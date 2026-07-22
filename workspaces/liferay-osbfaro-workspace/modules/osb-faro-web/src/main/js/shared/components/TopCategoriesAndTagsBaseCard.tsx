@@ -190,7 +190,7 @@ interface ITopCategoriesAndTagsWithDataProps
 const TopCategoriesAndTagsWithData: React.FC<
 	ITopCategoriesAndTagsWithDataProps
 > = ({dataSourceFn, dataSourceParams, rangeSelectors, skipRequest}) => {
-	const {channelId, groupId} = useParams<{
+	const {channelId = '', groupId = ''} = useParams<{
 		channelId: string;
 		groupId: string;
 	}>();

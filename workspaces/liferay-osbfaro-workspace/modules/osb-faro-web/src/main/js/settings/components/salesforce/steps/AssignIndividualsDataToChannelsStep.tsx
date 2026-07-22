@@ -13,7 +13,8 @@ import {modalTypes} from 'shared/actions/modals';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
-import {useHistory, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useWizardPage} from 'settings/components/base-page/WizardPageContext';
 import {WizardPageButtonGroup} from 'settings/components/base-page/WizardPageButtonGroup';
 
@@ -34,7 +35,7 @@ const AssignIndividualsDataToPropertiesStep = ({
 	open,
 	updateDataSourceFn,
 }: IAssignIndividualsDataToPropertiesStepProps) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const {groupId = ''} = useParams<{groupId: string}>();
 	const [selectedItems, setSelectedItems] = useState<string[]>([]);
 	const [allChannelsSelected, setAllChannelsSelected] = useState(false);

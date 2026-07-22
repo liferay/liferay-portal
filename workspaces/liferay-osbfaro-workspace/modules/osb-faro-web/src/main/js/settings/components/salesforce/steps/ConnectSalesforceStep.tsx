@@ -9,7 +9,7 @@ import {modalTypes} from 'shared/actions/modals';
 import {Routes, toRoute} from 'shared/util/router';
 import {Text} from '@clayui/core';
 import {updateSearchParams} from 'settings/components/base-page/utis';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useWizardPage} from '../../base-page/WizardPageContext';
 import {WizardPageButtonGroup} from 'settings/components/base-page/WizardPageButtonGroup';
 
@@ -28,7 +28,7 @@ const ConnectSalesforceStep = ({
 	onNext,
 	open,
 }: IConnectSalesforceStepProps) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const {dataSource, refetchDataSource} = useWizardPage();
 
 	if (!dataSource) {

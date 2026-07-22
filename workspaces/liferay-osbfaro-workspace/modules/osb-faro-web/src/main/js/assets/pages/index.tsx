@@ -3,15 +3,15 @@ import BasePage from 'shared/components/base-page';
 import BundleRouter from 'route-middleware/BundleRouter';
 import ClayLink from '@clayui/link';
 import DownloadCSVReport from 'shared/components/download-report/DownloadCSVReport';
+import ErrorPage from 'shared/pages/ErrorPage';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import URLConstants from 'shared/util/url-constants';
 import {CSVType} from 'shared/components/download-report/utils';
 import {getMatchedRoute, Routes, toRoute} from 'shared/util/router';
+import {Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
 import {Router} from 'shared/types';
-import {Switch, useParams} from 'react-router-dom';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
@@ -66,7 +66,7 @@ interface IAssetsProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const Assets: React.FC<IAssetsProps> = ({className, router}) => {
-	const {channelId, groupId} = useParams<{
+	const {channelId = '', groupId = ''} = useParams<{
 		channelId: string;
 		groupId: string;
 	}>();
@@ -206,37 +206,49 @@ const Assets: React.FC<IAssetsProps> = ({className, router}) => {
 							/>
 
 							<StatesRenderer.Success>
-								<Switch>
-									<BundleRouter
-										data={BlogsList}
-										destructured={false}
-										exact
-										path={Routes.ASSETS_BLOGS}
+								<RouterRoutes>
+									<Route
+										element={
+											<BundleRouter
+												data={BlogsList}
+												destructured={false}
+											/>
+										}
+										path="blogs"
 									/>
 
-									<BundleRouter
-										data={DocumentsAndMediaList}
-										destructured={false}
-										exact
-										path={Routes.ASSETS_DOCUMENTS_AND_MEDIA}
+									<Route
+										element={
+											<BundleRouter
+												data={DocumentsAndMediaList}
+												destructured={false}
+											/>
+										}
+										path="documents-and-media"
 									/>
 
-									<BundleRouter
-										data={FormsList}
-										destructured={false}
-										exact
-										path={Routes.ASSETS_FORMS}
+									<Route
+										element={
+											<BundleRouter
+												data={FormsList}
+												destructured={false}
+											/>
+										}
+										path="forms"
 									/>
 
-									<BundleRouter
-										data={WebContentList}
-										destructured={false}
-										exact
-										path={Routes.ASSETS_WEB_CONTENT}
+									<Route
+										element={
+											<BundleRouter
+												data={WebContentList}
+												destructured={false}
+											/>
+										}
+										path="web-content"
 									/>
 
-									<RouteNotFound />
-								</Switch>
+									<Route element={<ErrorPage />} path="*" />
+								</RouterRoutes>
 							</StatesRenderer.Success>
 						</StatesRenderer>
 					</Suspense>

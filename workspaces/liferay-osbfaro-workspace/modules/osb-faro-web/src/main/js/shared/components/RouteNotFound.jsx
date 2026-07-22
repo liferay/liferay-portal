@@ -1,8 +1,9 @@
+import ErrorPage from 'shared/pages/ErrorPage';
 import React from 'react';
-import {Redirect} from 'react-router-dom';
 
 /**
- * Component for triggering a redirect to the same page
- * with some extra state for App to decide whether to render a 404 or children.
+ * Renders the 404 page. Kept as a thin alias for the remaining call sites that
+ * render it as a not-found fallback; new code should render `ErrorPage` (or a
+ * catch-all `<Route path="*">`) directly.
  */
-export default () => <Redirect to={{state: {notFoundError: true}}} />;
+export default () => <ErrorPage />;

@@ -7,7 +7,6 @@ import DownloadPDFReport from 'shared/components/download-report/DownloadPDFRepo
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useState} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
 import {CSVType} from 'shared/components/download-report/utils';
 import {getMatchedRoute, Routes} from 'shared/util/router';
@@ -15,7 +14,6 @@ import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {pickBy} from 'lodash';
 import {Router} from 'shared/types';
 import {sub} from 'shared/util/lang';
-import {Switch} from 'react-router-dom';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
@@ -46,6 +44,7 @@ const WebContent: React.FC<{
 			assetId,
 			channelId = '',
 			groupId = '',
+			tabId,
 			title = '',
 			touchpoint,
 			type = '',
@@ -208,32 +207,22 @@ const WebContent: React.FC<{
 			>
 				<BasePage.Body>
 					<Suspense fallback={<Loading />}>
-						<Switch>
-							<BundleRouter
-								data={Overview}
-								destructured={false}
-								exact
-								path={Routes.ASSETS_WEB_CONTENT_OVERVIEW}
-							/>
-
+						{tabId === 'known-individuals' ? (
 							<BundleRouter
 								data={KnownIndividuals}
 								destructured={false}
-								exact
-								path={
-									Routes.ASSETS_WEB_CONTENT_KNOWN_INDIVIDUALS
-								}
 							/>
-
+						) : tabId === 'accounts' ? (
 							<BundleRouter
 								data={Accounts}
 								destructured={false}
-								exact
-								path={Routes.ASSETS_WEB_CONTENT_ACCOUNTS}
 							/>
-
-							<RouteNotFound />
-						</Switch>
+						) : (
+							<BundleRouter
+								data={Overview}
+								destructured={false}
+							/>
+						)}
 					</Suspense>
 				</BasePage.Body>
 			</BasePage.Context.Provider>

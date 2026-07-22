@@ -4,7 +4,7 @@ import {Alert} from 'shared/types';
 import {ConnectorConfig} from '../types';
 import {Routes, toRoute} from 'shared/util/router';
 import {updateSearchParams} from 'settings/components/base-page/utis';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useWizardPage} from '../../base-page/WizardPageContext';
 
 interface IConnectorAuthStepProps {
@@ -21,7 +21,7 @@ const ConnectorAuthStep = ({
 	onNext,
 }: IConnectorAuthStepProps) => {
 	const {dataSource} = useWizardPage();
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	const handleCancel = () => {
 		history.push(

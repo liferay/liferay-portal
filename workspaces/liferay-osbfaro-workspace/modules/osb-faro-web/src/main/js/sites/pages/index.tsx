@@ -5,18 +5,18 @@ import BundleRouter from 'route-middleware/BundleRouter';
 import ClayLink from '@clayui/link';
 import DownloadCSVReport from 'shared/components/download-report/DownloadCSVReport';
 import DownloadPDFReport from 'shared/components/download-report/DownloadPDFReport';
+import ErrorPage from 'shared/pages/ErrorPage';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import URLConstants from 'shared/util/url-constants';
 import {CSVType} from 'shared/components/download-report/utils';
 import {getMatchedRoute, Routes, toRoute} from 'shared/util/router';
 import {pickBy} from 'lodash';
+import {Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
 import {Router} from 'shared/types';
-import {Switch, useParams} from 'react-router-dom';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -245,47 +245,63 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 							/>
 
 							<StatesRenderer.Success>
-								<Switch>
-									<BundleRouter
-										data={InterestDetails}
-										destructured={false}
-										exact
-										path={Routes.SITES_INTEREST_DETAILS}
+								<RouterRoutes>
+									<Route
+										element={
+											<BundleRouter
+												data={InterestDetails}
+												destructured={false}
+											/>
+										}
+										path="interests/:interestId"
 									/>
 
-									<BundleRouter
-										data={Interests}
-										destructured={false}
-										exact
-										path={Routes.SITES_INTERESTS}
+									<Route
+										element={
+											<BundleRouter
+												data={Interests}
+												destructured={false}
+											/>
+										}
+										path="interests"
 									/>
 
-									<BundleRouter
-										data={Touchpoints}
-										destructured={false}
-										exact
-										path={Routes.SITES_TOUCHPOINTS}
+									<Route
+										element={
+											<BundleRouter
+												data={Touchpoints}
+												destructured={false}
+											/>
+										}
+										path="pages"
 									/>
 
-									<BundleRouter
-										componentProps={{
-											channelName: selectedChannelName,
-										}}
-										data={Overview}
-										destructured={false}
-										exact
-										path={Routes.SITES}
+									<Route
+										element={
+											<BundleRouter
+												componentProps={{
+													channelName:
+														selectedChannelName,
+												}}
+												data={Overview}
+												destructured={false}
+											/>
+										}
+										index
 									/>
 
-									<BundleRouter
-										data={SearchTermsPage}
-										destructured={false}
-										exact
-										path={Routes.SITES_SEARCH_TERMS}
+									<Route
+										element={
+											<BundleRouter
+												data={SearchTermsPage}
+												destructured={false}
+											/>
+										}
+										path="search-terms"
 									/>
 
-									<RouteNotFound />
-								</Switch>
+									<Route element={<ErrorPage />} path="*" />
+								</RouterRoutes>
 							</StatesRenderer.Success>
 						</StatesRenderer>
 					</Suspense>

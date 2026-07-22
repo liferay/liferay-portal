@@ -32,7 +32,7 @@ const getStageLabel = (stage: IAccountLifecycleStageStatus) => {
 };
 
 const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
-	const {groupId, id: accountId} = useParams<{
+	const {groupId = '', id: accountId = ''} = useParams<{
 		groupId: string;
 		id: string;
 	}>();

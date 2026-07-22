@@ -15,7 +15,7 @@ import {connect} from 'react-redux';
 import {DataSourceStates} from 'shared/util/constants';
 import {Project} from '../util/records';
 import {PropTypes} from 'prop-types';
-import {Redirect} from 'react-router';
+import {Navigate} from 'react-router-dom';
 import {Routes, toRoute} from 'shared/util/router';
 
 export const routingFn = ({project}) => {
@@ -117,7 +117,7 @@ export class AddWorkspace extends React.Component {
 				key='AddWorkspace'
 			>
 				{redirectToWorkspace ? (
-					<Redirect
+					<Navigate
 						to={toRoute(Routes.WORKSPACE_WITH_ID, {
 							groupId: friendlyURL
 						})}

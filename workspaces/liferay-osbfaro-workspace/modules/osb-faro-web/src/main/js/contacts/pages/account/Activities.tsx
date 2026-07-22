@@ -18,7 +18,7 @@ interface IActivitiesProps {
 const Activities: React.FC<IActivitiesProps> = ({accountName}) => {
 	const {selectedChannel} = useContext(ChannelContext);
 
-	const {channelId: routeChannelId, id} = useParams<{
+	const {channelId: routeChannelId = '', id = ''} = useParams<{
 		channelId: string;
 		groupId: string;
 		id: string;

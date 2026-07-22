@@ -12,7 +12,7 @@ import {DropdownRangeKeyLegacy} from './DropdownRangeKeyLegacy';
 import {formatTimeRange, getFilteredItems, getSelectedItem} from './utils';
 import {MomentDateRange} from 'shared/components/DateRangeInput';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {useHistory} from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
 import {useRetentionPeriod} from 'shared/hooks/useRetentionPeriod';
 
 export const DropdownRangeKeyContent: React.FC<
@@ -46,7 +46,7 @@ export const DropdownRangeKeyContent: React.FC<
 	});
 	const [seeMore, setSeeMore] = useState(false);
 	const [showDatePicker, setShowDatePicker] = useState(false);
-	const history = useHistory();
+	const location = useLocation();
 	const retentionPeriod = useRetentionPeriod();
 	const timeRange = formatTimeRange(data.timeRange);
 	const filteredItems = getFilteredItems({
@@ -70,26 +70,20 @@ export const DropdownRangeKeyContent: React.FC<
 	}
 
 	useEffect(() => {
-		const unlisten = history.listen((location) => {
-			const query = new URLSearchParams(location.search);
+		const query = new URLSearchParams(location.search);
 
-			if (query.get('downloadReport')) {
-				if (onRangeSelectorChange) {
-					onRangeSelectorChange({
-						rangeEnd: query.get('rangeEnd') || '',
-						rangeKey: query.get(
-							'rangeKey'
-						) as any as RangeKeyTimeRanges,
-						rangeStart: query.get('rangeStart') || '',
-					});
-				}
+		if (query.get('downloadReport')) {
+			if (onRangeSelectorChange) {
+				onRangeSelectorChange({
+					rangeEnd: query.get('rangeEnd') || '',
+					rangeKey: query.get(
+						'rangeKey'
+					) as any as RangeKeyTimeRanges,
+					rangeStart: query.get('rangeStart') || '',
+				});
 			}
-		});
-
-		return () => {
-			unlisten();
-		};
-	}, []);
+		}
+	}, [location.search]);
 
 	useEffect(() => {
 		if (customDateRange && customDateRange.end && customDateRange.start) {

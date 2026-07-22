@@ -5,12 +5,12 @@ import Card from 'shared/components/Card';
 import ClayBadge from '@clayui/badge';
 import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
+import ErrorPage from 'shared/pages/ErrorPage';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useState} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import {getMatchedRoute, Routes, toRoute} from 'shared/util/router';
-import {Switch, useParams} from 'react-router-dom';
+import {Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {UserStatuses} from 'shared/util/constants';
 
@@ -109,23 +109,29 @@ export const User = ({className}: {className?: string}) => {
 				)}
 
 				<Suspense fallback={<Loading />}>
-					<Switch>
-						<BundleRouter
-							componentProps={{currentUser}}
-							data={UserList}
-							exact
-							path={Routes.SETTINGS_USERS}
+					<RouterRoutes>
+						<Route
+							element={
+								<BundleRouter
+									componentProps={{currentUser}}
+									data={UserList}
+								/>
+							}
+							index
 						/>
 
-						<BundleRouter
-							componentProps={{onSetUserRequest}}
-							data={UserRequest}
-							exact
-							path={Routes.SETTINGS_USERS_REQUESTS}
+						<Route
+							element={
+								<BundleRouter
+									componentProps={{onSetUserRequest}}
+									data={UserRequest}
+								/>
+							}
+							path="requests"
 						/>
 
-						<RouteNotFound />
-					</Switch>
+						<Route element={<ErrorPage />} path="*" />
+					</RouterRoutes>
 				</Suspense>
 			</Card>
 		</BasePage>

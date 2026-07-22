@@ -18,7 +18,7 @@ export type Resource = {
 
 export const UsageOverviewExternal = () => {
 	const currentUser = useCurrentUser();
-	const {groupId} = useParams<{groupId: string}>();
+	const {groupId = ''} = useParams<{groupId: string}>();
 	const isLDP = useLDPEnabled({groupId});
 
 	let pageActions: {

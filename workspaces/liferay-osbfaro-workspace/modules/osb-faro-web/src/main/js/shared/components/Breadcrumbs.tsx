@@ -5,7 +5,7 @@ import getCN from 'classnames';
 import React from 'react';
 import {IBreadcrumbArgs} from 'shared/util/breadcrumbs';
 import {Link} from 'react-router-dom';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 
 interface IBreadcrumbProps {
 	bufferSize?: number;
@@ -64,7 +64,7 @@ const Breadcrumb: React.FC<IBreadcrumbProps> = ({
 	items,
 	onClick,
 }) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const totalItems = items.length;
 
 	let shownItems = items;

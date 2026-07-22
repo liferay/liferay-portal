@@ -25,7 +25,8 @@ import {
 } from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
 import {useChannelContext} from 'shared/context/channel';
-import {useHistory, useLocation, useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
@@ -213,7 +214,7 @@ const TABLE_FIELDS = [
 ];
 
 const List = () => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const {search} = useLocation();
 	const {selectedChannel} = useChannelContext();
 	const {channelId, groupId} = useParams();

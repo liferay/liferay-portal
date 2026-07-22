@@ -10,7 +10,7 @@ import {connect, ConnectedProps} from 'react-redux';
 import {Heading, Text} from '@clayui/core';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useParams} from 'react-router-dom';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
 import {useWizardPage, WizardPageProvider} from './WizardPageContext';
@@ -44,7 +44,7 @@ function getSafeStepFromURL(steps: Step[], initStep: string | null) {
 }
 
 function updateSearchParams(
-	history: ReturnType<typeof useHistory>,
+	history: ReturnType<typeof useHistoryAdapter>,
 	key: string,
 	value: any
 ) {
@@ -63,7 +63,7 @@ interface IWizardStepsProps extends PropsFromRedux {
 
 const WizardSteps = ({addAlert, close, open, steps}: IWizardStepsProps) => {
 	const {groupId = ''} = useParams<{groupId: string}>();
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const params = useQueryParams();
 	const {loadingContext, refetchDataSource} = useWizardPage();
 

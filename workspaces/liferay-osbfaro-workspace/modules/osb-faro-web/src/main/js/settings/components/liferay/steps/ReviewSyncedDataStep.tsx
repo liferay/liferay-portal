@@ -8,7 +8,7 @@ import {CREATE_DATE} from 'shared/util/pagination';
 import {DataSourceTypes, OrderByDirections} from 'shared/util/constants';
 import {ReviewSyncedDataFragment} from '../ReviewSyncedDataFragment';
 import {updateSearchParams} from 'settings/components/base-page/utis';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useInterval} from 'shared/hooks/useInterval';
 import {useLazyQuery} from '@apollo/client';
 import {WizardPageButtonGroup} from 'settings/components/base-page/WizardPageButtonGroup';
@@ -21,7 +21,7 @@ interface IReviewSyncedDataStepProps {
 }
 
 const ReviewSyncedDataStep = ({onNext, onPrev}: IReviewSyncedDataStepProps) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const [dataSource, setDataSource] = useState<DataSource>({
 		contactsSyncDetails: {selected: false},
 		id: '',

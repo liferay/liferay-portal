@@ -1,11 +1,10 @@
 import BundleRouter from 'route-middleware/BundleRouter';
+import ErrorPage from 'shared/pages/ErrorPage';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import {DEVELOPER_MODE} from 'shared/util/constants';
 import {ENABLE_BLOCKLIST_KEYWORDS} from 'shared/util/feature-flags';
-import {Routes} from 'shared/util/router';
-import {Switch} from 'react-router-dom';
+import {Route, Routes as RouterRoutes} from 'react-router-dom';
 
 const EventBlockList = lazy(
 	() =>
@@ -77,79 +76,70 @@ interface IDefinitionsProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 const Definitions: React.FC<IDefinitionsProps> = () => (
 	<Suspense fallback={<Loading />}>
-		<Switch>
-			<BundleRouter
-				data={Overview}
-				exact
-				path={Routes.SETTINGS_DEFINITIONS}
-			/>
+		<RouterRoutes>
+			<Route element={<BundleRouter data={Overview} />} index />
 
 			{ENABLE_BLOCKLIST_KEYWORDS && (
-				<BundleRouter
-					data={InterestTopics}
-					exact
-					path={Routes.SETTINGS_DEFINITIONS_INTEREST_TOPICS}
+				<Route
+					element={<BundleRouter data={InterestTopics} />}
+					path="interest-topics"
 				/>
 			)}
 
-			<BundleRouter
-				data={IndividualAttributes}
-				exact
-				path={Routes.SETTINGS_DEFINITIONS_INDIVIDUAL_ATTRIBUTES}
+			<Route
+				element={<BundleRouter data={IndividualAttributes} />}
+				path="individual-attributes"
 			/>
 
-			<BundleRouter
-				data={Search}
-				exact
-				path={Routes.SETTINGS_DEFINITIONS_SEARCH}
-			/>
+			<Route element={<BundleRouter data={Search} />} path="search" />
 
 			{DEVELOPER_MODE && (
 
 				// TODO: LRAC-4511 Remove when new TrackedBehavior page exists
 
-				<BundleRouter
-					data={TrackedBehaviors}
-					exact
-					path={Routes.SETTINGS_DEFINITIONS_BEHAVIORS}
+				<Route
+					element={<BundleRouter data={TrackedBehaviors} />}
+					path="behaviors"
 				/>
 			)}
 
-			<BundleRouter
-				data={AttributeView}
-				exact
-				path={Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_VIEW}
+			<Route
+				element={<BundleRouter data={AttributeView} />}
+				path="event-attributes/:attributeId"
 			/>
 
-			<BundleRouter
-				data={Events}
-				path={[
-					Routes.SETTINGS_DEFINITIONS_EVENTS_CUSTOM,
-					Routes.SETTINGS_DEFINITIONS_EVENTS_DEFAULT,
-				]}
+			<Route
+				element={<BundleRouter data={Events} />}
+				path="events/custom/*"
 			/>
 
-			<BundleRouter
-				data={EventAttributes}
-				path={[
-					Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_LOCAL,
-					Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_GLOBAL,
-				]}
+			<Route
+				element={<BundleRouter data={Events} />}
+				path="events/default/*"
 			/>
 
-			<BundleRouter
-				data={EventBlockList}
-				path={Routes.SETTINGS_DEFINITIONS_EVENTS_BLOCK_LIST}
+			<Route
+				element={<BundleRouter data={EventAttributes} />}
+				path="event-attributes/local/*"
 			/>
 
-			<BundleRouter
-				data={EventView}
-				exact
-				path={Routes.SETTINGS_DEFINITIONS_EVENTS_VIEW}
+			<Route
+				element={<BundleRouter data={EventAttributes} />}
+				path="event-attributes/global/*"
 			/>
 
-			<RouteNotFound />
-		</Switch>
+			<Route
+				element={<BundleRouter data={EventBlockList} />}
+				path="events/block-list/*"
+			/>
+
+			<Route
+				element={<BundleRouter data={EventView} />}
+				path="events/:eventId"
+			/>
+
+			<Route element={<ErrorPage />} path="*" />
+		</RouterRoutes>
 	</Suspense>
 );
 

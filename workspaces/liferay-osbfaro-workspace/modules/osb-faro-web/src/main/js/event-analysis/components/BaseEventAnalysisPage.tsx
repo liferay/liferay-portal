@@ -29,7 +29,8 @@ import {omit} from 'lodash';
 import {Routes, toRoute} from 'shared/util/router';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
-import {useHistory, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useMutation} from '@apollo/client';
 import {WithRangeKeyProps} from 'shared/hoc/WithRangeKey';
 
@@ -79,7 +80,7 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 	open,
 	rangeSelectors: initialRangeSelectors,
 }) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	const {selectedChannel} = useChannelContext();
 

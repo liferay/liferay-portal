@@ -1,6 +1,10 @@
-import {History} from 'history';
+import {IHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 
-export function updateSearchParams(history: History, key: string, value: any) {
+export function updateSearchParams(
+	history: IHistoryAdapter,
+	key: string,
+	value: any
+) {
 	const params = new URLSearchParams(window.location.search);
 	params.set(key, String(value));
 

@@ -1,11 +1,10 @@
 import BundleRouter from 'route-middleware/BundleRouter';
 import checkProjectState from 'shared/hoc/CheckProjectState';
+import ErrorPage from 'shared/pages/ErrorPage';
 import Loading from 'shared/components/Loading';
 import React, {Fragment, lazy, Suspense} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import {compose} from 'shared/hoc';
-import {Routes} from 'shared/util/router';
-import {Switch, useParams} from 'react-router-dom';
+import {Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useStore} from 'react-redux';
 import {withOnboarding} from 'shared/hoc';
@@ -125,7 +124,7 @@ const WorkspaceSettings = lazy(
 );
 
 export const Settings = () => {
-	const {groupId} = useParams<{groupId: string}>();
+	const {groupId = ''} = useParams();
 	const store = useStore();
 	const isLDP = useLDPEnabled({groupId});
 
@@ -140,123 +139,126 @@ export const Settings = () => {
 
 	return (
 		<Suspense fallback={<Loading />}>
-			<Switch>
-				<BundleRouter
-					data={DataSourceList}
-					exact
-					path={Routes.SETTINGS_DATA_SOURCE_LIST}
+			<RouterRoutes>
+				<Route
+					element={<BundleRouter data={DataSourceList} />}
+					path="data-source"
 				/>
 
-				<BundleRouter
-					data={DataSourceOnboarding}
-					exact
-					path={Routes.SETTINGS_DATA_SOURCE_ONBOARDING}
+				<Route
+					element={<BundleRouter data={DataSourceOnboarding} />}
+					path="data-source/:id/onboarding"
 				/>
 
-				<BundleRouter
-					data={DeleteDataSource}
-					path={Routes.SETTINGS_DATA_SOURCE_DELETE}
+				<Route
+					element={<BundleRouter data={DeleteDataSource} />}
+					path="data-source/:id/delete"
 				/>
 
-				<BundleRouter
-					data={DataSourceEdit}
-					exact
-					path={Routes.SETTINGS_DATA_SOURCE_EDIT}
+				<Route
+					element={<BundleRouter data={DataSourceEdit} />}
+					path="data-source/:id/edit"
 				/>
 
-				<BundleRouter
-					data={DataSource}
-					path={Routes.SETTINGS_DATA_SOURCE}
+				<Route
+					element={<BundleRouter data={DataSource} />}
+					path="data-source/:id/*"
 				/>
 
-				<BundleRouter data={Users} path={Routes.SETTINGS_USERS} />
+				<Route element={<BundleRouter data={Users} />} path="users/*" />
 
 				{!IS_PROJECT_SAAS && (
-					<BundleRouter
-						data={UsageOverview}
-						exact
-						path={Routes.SETTINGS_USAGE}
+					<Route
+						element={<BundleRouter data={UsageOverview} />}
+						path="usage"
 					/>
 				)}
 
 				{IS_PROJECT_SAAS && (
-					<BundleRouter
-						data={UsageOverviewExternal}
-						exact
-						path={Routes.SETTINGS_USAGE}
+					<Route
+						element={<BundleRouter data={UsageOverviewExternal} />}
+						path="usage"
 					/>
 				)}
 
-				<BundleRouter
-					data={Definitions}
-					path={Routes.SETTINGS_DEFINITIONS}
+				<Route
+					element={<BundleRouter data={Definitions} />}
+					path="definitions/*"
 				/>
 
-				<BundleRouter
-					data={DataPrivacy}
-					path={Routes.SETTINGS_DATA_PRIVACY}
+				<Route
+					element={<BundleRouter data={DataPrivacy} />}
+					path="data-privacy/*"
 				/>
 
-				<BundleRouter
-					data={WorkspaceSettings}
-					path={Routes.SETTINGS_WORKSPACE}
+				<Route
+					element={<BundleRouter data={WorkspaceSettings} />}
+					path="workspace/*"
 				/>
 
-				<BundleRouter
-					data={ChannelView}
-					exact
-					path={Routes.SETTINGS_CHANNELS_VIEW}
+				<Route
+					element={<BundleRouter data={ChannelView} />}
+					path="properties/:id"
 				/>
 
-				<BundleRouter
-					data={ChannelList}
-					path={Routes.SETTINGS_CHANNELS}
+				<Route
+					element={<BundleRouter data={ChannelList} />}
+					path="properties/*"
 				/>
 
-				<BundleRouter data={Apis} path={Routes.SETTINGS_APIS} />
+				<Route element={<BundleRouter data={Apis} />} path="apis/*" />
 
 				{recommendationsEnabled && (
 					<Fragment key="RECOMMENDATIONS">
-						<BundleRouter
-							data={RecommendationList}
-							destructured={false}
-							exact
-							path={Routes.SETTINGS_RECOMMENDATIONS}
-						/>
-
-						<BundleRouter
-							data={RecommendationCreateItemSimilarity}
-							destructured={false}
-							exact
-							path={
-								Routes.SETTINGS_RECOMMENDATIONS_CREATE_ITEM_SIMILARITY_MODEL
+						<Route
+							element={
+								<BundleRouter
+									data={RecommendationList}
+									destructured={false}
+								/>
 							}
+							path="recommendations"
 						/>
 
-						<BundleRouter
-							data={RecommendationEdit}
-							destructured={false}
-							exact
-							path={Routes.SETTINGS_RECOMMENDATION_EDIT}
+						<Route
+							element={
+								<BundleRouter
+									data={RecommendationCreateItemSimilarity}
+									destructured={false}
+								/>
+							}
+							path="recommendations/create-item-similarity-model"
 						/>
 
-						<BundleRouter
-							data={RecommendationView}
-							destructured={false}
-							exact
-							path={Routes.SETTINGS_RECOMMENDATION_MODEL_VIEW}
+						<Route
+							element={
+								<BundleRouter
+									data={RecommendationEdit}
+									destructured={false}
+								/>
+							}
+							path="recommendations/:jobId/edit"
+						/>
+
+						<Route
+							element={
+								<BundleRouter
+									data={RecommendationView}
+									destructured={false}
+								/>
+							}
+							path="recommendations/:jobId"
 						/>
 					</Fragment>
 				)}
 
-				<BundleRouter
-					data={FeatureFlags}
-					exact
-					path={Routes.SETTINGS_FEATURE_FLAGS}
+				<Route
+					element={<BundleRouter data={FeatureFlags} />}
+					path="feature-flags"
 				/>
 
-				<RouteNotFound />
-			</Switch>
+				<Route element={<ErrorPage />} path="*" />
+			</RouterRoutes>
 		</Suspense>
 	);
 };

@@ -6,7 +6,8 @@ import {connect} from 'react-redux';
 import {EXPERIMENT_DELETE_MUTATION} from 'experiments/queries/ExperimentMutation';
 import {Observer} from '@clayui/modal/lib/types';
 import {Routes, toRoute} from 'shared/util/router';
-import {useHistory, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useMutation} from '@apollo/client';
 
 interface IDeleteExperimentModalProps {
@@ -26,7 +27,7 @@ const DeleteExperimentModal = ({
 		channelId: string;
 		groupId: string;
 	}>();
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const [mutate] = useMutation(EXPERIMENT_DELETE_MUTATION);
 
 	const onSubmit = () =>

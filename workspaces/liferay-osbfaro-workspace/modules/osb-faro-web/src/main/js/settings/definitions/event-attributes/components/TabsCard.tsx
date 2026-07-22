@@ -4,9 +4,7 @@ import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useState} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import {getMatchedRoute, Routes, toRoute} from 'shared/util/router';
-import {Switch} from 'react-router';
 
 const AttributeList = lazy(
 	() => import(/* webpackChunkName: "AttributeList" */ './AttributeList')
@@ -40,6 +38,9 @@ interface ITabsCardProps {
 const TabsCard: React.FC<ITabsCardProps> = ({groupId}) => {
 	const matchedRoute = getMatchedRoute(NAV_ITEMS);
 
+	const globalAttributeTab =
+		matchedRoute === Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_GLOBAL;
+
 	const initialItem =
 		NAV_ITEMS.find((item) => item.route === matchedRoute) ?? NAV_ITEMS[0];
 
@@ -67,25 +68,11 @@ const TabsCard: React.FC<ITabsCardProps> = ({groupId}) => {
 			</ClayNavigationBar>
 
 			<Suspense fallback={<Loading />}>
-				<Switch>
-					<BundleRouter
-						data={AttributeList}
-						exact
-						path={
-							Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_LOCAL
-						}
-					/>
-
-					<BundleRouter
-						data={GlobalAttributeList}
-						exact
-						path={
-							Routes.SETTINGS_DEFINITIONS_EVENT_ATTRIBUTES_GLOBAL
-						}
-					/>
-
-					<RouteNotFound />
-				</Switch>
+				{globalAttributeTab ? (
+					<BundleRouter data={GlobalAttributeList} />
+				) : (
+					<BundleRouter data={AttributeList} />
+				)}
 			</Suspense>
 		</Card>
 	);

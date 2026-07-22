@@ -64,7 +64,11 @@ interface IIndividualsDataSetProps {
 const IndividualsDataSet: React.FC<IIndividualsDataSetProps> = ({
 	preview = false,
 }) => {
-	const {channelId, groupId, id} = useParams<{
+	const {
+		channelId = '',
+		groupId = '',
+		id = '',
+	} = useParams<{
 		channelId: string;
 		groupId: string;
 		id: string;

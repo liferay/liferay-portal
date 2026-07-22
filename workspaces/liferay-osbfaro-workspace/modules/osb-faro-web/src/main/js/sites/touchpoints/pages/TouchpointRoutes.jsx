@@ -9,7 +9,6 @@ import ExperienceDropdown from '../components/ExperienceDropdown';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useEffect, useState} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
 import TextTruncate from 'shared/components/TextTruncate';
 import {CSVType} from 'shared/components/download-report/utils';
@@ -19,10 +18,10 @@ import {getSafeDecodedURIComponent, getSafeTouchpoint} from 'shared/util/util';
 import {pickBy} from 'lodash';
 import {PropTypes} from 'prop-types';
 import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
-import {Switch, useHistory} from 'react-router-dom';
 import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
@@ -52,7 +51,8 @@ function TouchpointRoutes({className, router}) {
 		experienceId: experienceIdfromURL,
 		groupId,
 		title,
-		touchpoint
+		touchpoint,
+		touchpointType
 	} = router.params;
 	const {accountId, accountName, setAccount} = useAccountFilter();
 	const {segmentId, segmentName, setSegment} = useSegmentFilter();
@@ -86,7 +86,7 @@ function TouchpointRoutes({className, router}) {
 	const decodedTitle = getSafeDecodedURIComponent(title);
 	const decodedTouchpoint = getSafeDecodedURIComponent(touchpoint);
 	const [experienceId, setExperienceId] = useState(experienceIdfromURL);
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	const accountDropdown = LDPEnabled && (
 		<AccountDropdown
@@ -260,42 +260,36 @@ function TouchpointRoutes({className, router}) {
 
 				<BasePage.Body>
 					<Suspense fallback={<Loading />}>
-						<Switch>
-							<BundleRouter
-								data={TouchpointOverviewPage}
-								destructured={false}
-								exact
-								path={Routes.SITES_TOUCHPOINTS_OVERVIEW}
-							/>
-
-							<BundleRouter
-								data={KnownIndividuals}
-								destructured={false}
-								exact
-								path={
-									Routes.SITES_TOUCHPOINTS_KNOWN_INDIVIDUALS
-								}
-							/>
-
+						{touchpointType === 'path' && (
 							<BundleRouter
 								componentProps={{
 									rangeSelectors: pathRangeSelectors
 								}}
 								data={TouchpointPathPage}
 								destructured={false}
-								exact
-								path={Routes.SITES_TOUCHPOINTS_PATH}
 							/>
+						)}
 
+						{touchpointType === 'known-individuals' && (
+							<BundleRouter
+								data={KnownIndividuals}
+								destructured={false}
+							/>
+						)}
+
+						{touchpointType === 'accounts' && (
 							<BundleRouter
 								data={Accounts}
 								destructured={false}
-								exact
-								path={Routes.SITES_TOUCHPOINTS_ACCOUNTS}
 							/>
+						)}
 
-							<RouteNotFound />
-						</Switch>
+						{touchpointType === 'overview' && (
+							<BundleRouter
+								data={TouchpointOverviewPage}
+								destructured={false}
+							/>
+						)}
 					</Suspense>
 				</BasePage.Body>
 			</BasePage.Context.Provider>

@@ -10,7 +10,7 @@ import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {updateSearchParams} from 'settings/components/base-page/utis';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
 import {useWizardPage} from '../../base-page/WizardPageContext';
 import {WizardPageButtonGroup} from 'settings/components/base-page/WizardPageButtonGroup';
@@ -32,7 +32,7 @@ const ConnectLiferayDXPStep = ({
 }: IConnectLiferayDXPStepProps) => {
 	const {dataSource, refetchDataSource} = useWizardPage();
 	const {dataSourceId} = useQueryParams();
-	const history = useHistory();
+	const history = useHistoryAdapter();
 
 	const [token, setToken] = useState('');
 

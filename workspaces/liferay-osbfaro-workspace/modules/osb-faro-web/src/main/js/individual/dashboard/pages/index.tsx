@@ -2,14 +2,14 @@ import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import BundleRouter from 'route-middleware/BundleRouter';
 import DownloadPDFReport from 'shared/components/download-report/DownloadPDFReport';
+import ErrorPage from 'shared/pages/ErrorPage';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {getMatchedRoute, Routes} from 'shared/util/router';
+import {Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
 import {sub} from 'shared/util/lang';
-import {Switch, useParams} from 'react-router-dom';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
 
@@ -145,41 +145,49 @@ const Dashboard: React.FC<React.HTMLAttributes<HTMLDivElement>> = () => {
 			)}
 
 			<Suspense fallback={<Loading />}>
-				<Switch>
-					<BundleRouter
-						data={Overview}
-						destructured={false}
-						exact
-						path={Routes.CONTACTS_INDIVIDUALS}
+				<RouterRoutes>
+					<Route
+						element={
+							<BundleRouter
+								data={Overview}
+								destructured={false}
+							/>
+						}
+						index
 					/>
 
-					<BundleRouter
-						data={KnownIndividuals}
-						path={Routes.CONTACTS_INDIVIDUALS_KNOWN_INDIVIDUALS}
+					<Route
+						element={<BundleRouter data={KnownIndividuals} />}
+						path="known-individuals/*"
 					/>
 
-					<BundleRouter
-						data={Distribution}
-						exact
-						path={Routes.CONTACTS_INDIVIDUALS_DISTRIBUTION}
+					<Route
+						element={<BundleRouter data={Distribution} />}
+						path="distribution"
 					/>
 
-					<BundleRouter
-						data={InterestDetails}
-						destructured={false}
-						exact
-						path={Routes.CONTACTS_INDIVIDUALS_INTEREST_DETAILS}
+					<Route
+						element={
+							<BundleRouter
+								data={InterestDetails}
+								destructured={false}
+							/>
+						}
+						path="interests/:interestId"
 					/>
 
-					<BundleRouter
-						data={Interests}
-						destructured={false}
-						exact
-						path={Routes.CONTACTS_INDIVIDUALS_INTERESTS}
+					<Route
+						element={
+							<BundleRouter
+								data={Interests}
+								destructured={false}
+							/>
+						}
+						path="interests"
 					/>
 
-					<RouteNotFound />
-				</Switch>
+					<Route element={<ErrorPage />} path="*" />
+				</RouterRoutes>
 			</Suspense>
 		</BasePage>
 	);

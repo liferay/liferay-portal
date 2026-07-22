@@ -152,7 +152,7 @@ export const Node = ({
 							params: {
 								channelId,
 								groupId,
-								title: encodeURIComponent(payload.name),
+								title: payload.name,
 								touchpoint: payload.url,
 							},
 							query: {

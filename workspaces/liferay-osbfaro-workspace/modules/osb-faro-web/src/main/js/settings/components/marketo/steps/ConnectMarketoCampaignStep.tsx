@@ -10,7 +10,7 @@ import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {updateSearchParams} from 'settings/components/base-page/utis';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useWizardPage} from '../../base-page/WizardPageContext';
 import {WizardPageButtonGroup} from 'settings/components/base-page/WizardPageButtonGroup';
 
@@ -29,7 +29,7 @@ const ConnectMarketoCampaignStep = ({
 	onNext,
 	open,
 }: IConnectMarketoCampaignStepProps) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const {dataSource, refetchDataSource} = useWizardPage();
 
 	if (!dataSource) {

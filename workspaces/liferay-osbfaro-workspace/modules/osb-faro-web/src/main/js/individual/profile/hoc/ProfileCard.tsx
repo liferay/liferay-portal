@@ -4,7 +4,7 @@ import React from 'react';
 import {Individual} from 'shared/util/records';
 import {pickBy} from 'lodash';
 import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
-import {useHistory} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
 const DEFAULT_SESSIONS_DELTA = 50;
@@ -18,7 +18,7 @@ interface IProfileCardProps extends React.HTMLAttributes<HTMLElement> {
 }
 
 const ProfileCard: React.FC<IProfileCardProps> = ({tabId, ...props}) => {
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const {
 		delta,
 		onDeltaChange,

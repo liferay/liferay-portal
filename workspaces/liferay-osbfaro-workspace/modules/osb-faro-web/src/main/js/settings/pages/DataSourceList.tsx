@@ -32,7 +32,8 @@ import {
 import {getConnectorStatusDisplay} from 'settings/components/3rd-party-connector/getConnectorStatusDisplay';
 import {getDataSourceDisplayObject} from 'shared/util/data-sources';
 import {isLDPPlan} from 'shared/util/subscriptions';
-import {Link, useHistory, useParams} from 'react-router-dom';
+import {Link, useParams} from 'react-router-dom';
+import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -220,7 +221,7 @@ interface IDataSourceListProps extends React.HTMLAttributes<HTMLElement> {}
 
 const DataSourceList: React.FC<IDataSourceListProps> = ({className}) => {
 	const currentUser = useCurrentUser();
-	const history = useHistory();
+	const history = useHistoryAdapter();
 	const {groupId = ''} = useParams<{groupId: string}>();
 	const [alerts, setAlerts] = useState<
 		{

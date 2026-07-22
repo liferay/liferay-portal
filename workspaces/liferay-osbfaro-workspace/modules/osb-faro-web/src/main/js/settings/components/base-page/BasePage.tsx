@@ -183,10 +183,8 @@ const SettingsBasePage: React.FC<ISettingsBasePageProps> = ({
 									<li
 										className={getCN('item', {
 											active: !!matchPath(
-												location.pathname,
-												{
-													path: route,
-												}
+												{end: false, path: route},
+												location.pathname
 											),
 										})}
 										key={url}

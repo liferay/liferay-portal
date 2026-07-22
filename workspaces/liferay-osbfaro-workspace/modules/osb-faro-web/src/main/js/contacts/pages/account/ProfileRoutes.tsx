@@ -5,10 +5,9 @@ import BundleRouter from 'route-middleware/BundleRouter';
 import ErrorPage from 'shared/pages/ErrorPage';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useContext} from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import {ACCOUNTS, Routes, toRoute} from 'shared/util/router';
 import {ChannelContext} from 'shared/context/channel';
-import {Redirect, Switch, useParams} from 'react-router-dom';
+import {Navigate, Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Activities = lazy(
@@ -107,40 +106,53 @@ const AccountProfileRoutes = () => {
 
 			<BasePage.Body>
 				<Suspense fallback={<Loading />}>
-					<Switch>
-						<Redirect
-							exact
-							from={Routes.CONTACTS_ACCOUNT}
-							to={toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, {
-								channelId: channelId!,
-								groupId: groupId!,
-								id: id!,
-							})}
+					<RouterRoutes>
+						<Route
+							element={
+								<BundleRouter
+									componentProps={{account: data, loading}}
+									data={Profile}
+								/>
+							}
+							path="profile"
 						/>
 
-						<BundleRouter
-							componentProps={{account: data, loading}}
-							data={Profile}
-							exact
-							path={Routes.CONTACTS_ACCOUNT_PROFILE}
+						<Route
+							element={
+								<BundleRouter
+									componentProps={{accountName}}
+									data={Activities}
+								/>
+							}
+							path="activities"
 						/>
 
-						<BundleRouter
-							componentProps={{accountName}}
-							data={Activities}
-							exact
-							path={Routes.CONTACTS_ACCOUNT_ACTIVITIES}
+						<Route
+							element={
+								<BundleRouter
+									componentProps={{account: data}}
+									data={Overview}
+								/>
+							}
+							path="overview"
 						/>
 
-						<BundleRouter
-							componentProps={{account: data}}
-							data={Overview}
-							exact
-							path={Routes.CONTACTS_ACCOUNT_OVERVIEW}
+						<Route
+							element={
+								<Navigate
+									replace
+									to={toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, {
+										channelId: channelId!,
+										groupId: groupId!,
+										id: id!,
+									})}
+								/>
+							}
+							index
 						/>
 
-						<RouteNotFound />
-					</Switch>
+						<Route element={<ErrorPage />} path="*" />
+					</RouterRoutes>
 				</Suspense>
 			</BasePage.Body>
 		</BasePage>
