@@ -12,15 +12,15 @@ import {
 describe('toMatrixData', () => {
 	it('appends the localized sentinels after the real categories, preserving order', () => {
 		const matrixData = toMatrixData({
+			assetCount: 0,
 			contentCoverageEntries: [],
 			funnelStages: [
-				{externalReferenceCode: 'F1', id: '50001', name: 'Awareness'},
-				{externalReferenceCode: 'F2', id: '50002', name: 'Decision'},
+				{externalReferenceCode: 'F1', id: 50001, name: 'Awareness'},
+				{externalReferenceCode: 'F2', id: 50002, name: 'Decision'},
 			],
 			personas: [
-				{externalReferenceCode: 'P1', id: '40001', name: 'Champion'},
+				{externalReferenceCode: 'P1', id: 40001, name: 'Champion'},
 			],
-			totalAssetCount: 0,
 		});
 
 		expect(matrixData.personas.map((term) => term.id)).toEqual([
@@ -34,16 +34,16 @@ describe('toMatrixData', () => {
 		]);
 	});
 
-	it('maps the uncategorized bucket ("-1"), and any missing id, to the sentinel axes', () => {
+	it('maps the uncategorized bucket (-1), and any missing id, to the sentinel axes', () => {
 		const matrixData = toMatrixData({
+			assetCount: 6,
 			contentCoverageEntries: [
-				{funnelStageId: '50001', personaId: '40001', totalCount: 5},
-				{funnelStageId: '50001', personaId: '-1', totalCount: 2},
-				{funnelStageId: null, personaId: null, totalCount: 1},
+				{assetCount: 5, funnelStageId: 50001, personaId: 40001},
+				{assetCount: 2, funnelStageId: 50001, personaId: -1},
+				{assetCount: 1, funnelStageId: null, personaId: null},
 			],
 			funnelStages: [],
 			personas: [],
-			totalAssetCount: 6,
 		});
 
 		expect(matrixData.cells).toEqual([
