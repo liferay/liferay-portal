@@ -228,53 +228,6 @@ public class DesignLibraryResourcesDisplayContextTest {
 		return depotEntry;
 	}
 
-	private void _setUpHttpServletRequest() {
-		Mockito.when(
-			_themeDisplay.getPermissionChecker()
-		).thenReturn(
-			_permissionChecker
-		);
-
-		Mockito.when(
-			_themeDisplay.getLocale()
-		).thenReturn(
-			LocaleUtil.US
-		);
-
-		_mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-	}
-
-	private void _setUpPortletURLMocks() {
-		Mockito.when(
-			_liferayPortletResponse.createRenderURL()
-		).thenReturn(
-			_liferayPortletURL
-		);
-
-		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getControlPanelPortletURL(
-				Mockito.eq(_mockHttpServletRequest), Mockito.eq(_group),
-				Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(),
-				Mockito.anyString())
-		).thenReturn(
-			_liferayPortletURL
-		);
-
-		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getPortletNamespace(FragmentPortletKeys.FRAGMENT)
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-
-		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getPortletNamespace(
-				StyleBookPortletKeys.STYLE_BOOK)
-		).thenReturn(
-			RandomTestUtil.randomString()
-		);
-	}
-
 	private void _setUpDesignLibraryResourcesDisplayContext() {
 		ReflectionTestUtil.setFieldValue(
 			DesignLibraryResourcesDisplayContext.class,
@@ -321,6 +274,53 @@ public class DesignLibraryResourcesDisplayContextTest {
 		_designLibraryResourcesDisplayContext =
 			new DesignLibraryResourcesDisplayContext(
 				_mockHttpServletRequest, _liferayPortletResponse);
+	}
+
+	private void _setUpHttpServletRequest() {
+		Mockito.when(
+			_themeDisplay.getPermissionChecker()
+		).thenReturn(
+			_permissionChecker
+		);
+
+		Mockito.when(
+			_themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		_mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+	}
+
+	private void _setUpPortletURLMocks() {
+		Mockito.when(
+			_liferayPortletResponse.createRenderURL()
+		).thenReturn(
+			_liferayPortletURL
+		);
+
+		_portalUtilMockedStatic.when(
+			() -> PortalUtil.getControlPanelPortletURL(
+				Mockito.eq(_mockHttpServletRequest), Mockito.eq(_group),
+				Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.anyString())
+		).thenReturn(
+			_liferayPortletURL
+		);
+
+		_portalUtilMockedStatic.when(
+			() -> PortalUtil.getPortletNamespace(FragmentPortletKeys.FRAGMENT)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		_portalUtilMockedStatic.when(
+			() -> PortalUtil.getPortletNamespace(
+				StyleBookPortletKeys.STYLE_BOOK)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
 	}
 
 	private final MockedStatic<DepotEntryLocalServiceUtil>
