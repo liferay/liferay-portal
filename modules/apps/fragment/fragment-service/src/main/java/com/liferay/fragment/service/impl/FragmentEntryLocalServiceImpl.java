@@ -918,7 +918,7 @@ public class FragmentEntryLocalServiceImpl
 		}
 
 		int count = fragmentEntryVersionPersistence.countByFragmentEntryId(
-			fragmentEntry.getPrimaryKey());
+			fragmentEntry.getFragmentEntryId());
 
 		if (count <= maximumVersionsPerEntry) {
 			return;
