@@ -36,26 +36,31 @@ public abstract class BasePortalControllerBuildRunner
 	public void run() {
 		retirePreviousBuilds();
 
+		if (allowConcurrentBuildsUniqueSHA()) {
+			if (previousBuildHasCurrentSHA()) {
+				_updateBuildDescription();
+
+				return;
+			}
+
+			invokeBuild();
+
+			return;
+		}
+
 		if (allowConcurrentBuilds() || expirePreviousBuild()) {
 			invokeBuild();
 
 			return;
 		}
 
-		S buildData = getBuildData();
-
 		if (previousBuildHasCurrentSHA()) {
-			buildData.setBuildDescription(
-				JenkinsResultsParserUtil.combine(
-					"<strong>SKIPPED</strong> - <a href=\"https://github.com/",
-					"liferay/", buildData.getPortalGitHubRepositoryName(),
-					"/commit/", buildData.getPortalBranchSHA(), "\">",
-					getPortalBranchAbbreviatedSHA(), "</a> was already ran"));
-
-			super.updateBuildDescription();
+			_updateBuildDescription();
 
 			return;
 		}
+
+		S buildData = getBuildData();
 
 		if (previousBuildHasExistingInvocation()) {
 			buildData.setBuildDescription(
@@ -94,6 +99,22 @@ public abstract class BasePortalControllerBuildRunner
 		allowConcurrentBuildsString = allowConcurrentBuildsString.trim();
 
 		return allowConcurrentBuildsString.equals("true");
+	}
+
+	protected boolean allowConcurrentBuildsUniqueSHA() {
+		String allowConcurrentBuildsUniqueSHAString = Environment.get(
+			"ALLOW_CONCURRENT_BUILDS_UNIQUE_SHA");
+
+		if (allowConcurrentBuildsUniqueSHAString == null) {
+			return false;
+		}
+
+		allowConcurrentBuildsUniqueSHAString =
+			allowConcurrentBuildsUniqueSHAString.toLowerCase();
+		allowConcurrentBuildsUniqueSHAString =
+			allowConcurrentBuildsUniqueSHAString.trim();
+
+		return allowConcurrentBuildsUniqueSHAString.equals("true");
 	}
 
 	protected boolean expirePreviousBuild() {
@@ -372,6 +393,19 @@ public abstract class BasePortalControllerBuildRunner
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
+	}
+
+	private void _updateBuildDescription() {
+		S buildData = getBuildData();
+
+		buildData.setBuildDescription(
+			JenkinsResultsParserUtil.combine(
+				"<strong>SKIPPED</strong> - <a href=\"https://github.com/",
+				"liferay/", buildData.getPortalGitHubRepositoryName(),
+				"/commit/", buildData.getPortalBranchSHA(), "\">",
+				getPortalBranchAbbreviatedSHA(), "</a> was already ran"));
+
+		super.updateBuildDescription();
 	}
 
 	private static final Integer _CONTROLLER_BUILD_TIMEOUT_DEFAULT =
