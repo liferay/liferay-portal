@@ -1181,7 +1181,7 @@ public class LayoutReferencesExportImportContentProcessor
 	}
 
 	private Layout _fetchLayoutByFriendlyURL(
-		long groupId, boolean privateLayout, String url) {
+		long groupId, boolean privateLayout, String friendlyURL) {
 
 		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 			groupId, privateLayout, url);
@@ -1191,7 +1191,7 @@ public class LayoutReferencesExportImportContentProcessor
 		}
 
 		return _layoutLocalService.fetchLayoutByFriendlyURL(
-			groupId, !privateLayout, url);
+			groupId, !privateLayout, friendlyURL);
 	}
 
 	private String _getPortalURL(String url, String portalURL)
