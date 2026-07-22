@@ -520,6 +520,18 @@
 			"accountKey": "ERC-001",
 			"accountSubscriptionGroupERC": "ERC-001_liferay-cloud",
 			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-001_liferay-cloud_ai-hub-studio",
+			"instanceSize": "1",
+			"name": "AI Hub - Studio",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-001",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-001",
+			"accountSubscriptionGroupERC": "ERC-001_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
 			"externalReferenceCode": "ERC-001_liferay-cloud_lr-tokens-5000",
 			"instanceSize": "1",
 			"name": "LR Tokens (5,000)",
