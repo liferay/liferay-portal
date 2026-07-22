@@ -35,7 +35,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.constants.SegmentsExperimentConstants;
-import com.liferay.segments.exception.DefaultSegmentsExperienceSegmentException;
+import com.liferay.segments.exception.DefaultSegmentsExperienceException;
 import com.liferay.segments.exception.DuplicateSegmentsExperienceExternalReferenceCodeException;
 import com.liferay.segments.exception.DuplicateSegmentsExperienceKeyException;
 import com.liferay.segments.exception.LockedSegmentsExperimentException;
@@ -710,7 +710,7 @@ public class SegmentsExperienceLocalServiceTest {
 				segmentsExperience.getPriority() + 1));
 	}
 
-	@Test(expected = DefaultSegmentsExperienceSegmentException.class)
+	@Test(expected = DefaultSegmentsExperienceException.class)
 	public void testUpdateDefaultSegmentsExperienceWithSegmentsEntry()
 		throws Exception {
 

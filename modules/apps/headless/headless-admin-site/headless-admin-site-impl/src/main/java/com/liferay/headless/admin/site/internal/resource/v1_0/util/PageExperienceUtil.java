@@ -11,7 +11,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
-import com.liferay.segments.exception.DefaultSegmentsExperienceSegmentException;
+import com.liferay.segments.exception.DefaultSegmentsExperienceException;
 import com.liferay.segments.exception.DuplicateSegmentsExperienceKeyException;
 import com.liferay.segments.model.SegmentsExperience;
 
@@ -103,7 +103,7 @@ public class PageExperienceUtil {
 		}
 
 		if (defaultPageExperience.getSegmentItemExternalReference() != null) {
-			throw new DefaultSegmentsExperienceSegmentException();
+			throw new DefaultSegmentsExperienceException();
 		}
 	}
 

@@ -30,7 +30,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
-import com.liferay.segments.exception.DefaultSegmentsExperienceSegmentException;
+import com.liferay.segments.exception.DefaultSegmentsExperienceException;
 import com.liferay.segments.exception.DuplicateSegmentsExperienceKeyException;
 import com.liferay.segments.exception.LockedSegmentsExperimentException;
 import com.liferay.segments.exception.RequiredSegmentsExperienceException;
@@ -129,7 +129,8 @@ public class SegmentsExperienceLocalServiceImpl
 
 		User user = _userLocalService.getUser(userId);
 
-		_validateDefaultSegmentsEntry(segmentsEntryERC, segmentsExperienceKey);
+		_validateDefaultSegmentsExperience(
+			segmentsEntryERC, segmentsExperienceKey);
 		_validateLayout(plid, segmentsExperienceKey);
 		_validateName(nameMap);
 		_validatePriority(groupId, plid, priority);
@@ -526,7 +527,7 @@ public class SegmentsExperienceLocalServiceImpl
 			segmentsExperiencePersistence.findByPrimaryKey(
 				segmentsExperienceId);
 
-		_validateDefaultSegmentsEntry(
+		_validateDefaultSegmentsExperience(
 			segmentsEntryERC, segmentsExperience.getSegmentsExperienceKey());
 
 		if (segmentsExperience.hasSegmentsExperiment()) {
@@ -763,7 +764,7 @@ public class SegmentsExperienceLocalServiceImpl
 		segmentsExperiencePersistence.flush();
 	}
 
-	private void _validateDefaultSegmentsEntry(
+	private void _validateDefaultSegmentsExperience(
 			String segmentsEntryERC, String segmentsExperienceKey)
 		throws PortalException {
 
@@ -771,7 +772,7 @@ public class SegmentsExperienceLocalServiceImpl
 				segmentsExperienceKey) &&
 			Validator.isNotNull(segmentsEntryERC)) {
 
-			throw new DefaultSegmentsExperienceSegmentException();
+			throw new DefaultSegmentsExperienceException();
 		}
 	}
 
