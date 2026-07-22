@@ -139,7 +139,7 @@ export default function ElementVariationsList({
 													{elementVariation.active ? null : (
 														<ClayLabel displayType="danger">
 															{Liferay.Language.get(
-																'inactive'
+																'disabled'
 															)}
 														</ClayLabel>
 													)}

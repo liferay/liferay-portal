@@ -422,7 +422,7 @@ test(
 );
 
 test(
-	'Excludes an inactive variation from the page and applies it again once re-enabled',
+	'Excludes a disabled variation from the page and applies it again once re-enabled',
 	{tag: '@LPD-95644'},
 	async ({
 		apiHelpers,
@@ -480,7 +480,7 @@ test(
 		await elementVariationsPage.setVariationActive(variationName, false);
 
 		await expect(
-			elementVariationsPage.sidebar.getByText('Inactive', {exact: true})
+			elementVariationsPage.sidebar.getByText('Disabled', {exact: true})
 		).toBeVisible();
 
 		// Publish the page
@@ -489,7 +489,7 @@ test(
 
 		await pageEditorPage.publishPage();
 
-		// The inactive variation is excluded from the runtime bundle
+		// The disabled variation is excluded from the runtime bundle
 
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
@@ -506,7 +506,7 @@ test(
 		await elementVariationsPage.setVariationActive(variationName, true);
 
 		await expect(
-			elementVariationsPage.sidebar.getByText('Inactive', {exact: true})
+			elementVariationsPage.sidebar.getByText('Disabled', {exact: true})
 		).not.toBeVisible();
 
 		// Publish the page again
