@@ -51,4 +51,28 @@
 		margin-bottom: 4px;
 		text-transform: uppercase;
 	}
+
+	.pagespeed-gauge {
+		align-items: center;
+		display: flex;
+		gap: 16px;
+	}
+
+	.pagespeed-gauge-info {
+		display: grid;
+		gap: 2px;
+		grid-template-rows: 1fr auto 1fr;
+		min-height: 80px;
+	}
+
+	.pagespeed-gauge-label {
+		align-self: end;
+		color: #6b6c7e;
+		font-size: 13px;
+	}
+
+	.pagespeed-gauge-rating {
+		font-size: 16px;
+		font-weight: 600;
+	}
 }

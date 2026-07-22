@@ -58,15 +58,15 @@ export default function GaugeChart({label, score}: Props) {
 
 	return (
 		<div className="pagespeed-gauge">
-			<PieChart height={120} width={120}>
+			<PieChart height={80} width={80}>
 				<Pie
 					cx="50%"
 					cy="50%"
 					data={data}
 					dataKey="value"
 					endAngle={-270}
-					innerRadius={46}
-					outerRadius={54}
+					innerRadius={34}
+					outerRadius={40}
 					paddingAngle={0}
 					startAngle={90}
 					stroke="none"
@@ -79,7 +79,7 @@ export default function GaugeChart({label, score}: Props) {
 						position="center"
 						style={{
 							fill: TEXT_COLORS[category],
-							fontSize: '24px',
+							fontSize: '14px',
 							fontWeight: 600,
 						}}
 						value={score}
