@@ -284,6 +284,15 @@ public class DesignLibraryResourcesDisplayContext {
 		).build();
 	}
 
+	public boolean hasContentAccess(long designLibraryEntryId)
+		throws PortalException {
+
+		DepotEntry depotEntry = DepotEntryLocalServiceUtil.getDepotEntry(
+			designLibraryEntryId);
+
+		return _hasManageStyleBookEntriesPermission(depotEntry.getGroupId());
+	}
+
 	private JSONArray _getActionItemsJSONArray(
 			Group group, long designLibraryEntryId)
 		throws PortalException {

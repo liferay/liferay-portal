@@ -21,17 +21,27 @@ DesignLibraryResourcesDisplayContext designLibraryResourcesDisplayContext = new 
 		/>
 	</div>
 
-	<div class="design-library-fds-wrapper design-library-fds-wrapper--resources">
-		<frontend-data-set:headless-display
-			additionalProps="<%= designLibraryResourcesDisplayContext.getFDSAdditionalProps(designLibraryEntryId) %>"
-			apiURL="<%= designLibraryResourcesDisplayContext.getAPIURL(designLibraryEntryId) %>"
-			emptyState="<%= designLibraryResourcesDisplayContext.getEmptyState() %>"
-			fdsActionDropdownItems="<%= designLibraryResourcesDisplayContext.getFDSActionDropdownItems(designLibraryEntryId) %>"
-			formName="fm"
-			id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_RESOURCES %>"
-			propsTransformer="{DesignLibraryResourcesFDSPropsTransformer} from design-library-web"
-			selectedItemsKey="embedded.id"
-			selectionType="multiple"
-		/>
-	</div>
+	<c:choose>
+		<c:when test="<%= designLibraryResourcesDisplayContext.hasContentAccess(designLibraryEntryId) %>">
+			<div class="design-library-fds-wrapper design-library-fds-wrapper--resources">
+				<frontend-data-set:headless-display
+					additionalProps="<%= designLibraryResourcesDisplayContext.getFDSAdditionalProps(designLibraryEntryId) %>"
+					apiURL="<%= designLibraryResourcesDisplayContext.getAPIURL(designLibraryEntryId) %>"
+					emptyState="<%= designLibraryResourcesDisplayContext.getEmptyState() %>"
+					fdsActionDropdownItems="<%= designLibraryResourcesDisplayContext.getFDSActionDropdownItems(designLibraryEntryId) %>"
+					formName="fm"
+					id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_RESOURCES %>"
+					propsTransformer="{DesignLibraryResourcesFDSPropsTransformer} from design-library-web"
+					selectedItemsKey="embedded.id"
+					selectionType="multiple"
+				/>
+			</div>
+		</c:when>
+		<c:otherwise>
+			<clay:alert
+				displayType="info"
+				message="you-do-not-have-access-to-any-content-in-this-design-library"
+			/>
+		</c:otherwise>
+	</c:choose>
 </div>
