@@ -8,6 +8,7 @@ import ClayLayout from '@clayui/layout';
 import {
 	ChatActionButton,
 	ChatDropdownContainer,
+	ChatFloatingContainer,
 	ChatPanel,
 	ChatSidebarContainer,
 } from 'frontend-js-components-web';
@@ -75,6 +76,26 @@ function SampleDropdownChat() {
 	);
 }
 
+function SampleFloatingChat() {
+	const {open, setOpen, trigger} = useTrigger();
+
+	return (
+		<ClayLayout.Col size={4}>
+			<h4>Floating</h4>
+
+			<div style={{height: SAMPLE_HEIGHT}}>
+				<ChatFloatingContainer
+					onOpenChange={setOpen}
+					open={open}
+					trigger={trigger}
+				>
+					<SampleChatPanel />
+				</ChatFloatingContainer>
+			</div>
+		</ClayLayout.Col>
+	);
+}
+
 function SampleSidebarChat() {
 	const containerRef = useRef(null);
 	const {open, setOpen, trigger} = useTrigger();
@@ -101,6 +122,8 @@ export default function ChatPanelSamples() {
 	return (
 		<ClayLayout.Row>
 			<SampleDropdownChat />
+
+			<SampleFloatingChat />
 
 			<SampleSidebarChat />
 		</ClayLayout.Row>
