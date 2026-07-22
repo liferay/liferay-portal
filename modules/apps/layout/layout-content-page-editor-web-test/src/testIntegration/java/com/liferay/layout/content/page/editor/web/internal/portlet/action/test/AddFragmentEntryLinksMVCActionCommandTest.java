@@ -6,6 +6,10 @@
 package com.liferay.layout.content.page.editor.web.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
@@ -33,7 +37,10 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
@@ -57,7 +64,10 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ScopeUtil;
@@ -66,6 +76,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -77,6 +88,7 @@ import jakarta.portlet.ActionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -212,12 +224,51 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 	}
 
 	@Test
+	@TestInfo("LPD-98690")
 	public void testAddFragmentEntryLinks() throws Exception {
 		int numberOfFragmentEntryLinks = RandomTestUtil.randomInt(1, 3);
 
 		_testAddFragmentEntryLinks(
 			StringPool.BLANK, RandomTestUtil.randomString(),
 			numberOfFragmentEntryLinks);
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextThreadLocal.getServiceContext());
+
+		FragmentComposition fragmentComposition =
+			_addFragmentCompositionWithFragmentEntries(
+				depotEntry.getGroupId(), _group.getGroupId());
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-57283"),
+					Boolean.TRUE.toString())) {
+
+			_testAddFragmentEntryLinks(
+				fragmentComposition.getFragmentCompositionKey(),
+				_group.getGroupId());
+
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), _group.getGroupId());
+
+			_testAddFragmentEntryLinks(
+				fragmentComposition.getFragmentCompositionKey(),
+				_group.getGroupId(), depotEntry.getGroupId());
+		}
+
+		try (PropsTemporarySwapper propsTemporarySwapper =
+				new PropsTemporarySwapper(
+					FeatureFlagConstants.getKey("LPD-57283"),
+					Boolean.FALSE.toString())) {
+
+			_testAddFragmentEntryLinks(
+				fragmentComposition.getFragmentCompositionKey(),
+				_group.getGroupId());
+		}
 	}
 
 	@Test
@@ -331,10 +382,75 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 			FragmentConstants.TYPE_COMPONENT, html, numberOfFragmentEntryLinks);
 	}
 
+	private FragmentComposition _addFragmentCompositionWithFragmentEntries(
+			long... groupIds)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionLocalService.addFragmentCollection(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				StringUtil.randomString(), StringPool.BLANK, serviceContext);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		LayoutStructure layoutStructure = new LayoutStructure();
+
+		LayoutStructureItem rootLayoutStructureItem =
+			layoutStructure.addRootLayoutStructureItem();
+
+		LayoutStructureItem containerStyledLayoutStructureItem =
+			layoutStructure.addContainerStyledLayoutStructureItem(
+				rootLayoutStructureItem.getItemId(), 0);
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				layout.getPlid());
+
+		List<LayoutStructureItem> layoutStructureItems =
+			_addFragmentStyledLayoutStructureItems(
+				layout, layoutStructure,
+				containerStyledLayoutStructureItem.getItemId(),
+				segmentsExperienceId,
+				TransformUtil.transform(
+					groupIds,
+					groupId -> _addFragmentEntry(
+						Collections.emptySet(),
+						FragmentConstants.TYPE_COMPONENT,
+						RandomTestUtil.randomString(),
+						ServiceContextTestUtil.getServiceContext(
+							groupId, TestPropsValues.getUserId())),
+					FragmentEntry.class));
+
+		Assert.assertEquals(
+			layoutStructureItems.toString(), groupIds.length,
+			layoutStructureItems.size());
+
+		_layoutPageTemplateStructureLocalService.
+			updateLayoutPageTemplateStructureData(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				layout.getPlid(), segmentsExperienceId,
+				layoutStructure.toString());
+
+		String layoutStructureItemJSON =
+			_layoutStructureItemJSONSerializer.toJSONString(
+				layout, containerStyledLayoutStructureItem.getItemId(), true,
+				true, segmentsExperienceId);
+
+		return _fragmentCompositionLocalService.addFragmentComposition(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			fragmentCollection.getFragmentCollectionId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), layoutStructureItemJSON, 0,
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
+	}
+
 	private FragmentEntry _addFragmentEntry(
 			Set<String> fieldTypes, int fragmentEntryType, String html,
 			ServiceContext serviceContext)
-		throws Exception {
+		throws PortalException {
 
 		FragmentCollection fragmentCollection =
 			_fragmentCollectionLocalService.addFragmentCollection(
@@ -350,6 +466,32 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 			null, 0, false, false, fragmentEntryType,
 			JSONUtil.toString(JSONUtil.put("fieldTypes", fieldTypes)),
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
+	}
+
+	private List<LayoutStructureItem> _addFragmentStyledLayoutStructureItems(
+		Layout layout, LayoutStructure layoutStructure, String parentItemId,
+		long segmentsExperienceId, FragmentEntry... fragmentEntries) {
+
+		return TransformUtil.transform(
+			ListUtil.fromArray(fragmentEntries),
+			fragmentEntry -> {
+				FragmentEntryLink fragmentEntryLink =
+					_fragmentEntryLinkLocalService.addFragmentEntryLink(
+						null, TestPropsValues.getUserId(), _group.getGroupId(),
+						null, fragmentEntry.getExternalReferenceCode(),
+						ScopeUtil.getItemScopeExternalReferenceCode(
+							fragmentEntry.getGroupId(), _group.getGroupId()),
+						segmentsExperienceId, layout.getPlid(),
+						fragmentEntry.getCss(), fragmentEntry.getHtml(),
+						fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+						StringPool.BLANK, StringPool.BLANK, 0, null,
+						fragmentEntry.getType(),
+						ServiceContextThreadLocal.getServiceContext());
+
+				return layoutStructure.addFragmentStyledLayoutStructureItem(
+					fragmentEntryLink.getFragmentEntryLinkId(), parentItemId,
+					-1);
+			});
 	}
 
 	private void _assertFragmentEntryLinksContent(
@@ -480,6 +622,42 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 	}
 
 	private void _testAddFragmentEntryLinks(
+			String fragmentCompositionKey, long... groupIds)
+		throws Exception {
+
+		JSONObject jsonObject = ReflectionTestUtil.invoke(
+			_mvcActionCommand, "doTransactionalCommand",
+			new Class<?>[] {ActionRequest.class, ActionResponse.class},
+			_getMockLiferayPortletActionRequest(
+				fragmentCompositionKey, null, TestPropsValues.getUser()),
+			new MockLiferayPortletActionResponse());
+
+		JSONObject fragmentEntryLinksJSONObject = jsonObject.getJSONObject(
+			"fragmentEntryLinks");
+
+		long[] actualGroupIds = TransformUtil.transformToLongArray(
+			fragmentEntryLinksJSONObject.keySet(),
+			fragmentEntryLinkId -> {
+				FragmentEntryLink fragmentEntryLink =
+					_fragmentEntryLinkLocalService.getFragmentEntryLink(
+						Long.valueOf(fragmentEntryLinkId));
+
+				FragmentEntry fragmentEntry =
+					fragmentEntryLink.fetchFragmentEntry();
+
+				return fragmentEntry.getGroupId();
+			});
+
+		Assert.assertTrue(
+			Arrays.toString(actualGroupIds),
+			ArrayUtil.containsAll(actualGroupIds, groupIds));
+
+		Assert.assertEquals(
+			Arrays.toString(actualGroupIds), groupIds.length,
+			actualGroupIds.length);
+	}
+
+	private void _testAddFragmentEntryLinks(
 			String editableValues, String html, int numberOfFragmentEntryLinks)
 		throws Exception {
 
@@ -587,6 +765,12 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
