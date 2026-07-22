@@ -122,14 +122,14 @@ function Card({
 			>
 				{groupBy === 'categories' ? (
 					<PieChart
-						className="cms-dashboard__pie-chart w-100"
+						className="w-100"
 						data={metrics.map(({value, valueKey}) => ({
 							label: valueKey,
 							value,
 						}))}
-						legend="table"
+						legend="list"
+						legendPosition="bottom"
 						legendSwatchBorder={false}
-						legendTableDividers={false}
 						title=""
 					/>
 				) : (
@@ -138,9 +138,9 @@ function Card({
 							country: valueKey,
 							value,
 						}))}
-						legend="table"
+						legend="list"
+						legendPosition="bottom"
 						legendSwatchBorder={false}
-						legendTableDividers={false}
 						title=""
 						variant="choropleth"
 					/>
