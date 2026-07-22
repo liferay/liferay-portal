@@ -5032,7 +5032,7 @@ public class ObjectEntryLocalServiceTest {
 			).build());
 
 		objectEntry1.setExternalReferenceCode(
-			RandomTestUtil.randomString(1000));
+			RandomTestUtil.randomString(500));
 
 		objectEntry1 = _objectEntryLocalService.updateObjectEntry(objectEntry1);
 
