@@ -5,6 +5,7 @@
 
 import {Text} from '@clayui/core';
 import ClayIcon from '@clayui/icon';
+import ClaySticker from '@clayui/sticker';
 import {
 	getPercentage,
 	getStatsColor,
@@ -15,6 +16,7 @@ import {
 	IInfoPanelComponent,
 	IItemsActions,
 } from '@liferay/frontend-data-set-web';
+import classNames from 'classnames';
 import React, {useContext, useRef} from 'react';
 
 import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../../../common/utils/constants';
@@ -22,6 +24,7 @@ import {openCMSModal} from '../../../../common/utils/openCMSModal';
 import AssetTypeInfoPanel from '../../../info_panel/AssetTypeInfoPanelContent';
 import AssetNavigationModalContent from '../../../modal/asset_navigation_view/AssetNavigationModalContent';
 import shareAction from '../../../props_transformer/actions/shareAction';
+import {getFileMimeTypeObjectDefinitionStickerValue} from '../../../props_transformer/utils/transformViewsItemProps';
 import {BaseCard} from '../../common/BaseCard';
 import {PerformanceContext} from '../PerformanceContext';
 import PerformanceService from '../PerformanceService';
@@ -30,47 +33,54 @@ import {DownloadButton} from './DownloadButton';
 const TITLE_RENDERER = 'TopAssetsTitleRenderer';
 const TREND_RENDERER = 'TopAssetsTrendRenderer';
 
-const API_URL = '/o/search/v1.0/search';
+const API_URL = '/o/analytics-cms-rest/v1.0/performance-top-asset';
 
-const ADDITIONAL_API_URL_PARAMETERS =
-	"emptySearch=true&filter=cmsSection eq 'contents'&nestedFields=embedded," +
-	'systemProperties.objectDefinitionBrief';
+const NESTED_FIELDS =
+	'nestedFields=embedded,systemProperties.objectDefinitionBrief';
 
-function getAssetIcon(mimeType?: string) {
-	if (!mimeType) {
-		return 'document-text';
-	}
+function TitleCell({itemData, value}: {itemData: any; value: string}) {
+	const {additionalProps} = useContext(PerformanceContext);
 
-	if (mimeType.startsWith('image/')) {
-		return 'document-image';
-	}
+	return (
+		<div className="align-items-center d-flex">
+			{additionalProps && itemData.embedded ? (
+				<ClaySticker
+					className={classNames(
+						'flex-shrink-0',
+						'mr-2',
+						getFileMimeTypeObjectDefinitionStickerValue(
+							additionalProps.fileMimeTypeCssClasses,
+							additionalProps.objectDefinitionCssClasses,
+							itemData
+						)
+					)}
+				>
+					<ClayIcon
+						symbol={getFileMimeTypeObjectDefinitionStickerValue(
+							additionalProps.fileMimeTypeIcons,
+							additionalProps.objectDefinitionIcons,
+							itemData
+						)}
+					/>
+				</ClaySticker>
+			) : (
+				<ClayIcon
+					className="mr-2 text-secondary"
+					symbol="document-text"
+				/>
+			)}
 
-	if (mimeType.startsWith('video/')) {
-		return 'document-video';
-	}
-
-	if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) {
-		return 'document-table';
-	}
-
-	return 'document-text';
+			<Text size={3} weight="semi-bold">
+				{value}
+			</Text>
+		</div>
+	);
 }
 
 const customRenderers = {
 	tableCell: [
 		{
-			component: ({itemData, value}: {itemData: any; value: string}) => (
-				<div className="align-items-center d-flex">
-					<ClayIcon
-						className="mr-2 text-secondary"
-						symbol={getAssetIcon(itemData.mimeType)}
-					/>
-
-					<Text size={3} weight="semi-bold">
-						{value}
-					</Text>
-				</div>
-			),
+			component: TitleCell,
 			name: TITLE_RENDERER,
 			type: 'internal' as const,
 		},
@@ -106,19 +116,6 @@ const customRenderers = {
 	],
 };
 
-const filters = [
-	{
-		apiURL: "/o/headless-asset-library/v1.0/asset-libraries?filter=type eq 'Space'",
-		entityFieldType: 'string',
-		id: 'groupIds',
-		itemKey: 'siteId',
-		itemLabel: 'name',
-		label: Liferay.Language.get('space'),
-		multiple: true,
-		type: 'selection',
-	},
-];
-
 const sorts = [
 	{
 		direction: 'asc' as const,
@@ -128,8 +125,8 @@ const sorts = [
 	{
 		active: true,
 		direction: 'desc' as const,
-		key: 'dateModified',
-		label: Liferay.Language.get('modified'),
+		key: 'views',
+		label: Liferay.Language.get('views'),
 	},
 ];
 
@@ -162,7 +159,7 @@ const views = [
 			fields: [
 				{
 					contentRenderer: TITLE_RENDERER,
-					fieldName: 'embedded.title',
+					fieldName: 'title',
 					label: Liferay.Language.get('title'),
 				},
 				{
@@ -197,6 +194,12 @@ export function TopAssets() {
 
 	const depotEntryIds = space.value === 'all' ? undefined : [space.value];
 
+	const additionalAPIURLParameters = [
+		NESTED_FIELDS,
+		`rangeKey=${range.rangeKey}`,
+		...(depotEntryIds ?? []).map((id) => `depotEntryIds=${id}`),
+	].join('&');
+
 	const infoPanelContainerRef = useRef<HTMLElement | null>(
 		document.querySelector<HTMLElement>('.cms-section')
 	);
@@ -221,9 +224,9 @@ export function TopAssets() {
 
 			shareAction({
 				autocompleteURL,
-				collaboratorURL: collaboratorURLs[itemData.entryClassName],
+				collaboratorURL: collaboratorURLs[itemData.className],
 				creator: itemData.embedded.creator,
-				entryClassName: itemData.entryClassName,
+				entryClassName: itemData.className,
 				itemId: itemData.embedded.id,
 				title: itemData.embedded?.title,
 			});
@@ -233,7 +236,7 @@ export function TopAssets() {
 
 			const filteredItems = items.filter(
 				(item: any) =>
-					item?.entryClassName !== OBJECT_ENTRY_FOLDER_CLASS_NAME
+					item?.className !== OBJECT_ENTRY_FOLDER_CLASS_NAME
 			);
 
 			const currentItemPos = filteredItems.findIndex(
@@ -270,7 +273,7 @@ export function TopAssets() {
 			uppercaseTitle={false}
 		>
 			<FrontendDataSet
-				additionalAPIURLParameters={ADDITIONAL_API_URL_PARAMETERS}
+				additionalAPIURLParameters={additionalAPIURLParameters}
 				apiURL={API_URL}
 				customRenderers={customRenderers}
 				emptyState={{
@@ -280,13 +283,13 @@ export function TopAssets() {
 					image: '/states/cms_empty_state.svg',
 					title: Liferay.Language.get('no-assets-yet'),
 				}}
-				filters={filters}
 				hideManagementBarInEmptyState={true}
 				id="cmsPerformanceTopAssets"
 				infoPanelComponent={TopAssetsInfoPanel}
 				infoPanelContainerRef={infoPanelContainerRef}
 				infoPanelPosition="fixed"
 				itemsActions={itemsActions}
+				key={additionalAPIURLParameters}
 				onActionDropdownItemClick={onActionDropdownItemClick}
 				pagination={{initialDelta: 20}}
 				selectedItemsKey="embedded.id"

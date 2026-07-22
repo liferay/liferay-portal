@@ -131,27 +131,27 @@ async function getAssetConsumption({
 }
 
 async function getTopAssets({
-	assetFilterString,
 	depotEntryIds,
 	page,
 	pageSize,
 	rangeKey,
+	search,
 	sort,
 }: {
-	assetFilterString?: string;
 	depotEntryIds?: string[];
 	page?: number;
 	pageSize?: number;
 	rangeKey: RangeSelectors;
+	search?: string;
 	sort?: string;
 }) {
 	return ApiHelper.get<TopAssets>(
 		`${BASE_URL}/performance-top-asset${buildQuery({
-			assetFilterString,
 			depotEntryIds,
 			page,
 			pageSize,
 			rangeKey,
+			search,
 			sort,
 		})}`
 	);
@@ -177,20 +177,20 @@ function getMetricExportURL({
 }
 
 function getTopAssetsExportURL({
-	assetFilterString,
 	depotEntryIds,
 	rangeKey,
+	search,
 	sort,
 }: {
-	assetFilterString?: string;
 	depotEntryIds?: string[];
 	rangeKey: RangeSelectors;
+	search?: string;
 	sort?: string;
 }) {
 	return `${BASE_URL}/performance-top-asset/export${buildQuery({
-		assetFilterString,
 		depotEntryIds,
 		rangeKey,
+		search,
 		sort,
 	})}`;
 }
