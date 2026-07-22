@@ -32,8 +32,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"osgi.http.whiteboard.servlet.name=com.liferay.mcp.server.rest.internal.servlet.MCPServerProtectedResourceMetadataServlet",
-		"osgi.http.whiteboard.servlet.pattern=/.well-known/oauth-protected-resource",
-		"osgi.http.whiteboard.servlet.pattern=/.well-known/oauth-protected-resource/*"
+		"osgi.http.whiteboard.servlet.pattern=/.well-known/oauth-protected-resource/mcp"
 	},
 	service = Servlet.class
 )

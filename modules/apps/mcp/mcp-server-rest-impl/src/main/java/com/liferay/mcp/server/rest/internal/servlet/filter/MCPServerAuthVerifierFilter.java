@@ -164,7 +164,8 @@ public class MCPServerAuthVerifierFilter extends AuthVerifierFilter {
 			"Bearer realm=\"mcp\", resource_metadata=\"",
 			_portal.getPortalURL(httpServletRequest), _portal.getPathContext(),
 			Portal.PATH_MODULE,
-			MCPServerConstants.PATH_WELL_KNOWN_PROTECTED_RESOURCE, "\"");
+			MCPServerConstants.PATH_WELL_KNOWN_PROTECTED_RESOURCE,
+			MCPServerConstants.PATH_MCP, "\"");
 	}
 
 	private boolean _isEnabled(long companyId) {
