@@ -130,7 +130,7 @@ public class MCPServerProtectedResourceMetadataServletTest {
 				URI.create(
 					"http://localhost:" +
 						PortalUtil.getPortalServerPort(false) +
-							"/o/.well-known/oauth-protected-resource")
+							"/o/.well-known/oauth-protected-resource/mcp")
 			).method(
 				method, HttpRequest.BodyPublishers.noBody()
 			).build(),
