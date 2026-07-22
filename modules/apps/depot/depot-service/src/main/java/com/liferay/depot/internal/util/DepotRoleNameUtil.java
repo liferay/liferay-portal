@@ -1,0 +1,57 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.depot.internal.util;
+
+import com.liferay.depot.constants.DepotRolesConstants;
+
+import java.util.Objects;
+
+/**
+ * @author Jürgen Kappler
+ */
+public class DepotRoleNameUtil {
+
+	public static String getAdministratorRoleName(String subtype) {
+		if (Objects.equals(
+				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) {
+
+			return DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR;
+		}
+
+		return DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR;
+	}
+
+	public static String getContentReviewerRoleName(String subtype) {
+		if (Objects.equals(
+				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) {
+
+			return DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER;
+		}
+
+		return DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER;
+	}
+
+	public static String getMemberRoleName(String subtype) {
+		if (Objects.equals(
+				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) {
+
+			return DepotRolesConstants.DESIGN_LIBRARY_MEMBER;
+		}
+
+		return DepotRolesConstants.ASSET_LIBRARY_MEMBER;
+	}
+
+	public static String getOwnerRoleName(String subtype) {
+		if (Objects.equals(
+				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) {
+
+			return DepotRolesConstants.DESIGN_LIBRARY_OWNER;
+		}
+
+		return DepotRolesConstants.ASSET_LIBRARY_OWNER;
+	}
+
+}
