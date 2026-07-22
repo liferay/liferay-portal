@@ -48,21 +48,16 @@ public class DepotRoleUtil {
 			return roles;
 		}
 
-		if (Objects.equals(
-				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY) ||
-			Objects.equals(subtype, DepotRolesConstants.SUBTYPE_PROJECT)) {
-
-			return ListUtil.filter(
-				roles, role -> Objects.equals(role.getSubtype(), subtype));
-		}
-
 		return ListUtil.filter(
 			roles,
 			role -> {
 				String roleSubtype = role.getSubtype();
 
-				return Validator.isNull(roleSubtype) ||
-					   Objects.equals(roleSubtype, subtype);
+				if (Validator.isNull(roleSubtype)) {
+					roleSubtype = DepotRolesConstants.SUBTYPE_SPACE;
+				}
+
+				return Objects.equals(roleSubtype, subtype);
 			});
 	}
 
