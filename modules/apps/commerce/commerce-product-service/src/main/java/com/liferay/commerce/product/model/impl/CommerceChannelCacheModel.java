@@ -69,7 +69,7 @@ public class CommerceChannelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -107,6 +107,8 @@ public class CommerceChannelCacheModel
 		sb.append(priceDisplayType);
 		sb.append(", discountsTargetNetPrice=");
 		sb.append(discountsTargetNetPrice);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -197,6 +199,7 @@ public class CommerceChannelCacheModel
 		}
 
 		commerceChannelImpl.setDiscountsTargetNetPrice(discountsTargetNetPrice);
+		commerceChannelImpl.setStatus(status);
 
 		commerceChannelImpl.resetOriginalValues();
 
@@ -230,6 +233,8 @@ public class CommerceChannelCacheModel
 		priceDisplayType = objectInput.readUTF();
 
 		discountsTargetNetPrice = objectInput.readBoolean();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -308,6 +313,8 @@ public class CommerceChannelCacheModel
 		}
 
 		objectOutput.writeBoolean(discountsTargetNetPrice);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -328,6 +335,7 @@ public class CommerceChannelCacheModel
 	public String commerceCurrencyCode;
 	public String priceDisplayType;
 	public boolean discountsTargetNetPrice;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-785757745
+// LIFERAY-SERVICE-BUILDER-HASH:-2136115748

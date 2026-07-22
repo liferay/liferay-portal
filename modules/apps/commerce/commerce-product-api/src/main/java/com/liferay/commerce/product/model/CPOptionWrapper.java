@@ -54,6 +54,7 @@ public class CPOptionWrapper
 		attributes.put("skuContributor", isSkuContributor());
 		attributes.put("key", getKey());
 		attributes.put("lastPublishDate", getLastPublishDate());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -168,6 +169,12 @@ public class CPOptionWrapper
 
 		if (lastPublishDate != null) {
 			setLastPublishDate(lastPublishDate);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -481,6 +488,16 @@ public class CPOptionWrapper
 	@Override
 	public boolean getSkuContributor() {
 		return model.getSkuContributor();
+	}
+
+	/**
+	 * Returns the status of this cp option.
+	 *
+	 * @return the status of this cp option
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -844,6 +861,16 @@ public class CPOptionWrapper
 	}
 
 	/**
+	 * Sets the status of this cp option.
+	 *
+	 * @param status the status of this cp option
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the user ID of this cp option.
 	 *
 	 * @param userId the user ID of this cp option
@@ -913,4 +940,4 @@ public class CPOptionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1816286332
+// LIFERAY-SERVICE-BUILDER-HASH:888338024

@@ -313,6 +313,20 @@ public interface CommerceCatalogModel
 	 */
 	public void setSystem(boolean system);
 
+	/**
+	 * Returns the status of this commerce catalog.
+	 *
+	 * @return the status of this commerce catalog
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this commerce catalog.
+	 *
+	 * @param status the status of this commerce catalog
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public CommerceCatalog cloneWithOriginalValues();
 
@@ -321,4 +335,4 @@ public interface CommerceCatalogModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1334583038
+// LIFERAY-SERVICE-BUILDER-HASH:1258518445

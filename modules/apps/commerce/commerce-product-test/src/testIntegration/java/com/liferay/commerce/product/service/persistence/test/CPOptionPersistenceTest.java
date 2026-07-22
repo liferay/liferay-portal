@@ -146,6 +146,8 @@ public class CPOptionPersistenceTest {
 
 		newCPOption.setLastPublishDate(RandomTestUtil.nextDate());
 
+		newCPOption.setStatus(RandomTestUtil.nextInt());
+
 		newCPOption = _persistence.update(newCPOption);
 
 		_cpOptions.add(newCPOption);
@@ -193,6 +195,8 @@ public class CPOptionPersistenceTest {
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingCPOption.getLastPublishDate()),
 			Time.getShortTimestamp(newCPOption.getLastPublishDate()));
+		Assert.assertEquals(
+			existingCPOption.getStatus(), newCPOption.getStatus());
 	}
 
 	@Test(expected = DuplicateCPOptionExternalReferenceCodeException.class)
@@ -288,7 +292,8 @@ public class CPOptionPersistenceTest {
 			"companyId", true, "userId", true, "userName", true, "createDate",
 			true, "modifiedDate", true, "name", true, "description", true,
 			"commerceOptionTypeKey", true, "facetable", true, "required", true,
-			"skuContributor", true, "key", true, "lastPublishDate", true);
+			"skuContributor", true, "key", true, "lastPublishDate", true,
+			"status", true);
 	}
 
 	@Test
@@ -608,6 +613,8 @@ public class CPOptionPersistenceTest {
 
 		cpOption.setLastPublishDate(RandomTestUtil.nextDate());
 
+		cpOption.setStatus(RandomTestUtil.nextInt());
+
 		_cpOptions.add(_persistence.update(cpOption));
 
 		return cpOption;
@@ -618,4 +625,4 @@ public class CPOptionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-83335836
+// LIFERAY-SERVICE-BUILDER-HASH:469016723

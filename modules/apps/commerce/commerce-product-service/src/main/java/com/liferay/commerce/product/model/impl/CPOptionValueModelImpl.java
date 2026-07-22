@@ -78,7 +78,7 @@ public class CPOptionValueModelImpl
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"CPOptionId", Types.BIGINT}, {"name", Types.VARCHAR},
 		{"priority", Types.DOUBLE}, {"key_", Types.VARCHAR},
-		{"lastPublishDate", Types.TIMESTAMP}
+		{"lastPublishDate", Types.TIMESTAMP}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -100,10 +100,11 @@ public class CPOptionValueModelImpl
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("key_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPOptionValue (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPOptionValueId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPOptionId LONG,name STRING null,priority DOUBLE,key_ VARCHAR(75) null,lastPublishDate DATE null,primary key (CPOptionValueId, ctCollectionId))";
+		"create table CPOptionValue (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPOptionValueId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPOptionId LONG,name STRING null,priority DOUBLE,key_ VARCHAR(75) null,lastPublishDate DATE null,status INTEGER,primary key (CPOptionValueId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table CPOptionValue";
 
@@ -302,6 +303,7 @@ public class CPOptionValueModelImpl
 			attributeGetterFunctions.put("key", CPOptionValue::getKey);
 			attributeGetterFunctions.put(
 				"lastPublishDate", CPOptionValue::getLastPublishDate);
+			attributeGetterFunctions.put("status", CPOptionValue::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -369,6 +371,9 @@ public class CPOptionValueModelImpl
 				"lastPublishDate",
 				(BiConsumer<CPOptionValue, Date>)
 					CPOptionValue::setLastPublishDate);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CPOptionValue, Integer>)CPOptionValue::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -782,6 +787,21 @@ public class CPOptionValueModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -925,6 +945,7 @@ public class CPOptionValueModelImpl
 		cpOptionValueImpl.setPriority(getPriority());
 		cpOptionValueImpl.setKey(getKey());
 		cpOptionValueImpl.setLastPublishDate(getLastPublishDate());
+		cpOptionValueImpl.setStatus(getStatus());
 
 		cpOptionValueImpl.resetOriginalValues();
 
@@ -962,6 +983,8 @@ public class CPOptionValueModelImpl
 		cpOptionValueImpl.setKey(this.<String>getColumnOriginalValue("key_"));
 		cpOptionValueImpl.setLastPublishDate(
 			this.<Date>getColumnOriginalValue("lastPublishDate"));
+		cpOptionValueImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return cpOptionValueImpl;
 	}
@@ -1137,6 +1160,8 @@ public class CPOptionValueModelImpl
 			cpOptionValueCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
+		cpOptionValueCacheModel.status = getStatus();
+
 		return cpOptionValueCacheModel;
 	}
 
@@ -1215,6 +1240,7 @@ public class CPOptionValueModelImpl
 	private double _priority;
 	private String _key;
 	private Date _lastPublishDate;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1262,6 +1288,7 @@ public class CPOptionValueModelImpl
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("key_", _key);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1316,6 +1343,8 @@ public class CPOptionValueModelImpl
 
 		columnBitmasks.put("lastPublishDate", 16384L);
 
+		columnBitmasks.put("status", 32768L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1323,4 +1352,4 @@ public class CPOptionValueModelImpl
 	private CPOptionValue _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:619440122
+// LIFERAY-SERVICE-BUILDER-HASH:1293157228

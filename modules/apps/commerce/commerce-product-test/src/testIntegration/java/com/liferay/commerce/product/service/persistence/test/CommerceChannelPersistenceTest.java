@@ -149,6 +149,8 @@ public class CommerceChannelPersistenceTest {
 		newCommerceChannel.setDiscountsTargetNetPrice(
 			RandomTestUtil.randomBoolean());
 
+		newCommerceChannel.setStatus(RandomTestUtil.nextInt());
+
 		newCommerceChannel = _persistence.update(newCommerceChannel);
 
 		_commerceChannels.add(newCommerceChannel);
@@ -207,6 +209,9 @@ public class CommerceChannelPersistenceTest {
 		Assert.assertEquals(
 			existingCommerceChannel.isDiscountsTargetNetPrice(),
 			newCommerceChannel.isDiscountsTargetNetPrice());
+		Assert.assertEquals(
+			existingCommerceChannel.getStatus(),
+			newCommerceChannel.getStatus());
 	}
 
 	@Test(
@@ -310,7 +315,7 @@ public class CommerceChannelPersistenceTest {
 			"createDate", true, "modifiedDate", true, "accountEntryId", true,
 			"siteGroupId", true, "name", true, "type", true, "typeSettings",
 			true, "commerceCurrencyCode", true, "priceDisplayType", true,
-			"discountsTargetNetPrice", true);
+			"discountsTargetNetPrice", true, "status", true);
 	}
 
 	@Test
@@ -630,6 +635,8 @@ public class CommerceChannelPersistenceTest {
 		commerceChannel.setDiscountsTargetNetPrice(
 			RandomTestUtil.randomBoolean());
 
+		commerceChannel.setStatus(RandomTestUtil.nextInt());
+
 		_commerceChannels.add(_persistence.update(commerceChannel));
 
 		return commerceChannel;
@@ -641,4 +648,4 @@ public class CommerceChannelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1949056784
+// LIFERAY-SERVICE-BUILDER-HASH:1802377063

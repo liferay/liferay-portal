@@ -72,7 +72,8 @@ public class CommerceCatalogModelImpl
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"accountEntryId", Types.BIGINT}, {"name", Types.VARCHAR},
 		{"commerceCurrencyCode", Types.VARCHAR},
-		{"catalogDefaultLanguageId", Types.VARCHAR}, {"system_", Types.BOOLEAN}
+		{"catalogDefaultLanguageId", Types.VARCHAR}, {"system_", Types.BOOLEAN},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -94,10 +95,11 @@ public class CommerceCatalogModelImpl
 		TABLE_COLUMNS_MAP.put("commerceCurrencyCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("catalogDefaultLanguageId", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("system_", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CommerceCatalog (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceCatalogId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,accountEntryId LONG,name VARCHAR(75) null,commerceCurrencyCode VARCHAR(75) null,catalogDefaultLanguageId VARCHAR(75) null,system_ BOOLEAN,primary key (commerceCatalogId, ctCollectionId))";
+		"create table CommerceCatalog (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,commerceCatalogId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,accountEntryId LONG,name VARCHAR(75) null,commerceCurrencyCode VARCHAR(75) null,catalogDefaultLanguageId VARCHAR(75) null,system_ BOOLEAN,status INTEGER,primary key (commerceCatalogId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table CommerceCatalog";
 
@@ -296,6 +298,7 @@ public class CommerceCatalogModelImpl
 				"catalogDefaultLanguageId",
 				CommerceCatalog::getCatalogDefaultLanguageId);
 			attributeGetterFunctions.put("system", CommerceCatalog::getSystem);
+			attributeGetterFunctions.put("status", CommerceCatalog::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -370,6 +373,10 @@ public class CommerceCatalogModelImpl
 				"system",
 				(BiConsumer<CommerceCatalog, Boolean>)
 					CommerceCatalog::setSystem);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CommerceCatalog, Integer>)
+					CommerceCatalog::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -708,6 +715,21 @@ public class CommerceCatalogModelImpl
 			this.<Boolean>getColumnOriginalValue("system_"));
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -787,6 +809,7 @@ public class CommerceCatalogModelImpl
 		commerceCatalogImpl.setCatalogDefaultLanguageId(
 			getCatalogDefaultLanguageId());
 		commerceCatalogImpl.setSystem(isSystem());
+		commerceCatalogImpl.setStatus(getStatus());
 
 		commerceCatalogImpl.resetOriginalValues();
 
@@ -827,6 +850,8 @@ public class CommerceCatalogModelImpl
 			this.<String>getColumnOriginalValue("catalogDefaultLanguageId"));
 		commerceCatalogImpl.setSystem(
 			this.<Boolean>getColumnOriginalValue("system_"));
+		commerceCatalogImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return commerceCatalogImpl;
 	}
@@ -998,6 +1023,8 @@ public class CommerceCatalogModelImpl
 
 		commerceCatalogCacheModel.system = isSystem();
 
+		commerceCatalogCacheModel.status = getStatus();
+
 		return commerceCatalogCacheModel;
 	}
 
@@ -1075,6 +1102,7 @@ public class CommerceCatalogModelImpl
 	private String _commerceCurrencyCode;
 	private String _catalogDefaultLanguageId;
 	private boolean _system;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1124,6 +1152,7 @@ public class CommerceCatalogModelImpl
 		_columnOriginalValues.put(
 			"catalogDefaultLanguageId", _catalogDefaultLanguageId);
 		_columnOriginalValues.put("system_", _system);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1178,6 +1207,8 @@ public class CommerceCatalogModelImpl
 
 		columnBitmasks.put("system_", 16384L);
 
+		columnBitmasks.put("status", 32768L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1185,4 +1216,4 @@ public class CommerceCatalogModelImpl
 	private CommerceCatalog _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-192706666
+// LIFERAY-SERVICE-BUILDER-HASH:1416385710

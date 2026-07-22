@@ -69,7 +69,7 @@ public class CommerceCatalogCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -101,6 +101,8 @@ public class CommerceCatalogCacheModel
 		sb.append(catalogDefaultLanguageId);
 		sb.append(", system=");
 		sb.append(system);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -177,6 +179,7 @@ public class CommerceCatalogCacheModel
 		}
 
 		commerceCatalogImpl.setSystem(system);
+		commerceCatalogImpl.setStatus(status);
 
 		commerceCatalogImpl.resetOriginalValues();
 
@@ -206,6 +209,8 @@ public class CommerceCatalogCacheModel
 		catalogDefaultLanguageId = objectInput.readUTF();
 
 		system = objectInput.readBoolean();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -268,6 +273,8 @@ public class CommerceCatalogCacheModel
 		}
 
 		objectOutput.writeBoolean(system);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -285,6 +292,7 @@ public class CommerceCatalogCacheModel
 	public String commerceCurrencyCode;
 	public String catalogDefaultLanguageId;
 	public boolean system;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1030211326
+// LIFERAY-SERVICE-BUILDER-HASH:-873156339

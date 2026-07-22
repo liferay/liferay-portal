@@ -63,10 +63,12 @@ public class CommerceCatalogTable extends BaseTable<CommerceCatalogTable> {
 			Column.FLAG_DEFAULT);
 	public final Column<CommerceCatalogTable, Boolean> system = createColumn(
 		"system_", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+	public final Column<CommerceCatalogTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceCatalogTable() {
 		super("CommerceCatalog", CommerceCatalogTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:938356693
+// LIFERAY-SERVICE-BUILDER-HASH:-683698202

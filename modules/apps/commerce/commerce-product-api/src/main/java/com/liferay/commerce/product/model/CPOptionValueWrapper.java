@@ -51,6 +51,7 @@ public class CPOptionValueWrapper
 		attributes.put("priority", getPriority());
 		attributes.put("key", getKey());
 		attributes.put("lastPublishDate", getLastPublishDate());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -146,6 +147,12 @@ public class CPOptionValueWrapper
 
 		if (lastPublishDate != null) {
 			setLastPublishDate(lastPublishDate);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -365,6 +372,16 @@ public class CPOptionValueWrapper
 	@Override
 	public double getPriority() {
 		return model.getPriority();
+	}
+
+	/**
+	 * Returns the status of this cp option value.
+	 *
+	 * @return the status of this cp option value
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -611,6 +628,16 @@ public class CPOptionValueWrapper
 	}
 
 	/**
+	 * Sets the status of this cp option value.
+	 *
+	 * @param status the status of this cp option value
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the user ID of this cp option value.
 	 *
 	 * @param userId the user ID of this cp option value
@@ -680,4 +707,4 @@ public class CPOptionValueWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:835271593
+// LIFERAY-SERVICE-BUILDER-HASH:-865787065

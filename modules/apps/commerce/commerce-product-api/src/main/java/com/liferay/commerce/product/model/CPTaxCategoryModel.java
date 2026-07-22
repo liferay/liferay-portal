@@ -437,6 +437,20 @@ public interface CPTaxCategoryModel
 	public void setDescriptionMap(
 		Map<Locale, String> descriptionMap, Locale defaultLocale);
 
+	/**
+	 * Returns the status of this cp tax category.
+	 *
+	 * @return the status of this cp tax category
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this cp tax category.
+	 *
+	 * @param status the status of this cp tax category
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -458,4 +472,4 @@ public interface CPTaxCategoryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-956909210
+// LIFERAY-SERVICE-BUILDER-HASH:910519653

@@ -54,6 +54,7 @@ public class CPMeasurementUnitWrapper
 		attributes.put("priority", getPriority());
 		attributes.put("type", getType());
 		attributes.put("lastPublishDate", getLastPublishDate());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -167,6 +168,12 @@ public class CPMeasurementUnitWrapper
 
 		if (lastPublishDate != null) {
 			setLastPublishDate(lastPublishDate);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -399,6 +406,16 @@ public class CPMeasurementUnitWrapper
 	@Override
 	public double getRate() {
 		return model.getRate();
+	}
+
+	/**
+	 * Returns the status of this cp measurement unit.
+	 *
+	 * @return the status of this cp measurement unit
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -685,6 +702,16 @@ public class CPMeasurementUnitWrapper
 	}
 
 	/**
+	 * Sets the status of this cp measurement unit.
+	 *
+	 * @param status the status of this cp measurement unit
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the type of this cp measurement unit.
 	 *
 	 * @param type the type of this cp measurement unit
@@ -766,4 +793,4 @@ public class CPMeasurementUnitWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:827229313
+// LIFERAY-SERVICE-BUILDER-HASH:1733371317

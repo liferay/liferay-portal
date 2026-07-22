@@ -1120,6 +1120,7 @@ public class CommerceChannelPersistenceImpl
 		ctMergeColumnNames.add("commerceCurrencyCode");
 		ctMergeColumnNames.add("priceDisplayType");
 		ctMergeColumnNames.add("discountsTargetNetPrice");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1368,4 +1369,4 @@ public class CommerceChannelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1525109026
+// LIFERAY-SERVICE-BUILDER-HASH:1527375141

@@ -80,7 +80,8 @@ public class CPSpecificationOptionModelImpl
 		{"CPOptionCategoryId", Types.BIGINT}, {"title", Types.VARCHAR},
 		{"description", Types.VARCHAR}, {"facetable", Types.BOOLEAN},
 		{"key_", Types.VARCHAR}, {"priority", Types.DOUBLE},
-		{"visible", Types.BOOLEAN}, {"lastPublishDate", Types.TIMESTAMP}
+		{"visible", Types.BOOLEAN}, {"lastPublishDate", Types.TIMESTAMP},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -105,10 +106,11 @@ public class CPSpecificationOptionModelImpl
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("visible", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPSpecificationOption (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPSpecificationOptionId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPOptionCategoryId LONG,title STRING null,description STRING null,facetable BOOLEAN,key_ VARCHAR(75) null,priority DOUBLE,visible BOOLEAN,lastPublishDate DATE null,primary key (CPSpecificationOptionId, ctCollectionId))";
+		"create table CPSpecificationOption (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPSpecificationOptionId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CPOptionCategoryId LONG,title STRING null,description STRING null,facetable BOOLEAN,key_ VARCHAR(75) null,priority DOUBLE,visible BOOLEAN,lastPublishDate DATE null,status INTEGER,primary key (CPSpecificationOptionId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table CPSpecificationOption";
@@ -320,6 +322,8 @@ public class CPSpecificationOptionModelImpl
 				"visible", CPSpecificationOption::getVisible);
 			attributeGetterFunctions.put(
 				"lastPublishDate", CPSpecificationOption::getLastPublishDate);
+			attributeGetterFunctions.put(
+				"status", CPSpecificationOption::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -411,6 +415,10 @@ public class CPSpecificationOptionModelImpl
 				"lastPublishDate",
 				(BiConsumer<CPSpecificationOption, Date>)
 					CPSpecificationOption::setLastPublishDate);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CPSpecificationOption, Integer>)
+					CPSpecificationOption::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -980,6 +988,21 @@ public class CPSpecificationOptionModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1153,6 +1176,7 @@ public class CPSpecificationOptionModelImpl
 		cpSpecificationOptionImpl.setPriority(getPriority());
 		cpSpecificationOptionImpl.setVisible(isVisible());
 		cpSpecificationOptionImpl.setLastPublishDate(getLastPublishDate());
+		cpSpecificationOptionImpl.setStatus(getStatus());
 
 		cpSpecificationOptionImpl.resetOriginalValues();
 
@@ -1200,6 +1224,8 @@ public class CPSpecificationOptionModelImpl
 			this.<Boolean>getColumnOriginalValue("visible"));
 		cpSpecificationOptionImpl.setLastPublishDate(
 			this.<Date>getColumnOriginalValue("lastPublishDate"));
+		cpSpecificationOptionImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return cpSpecificationOptionImpl;
 	}
@@ -1388,6 +1414,8 @@ public class CPSpecificationOptionModelImpl
 			cpSpecificationOptionCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
+		cpSpecificationOptionCacheModel.status = getStatus();
+
 		return cpSpecificationOptionCacheModel;
 	}
 
@@ -1471,6 +1499,7 @@ public class CPSpecificationOptionModelImpl
 	private double _priority;
 	private boolean _visible;
 	private Date _lastPublishDate;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1522,6 +1551,7 @@ public class CPSpecificationOptionModelImpl
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("visible", _visible);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1582,6 +1612,8 @@ public class CPSpecificationOptionModelImpl
 
 		columnBitmasks.put("lastPublishDate", 131072L);
 
+		columnBitmasks.put("status", 262144L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1589,4 +1621,4 @@ public class CPSpecificationOptionModelImpl
 	private CPSpecificationOption _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2044842050
+// LIFERAY-SERVICE-BUILDER-HASH:1848591855

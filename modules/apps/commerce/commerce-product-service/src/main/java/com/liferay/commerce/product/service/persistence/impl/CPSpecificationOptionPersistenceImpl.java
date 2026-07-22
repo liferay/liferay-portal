@@ -1083,6 +1083,7 @@ public class CPSpecificationOptionPersistenceImpl
 		ctMergeColumnNames.add("priority");
 		ctMergeColumnNames.add("visible");
 		ctMergeColumnNames.add("lastPublishDate");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1327,4 +1328,4 @@ public class CPSpecificationOptionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2026949558
+// LIFERAY-SERVICE-BUILDER-HASH:1394873593

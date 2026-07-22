@@ -1099,6 +1099,7 @@ public class CPMeasurementUnitPersistenceImpl
 		ctMergeColumnNames.add("priority");
 		ctMergeColumnNames.add("type_");
 		ctMergeColumnNames.add("lastPublishDate");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1394,4 +1395,4 @@ public class CPMeasurementUnitPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-375124758
+// LIFERAY-SERVICE-BUILDER-HASH:937220891

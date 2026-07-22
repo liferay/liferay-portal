@@ -446,6 +446,7 @@ create table CPMeasurementUnit (
 	priority DOUBLE,
 	type_ INTEGER,
 	lastPublishDate DATE null,
+	status INTEGER,
 	primary key (CPMeasurementUnitId, ctCollectionId)
 );
 
@@ -468,6 +469,7 @@ create table CPOption (
 	skuContributor BOOLEAN,
 	key_ VARCHAR(75) null,
 	lastPublishDate DATE null,
+	status INTEGER,
 	primary key (CPOptionId, ctCollectionId)
 );
 
@@ -487,6 +489,7 @@ create table CPOptionCategory (
 	priority DOUBLE,
 	key_ VARCHAR(75) null,
 	lastPublishDate DATE null,
+	status INTEGER,
 	primary key (CPOptionCategoryId, ctCollectionId)
 );
 
@@ -506,6 +509,7 @@ create table CPOptionValue (
 	priority DOUBLE,
 	key_ VARCHAR(75) null,
 	lastPublishDate DATE null,
+	status INTEGER,
 	primary key (CPOptionValueId, ctCollectionId)
 );
 
@@ -538,6 +542,7 @@ create table CPSpecificationOption (
 	priority DOUBLE,
 	visible BOOLEAN,
 	lastPublishDate DATE null,
+	status INTEGER,
 	primary key (CPSpecificationOptionId, ctCollectionId)
 );
 
@@ -554,6 +559,7 @@ create table CPTaxCategory (
 	modifiedDate DATE null,
 	name STRING null,
 	description STRING null,
+	status INTEGER,
 	primary key (CPTaxCategoryId, ctCollectionId)
 );
 
@@ -590,6 +596,7 @@ create table CommerceCatalog (
 	commerceCurrencyCode VARCHAR(75) null,
 	catalogDefaultLanguageId VARCHAR(75) null,
 	system_ BOOLEAN,
+	status INTEGER,
 	primary key (commerceCatalogId, ctCollectionId)
 );
 
@@ -612,6 +619,7 @@ create table CommerceChannel (
 	commerceCurrencyCode VARCHAR(75) null,
 	priceDisplayType VARCHAR(75) null,
 	discountsTargetNetPrice BOOLEAN,
+	status INTEGER,
 	primary key (commerceChannelId, ctCollectionId)
 );
 

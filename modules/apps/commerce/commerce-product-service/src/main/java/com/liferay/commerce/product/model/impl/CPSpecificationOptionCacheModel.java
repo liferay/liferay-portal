@@ -69,7 +69,7 @@ public class CPSpecificationOptionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -107,6 +107,8 @@ public class CPSpecificationOptionCacheModel
 		sb.append(visible);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -197,6 +199,8 @@ public class CPSpecificationOptionCacheModel
 				new Date(lastPublishDate));
 		}
 
+		cpSpecificationOptionImpl.setStatus(status);
+
 		cpSpecificationOptionImpl.resetOriginalValues();
 
 		return cpSpecificationOptionImpl;
@@ -230,6 +234,8 @@ public class CPSpecificationOptionCacheModel
 
 		visible = objectInput.readBoolean();
 		lastPublishDate = objectInput.readLong();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -297,6 +303,8 @@ public class CPSpecificationOptionCacheModel
 
 		objectOutput.writeBoolean(visible);
 		objectOutput.writeLong(lastPublishDate);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -317,6 +325,7 @@ public class CPSpecificationOptionCacheModel
 	public double priority;
 	public boolean visible;
 	public long lastPublishDate;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1885152135
+// LIFERAY-SERVICE-BUILDER-HASH:1693618283

@@ -143,6 +143,8 @@ public class CommerceCatalogPersistenceTest {
 
 		newCommerceCatalog.setSystem(RandomTestUtil.randomBoolean());
 
+		newCommerceCatalog.setStatus(RandomTestUtil.nextInt());
+
 		newCommerceCatalog = _persistence.update(newCommerceCatalog);
 
 		_commerceCatalogs.add(newCommerceCatalog);
@@ -192,6 +194,9 @@ public class CommerceCatalogPersistenceTest {
 			newCommerceCatalog.getCatalogDefaultLanguageId());
 		Assert.assertEquals(
 			existingCommerceCatalog.isSystem(), newCommerceCatalog.isSystem());
+		Assert.assertEquals(
+			existingCommerceCatalog.getStatus(),
+			newCommerceCatalog.getStatus());
 	}
 
 	@Test(
@@ -295,7 +300,7 @@ public class CommerceCatalogPersistenceTest {
 			true, "companyId", true, "userId", true, "userName", true,
 			"createDate", true, "modifiedDate", true, "accountEntryId", true,
 			"name", true, "commerceCurrencyCode", true,
-			"catalogDefaultLanguageId", true, "system", true);
+			"catalogDefaultLanguageId", true, "system", true, "status", true);
 	}
 
 	@Test
@@ -609,6 +614,8 @@ public class CommerceCatalogPersistenceTest {
 
 		commerceCatalog.setSystem(RandomTestUtil.randomBoolean());
 
+		commerceCatalog.setStatus(RandomTestUtil.nextInt());
+
 		_commerceCatalogs.add(_persistence.update(commerceCatalog));
 
 		return commerceCatalog;
@@ -620,4 +627,4 @@ public class CommerceCatalogPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1804209971
+// LIFERAY-SERVICE-BUILDER-HASH:-1336146064

@@ -72,10 +72,12 @@ public class CommerceChannelTable extends BaseTable<CommerceChannelTable> {
 		createColumn(
 			"discountsTargetNetPrice", Boolean.class, Types.BOOLEAN,
 			Column.FLAG_DEFAULT);
+	public final Column<CommerceChannelTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CommerceChannelTable() {
 		super("CommerceChannel", CommerceChannelTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-827508503
+// LIFERAY-SERVICE-BUILDER-HASH:1081342436

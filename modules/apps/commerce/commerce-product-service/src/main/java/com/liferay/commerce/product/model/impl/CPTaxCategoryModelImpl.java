@@ -77,7 +77,8 @@ public class CPTaxCategoryModelImpl
 		{"CPTaxCategoryId", Types.BIGINT}, {"companyId", Types.BIGINT},
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"name", Types.VARCHAR}, {"description", Types.VARCHAR}
+		{"name", Types.VARCHAR}, {"description", Types.VARCHAR},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -96,10 +97,11 @@ public class CPTaxCategoryModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPTaxCategory (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPTaxCategoryId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description STRING null,primary key (CPTaxCategoryId, ctCollectionId))";
+		"create table CPTaxCategory (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPTaxCategoryId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,description STRING null,status INTEGER,primary key (CPTaxCategoryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table CPTaxCategory";
 
@@ -279,6 +281,7 @@ public class CPTaxCategoryModelImpl
 			attributeGetterFunctions.put("name", CPTaxCategory::getName);
 			attributeGetterFunctions.put(
 				"description", CPTaxCategory::getDescription);
+			attributeGetterFunctions.put("status", CPTaxCategory::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -337,6 +340,9 @@ public class CPTaxCategoryModelImpl
 				"description",
 				(BiConsumer<CPTaxCategory, String>)
 					CPTaxCategory::setDescription);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CPTaxCategory, Integer>)CPTaxCategory::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -778,6 +784,21 @@ public class CPTaxCategoryModelImpl
 				LocaleUtil.toLanguageId(defaultLocale)));
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -940,6 +961,7 @@ public class CPTaxCategoryModelImpl
 		cpTaxCategoryImpl.setModifiedDate(getModifiedDate());
 		cpTaxCategoryImpl.setName(getName());
 		cpTaxCategoryImpl.setDescription(getDescription());
+		cpTaxCategoryImpl.setStatus(getStatus());
 
 		cpTaxCategoryImpl.resetOriginalValues();
 
@@ -972,6 +994,8 @@ public class CPTaxCategoryModelImpl
 		cpTaxCategoryImpl.setName(this.<String>getColumnOriginalValue("name"));
 		cpTaxCategoryImpl.setDescription(
 			this.<String>getColumnOriginalValue("description"));
+		cpTaxCategoryImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return cpTaxCategoryImpl;
 	}
@@ -1123,6 +1147,8 @@ public class CPTaxCategoryModelImpl
 			cpTaxCategoryCacheModel.description = null;
 		}
 
+		cpTaxCategoryCacheModel.status = getStatus();
+
 		return cpTaxCategoryCacheModel;
 	}
 
@@ -1199,6 +1225,7 @@ public class CPTaxCategoryModelImpl
 	private String _nameCurrentLanguageId;
 	private String _description;
 	private String _descriptionCurrentLanguageId;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1243,6 +1270,7 @@ public class CPTaxCategoryModelImpl
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("description", _description);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1290,6 +1318,8 @@ public class CPTaxCategoryModelImpl
 
 		columnBitmasks.put("description", 2048L);
 
+		columnBitmasks.put("status", 4096L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1297,4 +1327,4 @@ public class CPTaxCategoryModelImpl
 	private CPTaxCategory _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1582134986
+// LIFERAY-SERVICE-BUILDER-HASH:209165891

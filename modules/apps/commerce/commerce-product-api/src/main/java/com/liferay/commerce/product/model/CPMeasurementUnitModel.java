@@ -446,6 +446,20 @@ public interface CPMeasurementUnitModel
 	@Override
 	public void setLastPublishDate(Date lastPublishDate);
 
+	/**
+	 * Returns the status of this cp measurement unit.
+	 *
+	 * @return the status of this cp measurement unit
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this cp measurement unit.
+	 *
+	 * @param status the status of this cp measurement unit
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -467,4 +481,4 @@ public interface CPMeasurementUnitModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1013816026
+// LIFERAY-SERVICE-BUILDER-HASH:1250310871

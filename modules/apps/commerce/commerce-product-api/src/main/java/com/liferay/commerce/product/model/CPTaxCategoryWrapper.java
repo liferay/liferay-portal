@@ -48,6 +48,7 @@ public class CPTaxCategoryWrapper
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("name", getName());
 		attributes.put("description", getDescription());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -125,6 +126,12 @@ public class CPTaxCategoryWrapper
 
 		if (description != null) {
 			setDescription(description);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -373,6 +380,16 @@ public class CPTaxCategoryWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the status of this cp tax category.
+	 *
+	 * @return the status of this cp tax category
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -646,6 +663,16 @@ public class CPTaxCategoryWrapper
 	}
 
 	/**
+	 * Sets the status of this cp tax category.
+	 *
+	 * @param status the status of this cp tax category
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the user ID of this cp tax category.
 	 *
 	 * @param userId the user ID of this cp tax category
@@ -715,4 +742,4 @@ public class CPTaxCategoryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1806654095
+// LIFERAY-SERVICE-BUILDER-HASH:-963599095

@@ -1124,6 +1124,7 @@ public class CommerceCatalogPersistenceImpl
 		ctMergeColumnNames.add("commerceCurrencyCode");
 		ctMergeColumnNames.add("catalogDefaultLanguageId");
 		ctMergeColumnNames.add("system_");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1380,4 +1381,4 @@ public class CommerceCatalogPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1479590413
+// LIFERAY-SERVICE-BUILDER-HASH:-1415722018

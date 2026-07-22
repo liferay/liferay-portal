@@ -79,7 +79,8 @@ public class CPMeasurementUnitModelImpl
 		{"modifiedDate", Types.TIMESTAMP}, {"name", Types.VARCHAR},
 		{"key_", Types.VARCHAR}, {"rate", Types.DOUBLE},
 		{"primary_", Types.BOOLEAN}, {"priority", Types.DOUBLE},
-		{"type_", Types.INTEGER}, {"lastPublishDate", Types.TIMESTAMP}
+		{"type_", Types.INTEGER}, {"lastPublishDate", Types.TIMESTAMP},
+		{"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -104,10 +105,11 @@ public class CPMeasurementUnitModelImpl
 		TABLE_COLUMNS_MAP.put("priority", Types.DOUBLE);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPMeasurementUnit (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPMeasurementUnitId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,key_ VARCHAR(75) null,rate DOUBLE,primary_ BOOLEAN,priority DOUBLE,type_ INTEGER,lastPublishDate DATE null,primary key (CPMeasurementUnitId, ctCollectionId))";
+		"create table CPMeasurementUnit (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,CPMeasurementUnitId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name STRING null,key_ VARCHAR(75) null,rate DOUBLE,primary_ BOOLEAN,priority DOUBLE,type_ INTEGER,lastPublishDate DATE null,status INTEGER,primary key (CPMeasurementUnitId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table CPMeasurementUnit";
 
@@ -317,6 +319,8 @@ public class CPMeasurementUnitModelImpl
 			attributeGetterFunctions.put("type", CPMeasurementUnit::getType);
 			attributeGetterFunctions.put(
 				"lastPublishDate", CPMeasurementUnit::getLastPublishDate);
+			attributeGetterFunctions.put(
+				"status", CPMeasurementUnit::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -407,6 +411,10 @@ public class CPMeasurementUnitModelImpl
 				"lastPublishDate",
 				(BiConsumer<CPMeasurementUnit, Date>)
 					CPMeasurementUnit::setLastPublishDate);
+			attributeSetterBiConsumers.put(
+				"status",
+				(BiConsumer<CPMeasurementUnit, Integer>)
+					CPMeasurementUnit::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -890,6 +898,21 @@ public class CPMeasurementUnitModelImpl
 		_lastPublishDate = lastPublishDate;
 	}
 
+	@JSON
+	@Override
+	public int getStatus() {
+		return _status;
+	}
+
+	@Override
+	public void setStatus(int status) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_status = status;
+	}
+
 	@Override
 	public StagedModelType getStagedModelType() {
 		return new StagedModelType(
@@ -1038,6 +1061,7 @@ public class CPMeasurementUnitModelImpl
 		cpMeasurementUnitImpl.setPriority(getPriority());
 		cpMeasurementUnitImpl.setType(getType());
 		cpMeasurementUnitImpl.setLastPublishDate(getLastPublishDate());
+		cpMeasurementUnitImpl.setStatus(getStatus());
 
 		cpMeasurementUnitImpl.resetOriginalValues();
 
@@ -1085,6 +1109,8 @@ public class CPMeasurementUnitModelImpl
 			this.<Integer>getColumnOriginalValue("type_"));
 		cpMeasurementUnitImpl.setLastPublishDate(
 			this.<Date>getColumnOriginalValue("lastPublishDate"));
+		cpMeasurementUnitImpl.setStatus(
+			this.<Integer>getColumnOriginalValue("status"));
 
 		return cpMeasurementUnitImpl;
 	}
@@ -1262,6 +1288,8 @@ public class CPMeasurementUnitModelImpl
 			cpMeasurementUnitCacheModel.lastPublishDate = Long.MIN_VALUE;
 		}
 
+		cpMeasurementUnitCacheModel.status = getStatus();
+
 		return cpMeasurementUnitCacheModel;
 	}
 
@@ -1344,6 +1372,7 @@ public class CPMeasurementUnitModelImpl
 	private double _priority;
 	private int _type;
 	private Date _lastPublishDate;
+	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1394,6 +1423,7 @@ public class CPMeasurementUnitModelImpl
 		_columnOriginalValues.put("priority", _priority);
 		_columnOriginalValues.put("type_", _type);
 		_columnOriginalValues.put("lastPublishDate", _lastPublishDate);
+		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1456,6 +1486,8 @@ public class CPMeasurementUnitModelImpl
 
 		columnBitmasks.put("lastPublishDate", 131072L);
 
+		columnBitmasks.put("status", 262144L);
+
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1463,4 +1495,4 @@ public class CPMeasurementUnitModelImpl
 	private CPMeasurementUnit _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1395471606
+// LIFERAY-SERVICE-BUILDER-HASH:827442639

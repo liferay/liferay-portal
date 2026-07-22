@@ -480,6 +480,20 @@ public interface CPOptionCategoryModel
 	 */
 	public void setLastPublishDate(Date lastPublishDate);
 
+	/**
+	 * Returns the status of this cp option category.
+	 *
+	 * @return the status of this cp option category
+	 */
+	public int getStatus();
+
+	/**
+	 * Sets the status of this cp option category.
+	 *
+	 * @param status the status of this cp option category
+	 */
+	public void setStatus(int status);
+
 	@Override
 	public String[] getAvailableLanguageIds();
 
@@ -501,4 +515,4 @@ public interface CPOptionCategoryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2011123096
+// LIFERAY-SERVICE-BUILDER-HASH:1790731479

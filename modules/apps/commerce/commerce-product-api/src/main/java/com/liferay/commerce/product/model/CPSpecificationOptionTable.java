@@ -79,10 +79,13 @@ public class CPSpecificationOptionTable
 		createColumn(
 			"lastPublishDate", Date.class, Types.TIMESTAMP,
 			Column.FLAG_DEFAULT);
+	public final Column<CPSpecificationOptionTable, Integer> status =
+		createColumn(
+			"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CPSpecificationOptionTable() {
 		super("CPSpecificationOption", CPSpecificationOptionTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1389560346
+// LIFERAY-SERVICE-BUILDER-HASH:-388105418

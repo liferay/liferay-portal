@@ -50,10 +50,12 @@ public class CPTaxCategoryTable extends BaseTable<CPTaxCategoryTable> {
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CPTaxCategoryTable, String> description = createColumn(
 		"description", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<CPTaxCategoryTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CPTaxCategoryTable() {
 		super("CPTaxCategory", CPTaxCategoryTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-312593471
+// LIFERAY-SERVICE-BUILDER-HASH:-574353488

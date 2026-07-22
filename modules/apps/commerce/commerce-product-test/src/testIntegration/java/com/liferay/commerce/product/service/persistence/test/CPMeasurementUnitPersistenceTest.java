@@ -149,6 +149,8 @@ public class CPMeasurementUnitPersistenceTest {
 
 		newCPMeasurementUnit.setLastPublishDate(RandomTestUtil.nextDate());
 
+		newCPMeasurementUnit.setStatus(RandomTestUtil.nextInt());
+
 		newCPMeasurementUnit = _persistence.update(newCPMeasurementUnit);
 
 		_cpMeasurementUnits.add(newCPMeasurementUnit);
@@ -210,6 +212,9 @@ public class CPMeasurementUnitPersistenceTest {
 			Time.getShortTimestamp(
 				existingCPMeasurementUnit.getLastPublishDate()),
 			Time.getShortTimestamp(newCPMeasurementUnit.getLastPublishDate()));
+		Assert.assertEquals(
+			existingCPMeasurementUnit.getStatus(),
+			newCPMeasurementUnit.getStatus());
 	}
 
 	@Test(
@@ -333,7 +338,7 @@ public class CPMeasurementUnitPersistenceTest {
 			true, "groupId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true, "name",
 			true, "key", true, "rate", true, "primary", true, "priority", true,
-			"type", true, "lastPublishDate", true);
+			"type", true, "lastPublishDate", true, "status", true);
 	}
 
 	@Test
@@ -681,6 +686,8 @@ public class CPMeasurementUnitPersistenceTest {
 
 		cpMeasurementUnit.setLastPublishDate(RandomTestUtil.nextDate());
 
+		cpMeasurementUnit.setStatus(RandomTestUtil.nextInt());
+
 		_cpMeasurementUnits.add(_persistence.update(cpMeasurementUnit));
 
 		return cpMeasurementUnit;
@@ -692,4 +699,4 @@ public class CPMeasurementUnitPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1374295531
+// LIFERAY-SERVICE-BUILDER-HASH:881297784

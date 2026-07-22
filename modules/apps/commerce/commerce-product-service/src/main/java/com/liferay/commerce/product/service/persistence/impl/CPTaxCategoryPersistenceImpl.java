@@ -865,6 +865,7 @@ public class CPTaxCategoryPersistenceImpl
 		ctIgnoreColumnNames.add("modifiedDate");
 		ctMergeColumnNames.add("name");
 		ctMergeColumnNames.add("description");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1051,4 +1052,4 @@ public class CPTaxCategoryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:511635616
+// LIFERAY-SERVICE-BUILDER-HASH:611551105

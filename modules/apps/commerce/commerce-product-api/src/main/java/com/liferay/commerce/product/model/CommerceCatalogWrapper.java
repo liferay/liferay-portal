@@ -52,6 +52,7 @@ public class CommerceCatalogWrapper
 		attributes.put(
 			"catalogDefaultLanguageId", getCatalogDefaultLanguageId());
 		attributes.put("system", isSystem());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -149,6 +150,12 @@ public class CommerceCatalogWrapper
 
 		if (system != null) {
 			setSystem(system);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -285,6 +292,16 @@ public class CommerceCatalogWrapper
 	@Override
 	public long getPrimaryKey() {
 		return model.getPrimaryKey();
+	}
+
+	/**
+	 * Returns the status of this commerce catalog.
+	 *
+	 * @return the status of this commerce catalog
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -473,6 +490,16 @@ public class CommerceCatalogWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce catalog.
+	 *
+	 * @param status the status of this commerce catalog
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets whether this commerce catalog is system.
 	 *
 	 * @param system the system of this commerce catalog
@@ -552,4 +579,4 @@ public class CommerceCatalogWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1548522502
+// LIFERAY-SERVICE-BUILDER-HASH:1243446636

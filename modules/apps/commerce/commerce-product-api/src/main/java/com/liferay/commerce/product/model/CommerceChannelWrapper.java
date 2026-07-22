@@ -54,6 +54,7 @@ public class CommerceChannelWrapper
 		attributes.put("commerceCurrencyCode", getCommerceCurrencyCode());
 		attributes.put("priceDisplayType", getPriceDisplayType());
 		attributes.put("discountsTargetNetPrice", isDiscountsTargetNetPrice());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -169,6 +170,12 @@ public class CommerceChannelWrapper
 
 		if (discountsTargetNetPrice != null) {
 			setDiscountsTargetNetPrice(discountsTargetNetPrice);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -325,6 +332,16 @@ public class CommerceChannelWrapper
 	@Override
 	public long getSiteGroupId() {
 		return model.getSiteGroupId();
+	}
+
+	/**
+	 * Returns the status of this commerce channel.
+	 *
+	 * @return the status of this commerce channel
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -550,6 +567,16 @@ public class CommerceChannelWrapper
 	}
 
 	/**
+	 * Sets the status of this commerce channel.
+	 *
+	 * @param status the status of this commerce channel
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the type of this commerce channel.
 	 *
 	 * @param type the type of this commerce channel
@@ -647,4 +674,4 @@ public class CommerceChannelWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-317324220
+// LIFERAY-SERVICE-BUILDER-HASH:-344525756

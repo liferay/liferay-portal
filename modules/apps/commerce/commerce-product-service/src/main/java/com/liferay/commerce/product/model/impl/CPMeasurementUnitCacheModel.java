@@ -69,7 +69,7 @@ public class CPMeasurementUnitCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -107,6 +107,8 @@ public class CPMeasurementUnitCacheModel
 		sb.append(type);
 		sb.append(", lastPublishDate=");
 		sb.append(lastPublishDate);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -187,6 +189,8 @@ public class CPMeasurementUnitCacheModel
 			cpMeasurementUnitImpl.setLastPublishDate(new Date(lastPublishDate));
 		}
 
+		cpMeasurementUnitImpl.setStatus(status);
+
 		cpMeasurementUnitImpl.resetOriginalValues();
 
 		return cpMeasurementUnitImpl;
@@ -221,6 +225,8 @@ public class CPMeasurementUnitCacheModel
 
 		type = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -283,6 +289,8 @@ public class CPMeasurementUnitCacheModel
 
 		objectOutput.writeInt(type);
 		objectOutput.writeLong(lastPublishDate);
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -303,6 +311,7 @@ public class CPMeasurementUnitCacheModel
 	public double priority;
 	public int type;
 	public long lastPublishDate;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1464568136
+// LIFERAY-SERVICE-BUILDER-HASH:-1273195270

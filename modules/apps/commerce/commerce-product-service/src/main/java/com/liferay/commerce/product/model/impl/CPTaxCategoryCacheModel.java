@@ -68,7 +68,7 @@ public class CPTaxCategoryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(27);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -94,6 +94,8 @@ public class CPTaxCategoryCacheModel
 		sb.append(name);
 		sb.append(", description=");
 		sb.append(description);
+		sb.append(", status=");
+		sb.append(status);
 		sb.append("}");
 
 		return sb.toString();
@@ -159,6 +161,8 @@ public class CPTaxCategoryCacheModel
 			cpTaxCategoryImpl.setDescription(description);
 		}
 
+		cpTaxCategoryImpl.setStatus(status);
+
 		cpTaxCategoryImpl.resetOriginalValues();
 
 		return cpTaxCategoryImpl;
@@ -182,6 +186,8 @@ public class CPTaxCategoryCacheModel
 		modifiedDate = objectInput.readLong();
 		name = objectInput.readUTF();
 		description = objectInput.readUTF();
+
+		status = objectInput.readInt();
 	}
 
 	@Override
@@ -233,6 +239,8 @@ public class CPTaxCategoryCacheModel
 		else {
 			objectOutput.writeUTF(description);
 		}
+
+		objectOutput.writeInt(status);
 	}
 
 	public long mvccVersion;
@@ -247,6 +255,7 @@ public class CPTaxCategoryCacheModel
 	public long modifiedDate;
 	public String name;
 	public String description;
+	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1007105850
+// LIFERAY-SERVICE-BUILDER-HASH:-279879815

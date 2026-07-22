@@ -916,6 +916,7 @@ public class CPOptionPersistenceImpl
 		ctMergeColumnNames.add("skuContributor");
 		ctMergeColumnNames.add("key_");
 		ctMergeColumnNames.add("lastPublishDate");
+		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
 			CTColumnResolutionType.CONTROL, ctControlColumnNames);
@@ -1116,4 +1117,4 @@ public class CPOptionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2091844013
+// LIFERAY-SERVICE-BUILDER-HASH:-1779635170

@@ -56,6 +56,7 @@ public class CPSpecificationOptionWrapper
 		attributes.put("priority", getPriority());
 		attributes.put("visible", isVisible());
 		attributes.put("lastPublishDate", getLastPublishDate());
+		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -170,6 +171,12 @@ public class CPSpecificationOptionWrapper
 
 		if (lastPublishDate != null) {
 			setLastPublishDate(lastPublishDate);
+		}
+
+		Integer status = (Integer)attributes.get("status");
+
+		if (status != null) {
+			setStatus(status);
 		}
 	}
 
@@ -414,6 +421,16 @@ public class CPSpecificationOptionWrapper
 	@Override
 	public double getPriority() {
 		return model.getPriority();
+	}
+
+	/**
+	 * Returns the status of this cp specification option.
+	 *
+	 * @return the status of this cp specification option
+	 */
+	@Override
+	public int getStatus() {
+		return model.getStatus();
 	}
 
 	/**
@@ -780,6 +797,16 @@ public class CPSpecificationOptionWrapper
 	}
 
 	/**
+	 * Sets the status of this cp specification option.
+	 *
+	 * @param status the status of this cp specification option
+	 */
+	@Override
+	public void setStatus(int status) {
+		model.setStatus(status);
+	}
+
+	/**
 	 * Sets the title of this cp specification option.
 	 *
 	 * @param title the title of this cp specification option
@@ -925,4 +952,4 @@ public class CPSpecificationOptionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1683371447
+// LIFERAY-SERVICE-BUILDER-HASH:-215186867

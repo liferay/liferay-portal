@@ -63,10 +63,12 @@ public class CPOptionTable extends BaseTable<CPOptionTable> {
 		"key_", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<CPOptionTable, Date> lastPublishDate = createColumn(
 		"lastPublishDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<CPOptionTable, Integer> status = createColumn(
+		"status", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
 
 	private CPOptionTable() {
 		super("CPOption", CPOptionTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1200082758
+// LIFERAY-SERVICE-BUILDER-HASH:311621381
