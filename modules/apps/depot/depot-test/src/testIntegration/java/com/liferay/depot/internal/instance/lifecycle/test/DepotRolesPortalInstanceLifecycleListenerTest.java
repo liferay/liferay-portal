@@ -142,6 +142,18 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 			DepotRolesConstants.DESIGN_LIBRARY_MEMBER,
 			List.of(ActionKeys.VIEW));
 
+		for (String name :
+				List.of(
+					DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+					DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+					DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
+
+			_assertResourcePermissions(
+				companyId, "com.liferay.style.book",
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				name, List.of("MANAGE_STYLE_BOOK_ENTRIES"));
+		}
+
 		Role administratorRole = _roleLocalService.getRole(
 			companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
 
