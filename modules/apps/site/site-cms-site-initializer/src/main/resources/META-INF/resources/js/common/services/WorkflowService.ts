@@ -157,6 +157,54 @@ export async function getWorkflowTasksAssignedToMyRoles({
 	throw new Error(error);
 }
 
+export async function getPendingWorkflowTask({
+	assetClassName,
+	assetPrimaryKey,
+}: {
+	assetClassName: string;
+	assetPrimaryKey: number;
+}): Promise<WorkflowTask | null> {
+	const {data: workflowInstancesData, error: workflowInstancesError} =
+		await ApiHelper.get<{
+			items: {id: number}[];
+		}>(
+			`/o/headless-admin-workflow/v1.0/workflow-instances?${new URLSearchParams(
+				{
+					assetClassName,
+					assetPrimaryKey: String(assetPrimaryKey),
+					completed: 'false',
+				}
+			).toString()}`
+		);
+
+	if (workflowInstancesError) {
+		throw new Error(workflowInstancesError);
+	}
+
+	const workflowInstanceId = workflowInstancesData?.items?.[0]?.id;
+
+	if (!workflowInstanceId) {
+		return null;
+	}
+
+	const {data: workflowTasksData, error: workflowTasksError} =
+		await ApiHelper.get<{
+			items: WorkflowTask[];
+		}>(
+			`/o/headless-admin-workflow/v1.0/workflow-instances/${workflowInstanceId}/workflow-tasks`
+		);
+
+	if (workflowTasksError) {
+		throw new Error(workflowTasksError);
+	}
+
+	const workflowTasks = workflowTasksData?.items ?? [];
+
+	return (
+		workflowTasks.find((workflowTask) => !workflowTask.completed) ?? null
+	);
+}
+
 export async function getAssignableUsers(
 	workflowTaskId: number
 ): Promise<AssignableUser[]> {

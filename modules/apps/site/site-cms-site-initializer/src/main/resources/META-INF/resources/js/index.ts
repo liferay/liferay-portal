@@ -80,6 +80,7 @@ export {default as ExpiredAssetsFDSPropsTransformer} from './main_view/props_tra
 export {default as HomeRecentAssetsFDSPropsTransformer} from './main_view/props_transformer/HomeRecentAssetsFDSPropsTransformer';
 export {default as MembersFDSPropsTransformer} from './main_view/props_transformer/MembersFDSPropsTransformer';
 export {default as OverdueReviewsFDSPropsTransformer} from './main_view/props_transformer/OverdueReviewsFDSPropsTransformer';
+export {default as PendingWorkflowsFDSPropsTransformer} from './main_view/props_transformer/PendingWorkflowsFDSPropsTransformer';
 export {default as RecycleBinFDSPropsTransformer} from './main_view/props_transformer/RecycleBinFDSPropsTransformer';
 export {default as RelatedAssetsFDSPropsTransformer} from './main_view/props_transformer/RelatedAssetsFDSPropsTransformer';
 export {default as SharedWithMeFDSPropsTransformer} from './main_view/props_transformer/SharedWithMeFDSPropsTransformer';
