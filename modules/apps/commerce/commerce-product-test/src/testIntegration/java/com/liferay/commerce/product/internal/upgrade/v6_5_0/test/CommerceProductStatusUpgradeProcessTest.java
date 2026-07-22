@@ -60,7 +60,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testUpgradeCommerceCatalogStatus() throws Exception {
+	public void testUpgradeCommerceCatalog() throws Exception {
 		CommerceCatalog commerceCatalog =
 			_commerceCatalogLocalService.addCommerceCatalog(
 				null, RandomTestUtil.randomString(),
@@ -93,7 +93,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeCommerceChannelStatus() throws Exception {
+	public void testUpgradeCommerceChannel() throws Exception {
 		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
 			TestPropsValues.getGroupId(), RandomTestUtil.randomString());
 
@@ -122,7 +122,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeCPMeasurementUnitStatus() throws Exception {
+	public void testUpgradeCPMeasurementUnit() throws Exception {
 		CPMeasurementUnit cpMeasurementUnit =
 			_cpMeasurementUnitLocalService.addCPMeasurementUnit(
 				null, RandomTestUtil.randomLocaleStringMap(),
@@ -156,7 +156,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeCPOptionCategoryStatus() throws Exception {
+	public void testUpgradeCPOptionCategory() throws Exception {
 		CPOptionCategory cpOptionCategory = CPTestUtil.addCPOptionCategory(
 			TestPropsValues.getGroupId());
 
@@ -185,7 +185,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeCPOptionStatus() throws Exception {
+	public void testUpgradeCPOption() throws Exception {
 		CPOption cpOption = CPTestUtil.addCPOption(
 			TestPropsValues.getGroupId(), false);
 
@@ -211,7 +211,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeCPOptionValueStatus() throws Exception {
+	public void testUpgradeCPOptionValue() throws Exception {
 		CPOptionValue cpOptionValue = CPTestUtil.addCPOptionValue(
 			CPTestUtil.addCPOption(TestPropsValues.getGroupId(), false));
 
@@ -239,7 +239,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeCPSpecificationOptionStatus() throws Exception {
+	public void testUpgradeCPSpecificationOption() throws Exception {
 		CPSpecificationOption cpSpecificationOption =
 			CPTestUtil.addCPSpecificationOption(
 				TestPropsValues.getGroupId(), true);
@@ -271,7 +271,7 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeCPTaxCategoryStatus() throws Exception {
+	public void testUpgradeCPTaxCategory() throws Exception {
 		CPTaxCategory cpTaxCategory =
 			_cpTaxCategoryLocalService.addCPTaxCategory(
 				null, RandomTestUtil.randomLocaleStringMap(),
