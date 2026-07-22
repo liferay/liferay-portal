@@ -55,21 +55,95 @@ describe('applyFieldValues', () => {
 		expect(nativeValueGetter?.call(input)).toBe('Generated');
 	});
 
-	it('writes a RichText field through the CKEditor instance', () => {
+	it('replaces a RichText field through the editor model', () => {
 		const form = createForm(
-			'<div class="lfr-ck"><div class="ck-editor__editable"></div>' +
-				'<input name="ObjectField_body" type="hidden" /></div>'
+			'<div class="rich-text-input" data-field-name="ObjectField_body">' +
+				'<div class="lfr-ck"><div class="ck ck-editor">' +
+				'<div class="ck-editor__editable"></div></div></div></div>'
 		);
 
-		const editable = form.querySelector('.ck-editor__editable');
+		const editor = form.querySelector('.ck-editor');
+
+		const insertContent = jest.fn();
+		const remove = jest.fn();
+		const createRangeIn = jest.fn(() => 'range');
+
+		const root = {};
+		const modelFragment = {};
+		const viewFragment = {};
+
+		(editor as any).ckeditorInstance = {
+			data: {
+				processor: {toView: jest.fn(() => viewFragment)},
+				toModel: jest.fn(() => modelFragment),
+			},
+			getData: jest.fn(),
+			model: {
+				change: (callback: (writer: unknown) => void) =>
+					callback({createRangeIn, remove}),
+				document: {getRoot: () => root},
+				insertContent,
+			},
+			setData: jest.fn(),
+		};
+
+		applyFieldValues(form, {body: '<p>New</p>'});
+
+		expect(remove).toHaveBeenCalledWith('range');
+		expect(insertContent).toHaveBeenCalledWith(modelFragment, root);
+	});
+
+	it('falls back to setData when the editor has no model API', () => {
+		const form = createForm(
+			'<div class="rich-text-input" data-field-name="ObjectField_body">' +
+				'<div class="lfr-ck"><div class="ck ck-editor">' +
+				'<div class="ck-editor__editable"></div></div></div></div>'
+		);
+
+		const editor = form.querySelector('.ck-editor');
 
 		const setData = jest.fn();
 
-		(editable as any).ckeditorInstance = {getData: jest.fn(), setData};
+		(editor as any).ckeditorInstance = {getData: jest.fn(), setData};
 
 		applyFieldValues(form, {body: '<p>New</p>'});
 
 		expect(setData).toHaveBeenCalledWith('<p>New</p>');
+	});
+
+	it('writes only the active locale control for a localized field', () => {
+		const form = createForm(
+			'<input name="ObjectField_title_en_US" value="" />' +
+				'<input name="ObjectField_title_pt_BR" value="" />'
+		);
+
+		applyFieldValues(form, {title: 'Generated'}, 'pt_BR');
+
+		expect(
+			(form.querySelector(
+				'[name="ObjectField_title_en_US"]'
+			) as HTMLInputElement).value
+		).toBe('');
+		expect(
+			(form.querySelector(
+				'[name="ObjectField_title_pt_BR"]'
+			) as HTMLInputElement).value
+		).toBe('Generated');
+	});
+
+	it('falls back to the first control when the locale is absent', () => {
+		const form = createForm(
+			'<input name="ObjectField_title_en_US" value="" />' +
+				'<input name="ObjectField_title_pt_BR" value="" />'
+		);
+
+		applyFieldValues(form, {title: 'Generated'}, 'fr_FR');
+
+		expect(
+			(form.querySelector(
+				'[name="ObjectField_title_en_US"]'
+			) as HTMLInputElement).value
+		).toBe('Generated');
 	});
 
 	it('ignores a field that has no control', () => {

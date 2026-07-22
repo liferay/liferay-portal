@@ -26,13 +26,14 @@ describe('getFieldValues', () => {
 
 	it('reads a RichText field through the CKEditor instance', () => {
 		const form = createForm(
-			'<div class="lfr-ck"><div class="ck-editor__editable"></div>' +
-				'<input name="ObjectField_body" type="hidden" value="stale" /></div>'
+			'<div class="rich-text-input" data-field-name="ObjectField_body">' +
+				'<div class="lfr-ck"><div class="ck ck-editor">' +
+				'<div class="ck-editor__editable"></div></div></div></div>'
 		);
 
-		const editable = form.querySelector('.ck-editor__editable');
+		const editor = form.querySelector('.ck-editor');
 
-		(editable as any).ckeditorInstance = {
+		(editor as any).ckeditorInstance = {
 			getData: () => '<p>Fresh</p>',
 			setData: jest.fn(),
 		};

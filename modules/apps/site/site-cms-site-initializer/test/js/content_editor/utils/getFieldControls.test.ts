@@ -20,7 +20,7 @@ describe('getFieldControls', () => {
 		const controls = getFieldControls(form, 'title');
 
 		expect(controls).toHaveLength(1);
-		expect(controls[0].name).toBe('ObjectField_title');
+		expect(controls[0].getAttribute('name')).toBe('ObjectField_title');
 	});
 
 	it('returns every locale-suffixed control for a localized field', () => {
@@ -30,7 +30,9 @@ describe('getFieldControls', () => {
 		);
 
 		expect(
-			getFieldControls(form, 'title').map((control) => control.name)
+			getFieldControls(form, 'title').map((control) =>
+				control.getAttribute('name')
+			)
 		).toEqual(['ObjectField_title_en_US', 'ObjectField_title_pt_BR']);
 	});
 
@@ -43,7 +45,21 @@ describe('getFieldControls', () => {
 		const controls = getFieldControls(form, 'title');
 
 		expect(controls).toHaveLength(1);
-		expect(controls[0].name).toBe('ObjectField_title');
+		expect(controls[0].getAttribute('name')).toBe('ObjectField_title');
+	});
+
+	it('falls back to the rich text container when there is no named control', () => {
+		const form = createForm(
+			'<div class="rich-text-input" data-field-name="ObjectField_content">' +
+				'<div class="lfr-ck"></div></div>'
+		);
+
+		const controls = getFieldControls(form, 'content');
+
+		expect(controls).toHaveLength(1);
+		expect(controls[0].getAttribute('data-field-name')).toBe(
+			'ObjectField_content'
+		);
 	});
 
 	it('returns an empty array when the field is absent', () => {
