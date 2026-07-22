@@ -177,6 +177,21 @@ public class GroupFragmentEntryLinkDisplayContext {
 		return _searchContainer;
 	}
 
+	private Predicate _getFragmentEntryScopePredicate(Group group) {
+		return Predicate.withParentheses(
+			FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.eq(
+				group.getExternalReferenceCode()
+			).or(
+				Predicate.withParentheses(
+					FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.
+						isNull(
+						).and(
+							FragmentEntryLinkTable.INSTANCE.groupId.eq(
+								group.getGroupId())
+						))
+			));
+	}
+
 	private Map<Group, Integer> _getGroupFragmentEntryUsages()
 		throws PortalException {
 
@@ -204,18 +219,7 @@ public class GroupFragmentEntryLinkDisplayContext {
 			FragmentEntryLinkTable.INSTANCE.fragmentEntryERC.eq(
 				fragmentEntry.getExternalReferenceCode()
 			).and(
-				Predicate.withParentheses(
-					FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.eq(
-						group.getExternalReferenceCode()
-					).or(
-						Predicate.withParentheses(
-							FragmentEntryLinkTable.INSTANCE.
-								fragmentEntryScopeERC.isNull(
-								).and(
-									FragmentEntryLinkTable.INSTANCE.groupId.eq(
-										fragmentEntry.getGroupId())
-								))
-					))
+				_getFragmentEntryScopePredicate(group)
 			).and(
 				FragmentEntryLinkTable.INSTANCE.deleted.eq(false)
 			)
