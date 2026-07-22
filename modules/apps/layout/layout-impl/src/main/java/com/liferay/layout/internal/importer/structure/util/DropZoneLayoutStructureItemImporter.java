@@ -20,7 +20,9 @@ import com.liferay.layout.util.structure.DropZoneLayoutStructureItem;
 import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.layout.util.structure.LayoutStructureItem;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
@@ -37,12 +39,14 @@ public class DropZoneLayoutStructureItemImporter
 	implements LayoutStructureItemImporter {
 
 	public DropZoneLayoutStructureItemImporter(
+		CompanyLocalService companyLocalService,
 		FragmentCollectionContributorRegistry
 			fragmentCollectionContributorRegistry,
 		FragmentCollectionLocalService fragmentCollectionLocalService,
 		FragmentEntryLocalService fragmentEntryLocalService,
 		FragmentRendererRegistry fragmentRendererRegistry) {
 
+		_companyLocalService = companyLocalService;
 		_fragmentCollectionContributorRegistry =
 			fragmentCollectionContributorRegistry;
 		_fragmentCollectionLocalService = fragmentCollectionLocalService;
@@ -120,11 +124,14 @@ public class DropZoneLayoutStructureItemImporter
 
 		Layout layout = layoutStructureItemImporterContext.getLayout();
 
+		long[] groupIds = _getGroupIds(
+			layout.getCompanyId(), layout.getGroupId());
+
 		for (Map<String, String> allowedFragmentMap : allowedFragments) {
 			fragmentEntryKeys.add(allowedFragmentMap.get(_KEY_KEY));
 
 			String fragmentCollectionKey = _getFragmentCollectionKey(
-				allowedFragmentMap.get(_KEY_KEY), layout.getGroupId());
+				allowedFragmentMap.get(_KEY_KEY), groupIds);
 
 			if (Validator.isNotNull(fragmentCollectionKey)) {
 				fragmentCollectionKeys.add(fragmentCollectionKey);
@@ -146,11 +153,28 @@ public class DropZoneLayoutStructureItemImporter
 		return PageElement.Type.DROP_ZONE;
 	}
 
-	private String _getFragmentCollectionKey(String fragmentKey, long groupId)
+	private FragmentEntry _fetchFragmentEntry(
+		String fragmentKey, long[] groupIds) {
+
+		for (long groupId : groupIds) {
+			FragmentEntry fragmentEntry =
+				_fragmentEntryLocalService.fetchFragmentEntry(
+					groupId, fragmentKey);
+
+			if (fragmentEntry != null) {
+				return fragmentEntry;
+			}
+		}
+
+		return null;
+	}
+
+	private String _getFragmentCollectionKey(
+			String fragmentKey, long[] groupIds)
 		throws Exception {
 
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.fetchFragmentEntry(groupId, fragmentKey);
+		FragmentEntry fragmentEntry = _fetchFragmentEntry(
+			fragmentKey, groupIds);
 
 		if (fragmentEntry != null) {
 			FragmentCollection fragmentCollection =
@@ -187,12 +211,19 @@ public class DropZoneLayoutStructureItemImporter
 		return null;
 	}
 
+	private long[] _getGroupIds(long companyId, long groupId) throws Exception {
+		Company company = _companyLocalService.getCompany(companyId);
+
+		return new long[] {groupId, company.getGroupId()};
+	}
+
 	private static final String _KEY_ALLOWED_FRAGMENTS = "allowedFragments";
 
 	private static final String _KEY_KEY = "key";
 
 	private static final String _KEY_UNALLOWED_FRAGMENTS = "unallowedFragments";
 
+	private final CompanyLocalService _companyLocalService;
 	private final FragmentCollectionContributorRegistry
 		_fragmentCollectionContributorRegistry;
 	private final FragmentCollectionLocalService
