@@ -6,6 +6,7 @@
 package com.liferay.depot.internal.feature.flag;
 
 import com.liferay.depot.internal.roles.DepotDesignLibraryRolesHelper;
+import com.liferay.depot.role.contributor.DepotRolePermissionsContributor;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,10 +19,14 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Gabriel Prates
@@ -49,6 +54,9 @@ public class DesignLibraryFeatureFlagListener implements FeatureFlagListener {
 					_userLocalService);
 
 			depotDesignLibraryRolesHelper.setupDesignLibraryRoles(companyId);
+
+			depotDesignLibraryRolesHelper.setupResourcePermissions(
+				companyId, _depotRolePermissionsContributors);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
@@ -57,6 +65,14 @@ public class DesignLibraryFeatureFlagListener implements FeatureFlagListener {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DesignLibraryFeatureFlagListener.class);
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<DepotRolePermissionsContributor>
+		_depotRolePermissionsContributors;
 
 	@Reference
 	private Language _language;

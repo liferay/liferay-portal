@@ -8,6 +8,7 @@ package com.liferay.depot.internal.instance.lifecycle;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.internal.roles.DepotDesignLibraryRolesHelper;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.role.contributor.DepotRolePermissionsContributor;
 import com.liferay.depot.util.DepotRoleUtil;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
@@ -31,6 +32,9 @@ import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 /**
  * @author Cristina González
@@ -111,6 +115,9 @@ public class DepotRolesPortalInstanceLifecycleListener
 
 			depotDesignLibraryRolesHelper.setupDesignLibraryRoles(
 				company.getCompanyId());
+
+			depotDesignLibraryRolesHelper.setupResourcePermissions(
+				company.getCompanyId(), _depotRolePermissionsContributors);
 		}
 	}
 
@@ -144,6 +151,14 @@ public class DepotRolesPortalInstanceLifecycleListener
 
 	private static final String _ASSET_TAGS_RESOURCE_NAME =
 		"com.liferay.asset.tags";
+
+	@Reference(
+		cardinality = ReferenceCardinality.MULTIPLE,
+		policy = ReferencePolicy.DYNAMIC,
+		policyOption = ReferencePolicyOption.GREEDY
+	)
+	private volatile List<DepotRolePermissionsContributor>
+		_depotRolePermissionsContributors;
 
 	@Reference
 	private Language _language;

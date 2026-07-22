@@ -9,6 +9,7 @@ Export-Package:\
 	com.liferay.depot.group.provider,\
 	com.liferay.depot.item.selector,\
 	com.liferay.depot.model,\
+	com.liferay.depot.role.contributor,\
 	com.liferay.depot.search,\
 	com.liferay.depot.service,\
 	com.liferay.depot.service.persistence,\
