@@ -696,35 +696,56 @@ public class ObjectEntryModelDocumentContributor
 									ObjectFieldConstants.
 										BUSINESS_TYPE_ATTACHMENT))) {
 
+						String dbTableName = objectField.getDBTableName();
+
+						if (objectField.isLocalized()) {
+							dbTableName =
+								objectDefinition.getLocalizationDBTableName();
+						}
+
 						ObjectFieldTable objectFieldTable =
-							new ObjectFieldTable(objectField);
+							new ObjectFieldTable(dbTableName, objectField);
 
-						for (Object[] values :
-								_dlFileEntryLocalService.
-									<List<Object[]>>dslQuery(
-										objectFieldTable.buildDSLQuery(),
-										false)) {
+						try {
+							for (Object[] values :
+									_dlFileEntryLocalService.
+										<List<Object[]>>dslQuery(
+											objectFieldTable.buildDSLQuery(),
+											false)) {
 
-							localFileNames.put(
-								(Long)values[0], (String)values[1]);
+								localFileNames.put(
+									(Long)values[0], (String)values[1]);
+							}
+						}
+						catch (Exception exception) {
+							if (_log.isWarnEnabled()) {
+								_log.warn(
+									"Unable to get file names for object " +
+										"field " + objectField.getName(),
+									exception);
+							}
 						}
 					}
 
 					return localFileNames;
 				});
 
-		if (fileNames == null) {
-			DLFileEntry dlFileEntry =
-				DLFileEntryLocalServiceUtil.fetchDLFileEntry(dlFileEntryId);
+		if (fileNames != null) {
+			String fileName = fileNames.get(dlFileEntryId);
 
-			if (dlFileEntry != null) {
-				return dlFileEntry.getFileName();
+			if (fileName != null) {
+				return fileName;
 			}
-
-			return StringPool.BLANK;
 		}
 
-		return fileNames.getOrDefault(dlFileEntryId, StringPool.BLANK);
+		DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.fetchDLFileEntry(
+			dlFileEntryId);
+
+		if (dlFileEntry != null) {
+			return dlFileEntry.getFileName();
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private long[] _getOrganizationIds(Long accountEntryId) {
@@ -853,8 +874,8 @@ public class ObjectEntryModelDocumentContributor
 			);
 		}
 
-		private ObjectFieldTable(ObjectField objectField) {
-			super(objectField.getDBTableName(), () -> null);
+		private ObjectFieldTable(String dbTableName, ObjectField objectField) {
+			super(dbTableName, () -> null);
 
 			_column = createColumn(
 				objectField.getDBColumnName(), Long.class, Types.BIGINT,
