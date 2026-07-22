@@ -18,8 +18,6 @@ public class AudiencesCriteriaKeys {
 
 	public static final String DEVICE_TYPE = "device_type";
 
-	public static final String GEOLOCATION = "geolocation";
-
 	public static final String HOSTNAME = "hostname";
 
 	public static final String LANGUAGE = "language";
