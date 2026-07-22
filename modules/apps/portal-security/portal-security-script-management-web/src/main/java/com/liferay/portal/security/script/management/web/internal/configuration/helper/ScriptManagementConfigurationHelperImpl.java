@@ -64,11 +64,12 @@ public class ScriptManagementConfigurationHelperImpl
 			ConfigurationAdminPortletKeys.SYSTEM_SETTINGS);
 
 		url = HttpComponentsUtil.addParameter(
-			url, namespace + "mvcRenderCommandName",
-			"/configuration_admin/edit_configuration");
-		url = HttpComponentsUtil.addParameter(
 			url, namespace + "factoryPid",
 			ScriptManagementConfiguration.class.getName());
+
+		url = HttpComponentsUtil.addParameter(
+			url, namespace + "mvcRenderCommandName",
+			"/configuration_admin/edit_configuration");
 
 		return HttpComponentsUtil.addParameter(
 			url, namespace + "pid",
