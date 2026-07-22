@@ -11,6 +11,7 @@ import {SectionHeader} from '../../common/SectionHeader';
 import {PerformanceContext} from '../PerformanceContext';
 import PerformanceService from '../PerformanceService';
 import {MetricType, OverviewMetrics} from '../types';
+import {HistogramCard} from './HistogramCard';
 import InteractiveCard, {MetricColor} from './InteractiveCard';
 
 type MetricConfig = {
@@ -53,6 +54,8 @@ export function Overview() {
 	const [loading, setLoading] = useState(true);
 	const [metrics, setMetrics] = useState<OverviewMetrics>();
 	const [selected, setSelected] = useState<MetricType | undefined>(undefined);
+
+	const selectedMetric = METRICS.find(({key}) => key === selected);
 
 	useEffect(() => {
 		async function getMetrics() {
@@ -121,6 +124,17 @@ export function Overview() {
 					);
 				})}
 			</ClayLayout.Row>
+
+			{selectedMetric ? (
+				<ClayLayout.Row className="mb-4">
+					<ClayLayout.Col className="mb-3" size={12}>
+						<HistogramCard
+							metricType={selectedMetric.key}
+							title={selectedMetric.title}
+						/>
+					</ClayLayout.Col>
+				</ClayLayout.Row>
+			) : null}
 		</>
 	);
 }
