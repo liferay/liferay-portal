@@ -94,7 +94,7 @@ export const UsageOverviewExternal = () => {
 					<p className="w-50 d-flex mb-0">
 						{isLDP
 							? Liferay.Language.get(
-									'as-a-saas-customer-description-liferay-one'
+									'you-can-view-your-project-usage-metrics-directly-in-liferay-one'
 								)
 							: Liferay.Language.get(
 									'as-a-saas-customer-description-customer-portal'
