@@ -1,5 +1,13 @@
 components:
     schemas:
+        AddObjectToProjectBulkSelectionAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        projectScopeKeys:
+                            items:
+                                type: string
+                            type: array
         AssetUsage:
             properties:
                 name:
@@ -27,6 +35,7 @@ components:
         BulkAction:
             discriminator:
                 mapping:
+                    AddObjectToProjectBulkSelectionAction: "#/components/schemas/AddObjectToProjectBulkSelectionAction"
                     AssignStructureDefaultWorkflowBulkSelectionAction: "#/components/schemas/AssignStructureDefaultWorkflowBulkSelectionAction"
                     AssignToObjectBulkSelectionAction: "#/components/schemas/AssignToObjectBulkSelectionAction"
                     CopyObjectBulkSelectionAction: "#/components/schemas/CopyObjectBulkSelectionAction"
@@ -55,6 +64,7 @@ components:
                     $ref: "#/components/schemas/SelectionScope"
                 type:
                     enum:
+                        -   AddObjectToProjectBulkSelectionAction
                         -   AssignStructureDefaultWorkflowBulkSelectionAction
                         -   AssignToObjectBulkSelectionAction
                         -   CopyObjectBulkSelectionAction
