@@ -41,7 +41,7 @@ public class CommercePricingClassUpgradeProcessTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testUpgradeCommercePricingClassStatus() throws Exception {
+	public void testUpgrade() throws Exception {
 		CommercePricingClass commercePricingClass =
 			_commercePricingClassLocalService.addCommercePricingClass(
 				TestPropsValues.getUserId(),
