@@ -3,5 +3,6 @@
 <Configuration strict="true">
 	<Loggers>
 		<Logger level="WARN" name="com.liferay.portal.tika.internal.extract.TextExtractorImpl" />
+		<Logger level="ERROR" name="org.apache.tika.detect.zip.DefaultZipContainerDetector" />
 	</Loggers>
 </Configuration>
