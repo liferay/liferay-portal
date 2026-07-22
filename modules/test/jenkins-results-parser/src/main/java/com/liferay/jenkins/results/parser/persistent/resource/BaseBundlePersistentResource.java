@@ -456,6 +456,48 @@ public abstract class BaseBundlePersistentResource
 		return producerJenkinsMaster.getRemoteURL() + "job/" + _JOB_NAME;
 	}
 
+	private Map<String, String> _getTopLevelJenkinsBuildParameters() {
+		Map<String, String> jenkinsBuildParameters = new HashMap<>();
+
+		String currentTopLevelBuildURL = getCurrentTopLevelBuildURL();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(currentTopLevelBuildURL)) {
+			return jenkinsBuildParameters;
+		}
+
+		Map<String, String> buildParameters;
+
+		try {
+			buildParameters = JenkinsResultsParserUtil.getBuildParameters(
+				currentTopLevelBuildURL);
+		}
+		catch (RuntimeException runtimeException) {
+			print(
+				"WARNING: Unable to get build parameters from " +
+					currentTopLevelBuildURL);
+
+			return jenkinsBuildParameters;
+		}
+
+		for (Map.Entry<String, String> entry : buildParameters.entrySet()) {
+			String name = entry.getKey();
+
+			if (!name.startsWith("JENKINS_GITHUB_")) {
+				continue;
+			}
+
+			String value = entry.getValue();
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+				continue;
+			}
+
+			jenkinsBuildParameters.put(name, value);
+		}
+
+		return jenkinsBuildParameters;
+	}
+
 	private void _invokeBuild() {
 		setControllerBuildURL(getCurrentTopLevelBuildURL());
 
@@ -491,6 +533,8 @@ public abstract class BaseBundlePersistentResource
 
 			buildParameters.put(startPropertyName, startPropertyValue);
 		}
+
+		buildParameters.putAll(_getTopLevelJenkinsBuildParameters());
 
 		buildParameters.put("AXIS_VARIABLE", _getAxisVariable());
 		buildParameters.put("BUILD_PRIORITY", _BUILD_PRIORITY);
