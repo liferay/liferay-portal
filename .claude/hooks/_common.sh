@@ -119,10 +119,10 @@ function _get_property_from_files {
 	echo "${default}"
 }
 
-function _source_db_brand {
+function _source_database_brand {
 	local brand
 
-	brand="$(echo "${WORKTREE_DB_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
+	brand="$(echo "${WORKTREE_DATABASE_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
 
 	case "${brand}" in
 		*psql* | *postgres*)
@@ -132,7 +132,7 @@ function _source_db_brand {
 			brand=mysql
 			;;
 		*)
-			_die "WORKTREE_DB_BRAND must contain one of: \"mysql\", \"psql\", \"postgres\" (got \"${brand}\")."
+			_die "WORKTREE_DATABASE_BRAND must contain one of: \"mysql\", \"psql\", \"postgres\" (got \"${brand}\")."
 			;;
 	esac
 
