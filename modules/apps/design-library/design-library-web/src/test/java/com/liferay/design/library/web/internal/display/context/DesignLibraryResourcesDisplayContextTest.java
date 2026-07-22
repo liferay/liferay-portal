@@ -59,10 +59,6 @@ public class DesignLibraryResourcesDisplayContextTest {
 	public void setUp() {
 		_setUpDesignLibraryResourcesDisplayContext();
 		_setUpHttpServletRequest();
-
-		_designLibraryResourcesDisplayContext =
-			new DesignLibraryResourcesDisplayContext(
-				_mockHttpServletRequest, _liferayPortletResponse);
 	}
 
 	@After
@@ -321,6 +317,10 @@ public class DesignLibraryResourcesDisplayContextTest {
 				}
 
 			});
+
+		_designLibraryResourcesDisplayContext =
+			new DesignLibraryResourcesDisplayContext(
+				_mockHttpServletRequest, _liferayPortletResponse);
 	}
 
 	private final MockedStatic<DepotEntryLocalServiceUtil>
