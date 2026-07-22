@@ -43,6 +43,20 @@ describe('PageSpeedCharts', () => {
 				screen.getByText('no-data-available-yet')
 			).toBeInTheDocument()
 		);
+
+		expect(
+			screen.getByText(
+				'no-data-is-available-yet.-results-will-appear-here-once-the-seo-health-scan-completes'
+			)
+		).toBeInTheDocument();
+	});
+
+	it('wraps the charts in a sheet container', () => {
+		const {container} = render(
+			<PageSpeedCharts initialResult={COMPLETE_RESULT} />
+		);
+
+		expect(container.querySelector('.sheet')).toBeInTheDocument();
 	});
 
 	it('renders a gauge for performance, accessibility, best practices, and SEO', () => {
