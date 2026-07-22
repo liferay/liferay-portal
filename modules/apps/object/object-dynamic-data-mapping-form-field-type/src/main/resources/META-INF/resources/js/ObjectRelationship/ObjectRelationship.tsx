@@ -203,7 +203,8 @@ export default function ObjectRelationship({
 			setState((prevState) => ({...prevState, loading: true}));
 
 			try {
-				const {items} = await fetchOptions<Resource>(newURL);
+				const items =
+					(await fetchOptions<Resource>(newURL))?.items ?? [];
 
 				const state: State = {
 					list:
@@ -218,13 +219,21 @@ export default function ObjectRelationship({
 
 				if (value) {
 					let selected: Item | void = items.find(
-						({id}) => id === Number(value)
+						({id}) => Number(id) === Number(value)
 					);
 
 					if (!selected && !parameterObjectFieldName) {
-						selected = await fetchOptions<Item>(
-							`${apiURL.split('?')[0]}/${value}`
+						const [baseAPIURL, apiURLQueryString] =
+							apiURL.split('?');
+
+						const item = await fetchOptions<Item>(
+							`${baseAPIURL}/${value}${apiURLQueryString ? `?${apiURLQueryString}` : ''}`
 						);
+
+						selected =
+							Number(item?.id) === Number(value)
+								? item
+								: undefined;
 					}
 
 					if (selected) {
