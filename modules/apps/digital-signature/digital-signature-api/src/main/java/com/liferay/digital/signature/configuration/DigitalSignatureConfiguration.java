@@ -33,8 +33,10 @@ public interface DigitalSignatureConfiguration {
 
 	public String environment();
 
+	@Meta.AD(type = Meta.Type.Password)
 	public String integrationKey();
 
+	@Meta.AD(type = Meta.Type.Password)
 	public String rsaPrivateKey();
 
 	public String siteSettingsStrategy();
