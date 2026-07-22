@@ -32,7 +32,8 @@ public interface GoogleCloudTranslatorConfiguration {
 
 	@Meta.AD(
 		deflt = "", description = "service-account-private-key-description",
-		name = "service-account-private-key", required = false
+		name = "service-account-private-key", required = false,
+		type = Meta.Type.Password
 	)
 	public String serviceAccountPrivateKey();
 

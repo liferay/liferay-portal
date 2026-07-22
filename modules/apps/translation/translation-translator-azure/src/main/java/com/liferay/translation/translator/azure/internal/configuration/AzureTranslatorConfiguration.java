@@ -32,7 +32,10 @@ public interface AzureTranslatorConfiguration {
 	@Meta.AD(deflt = "", name = "resource-location-name", required = false)
 	public String resourceLocation();
 
-	@Meta.AD(deflt = "", name = "subscription-key-name", required = false)
+	@Meta.AD(
+		deflt = "", name = "subscription-key-name", required = false,
+		type = Meta.Type.Password
+	)
 	public String subscriptionKey();
 
 }

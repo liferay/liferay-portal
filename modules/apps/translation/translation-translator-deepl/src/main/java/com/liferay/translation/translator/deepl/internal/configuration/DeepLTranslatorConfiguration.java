@@ -23,7 +23,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface DeepLTranslatorConfiguration {
 
-	@Meta.AD(name = "token", required = false)
+	@Meta.AD(name = "token", required = false, type = Meta.Type.Password)
 	public String authKey();
 
 	@Meta.AD(

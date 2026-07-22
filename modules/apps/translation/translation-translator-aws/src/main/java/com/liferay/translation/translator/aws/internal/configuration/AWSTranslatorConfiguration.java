@@ -35,7 +35,10 @@ public interface AWSTranslatorConfiguration {
 	@Meta.AD(deflt = "us-west-1", name = "region", required = false)
 	public String region();
 
-	@Meta.AD(deflt = "", name = "secret-key", required = false)
+	@Meta.AD(
+		deflt = "", name = "secret-key", required = false,
+		type = Meta.Type.Password
+	)
 	public String secretKey();
 
 }
