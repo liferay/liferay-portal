@@ -267,20 +267,8 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		FragmentCollection fragmentCollection =
-			_fragmentCollectionLocalService.addFragmentCollection(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				StringUtil.randomString(), StringPool.BLANK, serviceContext);
-
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.addFragmentEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				fragmentCollection.getFragmentCollectionId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				StringPool.BLANK, html, StringPool.BLANK, false,
-				StringPool.BLANK, null, 0, false, false, fragmentEntryType,
-				JSONUtil.toString(JSONUtil.put("fieldTypes", fieldTypes)),
-				WorkflowConstants.STATUS_APPROVED, serviceContext);
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			fieldTypes, fragmentEntryType, html, serviceContext);
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
@@ -328,7 +316,7 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 
 		return _fragmentCompositionLocalService.addFragmentComposition(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			fragmentCollection.getFragmentCollectionId(),
+			fragmentEntry.getFragmentCollectionId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), layoutStructureItemJSON, 0,
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
@@ -341,6 +329,27 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 		return _addFragmentComposition(
 			editableValues, Collections.emptySet(),
 			FragmentConstants.TYPE_COMPONENT, html, numberOfFragmentEntryLinks);
+	}
+
+	private FragmentEntry _addFragmentEntry(
+			Set<String> fieldTypes, int fragmentEntryType, String html,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		FragmentCollection fragmentCollection =
+			_fragmentCollectionLocalService.addFragmentCollection(
+				null, TestPropsValues.getUserId(),
+				serviceContext.getScopeGroupId(), StringUtil.randomString(),
+				StringPool.BLANK, serviceContext);
+
+		return _fragmentEntryLocalService.addFragmentEntry(
+			null, TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
+			fragmentCollection.getFragmentCollectionId(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, html, StringPool.BLANK, false, StringPool.BLANK,
+			null, 0, false, false, fragmentEntryType,
+			JSONUtil.toString(JSONUtil.put("fieldTypes", fieldTypes)),
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
 	}
 
 	private void _assertFragmentEntryLinksContent(
