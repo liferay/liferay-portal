@@ -110,7 +110,9 @@ function DuplicateRoom({
 
 			<ClayModal.Body>
 				<ClayAlert displayType="info">
-					{Liferay.Language.get('select-the-documents-to-copy')}
+					{Liferay.Language.get(
+						'if-you-also-want-to-duplicate-documents-select-which-ones-to-include'
+					)}
 				</ClayAlert>
 
 				{documentsFolderId !== null && (
