@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.configuration.CTSettingsConfiguration;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
-import com.liferay.change.tracking.service.CTCollectionServiceUtil;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
@@ -31,7 +30,6 @@ import com.liferay.fragment.util.comparator.FragmentEntryCreateDateComparator;
 import com.liferay.fragment.util.comparator.FragmentEntryNameComparator;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -59,9 +57,6 @@ import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.test.log.LogCapture;
-import com.liferay.portal.test.log.LogEntry;
-import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -72,7 +67,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -250,8 +244,8 @@ public class FragmentEntryLocalServiceTest {
 		_testUpdateFragmentEntryNameCssHtmlJsConfigurationAndStatus();
 		_testUpdateFragmentEntryNameCssHtmlJsConfigurationPreviewFileEntryIdAndStatus();
 		_testUpdateFragmentEntryPreviewFileEntryId();
-		_testUpdateFragmentEntryVersions(0);
-		_testUpdateFragmentEntryVersions(2);
+		_testUpdateFragmentEntryVersions();
+		_testUpdateFragmentEntryVersionsWithMaximumVersionsPerEntryDisabled();
 		_testUpdateFragmentEntryWithCacheable();
 		_testUpdateFragmentEntryWithHtmlWithAmpersand();
 		_testUpdateFragmentEntryWithPreviewFileEntryId();
@@ -325,58 +319,24 @@ public class FragmentEntryLocalServiceTest {
 		}
 	}
 
-	private List<Integer> _createFragmentEntryVersions(
-			List<Integer> allFragmentEntryVersions, int count,
-			FragmentEntry fragmentEntry, int maximumVersionsPerEntry)
-		throws Exception {
+	private void _assertUpdateFragmentEntryVersions(
+		FragmentEntry fragmentEntry, String expectedName, int expectedSize) {
 
-		for (int i = 0; i < count; i++) {
-			_fragmentEntryLocalService.updateFragmentEntry(
-				TestPropsValues.getUserId(), fragmentEntry.getFragmentEntryId(),
-				fragmentEntry.getFragmentCollectionId(),
-				fragmentEntry.getName(), StringPool.BLANK,
-				RandomTestUtil.randomString(), StringPool.BLANK, false,
-				StringPool.BLANK, StringPool.BLANK, 0, false, StringPool.BLANK,
-				WorkflowConstants.STATUS_APPROVED);
+		List<FragmentEntryVersion> fragmentEntryVersions =
+			_fragmentEntryLocalService.getVersions(fragmentEntry);
 
-			List<Integer> fragmentEntryVersions = _getFragmentEntryVersions(
-				fragmentEntry);
+		Assert.assertEquals(
+			fragmentEntryVersions.toString(), expectedSize,
+			fragmentEntryVersions.size());
 
-			allFragmentEntryVersions.add(fragmentEntryVersions.get(0));
+		if (expectedName != null) {
+			for (FragmentEntryVersion fragmentEntryVersion :
+					fragmentEntryVersions) {
 
-			Assert.assertEquals(
-				_getExpectedFragmentEntryVersions(
-					allFragmentEntryVersions, maximumVersionsPerEntry),
-				fragmentEntryVersions);
+				Assert.assertEquals(
+					expectedName, fragmentEntryVersion.getName());
+			}
 		}
-
-		return _getFragmentEntryVersions(fragmentEntry);
-	}
-
-	private List<Integer> _getExpectedFragmentEntryVersions(
-		List<Integer> fragmentEntryVersions, int maximumVersionsPerEntry) {
-
-		List<Integer> reversedFragmentEntryVersions = new ArrayList<>(
-			fragmentEntryVersions);
-
-		Collections.reverse(reversedFragmentEntryVersions);
-
-		if (maximumVersionsPerEntry <= 0) {
-			return reversedFragmentEntryVersions;
-		}
-
-		return reversedFragmentEntryVersions.subList(
-			0,
-			Math.min(
-				maximumVersionsPerEntry, reversedFragmentEntryVersions.size()));
-	}
-
-	private List<Integer> _getFragmentEntryVersions(
-		FragmentEntry fragmentEntry) {
-
-		return TransformUtil.transform(
-			_fragmentEntryLocalService.getVersions(fragmentEntry),
-			FragmentEntryVersion::getVersion);
 	}
 
 	private String _read(String fileName) throws Exception {
@@ -1301,73 +1261,114 @@ public class FragmentEntryLocalServiceTest {
 			previewFileEntryId + 1, fragmentEntry.getPreviewFileEntryId());
 	}
 
-	private void _testUpdateFragmentEntryVersions(int maximumVersionsPerEntry)
-		throws Exception {
-
-		int count = Math.max(maximumVersionsPerEntry + 1, 3);
-
+	private void _testUpdateFragmentEntryVersions() throws Exception {
 		try (CompanyConfigurationTemporarySwapper
-				ctSettingsConfigurationTemporarySwapper =
-					new CompanyConfigurationTemporarySwapper(
-						TestPropsValues.getCompanyId(),
-						CTSettingsConfiguration.class.getName(),
-						HashMapDictionaryBuilder.<String, Object>put(
-							"enabled", true
-						).build());
-			CompanyConfigurationTemporarySwapper
-				companyConfigurationTemporarySwapper =
+				fragmentEntryVersionConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
 						TestPropsValues.getCompanyId(),
 						FragmentEntryVersionConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
-							"maximumVersionsPerEntry", maximumVersionsPerEntry
+							"maximumVersionsPerEntry", 2
 						).build())) {
 
 			FragmentEntry fragmentEntry =
 				FragmentEntryTestUtil.addFragmentEntry(
 					_fragmentCollection.getFragmentCollectionId());
 
-			List<Integer> allFragmentEntryVersions = new ArrayList<>(
-				_getFragmentEntryVersions(fragmentEntry));
+			String name = RandomTestUtil.randomString();
 
-			List<Integer> fragmentEntryVersions = _createFragmentEntryVersions(
-				allFragmentEntryVersions, count, fragmentEntry,
-				maximumVersionsPerEntry);
+			_updateFragmentEntry(fragmentEntry, name);
+			_updateFragmentEntry(fragmentEntry, name);
 
-			CTCollection ctCollection =
-				_ctCollectionLocalService.addCTCollection(
-					null, TestPropsValues.getCompanyId(),
-					TestPropsValues.getUserId(), 0,
-					RandomTestUtil.randomString(),
-					RandomTestUtil.randomString());
+			_assertUpdateFragmentEntryVersions(fragmentEntry, name, 2);
 
-			try (SafeCloseable safeCloseable =
-					CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-						ctCollection.getCtCollectionId())) {
+			try (CompanyConfigurationTemporarySwapper
+					ctSettingsConfigurationTemporarySwapper =
+						new CompanyConfigurationTemporarySwapper(
+							TestPropsValues.getCompanyId(),
+							CTSettingsConfiguration.class.getName(),
+							HashMapDictionaryBuilder.<String, Object>put(
+								"enabled", true
+							).build())) {
 
-				fragmentEntryVersions = _createFragmentEntryVersions(
-					allFragmentEntryVersions, count, fragmentEntry,
-					maximumVersionsPerEntry);
+				CTCollection ctCollection =
+					_ctCollectionLocalService.addCTCollection(
+						null, TestPropsValues.getCompanyId(),
+						TestPropsValues.getUserId(), 0,
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString());
+
+				try (SafeCloseable safeCloseable =
+						CTCollectionThreadLocal.
+							setCTCollectionIdWithSafeCloseable(
+								ctCollection.getCtCollectionId())) {
+
+					String ctCollectionFragmentEntryName =
+						RandomTestUtil.randomString();
+
+					_updateFragmentEntry(
+						fragmentEntry, ctCollectionFragmentEntryName);
+					_updateFragmentEntry(
+						fragmentEntry, ctCollectionFragmentEntryName);
+
+					_assertUpdateFragmentEntryVersions(
+						fragmentEntry, ctCollectionFragmentEntryName, 2);
+				}
 			}
 
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"com.liferay.portal.background.task.internal.messaging." +
-						"BackgroundTaskMessageListener",
-					LoggerTestUtil.ERROR)) {
+			_assertUpdateFragmentEntryVersions(fragmentEntry, name, 2);
+		}
+	}
 
-				CTCollectionServiceUtil.publishCTCollection(
-					TestPropsValues.getUserId(),
-					ctCollection.getCtCollectionId());
+	private void _testUpdateFragmentEntryVersionsWithMaximumVersionsPerEntryDisabled()
+		throws Exception {
 
-				List<LogEntry> logEntries = logCapture.getLogEntries();
+		try (CompanyConfigurationTemporarySwapper
+				fragmentEntryVersionConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						FragmentEntryVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"maximumVersionsPerEntry", 0
+						).build())) {
 
-				Assert.assertEquals(
-					logEntries.toString(), 0, logEntries.size());
+			FragmentEntry fragmentEntry =
+				FragmentEntryTestUtil.addFragmentEntry(
+					_fragmentCollection.getFragmentCollectionId());
+
+			_updateFragmentEntry(fragmentEntry, RandomTestUtil.randomString());
+
+			_assertUpdateFragmentEntryVersions(fragmentEntry, null, 2);
+
+			try (CompanyConfigurationTemporarySwapper
+					ctSettingsConfigurationTemporarySwapper =
+						new CompanyConfigurationTemporarySwapper(
+							TestPropsValues.getCompanyId(),
+							CTSettingsConfiguration.class.getName(),
+							HashMapDictionaryBuilder.<String, Object>put(
+								"enabled", true
+							).build())) {
+
+				CTCollection ctCollection =
+					_ctCollectionLocalService.addCTCollection(
+						null, TestPropsValues.getCompanyId(),
+						TestPropsValues.getUserId(), 0,
+						RandomTestUtil.randomString(),
+						RandomTestUtil.randomString());
+
+				try (SafeCloseable safeCloseable =
+						CTCollectionThreadLocal.
+							setCTCollectionIdWithSafeCloseable(
+								ctCollection.getCtCollectionId())) {
+
+					_updateFragmentEntry(
+						fragmentEntry, RandomTestUtil.randomString());
+
+					_assertUpdateFragmentEntryVersions(fragmentEntry, null, 3);
+				}
 			}
 
-			Assert.assertEquals(
-				fragmentEntryVersions,
-				_getFragmentEntryVersions(fragmentEntry));
+			_assertUpdateFragmentEntryVersions(fragmentEntry, null, 2);
 		}
 	}
 
@@ -1535,6 +1536,17 @@ public class FragmentEntryLocalServiceTest {
 				Assert.assertEquals(html, updatedFragmentEntry.getHtml());
 			}
 		}
+	}
+
+	private void _updateFragmentEntry(FragmentEntry fragmentEntry, String name)
+		throws Exception {
+
+		_fragmentEntryLocalService.updateFragmentEntry(
+			TestPropsValues.getUserId(), fragmentEntry.getFragmentEntryId(),
+			fragmentEntry.getFragmentCollectionId(), name, StringPool.BLANK,
+			RandomTestUtil.randomString(), StringPool.BLANK, false,
+			StringPool.BLANK, StringPool.BLANK, 0, false, StringPool.BLANK,
+			WorkflowConstants.STATUS_APPROVED);
 	}
 
 	@Inject
