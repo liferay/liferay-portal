@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import React from 'react';
 
 import TaskInfoSummary from '../../js/components/task/TaskInfoSummary';
@@ -42,5 +42,30 @@ describe('TaskInfoSummary', () => {
 		);
 
 		expect(container).toBeInTheDocument();
+	});
+
+	it('disables the state selector and makes the assignee read only when the user lacks update permission', () => {
+		render(
+			<TaskInfoSummary
+				assignTo={mockAssignTo}
+				dueDate="2023-12-31"
+				hasUpdatePermission={false}
+				initialState="notStarted"
+				states={mockStates}
+				tags={['tag1', 'tag2']}
+				taskId="123"
+				title="Task"
+			/>
+		);
+
+		expect(screen.getByRole('combobox', {name: 'assignee'})).toBeDisabled();
+
+		const stateSelector = screen
+			.getAllByRole('combobox')
+			.find((element) =>
+				element.classList.contains('lfr-cmp__state-selector')
+			);
+
+		expect(stateSelector).toHaveClass('disabled');
 	});
 });
