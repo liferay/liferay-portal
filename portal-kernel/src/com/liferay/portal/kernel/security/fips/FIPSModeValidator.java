@@ -10,21 +10,28 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptor;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.PropertiesUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.IOException;
+
 import java.lang.reflect.Method;
+
+import java.net.URL;
 
 import java.security.Provider;
 import java.security.Security;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,6 +78,30 @@ public class FIPSModeValidator {
 			throw new SecurityException(
 				"AES key must be 128, 192, or 256 bits");
 		}
+	}
+
+	private static List<String> _getPlaintextSecretProperties(
+		Properties properties) {
+
+		List<String> plaintextSecretProperties = new ArrayList<>();
+
+		for (String key : PropsValues.ADMIN_OBFUSCATED_PROPERTIES) {
+			String value = properties.getProperty(key);
+
+			if (Validator.isNull(value)) {
+				continue;
+			}
+
+			value = value.trim();
+
+			if (value.startsWith("${") && value.endsWith("}")) {
+				continue;
+			}
+
+			plaintextSecretProperties.add(key);
+		}
+
+		return plaintextSecretProperties;
 	}
 
 	private static void _validateFIPSProvider(Provider[] providers) {
@@ -215,6 +246,40 @@ public class FIPSModeValidator {
 		}
 	}
 
+	private static void _validatePlaintextSecrets() {
+		List<String> messages = new ArrayList<>();
+
+		for (String source : PropsUtil.getLoadedSources()) {
+			String fileName = source.substring(source.lastIndexOf('/') + 1);
+
+			if (fileName.equals("portal.properties")) {
+				continue;
+			}
+
+			Properties properties = null;
+
+			try {
+				properties = PropertiesUtil.load(new URL(source));
+			}
+			catch (IOException ioException) {
+				continue;
+			}
+
+			for (String key : _getPlaintextSecretProperties(properties)) {
+				messages.add(
+					StringBundler.concat(
+						"property \"", key, "\" in \"", fileName, "\""));
+			}
+		}
+
+		if (!messages.isEmpty()) {
+			throw new SecurityException(
+				StringBundler.concat(
+					"A plaintext value for ", StringUtil.merge(messages, ", "),
+					" is not allowed in FIPS mode"));
+		}
+	}
+
 	private static void _validateProperties() {
 		if (GetterUtil.getBoolean(PropsUtil.get(PropsKeys.AUTH_MAC_ALLOW))) {
 			validateAlgorithm(PropsUtil.get(PropsKeys.AUTH_MAC_ALGORITHM));
@@ -226,6 +291,7 @@ public class FIPSModeValidator {
 
 		_validatePasswordsEncryptionAlgorithm(
 			PropsUtil.get(PropsKeys.PASSWORDS_ENCRYPTION_ALGORITHM));
+		_validatePlaintextSecrets();
 	}
 
 	private static void _validateProviders(Provider[] providers) {
