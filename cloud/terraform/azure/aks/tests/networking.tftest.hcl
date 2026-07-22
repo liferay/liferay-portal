@@ -4,7 +4,7 @@ mock_provider "azurerm" {
 run "should_compute_subnet_cidr_from_vpc_cidr" {
 	assert {
 		condition=local.subnet_cidr == "10.0.0.0/20"
-		error_message="The subnet CIDR must be cidrsubnet(vpc_cidr, 4, 0)"
+		error_message="The subnet CIDR must be a valid CIDR"
 	}
 	assert {
 		condition=one(azurerm_subnet.main.address_prefixes) == "10.0.0.0/20"
@@ -12,7 +12,7 @@ run "should_compute_subnet_cidr_from_vpc_cidr" {
 	}
 	assert {
 		condition=azurerm_subnet.main.name == "liferay-test-subnet"
-		error_message="The subnet name must be derived from the deployment_name"
+		error_message="The subnet name must be derived from deployment_name"
 	}
 	command=plan
 }
@@ -42,7 +42,7 @@ run "should_configure_cilium_overlay_network_profile" {
 run "should_create_network_security_group" {
 	assert {
 		condition=azurerm_network_security_group.main.name == "liferay-test-nsg"
-		error_message="The network security group name must be derived from the deployment_name"
+		error_message="The network security group name must be derived from deployment_name"
 	}
 	command=plan
 }
@@ -53,7 +53,7 @@ run "should_create_vnet_with_default_cidr" {
 	}
 	assert {
 		condition=azurerm_virtual_network.main.name == "liferay-test-vnet"
-		error_message="The virtual network name must be derived from the deployment_name"
+		error_message="The virtual network name must be derived from deployment_name"
 	}
 	command=plan
 }
@@ -82,7 +82,7 @@ run "should_override_pod_and_service_cidrs" {
 run "should_provision_nat_gateway_for_egress" {
 	assert {
 		condition=azurerm_nat_gateway.main.name == "liferay-test-nat"
-		error_message="The NAT gateway name must be derived from the deployment_name"
+		error_message="The NAT gateway name must be derived from deployment_name"
 	}
 	assert {
 		condition=azurerm_nat_gateway.main.sku_name == "Standard"
@@ -94,7 +94,7 @@ run "should_provision_nat_gateway_for_egress" {
 	}
 	assert {
 		condition=azurerm_public_ip.nat.name == "liferay-test-nat-ip"
-		error_message="The NAT public IP name must be derived from the deployment_name"
+		error_message="The NAT public IP name must be derived from deployment_name"
 	}
 	assert {
 		condition=azurerm_public_ip.nat.sku == "Standard"

@@ -8,11 +8,11 @@ run "should_apply_default_node_pool_settings" {
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].host_encryption_enabled == false
-		error_message="The default node pool must encrypt temp disks and caches at the host"
+		error_message="The default node pool must not encrypt temp disks and caches at the host"
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].max_pods == 50
-		error_message="The default node pool must allow at least 50 pods per node"
+		error_message="The default node pool must allow up to 50 pods per node"
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].name == "system"
@@ -60,15 +60,15 @@ run "should_default_to_public_cluster" {
 run "should_derive_cluster_name_from_deployment_name" {
 	assert {
 		condition=local.cluster_name == "liferay-test-aks"
-		error_message="The local.cluster_name must be \"<deployment_name>-aks\""
+		error_message="The local cluster_name variable must be \"<deployment_name>-aks\""
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.dns_prefix == "liferay-test"
-		error_message="The cluster dns_prefix must be the deployment_name"
+		error_message="The cluster dns_prefix must be deployment_name"
 	}
 	assert {
 		condition=azurerm_kubernetes_cluster.main.name == "liferay-test-aks"
-		error_message="The cluster name must be derived from the deployment_name"
+		error_message="The AKS cluster name must be derived from deployment_name"
 	}
 	command=plan
 }
@@ -109,7 +109,7 @@ run "should_expose_inputs_as_outputs" {
 	}
 	assert {
 		condition=output.resource_group_name == "liferay-test"
-		error_message="The resource_group_name output must be the deployment_name"
+		error_message="The resource_group_name output must be deployment_name"
 	}
 	command=plan
 }

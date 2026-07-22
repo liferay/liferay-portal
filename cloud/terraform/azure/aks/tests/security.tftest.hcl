@@ -4,7 +4,7 @@ mock_provider "azurerm" {
 run "should_configure_federated_identity_credential" {
 	assert {
 		condition=azurerm_federated_identity_credential.liferay.name == "liferay-test-liferay-default"
-		error_message="The federated identity credential name must be derived from the deployment_name"
+		error_message="The federated identity credential name must be derived from deployment_name"
 	}
 	assert {
 		condition=azurerm_federated_identity_credential.liferay.subject == "system:serviceaccount:liferay-system:liferay-default"
@@ -19,11 +19,11 @@ run "should_configure_federated_identity_credential" {
 run "should_create_cluster_and_workload_identities" {
 	assert {
 		condition=azurerm_user_assigned_identity.cluster.name == "liferay-test-cluster-identity"
-		error_message="The cluster identity name must be derived from the deployment_name"
+		error_message="The cluster identity name must be derived from deployment_name"
 	}
 	assert {
 		condition=azurerm_user_assigned_identity.workload.name == "liferay-test-workload-identity"
-		error_message="The workload identity name must be derived from the deployment_name"
+		error_message="The workload identity name must be derived from deployment_name"
 	}
 	command=plan
 }
