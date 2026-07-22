@@ -39,6 +39,7 @@ import {handleFindAndReplace} from '../find_and_replace/utils/handleFindAndRepla
 import AssetTypeInfoPanel from '../info_panel/AssetTypeInfoPanelContent';
 import ExportTranslationModalContent from '../modal/ExportTranslationModalContent';
 import AssetNavigationModalContent from '../modal/asset_navigation_view/AssetNavigationModalContent';
+import AddAssetsToProjectModalContent from '../projects/modal/AddAssetsToProjectModalContent';
 import copyOrMoveBulkAction from './actions/copyOrMoveBulkAction';
 import ACTIONS from './actions/creationMenuActions';
 import deleteAssetEntriesBulkAction, {
@@ -145,6 +146,8 @@ export type AdditionalProps = {
 	breadcrumbProps?: IBreadcrumbProps;
 	brokenLinksCheckerEnabled: boolean;
 	candidateAssetLibraries: AssetLibrary[];
+	cmpProjectAssetRelationshipObjectDefinitionId?: number;
+	cmpProjectObjectDefinitionId?: number;
 	cmsGroupId?: number;
 	collaboratorURLs: Record<string, string>;
 	contentViewURL: string;
@@ -642,7 +645,28 @@ export default function AssetsFDSPropsTransformer({
 			action: any;
 			selectedData: any;
 		}) => {
-			if (action?.data?.id === 'edit-categories') {
+			if (action?.data?.id === 'add-assets-to-project') {
+				openCMSModal({
+					center: true,
+					containerProps: {
+						className: 'modal-height-lg',
+					},
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) =>
+						AddAssetsToProjectModalContent({
+							apiURL: bulkActionAPIURL,
+							closeModal,
+							cmpProjectObjectDefinitionId:
+								additionalProps.cmpProjectObjectDefinitionId as number,
+							selectedData,
+						}),
+					size: 'md',
+				});
+			}
+			else if (action?.data?.id === 'edit-categories') {
 				openCMSModal({
 					center: true,
 					containerProps: {

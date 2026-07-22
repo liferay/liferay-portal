@@ -9,6 +9,8 @@ import React from 'react';
 
 import {IBulkActionTaskType} from '../../../common/types/BulkActionTask';
 
+export const BULK_ACTION_ADD_OBJECT_TO_PROJECT =
+	'AddObjectToProjectBulkSelectionAction';
 export const BULK_ACTION_ASSIGN_DEFAULT_WORKFLOW =
 	'AssignStructureDefaultWorkflowBulkSelectionAction';
 export const BULK_ACTION_ASSIGN_TO = 'AssignToObjectBulkSelectionAction';
@@ -39,6 +41,9 @@ export const INTERVAL_TASK_POLLING_MS = 5000;
 
 export const LABELS_BULK_ACTIONS: {[key in keyof IBulkActionTaskType]: string} =
 	{
+		[BULK_ACTION_ADD_OBJECT_TO_PROJECT]: Liferay.Language.get(
+			'add-assets-to-project'
+		),
 		[BULK_ACTION_ASSIGN_DEFAULT_WORKFLOW]:
 			Liferay.Language.get('assign-workflow'),
 		[BULK_ACTION_ASSIGN_TO]: Liferay.Language.get('assign-to'),

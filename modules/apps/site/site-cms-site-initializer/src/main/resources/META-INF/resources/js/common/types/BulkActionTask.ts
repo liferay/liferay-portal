@@ -96,6 +96,9 @@ export interface IBulkActionTaskStarterDTO<T extends keyof IBulkActionType> {
 }
 
 export interface IBulkActionType {
+	AddObjectToProjectBulkSelectionAction: {
+		projectScopeKeys?: string[];
+	};
 	AssignStructureDefaultWorkflowBulkSelectionAction: {
 		workflow?: string;
 	};
@@ -158,6 +161,7 @@ export interface IBulkActionType {
 }
 
 export interface IBulkActionTaskType {
+	AddObjectToProjectBulkSelectionAction: string;
 	AssignStructureDefaultWorkflowBulkSelectionAction: string;
 	AssignToObjectBulkSelectionAction: string;
 	CopyObjectBulkSelectionAction: string;

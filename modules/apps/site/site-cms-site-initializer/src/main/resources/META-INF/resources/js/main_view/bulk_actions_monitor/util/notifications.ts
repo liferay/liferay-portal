@@ -10,6 +10,7 @@ import {
 	IBulkActionTaskType,
 } from '../../../common/types/BulkActionTask';
 import {
+	BULK_ACTION_ADD_OBJECT_TO_PROJECT,
 	BULK_ACTION_ASSIGN_DEFAULT_WORKFLOW,
 	BULK_ACTION_ASSIGN_TO,
 	BULK_ACTION_CATEGORIES,
@@ -45,6 +46,26 @@ type BulkActionMessage = {
 };
 
 const BULK_ACTION_MESSAGES: BulkActionMessage = {
+	[BULK_ACTION_ADD_OBJECT_TO_PROJECT]: {
+		info: {
+			all: Liferay.Language.get(
+				'add-assets-to-project-action-started-for-all-assets'
+			),
+			plural: Liferay.Language.get(
+				'add-assets-to-project-action-started-for-x-assets'
+			),
+			singular: Liferay.Language.get(
+				'add-assets-to-project-action-started-for-one-asset'
+			),
+		},
+		success: {
+			all: Liferay.Language.get('all-items-were-successfully-added-to-x'),
+			plural: Liferay.Language.get(
+				'x-assets-were-successfully-added-to-x'
+			),
+			singular: Liferay.Language.get('x-was-successfully-added-to-x'),
+		},
+	},
 	[BULK_ACTION_ASSIGN_DEFAULT_WORKFLOW]: {
 		info: {
 			all: Liferay.Language.get(
