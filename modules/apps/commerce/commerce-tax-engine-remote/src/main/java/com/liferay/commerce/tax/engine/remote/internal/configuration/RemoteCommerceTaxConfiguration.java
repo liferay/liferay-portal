@@ -22,7 +22,10 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface RemoteCommerceTaxConfiguration {
 
-	@Meta.AD(name = "tax-value-endpoint-authorization-token", required = false)
+	@Meta.AD(
+		name = "tax-value-endpoint-authorization-token", required = false,
+		type = Meta.Type.Password
+	)
 	public String taxValueEndpointAuthorizationToken();
 
 	@Meta.AD(name = "tax-value-endpoint-url", required = false)

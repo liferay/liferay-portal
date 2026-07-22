@@ -24,7 +24,9 @@ public interface SalesforceConfiguration {
 	@Meta.AD(name = "consumer-key", required = false)
 	public String consumerKey();
 
-	@Meta.AD(name = "consumer-secret", required = false)
+	@Meta.AD(
+		name = "consumer-secret", required = false, type = Meta.Type.Password
+	)
 	public String consumerSecret();
 
 	@Meta.AD(name = "login-url", required = false)

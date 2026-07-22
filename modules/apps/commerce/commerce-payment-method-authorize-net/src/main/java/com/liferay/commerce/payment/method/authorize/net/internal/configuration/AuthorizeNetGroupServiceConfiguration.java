@@ -50,10 +50,14 @@ public interface AuthorizeNetGroupServiceConfiguration {
 	)
 	public boolean showStoreName();
 
-	@Meta.AD(name = "signature-key", required = false)
+	@Meta.AD(
+		name = "signature-key", required = false, type = Meta.Type.Password
+	)
 	public String signatureKey();
 
-	@Meta.AD(name = "transaction-key", required = false)
+	@Meta.AD(
+		name = "transaction-key", required = false, type = Meta.Type.Password
+	)
 	public String transactionKey();
 
 }

@@ -29,7 +29,9 @@ public interface SftpConfiguration {
 	)
 	public String host();
 
-	@Meta.AD(name = "feed-password", required = false)
+	@Meta.AD(
+		name = "feed-password", required = false, type = Meta.Type.Password
+	)
 	public String password();
 
 	@Meta.AD(deflt = "19321", name = "port", required = false)

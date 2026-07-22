@@ -22,7 +22,7 @@ public interface BingCommerceGeocoderConfiguration {
 
 	@Meta.AD(
 		description = "set-the-key-for-the-bing-maps-api-integration",
-		name = "api-key", required = false
+		name = "api-key", required = false, type = Meta.Type.Password
 	)
 	public String apiKey();
 
