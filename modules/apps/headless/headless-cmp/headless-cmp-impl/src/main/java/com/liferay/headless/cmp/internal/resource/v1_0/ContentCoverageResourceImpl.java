@@ -96,12 +96,14 @@ public class ContentCoverageResourceImpl
 		List<AssetCategory> funnelStageAssetCategories =
 			_filterAssetCategoriesByVocabulary(
 				assetCategories, "L_CMP_FUNNEL_STAGE");
+
+		List<Long> funnelStageAssetCategoryIds = _toAssetCategoryIds(
+			funnelStageAssetCategories);
+
 		List<AssetCategory> personaAssetCategories =
 			_filterAssetCategoriesByVocabulary(
 				assetCategories, "L_CMP_PERSONAS");
 
-		List<Long> funnelStageAssetCategoryIds = _toAssetCategoryIds(
-			funnelStageAssetCategories);
 		List<Long> personaAssetCategoryIds = _toAssetCategoryIds(
 			personaAssetCategories);
 

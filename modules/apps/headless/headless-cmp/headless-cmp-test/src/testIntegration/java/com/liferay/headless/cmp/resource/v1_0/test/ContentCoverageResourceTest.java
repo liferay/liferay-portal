@@ -125,7 +125,6 @@ public class ContentCoverageResourceTest
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
-
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				getObjectEntryFolderByExternalReferenceCode(
@@ -226,11 +225,9 @@ public class ContentCoverageResourceTest
 		_addContentObjectEntry(
 			new long[] {awarenessAssetCategory.getCategoryId()},
 			new String[] {assetTagName});
-
 		_addContentObjectEntry(
 			new long[] {awarenessAssetCategory.getCategoryId()},
 			new String[] {"L_CMP_TASK_" + RandomTestUtil.randomString(10)});
-
 		_assertContentCoverage(
 			_toContentCoverage(
 				2,
