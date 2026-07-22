@@ -272,7 +272,7 @@ public interface ContactsEngineClient {
 		int delta, List<OrderByField> orderByFields);
 
 	public Results<ApiUsageMetric> getApiUsageMetrics(
-		FaroProject faroProject, Date usageDate);
+		FaroProject faroProject, String endDateString, String startDateString);
 
 	public Asset getAsset(FaroProject faroProject, String id)
 		throws FaroEngineClientException;

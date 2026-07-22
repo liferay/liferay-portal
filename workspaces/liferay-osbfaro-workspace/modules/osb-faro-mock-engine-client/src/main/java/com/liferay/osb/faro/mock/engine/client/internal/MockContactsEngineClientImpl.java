@@ -46,9 +46,10 @@ public class MockContactsEngineClientImpl
 
 	@Override
 	public Results<ApiUsageMetric> getApiUsageMetrics(
-		FaroProject faroProject, Date usageDate) {
+		FaroProject faroProject, String endDateString, String startDateString) {
 
-		return contactsEngineClient.getApiUsageMetrics(faroProject, usageDate);
+		return contactsEngineClient.getApiUsageMetrics(
+			faroProject, endDateString, startDateString);
 	}
 
 	@Override

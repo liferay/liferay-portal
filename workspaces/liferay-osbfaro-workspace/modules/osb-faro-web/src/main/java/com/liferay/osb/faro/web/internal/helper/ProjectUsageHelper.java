@@ -9,11 +9,13 @@ import com.liferay.batch.engine.pagination.Page;
 import com.liferay.batch.engine.pagination.Pagination;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.model.ApiUsage;
 import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.util.DateUtil;
+import com.liferay.osb.faro.web.internal.model.display.contacts.ApiUsageMetricDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsage;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetric;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetricDisplay;
@@ -45,7 +47,8 @@ public class ProjectUsageHelper {
 				(page - 1) * pageSize, page * pageSize);
 
 		Map<String, Map<String, ApiUsageMetric>> apiUsageMetricsMap =
-			_getApiUsageMetricsMap(faroProjects);
+			_getApiUsageMetricsMap(
+				endDateString, faroProjects, startDateString);
 
 		List<DataSourceUsageMetricDisplay> dataSourceUsageMetricDisplays =
 			new ArrayList<>();
@@ -62,7 +65,8 @@ public class ProjectUsageHelper {
 	}
 
 	private Map<String, Map<String, ApiUsageMetric>> _getApiUsageMetricsMap(
-			List<FaroProject> faroProjects)
+			String endDateString, List<FaroProject> faroProjects,
+			String startDateString)
 		throws Exception {
 
 		Map<String, Map<String, ApiUsageMetric>> apiUsageMetricsMap =
@@ -78,7 +82,8 @@ public class ProjectUsageHelper {
 			Map<String, ApiUsageMetric> apiUsageMetricMap = new HashMap<>();
 
 			Results<ApiUsageMetric> results =
-				_contactsEngineClient.getApiUsageMetrics(faroProject, null);
+				_contactsEngineClient.getApiUsageMetrics(
+					faroProject, endDateString, startDateString);
 
 			for (ApiUsageMetric apiUsageMetric : results.getItems()) {
 				apiUsageMetricMap.put(
@@ -96,16 +101,20 @@ public class ProjectUsageHelper {
 			FaroProject faroProject)
 		throws Exception {
 
-		long apiCallsCount = 0;
-
 		Map<String, ApiUsageMetric> apiUsageMetricMap = apiUsageMetricsMap.get(
 			faroProject.getServerLocation());
 
 		ApiUsageMetric apiUsageMetric = apiUsageMetricMap.get(
 			faroProject.getProjectId());
 
+		List<ApiUsageMetricDisplay> apiUsageMetricDisplays = new ArrayList<>();
+
 		if (apiUsageMetric != null) {
-			apiCallsCount = apiUsageMetric.getCallsCount();
+			for (ApiUsage apiUsage : apiUsageMetric.getApiUsages()) {
+				apiUsageMetricDisplays.add(
+					new ApiUsageMetricDisplay(
+						apiUsage.getCallsCount(), apiUsage.getDateString()));
+			}
 		}
 
 		List<DataSourceUsage> dataSourceUsages = ListUtil.fromArray(
@@ -115,7 +124,7 @@ public class ProjectUsageHelper {
 				"10002", "Salesforce", _getDataSourceUsageMetrics(1)));
 
 		return new DataSourceUsageMetricDisplay(
-			apiCallsCount, 5, dataSourceUsages.size(),
+			apiUsageMetricDisplays, 5, dataSourceUsages.size(),
 			faroProject.getCorpProjectName(), faroProject.getCorpProjectUuid(),
 			dataSourceUsages,
 			DateUtil.formatDate(

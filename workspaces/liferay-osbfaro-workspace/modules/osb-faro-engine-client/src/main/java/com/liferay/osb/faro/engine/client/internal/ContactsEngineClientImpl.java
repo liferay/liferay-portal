@@ -1178,7 +1178,7 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<ApiUsageMetric> getApiUsageMetrics(
-		FaroProject faroProject, Date usageDate) {
+		FaroProject faroProject, String endDateString, String startDateString) {
 
 		PagedModel<?, ApiUsageMetric> pagedModel = get(
 			faroProject, Rels.API_USAGE_METRICS,
@@ -1186,7 +1186,9 @@ public class ContactsEngineClientImpl
 				<EntityModelPagedModel<ApiUsageMetric>>() {
 			},
 			HashMapBuilder.<String, Object>put(
-				"usageDate", usageDate
+				"endDate", endDateString
+			).put(
+				"startDate", startDateString
 			).build());
 
 		return pagedModel.getResults();
