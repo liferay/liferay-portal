@@ -680,6 +680,8 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 				numberOfFragmentEntryLinks, null, user);
 		}
 		finally {
+			_layoutLockManager.unlock(_layout, user.getUserId());
+
 			ServiceContextThreadLocal.popServiceContext();
 
 			UserTestUtil.setUser(TestPropsValues.getUser());
