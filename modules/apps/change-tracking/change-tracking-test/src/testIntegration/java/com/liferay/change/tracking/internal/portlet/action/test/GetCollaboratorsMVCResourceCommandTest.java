@@ -6,14 +6,23 @@
 package com.liferay.change.tracking.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.constants.CTRoleConstants;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -76,6 +85,49 @@ public class GetCollaboratorsMVCResourceCommandTest {
 		Assert.assertEquals(0, jsonArray.length());
 	}
 
+	@Test
+	public void testServeResourceWithInvitedCollaborator() throws Exception {
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
+
+		Group group = _groupLocalService.addGroup(
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			CTCollection.class.getName(), ctCollection.getCtCollectionId(),
+			GroupConstants.DEFAULT_LIVE_GROUP_ID,
+			RandomTestUtil.randomLocaleStringMap(), null,
+			GroupConstants.TYPE_SITE_PRIVATE, null, false,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, false,
+			true, null);
+
+		User user = UserTestUtil.addUser();
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			CTRoleConstants.PUBLICATIONS_REVIEWER);
+
+		_userGroupRoleLocalService.addUserGroupRole(
+			user.getUserId(), group.getGroupId(), role.getRoleId());
+
+		MockLiferayResourceResponse mockLiferayResourceResponse =
+			new MockLiferayResourceResponse();
+
+		_mvcResourceCommand.serveResource(
+			_getMockLiferayResourceRequest(
+				ctCollection.getCtCollectionId(), user),
+			mockLiferayResourceResponse);
+
+		JSONArray jsonArray = _getCollaboratorsJSONArray(
+			mockLiferayResourceResponse);
+
+		Assert.assertTrue(jsonArray.toString(), jsonArray.length() >= 1);
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertTrue(jsonObject.getBoolean("isOwner"));
+	}
+
 	private JSONArray _getCollaboratorsJSONArray(
 			MockLiferayResourceResponse mockLiferayResourceResponse)
 		throws Exception {
@@ -123,7 +175,16 @@ public class GetCollaboratorsMVCResourceCommandTest {
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
 
+	@Inject
+	private GroupLocalService _groupLocalService;
+
 	@Inject(filter = "mvc.command.name=/change_tracking/get_collaborators")
 	private MVCResourceCommand _mvcResourceCommand;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 }
