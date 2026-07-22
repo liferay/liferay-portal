@@ -27,7 +27,7 @@ const test = mergeTests(
 const CMP_PROJECT = 'cmp/projects';
 const CMP_TASK = 'cmp/tasks';
 
-test.skip(
+test(
 	'Filters the related assets table with AND and highlights the cell when a matrix cell is clicked',
 	{tag: ['@LPD-93351']},
 	async ({apiHelpers, page, projectPage, projectsPage}) => {
