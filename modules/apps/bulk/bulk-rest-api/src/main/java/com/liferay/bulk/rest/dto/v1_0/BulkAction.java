@@ -117,6 +117,10 @@ import java.util.function.Supplier;
 			value = StatusObjectBulkSelectionAction.class
 		),
 		@JsonSubTypes.Type(
+			name = "UpdateExpirationDateObjectBulkSelectionAction",
+			value = UpdateExpirationDateObjectBulkSelectionAction.class
+		),
+		@JsonSubTypes.Type(
 			name = "UpdateObjectValuesBulkSelectionAction",
 			value = UpdateObjectValuesBulkSelectionAction.class
 		),
@@ -400,6 +404,8 @@ public abstract class BulkAction implements Serializable {
 		STATUS_OBJECT_BULK_SELECTION_ACTION("StatusObjectBulkSelectionAction"),
 		EDIT_OBJECT_CATEGORIES_BULK_SELECTION_ACTION(
 			"EditObjectCategoriesBulkSelectionAction"),
+		UPDATE_EXPIRATION_DATE_OBJECT_BULK_SELECTION_ACTION(
+			"UpdateExpirationDateObjectBulkSelectionAction"),
 		UPDATE_OBJECT_VALUES_BULK_SELECTION_ACTION(
 			"UpdateObjectValuesBulkSelectionAction"),
 		UPDATE_REVIEW_DATE_OBJECT_BULK_SELECTION_ACTION(
@@ -527,4 +533,4 @@ public abstract class BulkAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1356730061
+// LIFERAY-REST-BUILDER-HASH:1193260222

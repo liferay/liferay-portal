@@ -33,6 +33,7 @@ import com.liferay.bulk.rest.client.dto.v1_0.PermissionObjectBulkSelectionAction
 import com.liferay.bulk.rest.client.dto.v1_0.ResetPermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.RestoreObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.StatusObjectBulkSelectionAction;
+import com.liferay.bulk.rest.client.dto.v1_0.UpdateExpirationDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.UpdateObjectValuesBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.UpdateReviewDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.http.HttpInvoker;
@@ -725,6 +726,22 @@ public abstract class BaseBulkActionResourceTestCase {
 
 				if (((StatusObjectBulkSelectionAction)bulkAction).getStatus() ==
 						null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("expirationDate", additionalAssertFieldName)) {
+				if (!(bulkAction instanceof
+						UpdateExpirationDateObjectBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (((UpdateExpirationDateObjectBulkSelectionAction)bulkAction).
+						getExpirationDate() == null) {
 
 					valid = false;
 				}
@@ -1554,6 +1571,27 @@ public abstract class BaseBulkActionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("expirationDate", additionalAssertFieldName)) {
+				if (!(bulkAction1 instanceof
+						UpdateExpirationDateObjectBulkSelectionAction) ||
+					!(bulkAction2 instanceof
+						UpdateExpirationDateObjectBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (!Objects.deepEquals(
+						((UpdateExpirationDateObjectBulkSelectionAction)
+							bulkAction1).getExpirationDate(),
+						((UpdateExpirationDateObjectBulkSelectionAction)
+							bulkAction2).getExpirationDate())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("values", additionalAssertFieldName)) {
 				if (!(bulkAction1 instanceof
 						UpdateObjectValuesBulkSelectionAction) ||
@@ -2098,6 +2136,18 @@ public abstract class BaseBulkActionResourceTestCase {
 				return bulkAction;
 			},
 			() -> {
+				UpdateExpirationDateObjectBulkSelectionAction bulkAction =
+					new UpdateExpirationDateObjectBulkSelectionAction();
+
+				bulkAction.setExpirationDate(RandomTestUtil.nextDate());
+
+				bulkAction.setType(
+					BulkAction.Type.create(
+						"UpdateExpirationDateObjectBulkSelectionAction"));
+
+				return bulkAction;
+			},
+			() -> {
 				UpdateObjectValuesBulkSelectionAction bulkAction =
 					new UpdateObjectValuesBulkSelectionAction();
 
@@ -2362,4 +2412,4 @@ public abstract class BaseBulkActionResourceTestCase {
 		_bulkActionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1165573656
+// LIFERAY-REST-BUILDER-HASH:722037867

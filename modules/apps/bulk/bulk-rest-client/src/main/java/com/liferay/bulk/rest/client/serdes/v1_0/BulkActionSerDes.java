@@ -25,6 +25,7 @@ import com.liferay.bulk.rest.client.dto.v1_0.PermissionObjectBulkSelectionAction
 import com.liferay.bulk.rest.client.dto.v1_0.ResetPermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.RestoreObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.StatusObjectBulkSelectionAction;
+import com.liferay.bulk.rest.client.dto.v1_0.UpdateExpirationDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.UpdateObjectValuesBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.UpdateReviewDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.json.BaseJSONParser;
@@ -162,6 +163,15 @@ public class BulkActionSerDes {
 			if (typeString.equals("StatusObjectBulkSelectionAction")) {
 				return StatusObjectBulkSelectionActionSerDes.toJSON(
 					(StatusObjectBulkSelectionAction)bulkAction);
+			}
+
+			if (typeString.equals(
+					"UpdateExpirationDateObjectBulkSelectionAction")) {
+
+				return UpdateExpirationDateObjectBulkSelectionActionSerDes.
+					toJSON(
+						(UpdateExpirationDateObjectBulkSelectionAction)
+							bulkAction);
 			}
 
 			if (typeString.equals("UpdateObjectValuesBulkSelectionAction")) {
@@ -349,6 +359,13 @@ public class BulkActionSerDes {
 				}
 
 				if (typeString.equals(
+						"UpdateExpirationDateObjectBulkSelectionAction")) {
+
+					return UpdateExpirationDateObjectBulkSelectionAction.toDTO(
+						json);
+				}
+
+				if (typeString.equals(
 						"UpdateObjectValuesBulkSelectionAction")) {
 
 					return UpdateObjectValuesBulkSelectionAction.toDTO(json);
@@ -484,4 +501,4 @@ public class BulkActionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:441451610
+// LIFERAY-REST-BUILDER-HASH:327525141
