@@ -9,8 +9,9 @@ import {
 	ChatActionButton,
 	ChatDropdownContainer,
 	ChatPanel,
+	ChatSidebarContainer,
 } from 'frontend-js-components-web';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 
 const SAMPLE_HEIGHT = 500;
 
@@ -28,7 +29,7 @@ function useTrigger() {
 	return {open, setOpen, trigger};
 }
 
-function ChatPanelSample() {
+function SampleChatPanel() {
 	const noop = () => {};
 
 	return (
@@ -54,7 +55,7 @@ function ChatPanelSample() {
 	);
 }
 
-function ChatDropdownSample() {
+function SampleDropdownChat() {
 	const {open, setOpen, trigger} = useTrigger();
 
 	return (
@@ -67,8 +68,30 @@ function ChatDropdownSample() {
 					open={open}
 					trigger={trigger}
 				>
-					<ChatPanelSample />
+					<SampleChatPanel />
 				</ChatDropdownContainer>
+			</div>
+		</ClayLayout.Col>
+	);
+}
+
+function SampleSidebarChat() {
+	const containerRef = useRef(null);
+	const {open, setOpen, trigger} = useTrigger();
+
+	return (
+		<ClayLayout.Col size={4}>
+			<h4>Sidebar</h4>
+
+			<div ref={containerRef} style={{height: SAMPLE_HEIGHT}}>
+				<ChatSidebarContainer
+					containerRef={containerRef}
+					onOpenChange={setOpen}
+					open={open}
+					trigger={trigger}
+				>
+					<SampleChatPanel />
+				</ChatSidebarContainer>
 			</div>
 		</ClayLayout.Col>
 	);
@@ -77,7 +100,9 @@ function ChatDropdownSample() {
 export default function ChatPanelSamples() {
 	return (
 		<ClayLayout.Row>
-			<ChatDropdownSample />
+			<SampleDropdownChat />
+
+			<SampleSidebarChat />
 		</ClayLayout.Row>
 	);
 }
