@@ -8,22 +8,39 @@ import {render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import UpdateReviewDateModalContent from '../../../../src/main/resources/META-INF/resources/js/main_view/modal/UpdateReviewDateModalContent';
+import ScheduleDateModalContent from '../../../../src/main/resources/META-INF/resources/js/main_view/modal/ScheduleDateModalContent';
 
-const FUTURE_REVIEW_DATE = '2099-12-31T10:00:00Z';
-const PAST_REVIEW_DATE = '2020-01-01T10:00:00Z';
+const FUTURE_DATE = '2099-12-31T10:00:00Z';
+const PAST_DATE = '2020-01-01T10:00:00Z';
 const SAVE_HINT =
 	'enter-a-review-date-or-select-never-review-to-enable-the-save-button';
 
-describe('UpdateReviewDateModalContent', () => {
-	it('renders the review date field, the never review checkbox, and the actions', () => {
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={jest.fn().mockResolvedValue(true)}
-				reviewDate={FUTURE_REVIEW_DATE}
-			/>
-		);
+function renderModal({
+	closeModal = jest.fn(),
+	date = FUTURE_DATE,
+	onSave = jest.fn().mockResolvedValue(true),
+}: {
+	closeModal?: () => void;
+	date?: string;
+	onSave?: (date: string) => Promise<boolean>;
+} = {}) {
+	return render(
+		<ScheduleDateModalContent
+			closeModal={closeModal}
+			date={date}
+			fieldLabel="review-date"
+			fieldName="reviewDate"
+			neverLabel="never-review"
+			onSave={onSave}
+			saveRequirementLabel={SAVE_HINT}
+			title="update-review-date"
+		/>
+	);
+}
+
+describe('ScheduleDateModalContent', () => {
+	it('renders the date field, the never checkbox, and the actions', () => {
+		renderModal();
 
 		expect(screen.getByText('update-review-date')).toBeInTheDocument();
 		expect(screen.getByLabelText('never-review')).toBeInTheDocument();
@@ -32,44 +49,28 @@ describe('UpdateReviewDateModalContent', () => {
 		expect(screen.queryByText(SAVE_HINT)).not.toBeInTheDocument();
 	});
 
-	it('does not preselect never review when no review date is given', () => {
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={jest.fn().mockResolvedValue(true)}
-			/>
-		);
+	it('does not preselect never when no date is given', () => {
+		renderModal({date: ''});
 
 		expect(screen.getByLabelText('never-review')).not.toBeChecked();
 		expect(screen.getAllByRole('textbox')[0]).toBeEnabled();
 	});
 
-	it('does not clear the review date when nothing is picked', async () => {
+	it('does not clear the date when nothing is picked', async () => {
 		const onSave = jest.fn().mockResolvedValue(true);
 
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={onSave}
-			/>
-		);
+		renderModal({date: '', onSave});
 
 		await userEvent.click(screen.getByText('save'));
 
 		expect(onSave).not.toHaveBeenCalled();
 	});
 
-	it('saves the review date as an ISO string with a trailing Z', async () => {
+	it('saves the date as an ISO string with a trailing Z', async () => {
 		const closeModal = jest.fn();
 		const onSave = jest.fn().mockResolvedValue(true);
 
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={closeModal}
-				onSave={onSave}
-				reviewDate={FUTURE_REVIEW_DATE}
-			/>
-		);
+		renderModal({closeModal, onSave});
 
 		await userEvent.click(screen.getByText('save'));
 
@@ -80,16 +81,10 @@ describe('UpdateReviewDateModalContent', () => {
 		await waitFor(() => expect(closeModal).toHaveBeenCalled());
 	});
 
-	it('does not save an unchanged past review date', async () => {
+	it('does not save an unchanged past date', async () => {
 		const onSave = jest.fn().mockResolvedValue(true);
 
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={onSave}
-				reviewDate={PAST_REVIEW_DATE}
-			/>
-		);
+		renderModal({date: PAST_DATE, onSave});
 
 		await userEvent.click(screen.getByText('save'));
 
@@ -99,13 +94,8 @@ describe('UpdateReviewDateModalContent', () => {
 		).toBeInTheDocument();
 	});
 
-	it('disables save and explains why while the review date is empty', async () => {
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={jest.fn().mockResolvedValue(true)}
-			/>
-		);
+	it('disables save and explains why while the date is empty', async () => {
+		renderModal({date: ''});
 
 		const saveButton = screen.getByText('save');
 
@@ -122,13 +112,8 @@ describe('UpdateReviewDateModalContent', () => {
 		expect(screen.queryByText(SAVE_HINT)).not.toBeInTheDocument();
 	});
 
-	it('enables save with an empty review date when never review is checked', async () => {
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={jest.fn().mockResolvedValue(true)}
-			/>
-		);
+	it('enables save with an empty date when never is checked', async () => {
+		renderModal({date: ''});
 
 		await userEvent.click(screen.getByLabelText('never-review'));
 
@@ -136,14 +121,8 @@ describe('UpdateReviewDateModalContent', () => {
 		expect(screen.queryByText(SAVE_HINT)).not.toBeInTheDocument();
 	});
 
-	it('disables save when the review date is in the past', async () => {
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={jest.fn().mockResolvedValue(true)}
-				reviewDate={FUTURE_REVIEW_DATE}
-			/>
-		);
+	it('disables save when the date is in the past', async () => {
+		renderModal();
 
 		const saveButton = screen.getByText('save');
 
@@ -158,16 +137,10 @@ describe('UpdateReviewDateModalContent', () => {
 		expect(saveButton).toBeDisabled();
 	});
 
-	it('clears the review date when never review is checked', async () => {
+	it('clears the date when never is checked', async () => {
 		const onSave = jest.fn().mockResolvedValue(true);
 
-		render(
-			<UpdateReviewDateModalContent
-				closeModal={jest.fn()}
-				onSave={onSave}
-				reviewDate={FUTURE_REVIEW_DATE}
-			/>
-		);
+		renderModal({onSave});
 
 		await userEvent.click(screen.getByLabelText('never-review'));
 		await userEvent.click(screen.getByText('save'));

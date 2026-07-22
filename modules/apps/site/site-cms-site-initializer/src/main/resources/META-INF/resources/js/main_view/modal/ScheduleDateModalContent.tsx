@@ -25,37 +25,47 @@ interface UpdateFieldData {
 	value: string;
 }
 
-export default function UpdateReviewDateModalContent({
+export default function ScheduleDateModalContent({
 	closeModal,
+	date = '',
+	fieldLabel,
+	fieldName,
+	neverLabel,
 	onSave,
-	reviewDate = '',
+	saveRequirementLabel,
+	title,
 }: {
 	closeModal: () => void;
-	onSave: (reviewDate: string) => Promise<boolean>;
-	reviewDate?: string;
+	date?: string;
+	fieldLabel: string;
+	fieldName: string;
+	neverLabel: string;
+	onSave: (date: string) => Promise<boolean>;
+	saveRequirementLabel: string;
+	title: string;
 }) {
 	const fieldRef = useRef<ScheduleFieldRef>(null);
 
 	const [field, setField] = useState({
 		error: '',
-		neverReview: false,
-		value: toMomentDate(reviewDate),
+		never: false,
+		value: toMomentDate(date),
 	});
 	const [saving, setSaving] = useState(false);
 
-	const canSave = field.neverReview || (Boolean(field.value) && !field.error);
+	const canSave = field.never || (Boolean(field.value) && !field.error);
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		if (!field.neverReview) {
+		if (!field.never) {
 			fieldRef.current?.validate();
 
-			const isReviewDateInvalid =
+			const isDateInvalid =
 				!moment(field.value, dateConfig.momentFormat, true).isValid() ||
 				isPastDate(field.value);
 
-			if (isReviewDateInvalid) {
+			if (isDateInvalid) {
 				return;
 			}
 		}
@@ -63,7 +73,7 @@ export default function UpdateReviewDateModalContent({
 		setSaving(true);
 
 		const success = await onSave(
-			field.neverReview
+			field.never
 				? ''
 				: `${moment(field.value, dateConfig.momentFormat)
 						.utc()
@@ -82,14 +92,10 @@ export default function UpdateReviewDateModalContent({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{Liferay.Language.get('update-review-date')}
+				{title}
 
 				{!canSave && (
-					<span className="sr-only">
-						{Liferay.Language.get(
-							'enter-a-review-date-or-select-never-review-to-enable-the-save-button'
-						)}
-					</span>
+					<span className="sr-only">{saveRequirementLabel}</span>
 				)}
 			</ClayModal.Header>
 
@@ -98,11 +104,11 @@ export default function UpdateReviewDateModalContent({
 					date={field.value}
 					dateConfig={dateConfig}
 					error={field.error}
-					label={Liferay.Language.get('review-date')}
-					name="reviewDate"
+					label={fieldLabel}
+					name={fieldName}
 					neverCheckbox={{
-						label: Liferay.Language.get('never-review'),
-						value: field.neverReview,
+						label: neverLabel,
+						value: field.never,
 					}}
 					ref={fieldRef}
 					updateFieldData={({
@@ -112,8 +118,7 @@ export default function UpdateReviewDateModalContent({
 					}: UpdateFieldData) =>
 						setField((previousField) => ({
 							error: error ?? '',
-							neverReview:
-								neverCheckbox ?? previousField.neverReview,
+							never: neverCheckbox ?? previousField.never,
 							value,
 						}))
 					}

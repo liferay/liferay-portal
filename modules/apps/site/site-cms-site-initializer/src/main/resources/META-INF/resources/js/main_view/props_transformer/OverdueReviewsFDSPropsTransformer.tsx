@@ -9,7 +9,7 @@ import React from 'react';
 import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
 import {IBulkActionFDSData} from '../../common/types/BulkActionTask';
 import {openCMSModal} from '../../common/utils/openCMSModal';
-import UpdateReviewDateModalContent from '../modal/UpdateReviewDateModalContent';
+import ScheduleDateModalContent from '../modal/ScheduleDateModalContent';
 import {triggerAssetBulkAction} from './actions/triggerAssetBulkAction';
 import ReviewDateRenderer from './cell_renderers/ReviewDateRenderer';
 import {getFileMimeTypeObjectDefinitionStickerValue} from './utils/transformViewsItemProps';
@@ -66,8 +66,12 @@ export default function OverdueReviewsFDSPropsTransformer({
 	) => {
 		openCMSModal({
 			contentComponent: ({closeModal}: {closeModal: () => void}) => (
-				<UpdateReviewDateModalContent
+				<ScheduleDateModalContent
 					closeModal={closeModal}
+					date={reviewDate}
+					fieldLabel={Liferay.Language.get('review-date')}
+					fieldName="reviewDate"
+					neverLabel={Liferay.Language.get('never-review')}
 					onSave={async (newReviewDate: string) => {
 						triggerAssetBulkAction({
 							apiURL: bulkActionAPIURL,
@@ -81,7 +85,10 @@ export default function OverdueReviewsFDSPropsTransformer({
 
 						return true;
 					}}
-					reviewDate={reviewDate}
+					saveRequirementLabel={Liferay.Language.get(
+						'enter-a-review-date-or-select-never-review-to-enable-the-save-button'
+					)}
+					title={Liferay.Language.get('update-review-date')}
 				/>
 			),
 			size: 'md',
