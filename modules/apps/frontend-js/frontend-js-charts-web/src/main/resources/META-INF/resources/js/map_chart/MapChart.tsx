@@ -39,6 +39,7 @@ export default function MapChart({
 	data,
 	fit = 'world',
 	legend = 'none',
+	legendPosition = 'end',
 	legendSwatchBorder = true,
 	legendTableDividers = true,
 	scheme = 'blue',
@@ -132,6 +133,7 @@ export default function MapChart({
 			onFocus={focusItem}
 			onHover={setHoverIndex}
 			onHoverEnd={clearHover}
+			position={legendPosition}
 			scheme={scheme}
 			tableDividers={legendTableDividers}
 			titleId={titleId}
@@ -184,10 +186,14 @@ export default function MapChart({
 					/>
 				) : null}
 
-				{legend === 'list' && legendElement}
+				{legend === 'list' && legendPosition === 'end'
+					? legendElement
+					: null}
 			</div>
 
-			{legend !== 'list' && legendElement}
+			{legend !== 'list' || legendPosition === 'bottom'
+				? legendElement
+				: null}
 		</figure>
 	);
 }

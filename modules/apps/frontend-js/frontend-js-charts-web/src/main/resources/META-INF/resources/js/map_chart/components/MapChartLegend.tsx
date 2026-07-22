@@ -25,6 +25,7 @@ interface MapChartLegendProps {
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
 	onHoverEnd: () => void;
+	position?: 'bottom' | 'end';
 	scheme: 'blue' | 'categorical';
 	tableDividers?: boolean;
 	titleId: string;
@@ -40,6 +41,7 @@ export default function MapChartLegend({
 	onFocus,
 	onHover,
 	onHoverEnd,
+	position,
 	scheme,
 	tableDividers,
 	titleId,
@@ -95,6 +97,7 @@ export default function MapChartLegend({
 				onActivate={onHover}
 				onDeactivate={() => onHoverEnd()}
 				onSelect={onFocus}
+				position={position}
 				tableDividers={tableDividers}
 				titleId={titleId}
 			/>

@@ -26,6 +26,7 @@ interface PieChartLegendProps {
 	onFocus: (index: number) => void;
 	onHover: (index: number) => void;
 	onHoverEnd: () => void;
+	position?: 'bottom' | 'end';
 	titleId: string;
 	total: number;
 }
@@ -56,6 +57,7 @@ export default function PieChartLegend({
 	onFocus,
 	onHover,
 	onHoverEnd,
+	position,
 	titleId,
 	total,
 }: PieChartLegendProps) {
@@ -99,6 +101,7 @@ export default function PieChartLegend({
 			onActivate={onHover}
 			onDeactivate={() => onHoverEnd()}
 			onSelect={onFocus}
+			position={position}
 			tableDividers={legendTableDividers}
 			titleId={titleId}
 		/>

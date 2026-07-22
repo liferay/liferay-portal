@@ -39,6 +39,12 @@ export interface PieChartProps {
 	legend?: 'list' | 'none' | 'table';
 
 	/**
+	 * Where the `list` legend sits: `end` (default) beside the pie, `bottom`
+	 * below it, full width. No effect on the `table` legend.
+	 */
+	legendPosition?: 'bottom' | 'end';
+
+	/**
 	 * Draw the 1px border around each legend color swatch (list and table).
 	 * Default `true`. Set `false` for borderless swatches.
 	 */
@@ -80,6 +86,7 @@ export default function PieChart({
 	description,
 	innerRadius: innerRadiusRatio,
 	legend = 'list',
+	legendPosition = 'end',
 	legendSwatchBorder = true,
 	legendTableDividers = true,
 	legendValue = 'percent',
@@ -150,6 +157,25 @@ export default function PieChart({
 
 	const summaryDescribedBy = legend === 'table' ? undefined : summaryId;
 
+	const legendBottom = legend === 'list' && legendPosition === 'bottom';
+
+	const legendElement = (
+		<PieChartLegend
+			activeIndex={activeIndex}
+			colors={colors}
+			data={data}
+			legend={legend}
+			legendTableDividers={legendTableDividers}
+			legendValue={legendValue}
+			onFocus={focusSlice}
+			onHover={setHoverIndex}
+			onHoverEnd={() => setHoverIndex(null)}
+			position={legendPosition}
+			titleId={titleId}
+			total={total}
+		/>
+	);
+
 	return (
 		<figure
 			aria-describedby={summaryDescribedBy}
@@ -203,20 +229,10 @@ export default function PieChart({
 					/>
 				</div>
 
-				<PieChartLegend
-					activeIndex={activeIndex}
-					colors={colors}
-					data={data}
-					legend={legend}
-					legendTableDividers={legendTableDividers}
-					legendValue={legendValue}
-					onFocus={focusSlice}
-					onHover={setHoverIndex}
-					onHoverEnd={() => setHoverIndex(null)}
-					titleId={titleId}
-					total={total}
-				/>
+				{legendBottom ? null : legendElement}
 			</div>
+
+			{legendBottom ? legendElement : null}
 		</figure>
 	);
 }

@@ -18,6 +18,28 @@
 	margin: 0.75rem 0 0;
 	padding: 0;
 
+	// `stacked`: one item per row instead of the responsive grid, so a
+	// full-width legend reads as a ranked list with the values flush right.
+	// The inline padding insets the rows from the chart edges. Rows show one
+	// cell per table column; the value min-size keeps those cells roughly
+	// aligned across rows without a real column track.
+
+	&--stacked {
+		grid-template-columns: 1fr;
+		padding-inline: 2rem;
+
+		.charts-legend__item {
+			grid-auto-columns: max-content;
+			grid-auto-flow: column;
+		}
+
+		.charts-legend__value {
+			margin-inline-start: 1rem;
+			min-inline-size: 3.5rem;
+			text-align: end;
+		}
+	}
+
 	&__item {
 		align-items: center;
 		border-radius: 4px;

@@ -12,6 +12,13 @@ export interface MapChartProps {
 	legend?: 'list' | 'none' | 'scale' | 'table';
 
 	/**
+	 * Where the `list` legend sits: `end` (default) beside the map, `bottom`
+	 * below it, full width. The `scale` and `table` legends always render at
+	 * the bottom.
+	 */
+	legendPosition?: 'bottom' | 'end';
+
+	/**
 	 * Draw the 1px border around each legend color swatch (list and table).
 	 * Default `true`. Set `false` for borderless swatches.
 	 */
