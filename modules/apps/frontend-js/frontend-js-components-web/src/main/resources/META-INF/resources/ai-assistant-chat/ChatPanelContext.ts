@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {createContext, useContext} from 'react';
+import React, {createContext, useContext} from 'react';
 
 interface ChatPanelContextValue {
 	dialogId: string;
 	onClose: () => void;
+	titleBarLeading?: React.ReactNode;
+	titleBarProps?: React.HTMLAttributes<HTMLDivElement>;
 	titleId: string;
 }
 

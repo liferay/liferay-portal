@@ -22,7 +22,8 @@ export default function ChatPanelHeader({
 	title,
 	...otherProps
 }: ChatPanelHeaderProps) {
-	const {onClose, titleId} = useChatPanelContext();
+	const {onClose, titleBarLeading, titleBarProps, titleId} =
+		useChatPanelContext();
 
 	return (
 		<div
@@ -34,10 +35,17 @@ export default function ChatPanelHeader({
 		>
 			<div className="align-items-center c-mb-2 d-flex flex-row justify-content-between">
 				<span
-					className="chat-panel-header-title text-3 text-weight-semi-bold"
-					id={titleId}
+					{...titleBarProps}
+					className="align-items-center c-gap-2 chat-panel-header-title-bar d-flex"
 				>
-					{title}
+					{titleBarLeading}
+
+					<span
+						className="chat-panel-header-title text-3 text-weight-semi-bold"
+						id={titleId}
+					>
+						{title}
+					</span>
 				</span>
 
 				<span className="align-items-center d-flex flex-row">
