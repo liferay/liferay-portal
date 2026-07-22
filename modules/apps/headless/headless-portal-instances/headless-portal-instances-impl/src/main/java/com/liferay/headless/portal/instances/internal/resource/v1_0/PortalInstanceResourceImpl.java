@@ -178,20 +178,19 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 			throw new BadRequestException("Web ID is required");
 		}
 
-		Company sourceCompany = _companyService.getCompanyByWebId(
+		Company fromCompany = _companyService.getCompanyByWebId(
 			portalInstanceId);
 
-		Long destinationCompanyId =
-			portalInstanceCopy.getDestinationCompanyId();
+		Long toCompanyId = portalInstanceCopy.getDestinationCompanyId();
 
-		if ((destinationCompanyId != null) && (destinationCompanyId <= 0)) {
-			destinationCompanyId = null;
+		if ((toCompanyId != null) && (toCompanyId <= 0)) {
+			toCompanyId = null;
 		}
 
 		try {
 			return _toPortalInstance(
 				_companyService.copyDBPartitionCompany(
-					sourceCompany.getCompanyId(), destinationCompanyId,
+					fromCompany.getCompanyId(), toCompanyId,
 					portalInstanceCopy.getName(),
 					portalInstanceCopy.getVirtualHost(),
 					portalInstanceCopy.getWebId()));
