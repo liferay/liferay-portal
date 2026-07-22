@@ -8,8 +8,11 @@ package com.liferay.fragment.web.internal.portlet.action;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.constants.FragmentPortletKeys;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
+import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.fragment.web.internal.display.context.GroupFragmentEntryLinkDisplayContext;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.service.GroupLocalService;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
@@ -38,7 +41,8 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommand
 			GroupFragmentEntryLinkDisplayContext.class.getName(),
 			new GroupFragmentEntryLinkDisplayContext(
 				_depotEntryGroupRelLocalService, _depotEntryLocalService,
-				renderRequest, renderResponse));
+				_fragmentEntryLinkLocalService, _fragmentEntryLocalService,
+				_groupLocalService, renderRequest, renderResponse));
 
 		return "/view_group_fragment_entry_usages.jsp";
 	}
@@ -48,5 +52,14 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommand
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
+	private FragmentEntryLocalService _fragmentEntryLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 }
