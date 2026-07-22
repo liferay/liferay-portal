@@ -1,0 +1,225 @@
+observability:
+    enabled: false
+operatorApplications:
+    ackPrometheusService:
+        chart: prometheusservice-chart
+        enabled: false
+        namespace: ack-system
+        path: ""
+        repoURL: oci://public.ecr.aws/aws-controllers-k8s
+        targetRevision: 1.4.1
+        values: {}
+    argoWorkflows:
+        chart: argo-workflows
+        enabled: true
+        namespace: argo-workflows-system
+        path: ""
+        repoURL: https://argoproj.github.io/argo-helm
+        targetRevision: 1.0.10
+        values:
+            controller:
+                resources:
+                    limits:
+                        memory: 512Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+                workflowDefaults:
+                    spec:
+                        securityContext:
+                            runAsNonRoot: true
+                            runAsUser: 8737
+                            seccompProfile:
+                                type: RuntimeDefault
+            executor:
+                image:
+                    tag: v4.0.4-nonroot
+                securityContext:
+                    allowPrivilegeEscalation: false
+                    capabilities:
+                        drop:
+                            -   ALL
+                    runAsNonRoot: true
+                    runAsUser: 8737
+                    seccompProfile:
+                        type: RuntimeDefault
+            mainContainer:
+                securityContext:
+                    allowPrivilegeEscalation: false
+                    capabilities:
+                        drop:
+                            -   ALL
+                    runAsNonRoot: true
+                    runAsUser: 8737
+                    seccompProfile:
+                        type: RuntimeDefault
+            server:
+                resources:
+                    limits:
+                        memory: 256Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+    crossplane:
+        chart: crossplane
+        enabled: true
+        functions:
+            function-auto-ready:
+                package: xpkg.upbound.io/upbound/function-auto-ready:v0.6.0
+                resources:
+                    limits:
+                        memory: 256Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+            function-go-templating:
+                package: xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.11.3
+                resources:
+                    limits:
+                        memory: 512Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+        namespace: crossplane-system
+        path: ""
+        repoURL: https://charts.crossplane.io/stable
+        targetRevision: 2.1.3
+        values:
+            podSecurityContextCrossplane:
+                runAsNonRoot: true
+                seccompProfile:
+                    type: RuntimeDefault
+            podSecurityContextRBACManager:
+                runAsNonRoot: true
+                seccompProfile:
+                    type: RuntimeDefault
+            resourcesCrossplane:
+                limits:
+                    memory: 2Gi
+                requests:
+                    cpu: 63m
+                    memory: 768Mi
+            resourcesRBACManager:
+                limits:
+                    memory: 512Mi
+                requests:
+                    cpu: 15m
+                    memory: 256Mi
+            securityContextCrossplane:
+                allowPrivilegeEscalation: false
+                capabilities:
+                    drop:
+                        -   ALL
+                readOnlyRootFilesystem: true
+                runAsGroup: 65532
+                runAsUser: 65532
+            securityContextRBACManager:
+                allowPrivilegeEscalation: false
+                capabilities:
+                    drop:
+                        -   ALL
+                readOnlyRootFilesystem: true
+                runAsGroup: 65532
+                runAsUser: 65532
+    eckOperator:
+        chart: eck-operator
+        enabled: true
+        namespace: elastic-system
+        path: ""
+        repoURL: https://helm.elastic.co
+        targetRevision: 3.2.0
+        values:
+            installCRDs: true
+            podSecurityContext:
+                runAsNonRoot: true
+                seccompProfile:
+                    type: RuntimeDefault
+            resources:
+                limits:
+                    cpu: 1
+                    memory: 512Mi
+                requests:
+                    cpu: 100m
+                    memory: 128Mi
+            securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                    drop:
+                        -   ALL
+                privileged: false
+                readOnlyRootFilesystem: true
+                runAsNonRoot: true
+                seccompProfile:
+                    type: RuntimeDefault
+    envoyGateway:
+        chart: gateway-helm
+        enabled: true
+        namespace: envoy-gateway-system
+        path: ""
+        repoURL: oci://docker.io/envoyproxy
+        targetRevision: 1.6.3
+        values:
+            config:
+                envoyGateway:
+                    extensionApis:
+                        enableBackend: false
+            deployment:
+                replicas: 2
+            podDisruptionBudget:
+                maxUnavailable: 1
+    externalSecrets:
+        chart: external-secrets
+        enabled: true
+        namespace: external-secrets-system
+        path: ""
+        repoURL: https://charts.external-secrets.io
+        targetRevision: 1.0.0
+        values:
+            certController:
+                resources:
+                    limits:
+                        memory: 512Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+            installCRDs: true
+            resources:
+                limits:
+                    memory: 512Mi
+                requests:
+                    cpu: 15m
+                    memory: 128Mi
+            webhook:
+                resources:
+                    limits:
+                        memory: 256Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+    keda:
+        chart: keda
+        enabled: false
+        namespace: keda-system
+        path: ""
+        repoURL: https://kedacore.github.io/charts
+        targetRevision: 2.19.0
+        values:
+            resources:
+                metricServer:
+                    limits:
+                        memory: 512Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+                operator:
+                    limits:
+                        memory: 512Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+                webhooks:
+                    limits:
+                        memory: 256Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
