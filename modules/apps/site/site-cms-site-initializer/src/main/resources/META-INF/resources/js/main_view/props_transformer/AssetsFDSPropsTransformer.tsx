@@ -148,6 +148,7 @@ export type AdditionalProps = {
 	candidateAssetLibraries: AssetLibrary[];
 	cmpProjectAssetRelationshipObjectDefinitionId?: number;
 	cmpProjectObjectDefinitionId?: number;
+	cmpProjectViewURL?: string;
 	cmsGroupId?: number;
 	collaboratorURLs: Record<string, string>;
 	contentViewURL: string;
@@ -661,6 +662,8 @@ export default function AssetsFDSPropsTransformer({
 							closeModal,
 							cmpProjectObjectDefinitionId:
 								additionalProps.cmpProjectObjectDefinitionId as number,
+							cmpProjectViewURL:
+								additionalProps.cmpProjectViewURL,
 							selectedData,
 						}),
 					size: 'md',
