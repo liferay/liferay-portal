@@ -90,6 +90,8 @@ public interface Rels {
 
 	public static final String BULK = "bulk";
 
+	public static final String CATALOG_FIELDS = "catalog-fields";
+
 	public static final String CHANNEL = "channel";
 
 	public static final String CHANNEL_CLEAR = "channel-clear";
