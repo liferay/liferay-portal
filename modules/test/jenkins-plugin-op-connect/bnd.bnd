@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Jenkins Plugin Op Connect
 Bundle-SymbolicName: com.liferay.jenkins.plugin.op.connect
-Bundle-Version: 1.0.1
+Bundle-Version: 1.0.2
 Export-Package: com.liferay.jenkins.plugin.op.connect
