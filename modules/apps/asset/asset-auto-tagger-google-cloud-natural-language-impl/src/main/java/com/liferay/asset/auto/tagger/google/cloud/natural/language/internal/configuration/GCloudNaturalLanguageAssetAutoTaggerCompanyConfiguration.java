@@ -39,7 +39,7 @@ public interface GCloudNaturalLanguageAssetAutoTaggerCompanyConfiguration {
 	)
 	@Meta.AD(
 		description = "set-the-api-key-for-the-google-cloud-natural-language-api",
-		name = "api-key", required = false
+		name = "api-key", required = false, type = Meta.Type.Password
 	)
 	public String apiKey();
 

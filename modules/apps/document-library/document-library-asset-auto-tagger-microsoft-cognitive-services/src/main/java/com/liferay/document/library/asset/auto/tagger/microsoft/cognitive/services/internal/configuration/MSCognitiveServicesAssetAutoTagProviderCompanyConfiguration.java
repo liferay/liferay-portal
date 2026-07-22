@@ -51,7 +51,7 @@ public interface MSCognitiveServicesAssetAutoTagProviderCompanyConfiguration {
 	)
 	@Meta.AD(
 		description = "set-the-api-key-for-the-computer-vision-api-v2",
-		name = "api-key", required = false
+		name = "api-key", required = false, type = Meta.Type.Password
 	)
 	public String apiKey();
 
