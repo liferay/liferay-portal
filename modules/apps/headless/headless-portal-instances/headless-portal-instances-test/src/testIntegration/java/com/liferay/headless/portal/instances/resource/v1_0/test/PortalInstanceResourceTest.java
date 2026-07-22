@@ -605,33 +605,24 @@ public class PortalInstanceResourceTest
 		portalInstanceCopy.setVirtualHost(virtualHost);
 		portalInstanceCopy.setWebId(randomId);
 
-		try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.application.list.user.personal.site.permissions." +
-					"internal.model.listener.CompanyModelListener",
-				LoggerTestUtil.ERROR);
-			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.kernel.transaction.TransactionCallbackUtil",
-				LoggerTestUtil.ERROR)) {
+		PortalInstance copiedPortalInstance =
+			portalInstanceResource.postPortalInstanceCopy(
+				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
 
-			PortalInstance copiedPortalInstance =
-				portalInstanceResource.postPortalInstanceCopy(
-					_portalInstance.getPortalInstanceId(), portalInstanceCopy);
+		try {
+			assertValid(copiedPortalInstance);
 
-			try {
-				assertValid(copiedPortalInstance);
-
-				Assert.assertNotEquals(
-					_portalInstance.getCompanyId(),
-					copiedPortalInstance.getCompanyId());
-				Assert.assertEquals(
-					randomId, copiedPortalInstance.getPortalInstanceId());
-				Assert.assertEquals(
-					virtualHost, copiedPortalInstance.getVirtualHost());
-			}
-			finally {
-				if (copiedPortalInstance != null) {
-					_deletePortalInstance(copiedPortalInstance);
-				}
+			Assert.assertNotEquals(
+				_portalInstance.getCompanyId(),
+				copiedPortalInstance.getCompanyId());
+			Assert.assertEquals(
+				randomId, copiedPortalInstance.getPortalInstanceId());
+			Assert.assertEquals(
+				virtualHost, copiedPortalInstance.getVirtualHost());
+		}
+		finally {
+			if (copiedPortalInstance != null) {
+				_deletePortalInstance(copiedPortalInstance);
 			}
 		}
 	}
@@ -679,31 +670,22 @@ public class PortalInstanceResourceTest
 		portalInstanceCopy.setVirtualHost(virtualHost);
 		portalInstanceCopy.setWebId(randomId);
 
-		try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.application.list.user.personal.site.permissions." +
-					"internal.model.listener.CompanyModelListener",
-				LoggerTestUtil.ERROR);
-			LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.kernel.transaction.TransactionCallbackUtil",
-				LoggerTestUtil.ERROR)) {
+		PortalInstance copiedPortalInstance =
+			portalInstanceResource.postPortalInstanceCopy(
+				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
 
-			PortalInstance copiedPortalInstance =
-				portalInstanceResource.postPortalInstanceCopy(
-					_portalInstance.getPortalInstanceId(), portalInstanceCopy);
+		try {
+			assertValid(copiedPortalInstance);
 
-			try {
-				assertValid(copiedPortalInstance);
-
-				Assert.assertNotEquals(
-					_portalInstance.getCompanyId(),
-					copiedPortalInstance.getCompanyId());
-				Assert.assertEquals(
-					randomId, copiedPortalInstance.getPortalInstanceId());
-			}
-			finally {
-				if (copiedPortalInstance != null) {
-					_deletePortalInstance(copiedPortalInstance);
-				}
+			Assert.assertNotEquals(
+				_portalInstance.getCompanyId(),
+				copiedPortalInstance.getCompanyId());
+			Assert.assertEquals(
+				randomId, copiedPortalInstance.getPortalInstanceId());
+		}
+		finally {
+			if (copiedPortalInstance != null) {
+				_deletePortalInstance(copiedPortalInstance);
 			}
 		}
 	}
