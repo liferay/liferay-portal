@@ -360,7 +360,7 @@
 			$_focus-within: map-get($map, focus-within);
 
 			@if ($_focus-within) {
-				&:focus-within:has(input:focus) {
+				&:focus-within:has(input:focus, textarea:focus) {
 					@include clay-input-group-item-variant($_focus-within);
 				}
 			}
@@ -578,6 +578,7 @@
 			}
 
 			$_input-group-item: map-get($map, input-group-item);
+			$map: map-remove($map, input-group-item);
 
 			@if ($_input-group-item) {
 				> .input-group-item {
@@ -586,6 +587,7 @@
 			}
 
 			$_input-group-item-shrink: map-get($map, input-group-item-shrink);
+			$map: map-remove($map, input-group-item-shrink);
 
 			@if ($_input-group-item-shrink) {
 				> .input-group-item-shrink {
@@ -596,6 +598,7 @@
 			}
 
 			$_btn-primary: map-get($map, btn-primary);
+			$map: map-remove($map, btn-primary);
 
 			@if ($_btn-primary) {
 				.btn-primary {
@@ -604,6 +607,7 @@
 			}
 
 			$_btn-secondary: map-get($map, btn-secondary);
+			$map: map-remove($map, btn-secondary);
 
 			@if ($_btn-secondary) {
 				.btn-secondary {
@@ -612,6 +616,7 @@
 			}
 
 			$_btn-unstyled: map-get($map, btn-unstyled);
+			$map: map-remove($map, btn-unstyled);
 
 			@if ($_btn-unstyled) {
 				.btn-unstyled {
@@ -621,6 +626,11 @@
 
 			$_media-breakpoint-down: map-get($map, media-breakpoint-down);
 			$_media-breakpoint-up: map-get($map, media-breakpoint-up);
+
+			$_media-breakpoints: $map;
+			$map: map-remove($map, media-breakpoint-down, media-breakpoint-up);
+
+			@include clay-map-to-css($map);
 
 			@if ($_media-breakpoint-down) or ($_media-breakpoint-up) {
 				@include clay-generate-media-breakpoints(

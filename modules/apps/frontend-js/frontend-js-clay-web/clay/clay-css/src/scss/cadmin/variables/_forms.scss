@@ -2214,3 +2214,93 @@ $cadmin-input-group-stacked-sm-down: map-deep-merge(
 	),
 	$cadmin-input-group-stacked-sm-down
 );
+
+$cadmin-input-group-ai: () !default;
+$cadmin-input-group-ai: map-deep-merge(
+	(
+		align-items: center,
+
+		'.form-control': (
+			padding: 0 0 0 $cadmin-input-padding-x,
+
+			'&:focus-within:has(.form-control-inset:focus)': (
+				border-color: $cadmin-purple-l2,
+				box-shadow:
+					unquote('0 0 10px hsl(from #{$cadmin-purple} h s l / 0.15)'),
+			),
+		),
+
+		'&[data-ai-state="focused"]': (
+			'.form-control': (
+				border-color: $cadmin-purple-l2,
+				box-shadow:
+					unquote('0 0 10px hsl(from #{$cadmin-purple} h s l / 0.15)'),
+			),
+		),
+
+		'&[data-ai-state="working"]': (
+			'.form-control': (
+				background-color: $cadmin-purple-l5,
+				border-color: $cadmin-purple-l1,
+				box-shadow:
+					unquote('0 0 10px hsl(from #{$cadmin-purple} h s l / 0.15)'),
+				color: $cadmin-purple-d2,
+			),
+		),
+
+		'&[data-ai-state="result"], &[data-ai-state="result-only"]': (
+			'.form-control': (
+				background-color: $cadmin-gray-100,
+				border-color: $cadmin-purple-l1,
+				box-shadow: none,
+				color: $cadmin-purple,
+			),
+		),
+
+		'.form-control-inset': (
+			color: inherit,
+			height: 2.375rem,
+			margin: 0,
+			min-height: 0,
+			padding: $cadmin-input-padding-y $cadmin-input-padding-x
+				$cadmin-input-padding-y 0,
+			resize: none,
+			width: 100%,
+
+			'&[aria-hidden="true"]::placeholder': (
+				background-image:
+					linear-gradient(
+						to right,
+						$cadmin-primary,
+						$cadmin-purple-d2
+					),
+				border-radius: $cadmin-input-border-radius,
+				color: transparent,
+				opacity: 0.25,
+			),
+		),
+
+		'.autofit-row': (
+			margin-left: -0.25rem,
+			margin-right: -0.25rem,
+
+			'.autofit-col': (
+				padding-left: 0.25rem,
+				padding-right: 0.25rem,
+			),
+
+			'.lexicon-icon': (
+				margin-top: 0,
+			),
+		),
+	),
+	$cadmin-input-group-ai
+);
+
+$cadmin-input-group-palette: () !default;
+$cadmin-input-group-palette: map-deep-merge(
+	(
+		'.input-group-ai': $cadmin-input-group-ai,
+	),
+	$cadmin-input-group-palette
+);

@@ -356,3 +356,13 @@
 		}
 	}
 }
+
+// Input Group Variants
+
+@each $key, $value in $cadmin-input-group-palette {
+	@if not clay-is-map-unset($value) {
+		#{$key} {
+			@include clay-input-group-variant($value);
+		}
+	}
+}
