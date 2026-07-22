@@ -15,6 +15,66 @@
 	width: 448px;
 }
 
+.chat-container-floating-panel {
+	background-color: $white;
+	overflow: hidden;
+	position: fixed;
+	z-index: $zindex-fixed;
+}
+
+.chat-container-floating-panel .chat-panel-header-title-bar {
+	cursor: move;
+	touch-action: none;
+	user-select: none;
+
+	.lexicon-icon-drag {
+		color: $gray-600;
+	}
+}
+
+.chat-container-floating-drag-handle {
+	touch-action: none;
+}
+
+.chat-container-floating-resize-handle {
+	background-color: transparent;
+	border: 0;
+	bottom: 0;
+	cursor: nwse-resize;
+	height: 24px;
+	padding: 0;
+	position: absolute;
+	right: 0;
+	touch-action: none;
+	width: 24px;
+}
+
+.chat-container-floating-resize-handle::after {
+	background-image: repeating-linear-gradient(
+		-45deg,
+		$gray-600 0,
+		$gray-600 1px,
+		transparent 1px,
+		transparent 3px
+	);
+	bottom: 3px;
+	content: '';
+	height: 10px;
+	position: absolute;
+	right: 3px;
+	width: 10px;
+}
+
+.chat-container-floating-drag-handle:focus-visible {
+	outline: 2px solid $primary;
+	outline-offset: 2px;
+}
+
+.chat-container-floating-resize-handle:focus-visible {
+	outline: 2px solid $primary;
+	outline-offset: -2px;
+}
+
 .chat-container {
 	position: relative;
 
@@ -29,6 +89,11 @@
 	&.chat-container-dropdown {
 		height: 100%;
 		width: 100%;
+	}
+
+	&.chat-container-floating {
+		inset: 0;
+		position: absolute;
 	}
 
 	&.chat-container-sidebar {
