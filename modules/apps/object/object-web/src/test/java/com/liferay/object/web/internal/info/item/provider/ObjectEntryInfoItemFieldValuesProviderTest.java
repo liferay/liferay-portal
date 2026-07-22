@@ -5,6 +5,7 @@
 
 package com.liferay.object.web.internal.info.item.provider;
 
+import com.liferay.asset.info.item.provider.AssetEntryInfoItemFieldSetProvider;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
@@ -109,6 +110,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 
 		_objectEntryInfoItemFieldValuesProvider =
 			new ObjectEntryInfoItemFieldValuesProvider(
+				Mockito.mock(AssetEntryInfoItemFieldSetProvider.class),
 				displayPageInfoItemFieldSetProvider,
 				Mockito.mock(DLAppLocalService.class),
 				Mockito.mock(DLURLHelper.class),
