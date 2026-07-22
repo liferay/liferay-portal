@@ -50,10 +50,16 @@ public class ContentSecurityPolicyNonceManager {
 	}
 
 	public String setNonce(HttpServletRequest httpServletRequest) {
-		String nonce = null;
-
 		httpServletRequest = _portal.getOriginalServletRequest(
 			httpServletRequest);
+
+		String nonce = (String)httpServletRequest.getAttribute(_NONCE);
+
+		if (nonce != null) {
+			_threadLocal.set(nonce);
+
+			return nonce;
+		}
 
 		HttpSession httpSession = httpServletRequest.getSession();
 
