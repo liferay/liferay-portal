@@ -41,7 +41,7 @@ public interface FirebasePushNotificationsSenderConfiguration {
 	)
 	@Meta.AD(
 		description = "service-account-key-help", name = "service-account-key",
-		required = false
+		required = false, type = Meta.Type.Password
 	)
 	public String serviceAccountKey();
 

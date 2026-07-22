@@ -27,7 +27,8 @@ public interface ApplePushNotificationsSenderConfiguration {
 
 	@Meta.AD(
 		description = "certificate-password-description",
-		name = "certificate-password-name", required = false
+		name = "certificate-password-name", required = false,
+		type = Meta.Type.Password
 	)
 	public String certificatePassword();
 
