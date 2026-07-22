@@ -40,6 +40,7 @@ describe('ProjectInfoSummary', () => {
 		expect(getByText('not-started')).toBeInTheDocument();
 		expect(getByText('tag1')).toBeInTheDocument();
 		expect(getByText('tag2')).toBeInTheDocument();
+		expect(screen.getByRole('combobox')).not.toHaveClass('disabled');
 	});
 
 	it('renders personas and funnel stages as chips', () => {
