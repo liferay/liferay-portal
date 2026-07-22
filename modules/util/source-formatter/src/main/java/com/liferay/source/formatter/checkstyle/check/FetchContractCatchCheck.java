@@ -219,6 +219,10 @@ public class FetchContractCatchCheck extends BaseCheck {
 				DetailAST exprDetailAST = childDetailAST.findFirstToken(
 					TokenTypes.EXPR);
 
+				if (exprDetailAST == null) {
+					return false;
+				}
+
 				DetailAST firstChildDetailAST = exprDetailAST.getFirstChild();
 
 				if ((firstChildDetailAST == null) ||
