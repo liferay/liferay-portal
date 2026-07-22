@@ -136,12 +136,12 @@ function _source_database_brand {
 			;;
 	esac
 
-	source "${brand}.sh"
+	source "_database_brand_${brand}.sh"
 
 	for function_name in _drop_database _set_database
 	do
 		[[ "$(type -t "${function_name}")" == function ]] ||
-			_die "${brand}.sh must implement the function: \"${function_name}\"."
+			_die "_database_brand_${brand}.sh must implement the function: \"${function_name}\"."
 	done
 }
 
