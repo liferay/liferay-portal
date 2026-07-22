@@ -26,6 +26,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -191,6 +192,9 @@ public class SectionDisplayContextUtil {
 		_addEditCategoriesAndTagsBulkActions(
 			bulkActionDropdownItems, httpServletRequest);
 
+		_addAddAssetsToProjectBulkAction(
+			bulkActionDropdownItems, httpServletRequest);
+
 		bulkActionDropdownItems.add(
 			FDSActionDropdownItemBuilder.setHighlighted(
 				true
@@ -289,6 +293,10 @@ public class SectionDisplayContextUtil {
 
 		_addEditCategoriesAndTagsBulkActions(
 			bulkActionDropdownItems, httpServletRequest);
+
+		_addAddAssetsToProjectBulkAction(
+			bulkActionDropdownItems, httpServletRequest);
+
 		_addPermissionsBulkActions(bulkActionDropdownItems, httpServletRequest);
 
 		return bulkActionDropdownItems;
@@ -775,6 +783,10 @@ public class SectionDisplayContextUtil {
 
 		_addEditCategoriesAndTagsBulkActions(
 			bulkActionDropdownItems, httpServletRequest);
+
+		_addAddAssetsToProjectBulkAction(
+			bulkActionDropdownItems, httpServletRequest);
+
 		_addPermissionsBulkActions(bulkActionDropdownItems, httpServletRequest);
 
 		return bulkActionDropdownItems;
@@ -893,6 +905,36 @@ public class SectionDisplayContextUtil {
 		}
 
 		return objectEntryFolderIdsMap;
+	}
+
+	private static void _addAddAssetsToProjectBulkAction(
+		List<DropdownItem> bulkActionDropdownItems,
+		HttpServletRequest httpServletRequest) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-58677")) {
+
+			return;
+		}
+
+		bulkActionDropdownItems.add(
+			FDSActionDropdownItemBuilder.setHref(
+				"#"
+			).setIcon(
+				"archive"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "add-assets-to-project")
+			).setMethod(
+				"post"
+			).setPermissionKey(
+				"update"
+			).build(
+				"add-assets-to-project"
+			));
 	}
 
 	private static void _addEditCategoriesAndTagsBulkActions(
