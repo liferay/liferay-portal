@@ -27,7 +27,9 @@ public interface SharepointRepositoryConfiguration {
 	@Meta.AD(name = "client-id", required = false)
 	public String clientId();
 
-	@Meta.AD(name = "client-secret", required = false)
+	@Meta.AD(
+		name = "client-secret", required = false, type = Meta.Type.Password
+	)
 	public String clientSecret();
 
 	@Meta.AD(name = "name", required = false)

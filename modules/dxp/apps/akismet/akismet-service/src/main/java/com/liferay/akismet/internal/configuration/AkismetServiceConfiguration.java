@@ -19,7 +19,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface AkismetServiceConfiguration {
 
-	@Meta.AD(name = "api-key", required = false)
+	@Meta.AD(name = "api-key", required = false, type = Meta.Type.Password)
 	public String akismetApiKey();
 
 	@Meta.AD(deflt = "50", name = "check-threshold", required = false)

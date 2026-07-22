@@ -22,7 +22,10 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface IpstackConfiguration {
 
-	@Meta.AD(deflt = "", name = "api-key", required = false)
+	@Meta.AD(
+		deflt = "", name = "api-key", required = false,
+		type = Meta.Type.Password
+	)
 	public String apiKey();
 
 	@Meta.AD(

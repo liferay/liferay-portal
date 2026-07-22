@@ -39,7 +39,7 @@ public interface PatcherConfiguration {
 	@Meta.AD(deflt = "", required = false)
 	public String jenkinsAdminUserName();
 
-	@Meta.AD(deflt = "", required = false)
+	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
 	public String jenkinsAdminUserToken();
 
 	@Meta.AD(deflt = "", required = false)
@@ -51,7 +51,7 @@ public interface PatcherConfiguration {
 	@Meta.AD(deflt = "", required = false)
 	public boolean jenkinsLoadBalancerEnabled();
 
-	@Meta.AD(deflt = "", required = false)
+	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
 	public String jenkinsToken();
 
 	@Meta.AD(deflt = "", required = false)
@@ -123,7 +123,7 @@ public interface PatcherConfiguration {
 	@Meta.AD(deflt = "", required = false)
 	public String supportLiferayAPIClientId();
 
-	@Meta.AD(deflt = "", required = false)
+	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
 	public String supportLiferayAPIClientSecret();
 
 	@Meta.AD(deflt = "", required = false)
