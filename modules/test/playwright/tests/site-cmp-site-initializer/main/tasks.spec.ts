@@ -406,6 +406,201 @@ test(
 );
 
 test(
+	'Calendar view creates a task by clicking a day',
+	{tag: ['@LPD-93258', '@LPD-97621']},
+	async ({page, projectPage, projectsPage, tasksPage}) => {
+		const taskTitle = getRandomString();
+
+		const targetDate = new Date();
+
+		targetDate.setDate(15);
+
+		const dayCell = tasksPage.getCalendarDayCell(targetDate);
+
+		await test.step('View the project and open its calendar view', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await tasksPage.calendarView.viewOption.click();
+
+			await expect(tasksPage.calendarView.title).toBeVisible();
+		});
+
+		await test.step('Click the add task button to open the create task modal', async () => {
+			const addTaskButton = dayCell.getByLabel('Add Task');
+
+			await dayCell.hover();
+
+			await clickAndExpectToBeVisible({
+				target: tasksPage.titleInput,
+				trigger: addTaskButton,
+			});
+		});
+
+		await test.step('The clicked day is pre-filled as the due date', async () => {
+			const locale = await page.evaluate(() =>
+				Liferay.ThemeDisplay.getBCP47LanguageId()
+			);
+
+			const expectedDueDate = targetDate.toLocaleDateString(locale, {
+				day: '2-digit',
+				month: '2-digit',
+				year: 'numeric',
+			});
+
+			await expect(page.getByLabel('Due Date')).toHaveValue(
+				expectedDueDate
+			);
+		});
+
+		await test.step('Fill in the title and save', async () => {
+			await tasksPage.titleInput.fill(taskTitle);
+
+			await tasksPage.saveButton.click();
+		});
+
+		await test.step('The new task appears on the clicked day', async () => {
+			await expect(
+				dayCell.getByText(taskTitle, {exact: true})
+			).toBeVisible();
+		});
+
+		await test.step('Clicking a day slot opens the create task modal with that day pre-filled', async () => {
+			const daySlotDate = new Date();
+
+			daySlotDate.setDate(10);
+
+			await clickAndExpectToBeVisible({
+				target: tasksPage.titleInput,
+				trigger: tasksPage.getCalendarDayCell(daySlotDate),
+			});
+
+			const locale = await page.evaluate(() =>
+				Liferay.ThemeDisplay.getBCP47LanguageId()
+			);
+
+			await expect(page.getByLabel('Due Date')).toHaveValue(
+				daySlotDate.toLocaleDateString(locale, {
+					day: '2-digit',
+					month: '2-digit',
+					year: 'numeric',
+				})
+			);
+
+			await page.getByRole('button', {name: 'Cancel'}).click();
+
+			await expect(tasksPage.titleInput).toBeHidden();
+		});
+
+		await test.step('Saving from a day slot keeps the calendar on the navigated month', async () => {
+			const nextMonthTaskTitle = getRandomString();
+
+			const nextMonthDate = new Date();
+
+			nextMonthDate.setDate(15);
+			nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+
+			await tasksPage.calendarView.nextMonthButton.click();
+
+			const nextMonthDayCell =
+				tasksPage.getCalendarDayCell(nextMonthDate);
+
+			await clickAndExpectToBeVisible({
+				target: tasksPage.titleInput,
+				trigger: nextMonthDayCell,
+			});
+
+			await tasksPage.titleInput.fill(nextMonthTaskTitle);
+
+			await tasksPage.saveButton.click();
+
+			await expect(
+				nextMonthDayCell.getByText(nextMonthTaskTitle, {exact: true})
+			).toBeVisible();
+		});
+	}
+);
+
+test(
+	'Calendar view displays task actions',
+	{tag: ['@LPD-69885', '@LPD-96185']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const scheduledTaskTitle = getRandomString();
+
+		const targetDate = new Date();
+
+		targetDate.setDate(15);
+
+		const dueDate = toDateString(targetDate);
+
+		const {calendarView} = tasksPage;
+
+		const dayCell = tasksPage.getCalendarDayCell(targetDate);
+
+		const kebab = dayCell.getByLabel('Actions');
+
+		const taskEvent = dayCell.getByText(scheduledTaskTitle);
+
+		await test.step('Create a task with a due date', async () => {
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					dueDate: `${dueDate}T00:00:00Z`,
+					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
+					title: scheduledTaskTitle,
+				},
+				cmpTask,
+				project.scopeKey
+			);
+		});
+
+		await test.step('View the project and open its calendar view', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await calendarView.viewOption.click();
+
+			await expect(calendarView.title).toBeVisible();
+		});
+
+		await test.step('Open the kebab and run an action without navigating away', async () => {
+			await taskEvent.hover();
+
+			await kebab.click();
+
+			await expect(page).not.toHaveURL(/\/e\/task\//);
+
+			await page.getByRole('menuitem', {name: 'Watch Task'}).click();
+
+			await expect(page).not.toHaveURL(/\/e\/task\//);
+		});
+
+		await test.step('Check the unscheduled panel tasks display a kebab and clicking it shows the actions', async () => {
+			await clickAndExpectToBeVisible({
+				target: calendarView.unscheduledTasksPanel,
+				trigger: calendarView.unscheduledTasksButton,
+			});
+
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {name: 'Delete'}),
+				trigger: calendarView.unscheduledTasksPanel
+					.getByLabel('Actions')
+					.first(),
+			});
+		});
+	}
+);
+
+test(
 	'Calendar view properly displays tasks',
 	{tag: ['@LPD-69885', '@LPD-96021']},
 	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
@@ -825,201 +1020,6 @@ test(
 				calendarView.unscheduledTasksPanel.getByText(taskTitle, {
 					exact: true,
 				})
-			).toBeVisible();
-		});
-	}
-);
-
-test(
-	"Calendar's task actions are displayed",
-	{tag: ['@LPD-69885', '@LPD-96185']},
-	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
-		const scheduledTaskTitle = getRandomString();
-
-		const targetDate = new Date();
-
-		targetDate.setDate(15);
-
-		const dueDate = toDateString(targetDate);
-
-		const {calendarView} = tasksPage;
-
-		const dayCell = tasksPage.getCalendarDayCell(targetDate);
-
-		const kebab = dayCell.getByLabel('Actions');
-
-		const taskEvent = dayCell.getByText(scheduledTaskTitle);
-
-		await test.step('Create a task with a due date', async () => {
-			await apiHelpers.objectEntry.postObjectEntry(
-				{
-					dueDate: `${dueDate}T00:00:00Z`,
-					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
-					title: scheduledTaskTitle,
-				},
-				cmpTask,
-				project.scopeKey
-			);
-		});
-
-		await test.step('View the project and open its calendar view', async () => {
-			await projectsPage.goto();
-
-			await projectsPage.getProject(project.title).click();
-
-			await projectPage.tasksTab.click();
-
-			await tasksPage.tableViewButton.click();
-
-			await calendarView.viewOption.click();
-
-			await expect(calendarView.title).toBeVisible();
-		});
-
-		await test.step('Open the kebab and run an action without navigating away', async () => {
-			await taskEvent.hover();
-
-			await kebab.click();
-
-			await expect(page).not.toHaveURL(/\/e\/task\//);
-
-			await page.getByRole('menuitem', {name: 'Watch Task'}).click();
-
-			await expect(page).not.toHaveURL(/\/e\/task\//);
-		});
-
-		await test.step('Check the unscheduled panel tasks display a kebab and clicking it shows the actions', async () => {
-			await clickAndExpectToBeVisible({
-				target: calendarView.unscheduledTasksPanel,
-				trigger: calendarView.unscheduledTasksButton,
-			});
-
-			await clickAndExpectToBeVisible({
-				target: page.getByRole('menuitem', {name: 'Delete'}),
-				trigger: calendarView.unscheduledTasksPanel
-					.getByLabel('Actions')
-					.first(),
-			});
-		});
-	}
-);
-
-test(
-	'Create a task from the calendar by clicking a day',
-	{tag: ['@LPD-93258', '@LPD-97621']},
-	async ({page, projectPage, projectsPage, tasksPage}) => {
-		const taskTitle = getRandomString();
-
-		const targetDate = new Date();
-
-		targetDate.setDate(15);
-
-		const dayCell = tasksPage.getCalendarDayCell(targetDate);
-
-		await test.step('View the project and open its calendar view', async () => {
-			await projectsPage.goto();
-
-			await projectsPage.getProject(project.title).click();
-
-			await projectPage.tasksTab.click();
-
-			await tasksPage.tableViewButton.click();
-
-			await tasksPage.calendarView.viewOption.click();
-
-			await expect(tasksPage.calendarView.title).toBeVisible();
-		});
-
-		await test.step('Click the add task button to open the create task modal', async () => {
-			const addTaskButton = dayCell.getByLabel('Add Task');
-
-			await dayCell.hover();
-
-			await clickAndExpectToBeVisible({
-				target: tasksPage.titleInput,
-				trigger: addTaskButton,
-			});
-		});
-
-		await test.step('The clicked day is pre-filled as the due date', async () => {
-			const locale = await page.evaluate(() =>
-				Liferay.ThemeDisplay.getBCP47LanguageId()
-			);
-
-			const expectedDueDate = targetDate.toLocaleDateString(locale, {
-				day: '2-digit',
-				month: '2-digit',
-				year: 'numeric',
-			});
-
-			await expect(page.getByLabel('Due Date')).toHaveValue(
-				expectedDueDate
-			);
-		});
-
-		await test.step('Fill in the title and save', async () => {
-			await tasksPage.titleInput.fill(taskTitle);
-
-			await tasksPage.saveButton.click();
-		});
-
-		await test.step('The new task appears on the clicked day', async () => {
-			await expect(
-				dayCell.getByText(taskTitle, {exact: true})
-			).toBeVisible();
-		});
-
-		await test.step('Clicking a day slot opens the create task modal with that day pre-filled', async () => {
-			const daySlotDate = new Date();
-
-			daySlotDate.setDate(10);
-
-			await clickAndExpectToBeVisible({
-				target: tasksPage.titleInput,
-				trigger: tasksPage.getCalendarDayCell(daySlotDate),
-			});
-
-			const locale = await page.evaluate(() =>
-				Liferay.ThemeDisplay.getBCP47LanguageId()
-			);
-
-			await expect(page.getByLabel('Due Date')).toHaveValue(
-				daySlotDate.toLocaleDateString(locale, {
-					day: '2-digit',
-					month: '2-digit',
-					year: 'numeric',
-				})
-			);
-
-			await page.getByRole('button', {name: 'Cancel'}).click();
-
-			await expect(tasksPage.titleInput).toBeHidden();
-		});
-
-		await test.step('Saving from a day slot keeps the calendar on the navigated month', async () => {
-			const nextMonthTaskTitle = getRandomString();
-
-			const nextMonthDate = new Date();
-
-			nextMonthDate.setDate(15);
-			nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
-
-			await tasksPage.calendarView.nextMonthButton.click();
-
-			const nextMonthDayCell =
-				tasksPage.getCalendarDayCell(nextMonthDate);
-
-			await clickAndExpectToBeVisible({
-				target: tasksPage.titleInput,
-				trigger: nextMonthDayCell,
-			});
-
-			await tasksPage.titleInput.fill(nextMonthTaskTitle);
-
-			await tasksPage.saveButton.click();
-
-			await expect(
-				nextMonthDayCell.getByText(nextMonthTaskTitle, {exact: true})
 			).toBeVisible();
 		});
 	}
