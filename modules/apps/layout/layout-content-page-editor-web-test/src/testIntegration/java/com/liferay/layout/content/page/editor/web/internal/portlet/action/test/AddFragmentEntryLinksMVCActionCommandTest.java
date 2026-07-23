@@ -688,7 +688,6 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 		Assert.assertTrue(
 			Arrays.toString(actualGroupIds),
 			ArrayUtil.containsAll(actualGroupIds, groupIds));
-
 		Assert.assertEquals(
 			Arrays.toString(actualGroupIds), groupIds.length,
 			actualGroupIds.length);
