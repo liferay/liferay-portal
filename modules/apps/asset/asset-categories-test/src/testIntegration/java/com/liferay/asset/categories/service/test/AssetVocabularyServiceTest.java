@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -68,7 +69,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -198,8 +198,8 @@ public class AssetVocabularyServiceTest {
 
 	@Test
 	public void testAddVocabularyWithoutAssetLibrary() throws Exception {
-		Group cmsGroup = CMSTestUtil.getOrAddGroup(
-			AssetVocabularyServiceTest.class);
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		AssetVocabulary vocabulary = AssetTestUtil.addVocabulary(
 			cmsGroup.getGroupId(), RandomTestUtil.randomString());
@@ -871,6 +871,9 @@ public class AssetVocabularyServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private Locale _locale;
 

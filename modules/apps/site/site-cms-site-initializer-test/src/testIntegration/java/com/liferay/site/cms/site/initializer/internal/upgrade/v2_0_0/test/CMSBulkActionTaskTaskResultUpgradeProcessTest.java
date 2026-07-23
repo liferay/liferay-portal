@@ -11,6 +11,8 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -18,7 +20,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -40,8 +41,8 @@ public class CMSBulkActionTaskTaskResultUpgradeProcessTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(
-			CMSBulkActionTaskTaskResultUpgradeProcessTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_objectDefinition =
 			_objectDefinitionLocalService.
@@ -88,6 +89,9 @@ public class CMSBulkActionTaskTaskResultUpgradeProcessTest {
 	private static final String _CLASS_NAME =
 		"com.liferay.site.cms.site.initializer.internal.upgrade.v2_0_0." +
 			"CMSBulkActionTaskTaskResultUpgradeProcess";
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private ObjectDefinition _objectDefinition;
 

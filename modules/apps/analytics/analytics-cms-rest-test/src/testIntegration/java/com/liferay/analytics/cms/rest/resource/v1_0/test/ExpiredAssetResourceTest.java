@@ -21,6 +21,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -34,7 +35,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.io.Serializable;
 
@@ -200,7 +200,8 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 	}
 
 	private void _setUpCMSContext() throws Exception {
-		CMSTestUtil.getOrAddGroup(ExpiredAssetResourceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_serviceContext = new ServiceContext() {
 			{
@@ -221,6 +222,9 @@ public class ExpiredAssetResourceTest extends BaseExpiredAssetResourceTestCase {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private LayoutClassedModelUsageLocalService

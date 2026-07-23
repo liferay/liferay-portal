@@ -21,6 +21,7 @@ import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -57,7 +59,6 @@ import com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.test.MockLiferayPortletContext;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import jakarta.portlet.Portlet;
 
@@ -85,8 +86,8 @@ public class WorkflowTaskDisplayContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = CMSTestUtil.getOrAddGroup(
-			WorkflowTaskDisplayContextTest.class);
+		_cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 		_group = GroupTestUtil.addGroup();
 	}
 
@@ -294,6 +295,9 @@ public class WorkflowTaskDisplayContextTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.portal.workflow.task.web.internal.portlet.MyWorkflowTaskPortlet"

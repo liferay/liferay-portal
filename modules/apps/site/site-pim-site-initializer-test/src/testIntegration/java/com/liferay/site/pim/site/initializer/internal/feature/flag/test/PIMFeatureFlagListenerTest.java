@@ -44,7 +44,7 @@ public class PIMFeatureFlagListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PIMTestUtil.getOrAddGroup(PIMFeatureFlagListenerTest.class);
+		PIMTestUtil.getOrAddGroup();
 	}
 
 	@Test

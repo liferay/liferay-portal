@@ -69,7 +69,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.subscription.service.SubscriptionLocalService;
 
 import java.util.Collections;
@@ -79,7 +78,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -92,12 +90,6 @@ import org.osgi.framework.ServiceRegistration;
 @RunWith(Arquillian.class)
 public class ObjectEntryFolderResourceTest
 	extends BaseObjectEntryFolderResourceTestCase {
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		BaseObjectEntryFolderResourceTestCase.setUpClass();
-		CMSTestUtil.getOrAddGroup(ObjectEntryFolderResourceTest.class);
-	}
 
 	@Before
 	public void setUp() throws Exception {

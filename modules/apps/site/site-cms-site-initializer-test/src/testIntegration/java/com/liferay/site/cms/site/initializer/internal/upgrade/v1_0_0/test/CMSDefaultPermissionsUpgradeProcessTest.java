@@ -17,10 +17,13 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -30,7 +33,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
 import java.util.Objects;
@@ -57,8 +59,8 @@ public class CMSDefaultPermissionsUpgradeProcessTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(
-			CMSDefaultPermissionsUpgradeProcessTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
@@ -166,6 +168,9 @@ public class CMSDefaultPermissionsUpgradeProcessTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;

@@ -20,6 +20,7 @@ import com.liferay.headless.asset.library.client.problem.Problem;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
@@ -43,7 +44,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +68,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		CMSTestUtil.getOrAddGroup(AssetLibraryResourceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 	}
 
 	@Override

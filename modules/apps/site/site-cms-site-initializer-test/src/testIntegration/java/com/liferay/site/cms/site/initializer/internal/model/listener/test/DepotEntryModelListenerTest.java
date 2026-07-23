@@ -15,6 +15,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -24,7 +25,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +51,8 @@ public class DepotEntryModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = CMSTestUtil.getOrAddGroup(DepotEntryModelListenerTest.class);
+		_group = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 	}
 
 	@Test
@@ -191,5 +192,8 @@ public class DepotEntryModelListenerTest {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 }

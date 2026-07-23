@@ -18,8 +18,10 @@ import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -29,7 +31,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerRegistry;
 
@@ -155,7 +156,8 @@ public class CMPTestUtil {
 	}
 
 	public static Group getOrAddGroup(Class<?> clazz) throws Exception {
-		Group group = CMSTestUtil.getOrAddGroup(clazz);
+		Group group = GroupLocalServiceUtil.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.

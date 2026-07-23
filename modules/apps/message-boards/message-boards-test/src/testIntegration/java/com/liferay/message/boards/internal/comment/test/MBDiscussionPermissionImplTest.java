@@ -27,6 +27,7 @@ import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -55,7 +57,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.io.Serializable;
 
@@ -201,8 +202,8 @@ public class MBDiscussionPermissionImplTest {
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(_user));
 
-			Group cmsGroup = CMSTestUtil.getOrAddGroup(
-				MBDiscussionPermissionImplTest.class);
+			Group cmsGroup = _groupLocalService.getGroup(
+				TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 			_depotEntry = _depotEntryLocalService.addDepotEntry(
 				HashMapBuilder.put(
@@ -337,6 +338,9 @@ public class MBDiscussionPermissionImplTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private MBBanLocalService _mbBanLocalService;

@@ -48,8 +48,7 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PIMTestUtil.getOrAddGroup(
-			PIMObjectEntryFolderDepotEntryLocalServiceWrapperTest.class);
+		PIMTestUtil.getOrAddGroup();
 	}
 
 	@Test

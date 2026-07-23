@@ -47,7 +47,9 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -62,7 +64,6 @@ import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.io.Serializable;
 
@@ -316,7 +317,8 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			String storageDLFolderPath)
 		throws Exception {
 
-		Group group = CMSTestUtil.getOrAddGroup(getClass());
+		Group group = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		List<ObjectFieldSetting> objectFieldSettings = new ArrayList<>();
 
@@ -477,7 +479,8 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 			boolean showFilesInLibrary, String storageDLFolderPath)
 		throws Exception {
 
-		Group group = CMSTestUtil.getOrAddGroup(getClass());
+		Group group = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
@@ -672,6 +675,9 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

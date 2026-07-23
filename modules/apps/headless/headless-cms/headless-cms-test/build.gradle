@@ -23,6 +23,5 @@ dependencies {
 	testIntegrationImplementation project(":apps:sharing:sharing-api")
 	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-api")
-	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

@@ -36,6 +36,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
@@ -59,7 +60,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -94,7 +94,8 @@ public class AssetUsageResourceTest extends BaseAssetUsageResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		CMSTestUtil.getOrAddGroup(AssetUsageResourceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_cmsBasicDocumentObjectDefinition =
 			_objectDefinitionLocalService.
@@ -363,6 +364,9 @@ public class AssetUsageResourceTest extends BaseAssetUsageResourceTestCase {
 
 	@Inject
 	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private LayoutClassedModelUsageLocalService

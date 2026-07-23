@@ -54,7 +54,6 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
 import java.util.ArrayList;
@@ -84,7 +83,8 @@ public class DepotEntryLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(DepotEntryLocalServiceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 	}
 
 	@Test

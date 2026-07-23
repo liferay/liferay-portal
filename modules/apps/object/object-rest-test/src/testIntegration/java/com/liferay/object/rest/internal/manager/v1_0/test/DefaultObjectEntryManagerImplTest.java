@@ -236,7 +236,6 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.subscription.service.SubscriptionLocalService;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
@@ -1897,7 +1896,8 @@ public class DefaultObjectEntryManagerImplTest
 	public void testAddObjectEntryWithDefaultObjectEntryFolder()
 		throws Exception {
 
-		CMSTestUtil.getOrAddGroup(DefaultObjectEntryManagerImplTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
@@ -3780,7 +3780,8 @@ public class DefaultObjectEntryManagerImplTest
 	public void testAddRelatedObjectEntryWithoutObjectEntryFolder()
 		throws Exception {
 
-		CMSTestUtil.getOrAddGroup(DefaultObjectEntryManagerImplTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 

@@ -13,6 +13,7 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -29,7 +31,6 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
 
 import java.util.ArrayList;
@@ -57,7 +58,8 @@ public class GroupModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = CMSTestUtil.getOrAddGroup(GroupModelListenerTest.class);
+		_cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 	}
 
 	@Test

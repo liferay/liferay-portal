@@ -32,7 +32,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -45,7 +47,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.io.Serializable;
 
@@ -74,7 +75,8 @@ public class MoveBulkSelectionActionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		CMSTestUtil.getOrAddGroup(MoveBulkSelectionActionTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_objectDefinition =
 			_objectDefinitionLocalService.
@@ -269,6 +271,9 @@ public class MoveBulkSelectionActionTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.site.cms.site.initializer.internal.bulk.selection.MoveBulkSelectionAction"

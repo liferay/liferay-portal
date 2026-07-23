@@ -255,7 +255,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalDateTimeUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.workflow.manager.WorkflowDefinitionManager;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.trash.model.TrashEntry;
 import com.liferay.trash.service.TrashEntryLocalService;
 
@@ -1451,7 +1450,8 @@ public class ObjectEntryLocalServiceTest {
 
 	@Test
 	public void testAddObjectEntryWithAssetTag() throws Exception {
-		CMSTestUtil.getOrAddGroup(ObjectEntryLocalServiceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		ObjectFolder objectFolder =
 			_objectFolderLocalService.getOrAddEmptyObjectFolder(
@@ -8533,7 +8533,8 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	private ObjectEntry _addCMSBasicDocumentObjectEntry() throws Exception {
-		CMSTestUtil.getOrAddGroup(ObjectEntryLocalServiceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),

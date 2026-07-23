@@ -45,8 +45,7 @@ public class ProductsCMSSectionTypeContributorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = PIMTestUtil.getOrAddGroup(
-			ProductsCMSSectionTypeContributorTest.class);
+		_group = PIMTestUtil.getOrAddGroup();
 
 		_company = _companyLocalService.getCompany(_group.getCompanyId());
 	}

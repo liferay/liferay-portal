@@ -9,12 +9,13 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerRegistry;
 
@@ -23,8 +24,9 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
  */
 public class PIMTestUtil {
 
-	public static Group getOrAddGroup(Class<?> clazz) throws Exception {
-		Group group = CMSTestUtil.getOrAddGroup(clazz);
+	public static Group getOrAddGroup() throws Exception {
+		Group group = GroupLocalServiceUtil.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionLocalServiceUtil.

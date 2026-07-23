@@ -20,6 +20,7 @@ import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -36,7 +37,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.cms.site.initializer.internal.service.test.util.CMSObjectEntryTestUtil;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 import com.liferay.trash.TrashHelper;
 import com.liferay.trash.model.TrashEntry;
 import com.liferay.trash.service.TrashEntryLocalService;
@@ -68,7 +68,8 @@ public class TrashEntryLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = CMSTestUtil.getOrAddGroup(TrashEntryLocalServiceTest.class);
+		_cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(

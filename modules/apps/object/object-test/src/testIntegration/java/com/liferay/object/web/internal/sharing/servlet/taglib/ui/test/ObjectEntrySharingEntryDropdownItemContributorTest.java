@@ -20,8 +20,10 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
@@ -43,7 +45,6 @@ import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryService;
 import com.liferay.sharing.servlet.taglib.ui.SharingEntryDropdownItemContributor;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.io.Serializable;
 
@@ -86,7 +87,8 @@ public class ObjectEntrySharingEntryDropdownItemContributorTest {
 
 		_bundleContext = bundle.getBundleContext();
 
-		_group = CMSTestUtil.getOrAddGroup(getClass());
+		_group = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_group.getGroupId());
@@ -270,6 +272,9 @@ public class ObjectEntrySharingEntryDropdownItemContributorTest {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

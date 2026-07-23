@@ -29,6 +29,8 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -45,7 +47,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import java.io.Serializable;
 
@@ -78,8 +79,8 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 	public void setUp() throws Exception {
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
-		CMSTestUtil.getOrAddGroup(
-			CMSObjectRelationshipEdgeUpgradeProcessTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_cmsContentStructuresObjectFolder =
 			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
@@ -550,6 +551,9 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

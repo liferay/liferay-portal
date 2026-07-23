@@ -58,8 +58,7 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PIMTestUtil.getOrAddGroup(
-			PIMProductObjectEntryModelDocumentContributorTest.class);
+		PIMTestUtil.getOrAddGroup();
 	}
 
 	@Test

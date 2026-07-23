@@ -5,7 +5,6 @@ dependencies {
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:site:site-api")
-	compileOnly project(":apps:site:site-cms-site-initializer-test-util")
 	compileOnly project(":core:petra:petra-lang")
 }
 

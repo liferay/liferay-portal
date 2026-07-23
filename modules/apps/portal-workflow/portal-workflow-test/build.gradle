@@ -9,6 +9,5 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	testIntegrationImplementation project(":apps:product-navigation:product-navigation-personal-menu-api")
-	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

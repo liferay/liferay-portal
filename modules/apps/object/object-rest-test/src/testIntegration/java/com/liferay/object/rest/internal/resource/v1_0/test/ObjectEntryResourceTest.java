@@ -238,7 +238,6 @@ import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.security.permission.SharingEntryAction;
 import com.liferay.sharing.service.SharingEntryLocalService;
-import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
 
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerResponseFilter;
@@ -6738,7 +6737,8 @@ public class ObjectEntryResourceTest {
 	public void testGetObjectEntryActionsWithSystemSharingDisabled()
 		throws Exception {
 
-		CMSTestUtil.getOrAddGroup(ObjectEntryResourceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -7360,7 +7360,8 @@ public class ObjectEntryResourceTest {
 
 		// With asset library administrator role
 
-		CMSTestUtil.getOrAddGroup(ObjectEntryResourceTest.class);
+		_groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),

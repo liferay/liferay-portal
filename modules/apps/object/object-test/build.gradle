@@ -85,7 +85,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:sharing:sharing-test-util")
 	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-api")
-	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-test-util")
 	testIntegrationImplementation project(":apps:staging:staging-api")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
