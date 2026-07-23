@@ -16,10 +16,10 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -76,19 +76,10 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 
 		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition();
 
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext();
-
-		serviceContext.setAssetTagNames(
-			new String[] {
-				_objectDefinition.getExternalReferenceCode() + _KEYWORD_SUFFIX,
-				RandomTestUtil.randomString()
-			});
-
 		_objectEntry = _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
 			_objectDefinition.getObjectDefinitionId(), 0, null,
-			Collections.emptyMap(), serviceContext);
+			Collections.emptyMap(), ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Test
@@ -105,24 +96,9 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 			additionalAPIURLParameters.contains(
 				StringBundler.concat(
 					"(cmsSection eq 'contents' or cmsSection eq 'files') and ",
-					"keywords/any(k:k in ('",
-					_objectDefinition.getExternalReferenceCode(),
-					_KEYWORD_SUFFIX, "'))")));
-
-		_objectEntry = _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_objectDefinition.getObjectDefinitionId(), 0, null,
-			Collections.emptyMap(), ServiceContextTestUtil.getServiceContext());
-
-		additionalAPIURLParameters = ReflectionTestUtil.invoke(
-			_getViewRelatedAssetsSectionDisplayContext(mockHttpServletRequest),
-			"getAdditionalAPIURLParameters", new Class<?>[0]);
-
-		Assert.assertTrue(
-			additionalAPIURLParameters,
-			additionalAPIURLParameters.contains(
-				"(cmsSection eq 'contents' or cmsSection eq 'files') and " +
-					"keywords/any(k:k in (''))"));
+					"cmpTaskObjectEntryIds in (",
+					_objectEntry.getObjectEntryId(),
+					") and rootDescendantNode eq false")));
 	}
 
 	@Test
@@ -132,8 +108,17 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 			"getAdditionalProps", new Class<?>[0]);
 
 		Assert.assertEquals(
-			_objectDefinition.getExternalReferenceCode() + _KEYWORD_SUFFIX,
-			additionalProps.get("keywords"));
+			HashMapBuilder.<String, Object>put(
+				"objectEntryId", String.valueOf(_objectEntry.getObjectEntryId())
+			).put(
+				"relationshipObjectFieldName",
+				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId"
+			).put(
+				"restContextPath", "/o/cmp/task-links"
+			).put(
+				"scopeGroupId", String.valueOf(_objectEntry.getGroupId())
+			).build(),
+			additionalProps.get("objectEntryLinkProps"));
 	}
 
 	@Test
@@ -159,30 +144,62 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 
 		Assert.assertEquals(dropdownItems.toString(), 2, dropdownItems.size());
 
-		_assertDropdownItem(
-			dropdownItems.get(0), "uploadMultipleFiles",
-			_objectDefinition.getExternalReferenceCode() + _KEYWORD_SUFFIX,
-			"Upload");
+		DropdownItem uploadDropdownItem = dropdownItems.get(0);
 
-		DropdownItem dropdownItem = dropdownItems.get(1);
+		Map<String, Object> uploadData =
+			(Map<String, Object>)uploadDropdownItem.get("data");
 
-		_assertDropdownItem(
-			dropdownItem, "selectAssets",
-			_objectDefinition.getExternalReferenceCode() + _KEYWORD_SUFFIX,
-			"CMS Assets");
+		ObjectDefinition cmsBasicDocumentObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", _objectEntry.getCompanyId());
 
-		Map<String, Object> data = (Map<String, Object>)dropdownItem.get(
-			"data");
+		Assert.assertEquals("uploadMultipleFiles", uploadData.get("action"));
+		Assert.assertEquals(
+			cmsBasicDocumentObjectDefinition.getClassName(),
+			uploadData.get("documentClassName"));
+		Assert.assertEquals(
+			String.valueOf(_objectEntry.getObjectEntryId()),
+			uploadData.get("objectEntryId"));
+		Assert.assertEquals(
+			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
+			uploadData.get("relationshipObjectFieldName"));
+		Assert.assertEquals(
+			"/o/cmp/task-links", uploadData.get("restContextPath"));
+		Assert.assertEquals(
+			String.valueOf(_objectEntry.getGroupId()),
+			uploadData.get("scopeGroupId"));
 
-		String searchAPIURL = (String)data.get("searchAPIURL");
+		DropdownItem selectDropdownItem = dropdownItems.get(1);
+
+		Map<String, Object> selectData =
+			(Map<String, Object>)selectDropdownItem.get("data");
+
+		Assert.assertEquals("selectAssets", selectData.get("action"));
+		Assert.assertEquals(
+			String.valueOf(_objectEntry.getObjectEntryId()),
+			selectData.get("objectEntryId"));
+		Assert.assertEquals(
+			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
+			selectData.get("relationshipObjectFieldName"));
+		Assert.assertEquals(
+			"/o/cmp/task-links", selectData.get("restContextPath"));
+		Assert.assertEquals(
+			String.valueOf(_objectEntry.getGroupId()),
+			selectData.get("scopeGroupId"));
+
+		String searchAPIURL = (String)selectData.get("searchAPIURL");
 
 		Assert.assertTrue(
+			searchAPIURL,
 			searchAPIURL.contains(
 				StringBundler.concat(
 					"(cmsSection eq 'contents' or cmsSection eq 'files') and ",
-					"not (keywords/any(k:k in ('",
-					_objectDefinition.getExternalReferenceCode(),
-					_KEYWORD_SUFFIX, "'))) and objectDefinitionId gt 0")));
+					"not (cmpTaskObjectEntryIds in (",
+					_objectEntry.getObjectEntryId(),
+					")) and objectDefinitionId gt 0")));
+
+		Assert.assertEquals("CMS Assets", selectDropdownItem.get("label"));
 	}
 
 	@Test
@@ -213,19 +230,6 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 			fdsActionDropdownItems.get(4));
 	}
 
-	private void _assertDropdownItem(
-		DropdownItem dropdownItem, String expectedAction,
-		String expectedKeywords, String expectedLabel) {
-
-		Map<String, Object> data = (Map<String, Object>)dropdownItem.get(
-			"data");
-
-		Assert.assertEquals(expectedAction, data.get("action"));
-		Assert.assertEquals(expectedKeywords, data.get("keywords"));
-
-		Assert.assertEquals(expectedLabel, dropdownItem.get("label"));
-	}
-
 	private Object _getViewRelatedAssetsSectionDisplayContext(
 			HttpServletRequest httpServletRequest)
 		throws Exception {
@@ -241,8 +245,6 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 				"ViewRelatedAssetsSectionDisplayContext");
 	}
 
-	private static final String _KEYWORD_SUFFIX = RandomTestUtil.randomString();
-
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
 
@@ -253,6 +255,9 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	private ObjectEntry _objectEntry;
 
