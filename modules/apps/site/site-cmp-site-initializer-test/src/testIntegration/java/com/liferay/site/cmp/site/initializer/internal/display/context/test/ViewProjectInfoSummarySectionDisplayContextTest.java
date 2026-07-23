@@ -93,6 +93,10 @@ public class ViewProjectInfoSummarySectionDisplayContextTest
 			JSONUtil.put(
 				"dueDate", "2026-01-31"
 			).put(
+				"funnelStages", new String[0]
+			).put(
+				"hasUpdatePermission", true
+			).put(
 				"initialState", "inProgress"
 			).put(
 				"manager",
@@ -101,6 +105,8 @@ public class ViewProjectInfoSummarySectionDisplayContextTest
 				).put(
 					"name", user1.getFullName()
 				)
+			).put(
+				"personas", new String[0]
 			).put(
 				"projectId", projectObjectEntry.getObjectEntryId()
 			).put(

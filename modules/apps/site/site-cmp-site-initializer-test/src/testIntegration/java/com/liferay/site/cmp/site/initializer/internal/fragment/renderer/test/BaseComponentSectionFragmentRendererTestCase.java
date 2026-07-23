@@ -15,6 +15,7 @@ import com.liferay.layout.display.page.constants.LayoutDisplayPageWebKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -66,6 +67,9 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 					_companyLocalService.fetchCompany(
 						TestPropsValues.getCompanyId()));
 				setLocale(LocaleUtil.US);
+				setPermissionChecker(
+					PermissionCheckerFactoryUtil.create(
+						TestPropsValues.getUser()));
 				setScopeGroupId(TestPropsValues.getGroupId());
 				setSiteGroupId(TestPropsValues.getGroupId());
 				setUser(TestPropsValues.getUser());

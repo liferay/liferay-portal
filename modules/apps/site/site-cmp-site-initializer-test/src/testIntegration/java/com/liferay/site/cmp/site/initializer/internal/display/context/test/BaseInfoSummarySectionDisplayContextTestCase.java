@@ -8,7 +8,9 @@ package com.liferay.site.cmp.site.initializer.internal.display.context.test;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -51,6 +53,9 @@ public abstract class BaseInfoSummarySectionDisplayContextTestCase {
 		themeDisplay = new ThemeDisplay() {
 			{
 				setLocale(LocaleUtil.US);
+				setPermissionChecker(
+					PermissionCheckerFactoryUtil.create(
+						TestPropsValues.getUser()));
 			}
 		};
 

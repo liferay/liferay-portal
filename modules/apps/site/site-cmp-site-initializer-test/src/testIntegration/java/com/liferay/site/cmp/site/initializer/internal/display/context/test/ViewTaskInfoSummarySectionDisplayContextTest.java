@@ -119,6 +119,8 @@ public class ViewTaskInfoSummarySectionDisplayContextTest
 			).put(
 				"dueDate", "2026-01-31"
 			).put(
+				"hasUpdatePermission", true
+			).put(
 				"initialState", "inProgress"
 			).put(
 				"states",
