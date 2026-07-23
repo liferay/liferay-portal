@@ -9,7 +9,7 @@ function docker_compose {
 
 	compose_files=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose.yaml")
 
-	if [ -f "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-env.yaml" ]
+	if [[ -f "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-env.yaml" ]]
 	then
 		compose_files+=(--file "$(dirname "${BASH_SOURCE[0]}")/../docker-compose-env.yaml")
 	fi
@@ -24,12 +24,12 @@ function get_gradle_property {
 
 	value=$(_read_property "${key}" "$(dirname "${BASH_SOURCE[0]}")/../gradle-local.properties")
 
-	if [ -z "${value}" ]
+	if [[ -z ${value} ]]
 	then
 		value=$(_read_property "${key}" "$(dirname "${BASH_SOURCE[0]}")/../gradle.properties")
 	fi
 
-	if [ -z "${value}" ]
+	if [[ -z ${value} ]]
 	then
 		echo "Property \"${key}\" was not found." >&2
 
@@ -43,7 +43,7 @@ function _read_property {
 	local key=${1}
 	local file=${2}
 
-	if [ -f "${file}" ]
+	if [[ -f ${file} ]]
 	then
 		grep "^${key}=" "${file}" | \
 			cut --delimiter "=" --fields 2- | \

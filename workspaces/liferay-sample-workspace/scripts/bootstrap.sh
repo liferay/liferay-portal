@@ -9,15 +9,16 @@ function main {
 
 	for arg in "${@}"
 	do
-		if [ "${arg}" == "--reset" ]
+		if [[ ${arg} == --reset ]]
 		then
 			reset="true"
 		fi
 	done
 
-	if [ "${reset}" == "true" ]
+	if [[ ${reset} == true ]]
 	then
 		echo "Tearing down containers and volumes."
+
 		docker_compose down --volumes
 	fi
 

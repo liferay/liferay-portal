@@ -7,16 +7,16 @@ source ../_common.sh
 function main {
 	local force="false"
 
-	if [ "${1:-}" == "-f" ] ||
-	   [ "${1:-}" == "--force" ]
+	if [[ ${1:-} == -f ]] ||
+	   [[ ${1:-} == --force ]]
 	then
 		force="true"
 	fi
 
 	local license_file=../../build/docker/deploy/license.xml
 
-	if [ -f "${license_file}" ] &&
-	   [ "${force}" == "false" ]
+	if [[ -f ${license_file} ]] &&
+	   [[ ${force} == false ]]
 	then
 		echo "A trial license already exists at ${license_file}."
 

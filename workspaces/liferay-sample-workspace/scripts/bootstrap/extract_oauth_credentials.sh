@@ -7,7 +7,7 @@ source ../_common.sh
 function main {
 	local oauth_application_name=${1:-}
 
-	if [ -z "${oauth_application_name}" ]
+	if [[ -z ${oauth_application_name} ]]
 	then
 		echo "The OAuth application name was not provided." >&2
 

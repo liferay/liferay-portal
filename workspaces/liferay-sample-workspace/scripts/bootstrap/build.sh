@@ -9,9 +9,11 @@ function main {
 
 	product=$(get_gradle_property liferay.workspace.product)
 
-	local version_tag=$(echo "${product}" | sed --expression "s/^dxp-//")
+	local version_tag
 
-	if [ -f pre-build.sh ]
+	version_tag=$(echo "${product}" | sed --expression "s/^dxp-//")
+
+	if [[ -f pre-build.sh ]]
 	then
 		source pre-build.sh
 	fi
@@ -22,6 +24,7 @@ function main {
 	./extract_license.sh
 
 	echo "Building Docker image."
+
 	../../gradlew --project-dir ../.. buildDockerImage
 
 	local workspace_name
@@ -29,9 +32,10 @@ function main {
 	workspace_name=$(basename "$(dirname "$(dirname "${PWD}")")")
 
 	echo "Tagging ${workspace_name}-liferay:${version_tag} as liferay:local."
+
 	docker tag "${workspace_name}-liferay:${version_tag}" "liferay:local"
 
-	if [ -f post-build.sh ]
+	if [[ -f post-build.sh ]]
 	then
 		source post-build.sh
 	fi

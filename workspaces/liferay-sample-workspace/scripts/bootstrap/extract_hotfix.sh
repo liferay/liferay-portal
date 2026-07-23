@@ -7,12 +7,12 @@ source ../_common.sh
 function main {
 	local hotfix_url=${1:-}
 
-	if [ -z "${hotfix_url}" ]
+	if [[ -z ${hotfix_url} ]]
 	then
 		hotfix_url=$(get_gradle_property liferay.workspace.hotfix.url || true)
 	fi
 
-	if [ -z "${hotfix_url}" ]
+	if [[ -z ${hotfix_url} ]]
 	then
 		exit 0
 	fi
@@ -23,7 +23,7 @@ function main {
 
 	hotfix_file="../../build/docker/patching/$(basename "${hotfix_url%%\?*}")"
 
-	if [ -f "${hotfix_file}" ]
+	if [[ -f ${hotfix_file} ]]
 	then
 		echo "Hotfix is already present at ${hotfix_file}."
 
