@@ -117,12 +117,6 @@ Reference cards under `rules/` hold the data skills look up. Skills cite the car
 
 ## Information Sources
 
-The authoritative documentation is [learn.liferay.com](https://learn.liferay.com). To find a topic, search `site:learn.liferay.com <topic>` or browse from the area roots:
-
-- Client extensions: `https://learn.liferay.com/w/dxp/development/client-extensions`
-- Objects: `https://learn.liferay.com/w/dxp/low-code/objects`
-- Headless APIs: `https://learn.liferay.com/w/dxp/integration/headless-apis`
-- Site building: `https://learn.liferay.com/w/dxp/sites`
-- Workspace tooling: `https://learn.liferay.com/w/dxp/development/tooling/liferay-workspace`
+The authoritative documentation is [learn.liferay.com](https://learn.liferay.com); search `site:learn.liferay.com <topic>` to find a topic.
 
 The Liferay Portal source code at [github.com/liferay/liferay-portal](https://github.com/liferay/liferay-portal) is canonical for architectural patterns and code samples; working client extension examples live at `workspaces/liferay-sample-workspace/client-extensions/`.
