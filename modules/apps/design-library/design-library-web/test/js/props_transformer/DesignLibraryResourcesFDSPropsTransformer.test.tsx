@@ -53,8 +53,8 @@ describe('DesignLibraryResourcesFDSPropsTransformer', () => {
 		expect(
 			result.creationMenu?.primaryItems?.map((item) => item.label)
 		).toEqual([
-			'new-component-fragment',
-			'new-input-fragment',
+			'new-basic-fragment',
+			'new-form-fragment',
 			'new-fragment-set',
 		]);
 	});
@@ -75,8 +75,8 @@ describe('DesignLibraryResourcesFDSPropsTransformer', () => {
 			result.creationMenu?.primaryItems?.map((item) => item.label)
 		).toEqual([
 			'new-style-book',
-			'new-component-fragment',
-			'new-input-fragment',
+			'new-basic-fragment',
+			'new-form-fragment',
 			'new-fragment-set',
 		]);
 	});
