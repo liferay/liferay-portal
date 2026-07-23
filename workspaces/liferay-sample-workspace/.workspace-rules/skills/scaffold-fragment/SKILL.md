@@ -1,6 +1,6 @@
 ---
 
-description: Create a Liferay page fragment — an HTML/CSS/JS building block that marketers drop onto Content Pages. Use when the user asks to create a fragment, build a hero section, or make a reusable page component. Maps to the Frontend Developer Learning Path and "Mastering Liferay Pages and Navigation".
+description: Create a Liferay page fragment — an HTML/CSS/JS building block that marketers drop onto Content Pages. Use when the user asks to create a fragment, build a hero section, or make a reusable page component.
 name: scaffold-fragment
 
 ---

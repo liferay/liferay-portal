@@ -1,6 +1,6 @@
 ---
 
-description: Add business logic to Liferay Objects via object actions, workflow definitions, and notification templates. Use when the user asks to send a notification on create, trigger an action on update, wire a workflow, or automate any response to object entry lifecycle events. Maps to the Business Logic and Automation section of "Mastering Data Modeling with Liferay Objects".
+description: Add business logic to Liferay Objects via object actions, workflow definitions, and notification templates. Use when the user asks to send a notification on create, trigger an action on update, wire a workflow, or automate any response to object entry lifecycle events.
 name: manage-object-logic
 
 ---

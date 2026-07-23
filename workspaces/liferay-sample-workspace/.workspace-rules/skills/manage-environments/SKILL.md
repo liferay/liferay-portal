@@ -1,6 +1,6 @@
 ---
 
-description: Manage workspace environment configurations (local/dev/uat/prod), promote changes between environments, export object data models, and capture a running site as a reusable site initializer CET. Use when the user asks to promote to UAT, export this site, migrate object data, or set up environment specific properties. Maps to workspace multienvironment support and Data Model Migration in "Mastering Data Modeling with Liferay Objects".
+description: Manage workspace environment configurations (local/dev/uat/prod), promote changes between environments, export object data models, and capture a running site as a reusable site initializer CET. Use when the user asks to promote to UAT, export this site, migrate object data, or set up environment specific properties.
 name: manage-environments
 
 ---

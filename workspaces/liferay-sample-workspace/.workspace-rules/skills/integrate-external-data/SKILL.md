@@ -1,6 +1,6 @@
 ---
 
-description: Back a Liferay Object with an external data source using the Object Entry Manager CET pattern. Use when the user wants to connect an object to an external REST API, database, or SaaS system rather than storing data in Liferay's own database. Maps to "Integration with External Systems and Data" in "Mastering Data Modeling with Liferay Objects".
+description: Back a Liferay Object with an external data source using the Object Entry Manager CET pattern. Use when the user wants to connect an object to an external REST API, database, or SaaS system rather than storing data in Liferay's own database.
 name: integrate-external-data
 
 ---
