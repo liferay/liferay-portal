@@ -18849,8 +18849,7 @@ public class ObjectEntryResourceTest {
 			fileEntry -> JSONUtil.put(
 				_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE,
 				_getFileEntryJSONObject(
-					_getDLFolder(depotEntry.getGroupId(), objectDefinition),
-					fileEntry, objectDefinition,
+					null, fileEntry, objectDefinition,
 					_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE)),
 			_toFileEntry(
 				Base64::encode, DLTestUtil.randomTextFileBytes(),
@@ -19820,8 +19819,7 @@ public class ObjectEntryResourceTest {
 			fileEntry -> JSONUtil.put(
 				_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE,
 				_getFileEntryJSONObject(
-					_getDLFolder(depotEntry.getGroupId(), objectDefinition),
-					fileEntry, objectDefinition,
+					null, fileEntry, objectDefinition,
 					_OBJECT_FIELD_NAME_ATTACHMENT_CMS_BASIC_DOCUMENT_SOURCE)),
 			_toFileEntry(
 				Base64::encode, DLTestUtil.randomTextFileBytes(),
