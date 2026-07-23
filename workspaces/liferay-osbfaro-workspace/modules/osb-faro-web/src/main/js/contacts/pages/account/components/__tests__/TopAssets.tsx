@@ -230,6 +230,17 @@ describe('TopAssets', () => {
 				'/assets/object-entry/'
 			);
 		});
+
+		it('should include accountId and accountName as query params on each asset link', () => {
+			render(<TopAssets account={ACCOUNT} />);
+
+			const link = screen.getAllByRole('link', {
+				name: 'Web Content One',
+			})[0] as HTMLAnchorElement;
+
+			expect(link.getAttribute('href')).toContain('accountId=acc-1');
+			expect(link.getAttribute('href')).toContain('accountName=Acme');
+		});
 	});
 
 	describe('group by picker', () => {

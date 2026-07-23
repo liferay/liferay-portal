@@ -151,4 +151,35 @@ describe('getEventDashboardUrl', () => {
 			})
 		).toBeUndefined();
 	});
+
+	it('includes accountId and accountName as query params on a page dashboard link when provided', () => {
+		const event = buildEvent({
+			applicationId: 'Page',
+			assetTitle: null as unknown as string,
+			canonicalUrl: 'https://www.liferay.com/legal',
+			name: 'pageViewed',
+			pageTitle: 'Legal 2026 - Liferay DXP',
+			properties: [{name: 'externalReferenceCode', value: 'abc'}],
+		});
+
+		const url = getEventDashboardUrl(event, {
+			...CONTEXT,
+			accountId: 'acc-1',
+			accountName: 'Acme Corporation',
+		});
+
+		expect(url).toContain('accountId=acc-1');
+		expect(url).toContain('accountName=Acme');
+	});
+
+	it('does not include accountId or accountName on an asset dashboard link', () => {
+		const url = getEventDashboardUrl(buildEvent(), {
+			...CONTEXT,
+			accountId: 'acc-1',
+			accountName: 'Acme Corporation',
+		});
+
+		expect(url).not.toContain('accountId');
+		expect(url).not.toContain('accountName');
+	});
 });

@@ -1,12 +1,17 @@
 import * as API from 'shared/api';
-import FilterBySegment from '../FilterBySegment';
 import React from 'react';
-import {cleanup, fireEvent, render, screen} from '@testing-library/react';
+import SegmentDropdown from '../SegmentDropdown';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+} from '@testing-library/react';
 import {MemoryRouter, Route} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockSegmentPageViewsReq} from 'test/graphql-data';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
-import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
@@ -38,10 +43,10 @@ const Wrapper = ({
 	</MemoryRouter>
 );
 
-describe('FilterBySegment', () => {
+describe('SegmentDropdown', () => {
 	afterEach(cleanup);
 
-	it('should render', async () => {
+	it('should render with "All Segments" as the default value', async () => {
 		(API.individualSegment.search as jest.Mock).mockReturnValue(
 			Promise.resolve({
 				items: [MOCK_SEGMENT('123', 'Viewed Page')],
@@ -54,7 +59,7 @@ describe('FilterBySegment', () => {
 
 		const {container} = render(
 			<Wrapper mocks={mocks}>
-				<FilterBySegment
+				<SegmentDropdown
 					onFilterChange={jest.fn()}
 					rangeSelectors={{
 						rangeEnd: '',
@@ -65,44 +70,18 @@ describe('FilterBySegment', () => {
 			</Wrapper>
 		);
 
-		await waitForLoadingToBeRemoved(container);
+		expect(
+			screen.getByRole('combobox', {name: 'All Segments'})
+		).toHaveTextContent('All Segments');
 
-		expect(screen.getByText('Create Segment')).toHaveClass('btn-secondary');
+		await waitFor(() =>
+			expect(API.individualSegment.search).toHaveBeenCalled()
+		);
+
 		expect(container).toMatchSnapshot();
 	});
 
-	it('should open dropdown w/ no segments empty state', async () => {
-		(API.individualSegment.search as jest.Mock).mockReturnValue(
-			Promise.resolve({
-				items: [],
-				total: 0,
-			})
-		);
-
-		const {container} = render(
-			<Wrapper>
-				<FilterBySegment
-					onFilterChange={jest.fn()}
-					rangeSelectors={{
-						rangeEnd: '',
-						rangeKey: RangeKeyTimeRanges.Last24Hours,
-						rangeStart: '',
-					}}
-				/>
-			</Wrapper>
-		);
-
-		await waitForLoadingToBeRemoved(container);
-
-		expect(screen.getByText('Create Segment')).toHaveClass('btn-primary');
-
-		fireEvent.click(screen.getByText('Filter'));
-
-		expect(screen.getByText('Filter By Segment')).toBeInTheDocument();
-		expect(screen.getByText('There are no segments.')).toBeInTheDocument();
-	});
-
-	it('should open dropdown w/ a list of segments', async () => {
+	it('should list the fetched segments when opened', async () => {
 		(API.individualSegment.search as jest.Mock).mockReturnValue(
 			Promise.resolve({
 				items: [
@@ -121,9 +100,9 @@ describe('FilterBySegment', () => {
 		];
 		const mocks = [mockSegmentPageViewsReq({segmentPageViews})];
 
-		const {container} = render(
+		render(
 			<Wrapper mocks={mocks}>
-				<FilterBySegment
+				<SegmentDropdown
 					onFilterChange={jest.fn()}
 					rangeSelectors={{
 						rangeEnd: '',
@@ -134,16 +113,26 @@ describe('FilterBySegment', () => {
 			</Wrapper>
 		);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitFor(() =>
+			expect(API.individualSegment.search).toHaveBeenCalled()
+		);
 
-		fireEvent.click(screen.getByText('Filter'));
+		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
 
-		expect(screen.getByText('Viewed Page')).toBeInTheDocument();
-		expect(screen.getByText('Viewed Form')).toBeInTheDocument();
-		expect(screen.getByText('Viewed Web Content')).toBeInTheDocument();
+		expect(
+			await screen.findByRole('option', {name: 'Viewed Page'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('option', {name: 'Viewed Form'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('option', {name: 'Viewed Web Content'})
+		).toBeInTheDocument();
 	});
 
-	it('should open dropdown w/ no segments found empty state', async () => {
+	it('should call onFilterChange with the selected segment', async () => {
+		const onFilterChange = jest.fn();
+
 		(API.individualSegment.search as jest.Mock).mockReturnValue(
 			Promise.resolve({
 				items: [MOCK_SEGMENT('123', 'Viewed Page')],
@@ -154,10 +143,10 @@ describe('FilterBySegment', () => {
 		const segmentPageViews = [{segmentId: '123', views: 100}];
 		const mocks = [mockSegmentPageViewsReq({segmentPageViews})];
 
-		const {container} = render(
+		render(
 			<Wrapper mocks={mocks}>
-				<FilterBySegment
-					onFilterChange={jest.fn()}
+				<SegmentDropdown
+					onFilterChange={onFilterChange}
 					rangeSelectors={{
 						rangeEnd: '',
 						rangeKey: RangeKeyTimeRanges.Last24Hours,
@@ -167,20 +156,26 @@ describe('FilterBySegment', () => {
 			</Wrapper>
 		);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitFor(() =>
+			expect(API.individualSegment.search).toHaveBeenCalled()
+		);
 
-		fireEvent.click(screen.getByText('Filter'));
+		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
 
-		expect(screen.getByText('Viewed Page')).toBeInTheDocument();
-
-		fireEvent.change(screen.getByRole('textbox'), {
-			target: {value: 'Viewed Form'},
+		const viewedPageOption = await screen.findByRole('option', {
+			name: 'Viewed Page',
 		});
 
-		expect(screen.getByText('No results were found.')).toBeInTheDocument();
+		await waitFor(() => expect(viewedPageOption).not.toBeDisabled());
+
+		fireEvent.click(viewedPageOption);
+
+		expect(onFilterChange).toHaveBeenCalledWith(
+			expect.objectContaining({id: '123', name: 'Viewed Page'})
+		);
 	});
 
-	it('should open dropdown w/ segments and select one of them', async () => {
+	it('should call onFilterChange with null when "All Segments" is selected again', async () => {
 		const onFilterChange = jest.fn();
 
 		(API.individualSegment.search as jest.Mock).mockReturnValue(
@@ -193,9 +188,9 @@ describe('FilterBySegment', () => {
 		const segmentPageViews = [{segmentId: '123', views: 100}];
 		const mocks = [mockSegmentPageViewsReq({segmentPageViews})];
 
-		const {container} = render(
+		render(
 			<Wrapper mocks={mocks}>
-				<FilterBySegment
+				<SegmentDropdown
 					onFilterChange={onFilterChange}
 					rangeSelectors={{
 						rangeEnd: '',
@@ -206,63 +201,30 @@ describe('FilterBySegment', () => {
 			</Wrapper>
 		);
 
-		await waitForLoadingToBeRemoved(container);
-
-		fireEvent.click(screen.getByText('Filter'));
-
-		fireEvent.click(screen.getByText('Viewed Page'));
-
-		expect(onFilterChange).toHaveBeenCalledWith(
-			expect.objectContaining({id: '123', name: 'Viewed Page'})
+		await waitFor(() =>
+			expect(API.individualSegment.search).toHaveBeenCalled()
 		);
 
-		expect(container.querySelector('.label')).toBeInTheDocument();
-	});
+		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
 
-	it('should open dropdown w/ segments, select one of them, and then, remove filter', async () => {
-		const onFilterChange = jest.fn();
+		const viewedPageOption = await screen.findByRole('option', {
+			name: 'Viewed Page',
+		});
 
-		(API.individualSegment.search as jest.Mock).mockReturnValue(
-			Promise.resolve({
-				items: [MOCK_SEGMENT('123', 'Viewed Page')],
-				total: 1,
-			})
+		await waitFor(() => expect(viewedPageOption).not.toBeDisabled());
+
+		fireEvent.click(viewedPageOption);
+
+		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
+
+		fireEvent.click(
+			await screen.findByRole('option', {name: 'All Segments'})
 		);
-
-		const segmentPageViews = [{segmentId: '123', views: 100}];
-		const mocks = [mockSegmentPageViewsReq({segmentPageViews})];
-
-		const {container} = render(
-			<Wrapper mocks={mocks}>
-				<FilterBySegment
-					onFilterChange={onFilterChange}
-					rangeSelectors={{
-						rangeEnd: '',
-						rangeKey: RangeKeyTimeRanges.Last24Hours,
-						rangeStart: '',
-					}}
-				/>
-			</Wrapper>
-		);
-
-		await waitForLoadingToBeRemoved(container);
-
-		fireEvent.click(screen.getByText('Filter'));
-
-		fireEvent.click(screen.getByText('Viewed Page'));
-
-		expect(onFilterChange).toHaveBeenCalledWith(
-			expect.objectContaining({id: '123', name: 'Viewed Page'})
-		);
-
-		fireEvent.click(screen.getByTitle('Remove Filter'));
-
-		expect(container.querySelector('.label')).not.toBeInTheDocument();
 
 		expect(onFilterChange).toHaveBeenCalledWith(null);
 	});
 
-	it('should open dropdown w/ segment disabled if there are no views', async () => {
+	it('should disable segments with no views for the current page', async () => {
 		const onFilterChange = jest.fn();
 
 		(API.individualSegment.search as jest.Mock).mockReturnValue(
@@ -275,9 +237,9 @@ describe('FilterBySegment', () => {
 		const segmentPageViews = [{segmentId: '123', views: 0}];
 		const mocks = [mockSegmentPageViewsReq({segmentPageViews})];
 
-		const {container} = render(
+		render(
 			<Wrapper mocks={mocks}>
-				<FilterBySegment
+				<SegmentDropdown
 					onFilterChange={onFilterChange}
 					rangeSelectors={{
 						rangeEnd: '',
@@ -288,15 +250,19 @@ describe('FilterBySegment', () => {
 			</Wrapper>
 		);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitFor(() =>
+			expect(API.individualSegment.search).toHaveBeenCalled()
+		);
 
-		fireEvent.click(screen.getByText('Filter'));
+		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
 
-		const viewedPageSegment = screen.getByText('Viewed Page');
+		const viewedPageOption = await screen.findByRole('option', {
+			name: 'Viewed Page',
+		});
 
-		expect(viewedPageSegment.closest('button')).toBeDisabled();
+		await waitFor(() => expect(viewedPageOption).toBeDisabled());
 
-		fireEvent.click(viewedPageSegment);
+		fireEvent.click(viewedPageOption);
 
 		expect(onFilterChange).not.toHaveBeenCalled();
 	});

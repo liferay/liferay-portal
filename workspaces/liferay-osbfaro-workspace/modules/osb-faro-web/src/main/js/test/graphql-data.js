@@ -1599,7 +1599,7 @@ export function mockRecommendationReq(item = {}, mockVariables = {}) {
 	};
 }
 
-export function mockPagePathReq(data = [], {rangeKey = 30}) {
+export function mockPagePathReq(data = [], {accountId, rangeKey = 30} = {}) {
 	return {
 		request: {
 			query: PagePathQuery,
@@ -1610,6 +1610,7 @@ export function mockPagePathReq(data = [], {rangeKey = 30}) {
 				rangeKey,
 				rangeStart: null,
 				title: 'Liferay DXP - Home',
+				...(accountId && {accountId}),
 			},
 		},
 		result: {

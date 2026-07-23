@@ -45,7 +45,18 @@ jest.mock('../../components/ExperienceDropdown', () => ({
 	default: () => <div data-testid='experience-dropdown' />
 }));
 
-jest.mock('../../components/FilterBySegment', () => ({
+jest.mock('shared/components/AccountDropdown', () => ({
+	__esModule: true,
+	default: ({initialAccountId, initialAccountName}) => (
+		<div
+			data-initial-account-id={initialAccountId}
+			data-initial-account-name={initialAccountName}
+			data-testid='account-dropdown'
+		/>
+	)
+}));
+
+jest.mock('../../components/SegmentDropdown', () => ({
 	__esModule: true,
 	default: () => null
 }));
@@ -261,5 +272,171 @@ describe('TouchpointRoutes', () => {
 		);
 
 		expect(screen.queryByText('Known Individuals')).toBeNull();
+	});
+
+	it('shows the account filter on the overview route for LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('account-dropdown')).toBeTruthy();
+	});
+
+	it('hides the account filter on the overview route for non-LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(false);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('account-dropdown')).toBeNull();
+	});
+
+	it('shows the account filter on the path route for LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_PATH);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('account-dropdown')).toBeTruthy();
+	});
+
+	it('hides the account filter on the path route for non-LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_PATH);
+		useLDPEnabled.mockReturnValue(false);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('account-dropdown')).toBeNull();
+	});
+
+	it('seeds the account filter from the accountId/accountName URL query params on the overview route', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {accountId: '100', accountName: 'Account 100'}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.getByTestId('account-dropdown')).toHaveAttribute(
+			'data-initial-account-id',
+			'100'
+		);
+		expect(screen.getByTestId('account-dropdown')).toHaveAttribute(
+			'data-initial-account-name',
+			'Account 100'
+		);
+	});
+
+	it('seeds the account filter from the accountId/accountName URL query params on the path route', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_PATH);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {accountId: '100', accountName: 'Account 100'}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.getByTestId('account-dropdown')).toHaveAttribute(
+			'data-initial-account-id',
+			'100'
+		);
 	});
 });

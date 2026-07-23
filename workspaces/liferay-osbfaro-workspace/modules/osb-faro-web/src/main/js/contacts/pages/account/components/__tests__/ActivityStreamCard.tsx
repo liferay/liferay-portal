@@ -2,7 +2,7 @@ import ActivityStreamCard from '../ActivityStreamCard';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {act, fireEvent, render} from '@testing-library/react';
-import {MemoryRouter} from 'react-router-dom';
+import {MemoryRouter, Route} from 'react-router-dom';
 import {
 	mockAccountEventMetricsReq,
 	mockAccountEventsTrendReq,
@@ -37,24 +37,28 @@ jest.mock('recharts', () => {
 const SEARCH_KEYWORDS = 'add to cart';
 
 interface WrapperProps {
+	accountName?: string;
 	mocks: any[];
 }
 
-const Wrapper: React.FC<WrapperProps> = ({mocks}) => (
+const Wrapper: React.FC<WrapperProps> = ({accountName, mocks}) => (
 	<Provider store={mockStore()}>
-		<MemoryRouter>
-			<MockedProvider mocks={mocks}>
-				<ActivityStreamCard
-					accountId="abc"
-					channelId="123123"
-					interval="D"
-					rangeSelectors={{
-						rangeEnd: null,
-						rangeKey: RangeKeyTimeRanges.Last30Days,
-						rangeStart: null,
-					}}
-				/>
-			</MockedProvider>
+		<MemoryRouter initialEntries={['/workspace/liferay.com']}>
+			<Route path="/workspace/:groupId">
+				<MockedProvider mocks={mocks}>
+					<ActivityStreamCard
+						accountId="abc"
+						accountName={accountName}
+						channelId="123123"
+						interval="D"
+						rangeSelectors={{
+							rangeEnd: null,
+							rangeKey: RangeKeyTimeRanges.Last30Days,
+							rangeStart: null,
+						}}
+					/>
+				</MockedProvider>
+			</Route>
 		</MemoryRouter>
 	</Provider>
 );
@@ -75,6 +79,26 @@ describe('ActivityStreamCard', () => {
 
 		expect(getByPlaceholderText('Search')).toBeInTheDocument();
 		expect(getByText('Jane Doe')).toBeInTheDocument();
+	});
+
+	it('includes accountId and accountName as query params on a page event link', async () => {
+		const {container} = render(
+			<Wrapper
+				accountName="Acme Corporation"
+				mocks={[
+					mockAccountEventMetricsReq(),
+					mockAccountEventsTrendReq(),
+					mockAccountUserSessionsReq(),
+				]}
+			/>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		const link = container.querySelector('.subtitle') as HTMLAnchorElement;
+
+		expect(link.getAttribute('href')).toContain('accountId=abc');
+		expect(link.getAttribute('href')).toContain('accountName=Acme');
 	});
 
 	it('drives pagination from the activity stream event total, not the session count', async () => {

@@ -176,6 +176,20 @@ describe('formatAccountSessions', () => {
 		expect(sessions[1].groupEnd).toBe(true);
 	});
 
+	it('includes accountId and accountName in a pageViewed event dashboard link', () => {
+		const [, , session] = formatAccountSessions([buildSession()], {
+			accountId: 'acc-1',
+			accountName: 'Acme Corporation',
+			channelId: '420253908131944590',
+			groupId: 'liferay.com',
+		});
+
+		const [event] = session.nestedItems as {descriptionUrl?: string}[];
+
+		expect(event.descriptionUrl).toContain('accountId=acc-1');
+		expect(event.descriptionUrl).toContain('accountName=Acme');
+	});
+
 	it('maps session attributes with the correct field names', () => {
 		const [, , session] = formatAccountSessions([
 			buildSession({userName: 'Ada Lovelace'}),

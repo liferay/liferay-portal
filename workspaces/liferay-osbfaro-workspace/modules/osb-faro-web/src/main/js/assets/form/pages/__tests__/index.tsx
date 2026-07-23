@@ -34,6 +34,26 @@ jest.mock('route-middleware/BundleRouter', () => ({
 	default: () => null,
 }));
 
+jest.mock('shared/components/AccountDropdown', () => ({
+	__esModule: true,
+	default: ({
+		assetType,
+		initialAccountId,
+		initialAccountName,
+	}: {
+		assetType: string;
+		initialAccountId?: string;
+		initialAccountName?: string;
+	}) => (
+		<div
+			data-asset-type={assetType}
+			data-initial-account-id={initialAccountId}
+			data-initial-account-name={initialAccountName}
+			data-testid="filter-by-account"
+		/>
+	),
+}));
+
 jest.mock('shared/context/channel', () => ({
 	useChannelContext: () => ({selectedChannel: {name: 'test channel'}}),
 }));
@@ -78,7 +98,7 @@ describe('Form', () => {
 		);
 	});
 
-	it('shows the visitors tab for LDP workspaces', () => {
+	it('shows the account filter on the overview route for LDP workspaces', () => {
 		(useLDPEnabled as jest.Mock).mockReturnValue(true);
 
 		render(
@@ -89,10 +109,13 @@ describe('Form', () => {
 			</Provider>
 		);
 
-		expect(screen.queryByText('Visitors')).toBeTruthy();
+		expect(screen.getByTestId('filter-by-account')).toHaveAttribute(
+			'data-asset-type',
+			'form'
+		);
 	});
 
-	it('hides the visitors tab for non-LDP workspaces', () => {
+	it('hides the account filter on the overview route for non-LDP workspaces', () => {
 		(useLDPEnabled as jest.Mock).mockReturnValue(false);
 
 		render(
@@ -103,34 +126,38 @@ describe('Form', () => {
 			</Provider>
 		);
 
-		expect(screen.queryByText('Visitors')).toBeNull();
+		expect(screen.queryByTestId('filter-by-account')).toBeNull();
 	});
 
-	it('shows the known individuals tab for non-LDP workspaces', () => {
-		(useLDPEnabled as jest.Mock).mockReturnValue(false);
-
-		render(
-			<Provider store={mockStore()}>
-				<MemoryRouter>
-					<Form className="" router={router as any} />
-				</MemoryRouter>
-			</Provider>
-		);
-
-		expect(screen.queryByText('Known Individuals')).toBeTruthy();
-	});
-
-	it('hides the known individuals tab for LDP workspaces', () => {
+	it('seeds the account filter from the accountId/accountName URL query params', () => {
 		(useLDPEnabled as jest.Mock).mockReturnValue(true);
 
 		render(
 			<Provider store={mockStore()}>
 				<MemoryRouter>
-					<Form className="" router={router as any} />
+					<Form
+						className=""
+						router={
+							{
+								...router,
+								query: {
+									accountId: '100',
+									accountName: 'Account 100',
+								},
+							} as any
+						}
+					/>
 				</MemoryRouter>
 			</Provider>
 		);
 
-		expect(screen.queryByText('Known Individuals')).toBeNull();
+		expect(screen.getByTestId('filter-by-account')).toHaveAttribute(
+			'data-initial-account-id',
+			'100'
+		);
+		expect(screen.getByTestId('filter-by-account')).toHaveAttribute(
+			'data-initial-account-name',
+			'Account 100'
+		);
 	});
 });

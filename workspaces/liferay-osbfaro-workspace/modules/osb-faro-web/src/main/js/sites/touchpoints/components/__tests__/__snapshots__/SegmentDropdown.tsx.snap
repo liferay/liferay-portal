@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SegmentDropdown should render with "All Segments" as the default value 1`] = `
+<div>
+  <div
+    class="segment-filter-dropdown"
+  >
+    <button
+      aria-activedescendant=""
+      aria-expanded="false"
+      aria-haspopup="listbox"
+      aria-label="All Segments"
+      class="form-control form-control-select form-control-select-secondary border-light form-control-sm"
+      role="combobox"
+      tabindex="0"
+      type="button"
+    >
+      <svg
+        class="lexicon-icon lexicon-icon-filter inline-item inline-item-before"
+        role="presentation"
+      >
+        <use
+          href="#filter"
+        />
+      </svg>
+      All Segments
+    </button>
+  </div>
+</div>
+`;
