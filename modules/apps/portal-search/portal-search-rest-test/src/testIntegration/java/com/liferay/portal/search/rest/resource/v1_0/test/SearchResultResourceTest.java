@@ -24,11 +24,14 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -1011,7 +1014,12 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 		Assert.assertFalse(searchResults.isEmpty());
 
 		for (SearchResult searchResult : searchResults) {
-			Assert.assertNotNull(searchResult.getEmbedded());
+			JSONObject searchResultJSONObject = _jsonFactory.createJSONObject(
+				String.valueOf(searchResult));
+
+			Assert.assertNotNull(
+				JSONUtil.getValue(
+					searchResultJSONObject, "JSONObject/embedded"));
 		}
 	}
 
@@ -1023,58 +1031,197 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 				false, Collections.emptyMap(), _dtoConverterRegistry, null,
 				LocaleUtil.getDefault(), null, TestPropsValues.getUser());
 
-		ObjectDefinition objectDefinition =
+		ObjectDefinition objectDefinition1 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
 					new TextObjectFieldBuilder(
-					).labelMap(
-						LocalizedMapUtil.getLocalizedMap(
-							RandomTestUtil.randomString())
 					).indexed(
 						true
 					).indexedAsKeyword(
 						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
 					).name(
-						"testField"
-					).localized(
-						true
+						"testField1"
 					).build()));
 
-		ObjectEntry objectEntry = _objectEntryManager.addObjectEntry(
-			dtoConverterContext, objectDefinition,
+		ObjectDefinition objectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).name(
+						"testField2"
+					).build()));
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, objectDefinition1,
+				objectDefinition2);
+
+		String searchValue = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry1 = _objectEntryManager.addObjectEntry(
+			dtoConverterContext, objectDefinition1,
 			new ObjectEntry() {
 				{
 					properties = HashMapBuilder.<String, Object>put(
-						"testField", RandomTestUtil.randomString()
+						"testField1", searchValue
 					).build();
 				}
 			},
 			ObjectDefinitionConstants.SCOPE_COMPANY);
 
+		String relatedValue = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry2 = _objectEntryManager.addObjectEntry(
+			dtoConverterContext, objectDefinition2,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"testField2", relatedValue
+					).build();
+				}
+			},
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectRelationshipTestUtil.relateObjectEntries(
+			objectEntry1.getId(), objectEntry2.getId(), objectRelationship,
+			TestPropsValues.getUserId());
+
 		SearchPage<SearchResult> searchPage = _postSearchPage(
 			HashMapBuilder.put(
-				"entryClassNames", objectDefinition.getClassName()
+				"entryClassNames", objectDefinition1.getClassName()
 			).put(
 				"nestedFields", "embedded"
 			).put(
-				"search", objectDefinition.getUserName()
+				"search", searchValue
 			).build(),
 			new SearchRequestBody());
 
-		Collection<SearchResult> searchResults = searchPage.getItems();
+		List<SearchResult> searchResults = ListUtil.fromCollection(
+			searchPage.getItems());
 
-		Assert.assertFalse(searchResults.isEmpty());
+		Assert.assertEquals(searchResults.toString(), 1, searchResults.size());
 
-		for (SearchResult searchResult : searchResults) {
-			Assert.assertNotNull(searchResult.getEmbedded());
-		}
+		SearchResult searchResult = searchResults.get(0);
+
+		JSONObject searchResultJSONObject = _jsonFactory.createJSONObject(
+			String.valueOf(searchResult));
+
+		Assert.assertEquals(
+			searchValue,
+			JSONUtil.getValueAsString(
+				searchResultJSONObject, "JSONObject/embedded",
+				"Object/testField1"));
+
+		Assert.assertNull(
+			JSONUtil.getValue(
+				searchResultJSONObject, "JSONObject/embedded",
+				"JSONArray/" + objectRelationship.getName()));
+
+		searchPage = _postSearchPage(
+			HashMapBuilder.put(
+				"entryClassNames", objectDefinition1.getClassName()
+			).put(
+				"nestedFields", "embedded." + objectRelationship.getName()
+			).put(
+				"search", searchValue
+			).build(),
+			new SearchRequestBody());
+
+		searchResults = ListUtil.fromCollection(searchPage.getItems());
+
+		Assert.assertEquals(searchResults.toString(), 1, searchResults.size());
+
+		searchResult = searchResults.get(0);
+
+		searchResultJSONObject = _jsonFactory.createJSONObject(
+			String.valueOf(searchResult));
+
+		Assert.assertNull(
+			JSONUtil.getValue(searchResultJSONObject, "JSONObject/embedded"));
+
+		searchPage = _postSearchPage(
+			HashMapBuilder.put(
+				"entryClassNames", objectDefinition1.getClassName()
+			).put(
+				"nestedFields",
+				"embedded,embedded." + objectRelationship.getName()
+			).put(
+				"search", searchValue
+			).build(),
+			new SearchRequestBody());
+
+		searchResults = ListUtil.fromCollection(searchPage.getItems());
+
+		Assert.assertEquals(searchResults.toString(), 1, searchResults.size());
+
+		searchResult = searchResults.get(0);
+
+		searchResultJSONObject = _jsonFactory.createJSONObject(
+			String.valueOf(searchResult));
+
+		Assert.assertEquals(
+			searchValue,
+			JSONUtil.getValueAsString(
+				searchResultJSONObject, "JSONObject/embedded",
+				"Object/testField1"));
+
+		Assert.assertNull(
+			JSONUtil.getValue(
+				searchResultJSONObject, "JSONObject/embedded",
+				"JSONArray/" + objectRelationship.getName()));
+
+		searchPage = _postSearchPage(
+			HashMapBuilder.put(
+				"entryClassNames", objectDefinition1.getClassName()
+			).put(
+				"nestedFields",
+				"embedded,embedded." + objectRelationship.getName()
+			).put(
+				"nestedFieldsDepth", "2"
+			).put(
+				"search", searchValue
+			).build(),
+			new SearchRequestBody());
+
+		searchResults = ListUtil.fromCollection(searchPage.getItems());
+
+		Assert.assertEquals(searchResults.toString(), 1, searchResults.size());
+
+		searchResult = searchResults.get(0);
+
+		searchResultJSONObject = _jsonFactory.createJSONObject(
+			String.valueOf(searchResult));
+
+		Assert.assertEquals(
+			searchValue,
+			JSONUtil.getValueAsString(
+				searchResultJSONObject, "JSONObject/embedded",
+				"Object/testField1"));
+
+		Assert.assertEquals(
+			relatedValue,
+			JSONUtil.getValueAsString(
+				searchResultJSONObject, "JSONObject/embedded",
+				"JSONArray/" + objectRelationship.getName(), "JSONObject/0",
+				"Object/testField2"));
 
 		_objectEntryManager.deleteObjectEntry(
 			testCompany.getCompanyId(), dtoConverterContext,
-			objectEntry.getExternalReferenceCode(), objectDefinition, "0");
+			objectEntry2.getExternalReferenceCode(), objectDefinition2, null);
 
-		_objectDefinitionLocalService.deleteObjectDefinition(
-			objectDefinition.getObjectDefinitionId());
+		_objectEntryManager.deleteObjectEntry(
+			testCompany.getCompanyId(), dtoConverterContext,
+			objectEntry1.getExternalReferenceCode(), objectDefinition1, null);
 	}
 
 	private void _testPostSearchPageWithEmptyScope() throws Exception {
@@ -1603,6 +1750,9 @@ public class SearchResultResourceTest extends BaseSearchResultResourceTestCase {
 		filter = "object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT
 	)
 	private ObjectEntryManager _objectEntryManager;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	private SearchEngine _searchEngine;
 
