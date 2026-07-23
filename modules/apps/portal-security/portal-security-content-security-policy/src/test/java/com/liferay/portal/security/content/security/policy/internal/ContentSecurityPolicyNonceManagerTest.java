@@ -31,11 +31,6 @@ public class ContentSecurityPolicyNonceManagerTest {
 
 	@Before
 	public void setUp() {
-		_contentSecurityPolicyNonceManager =
-			new ContentSecurityPolicyNonceManager();
-
-		_portal = Mockito.mock(Portal.class);
-
 		ReflectionTestUtil.setFieldValue(
 			_contentSecurityPolicyNonceManager, "_portal", _portal);
 	}
@@ -62,7 +57,6 @@ public class ContentSecurityPolicyNonceManagerTest {
 		Assert.assertEquals(
 			nonce,
 			_contentSecurityPolicyNonceManager.setNonce(httpServletRequest));
-
 		Assert.assertEquals(
 			nonce,
 			_contentSecurityPolicyNonceManager.getNonce(httpServletRequest));
@@ -76,7 +70,8 @@ public class ContentSecurityPolicyNonceManagerTest {
 		ContentSecurityPolicyNonceManager.class.getName() + "#NONCE";
 
 	private ContentSecurityPolicyNonceManager
-		_contentSecurityPolicyNonceManager;
-	private Portal _portal;
+		_contentSecurityPolicyNonceManager =
+			new ContentSecurityPolicyNonceManager();
+	private Portal _portal = Mockito.mock(Portal.class);
 
 }
