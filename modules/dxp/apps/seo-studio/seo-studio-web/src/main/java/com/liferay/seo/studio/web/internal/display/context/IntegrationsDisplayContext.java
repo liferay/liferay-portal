@@ -178,13 +178,17 @@ public class IntegrationsDisplayContext {
 
 		Object value = properties.get(key);
 
+		if (value == null) {
+			return null;
+		}
+
 		if (value instanceof ListEntry) {
 			ListEntry listEntry = (ListEntry)value;
 
 			return listEntry.getKey();
 		}
 
-		return (String)value;
+		return value.toString();
 	}
 
 	private final Map<String, String> _configurationURLsMap;
