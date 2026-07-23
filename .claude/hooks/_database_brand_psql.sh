@@ -1,23 +1,5 @@
 #!/usr/bin/env bash
 
-function _schema_name {
-	local db_name
-
-	db_name="$(_derive_db_name "$(basename "${1}")")"
-
-	[[ ${db_name} != lportal ]] || return 1
-
-	echo "${db_name#lportal_}"
-}
-
-function _psql_admin {
-	local dbname="${1}"
-
-	shift
-
-	psql --host localhost --username postgres --dbname "${dbname}" --no-psqlrc "${@}"
-}
-
 function _drop_database {
 	local worktree_path="${1}"
 
@@ -30,6 +12,24 @@ function _drop_database {
 	_psql_admin postgres --command "DROP SCHEMA IF EXISTS \"${name}\" CASCADE" >&2 || true
 	_psql_admin postgres --command "DROP OWNED BY \"${name}\"" >&2 || true
 	_psql_admin postgres --command "DROP ROLE IF EXISTS \"${name}\"" >&2 || true
+}
+
+function _psql_admin {
+	local dbname="${1}"
+
+	shift
+
+	psql --host localhost --username postgres --dbname "${dbname}" --no-psqlrc "${@}"
+}
+
+function _schema_name {
+	local db_name
+
+	db_name="$(_derive_db_name "$(basename "${1}")")"
+
+	[[ ${db_name} != lportal ]] || return 1
+
+	echo "${db_name#lportal_}"
 }
 
 function _set_database {

@@ -119,30 +119,6 @@ function _get_property_from_files {
 	echo "${default}"
 }
 
-function _source_database_brand {
-	local brand
-
-	brand="$(echo "${LIFERAY_PROVISION_DATABASE_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
-
-	if [[ ${brand} == *psql* || ${brand} == *postgres* ]]
-	then
-		brand=psql
-	elif [[ ${brand} == *mysql* ]]
-	then
-		brand=mysql
-	else
-		_die "LIFERAY_PROVISION_DATABASE_BRAND must contain one of: \"mysql\", \"psql\", \"postgres\" (got \"${brand}\")."
-	fi
-
-	source "_database_brand_${brand}.sh"
-
-	for function_name in _drop_database _set_database
-	do
-		[[ "$(type -t "${function_name}")" == function ]] ||
-			_die "_database_brand_${brand}.sh must implement the function: \"${function_name}\"."
-	done
-}
-
 function _sed {
 	local arg in_place=0
 
@@ -191,6 +167,32 @@ function _sed {
 	else
 		sed "${@}"
 	fi
+}
+
+function _source_database_brand {
+	local brand
+
+	brand="$(echo "${LIFERAY_PROVISION_DATABASE_BRAND:-mysql}" | tr "[:upper:]" "[:lower:]")"
+
+	if [[ ${brand} == *psql* || ${brand} == *postgres* ]]
+	then
+		brand=psql
+	elif [[ ${brand} == *mysql* ]]
+	then
+		brand=mysql
+	else
+		_die "The \"LIFERAY_PROVISION_DATABASE_BRAND\" value must contain one of \"mysql\", \"psql\", or \"postgres\" (got \"${brand}\")."
+	fi
+
+	source "_database_brand_${brand}.sh"
+
+	local function_name
+
+	for function_name in _drop_database _set_database
+	do
+		[[ $(type -t "${function_name}") == function ]] ||
+			_die "\"_database_brand_${brand}.sh\" must implement the \"${function_name}\" function."
+	done
 }
 
 _source_database_brand
