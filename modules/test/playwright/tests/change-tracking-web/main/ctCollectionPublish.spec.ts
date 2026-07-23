@@ -323,3 +323,75 @@ test('LPD-61155 View Publication history when CTProcess user is deleted', async 
 		page.getByRole('link', {name: ctCollection.body.name})
 	).toBeVisible();
 });
+
+test('LPD-47293 View page friendly URL after reverting publication', async ({
+	apiHelpers,
+	changeTrackingPage,
+	ctCollection,
+	page,
+	pagesAdminPage,
+	site,
+}) => {
+	const layoutName = getRandomString();
+
+	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+		groupId: site.id,
+		title: layoutName,
+	});
+
+	const friendlyURL = layout.friendlyURL;
+	const editedFriendlyURL = `${friendlyURL}-edited`;
+
+	const friendlyURLInput = page.getByLabel('Friendly URL').first();
+
+	await changeTrackingPage.workOnPublication(ctCollection);
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+
+	await pagesAdminPage.clickOnAction('Configure', layoutName);
+
+	await friendlyURLInput.fill(editedFriendlyURL);
+
+	await Promise.all([
+		page.waitForLoadState('load'),
+		page.getByRole('button', {name: 'Save'}).click(),
+	]);
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+
+	await pagesAdminPage.clickOnAction('Configure', layoutName);
+
+	await expect(friendlyURLInput).toHaveValue(editedFriendlyURL, {
+		timeout: 15000,
+	});
+
+	await changeTrackingPage.workOnProduction();
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+
+	await pagesAdminPage.clickOnAction('Configure', layoutName);
+
+	await expect(friendlyURLInput).toHaveValue(friendlyURL, {timeout: 15000});
+
+	await apiHelpers.headlessChangeTracking.publishCTCollection(
+		ctCollection.body.id
+	);
+
+	await changeTrackingPage.assertStatus('Published', ctCollection.body.name);
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+
+	await pagesAdminPage.clickOnAction('Configure', layoutName);
+
+	await expect(friendlyURLInput).toHaveValue(editedFriendlyURL, {
+		timeout: 15000,
+	});
+
+	await changeTrackingPage.revertPublication(ctCollection.body.name);
+
+	await pagesAdminPage.goto(site.friendlyUrlPath);
+
+	await pagesAdminPage.clickOnAction('Configure', layoutName);
+
+	await expect(friendlyURLInput).toHaveValue(friendlyURL, {timeout: 15000});
+});

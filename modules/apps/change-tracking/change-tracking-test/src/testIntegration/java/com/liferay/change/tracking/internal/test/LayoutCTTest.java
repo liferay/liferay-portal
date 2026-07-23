@@ -666,6 +666,33 @@ public class LayoutCTTest {
 	}
 
 	@Test
+	public void testPublishDeleteLayoutWithAssetTag() throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			_layoutLocalService.updateAsset(
+				layout.getUserId(), layout, null,
+				new String[] {RandomTestUtil.randomString()});
+
+			_layoutLocalService.deleteLayout(layout);
+		}
+
+		Assert.assertNotNull(_layoutLocalService.fetchLayout(layout.getPlid()));
+
+		_ctProcessLocalService.addCTProcess(
+			_ctCollection.getUserId(), _ctCollection.getCtCollectionId());
+
+		Assert.assertNull(_layoutLocalService.fetchLayout(layout.getPlid()));
+
+		Assert.assertNull(
+			_assetEntryLocalService.fetchEntry(
+				Layout.class.getName(), layout.getPlid()));
+	}
+
+	@Test
 	public void testPublishLayoutWithAssetTag() throws Exception {
 		String tagName1 = "layoutcttesttag1";
 		String tagName2 = "layoutcttesttag2";

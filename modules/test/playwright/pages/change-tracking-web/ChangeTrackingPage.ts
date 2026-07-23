@@ -514,6 +514,32 @@ export class ChangeTrackingPage {
 		await this.page.getByRole('button', {name: 'Publish'}).click();
 	}
 
+	async revertPublication(publicationName: string) {
+		await this.goToPublicationHistory();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'Revert'}),
+			trigger: this.page
+				.locator('.fds tbody tr')
+				.filter({hasText: publicationName})
+				.locator('.cell-item-actions .lexicon-icon-ellipsis-v'),
+		});
+
+		await this.page.locator('#publishTimeLater').check();
+
+		await this.page
+			.getByRole('button', {name: 'Revert and Create Publication'})
+			.click();
+
+		await this.page
+			.locator(
+				'#_com_liferay_change_tracking_web_portlet_PublicationsPortlet_controlMenu'
+			)
+			.filter({hasText: 'Review Changes'})
+			.waitFor();
+	}
+
 	async toggleSandboxConfiguration(check: boolean) {
 		await this.gotoPublicationsSettings();
 
