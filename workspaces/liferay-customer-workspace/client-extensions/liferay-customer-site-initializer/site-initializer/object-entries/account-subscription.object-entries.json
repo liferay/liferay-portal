@@ -577,6 +577,54 @@
 			"subscriptionStatus": "Active"
 		},
 		{
+			"accountKey": "ERC-001",
+			"accountSubscriptionGroupERC": "ERC-001_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-001_liferay-cloud_liferay-data-platform",
+			"instanceSize": "1",
+			"name": "Liferay Data Platform",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-001",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-001",
+			"accountSubscriptionGroupERC": "ERC-001_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-001_liferay-cloud_additional-events",
+			"instanceSize": "1",
+			"name": "Additional Events",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-001",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-001",
+			"accountSubscriptionGroupERC": "ERC-001_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-001_liferay-cloud_overage-events",
+			"instanceSize": "1",
+			"name": "Overage Events",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-001",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-001",
+			"accountSubscriptionGroupERC": "ERC-001_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-001_liferay-cloud_ldp-connector",
+			"instanceSize": "1",
+			"name": "LDP Connector",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-001",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
 			"accountKey": "ERC-023",
 			"accountSubscriptionGroupERC": "ERC-023_liferay-cloud",
 			"endDate": "2026-12-31T00:00:00Z",
@@ -621,6 +669,54 @@
 			"name": "Academic Non-Production",
 			"quantity": 1,
 			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-024",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-027",
+			"accountSubscriptionGroupERC": "ERC-027_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-027_liferay-cloud_liferay-data-platform",
+			"instanceSize": "1",
+			"name": "Liferay Data Platform",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-027",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-027",
+			"accountSubscriptionGroupERC": "ERC-027_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-027_liferay-cloud_additional-events",
+			"instanceSize": "1",
+			"name": "Additional Events",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-027",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-027",
+			"accountSubscriptionGroupERC": "ERC-027_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-027_liferay-cloud_overage-events",
+			"instanceSize": "1",
+			"name": "Overage Events",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-027",
+			"startDate": "2023-01-01T00:00:00Z",
+			"subscriptionStatus": "Active"
+		},
+		{
+			"accountKey": "ERC-027",
+			"accountSubscriptionGroupERC": "ERC-027_liferay-cloud",
+			"endDate": "2026-12-31T00:00:00Z",
+			"externalReferenceCode": "ERC-027_liferay-cloud_ldp-connector",
+			"instanceSize": "1",
+			"name": "LDP Connector",
+			"quantity": 1,
+			"r_accountEntryToAccountSubscription_accountEntryERC": "ERC-027",
 			"startDate": "2023-01-01T00:00:00Z",
 			"subscriptionStatus": "Active"
 		}
