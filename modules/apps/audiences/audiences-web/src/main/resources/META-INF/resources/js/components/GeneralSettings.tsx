@@ -6,7 +6,7 @@
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayPanel from '@clayui/panel';
-import React from 'react';
+import React, {useState} from 'react';
 
 interface IProps {
 	defaultExpanded?: boolean;
@@ -21,17 +21,20 @@ export default function GeneralSettings({
 	namespace,
 	onExternalReferenceCodeChange,
 }: IProps) {
+	const [expanded, setExpanded] = useState(defaultExpanded);
+
 	return (
 		<ClayPanel
 			className="audience-builder-general-settings border mt-4 rounded"
 			collapsable
 			collapseHeaderClassNames="align-items-center d-flex justify-content-between px-4 py-3"
-			defaultExpanded={defaultExpanded}
 			displayTitle={
 				<span className="font-weight-bold text-6">
 					{Liferay.Language.get('general-settings')}
 				</span>
 			}
+			expanded={expanded}
+			onExpandedChange={setExpanded}
 			showCollapseIcon
 		>
 			<ClayPanel.Body>
@@ -63,6 +66,7 @@ export default function GeneralSettings({
 						onChange={(event) =>
 							onExternalReferenceCodeChange(event.target.value)
 						}
+						onInvalid={() => setExpanded(true)}
 						required
 						type="text"
 						value={externalReferenceCode}
