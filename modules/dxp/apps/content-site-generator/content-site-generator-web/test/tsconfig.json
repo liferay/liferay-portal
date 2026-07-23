@@ -1,5 +1,5 @@
 {
-	"@generated": "1b9b91be7e8b0d615d4a904c3c9ce9bf288f73e7",
+	"@generated": "9b69cabff9bec7d44ab8998e2d324f491dd450e4",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,6 +11,9 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"@liferay/ai-hub-cell-js-components-web": [
+				"../../../../../apps/ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
 			"frontend-js-components-web": [
 				"../../../../../apps/frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/index.ts"
 			],
@@ -39,6 +42,9 @@
 		"../src/**/*.tsx"
 	],
 	"references": [
+		{
+			"path": "../../../../../apps/ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
 		{
 			"path": "../../../../../apps/frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
