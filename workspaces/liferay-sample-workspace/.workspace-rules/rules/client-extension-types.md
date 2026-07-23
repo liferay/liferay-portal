@@ -152,3 +152,10 @@ These CETs import bulk data or initialize a full site.
         - Liferay.Headless.Admin.User.everything
     type: oAuthApplicationHeadlessServer
 ```
+
+## References
+
+- `skills/scaffold-client-extension/SKILL.md` and `skills/guided-client-extension/SKILL.md` — the primary consumers of this card.
+- `rules/oauth-scopes.md` — scopes required per CET type.
+- `rules/site-initializer-format.md` — the `siteInitializer` CET tree.
+- Client extensions: `https://learn.liferay.com/w/dxp/development/client-extensions`

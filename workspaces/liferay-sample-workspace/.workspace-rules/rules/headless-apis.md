@@ -4,7 +4,7 @@
 
 Key Liferay REST modules, their base URIs, primary resources, and OAuth scopes. All paths resolve relative to `http://localhost:${PORT}`. Use Basic auth (`test@liferay.com:test`) for the curl examples on this page and in the skills. The OAuth scope strings noted per module are for `oAuthApplicationHeadlessServer` blocks when scaffolding microservice CETs — see `rules/oauth-scopes.md` for the full scaffolding reference.
 
-The tables below list the common endpoints per module — they are not exhaustive. To confirm an exact path or find an endpoint not listed here, use the `get-openapi` MCP tool (see `skills/mcp-server/SKILL.md`), or fetch `GET /o/<module>/v1.0/openapi.json` directly. Base URIs, feature flag gates, and OAuth scopes are *not* discoverable from the specs — rely on this card for those.
+The tables below list the common endpoints per module — they are not exhaustive. To confirm an exact path or find an endpoint not listed here, use the `get-openapi` MCP tool (see `skills/mcp-server/SKILL.md`), or fetch `GET /o/<module>/v1.0/openapi.json` directly. Base URIs, feature flag gates, and OAuth scopes are *not* discoverable from the specs — rely on this card for those. The per-module `Required flag` notes below map each module to its gating flag; see `rules/feature-flags-catalog.md` for each flag's default and status.
 
 ## headless-admin-site
 
@@ -156,3 +156,10 @@ Fragment code is in `fragmentVersions[]` (`html`, `css`, `js`, `configuration`, 
 | 404 | Resource not found or feature flag off; check flag state |
 | 409 | Conflict; typically duplicate name or ERC |
 | 500 | Server error; check `bundles/logs/liferay.<date>.log` |
+
+## References
+
+- `rules/oauth-scopes.md` — full scope-string reference for these modules.
+- `rules/feature-flags-catalog.md` — defaults for the flags gating these APIs.
+- `skills/mcp-server/SKILL.md` — the `get-openapi` tool for confirming exact paths.
+- Headless APIs: `https://learn.liferay.com/w/dxp/integration/headless-apis`

@@ -153,3 +153,10 @@ Object action definition body:
 	"parameters": { ... }
 }
 ```
+
+## References
+
+- `skills/manage-object-logic/SKILL.md` — the primary consumer of this card.
+- `rules/client-extension-types.md` — the `objectAction` CET type.
+- `rules/oauth-scopes.md` — scopes for CET-backed actions.
+- Objects: `https://learn.liferay.com/w/dxp/low-code/objects`
