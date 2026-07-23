@@ -18,12 +18,14 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -818,6 +820,31 @@ public class DepotPermissionCheckerWrapperTest {
 					})));
 	}
 
+	@FeatureFlag("LPD-58677")
+	@Test
+	public void testProjectManagerHasAssignMembersPermissionOnProjectManagerRole()
+		throws Exception {
+
+		DepotEntry depotEntry = _addProjectDepotEntry(
+			TestPropsValues.getUserId());
+
+		DepotTestUtil.withProjectManager(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Role role = _roleLocalService.getRole(
+					TestPropsValues.getCompanyId(),
+					DepotRolesConstants.PROJECT_MANAGER);
+
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						depotEntry.getGroupId(), Role.class.getName(),
+						role.getRoleId(), ActionKeys.ASSIGN_MEMBERS));
+			});
+	}
+
 	@Test
 	public void testSiteMemberDoesNotHaveDepotConnectedSiteMemberUpdatePermission()
 		throws Exception {
@@ -952,6 +979,9 @@ public class DepotPermissionCheckerWrapperTest {
 
 	@Inject
 	private PermissionCheckerFactory _permissionCheckerFactory;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

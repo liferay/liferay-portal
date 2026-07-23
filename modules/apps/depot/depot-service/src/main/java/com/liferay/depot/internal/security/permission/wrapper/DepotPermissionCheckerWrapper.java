@@ -308,13 +308,16 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 					}
 
 					if (_isDepotGroupAdmin(groupId)) {
+						String subtype = _getSubtype(
+							_groupLocalService.fetchGroup(groupId));
+
 						if (StringUtil.equals(
 								actionId, ActionKeys.ASSIGN_MEMBERS) &&
+							!Objects.equals(
+								subtype, DepotRolesConstants.SUBTYPE_PROJECT) &&
 							Objects.equals(
 								DepotRoleNameUtil.getAdministratorRoleName(
-									_getSubtype(
-										_groupLocalService.fetchGroup(
-											groupId))),
+									subtype),
 								role.getName())) {
 
 							return null;
