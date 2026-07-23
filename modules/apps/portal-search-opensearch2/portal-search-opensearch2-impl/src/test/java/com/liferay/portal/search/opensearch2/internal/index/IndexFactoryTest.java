@@ -17,6 +17,7 @@ import com.liferay.portal.search.opensearch2.internal.configuration.OpenSearchCo
 import com.liferay.portal.search.opensearch2.internal.configuration.OpenSearchConfigurationWrapperImpl;
 import com.liferay.portal.search.opensearch2.internal.connection.IndexName;
 import com.liferay.portal.search.opensearch2.internal.document.SingleFieldFixture;
+import com.liferay.portal.search.opensearch2.internal.index.util.IndexFactoryCompanyIdRegistryUtil;
 import com.liferay.portal.search.opensearch2.internal.query.QueryFactories;
 import com.liferay.portal.search.opensearch2.internal.util.ResourceUtil;
 import com.liferay.portal.search.spi.index.configuration.contributor.CompanyIndexConfigurationContributor;
@@ -75,6 +76,12 @@ public class IndexFactoryTest extends BaseOpenSearchTestCase {
 
 	@Before
 	public void setUp() throws Exception {
+		for (long companyId :
+				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
+
+			IndexFactoryCompanyIdRegistryUtil.unregisterCompanyId(companyId);
+		}
+
 		_indexFactoryFixture = new IndexFactoryFixture(
 			testName.getMethodName(), openSearchConnectionManager);
 
