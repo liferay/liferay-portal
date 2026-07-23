@@ -151,8 +151,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.comment.CommentManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -3119,40 +3117,25 @@ public class ObjectEntryLocalServiceTest {
 					).build()),
 				false);
 
-		_objectEntryLocalService.addObjectEntry(
+		String multiselectPicklistObjectFieldValue =
+			_getMultiselectPicklistObjectFieldValue(prefixKey, 100);
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
 				"multiselectPicklistObjectField",
-				_getMultiselectPicklistObjectFieldValue(prefixKey, 10)
+				multiselectPicklistObjectFieldValue
 			).build(),
 			new ServiceContext());
 
-		int expectedMaxLength = 5000;
+		Map<String, Serializable> values = objectEntry.getValues();
 
-		if (DBManagerUtil.getDBType() == DBType.SQLSERVER) {
-			expectedMaxLength = 4000;
-		}
-
-		AssertUtils.assertFailure(
-			ObjectEntryValuesException.ExceedsTextMaxLength.class,
-			StringBundler.concat(
-				"Object entry value exceeds the maximum length of ",
-				expectedMaxLength, " characters for object field ",
-				"\"multiselectPicklistObjectField\""),
-			() -> _objectEntryLocalService.addObjectEntry(
-				0, TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId(),
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				null,
-				HashMapBuilder.<String, Serializable>put(
-					"multiselectPicklistObjectField",
-					_getMultiselectPicklistObjectFieldValue(prefixKey, 100)
-				).build(),
-				new ServiceContext()));
+		Assert.assertEquals(
+			multiselectPicklistObjectFieldValue,
+			values.get("multiselectPicklistObjectField"));
 	}
 
 	@FeatureFlag("LPD-17564")
@@ -5031,8 +5014,7 @@ public class ObjectEntryLocalServiceTest {
 				"listTypeEntryKeyRequired", "listTypeEntryKey1"
 			).build());
 
-		objectEntry1.setExternalReferenceCode(
-			RandomTestUtil.randomString(500));
+		objectEntry1.setExternalReferenceCode(RandomTestUtil.randomString(500));
 
 		objectEntry1 = _objectEntryLocalService.updateObjectEntry(objectEntry1);
 
