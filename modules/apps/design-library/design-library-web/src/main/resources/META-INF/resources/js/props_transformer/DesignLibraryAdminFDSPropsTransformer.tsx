@@ -19,11 +19,12 @@ import {
 } from './cell_renderers';
 
 export default function DesignLibraryAdminFDSPropsTransformer({
-	additionalProps: {entryIdKey, redirectURL},
+	additionalProps: {canAddDesignLibrary, entryIdKey, redirectURL},
 	id,
 	...props
 }: {
 	additionalProps: {
+		canAddDesignLibrary: boolean;
 		entryIdKey: string;
 		redirectURL: string;
 	};
@@ -31,25 +32,27 @@ export default function DesignLibraryAdminFDSPropsTransformer({
 	id: string;
 	props: Record<string, unknown>;
 }): IFrontendDataSetProps {
-	const creationMenu = {
-		primaryItems: [
-			{
-				label: Liferay.Language.get('new-design-library'),
-				onClick: () => {
-					openModal({
-						contentComponent: ({closeModal}) =>
-							CreateDesignLibraryModal({
-								dataSetId: id,
-								entryIdKey,
-								onClose: closeModal,
-								redirectURL,
-							}),
-						size: 'md',
-					});
-				},
-			},
-		],
-	};
+	const creationMenu = canAddDesignLibrary
+		? {
+				primaryItems: [
+					{
+						label: Liferay.Language.get('new-design-library'),
+						onClick: () => {
+							openModal({
+								contentComponent: ({closeModal}) =>
+									CreateDesignLibraryModal({
+										dataSetId: id,
+										entryIdKey,
+										onClose: closeModal,
+										redirectURL,
+									}),
+								size: 'md',
+							});
+						},
+					},
+				],
+			}
+		: undefined;
 
 	return {
 		...props,
