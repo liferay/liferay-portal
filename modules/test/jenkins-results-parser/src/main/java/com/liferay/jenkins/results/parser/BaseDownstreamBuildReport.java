@@ -280,7 +280,7 @@ public abstract class BaseDownstreamBuildReport
 			"duration", (long)(caseJSONObject.optDouble("duration", 0) * 1000)
 		);
 
-		String errorDetails = caseJSONObject.optString("errorDetails", null);
+		String errorDetails = caseJSONObject.optString("errorDetails");
 
 		if (errorDetails != null) {
 			if (errorDetails.contains("\n")) {
