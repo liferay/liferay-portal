@@ -40,7 +40,9 @@ public class LoadBalancerUtilTest
 			LoadBalancerUtil.getAvailableJenkinsMasters(
 				"TEST-9-2", "test-9", properties, false));
 
-		Assert.assertEquals(jenkinsJenkinsMasterNames.toString(), 4, jenkinsJenkinsMasterNames.size());
+		Assert.assertEquals(
+			jenkinsJenkinsMasterNames.toString(), 4,
+			jenkinsJenkinsMasterNames.size());
 
 		Assert.assertFalse(jenkinsJenkinsMasterNames.contains("test-9-2"));
 
@@ -51,7 +53,9 @@ public class LoadBalancerUtilTest
 			LoadBalancerUtil.getAvailableJenkinsMasters(
 				null, "test-9", properties, false));
 
-		Assert.assertEquals(jenkinsJenkinsMasterNames.toString(), 3, jenkinsJenkinsMasterNames.size());
+		Assert.assertEquals(
+			jenkinsJenkinsMasterNames.toString(), 3,
+			jenkinsJenkinsMasterNames.size());
 
 		Assert.assertFalse(jenkinsJenkinsMasterNames.contains("test-9-3"));
 		Assert.assertFalse(jenkinsJenkinsMasterNames.contains("test-9-4"));
@@ -92,7 +96,9 @@ public class LoadBalancerUtilTest
 		Assert.assertNull(selectionCounts.get("http://test-9-5"));
 	}
 
-	private List<String> _getJenkinsMasterNames(List<JenkinsMaster> jenkinsMasters) {
+	private List<String> _getJenkinsMasterNames(
+		List<JenkinsMaster> jenkinsMasters) {
+
 		List<String> jenkinsJenkinsMasterNames = new ArrayList<>();
 
 		for (JenkinsMaster jenkinsMaster : jenkinsMasters) {

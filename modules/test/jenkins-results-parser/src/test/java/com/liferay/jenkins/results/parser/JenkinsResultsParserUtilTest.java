@@ -663,33 +663,6 @@ public class JenkinsResultsParserUtilTest
 		return environment;
 	}
 
-	private void _testIsCINode(
-		String jenkinsURL, String masterNetworkName, boolean expected) {
-
-		Environment environment = mockEnvironment();
-
-		Mockito.when(
-			environment.doGet("JENKINS_URL")
-		).thenReturn(
-			jenkinsURL
-		);
-
-		Mockito.when(
-			environment.doGet("MASTER_NETWORK_NAME")
-		).thenReturn(
-			masterNetworkName
-		);
-
-		ReflectionTestUtil.setFieldValue(
-			JenkinsResultsParserUtil.class, "_ciNode", null);
-
-		Assert.assertEquals(
-			JenkinsResultsParserUtil.combine(
-				"Unexpected isCINode() value for JENKINS_URL=", jenkinsURL,
-				" and MASTER_NETWORK_NAME=", masterNetworkName),
-			expected, JenkinsResultsParserUtil.isCINode());
-	}
-
 	private ServerSocket _createServerSocket() throws Exception {
 		return new ServerSocket(0, 1, InetAddress.getByName("localhost"));
 	}
@@ -767,6 +740,33 @@ public class JenkinsResultsParserUtilTest
 			expectedPropertyValue,
 			JenkinsResultsParserUtil.getProperty(
 				properties, actualPropertyName));
+	}
+
+	private void _testIsCINode(
+		String jenkinsURL, String masterNetworkName, boolean expected) {
+
+		Environment environment = mockEnvironment();
+
+		Mockito.when(
+			environment.doGet("JENKINS_URL")
+		).thenReturn(
+			jenkinsURL
+		);
+
+		Mockito.when(
+			environment.doGet("MASTER_NETWORK_NAME")
+		).thenReturn(
+			masterNetworkName
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			JenkinsResultsParserUtil.class, "_ciNode", null);
+
+		Assert.assertEquals(
+			JenkinsResultsParserUtil.combine(
+				"Unexpected isCINode() value for JENKINS_URL=", jenkinsURL,
+				" and MASTER_NETWORK_NAME=", masterNetworkName),
+			expected, JenkinsResultsParserUtil.isCINode());
 	}
 
 }
