@@ -780,6 +780,16 @@ public class CommercePriceListLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CommercePriceList getOrAddEmptyCommercePriceList(
+			String externalReferenceCode, long groupId, long companyId,
+			long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commercePriceListLocalService.getOrAddEmptyCommercePriceList(
+			externalReferenceCode, groupId, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -964,4 +974,4 @@ public class CommercePriceListLocalServiceWrapper
 	private CommercePriceListLocalService _commercePriceListLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1348597505
+// LIFERAY-SERVICE-BUILDER-HASH:1386049642
