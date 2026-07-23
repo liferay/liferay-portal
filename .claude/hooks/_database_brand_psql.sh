@@ -55,7 +55,7 @@ function _set_database {
 
 	if [[ -n ${existing_password} ]]
 	then
-		create_role="${create_role} PASSWORD '${existing_password}'"
+		create_role="${create_role} PASSWORD '${existing_password//\'/\'\'}'"
 	fi
 
 	_psql_admin postgres --tuples-only --no-align --command "SELECT 1 FROM pg_roles WHERE rolname = '${name}'" | grep --quiet 1 ||
