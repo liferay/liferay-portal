@@ -326,6 +326,12 @@ public interface CommerceCatalogLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceCatalog getOrAddEmptyCommerceCatalog(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -394,4 +400,4 @@ public interface CommerceCatalogLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1792484210
+// LIFERAY-SERVICE-BUILDER-HASH:-1382314699

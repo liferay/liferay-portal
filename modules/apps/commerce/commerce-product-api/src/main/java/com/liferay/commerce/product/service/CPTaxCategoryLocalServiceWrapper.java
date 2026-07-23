@@ -392,6 +392,15 @@ public class CPTaxCategoryLocalServiceWrapper
 		return _cpTaxCategoryLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CPTaxCategory getOrAddEmptyCPTaxCategory(
+			String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpTaxCategoryLocalService.getOrAddEmptyCPTaxCategory(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -490,4 +499,4 @@ public class CPTaxCategoryLocalServiceWrapper
 	private CPTaxCategoryLocalService _cpTaxCategoryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1655443680
+// LIFERAY-SERVICE-BUILDER-HASH:942117289

@@ -350,6 +350,14 @@ public class CPTaxCategoryLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CPTaxCategory getOrAddEmptyCPTaxCategory(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPTaxCategory(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -414,4 +422,4 @@ public class CPTaxCategoryLocalServiceUtil {
 			CPTaxCategoryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-366839469
+// LIFERAY-SERVICE-BUILDER-HASH:-709608358

@@ -452,6 +452,16 @@ public class CommerceCurrencyLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public com.liferay.commerce.currency.model.CommerceCurrency
+			getOrAddEmptyCommerceCurrency(
+				String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceCurrencyLocalService.getOrAddEmptyCommerceCurrency(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -599,4 +609,4 @@ public class CommerceCurrencyLocalServiceWrapper
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1946983008
+// LIFERAY-SERVICE-BUILDER-HASH:665901735
