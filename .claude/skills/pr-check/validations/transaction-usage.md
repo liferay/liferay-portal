@@ -18,14 +18,21 @@ A generated file carries the `@generated` Javadoc marker that Service Builder an
 MERGE_BASE=$(git merge-base HEAD master)
 
 for FILE in $(git diff --name-only "${MERGE_BASE}...HEAD" -- '*.java'); do
-	if [ ! -f "${FILE}" ] || command grep -q -i -F -e '@generated' "${FILE}"; then
+	if [ ! -f "${FILE}" ] || command grep --fixed-strings --ignore-case --quiet --regexp='@generated' "${FILE}"; then
 		continue
 	fi
 
 	git diff "${MERGE_BASE}...HEAD" -- "${FILE}" \
-		| command grep -E '^\+' \
-		| command grep -v -E '^\+\+\+' \
-		| command grep -F -e '@Transactional' -e 'Propagation.REQUIRES_NEW' -e 'REQUIRES_NEW_TRANSACTION' -e 'TransactionCallbackUtil' -e 'TransactionCommitCallbackUtil' -e 'TransactionInvokerUtil'
+		| command grep --extended-regexp '^\+' \
+		| command grep --extended-regexp --invert-match '^\+\+\+' \
+		| command grep \
+			--fixed-strings \
+			--regexp='@Transactional' \
+			--regexp='Propagation.REQUIRES_NEW' \
+			--regexp='REQUIRES_NEW_TRANSACTION' \
+			--regexp='TransactionCallbackUtil' \
+			--regexp='TransactionCommitCallbackUtil' \
+			--regexp='TransactionInvokerUtil'
 done
 ```
 
