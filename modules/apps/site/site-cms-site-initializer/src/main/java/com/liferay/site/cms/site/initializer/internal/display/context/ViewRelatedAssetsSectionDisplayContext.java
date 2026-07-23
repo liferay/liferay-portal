@@ -12,6 +12,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -41,6 +42,7 @@ public class ViewRelatedAssetsSectionDisplayContext
 		DLConfiguration dlConfiguration, GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest, Language language,
 		ObjectDefinition objectDefinition,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectDefinitionService objectDefinitionService,
 		ObjectEntry objectEntry, Portal portal,
 		TranslationInfoItemFieldValuesExporterRegistry
@@ -52,13 +54,31 @@ public class ViewRelatedAssetsSectionDisplayContext
 			objectDefinitionService, objectEntry, portal,
 			translationInfoItemFieldValuesExporterRegistry);
 
-		_linkedAssetsFilterFieldName = _getLinkedAssetsFilterFieldName();
+		_cmsBasicDocumentClassName = _getCMSBasicDocumentClassName(
+			objectDefinitionLocalService);
+
+		if (StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
+
+			_relatedObjectEntriesFilterFieldName = "cmpProjectObjectEntryIds";
+			_relationshipObjectFieldName =
+				"r_cmpProjectToCMPProjectLinks_c_cmpProjectId";
+			_restContextPath = "/o/cmp/project-links";
+		}
+		else {
+			_relatedObjectEntriesFilterFieldName = "cmpTaskObjectEntryIds";
+			_relationshipObjectFieldName =
+				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId";
+			_restContextPath = "/o/cmp/task-links";
+		}
 	}
 
 	@Override
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
-			"objectEntryLinkContext", _getObjectEntryLinkContext()
+			"documentClassName", _cmsBasicDocumentClassName
+		).put(
+			"objectEntryLinkProps", _getObjectEntryLinkProps()
 		).putAll(
 			super.getAdditionalProps()
 		).build();
@@ -73,7 +93,17 @@ public class ViewRelatedAssetsSectionDisplayContext
 				"baseAssetLibraryViewURL",
 				ActionUtil.getBaseSpaceURL(themeDisplay)
 			).putData(
+				"documentClassName", _cmsBasicDocumentClassName
+			).putData(
+				"objectEntryId", String.valueOf(objectEntry.getObjectEntryId())
+			).putData(
 				"parentObjectEntryFolderExternalReferenceCode", StringPool.BLANK
+			).putData(
+				"relationshipObjectFieldName", _relationshipObjectFieldName
+			).putData(
+				"restContextPath", _restContextPath
+			).putData(
+				"scopeGroupId", String.valueOf(objectEntry.getGroupId())
 			).setIcon(
 				"upload-multiple"
 			).setLabel(
@@ -84,9 +114,9 @@ public class ViewRelatedAssetsSectionDisplayContext
 			).putData(
 				"objectEntryId", String.valueOf(objectEntry.getObjectEntryId())
 			).putData(
-				"objectRelationshipFieldName", _getObjectRelationshipFieldName()
+				"relationshipObjectFieldName", _relationshipObjectFieldName
 			).putData(
-				"restContextPath", _getRESTContextPath()
+				"restContextPath", _restContextPath
 			).putData(
 				"scopeGroupId", String.valueOf(objectEntry.getGroupId())
 			).putData(
@@ -98,7 +128,7 @@ public class ViewRelatedAssetsSectionDisplayContext
 								StringBundler.concat(
 									"(cmsSection eq 'contents' or cmsSection ",
 									"eq 'files') and not (",
-									getLinkedAssetsFilterString(),
+									getRelatedObjectEntriesFilterString(),
 									") and objectDefinitionId gt 0 and ",
 									"rootDescendantNode eq false")),
 							httpServletRequest, null);
@@ -140,53 +170,42 @@ public class ViewRelatedAssetsSectionDisplayContext
 	}
 
 	@Override
-	protected String getLinkedAssetsFilterString() {
-		return getLinkedAssetsFilterString(
-			_linkedAssetsFilterFieldName, objectEntry.getObjectEntryId());
+	protected String getRelatedObjectEntriesFilterString() {
+		return getRelatedObjectEntriesFilterString(
+			_relatedObjectEntriesFilterFieldName,
+			objectEntry.getObjectEntryId());
 	}
 
-	private Map<String, Object> _getObjectEntryLinkContext() {
+	private String _getCMSBasicDocumentClassName(
+		ObjectDefinitionLocalService objectDefinitionLocalService) {
+
+		ObjectDefinition cmsBasicDocumentObjectDefinition =
+			objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_DOCUMENT", objectEntry.getCompanyId());
+
+		if (cmsBasicDocumentObjectDefinition == null) {
+			return StringPool.BLANK;
+		}
+
+		return cmsBasicDocumentObjectDefinition.getClassName();
+	}
+
+	private Map<String, Object> _getObjectEntryLinkProps() {
 		return HashMapBuilder.<String, Object>put(
 			"objectEntryId", String.valueOf(objectEntry.getObjectEntryId())
 		).put(
-			"objectRelationshipFieldName", _getObjectRelationshipFieldName()
+			"relationshipObjectFieldName", _relationshipObjectFieldName
 		).put(
-			"restContextPath", _getRESTContextPath()
+			"restContextPath", _restContextPath
 		).put(
 			"scopeGroupId", String.valueOf(objectEntry.getGroupId())
 		).build();
 	}
 
-	private String _getLinkedAssetsFilterFieldName() {
-		if (StringUtil.equals(
-				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
-
-			return "cmpProjectObjectEntryIds";
-		}
-
-		return "cmpTaskObjectEntryIds";
-	}
-
-	private String _getObjectRelationshipFieldName() {
-		if (StringUtil.equals(
-				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
-
-			return "r_cmpProjectToCMPProjectLinks_c_cmpProjectId";
-		}
-
-		return "r_cmpTaskToCMPTaskLinks_c_cmpTaskId";
-	}
-
-	private String _getRESTContextPath() {
-		if (StringUtil.equals(
-				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
-
-			return "/o/cmp/project-links";
-		}
-
-		return "/o/cmp/task-links";
-	}
-
-	private final String _linkedAssetsFilterFieldName;
+	private final String _cmsBasicDocumentClassName;
+	private final String _relatedObjectEntriesFilterFieldName;
+	private final String _relationshipObjectFieldName;
+	private final String _restContextPath;
 
 }

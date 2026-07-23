@@ -56,7 +56,8 @@ public class ViewRelatedAssetsJSPSectionFragmentRenderer
 			httpServletRequest, language,
 			_objectDefinitionLocalService.fetchObjectDefinition(
 				objectEntry.getObjectDefinitionId()),
-			_objectDefinitionService, objectEntry, _portal,
+			_objectDefinitionLocalService, _objectDefinitionService,
+			objectEntry, _portal,
 			translationInfoItemFieldValuesExporterRegistry);
 	}
 
