@@ -101,9 +101,8 @@ public class JournalArticleModelDocumentContributorTest {
 	public void testContributeArticleWithSeparatorContentField()
 		throws Exception {
 
-		JournalArticle journalArticle = _addArticleWithSeparatorContentField();
-
 		DocumentImpl documentImpl = new DocumentImpl();
+		JournalArticle journalArticle = _addArticleWithSeparatorContentField();
 
 		_modelDocumentContributor.contribute(documentImpl, journalArticle);
 
