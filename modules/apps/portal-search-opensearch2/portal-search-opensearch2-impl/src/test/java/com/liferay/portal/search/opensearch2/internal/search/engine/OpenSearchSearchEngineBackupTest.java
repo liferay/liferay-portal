@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.opensearch2.internal.BaseOpenSearchTestCase;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchSearchEngine;
 import com.liferay.portal.search.opensearch2.internal.OpenSearchTestRule;
+import com.liferay.portal.search.opensearch2.internal.index.util.IndexFactoryCompanyIdRegistryUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.IOException;
@@ -67,6 +68,12 @@ public class OpenSearchSearchEngineBackupTest extends BaseOpenSearchTestCase {
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		_openSearchSearchEngineFixture.tearDown();
+
+		for (long companyId :
+				IndexFactoryCompanyIdRegistryUtil.getCompanyIds()) {
+
+			IndexFactoryCompanyIdRegistryUtil.unregisterCompanyId(companyId);
+		}
 	}
 
 	@Test
