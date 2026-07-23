@@ -1,6 +1,5 @@
 {
 	"pageElement": {
-		"id": "307eeda7-c54b-12ac-6a79-c20994668d81",
 		"pageElements": [
 			{
 				"definition": {
@@ -22,14 +21,25 @@
 					],
 					"indexed": true
 				},
-				"id": "6a354764-116e-2b1b-1cb0-47e49cb25627",
 				"pageElements": [
 					{
 						"definition": {
 							"fragmentDropZoneId": "topBar"
 						},
-						"id": "5aeb1eb5-f96e-16cb-06b7-61e612a0485b",
 						"pageElements": [
+							{
+								"definition": {
+									"fragment": {
+										"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.LicenseExpirationAlertComponentSectionFragmentRenderer"
+									},
+									"fragmentConfig": {
+									},
+									"fragmentFields": [
+									],
+									"indexed": true
+								},
+								"type": "Fragment"
+							},
 							{
 								"definition": {
 									"fragment": {
@@ -70,13 +80,11 @@
 										}
 									]
 								},
-								"id": "32f64cbe-57dd-937b-2d9e-edc1de70b958",
 								"pageElements": [
 									{
 										"definition": {
 											"fragmentDropZoneId": "sidebarTrigger"
 										},
-										"id": "57750634-2ad5-dbdb-cf52-0577eeca1155",
 										"pageElements": [
 											{
 												"definition": {
@@ -90,7 +98,6 @@
 													],
 													"indexed": true
 												},
-												"id": "88b7f132-967b-ca14-1275-04240379f1e0",
 												"type": "Fragment"
 											}
 										],
@@ -106,7 +113,6 @@
 						"definition": {
 							"fragmentDropZoneId": "sidebarBody"
 						},
-						"id": "212eb06f-ac24-4b75-cde8-face21ecf4e5",
 						"pageElements": [
 							{
 								"definition": {
@@ -126,7 +132,6 @@
 									],
 									"indexed": true
 								},
-								"id": "339a84e4-b212-a686-2e8e-724ca1458332",
 								"type": "Fragment"
 							}
 						],
@@ -136,7 +141,6 @@
 						"definition": {
 							"fragmentDropZoneId": "content"
 						},
-						"id": "5400998b-15ff-c123-f346-4c6a2bf62947",
 						"pageElements": [
 							{
 								"definition": {
@@ -145,7 +149,6 @@
 										]
 									}
 								},
-								"id": "5b085050-70dd-18d8-1127-06afb1ebac78",
 								"type": "DropZone"
 							}
 						],
