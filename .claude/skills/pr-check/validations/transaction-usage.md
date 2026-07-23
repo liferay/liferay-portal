@@ -10,7 +10,7 @@ The diff adds new transaction usage in a hand-written Java file (generated files
 
 ## Command
 
-This check is static and needs no build. It walks each changed Java file, skips generated files, and reports any newly added transaction usage in the rest. It uses `command grep` because a bare `grep` resolves to a shell function that rejects these patterns.
+This check is static and needs no build. It walks each changed Java file, skips generated files, and reports any newly added transaction usage in the rest. It uses `command grep` so the diff is filtered by the system grep rather than the shell's `grep` wrapper, which some environments route to another tool with its own defaults.
 
 A generated file carries the `@generated` Javadoc marker that Service Builder and the other code generators stamp on every file they produce (for example every `*LocalService` interface). The scan matches it case-insensitively, so the `@Generated` annotation on REST Builder output is covered too. That annotation is machine-written boilerplate, not hand-written transaction code, so any file carrying it is excluded before the transaction scan.
 
