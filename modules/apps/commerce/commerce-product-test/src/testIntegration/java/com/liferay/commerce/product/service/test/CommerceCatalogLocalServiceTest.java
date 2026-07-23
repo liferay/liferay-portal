@@ -7,14 +7,18 @@ package com.liferay.commerce.product.service.test;
 
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -65,6 +69,56 @@ public class CommerceCatalogLocalServiceTest {
 				commerceCatalog.getGroupId(), TestPropsValues.getCompanyId());
 
 		Assert.assertTrue(cpConfigurationLists.isEmpty());
+	}
+
+	@Test
+	public void testGetOrAddEmptyCommerceCatalog() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
+				externalReferenceCode, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId());
+
+			Assert.fail();
+		}
+		catch (NoSuchCatalogException noSuchCatalogException) {
+			Assert.assertNotNull(noSuchCatalogException);
+		}
+
+		CommerceCatalog commerceCatalog = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			commerceCatalog =
+				_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
+					externalReferenceCode, TestPropsValues.getCompanyId(),
+					TestPropsValues.getUserId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				commerceCatalog.getExternalReferenceCode());
+
+			CommerceCatalog resolvedCommerceCatalog =
+				_commerceCatalogLocalService.getOrAddEmptyCommerceCatalog(
+					externalReferenceCode, TestPropsValues.getCompanyId(),
+					TestPropsValues.getUserId());
+
+			Assert.assertEquals(
+				commerceCatalog.getCommerceCatalogId(),
+				resolvedCommerceCatalog.getCommerceCatalogId());
+		}
+
+		commerceCatalog = _commerceCatalogLocalService.updateCommerceCatalog(
+			commerceCatalog.getCommerceCatalogId(),
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), "USD", "en_US");
+
+		Assert.assertNotEquals(
+			WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
 	}
 
 	@Inject
