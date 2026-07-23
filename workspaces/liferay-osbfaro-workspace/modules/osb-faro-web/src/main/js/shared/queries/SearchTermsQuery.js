@@ -3,6 +3,7 @@ import {gql} from '@apollo/client';
 
 export default gql`
 	query SearchTerms(
+		$accountId: String
 		$channelId: String
 		$rangeEnd: String
 		$rangeKey: Int
@@ -11,6 +12,7 @@ export default gql`
 		$start: Int!
 	) {
 		searchTerms(
+			accountId: $accountId
 			channelId: $channelId
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey

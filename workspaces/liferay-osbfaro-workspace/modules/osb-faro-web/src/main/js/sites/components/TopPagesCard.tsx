@@ -127,6 +127,7 @@ const TopPagesCardWithData: React.FC<ITopPageCardWithData> = ({
 }) => {
 	const [activeTabId, setActiveTabId] = useState(tabs[0].tabId);
 	const {
+		accountId,
 		router: {
 			params: {channelId},
 		},
@@ -140,6 +141,7 @@ const TopPagesCardWithData: React.FC<ITopPageCardWithData> = ({
 		{
 			variables: {
 				...getSafeRangeSelectors(rangeSelectors),
+				accountId,
 				channelId,
 				size: 5,
 				sort: {

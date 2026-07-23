@@ -109,6 +109,7 @@ const AcquisitionsCardWithData: React.FC<IAcquisitionsCard> = ({
 }) => {
 	const [activeTabId, setActiveTabId] = useState<string>(tabs[0].tabId);
 	const {
+		accountId,
 		router: {
 			params: {channelId},
 		},
@@ -119,6 +120,7 @@ const AcquisitionsCardWithData: React.FC<IAcquisitionsCard> = ({
 	>(AcquisitionsQuery, {
 		variables: {
 			...getSafeRangeSelectors(rangeSelectors),
+			accountId,
 			activeTabId,
 			channelId,
 			size: 5,

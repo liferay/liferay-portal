@@ -32,6 +32,8 @@ const withData = () =>
 	);
 
 interface ITableWithDataProps {
+	accountId?: string | null;
+	accountName?: string | null;
 	channelId: string;
 	delta: number;
 	groupId: string;
@@ -62,11 +64,15 @@ const TableWithData: React.FC<ITableWithDataProps> = withRangeKey(
 		),
 		emptyTitle: Liferay.Language.get('empty-title-pages'),
 		getColumns: ({
+			accountId,
+			accountName,
 			channelId,
 			groupId,
 			rangeSelectors,
 		}: ITableWithDataProps) => [
 			sitePagesListColumns.getTitleUrl({
+				accountId,
+				accountName,
 				channelId,
 				groupId,
 				rangeSelectors,

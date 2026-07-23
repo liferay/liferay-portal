@@ -12,6 +12,7 @@ import {
 	mapCardPropsToOptions,
 } from './mappers/composition-query';
 import {graphql} from '@apollo/client/react/hoc';
+import {pickBy} from 'lodash';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {useParams} from 'react-router-dom';
@@ -71,10 +72,11 @@ const SearchTermsCard = (props) => {
 			legacyDropdownRangeKey={false}
 			reportContainer={ReportContainer.SearchTermsCard}
 		>
-			{({rangeSelectors}) => (
+			{({accountId, rangeSelectors}) => (
 				<>
 					<TableWithData
 						{...props}
+						accountId={accountId}
 						channelId={channelId}
 						id={id}
 						rangeSelectors={rangeSelectors}
@@ -88,7 +90,7 @@ const SearchTermsCard = (props) => {
 							className="button-root"
 							displayType="secondary"
 							href={setUriQueryValues(
-								rangeSelectors,
+								pickBy({accountId, ...rangeSelectors}),
 								toRoute(Routes.SITES_SEARCH_TERMS, {
 									channelId,
 									groupId,

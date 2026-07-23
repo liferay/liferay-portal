@@ -115,7 +115,7 @@ const VisitorsByTimeCard: React.FC<IVisitorsByTimeCardProps> = ({
 	className,
 	label,
 }) => {
-	const {router} = useContext(
+	const {accountId, router} = useContext(
 		BasePage.Context as React.Context<IBasePageContext>
 	);
 
@@ -129,6 +129,7 @@ const VisitorsByTimeCard: React.FC<IVisitorsByTimeCardProps> = ({
 			{({rangeSelectors}) => (
 				<Card.Body>
 					<HeatmapChartWithData
+						accountId={accountId}
 						columnAxisFormatter={(col: string) => col.slice(0, 3)}
 						rangeSelectors={rangeSelectors}
 						renderTooltip={renderTooltip}

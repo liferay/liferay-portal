@@ -37,13 +37,16 @@ const mapResultToProps = safeResultToProps(
 );
 
 const mapPropsToOptions = ({
+	accountId,
 	channelId,
 	interval,
 }: {
+	accountId?: string | null;
 	channelId: string;
 	interval: Interval;
 }) => ({
 	variables: {
+		accountId,
 		channelId,
 		interval,
 	},

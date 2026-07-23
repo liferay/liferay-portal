@@ -22,6 +22,7 @@ export interface SitesTopPagesQueryData {
 }
 
 export interface SitesTopPagesQueryVariables extends SafeRangeSelectors {
+	accountId?: string | null;
 	channelId?: string;
 	size: number;
 	sort: {
@@ -33,6 +34,7 @@ export interface SitesTopPagesQueryVariables extends SafeRangeSelectors {
 
 export default gql`
 	query Touchpoint(
+		$accountId: String
 		$channelId: String
 		$rangeEnd: String
 		$rangeKey: Int
@@ -42,6 +44,7 @@ export default gql`
 		$start: Int!
 	) {
 		pages(
+			accountId: $accountId
 			channelId: $channelId
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey

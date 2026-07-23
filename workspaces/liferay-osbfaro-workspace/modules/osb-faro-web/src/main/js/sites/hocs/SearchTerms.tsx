@@ -1,3 +1,4 @@
+import BasePage from 'shared/components/base-page';
 import Card from 'shared/components/Card';
 import ClayLink from '@clayui/link';
 import Constants, {
@@ -5,7 +6,7 @@ import Constants, {
 	RangeKeyTimeRanges,
 	Sizes,
 } from 'shared/util/constants';
-import React from 'react';
+import React, {useContext} from 'react';
 import SearchTermsQuery from 'shared/queries/SearchTermsQuery';
 import URLConstants from 'shared/util/url-constants';
 import {compose} from 'redux';
@@ -90,6 +91,7 @@ const TableWithData = withTableData(withData, {
 });
 
 const SearchTerms = ({history}: {history: {push: (path: string) => void}}) => {
+	const {accountId} = useContext(BasePage.Context);
 	const {selectedChannel} = useChannelContext();
 	const {channelId, groupId} = useParams<{
 		channelId: string;
@@ -146,6 +148,7 @@ const SearchTerms = ({history}: {history: {push: (path: string) => void}}) => {
 			</Card.Header>
 
 			<TableWithData
+				accountId={accountId}
 				channelId={channelId}
 				delta={delta}
 				groupId={groupId}

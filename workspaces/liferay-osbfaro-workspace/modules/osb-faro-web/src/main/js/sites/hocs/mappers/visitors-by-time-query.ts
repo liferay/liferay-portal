@@ -28,15 +28,18 @@ const mapResultToProps = safeResultToProps((result: IVisitorsByTimeResult) => {
 });
 
 const mapPropsToOptions = ({
+	accountId,
 	rangeSelectors,
 	router: {
 		params: {channelId},
 	},
 }: {
+	accountId?: string | null;
 	rangeSelectors: RangeSelectors;
 	router: {params: {channelId: string}};
 }) => ({
 	variables: {
+		accountId,
 		channelId,
 		...getSafeRangeSelectors(rangeSelectors),
 	},

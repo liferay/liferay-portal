@@ -24,6 +24,7 @@ const getMapResultToProps = (compositionBagName: CompositionTypes) =>
 	);
 
 interface IMapPropsArgs {
+	accountId?: string | null;
 	channelId: string;
 	delta: number;
 	id: string;
@@ -32,6 +33,7 @@ interface IMapPropsArgs {
 }
 
 const mapPropsToOptions = ({
+	accountId,
 	channelId,
 	delta,
 	id,
@@ -39,6 +41,7 @@ const mapPropsToOptions = ({
 	rangeSelectors,
 }: IMapPropsArgs) => ({
 	variables: {
+		accountId,
 		channelId,
 		id,
 		size: delta,
@@ -48,15 +51,18 @@ const mapPropsToOptions = ({
 });
 
 const mapCardPropsToOptions = ({
+	accountId,
 	activeTabId,
 	channelId,
 	rangeSelectors,
 }: {
+	accountId?: string | null;
 	activeTabId: string;
 	channelId: string;
 	rangeSelectors: RangeSelectors;
 }) => ({
 	variables: {
+		accountId,
 		activeTabId,
 		channelId,
 		size: 5,

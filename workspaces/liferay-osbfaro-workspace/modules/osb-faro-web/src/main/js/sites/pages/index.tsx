@@ -1,4 +1,5 @@
 import * as breadcrumbs from 'shared/util/breadcrumbs';
+import AccountDropdown from 'shared/components/AccountDropdown';
 import BasePage from 'shared/components/base-page';
 import BundleRouter from 'route-middleware/BundleRouter';
 import ClayLink from '@clayui/link';
@@ -6,16 +7,23 @@ import DownloadCSVReport from 'shared/components/download-report/DownloadCSVRepo
 import DownloadPDFReport from 'shared/components/download-report/DownloadPDFReport';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
-import React, {lazy, Suspense} from 'react';
+import React, {lazy, Suspense, useState} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import URLConstants from 'shared/util/url-constants';
 import {CSVType} from 'shared/components/download-report/utils';
-import {getMatchedRoute, Routes, toRoute} from 'shared/util/router';
-import {Switch, useParams} from 'react-router-dom';
+import {pickBy} from 'lodash';
+import {
+	getMatchedRoute,
+	Routes,
+	setUriQueryValues,
+	toRoute,
+} from 'shared/util/router';
+import {Switch, useHistory, useParams} from 'react-router-dom';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 
 const InterestDetails = lazy(
 	() =>
@@ -88,9 +96,21 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 		channelId: string;
 		groupId: string;
 	}>();
+	const {accountId: accountIdFromURL, accountName: accountNameFromURL} =
+		router.query as {accountId?: string; accountName?: string};
 	const dataSourceStates = useDataSources();
+	const history = useHistory();
+	const LDPEnabled = useLDPEnabled({groupId});
 	const {selectedChannel} = useChannelContext();
 	const currentUser = useCurrentUser();
+	const [selectedAccount, setSelectedAccount] = useState(
+		accountIdFromURL
+			? {
+					id: accountIdFromURL,
+					name: accountNameFromURL || accountIdFromURL,
+				}
+			: null
+	);
 
 	if (!channelId) {
 		return null;
@@ -99,6 +119,19 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 	const authorized = currentUser.isAdmin();
 	const selectedChannelName = selectedChannel && selectedChannel.name;
 	const matchedRoute = getMatchedRoute(NAV_ITEMS);
+
+	const handleAccountFilterChange = (
+		account: {id: string; name: string} | null
+	) => {
+		history.push(
+			setUriQueryValues({
+				accountId: account?.id ?? null,
+				accountName: account?.name ?? null,
+			})
+		);
+
+		setSelectedAccount(account);
+	};
 
 	return (
 		<BasePage
@@ -127,41 +160,54 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 				<BasePage.Header.NavBar
 					items={NAV_ITEMS}
 					routeParams={{channelId, groupId}}
+					routeQueries={pickBy({
+						accountId: selectedAccount?.id,
+						accountName: selectedAccount?.name,
+					})}
 				/>
 			</BasePage.Header>
 
-			{matchedRoute !== Routes.SITES_INTERESTS && (
-				<BasePage.SubHeader>
-					<div className="d-flex justify-content-end w-100">
-						{matchedRoute === Routes.SITES && (
-							<DownloadPDFReport
-								disabled={!!dataSourceStates.empty}
-								subtitle={selectedChannelName ?? undefined}
-								title={Liferay.Language.get('sites-dashboard')}
-							/>
-						)}
+			<BasePage.SubHeader>
+				{LDPEnabled && (
+					<AccountDropdown
+						className="mr-2"
+						initialAccountId={accountIdFromURL}
+						initialAccountName={accountNameFromURL}
+						onFilterChange={handleAccountFilterChange}
+					/>
+				)}
 
-						{matchedRoute === Routes.SITES_SEARCH_TERMS && (
-							<DownloadCSVReport
-								disabled={!!dataSourceStates.empty}
-								type={CSVType.SearchTerms}
-								typeLang={Liferay.Language.get('search-terms')}
-							/>
-						)}
+				<div className="d-flex justify-content-end w-100">
+					{matchedRoute === Routes.SITES && (
+						<DownloadPDFReport
+							disabled={!!dataSourceStates.empty}
+							subtitle={selectedChannelName ?? undefined}
+							title={Liferay.Language.get('sites-dashboard')}
+						/>
+					)}
 
-						{matchedRoute === Routes.SITES_TOUCHPOINTS && (
-							<DownloadCSVReport
-								disabled={!!dataSourceStates.empty}
-								type={CSVType.Page}
-								typeLang={Liferay.Language.get('pages')}
-							/>
-						)}
-					</div>
-				</BasePage.SubHeader>
-			)}
+					{matchedRoute === Routes.SITES_SEARCH_TERMS && (
+						<DownloadCSVReport
+							disabled={!!dataSourceStates.empty}
+							type={CSVType.SearchTerms}
+							typeLang={Liferay.Language.get('search-terms')}
+						/>
+					)}
+
+					{matchedRoute === Routes.SITES_TOUCHPOINTS && (
+						<DownloadCSVReport
+							disabled={!!dataSourceStates.empty}
+							type={CSVType.Page}
+							typeLang={Liferay.Language.get('pages')}
+						/>
+					)}
+				</div>
+			</BasePage.SubHeader>
 
 			<BasePage.Context.Provider
 				value={{
+					accountId: selectedAccount?.id,
+					accountName: selectedAccount?.name,
 					filters: {},
 					router,
 				}}

@@ -2,6 +2,7 @@ import {gql} from '@apollo/client';
 
 export default gql`
 	query Touchpoint(
+		$accountId: String
 		$channelId: String
 		$keywords: String
 		$rangeEnd: String
@@ -13,6 +14,7 @@ export default gql`
 		$terms: String
 	) {
 		pages(
+			accountId: $accountId
 			channelId: $channelId
 			keywords: $keywords
 			rangeEnd: $rangeEnd
@@ -57,6 +59,7 @@ export default gql`
 
 export const TOUCHPOINTS_QUERY_TEST = gql`
 	query Touchpoint(
+		$accountId: String
 		$channelId: String
 		$keywords: String
 		$rangeEnd: String
@@ -69,6 +72,7 @@ export const TOUCHPOINTS_QUERY_TEST = gql`
 		$useDB: Boolean
 	) {
 		pages(
+			accountId: $accountId
 			channelId: $channelId
 			keywords: $keywords
 			rangeEnd: $rangeEnd
