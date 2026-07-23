@@ -103,7 +103,22 @@ public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 					actionRequest, exception.getClass(), exception);
 
 				actionResponse.setRenderParameter(
+					"audiencesEntryId", String.valueOf(audiencesEntryId));
+				actionResponse.setRenderParameter(
+					"externalReferenceCode", externalReferenceCode);
+				actionResponse.setRenderParameter("json", json);
+				actionResponse.setRenderParameter(
 					"mvcRenderCommandName", "/audiences/edit_audiences_entry");
+				actionResponse.setRenderParameter("name", name);
+				actionResponse.setRenderParameter(
+					"redisplay", Boolean.TRUE.toString());
+
+				String redirect = ParamUtil.getString(
+					actionRequest, "redirect");
+
+				if (Validator.isNotNull(redirect)) {
+					actionResponse.setRenderParameter("redirect", redirect);
+				}
 			}
 			else {
 				throw exception;

@@ -58,6 +58,11 @@ public class EditAudiencesEntryDisplayContext {
 
 	public JSONObject getAudiencesEntryJSONObject() {
 		try {
+			if (_hasSubmittedValues()) {
+				return JSONFactoryUtil.createJSONObject(
+					ParamUtil.getString(_httpServletRequest, "json"));
+			}
+
 			AudiencesEntry audiencesEntry = _getAudiencesEntry();
 
 			if (audiencesEntry != null) {
@@ -152,6 +157,8 @@ public class EditAudiencesEntryDisplayContext {
 		).put(
 			"backURLTitle", getBackURLTitle()
 		).put(
+			"expandGeneralSettings", _hasSubmittedValues()
+		).put(
 			"externalReferenceCode", _getExternalReferenceCode()
 		).put(
 			"name", _getName()
@@ -183,12 +190,19 @@ public class EditAudiencesEntryDisplayContext {
 			return _title;
 		}
 
-		AudiencesEntry audiencesEntry = _getAudiencesEntry();
-
-		if (audiencesEntry != null) {
-			_title = audiencesEntry.getName();
+		if (_hasSubmittedValues()) {
+			_title = ParamUtil.getString(_httpServletRequest, "name");
 		}
-		else {
+
+		if (Validator.isNull(_title)) {
+			AudiencesEntry audiencesEntry = _getAudiencesEntry();
+
+			if (audiencesEntry != null) {
+				_title = audiencesEntry.getName();
+			}
+		}
+
+		if (Validator.isNull(_title)) {
 			_title = LanguageUtil.get(_httpServletRequest, "new-audience");
 		}
 
@@ -213,6 +227,11 @@ public class EditAudiencesEntryDisplayContext {
 	}
 
 	private String _getExternalReferenceCode() {
+		if (_hasSubmittedValues()) {
+			return ParamUtil.getString(
+				_httpServletRequest, "externalReferenceCode");
+		}
+
 		try {
 			AudiencesEntry audiencesEntry = _getAudiencesEntry();
 
@@ -230,6 +249,10 @@ public class EditAudiencesEntryDisplayContext {
 	}
 
 	private String _getName() {
+		if (_hasSubmittedValues()) {
+			return ParamUtil.getString(_httpServletRequest, "name");
+		}
+
 		try {
 			AudiencesEntry audiencesEntry = _getAudiencesEntry();
 
@@ -244,6 +267,10 @@ public class EditAudiencesEntryDisplayContext {
 		}
 
 		return StringPool.BLANK;
+	}
+
+	private boolean _hasSubmittedValues() {
+		return ParamUtil.getBoolean(_httpServletRequest, "redisplay");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

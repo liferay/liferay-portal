@@ -36,6 +36,7 @@ interface IProps {
 	audiencesCriteriaTypes?: AudiencesCriteriaType[];
 	backURL?: string;
 	backURLTitle?: string;
+	expandGeneralSettings?: boolean;
 	externalReferenceCode?: string;
 	name?: string;
 	namespace?: string;
@@ -46,6 +47,7 @@ export default function AudienceBuilder({
 	audiencesCriteriaTypes = [],
 	backURL,
 	backURLTitle,
+	expandGeneralSettings = false,
 	externalReferenceCode,
 	name,
 	namespace = '',
@@ -118,6 +120,7 @@ export default function AudienceBuilder({
 								</ClayForm.Group>
 
 								<GeneralSettings
+									defaultExpanded={expandGeneralSettings}
 									externalReferenceCode={
 										state.externalReferenceCode
 									}

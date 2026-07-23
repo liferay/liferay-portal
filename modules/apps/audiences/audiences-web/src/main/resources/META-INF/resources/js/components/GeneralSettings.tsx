@@ -9,12 +9,14 @@ import ClayPanel from '@clayui/panel';
 import React from 'react';
 
 interface IProps {
+	defaultExpanded?: boolean;
 	externalReferenceCode: string;
 	namespace: string;
 	onExternalReferenceCodeChange: (externalReferenceCode: string) => void;
 }
 
 export default function GeneralSettings({
+	defaultExpanded = false,
 	externalReferenceCode,
 	namespace,
 	onExternalReferenceCodeChange,
@@ -24,6 +26,7 @@ export default function GeneralSettings({
 			className="audience-builder-general-settings border mt-4 rounded"
 			collapsable
 			collapseHeaderClassNames="align-items-center d-flex justify-content-between px-4 py-3"
+			defaultExpanded={defaultExpanded}
 			displayTitle={
 				<span className="font-weight-bold text-6">
 					{Liferay.Language.get('general-settings')}
