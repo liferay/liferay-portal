@@ -167,6 +167,7 @@ public class LayoutPageTemplateEntryModelListener
 
 		if ((infoPermissionProvider != null) &&
 			!infoPermissionProvider.hasViewPermission(
+				null, layout.getGroupId(),
 				PermissionThreadLocal.getPermissionChecker())) {
 
 			return Collections.emptyList();

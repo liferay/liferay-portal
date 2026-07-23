@@ -48,6 +48,7 @@ public class MappingTypesUtil {
 
 						if ((infoPermissionProvider == null) ||
 							infoPermissionProvider.hasViewPermission(
+								null, themeDisplay.getScopeGroupId(),
 								themeDisplay.getPermissionChecker())) {
 
 							return false;

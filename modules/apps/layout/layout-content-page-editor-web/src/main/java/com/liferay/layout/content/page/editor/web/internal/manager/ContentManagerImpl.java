@@ -244,6 +244,7 @@ public class ContentManagerImpl implements ContentManager {
 
 			if ((infoPermissionProvider == null) ||
 				(infoPermissionProvider.hasViewPermission(
+					null, themeDisplay.getScopeGroupId(),
 					themeDisplay.getPermissionChecker()) &&
 				 infoPermissionProvider.hasViewPermission(
 					 String.valueOf(

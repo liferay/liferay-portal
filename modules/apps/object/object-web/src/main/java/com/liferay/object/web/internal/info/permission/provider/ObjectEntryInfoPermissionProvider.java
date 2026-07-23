@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
 
 /**
  * @author Lourdes Fernández Besada
@@ -49,23 +50,7 @@ public class ObjectEntryInfoPermissionProvider
 
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker) {
-		if (FeatureFlagManagerUtil.isEnabled(
-				permissionChecker.getCompanyId(), "LPD-17564")) {
-
-			if (!_objectDefinition.isEnableFormContainer()) {
-				return false;
-			}
-		}
-		else {
-			if (_objectDefinition.isModifiableAndSystem()) {
-				return false;
-			}
-		}
-
-		Portlet portlet = _portletLocalService.getPortletById(
-			_objectDefinition.getCompanyId(), _objectDefinition.getPortletId());
-
-		if (!portlet.isActive()) {
+		if (_getActivePortlet(permissionChecker) == null) {
 			return false;
 		}
 
@@ -81,6 +66,59 @@ public class ObjectEntryInfoPermissionProvider
 		}
 
 		return false;
+	}
+
+	@Override
+	public boolean hasViewPermission(
+		String formVariationKey, long groupId,
+		PermissionChecker permissionChecker) {
+
+		if (hasViewPermission(permissionChecker)) {
+			return true;
+		}
+
+		Portlet portlet = _getActivePortlet(permissionChecker);
+
+		if (portlet == null) {
+			return false;
+		}
+
+		try {
+			return PortletPermissionUtil.contains(
+				permissionChecker, groupId, null, portlet.getRootPortletId(),
+				ActionKeys.VIEW);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return false;
+	}
+
+	private Portlet _getActivePortlet(PermissionChecker permissionChecker) {
+		if (FeatureFlagManagerUtil.isEnabled(
+				permissionChecker.getCompanyId(), "LPD-17564")) {
+
+			if (!_objectDefinition.isEnableFormContainer()) {
+				return null;
+			}
+		}
+		else {
+			if (_objectDefinition.isModifiableAndSystem()) {
+				return null;
+			}
+		}
+
+		Portlet portlet = _portletLocalService.getPortletById(
+			_objectDefinition.getCompanyId(), _objectDefinition.getPortletId());
+
+		if ((portlet == null) || !portlet.isActive()) {
+			return null;
+		}
+
+		return portlet;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
