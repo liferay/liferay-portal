@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import java.util.Collections;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -77,9 +78,8 @@ public class AIAssistantButtonComponentSectionFragmentRenderer
 
 		return HashMapBuilder.<String, Object>put(
 			"getContext",
-			HashMapBuilder.<String, Object>put(
-				"groupId", InfoItemUtil.getGroupId(httpServletRequest)
-			).build()
+			Collections.singletonMap(
+				"groupId", InfoItemUtil.getGroupId(httpServletRequest))
 		).put(
 			"instructionDefinitionScope", "cms"
 		).put(
