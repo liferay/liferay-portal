@@ -85,7 +85,21 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 				continue;
 			}
 
-			invokedJobNames.addAll(_getInvokedJobNames(propertyName));
+			for (String invokedJobName : _getInvokedJobNames(propertyName)) {
+				String portalTestSuiteName =
+					JenkinsResultsParserUtil.getProperty(
+						buildProperties,
+						"jenkins.pull.request.job.portal.test.suite", false,
+						propertyOptions.get(0), invokedJobName);
+
+				if (!JenkinsResultsParserUtil.isNullOrEmpty(
+						portalTestSuiteName)) {
+
+					invokedJobName += "/" + portalTestSuiteName;
+				}
+
+				invokedJobNames.add(invokedJobName);
+			}
 		}
 
 		if (invokedJobNames.isEmpty()) {
