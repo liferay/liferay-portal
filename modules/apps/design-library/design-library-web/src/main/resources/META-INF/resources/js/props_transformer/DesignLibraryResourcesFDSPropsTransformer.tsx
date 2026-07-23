@@ -199,6 +199,11 @@ export default function DesignLibraryResourcesFDSPropsTransformer(
 						return (
 							<LinkRenderer
 								{...rendererProps}
+								options={{
+									actionId: isFragmentCollection
+										? 'view'
+										: 'edit',
+								}}
 								stickerClassName={
 									isFragmentCollection
 										? 'design-library-fds-sticker-fragment-set'
