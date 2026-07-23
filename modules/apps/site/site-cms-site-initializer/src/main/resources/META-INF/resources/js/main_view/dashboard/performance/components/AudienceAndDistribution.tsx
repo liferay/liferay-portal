@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Text} from '@clayui/core';
 import ClayLayout from '@clayui/layout';
 import {ChartState, MapChart, PieChart} from '@liferay/frontend-js-charts-web';
 import React, {useContext, useEffect, useMemo, useState} from 'react';
@@ -13,6 +14,21 @@ import {PerformanceContext} from '../PerformanceContext';
 import PerformanceService from '../PerformanceService';
 import {PerformanceMetric} from '../types';
 import {DownloadButton} from './DownloadButton';
+
+const EMPTY_MESSAGES = {
+	categories: {
+		description: Liferay.Language.get(
+			'views-will-break-down-by-category-once-your-content-starts-getting-traffic'
+		),
+		title: Liferay.Language.get('no-category-data-yet'),
+	},
+	location: {
+		description: Liferay.Language.get(
+			'once-people-view-your-content-youll-see-where-theyre-from-on-the-map'
+		),
+		title: Liferay.Language.get('no-views-by-location-yet'),
+	},
+};
 
 export function AudienceAndDistribution() {
 	return (
@@ -97,10 +113,9 @@ function Card({
 
 	const metrics = metric?.metrics ?? [];
 
-	// With no data the charts still render, hollow: the pie draws its
-	// neutral track and the map plain land, both without a legend.
+	const empty = !metrics.length;
 
-	const legend = metrics.length ? 'list' : 'none';
+	const legend = empty ? 'none' : 'list';
 
 	return (
 		<BaseCard
@@ -131,6 +146,7 @@ function Card({
 						legend={legend}
 						legendPosition="bottom"
 						legendSwatchBorder={false}
+						showCenterLabel={!empty}
 						title=""
 					/>
 				) : (
@@ -146,6 +162,22 @@ function Card({
 						variant="choropleth"
 					/>
 				)}
+
+				{empty ? (
+					<div className="mt-4 px-8 text-center">
+						<div>
+							<Text size={4} weight="semi-bold">
+								{EMPTY_MESSAGES[groupBy].title}
+							</Text>
+						</div>
+
+						<div>
+							<Text color="secondary" size={3}>
+								{EMPTY_MESSAGES[groupBy].description}
+							</Text>
+						</div>
+					</div>
+				) : null}
 			</ChartState>
 		</BaseCard>
 	);
