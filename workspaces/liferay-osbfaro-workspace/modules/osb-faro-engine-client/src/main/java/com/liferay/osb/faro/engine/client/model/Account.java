@@ -29,6 +29,14 @@ public class Account {
 		return _country;
 	}
 
+	public Date getFirstActivityDate() {
+		if (_firstActivityDate == null) {
+			return null;
+		}
+
+		return new Date(_firstActivityDate.getTime());
+	}
+
 	public String getId() {
 		return _id;
 	}
@@ -79,6 +87,12 @@ public class Account {
 
 	public void setCountry(String country) {
 		_country = country;
+	}
+
+	public void setFirstActivityDate(Date firstActivityDate) {
+		if (firstActivityDate != null) {
+			_firstActivityDate = new Date(firstActivityDate.getTime());
+		}
 	}
 
 	public void setId(String id) {
@@ -140,6 +154,7 @@ public class Account {
 	private String _accountType;
 	private Double _annualRevenue;
 	private String _country;
+	private Date _firstActivityDate;
 	private String _id;
 	private String _industry;
 	private Date _lastActivityDate;
