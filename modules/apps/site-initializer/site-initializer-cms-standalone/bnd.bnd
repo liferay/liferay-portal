@@ -1,7 +1,6 @@
 Bundle-Name: Liferay Site Initializer CMS Standalone
 Bundle-SymbolicName: com.liferay.site.initializer.cms.standalone
 Bundle-Version: 1.0.2
-Liferay-Site-Initializer-Feature-Flag: LPD-17564
 Liferay-Site-Initializer-Name: CMS Standalone
 Provide-Capability: liferay.site.initializer
 Web-ContextPath: /site-initializer-cms-standalone

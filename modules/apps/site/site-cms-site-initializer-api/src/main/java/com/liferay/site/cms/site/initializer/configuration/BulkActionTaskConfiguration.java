@@ -13,8 +13,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Crescenzo Rega
  */
 @ExtendedObjectClassDefinition(
-	category = "object", featureFlagKey = "LPD-17564",
-	scope = ExtendedObjectClassDefinition.Scope.COMPANY
+	category = "object", scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(
 	id = "com.liferay.site.cms.site.initializer.configuration.BulkActionTaskConfiguration",
