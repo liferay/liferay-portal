@@ -12,6 +12,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -33,7 +34,8 @@ public class LayoutContentVersionCreatorImpl
 	@Override
 	public void createLayoutContentVersion(Layout layout) {
 		try {
-			if (!FeatureFlagManagerUtil.isEnabled(
+			if (!CTCollectionThreadLocal.isProductionMode() ||
+				!FeatureFlagManagerUtil.isEnabled(
 					layout.getCompanyId(), "LPD-10622") ||
 				!layout.isDraftLayout() || !layout.isTypeContent()) {
 
