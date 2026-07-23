@@ -53,27 +53,10 @@ public class BuildQueueRebalancerTest
 
 		buildProperties.setProperty("jenkins.load.balancer.blacklist", "");
 
-		for (String jenkinsMasterName :
-				new String[] {
-					_AVAILABLE_JENKINS_MASTER_NAME,
-					_BLACK_LISTED_JENKINS_MASTER_NAME
-				}) {
-
-			buildProperties.setProperty(
-				JenkinsResultsParserUtil.combine(
-					"jenkins.local.url[", jenkinsMasterName, "]"),
-				JenkinsResultsParserUtil.combine(
-					"http://", jenkinsMasterName, ".liferay.com"));
-			buildProperties.setProperty(
-				JenkinsResultsParserUtil.combine(
-					"jenkins.remote.url[", jenkinsMasterName, "]"),
-				JenkinsResultsParserUtil.combine(
-					"https://", jenkinsMasterName, ".liferay.com"));
-			buildProperties.setProperty(
-				JenkinsResultsParserUtil.combine(
-					"master.property(", jenkinsMasterName, "/executors.size)"),
-				"2");
-		}
+		_setJenkinsMasterBuildProperties(
+			buildProperties, _AVAILABLE_JENKINS_MASTER_NAME);
+		_setJenkinsMasterBuildProperties(
+			buildProperties, _BLACK_LISTED_JENKINS_MASTER_NAME);
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
@@ -102,20 +85,8 @@ public class BuildQueueRebalancerTest
 			_AVAILABLE_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
 			urlReader);
 
-		for (String jenkinsMasterName :
-				new String[] {
-					_AVAILABLE_JENKINS_MASTER_NAME,
-					_BLACK_LISTED_JENKINS_MASTER_NAME
-				}) {
-
-			JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
-				jenkinsMasterName);
-
-			_setFieldValue(
-				jenkinsMaster, "_awsFleetCloudLastUpdateTimestamp",
-				Long.MAX_VALUE);
-			_setFieldValue(jenkinsMaster, "_awsFleetClouds", new ArrayList<>());
-		}
+		_setJenkinsMasterAWSFleetClouds(_AVAILABLE_JENKINS_MASTER_NAME);
+		_setJenkinsMasterAWSFleetClouds(_BLACK_LISTED_JENKINS_MASTER_NAME);
 
 		_setFieldValue(
 			JenkinsMaster.getInstance(_BLACK_LISTED_JENKINS_MASTER_NAME),
@@ -180,6 +151,36 @@ public class BuildQueueRebalancerTest
 		field.setAccessible(true);
 
 		field.set(object, value);
+	}
+
+	private void _setJenkinsMasterAWSFleetClouds(String jenkinsMasterName)
+		throws Exception {
+
+		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
+			jenkinsMasterName);
+
+		_setFieldValue(
+			jenkinsMaster, "_awsFleetCloudLastUpdateTimestamp", Long.MAX_VALUE);
+		_setFieldValue(jenkinsMaster, "_awsFleetClouds", new ArrayList<>());
+	}
+
+	private void _setJenkinsMasterBuildProperties(
+		Properties buildProperties, String jenkinsMasterName) {
+
+		buildProperties.setProperty(
+			JenkinsResultsParserUtil.combine(
+				"jenkins.local.url[", jenkinsMasterName, "]"),
+			JenkinsResultsParserUtil.combine(
+				"http://", jenkinsMasterName, ".liferay.com"));
+		buildProperties.setProperty(
+			JenkinsResultsParserUtil.combine(
+				"jenkins.remote.url[", jenkinsMasterName, "]"),
+			JenkinsResultsParserUtil.combine(
+				"https://", jenkinsMasterName, ".liferay.com"));
+		buildProperties.setProperty(
+			JenkinsResultsParserUtil.combine(
+				"master.property(", jenkinsMasterName, "/executors.size)"),
+			"2");
 	}
 
 	private static final String _AVAILABLE_JENKINS_MASTER_NAME = "test-9-2";
