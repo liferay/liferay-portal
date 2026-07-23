@@ -55,13 +55,15 @@ describe('CheckPermissions', () => {
 		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
 
 		expect(
-			screen.getByText('no-sites-are-connected-yet')
+			screen.getByText('connect-sites-to-show-data')
 		).toBeInTheDocument();
 		expect(
-			screen.getByText('connect-sites-to-this-space')
+			screen.getByText(
+				'no-sites-connected-yet.-connect-spaces-to-sites-to-see-how-assets-perform'
+			)
 		).toBeInTheDocument();
 		expect(
-			screen.getByRole('button', {name: 'connect'})
+			screen.getByRole('button', {name: 'connect-sites'})
 		).toBeInTheDocument();
 	});
 
@@ -81,15 +83,15 @@ describe('CheckPermissions', () => {
 		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
 
 		expect(
-			screen.getByText('no-sites-are-connected-yet')
+			screen.getByText('connect-sites-to-show-data')
 		).toBeInTheDocument();
 		expect(
 			screen.getByText(
-				'please-contact-an-administrator-to-sync-sites-to-this-space'
+				'no-sites-connected-yet.-connect-spaces-to-sites-to-see-how-assets-perform'
 			)
 		).toBeInTheDocument();
 		expect(
-			screen.queryByRole('button', {name: 'connect'})
+			screen.queryByRole('button', {name: 'connect-sites'})
 		).not.toBeInTheDocument();
 	});
 
@@ -109,14 +111,19 @@ describe('CheckPermissions', () => {
 		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
 
 		expect(
-			screen.getByText('connect-to-liferay-analytics-cloud')
+			screen.getByText('see-how-your-content-performs')
 		).toBeInTheDocument();
 		expect(
 			screen.getByText(
-				'in-order-to-view-asset-performance,-your-liferay-dxp-instance-has-to-be-connected-with-liferay-analytics-cloud'
+				'track-views,-engagement,-and-where-your-assets-are-used-across-your-sites-with-liferay-data-platform'
 			)
 		).toBeInTheDocument();
-		expect(screen.getByText('connect')).toBeInTheDocument();
+		expect(
+			screen.getByText('learn-more-about-performance-capabilities')
+		).toBeInTheDocument();
+		expect(
+			screen.getByText('connect-your-liferay-data-platform')
+		).toBeInTheDocument();
 	});
 
 	it('renders empty state if there is no site connected to the Analytics Cloud (non-admin)', async () => {
@@ -135,14 +142,19 @@ describe('CheckPermissions', () => {
 		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
 
 		expect(
-			screen.getByText('connect-to-liferay-analytics-cloud')
+			screen.getByText('see-how-your-content-performs')
 		).toBeInTheDocument();
 		expect(
 			screen.getByText(
-				'please-contact-a-dxp-instance-administrator-to-connect-your-dxp-instance-to-analytics-cloud'
+				'track-views,-engagement,-and-where-your-assets-are-used-across-your-sites-with-liferay-data-platform'
 			)
 		).toBeInTheDocument();
-		expect(screen.queryByText('connect')).not.toBeInTheDocument();
+		expect(
+			screen.getByText('learn-more-about-performance-capabilities')
+		).toBeInTheDocument();
+		expect(
+			screen.queryByText('connect-your-liferay-data-platform')
+		).not.toBeInTheDocument();
 	});
 
 	it('renders empty state if there is no site synced the Analytics Cloud (admin)', async () => {

@@ -68,7 +68,7 @@ describe('AudienceAndDistribution', () => {
 		expect(screen.getByText('Business')).toBeInTheDocument();
 	});
 
-	it('renders hollow charts without a legend when the metrics are empty', async () => {
+	it('renders hollow charts with a no-data message when the metrics are empty', async () => {
 		jest.spyOn(PerformanceService, 'getMetric').mockResolvedValue({
 			data: {metricType: 'viewsMetric', metrics: []},
 			error: null,
@@ -86,6 +86,14 @@ describe('AudienceAndDistribution', () => {
 		expect(
 			container.querySelector('.charts-legend')
 		).not.toBeInTheDocument();
-		expect(screen.queryByText('no-data-available')).not.toBeInTheDocument();
+
+		expect(
+			screen.getByText('no-views-by-location-yet')
+		).toBeInTheDocument();
+		expect(screen.getByText('no-category-data-yet')).toBeInTheDocument();
+
+		expect(
+			container.querySelector('.chart-pie-center-label')
+		).not.toBeInTheDocument();
 	});
 });
