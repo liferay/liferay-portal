@@ -139,7 +139,6 @@ public class ExportPreviewResourceTest
 		_userLocalService.deleteUser(_user);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testGetAssetLibraryExportPreview() throws Exception {
@@ -160,7 +159,6 @@ public class ExportPreviewResourceTest
 			_companyObjectDefinition, _siteObjectDefinition);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testGetAssetLibraryPortletExportPreview() throws Exception {

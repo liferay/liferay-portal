@@ -5,15 +5,9 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 
-const test = mergeTests(
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(loginTest());
 
 // Landing on a control panel application renders the full product menu.
 

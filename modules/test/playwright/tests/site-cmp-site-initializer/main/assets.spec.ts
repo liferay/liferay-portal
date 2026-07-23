@@ -17,7 +17,6 @@ const test = mergeTests(
 	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-17564': {enabled: true},
 		'LPD-58677': {enabled: true},
 	}),
 	loginTest()

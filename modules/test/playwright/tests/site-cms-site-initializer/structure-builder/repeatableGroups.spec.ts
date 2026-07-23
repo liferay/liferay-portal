@@ -5,7 +5,6 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
@@ -19,9 +18,6 @@ import {structureBuilderPagesTest} from './fixtures/structureBuilderPagesTest';
 
 const test = mergeTests(
 	cmsPagesTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
 	loginTest(),
 	objectPagesTest,
 	pageEditorPagesTest,

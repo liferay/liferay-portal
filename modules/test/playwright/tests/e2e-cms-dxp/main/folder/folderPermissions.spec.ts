@@ -8,7 +8,6 @@ import {readFileSync} from 'fs';
 import path from 'path';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../../utils/getRandomString';
@@ -16,13 +15,7 @@ import {performLoginViaApi} from '../../../../utils/performLogin';
 import {AssetsPage} from '../../../site-cms-site-initializer/main/pages/AssetsPage';
 import {addSpaceUserWithSession, openFolder} from './utils/folders';
 
-const test = mergeTests(
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(dataApiHelpersTest, loginTest());
 
 const CONTENT_APPLICATION_NAME = 'cms/basic-web-contents';
 

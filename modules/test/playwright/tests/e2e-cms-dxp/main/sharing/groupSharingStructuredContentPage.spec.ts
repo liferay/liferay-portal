@@ -20,7 +20,6 @@ import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/stru
 const test = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-17564': {enabled: true},
 		'LPS-178052': {enabled: true},
 	}),
 	isolatedSiteTest,

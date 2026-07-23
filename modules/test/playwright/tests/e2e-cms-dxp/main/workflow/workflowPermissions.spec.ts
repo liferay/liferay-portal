@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../../fixtures/workflowPagesTest';
 import {addSpaceUser} from '../../../../utils/addSpaceUser';
@@ -17,14 +16,7 @@ import {
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../../utils/performLogin';
 
-const test = mergeTests(
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest(),
-	workflowPagesTest
-);
+const test = mergeTests(dataApiHelpersTest, loginTest(), workflowPagesTest);
 
 const APPLICATION_NAME = 'cms/basic-web-contents';
 

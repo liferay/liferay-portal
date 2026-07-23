@@ -56,9 +56,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 /**
  * @author Stefano Motta
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-58677")}
-)
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 @RunWith(Arquillian.class)
 public class ObjectEntryAuditModelListenerTest {
 

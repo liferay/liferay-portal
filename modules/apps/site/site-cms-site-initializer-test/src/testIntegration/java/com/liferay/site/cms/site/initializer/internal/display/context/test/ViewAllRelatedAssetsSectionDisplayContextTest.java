@@ -45,9 +45,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Larissa Ribeiro
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-58677")}
-)
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 @RunWith(Arquillian.class)
 @Sync
 public class ViewAllRelatedAssetsSectionDisplayContextTest

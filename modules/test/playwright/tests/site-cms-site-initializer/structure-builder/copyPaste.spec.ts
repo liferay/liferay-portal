@@ -5,7 +5,6 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
@@ -13,14 +12,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../main/fixtures/cmsPagesTest';
 import {structureBuilderPagesTest} from './fixtures/structureBuilderPagesTest';
 
-const test = mergeTests(
-	cmsPagesTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest(),
-	structureBuilderPagesTest
-);
+const test = mergeTests(cmsPagesTest, loginTest(), structureBuilderPagesTest);
 
 test(
 	'Fields can be copied and pasted',

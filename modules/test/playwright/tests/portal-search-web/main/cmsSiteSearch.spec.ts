@@ -6,7 +6,6 @@
 import {Browser, Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
@@ -17,8 +16,7 @@ import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 const test = mergeTests(
 	isolatedLayoutTest({type: 'portlet'}),
 	loginTest(),
-	dataApiHelpersTest,
-	featureFlagsTest({'LPD-17564': {enabled: true}})
+	dataApiHelpersTest
 );
 
 test.describe.configure({timeout: 180000});

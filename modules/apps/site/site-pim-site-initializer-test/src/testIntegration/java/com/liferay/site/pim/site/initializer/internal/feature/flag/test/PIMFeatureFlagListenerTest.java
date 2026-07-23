@@ -31,9 +31,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Stefano Motta
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-96666")}
-)
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-96666"))
 @RunWith(Arquillian.class)
 public class PIMFeatureFlagListenerTest {
 

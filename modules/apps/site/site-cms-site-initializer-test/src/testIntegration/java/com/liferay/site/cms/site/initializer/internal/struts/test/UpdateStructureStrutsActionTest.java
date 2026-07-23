@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -140,7 +139,43 @@ public class UpdateStructureStrutsActionTest {
 			serviceBuilderObjectDefinition2.getObjectDefinitionId());
 	}
 
-	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-99742")
+	public void testExecuteDoesNotDeleteEdgeObjectRelationships()
+		throws Exception {
+
+		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		com.liferay.object.model.ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+
+		Assert.assertTrue(objectRelationship.isEdge());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_updateStructureStrutsAction.execute(
+			_getMockHttpServletRequest(_objectDefinition2),
+			mockHttpServletResponse);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
+
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship.getObjectRelationshipId()));
+	}
+
 	@Test
 	@TestInfo("LPD-92696")
 	public void testExecuteDoesNotDeleteObjectRelationships() throws Exception {

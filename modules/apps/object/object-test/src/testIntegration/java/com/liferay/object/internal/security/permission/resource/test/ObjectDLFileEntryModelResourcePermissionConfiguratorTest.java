@@ -54,7 +54,6 @@ import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -79,7 +78,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Manuele Castro
  */
-@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class ObjectDLFileEntryModelResourcePermissionConfiguratorTest {
 

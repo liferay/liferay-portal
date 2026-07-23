@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -46,7 +45,6 @@ public class DepotItemSelectorViewTest {
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testIsVisible() {
 		Assert.assertTrue(
@@ -55,7 +53,6 @@ public class DepotItemSelectorViewTest {
 			_spacesDepotItemSelectorView.isVisible(null, _themeDisplay));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testIsVisibleForAnUnsupportedApplication() {
 		GroupItemSelectorCriterion groupItemSelectorCriterion =
@@ -71,7 +68,6 @@ public class DepotItemSelectorViewTest {
 				groupItemSelectorCriterion, _themeDisplay));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testIsVisibleForASupportedApplication() {
 		GroupItemSelectorCriterion groupItemSelectorCriterion =

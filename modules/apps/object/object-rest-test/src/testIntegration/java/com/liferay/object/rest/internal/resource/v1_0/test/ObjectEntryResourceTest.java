@@ -125,7 +125,6 @@ import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.WorkflowableComment;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -286,7 +285,6 @@ import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -307,11 +305,7 @@ import org.springframework.transaction.support.DefaultTransactionStatus;
 /**
  * @author Luis Miguel Barcos
  */
-@FeatureFlags(
-	featureFlags = {
-		@FeatureFlag(value = "LPD-17564"), @FeatureFlag(value = "LPS-164801")
-	}
-)
+@FeatureFlags(featureFlags = @FeatureFlag(value = "LPS-164801"))
 @RunWith(Arquillian.class)
 public class ObjectEntryResourceTest {
 
@@ -6304,7 +6298,6 @@ public class ObjectEntryResourceTest {
 		Assert.assertEquals(1, itemsJSONArray.length());
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testGetObjectEntriesPageWithObjectActions() throws Exception {
 		JSONObject actionsJSONObject1 = _getActionsJSONObject(
@@ -6381,7 +6374,6 @@ public class ObjectEntryResourceTest {
 		);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testGetObjectEntriesSystemProperties() throws Exception {
 		ObjectEntryTestUtil.addObjectEntry(
@@ -6693,17 +6685,6 @@ public class ObjectEntryResourceTest {
 
 	@Test
 	@TestInfo("LPD-62553")
-	public void testGetObjectEntryActions() throws Exception {
-		Assume.assumeFalse(
-			FeatureFlagManagerUtil.isEnabled(
-				_group.getCompanyId(), "LPD-17564"));
-
-		_testGetObjectEntryActions(false);
-	}
-
-	@FeatureFlag("LPD-17564")
-	@Test
-	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithCompanySharingDisabled()
 		throws Exception {
 
@@ -6721,7 +6702,6 @@ public class ObjectEntryResourceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithGroupSharingDisabled()
@@ -6747,14 +6727,12 @@ public class ObjectEntryResourceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithSharingEnabled() throws Exception {
 		_testGetObjectEntryActions(true);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	@TestInfo("LPD-62553")
 	public void testGetObjectEntryActionsWithSystemSharingDisabled()
@@ -7376,7 +7354,6 @@ public class ObjectEntryResourceTest {
 		);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	@TestInfo("LPD-83639")
 	public void testGetObjectEntryShareAction() throws Exception {
@@ -7497,7 +7474,6 @@ public class ObjectEntryResourceTest {
 		Assert.assertFalse(jsonObject.has("share"));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testGetObjectEntryTranslation() throws Exception {
 		_testGetObjectEntryTranslation(
@@ -7509,7 +7485,6 @@ public class ObjectEntryResourceTest {
 			null);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testGetObjectEntryTranslationLanguage() throws Exception {
 		_testGetObjectEntryTranslation(
@@ -8782,7 +8757,6 @@ public class ObjectEntryResourceTest {
 			JSONCompareMode.STRICT);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testGetObjectEntryWithTaxonomyCategories() throws Exception {
 
@@ -9775,7 +9749,6 @@ public class ObjectEntryResourceTest {
 			Http.Method.PUT, _objectDefinition2, _siteScopedObjectDefinition2);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testPatchPutCustomObjectEntryWithScheduleDates()
 		throws Exception {
@@ -16771,113 +16744,52 @@ public class ObjectEntryResourceTest {
 
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"copy",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564")) {
-
-					return _getActionValue(
-						StringBundler.concat(
-							href,
-							"/by-object-entry-folder-id/{objectEntryFolderId}",
-							"/copy"),
-						"POST");
-				}
-
-				return null;
-			}
+			_getActionValue(
+				StringBundler.concat(
+					href, "/by-object-entry-folder-id/{objectEntryFolderId}",
+					"/copy"),
+				"POST")
 		).put(
 			"copy-replace",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564")) {
-
-					return _getActionValue(
-						StringBundler.concat(
-							href,
-							"/by-object-entry-folder-id/{objectEntryFolderId}",
-							"/copy-replace"),
-						"POST");
-				}
-
-				return null;
-			}
+			_getActionValue(
+				StringBundler.concat(
+					href, "/by-object-entry-folder-id/{objectEntryFolderId}",
+					"/copy-replace"),
+				"POST")
 		).put(
 			"delete", _getActionValue(href, "DELETE")
 		).put(
 			"duplicate",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564")) {
-
-					return _getActionValue(
-						StringBundler.concat(
-							href, "/by-object-entry-folder-id/",
-							objectEntryFolderId, "/copy"),
-						"POST");
-				}
-
-				return null;
-			}
+			_getActionValue(
+				StringBundler.concat(
+					href, "/by-object-entry-folder-id/", objectEntryFolderId,
+					"/copy"),
+				"POST")
 		).put(
 			"expire",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564")) {
-
-					return _getActionValue(
-						StringBundler.concat(
-							scopedEndpoint, "/by-external-reference-code/",
-							externalReferenceCode, "/expire"),
-						"POST");
-				}
-
-				return null;
-			}
+			_getActionValue(
+				StringBundler.concat(
+					scopedEndpoint, "/by-external-reference-code/",
+					externalReferenceCode, "/expire"),
+				"POST")
 		).put(
 			"get", _getActionValue(href, "GET")
 		).put(
-			"get-by-scope",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564")) {
-
-					return _getActionValue(scopedEndpoint, "GET");
-				}
-
-				return null;
-			}
+			"get-by-scope", _getActionValue(scopedEndpoint, "GET")
 		).put(
 			"move",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564")) {
-
-					return _getActionValue(
-						StringBundler.concat(
-							href,
-							"/by-object-entry-folder-id/{objectEntryFolderId}",
-							"/move"),
-						"POST");
-				}
-
-				return null;
-			}
+			_getActionValue(
+				StringBundler.concat(
+					href, "/by-object-entry-folder-id/{objectEntryFolderId}",
+					"/move"),
+				"POST")
 		).put(
 			"move-replace",
-			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564")) {
-
-					return _getActionValue(
-						StringBundler.concat(
-							href,
-							"/by-object-entry-folder-id/{objectEntryFolderId}",
-							"/move-replace"),
-						"POST");
-				}
-
-				return null;
-			}
+			_getActionValue(
+				StringBundler.concat(
+					href, "/by-object-entry-folder-id/{objectEntryFolderId}",
+					"/move-replace"),
+				"POST")
 		).put(
 			"permissions", _getActionValue(href + "/permissions", "GET")
 		).put(
@@ -16885,10 +16797,7 @@ public class ObjectEntryResourceTest {
 		).put(
 			"share",
 			() -> {
-				if (FeatureFlagManagerUtil.isEnabled(
-						_group.getCompanyId(), "LPD-17564") &&
-					sharingEnabled) {
-
+				if (sharingEnabled) {
 					return _getActionValue(href, "GET");
 				}
 

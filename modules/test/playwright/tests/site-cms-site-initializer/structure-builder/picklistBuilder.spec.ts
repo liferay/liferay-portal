@@ -5,19 +5,12 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../main/fixtures/cmsPagesTest';
 
-const test = mergeTests(
-	cmsPagesTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(cmsPagesTest, loginTest());
 
 test(
 	'Check validation errors and picklist and option submission',

@@ -35,11 +35,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Leslie Wong
  */
-@FeatureFlags(
-	featureFlags = {
-		@FeatureFlag(value = "LPD-17564"), @FeatureFlag("LPD-11232")
-	}
-)
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-11232"))
 @RunWith(Arquillian.class)
 public class ConnectionInfoResourceTest
 	extends BaseConnectionInfoResourceTestCase {

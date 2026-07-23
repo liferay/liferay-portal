@@ -29,7 +29,6 @@ const test = mergeTests(
 	assetPublisherPagesTest,
 	collectionsPagesTest,
 	featureFlagsTest({
-		'LPD-17564': {enabled: true},
 		'LPD-65399': {enabled: true},
 		'LPS-155284': {enabled: true},
 		'LPS-178052': {enabled: true},

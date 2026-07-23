@@ -102,7 +102,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.odata.entity.EntityField;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
@@ -160,7 +159,6 @@ public class ObjectDefinitionResourceTest
 			RandomTestUtil.randomString());
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testGetObjectDefinition() throws Exception {
@@ -441,7 +439,6 @@ public class ObjectDefinitionResourceTest
 		_testPatchObjectDefinitionWithPermissions();
 	}
 
-	@FeatureFlag("LPD-17564")
 	@LazyReferencing
 	@Override
 	@Test
@@ -855,7 +852,6 @@ public class ObjectDefinitionResourceTest
 		_testPostObjectDefinitionWithWorkflowDefinitionLinks();
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testPutObjectDefinition() throws Exception {

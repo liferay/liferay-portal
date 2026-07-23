@@ -6,7 +6,6 @@
 package com.liferay.site.cms.standalone.site.initializer.internal.events;
 
 import com.liferay.portal.kernel.events.ActionException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -19,14 +18,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -39,21 +35,9 @@ public class CMSServicePreActionTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@Before
-	public void setUp() {
-		_featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-			FeatureFlagManagerUtil.class);
-	}
-
-	@After
-	public void tearDown() {
-		_featureFlagManagerUtilMockedStatic.close();
-	}
-
 	@Test
 	public void testRun() throws Exception {
 		_testRunRedirectsToCMS();
-		_testRunWhenFeatureFlagIsDisabled();
 		_testRunWhenRequestURIIsNotLayout();
 		_testRunWhenScopeGroupIsNotGuest();
 		_testRunWhenSendRedirectFails();
@@ -72,13 +56,6 @@ public class CMSServicePreActionTest {
 	}
 
 	private void _setUpMocks() {
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-17564"))
-		).thenReturn(
-			true
-		);
-
 		_group = Mockito.mock(Group.class);
 
 		Mockito.when(
@@ -141,19 +118,6 @@ public class CMSServicePreActionTest {
 		).sendRedirect(
 			"/web/cms"
 		);
-	}
-
-	private void _testRunWhenFeatureFlagIsDisabled() throws Exception {
-		_setUpMocks();
-
-		_featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-17564"))
-		).thenReturn(
-			false
-		);
-
-		_assertRunDoesNotRedirect();
 	}
 
 	private void _testRunWhenRequestURIIsNotLayout() throws Exception {
@@ -222,8 +186,6 @@ public class CMSServicePreActionTest {
 	}
 
 	private CMSServicePreAction _cmsServicePreAction;
-	private MockedStatic<FeatureFlagManagerUtil>
-		_featureFlagManagerUtilMockedStatic;
 	private Group _group;
 	private HttpServletRequest _httpServletRequest;
 	private HttpServletResponse _httpServletResponse;

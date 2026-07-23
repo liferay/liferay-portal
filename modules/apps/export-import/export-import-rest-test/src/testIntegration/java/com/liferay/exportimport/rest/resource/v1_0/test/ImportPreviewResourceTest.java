@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -110,7 +109,6 @@ public class ImportPreviewResourceTest
 		_userLocalService.deleteUser(_user);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testPostAssetLibraryImportPreview() throws Exception {
@@ -150,7 +148,6 @@ public class ImportPreviewResourceTest
 		}
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testPostAssetLibraryPortletImportPreview() throws Exception {

@@ -10,18 +10,11 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
-const testWithoutFF = mergeTests(
-	cmsPagesTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const testWithoutFF = mergeTests(cmsPagesTest, loginTest());
 
 const testWithFF = mergeTests(
 	cmsPagesTest,
 	featureFlagsTest({
-		'LPD-17564': {enabled: true},
 		'LPD-57655': {enabled: true},
 	}),
 	loginTest()

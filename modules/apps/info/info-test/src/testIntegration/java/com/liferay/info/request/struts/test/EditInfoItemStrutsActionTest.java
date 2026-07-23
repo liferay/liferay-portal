@@ -218,7 +218,6 @@ public class EditInfoItemStrutsActionTest {
 			objectEntry.getURLTitle(_objectDefinition.getDefaultLocale()));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddAndUpdateInfoItemWithEnableObjectEntrySchedule()
 		throws Exception {
@@ -533,7 +532,6 @@ public class EditInfoItemStrutsActionTest {
 			null, WorkflowConstants.STATUS_APPROVED);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testUpdateInfoItem() throws Exception {
 		MockHttpServletResponse mockHttpServletResponse =

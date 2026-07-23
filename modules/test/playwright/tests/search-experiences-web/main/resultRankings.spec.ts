@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {searchExperiencesPagesTest} from '../../../fixtures/searchExperiencesPageTest';
@@ -18,9 +17,6 @@ import getBasicWebContentStructureId from '../../../utils/structured-content/get
 
 export const test = mergeTests(
 	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true}, // CMS 2.0
-	}),
 	isolatedSiteTest,
 	loginTest(),
 	searchExperiencesPagesTest,

@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {addCMSAdministrator} from '../../../utils/addCMSAdministrator';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
@@ -20,14 +19,7 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 import {RecycleBinPage} from './pages/RecycleBinPage';
 
-const test = mergeTests(
-	cmsPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 test.beforeAll(async ({browser}) => {
 	const newPage = await browser.newPage();

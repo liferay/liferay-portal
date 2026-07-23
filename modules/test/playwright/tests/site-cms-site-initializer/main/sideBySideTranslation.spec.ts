@@ -10,7 +10,6 @@ import {
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {LocalizationSelectPage} from '../../../pages/fragment-web/LocalizationSelectPage';
@@ -151,14 +150,7 @@ async function getSampleStructureDefinition(apiHelpers: ApiHelpers) {
 	return SAMPLE_STRUCTURE_DEFINITION;
 }
 
-const test = mergeTests(
-	cmsPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 test(
 	'Can translate a content with side by side view',

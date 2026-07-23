@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -68,7 +67,6 @@ public class ObjectEntryModelDocumentContributorTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testContributeWithAssigneeObjectField() throws Exception {
 		String objectFieldName = "a" + RandomTestUtil.randomString();
@@ -175,7 +173,6 @@ public class ObjectEntryModelDocumentContributorTest {
 					objectFieldName, ": ", user.getFullName())));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testContributeWithDateField() throws Exception {
 		ObjectDefinition objectDefinition =
@@ -205,7 +202,6 @@ public class ObjectEntryModelDocumentContributorTest {
 			field.getValue());
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testContributeWithLocalizedFields() throws Exception {
 		String objectFieldName = "a" + RandomTestUtil.randomString();
@@ -250,7 +246,6 @@ public class ObjectEntryModelDocumentContributorTest {
 		Assert.assertNull(document.getField("objectEntryContent"));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testContributeWithNonlocalizedFields() throws Exception {
 		String objectFieldName = "a" + RandomTestUtil.randomString();

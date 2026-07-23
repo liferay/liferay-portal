@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.search.index.IndexStatusManager;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -62,7 +61,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Stefano Motta
  */
-@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class CMSFileDLPortletToolbarContributorContextTest {
 

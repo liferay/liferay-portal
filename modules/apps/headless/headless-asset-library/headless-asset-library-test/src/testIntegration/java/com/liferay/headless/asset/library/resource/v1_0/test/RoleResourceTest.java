@@ -64,7 +64,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Roberto Díaz
  */
-@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class RoleResourceTest extends BaseRoleResourceTestCase {
 
@@ -88,9 +87,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			testDepotEntry.getGroupId(), _userGroup);
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-58677")}
-	)
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 	@Override
 	@Test
 	public void testGetAssetLibraryRolesPage() throws Exception {

@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -72,7 +71,6 @@ public class AssetCategoryPortletDataHandlerTest
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAssetCategoryExportImportReportEntriesDuplicateExternalReferenceCode()
 		throws Exception {
@@ -122,7 +120,6 @@ public class AssetCategoryPortletDataHandlerTest
 						ExportImportReportEntryConstants.TYPE_ERROR)));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAssetVocabularyExportImportReportEntriesDuplicateTitle()
 		throws Exception {
@@ -170,7 +167,6 @@ public class AssetCategoryPortletDataHandlerTest
 						ExportImportReportEntryConstants.TYPE_ERROR)));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testExportImportAssetCategory() throws Exception {
 		AssetVocabulary assetVocabulary = _addAssetVocabulary();
@@ -196,7 +192,6 @@ public class AssetCategoryPortletDataHandlerTest
 					stagingGroup.getGroupId()));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testExportImportAssetVocabulary() throws Exception {
 		AssetVocabulary assetVocabulary = _addAssetVocabulary();
@@ -219,16 +214,10 @@ public class AssetCategoryPortletDataHandlerTest
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(enable = false, value = "LPD-11235"),
-			@FeatureFlag("LPD-17564")
-		}
+		featureFlags = {@FeatureFlag(enable = false, value = "LPD-11235")}
 	)
 	@Test
 	public void testExportImportCMSAssetVocabulary() throws Exception {
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), true, "LPD-17564");
-
 		Group originalStagingGroup = stagingGroup;
 
 		try {
@@ -280,9 +269,6 @@ public class AssetCategoryPortletDataHandlerTest
 		finally {
 			stagingGroup = originalStagingGroup;
 		}
-
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), false, "LPD-17564");
 	}
 
 	@Override

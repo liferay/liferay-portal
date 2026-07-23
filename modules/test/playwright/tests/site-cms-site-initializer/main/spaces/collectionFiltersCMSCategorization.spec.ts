@@ -7,7 +7,6 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {collectionsPagesTest} from '../../../../fixtures/collectionsPagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
@@ -20,9 +19,6 @@ const test = mergeTests(
 	cmsPagesTest,
 	collectionsPagesTest,
 	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
 	isolatedSiteTest,
 	loginTest()
 );

@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
@@ -16,14 +15,7 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 import {PermissionsPage} from '../permissions/pages/PermissionsPage';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
-const test = mergeTests(
-	cmsPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 test(
 	'Can edit a folder',

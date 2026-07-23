@@ -24,7 +24,6 @@ const test = mergeTests(
 	designLibrariesPageTest,
 	featureFlagsTest({
 		'LPD-11235': {enabled: true},
-		'LPD-17564': {enabled: true},
 		'LPD-35443': {enabled: true},
 		'LPD-57283': {enabled: true},
 		'LPD-76864': {enabled: true},

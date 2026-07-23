@@ -14,7 +14,6 @@ import com.liferay.object.service.ObjectFolderLocalServiceUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -90,20 +89,12 @@ public class ObjectDefinitionImplTest {
 	public void testIsCMS() throws Exception {
 		_testIsCMS(
 			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-			"false",
-			objectDefinition -> Assert.assertFalse(objectDefinition.isCMS()));
-		_testIsCMS(
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
-			"true",
 			objectDefinition -> Assert.assertTrue(objectDefinition.isCMS()));
 		_testIsCMS(
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, "false",
-			objectDefinition -> Assert.assertFalse(objectDefinition.isCMS()));
-		_testIsCMS(
-			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES, "true",
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES,
 			objectDefinition -> Assert.assertTrue(objectDefinition.isCMS()));
 		_testIsCMS(
-			RandomTestUtil.randomString(), "true",
+			RandomTestUtil.randomString(),
 			objectDefinition -> Assert.assertFalse(objectDefinition.isCMS()));
 	}
 
@@ -132,7 +123,7 @@ public class ObjectDefinitionImplTest {
 	}
 
 	private void _testIsCMS(
-			String externalReferenceCode, String featureFlagEnabled,
+			String externalReferenceCode,
 			UnsafeConsumer<ObjectDefinition, Exception> unsafeConsumer)
 		throws Exception {
 
@@ -156,18 +147,7 @@ public class ObjectDefinitionImplTest {
 
 		objectDefinition.setObjectFolderId(objectFolderId);
 
-		String featureFlagKey = "feature.flag.LPD-17564";
-
-		String originalValue = PropsUtil.get(featureFlagKey);
-
-		try {
-			PropsUtil.set(featureFlagKey, featureFlagEnabled);
-
-			unsafeConsumer.accept(objectDefinition);
-		}
-		finally {
-			PropsUtil.set(featureFlagKey, originalValue);
-		}
+		unsafeConsumer.accept(objectDefinition);
 	}
 
 	private static final MockedStatic<ObjectFolderLocalServiceUtil>

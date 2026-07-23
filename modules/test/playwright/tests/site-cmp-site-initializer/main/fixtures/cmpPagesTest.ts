@@ -5,7 +5,6 @@
 
 import {mergeTests, test} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {EditProjectPage} from '../pages/EditProjectPage';
@@ -50,12 +49,6 @@ const cmpPages = test.extend<{
 	},
 });
 
-const cmpPagesTest = mergeTests(
-	loginTest(),
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	cmpPages
-);
+const cmpPagesTest = mergeTests(loginTest(), cmpPages);
 
 export {cmpPagesTest};

@@ -140,9 +140,7 @@ public class StyleBookEntryProviderUtilTest {
 			styleBookEntries.contains(parentStyleBookEntry));
 	}
 
-	@FeatureFlags(
-		featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-57283")}
-	)
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-57283"))
 	@Test
 	@TestInfo("LPD-88081")
 	public void testGetStyleBookEntry() throws Exception {
@@ -237,11 +235,7 @@ public class StyleBookEntryProviderUtilTest {
 			StyleBookEntry styleBookEntry)
 		throws Exception {
 
-		try (PropsTemporarySwapper propsTemporarySwapper1 =
-				new PropsTemporarySwapper(
-					"feature.flag.LPD-17564",
-					String.valueOf(connectedDepotEntriesEnabled));
-			PropsTemporarySwapper propsTemporarySwapper2 =
+		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					"feature.flag.LPD-57283",
 					String.valueOf(connectedDepotEntriesEnabled))) {

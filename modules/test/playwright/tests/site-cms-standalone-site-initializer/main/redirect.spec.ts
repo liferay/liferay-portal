@@ -5,15 +5,9 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 
-const test = mergeTests(
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(loginTest());
 
 test(
 	'redirects a signed in user from the guest portal layout to the CMS',

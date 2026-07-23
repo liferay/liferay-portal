@@ -60,7 +60,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.site.cms.site.initializer.test.util.CMSTestUtil;
@@ -96,7 +95,6 @@ public class ObjectEntryInfoItemFieldValuesUpdaterTest
 		assertObjectEntryValues(name1, name2);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testUpdateFromInfoItemFieldValuesWithAttachmentField()
 		throws Exception {

@@ -22,7 +22,6 @@ export const test = mergeTests(
 	isolatedLayoutTest({type: 'portlet'}),
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-17564': {enabled: true}, // CMS 2.0
 		'LPS-178052': {enabled: true}, // Headless Site Page API
 	}),
 	isolatedSiteTest,

@@ -7,7 +7,6 @@ import {expect, mergeTests} from '@playwright/test';
 import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {fragmentsPagesTest} from '../../../fixtures/fragmentPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
@@ -25,9 +24,6 @@ import {PicklistBuilderPage} from './pages/PicklistBuilderPage';
 const test = mergeTests(
 	cmsPagesTest,
 	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
 	loginTest(),
 	fragmentsPagesTest,
 	pageEditorPagesTest,
@@ -91,85 +87,84 @@ test(
 	}
 );
 
-test(
-	'Upload fields marked to show in the CMS library create visible files',
-	{tag: '@LPD-17564'},
-	async ({assetsPage, contentsPage, page, structureBuilderPage}) => {
+test('Upload fields marked to show in the CMS library create visible files', async ({
+	assetsPage,
+	contentsPage,
+	page,
+	structureBuilderPage,
+}) => {
 
-		// Create a structure with a CMS library upload field
+	// Create a structure with a CMS library upload field
 
-		const structureLabel = `StructureName${getRandomInt()}`;
-		const contentTitle = getRandomString();
+	const structureLabel = `StructureName${getRandomInt()}`;
+	const contentTitle = getRandomString();
 
-		await structureBuilderPage.createStructureFromData({
-			label: structureLabel,
-			page: structureBuilderPage,
-		});
+	await structureBuilderPage.createStructureFromData({
+		label: structureLabel,
+		page: structureBuilderPage,
+	});
 
-		await structureBuilderPage.addField('Upload');
+	await structureBuilderPage.addField('Upload');
 
-		await structureBuilderPage.changeFieldSettings({
-			label: 'Upload to CMS Library',
-			name: 'uploadToCMSLibrary',
-			requestFile: 'computer',
-			showFilesInLibrary: true,
-		});
+	await structureBuilderPage.changeFieldSettings({
+		label: 'Upload to CMS Library',
+		name: 'uploadToCMSLibrary',
+		requestFile: 'computer',
+		showFilesInLibrary: true,
+	});
 
-		await structureBuilderPage.publishStructure();
+	await structureBuilderPage.publishStructure();
 
-		// Create a content for the structure and upload a file
+	// Create a content for the structure and upload a file
 
-		await contentsPage.goto();
+	await contentsPage.goto();
 
-		await contentsPage.createContent(structureLabel);
+	await contentsPage.createContent(structureLabel);
 
-		await contentsPage.fillData([{label: 'Title', value: contentTitle}]);
+	await contentsPage.fillData([{label: 'Title', value: contentTitle}]);
 
-		// Select the file from the computer
+	// Select the file from the computer
 
-		const fileChooserPromise = page.waitForEvent('filechooser');
+	const fileChooserPromise = page.waitForEvent('filechooser');
 
-		await page
-			.getByRole('button', {exact: true, name: 'Select File'})
-			.click();
+	await page.getByRole('button', {exact: true, name: 'Select File'}).click();
 
-		const fileChooser = await fileChooserPromise;
+	const fileChooser = await fileChooserPromise;
 
-		const fileName = 'file_upload_image_1.jpg';
+	const fileName = 'file_upload_image_1.jpg';
 
-		await fileChooser.setFiles(
-			path.join(__dirname, `/dependencies/${fileName}`)
-		);
+	await fileChooser.setFiles(
+		path.join(__dirname, `/dependencies/${fileName}`)
+	);
 
-		await expect(page.getByText('file_upload_image_1.jpg')).toBeVisible();
+	await expect(page.getByText('file_upload_image_1.jpg')).toBeVisible();
 
-		// Save the content
+	// Save the content
 
-		await contentsPage.saveContent();
+	await contentsPage.saveContent();
 
-		// Check the file is visible in the CMS Files
+	// Check the file is visible in the CMS Files
 
-		await assetsPage.gotoFiles();
+	await assetsPage.gotoFiles();
 
-		await expect(
-			assetsPage
-				.getCardItem(fileName)
-				.or(page.getByRole('row', {name: new RegExp(fileName)}))
-		).toBeVisible();
+	await expect(
+		assetsPage
+			.getCardItem(fileName)
+			.or(page.getByRole('row', {name: new RegExp(fileName)}))
+	).toBeVisible();
 
-		// Delete files
+	// Delete files
 
-		await assetsPage.gotoFiles();
+	await assetsPage.gotoFiles();
 
-		await expect(page.getByText(fileName)).toBeVisible();
+	await expect(page.getByText(fileName)).toBeVisible();
 
-		await contentsPage.deleteContent(fileName);
+	await contentsPage.deleteContent(fileName);
 
-		await contentsPage.goto();
+	await contentsPage.goto();
 
-		await contentsPage.deleteContent(contentTitle);
-	}
-);
+	await contentsPage.deleteContent(contentTitle);
+});
 
 test(
 	'Custom structure takes title as name field',

@@ -45,7 +45,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Alicia García
  */
-@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class ViewAllSpacesDisplayContextTest
 	extends BaseDisplayContextTestCase {

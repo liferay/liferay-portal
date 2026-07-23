@@ -68,12 +68,10 @@ public class CMSTestUtil {
 					CompanyThreadLocal.setCompanyIdWithSafeCloseable(
 						group.getCompanyId())) {
 
-				// These tests require the instance to be created with the
-				// feature flag LPD-17564 enabled. On CI, feature flags are
-				// enabled on demand for each test, but not during instance
-				// initialization. Until the feature flag LPD-17564 is removed,
-				// run the instance lifecycle initializer manually so that the
-				// role is created.
+				// These tests require the CMS instance lifecycle initializer
+				// to have run so that the role is created. Instance
+				// initialization during tests does not run it automatically,
+				// so run the instance lifecycle initializer manually here.
 
 				SiteInitializerRegistry siteInitializerRegistry =
 					_siteInitializerRegistrySnapshot.get();

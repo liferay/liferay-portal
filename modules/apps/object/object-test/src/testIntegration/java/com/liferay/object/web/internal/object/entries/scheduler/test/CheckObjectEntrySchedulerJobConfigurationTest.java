@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -71,7 +70,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Jhosseph Gonzalez
  */
-@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 @Sync
 public class CheckObjectEntrySchedulerJobConfigurationTest {

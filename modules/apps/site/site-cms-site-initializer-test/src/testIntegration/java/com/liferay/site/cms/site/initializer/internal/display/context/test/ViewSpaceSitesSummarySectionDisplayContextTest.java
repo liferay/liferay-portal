@@ -54,9 +54,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Alicia García
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-58677")}
-)
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 @RunWith(Arquillian.class)
 public class ViewSpaceSitesSummarySectionDisplayContextTest
 	extends BaseDisplayContextTestCase {

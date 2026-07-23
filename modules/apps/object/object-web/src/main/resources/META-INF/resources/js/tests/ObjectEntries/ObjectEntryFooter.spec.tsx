@@ -22,7 +22,6 @@ describe('ObjectEntryFooter component', () => {
 			...global.Liferay,
 			FeatureFlags: {
 				...global.Liferay?.FeatureFlags,
-				'LPD-17564': true,
 			},
 		};
 	});

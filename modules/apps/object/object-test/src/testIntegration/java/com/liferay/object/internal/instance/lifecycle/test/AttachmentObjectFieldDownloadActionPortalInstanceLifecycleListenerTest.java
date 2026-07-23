@@ -1,9 +1,9 @@
 /**
- * SPDX-FileCopyrightText: (c) 2025 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.object.internal.feature.flag.test;
+package com.liferay.object.internal.instance.lifecycle.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
@@ -21,25 +21,24 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
+import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
-import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -59,7 +58,8 @@ import org.junit.runner.RunWith;
  * @author Manuele Castro
  */
 @RunWith(Arquillian.class)
-public class AttachmentObjectFieldDownloadActionFeatureFlagListenerTest {
+public class
+	AttachmentObjectFieldDownloadActionPortalInstanceLifecycleListenerTest {
 
 	@ClassRule
 	@Rule
@@ -67,7 +67,7 @@ public class AttachmentObjectFieldDownloadActionFeatureFlagListenerTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void test() throws Exception {
+	public void testPortalInstanceRegistered() throws Exception {
 		ObjectField objectField = ObjectFieldUtil.createObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
 			ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
@@ -123,73 +123,45 @@ public class AttachmentObjectFieldDownloadActionFeatureFlagListenerTest {
 			String.valueOf(objectEntry.getObjectEntryId()),
 			powerUserRole.getRoleId(), new String[] {ActionKeys.VIEW});
 
-		boolean lpd17564Enabled = FeatureFlagManagerUtil.isEnabled(
-			objectDefinition.getCompanyId(), "LPD-17564");
+		String attachmentDownloadActionKey =
+			objectField.getAttachmentDownloadActionKey();
 
-		try (PropsTemporarySwapper propsTemporarySwapper =
-				new PropsTemporarySwapper(
-					FeatureFlagConstants.getKey("LPD-17564"),
-					Boolean.TRUE.toString())) {
+		// Simulate the pre-back-fill state by removing the download resource
+		// action that the object field publication creates
 
-			FeatureFlagTestUtil.invokeFeatureFlagListeners(
-				objectDefinition.getCompanyId(), true, "LPD-17564");
+		ResourceAction resourceAction =
+			_resourceActionLocalService.fetchResourceAction(
+				objectDefinition.getClassName(), attachmentDownloadActionKey);
 
-			String attachmentDownloadActionKey =
-				objectField.getAttachmentDownloadActionKey();
-
-			Assert.assertNotNull(
-				_resourceActionLocalService.fetchResourceAction(
-					objectDefinition.getClassName(),
-					attachmentDownloadActionKey));
-
-			Role guestRole = _roleLocalService.getRole(
-				objectDefinition.getCompanyId(), RoleConstants.GUEST);
-
-			Assert.assertFalse(
-				_resourcePermissionLocalService.hasResourcePermission(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getClassName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(objectEntry.getObjectEntryId()),
-					guestRole.getRoleId(), attachmentDownloadActionKey));
-
-			Role ownerRole = _roleLocalService.getRole(
-				objectDefinition.getCompanyId(), RoleConstants.OWNER);
-
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getClassName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(objectEntry.getObjectEntryId()),
-					ownerRole.getRoleId(), attachmentDownloadActionKey));
-
-			Assert.assertTrue(
-				_resourcePermissionLocalService.hasResourcePermission(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getClassName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(objectEntry.getObjectEntryId()),
-					powerUserRole.getRoleId(), attachmentDownloadActionKey));
-
-			Role userRole = _roleLocalService.getRole(
-				objectDefinition.getCompanyId(), RoleConstants.USER);
-
-			Assert.assertFalse(
-				_resourcePermissionLocalService.hasResourcePermission(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getClassName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(objectEntry.getObjectEntryId()),
-					userRole.getRoleId(), attachmentDownloadActionKey));
+		if (resourceAction != null) {
+			_resourceActionLocalService.deleteResourceAction(resourceAction);
 		}
-		finally {
-			if (!lpd17564Enabled) {
-				FeatureFlagTestUtil.invokeFeatureFlagListeners(
-					objectDefinition.getCompanyId(), lpd17564Enabled,
-					"LPD-17564");
-			}
-		}
+
+		_portalInstanceLifecycleListener.portalInstanceRegistered(
+			_companyLocalService.getCompany(objectDefinition.getCompanyId()));
+
+		Assert.assertNotNull(
+			_resourceActionLocalService.fetchResourceAction(
+				objectDefinition.getClassName(), attachmentDownloadActionKey));
+
+		Role guestRole = _roleLocalService.getRole(
+			objectDefinition.getCompanyId(), RoleConstants.GUEST);
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				objectDefinition.getCompanyId(),
+				objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(objectEntry.getObjectEntryId()),
+				guestRole.getRoleId(), attachmentDownloadActionKey));
+
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				objectDefinition.getCompanyId(),
+				objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(objectEntry.getObjectEntryId()),
+				powerUserRole.getRoleId(), attachmentDownloadActionKey));
 	}
 
 	private DLFileEntry _addDLFileEntry() throws Exception {
@@ -207,6 +179,9 @@ public class AttachmentObjectFieldDownloadActionFeatureFlagListenerTest {
 	}
 
 	@Inject
+	private CompanyLocalService _companyLocalService;
+
+	@Inject
 	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
@@ -214,6 +189,11 @@ public class AttachmentObjectFieldDownloadActionFeatureFlagListenerTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject(
+		filter = "component.name=com.liferay.object.internal.instance.lifecycle.AttachmentObjectFieldDownloadActionPortalInstanceLifecycleListener"
+	)
+	private PortalInstanceLifecycleListener _portalInstanceLifecycleListener;
 
 	@Inject
 	private ResourceActionLocalService _resourceActionLocalService;

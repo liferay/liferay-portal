@@ -6,19 +6,11 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
 import {cmsPagesTest} from '../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
 
-const test = mergeTests(
-	apiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	cmsPagesTest,
-	loginTest()
-);
+const test = mergeTests(apiHelpersTest, cmsPagesTest, loginTest());
 
 test('CMS loads and sections are shown', async ({
 	contentsPage,

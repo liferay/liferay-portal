@@ -109,12 +109,6 @@ public class EditRolePermissionsNavigationDisplayContextTest {
 				_invokeHasObjectDefinitionValidDomain(
 					Mockito.mock(ObjectDefinition.class)));
 
-			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-17564")
-			).thenReturn(
-				true
-			);
-
 			objectDefinitionSettingUtilMockedStatic.when(
 				() -> ObjectDefinitionSettingUtil.getValue(
 					Mockito.eq(ObjectDefinitionSettingConstants.NAME_DOMAIN),

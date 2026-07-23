@@ -40,7 +40,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -87,7 +86,6 @@ public class AssetTagsPortletDataHandlerTest
 		super.setUp();
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAssetTagExportImportReportEntries() throws Exception {
 		AssetTag assetTag = _addTag();
@@ -125,7 +123,6 @@ public class AssetTagsPortletDataHandlerTest
 						ExportImportReportEntryConstants.TYPE_ERROR)));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAssetTagImportCompletedWithErrors() throws Exception {
 		AssetTag assetTag = _addTag();
@@ -190,7 +187,6 @@ public class AssetTagsPortletDataHandlerTest
 			});
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testExportImportAssetTag() throws Exception {
 		AssetTag assetTag = _addTag();
@@ -212,16 +208,10 @@ public class AssetTagsPortletDataHandlerTest
 	}
 
 	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(enable = false, value = "LPD-11235"),
-			@FeatureFlag("LPD-17564")
-		}
+		featureFlags = {@FeatureFlag(enable = false, value = "LPD-11235")}
 	)
 	@Test
 	public void testExportImportCMSAssetTag() throws Exception {
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), true, "LPD-17564");
-
 		Group originalStagingGroup = stagingGroup;
 
 		try {
@@ -269,9 +259,6 @@ public class AssetTagsPortletDataHandlerTest
 		finally {
 			stagingGroup = originalStagingGroup;
 		}
-
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), false, "LPD-17564");
 	}
 
 	@Override

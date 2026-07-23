@@ -12,7 +12,6 @@ import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistry;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -37,7 +36,6 @@ public class ObjectEntryItemSelectorViewTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	@TestInfo("LPD-17564")
 	public void testGetTitle() throws Exception {
 		ObjectDefinition objectDefinition = Mockito.mock(
 			ObjectDefinition.class);

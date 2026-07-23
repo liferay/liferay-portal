@@ -8,7 +8,6 @@ package com.liferay.item.selector.taglib.internal.display.context;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -125,7 +124,6 @@ public class GroupSelectorDisplayContextTest {
 
 	@Test
 	public void testGetGroupTypes() {
-		_testGetGroupTypesWithoutCMSFeatureFlag();
 		_testGetGroupTypesWithDefaultSelectedTabRequestAttribute();
 		_testGetGroupTypesWithFileItemSelectorCriterion();
 		_testGetGroupTypesWithJournalArticleInfoItemItemSelectorCriterion();
@@ -134,184 +132,136 @@ public class GroupSelectorDisplayContextTest {
 		_testGetGroupTypesWithoutJournalArticleInfoItemItemSelectorCriterion();
 	}
 
-	private MockedStatic<FeatureFlagManagerUtil> _enableCMSFeatureFlag() {
-		MockedStatic<FeatureFlagManagerUtil>
-			featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
-				FeatureFlagManagerUtil.class);
-
-		featureFlagManagerUtilMockedStatic.when(
-			() -> FeatureFlagManagerUtil.isEnabled(
-				Mockito.anyLong(), Mockito.eq("LPD-17564"))
+	private void _testGetGroupTypesWithDefaultSelectedTabRequestAttribute() {
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
 		).thenReturn(
-			true
+			Collections.singletonList(new InfoItemItemSelectorCriterion())
 		);
 
-		return featureFlagManagerUtilMockedStatic;
-	}
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
 
-	private void _testGetGroupTypesWithDefaultSelectedTabRequestAttribute() {
-		try (MockedStatic<FeatureFlagManagerUtil>
-				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
+		mockLiferayResourceRequest.addParameter("criteria", "infoitem");
+		mockLiferayResourceRequest.setAttribute(
+			"liferay-item-selector:group-selector:selectedTab",
+			"com.liferay.document.library.item.selector.web.internal.info." +
+				"item.DLInfoItemItemSelectorView_Documents and Media");
 
-			Mockito.when(
-				_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
-			).thenReturn(
-				Collections.singletonList(new InfoItemItemSelectorCriterion())
-			);
-
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				new MockLiferayResourceRequest();
-
-			mockLiferayResourceRequest.addParameter("criteria", "infoitem");
-			mockLiferayResourceRequest.setAttribute(
-				"liferay-item-selector:group-selector:selectedTab",
-				"com.liferay.document.library.item.selector.web.internal." +
-					"info.item.DLInfoItemItemSelectorView_Documents and Media");
-
-			GroupSelectorDisplayContext groupSelectorDisplayContext =
-				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
-
-			Assert.assertEquals(
-				Collections.singleton("test"),
-				groupSelectorDisplayContext.getGroupTypes());
-		}
-	}
-
-	private void _testGetGroupTypesWithFileItemSelectorCriterion() {
-		try (MockedStatic<FeatureFlagManagerUtil>
-				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
-
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				new MockLiferayResourceRequest();
-
-			mockLiferayResourceRequest.addParameter("criteria", "file");
-
-			GroupSelectorDisplayContext groupSelectorDisplayContext =
-				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
-
-			Assert.assertEquals(
-				Collections.singleton("test"),
-				groupSelectorDisplayContext.getGroupTypes());
-		}
-	}
-
-	private void _testGetGroupTypesWithJournalArticleInfoItemItemSelectorCriterion() {
-		try (MockedStatic<FeatureFlagManagerUtil>
-				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
-
-			InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
-				new InfoItemItemSelectorCriterion();
-
-			infoItemItemSelectorCriterion.setItemType(
-				"com.liferay.journal.model.JournalArticle");
-
-			Mockito.when(
-				_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
-			).thenReturn(
-				Collections.singletonList(infoItemItemSelectorCriterion)
-			);
-
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				new MockLiferayResourceRequest();
-
-			mockLiferayResourceRequest.addParameter("criteria", "infoitem");
-
-			GroupSelectorDisplayContext groupSelectorDisplayContext =
-				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
-
-			Assert.assertEquals(
-				Collections.singleton("test"),
-				groupSelectorDisplayContext.getGroupTypes());
-		}
-	}
-
-	private void _testGetGroupTypesWithLegacyItemSelectorViewSelectedTab() {
-		try (MockedStatic<FeatureFlagManagerUtil>
-				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
-
-			Mockito.when(
-				_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
-			).thenReturn(
-				Collections.singletonList(new InfoItemItemSelectorCriterion())
-			);
-
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				new MockLiferayResourceRequest();
-
-			mockLiferayResourceRequest.addParameter("criteria", "infoitem");
-			mockLiferayResourceRequest.addParameter(
-				"selectedTab",
-				"com.liferay.commerce.order.content.web.internal.item." +
-					"selector.CommerceOrderItemSelectorView_Orders");
-
-			GroupSelectorDisplayContext groupSelectorDisplayContext =
-				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
-
-			Assert.assertEquals(
-				Collections.singleton("test"),
-				groupSelectorDisplayContext.getGroupTypes());
-		}
-	}
-
-	private void _testGetGroupTypesWithObjectEntryItemSelectorViewSelectedTab() {
-		try (MockedStatic<FeatureFlagManagerUtil>
-				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
-
-			Mockito.when(
-				_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
-			).thenReturn(
-				Collections.singletonList(new InfoItemItemSelectorCriterion())
-			);
-
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				new MockLiferayResourceRequest();
-
-			mockLiferayResourceRequest.addParameter("criteria", "infoitem");
-			mockLiferayResourceRequest.addParameter(
-				"selectedTab",
-				"com.liferay.object.web.internal.item.selector." +
-					"ObjectEntryItemSelectorView_Basic Web Content");
-
-			GroupSelectorDisplayContext groupSelectorDisplayContext =
-				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
-
-			Assert.assertEquals(
-				SetUtil.fromArray("space-depot", "test"),
-				groupSelectorDisplayContext.getGroupTypes());
-		}
-	}
-
-	private void _testGetGroupTypesWithoutCMSFeatureFlag() {
 		GroupSelectorDisplayContext groupSelectorDisplayContext =
-			new GroupSelectorDisplayContext(new MockLiferayResourceRequest());
+			new GroupSelectorDisplayContext(mockLiferayResourceRequest);
 
 		Assert.assertEquals(
 			Collections.singleton("test"),
 			groupSelectorDisplayContext.getGroupTypes());
 	}
 
+	private void _testGetGroupTypesWithFileItemSelectorCriterion() {
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.addParameter("criteria", "file");
+
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+		Assert.assertEquals(
+			Collections.singleton("test"),
+			groupSelectorDisplayContext.getGroupTypes());
+	}
+
+	private void _testGetGroupTypesWithJournalArticleInfoItemItemSelectorCriterion() {
+		InfoItemItemSelectorCriterion infoItemItemSelectorCriterion =
+			new InfoItemItemSelectorCriterion();
+
+		infoItemItemSelectorCriterion.setItemType(
+			"com.liferay.journal.model.JournalArticle");
+
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
+		).thenReturn(
+			Collections.singletonList(infoItemItemSelectorCriterion)
+		);
+
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.addParameter("criteria", "infoitem");
+
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+		Assert.assertEquals(
+			Collections.singleton("test"),
+			groupSelectorDisplayContext.getGroupTypes());
+	}
+
+	private void _testGetGroupTypesWithLegacyItemSelectorViewSelectedTab() {
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
+		).thenReturn(
+			Collections.singletonList(new InfoItemItemSelectorCriterion())
+		);
+
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.addParameter("criteria", "infoitem");
+		mockLiferayResourceRequest.addParameter(
+			"selectedTab",
+			"com.liferay.commerce.order.content.web.internal.item.selector." +
+				"CommerceOrderItemSelectorView_Orders");
+
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+		Assert.assertEquals(
+			Collections.singleton("test"),
+			groupSelectorDisplayContext.getGroupTypes());
+	}
+
+	private void _testGetGroupTypesWithObjectEntryItemSelectorViewSelectedTab() {
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
+		).thenReturn(
+			Collections.singletonList(new InfoItemItemSelectorCriterion())
+		);
+
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.addParameter("criteria", "infoitem");
+		mockLiferayResourceRequest.addParameter(
+			"selectedTab",
+			"com.liferay.object.web.internal.item.selector." +
+				"ObjectEntryItemSelectorView_Basic Web Content");
+
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(mockLiferayResourceRequest);
+
+		Assert.assertEquals(
+			SetUtil.fromArray("space-depot", "test"),
+			groupSelectorDisplayContext.getGroupTypes());
+	}
+
 	private void _testGetGroupTypesWithoutJournalArticleInfoItemItemSelectorCriterion() {
-		try (MockedStatic<FeatureFlagManagerUtil>
-				featureFlagManagerUtilMockedStatic = _enableCMSFeatureFlag()) {
+		Mockito.when(
+			_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
+		).thenReturn(
+			Collections.singletonList(new InfoItemItemSelectorCriterion())
+		);
 
-			Mockito.when(
-				_itemSelector.getItemSelectorCriteria(Mockito.anyMap())
-			).thenReturn(
-				Collections.singletonList(new InfoItemItemSelectorCriterion())
-			);
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
 
-			MockLiferayResourceRequest mockLiferayResourceRequest =
-				new MockLiferayResourceRequest();
+		mockLiferayResourceRequest.addParameter("criteria", "infoitem");
 
-			mockLiferayResourceRequest.addParameter("criteria", "infoitem");
+		GroupSelectorDisplayContext groupSelectorDisplayContext =
+			new GroupSelectorDisplayContext(mockLiferayResourceRequest);
 
-			GroupSelectorDisplayContext groupSelectorDisplayContext =
-				new GroupSelectorDisplayContext(mockLiferayResourceRequest);
-
-			Assert.assertEquals(
-				SetUtil.fromArray("space-depot", "test"),
-				groupSelectorDisplayContext.getGroupTypes());
-		}
+		Assert.assertEquals(
+			SetUtil.fromArray("space-depot", "test"),
+			groupSelectorDisplayContext.getGroupTypes());
 	}
 
 	private static final MockedStatic<FrameworkUtil>

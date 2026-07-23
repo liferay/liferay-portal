@@ -25,9 +25,6 @@ const test = mergeTests(
 	cmsPagesTest,
 	structureBuilderPagesTest,
 	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
 	loginTest()
 );
 
@@ -35,7 +32,6 @@ const testWithModalExportImport = mergeTests(
 	cmsPagesTest,
 	dataApiHelpersTest,
 	featureFlagsTest({
-		'LPD-17564': {enabled: true},
 		'LPD-57655': {enabled: false},
 	}),
 	loginTest(),

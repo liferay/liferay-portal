@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -44,7 +43,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Adolfo Pérez
  */
-@FeatureFlag("LPD-17564")
 @RunWith(Arquillian.class)
 public class RecentGroupManagerTest {
 
@@ -86,13 +84,6 @@ public class RecentGroupManagerTest {
 	}
 
 	private void _addCMSGroup() throws Exception {
-
-		// These tests require the instance to be created with the feature
-		// flag LPD-17564 enabled. On CI, feature flags are enabled on
-		// demand for each test, but not during instance initialization.
-		// Until the feature flag LPD-17564 is removed, we need an explicit CMS
-		// group creation.
-
 		Group group = GroupTestUtil.getOrAddCMSGroup(
 			TestPropsValues.getCompanyId());
 

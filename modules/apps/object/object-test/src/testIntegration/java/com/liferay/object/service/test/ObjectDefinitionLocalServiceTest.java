@@ -181,7 +181,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -884,7 +883,6 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectFolderLocalService.deleteObjectFolder(objectFolder);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddObjectDefinitionWithAcceptedGroupIds() throws Exception {
 		String name = ObjectDefinitionTestUtil.getRandomName();
@@ -924,7 +922,6 @@ public class ObjectDefinitionLocalServiceTest {
 				acceptedGroupIds));
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddObjectDefinitionWithMissingWorkflowDefinitionReference()
 		throws Exception {
@@ -1361,7 +1358,6 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition5);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddObjectDefinitionWithWorkflowDefinitionLinks()
 		throws Exception {
@@ -2005,7 +2001,6 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testAddSystemObjectDefinition() throws Exception {
 
@@ -2754,7 +2749,6 @@ public class ObjectDefinitionLocalServiceTest {
 			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testDeleteObjectDefinitionWithObjectEntries() throws Exception {
 		String objectFieldName = StringUtil.randomId();
@@ -3449,7 +3443,6 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition5);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testSystemObjectFields() throws Exception {
 		ObjectDefinition objectDefinition =
@@ -3483,7 +3476,6 @@ public class ObjectDefinitionLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testUpdateCustomObjectDefinition() throws Exception {
 		_assertObjectDefinitionValidationExceptionValidationErrors(

@@ -104,12 +104,6 @@ public class PortletConfigurationPermissionsDisplayContextTest {
 				"space"
 			);
 
-			featureFlagManagerUtilMockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(_COMPANY_ID, "LPD-17564")
-			).thenReturn(
-				true
-			);
-
 			Assert.assertNull(_invokeGetSubtype());
 
 			featureFlagManagerUtilMockedStatic.when(
