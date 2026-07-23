@@ -39,7 +39,7 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public void fetchGitHubDevBranch() {
-		if (_snapshot) {
+		if (isSnapshot()) {
 			System.out.println(
 				"Using git archive, unable to fetch from GitHub dev");
 		}
@@ -179,7 +179,7 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public GitWorkingDirectory getGitWorkingDirectory() {
-		if (_snapshot && !_isDotGitDirArchiveRequired()) {
+		if (!_isDotGitDirArchiveRequired() && isSnapshot()) {
 			throw new RuntimeException(
 				"Using Git archive, unable to get Git working directory");
 		}
@@ -467,7 +467,7 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public void synchronizeToGitHubDev() {
-		if (_snapshot) {
+		if (isSnapshot()) {
 			throw new RuntimeException(
 				"Using Git archive, unable to synchronize to GitHub dev");
 		}
@@ -477,7 +477,7 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public void tearDown() {
-		if (_snapshot) {
+		if (isSnapshot()) {
 			_deleteGitRepository();
 
 			return;
@@ -781,6 +781,10 @@ public abstract class BaseWorkspaceGitRepository
 		return _setUp;
 	}
 
+	protected boolean isSnapshot() {
+		return _snapshot;
+	}
+
 	protected void prepareGitWorkingDirectory() throws IOException {
 		if (!_isGitArchiveEnabled()) {
 			initializeGitWorkingDirectory();
@@ -790,7 +794,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		promoteGitArchive();
 
-		if (_snapshot) {
+		if (isSnapshot()) {
 			downloadGitArchives();
 
 			return;
@@ -800,7 +804,7 @@ public abstract class BaseWorkspaceGitRepository
 	}
 
 	protected void promoteGitArchive() throws IOException {
-		if (_snapshot) {
+		if (isSnapshot()) {
 			return;
 		}
 
@@ -842,7 +846,7 @@ public abstract class BaseWorkspaceGitRepository
 	}
 
 	protected void uploadGitArchives() throws IOException {
-		if (!_isGitArchiveEnabled() || _snapshot ||
+		if (!_isGitArchiveEnabled() || isSnapshot() ||
 			!JenkinsResultsParserUtil.isCloudCINode()) {
 
 			return;
