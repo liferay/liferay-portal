@@ -55,6 +55,10 @@ export interface PieChartProps {
 
 	/** What the `legend="list"` rows show next to each label. Default `percent`. */
 	legendValue?: PieChartLegendValue;
+
+	/** Show the total/active-datum label in the ring center. Default `true`. */
+	showCenterLabel?: boolean;
+
 	size?: 'lg' | 'md' | 'sm' | 'xs' | number;
 	thickness?: 'lg' | 'md';
 	title: string;
@@ -90,6 +94,7 @@ export default function PieChart({
 	legendSwatchBorder = true,
 	legendTableDividers = true,
 	legendValue = 'percent',
+	showCenterLabel = true,
 	size = 'md',
 	thickness = 'md',
 	title,
@@ -224,6 +229,7 @@ export default function PieChart({
 						onSliceBlur={() => setFocusIndex(null)}
 						pathFactory={pathFactory}
 						pixelSize={pixelSize}
+						showCenterLabel={showCenterLabel}
 						sliceRefFactory={sliceRefFactory}
 						total={total}
 					/>

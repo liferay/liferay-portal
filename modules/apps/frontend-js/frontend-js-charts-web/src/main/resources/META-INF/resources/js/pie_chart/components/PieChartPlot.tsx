@@ -30,6 +30,7 @@ interface PieChartPlotProps {
 	onSliceBlur: () => void;
 	pathFactory: (angles: SliceAngles) => string;
 	pixelSize: number;
+	showCenterLabel: boolean;
 	sliceRefFactory: (
 		index: number
 	) => (element: SVGPathElement | null) => void;
@@ -56,6 +57,7 @@ export default function PieChartPlot({
 	onSliceBlur,
 	pathFactory,
 	pixelSize,
+	showCenterLabel,
 	sliceRefFactory,
 	total,
 }: PieChartPlotProps) {
@@ -145,7 +147,7 @@ export default function PieChartPlot({
 				) : null}
 			</svg>
 
-			{innerRadius > 0 ? (
+			{showCenterLabel && innerRadius > 0 ? (
 				<PieChartCenterLabel
 					activeDatum={activeDatum}
 					activePercent={activePercent}
