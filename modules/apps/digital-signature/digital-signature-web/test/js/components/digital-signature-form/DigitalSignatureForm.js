@@ -65,4 +65,18 @@ describe('DigitalSignatureForm', () => {
 
 		expect(asFragment()).toMatchSnapshot();
 	});
+
+	it('Restricts recipients to existing users when embedded signing is enabled', () => {
+		const {getByPlaceholderText, queryByPlaceholderText} = render(
+			<AppContext.Provider value={{enableEmbeddedView: true}}>
+				<DigitalSignatureForm />
+			</AppContext.Provider>
+		);
+
+		expect(getByPlaceholderText('search-for')).toBeTruthy();
+		expect(queryByPlaceholderText('recipient-email')).toBeNull();
+		expect(
+			getByPlaceholderText('recipient-full-name').hasAttribute('disabled')
+		).toBeTruthy();
+	});
 });
