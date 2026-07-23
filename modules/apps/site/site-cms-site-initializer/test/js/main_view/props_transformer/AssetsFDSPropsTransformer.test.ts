@@ -231,4 +231,27 @@ describe('AssetsFDSPropsTransformer', () => {
 
 		expect(result.hideManagementBarInEmptyState).toBe(false);
 	});
+
+	it('marks the generate with AI creation menu items with the purple class', () => {
+		const result = AssetsFDSPropsTransformer({
+			additionalProps: mockAdditionalProps,
+			creationMenu: {
+				primaryItems: [
+					{data: {action: 'generateContentWithAI'}, label: 'content'},
+					{data: {action: 'generateImageWithAI'}, label: 'image'},
+					{data: {action: 'addFolder'}, label: 'folder'},
+				],
+			},
+			hideManagementBarInEmptyState: false,
+			id: 'com.liferay.site.cms.site.initializer-allSection',
+			views: [],
+		});
+
+		const [contentItem, imageItem, folderItem] =
+			result.creationMenu.primaryItems;
+
+		expect(contentItem.className).toBe('cms-generate-content-with-ai');
+		expect(imageItem.className).toBe('cms-generate-content-with-ai');
+		expect(folderItem.className).toBeUndefined();
+	});
 });
