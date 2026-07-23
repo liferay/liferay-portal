@@ -10,11 +10,13 @@ definition {
 		var curl = '''
 			${portalURL}/api/jsonws/segments.segmentsentry/add-segments-entry \
 				-u ${userLoginInfo} \
+				-d externalReferenceCode= \
 				-d segmentsEntryKey= \
 				-d nameMap=${nameMap} \
 				-d descriptionMap=${descriptionMap} \
 				-d active=true \
 				-d <CURL_DATA[criteria=${criteria}]CURL_DATA> \
+				-d source= \
 				-d serviceContext=${serviceContext}
 		''';
 
