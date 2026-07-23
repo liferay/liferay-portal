@@ -6,6 +6,10 @@
 package com.liferay.fragment.internal.portlet.action.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.test.util.FragmentEntryTestUtil;
@@ -29,13 +33,19 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
+
+import java.util.Collections;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -83,6 +93,44 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommandTest {
 					fragmentEntry.getFragmentEntryId()),
 				"getFragmentGroupUsageCount", new Class<?>[] {Group.class},
 				_group));
+	}
+
+	@Test
+	@TestInfo("LPD-98882")
+	public void testGetGroupFragmentEntryUsages() throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), DepotConstants.TYPE_DESIGN_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(depotEntry.getGroupId());
+
+		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
+			fragmentCollection.getFragmentCollectionId());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		_addFragmentEntryLink(fragmentEntry, _group.getGroupId());
+
+		Group notConnectedGroup = GroupTestUtil.addGroup();
+
+		_addFragmentEntryLink(fragmentEntry, notConnectedGroup.getGroupId());
+
+		Map<Group, Integer> groupFragmentEntryUsages =
+			ReflectionTestUtil.invoke(
+				_getGroupFragmentEntryLinkDisplayContext(
+					fragmentEntry.getFragmentEntryId()),
+				"_getGroupFragmentEntryUsages", new Class<?>[0]);
+
+		Assert.assertEquals(
+			Integer.valueOf(2), groupFragmentEntryUsages.get(_group));
+		Assert.assertFalse(
+			groupFragmentEntryUsages.toString(),
+			groupFragmentEntryUsages.containsKey(notConnectedGroup));
 	}
 
 	private void _addFragmentEntryLink(
@@ -134,6 +182,12 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommandTest {
 			"com.liferay.fragment.web.internal.display.context." +
 				"GroupFragmentEntryLinkDisplayContext");
 	}
+
+	@Inject
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
