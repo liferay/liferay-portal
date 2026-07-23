@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.site.dsr.site.initializer.internal.util.DSRUtil;
 
 import java.util.Locale;
 
@@ -51,7 +52,7 @@ public class DigitalSalesRoomManagementPanelCategory extends BasePanelCategory {
 		group = _groupLocalService.fetchGroup(
 			permissionChecker.getCompanyId(), GroupConstants.DSR);
 
-		if (group == null) {
+		if ((group == null) || DSRUtil.isExpired()) {
 			return false;
 		}
 

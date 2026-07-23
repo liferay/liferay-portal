@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.model.impl.PortletImpl;
 import com.liferay.site.dsr.site.initializer.internal.constants.DSRConstants;
+import com.liferay.site.dsr.site.initializer.internal.util.DSRUtil;
 
 import jakarta.portlet.PortletURL;
 
@@ -92,7 +93,7 @@ public class DigitalSalesRoomManagementPanelApp extends BasePanelApp {
 		group = _groupLocalService.fetchGroup(
 			permissionChecker.getCompanyId(), GroupConstants.DSR);
 
-		if (group == null) {
+		if ((group == null) || DSRUtil.isExpired()) {
 			return false;
 		}
 
