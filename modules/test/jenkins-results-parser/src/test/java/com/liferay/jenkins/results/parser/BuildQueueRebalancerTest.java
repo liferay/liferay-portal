@@ -31,7 +31,7 @@ public class BuildQueueRebalancerTest
 				JenkinsMaster.class, "_jenkinsMasters");
 
 		jenkinsMasters.remove(_AVAILABLE_JENKINS_MASTER_NAME);
-		jenkinsMasters.remove(_BLACK_LISTED_JENKINS_MASTER_NAME);
+		jenkinsMasters.remove(_BLACKLISTED_JENKINS_MASTER_NAME);
 
 		Map<String, JenkinsCohort> jenkinsCohorts =
 			ReflectionTestUtil.getFieldValue(
@@ -45,7 +45,7 @@ public class BuildQueueRebalancerTest
 	}
 
 	@Test
-	public void testRebalanceBlackListedJenkinsMasters() throws Exception {
+	public void testRebalanceBlacklistedJenkinsMasters() throws Exception {
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty("jenkins.load.balancer.blacklist", "");
@@ -53,7 +53,7 @@ public class BuildQueueRebalancerTest
 		_setJenkinsMasterBuildProperties(
 			buildProperties, _AVAILABLE_JENKINS_MASTER_NAME);
 		_setJenkinsMasterBuildProperties(
-			buildProperties, _BLACK_LISTED_JENKINS_MASTER_NAME);
+			buildProperties, _BLACKLISTED_JENKINS_MASTER_NAME);
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
@@ -64,17 +64,17 @@ public class BuildQueueRebalancerTest
 				"{\"items\":[", "{\"id\":101,\"inQueueSince\":1,",
 				"\"task\":{\"name\":",
 				"\"test-portal-acceptance-pullrequest(master)\",",
-				"\"url\":\"http://", _BLACK_LISTED_JENKINS_MASTER_NAME,
+				"\"url\":\"http://", _BLACKLISTED_JENKINS_MASTER_NAME,
 				".liferay.com/job/",
 				"test-portal-acceptance-pullrequest(master)/\"},",
 				"\"url\":\"queue/item/101/\",\"why\":\"\"},",
 				"{\"id\":102,\"inQueueSince\":2,", "\"task\":{\"name\":",
 				"\"test-portal-acceptance-pullrequest(master)\",",
-				"\"url\":\"http://", _BLACK_LISTED_JENKINS_MASTER_NAME,
+				"\"url\":\"http://", _BLACKLISTED_JENKINS_MASTER_NAME,
 				".liferay.com/job/",
 				"test-portal-acceptance-pullrequest(master)/\"},",
 				"\"url\":\"queue/item/102/\",\"why\":\"\"}", "]}"),
-			_BLACK_LISTED_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
+			_BLACKLISTED_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
 			urlReader);
 		setUrlReaderOutput(
 			"{\"mode\":\"NORMAL\"}",
@@ -86,10 +86,10 @@ public class BuildQueueRebalancerTest
 			urlReader);
 
 		_setJenkinsMasterAWSFleetClouds(_AVAILABLE_JENKINS_MASTER_NAME);
-		_setJenkinsMasterAWSFleetClouds(_BLACK_LISTED_JENKINS_MASTER_NAME);
+		_setJenkinsMasterAWSFleetClouds(_BLACKLISTED_JENKINS_MASTER_NAME);
 
 		ReflectionTestUtil.setFieldValue(
-			JenkinsMaster.getInstance(_BLACK_LISTED_JENKINS_MASTER_NAME),
+			JenkinsMaster.getInstance(_BLACKLISTED_JENKINS_MASTER_NAME),
 			"_blacklisted", true);
 
 		JenkinsCohort jenkinsCohort = JenkinsCohort.getInstance(
@@ -105,17 +105,17 @@ public class BuildQueueRebalancerTest
 		testEquals(
 			_AVAILABLE_JENKINS_MASTER_NAME, availableJenkinsMaster.getName());
 
-		List<JenkinsMaster> blackListedJenkinsMasters =
+		List<JenkinsMaster> blacklistedJenkinsMasters =
 			jenkinsCohort.getBlackListedJenkinsMasters();
 
-		testEquals(1, blackListedJenkinsMasters.size());
+		testEquals(1, blacklistedJenkinsMasters.size());
 
-		JenkinsMaster blackListedJenkinsMaster = blackListedJenkinsMasters.get(
+		JenkinsMaster blacklistedJenkinsMaster = blacklistedJenkinsMasters.get(
 			0);
 
 		testEquals(
-			_BLACK_LISTED_JENKINS_MASTER_NAME,
-			blackListedJenkinsMaster.getName());
+			_BLACKLISTED_JENKINS_MASTER_NAME,
+			blacklistedJenkinsMaster.getName());
 
 		BuildQueueRebalancer buildQueueRebalancer = new BuildQueueRebalancer(
 			jenkinsCohort);
@@ -131,7 +131,7 @@ public class BuildQueueRebalancerTest
 	}
 
 	@Test
-	public void testRebalanceUnreachableBlackListedJenkinsMaster()
+	public void testRebalanceUnreachableBlacklistedJenkinsMaster()
 		throws Exception {
 
 		Properties buildProperties = new Properties();
@@ -141,7 +141,7 @@ public class BuildQueueRebalancerTest
 		_setJenkinsMasterBuildProperties(
 			buildProperties, _AVAILABLE_JENKINS_MASTER_NAME);
 		_setJenkinsMasterBuildProperties(
-			buildProperties, _BLACK_LISTED_JENKINS_MASTER_NAME);
+			buildProperties, _BLACKLISTED_JENKINS_MASTER_NAME);
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
@@ -158,7 +158,7 @@ public class BuildQueueRebalancerTest
 				readURL ->
 					(readURL != null) &&
 					readURL.contains(
-						_BLACK_LISTED_JENKINS_MASTER_NAME +
+						_BLACKLISTED_JENKINS_MASTER_NAME +
 							".liferay.com/queue/api/json"))
 		);
 
@@ -172,10 +172,10 @@ public class BuildQueueRebalancerTest
 			urlReader);
 
 		_setJenkinsMasterAWSFleetClouds(_AVAILABLE_JENKINS_MASTER_NAME);
-		_setJenkinsMasterAWSFleetClouds(_BLACK_LISTED_JENKINS_MASTER_NAME);
+		_setJenkinsMasterAWSFleetClouds(_BLACKLISTED_JENKINS_MASTER_NAME);
 
 		ReflectionTestUtil.setFieldValue(
-			JenkinsMaster.getInstance(_BLACK_LISTED_JENKINS_MASTER_NAME),
+			JenkinsMaster.getInstance(_BLACKLISTED_JENKINS_MASTER_NAME),
 			"_blacklisted", true);
 
 		BuildQueueRebalancer buildQueueRebalancer = new BuildQueueRebalancer(
@@ -222,7 +222,7 @@ public class BuildQueueRebalancerTest
 
 	private static final String _AVAILABLE_JENKINS_MASTER_NAME = "test-9-2";
 
-	private static final String _BLACK_LISTED_JENKINS_MASTER_NAME = "test-9-1";
+	private static final String _BLACKLISTED_JENKINS_MASTER_NAME = "test-9-1";
 
 	private static final String _JENKINS_COHORT_NAME = "test-9";
 
