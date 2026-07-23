@@ -4885,6 +4885,18 @@ public class JenkinsResultsParserUtil {
 		_buildPropertiesURLs = urls;
 	}
 
+	public static synchronized void setTopLevelJobNames(
+		Set<String> topLevelJobNames) {
+
+		if (topLevelJobNames == null) {
+			_topLevelJobNames = null;
+
+			return;
+		}
+
+		_topLevelJobNames = new HashSet<>(topLevelJobNames);
+	}
+
 	public static void sleep(long duration) {
 		try {
 			Thread.sleep(duration);
