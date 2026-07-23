@@ -74,10 +74,25 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommandTest {
 		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
 			fragmentCollection.getFragmentCollectionId());
 
+		_addFragmentEntryLink(fragmentEntry, _group.getGroupId());
+
+		Assert.assertEquals(
+			2,
+			(long)ReflectionTestUtil.invoke(
+				_getGroupFragmentEntryLinkDisplayContext(
+					fragmentEntry.getFragmentEntryId()),
+				"getFragmentGroupUsageCount", new Class<?>[] {Group.class},
+				_group));
+	}
+
+	private void _addFragmentEntryLink(
+			FragmentEntry fragmentEntry, long groupId)
+		throws Exception {
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, null,
-				0, null, RandomTestUtil.randomString(),
+				null, TestPropsValues.getUserId(), groupId, 0, null, 0, null,
+				RandomTestUtil.randomString(),
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0, true, 0,
 				0, 0, WorkflowConstants.STATUS_APPROVED, new ServiceContext());
 
@@ -99,29 +114,25 @@ public class ViewGroupFragmentEntryUsagesMVCRenderCommandTest {
 				draftLayout.getPlid()));
 
 		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+	}
+
+	private Object _getGroupFragmentEntryLinkDisplayContext(
+			long fragmentEntryId)
+		throws Exception {
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
 
 		mockLiferayPortletRenderRequest.setParameter(
-			"fragmentEntryId",
-			String.valueOf(fragmentEntry.getFragmentEntryId()));
+			"fragmentEntryId", String.valueOf(fragmentEntryId));
 
 		_mvcRenderCommand.render(
 			mockLiferayPortletRenderRequest,
 			new MockLiferayPortletRenderResponse());
 
-		Object groupFragmentEntryLinkDisplayContext =
-			mockLiferayPortletRenderRequest.getAttribute(
-				"com.liferay.fragment.web.internal.display.context." +
-					"GroupFragmentEntryLinkDisplayContext");
-
-		Assert.assertEquals(
-			2,
-			(long)ReflectionTestUtil.invoke(
-				groupFragmentEntryLinkDisplayContext,
-				"getFragmentGroupUsageCount", new Class<?>[] {Group.class},
-				_group));
+		return mockLiferayPortletRenderRequest.getAttribute(
+			"com.liferay.fragment.web.internal.display.context." +
+				"GroupFragmentEntryLinkDisplayContext");
 	}
 
 	@DeleteAfterTestRun
