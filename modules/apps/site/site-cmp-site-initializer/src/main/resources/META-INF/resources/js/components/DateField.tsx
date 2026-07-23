@@ -12,7 +12,9 @@ import type {FirstDayOfWeekLocale} from 'frontend-js-web';
 
 interface IDateField {
 	id: string;
+	initialValue?: string;
 	onChange: (value: string) => Promise<void> | void;
+	required?: boolean;
 }
 
 export const dateConfig = datetimeUtils.generateDateConfigurations({
@@ -21,20 +23,28 @@ export const dateConfig = datetimeUtils.generateDateConfigurations({
 	type: 'Date',
 });
 
-export default function DateField({id, onChange}: IDateField) {
+export default function DateField({
+	id,
+	initialValue = '',
+	onChange,
+	required = true,
+}: IDateField) {
 	const [error, setError] = useState<string>('');
-	const [value, setValue] = useState<string>('');
+	const [value, setValue] = useState<string>(initialValue);
 
 	const locale = Liferay.ThemeDisplay.getBCP47LanguageId();
 
-	const handleError = useCallback((value: string) => {
-		if (!value) {
-			setError(Liferay.Language.get('this-field-is-required'));
-		}
-		else {
-			setError('');
-		}
-	}, []);
+	const handleError = useCallback(
+		(value: string) => {
+			if (required && !value) {
+				setError(Liferay.Language.get('this-field-is-required'));
+			}
+			else {
+				setError('');
+			}
+		},
+		[required]
+	);
 
 	const handleChange = async (value: string) => {
 		setError('');
