@@ -89,12 +89,38 @@ public class JournalArticleModelDocumentContributorTest {
 	}
 
 	@Test
-	public void testAvailableLanguageIds() throws Exception {
+	public void testContributeArticleAvailableLanguageIds() throws Exception {
 		Assert.assertEquals(
 			SetUtil.fromArray(
 				LocalizationUtil.getAvailableLanguageIds(
 					_journalArticle.getDocument())),
 			SetUtil.fromArray(_journalArticle.getAvailableLanguageIds()));
+	}
+
+	@Test
+	public void testContributeArticleContent() throws Exception {
+		Document document = _getDocument();
+
+		for (String languageId : _journalArticle.getAvailableLanguageIds()) {
+			Assert.assertEquals(
+				_getDDMIndexerContent(languageId),
+				document.get(
+					LocaleUtil.fromLanguageId(languageId), Field.CONTENT));
+		}
+	}
+
+	@Test
+	public void testContributeArticleDefaultLanguageId() throws Exception {
+		DDMStructure ddmStructure = _journalArticle.getDDMStructure();
+
+		DDMFormValues ddmFormValues = _ddmFieldLocalService.getDDMFormValues(
+			ddmStructure.getDDMForm(), _journalArticle.getId());
+
+		Document document = _getDocument();
+
+		Assert.assertEquals(
+			LocaleUtil.toLanguageId(ddmFormValues.getDefaultLocale()),
+			document.get("defaultLanguageId"));
 	}
 
 	@Test
@@ -108,35 +134,10 @@ public class JournalArticleModelDocumentContributorTest {
 
 		Assert.assertEquals(
 			journalArticle.getArticleId(), documentImpl.get(Field.ARTICLE_ID));
+
 		Assert.assertNotNull(documentImpl.getField(Field.UID));
 		Assert.assertEquals(
 			StringPool.BLANK, documentImpl.get(LocaleUtil.US, Field.CONTENT));
-	}
-
-	@Test
-	public void testFieldContent() throws Exception {
-		Document document = _getDocument();
-
-		for (String languageId : _journalArticle.getAvailableLanguageIds()) {
-			Assert.assertEquals(
-				_getDDMIndexerContent(languageId),
-				document.get(
-					LocaleUtil.fromLanguageId(languageId), Field.CONTENT));
-		}
-	}
-
-	@Test
-	public void testFieldDefaultLanguageId() throws Exception {
-		DDMStructure ddmStructure = _journalArticle.getDDMStructure();
-
-		DDMFormValues ddmFormValues = _ddmFieldLocalService.getDDMFormValues(
-			ddmStructure.getDDMForm(), _journalArticle.getId());
-
-		Document document = _getDocument();
-
-		Assert.assertEquals(
-			LocaleUtil.toLanguageId(ddmFormValues.getDefaultLocale()),
-			document.get("defaultLanguageId"));
 	}
 
 	private JournalArticle _addArticleWithSeparatorContentField()
