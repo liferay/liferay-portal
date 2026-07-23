@@ -34,9 +34,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -56,7 +53,6 @@ public class FriendlyUrlHistoryResourceImpl
 		parentClass = DisplayPageTemplate.class, value = "friendlyUrlHistory"
 	)
 	@Override
-	@Tags({@Tag(description = "[BETA]", name = "FriendlyUrlHistory")})
 	public FriendlyUrlHistory getSiteDisplayPageTemplateFriendlyUrlHistory(
 			String siteExternalReferenceCode,
 			@NestedFieldId(value = "externalReferenceCode") String
