@@ -249,7 +249,9 @@ export const Routes = buildRoutes({
 							},
 							LIFECYCLE: {
 								path: '/lifecycle',
-								routes: {},
+								routes: {
+									LIFECYCLE_CREATE: '/new',
+								},
 							},
 							SITES: {
 								path: '/sites',

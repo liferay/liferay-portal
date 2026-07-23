@@ -107,6 +107,12 @@ const LifecycleDashboard = lazy(() =>
 	)
 );
 
+const LifecycleCreate = lazy(() =>
+	import(
+		/* webpackChunkName: "LifecycleCreate" */ '../../lifecycle/pages/CreateLifecycle'
+	)
+);
+
 /* Sites */
 
 const SitesDashboard = lazy(() =>
@@ -355,6 +361,15 @@ export default class AppSidebarRoutes extends React.PureComponent {
 									data={AccountProfileRoutes}
 									exact={false}
 									path={Routes.CONTACTS_ACCOUNT}
+								/>
+							)}
+
+							{LDPEnabled && (
+								<BundleRouter
+									data={LifecycleCreate}
+									destructured={false}
+									exact
+									path={Routes.LIFECYCLE_CREATE}
 								/>
 							)}
 

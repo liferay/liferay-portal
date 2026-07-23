@@ -80,6 +80,37 @@ const LifecycleEmptyState = ({
 	</NoResultsDisplay>
 );
 
+const ConfigureLifecycleEmptyState = ({
+	channelId,
+	groupId,
+}: {
+	channelId: string;
+	groupId: string;
+}) => (
+	<NoResultsDisplay
+		description={Liferay.Language.get(
+			'complete-the-configuration-to-start-seeing-insights'
+		)}
+		displayCard
+		icon={{
+			border: false,
+			size: Sizes.XXXLarge,
+			symbol: 'ac_lifecycle_empty',
+		}}
+		spacer
+		title={Liferay.Language.get('configure-a-new-lifecycle')}
+	>
+		<ClayLink
+			button
+			className="button-root mt-1"
+			displayType="primary"
+			href={toRoute(Routes.LIFECYCLE_CREATE, {channelId, groupId})}
+		>
+			{Liferay.Language.get('new-lifecycle')}
+		</ClayLink>
+	</NoResultsDisplay>
+);
+
 const LifecycleOverview = () => {
 	const {filters, lifecycleId} = useLifecycle();
 
@@ -168,6 +199,8 @@ const BaseLifecycle = () => {
 
 	const lifecycleId = lifecycles?.[0]?.id;
 
+	const hasLifecycles = !!lifecycles?.length;
+
 	const {data: accountMetrics, loading: accountMetricsLoading} = useRequest({
 		dataSourceFn: API.accounts.fetchMetrics,
 		skipRequest: noDataSources,
@@ -186,9 +219,9 @@ const BaseLifecycle = () => {
 	const hasContent =
 		!loading &&
 		!noDataSources &&
+		hasLifecycles &&
 		!accountMetricsLoading &&
-		!!totalAccounts &&
-		!!lifecycleId;
+		!!totalAccounts;
 
 	const renderBody = () => {
 		if (loading) {
@@ -214,11 +247,20 @@ const BaseLifecycle = () => {
 			);
 		}
 
+		if (!hasLifecycles) {
+			return (
+				<ConfigureLifecycleEmptyState
+					channelId={channelId!}
+					groupId={groupId!}
+				/>
+			);
+		}
+
 		if (accountMetricsLoading) {
 			return <Loading />;
 		}
 
-		if (!totalAccounts || !lifecycleId) {
+		if (!totalAccounts) {
 			return (
 				<LifecycleEmptyState
 					authorized={authorized}
@@ -249,7 +291,7 @@ const BaseLifecycle = () => {
 	};
 
 	return (
-		<LifecycleContextProvider lifecycleId={lifecycleId}>
+		<LifecycleContextProvider lifecycleId={lifecycleId ?? ''}>
 			<BasePage documentTitle={Liferay.Language.get('lifecycles')}>
 				<BasePage.Header
 					breadcrumbs={[

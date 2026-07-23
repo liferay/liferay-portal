@@ -9,6 +9,7 @@ import {createMemoryHistory} from 'history';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
 import {Router} from 'react-router-dom';
+import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -236,6 +237,43 @@ describe('BaseLifecycle', () => {
 		});
 	});
 
+	describe('when no lifecycles are configured', () => {
+		beforeEach(() => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({lifecycles: []})
+			);
+		});
+
+		it('renders the "Configure a New Lifecycle" empty state', () => {
+			renderPage();
+
+			expect(
+				screen.getByText('Configure a New Lifecycle')
+			).toBeInTheDocument();
+			expect(
+				screen.getByText(
+					'Complete the configuration to start seeing insights.'
+				)
+			).toBeInTheDocument();
+			expect(screen.queryByTestId('overview-section')).toBeNull();
+			expect(screen.queryByTestId('global-filters')).toBeNull();
+		});
+
+		it('renders the New Lifecycle action linking to the create route', () => {
+			renderPage();
+
+			expect(
+				screen.getByRole('link', {name: 'New Lifecycle'})
+			).toHaveAttribute(
+				'href',
+				toRoute(Routes.LIFECYCLE_CREATE, {
+					channelId: '123',
+					groupId: '23',
+				})
+			);
+		});
+	});
+
 	it('renders the lifecycle content when account data is available', () => {
 		renderPage();
 
@@ -244,19 +282,5 @@ describe('BaseLifecycle', () => {
 		expect(screen.getByTestId('accounts-dataset')).toBeInTheDocument();
 		expect(screen.getByTestId('global-filters')).toBeInTheDocument();
 		expect(screen.queryByText('No Account Data Available')).toBeNull();
-	});
-
-	it('renders the empty state and hides the filters when no lifecycle exists', () => {
-		mockedUseRequest.mockImplementation(
-			useRequestImpl({lifecycles: [], totalCount: 5})
-		);
-
-		renderPage();
-
-		expect(
-			screen.getByText('No Account Data Available')
-		).toBeInTheDocument();
-		expect(screen.queryByTestId('overview-section')).toBeNull();
-		expect(screen.queryByTestId('global-filters')).toBeNull();
 	});
 });
