@@ -52,9 +52,9 @@ public class AudiencesCriteriaProviderImpl
 		List<AudiencesCriteriaType> audiencesCriteriaTypes = new ArrayList<>();
 
 		audiencesCriteriaTypes.add(
-			_getBrowserAttributesAudiencesCriteriaType(companyId, locale));
+			_getBrowserAttributesAudiencesCriteriaType(locale));
 		audiencesCriteriaTypes.add(
-			_getGeneralAttributesAudiencesCriteriaType(locale));
+			_getGeneralAttributesAudiencesCriteriaType(companyId, locale));
 
 		AudiencesCriteriaType customAudiencesCriteriaType =
 			_getCustomAudiencesCriteriaType(companyId, locale);
@@ -67,7 +67,7 @@ public class AudiencesCriteriaProviderImpl
 	}
 
 	private AudiencesCriteriaType _getBrowserAttributesAudiencesCriteriaType(
-		long companyId, Locale locale) {
+		Locale locale) {
 
 		List<AudiencesCriteria> audiencesCriterias = new ArrayList<>(
 			Arrays.asList(
@@ -197,32 +197,6 @@ public class AudiencesCriteriaProviderImpl
 					AudiencesCriteria.Type.SET
 				).build()));
 
-		List<AudiencesCriteria.Option> segmentsOptions =
-			TransformUtil.transform(
-				_segmentsEntryLocalService.getSegmentsEntriesBySource(
-					companyId, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
-				segmentsEntry -> new AudiencesCriteria.Option(
-					segmentsEntry.getName(locale),
-					segmentsEntry.getExternalReferenceCode()));
-
-		if (!segmentsOptions.isEmpty()) {
-			audiencesCriterias.add(
-				AudiencesCriteriaBuilder.setIcon(
-					"users"
-				).setInputType(
-					AudiencesCriteria.InputType.SELECT
-				).setKey(
-					AudiencesCriteriaKeys.SEGMENT
-				).setLabel(
-					_language.get(locale, "segments")
-				).setOptions(
-					segmentsOptions
-				).setType(
-					AudiencesCriteria.Type.STRING
-				).build());
-		}
-
 		Collections.addAll(
 			audiencesCriterias,
 			AudiencesCriteriaBuilder.setIcon(
@@ -328,9 +302,9 @@ public class AudiencesCriteriaProviderImpl
 	}
 
 	private AudiencesCriteriaType _getGeneralAttributesAudiencesCriteriaType(
-		Locale locale) {
+		long companyId, Locale locale) {
 
-		return new AudiencesCriteriaType(
+		List<AudiencesCriteria> audiencesCriterias = new ArrayList<>(
 			Arrays.asList(
 				AudiencesCriteriaBuilder.setIcon(
 					"check"
@@ -355,8 +329,36 @@ public class AudiencesCriteriaProviderImpl
 					_getLanguageOptions(locale)
 				).setType(
 					AudiencesCriteria.Type.STRING
-				).build()),
-			AudiencesCriteriaTypeKeys.GENERAL,
+				).build()));
+
+		List<AudiencesCriteria.Option> segmentsOptions =
+			TransformUtil.transform(
+				_segmentsEntryLocalService.getSegmentsEntriesBySource(
+					companyId, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null),
+				segmentsEntry -> new AudiencesCriteria.Option(
+					segmentsEntry.getName(locale),
+					segmentsEntry.getExternalReferenceCode()));
+
+		if (!segmentsOptions.isEmpty()) {
+			audiencesCriterias.add(
+				AudiencesCriteriaBuilder.setIcon(
+					"users"
+				).setInputType(
+					AudiencesCriteria.InputType.SELECT
+				).setKey(
+					AudiencesCriteriaKeys.SEGMENT
+				).setLabel(
+					_language.get(locale, "segments")
+				).setOptions(
+					segmentsOptions
+				).setType(
+					AudiencesCriteria.Type.STRING
+				).build());
+		}
+
+		return new AudiencesCriteriaType(
+			audiencesCriterias, AudiencesCriteriaTypeKeys.GENERAL,
 			_language.get(locale, AudiencesCriteriaTypeKeys.GENERAL));
 	}
 
