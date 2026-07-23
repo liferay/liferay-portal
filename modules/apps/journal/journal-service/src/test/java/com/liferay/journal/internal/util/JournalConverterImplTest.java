@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -206,6 +207,48 @@ public class JournalConverterImplTest {
 
 		_testUpdateContentDynamicElementWithCheckBox();
 		_testUpdateContentDynamicElementWithOptions();
+	}
+
+	@Test
+	@TestInfo("LPS-95441")
+	public void testUpdateContentDynamicElementWithInvalidJSONSelectValue() {
+		JournalConverterImpl journalConverterImpl = new JournalConverterImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			journalConverterImpl, "_jsonFactory", new JSONFactoryImpl());
+
+		DDMFormField ddmFormField = _createDDMFormField(
+			"string", true, "webContent", "select");
+
+		Element rootElement = _createRootElement();
+
+		Field field = new Field(
+			RandomTestUtil.randomLong(), ddmFormField.getName(),
+			HashMapBuilder.put(
+				LocaleUtil.US, ListUtil.fromArray((Serializable)"TestName")
+			).build(),
+			LocaleUtil.US);
+
+		ReflectionTestUtil.invoke(
+			journalConverterImpl, "_updateContentDynamicElement",
+			new Class<?>[] {
+				int.class, DDMFormField.class, Element.class, Field.class
+			},
+			0, ddmFormField, rootElement, field);
+
+		List<Element> dynamicContentElements = rootElement.elements(
+			"dynamic-content");
+
+		Assert.assertEquals(
+			dynamicContentElements.toString(), 1,
+			dynamicContentElements.size());
+
+		Element dynamicContentElement = dynamicContentElements.get(0);
+
+		Assert.assertEquals(
+			StringPool.BLANK, dynamicContentElement.getStringValue());
+
+		_assertDynamicContentElement(dynamicContentElement, null);
 	}
 
 	private void _assertDynamicContentElement(

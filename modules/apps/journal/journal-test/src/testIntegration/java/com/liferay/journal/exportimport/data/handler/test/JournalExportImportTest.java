@@ -20,6 +20,9 @@ import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.test.util.DataDefinitionTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
+import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeResponse;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
@@ -91,6 +94,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Node;
@@ -102,6 +106,7 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -110,6 +115,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -262,6 +268,100 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		_assertClassPK(
 			importedArticle2.getContent(),
 			importedArticle1.getResourcePrimKey());
+	}
+
+	@Test
+	@TestInfo("LPS-114230")
+	public void testExportImportJournalArticleWithImageFieldDLReference()
+		throws Exception {
+
+		DDMFormDeserializerDeserializeRequest.Builder builder =
+			DDMFormDeserializerDeserializeRequest.Builder.newBuilder(
+				JSONUtil.put(
+					"availableLanguageIds", JSONUtil.putAll("en_US")
+				).put(
+					"defaultLanguageId", "en_US"
+				).put(
+					"fields",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"dataType", "image"
+						).put(
+							"name", "image"
+						).put(
+							"type", "image"
+						))
+				).toString());
+
+		DDMFormDeserializerDeserializeResponse
+			ddmFormDeserializerDeserializeResponse =
+				_ddmFormDeserializer.deserialize(builder.build());
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			group.getGroupId(), JournalArticle.class.getName(),
+			ddmFormDeserializerDeserializeResponse.getDDMForm());
+
+		Class<?> clazz = getClass();
+
+		JournalArticle journalArticle = null;
+
+		try (InputStream inputStream = clazz.getResourceAsStream(
+				"/com/liferay/journal/dependencies/liferay.png")) {
+
+			FileEntry tempFileEntry = TempFileEntryUtil.addTempFileEntry(
+				String.valueOf(UUID.randomUUID()), group.getGroupId(),
+				TestPropsValues.getUserId(), JournalArticle.class.getName(),
+				"image.png", inputStream, ContentTypes.IMAGE_PNG);
+
+			StringBundler sb = new StringBundler(12);
+
+			sb.append("<?xml version=\"1.0\"?>");
+			sb.append("<root available-locales=\"en_US\" ");
+			sb.append("default-locale=\"en_US\">");
+			sb.append("<dynamic-element index-type=\"text\" ");
+			sb.append("instance-id=\"dqqn\" name=\"image\" ");
+			sb.append("type=\"image\">");
+			sb.append("<dynamic-content language-id=\"en_US\">");
+			sb.append("<![CDATA[{\"alt\": \"alt text\",\"groupId\": \"");
+			sb.append(String.valueOf(group.getGroupId()));
+			sb.append("\",\"uuid\": \"");
+			sb.append(tempFileEntry.getUuid());
+			sb.append("\"}]]></dynamic-content></dynamic-element></root>");
+
+			journalArticle = JournalTestUtil.addArticleWithXMLContent(
+				group.getGroupId(), sb.toString(),
+				ddmStructure.getStructureKey(), null);
+		}
+
+		exportImportPortlet(JournalPortletKeys.JOURNAL);
+
+		JournalArticle importedJournalArticle =
+			JournalArticleLocalServiceUtil.fetchJournalArticleByUuidAndGroupId(
+				journalArticle.getUuid(), importedGroup.getGroupId());
+
+		Assert.assertNotNull(importedJournalArticle);
+
+		JSONObject sourceImageJSONObject = _getImageFieldJSONObject(
+			journalArticle.getContent());
+
+		FileEntry sourceFileEntry =
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				sourceImageJSONObject.getString("uuid"),
+				sourceImageJSONObject.getLong("groupId"));
+
+		JSONObject importedImageJSONObject = _getImageFieldJSONObject(
+			importedJournalArticle.getContent());
+
+		FileEntry importedFileEntry =
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				importedImageJSONObject.getString("uuid"),
+				importedImageJSONObject.getLong("groupId"));
+
+		Assert.assertEquals(
+			importedGroup.getGroupId(), importedFileEntry.getGroupId());
+		Assert.assertNotEquals(
+			sourceFileEntry.getFileEntryId(),
+			importedFileEntry.getFileEntryId());
 	}
 
 	@Test
@@ -1268,6 +1368,18 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		return classPKs;
 	}
 
+	private JSONObject _getImageFieldJSONObject(String content)
+		throws Exception {
+
+		Document document = SAXReaderUtil.read(content);
+
+		List<Node> nodes = document.selectNodes("//dynamic-content");
+
+		Node node = nodes.get(0);
+
+		return _jsonFactory.createJSONObject(node.getText());
+	}
+
 	private String _read(String fileName) throws Exception {
 		return new String(
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
@@ -1300,6 +1412,9 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 	@Inject
 	private DataDefinitionResource.Factory _dataDefinitionResourceFactory;
+
+	@Inject(filter = "ddm.form.deserializer.type=json")
+	private DDMFormDeserializer _ddmFormDeserializer;
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;

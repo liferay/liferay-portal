@@ -370,6 +370,38 @@ public class DDMFormValuesExportImportContentProcessorTest {
 			missingReferenceElement.attributeValue("type"));
 	}
 
+	@Test
+	public void testReplaceLayoutImportContentReferencesWithMissingLayout()
+		throws Exception {
+
+		_journalArticle = JournalTestUtil.addArticle(
+			TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_stagingGroup);
+
+		_createDDMFormWithJournalField(_stagingGroup, _journalArticle, layout);
+
+		DDMFormValues ddmFormValues =
+			_exportImportContentProcessor.replaceExportContentReferences(
+				_portletDataContextExport, _journalArticle,
+				_journalDDMFormValues, true, true);
+
+		List<DDMFormFieldValue> ddmFormFieldValues =
+			ddmFormValues.getDDMFormFieldValues();
+
+		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(1);
+
+		Value value = ddmFormFieldValue.getValue();
+
+		String valueString = value.getString(LocaleUtil.US);
+
+		_exportImportContentProcessor.replaceImportContentReferences(
+			_portletDataContextImport, _journalArticle, ddmFormValues);
+
+		Assert.assertEquals(valueString, value.getString(LocaleUtil.US));
+	}
+
 	private DDMForm _createDDMFormWithJournalField(
 			Group group, JournalArticle journalArticle, Layout layout)
 		throws Exception {
