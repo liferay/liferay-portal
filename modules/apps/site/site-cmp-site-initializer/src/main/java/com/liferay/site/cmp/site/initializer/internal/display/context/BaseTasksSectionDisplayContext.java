@@ -369,6 +369,19 @@ public abstract class BaseTasksSectionDisplayContext
 				"assign-to"
 			),
 			FDSActionDropdownItemBuilder.setIcon(
+				"date-time"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "update-due-date")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"update"
+			).setVisibilityFilters(
+				visibilityFilters
+			).build(
+				"update-due-date"
+			),
+			FDSActionDropdownItemBuilder.setIcon(
 				"trash"
 			).setLabel(
 				LanguageUtil.get(httpServletRequest, "delete")
