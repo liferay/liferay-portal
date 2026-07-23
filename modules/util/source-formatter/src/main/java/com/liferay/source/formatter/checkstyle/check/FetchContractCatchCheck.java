@@ -191,12 +191,9 @@ public class FetchContractCatchCheck extends BaseCheck {
 
 		String methodCallMethodName = names.get(1);
 
-		if ((methodCallMethodName.equals("findBy") ||
-			 !methodCallMethodName.startsWith("findBy")) &&
-			(methodCallMethodName.equals("get") ||
-			 !methodCallMethodName.startsWith("get")) &&
-			(!methodCallMethodName.equals("remove") ||
-			 !methodCallClassName.endsWith("Persistence"))) {
+		if (!methodCallMethodName.matches("(findBy|get)\\w+") &&
+			(!methodCallClassName.endsWith("Persistence") ||
+			 !methodCallMethodName.equals("remove"))) {
 
 			return null;
 		}
