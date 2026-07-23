@@ -80,11 +80,11 @@ public abstract class BaseMockContactsEngineClientImpl
 
 	@Override
 	public AccountLifecycle addAccountLifecycle(
-		FaroProject faroProject, String description, String name,
-		String segmentId) {
+		FaroProject faroProject, AccountLifecycle accountLifecycle,
+		String channelId) {
 
 		return contactsEngineClient.addAccountLifecycle(
-			faroProject, description, name, segmentId);
+			faroProject, accountLifecycle, channelId);
 	}
 
 	@Override
