@@ -6,7 +6,6 @@
 package com.liferay.site.cms.site.initializer.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -41,16 +40,8 @@ public class SiteInitializerUtil {
 			long companyId, SiteInitializer siteInitializer)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-			return;
-		}
-
-		Group group = GroupLocalServiceUtil.fetchGroup(
+		Group group = GroupLocalServiceUtil.getGroup(
 			companyId, GroupConstants.CMS);
-
-		if (group == null) {
-			return;
-		}
 
 		String friendlyURL = FriendlyURLNormalizerUtil.normalizeWithEncoding(
 			"/dashboard");
