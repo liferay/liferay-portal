@@ -72,35 +72,6 @@ public class AudiencesCriteriaProviderTest {
 
 		Assert.assertEquals(
 			AudiencesCriteria.Type.STRING, urlAudiencesCriteria.getType());
-
-		SegmentsEntry segmentsEntry = _addSegmentsEntry();
-
-		audiencesCriteriaTypes =
-			_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
-				TestPropsValues.getCompanyId(), LocaleUtil.getDefault());
-
-		audiencesCriteriaType = audiencesCriteriaTypes.get(0);
-
-		audiencesCriterias = audiencesCriteriaType.getAudiencesCriterias();
-
-		Assert.assertEquals(
-			audiencesCriterias.toString(), 15, audiencesCriterias.size());
-
-		AudiencesCriteria segmentAudiencesCriteria = _getAudiencesCriteria(
-			audiencesCriterias, "segment");
-
-		Assert.assertEquals(
-			AudiencesCriteria.InputType.SELECT,
-			segmentAudiencesCriteria.getInputType());
-		Assert.assertEquals(
-			AudiencesCriteria.Type.STRING, segmentAudiencesCriteria.getType());
-
-		AudiencesCriteria.Option option = _getOption(
-			segmentAudiencesCriteria.getOptions(),
-			segmentsEntry.getExternalReferenceCode());
-
-		Assert.assertEquals(
-			segmentsEntry.getName(LocaleUtil.getDefault()), option.getLabel());
 	}
 
 	@Test
@@ -152,6 +123,7 @@ public class AudiencesCriteriaProviderTest {
 
 		Assert.assertEquals(
 			audiencesCriterias.toString(), 2, audiencesCriterias.size());
+		Assert.assertNull(_getAudiencesCriteria(audiencesCriterias, "segment"));
 
 		AudiencesCriteria authenticationAudiencesCriteria =
 			_getAudiencesCriteria(
@@ -174,6 +146,35 @@ public class AudiencesCriteriaProviderTest {
 			languageAudiencesCriteria.getOptions();
 
 		Assert.assertFalse(options.toString(), options.isEmpty());
+
+		SegmentsEntry segmentsEntry = _addSegmentsEntry();
+
+		audiencesCriteriaTypes =
+			_audiencesCriteriaProvider.getAudiencesCriteriaTypes(
+				TestPropsValues.getCompanyId(), LocaleUtil.getDefault());
+
+		audiencesCriteriaType = audiencesCriteriaTypes.get(1);
+
+		audiencesCriterias = audiencesCriteriaType.getAudiencesCriterias();
+
+		Assert.assertEquals(
+			audiencesCriterias.toString(), 3, audiencesCriterias.size());
+
+		AudiencesCriteria segmentAudiencesCriteria = _getAudiencesCriteria(
+			audiencesCriterias, "segment");
+
+		Assert.assertEquals(
+			AudiencesCriteria.InputType.SELECT,
+			segmentAudiencesCriteria.getInputType());
+		Assert.assertEquals(
+			AudiencesCriteria.Type.STRING, segmentAudiencesCriteria.getType());
+
+		AudiencesCriteria.Option option = _getOption(
+			segmentAudiencesCriteria.getOptions(),
+			segmentsEntry.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			segmentsEntry.getName(LocaleUtil.getDefault()), option.getLabel());
 	}
 
 	private void _addClientExtensionEntry(String name, String symbol)
