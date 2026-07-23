@@ -15,7 +15,7 @@ type GenerateLicenseKeyForm = z.infer<typeof zodSchema.generateLicenseKey>;
 
 export class ProductPurchaseCMP extends ProductPurchase {
 	private form?: GenerateLicenseKeyForm;
-	protected orderTypeExternalReferenceCode = OrderTypes.CMP;
+	protected orderTypeExternalReferenceCode = OrderTypes.CMP_BETA;
 
 	setForm(form: GenerateLicenseKeyForm) {
 		this.form = form;
@@ -56,7 +56,7 @@ export class ProductPurchaseCMP extends ProductPurchase {
 	}
 
 	public async getNextStepsLink(cart: Cart) {
-		if (cart.orderTypeExternalReferenceCode !== OrderTypes.CMP) {
+		if (cart.orderTypeExternalReferenceCode !== OrderTypes.CMP_BETA) {
 			return super.getNextStepsLink(cart);
 		}
 
