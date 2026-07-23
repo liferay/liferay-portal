@@ -168,7 +168,10 @@ public class JenkinsUtil {
 			"osb.patcher.tickets",
 			() -> {
 				if (patcherFix.getType() == PatcherFixConstants.TYPE_AUTO_FIX) {
-					return patcherFix.getName();
+					return StringUtil.merge(
+						JiraTicketResolverUtil.resolveTickets(
+							patcherConfiguration, patcherFix.getName()),
+						StringPool.COMMA);
 				}
 
 				return null;
