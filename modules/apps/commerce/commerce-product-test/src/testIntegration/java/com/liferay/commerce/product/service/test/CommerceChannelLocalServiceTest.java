@@ -11,8 +11,11 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.exception.CommerceChannelNameException;
+import com.liferay.commerce.product.exception.NoSuchChannelException;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
@@ -21,8 +24,10 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -81,6 +86,60 @@ public class CommerceChannelLocalServiceTest {
 				_commerceCurrency.getCode(), _serviceContext);
 
 		Assert.assertEquals("Channel", commerceChannel.getName());
+	}
+
+	@Test
+	public void testGetOrAddEmptyCommerceChannel() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_commerceChannelLocalService.getOrAddEmptyCommerceChannel(
+				externalReferenceCode, _serviceContext.getCompanyId(),
+				_serviceContext.getUserId());
+
+			Assert.fail();
+		}
+		catch (NoSuchChannelException noSuchChannelException) {
+			Assert.assertNotNull(noSuchChannelException);
+		}
+
+		CommerceChannel commerceChannel;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			commerceChannel =
+				_commerceChannelLocalService.getOrAddEmptyCommerceChannel(
+					externalReferenceCode, _serviceContext.getCompanyId(),
+					_serviceContext.getUserId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, commerceChannel.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				commerceChannel.getExternalReferenceCode());
+			Assert.assertEquals(0, commerceChannel.getSiteGroupId());
+
+			CommerceChannel resolvedCommerceChannel =
+				_commerceChannelLocalService.getOrAddEmptyCommerceChannel(
+					externalReferenceCode, _serviceContext.getCompanyId(),
+					_serviceContext.getUserId());
+
+			Assert.assertEquals(
+				commerceChannel.getCommerceChannelId(),
+				resolvedCommerceChannel.getCommerceChannelId());
+		}
+
+		commerceChannel = _commerceChannelLocalService.updateCommerceChannel(
+			commerceChannel.getCommerceChannelId(),
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, _group.getGroupId(),
+			"Test Channel", CommerceChannelConstants.CHANNEL_TYPE_SITE,
+			commerceChannel.getTypeSettingsUnicodeProperties(),
+			_commerceCurrency.getCode(), commerceChannel.getPriceDisplayType(),
+			commerceChannel.isDiscountsTargetNetPrice());
+
+		Assert.assertNotEquals(
+			WorkflowConstants.STATUS_EMPTY, commerceChannel.getStatus());
 	}
 
 	@Test
