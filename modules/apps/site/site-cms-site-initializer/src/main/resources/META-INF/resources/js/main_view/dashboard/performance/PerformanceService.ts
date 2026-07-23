@@ -8,6 +8,7 @@ import {RangeSelectors} from '@liferay/analytics-reports-js-components-web';
 import ApiHelper from '../../../common/services/ApiHelper';
 import {
 	AssetConsumption,
+	ConnectionInfo,
 	HistogramMetric,
 	MetricType,
 	OverviewMetrics,
@@ -52,6 +53,16 @@ async function getOverviewMetrics({
 			depotEntryIds,
 			rangeKey,
 		})}`
+	);
+}
+
+async function getConnectionInfo({
+	depotEntryGroupId,
+}: {
+	depotEntryGroupId: number;
+}) {
+	return ApiHelper.get<ConnectionInfo>(
+		`${BASE_URL}/connection-info${buildQuery({depotEntryGroupId})}`
 	);
 }
 
@@ -197,6 +208,7 @@ function getTopAssetsExportURL({
 
 export default {
 	getAssetConsumption,
+	getConnectionInfo,
 	getHistogramMetric,
 	getMetric,
 	getMetricExportURL,

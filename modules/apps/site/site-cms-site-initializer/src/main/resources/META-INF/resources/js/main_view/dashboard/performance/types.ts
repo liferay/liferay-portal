@@ -60,6 +60,13 @@ export type MetricItem = {
 	valueKey: string;
 };
 
+export type ConnectionInfo = {
+	admin: boolean;
+	connectedToAnalyticsCloud: boolean;
+	connectedToSpace: boolean;
+	siteSyncedToAnalyticsCloud: boolean;
+};
+
 export type PerformanceMetric = {
 	metricType: MetricType;
 	metrics: MetricItem[];
