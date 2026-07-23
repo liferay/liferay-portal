@@ -16,7 +16,11 @@
 			[#assign roomId = themeDisplay.getScopeGroup().getClassPK() /]
 
 			<div>
-				[#assign response = restClient.get("/digital-sales-room/rooms/${roomId}?nestedFields=r_accountToDSRRooms_accountEntryId") /]
+				[#attempt]
+					[#assign response = restClient.get("/digital-sales-room/rooms/${roomId}?nestedFields=r_accountToDSRRooms_accountEntryId") /]
+				[#recover]
+					[#assign response = "" /]
+				[/#attempt]
 
 				[#if response?has_content && (response.roomStatus)?? && (response.roomStatus == 5)]
 					<div class="alert alert-info" id="dsr-archived-room-warning" role="alert">

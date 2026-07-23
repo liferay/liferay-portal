@@ -2,15 +2,21 @@
 	<div id="dsr-header-user">
 		<div class="d-flex justify-content-end">
 			<div>
-				[@liferay_site_dsr_site_initializer_ui["comments"]
-					groupId=themeDisplay.getScopeGroupId()
-				/]
+				[#attempt]
+					[@liferay_site_dsr_site_initializer_ui["comments"]
+						groupId=themeDisplay.getScopeGroupId()
+					/]
+				[#recover]
+				[/#attempt]
 			</div>
 
 			<div>
-				[@liferay_site_dsr_site_initializer_ui["share"]
-					groupId=themeDisplay.getScopeGroupId()
-				/]
+				[#attempt]
+					[@liferay_site_dsr_site_initializer_ui["share"]
+						groupId=themeDisplay.getScopeGroupId()
+					/]
+				[#recover]
+				[/#attempt]
 			</div>
 
 			<div class="border-left ml-3 pl-3">
