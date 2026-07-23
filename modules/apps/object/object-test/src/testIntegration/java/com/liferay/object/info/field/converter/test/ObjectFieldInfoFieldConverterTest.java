@@ -125,7 +125,7 @@ public class ObjectFieldInfoFieldConverterTest {
 				null, null, null, _objectDefinitionLocalService,
 				_objectFieldLocalService, null, _objectRelationshipLocalService,
 				_objectScopeProviderRegistry, null, null, _portal,
-				_restContextPathResolverRegistry, null);
+				_restContextPathResolverRegistry, null, null);
 
 		InfoField.FinalStep finalStep = InfoField.builder(
 		).infoFieldType(
@@ -195,7 +195,7 @@ public class ObjectFieldInfoFieldConverterTest {
 			new ObjectFieldInfoFieldConverter(
 				_ddmExpressionFactory, null, null, null, null,
 				_objectFieldSettingLocalService, null, null, null, null, null,
-				null, null);
+				null, null, null);
 
 		InfoField<?> infoField = objectFieldInfoFieldConverter.getInfoField(
 			true, ObjectField.class.getSimpleName(), _objectField);
@@ -267,7 +267,7 @@ public class ObjectFieldInfoFieldConverterTest {
 			new ObjectFieldInfoFieldConverter(
 				_ddmExpressionFactory, null, null, null, null,
 				_objectFieldSettingLocalService, null, null, null, null, null,
-				null, null);
+				null, null, null);
 
 		InfoField<PhoneNumberInfoFieldType> infoField =
 			(InfoField<PhoneNumberInfoFieldType>)

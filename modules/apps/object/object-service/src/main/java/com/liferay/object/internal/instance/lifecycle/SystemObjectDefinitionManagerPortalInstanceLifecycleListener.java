@@ -261,7 +261,8 @@ public class SystemObjectDefinitionManagerPortalInstanceLifecycleListener
 					_objectRelationshipLocalService,
 					_objectScopeProviderRegistry, _objectStateFlowLocalService,
 					_objectStateLocalService, _portal,
-					_restContextPathResolverRegistry, _userLocalService);
+					_restContextPathResolverRegistry,
+					_systemObjectDefinitionManagerRegistry, _userLocalService);
 
 			_bundleContext.registerService(
 				InfoItemFieldValuesProvider.class,
