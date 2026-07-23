@@ -117,6 +117,17 @@ public class DesignLibraryResourcesDisplayContext {
 		String designLibraryResourcesURL = _getDesignLibraryResourcesURL(
 			designLibraryEntryId);
 
+		String viewFragmentCollectionURL = PortletURLBuilder.create(
+			PortalUtil.getControlPanelPortletURL(
+				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
+				0, 0, PortletRequest.RENDER_PHASE)
+		).setBackURL(
+			designLibraryResourcesURL
+		).setParameter(
+			"fragmentCollectionExternalReferenceCode",
+			"{embedded.externalReferenceCode}"
+		).buildString();
+
 		String editFragmentCollectionURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
 				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
@@ -145,18 +156,14 @@ public class DesignLibraryResourcesDisplayContext {
 			"styleBookEntryId", "{embedded.id}"
 		).buildString();
 
-		String viewFragmentCollectionURL = PortletURLBuilder.create(
-			PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
-				0, 0, PortletRequest.RENDER_PHASE)
-		).setBackURL(
-			designLibraryResourcesURL
-		).setParameter(
-			"fragmentCollectionExternalReferenceCode",
-			"{embedded.externalReferenceCode}"
-		).buildString();
-
 		return ListUtil.fromArray(
+			new FDSActionDropdownItem(
+				viewFragmentCollectionURL, "view", "view",
+				LanguageUtil.get(_httpServletRequest, "view"), null, null,
+				"link",
+				HashMapBuilder.<String, Object>put(
+					"entryClassName", FragmentCollection.class.getName()
+				).build()),
 			new FDSActionDropdownItem(
 				editFragmentCollectionURL, "pencil", "edit",
 				LanguageUtil.get(_httpServletRequest, "edit"), null, null,
@@ -171,13 +178,6 @@ public class DesignLibraryResourcesDisplayContext {
 				null, "get", "link",
 				HashMapBuilder.<String, Object>put(
 					"entryClassName", StyleBookEntry.class.getName()
-				).build()),
-			new FDSActionDropdownItem(
-				viewFragmentCollectionURL, "view", "view",
-				LanguageUtil.get(_httpServletRequest, "view"), null, null,
-				"link",
-				HashMapBuilder.<String, Object>put(
-					"entryClassName", FragmentCollection.class.getName()
 				).build()),
 			new FDSActionDropdownItem(
 				"{actions.delete.href}", "trash", "delete",
