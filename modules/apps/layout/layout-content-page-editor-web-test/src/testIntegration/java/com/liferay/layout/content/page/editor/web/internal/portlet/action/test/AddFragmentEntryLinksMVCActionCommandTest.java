@@ -253,7 +253,7 @@ public class AddFragmentEntryLinksMVCActionCommandTest {
 
 			_testAddFragmentEntryLinks(
 				Collections.singletonList(
-					"was ignored because its Design Library is not connected " +
+					"was ignored because its design library is not connected " +
 						"to this site."),
 				fragmentComposition.getFragmentCompositionKey(),
 				_group.getGroupId());
