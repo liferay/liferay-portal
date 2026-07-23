@@ -533,10 +533,10 @@ public class ObjectEntryLocalServiceSearchObjectEntriesTest {
 				"upload", txtFileEntry.getFileEntryId()
 			).build());
 
-		_assertKeywords("jpg", 1);
 		_assertKeywords("JPG", 1);
-		_assertKeywords("txt", 1);
 		_assertKeywords("TXT", 1);
+		_assertKeywords("jpg", 1);
+		_assertKeywords("txt", 1);
 	}
 
 	@Test
