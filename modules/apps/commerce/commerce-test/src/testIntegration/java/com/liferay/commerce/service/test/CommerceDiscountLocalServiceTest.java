@@ -15,6 +15,7 @@ import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.discount.constants.CommerceDiscountConstants;
+import com.liferay.commerce.discount.exception.NoSuchDiscountException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.discount.test.util.CommerceDiscountTestUtil;
@@ -27,8 +28,10 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -38,6 +41,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -200,6 +204,79 @@ public class CommerceDiscountLocalServiceTest {
 			commerceDiscounts.toString(), 1, commerceDiscounts.size());
 
 		Assert.assertEquals(commerceDiscount, commerceDiscounts.get(0));
+	}
+
+	@Test
+	public void testGetOrAddEmptyCommerceDiscount() throws Exception {
+		frutillaRule.scenario(
+			"Get or add an empty commerce discount"
+		).given(
+			"A company and an external reference code"
+		).when(
+			"An empty commerce discount is requested"
+		).then(
+			"A NoSuchDiscountException is thrown while lazy referencing is " +
+				"disabled"
+		).and(
+			"An empty stub with the given external reference code is " +
+				"returned while lazy referencing is enabled"
+		).and(
+			"The same commerce discount is resolved on subsequent requests"
+		).and(
+			"The empty status is cleared once the stub is updated"
+		);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_commerceDiscountLocalService.getOrAddEmptyCommerceDiscount(
+				externalReferenceCode, _group.getCompanyId(),
+				_user.getUserId());
+
+			Assert.fail();
+		}
+		catch (NoSuchDiscountException noSuchDiscountException) {
+			Assert.assertNotNull(noSuchDiscountException);
+		}
+
+		CommerceDiscount commerceDiscount;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			commerceDiscount =
+				_commerceDiscountLocalService.getOrAddEmptyCommerceDiscount(
+					externalReferenceCode, _group.getCompanyId(),
+					_user.getUserId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, commerceDiscount.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				commerceDiscount.getExternalReferenceCode());
+
+			CommerceDiscount resolvedCommerceDiscount =
+				_commerceDiscountLocalService.getOrAddEmptyCommerceDiscount(
+					externalReferenceCode, _group.getCompanyId(),
+					_user.getUserId());
+
+			Assert.assertEquals(
+				commerceDiscount.getCommerceDiscountId(),
+				resolvedCommerceDiscount.getCommerceDiscountId());
+		}
+
+		commerceDiscount = _commerceDiscountLocalService.updateCommerceDiscount(
+			commerceDiscount.getCommerceDiscountId(),
+			RandomTestUtil.randomString(),
+			CommerceDiscountConstants.TARGET_TOTAL, false, null, false, null,
+			StringPool.BLANK, null, null, null, null,
+			CommerceDiscountConstants.LIMITATION_TYPE_UNLIMITED, 0, 0, false,
+			true, 1, 1, 2020, 0, 0, 0, 0, 0, 0, 0, true, _serviceContext);
+
+		Assert.assertNotEquals(
+			WorkflowConstants.STATUS_EMPTY, commerceDiscount.getStatus());
+
+		_commerceDiscountLocalService.deleteCommerceDiscount(commerceDiscount);
 	}
 
 	@Test
