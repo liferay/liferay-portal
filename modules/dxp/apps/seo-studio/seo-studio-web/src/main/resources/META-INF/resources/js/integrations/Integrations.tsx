@@ -242,9 +242,7 @@ export default function Integrations({
 						/>
 
 						<div className="integrations-empty-title">
-							{Liferay.Language.get(
-								'no-integrations-have-been-added-yet'
-							)}
+							{Liferay.Language.get('no-integrations-yet')}
 						</div>
 
 						<div className="integrations-empty-description">

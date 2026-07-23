@@ -19,6 +19,12 @@ jest.mock('frontend-js-components-web', () => ({
 	openToast: jest.fn(),
 }));
 
+const DISPLAY_NAME = 'Display Name';
+
+const GOOGLE_PAGE_SPEED_API_KEY = 'googlePageSpeedAPIKey';
+
+const NO_INTEGRATIONS_YET = 'no-integrations-yet';
+
 const randomInt = () => Math.floor(Math.random() * 1_000_000);
 
 const randomString = () => Math.random().toString(36).slice(2, 10);
@@ -61,9 +67,7 @@ describe('Integrations', () => {
 	it('renders the empty state when no items are provided', () => {
 		renderIntegrations();
 
-		expect(
-			screen.getByText('no-integrations-have-been-added-yet')
-		).toBeInTheDocument();
+		expect(screen.getByText(NO_INTEGRATIONS_YET)).toBeInTheDocument();
 		expect(
 			screen.getByText('add-your-first-integration')
 		).toBeInTheDocument();
@@ -80,9 +84,7 @@ describe('Integrations', () => {
 
 		expect(screen.getByTestId('frontend-data-set')).toBeInTheDocument();
 
-		expect(
-			screen.queryByText('no-integrations-have-been-added-yet')
-		).not.toBeInTheDocument();
+		expect(screen.queryByText(NO_INTEGRATIONS_YET)).not.toBeInTheDocument();
 	});
 
 	it('renders the Add Integration trigger', () => {
@@ -102,14 +104,14 @@ describe('Integrations', () => {
 					configurationURL,
 					disabled: false,
 					id: randomString(),
-					name: 'Display Name',
+					name: DISPLAY_NAME,
 				},
 			],
 		});
 
 		fireEvent.click(screen.getByRole('button', {name: /add-integration/}));
 
-		const link = screen.getByRole('menuitem', {name: 'Display Name'});
+		const link = screen.getByRole('menuitem', {name: DISPLAY_NAME});
 
 		expect(link).toHaveAttribute('href', configurationURL);
 	});
@@ -121,14 +123,14 @@ describe('Integrations', () => {
 					configurationURL: `/${randomString()}`,
 					disabled: true,
 					id: randomString(),
-					name: 'Display Name',
+					name: DISPLAY_NAME,
 				},
 			],
 		});
 
 		fireEvent.click(screen.getByRole('button', {name: /add-integration/}));
 
-		const item = screen.getByRole('menuitem', {name: 'Display Name'});
+		const item = screen.getByRole('menuitem', {name: DISPLAY_NAME});
 
 		expect(item).not.toHaveAttribute('href');
 	});
@@ -213,7 +215,9 @@ describe('Integrations', () => {
 			.fn()
 			.mockResolvedValueOnce({
 				json: () =>
-					Promise.resolve({googlePageSpeedAPIKey: randomString()}),
+					Promise.resolve({
+						[GOOGLE_PAGE_SPEED_API_KEY]: randomString(),
+					}),
 				ok: true,
 			})
 			.mockResolvedValueOnce({
@@ -261,7 +265,9 @@ describe('Integrations', () => {
 			.fn()
 			.mockResolvedValueOnce({
 				json: () =>
-					Promise.resolve({googlePageSpeedAPIKey: randomString()}),
+					Promise.resolve({
+						[GOOGLE_PAGE_SPEED_API_KEY]: randomString(),
+					}),
 				ok: true,
 			})
 			.mockResolvedValueOnce({
