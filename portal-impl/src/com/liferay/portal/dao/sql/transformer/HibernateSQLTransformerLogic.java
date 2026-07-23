@@ -22,6 +22,7 @@ public class HibernateSQLTransformerLogic extends BaseSQLTransformerLogic {
 			getCastDecimalFunction(), getCastLongFunction(),
 			getCastTextFunction(), getInstrFunction(), getNullDateFunction(),
 			getSubstrFunction(), _getCountFunction(),
+			_getPositionalParameterFunction(),
 			_getUnsupportedMacroFunction(
 				"AGGREGATION", getAggregationPattern()),
 			_getUnsupportedMacroFunction("BITAND", getBitwiseCheckPattern()),
@@ -73,6 +74,37 @@ public class HibernateSQLTransformerLogic extends BaseSQLTransformerLogic {
 			}
 
 			return sql;
+		};
+	}
+
+	private Function<String, String> _getPositionalParameterFunction() {
+		return (String sql) -> {
+			if (!sql.contains("?")) {
+				return sql;
+			}
+
+			StringBundler sb = new StringBundler();
+
+			int counter = 1;
+			boolean quoted = false;
+
+			for (int i = 0; i < sql.length(); i++) {
+				char c = sql.charAt(i);
+
+				if (c == '\'') {
+					quoted = !quoted;
+				}
+
+				if ((c == '?') && !quoted) {
+					sb.append('?');
+					sb.append(counter++);
+				}
+				else {
+					sb.append(c);
+				}
+			}
+
+			return sb.toString();
 		};
 	}
 

@@ -379,7 +379,7 @@ public class QueryPos {
 
 	private static final int _DEFAULT_ARRAY_COUNT = 1;
 
-	private int _pos;
+	private int _pos = 1;
 	private final Query _query;
 
 }
