@@ -2476,7 +2476,7 @@ public class JenkinsResultsParserUtil {
 
 	public static List<JenkinsMaster> getJenkinsMasters(
 		Properties buildProperties, String cohortName,
-		boolean includeBlackListedJenkinsMasters, int maximumSlavesPerHost,
+		boolean includeBlacklistedJenkinsMasters, int maximumSlavesPerHost,
 		int minimumRAM, String networkName) {
 
 		List<JenkinsMaster> jenkinsMasters = new ArrayList<>();
@@ -2495,7 +2495,7 @@ public class JenkinsResultsParserUtil {
 			JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
 				matcher.group("jenkinsMasterName"));
 
-			if ((!includeBlackListedJenkinsMasters &&
+			if ((!includeBlacklistedJenkinsMasters &&
 				 jenkinsMaster.isBlackListed()) ||
 				(jenkinsMaster.getSlaveRAM() < minimumRAM) ||
 				(jenkinsMaster.getSlavesPerHost() > maximumSlavesPerHost)) {
