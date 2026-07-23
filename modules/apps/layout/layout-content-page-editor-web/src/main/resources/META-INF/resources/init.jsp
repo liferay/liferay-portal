@@ -25,6 +25,7 @@ page import="com.liferay.layout.content.page.editor.web.internal.display.context
 page import="com.liferay.layout.content.page.editor.web.internal.display.context.EditCollectionConfigurationDisplayContext" %><%@
 page import="com.liferay.layout.content.page.editor.web.internal.display.context.EditElementVariationsDisplayContext" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
+page import="com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil" %><%@
 page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.Group" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %>

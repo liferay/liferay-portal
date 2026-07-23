@@ -13,9 +13,11 @@ ContentPageEditorDisplayContext contentPageEditorDisplayContext = (ContentPageEd
 Group group = themeDisplay.getScopeGroup();
 %>
 
-<liferay-editor:resources
-	editorName="alloyeditor"
-/>
+<c:if test='<%= FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
+	<liferay-editor:resources
+		editorName="alloyeditor"
+	/>
+</c:if>
 
 <liferay-util:html-top>
 	<aui:link hashedFile="<%= true %>" href="layout-content-page-editor-web/page_editor/app/components/App.css" rel="stylesheet" />
