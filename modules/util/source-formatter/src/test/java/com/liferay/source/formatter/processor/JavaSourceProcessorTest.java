@@ -606,6 +606,22 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testMetaAnnotationMissingPasswordType() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"MetaAnnotationMissingPasswordType.testjava"
+			).addExpectedMessage(
+				"Use \"type = Meta.Type.Password\" in \"@Meta.AD\" for " +
+					"\"apiKey\", which appears to hold a secret",
+				24
+			).addExpectedMessage(
+				"Use \"type = Meta.Type.Password\" in \"@Meta.AD\" for " +
+					"\"clientSecret\", which appears to hold a secret",
+				26
+			));
+	}
+
+	@Test
 	public void testMethodEquals() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(

@@ -124,7 +124,7 @@ JavaLiferayFilterCheck | .java | Finds cases of incorrect use of certain method 
 JavaLogClassNameCheck | .java | Checks the name of the class that is passed in `LogFactoryUtil.getLog`. |
 [JavaLogLevelCheck](check/java_log_level_check.md#javaloglevelcheck) | .java | Checks that the correct log messages are printed. |
 JavaMapBuilderGenericsCheck | .java | Finds missing or unnecessary generics on `*MapBuilder.put` calls. |
-[JavaMetaAnnotationsCheck](check/java_meta_annotations_check.md#javametaannotationscheck) | .java | Checks for correct use of attributes `description` and `name` in annotation `@aQute.bnd.annotation.metatype.Meta`. |
+[JavaMetaAnnotationsCheck](check/java_meta_annotations_check.md#javametaannotationscheck) | .java | Checks for correct use of attributes `description`, `name`, and `type` in annotation `@aQute.bnd.annotation.metatype.Meta`, including requiring `type = Meta.Type.Password` on secret-bearing fields. |
 JavaMissingOverrideCheck | .java | Finds missing @Override annotations. |
 JavaMissingXMLPublicIdsCheck | .java | Finds missing public IDs for check XML files. |
 JavaModifiedServiceMethodCheck | .java | Finds missing empty lines before `removedService` or `addingService` calls. |

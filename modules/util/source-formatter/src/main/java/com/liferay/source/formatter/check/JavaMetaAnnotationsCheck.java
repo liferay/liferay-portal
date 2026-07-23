@@ -5,6 +5,7 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -26,8 +27,14 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 			String fileContent)
 		throws Exception {
 
+		JavaClass javaClass = (JavaClass)javaTerm;
+
+		if (javaClass.getParentJavaClass() == null) {
+			_checkMissingPasswordType(fileName, absolutePath, fileContent);
+		}
+
 		return formatAnnotations(
-			fileName, absolutePath, (JavaClass)javaTerm, fileContent);
+			fileName, absolutePath, javaClass, fileContent);
 	}
 
 	@Override
@@ -146,6 +153,46 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 			getLineNumber(content, content.indexOf(annotation)));
 	}
 
+	private void _checkMissingPasswordType(
+		String fileName, String absolutePath, String content) {
+
+		if (absolutePath.contains("/archived/") ||
+			absolutePath.contains("/gradleTest/") ||
+			absolutePath.contains("/test/") ||
+			absolutePath.contains("/testIntegration/") ||
+			!content.contains("@Meta.OCD")) {
+
+			return;
+		}
+
+		Matcher matcher = _stringAccessorPattern.matcher(content);
+
+		while (matcher.find()) {
+			String name = matcher.group(1);
+
+			if (!_isSecretName(name)) {
+				continue;
+			}
+
+			int previousSemicolon = content.lastIndexOf(
+				CharPool.SEMICOLON, matcher.start());
+
+			String annotations = content.substring(
+				previousSemicolon + 1, matcher.start());
+
+			if (annotations.contains("Meta.Type.Password")) {
+				continue;
+			}
+
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					"Use \"type = Meta.Type.Password\" in \"@Meta.AD\" for \"",
+					name, "\", which appears to hold a secret"),
+				getLineNumber(content, matcher.start()));
+		}
+	}
+
 	private String _fixOCDId(
 		String fileName, String annotation, String packageName) {
 
@@ -171,10 +218,40 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 			annotation, StringPool.PERCENT, StringPool.BLANK, matcher.start());
 	}
 
+	private boolean _isSecretName(String name) {
+		String lowerCaseName = StringUtil.toLowerCase(name);
+
+		for (String excludeKeyword : _EXCLUDED_SECRET_KEYWORDS) {
+			if (lowerCaseName.contains(excludeKeyword)) {
+				return false;
+			}
+		}
+
+		for (String secretKeyword : _SECRET_KEYWORDS) {
+			if (lowerCaseName.contains(secretKeyword)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private static final String _CHECK_CONFIGURATION_NAME_KEY =
 		"checkConfigurationName";
 
 	private static final String _CHECK_MISSING_NAME_KEY = "checkMissingName";
+
+	private static final String[] _EXCLUDED_SECRET_KEYWORDS = {
+		"algorithm", "field", "keyword", "providerid", "sapentry", "type",
+		"uri", "url"
+	};
+
+	private static final String[] _SECRET_KEYWORDS = {
+		"accesstoken", "apikey", "authkey", "authtoken", "credential",
+		"jsonwebkey", "passphrase", "passwd", "password", "privatekey",
+		"refreshtoken", "secret", "serviceaccountkey", "signaturekey",
+		"subscriptionkey"
+	};
 
 	private static final Pattern _annotationMetaTypePattern = Pattern.compile(
 		"[\\s\\(](name|description) = \"%");
@@ -182,5 +259,7 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 		Pattern.compile("\\s(\\w+) = \"([\\w\\.\\-]+?)\"");
 	private static final Pattern _annotationNameValueKeyPattern =
 		Pattern.compile("\\sname = \"([\\w\\.\\-]+?)\"");
+	private static final Pattern _stringAccessorPattern = Pattern.compile(
+		"public\\s+String(?:\\[\\])?\\s+(\\w+)\\s*\\(\\s*\\)\\s*;");
 
 }
