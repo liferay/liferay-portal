@@ -5,7 +5,7 @@
 
 import '@testing-library/jest-dom';
 import {TrendClassification} from '@liferay/analytics-reports-js-components-web';
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import React from 'react';
 
 import {PerformanceContextProvider} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/performance/PerformanceContext';
@@ -50,6 +50,20 @@ const renderComponent = () =>
 	);
 
 describe('Overview', () => {
+	const {ResizeObserver} = window;
+
+	beforeAll(() => {
+		window.ResizeObserver = jest.fn().mockImplementation(() => ({
+			disconnect: jest.fn(),
+			observe: jest.fn(),
+			unobserve: jest.fn(),
+		}));
+	});
+
+	afterAll(() => {
+		window.ResizeObserver = ResizeObserver;
+	});
+
 	afterEach(() => {
 		jest.clearAllMocks();
 	});
@@ -67,5 +81,53 @@ describe('Overview', () => {
 		expect(screen.getByText('views')).toBeInTheDocument();
 		expect(screen.getByText('downloads')).toBeInTheDocument();
 		expect(screen.getByText('reads-metric')).toBeInTheDocument();
+	});
+
+	it('expands the histogram chart when a metric card is toggled', async () => {
+		jest.spyOn(PerformanceService, 'getOverviewMetrics').mockResolvedValue({
+			data: mockedMetrics,
+			error: null,
+		});
+
+		jest.spyOn(PerformanceService, 'getHistogramMetric').mockResolvedValue({
+			data: {
+				histograms: [
+					{
+						metricName: 'impressionsMetric',
+						metrics: [
+							{
+								previousValue: 300,
+								previousValueKey: '2026-07-21T00:00',
+								value: 500,
+								valueKey: '2026-07-22T00:00',
+							},
+							{
+								previousValue: 400,
+								previousValueKey: '2026-07-22T00:00',
+								value: 700,
+								valueKey: '2026-07-23T00:00',
+							},
+						],
+						total: 1200,
+						totalValue: 1200,
+					},
+				],
+			},
+			error: null,
+		});
+
+		renderComponent();
+
+		await screen.findByText('31.9K');
+
+		expect(screen.queryByText('current-period')).not.toBeInTheDocument();
+
+		fireEvent.click(screen.getByRole('button', {name: /impressions/i}));
+
+		expect(await screen.findByText('current-period')).toBeInTheDocument();
+
+		fireEvent.click(screen.getByRole('button', {name: /impressions/i}));
+
+		expect(screen.queryByText('current-period')).not.toBeInTheDocument();
 	});
 });

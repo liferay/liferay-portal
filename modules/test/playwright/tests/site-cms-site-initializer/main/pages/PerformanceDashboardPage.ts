@@ -16,6 +16,7 @@ export class PerformanceDashboardPage {
 	readonly performanceTab: Locator;
 	readonly rangeSelectorsButton: Locator;
 	readonly spacesButton: Locator;
+	readonly topAssetsCard: Locator;
 	readonly viewsByCategorizationCard: Locator;
 	readonly viewsByLocationCard: Locator;
 
@@ -28,10 +29,16 @@ export class PerformanceDashboardPage {
 		this.overviewHeading = page.getByRole('heading', {
 			name: 'Performance Overview',
 		});
-		this.performanceTab = page.getByRole('tab', {name: 'Performance'});
+		this.performanceTab = page.getByRole('button', {
+			exact: true,
+			name: 'Performance',
+		});
 		this.rangeSelectorsButton = page.getByTestId('rangeSelectors');
 		this.spacesButton = page.getByRole('combobox', {
 			name: 'Filter by Spaces',
+		});
+		this.topAssetsCard = page.locator('.cms-dashboard__base-card', {
+			hasText: 'Top Assets',
 		});
 		this.viewsByCategorizationCard = page.locator(
 			'.cms-dashboard__base-card',

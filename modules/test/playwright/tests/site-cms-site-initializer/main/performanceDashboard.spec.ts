@@ -36,6 +36,28 @@ const LOCATION_METRIC = {
 	],
 };
 
+const TOP_ASSETS = {
+	actions: {},
+	facets: [],
+	items: [
+		{
+			className: 'com.liferay.object.model.ObjectEntry',
+			downloads: 5,
+			engagement: 12,
+			externalReferenceCode: 'erc-summer-sales',
+			impressions: 120,
+			title: 'Summer Sales Guide',
+			trend: {classification: 'POSITIVE', percentage: 18},
+			type: 'CMSBasicWebContent',
+			views: 96,
+		},
+	],
+	lastPage: 1,
+	page: 1,
+	pageSize: 20,
+	totalCount: 1,
+};
+
 const OVERVIEW_METRICS = {
 	downloadsMetric: {
 		metricType: 'downloadsMetric',
@@ -64,6 +86,21 @@ const OVERVIEW_METRICS = {
 };
 
 async function mockAnalyticsEndpoints(page: Page) {
+	await page.route(
+		'**/o/analytics-cms-rest/v1.0/connection-info*',
+		async (route) => {
+			await route.fulfill({
+				body: JSON.stringify({
+					admin: true,
+					connectedToAnalyticsCloud: true,
+					connectedToSpace: true,
+					siteSyncedToAnalyticsCloud: true,
+				}),
+				contentType: 'application/json',
+			});
+		}
+	);
+
 	await page.route(
 		'**/o/analytics-cms-rest/v1.0/performance-asset-consumption*',
 		async (route) => {
@@ -174,5 +211,32 @@ test(
 		await performanceDashboardPage.selectSpace(SITE_CMS_SPACE_NAME);
 
 		await spaceRequest;
+	}
+);
+
+test(
+	'renders the top assets returned by the analytics endpoint',
+	{tag: '@LPD-98984'},
+	async ({page, performanceDashboardPage}) => {
+		await mockAnalyticsEndpoints(page);
+
+		await page.route(
+			'**/o/analytics-cms-rest/v1.0/performance-top-asset*',
+			async (route) => {
+				await route.fulfill({
+					body: JSON.stringify(TOP_ASSETS),
+					contentType: 'application/json',
+				});
+			}
+		);
+
+		await performanceDashboardPage.goto();
+
+		await expect(performanceDashboardPage.topAssetsCard).toContainText(
+			'Summer Sales Guide'
+		);
+		await expect(performanceDashboardPage.topAssetsCard).toContainText(
+			'96'
+		);
 	}
 );
