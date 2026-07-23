@@ -3135,6 +3135,18 @@
 					"default": "",
 					"type": "string"
 				},
+				"jiraAPIToken": {
+					"default": "",
+					"type": "string"
+				},
+				"jiraAPIURL": {
+					"default": "",
+					"type": "string"
+				},
+				"jiraEmailAddress": {
+					"default": "",
+					"type": "string"
+				},
 				"jiraURL": {
 					"default": "",
 					"type": "string"
