@@ -58,7 +58,6 @@ public class DesignLibraryResourcesDisplayContextTest {
 	@Before
 	public void setUp() {
 		_setUpDesignLibraryResourcesDisplayContext();
-		_setUpHttpServletRequest();
 	}
 
 	@After
@@ -270,6 +269,8 @@ public class DesignLibraryResourcesDisplayContextTest {
 				}
 
 			});
+
+		_setUpHttpServletRequest();
 
 		_designLibraryResourcesDisplayContext =
 			new DesignLibraryResourcesDisplayContext(
