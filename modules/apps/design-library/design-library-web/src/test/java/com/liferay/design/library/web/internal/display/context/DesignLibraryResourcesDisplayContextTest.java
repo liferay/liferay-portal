@@ -99,13 +99,13 @@ public class DesignLibraryResourcesDisplayContextTest {
 				designLibraryEntryId);
 
 		_assertFDSActionDropdownItem(
-			FragmentCollection.class.getName(), "edit", "link",
+			FragmentCollection.class.getName(), "view", "link",
 			fdsActionDropdownItems.get(0));
 		_assertFDSActionDropdownItem(
-			StyleBookEntry.class.getName(), "edit", "link",
+			FragmentCollection.class.getName(), "edit", "link",
 			fdsActionDropdownItems.get(1));
 		_assertFDSActionDropdownItem(
-			FragmentCollection.class.getName(), "view", "link",
+			StyleBookEntry.class.getName(), "edit", "link",
 			fdsActionDropdownItems.get(2));
 		_assertFDSActionDropdownItem(
 			FragmentCollection.class.getName(), "delete", "async",
