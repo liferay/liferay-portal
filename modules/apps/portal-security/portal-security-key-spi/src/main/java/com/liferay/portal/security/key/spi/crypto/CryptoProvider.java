@@ -21,28 +21,29 @@ import java.util.List;
 public interface CryptoProvider {
 
 	public CryptoServiceResult<byte[]> decrypt(
-			byte[] ciphertext, long companyId, String identifier)
+			byte[] ciphertextBytes, long companyId, String keyIdentifier)
 		throws CryptoException;
 
-	public void deleteKey(long companyId, String identifier)
+	public void deleteKey(long companyId, String keyIdentifier)
 		throws CryptoException;
 
 	public CryptoServiceResult<byte[]> encrypt(
-			long companyId, String identifier, byte[] plaintext)
+			long companyId, String keyIdentifier, byte[] plaintextBytes)
 		throws CryptoException;
 
-	public CryptoServiceResult<Key> exportKey(long companyId, String identifier)
+	public CryptoServiceResult<Key> exportKey(
+			long companyId, String keyIdentifier)
 		throws CryptoException;
 
 	public CryptoServiceResult<String> generateAsymmetricKeyIdentifier(
-			String algorithm, long companyId, String identifier)
+			String algorithm, long companyId, String keyIdentifier)
 		throws CryptoException;
 
 	public CryptoServiceResult<String> generateSecretKeyIdentifier(
-			String algorithm, long companyId, String identifier)
+			String algorithm, long companyId, String keyIdentifier)
 		throws CryptoException;
 
-	public CryptoKey getCryptoKey(long companyId, String identifier)
+	public CryptoKey getCryptoKey(long companyId, String keyIdentifier)
 		throws CryptoException;
 
 	public List<String> getKeyIdentifiers(long companyId)
@@ -51,20 +52,20 @@ public interface CryptoProvider {
 	public ProviderStatus getProviderStatus();
 
 	public CryptoServiceResult<String> importSecretKey(
-			String algorithm, long companyId, String identifier,
-			byte[] rawKeyMaterial)
+			String algorithm, long companyId, String keyIdentifier,
+			byte[] rawKeyBytes)
 		throws CryptoException;
 
 	public boolean isAllowedCompany(long companyId);
 
 	public CryptoServiceResult<String> unwrap(
-			long companyId, String identifier, String masterIdentifier,
+			long companyId, String keyIdentifier, String masterKeyIdentifier,
 			String wrappedKeyAlgorithm, byte[] wrappedKeyBytes,
 			int wrappedKeyCipherType)
 		throws CryptoException;
 
 	public CryptoServiceResult<byte[]> wrap(
-			long companyId, String identifier, String masterIdentifier)
+			long companyId, String keyIdentifier, String masterKeyIdentifier)
 		throws CryptoException;
 
 }
