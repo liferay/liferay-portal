@@ -20,6 +20,37 @@ export async function fetchLifecycles({
 	});
 }
 
+interface ICreateLifecycleStage {
+	description: string;
+	displayOrder: number;
+	maxDuration: number | null;
+	segment: {
+		filter: string;
+		filterMetadata: string;
+	};
+	stageType: string;
+}
+
+interface ICreateLifecycle {
+	channelId: string;
+	groupId: string;
+	name: string;
+	stages: ICreateLifecycleStage[];
+}
+
+export async function createLifecycle({
+	channelId,
+	groupId,
+	name,
+	stages,
+}: ICreateLifecycle): Promise<ILifecycle> {
+	return sendRequest({
+		data: {accountLifecycle: {name, stages}},
+		method: 'POST',
+		path: `contacts/${groupId}/account-lifecycle?channelId=${channelId}`,
+	});
+}
+
 export interface IAccountLifecycle {
 	accountId?: string;
 	id: string;
