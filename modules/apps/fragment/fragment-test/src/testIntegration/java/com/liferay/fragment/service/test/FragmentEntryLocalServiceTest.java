@@ -288,14 +288,16 @@ public class FragmentEntryLocalServiceTest {
 			fragmentEntry.getType(), copyFragmentEntry.getType());
 	}
 
-	private void _assertFragmentEntryLinkHTML(
-		long fragmentEntryLinkId, String html) {
+	private void _assertFragmentEntryLinksHTML(
+		String expectedHtml, long... fragmentEntryLinkIds) {
 
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-				fragmentEntryLinkId);
+		for (long fragmentEntryLinkId : fragmentEntryLinkIds) {
+			FragmentEntryLink fragmentEntryLink =
+				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+					fragmentEntryLinkId);
 
-		Assert.assertEquals(html, fragmentEntryLink.getHtml());
+			Assert.assertEquals(expectedHtml, fragmentEntryLink.getHtml());
+		}
 	}
 
 	private String _read(String fileName) throws Exception {
@@ -1297,6 +1299,15 @@ public class FragmentEntryLocalServiceTest {
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
 				draftLayout.getPlid());
 
+		Group companyGroup = GroupLocalServiceUtil.getCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		FragmentEntry companyGroupFragmentEntry = _addFragmentEntry(
+			companyGroup.getGroupId());
+
+		FragmentEntryLink companyGroupFragmentEntryLink = _addFragmentEntryLink(
+			companyGroupFragmentEntry, draftLayout, segmentsExperienceId);
+
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
@@ -1323,12 +1334,15 @@ public class FragmentEntryLocalServiceTest {
 		String updatedHTML = RandomTestUtil.randomString();
 
 		_updateFragmentEntriesWithPropagateChanges(
-			updatedHTML, depotFragmentEntry, siteFragmentEntry);
+			updatedHTML, companyGroupFragmentEntry, depotFragmentEntry,
+			siteFragmentEntry);
 
-		_assertFragmentEntryLinkHTML(
-			depotFragmentEntryLink.getFragmentEntryLinkId(), originalHTML);
-		_assertFragmentEntryLinkHTML(
-			siteFragmentEntryLink.getFragmentEntryLinkId(), updatedHTML);
+		_assertFragmentEntryLinksHTML(
+			updatedHTML, companyGroupFragmentEntryLink.getFragmentEntryLinkId(),
+			siteFragmentEntryLink.getFragmentEntryLinkId());
+
+		_assertFragmentEntryLinksHTML(
+			originalHTML, depotFragmentEntryLink.getFragmentEntryLinkId());
 	}
 
 	private void _updateFragmentEntriesWithPropagateChanges(
