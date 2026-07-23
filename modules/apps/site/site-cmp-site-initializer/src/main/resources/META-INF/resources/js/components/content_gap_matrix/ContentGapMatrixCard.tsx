@@ -21,8 +21,10 @@ import './ContentGapMatrix.scss';
 interface ContentGapMatrixCardProps {
 	assetFDSId: string;
 	editProjectURL?: string;
+	groupId: number;
 	hasFunnelStagesOrPersonas: boolean;
 	projectId: string;
+	projectTitle: string;
 }
 
 const contentCoverageService = ContentCoverageServiceImpl;
@@ -30,8 +32,10 @@ const contentCoverageService = ContentCoverageServiceImpl;
 export default function ContentGapMatrixCard({
 	assetFDSId,
 	editProjectURL,
+	groupId,
 	hasFunnelStagesOrPersonas,
 	projectId,
+	projectTitle,
 }: ContentGapMatrixCardProps) {
 	const [data, setData] = useState<MatrixData | null>(null);
 	const [error, setError] = useState(false);
@@ -73,7 +77,11 @@ export default function ContentGapMatrixCard({
 	if (!hasFunnelStagesOrPersonas) {
 		return (
 			<div className="lfr-cmp__content-gap-matrix-card">
-				<ContentGapMatrixHeader />
+				<ContentGapMatrixHeader
+					groupId={groupId}
+					projectId={projectId}
+					projectTitle={projectTitle}
+				/>
 
 				<div className="lfr-cmp__content-gap-matrix-container">
 					<div className="empty-state">
@@ -121,7 +129,11 @@ export default function ContentGapMatrixCard({
 	if (error || !data) {
 		return (
 			<div className="lfr-cmp__content-gap-matrix-card">
-				<ContentGapMatrixHeader />
+				<ContentGapMatrixHeader
+					groupId={groupId}
+					projectId={projectId}
+					projectTitle={projectTitle}
+				/>
 
 				<div className="lfr-cmp__content-gap-matrix-container">
 					<div className="empty-state">
@@ -136,7 +148,12 @@ export default function ContentGapMatrixCard({
 
 	return (
 		<div className="lfr-cmp__content-gap-matrix-card">
-			<ContentGapMatrixHeader data={data} />
+			<ContentGapMatrixHeader
+				data={data}
+				groupId={groupId}
+				projectId={projectId}
+				projectTitle={projectTitle}
+			/>
 
 			<div className="lfr-cmp__content-gap-matrix-container">
 				<div className="lfr-cmp__content-gap-matrix-intro">

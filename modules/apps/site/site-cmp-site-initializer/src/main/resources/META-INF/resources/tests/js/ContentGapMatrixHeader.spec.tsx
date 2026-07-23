@@ -14,7 +14,16 @@ import {
 	PARTIAL_COVERAGE_MATRIX,
 } from '../../js/components/content_gap_matrix/services/fixtures';
 
+jest.mock('@liferay/ai-hub-cell-js-components-web', () => ({
+	AIAssistantChat: (props: {triggerLabel: string}) =>
+		require('react').createElement('button', null, props.triggerLabel),
+}));
+
 describe('ContentGapMatrixHeader', () => {
+	afterEach(() => {
+		Liferay.FeatureFlags['LPD-62272'] = false;
+	});
+
 	it('colors the coverage badge secondary at partial coverage', () => {
 		const {container} = render(
 			<ContentGapMatrixHeader data={PARTIAL_COVERAGE_MATRIX} />
@@ -84,5 +93,15 @@ describe('ContentGapMatrixHeader', () => {
 			getByText('x-critical-gaps', {exact: false})
 		).toBeInTheDocument();
 		expect(queryByText('no-assets-found')).not.toBeInTheDocument();
+	});
+
+	it('renders the AI insights trigger when the feature flag is enabled', () => {
+		Liferay.FeatureFlags['LPD-62272'] = true;
+
+		const {getByText} = render(
+			<ContentGapMatrixHeader data={PARTIAL_COVERAGE_MATRIX} />
+		);
+
+		expect(getByText('get-ai-insights')).toBeInTheDocument();
 	});
 });

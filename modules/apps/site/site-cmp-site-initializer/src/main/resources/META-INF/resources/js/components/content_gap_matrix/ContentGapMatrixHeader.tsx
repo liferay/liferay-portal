@@ -5,13 +5,24 @@
 
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
+import {AIAssistantChat} from '@liferay/ai-hub-cell-js-components-web';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {MatrixData} from './types';
 import {computeCoveragePercentage, countCriticalGaps} from './utils';
 
-export default function ContentGapMatrixHeader({data}: {data?: MatrixData}) {
+export default function ContentGapMatrixHeader({
+	data,
+	groupId,
+	projectId,
+	projectTitle,
+}: {
+	data?: MatrixData;
+	groupId?: number;
+	projectId?: string;
+	projectTitle?: string;
+}) {
 	const coveragePercentage = data ? computeCoveragePercentage(data) : 0;
 	const coverageDisplayType =
 		coveragePercentage === 0
@@ -24,35 +35,55 @@ export default function ContentGapMatrixHeader({data}: {data?: MatrixData}) {
 
 	return (
 		<div className="lfr-cmp__content-gap-matrix-header">
-			<h5 className="lfr-cmp__content-gap-matrix-header-title text-uppercase">
-				<ClayIcon symbol="diagram" />
+			<div>
+				<h5 className="lfr-cmp__content-gap-matrix-header-title text-uppercase">
+					<ClayIcon symbol="diagram" />
 
-				{Liferay.Language.get('content-coverage-matrix')}
-			</h5>
+					{Liferay.Language.get('content-coverage-matrix')}
+				</h5>
 
-			{data ? (
-				<div className="lfr-cmp__content-gap-matrix-header-stats">
-					<ClayLabel displayType={coverageDisplayType} inverse>
-						{sub(
-							Liferay.Language.get('x-covered'),
-							`${coveragePercentage}%`
-						)}
-					</ClayLabel>
-
-					{noAssets ? (
-						<ClayLabel displayType="danger" inverse>
-							{Liferay.Language.get('no-assets-found')}
-						</ClayLabel>
-					) : criticalGaps > 0 ? (
-						<ClayLabel displayType="warning" inverse>
+				{data ? (
+					<div className="lfr-cmp__content-gap-matrix-header-stats">
+						<ClayLabel displayType={coverageDisplayType} inverse>
 							{sub(
-								Liferay.Language.get('x-critical-gaps'),
-								String(criticalGaps)
+								Liferay.Language.get('x-covered'),
+								`${coveragePercentage}%`
 							)}
 						</ClayLabel>
-					) : null}
-				</div>
-			) : null}
+
+						{noAssets ? (
+							<ClayLabel displayType="danger" inverse>
+								{Liferay.Language.get('no-assets-found')}
+							</ClayLabel>
+						) : criticalGaps > 0 ? (
+							<ClayLabel displayType="warning" inverse>
+								{sub(
+									Liferay.Language.get('x-critical-gaps'),
+									String(criticalGaps)
+								)}
+							</ClayLabel>
+						) : null}
+					</div>
+				) : null}
+			</div>
+
+			{Liferay.FeatureFlags['LPD-62272'] && (
+				<AIAssistantChat
+					context={{
+						cmsGroupId: groupId,
+						focusScope: 'full-matrix',
+						projectId,
+					}}
+					initialMessage={sub(
+						Liferay.Language.get(
+							'get-ai-insights-for-the-x-content-coverage-matrix'
+						),
+						projectTitle
+					)}
+					instructionDefinitionScope="cms"
+					triggerLabel={Liferay.Language.get('get-ai-insights')}
+				/>
+			)}
 		</div>
 	);
 }
