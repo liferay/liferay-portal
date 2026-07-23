@@ -69,8 +69,8 @@ public class DesignLibraryResourcesDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_setUpJSONFactoryUtil();
 		_setUpDesignLibraryResourcesDisplayContext();
+		_setUpJSONFactoryUtil();
 	}
 
 	@After
