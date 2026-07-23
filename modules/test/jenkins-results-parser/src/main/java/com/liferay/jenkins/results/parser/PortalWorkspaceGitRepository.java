@@ -246,7 +246,65 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	@Override
 	protected void setUpAdditionalCaches() throws IOException {
 		if (isBinariesCacheEnabled()) {
-			_setUpBinariesCache();
+			setUpBinariesCache();
+		}
+	}
+
+	protected void setUpBinariesCache() {
+		if (!JenkinsResultsParserUtil.isCloudCINode() || _setUpBinariesCache) {
+			return;
+		}
+
+		String binariesCacheS3Path;
+
+		try {
+			binariesCacheS3Path = JenkinsResultsParserUtil.getBuildProperty(
+				"binaries.cache.s3.path", getUpstreamBranchName());
+		}
+		catch (IOException ioException) {
+			System.out.println(
+				"WARNING: Unable to get \"binaries.cache.s3.path\"");
+
+			_setUpBinariesCache = true;
+
+			return;
+		}
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(binariesCacheS3Path)) {
+			return;
+		}
+
+		File binariesCacheTarGzipFile = new File(
+			getDirectory(), "binaries-cache.tar.gz");
+
+		try {
+			CloudBucketUtil.downloadS3File(
+				binariesCacheTarGzipFile, binariesCacheS3Path);
+		}
+		catch (IOException ioException) {
+			System.out.println(
+				"WARNING: Unable to download " + binariesCacheS3Path);
+
+			_setUpBinariesCache = true;
+
+			return;
+		}
+
+		try {
+			JenkinsResultsParserUtil.unTarGzip(
+				binariesCacheTarGzipFile, getDirectory());
+
+			System.out.println(
+				"Successfully untared " + binariesCacheS3Path + " to " +
+					getDirectory());
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+		finally {
+			JenkinsResultsParserUtil.delete(binariesCacheTarGzipFile);
+
+			_setUpBinariesCache = true;
 		}
 	}
 
@@ -333,64 +391,6 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			null, portalGitWorkingDirectory, upstreamBranchName, null,
 			portalGitWorkingDirectory.getGitRepositoryName(), "relevant",
 			upstreamBranchName);
-	}
-
-	private void _setUpBinariesCache() {
-		if (!JenkinsResultsParserUtil.isCloudCINode() || _setUpBinariesCache) {
-			return;
-		}
-
-		String binariesCacheS3Path;
-
-		try {
-			binariesCacheS3Path = JenkinsResultsParserUtil.getBuildProperty(
-				"binaries.cache.s3.path", getUpstreamBranchName());
-		}
-		catch (IOException ioException) {
-			System.out.println(
-				"WARNING: Unable to get \"binaries.cache.s3.path\"");
-
-			_setUpBinariesCache = true;
-
-			return;
-		}
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(binariesCacheS3Path)) {
-			return;
-		}
-
-		File binariesCacheTarGzipFile = new File(
-			getDirectory(), "binaries-cache.tar.gz");
-
-		try {
-			CloudBucketUtil.downloadS3File(
-				binariesCacheTarGzipFile, binariesCacheS3Path);
-		}
-		catch (IOException ioException) {
-			System.out.println(
-				"WARNING: Unable to download " + binariesCacheS3Path);
-
-			_setUpBinariesCache = true;
-
-			return;
-		}
-
-		try {
-			JenkinsResultsParserUtil.unTarGzip(
-				binariesCacheTarGzipFile, getDirectory());
-
-			System.out.println(
-				"Successfully untared " + binariesCacheS3Path + " to " +
-					getDirectory());
-		}
-		catch (Exception exception) {
-			throw new RuntimeException(exception);
-		}
-		finally {
-			JenkinsResultsParserUtil.delete(binariesCacheTarGzipFile);
-
-			_setUpBinariesCache = true;
-		}
 	}
 
 	private void _writeAppServerPropertiesFile() {
