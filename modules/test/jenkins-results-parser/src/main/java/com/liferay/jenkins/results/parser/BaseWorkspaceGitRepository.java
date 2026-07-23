@@ -664,7 +664,7 @@ public abstract class BaseWorkspaceGitRepository
 			return;
 		}
 
-		_promoteGitArchive();
+		promoteGitArchive();
 
 		if (_snapshot) {
 			_downloadGitArchive();
@@ -673,6 +673,21 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		_initializeGitWorkingDirectory();
+	}
+
+	protected void promoteGitArchive() throws IOException {
+		if (_snapshot) {
+			return;
+		}
+
+		if (_isGitArchiveAvailable() && _isDotGitArchiveAvailable()) {
+			CloudBucketUtil.touchS3File(_getGitArchiveS3BucketPath());
+			CloudBucketUtil.touchS3File(_getDotGitArchiveS3BucketPath());
+
+			_setSnapshot(true);
+
+			_updateBuildDatabase();
+		}
 	}
 
 	protected void setSetUp(boolean setUp) {
@@ -1344,21 +1359,6 @@ public abstract class BaseWorkspaceGitRepository
 
 	private boolean _isPullRequest() {
 		return PullRequest.isValidGitHubPullRequestURL(getGitHubURL());
-	}
-
-	private void _promoteGitArchive() throws IOException {
-		if (_snapshot) {
-			return;
-		}
-
-		if (_isGitArchiveAvailable() && _isDotGitArchiveAvailable()) {
-			CloudBucketUtil.touchS3File(_getGitArchiveS3BucketPath());
-			CloudBucketUtil.touchS3File(_getDotGitArchiveS3BucketPath());
-
-			_setSnapshot(true);
-
-			_updateBuildDatabase();
-		}
 	}
 
 	private void _setBaseBranchHeadSHA(String branchSHA) {
