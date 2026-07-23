@@ -825,6 +825,14 @@ public class CommerceDiscountLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CommerceDiscount getOrAddEmptyCommerceDiscount(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCommerceDiscount(
+			externalReferenceCode, companyId, userId);
+	}
+
 	public static List<CommerceDiscount> getOrderTypeCommerceDiscounts(
 		long commerceOrderTypeId, long cpDefinitionId, long cpInstanceId,
 		String unitOfMeasureKey) {
@@ -1173,4 +1181,4 @@ public class CommerceDiscountLocalServiceUtil {
 			CommerceDiscountLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1709429236
+// LIFERAY-SERVICE-BUILDER-HASH:1028861521

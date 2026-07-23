@@ -943,6 +943,16 @@ public class CommerceDiscountLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.commerce.discount.model.CommerceDiscount
+			getOrAddEmptyCommerceDiscount(
+				String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceDiscountLocalService.getOrAddEmptyCommerceDiscount(
+			externalReferenceCode, companyId, userId);
+	}
+
+	@Override
 	public java.util.List<com.liferay.commerce.discount.model.CommerceDiscount>
 		getOrderTypeCommerceDiscounts(
 			long commerceOrderTypeId, long cpDefinitionId, long cpInstanceId,
@@ -1351,4 +1361,4 @@ public class CommerceDiscountLocalServiceWrapper
 	private CommerceDiscountLocalService _commerceDiscountLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-411383524
+// LIFERAY-SERVICE-BUILDER-HASH:888709029
