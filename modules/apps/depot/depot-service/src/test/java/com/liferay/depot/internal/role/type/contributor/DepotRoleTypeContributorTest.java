@@ -246,6 +246,9 @@ public class DepotRoleTypeContributorTest {
 		_testIsAllowDeleteWithDesignLibraryOwner();
 		_testIsAllowDeleteWithMember();
 		_testIsAllowDeleteWithOwner();
+		_testIsAllowDeleteWithProjectContributor();
+		_testIsAllowDeleteWithProjectManager();
+		_testIsAllowDeleteWithProjectMember();
 	}
 
 	@Test
@@ -359,6 +362,24 @@ public class DepotRoleTypeContributorTest {
 		Assert.assertFalse(
 			_depotRoleTypeContributor.isAllowDelete(
 				_mockRole(DepotRolesConstants.ASSET_LIBRARY_OWNER)));
+	}
+
+	private void _testIsAllowDeleteWithProjectContributor() {
+		Assert.assertTrue(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.PROJECT_CONTRIBUTOR)));
+	}
+
+	private void _testIsAllowDeleteWithProjectManager() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.PROJECT_MANAGER)));
+	}
+
+	private void _testIsAllowDeleteWithProjectMember() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAllowDelete(
+				_mockRole(DepotRolesConstants.PROJECT_MEMBER)));
 	}
 
 	private final DepotRoleTypeContributor _depotRoleTypeContributor =
