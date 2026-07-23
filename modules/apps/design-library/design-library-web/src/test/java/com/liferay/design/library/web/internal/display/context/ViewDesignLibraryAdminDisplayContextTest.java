@@ -45,113 +45,6 @@ public class ViewDesignLibraryAdminDisplayContextTest {
 
 	@Before
 	public void setUp() {
-		_setUpHttpServletRequest();
-		_setUpLanguageUtil();
-		_setUpPortletURLMocks();
-		_setUpViewDesignLibraryAdminDisplayContext();
-	}
-
-	@After
-	public void tearDown() {
-		_languageUtilMockedStatic.close();
-	}
-
-	@Test
-	public void testGetEmptyStateWhenCanAddDesignLibrary() throws Exception {
-		_setUpAddDepotEntryPermission(true);
-
-		Map<String, Object> emptyState =
-			_viewDesignLibraryAdminDisplayContext.getEmptyState();
-
-		Assert.assertEquals(
-			"click-new-to-create-your-first-design-library",
-			emptyState.get("description"));
-	}
-
-	@Test
-	public void testGetEmptyStateWhenCannotAddDesignLibrary() throws Exception {
-		_setUpAddDepotEntryPermission(false);
-
-		Map<String, Object> emptyState =
-			_viewDesignLibraryAdminDisplayContext.getEmptyState();
-
-		Assert.assertEquals(StringPool.BLANK, emptyState.get("description"));
-	}
-
-	@Test
-	public void testGetFDSAdditionalPropsWhenCanAddDesignLibrary()
-		throws Exception {
-
-		_assertCanAddDesignLibrary(true);
-	}
-
-	@Test
-	public void testGetFDSAdditionalPropsWhenCannotAddDesignLibrary()
-		throws Exception {
-
-		_assertCanAddDesignLibrary(false);
-	}
-
-	private void _assertCanAddDesignLibrary(boolean addDepotEntryPermission) {
-		_setUpAddDepotEntryPermission(addDepotEntryPermission);
-
-		Map<String, Object> fdsAdditionalProps =
-			_viewDesignLibraryAdminDisplayContext.getFDSAdditionalProps();
-
-		Assert.assertEquals(
-			addDepotEntryPermission,
-			fdsAdditionalProps.get("canAddDesignLibrary"));
-	}
-
-	private void _setUpAddDepotEntryPermission(
-		boolean addDepotEntryPermission) {
-
-		long scopeGroupId = RandomTestUtil.randomLong();
-
-		Mockito.when(
-			_themeDisplay.getScopeGroupId()
-		).thenReturn(
-			scopeGroupId
-		);
-
-		Mockito.when(
-			_portletResourcePermission.contains(
-				_permissionChecker, scopeGroupId,
-				DepotActionKeys.ADD_DEPOT_ENTRY)
-		).thenReturn(
-			addDepotEntryPermission
-		);
-	}
-
-	private void _setUpHttpServletRequest() {
-		Mockito.when(
-			_themeDisplay.getPermissionChecker()
-		).thenReturn(
-			_permissionChecker
-		);
-
-		_mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-	}
-
-	private void _setUpLanguageUtil() {
-		_languageUtilMockedStatic.when(
-			() -> LanguageUtil.get(
-				Mockito.eq(_mockHttpServletRequest), Mockito.anyString())
-		).thenAnswer(
-			invocation -> invocation.getArgument(1)
-		);
-	}
-
-	private void _setUpPortletURLMocks() {
-		Mockito.when(
-			_liferayPortletResponse.createRenderURL()
-		).thenReturn(
-			_liferayPortletURL
-		);
-	}
-
-	private void _setUpViewDesignLibraryAdminDisplayContext() {
 		ReflectionTestUtil.setFieldValue(
 			ViewDesignLibraryAdminDisplayContext.class,
 			"_depotPortletResourcePermissionSnapshot",
@@ -166,17 +59,102 @@ public class ViewDesignLibraryAdminDisplayContextTest {
 
 			});
 
+		_languageUtilMockedStatic.when(
+			() -> LanguageUtil.get(
+				Mockito.eq(_mockHttpServletRequest), Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1)
+		);
+
+		Mockito.when(
+			_themeDisplay.getPermissionChecker()
+		).thenReturn(
+			_permissionChecker
+		);
+
+		_mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+
+		Mockito.when(
+			_liferayPortletResponse.createRenderURL()
+		).thenReturn(
+			Mockito.mock(LiferayPortletURL.class)
+		);
+
 		_viewDesignLibraryAdminDisplayContext =
 			new ViewDesignLibraryAdminDisplayContext(
 				_mockHttpServletRequest, _liferayPortletResponse);
+	}
+
+	@After
+	public void tearDown() {
+		_languageUtilMockedStatic.close();
+	}
+
+	@Test
+	public void testGetEmptyState() {
+		_testGetEmptyStateWhenUserDoesNotHaveAddPermission();
+		_testGetEmptyStateWhenUserHasAddPermission();
+	}
+
+	@Test
+	public void testGetFDSAdditionalProps() {
+		_testGetFDSAdditionalProps(false);
+		_testGetFDSAdditionalProps(true);
+	}
+
+	private void _setUpAddDepotEntryPermission(boolean canAddDesignLibrary) {
+		long scopeGroupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_themeDisplay.getScopeGroupId()
+		).thenReturn(
+			scopeGroupId
+		);
+
+		Mockito.when(
+			_portletResourcePermission.contains(
+				_permissionChecker, scopeGroupId,
+				DepotActionKeys.ADD_DEPOT_ENTRY)
+		).thenReturn(
+			canAddDesignLibrary
+		);
+	}
+
+	private void _testGetEmptyStateWhenUserDoesNotHaveAddPermission() {
+		_setUpAddDepotEntryPermission(false);
+
+		Map<String, Object> emptyState =
+			_viewDesignLibraryAdminDisplayContext.getEmptyState();
+
+		Assert.assertEquals(StringPool.BLANK, emptyState.get("description"));
+	}
+
+	private void _testGetEmptyStateWhenUserHasAddPermission() {
+		_setUpAddDepotEntryPermission(true);
+
+		Map<String, Object> emptyState =
+			_viewDesignLibraryAdminDisplayContext.getEmptyState();
+
+		Assert.assertEquals(
+			"click-new-to-create-your-first-design-library",
+			emptyState.get("description"));
+	}
+
+	private void _testGetFDSAdditionalProps(boolean canAddDesignLibrary) {
+		_setUpAddDepotEntryPermission(canAddDesignLibrary);
+
+		Map<String, Object> fdsAdditionalProps =
+			_viewDesignLibraryAdminDisplayContext.getFDSAdditionalProps();
+
+		Assert.assertEquals(
+			canAddDesignLibrary, fdsAdditionalProps.get("canAddDesignLibrary"));
 	}
 
 	private final MockedStatic<LanguageUtil> _languageUtilMockedStatic =
 		Mockito.mockStatic(LanguageUtil.class);
 	private final LiferayPortletResponse _liferayPortletResponse = Mockito.mock(
 		LiferayPortletResponse.class);
-	private final LiferayPortletURL _liferayPortletURL = Mockito.mock(
-		LiferayPortletURL.class);
 	private final MockHttpServletRequest _mockHttpServletRequest =
 		new MockHttpServletRequest();
 	private final PermissionChecker _permissionChecker = Mockito.mock(
