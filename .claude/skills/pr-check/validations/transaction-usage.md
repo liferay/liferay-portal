@@ -47,7 +47,7 @@ shuyangzhou
 When the validation fails, report the message below to the developer and return it as the failure note.
 
 ```markdown
-⚠️ **Transaction usage requires Core Infrastructure review.** New transaction code (`@Transactional`, `TransactionInvokerUtil`, etc.) has heavy performance implications and requires additional review. After team review is complete, please send this pull request to @liferay-core-infra and request review from @shuyangzhou. For additional questions, use #t-core-infrastructure on Slack.
+**Transaction usage requires Core Infrastructure review.** New transaction code (`@Transactional`, `TransactionInvokerUtil`, etc.) has heavy performance implications and requires additional review. After team review is complete, please send this pull request to @liferay-core-infra and request review from @shuyangzhou. For additional questions, use #t-core-infrastructure on Slack.
 ```
 
 ## Time Estimate
