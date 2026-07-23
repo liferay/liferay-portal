@@ -15,6 +15,7 @@ type DocumentMetricResult = {
 
 const BROWSER_DEVICE_QUERY = gql`
 	query DocumentsAndMediaMetrics(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -26,6 +27,7 @@ const BROWSER_DEVICE_QUERY = gql`
 		$touchpoint: String
 	) {
 		document(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId

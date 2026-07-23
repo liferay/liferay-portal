@@ -10,6 +10,7 @@ import {withLocationsCard} from 'cerebro-shared/hocs/LocationsCard';
 
 const GEOLOCATION_QUERY = gql`
 	query ObjectEntryLocationsMetric(
+		$accountId: String
 		$assetId: String!
 		$devices: String
 		$location: String
@@ -19,6 +20,7 @@ const GEOLOCATION_QUERY = gql`
 		$touchpoint: String
 	) {
 		objectEntry(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			country: $location

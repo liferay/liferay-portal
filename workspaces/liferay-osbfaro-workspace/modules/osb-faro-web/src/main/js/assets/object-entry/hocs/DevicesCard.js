@@ -8,6 +8,7 @@ import {withDevicesCard} from 'shared/hoc/DevicesCard';
 
 const BROWSER_DEVICE_QUERY = gql`
 	query ObjectEntryDevicesCardMetric(
+		$accountId: String
 		$assetId: String!
 		$devices: String
 		$location: String
@@ -17,6 +18,7 @@ const BROWSER_DEVICE_QUERY = gql`
 		$touchpoint: String
 	) {
 		objectEntry(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			country: $location

@@ -8,6 +8,7 @@ import {withDevicesCard} from 'shared/hoc/DevicesCard';
 
 const BROWSER_DEVICE_QUERY = gql`
 	query BlogsMetrics(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -19,6 +20,7 @@ const BROWSER_DEVICE_QUERY = gql`
 		$touchpoint: String
 	) {
 		blog(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId

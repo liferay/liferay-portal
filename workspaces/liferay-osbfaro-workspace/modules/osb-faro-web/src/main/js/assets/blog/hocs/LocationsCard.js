@@ -10,6 +10,7 @@ import {withLocationsCard} from 'cerebro-shared/hocs/LocationsCard';
 
 const GEOLOCATION_QUERY = gql`
 	query BlogsMetrics(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -21,6 +22,7 @@ const GEOLOCATION_QUERY = gql`
 		$touchpoint: String
 	) {
 		blog(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId
