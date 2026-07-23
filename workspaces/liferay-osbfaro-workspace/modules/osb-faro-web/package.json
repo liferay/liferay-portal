@@ -16,6 +16,7 @@
 		"@clayui/core": "3.165.0",
 		"@clayui/css": "3.165.0",
 		"@clayui/data-provider": "3.165.0",
+		"@clayui/date-picker": "3.165.0",
 		"@clayui/drop-down": "3.165.0",
 		"@clayui/empty-state": "3.165.0",
 		"@clayui/form": "3.165.0",

@@ -1019,7 +1019,7 @@
   dependencies:
     core-js-pure "^3.48.0"
 
-"@babel/runtime@^7.1.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.26.10", "@babel/runtime@^7.28.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.13", "@babel/runtime@^7.12.5", "@babel/runtime@^7.21.0", "@babel/runtime@^7.26.10", "@babel/runtime@^7.28.4", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.29.7"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.29.7.tgz#12022450c45a4da6d8d8287b18a4ff2ddb23f768"
   integrity sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==
@@ -1141,6 +1141,21 @@
     "@clayui/shared" "^3.165.0"
     fast-json-stable-stringify "^2.1.0"
     warning "^4.0.3"
+
+"@clayui/date-picker@3.165.0":
+  version "3.165.0"
+  resolved "https://registry.yarnpkg.com/@clayui/date-picker/-/date-picker-3.165.0.tgz#c2c8686f71b71deb059ce53c1f7becea933d5bce"
+  integrity sha512-PAveS9Fm177MGHX3C89VliGTMhMNk2D43LdQ3Q33Ou/y/Qkg1oiqlr2x2qYF5W85puY2ecSlrMGKCxbt0lSgow==
+  dependencies:
+    "@clayui/button" "^3.165.0"
+    "@clayui/core" "^3.165.0"
+    "@clayui/drop-down" "^3.165.0"
+    "@clayui/form" "^3.165.0"
+    "@clayui/icon" "^3.165.0"
+    "@clayui/shared" "^3.165.0"
+    "@clayui/time-picker" "^3.165.0"
+    classnames "2.3.1"
+    date-fns "^2.14.0"
 
 "@clayui/drop-down@3.165.0", "@clayui/drop-down@^3.165.0":
   version "3.165.0"
@@ -1366,6 +1381,17 @@
   resolved "https://registry.yarnpkg.com/@clayui/tabs/-/tabs-3.165.0.tgz#49700ccf284d7d413299d21ab889018ec2c469bc"
   integrity sha512-SJsPd/aaD+/bcWF+2D2HhHwhV28+FFoDQFa91eSUObAUbVpRaSnL6H1O8bcLnVcbRyYblgmf9bHyWyuLLQCmbQ==
   dependencies:
+    "@clayui/shared" "^3.165.0"
+    classnames "2.3.1"
+
+"@clayui/time-picker@^3.165.0":
+  version "3.165.0"
+  resolved "https://registry.yarnpkg.com/@clayui/time-picker/-/time-picker-3.165.0.tgz#596ed5a2aefb22137f079b74af403da47d5ee876"
+  integrity sha512-eLd5OdZaZhg5NpbvEIvUM+KZINH05omTex0SoGlbCYjCGrhIKMXOnDtNN76ovTRNtJl1YhR9kj/InmY4q0f8cw==
+  dependencies:
+    "@clayui/button" "^3.165.0"
+    "@clayui/form" "^3.165.0"
+    "@clayui/icon" "^3.165.0"
     "@clayui/shared" "^3.165.0"
     classnames "2.3.1"
 
@@ -5803,6 +5829,13 @@ date-fns@^1.30.1:
   version "1.30.1"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
   integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
+
+date-fns@^2.14.0:
+  version "2.30.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.30.0.tgz#f367e644839ff57894ec6ac480de40cae4b0f4d0"
+  integrity sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==
+  dependencies:
+    "@babel/runtime" "^7.21.0"
 
 dateformat@^2.0.0:
   version "2.2.0"
