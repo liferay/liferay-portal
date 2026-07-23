@@ -61,16 +61,19 @@ public class BuildQueueRebalancerTest
 
 		setUrlReaderOutput(
 			JenkinsResultsParserUtil.combine(
-				"{\"items\":[{\"id\":101,\"inQueueSince\":1,\"task\":",
-				"{\"name\":\"test-portal-acceptance-pullrequest(master)\",",
+				"{\"items\":[", "{\"id\":101,\"inQueueSince\":1,",
+				"\"task\":{\"name\":",
+				"\"test-portal-acceptance-pullrequest(master)\",",
 				"\"url\":\"http://", _BLACK_LISTED_JENKINS_MASTER_NAME,
-				".liferay.com/job/test-portal-acceptance-pullrequest",
-				"(master)/\"},\"url\":\"queue/item/101/\",\"why\":\"\"},",
-				"{\"id\":102,\"inQueueSince\":2,\"task\":{\"name\":",
-				"\"test-portal-acceptance-pullrequest(master)\",\"url\":",
-				"\"http://", _BLACK_LISTED_JENKINS_MASTER_NAME,
-				".liferay.com/job/test-portal-acceptance-pullrequest",
-				"(master)/\"},\"url\":\"queue/item/102/\",\"why\":\"\"}]}"),
+				".liferay.com/job/",
+				"test-portal-acceptance-pullrequest(master)/\"},",
+				"\"url\":\"queue/item/101/\",\"why\":\"\"},",
+				"{\"id\":102,\"inQueueSince\":2,", "\"task\":{\"name\":",
+				"\"test-portal-acceptance-pullrequest(master)\",",
+				"\"url\":\"http://", _BLACK_LISTED_JENKINS_MASTER_NAME,
+				".liferay.com/job/",
+				"test-portal-acceptance-pullrequest(master)/\"},",
+				"\"url\":\"queue/item/102/\",\"why\":\"\"}", "]}"),
 			_BLACK_LISTED_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
 			urlReader);
 		setUrlReaderOutput(
