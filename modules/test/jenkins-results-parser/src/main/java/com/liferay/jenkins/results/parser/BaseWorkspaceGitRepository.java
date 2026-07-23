@@ -401,7 +401,7 @@ public abstract class BaseWorkspaceGitRepository
 
 			setUpAdditionalCaches();
 
-			uploadGitArchive();
+			uploadGitArchives();
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -809,7 +809,27 @@ public abstract class BaseWorkspaceGitRepository
 	protected void setUpAdditionalCaches() throws IOException {
 	}
 
+	protected void uploadDotGitArchive() throws IOException {
+		File dotGitDirArchiveFile = _archiveDotGitDir();
+
+		CloudBucketUtil.uploadS3File(
+			_getGitArchiveS3BucketPath(dotGitDirArchiveFile.getName()),
+			dotGitDirArchiveFile);
+
+		JenkinsResultsParserUtil.delete(dotGitDirArchiveFile);
+	}
+
 	protected void uploadGitArchive() throws IOException {
+		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+
+		File archiveFile = gitWorkingDirectory.archive(_getGitArchiveName());
+
+		CloudBucketUtil.uploadS3File(_getGitArchiveS3BucketPath(), archiveFile);
+
+		JenkinsResultsParserUtil.delete(archiveFile);
+	}
+
+	protected void uploadGitArchives() throws IOException {
 		if (!_isGitArchiveEnabled() || _snapshot ||
 			!JenkinsResultsParserUtil.isCloudCINode()) {
 
@@ -819,23 +839,9 @@ public abstract class BaseWorkspaceGitRepository
 		String jobName = _getJobName();
 
 		if (JenkinsResultsParserUtil.isTopLevelJobName(jobName)) {
-			GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+			uploadGitArchive();
 
-			File archiveFile = gitWorkingDirectory.archive(
-				_getGitArchiveName());
-
-			CloudBucketUtil.uploadS3File(
-				_getGitArchiveS3BucketPath(), archiveFile);
-
-			JenkinsResultsParserUtil.delete(archiveFile);
-
-			File dotGitDirArchiveFile = _archiveDotGitDir();
-
-			CloudBucketUtil.uploadS3File(
-				_getGitArchiveS3BucketPath(dotGitDirArchiveFile.getName()),
-				dotGitDirArchiveFile);
-
-			JenkinsResultsParserUtil.delete(dotGitDirArchiveFile);
+			uploadDotGitArchive();
 		}
 
 		if (!jobName.contains("root-cause-analysis-tool")) {
