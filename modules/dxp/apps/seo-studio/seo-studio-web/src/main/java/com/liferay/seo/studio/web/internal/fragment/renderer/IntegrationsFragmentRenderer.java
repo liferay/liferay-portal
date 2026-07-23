@@ -12,6 +12,7 @@ import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.log.Log;
@@ -19,8 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -60,11 +60,11 @@ public class IntegrationsFragmentRenderer
 	protected IntegrationsDisplayContext getDisplayContext(
 		HttpServletRequest httpServletRequest) {
 
-		long companyId = portal.getCompanyId(httpServletRequest);
-
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
+
+		long companyId = portal.getCompanyId(httpServletRequest);
 
 		List<ListTypeEntry> seoStudioIntegrationTypeListTypeEntries =
 			_getSEOStudioIntegrationTypeListTypeEntries(companyId);
@@ -98,14 +98,11 @@ public class IntegrationsFragmentRenderer
 		for (ListTypeEntry listTypeEntry :
 				seoStudioIntegrationTypeListTypeEntries) {
 
-			String friendlyURL = _friendlyURLsMap.get(listTypeEntry.getKey());
-
-			if (Validator.isNull(friendlyURL)) {
-				continue;
-			}
+			String key = listTypeEntry.getKey();
 
 			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-				themeDisplay.getScopeGroupId(), false, friendlyURL);
+				themeDisplay.getScopeGroupId(), false,
+				StringPool.SLASH + StringUtil.toLowerCase(key));
 
 			if (layout == null) {
 				continue;
@@ -113,8 +110,7 @@ public class IntegrationsFragmentRenderer
 
 			try {
 				configurationURLsMap.put(
-					listTypeEntry.getKey(),
-					portal.getLayoutFullURL(layout, themeDisplay));
+					key, portal.getLayoutFullURL(layout, themeDisplay));
 			}
 			catch (PortalException portalException) {
 				if (_log.isWarnEnabled()) {
@@ -173,13 +169,6 @@ public class IntegrationsFragmentRenderer
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		IntegrationsFragmentRenderer.class);
-
-	private static final Map<String, String> _friendlyURLsMap =
-		HashMapBuilder.put(
-			"gsc", "/gsc"
-		).put(
-			"pageSpeed", "/pagespeed"
-		).build();
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;

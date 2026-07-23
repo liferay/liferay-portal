@@ -10,7 +10,7 @@
 		{
 			"externalReferenceCode": "PAGESPEED",
 			"key": "pageSpeed",
-			"name": "PageSpeed",
+			"name": "Google PageSpeed Insights",
 			"system": true
 		}
 	],
