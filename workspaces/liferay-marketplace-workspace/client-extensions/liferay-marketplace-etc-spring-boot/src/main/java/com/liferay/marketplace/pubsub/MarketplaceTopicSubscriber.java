@@ -50,7 +50,7 @@ import org.springframework.stereotype.Service;
 public class MarketplaceTopicSubscriber {
 
 	@PostConstruct
-	public void postConstruct() {
+	public void postConstruct() throws Exception {
 		GoogleCredentials googleCredentials;
 
 		try {
