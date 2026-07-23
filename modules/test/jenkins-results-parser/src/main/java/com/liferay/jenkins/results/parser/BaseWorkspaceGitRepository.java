@@ -361,7 +361,7 @@ public abstract class BaseWorkspaceGitRepository
 
 		validateKeys(_REQUIRED_KEYS);
 
-		_updateBuildDatabase();
+		updateBuildDatabase();
 	}
 
 	@Override
@@ -777,6 +777,14 @@ public abstract class BaseWorkspaceGitRepository
 		return workingDirectoryName.contains("ee-6.2.x");
 	}
 
+	protected boolean isGitArchivesAvailable() {
+		if (_isGitArchiveAvailable() && _isDotGitArchiveAvailable()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	protected boolean isSetUp() {
 		return _setUp;
 	}
@@ -808,13 +816,12 @@ public abstract class BaseWorkspaceGitRepository
 			return;
 		}
 
-		if (_isGitArchiveAvailable() && _isDotGitArchiveAvailable()) {
-			CloudBucketUtil.touchS3File(_getGitArchiveS3BucketPath());
-			CloudBucketUtil.touchS3File(_getDotGitArchiveS3BucketPath());
+		if (isGitArchivesAvailable()) {
+			touchGitArchives();
 
-			_setSnapshot(true);
+			setSnapshot(true);
 
-			_updateBuildDatabase();
+			updateBuildDatabase();
 		}
 	}
 
@@ -822,7 +829,24 @@ public abstract class BaseWorkspaceGitRepository
 		_setUp = setUp;
 	}
 
+	protected void setSnapshot(boolean snapshot) {
+		put("snapshot", snapshot);
+
+		_snapshot = snapshot;
+	}
+
 	protected void setUpAdditionalCaches() throws IOException {
+	}
+
+	protected void touchGitArchives() throws IOException {
+		CloudBucketUtil.touchS3File(_getDotGitArchiveS3BucketPath());
+		CloudBucketUtil.touchS3File(_getGitArchiveS3BucketPath());
+	}
+
+	protected void updateBuildDatabase() {
+		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+
+		buildDatabase.putWorkspaceGitRepository(getDirectoryName(), this);
 	}
 
 	protected void uploadDotGitArchive() throws IOException {
@@ -861,10 +885,10 @@ public abstract class BaseWorkspaceGitRepository
 		}
 
 		if (!jobName.contains("root-cause-analysis-tool")) {
-			_setSnapshot(true);
+			setSnapshot(true);
 		}
 
-		_updateBuildDatabase();
+		updateBuildDatabase();
 	}
 
 	protected void validateSHAInRemoteGitRef(
@@ -1455,18 +1479,6 @@ public abstract class BaseWorkspaceGitRepository
 
 	private void _setSenderBranchUsername(String username) {
 		put("sender_branch_username", username);
-	}
-
-	private void _setSnapshot(boolean snapshot) {
-		put("snapshot", snapshot);
-
-		_snapshot = snapshot;
-	}
-
-	private void _updateBuildDatabase() {
-		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
-
-		buildDatabase.putWorkspaceGitRepository(getDirectoryName(), this);
 	}
 
 	private static final int _MAX_BASE_BRANCH_SHA_LENGTH = 7;
