@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.IOException;
+
 import java.lang.reflect.Field;
 
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ import java.util.Properties;
 
 import org.junit.After;
 import org.junit.Test;
+
+import org.mockito.Mockito;
 
 /**
  * @author Calum Ragan
@@ -128,6 +132,67 @@ public class BuildQueueRebalancerTest
 			true,
 			summary.startsWith(
 				"Build queue rebalanced by 2 reinvocations and 0 aborts"));
+	}
+
+	@Test
+	public void testRebalanceUnreachableBlackListedJenkinsMaster()
+		throws Exception {
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty("jenkins.load.balancer.blacklist", "");
+
+		_setJenkinsMasterBuildProperties(
+			buildProperties, _AVAILABLE_JENKINS_MASTER_NAME);
+		_setJenkinsMasterBuildProperties(
+			buildProperties, _BLACK_LISTED_JENKINS_MASTER_NAME);
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		UrlReader urlReader = mockUrlReader();
+
+		Mockito.doThrow(
+			new IOException("Connection refused")
+		).when(
+			urlReader
+		).doRead(
+			Mockito.anyBoolean(), Mockito.any(), Mockito.any(),
+			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.argThat(
+				readURL ->
+					(readURL != null) &&
+					readURL.contains(
+						_BLACK_LISTED_JENKINS_MASTER_NAME +
+							".liferay.com/queue/api/json"))
+		);
+
+		setUrlReaderOutput(
+			"{\"mode\":\"NORMAL\"}",
+			_AVAILABLE_JENKINS_MASTER_NAME + ".liferay.com/api/json?tree=mode",
+			urlReader);
+		setUrlReaderOutput(
+			"{\"items\":[]}",
+			_AVAILABLE_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
+			urlReader);
+
+		_setJenkinsMasterAWSFleetClouds(_AVAILABLE_JENKINS_MASTER_NAME);
+		_setJenkinsMasterAWSFleetClouds(_BLACK_LISTED_JENKINS_MASTER_NAME);
+
+		_setFieldValue(
+			JenkinsMaster.getInstance(_BLACK_LISTED_JENKINS_MASTER_NAME),
+			"_blacklisted", true);
+
+		BuildQueueRebalancer buildQueueRebalancer = new BuildQueueRebalancer(
+			JenkinsCohort.getInstance(_JENKINS_COHORT_NAME));
+
+		buildQueueRebalancer.rebalance();
+
+		String summary = buildQueueRebalancer.getSummary();
+
+		testEquals(
+			true,
+			summary.startsWith(
+				"Build queue rebalanced by 0 reinvocations and 0 aborts"));
 	}
 
 	@SuppressWarnings("unchecked")

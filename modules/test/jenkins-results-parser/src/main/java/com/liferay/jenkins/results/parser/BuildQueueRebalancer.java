@@ -116,10 +116,17 @@ public class BuildQueueRebalancer {
 		for (JenkinsMaster jenkinsMaster :
 				_jenkinsCohort.getBlackListedJenkinsMasters()) {
 
-			for (JenkinsMaster.QueueItem queueItem :
-					jenkinsMaster.getQueueItems()) {
+			try {
+				for (JenkinsMaster.QueueItem queueItem :
+						jenkinsMaster.getQueueItems()) {
 
-				_rebalanceActions.add(new RebalanceAction(queueItem));
+					_rebalanceActions.add(new RebalanceAction(queueItem));
+				}
+			}
+			catch (Exception exception) {
+				System.out.println(
+					"Unable to drain queue items from " +
+						jenkinsMaster.getName() + ": " + exception);
 			}
 		}
 	}
