@@ -5,6 +5,9 @@
 
 package com.liferay.portal.dao.orm.hibernate;
 
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+
 import java.io.Serializable;
 
 import java.sql.PreparedStatement;
@@ -13,12 +16,12 @@ import java.sql.SQLException;
 
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.usertype.UserType;
+import org.hibernate.usertype.EnhancedUserType;
 
 /**
  * @author Brian Wing Shun Chan
  */
-public class BooleanType implements Serializable, UserType {
+public class BooleanType implements EnhancedUserType, Serializable {
 
 	public static final Boolean DEFAULT_VALUE = Boolean.FALSE;
 
@@ -47,6 +50,11 @@ public class BooleanType implements Serializable, UserType {
 		}
 
 		return x.equals(y);
+	}
+
+	@Override
+	public Object fromXMLString(String xmlValue) {
+		return Boolean.valueOf(xmlValue);
 	}
 
 	@Override
@@ -90,6 +98,17 @@ public class BooleanType implements Serializable, UserType {
 	}
 
 	@Override
+	public String objectToSQLString(Object value) {
+		DB db = DBManagerUtil.getDB();
+
+		if (Boolean.TRUE.equals(value)) {
+			return db.getTemplateTrue();
+		}
+
+		return db.getTemplateFalse();
+	}
+
+	@Override
 	public Object replace(Object original, Object target, Object owner) {
 		return original;
 	}
@@ -102,6 +121,11 @@ public class BooleanType implements Serializable, UserType {
 	@Override
 	public int[] sqlTypes() {
 		return new int[] {StandardBasicTypes.BOOLEAN.sqlType()};
+	}
+
+	@Override
+	public String toXMLString(Object value) {
+		return value.toString();
 	}
 
 }
