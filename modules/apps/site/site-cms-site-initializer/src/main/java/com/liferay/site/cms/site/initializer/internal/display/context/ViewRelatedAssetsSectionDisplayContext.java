@@ -5,7 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.configuration.DLConfiguration;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
@@ -30,7 +29,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Carolina Barbosa
@@ -39,7 +37,6 @@ public class ViewRelatedAssetsSectionDisplayContext
 	extends BaseRelatedAssetsSectionDisplayContext {
 
 	public ViewRelatedAssetsSectionDisplayContext(
-		AssetTagLocalService assetTagLocalService,
 		DepotEntryLocalService depotEntryLocalService,
 		DLConfiguration dlConfiguration, GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest, Language language,
@@ -50,20 +47,18 @@ public class ViewRelatedAssetsSectionDisplayContext
 			translationInfoItemFieldValuesExporterRegistry) {
 
 		super(
-			assetTagLocalService, depotEntryLocalService, dlConfiguration,
-			groupLocalService, httpServletRequest, language, objectDefinition,
+			depotEntryLocalService, dlConfiguration, groupLocalService,
+			httpServletRequest, language, objectDefinition,
 			objectDefinitionService, objectEntry, portal,
 			translationInfoItemFieldValuesExporterRegistry);
 
-		Set<String> tagNames = getTagNames(objectDefinition, objectEntry);
-
-		_keywords = tagNames.toArray(new String[0]);
+		_linkedAssetsFilterFieldName = _getLinkedAssetsFilterFieldName();
 	}
 
 	@Override
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
-			"keywords", StringUtil.merge(_keywords)
+			"objectEntryLinkContext", _getObjectEntryLinkContext()
 		).putAll(
 			super.getAdditionalProps()
 		).build();
@@ -78,8 +73,6 @@ public class ViewRelatedAssetsSectionDisplayContext
 				"baseAssetLibraryViewURL",
 				ActionUtil.getBaseSpaceURL(themeDisplay)
 			).putData(
-				"keywords", StringUtil.merge(_keywords)
-			).putData(
 				"parentObjectEntryFolderExternalReferenceCode", StringPool.BLANK
 			).setIcon(
 				"upload-multiple"
@@ -89,7 +82,13 @@ public class ViewRelatedAssetsSectionDisplayContext
 			DropdownItemBuilder.putData(
 				"action", "selectAssets"
 			).putData(
-				"keywords", StringUtil.merge(_keywords)
+				"objectEntryId", String.valueOf(objectEntry.getObjectEntryId())
+			).putData(
+				"objectRelationshipFieldName", _getObjectRelationshipFieldName()
+			).putData(
+				"restContextPath", _getRESTContextPath()
+			).putData(
+				"scopeGroupId", String.valueOf(objectEntry.getGroupId())
 			).putData(
 				"searchAPIURL",
 				() -> {
@@ -98,9 +97,9 @@ public class ViewRelatedAssetsSectionDisplayContext
 							appendStatus(
 								StringBundler.concat(
 									"(cmsSection eq 'contents' or cmsSection ",
-									"eq 'files') and not (keywords/any(k:k in ",
-									"(", getKeywordsFilterString(),
-									"))) and objectDefinitionId gt 0 and ",
+									"eq 'files') and not (",
+									getLinkedAssetsFilterString(),
+									") and objectDefinitionId gt 0 and ",
 									"rootDescendantNode eq false")),
 							httpServletRequest, null);
 
@@ -141,10 +140,53 @@ public class ViewRelatedAssetsSectionDisplayContext
 	}
 
 	@Override
-	protected String[] getKeywords() {
-		return _keywords;
+	protected String getLinkedAssetsFilterString() {
+		return getLinkedAssetsFilterString(
+			_linkedAssetsFilterFieldName, objectEntry.getObjectEntryId());
 	}
 
-	private final String[] _keywords;
+	private Map<String, Object> _getObjectEntryLinkContext() {
+		return HashMapBuilder.<String, Object>put(
+			"objectEntryId", String.valueOf(objectEntry.getObjectEntryId())
+		).put(
+			"objectRelationshipFieldName", _getObjectRelationshipFieldName()
+		).put(
+			"restContextPath", _getRESTContextPath()
+		).put(
+			"scopeGroupId", String.valueOf(objectEntry.getGroupId())
+		).build();
+	}
+
+	private String _getLinkedAssetsFilterFieldName() {
+		if (StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
+
+			return "cmpProjectObjectEntryIds";
+		}
+
+		return "cmpTaskObjectEntryIds";
+	}
+
+	private String _getObjectRelationshipFieldName() {
+		if (StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
+
+			return "r_cmpProjectToCMPProjectLinks_c_cmpProjectId";
+		}
+
+		return "r_cmpTaskToCMPTaskLinks_c_cmpTaskId";
+	}
+
+	private String _getRESTContextPath() {
+		if (StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
+
+			return "/o/cmp/project-links";
+		}
+
+		return "/o/cmp/task-links";
+	}
+
+	private final String _linkedAssetsFilterFieldName;
 
 }
