@@ -80,7 +80,8 @@ public class ConfigurationEntryRetrieverImpl
 		return new ConfigurationCategoryMenuDisplay(
 			configurationCategoryDisplay,
 			getConfigurationEntries(
-				configurationCategory, languageId, scope, scopePK));
+				configurationCategory, languageId, scope, scopePK),
+			scope);
 	}
 
 	@Override
