@@ -116,8 +116,6 @@ public class PortalHibernateConfiguration
 			properties.setProperty("hibernate.dialect", clazz.getName());
 		}
 
-		properties.setProperty(
-			"hibernate.query.sql.jdbc_style_params_base", "true");
 		properties.setProperty("jakarta.persistence.validation.mode", "none");
 
 		BootstrapServiceRegistryBuilder bootstrapServiceRegistryBuilder =
