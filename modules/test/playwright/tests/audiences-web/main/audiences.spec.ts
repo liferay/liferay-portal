@@ -376,6 +376,106 @@ test(
 );
 
 test(
+	'Keeps the values and avoids a duplicate when a save fails',
+	{
+		tag: '@LPD-99227',
+	},
+	async ({audiencesPage, page}) => {
+		const externalReferenceCode = 'ERC-' + getRandomString();
+
+		// Create the audience that already owns the external reference code
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Browser Name',
+			externalReferenceCode,
+			name: 'Audience ' + getRandomString(),
+			value: 'Chrome',
+		});
+
+		// Create the audience to edit
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Browser Name',
+			name: audienceName,
+			value: 'Chrome',
+		});
+
+		// Edit it
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Edit'}),
+			trigger: page
+				.locator('tr')
+				.filter({hasText: audienceName})
+				.locator('button.dropdown-toggle'),
+		});
+
+		// An empty external reference code expands the general settings on save
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.externalReferenceCodeInput.fill('');
+
+		await audiencesPage.generalSettingsButton.click();
+
+		await audiencesPage.saveButton.click();
+
+		await expect(audiencesPage.externalReferenceCodeInput).toBeVisible();
+
+		// Reuse the external reference code already in use
+
+		await audiencesPage.externalReferenceCodeInput.fill(
+			externalReferenceCode
+		);
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(
+			page,
+			'Please enter a unique external reference code.',
+			{autoClose: false, type: 'danger'}
+		);
+
+		// Only the specific error shows, not the generic failure message
+
+		await expect(
+			page.locator('#ToastAlertContainer .alert-danger')
+		).toHaveCount(1);
+
+		// The values survive and the general settings stay expanded
+
+		await expect(audiencesPage.nameInput).toHaveValue(audienceName);
+		await expect(
+			page.locator('.audience-builder-rule').getByText('Browser Name')
+		).toBeVisible();
+		await expect(audiencesPage.valueInput).toHaveValue('Chrome');
+		await expect(audiencesPage.externalReferenceCodeInput).toBeVisible();
+		await expect(audiencesPage.externalReferenceCodeInput).toHaveValue(
+			externalReferenceCode
+		);
+
+		// Fixing the code updates the audience instead of duplicating it
+
+		await audiencesPage.externalReferenceCodeInput.fill(
+			'ERC-' + getRandomString()
+		);
+
+		await audiencesPage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await expect(
+			page.locator('tr').filter({hasText: audienceName})
+		).toHaveCount(1);
+	}
+);
+
+test(
 	'Groups, navigates, keeps the conjunction independent, caps nesting, and unwraps',
 	{
 		tag: '@LPD-98159',
