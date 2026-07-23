@@ -39,6 +39,11 @@ public class ProductsSectionFragmentRenderer implements FragmentRenderer {
 	}
 
 	@Override
+	public boolean isSelectable(HttpServletRequest httpServletRequest) {
+		return false;
+	}
+
+	@Override
 	public void render(
 		FragmentRendererContext fragmentRendererContext,
 		HttpServletRequest httpServletRequest,
