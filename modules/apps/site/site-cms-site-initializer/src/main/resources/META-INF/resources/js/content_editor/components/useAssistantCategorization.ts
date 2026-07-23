@@ -16,7 +16,6 @@ import {
 	CategorizationCommitPayload,
 	CategorizeEventPayload,
 	GENERATE_TAGS_AGENT,
-	OPEN_CATEGORIZATION_PANEL_EVENT,
 	REQUEST_CATEGORIZE_EVENT,
 	RequestCategorizePayload,
 } from '../../main_view/info_panel/components/categorizationAgentEvents';
@@ -32,7 +31,6 @@ export default function useAssistantCategorization({
 	categorizationFields,
 	cmsGroupId,
 	contentAPIURL,
-	onOpenCategorizationPanel,
 	onUpdateCategorization,
 	panel,
 }: {
@@ -40,7 +38,6 @@ export default function useAssistantCategorization({
 	categorizationFields: CategorizationFields | null;
 	cmsGroupId: string;
 	contentAPIURL: string;
-	onOpenCategorizationPanel: () => void;
 	onUpdateCategorization: (props: UpdateCategorizationProps) => void;
 	panel: React.Key | null;
 }) {
@@ -116,7 +113,6 @@ export default function useAssistantCategorization({
 
 		const applyCommittedSuggestions = async ({
 			agent,
-			notifyAssistantPanelOpen,
 			scopeId,
 			suggestions,
 		}: CategorizationCommitPayload) => {
@@ -125,8 +121,6 @@ export default function useAssistantCategorization({
 			if (panelRef.current === 'categorization' || !fields) {
 				return;
 			}
-
-			notifyAssistantPanelOpen?.(false);
 
 			if (agent === AUTO_CATEGORIZE_AGENT) {
 				const currentBriefs = fields.assetCategoryIds.value;
@@ -209,21 +203,10 @@ export default function useAssistantCategorization({
 
 		Liferay.on(COMMIT_EVENT, applyCommittedSuggestions);
 		Liferay.on(REQUEST_CATEGORIZE_EVENT, handleRequestCategorize);
-		Liferay.on(OPEN_CATEGORIZATION_PANEL_EVENT, onOpenCategorizationPanel);
 
 		return () => {
 			Liferay.detach(COMMIT_EVENT, applyCommittedSuggestions);
 			Liferay.detach(REQUEST_CATEGORIZE_EVENT, handleRequestCategorize);
-			Liferay.detach(
-				OPEN_CATEGORIZATION_PANEL_EVENT,
-				onOpenCategorizationPanel
-			);
 		};
-	}, [
-		assetLibraryId,
-		cmsGroupId,
-		contentAPIURL,
-		onOpenCategorizationPanel,
-		onUpdateCategorization,
-	]);
+	}, [assetLibraryId, cmsGroupId, contentAPIURL, onUpdateCategorization]);
 }

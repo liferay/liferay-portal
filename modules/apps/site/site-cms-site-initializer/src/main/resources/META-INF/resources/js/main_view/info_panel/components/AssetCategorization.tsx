@@ -238,11 +238,8 @@ export default function AssetCategorization({
 	useEffect(() => {
 		const handleCommit = ({
 			agent,
-			notifyAssistantPanelOpen,
 			suggestions,
 		}: CategorizationCommitPayload) => {
-			notifyAssistantPanelOpen?.(true);
-
 			if (agent === AUTO_CATEGORIZE_AGENT) {
 				addCategorySuggestions(suggestions);
 			}

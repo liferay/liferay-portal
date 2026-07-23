@@ -13,9 +13,6 @@ export const COMMIT_EVENT = 'cms:aiAssistant:commit';
 
 export const GENERATE_TAGS_AGENT = 'L_GENERATE_TAGS';
 
-export const OPEN_CATEGORIZATION_PANEL_EVENT =
-	'cms:aiAssistant:openCategorizationPanel';
-
 export const REQUEST_CATEGORIZE_EVENT = 'cms:aiAssistant:requestCategorize';
 
 export interface CategorizationAction {
@@ -26,7 +23,6 @@ export interface CategorizationAction {
 
 export interface CategorizationCommitPayload {
 	agent: typeof AUTO_CATEGORIZE_AGENT | typeof GENERATE_TAGS_AGENT;
-	notifyAssistantPanelOpen?: (categorizationPanelOpen: boolean) => void;
 	scopeId?: number | string;
 	suggestions: CategorizationCommitSuggestion[];
 }

@@ -334,10 +334,6 @@ function SidePanel(props: SidePanelProps) {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [panel, setPanel] = useState<React.Key | null>(null);
 
-	const openCategorizationPanel = useCallback(() => {
-		setPanel('categorization');
-	}, []);
-
 	const showErrorInPanel = useCallback((panelId: React.Key) => {
 		setPanel(panelId);
 		setHasError(true);
@@ -350,7 +346,6 @@ function SidePanel(props: SidePanelProps) {
 		categorizationFields: props.categorizationFields,
 		cmsGroupId: props.cmsGroupId,
 		contentAPIURL: props.contentAPIURL,
-		onOpenCategorizationPanel: openCategorizationPanel,
 		onUpdateCategorization,
 		panel,
 	});

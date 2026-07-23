@@ -268,25 +268,6 @@ describe('ContentEditorSidePanel', () => {
 		});
 	});
 
-	it('opens the categorization panel when requested directly', async () => {
-		const handlers: Record<string, (payload: any) => void> = {};
-
-		(global as any).Liferay.on = jest.fn(
-			(name: string, callback: (payload: any) => void) => {
-				handlers[name] = callback;
-			}
-		);
-		(global as any).Liferay.fire = jest.fn();
-
-		renderComponent();
-
-		await act(async () => {
-			handlers['cms:aiAssistant:openCategorizationPanel']({});
-		});
-
-		expect(screen.getByText('categorization')).toBeInTheDocument();
-	});
-
 	it('persists a tag commit while the categorization panel is closed', async () => {
 		const handlers: Record<string, (payload: any) => void> = {};
 
@@ -305,18 +286,13 @@ describe('ContentEditorSidePanel', () => {
 			renderComponent();
 		});
 
-		const notifyAssistantPanelOpen = jest.fn();
-
 		await act(async () => {
 			handlers['cms:aiAssistant:commit']({
 				agent: 'L_GENERATE_TAGS',
-				notifyAssistantPanelOpen,
 				scopeId: 555,
 				suggestions: [{isNew: true, name: 'Culture'}],
 			});
 		});
-
-		expect(notifyAssistantPanelOpen).toHaveBeenCalledWith(false);
 
 		expect(screen.queryByText('categorization')).not.toBeInTheDocument();
 

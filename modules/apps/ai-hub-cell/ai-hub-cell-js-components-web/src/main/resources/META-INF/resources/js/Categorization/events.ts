@@ -9,9 +9,6 @@ export const CATEGORIZE_EVENT = 'cms:aiAssistant:categorize';
 
 export const COMMIT_EVENT = 'cms:aiAssistant:commit';
 
-export const OPEN_CATEGORIZATION_PANEL_EVENT =
-	'cms:aiAssistant:openCategorizationPanel';
-
 export const REQUEST_CATEGORIZE_EVENT = 'cms:aiAssistant:requestCategorize';
 
 export interface CategorizeEventPayload {
@@ -29,7 +26,6 @@ export interface CategorizeEventPayload {
 
 export interface CommitEventPayload {
 	agent: ECategorizationAgent;
-	notifyAssistantPanelOpen?: (categorizationPanelOpen: boolean) => void;
 	scopeId: number;
 	suggestions: Suggestion[];
 }
