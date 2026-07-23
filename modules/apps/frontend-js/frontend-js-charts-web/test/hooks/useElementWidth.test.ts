@@ -6,7 +6,7 @@
 import {act, renderHook} from '@testing-library/react';
 import {RefObject} from 'react';
 
-import {useElementWidth} from '../../../src/main/resources/META-INF/resources/js/map_chart/hooks/useElementWidth';
+import {useElementWidth} from '../../src/main/resources/META-INF/resources/js/hooks/useElementWidth';
 
 type ResizeObserverCallback = (
 	entries: {contentRect: {width: number}}[]

@@ -34,6 +34,7 @@ const DEFAULT_PROPS = {
 	onSliceBlur: () => {},
 	pathFactory: () => 'M 0 0',
 	pixelSize: 200,
+	showCenterLabel: true,
 	sliceRefFactory: createSliceRefFactory([]),
 	total: 100,
 };
