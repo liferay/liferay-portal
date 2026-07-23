@@ -49,6 +49,7 @@ import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
+import com.liferay.osb.faro.engine.client.model.DataSourceUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Distribution;
 import com.liferay.osb.faro.engine.client.model.EntityModelPagedModel;
 import com.liferay.osb.faro.engine.client.model.Event;
@@ -66,6 +67,7 @@ import com.liferay.osb.faro.engine.client.model.Interest;
 import com.liferay.osb.faro.engine.client.model.PageExperience;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
 import com.liferay.osb.faro.engine.client.model.PagedModel;
+import com.liferay.osb.faro.engine.client.model.ProjectDataSourceCount;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Provider;
 import com.liferay.osb.faro.engine.client.model.RealTimeMembershipMetric;
@@ -2112,6 +2114,20 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
+	public Results<DataSourceUsageMetric> getDataSourceUsageMetrics(
+		FaroProject faroProject, Date date) {
+
+		PagedModel<?, DataSourceUsageMetric> pagedModel = get(
+			faroProject, Rels.DATA_SOURCE_USAGE_METRICS,
+			new ParameterizedTypeReference
+				<EntityModelPagedModel<DataSourceUsageMetric>>() {
+			},
+			Collections.singletonMap("date", date));
+
+		return pagedModel.getResults();
+	}
+
+	@Override
 	public long getDXPUsersCount(FaroProject faroProject, String id) {
 		RestTemplate restTemplate = getRestTemplate(faroProject);
 
@@ -3247,6 +3263,20 @@ public class ContactsEngineClientImpl
 	@Override
 	public PageVisited getPageVisited(FaroProject faroProject, String id) {
 		return get(faroProject, Rels.PAGE_VISITED, id, PageVisited.class);
+	}
+
+	@Override
+	public Results<ProjectDataSourceCount> getProjectDataSourceCounts(
+		FaroProject faroProject) {
+
+		PagedModel<?, ProjectDataSourceCount> pagedModel = get(
+			faroProject, Rels.PROJECTS_DATA_SOURCE_COUNTS,
+			new ParameterizedTypeReference
+				<EntityModelPagedModel<ProjectDataSourceCount>>() {
+			},
+			getUriVariables(faroProject));
+
+		return pagedModel.getResults();
 	}
 
 	@Override
