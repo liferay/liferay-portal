@@ -11,7 +11,6 @@ import com.liferay.object.rest.dto.v1_0.Status;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -68,11 +67,6 @@ public class AddTaskStrutsAction implements StrutsAction {
 			objectDefinition,
 			new ObjectEntry() {
 				{
-					setKeywords(
-						() -> new String[] {
-							"L_CMP_TASK_" +
-								RandomUtil.nextInt(Integer.MAX_VALUE)
-						});
 					setObjectEntryFolderExternalReferenceCode(
 						() -> ParamUtil.getString(
 							httpServletRequest,
