@@ -122,6 +122,11 @@ public class PortalWorkspaceGitRepositoryTest
 			portalWorkspaceGitRepository
 		).setUpAdditionalCaches();
 
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspaceGitRepository
+		).setUpBinariesCache();
+
 		portalWorkspaceGitRepository.setUp();
 
 		Mockito.verify(
