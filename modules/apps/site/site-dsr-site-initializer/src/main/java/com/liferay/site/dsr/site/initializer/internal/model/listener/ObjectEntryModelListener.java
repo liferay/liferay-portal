@@ -471,6 +471,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 							"friendlyURL",
 							StringUtil.removeFirst(group.getFriendlyURL(), "/")
 						).put(
+							"initialized", sourceObjectEntryId != 0
+						).put(
 							"siteExternalReferenceCode",
 							group.getExternalReferenceCode()
 						).put(
@@ -605,6 +607,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			String name = entry.getKey();
 
 			if (Objects.equals(name, "archiveDate") ||
+				Objects.equals(name, "initialized") ||
 				Objects.equals(name, "roomStatus")) {
 
 				continue;

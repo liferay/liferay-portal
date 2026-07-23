@@ -132,6 +132,7 @@ export interface IRoomObjectEntry {
 	externalReferenceCode: string;
 	friendlyURL: string;
 	id: number;
+	initialized: boolean;
 	name: string;
 	r_accountToDSRRooms_accountEntry: {
 		description: string;

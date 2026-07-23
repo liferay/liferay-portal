@@ -74,16 +74,12 @@ function DuplicateRoom({
 				name: `${name} (Copy)`,
 			});
 
-			const room = await RoomService.getRoom(duplicatedRoom.id);
-
 			for (let i = 0; i < 10; i++) {
 				await new Promise((resolve) => setTimeout(resolve, 2000));
 
-				const sitePages = await RoomService.checkSitePages(
-					room.siteExternalReferenceCode
-				);
+				const room = await RoomService.getRoom(duplicatedRoom.id);
 
-				if (sitePages?.items.length) {
+				if (room.initialized) {
 					break;
 				}
 			}

@@ -1297,6 +1297,11 @@ public class BundleSiteInitializer implements SiteInitializer {
 			_languageKeyResolver.expand(
 				serviceContext.getCompanyId(), objectDefinitionJSONObject);
 
+			String updateStrategy = objectDefinitionJSONObject.getString(
+				"updateStrategy");
+
+			objectDefinitionJSONObject.remove("updateStrategy");
+
 			json = objectDefinitionJSONObject.toString();
 
 			ObjectDefinition objectDefinition = ObjectDefinition.toDTO(json);
@@ -1334,9 +1339,16 @@ public class BundleSiteInitializer implements SiteInitializer {
 				objectDefinitionIds.add(objectDefinition.getId());
 			}
 			else {
-				objectDefinition =
-					objectDefinitionResource.patchObjectDefinition(
-						existingObjectDefinition.getId(), objectDefinition);
+				if (Objects.equals(updateStrategy, "UPDATE")) {
+					objectDefinition =
+						objectDefinitionResource.putObjectDefinition(
+							existingObjectDefinition.getId(), objectDefinition);
+				}
+				else {
+					objectDefinition =
+						objectDefinitionResource.patchObjectDefinition(
+							existingObjectDefinition.getId(), objectDefinition);
+				}
 			}
 
 			_replaceObjectDefinitionValues(

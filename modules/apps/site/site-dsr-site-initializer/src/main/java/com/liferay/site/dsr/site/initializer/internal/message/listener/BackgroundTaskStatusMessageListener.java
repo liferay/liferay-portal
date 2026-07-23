@@ -8,7 +8,9 @@ package com.liferay.site.dsr.site.initializer.internal.message.listener;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManager;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
@@ -27,8 +29,13 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.site.dsr.site.initializer.constants.DSRFolderConstants;
 import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
+
+import java.io.Serializable;
 
 import java.util.Objects;
 
@@ -92,6 +99,21 @@ public class BackgroundTaskStatusMessageListener implements MessageListener {
 		}
 
 		try {
+			ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
+				group.getClassPK());
+
+			if ((objectEntry != null) &&
+				!MapUtil.getBoolean(objectEntry.getValues(), "initialized")) {
+
+				_objectEntryLocalService.partialUpdateObjectEntry(
+					objectEntry.getUserId(), objectEntry.getObjectEntryId(),
+					objectEntry.getObjectEntryFolderId(),
+					HashMapBuilder.<String, Serializable>put(
+						"initialized", true
+					).build(),
+					new ServiceContext());
+			}
+
 			_setDLFolderResourcePermissions(companyId, group);
 
 			if (group.getDefaultPublicPlid() == 0) {
@@ -176,6 +198,9 @@ public class BackgroundTaskStatusMessageListener implements MessageListener {
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
 	private ResourcePermissionLocalService _resourcePermissionLocalService;

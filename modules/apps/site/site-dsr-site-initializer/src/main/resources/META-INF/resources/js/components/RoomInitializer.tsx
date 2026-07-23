@@ -158,18 +158,14 @@ function RoomInitializer({
 						siteTemplateKey: dataContext.templateKey || '',
 					});
 
-					room = await RoomService.getRoom(room.id);
-
 					for (let i = 0; i < 10; i++) {
 						await new Promise((resolve) =>
 							setTimeout(resolve, 2000)
 						);
 
-						const data = await RoomService.checkSitePages(
-							room.siteExternalReferenceCode
-						);
+						room = await RoomService.getRoom(room.id);
 
-						if (data?.items.length) {
+						if (room.initialized) {
 							break;
 						}
 					}

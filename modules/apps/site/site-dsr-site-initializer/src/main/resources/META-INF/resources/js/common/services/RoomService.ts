@@ -79,20 +79,6 @@ async function archiveRoom(roomId: number): Promise<IRoomObjectEntry> {
 	throw new Error(error);
 }
 
-async function checkSitePages(
-	siteExternalReferenceCode: string
-): Promise<{items: Array<any>}> {
-	const url = `/o/headless-admin-site/v1.0/sites/${siteExternalReferenceCode}/site-pages`;
-
-	const {data, error} = await ApiHelper.get<{items: Array<any>}>(url);
-
-	if (data) {
-		return data || {items: []};
-	}
-
-	throw new Error(error);
-}
-
 async function deleteRoomInvitedMember(
 	roomId: number,
 	invitedMemberId: number
@@ -326,7 +312,6 @@ export default {
 	addRoom,
 	addRoomUserAccount,
 	archiveRoom,
-	checkSitePages,
 	deleteRoomInvitedMember,
 	deleteRoomUserAccount,
 	duplicateRoom,

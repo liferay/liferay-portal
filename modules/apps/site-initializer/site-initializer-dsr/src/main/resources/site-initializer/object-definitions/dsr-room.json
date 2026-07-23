@@ -68,6 +68,21 @@
 			"system": true
 		},
 		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "INITIALIZED",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Initialized"
+			},
+			"name": "initialized",
+			"required": false,
+			"system": true
+		},
+		{
 			"DBType": "String",
 			"businessType": "Text",
 			"externalReferenceCode": "NAME",
@@ -186,5 +201,6 @@
 	},
 	"scope": "company",
 	"system": true,
-	"titleObjectFieldName": "name"
+	"titleObjectFieldName": "name",
+	"updateStrategy": "UPDATE"
 }
