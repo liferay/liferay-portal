@@ -85,6 +85,8 @@ const GroupByTrigger = React.forwardRef<
 ));
 
 interface ITopAssetsTabContentProps {
+	accountId?: string;
+	accountName?: string;
 	assets: ITopAsset[];
 	groupBy: GroupByMetric;
 	isFiles: boolean;
@@ -94,6 +96,8 @@ interface ITopAssetsTabContentProps {
 }
 
 const TopAssetsTabContent: React.FC<ITopAssetsTabContentProps> = ({
+	accountId,
+	accountName,
 	assets,
 	groupBy,
 	isFiles,
@@ -198,26 +202,35 @@ const TopAssetsTabContent: React.FC<ITopAssetsTabContentProps> = ({
 											</div>
 											<ClayLink
 												className="font-weight-semi-bold text-dark"
-												href={toRoute(
-													getAssetRoute(
-														asset.assetType
-													),
+												href={setUriQueryValues(
 													{
-														assetId: asset.id,
-														channelId,
-														groupId,
-														touchpoint: 'overview',
-														...(asset.assetType && {
-															type: encodeURIComponent(
-																asset.assetType
-															),
+														accountId,
+														...(accountName && {
+															accountName,
 														}),
-														...(asset.assetTitle && {
-															title: encodeURIComponent(
-																asset.assetTitle
-															),
-														}),
-													}
+													},
+													toRoute(
+														getAssetRoute(
+															asset.assetType
+														),
+														{
+															assetId: asset.id,
+															channelId,
+															groupId,
+															touchpoint:
+																'overview',
+															...(asset.assetType && {
+																type: encodeURIComponent(
+																	asset.assetType
+																),
+															}),
+															...(asset.assetTitle && {
+																title: encodeURIComponent(
+																	asset.assetTitle
+																),
+															}),
+														}
+													)
 												)}
 											>
 												{asset.assetTitle}
@@ -285,6 +298,8 @@ const TopAssets: React.FC<ITopAssetsProps> = ({account, className}) => {
 
 	const tabContent = (
 		<TopAssetsTabContent
+			accountId={accountId}
+			accountName={accountName}
 			assets={assets}
 			groupBy={groupBy}
 			isFiles={TABS[activeTab] === 'files'}
