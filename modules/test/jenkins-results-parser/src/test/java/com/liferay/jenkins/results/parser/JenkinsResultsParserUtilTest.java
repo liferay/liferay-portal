@@ -507,10 +507,10 @@ public class JenkinsResultsParserUtilTest
 
 	@Test
 	public void testIsCINode() {
-		_assertIsCINode("https://test-1-1.liferay.com/", "test-network", true);
-		_assertIsCINode("https://test-1-1.liferay.com/", null, true);
-		_assertIsCINode(null, "test-network", true);
-		_assertIsCINode(null, null, false);
+		_testIsCINode("https://test-1-1.liferay.com/", "test-network", true);
+		_testIsCINode("https://test-1-1.liferay.com/", null, true);
+		_testIsCINode(null, "test-network", true);
+		_testIsCINode(null, null, false);
 	}
 
 	@Test
@@ -663,7 +663,7 @@ public class JenkinsResultsParserUtilTest
 		return environment;
 	}
 
-	private void _assertIsCINode(
+	private void _testIsCINode(
 		String jenkinsURL, String masterNetworkName, boolean expected) {
 
 		Environment environment = mockEnvironment();
