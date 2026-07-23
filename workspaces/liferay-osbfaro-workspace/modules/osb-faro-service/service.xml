@@ -46,6 +46,37 @@
 			<finder-column name="workspaceGroupId" />
 		</finder>
 	</entity>
+	<entity local-service="true" name="FaroDataSourceUsage" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="faroDataSourceUsageId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="createTime" type="long" />
+		<column name="modifiedTime" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="billableEventsCount" type="long" />
+		<column name="dataSourceId" type="long" />
+		<column name="dataSourceName" type="String" />
+		<column name="dataSourceStatus" type="String" />
+		<column name="faroProjectId" type="long" />
+		<column name="knownIndividualsCount" type="long" />
+		<column name="usageTime" type="long" />
+
+		<!-- Finder methods -->
+
+		<finder name="F_D_U" return-type="FaroDataSourceUsage">
+			<finder-column name="dataSourceId" />
+			<finder-column name="faroProjectId" />
+			<finder-column name="usageTime" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="FaroEmail" persistence-class="false" remote-service="false" />
 	<entity local-service="true" name="FaroNotification" remote-service="false">
 
