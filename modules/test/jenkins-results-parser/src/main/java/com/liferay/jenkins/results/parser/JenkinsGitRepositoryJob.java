@@ -63,10 +63,9 @@ public class JenkinsGitRepositoryJob extends GitRepositoryJob {
 			}
 		}
 
-		Properties buildProperties = _getBuildProperties();
-
 		Set<String> invokedJobNames = new TreeSet<>();
 
+		Properties buildProperties = _getBuildProperties();
 		String testSuiteName = getTestSuiteName();
 
 		for (String propertyName : buildProperties.stringPropertyNames()) {
