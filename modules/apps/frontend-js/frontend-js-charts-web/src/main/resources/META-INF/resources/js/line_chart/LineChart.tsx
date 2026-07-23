@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import React, {useCallback, useId, useMemo, useRef, useState} from 'react';
 
 import ChartTooltip from '../chart_tooltip/ChartTooltip';
+import {useElementWidth} from '../hooks/useElementWidth';
 import {getCategoricalColors} from '../palette';
 import LineChartLegend from './legend/LineChartLegend';
 import LineChartPlot from './plot/LineChartPlot';
@@ -37,6 +38,8 @@ const BLUE_SHADES = [
 	'var(--chart-blue-l3, light-dark(#97c5ff, #0056b8))',
 ];
 
+const DEFAULT_WIDTH = 640;
+
 export default function LineChart({
 	alignment = 'start',
 	animated = true,
@@ -51,13 +54,19 @@ export default function LineChart({
 	scheme = 'blue',
 	series,
 	title,
-	width = 640,
+	width,
 	yFormat,
 	yTicks = 5,
 }: LineChartProps) {
 	const reactId = useId();
 	const titleId = `${reactId}-title`;
 	const descId = `${reactId}-desc`;
+
+	const rootRef = useRef<HTMLElement>(null);
+
+	const measuredWidth = useElementWidth(rootRef);
+
+	const effectiveWidth = width ?? (measuredWidth || DEFAULT_WIDTH);
 
 	const [focus, setFocus] = useState<ActivePoint | null>(null);
 	const [hover, setHover] = useState<ActivePoint | null>(null);
@@ -76,8 +85,15 @@ export default function LineChart({
 	);
 
 	const geometry = useMemo(
-		() => getLineChartGeometry({categories, height, series, width, yTicks}),
-		[categories, height, series, width, yTicks]
+		() =>
+			getLineChartGeometry({
+				categories,
+				height,
+				series,
+				width: effectiveWidth,
+				yTicks,
+			}),
+		[categories, height, series, effectiveWidth, yTicks]
 	);
 
 	const palette = useMemo(
@@ -299,6 +315,7 @@ export default function LineChart({
 				},
 				className
 			)}
+			ref={rootRef}
 			style={{maxWidth: width}}
 		>
 			<figcaption className="charts-line-chart__title" id={titleId}>
@@ -327,7 +344,7 @@ export default function LineChart({
 					setPointRef={setPointRef}
 					styles={styles}
 					tabbable={tabbable}
-					width={width}
+					width={effectiveWidth}
 				/>
 
 				{pointTooltip === 'corner' &&

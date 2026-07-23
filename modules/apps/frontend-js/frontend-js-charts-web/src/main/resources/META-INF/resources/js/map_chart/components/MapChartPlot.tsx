@@ -5,9 +5,9 @@
 
 import React, {useMemo, useRef} from 'react';
 
+import {useElementWidth} from '../../hooks/useElementWidth';
 import {MARKER_RADIUS} from '../constants';
 import {WORLD_MAP_DATA, WORLD_MAP_VIEW_BOX} from '../geography/mapChartData';
-import {useElementWidth} from '../hooks/useElementWidth';
 import {MapDatum} from '../types/MapDatum';
 import {computeDataBoundingBox} from '../utils/computeDataBoundingBox';
 import {computeMarkerHitRadius} from '../utils/computeMarkerHitRadius';

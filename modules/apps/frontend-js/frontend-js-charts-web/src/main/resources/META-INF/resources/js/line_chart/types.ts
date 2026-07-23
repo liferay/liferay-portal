@@ -121,7 +121,11 @@ export interface LineChartProps {
 	/** Accessible name for the chart as a whole. */
 	title: string;
 
-	/** Width of the SVG viewport. Default `640`. */
+	/**
+	 * Width of the SVG viewport. Omit it to fill the container: the chart
+	 * measures itself and relayouts on container resizes (`640` until the
+	 * first measure lands, e.g. without `ResizeObserver` support).
+	 */
 	width?: number;
 
 	/** Formats y-axis tick labels (and tooltip values). Default `String`. */
