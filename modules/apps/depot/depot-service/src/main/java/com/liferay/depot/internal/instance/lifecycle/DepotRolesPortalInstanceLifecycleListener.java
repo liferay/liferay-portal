@@ -113,10 +113,10 @@ public class DepotRolesPortalInstanceLifecycleListener
 					_resourcePermissionLocalService, _roleLocalService,
 					_userLocalService);
 
-			depotDesignLibraryRolesHelper.setupDesignLibraryRoles(
+			depotDesignLibraryRolesHelper.setUpDesignLibraryRoles(
 				company.getCompanyId());
 
-			depotDesignLibraryRolesHelper.setupResourcePermissions(
+			depotDesignLibraryRolesHelper.setUpResourcePermissions(
 				company.getCompanyId(), _depotRolePermissionsContributors);
 		}
 	}

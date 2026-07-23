@@ -43,7 +43,7 @@ public class DepotDesignLibraryRolesHelper {
 		_userLocalService = userLocalService;
 	}
 
-	public void setupDesignLibraryRoles(long companyId) throws PortalException {
+	public void setUpDesignLibraryRoles(long companyId) throws PortalException {
 		Role administratorRole = _getOrCreateRole(
 			companyId, DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR);
 
@@ -94,7 +94,7 @@ public class DepotDesignLibraryRolesHelper {
 		}
 	}
 
-	public void setupResourcePermissions(
+	public void setUpResourcePermissions(
 			long companyId,
 			List<DepotRolePermissionsContributor>
 				depotRolePermissionsContributors)
