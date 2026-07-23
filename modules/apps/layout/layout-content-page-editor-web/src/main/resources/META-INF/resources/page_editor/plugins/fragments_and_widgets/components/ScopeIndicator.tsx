@@ -41,7 +41,7 @@ export function ScopeIndicator({scope}: {scope?: FragmentSetScope}) {
 			className={`c-ml-1 flex-shrink-0 lfr-portal-tooltip page-editor__scope-indicator rounded ${indicator.className}`}
 			data-tooltip-align="top"
 			displayType="unstyled"
-			size="sm"
+			size="xs"
 			title={title}
 		>
 			<ClayIcon symbol={indicator.symbol} />
