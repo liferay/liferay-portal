@@ -595,7 +595,7 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE)) {
 
 			throw new IllegalArgumentException(
-				"Parent layout page template collection " +
+				"The parent layout page template collection " +
 					parentLayoutPageTemplateCollectionId +
 						" must be of type display page");
 		}
