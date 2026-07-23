@@ -77,7 +77,7 @@ public class AIAssistantButtonComponentSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return HashMapBuilder.<String, Object>put(
-			"getContext",
+			"context",
 			Collections.singletonMap(
 				"groupId", InfoItemUtil.getGroupId(httpServletRequest))
 		).put(
