@@ -249,6 +249,39 @@ public class DepotPermissionCheckerWrapperTest {
 			});
 	}
 
+	@FeatureFlag("LPD-58677")
+	@Test
+	public void testHasPermissionsWithDepotGroupAndProjectManager()
+		throws Exception {
+
+		DepotEntry depotEntry = _addProjectDepotEntry(
+			TestPropsValues.getUserId());
+
+		DepotTestUtil.withProjectManager(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						depotEntry.getGroup(), Group.class.getName(),
+						depotEntry.getGroupId(), ActionKeys.ASSIGN_MEMBERS));
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						depotEntry.getGroup(), Group.class.getName(),
+						depotEntry.getGroupId(), ActionKeys.UPDATE));
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						depotEntry.getGroup(), Group.class.getName(),
+						depotEntry.getGroupId(), ActionKeys.VIEW));
+				Assert.assertTrue(
+					permissionChecker.hasPermission(
+						depotEntry.getGroup(), Group.class.getName(),
+						depotEntry.getGroupId(), ActionKeys.VIEW_MEMBERS));
+			});
+	}
+
 	@Test
 	public void testHasStagingPermissionReturnsTrueForAssetLibraryOwners()
 		throws Exception {
@@ -400,6 +433,25 @@ public class DepotPermissionCheckerWrapperTest {
 			});
 	}
 
+	@FeatureFlag("LPD-58677")
+	@Test
+	public void testIsGroupAdminWithDepotGroupAndProjectManager()
+		throws Exception {
+
+		DepotEntry depotEntry = _addProjectDepotEntry(
+			TestPropsValues.getUserId());
+
+		DepotTestUtil.withProjectManager(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Assert.assertTrue(
+					permissionChecker.isGroupAdmin(depotEntry.getGroupId()));
+			});
+	}
+
 	@Test
 	public void testIsGroupAdminWithGroup0AndNoOmniadmin() throws Exception {
 		DepotTestUtil.withRegularUser(
@@ -521,6 +573,25 @@ public class DepotPermissionCheckerWrapperTest {
 			TestPropsValues.getUserId());
 
 		DepotTestUtil.withDesignLibraryMember(
+			depotEntry,
+			user -> {
+				PermissionChecker permissionChecker =
+					_permissionCheckerFactory.create(user);
+
+				Assert.assertTrue(
+					permissionChecker.isGroupMember(depotEntry.getGroupId()));
+			});
+	}
+
+	@FeatureFlag("LPD-58677")
+	@Test
+	public void testIsGroupMemberWithDepotGroupAndProjectMember()
+		throws Exception {
+
+		DepotEntry depotEntry = _addProjectDepotEntry(
+			TestPropsValues.getUserId());
+
+		DepotTestUtil.withProjectMember(
 			depotEntry,
 			user -> {
 				PermissionChecker permissionChecker =
@@ -848,6 +919,20 @@ public class DepotPermissionCheckerWrapperTest {
 			StringUtil.randomString(), StringUtil.randomString(), new byte[0],
 			null, null, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private DepotEntry _addProjectDepotEntry(long userId) throws Exception {
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), DepotConstants.TYPE_PROJECT,
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId(), userId));
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry;
 	}
 
 	@DeleteAfterTestRun

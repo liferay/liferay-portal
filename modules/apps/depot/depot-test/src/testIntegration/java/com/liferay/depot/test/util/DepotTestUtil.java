@@ -165,6 +165,26 @@ public class DepotTestUtil {
 		}
 	}
 
+	public static void withProjectManager(
+			DepotEntry depotEntry,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		_withProjectGroupUser(
+			depotEntry.getGroupId(), DepotRolesConstants.PROJECT_MANAGER,
+			unsafeConsumer);
+	}
+
+	public static void withProjectMember(
+			DepotEntry depotEntry,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		_withProjectGroupUser(
+			depotEntry.getGroupId(), DepotRolesConstants.PROJECT_MEMBER,
+			unsafeConsumer);
+	}
+
 	public static void withRegularUser(
 			UnsafeBiConsumer<User, Role, Exception> unsafeBiConsumer)
 		throws Exception {
@@ -258,6 +278,25 @@ public class DepotTestUtil {
 
 			UserLocalServiceUtil.deleteUser(user);
 		}
+	}
+
+	private static void _withProjectGroupUser(
+			long groupId, String roleName,
+			UnsafeConsumer<User, Exception> unsafeConsumer)
+		throws Exception {
+
+		Role role = RoleLocalServiceUtil.fetchRole(
+			TestPropsValues.getCompanyId(), roleName);
+
+		if (role == null) {
+			RoleLocalServiceUtil.addRole(
+				RoleConstants.toSystemRoleExternalReferenceCode(roleName),
+				TestPropsValues.getUserId(), null, 0, roleName, null, null,
+				RoleConstants.TYPE_DEPOT, DepotRolesConstants.SUBTYPE_PROJECT,
+				null);
+		}
+
+		_withGroupUser(groupId, roleName, unsafeConsumer);
 	}
 
 	private static void _withUser(
