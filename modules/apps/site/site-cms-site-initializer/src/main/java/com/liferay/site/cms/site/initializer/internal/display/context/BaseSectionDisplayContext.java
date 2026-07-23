@@ -15,10 +15,13 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryFolder;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryFolderLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -97,6 +100,15 @@ public abstract class BaseSectionDisplayContext {
 	}
 
 	public Map<String, Object> getAdditionalProps() {
+		ObjectDefinition cmpProjectObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT", themeDisplay.getCompanyId());
+		ObjectDefinition cmpTaskObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMP_TASK", themeDisplay.getCompanyId());
+
 		return HashMapBuilder.<String, Object>put(
 			"additionalAPIURLParameters",
 			() -> {
@@ -136,6 +148,70 @@ public abstract class BaseSectionDisplayContext {
 			SectionDisplayContextUtil.getDepotEntriesJSONArray(
 				httpServletRequest,
 				getRootObjectEntryFolderExternalReferenceCode())
+		).put(
+			"cmpProjectLinkObjectDefinitionId",
+			() -> {
+				ObjectDefinition cmpProjectLinkObjectDefinition =
+					ObjectDefinitionLocalServiceUtil.
+						fetchObjectDefinitionByExternalReferenceCode(
+							"L_CMP_PROJECT_LINK", themeDisplay.getCompanyId());
+
+				if (cmpProjectLinkObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpProjectLinkObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpProjectObjectDefinitionId",
+			() -> {
+				if (cmpProjectObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpProjectObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpProjectViewURL",
+			() -> {
+				if (cmpProjectObjectDefinition == null) {
+					return null;
+				}
+
+				return _getCMPViewURL(cmpProjectObjectDefinition, "project");
+			}
+		).put(
+			"cmpTaskLinkObjectDefinitionId",
+			() -> {
+				ObjectDefinition cmpTaskLinkObjectDefinition =
+					ObjectDefinitionLocalServiceUtil.
+						fetchObjectDefinitionByExternalReferenceCode(
+							"L_CMP_TASK_LINK", themeDisplay.getCompanyId());
+
+				if (cmpTaskLinkObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpTaskLinkObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpTaskObjectDefinitionId",
+			() -> {
+				if (cmpTaskObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpTaskObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpTaskViewURL",
+			() -> {
+				if (cmpTaskObjectDefinition == null) {
+					return null;
+				}
+
+				return _getCMPViewURL(cmpTaskObjectDefinition, "task");
+			}
 		).put(
 			"cmsGroupId",
 			() -> {
@@ -308,6 +384,15 @@ public abstract class BaseSectionDisplayContext {
 	protected final ObjectEntryFolder objectEntryFolder;
 	protected final Portal portal;
 	protected final ThemeDisplay themeDisplay;
+
+	private String _getCMPViewURL(
+		ObjectDefinition objectDefinition, String type) {
+
+		return StringBundler.concat(
+			themeDisplay.getPortalURL(), portal.getPathFriendlyURLPublic(),
+			"/cms/e/", type, "/",
+			portal.getClassNameId(objectDefinition.getClassName()));
+	}
 
 	private JSONObject _getExportFileFormatJSONObject(
 		TranslationInfoItemFieldValuesExporter

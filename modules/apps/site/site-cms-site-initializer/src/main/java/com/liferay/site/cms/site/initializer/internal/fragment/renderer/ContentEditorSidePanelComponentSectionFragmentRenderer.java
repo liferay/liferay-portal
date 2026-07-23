@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.editor.configuration.EditorConfigurationFactory
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
@@ -126,6 +128,15 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
+		ObjectDefinition cmpProjectObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT", themeDisplay.getCompanyId());
+		ObjectDefinition cmpTaskObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_CMP_TASK", themeDisplay.getCompanyId());
+
 		return HashMapBuilder.<String, Object>put(
 			"addCommentURL",
 			() -> {
@@ -149,6 +160,72 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 			"assetLibraryId", objectEntry.getGroupId()
 		).put(
 			"assetType", classNameId
+		).put(
+			"cmpProjectLinkObjectDefinitionId",
+			() -> {
+				ObjectDefinition cmpProjectLinkObjectDefinition =
+					_objectDefinitionLocalService.
+						fetchObjectDefinitionByExternalReferenceCode(
+							"L_CMP_PROJECT_LINK", themeDisplay.getCompanyId());
+
+				if (cmpProjectLinkObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpProjectLinkObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpProjectObjectDefinitionId",
+			() -> {
+				if (cmpProjectObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpProjectObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpProjectViewURL",
+			() -> {
+				if (cmpProjectObjectDefinition == null) {
+					return null;
+				}
+
+				return _getCMPViewURL(
+					cmpProjectObjectDefinition, themeDisplay, "project");
+			}
+		).put(
+			"cmpTaskLinkObjectDefinitionId",
+			() -> {
+				ObjectDefinition cmpTaskLinkObjectDefinition =
+					_objectDefinitionLocalService.
+						fetchObjectDefinitionByExternalReferenceCode(
+							"L_CMP_TASK_LINK", themeDisplay.getCompanyId());
+
+				if (cmpTaskLinkObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpTaskLinkObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpTaskObjectDefinitionId",
+			() -> {
+				if (cmpTaskObjectDefinition == null) {
+					return null;
+				}
+
+				return cmpTaskObjectDefinition.getObjectDefinitionId();
+			}
+		).put(
+			"cmpTaskViewURL",
+			() -> {
+				if (cmpTaskObjectDefinition == null) {
+					return null;
+				}
+
+				return _getCMPViewURL(
+					cmpTaskObjectDefinition, themeDisplay, "task");
+			}
 		).put(
 			"cmsGroupId", themeDisplay.getScopeGroupId()
 		).put(
@@ -232,6 +309,22 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 				return data.get("editorConfig");
 			}
 		).put(
+			"entryClassName", objectEntry.getModelClassName()
+		).put(
+			"entryExternalReferenceCode", objectEntry.getExternalReferenceCode()
+		).put(
+			"entryGroupExternalReferenceCode",
+			() -> {
+				Group group = groupLocalService.fetchGroup(
+					objectEntry.getGroupId());
+
+				if (group == null) {
+					return null;
+				}
+
+				return group.getExternalReferenceCode();
+			}
+		).put(
 			"expirationDate",
 			() -> {
 				String restoredExpirationDate =
@@ -306,6 +399,17 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 		).build();
 	}
 
+	private String _getCMPViewURL(
+		ObjectDefinition objectDefinition, ThemeDisplay themeDisplay,
+		String type) {
+
+		return StringBundler.concat(
+			themeDisplay.getPortalURL(), _portal.getPathFriendlyURLPublic(),
+			"/cms/e/", type, "/",
+			_classNameLocalService.getClassNameId(
+				objectDefinition.getClassName()));
+	}
+
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
 
@@ -323,6 +427,9 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 
 	@Reference
 	private ObjectEntryService _objectEntryService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private SubscriptionLocalService _subscriptionLocalService;
