@@ -230,7 +230,7 @@ public class FragmentEntryLocalServiceTest {
 	}
 
 	@Test
-	@TestInfo("LPD-98538")
+	@TestInfo("LPD-98882")
 	public void testUpdateFragmentEntry() throws Exception {
 		_testUpdateFragmentEntryFragmentCollectionId();
 		_testUpdateFragmentEntryName();
