@@ -7,7 +7,7 @@ import {RefObject, useEffect, useRef} from 'react';
 
 export default function useResizeObserver(
 	ref: RefObject<HTMLElement>,
-	onResize: (element: HTMLElement) => void
+	onResize: (element: HTMLElement, entry?: ResizeObserverEntry) => void
 ) {
 	const onResizeRef = useRef(onResize);
 
@@ -22,8 +22,8 @@ export default function useResizeObserver(
 			return;
 		}
 
-		const resizeObserver = new ResizeObserver(() =>
-			onResizeRef.current(element)
+		const resizeObserver = new ResizeObserver((entries) =>
+			onResizeRef.current(element, entries[0])
 		);
 
 		resizeObserver.observe(element);

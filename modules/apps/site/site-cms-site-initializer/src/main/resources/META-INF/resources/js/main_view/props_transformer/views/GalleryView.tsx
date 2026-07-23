@@ -52,8 +52,8 @@ const GalleryView = ({
 		Math.max(0, items.length - 1)
 	);
 
-	useResizeObserver(thumbnailsRef, (element) => {
-		const {width} = element.getBoundingClientRect();
+	useResizeObserver(thumbnailsRef, (element, entry) => {
+		const {width} = entry?.contentRect ?? element.getBoundingClientRect();
 
 		const fittingCount = Math.floor(
 			(width + THUMBNAIL_GAP) / (THUMBNAIL_WIDTH + THUMBNAIL_GAP)
