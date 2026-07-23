@@ -9,7 +9,6 @@ import com.liferay.headless.admin.site.dto.v1_0.DisplayPageTemplateFolder;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
-import com.liferay.layout.page.template.exception.InvalidLayoutPageTemplateCollectionTypeException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionServiceUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
@@ -104,7 +103,7 @@ public class DisplayPageTemplateFolderUtil {
 				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE,
 				parentLayoutPageTemplateCollection.getType())) {
 
-			throw new InvalidLayoutPageTemplateCollectionTypeException(
+			throw new IllegalArgumentException(
 				"The parent display page template folder type does not match " +
 					"the display page type");
 		}

@@ -8,7 +8,6 @@ package com.liferay.layout.page.template.service.impl;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionException;
-import com.liferay.layout.page.template.exception.InvalidLayoutPageTemplateCollectionTypeException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionGroupIdException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionNameException;
@@ -577,8 +576,7 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 	}
 
 	private void _validateParentLayoutPageTemplateCollectionType(
-			long parentLayoutPageTemplateCollectionId, int type)
-		throws PortalException {
+		long parentLayoutPageTemplateCollectionId, int type) {
 
 		if ((type != LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE) ||
 			(parentLayoutPageTemplateCollectionId ==
@@ -596,7 +594,7 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 			(parentLayoutPageTemplateCollection.getType() !=
 				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE)) {
 
-			throw new InvalidLayoutPageTemplateCollectionTypeException(
+			throw new IllegalArgumentException(
 				"Parent layout page template collection " +
 					parentLayoutPageTemplateCollectionId +
 						" must be of type display page");

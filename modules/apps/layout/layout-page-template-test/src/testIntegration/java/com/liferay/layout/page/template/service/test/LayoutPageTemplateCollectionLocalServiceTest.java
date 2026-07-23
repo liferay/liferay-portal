@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.exception.DuplicateLayoutPageTemplateCollectionExternalReferenceCodeException;
-import com.liferay.layout.page.template.exception.InvalidLayoutPageTemplateCollectionTypeException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionGroupIdException;
 import com.liferay.layout.page.template.exception.LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
@@ -186,7 +185,7 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 				" must have fewer than 75 characters"));
 	}
 
-	@Test(expected = InvalidLayoutPageTemplateCollectionTypeException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testAddLayoutPageTemplateCollectionWithInvalidParentType()
 		throws Exception {
 
