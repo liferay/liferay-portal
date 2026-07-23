@@ -4,10 +4,11 @@
  */
 
 import {ClayTooltipProvider} from '@clayui/tooltip';
+import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import ContentGapCell from './ContentGapCell';
-import {MatrixData} from './types';
+import {MatrixData, TaxonomyTerm} from './types';
 import {useCoverageFilter} from './useCoverageFilter';
 import {buildCountsByCellKey, getCellKey, getMaxRealCount} from './utils';
 
@@ -27,6 +28,22 @@ export default function ContentGapMatrixGrid({
 
 	const getCount = (personaId: string, funnelStageId: string) =>
 		countsByCellKey.get(getCellKey(personaId, funnelStageId)) ?? 0;
+
+	const handleGenerate = (
+		persona: TaxonomyTerm,
+		funnelStage: TaxonomyTerm
+	) => {
+		Liferay.fire('openAIAssistantChat', {
+			context: {funnelStage: funnelStage.name, persona: persona.name},
+			message: sub(
+				Liferay.Language.get(
+					'generate-content-for-the-x-persona-and-the-x-funnel-stage'
+				),
+				persona.name,
+				funnelStage.name
+			),
+		});
+	};
 
 	return (
 		<ClayTooltipProvider>
@@ -77,6 +94,7 @@ export default function ContentGapMatrixGrid({
 								key={funnelStage.id}
 								maxRealCount={maxRealCount}
 								onFilter={applyFilter}
+								onGenerate={handleGenerate}
 								persona={persona}
 								selected={
 									selectedCategoryIds.has(persona.id) &&

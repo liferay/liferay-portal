@@ -14,6 +14,7 @@ interface ContentGapCellProps {
 	funnelStage: TaxonomyTerm;
 	maxRealCount: number;
 	onFilter?: (persona: TaxonomyTerm, funnelStage: TaxonomyTerm) => void;
+	onGenerate?: (persona: TaxonomyTerm, funnelStage: TaxonomyTerm) => void;
 	persona: TaxonomyTerm;
 	selected?: boolean;
 	totalCount: number;
@@ -23,6 +24,7 @@ export default function ContentGapCell({
 	funnelStage,
 	maxRealCount,
 	onFilter,
+	onGenerate,
 	persona,
 	selected,
 	totalCount,
@@ -34,10 +36,6 @@ export default function ContentGapCell({
 	const gap = totalCount === 0;
 
 	const tier = gap ? 0 : getCellTier(totalCount, maxRealCount);
-
-	// Only real persona/funnel-stage cells filter the asset table. The
-	// uncategorized "No Persona" row and "No Funnel" column have no category to
-	// filter by, so they stay static.
 
 	const clickable =
 		Boolean(onFilter) && !isSentinel(persona) && !isSentinel(funnelStage);
@@ -55,8 +53,6 @@ export default function ContentGapCell({
 	const cellCount = (
 		<span className="lfr-cmp__content-gap-cell-count">{totalCount}</span>
 	);
-
-	// Close the action bar when clicking outside the cell.
 
 	useEffect(() => {
 		if (!active) {
@@ -115,6 +111,11 @@ export default function ContentGapCell({
 				<ContentGapCellActions
 					onFilter={() => {
 						onFilter?.(persona, funnelStage);
+
+						setActive(false);
+					}}
+					onGenerate={() => {
+						onGenerate?.(persona, funnelStage);
 
 						setActive(false);
 					}}

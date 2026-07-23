@@ -26,6 +26,10 @@ const STAGE: TaxonomyTerm = {
 };
 
 describe('ContentGapCell', () => {
+	afterEach(() => {
+		Liferay.FeatureFlags['LPD-62272'] = false;
+	});
+
 	it('applies the persona and funnel-stage filter when a real cell is clicked', () => {
 		const onFilter = jest.fn();
 
@@ -92,6 +96,29 @@ describe('ContentGapCell', () => {
 		expect(
 			container.querySelector('.lfr-cmp__content-gap-cell--clickable')
 		).toBeNull();
+	});
+
+	it('generates content for the persona and funnel stage when generate is clicked', () => {
+		Liferay.FeatureFlags['LPD-62272'] = true;
+
+		const onGenerate = jest.fn();
+
+		const {getByLabelText} = render(
+			<ContentGapCell
+				funnelStage={STAGE}
+				maxRealCount={40}
+				onFilter={jest.fn()}
+				onGenerate={onGenerate}
+				persona={PERSONA}
+				totalCount={24}
+			/>
+		);
+
+		fireEvent.click(getByLabelText('Champion, Awareness: 24'));
+
+		fireEvent.click(screen.getByText('generate'));
+
+		expect(onGenerate).toHaveBeenCalledWith(PERSONA, STAGE);
 	});
 
 	it('highlights the cell whose filter is applied', () => {
