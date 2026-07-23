@@ -7,8 +7,6 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.IOException;
 
-import java.lang.reflect.Field;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -29,21 +27,18 @@ public class BuildQueueRebalancerTest
 	@After
 	@Override
 	public void tearDown() {
-		try {
-			Map<String, JenkinsMaster> jenkinsMasters = _getStaticFieldValue(
+		Map<String, JenkinsMaster> jenkinsMasters =
+			ReflectionTestUtil.getFieldValue(
 				JenkinsMaster.class, "_jenkinsMasters");
 
-			jenkinsMasters.remove(_AVAILABLE_JENKINS_MASTER_NAME);
-			jenkinsMasters.remove(_BLACK_LISTED_JENKINS_MASTER_NAME);
+		jenkinsMasters.remove(_AVAILABLE_JENKINS_MASTER_NAME);
+		jenkinsMasters.remove(_BLACK_LISTED_JENKINS_MASTER_NAME);
 
-			Map<String, JenkinsCohort> jenkinsCohorts = _getStaticFieldValue(
+		Map<String, JenkinsCohort> jenkinsCohorts =
+			ReflectionTestUtil.getFieldValue(
 				JenkinsCohort.class, "_jenkinsCohorts");
 
-			jenkinsCohorts.remove(_JENKINS_COHORT_NAME);
-		}
-		catch (ReflectiveOperationException reflectiveOperationException) {
-			throw new RuntimeException(reflectiveOperationException);
-		}
+		jenkinsCohorts.remove(_JENKINS_COHORT_NAME);
 
 		JenkinsResultsParserUtil.setBuildProperties(
 			(Hashtable<Object, Object>)null);
@@ -92,7 +87,7 @@ public class BuildQueueRebalancerTest
 		_setJenkinsMasterAWSFleetClouds(_AVAILABLE_JENKINS_MASTER_NAME);
 		_setJenkinsMasterAWSFleetClouds(_BLACK_LISTED_JENKINS_MASTER_NAME);
 
-		_setFieldValue(
+		ReflectionTestUtil.setFieldValue(
 			JenkinsMaster.getInstance(_BLACK_LISTED_JENKINS_MASTER_NAME),
 			"_blacklisted", true);
 
@@ -178,7 +173,7 @@ public class BuildQueueRebalancerTest
 		_setJenkinsMasterAWSFleetClouds(_AVAILABLE_JENKINS_MASTER_NAME);
 		_setJenkinsMasterAWSFleetClouds(_BLACK_LISTED_JENKINS_MASTER_NAME);
 
-		_setFieldValue(
+		ReflectionTestUtil.setFieldValue(
 			JenkinsMaster.getInstance(_BLACK_LISTED_JENKINS_MASTER_NAME),
 			"_blacklisted", true);
 
@@ -195,38 +190,14 @@ public class BuildQueueRebalancerTest
 				"Build queue rebalanced by 0 reinvocations and 0 aborts"));
 	}
 
-	@SuppressWarnings("unchecked")
-	private <T> T _getStaticFieldValue(Class<?> clazz, String fieldName)
-		throws ReflectiveOperationException {
-
-		Field field = clazz.getDeclaredField(fieldName);
-
-		field.setAccessible(true);
-
-		return (T)field.get(null);
-	}
-
-	private void _setFieldValue(Object object, String fieldName, Object value)
-		throws Exception {
-
-		Class<?> clazz = object.getClass();
-
-		Field field = clazz.getDeclaredField(fieldName);
-
-		field.setAccessible(true);
-
-		field.set(object, value);
-	}
-
-	private void _setJenkinsMasterAWSFleetClouds(String jenkinsMasterName)
-		throws Exception {
-
+	private void _setJenkinsMasterAWSFleetClouds(String jenkinsMasterName) {
 		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(
 			jenkinsMasterName);
 
-		_setFieldValue(
+		ReflectionTestUtil.setFieldValue(
 			jenkinsMaster, "_awsFleetCloudLastUpdateTimestamp", Long.MAX_VALUE);
-		_setFieldValue(jenkinsMaster, "_awsFleetClouds", new ArrayList<>());
+		ReflectionTestUtil.setFieldValue(
+			jenkinsMaster, "_awsFleetClouds", new ArrayList<>());
 	}
 
 	private void _setJenkinsMasterBuildProperties(
