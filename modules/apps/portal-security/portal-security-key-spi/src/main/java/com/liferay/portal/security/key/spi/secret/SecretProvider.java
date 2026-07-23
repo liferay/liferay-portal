@@ -17,12 +17,12 @@ import java.util.List;
  */
 public interface SecretProvider {
 
-	public void deleteSecret(long companyId, String identifier)
+	public void deleteSecret(long companyId, String secretIdentifier)
 		throws SecretException;
 
 	public ProviderStatus getProviderStatus();
 
-	public Secret getSecret(long companyId, String identifier)
+	public Secret getSecret(long companyId, String secretIdentifier)
 		throws SecretException;
 
 	public List<String> getSecretIdentifiers(long companyId)
