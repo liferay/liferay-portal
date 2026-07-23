@@ -61,9 +61,9 @@ public class JournalArticleFriendlyURLFormatUpgradeProcess
 				long groupId = resultSet1.getLong("groupId");
 				String languageId = resultSet1.getString("languageId");
 
-				String originalUrlTitle = resultSet1.getString("urlTitle");
-
 				String urlTitle = resultSet1.getString("urlTitle");
+
+				String originalUrlTitle = urlTitle;
 
 				while (urlTitle.endsWith(StringPool.SLASH)) {
 					urlTitle = urlTitle.substring(0, urlTitle.length() - 1);
