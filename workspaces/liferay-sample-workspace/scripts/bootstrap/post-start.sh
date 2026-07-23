@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "Deploying artifacts to Liferay container."
+echo "Deploying artifacts to the Liferay container."
 
 ./deploy_client_extensions.sh
