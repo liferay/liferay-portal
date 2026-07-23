@@ -27,7 +27,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCachable;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -263,9 +262,7 @@ public class AssetCategoryLocalServiceImpl
 			AssetCategory category, boolean skipRebuildTree)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				category.getCompanyId(), "LPD-86291") &&
-			category.isSystem() &&
+		if (category.isSystem() &&
 			!ExportImportThreadLocal.isImportInProcess() &&
 			!GroupThreadLocal.isDeleteInProcess()) {
 
@@ -912,9 +909,7 @@ public class AssetCategoryLocalServiceImpl
 			long vocabularyId, AssetCategory category)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				category.getCompanyId(), "LPD-86291") ||
-			!category.isSystem() ||
+		if (!category.isSystem() ||
 			ExportImportThreadLocal.isImportInProcess()) {
 
 			return;
@@ -948,9 +943,7 @@ public class AssetCategoryLocalServiceImpl
 		AssetCategory parentCategory =
 			assetCategoryPersistence.findByPrimaryKey(parentCategoryId);
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				parentCategory.getCompanyId(), "LPD-86291") ||
-			!parentCategory.isSystem() ||
+		if (!parentCategory.isSystem() ||
 			ExportImportThreadLocal.isImportInProcess()) {
 
 			return;

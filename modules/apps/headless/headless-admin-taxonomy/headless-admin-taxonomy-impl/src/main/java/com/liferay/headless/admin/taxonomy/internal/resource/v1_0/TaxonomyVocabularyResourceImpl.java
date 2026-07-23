@@ -562,10 +562,7 @@ public class TaxonomyVocabularyResourceImpl
 				assetVocabulary.getGroupId(), assetVocabulary.getVocabularyId(),
 				contextUriInfo, contextUser.getUserId());
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				assetVocabulary.getCompanyId(), "LPD-86291") &&
-			assetVocabulary.isSystem()) {
-
+		if (assetVocabulary.isSystem()) {
 			actions.remove("delete");
 		}
 

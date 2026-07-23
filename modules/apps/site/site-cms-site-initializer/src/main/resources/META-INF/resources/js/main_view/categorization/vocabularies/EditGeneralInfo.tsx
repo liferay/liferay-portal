@@ -77,8 +77,6 @@ export default function EditGeneralInfo({
 }) {
 	const [languageId, setLanguageId] = useState<string>(defaultLanguageId);
 
-	const featureFlagEnabled = !!Liferay.FeatureFlags['LPD-86291'];
-
 	const getLanguageLabel = (languageId: string) => {
 		return languageId.replace('_', '-');
 	};
@@ -370,9 +368,7 @@ export default function EditGeneralInfo({
 						className="mb-0 py-2 text-6 text-dark"
 						id="categorization-scope-title"
 					>
-						{featureFlagEnabled
-							? Liferay.Language.get('scope')
-							: Liferay.Language.get('space')}
+						{Liferay.Language.get('scope')}
 					</h2>
 
 					<CategorizationSpaces
@@ -384,16 +380,14 @@ export default function EditGeneralInfo({
 						setSpaceInputError={setSpaceInputError}
 					/>
 
-					{featureFlagEnabled && (
-						<CategorizationProjects
-							checkboxText="vocabulary"
-							disabled={vocabulary.system}
-							projects={projects}
-							setProjectChange={setProjectChange}
-							setProjectInputError={setProjectInputError}
-							setSelectedProjects={onChangeSelectedProjects}
-						/>
-					)}
+					<CategorizationProjects
+						checkboxText="vocabulary"
+						disabled={vocabulary.system}
+						projects={projects}
+						setProjectChange={setProjectChange}
+						setProjectInputError={setProjectInputError}
+						setSelectedProjects={onChangeSelectedProjects}
+					/>
 				</ClayForm.Group>
 			</ClayPanel>
 

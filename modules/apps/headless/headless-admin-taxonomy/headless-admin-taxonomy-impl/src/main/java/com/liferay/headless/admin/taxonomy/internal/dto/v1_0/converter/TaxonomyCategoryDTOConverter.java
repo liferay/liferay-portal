@@ -20,7 +20,6 @@ import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategoryProperty;
 import com.liferay.headless.admin.taxonomy.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -94,10 +93,7 @@ public class TaxonomyCategoryDTOConverter
 				dtoConverterContext.getUriInfo(),
 				dtoConverterContext.getUserId());
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				assetCategory.getCompanyId(), "LPD-86291") &&
-			assetCategory.isSystem()) {
-
+		if (assetCategory.isSystem()) {
 			actions.remove("add-category");
 			actions.remove("delete");
 			actions.remove("replace");

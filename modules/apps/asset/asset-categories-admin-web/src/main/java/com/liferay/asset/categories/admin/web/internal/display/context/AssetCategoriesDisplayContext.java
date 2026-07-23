@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -972,10 +971,7 @@ public class AssetCategoriesDisplayContext {
 	}
 
 	public boolean isSystemCategory(AssetCategory category) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-86291") ||
-			(category == null)) {
-
+		if (category == null) {
 			return false;
 		}
 
@@ -983,10 +979,7 @@ public class AssetCategoriesDisplayContext {
 	}
 
 	public boolean isSystemVocabulary(AssetVocabulary vocabulary) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-86291") ||
-			(vocabulary == null)) {
-
+		if (vocabulary == null) {
 			return false;
 		}
 

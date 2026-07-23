@@ -12,7 +12,6 @@ import com.liferay.asset.kernel.model.AssetVocabularyGroupRel;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
@@ -149,10 +148,7 @@ public class AssetVocabularyGroupRelLocalServiceImpl
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.fetchAssetVocabulary(vocabularyId);
 
-		if ((assetVocabulary == null) || !assetVocabulary.isSystem() ||
-			!FeatureFlagManagerUtil.isEnabled(
-				assetVocabulary.getCompanyId(), "LPD-86291")) {
-
+		if ((assetVocabulary == null) || !assetVocabulary.isSystem()) {
 			return;
 		}
 

@@ -22,7 +22,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -292,9 +291,7 @@ public class AssetVocabularyLocalServiceImpl
 	public AssetVocabulary deleteVocabulary(AssetVocabulary vocabulary)
 		throws PortalException {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				vocabulary.getCompanyId(), "LPD-86291") &&
-			!ExportImportThreadLocal.isImportInProcess() &&
+		if (!ExportImportThreadLocal.isImportInProcess() &&
 			!GroupThreadLocal.isDeleteInProcess() && vocabulary.isSystem()) {
 
 			throw new SystemVocabularyException.MustNotDelete(
@@ -816,9 +813,7 @@ public class AssetVocabularyLocalServiceImpl
 			int visibilityType, AssetVocabulary vocabulary)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				vocabulary.getCompanyId(), "LPD-86291") ||
-			ExportImportThreadLocal.isImportInProcess() ||
+		if (ExportImportThreadLocal.isImportInProcess() ||
 			!vocabulary.isSystem()) {
 
 			return;

@@ -11,7 +11,6 @@ import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -157,10 +156,7 @@ public class AssetVocabularyActionDropdownItemsProvider {
 	}
 
 	private boolean _isSystemVocabulary(AssetVocabulary vocabulary) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-86291") ||
-			(vocabulary == null)) {
-
+		if (vocabulary == null) {
 			return false;
 		}
 
