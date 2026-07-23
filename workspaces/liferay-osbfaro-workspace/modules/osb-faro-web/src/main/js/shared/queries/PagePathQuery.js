@@ -2,6 +2,7 @@ import {gql} from '@apollo/client';
 
 export default gql`
 	query PagePath(
+		$accountId: String
 		$canonicalUrl: String
 		$channelId: String
 		$rangeEnd: String
@@ -11,6 +12,7 @@ export default gql`
 		$title: String!
 	) {
 		pagePath(
+			accountId: $accountId
 			canonicalUrl: $canonicalUrl
 			channelId: $channelId
 			rangeEnd: $rangeEnd

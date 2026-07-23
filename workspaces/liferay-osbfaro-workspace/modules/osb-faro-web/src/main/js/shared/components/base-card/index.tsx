@@ -37,6 +37,7 @@ const BaseCard: React.FC<BaseCardIProps> = ({
 	const context = useContext(BasePage.Context);
 
 	const {
+		accountId,
 		experienceId,
 		filters,
 		rangeSelectors: contextRangeSelectors,
@@ -55,6 +56,7 @@ const BaseCard: React.FC<BaseCardIProps> = ({
 	const isGlobal = !!contextRangeSelectors;
 
 	const otherProps = {
+		accountId,
 		experienceId,
 		filters,
 		interval,

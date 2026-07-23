@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+import FilterPickerTrigger from 'shared/components/FilterPickerTrigger';
 import React, {useMemo, useState} from 'react';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {fetchPageExperience} from 'shared/api/experiences';
@@ -18,10 +20,14 @@ const ALL_EXPERIENCES_ITEM: IExperienceItem = {
 };
 
 interface IExperienceDropdownProps {
+	className?: string;
 	onChange: (experienceId: string | null) => void;
 }
 
-const ExperienceDropdown: React.FC<IExperienceDropdownProps> = ({onChange}) => {
+const ExperienceDropdown: React.FC<IExperienceDropdownProps> = ({
+	className,
+	onChange,
+}) => {
 	const {channelId, groupId, title, touchpoint} = useParams();
 
 	const [selectedKey, setSelectedKey] = useState<string>('null');
@@ -54,9 +60,10 @@ const ExperienceDropdown: React.FC<IExperienceDropdownProps> = ({onChange}) => {
 
 	return (
 		<ClayTooltipProvider>
-			<div className="experience-dropdown">
+			<div className={classNames('experience-dropdown', className)}>
 				<Picker
 					aria-label={Liferay.Language.get('all-experiences')}
+					as={FilterPickerTrigger}
 					className="border-light form-control-sm"
 					items={displayItems}
 					onSelectionChange={(key) =>

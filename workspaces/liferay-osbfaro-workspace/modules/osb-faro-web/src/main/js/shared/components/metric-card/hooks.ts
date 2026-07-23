@@ -36,6 +36,7 @@ export const useAssetVariables = (variables: ICommonVariables) => {
 };
 
 type TMetricQueryParams = {
+	accountId?: string;
 	experienceId?: string;
 	filters: RawFilters;
 	interval: Interval;
@@ -45,6 +46,7 @@ type TMetricQueryParams = {
 };
 
 const buildQueryVariables = ({
+	accountId,
 	experienceId,
 	filters,
 	interval,
@@ -55,11 +57,13 @@ const buildQueryVariables = ({
 		interval,
 		...getFilters(filters),
 		...getSafeRangeSelectors(rangeSelectors),
+		...(accountId && {accountId}),
 		...(experienceId && {experienceId}),
 	});
 
 export const useMetricQuery = ({
 	Query,
+	accountId,
 	experienceId,
 	filters,
 	interval,
@@ -69,6 +73,7 @@ export const useMetricQuery = ({
 	const {data, error, loading} = useQuery(Query, {
 		fetchPolicy: fetchPolicyDefinition(rangeSelectors),
 		variables: buildQueryVariables({
+			accountId,
 			experienceId,
 			filters,
 			interval,

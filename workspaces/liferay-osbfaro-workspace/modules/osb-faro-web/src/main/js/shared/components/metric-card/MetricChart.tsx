@@ -411,6 +411,7 @@ const MetricChartWrapper: React.FC<IMetricChartWrapperProps> = ({
 };
 
 const MetricChartRenderer: React.FC<ICommonMetricProps> = ({
+	accountId,
 	emptyDescription,
 	emptyTitle,
 	experienceId,
@@ -423,6 +424,7 @@ const MetricChartRenderer: React.FC<ICommonMetricProps> = ({
 	const metricName = getMetricName(activeItemIndex, metrics);
 
 	const {data, error, loading} = useMetricQuery({
+		accountId,
 		experienceId,
 		filters,
 		interval,
