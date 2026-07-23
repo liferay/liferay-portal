@@ -181,7 +181,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		Map<String, String> parameters = new HashMap<>();
 
 		String tckHome = JenkinsResultsParserUtil.getProperty(
-			_getPortalTestProperties(), "tck.home");
+			getPortalTestProperties(), "tck.home");
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(tckHome)) {
 			parameters.put("tck.home", tckHome);
@@ -220,6 +220,52 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		RemoteGitRef remoteGitRef, String upstreamBranchName) {
 
 		super(remoteGitRef, upstreamBranchName);
+	}
+
+	protected Properties getPortalTestProperties() {
+		Properties testProperties = getProperties("portal.test.properties");
+
+		String companyDefaultLocale = Environment.get(
+			"TEST_COMPANY_DEFAULT_LOCALE");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(companyDefaultLocale)) {
+			testProperties.setProperty(
+				"test.company.default.locale", companyDefaultLocale);
+		}
+
+		String portalLatestBundleVersion = Environment.get(
+			"PORTAL_LATEST_BUNDLE_VERSION");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(
+				portalLatestBundleVersion)) {
+
+			testProperties.put(
+				"test.released.release.bundle.version",
+				portalLatestBundleVersion);
+
+			Properties buildProperties = null;
+
+			try {
+				buildProperties = JenkinsResultsParserUtil.getBuildProperties();
+			}
+			catch (IOException ioException) {
+				throw new RuntimeException(ioException);
+			}
+
+			String portalBundleTomcatURL = JenkinsResultsParserUtil.getProperty(
+				buildProperties, "portal.bundle.tomcat",
+				portalLatestBundleVersion);
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+					portalBundleTomcatURL)) {
+
+				testProperties.put(
+					"test.released.test.portal.bundle.zip.url",
+					portalBundleTomcatURL);
+			}
+		}
+
+		return testProperties;
 	}
 
 	@Override
@@ -330,52 +376,6 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		}
 	}
 
-	private Properties _getPortalTestProperties() {
-		Properties testProperties = getProperties("portal.test.properties");
-
-		String companyDefaultLocale = Environment.get(
-			"TEST_COMPANY_DEFAULT_LOCALE");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(companyDefaultLocale)) {
-			testProperties.setProperty(
-				"test.company.default.locale", companyDefaultLocale);
-		}
-
-		String portalLatestBundleVersion = Environment.get(
-			"PORTAL_LATEST_BUNDLE_VERSION");
-
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(
-				portalLatestBundleVersion)) {
-
-			testProperties.put(
-				"test.released.release.bundle.version",
-				portalLatestBundleVersion);
-
-			Properties buildProperties = null;
-
-			try {
-				buildProperties = JenkinsResultsParserUtil.getBuildProperties();
-			}
-			catch (IOException ioException) {
-				throw new RuntimeException(ioException);
-			}
-
-			String portalBundleTomcatURL = JenkinsResultsParserUtil.getProperty(
-				buildProperties, "portal.bundle.tomcat",
-				portalLatestBundleVersion);
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(
-					portalBundleTomcatURL)) {
-
-				testProperties.put(
-					"test.released.test.portal.bundle.zip.url",
-					portalBundleTomcatURL);
-			}
-		}
-
-		return testProperties;
-	}
-
 	private PortalAcceptancePullRequestJob
 		_getRelevantPortalAcceptancePullRequestJob() {
 
@@ -435,7 +435,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 				getDirectory(),
 				JenkinsResultsParserUtil.combine(
 					"test.", Environment.get("HOSTNAME"), ".properties")),
-			_getPortalTestProperties(), true);
+			getPortalTestProperties(), true);
 	}
 
 	private Properties _appServerProperties;
