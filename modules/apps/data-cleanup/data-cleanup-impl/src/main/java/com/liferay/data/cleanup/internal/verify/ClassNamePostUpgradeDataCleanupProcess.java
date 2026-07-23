@@ -15,12 +15,14 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.DataCleanupLoggingUtil;
@@ -81,40 +83,11 @@ public class ClassNamePostUpgradeDataCleanupProcess
 		}
 
 		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
-		Map<String, List<Bundle>> packageNameBundlesMap = new HashMap<>();
-
-		for (Bundle bundle : bundleContext.getBundles()) {
-			BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
-
-			if (bundleWiring == null) {
-				continue;
-			}
-
-			for (BundleCapability bundleCapability :
-					bundleWiring.getCapabilities(
-						BundleRevision.PACKAGE_NAMESPACE)) {
-
-				Map<String, Object> attributes =
-					bundleCapability.getAttributes();
-
-				Object packageName = attributes.get(
-					BundleRevision.PACKAGE_NAMESPACE);
-
-				if (packageName == null) {
-					continue;
-				}
-
-				List<Bundle> bundles = packageNameBundlesMap.computeIfAbsent(
-					packageName.toString(), key -> new ArrayList<>());
-
-				bundles.add(bundle);
-			}
-		}
+		DBInspector dbInspector = new DBInspector(connection);
+		_packageNameBundlesMap = _getPackageNameBundlesMap();
 
 		StringBundler sb = new StringBundler();
 		List<String> tableNames = new ArrayList<>();
-
-		DBInspector dbInspector = new DBInspector(connection);
 
 		for (String tableName : dbInspector.getTableNames(null)) {
 			if (!dbInspector.hasColumn(tableName, "classNameId") ||
@@ -187,7 +160,7 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 			if (_isClassDefined(
 					bundleContext, definedClasses, models,
-					packageNameBundlesMap, value)) {
+					_packageNameBundlesMap, value)) {
 
 				continue;
 			}
@@ -228,6 +201,48 @@ public class ClassNamePostUpgradeDataCleanupProcess
 						String.join(", ", new TreeSet<>(usedTableNames))));
 			}
 		}
+	}
+
+	private Map<String, List<Bundle>> _getPackageNameBundlesMap() {
+		if (CompanyThreadLocal.getNonsystemCompanyId() !=
+				PortalInstancePool.getDefaultCompanyId()) {
+
+			return _packageNameBundlesMap;
+		}
+
+		Map<String, List<Bundle>> packageNameBundlesMap = new HashMap<>();
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+
+			if (bundleWiring == null) {
+				continue;
+			}
+
+			for (BundleCapability bundleCapability :
+					bundleWiring.getCapabilities(
+						BundleRevision.PACKAGE_NAMESPACE)) {
+
+				Map<String, Object> attributes =
+					bundleCapability.getAttributes();
+
+				Object packageName = attributes.get(
+					BundleRevision.PACKAGE_NAMESPACE);
+
+				if (packageName == null) {
+					continue;
+				}
+
+				List<Bundle> bundles = packageNameBundlesMap.computeIfAbsent(
+					packageName.toString(), key -> new ArrayList<>());
+
+				bundles.add(bundle);
+			}
+		}
+
+		return packageNameBundlesMap;
 	}
 
 	private boolean _isClassDefined(
@@ -299,6 +314,8 @@ public class ClassNamePostUpgradeDataCleanupProcess
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ClassNamePostUpgradeDataCleanupProcess.class);
+
+	private static Map<String, List<Bundle>> _packageNameBundlesMap;
 
 	private final ClassNameLocalService _classNameLocalService;
 	private final CompanyLocalService _companyLocalService;
