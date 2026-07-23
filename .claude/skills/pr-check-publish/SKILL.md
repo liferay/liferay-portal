@@ -21,7 +21,7 @@ Newly created PRs do not need this skill: the `pr` skill writes the same Results
 
 ### Results Summary
 
-Use the **Results Summary** block emitted by the `pr-check` run in the current session — the overall state line, the tested SHA, and the per-validation table. When no Results Summary is available (pr-check has not run this session), abort and ask the user to run `pr-check` first; this skill records a run, it does not perform one.
+Use the **Results Summary** block emitted by the `pr-check` run in the current session — the overall state line, the tested SHA, the per-validation table, and, when a validation failed and returned a failure note, that note appended below the table. When no Results Summary is available (pr-check has not run this session), abort and ask the user to run `pr-check` first; this skill records a run, it does not perform one.
 
 ## Expected Output
 
