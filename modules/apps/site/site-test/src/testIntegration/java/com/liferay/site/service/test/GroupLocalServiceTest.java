@@ -206,7 +206,6 @@ public class GroupLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Test
 	public void testDeleteGroup() throws Exception {
 		Group group1 = GroupTestUtil.addGroup();

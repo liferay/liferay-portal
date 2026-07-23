@@ -169,7 +169,6 @@ describe('MultipleScopesRenderer', () => {
 	it('does not render projects when itemData has no projects', () => {
 		(global as any).Liferay.FeatureFlags = {
 			'LPD-58677': true,
-			'LPD-86291': true,
 		};
 
 		const itemData = {
@@ -184,7 +183,7 @@ describe('MultipleScopesRenderer', () => {
 		(global as any).Liferay.FeatureFlags = {};
 	});
 
-	it('does not render projects when the feature flags are disabled', () => {
+	it('does not render projects when the feature flag is disabled', () => {
 		const itemData = {
 			assetLibraries: [{id: -1, name: ''}],
 			projects: [{id: -1, name: ''}],
@@ -196,11 +195,10 @@ describe('MultipleScopesRenderer', () => {
 		expect(screen.queryByText('all-projects')).not.toBeInTheDocument();
 	});
 
-	describe('When itemData has projects and the feature flags are enabled', () => {
+	describe('When itemData has projects and the feature flag is enabled', () => {
 		beforeEach(() => {
 			(global as any).Liferay.FeatureFlags = {
 				'LPD-58677': true,
-				'LPD-86291': true,
 			};
 
 			mockGetSpaceWithCache();

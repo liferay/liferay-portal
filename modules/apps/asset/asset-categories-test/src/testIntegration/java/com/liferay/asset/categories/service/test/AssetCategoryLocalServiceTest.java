@@ -65,7 +65,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -274,7 +273,6 @@ public class AssetCategoryLocalServiceTest {
 			assetCategory.getTitleMap());
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Test
 	public void testAddCategorySystemCategory() throws Exception {
 		AssetCategory assetCategory = _addSystemCategory();
@@ -538,7 +536,6 @@ public class AssetCategoryLocalServiceTest {
 			assetCategory, assetCategoryTitle);
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Test
 	public void testDeleteCategories() throws Exception {
 		AssetCategory assetCategory = _addSystemCategory();
@@ -552,7 +549,6 @@ public class AssetCategoryLocalServiceTest {
 				new long[] {assetCategory.getCategoryId()}));
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Test
 	public void testDeleteCategory() throws Exception {
 		Map<Locale, String> titleMap = HashMapBuilder.put(
@@ -915,7 +911,6 @@ public class AssetCategoryLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Test
 	public void testMoveCategory() throws Exception {
 		AssetCategory assetCategory1 = _addSystemCategory();
@@ -1325,7 +1320,6 @@ public class AssetCategoryLocalServiceTest {
 			assetCategory2.getCategoryId());
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Test
 	public void testUpdateCategory() throws Exception {
 		_testUpdateCategorySystemDescription();

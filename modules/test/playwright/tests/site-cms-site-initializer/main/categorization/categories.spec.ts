@@ -32,7 +32,6 @@ const systemCategoryTest = mergeTests(
 	dataApiHelpersTest,
 	featureFlagsTest({
 		'LPD-17564': {enabled: true},
-		'LPD-86291': {enabled: true},
 	}),
 	loginTest()
 );
@@ -778,13 +777,10 @@ systemCategoryTest.describe('System category tests', () => {
 		}
 	);
 
-	systemCategoryTest.afterEach(async ({apiHelpers}) => {
-
-		// A system category cannot be deleted while LPD-86291 is enabled, so
-		// disable it before the vocabulary and its categories are cleaned up.
-
-		await apiHelpers.featureFlag.updateFeatureFlag('LPD-86291', false);
-	});
+	// A system category cannot be deleted once created, so the automatic
+	// cleanup of its vocabulary fails silently and both are left behind. Each
+	// test creates a fresh vocabulary and navigates to it by id, so the
+	// leftover data does not interfere with the assertions.
 
 	systemCategoryTest(
 		'Mark a system category with a lock icon and hide its edit, move, and delete actions',

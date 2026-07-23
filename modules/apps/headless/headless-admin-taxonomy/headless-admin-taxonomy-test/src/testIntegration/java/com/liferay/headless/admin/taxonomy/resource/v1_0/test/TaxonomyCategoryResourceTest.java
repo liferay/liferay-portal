@@ -139,7 +139,6 @@ public class TaxonomyCategoryResourceTest
 		super.testDeleteAssetLibraryTaxonomyCategoryByExternalReferenceCode();
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Override
 	@Test
 	public void testDeleteTaxonomyCategory() throws Exception {
@@ -467,7 +466,6 @@ public class TaxonomyCategoryResourceTest
 		super.testGraphQLPostTaxonomyVocabularyTaxonomyCategory();
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Override
 	@Test
 	public void testPatchTaxonomyCategory() throws Exception {
@@ -518,7 +516,6 @@ public class TaxonomyCategoryResourceTest
 		_testPostSiteTaxonomyCategoryWithNonexistingTaxonomyVocabulary();
 	}
 
-	@FeatureFlag("LPD-86291")
 	@Override
 	@Test
 	public void testPostTaxonomyCategoryTaxonomyCategory() throws Exception {
