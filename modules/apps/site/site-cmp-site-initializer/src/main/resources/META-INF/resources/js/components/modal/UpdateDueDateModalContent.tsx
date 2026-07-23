@@ -1,0 +1,101 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
+import {displayErrorToast} from '@liferay/site-cms-site-initializer';
+import moment from 'moment';
+import React, {useId, useState} from 'react';
+
+import {patchTaskById} from '../../utils/api';
+import {displayDueDateSuccessToast} from '../../utils/toastUtil';
+import DateField, {dateConfig} from '../DateField';
+
+type Props = {
+	closeModal: () => void;
+	dueDate?: string;
+	loadData: Function;
+	taskId: string;
+	taskTitle: string;
+};
+
+export default function UpdateDueDateModalContent({
+	closeModal,
+	dueDate: initialDueDate,
+	loadData,
+	taskId,
+	taskTitle,
+}: Props) {
+	const initialValue = initialDueDate
+		? moment(initialDueDate.slice(0, 10)).format(dateConfig.momentFormat)
+		: '';
+
+	const [dueDate, setDueDate] = useState<string>(initialValue);
+
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+
+		const {error} = await patchTaskById({
+			body: {
+				dueDate: dueDate
+					? moment(dueDate, dateConfig.momentFormat).format(
+							'YYYY-MM-DD'
+						)
+					: '',
+			},
+			taskId,
+		});
+
+		if (!error) {
+			closeModal();
+
+			loadData();
+
+			displayDueDateSuccessToast(taskTitle);
+		}
+		else {
+			displayErrorToast(error);
+		}
+	};
+
+	return (
+		<form onSubmit={handleSubmit}>
+			<ClayModal.Header>
+				{Liferay.Language.get('update-due-date')}
+			</ClayModal.Header>
+
+			<ClayModal.Body>
+				<label>{Liferay.Language.get('due-date')}</label>
+
+				<DateField
+					id={useId()}
+					initialValue={initialValue}
+					onChange={async (value: string) => {
+						setDueDate(value);
+					}}
+					required={false}
+				/>
+			</ClayModal.Body>
+
+			<ClayModal.Footer
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							displayType="secondary"
+							onClick={closeModal}
+							type="button"
+						>
+							{Liferay.Language.get('cancel')}
+						</ClayButton>
+
+						<ClayButton displayType="primary" type="submit">
+							{Liferay.Language.get('update')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
+		</form>
+	);
+}

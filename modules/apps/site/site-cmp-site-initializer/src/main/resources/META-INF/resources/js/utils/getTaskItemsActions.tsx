@@ -14,6 +14,7 @@ import React from 'react';
 
 import DeleteTaskModal from '../components/modal/DeleteTaskModal';
 import EditAssigneeModalContent from '../components/modal/EditAssigneeModalContent';
+import UpdateDueDateModalContent from '../components/modal/UpdateDueDateModalContent';
 import {
 	deleteTaskById,
 	getUserAccount,
@@ -171,6 +172,32 @@ export default function getTaskItemsActions(
 					size: 'md',
 				});
 			},
+		});
+	}
+
+	if (task.actions?.update) {
+		middleItems.push({
+			label: Liferay.Language.get('update-due-date'),
+			onClick: async () => {
+				await openCMPModal({
+					center: true,
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) => (
+						<UpdateDueDateModalContent
+							closeModal={closeModal}
+							dueDate={task.embedded.dueDate}
+							loadData={loadData}
+							taskId={String(task.embedded.id)}
+							taskTitle={task.embedded.title}
+						/>
+					),
+					size: 'md',
+				});
+			},
+			symbolLeft: 'date-time',
 		});
 	}
 
