@@ -27,7 +27,7 @@ export default function PerformanceDashboard({
 	if (!analyticsEnabled) {
 		return (
 			<div
-				className="align-items-center d-flex justify-content-center"
+				className="align-items-center d-flex justify-content-center pb-6"
 				style={{minHeight: '50vh'}}
 			>
 				<ConnectToAnalyticsCloud admin={admin} />

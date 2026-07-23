@@ -17,27 +17,35 @@ function buildAnalyticsCloudConfigURL() {
 	});
 }
 
+const LEARN_PERFORMANCE_CAPABILITIES_URL =
+	'https://www.liferay.com/capabilities/data-platform?utm_medium=referral&utm_source=ft-cms&utm_content=ldp&utm_cid=701VO00001AIY6bYAH';
+
 function ConnectToAnalyticsCloud({admin}: {admin: boolean}) {
 	return (
 		<EmptyState
-			description={
-				admin
-					? Liferay.Language.get(
-							'in-order-to-view-asset-performance,-your-liferay-dxp-instance-has-to-be-connected-with-liferay-analytics-cloud'
-						)
-					: Liferay.Language.get(
-							'please-contact-a-dxp-instance-administrator-to-connect-your-dxp-instance-to-analytics-cloud'
-						)
-			}
+			description={Liferay.Language.get(
+				'track-views,-engagement,-and-where-your-assets-are-used-across-your-sites-with-liferay-data-platform'
+			)}
 			externalImage={{
-				src: '/o/analytics-reports-js-components-web/assets/performance_tab_empty_state.svg',
+				src: '/o/site-cms-site-initializer/images/performance.svg',
 				style: {
 					marginBottom: '1rem',
 					width: 245,
 				},
 			}}
-			title={Liferay.Language.get('connect-to-liferay-analytics-cloud')}
+			title={Liferay.Language.get('see-how-your-content-performs')}
 		>
+			<ClayLink
+				className="d-block mb-3 text-decoration-underline"
+				href={LEARN_PERFORMANCE_CAPABILITIES_URL}
+				rel="noopener noreferrer"
+				target="_blank"
+			>
+				{Liferay.Language.get(
+					'learn-more-about-performance-capabilities'
+				)}
+			</ClayLink>
+
 			{admin && (
 				<ClayLink
 					button
@@ -45,7 +53,7 @@ function ConnectToAnalyticsCloud({admin}: {admin: boolean}) {
 					href={buildAnalyticsCloudConfigURL().href}
 					small
 				>
-					{Liferay.Language.get('connect')}
+					{Liferay.Language.get('connect-your-liferay-data-platform')}
 				</ClayLink>
 			)}
 		</EmptyState>
