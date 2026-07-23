@@ -275,10 +275,10 @@ public abstract class BaseDownstreamBuildReport
 	}
 
 	private JSONObject _toTestResultJSONObject(JSONObject caseJSONObject) {
-		JSONObject testResultJSONObject = new JSONObject();
-
-		testResultJSONObject.put(
-			"duration", (long)(caseJSONObject.optDouble("duration", 0) * 1000));
+		JSONObject testResultJSONObject = new JSONObject(
+		).put(
+			"duration", (long)(caseJSONObject.optDouble("duration", 0) * 1000)
+		);
 
 		String errorDetails = caseJSONObject.optString("errorDetails", null);
 
