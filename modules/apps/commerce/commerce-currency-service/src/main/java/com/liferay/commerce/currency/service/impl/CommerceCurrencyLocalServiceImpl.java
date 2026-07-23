@@ -22,6 +22,7 @@ import com.liferay.commerce.currency.util.ExchangeRateProvider;
 import com.liferay.commerce.currency.util.ExchangeRateProviderRegistry;
 import com.liferay.commerce.currency.util.comparator.CommerceCurrencyPriorityComparator;
 import com.liferay.commerce.product.constants.CPField;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -77,6 +78,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -159,7 +162,13 @@ public class CommerceCurrencyLocalServiceImpl
 		commerceCurrency.setPrimary(primary);
 		commerceCurrency.setPriority(priority);
 		commerceCurrency.setActive(active);
-		commerceCurrency.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			commerceCurrency.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			commerceCurrency.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
 
 		return commerceCurrencyPersistence.update(commerceCurrency);
 	}
@@ -241,6 +250,26 @@ public class CommerceCurrencyLocalServiceImpl
 		throws NoSuchCurrencyException {
 
 		return commerceCurrencyPersistence.findByC_C(companyId, code);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CommerceCurrency getOrAddEmptyCommerceCurrency(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CommerceCurrency.class, companyId,
+			() -> commerceCurrencyLocalService.addCommerceCurrency(
+				externalReferenceCode, userId, externalReferenceCode,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				externalReferenceCode, BigDecimal.ONE, new HashMap<>(), 0, 0,
+				null, false, 0, false),
+			externalReferenceCode,
+			this::fetchCommerceCurrencyByExternalReferenceCode,
+			this::getCommerceCurrencyByExternalReferenceCode,
+			CommerceCurrency.class.getName());
 	}
 
 	@Override
@@ -453,6 +482,16 @@ public class CommerceCurrencyLocalServiceImpl
 		commerceCurrency.setPrimary(primary);
 		commerceCurrency.setPriority(priority);
 		commerceCurrency.setActive(active);
+
+		if (commerceCurrency.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			commerceCurrency.setStatus(
+				_emptyModelManager.solveEmptyModel(
+					commerceCurrency.getExternalReferenceCode(),
+					commerceCurrency.getModelClassName(),
+					commerceCurrency.getCompanyId(), 0,
+					commerceCurrency.getStatus(),
+					() -> WorkflowConstants.STATUS_APPROVED));
+		}
 
 		return commerceCurrencyPersistence.update(commerceCurrency);
 	}
@@ -691,6 +730,9 @@ public class CommerceCurrencyLocalServiceImpl
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExchangeRateProviderRegistry _exchangeRateProviderRegistry;
