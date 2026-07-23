@@ -120,15 +120,13 @@ export default function useAIChat({
 	]);
 
 	useEffect(() => {
-		const fieldElement = triggerRef?.current?.closest(
-			'[data-ai-assistant-field-id]'
-		);
+		const fieldId = triggerRef?.current
+			?.closest('[data-ai-assistant-field-id]')
+			?.getAttribute('data-ai-assistant-field-id');
 
-		if (fieldElement) {
-			fileUploadSelectorRef.current = `[data-ai-assistant-field-id="${fieldElement.getAttribute(
-				'data-ai-assistant-field-id'
-			)}"]`;
-		}
+		fileUploadSelectorRef.current = fieldId
+			? `[data-ai-assistant-field-id="${fieldId}"]`
+			: '[data-ai-assistant-field-id]';
 	}, [triggerRef]);
 
 	useEffect(() => {
