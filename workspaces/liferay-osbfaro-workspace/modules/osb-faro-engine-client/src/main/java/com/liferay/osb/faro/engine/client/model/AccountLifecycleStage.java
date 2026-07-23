@@ -5,6 +5,8 @@
 
 package com.liferay.osb.faro.engine.client.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Riccardo Ferrari
  */
@@ -12,6 +14,11 @@ public class AccountLifecycleStage {
 
 	public String getAccountLifecycleId() {
 		return _accountLifecycleId;
+	}
+
+	@JsonProperty("segment")
+	public AccountLifecycleStageRule getAccountLifecycleStageRule() {
+		return _accountLifecycleStageRule;
 	}
 
 	public String getDescription() {
@@ -42,6 +49,12 @@ public class AccountLifecycleStage {
 		_accountLifecycleId = accountLifecycleId;
 	}
 
+	public void setAccountLifecycleStageRule(
+		AccountLifecycleStageRule accountLifecycleStageRule) {
+
+		_accountLifecycleStageRule = accountLifecycleStageRule;
+	}
+
 	public void setDescription(String description) {
 		_description = description;
 	}
@@ -67,6 +80,7 @@ public class AccountLifecycleStage {
 	}
 
 	private String _accountLifecycleId;
+	private AccountLifecycleStageRule _accountLifecycleStageRule;
 	private String _description;
 	private Integer _displayOrder;
 	private String _id;

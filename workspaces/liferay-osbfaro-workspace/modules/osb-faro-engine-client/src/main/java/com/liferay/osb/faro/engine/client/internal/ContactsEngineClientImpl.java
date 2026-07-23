@@ -132,18 +132,16 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public AccountLifecycle addAccountLifecycle(
-		FaroProject faroProject, String description, String name,
-		String segmentId) {
+		FaroProject faroProject, AccountLifecycle accountLifecycle,
+		String channelId) {
 
-		AccountLifecycle accountLifecycle = new AccountLifecycle();
+		Map<String, Object> uriVariables = getUriVariables(faroProject);
 
-		accountLifecycle.setDescription(description);
-		accountLifecycle.setName(name);
-		accountLifecycle.setSegmentId(segmentId);
+		uriVariables.put("channelId", channelId);
 
 		return post(
 			faroProject, Rels.ACCOUNT_LIFECYCLES, accountLifecycle,
-			AccountLifecycle.class);
+			AccountLifecycle.class, uriVariables);
 	}
 
 	@Override
