@@ -143,7 +143,7 @@ public class DepotDesignLibraryRolesHelper {
 				RoleConstants.toSystemRoleExternalReferenceCode(name),
 				user.getUserId(), null, 0, name,
 				DepotRoleUtil.getTitleMap(_language, name),
-				DepotRoleUtil.getDescriptionMap(companyId, _language, name),
+				DepotRoleUtil.getDescriptionMap(_language, name),
 				RoleConstants.TYPE_DEPOT,
 				DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY, null);
 		}
