@@ -20,6 +20,9 @@ public class DepotRoleNameUtil {
 
 			return DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR;
 		}
+		else if (Objects.equals(subtype, DepotRolesConstants.SUBTYPE_PROJECT)) {
+			return DepotRolesConstants.PROJECT_MANAGER;
+		}
 
 		return DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR;
 	}
@@ -39,6 +42,9 @@ public class DepotRoleNameUtil {
 				subtype, DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY)) {
 
 			return DepotRolesConstants.DESIGN_LIBRARY_MEMBER;
+		}
+		else if (Objects.equals(subtype, DepotRolesConstants.SUBTYPE_PROJECT)) {
+			return DepotRolesConstants.PROJECT_MEMBER;
 		}
 
 		return DepotRolesConstants.ASSET_LIBRARY_MEMBER;
