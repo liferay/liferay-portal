@@ -1075,11 +1075,15 @@ export const organizationsListColumns = [
 
 export const sitePagesListColumns = {
 	getTitleUrl: ({
+		accountId,
+		accountName,
 		channelId,
 		groupId,
 		rangeSelectors,
 		route,
 	}: ChannelGroupParams & {
+		accountId?: string | null;
+		accountName?: string | null;
 		rangeSelectors: Record<string, any>;
 		route: string;
 	}) => ({
@@ -1096,7 +1100,7 @@ export const sitePagesListColumns = {
 				data: {assetId: string; assetTitle?: string};
 			}) =>
 				setUriQueryValues(
-					pickBy(rangeSelectors),
+					pickBy({accountId, accountName, ...rangeSelectors}),
 					toRoute(route, {
 						channelId,
 						groupId,

@@ -28,6 +28,7 @@ export const PageAudienceReportQuery = ({
 	name: Name;
 }) => gql`
 	query ${name}AudienceReportQuery(
+		$accountId: String
 		$channelId: String
 		$devices: String
 		$experienceId: String
@@ -39,6 +40,7 @@ export const PageAudienceReportQuery = ({
 		$touchpoint: String
 	) {
 		${name}(
+			accountId: $accountId
 			channelId: $channelId
 			canonicalUrl: $touchpoint
 			country: $location
@@ -66,6 +68,7 @@ export const AssetAudienceReportQuery = ({
 	name: Name;
 }) => gql`
 	query ${name}AudienceReportQuery(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -77,6 +80,7 @@ export const AssetAudienceReportQuery = ({
 		$touchpoint: String
 	) {
 		${name}(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId

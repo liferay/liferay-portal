@@ -21,10 +21,11 @@ function AudienceReportBaseCard({
 			minHeight={536}
 			reportContainer={ReportContainer.AudienceCard}
 		>
-			{({experienceId, filters, rangeSelectors}) => (
+			{({accountId, experienceId, filters, rangeSelectors}) => (
 				<Card.Body>
 					<AudienceReport
 						{...props}
+						accountId={accountId}
 						experienceId={experienceId}
 						filters={filters}
 						mapper={(result: any) => result?.[name]?.[metricName]}

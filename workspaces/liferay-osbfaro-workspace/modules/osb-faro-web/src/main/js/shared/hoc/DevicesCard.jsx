@@ -152,6 +152,7 @@ const withDevicesCard = (
 				reportContainer={reportContainer}
 			>
 				{({
+					accountId,
 					experienceId,
 					filters,
 					interval,
@@ -160,6 +161,7 @@ const withDevicesCard = (
 				}) => (
 					<Card.Body>
 						<TabsWithDevices
+							accountId={accountId}
 							activeTab={activeTab}
 							experienceId={experienceId}
 							filters={filters}

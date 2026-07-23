@@ -58,7 +58,7 @@ const withBaseResults = (withData, configs) => {
 
 		render() {
 			const {
-				context: {filters},
+				context: {accountId, accountName, filters},
 				props: {
 					delta,
 					orderIOMap,
@@ -74,6 +74,8 @@ const withBaseResults = (withData, configs) => {
 				<div className='d-flex flex-column flex-grow-1 justify-content-between'>
 					<TableWithData
 						{...otherProps}
+						accountId={accountId}
+						accountName={accountName}
 						delta={delta}
 						filters={filters}
 						orderIOMap={orderIOMap}

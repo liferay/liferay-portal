@@ -33,6 +33,7 @@ export function safeResultToProps<TData = any>(
 ): (props: {data: any; ownProps: any}, context?: any) => Record<string, any>;
 
 export function getVariables(args: {
+	accountId?: string | null;
 	assetId?: string;
 	experienceId?: string;
 	filters?: any;

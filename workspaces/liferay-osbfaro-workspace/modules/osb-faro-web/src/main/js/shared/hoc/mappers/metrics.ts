@@ -15,6 +15,7 @@ export const getMapPropsToOptions: (
 ) => (props: {[key: string]: any}) => GraphQLOptions =
 	(gqlQuery, options = {}) =>
 	({
+		accountId,
 		delta,
 		filters,
 		interestId,
@@ -25,6 +26,7 @@ export const getMapPropsToOptions: (
 		router: {params, query: routerQuery},
 	}) => {
 		const {variables} = getVariables({
+			accountId,
 			filters,
 			params,
 			rangeSelectors,

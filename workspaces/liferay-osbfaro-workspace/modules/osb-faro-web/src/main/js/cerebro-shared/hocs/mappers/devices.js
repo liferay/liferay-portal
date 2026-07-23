@@ -103,13 +103,21 @@ const getDevicesMapper = (getMetric) => {
 	 * @param {object} param1 context
 	 */
 	const mapPropsToOptions = ({
+		accountId,
 		experienceId,
 		filters,
 		interval,
 		rangeSelectors,
 		router: {params},
 	}) =>
-		getVariables({experienceId, filters, interval, params, rangeSelectors});
+		getVariables({
+			accountId,
+			experienceId,
+			filters,
+			interval,
+			params,
+			rangeSelectors,
+		});
 
 	return {
 		options: mapPropsToOptions,
