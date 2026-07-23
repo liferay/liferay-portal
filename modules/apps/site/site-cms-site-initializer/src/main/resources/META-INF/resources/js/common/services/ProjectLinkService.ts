@@ -8,7 +8,7 @@ import ApiHelper, {RequestResult} from './ApiHelper';
 /**
  * Identifies the asset being linked. `className` and `externalReferenceCode`
  * plus `groupExternalReferenceCode` are the fields the
- * CMPProjectAssetRelationship object stores to point back at the asset.
+ * CMPProjectLink object stores to point back at the asset.
  */
 type AssetIdentity = {
 	entryClassName?: string;
@@ -34,21 +34,21 @@ export type CMPTask = {
 };
 
 /**
- * A CMPProjectAssetRelationship entry reduced to what the panels need: the
+ * A CMPProjectLink entry reduced to what the panels need: the
  * entry id (required to unlink) and the linked project id.
  */
-export type ProjectAssetLink = {
+export type ProjectLink = {
 	id?: number;
 	projectId: number;
 };
 
-type ProjectAssetLinkSearchItem = {
+type ProjectLinkSearchItem = {
 	embedded: {
 		classExternalReferenceCode: string;
 		className: string;
 		groupExternalReferenceCode: string;
 		id: number;
-		r_cmpProjectToCMPProjectAssetRelationships_c_cmpProjectId: number;
+		r_cmpProjectToCMPProjectLinks_c_cmpProjectId: number;
 	};
 };
 
@@ -70,7 +70,7 @@ type TaskSearchItem = {
 	};
 };
 
-const PROJECT_ASSET_RELATIONSHIPS_URL = '/o/cmp/project-asset-relationships';
+const PROJECT_LINKS_URL = '/o/cmp/project-links';
 
 const TASK_TAG_PREFIX = 'L_CMP_TASK';
 
@@ -185,28 +185,28 @@ async function getLinkedTasks({
 }
 
 /**
- * Lists the CMPProjectAssetRelationship entries pointing at the given asset.
+ * Lists the CMPProjectLink entries pointing at the given asset.
  * The `/o/search` filter does not cover object entry fields, so every entry of
  * the relationship object is fetched and matched against the asset client
  * side.
  */
-async function getProjectAssetLinks({
-	cmpProjectAssetRelationshipObjectDefinitionId,
+async function getProjectLinks({
+	cmpProjectLinkObjectDefinitionId,
 	entryClassName,
 	entryExternalReferenceCode,
 	entryGroupExternalReferenceCode,
 	signal,
 }: AssetIdentity & {
-	cmpProjectAssetRelationshipObjectDefinitionId?: number | null;
+	cmpProjectLinkObjectDefinitionId?: number | null;
 	signal?: AbortSignal;
-}): Promise<RequestResult<ProjectAssetLink[]>> {
-	if (!cmpProjectAssetRelationshipObjectDefinitionId) {
+}): Promise<RequestResult<ProjectLink[]>> {
+	if (!cmpProjectLinkObjectDefinitionId) {
 		return {data: [], error: null};
 	}
 
 	const {data, error, status, type} =
-		await fetchAllSearchItems<ProjectAssetLinkSearchItem>({
-			objectDefinitionId: cmpProjectAssetRelationshipObjectDefinitionId,
+		await fetchAllSearchItems<ProjectLinkSearchItem>({
+			objectDefinitionId: cmpProjectLinkObjectDefinitionId,
 			signal,
 		});
 
@@ -214,7 +214,7 @@ async function getProjectAssetLinks({
 		return {data: null, error, status, type};
 	}
 
-	const links: ProjectAssetLink[] = [];
+	const links: ProjectLink[] = [];
 
 	data.forEach(({embedded}) => {
 		if (
@@ -229,8 +229,7 @@ async function getProjectAssetLinks({
 
 		links.push({
 			id: embedded.id,
-			projectId:
-				embedded.r_cmpProjectToCMPProjectAssetRelationships_c_cmpProjectId,
+			projectId: embedded.r_cmpProjectToCMPProjectLinks_c_cmpProjectId,
 		});
 	});
 
@@ -288,13 +287,12 @@ async function linkProject({
 	project: CMPProject;
 }): Promise<RequestResult<{id: number}>> {
 	return ApiHelper.post<{id: number}>(
-		`${PROJECT_ASSET_RELATIONSHIPS_URL}/scopes/${project.scopeKey}`,
+		`${PROJECT_LINKS_URL}/scopes/${project.scopeKey}`,
 		{
 			classExternalReferenceCode: entryExternalReferenceCode,
 			className: entryClassName,
 			groupExternalReferenceCode: entryGroupExternalReferenceCode,
-			r_cmpProjectToCMPProjectAssetRelationships_c_cmpProjectId:
-				project.id,
+			r_cmpProjectToCMPProjectLinks_c_cmpProjectId: project.id,
 		}
 	);
 }
@@ -308,12 +306,12 @@ async function unlinkProject({
 }: {
 	linkId: number;
 }): Promise<RequestResult<null>> {
-	return ApiHelper.delete(`${PROJECT_ASSET_RELATIONSHIPS_URL}/${linkId}`);
+	return ApiHelper.delete(`${PROJECT_LINKS_URL}/${linkId}`);
 }
 
 const ProjectLinkService = {
 	getLinkedTasks,
-	getProjectAssetLinks,
+	getProjectLinks,
 	getProjects,
 	linkProject,
 	unlinkProject,

@@ -55,7 +55,7 @@ function mockService({
 		data: {1: [{id: 101, title: 'Review Blog Post'}]},
 		error: null,
 	});
-	jest.spyOn(ProjectLinkService, 'getProjectAssetLinks').mockResolvedValue({
+	jest.spyOn(ProjectLinkService, 'getProjectLinks').mockResolvedValue({
 		data: linked.map((project) => ({
 			id: project.linkId,
 			projectId: project.id,

@@ -92,8 +92,8 @@ const AssetTypeInfoPanelContent = ({
 							Number(groupId) === Number(asset.scopeId)
 					),
 					breadcrumbProps,
-					cmpProjectAssetRelationshipObjectDefinitionId:
-						otherProps.cmpProjectAssetRelationshipObjectDefinitionId,
+					cmpProjectLinkObjectDefinitionId:
+						otherProps.cmpProjectLinkObjectDefinitionId,
 					cmpProjectObjectDefinitionId:
 						otherProps.cmpProjectObjectDefinitionId,
 					cmpProjectViewURL: otherProps.cmpProjectViewURL,

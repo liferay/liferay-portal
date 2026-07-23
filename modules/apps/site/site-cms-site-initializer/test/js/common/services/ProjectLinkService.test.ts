@@ -45,8 +45,7 @@ function relationshipItem({
 			className,
 			groupExternalReferenceCode,
 			id,
-			r_cmpProjectToCMPProjectAssetRelationships_c_cmpProjectId:
-				projectId,
+			r_cmpProjectToCMPProjectLinks_c_cmpProjectId: projectId,
 		},
 	};
 }
@@ -149,15 +148,13 @@ describe('ProjectLinkService', () => {
 
 		const [url, options] = fetchCall(0);
 
-		expect(url).toBe(
-			'/o/cmp/project-asset-relationships/scopes/PROJECT-DEPOT'
-		);
+		expect(url).toBe('/o/cmp/project-links/scopes/PROJECT-DEPOT');
 		expect(options.method).toBe('POST');
 		expect(JSON.parse(options.body as string)).toEqual({
 			classExternalReferenceCode: 'ASSET-1',
 			className: 'com.example.Content',
 			groupExternalReferenceCode: 'SPACE-1',
-			r_cmpProjectToCMPProjectAssetRelationships_c_cmpProjectId: 7,
+			r_cmpProjectToCMPProjectLinks_c_cmpProjectId: 7,
 		});
 	});
 
@@ -183,18 +180,18 @@ describe('ProjectLinkService', () => {
 			])
 		);
 
-		const {data} = await ProjectLinkService.getProjectAssetLinks({
+		const {data} = await ProjectLinkService.getProjectLinks({
 			...ASSET_IDENTITY,
-			cmpProjectAssetRelationshipObjectDefinitionId: 42,
+			cmpProjectLinkObjectDefinitionId: 42,
 		});
 
 		expect(data).toEqual([{id: 11, projectId: 1}]);
 	});
 
 	it('returns empty results when the object definition id is missing', async () => {
-		const linksResult = await ProjectLinkService.getProjectAssetLinks({
+		const linksResult = await ProjectLinkService.getProjectLinks({
 			...ASSET_IDENTITY,
-			cmpProjectAssetRelationshipObjectDefinitionId: null,
+			cmpProjectLinkObjectDefinitionId: null,
 		});
 		const projectsResult = await ProjectLinkService.getProjects({
 			cmpProjectObjectDefinitionId: null,
@@ -223,8 +220,8 @@ describe('ProjectLinkService', () => {
 			])
 		);
 
-		const {data} = await ProjectLinkService.getProjectAssetLinks({
-			cmpProjectAssetRelationshipObjectDefinitionId: 42,
+		const {data} = await ProjectLinkService.getProjectLinks({
+			cmpProjectLinkObjectDefinitionId: 42,
 			entryExternalReferenceCode: 'ASSET-1',
 			entryGroupExternalReferenceCode: 'SPACE-1',
 		});
@@ -248,7 +245,7 @@ describe('ProjectLinkService', () => {
 
 		const [url, options] = fetchCall(0);
 
-		expect(url).toBe('/o/cmp/project-asset-relationships/12');
+		expect(url).toBe('/o/cmp/project-links/12');
 		expect(options.method).toBe('DELETE');
 	});
 });

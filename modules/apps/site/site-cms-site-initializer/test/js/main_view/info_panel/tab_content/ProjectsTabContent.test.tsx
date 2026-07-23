@@ -43,7 +43,7 @@ describe('ProjectsTabContent', () => {
 								scope: {externalReferenceCode: 'SPACE-1'},
 							},
 						},
-						cmpProjectAssetRelationshipObjectDefinitionId: 11,
+						cmpProjectLinkObjectDefinitionId: 11,
 						cmpProjectObjectDefinitionId: 22,
 						cmpProjectViewURL: '/project/',
 						cmpTaskObjectDefinitionId: 33,
@@ -58,7 +58,7 @@ describe('ProjectsTabContent', () => {
 
 		expect(mockLinkedProjects).toHaveBeenCalledWith({
 			assetKeywords: ['L_CMP_TASK_X'],
-			cmpProjectAssetRelationshipObjectDefinitionId: 11,
+			cmpProjectLinkObjectDefinitionId: 11,
 			cmpProjectObjectDefinitionId: 22,
 			cmpTaskObjectDefinitionId: 33,
 			entryClassName: 'com.example.Content',

@@ -11,7 +11,7 @@ import {AssetTypeInfoPanelContext} from '../context';
 const ProjectsTabContent = () => {
 	const {
 		asset,
-		cmpProjectAssetRelationshipObjectDefinitionId,
+		cmpProjectLinkObjectDefinitionId,
 		cmpProjectObjectDefinitionId,
 		cmpProjectViewURL,
 		cmpTaskObjectDefinitionId,
@@ -22,9 +22,7 @@ const ProjectsTabContent = () => {
 	return (
 		<LinkedProjects
 			assetKeywords={asset.keywords}
-			cmpProjectAssetRelationshipObjectDefinitionId={
-				cmpProjectAssetRelationshipObjectDefinitionId
-			}
+			cmpProjectLinkObjectDefinitionId={cmpProjectLinkObjectDefinitionId}
 			cmpProjectObjectDefinitionId={cmpProjectObjectDefinitionId}
 			cmpTaskObjectDefinitionId={cmpTaskObjectDefinitionId}
 			entryClassName={entryClassName}

@@ -9,7 +9,7 @@ import LinkedProjects from '../../../common/components/LinkedProjects';
 
 type ProjectsPanelProps = {
 	assetKeywords?: string[];
-	cmpProjectAssetRelationshipObjectDefinitionId?: number | null;
+	cmpProjectLinkObjectDefinitionId?: number | null;
 	cmpProjectObjectDefinitionId?: number | null;
 	cmpProjectViewURL?: string;
 	cmpTaskObjectDefinitionId?: number | null;
@@ -21,7 +21,7 @@ type ProjectsPanelProps = {
 
 export default function ProjectsPanel({
 	assetKeywords,
-	cmpProjectAssetRelationshipObjectDefinitionId,
+	cmpProjectLinkObjectDefinitionId,
 	cmpProjectObjectDefinitionId,
 	cmpProjectViewURL,
 	cmpTaskObjectDefinitionId,
@@ -34,8 +34,8 @@ export default function ProjectsPanel({
 		<div className="px-3">
 			<LinkedProjects
 				assetKeywords={assetKeywords}
-				cmpProjectAssetRelationshipObjectDefinitionId={
-					cmpProjectAssetRelationshipObjectDefinitionId
+				cmpProjectLinkObjectDefinitionId={
+					cmpProjectLinkObjectDefinitionId
 				}
 				cmpProjectObjectDefinitionId={cmpProjectObjectDefinitionId}
 				cmpTaskObjectDefinitionId={cmpTaskObjectDefinitionId}

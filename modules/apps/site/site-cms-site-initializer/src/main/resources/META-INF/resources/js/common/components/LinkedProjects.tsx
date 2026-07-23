@@ -11,7 +11,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import ProjectLinkService, {
 	CMPProject,
 	CMPTask,
-	ProjectAssetLink,
+	ProjectLink,
 } from '../services/ProjectLinkService';
 import ProjectCard from './ProjectCard';
 
@@ -19,7 +19,7 @@ import '../../../css/components/LinkedProjects.scss';
 
 type LinkedProjectsProps = {
 	assetKeywords?: string[];
-	cmpProjectAssetRelationshipObjectDefinitionId?: number | null;
+	cmpProjectLinkObjectDefinitionId?: number | null;
 	cmpProjectObjectDefinitionId?: number | null;
 	cmpTaskObjectDefinitionId?: number | null;
 	entryClassName?: string;
@@ -37,7 +37,7 @@ type LinkedProjectsProps = {
  */
 export default function LinkedProjects({
 	assetKeywords,
-	cmpProjectAssetRelationshipObjectDefinitionId,
+	cmpProjectLinkObjectDefinitionId,
 	cmpProjectObjectDefinitionId,
 	cmpTaskObjectDefinitionId,
 	entryClassName,
@@ -49,7 +49,7 @@ export default function LinkedProjects({
 	const [expandedProjectIds, setExpandedProjectIds] = useState<Set<number>>(
 		new Set()
 	);
-	const [links, setLinks] = useState<ProjectAssetLink[]>([]);
+	const [links, setLinks] = useState<ProjectLink[]>([]);
 	const [projects, setProjects] = useState<CMPProject[]>([]);
 	const [tasksByProjectId, setTasksByProjectId] = useState<{
 		[projectId: number]: CMPTask[];
@@ -82,8 +82,8 @@ export default function LinkedProjects({
 	useEffect(() => {
 		const controller = new AbortController();
 
-		ProjectLinkService.getProjectAssetLinks({
-			cmpProjectAssetRelationshipObjectDefinitionId,
+		ProjectLinkService.getProjectLinks({
+			cmpProjectLinkObjectDefinitionId,
 			entryClassName,
 			entryExternalReferenceCode,
 			entryGroupExternalReferenceCode,
@@ -103,7 +103,7 @@ export default function LinkedProjects({
 
 		return () => controller.abort();
 	}, [
-		cmpProjectAssetRelationshipObjectDefinitionId,
+		cmpProjectLinkObjectDefinitionId,
 		entryClassName,
 		entryExternalReferenceCode,
 		entryGroupExternalReferenceCode,

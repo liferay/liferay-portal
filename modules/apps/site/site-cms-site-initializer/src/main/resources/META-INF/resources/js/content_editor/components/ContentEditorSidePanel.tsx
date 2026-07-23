@@ -32,7 +32,7 @@ type Props = {
 	addCommentURL: string;
 	assetLibraryId: string;
 	assetType: number;
-	cmpProjectAssetRelationshipObjectDefinitionId?: number | null;
+	cmpProjectLinkObjectDefinitionId?: number | null;
 	cmpProjectObjectDefinitionId?: number | null;
 	cmpProjectViewURL?: string;
 	cmpTaskObjectDefinitionId?: number | null;
