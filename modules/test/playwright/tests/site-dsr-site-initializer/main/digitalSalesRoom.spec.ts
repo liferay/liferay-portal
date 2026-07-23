@@ -2196,7 +2196,7 @@ test(
 			await expect(
 				digitalSalesRoomsPage.archivedRoomWarning
 			).toContainText(
-				'This Digital Sales Room is archived. New comments cannot be added, and it can no longer be shared.'
+				'This digital sales room is archived. New comments cannot be added, and it can no longer be shared.'
 			);
 		});
 	}
