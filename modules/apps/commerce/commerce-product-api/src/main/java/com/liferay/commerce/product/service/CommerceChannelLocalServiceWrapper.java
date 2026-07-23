@@ -481,6 +481,15 @@ public class CommerceChannelLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CommerceChannel getOrAddEmptyCommerceChannel(
+			String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _commerceChannelLocalService.getOrAddEmptyCommerceChannel(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -611,4 +620,4 @@ public class CommerceChannelLocalServiceWrapper
 	private CommerceChannelLocalService _commerceChannelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-302143692
+// LIFERAY-SERVICE-BUILDER-HASH:-992223687
