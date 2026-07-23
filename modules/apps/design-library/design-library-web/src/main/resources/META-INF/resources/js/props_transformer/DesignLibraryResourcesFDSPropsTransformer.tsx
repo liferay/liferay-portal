@@ -153,12 +153,12 @@ export default function DesignLibraryResourcesFDSPropsTransformer(
 		};
 
 		pushAddFragmentItem(
-			Liferay.Language.get('new-component-fragment'),
+			Liferay.Language.get('new-basic-fragment'),
 			FRAGMENT_TYPE_COMPONENT
 		);
 
 		pushAddFragmentItem(
-			Liferay.Language.get('new-input-fragment'),
+			Liferay.Language.get('new-form-fragment'),
 			FRAGMENT_TYPE_INPUT
 		);
 	}
