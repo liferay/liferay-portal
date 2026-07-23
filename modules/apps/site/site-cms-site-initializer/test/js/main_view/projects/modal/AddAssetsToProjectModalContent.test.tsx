@@ -59,7 +59,7 @@ function renderModal({closeModal = jest.fn()} = {}) {
 			apiURL="/o/bulk"
 			closeModal={closeModal}
 			cmpProjectObjectDefinitionId={42}
-			cmpProjectViewURL="/project/"
+			cmpProjectViewURL="/project"
 			selectedData={SELECTED_DATA}
 		/>
 	);

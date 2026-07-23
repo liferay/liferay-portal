@@ -33,9 +33,9 @@ describe('ProjectsPanel', () => {
 				assetKeywords={['L_CMP_TASK_X']}
 				cmpProjectLinkObjectDefinitionId={11}
 				cmpProjectObjectDefinitionId={22}
-				cmpProjectViewURL="/project/"
+				cmpProjectViewURL="/project"
 				cmpTaskObjectDefinitionId={33}
-				cmpTaskViewURL="/task/"
+				cmpTaskViewURL="/task"
 				entryClassName="com.example.Content"
 				entryExternalReferenceCode="ASSET-1"
 				entryGroupExternalReferenceCode="SPACE-1"
@@ -50,8 +50,8 @@ describe('ProjectsPanel', () => {
 			entryClassName: 'com.example.Content',
 			entryExternalReferenceCode: 'ASSET-1',
 			entryGroupExternalReferenceCode: 'SPACE-1',
-			projectViewURL: '/project/',
-			taskViewURL: '/task/',
+			projectViewURL: '/project',
+			taskViewURL: '/task',
 		});
 	});
 });

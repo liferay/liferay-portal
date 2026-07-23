@@ -45,9 +45,9 @@ describe('ProjectsTabContent', () => {
 						},
 						cmpProjectLinkObjectDefinitionId: 11,
 						cmpProjectObjectDefinitionId: 22,
-						cmpProjectViewURL: '/project/',
+						cmpProjectViewURL: '/project',
 						cmpTaskObjectDefinitionId: 33,
-						cmpTaskViewURL: '/task/',
+						cmpTaskViewURL: '/task',
 						entryClassName: 'com.example.Content',
 					} as unknown as IAssetTypeInfoPanelContext
 				}
@@ -64,8 +64,8 @@ describe('ProjectsTabContent', () => {
 			entryClassName: 'com.example.Content',
 			entryExternalReferenceCode: 'ASSET-1',
 			entryGroupExternalReferenceCode: 'SPACE-1',
-			projectViewURL: '/project/',
-			taskViewURL: '/task/',
+			projectViewURL: '/project',
+			taskViewURL: '/task',
 		});
 	});
 });
