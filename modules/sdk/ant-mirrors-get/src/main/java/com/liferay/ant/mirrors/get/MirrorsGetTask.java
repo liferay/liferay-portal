@@ -396,13 +396,6 @@ public class MirrorsGetTask extends Task {
 					"gcloud", "storage", "cp", gsURL, targetFile.toString()
 				});
 
-			if (process.exitValue() == 0) {
-				return;
-			}
-
-			process = _executeCommands(
-				new String[] {"gsutil", "cp", gsURL, targetFile.toString()});
-
 			if (process.exitValue() != 0) {
 				System.out.println(
 					"Unable to download file from " + gsURL + ".");

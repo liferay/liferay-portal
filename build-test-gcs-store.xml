@@ -55,8 +55,8 @@
 				<sequential>
 					<echo>Expired Bucket: @{delete.name}</echo>
 
-					<exec executable="gsutil">
-						<arg line="rm -r gs://@{delete.name}" />
+					<exec executable="gcloud">
+						<arg line="storage rm --recursive gs://@{delete.name}" />
 					</exec>
 				</sequential>
 			</for>
@@ -184,8 +184,8 @@
 	</target>
 
 	<target name="delete-gcs-bucket">
-		<exec executable="gsutil">
-			<arg line="rm -r gs://lfr-qa-poshi-test-${gcs.bucket.id}" />
+		<exec executable="gcloud">
+			<arg line="storage rm --recursive gs://lfr-qa-poshi-test-${gcs.bucket.id}" />
 		</exec>
 
 		<delete-gcs-buckets />
