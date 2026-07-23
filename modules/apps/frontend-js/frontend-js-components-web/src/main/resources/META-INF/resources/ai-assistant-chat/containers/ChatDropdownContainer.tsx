@@ -3,18 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	Overlay,
-	useIsFirstRender,
-	useOverlayPosition,
-	usePrevious,
-} from '@clayui/shared';
+import {Overlay, useOverlayPosition} from '@clayui/shared';
 import classNames from 'classnames';
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useRef} from 'react';
 
 import {ChatPanelContext} from '../ChatPanelContext';
 import useChatContainer from '../hooks/useChatContainer';
 import useClonedTrigger from '../hooks/useClonedTrigger';
+import useTriggerFocusOnClose from '../hooks/useTriggerFocusOnClose';
 import {ChatContainerProps} from './ChatContainerProps';
 import InitialFocus from './InitialFocus';
 
@@ -34,9 +30,6 @@ export default function ChatDropdownContainer({
 	const menuRef = useRef<HTMLDivElement | null>(null);
 	const triggerRef = useRef<HTMLElement | null>(null);
 
-	const isFirstRender = useIsFirstRender();
-	const previousOpen = usePrevious(open);
-
 	const contextValue = useChatContainer({
 		id,
 		onClose: () => onOpenChange(false),
@@ -51,11 +44,7 @@ export default function ChatDropdownContainer({
 		[trigger, onOpenChange, open]
 	);
 
-	useEffect(() => {
-		if (!isFirstRender && previousOpen && !open) {
-			triggerRef.current?.focus();
-		}
-	}, [isFirstRender, previousOpen, open]);
+	useTriggerFocusOnClose(open, triggerRef);
 
 	useOverlayPosition({isOpen: open, ref: menuRef, triggerRef});
 

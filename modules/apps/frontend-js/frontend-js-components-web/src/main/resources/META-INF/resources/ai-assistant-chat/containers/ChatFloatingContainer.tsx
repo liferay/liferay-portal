@@ -3,10 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Overlay, useIsFirstRender, usePrevious} from '@clayui/shared';
-import React, {useEffect, useId, useRef} from 'react';
+import {Overlay} from '@clayui/shared';
+import React, {useId, useRef} from 'react';
 
 import useClonedTrigger from '../hooks/useClonedTrigger';
+import useTriggerFocusOnClose from '../hooks/useTriggerFocusOnClose';
 import {ChatContainerProps} from './ChatContainerProps';
 import FloatingPanel from './FloatingPanel';
 
@@ -27,20 +28,13 @@ export default function ChatFloatingContainer({
 
 	const stableId = id ?? generatedId;
 
-	const isFirstRender = useIsFirstRender();
-	const previousOpen = usePrevious(open);
-
 	const handleTriggerClick = (event: React.MouseEvent<HTMLElement>) => {
 		trigger.props.onClick?.(event);
 
 		onOpenChange(!open);
 	};
 
-	useEffect(() => {
-		if (!isFirstRender && previousOpen && !open) {
-			triggerRef.current?.focus();
-		}
-	}, [isFirstRender, previousOpen, open]);
+	useTriggerFocusOnClose(open, triggerRef);
 
 	const clonedTrigger = useClonedTrigger(trigger, {
 		dialogId: stableId,
