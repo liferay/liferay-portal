@@ -15,14 +15,15 @@ public class DataSourceUsageMetricDisplay {
 	public DataSourceUsageMetricDisplay(
 		List<ApiUsageMetricDisplay> apiUsageMetricDisplays,
 		long batchSegmentsCount, long connectedDataSourcesCount,
-		String corpProjectName, String corpProjectUuid,
-		List<DataSourceUsage> dataSourceUsages, String lastAccessDateString,
-		String lastAnniversaryDateString, boolean offline,
-		long realTimeSegmentsCount, String weDeployKey) {
+		long connectorsConnectedCount, String corpProjectName,
+		String corpProjectUuid, List<DataSourceUsage> dataSourceUsages,
+		String lastAccessDateString, String lastAnniversaryDateString,
+		boolean offline, long realTimeSegmentsCount, String weDeployKey) {
 
 		_apiUsageMetricDisplays = apiUsageMetricDisplays;
 		_batchSegmentsCount = batchSegmentsCount;
 		_connectedDataSourcesCount = connectedDataSourcesCount;
+		_connectorsConnectedCount = connectorsConnectedCount;
 		_corpProjectName = corpProjectName;
 		_corpProjectUuid = corpProjectUuid;
 		_dataSourceUsages = dataSourceUsages;
@@ -43,6 +44,10 @@ public class DataSourceUsageMetricDisplay {
 
 	public long getConnectedDataSourcesCount() {
 		return _connectedDataSourcesCount;
+	}
+
+	public long getConnectorsConnectedCount() {
+		return _connectorsConnectedCount;
 	}
 
 	public String getCorpProjectName() {
@@ -80,6 +85,7 @@ public class DataSourceUsageMetricDisplay {
 	private final List<ApiUsageMetricDisplay> _apiUsageMetricDisplays;
 	private final long _batchSegmentsCount;
 	private final long _connectedDataSourcesCount;
+	private final long _connectorsConnectedCount;
 	private final String _corpProjectName;
 	private final String _corpProjectUuid;
 	private final List<DataSourceUsage> _dataSourceUsages;

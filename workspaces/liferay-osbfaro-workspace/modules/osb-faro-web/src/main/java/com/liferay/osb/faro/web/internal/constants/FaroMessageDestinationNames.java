@@ -23,6 +23,10 @@ public class FaroMessageDestinationNames {
 		"liferay/faro_monthly_email_report_message_processor";
 
 	public static final String
+		FARO_UPDATE_FARO_DATA_SOURCE_USAGE_MESSAGE_PROCESSOR =
+			"liferay/faro_update_faro_data_source_usage_message_processor";
+
+	public static final String
 		FARO_UPDATE_FARO_PROJECT_SUBSCRIPTIONS_MESSAGE_PROCESSOR =
 			"liferay/faro_update_faro_project_subscriptions_message_processor";
 

@@ -13,11 +13,12 @@ import java.util.List;
 public class DataSourceUsage {
 
 	public DataSourceUsage(
-		String dataSourceId, String dataSourceName,
+		String dataSourceId, String dataSourceName, String dataSourceStatus,
 		List<DataSourceUsageMetric> usageMetrics) {
 
 		_dataSourceId = dataSourceId;
 		_dataSourceName = dataSourceName;
+		_dataSourceStatus = dataSourceStatus;
 		_usageMetrics = usageMetrics;
 	}
 
@@ -29,12 +30,17 @@ public class DataSourceUsage {
 		return _dataSourceName;
 	}
 
+	public String getDataSourceStatus() {
+		return _dataSourceStatus;
+	}
+
 	public List<DataSourceUsageMetric> getUsageMetrics() {
 		return _usageMetrics;
 	}
 
 	private final String _dataSourceId;
 	private final String _dataSourceName;
+	private final String _dataSourceStatus;
 	private final List<DataSourceUsageMetric> _usageMetrics;
 
 }
