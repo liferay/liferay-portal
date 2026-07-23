@@ -9,3 +9,7 @@ export const fetchDetails = jest.fn(() =>
 export const search = jest.fn(() =>
 	Promise.resolve(data.mockSearch(data.mockAccount))
 );
+
+export const searchAccounts = jest.fn(() =>
+	Promise.resolve(data.mockSearch(data.mockAccount))
+);

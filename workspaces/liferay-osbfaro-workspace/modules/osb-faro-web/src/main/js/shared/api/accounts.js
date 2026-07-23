@@ -103,3 +103,28 @@ export function search({
 		path: `contacts/${groupId}/account/search`,
 	});
 }
+
+export function searchAccounts({
+	assetId,
+	assetTitle,
+	assetType,
+	channelId = '',
+	groupId,
+	page = 0,
+	pageSize = DEFAULT_DELTA,
+	query = '',
+}) {
+	return sendRequest({
+		data: {
+			assetId,
+			assetTitle,
+			assetType,
+			channelId,
+			keywords: query,
+			page,
+			pageSize,
+		},
+		method: 'GET',
+		path: `contacts/${groupId}/account/account-names`,
+	});
+}
