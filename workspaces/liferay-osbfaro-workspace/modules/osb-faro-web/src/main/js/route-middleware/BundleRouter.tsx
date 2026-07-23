@@ -1,6 +1,6 @@
 import React from 'react';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
-import {useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
 
 interface IBundleRouterProps {
@@ -15,6 +15,7 @@ const BundleRouter = ({
 	destructured = true,
 }: IBundleRouterProps) => {
 	const history = useHistoryAdapter();
+	const location = useLocation();
 	const params = useParams();
 	const query = useQueryParams();
 
@@ -22,7 +23,7 @@ const BundleRouter = ({
 		return (
 			<Component
 				history={history}
-				location={history.location}
+				location={location}
 				{...query}
 				{...params}
 				{...componentProps}
@@ -33,7 +34,7 @@ const BundleRouter = ({
 	return (
 		<Component
 			history={history}
-			location={history.location}
+			location={location}
 			router={{params, query}}
 			{...componentProps}
 		/>

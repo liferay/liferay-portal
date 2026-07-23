@@ -1,9 +1,8 @@
-import {Location, useLocation, useNavigate} from 'react-router-dom';
-import {useMemo, useRef} from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useMemo} from 'react';
 
 export interface IHistoryAdapter {
 	goBack: () => void;
-	location: Location;
 	push: (to: any, state?: unknown) => void;
 	replace: (to: any, state?: unknown) => void;
 }
@@ -22,18 +21,20 @@ function toNavigateArgs(
 	return [to, {replace, state}];
 }
 
+/**
+ * A v5-`history`-shaped adapter (`push`/`replace`/`goBack`) built on
+ * `useNavigate`, with a stable identity that survives navigations. It
+ * deliberately does NOT read `useLocation`: `useNavigate` is subscription-free
+ * under the data router, so the ~18 imperative consumers (e.g. Toolbar,
+ * Breadcrumbs) do not re-render on every navigation. Callers that need the
+ * current location call `useLocation` themselves.
+ */
 export function useHistoryAdapter(): IHistoryAdapter {
 	const navigate = useNavigate();
-	const locationRef = useRef<Location>();
-
-	locationRef.current = useLocation();
 
 	return useMemo<IHistoryAdapter>(
 		() => ({
 			goBack: () => navigate(-1),
-			get location() {
-				return locationRef.current as Location;
-			},
 			push: (to, state) => navigate(...toNavigateArgs(to, state, false)),
 			replace: (to, state) =>
 				navigate(...toNavigateArgs(to, state, true)),

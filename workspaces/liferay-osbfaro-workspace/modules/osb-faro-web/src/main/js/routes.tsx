@@ -1,5 +1,4 @@
 import BundleRouter from 'route-middleware/BundleRouter';
-import ErrorBoundary from 'shared/components/ErrorBoundary';
 import ErrorPage from 'shared/pages/ErrorPage';
 import Loading from 'shared/components/Loading';
 import React, {lazy} from 'react';
@@ -77,7 +76,7 @@ export function getRoutes(): RouteObject[] {
 				{element: <ErrorPage />, path: '*'},
 			],
 			element: <RootLayout />,
-			errorElement: <ErrorBoundary />,
+			errorElement: <ErrorPage />,
 		},
 	];
 }

@@ -219,13 +219,11 @@ export const Routes = buildRoutes({
 									CONTACTS_INTERESTS: '/:type/:id/interests',
 
 									/*
-									 * CONTACTS_LIST_ACCOUNT, CONTACTS_LIST_INDIVIDUAL and CONTACTS_LIST_SEGMENT are
-									 * separate for the sake of keeping two separate Routers.
-									 * CONTACTS_LIST_ENTITY should be used as consumable route.
+									 * CONTACTS_LIST_SEGMENT is kept separate to drive
+									 * its own Router; CONTACTS_LIST_ENTITY is the
+									 * consumable route.
 									 */
-									CONTACTS_LIST_ACCOUNT: '/:type',
 									CONTACTS_LIST_ENTITY: '/:type',
-									CONTACTS_LIST_INDIVIDUAL: '/:type',
 									CONTACTS_LIST_SEGMENT: '/:type',
 									CONTACTS_SEGMENT: {
 										path: `/${SEGMENTS}/:id`,

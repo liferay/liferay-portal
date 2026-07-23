@@ -4,15 +4,9 @@ import React, {lazy, Suspense} from 'react';
 import {close, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
-import {
-	matchPath,
-	Route,
-	Routes as RouterRoutes,
-	useLocation,
-} from 'react-router-dom';
+import {Route, Routes as RouterRoutes, useParams} from 'react-router-dom';
 import {Project} from 'shared/util/records';
 import {RootState} from 'shared/store';
-import {Routes} from 'shared/util/router';
 import {useModalNotifications} from 'shared/hooks/useModalNotifications';
 import {withHelpWidget} from 'shared/hoc';
 
@@ -28,17 +22,7 @@ const Settings = lazy(
 );
 
 const connector = connect(
-	(
-		store: RootState,
-		{location: {pathname}}: {location: {pathname: string}}
-	) => {
-		const match = matchPath(
-			{end: false, path: Routes.WORKSPACE_WITH_ID},
-			pathname
-		);
-
-		const groupId = match?.params?.groupId ?? '0';
-
+	(store: RootState, {groupId}: {groupId: string}) => {
 		const project =
 			store.getIn(['projects', groupId, 'data'], new Project()) ||
 			new Project();
@@ -90,9 +74,9 @@ const ConnectedWorkspaceLayer = compose<any>(
 )(WorkspaceLayer);
 
 const WorkspaceLayout = () => {
-	const location = useLocation();
+	const {groupId = '0'} = useParams<{groupId: string}>();
 
-	return <ConnectedWorkspaceLayer location={location} />;
+	return <ConnectedWorkspaceLayer groupId={groupId} />;
 };
 
 export default WorkspaceLayout;
