@@ -12,6 +12,9 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTCollectionService;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.test.util.DataDefinitionTestUtil;
@@ -41,13 +44,17 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalArticleResource;
+import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalContent;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -150,6 +157,45 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		throws Exception {
 
 		exportImportJournalArticle(true);
+	}
+
+	@Test
+	@TestInfo("LPS-164716")
+	public void testExportImportIntoActiveCTCollection() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			group.getGroupId(), JournalArticle.class.getName());
+
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			group.getGroupId(), ddmStructure.getStructureId(),
+			PortalUtil.getClassNameId(JournalArticle.class));
+
+		JournalFolder journalFolder = JournalTestUtil.addFolder(
+			group.getGroupId(), RandomTestUtil.randomString());
+
+		exportPortlet(getPortletId(), layout);
+
+		_ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					_ctCollection.getCtCollectionId())) {
+
+			importPortlet(getPortletId(), layout);
+
+			_assertImportedArtifacts(
+				ddmStructure, ddmTemplate, journalFolder, true);
+		}
+
+		_assertImportedArtifacts(
+			ddmStructure, ddmTemplate, journalFolder, false);
+
+		_ctCollectionService.publishCTCollection(
+			TestPropsValues.getUserId(), _ctCollection.getCtCollectionId());
+
+		_assertImportedArtifacts(
+			ddmStructure, ddmTemplate, journalFolder, true);
 	}
 
 	@Test
@@ -1141,6 +1187,32 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 		Assert.assertTrue(classPKs.contains(classPK));
 	}
 
+	private void _assertImportedArtifacts(
+		DDMStructure ddmStructure, DDMTemplate ddmTemplate,
+		JournalFolder journalFolder, boolean present) {
+
+		DDMStructure importedDDMStructure =
+			DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
+				ddmStructure.getUuid(), importedGroup.getGroupId());
+		DDMTemplate importedDDMTemplate =
+			DDMTemplateLocalServiceUtil.fetchDDMTemplateByUuidAndGroupId(
+				ddmTemplate.getUuid(), importedGroup.getGroupId());
+		JournalFolder importedJournalFolder =
+			JournalFolderLocalServiceUtil.fetchJournalFolderByUuidAndGroupId(
+				journalFolder.getUuid(), importedGroup.getGroupId());
+
+		if (present) {
+			Assert.assertNotNull(importedDDMStructure);
+			Assert.assertNotNull(importedDDMTemplate);
+			Assert.assertNotNull(importedJournalFolder);
+		}
+		else {
+			Assert.assertNull(importedDDMStructure);
+			Assert.assertNull(importedDDMTemplate);
+			Assert.assertNull(importedJournalFolder);
+		}
+	}
+
 	private String _buildXMLContent(String referenceJSON) {
 		return StringBundler.concat(
 			"<?xml version=\"1.0\"?>",
@@ -1216,6 +1288,15 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 
 	@Inject
 	private ConfigurationProvider _configurationProvider;
+
+	@DeleteAfterTestRun
+	private CTCollection _ctCollection;
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private CTCollectionService _ctCollectionService;
 
 	@Inject
 	private DataDefinitionResource.Factory _dataDefinitionResourceFactory;
