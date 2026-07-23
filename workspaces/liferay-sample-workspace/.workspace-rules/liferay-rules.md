@@ -78,6 +78,7 @@ Every skill lives under `skills/` and owns one workflow. Match the user's intent
 
 | User Intent | Skill |
 | --- | --- |
+| First-time user: a guided first run creating a workspace and starting the server | `initial-setup-guide` |
 | Set up, initialize, or repair a workspace and bundle | `workspace-init` |
 | Check, prompt for, or enable a required feature flag | `feature-flags` |
 | Deploy a target and confirm it started | `deploy-and-verify` |
