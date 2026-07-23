@@ -384,6 +384,8 @@
 		</finder>
 	</entity>
 	<exceptions>
+		<exception>DefaultSegmentsExperience</exception>
+		<exception>DuplicateSegmentsExperienceKey</exception>
 		<exception>DuplicateSegmentsExperiment</exception>
 		<exception>LockedSegmentsEntry</exception>
 		<exception>LockedSegmentsExperiment</exception>
