@@ -51,6 +51,36 @@ configmap:
 customEnv: {}
 customEnvFrom: {}
 customInitContainers:
+    x-license-sync:
+        -   containerTemplate: |
+                {{- if .license.enabled }}
+                -   command:
+                        -   bash
+                        -   /liferay-init-scripts/license-sync.sh
+                    env:
+                        -   name: LIFERAY_LICENSE_SYNC_INTERVAL
+                            value: {{ .license.syncInterval | quote }}
+                    image: {{ printf "%s:%s" .image.repository (.image.tag | toString) }}
+                    imagePullPolicy: {{ .image.pullPolicy }}
+                    name: liferay-license-sync
+                    restartPolicy: Always
+                    securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                            drop:
+                                -   ALL
+                        seccompProfile:
+                            type: RuntimeDefault
+                    volumeMounts:
+                        -   mountPath: /liferay-init-scripts/license-sync.sh
+                            name: {{ .license.initScriptsVolumeName }}
+                            subPath: license-sync.sh
+                        -   mountPath: /secret
+                            name: liferay-license
+                        -   mountPath: /liferay-home
+                            name: liferay-persistent-volume
+                            subPath: liferay
+                {{- end }}
     x-liferay-overlay:
         -   containerTemplate: |
                 {{- if and .overlay.enabled .overlay.copy }}
@@ -207,6 +237,11 @@ customServicePorts: {}
 customVolumeClaimTemplates: {}
 customVolumeMounts: {}
 customVolumes:
+    x-license:
+        -   name: liferay-license
+            secret:
+                optional: true
+                secretName: liferay-license
     x-liferay-init-scripts-default:
         -   configMap:
                 defaultMode: 0755
@@ -281,6 +316,10 @@ image:
     repository: liferay/dxp
     tag: 2026.q1.8-lts
 initContainers: []
+license:
+    enabled: false
+    initScriptsVolumeName: liferay-init-scripts-default
+    syncInterval: 60
 livenessProbe:
     failureThreshold: 3
     httpGet:

@@ -111,10 +111,6 @@ liferay-default:
     customLabels:
         origin: liferay-gcp
     customVolumeMounts:
-        x-license:
-            -   mountPath: /etc/liferay/mount/files/deploy/license.xml
-                name: liferay-license
-                subPath: license.xml
         x-liferay-gcp:
             -   mountPath: /opt/liferay/osgi/configs/com.liferay.portal.search.elasticsearch7.configuration.ElasticsearchConfiguration.config
                 name: liferay-configmap
@@ -126,15 +122,13 @@ liferay-default:
                 name: liferay-configmap
                 subPath: com.liferay.portal.store.gcs.configuration.GCSStoreConfiguration.config
     customVolumes:
-        x-license:
-            -   name: liferay-license
-                secret:
-                    secretName: liferay-license
         x-liferay-init-scripts-gcp:
             -   configMap:
                     defaultMode: 0755
                     name: liferay-init-scripts-gcp
                 name: liferay-init-scripts-gcp
+    license:
+        enabled: true
     network:
         enabled: true
         hostnames: []

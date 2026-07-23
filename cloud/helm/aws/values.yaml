@@ -23,6 +23,8 @@ liferay-default:
                 secretKey=""
     customEnv:
         x-liferay-aws:
+            -   name: LIFERAY_DISABLE_TRIAL_LICENSE
+                value: "true"
             -   name: LIFERAY_DL_PERIOD_STORE_PERIOD_IMPL
                 value: com.liferay.portal.store.s3.S3Store
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
@@ -202,6 +204,8 @@ liferay-default:
             -   configMap:
                     name: liferay-search-config-aws
                 name: liferay-search-config-aws
+    license:
+        enabled: true
     network:
         enabled: true
         timeouts:

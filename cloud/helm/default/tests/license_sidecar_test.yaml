@@ -1,0 +1,110 @@
+suite: License Sync Sidecar
+templates:
+    -   templates/configmap.yaml
+    -   templates/liferay-init-scripts-cm.yaml
+    -   templates/workloads.yaml
+tests:
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: liferay-license-sync
+                    path: spec.template.spec.initContainers
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Adds the license sync sidecar when the license is enabled
+        set:
+            license.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].restartPolicy
+                    value: Always
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Runs the license sync sidecar as a native sidecar
+        set:
+            license.enabled: true
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        mountPath: /liferay-home
+                        name: liferay-persistent-volume
+                        subPath: liferay
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].volumeMounts
+            -   contains:
+                    any: true
+                    content:
+                        mountPath: /liferay-init-scripts/license-sync.sh
+                        name: liferay-init-scripts-default
+                        subPath: license-sync.sh
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].volumeMounts
+            -   contains:
+                    any: true
+                    content:
+                        mountPath: /secret
+                        name: liferay-license
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].volumeMounts
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Mounts the license secret, sync script, and deploy folder
+        set:
+            license.enabled: true
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: liferay-license
+                        secret:
+                            optional: true
+                            secretName: liferay-license
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Mounts the license secret as an optional whole volume
+        set:
+            license.enabled: true
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: LIFERAY_LICENSE_SYNC_INTERVAL
+                        value: "120"
+                    path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].env
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Passes the configured sync interval to the sidecar
+        set:
+            license.enabled: true
+            license.syncInterval: 120
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: liferay-license-sync
+                    path: spec.template.spec.initContainers
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Omits the license sync sidecar when the license is disabled
+        set:
+            license.enabled: false
+    -   asserts:
+            -   isNotEmpty:
+                    path: data['license-sync.sh']
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-init-scripts-default
+        it: Publishes the license sync script in the init scripts ConfigMap
