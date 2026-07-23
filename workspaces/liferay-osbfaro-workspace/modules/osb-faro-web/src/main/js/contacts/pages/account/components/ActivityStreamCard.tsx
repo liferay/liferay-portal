@@ -34,6 +34,7 @@ import {getDateRangeLabel, getDateRangeLabelFromDate} from 'shared/util/date';
 
 interface IActivityStreamCardProps {
 	accountId: string;
+	accountName?: string;
 	channelId: string;
 	interval: Interval;
 	rangeSelectors: RangeSelectors;
@@ -41,6 +42,7 @@ interface IActivityStreamCardProps {
 
 const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	accountId,
+	accountName,
 	channelId,
 	interval,
 	rangeSelectors,
@@ -142,7 +144,13 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 				({eventsByUserSessions}) => ({
 					items: formatAccountSessions(
 						eventsByUserSessions?.userSessions ?? [],
-						{channelId, groupId, rangeSelectors}
+						{
+							accountId,
+							accountName,
+							channelId,
+							groupId,
+							rangeSelectors,
+						}
 					),
 					total: eventsByUserSessions?.totalEventsMetric?.value ?? 0,
 				})
@@ -151,6 +159,8 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			sessionsResponse.data,
 			sessionsResponse.error,
 			sessionsResponse.loading,
+			accountId,
+			accountName,
 			channelId,
 			groupId,
 			rangeSelectors,

@@ -108,6 +108,7 @@ const AccountProfileRoutes = () => {
 						/>
 
 						<BundleRouter
+							componentProps={{accountName}}
 							data={Activities}
 							exact
 							path={Routes.CONTACTS_ACCOUNT}

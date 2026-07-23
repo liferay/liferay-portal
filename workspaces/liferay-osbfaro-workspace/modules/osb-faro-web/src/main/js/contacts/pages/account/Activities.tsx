@@ -7,7 +7,11 @@ import {ChannelContext} from 'shared/context/channel';
 import {Interval, RangeSelectors} from 'shared/types';
 import {useParams} from 'react-router-dom';
 
-const Activities = () => {
+interface IActivitiesProps {
+	accountName?: string;
+}
+
+const Activities: React.FC<IActivitiesProps> = ({accountName}) => {
 	const {selectedChannel} = useContext(ChannelContext);
 
 	const {channelId: routeChannelId, id} = useParams<{
@@ -45,6 +49,7 @@ const Activities = () => {
 				}) => (
 					<ActivityStreamCard
 						accountId={id}
+						accountName={accountName}
 						channelId={channelId}
 						interval={interval}
 						rangeSelectors={rangeSelectors}

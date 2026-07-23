@@ -1,6 +1,6 @@
 import {AssetTypes} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
-import {Routes, toRoute} from 'shared/util/router';
+import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {UserSessionEvent} from 'shared/queries/UserSessionQuery';
 
 /**
@@ -35,6 +35,8 @@ const ASSET_APPLICATIONS: Record<
 };
 
 export interface EventDashboardContext {
+	accountId?: string;
+	accountName?: string;
 	channelId?: string;
 	groupId?: string;
 	isWebhook?: boolean;
@@ -75,13 +77,21 @@ const buildQuery = (rangeSelectors?: RangeSelectors): string => {
  *   external reference code as the asset id and the object definition name as
  *   the dashboard type.
  * - pageViewed events link to the page (touchpoint) dashboard, using the
- *   canonical URL as the touchpoint.
- * - Anything else (e.g. unmapped application ids or events missing their id
- *   property) returns undefined.
+ *   canonical URL as the touchpoint. The account timeline additionally passes
+ *   `accountId`/`accountName`, so the page dashboard opens pre-filtered by
+ *   that account; the individual timeline never provides them.
+ * - Anything else (e.g. unmapped application ids) returns undefined.
  */
 export const getEventDashboardUrl = (
 	event: UserSessionEvent,
-	{channelId, groupId, isWebhook, rangeSelectors}: EventDashboardContext
+	{
+		accountId,
+		accountName,
+		channelId,
+		groupId,
+		isWebhook,
+		rangeSelectors,
+	}: EventDashboardContext
 ): string | undefined => {
 	if (isWebhook || !channelId || !groupId) {
 		return undefined;
@@ -131,12 +141,22 @@ export const getEventDashboardUrl = (
 	if (event.applicationId === AssetTypes.WebPage && event.canonicalUrl) {
 		const title = event.pageTitle || event.assetTitle;
 
-		return `${toRoute(Routes.SITES_TOUCHPOINTS_OVERVIEW, {
+		const href = `${toRoute(Routes.SITES_TOUCHPOINTS_OVERVIEW, {
 			channelId,
 			groupId,
 			touchpoint: event.canonicalUrl,
 			...(title && {title}),
 		})}${buildQuery(rangeSelectors)}`;
+
+		return accountId || accountName
+			? setUriQueryValues(
+					{
+						...(accountId && {accountId}),
+						...(accountName && {accountName}),
+					},
+					href
+				)
+			: href;
 	}
 
 	return undefined;
