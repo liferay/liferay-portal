@@ -50,6 +50,7 @@ public class ObjectEntryInfoItemExceptionRequestHandlerTest {
 
 		InfoItemFormProvider<?> infoItemFormProvider = Mockito.mock(
 			InfoItemFormProvider.class);
+
 		InfoForm infoForm = Mockito.mock(InfoForm.class);
 
 		InfoField<?> infoField = Mockito.mock(InfoField.class);
