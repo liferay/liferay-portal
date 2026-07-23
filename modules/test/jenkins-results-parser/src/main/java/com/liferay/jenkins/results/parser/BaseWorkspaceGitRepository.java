@@ -562,11 +562,50 @@ public abstract class BaseWorkspaceGitRepository
 		validateKeys(_REQUIRED_KEYS);
 	}
 
-	protected void downloadGitArchive() throws IOException {
-		if (!JenkinsResultsParserUtil.isCloudCINode()) {
-			return;
+	protected void downloadDotGitArchive() throws IOException {
+		String baseRepositoryDir = JenkinsResultsParserUtil.getBuildProperty(
+			"base.repository.dir");
+
+		File dotGitArchiveFile = new File(
+			baseRepositoryDir, _getDotGitArchiveName());
+
+		CloudBucketUtil.downloadS3File(
+			dotGitArchiveFile, _getDotGitArchiveS3BucketPath());
+
+		File directory = getDirectory();
+
+		JenkinsResultsParserUtil.unzip(dotGitArchiveFile, directory);
+
+		JenkinsResultsParserUtil.delete(dotGitArchiveFile);
+
+		GitUtil.ExecutionResult executionResult = GitUtil.executeBashCommands(
+			GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
+			GitUtil.MILLIS_TIMEOUT, directory, "git reset");
+
+		if (executionResult.getExitValue() != 0) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to reset Git directory: " + directory,
+					executionResult.getStandardError()));
 		}
 
+		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+
+		gitWorkingDirectory.checkoutLocalGitBranch(
+			gitWorkingDirectory.createLocalGitBranch(
+				getBranchName(), true, "HEAD"));
+
+		String upstreamBranchName = getUpstreamBranchName();
+
+		if (!gitWorkingDirectory.localGitBranchExists(upstreamBranchName)) {
+			gitWorkingDirectory.createLocalGitBranch(
+				upstreamBranchName, true, getBaseBranchSHA());
+		}
+
+		gitWorkingDirectory.displayLog();
+	}
+
+	protected void downloadGitArchive() throws IOException {
 		String baseRepositoryDir = JenkinsResultsParserUtil.getBuildProperty(
 			"base.repository.dir");
 
@@ -584,44 +623,17 @@ public abstract class BaseWorkspaceGitRepository
 		JenkinsResultsParserUtil.unzip(gitArchiveFile, directory);
 
 		JenkinsResultsParserUtil.delete(gitArchiveFile);
+	}
+
+	protected void downloadGitArchives() throws IOException {
+		if (!JenkinsResultsParserUtil.isCloudCINode()) {
+			return;
+		}
+
+		downloadGitArchive();
 
 		if (_isDotGitDirArchiveRequired()) {
-			File dotGitArchiveFile = new File(
-				baseRepositoryDir, _getDotGitArchiveName());
-
-			CloudBucketUtil.downloadS3File(
-				dotGitArchiveFile, _getDotGitArchiveS3BucketPath());
-
-			JenkinsResultsParserUtil.unzip(dotGitArchiveFile, directory);
-
-			JenkinsResultsParserUtil.delete(dotGitArchiveFile);
-
-			GitUtil.ExecutionResult executionResult =
-				GitUtil.executeBashCommands(
-					GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
-					GitUtil.MILLIS_TIMEOUT, directory, "git reset");
-
-			if (executionResult.getExitValue() != 0) {
-				throw new RuntimeException(
-					JenkinsResultsParserUtil.combine(
-						"Unable to reset Git directory: " + directory,
-						executionResult.getStandardError()));
-			}
-
-			GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
-
-			gitWorkingDirectory.checkoutLocalGitBranch(
-				gitWorkingDirectory.createLocalGitBranch(
-					getBranchName(), true, "HEAD"));
-
-			String upstreamBranchName = getUpstreamBranchName();
-
-			if (!gitWorkingDirectory.localGitBranchExists(upstreamBranchName)) {
-				gitWorkingDirectory.createLocalGitBranch(
-					upstreamBranchName, true, getBaseBranchSHA());
-			}
-
-			gitWorkingDirectory.displayLog();
+			downloadDotGitArchive();
 		}
 	}
 
@@ -779,7 +791,7 @@ public abstract class BaseWorkspaceGitRepository
 		promoteGitArchive();
 
 		if (_snapshot) {
-			downloadGitArchive();
+			downloadGitArchives();
 
 			return;
 		}
