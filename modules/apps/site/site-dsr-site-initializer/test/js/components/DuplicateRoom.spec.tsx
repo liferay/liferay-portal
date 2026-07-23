@@ -48,7 +48,6 @@ jest.mock(
 	() => ({
 		__esModule: true,
 		default: {
-			checkSitePages: jest.fn(),
 			duplicateRoom: jest.fn(),
 			getDocumentsFolderId: jest.fn(),
 			getRoom: jest.fn(),
@@ -93,11 +92,7 @@ describe('DuplicateRoom', () => {
 
 		(RoomService.getRoom as jest.Mock).mockResolvedValue({
 			id: 99,
-			siteExternalReferenceCode: 'duplicate-room',
-		});
-
-		(RoomService.checkSitePages as jest.Mock).mockResolvedValue({
-			items: [{}],
+			initialized: true,
 		});
 	});
 
