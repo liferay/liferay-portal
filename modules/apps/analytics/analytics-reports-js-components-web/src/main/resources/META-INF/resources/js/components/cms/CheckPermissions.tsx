@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React from 'react';
@@ -11,6 +10,7 @@ import React from 'react';
 import useFetch from '../../hooks/useFetch';
 import {buildQueryString} from '../../utils/buildQueryString';
 import EmptyState from '../EmptyState';
+import ConnectSites from './ConnectSites';
 import ConnectToAnalyticsCloud, {
 	buildAnalyticsCloudConfigURL,
 } from './ConnectToAnalyticsCloud';
@@ -32,28 +32,8 @@ const EmptyStates: React.FC<IEmptyStateProps> = ({
 	siteSyncedToAnalyticsCloud,
 }) => {
 	if (!connectedToSpace) {
-		if (admin) {
-			return (
-				<EmptyState
-					description={Liferay.Language.get(
-						'connect-sites-to-this-space'
-					)}
-					title={Liferay.Language.get('no-sites-are-connected-yet')}
-				>
-					<ClayButton onClick={onConnectSites} size="sm">
-						{Liferay.Language.get('connect')}
-					</ClayButton>
-				</EmptyState>
-			);
-		}
-
 		return (
-			<EmptyState
-				description={Liferay.Language.get(
-					'please-contact-an-administrator-to-sync-sites-to-this-space'
-				)}
-				title={Liferay.Language.get('no-sites-are-connected-yet')}
-			/>
+			<ConnectSites onConnectSites={admin ? onConnectSites : undefined} />
 		);
 	}
 
