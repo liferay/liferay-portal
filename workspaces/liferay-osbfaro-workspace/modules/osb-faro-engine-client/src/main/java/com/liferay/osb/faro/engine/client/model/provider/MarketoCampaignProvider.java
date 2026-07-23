@@ -19,6 +19,10 @@ public class MarketoCampaignProvider implements Provider {
 		return _channelsConfiguration;
 	}
 
+	public ContactsConfiguration getContactsConfiguration() {
+		return _contactsConfiguration;
+	}
+
 	@Override
 	public String getType() {
 		return TYPE;
@@ -30,6 +34,27 @@ public class MarketoCampaignProvider implements Provider {
 		_channelsConfiguration = channelsConfiguration;
 	}
 
+	public void setContactsConfiguration(
+		ContactsConfiguration contactsConfiguration) {
+
+		_contactsConfiguration = contactsConfiguration;
+	}
+
+	public static class ContactsConfiguration {
+
+		public boolean isEnableAllLeads() {
+			return _enableAllLeads;
+		}
+
+		public void setEnableAllLeads(boolean enableAllLeads) {
+			_enableAllLeads = enableAllLeads;
+		}
+
+		private boolean _enableAllLeads;
+
+	}
+
 	private ChannelsConfiguration _channelsConfiguration;
+	private ContactsConfiguration _contactsConfiguration;
 
 }

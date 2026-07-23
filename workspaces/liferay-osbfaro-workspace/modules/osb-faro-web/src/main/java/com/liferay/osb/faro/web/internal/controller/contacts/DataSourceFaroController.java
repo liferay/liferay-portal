@@ -313,6 +313,9 @@ public class DataSourceFaroController extends BaseFaroController {
 			@PathParam("groupId") long groupId,
 			@DefaultValue(StringPool.BLANK) @FormParam("channelsConfiguration")
 				FaroParam<ChannelsConfiguration> channelsConfigurationFaroParam,
+			@DefaultValue(StringPool.BLANK) @FormParam("contactsConfiguration")
+				FaroParam<MarketoCampaignProvider.ContactsConfiguration>
+					contactsConfigurationFaroParam,
 			@FormParam("credentials") Credentials credentials,
 			@FormParam("name") String name,
 			@DefaultValue("ACTIVE") @FormParam("status") String status,
@@ -324,6 +327,8 @@ public class DataSourceFaroController extends BaseFaroController {
 
 		marketoCampaignProvider.setChannelsConfiguration(
 			channelsConfigurationFaroParam.getValue());
+		marketoCampaignProvider.setContactsConfiguration(
+			contactsConfigurationFaroParam.getValue());
 
 		return create(
 			groupId, credentials, marketoCampaignProvider, name, url, null,
@@ -1376,6 +1381,9 @@ public class DataSourceFaroController extends BaseFaroController {
 			@PathParam("groupId") long groupId, @PathParam("id") String id,
 			@DefaultValue(StringPool.BLANK) @FormParam("channelsConfiguration")
 				FaroParam<ChannelsConfiguration> channelsConfigurationFaroParam,
+			@DefaultValue(StringPool.BLANK) @FormParam("contactsConfiguration")
+				FaroParam<MarketoCampaignProvider.ContactsConfiguration>
+					contactsConfigurationFaroParam,
 			@FormParam("credentials") Credentials credentials,
 			@FormParam("name") String name, @FormParam("status") String status,
 			@FormParam("url") String url)
@@ -1385,16 +1393,27 @@ public class DataSourceFaroController extends BaseFaroController {
 
 		ChannelsConfiguration channelsConfiguration =
 			channelsConfigurationFaroParam.getValue();
+		MarketoCampaignProvider.ContactsConfiguration contactsConfiguration =
+			contactsConfigurationFaroParam.getValue();
 
-		if (channelsConfiguration != null) {
+		if ((channelsConfiguration != null) ||
+			(contactsConfiguration != null)) {
+
 			DataSource dataSource = contactsEngineClient.getDataSource(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId), id);
 
 			marketoCampaignProvider =
 				(MarketoCampaignProvider)dataSource.getProvider();
 
-			marketoCampaignProvider.setChannelsConfiguration(
-				channelsConfiguration);
+			if (channelsConfiguration != null) {
+				marketoCampaignProvider.setChannelsConfiguration(
+					channelsConfiguration);
+			}
+
+			if (contactsConfiguration != null) {
+				marketoCampaignProvider.setContactsConfiguration(
+					contactsConfiguration);
+			}
 		}
 
 		return update(
@@ -1724,6 +1743,9 @@ public class DataSourceFaroController extends BaseFaroController {
 			@PathParam("groupId") long groupId, @PathParam("id") String id,
 			@DefaultValue(StringPool.BLANK) @FormParam("channelsConfiguration")
 				FaroParam<ChannelsConfiguration> channelsConfigurationFaroParam,
+			@DefaultValue(StringPool.BLANK) @FormParam("contactsConfiguration")
+				FaroParam<MarketoCampaignProvider.ContactsConfiguration>
+					contactsConfigurationFaroParam,
 			@FormParam("credentials") Credentials credentials,
 			@FormParam("name") String name, @FormParam("status") String status,
 			@FormParam("url") String url)
@@ -1734,6 +1756,8 @@ public class DataSourceFaroController extends BaseFaroController {
 
 		marketoCampaignProvider.setChannelsConfiguration(
 			channelsConfigurationFaroParam.getValue());
+		marketoCampaignProvider.setContactsConfiguration(
+			contactsConfigurationFaroParam.getValue());
 
 		return update(
 			groupId, id, credentials, null, null, 0, name, false,
