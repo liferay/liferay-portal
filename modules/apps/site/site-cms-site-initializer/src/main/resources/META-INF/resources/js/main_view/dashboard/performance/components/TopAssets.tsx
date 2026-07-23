@@ -119,13 +119,13 @@ const customRenderers = {
 const sorts = [
 	{
 		direction: 'asc' as const,
-		key: 'title',
+		key: 'assetTitle',
 		label: Liferay.Language.get('title'),
 	},
 	{
 		active: true,
 		direction: 'desc' as const,
-		key: 'views',
+		key: 'viewsMetric',
 		label: Liferay.Language.get('views'),
 	},
 ];
