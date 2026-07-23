@@ -9,7 +9,6 @@ import com.liferay.consent.management.platform.integration.configuration.Consent
 import com.liferay.cookies.consent.CookiesConsentChecker;
 import com.liferay.cookies.consent.CookiesConsentCheckerResolver;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
@@ -36,13 +35,8 @@ public class CookiesConsentCheckerResolverImpl
 			return _defaultCookiesConsentChecker;
 		}
 
-		long companyId = _portal.getCompanyId(httpServletRequest);
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-65299")) {
-			return _defaultCookiesConsentChecker;
-		}
-
 		try {
+			long companyId = _portal.getCompanyId(httpServletRequest);
 			long groupId = _portal.getScopeGroupId(httpServletRequest);
 
 			ConsentManagementPlatformConfiguration
