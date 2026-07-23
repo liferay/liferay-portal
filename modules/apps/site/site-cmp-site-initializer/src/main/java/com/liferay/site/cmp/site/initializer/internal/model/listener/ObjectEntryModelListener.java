@@ -162,27 +162,25 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		return new String[] {ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW};
 	}
-
-	private void _reindexLinkedObjectEntry(
-			ObjectEntry cmpProjectLinkObjectEntry)
+	private void _reindexLinkedObjectEntry(ObjectEntry objectEntry)
 		throws Exception {
 
-		ObjectDefinition cmpProjectLinkObjectDefinition =
-			cmpProjectLinkObjectEntry.getObjectDefinition();
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		if (!StringUtil.equals(
-				cmpProjectLinkObjectDefinition.getExternalReferenceCode(),
-				"L_CMP_PROJECT_LINK")) {
+				objectDefinition.getExternalReferenceCode(),
+				"L_CMP_PROJECT_LINK") &&
+			!StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(),
+				"L_CMP_TASK_LINK")) {
 
 			return;
 		}
 
-		Map<String, Serializable> values =
-			cmpProjectLinkObjectEntry.getValues();
-
 		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
-			MapUtil.getString(values, "groupExternalReferenceCode"),
-			cmpProjectLinkObjectEntry.getCompanyId());
+			MapUtil.getString(
+				objectEntry.getValues(), "groupExternalReferenceCode"),
+			objectEntry.getCompanyId());
 
 		if (group == null) {
 			return;
@@ -190,8 +188,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		ObjectDefinition linkedObjectDefinition =
 			_objectDefinitionLocalService.fetchObjectDefinitionByClassName(
-				cmpProjectLinkObjectEntry.getCompanyId(),
-				MapUtil.getString(values, "className"));
+				objectEntry.getCompanyId(),
+				MapUtil.getString(objectEntry.getValues(), "className"));
 
 		if (linkedObjectDefinition == null) {
 			return;
@@ -199,7 +197,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		ObjectEntry linkedObjectEntry =
 			_objectEntryLocalService.fetchObjectEntry(
-				MapUtil.getString(values, "classExternalReferenceCode"),
+				MapUtil.getString(
+					objectEntry.getValues(), "classExternalReferenceCode"),
 				group.getGroupId(),
 				linkedObjectDefinition.getObjectDefinitionId());
 
