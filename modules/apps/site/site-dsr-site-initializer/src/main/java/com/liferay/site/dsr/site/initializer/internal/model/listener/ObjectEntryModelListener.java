@@ -73,6 +73,7 @@ import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.dsr.site.initializer.constants.DSRFolderConstants;
+import com.liferay.site.dsr.site.initializer.internal.util.DSRUtil;
 import com.liferay.site.dsr.site.initializer.thread.local.DSRRoomThreadLocal;
 import com.liferay.site.dsr.site.initializer.util.DSRRoomUtil;
 import com.liferay.sites.kernel.util.Sites;
@@ -128,6 +129,18 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		try {
 			_onAfterUpdate(originalObjectEntry, objectEntry);
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
+
+	@Override
+	public void onBeforeCreate(ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		try {
+			_onBeforeCreate(objectEntry);
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
@@ -585,6 +598,22 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			group.isManualMembership(), group.getMembershipRestriction(),
 			friendlyURL, group.isInheritContent(), group.isActive(),
 			serviceContext);
+	}
+
+	private void _onBeforeCreate(ObjectEntry objectEntry) {
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if (!Objects.equals(
+				objectDefinition.getExternalReferenceCode(), "L_DSR_ROOM")) {
+
+			return;
+		}
+
+		if (DSRUtil.isExpired()) {
+			throw new UnsupportedOperationException(
+				"Unable to create a digital sales room because the license " +
+					"has expired");
+		}
 	}
 
 	private void _onBeforeUpdate(
