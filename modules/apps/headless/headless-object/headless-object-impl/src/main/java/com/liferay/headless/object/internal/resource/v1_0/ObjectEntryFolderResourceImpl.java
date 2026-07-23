@@ -27,7 +27,6 @@ import com.liferay.object.service.ObjectEntryFolderService;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -155,12 +154,6 @@ public class ObjectEntryFolderResourceImpl
 	public void deleteObjectEntryFolder(Long objectEntryFolderId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		_deleteObjectEntryFolder(
 			_objectEntryFolderLocalService.getObjectEntryFolder(
 				objectEntryFolderId));
@@ -170,12 +163,6 @@ public class ObjectEntryFolderResourceImpl
 	public void deleteScopeScopeKeyObjectEntryFolderByExternalReferenceCode(
 			String scopeKey, String externalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		_deleteObjectEntryFolder(
 			_objectEntryFolderLocalService.
@@ -248,12 +235,6 @@ public class ObjectEntryFolderResourceImpl
 				String scopeKey, String externalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return _toObjectEntryFolder(
 			_objectEntryFolderService.
 				getObjectEntryFolderByExternalReferenceCode(
@@ -267,12 +248,6 @@ public class ObjectEntryFolderResourceImpl
 			Aggregation aggregation, Filter filter, Pagination pagination,
 			Sort[] sorts)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long groupId = _getGroupId(scopeKey);
 
@@ -337,12 +312,6 @@ public class ObjectEntryFolderResourceImpl
 				ObjectEntryFolder objectEntryFolder)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return _updateObjectEntryFolder(
 			objectEntryFolder,
 			_objectEntryFolderService.
@@ -355,12 +324,6 @@ public class ObjectEntryFolderResourceImpl
 	public ObjectEntryFolder postObjectEntryFolderByParentObjectEntryFolderCopy(
 			Long objectEntryFolderId, Long parentObjectEntryFolderId)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		com.liferay.object.model.ObjectEntryFolder
 			serviceBuilderObjectEntryFolder =
@@ -382,12 +345,6 @@ public class ObjectEntryFolderResourceImpl
 				Long objectEntryFolderId, Long parentObjectEntryFolderId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		com.liferay.object.model.ObjectEntryFolder
 			serviceBuilderObjectEntryFolder =
 				_objectEntryFolderService.getObjectEntryFolder(
@@ -406,12 +363,6 @@ public class ObjectEntryFolderResourceImpl
 	public ObjectEntryFolder postObjectEntryFolderByParentObjectEntryFolderMove(
 			Long objectEntryFolderId, Long parentObjectEntryFolderId)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		com.liferay.object.model.ObjectEntryFolder
 			serviceBuilderObjectEntryFolder =
@@ -433,12 +384,6 @@ public class ObjectEntryFolderResourceImpl
 				Long objectEntryFolderId, Long parentObjectEntryFolderId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		com.liferay.object.model.ObjectEntryFolder
 			serviceBuilderObjectEntryFolder =
 				_objectEntryFolderService.getObjectEntryFolder(
@@ -458,12 +403,6 @@ public class ObjectEntryFolderResourceImpl
 			String scopeKey, ObjectEntryFolder objectEntryFolder)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		long groupId = _getGroupId(scopeKey);
 
 		return _addObjectEntryFolder(
@@ -479,12 +418,6 @@ public class ObjectEntryFolderResourceImpl
 			postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeRestore(
 				String scopeKey, String externalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		com.liferay.object.model.ObjectEntryFolder
 			serviceBuilderObjectEntryFolder =
@@ -508,12 +441,6 @@ public class ObjectEntryFolderResourceImpl
 				String scopeKey, String externalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		long groupId = _getGroupId(scopeKey);
 
 		com.liferay.object.model.ObjectEntryFolder
@@ -532,12 +459,6 @@ public class ObjectEntryFolderResourceImpl
 			postScopeScopeKeyObjectEntryFolderByExternalReferenceCodeUnsubscribe(
 				String scopeKey, String externalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long groupId = _getGroupId(scopeKey);
 
@@ -558,12 +479,6 @@ public class ObjectEntryFolderResourceImpl
 				String scopeKey, String externalReferenceCode,
 				ObjectEntryFolder objectEntryFolder)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		long groupId = _getGroupId(scopeKey);
 
@@ -639,12 +554,6 @@ public class ObjectEntryFolderResourceImpl
 	protected ObjectEntryFolder doGetObjectEntryFolder(Long objectEntryFolderId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return _toObjectEntryFolder(
 			_objectEntryFolderService.getObjectEntryFolder(
 				objectEntryFolderId));
@@ -654,12 +563,6 @@ public class ObjectEntryFolderResourceImpl
 	protected ObjectEntryFolder doPutObjectEntryFolder(
 			Long objectEntryFolderId, ObjectEntryFolder objectEntryFolder)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		com.liferay.object.model.ObjectEntryFolder
 			serviceBuilderObjectEntryFolder =
@@ -727,10 +630,7 @@ public class ObjectEntryFolderResourceImpl
 				serviceBuilderObjectEntryFolder)
 		throws Exception {
 
-		if (serviceBuilderObjectEntryFolder.isTrashable(_trashHelper) &&
-			FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
+		if (serviceBuilderObjectEntryFolder.isTrashable(_trashHelper)) {
 			_objectEntryFolderService.moveObjectEntryFolderToTrash(
 				serviceBuilderObjectEntryFolder,
 				ServiceContextBuilder.create(
@@ -841,32 +741,15 @@ public class ObjectEntryFolderResourceImpl
 				contextAcceptLanguage.isAcceptAllLanguages(),
 				HashMapBuilder.put(
 					"copy",
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-17564")) {
-
-							return null;
-						}
-
-						return addAction(
-							ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
-							"postObjectEntryFolderByParentObjectEntryFolder" +
-								"Copy");
-					}
+					() -> addAction(
+						ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
+						"postObjectEntryFolderByParentObjectEntryFolderCopy")
 				).put(
 					"copy-replace",
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-17564")) {
-
-							return null;
-						}
-
-						return addAction(
-							ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
-							"postObjectEntryFolderByParentObjectEntryFolder" +
-								"CopyReplace");
-					}
+					() -> addAction(
+						ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
+						"postObjectEntryFolderByParentObjectEntryFolder" +
+							"CopyReplace")
 				).put(
 					"delete",
 					addAction(
@@ -874,29 +757,19 @@ public class ObjectEntryFolderResourceImpl
 						"deleteObjectEntryFolder")
 				).put(
 					"duplicate",
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-17564")) {
-
-							return null;
-						}
-
-						return ActionUtil.addAction(
-							ActionKeys.UPDATE,
-							ObjectEntryFolderResourceImpl.class,
-							serviceBuilderObjectEntryFolder.
-								getObjectEntryFolderId(),
-							"postObjectEntryFolderByParentObjectEntryFolder" +
-								"Copy",
-							null, _objectEntryFolderModelResourcePermission,
-							HashMapBuilder.put(
-								"parentObjectEntryFolderId",
-								String.valueOf(
-									serviceBuilderObjectEntryFolder.
-										getParentObjectEntryFolderId())
-							).build(),
-							contextUriInfo);
-					}
+					() -> ActionUtil.addAction(
+						ActionKeys.UPDATE, ObjectEntryFolderResourceImpl.class,
+						serviceBuilderObjectEntryFolder.
+							getObjectEntryFolderId(),
+						"postObjectEntryFolderByParentObjectEntryFolderCopy",
+						null, _objectEntryFolderModelResourcePermission,
+						HashMapBuilder.put(
+							"parentObjectEntryFolderId",
+							String.valueOf(
+								serviceBuilderObjectEntryFolder.
+									getParentObjectEntryFolderId())
+						).build(),
+						contextUriInfo)
 				).put(
 					"get",
 					addAction(
@@ -904,56 +777,29 @@ public class ObjectEntryFolderResourceImpl
 						"getObjectEntryFolder")
 				).put(
 					"get-by-scope",
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-17564")) {
-
-							return null;
-						}
-
-						return ActionUtil.addAction(
-							ActionKeys.VIEW,
-							ObjectEntryFolderResourceImpl.class,
-							serviceBuilderObjectEntryFolder.
-								getObjectEntryFolderId(),
-							"getScopeScopeKeyObjectEntryFoldersPage", null,
-							_objectEntryFolderModelResourcePermission,
-							HashMapBuilder.put(
-								"scopeKey",
-								String.valueOf(
-									serviceBuilderObjectEntryFolder.
-										getGroupId())
-							).build(),
-							contextUriInfo);
-					}
+					() -> ActionUtil.addAction(
+						ActionKeys.VIEW, ObjectEntryFolderResourceImpl.class,
+						serviceBuilderObjectEntryFolder.
+							getObjectEntryFolderId(),
+						"getScopeScopeKeyObjectEntryFoldersPage", null,
+						_objectEntryFolderModelResourcePermission,
+						HashMapBuilder.put(
+							"scopeKey",
+							String.valueOf(
+								serviceBuilderObjectEntryFolder.getGroupId())
+						).build(),
+						contextUriInfo)
 				).put(
 					"move",
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-17564")) {
-
-							return null;
-						}
-
-						return addAction(
-							ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
-							"postObjectEntryFolderByParentObjectEntryFolder" +
-								"Move");
-					}
+					() -> addAction(
+						ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
+						"postObjectEntryFolderByParentObjectEntryFolderMove")
 				).put(
 					"move-replace",
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-17564")) {
-
-							return null;
-						}
-
-						return addAction(
-							ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
-							"postObjectEntryFolderByParentObjectEntryFolder" +
-								"MoveReplace");
-					}
+					() -> addAction(
+						ActionKeys.UPDATE, serviceBuilderObjectEntryFolder,
+						"postObjectEntryFolderByParentObjectEntryFolder" +
+							"MoveReplace")
 				).put(
 					"permissions",
 					addAction(
@@ -962,10 +808,8 @@ public class ObjectEntryFolderResourceImpl
 				).put(
 					"restore",
 					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								contextCompany.getCompanyId(), "LPD-17564") ||
-							(serviceBuilderObjectEntryFolder.getStatus() !=
-								WorkflowConstants.STATUS_IN_TRASH)) {
+						if (serviceBuilderObjectEntryFolder.getStatus() !=
+								WorkflowConstants.STATUS_IN_TRASH) {
 
 							return null;
 						}

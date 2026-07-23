@@ -14,7 +14,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -41,12 +40,6 @@ public class AssetPermissionActionResourceImpl
 	public AssetPermissionAction postAssetPermission(
 			AssetPermissionAction assetPermissionAction)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		if (AssetPermissionAction.Type.RESET_ASSET_PERMISSION_ACTION.equals(
 				assetPermissionAction.getType())) {

@@ -34,7 +34,6 @@ import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -526,10 +525,7 @@ public class TaxonomyVocabularyResourceImpl
 
 		Group group = _groupLocalService.getGroup(siteId);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			if (ArrayUtil.isNotEmpty(taxonomyVocabulary.getProjects())) {
 				_assetVocabularyGroupRelLocalService.
 					setAssetVocabularyGroupRels(
@@ -1000,10 +996,7 @@ public class TaxonomyVocabularyResourceImpl
 
 				Group group = _groupLocalService.getGroup(groupId);
 
-				if (FeatureFlagManagerUtil.isEnabled(
-						group.getCompanyId(), "LPD-17564") &&
-					group.isCMS()) {
-
+				if (group.isCMS()) {
 					BooleanFilter booleanFilter = new BooleanFilter();
 
 					booleanFilter.addRequiredTerm(
@@ -1174,9 +1167,7 @@ public class TaxonomyVocabularyResourceImpl
 
 		Group group = _groupLocalService.getGroup(assetVocabulary.getGroupId());
 
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			if (taxonomyVocabulary.getProjects() != null) {
 				_assetVocabularyGroupRelLocalService.
 					setAssetVocabularyGroupRels(

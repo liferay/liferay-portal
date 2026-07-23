@@ -8,7 +8,6 @@ package com.liferay.depot.web.internal.item.selector;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 
 import org.osgi.service.component.annotations.Component;
@@ -26,12 +25,6 @@ public class SpacesDepotItemSelectorView extends BaseDepotItemSelectorView {
 	public boolean isVisible(
 		GroupItemSelectorCriterion groupItemSelectorCriterion,
 		ThemeDisplay themeDisplay) {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-17564")) {
-
-			return false;
-		}
 
 		return super.isVisible(groupItemSelectorCriterion, themeDisplay);
 	}

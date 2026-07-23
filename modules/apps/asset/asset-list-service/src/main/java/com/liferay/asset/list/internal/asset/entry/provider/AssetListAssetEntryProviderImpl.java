@@ -983,10 +983,7 @@ public class AssetListAssetEntryProviderImpl
 			int depotEntryType = GetterUtil.getInteger(
 				group.getTypeSettingsProperty("depotEntryType"));
 
-			if ((depotEntryType != DepotConstants.TYPE_SPACE) ||
-				!FeatureFlagManagerUtil.isEnabled(
-					group.getCompanyId(), "LPD-17564")) {
-
+			if (depotEntryType != DepotConstants.TYPE_SPACE) {
 				continue;
 			}
 

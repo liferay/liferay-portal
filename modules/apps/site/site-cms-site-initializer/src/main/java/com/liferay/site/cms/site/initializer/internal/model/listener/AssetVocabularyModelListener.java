@@ -9,7 +9,6 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -31,12 +30,6 @@ public class AssetVocabularyModelListener
 		throws ModelListenerException {
 
 		try {
-			if (!FeatureFlagManagerUtil.isEnabled(
-					assetVocabulary.getCompanyId(), "LPD-17564")) {
-
-				return;
-			}
-
 			Group group = _groupLocalService.fetchGroup(
 				assetVocabulary.getGroupId());
 

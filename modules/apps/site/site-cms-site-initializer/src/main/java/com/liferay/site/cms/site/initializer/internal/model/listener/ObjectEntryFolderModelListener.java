@@ -15,7 +15,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -92,24 +91,12 @@ public class ObjectEntryFolderModelListener
 	private void _onAfterCreate(ObjectEntryFolder objectEntryFolder)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectEntryFolder.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
-
 		CMSDefaultPermissionUtil.addCMSDefaultPermissions(
 			objectEntryFolder, _filterFactory);
 	}
 
 	private void _onAfterRemove(ObjectEntryFolder objectEntryFolder)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectEntryFolder.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
 
 		_sharingEntryLocalService.deleteSharingEntries(
 			_portal.getClassNameId(ObjectEntryFolder.class.getName()),
@@ -143,12 +130,6 @@ public class ObjectEntryFolderModelListener
 			String originalExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectEntryFolder.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
-
 		ObjectEntry objectEntry = CMSDefaultPermissionUtil.fetchObjectEntry(
 			objectEntryFolder.getCompanyId(), objectEntryFolder.getUserId(),
 			originalExternalReferenceCode,
@@ -165,12 +146,6 @@ public class ObjectEntryFolderModelListener
 	private void _updateCMSDefaultPermissions(
 			ObjectEntryFolder objectEntryFolder)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectEntryFolder.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
 
 		JSONObject defaultPermissionsJSONObject =
 			CMSDefaultPermissionUtil.getCMSDefaultPermissionJSONObject(

@@ -42,7 +42,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -660,8 +659,6 @@ public class ObjectEntryResourceImpl
 			String targetLanguageIds, String version)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		String className = _objectDefinition.getClassName();
 
 		String xliffMimeType = null;
@@ -691,8 +688,6 @@ public class ObjectEntryResourceImpl
 	public Response getObjectEntryTranslationLanguage(
 			Long objectEntryId, String languageId, String targetLanguageId)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		File xliffFile = _translationManager.getXLIFFFile(
 			_objectDefinition.getClassName(), objectEntryId,
@@ -789,8 +784,6 @@ public class ObjectEntryResourceImpl
 			String sourceLanguageId, String targetLanguageIds, String version)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		ObjectEntry objectEntry = getScopeScopeKeyByExternalReferenceCode(
 			scopeKey, externalReferenceCode);
 
@@ -803,8 +796,6 @@ public class ObjectEntryResourceImpl
 			String scopeKey, String externalReferenceCode, String languageId,
 			String targetLanguageId)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		ObjectEntry objectEntry = getScopeScopeKeyByExternalReferenceCode(
 			scopeKey, externalReferenceCode);
@@ -956,8 +947,6 @@ public class ObjectEntryResourceImpl
 			String externalReferenceCode)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
 				_objectEntryManagerRegistry.getObjectEntryManager(
@@ -972,8 +961,6 @@ public class ObjectEntryResourceImpl
 	public void postByExternalReferenceCodeUnsubscribe(
 			String externalReferenceCode)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
@@ -1091,8 +1078,6 @@ public class ObjectEntryResourceImpl
 			Long objectEntryId, MultipartBody multipartBody)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		BinaryFile binaryFile = multipartBody.getBinaryFile("file");
 
 		if (binaryFile == null) {
@@ -1196,8 +1181,6 @@ public class ObjectEntryResourceImpl
 			String scopeKey, String externalReferenceCode)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
 				_objectEntryManagerRegistry.getObjectEntryManager(
@@ -1215,8 +1198,6 @@ public class ObjectEntryResourceImpl
 				MultipartBody multipartBody)
 		throws Exception {
 
-		_checkFeatureFlag();
-
 		ObjectEntry objectEntry = getScopeScopeKeyByExternalReferenceCode(
 			scopeKey, externalReferenceCode);
 
@@ -1227,8 +1208,6 @@ public class ObjectEntryResourceImpl
 	public void postScopeScopeKeyByExternalReferenceCodeUnsubscribe(
 			String scopeKey, String externalReferenceCode)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
@@ -1310,8 +1289,6 @@ public class ObjectEntryResourceImpl
 	public ObjectEntry putByExternalReferenceCodeRestore(
 			String externalReferenceCode)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
@@ -1425,8 +1402,6 @@ public class ObjectEntryResourceImpl
 	public ObjectEntry putScopeScopeKeyByExternalReferenceCodeRestore(
 			String scopeKey, String externalReferenceCode)
 		throws Exception {
-
-		_checkFeatureFlag();
 
 		DefaultObjectEntryManager defaultObjectEntryManager =
 			DefaultObjectEntryManagerProvider.provide(
@@ -1589,14 +1564,6 @@ public class ObjectEntryResourceImpl
 			for (ObjectEntry objectEntry : objectEntries) {
 				unsafeFunction.apply(objectEntry);
 			}
-		}
-	}
-
-	private void _checkFeatureFlag() {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_objectDefinition.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
 		}
 	}
 

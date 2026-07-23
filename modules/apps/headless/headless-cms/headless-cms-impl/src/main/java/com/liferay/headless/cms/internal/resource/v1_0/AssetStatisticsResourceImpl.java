@@ -17,7 +17,6 @@ import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -46,12 +45,6 @@ public class AssetStatisticsResourceImpl
 	@Override
 	public AssetStatistics getAssetStatistics(Long assetLibraryId)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		Long[] groupIds = _getGroupIds(assetLibraryId);
 

@@ -7,7 +7,6 @@ package com.liferay.object.web.internal.info.permission.provider;
 
 import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.object.model.ObjectEntryFolder;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import org.osgi.service.component.annotations.Component;
@@ -23,14 +22,12 @@ public class ObjectEntryFolderInfoPermissionProvider
 	public boolean hasAddPermission(
 		long groupId, PermissionChecker permissionChecker) {
 
-		return FeatureFlagManagerUtil.isEnabled(
-			permissionChecker.getCompanyId(), "LPD-17564");
+		return true;
 	}
 
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker) {
-		return FeatureFlagManagerUtil.isEnabled(
-			permissionChecker.getCompanyId(), "LPD-17564");
+		return true;
 	}
 
 }

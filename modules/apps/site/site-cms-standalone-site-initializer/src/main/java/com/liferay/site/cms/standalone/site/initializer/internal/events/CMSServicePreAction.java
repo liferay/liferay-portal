@@ -8,7 +8,6 @@ package com.liferay.site.cms.standalone.site.initializer.internal.events;
 import com.liferay.portal.kernel.events.Action;
 import com.liferay.portal.kernel.events.ActionException;
 import com.liferay.portal.kernel.events.LifecycleAction;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
@@ -51,10 +50,7 @@ public class CMSServicePreAction extends Action {
 
 		Group scopeGroup = themeDisplay.getScopeGroup();
 
-		if (!scopeGroup.isGuest() ||
-			!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-17564")) {
-
+		if (!scopeGroup.isGuest()) {
 			return;
 		}
 

@@ -22,7 +22,6 @@ import com.liferay.exportimport.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -178,10 +177,7 @@ public class AssetVocabularyStagedModelDataHandler
 		Group group = _groupLocalService.getGroup(
 			portletDataContext.getScopeGroupId());
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			_exportAssetVocabularyGroupRel(portletDataContext, vocabulary);
 		}
 
@@ -267,16 +263,9 @@ public class AssetVocabularyStagedModelDataHandler
 		importedVocabulary = _assetVocabularyLocalService.updateAssetVocabulary(
 			importedVocabulary);
 
-		Group group = _groupLocalService.getGroup(
-			portletDataContext.getScopeGroupId());
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564")) {
-
-			_importAssetVocabularyGroupRel(
-				portletDataContext, vocabulary,
-				importedVocabulary.getVocabularyId());
-		}
+		_importAssetVocabularyGroupRel(
+			portletDataContext, vocabulary,
+			importedVocabulary.getVocabularyId());
 
 		Map<Long, Long> vocabularyIds =
 			(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(

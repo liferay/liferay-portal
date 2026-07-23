@@ -321,63 +321,59 @@ export function ConfigurationContainer({
 					);
 				})()}
 
-			{Liferay.FeatureFlags['LPD-17564'] && (
-				<>
-					<ClayForm.Group>
-						<Toggle
-							disabled={
-								disabled ||
-								(isEnableObjectEntrySchedule && isApproved)
+			<>
+				<ClayForm.Group>
+					<Toggle
+						disabled={
+							disabled ||
+							(isEnableObjectEntrySchedule && isApproved)
+						}
+						label={Liferay.Language.get(
+							'allow-users-to-schedule-a-display-expiration-and-review-date-for-entries'
+						)}
+						name="enableObjectEntrySchedule"
+						onBlur={(event) => {
+							event.stopPropagation();
+
+							if (onSubmit) {
+								onSubmit();
 							}
-							label={Liferay.Language.get(
-								'allow-users-to-schedule-a-display-expiration-and-review-date-for-entries'
-							)}
-							name="enableObjectEntrySchedule"
-							onBlur={(event) => {
-								event.stopPropagation();
+						}}
+						onToggle={() => {
+							setValues({
+								enableObjectEntrySchedule:
+									!values.enableObjectEntrySchedule,
+							});
+						}}
+						toggled={values.enableObjectEntrySchedule}
+					/>
+				</ClayForm.Group>
 
-								if (onSubmit) {
-									onSubmit();
-								}
-							}}
-							onToggle={() => {
-								setValues({
-									enableObjectEntrySchedule:
-										!values.enableObjectEntrySchedule,
-								});
-							}}
-							toggled={values.enableObjectEntrySchedule}
-						/>
-					</ClayForm.Group>
+				<ClayForm.Group>
+					<Toggle
+						disabled={disabled}
+						label={sub(
+							Liferay.Language.get('enable-x'),
+							Liferay.Language.get('mapping-in-form-container')
+						)}
+						name="enableFormContainer"
+						onBlur={(event) => {
+							event.stopPropagation();
 
-					<ClayForm.Group>
-						<Toggle
-							disabled={disabled}
-							label={sub(
-								Liferay.Language.get('enable-x'),
-								Liferay.Language.get(
-									'mapping-in-form-container'
-								)
-							)}
-							name="enableFormContainer"
-							onBlur={(event) => {
-								event.stopPropagation();
-
-								if (onSubmit) {
-									onSubmit();
-								}
-							}}
-							onToggle={() => {
-								setValues({
-									enableFormContainer:
-										!values.enableFormContainer,
-								});
-							}}
-							toggled={values.enableFormContainer}
-						/>
-					</ClayForm.Group>
-				</>
-			)}
+							if (onSubmit) {
+								onSubmit();
+							}
+						}}
+						onToggle={() => {
+							setValues({
+								enableFormContainer:
+									!values.enableFormContainer,
+							});
+						}}
+						toggled={values.enableFormContainer}
+					/>
+				</ClayForm.Group>
+			</>
 		</div>
 	);
 }

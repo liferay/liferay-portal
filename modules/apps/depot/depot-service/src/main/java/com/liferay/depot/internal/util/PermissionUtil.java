@@ -7,7 +7,6 @@ package com.liferay.depot.internal.util;
 
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -22,10 +21,6 @@ public class PermissionUtil {
 
 	public static boolean hasCMSAdministratorRole(long companyId, long userId)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-			return false;
-		}
 
 		Boolean value = PermissionCacheUtil.getUserPrimaryKeyRole(
 			userId, companyId, RoleConstants.CMS_ADMINISTRATOR);
@@ -43,10 +38,6 @@ public class PermissionUtil {
 
 	public static boolean isDepotGroupAdminOrOwner(long companyId, long userId)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-			return false;
-		}
 
 		Role assetLibraryAdministratorRole = RoleLocalServiceUtil.getRole(
 			companyId, DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);

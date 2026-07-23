@@ -24,7 +24,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -160,12 +159,6 @@ public class ApplicationsMenuPanelAppsMVCResourceCommand
 
 	private Page<AssetLibrary> _getAssetLibrariesPage(ThemeDisplay themeDisplay)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-17564")) {
-
-			return null;
-		}
 
 		AssetLibraryResource.Builder builder =
 			_assetLibraryResourceFactory.create();

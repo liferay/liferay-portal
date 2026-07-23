@@ -11,7 +11,6 @@ import com.liferay.depot.service.DepotEntryGroupRelService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.headless.asset.library.dto.v1_0.ConnectedSite;
 import com.liferay.headless.asset.library.resource.v1_0.ConnectedSiteResource;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -41,10 +40,6 @@ public class ConnectedSiteResourceImpl extends BaseConnectedSiteResourceImpl {
 			String connectedSiteExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
-
 		Group assetLibraryGroup =
 			_groupLocalService.getGroupByExternalReferenceCode(
 				assetLibraryExternalReferenceCode,
@@ -73,10 +68,6 @@ public class ConnectedSiteResourceImpl extends BaseConnectedSiteResourceImpl {
 			String connectedSiteExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
-
 		Group assetLibraryGroup =
 			_groupLocalService.getGroupByExternalReferenceCode(
 				assetLibraryExternalReferenceCode,
@@ -103,10 +94,6 @@ public class ConnectedSiteResourceImpl extends BaseConnectedSiteResourceImpl {
 			String assetLibraryExternalReferenceCode, Pagination pagination)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
-
 		Group group = _groupLocalService.getGroupByExternalReferenceCode(
 			assetLibraryExternalReferenceCode, contextCompany.getCompanyId());
 
@@ -130,10 +117,6 @@ public class ConnectedSiteResourceImpl extends BaseConnectedSiteResourceImpl {
 			String connectedSiteExternalReferenceCode,
 			ConnectedSite connectedSite)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
 
 		Group assetLibraryGroup =
 			_groupLocalService.getGroupByExternalReferenceCode(

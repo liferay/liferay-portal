@@ -19,7 +19,6 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -80,10 +79,6 @@ public class ObjectEntryVersionLocalServiceImpl
 
 	public void checkObjectEntryVersions(long companyId)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return;
-		}
 
 		ObjectEntryVersionConfiguration objectEntryVersionConfiguration =
 			_configurationProvider.getCompanyConfiguration(
@@ -438,11 +433,7 @@ public class ObjectEntryVersionLocalServiceImpl
 			throw new PortalException(exception);
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectEntry.getCompanyId(), "LPD-17564")) {
-
-			objectEntryVersion.setDisplayDate(objectEntry.getDisplayDate());
-		}
+		objectEntryVersion.setDisplayDate(objectEntry.getDisplayDate());
 
 		Date date = new Date();
 		Date expirationDate = objectEntryVersion.getExpirationDate();
@@ -460,11 +451,7 @@ public class ObjectEntryVersionLocalServiceImpl
 			objectEntryVersion.setExpirationDate(date);
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectEntry.getCompanyId(), "LPD-17564")) {
-
-			objectEntryVersion.setReviewDate(objectEntry.getReviewDate());
-		}
+		objectEntryVersion.setReviewDate(objectEntry.getReviewDate());
 
 		objectEntryVersion.setVersion(version);
 		objectEntryVersion.setStatus(status);

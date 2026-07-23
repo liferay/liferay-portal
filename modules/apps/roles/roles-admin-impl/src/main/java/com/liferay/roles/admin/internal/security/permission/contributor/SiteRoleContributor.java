@@ -8,7 +8,6 @@ package com.liferay.roles.admin.internal.security.permission.contributor;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -34,10 +33,7 @@ public class SiteRoleContributor implements RoleContributor {
 	@Override
 	public void contribute(RoleCollection roleCollection) {
 		try {
-			if (!FeatureFlagManagerUtil.isEnabled(
-					roleCollection.getCompanyId(), "LPD-17564") ||
-				(roleCollection.getGroupId() <= 0)) {
-
+			if (roleCollection.getGroupId() <= 0) {
 				return;
 			}
 

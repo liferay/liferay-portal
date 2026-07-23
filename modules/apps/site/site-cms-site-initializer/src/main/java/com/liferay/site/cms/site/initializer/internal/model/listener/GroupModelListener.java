@@ -16,7 +16,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -78,9 +77,7 @@ public class GroupModelListener extends BaseModelListener<Group> {
 			group.getGroupId());
 
 		if ((depotEntry == null) ||
-			(depotEntry.getType() != DepotConstants.TYPE_SPACE) ||
-			!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564")) {
+			(depotEntry.getType() != DepotConstants.TYPE_SPACE)) {
 
 			return;
 		}

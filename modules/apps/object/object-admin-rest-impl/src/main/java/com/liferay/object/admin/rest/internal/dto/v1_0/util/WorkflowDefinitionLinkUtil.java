@@ -7,14 +7,12 @@ package com.liferay.object.admin.rest.internal.dto.v1_0.util;
 
 import com.liferay.object.admin.rest.dto.v1_0.WorkflowDefinitionLink;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,10 +28,6 @@ public class WorkflowDefinitionLinkUtil {
 					workflowDefinitionLinkLocalService,
 				WorkflowDefinitionLink[] workflowDefinitionLinks)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return Collections.emptyList();
-		}
 
 		List<com.liferay.portal.kernel.model.WorkflowDefinitionLink>
 			serviceBuilderWorkflowDefinitionLinks = new ArrayList<>();

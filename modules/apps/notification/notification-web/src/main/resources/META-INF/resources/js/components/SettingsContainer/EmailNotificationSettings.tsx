@@ -35,7 +35,7 @@ const RECIPIENT_OPTIONS = [
 		label: Liferay.Language.get('roles'),
 		value: 'role',
 	},
-	Liferay.FeatureFlags['LPD-17564'] && {
+	{
 		label: Liferay.Language.get('subscribers'),
 		value: 'subscribers',
 	},

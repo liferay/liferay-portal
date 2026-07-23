@@ -8,7 +8,6 @@ package com.liferay.site.cms.site.initializer.internal.product.navigation.person
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -67,10 +66,6 @@ public class CMSPersonalMenuEntry implements PersonalMenuEntry {
 	public boolean isShow(
 			PortletRequest portletRequest, PermissionChecker permissionChecker)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return false;
-		}
 
 		Group group = _groupLocalService.fetchGroup(
 			permissionChecker.getCompanyId(), GroupConstants.CMS);

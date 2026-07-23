@@ -24,7 +24,6 @@ import com.liferay.headless.asset.library.internal.util.AssetLibraryUtil;
 import com.liferay.headless.asset.library.resource.v1_0.AssetLibraryResource;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.portal.kernel.exception.DuplicateGroupExternalReferenceCodeException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.Field;
@@ -87,12 +86,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	public void deleteAssetLibrary(String assetLibraryExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		DepotEntry depotEntry = _getGroupDepotEntry(
 			_getGroupIdByExternalReferenceCode(
 				assetLibraryExternalReferenceCode));
@@ -103,12 +96,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	@Override
 	public void deleteAssetLibraryPin(String assetLibraryExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		DepotEntry depotEntry = _getGroupDepotEntry(
 			_getGroupIdByExternalReferenceCode(
@@ -122,12 +109,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	public Page<AssetLibrary> getAssetLibrariesPinnedByMePage(
 			Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		List<AssetLibrary> assetLibraries = new ArrayList<>(
 			pagination.getPageSize());
@@ -159,12 +140,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	public AssetLibrary patchAssetLibrary(
 			String assetLibraryExternalReferenceCode, AssetLibrary assetLibrary)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		DepotEntry depotEntry = _getGroupDepotEntry(
 			_getGroupIdByExternalReferenceCode(
@@ -231,12 +206,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			String assetLibraryExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		DepotEntry depotEntry = _getGroupDepotEntry(
 			_getGroupIdByExternalReferenceCode(
 				assetLibraryExternalReferenceCode));
@@ -252,12 +221,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			String keywords, String search, Filter filter,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		return SearchUtil.search(
 			Collections.emptyMap(),
@@ -284,12 +247,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			String assetLibraryExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return _toAssetLibrary(
 			_depotEntryService.getGroupDepotEntry(
 				_getGroupIdByExternalReferenceCode(
@@ -299,12 +256,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	@Override
 	protected AssetLibrary doPostAssetLibrary(AssetLibrary assetLibrary)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		String externalReferenceCode = assetLibrary.getExternalReferenceCode();
 
@@ -336,12 +287,6 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 	protected AssetLibrary doPutAssetLibrary(
 			String assetLibraryExternalReferenceCode, AssetLibrary assetLibrary)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		return _toAssetLibrary(
 			_addOrUpdateDepotEntry(

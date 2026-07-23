@@ -7,7 +7,6 @@ package com.liferay.notification.web.internal.portlet.action;
 
 import com.liferay.notification.constants.NotificationPortletKeys;
 import com.liferay.object.model.ObjectField;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -54,22 +53,20 @@ public class GetGeneralNotificationTemplateTermsMVCResourceCommand
 		List<ObjectField> objectFields, String partialTermName,
 		ThemeDisplay themeDisplay) {
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			_termNames.putAll(
-				HashMapBuilder.put(
-					"email-recipient-address", "[%EMAIL_RECIPIENT_ADDRESS%]"
-				).put(
-					"email-recipient-name", "[%EMAIL_RECIPIENT_NAME%]"
-				).put(
-					"object-definition-name", "[%OBJECT_DEFINITION_NAME%]"
-				).put(
-					"object-entry-folder-name", "[%OBJECT_ENTRY_FOLDER_NAME%]"
-				).put(
-					"object-entry-title-field", "[%OBJECT_ENTRY_TITLE_FIELD%]"
-				).put(
-					"object-entry-version", "[%OBJECT_ENTRY_VERSION%]"
-				).build());
-		}
+		_termNames.putAll(
+			HashMapBuilder.put(
+				"email-recipient-address", "[%EMAIL_RECIPIENT_ADDRESS%]"
+			).put(
+				"email-recipient-name", "[%EMAIL_RECIPIENT_NAME%]"
+			).put(
+				"object-definition-name", "[%OBJECT_DEFINITION_NAME%]"
+			).put(
+				"object-entry-folder-name", "[%OBJECT_ENTRY_FOLDER_NAME%]"
+			).put(
+				"object-entry-title-field", "[%OBJECT_ENTRY_TITLE_FIELD%]"
+			).put(
+				"object-entry-version", "[%OBJECT_ENTRY_VERSION%]"
+			).build());
 
 		return _termNames.entrySet();
 	}

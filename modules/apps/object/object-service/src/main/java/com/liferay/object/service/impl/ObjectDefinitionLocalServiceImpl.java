@@ -137,7 +137,6 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -419,7 +418,6 @@ public class ObjectDefinitionLocalServiceImpl
 		throws PortalException {
 
 		_validateWorkflowDefinitionLinks(
-			objectDefinition.getCompanyId(),
 			objectDefinition.getObjectDefinitionSettings(),
 			objectDefinition.getScope(), workflowDefinitionLinks);
 
@@ -447,15 +445,6 @@ public class ObjectDefinitionLocalServiceImpl
 			List<ObjectField> objectFields,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException {
-
-		User user = _userLocalService.getUser(userId);
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				user.getCompanyId(), "LPD-17564") &&
-			!modifiable) {
-
-			enableFormContainer = false;
-		}
 
 		return _addObjectDefinition(
 			externalReferenceCode, userId, objectFolderId, className,
@@ -615,14 +604,12 @@ public class ObjectDefinitionLocalServiceImpl
 						_classNameLocalService.getClassNameId(
 							objectDefinition.getClassName()));
 
-					if (FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-						_subscriptionLocalService.deleteSubscriptions(
-							objectDefinition.getCompanyId(),
-							objectDefinition.getClassName());
-						_trashEntryLocalService.deleteTrashEntries(
-							objectDefinition.getCompanyId(),
-							objectDefinition.getClassName());
-					}
+					_subscriptionLocalService.deleteSubscriptions(
+						objectDefinition.getCompanyId(),
+						objectDefinition.getClassName());
+					_trashEntryLocalService.deleteTrashEntries(
+						objectDefinition.getCompanyId(),
+						objectDefinition.getClassName());
 
 					_deleteFromTable(objectDefinition.getDBTableName());
 
@@ -1347,8 +1334,8 @@ public class ObjectDefinitionLocalServiceImpl
 			externalReferenceCode, objectDefinition.isSystem());
 		_validateObjectFieldId(objectDefinition, titleObjectFieldId);
 		_validateWorkflowDefinitionLinks(
-			objectDefinition.getCompanyId(), objectDefinitionSettings,
-			objectDefinition.getScope(), workflowDefinitionLinks);
+			objectDefinitionSettings, objectDefinition.getScope(),
+			workflowDefinitionLinks);
 
 		long oldObjectFolderId = objectDefinition.getObjectFolderId();
 
@@ -1561,8 +1548,7 @@ public class ObjectDefinitionLocalServiceImpl
 			enableCategorization, modifiable, storageType, system);
 		_validateEnableComments(
 			enableComments, modifiable, storageType, system);
-		_validateEnableFormContainer(
-			user.getCompanyId(), enableFormContainer, modifiable, system);
+		_validateEnableFormContainer(enableFormContainer, modifiable, system);
 		_validateEnableFriendlyURLCustomization(
 			enableFriendlyURLCustomization, friendlyURLSeparator, modifiable,
 			storageType, system);
@@ -1580,8 +1566,7 @@ public class ObjectDefinitionLocalServiceImpl
 		_validateScope(panelCategoryKey, scope, storageType);
 		_validateVersion(system, version);
 		_validateWorkflowDefinitionLinks(
-			user.getCompanyId(), objectDefinitionSettings, scope,
-			workflowDefinitionLinks);
+			objectDefinitionSettings, scope, workflowDefinitionLinks);
 
 		ObjectDefinition objectDefinition = objectDefinitionPersistence.create(
 			counterLocalService.increment());
@@ -1606,21 +1591,13 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinition.setEnableObjectEntryDraft(enableObjectEntryDraft);
 		objectDefinition.setEnableObjectEntryHistory(enableObjectEntryHistory);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				user.getCompanyId(), "LPD-17564")) {
+		objectDefinition.setEnableObjectEntrySchedule(
+			enableObjectEntrySchedule);
+		objectDefinition.setEnableObjectEntryVersioning(
+			enableObjectEntryVersioning);
 
-			objectDefinition.setEnableObjectEntrySchedule(
-				enableObjectEntrySchedule);
-			objectDefinition.setEnableObjectEntryVersioning(
-				enableObjectEntryVersioning);
-		}
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564")) {
-
-			objectDefinition.setEnableObjectEntrySubscription(
-				enableObjectEntrySubscription);
-		}
+		objectDefinition.setEnableObjectEntrySubscription(
+			enableObjectEntrySubscription);
 
 		objectDefinition.setFriendlyURLSeparator(friendlyURLSeparator);
 		objectDefinition.setLabelMap(labelMap, LocaleUtil.getSiteDefault());
@@ -1665,10 +1642,7 @@ public class ObjectDefinitionLocalServiceImpl
 		_addOrUpdateObjectDefinitionSettings(
 			objectDefinition, objectDefinitionSettings);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564") &&
-			objectDefinition.isEnableObjectEntrySubscription()) {
-
+		if (objectDefinition.isEnableObjectEntrySubscription()) {
 			_objectActionLocalService.addOrUpdateSubscriptionObjectActions(
 				objectDefinition);
 		}
@@ -1919,10 +1893,6 @@ public class ObjectDefinitionLocalServiceImpl
 			ObjectDefinition objectDefinition,
 			List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return;
-		}
 
 		Set<Long> oldWorkflowDefinitionLinkIds = new HashSet<>(
 			TransformUtil.transform(
@@ -2782,8 +2752,8 @@ public class ObjectDefinitionLocalServiceImpl
 			enableComments, objectDefinition.isModifiable(),
 			objectDefinition.getStorageType(), objectDefinition.isSystem());
 		_validateEnableFormContainer(
-			objectDefinition.getCompanyId(), enableFormContainer,
-			objectDefinition.isModifiable(), objectDefinition.isSystem());
+			enableFormContainer, objectDefinition.isModifiable(),
+			objectDefinition.isSystem());
 		_validateEnableFriendlyURLCustomization(
 			enableFriendlyURLCustomization, friendlyURLSeparator,
 			objectDefinition.isModifiable(), objectDefinition.getStorageType(),
@@ -2807,8 +2777,7 @@ public class ObjectDefinitionLocalServiceImpl
 		_validateScope(
 			panelCategoryKey, scope, objectDefinition.getStorageType());
 		_validateWorkflowDefinitionLinks(
-			objectDefinition.getCompanyId(), objectDefinitionSettings, scope,
-			workflowDefinitionLinks);
+			objectDefinitionSettings, scope, workflowDefinitionLinks);
 
 		if (objectDefinition.getAccountEntryRestrictedObjectFieldId() != 0) {
 			_objectFieldLocalService.updateRequired(
@@ -2849,21 +2818,13 @@ public class ObjectDefinitionLocalServiceImpl
 		objectDefinition.setEnableObjectEntryDraft(enableObjectEntryDraft);
 		objectDefinition.setEnableObjectEntryHistory(enableObjectEntryHistory);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564")) {
+		objectDefinition.setEnableObjectEntrySchedule(
+			enableObjectEntrySchedule);
+		objectDefinition.setEnableObjectEntryVersioning(
+			enableObjectEntryVersioning);
 
-			objectDefinition.setEnableObjectEntrySchedule(
-				enableObjectEntrySchedule);
-			objectDefinition.setEnableObjectEntryVersioning(
-				enableObjectEntryVersioning);
-		}
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564")) {
-
-			objectDefinition.setEnableObjectEntrySubscription(
-				enableObjectEntrySubscription);
-		}
+		objectDefinition.setEnableObjectEntrySubscription(
+			enableObjectEntrySubscription);
 
 		objectDefinition.setFriendlyURLSeparator(friendlyURLSeparator);
 		objectDefinition.setLabelMap(
@@ -2886,10 +2847,8 @@ public class ObjectDefinitionLocalServiceImpl
 			addOrUpdateObjectDefinitionPLOEntries(objectDefinition);
 		}
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564") &&
-			(objectDefinition.isEnableObjectEntrySubscription() !=
-				oldEnableObjectEntrySubscription)) {
+		if (objectDefinition.isEnableObjectEntrySubscription() !=
+				oldEnableObjectEntrySubscription) {
 
 			_objectActionLocalService.addOrUpdateSubscriptionObjectActions(
 				objectDefinition);
@@ -3288,13 +3247,8 @@ public class ObjectDefinitionLocalServiceImpl
 	}
 
 	private void _validateEnableFormContainer(
-			long companyId, boolean enableFormContainer, boolean modifiable,
-			boolean system)
+			boolean enableFormContainer, boolean modifiable, boolean system)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-			return;
-		}
 
 		if (enableFormContainer &&
 			_isUnmodifiableSystemObject(modifiable, system)) {
@@ -3378,10 +3332,6 @@ public class ObjectDefinitionLocalServiceImpl
 			ObjectDefinition objectDefinition, boolean system)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return;
-		}
-
 		if (enableObjectEntrySchedule &&
 			_isUnmodifiableSystemObject(modifiable, system)) {
 
@@ -3409,10 +3359,6 @@ public class ObjectDefinitionLocalServiceImpl
 			boolean system)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return;
-		}
-
 		if (enableObjectEntrySubscription &&
 			_isUnmodifiableSystemObject(modifiable, system)) {
 
@@ -3428,10 +3374,6 @@ public class ObjectDefinitionLocalServiceImpl
 			boolean enableObjectEntryVersioning, boolean modifiable,
 			ObjectDefinition objectDefinition, boolean system)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return;
-		}
 
 		if (enableObjectEntryVersioning &&
 			_isUnmodifiableSystemObject(modifiable, system)) {
@@ -3963,14 +3905,9 @@ public class ObjectDefinitionLocalServiceImpl
 	}
 
 	private void _validateWorkflowDefinitionLinks(
-			long companyId,
 			List<ObjectDefinitionSetting> objectDefinitionSettings,
 			String scope, List<WorkflowDefinitionLink> workflowDefinitionLinks)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-			return;
-		}
 
 		for (WorkflowDefinitionLink workflowDefinitionLink :
 				workflowDefinitionLinks) {

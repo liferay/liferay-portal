@@ -22,7 +22,6 @@ import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletCategory;
@@ -440,14 +439,7 @@ public class EditRolePermissionsNavigationDisplayContext {
 
 			_getObjectsNavigationItems(topLevelNavigationItem);
 		}
-		else if ((roleType == RoleConstants.TYPE_DEPOT) &&
-				 (FeatureFlagManagerUtil.isEnabled(
-					 _themeDisplay.getCompanyId(), "LPD-17564") ||
-				  FeatureFlagManagerUtil.isEnabled(
-					  _themeDisplay.getCompanyId(), "LPD-57283") ||
-				  FeatureFlagManagerUtil.isEnabled(
-					  _themeDisplay.getCompanyId(), "LPD-58677"))) {
-
+		else if (roleType == RoleConstants.TYPE_DEPOT) {
 			_getObjectsNavigationItems(topLevelNavigationItem);
 		}
 
@@ -586,13 +578,7 @@ public class EditRolePermissionsNavigationDisplayContext {
 		ObjectDefinition objectDefinition) {
 
 		if ((_role.getType() != RoleConstants.TYPE_DEPOT) ||
-			Validator.isNull(_role.getSubtype()) ||
-			(!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-17564") &&
-			 !FeatureFlagManagerUtil.isEnabled(
-				 _themeDisplay.getCompanyId(), "LPD-57283") &&
-			 !FeatureFlagManagerUtil.isEnabled(
-				 _themeDisplay.getCompanyId(), "LPD-58677"))) {
+			Validator.isNull(_role.getSubtype())) {
 
 			return true;
 		}

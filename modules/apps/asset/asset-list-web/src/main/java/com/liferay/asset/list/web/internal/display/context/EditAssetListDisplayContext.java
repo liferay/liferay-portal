@@ -49,7 +49,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -850,22 +849,17 @@ public class EditAssetListDisplayContext {
 
 		long[] groupIds = getSelectedGroupIds();
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-17564")) {
+		for (Group group : getSelectedGroups()) {
+			int depotEntryType = GetterUtil.getInteger(
+				group.getTypeSettingsProperty("depotEntryType"));
 
-			for (Group group : getSelectedGroups()) {
-				int depotEntryType = GetterUtil.getInteger(
-					group.getTypeSettingsProperty("depotEntryType"));
+			if (depotEntryType == DepotConstants.TYPE_SPACE) {
+				Group cmsGroup = GroupLocalServiceUtil.getGroup(
+					_themeDisplay.getCompanyId(), GroupConstants.CMS);
 
-				if (depotEntryType == DepotConstants.TYPE_SPACE) {
-					Group cmsGroup = GroupLocalServiceUtil.getGroup(
-						_themeDisplay.getCompanyId(), GroupConstants.CMS);
+				groupIds = ArrayUtil.append(groupIds, cmsGroup.getGroupId());
 
-					groupIds = ArrayUtil.append(
-						groupIds, cmsGroup.getGroupId());
-
-					break;
-				}
+				break;
 			}
 		}
 

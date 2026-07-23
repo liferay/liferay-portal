@@ -10,7 +10,6 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
@@ -93,10 +92,7 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 
 		Group group = _groupLocalService.getGroup(groupId);
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564") ||
-			!group.isDepot()) {
-
+		if (!group.isDepot()) {
 			return;
 		}
 

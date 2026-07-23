@@ -10,7 +10,6 @@ import com.liferay.headless.asset.library.resource.v1_0.UserAccountResource;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -63,10 +62,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			String userAccountExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
-
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 		User user = _userService.getUserByExternalReferenceCode(
 			userAccountExternalReferenceCode, contextCompany.getCompanyId());
@@ -79,10 +74,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			String assetLibraryExternalReferenceCode,
 			String userAccountExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
 
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 
@@ -102,10 +93,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			String search, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
-
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 
 		_checkAssetLibraryAdminOrAssetLibraryMember(group.getGroupId());
@@ -119,10 +106,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 			String assetLibraryExternalReferenceCode,
 			String userAccountExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
 
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 		User user = _userService.getUserByExternalReferenceCode(

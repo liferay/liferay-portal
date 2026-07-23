@@ -10,7 +10,6 @@ import com.liferay.document.library.portlet.toolbar.contributor.DLPortletToolbar
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -45,12 +44,6 @@ public class CMSFileDLPortletToolbarContributorContext
 	public void updatePortletTitleMenuItems(
 		List<MenuItem> menuItems, Folder folder, ThemeDisplay themeDisplay,
 		PortletRequest portletRequest, PortletResponse portletResponse) {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				themeDisplay.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
 
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.

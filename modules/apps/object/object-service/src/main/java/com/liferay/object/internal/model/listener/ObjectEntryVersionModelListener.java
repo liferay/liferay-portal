@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -86,12 +85,6 @@ public class ObjectEntryVersionModelListener
 	private void _addOrUpdateLatestApprovedObjectEntry(
 			ObjectEntryVersion objectEntryVersion)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectEntryVersion.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			objectEntryVersion.getObjectEntryId());

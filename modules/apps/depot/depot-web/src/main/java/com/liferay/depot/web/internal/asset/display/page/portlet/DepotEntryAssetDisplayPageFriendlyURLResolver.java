@@ -11,7 +11,6 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -48,10 +47,6 @@ public class DepotEntryAssetDisplayPageFriendlyURLResolver
 	protected LayoutDisplayPageProvider<?> getLayoutDisplayPageProvider(
 			long companyId, String friendlyURL)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return super.getLayoutDisplayPageProvider(companyId, friendlyURL);
-		}
 
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();

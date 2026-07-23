@@ -8,7 +8,6 @@ package com.liferay.site.cms.standalone.site.initializer.internal.instance.lifec
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
@@ -55,10 +54,6 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 
 	@Override
 	protected void doPortalInstanceRegistered(long companyId) throws Exception {
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-			return;
-		}
-
 		Group group = _groupLocalService.getGroup(
 			companyId, GroupConstants.GUEST);
 

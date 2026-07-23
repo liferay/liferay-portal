@@ -26,7 +26,6 @@ import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
 
@@ -95,28 +94,13 @@ public class ObjectEntryInfoItemFormProvider
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.createDateInfoField
 				).infoFieldSetEntry(
-					unsafeConsumer -> {
-						if (FeatureFlagManagerUtil.isEnabled(
-								_objectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							unsafeConsumer.accept(
-								ObjectEntryInfoItemFields.
-									getDisplayDateInfoField(_objectDefinition));
-						}
-					}
+					unsafeConsumer -> unsafeConsumer.accept(
+						ObjectEntryInfoItemFields.getDisplayDateInfoField(
+							_objectDefinition))
 				).infoFieldSetEntry(
-					unsafeConsumer -> {
-						if (FeatureFlagManagerUtil.isEnabled(
-								_objectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							unsafeConsumer.accept(
-								ObjectEntryInfoItemFields.
-									getExpirationDateInfoField(
-										_objectDefinition));
-						}
-					}
+					unsafeConsumer -> unsafeConsumer.accept(
+						ObjectEntryInfoItemFields.getExpirationDateInfoField(
+							_objectDefinition))
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.externalReferenceCodeInfoField
 				).infoFieldSetEntry(
@@ -129,16 +113,9 @@ public class ObjectEntryInfoItemFormProvider
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.publishDateInfoField
 				).infoFieldSetEntry(
-					unsafeConsumer -> {
-						if (FeatureFlagManagerUtil.isEnabled(
-								_objectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							unsafeConsumer.accept(
-								ObjectEntryInfoItemFields.
-									getReviewDateInfoField(_objectDefinition));
-						}
-					}
+					unsafeConsumer -> unsafeConsumer.accept(
+						ObjectEntryInfoItemFields.getReviewDateInfoField(
+							_objectDefinition))
 				).infoFieldSetEntry(
 					ObjectEntryInfoItemFields.statusInfoField
 				).infoFieldSetEntry(

@@ -19,7 +19,6 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -258,9 +257,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 				ObjectActionKeys.OBJECT_ENTRY_HISTORY, "</action-key>");
 		}
 
-		if (objectDefinition.isEnableObjectEntrySubscription() &&
-			FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-
+		if (objectDefinition.isEnableObjectEntrySubscription()) {
 			permissionsSupports = StringBundler.concat(
 				permissionsSupports, "<action-key>", ActionKeys.SUBSCRIBE,
 				"</action-key>");
@@ -280,15 +277,9 @@ public class ObjectDefinitionResourcePermissionUtil {
 			objectActionLocalService, objectActions,
 			objectDefinition.getObjectDefinitionId());
 
-		String objectFieldPermissionKeys = StringPool.BLANK;
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564")) {
-
-			objectFieldPermissionKeys = _getObjectFieldPermissionKeys(
-				objectDefinition.getObjectDefinitionId(),
-				objectFieldLocalService, objectFields);
-		}
+		String objectFieldPermissionKeys = _getObjectFieldPermissionKeys(
+			objectDefinition.getObjectDefinitionId(), objectFieldLocalService,
+			objectFields);
 
 		String resourceActionsFileName =
 			"resource-actions/resource-actions.xml.tpl";

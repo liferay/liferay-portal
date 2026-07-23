@@ -17,7 +17,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -278,10 +277,7 @@ public class LayoutSEOLinkManagerImpl implements LayoutSEOLinkManager {
 
 		Group group = layout.getGroup();
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				layout.getCompanyId(), "LPD-17564") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			returnCompanyName = StringPool.BLANK;
 		}
 

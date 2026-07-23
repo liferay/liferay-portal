@@ -16,7 +16,6 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -24,7 +23,6 @@ import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.search.GroupSearch;
@@ -101,14 +99,6 @@ public class GroupSelectorDisplayContext {
 		Set<String> groupItemSelectorProviderTypes =
 			GroupItemSelectorProviderRegistryUtil.
 				getGroupItemSelectorProviderTypes();
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				PortalUtil.getCompanyId(_liferayPortletRequest), "LPD-17564")) {
-
-			groupItemSelectorProviderTypes.remove("space-depot");
-
-			return groupItemSelectorProviderTypes;
-		}
 
 		for (String criterion :
 				ParamUtil.getStringValues(_liferayPortletRequest, "criteria")) {

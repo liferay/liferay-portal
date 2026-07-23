@@ -9,7 +9,6 @@ import com.liferay.admin.kernel.util.PortalMyAccountApplicationType;
 import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -64,13 +63,7 @@ public class DepotAdminRolesDisplayContext {
 	}
 
 	public String getAssetLibraryLabelKey() {
-		if (FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-17564")) {
-
-			return "asset-library-or-space";
-		}
-
-		return "asset-library";
+		return "asset-library-or-space";
 	}
 
 	public String getDepotRoleSyncEntitiesEventName() {
@@ -79,13 +72,7 @@ public class DepotAdminRolesDisplayContext {
 	}
 
 	public String getEmptyResultsMessageKey() {
-		if (FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-17564")) {
-
-			return "this-user-is-not-assigned-any-asset-library-or-space-roles";
-		}
-
-		return "this-user-is-not-assigned-any-asset-library-roles";
+		return "this-user-is-not-assigned-any-asset-library-or-space-roles";
 	}
 
 	public String getHeaderNames() {
@@ -99,13 +86,7 @@ public class DepotAdminRolesDisplayContext {
 	}
 
 	public String getLabelKey() {
-		if (FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-17564")) {
-
-			return "asset-library-and-space-roles";
-		}
-
-		return "asset-library-roles";
+		return "asset-library-and-space-roles";
 	}
 
 	public String getSelectDepotRolesEventName() {

@@ -9,7 +9,6 @@ import com.liferay.headless.asset.library.dto.v1_0.UserGroup;
 import com.liferay.headless.asset.library.resource.v1_0.UserGroupResource;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchUserGroupException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -53,12 +52,6 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 			String userGroupExternalReferenceCode)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 		com.liferay.portal.kernel.model.UserGroup userGroup =
 			_userGroupService.getUserGroupByExternalReferenceCode(
@@ -73,12 +66,6 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 			String assetLibraryExternalReferenceCode,
 			String userGroupExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 
@@ -99,12 +86,6 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 			String search, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 
 		_checkAssetLibraryAdminOrAssetLibraryMember(group.getGroupId());
@@ -118,12 +99,6 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 			String assetLibraryExternalReferenceCode,
 			String userGroupExternalReferenceCode)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
 

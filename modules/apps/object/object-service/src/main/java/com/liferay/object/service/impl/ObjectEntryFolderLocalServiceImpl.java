@@ -247,18 +247,14 @@ public class ObjectEntryFolderLocalServiceImpl
 				ObjectEntryFolder.class.getName()),
 			objectEntryFolder.getObjectEntryFolderId());
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			_subscriptionLocalService.deleteSubscriptions(
-				objectEntryFolder.getCompanyId(),
-				ObjectEntryFolder.class.getName(),
-				_getClassPK(
-					objectEntryFolder.getGroupId(),
-					objectEntryFolder.getObjectEntryFolderId()));
-		}
+		_subscriptionLocalService.deleteSubscriptions(
+			objectEntryFolder.getCompanyId(), ObjectEntryFolder.class.getName(),
+			_getClassPK(
+				objectEntryFolder.getGroupId(),
+				objectEntryFolder.getObjectEntryFolderId()));
 
-		if (FeatureFlagManagerUtil.isEnabled("LPD-17564") &&
-			(objectEntryFolder.getStatus() ==
-				WorkflowConstants.STATUS_IN_TRASH)) {
+		if (objectEntryFolder.getStatus() ==
+				WorkflowConstants.STATUS_IN_TRASH) {
 
 			_trashEntryLocalService.deleteEntry(
 				ObjectEntryFolder.class.getName(),
@@ -681,65 +677,58 @@ public class ObjectEntryFolderLocalServiceImpl
 				serviceContext);
 		}
 		else {
-			if (FeatureFlagManagerUtil.isEnabled(
-					objectEntryFolder.getCompanyId(), "LPD-17564")) {
+			Group group = _groupLocalService.fetchGroup(
+				objectEntryFolder.getGroupId());
 
-				Group group = _groupLocalService.fetchGroup(
-					objectEntryFolder.getGroupId());
+			if (group.isDepot()) {
+				int count =
+					_resourcePermissionLocalService.getResourcePermissionsCount(
+						objectEntryFolder.getCompanyId(),
+						ObjectEntryFolder.class.getName(),
+						ResourceConstants.SCOPE_INDIVIDUAL,
+						String.valueOf(
+							objectEntryFolder.getObjectEntryFolderId()));
 
-				if (group.isDepot()) {
-					int count =
-						_resourcePermissionLocalService.
-							getResourcePermissionsCount(
-								objectEntryFolder.getCompanyId(),
-								ObjectEntryFolder.class.getName(),
-								ResourceConstants.SCOPE_INDIVIDUAL,
-								String.valueOf(
-									objectEntryFolder.
-										getObjectEntryFolderId()));
-
-					if (count > 0) {
-						return;
-					}
+				if (count > 0) {
+					return;
 				}
+			}
 
-				ModelPermissions modelPermissions =
-					serviceContext.getModelPermissions();
+			ModelPermissions modelPermissions =
+				serviceContext.getModelPermissions();
 
-				if ((modelPermissions == null) ||
-					!Objects.equals(
-						modelPermissions.getResourceName(),
-						ObjectEntryFolder.class.getName())) {
+			if ((modelPermissions == null) ||
+				!Objects.equals(
+					modelPermissions.getResourceName(),
+					ObjectEntryFolder.class.getName())) {
 
-					modelPermissions = ModelPermissionsFactory.create(
-						ObjectEntryFolder.class.getName());
+				modelPermissions = ModelPermissionsFactory.create(
+					ObjectEntryFolder.class.getName());
 
-					serviceContext.setModelPermissions(modelPermissions);
-				}
+				serviceContext.setModelPermissions(modelPermissions);
+			}
 
-				modelPermissions.addRolePermissions(
-					DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-					ActionKeys.ADD_ENTRY,
-					ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER, ActionKeys.VIEW);
-				modelPermissions.addRolePermissions(
-					DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
-					ActionKeys.ADD_ENTRY,
-					ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER, ActionKeys.VIEW);
-				modelPermissions.addRolePermissions(
-					DepotRolesConstants.ASSET_LIBRARY_MEMBER, ActionKeys.VIEW);
+			modelPermissions.addRolePermissions(
+				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
+				ActionKeys.ADD_ENTRY, ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER,
+				ActionKeys.VIEW);
+			modelPermissions.addRolePermissions(
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
+				ActionKeys.ADD_ENTRY, ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER,
+				ActionKeys.VIEW);
+			modelPermissions.addRolePermissions(
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER, ActionKeys.VIEW);
 
-				if (group.isDepot()) {
-					DepotEntry depotEntry =
-						_depotEntryLocalService.getGroupDepotEntry(
-							group.getGroupId());
+			if (group.isDepot()) {
+				DepotEntry depotEntry =
+					_depotEntryLocalService.getGroupDepotEntry(
+						group.getGroupId());
 
-					if (depotEntry.getType() == DepotConstants.TYPE_SPACE) {
-						modelPermissions.addRolePermissions(
-							RoleConstants.CMS_ADMINISTRATOR,
-							ActionKeys.ADD_ENTRY,
-							ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER,
-							ActionKeys.VIEW);
-					}
+				if (depotEntry.getType() == DepotConstants.TYPE_SPACE) {
+					modelPermissions.addRolePermissions(
+						RoleConstants.CMS_ADMINISTRATOR, ActionKeys.ADD_ENTRY,
+						ObjectActionKeys.ADD_OBJECT_ENTRY_FOLDER,
+						ActionKeys.VIEW);
 				}
 			}
 

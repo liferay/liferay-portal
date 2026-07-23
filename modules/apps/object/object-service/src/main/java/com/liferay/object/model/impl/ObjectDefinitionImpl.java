@@ -254,10 +254,6 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 
 	@Override
 	public boolean isCMS() {
-		if (!FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPD-17564")) {
-			return false;
-		}
-
 		if (Objects.equals(
 				getObjectFolderExternalReferenceCode(),
 				ObjectFolderConstants.

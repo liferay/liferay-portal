@@ -263,9 +263,7 @@ export default function EditObjectDetails({
 			(!values.modifiable && values.system)
 		);
 
-	const showSubscriptionSection =
-		Liferay.FeatureFlags['LPD-17564'] &&
-		!(!values.modifiable && values.system);
+	const showSubscriptionSection = !(!values.modifiable && values.system);
 
 	return (
 		<LearnResourcesContext.Provider value={learnResources}>

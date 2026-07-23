@@ -7,8 +7,6 @@ package com.liferay.site.cms.site.initializer.internal.object.label.key.provider
 
 import com.liferay.object.label.key.provider.ObjectDefinitionLabelKeyProvider;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import org.osgi.service.component.annotations.Component;
@@ -22,12 +20,6 @@ public class CMSObjectDefinitionLabelKeyProvider
 
 	@Override
 	public String getObjectDefinitionLabelKey(String externalReferenceCode) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				CompanyThreadLocal.getCompanyId(), "LPD-17564")) {
-
-			return StringPool.BLANK;
-		}
-
 		return CMSObjectDefinitionLabelKey.getLabelKey(externalReferenceCode);
 	}
 

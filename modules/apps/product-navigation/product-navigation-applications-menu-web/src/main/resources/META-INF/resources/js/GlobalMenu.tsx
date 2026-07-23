@@ -279,9 +279,7 @@ function normalizeCategoryItems({
 		item.key === 'control_panel' ? {...item, className: 'c-mt-2'} : item
 	);
 
-	if (Liferay.FeatureFlags['LPD-17564']) {
-		categoryItems.splice(2, 0, {...cms, homeURL: cms.url});
-	}
+	categoryItems.splice(2, 0, {...cms, homeURL: cms.url});
 
 	return categoryItems;
 }

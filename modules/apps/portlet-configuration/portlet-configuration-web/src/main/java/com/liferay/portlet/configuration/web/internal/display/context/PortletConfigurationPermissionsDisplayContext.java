@@ -756,14 +756,7 @@ public class PortletConfigurationPermissionsDisplayContext {
 	}
 
 	private String _getSubtype() {
-		if ((_group == null) || !_group.isDepot()) {
-			return null;
-		}
-
-		if ((!FeatureFlagManagerUtil.isEnabled(
-				_themeDisplay.getCompanyId(), "LPD-17564") &&
-			 !FeatureFlagManagerUtil.isEnabled(
-				 _themeDisplay.getCompanyId(), "LPD-58677")) ||
+		if ((_group == null) || !_group.isDepot() ||
 			!FeatureFlagManagerUtil.isEnabled(
 				_themeDisplay.getCompanyId(), "LPD-96750")) {
 

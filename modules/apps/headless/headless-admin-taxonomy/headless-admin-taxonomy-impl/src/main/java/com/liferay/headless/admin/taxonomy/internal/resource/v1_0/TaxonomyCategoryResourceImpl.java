@@ -39,7 +39,6 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Type;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -974,18 +973,14 @@ public class TaxonomyCategoryResourceImpl
 				_assetVocabularyService.getOrAddEmptyVocabulary(
 					taxonomyVocabularyExternalReferenceCode, groupId);
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					assetVocabulary.getCompanyId(), "LPD-17564")) {
+			Group group = _groupLocalService.getGroup(groupId);
 
-				Group group = _groupLocalService.getGroup(groupId);
-
-				if (group.isCMS()) {
-					_assetVocabularyGroupRelLocalService.
-						setAssetVocabularyGroupRels(
-							assetVocabulary.getVocabularyId(),
-							new long[] {GroupConstants.GROUP_ID_ALL},
-							DepotConstants.TYPE_SPACE);
-				}
+			if (group.isCMS()) {
+				_assetVocabularyGroupRelLocalService.
+					setAssetVocabularyGroupRels(
+						assetVocabulary.getVocabularyId(),
+						new long[] {GroupConstants.GROUP_ID_ALL},
+						DepotConstants.TYPE_SPACE);
 			}
 
 			return assetVocabulary.getVocabularyId();

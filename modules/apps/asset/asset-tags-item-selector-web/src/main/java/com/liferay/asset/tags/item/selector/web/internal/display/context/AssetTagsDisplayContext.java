@@ -12,7 +12,6 @@ import com.liferay.asset.tags.item.selector.web.internal.search.EntriesChecker;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -111,11 +110,6 @@ public class AssetTagsDisplayContext {
 			_groupIds = ArrayUtil.toLongArray(
 				_groupLocalService.getGroupIds(
 					themeDisplay.getCompanyId(), true));
-		}
-		else if (!FeatureFlagManagerUtil.isEnabled(
-					themeDisplay.getCompanyId(), "LPD-17564")) {
-
-			_groupIds = _assetTagsItemSelectorCriterion.getGroupIds();
 		}
 		else {
 			List<Long> groupIds = new ArrayList<>();

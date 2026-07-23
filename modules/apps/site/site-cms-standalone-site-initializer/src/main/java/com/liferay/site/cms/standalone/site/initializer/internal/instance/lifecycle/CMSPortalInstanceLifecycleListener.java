@@ -8,7 +8,6 @@ package com.liferay.site.cms.standalone.site.initializer.internal.instance.lifec
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -27,12 +26,6 @@ public class CMSPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				company.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
-
 		Configuration configuration =
 			_configurationAdmin.createFactoryConfiguration(
 				"com.liferay.portal.vulcan.internal.configuration." +

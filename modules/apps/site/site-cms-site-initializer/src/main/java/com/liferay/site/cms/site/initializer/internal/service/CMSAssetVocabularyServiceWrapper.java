@@ -8,7 +8,6 @@ package com.liferay.site.cms.site.initializer.internal.service;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceWrapper;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -32,9 +31,7 @@ public class CMSAssetVocabularyServiceWrapper
 
 		long companyId = CMSAssetVocabularyUtil.getCompanyId(groupIds);
 
-		if ((companyId == CompanyConstants.SYSTEM) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-
+		if (companyId == CompanyConstants.SYSTEM) {
 			return super.getGroupVocabularies(groupIds, visibilityTypes);
 		}
 

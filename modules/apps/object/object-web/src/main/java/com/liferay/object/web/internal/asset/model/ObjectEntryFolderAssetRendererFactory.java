@@ -14,8 +14,6 @@ import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.Portal;
@@ -49,12 +47,6 @@ public class ObjectEntryFolderAssetRendererFactory
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderService.getObjectEntryFolder(classPK);
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectEntryFolder.getCompanyId(), "LPD-17564")) {
-
-			return null;
-		}
-
 		return new ObjectEntryFolderAssetRenderer(
 			_assetDisplayPageFriendlyURLProvider, _depotEntryLocalService,
 			objectEntryFolder, this, _portal);
@@ -86,8 +78,7 @@ public class ObjectEntryFolderAssetRendererFactory
 
 	@Override
 	public boolean isSearchable() {
-		return FeatureFlagManagerUtil.isEnabled(
-			CompanyThreadLocal.getCompanyId(), "LPD-17564");
+		return true;
 	}
 
 	@Reference

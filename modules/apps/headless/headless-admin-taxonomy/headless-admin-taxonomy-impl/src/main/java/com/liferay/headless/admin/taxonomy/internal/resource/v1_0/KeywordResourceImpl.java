@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Type;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.UserConstants;
@@ -347,14 +346,10 @@ public class KeywordResourceImpl
 			keyword.getExternalReferenceCode(), keywordId, keyword.getName(),
 			null);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				assetTag.getCompanyId(), "LPD-17564")) {
-
-			_assetTagGroupRelLocalService.setAssetTagGroupRels(
-				assetTag.getTagId(),
-				TaxonomyGroupUtil.getAssetLibraryGroupIds(
-					keyword.getAssetLibraries(), assetTag.getCompanyId()));
-		}
+		_assetTagGroupRelLocalService.setAssetTagGroupRels(
+			assetTag.getTagId(),
+			TaxonomyGroupUtil.getAssetLibraryGroupIds(
+				keyword.getAssetLibraries(), assetTag.getCompanyId()));
 
 		return _toKeyword(assetTag);
 	}
@@ -364,12 +359,6 @@ public class KeywordResourceImpl
 		throws Exception {
 
 		AssetTag assetTag = _assetTagService.getTag(toKeywordId);
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				assetTag.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		for (long fromKeywordId : fromKeywordIds) {
 			_assetTagService.mergeTags(fromKeywordId, toKeywordId);
@@ -434,10 +423,7 @@ public class KeywordResourceImpl
 			Long siteId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564") ||
-			!group.isCMS()) {
-
+		if (!group.isCMS()) {
 			return _assetTagService.addTag(
 				externalReferenceCode, siteId, keyword.getName(),
 				new ServiceContext());
@@ -623,10 +609,7 @@ public class KeywordResourceImpl
 
 		Group group = _groupLocalService.getGroup(siteId);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			List<Long> existingGroupIds = transform(
 				_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
 					assetTag.getTagId()),

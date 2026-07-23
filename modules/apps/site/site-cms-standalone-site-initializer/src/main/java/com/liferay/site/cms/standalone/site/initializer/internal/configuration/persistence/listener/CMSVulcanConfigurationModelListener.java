@@ -7,9 +7,7 @@ package com.liferay.site.cms.standalone.site.initializer.internal.configuration.
 
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.Dictionary;
 import java.util.Objects;
@@ -30,10 +28,7 @@ public class CMSVulcanConfigurationModelListener
 	public void onBeforeSave(String pid, Dictionary<String, Object> properties)
 		throws ConfigurationModelListenerException {
 
-		if (!Objects.equals(properties.get("path"), "/headless-delivery") ||
-			!FeatureFlagManagerUtil.isEnabled(
-				PortalUtil.getDefaultCompanyId(), "LPD-17564")) {
-
+		if (!Objects.equals(properties.get("path"), "/headless-delivery")) {
 			return;
 		}
 

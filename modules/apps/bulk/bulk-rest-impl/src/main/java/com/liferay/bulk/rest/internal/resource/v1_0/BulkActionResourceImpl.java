@@ -54,7 +54,6 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -134,14 +133,6 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			Pagination pagination, Sort[] sorts, BulkAction bulkAction)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") &&
-			!BulkAction.Type.DELETE_OBJECT_ENTRY_BULK_SELECTION_ACTION.equals(
-				bulkAction.getType())) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		BulkActionBulkSelectionFactory bulkActionBulkSelectionFactory =
 			_getBulkActionBulkSelectionFactory(
 				blueprintExternalReferenceCode, bulkAction, emptySearch,
@@ -172,9 +163,7 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			Pagination pagination, Sort[] sorts, BulkAction bulkAction)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			!Objects.equals(
+		if (!Objects.equals(
 				bulkAction.getType(),
 				BulkAction.Type.DELETE_OBJECT_BULK_SELECTION_ACTION)) {
 

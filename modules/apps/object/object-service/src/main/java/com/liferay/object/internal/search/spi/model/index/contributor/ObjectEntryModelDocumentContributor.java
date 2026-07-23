@@ -31,7 +31,6 @@ import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -567,17 +566,13 @@ public class ObjectEntryModelDocumentContributor
 		document.addKeyword(
 			"rootDescendantNode", objectEntry.isRootDescendantNode());
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectEntry.getCompanyId(), "LPD-17564")) {
+		document.addDate(Field.DISPLAY_DATE, objectEntry.getDisplayDate());
+		document.addDate(
+			Field.EXPIRATION_DATE, objectEntry.getExpirationDate());
+		document.addDate(Field.REVIEW_DATE, objectEntry.getReviewDate());
 
-			document.addDate(Field.DISPLAY_DATE, objectEntry.getDisplayDate());
-			document.addDate(
-				Field.EXPIRATION_DATE, objectEntry.getExpirationDate());
-			document.addDate(Field.REVIEW_DATE, objectEntry.getReviewDate());
-
-			_contributeObjectEntryFolder(
-				document, objectEntry.getObjectEntryFolderId());
-		}
+		_contributeObjectEntryFolder(
+			document, objectEntry.getObjectEntryFolderId());
 
 		if (objectDefinition.isCMP()) {
 			if (values == null) {

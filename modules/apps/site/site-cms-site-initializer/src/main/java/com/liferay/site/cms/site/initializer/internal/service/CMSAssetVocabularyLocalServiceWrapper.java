@@ -7,7 +7,6 @@ package com.liferay.site.cms.site.initializer.internal.service;
 
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceWrapper;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceWrapper;
@@ -33,9 +32,7 @@ public class CMSAssetVocabularyLocalServiceWrapper
 
 		long companyId = CMSAssetVocabularyUtil.getCompanyId(groupIds);
 
-		if ((companyId == CompanyConstants.SYSTEM) ||
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
-
+		if (companyId == CompanyConstants.SYSTEM) {
 			return super.getGroupsVocabularies(
 				groupIds, className, classTypePK);
 		}

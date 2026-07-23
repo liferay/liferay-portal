@@ -2177,8 +2177,7 @@ public class DefaultObjectEntryManagerImpl
 			_trashHelper.isTrashEnabled(
 				serviceBuilderObjectEntry.getGroupId()) &&
 			(serviceBuilderObjectEntry.getStatus() !=
-				WorkflowConstants.STATUS_IN_TRASH) &&
-			FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
+				WorkflowConstants.STATUS_IN_TRASH)) {
 
 			_objectEntryService.moveObjectEntryToTrash(
 				serviceBuilderObjectEntry,
@@ -2537,10 +2536,9 @@ public class DefaultObjectEntryManagerImpl
 	}
 
 	private String _getObjectEntryFolderExternalReferenceCode(
-		long companyId, long groupId, ObjectDefinition objectDefinition) {
+		long groupId, ObjectDefinition objectDefinition) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564") ||
-			(groupId == 0) ||
+		if ((groupId == 0) ||
 			!StringUtil.equals(
 				objectDefinition.getScope(),
 				ObjectDefinitionConstants.SCOPE_DEPOT)) {
@@ -2594,7 +2592,7 @@ public class DefaultObjectEntryManagerImpl
 
 			objectEntryFolderExternalReferenceCode =
 				_getObjectEntryFolderExternalReferenceCode(
-					companyId, groupId, objectDefinition);
+					groupId, objectDefinition);
 
 			if (Validator.isNull(objectEntryFolderExternalReferenceCode)) {
 				return objectEntryFolderId;
@@ -2665,11 +2663,8 @@ public class DefaultObjectEntryManagerImpl
 			).put(
 				"copy",
 				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564") ||
-						(!objectEntryVersion.isApproved() &&
-						 !objectEntryVersion.isDraft())) {
+					if (!objectEntryVersion.isApproved() &&
+						!objectEntryVersion.isDraft()) {
 
 						return null;
 					}
@@ -2747,10 +2742,7 @@ public class DefaultObjectEntryManagerImpl
 			).put(
 				"expire",
 				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564") ||
-						objectEntryVersion.isExpired() ||
+					if (objectEntryVersion.isExpired() ||
 						objectEntryVersion.isDraft() ||
 						objectEntryVersion.isPending()) {
 
@@ -3027,9 +3019,7 @@ public class DefaultObjectEntryManagerImpl
 			com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564") ||
-			!objectDefinition.isEnableObjectEntrySubscription() ||
+		if (!objectDefinition.isEnableObjectEntrySubscription() ||
 			ObjectEntryFolderSubscriptionUtil.isSubscribedToObjectEntryFolder(
 				serviceBuilderObjectEntry.getCompanyId(),
 				serviceBuilderObjectEntry.getGroupId(),
@@ -3577,36 +3567,15 @@ public class DefaultObjectEntryManagerImpl
 				}
 			).put(
 				"copy",
-				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564")) {
-
-						return null;
-					}
-
-					return _addAction(
-						ActionKeys.UPDATE,
-						"postObjectEntryByObjectEntryFolderCopy",
-						serviceBuilderObjectEntry,
-						dtoConverterContext.getUriInfo());
-				}
+				() -> _addAction(
+					ActionKeys.UPDATE, "postObjectEntryByObjectEntryFolderCopy",
+					serviceBuilderObjectEntry, dtoConverterContext.getUriInfo())
 			).put(
 				"copy-replace",
-				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564")) {
-
-						return null;
-					}
-
-					return _addAction(
-						ActionKeys.UPDATE,
-						"postObjectEntryByObjectEntryFolderCopyReplace",
-						serviceBuilderObjectEntry,
-						dtoConverterContext.getUriInfo());
-				}
+				() -> _addAction(
+					ActionKeys.UPDATE,
+					"postObjectEntryByObjectEntryFolderCopyReplace",
+					serviceBuilderObjectEntry, dtoConverterContext.getUriInfo())
 			).put(
 				"delete",
 				() -> _addAction(
@@ -3615,32 +3584,19 @@ public class DefaultObjectEntryManagerImpl
 					serviceBuilderParentObjectEntry)
 			).put(
 				"duplicate",
-				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564")) {
-
-						return null;
-					}
-
-					return _addAction(
-						ActionKeys.UPDATE,
-						"postObjectEntryByObjectEntryFolderCopy",
-						serviceBuilderObjectEntry,
-						HashMapBuilder.put(
-							"objectEntryFolderId",
-							String.valueOf(
-								serviceBuilderObjectEntry.
-									getObjectEntryFolderId())
-						).build(),
-						dtoConverterContext.getUriInfo());
-				}
+				() -> _addAction(
+					ActionKeys.UPDATE, "postObjectEntryByObjectEntryFolderCopy",
+					serviceBuilderObjectEntry,
+					HashMapBuilder.put(
+						"objectEntryFolderId",
+						String.valueOf(
+							serviceBuilderObjectEntry.getObjectEntryFolderId())
+					).build(),
+					dtoConverterContext.getUriInfo())
 			).put(
 				"expire",
 				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							objectDefinition.getCompanyId(), "LPD-17564") ||
-						serviceBuilderObjectEntry.isDraft() ||
+					if (serviceBuilderObjectEntry.isDraft() ||
 						serviceBuilderObjectEntry.isExpired() ||
 						serviceBuilderObjectEntry.isPending()) {
 
@@ -3664,59 +3620,28 @@ public class DefaultObjectEntryManagerImpl
 					serviceBuilderParentObjectEntry)
 			).put(
 				"get-by-scope",
-				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564")) {
-
-						return null;
-					}
-
-					return ActionUtil.addAction(
-						ActionKeys.VIEW, ObjectEntryResourceImpl.class,
-						serviceBuilderObjectEntry.getObjectEntryId(),
-						"getScopeScopeKeyPage", null,
-						_objectEntryService.getModelResourcePermission(
-							serviceBuilderObjectEntry.getObjectDefinitionId()),
-						HashMapBuilder.put(
-							"scopeKey",
-							String.valueOf(
-								serviceBuilderObjectEntry.getGroupId())
-						).build(),
-						dtoConverterContext.getUriInfo());
-				}
+				() -> ActionUtil.addAction(
+					ActionKeys.VIEW, ObjectEntryResourceImpl.class,
+					serviceBuilderObjectEntry.getObjectEntryId(),
+					"getScopeScopeKeyPage", null,
+					_objectEntryService.getModelResourcePermission(
+						serviceBuilderObjectEntry.getObjectDefinitionId()),
+					HashMapBuilder.put(
+						"scopeKey",
+						String.valueOf(serviceBuilderObjectEntry.getGroupId())
+					).build(),
+					dtoConverterContext.getUriInfo())
 			).put(
 				"move",
-				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564")) {
-
-						return null;
-					}
-
-					return _addAction(
-						ActionKeys.UPDATE,
-						"postObjectEntryByObjectEntryFolderMove",
-						serviceBuilderObjectEntry,
-						dtoConverterContext.getUriInfo());
-				}
+				() -> _addAction(
+					ActionKeys.UPDATE, "postObjectEntryByObjectEntryFolderMove",
+					serviceBuilderObjectEntry, dtoConverterContext.getUriInfo())
 			).put(
 				"move-replace",
-				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564")) {
-
-						return null;
-					}
-
-					return _addAction(
-						ActionKeys.UPDATE,
-						"postObjectEntryByObjectEntryFolderMoveReplace",
-						serviceBuilderObjectEntry,
-						dtoConverterContext.getUriInfo());
-				}
+				() -> _addAction(
+					ActionKeys.UPDATE,
+					"postObjectEntryByObjectEntryFolderMoveReplace",
+					serviceBuilderObjectEntry, dtoConverterContext.getUriInfo())
 			).put(
 				"permissions",
 				_addAction(
@@ -3730,10 +3655,7 @@ public class DefaultObjectEntryManagerImpl
 			).put(
 				"restore",
 				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							objectDefinition.getCompanyId(), "LPD-17564") ||
-						!serviceBuilderObjectEntry.isInTrash()) {
-
+					if (!serviceBuilderObjectEntry.isInTrash()) {
 						return null;
 					}
 
@@ -3749,12 +3671,6 @@ public class DefaultObjectEntryManagerImpl
 			).put(
 				"share",
 				() -> {
-					if (!FeatureFlagManagerUtil.isEnabled(
-							objectDefinition.getCompanyId(), "LPD-17564")) {
-
-						return null;
-					}
-
 					Group group = groupLocalService.fetchGroup(
 						serviceBuilderObjectEntry.getGroupId());
 

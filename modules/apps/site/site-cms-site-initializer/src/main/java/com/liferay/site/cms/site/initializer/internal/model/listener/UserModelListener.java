@@ -10,7 +10,6 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Group;
@@ -89,12 +88,6 @@ public class UserModelListener extends BaseModelListener<User> {
 		throws PortalException {
 
 		User user = _userLocalService.getUser((Long)classPK);
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				user.getCompanyId(), "LPD-17564")) {
-
-			return;
-		}
 
 		if (associationClassName.equals(Group.class.getName())) {
 			_onAfterAddAssociationGroup(user, (Long)associationClassPK);

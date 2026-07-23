@@ -21,7 +21,6 @@ import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -178,10 +177,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	private boolean _isCMSObjectEntry(ObjectEntry objectEntry)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				objectEntry.getCompanyId(), "LPD-17564") ||
-			(objectEntry.getGroupId() == 0)) {
-
+		if (objectEntry.getGroupId() == 0) {
 			return false;
 		}
 

@@ -36,7 +36,6 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -656,14 +655,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectDefinition.getCompanyId(), "LPD-17564") &&
-			(objectEntryFolderId !=
+		if (objectEntryFolderId !=
 				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT)) {
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT) {
 
 			ModelResourcePermissionUtil.check(
 				_objectEntryFolderModelResourcePermission, permissionChecker,
@@ -671,6 +665,9 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 
 			return;
 		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
 
 		ObjectEntry rootObjectEntry = _getRootObjectEntry(
 			objectDefinition, values);

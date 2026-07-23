@@ -167,17 +167,7 @@ public class ObjectDefinitionUtil {
 				setEnableComments(
 					serviceBuilderObjectDefinition::isEnableComments);
 				setEnableFormContainer(
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							return null;
-						}
-
-						return serviceBuilderObjectDefinition.
-							isEnableFormContainer();
-					});
+					serviceBuilderObjectDefinition::isEnableFormContainer);
 				setEnableFriendlyURLCustomization(
 					serviceBuilderObjectDefinition::
 						isEnableFriendlyURLCustomization);
@@ -199,41 +189,14 @@ public class ObjectDefinitionUtil {
 				setEnableObjectEntryHistory(
 					serviceBuilderObjectDefinition::isEnableObjectEntryHistory);
 				setEnableObjectEntrySchedule(
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							return null;
-						}
-
-						return serviceBuilderObjectDefinition.
-							isEnableObjectEntrySchedule();
-					});
+					serviceBuilderObjectDefinition::
+						isEnableObjectEntrySchedule);
 				setEnableObjectEntrySubscription(
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							return null;
-						}
-
-						return serviceBuilderObjectDefinition.
-							isEnableObjectEntrySubscription();
-					});
+					serviceBuilderObjectDefinition::
+						isEnableObjectEntrySubscription);
 				setEnableObjectEntryVersioning(
-					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							return null;
-						}
-
-						return serviceBuilderObjectDefinition.
-							isEnableObjectEntryVersioning();
-					});
+					serviceBuilderObjectDefinition::
+						isEnableObjectEntryVersioning);
 				setExternalReferenceCode(
 					serviceBuilderObjectDefinition::getExternalReferenceCode);
 				setFriendlyURLSeparator(
@@ -404,13 +367,6 @@ public class ObjectDefinitionUtil {
 					});
 				setWorkflowDefinitionLinks(
 					() -> {
-						if (!FeatureFlagManagerUtil.isEnabled(
-								serviceBuilderObjectDefinition.getCompanyId(),
-								"LPD-17564")) {
-
-							return null;
-						}
-
 						List
 							<com.liferay.portal.kernel.model.
 								WorkflowDefinitionLink>

@@ -21,7 +21,6 @@ import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
@@ -139,9 +138,7 @@ public class ObjectEntryImpl extends ObjectEntryBaseImpl {
 
 	@Override
 	public Date getPublishDate() {
-		if (!FeatureFlagManagerUtil.isEnabled(getCompanyId(), "LPD-17564") ||
-			!isApproved()) {
-
+		if (!isApproved()) {
 			return null;
 		}
 

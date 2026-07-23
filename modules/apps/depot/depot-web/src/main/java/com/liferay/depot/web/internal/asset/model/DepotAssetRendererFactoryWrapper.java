@@ -18,7 +18,6 @@ import com.liferay.depot.web.internal.application.controller.DepotApplicationCon
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -144,12 +143,6 @@ public class DepotAssetRendererFactoryWrapper<T>
 					return assetRenderer;
 				}
 			}
-		}
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564")) {
-
-			return null;
 		}
 
 		if ((depotEntry != null) &&

@@ -9,7 +9,6 @@ import com.liferay.info.permission.provider.InfoPermissionProvider;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
@@ -50,7 +49,7 @@ public class ObjectEntryInfoPermissionProvider
 
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker) {
-		if (_getActivePortlet(permissionChecker) == null) {
+		if (_getActivePortlet() == null) {
 			return false;
 		}
 
@@ -77,7 +76,7 @@ public class ObjectEntryInfoPermissionProvider
 			return true;
 		}
 
-		Portlet portlet = _getActivePortlet(permissionChecker);
+		Portlet portlet = _getActivePortlet();
 
 		if (portlet == null) {
 			return false;
@@ -97,18 +96,9 @@ public class ObjectEntryInfoPermissionProvider
 		return false;
 	}
 
-	private Portlet _getActivePortlet(PermissionChecker permissionChecker) {
-		if (FeatureFlagManagerUtil.isEnabled(
-				permissionChecker.getCompanyId(), "LPD-17564")) {
-
-			if (!_objectDefinition.isEnableFormContainer()) {
-				return null;
-			}
-		}
-		else {
-			if (_objectDefinition.isModifiableAndSystem()) {
-				return null;
-			}
+	private Portlet _getActivePortlet() {
+		if (!_objectDefinition.isEnableFormContainer()) {
+			return null;
 		}
 
 		Portlet portlet = _portletLocalService.getPortletById(

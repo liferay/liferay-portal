@@ -11,7 +11,6 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -41,10 +40,6 @@ public class SubscribersEmailProvider implements EmailProvider {
 	@Override
 	public String provide(NotificationContext notificationContext, Object value)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			return null;
-		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			notificationContext.getClassPK());

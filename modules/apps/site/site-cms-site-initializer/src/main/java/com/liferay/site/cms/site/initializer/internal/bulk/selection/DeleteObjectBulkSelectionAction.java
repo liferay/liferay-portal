@@ -14,7 +14,6 @@ import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.service.ObjectEntryFolderService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -86,10 +85,7 @@ public class DeleteObjectBulkSelectionAction
 	private void _deleteObjectEntryFolder(ObjectEntryFolder objectEntryFolder)
 		throws Exception {
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				objectEntryFolder.getCompanyId(), "LPD-17564") &&
-			objectEntryFolder.isTrashable(_trashHelper)) {
-
+		if (objectEntryFolder.isTrashable(_trashHelper)) {
 			_objectEntryFolderService.moveObjectEntryFolderToTrash(
 				objectEntryFolder, new ServiceContext());
 		}

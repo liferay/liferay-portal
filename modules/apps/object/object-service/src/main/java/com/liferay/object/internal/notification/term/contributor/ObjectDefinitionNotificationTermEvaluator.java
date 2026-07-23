@@ -25,7 +25,6 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.UnsafeTriFunction;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.ListType;
@@ -190,10 +189,7 @@ public class ObjectDefinitionNotificationTermEvaluator
 	private String _evaluateObjectDefinition(
 		Context context, String termName, Map<String, Object> termValues) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_objectDefinition.getCompanyId(), "LPD-17564") ||
-			!termName.equals("[%OBJECT_DEFINITION_NAME%]")) {
-
+		if (!termName.equals("[%OBJECT_DEFINITION_NAME%]")) {
 			return null;
 		}
 
@@ -202,12 +198,6 @@ public class ObjectDefinitionNotificationTermEvaluator
 
 	private String _evaluateObjectEntry(
 		Context context, String termName, Map<String, Object> termValues) {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				_objectDefinition.getCompanyId(), "LPD-17564")) {
-
-			return null;
-		}
 
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			GetterUtil.getLong(termValues.get("id")));

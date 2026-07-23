@@ -289,10 +289,7 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 							'<portlet:namespace />scheduleContainer'
 						);
 
-						if (
-							Liferay.FeatureFlags['LPD-17564'] &&
-							scheduleContainerInput
-						) {
+						if (scheduleContainerInput) {
 							scheduleContainerInputValue = JSON.parse(
 								scheduleContainerInput.value
 							);
@@ -369,10 +366,7 @@ if (ParamUtil.getBoolean(request, "showHeader", true)) {
 								});
 							}
 
-							if (
-								Liferay.FeatureFlags['LPD-17564'] &&
-								scheduleContainerInputValue
-							) {
+							if (scheduleContainerInputValue) {
 								values = {
 									...values,
 									...scheduleContainerInputValue,

@@ -23,7 +23,6 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -70,9 +69,7 @@ public class CardinalityAssetEntryValidator implements AssetEntryValidator {
 
 		if ((depotEntry != null) &&
 			((depotEntry.getType() == DepotConstants.TYPE_PROJECT) ||
-			 (depotEntry.getType() == DepotConstants.TYPE_SPACE)) &&
-			FeatureFlagManagerUtil.isEnabled(
-				depotEntry.getCompanyId(), "LPD-17564")) {
+			 (depotEntry.getType() == DepotConstants.TYPE_SPACE))) {
 
 			List<AssetVocabularyGroupRel> assetVocabularyGroupRels =
 				new ArrayList<>(

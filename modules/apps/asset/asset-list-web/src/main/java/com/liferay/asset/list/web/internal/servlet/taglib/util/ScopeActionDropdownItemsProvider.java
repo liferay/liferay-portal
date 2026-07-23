@@ -9,7 +9,6 @@ import com.liferay.asset.list.web.internal.display.context.EditAssetListDisplayC
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -63,15 +62,8 @@ public class ScopeActionDropdownItemsProvider {
 					_editAssetListDisplayContext.getSelectGroupEventName());
 
 				String otherSiteLabelLocalized = LanguageUtil.get(
-					_themeDisplay.getLocale(), "other-site-or-asset-library");
-
-				if (FeatureFlagManagerUtil.isEnabled(
-						_themeDisplay.getCompanyId(), "LPD-17564")) {
-
-					otherSiteLabelLocalized = LanguageUtil.get(
-						_themeDisplay.getLocale(),
-						"other-site-asset-library-or-space");
-				}
+					_themeDisplay.getLocale(),
+					"other-site-asset-library-or-space");
 
 				dropdownItem.setLabel(
 					otherSiteLabelLocalized + StringPool.TRIPLE_PERIOD);

@@ -12,7 +12,6 @@ import com.liferay.layout.admin.kernel.visibility.LayoutVisibilityManager;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSON;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -670,13 +669,7 @@ public class GroupImpl extends GroupBaseImpl {
 				return "current-asset-library";
 			}
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					themeDisplay.getCompanyId(), "LPD-17564")) {
-
-				return "asset-library-or-space";
-			}
-
-			return "asset-library";
+			return "asset-library-or-space";
 		}
 
 		if (getGroupId() == themeDisplay.getScopeGroupId()) {

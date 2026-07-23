@@ -9,8 +9,6 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.BaseAssetRendererFactory;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.sharing.constants.SharingPortletKeys;
 import com.liferay.sharing.interpreter.SharingEntryInterpreterProvider;
 import com.liferay.sharing.model.SharingEntry;
@@ -44,12 +42,6 @@ public class SharingEntryAssetRendererFactory
 		SharingEntry sharingEntry = _sharingEntryLocalService.getSharingEntry(
 			classPK);
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				sharingEntry.getCompanyId(), "LPD-17564")) {
-
-			return null;
-		}
-
 		return new SharingEntryAssetRenderer(
 			sharingEntry, _sharingEntryInterpreterProvider);
 	}
@@ -71,8 +63,7 @@ public class SharingEntryAssetRendererFactory
 
 	@Override
 	public boolean isSearchable() {
-		return FeatureFlagManagerUtil.isEnabled(
-			CompanyThreadLocal.getCompanyId(), "LPD-17564");
+		return true;
 	}
 
 	@Reference

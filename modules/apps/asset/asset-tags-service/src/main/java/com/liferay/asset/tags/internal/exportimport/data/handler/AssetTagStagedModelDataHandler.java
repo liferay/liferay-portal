@@ -18,7 +18,6 @@ import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -117,10 +116,7 @@ public class AssetTagStagedModelDataHandler
 		Group group = _groupLocalService.getGroup(
 			portletDataContext.getScopeGroupId());
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			_exportAssetTagGroupRel(portletDataContext, assetTag);
 		}
 
@@ -211,10 +207,7 @@ public class AssetTagStagedModelDataHandler
 		Group group = _groupLocalService.fetchGroup(
 			portletDataContext.getScopeGroupId());
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-17564") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			_importAssetTagGroupRel(
 				portletDataContext, assetTag, importedAssetTag.getTagId());
 		}

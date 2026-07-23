@@ -11,7 +11,6 @@ import com.liferay.headless.object.util.v1_0.CollaboratorUtil;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.TicketLocalService;
@@ -45,10 +44,7 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 			Long objectEntryFolderId, String type, Long collaboratorId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			Objects.equals(type, "Email")) {
-
+		if (Objects.equals(type, "Email")) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -70,10 +66,7 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 				Long collaboratorId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			Objects.equals(type, "Email")) {
-
+		if (Objects.equals(type, "Email")) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -98,10 +91,7 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 			Long objectEntryFolderId, String type, Long collaboratorId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			Objects.equals(type, "Email")) {
-
+		if (Objects.equals(type, "Email")) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -123,12 +113,6 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 	public Page<Collaborator> getObjectEntryFolderCollaboratorsPage(
 			Long objectEntryFolderId, Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.getObjectEntryFolder(
@@ -152,10 +136,7 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 				Long collaboratorId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			Objects.equals(type, "Email")) {
-
+		if (Objects.equals(type, "Email")) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -185,12 +166,6 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 				Pagination pagination)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				getObjectEntryFolderByExternalReferenceCode(
@@ -215,12 +190,6 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 	public Page<Collaborator> postObjectEntryFolderCollaboratorsPage(
 			Long objectEntryFolderId, Collaborator[] collaborators)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		for (Collaborator collaborator : collaborators) {
 			if (Objects.equals(collaborator.getType(), "Email")) {
@@ -250,12 +219,6 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 				String scopeKey, String externalReferenceCode,
 				Collaborator[] collaborators)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		for (Collaborator collaborator : collaborators) {
 			if (Objects.equals(collaborator.getType(), "Email")) {
@@ -290,10 +253,7 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 			Collaborator collaborator)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			Objects.equals(type, "Email")) {
-
+		if (Objects.equals(type, "Email")) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -321,10 +281,7 @@ public class CollaboratorResourceImpl extends BaseCollaboratorResourceImpl {
 				Long collaboratorId, Collaborator collaborator)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			Objects.equals(type, "Email")) {
-
+		if (Objects.equals(type, "Email")) {
 			throw new UnsupportedOperationException();
 		}
 

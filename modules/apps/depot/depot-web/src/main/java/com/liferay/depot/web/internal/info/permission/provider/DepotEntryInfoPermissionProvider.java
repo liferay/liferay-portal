@@ -7,7 +7,6 @@ package com.liferay.depot.web.internal.info.permission.provider;
 
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.info.permission.provider.InfoPermissionProvider;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import org.osgi.service.component.annotations.Component;
@@ -23,14 +22,12 @@ public class DepotEntryInfoPermissionProvider
 	public boolean hasAddPermission(
 		long groupId, PermissionChecker permissionChecker) {
 
-		return FeatureFlagManagerUtil.isEnabled(
-			permissionChecker.getCompanyId(), "LPD-17564");
+		return true;
 	}
 
 	@Override
 	public boolean hasViewPermission(PermissionChecker permissionChecker) {
-		return FeatureFlagManagerUtil.isEnabled(
-			permissionChecker.getCompanyId(), "LPD-17564");
+		return true;
 	}
 
 }
