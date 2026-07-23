@@ -91,7 +91,13 @@ export default compose(
 
 				const channel = getDefaultChannel(defaultChannelId, channels);
 
-				if (channel && defaultChannelId !== channel.id) {
+				// Only reset the stored default when it is loaded but points at
+				// an invalid channel. Guarding on `defaultChannelId` avoids a
+				// race under React Router v7: on a channel switch the sidebar
+				// remounts and re-fetches, so this constructor can run while
+				// `defaultChannelId` is momentarily undefined; without the guard
+				// it would overwrite the real preference with `channels[0]`.
+				if (channel && defaultChannelId && defaultChannelId !== channel.id) {
 					updateDefaultChannelId({
 						defaultChannelId: channel.id,
 						groupId

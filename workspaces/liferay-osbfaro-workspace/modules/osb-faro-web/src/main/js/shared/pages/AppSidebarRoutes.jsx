@@ -8,13 +8,38 @@ import {compose} from 'redux';
 import {connect} from 'react-redux';
 import {DEVELOPER_MODE} from 'shared/util/constants';
 import {DownloadReportProvider} from 'shared/components/download-report/DownloadReportContext';
-import {Route, Routes as RouterRoutes} from 'react-router-dom';
+import {
+	matchPath,
+	Route,
+	Routes as RouterRoutes,
+	useLocation
+} from 'react-router-dom';
+import {Routes} from 'shared/util/router';
 import {
 	withLDPEnabled,
 	withOnboarding,
 	withUnassignedSegments
 } from 'shared/hoc';
 import {withSidebar} from 'shared/hoc';
+
+/**
+ * Inject the current `channelId` from the URL.
+ *
+ * Under the React Router v7 descendant-`<Routes>` topology, `AppSidebarRoutes`
+ * is mounted at the parent `*` splat, so `channelId` is not a named param at
+ * this level and is absent from the params `BundleRouter` injects. The sidebar
+ * chain (channel selector, nav links, `checkValidChannel`) needs it, so derive
+ * it from the pathname. Re-runs on navigation via `useLocation`.
+ */
+const withChannelId = (WrappedComponent) => (props) => {
+	const {pathname} = useLocation();
+
+	const match = matchPath({end: false, path: Routes.CHANNEL}, pathname);
+
+	return (
+		<WrappedComponent {...props} channelId={match?.params?.channelId} />
+	);
+};
 
 const UIKit = lazy(() =>
 	import(/* webpackChunkName: "UIKit" */ '../../ui-kit/pages/index')
@@ -471,6 +496,7 @@ const AppSidebarRoutes = ({LDPEnabled, currentUser, groupId}) => {
 };
 
 export default compose(
+	withChannelId,
 	withSidebar,
 	withOnboarding,
 	withUnassignedSegments,
