@@ -5,6 +5,7 @@
 
 package com.liferay.portal.vulcan.internal.crud;
 
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -14,8 +15,12 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegate;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilder;
+import com.liferay.portal.vulcan.fields.NestedFieldsContext;
+import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
+import com.liferay.portal.vulcan.internal.fields.NestedFieldsSetterUtil;
 import com.liferay.portal.vulcan.jaxrs.context.ContextDataInjector;
 import com.liferay.portal.vulcan.jaxrs.context.ContextDataInjectorBuilder;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,11 +64,26 @@ public class VulcanCRUDItemDelegateBuilderImpl
 
 	@Override
 	public VulcanCRUDItemDelegate build() throws Exception {
+		NestedFieldsContext nestedFieldsContext =
+			NestedFieldsContextThreadLocal.getNestedFieldsContext();
+
 		ContextDataInjector contextDataInjector =
 			_contextDataInjectorBuilder.acceptLanguage(
 				_acceptLanguage
 			).company(
 				_company
+			).fallbackContextValueFunction(
+				contextClass -> {
+					if (nestedFieldsContext == null) {
+						return null;
+					}
+
+					if (contextClass == Pagination.class) {
+						return Pagination.of(-1, -1);
+					}
+
+					return null;
+				}
 			).groupLocalService(
 				_groupLocalService
 			).httpServletRequest(
@@ -84,8 +104,16 @@ public class VulcanCRUDItemDelegateBuilderImpl
 				_user
 			).build();
 
-		return (VulcanCRUDItemDelegate)contextDataInjector.inject(
-			_vulcanCRUDItemDelegate);
+		VulcanCRUDItemDelegate vulcanCRUDItemDelegate =
+			(VulcanCRUDItemDelegate)contextDataInjector.inject(
+				_vulcanCRUDItemDelegate);
+
+		if (nestedFieldsContext != null) {
+			return _withNestedFields(
+				contextDataInjector, vulcanCRUDItemDelegate);
+		}
+
+		return vulcanCRUDItemDelegate;
 	}
 
 	@Override
@@ -174,6 +202,41 @@ public class VulcanCRUDItemDelegateBuilderImpl
 		_company = company;
 		_contextDataInjectorBuilder = contextDataInjectorBuilder;
 		_vulcanCRUDItemDelegate = vulcanCRUDItemDelegate;
+	}
+
+	private VulcanCRUDItemDelegate _withNestedFields(
+		ContextDataInjector contextDataInjector,
+		VulcanCRUDItemDelegate vulcanCRUDItemDelegate) {
+
+		return new VulcanCRUDItemDelegate() {
+
+			@Override
+			public Object fetchItem(Long id) {
+				return _setNestedFields(vulcanCRUDItemDelegate.fetchItem(id));
+			}
+
+			@Override
+			public Object getItem(Long id) throws Exception {
+				return _setNestedFields(vulcanCRUDItemDelegate.getItem(id));
+			}
+
+			private Object _setNestedFields(Object item) {
+				if (item == null) {
+					return null;
+				}
+
+				try {
+					NestedFieldsSetterUtil.setNestedFields(
+						item, contextDataInjector);
+				}
+				catch (Exception exception) {
+					return ReflectionUtil.throwException(exception);
+				}
+
+				return item;
+			}
+
+		};
 	}
 
 	private AcceptLanguage _acceptLanguage;
