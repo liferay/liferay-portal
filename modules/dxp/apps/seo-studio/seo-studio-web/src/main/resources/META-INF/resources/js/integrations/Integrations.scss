@@ -16,15 +16,8 @@
 }
 
 .seo-studio-integrations {
-	.add-integration-button {
-		align-items: center;
-		display: flex;
-		font-size: 14px;
-		height: 32px;
-		justify-content: center;
-		padding: 0;
-		width: 155px;
-	}
+	background: #f1f2f5;
+	min-height: calc(100vh - var(--control-menu-container-height, 0px));
 
 	.integrations-empty {
 		align-items: center;
@@ -51,6 +44,10 @@
 		font-size: 16px;
 		font-weight: 600;
 		margin-top: 16px;
+	}
+
+	.sheet {
+		padding-bottom: 24px;
 	}
 
 	.sheet-header {

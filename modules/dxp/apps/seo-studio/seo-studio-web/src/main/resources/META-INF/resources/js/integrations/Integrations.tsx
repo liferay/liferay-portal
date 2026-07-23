@@ -4,7 +4,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayDropDown from '@clayui/drop-down';
+import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 import {openToast} from 'frontend-js-components-web';
@@ -170,22 +170,20 @@ export default function Integrations({
 						<div className="autofit-col">
 							<ClayDropDown
 								active={active}
+								alignmentPosition={Align.BottomRight}
 								menuElementAttrs={{
 									className: 'integrations-add-menu',
 								}}
 								onActiveChange={setActive}
 								trigger={
-									<ClayButton
-										className="add-integration-button"
-										displayType="primary"
-									>
-										<span className="inline-item inline-item-before">
-											{Liferay.Language.get(
-												'add-integration'
-											)}
-										</span>
+									<ClayButton displayType="primary">
+										{Liferay.Language.get(
+											'add-integration'
+										)}
 
-										<ClayIcon symbol="caret-bottom" />
+										<span className="inline-item inline-item-after">
+											<ClayIcon symbol="caret-bottom" />
+										</span>
 									</ClayButton>
 								}
 							>
