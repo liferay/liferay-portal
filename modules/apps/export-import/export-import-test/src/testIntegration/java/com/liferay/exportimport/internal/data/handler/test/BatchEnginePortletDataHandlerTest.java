@@ -1746,6 +1746,52 @@ public class BatchEnginePortletDataHandlerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-99059")
+	public void testExportSiteObjectEntriesExceedingExportBatchSize()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName(),
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
+						RandomTestUtil.randomString(), "textField", false)),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		Group group = GroupTestUtil.addGroup();
+
+		int objectEntriesCount = 150;
+
+		for (int i = 0; i < objectEntriesCount; i++) {
+			_objectEntryLocalService.addObjectEntry(
+				group.getGroupId(), TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"textField", RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+		}
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withObjectEntries(
+			objectDefinition
+		).executeExport();
+
+		JSONArray jsonArray = _getExportedObjectEntriesJSONArray(
+			objectDefinition.getExternalReferenceCode(), larFile,
+			group.getGroupId());
+
+		Assert.assertEquals(objectEntriesCount, jsonArray.length());
+	}
+
+	@Test
 	public void testGetDescriptionAndTagWithObjectDefinitionHierarchy()
 		throws Exception {
 
