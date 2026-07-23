@@ -8,6 +8,7 @@ import {gql} from '@apollo/client';
 
 export default gql`
 	query FormsMetrics(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -19,6 +20,7 @@ export default gql`
 		$touchpoint: String
 	) {
 		form(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId

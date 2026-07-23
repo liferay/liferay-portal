@@ -71,9 +71,10 @@ export const AssetAppearsOnCard: React.FC<IAssetAppearsOnCardProps> = ({
 		minHeight={536}
 		reportContainer={ReportContainer.AssetAppearsOnCard}
 	>
-		{({rangeSelectors}) => (
+		{({accountId, rangeSelectors}) => (
 			<AssetAppearsOnStateRenderer
 				accessors={accessors}
+				accountId={accountId}
 				assetType={assetType}
 				emptyStateLink={emptyStateLink}
 				emptyStateText={emptyStateText}
@@ -85,6 +86,7 @@ export const AssetAppearsOnCard: React.FC<IAssetAppearsOnCardProps> = ({
 
 const AssetAppearsOnStateRenderer = ({
 	accessors,
+	accountId,
 	assetType,
 	emptyStateLink,
 	emptyStateText,
@@ -100,6 +102,7 @@ const AssetAppearsOnStateRenderer = ({
 	const {data, error, loading} = useQuery(AssetAppearsOnQuery, {
 		fetchPolicy: 'network-only',
 		variables: {
+			accountId,
 			assetId,
 			assetType:
 				assetType === AssetTypes.ObjectEntry

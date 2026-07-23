@@ -2,6 +2,7 @@ import {gql} from '@apollo/client';
 
 export default gql`
 	query AssetAppearsOnQuery(
+		$accountId: String
 		$assetId: String!
 		$assetType: AssetType!
 		$channelId: String
@@ -14,6 +15,7 @@ export default gql`
 		$title: String
 	) {
 		assetPages(
+			accountId: $accountId
 			assetId: $assetId
 			assetType: $assetType
 			channelId: $channelId
