@@ -172,19 +172,9 @@ export async function performAnalyticsCloudLoginViaApi(
 }
 
 export async function performLogout(page: Page) {
-	await page.goto('/');
+	await page.goto('/c/portal/logout');
 
-	await expect(async () => {
-		await page.getByTitle('User Profile Menu').click({timeout: 1000});
-
-		await page
-			.getByRole('menuitem', {name: 'Sign Out'})
-			.click({timeout: 1000});
-
-		await expect(page.getByRole('button', {name: 'Sign In'})).toBeVisible({
-			timeout: 3000,
-		});
-	}).toPass();
+	await page.waitForURL((url) => !url.pathname.endsWith('/c/portal/logout'));
 }
 
 export async function performUserSwitch(
