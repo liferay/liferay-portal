@@ -45,7 +45,7 @@ public class BuildQueueRebalancer {
 	}
 
 	public void rebalance() {
-		_generateBlackListRebalanceActions();
+		_generateBlacklistRebalanceActions();
 
 		_generateAvailableRebalanceActions();
 
@@ -112,7 +112,7 @@ public class BuildQueueRebalancer {
 		}
 	}
 
-	private void _generateBlackListRebalanceActions() {
+	private void _generateBlacklistRebalanceActions() {
 		for (JenkinsMaster jenkinsMaster :
 				_jenkinsCohort.getBlackListedJenkinsMasters()) {
 

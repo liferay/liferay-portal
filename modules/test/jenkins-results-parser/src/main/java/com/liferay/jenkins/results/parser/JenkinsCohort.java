@@ -60,7 +60,7 @@ public class JenkinsCohort {
 	}
 
 	public List<JenkinsMaster> getBlackListedJenkinsMasters() {
-		List<JenkinsMaster> blackListedJenkinsMasters = new ArrayList<>();
+		List<JenkinsMaster> blacklistedJenkinsMasters = new ArrayList<>();
 
 		try {
 			List<JenkinsMaster> jenkinsMasters =
@@ -71,7 +71,7 @@ public class JenkinsCohort {
 
 			for (JenkinsMaster jenkinsMaster : jenkinsMasters) {
 				if (jenkinsMaster.isBlackListed()) {
-					blackListedJenkinsMasters.add(jenkinsMaster);
+					blacklistedJenkinsMasters.add(jenkinsMaster);
 				}
 			}
 		}
@@ -79,7 +79,7 @@ public class JenkinsCohort {
 			throw new RuntimeException(ioException);
 		}
 
-		return blackListedJenkinsMasters;
+		return blacklistedJenkinsMasters;
 	}
 
 	public int getIdleJenkinsSlaveCount() {
