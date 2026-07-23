@@ -57,6 +57,15 @@ public interface PatcherConfiguration {
 	@Meta.AD(deflt = "", required = false)
 	public String jenkinsURL();
 
+	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
+	public String jiraAPIToken();
+
+	@Meta.AD(deflt = "", required = false)
+	public String jiraAPIURL();
+
+	@Meta.AD(deflt = "", required = false)
+	public String jiraEmailAddress();
+
 	@Meta.AD(deflt = "", required = false)
 	public String jiraURL();
 
