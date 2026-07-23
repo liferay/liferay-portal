@@ -1,6 +1,6 @@
 ---
 
-description: Create and configure site pages, navigation menus, display page templates, page templates, and SEO settings via the Headless Admin Site API. Use when the user asks to create a page, set up navigation, build a display page template for an object, or configure page SEO. Requires feature flag LPD-35443. Maps to "Mastering Liferay Pages and Navigation".
+description: Create and configure site pages, navigation menus, display page templates, page templates, and SEO settings via the Headless Admin Site API. Use when the user asks to create a page, set up navigation, build a display page template for an object, or configure page SEO. Requires feature flag LPD-35443.
 name: manage-pages
 
 ---
@@ -18,7 +18,11 @@ Create and wire site pages, navigation menus, and page templates. The reliable p
 
 ## Prerequisites
 
-Feature flag `LPD-35443` must be on for the public layout API. Verify and enable via `feature-flags` skill.
+Verify and enable via the `feature-flags` skill. Flag defaults are `inferred — verify`.
+
+| Flag | Default | Required For |
+| --- | --- | --- |
+| `LPD-35443` | off | Public layout (page) REST API |
 
 ## Page Types
 
@@ -31,11 +35,13 @@ Consult `rules/page-types.md` for the full table. Common types:
 | Display Page Template | Object/content type landing page | headless-admin-site |
 | Page Template | Reusable page blueprint | headless-admin-site |
 
-## Authoring Pages in the Site Initializer (Primary)
+## Workflow
+
+### Author Pages in the Site Initializer (Primary)
 
 Pages live in the initializer tree and come into being when the initializer is triggered. This avoids the unreliable live page creation API and keeps the page definitions in source control.
 
-### Write `page.json`
+#### Write `page.json`
 
 Create `site-initializer/layouts/<NN-page-name>/page.json`. The `NN` prefix controls creation order. Set the type, name, friendly URL, and any per role permissions (see the `page.json` format in `rules/site-initializer-format.md`):
 
@@ -52,7 +58,7 @@ Create `site-initializer/layouts/<NN-page-name>/page.json`. The `NN` prefix cont
 }
 ```
 
-### Write `page-definition.json`
+#### Write `page-definition.json`
 
 Compose the layout in `site-initializer/layouts/<NN-page-name>/page-definition.json`. Reference each fragment by its `key` and `siteKey` (the fragments must exist under `site-initializer/fragments/group/<collection-key>/fragments/`):
 
@@ -78,15 +84,15 @@ Compose the layout in `site-initializer/layouts/<NN-page-name>/page-definition.j
 
 The `key` is the fragment's directory name under the collection's `fragments/` folder (e.g. a folder `fragments/group/myco/fragments/hero/` → `"key": "hero"`). The `siteKey` token `[$GROUP_KEY$]` resolves to the current site at provision time and tells the importer the fragment lives in this site's collection (omit `siteKey` only for built in fragments, which use a combined key like `"key": "BASIC_COMPONENT-paragraph"`). **Do not** use `collectionExternalReferenceCode`/`fragmentEntryKey` here — the site-initializer importer reads `key`/`siteKey` and silently drops any fragment element it cannot resolve, leaving the page blank.
 
-### Navigation and SEO
+#### Navigation and SEO
 
 Set sitewide navigation and theme in `site-initializer/layout-set/public/metadata.json`. Per page SEO metadata lives alongside the page in `page.json`.
 
-### Provision
+#### Provision
 
 Trigger (or, for `layouts/` changes on an existing site, reprovision) the site — delete and recreate it from the initializer. See `rules/site-initializer-format.md` for the commands. Because the source tree is current and object data is company scoped, runtime entries survive the reprovision.
 
-## Display Object Data on a Page
+### Display Object Data on a Page
 
 To show a list of object entries on a page, use a **server side Collection Display**, not a client side `fetch`. A browser `fetch` to `/o/c/<pluralLabel>` carries the visitor's cookies, so the headless object API evaluates the request as the Guest user and typically returns **0 items** (Guest lacks entry level view permission).
 
@@ -134,7 +140,7 @@ Compose it in `page-definition.json` (see the `Collection` / `CollectionItem` el
 	]
 	```
 
-### Setting Literal Text (Not Mapped)
+#### Setting Literal Text (Not Mapped)
 
 The same `fragmentFields` array also sets a fixed value, using `value_i18n` where a mapped field would use `mapping`. Use it whenever one section fragment appears on several pages — without it every instance renders the fragment's default text, so a shared heading silently reads "Upcoming Events" on the register page:
 
@@ -154,7 +160,7 @@ The same `fragmentFields` array also sets a fixed value, using `value_i18n` wher
 ]
 ```
 
-#### A Literal Override Replaces the Editable's Inner Markup
+##### A Literal Override Replaces the Editable's Inner Markup
 
 The value is written as the editable region's **content**, so any tag inside that region is gone. A `rich-text` region authored as
 
@@ -173,7 +179,7 @@ Two consequences, both quiet:
 
 It also means the page has no `<h2>` where the author intended one. Where document outline matters, put the heading tag *outside* the editable region and let the override fill a `<span>` within it.
 
-### Per Instance Configuration — `fragmentConfig`
+#### Per Instance Configuration — `fragmentConfig`
 
 `fragmentFields` sets *editable regions*. A sibling key, `fragmentConfig`, sets the fragment's **`configuration.json` values** for that one placement, and it is what lets a single fragment serve several pages with different behavior instead of forking it:
 
@@ -209,7 +215,7 @@ Match the class **inside** the tag as above rather than anchoring on `class="…
 
 Assert on the page whose values **differ** from the `configuration.json` defaults. Those defaults are what a placement renders with no override, so a page configured to match them proves nothing about whether `fragmentConfig` was read at all — and defaults are usually chosen to suit the most common placement, which is exactly the page you would reach for first.
 
-### Mapping Limits — Denormalize Into Display Fields
+#### Mapping Limits — Denormalize Into Display Fields
 
 Field mapping renders the raw stored value and cannot transform it. In particular:
 
@@ -228,7 +234,7 @@ An `Aggregation` field is still a computed field, so the "cannot be mapped" limi
 
 The rule is about *what the fetch reads*, not about fetching. Read the line above as: never count the **private** object in the browser. A fetch of an object the visitor legitimately holds `VIEW` on is fine, and is sometimes the only option.
 
-#### When a Collection Element Cannot Do the Job
+##### When a Collection Element Cannot Do the Job
 
 Prefer the server side Collection. But it renders stored values only, so a listing needs fragment JavaScript once it requires any of these — and a realistic "upcoming events with remaining capacity" listing requires all three at once:
 
@@ -248,7 +254,7 @@ Two details that bite:
 - **Use `Liferay.Util.fetch`, not native `fetch`** (`skills/scaffold-client-extension/SKILL.md`).
 - **`Aggregation` serialises as a string** — an event with two registrations returns `"registrationCount": "2"`. `capacity - count` concatenates in JavaScript. Parse first.
 
-#### Read DateTime With the UTC Getters
+##### Read DateTime With the UTC Getters
 
 A `DateTime` field stored `convertToUTC` comes back as `2026-10-14T09:00:00.000Z`. `new Date(...)` parses that correctly, but `getHours()` / `getDate()` / `getDay()` then render it **in the browser's timezone** — so a 09:00 keynote displays as `02:00` to a visitor on US Pacific, and as a different time again to everyone else. Verified on 2026.Q2: the same listing read `09:00–10:30` server side and `02:00–03:30` in the browser.
 
@@ -262,33 +268,9 @@ pad(date.getUTCHours()) + ':' + pad(date.getUTCMinutes())
 
 Use `getUTCDay()`, `getUTCDate()`, and `getUTCMonth()` for the date parts too, and compare `toUTCString().slice(0, 16)` rather than `toDateString()` when testing whether a start and end fall on the same day — the local variant flips near midnight. Only reach for the local getters when the time genuinely should follow the reader (a webinar), and say so in a comment, because the next person will assume it is this bug.
 
-Verifying this is browser work, not `curl` work: `curl` executes no JavaScript, so an empty listing and a working one produce identical HTML. See the Verify section below.
+Verifying this is browser work, not `curl` work: `curl` executes no JavaScript, so an empty listing and a working one produce identical HTML. See "Success Signal" below.
 
-## Verify
-
-Applies to **both** paths — a page authored in the initializer tree and one created over the live API.
-
-```bash
-curl --head --silent --url "http://localhost:${PORT}/web/<site-friendly-url>/<page-url-slug>"
-```
-
-Expect `200 OK`. Listing pages over REST (`GET /sites/<site-erc>/site-pages`) needs flag `LPD-35443`; without it the call returns `400 UnsupportedOperationException`, which says nothing about whether the pages exist.
-
-**`200 OK` is not evidence the page works.** A page whose Collection returned no rows, whose fragment reused another page's placeholder text, or whose mapping silently failed all return 200 with fragments present. Verify content, and verify it as the audience:
-
-1. **Probe without credentials.** `curl` with no `--user` and no cookie jar is exactly a Guest request, and it is the only cheap way to see what a visitor sees. Signed in verification hides every permission gap in this skill — see `rules/guest-access.md`.
-
-	```bash
-	curl --silent --url "http://localhost:${PORT}/web/<site>/<page>" > /tmp/page.html
-	```
-
-1. **Assert real data, not markup presence.** Grep for a value that only exists in the database (an actual event name) *and* confirm the fragment's placeholder strings are absent — placeholders still present means the mapping did not resolve.
-
-1. **Check each page's own text.** Reusing a section fragment across pages carries its default text with it; a heading that reads "Upcoming Events" on the register page is a 200 with wrong content. Set per page values with a literal `fragmentFields` entry rather than relying on the fragment default.
-
-1. **Open it in a browser before declaring success.** Anything driven by JavaScript — a computed value, a populated `select` — is invisible to `curl`, which executes none of it. Confirm signed out too: sign in state changes what client side calls return.
-
-## Fallback: Live API
+### Create Pages via the Live API (Fallback)
 
 Use the Headless Admin Site API (`/o/headless-admin-site/v1.0`) only when reprovisioning is undesirable and the change is small. It is unreliable for page **creation** in particular. When the MCP server is available, prefer MCP tool calls over raw curl.
 
@@ -302,7 +284,7 @@ Everything below has a tree equivalent that is the verified path. Reach for the 
 | Display page template | `layout-page-templates/display-page-templates/<name>/` |
 | SEO settings | No tree equivalent is documented — use the live API below |
 
-### Corrections to Any Live API Example
+#### Corrections to Any Live API Example
 
 Published examples for this module — including older ones in this pack's history — predate the current DTOs. Verify against the spec (`get-openapi` MCP tool, or `GET /o/headless-admin-site/v1.0/openapi.json`) and apply these:
 
@@ -314,7 +296,7 @@ Published examples for this module — including older ones in this pack's histo
 - **Three distinct `type` vocabularies.** Live API: `ContentPage` / `WidgetPage` / `LinkToURLPage` / `EmbeddedPage` / `PageSetPage` / `LinkToPagePage`. Initializer `page.json`: `Content` / `Portlet` / `URL` / `Embedded`. `headless-delivery` uses a separate `pageType`.
 - **Page element operations require flag `LPD-74328`**, and public layout access requires `LPD-35443`.
 
-### Ensure the Site Exists
+#### Ensure the Site Exists
 
 ```bash
 curl \
@@ -326,7 +308,7 @@ curl \
 
 Save the `externalReferenceCode` as `<site-erc>`. A `siteInitializer` CET that declares `siteExternalReferenceCode` provisions its own site on deploy, so creating one by hand is usually a sign the initializer is not wired up.
 
-### Configure SEO Settings
+#### Configure SEO Settings
 
 The one operation with no documented initializer equivalent — no `page.json` in the portal source sets these fields. Patch the page after it exists:
 
@@ -353,7 +335,19 @@ curl \
 
 Because this is applied live, it is **lost on reprovision**. Record it as a known manual step, or confirm whether `page.json` accepts SEO fields on your version and document the result here.
 
-## Live API Patterns and Gotchas
+### Place a Client Extension Widget on a Page
+
+When the user wants to add a deployed Custom Element CET to a page:
+
+1. Confirm the CET is verified active first (see `deploy-and-verify`).
+
+1. Ask the user which page to add it to — do not assume.
+
+1. If the widget is already on the page, ask whether to replace or add a new one.
+
+1. Place the widget via MCP, the Headless Admin Site API, or the Liferay UI depending on what the environment supports. See `mcp-server` for MCP availability per DXP version.
+
+## Patterns and Gotchas
 
 ### Schema Discovery Before Write Operations
 
@@ -429,14 +423,26 @@ Discriminators for fragment placement:
 
 Fragment CRUD lives in its own module, `headless-admin-fragment` — not in `headless-admin-site`, which is why it looks absent when you check the page API's spec. It is verified working on 2026.Q2, but it does **not** propagate edits to fragments already placed on a page. See `skills/scaffold-fragment/SKILL.md` → "The Live Fragment API". For programmatic placement on pages, use the discriminators above.
 
-## Placing a Client Extension Widget on a Page
+## Success Signal
 
-When the user wants to add a deployed Custom Element CET to a page:
+Applies to **both** paths — a page authored in the initializer tree and one created over the live API.
 
-1. Confirm the CET is verified active first (see `deploy-and-verify`).
+```bash
+curl --head --silent --url "http://localhost:${PORT}/web/<site-friendly-url>/<page-url-slug>"
+```
 
-1. Ask the user which page to add it to — do not assume.
+Expect `200 OK`. Listing pages over REST (`GET /sites/<site-erc>/site-pages`) needs flag `LPD-35443`; without it the call returns `400 UnsupportedOperationException`, which says nothing about whether the pages exist.
 
-1. If the widget is already on the page, ask whether to replace or add a new one.
+**`200 OK` is not evidence the page works.** A page whose Collection returned no rows, whose fragment reused another page's placeholder text, or whose mapping silently failed all return 200 with fragments present. Verify content, and verify it as the audience:
 
-1. Place the widget via MCP, the Headless Admin Site API, or the Liferay UI depending on what the environment supports. See `mcp-server` for MCP availability per DXP version.
+1. **Probe without credentials.** `curl` with no `--user` and no cookie jar is exactly a Guest request, and it is the only cheap way to see what a visitor sees. Signed in verification hides every permission gap in this skill — see `rules/guest-access.md`.
+
+	```bash
+	curl --silent --url "http://localhost:${PORT}/web/<site>/<page>" > /tmp/page.html
+	```
+
+1. **Assert real data, not markup presence.** Grep for a value that only exists in the database (an actual event name) *and* confirm the fragment's placeholder strings are absent — placeholders still present means the mapping did not resolve.
+
+1. **Check each page's own text.** Reusing a section fragment across pages carries its default text with it; a heading that reads "Upcoming Events" on the register page is a 200 with wrong content. Set per page values with a literal `fragmentFields` entry rather than relying on the fragment default.
+
+1. **Open it in a browser before declaring success.** Anything driven by JavaScript — a computed value, a populated `select` — is invisible to `curl`, which executes none of it. Confirm signed out too: sign in state changes what client side calls return.

@@ -295,3 +295,7 @@ When a phase fails:
 1. Ask the user whether to retry the failed phase, skip it, or abort.
 
 1. Do not proceed to dependent phases when a prerequisite phase has failed.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. Phase 10 above holds the observable checks (site, pages, published objects, home-page probe); confirm on a live bundle.

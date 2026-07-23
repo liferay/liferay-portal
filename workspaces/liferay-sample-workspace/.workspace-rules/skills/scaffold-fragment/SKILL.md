@@ -406,3 +406,7 @@ For inserting a fragment into a Content Page via the headless API (rather than t
 
 - **Custom fragments must inline `html` and `css` on the `fragmentInstance`** at placement time. The source files generated here ARE the content that gets inlined — keep them selfcontained so the placement does not pull in fragile external dependencies.
 - The fragment's `fragmentEntryKey` IS its external reference code in placement payloads — choose a stable, kebab-case key.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The `### Verify` step above (fragment appears in the editor's Fragments panel, editable regions highlight, no console or import errors) is the observable done-when; confirm on a live bundle.

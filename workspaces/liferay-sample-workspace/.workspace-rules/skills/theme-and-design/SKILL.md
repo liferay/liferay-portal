@@ -19,7 +19,9 @@ When iterating on a site built from a site initializer, theme changes apply **li
 - "Create a dark variant of the site"
 - Called by `build-site` when the user specifies visual design requirements
 
-## Layer 1: themeCSS Client Extension
+## Workflow
+
+### Layer 1: themeCSS Client Extension
 
 A `themeCSS` CET injects custom CSS that overrides Clay Design System variables. This replaces the legacy Liferay theme WAR.
 
@@ -31,7 +33,7 @@ A `themeCSS` CET injects custom CSS that overrides Clay Design System variables.
 >
 > So decide up front where each part of the look lives. Anything that must survive delete-and-redeploy belongs in the style book, the master page, fragment CSS, or layout set settings. Use the themeCSS CET for Clay level overrides that have no style book token (Classic exposes no `headings*` tokens), and say plainly that it needs the manual selection step.
 
-### Scaffold
+#### Scaffold
 
 ```
 client-extensions/<name>/
@@ -103,15 +105,15 @@ $box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 
 Build the SCSS to CSS: `blade gw buildClientExtension` or configure the Sass build in `build.gradle`. Then run `deploy-and-verify`.
 
-### Apply to Site
+#### Apply to Site
 
 After deployment, go to Site Administration → Design → Theme → Configure and select the deployed theme CSS client extension.
 
-## Layer 2: Style Book
+### Layer 2: Style Book
 
 A style book maps Clay token names to site specific values. It overrides the themeCSS tokens without touching the code. Unlike a themeCSS CET, a style book **can** be applied from the initializer tree, which makes it the reproducible half of the theme layer.
 
-### Author It in the Tree
+#### Author It in the Tree
 
 `site-initializer/style-books/<name>/style-book.json` — `defaultStyleBookEntry` is what applies it to the site with no manual step:
 
@@ -135,7 +137,7 @@ A style book maps Clay token names to site specific values. It overrides the the
 }
 ```
 
-### Token Names Must Exist in the Theme — Unknown Ones Are Dropped Silently
+#### Token Names Must Exist in the Theme — Unknown Ones Are Dropped Silently
 
 A token only takes effect if its name is declared in the active theme's `frontend-token-definition.json`. An invented name is discarded with **no error**: the initializer logs `addStyleBookEntries took N ms`, nothing warns, and the page keeps the default value. Do not guess — enumerate first:
 
@@ -166,7 +168,7 @@ Recolouring buttons takes the whole `btnPrimary*` set, not just the background �
 
 **Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Only the *sizes* are tokenised (`h1FontSize`…`h6FontSize`); heading **family** and **weight** have no token.
 
-#### Site Wide CSS With No Token — Put It in a Master Page Fragment
+##### Site Wide CSS With No Token — Put It in a Master Page Fragment
 
 This is the gap the two constraints at the top of this skill create: the value has no style book token, and a themeCSS CET reverts to unselected on every reprovision. The reproducible answer is the **master page's header fragment**.
 
@@ -186,7 +188,7 @@ A fragment's `index.css` is a stylesheet on the page, so its rules can target an
 
 This is a deliberate exception to "Fragment Scoping" in `scaffold-fragment` — that rule exists to stop *accidental* cascade leakage between sibling fragments on one page. Keep the exception narrow (headings and brand chrome), keep it in the master's fragment rather than a content fragment, and comment why, or the next reader will "fix" it back into scope.
 
-#### Tag Selectors Alone Miss Every Overridden Heading
+##### Tag Selectors Alone Miss Every Overridden Heading
 
 A `fragmentFields` literal in `page-definition.json` replaces the editable region's **inner markup**, so a title authored as `<div class="…__title"><h2>…</h2></div>` renders as that `div` with bare text — no `<h2>` survives (see `skills/manage-pages/SKILL.md` → "A Literal Override Replaces the Editable's Inner Markup").
 
@@ -204,7 +206,7 @@ The rule above therefore matches the fragment's *default* heading and skips ever
 
 Verified on 2026.Q2: with tags only, `getComputedStyle` on an overridden hero title returned the body font at weight `700`, while the untouched default beside it rendered correctly — so the page looked *mostly* branded and the failure read as a font-loading problem rather than a selector one.
 
-#### Every Content Fragment Outranks This Rule — Strip Their Heading Weights
+##### Every Content Fragment Outranks This Rule — Strip Their Heading Weights
 
 The selector above is one id plus a **type**, so any fragment styling its own heading through a class beats it. `scaffold-fragment` requires exactly that form (`#wrapper .<wrapper-class>`), so the collision is the default outcome, not an edge case:
 
@@ -269,11 +271,11 @@ Save the returned `id`. Apply the style book to the site via Site Administration
 
 Consult learn.liferay.com for the full style book token reference (search `style book tokens`).
 
-## Layer 3: Master Page
+### Layer 3: Master Page
 
 Master pages define the persistent header and footer that surround all Content Pages assigned to that master.
 
-### Create via API
+#### Create via API
 
 ```bash
 curl \
@@ -359,7 +361,7 @@ A `themeCSS` CET overrides Clay Design System variables and is selected per site
 
 Use `globalCSS` for site agnostic CSS that must always load; use `themeCSS` for brand tokens applied through the theme picker.
 
-## Verify
+## Success Signal
 
 After deploying and assigning:
 

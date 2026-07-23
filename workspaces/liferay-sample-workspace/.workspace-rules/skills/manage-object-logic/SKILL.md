@@ -277,7 +277,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-The executor key for a Client Extension action is `"objectAction"` (not `"groovy"` — that key is only for the inline Groovy executor in §3a/§3b's sibling pattern). See `rules/object-actions-catalog.md`.
+The executor key for a Client Extension action is `"objectAction"` (not `"groovy"` — that key is only for the inline Groovy executor). See `rules/object-actions-catalog.md`.
 
 ### Kaleo Workflow
 
@@ -326,7 +326,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-## Common Gotchas
+## Patterns and Gotchas
 
 ### Object Action Refire Loop
 
@@ -351,3 +351,7 @@ Rules:
 ### Type Safety in Groovy
 
 Never pass interpolated strings (`"${var}"`) to Liferay Service APIs. Groovy `GStringImpl` causes cast exceptions. Always use explicit string concatenation: `"" + var`.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The Verify Object Actions and Test the Trigger steps above (each action `"active": true`; a test entry fires the expected side effect) are the observable done-when; confirm on a live bundle.

@@ -1,13 +1,13 @@
 ---
 
-alwaysApply: false
 description: Beginner friendly mentor walkthrough for creating, deploying, and verifying a first Liferay Client Extension. Use when the user appears new to Liferay or Client Extensions, or when the user explicitly asks for a guided experience. For experienced developers and advanced workflows, use `scaffold-client-extension` instead.
-globs: client-extensions/**
 name: guided-client-extension
 
 ---
 
-# Liferay Client Extension Mentor Protocol (Beginner Friendly)
+# Guided Client Extension
+
+Beginner friendly mentor walkthrough for creating, deploying, and verifying a first Liferay Client Extension.
 
 ## Preflight Check
 

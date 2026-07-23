@@ -179,3 +179,7 @@ curl \
 1. Trigger the deployment pipeline (CI/CD), or push to the UAT server and run `blade gw initBundle`.
 
 1. Bounce Tomcat on the UAT server to pick up the new properties.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. Confirm (per the steps above) that the merged config reaches `bundles/portal-ext.properties`, the batch export task reaches `"executeStatus": "COMPLETED"`, and a re-fetched entry shows the imported fields persisted.

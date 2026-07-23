@@ -148,3 +148,7 @@ Check the microservice logs to confirm Liferay forwarded the calls. If entries a
 | 401 from microservice | `X-Liferay-Token` validation failing; verify the token algorithm |
 | CET not linked to object | `objectDefinitionRestContextPath` must match exactly; redeploy after fix |
 | Empty list from Liferay | Microservice returns nonenvelope JSON; wrap in the Headless page envelope |
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The `### Verify` step above (POST then GET on `/o/c/<pluralLabel>` return external-system records; microservice logs show forwarded CRUD calls) is the observable done-when; confirm on a live bundle.

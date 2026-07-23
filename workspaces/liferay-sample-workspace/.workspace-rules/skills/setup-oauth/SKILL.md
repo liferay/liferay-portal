@@ -40,7 +40,22 @@ Replace `<workspace-id>` with the value of `id` in `client-extension.yaml`.
 
 Run `deploy-and-verify` from the client extension root. Blade copies both entries to Liferay on deploy.
 
-### Verify Registration
+### Token Acquisition (for Manual Testing)
+
+The deployed CET retrieves its token automatically via the Liferay OAuth2 API. For manual testing:
+
+```bash
+curl \
+	--data "grant_type=client_credentials" \
+	--silent \
+	--url "http://localhost:${PORT}/o/oauth2/token" \
+	--user "<clientId>:<clientSecret>" \
+	| jq '{access_token, token_type, expires_in}'
+```
+
+The client ID and secret are displayed once in Control Panel → OAuth 2 Administration when the application is created. Retrieve them from there when needed.
+
+## Success Signal
 
 After deployment, confirm the OAuth application is registered:
 
@@ -63,22 +78,7 @@ lb | grep <workspace-id>
 
 Both the OAuth application bundle and the CET bundle should show `ACTIVE`.
 
-### Token Acquisition (for Manual Testing)
-
-The deployed CET retrieves its token automatically via the Liferay OAuth2 API. For manual testing:
-
-```bash
-curl \
-	--data "grant_type=client_credentials" \
-	--silent \
-	--url "http://localhost:${PORT}/o/oauth2/token" \
-	--user "<clientId>:<clientSecret>" \
-	| jq '{access_token, token_type, expires_in}'
-```
-
-The client ID and secret are displayed once in Control Panel → OAuth 2 Administration when the application is created. Retrieve them from there when needed.
-
-### Troubleshoot
+## Common Errors and Fixes
 
 | Symptom | Check |
 | --- | --- |

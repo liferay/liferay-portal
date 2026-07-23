@@ -5,24 +5,31 @@ name: workspace-init
 
 ---
 
-# Workspace Init and Preflight Checks
+# Workspace Init
 
 Stand up a working Liferay Workspace from zero, or diagnose a workspace that looks uninitialized. Covers `blade init`, bundle download, license setup, BasicAuth verifier, server start, and first login bootstrap.
 
-> **When to apply this skill:** the user asks for setup help, the server appears down or unreachable, or the workspace looks uninitialized (missing `bundles/`, missing `gradle.properties`). Do not run through all steps for a returning user whose server is already running.
+## When to Invoke
+
+- The user asks to set up, initialize, or scaffold a workspace, or asks for setup help.
+- The server appears down or unreachable.
+- The workspace looks uninitialized — missing `bundles/`, or missing `gradle.properties`.
+- Do not run through all steps for a returning user whose server is already running.
 
 > **Note:** These rules apply to local workspace initialization and must not be used to configure higher environments (UAT/Prod).
 
-## Version and Tooling Check
+## Workflow
+
+### Version and Tooling Check
 
 - **Check version**: read `liferay.workspace.product` in `gradle.properties`.
 - **Verify tooling**: check that `blade` (`blade --version`) and Java (`javac -version`) are installed. If missing, provide installation steps.
 - **DXP License**: if `liferay.workspace.product` contains `dxp`, a license file is required. Liferay identifies license files by XML content, not filename — check `bundles/deploy/` for any `.xml` file whose root element is `<license>` or `<licenses>`. If none is found, stop and ask the user to place their license file in `bundles/deploy/` before continuing. For Docker, apply the same check to the directory mounted to the container's deploy path. Community Edition and free tier products do not require a license — skip this check for those.
 - **License is consumed on boot**: Liferay registers the key into the database and deletes the file, so an empty `bundles/deploy/` on an already booted instance is the normal licensed state, not a missing license. Confirm activation from the log instead — `grep -iE 'license validation passed|License registered' bundles/tomcat*/logs/catalina.out`. Because the license now lives in the database, **clearing `bundles/data` also discards it**; re-copy a key into `bundles/deploy/` as part of any such reset.
 
-## Environment Readiness and State Sync
+### Environment Readiness and State Sync
 
-### Configure MCP Before Starting the Server
+#### Configure MCP Before Starting the Server
 
 If the Liferay MCP server is supported in your DXP version (see `skills/mcp-server/SKILL.md`), configure it **now**, before starting Liferay. CLI agents load MCP settings at startup only — configuring it after the server is already running means the agent will need to restart, costing another full server boot. Do it in this order:
 
@@ -36,7 +43,7 @@ If the Liferay MCP server is supported in your DXP version (see `skills/mcp-serv
 
 Skip this block if MCP is not supported in your DXP version.
 
-### Tomcat
+#### Tomcat
 
 - **Initialize**: run `blade server init` if `bundles/` does not exist.
 - **BasicAuth verifier (dev only — required for headless REST and MCP)**: add to `configs/local/portal-ext.properties` BEFORE first boot:
@@ -66,7 +73,7 @@ Skip this block if MCP is not supported in your DXP version.
 
 - **Login**: use `test@liferay.com` / `test` (or credentials found in `portal-ext.properties`).
 
-### Docker
+#### Docker
 
 - **Locate compose file**: search the workspace for `docker-compose.yaml` or `docker-compose.yml` — its location varies by project.
 - **Database**: verify the compose file defines a database service (MySQL). Docker has no embedded database; both the database and Liferay containers must be running.
@@ -77,12 +84,12 @@ Skip this block if MCP is not supported in your DXP version.
 - **Start**: `docker compose up` (foreground) or `docker compose up --detach` (background). Run from the directory containing the compose file.
 - **Login**: use credentials defined in `liferay.env` (default: `test@liferay.com` / `test`).
 
-## Server Verification
+### Server Verification
 
 - **Tomcat**: watch `bundles/tomcat*/logs/catalina.out` for `Server startup in [X] ms`. Then verify `http://localhost:${PORT}` is reachable.
 - **Docker**: poll the health check endpoint until it returns `200`: `curl --fail http://localhost:${PORT}/c/portal/status`. Then verify `http://localhost:${PORT}` is reachable. (Port may differ if the compose file maps a different host port.)
 
-## First Login Bootstrap (Mandatory Before API/MCP Calls)
+### First Login Bootstrap (Mandatory Before API/MCP Calls)
 
 On a fresh Liferay instance, the default admin `test@liferay.com` is created with `passwordReset=true` and `agreedToTermsOfUse=false` in the database. Until both flags are cleared, every authenticated API call (REST, MCP `call-http-endpoint`) returns 403 — including for the Omni Admin user.
 
@@ -92,7 +99,7 @@ Otherwise, prompt the user to log into `http://localhost:${PORT}` as `test@lifer
 
 Do not automate the browser login flow — Liferay's login form structure varies across versions and automation is brittle.
 
-## MCP Connection Check (When MCP Is Configured)
+### MCP Connection Check (When MCP Is Configured)
 
 With the server running, verify the MCP connection using your client's built in connection test (see `skills/mcp-server/SKILL.md`). If it returns 401/403, stop and ask the user for updated credentials. If MCP tools are not visible, ensure the CLI session was restarted after configuration.
 
@@ -104,7 +111,7 @@ Only fall back to direct REST APIs if MCP has been configured correctly and is s
 
 If the user prompts for setup assistance, guide them through these steps one by one. Do not skip ahead. Explain what you are checking (e.g., "I am verifying that your Liferay server is up") and wait for processes to complete before writing code.
 
-## Verification
+## Success Signal
 
 - `gradle.properties` and `settings.gradle` present
 - `bundles/tomcat*/` present

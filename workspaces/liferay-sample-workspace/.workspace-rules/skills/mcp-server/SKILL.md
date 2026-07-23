@@ -5,11 +5,17 @@ name: mcp-server
 
 ---
 
-# Liferay MCP Server
+# MCP Server
 
 **MCP (Model Context Protocol)** is the AI agent integration standard that lets AI tools call Liferay APIs directly without manual REST auth setup.
 
 > Available on recent DXP quarterly releases (gated by feature flag `LPD-63311`, marked `beta`). Verify against your DXP version before relying on it.
+
+## When to Invoke
+
+- "Enable MCP", "set up the MCP server"
+- An MCP tool call returns errors
+- Before content, page, or object operations where MCP is preferred over raw REST
 
 ## Setup
 
@@ -42,7 +48,7 @@ When MCP is available, always attempt operations via MCP before reaching for hea
 
 **Fallback policy**: only fall back to REST APIs if MCP has been configured correctly and is still returning errors. "Not yet configured" is not a valid fallback condition — configure it first. When falling back, document why before pivoting to REST — this prevents silently sliding into REST auth debugging.
 
-## Quirks and Workarounds
+## Patterns and Gotchas
 
 ### DXP 2026.Q1+: Streamable HTTP Transport Required
 
@@ -106,3 +112,7 @@ The MCP connection handshake succeeds without `BasicAuthHeaderAuthVerifier` conf
 ### First Login 403 Trap (Fresh Liferay Instances)
 
 If MCP connects and tools appear but every `call-http-endpoint` returns 403, the default admin has not completed first login bootstrap. On a fresh instance, `headless-delivery` endpoints return JSON 404 while admin APIs return XML 403 — both are auth failures, not routing or SAP issues. Complete first login bootstrap per `skills/workspace-init/SKILL.md` → "First Login Bootstrap" before retrying.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The Connection Check above (the MCP server appears in the client's tool list and a `call-http-endpoint` call returns a non-403 response) is the observable done-when; confirm on a live bundle.

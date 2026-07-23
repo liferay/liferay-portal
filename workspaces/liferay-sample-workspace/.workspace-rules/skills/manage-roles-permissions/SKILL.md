@@ -225,3 +225,7 @@ When creating user accounts through the Headless Admin User API, explicitly clea
 ```
 
 Include both fields on the create payload where supported. **Caveat:** `agreedToTermsOfUse` and `passwordReset` are not part of the standard headless `UserAccount` DTO on current DXP — verify against the OpenAPI spec (`get-openapi` MCP tool, or `GET /o/headless-admin-user/v1.0/openapi.json`) before relying on them. The reliable way to avoid the first login 403 trap is the preboot bootstrap (`terms.of.use.required=false`, `passwords.default.policy.change.required=false`) covered in `workspace-init`.
+
+## Success Signal
+
+TODO / inferred — verify against a running bundle. The Verify Roles and Permissions step above (role listed; granted `actionIds` present; a user holding only that role is allowed the granted actions and denied the rest) is the observable done-when; confirm on a live bundle.
