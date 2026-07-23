@@ -485,37 +485,4 @@ html#{$cadmin-selector} .cadmin {
 		height: auto;
 		min-height: 0;
 	}
-
-	.ai-assistant {
-		--ai-assistant-focus-box-shadow: #{unquote(
-				'0 0 10px hsl(from #{$cadmin-purple} h s l / 0.15)'
-			)};
-
-		[data-ai-state='focused'] {
-			.form-control {
-				background-color: $cadmin-input-bg;
-				border-color: $cadmin-purple-d2;
-				box-shadow: var(--ai-assistant-focus-box-shadow);
-				color: $cadmin-input-color;
-			}
-		}
-
-		[data-ai-state='working'] {
-			.form-control {
-				background-color: $cadmin-purple-l5;
-				border-color: $cadmin-purple-l1;
-				box-shadow: var(--ai-assistant-focus-box-shadow);
-				color: $cadmin-purple-d2;
-			}
-		}
-
-		[data-ai-state='result'],
-		[data-ai-state='result-readonly'] {
-			.form-control {
-				background-color: $cadmin-input-bg;
-				border-color: $cadmin-purple-l1;
-				color: $cadmin-purple;
-			}
-		}
-	}
 }

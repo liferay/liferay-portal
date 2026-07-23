@@ -4,11 +4,12 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayForm from '@clayui/form';
+import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
+import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {autoSize as AutoSize} from 'frontend-js-web';
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
 import AIAssistantFooterDisclaimer from './components/AIAssistantFooterDisclaimer';
 import AIAssistantMessageBalloon from './components/AIAssistantMessageBalloon';
@@ -37,7 +38,7 @@ interface AIAssistantChatBodyProps {
 }
 
 const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
-	aiState,
+	aiState: controlledAIState,
 	chat,
 	quickActions,
 	showGreeting,
@@ -60,7 +61,20 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 		sourceLanguageIdRef,
 	} = chat;
 
+	const [focused, setFocused] = useState<boolean>(false);
+
 	const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
+
+	let aiState = controlledAIState;
+
+	if (!aiState) {
+		if (isGenerating) {
+			aiState = 'working';
+		}
+		else if (focused) {
+			aiState = 'focused';
+		}
+	}
 
 	useEffect(() => {
 		if (textAreaRef.current) {
@@ -324,39 +338,105 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 				className="ai-assistant-chat__form"
 				onSubmit={(event) => onSubmit(event)}
 			>
-				<div
-					className="ai-assistant-chat__input-row"
+				<ClayInput.Group
+					className="input-group-ai"
 					data-ai-state={aiState}
 				>
-					<textarea
-						className="ai-assistant-chat__input form-control"
-						id="assistant-user-input"
-						onChange={(event) => setMessage(event.target.value)}
-						onKeyDown={(
-							event: React.KeyboardEvent<HTMLTextAreaElement>
-						) => {
-							handleTextAreaKeyDown(event);
-						}}
-						placeholder="Ask me anything..."
-						readOnly={isGenerating || !!aiState}
-						ref={textAreaRef}
-						rows={1}
-						value={message}
-					/>
+					<ClayInput.GroupItem>
+						<div className="form-control">
+							<ClayLayout.ContentRow verticalAlign="center">
+								{aiState === 'working' && (
+									<ClayLayout.ContentCol>
+										<ClayIcon
+											spritemap={Liferay.Icons.spritemap}
+											symbol="stars"
+										/>
+									</ClayLayout.ContentCol>
+								)}
 
-					<ClayButton
-						disabled={!message.trim()}
-						displayType="primary"
-						type="submit"
-					>
-						<ClayIcon
-							height={12}
-							spritemap={Liferay.Icons.spritemap}
-							symbol={isGenerating ? 'square' : 'order-arrow-up'}
-							width={12}
-						/>
-					</ClayButton>
-				</div>
+								<ClayLayout.ContentCol expand>
+									<textarea
+										className="form-control-inset"
+										id="assistant-user-input"
+										onBlur={() => setFocused(false)}
+										onChange={(event) =>
+											setMessage(event.target.value)
+										}
+										onFocus={() => setFocused(true)}
+										onKeyDown={(
+											event: React.KeyboardEvent<HTMLTextAreaElement>
+										) => {
+											handleTextAreaKeyDown(event);
+										}}
+										placeholder={Liferay.Language.get(
+											'ask-me-anything'
+										)}
+										readOnly={
+											isGenerating ||
+											aiState === 'result-readonly' ||
+											aiState === 'working'
+										}
+										ref={textAreaRef}
+										rows={1}
+										value={
+											aiState === 'working'
+												? Liferay.Language.get(
+														'working-on-it'
+													)
+												: message
+										}
+									/>
+								</ClayLayout.ContentCol>
+							</ClayLayout.ContentRow>
+						</div>
+					</ClayInput.GroupItem>
+
+					{aiState === 'result' && (
+						<>
+							<ClayInput.GroupItem shrink>
+								<ClayButton
+									disabled={!message.trim()}
+									displayType="primary"
+									monospaced
+									size="sm"
+									type="submit"
+								>
+									<ClayIcon
+										spritemap={Liferay.Icons.spritemap}
+										symbol={
+											isGenerating ? 'square' : 'check'
+										}
+									/>
+								</ClayButton>
+							</ClayInput.GroupItem>
+
+							<ClayInput.GroupItem shrink>
+								<ClayButton
+									displayType="ai"
+									monospaced
+									outline
+									rounded
+									size="sm"
+								>
+									<ClayIcon
+										spritemap={Liferay.Icons.spritemap}
+										symbol="reload"
+									/>
+								</ClayButton>
+							</ClayInput.GroupItem>
+						</>
+					)}
+				</ClayInput.Group>
+
+				{(aiState === 'result' || aiState === 'result-readonly') && (
+					<ClayForm.FeedbackGroup>
+						<ClayForm.Text>
+							<ClayForm.FeedbackIndicator symbol="stars" />
+
+							{Liferay.Language.get('suggestion')}
+						</ClayForm.Text>
+					</ClayForm.FeedbackGroup>
+				)}
 			</ClayForm>
 
 			<AIAssistantFooterDisclaimer />
