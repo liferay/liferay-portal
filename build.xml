@@ -377,15 +377,7 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 
 		<deploy-properties />
 
-		<if>
-			<equals arg1="${build.profile}" arg2="cms-standalone" />
-			<then>
-				<echo file="${app.server.classes.portal.dir}/portal-bundle.properties">include-and-override=portal-cms-standalone.properties</echo>
-			</then>
-			<else>
-				<delete failonerror="false" file="${app.server.classes.portal.dir}/portal-bundle.properties" />
-			</else>
-		</if>
+		<delete failonerror="false" file="${app.server.classes.portal.dir}/portal-bundle.properties" />
 
 		<antcall target="deploy-additional-jars" />
 
