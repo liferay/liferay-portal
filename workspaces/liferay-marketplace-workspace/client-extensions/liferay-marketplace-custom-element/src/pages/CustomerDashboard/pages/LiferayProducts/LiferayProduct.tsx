@@ -30,9 +30,12 @@ const LiferayProduct = () => {
 	}
 
 	if (
-		[OrderTypes.CMP, OrderTypes.DSR, OrderTypes.DXP].includes(
-			orderTypeExternalReferenceCode
-		)
+		[
+			OrderTypes.CMP,
+			OrderTypes.CMP_BETA,
+			OrderTypes.DSR,
+			OrderTypes.DXP,
+		].includes(orderTypeExternalReferenceCode)
 	) {
 		return <ActivationKeysDetails />;
 	}

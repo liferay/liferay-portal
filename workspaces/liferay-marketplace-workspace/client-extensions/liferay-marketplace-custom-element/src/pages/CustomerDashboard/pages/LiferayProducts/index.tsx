@@ -27,6 +27,7 @@ const searchParams = new URLSearchParams({
 		OrderTypes.ADDONS,
 		OrderTypes.AI_HUB,
 		OrderTypes.CMP,
+		OrderTypes.CMP_BETA,
 		OrderTypes.DSR,
 		OrderTypes.DXP,
 	]),
@@ -102,9 +103,17 @@ const LiferayProductsListView = () => {
 							},
 							{
 								hidden: (row: PlacedOrder) =>
+									row.orderTypeExternalReferenceCode !==
+									OrderTypes.CMP,
+								name: i18n.translate('create-license-key'),
+								onClick: (placedOrder: PlacedOrder) =>
+									navigate(getViewDetailsPath(placedOrder)),
+							},
+							{
+								hidden: (row: PlacedOrder) =>
 									![
 										OrderTypes.AI_HUB,
-										OrderTypes.CMP,
+										OrderTypes.CMP_BETA,
 										OrderTypes.DSR,
 									].includes(
 										row.orderTypeExternalReferenceCode as OrderTypes

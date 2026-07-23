@@ -70,6 +70,7 @@ const Licenses = ({actions, readOnly = false}: LicensesProps) => {
 	const keyType = [
 		OrderTypes.CLIENT_EXTENSION,
 		OrderTypes.CMP,
+		OrderTypes.CMP_BETA,
 		OrderTypes.COMPOSITE_APP,
 		OrderTypes.DSR,
 		OrderTypes.DXP_APP,

@@ -235,25 +235,32 @@ export default function ActivationKeys() {
 	const orderTypeExternalReferenceCode =
 		outletContext?.placedOrder.orderTypeExternalReferenceCode;
 
-	const ActivationKeysComponent =
-		orderTypeExternalReferenceCode === OrderTypes.DXP
-			? ActivationKeysDXP
-			: () => (
-					<Licenses
-						actions={(row, licenseActions) => (
-							<ClayButton
-								displayType="secondary"
-								onClick={() =>
-									licenseActions.onDownloadLicenseKey(row)
-								}
-								size="sm"
-							>
-								{i18n.translate('download')}
-							</ClayButton>
-						)}
-						readOnly
-					/>
-				);
+	const getActivationKeysComponent = () => {
+		if (orderTypeExternalReferenceCode === OrderTypes.DXP) {
+			return ActivationKeysDXP;
+		}
+
+		if (orderTypeExternalReferenceCode === OrderTypes.CMP) {
+			return () => <Licenses />;
+		}
+
+		return () => (
+			<Licenses
+				actions={(row, licenseActions) => (
+					<ClayButton
+						displayType="secondary"
+						onClick={() => licenseActions.onDownloadLicenseKey(row)}
+						size="sm"
+					>
+						{i18n.translate('download')}
+					</ClayButton>
+				)}
+				readOnly
+			/>
+		);
+	};
+
+	const ActivationKeysComponent = getActivationKeysComponent();
 
 	return (
 		<div className="mt-5">

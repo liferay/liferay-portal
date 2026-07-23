@@ -9,6 +9,7 @@ import ClayIcon from '@clayui/icon';
 import {NavbarProps} from '../../../../components/Navbar';
 import {useMarketplaceContext} from '../../../../context/MarketplaceContext';
 import {
+	CMP_ORDER_TYPES,
 	OrderCustomFields,
 	OrderTypes,
 	OrderWorkflowStatusCode,
@@ -32,7 +33,9 @@ const getTabs = (data: ProductAndOrderPayload): NavbarProps['routes'] => {
 		return [];
 	}
 
-	const isCMP = orderTypeExternalReferenceCode === OrderTypes.CMP;
+	const isCMP = CMP_ORDER_TYPES.includes(
+		orderTypeExternalReferenceCode as OrderTypes
+	);
 	const isDSR = orderTypeExternalReferenceCode === OrderTypes.DSR;
 	const isDXP = orderTypeExternalReferenceCode === OrderTypes.DXP;
 
@@ -93,6 +96,7 @@ const LiferayProductsOutlet = () => {
 						OrderTypes.ADDONS,
 						OrderTypes.AI_HUB,
 						OrderTypes.CMP,
+						OrderTypes.CMP_BETA,
 						OrderTypes.DSR,
 						OrderTypes.DXP,
 					].includes(orderType)
@@ -132,7 +136,7 @@ const LiferayProductsOutlet = () => {
 									</ClayButton>
 								)}
 
-							{[OrderTypes.CMP, OrderTypes.DXP].includes(
+							{[OrderTypes.CMP_BETA, OrderTypes.DXP].includes(
 								orderType
 							) && (
 								<ClayButton
@@ -148,6 +152,23 @@ const LiferayProductsOutlet = () => {
 									{i18n.translate('new-activation-key')}
 								</ClayButton>
 							)}
+
+							{orderType === OrderTypes.CMP &&
+								orderStatus ===
+									OrderWorkflowStatusCode.COMPLETED && (
+									<ClayButton
+										displayType="primary"
+										onClick={() => {
+											Liferay.Util.navigate(
+												`${getSiteURL()}/customer-dashboard#/order/${props?.placedOrder?.id}/create-license`
+											);
+										}}
+										outline
+										size="regular"
+									>
+										{i18n.translate('create-license-key')}
+									</ClayButton>
+								)}
 
 							{groupId && (
 								<ClayButton

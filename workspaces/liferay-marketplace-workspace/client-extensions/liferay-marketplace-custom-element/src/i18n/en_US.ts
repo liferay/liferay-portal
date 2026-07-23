@@ -528,6 +528,8 @@ export default {
 	'no-orders-yet': 'No Orders Yet',
 	'no-projects-available-for-x': 'No projects available for {0}',
 	'no-results-found': 'No Results Found',
+	'no-subscriptions-are-available-for-this-order':
+		'No subscriptions are available for this order. Contact your Liferay representative for assistance.',
 	'no-trials-yet': 'No Trials Yet',
 	'no-x': 'No {0}',
 	'not-installed': 'Not Installed',
