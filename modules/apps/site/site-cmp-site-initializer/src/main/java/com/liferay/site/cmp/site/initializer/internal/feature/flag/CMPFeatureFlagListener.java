@@ -45,10 +45,8 @@ public class CMPFeatureFlagListener implements FeatureFlagListener {
 
 			_groupLocalService.checkSystemGroups(companyId);
 
-			com.liferay.site.cms.site.initializer.util.SiteInitializerUtil.
-				initialize(companyId, _cmsSiteInitializer);
-
-			SiteInitializerUtil.initialize(companyId, _cmpSiteInitializer);
+			SiteInitializerUtil.initialize(
+				_cmpSiteInitializer, _cmsSiteInitializer, companyId);
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);

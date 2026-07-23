@@ -5,12 +5,8 @@
 
 package com.liferay.site.cmp.site.initializer.internal.instance.lifecycle;
 
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.instance.lifecycle.InitialRequestPortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
-import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.license.util.App;
-import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.site.cmp.site.initializer.internal.util.SiteInitializerUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
@@ -34,18 +30,8 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListener
 
 	@Override
 	protected void doPortalInstanceRegistered(long companyId) throws Exception {
-		if (!LicenseManagerUtil.isAppEnabled(App.CMP)) {
-			return;
-		}
-
-		try (SafeCloseable safeCloseable =
-				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
-
-			com.liferay.site.cms.site.initializer.util.SiteInitializerUtil.
-				initialize(companyId, _cmsSiteInitializer);
-
-			SiteInitializerUtil.initialize(companyId, _cmpSiteInitializer);
-		}
+		SiteInitializerUtil.initialize(
+			_cmpSiteInitializer, _cmsSiteInitializer, companyId);
 	}
 
 	@Reference(

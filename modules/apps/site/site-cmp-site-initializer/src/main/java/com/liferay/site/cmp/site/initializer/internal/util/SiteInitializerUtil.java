@@ -11,6 +11,8 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -100,6 +102,23 @@ public class SiteInitializerUtil {
 
 			ServiceContextThreadLocal.popServiceContext();
 		}
+	}
+
+	public static void initialize(
+			SiteInitializer cmpSiteInitializer,
+			SiteInitializer cmsSiteInitializer, long companyId)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-58677") ||
+			!LicenseManagerUtil.isAppEnabled(App.CMP)) {
+
+			return;
+		}
+
+		com.liferay.site.cms.site.initializer.util.SiteInitializerUtil.
+			initialize(companyId, cmsSiteInitializer);
+
+		initialize(companyId, cmpSiteInitializer);
 	}
 
 	private static User _getUser(long companyId) throws PortalException {
