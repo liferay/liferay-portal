@@ -64,10 +64,9 @@ function TitleCell({itemData, value}: {itemData: any; value: string}) {
 					/>
 				</ClaySticker>
 			) : (
-				<ClayIcon
-					className="mr-2 text-secondary"
-					symbol="document-text"
-				/>
+				<ClaySticker className="flex-shrink-0 mr-2 text-secondary">
+					<ClayIcon symbol="document-text" />
+				</ClaySticker>
 			)}
 
 			<Text size={3} weight="semi-bold">
