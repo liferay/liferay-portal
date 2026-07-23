@@ -12,6 +12,7 @@ import com.liferay.fragment.helper.FragmentEntryLinkHelper;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.renderer.DefaultFragmentRendererContext;
 import com.liferay.fragment.renderer.FragmentRendererController;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
@@ -19,6 +20,8 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Locale;
@@ -90,15 +93,29 @@ public class FragmentEntryLinkCTDisplayRender
 
 		FragmentEntryLink fragmentEntryLink = displayContext.getModel();
 
+		Layout layout = _layoutLocalService.fetchLayout(
+			fragmentEntryLink.getPlid());
+
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
+
 		DefaultFragmentRendererContext defaultFragmentRendererContext =
 			new DefaultFragmentRendererContext(fragmentEntryLink);
 
 		defaultFragmentRendererContext.setLocale(displayContext.getLocale());
 
-		return _fragmentRendererController.render(
-			defaultFragmentRendererContext,
-			displayContext.getHttpServletRequest(),
-			displayContext.getHttpServletResponse());
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					layout)) {
+
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			return _fragmentRendererController.render(
+				defaultFragmentRendererContext, serviceContext.getRequest(),
+				displayContext.getHttpServletResponse());
+		}
 	}
 
 	@Override
@@ -144,5 +161,8 @@ public class FragmentEntryLinkCTDisplayRender
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 }
