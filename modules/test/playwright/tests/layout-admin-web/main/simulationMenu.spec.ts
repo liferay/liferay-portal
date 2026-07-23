@@ -14,6 +14,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -257,11 +258,19 @@ test.describe('Page content', () => {
 			);
 
 			await clickAndExpectToBeVisible({
-				autoClick: true,
 				target: selectCollectionIframe.getByRole('button', {
 					name: assetListEntryName,
 				}),
+				timeout: 2000,
 				trigger: configurationIFrame.getByLabel('Select Collection'),
+			});
+
+			await clickAndExpectToBeHidden({
+				target: configurationIFrame.locator('.modal-dialog'),
+				timeout: 2000,
+				trigger: selectCollectionIframe.getByRole('button', {
+					name: assetListEntryName,
+				}),
 			});
 
 			await expect(
@@ -280,7 +289,7 @@ test.describe('Page content', () => {
 
 			await expect(
 				page.getByText('Showing content for the segment "Anyone".')
-			).toBeVisible({timeout: 5000});
+			).toBeVisible();
 
 			const simulationPreviewIframe = page.frameLocator(
 				'iframe[title="Simulation Preview"]'
@@ -312,7 +321,7 @@ test.describe('Page content', () => {
 					page.getByText(
 						`Showing content for the segment "${segmentsEntryName}".`
 					)
-				).toBeVisible({timeout: 5000});
+				).toBeVisible();
 
 				await expect(
 					simulationPreviewIframe.getByRole('link', {
@@ -356,7 +365,7 @@ test.describe('Page content', () => {
 
 			await expect(
 				page.getByText('Showing content for the segment "Anyone".')
-			).toBeVisible({timeout: 5000});
+			).toBeVisible();
 
 			await expect(
 				page.getByText(
