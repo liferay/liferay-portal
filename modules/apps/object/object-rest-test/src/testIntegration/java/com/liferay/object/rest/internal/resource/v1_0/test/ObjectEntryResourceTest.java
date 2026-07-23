@@ -10167,7 +10167,7 @@ public class ObjectEntryResourceTest {
 						Http.Method.POST);
 
 					Assert.assertEquals(
-						"BAD_REQUEST", jsonObject.getString("status"));
+						"FORBIDDEN", jsonObject.getString("status"));
 				}
 			);
 		}
