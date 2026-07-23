@@ -13,6 +13,8 @@ String digitalSignatureTitle = (String)request.getAttribute(DigitalSignatureWebK
 if (digitalSignatureTitle != null) {
 	renderResponse.setTitle(digitalSignatureTitle);
 }
+
+DigitalSignatureConfiguration digitalSignatureConfiguration = DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId());
 %>
 
 <liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" var="baseResourceURL" />
@@ -25,6 +27,8 @@ if (digitalSignatureTitle != null) {
 				"allowedFileExtensions", StringUtil.merge(DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS)
 			).put(
 				"baseResourceURL", String.valueOf(baseResourceURL)
+			).put(
+				"enableEmbeddedView", digitalSignatureConfiguration.enableEmbeddedView()
 			).put(
 				"fileEntries", request.getAttribute(DigitalSignatureWebKeys.DIGITAL_SIGNATURE_FILE_ENTRIES)
 			).build()

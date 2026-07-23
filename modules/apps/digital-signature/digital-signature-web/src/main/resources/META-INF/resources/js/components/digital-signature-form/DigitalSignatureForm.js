@@ -33,8 +33,12 @@ const defaultRecipient = {
 };
 
 const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
-	const {allowedFileExtensions, baseResourceURL, portletNamespace} =
-		useContext(AppContext);
+	const {
+		allowedFileExtensions,
+		baseResourceURL,
+		enableEmbeddedView,
+		portletNamespace,
+	} = useContext(AppContext);
 	const urlParams = new URLSearchParams(window.location.href);
 	const backURL = urlParams.get(`${portletNamespace}backURL`);
 
@@ -180,6 +184,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 					<ClayForm onSubmit={handleSubmit}>
 						<DigitalSignatureFormBase
 							defaultRecipient={defaultRecipient}
+							enableEmbeddedView={enableEmbeddedView}
 							errors={errors}
 							handleChange={handleChange}
 							setFieldValue={setFieldValue}
