@@ -8,6 +8,7 @@ import {withDevicesCard} from 'shared/hoc/DevicesCard';
 
 const TouchpointDevicesQuery = gql`
 	query TouchpointDevicesQuery(
+		$accountId: String
 		$channelId: String
 		$devices: String
 		$experienceId: String
@@ -19,6 +20,7 @@ const TouchpointDevicesQuery = gql`
 		$touchpoint: String
 	) {
 		page(
+			accountId: $accountId
 			channelId: $channelId
 			canonicalUrl: $touchpoint
 			country: $location

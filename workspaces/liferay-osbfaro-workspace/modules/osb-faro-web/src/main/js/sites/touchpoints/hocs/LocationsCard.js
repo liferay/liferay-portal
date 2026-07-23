@@ -10,6 +10,7 @@ import {withLocationsCard} from 'cerebro-shared/hocs/LocationsCard';
 
 const TouchpointLocationsQuery = gql`
 	query TouchpointLocationsQuery(
+		$accountId: String
 		$channelId: String
 		$devices: String
 		$experienceId: String
@@ -21,6 +22,7 @@ const TouchpointLocationsQuery = gql`
 		$touchpoint: String
 	) {
 		page(
+			accountId: $accountId
 			channelId: $channelId
 			canonicalUrl: $touchpoint
 			country: $location
