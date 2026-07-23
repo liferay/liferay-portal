@@ -11,10 +11,13 @@ import com.liferay.osb.faro.engine.client.model.AccountLifecycleMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
+import com.liferay.osb.faro.web.internal.exception.FaroException;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.AccountDisplay;
+import com.liferay.osb.faro.web.internal.param.FaroParam;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.RoleConstants;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.annotation.security.RolesAllowed;
 
@@ -46,14 +49,18 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public AccountLifecycle createAccountLifecycle(
 			@PathParam("groupId") long groupId,
-			@FormParam("description") String description,
-			@FormParam("name") String name,
-			@FormParam("segmentId") String segmentId)
+			@FormParam("accountLifecycle") FaroParam<AccountLifecycle>
+				accountLifecycleFaroParam,
+			@QueryParam("channelId") String channelId)
 		throws Exception {
+
+		if (Validator.isNull(channelId)) {
+			throw new FaroException("Invalid channel ID: " + channelId);
+		}
 
 		return contactsEngineClient.addAccountLifecycle(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
-			description, name, segmentId);
+			accountLifecycleFaroParam.getValue(), channelId);
 	}
 
 	@GET
