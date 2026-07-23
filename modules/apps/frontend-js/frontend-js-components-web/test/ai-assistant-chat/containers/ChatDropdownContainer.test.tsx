@@ -18,11 +18,13 @@ import {ChatDropdownContainer} from '../../../src/main/resources/META-INF/resour
 import ChatPanel from '../../../src/main/resources/META-INF/resources/ai-assistant-chat';
 
 function ControlledChatDropdownContainer({
+	initialOpen = true,
 	onOpenChange = () => {},
 }: {
+	initialOpen?: boolean;
 	onOpenChange?: (open: boolean) => void;
 }) {
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(initialOpen);
 
 	return (
 		<ChatDropdownContainer
@@ -42,9 +44,15 @@ function ControlledChatDropdownContainer({
 	);
 }
 
-function renderContainer(onOpenChange?: (open: boolean) => void) {
+function renderContainer(
+	onOpenChange?: (open: boolean) => void,
+	initialOpen?: boolean
+) {
 	return render(
-		<ControlledChatDropdownContainer onOpenChange={onOpenChange} />
+		<ControlledChatDropdownContainer
+			initialOpen={initialOpen}
+			onOpenChange={onOpenChange}
+		/>
 	);
 }
 
@@ -99,6 +107,35 @@ describe('ChatDropdownContainer', () => {
 		const dialog = screen.getByRole('dialog');
 
 		expect(trigger.getAttribute('aria-controls')).toBe(dialog.id);
+	});
+
+	it('does not focus the trigger on the first render when initially closed', () => {
+		renderContainer(undefined, false);
+
+		const trigger = screen.getByRole('button', {
+			hidden: true,
+			name: 'Open Chat',
+		});
+
+		expect(trigger).not.toHaveFocus();
+	});
+
+	it('does not refocus the trigger on a rerender that keeps the dropdown open', async () => {
+		const {rerender} = renderContainer();
+
+		const closeButton = screen.getByRole('button', {name: 'close'});
+
+		await waitFor(() => expect(closeButton).toHaveFocus());
+
+		rerender(<ControlledChatDropdownContainer />);
+
+		const trigger = screen.getByRole('button', {
+			hidden: true,
+			name: 'Open Chat',
+		});
+
+		expect(trigger).not.toHaveFocus();
+		expect(closeButton).toHaveFocus();
 	});
 
 	it('moves focus into the menu and does not expose a menu role', async () => {
@@ -165,6 +202,21 @@ describe('ChatDropdownContainer', () => {
 		await userEvent.click(closeButton);
 
 		await waitFor(() => expect(trigger).toHaveFocus());
+	});
+
+	it('fires onOpenChange(false) when the open trigger is clicked', async () => {
+		const onOpenChange = jest.fn();
+
+		renderContainer(onOpenChange);
+
+		const trigger = screen.getByRole('button', {
+			hidden: true,
+			name: 'Open Chat',
+		});
+
+		await userEvent.click(trigger);
+
+		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});
 
 	it('has no accessibility violations', async () => {
