@@ -181,6 +181,8 @@ public class DefaultBuildUpdater extends BaseBuildUpdater {
 
 	@Override
 	protected boolean isBuildRunning() {
+		Build build = getBuild();
+
 		try {
 			JSONObject buildJSONObject = _getBuildJSONObject();
 
@@ -188,29 +190,35 @@ public class DefaultBuildUpdater extends BaseBuildUpdater {
 				return false;
 			}
 
-			Build build = getBuild();
-
 			build.setBuildURL(buildJSONObject.getString("url"));
-
-			build.saveBuildURLInBuildDatabase();
 
 			Build.Invocation buildInvocation = build.getCurrentInvocation();
 
 			buildInvocation.setQueueId(buildJSONObject.getLong("queueId"));
-
-			return true;
 		}
 		catch (Exception exception) {
 			exception.printStackTrace();
 
-			Build build = getBuild();
-
 			System.out.println(
 				JenkinsResultsParserUtil.combine(
 					"[", build.getBuildName(), "] Unable to get build item"));
+
+			return false;
 		}
 
-		return false;
+		try {
+			build.saveBuildURLInBuildDatabase();
+		}
+		catch (Exception exception) {
+			exception.printStackTrace();
+
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"[", build.getBuildName(),
+					"] Unable to save the running build URL"));
+		}
+
+		return true;
 	}
 
 	private JSONObject _getBuildJSONObject() {
