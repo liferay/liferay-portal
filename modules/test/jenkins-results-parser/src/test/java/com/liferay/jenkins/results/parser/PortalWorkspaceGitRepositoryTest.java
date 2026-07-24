@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser;
 import java.io.File;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -191,6 +192,36 @@ public class PortalWorkspaceGitRepositoryTest
 		);
 	}
 
+	@Test
+	public void testSetUpAdditionalCaches() throws Exception {
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty("binaries.cache.enabled", "false");
+		buildProperties.setProperty("binaries.cache.enabled[job*]", "true");
+		buildProperties.setProperty("binaries.cache.enabled[job-1]", "false");
+		buildProperties.setProperty("binaries.cache.enabled[suite*]", "true");
+		buildProperties.setProperty("binaries.cache.enabled[suite-1]", "false");
+		buildProperties.setProperty("binaries.cache.enabled[one][two]", "true");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		_testSetUpAdditionalCaches(false, null, null);
+
+		_testSetUpAdditionalCaches(true, "suite", null);
+		_testSetUpAdditionalCaches(true, "suite-0", null);
+		_testSetUpAdditionalCaches(false, "suite-1", null);
+		_testSetUpAdditionalCaches(false, "wrong", null);
+
+		_testSetUpAdditionalCaches(true, null, "job");
+		_testSetUpAdditionalCaches(true, null, "job-0");
+		_testSetUpAdditionalCaches(false, null, "job-1");
+		_testSetUpAdditionalCaches(false, null, "wrong");
+
+		_testSetUpAdditionalCaches(false, "one", null);
+		_testSetUpAdditionalCaches(false, null, "two");
+		_testSetUpAdditionalCaches(true, "one", "two");
+	}
+
 	private boolean _isCommand(
 		Shell.ExecutionRequest executionRequest, String... substrings) {
 
@@ -307,6 +338,48 @@ public class PortalWorkspaceGitRepositoryTest
 			bundleURL,
 			portalTestProperties.getProperty(
 				"test.released.test.portal.bundle.zip.url"));
+	}
+
+	private void _testSetUpAdditionalCaches(
+			boolean binariesCacheEnabled, String ciTestSuite, String jobName)
+		throws Exception {
+
+		Map<String, String> environmentValues = new HashMap<>();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(ciTestSuite)) {
+			environmentValues.put("CI_TEST_SUITE", ciTestSuite);
+		}
+
+		environmentValues.put("MASTER_NETWORK_NAME", "aws-network");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(jobName)) {
+			environmentValues.put("JOB_NAME", jobName);
+		}
+
+		mockEnvironment(environmentValues);
+
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_newPortalWorkspaceGitRepository();
+
+		portalWorkspaceGitRepository.setUpAdditionalCaches();
+
+		if (binariesCacheEnabled) {
+			Assert.assertTrue(
+				portalWorkspaceGitRepository.isBinariesCacheEnabled());
+
+			Mockito.verify(
+				portalWorkspaceGitRepository, Mockito.times(1)
+			).setUpBinariesCache();
+
+			return;
+		}
+
+		Assert.assertFalse(
+			portalWorkspaceGitRepository.isBinariesCacheEnabled());
+
+		Mockito.verify(
+			portalWorkspaceGitRepository, Mockito.never()
+		).setUpBinariesCache();
 	}
 
 }
