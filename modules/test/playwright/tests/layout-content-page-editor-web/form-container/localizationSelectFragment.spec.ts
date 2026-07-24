@@ -45,14 +45,15 @@ test(
 		structureBuilderPage,
 	}) => {
 
-		// Create a Space with English and Italian only
+		// Create a Space with English and French only
 
 		const spaceName = getRandomString();
 
 		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 			name: spaceName,
 			settings: {
-				availableLanguageIds: ['en-US', 'it-IT'],
+				availableLanguageIds: ['en_US', 'fr_FR'],
+				defaultLanguageId: 'en_US',
 				useCustomLanguages: true,
 			},
 			type: 'Space',
@@ -76,7 +77,7 @@ test(
 
 		await contentsPage.createContent(structureLabel, spaceName);
 
-		// Check the language picker only shows English and Italian
+		// Check the language picker only shows English and French
 
 		await localizationSelectPage.trigger.click();
 
@@ -85,7 +86,7 @@ test(
 		).toBeVisible();
 
 		await expect(
-			page.locator('.dropdown-item', {hasText: 'it-IT'})
+			page.locator('.dropdown-item', {hasText: 'fr-FR'})
 		).toBeVisible();
 
 		await expect(
