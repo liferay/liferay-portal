@@ -51,7 +51,7 @@ public class MarketplaceTopicSubscriber {
 
 	@PostConstruct
 	public void postConstruct() throws Exception {
-		GoogleCredentials googleCredentials;
+		GoogleCredentials googleCredentials = null;
 
 		try {
 			googleCredentials = ServiceAccountCredentials.fromStream(
