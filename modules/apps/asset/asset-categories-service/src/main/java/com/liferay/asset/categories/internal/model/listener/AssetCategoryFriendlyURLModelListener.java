@@ -11,7 +11,6 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -30,12 +29,6 @@ public class AssetCategoryFriendlyURLModelListener
 	@Override
 	public void onAfterCreate(AssetCategory assetCategory)
 		throws ModelListenerException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				assetCategory.getCompanyId(), "LPD-70396")) {
-
-			return;
-		}
 
 		try {
 			if (ExportImportThreadLocal.isImportInProcess() ||
@@ -65,12 +58,6 @@ public class AssetCategoryFriendlyURLModelListener
 	@Override
 	public void onBeforeRemove(AssetCategory assetCategory)
 		throws ModelListenerException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				assetCategory.getCompanyId(), "LPD-70396")) {
-
-			return;
-		}
 
 		_friendlyURLEntryLocalService.deleteFriendlyURLEntry(
 			assetCategory.getGroupId(),

@@ -14,7 +14,6 @@ import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -302,30 +301,17 @@ public class AssetCategoriesImporter {
 
 		Map<String, String> urlTitleMap = new HashMap<>();
 
-		boolean featureFlagEnabled = FeatureFlagManagerUtil.isEnabled(
-			assetCategory.getCompanyId(), "LPD-70396");
-
 		Map<Locale, String> titleMap = assetCategory.getTitleMap();
 
 		for (Map.Entry<Locale, String> titleEntry : titleMap.entrySet()) {
 			Group companyGroup = _groupLocalService.getCompanyGroup(
 				assetCategory.getCompanyId());
 
-			String urlTitle = null;
-
-			if (featureFlagEnabled) {
-				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
-					companyGroup.getGroupId(),
-					_portal.getClassNameId(AssetCategory.class),
-					_getParentClassPK(assetCategory),
-					assetCategory.getCategoryId(), titleEntry.getValue(), null);
-			}
-			else {
-				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
-					companyGroup.getGroupId(),
-					_portal.getClassNameId(AssetCategory.class),
-					assetCategory.getCategoryId(), titleEntry.getValue(), null);
-			}
+			String urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
+				companyGroup.getGroupId(),
+				_portal.getClassNameId(AssetCategory.class),
+				_getParentClassPK(assetCategory), assetCategory.getCategoryId(),
+				titleEntry.getValue(), null);
 
 			urlTitleMap.put(
 				LocaleUtil.toLanguageId(titleEntry.getKey()), urlTitle);
