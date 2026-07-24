@@ -7,6 +7,8 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
+import java.util.Properties;
+
 import org.json.JSONObject;
 
 import org.junit.Assert;
@@ -29,6 +31,14 @@ public class WorkspaceGitRepositoryTest
 		Assert.assertFalse(_isFullDotGitDirArchiveRequired("liferay-portal"));
 		Assert.assertFalse(
 			_isFullDotGitDirArchiveRequired("liferay-portal-7.0.x"));
+	}
+
+	@Test
+	public void testPrepareGitWorkingDirectory() throws Exception {
+		_testPrepareGitWorkingDirectory(true, true);
+		_testPrepareGitWorkingDirectory(true, false);
+		_testPrepareGitWorkingDirectory(false, true);
+		_testPrepareGitWorkingDirectory(false, false);
 	}
 
 	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)
@@ -98,6 +108,80 @@ public class WorkspaceGitRepositoryTest
 		).getGitWorkingDirectory();
 
 		return defaultWorkspaceGitRepository;
+	}
+
+	private void _testPrepareGitWorkingDirectory(
+			boolean gitArchiveEnabled, boolean snapshot)
+		throws Exception {
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"git.archive.enabled", String.valueOf(gitArchiveEnabled));
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).downloadGitArchives();
+
+		Mockito.doReturn(
+			snapshot
+		).when(
+			defaultWorkspaceGitRepository
+		).isSnapshot();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).initializeGitWorkingDirectory();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).promoteGitArchive();
+
+		defaultWorkspaceGitRepository.prepareGitWorkingDirectory();
+
+		if (!gitArchiveEnabled || !snapshot) {
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.never()
+			).downloadGitArchives();
+		}
+		else {
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.times(1)
+			).downloadGitArchives();
+		}
+
+		if (gitArchiveEnabled && snapshot) {
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.never()
+			).initializeGitWorkingDirectory();
+		}
+		else {
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.times(1)
+			).initializeGitWorkingDirectory();
+		}
+
+		if (!gitArchiveEnabled) {
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.never()
+			).promoteGitArchive();
+		}
+		else {
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.times(1)
+			).promoteGitArchive();
+		}
 	}
 
 }
