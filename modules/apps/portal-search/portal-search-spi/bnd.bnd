@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search SPI
 Bundle-SymbolicName: com.liferay.portal.search.spi
-Bundle-Version: 16.0.3
+Bundle-Version: 17.0.0
 Export-Package:\
 	com.liferay.portal.search.spi.index.configuration.contributor,\
 	com.liferay.portal.search.spi.index.configuration.contributor.helper,\
