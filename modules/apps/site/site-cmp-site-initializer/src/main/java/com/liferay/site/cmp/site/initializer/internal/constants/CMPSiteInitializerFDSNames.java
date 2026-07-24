@@ -16,6 +16,18 @@ public class CMPSiteInitializerFDSNames {
 	public static final String CMP_PROJECT =
 		CMPSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-project";
 
+	public static final String CMP_PROJECT_MEMBERS_SUMMARY =
+		CMPSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-project-members-summary";
+
+	public static final String CMP_PROJECT_MEMBERS_USER_GROUPS_SUMMARY =
+		CMPSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-project-members-user-groups-summary";
+
+	public static final String CMP_PROJECT_MEMBERS_USERS_SUMMARY =
+		CMPSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-project-members-users-summary";
+
 	public static final String CMP_PROJECT_TASKS =
 		CMPSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-project-tasks";
 
