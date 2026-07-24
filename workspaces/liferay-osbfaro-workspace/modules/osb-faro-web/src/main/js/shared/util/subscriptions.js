@@ -242,6 +242,10 @@ export function getPlanAddOns(currentPlan) {
 }
 
 export function getPlanLabel(name) {
+	if (!name) {
+		return '';
+	}
+
 	switch (name) {
 		case PLANS.basic?.name:
 			return Liferay.Language.get('basic-plan');
@@ -320,6 +324,10 @@ export function getPropIcon(name) {
 }
 
 export function getPropLabel(name) {
+	if (!name) {
+		return '';
+	}
+
 	switch (name) {
 		case INDIVIDUALS:
 		case `${INDIVIDUALS}Limit`:
