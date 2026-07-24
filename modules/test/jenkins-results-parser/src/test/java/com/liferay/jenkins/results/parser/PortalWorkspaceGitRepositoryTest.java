@@ -8,8 +8,11 @@ package com.liferay.jenkins.results.parser;
 import java.io.File;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 
+import org.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -19,6 +22,47 @@ import org.mockito.Mockito;
  */
 public class PortalWorkspaceGitRepositoryTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testGetPortalTestProperties() throws Exception {
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty("portal.bundle.tomcat[version.0]", "url.0");
+		buildProperties.setProperty(
+			"portal.latest.bundle.version", "version.0");
+
+		buildProperties.setProperty("portal.bundle.tomcat[version.1]", "url.1");
+		buildProperties.setProperty(
+			"portal.latest.bundle.version[master]", "version.1");
+
+		buildProperties.setProperty("portal.bundle.tomcat[version.2]", "url.2");
+		buildProperties.setProperty(
+			"portal.latest.bundle.version[7.0.x]", "version.2");
+
+		buildProperties.setProperty(
+			"portal.bundle.tomcat[version.env]", "url.env");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		Map<String, String> environmentValues = Collections.emptyMap();
+
+		_testGetPortalTestProperties(
+			"url.0", "version.0", environmentValues, null);
+		_testGetPortalTestProperties(
+			"url.1", "version.1", environmentValues, "master");
+		_testGetPortalTestProperties(
+			"url.2", "version.2", environmentValues, "7.0.x");
+
+		environmentValues = Collections.singletonMap(
+			"PORTAL_LATEST_BUNDLE_VERSION", "version.env");
+
+		_testGetPortalTestProperties(
+			"url.env", "version.env", environmentValues, null);
+		_testGetPortalTestProperties(
+			"url.env", "version.env", environmentValues, "master");
+		_testGetPortalTestProperties(
+			"url.env", "version.env", environmentValues, "7.0.x");
+	}
 
 	@Test
 	public void testSetUp() throws Exception {
@@ -163,6 +207,106 @@ public class PortalWorkspaceGitRepositoryTest
 		}
 
 		return true;
+	}
+
+	private PortalWorkspaceGitRepository _newPortalWorkspaceGitRepository()
+		throws Exception {
+
+		File workingDirectory = File.createTempFile("portal-workspace-", null);
+
+		workingDirectory.delete();
+
+		workingDirectory.mkdir();
+
+		File gitDirectory = new File(workingDirectory, ".git");
+
+		gitDirectory.mkdir();
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
+			"base_branch_head_sha", "1234567890123456789012345678901234567890"
+		).put(
+			"base_branch_sha", "1234567890123456789012345678901234567890"
+		).put(
+			"base_branch_username", "liferay"
+		).put(
+			"directory",
+			JenkinsResultsParserUtil.getCanonicalPath(workingDirectory)
+		).put(
+			"directory_name", "liferay-portal"
+		).put(
+			"git_hub_url", "https://github.com/liferay/liferay-portal"
+		).put(
+			"name", "liferay-portal"
+		).put(
+			"sender_branch_head_sha", "0987654321098765432109876543210987654321"
+		).put(
+			"sender_branch_name", "master"
+		).put(
+			"sender_branch_sha", "0987654321098765432109876543210987654321"
+		).put(
+			"sender_branch_username", "test"
+		).put(
+			"upstream_branch_name", "master"
+		);
+
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository = Mockito.spy(
+			new PortalWorkspaceGitRepository(jsonObject));
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			gitWorkingDirectory
+		).when(
+			portalWorkspaceGitRepository
+		).getGitWorkingDirectory();
+
+		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
+
+		Mockito.doReturn(
+			"0987654321098765432109876543210987654321"
+		).when(
+			localGitBranch
+		).getSHA();
+
+		Mockito.doReturn(
+			localGitBranch
+		).when(
+			portalWorkspaceGitRepository
+		).getLocalGitBranch();
+
+		return portalWorkspaceGitRepository;
+	}
+
+	private void _testGetPortalTestProperties(
+			String bundleURL, String bundleVersion,
+			Map<String, String> environmentValues, String upstreamBranchName)
+		throws Exception {
+
+		mockEnvironment(environmentValues);
+
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_newPortalWorkspaceGitRepository();
+
+		Mockito.doReturn(
+			upstreamBranchName
+		).when(
+			portalWorkspaceGitRepository
+		).getUpstreamBranchName();
+
+		Properties portalTestProperties =
+			portalWorkspaceGitRepository.getPortalTestProperties();
+
+		Assert.assertEquals(
+			bundleVersion,
+			portalTestProperties.getProperty(
+				"test.released.release.bundle.version"));
+		Assert.assertEquals(
+			bundleURL,
+			portalTestProperties.getProperty(
+				"test.released.test.portal.bundle.zip.url"));
 	}
 
 }
