@@ -746,15 +746,16 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	private void _testGetDesignLibraryFragmentSetsPageAsDesignLibraryOwner()
 		throws Exception {
 
+		Group group = _depotEntry.getGroup();
+
 		FragmentSet fragmentSet = _addDesignLibraryFragmentSet(
-			randomFragmentSet(), _depotEntry.getGroup());
+			randomFragmentSet(), group);
 
 		Page<FragmentSet> page =
 			_designLibraryOwnerFragmentSetResource.
 				getDesignLibraryFragmentSetsPage(
-					_depotEntry.getGroup(
-					).getExternalReferenceCode(),
-					null, Pagination.of(1, 10));
+					group.getExternalReferenceCode(), null,
+					Pagination.of(1, 10));
 
 		assertContains(fragmentSet, (List<FragmentSet>)page.getItems());
 	}
@@ -762,15 +763,15 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 	private void _testGetDesignLibraryFragmentSetsPageWithoutPermissions()
 		throws Exception {
 
-		_addDesignLibraryFragmentSet(
-			randomFragmentSet(), _depotEntry.getGroup());
+		Group group = _depotEntry.getGroup();
+
+		_addDesignLibraryFragmentSet(randomFragmentSet(), group);
 
 		Page<FragmentSet> page =
 			_userWithoutPermissionsFragmentSetResource.
 				getDesignLibraryFragmentSetsPage(
-					_depotEntry.getGroup(
-					).getExternalReferenceCode(),
-					null, Pagination.of(1, 10));
+					group.getExternalReferenceCode(), null,
+					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
 	}
