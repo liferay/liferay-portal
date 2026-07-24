@@ -3,7 +3,14 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {act, fireEvent, render, screen} from '@testing-library/react';
+import {
+	act,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -13,6 +20,9 @@ import {
 	createEventSource,
 	postChatByExternalReferenceCodeMessage,
 } from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api';
+import {CATEGORIZE_EVENT} from '../../../src/main/resources/META-INF/resources/js/Categorization/events';
+import {classifyCategorizationIntent} from '../../../src/main/resources/META-INF/resources/js/Categorization/services/classifyCategorizationIntent';
+import {ECategorizationAgent} from '../../../src/main/resources/META-INF/resources/js/Categorization/types';
 import {postAIIssueReport} from '../../../src/main/resources/META-INF/resources/js/ReportFeedback/api';
 
 jest.mock(
@@ -26,9 +36,24 @@ jest.mock(
 );
 
 jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/AIAssistantChat/components/CategorizationMessageBalloon',
+	() => ({
+		__esModule: true,
+		default: () => 'categorization-balloon',
+	})
+);
+
+jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/Categorization/services/classifyCategorizationIntent'
+);
+
+jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/ReportFeedback/api'
 );
 
+const mockClassify = classifyCategorizationIntent as jest.MockedFunction<
+	typeof classifyCategorizationIntent
+>;
 const mockCreateEventSource = createEventSource as jest.MockedFunction<
 	typeof createEventSource
 >;
@@ -61,9 +86,11 @@ function createFakeEventSource() {
 	};
 }
 
-async function renderAndOpen() {
+async function renderAndOpen(
+	props: Partial<React.ComponentProps<typeof AIAssistantChat>> = {}
+) {
 	await act(async () => {
-		render(<AIAssistantChat {...defaultProps} />);
+		render(<AIAssistantChat {...defaultProps} {...props} />);
 	});
 
 	await act(async () => {
@@ -73,9 +100,33 @@ async function renderAndOpen() {
 	});
 }
 
+function getLiferayHandler(eventName: string) {
+	return (Liferay.on as jest.Mock).mock.calls
+		.filter(([name]) => name === eventName)
+		.at(-1)?.[1];
+}
+
+function fireCategorizeEvent(payload: unknown) {
+	getLiferayHandler(CATEGORIZE_EVENT)?.(payload);
+}
+
+function getSidebar() {
+	return screen.getByRole('complementary', {name: 'ai-assistant'});
+}
+
 describe('AIAssistantChat', () => {
 	beforeEach(() => {
-		window.HTMLElement.prototype.scrollTo = jest.fn();
+
+		// Clay's SidePanel derives its mobile behavior (focus trap that
+		// aria-hides the rest of the page) from the body width, which is
+		// always 0 in jsdom; report a desktop width instead.
+
+		Object.defineProperty(document.body, 'clientWidth', {
+			configurable: true,
+			value: 1440,
+		});
+
+		window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
 		mockCreateEventSource.mockReset();
 		mockCreateEventSource.mockResolvedValue(null);
@@ -93,20 +144,82 @@ describe('AIAssistantChat', () => {
 		};
 	});
 
-	it('shows the chat input immediately on open', async () => {
+	it('accumulates several image events into a single balloon', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
 		await renderAndOpen();
 
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({
+					data: 'AAA',
+					mimeType: 'image/png',
+					type: 'image',
+				})
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({
+					data: 'BBB',
+					mimeType: 'image/png',
+					type: 'image',
+				})
+			);
+		});
+
+		const images = screen.getAllByAltText('generated-image');
+
+		expect(images).toHaveLength(2);
+		expect(images[0]).toHaveAttribute('src', 'data:image/png;base64,AAA');
+		expect(images[1]).toHaveAttribute('src', 'data:image/png;base64,BBB');
+
 		expect(
-			screen.getByPlaceholderText('Ask me anything...')
-		).toBeInTheDocument();
+			screen.getAllByRole('checkbox', {name: 'generated-image'})
+		).toHaveLength(2);
 	});
 
-	it('shows the footer disclaimer', async () => {
-		await renderAndOpen();
+	it('closes the sidebar on Escape', async () => {
+		await renderAndOpen({displayMode: 'sidebar'});
+
+		const sidebar = getSidebar();
+
+		await waitFor(() => expect(sidebar).not.toHaveAttribute('inert'));
+
+		await act(async () => {
+			fireEvent.keyDown(document, {key: 'Escape'});
+		});
+
+		await waitFor(() => expect(sidebar).toHaveAttribute('inert'));
 
 		expect(
-			screen.getByText('ai-generated-responses-may-be-inaccurate')
-		).toBeInTheDocument();
+			screen.getByRole('button', {name: 'ai-assistant'})
+		).toHaveAttribute('aria-expanded', 'false');
+	});
+
+	it('defaults the mime type to image/png when the image event omits it', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen();
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({data: 'CCC', type: 'image'})
+			);
+		});
+
+		expect(screen.getByAltText('generated-image')).toHaveAttribute(
+			'src',
+			'data:image/png;base64,CCC'
+		);
 	});
 
 	it('exposes the feedback row on a successful message and wires the codes', async () => {
@@ -145,6 +258,117 @@ describe('AIAssistantChat', () => {
 		});
 	});
 
+	describe('free-form categorization', () => {
+		beforeEach(() => {
+			mockClassify.mockReset();
+			mockPostChat.mockClear();
+			(Liferay.fire as jest.Mock).mockClear();
+		});
+
+		it('does not classify when the feature is disabled', async () => {
+			const fakeEventSource = createFakeEventSource();
+
+			mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+			await act(async () => {
+				render(
+					<AIAssistantChat
+						{...defaultProps}
+						initialMessage="tag this article"
+					/>
+				);
+			});
+
+			await act(async () => {
+				fakeEventSource.emit('Subscribe', 'ref-1');
+			});
+
+			expect(mockClassify).not.toHaveBeenCalled();
+			expect(mockPostChat).toHaveBeenCalled();
+		});
+
+		it('fires a single request event for a categorization message', async () => {
+			const fakeEventSource = createFakeEventSource();
+
+			mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+			mockClassify.mockResolvedValue({
+				actions: [{agent: 'tag', count: 3, targets: []}],
+				passthrough: false,
+			});
+
+			await act(async () => {
+				render(
+					<AIAssistantChat
+						{...defaultProps}
+						enableFreeFormCategorization
+						initialMessage="tag this article"
+					/>
+				);
+			});
+
+			await act(async () => {
+				fakeEventSource.emit('Subscribe', 'ref-1');
+			});
+
+			expect(mockClassify).toHaveBeenCalledWith('tag this article');
+			expect(Liferay.fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:requestCategorize',
+				{actions: [{agent: 'tag', count: 3, targets: []}]}
+			);
+			expect(mockPostChat).not.toHaveBeenCalled();
+		});
+
+		it('posts a passthrough message to the chat', async () => {
+			const fakeEventSource = createFakeEventSource();
+
+			mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+			mockClassify.mockResolvedValue({actions: [], passthrough: true});
+
+			await act(async () => {
+				render(
+					<AIAssistantChat
+						{...defaultProps}
+						enableFreeFormCategorization
+						initialMessage="what can you do?"
+					/>
+				);
+			});
+
+			await act(async () => {
+				fakeEventSource.emit('Subscribe', 'ref-1');
+			});
+
+			expect(mockClassify).toHaveBeenCalledWith('what can you do?');
+			expect(mockPostChat).toHaveBeenCalled();
+			expect(Liferay.fire).not.toHaveBeenCalledWith(
+				'cms:aiAssistant:requestCategorize',
+				expect.anything()
+			);
+		});
+
+		it('renders only the balloon when the categorization event suppresses the user message', async () => {
+			await act(async () => {
+				render(<AIAssistantChat {...defaultProps} />);
+			});
+
+			await act(async () => {
+				getLiferayHandler(CATEGORIZE_EVENT)?.({
+					agent: 'L_GENERATE_TAGS',
+					cmsGroupId: 1,
+					content: 'x',
+					scopeId: 1,
+					suppressUserMessage: true,
+					targets: ['kayaking'],
+				});
+			});
+
+			expect(
+				screen.getByText('categorization-balloon')
+			).toBeInTheDocument();
+			expect(screen.queryByText('generate-tags')).not.toBeInTheDocument();
+		});
+	});
+
 	it('hides the feedback row on an error message', async () => {
 		const fakeEventSource = createFakeEventSource();
 
@@ -168,6 +392,36 @@ describe('AIAssistantChat', () => {
 				name: 'send-negative-feedback-or-report-legal-concern',
 			})
 		).not.toBeInTheDocument();
+	});
+
+	it('keeps the live connection across shell switches', async () => {
+		await renderAndOpen();
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'maximize'}));
+		});
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'minimize'}));
+		});
+
+		expect(mockCreateEventSource).toHaveBeenCalledTimes(1);
+	});
+
+	it('keeps the message draft when switching shells', async () => {
+		await renderAndOpen();
+
+		fireEvent.change(screen.getByPlaceholderText('Ask me anything...'), {
+			target: {value: 'Draft in progress'},
+		});
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'maximize'}));
+		});
+
+		expect(
+			within(getSidebar()).getByPlaceholderText('Ask me anything...')
+		).toHaveValue('Draft in progress');
 	});
 
 	it('merges the static context and the getContext snapshot when sending', async () => {
@@ -212,6 +466,159 @@ describe('AIAssistantChat', () => {
 		);
 	});
 
+	it('moves the conversation into the sidebar when maximized', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen();
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'Chat Message Sent',
+				JSON.stringify({data: 'Here is your answer'})
+			);
+		});
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'maximize'}));
+		});
+
+		expect(
+			within(getSidebar()).getByText('Here is your answer')
+		).toBeInTheDocument();
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'minimize'}));
+		});
+
+		expect(
+			screen.getByRole('button', {name: 'maximize'})
+		).toBeInTheDocument();
+		expect(screen.getByText('Here is your answer')).toBeInTheDocument();
+	});
+
+	it('offers no maximize toggle in the dropdown display mode', async () => {
+		await renderAndOpen({displayMode: 'dropdown'});
+
+		expect(
+			screen.getByPlaceholderText('Ask me anything...')
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: 'maximize'})
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('complementary', {name: 'ai-assistant'})
+		).not.toBeInTheDocument();
+	});
+
+	it('offers the maximize toggle in the default display mode', async () => {
+		await renderAndOpen();
+
+		expect(
+			screen.getByRole('button', {name: 'maximize'})
+		).toBeInTheDocument();
+	});
+
+	it('opens the dropdown for an open event that opts out of expanding', async () => {
+		await act(async () => {
+			render(<AIAssistantChat {...defaultProps} />);
+		});
+
+		await act(async () => {
+			getLiferayHandler('openAIAssistantChat')?.({
+				expanded: false,
+				message: 'Generate content',
+			});
+		});
+
+		expect(
+			screen.getByRole('button', {name: 'maximize'})
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: 'minimize'})
+		).not.toBeInTheDocument();
+	});
+
+	it('opens the dropdown when a categorize event fires in the default display mode', async () => {
+		await act(async () => {
+			render(<AIAssistantChat {...defaultProps} />);
+		});
+
+		await act(async () => {
+			fireCategorizeEvent({
+				agent: ECategorizationAgent.GENERATE_TAGS,
+				content: 'Body',
+			});
+		});
+
+		expect(screen.getByText('generate-tags')).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {name: 'maximize'})
+		).toBeInTheDocument();
+	});
+
+	it('opens the sidebar by default for an open event', async () => {
+		await act(async () => {
+			render(<AIAssistantChat {...defaultProps} />);
+		});
+
+		await act(async () => {
+			getLiferayHandler('openAIAssistantChat')?.({
+				message: 'Translate Content',
+			});
+		});
+
+		const sidebar = getSidebar();
+
+		await waitFor(() => expect(sidebar).not.toHaveAttribute('inert'));
+
+		expect(
+			within(sidebar).getByPlaceholderText('Ask me anything...')
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: 'maximize'})
+		).not.toBeInTheDocument();
+	});
+
+	it('opens the sidebar from the trigger in the sidebar display mode', async () => {
+		await renderAndOpen({displayMode: 'sidebar'});
+
+		expect(
+			screen.getByRole('button', {name: 'ai-assistant'})
+		).toHaveAttribute('aria-expanded', 'true');
+
+		const sidebar = getSidebar();
+
+		await waitFor(() => expect(sidebar).not.toHaveAttribute('inert'));
+
+		expect(
+			within(sidebar).getByPlaceholderText('Ask me anything...')
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: 'minimize'})
+		).not.toBeInTheDocument();
+	});
+
+	it('opens the sidebar when a categorize event fires in the sidebar display mode', async () => {
+		await act(async () => {
+			render(<AIAssistantChat {...defaultProps} displayMode="sidebar" />);
+		});
+
+		await act(async () => {
+			fireCategorizeEvent({
+				agent: ECategorizationAgent.GENERATE_TAGS,
+				content: 'Body',
+			});
+		});
+
+		const sidebar = getSidebar();
+
+		await waitFor(() => expect(sidebar).not.toHaveAttribute('inert'));
+
+		expect(within(sidebar).getByText('generate-tags')).toBeInTheDocument();
+	});
+
 	it('renders a generated image from an image event', async () => {
 		const fakeEventSource = createFakeEventSource();
 
@@ -237,63 +644,65 @@ describe('AIAssistantChat', () => {
 		);
 	});
 
-	it('accumulates several image events into a single balloon', async () => {
-		const fakeEventSource = createFakeEventSource();
-
-		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
-
+	it('reopens as a dropdown after the expanded chat is closed', async () => {
 		await renderAndOpen();
 
 		await act(async () => {
-			fakeEventSource.emit(
-				'Chat Message Sent',
-				JSON.stringify({
-					data: 'AAA',
-					mimeType: 'image/png',
-					type: 'image',
-				})
+			fireEvent.click(screen.getByRole('button', {name: 'maximize'}));
+		});
+
+		const sidebar = getSidebar();
+
+		await waitFor(() => expect(sidebar).not.toHaveAttribute('inert'));
+
+		await act(async () => {
+			fireEvent.click(
+				within(sidebar).getByRole('button', {name: 'close'})
 			);
 		});
 
 		await act(async () => {
-			fakeEventSource.emit(
-				'Chat Message Sent',
-				JSON.stringify({
-					data: 'BBB',
-					mimeType: 'image/png',
-					type: 'image',
-				})
-			);
+			screen
+				.getByRole('button', {name: 'ai-assistant'})
+				.dispatchEvent(new MouseEvent('click', {bubbles: true}));
 		});
-
-		const images = screen.getAllByAltText('generated-image');
-
-		expect(images).toHaveLength(2);
-		expect(images[0]).toHaveAttribute('src', 'data:image/png;base64,AAA');
-		expect(images[1]).toHaveAttribute('src', 'data:image/png;base64,BBB');
 
 		expect(
-			screen.getAllByRole('checkbox', {name: 'generated-image'})
-		).toHaveLength(2);
+			screen.getByRole('button', {name: 'maximize'})
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', {name: 'minimize'})
+		).not.toBeInTheDocument();
 	});
 
-	it('defaults the mime type to image/png when the image event omits it', async () => {
-		const fakeEventSource = createFakeEventSource();
-
-		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
-
+	it('reuses the same body DOM across shell switches', async () => {
 		await renderAndOpen();
 
+		const inputBeforeExpand =
+			screen.getByPlaceholderText('Ask me anything...');
+
 		await act(async () => {
-			fakeEventSource.emit(
-				'Chat Message Sent',
-				JSON.stringify({data: 'CCC', type: 'image'})
-			);
+			fireEvent.click(screen.getByRole('button', {name: 'maximize'}));
 		});
 
-		expect(screen.getByAltText('generated-image')).toHaveAttribute(
-			'src',
-			'data:image/png;base64,CCC'
-		);
+		expect(
+			within(getSidebar()).getByPlaceholderText('Ask me anything...')
+		).toBe(inputBeforeExpand);
+	});
+
+	it('shows the chat input immediately on open', async () => {
+		await renderAndOpen();
+
+		expect(
+			screen.getByPlaceholderText('Ask me anything...')
+		).toBeInTheDocument();
+	});
+
+	it('shows the footer disclaimer', async () => {
+		await renderAndOpen();
+
+		expect(
+			screen.getByText('ai-generated-responses-may-be-inaccurate')
+		).toBeInTheDocument();
 	});
 });

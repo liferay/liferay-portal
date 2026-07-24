@@ -77,6 +77,154 @@ describe('CategorizationMessageBalloon', () => {
 		} as never;
 	});
 
+	afterEach(() => {
+		(Liferay.Language.get as jest.Mock).mockImplementation(
+			(key: string) => key
+		);
+	});
+
+	it('counts only the tags not already on the content in the confirmation', async () => {
+		(Liferay.Language.get as jest.Mock).mockImplementation((key: string) =>
+			key === 'great-i-have-added-x-tags-to-your-content'
+				? 'Great! I have added {0} tags to your content.'
+				: key
+		);
+
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetExistingTags.mockResolvedValue(['Japan']);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					currentTagNames={['Japan']}
+					scopeId={555}
+				/>
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-3');
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"Japan","isNew":false},{"name":"Culture","isNew":true},{"name":"Tradition","isNew":true}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-tags'}));
+
+		expect(
+			screen.getByText(/Great! I have added 2 tags/)
+		).toBeInTheDocument();
+		expect(screen.queryByText(/added 3 tags/)).not.toBeInTheDocument();
+	});
+
+	it('does not show a confirmation when no new categories are added', async () => {
+		(Liferay.Language.get as jest.Mock).mockImplementation((key: string) =>
+			key === 'great-i-have-added-x-categories-to-your-content'
+				? 'Great! I have added {0} categories to your content.'
+				: key
+		);
+
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetCandidateCategories.mockResolvedValue([
+			{id: 39001, name: 'International', vocabulary: 'Travel'},
+			{id: 39002, name: 'Roadtrip', vocabulary: 'Travel'},
+		]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.AUTO_CATEGORIZE}
+					cmsGroupId={20124}
+					content="Japan"
+					currentCategoryIds={[39001, 39002]}
+					scopeId={555}
+				/>
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-5');
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_AUTO_CATEGORIZE',
+				JSON.stringify({
+					data: '{"suggestions":[{"id":39001,"confidence":0.9},{"id":39002,"confidence":0.8}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		fireEvent.click(screen.getByRole('button', {name: 'save-categories'}));
+
+		expect(
+			screen.queryByText(/Great! I have added/)
+		).not.toBeInTheDocument();
+	});
+
+	it('excludes already-attached categories from the confirmation count', async () => {
+		(Liferay.Language.get as jest.Mock).mockImplementation((key: string) =>
+			key === 'great-i-have-added-x-categories-to-your-content'
+				? 'Great! I have added {0} categories to your content.'
+				: key
+		);
+
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetCandidateCategories.mockResolvedValue([
+			{id: 39001, name: 'International', vocabulary: 'Travel'},
+			{id: 39002, name: 'Roadtrip', vocabulary: 'Travel'},
+		]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.AUTO_CATEGORIZE}
+					cmsGroupId={20124}
+					content="Japan"
+					currentCategoryIds={[39001]}
+					scopeId={555}
+				/>
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-4');
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_AUTO_CATEGORIZE',
+				JSON.stringify({
+					data: '{"suggestions":[{"id":39001,"confidence":0.9},{"id":39002,"confidence":0.8}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		fireEvent.click(screen.getByRole('button', {name: 'save-categories'}));
+
+		expect(
+			screen.getByText(/Great! I have added 1 categories/)
+		).toBeInTheDocument();
+	});
+
 	it('fetches candidates, renders suggestions, and fires the commit event', async () => {
 		const fakeEventSource = createFakeEventSource();
 
@@ -125,10 +273,132 @@ describe('CategorizationMessageBalloon', () => {
 
 		fireEvent.click(screen.getByRole('button', {name: 'save-categories'}));
 
-		expect(mockFire).toHaveBeenCalledWith('cms:aiAssistant:commit', {
-			agent: 'L_AUTO_CATEGORIZE',
-			suggestions: [{id: 39001, name: 'International'}],
+		expect(mockFire).toHaveBeenCalledWith(
+			'cms:aiAssistant:commit',
+			expect.objectContaining({
+				agent: 'L_AUTO_CATEGORIZE',
+				scopeId: 555,
+				suggestions: [{id: 39001, name: 'International'}],
+			})
+		);
+	});
+
+	it('ignores case when counting new tags in the confirmation', async () => {
+		(Liferay.Language.get as jest.Mock).mockImplementation((key: string) =>
+			key === 'great-i-have-added-x-tags-to-your-content'
+				? 'Great! I have added {0} tags to your content.'
+				: key
+		);
+
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetExistingTags.mockResolvedValue(['japan']);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					currentTagNames={['japan']}
+					scopeId={555}
+				/>
+			);
 		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-6');
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"Japan","isNew":false},{"name":"Culture","isNew":true}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		fireEvent.click(screen.getByRole('button', {name: 'add-tags'}));
+
+		expect(
+			screen.getByText(/Great! I have added 1 tags/)
+		).toBeInTheDocument();
+	});
+
+	it('marks unknown tag targets as new and known ones as existing', async () => {
+		mockGetExistingTags.mockResolvedValue(['japan']);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					targets={['kayaking', 'Japan']}
+				/>
+			);
+		});
+
+		expect(screen.getByText('kayaking')).toBeInTheDocument();
+		expect(screen.getByText('japan')).toBeInTheDocument();
+		expect(screen.queryByText('Japan')).not.toBeInTheDocument();
+		expect(
+			screen.getByText('i-found-x-existing-tags-and-suggest-x-new-tags')
+		).toBeInTheDocument();
+		expect(mockCreateEventSource).not.toHaveBeenCalled();
+	});
+
+	it('resolves a named category target without invoking the model', async () => {
+		mockGetCandidateCategories.mockResolvedValue([
+			{id: 39001, name: 'Fishing', vocabulary: 'Topic'},
+			{id: 39002, name: 'Travel', vocabulary: 'Topic'},
+		]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.AUTO_CATEGORIZE}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					targets={['fishing']}
+				/>
+			);
+		});
+
+		expect(screen.getByText('Fishing')).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {name: 'save-categories'})
+		).toBeInTheDocument();
+		expect(mockCreateEventSource).not.toHaveBeenCalled();
+	});
+
+	it('shows the empty state when a category target does not match', async () => {
+		mockGetCandidateCategories.mockResolvedValue([
+			{id: 39002, name: 'Travel', vocabulary: 'Topic'},
+		]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.AUTO_CATEGORIZE}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					targets={['Fishing']}
+				/>
+			);
+		});
+
+		expect(
+			screen.getByText(
+				'i-have-not-found-any-matching-categories-what-would-you-like-to-do'
+			)
+		).toBeInTheDocument();
 	});
 
 	it('uses the tags fetcher for the generate tags agent', async () => {
