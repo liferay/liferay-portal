@@ -1,4 +1,5 @@
 dependencies {
+	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:client-extension:client-extension-api")
 	testIntegrationImplementation project(":apps:client-extension:client-extension-type-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")

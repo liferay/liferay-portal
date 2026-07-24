@@ -186,15 +186,19 @@ public class CETManagerImpl implements CETManager {
 		long clientExtensionEntryId =
 			clientExtensionEntry.getClientExtensionEntryId();
 
-		CET cet = _cets.get(clientExtensionEntryId);
+		CETHolder cetHolder = _cets.get(clientExtensionEntryId);
 
-		if (cet != null) {
-			return cet;
+		if ((cetHolder != null) &&
+			(cetHolder._mvccVersion == clientExtensionEntry.getMvccVersion())) {
+
+			return cetHolder._cet;
 		}
 
-		cet = _cetFactory.create(clientExtensionEntry, true);
+		CET cet = _cetFactory.create(clientExtensionEntry, true);
 
-		_cets.put(clientExtensionEntryId, cet);
+		_cets.put(
+			clientExtensionEntryId,
+			new CETHolder(cet, clientExtensionEntry.getMvccVersion()));
 
 		return cet;
 	}
@@ -352,7 +356,7 @@ public class CETManagerImpl implements CETManager {
 	@Reference
 	private CETFactory _cetFactory;
 
-	private final Map<Long, CET> _cets = new ConcurrentHashMap<>();
+	private final Map<Long, CETHolder> _cets = new ConcurrentHashMap<>();
 	private final Map<Long, Map<String, CET>> _cetsMaps =
 		new ConcurrentHashMap<>();
 
@@ -364,5 +368,17 @@ public class CETManagerImpl implements CETManager {
 
 	private final Map<Long, Map<String, List<ServiceRegistration<?>>>>
 		_serviceRegistrationsMaps = new ConcurrentHashMap<>();
+
+	private static class CETHolder {
+
+		private CETHolder(CET cet, long mvccVersion) {
+			_cet = cet;
+			_mvccVersion = mvccVersion;
+		}
+
+		private final CET _cet;
+		private final long _mvccVersion;
+
+	}
 
 }

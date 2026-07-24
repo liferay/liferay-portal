@@ -6,13 +6,17 @@
 package com.liferay.client.extension.type.internal.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
 import com.liferay.client.extension.type.CET;
 import com.liferay.client.extension.type.GlobalCSSCET;
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -92,36 +96,51 @@ public class CETManagerImplTest {
 	}
 
 	private void _testGetCETIsRebuiltAfterUpdate() throws Exception {
-		ClientExtensionEntry clientExtensionEntry = _addClientExtensionEntry(
-			ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
-			"http://" + RandomTestUtil.randomString());
 
-		CET cet1 = _cetManager.getCET(
-			TestPropsValues.getCompanyId(),
-			clientExtensionEntry.getExternalReferenceCode());
+		// Run inside a change tracking collection to verify that the cached
+		// CET is rebuilt even when the entity cache writes to a change
+		// tracking scoped cache instead of the production cache
 
-		String url = "http://" + RandomTestUtil.randomString();
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
-		clientExtensionEntry.setTypeSettings(
-			UnicodePropertiesBuilder.create(
-				true
-			).put(
-				"url", url
-			).buildString());
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
 
-		clientExtensionEntry =
-			_clientExtensionEntryLocalService.updateClientExtensionEntry(
-				clientExtensionEntry);
+			ClientExtensionEntry clientExtensionEntry =
+				_addClientExtensionEntry(
+					ClientExtensionEntryConstants.TYPE_GLOBAL_CSS,
+					"http://" + RandomTestUtil.randomString());
 
-		CET cet2 = _cetManager.getCET(
-			TestPropsValues.getCompanyId(),
-			clientExtensionEntry.getExternalReferenceCode());
+			CET cet1 = _cetManager.getCET(
+				TestPropsValues.getCompanyId(),
+				clientExtensionEntry.getExternalReferenceCode());
 
-		Assert.assertNotSame(cet1, cet2);
+			String url = "http://" + RandomTestUtil.randomString();
 
-		GlobalCSSCET globalCSSCET = (GlobalCSSCET)cet2;
+			clientExtensionEntry.setTypeSettings(
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"url", url
+				).buildString());
 
-		Assert.assertEquals(url, globalCSSCET.getURL());
+			clientExtensionEntry =
+				_clientExtensionEntryLocalService.updateClientExtensionEntry(
+					clientExtensionEntry);
+
+			CET cet2 = _cetManager.getCET(
+				TestPropsValues.getCompanyId(),
+				clientExtensionEntry.getExternalReferenceCode());
+
+			Assert.assertNotSame(cet1, cet2);
+
+			GlobalCSSCET globalCSSCET = (GlobalCSSCET)cet2;
+
+			Assert.assertEquals(url, globalCSSCET.getURL());
+		}
 	}
 
 	private void _testGetCETsReturnsOnlyRequestedType() throws Exception {
@@ -191,5 +210,8 @@ public class CETManagerImplTest {
 
 	@Inject
 	private ClientExtensionEntryLocalService _clientExtensionEntryLocalService;
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 }
