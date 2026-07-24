@@ -5,6 +5,7 @@
 		<field name="mvccVersion" type="long" />
 		<field name="ploEntryId" type="long" />
 		<field name="companyId" type="long" />
+		<field name="externalReferenceCode" type="String" />
 		<field name="userId" type="long" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />

@@ -13,6 +13,7 @@
 		<!-- Audit fields -->
 
 		<column name="companyId" type="long" />
+		<column name="externalReferenceCode" type="String" />
 		<column name="userId" type="long" />
 		<column name="createDate" type="Date" />
 		<column name="modifiedDate" type="Date" />
@@ -33,6 +34,10 @@
 
 		<finder name="CompanyId" return-type="Collection">
 			<finder-column name="companyId" />
+		</finder>
+		<finder name="C_ERC" return-type="PLOEntry" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="externalReferenceCode" />
 		</finder>
 		<finder name="C_K" return-type="Collection">
 			<finder-column name="companyId" />
