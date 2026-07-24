@@ -15,7 +15,7 @@ import com.liferay.headless.batch.engine.internal.resource.v1_0.util.ParametersU
 import com.liferay.headless.batch.engine.resource.v1_0.ExportTaskResource;
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.io.StreamUtil;
-import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
+import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -115,7 +115,7 @@ public class ExportTaskResourceImpl extends BaseExportTaskResourceImpl {
 		// transaction commits so the processing thread reads a fully
 		// persisted batch engine export task
 
-		TransactionCommitCallbackUtil.registerCallback(
+		TransactionCallbackUtil.registerCommitCallback(
 			() -> executorService.submit(
 				() -> _batchEngineExportTaskExecutor.execute(
 					batchEngineExportTask)));
