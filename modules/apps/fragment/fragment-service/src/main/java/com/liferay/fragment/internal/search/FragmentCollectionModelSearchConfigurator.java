@@ -42,6 +42,11 @@ public class FragmentCollectionModelSearchConfigurator
 		return _modelIndexWriterContributor;
 	}
 
+	@Override
+	public boolean isPermissionAware() {
+		return false;
+	}
+
 	@Activate
 	protected void activate() {
 		_modelIndexWriterContributor = new ModelIndexerWriterContributor<>(
