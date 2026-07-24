@@ -5,7 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
@@ -81,7 +80,6 @@ public class ViewSpaceMembersSummarySectionDisplayContextTest {
 		ViewSpaceMembersSummarySectionDisplayContext
 			viewSpaceMembersSummarySectionDisplayContext =
 				new ViewSpaceMembersSummarySectionDisplayContext(
-					Mockito.mock(DepotEntryLocalService.class),
 					RandomTestUtil.randomLong(), groupLocalService,
 					groupModelResourcePermission, mockHttpServletRequest,
 					Mockito.mock(Language.class),

@@ -17,19 +17,16 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
-
-import java.util.List;
-import java.util.Map;
 
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -57,42 +54,15 @@ public class ViewSpaceMembersSummarySectionDisplayContextTest
 
 	@Test
 	public void testGetHeaderProps() throws Exception {
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext());
 
 		mockHttpServletRequest.setAttribute(
-			InfoDisplayWebKeys.INFO_ITEM, depotEntry);
+			InfoDisplayWebKeys.INFO_ITEM, _depotEntry);
 
-		_assertHeaderProps(null, depotEntry.getGroup());
-
-		DepotEntry projectDepotEntry = _depotEntryLocalService.addDepotEntry(
-			RandomTestUtil.randomLocaleStringMap(),
-			RandomTestUtil.randomLocaleStringMap(), DepotConstants.TYPE_PROJECT,
-			ServiceContextTestUtil.getServiceContext());
-
-		mockHttpServletRequest.setAttribute(
-			InfoDisplayWebKeys.INFO_ITEM, projectDepotEntry);
-
-		_assertHeaderProps(
-			HashMapBuilder.<String, Object>put(
-				"filter",
-				() -> {
-					List<Long> depotEntryGroupIds =
-						_depotEntryLocalService.getDepotEntryGroupIds(
-							group.getCompanyId(), DepotConstants.TYPE_SPACE);
-
-					return "groupIds in (" +
-						StringUtil.merge(depotEntryGroupIds) + ")";
-				}
-			).build(),
-			projectDepotEntry.getGroup());
-	}
-
-	private void _assertHeaderProps(
-			Map<String, Object> additionalSpaceModalProps, Group group)
-		throws Exception {
+		Group group = _depotEntry.getGroup();
 
 		AssertUtils.assertEquals(
 			HashMapBuilder.<String, Object>put(
@@ -118,8 +88,6 @@ public class ViewSpaceMembersSummarySectionDisplayContextTest
 					"assetLibraryCreatorUserId", TestPropsValues.getUserId()
 				).put(
 					"externalReferenceCode", group.getExternalReferenceCode()
-				).putAll(
-					additionalSpaceModalProps
 				).build()
 			).put(
 				"title", "Members (1)"
@@ -139,6 +107,9 @@ public class ViewSpaceMembersSummarySectionDisplayContextTest
 			"com.liferay.site.cms.site.initializer.internal.display.context." +
 				"ViewSpaceMembersSummarySectionDisplayContext");
 	}
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
