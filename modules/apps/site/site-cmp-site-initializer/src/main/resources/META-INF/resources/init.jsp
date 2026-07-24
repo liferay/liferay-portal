@@ -6,6 +6,7 @@
 --%>
 
 <%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
+taglib uri="http://liferay.com/tld/clay" prefix="clay" %><%@
 taglib uri="http://liferay.com/tld/frontend-data-set" prefix="frontend-data-set" %><%@
 taglib uri="http://liferay.com/tld/react" prefix="react" %><%@
 taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %>
@@ -15,6 +16,7 @@ page import="com.liferay.site.cmp.site.initializer.internal.display.context.View
 page import="com.liferay.site.cmp.site.initializer.internal.display.context.ViewAssigneeSectionDisplayContext" %><%@
 page import="com.liferay.site.cmp.site.initializer.internal.display.context.ViewProjectInfoSummarySectionDisplayContext" %><%@
 page import="com.liferay.site.cmp.site.initializer.internal.display.context.ViewProjectManagerAssigneeSectionDisplayContext" %><%@
+page import="com.liferay.site.cmp.site.initializer.internal.display.context.ViewProjectMembersSummarySectionDisplayContext" %><%@
 page import="com.liferay.site.cmp.site.initializer.internal.display.context.ViewProjectSponsorAssigneeSectionDisplayContext" %><%@
 page import="com.liferay.site.cmp.site.initializer.internal.display.context.ViewProjectTasksSectionDisplayContext" %><%@
 page import="com.liferay.site.cmp.site.initializer.internal.display.context.ViewProjectsSectionDisplayContext" %><%@
