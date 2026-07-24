@@ -429,12 +429,14 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Override
 	public boolean isRegenerateSitemapInProgress(long companyId) {
-		List<com.liferay.portal.lock.model.Lock> locks =
+		List<com.liferay.portal.lock.model.Lock> serviceBuilderLocks =
 			_lockLocalService.getLocks(
 				companyId, SitemapManagerImpl.class.getName());
 
-		for (com.liferay.portal.lock.model.Lock lock : locks) {
-			if (!lock.isExpired()) {
+		for (com.liferay.portal.lock.model.Lock serviceBuilderLock :
+				serviceBuilderLocks) {
+
+			if (!serviceBuilderLock.isExpired()) {
 				return true;
 			}
 		}
