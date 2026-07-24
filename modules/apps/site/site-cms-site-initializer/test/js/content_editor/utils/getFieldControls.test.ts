@@ -14,28 +14,6 @@ function createForm(html: string): HTMLFormElement {
 }
 
 describe('getFieldControls', () => {
-	it('returns the control for a non-localized field', () => {
-		const form = createForm('<input name="ObjectField_title" />');
-
-		const controls = getFieldControls(form, 'title');
-
-		expect(controls).toHaveLength(1);
-		expect(controls[0].getAttribute('name')).toBe('ObjectField_title');
-	});
-
-	it('returns every locale-suffixed control for a localized field', () => {
-		const form = createForm(
-			'<input name="ObjectField_title_en_US" />' +
-				'<input name="ObjectField_title_pt_BR" />'
-		);
-
-		expect(
-			getFieldControls(form, 'title').map((control) =>
-				control.getAttribute('name')
-			)
-		).toEqual(['ObjectField_title_en_US', 'ObjectField_title_pt_BR']);
-	});
-
 	it('does not match a field that only shares the prefix', () => {
 		const form = createForm(
 			'<input name="ObjectField_title" />' +
@@ -66,5 +44,27 @@ describe('getFieldControls', () => {
 		const form = createForm('<input name="ObjectField_body" />');
 
 		expect(getFieldControls(form, 'title')).toHaveLength(0);
+	});
+
+	it('returns every locale-suffixed control for a localized field', () => {
+		const form = createForm(
+			'<input name="ObjectField_title_en_US" />' +
+				'<input name="ObjectField_title_pt_BR" />'
+		);
+
+		expect(
+			getFieldControls(form, 'title').map((control) =>
+				control.getAttribute('name')
+			)
+		).toEqual(['ObjectField_title_en_US', 'ObjectField_title_pt_BR']);
+	});
+
+	it('returns the control for a non-localized field', () => {
+		const form = createForm('<input name="ObjectField_title" />');
+
+		const controls = getFieldControls(form, 'title');
+
+		expect(controls).toHaveLength(1);
+		expect(controls[0].getAttribute('name')).toBe('ObjectField_title');
 	});
 });

@@ -14,45 +14,45 @@ function createForm(html: string): HTMLFormElement {
 }
 
 describe('applyFieldValues', () => {
-	it('writes a plain field value and fires input and change events', () => {
-		const form = createForm('<input name="ObjectField_title" value="" />');
+	it('falls back to setData when the editor has no model API', () => {
+		const form = createForm(
+			'<div class="rich-text-input" data-field-name="ObjectField_body">' +
+				'<div class="lfr-ck"><div class="ck ck-editor">' +
+				'<div class="ck-editor__editable"></div></div></div></div>'
+		);
 
-		const input = form.querySelector('input') as HTMLInputElement;
+		const editor = form.querySelector('.ck-editor');
 
-		const inputListener = jest.fn();
-		const changeListener = jest.fn();
+		const setData = jest.fn();
 
-		input.addEventListener('input', inputListener);
-		input.addEventListener('change', changeListener);
+		(editor as any).ckeditorInstance = {getData: jest.fn(), setData};
 
-		applyFieldValues(form, {title: 'Generated'});
+		applyFieldValues(form, {body: '<p>New</p>'});
 
-		expect(input.value).toBe('Generated');
-		expect(inputListener).toHaveBeenCalledTimes(1);
-		expect(changeListener).toHaveBeenCalledTimes(1);
+		expect(setData).toHaveBeenCalledWith('<p>New</p>');
 	});
 
-	it('writes through the native setter when a control ignores direct assignment', () => {
+	it('falls back to the first control when the locale is absent', () => {
+		const form = createForm(
+			'<input name="ObjectField_title_en_US" value="" />' +
+				'<input name="ObjectField_title_pt_BR" value="" />'
+		);
+
+		applyFieldValues(form, {title: 'Generated'}, 'fr_FR');
+
+		expect(
+			(
+				form.querySelector(
+					'[name="ObjectField_title_en_US"]'
+				) as HTMLInputElement
+			).value
+		).toBe('Generated');
+	});
+
+	it('ignores a field that has no control', () => {
 		const form = createForm('<input name="ObjectField_title" value="" />');
 
-		const input = form.querySelector('input') as HTMLInputElement;
-
-		const nativeValueGetter = Object.getOwnPropertyDescriptor(
-			HTMLInputElement.prototype,
-			'value'
-		)?.get;
-
-		Object.defineProperty(input, 'value', {
-			configurable: true,
-			get() {
-				return nativeValueGetter?.call(this);
-			},
-			set() {},
-		});
-
-		applyFieldValues(form, {title: 'Generated'});
-
-		expect(nativeValueGetter?.call(input)).toBe('Generated');
+		expect(() => applyFieldValues(form, {missing: 'x'})).not.toThrow();
 	});
 
 	it('replaces a RichText field through the editor model', () => {
@@ -93,22 +93,22 @@ describe('applyFieldValues', () => {
 		expect(insertContent).toHaveBeenCalledWith(modelFragment, root);
 	});
 
-	it('falls back to setData when the editor has no model API', () => {
-		const form = createForm(
-			'<div class="rich-text-input" data-field-name="ObjectField_body">' +
-				'<div class="lfr-ck"><div class="ck ck-editor">' +
-				'<div class="ck-editor__editable"></div></div></div></div>'
-		);
+	it('writes a plain field value and fires input and change events', () => {
+		const form = createForm('<input name="ObjectField_title" value="" />');
 
-		const editor = form.querySelector('.ck-editor');
+		const input = form.querySelector('input') as HTMLInputElement;
 
-		const setData = jest.fn();
+		const inputListener = jest.fn();
+		const changeListener = jest.fn();
 
-		(editor as any).ckeditorInstance = {getData: jest.fn(), setData};
+		input.addEventListener('input', inputListener);
+		input.addEventListener('change', changeListener);
 
-		applyFieldValues(form, {body: '<p>New</p>'});
+		applyFieldValues(form, {title: 'Generated'});
 
-		expect(setData).toHaveBeenCalledWith('<p>New</p>');
+		expect(input.value).toBe('Generated');
+		expect(inputListener).toHaveBeenCalledTimes(1);
+		expect(changeListener).toHaveBeenCalledTimes(1);
 	});
 
 	it('writes only the active locale control for a localized field', () => {
@@ -135,26 +135,26 @@ describe('applyFieldValues', () => {
 		).toBe('Generated');
 	});
 
-	it('falls back to the first control when the locale is absent', () => {
-		const form = createForm(
-			'<input name="ObjectField_title_en_US" value="" />' +
-				'<input name="ObjectField_title_pt_BR" value="" />'
-		);
-
-		applyFieldValues(form, {title: 'Generated'}, 'fr_FR');
-
-		expect(
-			(
-				form.querySelector(
-					'[name="ObjectField_title_en_US"]'
-				) as HTMLInputElement
-			).value
-		).toBe('Generated');
-	});
-
-	it('ignores a field that has no control', () => {
+	it('writes through the native setter when a control ignores direct assignment', () => {
 		const form = createForm('<input name="ObjectField_title" value="" />');
 
-		expect(() => applyFieldValues(form, {missing: 'x'})).not.toThrow();
+		const input = form.querySelector('input') as HTMLInputElement;
+
+		const nativeValueGetter = Object.getOwnPropertyDescriptor(
+			HTMLInputElement.prototype,
+			'value'
+		)?.get;
+
+		Object.defineProperty(input, 'value', {
+			configurable: true,
+			get() {
+				return nativeValueGetter?.call(this);
+			},
+			set() {},
+		});
+
+		applyFieldValues(form, {title: 'Generated'});
+
+		expect(nativeValueGetter?.call(input)).toBe('Generated');
 	});
 });
