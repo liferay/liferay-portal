@@ -225,6 +225,7 @@ public class ContentCoverageResourceTest
 		_addContentObjectEntry(
 			new long[] {awarenessAssetCategory.getCategoryId()},
 			new String[] {assetTagName});
+
 		_addContentObjectEntry(
 			new long[] {awarenessAssetCategory.getCategoryId()},
 			new String[] {"L_CMP_TASK_" + RandomTestUtil.randomString(10)});
