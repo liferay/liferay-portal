@@ -158,7 +158,7 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 		if (ArrayUtil.isNotEmpty(accountEntryIds)) {
 			junction.add(accountEntryIdProperty.in(accountEntryIds));
 		}
-		else {
+		else if (andSearch) {
 			junction.add(accountEntryIdProperty.eq(0L));
 		}
 
@@ -224,7 +224,7 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 		if (Validator.isNotNull(contextName)) {
 			junction.add(contextNameProperty.eq(contextName));
 		}
-		else {
+		else if (andSearch) {
 			junction.add(contextNameProperty.isNull());
 		}
 
