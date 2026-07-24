@@ -46,6 +46,15 @@ public class PLOEntryLocalServiceUtil {
 			companyId, userId, key, languageId, value);
 	}
 
+	public static PLOEntry addOrUpdatePLOEntry(
+			String externalReferenceCode, long companyId, long userId,
+			String key, String languageId, String value)
+		throws PortalException {
+
+		return getService().addOrUpdatePLOEntry(
+			externalReferenceCode, companyId, userId, key, languageId, value);
+	}
+
 	/**
 	 * Adds the plo entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -129,6 +138,14 @@ public class PLOEntryLocalServiceUtil {
 	 */
 	public static PLOEntry deletePLOEntry(PLOEntry ploEntry) {
 		return getService().deletePLOEntry(ploEntry);
+	}
+
+	public static PLOEntry deletePLOEntryByExternalReferenceCode(
+			long companyId, String externalReferenceCode)
+		throws PortalException {
+
+		return getService().deletePLOEntryByExternalReferenceCode(
+			companyId, externalReferenceCode);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -277,9 +294,25 @@ public class PLOEntryLocalServiceUtil {
 	}
 
 	public static List<PLOEntry> getPLOEntries(
+		long companyId, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return getService().getPLOEntries(
+			companyId, start, end, orderByComparator);
+	}
+
+	public static List<PLOEntry> getPLOEntries(
 		long companyId, String languageId) {
 
 		return getService().getPLOEntries(companyId, languageId);
+	}
+
+	public static List<PLOEntry> getPLOEntries(
+		long companyId, String key, String value, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return getService().getPLOEntries(
+			companyId, key, value, start, end, orderByComparator);
 	}
 
 	/**
@@ -295,6 +328,12 @@ public class PLOEntryLocalServiceUtil {
 		return getService().getPLOEntriesCount(companyId);
 	}
 
+	public static int getPLOEntriesCount(
+		long companyId, String key, String value) {
+
+		return getService().getPLOEntriesCount(companyId, key, value);
+	}
+
 	/**
 	 * Returns the plo entry with the primary key.
 	 *
@@ -304,6 +343,14 @@ public class PLOEntryLocalServiceUtil {
 	 */
 	public static PLOEntry getPLOEntry(long ploEntryId) throws PortalException {
 		return getService().getPLOEntry(ploEntryId);
+	}
+
+	public static PLOEntry getPLOEntryByExternalReferenceCode(
+			long companyId, String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getPLOEntryByExternalReferenceCode(
+			companyId, externalReferenceCode);
 	}
 
 	public static void importPLOEntries(
@@ -346,4 +393,4 @@ public class PLOEntryLocalServiceUtil {
 			PLOEntryLocalServiceUtil.class, PLOEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1576929088
+// LIFERAY-SERVICE-BUILDER-HASH:1367350348

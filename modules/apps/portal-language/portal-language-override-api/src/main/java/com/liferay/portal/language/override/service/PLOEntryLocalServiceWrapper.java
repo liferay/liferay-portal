@@ -39,6 +39,17 @@ public class PLOEntryLocalServiceWrapper
 			companyId, userId, key, languageId, value);
 	}
 
+	@Override
+	public com.liferay.portal.language.override.model.PLOEntry
+			addOrUpdatePLOEntry(
+				String externalReferenceCode, long companyId, long userId,
+				String key, String languageId, String value)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _ploEntryLocalService.addOrUpdatePLOEntry(
+			externalReferenceCode, companyId, userId, key, languageId, value);
+	}
+
 	/**
 	 * Adds the plo entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -137,6 +148,16 @@ public class PLOEntryLocalServiceWrapper
 		com.liferay.portal.language.override.model.PLOEntry ploEntry) {
 
 		return _ploEntryLocalService.deletePLOEntry(ploEntry);
+	}
+
+	@Override
+	public com.liferay.portal.language.override.model.PLOEntry
+			deletePLOEntryByExternalReferenceCode(
+				long companyId, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _ploEntryLocalService.deletePLOEntryByExternalReferenceCode(
+			companyId, externalReferenceCode);
 	}
 
 	@Override
@@ -317,9 +338,33 @@ public class PLOEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.portal.language.override.model.PLOEntry>
+		getPLOEntries(
+			long companyId, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.portal.language.override.model.PLOEntry>
+					orderByComparator) {
+
+		return _ploEntryLocalService.getPLOEntries(
+			companyId, start, end, orderByComparator);
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.language.override.model.PLOEntry>
 		getPLOEntries(long companyId, String languageId) {
 
 		return _ploEntryLocalService.getPLOEntries(companyId, languageId);
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.language.override.model.PLOEntry>
+		getPLOEntries(
+			long companyId, String key, String value, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<com.liferay.portal.language.override.model.PLOEntry>
+					orderByComparator) {
+
+		return _ploEntryLocalService.getPLOEntries(
+			companyId, key, value, start, end, orderByComparator);
 	}
 
 	/**
@@ -337,6 +382,11 @@ public class PLOEntryLocalServiceWrapper
 		return _ploEntryLocalService.getPLOEntriesCount(companyId);
 	}
 
+	@Override
+	public int getPLOEntriesCount(long companyId, String key, String value) {
+		return _ploEntryLocalService.getPLOEntriesCount(companyId, key, value);
+	}
+
 	/**
 	 * Returns the plo entry with the primary key.
 	 *
@@ -350,6 +400,16 @@ public class PLOEntryLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _ploEntryLocalService.getPLOEntry(ploEntryId);
+	}
+
+	@Override
+	public com.liferay.portal.language.override.model.PLOEntry
+			getPLOEntryByExternalReferenceCode(
+				long companyId, String externalReferenceCode)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _ploEntryLocalService.getPLOEntryByExternalReferenceCode(
+			companyId, externalReferenceCode);
 	}
 
 	@Override
@@ -407,4 +467,4 @@ public class PLOEntryLocalServiceWrapper
 	private PLOEntryLocalService _ploEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:688676206
+// LIFERAY-SERVICE-BUILDER-HASH:1697023306
