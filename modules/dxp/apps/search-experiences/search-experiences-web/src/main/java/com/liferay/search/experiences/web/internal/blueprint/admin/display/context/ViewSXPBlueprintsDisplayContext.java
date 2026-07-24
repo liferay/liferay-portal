@@ -95,7 +95,7 @@ public class ViewSXPBlueprintsDisplayContext {
 				).buildString(),
 				"pencil", "edit",
 				LanguageUtil.get(_sxpRequestHelper.getRequest(), "edit"), "get",
-				"get", "link"),
+				"update", "link"),
 			new FDSActionDropdownItem(
 				"#", "book", "enableAsACollectionProvider",
 				LanguageUtil.get(
