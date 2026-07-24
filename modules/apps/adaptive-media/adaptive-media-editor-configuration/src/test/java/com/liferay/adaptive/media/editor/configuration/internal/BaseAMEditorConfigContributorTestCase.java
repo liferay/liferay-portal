@@ -275,7 +275,7 @@ public abstract class BaseAMEditorConfigContributorTestCase {
 		Mockito.when(
 			_itemSelector.getItemSelectorURL(
 				Mockito.any(RequestBackedPortletURLFactory.class),
-				Mockito.anyString(), Mockito.<ItemSelectorCriterion>any())
+				Mockito.anyString(), Mockito.any(ItemSelectorCriterion[].class))
 		).thenReturn(
 			_portletURL
 		);
