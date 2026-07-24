@@ -73,15 +73,16 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 	public void testAddLayoutPageTemplateCollection() throws Exception {
 		String externalReferenceCode = StringUtil.randomString();
 
-		_layoutPageTemplateCollectionLocalService.
-			addLayoutPageTemplateCollection(
-				externalReferenceCode, TestPropsValues.getUserId(),
-				_group.getGroupId(),
-				LayoutPageTemplateConstants.
-					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-				null, RandomTestUtil.randomString(), null,
-				LayoutPageTemplateCollectionTypeConstants.BASIC,
-				_serviceContext);
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			_layoutPageTemplateCollectionLocalService.
+				addLayoutPageTemplateCollection(
+					externalReferenceCode, TestPropsValues.getUserId(),
+					_group.getGroupId(),
+					LayoutPageTemplateConstants.
+						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+					null, RandomTestUtil.randomString(), null,
+					LayoutPageTemplateCollectionTypeConstants.BASIC,
+					_serviceContext);
 
 		Assert.assertNotNull(
 			_layoutPageTemplateCollectionLocalService.
@@ -108,6 +109,28 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 				_log.debug(
 					duplicateLayoutPageTemplateCollectionExternalReferenceCodeException);
 			}
+		}
+
+		long parentLayoutPageTemplateCollectionId =
+			layoutPageTemplateCollection.getLayoutPageTemplateCollectionId();
+
+		try {
+			_layoutPageTemplateCollectionLocalService.
+				addLayoutPageTemplateCollection(
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					parentLayoutPageTemplateCollectionId, null,
+					RandomTestUtil.randomString(), null,
+					LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE,
+					_serviceContext);
+
+			Assert.fail();
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				"The parent layout page template collection " +
+					parentLayoutPageTemplateCollectionId +
+						" must be of type display page",
+				illegalArgumentException.getMessage());
 		}
 
 		Group companyGroup = _groupLocalService.getCompanyGroup(
@@ -137,7 +160,7 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 
 		String layoutPageTemplateCollectionKey = RandomTestUtil.randomString();
 
-		LayoutPageTemplateCollection layoutPageTemplateCollection =
+		layoutPageTemplateCollection =
 			_layoutPageTemplateCollectionLocalService.
 				addLayoutPageTemplateCollection(
 					null, TestPropsValues.getUserId(), _group.getGroupId(),
@@ -183,30 +206,6 @@ public class LayoutPageTemplateCollectionLocalServiceTest {
 				"Layout page template collection key ",
 				layoutPageTemplateCollectionKey,
 				" must have fewer than 75 characters"));
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testAddLayoutPageTemplateCollectionWithInvalidParentType()
-		throws Exception {
-
-		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			_layoutPageTemplateCollectionLocalService.
-				addLayoutPageTemplateCollection(
-					null, TestPropsValues.getUserId(), _group.getGroupId(),
-					LayoutPageTemplateConstants.
-						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
-					null, RandomTestUtil.randomString(), null,
-					LayoutPageTemplateCollectionTypeConstants.BASIC,
-					_serviceContext);
-
-		_layoutPageTemplateCollectionLocalService.
-			addLayoutPageTemplateCollection(
-				null, TestPropsValues.getUserId(), _group.getGroupId(),
-				layoutPageTemplateCollection.
-					getLayoutPageTemplateCollectionId(),
-				null, RandomTestUtil.randomString(), null,
-				LayoutPageTemplateCollectionTypeConstants.DISPLAY_PAGE,
-				_serviceContext);
 	}
 
 	@Test

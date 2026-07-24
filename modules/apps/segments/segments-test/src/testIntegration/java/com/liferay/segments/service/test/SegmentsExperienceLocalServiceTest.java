@@ -215,37 +215,48 @@ public class SegmentsExperienceLocalServiceTest {
 			segmentsExperiences.toString(), 3, segmentsExperiences.size());
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testAddSegmentsExperienceToContentPageTemplate()
-		throws Exception {
-
+	@Test
+	public void testAddSegmentsExperienceToPageTemplate() throws Exception {
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
 				_group.getGroupId(), LayoutPageTemplateEntryTypeConstants.BASIC,
 				WorkflowConstants.STATUS_DRAFT);
 
-		_segmentsExperienceLocalService.addSegmentsExperience(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), null, null,
-			layoutPageTemplateEntry.getPlid(),
-			RandomTestUtil.randomLocaleStringMap(), true,
-			new UnicodeProperties(true),
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-	}
+		try {
+			_segmentsExperienceLocalService.addSegmentsExperience(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, layoutPageTemplateEntry.getPlid(),
+				RandomTestUtil.randomLocaleStringMap(), true,
+				new UnicodeProperties(true),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				"Segments experiences cannot be added to layout " +
+					layoutPageTemplateEntry.getPlid() +
+						" because it belongs to a page template",
+				illegalArgumentException.getMessage());
+		}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void testAddSegmentsExperienceToDisplayPageTemplate()
-		throws Exception {
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
+		layoutPageTemplateEntry =
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				_group.getGroupId());
 
-		_segmentsExperienceLocalService.addSegmentsExperience(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), null, null,
-			layoutPageTemplateEntry.getPlid(),
-			RandomTestUtil.randomLocaleStringMap(), true,
-			new UnicodeProperties(true),
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		try {
+			_segmentsExperienceLocalService.addSegmentsExperience(
+				null, TestPropsValues.getUserId(), _group.getGroupId(), null,
+				null, layoutPageTemplateEntry.getPlid(),
+				RandomTestUtil.randomLocaleStringMap(), true,
+				new UnicodeProperties(true),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			Assert.assertEquals(
+				"Segments experiences cannot be added to layout " +
+					layoutPageTemplateEntry.getPlid() +
+						" because it is not a content page",
+				illegalArgumentException.getMessage());
+		}
 	}
 
 	@Test(
