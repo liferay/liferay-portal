@@ -236,6 +236,19 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		String portalLatestBundleVersion = Environment.get(
 			"PORTAL_LATEST_BUNDLE_VERSION");
 
+		if (JenkinsResultsParserUtil.isNullOrEmpty(portalLatestBundleVersion)) {
+			try {
+				portalLatestBundleVersion =
+					JenkinsResultsParserUtil.getBuildProperty(
+						"portal.latest.bundle.version",
+						getUpstreamBranchName());
+			}
+			catch (IOException ioException) {
+				System.out.println(
+					"WARNING: Unable to get \"portal.latest.bundle.version\"");
+			}
+		}
+
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(
 				portalLatestBundleVersion)) {
 
