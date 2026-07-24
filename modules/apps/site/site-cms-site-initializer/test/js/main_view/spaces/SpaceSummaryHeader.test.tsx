@@ -143,6 +143,48 @@ describe('SpaceSummaryHeader', () => {
 				);
 			}
 		);
+
+		it('is replaced by onOpenMembersModal when the prop is provided', async () => {
+			const onOpenMembersModal = jest.fn();
+
+			const spaceModalProps = {
+				action: SpaceSummaryHeaderActions.OPEN_MEMBERS_MODAL,
+				assetLibraryCreatorUserId: '123',
+				externalReferenceCode: '789',
+			};
+
+			const props = {
+				...defaultProps,
+				onOpenMembersModal,
+				permissions: {
+					hasAssignMembersPermission: true,
+					hasConnectSitesPermission: false,
+				},
+				spaceModalProps,
+			};
+
+			render(<SpaceSummaryHeader {...props} />);
+
+			const button = await waitFor(() =>
+				screen.getByRole('button', {name: defaultProps.label})
+			);
+
+			await userEvent.click(button);
+
+			expect(manageMembersAction).not.toHaveBeenCalled();
+			expect(onOpenMembersModal).toHaveBeenCalledTimes(1);
+			expect(onOpenMembersModal).toHaveBeenCalledWith(
+				{
+					assetLibraryCreatorUserId:
+						spaceModalProps.assetLibraryCreatorUserId,
+					externalReferenceCode:
+						spaceModalProps.externalReferenceCode,
+					hasAssignMembersPermission: true,
+					title: defaultProps.title,
+				},
+				expect.any(Function)
+			);
+		});
 	});
 
 	describe('manageConnectedSitesAction', () => {
