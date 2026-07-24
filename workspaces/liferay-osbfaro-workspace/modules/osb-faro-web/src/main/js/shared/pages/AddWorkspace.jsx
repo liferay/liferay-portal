@@ -118,6 +118,7 @@ export class AddWorkspace extends React.Component {
 			>
 				{redirectToWorkspace ? (
 					<Navigate
+						replace
 						to={toRoute(Routes.WORKSPACE_WITH_ID, {
 							groupId: friendlyURL
 						})}
