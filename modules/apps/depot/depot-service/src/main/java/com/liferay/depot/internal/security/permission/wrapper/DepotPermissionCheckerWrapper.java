@@ -225,8 +225,14 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 			Group group = _groupLocalService.fetchGroup(groupId);
 
+			if (group == null) {
+				return false;
+			}
+
 			return _isOrAddToPermissionCache(
-				group, DepotRoleNameUtil.getOwnerRoleName(_getSubtype(group)),
+				group,
+				DepotRoleNameUtil.getOwnerRoleName(
+					group.getCompanyId(), _getSubtype(group)),
 				this::_isGroupOwner);
 		}
 		catch (Exception exception) {
@@ -448,7 +454,9 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 				DepotRoleNameUtil.getAdministratorRoleName(subtype), true) ||
 			_userGroupRoleLocalService.hasUserGroupRole(
 				getUserId(), liveGroup.getGroupId(),
-				DepotRoleNameUtil.getOwnerRoleName(subtype), true)) {
+				DepotRoleNameUtil.getOwnerRoleName(
+					liveGroup.getCompanyId(), subtype),
+				true)) {
 
 			return true;
 		}
@@ -501,7 +509,9 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 		return _userGroupRoleLocalService.hasUserGroupRole(
 			getUserId(), liveGroup.getGroupId(),
-			DepotRoleNameUtil.getOwnerRoleName(_getSubtype(liveGroup)), true);
+			DepotRoleNameUtil.getOwnerRoleName(
+				liveGroup.getCompanyId(), _getSubtype(liveGroup)),
+			true);
 	}
 
 	private boolean _isOrAddToPermissionCache(
