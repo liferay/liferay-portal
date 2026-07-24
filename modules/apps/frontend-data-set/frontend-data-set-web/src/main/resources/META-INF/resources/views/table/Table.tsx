@@ -237,10 +237,6 @@ const Row = ({
 							>
 								{!item.editable && (
 									<SelectionComponent
-										aria-label={sub(
-											Liferay.Language.get('select-x'),
-											accessibleName
-										)}
 										checked={active}
 										onChange={() =>
 											onItemSelectionChange(item)
@@ -249,7 +245,16 @@ const Row = ({
 											'select-item'
 										)}
 										value={id}
-									/>
+									>
+										<span className="sr-only">
+											{sub(
+												Liferay.Language.get(
+													'select-x'
+												),
+												accessibleName
+											)}
+										</span>
+									</SelectionComponent>
 								)}
 							</ClayTableCell>
 						);
