@@ -3277,6 +3277,48 @@ public class DefaultObjectEntryManagerImplTest
 	}
 
 	@Test
+	public void testAddObjectEntryWithRequiredRelationshipObjectField()
+		throws Exception {
+
+		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
+			_objectDefinition2.getObjectDefinitionId(),
+			_objectRelationshipFieldName);
+
+		_objectFieldLocalService.updateRequired(
+			objectField.getObjectFieldId(), true);
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.Required.class,
+			"No value was provided for required object field \"" +
+				_objectRelationshipFieldName + "\"",
+			() -> _addObjectEntry(
+				_objectDefinition2,
+				HashMapBuilder.<String, Object>put(
+					_objectRelationshipFieldName, 0
+				).build()));
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			_objectDefinition1,
+			HashMapBuilder.<String, Object>put(
+				"textObjectFieldName", RandomTestUtil.randomString()
+			).build());
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			_objectDefinition2,
+			HashMapBuilder.<String, Object>put(
+				_objectRelationshipFieldName, objectEntry1.getId()
+			).build());
+
+		Assert.assertEquals(
+			GetterUtil.getLong(objectEntry1.getId()),
+			GetterUtil.getLong(
+				objectEntry2.getProperties(
+				).get(
+					_objectRelationshipFieldName
+				)));
+	}
+
+	@Test
 	public void testAddObjectEntryWithRichTextObjectField() throws Exception {
 		ObjectDefinition objectDefinition = _addObjectDefinition(
 			Collections.singletonList(
