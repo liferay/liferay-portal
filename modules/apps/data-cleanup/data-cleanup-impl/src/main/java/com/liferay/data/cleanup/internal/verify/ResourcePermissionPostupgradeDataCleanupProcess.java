@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -47,7 +48,7 @@ public class ResourcePermissionPostupgradeDataCleanupProcess
 	@Override
 	public void cleanUp() throws Exception {
 		if (!PostUpgradeDataCleanupProcessUtil.isEveryLiferayBundleResolved()) {
-			if (_log.isWarnEnabled()) {
+			if (_log.isWarnEnabled() && CompanyThreadLocal.isDefaultCompany()) {
 				_log.warn(
 					StringBundler.concat(
 						ResourcePermissionPostupgradeDataCleanupProcess.class.
