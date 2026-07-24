@@ -594,7 +594,7 @@ public class FragmentSetResourceTest extends BaseFragmentSetResourceTestCase {
 
 		Role role = _roleLocalService.getRole(
 			testCompany.getCompanyId(),
-			DepotRolesConstants.ASSET_LIBRARY_OWNER);
+			DepotRolesConstants.DESIGN_LIBRARY_OWNER);
 
 		_userGroupRoleLocalService.addUserGroupRoles(
 			user.getUserId(), group.getGroupId(),
