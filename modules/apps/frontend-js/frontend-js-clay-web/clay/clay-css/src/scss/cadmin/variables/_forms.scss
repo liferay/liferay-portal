@@ -2248,7 +2248,7 @@ $cadmin-input-group-ai: map-deep-merge(
 			),
 		),
 
-		'&[data-ai-state="result"], &[data-ai-state="result-only"]': (
+		'&[data-ai-state="result"], &[data-ai-state="result-readonly"]': (
 			'.form-control': (
 				background-color: $cadmin-gray-100,
 				border-color: $cadmin-purple-l1,
