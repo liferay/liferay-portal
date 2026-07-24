@@ -7,7 +7,6 @@ import {Page, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {masterPagesPagesTest} from '../../../fixtures/masterPagesPagesTest';
@@ -26,9 +25,6 @@ import {portletPublishToLivePageTest} from '../../staging-configuration-web/main
 
 const test = mergeTests(
 	apiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
 	isolatedSiteTest,
 	loginTest(),
 	masterPagesPagesTest,

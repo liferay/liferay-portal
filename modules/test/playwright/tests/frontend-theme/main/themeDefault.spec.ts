@@ -25,7 +25,6 @@ const test = mergeTests(
 	frontendThemePagesTest,
 	loginTest(),
 	featureFlagsTest({
-		'LPD-17564': {enabled: true},
 		'LPS-178052': {enabled: true},
 	})
 );

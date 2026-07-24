@@ -41,7 +41,6 @@ async function expectStyleBookToBeSelected({
 
 const test = mergeTests(
 	featureFlagsTest({
-		'LPD-17564': {enabled: true},
 		'LPD-76864': {enabled: true},
 	}),
 	isolatedSiteTest,
