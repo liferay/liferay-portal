@@ -7,16 +7,18 @@ import {Text} from '@clayui/core';
 
 interface ILifecycleSettingsToolbarProps {
 	backURL: string;
-	createDisabled?: boolean;
 	onCancel: () => void;
-	onCreate: () => void;
+	onSubmit: () => void;
+	submitDisabled?: boolean;
+	submitLabel: string;
 }
 
 const LifecycleSettingsToolbar: React.FC<ILifecycleSettingsToolbarProps> = ({
 	backURL,
-	createDisabled = false,
 	onCancel,
-	onCreate,
+	onSubmit,
+	submitDisabled = false,
+	submitLabel,
 }) => (
 	<ClayToolbar className="bg-white">
 		<ClayToolbar.Nav className="mx-4">
@@ -59,12 +61,12 @@ const LifecycleSettingsToolbar: React.FC<ILifecycleSettingsToolbarProps> = ({
 			<ClayToolbar.Item>
 				<ClayButton
 					className="rounded-lg"
-					disabled={createDisabled}
+					disabled={submitDisabled}
 					displayType="primary"
-					onClick={onCreate}
+					onClick={onSubmit}
 					size="sm"
 				>
-					{Liferay.Language.get('create')}
+					{submitLabel}
 				</ClayButton>
 			</ClayToolbar.Item>
 		</ClayToolbar.Nav>

@@ -1,7 +1,10 @@
 import {
+	createDefaultStageConfigs,
+	DEFAULT_MAX_DAYS,
 	IStageConfig,
 	LIFECYCLE_STAGE_ORDER,
 } from 'lifecycle/utils/stageConfiguration';
+import {ILifecycleStage} from 'shared/api/lifecycle';
 import {
 	Operator,
 	OperatorType,
@@ -16,6 +19,7 @@ export interface IStageSegmentPayload {
 export interface IStagePayload {
 	description: string;
 	displayOrder: number;
+	id?: string;
 	maxDuration: number | null;
 	segment: IStageSegmentPayload;
 	stageType: string;
@@ -24,6 +28,13 @@ export interface IStagePayload {
 export interface ICreateLifecyclePayload {
 	channelId: string;
 	groupId: string;
+	name: string;
+	stages: IStagePayload[];
+}
+
+export interface IUpdateLifecyclePayload {
+	groupId: string;
+	lifecycleId: string;
 	name: string;
 	stages: IStagePayload[];
 }
@@ -107,6 +118,20 @@ export const buildStageFilterMetadata = (stage: IStageConfig): string =>
 		operator: stage.operator,
 	});
 
+const buildStagePayload = (
+	stage: IStageConfig,
+	index: number
+): IStagePayload => ({
+	description: stage.description,
+	displayOrder: index + 1,
+	maxDuration: stage.maxTimeEnabled ? stage.maxTimeDays : null,
+	segment: {
+		filter: buildStageFilter(stage),
+		filterMetadata: buildStageFilterMetadata(stage),
+	},
+	stageType: LIFECYCLE_STAGE_ORDER[index],
+});
+
 export const buildCreateLifecyclePayload = ({
 	channelId,
 	groupId,
@@ -121,14 +146,74 @@ export const buildCreateLifecyclePayload = ({
 	channelId,
 	groupId,
 	name,
+	stages: stageConfigs.map(buildStagePayload),
+});
+
+export const buildUpdateLifecyclePayload = ({
+	groupId,
+	lifecycleId,
+	name,
+	stageConfigs,
+}: {
+	groupId: string;
+	lifecycleId: string;
+	name: string;
+	stageConfigs: IStageConfig[];
+}): IUpdateLifecyclePayload => ({
+	groupId,
+	lifecycleId,
+	name,
 	stages: stageConfigs.map((stage, index) => ({
-		description: stage.description,
-		displayOrder: index + 1,
-		maxDuration: stage.maxTimeEnabled ? stage.maxTimeDays : null,
-		segment: {
-			filter: buildStageFilter(stage),
-			filterMetadata: buildStageFilterMetadata(stage),
-		},
-		stageType: LIFECYCLE_STAGE_ORDER[index],
+		...buildStagePayload(stage, index),
+		...(stage.id ? {id: stage.id} : {}),
 	})),
 });
+
+interface IStageFilterMetadata {
+	conditionValue?: string | null;
+	field?: string | null;
+	fieldDataCategory?: string | null;
+	fieldDataType?: string | null;
+	operator?: string | null;
+}
+
+const parseFilterMetadata = (filterMetadata?: string): IStageFilterMetadata => {
+	if (!filterMetadata) {
+		return {};
+	}
+
+	try {
+		return JSON.parse(filterMetadata) as IStageFilterMetadata;
+	}
+	catch {
+		return {};
+	}
+};
+
+export const stageConfigsFromLifecycle = (
+	stages: ILifecycleStage[] = []
+): IStageConfig[] => {
+	const defaults = createDefaultStageConfigs();
+
+	return LIFECYCLE_STAGE_ORDER.map((stageType, index) => {
+		const stage = stages.find((current) => current.stageType === stageType);
+
+		if (!stage) {
+			return defaults[index];
+		}
+
+		const metadata = parseFilterMetadata(stage.segment?.filterMetadata);
+
+		return {
+			conditionValue: metadata.conditionValue ?? null,
+			description: stage.description || defaults[index].description,
+			field: metadata.field ?? null,
+			fieldDataCategory: metadata.fieldDataCategory ?? null,
+			fieldDataType: metadata.fieldDataType ?? null,
+			id: stage.id,
+			maxTimeDays: stage.maxDuration ?? DEFAULT_MAX_DAYS,
+			maxTimeEnabled: stage.maxDuration != null,
+			operator: metadata.operator ?? null,
+		};
+	});
+};

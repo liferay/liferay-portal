@@ -4,6 +4,7 @@ import AccountsDataSet from 'shared/components/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
+import {ClayButtonWithIcon} from '@clayui/button';
 import GlobalFilters from '../components/GlobalFilters';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
 import Loading from 'shared/components/Loading';
@@ -25,7 +26,7 @@ import {SectionHeader} from 'shared/components/SectionHeader';
 import {Sizes} from 'shared/util/constants';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
-import {useParams} from 'react-router-dom';
+import {useHistory, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const LifecycleEmptyState = ({
@@ -111,6 +112,22 @@ const ConfigureLifecycleEmptyState = ({
 	</NoResultsDisplay>
 );
 
+const ProcessingLifecycleEmptyState = () => (
+	<NoResultsDisplay
+		description={Liferay.Language.get(
+			'your-configuration-is-complete.-metrics-will-appear-in-the-dashboard-once-processing-is-complete'
+		)}
+		displayCard
+		icon={{
+			border: false,
+			size: Sizes.XXXLarge,
+			symbol: 'ac_ready_to_use',
+		}}
+		spacer
+		title={Liferay.Language.get('your-dashboard-is-almost-ready')}
+	/>
+);
+
 const LifecycleOverview = () => {
 	const {filters, lifecycleId} = useLifecycle();
 
@@ -187,6 +204,8 @@ const BaseLifecycle = () => {
 	const currentUser = useCurrentUser();
 	const {selectedChannel} = useContext(ChannelContext);
 
+	const history = useHistory();
+
 	const {channelId, groupId} = useParams();
 
 	const {empty: noDataSources, loading: dataSourcesLoading} =
@@ -197,9 +216,13 @@ const BaseLifecycle = () => {
 		variables: {groupId: groupId!},
 	});
 
-	const lifecycleId = lifecycles?.[0]?.id;
+	const lifecycle = lifecycles?.[0];
+
+	const lifecycleId = lifecycle?.id;
 
 	const hasLifecycles = !!lifecycles?.length;
+
+	const processing = hasLifecycles && lifecycle?.processedDate == null;
 
 	const {data: accountMetrics, loading: accountMetricsLoading} = useRequest({
 		dataSourceFn: API.accounts.fetchMetrics,
@@ -220,6 +243,7 @@ const BaseLifecycle = () => {
 		!loading &&
 		!noDataSources &&
 		hasLifecycles &&
+		!processing &&
 		!accountMetricsLoading &&
 		!!totalAccounts;
 
@@ -254,6 +278,10 @@ const BaseLifecycle = () => {
 					groupId={groupId!}
 				/>
 			);
+		}
+
+		if (processing) {
+			return <ProcessingLifecycleEmptyState />;
 		}
 
 		if (accountMetricsLoading) {
@@ -308,6 +336,30 @@ const BaseLifecycle = () => {
 							className="mb-3"
 							title={Liferay.Language.get('lifecycles')}
 						/>
+
+						{hasLifecycles && authorized && (
+							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get(
+									'lifecycle-configuration'
+								)}
+								borderless
+								data-tooltip-align="top"
+								displayType="secondary"
+								onClick={() =>
+									history.push(
+										toRoute(Routes.LIFECYCLE_EDIT, {
+											channelId,
+											groupId,
+											lifecycleId,
+										})
+									)
+								}
+								symbol="cog"
+								title={Liferay.Language.get(
+									'lifecycle-configuration'
+								)}
+							/>
+						)}
 					</BasePage.Row>
 				</BasePage.Header>
 				{hasContent && (

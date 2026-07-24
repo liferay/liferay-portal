@@ -113,6 +113,12 @@ const LifecycleCreate = lazy(() =>
 	)
 );
 
+const LifecycleEdit = lazy(() =>
+	import(
+		/* webpackChunkName: "LifecycleEdit" */ '../../lifecycle/pages/EditLifecycle'
+	)
+);
+
 /* Sites */
 
 const SitesDashboard = lazy(() =>
@@ -370,6 +376,15 @@ export default class AppSidebarRoutes extends React.PureComponent {
 									destructured={false}
 									exact
 									path={Routes.LIFECYCLE_CREATE}
+								/>
+							)}
+
+							{LDPEnabled && (
+								<BundleRouter
+									data={LifecycleEdit}
+									destructured={false}
+									exact
+									path={Routes.LIFECYCLE_EDIT}
 								/>
 							)}
 

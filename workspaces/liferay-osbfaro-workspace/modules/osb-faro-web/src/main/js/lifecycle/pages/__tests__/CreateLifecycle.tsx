@@ -42,6 +42,7 @@ const buildStages = (configured: boolean): IStageConfig[] =>
 		field: configured ? 'account.annualRevenue' : null,
 		fieldDataCategory: configured ? 'Number' : null,
 		fieldDataType: configured ? 'NUMERIC' : null,
+		id: null,
 		maxTimeDays: DEFAULT_MAX_DAYS,
 		maxTimeEnabled: true,
 		operator: configured ? 'gt' : null,

@@ -13,33 +13,34 @@ const renderToolbar = (
 			<LifecycleSettingsToolbar
 				backURL="/back"
 				onCancel={jest.fn()}
-				onCreate={jest.fn()}
+				onSubmit={jest.fn()}
+				submitLabel="Save"
 				{...props}
 			/>
 		</MemoryRouter>
 	);
 
 describe('LifecycleSettingsToolbar', () => {
-	it('enables the Create button by default', () => {
-		renderToolbar();
+	it('renders the submit button with the given label', () => {
+		renderToolbar({submitLabel: 'Create'});
 
 		expect(screen.getByRole('button', {name: 'Create'})).toBeEnabled();
 	});
 
-	it('disables the Create button when createDisabled is set', () => {
-		renderToolbar({createDisabled: true});
+	it('disables the submit button when submitDisabled is set', () => {
+		renderToolbar({submitDisabled: true});
 
-		expect(screen.getByRole('button', {name: 'Create'})).toBeDisabled();
+		expect(screen.getByRole('button', {name: 'Save'})).toBeDisabled();
 	});
 
-	it('calls onCreate when the enabled Create button is clicked', () => {
-		const onCreate = jest.fn();
+	it('calls onSubmit when the enabled submit button is clicked', () => {
+		const onSubmit = jest.fn();
 
-		renderToolbar({onCreate});
+		renderToolbar({onSubmit});
 
-		fireEvent.click(screen.getByRole('button', {name: 'Create'}));
+		fireEvent.click(screen.getByRole('button', {name: 'Save'}));
 
-		expect(onCreate).toHaveBeenCalledTimes(1);
+		expect(onSubmit).toHaveBeenCalledTimes(1);
 	});
 
 	it('calls onCancel when the Cancel button is clicked', () => {

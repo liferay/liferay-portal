@@ -43,6 +43,7 @@ export interface IStageConfig {
 	field: string | null;
 	fieldDataCategory: string | null;
 	fieldDataType: string | null;
+	id: string | null;
 	maxTimeDays: number;
 	maxTimeEnabled: boolean;
 	operator: string | null;
@@ -55,6 +56,7 @@ export const createDefaultStageConfigs = (): IStageConfig[] =>
 		field: null,
 		fieldDataCategory: null,
 		fieldDataType: null,
+		id: null,
 		maxTimeDays: DEFAULT_MAX_DAYS,
 		maxTimeEnabled: true,
 		operator: null,

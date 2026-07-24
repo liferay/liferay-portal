@@ -4,7 +4,7 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {createMemoryHistory} from 'history';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
@@ -78,10 +78,12 @@ const useRequestImpl =
 	({
 		lifecycles = [{id: '1'}],
 		metricsLoading = false,
+		processedDate = 1700000000000,
 		totalCount = 1,
 	}: {
-		lifecycles?: {id: string}[];
+		lifecycles?: {id: string; processedDate?: number | null}[];
 		metricsLoading?: boolean;
+		processedDate?: number | null;
 		totalCount?: number;
 	} = {}) =>
 	({variables}: {variables?: {[key: string]: any}} = {}) =>
@@ -91,7 +93,14 @@ const useRequestImpl =
 					error: false,
 					loading: metricsLoading,
 				}
-			: {data: lifecycles, error: false, loading: false};
+			: {
+					data: lifecycles.map((lifecycle) => ({
+						processedDate,
+						...lifecycle,
+					})),
+					error: false,
+					loading: false,
+				};
 
 const store = mockStore();
 
@@ -271,6 +280,56 @@ describe('BaseLifecycle', () => {
 					groupId: '23',
 				})
 			);
+		});
+	});
+
+	describe('when the lifecycle is still processing', () => {
+		beforeEach(() => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({processedDate: null})
+			);
+		});
+
+		it('renders the "almost ready" processing state', () => {
+			renderPage();
+
+			expect(
+				screen.getByText('Your dashboard is almost ready!')
+			).toBeInTheDocument();
+			expect(screen.queryByTestId('overview-section')).toBeNull();
+			expect(screen.queryByTestId('global-filters')).toBeNull();
+		});
+	});
+
+	describe('the Lifecycle Configuration action', () => {
+		it('navigates to the edit route when clicked by an admin', () => {
+			const history = createMemoryHistory({
+				initialEntries: ['/workspace/23/123/lifecycles'],
+			});
+
+			renderPage(history);
+
+			fireEvent.click(
+				screen.getByRole('button', {name: 'Lifecycle Configuration'})
+			);
+
+			expect(history.location.pathname).toBe(
+				toRoute(Routes.LIFECYCLE_EDIT, {
+					channelId: '123',
+					groupId: '23',
+					lifecycleId: '1',
+				})
+			);
+		});
+
+		it('is hidden for non-admins', () => {
+			mockedUseCurrentUser.mockReturnValue({isAdmin: () => false});
+
+			renderPage();
+
+			expect(
+				screen.queryByRole('button', {name: 'Lifecycle Configuration'})
+			).toBeNull();
 		});
 	});
 

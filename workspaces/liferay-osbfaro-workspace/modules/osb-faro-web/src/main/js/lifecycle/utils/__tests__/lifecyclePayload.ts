@@ -1,6 +1,8 @@
 import {
 	buildCreateLifecyclePayload,
 	buildStageFilter,
+	buildUpdateLifecyclePayload,
+	stageConfigsFromLifecycle,
 } from 'lifecycle/utils/lifecyclePayload';
 import {
 	createDefaultStageConfigs,
@@ -13,6 +15,7 @@ const baseStage: IStageConfig = {
 	field: null,
 	fieldDataCategory: null,
 	fieldDataType: null,
+	id: null,
 	maxTimeDays: 90,
 	maxTimeEnabled: true,
 	operator: null,
@@ -174,5 +177,82 @@ describe('buildCreateLifecyclePayload', () => {
 		});
 
 		expect(payload.stages[0].maxDuration).toBeNull();
+	});
+});
+
+describe('buildUpdateLifecyclePayload', () => {
+	it('includes the stage id when present and omits it otherwise', () => {
+		const payload = buildUpdateLifecyclePayload({
+			groupId: '23',
+			lifecycleId: '9',
+			name: 'My Lifecycle',
+			stageConfigs: [
+				{...baseStage, id: 'stage-1'},
+				{...baseStage, id: null},
+			],
+		});
+
+		expect(payload.groupId).toBe('23');
+		expect(payload.lifecycleId).toBe('9');
+		expect(payload.stages[0].id).toBe('stage-1');
+		expect(payload.stages[1]).not.toHaveProperty('id');
+	});
+});
+
+describe('stageConfigsFromLifecycle', () => {
+	it('rebuilds every stage config from the saved segment metadata', () => {
+		const configs = stageConfigsFromLifecycle([
+			{
+				description: 'Saved description',
+				displayOrder: 1,
+				id: 'stage-1',
+				maxDuration: 30,
+				segment: {
+					filter: '(account.annualRevenue gt 1000)',
+					filterMetadata: JSON.stringify({
+						conditionValue: '1000',
+						field: 'account.annualRevenue',
+						fieldDataCategory: 'Number',
+						fieldDataType: 'NUMERIC',
+						operator: 'gt',
+					}),
+				},
+				stageType: 'AWARE',
+			},
+		]);
+
+		expect(configs).toHaveLength(6);
+
+		const [aware] = configs;
+
+		expect(aware.id).toBe('stage-1');
+		expect(aware.description).toBe('Saved description');
+		expect(aware.field).toBe('account.annualRevenue');
+		expect(aware.operator).toBe('gt');
+		expect(aware.conditionValue).toBe('1000');
+		expect(aware.maxTimeDays).toBe(30);
+		expect(aware.maxTimeEnabled).toBe(true);
+	});
+
+	it('falls back to defaults for stages absent from the response', () => {
+		const configs = stageConfigsFromLifecycle([]);
+
+		expect(configs).toHaveLength(6);
+		expect(configs.every((config) => config.id === null)).toBe(true);
+		expect(configs[0].field).toBeNull();
+	});
+
+	it('disables the stage limit when maxDuration is null', () => {
+		const [aware] = stageConfigsFromLifecycle([
+			{
+				description: 'Saved',
+				displayOrder: 1,
+				id: 'stage-1',
+				maxDuration: null,
+				stageType: 'AWARE',
+			},
+		]);
+
+		expect(aware.maxTimeEnabled).toBe(false);
 	});
 });

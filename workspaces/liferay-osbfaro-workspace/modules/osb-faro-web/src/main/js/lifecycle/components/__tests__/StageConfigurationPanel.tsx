@@ -21,6 +21,7 @@ const baseValue: IStageConfig = {
 	field: null,
 	fieldDataCategory: null,
 	fieldDataType: null,
+	id: null,
 	maxTimeDays: DEFAULT_MAX_DAYS,
 	maxTimeEnabled: true,
 	operator: null,
