@@ -236,6 +236,12 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 								},
 								{
 									contentRenderer: 'dateRenderer',
+									fieldName: 'firstActive',
+									label: Liferay.Language.get('first-active'),
+									sortable: true,
+								},
+								{
+									contentRenderer: 'dateRenderer',
 									fieldName: 'lastActive',
 									label: Liferay.Language.get('last-active'),
 									sortable: true,
