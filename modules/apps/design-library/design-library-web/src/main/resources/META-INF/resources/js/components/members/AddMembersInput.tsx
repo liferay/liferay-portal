@@ -70,7 +70,7 @@ export default function AddMembersInput({
 		}
 
 		return filters.length
-			? addParams({filters: filters.join(' and ')}, endpoint)
+			? addParams({filter: filters.join(' and ')}, endpoint)
 			: endpoint;
 	}, [excludeMembers, filter, selectValue]);
 

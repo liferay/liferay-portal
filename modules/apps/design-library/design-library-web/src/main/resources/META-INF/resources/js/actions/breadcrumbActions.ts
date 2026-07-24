@@ -48,6 +48,7 @@ export function openConnectedSitesModal({
 	openModal({
 		contentComponent: () =>
 			DesignLibraryConnectedSitesModal({externalReferenceCode}),
+		onClose: () => window.location.reload(),
 		size: 'md',
 	});
 }
@@ -71,6 +72,7 @@ export function openManageMembersModal({
 				headerTitle,
 				ownerId,
 			}),
+		onClose: () => window.location.reload(),
 		size: 'md',
 	});
 }
