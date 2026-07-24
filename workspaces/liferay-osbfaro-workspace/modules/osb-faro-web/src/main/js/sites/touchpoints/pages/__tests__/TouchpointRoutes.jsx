@@ -390,12 +390,14 @@ describe('TouchpointRoutes', () => {
 				title: 'page',
 				touchpoint: 'http://example.com/web/site/home'
 			},
-			query: {accountId: '100', accountName: 'Account 100'}
+			query: {}
 		};
 
 		render(
 			<Provider store={mockStore()}>
-				<MemoryRouter>
+				<MemoryRouter
+					initialEntries={['/?accountId=100&accountName=Account+100']}
+				>
 					<TouchpointRoutes router={router} />
 				</MemoryRouter>
 			</Provider>
@@ -423,12 +425,14 @@ describe('TouchpointRoutes', () => {
 				title: 'page',
 				touchpoint: 'http://example.com/web/site/home'
 			},
-			query: {accountId: '100', accountName: 'Account 100'}
+			query: {}
 		};
 
 		render(
 			<Provider store={mockStore()}>
-				<MemoryRouter>
+				<MemoryRouter
+					initialEntries={['/?accountId=100&accountName=Account+100']}
+				>
 					<TouchpointRoutes router={router} />
 				</MemoryRouter>
 			</Provider>

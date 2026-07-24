@@ -9,12 +9,13 @@ import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useState} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
 import {CSVType} from 'shared/components/download-report/utils';
-import {getMatchedRoute, Routes, setUriQueryValues} from 'shared/util/router';
+import {getMatchedRoute, Routes} from 'shared/util/router';
 import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {pickBy} from 'lodash';
 import {Router} from 'shared/types';
 import {sub} from 'shared/util/lang';
-import {Switch, useHistory} from 'react-router-dom';
+import {Switch} from 'react-router-dom';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
@@ -47,7 +48,6 @@ const Form: React.FC<{
 			touchpoint,
 			type = '',
 		},
-		query: {accountId: accountIdFromURL, accountName: accountNameFromURL},
 	} = router;
 
 	const LDPEnabled = useLDPEnabled({groupId});
@@ -76,17 +76,8 @@ const Form: React.FC<{
 	];
 
 	const [filters] = useState({});
-	const [selectedAccount, setSelectedAccount] = useState<{
-		id: string;
-		name: string;
-	} | null>(
-		accountIdFromURL
-			? {
-					id: accountIdFromURL,
-					name: accountNameFromURL || accountIdFromURL,
-				}
-			: null
-	);
+
+	const {accountId, accountName, setAccount} = useAccountFilter();
 
 	const dataSourceStates = useDataSources();
 
@@ -96,21 +87,6 @@ const Form: React.FC<{
 	const rangeSelectorsFromQuery = useQueryRangeSelectors();
 
 	const {selectedChannel} = useChannelContext();
-
-	const history = useHistory();
-
-	const handleAccountFilterChange = (
-		account: {id: string; name: string} | null
-	) => {
-		history.push(
-			setUriQueryValues({
-				accountId: account?.id ?? null,
-				accountName: account?.name ?? null,
-			})
-		);
-
-		setSelectedAccount(account);
-	};
 
 	return (
 		<BasePage
@@ -156,9 +132,9 @@ const Form: React.FC<{
 					{LDPEnabled && (
 						<AccountDropdown
 							assetType="form"
-							initialAccountId={accountIdFromURL}
-							initialAccountName={accountNameFromURL}
-							onFilterChange={handleAccountFilterChange}
+							initialAccountId={accountId}
+							initialAccountName={accountName}
+							onFilterChange={setAccount}
 						/>
 					)}
 
@@ -193,7 +169,7 @@ const Form: React.FC<{
 
 			<BasePage.Context.Provider
 				value={{
-					accountId: selectedAccount?.id,
+					accountId,
 					filters,
 					router,
 				}}

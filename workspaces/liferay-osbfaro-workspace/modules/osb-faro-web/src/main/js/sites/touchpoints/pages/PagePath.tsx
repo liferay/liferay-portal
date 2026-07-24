@@ -4,7 +4,6 @@ import {RangeSelectors} from 'shared/types';
 
 interface ITouchpointPathPageProps {
 	rangeSelectors: RangeSelectors;
-	selectedAccount?: {id: string};
 	selectedSegment?: {id: string};
 }
 

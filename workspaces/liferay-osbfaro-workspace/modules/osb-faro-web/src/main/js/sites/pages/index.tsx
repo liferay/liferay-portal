@@ -7,19 +7,16 @@ import DownloadCSVReport from 'shared/components/download-report/DownloadCSVRepo
 import DownloadPDFReport from 'shared/components/download-report/DownloadPDFReport';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
-import React, {lazy, Suspense, useState} from 'react';
+import React, {lazy, Suspense} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import URLConstants from 'shared/util/url-constants';
 import {CSVType} from 'shared/components/download-report/utils';
+import {getMatchedRoute, Routes, toRoute} from 'shared/util/router';
 import {pickBy} from 'lodash';
-import {
-	getMatchedRoute,
-	Routes,
-	setUriQueryValues,
-	toRoute,
-} from 'shared/util/router';
-import {Switch, useHistory, useParams} from 'react-router-dom';
+import {Router} from 'shared/types';
+import {Switch, useParams} from 'react-router-dom';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
@@ -77,16 +74,6 @@ const NAV_ITEMS = [
 	},
 ];
 
-type RouterParams = {
-	channelId: string;
-	groupId: string;
-};
-
-type Router = {
-	params: RouterParams;
-	query: object;
-};
-
 interface IDashboardProps extends React.HTMLAttributes<HTMLDivElement> {
 	router: Router;
 }
@@ -96,21 +83,11 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 		channelId: string;
 		groupId: string;
 	}>();
-	const {accountId: accountIdFromURL, accountName: accountNameFromURL} =
-		router.query as {accountId?: string; accountName?: string};
+	const {accountId, accountName, setAccount} = useAccountFilter();
 	const dataSourceStates = useDataSources();
-	const history = useHistory();
 	const LDPEnabled = useLDPEnabled({groupId});
 	const {selectedChannel} = useChannelContext();
 	const currentUser = useCurrentUser();
-	const [selectedAccount, setSelectedAccount] = useState(
-		accountIdFromURL
-			? {
-					id: accountIdFromURL,
-					name: accountNameFromURL || accountIdFromURL,
-				}
-			: null
-	);
 
 	if (!channelId) {
 		return null;
@@ -119,19 +96,6 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 	const authorized = currentUser.isAdmin();
 	const selectedChannelName = selectedChannel && selectedChannel.name;
 	const matchedRoute = getMatchedRoute(NAV_ITEMS);
-
-	const handleAccountFilterChange = (
-		account: {id: string; name: string} | null
-	) => {
-		history.push(
-			setUriQueryValues({
-				accountId: account?.id ?? null,
-				accountName: account?.name ?? null,
-			})
-		);
-
-		setSelectedAccount(account);
-	};
 
 	return (
 		<BasePage
@@ -160,10 +124,7 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 				<BasePage.Header.NavBar
 					items={NAV_ITEMS}
 					routeParams={{channelId, groupId}}
-					routeQueries={pickBy({
-						accountId: selectedAccount?.id,
-						accountName: selectedAccount?.name,
-					})}
+					routeQueries={pickBy({accountId, accountName})}
 				/>
 			</BasePage.Header>
 
@@ -171,9 +132,9 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 				{LDPEnabled && (
 					<AccountDropdown
 						className="mr-2"
-						initialAccountId={accountIdFromURL}
-						initialAccountName={accountNameFromURL}
-						onFilterChange={handleAccountFilterChange}
+						initialAccountId={accountId}
+						initialAccountName={accountName}
+						onFilterChange={setAccount}
 					/>
 				)}
 
@@ -206,8 +167,8 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 
 			<BasePage.Context.Provider
 				value={{
-					accountId: selectedAccount?.id,
-					accountName: selectedAccount?.name,
+					accountId,
+					accountName,
 					filters: {},
 					router,
 				}}

@@ -184,6 +184,26 @@ const TopAssetsTabContent: React.FC<ITopAssetsTabContentProps> = ({
 								mimeType: asset.mimeType,
 							});
 
+							const href = setUriQueryValues(
+								{accountId, accountName},
+								toRoute(getAssetRoute(asset.assetType), {
+									assetId: asset.id,
+									channelId,
+									groupId,
+									touchpoint: 'overview',
+									...(asset.assetType && {
+										type: encodeURIComponent(
+											asset.assetType
+										),
+									}),
+									...(asset.assetTitle && {
+										title: encodeURIComponent(
+											asset.assetTitle
+										),
+									}),
+								})
+							);
+
 							return (
 								<ClayTable.Row key={asset.id}>
 									<ClayTable.Cell expanded>
@@ -202,36 +222,7 @@ const TopAssetsTabContent: React.FC<ITopAssetsTabContentProps> = ({
 											</div>
 											<ClayLink
 												className="font-weight-semi-bold text-dark"
-												href={setUriQueryValues(
-													{
-														accountId,
-														...(accountName && {
-															accountName,
-														}),
-													},
-													toRoute(
-														getAssetRoute(
-															asset.assetType
-														),
-														{
-															assetId: asset.id,
-															channelId,
-															groupId,
-															touchpoint:
-																'overview',
-															...(asset.assetType && {
-																type: encodeURIComponent(
-																	asset.assetType
-																),
-															}),
-															...(asset.assetTitle && {
-																title: encodeURIComponent(
-																	asset.assetTitle
-																),
-															}),
-														}
-													)
-												)}
+												href={href}
 											>
 												{asset.assetTitle}
 											</ClayLink>

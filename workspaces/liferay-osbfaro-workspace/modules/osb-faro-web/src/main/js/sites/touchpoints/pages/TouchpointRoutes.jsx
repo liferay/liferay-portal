@@ -20,6 +20,7 @@ import {pickBy} from 'lodash';
 import {PropTypes} from 'prop-types';
 import {removeUriQueryParam, setUriQueryValues} from 'shared/util/router';
 import {Switch, useHistory} from 'react-router-dom';
+import {useAccountFilter} from 'shared/hooks/useAccountFilter';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
@@ -52,8 +53,7 @@ function TouchpointRoutes({className, router}) {
 		title,
 		touchpoint
 	} = router.params;
-	const {accountId: accountIdFromURL, accountName: accountNameFromURL} =
-		router.query;
+	const {accountId, accountName, setAccount} = useAccountFilter();
 	const LDPEnabled = useLDPEnabled({groupId});
 	const NAV_ITEMS = [
 		{
@@ -84,24 +84,18 @@ function TouchpointRoutes({className, router}) {
 	const decodedTitle = getSafeDecodedURIComponent(title);
 	const decodedTouchpoint = getSafeDecodedURIComponent(touchpoint);
 	const [selectedSegment, setSelectedSegment] = useState({});
-	const [selectedAccount, setSelectedAccount] = useState(
-		accountIdFromURL
-			? {id: accountIdFromURL, name: accountNameFromURL || accountIdFromURL}
-			: null
-	);
 	const [experienceId, setExperienceId] = useState(experienceIdfromURL);
 	const history = useHistory();
 
-	const handleAccountFilterChange = account => {
-		history.push(
-			setUriQueryValues({
-				accountId: account?.id ?? null,
-				accountName: account?.name ?? null
-			})
-		);
-
-		setSelectedAccount(account);
-	};
+	const accountDropdown = LDPEnabled && (
+		<AccountDropdown
+			assetType='page'
+			className='mr-2'
+			initialAccountId={accountId}
+			initialAccountName={accountName}
+			onFilterChange={setAccount}
+		/>
+	);
 
 	useEffect(() => {
 		setPathRangeSelectors(rangeSelectors);
@@ -152,15 +146,7 @@ function TouchpointRoutes({className, router}) {
 
 			{matchedRoute === Routes.SITES_TOUCHPOINTS_OVERVIEW && (
 				<BasePage.SubHeader>
-					{LDPEnabled && (
-						<AccountDropdown
-							assetType='page'
-							className='mr-2'
-							initialAccountId={accountIdFromURL}
-							initialAccountName={accountNameFromURL}
-							onFilterChange={handleAccountFilterChange}
-						/>
-					)}
+					{accountDropdown}
 
 					{LDPEnabled && (
 						<ExperienceDropdown
@@ -223,7 +209,7 @@ function TouchpointRoutes({className, router}) {
 
 			<BasePage.Context.Provider
 				value={{
-					accountId: selectedAccount?.id,
+					accountId,
 					experienceId,
 					filters: {},
 					rangeSelectors: pathRangeSelectors,
@@ -232,15 +218,7 @@ function TouchpointRoutes({className, router}) {
 			>
 				{matchedRoute === Routes.SITES_TOUCHPOINTS_PATH && (
 					<BasePage.SubHeader>
-						{LDPEnabled && (
-							<AccountDropdown
-								assetType='page'
-								className='mr-2'
-								initialAccountId={accountIdFromURL}
-								initialAccountName={accountNameFromURL}
-								onFilterChange={handleAccountFilterChange}
-							/>
-						)}
+						{accountDropdown}
 
 						<SegmentDropdown
 							onFilterChange={setSelectedSegment}
@@ -279,7 +257,6 @@ function TouchpointRoutes({className, router}) {
 							<BundleRouter
 								componentProps={{
 									rangeSelectors: pathRangeSelectors,
-									selectedAccount,
 									selectedSegment
 								}}
 								data={TouchpointPathPage}

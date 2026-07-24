@@ -113,18 +113,10 @@ describe('Dashboard', () => {
 
 		render(
 			<Provider store={mockStore()}>
-				<MemoryRouter>
-					<Dashboard
-						router={
-							{
-								...router,
-								query: {
-									accountId: '100',
-									accountName: 'Account 100',
-								},
-							} as any
-						}
-					/>
+				<MemoryRouter
+					initialEntries={['/?accountId=100&accountName=Account+100']}
+				>
+					<Dashboard router={router as any} />
 				</MemoryRouter>
 			</Provider>
 		);

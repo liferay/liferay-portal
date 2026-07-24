@@ -149,13 +149,7 @@ export const getEventDashboardUrl = (
 		})}${buildQuery(rangeSelectors)}`;
 
 		return accountId || accountName
-			? setUriQueryValues(
-					{
-						...(accountId && {accountId}),
-						...(accountName && {accountName}),
-					},
-					href
-				)
+			? setUriQueryValues({accountId, accountName}, href)
 			: href;
 	}
 
