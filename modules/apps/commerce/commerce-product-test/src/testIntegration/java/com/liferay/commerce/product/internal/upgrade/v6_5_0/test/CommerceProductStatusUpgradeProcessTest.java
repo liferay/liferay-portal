@@ -156,6 +156,32 @@ public class CommerceProductStatusUpgradeProcessTest {
 	}
 
 	@Test
+	public void testUpgradeCPOption() throws Exception {
+		CPOption cpOption = CPTestUtil.addCPOption(
+			TestPropsValues.getGroupId(), false);
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update CPOption set status = ? where CPOptionId = ?")) {
+
+			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
+			preparedStatement.setLong(2, cpOption.getCPOptionId());
+
+			preparedStatement.executeUpdate();
+		}
+
+		_runUpgrade();
+
+		cpOption = _cpOptionLocalService.getCPOption(cpOption.getCPOptionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpOption.getStatus());
+	}
+
+	@Test
 	public void testUpgradeCPOptionCategory() throws Exception {
 		CPOptionCategory cpOptionCategory = CPTestUtil.addCPOptionCategory(
 			TestPropsValues.getGroupId());
@@ -182,32 +208,6 @@ public class CommerceProductStatusUpgradeProcessTest {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, cpOptionCategory.getStatus());
-	}
-
-	@Test
-	public void testUpgradeCPOption() throws Exception {
-		CPOption cpOption = CPTestUtil.addCPOption(
-			TestPropsValues.getGroupId(), false);
-
-		try (Connection connection = DataAccess.getConnection();
-
-			PreparedStatement preparedStatement =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					"update CPOption set status = ? where CPOptionId = ?")) {
-
-			preparedStatement.setInt(1, WorkflowConstants.STATUS_DENIED);
-			preparedStatement.setLong(2, cpOption.getCPOptionId());
-
-			preparedStatement.executeUpdate();
-		}
-
-		_runUpgrade();
-
-		cpOption = _cpOptionLocalService.getCPOption(cpOption.getCPOptionId());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, cpOption.getStatus());
 	}
 
 	@Test
