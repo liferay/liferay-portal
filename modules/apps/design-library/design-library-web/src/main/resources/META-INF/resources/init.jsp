@@ -18,9 +18,13 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ page import="com.liferay.depot.model.DepotEntry" %><%@
 page import="com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames" %><%@
 page import="com.liferay.design.library.web.internal.constants.DesignLibraryWebKeys" %><%@
+page import="com.liferay.design.library.web.internal.display.context.DesignLibraryConnectedSitesDisplayContext" %><%@
+page import="com.liferay.design.library.web.internal.display.context.DesignLibraryMembersDisplayContext" %><%@
 page import="com.liferay.design.library.web.internal.display.context.EditDesignLibraryDisplayContext" %><%@
 page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryAdminDisplayContext" %><%@
 page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryResourcesDisplayContext" %>
+
+<%@ page import="java.util.Map" %>
 
 <liferay-theme:defineObjects />
 

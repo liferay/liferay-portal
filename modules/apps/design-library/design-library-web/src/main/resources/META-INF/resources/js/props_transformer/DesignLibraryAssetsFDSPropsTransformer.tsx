@@ -16,12 +16,22 @@ import {
 	LinkRenderer,
 	ResourceTypeRenderer,
 } from './cell_renderers';
+import getDesignAssetCreationItems, {
+	DesignAssetCreationProps,
+} from './getDesignAssetCreationItems';
 
-export default function DesignLibraryResourcesFDSPropsTransformer(
-	props: IFrontendDataSetProps
+export default function DesignLibraryAssetsFDSPropsTransformer(
+	props: IFrontendDataSetProps & {
+		additionalProps?: DesignAssetCreationProps;
+	}
 ): IFrontendDataSetProps {
 	return {
 		...props,
+		creationMenu: {
+			primaryItems: getDesignAssetCreationItems(
+				props.additionalProps || {}
+			),
+		},
 		customRenderers: {
 			tableCell: [
 				{
