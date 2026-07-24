@@ -100,6 +100,7 @@ const IndividualsTableWithData = withBaseResults(withIndividualsData, {
 		{
 			accessor: 'accountName',
 			cellRenderer: AccountNames,
+			className: 'table-cell-expand-small',
 			label: Liferay.Language.get('account-name'),
 			sortable: false,
 		},
