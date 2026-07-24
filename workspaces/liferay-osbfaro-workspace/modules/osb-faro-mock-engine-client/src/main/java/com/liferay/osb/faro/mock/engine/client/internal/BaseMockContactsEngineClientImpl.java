@@ -15,6 +15,7 @@ import com.liferay.osb.faro.engine.client.model.AccountLifecycleMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
+import com.liferay.osb.faro.engine.client.model.AccountName;
 import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.ActivityAggregation;
 import com.liferay.osb.faro.engine.client.model.ActivityAsset;
@@ -419,6 +420,17 @@ public abstract class BaseMockContactsEngineClientImpl
 		FaroProject faroProject, Long channelId) {
 
 		return contactsEngineClient.getAccountMetrics(faroProject, channelId);
+	}
+
+	@Override
+	public Results<AccountName> getAccountNames(
+		FaroProject faroProject, String assetId, String assetTitle,
+		String assetType, Long channelId, String keywords, String rangeEnd,
+		Integer rangeKey, String rangeStart, int page, int pageSize) {
+
+		return contactsEngineClient.getAccountNames(
+			faroProject, assetId, assetTitle, assetType, channelId, keywords,
+			rangeEnd, rangeKey, rangeStart, page, pageSize);
 	}
 
 	@Override

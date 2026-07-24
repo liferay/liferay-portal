@@ -11,6 +11,7 @@ import com.liferay.osb.faro.engine.client.model.AccountDetails;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
+import com.liferay.osb.faro.engine.client.model.AccountName;
 import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
@@ -145,6 +146,32 @@ public class AccountFaroController extends BaseFaroController {
 		return contactsEngineClient.getAccountMetrics(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
 			channelId);
+	}
+
+	@GET
+	@Path("/account-names")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public FaroFDSResultsDisplay<AccountName>
+			getAccountNamesFaroFDSResultsDisplay(
+				@PathParam("groupId") long groupId,
+				@QueryParam("assetId") String assetId,
+				@QueryParam("assetTitle") String assetTitle,
+				@QueryParam("assetType") String assetType,
+				@QueryParam("channelId") Long channelId,
+				@QueryParam("keywords") String keywords,
+				@QueryParam("rangeEnd") String rangeEnd,
+				@QueryParam("rangeKey") Integer rangeKey,
+				@QueryParam("rangeStart") String rangeStart,
+				@QueryParam("page") int page,
+				@QueryParam("pageSize") int pageSize)
+		throws Exception {
+
+		return new FaroFDSResultsDisplay<>(
+			contactsEngineClient.getAccountNames(
+				faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				assetId, assetTitle, assetType, channelId, keywords, rangeEnd,
+				rangeKey, rangeStart, page, pageSize),
+			page, pageSize);
 	}
 
 	@Override

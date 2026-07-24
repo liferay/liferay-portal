@@ -13,6 +13,7 @@ import com.liferay.osb.faro.engine.client.model.AccountLifecycleMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
+import com.liferay.osb.faro.engine.client.model.AccountName;
 import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.ActivityAggregation;
 import com.liferay.osb.faro.engine.client.model.ActivityAsset;
@@ -230,6 +231,11 @@ public interface ContactsEngineClient {
 
 	public List<AccountMetric> getAccountMetrics(
 		FaroProject faroProject, Long channelId);
+
+	public Results<AccountName> getAccountNames(
+		FaroProject faroProject, String assetId, String assetTitle,
+		String assetType, Long channelId, String keywords, String rangeEnd,
+		Integer rangeKey, String rangeStart, int page, int pageSize);
 
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,

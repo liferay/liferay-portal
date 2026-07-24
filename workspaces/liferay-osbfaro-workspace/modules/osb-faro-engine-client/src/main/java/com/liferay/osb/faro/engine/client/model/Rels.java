@@ -35,6 +35,8 @@ public interface Rels {
 
 	public static final String ACCOUNT_LIFECYCLES = "account-lifecycles";
 
+	public static final String ACCOUNT_NAMES = "account-names";
+
 	public static final String ACCOUNTS = "accounts";
 
 	public static final String ACCOUNTS_DISTRIBUTION = "accounts-distribution";
