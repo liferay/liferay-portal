@@ -452,12 +452,11 @@ public class ObjectEntryInfoItemFormProviderTest {
 			ObjectRelationshipConstants.OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX +
 				objectRelationship.getName());
 
-		Assert.assertNotNull(infoField);
-		Assert.assertEquals(
-			RelationshipInfoFieldType.INSTANCE, infoField.getInfoFieldType());
 		Assert.assertTrue(
 			(boolean)infoField.getAttribute(
 				RelationshipInfoFieldType.MULTIPLE));
+		Assert.assertEquals(
+			RelationshipInfoFieldType.INSTANCE, infoField.getInfoFieldType());
 	}
 
 	private void _testGetInfoFormWithObjectAction() throws Exception {
