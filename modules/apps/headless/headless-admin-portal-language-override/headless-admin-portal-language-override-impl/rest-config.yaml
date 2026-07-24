@@ -1,0 +1,12 @@
+apiDir: ../headless-admin-portal-language-override-api/src/main/java
+apiPackagePath: com.liferay.headless.admin.portal.language.override
+application:
+    baseURI: /headless-admin-portal-language-override
+    className: HeadlessAdminPortalLanguageOverrideApplication
+    name: Liferay.Headless.Admin.Portal.Language.Override
+author: Thiago Buarque
+clientDir: ../headless-admin-portal-language-override-client/src/main/java
+compatibilityVersion: 15
+forcePredictableOperationId: true
+javaEEPackage: jakarta
+testDir: ../headless-admin-portal-language-override-test/src/testIntegration/java
