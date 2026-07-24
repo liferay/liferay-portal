@@ -69,9 +69,9 @@ public class ContentSecurityPolicyNonceManagerTest {
 	private static final String _NONCE =
 		ContentSecurityPolicyNonceManager.class.getName() + "#NONCE";
 
-	private ContentSecurityPolicyNonceManager
+	private final ContentSecurityPolicyNonceManager
 		_contentSecurityPolicyNonceManager =
 			new ContentSecurityPolicyNonceManager();
-	private Portal _portal = Mockito.mock(Portal.class);
+	private final Portal _portal = Mockito.mock(Portal.class);
 
 }
