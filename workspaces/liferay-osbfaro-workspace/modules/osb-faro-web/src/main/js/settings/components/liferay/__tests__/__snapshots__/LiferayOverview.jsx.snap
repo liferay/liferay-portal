@@ -708,7 +708,7 @@ exports[`LiferayOverview should render 1`] = `
                   <p
                     class="text-4 text-secondary"
                   >
-                    Properties allow you to aggregate data on your users and DXP sites and channels. The data source data will be available in any property they are assigned to.
+                    Properties let you consolidate data from individuals, accounts, campaigns, sites, and commerce channels in one place. An individual's data is available in every property they are assigned to.
                   </p>
                   <div
                     class="mb-4"
