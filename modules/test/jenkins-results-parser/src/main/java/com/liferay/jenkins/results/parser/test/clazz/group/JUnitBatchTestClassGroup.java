@@ -71,6 +71,10 @@ public class JUnitBatchTestClassGroup extends BatchTestClassGroup {
 	}
 
 	public List<JobProperty> getExcludesJobProperties() {
+		if (isRootCauseAnalysis()) {
+			return new ArrayList<>();
+		}
+
 		if (_jUnitTestBatch != null) {
 			List<JobProperty> testBatchJobProperties =
 				getTestSelectorExcludesJobProperties();
