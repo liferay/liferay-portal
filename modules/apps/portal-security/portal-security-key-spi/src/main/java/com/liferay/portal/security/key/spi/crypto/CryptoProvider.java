@@ -53,7 +53,7 @@ public interface CryptoProvider {
 
 	public CryptoServiceResult<String> importSecretKey(
 			String algorithm, long companyId, String keyIdentifier,
-			byte[] rawKeyBytes)
+			byte[] keyBytes)
 		throws CryptoException;
 
 	public boolean isAllowedCompany(long companyId);
