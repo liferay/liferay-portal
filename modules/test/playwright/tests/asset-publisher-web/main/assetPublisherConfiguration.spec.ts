@@ -283,6 +283,12 @@ test(
 			.getByRole('tab', {name: "Paramètres d'affichage"})
 			.click();
 
+		// Expand the metadata section, which is collapsed by default
+
+		await assetPublisherPage.configurationIframe
+			.locator('[aria-controls="metadataContent"]')
+			.click();
+
 		// Assert a move button rendered in the metadata section
 
 		await expect(
