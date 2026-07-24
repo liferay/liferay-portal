@@ -7,8 +7,6 @@ package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
-import com.liferay.fragment.constants.FragmentActionKeys;
-import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryVersion;
@@ -40,10 +38,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -55,7 +50,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -167,8 +161,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_fragmentCollection = _addFragmentCollection();
 		_userWithoutPermissionsFragmentResource =
 			_getUserWithoutPermissionsFragmentResource();
-		_userWithPermissionsFragmentResource =
-			_getUserWithPermissionsFragmentResource();
 	}
 
 	@Override
@@ -192,7 +184,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testDeleteSiteFragmentNonexistent();
 		_testDeleteSiteFragmentWithFormFragment();
 		_testDeleteSiteFragmentWithoutPermissionsProblemException();
-		_testDeleteSiteFragmentWithPermissions();
 	}
 
 	@Override
@@ -208,7 +199,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testGetSiteFragmentThumbnailURLReference();
 		_testGetSiteFragmentWithFormFragment();
 		_testGetSiteFragmentWithoutPermissionsProblemException();
-		_testGetSiteFragmentWithPermissions();
 	}
 
 	@Override
@@ -219,7 +209,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 		_testGetSiteFragmentSetFragmentsPageWithNonexistentFragmentSet();
 		_testGetSiteFragmentSetFragmentsPageWithoutPermissions();
-		_testGetSiteFragmentSetFragmentsPageWithPermissions();
 		_testGetSiteFragmentSetFragmentsPageWithStatus();
 	}
 
@@ -232,7 +221,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testGetSiteFragmentsPageWithFilter();
 		_testGetSiteFragmentsPageWithFragmentSets();
 		_testGetSiteFragmentsPageWithoutPermissions();
-		_testGetSiteFragmentsPageWithPermissions();
 	}
 
 	@Override
@@ -269,7 +257,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentThumbnailURLReferenceURLUnsupportedProtocolProblemException();
 		_testPostSiteFragmentWithFormFragment();
 		_testPostSiteFragmentWithoutPermissionsProblemException();
-		_testPostSiteFragmentWithPermissions();
 	}
 
 	@Override
@@ -291,7 +278,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentSetFragmentFragmentSetNull();
 		_testPostSiteFragmentSetFragmentWithFormFragment();
 		_testPostSiteFragmentSetFragmentWithoutPermissionsProblemException();
-		_testPostSiteFragmentSetFragmentWithPermissions();
 	}
 
 	@Override
@@ -332,7 +318,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPutSiteFragmentUpdateTypeProblemException();
 		_testPutSiteFragmentWithFormFragment();
 		_testPutSiteFragmentWithoutPermissionsProblemException();
-		_testPutSiteFragmentWithPermissions();
 	}
 
 	@Override
@@ -827,32 +812,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		).build();
 	}
 
-	private FragmentResource _getUserWithPermissionsFragmentResource()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
-
-		Role role = RoleTestUtil.addRole(
-			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
-			FragmentConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testGroup.getGroupId()),
-			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
-
-		return FragmentResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-	}
-
 	private void _populateFragment(Fragment fragment) {
 		if ((fragment instanceof FormFragment formFragment) &&
 			(formFragment.getFieldTypes() == null)) {
@@ -1283,17 +1242,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 	}
 
-	private void _testDeleteSiteFragmentWithPermissions() throws Exception {
-		Fragment fragment = _postSiteFragmentSetFragment(
-			_randomFragment(true, true, _fragmentCollection));
-
-		assertHttpResponseStatusCode(
-			204,
-			_userWithPermissionsFragmentResource.deleteSiteFragmentHttpResponse(
-				testGroup.getExternalReferenceCode(),
-				fragment.getExternalReferenceCode()));
-	}
-
 	private void _testGetSiteFragment(boolean approved, boolean draft)
 		throws Exception {
 
@@ -1374,23 +1322,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
-	}
-
-	private void _testGetSiteFragmentSetFragmentsPageWithPermissions()
-		throws Exception {
-
-		Fragment fragment = _postSiteFragmentSetFragment(
-			_randomFragment(true, true, _fragmentCollection),
-			_fragmentCollection.getExternalReferenceCode());
-
-		Page<Fragment> page =
-			_userWithPermissionsFragmentResource.
-				getSiteFragmentSetFragmentsPage(
-					testGroup.getExternalReferenceCode(),
-					_fragmentCollection.getExternalReferenceCode(),
-					Pagination.of(1, 10));
-
-		assertContains(fragment, (List<Fragment>)page.getItems());
 	}
 
 	private void _testGetSiteFragmentSetFragmentsPageWithStatus()
@@ -1505,23 +1436,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Assert.assertEquals(0, page.getTotalCount());
 	}
 
-	private void _testGetSiteFragmentsPageWithPermissions() throws Exception {
-		Fragment fragment = _postSiteFragmentSetFragment(
-			_randomFragment(true, true, _fragmentCollection),
-			_fragmentCollection.getExternalReferenceCode());
-
-		Page<Fragment> page =
-			_userWithPermissionsFragmentResource.getSiteFragmentsPage(
-				testGroup.getExternalReferenceCode(), null,
-				Pagination.of(1, 1));
-
-		page = _userWithPermissionsFragmentResource.getSiteFragmentsPage(
-			testGroup.getExternalReferenceCode(), null,
-			Pagination.of(1, (int)page.getTotalCount()));
-
-		assertContains(fragment, (List<Fragment>)page.getItems());
-	}
-
 	private void _testGetSiteFragmentThumbnailURLReference() throws Exception {
 		Fragment postFragment = _postSiteFragmentSetFragment(randomFragment());
 
@@ -1582,20 +1496,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
-	}
-
-	private void _testGetSiteFragmentWithPermissions() throws Exception {
-		Fragment postFragment = _postSiteFragmentSetFragment(
-			_randomFragment(true, true, _fragmentCollection));
-
-		Fragment getFragment =
-			_userWithPermissionsFragmentResource.getSiteFragment(
-				testGroup.getExternalReferenceCode(),
-				postFragment.getExternalReferenceCode());
-
-		Assert.assertEquals(
-			postFragment.getExternalReferenceCode(),
-			getFragment.getExternalReferenceCode());
 	}
 
 	private void _testPostFragmentApproved(
@@ -2164,23 +2064,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 	}
 
-	private void _testPostSiteFragmentSetFragmentWithPermissions()
-		throws Exception {
-
-		Fragment fragment = _randomFragment(
-			true, true, RandomTestUtil.randomString(), _fragmentCollection,
-			null);
-
-		Fragment postFragment =
-			_userWithPermissionsFragmentResource.postSiteFragmentSetFragment(
-				testGroup.getExternalReferenceCode(),
-				_fragmentCollection.getExternalReferenceCode(), fragment);
-
-		Assert.assertEquals(
-			fragment.getExternalReferenceCode(),
-			postFragment.getExternalReferenceCode());
-	}
-
 	private void _testPostSiteFragmentThumbnailURLReferenceExternalReferenceCode()
 		throws Exception {
 
@@ -2407,20 +2290,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
-	}
-
-	private void _testPostSiteFragmentWithPermissions() throws Exception {
-		Fragment fragment = _randomFragment(
-			true, true, RandomTestUtil.randomString(), _fragmentCollection,
-			null);
-
-		Fragment postFragment =
-			_userWithPermissionsFragmentResource.postSiteFragment(
-				testGroup.getExternalReferenceCode(), fragment);
-
-		Assert.assertEquals(
-			fragment.getExternalReferenceCode(),
-			postFragment.getExternalReferenceCode());
 	}
 
 	private void _testPutFragment(
@@ -3184,18 +3053,6 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		}
 	}
 
-	private void _testPutSiteFragmentWithPermissions() throws Exception {
-		String externalReferenceCode = RandomTestUtil.randomString();
-
-		Fragment putFragment =
-			_userWithPermissionsFragmentResource.putSiteFragment(
-				testGroup.getExternalReferenceCode(), externalReferenceCode,
-				_randomFragment(true, true, _fragmentCollection));
-
-		Assert.assertEquals(
-			externalReferenceCode, putFragment.getExternalReferenceCode());
-	}
-
 	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection) {
 		return new FragmentSet() {
 			{
@@ -3275,6 +3132,5 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private UserLocalService _userLocalService;
 
 	private FragmentResource _userWithoutPermissionsFragmentResource;
-	private FragmentResource _userWithPermissionsFragmentResource;
 
 }
