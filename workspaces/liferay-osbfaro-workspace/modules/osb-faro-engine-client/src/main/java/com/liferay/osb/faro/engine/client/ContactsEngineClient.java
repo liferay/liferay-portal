@@ -650,8 +650,7 @@ public interface ContactsEngineClient {
 	public void setEngineURL(String engineURL);
 
 	public AccountLifecycle updateAccountLifecycle(
-		FaroProject faroProject, String description, String id, String name,
-		String segmentId);
+		FaroProject faroProject, AccountLifecycle accountLifecycle);
 
 	public void updateAccountLifecycleStageRule(
 		FaroProject faroProject, String filterMetadata, String filterString,

@@ -3522,19 +3522,12 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public AccountLifecycle updateAccountLifecycle(
-		FaroProject faroProject, String description, String id, String name,
-		String segmentId) {
-
-		AccountLifecycle accountLifecycle = new AccountLifecycle();
-
-		accountLifecycle.setDescription(description);
-		accountLifecycle.setId(id);
-		accountLifecycle.setName(name);
-		accountLifecycle.setSegmentId(segmentId);
+		FaroProject faroProject, AccountLifecycle accountLifecycle) {
 
 		return put(
 			faroProject, Rels.ACCOUNT_LIFECYCLE, accountLifecycle,
-			AccountLifecycle.class, getUriVariables(faroProject, id));
+			AccountLifecycle.class,
+			getUriVariables(faroProject, accountLifecycle.getId()));
 	}
 
 	@Override

@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.engine.client.model;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,6 +23,14 @@ public class AccountLifecycle {
 
 	public String getName() {
 		return _name;
+	}
+
+	public Date getProcessedDate() {
+		if (_processedDate == null) {
+			return null;
+		}
+
+		return new Date(_processedDate.getTime());
 	}
 
 	public String getSegmentId() {
@@ -44,6 +53,12 @@ public class AccountLifecycle {
 		_name = name;
 	}
 
+	public void setProcessedDate(Date processedDate) {
+		if (processedDate != null) {
+			_processedDate = new Date(processedDate.getTime());
+		}
+	}
+
 	public void setSegmentId(String segmentId) {
 		_segmentId = segmentId;
 	}
@@ -55,6 +70,7 @@ public class AccountLifecycle {
 	private String _description;
 	private String _id;
 	private String _name;
+	private Date _processedDate;
 	private String _segmentId;
 	private List<AccountLifecycleStage> _stages;
 
