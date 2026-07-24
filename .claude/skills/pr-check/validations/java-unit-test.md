@@ -26,13 +26,15 @@ For OSGi modules — run only the specific test class, batching counterparts wit
 "${REPO_ROOT}/gradlew" \
 	--continue \
 	--project-dir "${REPO_ROOT}/modules" \
-	--tests "<FQN1>" \
-	--tests "<FQN2>" \
 	-Dtest.ignore.failures=false \
-	:<path>:test
+	:<path>:test \
+	--tests "<FQN1>" \
+	--tests "<FQN2>"
 ```
 
 `--continue` keeps Gradle going when a downstream task fails so the test results still surface; `-Dtest.ignore.failures=false` overrides Liferay's default of swallowing test failures.
+
+Each `--tests` flag is an option on the `test` task rather than a Gradle flag, so it follows the task path and breaks the usual alphabetical flag order. Ahead of the task path, Gradle rejects the option and runs nothing.
 
 For portal-core — `test-class` (defined in `build-common.xml`) is the target that filters by `test.class` (`test-unit` ignores it and runs the full suite):
 
@@ -41,6 +43,8 @@ For portal-core — `test-class` (defined in `build-common.xml`) is the target t
 ```
 
 The space-separated Ant fileset pattern is the same one used by **Structural Smoke** — see that file for the explanation.
+
+Decide PASS or FAIL from the `tests`, `failures`, and `errors` counts in the `TEST-*.xml` files the run writes, not from a `BUILD SUCCESSFUL` marker, because the `tail` pipe discards the build's exit status and an absent marker does not distinguish tests that failed from tests that never ran. Gradle writes the files under `modules/<path>/test-results/unit/test` and the Ant target writes them under `portal-impl/test-results/unit`. A command that was given test classes and executed none of them is a FAIL. When Selection finds no test class to run there is nothing to execute, so the validation reports PASS.
 
 ## Checklist
 
