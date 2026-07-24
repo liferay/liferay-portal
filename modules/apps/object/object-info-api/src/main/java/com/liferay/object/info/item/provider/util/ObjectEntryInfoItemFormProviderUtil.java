@@ -42,9 +42,11 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.template.info.item.provider.TemplateInfoItemFieldSetProvider;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Carolina Barbosa
@@ -375,11 +377,30 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							name, namespace));
 				}
 
+				Set<ObjectRelationship> objectRelationships =
+					new LinkedHashSet<>(
+						ObjectRelationshipLocalServiceUtil.
+							getObjectRelationships(
+								objectDefinition.getObjectDefinitionId(),
+								true));
+
 				for (ObjectRelationship objectRelationship :
 						ObjectRelationshipLocalServiceUtil.
 							getObjectRelationships(
 								objectDefinition.getObjectDefinitionId(),
-								true)) {
+								ObjectRelationshipConstants.
+									DELETION_TYPE_DISASSOCIATE,
+								false)) {
+
+					if (objectRelationship.compareType(
+							ObjectRelationshipConstants.TYPE_MANY_TO_MANY)) {
+
+						objectRelationships.add(objectRelationship);
+					}
+				}
+
+				for (ObjectRelationship objectRelationship :
+						objectRelationships) {
 
 					unsafeConsumer.accept(
 						objectFieldInfoFieldConverter.
