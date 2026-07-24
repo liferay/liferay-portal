@@ -11,7 +11,7 @@ export default function MessageBalloon({
 	children: React.ReactNode;
 }) {
 	return (
-		<div className="ai-assistant-chat__ai-assistant-message-balloon d-flex flex-column mb-2 rounded">
+		<div className="ai-assistant-chat__ai-assistant-message-balloon">
 			{children}
 		</div>
 	);

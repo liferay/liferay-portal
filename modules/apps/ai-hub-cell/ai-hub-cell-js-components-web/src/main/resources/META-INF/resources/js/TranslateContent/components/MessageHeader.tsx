@@ -8,12 +8,14 @@ import React from 'react';
 
 export default function MessageHeader({message}: {message: string}) {
 	return (
-		<div className="d-flex flex-row font-weight-semi-bold">
-			<div className="align-items-start d-inline-block ml-2 mt-2 text-2 text-primary">
+		<div className="ai-assistant-chat__message-header">
+			<div className="ai-assistant-chat__message-header-icon">
 				<ClayIcon spritemap={Liferay.Icons.spritemap} symbol="stars" />
 			</div>
 
-			<div className="m-2">{message}</div>
+			<div className="ai-assistant-chat__message-header-text">
+				{message}
+			</div>
 		</div>
 	);
 }

@@ -9,7 +9,7 @@ import React from 'react';
 export default function LanguageIdIcon({languageId}: {languageId: string}) {
 	return (
 		<ClayIcon
-			className="mr-2"
+			className="ai-assistant-chat__language-id-icon"
 			spritemap={Liferay.Icons.spritemap}
 			symbol={languageId.replace(/_/g, '-').toLowerCase()}
 		/>

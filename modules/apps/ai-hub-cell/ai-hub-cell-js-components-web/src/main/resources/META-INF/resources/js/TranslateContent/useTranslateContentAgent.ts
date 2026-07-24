@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {useEffect, useRef, useState} from 'react';
+import {Dispatch, SetStateAction, useEffect, useRef, useState} from 'react';
 
 import {putAgentInstanceResume} from './api';
 import {TranslateContentMessageBalloonProps} from './types';
@@ -20,6 +20,9 @@ export default function useTranslateContentAgent({
 }: TranslateContentMessageBalloonProps) {
 	const appliedRef = useRef<boolean>(false);
 
+	const [overwriteLanguageIds, setOverwriteLanguageIds] = useState<string[]>(
+		[]
+	);
 	const [selectedLanguageIds, setSelectedLanguageIds] = useState<string[]>(
 		() =>
 			(requestedLanguageIds ?? []).filter((languageId) =>
@@ -52,14 +55,17 @@ export default function useTranslateContentAgent({
 		}).catch(() => setIsGenerating(false));
 	};
 
-	const toggleSelectedLanguageId = (languageId: string) => {
-		setSelectedLanguageIds((previousSelectedLanguageIds) =>
-			previousSelectedLanguageIds.includes(languageId)
-				? previousSelectedLanguageIds.filter(
-						(selectedLanguageId) =>
-							selectedLanguageId !== languageId
+	const toggleLanguageId = (
+		setLanguageIds: Dispatch<SetStateAction<string[]>>,
+		languageId: string
+	) => {
+		setLanguageIds((previousLanguageIds) =>
+			previousLanguageIds.includes(languageId)
+				? previousLanguageIds.filter(
+						(previousLanguageId) =>
+							previousLanguageId !== languageId
 					)
-				: [...previousSelectedLanguageIds, languageId]
+				: [...previousLanguageIds, languageId]
 		);
 	};
 
@@ -76,6 +82,21 @@ export default function useTranslateContentAgent({
 		setStep('confirm');
 		setTranslatedLanguageIds(translatedLanguageIds);
 	};
+
+	const review = () => {
+		setOverwriteLanguageIds(translatedLanguageIds);
+		setStep('review');
+	};
+
+	const overwriteAll = () => submit(selectedLanguageIds);
+
+	const overwriteTargetLanguageIds = selectedLanguageIds.filter(
+		(languageId) =>
+			!translatedLanguageIds.includes(languageId) ||
+			overwriteLanguageIds.includes(languageId)
+	);
+
+	const overwrite = () => submit(overwriteTargetLanguageIds);
 
 	useEffect(() => {
 		if (appliedRef.current || !results?.length) {
@@ -103,15 +124,24 @@ export default function useTranslateContentAgent({
 	}, [results]);
 
 	return {
+		confirmDisabled: submitted || step === 'review',
 		onTranslate,
+		overwrite,
+		overwriteAll,
+		overwriteDisabled: submitted || !overwriteTargetLanguageIds.length,
+		overwriteLanguageIds,
+		review,
+		selectDisabled: submitted || step !== 'select',
 		selectedLanguageIds,
 		setSelectedLanguageIds,
-		setStep,
 		setValue,
-		step,
-		submit,
+		showConfirm: step === 'confirm' || step === 'review',
+		showReview: step === 'review',
 		submitted,
-		toggleSelectedLanguageId,
+		toggleOverwriteLanguageId: (languageId: string) =>
+			toggleLanguageId(setOverwriteLanguageIds, languageId),
+		toggleSelectedLanguageId: (languageId: string) =>
+			toggleLanguageId(setSelectedLanguageIds, languageId),
 		translatedLanguageIds,
 		value,
 	};
