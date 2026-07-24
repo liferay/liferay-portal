@@ -127,7 +127,6 @@ public class DesignLibraryResourcesDisplayContext {
 			"fragmentCollectionExternalReferenceCode",
 			"{embedded.externalReferenceCode}"
 		).buildString();
-
 		String editFragmentCollectionURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
 				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
@@ -140,7 +139,6 @@ public class DesignLibraryResourcesDisplayContext {
 			"fragmentCollectionExternalReferenceCode",
 			"{embedded.externalReferenceCode}"
 		).buildString();
-
 		String editStyleBookEntryURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
 				_httpServletRequest, depotGroup,
