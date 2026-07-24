@@ -131,6 +131,14 @@ public abstract class BaseSectionDisplayContextTestCase {
 			"getFDSFilters", new Class<?>[0]);
 	}
 
+	protected Map<String, Object> getHeaderProps(AssetEntry assetEntry)
+		throws Exception {
+
+		return ReflectionTestUtil.invoke(
+			getSectionDisplayContext(_getHttpServletRequest(assetEntry)),
+			"getHeaderProps", new Class<?>[0]);
+	}
+
 	protected abstract String getObjectDefinitionExternalReferenceCode();
 
 	protected abstract Object getSectionDisplayContext(
