@@ -91,6 +91,8 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -365,6 +367,9 @@ public class ObjectFieldLocalServiceImpl
 		ObjectDefinition objectDefinition =
 			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
 
+		Indexer<ObjectField> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			ObjectField.class);
+
 		for (ObjectField objectField :
 				objectFieldPersistence.findByObjectDefinitionId(
 					objectDefinitionId)) {
@@ -374,6 +379,8 @@ public class ObjectFieldLocalServiceImpl
 			}
 
 			objectFieldPersistence.remove(objectField);
+
+			indexer.delete(objectField);
 
 			if (FeatureFlagManagerUtil.isEnabled(
 					objectField.getCompanyId(), "LPD-17564") &&
