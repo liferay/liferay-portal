@@ -1,8 +1,9 @@
 import Card from 'shared/components/Card';
 import {AccountNames} from 'shared/components/table/cell-components';
-import CardTabs from 'shared/components/CardTabs';
+import CardTabs, {CardTabSizes} from 'shared/components/CardTabs';
 import ClayLink from '@clayui/link';
 import getMetricsMapper from 'shared/hoc/mappers/metrics';
+import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import knownAccountsListAssetQuery from 'shared/queries/knownAccountsListAssetQuery';
 import knownIndividualsListAssetQuery from 'shared/queries/knownIndividualsListAssetQuery';
 import React, {useState} from 'react';
@@ -60,6 +61,7 @@ const AccountsTableWithData = withBaseResults(withAccountsData, {
 	],
 	legacyDropdownRangeKey: false,
 	rowIdentifier: 'id',
+	showDropdownRangeKey: false,
 });
 
 const IndividualsTableWithData = withBaseResults(withIndividualsData, {
@@ -107,6 +109,7 @@ const IndividualsTableWithData = withBaseResults(withIndividualsData, {
 	],
 	legacyDropdownRangeKey: false,
 	rowIdentifier: 'id',
+	showDropdownRangeKey: false,
 });
 
 const TABS = [
@@ -136,9 +139,21 @@ const VisitorsListCard = ({
 
 	return (
 		<Card className="visitors-list-root" pageDisplay>
+			<Card.Header className="align-items-center d-flex justify-content-between">
+				<Card.Title>{Liferay.Language.get('visitors')}</Card.Title>
+
+				<DropdownRangeKey
+					legacy={false}
+					onRangeSelectorChange={setRangeSelectors}
+					rangeSelectors={rangeSelectors}
+				/>
+			</Card.Header>
+
 			<CardTabs
 				activeTabId={activeTabId}
+				className="mx-4 mb-2"
 				onChange={setActiveTabId}
+				size={CardTabSizes.Small}
 				tabs={TABS}
 			/>
 
