@@ -459,7 +459,6 @@ public class DesignLibraryResourcesDisplayContextTest {
 				}
 
 			});
-
 		ReflectionTestUtil.setFieldValue(
 			DesignLibraryResourcesDisplayContext.class,
 			"_fragmentPortletResourcePermissionSnapshot",
@@ -473,7 +472,6 @@ public class DesignLibraryResourcesDisplayContextTest {
 				}
 
 			});
-
 		ReflectionTestUtil.setFieldValue(
 			DesignLibraryResourcesDisplayContext.class,
 			"_styleBookPortletResourcePermissionSnapshot",
