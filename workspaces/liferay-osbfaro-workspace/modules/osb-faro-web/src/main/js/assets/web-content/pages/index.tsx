@@ -16,8 +16,12 @@ import {sub} from 'shared/util/lang';
 import {Switch} from 'react-router-dom';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
+const Accounts = lazy(
+	() => import(/* webpackChunkName: "WebContentAccounts" */ './Accounts')
+);
 const Overview = lazy(
 	() => import(/* webpackChunkName: "WebContentOverview" */ './Overview')
 );
@@ -28,19 +32,6 @@ const KnownIndividuals = lazy(
 			/* webpackChunkName: "WebContentKnownIndividuals" */ './KnownIndividuals'
 		)
 );
-
-const NAV_ITEMS = [
-	{
-		exact: true,
-		label: Liferay.Language.get('overview'),
-		route: Routes.ASSETS_WEB_CONTENT_OVERVIEW,
-	},
-	{
-		exact: true,
-		label: Liferay.Language.get('known-individuals'),
-		route: Routes.ASSETS_WEB_CONTENT_KNOWN_INDIVIDUALS,
-	},
-];
 
 const WebContent: React.FC<{
 	className: string;
@@ -56,6 +47,31 @@ const WebContent: React.FC<{
 			type = '',
 		},
 	} = router;
+
+	const LDPEnabled = useLDPEnabled({groupId});
+
+	const NAV_ITEMS = [
+		{
+			exact: true,
+			label: Liferay.Language.get('overview'),
+			route: Routes.ASSETS_WEB_CONTENT_OVERVIEW,
+		},
+		...(LDPEnabled
+			? [
+					{
+						exact: true,
+						label: Liferay.Language.get('visitors'),
+						route: Routes.ASSETS_WEB_CONTENT_ACCOUNTS,
+					},
+				]
+			: [
+					{
+						exact: true,
+						label: Liferay.Language.get('known-individuals'),
+						route: Routes.ASSETS_WEB_CONTENT_KNOWN_INDIVIDUALS,
+					},
+				]),
+	];
 
 	const [filters] = useState({});
 
@@ -157,6 +173,13 @@ const WebContent: React.FC<{
 								path={
 									Routes.ASSETS_WEB_CONTENT_KNOWN_INDIVIDUALS
 								}
+							/>
+
+							<BundleRouter
+								data={Accounts}
+								destructured={false}
+								exact
+								path={Routes.ASSETS_WEB_CONTENT_ACCOUNTS}
 							/>
 
 							<RouteNotFound />

@@ -1,0 +1,157 @@
+import Card from 'shared/components/Card';
+import CardTabs from 'shared/components/CardTabs';
+import ClayLink from '@clayui/link';
+import getMetricsMapper from 'shared/hoc/mappers/metrics';
+import ObjectEntryKnownAccountsListQuery from 'shared/queries/ObjectEntryKnownAccountsListQuery';
+import ObjectEntryKnownIndividualsListQuery from 'shared/queries/ObjectEntryKnownIndividualsListQuery';
+import React, {useState} from 'react';
+import URLConstants from 'shared/util/url-constants';
+import {
+	accountsListColumns,
+	metricsListColumns,
+} from 'shared/util/table-columns';
+import {
+	compose,
+	withBaseResults,
+	withQueryPagination,
+	withQueryRangeSelectors,
+} from 'shared/hoc';
+import {createOrderIOMap, NAME} from 'shared/util/pagination';
+import {graphql} from '@apollo/client/react/hoc';
+import {RangeSelectors} from 'shared/types';
+import {Routes} from 'shared/util/router';
+import {Sizes} from 'shared/util/constants';
+
+const withAccountsData = () =>
+	graphql(
+		ObjectEntryKnownAccountsListQuery,
+		getMetricsMapper((result) => ({
+			items: result.objectEntry.viewsMetric.accounts.accountNames,
+			total: result.objectEntry.viewsMetric.accounts.total,
+		}))
+	);
+
+const withIndividualsData = () =>
+	graphql(
+		ObjectEntryKnownIndividualsListQuery,
+		getMetricsMapper((result) => ({
+			items: result.objectEntry.viewsMetric.individuals.individuals,
+			total: result.objectEntry.viewsMetric.individuals.total,
+		}))
+	);
+
+const AccountsTableWithData = withBaseResults(withAccountsData, {
+	emptyIcon: {
+		border: false,
+		size: Sizes.XXXLarge,
+		symbol: 'ac_satellite',
+	},
+	emptyTitle: Liferay.Language.get('there-are-no-accounts-found'),
+	getColumns: ({
+		router: {
+			params: {channelId, groupId},
+		},
+	}: {
+		router: {params: {channelId: string; groupId: string}};
+	}) => [
+		{
+			...accountsListColumns.getName({channelId, groupId}),
+			sortable: false,
+		},
+	],
+	legacyDropdownRangeKey: false,
+	rowIdentifier: 'id',
+});
+
+const IndividualsTableWithData = withBaseResults(withIndividualsData, {
+	emptyDescription: (
+		<>
+			<span className="mr-1">
+				{Liferay.Language.get(
+					'check-back-later-to-verify-if-data-has-been-received-from-your-data-sources,-or-you-can-try-a-different-date-range'
+				)}
+			</span>
+
+			<ClayLink
+				href={URLConstants.IndividualsDashboardDocumentation}
+				key="DOCUMENTATION"
+				target="_blank"
+			>
+				{Liferay.Language.get('learn-more-about-individuals')}
+			</ClayLink>
+		</>
+	),
+	emptyIcon: {
+		border: false,
+		size: Sizes.XXXLarge,
+		symbol: 'ac_satellite',
+	},
+	emptyTitle: Liferay.Language.get('there-are-no-individuals-found'),
+	getColumns: ({
+		router: {
+			params: {channelId, groupId},
+		},
+	}: {
+		router: {params: {channelId: string; groupId: string}};
+	}) => [
+		metricsListColumns.getNameEmail({
+			channelId,
+			groupId,
+			route: Routes.CONTACTS_INDIVIDUAL,
+		}),
+	],
+	legacyDropdownRangeKey: false,
+	rowIdentifier: 'id',
+});
+
+const TABS = [
+	{
+		tabId: 'accounts',
+		title: Liferay.Language.get('accounts'),
+	},
+	{
+		tabId: 'individuals',
+		title: Liferay.Language.get('known-individuals'),
+	},
+];
+
+interface IVisitorsListCardProps {
+	rangeSelectors: RangeSelectors;
+	[key: string]: unknown;
+}
+
+const VisitorsListCard = ({
+	rangeSelectors: initialRangeSelectors,
+	...otherProps
+}: IVisitorsListCardProps) => {
+	const [activeTabId, setActiveTabId] = useState(TABS[0].tabId);
+	const [rangeSelectors, setRangeSelectors] = useState<RangeSelectors>(
+		initialRangeSelectors
+	);
+
+	const TableWithData =
+		activeTabId === 'individuals'
+			? IndividualsTableWithData
+			: AccountsTableWithData;
+
+	return (
+		<Card className="visitors-list-root" pageDisplay>
+			<CardTabs
+				activeTabId={activeTabId}
+				onChange={setActiveTabId}
+				tabs={TABS}
+			/>
+
+			<TableWithData
+				{...otherProps}
+				onRangeSelectorsChange={setRangeSelectors}
+				rangeSelectors={rangeSelectors}
+			/>
+		</Card>
+	);
+};
+
+export default compose<React.ComponentType<any>>(
+	withQueryPagination({initialOrderIOMap: createOrderIOMap(NAME)}),
+	withQueryRangeSelectors()
+)(VisitorsListCard);

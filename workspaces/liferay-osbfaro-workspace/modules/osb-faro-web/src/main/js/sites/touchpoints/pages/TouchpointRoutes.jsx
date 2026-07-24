@@ -24,6 +24,9 @@ import {useDataSources} from 'shared/context/dataSources';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
+const Accounts = lazy(() =>
+	import(/* webpackChunkName: "TouchpointAccountsPage" */ './Accounts')
+);
 const KnownIndividuals = lazy(() =>
 	import(
 		/* webpackChunkName: "TouchpointKnownIndividualsPage" */ './KnownIndividuals'
@@ -38,24 +41,6 @@ const TouchpointPathPage = lazy(() =>
 	import(/* webpackChunkName: "TouchpointPathPage" */ './PagePath')
 );
 
-const NAV_ITEMS = [
-	{
-		exact: true,
-		label: Liferay.Language.get('overview'),
-		route: Routes.SITES_TOUCHPOINTS_OVERVIEW
-	},
-	{
-		exact: true,
-		label: Liferay.Language.get('path'),
-		route: Routes.SITES_TOUCHPOINTS_PATH
-	},
-	{
-		exact: true,
-		label: Liferay.Language.get('known-individuals'),
-		route: Routes.SITES_TOUCHPOINTS_KNOWN_INDIVIDUALS
-	}
-];
-
 function TouchpointRoutes({className, router}) {
 	const dataSourceStates = useDataSources();
 	const rangeSelectors = useQueryRangeSelectors();
@@ -66,6 +51,29 @@ function TouchpointRoutes({className, router}) {
 		title,
 		touchpoint
 	} = router.params;
+	const LDPEnabled = useLDPEnabled({groupId});
+	const NAV_ITEMS = [
+		{
+			exact: true,
+			label: Liferay.Language.get('overview'),
+			route: Routes.SITES_TOUCHPOINTS_OVERVIEW
+		},
+		{
+			exact: true,
+			label: Liferay.Language.get('path'),
+			route: Routes.SITES_TOUCHPOINTS_PATH
+		},
+		LDPEnabled && {
+			exact: true,
+			label: Liferay.Language.get('visitors'),
+			route: Routes.SITES_TOUCHPOINTS_ACCOUNTS
+		},
+		!LDPEnabled && {
+			exact: true,
+			label: Liferay.Language.get('known-individuals'),
+			route: Routes.SITES_TOUCHPOINTS_KNOWN_INDIVIDUALS
+		}
+	].filter(Boolean);
 	const [pathRangeSelectors, setPathRangeSelectors] =
 		useState(rangeSelectors);
 	const {selectedChannel} = useChannelContext();
@@ -75,7 +83,6 @@ function TouchpointRoutes({className, router}) {
 	const [selectedSegment, setSelectedSegment] = useState({});
 	const [experienceId, setExperienceId] = useState(experienceIdfromURL);
 	const history = useHistory();
-	const LDPEnabled = useLDPEnabled({groupId});
 
 	useEffect(() => {
 		setPathRangeSelectors(rangeSelectors);
@@ -236,6 +243,13 @@ function TouchpointRoutes({className, router}) {
 								destructured={false}
 								exact
 								path={Routes.SITES_TOUCHPOINTS_PATH}
+							/>
+
+							<BundleRouter
+								data={Accounts}
+								destructured={false}
+								exact
+								path={Routes.SITES_TOUCHPOINTS_ACCOUNTS}
 							/>
 
 							<RouteNotFound />

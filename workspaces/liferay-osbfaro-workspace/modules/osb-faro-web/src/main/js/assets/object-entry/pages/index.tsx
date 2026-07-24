@@ -14,8 +14,12 @@ import {sub} from 'shared/util/lang';
 import {Switch} from 'react-router-dom';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
+const Accounts = lazy(
+	() => import(/* webpackChunkName: "ObjectEntryAccounts" */ './Accounts')
+);
 const Overview = lazy(
 	() => import(/* webpackChunkName: "ObjectEntryOverview" */ './Overview')
 );
@@ -27,19 +31,6 @@ const KnownIndividuals = lazy(
 			/* webpackChunkName: "ObjectEntryKnownIndividuals" */ './KnownIndividualsListCard'
 		)
 );
-
-const NAV_ITEMS = [
-	{
-		exact: true,
-		label: Liferay.Language.get('overview'),
-		route: Routes.ASSETS_OBJECT_ENTRY_OVERVIEW,
-	},
-	{
-		exact: true,
-		label: Liferay.Language.get('known-individuals'),
-		route: Routes.ASSETS_OBJECT_ENTRY_KNOWN_INDIVIDUALS,
-	},
-];
 
 const ObjectEntry: React.FC<{
 	className: string;
@@ -55,6 +46,31 @@ const ObjectEntry: React.FC<{
 			type = '',
 		},
 	} = router;
+
+	const LDPEnabled = useLDPEnabled({groupId});
+
+	const NAV_ITEMS = [
+		{
+			exact: true,
+			label: Liferay.Language.get('overview'),
+			route: Routes.ASSETS_OBJECT_ENTRY_OVERVIEW,
+		},
+		...(LDPEnabled
+			? [
+					{
+						exact: true,
+						label: Liferay.Language.get('visitors'),
+						route: Routes.ASSETS_OBJECT_ENTRY_ACCOUNTS,
+					},
+				]
+			: [
+					{
+						exact: true,
+						label: Liferay.Language.get('known-individuals'),
+						route: Routes.ASSETS_OBJECT_ENTRY_KNOWN_INDIVIDUALS,
+					},
+				]),
+	];
 
 	const [filters] = useState({});
 
@@ -146,6 +162,13 @@ const ObjectEntry: React.FC<{
 								path={
 									Routes.ASSETS_OBJECT_ENTRY_KNOWN_INDIVIDUALS
 								}
+							/>
+
+							<BundleRouter
+								data={Accounts}
+								destructured={false}
+								exact
+								path={Routes.ASSETS_OBJECT_ENTRY_ACCOUNTS}
 							/>
 
 							<RouteNotFound />

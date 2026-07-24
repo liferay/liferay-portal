@@ -16,8 +16,12 @@ import {sub} from 'shared/util/lang';
 import {Switch} from 'react-router-dom';
 import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
 
+const Accounts = lazy(
+	() => import(/* webpackChunkName: "BlogsAccounts" */ './Accounts')
+);
 const Overview = lazy(
 	() => import(/* webpackChunkName: "BlogsOverview" */ './Overview')
 );
@@ -29,19 +33,6 @@ const KnownIndividuals = lazy(
 		)
 );
 
-const NAV_ITEMS = [
-	{
-		exact: true,
-		label: Liferay.Language.get('overview'),
-		route: Routes.ASSETS_BLOGS_OVERVIEW,
-	},
-	{
-		exact: true,
-		label: Liferay.Language.get('known-individuals'),
-		route: Routes.ASSETS_BLOGS_KNOWN_INDIVIDUALS,
-	},
-];
-
 const Blog: React.FC<{
 	className: string;
 	router: Router;
@@ -49,6 +40,31 @@ const Blog: React.FC<{
 	const {
 		params: {assetId, channelId, groupId, title, touchpoint, type},
 	} = router;
+
+	const LDPEnabled = useLDPEnabled({groupId: groupId!});
+
+	const NAV_ITEMS = [
+		{
+			exact: true,
+			label: Liferay.Language.get('overview'),
+			route: Routes.ASSETS_BLOGS_OVERVIEW,
+		},
+		...(LDPEnabled
+			? [
+					{
+						exact: true,
+						label: Liferay.Language.get('visitors'),
+						route: Routes.ASSETS_BLOGS_ACCOUNTS,
+					},
+				]
+			: [
+					{
+						exact: true,
+						label: Liferay.Language.get('known-individuals'),
+						route: Routes.ASSETS_BLOGS_KNOWN_INDIVIDUALS,
+					},
+				]),
+	];
 
 	const [filters] = useState({});
 
@@ -155,6 +171,13 @@ const Blog: React.FC<{
 								destructured={false}
 								exact
 								path={Routes.ASSETS_BLOGS_KNOWN_INDIVIDUALS}
+							/>
+
+							<BundleRouter
+								data={Accounts}
+								destructured={false}
+								exact
+								path={Routes.ASSETS_BLOGS_ACCOUNTS}
 							/>
 
 							<RouteNotFound />
