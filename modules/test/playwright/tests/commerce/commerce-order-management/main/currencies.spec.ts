@@ -13,7 +13,7 @@ import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
-	performUserSwitch,
+	performUserSwitchViaApi,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
@@ -147,8 +147,6 @@ test(
 			await commerceAdminChannelDetailsPage.changeChannelDefaultCurrency(
 				'INR'
 			);
-
-			await waitForAlert(page);
 		});
 
 		const {buyerUser} = await createAccountWithBuyerUser(
@@ -156,7 +154,7 @@ test(
 			site.id
 		);
 
-		await performUserSwitch(page, buyerUser.alternateName);
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
 
 		await test.step('Product details page price is in Indian format', async () => {
 			await page.goto(`/web${site.friendlyUrlPath}/p/${productName}`);
