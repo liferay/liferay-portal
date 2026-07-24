@@ -21,10 +21,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Roberto Díaz
  */
 @Component(
-	property = "frontend.data.set.name=" + CMSSiteInitializerFDSNames.SPACE_MEMBERS_USERS_SUMMARY_SECTION,
+	property = "frontend.data.set.name=" + CMSSiteInitializerFDSNames.SPACE_MEMBERS_USER_GROUPS_SUMMARY_SECTION,
 	service = FDSView.class
 )
-public class UsersSummarySectionTableFDSView extends BaseTableFDSView {
+public class SpaceMembersUserGroupsSummarySectionTableFDSView
+	extends BaseTableFDSView {
 
 	@Override
 	public FDSTableSchema getFDSTableSchema(Locale locale) {
@@ -34,7 +35,7 @@ public class UsersSummarySectionTableFDSView extends BaseTableFDSView {
 		return fdsTableSchemaBuilder.add(
 			"name", "members",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"userTableCellRenderer")
+				"userGroupTableCellRenderer")
 		).build();
 	}
 
