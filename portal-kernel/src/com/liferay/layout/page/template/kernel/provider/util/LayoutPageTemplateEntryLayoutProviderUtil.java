@@ -19,10 +19,14 @@ public class LayoutPageTemplateEntryLayoutProviderUtil {
 		long groupId, String externalReferenceCode, long plid) {
 
 		LayoutPageTemplateEntryLayoutProvider
-			layoutPageTemplateEntryLayoutProviderUtil =
+			layoutPageTemplateEntryLayoutProvider =
 				_layoutPageTemplateEntryLayoutProviderSnapshot.get();
 
-		return layoutPageTemplateEntryLayoutProviderUtil.
+		if (layoutPageTemplateEntryLayoutProvider == null) {
+			return null;
+		}
+
+		return layoutPageTemplateEntryLayoutProvider.
 			getLayoutPageTemplateEntryLayout(
 				groupId, externalReferenceCode, plid);
 	}
@@ -34,6 +38,10 @@ public class LayoutPageTemplateEntryLayoutProviderUtil {
 		LayoutPageTemplateEntryLayoutProvider
 			layoutPageTemplateEntryLayoutProvider =
 				_layoutPageTemplateEntryLayoutProviderSnapshot.get();
+
+		if (layoutPageTemplateEntryLayoutProvider == null) {
+			return null;
+		}
 
 		return layoutPageTemplateEntryLayoutProvider.
 			getLayoutPageTemplateEntryLayoutPrototype(
