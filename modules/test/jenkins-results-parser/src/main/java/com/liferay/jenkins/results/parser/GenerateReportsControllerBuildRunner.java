@@ -243,7 +243,8 @@ public class GenerateReportsControllerBuildRunner
 
 		String jobURL = JenkinsResultsParserUtil.combine(
 			JenkinsResultsParserUtil.getMostAvailableMasterURL(
-				"http://test-1.liferay.com", null, 1, "generate-reports"),
+				"http://" + buildData.getCohortName() + ".liferay.com", null, 1,
+				"generate-reports"),
 			"/job/generate-reports");
 
 		sb.append(jobURL);
