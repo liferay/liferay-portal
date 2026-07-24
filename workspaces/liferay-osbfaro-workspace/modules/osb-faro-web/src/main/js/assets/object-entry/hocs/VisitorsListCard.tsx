@@ -1,4 +1,5 @@
 import Card from 'shared/components/Card';
+import {AccountNames} from 'shared/components/table/cell-components';
 import CardTabs from 'shared/components/CardTabs';
 import ClayLink from '@clayui/link';
 import getMetricsMapper from 'shared/hoc/mappers/metrics';
@@ -99,6 +100,13 @@ const IndividualsTableWithData = withBaseResults(withIndividualsData, {
 			groupId,
 			route: Routes.CONTACTS_INDIVIDUAL,
 		}),
+
+		{
+			accessor: 'accountName',
+			cellRenderer: AccountNames,
+			label: Liferay.Language.get('account-name'),
+			sortable: false,
+		},
 	],
 	legacyDropdownRangeKey: false,
 	rowIdentifier: 'id',
