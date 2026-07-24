@@ -481,7 +481,7 @@
 															{
 																"definition": {
 																	"fragment": {
-																		"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewSpaceMembersSummaryJSPSectionFragmentRenderer"
+																		"key": "com.liferay.site.cmp.site.initializer.internal.fragment.renderer.ViewProjectMembersSummaryJSPSectionFragmentRenderer"
 																	},
 																	"fragmentConfig": {
 																	},
