@@ -5,9 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItem;
@@ -27,13 +24,11 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSpaceConstants;
 import com.liferay.site.cms.site.initializer.internal.util.SpaceSummaryHeaderUtil;
-import com.liferay.site.cms.site.initializer.util.CMSDepotEntryGroupUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @author Roberto Díaz
@@ -41,8 +36,7 @@ import java.util.Objects;
 public class ViewSpaceMembersSummarySectionDisplayContext {
 
 	public ViewSpaceMembersSummarySectionDisplayContext(
-			DepotEntryLocalService depotEntryLocalService, long groupId,
-			GroupLocalService groupLocalService,
+			long groupId, GroupLocalService groupLocalService,
 			ModelResourcePermission<Group> groupModelResourcePermission,
 			HttpServletRequest httpServletRequest, Language language,
 			UserGroupLocalService userGroupLocalService,
@@ -55,8 +49,6 @@ public class ViewSpaceMembersSummarySectionDisplayContext {
 		_language = language;
 		_userGroupLocalService = userGroupLocalService;
 		_userLocalService = userLocalService;
-
-		_depotEntry = depotEntryLocalService.fetchGroupDepotEntry(groupId);
 
 		_group = groupLocalService.getGroup(groupId);
 
@@ -137,18 +129,6 @@ public class ViewSpaceMembersSummarySectionDisplayContext {
 				"assetLibraryCreatorUserId", _getAssetLibraryCreatorUserId()
 			).put(
 				"externalReferenceCode", _externalReferenceCode
-			).put(
-				"filter",
-				() -> {
-					if (!Objects.equals(
-							_depotEntry.getType(),
-							DepotConstants.TYPE_PROJECT)) {
-
-						return null;
-					}
-
-					return CMSDepotEntryGroupUtil.getFilterString();
-				}
 			).build(),
 			_getSpaceMembersHeaderTitle(), StringPool.BLANK);
 	}
@@ -187,7 +167,6 @@ public class ViewSpaceMembersSummarySectionDisplayContext {
 			ActionKeys.ASSIGN_MEMBERS);
 	}
 
-	private final DepotEntry _depotEntry;
 	private final String _externalReferenceCode;
 	private final Group _group;
 	private final long _groupId;
