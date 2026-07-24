@@ -83,6 +83,14 @@ public class WorkspaceGitRepositoryTest
 		).uploadGitArchives();
 	}
 
+	@Test
+	public void testSnapshotStateAfterPromoteGitArchive() throws Exception {
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, true));
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, false));
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(false, true));
+		Assert.assertFalse(_isSnapshotAfterPromoteGitArchive(false, false));
+	}
+
 	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)
 		throws Exception {
 
@@ -99,6 +107,39 @@ public class WorkspaceGitRepositoryTest
 			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
 
 		return defaultWorkspaceGitRepository.isFullDotGitDirArchiveRequired();
+	}
+
+	private boolean _isSnapshotAfterPromoteGitArchive(
+			boolean gitArchiveAvailable, boolean snapshot)
+		throws Exception {
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+
+		Mockito.doReturn(
+			gitArchiveAvailable
+		).when(
+			defaultWorkspaceGitRepository
+		).isGitArchivesAvailable();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).touchGitArchives();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).updateBuildDatabase();
+
+		defaultWorkspaceGitRepository.setSnapshot(snapshot);
+
+		defaultWorkspaceGitRepository.promoteGitArchive();
+
+		return defaultWorkspaceGitRepository.isSnapshot();
 	}
 
 	private DefaultWorkspaceGitRepository _newDefaultWorkspaceGitRepository(
