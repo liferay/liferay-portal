@@ -12,7 +12,6 @@ import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -293,11 +292,11 @@ public class AMImageHTMLExportImportContentProcessorTest {
 
 	@Test
 	public void testImportContentIgnoresInvalidReferences() throws Exception {
-		Mockito.doThrow(
-			PortalException.class
+		Mockito.doReturn(
+			null
 		).when(
 			_dlAppLocalService
-		).getFileEntry(
+		).fetchFileEntry(
 			_FILE_ENTRY_ID_1
 		);
 
@@ -443,7 +442,7 @@ public class AMImageHTMLExportImportContentProcessorTest {
 			fileEntry
 		).when(
 			_dlAppLocalService
-		).getFileEntry(
+		).fetchFileEntry(
 			fileEntryId
 		);
 
