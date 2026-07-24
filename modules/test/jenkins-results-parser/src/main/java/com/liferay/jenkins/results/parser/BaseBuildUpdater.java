@@ -103,6 +103,18 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 			_missingReinvocationCount++;
 			_missingTickCount = 0;
 
+			if (_hasMatchingBuild()) {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						"[", _build.getBuildName(),
+						"] Skipped reinvoking a build that is already queued ",
+						"or running"));
+
+				_build.setStatus("queued");
+
+				return;
+			}
+
 			_build.reset();
 
 			reinvoke();
@@ -225,6 +237,33 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 		}
 
 		return _MISSING_REINVOKE_TICK_COUNT_DEFAULT;
+	}
+
+	private boolean _hasMatchingBuild() {
+		Build build = getBuild();
+
+		Build.Invocation currentInvocation = build.getCurrentInvocation();
+
+		if (currentInvocation == null) {
+			return false;
+		}
+
+		JenkinsMaster jenkinsMaster = currentInvocation.getJenkinsMaster();
+
+		if (jenkinsMaster == null) {
+			return false;
+		}
+
+		String jobName = build.getJobName();
+		Map<String, String> parameters = build.getParameters();
+
+		if (jenkinsMaster.isBuildInProgress(jobName, parameters) ||
+			jenkinsMaster.isBuildQueued(jobName, parameters)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _hasMaximumInvocationCount() {
