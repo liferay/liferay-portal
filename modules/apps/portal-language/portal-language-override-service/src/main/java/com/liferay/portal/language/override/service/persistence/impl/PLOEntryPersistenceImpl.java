@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.language.override.exception.NoSuchPLOEntryException;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.model.PLOEntryTable;
@@ -45,6 +46,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -163,6 +165,71 @@ public class PLOEntryPersistenceImpl
 	public int countByCompanyId(long companyId) {
 		return _collectionPersistenceFinderByCompanyId.count(
 			finderCache, new Object[] {companyId});
+	}
+
+	private UniquePersistenceFinder<PLOEntry, NoSuchPLOEntryException>
+		_uniquePersistenceFinderByC_ERC;
+
+	/**
+	 * Returns the plo entry where companyId = &#63; and externalReferenceCode = &#63; or throws a <code>NoSuchPLOEntryException</code> if it could not be found.
+	 *
+	 * @param companyId the company ID
+	 * @param externalReferenceCode the external reference code
+	 * @return the matching plo entry
+	 * @throws NoSuchPLOEntryException if a matching plo entry could not be found
+	 */
+	@Override
+	public PLOEntry findByC_ERC(long companyId, String externalReferenceCode)
+		throws NoSuchPLOEntryException {
+
+		return _uniquePersistenceFinderByC_ERC.find(
+			finderCache, new Object[] {companyId, externalReferenceCode});
+	}
+
+	/**
+	 * Returns the plo entry where companyId = &#63; and externalReferenceCode = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param companyId the company ID
+	 * @param externalReferenceCode the external reference code
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching plo entry, or <code>null</code> if a matching plo entry could not be found
+	 */
+	@Override
+	public PLOEntry fetchByC_ERC(
+		long companyId, String externalReferenceCode, boolean useFinderCache) {
+
+		return _uniquePersistenceFinderByC_ERC.fetch(
+			finderCache, new Object[] {companyId, externalReferenceCode},
+			useFinderCache);
+	}
+
+	/**
+	 * Removes the plo entry where companyId = &#63; and externalReferenceCode = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param externalReferenceCode the external reference code
+	 * @return the plo entry that was removed
+	 */
+	@Override
+	public PLOEntry removeByC_ERC(long companyId, String externalReferenceCode)
+		throws NoSuchPLOEntryException {
+
+		PLOEntry ploEntry = findByC_ERC(companyId, externalReferenceCode);
+
+		return remove(ploEntry);
+	}
+
+	/**
+	 * Returns the number of plo entries where companyId = &#63; and externalReferenceCode = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param externalReferenceCode the external reference code
+	 * @return the number of matching plo entries
+	 */
+	@Override
+	public int countByC_ERC(long companyId, String externalReferenceCode) {
+		return _uniquePersistenceFinderByC_ERC.count(
+			finderCache, new Object[] {companyId, externalReferenceCode});
 	}
 
 	private CollectionPersistenceFinder<PLOEntry, NoSuchPLOEntryException>
@@ -511,6 +578,45 @@ public class PLOEntryPersistenceImpl
 
 		PLOEntryModelImpl ploEntryModelImpl = (PLOEntryModelImpl)ploEntry;
 
+		if (Validator.isNull(ploEntry.getExternalReferenceCode())) {
+			ploEntry.setExternalReferenceCode(
+				String.valueOf(ploEntry.getPrimaryKey()));
+		}
+		else {
+			if (!Objects.equals(
+					ploEntryModelImpl.getColumnOriginalValue(
+						"externalReferenceCode"),
+					ploEntry.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId = ploEntry.getCompanyId();
+
+					long groupId = 0;
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = ploEntry.getPrimaryKey();
+					}
+
+					try {
+						ploEntry.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								PLOEntry.class.getName(), classPK,
+								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
+								ploEntry.getExternalReferenceCode(), null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
+		}
+
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
@@ -670,6 +776,22 @@ public class PLOEntryPersistenceImpl
 					"ploEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
 					true, PLOEntry::getCompanyId));
 
+		_uniquePersistenceFinderByC_ERC = new UniquePersistenceFinder<>(
+			this,
+			createUniqueFinderPath(
+				FINDER_CLASS_NAME_ENTITY, "fetchByC_ERC",
+				new String[] {Long.class.getName(), String.class.getName()},
+				new String[] {"companyId", "externalReferenceCode"}, 0, 2,
+				false, PLOEntry::getCompanyId,
+				convertNullFunction(PLOEntry::getExternalReferenceCode)),
+			_SQL_SELECT_PLOENTRY_WHERE, "",
+			new FinderColumn<>(
+				"ploEntry.", "companyId", FinderColumn.Type.LONG, "=", true,
+				true, PLOEntry::getCompanyId),
+			new FinderColumn<>(
+				"ploEntry.", "externalReferenceCode", FinderColumn.Type.STRING,
+				"=", true, true, PLOEntry::getExternalReferenceCode));
+
 		_collectionPersistenceFinderByC_K = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -809,4 +931,4 @@ public class PLOEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1297784821
+// LIFERAY-SERVICE-BUILDER-HASH:779616534

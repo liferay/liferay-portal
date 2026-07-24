@@ -30,6 +30,10 @@ public class PLOEntryTable extends BaseTable<PLOEntryTable> {
 		"ploEntryId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
 	public final Column<PLOEntryTable, Long> companyId = createColumn(
 		"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<PLOEntryTable, String> externalReferenceCode =
+		createColumn(
+			"externalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<PLOEntryTable, Long> userId = createColumn(
 		"userId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<PLOEntryTable, Date> createDate = createColumn(
@@ -48,4 +52,4 @@ public class PLOEntryTable extends BaseTable<PLOEntryTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1410306551
+// LIFERAY-SERVICE-BUILDER-HASH:1176643334

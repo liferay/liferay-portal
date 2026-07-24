@@ -63,10 +63,10 @@ public class PLOEntryModelImpl
 
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"ploEntryId", Types.BIGINT},
-		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
-		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
-		{"key_", Types.VARCHAR}, {"languageId", Types.VARCHAR},
-		{"value", Types.CLOB}
+		{"companyId", Types.BIGINT}, {"externalReferenceCode", Types.VARCHAR},
+		{"userId", Types.BIGINT}, {"createDate", Types.TIMESTAMP},
+		{"modifiedDate", Types.TIMESTAMP}, {"key_", Types.VARCHAR},
+		{"languageId", Types.VARCHAR}, {"value", Types.CLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -76,6 +76,7 @@ public class PLOEntryModelImpl
 		TABLE_COLUMNS_MAP.put("mvccVersion", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("ploEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("externalReferenceCode", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
@@ -85,7 +86,7 @@ public class PLOEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PLOEntry (mvccVersion LONG default 0 not null,ploEntryId LONG not null primary key,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,key_ VARCHAR(1000) null,languageId VARCHAR(75) null,value TEXT null)";
+		"create table PLOEntry (mvccVersion LONG default 0 not null,ploEntryId LONG not null primary key,companyId LONG,externalReferenceCode VARCHAR(75) null,userId LONG,createDate DATE null,modifiedDate DATE null,key_ VARCHAR(1000) null,languageId VARCHAR(75) null,value TEXT null)";
 
 	public static final String TABLE_SQL_DROP = "drop table PLOEntry";
 
@@ -111,13 +112,19 @@ public class PLOEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long KEY_COLUMN_BITMASK = 2L;
+	public static final long EXTERNALREFERENCECODE_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LANGUAGEID_COLUMN_BITMASK = 4L;
+	public static final long KEY_COLUMN_BITMASK = 4L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long LANGUAGEID_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -230,6 +237,8 @@ public class PLOEntryModelImpl
 				"mvccVersion", PLOEntry::getMvccVersion);
 			attributeGetterFunctions.put("ploEntryId", PLOEntry::getPloEntryId);
 			attributeGetterFunctions.put("companyId", PLOEntry::getCompanyId);
+			attributeGetterFunctions.put(
+				"externalReferenceCode", PLOEntry::getExternalReferenceCode);
 			attributeGetterFunctions.put("userId", PLOEntry::getUserId);
 			attributeGetterFunctions.put("createDate", PLOEntry::getCreateDate);
 			attributeGetterFunctions.put(
@@ -262,6 +271,10 @@ public class PLOEntryModelImpl
 			attributeSetterBiConsumers.put(
 				"companyId",
 				(BiConsumer<PLOEntry, Long>)PLOEntry::setCompanyId);
+			attributeSetterBiConsumers.put(
+				"externalReferenceCode",
+				(BiConsumer<PLOEntry, String>)
+					PLOEntry::setExternalReferenceCode);
 			attributeSetterBiConsumers.put(
 				"userId", (BiConsumer<PLOEntry, Long>)PLOEntry::setUserId);
 			attributeSetterBiConsumers.put(
@@ -337,6 +350,35 @@ public class PLOEntryModelImpl
 	public long getOriginalCompanyId() {
 		return GetterUtil.getLong(
 			this.<Long>getColumnOriginalValue("companyId"));
+	}
+
+	@JSON
+	@Override
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCode == null) {
+			return "";
+		}
+		else {
+			return _externalReferenceCode;
+		}
+	}
+
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_externalReferenceCode = externalReferenceCode;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public String getOriginalExternalReferenceCode() {
+		return getColumnOriginalValue("externalReferenceCode");
 	}
 
 	@JSON
@@ -543,6 +585,7 @@ public class PLOEntryModelImpl
 		ploEntryImpl.setMvccVersion(getMvccVersion());
 		ploEntryImpl.setPloEntryId(getPloEntryId());
 		ploEntryImpl.setCompanyId(getCompanyId());
+		ploEntryImpl.setExternalReferenceCode(getExternalReferenceCode());
 		ploEntryImpl.setUserId(getUserId());
 		ploEntryImpl.setCreateDate(getCreateDate());
 		ploEntryImpl.setModifiedDate(getModifiedDate());
@@ -565,6 +608,8 @@ public class PLOEntryModelImpl
 			this.<Long>getColumnOriginalValue("ploEntryId"));
 		ploEntryImpl.setCompanyId(
 			this.<Long>getColumnOriginalValue("companyId"));
+		ploEntryImpl.setExternalReferenceCode(
+			this.<String>getColumnOriginalValue("externalReferenceCode"));
 		ploEntryImpl.setUserId(this.<Long>getColumnOriginalValue("userId"));
 		ploEntryImpl.setCreateDate(
 			this.<Date>getColumnOriginalValue("createDate"));
@@ -654,6 +699,16 @@ public class PLOEntryModelImpl
 		ploEntryCacheModel.ploEntryId = getPloEntryId();
 
 		ploEntryCacheModel.companyId = getCompanyId();
+
+		ploEntryCacheModel.externalReferenceCode = getExternalReferenceCode();
+
+		String externalReferenceCode = ploEntryCacheModel.externalReferenceCode;
+
+		if ((externalReferenceCode != null) &&
+			(externalReferenceCode.length() == 0)) {
+
+			ploEntryCacheModel.externalReferenceCode = null;
+		}
 
 		ploEntryCacheModel.userId = getUserId();
 
@@ -763,6 +818,7 @@ public class PLOEntryModelImpl
 	private long _mvccVersion;
 	private long _ploEntryId;
 	private long _companyId;
+	private String _externalReferenceCode;
 	private long _userId;
 	private Date _createDate;
 	private Date _modifiedDate;
@@ -804,6 +860,8 @@ public class PLOEntryModelImpl
 		_columnOriginalValues.put("mvccVersion", _mvccVersion);
 		_columnOriginalValues.put("ploEntryId", _ploEntryId);
 		_columnOriginalValues.put("companyId", _companyId);
+		_columnOriginalValues.put(
+			"externalReferenceCode", _externalReferenceCode);
 		_columnOriginalValues.put("userId", _userId);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
@@ -839,17 +897,19 @@ public class PLOEntryModelImpl
 
 		columnBitmasks.put("companyId", 4L);
 
-		columnBitmasks.put("userId", 8L);
+		columnBitmasks.put("externalReferenceCode", 8L);
 
-		columnBitmasks.put("createDate", 16L);
+		columnBitmasks.put("userId", 16L);
 
-		columnBitmasks.put("modifiedDate", 32L);
+		columnBitmasks.put("createDate", 32L);
 
-		columnBitmasks.put("key_", 64L);
+		columnBitmasks.put("modifiedDate", 64L);
 
-		columnBitmasks.put("languageId", 128L);
+		columnBitmasks.put("key_", 128L);
 
-		columnBitmasks.put("value", 256L);
+		columnBitmasks.put("languageId", 256L);
+
+		columnBitmasks.put("value", 512L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -858,4 +918,4 @@ public class PLOEntryModelImpl
 	private PLOEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-399023457
+// LIFERAY-SERVICE-BUILDER-HASH:-1083603978

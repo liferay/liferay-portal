@@ -116,6 +116,8 @@ public class PLOEntryPersistenceTest {
 
 		newPLOEntry.setCompanyId(RandomTestUtil.nextLong());
 
+		newPLOEntry.setExternalReferenceCode(RandomTestUtil.randomString());
+
 		newPLOEntry.setUserId(RandomTestUtil.nextLong());
 
 		newPLOEntry.setCreateDate(RandomTestUtil.nextDate());
@@ -142,6 +144,9 @@ public class PLOEntryPersistenceTest {
 		Assert.assertEquals(
 			existingPLOEntry.getCompanyId(), newPLOEntry.getCompanyId());
 		Assert.assertEquals(
+			existingPLOEntry.getExternalReferenceCode(),
+			newPLOEntry.getExternalReferenceCode());
+		Assert.assertEquals(
 			existingPLOEntry.getUserId(), newPLOEntry.getUserId());
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingPLOEntry.getCreateDate()),
@@ -161,6 +166,15 @@ public class PLOEntryPersistenceTest {
 		_persistence.countByCompanyId(RandomTestUtil.nextLong());
 
 		_persistence.countByCompanyId(0L);
+	}
+
+	@Test
+	public void testCountByC_ERC() throws Exception {
+		_persistence.countByC_ERC(RandomTestUtil.nextLong(), "");
+
+		_persistence.countByC_ERC(0L, "null");
+
+		_persistence.countByC_ERC(0L, (String)null);
 	}
 
 	@Test
@@ -216,8 +230,8 @@ public class PLOEntryPersistenceTest {
 	protected OrderByComparator<PLOEntry> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"PLOEntry", "mvccVersion", true, "ploEntryId", true, "companyId",
-			true, "userId", true, "createDate", true, "modifiedDate", true,
-			"key", true, "languageId", true);
+			true, "externalReferenceCode", true, "userId", true, "createDate",
+			true, "modifiedDate", true, "key", true, "languageId", true);
 	}
 
 	@Test
@@ -483,6 +497,17 @@ public class PLOEntryPersistenceTest {
 				ploEntry, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "companyId"));
 		Assert.assertEquals(
+			ploEntry.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				ploEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+
+		Assert.assertEquals(
+			Long.valueOf(ploEntry.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				ploEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+		Assert.assertEquals(
 			ploEntry.getKey(),
 			ReflectionTestUtil.invoke(
 				ploEntry, "getColumnOriginalValue",
@@ -500,6 +525,8 @@ public class PLOEntryPersistenceTest {
 		PLOEntry ploEntry = _persistence.create(pk);
 
 		ploEntry.setCompanyId(RandomTestUtil.nextLong());
+
+		ploEntry.setExternalReferenceCode(RandomTestUtil.randomString());
 
 		ploEntry.setUserId(RandomTestUtil.nextLong());
 
@@ -523,4 +550,4 @@ public class PLOEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1502411394
+// LIFERAY-SERVICE-BUILDER-HASH:-119168978

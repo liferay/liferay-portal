@@ -67,7 +67,7 @@ public class PLOEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(19);
+		StringBundler sb = new StringBundler(21);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -75,6 +75,8 @@ public class PLOEntryCacheModel
 		sb.append(ploEntryId);
 		sb.append(", companyId=");
 		sb.append(companyId);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", userId=");
 		sb.append(userId);
 		sb.append(", createDate=");
@@ -99,6 +101,14 @@ public class PLOEntryCacheModel
 		ploEntryImpl.setMvccVersion(mvccVersion);
 		ploEntryImpl.setPloEntryId(ploEntryId);
 		ploEntryImpl.setCompanyId(companyId);
+
+		if (externalReferenceCode == null) {
+			ploEntryImpl.setExternalReferenceCode("");
+		}
+		else {
+			ploEntryImpl.setExternalReferenceCode(externalReferenceCode);
+		}
+
 		ploEntryImpl.setUserId(userId);
 
 		if (createDate == Long.MIN_VALUE) {
@@ -150,6 +160,7 @@ public class PLOEntryCacheModel
 		ploEntryId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
+		externalReferenceCode = objectInput.readUTF();
 
 		userId = objectInput.readLong();
 		createDate = objectInput.readLong();
@@ -166,6 +177,13 @@ public class PLOEntryCacheModel
 		objectOutput.writeLong(ploEntryId);
 
 		objectOutput.writeLong(companyId);
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
+		}
 
 		objectOutput.writeLong(userId);
 		objectOutput.writeLong(createDate);
@@ -196,6 +214,7 @@ public class PLOEntryCacheModel
 	public long mvccVersion;
 	public long ploEntryId;
 	public long companyId;
+	public String externalReferenceCode;
 	public long userId;
 	public long createDate;
 	public long modifiedDate;
@@ -204,4 +223,4 @@ public class PLOEntryCacheModel
 	public String value;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1858414106
+// LIFERAY-SERVICE-BUILDER-HASH:-2030323553
