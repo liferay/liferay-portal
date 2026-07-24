@@ -13,17 +13,17 @@
 }
 
 .design-library-fds-wrapper--landing {
-	.design-library-fds-sticker-designlibrary {
-		background-color: $teal-l3;
-		color: $teal;
-	}
-
 	.card-item-first {
 		background-color: $teal-l3;
 
 		.card-type-asset-icon {
 			color: $teal;
 		}
+	}
+
+	.design-library-fds-sticker-designlibrary {
+		background-color: $teal-l3;
+		color: $teal;
 	}
 }
 
