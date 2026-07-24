@@ -26,15 +26,15 @@ public class FragmentDepotRolePermissionsContributor
 	public List<DepotRolePermission> getDepotRolePermissions() {
 		return List.of(
 			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
-				FragmentConstants.RESOURCE_NAME,
-				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES),
-			new DepotRolePermission(
 				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
 				FragmentConstants.RESOURCE_NAME,
 				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES),
 			new DepotRolePermission(
 				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+				FragmentConstants.RESOURCE_NAME,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES),
+			new DepotRolePermission(
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
 				FragmentConstants.RESOURCE_NAME,
 				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES));
 	}
