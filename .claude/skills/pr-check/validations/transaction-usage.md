@@ -18,7 +18,8 @@ A generated file carries the `@generated` Javadoc marker that Service Builder an
 MERGE_BASE=$(git merge-base HEAD master)
 
 for FILE in $(git diff --name-only "${MERGE_BASE}...HEAD" -- '*.java'); do
-	if [ ! -f "${FILE}" ] || command grep --fixed-strings --ignore-case --quiet --regexp='@generated' "${FILE}"; then
+	if [[ ! -f ${FILE} ]] || command grep --fixed-strings --ignore-case --quiet --regexp='@generated' "${FILE}"
+	then
 		continue
 	fi
 
