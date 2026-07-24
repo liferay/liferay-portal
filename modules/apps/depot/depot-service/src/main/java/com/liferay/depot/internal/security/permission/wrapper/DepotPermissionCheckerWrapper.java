@@ -153,7 +153,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 			return _isOrAddToPermissionCache(
 				group,
 				DepotRoleNameUtil.getContentReviewerRoleName(
-					_getSubtype(group)),
+					companyId, _getSubtype(group)),
 				this::_isContentReviewer);
 		}
 		catch (Exception exception) {
@@ -176,13 +176,18 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 			Group group = _groupLocalService.fetchGroup(groupId);
 
+			if (group == null) {
+				return false;
+			}
+
 			if (_isCMSAdministrator(group)) {
 				return true;
 			}
 
 			return _isOrAddToPermissionCache(
 				group,
-				DepotRoleNameUtil.getAdministratorRoleName(_getSubtype(group)),
+				DepotRoleNameUtil.getAdministratorRoleName(
+					group.getCompanyId(), _getSubtype(group)),
 				this::_isGroupAdmin);
 		}
 		catch (Exception exception) {
@@ -323,7 +328,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 								subtype, DepotRolesConstants.SUBTYPE_PROJECT) &&
 							Objects.equals(
 								DepotRoleNameUtil.getAdministratorRoleName(
-									subtype),
+									getCompanyId(), subtype),
 								role.getName())) {
 
 							return null;
@@ -396,7 +401,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 		return _userGroupRoleLocalService.hasUserGroupRole(
 			getUserId(), liveGroup.getGroupId(),
 			DepotRoleNameUtil.getContentReviewerRoleName(
-				_getSubtype(liveGroup)),
+				liveGroup.getCompanyId(), _getSubtype(liveGroup)),
 			true);
 	}
 
@@ -451,7 +456,9 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 		if (_userGroupRoleLocalService.hasUserGroupRole(
 				getUserId(), liveGroup.getGroupId(),
-				DepotRoleNameUtil.getAdministratorRoleName(subtype), true) ||
+				DepotRoleNameUtil.getAdministratorRoleName(
+					liveGroup.getCompanyId(), subtype),
+				true) ||
 			_userGroupRoleLocalService.hasUserGroupRole(
 				getUserId(), liveGroup.getGroupId(),
 				DepotRoleNameUtil.getOwnerRoleName(
@@ -492,7 +499,8 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 				DepotRolesConstants.ASSET_LIBRARY_CONNECTED_SITE_MEMBER) ||
 			_hasRole(
 				liveGroup.getCompanyId(), roleIds,
-				DepotRoleNameUtil.getMemberRoleName(_getSubtype(liveGroup)))) {
+				DepotRoleNameUtil.getMemberRoleName(
+					liveGroup.getCompanyId(), _getSubtype(liveGroup)))) {
 
 			return true;
 		}
