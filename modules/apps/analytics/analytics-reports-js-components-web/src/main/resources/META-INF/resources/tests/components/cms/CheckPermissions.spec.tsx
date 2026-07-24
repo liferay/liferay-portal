@@ -95,6 +95,29 @@ describe('CheckPermissions', () => {
 		).not.toBeInTheDocument();
 	});
 
+	it('renders the connect to Analytics Cloud state before the connect sites state when neither is connected', async () => {
+		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
+			data: {
+				admin: true,
+				connectedToAnalyticsCloud: false,
+				connectedToSpace: false,
+				siteSyncedToAnalyticsCloud: true,
+			},
+			error: null,
+		});
+
+		render(<CheckPermissions scopeId="123">tab rendered</CheckPermissions>);
+
+		await waitForElementToBeRemoved(() => screen.getByTestId('loading'));
+
+		expect(
+			screen.getByText('see-how-your-content-performs')
+		).toBeInTheDocument();
+		expect(
+			screen.queryByText('connect-sites-to-show-data')
+		).not.toBeInTheDocument();
+	});
+
 	it('renders empty state if there is no site connected to the Analytics Cloud (admin)', async () => {
 		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
 			data: {

@@ -31,14 +31,14 @@ const EmptyStates: React.FC<IEmptyStateProps> = ({
 	onConnectSites,
 	siteSyncedToAnalyticsCloud,
 }) => {
+	if (!connectedToAnalyticsCloud) {
+		return <ConnectToAnalyticsCloud admin={admin} />;
+	}
+
 	if (!connectedToSpace) {
 		return (
 			<ConnectSites onConnectSites={admin ? onConnectSites : undefined} />
 		);
-	}
-
-	if (!connectedToAnalyticsCloud) {
-		return <ConnectToAnalyticsCloud admin={admin} />;
 	}
 
 	if (!siteSyncedToAnalyticsCloud) {
