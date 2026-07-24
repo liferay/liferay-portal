@@ -14,6 +14,9 @@ export const SPACE_MEMBERS_CONFIG: MembersConfig = {
 		'L_DESIGN_LIBRARY_CONTENT_REVIEWER',
 		'L_DESIGN_LIBRARY_MEMBER',
 		'L_DESIGN_LIBRARY_OWNER',
+		'L_PROJECT_CONTRIBUTOR',
+		'L_PROJECT_MANAGER',
+		'L_PROJECT_MEMBER',
 	],
 	messages: {
 		addGroupError: Liferay.Language.get('failed-to-add-group-x-to-space'),
