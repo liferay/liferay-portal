@@ -28,11 +28,11 @@ const AssistantMessageBalloon: React.FC<AssistantMessageBalloonProps> = ({
 }) => {
 	return (
 		<div
-			className={`d-flex flex-column mb-2 rounded ${error ? 'ai-assistant-chat__ai-assistant-error-message-balloon' : 'ai-assistant-chat__ai-assistant-message-balloon'}`}
+			className={`${error ? 'ai-assistant-chat__ai-assistant-error-message-balloon' : 'ai-assistant-chat__ai-assistant-message-balloon'} d-flex flex-column mb-2 rounded`}
 		>
-			<div className="d-flex flex-row font-weight-semi-bold">
+			<div className="d-flex flex-row">
 				<div
-					className={`align-items-start d-inline-block ml-2 mt-2 text-2 ${error ? 'text-danger' : 'text-primary'}`}
+					className={`align-items-start d-inline-block flex-shrink-0 ml-2 mt-2 text-2 ${error ? 'text-danger' : 'text-primary'}`}
 				>
 					<ClayIcon
 						spritemap={Liferay.Icons.spritemap}
@@ -47,7 +47,7 @@ const AssistantMessageBalloon: React.FC<AssistantMessageBalloonProps> = ({
 					</span>
 				) : (
 					<div
-						className="m-2"
+						className="flex-grow-1 m-2"
 						dangerouslySetInnerHTML={{
 							__html: renderAIAssistantMessageMarkdown(message),
 						}}

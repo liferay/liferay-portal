@@ -29,12 +29,12 @@ const UserChatItem: React.FC<{message: string}> = ({message}) => {
 	}, []);
 
 	return (
-		<div className="align-items-center d-flex justify-content-end mb-2">
-			<span className="ai-assistant-chat__user-message col-auto p-2 text-break">
+		<div className="ai-assistant-chat__user-message">
+			<span className="ai-assistant-chat__user-message-content">
 				{message}
 			</span>
 
-			<div className="flex-shrink-0 ml-2">
+			<div className="ai-assistant-chat__user-message-avatar">
 				<Avatar image={userAccount?.image} name={userAccount?.name} />
 			</div>
 		</div>
