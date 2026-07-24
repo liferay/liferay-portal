@@ -192,11 +192,28 @@ test(
 			});
 
 			await test.step('Verify the account is selected and the cart still has the product', async () => {
+				const accountSelectionModal = page.locator(
+					'#account-selection-modal'
+				);
+				const accountSelector = page.locator('.btn-account-selector', {
+					hasText: account.name,
+				});
+
 				await expect(
-					page.locator('.btn-account-selector', {
-						hasText: account.name,
-					})
+					accountSelectionModal.or(accountSelector).first()
 				).toBeVisible();
+
+				if (await accountSelectionModal.isVisible()) {
+					await accountSelectionModal
+						.locator('#available-accounts-list')
+						.selectOption(account.name);
+
+					await accountSelectionModal
+						.getByRole('button', {name: 'Continue'})
+						.click();
+				}
+
+				await expect(accountSelector).toBeVisible();
 
 				await commerceMiniCartPage.miniCartButton.click();
 
