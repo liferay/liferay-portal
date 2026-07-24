@@ -651,6 +651,17 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"BAD_REQUEST", titleKey, unsafeRunnable, titleArguments);
 	}
 
+	private void _assertProblemExceptionProblemStatus(
+		String status, UnsafeRunnable<Exception> unsafeRunnable) {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class, unsafeRunnable::run);
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals(status, problem.getStatus());
+	}
+
 	private void _assertThumbnailURLReference(
 			byte[] expectedBytes, String expectedExternalReferenceCode,
 			Fragment fragment)
@@ -1228,15 +1239,11 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Fragment fragment = _postSiteFragmentSetFragment(
 			_randomFragment(true, true, _fragmentCollection));
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() -> _userWithoutPermissionsFragmentResource.deleteSiteFragment(
 				testGroup.getExternalReferenceCode(),
 				fragment.getExternalReferenceCode()));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private void _testGetSiteFragment(boolean approved, boolean draft)
@@ -1481,15 +1488,11 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Fragment fragment = _postSiteFragmentSetFragment(
 			_randomFragment(true, true, _fragmentCollection));
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
 			() -> _userWithoutPermissionsFragmentResource.getSiteFragment(
 				testGroup.getExternalReferenceCode(),
 				fragment.getExternalReferenceCode()));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("NOT_FOUND", problem.getStatus());
 	}
 
 	private void _testPostFragmentApproved(
@@ -2043,18 +2046,14 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private void _testPostSiteFragmentSetFragmentWithoutPermissionsProblemException()
 		throws Exception {
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() ->
 				_userWithoutPermissionsFragmentResource.
 					postSiteFragmentSetFragment(
 						testGroup.getExternalReferenceCode(),
 						_fragmentCollection.getExternalReferenceCode(),
 						_randomFragment(true, true, _fragmentCollection)));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private void _testPostSiteFragmentThumbnailURLReferenceExternalReferenceCode()
@@ -2271,15 +2270,11 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private void _testPostSiteFragmentWithoutPermissionsProblemException()
 		throws Exception {
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() -> _userWithoutPermissionsFragmentResource.postSiteFragment(
 				testGroup.getExternalReferenceCode(),
 				_randomFragment(true, true, _fragmentCollection)));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private void _testPutFragment(
@@ -3028,16 +3023,12 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private void _testPutSiteFragmentWithoutPermissionsProblemException()
 		throws Exception {
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() -> _userWithoutPermissionsFragmentResource.putSiteFragment(
 				testGroup.getExternalReferenceCode(),
 				RandomTestUtil.randomString(),
 				_randomFragment(true, true, _fragmentCollection)));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private FragmentSet _toFragmentSet(FragmentCollection fragmentCollection) {

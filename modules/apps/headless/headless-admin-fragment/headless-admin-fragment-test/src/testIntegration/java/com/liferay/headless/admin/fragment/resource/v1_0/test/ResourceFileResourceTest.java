@@ -484,6 +484,17 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 			"BAD_REQUEST", titleKey, unsafeRunnable, titleArguments);
 	}
 
+	private void _assertProblemExceptionProblemStatus(
+		String status, UnsafeRunnable<Exception> unsafeRunnable) {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class, unsafeRunnable::run);
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals(status, problem.getStatus());
+	}
+
 	private void _assertURLContent(byte[] expectedBytes, String urlString)
 		throws Exception {
 
@@ -763,17 +774,13 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
 			testGroup.getExternalReferenceCode(), randomResourceFile());
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() ->
 				_userWithoutPermissionsResourceFileResource.
 					deleteSiteResourceFile(
 						testGroup.getExternalReferenceCode(),
 						resourceFile.getExternalReferenceCode()));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private void _testGetSiteFragmentSetResourceFilesPage() throws Exception {
@@ -1134,16 +1141,12 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
 			testGroup.getExternalReferenceCode(), randomResourceFile());
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
 			() ->
 				_userWithoutPermissionsResourceFileResource.getSiteResourceFile(
 					testGroup.getExternalReferenceCode(),
 					resourceFile.getExternalReferenceCode()));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("NOT_FOUND", problem.getStatus());
 	}
 
 	private void _testGetSiteResourceFolderResourceFilesPage()
@@ -1226,18 +1229,14 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		ResourceFolder resourceFolder = _postSiteResourceFolder(
 			_getFragmentSetExternalReferenceCode());
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"NOT_FOUND",
 			() ->
 				_userWithoutPermissionsResourceFileResource.
 					getSiteResourceFolderResourceFilesPage(
 						testGroup.getExternalReferenceCode(),
 						resourceFolder.getExternalReferenceCode(),
 						Pagination.of(1, 10)));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("NOT_FOUND", problem.getStatus());
 	}
 
 	private void _testPostSiteFragmentSetResourceFileWithoutPermissionsProblemException()
@@ -1246,8 +1245,8 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() ->
 				_userWithoutPermissionsResourceFileResource.
 					postSiteFragmentSetResourceFile(
@@ -1255,10 +1254,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 						fragmentCollection.getExternalReferenceCode(),
 						_randomResourceFile(
 							fragmentCollection.getExternalReferenceCode())));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private void _testPostSiteResourceFile() throws Exception {
@@ -1737,17 +1732,13 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	private void _testPostSiteResourceFileWithoutPermissionsProblemException()
 		throws Exception {
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() ->
 				_userWithoutPermissionsResourceFileResource.
 					postSiteResourceFile(
 						testGroup.getExternalReferenceCode(),
 						randomResourceFile()));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private void _testPutSiteResourceFile() throws Exception {
@@ -2166,16 +2157,12 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		resourceFile.setName(RandomTestUtil.randomString());
 
-		Problem.ProblemException problemException = Assert.assertThrows(
-			Problem.ProblemException.class,
+		_assertProblemExceptionProblemStatus(
+			"FORBIDDEN",
 			() ->
 				_userWithoutPermissionsResourceFileResource.putSiteResourceFile(
 					testGroup.getExternalReferenceCode(),
 					resourceFile.getExternalReferenceCode(), resourceFile));
-
-		Problem problem = problemException.getProblem();
-
-		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 	}
 
 	private FileURLReference _toFileURLReference(byte[] bytes) {
