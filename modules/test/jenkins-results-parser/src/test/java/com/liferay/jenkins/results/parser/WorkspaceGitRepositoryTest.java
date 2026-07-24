@@ -7,7 +7,11 @@ package com.liferay.jenkins.results.parser;
 
 import java.io.File;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.json.JSONObject;
 
@@ -91,6 +95,53 @@ public class WorkspaceGitRepositoryTest
 		Assert.assertFalse(_isSnapshotAfterPromoteGitArchive(false, false));
 	}
 
+	@Test
+	public void testSnapshotStateAfterUploadGitArchives() throws Exception {
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("top-level-job", true, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("top-level-job", true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("top-level-job", false, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives("top-level-job", false, false));
+
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("downstream-job", true, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("downstream-job", true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("downstream-job", false, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives("downstream-job", false, false));
+
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool", true, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool", true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool", false, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool", false, false));
+
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool-batch", true, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool-batch", true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool-batch", false, true));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool-batch", false, false));
+	}
+
 	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)
 		throws Exception {
 
@@ -138,6 +189,83 @@ public class WorkspaceGitRepositoryTest
 		defaultWorkspaceGitRepository.setSnapshot(snapshot);
 
 		defaultWorkspaceGitRepository.promoteGitArchive();
+
+		return defaultWorkspaceGitRepository.isSnapshot();
+	}
+
+	private boolean _isSnapshotAfterUploadGitArchives(
+			String jobName, boolean gitArchiveEnabled, boolean snapshot)
+		throws Exception {
+
+		Map<String, String> environmentValues = new HashMap<>();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(jobName)) {
+			environmentValues.put("JOB_NAME", jobName);
+		}
+
+		environmentValues.put("MASTER_NETWORK_NAME", "aws-network");
+
+		mockEnvironment(environmentValues);
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"git.archive.enabled", String.valueOf(gitArchiveEnabled));
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		Set<String> topLevelJobNames = new HashSet<>();
+
+		topLevelJobNames.add("root-cause-analysis-tool");
+		topLevelJobNames.add("top-level-job");
+
+		JenkinsResultsParserUtil.setTopLevelJobNames(topLevelJobNames);
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).uploadGitArchive();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).uploadDotGitArchive();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).updateBuildDatabase();
+
+		defaultWorkspaceGitRepository.setSnapshot(snapshot);
+
+		defaultWorkspaceGitRepository.uploadGitArchives();
+
+		if (gitArchiveEnabled && !snapshot &&
+			topLevelJobNames.contains(jobName)) {
+
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.times(1)
+			).uploadGitArchive();
+
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.times(1)
+			).uploadDotGitArchive();
+		}
+		else {
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.never()
+			).uploadGitArchive();
+
+			Mockito.verify(
+				defaultWorkspaceGitRepository, Mockito.never()
+			).uploadDotGitArchive();
+		}
 
 		return defaultWorkspaceGitRepository.isSnapshot();
 	}
