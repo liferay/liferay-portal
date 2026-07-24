@@ -40,11 +40,9 @@ public class InstanceWorkflowMetricsReindexer
 	protected void onAfterReindex(long companyId, ExecutionMode executionMode)
 		throws Exception {
 
-		if (executionMode == ExecutionMode.FULL) {
-			_processWorkflowMetricsReindexer.reindex(companyId, executionMode);
+		_processWorkflowMetricsReindexer.reindex(companyId, executionMode);
 
-			_taskWorkflowMetricsReindexer.reindex(companyId, executionMode);
-		}
+		_taskWorkflowMetricsReindexer.reindex(companyId, executionMode);
 	}
 
 	@Override
@@ -114,9 +112,7 @@ public class InstanceWorkflowMetricsReindexer
 	@Reference(target = "(workflow.metrics.reindexer.key=process)")
 	private IndexReindexer _processWorkflowMetricsReindexer;
 
-	@Reference(
-		target = "(component.name=com.liferay.portal.workflow.metrics.internal.search.index.reindexer.TaskWorkflowMetricsReindexer)"
-	)
+	@Reference(target = "(workflow.metrics.reindexer.key=task)")
 	private IndexReindexer _taskWorkflowMetricsReindexer;
 
 	@Reference
