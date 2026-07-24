@@ -66,11 +66,7 @@ public class SEOStudioService extends BaseService {
 	}
 
 	public JSONObject fetchSEOStudioDomainJSONObject(long seoStudioDomainId) {
-		UriComponents uriComponents = UriComponentsBuilder.fromPath(
-			"/o/seo-studio/domains/" + seoStudioDomainId
-		).build();
-
-		String responseJSON = get(_getAuthorization(), uriComponents.toUri());
+		String responseJSON = _getSEOStudioDomain(seoStudioDomainId);
 
 		if (Validator.isNull(responseJSON)) {
 			return null;
@@ -123,17 +119,6 @@ public class SEOStudioService extends BaseService {
 		}
 
 		return crawlHits;
-	}
-
-	public String patchSEOStudioDomain(
-		JSONObject jsonObject, long seoStudioDomainId) {
-
-		UriComponents uriComponents = UriComponentsBuilder.fromPath(
-			"/o/seo-studio/domains/" + seoStudioDomainId
-		).build();
-
-		return patch(
-			_getAuthorization(), jsonObject.toString(), uriComponents.toUri());
 	}
 
 	public long getSEOStudioDomainId(JSONObject seoStudioScanJSONObject) {
@@ -310,6 +295,14 @@ public class SEOStudioService extends BaseService {
 		UriComponents uriComponents = uriComponentsBuilder.build();
 
 		uriComponents = uriComponents.encode();
+
+		return get(_getAuthorization(), uriComponents.toUri());
+	}
+
+	private String _getSEOStudioDomain(long seoStudioDomainId) {
+		UriComponents uriComponents = UriComponentsBuilder.fromPath(
+			"/o/seo-studio/domains/" + seoStudioDomainId
+		).build();
 
 		return get(_getAuthorization(), uriComponents.toUri());
 	}

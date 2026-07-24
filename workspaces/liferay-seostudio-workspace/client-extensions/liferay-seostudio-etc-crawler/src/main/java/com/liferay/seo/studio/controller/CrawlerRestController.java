@@ -86,15 +86,6 @@ public class CrawlerRestController extends BaseRestController {
 
 			String canonicalDomainURL = _resolveCanonicalDomainURL(domainURL);
 
-			if (!canonicalDomainURL.equals(domainURL)) {
-				_seoStudioService.patchSEOStudioDomain(
-					new JSONObject(
-					).put(
-						"hostname", canonicalDomainURL
-					),
-					seoStudioDomainId);
-			}
-
 			String sitemapURL = canonicalDomainURL + "/sitemap.xml";
 
 			if (!_isSitemapReachable(sitemapURL)) {
