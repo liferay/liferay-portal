@@ -36,6 +36,7 @@ dependencies {
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":apps:site:site-cms-site-initializer-api")
+	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":apps:subscription:subscription-api")
 	compileOnly project(":apps:translation:translation-api")
 	compileOnly project(":core:petra:petra-function")
