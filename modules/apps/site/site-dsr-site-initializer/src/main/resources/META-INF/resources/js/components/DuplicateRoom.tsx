@@ -27,7 +27,7 @@ const DocumentTitleCell = ({
 	itemData: any;
 	value: string;
 }) => (
-	<span className="align-items-center d-flex">
+	<span className="align-items-center d-flex text-secondary">
 		<ClayIcon
 			className="mr-2"
 			symbol={mimeTypeUtils.getIconFromMimeType(itemData.encodingFormat)}
