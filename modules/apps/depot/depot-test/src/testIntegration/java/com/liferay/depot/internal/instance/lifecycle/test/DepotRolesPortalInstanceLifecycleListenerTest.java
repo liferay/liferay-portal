@@ -149,6 +149,10 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 					DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
 
 			_assertResourcePermissions(
+				companyId, "com.liferay.fragment",
+				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
+				name, List.of("MANAGE_FRAGMENT_ENTRIES"));
+			_assertResourcePermissions(
 				companyId, "com.liferay.style.book",
 				ResourceConstants.SCOPE_COMPANY, String.valueOf(companyId),
 				name, List.of("MANAGE_STYLE_BOOK_ENTRIES"));
