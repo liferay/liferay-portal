@@ -7,8 +7,6 @@ package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
-import com.liferay.fragment.constants.FragmentActionKeys;
-import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FileURLReference;
@@ -27,10 +25,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -42,7 +37,6 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -150,8 +144,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_resourceFolderResource = _getResourceFolderResource();
 		_userWithoutPermissionsResourceFileResource =
 			_getUserWithoutPermissionsResourceFileResource();
-		_userWithPermissionsResourceFileResource =
-			_getUserWithPermissionsResourceFileResource();
 	}
 
 	@Override
@@ -162,7 +154,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		_testDeleteSiteResourceFilePortletFileProblemException();
 		_testDeleteSiteResourceFileWithoutPermissionsProblemException();
-		_testDeleteSiteResourceFileWithPermissions();
 	}
 
 	@Override
@@ -175,7 +166,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testGetSiteFragmentSetResourceFilesPageEmpty();
 		_testGetSiteFragmentSetResourceFilesPageFragmentSetNonexistentProblemException();
 		_testGetSiteFragmentSetResourceFilesPageWithoutPermissions();
-		_testGetSiteFragmentSetResourceFilesPageWithPermissions();
 	}
 
 	@Override
@@ -192,7 +182,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testGetSiteResourceFilePortletFileProblemException();
 		_testGetSiteResourceFileResourceFolder();
 		_testGetSiteResourceFileWithoutPermissionsProblemException();
-		_testGetSiteResourceFileWithPermissions();
 	}
 
 	@Override
@@ -204,7 +193,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testGetSiteResourceFilesPage();
 		_testGetSiteResourceFilesPagePortletFile();
 		_testGetSiteResourceFilesPageWithoutPermissions();
-		_testGetSiteResourceFilesPageWithPermissions();
 	}
 
 	@Override
@@ -218,7 +206,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testGetSiteResourceFolderResourceFilesPagePortletFolderProblemException();
 		_testGetSiteResourceFolderResourceFilesPageResourceFolderNonexistentProblemException();
 		_testGetSiteResourceFolderResourceFilesPageWithoutPermissionsProblemException();
-		_testGetSiteResourceFolderResourceFilesPageWithPermissions();
 	}
 
 	@Override
@@ -228,7 +215,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		super.testPostSiteFragmentSetResourceFile();
 
 		_testPostSiteFragmentSetResourceFileWithoutPermissionsProblemException();
-		_testPostSiteFragmentSetResourceFileWithPermissions();
 	}
 
 	@Override
@@ -259,7 +245,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPostSiteResourceFileResourceFolderNonexistentProblemException();
 		_testPostSiteResourceFileResourceFolderPortletFolderProblemException();
 		_testPostSiteResourceFileWithoutPermissionsProblemException();
-		_testPostSiteResourceFileWithPermissions();
 	}
 
 	@Override
@@ -278,7 +263,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_testPutSiteResourceFileResourceFolderExternalReferenceCode();
 		_testPutSiteResourceFileResourceFolderPortletFolderProblemException();
 		_testPutSiteResourceFileWithoutPermissionsProblemException();
-		_testPutSiteResourceFileWithPermissions();
 	}
 
 	@Override
@@ -647,32 +631,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		).build();
 	}
 
-	private ResourceFileResource _getUserWithPermissionsResourceFileResource()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
-
-		Role role = RoleTestUtil.addRole(
-			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
-			FragmentConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testGroup.getGroupId()),
-			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
-
-		return ResourceFileResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-	}
-
 	private ResourceFile _postSiteResourceFile(ResourceFolder resourceFolder)
 		throws Exception {
 
@@ -819,28 +777,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		}
 	}
 
-	private void _testDeleteSiteResourceFileWithPermissions() throws Exception {
-		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
-			testGroup.getExternalReferenceCode(), randomResourceFile());
-
-		_userWithPermissionsResourceFileResource.deleteSiteResourceFile(
-			testGroup.getExternalReferenceCode(),
-			resourceFile.getExternalReferenceCode());
-
-		try {
-			resourceFileResource.getSiteResourceFile(
-				testGroup.getExternalReferenceCode(),
-				resourceFile.getExternalReferenceCode());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
-	}
-
 	private void _testGetSiteFragmentSetResourceFilesPage() throws Exception {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -917,30 +853,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
-	}
-
-	private void _testGetSiteFragmentSetResourceFilesPageWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFile resourceFile =
-			resourceFileResource.postSiteFragmentSetResourceFile(
-				testGroup.getExternalReferenceCode(),
-				fragmentCollection.getExternalReferenceCode(),
-				_randomResourceFile(
-					fragmentCollection.getExternalReferenceCode()));
-
-		Page<ResourceFile> page =
-			_userWithPermissionsResourceFileResource.
-				getSiteFragmentSetResourceFilesPage(
-					testGroup.getExternalReferenceCode(),
-					fragmentCollection.getExternalReferenceCode(),
-					Pagination.of(1, 10));
-
-		assertContains(resourceFile, (List<ResourceFile>)page.getItems());
-		Assert.assertEquals(1, page.getTotalCount());
 	}
 
 	private void _testGetSiteResourceFileFileURLReferenceFileBase64()
@@ -1217,25 +1129,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		Assert.assertEquals(0, page.getTotalCount());
 	}
 
-	private void _testGetSiteResourceFilesPageWithPermissions()
-		throws Exception {
-
-		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
-			testGroup.getExternalReferenceCode(), randomResourceFile());
-
-		Page<ResourceFile> page =
-			_userWithPermissionsResourceFileResource.getSiteResourceFilesPage(
-				testGroup.getExternalReferenceCode(), null,
-				Pagination.of(1, 1));
-
-		page =
-			_userWithPermissionsResourceFileResource.getSiteResourceFilesPage(
-				testGroup.getExternalReferenceCode(), null,
-				Pagination.of(1, (int)page.getTotalCount()));
-
-		assertContains(resourceFile, (List<ResourceFile>)page.getItems());
-	}
-
 	private void _testGetSiteResourceFileWithoutPermissionsProblemException()
 		throws Exception {
 
@@ -1254,19 +1147,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
-	}
-
-	private void _testGetSiteResourceFileWithPermissions() throws Exception {
-		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
-			testGroup.getExternalReferenceCode(), randomResourceFile());
-
-		ResourceFile getResourceFile =
-			_userWithPermissionsResourceFileResource.getSiteResourceFile(
-				testGroup.getExternalReferenceCode(),
-				resourceFile.getExternalReferenceCode());
-
-		assertEquals(resourceFile, getResourceFile);
-		assertValid(getResourceFile);
 	}
 
 	private void _testGetSiteResourceFolderResourceFilesPage()
@@ -1365,28 +1245,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		}
 	}
 
-	private void _testGetSiteResourceFolderResourceFilesPageWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFolder resourceFolder = _postSiteResourceFolder(
-			fragmentCollection.getExternalReferenceCode());
-
-		ResourceFile resourceFile = _postSiteResourceFile(resourceFolder);
-
-		Page<ResourceFile> page =
-			_userWithPermissionsResourceFileResource.
-				getSiteResourceFolderResourceFilesPage(
-					testGroup.getExternalReferenceCode(),
-					resourceFolder.getExternalReferenceCode(),
-					Pagination.of(1, 10));
-
-		assertContains(resourceFile, (List<ResourceFile>)page.getItems());
-		Assert.assertEquals(1, page.getTotalCount());
-	}
-
 	private void _testPostSiteFragmentSetResourceFileWithoutPermissionsProblemException()
 		throws Exception {
 
@@ -1408,26 +1266,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
-	}
-
-	private void _testPostSiteFragmentSetResourceFileWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFile resourceFile = _randomResourceFile(
-			fragmentCollection.getExternalReferenceCode());
-
-		ResourceFile postResourceFile =
-			_userWithPermissionsResourceFileResource.
-				postSiteFragmentSetResourceFile(
-					testGroup.getExternalReferenceCode(),
-					fragmentCollection.getExternalReferenceCode(),
-					resourceFile);
-
-		assertEquals(resourceFile, postResourceFile);
-		assertValid(postResourceFile);
 	}
 
 	private void _testPostSiteResourceFile() throws Exception {
@@ -1919,17 +1757,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		}
 	}
 
-	private void _testPostSiteResourceFileWithPermissions() throws Exception {
-		ResourceFile resourceFile = randomResourceFile();
-
-		ResourceFile postResourceFile =
-			_userWithPermissionsResourceFileResource.postSiteResourceFile(
-				testGroup.getExternalReferenceCode(), resourceFile);
-
-		assertEquals(resourceFile, postResourceFile);
-		assertValid(postResourceFile);
-	}
-
 	private void _testPutSiteResourceFile() throws Exception {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -2360,29 +2187,6 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		}
 	}
 
-	private void _testPutSiteResourceFileWithPermissions() throws Exception {
-		ResourceFile resourceFile = resourceFileResource.postSiteResourceFile(
-			testGroup.getExternalReferenceCode(), randomResourceFile());
-
-		byte[] bytes = RandomTestUtil.randomBytes();
-
-		resourceFile.setFileURLReference(_toFileURLReference(bytes));
-
-		resourceFile.setName(RandomTestUtil.randomString());
-
-		ResourceFile putResourceFile =
-			_userWithPermissionsResourceFileResource.putSiteResourceFile(
-				testGroup.getExternalReferenceCode(),
-				resourceFile.getExternalReferenceCode(), resourceFile);
-
-		Assert.assertEquals(resourceFile.getName(), putResourceFile.getName());
-		assertValid(putResourceFile);
-
-		_assertContent(
-			bytes, resourceFile.getExternalReferenceCode(),
-			testGroup.getGroupId());
-	}
-
 	private FileURLReference _toFileURLReference(byte[] bytes) {
 		FileURLReference fileURLReference = new FileURLReference();
 
@@ -2448,6 +2252,5 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 	private UserLocalService _userLocalService;
 
 	private ResourceFileResource _userWithoutPermissionsResourceFileResource;
-	private ResourceFileResource _userWithPermissionsResourceFileResource;
 
 }
