@@ -15,7 +15,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.BaseDBProcess;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassName;
@@ -204,9 +203,7 @@ public class ClassNamePostUpgradeDataCleanupProcess
 	}
 
 	private Map<String, List<Bundle>> _getPackageNameBundlesMap() {
-		if (CompanyThreadLocal.getNonsystemCompanyId() !=
-				PortalInstancePool.getDefaultCompanyId()) {
-
+		if (!CompanyThreadLocal.isDefaultCompany()) {
 			return _packageNameBundlesMap;
 		}
 

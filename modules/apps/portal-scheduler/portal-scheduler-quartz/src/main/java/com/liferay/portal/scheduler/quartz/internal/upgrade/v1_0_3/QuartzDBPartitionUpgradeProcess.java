@@ -8,7 +8,6 @@ package com.liferay.portal.scheduler.quartz.internal.upgrade.v1_0_3;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -19,9 +18,7 @@ public class QuartzDBPartitionUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		if (PortalUtil.getDefaultCompanyId() !=
-				CompanyThreadLocal.getCompanyId()) {
-
+		if (!CompanyThreadLocal.isDefaultCompany()) {
 			return;
 		}
 

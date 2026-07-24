@@ -22,9 +22,7 @@ public class UpgradePartitionedControlTable extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		if (CompanyThreadLocal.getCompanyId() !=
-				PortalInstancePool.getDefaultCompanyId()) {
-
+		if (!CompanyThreadLocal.isDefaultCompany()) {
 			return;
 		}
 
