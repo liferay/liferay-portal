@@ -1654,7 +1654,7 @@ test(
 
 test(
 	'A seller can duplicate a room copying only the selected documents',
-	{tag: ['@LPD-92370', '@LPD-97489']},
+	{tag: ['@LPD-92370', '@LPD-97489', '@LPD-97852']},
 	async ({
 		apiHelpers,
 		digitalSalesRoomsPage,
@@ -1733,6 +1733,10 @@ test(
 			await expect(
 				digitalSalesRoomsPage.documentRow('liferay')
 			).toBeVisible();
+
+			await expect(
+				digitalSalesRoomsPage.documentRowTitle('liferay')
+			).toHaveClass(/text-secondary/);
 
 			await digitalSalesRoomsPage.documentRowCheckbox('liferay').check();
 			await digitalSalesRoomsPage.duplicateButton.click();

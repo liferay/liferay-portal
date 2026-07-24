@@ -19,6 +19,7 @@ export class DigitalSalesRoomsPage {
 	readonly digitalSalesRoomsTable: DataTablePage;
 	readonly documentRow: (documentName: string) => Locator;
 	readonly documentRowCheckbox: (documentName: string) => Locator;
+	readonly documentRowTitle: (documentName: string) => Locator;
 	readonly duplicateButton: Locator;
 	readonly duplicateMenuItem: Locator;
 	readonly duplicateModal: Locator;
@@ -63,6 +64,10 @@ export class DigitalSalesRoomsPage {
 			this.duplicateModal.locator('tr', {hasText: documentName});
 		this.documentRowCheckbox = (documentName: string) =>
 			this.documentRow(documentName).getByRole('checkbox');
+		this.documentRowTitle = (documentName: string) =>
+			this.documentRow(documentName).locator('span.align-items-center', {
+				hasText: documentName,
+			});
 		this.duplicateButton = page
 			.getByRole('dialog')
 			.getByRole('button', {name: 'Duplicate'});
