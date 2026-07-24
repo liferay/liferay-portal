@@ -26,15 +26,15 @@ public class StyleBookDepotRolePermissionsContributor
 	public List<DepotRolePermission> getDepotRolePermissions() {
 		return List.of(
 			new DepotRolePermission(
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
-				StyleBookConstants.RESOURCE_NAME,
-				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES),
-			new DepotRolePermission(
 				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
 				StyleBookConstants.RESOURCE_NAME,
 				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES),
 			new DepotRolePermission(
 				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+				StyleBookConstants.RESOURCE_NAME,
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES),
+			new DepotRolePermission(
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
 				StyleBookConstants.RESOURCE_NAME,
 				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES));
 	}
