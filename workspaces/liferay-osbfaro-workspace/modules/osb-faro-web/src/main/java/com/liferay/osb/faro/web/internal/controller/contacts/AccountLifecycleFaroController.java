@@ -139,14 +139,18 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public AccountLifecycle updateAccountLifecycle(
 			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@FormParam("description") String description,
-			@FormParam("name") String name,
-			@FormParam("segmentId") String segmentId)
+			@FormParam("accountLifecycle") FaroParam<AccountLifecycle>
+				accountLifecycleFaroParam)
 		throws Exception {
+
+		AccountLifecycle accountLifecycle =
+			accountLifecycleFaroParam.getValue();
+
+		accountLifecycle.setId(id);
 
 		return contactsEngineClient.updateAccountLifecycle(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
-			description, id, name, segmentId);
+			accountLifecycle);
 	}
 
 	@Path("/{id}/stages/{stageId}/rules")
