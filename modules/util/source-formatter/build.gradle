@@ -45,7 +45,8 @@ dependencies {
 	api group: "org.reflections", name: "reflections", version: "0.10.2"
 	api group: "xerces", name: "xercesImpl", version: "2.12.2"
 
-	compileInclude group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	compileInclude group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "6.4.0"
+	compileInclude group: "biz.aQute.bnd", name: "biz.aQute.bnd.util", version: "6.4.0"
 	compileInclude group: "com.liferay", name: "com.liferay.petra.function", version: "5.5.0"
 	compileInclude group: "com.liferay", name: "com.liferay.petra.io", version: "5.0.6"
 	compileInclude group: "com.liferay", name: "com.liferay.petra.lang", version: "1.0.0"

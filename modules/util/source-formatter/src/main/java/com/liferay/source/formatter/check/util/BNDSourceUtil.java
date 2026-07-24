@@ -125,8 +125,10 @@ public class BNDSourceUtil {
 	public static Map<String, String> getDefinitionKeysMap() {
 		return _populateDefinitionKeysMap(
 			ArrayUtil.append(
-				Constants.BUNDLE_SPECIFIC_HEADERS, Constants.headers,
-				Constants.options));
+				ArrayUtil.toStringArray(Constants.BUNDLE_SPECIFIC_HEADERS),
+				ArrayUtil.toStringArray(Constants.headers),
+				ArrayUtil.toStringArray(Constants.options),
+				new String[] {"-bundleannotations"}));
 	}
 
 	public static String getDefinitionValue(String content, String key) {
