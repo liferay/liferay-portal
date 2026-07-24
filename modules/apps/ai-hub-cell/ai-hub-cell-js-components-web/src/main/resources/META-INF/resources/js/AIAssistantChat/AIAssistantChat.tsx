@@ -3,727 +3,188 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayButton from '@clayui/button';
-import ClayDropDown from '@clayui/drop-down';
-import ClayForm from '@clayui/form';
-import ClayIcon from '@clayui/icon';
-import ClayLayout from '@clayui/layout';
-import ClayLoadingIndicator from '@clayui/loading-indicator';
-import classNames from 'classnames';
-import {EventSource} from 'eventsource';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {ReactPortal} from '@liferay/frontend-js-react-web';
+import React, {useId, useRef, useState} from 'react';
 
-import {
-	CATEGORIZE_EVENT,
-	CategorizeEventPayload,
-} from '../Categorization/events';
-import {ECategorizationAgent} from '../Categorization/types';
 import ReportFeedbackModal from '../ReportFeedback/ReportFeedbackModal';
-import submitPositiveReportFeedback from '../ReportFeedback/submitPositiveReportFeedback';
-import {
-	ChatContext,
-	createEventSource,
-	postChatByExternalReferenceCodeMessage,
-} from './api';
-import AIAssistantFooterDisclaimer from './components/AIAssistantFooterDisclaimer';
-import AIAssistantMessageBalloon from './components/AIAssistantMessageBalloon';
-import CategorizationMessageBalloon from './components/CategorizationMessageBalloon';
-import ContentTypeSelectorMessageBalloon, {
-	ContentType,
-} from './components/ContentTypeSelectorMessageBalloon';
-import ContentsMessageBalloon from './components/ContentsMessageBalloon';
-import ImageMessageBalloon from './components/ImageMessageBalloon';
-import UserMessageBalloon from './components/UserMessageBalloon';
-import {ChatMessageSentData, Message} from './types';
-import buildAssistantMessage from './utils/buildAssistantMessage';
-import parseContentDraftsMessage from './utils/parseContentDraftsMessage';
+import AIAssistantChatBody from './AIAssistantChatBody';
+import {ChatContext} from './api';
+import AIAssistantTrigger from './components/AIAssistantTrigger';
+import AIAssistantDropdown from './shells/AIAssistantDropdown';
+import AIAssistantSidebar from './shells/AIAssistantSidebar';
+import useAIChat from './useAIChat';
 
 import './chat.scss';
 
-interface ReportContext {
-	agentDefinitionExternalReferenceCodes: string[];
-	index: number;
-}
-
 type AIState = 'focused' | 'result' | 'result-readonly' | 'working';
+
+export type AIAssistantDisplayMode = 'dropdown' | 'sidebar' | 'toggle';
 
 interface AIAssistantChatProps {
 	aiState?: AIState;
 	context?: ChatContext;
-	embedded?: boolean;
+	displayMode?: AIAssistantDisplayMode;
+	enableFreeFormCategorization?: boolean;
 	getContext?: () => ChatContext;
 	hideTriggerLabel?: boolean;
 	initialMessage?: string;
 	instructionDefinitionScope: string;
+	pushContainer?: string;
 	quickActions?: string[];
+	sidebarBehavior?: 'overlay' | 'push';
 	triggerClassName?: string;
 	triggerLabel?: string;
 	triggerRound?: boolean;
 }
 
+// Renders the AI Assistant chat behind a trigger. The chat body is rendered
+// once into a stable node; the active shell (dropdown or sidebar, chosen by
+// displayMode) reparents that node, so switching shells never remounts it.
+
 const AIAssistantChat: React.FC<AIAssistantChatProps> = ({
 	aiState,
 	context,
-	embedded = false,
+	displayMode = 'toggle',
+	enableFreeFormCategorization = false,
 	getContext,
 	hideTriggerLabel = false,
 	initialMessage,
 	instructionDefinitionScope,
+	pushContainer,
 	quickActions,
-	triggerRound = true,
+	sidebarBehavior,
 	triggerClassName,
-	triggerLabel = Liferay.Language.get('ai-assistant'),
+	triggerLabel,
+	triggerRound = true,
 }) => {
-	const [active, setActive] = useState<boolean>(false);
-	const [feedbackGiven, setFeedbackGiven] = useState<Record<number, boolean>>(
-		{}
-	);
-	const [isGenerating, setIsGenerating] = useState<boolean>(false);
-	const [messages, setMessages] = useState<Message[]>([]);
-	const [message, setMessage] = useState<string>('');
-	const [reportContext, setReportContext] = useState<ReportContext | null>(
-		null
-	);
+	const [expanded, setExpanded] = useState<boolean>(false);
+	const [open, setOpen] = useState<boolean>(false);
 
-	const handleThumbsUp = (index: number, item: Message) => {
-		if (feedbackGiven[index]) {
-			return;
-		}
+	const [bodyNode] = useState(() => {
+		const element = document.createElement('div');
 
-		setFeedbackGiven((previousFeedbackGiven) => ({
-			...previousFeedbackGiven,
-			[index]: true,
-		}));
+		element.style.display = 'contents';
 
-		submitPositiveReportFeedback({
-			agentDefinitionExternalReferenceCodes:
-				item.agentDefinitionExternalReferenceCodes ?? [],
-			surface: 'aiAssistant',
-		});
-	};
-	const eventSourceRef = useRef<EventSource | null>(null);
-	const eventSourceReference = useRef<string | null>(null);
-	const contextRef = useRef<ChatContext | undefined>(context);
-	const getContextRef = useRef<(() => ChatContext) | undefined>(getContext);
-	const runtimeContextRef = useRef<ChatContext>({});
-	const initialMessageRef = useRef<string | undefined>(initialMessage);
-	const initialMessageSentRef = useRef<boolean>(false);
-	const instructionDefinitionScopeRef = useRef<string>(
-		instructionDefinitionScope
-	);
-	const messagesContainerRef = useRef<HTMLDivElement | null>(null);
+		return element;
+	});
+
+	const sidebarId = useId();
 	const triggerRef = useRef<HTMLButtonElement | null>(null);
-	const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-	const fileUploadSelectorRef = useRef<string | undefined>(undefined);
 
-	useEffect(() => {
-		contextRef.current = context;
-		getContextRef.current = getContext;
-		instructionDefinitionScopeRef.current = instructionDefinitionScope;
-	}, [context, getContext, instructionDefinitionScope]);
+	const handleOpenChange = (nextOpen: boolean) => {
+		setOpen(nextOpen);
 
-	useEffect(() => {
-		const fieldElement = triggerRef.current?.closest(
-			'[data-ai-assistant-field-id]'
-		);
-
-		if (fieldElement) {
-			fileUploadSelectorRef.current = `[data-ai-assistant-field-id="${fieldElement.getAttribute(
-				'data-ai-assistant-field-id'
-			)}"]`;
+		if (!nextOpen) {
+			setExpanded(false);
 		}
-	}, []);
+	};
 
-	useEffect(() => {
-		setTimeout(() => {
-			const container = messagesContainerRef.current;
-
-			container?.scrollTo({
-				behavior: 'smooth',
-				top: container.scrollHeight,
-			});
-		}, 0);
-	}, [messages]);
-
-	const sendMessage = useCallback((text: string) => {
-		if (!text.trim()) {
-			return;
-		}
-
-		setMessages((previousMessages) => [
-			...previousMessages,
-			{sender: 'user', text},
-		]);
-
-		setMessage('');
-
-		if (eventSourceReference.current) {
-			setIsGenerating(true);
-
-			postChatByExternalReferenceCodeMessage({
-				chatContext: {
-					...contextRef.current,
-					...getContextRef.current?.(),
-					...runtimeContextRef.current,
-				},
-				eventSourceReference: eventSourceReference.current,
-				instructionDefinitionScope:
-					instructionDefinitionScopeRef.current,
-				message: text,
-			}).catch(() => setIsGenerating(false));
-		}
-	}, []);
-
-	function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-
-		sendMessage(message);
-	}
-
-	function adjustTextAreaHeight(element: HTMLTextAreaElement) {
-		const textArea = element ?? textAreaRef.current;
-
-		if (!textArea) {
-			return;
-		}
-
-		const style = window.getComputedStyle(textArea);
-		const lineHeight =
-			parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
-		const maxHeight = lineHeight * 4;
-
-		textArea.style.height = 'auto';
-		const newHeight = Math.min(textArea.scrollHeight, maxHeight);
-		textArea.style.height = `${newHeight}px`;
-		textArea.style.overflowY =
-			textArea.scrollHeight > maxHeight ? 'auto' : 'hidden';
-	}
-
-	function handleTextAreaKeyDown(
-		event: React.KeyboardEvent<HTMLTextAreaElement>
-	) {
-		if (event.key !== 'Enter') {
-			event.stopPropagation();
-
-			return;
-		}
-
-		if (event.shiftKey) {
-			setTimeout(
-				() => adjustTextAreaHeight(event.target as HTMLTextAreaElement),
-				0
-			);
-
-			return;
-		}
-
-		event.preventDefault();
-
-		const form = (event.target as HTMLElement).closest(
-			'form'
-		) as HTMLFormElement | null;
-
-		if (form?.requestSubmit) {
-			form.requestSubmit();
-		}
-		else {
-			form?.dispatchEvent(
-				new Event('submit', {
-					bubbles: true,
-					cancelable: true,
-				})
-			);
-		}
-	}
-
-	const openAIAssistantChatConnection = useCallback(() => {
-		createEventSource().then((eventSource) => {
-			if (!eventSource) {
-				return;
+	const chat = useAIChat({
+		context,
+		enableFreeFormCategorization,
+		getContext,
+		initialMessage,
+		instructionDefinitionScope,
+		onCloseRequested: () => handleOpenChange(false),
+		onOpenRequested: (options) => {
+			if (options?.expanded) {
+				setExpanded(true);
 			}
 
-			eventSourceRef.current = eventSource;
+			handleOpenChange(true);
+		},
+		triggerRef,
+	});
 
-			eventSourceRef.current.addEventListener(
-				'Chat Message Sent',
-				(event) => {
-					try {
-						const dataJSON: ChatMessageSentData = JSON.parse(
-							event.data
-						);
-
-						const assistantMessage =
-							buildAssistantMessage(dataJSON);
-
-						setMessages((previousMessages) => {
-							const lastMessage = previousMessages.at(-1);
-							const messages = previousMessages.slice(0, -1);
-
-							if (
-								lastMessage?.images?.length &&
-								assistantMessage?.images?.length
-							) {
-								return [
-									...messages,
-									{
-										...assistantMessage,
-										images: [
-											...lastMessage.images,
-											...assistantMessage.images,
-										],
-									},
-								];
-							}
-
-							return [...previousMessages, assistantMessage];
-						});
-
-						setMessage('');
-					}
-					catch {
-						setMessages((previousMessages) => [
-							...previousMessages,
-							{error: true, sender: 'assistant', text: ''},
-						]);
-
-						return;
-					}
-					finally {
-						setIsGenerating(false);
-					}
-				}
-			);
-
-			eventSourceRef.current.addEventListener('Subscribe', (event) => {
-				eventSourceReference.current = event.data;
-
-				if (
-					initialMessageRef.current &&
-					!initialMessageSentRef.current
-				) {
-					initialMessageSentRef.current = true;
-
-					sendMessage(initialMessageRef.current);
-				}
-			});
-
-			eventSourceRef.current.addEventListener(
-				'Agent Invocation Failed',
-				(event) => {
-					let text = '';
-
-					try {
-						text = JSON.parse(event.data)['data'];
-					}
-					catch {
-						text = '';
-					}
-
-					setMessages((previousMessages) => [
-						...previousMessages,
-						{
-							error: true,
-							sender: 'assistant',
-							text,
-						},
-					]);
-
-					setIsGenerating(false);
-				}
-			);
-		});
-	}, [sendMessage]);
-
-	const closeAIAssistantChatConnection = useCallback(() => {
-		eventSourceRef.current?.close();
-
-		eventSourceRef.current = null;
-	}, []);
-
-	useEffect(() => {
-		openAIAssistantChatConnection();
-
-		return () => {
-			closeAIAssistantChatConnection();
-		};
-	}, [closeAIAssistantChatConnection, openAIAssistantChatConnection]);
-
-	useEffect(() => {
-		const handleOpen = (payload: {
-			contentTypes?: ContentType[];
-			context?: ChatContext;
-			message?: string;
-		}) => {
-			setActive(true);
-
-			runtimeContextRef.current = payload?.context ?? {};
-
-			if (payload?.contentTypes?.length) {
-				setMessages((previousMessages) => [
-					...previousMessages,
-					{
-						sender: 'user',
-						text: Liferay.Language.get('generate-content'),
-					},
-					{
-						contentTypes: payload.contentTypes,
-						sender: 'assistant',
-						text: Liferay.Language.get(
-							'what-type-of-content-do-you-want-to-generate'
-						),
-					},
-				]);
-			}
-			else if (payload?.message) {
-				sendMessage(payload.message);
-			}
-		};
-
-		Liferay.on('openAIAssistantChat', handleOpen);
-
-		return () => {
-			Liferay.detach('openAIAssistantChat', handleOpen);
-		};
-	}, [sendMessage]);
-
-	useEffect(() => {
-		const handleCategorize = (payload: CategorizeEventPayload) => {
-			setActive(true);
-
-			setMessages((previousMessages) => [
-				...previousMessages,
-				{
-					sender: 'user',
-					text:
-						payload.agent === ECategorizationAgent.AUTO_CATEGORIZE
-							? Liferay.Language.get('add-categories')
-							: Liferay.Language.get('generate-tags'),
-				},
-				{categorization: payload, sender: 'assistant', text: ''},
-			]);
-		};
-
-		Liferay.on(CATEGORIZE_EVENT, handleCategorize);
-
-		return () => {
-			Liferay.detach(CATEGORIZE_EVENT, handleCategorize);
-		};
-	}, []);
-
-	useEffect(() => {
-		const handleOpen = (payload: {
-			context?: ChatContext;
-			message?: string;
-		}) => {
-			setActive(true);
-
-			if (payload?.context) {
-				contextRef.current = {
-					...contextRef.current,
-					...payload.context,
-				};
-			}
-
-			if (payload?.message) {
-				sendMessage(payload.message);
-			}
-		};
-
-		Liferay.on('openAIAssistantChat', handleOpen);
-
-		return () => {
-			Liferay.detach('openAIAssistantChat', handleOpen);
-		};
-	}, [sendMessage]);
-
-	const chatSurface = (
-		<>
-			<div
-				className="ai-assistant-chat__messages-container"
-				ref={messagesContainerRef}
-			>
-				{!initialMessage && (
-					<AIAssistantMessageBalloon
-						error={false}
-						message="Hi! I can help you generate content, titles, tags, or
-						translate your work. What would you like to do?"
-					/>
-				)}
-
-				{messages.map((item, index) => {
-					if (item.sender === 'user') {
-						return (
-							<UserMessageBalloon
-								key={index}
-								message={item.text}
-							/>
-						);
-					}
-
-					if (item.categorization) {
-						return (
-							<CategorizationMessageBalloon
-								key={index}
-								{...item.categorization}
-							/>
-						);
-					}
-
-					if (item.contentTypes) {
-						return (
-							<ContentTypeSelectorMessageBalloon
-								contentTypes={item.contentTypes}
-								contextRef={runtimeContextRef}
-								key={index}
-								message={item.text}
-								sendMessage={sendMessage}
-							/>
-						);
-					}
-
-					if (parseContentDraftsMessage(item.text).drafts.length) {
-						return (
-							<ContentsMessageBalloon
-								key={index}
-								message={item.text}
-							/>
-						);
-					}
-
-					if (item.images?.length) {
-						const context = {
-							...contextRef.current,
-							...getContextRef.current?.(),
-						};
-
-						return (
-							<ImageMessageBalloon
-								images={item.images}
-								key={index}
-								saveProps={{
-									fileUploadSelector:
-										context.fileUploadSelector ??
-										fileUploadSelectorRef.current,
-									groupId: context.groupId,
-									objectEntryFolderExternalReferenceCode:
-										context.objectEntryFolderExternalReferenceCode,
-								}}
-							/>
-						);
-					}
-
-					return (
-						<AIAssistantMessageBalloon
-							error={item.error ?? false}
-							feedbackGiven={Boolean(feedbackGiven[index])}
-							key={index}
-							message={item.text}
-							onReport={
-								!item.error
-									? () =>
-											setReportContext({
-												agentDefinitionExternalReferenceCodes:
-													item.agentDefinitionExternalReferenceCodes ??
-													[],
-												index,
-											})
-									: undefined
-							}
-							onThumbsUp={
-								!item.error
-									? () => handleThumbsUp(index, item)
-									: undefined
-							}
-						/>
-					);
-				})}
-
-				{isGenerating && (
-					<div className="ai-assistant-chat__generating-balloon">
-						<div className="ai-assistant-chat__generating-balloon-indicator">
-							<ClayLoadingIndicator />
-						</div>
-
-						<span className="ai-assistant-chat__generating-loading-text">
-							{Liferay.Language.get('generating')}
-						</span>
-					</div>
-				)}
-			</div>
-
-			{!!quickActions?.length && (
-				<div className="ai-assistant-chat__quick-actions">
-					<span className="ai-assistant-chat__quick-actions-title">
-						{Liferay.Language.get('quick-actions')}
-					</span>
-
-					<div className="ai-assistant-chat__quick-actions-list">
-						{quickActions.map((quickAction) => (
-							<ClayButton
-								className="ai-assistant-chat__quick-action"
-								disabled={isGenerating}
-								displayType="secondary"
-								key={quickAction}
-								onClick={() => sendMessage(quickAction)}
-								size="xs"
-							>
-								<ClayIcon
-									className="ai-assistant-chat__quick-action-icon"
-									height={12}
-									spritemap={Liferay.Icons.spritemap}
-									symbol="stars"
-									width={12}
-								/>
-
-								{quickAction}
-							</ClayButton>
-						))}
-					</div>
-				</div>
-			)}
-
-			<ClayForm
-				className="ai-assistant-chat__form"
-				onSubmit={(event) => onSubmit(event)}
-			>
-				<div
-					className="ai-assistant-chat__input-row"
-					data-ai-state={aiState}
-				>
-					<textarea
-						className="ai-assistant-chat__input form-control"
-						id="assistant-user-input"
-						onChange={(event) => {
-							setMessage(event.target.value);
-							adjustTextAreaHeight(event.target);
-						}}
-						onKeyDown={(
-							event: React.KeyboardEvent<HTMLTextAreaElement>
-						) => {
-							handleTextAreaKeyDown(event);
-						}}
-						placeholder="Ask me anything..."
-						readOnly={isGenerating || !!aiState}
-						ref={textAreaRef}
-						rows={1}
-						value={message}
-					/>
-
-					<ClayButton
-						disabled={!message.trim()}
-						displayType="primary"
-						type="submit"
-					>
-						<ClayIcon
-							height={12}
-							spritemap={Liferay.Icons.spritemap}
-							symbol={isGenerating ? 'square' : 'order-arrow-up'}
-							width={12}
-						/>
-					</ClayButton>
-				</div>
-			</ClayForm>
-
-			<AIAssistantFooterDisclaimer />
-		</>
+	const chatBody = (
+		<AIAssistantChatBody
+			aiState={aiState}
+			chat={chat}
+			quickActions={quickActions}
+			showGreeting={!initialMessage}
+		/>
 	);
 
-	if (embedded) {
-		return (
-			<div className="ai-assistant ai-assistant-chat__embedded">
-				{chatSurface}
-			</div>
-		);
-	}
+	const reportFeedbackModal = chat.reportContext !== null && (
+		<ReportFeedbackModal
+			agentDefinitionExternalReferenceCodes={
+				chat.reportContext.agentDefinitionExternalReferenceCodes
+			}
+			onClose={() => chat.setReportContext(null)}
+			onSubmitted={() =>
+				chat.markFeedbackGiven(chat.reportContext!.index)
+			}
+			surface="aiAssistant"
+		/>
+	);
+
+	const trigger = (
+		<AIAssistantTrigger
+			className={triggerClassName}
+			hideLabel={hideTriggerLabel}
+			label={triggerLabel}
+			ref={triggerRef}
+			round={triggerRound}
+		/>
+	);
+
+	const sidebarActive =
+		displayMode === 'sidebar' || (displayMode === 'toggle' && expanded);
+
+	const sidebarEnabled = displayMode !== 'dropdown';
 
 	return (
-		<ClayDropDown
-			active={active}
-			alignmentPosition={4}
-			className="ai-assistant-chat__dropdown"
-			hasRightSymbols={false}
-			menuElementAttrs={{
-				className: 'cadmin',
-				style: {
-					height: 552,
-					maxHeight: 'none',
-					maxWidth: 'none',
-					overflow: 'hidden',
-					width: 448,
-				},
-			}}
-			onActiveChange={setActive}
-			trigger={
-				<ClayButton
-					aria-label={triggerLabel}
-					borderless
-					className={classNames(
-						'ai-assistant-chat__trigger',
-						triggerClassName
-					)}
-					displayType="secondary"
-					monospaced={triggerRound && hideTriggerLabel}
-					ref={triggerRef}
-					rounded={triggerRound}
-				>
-					<ClayIcon
-						height={16}
-						spritemap={Liferay.Icons.spritemap}
-						symbol="stars"
-						width={16}
-					/>
-
-					{!hideTriggerLabel && (
-						<span className="ai-assistant-chat__trigger-label">
-							{triggerLabel}
-						</span>
-					)}
-				</ClayButton>
-			}
-		>
-			<div className="ai-assistant ai-assistant-chat__dropdown-container">
-				<div className="ai-assistant-chat__dropdown-header">
-					<ClayLayout.ContentRow className="ai-assistant-chat__dropdown-header-row">
-						<ClayLayout.ContentCol className="ai-assistant-chat__dropdown-title">
-							{Liferay.Language.get('ai-assistant')}
-						</ClayLayout.ContentCol>
-
-						<ClayLayout.ContentCol>
-							<ClayButton
-								aria-label={Liferay.Language.get('close')}
-								borderless
-								displayType="unstyled"
-								onClick={() => setActive(false)}
-							>
-								<ClayIcon
-									className="ai-assistant-chat__dropdown-close-button"
-									spritemap={Liferay.Icons.spritemap}
-									symbol="times"
-								/>
-							</ClayButton>
-						</ClayLayout.ContentCol>
-					</ClayLayout.ContentRow>
-				</div>
-
-				{chatSurface}
-			</div>
-
-			{reportContext !== null && (
-				<ReportFeedbackModal
-					agentDefinitionExternalReferenceCodes={
-						reportContext.agentDefinitionExternalReferenceCodes
+		<>
+			{sidebarActive ? (
+				React.cloneElement(trigger, {
+					'aria-controls': sidebarId,
+					'aria-expanded': open,
+					'onClick': () => handleOpenChange(!open),
+				})
+			) : (
+				<AIAssistantDropdown
+					active={open}
+					bodyNode={bodyNode}
+					onActiveChange={handleOpenChange}
+					onExpand={
+						displayMode === 'toggle'
+							? () => setExpanded(true)
+							: undefined
 					}
-					onClose={() => setReportContext(null)}
-					onSubmitted={() =>
-						setFeedbackGiven((previousFeedbackGiven) => ({
-							...previousFeedbackGiven,
-							[reportContext.index]: true,
-						}))
-					}
-					surface="aiAssistant"
+					trigger={trigger}
 				/>
 			)}
-		</ClayDropDown>
+
+			{sidebarEnabled && (
+				<AIAssistantSidebar
+					active={sidebarActive}
+					behavior={sidebarBehavior}
+					bodyNode={bodyNode}
+					id={sidebarId}
+					onCollapse={
+						displayMode === 'toggle'
+							? () => {
+									setExpanded(false);
+
+									requestAnimationFrame(() =>
+										triggerRef.current?.focus()
+									);
+								}
+							: undefined
+					}
+					onOpenChange={handleOpenChange}
+					open={open && sidebarActive}
+					pushContainer={pushContainer}
+					triggerRef={triggerRef}
+				/>
+			)}
+
+			<ReactPortal container={bodyNode} wrapper={false}>
+				{chatBody}
+			</ReactPortal>
+
+			{reportFeedbackModal}
+		</>
 	);
 };
 
