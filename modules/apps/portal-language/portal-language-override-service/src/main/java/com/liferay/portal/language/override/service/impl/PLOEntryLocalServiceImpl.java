@@ -11,13 +11,17 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.cluster.ClusterExecutor;
 import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.language.override.exception.PLOEntryImportException;
 import com.liferay.portal.language.override.exception.PLOEntryKeyException;
 import com.liferay.portal.language.override.exception.PLOEntryLanguageIdException;
@@ -59,6 +63,68 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public PLOEntry addOrUpdatePLOEntry(
+			String externalReferenceCode, long companyId, long userId,
+			String key, String languageId, String value)
+		throws PortalException {
+
+		languageId = _normalizeLanguageId(languageId);
+
+		_validate(key, languageId, value);
+
+		PLOEntry ploEntry = null;
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			ploEntry = ploEntryPersistence.fetchByC_ERC(
+				companyId, externalReferenceCode);
+		}
+
+		if (ploEntry != null) {
+
+			// A matching external reference code takes precedence
+
+			ploEntry.setUserId(userId);
+			ploEntry.setKey(key);
+			ploEntry.setLanguageId(languageId);
+			ploEntry.setValue(value);
+
+			return updatePLOEntry(ploEntry);
+		}
+
+		PLOEntry keyLanguageIdPLOEntry = ploEntryPersistence.fetchByC_K_L(
+			companyId, key, languageId);
+
+		if (keyLanguageIdPLOEntry != null) {
+
+			// The same key and language ID already exist, so update the value
+			// but keep the existing external reference code
+
+			if (Objects.equals(keyLanguageIdPLOEntry.getValue(), value)) {
+				return keyLanguageIdPLOEntry;
+			}
+
+			keyLanguageIdPLOEntry.setValue(value);
+
+			return updatePLOEntry(keyLanguageIdPLOEntry);
+		}
+
+		ploEntry = createPLOEntry(counterLocalService.increment());
+
+		if (Validator.isNull(externalReferenceCode)) {
+			externalReferenceCode = PortalUUIDUtil.generate();
+		}
+
+		ploEntry.setCompanyId(companyId);
+		ploEntry.setExternalReferenceCode(externalReferenceCode);
+		ploEntry.setUserId(userId);
+		ploEntry.setKey(key);
+		ploEntry.setLanguageId(languageId);
+		ploEntry.setValue(value);
+
+		return addPLOEntry(ploEntry);
+	}
+
+	@Override
 	public void deletePLOEntries(long companyId, String key) {
 		ploEntryPersistence.removeByC_K(companyId, key);
 	}
@@ -77,6 +143,16 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public PLOEntry deletePLOEntryByExternalReferenceCode(
+			long companyId, String externalReferenceCode)
+		throws PortalException {
+
+		return deletePLOEntry(
+			getPLOEntryByExternalReferenceCode(
+				companyId, externalReferenceCode));
+	}
+
+	@Override
 	public PLOEntry fetchPLOEntry(
 		long companyId, String key, String languageId) {
 
@@ -89,13 +165,47 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<PLOEntry> getPLOEntries(
+		long companyId, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return ploEntryPersistence.findByCompanyId(
+			companyId, start, end, orderByComparator);
+	}
+
+	@Override
 	public List<PLOEntry> getPLOEntries(long companyId, String languageId) {
 		return ploEntryPersistence.findByC_L(companyId, languageId);
 	}
 
 	@Override
+	public List<PLOEntry> getPLOEntries(
+		long companyId, String key, String value, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return ploEntryLocalService.dynamicQuery(
+			_getKeywordsDynamicQuery(companyId, key, value), start, end,
+			orderByComparator);
+	}
+
+	@Override
 	public int getPLOEntriesCount(long companyId) {
 		return ploEntryPersistence.countByCompanyId(companyId);
+	}
+
+	@Override
+	public int getPLOEntriesCount(long companyId, String key, String value) {
+		return (int)ploEntryLocalService.dynamicQueryCount(
+			_getKeywordsDynamicQuery(companyId, key, value));
+	}
+
+	@Override
+	public PLOEntry getPLOEntryByExternalReferenceCode(
+			long companyId, String externalReferenceCode)
+		throws PortalException {
+
+		return ploEntryPersistence.findByC_ERC(
+			companyId, externalReferenceCode);
 	}
 
 	@Override
@@ -170,6 +280,7 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 			ploEntry = createPLOEntry(counterLocalService.increment());
 
 			ploEntry.setCompanyId(companyId);
+			ploEntry.setExternalReferenceCode(PortalUUIDUtil.generate());
 			ploEntry.setUserId(userId);
 			ploEntry.setKey(key);
 			ploEntry.setLanguageId(languageId);
@@ -185,6 +296,26 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		ploEntry.setValue(value);
 
 		return updatePLOEntry(ploEntry);
+	}
+
+	private DynamicQuery _getKeywordsDynamicQuery(
+		long companyId, String key, String value) {
+
+		DynamicQuery dynamicQuery = ploEntryLocalService.dynamicQuery();
+
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("companyId", companyId));
+
+		if (Validator.isNotNull(key)) {
+			dynamicQuery.add(
+				RestrictionsFactoryUtil.like("key", "%" + key + "%"));
+		}
+
+		if (Validator.isNotNull(value)) {
+			dynamicQuery.add(
+				RestrictionsFactoryUtil.like("value", "%" + value + "%"));
+		}
+
+		return dynamicQuery;
 	}
 
 	private String _normalizeLanguageId(String languageId) {
