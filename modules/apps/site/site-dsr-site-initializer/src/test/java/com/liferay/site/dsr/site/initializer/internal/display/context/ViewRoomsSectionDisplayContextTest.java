@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -68,6 +70,12 @@ public class ViewRoomsSectionDisplayContextTest {
 
 	@Before
 	public void setUp() throws PortalException {
+		_licenseManagerUtilMockedStatic.when(
+			() -> LicenseManagerUtil.isAppEnabled(App.DSR)
+		).thenReturn(
+			true
+		);
+
 		_languageUtilMockedStatic.when(
 			() -> LanguageUtil.get(
 				Mockito.any(HttpServletRequest.class), Mockito.eq("archive"))
@@ -235,6 +243,7 @@ public class ViewRoomsSectionDisplayContextTest {
 	public void tearDown() {
 		_languageUtilMockedStatic.close();
 		_layoutSetPrototypeLocalServiceUtilMockedStatic.close();
+		_licenseManagerUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
 		_roleLocalServiceUtilMockedStatic.close();
 		_userGroupRoleLocalServiceUtilMockedStatic.close();
@@ -305,75 +314,9 @@ public class ViewRoomsSectionDisplayContextTest {
 
 	@Test
 	public void testGetCreationMenu() throws Exception {
-		ObjectEntryService objectEntryService = Mockito.mock(
-			ObjectEntryService.class);
-
-		Mockito.when(
-			objectEntryService.hasPortletResourcePermission(
-				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString())
-		).thenReturn(
-			false
-		).thenReturn(
-			true
-		);
-
-		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
-			new ViewRoomsSectionDisplayContext(
-				new HashMap<>(), _getMockHttpServletRequest(),
-				_objectDefinition, objectEntryService);
-
-		Assert.assertNull(viewRoomsSectionDisplayContext.getCreationMenu());
-
-		CreationMenu creationMenu =
-			viewRoomsSectionDisplayContext.getCreationMenu();
-
-		Assert.assertNotNull(creationMenu);
-
-		List<DropdownItem> dropdownItems = (List<DropdownItem>)creationMenu.get(
-			"primaryItems");
-
-		Assert.assertEquals(dropdownItems.toString(), 1, dropdownItems.size());
-
-		DropdownItem dropdownItem = dropdownItems.get(0);
-
-		Assert.assertEquals("forms", dropdownItem.get("icon"));
-		Assert.assertEquals(
-			"New Digital Sales Room", dropdownItem.get("label"));
-
-		HashMap<String, Object> dropdownItemData =
-			(HashMap<String, Object>)dropdownItem.get("data");
-
-		Assert.assertEquals(
-			"createDigitalSalesRoom", dropdownItemData.get("action"));
-		Assert.assertEquals(
-			String.valueOf(_objectDefinition.getObjectDefinitionId()),
-			dropdownItemData.get("objectDefinitionId"));
-		Assert.assertEquals(
-			_objectDefinition.getLabel(LocaleUtil.ENGLISH),
-			dropdownItemData.get("title"));
-	}
-
-	@Test
-	public void testGetCreationMenuWithConfiguration() throws Exception {
-		ObjectEntryService objectEntryService = Mockito.mock(
-			ObjectEntryService.class);
-
-		Mockito.when(
-			objectEntryService.hasPortletResourcePermission(
-				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString())
-		).thenReturn(
-			true
-		);
-
-		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
-			new ViewRoomsSectionDisplayContext(
-				HashMapBuilder.<String, Object>put(
-					"isHomePage", true
-				).build(),
-				_getMockHttpServletRequest(), _objectDefinition,
-				objectEntryService);
-
-		Assert.assertNull(viewRoomsSectionDisplayContext.getCreationMenu());
+		_testGetCreationMenu();
+		_testGetCreationMenuWithConfiguration();
+		_testGetCreationMenuWhenLicenseIsExpired();
 	}
 
 	@Test
@@ -517,6 +460,102 @@ public class ViewRoomsSectionDisplayContextTest {
 		return mockHttpServletRequest;
 	}
 
+	private void _testGetCreationMenu() throws Exception {
+		ObjectEntryService objectEntryService = Mockito.mock(
+			ObjectEntryService.class);
+
+		Mockito.when(
+			objectEntryService.hasPortletResourcePermission(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			false
+		).thenReturn(
+			true
+		);
+
+		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
+			new ViewRoomsSectionDisplayContext(
+				new HashMap<>(), _getMockHttpServletRequest(),
+				_objectDefinition, objectEntryService);
+
+		Assert.assertNull(viewRoomsSectionDisplayContext.getCreationMenu());
+
+		CreationMenu creationMenu =
+			viewRoomsSectionDisplayContext.getCreationMenu();
+
+		Assert.assertNotNull(creationMenu);
+
+		List<DropdownItem> dropdownItems = (List<DropdownItem>)creationMenu.get(
+			"primaryItems");
+
+		Assert.assertEquals(dropdownItems.toString(), 1, dropdownItems.size());
+
+		DropdownItem dropdownItem = dropdownItems.get(0);
+
+		Assert.assertEquals("forms", dropdownItem.get("icon"));
+		Assert.assertEquals(
+			"New Digital Sales Room", dropdownItem.get("label"));
+
+		HashMap<String, Object> dropdownItemData =
+			(HashMap<String, Object>)dropdownItem.get("data");
+
+		Assert.assertEquals(
+			"createDigitalSalesRoom", dropdownItemData.get("action"));
+		Assert.assertEquals(
+			String.valueOf(_objectDefinition.getObjectDefinitionId()),
+			dropdownItemData.get("objectDefinitionId"));
+		Assert.assertEquals(
+			_objectDefinition.getLabel(LocaleUtil.ENGLISH),
+			dropdownItemData.get("title"));
+	}
+
+	private void _testGetCreationMenuWhenLicenseIsExpired() throws Exception {
+		ObjectEntryService objectEntryService = Mockito.mock(
+			ObjectEntryService.class);
+
+		Mockito.when(
+			objectEntryService.hasPortletResourcePermission(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			true
+		);
+
+		_licenseManagerUtilMockedStatic.when(
+			() -> LicenseManagerUtil.isAppEnabled(App.DSR)
+		).thenReturn(
+			false
+		);
+
+		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
+			new ViewRoomsSectionDisplayContext(
+				new HashMap<>(), _getMockHttpServletRequest(),
+				_objectDefinition, objectEntryService);
+
+		Assert.assertNull(viewRoomsSectionDisplayContext.getCreationMenu());
+	}
+
+	private void _testGetCreationMenuWithConfiguration() throws Exception {
+		ObjectEntryService objectEntryService = Mockito.mock(
+			ObjectEntryService.class);
+
+		Mockito.when(
+			objectEntryService.hasPortletResourcePermission(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			true
+		);
+
+		ViewRoomsSectionDisplayContext viewRoomsSectionDisplayContext =
+			new ViewRoomsSectionDisplayContext(
+				HashMapBuilder.<String, Object>put(
+					"isHomePage", true
+				).build(),
+				_getMockHttpServletRequest(), _objectDefinition,
+				objectEntryService);
+
+		Assert.assertNull(viewRoomsSectionDisplayContext.getCreationMenu());
+	}
+
 	private static final String _CLASS_NAME =
 		"com.liferay.object.model.ObjectDefinition#D1S2";
 
@@ -534,6 +573,9 @@ public class ViewRoomsSectionDisplayContextTest {
 	private final MockedStatic<LayoutSetPrototypeLocalServiceUtil>
 		_layoutSetPrototypeLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			LayoutSetPrototypeLocalServiceUtil.class);
+	private final MockedStatic<LicenseManagerUtil>
+		_licenseManagerUtilMockedStatic = Mockito.mockStatic(
+			LicenseManagerUtil.class);
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);
 	private final PermissionChecker _permissionChecker = Mockito.mock(

@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.site.dsr.site.initializer.internal.constants.DSRConstants;
+import com.liferay.site.dsr.site.initializer.internal.util.DSRUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -113,7 +114,9 @@ public class ViewRoomsSectionDisplayContext extends BaseSectionDisplayContext {
 
 	@Override
 	public CreationMenu getCreationMenu() throws Exception {
-		if (isHomePage() || !hasAddObjectEntryPortletResourcePermission()) {
+		if (isHomePage() || !hasAddObjectEntryPortletResourcePermission() ||
+			DSRUtil.isExpired()) {
+
 			return null;
 		}
 
