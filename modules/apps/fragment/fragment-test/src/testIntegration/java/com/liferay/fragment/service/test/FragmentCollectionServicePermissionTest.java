@@ -7,6 +7,7 @@ package com.liferay.fragment.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.constants.FragmentActionKeys;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.fragment.test.util.FragmentTestUtil;
@@ -57,7 +58,7 @@ public class FragmentCollectionServicePermissionTest {
 
 		_role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
-			"com.liferay.fragment", ResourceConstants.SCOPE_GROUP,
+			FragmentConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
 			String.valueOf(_group.getGroupId()),
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 

@@ -79,7 +79,7 @@ public class FragmentEntryServicePermissionTest {
 			TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER);
 
 		ResourcePermissionLocalServiceUtil.removeResourcePermissions(
-			TestPropsValues.getCompanyId(), "com.liferay.fragment",
+			TestPropsValues.getCompanyId(), FragmentConstants.RESOURCE_NAME,
 			ResourceConstants.SCOPE_GROUP, siteMemberRole.getRoleId(),
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
@@ -661,7 +661,7 @@ public class FragmentEntryServicePermissionTest {
 			TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER);
 
 		ResourcePermissionLocalServiceUtil.addResourcePermission(
-			TestPropsValues.getCompanyId(), "com.liferay.fragment",
+			TestPropsValues.getCompanyId(), FragmentConstants.RESOURCE_NAME,
 			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
 			siteMemberRole.getRoleId(), permissionType);
 	}
