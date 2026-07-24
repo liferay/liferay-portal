@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.asset.categories.internal.feature.flag;
+package com.liferay.asset.categories.internal.upgrade.v1_0_0;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
@@ -11,62 +11,54 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagListener;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Mikel Lorza
  */
-@Component(
-	property = "feature.flag.key=LPD-70396", service = FeatureFlagListener.class
-)
-public class AssetCategoryFriendlyURLFeatureFlagListener
-	implements FeatureFlagListener {
+public class AssetCategoryFriendlyURLUpgradeProcess extends UpgradeProcess {
+
+	public AssetCategoryFriendlyURLUpgradeProcess(
+		AssetCategoryLocalService assetCategoryLocalService,
+		ClassNameLocalService classNameLocalService,
+		FriendlyURLEntryLocalService friendlyURLEntryLocalService) {
+
+		_assetCategoryLocalService = assetCategoryLocalService;
+		_classNameLocalService = classNameLocalService;
+		_friendlyURLEntryLocalService = friendlyURLEntryLocalService;
+	}
 
 	@Override
-	public void onValue(
-		long companyId, String featureFlagKey, boolean enabled) {
-
-		if (!enabled) {
-			return;
-		}
-
+	protected void doUpgrade() throws Exception {
 		long classNameId = _classNameLocalService.getClassNameId(
 			AssetCategory.class);
 
-		ActionableDynamicQuery actionableDynamicQuery =
-			_assetCategoryLocalService.getActionableDynamicQuery();
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				"select categoryId from AssetCategory where ctCollectionId = " +
+					"0");
 
-		actionableDynamicQuery.setCompanyId(companyId);
-		actionableDynamicQuery.setPerformActionMethod(
-			(AssetCategory assetCategory) -> {
-				try {
-					_migrate(assetCategory, classNameId);
-				}
-				catch (PortalException portalException) {
-					_log.error(
-						"Unable to migrate the friendly URL entry for asset " +
-							"category " + assetCategory.getCategoryId(),
-						portalException);
-				}
-			});
+			ResultSet resultSet = preparedStatement.executeQuery()) {
 
-		try {
-			actionableDynamicQuery.performActions();
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
+			while (resultSet.next()) {
+				AssetCategory assetCategory =
+					_assetCategoryLocalService.fetchAssetCategory(
+						resultSet.getLong("categoryId"));
+
+				if (assetCategory == null) {
+					continue;
+				}
+
+				_migrate(assetCategory, classNameId);
+			}
 		}
 	}
 
@@ -124,16 +116,8 @@ public class AssetCategoryFriendlyURLFeatureFlagListener
 			new ServiceContext());
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		AssetCategoryFriendlyURLFeatureFlagListener.class);
-
-	@Reference
-	private AssetCategoryLocalService _assetCategoryLocalService;
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
-
-	@Reference
-	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+	private final AssetCategoryLocalService _assetCategoryLocalService;
+	private final ClassNameLocalService _classNameLocalService;
+	private final FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 }

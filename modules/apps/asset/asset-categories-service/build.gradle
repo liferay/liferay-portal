@@ -21,6 +21,7 @@ dependencies {
 	compileOnly project(":apps:portal-security:portal-security-service-access-policy-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:staging:staging-api")
+	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":apps:xstream:xstream-configurator-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-reflect")
