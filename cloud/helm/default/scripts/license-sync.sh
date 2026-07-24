@@ -5,9 +5,9 @@ set -o nounset
 set -o pipefail
 
 function main {
-	local deploy_file="${LIFERAY_LICENSE_DEPLOY_FILE:-/liferay-home/deploy/license.xml}"
+	local deploy_file="${LIFERAY_LICENSE_DEPLOY_FILE:-/opt/liferay/deploy/license.xml}"
 	local interval="${LIFERAY_LICENSE_SYNC_INTERVAL:-60}"
-	local marker_file="${LIFERAY_LICENSE_MARKER_FILE:-/liferay-home/.liferay-license-sync.sha}"
+	local marker_file="${LIFERAY_LICENSE_MARKER_FILE:-/opt/liferay/.liferay-license-sync.sha}"
 	local secret_file="${LIFERAY_LICENSE_SECRET_FILE:-/secret/license.xml}"
 
 	_log_json "Watching \"${secret_file}\" every ${interval}s. Syncing to \"${deploy_file}\" on content change."

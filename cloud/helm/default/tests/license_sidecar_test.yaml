@@ -32,16 +32,16 @@ tests:
             -   contains:
                     any: true
                     content:
-                        mountPath: /liferay-home
-                        name: liferay-persistent-volume
-                        subPath: liferay
+                        mountPath: /liferay-init-scripts/license-sync.sh
+                        name: liferay-init-scripts-default
+                        subPath: license-sync.sh
                     path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].volumeMounts
             -   contains:
                     any: true
                     content:
-                        mountPath: /liferay-init-scripts/license-sync.sh
-                        name: liferay-init-scripts-default
-                        subPath: license-sync.sh
+                        mountPath: /opt/liferay
+                        name: liferay-persistent-volume
+                        subPath: liferay
                     path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].volumeMounts
             -   contains:
                     any: true

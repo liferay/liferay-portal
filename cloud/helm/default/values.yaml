@@ -77,7 +77,7 @@ customInitContainers:
                             subPath: license-sync.sh
                         -   mountPath: /secret
                             name: liferay-license
-                        -   mountPath: /liferay-home
+                        -   mountPath: /opt/liferay
                             name: liferay-persistent-volume
                             subPath: liferay
                 {{- end }}
