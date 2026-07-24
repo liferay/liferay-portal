@@ -4,11 +4,13 @@
  */
 
 import {IconSelector} from '@clayui/core';
+import {ClayIconSpriteContext} from '@clayui/icon';
 import React, {useState} from 'react';
 
 export default function NavigationMenuIconSelector({
 	portletNamespace,
 	selectedIcon,
+	spritemap,
 }) {
 	const [icon, setIcon] = useState(selectedIcon);
 
@@ -22,11 +24,13 @@ export default function NavigationMenuIconSelector({
 				value={icon}
 			/>
 
-			<IconSelector
-				onIconChange={setIcon}
-				selectedIcon={icon}
-				spritemap={Liferay.Icons.spritemap}
-			/>
+			<ClayIconSpriteContext.Provider value={spritemap}>
+				<IconSelector
+					onIconChange={setIcon}
+					selectedIcon={icon}
+					spritemap={spritemap}
+				/>
+			</ClayIconSpriteContext.Provider>
 		</div>
 	);
 }

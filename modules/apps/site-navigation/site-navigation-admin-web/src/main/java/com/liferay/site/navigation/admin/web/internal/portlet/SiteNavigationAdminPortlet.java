@@ -5,6 +5,7 @@
 
 package com.liferay.site.navigation.admin.web.internal.portlet;
 
+import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portlet.display.template.PortletDisplayTemplate;
@@ -60,7 +61,7 @@ public class SiteNavigationAdminPortlet extends MVCPortlet {
 
 		SiteNavigationAdminDisplayContext siteNavigationAdminDisplayContext =
 			new SiteNavigationAdminDisplayContext(
-				_portal.getHttpServletRequest(renderRequest),
+				_cetManager, _portal.getHttpServletRequest(renderRequest),
 				_portal.getLiferayPortletRequest(renderRequest),
 				_portal.getLiferayPortletResponse(renderResponse),
 				_portletDisplayTemplate, _siteNavigationMenuItemTypeRegistry,
@@ -73,6 +74,9 @@ public class SiteNavigationAdminPortlet extends MVCPortlet {
 
 		super.doDispatch(renderRequest, renderResponse);
 	}
+
+	@Reference
+	private CETManager _cetManager;
 
 	@Reference
 	private Portal _portal;

@@ -35,7 +35,7 @@ export function MenuItem({item, onMenuItemRemoved, sidebarPanelRef}) {
 	const setItems = useSetItems();
 	const setSelectedMenuItemId = useSetSelectedMenuItemId();
 	const setSidebarPanelId = useSetSidebarPanelId();
-	const {editSiteNavigationMenuItemParentURL, portletNamespace} =
+	const {editSiteNavigationMenuItemParentURL, portletNamespace, spritemap} =
 		useConstants();
 
 	const items = useItems();
@@ -323,6 +323,7 @@ export function MenuItem({item, onMenuItemRemoved, sidebarPanelRef}) {
 									<ClayLayout.ContentCol gutters>
 										<ClayIcon
 											className="lfr-portal-tooltip mr-3"
+											spritemap={spritemap}
 											style={{
 												height: '1.5rem',
 												width: '1.5rem',

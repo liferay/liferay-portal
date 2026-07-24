@@ -38,5 +38,6 @@ ConstantsProvider.propTypes = {
 			}).isRequired
 		),
 		siteNavigationMenuName: PropTypes.string,
+		spritemap: PropTypes.string,
 	}),
 };

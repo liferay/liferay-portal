@@ -50,6 +50,8 @@ SiteNavigationMenuItem siteNavigationMenuItem = SiteNavigationMenuItemLocalServi
 						props='<%=
 							HashMapBuilder.<String, Object>put(
 								"selectedIcon", siteNavigationMenuItemType.getDisplayIcon(siteNavigationMenuItem)
+							).put(
+								"spritemap", siteNavigationAdminDisplayContext.getSpritemap()
 							).build()
 						%>'
 					/>

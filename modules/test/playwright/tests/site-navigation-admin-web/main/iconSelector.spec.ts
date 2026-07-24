@@ -12,6 +12,9 @@ import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
 import {navigationMenusPagesTest} from './fixtures/navigationMenusPagesTest';
 
+const SITE_ACCESSIBILITY_ICON_PATTERN =
+	/\/o\/classic-theme\/images\/clay\/icons\.svg#accessibility$/;
+
 const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
@@ -25,7 +28,7 @@ const test = mergeTests(
 test(
 	'Ensure that the IconSelector component can add, edit and delete an icon in a navigation menu item',
 	{
-		tag: '@LPD-44978',
+		tag: ['@LPD-44978', '@LPD-66508'],
 	},
 	async ({apiHelpers, navigationMenusPage, page, site}) => {
 
@@ -53,13 +56,30 @@ test(
 			.getByText(pageName)
 			.click();
 
+		// Assert that the icon selector offers the icons of the spritemap of
+		// the public pages of the site instead of the ones of the
+		// administration theme
+
+		await page.getByLabel('Select an Icon').click();
+
+		await expect(
+			page.getByLabel('Select accessibility icon').locator('use')
+		).toHaveAttribute('href', SITE_ACCESSIBILITY_ICON_PATTERN);
+
+		await page.keyboard.press('Escape');
+
 		await navigationMenusPage.addOrChangeIcon('accessibility');
 
-		// Assert that the icon is being displayed in the page menu item
+		// Assert that the icon is being displayed in the page menu item with
+		// the spritemap of the public pages of the site
 
 		await expect(
 			page.locator('.autofit-col-gutters .lexicon-icon-accessibility')
 		).toBeVisible();
+
+		await expect(
+			page.locator('.autofit-col-gutters .lexicon-icon-accessibility use')
+		).toHaveAttribute('href', SITE_ACCESSIBILITY_ICON_PATTERN);
 
 		// Select a different icon for the page item
 

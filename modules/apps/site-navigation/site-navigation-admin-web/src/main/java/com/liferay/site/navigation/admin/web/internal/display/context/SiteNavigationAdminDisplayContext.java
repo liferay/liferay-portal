@@ -5,6 +5,11 @@
 
 package com.liferay.site.navigation.admin.web.internal.display.context;
 
+import com.liferay.client.extension.constants.ClientExtensionEntryConstants;
+import com.liferay.client.extension.model.ClientExtensionEntryRel;
+import com.liferay.client.extension.service.ClientExtensionEntryRelLocalServiceUtil;
+import com.liferay.client.extension.type.ThemeSpritemapCET;
+import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.dynamic.data.mapping.constants.DDMTemplateConstants;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalServiceUtil;
@@ -12,6 +17,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -21,6 +27,8 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
@@ -30,6 +38,7 @@ import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.theme.NavItem;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -73,7 +82,7 @@ import java.util.Objects;
 public class SiteNavigationAdminDisplayContext {
 
 	public SiteNavigationAdminDisplayContext(
-		HttpServletRequest httpServletRequest,
+		CETManager cetManager, HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
 		PortletDisplayTemplate portletDisplayTemplate,
@@ -81,6 +90,7 @@ public class SiteNavigationAdminDisplayContext {
 		SiteNavigationMenuLocalService siteNavigationMenuLocalService,
 		SiteNavigationMenuService siteNavigationMenuService) {
 
+		_cetManager = cetManager;
 		_httpServletRequest = httpServletRequest;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
@@ -301,6 +311,8 @@ public class SiteNavigationAdminDisplayContext {
 				_siteNavigationMenuItemTypeRegistry, _themeDisplay)
 		).put(
 			"siteNavigationMenuName", getSiteNavigationMenuName()
+		).put(
+			"spritemap", getSpritemap()
 		).build();
 	}
 
@@ -340,6 +352,16 @@ public class SiteNavigationAdminDisplayContext {
 		_siteNavigationMenuName = siteNavigationMenu.getName();
 
 		return _siteNavigationMenuName;
+	}
+
+	public String getSpritemap() {
+		if (_spritemap != null) {
+			return _spritemap;
+		}
+
+		_spritemap = _getSpritemap();
+
+		return _spritemap;
 	}
 
 	public boolean hasEditPermission() {
@@ -531,9 +553,48 @@ public class SiteNavigationAdminDisplayContext {
 		return liferayPortletURL.toString();
 	}
 
+	private String _getSpritemap() {
+		LayoutSet layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
+			_themeDisplay.getScopeGroupId(), false);
+
+		if (layoutSet == null) {
+			return _themeDisplay.getPathThemeSpritemap();
+		}
+
+		ThemeSpritemapCET themeSpritemapCET = _getThemeSpritemapCET(layoutSet);
+
+		if (themeSpritemapCET != null) {
+			return themeSpritemapCET.getURL();
+		}
+
+		Theme theme = layoutSet.getTheme();
+
+		return StringBundler.concat(
+			_themeDisplay.getCDNBaseURL(), theme.getStaticResourcePath(),
+			theme.getImagesPath(), "/clay/icons.svg");
+	}
+
+	private ThemeSpritemapCET _getThemeSpritemapCET(LayoutSet layoutSet) {
+		ClientExtensionEntryRel clientExtensionEntryRel =
+			ClientExtensionEntryRelLocalServiceUtil.
+				fetchClientExtensionEntryRel(
+					PortalUtil.getClassNameId(LayoutSet.class),
+					layoutSet.getLayoutSetId(),
+					ClientExtensionEntryConstants.TYPE_THEME_SPRITEMAP);
+
+		if (clientExtensionEntryRel == null) {
+			return null;
+		}
+
+		return (ThemeSpritemapCET)_cetManager.getCET(
+			layoutSet.getCompanyId(),
+			clientExtensionEntryRel.getCETExternalReferenceCode());
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		SiteNavigationAdminDisplayContext.class);
 
+	private final CETManager _cetManager;
 	private String _ddmTemplateKey;
 	private String _displayStyle;
 	private final HttpServletRequest _httpServletRequest;
@@ -551,6 +612,7 @@ public class SiteNavigationAdminDisplayContext {
 		_siteNavigationMenuLocalService;
 	private String _siteNavigationMenuName;
 	private final SiteNavigationMenuService _siteNavigationMenuService;
+	private String _spritemap;
 	private final ThemeDisplay _themeDisplay;
 	private Boolean _updatePermission;
 
