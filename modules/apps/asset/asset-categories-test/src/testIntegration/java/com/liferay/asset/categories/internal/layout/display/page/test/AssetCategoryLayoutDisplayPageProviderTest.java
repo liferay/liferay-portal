@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -61,14 +60,12 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 		_group = GroupTestUtil.addGroup();
 	}
 
-	@FeatureFlag("LPD-70396")
 	@Test
 	public void testGetLayoutDisplayPageObjectProvider() throws Exception {
 		_testGetLayoutDisplayPageObjectProviderERCInfoItemIdentifier();
 		_testGetLayoutDisplayPageObjectProviderNestedAssetCategory();
 	}
 
-	@FeatureFlag("LPD-70396")
 	@Test
 	public void testGetURLTitle() throws Exception {
 		_testGetURLTitleWithMaximumLengthExceeded();
