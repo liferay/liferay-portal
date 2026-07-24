@@ -499,9 +499,13 @@ export default function CalendarView({
 				}}
 				eventStartEditable={currentView !== 'dayGridDay'}
 				events={events}
+				firstDay={dateUtils.getFirstDayOfWeek(
+					locale as FirstDayOfWeekLocale
+				)}
 				fixedWeekCount={false}
 				headerToolbar={false}
 				initialView="dayGridMonth"
+				locale={locale}
 				moreLinkClassNames={[
 					'btn',
 					'btn-outline-secondary',
