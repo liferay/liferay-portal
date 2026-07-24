@@ -81,7 +81,9 @@ public class EnvPropertiesUtil {
 		for (Map.Entry<String, String> entry : env.entrySet()) {
 			String key = entry.getKey();
 
-			if (!key.startsWith(envPrefix)) {
+			if (!key.startsWith(envPrefix) ||
+				ArrayUtil.exists(_DOCKER_IMAGE_ENV_PREFIXES, key::startsWith)) {
+
 				continue;
 			}
 
@@ -124,6 +126,10 @@ public class EnvPropertiesUtil {
 			throw new ExceptionInInitializerError(exception);
 		}
 	}
+
+	private static final String[] _DOCKER_IMAGE_ENV_PREFIXES = {
+		"LIFERAY_CONTAINER_", "LIFERAY_DOCKER_"
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EnvPropertiesUtil.class);
