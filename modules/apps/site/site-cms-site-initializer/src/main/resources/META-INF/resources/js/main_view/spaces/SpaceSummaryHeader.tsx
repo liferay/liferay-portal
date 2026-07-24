@@ -41,6 +41,10 @@ interface SpaceSummaryHeaderProps {
 	apiURL: string;
 	creationMenu?: any;
 	label: string;
+	onOpenMembersModal?: (
+		data: ManageMembersData,
+		loadData?: () => void
+	) => void;
 	permissions?: SpaceSummaryHeaderPermissions;
 	spaceModalProps?: SpaceModalPropsType;
 	title: string;
@@ -51,6 +55,7 @@ export default function SpaceSummaryHeader({
 	apiURL,
 	creationMenu,
 	label,
+	onOpenMembersModal,
 	permissions,
 	spaceModalProps,
 	title,
@@ -150,6 +155,12 @@ export default function SpaceSummaryHeader({
 			),
 			title,
 		};
+
+		if (onOpenMembersModal) {
+			onOpenMembersModal(data, loadData);
+
+			return;
+		}
 
 		manageMembersAction(data, loadData);
 	};
