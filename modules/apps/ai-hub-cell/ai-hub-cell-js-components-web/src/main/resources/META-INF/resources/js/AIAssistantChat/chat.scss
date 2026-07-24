@@ -1,4 +1,8 @@
-@import 'cadmin-variables';
+@import '../variables';
+
+// Must match SIDEBAR_WIDTH in shells/AIAssistantSidebar.tsx.
+
+$ai-assistant-sidebar-width: 448px;
 
 @mixin ai-assistant-chat-gutter {
 	padding-left: 1rem;
@@ -15,6 +19,10 @@ html#{$cadmin-selector} {
 	.ai-assistant-chat__dropdown {
 		display: flex;
 		padding: 0;
+	}
+
+	.ai-assistant-chat__language-id-icon {
+		margin-right: 0.5rem;
 	}
 
 	.ai-assistant-chat__trigger.btn {
@@ -55,51 +63,95 @@ html#{$cadmin-selector} {
 	}
 }
 
+// The push marker lands on the host page's content container, outside any
+// cadmin scope; two classes outrank Clay's single-class padding rule.
+
+.ai-assistant-sidebar-push.c-slideout-push-end {
+	padding-right: $ai-assistant-sidebar-width;
+
+	// Mirrors Clay's media-breakpoint-down(md) rule on .c-slideout-push-end.
+
+	@media (max-width: 991.98px) {
+		padding-right: 0;
+	}
+}
+
 html#{$cadmin-selector} .cadmin {
-	.ai-assistant-chat__embedded {
-		height: 100%;
-		padding-top: 1rem;
+	&.ai-assistant-chat__panel {
+		height: 552px;
+		max-height: none;
+		max-width: none;
+		overflow: hidden;
+		width: 448px;
+	}
 
-		.ai-assistant-chat__messages-container {
-			min-height: 200px;
-		}
+	&.ai-assistant-sidebar-root > .c-slideout {
+		// SidePanel only writes a valid inline top when it can measure a
+		// container; without one the browser discards the inline value and
+		// this fallback docks the panel below the control menu and any CMS
+		// top bar. Clay's own bottom: 0 stretches it to the viewport bottom.
 
-		.ai-assistant-chat__quick-actions-title {
-			display: block;
-			margin-bottom: 0.5rem;
+		top: calc(
+			var(--control-menu-container-height, 0px) +
+				var(--top-bar-height, 0px)
+		);
+	}
+
+	.ai-assistant-sidebar {
+		border-left: $cadmin-border-width solid $cadmin-border-color;
+		border-radius: 0;
+		max-width: 100vw;
+	}
+
+	.ai-assistant-chat__panel-header {
+		flex-shrink: 0;
+		margin-bottom: 1rem;
+		padding-left: 1.5rem;
+		padding-right: 1.5rem;
+		padding-top: 0.5rem;
+
+		&-row {
+			align-items: center;
+			border-bottom: $cadmin-border-width solid $cadmin-border-color;
+			justify-content: space-between;
+			padding-bottom: 0.5rem;
 		}
 	}
 
+	.ai-assistant-chat__panel-title {
+		color: $cadmin-gray-900;
+		font-weight: 600;
+	}
+
+	.ai-assistant-chat__panel-actions {
+		align-items: center;
+		display: flex;
+	}
+
+	.ai-assistant-chat__panel-actions-separator {
+		align-self: center;
+		background-color: $cadmin-gray-500;
+		height: 16px;
+		margin-left: 0.5rem;
+		margin-right: 0.5rem;
+		width: 1px;
+	}
+
+	.ai-assistant-chat__panel-close-button,
+	.ai-assistant-chat__panel-expand-button {
+		color: $cadmin-gray-600;
+	}
+
+	.ai-assistant-chat__body-slot {
+		display: contents;
+	}
+
 	.ai-assistant-chat__dropdown-container,
-	.ai-assistant-chat__embedded {
+	.ai-assistant-chat__sidebar-container {
 		display: flex;
 		flex-direction: column;
 		height: 100%;
 		width: 100%;
-
-		.ai-assistant-chat__dropdown-close-button {
-			color: $cadmin-gray-600;
-		}
-
-		.ai-assistant-chat__dropdown-header {
-			flex-shrink: 0;
-			margin-bottom: 1rem;
-			padding-left: 1.5rem;
-			padding-right: 1.5rem;
-			padding-top: 0.5rem;
-
-			&-row {
-				align-items: center;
-				border-bottom: $cadmin-border-width solid $cadmin-border-color;
-				justify-content: space-between;
-				padding-bottom: 0.5rem;
-			}
-		}
-
-		.ai-assistant-chat__dropdown-title {
-			color: $cadmin-gray-900;
-			font-weight: 600;
-		}
 
 		.ai-assistant-chat__footer-disclaimer {
 			@include ai-assistant-chat-gutter;
@@ -198,8 +250,12 @@ html#{$cadmin-selector} .cadmin {
 		}
 
 		.ai-assistant-chat__generating-loading-text {
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
 			align-self: center;
-			color: $cadmin-primary;
+			background-clip: text;
+			background-image: $ai-loading-gradient;
+			color: transparent;
 			font-weight: 600;
 			margin: 0.5rem;
 		}
@@ -207,51 +263,12 @@ html#{$cadmin-selector} .cadmin {
 			background: $cadmin-danger-l2;
 		}
 		.ai-assistant-chat__ai-assistant-message-balloon {
-			background: $cadmin-gray-100;
-		}
-
-		.ai-assistant-chat__content-generation-balloon {
 			display: flex;
 			flex-direction: column;
 			margin-bottom: 0.5rem;
 
-			&-header {
-				align-items: flex-start;
-				display: flex;
-				gap: 0.5rem;
-				padding: 0.5rem;
-
-				.lexicon-icon {
-					color: $cadmin-primary;
-					flex-shrink: 0;
-					margin-top: 0.125rem;
-				}
-			}
-
-			&-form {
-				display: flex;
-				flex-direction: column;
-				gap: 0.5rem;
-				padding: 0.5rem;
-			}
-
-			&-icon {
-				align-items: center;
-				border: $cadmin-border-width solid $cadmin-border-color;
-				border-radius: 0.25rem;
-				color: $cadmin-gray-900;
-				display: inline-flex;
-				justify-content: center;
-				padding: 0.375rem;
-
-				.lexicon-icon {
-					margin-top: initial;
-				}
-			}
-
-			&-list {
-				background: transparent;
-				margin: 0 0.5rem 0.5rem;
+			p:last-child {
+				margin-bottom: 0;
 			}
 		}
 
@@ -332,8 +349,97 @@ html#{$cadmin-selector} .cadmin {
 			}
 		}
 
+		.ai-assistant-chat__content-generation-balloon {
+			display: flex;
+			flex-direction: column;
+			margin-bottom: 0.5rem;
+
+			&-header {
+				align-items: flex-start;
+				display: flex;
+				gap: 0.5rem;
+				padding: 0.5rem;
+
+				.lexicon-icon {
+					color: $cadmin-primary;
+					flex-shrink: 0;
+					margin-top: 0.125rem;
+				}
+			}
+
+			&-form {
+				display: flex;
+				flex-direction: column;
+				gap: 0.5rem;
+				padding: 0.5rem;
+			}
+
+			&-icon {
+				align-items: center;
+				border: $cadmin-border-width solid $cadmin-border-color;
+				border-radius: 0.25rem;
+				color: $cadmin-gray-900;
+				display: inline-flex;
+				justify-content: center;
+				padding: 0.375rem;
+
+				.lexicon-icon {
+					margin-top: initial;
+				}
+			}
+
+			&-list {
+				background: transparent;
+				margin: 0 0.5rem 0.5rem;
+			}
+		}
+
+		.ai-assistant-chat__language-select {
+			margin: 0.5rem;
+
+			.form-control,
+			input {
+				cursor: pointer;
+			}
+		}
+
+		.ai-assistant-chat__message-header {
+			display: flex;
+			flex-direction: row;
+
+			&-icon {
+				color: $cadmin-primary;
+				display: inline-block;
+				font-size: 12px;
+				margin-left: 0.5rem;
+				margin-top: 0.5rem;
+			}
+
+			&-text {
+				margin: 0.5rem;
+			}
+		}
+
+		.ai-assistant-chat__translation-review {
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+			margin: 0.5rem;
+		}
+
 		.ai-feedback-actions-row {
 			gap: 0.375rem;
+		}
+
+		.ai-assistant-chat__user-action {
+			display: flex;
+			gap: 0.5rem;
+			justify-content: flex-end;
+			margin-bottom: 0.5rem;
+
+			.btn {
+				border-radius: 0.5rem;
+			}
 		}
 
 		.ai-assistant-chat__user-image {
@@ -357,12 +463,37 @@ html#{$cadmin-selector} .cadmin {
 		}
 
 		.ai-assistant-chat__user-message {
-			max-width: 70%;
+			align-items: center;
+			display: flex;
+			justify-content: flex-end;
+			margin-bottom: 0.5rem;
+
+			&-avatar {
+				flex-shrink: 0;
+				margin-left: 0.5rem;
+			}
+
+			&-content {
+				background: $cadmin-gray-100;
+				border-radius: 0.5rem;
+				max-width: 70%;
+				overflow-wrap: break-word;
+				padding: 0.5rem;
+			}
 		}
 
 		.ai-assistant-chat__suggestion-hint {
 			color: $cadmin-purple;
 		}
+	}
+
+	// The sidebar container shares the panel height with the header above
+	// it, so it grows into the remaining space instead of the full height.
+
+	.ai-assistant-chat__sidebar-container {
+		flex-grow: 1;
+		height: auto;
+		min-height: 0;
 	}
 
 	.ai-assistant {
