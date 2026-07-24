@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.field.type.OptionInfoFieldType;
+import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemReference;
@@ -27,6 +28,7 @@ import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.PicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
@@ -68,6 +70,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -253,6 +256,7 @@ public class ObjectEntryInfoItemFormProviderTest {
 		_testGetInfoFormWithAttachmentObjectField();
 		_testGetInfoFormWithEdgeObjectRelationship();
 		_testGetInfoFormWithEnableObjectEntrySchedule();
+		_testGetInfoFormWithManyToManyObjectRelationship();
 		_testGetInfoFormWithObjectAction();
 		_testGetInfoFormWithObjectRelationship();
 		_testGetInfoFormWithPicklistObjectField();
@@ -429,6 +433,31 @@ public class ObjectEntryInfoItemFormProviderTest {
 		_assertInfoField(true, "displayDate", _childInfoForm);
 		_assertInfoField(true, "expirationDate", _childInfoForm);
 		_assertInfoField(true, "reviewDate", _childInfoForm);
+	}
+
+	private void _testGetInfoFormWithManyToManyObjectRelationship()
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _parentObjectDefinition,
+				_childObjectDefinition,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		InfoForm infoForm = _getInfoForm(_parentObjectDefinition);
+
+		InfoField infoField = infoForm.getInfoField(
+			ObjectRelationshipConstants.OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX +
+				objectRelationship.getName());
+
+		Assert.assertNotNull(infoField);
+		Assert.assertEquals(
+			RelationshipInfoFieldType.INSTANCE, infoField.getInfoFieldType());
+		Assert.assertTrue(
+			(boolean)infoField.getAttribute(
+				RelationshipInfoFieldType.MULTIPLE));
 	}
 
 	private void _testGetInfoFormWithObjectAction() throws Exception {
