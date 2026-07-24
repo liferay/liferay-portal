@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
+import org.mockito.InOrder;
 import org.mockito.Mockito;
 
 /**
@@ -39,6 +40,47 @@ public class WorkspaceGitRepositoryTest
 		_testPrepareGitWorkingDirectory(true, false);
 		_testPrepareGitWorkingDirectory(false, true);
 		_testPrepareGitWorkingDirectory(false, false);
+	}
+
+	@Test
+	public void testSetUp() throws Exception {
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).prepareGitWorkingDirectory();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).setUpAdditionalCaches();
+
+		Mockito.doNothing(
+		).when(
+			defaultWorkspaceGitRepository
+		).uploadGitArchives();
+
+		defaultWorkspaceGitRepository.setUp();
+		defaultWorkspaceGitRepository.setUp();
+
+		InOrder inOrder = Mockito.inOrder(defaultWorkspaceGitRepository);
+
+		inOrder.verify(
+			defaultWorkspaceGitRepository, Mockito.times(1)
+		).prepareGitWorkingDirectory();
+
+		inOrder.verify(
+			defaultWorkspaceGitRepository, Mockito.times(1)
+		).setUpAdditionalCaches();
+
+		inOrder.verify(
+			defaultWorkspaceGitRepository, Mockito.times(1)
+		).uploadGitArchives();
 	}
 
 	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)

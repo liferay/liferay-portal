@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.json.JSONObject;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -66,133 +67,6 @@ public class PortalWorkspaceGitRepositoryTest
 	}
 
 	@Test
-	public void testSetUp() throws Exception {
-		File workingDirectory = File.createTempFile("portal-workspace-", null);
-
-		workingDirectory.delete();
-
-		workingDirectory.mkdir();
-
-		File gitDirectory = new File(workingDirectory, ".git");
-
-		gitDirectory.mkdir();
-
-		mockEnvironment(
-			Collections.singletonMap("MASTER_NETWORK_NAME", "aws-network"));
-
-		Properties buildProperties = new Properties();
-
-		buildProperties.setProperty(
-			"binaries.cache.s3.path",
-			"s3://liferayci-file-propagator/binaries-cache/master.tar.gz");
-		buildProperties.setProperty("git.archive.enabled", "true");
-
-		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
-
-		BuildDatabaseUtil.setBuildDatabase(
-			BuildDatabaseTestUtil.newBuildDatabaseWithPullRequest());
-
-		Shell shell = mockShell();
-
-		Mockito.doReturn(
-			new Shell.ExecutionResult(0, "", "")
-		).when(
-			shell
-		).doExecute(
-			Mockito.any(Shell.ExecutionRequest.class)
-		);
-
-		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
-
-		Mockito.doReturn(
-			"1234567890123456789012345678901234567890"
-		).when(
-			localGitBranch
-		).getSHA();
-
-		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
-			GitWorkingDirectory.class);
-
-		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			Mockito.mock(PortalWorkspaceGitRepository.class);
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).prepareGitWorkingDirectory();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).setUp();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).setUpAdditionalCaches();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).setUpBinariesCache();
-
-		Mockito.doReturn(
-			workingDirectory
-		).when(
-			portalWorkspaceGitRepository
-		).getDirectory();
-
-		Mockito.doReturn(
-			"liferay-portal"
-		).when(
-			portalWorkspaceGitRepository
-		).getDirectoryName();
-
-		Mockito.doReturn(
-			gitWorkingDirectory
-		).when(
-			portalWorkspaceGitRepository
-		).getGitWorkingDirectory();
-
-		Mockito.doReturn(
-			localGitBranch
-		).when(
-			portalWorkspaceGitRepository
-		).getLocalGitBranch();
-
-		Mockito.doReturn(
-			"master"
-		).when(
-			portalWorkspaceGitRepository
-		).getUpstreamBranchName();
-
-		Mockito.doReturn(
-			true
-		).when(
-			portalWorkspaceGitRepository
-		).isBinariesCacheEnabled();
-
-		portalWorkspaceGitRepository.setUp();
-
-		Mockito.verify(
-			shell
-		).doExecute(
-			Mockito.argThat(
-				executionRequest -> _isCommand(
-					executionRequest, "aws s3 cp", "binaries-cache.tar.gz"))
-		);
-
-		Mockito.verify(
-			shell
-		).doExecute(
-			Mockito.argThat(
-				executionRequest -> _isCommand(
-					executionRequest, "tar --directory=",
-					"binaries-cache.tar.gz"))
-		);
-	}
-
-	@Test
 	public void testSetUpAdditionalCaches() throws Exception {
 		Properties buildProperties = new Properties();
 
@@ -220,24 +94,6 @@ public class PortalWorkspaceGitRepositoryTest
 		_testSetUpAdditionalCaches(false, "one", null);
 		_testSetUpAdditionalCaches(false, null, "two");
 		_testSetUpAdditionalCaches(true, "one", "two");
-	}
-
-	private boolean _isCommand(
-		Shell.ExecutionRequest executionRequest, String... substrings) {
-
-		if (executionRequest == null) {
-			return false;
-		}
-
-		String command = executionRequest.getCommands()[0];
-
-		for (String substring : substrings) {
-			if (!command.contains(substring)) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	private PortalWorkspaceGitRepository _newPortalWorkspaceGitRepository()
