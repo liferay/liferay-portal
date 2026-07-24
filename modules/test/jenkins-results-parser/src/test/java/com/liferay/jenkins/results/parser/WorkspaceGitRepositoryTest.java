@@ -1,0 +1,103 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.jenkins.results.parser;
+
+import java.io.File;
+
+import org.json.JSONObject;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import org.mockito.Mockito;
+
+/**
+ * @author Michael Hashimoto
+ */
+public class WorkspaceGitRepositoryTest
+	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testIsFullDotGitDirArchiveRequired() throws Exception {
+		Assert.assertTrue(
+			_isFullDotGitDirArchiveRequired("liferay-plugins-ee-6.2.x"));
+		Assert.assertTrue(
+			_isFullDotGitDirArchiveRequired("liferay-portal-ee-6.2.x"));
+		Assert.assertFalse(_isFullDotGitDirArchiveRequired("liferay-portal"));
+		Assert.assertFalse(
+			_isFullDotGitDirArchiveRequired("liferay-portal-7.0.x"));
+	}
+
+	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)
+		throws Exception {
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			new File(workingDirectoryName)
+		).when(
+			gitWorkingDirectory
+		).getWorkingDirectory();
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+
+		return defaultWorkspaceGitRepository.isFullDotGitDirArchiveRequired();
+	}
+
+	private DefaultWorkspaceGitRepository _newDefaultWorkspaceGitRepository(
+			GitWorkingDirectory gitWorkingDirectory)
+		throws Exception {
+
+		File workingDirectory = File.createTempFile("workspace-", null);
+
+		workingDirectory.delete();
+
+		workingDirectory.mkdir();
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put(
+			"base_branch_head_sha", "1234567890123456789012345678901234567890"
+		).put(
+			"base_branch_sha", "1234567890123456789012345678901234567890"
+		).put(
+			"base_branch_username", "liferay"
+		).put(
+			"directory",
+			JenkinsResultsParserUtil.getCanonicalPath(workingDirectory)
+		).put(
+			"directory_name", "test-repository"
+		).put(
+			"git_hub_url", "https://github.com/liferay/test-repository"
+		).put(
+			"name", "test-repository"
+		).put(
+			"sender_branch_head_sha", "0987654321098765432109876543210987654321"
+		).put(
+			"sender_branch_name", "master"
+		).put(
+			"sender_branch_sha", "0987654321098765432109876543210987654321"
+		).put(
+			"sender_branch_username", "test"
+		).put(
+			"upstream_branch_name", "master"
+		);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			Mockito.spy(new DefaultWorkspaceGitRepository(jsonObject));
+
+		Mockito.doReturn(
+			gitWorkingDirectory
+		).when(
+			defaultWorkspaceGitRepository
+		).getGitWorkingDirectory();
+
+		return defaultWorkspaceGitRepository;
+	}
+
+}
