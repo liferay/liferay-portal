@@ -6,8 +6,8 @@ import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import Loading from 'shared/components/Loading';
+import MarketoCampaignEntities from './MarketoCampaignEntities';
 import React, {useEffect, useRef, useState} from 'react';
-import SalesforceAccountsAndIndividuals from './SalesforceAccountsAndIndividuals';
 import URLConstants from 'shared/util/url-constants';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
@@ -17,12 +17,12 @@ import {ClayInput} from '@clayui/form';
 import {close, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
-import {ConnectSalesforceAuth} from './ConnectSalesforceAuth';
+import {ConnectMarketoCampaignAuth} from './ConnectMarketoCampaignAuth';
 import {DataSource} from 'shared/util/records';
 import {DataSourceEditableTitle} from '../data-source/DataSourceEditableTitle';
 import {DataSourceStatuses} from 'shared/util/constants';
 import {Entity} from '../3rd-party-connector/types';
-import {fetch, updateSalesforce} from 'shared/api/data-source';
+import {fetch, updateMarketoCampaign} from 'shared/api/data-source';
 import {fetchConnectorEntityCount} from 'shared/api/connector';
 import {getDataSourceDisplayObject} from 'shared/util/data-sources';
 import {sub} from 'shared/util/lang';
@@ -41,11 +41,11 @@ const connector = connect(null, {
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
-interface ISalesforceOverviewProps extends PropsFromRedux {
+interface IMarketoCampaignOverviewProps extends PropsFromRedux {
 	dataSource: DataSource;
 }
 
-const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
+const MarketoCampaignOverview: React.FC<IMarketoCampaignOverviewProps> = ({
 	addAlert,
 	close,
 	dataSource: initialDataSource,
@@ -60,27 +60,17 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 	}>();
 	const currentUser = useCurrentUser();
 
-	type Alert = {
+	type ConnectionAlert = {
 		displayType: DisplayType;
 		message: string;
 	};
 
-	const [alert, setAlert] = useState<Alert>({
+	const [alert, setAlert] = useState<ConnectionAlert>({
 		displayType: 'success',
 		message: '',
 	});
 
 	const dataSourceActive = dataSource.status === DataSourceStatuses.Active;
-
-	const enabledAllAccounts = dataSource.provider?.getIn(
-		['accountsConfiguration', 'enableAllAccounts'],
-		false
-	);
-
-	const enabledAllContacts = dataSource.provider?.getIn(
-		['contactsConfiguration', 'enableAllContacts'],
-		false
-	);
 
 	const enableAllLeads = dataSource.provider?.getIn(
 		['contactsConfiguration', 'enableAllLeads'],
@@ -112,36 +102,31 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 	};
 
 	useEffect(() => {
-		const alert: Alert = {
+		const connectionAlert: ConnectionAlert = {
 			displayType: 'success',
 			message: Liferay.Language.get(
-				'you-have-successfully-authenticated-your-token-with-liferay-analytics-cloud.-you-can-now-select-the-data-to-sync'
+				'you-have-successfully-authenticated-your-credentials-with-liferay-analytics-cloud.-you-can-now-select-the-data-to-sync'
 			),
 		};
 
 		if (!dataSourceActive) {
-			alert.displayType = 'warning';
+			connectionAlert.displayType = 'warning';
 
-			alert.message = sub(
+			connectionAlert.message = sub(
 				Liferay.Language.get(
 					'the-data-source-is-disconnected.-data-is-no-longer-being-synced-from-x,-but-you-can-reconnect-to-resume-syncing'
 				),
-				[Liferay.Language.get('salesforce')]
+				[Liferay.Language.get('marketo')]
 			) as string;
 		}
-		else if (enabledAllAccounts || enabledAllContacts || enableAllLeads) {
-			alert.message = Liferay.Language.get(
+		else if (enableAllLeads) {
+			connectionAlert.message = Liferay.Language.get(
 				'all-data-coming-from-this-data-source-is-up-to-date.-there-are-no-errors-to-report'
 			);
 		}
 
-		setAlert(alert);
-	}, [
-		dataSourceActive,
-		enableAllLeads,
-		enabledAllAccounts,
-		enabledAllContacts,
-	]);
+		setAlert(connectionAlert);
+	}, [dataSourceActive, enableAllLeads]);
 
 	const {handleDisconnect} = useDisconnectDataSource({
 		addAlert,
@@ -174,7 +159,7 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 				groupId={groupId}
 				label={label}
 				onUpdateName={async (name: string) => {
-					await updateSalesforce({groupId, id, name} as any);
+					await updateMarketoCampaign({groupId, id, name});
 
 					await handleUpdateDataSource();
 				}}
@@ -200,7 +185,7 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 										Liferay.Language.get(
 											'to-reestablish-the-connection-between-x-and-liferay-analytics-cloud,-check-your-credentials-and-paste-on-the-input-below'
 										),
-										[Liferay.Language.get('salesforce')]
+										[Liferay.Language.get('marketo')]
 									)}
 								</Text>
 
@@ -216,8 +201,8 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 								</ClayLink>
 							</div>
 
-							<ConnectSalesforceAuth
-								addAlert={addAlert as unknown as Alert.AddAlert}
+							<ConnectMarketoCampaignAuth
+								addAlert={addAlert}
 								buttonProps={{size: 'sm'}}
 								dataSource={dataSource}
 								onSubmit={handleUpdateDataSource}
@@ -240,7 +225,7 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 							<ClayInput
 								readOnly
 								type="text"
-								value={Liferay.Language.get('salesforce')}
+								value={Liferay.Language.get('marketo')}
 							/>
 						</ClayInput.GroupItem>
 
@@ -276,29 +261,23 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 			</Card>
 
 			<Card title={Liferay.Language.get('synced-data')}>
-				<AccountAndIndividuals
+				<SyncedIndividuals
 					currentUser={currentUser}
 					dataSource={dataSource}
 					groupId={groupId}
 					loading={loading}
 					onSubmit={async ({
-						enabledAllAccounts,
-						enabledAllIndividuals,
+						enabledIndividuals,
 					}: {
-						enabledAllAccounts: boolean;
-						enabledAllIndividuals: boolean;
+						enabledIndividuals: boolean;
 					}) => {
-						await updateSalesforce({
-							accountsConfiguration: {
-								enableAllAccounts: enabledAllAccounts,
-							},
+						await updateMarketoCampaign({
 							contactsConfiguration: {
-								enableAllContacts: enabledAllIndividuals,
-								enableAllLeads: enabledAllIndividuals,
+								enableAllLeads: enabledIndividuals,
 							},
 							groupId,
 							id: dataSource.id,
-						} as any);
+						});
 
 						await handleUpdateDataSource();
 
@@ -323,18 +302,14 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 					handleUpdateDataSource={handleUpdateDataSource}
 					loading={loading}
 					open={open}
-					updateDataSourceFn={
-						updateSalesforce as (params: {
-							[key: string]: any;
-						}) => Promise<any>
-					}
+					updateDataSourceFn={updateMarketoCampaign}
 				/>
 			</Card>
 		</BasePage>
 	);
 };
 
-const AccountAndIndividuals = ({
+const SyncedIndividuals = ({
 	currentUser,
 	dataSource,
 	groupId,
@@ -345,61 +320,53 @@ const AccountAndIndividuals = ({
 	dataSource: DataSource;
 	groupId: string;
 	loading: boolean;
-	onSubmit: (params: {
-		enabledAllAccounts: boolean;
-		enabledAllIndividuals: boolean;
-	}) => void;
+	onSubmit: (params: {enabledIndividuals: boolean}) => void;
 }) => {
-	const [enabledAllAccounts, setEnabledAllAccounts] = useState(
+	const MARKETO_COMPANIES_ENTITY = Entity.Accounts;
+	const MARKETO_LEADS_ENTITY = Entity.Users;
+
+	const [enabledIndividuals, setEnabledIndividuals] = useState(
 		dataSource.provider?.getIn(
-			['accountsConfiguration', 'enableAllAccounts'],
+			['contactsConfiguration', 'enableAllLeads'],
 			false
 		)
 	);
 
-	const [enabledAllIndividuals, setEnabledAllIndividuals] = useState(
-		dataSource.provider?.getIn(
-			['contactsConfiguration', 'enableAllContacts'],
-			false
-		) ||
-			dataSource.provider?.getIn(
-				['contactsConfiguration', 'enableAllLeads'],
-				false
-			)
-	);
-
-	const accountsCountResponse = useRequest({
-		dataSourceFn: (params) =>
-			fetchConnectorEntityCount(Entity.Accounts, params),
-		variables: {groupId, id: dataSource.id!},
-	});
-
-	const userCountResponse = useRequest({
-		dataSourceFn: (params) =>
-			fetchConnectorEntityCount(Entity.Users, params),
-		variables: {groupId, id: dataSource.id!},
-	});
-
 	const hasChangesRef = useRef<boolean | null>(null);
-	const enabledAllAccountsPrevValue = useRef(enabledAllAccounts);
-	const enabledAllIndividualsPrevValue = useRef(enabledAllIndividuals);
+	const enabledIndividualsPrevValue = useRef(enabledIndividuals);
 
 	const dataSourceActive = dataSource.status === DataSourceStatuses.Active;
 
-	if (accountsCountResponse.error || userCountResponse.error) {
+	const leadsCountResponse = useRequest({
+		dataSourceFn: (params) =>
+			fetchConnectorEntityCount(MARKETO_LEADS_ENTITY, params),
+		skipRequest: !dataSource.id,
+		variables: {groupId, id: dataSource.id ?? ''},
+	});
+
+	const companiesCountResponse = useRequest({
+		dataSourceFn: (params) =>
+			fetchConnectorEntityCount(MARKETO_COMPANIES_ENTITY, params),
+		skipRequest: !dataSource.id,
+		variables: {groupId, id: dataSource.id ?? ''},
+	});
+
+	if (companiesCountResponse.error || leadsCountResponse.error) {
 		return <ErrorDisplay />;
 	}
 
-	if (accountsCountResponse.loading || userCountResponse.loading) {
+	if (companiesCountResponse.loading || leadsCountResponse.loading) {
 		return <Loading spacer />;
 	}
+
+	const individualsSyncedCount =
+		(leadsCountResponse.data ?? 0) + (companiesCountResponse.data ?? 0);
 
 	return (
 		<div>
 			{!hasChangesRef.current &&
 				dataSourceActive &&
-				!enabledAllAccounts &&
-				!enabledAllIndividuals && (
+				!enabledIndividuals && (
 					<ClayAlert displayType="warning" title="Warning">
 						{Liferay.Language.get(
 							'the-data-source-setup-is-almost-complete.-sync-data-to-start-seeing-results-as-activities-occur-on-your-sites'
@@ -421,7 +388,7 @@ const AccountAndIndividuals = ({
 						Liferay.Language.get(
 							'to-configure-your-x-data-source,-go-to-your-x-environment-to-update-this-app-connection'
 						),
-						[Liferay.Language.get('salesforce')]
+						[Liferay.Language.get('marketo')]
 					)}
 				</Text>
 			</div>
@@ -432,31 +399,17 @@ const AccountAndIndividuals = ({
 				</Text>
 			</div>
 
-			<SalesforceAccountsAndIndividuals
-				accountsSyncedCount={accountsCountResponse.data}
+			<MarketoCampaignEntities
 				disabled={!dataSourceActive || !currentUser.isAdmin()}
-				enabledAccounts={enabledAllAccounts}
-				enabledIndividuals={enabledAllIndividuals}
-				individualsSyncedCount={userCountResponse.data}
-				onAccountsChange={() => {
-					const newValue = !enabledAllAccounts;
-
-					setEnabledAllAccounts(newValue);
-
-					hasChangesRef.current =
-						enabledAllAccountsPrevValue.current !== newValue ||
-						enabledAllIndividualsPrevValue.current !==
-							enabledAllIndividuals;
-				}}
+				enabledIndividuals={enabledIndividuals}
+				individualsSyncedCount={individualsSyncedCount}
 				onIndividualsChange={() => {
-					const newValue = !enabledAllIndividuals;
+					const newValue = !enabledIndividuals;
 
-					setEnabledAllIndividuals(newValue);
+					setEnabledIndividuals(newValue);
 
 					hasChangesRef.current =
-						enabledAllIndividualsPrevValue.current !== newValue ||
-						enabledAllAccountsPrevValue.current !==
-							enabledAllAccounts;
+						enabledIndividualsPrevValue.current !== newValue;
 				}}
 			/>
 
@@ -467,10 +420,7 @@ const AccountAndIndividuals = ({
 					onClick={async () => {
 						hasChangesRef.current = false;
 
-						await onSubmit({
-							enabledAllAccounts,
-							enabledAllIndividuals,
-						});
+						await onSubmit({enabledIndividuals});
 					}}
 					size="sm"
 				>
@@ -481,4 +431,7 @@ const AccountAndIndividuals = ({
 	);
 };
 
-export default compose(connector, withSelectionProvider)(SalesforceOverview);
+export default compose(
+	connector,
+	withSelectionProvider
+)(MarketoCampaignOverview);

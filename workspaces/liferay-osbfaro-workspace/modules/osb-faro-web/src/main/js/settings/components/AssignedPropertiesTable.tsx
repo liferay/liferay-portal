@@ -130,7 +130,7 @@ const AssignedPropertiesTable = ({
 			<div className="p-4">
 				<Text as="p" color="secondary" size={4}>
 					{Liferay.Language.get(
-						'properties-allow-you-to-aggregate-data-on-your-users-and-dxp-sites-and-channels.-the-data-source-data-will-be-available-in-any-property-they-are-assigned-to'
+						'properties-let-you-consolidate-data-from-individuals,-accounts,-campaigns,-sites,-and-commerce-channels-in-one-place.-an-individuals-data-is-available-in-every-property-they-are-assigned-to'
 					)}
 				</Text>
 

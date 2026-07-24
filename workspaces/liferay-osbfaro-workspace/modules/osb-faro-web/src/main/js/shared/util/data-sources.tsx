@@ -10,6 +10,7 @@ import {
 import {DataSource} from 'shared/util/records';
 import {Map as ImmutableMap, List} from 'immutable';
 import {Routes, toRoute} from 'shared/util/router';
+import {sub} from 'shared/util/lang';
 import {toPromise} from 'shared/components/form';
 
 export const LIFERAY_SITE_TYPE = `${EntityTypes.DataSource}-site`;
@@ -92,9 +93,12 @@ export const STATUS_DISPLAY = {
 	[DataSourceStates.Disconnected]: {
 		display: 'secondary',
 		label: Liferay.Language.get('disconnected'),
-		message: Liferay.Language.get(
-			'the-data-source-is-disconnected.-data-is-no-longer-being-synced-from-dxp,-but-you-can-reconnect-to-resume-syncing'
-		),
+		message: sub(
+			Liferay.Language.get(
+				'the-data-source-is-disconnected.-data-is-no-longer-being-synced-from-x,-but-you-can-reconnect-to-resume-syncing'
+			),
+			[Liferay.Language.get('liferay-dxp')]
+		) as string,
 	},
 	[DataSourceStates.InProgressDeleting]: {
 		display: 'info',

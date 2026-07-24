@@ -26,6 +26,7 @@ import {
 } from 'shared/api/data-source';
 import {getDataSourceDisplayObject} from 'shared/util/data-sources';
 import {ReviewSyncedDataFragment} from './ReviewSyncedDataFragment';
+import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDisconnectDataSource} from '../data-source/utils';
@@ -118,9 +119,12 @@ const LiferayOverview: React.FC<ILiferayeOverviewProps> = ({
 		if (!dataSourceActive) {
 			alert.displayType = 'warning';
 
-			alert.message = Liferay.Language.get(
-				'the-data-source-is-disconnected.-data-is-no-longer-being-synced-from-dxp,-but-you-can-reconnect-to-resume-syncing'
-			);
+			alert.message = sub(
+				Liferay.Language.get(
+					'the-data-source-is-disconnected.-data-is-no-longer-being-synced-from-x,-but-you-can-reconnect-to-resume-syncing'
+				),
+				[Liferay.Language.get('liferay-dxp')]
+			) as string;
 		}
 		else if (dataSource?.sitesSelected || dataSource?.contactsSelected) {
 			alert.message = Liferay.Language.get(

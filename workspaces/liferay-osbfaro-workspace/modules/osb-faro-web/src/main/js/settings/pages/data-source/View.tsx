@@ -1,6 +1,7 @@
 import ConnectorOverview from 'settings/components/3rd-party-connector/ConnectorOverview';
 import CSV from './CSV';
 import LiferayOverview from 'settings/components/liferay/LiferayOverview';
+import MarketoCampaignOverview from 'settings/components/marketo/MarketoCampaignOverview';
 import omitDefinedProps from 'shared/util/omitDefinedProps';
 import PropTypes from 'prop-types';
 import React, {ComponentType} from 'react';
@@ -14,6 +15,8 @@ import {withRouter} from 'react-router-dom';
 const PAGE_MAP: {[type: string]: ComponentType<any>} = {
 	[DataSourceTypes.Csv]: CSV as ComponentType<any>,
 	[DataSourceTypes.Liferay]: LiferayOverview as ComponentType<any>,
+	[DataSourceTypes.MarketoCampaign]:
+		MarketoCampaignOverview as ComponentType<any>,
 	[DataSourceTypes.Salesforce]: SalesforceOverview as ComponentType<any>,
 };
 
