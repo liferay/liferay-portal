@@ -55,7 +55,7 @@ public abstract class BaseModelListenerTestCase {
 
 		CMPTestUtil.getOrAddGroup(BaseModelListenerTestCase.class);
 
-		projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+		cmpProjectObjectEntry = CMPTestUtil.addCMPProjectObjectEntry();
 	}
 
 	@After
@@ -63,17 +63,17 @@ public abstract class BaseModelListenerTestCase {
 		ReflectionTestUtil.setFieldValue(
 			getModelListener(), "auditRouter", _auditRouter);
 
-		_objectEntryLocalService.deleteObjectEntry(projectObjectEntry);
+		_objectEntryLocalService.deleteObjectEntry(cmpProjectObjectEntry);
 	}
 
 	protected void assertAuditMessage(String expectedEventType) {
 		AuditMessage auditMessage = _auditMessages.poll();
 
 		Assert.assertEquals(
-			projectObjectEntry.getModelClassName(),
+			cmpProjectObjectEntry.getModelClassName(),
 			auditMessage.getClassName());
 		Assert.assertEquals(
-			projectObjectEntry.getObjectEntryId(),
+			cmpProjectObjectEntry.getObjectEntryId(),
 			GetterUtil.getLong(auditMessage.getClassPK()));
 		Assert.assertEquals(expectedEventType, auditMessage.getEventType());
 
@@ -82,7 +82,7 @@ public abstract class BaseModelListenerTestCase {
 
 	protected abstract ModelListener<?> getModelListener();
 
-	protected ObjectEntry projectObjectEntry;
+	protected ObjectEntry cmpProjectObjectEntry;
 
 	private final Queue<AuditMessage> _auditMessages = new LinkedList<>();
 	private AuditRouter _auditRouter;

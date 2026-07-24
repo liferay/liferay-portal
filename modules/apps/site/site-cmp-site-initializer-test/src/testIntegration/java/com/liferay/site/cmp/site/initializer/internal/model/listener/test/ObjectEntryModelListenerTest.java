@@ -73,89 +73,93 @@ public class ObjectEntryModelListenerTest {
 
 	@Test
 	public void testOnAfterCreate() throws Exception {
-		ObjectEntry projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
 
 		Group group = _groupLocalService.getGroup(
-			projectObjectEntry.getGroupId());
+			cmpProjectObjectEntry.getGroupId());
 
 		Assert.assertEquals(
 			group.getName(LocaleUtil.getDefault()),
-			MapUtil.getString(projectObjectEntry.getValues(), "title"));
+			MapUtil.getString(cmpProjectObjectEntry.getValues(), "title"));
 
 		Role role = RoleUtil.getOrAddCMSAdministratorRole(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
 
 		_assertResourceActions(
-			projectObjectEntry, role.getName(), ActionKeys.ADD_DISCUSSION,
+			cmpProjectObjectEntry, role.getName(), ActionKeys.ADD_DISCUSSION,
 			ActionKeys.DELETE, ActionKeys.DELETE_DISCUSSION,
 			ActionKeys.PERMISSIONS, ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
 			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 
 		_assertResourceActions(
-			projectObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
+			cmpProjectObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
 		_assertResourceActions(
-			projectObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
+			cmpProjectObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
 			ActionKeys.DELETE_DISCUSSION, ActionKeys.PERMISSIONS,
 			ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
 			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 		_assertResourceActions(
-			projectObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
+			cmpProjectObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
 
-		ObjectEntry taskObjectEntry = CMPTestUtil.addTaskObjectEntry(
-			projectObjectEntry);
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry);
 
 		_assertResourceActions(
-			taskObjectEntry, role.getName(), ActionKeys.ADD_DISCUSSION,
+			cmpTaskObjectEntry, role.getName(), ActionKeys.ADD_DISCUSSION,
 			ActionKeys.DELETE, ActionKeys.DELETE_DISCUSSION,
 			ActionKeys.PERMISSIONS, ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
 			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 
 		_assertResourceActions(
-			taskObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
+			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW);
 		_assertResourceActions(
-			taskObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
+			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
 			ActionKeys.DELETE_DISCUSSION, ActionKeys.PERMISSIONS,
 			ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
 			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 		_assertResourceActions(
-			taskObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
+			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
 	}
 
 	@Test
 	public void testOnAfterUpdate() throws Exception {
-		ObjectEntry projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
 
-		User user1 = UserTestUtil.addUser(projectObjectEntry.getGroupId());
-		User user2 = UserTestUtil.addUser(projectObjectEntry.getGroupId());
+		User user1 = UserTestUtil.addUser(cmpProjectObjectEntry.getGroupId());
+		User user2 = UserTestUtil.addUser(cmpProjectObjectEntry.getGroupId());
 
-		Map<String, Serializable> values = projectObjectEntry.getValues();
+		Map<String, Serializable> values = cmpProjectObjectEntry.getValues();
 
 		values.put("r_userToCMPProjectManager_userId", user1.getUserId());
 		values.put("r_userToCMPProjectSponsor_userId", user2.getUserId());
 
-		projectObjectEntry.setValues(values);
+		cmpProjectObjectEntry.setValues(values);
 
-		projectObjectEntry = _objectEntryLocalService.partialUpdateObjectEntry(
-			TestPropsValues.getUserId(), projectObjectEntry.getObjectEntryId(),
-			projectObjectEntry.getObjectEntryFolderId(), values,
-			ServiceContextTestUtil.getServiceContext());
+		cmpProjectObjectEntry =
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				TestPropsValues.getUserId(),
+				cmpProjectObjectEntry.getObjectEntryId(),
+				cmpProjectObjectEntry.getObjectEntryFolderId(), values,
+				ServiceContextTestUtil.getServiceContext());
 
 		_assertUserGroupRoles(
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MANAGER),
-			projectObjectEntry.getGroupId(), user1.getUserId());
+			cmpProjectObjectEntry.getGroupId(), user1.getUserId());
 		_assertUserGroupRoles(
 			1, Collections.singletonList(DepotRolesConstants.PROJECT_MEMBER),
-			projectObjectEntry.getGroupId(), user2.getUserId());
+			cmpProjectObjectEntry.getGroupId(), user2.getUserId());
 	}
 
 	private void _assertResourceActions(

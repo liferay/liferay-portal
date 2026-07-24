@@ -83,7 +83,11 @@ function QuickFilterButton({
 	);
 }
 
-export default function TasksQuickFilters({projectId}: {projectId?: string}) {
+export default function TasksQuickFilters({
+	cmpProjectObjectEntryId,
+}: {
+	cmpProjectObjectEntryId?: string;
+}) {
 	const [activeQuickFilter, setActiveQuickFilter] = useState<string | null>(
 		null
 	);
@@ -278,8 +282,8 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 
 	const fetchCounts = useCallback(async () => {
 		fetch(
-			projectId
-				? `/o/headless-cmp/v1.0/projects/${projectId}/task-statistics/`
+			cmpProjectObjectEntryId
+				? `/o/headless-cmp/v1.0/projects/${cmpProjectObjectEntryId}/task-statistics/`
 				: '/o/headless-cmp/v1.0/task-statistics/',
 			{
 				method: 'GET',
@@ -292,7 +296,7 @@ export default function TasksQuickFilters({projectId}: {projectId?: string}) {
 			setOverdueCount(data.overdueCount);
 			setTotalCount(data.totalCount);
 		});
-	}, [projectId]);
+	}, [cmpProjectObjectEntryId]);
 
 	useEffect(() => {
 		fetchCounts();

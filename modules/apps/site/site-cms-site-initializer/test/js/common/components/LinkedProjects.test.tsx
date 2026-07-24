@@ -57,8 +57,8 @@ function mockService({
 	});
 	jest.spyOn(ProjectLinkService, 'getProjectLinks').mockResolvedValue({
 		data: linked.map((project) => ({
+			cmpProjectObjectEntryId: project.id,
 			id: project.linkId,
-			projectId: project.id,
 		})),
 		error: null,
 	});

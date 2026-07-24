@@ -117,6 +117,20 @@ public class ContentCoverageResourceTest
 	public void testGraphQLGetProjectContentCoverageNotFound() {
 	}
 
+	private ObjectEntry _addCMPProjectObjectEntry(
+			long[] assetCategoryIds, String assetTagName)
+		throws Exception {
+
+		ObjectEntry objectEntry = CMPTestUtil.addCMPProjectObjectEntry();
+
+		_partialUpdateObjectEntry(assetCategoryIds, new String[0], objectEntry);
+		_partialUpdateObjectEntry(
+			new long[0], new String[] {assetTagName},
+			CMPTestUtil.addCMPTaskObjectEntry(objectEntry));
+
+		return objectEntry;
+	}
+
 	private ObjectEntry _addContentObjectEntry(
 			long[] assetCategoryIds, String[] assetTagNames)
 		throws Exception {
@@ -158,20 +172,6 @@ public class ContentCoverageResourceTest
 		_objectEntryLocalService.updateStatus(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(), status,
 			ServiceContextTestUtil.getServiceContext(_depotEntry.getGroupId()));
-	}
-
-	private ObjectEntry _addProjectObjectEntry(
-			long[] assetCategoryIds, String assetTagName)
-		throws Exception {
-
-		ObjectEntry objectEntry = CMPTestUtil.addProjectObjectEntry();
-
-		_partialUpdateObjectEntry(assetCategoryIds, new String[0], objectEntry);
-		_partialUpdateObjectEntry(
-			new long[0], new String[] {assetTagName},
-			CMPTestUtil.addTaskObjectEntry(objectEntry));
-
-		return objectEntry;
 	}
 
 	private void _assertContentCoverage(
@@ -218,7 +218,7 @@ public class ContentCoverageResourceTest
 
 		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
 
-		ObjectEntry objectEntry = _addProjectObjectEntry(
+		ObjectEntry objectEntry = _addCMPProjectObjectEntry(
 			new long[] {awarenessAssetCategory.getCategoryId()}, assetTagName);
 
 		_addContentObjectEntry(new long[0], new String[] {assetTagName});
@@ -256,7 +256,7 @@ public class ContentCoverageResourceTest
 
 		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
 
-		ObjectEntry projectObjectEntry = _addProjectObjectEntry(
+		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
 			new long[] {
 				awarenessAssetCategory.getCategoryId(),
 				championAssetCategory.getCategoryId(),
@@ -331,7 +331,7 @@ public class ContentCoverageResourceTest
 				new AssetCategory[] {
 					championAssetCategory, decisionMakerAssetCategory
 				}),
-			projectObjectEntry);
+			cmpProjectObjectEntry);
 	}
 
 	private void _testGetProjectContentCoverageWithInvalidProjectId()
@@ -348,7 +348,7 @@ public class ContentCoverageResourceTest
 
 		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
 
-		ObjectEntry objectEntry = _addProjectObjectEntry(
+		ObjectEntry objectEntry = _addCMPProjectObjectEntry(
 			new long[0], assetTagName);
 
 		AssetCategory decisionMakerAssetCategory = _getAssetCategory(
@@ -373,7 +373,7 @@ public class ContentCoverageResourceTest
 
 		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
 
-		ObjectEntry objectEntry = _addProjectObjectEntry(
+		ObjectEntry objectEntry = _addCMPProjectObjectEntry(
 			new long[] {
 				awarenessAssetCategory.getCategoryId(),
 				championAssetCategory.getCategoryId()

@@ -163,9 +163,9 @@ export default function getTaskItemsActions(
 					}) => (
 						<EditAssigneeModalContent
 							closeModal={closeModal}
+							cmpTaskObjectEntryId={String(task.embedded.id)}
+							cmpTaskObjectEntryTitle={task.embedded.title}
 							loadData={loadData}
-							taskId={String(task.embedded.id)}
-							taskTitle={task.embedded.title}
 							value={task.embedded.assignTo}
 						/>
 					),
@@ -188,10 +188,10 @@ export default function getTaskItemsActions(
 					}) => (
 						<UpdateDueDateModalContent
 							closeModal={closeModal}
+							cmpTaskObjectEntryId={String(task.embedded.id)}
+							cmpTaskObjectEntryTitle={task.embedded.title}
 							dueDate={task.embedded.dueDate}
 							loadData={loadData}
-							taskId={String(task.embedded.id)}
-							taskTitle={task.embedded.title}
 						/>
 					),
 					size: 'md',

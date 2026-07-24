@@ -33,8 +33,8 @@ describe('TasksOverview', () => {
 		await act(async () => {
 			render(
 				<TasksOverview
+					cmpProjectObjectEntryId="123"
 					hasAddTaskPermission
-					projectId="123"
 					redirect="/redirect-url"
 				/>
 			);
@@ -72,8 +72,8 @@ describe('TasksOverview', () => {
 		await act(async () => {
 			render(
 				<TasksOverview
+					cmpProjectObjectEntryId="123"
 					hasAddTaskPermission
-					projectId="123"
 					redirect="/redirect-url"
 				/>
 			);
@@ -116,8 +116,8 @@ describe('TasksOverview', () => {
 		await act(async () => {
 			render(
 				<TasksOverview
+					cmpProjectObjectEntryId="123"
 					hasAddTaskPermission={false}
-					projectId="123"
 					redirect="/redirect-url"
 				/>
 			);

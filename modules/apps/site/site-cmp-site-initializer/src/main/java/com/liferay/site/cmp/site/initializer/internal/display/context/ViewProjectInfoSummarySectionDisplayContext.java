@@ -40,6 +40,8 @@ public class ViewProjectInfoSummarySectionDisplayContext
 
 	public Map<String, Object> getProperties() throws Exception {
 		return HashMapBuilder.<String, Object>put(
+			"cmpProjectObjectEntryId", objectEntry.getObjectEntryId()
+		).put(
 			"funnelStages", _getAssetCategoryTitles("L_CMP_FUNNEL_STAGE")
 		).put(
 			"manager",
@@ -48,8 +50,6 @@ public class ViewProjectInfoSummarySectionDisplayContext
 					getFieldValue("r_userToCMPProjectManager_userId")))
 		).put(
 			"personas", _getAssetCategoryTitles("L_CMP_PERSONAS")
-		).put(
-			"projectId", objectEntry.getObjectEntryId()
 		).put(
 			"sponsor",
 			_getUserInfoMap(

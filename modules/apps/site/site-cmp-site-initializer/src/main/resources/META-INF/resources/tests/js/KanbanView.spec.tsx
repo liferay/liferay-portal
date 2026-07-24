@@ -43,11 +43,11 @@ describe('KanbanView mapping and lifecycle', () => {
 
 		const {unmount} = render(
 			<KanbanView
+				cmpProjectObjectDefinitionId={123}
+				cmpProjectObjectEntryId=""
 				hasAddTaskPermission
 				items={items}
 				itemsActions={[]}
-				projectId=""
-				projectObjectDefinitionId={123}
 			/>
 		);
 

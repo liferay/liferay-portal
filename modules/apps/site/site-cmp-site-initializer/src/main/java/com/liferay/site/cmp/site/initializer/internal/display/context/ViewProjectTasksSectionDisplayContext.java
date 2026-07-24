@@ -33,6 +33,8 @@ public class ViewProjectTasksSectionDisplayContext
 	public ViewProjectTasksSectionDisplayContext(
 		AssetTagLocalService assetTagLocalService,
 		ClassNameLocalService classNameLocalService,
+		ObjectDefinition cmpProjectObjectDefinition,
+		ObjectDefinition cmpTaskObjectDefinition,
 		DepotEntryLocalService depotEntryLocalService,
 		HttpServletRequest httpServletRequest,
 		ListTypeEntryLocalService listTypeEntryLocalService,
@@ -40,15 +42,15 @@ public class ViewProjectTasksSectionDisplayContext
 		ObjectFieldLocalService objectFieldLocalService,
 		ObjectStateFlowLocalService objectStateFlowLocalService,
 		ObjectStateLocalService objectStateLocalService,
-		ObjectDefinition projectObjectDefinition, RoleService roleService,
-		ObjectDefinition taskObjectDefinition) {
+		RoleService roleService) {
 
 		super(
-			assetTagLocalService, classNameLocalService, depotEntryLocalService,
-			httpServletRequest, listTypeEntryLocalService, objectEntryService,
+			assetTagLocalService, classNameLocalService,
+			cmpProjectObjectDefinition, cmpTaskObjectDefinition,
+			depotEntryLocalService, httpServletRequest,
+			listTypeEntryLocalService, objectEntryService,
 			objectFieldLocalService, objectStateFlowLocalService,
-			objectStateLocalService, projectObjectDefinition, roleService,
-			taskObjectDefinition);
+			objectStateLocalService, roleService);
 	}
 
 	@Override
@@ -77,7 +79,7 @@ public class ViewProjectTasksSectionDisplayContext
 
 	public Map<String, Object> getTasksQuickFiltersProperties() {
 		return HashMapBuilder.<String, Object>put(
-			"projectId",
+			"cmpProjectObjectEntryId",
 			() -> {
 				if (assetEntry == null) {
 					return null;

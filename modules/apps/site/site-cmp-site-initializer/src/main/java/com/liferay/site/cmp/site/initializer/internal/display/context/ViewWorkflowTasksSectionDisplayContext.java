@@ -43,6 +43,8 @@ public class ViewWorkflowTasksSectionDisplayContext
 	public ViewWorkflowTasksSectionDisplayContext(
 		AssetTagLocalService assetTagLocalService,
 		ClassNameLocalService classNameLocalService,
+		ObjectDefinition cmpProjectObjectDefinition,
+		ObjectDefinition cmpTaskObjectDefinition,
 		DepotEntryLocalService depotEntryLocalService,
 		HttpServletRequest httpServletRequest,
 		ListTypeEntryLocalService listTypeEntryLocalService,
@@ -50,15 +52,15 @@ public class ViewWorkflowTasksSectionDisplayContext
 		ObjectFieldLocalService objectFieldLocalService,
 		ObjectStateFlowLocalService objectStateFlowLocalService,
 		ObjectStateLocalService objectStateLocalService,
-		ObjectDefinition projectObjectDefinition, RoleService roleService,
-		ObjectDefinition taskObjectDefinition) {
+		RoleService roleService) {
 
 		super(
-			assetTagLocalService, classNameLocalService, depotEntryLocalService,
-			httpServletRequest, listTypeEntryLocalService, objectEntryService,
+			assetTagLocalService, classNameLocalService,
+			cmpProjectObjectDefinition, cmpTaskObjectDefinition,
+			depotEntryLocalService, httpServletRequest,
+			listTypeEntryLocalService, objectEntryService,
 			objectFieldLocalService, objectStateFlowLocalService,
-			objectStateLocalService, projectObjectDefinition, roleService,
-			taskObjectDefinition);
+			objectStateLocalService, roleService);
 	}
 
 	@Override
@@ -134,8 +136,8 @@ public class ViewWorkflowTasksSectionDisplayContext
 	public List<FDSFilter> getFDSFilters() {
 		return ListUtil.fromArray(
 			new AssigneeSelectionFDSFilter(
-				classNameLocalService, projectObjectDefinition.getCompanyId(),
-				roleService),
+				classNameLocalService,
+				cmpProjectObjectDefinition.getCompanyId(), roleService),
 			new WorkflowTaskDueDateRangeFDSFilter(),
 			new WorkflowTaskStatusSelectionFDSFilter());
 	}

@@ -44,22 +44,23 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 		CMPTestUtil.getOrAddGroup(
 			BaseComponentSectionFragmentRendererTestCase.class);
 
-		projectObjectDefinition =
+		cmpProjectObjectDefinition =
 			objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", TestPropsValues.getCompanyId());
 
-		projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+		cmpProjectObjectEntry = CMPTestUtil.addCMPProjectObjectEntry();
 
-		projectTitle = MapUtil.getString(
-			projectObjectEntry.getValues(), "title");
+		cmpProjectObjectEntryTitle = MapUtil.getString(
+			cmpProjectObjectEntry.getValues(), "title");
 
-		taskObjectDefinition =
+		cmpTaskObjectDefinition =
 			objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK", TestPropsValues.getCompanyId());
 
-		taskObjectEntry = CMPTestUtil.addTaskObjectEntry(projectObjectEntry);
+		cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry);
 
 		themeDisplay = new ThemeDisplay() {
 			{
@@ -77,7 +78,7 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 		};
 
 		mockHttpServletRequest = getMockHttpServletRequest(
-			projectObjectDefinition, projectObjectEntry);
+			cmpProjectObjectDefinition, cmpProjectObjectEntry);
 	}
 
 	protected abstract FragmentRenderer getFragmentRenderer();
@@ -122,16 +123,16 @@ public abstract class BaseComponentSectionFragmentRendererTestCase {
 			null, mockHttpServletRequest);
 	}
 
+	protected ObjectDefinition cmpProjectObjectDefinition;
+	protected ObjectEntry cmpProjectObjectEntry;
+	protected String cmpProjectObjectEntryTitle;
+	protected ObjectDefinition cmpTaskObjectDefinition;
+	protected ObjectEntry cmpTaskObjectEntry;
 	protected MockHttpServletRequest mockHttpServletRequest;
 
 	@Inject
 	protected ObjectDefinitionLocalService objectDefinitionLocalService;
 
-	protected ObjectDefinition projectObjectDefinition;
-	protected ObjectEntry projectObjectEntry;
-	protected String projectTitle;
-	protected ObjectDefinition taskObjectDefinition;
-	protected ObjectEntry taskObjectEntry;
 	protected ThemeDisplay themeDisplay;
 
 	@Inject

@@ -279,9 +279,9 @@ export default function AllTasksFDSPropsTransformer({
 					}) => (
 						<EditAssigneeModalContent
 							closeModal={closeModal}
+							cmpTaskObjectEntryId={String(itemData.embedded.id)}
+							cmpTaskObjectEntryTitle={itemData.embedded.title}
 							loadData={loadData}
-							taskId={String(itemData.embedded.id)}
-							taskTitle={itemData.embedded.title}
 							value={itemData.embedded.assignTo}
 						/>
 					),

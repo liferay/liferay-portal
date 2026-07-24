@@ -35,7 +35,7 @@ public abstract class BaseInfoSummarySectionDisplayContextTestCase {
 		CMPTestUtil.getOrAddGroup(
 			BaseInfoSummarySectionDisplayContextTestCase.class);
 
-		projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+		cmpProjectObjectEntry = CMPTestUtil.addCMPProjectObjectEntry();
 	}
 
 	protected abstract FragmentRenderer getFragmentRenderer();
@@ -73,7 +73,7 @@ public abstract class BaseInfoSummarySectionDisplayContextTestCase {
 			HttpServletRequest httpServletRequest)
 		throws Exception;
 
-	protected ObjectEntry projectObjectEntry;
+	protected ObjectEntry cmpProjectObjectEntry;
 	protected ThemeDisplay themeDisplay;
 
 }

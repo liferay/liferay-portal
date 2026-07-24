@@ -40,11 +40,11 @@ function mapByStateCode(items: ITask[]): {[key: string]: IColumn} {
 }
 
 interface PendingMove {
+	cmpTaskObjectEntryId: number | string;
 	newStatus: {
 		key: string;
 		name: string;
 	};
-	taskId: number | string;
 }
 
 export function useOptimisticBoard(
@@ -70,7 +70,8 @@ export function useOptimisticBoard(
 	const boardData = useMemo(() => {
 		const mergedItems = serverTasks.map((serverTask) => {
 			const pendingMove = pendingMoves.find(
-				(pendingMove) => pendingMove.taskId === serverTask.embedded.id
+				(pendingMove) =>
+					pendingMove.cmpTaskObjectEntryId === serverTask.embedded.id
 			);
 
 			if (pendingMove) {
@@ -95,8 +96,8 @@ export function useOptimisticBoard(
 	const moveTask = useCallback(
 		async (task: ITask, newStatus: {key: string; name: string}) => {
 			const pendingMoveOperation: PendingMove = {
+				cmpTaskObjectEntryId: task.embedded.id,
 				newStatus,
-				taskId: task.embedded.id,
 			};
 
 			setPendingMoves((prevPendingMoves) => [

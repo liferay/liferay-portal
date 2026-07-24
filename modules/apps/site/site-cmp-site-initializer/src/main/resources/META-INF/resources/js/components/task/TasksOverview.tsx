@@ -65,12 +65,12 @@ function StatisticButton({
 }
 
 export default function TasksOverview({
+	cmpProjectObjectEntryId,
 	hasAddTaskPermission,
-	projectId,
 	redirect,
 }: {
+	cmpProjectObjectEntryId: string;
 	hasAddTaskPermission: boolean;
-	projectId: string;
 	redirect: string;
 }) {
 	const [blockedCount, setBlockedCount] = useState(0);
@@ -115,9 +115,9 @@ export default function TasksOverview({
 			fetch(url).then((response) => response.json());
 
 		const [projectData, taskStatisticsData] = await Promise.all([
-			fetchJSON(`/o/cmp/projects/${projectId}`),
+			fetchJSON(`/o/cmp/projects/${cmpProjectObjectEntryId}`),
 			fetchJSON(
-				`/o/headless-cmp/v1.0/projects/${projectId}/task-statistics/`
+				`/o/headless-cmp/v1.0/projects/${cmpProjectObjectEntryId}/task-statistics/`
 			),
 		]);
 
@@ -128,7 +128,7 @@ export default function TasksOverview({
 		setTotalCount(taskStatisticsData.totalCount);
 
 		setLoading(false);
-	}, [projectId]);
+	}, [cmpProjectObjectEntryId]);
 
 	useEffect(() => {
 		fetchCounts();

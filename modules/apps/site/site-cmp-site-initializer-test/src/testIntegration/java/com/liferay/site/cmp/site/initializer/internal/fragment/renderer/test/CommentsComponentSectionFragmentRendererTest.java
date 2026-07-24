@@ -67,8 +67,8 @@ public class CommentsComponentSectionFragmentRendererTest
 			themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 			GroupConstants.CMS_FRIENDLY_URL, actionId, "?p_l_id=",
 			themeDisplay.getPlid(), "&classNameId=",
-			_portal.getClassNameId(projectObjectDefinition.getClassName()),
-			"&classPK=", projectObjectEntry.getObjectEntryId());
+			_portal.getClassNameId(cmpProjectObjectDefinition.getClassName()),
+			"&classPK=", cmpProjectObjectEntry.getObjectEntryId());
 	}
 
 	@Inject(

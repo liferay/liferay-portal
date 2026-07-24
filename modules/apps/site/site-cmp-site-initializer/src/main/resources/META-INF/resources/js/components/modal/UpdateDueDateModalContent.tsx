@@ -15,18 +15,18 @@ import DateField, {dateConfig} from '../DateField';
 
 type Props = {
 	closeModal: () => void;
+	cmpTaskObjectEntryId: string;
+	cmpTaskObjectEntryTitle: string;
 	dueDate?: string;
 	loadData: Function;
-	taskId: string;
-	taskTitle: string;
 };
 
 export default function UpdateDueDateModalContent({
 	closeModal,
+	cmpTaskObjectEntryId,
+	cmpTaskObjectEntryTitle,
 	dueDate: initialDueDate,
 	loadData,
-	taskId,
-	taskTitle,
 }: Props) {
 	const initialValue = initialDueDate
 		? moment(initialDueDate.slice(0, 10)).format(dateConfig.momentFormat)
@@ -45,7 +45,7 @@ export default function UpdateDueDateModalContent({
 						)
 					: '',
 			},
-			taskId,
+			taskId: cmpTaskObjectEntryId,
 		});
 
 		if (!error) {
@@ -53,7 +53,7 @@ export default function UpdateDueDateModalContent({
 
 			loadData();
 
-			displayDueDateSuccessToast(taskTitle);
+			displayDueDateSuccessToast(cmpTaskObjectEntryTitle);
 		}
 		else {
 			displayErrorToast(error);

@@ -27,7 +27,7 @@ describe('createTaskAction', () => {
 			createTaskAction({
 				addProjectURL: '/add-project',
 				addTaskURL: '/add-task',
-				projectObjectDefinitionId: 123,
+				cmpProjectObjectDefinitionId: 123,
 			});
 
 			expect(mockNavigate).not.toHaveBeenCalled();
@@ -41,7 +41,7 @@ describe('createTaskAction', () => {
 				addProjectURL: '/add-project',
 				addTaskURL: '/add-task',
 				closeModal: mockCloseModal,
-				projectObjectDefinitionId: 123,
+				cmpProjectObjectDefinitionId: 123,
 			});
 		});
 	});
@@ -55,7 +55,7 @@ describe('createTaskAction', () => {
 			createTaskAction({
 				addProjectURL: '/add-project',
 				addTaskURL: '/add-task',
-				projectObjectDefinitionId: 123,
+				cmpProjectObjectDefinitionId: 123,
 				redirect: 'http://localhost/redirect-url',
 			});
 
@@ -75,7 +75,7 @@ describe('createTaskAction', () => {
 			createTaskAction({
 				addProjectURL: '/add-project',
 				addTaskURL: '/add-task',
-				projectObjectDefinitionId: 123,
+				cmpProjectObjectDefinitionId: 123,
 				redirect:
 					'http://localhost/web/cms/add_task?projectId=42&redirect=http://localhost/web/cms/tasks',
 			});

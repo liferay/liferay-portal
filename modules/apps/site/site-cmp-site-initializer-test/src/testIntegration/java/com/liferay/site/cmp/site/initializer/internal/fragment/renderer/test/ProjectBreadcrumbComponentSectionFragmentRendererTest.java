@@ -66,8 +66,8 @@ public class ProjectBreadcrumbComponentSectionFragmentRendererTest
 					themeDisplay.getPathFriendlyURLPublic(),
 					GroupConstants.CMS_FRIENDLY_URL, "/e/edit-project/",
 					_portal.getClassNameId(
-						projectObjectDefinition.getClassName()),
-					StringPool.SLASH, projectObjectEntry.getObjectEntryId(),
+						cmpProjectObjectDefinition.getClassName()),
+					StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId(),
 					"?redirect=", themeDisplay.getURLCurrent())
 			).put(
 				"label", "Edit"
@@ -82,10 +82,11 @@ public class ProjectBreadcrumbComponentSectionFragmentRendererTest
 			JSONUtil.put(
 				"href",
 				StringBundler.concat(
-					"/o", projectObjectDefinition.getRESTContextPath(),
-					"/scopes/", projectObjectEntry.getGroupId(),
+					"/o", cmpProjectObjectDefinition.getRESTContextPath(),
+					"/scopes/", cmpProjectObjectEntry.getGroupId(),
 					"/by-external-reference-code/",
-					projectObjectEntry.getExternalReferenceCode(), "/subscribe")
+					cmpProjectObjectEntry.getExternalReferenceCode(),
+					"/subscribe")
 			).put(
 				"label", "Watch Project"
 			).put(
@@ -94,13 +95,14 @@ public class ProjectBreadcrumbComponentSectionFragmentRendererTest
 					themeDisplay.getPathFriendlyURLPublic(),
 					GroupConstants.CMS_FRIENDLY_URL, "/e/project/",
 					PortalUtil.getClassNameId(
-						projectObjectDefinition.getClassName()),
-					StringPool.SLASH, projectObjectEntry.getObjectEntryId())
+						cmpProjectObjectDefinition.getClassName()),
+					StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId())
 			).put(
 				"successMessage",
 				_language.format(
 					mockHttpServletRequest, "you-are-successfully-watching-x",
-					StringBundler.concat("<strong>", projectTitle, "</strong>"))
+					StringBundler.concat(
+						"<strong>", cmpProjectObjectEntryTitle, "</strong>"))
 			).put(
 				"symbolLeft", "bell-on"
 			).put(
@@ -117,17 +119,17 @@ public class ProjectBreadcrumbComponentSectionFragmentRendererTest
 				"confirmationMessage",
 				_language.format(
 					mockHttpServletRequest, "delete-project-confirmation-body",
-					projectTitle)
+					cmpProjectObjectEntryTitle)
 			).put(
 				"confirmationTitle",
 				_language.format(
 					mockHttpServletRequest, "delete-asset-confirmation-title",
-					projectTitle)
+					cmpProjectObjectEntryTitle)
 			).put(
 				"href",
 				StringBundler.concat(
-					"/o", projectObjectDefinition.getRESTContextPath(),
-					StringPool.SLASH, projectObjectEntry.getObjectEntryId())
+					"/o", cmpProjectObjectDefinition.getRESTContextPath(),
+					StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId())
 			).put(
 				"label", "Delete"
 			).put(
@@ -139,7 +141,8 @@ public class ProjectBreadcrumbComponentSectionFragmentRendererTest
 				"successMessage",
 				_language.format(
 					mockHttpServletRequest, "x-was-successfully-deleted",
-					StringBundler.concat("<strong>", projectTitle, "</strong>"))
+					StringBundler.concat(
+						"<strong>", cmpProjectObjectEntryTitle, "</strong>"))
 			).put(
 				"symbolLeft", "trash"
 			).put(
@@ -172,7 +175,7 @@ public class ProjectBreadcrumbComponentSectionFragmentRendererTest
 			).put(
 				"href", StringPool.BLANK
 			).put(
-				"label", projectTitle
+				"label", cmpProjectObjectEntryTitle
 			).toString(),
 			jsonObject.toString(), true);
 

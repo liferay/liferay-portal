@@ -48,7 +48,7 @@ public class HistoryComponentSectionFragmentRendererTest
 		Assert.assertEquals("ProjectHistory", _getComponentName());
 
 		mockHttpServletRequest = getMockHttpServletRequest(
-			taskObjectDefinition, taskObjectEntry);
+			cmpTaskObjectDefinition, cmpTaskObjectEntry);
 
 		Assert.assertEquals("TaskHistory", _getComponentName());
 	}
@@ -57,18 +57,18 @@ public class HistoryComponentSectionFragmentRendererTest
 	public void testGetProps() throws Exception {
 		Assert.assertEquals(
 			StringBundler.concat(
-				"/o", projectObjectDefinition.getRESTContextPath(),
-				StringPool.SLASH, projectObjectEntry.getObjectEntryId(),
+				"/o", cmpProjectObjectDefinition.getRESTContextPath(),
+				StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId(),
 				"?fields=auditEvents&nestedFields=auditEvents"),
 			MapUtil.getString(getProps(), "apiURL"));
 
 		mockHttpServletRequest = getMockHttpServletRequest(
-			taskObjectDefinition, taskObjectEntry);
+			cmpTaskObjectDefinition, cmpTaskObjectEntry);
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				"/o", taskObjectDefinition.getRESTContextPath(),
-				StringPool.SLASH, taskObjectEntry.getObjectEntryId(),
+				"/o", cmpTaskObjectDefinition.getRESTContextPath(),
+				StringPool.SLASH, cmpTaskObjectEntry.getObjectEntryId(),
 				"?fields=auditEvents&nestedFields=auditEvents"),
 			MapUtil.getString(getProps(), "apiURL"));
 	}

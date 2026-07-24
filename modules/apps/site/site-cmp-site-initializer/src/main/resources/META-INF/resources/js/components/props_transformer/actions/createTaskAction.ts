@@ -12,12 +12,12 @@ import SelectProjectModalContent from '../../modal/SelectProjectModalContent';
 export default function createTaskAction({
 	addProjectURL,
 	addTaskURL,
-	projectObjectDefinitionId,
+	cmpProjectObjectDefinitionId,
 	redirect,
 }: {
 	addProjectURL: string;
 	addTaskURL: string;
-	projectObjectDefinitionId: number;
+	cmpProjectObjectDefinitionId: number;
 	redirect?: string;
 }) {
 	if (redirect) {
@@ -33,7 +33,7 @@ export default function createTaskAction({
 				addProjectURL,
 				addTaskURL,
 				closeModal,
-				projectObjectDefinitionId,
+				cmpProjectObjectDefinitionId,
 			}),
 		size: 'md',
 	});

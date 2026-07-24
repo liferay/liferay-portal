@@ -31,12 +31,12 @@ describe('TaskInfoSummary', () => {
 		const {container} = render(
 			<TaskInfoSummary
 				assignTo={mockAssignTo}
+				cmpTaskObjectEntryId="123"
 				dueDate="2023-12-31"
 				hasUpdatePermission
 				initialState="notStarted"
 				states={mockStates}
 				tags={['tag1', 'tag2']}
-				taskId="123"
 				title="Task"
 			/>
 		);
@@ -60,12 +60,12 @@ describe('TaskInfoSummary', () => {
 		render(
 			<TaskInfoSummary
 				assignTo={mockAssignTo}
+				cmpTaskObjectEntryId="123"
 				dueDate="2023-12-31"
 				hasUpdatePermission={false}
 				initialState="notStarted"
 				states={mockStates}
 				tags={['tag1', 'tag2']}
-				taskId="123"
 				title="Task"
 			/>
 		);

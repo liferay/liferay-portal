@@ -155,9 +155,9 @@ public class ViewProjectsSectionDisplayContext
 			new ProjectSponsorSelectionFDSFilter(),
 			new StateSelectionFDSFilter(),
 			new TagSelectionFDSFilter(
-				_assetTagLocalService, _depotEntryLocalService,
-				ObjectEntryUtil.getObjectEntry(httpServletRequest),
-				objectDefinition));
+				_assetTagLocalService, objectDefinition,
+				_depotEntryLocalService,
+				ObjectEntryUtil.getObjectEntry(httpServletRequest)));
 	}
 
 	private final AssetTagLocalService _assetTagLocalService;

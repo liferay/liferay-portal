@@ -61,13 +61,13 @@ public class ProjectSelectorComponentSectionFragmentRenderer
 			return Collections.emptyMap();
 		}
 
-		ObjectEntry projectObjectEntry =
+		ObjectEntry cmpProjectObjectEntry =
 			_objectEntryLocalService.fetchObjectEntry(
 				MapUtil.getLong(
 					objectEntry.getValues(),
 					"r_cmpProjectToCMPTasks_c_cmpProjectId"));
 
-		if (projectObjectEntry == null) {
+		if (cmpProjectObjectEntry == null) {
 			return Collections.emptyMap();
 		}
 
@@ -76,10 +76,11 @@ public class ProjectSelectorComponentSectionFragmentRenderer
 			() -> JSONUtil.putAll(
 				JSONUtil.put(
 					"label",
-					MapUtil.getString(projectObjectEntry.getValues(), "title")
+					MapUtil.getString(
+						cmpProjectObjectEntry.getValues(), "title")
 				).put(
 					"value",
-					String.valueOf(projectObjectEntry.getObjectEntryId())
+					String.valueOf(cmpProjectObjectEntry.getObjectEntryId())
 				))
 		).build();
 	}

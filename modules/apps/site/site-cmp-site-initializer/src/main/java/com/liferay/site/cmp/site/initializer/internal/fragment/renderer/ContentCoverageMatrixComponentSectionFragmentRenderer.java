@@ -87,6 +87,11 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 			"assetFDSId",
 			"com.liferay.site.cms.site.initializer-allRelatedAssetsSection"
 		).put(
+			"cmpProjectObjectEntryId", objectEntry.getObjectEntryId()
+		).put(
+			"cmpProjectObjectEntryTitle",
+			MapUtil.getString(objectEntry.getValues(), "title")
+		).put(
 			"editProjectURL",
 			() -> {
 				ModelResourcePermission<ObjectEntry> modelResourcePermission =
@@ -140,10 +145,6 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 
 				return false;
 			}
-		).put(
-			"projectId", objectEntry.getObjectEntryId()
-		).put(
-			"projectTitle", MapUtil.getString(objectEntry.getValues(), "title")
 		).build();
 	}
 

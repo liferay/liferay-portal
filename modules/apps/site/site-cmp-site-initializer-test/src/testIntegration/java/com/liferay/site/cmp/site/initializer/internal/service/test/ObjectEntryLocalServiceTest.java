@@ -52,24 +52,27 @@ public class ObjectEntryLocalServiceTest {
 	public void setUp() throws Exception {
 		CMPTestUtil.getOrAddGroup(ObjectEntryLocalServiceTest.class);
 
-		_projectLinkObjectDefinition =
+		_cmpProjectLinkObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT_LINK", TestPropsValues.getCompanyId());
-		_taskLinkObjectDefinition =
+		_cmpTaskLinkObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK_LINK", TestPropsValues.getCompanyId());
 	}
 
 	@Test
-	public void testDeleteProjectObjectEntry() throws Exception {
-		ObjectEntry projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+	public void testDeleteCMPProjectObjectEntry() throws Exception {
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
 
-		ObjectEntry projectLinkObjectEntry =
+		ObjectEntry cmpProjectLinkObjectEntry =
 			_objectEntryLocalService.addObjectEntry(
-				projectObjectEntry.getGroupId(), projectObjectEntry.getUserId(),
-				_projectLinkObjectDefinition.getObjectDefinitionId(), 0, null,
+				cmpProjectObjectEntry.getGroupId(),
+				cmpProjectObjectEntry.getUserId(),
+				_cmpProjectLinkObjectDefinition.getObjectDefinitionId(), 0,
+				null,
 				HashMapBuilder.<String, Serializable>put(
 					"classExternalReferenceCode", RandomTestUtil.randomString()
 				).put(
@@ -78,26 +81,26 @@ public class ObjectEntryLocalServiceTest {
 					"groupExternalReferenceCode", RandomTestUtil.randomString()
 				).put(
 					"r_cmpProjectToCMPProjectLinks_c_cmpProjectId",
-					projectObjectEntry.getObjectEntryId()
+					cmpProjectObjectEntry.getObjectEntryId()
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
 		_objectEntryLocalService.deleteObjectEntry(
-			projectObjectEntry.getObjectEntryId());
+			cmpProjectObjectEntry.getObjectEntryId());
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				projectLinkObjectEntry.getObjectEntryId()));
+				cmpProjectLinkObjectEntry.getObjectEntryId()));
 	}
 
 	@Test
-	public void testDeleteTaskObjectEntry() throws Exception {
-		ObjectEntry taskObjectEntry = CMPTestUtil.addTaskObjectEntry();
+	public void testDeleteCMPTaskObjectEntry() throws Exception {
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
-		ObjectEntry taskLinkObjectEntry =
+		ObjectEntry cmpTaskLinkObjectEntry =
 			_objectEntryLocalService.addObjectEntry(
-				taskObjectEntry.getGroupId(), taskObjectEntry.getUserId(),
-				_taskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
+				cmpTaskObjectEntry.getGroupId(), cmpTaskObjectEntry.getUserId(),
+				_cmpTaskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
 				HashMapBuilder.<String, Serializable>put(
 					"classExternalReferenceCode", RandomTestUtil.randomString()
 				).put(
@@ -106,17 +109,20 @@ public class ObjectEntryLocalServiceTest {
 					"groupExternalReferenceCode", RandomTestUtil.randomString()
 				).put(
 					"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
-					taskObjectEntry.getObjectEntryId()
+					cmpTaskObjectEntry.getObjectEntryId()
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
 		_objectEntryLocalService.deleteObjectEntry(
-			taskObjectEntry.getObjectEntryId());
+			cmpTaskObjectEntry.getObjectEntryId());
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				taskLinkObjectEntry.getObjectEntryId()));
+				cmpTaskLinkObjectEntry.getObjectEntryId()));
 	}
+
+	private ObjectDefinition _cmpProjectLinkObjectDefinition;
+	private ObjectDefinition _cmpTaskLinkObjectDefinition;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
@@ -126,8 +132,5 @@ public class ObjectEntryLocalServiceTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	private ObjectDefinition _projectLinkObjectDefinition;
-	private ObjectDefinition _taskLinkObjectDefinition;
 
 }

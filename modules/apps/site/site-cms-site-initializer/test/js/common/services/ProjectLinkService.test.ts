@@ -29,15 +29,15 @@ function mockSearchResponse(items: unknown[], lastPage: number = 1) {
 function relationshipItem({
 	classExternalReferenceCode = 'ASSET-1',
 	className = 'com.example.Content',
+	cmpProjectObjectEntryId = 1,
 	groupExternalReferenceCode = 'SPACE-1',
 	id = 11,
-	projectId = 1,
 }: {
 	classExternalReferenceCode?: string;
 	className?: string;
+	cmpProjectObjectEntryId?: number;
 	groupExternalReferenceCode?: string;
 	id?: number;
-	projectId?: number;
 }) {
 	return {
 		embedded: {
@@ -45,7 +45,8 @@ function relationshipItem({
 			className,
 			groupExternalReferenceCode,
 			id,
-			r_cmpProjectToCMPProjectLinks_c_cmpProjectId: projectId,
+			r_cmpProjectToCMPProjectLinks_c_cmpProjectId:
+				cmpProjectObjectEntryId,
 		},
 	};
 }
@@ -161,21 +162,21 @@ describe('ProjectLinkService', () => {
 	it('matches relationship entries against the asset identity', async () => {
 		mockFetch.mockResolvedValueOnce(
 			mockSearchResponse([
-				relationshipItem({id: 11, projectId: 1}),
+				relationshipItem({cmpProjectObjectEntryId: 1, id: 11}),
 				relationshipItem({
 					classExternalReferenceCode: 'OTHER-ASSET',
+					cmpProjectObjectEntryId: 2,
 					id: 12,
-					projectId: 2,
 				}),
 				relationshipItem({
+					cmpProjectObjectEntryId: 3,
 					groupExternalReferenceCode: 'OTHER-SPACE',
 					id: 13,
-					projectId: 3,
 				}),
 				relationshipItem({
 					className: 'com.example.Other',
+					cmpProjectObjectEntryId: 4,
 					id: 14,
-					projectId: 4,
 				}),
 			])
 		);
@@ -185,7 +186,7 @@ describe('ProjectLinkService', () => {
 			cmpProjectLinkObjectDefinitionId: 42,
 		});
 
-		expect(data).toEqual([{id: 11, projectId: 1}]);
+		expect(data).toEqual([{cmpProjectObjectEntryId: 1, id: 11}]);
 	});
 
 	it('returns empty results when the object definition id is missing', async () => {
@@ -211,11 +212,11 @@ describe('ProjectLinkService', () => {
 	it('skips the className check when the asset entry class name is unknown', async () => {
 		mockFetch.mockResolvedValueOnce(
 			mockSearchResponse([
-				relationshipItem({id: 11, projectId: 1}),
+				relationshipItem({cmpProjectObjectEntryId: 1, id: 11}),
 				relationshipItem({
 					className: 'com.example.Other',
+					cmpProjectObjectEntryId: 2,
 					id: 12,
-					projectId: 2,
 				}),
 			])
 		);
@@ -227,8 +228,8 @@ describe('ProjectLinkService', () => {
 		});
 
 		expect(data).toEqual([
-			{id: 11, projectId: 1},
-			{id: 12, projectId: 2},
+			{cmpProjectObjectEntryId: 1, id: 11},
+			{cmpProjectObjectEntryId: 2, id: 12},
 		]);
 	});
 

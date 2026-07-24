@@ -261,7 +261,7 @@ describe('TasksQuickFilters', () => {
 
 	it('renders the appropriate counts when a projectId is provided', async () => {
 		await act(async () => {
-			render(<TasksQuickFilters projectId="123" />);
+			render(<TasksQuickFilters cmpProjectObjectEntryId="123" />);
 		});
 
 		expect(fetch).toHaveBeenCalledWith(

@@ -69,7 +69,7 @@ public class ViewAssigneeSectionDisplayContextTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		ObjectDefinition taskObjectDefinition =
+		ObjectDefinition cmpTaskObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK", TestPropsValues.getCompanyId());
@@ -79,19 +79,20 @@ public class ViewAssigneeSectionDisplayContextTest
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-		_taskObjectEntry = objectEntryLocalService.addObjectEntry(
-			projectObjectEntry.getGroupId(), projectObjectEntry.getUserId(),
-			taskObjectDefinition.getObjectDefinitionId(), 0, null,
+		_cmpTaskObjectEntry = objectEntryLocalService.addObjectEntry(
+			cmpProjectObjectEntry.getGroupId(),
+			cmpProjectObjectEntry.getUserId(),
+			cmpTaskObjectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"r_cmpProjectToCMPTasks_c_cmpProjectId",
-				projectObjectEntry.getObjectEntryId()
+				cmpProjectObjectEntry.getObjectEntryId()
 			).put(
 				"title", RandomTestUtil.randomString()
 			).build(),
 			serviceContext);
 
 		httpServletRequest.setAttribute(
-			InfoDisplayWebKeys.INFO_ITEM, _taskObjectEntry);
+			InfoDisplayWebKeys.INFO_ITEM, _cmpTaskObjectEntry);
 	}
 
 	@Test
@@ -119,7 +120,7 @@ public class ViewAssigneeSectionDisplayContextTest
 			).put(
 				"type", Assignee.Type.ROLE.toString()
 			).build(),
-			_taskObjectEntry,
+			_cmpTaskObjectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"assignTo",
 				HashMapBuilder.put(
@@ -142,7 +143,7 @@ public class ViewAssigneeSectionDisplayContextTest
 			).put(
 				"type", Assignee.Type.USER.toString()
 			).build(),
-			_taskObjectEntry,
+			_cmpTaskObjectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"assignTo",
 				HashMapBuilder.put(
@@ -169,6 +170,8 @@ public class ViewAssigneeSectionDisplayContextTest
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
+	private ObjectEntry _cmpTaskObjectEntry;
+
 	@Inject(
 		filter = "component.name=com.liferay.site.cmp.site.initializer.internal.fragment.renderer.ViewAssigneeJSPSectionFragmentRenderer"
 	)
@@ -179,7 +182,5 @@ public class ViewAssigneeSectionDisplayContextTest
 
 	@Inject
 	private RoleLocalService _roleLocalService;
-
-	private ObjectEntry _taskObjectEntry;
 
 }

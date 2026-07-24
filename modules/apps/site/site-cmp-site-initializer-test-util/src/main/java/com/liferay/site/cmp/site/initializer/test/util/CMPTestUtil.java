@@ -42,7 +42,9 @@ import java.util.Collections;
  */
 public class CMPTestUtil {
 
-	public static ObjectEntry addProjectObjectEntry() throws PortalException {
+	public static ObjectEntry addCMPProjectObjectEntry()
+		throws PortalException {
+
 		DepotEntry depotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
@@ -70,14 +72,15 @@ public class CMPTestUtil {
 			serviceContext);
 	}
 
-	public static ObjectEntry addTaskObjectEntry() throws PortalException {
-		return addTaskObjectEntry(addProjectObjectEntry());
+	public static ObjectEntry addCMPTaskObjectEntry() throws PortalException {
+		return addCMPTaskObjectEntry(addCMPProjectObjectEntry());
 	}
 
-	public static ObjectEntry addTaskObjectEntry(ObjectEntry projectObjectEntry)
+	public static ObjectEntry addCMPTaskObjectEntry(
+			ObjectEntry cmpProjectObjectEntry)
 		throws PortalException {
 
-		ObjectDefinition taskObjectDefinition =
+		ObjectDefinition cmpTaskObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK", TestPropsValues.getCompanyId());
@@ -88,11 +91,12 @@ public class CMPTestUtil {
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
 		return ObjectEntryLocalServiceUtil.addObjectEntry(
-			projectObjectEntry.getGroupId(), projectObjectEntry.getUserId(),
-			taskObjectDefinition.getObjectDefinitionId(), 0, null,
+			cmpProjectObjectEntry.getGroupId(),
+			cmpProjectObjectEntry.getUserId(),
+			cmpTaskObjectDefinition.getObjectDefinitionId(), 0, null,
 			HashMapBuilder.<String, Serializable>put(
 				"r_cmpProjectToCMPTasks_c_cmpProjectId",
-				projectObjectEntry.getObjectEntryId()
+				cmpProjectObjectEntry.getObjectEntryId()
 			).put(
 				"title", RandomTestUtil.randomString()
 			).build(),

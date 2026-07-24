@@ -14,8 +14,8 @@ describe('ContentGapMatrixCard', () => {
 		render(
 			<ContentGapMatrixCard
 				assetFDSId="fdsId"
+				cmpProjectObjectEntryId="123"
 				hasFunnelStagesOrPersonas={false}
-				projectId="123"
 			/>
 		);
 
@@ -26,9 +26,9 @@ describe('ContentGapMatrixCard', () => {
 		render(
 			<ContentGapMatrixCard
 				assetFDSId="fdsId"
+				cmpProjectObjectEntryId="123"
 				editProjectURL="/edit-project"
 				hasFunnelStagesOrPersonas={false}
-				projectId="123"
 			/>
 		);
 

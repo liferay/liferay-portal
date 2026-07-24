@@ -38,8 +38,8 @@ export type CMPTask = {
  * entry id (required to unlink) and the linked project id.
  */
 export type ProjectLink = {
+	cmpProjectObjectEntryId: number;
 	id?: number;
-	projectId: number;
 };
 
 type ProjectLinkSearchItem = {
@@ -165,17 +165,18 @@ async function getLinkedTasks({
 	const tasksByProjectId: {[projectId: number]: CMPTask[]} = {};
 
 	data.forEach(({embedded}) => {
-		const projectId = embedded.r_cmpProjectToCMPTasks_c_cmpProjectId;
+		const cmpProjectObjectEntryId =
+			embedded.r_cmpProjectToCMPTasks_c_cmpProjectId;
 
-		if (projectId === undefined) {
+		if (cmpProjectObjectEntryId === undefined) {
 			return;
 		}
 
-		if (!tasksByProjectId[projectId]) {
-			tasksByProjectId[projectId] = [];
+		if (!tasksByProjectId[cmpProjectObjectEntryId]) {
+			tasksByProjectId[cmpProjectObjectEntryId] = [];
 		}
 
-		tasksByProjectId[projectId].push({
+		tasksByProjectId[cmpProjectObjectEntryId].push({
 			id: embedded.id,
 			title: embedded.title,
 		});
@@ -228,8 +229,9 @@ async function getProjectLinks({
 		}
 
 		links.push({
+			cmpProjectObjectEntryId:
+				embedded.r_cmpProjectToCMPProjectLinks_c_cmpProjectId,
 			id: embedded.id,
-			projectId: embedded.r_cmpProjectToCMPProjectLinks_c_cmpProjectId,
 		});
 	});
 

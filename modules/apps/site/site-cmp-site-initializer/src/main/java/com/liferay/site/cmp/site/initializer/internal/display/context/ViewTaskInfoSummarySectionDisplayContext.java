@@ -49,7 +49,7 @@ public class ViewTaskInfoSummarySectionDisplayContext
 				return JSONFactoryUtil.createJSONObject(assignee.toString());
 			}
 		).put(
-			"taskId", objectEntry.getObjectEntryId()
+			"cmpTaskObjectEntryId", objectEntry.getObjectEntryId()
 		).putAll(
 			super.getProperties()
 		).build();

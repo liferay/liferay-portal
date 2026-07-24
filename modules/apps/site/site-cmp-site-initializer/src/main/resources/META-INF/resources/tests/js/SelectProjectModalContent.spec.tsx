@@ -26,7 +26,7 @@ const defaultProps = {
 	addProjectURL: 'http://localhost/add-project',
 	addTaskURL: 'http://localhost/add-task',
 	closeModal: mockCloseModal,
-	projectObjectDefinitionId: 123,
+	cmpProjectObjectDefinitionId: 123,
 };
 
 describe('SelectProjectModalContent', () => {

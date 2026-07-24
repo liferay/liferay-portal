@@ -63,6 +63,8 @@ public abstract class BaseTasksSectionDisplayContext
 	public BaseTasksSectionDisplayContext(
 		AssetTagLocalService assetTagLocalService,
 		ClassNameLocalService classNameLocalService,
+		ObjectDefinition cmpProjectObjectDefinition,
+		ObjectDefinition cmpTaskObjectDefinition,
 		DepotEntryLocalService depotEntryLocalService,
 		HttpServletRequest httpServletRequest,
 		ListTypeEntryLocalService listTypeEntryLocalService,
@@ -70,27 +72,27 @@ public abstract class BaseTasksSectionDisplayContext
 		ObjectFieldLocalService objectFieldLocalService,
 		ObjectStateFlowLocalService objectStateFlowLocalService,
 		ObjectStateLocalService objectStateLocalService,
-		ObjectDefinition projectObjectDefinition, RoleService roleService,
-		ObjectDefinition taskObjectDefinition) {
+		RoleService roleService) {
 
-		super(httpServletRequest, taskObjectDefinition, objectEntryService);
+		super(httpServletRequest, cmpTaskObjectDefinition, objectEntryService);
 
 		this.assetTagLocalService = assetTagLocalService;
 		this.classNameLocalService = classNameLocalService;
+		this.cmpProjectObjectDefinition = cmpProjectObjectDefinition;
 		this.depotEntryLocalService = depotEntryLocalService;
 		this.listTypeEntryLocalService = listTypeEntryLocalService;
 		this.objectFieldLocalService = objectFieldLocalService;
 		this.objectStateFlowLocalService = objectStateFlowLocalService;
 		this.objectStateLocalService = objectStateLocalService;
-		this.projectObjectDefinition = projectObjectDefinition;
 		this.roleService = roleService;
 	}
 
 	public Map<String, Object> getAdditionalProps() throws Exception {
 		return HashMapBuilder.<String, Object>put(
-			"hasAddTaskPermission", hasAddObjectEntryPortletResourcePermission()
+			"cmpProjectObjectDefinitionId",
+			cmpProjectObjectDefinition.getObjectDefinitionId()
 		).put(
-			"projectId",
+			"cmpProjectObjectEntryId",
 			() -> {
 				if (assetEntry == null) {
 					return null;
@@ -99,8 +101,7 @@ public abstract class BaseTasksSectionDisplayContext
 				return assetEntry.getClassPK();
 			}
 		).put(
-			"projectObjectDefinitionId",
-			projectObjectDefinition.getObjectDefinitionId()
+			"hasAddTaskPermission", hasAddObjectEntryPortletResourcePermission()
 		).put(
 			"states",
 			() -> {
@@ -200,7 +201,7 @@ public abstract class BaseTasksSectionDisplayContext
 					"addProjectURL",
 					StringBundler.concat(
 						ActionUtil.getAddProjectURL(
-							projectObjectDefinition, themeDisplay),
+							cmpProjectObjectDefinition, themeDisplay),
 						"&action=",
 						CMPActionConstants.CREATE_PROJECT_GLOBAL_TASK));
 				dropdownItem.putData(
@@ -210,12 +211,12 @@ public abstract class BaseTasksSectionDisplayContext
 							0, objectDefinition, 0, themeDisplay),
 						"&action=", CMPActionConstants.CREATE_GLOBAL_TASK));
 				dropdownItem.putData(
+					"cmpProjectObjectDefinitionId",
+					String.valueOf(
+						cmpProjectObjectDefinition.getObjectDefinitionId()));
+				dropdownItem.putData(
 					"objectDefinitionId",
 					String.valueOf(objectDefinition.getObjectDefinitionId()));
-				dropdownItem.putData(
-					"projectObjectDefinitionId",
-					String.valueOf(
-						projectObjectDefinition.getObjectDefinitionId()));
 
 				if (assetEntry != null) {
 					dropdownItem.putData(
@@ -255,21 +256,21 @@ public abstract class BaseTasksSectionDisplayContext
 
 		fdsFilters.add(
 			new AssigneeSelectionFDSFilter(
-				classNameLocalService, projectObjectDefinition.getCompanyId(),
-				roleService));
+				classNameLocalService,
+				cmpProjectObjectDefinition.getCompanyId(), roleService));
 		fdsFilters.add(new CreateDateFDSFilter());
 		fdsFilters.add(new DueDateRangeFDSFilter());
 
 		if (assetEntry == null) {
 			fdsFilters.add(
-				new ProjectSelectionFDSFilter(projectObjectDefinition));
+				new ProjectSelectionFDSFilter(cmpProjectObjectDefinition));
 		}
 
 		fdsFilters.add(new StateSelectionFDSFilter());
 		fdsFilters.add(
 			new TagSelectionFDSFilter(
-				assetTagLocalService, depotEntryLocalService, assetEntry,
-				projectObjectDefinition));
+				assetTagLocalService, cmpProjectObjectDefinition,
+				depotEntryLocalService, assetEntry));
 
 		return fdsFilters;
 	}
@@ -489,12 +490,12 @@ public abstract class BaseTasksSectionDisplayContext
 
 	protected final AssetTagLocalService assetTagLocalService;
 	protected final ClassNameLocalService classNameLocalService;
+	protected final ObjectDefinition cmpProjectObjectDefinition;
 	protected final DepotEntryLocalService depotEntryLocalService;
 	protected final ListTypeEntryLocalService listTypeEntryLocalService;
 	protected final ObjectFieldLocalService objectFieldLocalService;
 	protected final ObjectStateFlowLocalService objectStateFlowLocalService;
 	protected final ObjectStateLocalService objectStateLocalService;
-	protected final ObjectDefinition projectObjectDefinition;
 	protected final RoleService roleService;
 
 	private JSONArray _getNextStatesJSONArray(

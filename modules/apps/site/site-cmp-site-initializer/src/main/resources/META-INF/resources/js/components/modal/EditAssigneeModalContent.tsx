@@ -17,17 +17,17 @@ import './../AssigneeTrigger.scss';
 
 type Props = {
 	closeModal: () => void;
+	cmpTaskObjectEntryId: string;
+	cmpTaskObjectEntryTitle: string;
 	loadData: Function;
-	taskId: string;
-	taskTitle: string;
 	value: AssigneeValue | {} | null;
 };
 
 export default function EditAssigneeModalContent({
 	closeModal,
+	cmpTaskObjectEntryId,
+	cmpTaskObjectEntryTitle,
 	loadData,
-	taskId,
-	taskTitle,
 	value: initialValue,
 }: Props) {
 	const [value, setValue] = useState<AssigneeValue | null | {}>(initialValue);
@@ -37,7 +37,7 @@ export default function EditAssigneeModalContent({
 
 		const {error} = await patchTaskById({
 			body: {assignTo: value},
-			taskId,
+			taskId: cmpTaskObjectEntryId,
 		});
 
 		if (!error) {
@@ -45,7 +45,10 @@ export default function EditAssigneeModalContent({
 
 			loadData();
 
-			displayAssignSuccessToast(taskTitle, (value as AssigneeValue).name);
+			displayAssignSuccessToast(
+				cmpTaskObjectEntryTitle,
+				(value as AssigneeValue).name
+			);
 		}
 		else {
 			displayErrorToast(error);

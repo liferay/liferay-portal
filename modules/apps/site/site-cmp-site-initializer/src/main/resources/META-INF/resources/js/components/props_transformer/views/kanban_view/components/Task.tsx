@@ -24,7 +24,7 @@ import './Task.scss';
 const TaskCard = React.memo(
 	forwardRef<HTMLDivElement, {isDragging?: boolean; task: ITask}>(
 		({isDragging, task}, ref) => {
-			const {itemsActions, loadData, projectId} =
+			const {cmpProjectObjectEntryId, itemsActions, loadData} =
 				useContext(KanbanViewContext);
 
 			return (
@@ -69,7 +69,7 @@ const TaskCard = React.memo(
 									className="lfr__kaban-task-card-row-text-content"
 									displayType="subtitle"
 								>
-									{!projectId
+									{!cmpProjectObjectEntryId
 										? task.embedded.cmpProjectToCMPTasks
 												.title
 										: DateRenderer({

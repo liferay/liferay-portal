@@ -57,10 +57,10 @@ public class TasksOverviewComponentSectionFragmentRenderer
 		FragmentRendererContext fragmentRendererContext,
 		HttpServletRequest httpServletRequest) {
 
-		ObjectEntry projectObjectEntry = ObjectEntryUtil.getObjectEntry(
+		ObjectEntry cmpProjectObjectEntry = ObjectEntryUtil.getObjectEntry(
 			httpServletRequest);
 
-		if (projectObjectEntry == null) {
+		if (cmpProjectObjectEntry == null) {
 			return null;
 		}
 
@@ -68,24 +68,24 @@ public class TasksOverviewComponentSectionFragmentRenderer
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		ObjectDefinition taskObjectDefinition =
+		ObjectDefinition cmpTaskObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK", themeDisplay.getCompanyId());
 
 		return HashMapBuilder.<String, Object>put(
+			"cmpProjectObjectEntryId", cmpProjectObjectEntry.getObjectEntryId()
+		).put(
 			"hasAddTaskPermission",
 			() -> _objectEntryService.hasPortletResourcePermission(
-				projectObjectEntry.getGroupId(),
-				taskObjectDefinition.getObjectDefinitionId(),
+				cmpProjectObjectEntry.getGroupId(),
+				cmpTaskObjectDefinition.getObjectDefinitionId(),
 				ObjectActionKeys.ADD_OBJECT_ENTRY)
-		).put(
-			"projectId", projectObjectEntry.getObjectEntryId()
 		).put(
 			"redirect",
 			ActionUtil.getAddTaskURL(
-				projectObjectEntry.getGroupId(), taskObjectDefinition,
-				projectObjectEntry.getObjectEntryId(), themeDisplay)
+				cmpProjectObjectEntry.getGroupId(), cmpTaskObjectDefinition,
+				cmpProjectObjectEntry.getObjectEntryId(), themeDisplay)
 		).build();
 	}
 

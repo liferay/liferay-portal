@@ -35,11 +35,11 @@ jest.mock('@fullcalendar/react', () => {
 const renderCalendarView = (hasAddTaskPermission: boolean) =>
 	render(
 		<CalendarView
+			cmpProjectObjectDefinitionId={456}
+			cmpProjectObjectEntryId="123"
 			hasAddTaskPermission={hasAddTaskPermission}
 			items={[]}
 			itemsActions={[]}
-			projectId="123"
-			projectObjectDefinitionId={456}
 		/>
 	);
 

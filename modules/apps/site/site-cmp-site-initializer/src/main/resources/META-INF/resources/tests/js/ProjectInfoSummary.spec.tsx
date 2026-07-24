@@ -21,13 +21,13 @@ describe('ProjectInfoSummary', () => {
 	it('renders with props', () => {
 		const {getByText} = render(
 			<ProjectInfoSummary
+				cmpProjectObjectEntryId="123"
 				dueDate="2023-12-31"
 				funnelStages={[]}
 				hasUpdatePermission
 				initialState="notStarted"
 				manager={mockManager}
 				personas={[]}
-				projectId="123"
 				sponsor={mockSponsor}
 				states={mockStates}
 				tags={['tag1', 'tag2']}
@@ -46,13 +46,13 @@ describe('ProjectInfoSummary', () => {
 	it('renders personas and funnel stages as chips', () => {
 		const {getByText} = render(
 			<ProjectInfoSummary
+				cmpProjectObjectEntryId="123"
 				dueDate="2023-12-31"
 				funnelStages={['Awareness', 'Consideration']}
 				hasUpdatePermission
 				initialState="notStarted"
 				manager={mockManager}
 				personas={['Decision Maker', 'Champion']}
-				projectId="123"
 				sponsor={mockSponsor}
 				states={mockStates}
 				tags={[]}
@@ -68,13 +68,13 @@ describe('ProjectInfoSummary', () => {
 	it('renders empty personas and funnel stages without chips', () => {
 		const {queryByText} = render(
 			<ProjectInfoSummary
+				cmpProjectObjectEntryId="123"
 				dueDate="2023-12-31"
 				funnelStages={[]}
 				hasUpdatePermission
 				initialState="notStarted"
 				manager={mockManager}
 				personas={[]}
-				projectId="123"
 				sponsor={mockSponsor}
 				states={mockStates}
 				tags={[]}
@@ -88,13 +88,13 @@ describe('ProjectInfoSummary', () => {
 	it('disables the state selector when the user lacks update permission', () => {
 		render(
 			<ProjectInfoSummary
+				cmpProjectObjectEntryId="123"
 				dueDate="2023-12-31"
 				funnelStages={[]}
 				hasUpdatePermission={false}
 				initialState="notStarted"
 				manager={mockManager}
 				personas={[]}
-				projectId="123"
 				sponsor={mockSponsor}
 				states={mockStates}
 				tags={[]}

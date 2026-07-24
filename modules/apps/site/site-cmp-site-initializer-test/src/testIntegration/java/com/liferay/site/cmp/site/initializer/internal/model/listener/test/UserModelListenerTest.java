@@ -42,14 +42,14 @@ public class UserModelListenerTest extends BaseModelListenerTestCase {
 
 	@Test
 	public void testOnAfterAddAssociation() throws Exception {
-		_updateUser(new long[] {projectObjectEntry.getGroupId()});
+		_updateUser(new long[] {cmpProjectObjectEntry.getGroupId()});
 
 		assertAuditMessage("CMP_ADD_MEMBER");
 	}
 
 	@Test
 	public void testOnAfterRemoveAssociation() throws Exception {
-		_updateUser(new long[] {projectObjectEntry.getGroupId()});
+		_updateUser(new long[] {cmpProjectObjectEntry.getGroupId()});
 
 		assertAuditMessage("CMP_ADD_MEMBER");
 

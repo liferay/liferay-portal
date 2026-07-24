@@ -53,19 +53,21 @@ public class TaskStatisticsResourceTest
 
 		CMPTestUtil.getOrAddGroup(TaskStatisticsResourceTest.class);
 
-		_projectObjectEntry1 = CMPTestUtil.addProjectObjectEntry();
+		_cmpProjectObjectEntry1 = CMPTestUtil.addCMPProjectObjectEntry();
 
 		_partialUpdateObjectEntry(
-			null, CMPTestUtil.addTaskObjectEntry(_projectObjectEntry1),
+			null, CMPTestUtil.addCMPTaskObjectEntry(_cmpProjectObjectEntry1),
 			"blocked");
 		_partialUpdateObjectEntry(
-			"3000-01-31", CMPTestUtil.addTaskObjectEntry(_projectObjectEntry1),
+			"3000-01-31",
+			CMPTestUtil.addCMPTaskObjectEntry(_cmpProjectObjectEntry1),
 			"inProgress");
 
-		_projectObjectEntry2 = CMPTestUtil.addProjectObjectEntry();
+		_cmpProjectObjectEntry2 = CMPTestUtil.addCMPProjectObjectEntry();
 
 		_partialUpdateObjectEntry(
-			"2025-01-31", CMPTestUtil.addTaskObjectEntry(_projectObjectEntry2),
+			"2025-01-31",
+			CMPTestUtil.addCMPTaskObjectEntry(_cmpProjectObjectEntry2),
 			"inProgress");
 	}
 
@@ -73,8 +75,8 @@ public class TaskStatisticsResourceTest
 	public void tearDown() throws Exception {
 		super.tearDown();
 
-		_objectEntryLocalService.deleteObjectEntry(_projectObjectEntry1);
-		_objectEntryLocalService.deleteObjectEntry(_projectObjectEntry2);
+		_objectEntryLocalService.deleteObjectEntry(_cmpProjectObjectEntry1);
+		_objectEntryLocalService.deleteObjectEntry(_cmpProjectObjectEntry2);
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class TaskStatisticsResourceTest
 	public void testGetProjectTaskStatistics() throws Exception {
 		TaskStatistics taskStatistics1 =
 			taskStatisticsResource.getProjectTaskStatistics(
-				_projectObjectEntry1.getObjectEntryId(), null);
+				_cmpProjectObjectEntry1.getObjectEntryId(), null);
 
 		Assert.assertEquals(
 			1, GetterUtil.getLong(taskStatistics1.getBlockedCount()));
@@ -95,7 +97,7 @@ public class TaskStatisticsResourceTest
 
 		TaskStatistics taskStatistics2 =
 			taskStatisticsResource.getProjectTaskStatistics(
-				_projectObjectEntry2.getObjectEntryId(), null);
+				_cmpProjectObjectEntry2.getObjectEntryId(), null);
 
 		Assert.assertEquals(
 			0, GetterUtil.getLong(taskStatistics2.getBlockedCount()));
@@ -148,10 +150,10 @@ public class TaskStatisticsResourceTest
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	private ObjectEntry _cmpProjectObjectEntry1;
+	private ObjectEntry _cmpProjectObjectEntry2;
+
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	private ObjectEntry _projectObjectEntry1;
-	private ObjectEntry _projectObjectEntry2;
 
 }

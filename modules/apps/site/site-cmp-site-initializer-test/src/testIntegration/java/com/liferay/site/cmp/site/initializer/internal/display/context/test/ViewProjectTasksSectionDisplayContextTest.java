@@ -125,7 +125,7 @@ public class ViewProjectTasksSectionDisplayContextTest
 
 		Assert.assertEquals(
 			assetEntry.getClassPK(),
-			tasksQuickFiltersProperties.get("projectId"));
+			tasksQuickFiltersProperties.get("cmpProjectObjectEntryId"));
 	}
 
 	@Override

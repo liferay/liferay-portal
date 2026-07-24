@@ -23,23 +23,23 @@ import '../AssigneeTrigger.scss';
 
 interface TaskInfoSummaryProps {
 	assignTo: AssigneeValue;
+	cmpTaskObjectEntryId: string;
 	dueDate: string;
 	hasUpdatePermission: boolean;
 	initialState: string;
 	states: State[];
 	tags: string[];
-	taskId: string;
 	title: string;
 }
 
 export default function TaskInfoSummary({
 	assignTo,
+	cmpTaskObjectEntryId,
 	dueDate,
 	hasUpdatePermission,
 	initialState,
 	states,
 	tags,
-	taskId,
 	title,
 }: TaskInfoSummaryProps) {
 	const [selectedStateKey, setSelectedStateKey] = useState(initialState);
@@ -61,7 +61,7 @@ export default function TaskInfoSummary({
 
 								const {error} = await patchTaskById({
 									body: {state: key},
-									taskId,
+									taskId: cmpTaskObjectEntryId,
 								});
 
 								if (!error) {
@@ -90,7 +90,7 @@ export default function TaskInfoSummary({
 							onChange={async (value: AssigneeValue | {}) => {
 								const {error} = await patchTaskById({
 									body: {assignTo: value},
-									taskId,
+									taskId: cmpTaskObjectEntryId,
 								});
 
 								if (!error) {

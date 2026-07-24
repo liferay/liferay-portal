@@ -48,10 +48,10 @@ public abstract class BaseAssigneeSectionDisplayContextTestCase {
 
 		httpServletRequest = new MockHttpServletRequest();
 
-		projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+		cmpProjectObjectEntry = CMPTestUtil.addCMPProjectObjectEntry();
 
 		httpServletRequest.setAttribute(
-			InfoDisplayWebKeys.INFO_ITEM, projectObjectEntry);
+			InfoDisplayWebKeys.INFO_ITEM, cmpProjectObjectEntry);
 
 		themeDisplay = new ThemeDisplay() {
 			{
@@ -106,12 +106,12 @@ public abstract class BaseAssigneeSectionDisplayContextTestCase {
 			HttpServletRequest httpServletRequest)
 		throws Exception;
 
+	protected ObjectEntry cmpProjectObjectEntry;
 	protected HttpServletRequest httpServletRequest;
 
 	@Inject
 	protected ObjectEntryLocalService objectEntryLocalService;
 
-	protected ObjectEntry projectObjectEntry;
 	protected ThemeDisplay themeDisplay;
 
 	@Inject

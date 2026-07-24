@@ -52,17 +52,16 @@ public class ViewAllTasksJSPSectionFragmentRenderer
 
 		return new ViewAllTasksSectionDisplayContext(
 			_assetTagLocalService, _classNameLocalService,
-			_depotEntryLocalService, httpServletRequest,
-			_listTypeEntryLocalService, _objectEntryService,
-			_objectFieldLocalService, _objectStateFlowLocalService,
-			_objectStateLocalService,
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", themeDisplay.getCompanyId()),
-			_roleService,
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK", themeDisplay.getCompanyId()));
+					"L_CMP_TASK", themeDisplay.getCompanyId()),
+			_depotEntryLocalService, httpServletRequest,
+			_listTypeEntryLocalService, _objectEntryService,
+			_objectFieldLocalService, _objectStateFlowLocalService,
+			_objectStateLocalService, _roleService);
 	}
 
 	@Override

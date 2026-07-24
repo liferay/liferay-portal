@@ -50,7 +50,7 @@ public class ProjectSelectorComponentSectionFragmentRendererTest
 		super.setUp();
 
 		mockHttpServletRequest = getMockHttpServletRequest(
-			taskObjectDefinition, taskObjectEntry);
+			cmpTaskObjectDefinition, cmpTaskObjectEntry);
 	}
 
 	@Test
@@ -62,9 +62,10 @@ public class ProjectSelectorComponentSectionFragmentRendererTest
 		JSONAssert.assertEquals(
 			JSONUtil.put(
 				"label",
-				MapUtil.getString(projectObjectEntry.getValues(), "title")
+				MapUtil.getString(cmpProjectObjectEntry.getValues(), "title")
 			).put(
-				"value", String.valueOf(projectObjectEntry.getObjectEntryId())
+				"value",
+				String.valueOf(cmpProjectObjectEntry.getObjectEntryId())
 			).toString(),
 			String.valueOf(jsonArray.getJSONObject(0)), true);
 	}

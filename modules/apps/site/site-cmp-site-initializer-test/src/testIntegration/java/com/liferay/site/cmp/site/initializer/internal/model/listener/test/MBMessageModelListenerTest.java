@@ -92,15 +92,17 @@ public class MBMessageModelListenerTest {
 
 	@Test
 	public void testOnAfterCreate() throws Exception {
-		ObjectEntry projectObjectEntry = CMPTestUtil.addProjectObjectEntry();
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
 
 		_objectEntryLocalService.subscribeObjectEntry(
-			TestPropsValues.getUserId(), projectObjectEntry.getGroupId(),
-			projectObjectEntry.getObjectEntryId());
+			TestPropsValues.getUserId(), cmpProjectObjectEntry.getGroupId(),
+			cmpProjectObjectEntry.getObjectEntryId());
 
-		projectObjectEntry = _objectEntryLocalService.updateObjectEntry(
-			TestPropsValues.getUserId(), projectObjectEntry.getObjectEntryId(),
-			projectObjectEntry.getObjectEntryFolderId(),
+		cmpProjectObjectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(),
+			cmpProjectObjectEntry.getObjectEntryId(),
+			cmpProjectObjectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
 				"title", RandomTestUtil.randomString()
 			).build(),
@@ -109,9 +111,10 @@ public class MBMessageModelListenerTest {
 		User user = TestPropsValues.getUser();
 
 		_commentManager.addComment(
-			null, TestPropsValues.getUserId(), projectObjectEntry.getGroupId(),
-			projectObjectEntry.getModelClassName(),
-			projectObjectEntry.getObjectEntryId(), user.getFullName(), null,
+			null, TestPropsValues.getUserId(),
+			cmpProjectObjectEntry.getGroupId(),
+			cmpProjectObjectEntry.getModelClassName(),
+			cmpProjectObjectEntry.getObjectEntryId(), user.getFullName(), null,
 			RandomTestUtil.randomString(),
 			new IdentityServiceContextFunction(
 				ServiceContextTestUtil.getServiceContext()));
@@ -119,14 +122,14 @@ public class MBMessageModelListenerTest {
 		Assert.assertTrue(
 			MailServiceTestUtil.lastMailMessageContains(
 				"There is a new comment on the project " +
-					projectObjectEntry.getTitleValue()));
+					cmpProjectObjectEntry.getTitleValue()));
 		Assert.assertTrue(
 			MailServiceTestUtil.lastMailMessageContains(
 				StringBundler.concat(
 					GroupConstants.CMS_FRIENDLY_URL, "/e/project/",
 					_portal.getClassNameId(
-						projectObjectEntry.getModelClassName()),
-					"/", projectObjectEntry.getObjectEntryId())));
+						cmpProjectObjectEntry.getModelClassName()),
+					"/", cmpProjectObjectEntry.getObjectEntryId())));
 	}
 
 	@Inject

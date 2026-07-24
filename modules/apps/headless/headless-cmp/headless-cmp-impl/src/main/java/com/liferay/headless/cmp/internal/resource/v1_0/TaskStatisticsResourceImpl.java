@@ -75,51 +75,52 @@ public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 	}
 
 	private long _getCount(
-			String filterString, ObjectEntry projectObjectEntry,
-			ObjectDefinition taskObjectDefinition)
+			ObjectEntry cmpProjectObjectEntry,
+			ObjectDefinition cmpTaskObjectDefinition, String filterString)
 		throws Exception {
 
 		List<Long> groupIds = new ArrayList<>();
 
-		if (projectObjectEntry == null) {
+		if (cmpProjectObjectEntry == null) {
 			groupIds = transform(
 				_depotEntryLocalService.getDepotEntries(
 					contextCompany.getCompanyId(), DepotConstants.TYPE_PROJECT),
 				DepotEntryModel::getGroupId);
 		}
 		else {
-			groupIds.add(projectObjectEntry.getGroupId());
+			groupIds.add(cmpProjectObjectEntry.getGroupId());
 		}
 
 		return _objectEntryLocalService.getValuesListCount(
 			groupIds.toArray(new Long[0]), 0, 0,
-			taskObjectDefinition.getObjectDefinitionId(),
-			_filterFactory.create(filterString, taskObjectDefinition), true,
+			cmpTaskObjectDefinition.getObjectDefinitionId(),
+			_filterFactory.create(filterString, cmpTaskObjectDefinition), true,
 			null);
 	}
 
 	private TaskStatistics _toTaskStatistics(
-		ObjectEntry projectObjectEntry, ObjectDefinition taskObjectDefinition) {
+		ObjectEntry cmpProjectObjectEntry,
+		ObjectDefinition cmpTaskObjectDefinition) {
 
 		return new TaskStatistics() {
 			{
 				setBlockedCount(
 					() -> _getCount(
-						"state eq 'blocked'", projectObjectEntry,
-						taskObjectDefinition));
+						cmpProjectObjectEntry, cmpTaskObjectDefinition,
+						"state eq 'blocked'"));
 				setInProgressCount(
 					() -> _getCount(
-						"state eq 'inProgress'", projectObjectEntry,
-						taskObjectDefinition));
+						cmpProjectObjectEntry, cmpTaskObjectDefinition,
+						"state eq 'inProgress'"));
 				setOverdueCount(
 					() -> _getCount(
+						cmpProjectObjectEntry, cmpTaskObjectDefinition,
 						"dueDate lt " + LocalDate.now() +
-							" and state ne 'done'",
-						projectObjectEntry, taskObjectDefinition));
+							" and state ne 'done'"));
 				setTotalCount(
 					() -> _getCount(
-						StringPool.BLANK, projectObjectEntry,
-						taskObjectDefinition));
+						cmpProjectObjectEntry, cmpTaskObjectDefinition,
+						StringPool.BLANK));
 			}
 		};
 	}

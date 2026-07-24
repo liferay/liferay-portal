@@ -78,7 +78,7 @@ public class ViewProjectSponsorAssigneeSectionDisplayContextTest
 			).put(
 				"type", Assignee.Type.USER.toString()
 			).build(),
-			projectObjectEntry,
+			cmpProjectObjectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"r_userToCMPProjectSponsor_userId", user.getUserId()
 			).build());

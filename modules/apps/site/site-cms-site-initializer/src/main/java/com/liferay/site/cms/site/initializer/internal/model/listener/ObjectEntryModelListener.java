@@ -233,8 +233,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	}
 
 	private void _route(
-			AssetTag assetTag, List<Attribute> attributes, String eventType,
-			ObjectDefinition taskObjectDefinition)
+			AssetTag assetTag, List<Attribute> attributes,
+			ObjectDefinition cmpTaskObjectDefinition, String eventType)
 		throws Exception {
 
 		for (long assetEntryId :
@@ -246,7 +246,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 			if (!StringUtil.equals(
 					assetEntry.getClassName(),
-					taskObjectDefinition.getClassName())) {
+					cmpTaskObjectDefinition.getClassName())) {
 
 				continue;
 			}
@@ -272,12 +272,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		ObjectDefinition taskObjectDefinition =
+		ObjectDefinition cmpTaskObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_TASK", objectEntry.getCompanyId());
 
-		if (taskObjectDefinition == null) {
+		if (cmpTaskObjectDefinition == null) {
 			return;
 		}
 
@@ -292,23 +292,23 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			SetUtil.asymmetricDifference(newAssetTagNames, oldAssetTagNames),
 			Collections.singletonList(
 				new Attribute(objectEntry.getTitleValue())),
-			"CMP_ADD_ASSET", taskObjectDefinition);
+			cmpTaskObjectDefinition, "CMP_ADD_ASSET");
 		_route(
 			SetUtil.asymmetricDifference(oldAssetTagNames, newAssetTagNames),
 			Collections.singletonList(
 				new Attribute(objectEntry.getTitleValue())),
-			"CMP_REMOVE_ASSET", taskObjectDefinition);
+			cmpTaskObjectDefinition, "CMP_REMOVE_ASSET");
 	}
 
 	private void _route(
 			Set<String> assetTagNames, List<Attribute> attributes,
-			String eventType, ObjectDefinition taskObjectDefinition)
+			ObjectDefinition cmpTaskObjectDefinition, String eventType)
 		throws Exception {
 
 		for (String assetTagName : assetTagNames) {
 			if (!StringUtil.startsWith(
 					assetTagName,
-					taskObjectDefinition.getExternalReferenceCode())) {
+					cmpTaskObjectDefinition.getExternalReferenceCode())) {
 
 				continue;
 			}
@@ -318,7 +318,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 						new long[0], assetTagName, QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS)) {
 
-				_route(assetTag, attributes, eventType, taskObjectDefinition);
+				_route(
+					assetTag, attributes, cmpTaskObjectDefinition, eventType);
 			}
 		}
 	}

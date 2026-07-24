@@ -20,22 +20,22 @@ import './ContentGapMatrix.scss';
 
 interface ContentGapMatrixCardProps {
 	assetFDSId: string;
+	cmpProjectObjectEntryId: string;
+	cmpProjectObjectEntryTitle: string;
 	editProjectURL?: string;
 	groupId: number;
 	hasFunnelStagesOrPersonas: boolean;
-	projectId: string;
-	projectTitle: string;
 }
 
 const contentCoverageService = ContentCoverageServiceImpl;
 
 export default function ContentGapMatrixCard({
 	assetFDSId,
+	cmpProjectObjectEntryId,
+	cmpProjectObjectEntryTitle,
 	editProjectURL,
 	groupId,
 	hasFunnelStagesOrPersonas,
-	projectId,
-	projectTitle,
 }: ContentGapMatrixCardProps) {
 	const [data, setData] = useState<MatrixData | null>(null);
 	const [error, setError] = useState(false);
@@ -46,7 +46,9 @@ export default function ContentGapMatrixCard({
 		setLoading(true);
 
 		try {
-			setData(await contentCoverageService.getMatrix(projectId));
+			setData(
+				await contentCoverageService.getMatrix(cmpProjectObjectEntryId)
+			);
 		}
 		catch {
 			setError(true);
@@ -54,7 +56,7 @@ export default function ContentGapMatrixCard({
 		finally {
 			setLoading(false);
 		}
-	}, [projectId]);
+	}, [cmpProjectObjectEntryId]);
 
 	useEffect(() => {
 		if (hasFunnelStagesOrPersonas) {
@@ -78,9 +80,9 @@ export default function ContentGapMatrixCard({
 		return (
 			<div className="lfr-cmp__content-gap-matrix-card">
 				<ContentGapMatrixHeader
+					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
+					cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
 					groupId={groupId}
-					projectId={projectId}
-					projectTitle={projectTitle}
 				/>
 
 				<div className="lfr-cmp__content-gap-matrix-container">
@@ -130,9 +132,9 @@ export default function ContentGapMatrixCard({
 		return (
 			<div className="lfr-cmp__content-gap-matrix-card">
 				<ContentGapMatrixHeader
+					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
+					cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
 					groupId={groupId}
-					projectId={projectId}
-					projectTitle={projectTitle}
 				/>
 
 				<div className="lfr-cmp__content-gap-matrix-container">
@@ -149,10 +151,10 @@ export default function ContentGapMatrixCard({
 	return (
 		<div className="lfr-cmp__content-gap-matrix-card">
 			<ContentGapMatrixHeader
+				cmpProjectObjectEntryId={cmpProjectObjectEntryId}
+				cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
 				data={data}
 				groupId={groupId}
-				projectId={projectId}
-				projectTitle={projectTitle}
 			/>
 
 			<div className="lfr-cmp__content-gap-matrix-container">

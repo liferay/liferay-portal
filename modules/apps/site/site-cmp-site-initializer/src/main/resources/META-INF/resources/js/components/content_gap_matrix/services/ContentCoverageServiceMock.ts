@@ -26,7 +26,9 @@ const SCENARIOS: Record<string, MatrixData> = {
 };
 
 export const ContentCoverageServiceMock: ContentCoverageService = {
-	getMatrix(projectId: string): Promise<MatrixData> {
-		return Promise.resolve(SCENARIOS[projectId] ?? PARTIAL_COVERAGE_MATRIX);
+	getMatrix(cmpProjectObjectEntryId: string): Promise<MatrixData> {
+		return Promise.resolve(
+			SCENARIOS[cmpProjectObjectEntryId] ?? PARTIAL_COVERAGE_MATRIX
+		);
 	},
 };

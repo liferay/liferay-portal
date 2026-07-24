@@ -105,17 +105,20 @@ describe('Kanban Task', () => {
 		},
 	} as any;
 
-	const renderTask = (itemsActions: any[] = [], projectId = '') =>
+	const renderTask = (
+		itemsActions: any[] = [],
+		cmpProjectObjectEntryId = ''
+	) =>
 		render(
 			<KanbanViewContext.Provider
 				value={{
 					boardData: {},
 					changeTaskStatus: jest.fn(),
+					cmpProjectObjectDefinitionId: 123,
+					cmpProjectObjectEntryId,
 					hasAddTaskPermission: true,
 					itemsActions,
 					loadData: mockLoadData,
-					projectId,
-					projectObjectDefinitionId: 123,
 				}}
 			>
 				<Task {...task} />
@@ -231,11 +234,11 @@ describe('Kanban Task', () => {
 				value={{
 					boardData: {},
 					changeTaskStatus: jest.fn(),
+					cmpProjectObjectDefinitionId: 123,
+					cmpProjectObjectEntryId: '123',
 					hasAddTaskPermission: true,
 					itemsActions: [],
 					loadData: mockLoadData,
-					projectId: '123',
-					projectObjectDefinitionId: 123,
 				}}
 			>
 				<Task {...taskWithDueDate} />
@@ -302,11 +305,11 @@ describe('Kanban Task', () => {
 					value={{
 						boardData: {},
 						changeTaskStatus: jest.fn(),
+						cmpProjectObjectDefinitionId: 123,
+						cmpProjectObjectEntryId: '',
 						hasAddTaskPermission: true,
 						itemsActions: [],
 						loadData: mockLoadData,
-						projectId: '',
-						projectObjectDefinitionId: 123,
 					}}
 				>
 					<Task {...taskWithSubscription} />
@@ -337,11 +340,11 @@ describe('Kanban Task', () => {
 					value={{
 						boardData: {},
 						changeTaskStatus: jest.fn(),
+						cmpProjectObjectDefinitionId: 123,
+						cmpProjectObjectEntryId: '',
 						hasAddTaskPermission: true,
 						itemsActions: [],
 						loadData: mockLoadData,
-						projectId: '',
-						projectObjectDefinitionId: 123,
 					}}
 				>
 					<Task {...taskWithSubscription} />

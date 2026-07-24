@@ -56,11 +56,12 @@ public class TagsComponentSectionFragmentRendererTest
 
 		serviceContext.setAssetTagNames(new String[] {keyword1, keyword2});
 
-		projectObjectEntry = _objectEntryLocalService.partialUpdateObjectEntry(
-			projectObjectEntry.getUserId(),
-			projectObjectEntry.getObjectEntryId(),
-			projectObjectEntry.getObjectEntryFolderId(), Collections.emptyMap(),
-			serviceContext);
+		cmpProjectObjectEntry =
+			_objectEntryLocalService.partialUpdateObjectEntry(
+				cmpProjectObjectEntry.getUserId(),
+				cmpProjectObjectEntry.getObjectEntryId(),
+				cmpProjectObjectEntry.getObjectEntryFolderId(),
+				Collections.emptyMap(), serviceContext);
 
 		themeDisplay.setPermissionChecker(
 			PermissionThreadLocal.getPermissionChecker());

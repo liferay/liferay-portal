@@ -83,7 +83,7 @@ public class ObjectEntryAuditModelListenerTest {
 
 		CMPTestUtil.getOrAddGroup(ObjectEntryAuditModelListenerTest.class);
 
-		_cmpTaskObjectEntry = CMPTestUtil.addTaskObjectEntry();
+		_cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
 		_cmpTaskObjectEntry = _objectEntryLocalService.partialUpdateObjectEntry(
 			_cmpTaskObjectEntry.getUserId(),

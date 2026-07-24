@@ -13,15 +13,15 @@ import {MatrixData} from './types';
 import {computeCoveragePercentage, countCriticalGaps} from './utils';
 
 export default function ContentGapMatrixHeader({
+	cmpProjectObjectEntryId,
+	cmpProjectObjectEntryTitle,
 	data,
 	groupId,
-	projectId,
-	projectTitle,
 }: {
+	cmpProjectObjectEntryId?: string;
+	cmpProjectObjectEntryTitle?: string;
 	data?: MatrixData;
 	groupId?: number;
-	projectId?: string;
-	projectTitle?: string;
 }) {
 	const coveragePercentage = data ? computeCoveragePercentage(data) : 0;
 	const coverageDisplayType =
@@ -72,13 +72,13 @@ export default function ContentGapMatrixHeader({
 					context={{
 						cmsGroupId: groupId,
 						focusScope: 'full-matrix',
-						projectId,
+						projectId: cmpProjectObjectEntryId,
 					}}
 					initialMessage={sub(
 						Liferay.Language.get(
 							'get-ai-insights-for-the-x-content-coverage-matrix'
 						),
-						projectTitle
+						cmpProjectObjectEntryTitle
 					)}
 					instructionDefinitionScope="cms"
 					triggerLabel={Liferay.Language.get('get-ai-insights')}

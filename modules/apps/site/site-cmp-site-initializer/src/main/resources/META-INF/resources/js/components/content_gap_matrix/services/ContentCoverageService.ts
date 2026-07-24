@@ -8,7 +8,7 @@ import {fetch} from 'frontend-js-web';
 import {MatrixData, NO_FUNNEL_STAGE, NO_PERSONA, TaxonomyTerm} from '../types';
 
 export interface ContentCoverageService {
-	getMatrix(projectId: string): Promise<MatrixData>;
+	getMatrix(cmpProjectObjectEntryId: string): Promise<MatrixData>;
 }
 
 interface ContentCoverageTermResponse {
@@ -73,14 +73,14 @@ export function toMatrixData(response: ContentCoverageResponse): MatrixData {
  * (LPD-96935).
  */
 export const ContentCoverageServiceImpl: ContentCoverageService = {
-	async getMatrix(projectId: string): Promise<MatrixData> {
+	async getMatrix(cmpProjectObjectEntryId: string): Promise<MatrixData> {
 		const response = await fetch(
-			`/o/headless-cmp/v1.0/projects/${projectId}/content-coverage`
+			`/o/headless-cmp/v1.0/projects/${cmpProjectObjectEntryId}/content-coverage`
 		);
 
 		if (!response.ok) {
 			throw new Error(
-				`Unable to load content coverage for project ${projectId}`
+				`Unable to load content coverage for project ${cmpProjectObjectEntryId}`
 			);
 		}
 

@@ -14,7 +14,7 @@ import React, {useState} from 'react';
 
 import './SelectProjectModalContent.scss';
 
-export interface Project {
+export interface CMPProject {
 	embedded: {
 		id: number;
 		scopeId: number;
@@ -26,21 +26,21 @@ export default function SelectProjectModalContent({
 	addProjectURL,
 	addTaskURL,
 	closeModal,
-	projectObjectDefinitionId,
+	cmpProjectObjectDefinitionId,
 }: {
 	addProjectURL: string;
 	addTaskURL: string;
 	closeModal: () => void;
-	projectObjectDefinitionId: number;
+	cmpProjectObjectDefinitionId: number;
 }) {
 	const [errorMessage, setErrorMessage] = useState<string>('');
-	const [selectedProject, setSelectedProject] = useState<Project | null>();
+	const [selectedProject, setSelectedProject] = useState<CMPProject | null>();
 
 	const {
 		resource,
 	}: {
 		resource: {
-			items: Project[];
+			items: CMPProject[];
 		};
 	} = useResource({
 		fetchOptions: {
@@ -49,10 +49,10 @@ export default function SelectProjectModalContent({
 			method: 'GET',
 		},
 		fetchPolicy: FetchPolicy.CacheFirst,
-		link: `${Liferay.ThemeDisplay.getPortalURL()}/o/search/v1.0/search?emptySearch=true&filter=objectDefinitionId eq ${projectObjectDefinitionId}&nestedFields=embedded`,
+		link: `${Liferay.ThemeDisplay.getPortalURL()}/o/search/v1.0/search?emptySearch=true&filter=objectDefinitionId eq ${cmpProjectObjectDefinitionId}&nestedFields=embedded`,
 	});
 
-	const projects: Project[] = resource?.items?.length
+	const projects: CMPProject[] = resource?.items?.length
 		? resource.items
 		: [
 				{
@@ -95,7 +95,7 @@ export default function SelectProjectModalContent({
 					label={Liferay.Language.get('project')}
 					required
 				>
-					<Picker<Project>
+					<Picker<CMPProject>
 						aria-label={Liferay.Language.get('project')}
 						items={projects}
 						messages={{

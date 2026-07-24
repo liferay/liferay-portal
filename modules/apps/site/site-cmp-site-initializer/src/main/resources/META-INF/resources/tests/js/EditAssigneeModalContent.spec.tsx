@@ -30,9 +30,9 @@ describe('EditAssigneeModalContent', () => {
 		const {getByText} = render(
 			<EditAssigneeModalContent
 				closeModal={mockCloseModal}
+				cmpTaskObjectEntryId="123"
+				cmpTaskObjectEntryTitle="Task Title"
 				loadData={mockLoadData}
-				taskId="123"
-				taskTitle="Task Title"
 				value={{name: 'New Assignee'}}
 			/>
 		);

@@ -56,8 +56,8 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 				themeDisplay.getPathFriendlyURLPublic(),
 				GroupConstants.CMS_FRIENDLY_URL, "/e/project/",
 				PortalUtil.getClassNameId(
-					projectObjectDefinition.getClassName()),
-				StringPool.SLASH, projectObjectEntry.getObjectEntryId()),
+					cmpProjectObjectDefinition.getClassName()),
+				StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId()),
 			MapUtil.getString(getProps(), "formSubmitURL"));
 		Assert.assertEquals(
 			"New Project", MapUtil.getString(getProps(), "title"));
@@ -72,24 +72,24 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 				themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 				GroupConstants.CMS_FRIENDLY_URL,
 				"/add_task?objectDefinitionId=",
-				taskObjectDefinition.getObjectDefinitionId(), "&plid=",
+				cmpTaskObjectDefinition.getObjectDefinitionId(), "&plid=",
 				themeDisplay.getPlid(), "&projectGroupId=",
-				projectObjectEntry.getGroupId(), "&projectId=",
-				projectObjectEntry.getObjectEntryId(), "&redirect=/redirect-",
-				"url&action=createGlobalTask"),
+				cmpProjectObjectEntry.getGroupId(), "&projectId=",
+				cmpProjectObjectEntry.getObjectEntryId(),
+				"&redirect=/redirect-url&action=createGlobalTask"),
 			MapUtil.getString(getProps(), "formSubmitURL"));
 		Assert.assertEquals(
 			"New Project", MapUtil.getString(getProps(), "title"));
 
 		mockHttpServletRequest = getMockHttpServletRequest(
-			projectObjectDefinition,
-			_partialUpdateObjectEntry(projectObjectEntry));
+			cmpProjectObjectDefinition,
+			_partialUpdateObjectEntry(cmpProjectObjectEntry));
 
 		Assert.assertEquals(
 			"Edit Project", MapUtil.getString(getProps(), "title"));
 
 		mockHttpServletRequest = getMockHttpServletRequest(
-			taskObjectDefinition, taskObjectEntry);
+			cmpTaskObjectDefinition, cmpTaskObjectEntry);
 
 		Assert.assertEquals(
 			"/redirect-url", MapUtil.getString(getProps(), "backURL"));
@@ -105,7 +105,8 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 		Assert.assertEquals("New Task", MapUtil.getString(getProps(), "title"));
 
 		mockHttpServletRequest = getMockHttpServletRequest(
-			taskObjectDefinition, _partialUpdateObjectEntry(taskObjectEntry));
+			cmpTaskObjectDefinition,
+			_partialUpdateObjectEntry(cmpTaskObjectEntry));
 
 		Assert.assertEquals(
 			"Edit Task", MapUtil.getString(getProps(), "title"));

@@ -68,10 +68,11 @@ export default function ProjectTasksFDSPropsTransformer({
 		component: (props: any) =>
 			CalendarView({
 				...props,
+				cmpProjectObjectDefinitionId:
+					additionalProps.cmpProjectObjectDefinitionId,
+				cmpProjectObjectEntryId:
+					additionalProps.cmpProjectObjectEntryId,
 				hasAddTaskPermission: additionalProps.hasAddTaskPermission,
-				projectId: additionalProps.projectId,
-				projectObjectDefinitionId:
-					additionalProps.projectObjectDefinitionId,
 			}),
 		default: false,
 		initialPaginationDelta: FDS_PAGINATION_DELTA_ALL,
@@ -94,10 +95,11 @@ export default function ProjectTasksFDSPropsTransformer({
 		component: (props: any) =>
 			KanbanView({
 				...props,
+				cmpProjectObjectDefinitionId:
+					additionalProps.cmpProjectObjectDefinitionId,
+				cmpProjectObjectEntryId:
+					additionalProps.cmpProjectObjectEntryId,
 				hasAddTaskPermission: additionalProps.hasAddTaskPermission,
-				projectId: additionalProps.projectId,
-				projectObjectDefinitionId:
-					additionalProps.projectObjectDefinitionId,
 			}),
 		default: false,
 		initialPaginationDelta: FDS_PAGINATION_DELTA_ALL,
@@ -206,9 +208,9 @@ export default function ProjectTasksFDSPropsTransformer({
 					}) => (
 						<EditAssigneeModalContent
 							closeModal={closeModal}
+							cmpTaskObjectEntryId={String(itemData.embedded.id)}
+							cmpTaskObjectEntryTitle={itemData.embedded.title}
 							loadData={loadData}
-							taskId={String(itemData.embedded.id)}
-							taskTitle={itemData.embedded.title}
 							value={itemData.embedded.assignTo}
 						/>
 					),
@@ -225,10 +227,10 @@ export default function ProjectTasksFDSPropsTransformer({
 					}) => (
 						<UpdateDueDateModalContent
 							closeModal={closeModal}
+							cmpTaskObjectEntryId={String(itemData.embedded.id)}
+							cmpTaskObjectEntryTitle={itemData.embedded.title}
 							dueDate={itemData.embedded.dueDate}
 							loadData={loadData}
-							taskId={String(itemData.embedded.id)}
-							taskTitle={itemData.embedded.title}
 						/>
 					),
 					size: 'md',

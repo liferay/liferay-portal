@@ -141,7 +141,7 @@ export default function LinkedProjects({
 		const joinedProjects: CMPProject[] = [];
 
 		links.forEach((link) => {
-			const project = projectsById.get(link.projectId);
+			const project = projectsById.get(link.cmpProjectObjectEntryId);
 
 			if (project) {
 				joinedProjects.push({...project, linkId: link.id});
@@ -152,13 +152,18 @@ export default function LinkedProjects({
 	}, [links, projects]);
 
 	const selectableProjects = useMemo(() => {
-		const linkedProjectIds = new Set(links.map(({projectId}) => projectId));
+		const linkedProjectIds = new Set(
+			links.map(({cmpProjectObjectEntryId}) => cmpProjectObjectEntryId)
+		);
 
 		return projects.filter(({id}) => !linkedProjectIds.has(id));
 	}, [links, projects]);
 
 	const linkProject = async (project: CMPProject) => {
-		setLinks((previous) => [...previous, {projectId: project.id}]);
+		setLinks((previous) => [
+			...previous,
+			{cmpProjectObjectEntryId: project.id},
+		]);
 
 		const {data, error} = await ProjectLinkService.linkProject({
 			entryClassName,
@@ -173,7 +178,10 @@ export default function LinkedProjects({
 
 		if (error || !data) {
 			setLinks((previous) =>
-				previous.filter(({projectId}) => projectId !== project.id)
+				previous.filter(
+					({cmpProjectObjectEntryId}) =>
+						cmpProjectObjectEntryId !== project.id
+				)
 			);
 
 			openToast({
@@ -188,7 +196,9 @@ export default function LinkedProjects({
 
 		setLinks((previous) =>
 			previous.map((link) =>
-				link.projectId === project.id ? {...link, id: data.id} : link
+				link.cmpProjectObjectEntryId === project.id
+					? {...link, id: data.id}
+					: link
 			)
 		);
 
@@ -208,7 +218,10 @@ export default function LinkedProjects({
 		const linkId = project.linkId;
 
 		setLinks((previous) =>
-			previous.filter(({projectId}) => projectId !== project.id)
+			previous.filter(
+				({cmpProjectObjectEntryId}) =>
+					cmpProjectObjectEntryId !== project.id
+			)
 		);
 
 		const {error} = await ProjectLinkService.unlinkProject({linkId});
@@ -220,7 +233,7 @@ export default function LinkedProjects({
 		if (error) {
 			setLinks((previous) => [
 				...previous,
-				{id: linkId, projectId: project.id},
+				{cmpProjectObjectEntryId: project.id, id: linkId},
 			]);
 
 			openToast({message: error, type: 'danger'});

@@ -61,97 +61,101 @@ public class ObjectEntryResourceTest {
 	public void setUp() throws Exception {
 		CMPTestUtil.getOrAddGroup(ObjectEntryResourceTest.class);
 
-		ObjectDefinition basicWebContentObjectDefinition =
+		_cmpProjectLinkObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT_LINK", TestPropsValues.getCompanyId());
+		_cmpProjectObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT", TestPropsValues.getCompanyId());
+		_cmpTaskLinkObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_TASK_LINK", TestPropsValues.getCompanyId());
+		_cmpTaskObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_TASK", TestPropsValues.getCompanyId());
+
+		ObjectDefinition cmsBasicWebContentObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
-		_basicWebContentObjectEntry = _objectEntryLocalService.addObjectEntry(
-			depotEntry.getGroupId(), TestPropsValues.getUserId(),
-			basicWebContentObjectDefinition.getObjectDefinitionId(), 0, null,
-			Collections.singletonMap(
-				"title_i18n",
-				(Serializable)RandomTestUtil.randomLanguageIdStringMap()),
-			ServiceContextTestUtil.getServiceContext());
-
-		_projectLinkObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_PROJECT_LINK", TestPropsValues.getCompanyId());
-		_projectObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_PROJECT", TestPropsValues.getCompanyId());
-		_taskLinkObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK_LINK", TestPropsValues.getCompanyId());
-		_taskObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK", TestPropsValues.getCompanyId());
+		_cmsBasicWebContentObjectEntry =
+			_objectEntryLocalService.addObjectEntry(
+				depotEntry.getGroupId(), TestPropsValues.getUserId(),
+				cmsBasicWebContentObjectDefinition.getObjectDefinitionId(), 0,
+				null,
+				Collections.singletonMap(
+					"title_i18n",
+					(Serializable)RandomTestUtil.randomLanguageIdStringMap()),
+				ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Test
-	public void testPostProjectLinkObjectEntry() throws Exception {
+	public void testPostCMPProjectLinkObjectEntry() throws Exception {
 
 		// Link basic web content in a project
 
-		_testPostProjectLinkObjectEntry();
+		_testPostCMPProjectLinkObjectEntry();
 
 		// Link the same basic web content in a different project
 
-		_testPostProjectLinkObjectEntry();
+		_testPostCMPProjectLinkObjectEntry();
 	}
 
 	@Test
-	public void testPostProjectObjectEntry() throws Exception {
+	public void testPostCMPProjectObjectEntry() throws Exception {
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_PROJECT);
 
 		Assert.assertEquals(
 			409,
 			HTTPTestUtil.invokeToHttpCode(
 				null,
-				_projectObjectDefinition.getRESTContextPath() + "/scopes/" +
+				_cmpProjectObjectDefinition.getRESTContextPath() + "/scopes/" +
 					depotEntry.getGroupId(),
 				Http.Method.POST));
 
-		JSONObject projectObjectEntryJSONObject = _postProjectObjectEntry();
+		JSONObject cmpProjectObjectEntryJSONObject =
+			_postCMPProjectObjectEntry();
 
 		depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
-			projectObjectEntryJSONObject.getLong("scopeId"));
+			cmpProjectObjectEntryJSONObject.getLong("scopeId"));
 
 		Assert.assertEquals(DepotConstants.TYPE_PROJECT, depotEntry.getType());
 	}
 
 	@Test
-	public void testPostTaskLinkObjectEntry() throws Exception {
+	public void testPostCMPTaskLinkObjectEntry() throws Exception {
 
 		// Link basic web content in a task
 
-		_testPostTaskLinkObjectEntry();
+		_testPostCMPTaskLinkObjectEntry();
 
 		// Link the same basic web content in a different task
 
-		_testPostTaskLinkObjectEntry();
+		_testPostCMPTaskLinkObjectEntry();
 	}
 
 	@Test
-	public void testPostTaskObjectEntry() throws Exception {
+	public void testPostCMPTaskObjectEntry() throws Exception {
+		JSONObject cmpProjectObjectEntryJSONObject =
+			_postCMPProjectObjectEntry();
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_PROJECT);
-		JSONObject projectObjectEntryJSONObject = _postProjectObjectEntry();
 
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
 				JSONUtil.put(
 					"r_cmpProjectToCMPTasks_c_cmpProjectId",
-					projectObjectEntryJSONObject.getLong("id")
+					cmpProjectObjectEntryJSONObject.getLong("id")
 				).put(
 					"title", RandomTestUtil.randomString()
 				).toString(),
-				_taskObjectDefinition.getRESTContextPath() + "/scopes/" +
+				_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
 					depotEntry.getGroupId(),
 				Http.Method.POST));
 		Assert.assertEquals(
@@ -159,33 +163,35 @@ public class ObjectEntryResourceTest {
 			HTTPTestUtil.invokeToHttpCode(
 				JSONUtil.put(
 					"r_cmpProjectToCMPTasks_c_cmpProjectERC",
-					projectObjectEntryJSONObject.getString(
+					cmpProjectObjectEntryJSONObject.getString(
 						"externalReferenceCode")
 				).put(
 					"title", RandomTestUtil.randomString()
 				).toString(),
-				_taskObjectDefinition.getRESTContextPath() + "/scopes/" +
+				_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
 					depotEntry.getGroupId(),
 				Http.Method.POST));
 
-		JSONObject taskObjectEntryJSONObject = HTTPTestUtil.invokeToJSONObject(
-			JSONUtil.put(
-				"r_cmpProjectToCMPTasks_c_cmpProjectERC",
-				projectObjectEntryJSONObject.getString("externalReferenceCode")
-			).put(
-				"title", RandomTestUtil.randomString()
-			).toString(),
-			_taskObjectDefinition.getRESTContextPath() + "/scopes/" +
-				projectObjectEntryJSONObject.getLong("scopeId"),
-			Http.Method.POST);
+		JSONObject cmpTaskObjectEntryJSONObject =
+			HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.put(
+					"r_cmpProjectToCMPTasks_c_cmpProjectERC",
+					cmpProjectObjectEntryJSONObject.getString(
+						"externalReferenceCode")
+				).put(
+					"title", RandomTestUtil.randomString()
+				).toString(),
+				_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
+					cmpProjectObjectEntryJSONObject.getLong("scopeId"),
+				Http.Method.POST);
 
 		Assert.assertEquals(
-			projectObjectEntryJSONObject.getLong("id"),
-			taskObjectEntryJSONObject.getLong(
+			cmpProjectObjectEntryJSONObject.getLong("id"),
+			cmpTaskObjectEntryJSONObject.getLong(
 				"r_cmpProjectToCMPTasks_c_cmpProjectId"));
 		Assert.assertEquals(
-			projectObjectEntryJSONObject.getLong("scopeId"),
-			taskObjectEntryJSONObject.getLong("scopeId"));
+			cmpProjectObjectEntryJSONObject.getLong("scopeId"),
+			cmpTaskObjectEntryJSONObject.getLong("scopeId"));
 	}
 
 	private DepotEntry _addDepotEntry(int type) throws Exception {
@@ -195,130 +201,141 @@ public class ObjectEntryResourceTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private JSONObject _getBasicWebContentObjectEntryJSONObject() {
+	private JSONObject _getCMSBasicWebContentObjectEntryJSONObject() {
 		return JSONUtil.put(
 			"classExternalReferenceCode",
-			_basicWebContentObjectEntry.getExternalReferenceCode()
+			_cmsBasicWebContentObjectEntry.getExternalReferenceCode()
 		).put(
-			"className", _basicWebContentObjectEntry.getModelClassName()
+			"className", _cmsBasicWebContentObjectEntry.getModelClassName()
 		).put(
 			"groupExternalReferenceCode",
 			() -> {
 				Group group = _groupLocalService.getGroup(
-					_basicWebContentObjectEntry.getGroupId());
+					_cmsBasicWebContentObjectEntry.getGroupId());
 
 				return group.getExternalReferenceCode();
 			}
 		);
 	}
 
-	private JSONObject _postProjectObjectEntry() throws Exception {
+	private JSONObject _postCMPProjectObjectEntry() throws Exception {
 		return HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				"title", RandomTestUtil.randomString()
 			).toString(),
-			_projectObjectDefinition.getRESTContextPath(), Http.Method.POST);
+			_cmpProjectObjectDefinition.getRESTContextPath(), Http.Method.POST);
 	}
 
-	private JSONObject _postTaskObjectEntry() throws Exception {
-		JSONObject projectObjectEntryJSONObject = _postProjectObjectEntry();
+	private JSONObject _postCMPTaskObjectEntry() throws Exception {
+		JSONObject cmpProjectObjectEntryJSONObject =
+			_postCMPProjectObjectEntry();
 
 		return HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				"r_cmpProjectToCMPTasks_c_cmpProjectERC",
-				projectObjectEntryJSONObject.getString("externalReferenceCode")
+				cmpProjectObjectEntryJSONObject.getString(
+					"externalReferenceCode")
 			).put(
 				"title", RandomTestUtil.randomString()
 			).toString(),
-			_taskObjectDefinition.getRESTContextPath() + "/scopes/" +
-				projectObjectEntryJSONObject.getLong("scopeId"),
+			_cmpTaskObjectDefinition.getRESTContextPath() + "/scopes/" +
+				cmpProjectObjectEntryJSONObject.getLong("scopeId"),
 			Http.Method.POST);
 	}
 
-	private void _testPostProjectLinkObjectEntry() throws Exception {
-		JSONObject bodyJSONObject = _getBasicWebContentObjectEntryJSONObject();
+	private void _testPostCMPProjectLinkObjectEntry() throws Exception {
+		JSONObject bodyJSONObject =
+			_getCMSBasicWebContentObjectEntryJSONObject();
 
-		JSONObject projectObjectEntryJSONObject = _postProjectObjectEntry();
+		JSONObject cmpProjectObjectEntryJSONObject =
+			_postCMPProjectObjectEntry();
 
 		bodyJSONObject.put(
 			"r_cmpProjectToCMPProjectLinks_c_cmpProjectId",
-			projectObjectEntryJSONObject.getLong("id"));
+			cmpProjectObjectEntryJSONObject.getLong("id"));
 
-		JSONObject projectLinkObjectEntryJSONObject =
+		JSONObject cmpProjectLinkObjectEntryJSONObject =
 			HTTPTestUtil.invokeToJSONObject(
 				bodyJSONObject.toString(),
-				_projectLinkObjectDefinition.getRESTContextPath() + "/scopes/" +
-					projectObjectEntryJSONObject.getLong("scopeId"),
+				_cmpProjectLinkObjectDefinition.getRESTContextPath() +
+					"/scopes/" +
+						cmpProjectObjectEntryJSONObject.getLong("scopeId"),
 				Http.Method.POST);
 
 		Assert.assertEquals(
 			bodyJSONObject.getString("classExternalReferenceCode"),
-			projectLinkObjectEntryJSONObject.getString(
+			cmpProjectLinkObjectEntryJSONObject.getString(
 				"classExternalReferenceCode"));
 		Assert.assertEquals(
 			bodyJSONObject.getString("className"),
-			projectLinkObjectEntryJSONObject.getString("className"));
+			cmpProjectLinkObjectEntryJSONObject.getString("className"));
 		Assert.assertEquals(
 			bodyJSONObject.getString("groupExternalReferenceCode"),
-			projectLinkObjectEntryJSONObject.getString(
+			cmpProjectLinkObjectEntryJSONObject.getString(
 				"groupExternalReferenceCode"));
 		Assert.assertEquals(
 			bodyJSONObject.getLong(
 				"r_cmpProjectToCMPProjectLinks_c_cmpProjectId"),
-			projectLinkObjectEntryJSONObject.getLong(
+			cmpProjectLinkObjectEntryJSONObject.getLong(
 				"r_cmpProjectToCMPProjectLinks_c_cmpProjectId"));
 
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
 				bodyJSONObject.toString(),
-				_projectLinkObjectDefinition.getRESTContextPath() + "/scopes/" +
-					projectObjectEntryJSONObject.getLong("scopeId"),
+				_cmpProjectLinkObjectDefinition.getRESTContextPath() +
+					"/scopes/" +
+						cmpProjectObjectEntryJSONObject.getLong("scopeId"),
 				Http.Method.POST));
 	}
 
-	private void _testPostTaskLinkObjectEntry() throws Exception {
-		JSONObject bodyJSONObject = _getBasicWebContentObjectEntryJSONObject();
+	private void _testPostCMPTaskLinkObjectEntry() throws Exception {
+		JSONObject bodyJSONObject =
+			_getCMSBasicWebContentObjectEntryJSONObject();
 
-		JSONObject taskObjectEntryJSONObject = _postTaskObjectEntry();
+		JSONObject cmpTaskObjectEntryJSONObject = _postCMPTaskObjectEntry();
 
 		bodyJSONObject.put(
 			"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
-			taskObjectEntryJSONObject.getLong("id"));
+			cmpTaskObjectEntryJSONObject.getLong("id"));
 
-		JSONObject taskLinkObjectEntryJSONObject =
+		JSONObject cmpTaskLinkObjectEntryJSONObject =
 			HTTPTestUtil.invokeToJSONObject(
 				bodyJSONObject.toString(),
-				_taskLinkObjectDefinition.getRESTContextPath() + "/scopes/" +
-					taskObjectEntryJSONObject.getLong("scopeId"),
+				_cmpTaskLinkObjectDefinition.getRESTContextPath() + "/scopes/" +
+					cmpTaskObjectEntryJSONObject.getLong("scopeId"),
 				Http.Method.POST);
 
 		Assert.assertEquals(
 			bodyJSONObject.getString("classExternalReferenceCode"),
-			taskLinkObjectEntryJSONObject.getString(
+			cmpTaskLinkObjectEntryJSONObject.getString(
 				"classExternalReferenceCode"));
 		Assert.assertEquals(
 			bodyJSONObject.getString("className"),
-			taskLinkObjectEntryJSONObject.getString("className"));
+			cmpTaskLinkObjectEntryJSONObject.getString("className"));
 		Assert.assertEquals(
 			bodyJSONObject.getString("groupExternalReferenceCode"),
-			taskLinkObjectEntryJSONObject.getString(
+			cmpTaskLinkObjectEntryJSONObject.getString(
 				"groupExternalReferenceCode"));
 		Assert.assertEquals(
 			bodyJSONObject.getLong("r_cmpTaskToCMPTaskLinks_c_cmpTaskId"),
-			taskLinkObjectEntryJSONObject.getLong(
+			cmpTaskLinkObjectEntryJSONObject.getLong(
 				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId"));
 
 		Assert.assertEquals(
 			400,
 			HTTPTestUtil.invokeToHttpCode(
 				bodyJSONObject.toString(),
-				_taskLinkObjectDefinition.getRESTContextPath() + "/scopes/" +
-					taskObjectEntryJSONObject.getLong("scopeId"),
+				_cmpTaskLinkObjectDefinition.getRESTContextPath() + "/scopes/" +
+					cmpTaskObjectEntryJSONObject.getLong("scopeId"),
 				Http.Method.POST));
 	}
 
-	private ObjectEntry _basicWebContentObjectEntry;
+	private ObjectDefinition _cmpProjectLinkObjectDefinition;
+	private ObjectDefinition _cmpProjectObjectDefinition;
+	private ObjectDefinition _cmpTaskLinkObjectDefinition;
+	private ObjectDefinition _cmpTaskObjectDefinition;
+	private ObjectEntry _cmsBasicWebContentObjectEntry;
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
@@ -331,10 +348,5 @@ public class ObjectEntryResourceTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	private ObjectDefinition _projectLinkObjectDefinition;
-	private ObjectDefinition _projectObjectDefinition;
-	private ObjectDefinition _taskLinkObjectDefinition;
-	private ObjectDefinition _taskObjectDefinition;
 
 }

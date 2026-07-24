@@ -131,15 +131,15 @@ describe('CreateTaskModal', () => {
 	});
 
 	const renderModal = (
-		projectId?: string,
+		cmpProjectObjectEntryId?: string,
 		props: Partial<React.ComponentProps<typeof CreateTaskModal>> = {}
 	) =>
 		render(
 			<CreateTaskModal
 				closeModal={() => {}}
+				cmpProjectObjectDefinitionId={123}
+				cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 				loadData={() => {}}
-				projectId={projectId}
-				projectObjectDefinitionId={123}
 				state=""
 				{...props}
 			/>

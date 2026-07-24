@@ -60,10 +60,10 @@ const renderModal = (
 	render(
 		<UpdateDueDateModalContent
 			closeModal={mockCloseModal}
+			cmpTaskObjectEntryId="123"
+			cmpTaskObjectEntryTitle="Task Title"
 			dueDate="2026-07-15T00:00:00Z"
 			loadData={mockLoadData}
-			taskId="123"
-			taskTitle="Task Title"
 			{...props}
 		/>
 	);
