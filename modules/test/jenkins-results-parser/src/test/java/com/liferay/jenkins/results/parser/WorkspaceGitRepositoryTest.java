@@ -142,6 +142,47 @@ public class WorkspaceGitRepositoryTest
 				"root-cause-analysis-tool-batch", false, false));
 	}
 
+	@Test
+	public void testValidateSHAInRemoteGitRef() throws Exception {
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
+		RemoteGitRef remoteGitRef = Mockito.mock(RemoteGitRef.class);
+
+		Mockito.when(
+			gitWorkingDirectory.fetch(remoteGitRef)
+		).thenReturn(
+			localGitBranch
+		);
+
+		Mockito.when(
+			gitWorkingDirectory.refContainsSHA(localGitBranch, null)
+		).thenReturn(
+			true
+		);
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+
+		defaultWorkspaceGitRepository.validateSHAInRemoteGitRef(
+			"master", remoteGitRef, null);
+
+		InOrder inOrder = Mockito.inOrder(gitWorkingDirectory);
+
+		inOrder.verify(
+			gitWorkingDirectory
+		).fetch(
+			remoteGitRef
+		);
+
+		inOrder.verify(
+			gitWorkingDirectory
+		).refContainsSHA(
+			localGitBranch, null
+		);
+	}
+
 	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)
 		throws Exception {
 
