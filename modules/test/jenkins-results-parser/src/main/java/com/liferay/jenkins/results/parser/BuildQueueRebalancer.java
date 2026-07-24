@@ -114,7 +114,7 @@ public class BuildQueueRebalancer {
 
 	private void _generateBlacklistRebalanceActions() {
 		for (JenkinsMaster jenkinsMaster :
-				_jenkinsCohort.getBlackListedJenkinsMasters()) {
+				_jenkinsCohort.getBlacklistedJenkinsMasters()) {
 
 			try {
 				for (JenkinsMaster.QueueItem queueItem :

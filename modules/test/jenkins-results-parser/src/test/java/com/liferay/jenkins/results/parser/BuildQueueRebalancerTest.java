@@ -106,7 +106,7 @@ public class BuildQueueRebalancerTest
 			_AVAILABLE_JENKINS_MASTER_NAME, availableJenkinsMaster.getName());
 
 		List<JenkinsMaster> blacklistedJenkinsMasters =
-			jenkinsCohort.getBlackListedJenkinsMasters();
+			jenkinsCohort.getBlacklistedJenkinsMasters();
 
 		testEquals(1, blacklistedJenkinsMasters.size());
 

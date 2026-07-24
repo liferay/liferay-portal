@@ -735,7 +735,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 				_AVAILABLE_TIMEOUT)) {
 
 			try {
-				if (!isBlackListed()) {
+				if (!isBlacklisted()) {
 					JenkinsResultsParserUtil.toJSONObject(
 						getURL() + "/api/json?tree=mode", false, 1, 1, 1000);
 
@@ -755,7 +755,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return _available;
 	}
 
-	public boolean isBlackListed() {
+	public boolean isBlacklisted() {
 		if (_jenkinsMastersBlacklist.contains(getName())) {
 			_blacklisted = true;
 		}
