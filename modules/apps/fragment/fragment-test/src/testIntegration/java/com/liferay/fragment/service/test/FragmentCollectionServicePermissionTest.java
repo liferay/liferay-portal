@@ -60,6 +60,8 @@ public class FragmentCollectionServicePermissionTest {
 			String.valueOf(_group.getGroupId()),
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
+		_user = UserTestUtil.addGroupUser(_group, RoleConstants.POWER_USER);
+
 		_userWithoutPermissions = UserTestUtil.addGroupUser(
 			_group, RoleConstants.POWER_USER);
 
@@ -100,8 +102,26 @@ public class FragmentCollectionServicePermissionTest {
 	public void testGetFragmentCollectionByExternalReferenceCode()
 		throws Exception {
 
-		_testGetFragmentCollectionByExternalReferenceCodeWithoutPermissions();
-		_testGetFragmentCollectionByExternalReferenceCodeWithPermissions();
+		FragmentCollection fragmentCollection =
+			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
+
+		UserTestUtil.setUser(_user);
+
+		try {
+			_fragmentCollectionService.
+				getFragmentCollectionByExternalReferenceCode(
+					fragmentCollection.getExternalReferenceCode(),
+					_group.getGroupId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+		}
+
+		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
+
+		_fragmentCollectionService.getFragmentCollectionByExternalReferenceCode(
+			fragmentCollection.getExternalReferenceCode(), _group.getGroupId());
 	}
 
 	@Test
@@ -260,38 +280,6 @@ public class FragmentCollectionServicePermissionTest {
 			fragmentCollection.getFragmentCollectionId());
 	}
 
-	private void _testGetFragmentCollectionByExternalReferenceCodeWithoutPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection =
-			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
-		UserTestUtil.setUser(_userWithoutPermissions);
-
-		try {
-			_fragmentCollectionService.
-				getFragmentCollectionByExternalReferenceCode(
-					fragmentCollection.getExternalReferenceCode(),
-					_group.getGroupId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
-	}
-
-	private void _testGetFragmentCollectionByExternalReferenceCodeWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection =
-			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
-		UserTestUtil.setUser(_userWithPermissions);
-
-		_fragmentCollectionService.getFragmentCollectionByExternalReferenceCode(
-			fragmentCollection.getExternalReferenceCode(), _group.getGroupId());
-	}
-
 	private void _testGetTempFileNamesWithoutPermissions() throws Exception {
 		UserTestUtil.setUser(_userWithoutPermissions);
 
@@ -352,6 +340,9 @@ public class FragmentCollectionServicePermissionTest {
 
 	@DeleteAfterTestRun
 	private Role _role;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 	@Inject
 	private UserLocalService _userLocalService;
