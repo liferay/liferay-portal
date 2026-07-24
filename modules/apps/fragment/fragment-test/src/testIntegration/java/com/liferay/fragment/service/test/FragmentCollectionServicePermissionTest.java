@@ -10,6 +10,7 @@ import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionService;
 import com.liferay.fragment.test.util.FragmentTestUtil;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -65,45 +66,20 @@ public class FragmentCollectionServicePermissionTest {
 
 	@Test
 	public void testAddFragmentCollection() throws Exception {
-		UserTestUtil.setUser(_user);
+		_assertRoleGrantsPermission(
+			() -> {
+				_fragmentCollectionService.addFragmentCollection(
+					null, _group.getGroupId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), StringPool.BLANK, false,
+					ServiceContextTestUtil.getServiceContext(
+						_group, _user.getUserId()));
 
-		try {
-			_fragmentCollectionService.addFragmentCollection(
-				null, _group.getGroupId(), RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), StringPool.BLANK, false,
-				ServiceContextTestUtil.getServiceContext(
-					_group, _user.getUserId()));
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
-
-		try {
-			_fragmentCollectionService.addFragmentCollection(
-				null, _group.getGroupId(), RandomTestUtil.randomString(),
-				StringPool.BLANK,
-				ServiceContextTestUtil.getServiceContext(
-					_group, _user.getUserId()));
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
-
-		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
-
-		_fragmentCollectionService.addFragmentCollection(
-			null, _group.getGroupId(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), StringPool.BLANK, false,
-			ServiceContextTestUtil.getServiceContext(
-				_group, _user.getUserId()));
-
-		_fragmentCollectionService.addFragmentCollection(
-			null, _group.getGroupId(), RandomTestUtil.randomString(),
-			StringPool.BLANK,
-			ServiceContextTestUtil.getServiceContext(
-				_group, _user.getUserId()));
+				_fragmentCollectionService.addFragmentCollection(
+					null, _group.getGroupId(), RandomTestUtil.randomString(),
+					StringPool.BLANK,
+					ServiceContextTestUtil.getServiceContext(
+						_group, _user.getUserId()));
+			});
 	}
 
 	@Test
@@ -111,21 +87,9 @@ public class FragmentCollectionServicePermissionTest {
 		FragmentCollection fragmentCollection =
 			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
 
-		UserTestUtil.setUser(_user);
-
-		try {
-			_fragmentCollectionService.deleteFragmentCollection(
-				fragmentCollection.getFragmentCollectionId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
-
-		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
-
-		_fragmentCollectionService.deleteFragmentCollection(
-			fragmentCollection.getFragmentCollectionId());
+		_assertRoleGrantsPermission(
+			() -> _fragmentCollectionService.deleteFragmentCollection(
+				fragmentCollection.getFragmentCollectionId()));
 	}
 
 	@Test
@@ -140,21 +104,9 @@ public class FragmentCollectionServicePermissionTest {
 			fragmentCollection2.getFragmentCollectionId()
 		};
 
-		UserTestUtil.setUser(_user);
-
-		try {
-			_fragmentCollectionService.deleteFragmentCollections(
-				fragmentCollectionIds);
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
-
-		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
-
-		_fragmentCollectionService.deleteFragmentCollections(
-			fragmentCollectionIds);
+		_assertRoleGrantsPermission(
+			() -> _fragmentCollectionService.deleteFragmentCollections(
+				fragmentCollectionIds));
 	}
 
 	@Test
@@ -178,42 +130,19 @@ public class FragmentCollectionServicePermissionTest {
 		FragmentCollection fragmentCollection =
 			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
 
-		UserTestUtil.setUser(_user);
-
-		try {
-			_fragmentCollectionService.
-				getFragmentCollectionByExternalReferenceCode(
-					fragmentCollection.getExternalReferenceCode(),
-					_group.getGroupId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
-
-		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
-
-		_fragmentCollectionService.getFragmentCollectionByExternalReferenceCode(
-			fragmentCollection.getExternalReferenceCode(), _group.getGroupId());
+		_assertRoleGrantsPermission(
+			() ->
+				_fragmentCollectionService.
+					getFragmentCollectionByExternalReferenceCode(
+						fragmentCollection.getExternalReferenceCode(),
+						_group.getGroupId()));
 	}
 
 	@Test
 	public void testGetTempFileNames() throws Exception {
-		UserTestUtil.setUser(_user);
-
-		try {
-			_fragmentCollectionService.getTempFileNames(
-				_group.getGroupId(), StringPool.BLANK);
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
-
-		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
-
-		_fragmentCollectionService.getTempFileNames(
-			_group.getGroupId(), StringPool.BLANK);
+		_assertRoleGrantsPermission(
+			() -> _fragmentCollectionService.getTempFileNames(
+				_group.getGroupId(), StringPool.BLANK));
 	}
 
 	@Test
@@ -221,23 +150,24 @@ public class FragmentCollectionServicePermissionTest {
 		FragmentCollection fragmentCollection =
 			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
 
+		_assertRoleGrantsPermission(
+			() -> _fragmentCollectionService.updateFragmentCollection(
+				fragmentCollection.getFragmentCollectionId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
+	}
+
+	private void _assertRoleGrantsPermission(
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
 		UserTestUtil.setUser(_user);
 
-		try {
-			_fragmentCollectionService.updateFragmentCollection(
-				fragmentCollection.getFragmentCollectionId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-		}
+		Assert.assertThrows(
+			PrincipalException.MustHavePermission.class, unsafeRunnable::run);
 
 		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
 
-		_fragmentCollectionService.updateFragmentCollection(
-			fragmentCollection.getFragmentCollectionId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		unsafeRunnable.run();
 	}
 
 	@Inject
