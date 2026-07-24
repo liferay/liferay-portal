@@ -51,6 +51,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -84,6 +85,14 @@ public class ObjectEntryWorkflowHandlerTest {
 			_group.getGroupId(), TestPropsValues.getUserId());
 
 		_serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
@@ -191,11 +200,6 @@ public class ObjectEntryWorkflowHandlerTest {
 			workflowHandler.getEntryClassPK(
 				TestPropsValues.getCompanyId(), mockHttpServletRequest,
 				workflowTask));
-
-		TreeTestUtil.deleteObjectDefinitionHierarchy(
-			_objectDefinitionLocalService,
-			new String[] {"C_A", "C_AA", "C_AB", "C_AAA", "C_AAB"},
-			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
