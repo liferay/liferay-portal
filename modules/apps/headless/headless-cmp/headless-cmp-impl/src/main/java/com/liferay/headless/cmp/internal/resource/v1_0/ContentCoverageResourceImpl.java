@@ -8,19 +8,19 @@ package com.liferay.headless.cmp.internal.resource.v1_0;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryModel;
 import com.liferay.asset.kernel.service.AssetCategoryService;
-import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.headless.cmp.dto.v1_0.ContentCoverage;
 import com.liferay.headless.cmp.dto.v1_0.ContentCoverageEntry;
 import com.liferay.headless.cmp.dto.v1_0.FunnelStage;
 import com.liferay.headless.cmp.dto.v1_0.Persona;
 import com.liferay.headless.cmp.resource.v1_0.ContentCoverageResource;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -37,11 +37,9 @@ import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
-import com.liferay.site.cms.site.initializer.util.AssetTagUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -69,20 +67,10 @@ public class ContentCoverageResourceImpl
 
 		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(projectId);
 
-		Set<String> assetTagNames = AssetTagUtil.getRelatedAssetTagNames(
-			_assetTagLocalService, _objectDefinitionLocalService, objectEntry,
-			_objectEntryLocalService,
-			_objectRelationshipLocalService.
-				fetchObjectRelationshipByExternalReferenceCode(
-					"L_CMP_PROJECT_TO_L_CMP_TASKS",
-					objectEntry.getObjectDefinitionId()));
-
 		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
 
 		booleanQuery.addFilterQueryClauses(
-			_createTermsQuery(
-				"assetTagNames.lowercase",
-				assetTagNames.toArray(new String[0])),
+			_createLinkedObjectEntriesBooleanQuery(objectEntry),
 			_createTermsQuery("cms_section", "contents", "files"),
 			_createTermsQuery(
 				Field.STATUS,
@@ -225,6 +213,32 @@ public class ContentCoverageResourceImpl
 					String.class)));
 	}
 
+	private BooleanQuery _createLinkedObjectEntriesBooleanQuery(
+			ObjectEntry objectEntry)
+		throws Exception {
+
+		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
+
+		booleanQuery.addShouldQueryClauses(
+			QueriesUtil.term(
+				"cmpProjectObjectEntryIds",
+				String.valueOf(objectEntry.getObjectEntryId())));
+
+		long[] relatedCMPTaskObjectEntryIds = _getRelatedCMPTaskObjectEntryIds(
+			objectEntry);
+
+		if (relatedCMPTaskObjectEntryIds.length > 0) {
+			booleanQuery.addShouldQueryClauses(
+				_createTermsQuery(
+					"cmpTaskObjectEntryIds",
+					ArrayUtil.toStringArray(relatedCMPTaskObjectEntryIds)));
+		}
+
+		booleanQuery.setMinimumShouldMatch(1);
+
+		return booleanQuery;
+	}
+
 	private TermsQuery _createTermsQuery(String fieldName, String... values) {
 		TermsQuery termsQuery = QueriesUtil.terms(fieldName);
 
@@ -250,6 +264,28 @@ public class ContentCoverageResourceImpl
 		return StringBundler.concat(
 			funnelStageAssetCategoryId, StringPool.UNDERLINE,
 			personaAssetCategoryId);
+	}
+
+	private long[] _getRelatedCMPTaskObjectEntryIds(ObjectEntry objectEntry)
+		throws Exception {
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.
+				fetchObjectRelationshipByExternalReferenceCode(
+					"L_CMP_PROJECT_TO_L_CMP_TASKS",
+					objectEntry.getObjectDefinitionId());
+
+		if (objectRelationship == null) {
+			return new long[0];
+		}
+
+		return transformToLongArray(
+			_objectEntryLocalService.getOneToManyObjectEntries(
+				objectEntry.getGroupId(),
+				objectRelationship.getObjectRelationshipId(), null, false,
+				objectEntry.getObjectEntryId(), true, null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null),
+			ObjectEntry::getObjectEntryId);
 	}
 
 	private List<Long> _toAssetCategoryIds(
@@ -305,12 +341,6 @@ public class ContentCoverageResourceImpl
 
 	@Reference
 	private AssetCategoryService _assetCategoryService;
-
-	@Reference
-	private AssetTagLocalService _assetTagLocalService;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
