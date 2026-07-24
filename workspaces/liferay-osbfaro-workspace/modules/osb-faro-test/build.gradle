@@ -3,6 +3,7 @@ dependencies {
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
 
 	testImplementation(group: "easyconf", name: "easyconf", version: "0.9.5") {
+		exclude group: "struts"
 		exclude group: "xdoclet"
 		exclude group: "xpp3"
 	}
