@@ -55,24 +55,22 @@ public class SecretManagerImplTest {
 
 	@Test
 	public void testDeleteSecret() throws Exception {
-
-		// Delegates to the provider
-
-		long companyId = RandomTestUtil.randomLong();
-		String secretIdentifier = RandomTestUtil.randomString();
-		String secretProviderId = RandomTestUtil.randomString();
-
 		Mockito.when(
 			_secretProvider.isAllowedCompany(Mockito.anyLong())
 		).thenReturn(
 			true
 		);
 
+		String secretProviderId = RandomTestUtil.randomString();
+
 		Mockito.when(
 			_serviceTrackerMap.getService(secretProviderId)
 		).thenReturn(
 			Collections.singletonList(_secretProvider)
 		);
+
+		long companyId = RandomTestUtil.randomLong();
+		String secretIdentifier = RandomTestUtil.randomString();
 
 		_secretManagerImpl.deleteSecret(
 			companyId, _createKeyReference(secretIdentifier, secretProviderId));
@@ -82,8 +80,6 @@ public class SecretManagerImplTest {
 		).deleteSecret(
 			companyId, secretIdentifier
 		);
-
-		// Throws when the provider is not found
 
 		Assert.assertThrows(
 			SecretException.class,
@@ -142,9 +138,6 @@ public class SecretManagerImplTest {
 
 	@Test
 	public void testGetSecret() throws Exception {
-
-		// Delegates to the provider
-
 		long companyId = RandomTestUtil.randomLong();
 		String secretIdentifier = RandomTestUtil.randomString();
 		String secretProviderId = RandomTestUtil.randomString();
@@ -178,8 +171,6 @@ public class SecretManagerImplTest {
 			companyId, secretIdentifier
 		);
 
-		// Throws when the provider is in an error state
-
 		Mockito.when(
 			_secretProvider.getProviderStatus()
 		).thenReturn(
@@ -196,8 +187,6 @@ public class SecretManagerImplTest {
 	@Test
 	public void testGetSecretProviderIds() {
 		long companyId = RandomTestUtil.randomLong();
-
-		// Includes a provider that allows the company
 
 		Mockito.when(
 			_secretProvider.isAllowedCompany(companyId)
@@ -222,8 +211,6 @@ public class SecretManagerImplTest {
 		Assert.assertEquals(
 			Collections.singletonList(secretProviderId),
 			_secretManagerImpl.getSecretProviderIds(companyId));
-
-		// Excludes a provider that does not allow the company
 
 		Mockito.when(
 			_secretProvider.isAllowedCompany(companyId)
