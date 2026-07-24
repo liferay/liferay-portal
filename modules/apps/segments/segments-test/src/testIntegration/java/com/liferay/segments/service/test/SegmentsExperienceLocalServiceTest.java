@@ -229,6 +229,8 @@ public class SegmentsExperienceLocalServiceTest {
 				RandomTestUtil.randomLocaleStringMap(), true,
 				new UnicodeProperties(true),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 			Assert.assertEquals(
@@ -249,6 +251,8 @@ public class SegmentsExperienceLocalServiceTest {
 				RandomTestUtil.randomLocaleStringMap(), true,
 				new UnicodeProperties(true),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 			Assert.assertEquals(
