@@ -54,17 +54,17 @@ public class FragmentCollectionServicePermissionTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_userWithoutPermissions = UserTestUtil.addGroupUser(
-			_group, RoleConstants.POWER_USER);
-
-		_userWithPermissions = UserTestUtil.addGroupUser(
-			_group, RoleConstants.POWER_USER);
-
 		_role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
 			"com.liferay.fragment", ResourceConstants.SCOPE_GROUP,
 			String.valueOf(_group.getGroupId()),
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+
+		_userWithoutPermissions = UserTestUtil.addGroupUser(
+			_group, RoleConstants.POWER_USER);
+
+		_userWithPermissions = UserTestUtil.addGroupUser(
+			_group, RoleConstants.POWER_USER);
 
 		_userLocalService.addRoleUser(
 			_role.getRoleId(), _userWithPermissions.getUserId());
