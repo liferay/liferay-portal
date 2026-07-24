@@ -9,10 +9,7 @@ import com.liferay.asset.categories.item.selector.web.internal.constants.AssetCa
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryServiceUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -20,7 +17,6 @@ import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -34,7 +30,6 @@ import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -113,22 +108,10 @@ public class SelectAssetVocabularyDisplayContext {
 	private List<AssetVocabulary> _getAssetVocabularies()
 		throws PortalException {
 
-		List<Long> groupIds = new ArrayList<>();
-
-		groupIds.add(_themeDisplay.getCompanyGroupId());
-		groupIds.add(_themeDisplay.getScopeGroupId());
-
-		List<DepotEntry> depotEntries =
-			DepotEntryServiceUtil.getCurrentAndGroupConnectedDepotEntries(
-				_themeDisplay.getScopeGroupId(), DepotConstants.TYPE_ANY,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (DepotEntry depotEntry : depotEntries) {
-			groupIds.add(depotEntry.getGroupId());
-		}
-
 		return AssetVocabularyServiceUtil.getGroupVocabularies(
-			ArrayUtil.toLongArray(groupIds),
+			SiteConnectedGroupGroupProviderUtil.
+				getCurrentAndAncestorSiteAndDepotGroupIds(
+					_themeDisplay.getScopeGroupId()),
 			new int[] {AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC});
 	}
 
