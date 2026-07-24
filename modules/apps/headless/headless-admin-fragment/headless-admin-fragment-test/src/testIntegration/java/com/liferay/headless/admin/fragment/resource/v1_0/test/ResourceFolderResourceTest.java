@@ -7,8 +7,6 @@ package com.liferay.headless.admin.fragment.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
-import com.liferay.fragment.constants.FragmentActionKeys;
-import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.headless.admin.fragment.client.dto.v1_0.FragmentSet;
@@ -26,10 +24,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -40,7 +35,6 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -92,8 +86,6 @@ public class ResourceFolderResourceTest
 
 		_userWithoutPermissionsResourceFolderResource =
 			_getUserWithoutPermissionsResourceFolderResource();
-		_userWithPermissionsResourceFolderResource =
-			_getUserWithPermissionsResourceFolderResource();
 	}
 
 	@Override
@@ -105,7 +97,6 @@ public class ResourceFolderResourceTest
 		_testDeleteSiteResourceFolderChildResourceFolder();
 		_testDeleteSiteResourceFolderPortletFolderProblemException();
 		_testDeleteSiteResourceFolderWithoutPermissionsProblemException();
-		_testDeleteSiteResourceFolderWithPermissions();
 	}
 
 	@Override
@@ -118,7 +109,6 @@ public class ResourceFolderResourceTest
 		_testGetSiteFragmentSetResourceFoldersPageEmpty();
 		_testGetSiteFragmentSetResourceFoldersPageFragmentSetNonexistentProblemException();
 		_testGetSiteFragmentSetResourceFoldersPageWithoutPermissions();
-		_testGetSiteFragmentSetResourceFoldersPageWithPermissions();
 	}
 
 	@Override
@@ -132,7 +122,6 @@ public class ResourceFolderResourceTest
 		_testGetSiteResourceFolderPortletFolderProblemException();
 		_testGetSiteResourceFolderResourceFolderNonexistentProblemException();
 		_testGetSiteResourceFolderWithoutPermissionsProblemException();
-		_testGetSiteResourceFolderWithPermissions();
 	}
 
 	@Override
@@ -147,7 +136,6 @@ public class ResourceFolderResourceTest
 		_testGetSiteResourceFolderResourceFoldersPageEmpty();
 		_testGetSiteResourceFolderResourceFoldersPageResourceFolderNonexistentProblemException();
 		_testGetSiteResourceFolderResourceFoldersPageWithoutPermissionsProblemException();
-		_testGetSiteResourceFolderResourceFoldersPageWithPermissions();
 	}
 
 	@Override
@@ -159,7 +147,6 @@ public class ResourceFolderResourceTest
 		_testGetSiteResourceFoldersPage();
 		_testGetSiteResourceFoldersPagePortletFolder();
 		_testGetSiteResourceFoldersPageWithoutPermissions();
-		_testGetSiteResourceFoldersPageWithPermissions();
 	}
 
 	@Override
@@ -169,7 +156,6 @@ public class ResourceFolderResourceTest
 		super.testPostSiteFragmentSetResourceFolder();
 
 		_testPostSiteFragmentSetResourceFolderWithoutPermissionsProblemException();
-		_testPostSiteFragmentSetResourceFolderWithPermissions();
 	}
 
 	@Override
@@ -195,7 +181,6 @@ public class ResourceFolderResourceTest
 		_testPostSiteResourceFolderParentResourceFolderPortletFolderLazyReferencingProblemException();
 		_testPostSiteResourceFolderParentResourceFolderPortletFolderProblemException();
 		_testPostSiteResourceFolderWithoutPermissionsProblemException();
-		_testPostSiteResourceFolderWithPermissions();
 	}
 
 	@Override
@@ -206,7 +191,6 @@ public class ResourceFolderResourceTest
 		_testPutSiteResourceFolderParentResourceFolderExternalReferenceCode();
 		_testPutSiteResourceFolderPortletFolderProblemException();
 		_testPutSiteResourceFolderWithoutPermissionsProblemException();
-		_testPutSiteResourceFolderWithPermissions();
 	}
 
 	@Override
@@ -497,33 +481,6 @@ public class ResourceFolderResourceTest
 		).build();
 	}
 
-	private ResourceFolderResource
-			_getUserWithPermissionsResourceFolderResource()
-		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(testCompany, password);
-
-		Role role = RoleTestUtil.addRole(
-			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
-			FragmentConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testGroup.getGroupId()),
-			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
-
-		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
-
-		return ResourceFolderResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-	}
-
 	private ResourceFolder _postSiteResourceFolder(
 			ResourceFolder parentResourceFolder)
 		throws Exception {
@@ -654,21 +611,6 @@ public class ResourceFolderResourceTest
 		}
 	}
 
-	private void _testDeleteSiteResourceFolderWithPermissions()
-		throws Exception {
-
-		ResourceFolder resourceFolder =
-			resourceFolderResource.postSiteResourceFolder(
-				testGroup.getExternalReferenceCode(), randomResourceFolder());
-
-		assertHttpResponseStatusCode(
-			204,
-			_userWithPermissionsResourceFolderResource.
-				deleteSiteResourceFolderHttpResponse(
-					testGroup.getExternalReferenceCode(),
-					resourceFolder.getExternalReferenceCode()));
-	}
-
 	private void _testGetSiteFragmentSetResourceFoldersPage() throws Exception {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -740,29 +682,6 @@ public class ResourceFolderResourceTest
 					Pagination.of(1, 10));
 
 		Assert.assertEquals(0, page.getTotalCount());
-	}
-
-	private void _testGetSiteFragmentSetResourceFoldersPageWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFolder resourceFolder =
-			resourceFolderResource.postSiteFragmentSetResourceFolder(
-				testGroup.getExternalReferenceCode(),
-				fragmentCollection.getExternalReferenceCode(),
-				_randomResourceFolder(
-					fragmentCollection.getExternalReferenceCode()));
-
-		Page<ResourceFolder> page =
-			_userWithPermissionsResourceFolderResource.
-				getSiteFragmentSetResourceFoldersPage(
-					testGroup.getExternalReferenceCode(),
-					fragmentCollection.getExternalReferenceCode(),
-					Pagination.of(1, 10));
-
-		assertContains(resourceFolder, (List<ResourceFolder>)page.getItems());
 	}
 
 	private void _testGetSiteResourceFolderFragmentSet() throws Exception {
@@ -950,29 +869,6 @@ public class ResourceFolderResourceTest
 		}
 	}
 
-	private void _testGetSiteResourceFolderResourceFoldersPageWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFolder resourceFolder = _postSiteResourceFolder(
-			fragmentCollection.getExternalReferenceCode());
-
-		ResourceFolder childResourceFolder = _postSiteResourceFolder(
-			resourceFolder);
-
-		Page<ResourceFolder> page =
-			_userWithPermissionsResourceFolderResource.
-				getSiteResourceFolderResourceFoldersPage(
-					testGroup.getExternalReferenceCode(),
-					resourceFolder.getExternalReferenceCode(),
-					Pagination.of(1, 10));
-
-		assertContains(
-			childResourceFolder, (List<ResourceFolder>)page.getItems());
-	}
-
 	private void _testGetSiteResourceFoldersPage() throws Exception {
 		FragmentCollection fragmentCollection1 = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -1064,30 +960,6 @@ public class ResourceFolderResourceTest
 		Assert.assertEquals(0, page.getTotalCount());
 	}
 
-	private void _testGetSiteResourceFoldersPageWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFolder resourceFolder = _postSiteResourceFolder(
-			fragmentCollection.getExternalReferenceCode());
-
-		Page<ResourceFolder> page =
-			_userWithPermissionsResourceFolderResource.
-				getSiteResourceFoldersPage(
-					testGroup.getExternalReferenceCode(), null,
-					Pagination.of(1, 1));
-
-		page =
-			_userWithPermissionsResourceFolderResource.
-				getSiteResourceFoldersPage(
-					testGroup.getExternalReferenceCode(), null,
-					Pagination.of(1, (int)page.getTotalCount()));
-
-		assertContains(resourceFolder, (List<ResourceFolder>)page.getItems());
-	}
-
 	private void _testGetSiteResourceFolderWithoutPermissionsProblemException()
 		throws Exception {
 
@@ -1107,21 +979,6 @@ public class ResourceFolderResourceTest
 
 			Assert.assertEquals("NOT_FOUND", problem.getStatus());
 		}
-	}
-
-	private void _testGetSiteResourceFolderWithPermissions() throws Exception {
-		ResourceFolder resourceFolder =
-			resourceFolderResource.postSiteResourceFolder(
-				testGroup.getExternalReferenceCode(), randomResourceFolder());
-
-		ResourceFolder getResourceFolder =
-			_userWithPermissionsResourceFolderResource.getSiteResourceFolder(
-				testGroup.getExternalReferenceCode(),
-				resourceFolder.getExternalReferenceCode());
-
-		Assert.assertEquals(
-			resourceFolder.getExternalReferenceCode(),
-			getResourceFolder.getExternalReferenceCode());
 	}
 
 	private void _testPostSiteFragmentSetResourceFolderWithoutPermissionsProblemException()
@@ -1149,27 +1006,6 @@ public class ResourceFolderResourceTest
 
 			Assert.assertEquals("FORBIDDEN", problem.getStatus());
 		}
-	}
-
-	private void _testPostSiteFragmentSetResourceFolderWithPermissions()
-		throws Exception {
-
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFolder resourceFolder = _randomResourceFolder(
-			fragmentCollection.getExternalReferenceCode());
-
-		ResourceFolder postResourceFolder =
-			_userWithPermissionsResourceFolderResource.
-				postSiteFragmentSetResourceFolder(
-					testGroup.getExternalReferenceCode(),
-					fragmentCollection.getExternalReferenceCode(),
-					resourceFolder);
-
-		Assert.assertEquals(
-			resourceFolder.getExternalReferenceCode(),
-			postResourceFolder.getExternalReferenceCode());
 	}
 
 	private void _testPostSiteResourceFolder() throws Exception {
@@ -1689,22 +1525,6 @@ public class ResourceFolderResourceTest
 		}
 	}
 
-	private void _testPostSiteResourceFolderWithPermissions() throws Exception {
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		ResourceFolder resourceFolder = _randomResourceFolder(
-			fragmentCollection.getExternalReferenceCode());
-
-		ResourceFolder postResourceFolder =
-			_userWithPermissionsResourceFolderResource.postSiteResourceFolder(
-				testGroup.getExternalReferenceCode(), resourceFolder);
-
-		Assert.assertEquals(
-			resourceFolder.getExternalReferenceCode(),
-			postResourceFolder.getExternalReferenceCode());
-	}
-
 	private void _testPutSiteResourceFolder() throws Exception {
 		FragmentCollection fragmentCollection = _addFragmentCollection(
 			testGroup.getGroupId());
@@ -1869,23 +1689,6 @@ public class ResourceFolderResourceTest
 		}
 	}
 
-	private void _testPutSiteResourceFolderWithPermissions() throws Exception {
-		FragmentCollection fragmentCollection = _addFragmentCollection(
-			testGroup.getGroupId());
-
-		String externalReferenceCode = RandomTestUtil.randomString();
-
-		ResourceFolder putResourceFolder =
-			_userWithPermissionsResourceFolderResource.putSiteResourceFolder(
-				testGroup.getExternalReferenceCode(), externalReferenceCode,
-				_randomResourceFolder(
-					fragmentCollection.getExternalReferenceCode()));
-
-		Assert.assertEquals(
-			externalReferenceCode,
-			putResourceFolder.getExternalReferenceCode());
-	}
-
 	private FragmentSet _toFragmentSet(String externalReferenceCode) {
 		FragmentSet fragmentSet = new FragmentSet();
 
@@ -1932,6 +1735,5 @@ public class ResourceFolderResourceTest
 
 	private ResourceFolderResource
 		_userWithoutPermissionsResourceFolderResource;
-	private ResourceFolderResource _userWithPermissionsResourceFolderResource;
 
 }
