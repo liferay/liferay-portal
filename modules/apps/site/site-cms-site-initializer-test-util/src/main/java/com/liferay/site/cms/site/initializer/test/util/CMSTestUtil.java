@@ -41,10 +41,10 @@ public class CMSTestUtil {
 		}
 
 		// Create the group with the guest user as the creator, exactly as the
-		// production GroupLocalServiceImpl.checkSystemGroups path provisions
-		// the CMS system group. A non-guest creator would be added as the
-		// site owner and a group member, which production never does, and
-		// that membership would dangle once the group is removed.
+		// production GroupLocalServiceImpl#checkSystemGroups path provisions
+		// the CMS system group. A nonguest creator would be added as the site
+		// owner and a group member, which production never does, and that
+		// membership would dangle once the group is removed.
 
 		group = GroupTestUtil.addGroup(
 			companyId, UserLocalServiceUtil.getGuestUserId(companyId), 0,
