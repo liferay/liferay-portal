@@ -178,21 +178,22 @@ public class GetLaunchEntryContentMVCResourceCommandTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
+			new MockLiferayPortletRenderResponse());
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setLocale(LocaleUtil.US);
 
 		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_RESPONSE,
-			new MockLiferayPortletRenderResponse());
-		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
 		mockLiferayResourceRequest.setAttribute(
 			PortletServlet.PORTLET_SERVLET_REQUEST, mockHttpServletRequest);
+
 		mockLiferayResourceRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
-
 		mockLiferayResourceRequest.setParameter("className", className);
 		mockLiferayResourceRequest.setParameter(
 			"classPK", String.valueOf(classPK));
