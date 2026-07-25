@@ -1,1 +1,0 @@
-../../.workspace-rules/rules/oauth-scopes.md

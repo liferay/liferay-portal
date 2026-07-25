@@ -1,1 +1,0 @@
-../../.workspace-rules/rules/object-actions-catalog.md
