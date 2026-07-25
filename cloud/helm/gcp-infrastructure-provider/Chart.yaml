@@ -11,7 +11,8 @@ dependencies:
         name: liferay-subchart-backup-restore
         version: 0.1.3
 description:
-    Liferay is an all-in-one DXP, LCAP, and Commerce platform. This chart provides cloud infrastructure resource definitions for GCP.
+    Liferay is an all-in-one DXP, LCAP, and Commerce platform. This chart provides cloud infrastructure resource
+    definitions for GCP.
 icon: https://www-cdn.liferay.com/documents/d/guest/liferay-logo
 name: liferay-gcp-infrastructure-provider
 type: application
