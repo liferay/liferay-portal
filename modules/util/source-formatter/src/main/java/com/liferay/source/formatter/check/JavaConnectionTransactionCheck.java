@@ -7,7 +7,6 @@ package com.liferay.source.formatter.check;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.tools.ToolsUtil;
-import com.liferay.source.formatter.parser.JavaTerm;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -16,24 +15,20 @@ import java.util.regex.Pattern;
 /**
  * @author Shuyang Zhou
  */
-public class JavaConnectionTransactionCheck extends BaseJavaTermCheck {
+public class JavaConnectionTransactionCheck extends BaseFileCheck {
 
 	@Override
 	public boolean isLiferaySourceCheck() {
 		return true;
 	}
 
-	@Override
 	protected String doProcess(
-			String fileName, String absolutePath, JavaTerm javaTerm,
-			String fileContent)
+			String fileName, String absolutePath, String content)
 		throws Exception {
-
-		String content = javaTerm.getContent();
 
 		if (absolutePath.contains("/test/") ||
 			absolutePath.contains("/testIntegration/") ||
-			!fileContent.contains("import java.sql.Connection;")) {
+			!content.contains("import java.sql.Connection;")) {
 
 			return content;
 		}
@@ -46,43 +41,27 @@ public class JavaConnectionTransactionCheck extends BaseJavaTermCheck {
 			}
 		}
 
-		_checkConnectionTransactionMethodCall(
-			content, fileContent, fileName, javaTerm, "commit");
-		_checkConnectionTransactionMethodCall(
-			content, fileContent, fileName, javaTerm, "rollback");
-		_checkConnectionTransactionMethodCall(
-			content, fileContent, fileName, javaTerm, "setAutoCommit");
+		_checkMethodCall(fileName, content, "commit");
+		_checkMethodCall(fileName, content, "rollback");
+		_checkMethodCall(fileName, content, "setAutoCommit");
 
 		return content;
 	}
 
-	@Override
-	protected String[] getCheckableJavaTermNames() {
-		return new String[] {JAVA_CLASS};
-	}
+	private void _checkMethodCall(
+		String fileName, String content, String methodName) {
 
-	private void _checkConnectionTransactionMethodCall(
-		String content, String fileContent, String fileName, JavaTerm javaTerm,
-		String methodName) {
+		Pattern pattern = Pattern.compile("\\b(\\w+)\\." + methodName + "\\(");
 
-		Matcher matcher = Pattern.compile(
-			"(\\w+)\\." + methodName + "\\("
-		).matcher(
-			content
-		);
+		Matcher matcher = pattern.matcher(content);
 
 		while (matcher.find()) {
 			int start = matcher.start();
 
-			if (ToolsUtil.isInsideQuotes(content, start)) {
-				continue;
-			}
-
-			String variableName = matcher.group(1);
-
-			if (!Objects.equals(
+			if (ToolsUtil.isInsideQuotes(content, start) ||
+				!Objects.equals(
 					getVariableTypeName(
-						content, javaTerm, fileContent, fileName, variableName),
+						content, null, content, fileName, matcher.group(1)),
 					"Connection")) {
 
 				continue;
@@ -96,7 +75,7 @@ public class JavaConnectionTransactionCheck extends BaseJavaTermCheck {
 					"managed by the container, and committing a borrowed ",
 					"connection can flush the caller's transaction. See ",
 					"LPD-98668."),
-				getLineNumber(content, start));
+				getLineNumber(content, matcher.start()));
 		}
 	}
 
