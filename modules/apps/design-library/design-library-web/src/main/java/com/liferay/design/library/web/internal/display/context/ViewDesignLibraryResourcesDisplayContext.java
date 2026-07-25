@@ -264,7 +264,13 @@ public class ViewDesignLibraryResourcesDisplayContext {
 	}
 
 	public boolean hasContentAccess() {
-		return _hasManageStyleBookEntriesPermission(_depotEntry.getGroupId());
+		if (_hasManageFragmentEntriesPermission(_depotEntry.getGroupId()) &&
+			_hasManageStyleBookEntriesPermission(_depotEntry.getGroupId())) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private JSONArray _getActionItemsJSONArray(Group group)
