@@ -23,8 +23,7 @@ public class JavaConnectionTransactionCheck extends BaseFileCheck {
 	}
 
 	protected String doProcess(
-			String fileName, String absolutePath, String content)
-		throws Exception {
+		String fileName, String absolutePath, String content) {
 
 		if (absolutePath.contains("/test/") ||
 			absolutePath.contains("/testIntegration/") ||
@@ -56,9 +55,7 @@ public class JavaConnectionTransactionCheck extends BaseFileCheck {
 		Matcher matcher = pattern.matcher(content);
 
 		while (matcher.find()) {
-			int start = matcher.start();
-
-			if (ToolsUtil.isInsideQuotes(content, start) ||
+			if (ToolsUtil.isInsideQuotes(content, matcher.start()) ||
 				!Objects.equals(
 					getVariableTypeName(
 						content, null, content, fileName, matcher.group(1)),
