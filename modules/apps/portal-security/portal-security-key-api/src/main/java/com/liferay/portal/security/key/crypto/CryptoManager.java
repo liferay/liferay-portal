@@ -55,8 +55,8 @@ public interface CryptoManager {
 		throws CryptoException;
 
 	public CryptoServiceResult<KeyReference> importSecretKey(
-			String algorithm, long companyId, KeyReference keyReference,
-			byte[] keyBytes)
+			String algorithm, long companyId, byte[] keyBytes,
+			KeyReference keyReference)
 		throws CryptoException;
 
 	public CryptoServiceResult<KeyReference> unwrap(

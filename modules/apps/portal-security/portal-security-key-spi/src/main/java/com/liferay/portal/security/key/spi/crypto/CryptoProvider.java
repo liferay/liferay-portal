@@ -52,8 +52,8 @@ public interface CryptoProvider {
 	public ProviderStatus getProviderStatus();
 
 	public CryptoServiceResult<String> importSecretKey(
-			String algorithm, long companyId, String keyIdentifier,
-			byte[] keyBytes)
+			String algorithm, long companyId, byte[] keyBytes,
+			String keyIdentifier)
 		throws CryptoException;
 
 	public boolean isAllowedCompany(long companyId);
