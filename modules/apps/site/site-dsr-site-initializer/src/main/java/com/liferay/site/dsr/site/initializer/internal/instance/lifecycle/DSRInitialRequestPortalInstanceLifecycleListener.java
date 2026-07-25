@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -66,9 +67,10 @@ public class DSRInitialRequestPortalInstanceLifecycleListener
 					DSRConstants.DSR_FRIENDLY_URL, false, false, true, null);
 			}
 
-			if (_layoutLocalService.fetchLayoutByFriendlyURL(
-					group.getGroupId(), false, "/home") != null) {
+			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/home");
 
+			if (layout != null) {
 				return;
 			}
 
