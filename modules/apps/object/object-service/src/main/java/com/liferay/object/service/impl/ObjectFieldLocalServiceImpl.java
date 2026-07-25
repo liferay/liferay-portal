@@ -364,11 +364,10 @@ public class ObjectFieldLocalServiceImpl
 	public void deleteObjectFieldByObjectDefinitionId(Long objectDefinitionId)
 		throws PortalException {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
-
 		Indexer<ObjectField> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			ObjectField.class);
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(objectDefinitionId);
 
 		for (ObjectField objectField :
 				objectFieldPersistence.findByObjectDefinitionId(
