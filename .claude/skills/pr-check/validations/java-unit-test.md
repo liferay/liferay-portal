@@ -34,7 +34,7 @@ For OSGi modules — run only the specific test class, batching counterparts wit
 
 `--continue` keeps Gradle going when a downstream task fails so the test results still surface; `-Dtest.ignore.failures=false` overrides Liferay's default of swallowing test failures.
 
-Each `--tests` flag is an option on the `test` task rather than a Gradle flag, so it follows the task path and breaks the usual alphabetical flag order. Ahead of the task path, Gradle rejects the option and runs nothing.
+Each `--tests` flag is an option on the `test` task rather than a Gradle flag, so it follows the task path and breaks the usual alphabetical flag order. When a `--tests` option comes before the task path, Gradle rejects it and runs nothing.
 
 For portal-core — `test-class` (defined in `build-common.xml`) is the target that filters by `test.class` (`test-unit` ignores it and runs the full suite):
 
