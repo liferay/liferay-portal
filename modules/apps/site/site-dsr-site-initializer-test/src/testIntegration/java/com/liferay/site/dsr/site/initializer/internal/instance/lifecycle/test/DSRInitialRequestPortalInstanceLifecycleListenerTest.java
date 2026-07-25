@@ -7,6 +7,7 @@ package com.liferay.site.dsr.site.initializer.internal.instance.lifecycle.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
@@ -40,25 +41,55 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 
 	@Test
 	public void testPortalInstanceRegistered() throws Exception {
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
 		Group group = _groupLocalService.fetchGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.DSR);
+			company.getCompanyId(), GroupConstants.DSR);
 
 		if (group != null) {
 			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-				group.getGroupId(), false, "/rooms");
+				group.getGroupId(), false, "/home");
 
 			if (layout != null) {
 				_layoutLocalService.deleteLayout(layout);
 			}
 		}
 
-		_portalInstanceLifecycleListener.portalInstanceRegistered(
-			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		_portalInstanceLifecycleListener.portalInstanceRegistered(company);
 
 		group = _groupLocalService.fetchGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.DSR);
+			company.getCompanyId(), GroupConstants.DSR);
 
-		Assert.assertNotNull(group);
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/home"));
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/rooms"));
+
+		_layoutLocalService.deleteLayout(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/rooms"));
+
+		_portalInstanceLifecycleListener.portalInstanceRegistered(company);
+
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/home"));
+		Assert.assertNull(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/rooms"));
+
+		_layoutLocalService.deleteLayout(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/home"));
+
+		_portalInstanceLifecycleListener.portalInstanceRegistered(company);
+
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/home"));
 		Assert.assertNotNull(
 			_layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false, "/rooms"));
