@@ -164,6 +164,11 @@ public class TextExtractorImpl implements TextExtractor {
 							boolean outputHtml)
 						throws IOException, SAXException {
 
+						if (!inputStream.markSupported()) {
+							inputStream = new UnsyncBufferedInputStream(
+								inputStream);
+						}
+
 						MediaType mediaType = detector.detect(
 							inputStream, new Metadata());
 
