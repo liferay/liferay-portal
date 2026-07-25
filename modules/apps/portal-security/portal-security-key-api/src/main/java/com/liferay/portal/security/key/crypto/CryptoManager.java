@@ -22,14 +22,14 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface CryptoManager {
 
 	public CryptoServiceResult<byte[]> decrypt(
-			byte[] ciphertextBytes, long companyId, KeyReference keyReference)
+			byte[] cipherText, long companyId, KeyReference keyReference)
 		throws CryptoException;
 
 	public void deleteKey(long companyId, KeyReference keyReference)
 		throws CryptoException;
 
 	public CryptoServiceResult<byte[]> encrypt(
-			long companyId, KeyReference keyReference, byte[] plaintextBytes)
+			long companyId, KeyReference keyReference, byte[] plainText)
 		throws CryptoException;
 
 	public CryptoServiceResult<Key> exportKey(
