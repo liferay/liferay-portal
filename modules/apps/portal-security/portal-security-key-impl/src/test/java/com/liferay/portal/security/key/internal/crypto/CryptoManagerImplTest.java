@@ -1,0 +1,595 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.portal.security.key.internal.crypto;
+
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.security.key.KeyReference;
+import com.liferay.portal.security.key.ServiceIndicator;
+import com.liferay.portal.security.key.crypto.CryptoServiceResult;
+import com.liferay.portal.security.key.crypto.exception.CryptoException;
+import com.liferay.portal.security.key.spi.ProviderStatus;
+import com.liferay.portal.security.key.spi.crypto.CryptoProvider;
+import com.liferay.portal.security.key.spi.profile.KeyManagerProfile;
+import com.liferay.portal.security.key.spi.profile.KeyManagerProfileRegistry;
+import com.liferay.portal.test.rule.LiferayUnitTestRule;
+
+import java.security.Key;
+
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+/**
+ * @author Christopher Kian
+ */
+public class CryptoManagerImplTest {
+
+	@ClassRule
+	@Rule
+	public static final LiferayUnitTestRule liferayUnitTestRule =
+		LiferayUnitTestRule.INSTANCE;
+
+	@Before
+	public void setUp() {
+		MockitoAnnotations.openMocks(this);
+
+		ReflectionTestUtil.setFieldValue(
+			_cryptoManagerImpl, "_keyManagerProfileRegistry",
+			_keyManagerProfileRegistry);
+		ReflectionTestUtil.setFieldValue(
+			_cryptoManagerImpl, "_serviceTrackerMap", _serviceTrackerMap);
+	}
+
+	@Test
+	public void testDecrypt() throws Exception {
+		byte[] plaintextBytes = RandomTestUtil.randomBytes();
+
+		Mockito.when(
+			_cryptoProvider.decrypt(
+				Mockito.any(byte[].class), Mockito.anyLong(),
+				Mockito.anyString())
+		).thenReturn(
+			_cryptoServiceResult(plaintextBytes)
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<byte[]> cryptoServiceResult =
+			_cryptoManagerImpl.decrypt(
+				RandomTestUtil.randomBytes(), RandomTestUtil.randomLong(),
+				_keyReference(cryptoProviderId));
+
+		Assert.assertArrayEquals(
+			plaintextBytes, cryptoServiceResult.getValue());
+	}
+
+	@Test
+	public void testDeleteKey() throws Exception {
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		long companyId = RandomTestUtil.randomLong();
+		String identifier = RandomTestUtil.randomString();
+
+		_cryptoManagerImpl.deleteKey(
+			companyId, _keyReference(cryptoProviderId, identifier));
+
+		Mockito.verify(
+			_cryptoProvider
+		).deleteKey(
+			companyId, identifier
+		);
+	}
+
+	@Test
+	public void testEncryptResolvesProviderWildcard() throws Exception {
+		_testEncryptResolvesProviderWildcard(CompanyConstants.SYSTEM);
+		_testEncryptResolvesProviderWildcard(RandomTestUtil.randomLong());
+	}
+
+	@Test
+	public void testEncryptThrows() {
+		Mockito.when(
+			_keyManagerProfileRegistry.getActiveKeyManagerProfile()
+		).thenReturn(
+			null
+		);
+
+		Assert.assertThrows(
+			CryptoException.class,
+			() -> _cryptoManagerImpl.encrypt(
+				RandomTestUtil.randomLong(), _keyReference(StringPool.STAR),
+				RandomTestUtil.randomBytes()));
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Assert.assertThrows(
+			CryptoException.class,
+			() -> _cryptoManagerImpl.encrypt(
+				RandomTestUtil.randomLong(), _keyReference(cryptoProviderId),
+				RandomTestUtil.randomBytes()));
+
+		Mockito.when(
+			_cryptoProvider.getProviderStatus()
+		).thenReturn(
+			ProviderStatus.ERROR
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		Assert.assertThrows(
+			CryptoException.class,
+			() -> _cryptoManagerImpl.encrypt(
+				RandomTestUtil.randomLong(), _keyReference(cryptoProviderId),
+				RandomTestUtil.randomBytes()));
+	}
+
+	@Test
+	public void testExportKey() throws Exception {
+		Key key = Mockito.mock(Key.class);
+
+		Mockito.when(
+			_cryptoProvider.exportKey(Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			_cryptoServiceResult(key)
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<Key> cryptoServiceResult =
+			_cryptoManagerImpl.exportKey(
+				RandomTestUtil.randomLong(), _keyReference(cryptoProviderId));
+
+		Assert.assertSame(key, cryptoServiceResult.getValue());
+	}
+
+	@Test
+	public void testGenerateAsymmetricKeyReference() throws Exception {
+		String identifier = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_cryptoProvider.generateAsymmetricKeyIdentifier(
+				Mockito.anyString(), Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			_cryptoServiceResult(identifier)
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<KeyReference> cryptoServiceResult =
+			_cryptoManagerImpl.generateAsymmetricKeyReference(
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				_keyReference(cryptoProviderId));
+
+		KeyReference keyReference = cryptoServiceResult.getValue();
+
+		Assert.assertEquals(cryptoProviderId, keyReference.getProviderId());
+		Assert.assertEquals(identifier, keyReference.getIdentifier());
+	}
+
+	@Test
+	public void testGenerateSecretKeyReference() throws Exception {
+		String identifier = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_cryptoProvider.generateSecretKeyIdentifier(
+				Mockito.anyString(), Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			_cryptoServiceResult(identifier)
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<KeyReference> cryptoServiceResult =
+			_cryptoManagerImpl.generateSecretKeyReference(
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				_keyReference(cryptoProviderId));
+
+		KeyReference keyReference = cryptoServiceResult.getValue();
+
+		Assert.assertEquals(cryptoProviderId, keyReference.getProviderId());
+		Assert.assertEquals(identifier, keyReference.getIdentifier());
+	}
+
+	@Test
+	public void testGetCryptoProviderIds() {
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		Mockito.when(
+			_serviceTrackerMap.keySet()
+		).thenReturn(
+			Collections.singleton(cryptoProviderId)
+		);
+
+		Assert.assertEquals(
+			Collections.singletonList(cryptoProviderId),
+			_cryptoManagerImpl.getCryptoProviderIds(
+				RandomTestUtil.randomLong()));
+	}
+
+	@Test
+	public void testGetKeyReferences() throws Exception {
+		String identifier = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_cryptoProvider.getKeyIdentifiers(Mockito.anyLong())
+		).thenReturn(
+			Collections.singletonList(identifier)
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		List<KeyReference> keyReferences = _cryptoManagerImpl.getKeyReferences(
+			RandomTestUtil.randomLong(), cryptoProviderId);
+
+		Assert.assertEquals(keyReferences.toString(), 1, keyReferences.size());
+
+		KeyReference keyReference = keyReferences.get(0);
+
+		Assert.assertEquals(cryptoProviderId, keyReference.getProviderId());
+		Assert.assertEquals(identifier, keyReference.getIdentifier());
+	}
+
+	@Test
+	public void testImportSecretKey() throws Exception {
+		String identifier = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_cryptoProvider.importSecretKey(
+				Mockito.anyString(), Mockito.anyLong(),
+				Mockito.any(byte[].class), Mockito.anyString())
+		).thenReturn(
+			_cryptoServiceResult(identifier)
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<KeyReference> cryptoServiceResult =
+			_cryptoManagerImpl.importSecretKey(
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				RandomTestUtil.randomBytes(), _keyReference(cryptoProviderId));
+
+		KeyReference keyReference = cryptoServiceResult.getValue();
+
+		Assert.assertEquals(cryptoProviderId, keyReference.getProviderId());
+		Assert.assertEquals(identifier, keyReference.getIdentifier());
+	}
+
+	@Test
+	public void testImportSecretKeyZerosKeyBytesEvenOnFailure()
+		throws Exception {
+
+		Mockito.when(
+			_cryptoProvider.importSecretKey(
+				Mockito.anyString(), Mockito.anyLong(),
+				Mockito.any(byte[].class), Mockito.anyString())
+		).thenThrow(
+			new CryptoException()
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		byte[] keyBytes = RandomTestUtil.randomBytes();
+
+		Assert.assertThrows(
+			CryptoException.class,
+			() -> _cryptoManagerImpl.importSecretKey(
+				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
+				keyBytes, _keyReference(cryptoProviderId)));
+
+		for (byte b : keyBytes) {
+			Assert.assertEquals(0, b);
+		}
+	}
+
+	@Test
+	public void testUnwrap() throws Exception {
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String unwrappedIdentifier = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_cryptoProvider.unwrap(
+				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.any(byte[].class),
+				Mockito.anyInt())
+		).thenReturn(
+			_cryptoServiceResult(unwrappedIdentifier)
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<KeyReference> cryptoServiceResult =
+			_cryptoManagerImpl.unwrap(
+				RandomTestUtil.randomLong(), _keyReference(cryptoProviderId),
+				_keyReference(cryptoProviderId), RandomTestUtil.randomString(),
+				RandomTestUtil.randomBytes(), RandomTestUtil.randomInt());
+
+		KeyReference keyReference = cryptoServiceResult.getValue();
+
+		Assert.assertEquals(cryptoProviderId, keyReference.getProviderId());
+		Assert.assertEquals(unwrappedIdentifier, keyReference.getIdentifier());
+	}
+
+	@Test
+	public void testWrap() throws Exception {
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		byte[] wrappedKeyBytes = RandomTestUtil.randomBytes();
+
+		Mockito.when(
+			_cryptoProvider.wrap(
+				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString())
+		).thenReturn(
+			_cryptoServiceResult(wrappedKeyBytes)
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<byte[]> cryptoServiceResult =
+			_cryptoManagerImpl.wrap(
+				RandomTestUtil.randomLong(), _keyReference(cryptoProviderId),
+				_keyReference(cryptoProviderId));
+
+		Assert.assertSame(wrappedKeyBytes, cryptoServiceResult.getValue());
+	}
+
+	@Test
+	public void testWrapThrowsWhenProvidersDiffer() {
+		Assert.assertThrows(
+			CryptoException.class,
+			() -> _cryptoManagerImpl.wrap(
+				RandomTestUtil.randomLong(),
+				_keyReference(RandomTestUtil.randomString()),
+				_keyReference(RandomTestUtil.randomString())));
+	}
+
+	private <T> CryptoServiceResult<T> _cryptoServiceResult(T value) {
+		return new CryptoServiceResult<>(
+			new ServiceIndicator(true, RandomTestUtil.randomString()), value);
+	}
+
+	private KeyReference _keyReference(String cryptoProviderId) {
+		return _keyReference(cryptoProviderId, RandomTestUtil.randomString());
+	}
+
+	private KeyReference _keyReference(
+		String cryptoProviderId, String identifier) {
+
+		return new KeyReference(
+			identifier, cryptoProviderId, KeyReference.Type.CRYPTO);
+	}
+
+	private void _testEncryptResolvesProviderWildcard(long companyId)
+		throws Exception {
+
+		String identifier = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_cryptoProvider.encrypt(
+				Mockito.eq(companyId), Mockito.eq(identifier),
+				Mockito.any(byte[].class))
+		).thenReturn(
+			_cryptoServiceResult(new byte[0])
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(companyId)
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		if (companyId == CompanyConstants.SYSTEM) {
+			Mockito.when(
+				_keyManagerProfile.getSystemDEKProviderId()
+			).thenReturn(
+				cryptoProviderId
+			);
+		}
+		else {
+			Mockito.when(
+				_keyManagerProfile.getCompanyDEKProviderId()
+			).thenReturn(
+				cryptoProviderId
+			);
+		}
+
+		Mockito.when(
+			_keyManagerProfileRegistry.getActiveKeyManagerProfile()
+		).thenReturn(
+			_keyManagerProfile
+		);
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		_cryptoManagerImpl.encrypt(
+			companyId, _keyReference(StringPool.STAR, identifier),
+			RandomTestUtil.randomBytes());
+
+		if (companyId == CompanyConstants.SYSTEM) {
+			Mockito.verify(
+				_keyManagerProfile, Mockito.atLeastOnce()
+			).getSystemDEKProviderId();
+		}
+		else {
+			Mockito.verify(
+				_keyManagerProfile, Mockito.atLeastOnce()
+			).getCompanyDEKProviderId();
+		}
+	}
+
+	private final CryptoManagerImpl _cryptoManagerImpl =
+		new CryptoManagerImpl();
+
+	@Mock
+	private CryptoProvider _cryptoProvider;
+
+	@Mock
+	private KeyManagerProfile _keyManagerProfile;
+
+	@Mock
+	private KeyManagerProfileRegistry _keyManagerProfileRegistry;
+
+	@Mock
+	private ServiceTrackerMap<String, List<CryptoProvider>> _serviceTrackerMap;
+
+}
