@@ -117,15 +117,20 @@ public class ViewAllTasksSectionDisplayContextTest
 				"entryClassName", objectDefinition.getClassName()),
 			fdsActionDropdownItems.get(4));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"trash", "delete", "Delete", null,
+			"date-time", "update-due-date", "Update Due Date", "get",
 			Collections.singletonMap(
 				"entryClassName", objectDefinition.getClassName()),
 			fdsActionDropdownItems.get(5));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"trash", "delete", "Delete", null,
+			Collections.singletonMap(
+				"entryClassName", objectDefinition.getClassName()),
+			fdsActionDropdownItems.get(6));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"view", "actionLinkWorkflowTask", "View", null,
 			Collections.singletonMap(
 				"entryClassName", CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN),
-			fdsActionDropdownItems.get(6));
+			fdsActionDropdownItems.get(7));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			null, "assignToMeWorkflowTask", "Assign to Me", null,
 			HashMapBuilder.<String, Object>put(
@@ -135,7 +140,7 @@ public class ViewAllTasksSectionDisplayContextTest
 			).put(
 				"entryClassName", CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN
 			).build(),
-			fdsActionDropdownItems.get(7));
+			fdsActionDropdownItems.get(8));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			null, "assignToWorkflowTask", "Assign to...", null,
 			HashMapBuilder.<String, Object>put(
@@ -143,7 +148,7 @@ public class ViewAllTasksSectionDisplayContextTest
 			).put(
 				"entryClassName", CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN
 			).build(),
-			fdsActionDropdownItems.get(8));
+			fdsActionDropdownItems.get(9));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"date-time", "updateDueDateWorkflowTask", "Update Due Date", null,
 			HashMapBuilder.<String, Object>put(
@@ -151,9 +156,9 @@ public class ViewAllTasksSectionDisplayContextTest
 			).put(
 				"entryClassName", CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN
 			).build(),
-			fdsActionDropdownItems.get(9));
+			fdsActionDropdownItems.get(10));
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 10,
+			fdsActionDropdownItems.toString(), 11,
 			fdsActionDropdownItems.size());
 	}
 

@@ -78,7 +78,7 @@ public class ViewProjectTasksSectionDisplayContextTest
 			getFDSActionDropdownItems(assetEntry);
 
 		Assert.assertEquals(
-			fdsActionDropdownItems.toString(), 6,
+			fdsActionDropdownItems.toString(), 7,
 			fdsActionDropdownItems.size());
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
@@ -103,10 +103,15 @@ public class ViewProjectTasksSectionDisplayContextTest
 				"entryClassName", objectDefinition.getClassName()),
 			fdsActionDropdownItems.get(4));
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
-			"trash", "delete", "Delete", null,
+			"date-time", "update-due-date", "Update Due Date", "get",
 			Collections.singletonMap(
 				"entryClassName", objectDefinition.getClassName()),
 			fdsActionDropdownItems.get(5));
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"trash", "delete", "Delete", null,
+			Collections.singletonMap(
+				"entryClassName", objectDefinition.getClassName()),
+			fdsActionDropdownItems.get(6));
 	}
 
 	@Test
