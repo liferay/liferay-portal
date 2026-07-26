@@ -22,6 +22,7 @@ async function getInsightType(
 	const json = await response.json();
 
 	if (json?.name && typeof json.name === 'object') {
+		json.nameKey = json.name.key;
 		json.name = json.name.name;
 	}
 

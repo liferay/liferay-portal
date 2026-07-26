@@ -53,6 +53,10 @@ public class AffectedPagesSectionSEOStudioTableFDSView
 			"friendly-url"
 		).add(
 			"monthlyTraffic", "monthly-traffic"
+		).add(
+			"state", "status",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"stateCellRenderer")
 		).build();
 	}
 
