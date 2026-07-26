@@ -1,0 +1,4 @@
+Bundle-Name: Liferay SEO Studio SPI
+Bundle-SymbolicName: com.liferay.seo.studio.spi
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.seo.studio.spi.autofix
