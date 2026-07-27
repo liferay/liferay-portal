@@ -44,15 +44,13 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -159,7 +157,7 @@ public class TaxonomyCategoryResourceTest
 		Group originalIrrelevantGroup = irrelevantGroup;
 		Group originalTestGroup = testGroup;
 
-		_addCMSGroup();
+		_setUpCMSGroup();
 
 		_testGetAssetLibraryTaxonomyCategoriesPage(DepotConstants.TYPE_PROJECT);
 		_testGetAssetLibraryTaxonomyCategoriesPage(DepotConstants.TYPE_SPACE);
@@ -933,26 +931,6 @@ public class TaxonomyCategoryResourceTest
 			new ServiceContext());
 	}
 
-	private void _addCMSGroup() throws Exception {
-
-		// These tests require an explicit CMS group creation.
-
-		Role role = _roleLocalService.fetchRole(
-			testDepotEntryGroup.getCompanyId(), RoleConstants.SITE_MEMBER);
-
-		if (role == null) {
-			_roleLocalService.addRole(
-				null, TestPropsValues.getUserId(), null, 0,
-				RoleConstants.SITE_MEMBER, null, null,
-				RoleConstants.TYPE_REGULAR, null, null);
-		}
-
-		irrelevantGroup = GroupTestUtil.getOrAddCMSGroup(
-			testDepotEntryGroup.getCompanyId());
-
-		testGroup = irrelevantGroup;
-	}
-
 	private String _addFriendlyUrlPath(String friendlyUrlPath)
 		throws Exception {
 
@@ -1082,6 +1060,13 @@ public class TaxonomyCategoryResourceTest
 				siteId = testGroup.getGroupId();
 			}
 		};
+	}
+
+	private void _setUpCMSGroup() throws Exception {
+		irrelevantGroup = _groupLocalService.getGroup(
+			testDepotEntryGroup.getCompanyId(), GroupConstants.CMS);
+
+		testGroup = irrelevantGroup;
 	}
 
 	private void _testDeleteTaxonomyCategorySystem() throws Exception {
@@ -1856,7 +1841,7 @@ public class TaxonomyCategoryResourceTest
 		Group originalIrrelevantGroup = irrelevantGroup;
 		Group originalTestGroup = testGroup;
 
-		_addCMSGroup();
+		_setUpCMSGroup();
 
 		ParentTaxonomyVocabulary parentTaxonomyVocabulary =
 			new ParentTaxonomyVocabulary() {
@@ -2305,6 +2290,10 @@ public class TaxonomyCategoryResourceTest
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	private AssetVocabulary _globalAssetVocabulary;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
 	private AssetVocabulary _internalAssetVocabulary;
 
 	@Inject
@@ -2312,9 +2301,6 @@ public class TaxonomyCategoryResourceTest
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
 
 	private Scope.Type _scopeType = Scope.Type.SITE;
 

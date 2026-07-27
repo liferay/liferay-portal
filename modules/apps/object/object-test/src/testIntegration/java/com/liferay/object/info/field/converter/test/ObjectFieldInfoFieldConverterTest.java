@@ -41,6 +41,8 @@ import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -154,8 +156,8 @@ public class ObjectFieldInfoFieldConverterTest {
 				_portal.getPortalURL(new MockHttpServletRequest()) +
 					_portal.getPathContext()));
 
-		Group cmsGroup = GroupTestUtil.getOrAddCMSGroup(
-			TestPropsValues.getCompanyId());
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		RESTContextPathResolver restContextPathResolver =
 			_restContextPathResolverRegistry.getRESTContextPathResolver(
@@ -404,6 +406,9 @@ public class ObjectFieldInfoFieldConverterTest {
 
 	@Inject
 	private DDMExpressionFactory _ddmExpressionFactory;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private LayoutDisplayPageProviderRegistry
