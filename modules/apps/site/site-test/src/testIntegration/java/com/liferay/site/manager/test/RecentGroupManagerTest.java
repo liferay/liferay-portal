@@ -9,12 +9,9 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.servlet.PortletServlet;
 import com.liferay.portal.kernel.test.portlet.MockPortletRequest;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -55,8 +52,6 @@ public class RecentGroupManagerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_addCMSGroup();
-
 		_group = GroupTestUtil.addGroup();
 
 		LayoutTestUtil.addTypeContentLayout(_group);
@@ -81,25 +76,6 @@ public class RecentGroupManagerTest {
 		Assert.assertEquals(
 			Collections.singletonList(_group),
 			_recentGroupManager.getRecentGroups(mockHttpServletRequest));
-	}
-
-	private void _addCMSGroup() throws Exception {
-		Group group = GroupTestUtil.getOrAddCMSGroup(
-			TestPropsValues.getCompanyId());
-
-		if (group != null) {
-			return;
-		}
-
-		Role role = _roleLocalService.fetchRole(
-			TestPropsValues.getCompanyId(), RoleConstants.SITE_MEMBER);
-
-		if (role == null) {
-			_roleLocalService.addRole(
-				null, TestPropsValues.getUserId(), null, 0,
-				RoleConstants.SITE_MEMBER, null, null,
-				RoleConstants.TYPE_REGULAR, null, null);
-		}
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest()
@@ -148,8 +124,5 @@ public class RecentGroupManagerTest {
 
 	@Inject
 	private RecentGroupManager _recentGroupManager;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
 
 }

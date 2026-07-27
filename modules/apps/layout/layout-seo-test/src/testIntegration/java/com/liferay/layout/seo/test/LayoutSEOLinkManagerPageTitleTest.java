@@ -14,6 +14,7 @@ import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwa
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.Portlet;
@@ -68,7 +69,8 @@ public class LayoutSEOLinkManagerPageTitleTest {
 
 		_group = _addGroup();
 
-		_cmsGroup = GroupTestUtil.getOrAddCMSGroup(_group.getCompanyId());
+		_cmsGroup = _groupLocalService.getGroup(
+			_group.getCompanyId(), GroupConstants.CMS);
 
 		_layout.setGroupId(_group.getGroupId());
 
