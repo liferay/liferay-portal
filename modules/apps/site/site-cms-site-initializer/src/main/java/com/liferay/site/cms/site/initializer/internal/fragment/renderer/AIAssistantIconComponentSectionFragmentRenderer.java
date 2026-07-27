@@ -58,7 +58,7 @@ public class AIAssistantIconComponentSectionFragmentRenderer
 
 	@Override
 	protected String getComponentName() {
-		return "AIAssistantChat";
+		return "AIAssistantTriggerButton";
 	}
 
 	@Override
@@ -81,11 +81,13 @@ public class AIAssistantIconComponentSectionFragmentRenderer
 			Collections.singletonMap(
 				"groupId", InfoItemUtil.getGroupId(httpServletRequest))
 		).put(
-			"hideTriggerLabel", true
+			"hideLabel", true
 		).put(
 			"instructionDefinitionScope", "cms"
 		).put(
-			"triggerRound", true
+			"presentation", "dropdown"
+		).put(
+			"round", true
 		).build();
 	}
 

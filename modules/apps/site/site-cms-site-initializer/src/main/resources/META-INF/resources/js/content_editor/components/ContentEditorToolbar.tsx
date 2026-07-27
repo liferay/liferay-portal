@@ -10,7 +10,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
-import {AIAssistantChat} from '@liferay/ai-hub-cell-js-components-web';
+import {AIAssistantTriggerButton} from '@liferay/ai-hub-cell-js-components-web';
 import {isCtrlOrMeta} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {openToast, useSessionState} from 'frontend-js-components-web';
@@ -260,13 +260,14 @@ export default function ContentEditorToolbar({
 			{Liferay.FeatureFlags['LPD-62272'] && (
 				<>
 					<Toolbar.Item>
-						<AIAssistantChat
+						<AIAssistantTriggerButton
 							context={{groupId}}
 							enableFreeFormCategorization
 							getContext={getContext}
-							hideTriggerLabel
+							hideLabel
 							instructionDefinitionScope="cms"
-							triggerRound
+							presentation="dropdown"
+							round
 						/>
 					</Toolbar.Item>
 

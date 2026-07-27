@@ -15,8 +15,8 @@ import {
 } from '../../js/components/content_gap_matrix/services/fixtures';
 
 jest.mock('@liferay/ai-hub-cell-js-components-web', () => ({
-	AIAssistantChat: (props: {triggerLabel: string}) =>
-		require('react').createElement('button', null, props.triggerLabel),
+	AIAssistantTriggerButton: (props: {label: string}) =>
+		require('react').createElement('button', null, props.label),
 }));
 
 describe('ContentGapMatrixHeader', () => {

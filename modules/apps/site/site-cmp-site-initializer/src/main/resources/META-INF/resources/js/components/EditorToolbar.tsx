@@ -6,7 +6,7 @@
 import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayLink from '@clayui/link';
-import {AIAssistantChat} from '@liferay/ai-hub-cell-js-components-web';
+import {AIAssistantTriggerButton} from '@liferay/ai-hub-cell-js-components-web';
 import {isCtrlOrMeta} from '@liferay/layout-js-components-web';
 import {Toolbar} from '@liferay/site-cms-site-initializer';
 import {sessionStorage, sub} from 'frontend-js-web';
@@ -85,11 +85,12 @@ export default function EditorToolbar({
 			{Liferay.FeatureFlags['LPD-62272'] && (
 				<>
 					<Toolbar.Item>
-						<AIAssistantChat
+						<AIAssistantTriggerButton
 							context={{groupId}}
-							hideTriggerLabel
+							hideLabel
 							instructionDefinitionScope="cms"
-							triggerRound
+							presentation="dropdown"
+							round
 						/>
 					</Toolbar.Item>
 

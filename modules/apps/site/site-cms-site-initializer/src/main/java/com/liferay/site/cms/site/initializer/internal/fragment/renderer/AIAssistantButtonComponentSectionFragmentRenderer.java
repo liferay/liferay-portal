@@ -58,7 +58,7 @@ public class AIAssistantButtonComponentSectionFragmentRenderer
 
 	@Override
 	protected String getComponentName() {
-		return "AIAssistantChat";
+		return "AIAssistantTriggerButton";
 	}
 
 	@Override
@@ -83,7 +83,9 @@ public class AIAssistantButtonComponentSectionFragmentRenderer
 		).put(
 			"instructionDefinitionScope", "cms"
 		).put(
-			"triggerRound", true
+			"presentation", "dropdown"
+		).put(
+			"round", true
 		).build();
 	}
 

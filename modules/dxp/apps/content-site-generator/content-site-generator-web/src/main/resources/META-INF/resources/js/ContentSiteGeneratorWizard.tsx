@@ -5,7 +5,7 @@
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {
-	AIAssistantChat,
+	AIAssistantTriggerButton,
 	ChatContext,
 } from '@liferay/ai-hub-cell-js-components-web';
 import {openToast} from 'frontend-js-components-web';
@@ -249,8 +249,7 @@ export default function ContentSiteGeneratorWizard({
 				<StepLayout
 					activeStep={STEP_REFINE}
 					sidebar={
-						<AIAssistantChat
-							embedded
+						<AIAssistantTriggerButton
 							getContext={getChatContext}
 							initialMessage={autoSendMessage}
 							instructionDefinitionScope=""
