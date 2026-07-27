@@ -23,6 +23,12 @@ public class FaroPropsValues {
 		PropsUtil.get("faro.demo.creator.method"),
 		System.getenv("FARO_DEMO_CREATOR_METHOD"));
 
+	public static final boolean FARO_DEMO_DATA_PLATFORM_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get("faro.demo.data.platform.enabled"),
+			GetterUtil.getBoolean(
+				System.getenv("FARO_DEMO_DATA_PLATFORM_ENABLED")));
+
 	public static final String FARO_MOCK_OSB_ACCOUNT_ENTRY =
 		GetterUtil.getString(
 			PropsUtil.get("faro.mock.osb.account.entry"),

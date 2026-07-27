@@ -130,8 +130,15 @@ public abstract class DemoCreatorService {
 		if (FaroPropsValues.OSB_FARO_SUBSCRIPTION_PUSH_ENABLED) {
 			OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
 
-			osbOfferingEntry.setProductEntryId(
-				ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
+			String productEntryId =
+				ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID;
+
+			if (FaroPropsValues.FARO_DEMO_DATA_PLATFORM_ENABLED) {
+				productEntryId =
+					ProductConstants.DATA_PLATFORM_ENTERPRISE_PRODUCT_ENTRY_ID;
+			}
+
+			osbOfferingEntry.setProductEntryId(productEntryId);
 			osbOfferingEntry.setQuantity(1);
 			osbOfferingEntry.setStartDate(new Date());
 			osbOfferingEntry.setStatus(

@@ -149,8 +149,16 @@ public class MockProvisioningClientImpl extends BaseMockProvisioningClientImpl {
 				OSBOfferingEntry enterpriseOSBOfferingEntry =
 					new OSBOfferingEntry();
 
-				enterpriseOSBOfferingEntry.setProductEntryId(
-					ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID);
+				String productEntryId =
+					ProductConstants.ENTERPRISE_PRODUCT_ENTRY_ID;
+
+				if (FaroPropsValues.FARO_DEMO_DATA_PLATFORM_ENABLED) {
+					productEntryId =
+						ProductConstants.
+							DATA_PLATFORM_ENTERPRISE_PRODUCT_ENTRY_ID;
+				}
+
+				enterpriseOSBOfferingEntry.setProductEntryId(productEntryId);
 				enterpriseOSBOfferingEntry.setQuantity(1);
 				enterpriseOSBOfferingEntry.setStartDate(
 					new Date(1546329600000L));
