@@ -41,6 +41,8 @@ import type {FirstDayOfWeekLocale} from 'frontend-js-web';
 
 const ADD_TASK_BUTTON_CLASS_NAME = 'lfr__calendar-view-add-task-button';
 
+const calendarNavigationStates = new Map<string, {date: Date; view: string}>();
+
 interface CalendarViewProps {
 	cmpProjectObjectDefinitionId: number;
 	cmpProjectObjectEntryId?: string;
@@ -62,7 +64,9 @@ export default function CalendarView({
 	items,
 	itemsActions,
 }: CalendarViewProps) {
-	const {loadData, onItemsChange} = useContext(FrontendDataSetContext);
+	const {id, loadData, onItemsChange} = useContext(FrontendDataSetContext);
+
+	const calendarNavigationState = calendarNavigationStates.get(id ?? '');
 
 	const calendarRef = useRef<FullCalendar>(null);
 	const calendarViewRef = useRef<HTMLDivElement>(null);
@@ -73,7 +77,9 @@ export default function CalendarView({
 		{label: Liferay.Language.get('month'), view: 'dayGridMonth'},
 	];
 
-	const [currentView, setCurrentView] = useState('dayGridMonth');
+	const [currentView, setCurrentView] = useState(
+		calendarNavigationState?.view ?? 'dayGridMonth'
+	);
 	const [datePickerExpanded, setDatePickerExpanded] = useState(false);
 	const [datePickerValue, setDatePickerValue] = useState('');
 	const [fdsContainerElement, setFDSContainerElement] =
@@ -438,6 +444,11 @@ export default function CalendarView({
 
 			<FullCalendar
 				datesSet={({view}) => {
+					calendarNavigationStates.set(id ?? '', {
+						date: view.currentStart,
+						view: view.type,
+					});
+
 					setCurrentView(view.type);
 					setTitle(view.title);
 				}}
@@ -527,7 +538,8 @@ export default function CalendarView({
 				)}
 				fixedWeekCount={false}
 				headerToolbar={false}
-				initialView="dayGridMonth"
+				initialDate={calendarNavigationState?.date}
+				initialView={currentView}
 				locale={locale}
 				moreLinkClassNames={[
 					'btn',
