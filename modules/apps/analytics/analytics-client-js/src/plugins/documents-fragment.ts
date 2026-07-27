@@ -5,8 +5,14 @@
 
 import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
-import {isTrackable, transformAssetTypeToSelector} from '../utils/assets';
-import {onReady} from '../utils/events';
+import {
+	isDownloadAction,
+	isImpressionAction,
+	isTrackable,
+	transformAssetTypeToSelector,
+} from '../utils/assets';
+import {composeDisposers} from '../utils/disposers';
+import {trackVisibleElements} from '../utils/trackVisibleElements';
 
 /**
  * Returns analytics payload with Document information.
@@ -94,7 +100,7 @@ function trackDocumentDownloaded(analytics: Analytics) {
 }
 
 /**
- * Sends information when user scrolls on a Document.
+ * Sends information the first time a Document is visible inside the viewport.
  */
 function trackDocument(
 	analytics: Analytics,
@@ -110,46 +116,41 @@ function trackDocument(
 		AnalyticsType.ElementType.FileEntry
 	);
 
-	const stopTrackingOnReady = onReady(() => {
-		Array.prototype.slice
-			.call(document.querySelectorAll(selector))
-			.filter((element) => isTrackable(element))
-			.forEach((element) => {
-				const payload = getDocumentPayload(element);
-
-				analytics.send(
-					eventId,
-					AnalyticsType.ApplicationId.Document,
-					payload
-				);
-			});
+	return trackVisibleElements({
+		isTrackable,
+		onVisible: (element) => {
+			analytics.send(
+				eventId,
+				AnalyticsType.ApplicationId.Document,
+				getDocumentPayload(element)
+			);
+		},
+		selector,
 	});
+}
 
-	return () => stopTrackingOnReady();
+/**
+ * Sends the impression event the first time a Document is visible inside the
+ * viewport. A link flagged for download also fires the impression event on the
+ * documentsFragment plugin.
+ */
+function trackDocumentImpression(analytics: Analytics) {
+	return trackDocument(analytics, {
+		eventId: AnalyticsType.EventId.DocumentImpressionMade,
+		isTrackable: (element) =>
+			isTrackable(element) &&
+			(isImpressionAction(element) || isDownloadAction(element)),
+	});
 }
 
 /**
  * Plugin function that registers listeners for Document events.
- * A link with action download should fire a documentImpressionMade event
- * on load page to the documentsFragment plugin.
  */
 function documents(analytics: Analytics) {
-	const stopTrackingDocumentDownloaded = trackDocumentDownloaded(analytics);
-	const stopTrackingDocumentImpressionMade = trackDocument(analytics, {
-		eventId: AnalyticsType.EventId.DocumentImpressionMade,
-		isTrackable: (element) =>
-			(isTrackable(element) &&
-				element.dataset.analyticsAssetAction ===
-					AnalyticsType.ElementAction.Impression) ||
-			(isTrackable(element) &&
-				element.dataset.analyticsAssetAction ===
-					AnalyticsType.ElementAction.Download),
-	});
-
-	return () => {
-		stopTrackingDocumentDownloaded();
-		stopTrackingDocumentImpressionMade();
-	};
+	return composeDisposers([
+		trackDocumentDownloaded(analytics),
+		trackDocumentImpression(analytics),
+	]);
 }
 
 export {documents};

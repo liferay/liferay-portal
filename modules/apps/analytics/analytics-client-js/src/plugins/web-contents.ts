@@ -7,12 +7,14 @@ import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
 import {
 	getNumberOfWords,
+	isImpressionAction,
 	isTrackable,
+	isViewAction,
 	transformAssetTypeToSelector,
 } from '../utils/assets';
-import {debounce} from '../utils/debounce';
-import {clickEvent, onEvents, onReady} from '../utils/events';
-import {isPartiallyInViewport} from '../utils/scroll';
+import {composeDisposers} from '../utils/disposers';
+import {clickEvent} from '../utils/events';
+import {trackVisibleElements} from '../utils/trackVisibleElements';
 
 /**
  * Returns analytics payload with WebContent information.
@@ -90,7 +92,7 @@ function trackWebContentClicked(analytics: Analytics) {
 }
 
 /**
- * Sends information the first time a WebContent enters into the viewport.
+ * Sends information the first time a WebContent is visible inside the viewport.
  */
 function trackWebContent(
 	analytics: Analytics,
@@ -102,76 +104,62 @@ function trackWebContent(
 		isTrackable: (element: AnalyticsType.HTMLElement) => boolean;
 	}
 ) {
-	const selector = transformAssetTypeToSelector(
-		[
-			AnalyticsType.ElementType.WebContent,
-			AnalyticsType.ElementType.JournalArticle,
-		],
-		`:not([data-analytics-asset-viewed="true"])`
-	);
+	const selector = transformAssetTypeToSelector([
+		AnalyticsType.ElementType.WebContent,
+		AnalyticsType.ElementType.JournalArticle,
+	]);
 
-	const markViewedElements = debounce(() => {
-		const elements = Array.prototype.slice
-			.call(document.querySelectorAll(selector))
-			.filter(isTrackable);
+	return trackVisibleElements({
+		isTrackable,
+		onVisible: (element) => {
+			const payload = getWebContentPayload(element);
 
-		elements.forEach((element) => {
-			if (isPartiallyInViewport(element)) {
-				const payload = getWebContentPayload(element);
+			Object.assign(payload, {
+				numberOfWords: getNumberOfWords(element),
+			});
 
-				Object.assign(payload, {
-					numberOfWords: getNumberOfWords(element),
-				});
+			analytics.send(
+				eventId,
+				AnalyticsType.ApplicationId.WebContent,
+				payload
+			);
+		},
+		selector,
+	});
+}
 
-				element.dataset.analyticsAssetViewed = true;
+/**
+ * Sends the impression event the first time a WebContent flagged for impression
+ * is visible inside the viewport.
+ */
+function trackWebContentImpression(analytics: Analytics) {
+	return trackWebContent(analytics, {
+		eventId: AnalyticsType.EventId.WebContentImpressionMade,
+		isTrackable: (element) =>
+			isTrackable(element) && isImpressionAction(element),
+	});
+}
 
-				analytics.send(
-					eventId,
-					AnalyticsType.ApplicationId.WebContent,
-					payload
-				);
-			}
-		});
-	}, 250);
-
-	const stopTrackingOnReady = onReady(markViewedElements);
-	const stopTrackingEvents = onEvents(
-		['scroll', 'resize'],
-		markViewedElements
-	);
-
-	return () => {
-		stopTrackingEvents();
-		stopTrackingOnReady();
-	};
+/**
+ * Sends the view event the first time a WebContent is visible inside the
+ * viewport.
+ */
+function trackWebContentViewed(analytics: Analytics) {
+	return trackWebContent(analytics, {
+		eventId: AnalyticsType.EventId.WebContentViewed,
+		isTrackable: (element) => isTrackable(element) && isViewAction(element),
+	});
 }
 
 /**
  * Plugin function that registers listeners for Web Content events
  */
 function webContent(analytics: Analytics) {
-	const stopTrackingWebContentClicked = trackWebContentClicked(analytics);
-	const stopTrackingWebContentImpressionMade = trackWebContent(analytics, {
-		eventId: AnalyticsType.EventId.WebContentImpressionMade,
-		isTrackable: (element) =>
-			isTrackable(element) &&
-			element.dataset?.analyticsAssetAction ===
-				AnalyticsType.ElementAction.Impression,
-	});
-	const stopTrackingWebContentViewed = trackWebContent(analytics, {
-		eventId: AnalyticsType.EventId.WebContentViewed,
-		isTrackable: (element) =>
-			isTrackable(element) &&
-			(!element.dataset?.analyticsAssetAction ||
-				element.dataset?.analyticsAssetAction ===
-					AnalyticsType.ElementAction.View),
-	});
-
-	return () => {
-		stopTrackingWebContentClicked();
-		stopTrackingWebContentImpressionMade();
-		stopTrackingWebContentViewed();
-	};
+	return composeDisposers([
+		trackWebContentClicked(analytics),
+		trackWebContentImpression(analytics),
+		trackWebContentViewed(analytics),
+	]);
 }
 
 export {webContent};

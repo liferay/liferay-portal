@@ -6,7 +6,8 @@
 import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
 import {closest, getClosestAssetElement, isTrackable} from '../utils/assets';
-import {onReady} from '../utils/events';
+import {composeDisposers} from '../utils/disposers';
+import {trackVisibleElements} from '../utils/trackVisibleElements';
 
 /**
  * Returns analytics payload with Document information.
@@ -88,42 +89,31 @@ function trackDocumentDownloaded(analytics: Analytics) {
 }
 
 /**
- * Sends information when user scrolls on a Document.
+ * Sends information the first time a previewed Document is visible inside the
+ * viewport.
  */
 function trackDocumentPreviewed(analytics: Analytics) {
-	const stopTrackingOnReady = onReady(() => {
-		Array.prototype.slice
-			.call(
-				document.querySelectorAll(
-					'[data-analytics-asset-action="preview"]'
-				)
-			)
-			.filter((element) => isTrackable(element))
-			.forEach((element) => {
-				const payload = getDocumentPayload(element);
-
-				analytics.send(
-					AnalyticsType.EventId.DocumentPreviewed,
-					AnalyticsType.ApplicationId.Document,
-					payload
-				);
-			});
+	return trackVisibleElements<AnalyticsType.HTMLElement>({
+		isTrackable,
+		onVisible: (element) => {
+			analytics.send(
+				AnalyticsType.EventId.DocumentPreviewed,
+				AnalyticsType.ApplicationId.Document,
+				getDocumentPayload(element)
+			);
+		},
+		selector: '[data-analytics-asset-action="preview"]',
 	});
-
-	return () => stopTrackingOnReady();
 }
 
 /**
  * Plugin function that registers listeners for Document events
  */
 function documents(analytics: Analytics) {
-	const stopTrackingDocumentDownloaded = trackDocumentDownloaded(analytics);
-	const stopTrackingDocumentPreviewed = trackDocumentPreviewed(analytics);
-
-	return () => {
-		stopTrackingDocumentDownloaded();
-		stopTrackingDocumentPreviewed();
-	};
+	return composeDisposers([
+		trackDocumentDownloaded(analytics),
+		trackDocumentPreviewed(analytics),
+	]);
 }
 
 export {documents};

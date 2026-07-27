@@ -6,7 +6,8 @@
 import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
 import {isTrackable} from '../utils/assets';
-import {onReady} from '../utils/events';
+import {composeDisposers} from '../utils/disposers';
+import {trackVisibleElements} from '../utils/trackVisibleElements';
 
 /**
  * Returns an identifier for a form element.
@@ -197,22 +198,20 @@ function trackFormSubmitted(analytics: Analytics) {
 }
 
 /**
- * Sends information about forms rendered on the page when it was loaded.
+ * Sends information the first time a trackable form is visible inside the
+ * viewport.
  */
 function trackFormViewed(analytics: Analytics) {
-	return onReady(() => {
-		Array.prototype.slice
-			.call(document.querySelectorAll('form'))
-			.filter((form) => isTrackableForm(form))
-			.forEach((form) => {
-				const payload = getFormPayload(form);
-
-				analytics.send(
-					AnalyticsType.EventId.FormViewed,
-					AnalyticsType.ApplicationId.Form,
-					payload
-				);
-			});
+	return trackVisibleElements({
+		isTrackable: isTrackableForm,
+		onVisible: (form) => {
+			analytics.send(
+				AnalyticsType.EventId.FormViewed,
+				AnalyticsType.ApplicationId.Form,
+				getFormPayload(form)
+			);
+		},
+		selector: 'form',
 	});
 }
 
@@ -220,17 +219,12 @@ function trackFormViewed(analytics: Analytics) {
  * Plugin function that registers listener against form events
  */
 function forms(analytics: Analytics) {
-	const stopTrackingFieldBlurred = trackFieldBlurred(analytics);
-	const stopTrackingFieldFocused = trackFieldFocused(analytics);
-	const stopTrackingFormSubmitted = trackFormSubmitted(analytics);
-	const stopTrackingFormViewed = trackFormViewed(analytics);
-
-	return () => {
-		stopTrackingFieldBlurred();
-		stopTrackingFieldFocused();
-		stopTrackingFormSubmitted();
-		stopTrackingFormViewed();
-	};
+	return composeDisposers([
+		trackFieldBlurred(analytics),
+		trackFieldFocused(analytics),
+		trackFormSubmitted(analytics),
+		trackFormViewed(analytics),
+	]);
 }
 
 export {forms};

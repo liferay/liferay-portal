@@ -5,10 +5,14 @@
 
 import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
-import {isTrackable, transformAssetTypeToSelector} from '../utils/assets';
-import {debounce} from '../utils/debounce';
-import {onEvents, onReady} from '../utils/events';
-import {isPartiallyInViewport} from '../utils/scroll';
+import {
+	isImpressionAction,
+	isTrackable,
+	isViewAction,
+	transformAssetTypeToSelector,
+} from '../utils/assets';
+import {composeDisposers} from '../utils/disposers';
+import {trackVisibleElements} from '../utils/trackVisibleElements';
 
 const customDatasetList = [
 	AnalyticsType.DataSetList.AnalyticsAssetAction,
@@ -88,7 +92,7 @@ function trackObjectEntryDownloaded(analytics: Analytics) {
 }
 
 /**
- * Sends information the first time a ObjectEntry enters into the viewport.
+ * Sends information the first time a ObjectEntry is visible inside the viewport.
  */
 function trackObjectEntry(
 	analytics: Analytics,
@@ -101,69 +105,56 @@ function trackObjectEntry(
 	}
 ) {
 	const selector = transformAssetTypeToSelector(
-		AnalyticsType.ElementType.ObjectEntry,
-		`:not([data-analytics-asset-viewed="true"])`
+		AnalyticsType.ElementType.ObjectEntry
 	);
 
-	const markViewedElements = debounce(() => {
-		const elements = Array.prototype.slice
-			.call(document.querySelectorAll(selector))
-			.filter(isTrackable);
+	return trackVisibleElements({
+		isTrackable,
+		onVisible: (element) => {
+			analytics.send(
+				eventId,
+				AnalyticsType.ApplicationId.ObjectEntry,
+				getObjectEntryPayload(element)
+			);
+		},
+		selector,
+	});
+}
 
-		elements.forEach((element) => {
-			if (isPartiallyInViewport(element)) {
-				const payload = getObjectEntryPayload(element);
+/**
+ * Sends the impression event the first time an ObjectEntry flagged for
+ * impression is visible inside the viewport.
+ */
+function trackObjectEntryImpression(analytics: Analytics) {
+	return trackObjectEntry(analytics, {
+		eventId: AnalyticsType.EventId.ObjectEntryImpressionMade,
+		isTrackable: (element) =>
+			isTrackable(element, customDatasetList) &&
+			isImpressionAction(element),
+	});
+}
 
-				element.dataset.analyticsAssetViewed = true;
-
-				analytics.send(
-					eventId,
-					AnalyticsType.ApplicationId.ObjectEntry,
-					payload
-				);
-			}
-		});
-	}, 250);
-
-	const stopTrackingOnReady = onReady(markViewedElements);
-	const stopTrackingEvents = onEvents(
-		['scroll', 'resize'],
-		markViewedElements
-	);
-
-	return () => {
-		stopTrackingEvents();
-		stopTrackingOnReady();
-	};
+/**
+ * Sends the view event the first time an ObjectEntry is visible inside the
+ * viewport.
+ */
+function trackObjectEntryViewed(analytics: Analytics) {
+	return trackObjectEntry(analytics, {
+		eventId: AnalyticsType.EventId.ObjectEntryViewed,
+		isTrackable: (element) =>
+			isTrackable(element, customDatasetList) && isViewAction(element),
+	});
 }
 
 /**
  * Plugin function that registers listeners for ObjectEntry events
  */
 function objectEntry(analytics: Analytics) {
-	const stopTrackingObjectEntryDownloaded =
-		trackObjectEntryDownloaded(analytics);
-	const stopTrackingObjectEntryImpressionMade = trackObjectEntry(analytics, {
-		eventId: AnalyticsType.EventId.ObjectEntryImpressionMade,
-		isTrackable: (element) =>
-			isTrackable(element, customDatasetList) &&
-			element.dataset?.analyticsAssetAction ===
-				AnalyticsType.ElementAction.Impression,
-	});
-	const stopTrackingObjectEntryViewed = trackObjectEntry(analytics, {
-		eventId: AnalyticsType.EventId.ObjectEntryViewed,
-		isTrackable: (element) =>
-			isTrackable(element, customDatasetList) &&
-			(!element.dataset?.analyticsAssetAction ||
-				element.dataset?.analyticsAssetAction ===
-					AnalyticsType.ElementAction.View),
-	});
-
-	return () => {
-		stopTrackingObjectEntryDownloaded();
-		stopTrackingObjectEntryImpressionMade();
-		stopTrackingObjectEntryViewed();
-	};
+	return composeDisposers([
+		trackObjectEntryDownloaded(analytics),
+		trackObjectEntryImpression(analytics),
+		trackObjectEntryViewed(analytics),
+	]);
 }
 
 export {objectEntry};

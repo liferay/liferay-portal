@@ -8,8 +8,10 @@ import {Analytics as AnalyticsType} from '../types';
 import {closest, getClosestAssetElement, isTrackable} from '../utils/assets';
 import {DEBOUNCE} from '../utils/constants';
 import {debounce} from '../utils/debounce';
-import {clickEvent, onReady} from '../utils/events';
+import {composeDisposers} from '../utils/disposers';
+import {clickEvent} from '../utils/events';
 import {ScrollTracker} from '../utils/scroll';
+import {trackVisibleElements} from '../utils/trackVisibleElements';
 
 /**
  * Returns analytics payload with Custom Asset information.
@@ -161,38 +163,33 @@ function trackCustomAssetSubmitted(analytics: Analytics) {
 }
 
 /**
- * Sends information when user scrolls on a Custom asset.
+ * Sends information the first time a Custom asset is visible inside the
+ * viewport.
  */
 function trackCustomAssetViewed(analytics: Analytics) {
 	const customAssetElements: AnalyticsType.HTMLElement[] = [];
-	const stopTrackingOnReady = onReady(() => {
-		Array.prototype.slice
-			.call(
-				document.querySelectorAll(
-					'[data-analytics-asset-type="custom"]'
-				)
-			)
-			.filter((element) =>
-				isTrackable(element, [
-					AnalyticsType.DataSetList.AnalyticsAssetId,
-					AnalyticsType.DataSetList.AnalyticsAssetType,
-				])
-			)
-			.forEach((element) => {
-				const formEnabled =
-					!!element.getElementsByTagName('form').length;
 
-				const payload = getCustomAssetPayload(element);
-				Object.assign(payload, {formEnabled});
+	const stopTrackingViewed = trackVisibleElements<AnalyticsType.HTMLElement>({
+		isTrackable: (element) =>
+			isTrackable(element, [
+				AnalyticsType.DataSetList.AnalyticsAssetId,
+				AnalyticsType.DataSetList.AnalyticsAssetType,
+			]),
+		onVisible: (element) => {
+			const formEnabled = !!element.getElementsByTagName('form').length;
 
-				customAssetElements.push(element);
+			const payload = getCustomAssetPayload(element);
+			Object.assign(payload, {formEnabled});
 
-				analytics.send(
-					AnalyticsType.EventId.AssetViewed,
-					AnalyticsType.ApplicationId.Custom,
-					payload
-				);
-			});
+			customAssetElements.push(element);
+
+			analytics.send(
+				AnalyticsType.EventId.AssetViewed,
+				AnalyticsType.ApplicationId.Custom,
+				payload
+			);
+		},
+		selector: '[data-analytics-asset-type="custom"]',
 	});
 
 	const stopTrackingCustomAssetScroll = trackCustomAssetScroll(
@@ -202,7 +199,7 @@ function trackCustomAssetViewed(analytics: Analytics) {
 
 	return () => {
 		stopTrackingCustomAssetScroll();
-		stopTrackingOnReady();
+		stopTrackingViewed();
 	};
 }
 
@@ -228,17 +225,12 @@ function trackCustomAssetClick(analytics: Analytics) {
  * Plugin function that registers listeners for Custom Asset events
  */
 function custom(analytics: Analytics) {
-	const stopTrackingClicked = trackCustomAssetClick(analytics);
-	const stopTrackingDownloaded = trackCustomAssetDownloaded(analytics);
-	const stopTrackingSubmitted = trackCustomAssetSubmitted(analytics);
-	const stopTrackingViewed = trackCustomAssetViewed(analytics);
-
-	return () => {
-		stopTrackingClicked();
-		stopTrackingDownloaded();
-		stopTrackingSubmitted();
-		stopTrackingViewed();
-	};
+	return composeDisposers([
+		trackCustomAssetClick(analytics),
+		trackCustomAssetDownloaded(analytics),
+		trackCustomAssetSubmitted(analytics),
+		trackCustomAssetViewed(analytics),
+	]);
 }
 
 export {custom};

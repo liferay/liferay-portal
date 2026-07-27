@@ -7,13 +7,17 @@ import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
 import {
 	getNumberOfWords,
+	isImpressionAction,
 	isTrackable,
+	isViewAction,
 	transformAssetTypeToSelector,
 } from '../utils/assets';
 import {DEBOUNCE} from '../utils/constants';
 import {debounce} from '../utils/debounce';
-import {clickEvent, onReady} from '../utils/events';
+import {composeDisposers} from '../utils/disposers';
+import {clickEvent} from '../utils/events';
 import {ScrollTracker} from '../utils/scroll';
+import {trackVisibleElements} from '../utils/trackVisibleElements';
 
 /**
  * Returns analytics payload with Blog information.
@@ -100,7 +104,7 @@ function trackBlogsScroll(
 }
 
 /**
- * Sends information when user scrolls on a Blog.
+ * Sends information the first time a Blog is visible inside the viewport.
  */
 function trackBlog(
 	analytics: Analytics,
@@ -119,32 +123,27 @@ function trackBlog(
 		AnalyticsType.ElementType.BlogsEntry,
 	]);
 
-	const stopTrackingOnReady = onReady(() => {
-		Array.prototype.slice
-			.call(document.querySelectorAll(selector))
-			.filter(isTrackable)
-			.forEach((element: AnalyticsType.HTMLElement) => {
-				const payload = getBlogPayload(element);
+	const stopTrackingBlogViewed = trackVisibleElements({
+		isTrackable,
+		onVisible: (element) => {
+			const payload = getBlogPayload(element);
 
-				Object.assign(payload, {
-					numberOfWords: getNumberOfWords(element),
-				});
-
-				blogElements.push(element);
-
-				analytics.send(
-					eventId,
-					AnalyticsType.ApplicationId.Blog,
-					payload
-				);
+			Object.assign(payload, {
+				numberOfWords: getNumberOfWords(element),
 			});
+
+			blogElements.push(element);
+
+			analytics.send(eventId, AnalyticsType.ApplicationId.Blog, payload);
+		},
+		selector,
 	});
 
 	const stopTrackingBlogsScroll = trackBlogsScroll(analytics, blogElements);
 
 	return () => {
 		stopTrackingBlogsScroll();
-		stopTrackingOnReady();
+		stopTrackingBlogViewed();
 	};
 }
 
@@ -163,31 +162,36 @@ function trackBlogClicked(analytics: Analytics) {
 }
 
 /**
+ * Sends the impression event the first time a Blog flagged for impression is
+ * visible inside the viewport.
+ */
+function trackBlogImpression(analytics: Analytics) {
+	return trackBlog(analytics, {
+		eventId: AnalyticsType.EventId.BlogImpressionMade,
+		isTrackable: (element) =>
+			isTrackable(element) && isImpressionAction(element),
+	});
+}
+
+/**
+ * Sends the view event the first time a Blog is visible inside the viewport.
+ */
+function trackBlogViewed(analytics: Analytics) {
+	return trackBlog(analytics, {
+		eventId: AnalyticsType.EventId.BlogViewed,
+		isTrackable: (element) => isTrackable(element) && isViewAction(element),
+	});
+}
+
+/**
  * Plugin function that registers listeners for Blog events
  */
 function blogs(analytics: Analytics) {
-	const stopTrackingBlogClicked = trackBlogClicked(analytics);
-	const stopTrackingBlogImpressionMade = trackBlog(analytics, {
-		eventId: AnalyticsType.EventId.BlogImpressionMade,
-		isTrackable: (element) =>
-			isTrackable(element) &&
-			element.dataset?.analyticsAssetAction ===
-				AnalyticsType.ElementAction.Impression,
-	});
-	const stopTrackingBlogViewed = trackBlog(analytics, {
-		eventId: AnalyticsType.EventId.BlogViewed,
-		isTrackable: (element) =>
-			isTrackable(element) &&
-			(!element.dataset?.analyticsAssetAction ||
-				element.dataset?.analyticsAssetAction ===
-					AnalyticsType.ElementAction.View),
-	});
-
-	return () => {
-		stopTrackingBlogClicked();
-		stopTrackingBlogImpressionMade();
-		stopTrackingBlogViewed();
-	};
+	return composeDisposers([
+		trackBlogClicked(analytics),
+		trackBlogImpression(analytics),
+		trackBlogViewed(analytics),
+	]);
 }
 
 export {blogs};
