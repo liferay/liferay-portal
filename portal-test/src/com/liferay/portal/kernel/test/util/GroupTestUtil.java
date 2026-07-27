@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
@@ -324,6 +325,19 @@ public class GroupTestUtil {
 
 		StagingLocalServiceUtil.enableLocalStaging(
 			userId, group, false, false, serviceContext);
+	}
+
+	public static Group getOrAddCMSGroup(long companyId) throws Exception {
+		Group cmsGroup = GroupLocalServiceUtil.fetchGroup(
+			companyId, GroupConstants.CMS);
+
+		if (cmsGroup == null) {
+			cmsGroup = addGroup(
+				companyId, UserLocalServiceUtil.getGuestUserId(companyId), 0,
+				GroupConstants.CMS);
+		}
+
+		return cmsGroup;
 	}
 
 	public static Group updateDisplaySettings(
