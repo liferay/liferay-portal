@@ -10,6 +10,9 @@ output "kubelet_identity_object_id" {
 output "node_resource_group" {
 	value=azurerm_kubernetes_cluster.main.node_resource_group
 }
+output "observability_identity_client_id" {
+	value=try(azurerm_user_assigned_identity.observability[0].client_id, "")
+}
 output "oidc_issuer_url" {
 	value=azurerm_kubernetes_cluster.main.oidc_issuer_url
 }
