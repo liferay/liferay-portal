@@ -104,7 +104,10 @@ export default function useAIChat({
 	>(onOpenRequested);
 
 	useEffect(() => {
-		contextRef.current = context;
+		if (context !== undefined) {
+			contextRef.current = context;
+		}
+
 		enableFreeFormCategorizationRef.current = enableFreeFormCategorization;
 		getContextRef.current = getContext;
 		instructionDefinitionScopeRef.current = instructionDefinitionScope;
@@ -199,6 +202,20 @@ export default function useAIChat({
 			})
 			.catch(() => postToChat());
 	}, []);
+
+	useEffect(() => {
+		initialMessageRef.current = initialMessage;
+
+		if (
+			initialMessage &&
+			!initialMessageSentRef.current &&
+			eventSourceReference.current
+		) {
+			initialMessageSentRef.current = true;
+
+			sendMessage(initialMessage);
+		}
+	}, [initialMessage, sendMessage]);
 
 	const giveThumbsUp = useCallback(
 		(index: number, item: Message) => {
