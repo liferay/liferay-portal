@@ -28,7 +28,7 @@ import {
 	displayDueDateSuccessToast,
 	displayErrorToast,
 } from '../../../../utils/toastUtil';
-import {ITask, ITaskObjectEntry} from '../../../../utils/types';
+import {ITask, ITaskItemsActionsTask} from '../../../../utils/types';
 import CreateTaskModal from '../../../modal/CreateTaskModal';
 import {UPDATE_TASKS_QUICK_FILTER_VISIBILITY} from '../../../task/TasksQuickFilters';
 import CalendarMoreLinkPopover from './components/CalendarMoreLinkPopover';
@@ -52,7 +52,7 @@ interface CalendarViewProps {
 interface MoreLinkPopover {
 	alignElement: HTMLElement;
 	date: Date;
-	tasks: ITaskObjectEntry[];
+	taskIds: string[];
 }
 
 export default function CalendarView({
@@ -230,6 +230,28 @@ export default function CalendarView({
 		}
 
 		displayDueDateSuccessToast(task.title);
+	};
+
+	const handleTaskChanged = ({actions, embedded}: ITaskItemsActionsTask) => {
+		const changedItem = items.find(
+			(item) => item.embedded?.id === embedded.id
+		);
+
+		if (!changedItem) {
+			loadData();
+
+			return;
+		}
+
+		onItemsChange({
+			itemKey: 'embedded.id',
+			items: [
+				{
+					...changedItem,
+					embedded: {...embedded, ...(actions && {actions})},
+				},
+			],
+		});
 	};
 
 	const currentYear = new Date().getFullYear();
@@ -469,6 +491,7 @@ export default function CalendarView({
 						expanded={currentView !== 'dayGridMonth'}
 						itemsActions={itemsActions}
 						loadData={loadData}
+						onTaskChanged={handleTaskChanged}
 						task={arg.event.extendedProps.task}
 					/>
 				)}
@@ -515,8 +538,8 @@ export default function CalendarView({
 					setMoreLinkPopover({
 						alignElement: arg.jsEvent.currentTarget as HTMLElement,
 						date: arg.date,
-						tasks: arg.allSegs.map(
-							(seg) => seg.event.extendedProps.task
+						taskIds: arg.allSegs.map((seg) =>
+							String(seg.event.extendedProps.task.id)
 						),
 					});
 
@@ -563,7 +586,12 @@ export default function CalendarView({
 					alignElement={moreLinkPopover.alignElement}
 					itemsActions={itemsActions}
 					onClose={() => setMoreLinkPopover(null)}
-					tasks={moreLinkPopover.tasks}
+					tasks={items
+						.map((item) => item.embedded)
+						.filter(Boolean)
+						.filter((task) =>
+							moreLinkPopover.taskIds.includes(String(task.id))
+						)}
 				/>
 			)}
 
@@ -571,6 +599,7 @@ export default function CalendarView({
 				<UnscheduledTasksPanel
 					containerRef={fdsContainerRef}
 					onOpenChange={setUnscheduledTasksPanelOpen}
+					onTaskChanged={handleTaskChanged}
 					open={unscheduledTasksPanelOpen}
 					tasks={unscheduledTasks}
 				/>

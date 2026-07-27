@@ -15,7 +15,10 @@ import React from 'react';
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import isActionsMenuEvent from '../../../../../utils/isActionsMenuEvent';
 import isOverdue from '../../../../../utils/isOverdue';
-import {ITaskObjectEntry} from '../../../../../utils/types';
+import {
+	ITaskItemsActionsTask,
+	ITaskObjectEntry,
+} from '../../../../../utils/types';
 import StateLabel from '../../../../StateLabel';
 
 import './CalendarTaskCard.scss';
@@ -24,6 +27,7 @@ interface CalendarTaskCardProps {
 	expanded?: boolean;
 	itemsActions?: IItemsActions[];
 	loadData: Function;
+	onTaskChanged?: (task: ITaskItemsActionsTask) => void;
 	task: ITaskObjectEntry;
 }
 
@@ -31,6 +35,7 @@ export default function CalendarTaskCard({
 	expanded = false,
 	itemsActions = [],
 	loadData,
+	onTaskChanged,
 	task,
 }: CalendarTaskCardProps) {
 	const {assignTo, dueDate, state, title} = task;
@@ -38,10 +43,15 @@ export default function CalendarTaskCard({
 	const blocked = state?.key === 'blocked';
 	const overdue = isOverdue({dueDate, state});
 
-	const taskItemsActions = getTaskItemsActions(itemsActions, loadData, {
-		actions: task.actions,
-		embedded: task,
-	});
+	const taskItemsActions = getTaskItemsActions(
+		itemsActions,
+		loadData,
+		{
+			actions: task.actions,
+			embedded: task,
+		},
+		onTaskChanged
+	);
 
 	const hasViewPermission = Boolean(task.actions?.get);
 
