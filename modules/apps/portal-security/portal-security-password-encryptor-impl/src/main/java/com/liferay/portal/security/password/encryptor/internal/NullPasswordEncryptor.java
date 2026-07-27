@@ -21,10 +21,10 @@ public class NullPasswordEncryptor implements PasswordEncryptor {
 
 	@Override
 	public String encrypt(
-		String algorithm, String plainTextPassword, String encryptedPassword,
+		String algorithm, String plaintextPassword, String encryptedPassword,
 		boolean upgradeHashSecurity) {
 
-		return plainTextPassword;
+		return plaintextPassword;
 	}
 
 }

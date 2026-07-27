@@ -200,13 +200,13 @@ public abstract class SecretsUtil {
 		aesCipher.init(
 			Cipher.DECRYPT_MODE, secretKey, new GCMParameterSpec(128, iv));
 
-		byte[] plainText = aesCipher.doFinal(
+		byte[] plaintext = aesCipher.doFinal(
 			decoder.decode(envelopeJSONObject.getString("cipherText")));
 
-		return new String(plainText, StandardCharsets.UTF_8);
+		return new String(plaintext, StandardCharsets.UTF_8);
 	}
 
-	private static String _encrypt(String plainText, PublicKey publicKey)
+	private static String _encrypt(String plaintext, PublicKey publicKey)
 		throws GeneralSecurityException {
 
 		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
@@ -226,8 +226,8 @@ public abstract class SecretsUtil {
 		aesCipher.init(
 			Cipher.ENCRYPT_MODE, secretKey, new GCMParameterSpec(128, iv));
 
-		byte[] cipherText = aesCipher.doFinal(
-			plainText.getBytes(StandardCharsets.UTF_8));
+		byte[] ciphertext = aesCipher.doFinal(
+			plaintext.getBytes(StandardCharsets.UTF_8));
 
 		Cipher rsaCipher = Cipher.getInstance(
 			"RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
@@ -243,7 +243,7 @@ public abstract class SecretsUtil {
 		envelopeJSONObject.put(
 			"cipher", _CACHE_CIPHER
 		).put(
-			"cipherText", encoder.encodeToString(cipherText)
+			"cipherText", encoder.encodeToString(ciphertext)
 		).put(
 			"encryptedKey", encoder.encodeToString(encryptedKey)
 		).put(

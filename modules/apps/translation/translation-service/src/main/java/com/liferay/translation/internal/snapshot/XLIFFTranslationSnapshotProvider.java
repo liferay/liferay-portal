@@ -465,14 +465,14 @@ public class XLIFFTranslationSnapshotProvider
 						"There is no translation target");
 				}
 
-				String targetPlainText = targetFragment.getPlainText();
+				String targetPlaintext = targetFragment.getPlainText();
 
 				unsafeConsumer.accept(
 					new InfoFieldValue<>(
 						_createInfoField(targetLocale, unit.getId()),
 						InfoLocalizedValue.builder(
 						).value(
-							targetLocale, targetPlainText
+							targetLocale, targetPlaintext
 						).value(
 							biConsumer -> {
 								if (includeSource) {

@@ -34,7 +34,7 @@ public class SSHAPasswordEncryptor implements PasswordEncryptor {
 
 	@Override
 	public String encrypt(
-			String algorithm, String plainTextPassword,
+			String algorithm, String plaintextPassword,
 			String encryptedPassword, boolean upgradeHashSecurity)
 		throws PwdEncryptorException {
 
@@ -49,11 +49,11 @@ public class SSHAPasswordEncryptor implements PasswordEncryptor {
 				PropsValues.FIPS_ENABLED ? DigesterUtil.SHA_256 :
 					DigesterUtil.SHA_1);
 
-			byte[] plainTextPasswordBytes = plainTextPassword.getBytes(
+			byte[] plaintextPasswordBytes = plaintextPassword.getBytes(
 				DigesterUtil.ENCODING);
 
 			byte[] messageDigestBytes = messageDigest.digest(
-				ArrayUtil.append(plainTextPasswordBytes, saltBytes));
+				ArrayUtil.append(plaintextPasswordBytes, saltBytes));
 
 			return Base64.encode(
 				ArrayUtil.append(messageDigestBytes, saltBytes));

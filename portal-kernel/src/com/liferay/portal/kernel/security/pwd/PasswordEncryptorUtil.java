@@ -30,14 +30,14 @@ import com.liferay.portal.kernel.util.Validator;
  */
 public class PasswordEncryptorUtil {
 
-	public static String encrypt(String plainTextPassword)
+	public static String encrypt(String plaintextPassword)
 		throws PwdEncryptorException {
 
-		return encrypt(plainTextPassword, null);
+		return encrypt(plaintextPassword, null);
 	}
 
 	public static String encrypt(
-			String plainTextPassword, String encryptedPassword)
+			String plaintextPassword, String encryptedPassword)
 		throws PwdEncryptorException {
 
 		long startTime = 0;
@@ -48,7 +48,7 @@ public class PasswordEncryptorUtil {
 
 		try {
 			return encrypt(
-				_PASSWORDS_ENCRYPTION_ALGORITHM, plainTextPassword,
+				_PASSWORDS_ENCRYPTION_ALGORITHM, plaintextPassword,
 				encryptedPassword);
 		}
 		finally {
@@ -61,7 +61,7 @@ public class PasswordEncryptorUtil {
 	}
 
 	public static String encrypt(
-			String plainTextPassword, String encryptedPassword,
+			String plaintextPassword, String encryptedPassword,
 			boolean upgradeHashSecurity)
 		throws PwdEncryptorException {
 
@@ -70,15 +70,15 @@ public class PasswordEncryptorUtil {
 		}
 
 		return _encrypt(
-			null, plainTextPassword, encryptedPassword, upgradeHashSecurity);
+			null, plaintextPassword, encryptedPassword, upgradeHashSecurity);
 	}
 
 	public static String encrypt(
-			String algorithm, String plainTextPassword,
+			String algorithm, String plaintextPassword,
 			String encryptedPassword)
 		throws PwdEncryptorException {
 
-		return _encrypt(algorithm, plainTextPassword, encryptedPassword, false);
+		return _encrypt(algorithm, plaintextPassword, encryptedPassword, false);
 	}
 
 	public static String getEncryptedPasswordAlgorithmSettings(
@@ -100,11 +100,11 @@ public class PasswordEncryptorUtil {
 	}
 
 	private static String _encrypt(
-			String algorithm, String plainTextPassword,
+			String algorithm, String plaintextPassword,
 			String encryptedPassword, boolean upgradeHashSecurity)
 		throws PwdEncryptorException {
 
-		if (Validator.isNull(plainTextPassword)) {
+		if (Validator.isNull(plaintextPassword)) {
 			throw new PwdEncryptorException.PwdMustNotBeNull(
 				"Unable to _encrypt blank password");
 		}
@@ -148,7 +148,7 @@ public class PasswordEncryptorUtil {
 		PasswordEncryptor passwordEncryptor = _getPasswordEncryptor(algorithm);
 
 		String newEncryptedPassword = passwordEncryptor.encrypt(
-			algorithm, plainTextPassword, encryptedPassword, false);
+			algorithm, plaintextPassword, encryptedPassword, false);
 
 		if (!prependAlgorithm) {
 			if (_log.isDebugEnabled()) {

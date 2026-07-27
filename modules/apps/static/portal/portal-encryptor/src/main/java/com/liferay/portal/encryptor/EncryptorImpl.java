@@ -105,16 +105,16 @@ public class EncryptorImpl implements Encryptor {
 	}
 
 	@Override
-	public String encrypt(Key key, String plainText) throws EncryptorException {
+	public String encrypt(Key key, String plaintext) throws EncryptorException {
 		if (key == null) {
 			if (_log.isWarnEnabled()) {
 				_log.warn("Skip encrypting based on a null key");
 			}
 
-			return plainText;
+			return plaintext;
 		}
 
-		byte[] encryptedBytes = encryptUnencoded(key, plainText);
+		byte[] encryptedBytes = encryptUnencoded(key, plaintext);
 
 		return Base64.encode(encryptedBytes);
 	}
@@ -158,11 +158,11 @@ public class EncryptorImpl implements Encryptor {
 	}
 
 	@Override
-	public byte[] encryptUnencoded(Key key, String plainText)
+	public byte[] encryptUnencoded(Key key, String plaintext)
 		throws EncryptorException {
 
 		try {
-			byte[] decryptedBytes = plainText.getBytes(ENCODING);
+			byte[] decryptedBytes = plaintext.getBytes(ENCODING);
 
 			return encryptUnencoded(key, decryptedBytes);
 		}

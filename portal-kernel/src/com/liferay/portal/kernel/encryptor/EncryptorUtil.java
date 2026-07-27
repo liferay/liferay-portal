@@ -36,12 +36,12 @@ public class EncryptorUtil {
 		return encryptor.deserializeKey(base64String);
 	}
 
-	public static String encrypt(Key key, String plainText)
+	public static String encrypt(Key key, String plaintext)
 		throws EncryptorException {
 
 		Encryptor encryptor = _encryptorSnapshot.get();
 
-		return encryptor.encrypt(key, plainText);
+		return encryptor.encrypt(key, plaintext);
 	}
 
 	public static byte[] encryptUnencoded(Key key, byte[] plainBytes)
@@ -52,12 +52,12 @@ public class EncryptorUtil {
 		return encryptor.encryptUnencoded(key, plainBytes);
 	}
 
-	public static byte[] encryptUnencoded(Key key, String plainText)
+	public static byte[] encryptUnencoded(Key key, String plaintext)
 		throws EncryptorException {
 
 		Encryptor encryptor = _encryptorSnapshot.get();
 
-		return encryptor.encryptUnencoded(key, plainText);
+		return encryptor.encryptUnencoded(key, plaintext);
 	}
 
 	public static Key generateKey() throws EncryptorException {

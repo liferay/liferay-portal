@@ -189,7 +189,7 @@ public class JournalTransformerTest {
 		_testCreateTemplateNodeMultipleSelectTypeDDMFormFieldWithoutOptions();
 		_testCreateTemplateNodeSingleSelectTypeDDMFormFieldWithOptions();
 		_testCreateTemplateNodeTextDDMFormFieldWithHTML();
-		_testCreateTemplateNodeTextDDMFormFieldWithPlainText();
+		_testCreateTemplateNodeTextDDMFormFieldWithPlaintext();
 	}
 
 	@Test
@@ -1005,7 +1005,7 @@ public class JournalTransformerTest {
 			"<img src=\"x\" onerror=alert(document.cookie)>");
 	}
 
-	private void _testCreateTemplateNodeTextDDMFormFieldWithPlainText() {
+	private void _testCreateTemplateNodeTextDDMFormFieldWithPlaintext() {
 		_testCreateTemplateNodeTextDDMFormField(RandomTestUtil.randomString());
 	}
 

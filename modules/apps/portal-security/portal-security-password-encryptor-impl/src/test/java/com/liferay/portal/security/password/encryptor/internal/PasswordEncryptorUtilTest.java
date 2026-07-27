@@ -388,11 +388,11 @@ public class PasswordEncryptorUtilTest {
 	}
 
 	private void _testEncryptFailure(
-		String algorithm, String plainTextPassword, String encryptedPassword) {
+		String algorithm, String plaintextPassword, String encryptedPassword) {
 
 		try {
 			PasswordEncryptorUtil.encrypt(
-				algorithm, plainTextPassword, encryptedPassword);
+				algorithm, plaintextPassword, encryptedPassword);
 
 			Assert.fail();
 		}
@@ -423,15 +423,15 @@ public class PasswordEncryptorUtilTest {
 
 		@Override
 		public String encrypt(
-			String algorithm, String plainTextPassword,
+			String algorithm, String plaintextPassword,
 			String encryptedPassword, boolean upgradeHashSecurity) {
 
 			if (encryptedPassword != null) {
-				return plainTextPassword +
+				return plaintextPassword +
 					encryptedPassword.substring(encryptedPassword.indexOf(':'));
 			}
 
-			return plainTextPassword + ':' +
+			return plaintextPassword + ':' +
 				algorithm.substring(algorithm.indexOf('/') + 1);
 		}
 

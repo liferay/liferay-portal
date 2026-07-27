@@ -217,7 +217,7 @@ public class FragmentEntryServiceTest {
 	}
 
 	@Test
-	public void testAddFragmentEntryUsingPlainTextHTML() throws Exception {
+	public void testAddFragmentEntryUsingPlaintextHTML() throws Exception {
 		_fragmentEntryService.addFragmentEntry(
 			null, _group.getGroupId(),
 			_fragmentCollection.getFragmentCollectionId(),

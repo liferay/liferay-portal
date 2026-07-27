@@ -22,12 +22,12 @@ public interface Encryptor {
 
 	public Key deserializeKey(String base64String);
 
-	public String encrypt(Key key, String plainText) throws EncryptorException;
+	public String encrypt(Key key, String plaintext) throws EncryptorException;
 
 	public byte[] encryptUnencoded(Key key, byte[] plainBytes)
 		throws EncryptorException;
 
-	public byte[] encryptUnencoded(Key key, String plainText)
+	public byte[] encryptUnencoded(Key key, String plaintext)
 		throws EncryptorException;
 
 	public Key generateKey() throws EncryptorException;

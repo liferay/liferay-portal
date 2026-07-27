@@ -32,7 +32,7 @@ public class CryptPasswordEncryptor implements PasswordEncryptor {
 
 	@Override
 	public String encrypt(
-			String algorithm, String plainTextPassword,
+			String algorithm, String plaintextPassword,
 			String encryptedPassword, boolean upgradeHashSecurity)
 		throws PwdEncryptorException {
 
@@ -44,7 +44,7 @@ public class CryptPasswordEncryptor implements PasswordEncryptor {
 
 		try {
 			return Crypt.crypt(
-				saltBytes, plainTextPassword.getBytes(DigesterUtil.ENCODING));
+				saltBytes, plaintextPassword.getBytes(DigesterUtil.ENCODING));
 		}
 		catch (UnsupportedEncodingException unsupportedEncodingException) {
 			throw new PwdEncryptorException.UnsupportedEncoding(

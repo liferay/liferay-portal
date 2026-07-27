@@ -27,7 +27,7 @@ public class DefaultPasswordEncryptor implements PasswordEncryptor {
 
 	@Override
 	public String encrypt(
-			String algorithm, String plainTextPassword,
+			String algorithm, String plaintextPassword,
 			String encryptedPassword, boolean upgradeHashSecurity)
 		throws PwdEncryptorException {
 
@@ -41,7 +41,7 @@ public class DefaultPasswordEncryptor implements PasswordEncryptor {
 				noSuchAlgorithmException);
 		}
 
-		return DigesterUtil.digest(algorithm, plainTextPassword);
+		return DigesterUtil.digest(algorithm, plaintextPassword);
 	}
 
 }

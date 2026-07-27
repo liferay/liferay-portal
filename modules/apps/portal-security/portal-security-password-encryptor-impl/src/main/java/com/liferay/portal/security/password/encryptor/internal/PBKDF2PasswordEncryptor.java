@@ -43,7 +43,7 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 
 	@Override
 	public String encrypt(
-			String algorithm, String plainTextPassword,
+			String algorithm, String plaintextPassword,
 			String encryptedPassword, boolean upgradeHashSecurity)
 		throws PwdEncryptorException {
 
@@ -61,7 +61,7 @@ public class PBKDF2PasswordEncryptor implements PasswordEncryptor {
 		byte[] secretKeyBytes = _generateDerivedKey(
 			pbkdf2EncryptionConfiguration.getKeySize(),
 			pbkdf2EncryptionConfiguration.getMacAlgorithm(),
-			plainTextPassword.getBytes(),
+			plaintextPassword.getBytes(),
 			pbkdf2EncryptionConfiguration.getRounds(), saltBytes);
 
 		ByteBuffer byteBuffer = ByteBuffer.allocate(

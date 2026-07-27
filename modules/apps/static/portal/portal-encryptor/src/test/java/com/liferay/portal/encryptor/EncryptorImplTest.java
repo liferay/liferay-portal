@@ -36,14 +36,14 @@ public class EncryptorImplTest {
 
 		Key key = encryptor.generateKey();
 
-		String encryptedString = encryptor.encrypt(key, _PLAIN_TEXT);
+		String encryptedString = encryptor.encrypt(key, _PLAINTEXT);
 
 		try (SafeCloseable safeCloseable =
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"FIPS_ENABLED", true)) {
 
 			Assert.assertEquals(
-				_PLAIN_TEXT, encryptor.decrypt(key, encryptedString));
+				_PLAINTEXT, encryptor.decrypt(key, encryptedString));
 		}
 	}
 
@@ -57,26 +57,26 @@ public class EncryptorImplTest {
 
 			Key key = encryptor.generateKey();
 
-			String encryptedString1 = encryptor.encrypt(key, _PLAIN_TEXT);
-			String encryptedString2 = encryptor.encrypt(key, _PLAIN_TEXT);
+			String encryptedString1 = encryptor.encrypt(key, _PLAINTEXT);
+			String encryptedString2 = encryptor.encrypt(key, _PLAINTEXT);
 
 			Assert.assertNotEquals(encryptedString1, encryptedString2);
 
 			Assert.assertEquals(
-				_PLAIN_TEXT, encryptor.decrypt(key, encryptedString1));
+				_PLAINTEXT, encryptor.decrypt(key, encryptedString1));
 			Assert.assertEquals(
-				_PLAIN_TEXT, encryptor.decrypt(key, encryptedString2));
+				_PLAINTEXT, encryptor.decrypt(key, encryptedString2));
 
 			Assert.assertThrows(
 				SecurityException.class,
 				() -> encryptor.decryptUnencodedAsBytes(
 					new SecretKeySpec(new byte[8], "AES"),
-					_PLAIN_TEXT.getBytes()));
+					_PLAINTEXT.getBytes()));
 			Assert.assertThrows(
 				SecurityException.class,
 				() -> encryptor.encryptUnencoded(
 					new SecretKeySpec(new byte[8], "AES"),
-					_PLAIN_TEXT.getBytes()));
+					_PLAINTEXT.getBytes()));
 		}
 	}
 
@@ -86,16 +86,16 @@ public class EncryptorImplTest {
 
 		Key key = encryptor.generateKey();
 
-		String encryptedString = encryptor.encrypt(key, _PLAIN_TEXT);
+		String encryptedString = encryptor.encrypt(key, _PLAINTEXT);
 
 		String serializedKey = encryptor.serializeKey(key);
 
 		key = encryptor.deserializeKey(serializedKey);
 
 		Assert.assertEquals(
-			_PLAIN_TEXT, encryptor.decrypt(key, encryptedString));
+			_PLAINTEXT, encryptor.decrypt(key, encryptedString));
 	}
 
-	private static final String _PLAIN_TEXT = RandomTestUtil.randomString();
+	private static final String _PLAINTEXT = RandomTestUtil.randomString();
 
 }

@@ -30,7 +30,7 @@ public class BCryptPasswordEncryptor implements PasswordEncryptor {
 
 	@Override
 	public String encrypt(
-		String algorithm, String plainTextPassword, String encryptedPassword,
+		String algorithm, String plaintextPassword, String encryptedPassword,
 		boolean upgradeHashSecurity) {
 
 		String salt = null;
@@ -54,7 +54,7 @@ public class BCryptPasswordEncryptor implements PasswordEncryptor {
 			salt = encryptedPassword.substring(0, 29);
 		}
 
-		return BCrypt.hashpw(plainTextPassword, salt);
+		return BCrypt.hashpw(plaintextPassword, salt);
 	}
 
 	@Override
