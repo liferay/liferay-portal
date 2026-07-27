@@ -25,6 +25,8 @@
 			"description"?: string;
 			"description_i18n"?: {[key: string]: string;};
 			"externalReferenceCode"?: string;
+			"friendlyUrlPath"?: string;
+			"friendlyUrlPath_i18n"?: {[key: string]: string;};
 			"id"?: string;
 			"name"?: string;
 			"name_i18n"?: {[key: string]: string;};
@@ -93,6 +95,16 @@
 			baseName: "externalReferenceCode",
 			name: "externalReferenceCode",
 			type: "string",
+		},
+		{
+			baseName: "friendlyUrlPath",
+			name: "friendlyUrlPath",
+			type: "string",
+		},
+		{
+			baseName: "friendlyUrlPath_i18n",
+			name: "friendlyUrlPath_i18n",
+			type: "{[key: string]: string;}",
 		},
 		{
 			baseName: "id",
