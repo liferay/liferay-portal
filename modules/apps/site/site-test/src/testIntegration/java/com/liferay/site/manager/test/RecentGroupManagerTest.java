@@ -93,8 +93,8 @@ public class RecentGroupManagerTest {
 		// Until the feature flag LPD-17564 is removed, we need an explicit CMS
 		// group creation.
 
-		Group group = _groupLocalService.fetchGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+		Group group = GroupTestUtil.getOrAddCMSGroup(
+			TestPropsValues.getCompanyId());
 
 		if (group != null) {
 			return;
@@ -109,10 +109,6 @@ public class RecentGroupManagerTest {
 				RoleConstants.SITE_MEMBER, null, null,
 				RoleConstants.TYPE_REGULAR, null, null);
 		}
-
-		GroupTestUtil.addGroup(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest()
