@@ -66,24 +66,16 @@ public class SelectAssetVocabularyDisplayContextTest {
 	@Test
 	@TestInfo("LPD-99346")
 	public void testGetAssetVocabularies() throws Exception {
-		long[] groupIds = {
-			_GROUP_ID, RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
-			RandomTestUtil.randomLong()
-		};
-
-		_siteConnectedGroupGroupProviderUtilMockedStatic.when(
-			() ->
-				SiteConnectedGroupGroupProviderUtil.
-					getCurrentAndAncestorSiteAndDepotGroupIds(_GROUP_ID)
-		).thenReturn(
-			groupIds
-		);
-
 		List<AssetVocabulary> assetVocabularies = Arrays.asList(
 			Mockito.mock(AssetVocabulary.class),
 			Mockito.mock(AssetVocabulary.class),
 			Mockito.mock(AssetVocabulary.class),
 			Mockito.mock(AssetVocabulary.class));
+
+		long[] groupIds = {
+			_GROUP_ID, RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+			RandomTestUtil.randomLong()
+		};
 
 		_assetVocabularyServiceUtilMockedStatic.when(
 			() -> AssetVocabularyServiceUtil.getGroupVocabularies(
@@ -94,6 +86,14 @@ public class SelectAssetVocabularyDisplayContextTest {
 					}))
 		).thenReturn(
 			assetVocabularies
+		);
+
+		_siteConnectedGroupGroupProviderUtilMockedStatic.when(
+			() ->
+				SiteConnectedGroupGroupProviderUtil.
+					getCurrentAndAncestorSiteAndDepotGroupIds(_GROUP_ID)
+		).thenReturn(
+			groupIds
 		);
 
 		MockHttpServletRequest mockHttpServletRequest =
