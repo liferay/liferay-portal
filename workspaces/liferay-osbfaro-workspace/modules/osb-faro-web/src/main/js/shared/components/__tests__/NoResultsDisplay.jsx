@@ -68,7 +68,7 @@ describe('NoResultsDisplay', () => {
 
 describe('NoResultsDisplay - getFormattedTitle util', () => {
 	it('should return formatted title', () => {
-		expect(getFormattedTitle()).toEqual('There are no items found.');
+		expect(getFormattedTitle()).toEqual('No items were found.');
 	});
 
 	it('should return formatted title passing a title', () => {
@@ -84,7 +84,7 @@ describe('NoResultsDisplay - getFormattedTitle util', () => {
 
 	it('should return formatted title passing a name', () => {
 		expect(getFormattedTitle(Liferay.Language.get('segments'))).toEqual(
-			'There are no Segments found.'
+			'No Segments were found.'
 		);
 	});
 });

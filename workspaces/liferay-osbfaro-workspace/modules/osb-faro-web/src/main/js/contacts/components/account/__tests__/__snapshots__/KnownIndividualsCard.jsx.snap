@@ -175,7 +175,7 @@ exports[`KnownIndividualsCard should render w/ NoResultsDisplay 1`] = `
         <div
           class="h4 no-results-title"
         >
-          There are no individuals found.
+          No individuals were found.
         </div>
         <div
           class="no-results-description"

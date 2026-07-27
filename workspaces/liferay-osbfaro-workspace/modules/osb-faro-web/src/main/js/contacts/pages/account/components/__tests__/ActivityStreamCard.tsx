@@ -157,7 +157,7 @@ describe('ActivityStreamCard', () => {
 			await jest.advanceTimersByTimeAsync(500);
 		});
 
-		expect(getByText('There are no results found.')).toBeInTheDocument();
+		expect(getByText('No results were found.')).toBeInTheDocument();
 
 		fireEvent.click(getByText('Clear Search'));
 

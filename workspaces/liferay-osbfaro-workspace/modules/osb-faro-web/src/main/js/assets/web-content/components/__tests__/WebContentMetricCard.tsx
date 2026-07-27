@@ -101,9 +101,7 @@ describe('WebContentMetricCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(
-			getByText('There are no visitors data found.')
-		).toBeInTheDocument();
+		expect(getByText('No visitors data was found.')).toBeInTheDocument();
 
 		const linkToTheDocumentation = getByText(
 			'Learn more about visitor behavior.'

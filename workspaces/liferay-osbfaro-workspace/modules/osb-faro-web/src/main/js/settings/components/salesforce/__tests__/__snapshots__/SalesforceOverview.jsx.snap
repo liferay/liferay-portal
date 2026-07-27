@@ -917,7 +917,7 @@ exports[`SalesforceOverview should render 1`] = `
                     <div
                       class="h4 no-results-title"
                     >
-                      There are no properties found.
+                      No properties were found.
                     </div>
                     <div
                       class="no-results-description"

@@ -282,7 +282,7 @@ describe('List', () => {
 
 			expect(
 				screen.getByTestId('fds-empty-state-title')
-			).toHaveTextContent('There are no assets found.');
+			).toHaveTextContent('No assets were found.');
 		});
 
 		it('should include the check-back-later text in the empty state description', () => {

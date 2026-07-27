@@ -63,6 +63,6 @@ describe('SearchableModal', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText('There are no items found.')).toBeTruthy();
+		expect(queryByText('No items were found.')).toBeTruthy();
 	});
 });

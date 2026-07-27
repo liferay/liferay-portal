@@ -134,7 +134,7 @@ describe('IndividualProfileCard', () => {
 
 		jest.runAllTimers();
 
-		expect(getByText('There are no results found.')).toBeInTheDocument();
+		expect(getByText('No results were found.')).toBeInTheDocument();
 	});
 
 	it('should clear search input when clear button is clicked', async () => {

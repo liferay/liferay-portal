@@ -76,7 +76,7 @@ describe('BaseResults', () => {
 		await waitFor(
 			() => {
 				expect(
-					getByText('There are no results found.')
+					getByText('No results were found.')
 				).toBeInTheDocument();
 			},
 			{timeout: 1000}

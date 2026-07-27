@@ -186,7 +186,7 @@ exports[`SegmentOverview should render 1`] = `
                 <div
                   class="h4 no-results-title"
                 >
-                  There are no results found.
+                  No results were found.
                 </div>
                 <div
                   class="no-results-description"

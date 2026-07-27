@@ -177,9 +177,7 @@ describe('FilterBySegment', () => {
 			target: {value: 'Viewed Form'},
 		});
 
-		expect(
-			screen.getByText('There are no results found.')
-		).toBeInTheDocument();
+		expect(screen.getByText('No results were found.')).toBeInTheDocument();
 	});
 
 	it('should open dropdown w/ segments and select one of them', async () => {

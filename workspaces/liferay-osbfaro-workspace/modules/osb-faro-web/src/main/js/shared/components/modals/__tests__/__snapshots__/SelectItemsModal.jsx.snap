@@ -355,7 +355,7 @@ exports[`SelectItemsModal should render with a blank submit 1`] = `
             <div
               class="h4 no-results-title"
             >
-              There are no items found.
+              No items were found.
             </div>
           </div>
         </div>
@@ -724,7 +724,7 @@ exports[`SelectItemsModal should render with a successful submit 1`] = `
             <div
               class="h4 no-results-title"
             >
-              There are no items found.
+              No items were found.
             </div>
           </div>
         </div>
@@ -851,7 +851,7 @@ exports[`SelectItemsModal should render with an unsuccessful submit 1`] = `
             <div
               class="h4 no-results-title"
             >
-              There are no items found.
+              No items were found.
             </div>
           </div>
         </div>
@@ -1101,7 +1101,7 @@ exports[`SelectItemsModal should render with selectedItems with the disable sele
             <div
               class="h4 no-results-title"
             >
-              There are no items found.
+              No items were found.
             </div>
           </div>
         </div>

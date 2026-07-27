@@ -63,7 +63,7 @@ exports[`ListComponent renders 1`] = `
       <div
         class="h4 no-results-title"
       >
-        There are no items found.
+        No items were found.
       </div>
     </div>
   </div>

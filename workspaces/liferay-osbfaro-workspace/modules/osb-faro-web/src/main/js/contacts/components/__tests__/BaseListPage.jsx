@@ -120,7 +120,7 @@ describe('BaseListPage', () => {
 			container.querySelectorAll('.tbar-section.text-truncate')[1]
 		).toHaveTextContent('Clear');
 
-		expect(getByText('There are no results found.')).toBeInTheDocument();
+		expect(getByText('No results were found.')).toBeInTheDocument();
 	});
 
 	it('should render with alerts', async () => {
