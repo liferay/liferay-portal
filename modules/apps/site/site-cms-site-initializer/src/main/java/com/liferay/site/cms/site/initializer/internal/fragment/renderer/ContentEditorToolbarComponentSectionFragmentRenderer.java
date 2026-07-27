@@ -13,12 +13,9 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -212,27 +209,21 @@ public class ContentEditorToolbarComponentSectionFragmentRenderer
 					return null;
 				}
 
-				JSONArray objectFieldsJSONArray =
-					_jsonFactory.createJSONArray();
+				return JSONUtil.toJSONArray(
+					_objectFieldLocalService.getObjectFields(
+						objectDefinition.getObjectDefinitionId()),
+					objectField -> {
+						if (objectField.isMetadata()) {
+							return null;
+						}
 
-				for (ObjectField objectField :
-						_objectFieldLocalService.getObjectFields(
-							objectDefinition.getObjectDefinitionId())) {
-
-					if (objectField.isMetadata()) {
-						continue;
-					}
-
-					objectFieldsJSONArray.put(
-						JSONUtil.put(
+						return JSONUtil.put(
 							"label",
 							objectField.getLabel(themeDisplay.getLocale())
 						).put(
 							"name", objectField.getName()
-						));
-				}
-
-				return objectFieldsJSONArray;
+						);
+					});
 			}
 		).put(
 			"title", title
@@ -261,9 +252,6 @@ public class ContentEditorToolbarComponentSectionFragmentRenderer
 
 		return title;
 	}
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService
