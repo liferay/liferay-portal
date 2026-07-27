@@ -857,7 +857,7 @@ public class BatchEnginePortletDataHandlerTest {
 	}
 
 	@Test
-	@TestInfo("LPD-77963")
+	@TestInfo({"LPD-76327", "LPD-77963"})
 	public void testExportImportCompanyObjectEntriesWithMissingPortlet()
 		throws Exception {
 

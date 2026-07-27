@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -260,6 +261,17 @@ public class ImportProcessResourceTest
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition);
 		}
+
+		_testPostImportProcessWithoutObjectDefinition(
+			() -> _exportLayoutAsFile(companyGroup.getGroupId()),
+			_publishObjectDefinition(ObjectDefinitionConstants.SCOPE_COMPANY),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			file -> _importPreviewResource.postImportPreview(
+				null,
+				HashMapBuilder.put(
+					"file", file
+				).build()),
+			importProcessResource::postImportProcess);
 
 		_testPostImportProcessWithPreviewForOtherGroup(
 			testGroup.getGroupId(),
@@ -751,6 +763,7 @@ public class ImportProcessResourceTest
 			true);
 	}
 
+	@TestInfo("LPD-45048")
 	private void _testPostImportProcessWithObjectDefinition(
 			UnsafeSupplier<File, Exception> exportFileUnsafeSupplier,
 			ObjectDefinition objectDefinition, long objectEntryGroupId,
@@ -806,6 +819,63 @@ public class ImportProcessResourceTest
 			_objectEntryLocalService.fetchObjectEntry(
 				objectEntry.getExternalReferenceCode(), objectEntryGroupId,
 				objectDefinition.getObjectDefinitionId()));
+	}
+
+	@TestInfo("LPD-76327")
+	private void _testPostImportProcessWithoutObjectDefinition(
+			UnsafeSupplier<File, Exception> exportFileUnsafeSupplier,
+			ObjectDefinition objectDefinition, long objectEntryGroupId,
+			UnsafeFunction<File, ImportPreview, Exception>
+				postImportPreviewUnsafeFunction,
+			UnsafeFunction<ImportProcessRequest, ImportProcess, Exception>
+				postImportProcessUnsafeFunction)
+		throws Exception {
+
+		ObjectEntry objectEntry = ObjectEntryTestUtil.addObjectEntry(
+			objectEntryGroupId, objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				"textField", RandomTestUtil.randomString()
+			).build());
+
+		File file = exportFileUnsafeSupplier.get();
+
+		String portletId = objectDefinition.getPortletId();
+
+		_objectEntryLocalService.deleteObjectEntry(
+			objectEntry.getObjectEntryId());
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			objectDefinition.getObjectDefinitionId());
+
+		postImportPreviewUnsafeFunction.apply(file);
+
+		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
+
+		importProcessRequest.setRequestPortletDataHandlers(
+			new RequestPortletDataHandler[] {
+				new RequestPortletDataHandler() {
+					{
+						name = "PORTLET_DATA_" + portletId;
+					}
+				}
+			});
+
+		ImportProcess importProcess = postImportProcessUnsafeFunction.apply(
+			importProcessRequest);
+
+		assertValid(importProcess);
+
+		ExportImportTestUtil.retryAssert(
+			1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
+			() -> {
+				BackgroundTask backgroundTask =
+					_backgroundTaskLocalService.getBackgroundTask(
+						importProcess.getId());
+
+				Assert.assertEquals(
+					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
+					backgroundTask.getStatus());
+			});
 	}
 
 	private void _testPostImportProcessWithoutPreview(
