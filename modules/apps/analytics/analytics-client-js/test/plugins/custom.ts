@@ -10,6 +10,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
+import {DEBOUNCE} from '../../src/utils/constants';
 import {INITIAL_ANALYTICS_CONFIG, mockVisibleRect, wait} from '../helpers';
 
 const applicationId = 'Custom';
@@ -278,6 +279,110 @@ describe('Custom Asset Plugin', () => {
 					({eventId}) => eventId === 'assetViewed'
 				).length
 			).toBe(1);
+
+			document.body.removeChild(customAssetElement);
+		});
+	});
+
+	describe('assetDepthReached event', () => {
+		beforeEach(() => {
+
+			// Recreate with a flush interval large enough that the queue is not
+			// drained before the debounced scroll depth event is asserted.
+
+			AnalyticsClient.dispose();
+
+			Analytics = AnalyticsClient.create({
+				...INITIAL_ANALYTICS_CONFIG,
+				flushInterval: 60000,
+			});
+		});
+
+		it('is fired on scroll after a viewed custom asset reaches a depth level', async () => {
+			const customAssetElement = createCustomAssetElement();
+
+			mockVisibleRect(customAssetElement);
+
+			// The element must be viewed first so it is tracked for scrolling
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(100);
+
+			document.dispatchEvent(new Event('scroll'));
+
+			await wait(DEBOUNCE + 200);
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'assetDepthReached'
+			);
+
+			expect(events.length).toBeGreaterThanOrEqual(1);
+
+			expect(events[0]).toEqual(
+				expect.objectContaining({
+					applicationId,
+					eventId: 'assetDepthReached',
+					properties: expect.objectContaining({
+						assetId: 'assetId',
+						depth: expect.any(Number),
+					}),
+				})
+			);
+
+			expect(events[0].properties.depth).toBeGreaterThan(0);
+
+			document.body.removeChild(customAssetElement);
+		});
+	});
+
+	describe('assetSubmitted event', () => {
+		it('is fired when a form inside a custom asset is submitted', async () => {
+			const customAssetElement = createCustomAssetElementWithForm();
+
+			const form = customAssetElement.querySelector(
+				'form'
+			) as HTMLFormElement;
+
+			form.dispatchEvent(new Event('submit', {bubbles: true}));
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'assetSubmitted'
+			);
+
+			expect(events.length).toBe(1);
+
+			expect(events[0]).toEqual(
+				expect.objectContaining({
+					applicationId,
+					eventId: 'assetSubmitted',
+					properties: expect.objectContaining({
+						assetId: 'assetId',
+					}),
+				})
+			);
+
+			document.body.removeChild(customAssetElement);
+		});
+
+		it('is not fired when the submit event is defaultPrevented', async () => {
+			const customAssetElement = createCustomAssetElementWithForm();
+
+			const form = customAssetElement.querySelector(
+				'form'
+			) as HTMLFormElement;
+
+			form.addEventListener('submit', (event) => event.preventDefault());
+
+			form.dispatchEvent(
+				new Event('submit', {bubbles: true, cancelable: true})
+			);
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'assetSubmitted'
+			);
+
+			expect(events.length).toBe(0);
 
 			document.body.removeChild(customAssetElement);
 		});
