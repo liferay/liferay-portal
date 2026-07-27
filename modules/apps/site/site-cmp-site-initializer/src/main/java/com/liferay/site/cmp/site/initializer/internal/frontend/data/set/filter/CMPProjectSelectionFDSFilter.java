@@ -13,9 +13,9 @@ import com.liferay.petra.string.StringBundler;
 /**
  * @author José Abelenda
  */
-public class ProjectSelectionFDSFilter extends BaseSelectionFDSFilter {
+public class CMPProjectSelectionFDSFilter extends BaseSelectionFDSFilter {
 
-	public ProjectSelectionFDSFilter(ObjectDefinition objectDefinition) {
+	public CMPProjectSelectionFDSFilter(ObjectDefinition objectDefinition) {
 		_objectDefinition = objectDefinition;
 	}
 

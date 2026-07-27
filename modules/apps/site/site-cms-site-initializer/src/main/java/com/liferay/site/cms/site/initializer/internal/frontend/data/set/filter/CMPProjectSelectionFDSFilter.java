@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = FDSFilter.class
 )
-public class ProjectSelectionFDSFilter extends BaseSelectionFDSFilter {
+public class CMPProjectSelectionFDSFilter extends BaseSelectionFDSFilter {
 
 	@Override
 	public String getAPIURL() {

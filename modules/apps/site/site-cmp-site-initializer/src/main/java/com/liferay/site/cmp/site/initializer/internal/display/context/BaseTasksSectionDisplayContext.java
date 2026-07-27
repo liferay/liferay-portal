@@ -39,9 +39,9 @@ import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.site.cmp.site.initializer.internal.constants.CMPActionConstants;
 import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.AssigneeSelectionFDSFilter;
+import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.CMPProjectSelectionFDSFilter;
 import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.CreateDateFDSFilter;
 import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.DueDateRangeFDSFilter;
-import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.ProjectSelectionFDSFilter;
 import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.StateSelectionFDSFilter;
 import com.liferay.site.cmp.site.initializer.internal.frontend.data.set.filter.TagSelectionFDSFilter;
 import com.liferay.site.cmp.site.initializer.internal.util.ActionUtil;
@@ -263,7 +263,7 @@ public abstract class BaseTasksSectionDisplayContext
 
 		if (assetEntry == null) {
 			fdsFilters.add(
-				new ProjectSelectionFDSFilter(cmpProjectObjectDefinition));
+				new CMPProjectSelectionFDSFilter(cmpProjectObjectDefinition));
 		}
 
 		fdsFilters.add(new StateSelectionFDSFilter());
