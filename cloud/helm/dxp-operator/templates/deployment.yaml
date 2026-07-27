@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: {{ include "dxp-operator.fullname" . }}
+    namespace: {{ include "dxp-operator.namespace" . }}
+spec:
+    replicas: {{ .Values.replicaCount }}
+    selector:
+        matchLabels:
+            {{- include "dxp-operator.selectorLabels" . | nindent 12 }}
+    template:
+        metadata:
+            {{- with .Values.podAnnotations }}
+            annotations:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
+            labels:
+                {{- include "dxp-operator.labels" . | nindent 16 }}
+        spec:
+            containers:
+                -   env:
+                        -   name: HEARTBEAT_INTERVAL
+                            value: {{ .Values.heartbeatInterval | quote }}
+                        -   name: METRICS_ADDRESS
+                            value: {{ printf ":%d" (int .Values.metrics.port) | quote }}
+                        -   name: PROBE_ADDRESS
+                            value: {{ printf ":%d" (int .Values.probes.port) | quote }}
+                    image: {{ printf "%s:%s" .Values.image.repository (.Values.image.tag | toString) }}
+                    imagePullPolicy: {{ .Values.image.pullPolicy }}
+                    livenessProbe:
+                        httpGet:
+                            path: /healthz
+                            port: health
+                        initialDelaySeconds: 15
+                        periodSeconds: 20
+                    name: manager
+                    ports:
+                        -   containerPort: {{ .Values.metrics.port }}
+                            name: metrics
+                            protocol: TCP
+                        -   containerPort: {{ .Values.probes.port }}
+                            name: health
+                            protocol: TCP
+                    readinessProbe:
+                        httpGet:
+                            path: /readyz
+                            port: health
+                        initialDelaySeconds: 5
+                        periodSeconds: 10
+                    resources:
+                        {{- toYaml .Values.resources | nindent 24 }}
+                    {{- with .Values.securityContext }}
+                    securityContext:
+                        {{- toYaml . | nindent 24 }}
+                    {{- end }}
+            {{- with .Values.image.pullSecrets }}
+            imagePullSecrets:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
+            {{- with .Values.nodeSelector }}
+            nodeSelector:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
+            {{- with .Values.podSecurityContext }}
+            securityContext:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
+            serviceAccountName: {{ include "dxp-operator.serviceAccountName" . }}
+            {{- with .Values.tolerations }}
+            tolerations:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
+            {{- with .Values.affinity }}
+            affinity:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
