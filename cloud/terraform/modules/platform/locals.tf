@@ -75,6 +75,19 @@ locals {
 			usernameProperty=try(var.git_repository_config.credentials.username_property, null)
 		} : key=>value if value != null
 	}
+	gitops_layout={
+		for key, value in {
+			base=var.gitops_layout_config.base
+			environmentId=var.gitops_layout_config.environment_id
+			environments=var.gitops_layout_config.environments
+			infrastructureValuesFilename=var.gitops_layout_config.infrastructure_values_filename
+			liferayValuesFilename=var.gitops_layout_config.liferay_values_filename
+			projectId=var.gitops_layout_config.project_id
+			projectValuesFilename=var.gitops_layout_config.project_values_filename
+			projects=var.gitops_layout_config.projects
+			system=var.gitops_layout_config.system
+		} : key=>value if value != null
+	}
 	helm_chart_registry_url="oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart"
 	infrastructure_git_repository={
 		for key, value in {
@@ -93,11 +106,6 @@ locals {
 	}
 	platform_helm_values=merge(
 		{
-			applicationSets={
-				enabled=true
-				infrastructure=local.chart_sources.infrastructure
-				liferay=local.chart_sources.liferay
-			}
 			clusterIdentity=var.cluster_identity
 			clusterSecretStore={
 				enabled=true
@@ -114,14 +122,14 @@ locals {
 				},
 				length(local.infrastructure_git_repository) == 0 ? {} : {
 					infrastructureRepository=local.infrastructure_git_repository
+				},
+				length(local.gitops_layout) == 0 ? {} : {
+					layout=local.gitops_layout
 				}
 			)
-			infrastructureProvider=merge(
-				{
-					enabled=true
-				},
-				local.chart_sources.infrastructure_provider
-			)
+			infrastructure=local.chart_sources.infrastructure
+			infrastructureProvider=local.chart_sources.infrastructure_provider
+			liferay=local.chart_sources.liferay
 			observability=merge(
 				{
 					enabled=var.observability_enabled

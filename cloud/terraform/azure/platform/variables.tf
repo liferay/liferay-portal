@@ -41,6 +41,20 @@ variable "git_repository_config" {
 variable "git_repository_url" {
 	type=string
 }
+variable "gitops_layout_config" {
+	default={}
+	type=object({
+		base=optional(string, null)
+		environment_id=optional(string, null)
+		environments=optional(string, null)
+		infrastructure_values_filename=optional(string, null)
+		liferay_values_filename=optional(string, null)
+		project_id=optional(string, null)
+		project_values_filename=optional(string, null)
+		projects=optional(string, null)
+		system=optional(string, null)
+	})
+}
 variable "infrastructure_git_repository_config" {
 	default={}
 	type=object({

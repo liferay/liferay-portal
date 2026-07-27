@@ -6,6 +6,7 @@ module "platform" {
 	cluster_secret_store_provider=local.cluster_secret_store_provider
 	git_repository_config=var.git_repository_config
 	git_repository_url=var.git_repository_url
+	gitops_layout_config=var.gitops_layout_config
 	infrastructure_git_repository_config=var.infrastructure_git_repository_config
 	infrastructure_helm_chart_config=var.infrastructure_helm_chart_config
 	infrastructure_helm_chart_version=var.infrastructure_helm_chart_version
