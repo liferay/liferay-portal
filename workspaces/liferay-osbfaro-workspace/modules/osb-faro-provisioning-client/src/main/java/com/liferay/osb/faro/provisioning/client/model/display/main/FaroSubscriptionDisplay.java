@@ -192,6 +192,10 @@ public class FaroSubscriptionDisplay {
 		return _active;
 	}
 
+	public void setBatchSegmentsLimit(long batchSegmentsLimit) {
+		_batchSegmentsLimit = batchSegmentsLimit;
+	}
+
 	public void setCounts(
 			FaroProject faroProject,
 			FaroProjectUsageLocalService faroProjectUsageLocalService)
@@ -266,6 +270,14 @@ public class FaroSubscriptionDisplay {
 
 		_pageViewsStatus = getStatus(
 			_pageViewsCountSinceLastAnniversary, _pageViewsLimit);
+	}
+
+	public void setEventAnalysisLimit(long eventAnalysisLimit) {
+		_eventAnalysisLimit = eventAnalysisLimit;
+	}
+
+	public void setRealTimeSegmentsLimit(long realTimeSegmentsLimit) {
+		_realTimeSegmentsLimit = realTimeSegmentsLimit;
 	}
 
 	public static class AddOn {

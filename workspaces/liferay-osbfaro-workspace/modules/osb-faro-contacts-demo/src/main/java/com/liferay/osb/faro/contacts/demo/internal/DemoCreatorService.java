@@ -158,6 +158,10 @@ public abstract class DemoCreatorService {
 		FaroSubscriptionDisplay faroSubscriptionDisplay =
 			new FaroSubscriptionDisplay(osbAccountEntry);
 
+		faroSubscriptionDisplay.setBatchSegmentsLimit(100);
+		faroSubscriptionDisplay.setEventAnalysisLimit(100);
+		faroSubscriptionDisplay.setRealTimeSegmentsLimit(100);
+
 		FaroProject faroProject = faroProjectLocalService.addFaroProject(
 			user.getUserId(), FaroPropsValues.FARO_PROJECT_ID,
 			osbAccountEntry.getDossieraAccountKey(),
