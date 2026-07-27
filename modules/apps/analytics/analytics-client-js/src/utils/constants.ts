@@ -5,7 +5,7 @@
 
 // AC Version
 
-export const ANALYTICS_CLIENT_VERSION = '1.3.5';
+export const ANALYTICS_CLIENT_VERSION = '1.4.0';
 
 export const ANALYTICS_BATCH_SEGMENT_EXTERNAL_REFERENCE_CODES =
 	'analyticsBatchSegmentExternalReferenceCodes';
