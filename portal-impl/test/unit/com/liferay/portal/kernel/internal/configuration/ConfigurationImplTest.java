@@ -48,6 +48,8 @@ public class ConfigurationImplTest {
 	@NewEnv(type = NewEnv.Type.JVM)
 	@NewEnv.Environment(
 		variables = {
+			"LIFERAY_CONTAINER_DISABLE_TRIAL_LICENSE=false",
+			"LIFERAY_DOCKER_HOTFIX=liferay-hotfix-1-7413.zip",
 			"LIFERAY_INCLUDE_MINUS_AND_MINUS_OVERRIDE=a.properties,b.properties",
 			"LIFERAY_LIFERAY_PERIOD_HOME=/liferay",
 			"LIFERAY_SETUP_PERIOD_WIZARD_PERIOD_ENABLED=false",
@@ -112,6 +114,12 @@ public class ConfigurationImplTest {
 		Assert.assertEquals(
 			"b.properties",
 			includeAndOverrides[includeAndOverrides.length - 1]);
+
+		// LPD-94999
+
+		Assert.assertNull(
+			configurationImpl.get("container_disable_trial_license"));
+		Assert.assertNull(configurationImpl.get("docker_hotfix"));
 	}
 
 	@NewEnv(type = NewEnv.Type.JVM)

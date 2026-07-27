@@ -5,19 +5,13 @@
 
 package com.liferay.portal.kernel.util;
 
-import com.liferay.portal.kernel.test.rule.NewEnv;
-import com.liferay.portal.kernel.test.rule.NewEnvTestRule;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Rule;
 import org.junit.Test;
 
 /**
@@ -85,28 +79,5 @@ public class EnvPropertiesUtilTest {
 				logEntry.getMessage());
 		}
 	}
-
-	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.Environment(
-		append = false,
-		variables = {
-			"LIFERAY_CONTAINER_DISABLE_TRIAL_LICENSE=false",
-			"LIFERAY_DOCKER_HOTFIX=liferay-hotfix-1-7413.zip",
-			"LIFERAY_SETUP_PERIOD_WIZARD_PERIOD_ENABLED=false"
-		}
-	)
-	@Test
-	public void testLoadEnvOverrides() {
-		Map<String, String> properties = new HashMap<>();
-
-		EnvPropertiesUtil.loadEnvOverrides("LIFERAY_", properties::put);
-
-		Assert.assertEquals(
-			Collections.singletonMap("setup.wizard.enabled", "false"),
-			properties);
-	}
-
-	@Rule
-	public final NewEnvTestRule newEnvTestRule = NewEnvTestRule.INSTANCE;
 
 }
