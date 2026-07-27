@@ -25,6 +25,11 @@ public interface ExportImportPortletPreferencesProcessor {
 		return true;
 	}
 
+	public default void processExportPortletPreferences(
+			long companyId, PortletPreferences portletPreferences)
+		throws PortletDataException {
+	}
+
 	public PortletPreferences processExportPortletPreferences(
 			PortletDataContext portletDataContext,
 			PortletPreferences portletPreferences)

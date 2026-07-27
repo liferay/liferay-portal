@@ -6,6 +6,7 @@
 package com.liferay.exportimport.portlet.preferences.processor;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.portal.kernel.model.Portlet;
 
 import jakarta.portlet.PortletPreferences;
@@ -20,11 +21,19 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface ExportImportPortletPreferencesProcessorHelper {
 
+	public String getGroupExportPortletPreferencesExternalReferenceCode(
+		long companyId, String externalReferenceCode);
+
 	public void updateExportPortletPreferencesClassPKs(
 			PortletDataContext portletDataContext, Portlet portlet,
 			PortletPreferences portletPreferences, String key, String className,
 			Function<String, String> exportPortletPreferencesNewValueFunction)
 		throws Exception;
+
+	public void updateGroupExportPortletPreferencesExternalReferenceCode(
+			long companyId, String externalReferenceCodePreferenceKey,
+			PortletPreferences portletPreferences)
+		throws PortletDataException;
 
 	public void updateImportPortletPreferencesClassPKs(
 			PortletDataContext portletDataContext,
