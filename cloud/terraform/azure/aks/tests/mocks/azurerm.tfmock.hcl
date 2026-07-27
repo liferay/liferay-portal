@@ -29,3 +29,24 @@ mock_resource "azurerm_virtual_network" {
 		id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Network/virtualNetworks/liferay-test-vnet"
 	}
 }
+override_resource {
+	override_during=plan
+	target=azurerm_kubernetes_cluster.main
+	values={
+		id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.ContainerService/managedClusters/liferay-test-aks"
+	}
+}
+override_resource {
+	override_during=plan
+	target=azurerm_monitor_data_collection_endpoint.main[0]
+	values={
+		id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Insights/dataCollectionEndpoints/liferay-test-prometheus-dce"
+	}
+}
+override_resource {
+	override_during=plan
+	target=azurerm_monitor_workspace.main[0]
+	values={
+		id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.Monitor/accounts/liferay-test-amw"
+	}
+}
