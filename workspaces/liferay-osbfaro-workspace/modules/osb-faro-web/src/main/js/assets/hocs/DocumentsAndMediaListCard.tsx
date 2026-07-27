@@ -95,7 +95,7 @@ const DocumentsAndMediaListCard: React.FC = () => {
 							symbol: 'ac_satellite',
 						}}
 						title={Liferay.Language.get(
-							'there-are-no-visitors-data-found'
+							'no-visitors-data-was-found'
 						)}
 					/>
 				}

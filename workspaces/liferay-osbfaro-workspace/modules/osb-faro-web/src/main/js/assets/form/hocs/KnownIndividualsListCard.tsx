@@ -53,7 +53,7 @@ const TableWithData = withBaseResults(withData, {
 		size: Sizes.XXXLarge,
 		symbol: 'ac_satellite',
 	},
-	emptyTitle: Liferay.Language.get('there-are-no-individuals-found'),
+	emptyTitle: Liferay.Language.get('no-individuals-were-found'),
 	getColumns: ({
 		router: {
 			params: {channelId, groupId},

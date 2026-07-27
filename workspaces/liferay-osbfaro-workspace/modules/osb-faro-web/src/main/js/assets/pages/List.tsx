@@ -359,9 +359,7 @@ const List = () => {
 							description:
 								assetsEmptyStateDescription as unknown as string,
 							image: '/states/satellite.svg',
-							title: Liferay.Language.get(
-								'there-are-no-assets-found'
-							),
+							title: Liferay.Language.get('no-assets-were-found'),
 						}}
 						filters={filters}
 						groupedFilters={[

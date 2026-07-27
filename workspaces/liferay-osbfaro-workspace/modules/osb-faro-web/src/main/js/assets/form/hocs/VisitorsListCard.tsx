@@ -53,7 +53,7 @@ const AccountsTableWithData = withBaseResults(withAccountsData, {
 		size: Sizes.XXXLarge,
 		symbol: 'ac_satellite',
 	},
-	emptyTitle: Liferay.Language.get('there-are-no-accounts-found'),
+	emptyTitle: Liferay.Language.get('no-accounts-were-found'),
 	getColumns: ({
 		router: {
 			params: {channelId, groupId},

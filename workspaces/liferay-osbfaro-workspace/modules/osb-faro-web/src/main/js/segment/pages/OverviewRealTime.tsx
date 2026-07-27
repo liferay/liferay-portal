@@ -405,7 +405,7 @@ const RealTimeSegmentOverview: React.FC<IOverviewProps> = ({
 										}
 										spacer
 										title={Liferay.Language.get(
-											'there-are-no-members-found-on-the-selected-time-period'
+											'no-members-were-found-on-the-selected-time-period'
 										)}
 									/>
 								)}

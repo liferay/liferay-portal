@@ -84,7 +84,7 @@ const ListWithInterests = compose(
 			</>
 		),
 		spacer: true,
-		title: Liferay.Language.get('there-are-no-interests-found')
+		title: Liferay.Language.get('no-interests-were-found')
 	})
 )(InterestsList);
 

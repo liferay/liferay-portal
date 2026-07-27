@@ -193,7 +193,7 @@ const PagePathCard: React.FC<IPagePathCardProps> = ({
 									}
 									flexGrow={false}
 									title={Liferay.Language.get(
-										'there-are-no-data-found'
+										'no-data-was-found'
 									)}
 								/>
 							</>

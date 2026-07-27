@@ -105,7 +105,7 @@ export class Overview extends React.Component {
 									}
 									spacer
 									title={Liferay.Language.get(
-										'there-are-no-segments-found'
+										'no-segments-were-found'
 									)}
 								/>
 							)}

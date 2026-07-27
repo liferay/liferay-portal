@@ -258,7 +258,7 @@ const EventList: React.FC<IEventListProps> = ({
 				eventListColumns.hidden,
 			]}
 			delta={delta}
-			emptyTitle={Liferay.Language.get('there-are-no-events-found')}
+			emptyTitle={Liferay.Language.get('no-events-were-found')}
 			error={error}
 			items={get(data, ['eventDefinitions', 'eventDefinitions'], [])}
 			loading={loading}

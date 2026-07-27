@@ -39,7 +39,7 @@ const TableWithData = withTableData(withData, {
 			</ClayLink>
 		</>
 	),
-	emptyTitle: Liferay.Language.get('there-are-no-interests-found'),
+	emptyTitle: Liferay.Language.get('no-interests-were-found'),
 	getColumns: ({channelId, groupId, id, maxCount, totalCount}) => [
 		compositionListColumns.getName({
 			label: Liferay.Language.get('topic'),

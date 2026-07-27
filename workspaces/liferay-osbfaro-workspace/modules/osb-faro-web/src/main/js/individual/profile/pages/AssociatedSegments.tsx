@@ -122,7 +122,7 @@ const AssociatedSegments: React.FC<IAssociatedSegmentsProps> = ({
 				size: Sizes.XXXLarge,
 				symbol: 'ac_satellite',
 			}}
-			title={Liferay.Language.get('there-are-no-segments-found')}
+			title={Liferay.Language.get('no-segments-were-found')}
 		>
 			<ClayLink
 				button

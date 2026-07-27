@@ -802,7 +802,7 @@ export const List: React.FC<IListProps> = ({
 										symbol: 'ac_satellite',
 									}}
 									title={Liferay.Language.get(
-										'there-are-no-segments-found'
+										'no-segments-were-found'
 									)}
 								/>
 							}

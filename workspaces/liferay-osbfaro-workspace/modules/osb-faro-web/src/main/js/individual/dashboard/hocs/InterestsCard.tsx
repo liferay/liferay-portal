@@ -114,7 +114,7 @@ const InterestsCard: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 						</>
 					}
 					showIcon={false}
-					title={Liferay.Language.get('there-are-no-interests-found')}
+					title={Liferay.Language.get('no-interests-were-found')}
 				/>
 
 				<StatesRenderer.Error>

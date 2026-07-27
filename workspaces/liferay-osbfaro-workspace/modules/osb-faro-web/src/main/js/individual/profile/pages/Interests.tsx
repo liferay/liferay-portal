@@ -117,9 +117,7 @@ const Interests: React.FC<IInterestsProps> = ({channelId, groupId, id}) => {
 							size: Sizes.XXXLarge,
 							symbol: 'ac_satellite',
 						}}
-						title={Liferay.Language.get(
-							'there-are-no-interests-found'
-						)}
+						title={Liferay.Language.get('no-interests-were-found')}
 					/>
 				)}
 				orderByOptions={[

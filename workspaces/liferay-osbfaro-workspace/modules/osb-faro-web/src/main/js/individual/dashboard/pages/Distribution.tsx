@@ -124,7 +124,7 @@ export const IndividualsDistribution: React.FC<
 											symbol: 'ac_satellite',
 										}}
 										title={Liferay.Language.get(
-											'there-are-no-results-found'
+											'no-results-were-found'
 										)}
 									/>
 								)}

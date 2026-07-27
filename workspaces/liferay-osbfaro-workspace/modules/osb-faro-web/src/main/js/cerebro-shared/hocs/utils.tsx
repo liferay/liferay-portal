@@ -62,9 +62,7 @@ const withEmpty: TWithEmpty =
 							size: Sizes.XXXLarge,
 							symbol: 'ac_no_results_found',
 						}}
-						title={Liferay.Language.get(
-							'there-are-no-results-found'
-						)}
+						title={Liferay.Language.get('no-results-were-found')}
 					/>
 				);
 			}

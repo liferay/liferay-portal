@@ -354,7 +354,7 @@ const UserList: React.FC<IUserListProps> = ({
 				},
 			]}
 			delta={delta}
-			emptyTitle={sub(Liferay.Language.get('there-are-no-x-found'), [
+			emptyTitle={sub(Liferay.Language.get('no-x-were-found'), [
 				Liferay.Language.get('users'),
 			])}
 			entityLabel={Liferay.Language.get('users')}

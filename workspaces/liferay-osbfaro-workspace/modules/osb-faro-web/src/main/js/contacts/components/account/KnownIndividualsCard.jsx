@@ -100,7 +100,7 @@ export default class KnownIndividualsCard extends React.Component {
 					key='NO_RESULTS_DISPLAY'
 					spacer
 					title={Liferay.Language.get(
-						'there-are-no-individuals-found'
+						'no-individuals-were-found'
 					)}
 				/>
 			);

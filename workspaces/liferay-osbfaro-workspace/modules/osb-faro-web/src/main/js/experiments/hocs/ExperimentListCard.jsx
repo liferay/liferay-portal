@@ -47,7 +47,7 @@ const ExperimentListCard = props => {
 			size: Sizes.XXXLarge,
 			symbol: 'ac_satellite'
 		},
-		emptyTitle: Liferay.Language.get('there-are-no-tests-found'),
+		emptyTitle: Liferay.Language.get('no-tests-were-found'),
 		getColumns: () => getColumns(timeZoneId),
 		rowIdentifier: 'id',
 		showDropdownRangeKey: false

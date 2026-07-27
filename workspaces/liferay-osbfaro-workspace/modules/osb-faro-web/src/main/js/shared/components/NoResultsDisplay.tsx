@@ -85,7 +85,7 @@ type GetFormattedTitle = (name?: string, title?: string) => string;
 
 export const getFormattedTitle: GetFormattedTitle = (
 	name = Liferay.Language.get('items').toLowerCase(),
-	title = Liferay.Language.get('there-are-no-x-found')
+	title = Liferay.Language.get('no-x-were-found')
 ) => sub(title, [name]) as string;
 
 export default NoResultsDisplay;

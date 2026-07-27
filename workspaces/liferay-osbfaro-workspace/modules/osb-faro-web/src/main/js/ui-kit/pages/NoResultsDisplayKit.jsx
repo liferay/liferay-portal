@@ -17,7 +17,7 @@ class NoResultsDisplayKit extends React.Component {
 
 				<NoResultsDisplay
 					icon={{symbol: 'ac_individual'}}
-					title={sub(Liferay.Language.get('there-are-no-x-found'), [
+					title={sub(Liferay.Language.get('no-x-were-found'), [
 						Liferay.Language.get('individuals')
 					])}
 				/>

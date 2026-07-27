@@ -110,9 +110,7 @@ const Interests: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 							size: Sizes.XXXLarge,
 							symbol: 'ac_satellite',
 						}}
-						title={Liferay.Language.get(
-							'there-are-no-interests-found'
-						)}
+						title={Liferay.Language.get('no-interests-were-found')}
 					/>
 				}
 				orderIOMap={orderIOMap}

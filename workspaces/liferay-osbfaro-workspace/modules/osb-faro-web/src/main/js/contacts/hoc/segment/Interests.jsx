@@ -46,7 +46,7 @@ const TableWithData = withBaseResults(withData, {
 		size: Sizes.XXXLarge,
 		symbol: 'ac_satellite'
 	},
-	emptyTitle: Liferay.Language.get('there-are-no-interests-found'),
+	emptyTitle: Liferay.Language.get('no-interests-were-found'),
 	getColumns: ({
 		maxCount,
 		router: {

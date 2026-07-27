@@ -107,7 +107,7 @@ export default class AssociatedSegmentsCard extends React.Component {
 							'please-try-a-different-search-term'
 						)}
 						title={Liferay.Language.get(
-							'there-are-no-results-found'
+							'no-results-were-found'
 						)}
 					/>
 				);

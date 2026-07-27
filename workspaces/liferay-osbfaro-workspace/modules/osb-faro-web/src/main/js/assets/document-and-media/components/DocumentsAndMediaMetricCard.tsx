@@ -56,9 +56,7 @@ const DocumentsAndMediaMetricCard: React.FC<IGenericMetricBaseCardProps> = (
 					</ClayLink>
 				</>
 			}
-			emptyTitle={Liferay.Language.get(
-				'there-are-no-visitors-data-found'
-			)}
+			emptyTitle={Liferay.Language.get('no-visitors-data-was-found')}
 			metrics={metrics}
 			queries={{
 				MetricQuery: AssetMetricQuery(NAME),

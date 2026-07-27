@@ -59,7 +59,7 @@ const IndividualsDistributionCard: React.FC<
 							</ClayLink>
 						</>
 					}
-					title={Liferay.Language.get('there-are-no-results-found')}
+					title={Liferay.Language.get('no-results-were-found')}
 				/>
 			)}
 			viewAllLink={toRoute(Routes.CONTACTS_INDIVIDUALS_DISTRIBUTION, {

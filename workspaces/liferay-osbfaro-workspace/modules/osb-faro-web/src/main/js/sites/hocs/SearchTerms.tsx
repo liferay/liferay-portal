@@ -62,7 +62,7 @@ const TableWithData = withTableData(withData, {
 		size: Sizes.XXXLarge,
 		symbol: 'ac_satellite',
 	},
-	emptyTitle: Liferay.Language.get('there-are-no-search-terms-found'),
+	emptyTitle: Liferay.Language.get('no-search-terms-were-found'),
 	getColumns: ({
 		maxCount,
 		totalCount,

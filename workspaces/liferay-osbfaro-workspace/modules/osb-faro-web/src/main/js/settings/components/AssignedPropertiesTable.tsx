@@ -284,7 +284,7 @@ const AssignedPropertiesTable = ({
 								symbol: 'ac_satellite',
 							}}
 							title={Liferay.Language.get(
-								'there-are-no-properties-found'
+								'no-properties-were-found'
 							)}
 						/>
 					}

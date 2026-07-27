@@ -237,7 +237,7 @@ const Dropdown = ({
 							>
 								<div className="h4 no-results-title">
 									{Liferay.Language.get(
-										'there-are-no-results-found'
+										'no-results-were-found'
 									)}
 								</div>
 
