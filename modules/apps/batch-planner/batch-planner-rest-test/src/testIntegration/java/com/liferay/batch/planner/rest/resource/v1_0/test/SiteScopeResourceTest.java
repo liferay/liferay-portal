@@ -97,29 +97,6 @@ public class SiteScopeResourceTest extends BaseSiteScopeResourceTestCase {
 		_testGetPlanInternalClassNameKeySiteScopesPage(
 			Collections.emptyList(), true, internalClassNameKey);
 
-		// Object definition (site scoped)
-
-		ObjectDefinition objectDefinition2 =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(
-					ObjectFieldUtil.createObjectField(
-						"Text", "String", true, true, null,
-						RandomTestUtil.randomString(),
-						"a" + RandomTestUtil.randomString(), false)),
-				ObjectDefinitionConstants.SCOPE_SITE);
-
-		internalClassNameKey = _getInternalClassNameKey(objectDefinition2);
-
-		_testGetPlanInternalClassNameKeySiteScopesPage(
-			Arrays.asList(companyGroup, group, testGroup), null,
-			internalClassNameKey);
-		_testGetPlanInternalClassNameKeySiteScopesPage(
-			Arrays.asList(companyGroup, group, testGroup), false,
-			internalClassNameKey);
-		_testGetPlanInternalClassNameKeySiteScopesPage(
-			Arrays.asList(companyGroup, group, testGroup), true,
-			internalClassNameKey);
-
 		// Object definition (depot scoped)
 
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
@@ -132,7 +109,7 @@ public class SiteScopeResourceTest extends BaseSiteScopeResourceTestCase {
 			DepotConstants.TYPE_SPACE,
 			ServiceContextTestUtil.getServiceContext());
 
-		ObjectDefinition objectDefinition3 =
+		ObjectDefinition objectDefinition2 =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
 					ObjectFieldUtil.createObjectField(
@@ -141,7 +118,7 @@ public class SiteScopeResourceTest extends BaseSiteScopeResourceTestCase {
 						"a" + RandomTestUtil.randomString(), false)),
 				ObjectDefinitionConstants.SCOPE_DEPOT);
 
-		internalClassNameKey = _getInternalClassNameKey(objectDefinition3);
+		internalClassNameKey = _getInternalClassNameKey(objectDefinition2);
 
 		_testGetPlanInternalClassNameKeySiteScopesPageDepot(
 			depotEntry.getGroupId(), null, internalClassNameKey);
@@ -149,6 +126,29 @@ public class SiteScopeResourceTest extends BaseSiteScopeResourceTestCase {
 			depotEntry.getGroupId(), false, internalClassNameKey);
 		_testGetPlanInternalClassNameKeySiteScopesPageDepot(
 			depotEntry.getGroupId(), true, internalClassNameKey);
+
+		// Object definition (site scoped)
+
+		ObjectDefinition objectDefinition3 =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						"Text", "String", true, true, null,
+						RandomTestUtil.randomString(),
+						"a" + RandomTestUtil.randomString(), false)),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		internalClassNameKey = _getInternalClassNameKey(objectDefinition3);
+
+		_testGetPlanInternalClassNameKeySiteScopesPage(
+			Arrays.asList(companyGroup, group, testGroup), null,
+			internalClassNameKey);
+		_testGetPlanInternalClassNameKeySiteScopesPage(
+			Arrays.asList(companyGroup, group, testGroup), false,
+			internalClassNameKey);
+		_testGetPlanInternalClassNameKeySiteScopesPage(
+			Arrays.asList(companyGroup, group, testGroup), true,
+			internalClassNameKey);
 
 		// Service builder entity (company scoped)
 
