@@ -248,6 +248,38 @@ test.describe("Category tests that don't focus on creation", () => {
 	);
 
 	test(
+		"Edit the slug of a Vocabulary's Category",
+		{tag: '@LPD-99566'},
+		async ({editCategoryPage}) => {
+
+			// A new category has no slug yet
+
+			await editCategoryPage.gotoCreateCategory(vocabularyId);
+
+			await expect(editCategoryPage.slugInput).toBeEmpty();
+
+			// An empty slug falls back to the category name
+
+			await editCategoryPage.gotoEditCategory(categoryId);
+
+			await expect(editCategoryPage.slugInput).toHaveValue(categoryName);
+
+			// A slug is normalized and kept
+
+			await editCategoryPage.fillSlug('Winter Sports');
+
+			await editCategoryPage.clickSave();
+			await editCategoryPage.handleEditConfirmationModal(true);
+
+			await editCategoryPage.gotoEditCategory(categoryId);
+
+			await expect(editCategoryPage.slugInput).toHaveValue(
+				'winter-sports'
+			);
+		}
+	);
+
+	test(
 		"Visit the edit page of a Vocabulary's Category from dropdown actions",
 		{tag: '@LPD-53252'},
 		async ({categoriesPage, page}) => {
