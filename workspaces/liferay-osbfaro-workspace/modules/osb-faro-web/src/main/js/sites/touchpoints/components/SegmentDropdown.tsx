@@ -1,6 +1,5 @@
 import * as API from 'shared/api';
-import classNames from 'classnames';
-import FilterPicker, {FilterPickerItem} from 'shared/components/FilterPicker';
+import FilterPicker, {IFilterPickerItem} from 'shared/components/FilterPicker';
 import React, {useMemo} from 'react';
 import {
 	createOrderIOMap,
@@ -23,14 +22,9 @@ import {useQuery} from '@apollo/client';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useRequest} from 'shared/hooks/useRequest';
 
-type Item = {
-	id: string;
-	name: string;
-};
-
 interface ISegmentDropdownProps {
 	className?: string;
-	onFilterChange: (item: Item | null) => void;
+	onFilterChange: (item: IFilterPickerItem | null) => void;
 	rangeSelectors: RangeSelectors;
 }
 
@@ -49,7 +43,7 @@ const SegmentDropdown: React.FC<ISegmentDropdownProps> = ({
 		initialOrderIOMap: createOrderIOMap(NAME, getDefaultSortOrder(NAME)),
 	});
 
-	const {data} = useRequest({
+	const {data, loading} = useRequest({
 		dataSourceFn: API.individualSegment.search,
 		variables: {
 			channelId,
@@ -76,26 +70,26 @@ const SegmentDropdown: React.FC<ISegmentDropdownProps> = ({
 		},
 	});
 
-	const items: FilterPickerItem[] = useMemo(
-		() =>
-			data?.items.map((item: any) => {
-				const selectedSegmentData = segmentData?.segmentPageViews.find(
-					({segmentId}) => segmentId === item.id
-				);
+	// A segment with no page views in the range cannot be charted, so it is
+	// listed but not selectable.
 
-				return {
-					...item,
-					disabled: !selectedSegmentData?.views,
-				};
-			}) ?? [],
+	const items: IFilterPickerItem[] = useMemo(
+		() =>
+			data?.items.map((item: IFilterPickerItem) => ({
+				...item,
+				disabled: !segmentData?.segmentPageViews.find(
+					({segmentId}) => segmentId === item.id
+				)?.views,
+			})) ?? [],
 		[data, segmentData]
 	);
 
 	return (
 		<FilterPicker
-			allItemsLabel={Liferay.Language.get('all-segments')}
-			className={classNames('segment-filter-dropdown', className)}
+			className={className}
+			entityLabel={Liferay.Language.get('segments')}
 			items={items}
+			loading={loading}
 			onFilterChange={onFilterChange}
 		/>
 	);

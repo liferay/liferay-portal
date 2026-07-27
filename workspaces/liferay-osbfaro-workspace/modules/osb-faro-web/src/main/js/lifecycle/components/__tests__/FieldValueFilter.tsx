@@ -79,7 +79,7 @@ describe('FieldValueFilter', () => {
 		const menu = baseElement.querySelector('.dropdown-menu');
 
 		expect(menu).toBeInTheDocument();
-		expect(menu).toHaveStyle({maxWidth: 'none', width: '50px'});
+		expect(menu).toHaveStyle({maxWidth: 'none', width: '240px'});
 	});
 
 	it('should pass the fieldMappingFieldName through to the request', () => {

@@ -43,6 +43,16 @@ const Wrapper = ({
 	</MemoryRouter>
 );
 
+const openPicker = async () => {
+	const trigger = screen.getByRole('combobox', {name: 'Filter By Segments'});
+
+	// The trigger is disabled while its request is in flight.
+
+	await waitFor(() => expect(trigger).toBeEnabled());
+
+	fireEvent.click(trigger);
+};
+
 describe('SegmentDropdown', () => {
 	afterEach(cleanup);
 
@@ -71,7 +81,7 @@ describe('SegmentDropdown', () => {
 		);
 
 		expect(
-			screen.getByRole('combobox', {name: 'All Segments'})
+			screen.getByRole('combobox', {name: 'Filter By Segments'})
 		).toHaveTextContent('All Segments');
 
 		await waitFor(() =>
@@ -117,7 +127,7 @@ describe('SegmentDropdown', () => {
 			expect(API.individualSegment.search).toHaveBeenCalled()
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
+		await openPicker();
 
 		expect(
 			await screen.findByRole('option', {name: 'Viewed Page'})
@@ -160,7 +170,7 @@ describe('SegmentDropdown', () => {
 			expect(API.individualSegment.search).toHaveBeenCalled()
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
+		await openPicker();
 
 		const viewedPageOption = await screen.findByRole('option', {
 			name: 'Viewed Page',
@@ -205,7 +215,7 @@ describe('SegmentDropdown', () => {
 			expect(API.individualSegment.search).toHaveBeenCalled()
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
+		await openPicker();
 
 		const viewedPageOption = await screen.findByRole('option', {
 			name: 'Viewed Page',
@@ -215,7 +225,7 @@ describe('SegmentDropdown', () => {
 
 		fireEvent.click(viewedPageOption);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
+		await openPicker();
 
 		fireEvent.click(
 			await screen.findByRole('option', {name: 'All Segments'})
@@ -254,7 +264,7 @@ describe('SegmentDropdown', () => {
 			expect(API.individualSegment.search).toHaveBeenCalled()
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Segments'}));
+		await openPicker();
 
 		const viewedPageOption = await screen.findByRole('option', {
 			name: 'Viewed Page',

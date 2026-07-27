@@ -1,23 +1,10 @@
-import classNames from 'classnames';
-import FilterPickerTrigger from 'shared/components/FilterPickerTrigger';
-import React, {useMemo, useState} from 'react';
-import {ClayTooltipProvider} from '@clayui/tooltip';
+import FilterPicker, {IFilterPickerItem} from 'shared/components/FilterPicker';
+import React from 'react';
 import {fetchPageExperience} from 'shared/api/experiences';
-import {Option, Picker, Text} from '@clayui/core';
-import {truncateText} from 'shared/util/util';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
-interface IExperienceItem {
-	id: string | null;
-	name: string;
-	displayName?: string;
-}
-
-const ALL_EXPERIENCES_ITEM: IExperienceItem = {
-	id: null,
-	name: Liferay.Language.get('all-experiences'),
-};
+const NO_ITEMS: IFilterPickerItem[] = [];
 
 interface IExperienceDropdownProps {
 	className?: string;
@@ -30,9 +17,7 @@ const ExperienceDropdown: React.FC<IExperienceDropdownProps> = ({
 }) => {
 	const {channelId, groupId, title, touchpoint} = useParams();
 
-	const [selectedKey, setSelectedKey] = useState<string>('null');
-
-	const {data} = useRequest({
+	const {data, loading} = useRequest({
 		dataSourceFn: fetchPageExperience,
 		variables: {
 			canonicalUrl: touchpoint!,
@@ -42,53 +27,14 @@ const ExperienceDropdown: React.FC<IExperienceDropdownProps> = ({
 		},
 	});
 
-	const displayItems = useMemo(() => {
-		const apiItems: IExperienceItem[] = Array.isArray(data) ? data : [];
-
-		return [ALL_EXPERIENCES_ITEM, ...apiItems].map((item) => ({
-			...item,
-			displayName: truncateText(item.name, 35, null),
-			id: item.id === null ? 'null' : String(item.id),
-		}));
-	}, [data]);
-
-	const handleSelectionChange = (key: string) => {
-		setSelectedKey(key);
-		const valueForBackend = key === 'null' ? null : key;
-		onChange(valueForBackend);
-	};
-
 	return (
-		<ClayTooltipProvider>
-			<div className={classNames('experience-dropdown', className)}>
-				<Picker
-					aria-label={Liferay.Language.get('all-experiences')}
-					as={FilterPickerTrigger}
-					className="border-light form-control-sm"
-					items={displayItems}
-					onSelectionChange={(key) =>
-						handleSelectionChange(String(key))
-					}
-					searchable
-					selectedKey={selectedKey}
-				>
-					{(item: IExperienceItem) => (
-						<Option key={String(item.id)} textValue={item.name}>
-							<div
-								className="w-100"
-								title={
-									item.name.length > 35
-										? item.name
-										: undefined
-								}
-							>
-								<Text size={3}>{item.displayName}</Text>
-							</div>
-						</Option>
-					)}
-				</Picker>
-			</div>
-		</ClayTooltipProvider>
+		<FilterPicker
+			className={className}
+			entityLabel={Liferay.Language.get('experiences')}
+			items={Array.isArray(data) ? data : NO_ITEMS}
+			loading={loading}
+			onFilterChange={(item) => onChange(item?.id ?? null)}
+		/>
 	);
 };
 

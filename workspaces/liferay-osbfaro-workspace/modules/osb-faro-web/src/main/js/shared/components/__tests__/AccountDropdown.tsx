@@ -47,6 +47,16 @@ const SiteWrapper = ({children}: {children: React.ReactNode}) => (
 	</MemoryRouter>
 );
 
+const openPicker = async () => {
+	const trigger = screen.getByRole('combobox', {name: 'Filter By Accounts'});
+
+	// The trigger is disabled while its request is in flight.
+
+	await waitFor(() => expect(trigger).toBeEnabled());
+
+	fireEvent.click(trigger);
+};
+
 describe('AccountDropdown', () => {
 	afterEach(cleanup);
 
@@ -65,7 +75,7 @@ describe('AccountDropdown', () => {
 		);
 
 		expect(
-			screen.getByRole('combobox', {name: 'All Accounts'})
+			screen.getByRole('combobox', {name: 'Filter By Accounts'})
 		).toHaveTextContent('All Accounts');
 
 		await waitFor(() =>
@@ -96,7 +106,7 @@ describe('AccountDropdown', () => {
 			expect(API.accounts.searchAccounts).toHaveBeenCalled()
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Accounts'}));
+		await openPicker();
 
 		expect(
 			await screen.findByRole('option', {name: 'Account 100'})
@@ -132,7 +142,7 @@ describe('AccountDropdown', () => {
 			expect(API.accounts.searchAccounts).toHaveBeenCalled()
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Accounts'}));
+		await openPicker();
 
 		fireEvent.click(
 			await screen.findByRole('option', {name: 'Account 100'})
@@ -166,13 +176,13 @@ describe('AccountDropdown', () => {
 			expect(API.accounts.searchAccounts).toHaveBeenCalled()
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Accounts'}));
+		await openPicker();
 
 		fireEvent.click(
 			await screen.findByRole('option', {name: 'Account 100'})
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Accounts'}));
+		await openPicker();
 
 		fireEvent.click(
 			await screen.findByRole('option', {name: 'All Accounts'})
@@ -223,7 +233,7 @@ describe('AccountDropdown', () => {
 		);
 
 		expect(
-			screen.getByRole('combobox', {name: 'All Accounts'})
+			screen.getByRole('combobox', {name: 'Filter By Accounts'})
 		).toHaveTextContent('Account 100');
 
 		await waitFor(() =>
@@ -247,7 +257,7 @@ describe('AccountDropdown', () => {
 		);
 
 		expect(
-			screen.getByRole('combobox', {name: 'All Accounts'})
+			screen.getByRole('combobox', {name: 'Filter By Accounts'})
 		).toHaveTextContent('100');
 	});
 
@@ -298,7 +308,7 @@ describe('AccountDropdown', () => {
 			)
 		);
 
-		fireEvent.click(screen.getByRole('combobox', {name: 'All Accounts'}));
+		await openPicker();
 
 		expect(
 			await screen.findByRole('option', {name: 'Account 100'})

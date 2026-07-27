@@ -1,24 +1,18 @@
 import * as API from 'shared/api';
-import classNames from 'classnames';
-import FilterPicker, {FilterPickerItem} from './FilterPicker';
+import FilterPicker, {IFilterPickerItem} from './FilterPicker';
 import React, {useMemo} from 'react';
 import {getSafeDecodedURIComponent, getSafeTouchpoint} from 'shared/util/util';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
-const NO_ITEMS: FilterPickerItem[] = [];
-
-type Item = {
-	id: string;
-	name: string;
-};
+const NO_ITEMS: IFilterPickerItem[] = [];
 
 interface IAccountDropdownProps {
 	assetType?: string;
 	className?: string;
 	initialAccountId?: string | null;
 	initialAccountName?: string | null;
-	onFilterChange: (item: Item | null) => void;
+	onFilterChange: (item: IFilterPickerItem | null) => void;
 }
 
 const AccountDropdown: React.FC<IAccountDropdownProps> = ({
@@ -36,7 +30,7 @@ const AccountDropdown: React.FC<IAccountDropdownProps> = ({
 		touchpoint: string;
 	}>();
 
-	const {data} = useRequest({
+	const {data, loading} = useRequest({
 		dataSourceFn: API.accounts.searchAccounts,
 		variables: {
 			assetId: assetType
@@ -53,12 +47,15 @@ const AccountDropdown: React.FC<IAccountDropdownProps> = ({
 		},
 	});
 
-	const preloadedItem = useMemo(
+	// The account comes from the URL, which may name one that is not on the
+	// fetched page, so it is passed as the selection rather than looked up.
+
+	const selected = useMemo(
 		() =>
 			initialAccountId
 				? {
-						id: String(initialAccountId),
-						name: initialAccountName || String(initialAccountId),
+						id: initialAccountId,
+						name: initialAccountName || initialAccountId,
 					}
 				: null,
 		[initialAccountId, initialAccountName]
@@ -66,11 +63,12 @@ const AccountDropdown: React.FC<IAccountDropdownProps> = ({
 
 	return (
 		<FilterPicker
-			allItemsLabel={Liferay.Language.get('all-accounts')}
-			className={classNames('account-filter-dropdown', className)}
+			className={className}
+			entityLabel={Liferay.Language.get('accounts')}
 			items={data?.items ?? NO_ITEMS}
+			loading={loading}
 			onFilterChange={onFilterChange}
-			preloadedItem={preloadedItem}
+			selected={selected}
 		/>
 	);
 };
