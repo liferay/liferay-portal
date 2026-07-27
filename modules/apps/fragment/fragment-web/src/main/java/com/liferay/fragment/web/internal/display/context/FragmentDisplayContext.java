@@ -294,6 +294,31 @@ public class FragmentDisplayContext {
 		return _contributedEntriesSearchContainer;
 	}
 
+	public long getEditFragmentCollectionId() {
+		long fragmentCollectionId = ParamUtil.getLong(
+			_httpServletRequest, "fragmentCollectionId");
+
+		if (fragmentCollectionId == 0) {
+			String externalReferenceCode = ParamUtil.getString(
+				_httpServletRequest, "fragmentCollectionExternalReferenceCode");
+
+			if (Validator.isNotNull(externalReferenceCode)) {
+				FragmentCollection fragmentCollection =
+					FragmentCollectionLocalServiceUtil.
+						fetchFragmentCollectionByExternalReferenceCode(
+							externalReferenceCode,
+							_themeDisplay.getScopeGroupId());
+
+				if (fragmentCollection != null) {
+					fragmentCollectionId =
+						fragmentCollection.getFragmentCollectionId();
+				}
+			}
+		}
+
+		return fragmentCollectionId;
+	}
+
 	public FragmentCollection getFragmentCollection() {
 		if (_fragmentCollection != null) {
 			return _fragmentCollection;
@@ -342,26 +367,7 @@ public class FragmentDisplayContext {
 			return _fragmentCollectionId;
 		}
 
-		long fragmentCollectionId = ParamUtil.getLong(
-			_httpServletRequest, "fragmentCollectionId");
-
-		if (fragmentCollectionId == 0) {
-			String externalReferenceCode = ParamUtil.getString(
-				_httpServletRequest, "fragmentCollectionExternalReferenceCode");
-
-			if (Validator.isNotNull(externalReferenceCode)) {
-				FragmentCollection fragmentCollection =
-					FragmentCollectionLocalServiceUtil.
-						fetchFragmentCollectionByExternalReferenceCode(
-							externalReferenceCode,
-							_themeDisplay.getScopeGroupId());
-
-				if (fragmentCollection != null) {
-					fragmentCollectionId =
-						fragmentCollection.getFragmentCollectionId();
-				}
-			}
-		}
+		long fragmentCollectionId = getEditFragmentCollectionId();
 
 		if (fragmentCollectionId == 0) {
 			fragmentCollectionId = _getDefaultFragmentCollectionId();

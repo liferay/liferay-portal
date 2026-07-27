@@ -8,7 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-long fragmentCollectionId = fragmentDisplayContext.getFragmentCollectionId();
+long fragmentCollectionId = fragmentDisplayContext.getEditFragmentCollectionId();
 
 FragmentCollection fragmentCollection = FragmentCollectionLocalServiceUtil.fetchFragmentCollection(fragmentCollectionId);
 
