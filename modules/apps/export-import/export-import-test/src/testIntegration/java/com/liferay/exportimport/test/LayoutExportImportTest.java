@@ -470,6 +470,8 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		ddmForm.setAvailableLocales(Collections.singleton(LocaleUtil.US));
 		ddmForm.setDefaultLocale(LocaleUtil.US);
 
+		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
+
 		DDMFormField ddmFormField = new DDMFormField(
 			"linkToPage", DDMFormFieldTypeConstants.LINK_TO_LAYOUT);
 
@@ -478,8 +480,6 @@ public class LayoutExportImportTest extends BaseExportImportTestCase {
 		ddmFormField.setFieldNamespace("ddm");
 		ddmFormField.setLocalizable(true);
 		ddmFormField.setShowLabel(true);
-
-		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
 
 		ddmFormFields.add(ddmFormField);
 
