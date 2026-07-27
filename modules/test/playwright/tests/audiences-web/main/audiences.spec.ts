@@ -33,7 +33,7 @@ test(
 	{
 		tag: '@LPD-93951',
 	},
-	async ({page}) => {
+	async ({audiencesPage, page}) => {
 		await page.goto(PORTLET_URLS.audiences);
 
 		// Create a new audience
@@ -117,18 +117,7 @@ test(
 
 		// Delete the audience and check it is no longer listed
 
-		page.once('dialog', (dialog) => dialog.accept());
-
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: page.getByRole('menuitem', {name: 'Delete'}),
-			trigger: page
-				.locator('tr')
-				.filter({hasText: audienceName})
-				.locator('button.dropdown-toggle'),
-		});
-
-		await waitForAlert(page);
+		await audiencesPage.deleteAudience(audienceName);
 
 		await expect(
 			page.locator('tr').filter({hasText: audienceName})
