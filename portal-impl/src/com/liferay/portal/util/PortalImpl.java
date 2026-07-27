@@ -1567,11 +1567,12 @@ public class PortalImpl implements Portal {
 		Group layoutGroup = layout.getGroup();
 
 		if (forceLayoutFriendlyURL ||
-			((!layout.isFirstParent() || Validator.isNotNull(parametersURL)) &&
+			(!(layout instanceof VirtualLayout) &&
+			 (!layout.isFirstParent() || Validator.isNotNull(parametersURL)) &&
 			 _requiresLayoutFriendlyURL(
 				 layoutGroup.getFriendlyURL(),
 				 themeDisplay.getLayoutFriendlyURL(layout),
-				 StringUtil.toLowerCase(groupFriendlyURL))) ||
+				 groupFriendlyURL)) ||
 			groupFriendlyURL.endsWith(
 				StringPool.SLASH + layout.getLayoutId())) {
 
@@ -8178,20 +8179,23 @@ public class PortalImpl implements Portal {
 		groupFriendlyURL = FriendlyURLNormalizerUtil.normalizeWithEncoding(
 			groupFriendlyURL);
 
+		layoutFriendlyURL = FriendlyURLNormalizerUtil.normalizeWithEncoding(
+			layoutFriendlyURL);
+
 		if (groupFriendlyURL.contains(
 				_PUBLIC_GROUP_SERVLET_MAPPING + StringPool.SLASH)) {
 
 			if (groupFriendlyURL.contains(
 					StringBundler.concat(
-						_PUBLIC_GROUP_SERVLET_MAPPING, siteGroupFriendlyURL,
-						StringUtil.toLowerCase(layoutFriendlyURL)))) {
+						_PUBLIC_GROUP_SERVLET_MAPPING,
+						FriendlyURLNormalizerUtil.normalizeWithEncoding(
+							siteGroupFriendlyURL),
+						layoutFriendlyURL))) {
 
 				return true;
 			}
 		}
-		else if (groupFriendlyURL.contains(
-					StringUtil.toLowerCase(layoutFriendlyURL))) {
-
+		else if (groupFriendlyURL.contains(layoutFriendlyURL)) {
 			return true;
 		}
 
