@@ -259,6 +259,14 @@ components:
                     description:
                         The category's external reference code
                     type: string
+                friendlyUrlPath:
+                    description:
+                        The category's relative URL.
+                    type: string
+                friendlyUrlPath_i18n:
+                    additionalProperties:
+                        type: string
+                    type: object
                 id:
                     description:
                         The category's ID.
