@@ -41,11 +41,18 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		String upstreamBranchName = getUpstreamBranchName();
 
 		if (!JenkinsResultsParserUtil.isCloudCINode() ||
-			upstreamBranchName.startsWith("ee-")) {
+			upstreamBranchName.startsWith("ee-") ||
+			!isGitArchiveYarnCacheEnabled()) {
 
 			return archiveFile;
 		}
 
+		createYarnCache(fileName);
+
+		return archiveFile;
+	}
+
+	public File createYarnCache(String fileName) {
 		setUpYarn();
 
 		GitUtil.ExecutionResult executionResult = executeBashCommands(
@@ -63,7 +70,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 					executionResult.getStandardError()));
 		}
 
-		return archiveFile;
+		return new File(getWorkingDirectory(), fileName);
 	}
 
 	public Properties getAppServerProperties() {
