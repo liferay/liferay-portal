@@ -63,20 +63,6 @@ public class BaseDownstreamBuildTest
 		Element upstreamJobFailureElement = Dom4JUtil.getNewElement(
 			"code", null, upstreamJobFailureMarker);
 
-		Mockito.when(
-			baseDownstreamBuild.getTestResultGitHubElements(
-				Mockito.anyList(), Mockito.eq(true))
-		).thenReturn(
-			Arrays.asList(uniqueFailureElement)
-		);
-
-		Mockito.when(
-			baseDownstreamBuild.getTestResultGitHubElements(
-				Mockito.anyList(), Mockito.eq(false))
-		).thenReturn(
-			Arrays.asList(upstreamJobFailureElement)
-		);
-
 		Mockito.doCallRealMethod(
 		).when(
 			baseDownstreamBuild
@@ -86,6 +72,20 @@ public class BaseDownstreamBuildTest
 		).when(
 			baseDownstreamBuild
 		).getGitHubMessageUpstreamJobFailureElement();
+
+		Mockito.when(
+			baseDownstreamBuild.getTestResultGitHubElements(
+				Mockito.anyList(), Mockito.eq(false))
+		).thenReturn(
+			Arrays.asList(upstreamJobFailureElement)
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getTestResultGitHubElements(
+				Mockito.anyList(), Mockito.eq(true))
+		).thenReturn(
+			Arrays.asList(uniqueFailureElement)
+		);
 
 		Element gitHubMessageElement =
 			baseDownstreamBuild.getGitHubMessageElement();

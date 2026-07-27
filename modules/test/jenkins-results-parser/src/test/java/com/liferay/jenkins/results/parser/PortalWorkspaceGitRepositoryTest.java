@@ -71,6 +71,26 @@ public class PortalWorkspaceGitRepositoryTest
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			Mockito.mock(PortalWorkspaceGitRepository.class);
 
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspaceGitRepository
+		).prepareGitWorkingDirectory();
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspaceGitRepository
+		).setUp();
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspaceGitRepository
+		).setUpAdditionalCaches();
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspaceGitRepository
+		).setUpBinariesCache();
+
 		Mockito.doReturn(
 			workingDirectory
 		).when(
@@ -106,26 +126,6 @@ public class PortalWorkspaceGitRepositoryTest
 		).when(
 			portalWorkspaceGitRepository
 		).isBinariesCacheEnabled();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).prepareGitWorkingDirectory();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).setUp();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).setUpAdditionalCaches();
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalWorkspaceGitRepository
-		).setUpBinariesCache();
 
 		portalWorkspaceGitRepository.setUp();
 

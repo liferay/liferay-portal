@@ -66,16 +66,16 @@ public class PortalGitWorkingDirectoryTest
 		PortalGitWorkingDirectory portalGitWorkingDirectory = Mockito.mock(
 			PortalGitWorkingDirectory.class);
 
+		Mockito.doCallRealMethod(
+		).when(
+			portalGitWorkingDirectory
+		).getFilteredEnvironment();
+
 		Mockito.when(
 			portalGitWorkingDirectory.getUpstreamBranchName()
 		).thenReturn(
 			upstreamBranchName
 		);
-
-		Mockito.doCallRealMethod(
-		).when(
-			portalGitWorkingDirectory
-		).getFilteredEnvironment();
 
 		return portalGitWorkingDirectory.getFilteredEnvironment();
 	}

@@ -39,6 +39,16 @@ public class BaseTestrayAttachmentUploaderTest
 		BaseTestrayAttachmentUploader baseTestrayAttachmentUploader =
 			Mockito.mock(BaseTestrayAttachmentUploader.class);
 
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestrayAttachmentUploader
+		).getPreparedFiles();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseTestrayAttachmentUploader
+		).prepareFiles();
+
 		Mockito.when(
 			baseTestrayAttachmentUploader.getPreparedFilesBaseDir()
 		).thenReturn(
@@ -50,16 +60,6 @@ public class BaseTestrayAttachmentUploaderTest
 		).thenReturn(
 			testrayAttachmentRecorder
 		);
-
-		Mockito.doCallRealMethod(
-		).when(
-			baseTestrayAttachmentUploader
-		).getPreparedFiles();
-
-		Mockito.doCallRealMethod(
-		).when(
-			baseTestrayAttachmentUploader
-		).prepareFiles();
 
 		baseTestrayAttachmentUploader.prepareFiles();
 
