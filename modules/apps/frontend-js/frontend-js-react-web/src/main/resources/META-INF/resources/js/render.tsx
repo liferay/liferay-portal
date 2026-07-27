@@ -45,6 +45,7 @@ export default function render(
 	renderable:
 		| NonNullable<React.ReactNode>
 		| NonNullable<React.ForwardRefExoticComponent<any>>
+		| React.ComponentType<any>
 		| ((props: any) => NonNullable<React.ReactNode>),
 	renderData: {
 		__reactDOMFlushSync?: boolean;
