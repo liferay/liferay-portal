@@ -2,20 +2,19 @@ package main
 
 import (
 	"os"
+	"time"
 
 	"github.com/caarlos0/env/v11"
-	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
-	"github.com/liferay/liferay-portal/cloud/operator/internal/controller"
+	licensingcontroller "github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
 )
 
 func init() {
@@ -24,64 +23,61 @@ func init() {
 }
 
 func main() {
-	cfg, _ := env.ParseAs[config]()
+	config, _ := env.ParseAs[config]()
 
 	ctrl.SetLogger(zap.New())
 
-	mgr, err := ctrl.NewManager(
+	manager, error := ctrl.NewManager(
 		ctrl.GetConfigOrDie(),
 		ctrl.Options{
-			Cache: cache.Options{
-				DefaultLabelSelector: labels.SelectorFromSet(
-					map[string]string{
-						"controller-watched": "yes",
-					},
-				),
-			},
-			HealthProbeBindAddress: cfg.ProbeAddress,
+			HealthProbeBindAddress: config.ProbeAddress,
 			Metrics: metricsserver.Options{
-				BindAddress: cfg.MetricsAddress,
+				BindAddress: config.MetricsAddress,
 			},
 			Scheme: scheme,
 		},
 	)
 
-	if err != nil {
-		setupLog.Error(err, "Unable to start manager.")
+	if error != nil {
+		setupLog.Error(error, "Unable to start manager.")
 
 		os.Exit(1)
 	}
 
-	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
-		setupLog.Error(err, "Unable to set up health check.")
+	if error := manager.AddHealthzCheck("healthz", healthz.Ping); error != nil {
+		setupLog.Error(error, "Unable to set up health check.")
 
 		os.Exit(1)
 	}
 
-	if err := mgr.AddReadyzCheck("readyz", healthz.Ping); err != nil {
-		setupLog.Error(err, "Unable to set up ready check.")
+	if error := manager.AddReadyzCheck("readyz", healthz.Ping); error != nil {
+		setupLog.Error(error, "Unable to set up ready check.")
 
 		os.Exit(1)
 	}
 
-	reconciler := &controller.Reconciler{Client: mgr.GetClient()}
+	liferayEnvironmentReconciler := &licensingcontroller.LiferayEnvironmentReconciler{
+		Client:            manager.GetClient(),
+		HeartbeatInterval: config.HeartbeatInterval,
+	}
 
-	if err := reconciler.SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "Unable to create controller.")
+	if error := liferayEnvironmentReconciler.SetupWithManager(manager); error != nil {
+		setupLog.Error(error, "Unable to create liferayenvironment controller.")
 
 		os.Exit(1)
 	}
 
-	if err := mgr.Start(ctrl.SetupSignalHandler()); err != nil {
-		setupLog.Error(err, "Unexpected error while running manager.")
+	if error := manager.Start(ctrl.SetupSignalHandler()); error != nil {
+		setupLog.Error(error, "Unexpected error while running manager.")
 
 		os.Exit(1)
 	}
 }
 
 type config struct {
-	MetricsAddress string `env:"METRICS_ADDRESS" envDefault:":8080"`
-	ProbeAddress   string `env:"PROBE_ADDRESS" envDefault:":8081"`
+	HeartbeatInterval time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
+	MetricsAddress    string        `env:"METRICS_ADDRESS" envDefault:":8080"`
+	ProbeAddress      string        `env:"PROBE_ADDRESS" envDefault:":8081"`
 }
 
 var (
