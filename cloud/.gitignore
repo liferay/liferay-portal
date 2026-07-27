@@ -1,4 +1,6 @@
 **/test-results/*
+**/zz_generated.deepcopy.go
 *.tfstate
 *.tfstate.*
 .terraform/
+operator/resources/manager

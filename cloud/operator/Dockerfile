@@ -2,16 +2,16 @@ FROM golang:1.24 AS builder
 
 WORKDIR /workspace
 
-COPY resources .
+COPY go_build.sh .
 
-RUN go mod download && \
-	go mod verify && \
-	CGO_ENABLED=0 go build -a -ldflags="-s -w" -o manager main.go
+COPY resources resources
+
+RUN ./go_build.sh
 
 FROM gcr.io/distroless/static:nonroot
 
 ENTRYPOINT ["/manager"]
 
-COPY --from=builder /workspace/manager /
+COPY --from=builder /workspace/resources/manager /
 
 USER 65532:65532
