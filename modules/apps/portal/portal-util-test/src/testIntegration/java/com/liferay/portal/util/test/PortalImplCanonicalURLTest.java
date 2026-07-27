@@ -17,9 +17,11 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -180,6 +182,14 @@ public class PortalImplCanonicalURLTest {
 			HashMapBuilder.put(
 				LocaleUtil.US, "/test-page"
 			).build());
+		_layout6 = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId(), false,
+			HashMapBuilder.put(
+				LocaleUtil.US, "Pöge"
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.US, "/pöge"
+			).build());
 
 		String groupKey = PropsValues.VIRTUAL_HOSTS_DEFAULT_SITE_NAME;
 
@@ -239,6 +249,31 @@ public class PortalImplCanonicalURLTest {
 	}
 
 	@Test
+	@TestInfo("LPD-98055")
+	public void testCanonicalURLLayoutFriendlyURLWithNonasciiCharacter()
+		throws Exception {
+
+		Assert.assertEquals("/p%C3%B6ge", _layout6.getFriendlyURL());
+
+		_testCanonicalURL(
+			"localhost", "localhost", _group, _layout6, null, null, "/en",
+			"/p%C3%B6ge", false, false);
+		_testCanonicalURL(
+			"localhost", "localhost", _group, _addLegacyLayout("/legacy-pöge"),
+			null, null, "/en", "/legacy-p%C3%B6ge", false, false);
+	}
+
+	@Test
+	@TestInfo("LPD-98055")
+	public void testCanonicalURLLegacyLayoutFriendlyURLWithMixedCase()
+		throws Exception {
+
+		_testCanonicalURL(
+			"localhost", "localhost", _group, _addLegacyLayout("/LegacyHome1"),
+			null, null, "/en", "/LegacyHome1", false, false);
+	}
+
+	@Test
 	public void testCanonicalURLPartialCollisionWIthPublicGroupServletMapping()
 		throws Exception {
 
@@ -265,6 +300,21 @@ public class PortalImplCanonicalURLTest {
 					completeURL, "_ga",
 					"2.237928582.786466685.1515402734-1365236376"),
 				themeDisplay, _layout4, false, false));
+	}
+
+	@Test
+	@TestInfo("LPD-98055")
+	public void testCanonicalURLVirtualLayout() throws Exception {
+		_targetGroup = GroupTestUtil.addGroup();
+
+		Layout virtualLayout = new VirtualLayout(_layout6, _targetGroup);
+
+		_testCanonicalURL(
+			"localhost", "localhost", _targetGroup, virtualLayout, null, null,
+			"/en", StringPool.BLANK, false, false);
+		_testCanonicalURL(
+			"localhost", "localhost", _targetGroup, virtualLayout, null, null,
+			"/en", virtualLayout.getFriendlyURL(), true, false);
 	}
 
 	@Test
@@ -630,6 +680,21 @@ public class PortalImplCanonicalURLTest {
 			"/home2", false, false);
 	}
 
+	private Layout _addLegacyLayout(String friendlyURL) throws Exception {
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			_group.getGroupId());
+
+		_layoutFriendlyURLLocalService.updateLayoutFriendlyURL(
+			TestPropsValues.getUserId(), layout.getCompanyId(),
+			layout.getGroupId(), layout.getPlid(), layout.isPrivateLayout(),
+			friendlyURL, LocaleUtil.toLanguageId(LocaleUtil.US),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		layout.setFriendlyURL(friendlyURL);
+
+		return _layoutLocalService.updateLayout(layout);
+	}
+
 	private ThemeDisplay _createThemeDisplay(
 			String portalDomain, Group group, int serverPort, boolean secure)
 		throws Exception {
@@ -811,11 +876,18 @@ public class PortalImplCanonicalURLTest {
 	private Layout _layout3;
 	private Layout _layout4;
 	private Layout _layout5;
+	private Layout _layout6;
+
+	@Inject
+	private LayoutFriendlyURLLocalService _layoutFriendlyURLLocalService;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
 
 	@Inject
 	private Portal _portal;
+
+	@DeleteAfterTestRun
+	private Group _targetGroup;
 
 }
