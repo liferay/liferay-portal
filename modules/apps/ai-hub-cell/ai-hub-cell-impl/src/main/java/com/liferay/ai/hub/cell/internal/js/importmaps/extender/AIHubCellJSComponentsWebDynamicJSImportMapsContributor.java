@@ -43,15 +43,6 @@ public class AIHubCellJSComponentsWebDynamicJSImportMapsContributor
 
 		writer.write(esModuleAbsolutePortalURLBuilder.build());
 
-		writer.write(
-			"\", \"@liferay/ai-hub-cell-js-components-web" +
-				"/renderAIAssistantChat\": \"");
-
-		esModuleAbsolutePortalURLBuilder = absolutePortalURLBuilder.forESModule(
-			"ai-hub-cell-js-components-web", "renderAIAssistantChat.js");
-
-		writer.write(esModuleAbsolutePortalURLBuilder.build());
-
 		writer.write("\", ");
 
 		writer.write(

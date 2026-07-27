@@ -6,8 +6,6 @@
 module.exports = {
 	main: './src/main/resources/META-INF/resources/js/index.ts',
 	submodules: {
-		renderAIAssistantChat:
-			'./src/main/resources/META-INF/resources/js/renderAIAssistantChat.ts',
 		renderAIAssistantTrigger:
 			'./src/main/resources/META-INF/resources/js/renderAIAssistantTrigger.ts',
 	},

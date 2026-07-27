@@ -1,5 +1,5 @@
 {
-	"@generated": "9b69cabff9bec7d44ab8998e2d324f491dd450e4",
+	"@generated": "d5acd567c396310e0e9509b85343e1e89859f0d6",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,9 @@
 		"paths": {
 			"@liferay/ai-hub-cell-js-components-web": [
 				"../../../../../apps/ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/ai-hub-cell-js-components-web/renderAIAssistantTrigger": [
+				"../../../../../apps/ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/renderAIAssistantTrigger.ts"
 			],
 			"frontend-js-components-web": [
 				"../../../../../apps/frontend-js/frontend-js-components-web/src/main/resources/META-INF/resources/index.ts"

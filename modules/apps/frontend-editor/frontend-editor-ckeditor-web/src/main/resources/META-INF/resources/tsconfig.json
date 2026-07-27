@@ -1,5 +1,5 @@
 {
-	"@generated": "218c58278ba223c56823296ae1507f74500446a0",
+	"@generated": "729b7f202e9d59f394c4561580b6286ebac15471",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -14,8 +14,8 @@
 			"@liferay/ai-hub-cell-js-components-web": [
 				"../../../../../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
-			"@liferay/ai-hub-cell-js-components-web/renderAIAssistantChat": [
-				"../../../../../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/renderAIAssistantChat.ts"
+			"@liferay/ai-hub-cell-js-components-web/renderAIAssistantTrigger": [
+				"../../../../../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/renderAIAssistantTrigger.ts"
 			],
 			"@liferay/cookies-banner-web": [
 				"../../../../../../../cookies/cookies-banner-web/src/main/resources/META-INF/resources/js/index.d.ts"

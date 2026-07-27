@@ -8,7 +8,6 @@ export type {
 	AIAssistantOpenCommand,
 	AIAssistantPresentation,
 } from './AIAssistantChat/AIAssistant';
-export {default as AIAssistantChat} from './AIAssistantChat/AIAssistantChat';
 export {default as AIAssistantTriggerButton} from './AIAssistantChat/AIAssistantTriggerButton';
 export type {ChatContext} from './AIAssistantChat/api';
 export {default as CategorizationSuggestions} from './Categorization/components/CategorizationSuggestions';
@@ -34,5 +33,4 @@ export type {
 	ReportFeedbackSurface,
 } from './ReportFeedback/api';
 export {default as WritingAssistant} from './WritingAssistant/WritingAssistant';
-export {default as renderAIAssistantChat} from './renderAIAssistantChat';
 export {default as renderAIAssistantTrigger} from './renderAIAssistantTrigger';
