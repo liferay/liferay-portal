@@ -604,7 +604,7 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 
 	private static final int _LIFERAY_INDIVIDUALS_COUNT = 100;
 
-	private static final int _SALESFORCE_ACCOUNTS_COUNT = 10;
+	private static final int _SALESFORCE_ACCOUNTS_COUNT = 50;
 
 	private static final String _SALESFORCE_DATA_SOURCE_NAME =
 		"Beryl Salesforce";
