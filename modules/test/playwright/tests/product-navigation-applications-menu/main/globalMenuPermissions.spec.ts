@@ -102,12 +102,14 @@ test(
 
 		const categories = globalMenuPage.categoriesList.getByRole('menuitem');
 
-		await expect(categories).toHaveCount(1);
+		await expect(categories).toHaveCount(2);
 
 		const firstCategory = categories.first();
 
-		await expect(firstCategory).toHaveAccessibleName('Control Panel');
+		await expect(firstCategory).toHaveAccessibleName('Commerce');
 		await expect(firstCategory).toHaveCSS('border-top-width', '0px');
+
+		await expect(categories.nth(1)).toHaveAccessibleName('Control Panel');
 	}
 );
 
