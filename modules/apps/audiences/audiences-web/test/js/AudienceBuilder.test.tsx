@@ -168,7 +168,12 @@ describe('AudienceBuilder', () => {
 
 			expect(await screen.findByText('error-message')).toBeVisible();
 
-			expect(screen.getByRole('textbox', {name: 'erc'})).toBeVisible();
+			const externalReferenceCodeInput = screen.getByRole('textbox', {
+				name: 'erc',
+			});
+
+			expect(externalReferenceCodeInput).toBeVisible();
+			expect(externalReferenceCodeInput).toHaveFocus();
 
 			expect(navigate).not.toHaveBeenCalled();
 			expect(Liferay.Util.openToast).not.toHaveBeenCalled();
@@ -215,6 +220,8 @@ describe('AudienceBuilder', () => {
 			expect(screen.getByText('this-field-is-required')).toBeVisible();
 
 			expect(screen.getByRole('textbox', {name: 'erc'})).toBeVisible();
+
+			expect(screen.getByLabelText('name')).toHaveFocus();
 
 			expect(fetch).not.toHaveBeenCalled();
 			expect(Liferay.Util.openToast).not.toHaveBeenCalled();

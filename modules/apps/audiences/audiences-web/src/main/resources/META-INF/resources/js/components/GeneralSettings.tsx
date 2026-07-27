@@ -7,29 +7,27 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayPanel from '@clayui/panel';
 import classNames from 'classnames';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 interface IProps {
 	errorMessage?: string;
+	expanded: boolean;
 	externalReferenceCode: string;
+	externalReferenceCodeInputRef: React.RefObject<HTMLInputElement>;
 	namespace: string;
+	onExpandedChange: (expanded: boolean) => void;
 	onExternalReferenceCodeChange: (externalReferenceCode: string) => void;
 }
 
 export default function GeneralSettings({
 	errorMessage,
+	expanded,
 	externalReferenceCode,
+	externalReferenceCodeInputRef,
 	namespace,
+	onExpandedChange,
 	onExternalReferenceCodeChange,
 }: IProps) {
-	const [expanded, setExpanded] = useState(false);
-
-	useEffect(() => {
-		if (errorMessage) {
-			setExpanded(true);
-		}
-	}, [errorMessage]);
-
 	return (
 		<ClayPanel
 			className="audience-builder-general-settings border mt-4 rounded"
@@ -41,7 +39,7 @@ export default function GeneralSettings({
 				</span>
 			}
 			expanded={expanded}
-			onExpandedChange={setExpanded}
+			onExpandedChange={onExpandedChange}
 			showCollapseIcon
 		>
 			<ClayPanel.Body>
@@ -83,6 +81,7 @@ export default function GeneralSettings({
 						onChange={(event) =>
 							onExternalReferenceCodeChange(event.target.value)
 						}
+						ref={externalReferenceCodeInputRef}
 						type="text"
 						value={externalReferenceCode}
 					/>
