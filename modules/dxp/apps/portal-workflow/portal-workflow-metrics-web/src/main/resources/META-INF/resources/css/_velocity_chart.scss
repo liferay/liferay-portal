@@ -9,13 +9,13 @@
 			opacity: 1 !important;
 			rx: 4;
 			ry: 4;
-			stroke: #e5e5eb;
+			stroke: $gray-300;
 			stroke-width: 1px;
 		}
 
 		.bb-xgrid-line line,
 		.bb-ygrids line {
-			stroke: #e5e5eb;
+			stroke: $gray-300;
 			stroke-dasharray: 3px;
 			stroke-width: 1px;
 		}
@@ -40,7 +40,7 @@
 		}
 
 		.bb-xgrid-focus > line {
-			stroke: #80acff;
+			stroke: $primary-l1;
 			stroke-width: 1px;
 		}
 
@@ -52,15 +52,15 @@
 
 .workflow-tooltip-chart {
 	background-clip: padding-box;
-	background-color: #fff;
+	background-color: $white;
 	border-radius: 0.3rem;
-	box-shadow: 0 1px 15px -2px rgb(0 0 0 / 20%);
+	box-shadow: 0 1px 15px -2px unquote('hsl(from #{$black} h s l / 0.2)');
 	font-size: 0.875rem;
 	opacity: 1;
 	padding: 1rem;
 
 	.workflow-tooltip-chart-header {
-		border-bottom: solid 1px #e7e7ed;
+		border-bottom: solid 1px $gray-300;
 
 		.workflow-tooltip-chart-column {
 			font-weight: 600;
@@ -71,7 +71,7 @@
 	}
 
 	.workflow-tooltip-chart-content.font-weight-semibold {
-		color: #272833;
+		color: $gray-900;
 	}
 
 	.workflow-tooltip-chart-body

@@ -1,24 +1,24 @@
 .portal-workflow-metrics-app,
 .instance-details-modal {
 	.bg-danger-light {
-		background: #feefef;
+		background: $danger-l2;
 	}
 
 	.bg-info-light {
-		background: #fff;
-		border: 1px solid #f0f5ff;
+		background: $white;
+		border: 1px solid $primary-l3;
 		box-sizing: border-box;
 	}
 
 	.bg-muted {
-		background: #f5f5f8;
+		background: $gray-100;
 	}
 
 	.bg-success-light {
-		background: #edf9f0;
+		background: $success-l2;
 	}
 
 	.bg-warning-light {
-		background: #fff4ec;
+		background: $warning-l2;
 	}
 }

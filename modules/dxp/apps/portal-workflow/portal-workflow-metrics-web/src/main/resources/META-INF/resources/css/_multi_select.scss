@@ -7,7 +7,7 @@
 	}
 
 	> .drop-icon {
-		color: #6b6c7e;
+		color: $gray-600;
 		padding-right: 0.5rem;
 	}
 
@@ -26,20 +26,20 @@
 			&:active,
 			& {
 				background-color: transparent;
-				color: #6b6c7e;
+				color: $gray-600;
 				cursor: default;
 			}
 		}
 	}
 
 	&.is-active {
-		background-color: #f0f5ff;
-		border-color: #80acff;
-		color: #272833;
+		background-color: $primary-l3;
+		border-color: $primary-l1;
+		color: $gray-900;
 		outline: 0;
 
 		> .drop-icon {
-			color: #272833;
+			color: $gray-900;
 		}
 
 		> .drop-suggestion {

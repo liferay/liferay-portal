@@ -16,7 +16,7 @@
 	}
 
 	td {
-		border-top: 1px solid #e7e7ed !important;
+		border-top: 1px solid $gray-300 !important;
 
 		> .due-date {
 			.due-date-badge {
@@ -29,13 +29,13 @@
 
 			&.text-success {
 				.due-date-badge {
-					background-color: #5aca75;
+					background-color: $success-l1;
 				}
 			}
 
 			&.text-danger {
 				.due-date-badge {
-					background-color: #da1414;
+					background-color: $danger;
 				}
 			}
 

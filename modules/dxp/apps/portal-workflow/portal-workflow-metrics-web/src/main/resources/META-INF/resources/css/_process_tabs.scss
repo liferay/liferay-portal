@@ -6,7 +6,7 @@ $c: '.workflow-process-tabs';
 	}
 
 	.tabs-panel-header {
-		color: #272833;
+		color: $gray-900;
 		font-size: 18px;
 		font-weight: 700;
 		margin-top: 10px;
@@ -41,10 +41,10 @@ $c: '.workflow-process-tabs';
 	}
 
 	.process-tabs-summary-card {
-		border: 1px solid #e7e7ed;
+		border: 1px solid $gray-300;
 		border-radius: 0.25rem;
 		box-sizing: border-box;
-		color: #30313f !important;
+		color: $secondary-d2 !important;
 		display: inline-flex;
 		font-size: 0.875rem;
 		margin-bottom: 0.5rem;
@@ -60,11 +60,11 @@ $c: '.workflow-process-tabs';
 		}
 
 		.footer {
-			color: #6b6c7e;
+			color: $gray-600;
 			min-height: 1.3rem;
 
 			.highlight-hover {
-				color: #0b5fff;
+				color: $primary;
 			}
 		}
 
@@ -76,7 +76,7 @@ $c: '.workflow-process-tabs';
 			pointer-events: none;
 
 			.header {
-				color: #a7a9bc;
+				color: $gray-500;
 
 				.sticker {
 					opacity: 0.4;
@@ -85,7 +85,7 @@ $c: '.workflow-process-tabs';
 		}
 
 		&:hover {
-			border: 2px solid #80acff;
+			border: 2px solid $primary-l1;
 			padding: 15px;
 		}
 
@@ -132,7 +132,7 @@ $c: '.workflow-process-tabs';
 
 	.velocity-value,
 	.velocity-unit {
-		color: #30313f;
+		color: $secondary-d2;
 	}
 
 	.velocity-value {
@@ -167,7 +167,7 @@ $c: '.workflow-process-tabs';
 
 .updated-info-container {
 	.metrics-calculated-info {
-		color: #6b6c7e;
+		color: $gray-600;
 		font-size: 12px;
 		font-style: normal;
 		font-weight: normal;
@@ -184,7 +184,7 @@ $c: '.workflow-process-tabs';
 	}
 
 	.empty-message {
-		color: #6b6c7e;
+		color: $gray-600;
 		font-size: 0.875rem;
 	}
 
@@ -193,7 +193,7 @@ $c: '.workflow-process-tabs';
 	}
 
 	.task-count-percentage {
-		color: #6b6c7e;
+		color: $gray-600;
 		font-size: 0.75rem;
 	}
 
@@ -209,14 +209,14 @@ $c: '.workflow-process-tabs';
 	}
 
 	.workload-by-assignee-link {
-		color: #000;
+		color: $black;
 	}
 }
 
 .workload-by-step-link {
-	color: #272833;
+	color: $gray-900;
 
 	&:hover {
-		color: #272833;
+		color: $gray-900;
 	}
 }

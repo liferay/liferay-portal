@@ -2,7 +2,7 @@
 	path,
 	line {
 		fill: none;
-		stroke: #e5e5eb;
+		stroke: $gray-300;
 	}
 
 	text {
@@ -10,7 +10,7 @@
 		user-select: none;
 
 		tspan {
-			fill: #6b6c7e;
+			fill: $gray-600;
 		}
 	}
 
@@ -26,7 +26,7 @@
 			'Apple Color Emoji',
 			'Segoe UI Emoji',
 			'Segoe UI Symbol';
-		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+		-webkit-tap-highlight-color: unquote('hsl(from #{$black} h s l / 0)');
 	}
 }
 
@@ -57,33 +57,33 @@
 
 .bb-chart-arc {
 	path {
-		stroke: #fff;
+		stroke: $white;
 	}
 
 	text {
-		fill: #fff;
+		fill: $white;
 		font-size: 13px;
 	}
 }
 
 .bb-chart-arc .bb-gauge-value {
-	fill: #000;
+	fill: $black;
 }
 
 .bb-chart-arcs {
 	.bb-chart-arcs-background {
-		fill: #e0e0e0;
+		fill: $gray-300;
 		stroke: none;
 	}
 
 	.bb-chart-arcs-gauge-unit {
-		fill: #000;
+		fill: $black;
 		font-size: 16px;
 	}
 
 	.bb-chart-arcs-gauge-max,
 	.bb-chart-arcs-gauge-min {
-		fill: #777;
+		fill: $gray-600;
 	}
 }
 
@@ -93,25 +93,25 @@
 }
 
 .bb-circle._expanded_ {
-	stroke: white;
+	stroke: $white;
 	stroke-width: 1px;
 }
 
 .bb-grid {
 	line {
-		stroke: #e5e5eb;
+		stroke: $gray-300;
 		stroke-width: 0.5px;
 	}
 
 	text {
-		fill: #aaa;
+		fill: $gray-500;
 	}
 }
 
 .bb-legend-background {
-	fill: white;
+	fill: $white;
 	opacity: 0.75;
-	stroke: lightgray;
+	stroke: $gray-400;
 	stroke-width: 1;
 }
 
@@ -183,7 +183,7 @@
 .bb-chart-radars {
 	.bb-axis {
 		line {
-			stroke: #848282;
+			stroke: $gray-600;
 			stroke-width: 0.5px;
 		}
 
@@ -196,12 +196,12 @@
 	.bb-levels {
 		polygon {
 			fill: none;
-			stroke: #848282;
+			stroke: $gray-600;
 			stroke-width: 0.5px;
 		}
 
 		text {
-			fill: #848282;
+			fill: $gray-600;
 		}
 	}
 
@@ -212,17 +212,17 @@
 }
 
 .bb-region {
-	fill: steelblue;
+	fill: $info;
 	fill-opacity: 0.1;
 }
 
 .bb-selected-circle {
-	fill: white;
+	fill: $white;
 	stroke-width: 2px;
 }
 
 .bb-text.bb-empty {
-	fill: #808080;
+	fill: $gray-600;
 	font-size: 2em;
 }
 
@@ -235,7 +235,7 @@
 	empty-cells: show;
 
 	td {
-		background-color: #fff;
+		background-color: $white;
 		font-size: 13px;
 		padding: 3px 6px;
 
@@ -258,8 +258,8 @@
 	}
 
 	th {
-		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-		color: #000;
+		border-bottom: 1px solid unquote('hsl(from #{$black} h s l / 0.2)');
+		color: $black;
 		font-size: 14px;
 		padding: 2px 5px;
 		text-align: left;
@@ -268,9 +268,9 @@
 
 .bb-tooltip-container {
 	background-clip: padding-box;
-	background-color: #fff;
+	background-color: $white;
 	border-radius: 0.3rem;
-	box-shadow: 0 1px 15px -2px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 15px -2px unquote('hsl(from #{$black} h s l / 0.2)');
 	display: block;
 	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
 		'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
