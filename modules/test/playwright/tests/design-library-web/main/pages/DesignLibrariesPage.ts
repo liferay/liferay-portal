@@ -7,6 +7,7 @@ import {Locator, Page, expect} from '@playwright/test';
 
 import {liferayConfig} from '../../../../liferay.config';
 import POM from '../../../../utils/POM';
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
 const PORTLET_NAME =
@@ -60,19 +61,16 @@ export class DesignLibrariesPage extends POM {
 	}
 
 	async clickNewStyleBook() {
-		await this.page
-			.getByRole('button', {name: 'New Style Book'})
-			.or(this.page.getByRole('button', {exact: true, name: 'New'}))
-			.first()
-			.click();
-
 		const newStyleBookMenuItem = this.page.getByRole('menuitem', {
 			name: 'New Style Book',
 		});
 
-		if (await newStyleBookMenuItem.isVisible()) {
-			await newStyleBookMenuItem.click();
-		}
+		await clickAndExpectToBeVisible({
+			target: newStyleBookMenuItem,
+			trigger: this.page.getByRole('button', {name: 'Add Asset'}),
+		});
+
+		await newStyleBookMenuItem.click();
 	}
 
 	async createStyleBook(
