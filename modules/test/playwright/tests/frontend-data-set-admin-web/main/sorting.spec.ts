@@ -652,6 +652,10 @@ test('Sorting label in the table is not blank after changing default site langua
 			await globalMenuPage.goToControlPanel('Instance Settings');
 
 			await page.getByRole('link', {name: 'Localization'}).click();
+
+			await page
+				.getByRole('menuitem', {exact: true, name: 'Language'})
+				.click();
 		});
 
 		await test.step('Change default site language to Spanish', async () => {
@@ -701,6 +705,10 @@ test('Sorting label in the table is not blank after changing default site langua
 				await globalMenuPage.goToControlPanel('Instance Settings');
 
 				await page.getByRole('link', {name: 'Localization'}).click();
+
+				await page
+					.getByRole('menuitem', {exact: true, name: 'Language'})
+					.click();
 			});
 
 			await test.step('Change default site language back to English', async () => {
