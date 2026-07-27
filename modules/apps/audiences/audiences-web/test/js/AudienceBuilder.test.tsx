@@ -236,9 +236,7 @@ describe('AudienceBuilder', () => {
 
 			await waitFor(() =>
 				expect(Liferay.Util.openToast).toHaveBeenCalledWith({
-					autoClose: false,
 					message: 'error-message',
-					toastProps: {className: 'audience-builder-save-error'},
 					type: 'danger',
 				})
 			);

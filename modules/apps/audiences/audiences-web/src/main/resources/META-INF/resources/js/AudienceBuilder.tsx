@@ -34,22 +34,10 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 	React.PropsWithChildren<{backend: typeof HTML5Backend}>
 >;
 
-const SAVE_ERROR_TOAST_CLASS = 'audience-builder-save-error';
-
-function dismissSaveErrorToast() {
-	const closeButton = document.querySelector<HTMLElement>(
-		`.${SAVE_ERROR_TOAST_CLASS} button.close`
-	);
-
-	closeButton?.click();
-}
-
 function showSaveErrorToast(message?: string) {
 	Liferay.Util.openToast({
-		autoClose: false,
 		message:
 			message || Liferay.Language.get('an-unexpected-error-occurred'),
-		toastProps: {className: SAVE_ERROR_TOAST_CLASS},
 		type: 'danger',
 	});
 }
@@ -106,8 +94,6 @@ export default function AudienceBuilder({
 		if (!form || !form.reportValidity()) {
 			return;
 		}
-
-		dismissSaveErrorToast();
 
 		setSaveError(null);
 		setSaving(true);
