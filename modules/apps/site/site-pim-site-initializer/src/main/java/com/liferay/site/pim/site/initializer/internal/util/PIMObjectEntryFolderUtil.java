@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectEntryFolderConstants;
 
 import java.util.HashMap;
@@ -25,8 +24,8 @@ import java.util.Map;
 public class PIMObjectEntryFolderUtil {
 
 	public static ObjectEntryFolder getOrAddProductsObjectEntryFolder(
-			ObjectEntryFolderLocalService objectEntryFolderLocalService,
-			Group group)
+			Group group,
+			ObjectEntryFolderLocalService objectEntryFolderLocalService)
 		throws PortalException {
 
 		ObjectEntryFolder objectEntryFolder =
@@ -49,16 +48,13 @@ public class PIMObjectEntryFolderUtil {
 				locale, LanguageUtil.get(locale, "products", "Products"));
 		}
 
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
+		ServiceContext serviceContext = new ServiceContext();
 
-		if (serviceContext == null) {
-			serviceContext = new ServiceContext();
-
-			serviceContext.setCompanyId(group.getCompanyId());
-			serviceContext.setScopeGroupId(group.getGroupId());
-			serviceContext.setUserId(group.getCreatorUserId());
-		}
+		serviceContext.setAddGroupPermissions(false);
+		serviceContext.setAddGuestPermissions(false);
+		serviceContext.setCompanyId(group.getCompanyId());
+		serviceContext.setScopeGroupId(group.getGroupId());
+		serviceContext.setUserId(group.getCreatorUserId());
 
 		try {
 			return objectEntryFolderLocalService.addObjectEntryFolder(

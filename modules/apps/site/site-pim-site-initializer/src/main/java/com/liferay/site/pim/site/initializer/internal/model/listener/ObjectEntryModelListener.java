@@ -37,19 +37,31 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
-			if (!_isPIMProductObjectEntry(objectEntry) ||
-				!_shouldMoveToProductsObjectEntryFolder(objectEntry)) {
-
+			if (!_isPIMProductObjectEntry(objectEntry)) {
 				return;
 			}
 
 			ObjectEntryFolder objectEntryFolder =
-				PIMObjectEntryFolderUtil.getOrAddProductsObjectEntryFolder(
-					_objectEntryFolderLocalService,
-					_groupLocalService.getGroup(objectEntry.getGroupId()));
+				_objectEntryFolderLocalService.fetchObjectEntryFolder(
+					objectEntry.getObjectEntryFolderId());
 
-			objectEntry.setObjectEntryFolderId(
-				objectEntryFolder.getObjectEntryFolderId());
+			if ((objectEntryFolder == null) ||
+				Objects.equals(
+					objectEntryFolder.getExternalReferenceCode(),
+					ObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_CONTENTS) ||
+				Objects.equals(
+					objectEntryFolder.getExternalReferenceCode(),
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES)) {
+
+				objectEntryFolder =
+					PIMObjectEntryFolderUtil.getOrAddProductsObjectEntryFolder(
+						_groupLocalService.getGroup(objectEntry.getGroupId()),
+						_objectEntryFolderLocalService);
+
+				objectEntry.setObjectEntryFolderId(
+					objectEntryFolder.getObjectEntryFolderId());
+			}
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
@@ -79,33 +91,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		if ((objectFolder != null) &&
 			(objectDefinition.getObjectFolderId() ==
 				objectFolder.getObjectFolderId())) {
-
-			return true;
-		}
-
-		return false;
-	}
-
-	private boolean _shouldMoveToProductsObjectEntryFolder(
-		ObjectEntry objectEntry) {
-
-		long objectEntryFolderId = objectEntry.getObjectEntryFolderId();
-
-		if (objectEntryFolderId ==
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT) {
-
-			return true;
-		}
-
-		ObjectEntryFolder objectEntryFolder =
-			_objectEntryFolderLocalService.fetchObjectEntryFolder(
-				objectEntryFolderId);
-
-		if ((objectEntryFolder != null) &&
-			Objects.equals(
-				objectEntryFolder.getExternalReferenceCode(),
-				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS)) {
 
 			return true;
 		}

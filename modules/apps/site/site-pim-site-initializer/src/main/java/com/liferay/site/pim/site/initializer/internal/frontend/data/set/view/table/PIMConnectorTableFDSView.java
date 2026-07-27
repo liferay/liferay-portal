@@ -36,7 +36,7 @@ public class PIMConnectorTableFDSView extends BaseTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"nameTableCellRenderer")
 		).add(
-			"connectorKey", "connector"
+			"key", "connector"
 		).add(
 			"active", "active"
 		).build();
