@@ -90,8 +90,9 @@ describe('getCMSItemSelectorFilters', () => {
 		const groupedFilters = getCMSItemSelectorGroupedFilters();
 
 		expect(groupedFilters.length).toBe(2);
-		expect(groupedFilters[0].filters.length).toBe(7);
+		expect(groupedFilters[0].filters.length).toBe(8);
 		expect(groupedFilters[0].filters[0]).toBe('groupIds');
+		expect(groupedFilters[0].filters).toContain('cmpProjectObjectEntryIds');
 		expect(groupedFilters[0].filters).toContain('extension');
 		expect(groupedFilters[1].filters.length).toBe(5);
 	});
