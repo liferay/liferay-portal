@@ -388,7 +388,11 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return _testProperties;
 	}
 
-	public void setUpYarn() {
+	public synchronized void setUpYarn() {
+		if (_setUpYarn) {
+			return;
+		}
+
 		File workingDirectory = getWorkingDirectory();
 
 		try {
@@ -425,6 +429,8 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 				workingDirectory, "modules/node_modules_cache");
 
 			if (!nodeModulesCacheDir.exists()) {
+				_setUpYarn = true;
+
 				return;
 			}
 
@@ -465,6 +471,8 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 			throw new GitWorkingDirectoryRuntimeException(
 				this, "Failed to run setup-yarn in " + workingDirectory);
 		}
+
+		_setUpYarn = true;
 	}
 
 	public static class Module {
@@ -623,6 +631,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	private List<File> _jsUnitFiles;
 	private List<File> _modifiedModuleDirs;
 	private Properties _releaseProperties;
+	private boolean _setUpYarn;
 	private Properties _testProperties;
 
 }
