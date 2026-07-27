@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+    annotations:
+        argocd.argoproj.io/compare-options: IgnoreExtraneous
+        argocd.argoproj.io/sync-wave: "-60"
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferay-infrastructure-provider
+    name: liferay-infrastructure-provider
+    namespace: {{ .Release.Namespace }}
+spec:
+    destination:
+        namespace: {{ .Values.operatorApplications.crossplane.namespace }}
+        server: https://kubernetes.default.svc
+    project: liferay-infrastructure
+    sources:
+        -   {{- include "liferay-platform.chartSource" .Values.infrastructureProvider | nindent 12 }}
+            helm:
+                parameters:
+                    {{- range $key, $value := .Values.clusterIdentity }}
+                    -   name: clusterIdentity.{{ $key }}
+                        value: {{ $value | quote }}
+                    {{- end }}
+                    -   name: crossplaneNamespace
+                        value: {{ .Values.operatorApplications.crossplane.namespace | quote }}
+                    -   name: deploymentName
+                        value: {{ .Values.clusterIdentity.deploymentName | quote }}
+                    -   name: gateway.className
+                        value: liferay-gateway-class
+                    -   name: gateway.namespace
+                        value: {{ .Values.operatorApplications.envoyGateway.namespace | quote }}
+                    {{- with .Values.infrastructureProvider.parameters }}
+                    {{- toYaml . | nindent 20 }}
+                    {{- end }}
+                valueFiles:
+                    -   $values/{{ .Values.gitops.layout.system }}/{{ .Values.gitops.layout.infrastructureProviderValuesFilename }}
+        -   ref: values
+            repoURL: {{ include "liferay-platform.infrastructureRepositoryURL" . }}
+            targetRevision: {{ include "liferay-platform.infrastructureRepositoryRevision" . }}
+    syncPolicy:
+        automated:
+            prune: true
+            selfHeal: true
+        retry:
+            backoff:
+                duration: 30s
+                factor: 2
+                maxDuration: 10m
+            limit: 10
+        syncOptions:
+            -   CreateNamespace=true
+            -   SkipDryRunOnMissingResource=true

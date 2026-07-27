@@ -1,0 +1,83 @@
+{{- $gitops := .Values.gitops -}}
+{{- $layout := $gitops.layout -}}
+{{- $name := printf "%s-%s-app" $layout.projectId $layout.environmentId -}}
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-60"
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferay-applicationset
+    name: liferay-applicationset
+    namespace: {{ .Release.Namespace }}
+spec:
+    generators:
+        -   git:
+                files:
+                    -   path: {{ $layout.environments }}/{{ $layout.liferayValuesFilename }}
+                repoURL: {{ $gitops.repository.url }}
+                revision: {{ $gitops.repository.revision }}
+    template:
+        metadata:
+            annotations:
+                argocd.argoproj.io/compare-options: IgnoreExtraneous
+            labels:
+                {{- include "liferay-platform.labels" . | nindent 16 }}
+                app.kubernetes.io/name: {{ $name | quote }}
+            name: {{ $name | quote }}
+        spec:
+            destination:
+                namespace: {{ printf "liferay-%s-%s" $layout.projectId $layout.environmentId }}
+                server: https://kubernetes.default.svc
+            ignoreDifferences:
+                -   group: ""
+                    jsonPointers:
+                        -   /data
+                    kind: Secret
+                    name: liferay-default
+            project: liferay-application
+            sources:
+                -   {{- include "liferay-platform.chartSource" .Values.liferay | nindent 20 }}
+                    helm:
+                        parameters:
+                            -   name: global.deploymentName
+                                value: {{ .Values.clusterIdentity.deploymentName | quote }}
+                            -   name: global.liferayServiceAccount.create
+                                value: "true"
+                            -   name: global.liferayServiceAccount.name
+                                value: liferay-default
+                            -   name: global.projectId
+                                value: {{ $layout.projectId | quote }}
+                            -   name: liferay-default.environmentId
+                                value: {{ $layout.environmentId | quote }}
+                            -   name: liferay-default.network.gatewayName
+                                value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
+                            {{- with .Values.liferay.parameters }}
+                            {{- toYaml . | nindent 28 }}
+                            {{- end }}
+                        valueFiles:
+                            -   $values/{{ $layout.base }}/{{ $layout.liferayValuesFilename }}
+                            -   $values/{{ `{{path}}` }}/{{ $layout.liferayValuesFilename }}
+                -   ref: values
+                    repoURL: {{ $gitops.repository.url }}
+                    targetRevision: {{ $gitops.repository.revision }}
+            syncPolicy:
+                automated:
+                    prune: true
+                    selfHeal: true
+                managedNamespaceMetadata:
+                    labels:
+                        liferay.com/observable: "true"
+                        pod-security.kubernetes.io/enforce: restricted
+                retry:
+                    backoff:
+                        duration: 30s
+                        factor: 2
+                        maxDuration: 10m
+                    limit: 10
+                syncOptions:
+                    -   CreateNamespace=true
+                    -   RespectIgnoreDifferences=true

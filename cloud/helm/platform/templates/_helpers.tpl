@@ -8,6 +8,18 @@ repoURL: {{ .repoURL }}
 targetRevision: {{ .targetRevision | quote }}
 {{- end -}}
 
+{{- define "liferay-platform.clusterSecretStoreName" -}}
+{{- printf "%s-secret-store" .Values.clusterIdentity.deploymentName -}}
+{{- end -}}
+
+{{- define "liferay-platform.infrastructureRepositoryRevision" -}}
+{{- .Values.gitops.infrastructureRepository.revision | default .Values.gitops.repository.revision -}}
+{{- end -}}
+
+{{- define "liferay-platform.infrastructureRepositoryURL" -}}
+{{- .Values.gitops.infrastructureRepository.url | default .Values.gitops.repository.url -}}
+{{- end -}}
+
 {{- define "liferay-platform.labels" -}}
 liferay.com/project: liferay-cloud-native
 {{- end -}}

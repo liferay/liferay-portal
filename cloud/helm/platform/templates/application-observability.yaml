@@ -1,0 +1,62 @@
+{{- if .Values.observability.enabled -}}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+    annotations:
+        argocd.argoproj.io/compare-options: IgnoreExtraneous
+        argocd.argoproj.io/sync-wave: "-60"
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferay-observability
+    name: liferay-observability
+    namespace: {{ .Release.Namespace }}
+spec:
+    destination:
+        namespace: {{ .Values.observability.namespace }}
+        server: https://kubernetes.default.svc
+    ignoreDifferences:
+        -   group: ""
+            jsonPointers:
+                -   /data
+            kind: Secret
+            name: liferay-observability-grafana
+    project: liferay-infrastructure
+    sources:
+        -   {{- include "liferay-platform.chartSource" .Values.observability | nindent 12 }}
+            helm:
+                parameters:
+                    -   name: centralHub.gitURL
+                        value: {{ .Values.gitops.repository.url | quote }}
+                    -   name: grafana.namespaceOverride
+                        value: {{ .Values.observability.namespace | quote }}
+                    -   name: kube-state-metrics.namespaceOverride
+                        value: {{ .Values.observability.namespace | quote }}
+                    -   name: namespaceOverride
+                        value: {{ .Values.observability.namespace | quote }}
+                    -   name: prometheus-node-exporter.namespaceOverride
+                        value: {{ .Values.observability.namespace | quote }}
+                    {{- with .Values.observability.parameters }}
+                    {{- toYaml . | nindent 20 }}
+                    {{- end }}
+                valueFiles:
+                    -   $values/{{ .Values.gitops.layout.system }}/{{ .Values.gitops.layout.observabilityValuesFilename }}
+        -   ref: values
+            repoURL: {{ include "liferay-platform.infrastructureRepositoryURL" . }}
+            targetRevision: {{ include "liferay-platform.infrastructureRepositoryRevision" . }}
+    syncPolicy:
+        automated:
+            prune: true
+            selfHeal: true
+        retry:
+            backoff:
+                duration: 30s
+                factor: 2
+                maxDuration: 10m
+            limit: 10
+        syncOptions:
+            -   CreateNamespace=true
+            -   RespectIgnoreDifferences=true
+            -   SkipDryRunOnMissingResource=true
+{{- end -}}

@@ -139,7 +139,7 @@ variable "observability_helm_chart_config" {
 variable "observability_helm_chart_version" {
 	type=string
 }
-variable "operators_helm_values" {
+variable "operator_applications_helm_values" {
 	default={}
 	type=any
 }

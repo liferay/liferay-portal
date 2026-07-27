@@ -48,7 +48,7 @@ locals {
 		name="external-secrets"
 		namespace="external-secrets-system"
 	}
-	operators_helm_values={
+	operator_applications_helm_values={
 		externalSecrets={
 			values={
 				serviceAccount={

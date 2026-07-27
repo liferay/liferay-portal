@@ -1,0 +1,23 @@
+{{- $sourceRepos := list .Values.gitops.repository.url .Values.liferay.repoURL (printf "%s/*" .Values.liferay.repoURL) -}}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+    annotations:
+        argocd.argoproj.io/compare-options: IgnoreExtraneous
+        argocd.argoproj.io/sync-wave: "-100"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferay-appproject
+    name: liferay-application
+    namespace: {{ .Release.Namespace }}
+spec:
+    clusterResourceWhitelist:
+        -   group: "*"
+            kind: "*"
+    description:
+        ArgoCD project for Liferay cloud native applications.
+    destinations:
+        -   namespace: liferay-*
+            server: https://kubernetes.default.svc
+    sourceRepos:
+        {{- $sourceRepos | toYaml | nindent 8 }}

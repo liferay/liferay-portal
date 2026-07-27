@@ -146,8 +146,8 @@ locals {
 		length(local.argocd_helm_values) == 0 ? {} : {
 			argocd=local.argocd_helm_values
 		},
-		length(var.operators_helm_values) == 0 ? {} : {
-			operators=var.operators_helm_values
+		length(var.operator_applications_helm_values) == 0 ? {} : {
+			operatorApplications=var.operator_applications_helm_values
 		}
 	)
 	terraform_manager_name="liferay-cloud-native-terraform"

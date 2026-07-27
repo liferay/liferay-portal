@@ -17,7 +17,7 @@ module "platform" {
 	observability_enabled=var.observability_enabled
 	observability_helm_chart_config=var.observability_helm_chart_config
 	observability_helm_chart_version=var.observability_helm_chart_version
-	operators_helm_values=local.operators_helm_values
+	operator_applications_helm_values=local.operator_applications_helm_values
 	platform_helm_chart_config=var.platform_helm_chart_config
 	platform_helm_chart_version=var.platform_helm_chart_version
 	source="../../modules/platform"

@@ -1,0 +1,77 @@
+{{- $layout := .Values.gitops.layout -}}
+{{- $name := printf "%s-%s-infra" $layout.projectId $layout.environmentId -}}
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-60"
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: liferay-infrastructure-applicationset
+    name: liferay-infrastructure-applicationset
+    namespace: {{ .Release.Namespace }}
+spec:
+    generators:
+        -   git:
+                files:
+                    -   path: {{ $layout.environments }}/{{ $layout.infrastructureValuesFilename }}
+                repoURL: {{ include "liferay-platform.infrastructureRepositoryURL" . }}
+                revision: {{ include "liferay-platform.infrastructureRepositoryRevision" . }}
+    template:
+        metadata:
+            annotations:
+                argocd.argoproj.io/compare-options: IgnoreExtraneous
+            labels:
+                {{- include "liferay-platform.labels" . | nindent 16 }}
+                app.kubernetes.io/name: {{ $name | quote }}
+            name: {{ $name | quote }}
+        spec:
+            destination:
+                namespace: {{ printf "liferay-%s-%s" $layout.projectId $layout.environmentId }}
+                server: https://kubernetes.default.svc
+            project: liferay-infrastructure
+            sources:
+                -   {{- include "liferay-platform.chartSource" .Values.infrastructure | nindent 20 }}
+                    helm:
+                        parameters:
+                            -   name: environmentId
+                                value: {{ $layout.environmentId | quote }}
+                            -   name: gateway.className
+                                value: liferay-gateway-class
+                            -   name: gateway.name
+                                value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
+                            -   name: projectId
+                                value: {{ $layout.projectId | quote }}
+                            -   name: region
+                                value: {{ .Values.clusterIdentity.region | quote }}
+                            -   name: secretStoreName
+                                value: {{ include "liferay-platform.clusterSecretStoreName" . | quote }}
+                            {{- with .Values.infrastructure.parameters }}
+                            {{- toYaml . | nindent 28 }}
+                            {{- end }}
+                        valueFiles:
+                            -   $values/{{ $layout.base }}/{{ $layout.infrastructureValuesFilename }}
+                            -   $values/{{ `{{path}}` }}/{{ $layout.infrastructureValuesFilename }}
+                -   ref: values
+                    repoURL: {{ include "liferay-platform.infrastructureRepositoryURL" . }}
+                    targetRevision: {{ include "liferay-platform.infrastructureRepositoryRevision" . }}
+            syncPolicy:
+                automated:
+                    prune: true
+                    selfHeal: true
+                managedNamespaceMetadata:
+                    labels:
+                        pod-security.kubernetes.io/enforce: restricted
+                retry:
+                    backoff:
+                        duration: 30s
+                        factor: 2
+                        maxDuration: 10m
+                    limit: 10
+                syncOptions:
+                    -   CreateNamespace=true
+                    -   IgnoreExtraneous=true
+                    -   RespectIgnoreDifferences=true
+                    -   SkipDryRunOnMissingResource=true

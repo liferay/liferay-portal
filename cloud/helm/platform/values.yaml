@@ -1,5 +1,51 @@
+clusterIdentity:
+    deploymentName: ""
+    region: ""
+gitops:
+    infrastructureRepository:
+        revision: ""
+        url: ""
+    layout:
+        base: liferay/projects/{{path[2]}}/base
+        environmentId: "{{path[4]}}"
+        environments: liferay/projects/*/environments/*
+        infrastructureProviderValuesFilename: infrastructure-provider.yaml
+        infrastructureValuesFilename: infrastructure.yaml
+        liferayValuesFilename: liferay.yaml
+        observabilityValuesFilename: observability.yaml
+        projectId: "{{path[2]}}"
+        projectValuesFilename: project.yaml
+        projects: liferay/projects/*
+        system: liferay/system
+    repository:
+        revision: HEAD
+        url: ""
+infrastructure:
+    chart: ""
+    parameters: []
+    path: ""
+    repoURL: ""
+    targetRevision: ""
+infrastructureProvider:
+    chart: ""
+    parameters: []
+    path: ""
+    repoURL: ""
+    targetRevision: ""
+liferay:
+    chart: ""
+    parameters: []
+    path: ""
+    repoURL: ""
+    targetRevision: ""
 observability:
+    chart: observability
     enabled: false
+    namespace: observability
+    parameters: []
+    path: ""
+    repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
+    targetRevision: 1.0.0
 operatorApplications:
     ackPrometheusService:
         chart: prometheusservice-chart
