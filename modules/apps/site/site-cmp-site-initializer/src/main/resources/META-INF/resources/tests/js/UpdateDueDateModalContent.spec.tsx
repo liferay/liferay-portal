@@ -95,6 +95,29 @@ describe('UpdateDueDateModalContent', () => {
 		expect(mockLoadData).toHaveBeenCalled();
 	});
 
+	it('hands the updated task to onTaskUpdated instead of reloading', async () => {
+		const updatedTask = {dueDate: '2026-08-20', id: 123};
+
+		mockPatchTaskById.mockResolvedValue({data: updatedTask, error: null});
+
+		const onTaskUpdated = jest.fn();
+
+		const {getByTestId, getByText} = renderModal({onTaskUpdated});
+
+		fireEvent.change(getByTestId('mock-date-field'), {
+			target: {value: '08/20/2026'},
+		});
+
+		fireEvent.submit(getByText('update').closest('form')!);
+
+		await waitFor(() => {
+			expect(onTaskUpdated).toHaveBeenCalledWith(updatedTask);
+		});
+
+		expect(mockCloseModal).toHaveBeenCalled();
+		expect(mockLoadData).not.toHaveBeenCalled();
+	});
+
 	it('pre-fills the picker with the task due date', () => {
 		const {getByTestId} = renderModal();
 

@@ -4,10 +4,17 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render} from '@testing-library/react';
+import {fireEvent, render, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import CalendarTaskCard from '../../js/components/props_transformer/views/calendar_view/components/CalendarTaskCard';
+import {
+	getTaskById,
+	getUserAccount,
+	patchTaskById,
+	postSubscribeTaskByExternalReferenceCode,
+	postUnsubscribeTaskByExternalReferenceCode,
+} from '../../js/utils/api';
 import {ITaskObjectEntry} from '../../js/utils/types';
 import {mockNavigate} from './__mocks__/frontend-js-web';
 
@@ -24,6 +31,7 @@ jest.mock('@liferay/site-cms-site-initializer', () => ({
 
 jest.mock('../../js/utils/api', () => ({
 	deleteTaskById: jest.fn(),
+	getTaskById: jest.fn(),
 	getUserAccount: jest.fn(),
 	patchTaskById: jest.fn(),
 	postSubscribeTaskByExternalReferenceCode: jest.fn(),
@@ -67,7 +75,10 @@ function createTask(overrides: Partial<ITaskObjectEntry> = {}) {
 	} as ITaskObjectEntry;
 }
 
-function renderCard(task: ITaskObjectEntry, props: {expanded?: boolean} = {}) {
+function renderCard(
+	task: ITaskObjectEntry,
+	props: Partial<React.ComponentProps<typeof CalendarTaskCard>> = {}
+) {
 	return render(
 		<CalendarTaskCard loadData={jest.fn()} task={task} {...props} />
 	);
@@ -205,5 +216,215 @@ describe('CalendarTaskCard', () => {
 		expect(getByText('edit')).toBeInTheDocument();
 		expect(getByText('view')).toBeInTheDocument();
 		expect(getByText('watch-task')).toBeInTheDocument();
+	});
+
+	describe('quick actions with in-place task updates', () => {
+		const task = createTask({
+			actions: taskActions,
+			externalReferenceCode: 'TASK-1',
+			id: 1,
+			scopeKey: 'scope-1',
+		} as Partial<ITaskObjectEntry>);
+
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('keeps the task untouched when watching fails', async () => {
+			(
+				postSubscribeTaskByExternalReferenceCode as jest.Mock
+			).mockResolvedValue({error: 'error'});
+
+			const loadData = jest.fn();
+			const onTaskChanged = jest.fn();
+
+			const {getByLabelText, getByText} = renderCard(task, {
+				loadData,
+				onTaskChanged,
+			});
+
+			fireEvent.click(getByLabelText('actions'));
+			fireEvent.click(getByText('watch-task'));
+
+			await waitFor(() => {
+				expect(
+					postSubscribeTaskByExternalReferenceCode
+				).toHaveBeenCalled();
+			});
+
+			expect(loadData).not.toHaveBeenCalled();
+			expect(onTaskChanged).not.toHaveBeenCalled();
+		});
+
+		it('merges the assign to me response into the task instead of reloading', async () => {
+			(getUserAccount as jest.Mock).mockResolvedValue({
+				externalReferenceCode: 'USER-1',
+				name: 'John Doe',
+			});
+
+			const updatedTask = {
+				assignTo: {name: 'John Doe'},
+				dateModified: '2026-02-05T00:00:00Z',
+			};
+
+			(patchTaskById as jest.Mock).mockResolvedValue({
+				data: updatedTask,
+				error: null,
+			});
+
+			const loadData = jest.fn();
+			const onTaskChanged = jest.fn();
+
+			const {getByLabelText, getByText} = renderCard(task, {
+				loadData,
+				onTaskChanged,
+			});
+
+			fireEvent.click(getByLabelText('actions'));
+			fireEvent.click(getByText('assign-to-me'));
+
+			await waitFor(() => {
+				expect(onTaskChanged).toHaveBeenCalledWith({
+					actions: taskActions,
+					embedded: {...task, ...updatedTask},
+				});
+			});
+
+			expect(loadData).not.toHaveBeenCalled();
+		});
+
+		it('refreshes the task after stop watching instead of reloading', async () => {
+			(
+				postUnsubscribeTaskByExternalReferenceCode as jest.Mock
+			).mockResolvedValue({error: null});
+
+			const watchedTask = createTask({
+				...task,
+				actions: {
+					assignToMe: taskActions.assignToMe,
+					delete: taskActions.delete,
+					get: taskActions.get,
+					unsubscribe: {href: '/unsubscribe', method: 'POST'},
+					update: taskActions.update,
+				},
+			} as Partial<ITaskObjectEntry>);
+
+			const refreshedTask = {...watchedTask, actions: taskActions};
+
+			(getTaskById as jest.Mock).mockResolvedValue({
+				data: refreshedTask,
+				error: null,
+			});
+
+			const loadData = jest.fn();
+			const onTaskChanged = jest.fn();
+
+			const {getByLabelText, getByText} = renderCard(watchedTask, {
+				loadData,
+				onTaskChanged,
+			});
+
+			fireEvent.click(getByLabelText('actions'));
+			fireEvent.click(getByText('stop-watching-task'));
+
+			await waitFor(() => {
+				expect(onTaskChanged).toHaveBeenCalledWith({
+					actions: taskActions,
+					embedded: refreshedTask,
+				});
+			});
+
+			expect(getTaskById).toHaveBeenCalledWith({taskId: '1'});
+			expect(loadData).not.toHaveBeenCalled();
+		});
+
+		it('refreshes the task after watching instead of reloading', async () => {
+			(
+				postSubscribeTaskByExternalReferenceCode as jest.Mock
+			).mockResolvedValue({error: null});
+
+			const refreshedTaskActions = {
+				assignToMe: taskActions.assignToMe,
+				delete: taskActions.delete,
+				get: taskActions.get,
+				unsubscribe: {href: '/unsubscribe', method: 'POST'},
+				update: taskActions.update,
+			};
+
+			const refreshedTask = {...task, actions: refreshedTaskActions};
+
+			(getTaskById as jest.Mock).mockResolvedValue({
+				data: refreshedTask,
+				error: null,
+			});
+
+			const loadData = jest.fn();
+			const onTaskChanged = jest.fn();
+
+			const {getByLabelText, getByText} = renderCard(task, {
+				loadData,
+				onTaskChanged,
+			});
+
+			fireEvent.click(getByLabelText('actions'));
+			fireEvent.click(getByText('watch-task'));
+
+			await waitFor(() => {
+				expect(onTaskChanged).toHaveBeenCalledWith({
+					actions: refreshedTaskActions,
+					embedded: refreshedTask,
+				});
+			});
+
+			expect(getTaskById).toHaveBeenCalledWith({taskId: '1'});
+			expect(loadData).not.toHaveBeenCalled();
+		});
+
+		it('reloads after watching when in-place updates are unavailable', async () => {
+			(
+				postSubscribeTaskByExternalReferenceCode as jest.Mock
+			).mockResolvedValue({error: null});
+
+			const loadData = jest.fn();
+
+			const {getByLabelText, getByText} = renderCard(task, {loadData});
+
+			fireEvent.click(getByLabelText('actions'));
+			fireEvent.click(getByText('watch-task'));
+
+			await waitFor(() => {
+				expect(loadData).toHaveBeenCalled();
+			});
+
+			expect(getTaskById).not.toHaveBeenCalled();
+		});
+
+		it('reloads after watching when the task refetch returns no data', async () => {
+			(
+				postSubscribeTaskByExternalReferenceCode as jest.Mock
+			).mockResolvedValue({error: null});
+
+			(getTaskById as jest.Mock).mockResolvedValue({
+				data: null,
+				error: 'error',
+			});
+
+			const loadData = jest.fn();
+			const onTaskChanged = jest.fn();
+
+			const {getByLabelText, getByText} = renderCard(task, {
+				loadData,
+				onTaskChanged,
+			});
+
+			fireEvent.click(getByLabelText('actions'));
+			fireEvent.click(getByText('watch-task'));
+
+			await waitFor(() => {
+				expect(loadData).toHaveBeenCalled();
+			});
+
+			expect(onTaskChanged).not.toHaveBeenCalled();
+		});
 	});
 });
