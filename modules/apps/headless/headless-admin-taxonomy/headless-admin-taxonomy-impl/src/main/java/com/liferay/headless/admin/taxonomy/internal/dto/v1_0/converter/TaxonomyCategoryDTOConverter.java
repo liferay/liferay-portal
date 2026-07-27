@@ -13,6 +13,8 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetCategoryService;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.ParentTaxonomyCategory;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.ParentTaxonomyVocabulary;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategory;
@@ -82,6 +84,14 @@ public class TaxonomyCategoryDTOConverter
 		throws Exception {
 
 		return _toTaxonomyCategory(dtoConverterContext, assetCategory);
+	}
+
+	private FriendlyURLEntry _fetchFriendlyURLEntry(
+		AssetCategory assetCategory) {
+
+		return _friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
+			_portal.getClassNameId(AssetCategory.class),
+			assetCategory.getCategoryId());
 	}
 
 	private Map<String, Map<String, String>> _getActions(
@@ -162,6 +172,33 @@ public class TaxonomyCategoryDTOConverter
 						assetCategory.getDescriptionMap()));
 				setExternalReferenceCode(
 					assetCategory::getExternalReferenceCode);
+				setFriendlyUrlPath(
+					() -> {
+						FriendlyURLEntry friendlyURLEntry =
+							_fetchFriendlyURLEntry(assetCategory);
+
+						if (friendlyURLEntry == null) {
+							return null;
+						}
+
+						return friendlyURLEntry.getUrlTitle(
+							LocaleUtil.toLanguageId(
+								dtoConverterContext.getLocale()));
+					});
+				setFriendlyUrlPath_i18n(
+					() -> {
+						FriendlyURLEntry friendlyURLEntry =
+							_fetchFriendlyURLEntry(assetCategory);
+
+						if (friendlyURLEntry == null) {
+							return null;
+						}
+
+						return LocalizedMapUtil.getI18nMap(
+							dtoConverterContext.isAcceptAllLanguages(),
+							LocalizedMapUtil.getLocalizedMap(
+								friendlyURLEntry.getLanguageIdToUrlTitleMap()));
+					});
 				setId(() -> String.valueOf(assetCategory.getCategoryId()));
 				setName(
 					() -> assetCategory.getTitle(
@@ -311,6 +348,9 @@ public class TaxonomyCategoryDTOConverter
 		target = "(dto.class.name=com.liferay.headless.admin.taxonomy.dto.v1_0.TaxonomyCategory)"
 	)
 	private DTOActionProvider _dtoActionProvider;
+
+	@Reference
+	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
