@@ -15,6 +15,21 @@
 		<field name="permissionType" type="int" />
 		<field name="workspaceGroupId" type="long" />
 	</model>
+	<model name="com.liferay.osb.faro.model.FaroDataSourceUsage">
+		<field name="mvccVersion" type="long" />
+		<field name="faroDataSourceUsageId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="createTime" type="long" />
+		<field name="modifiedTime" type="long" />
+		<field name="billableEventsCount" type="long" />
+		<field name="dataSourceId" type="long" />
+		<field name="dataSourceName" type="String" />
+		<field name="dataSourceStatus" type="String" />
+		<field name="faroProjectId" type="long" />
+		<field name="knownIndividualsCount" type="long" />
+		<field name="usageTime" type="long" />
+	</model>
 	<model name="com.liferay.osb.faro.model.FaroNotification">
 		<field name="mvccVersion" type="long" />
 		<field name="faroNotificationId" type="long" />

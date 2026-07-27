@@ -1,6 +1,8 @@
 create index IX_28923D9C on OSBFaro_FaroChannel (groupId, userId);
 create unique index IX_5922CD6D on OSBFaro_FaroChannel (workspaceGroupId, channelId[$COLUMN_LENGTH:75$]);
 
+create index IX_CC1C46E7 on OSBFaro_FaroDataSourceUsage (dataSourceId, faroProjectId, usageTime);
+
 create index IX_F93E2F21 on OSBFaro_FaroNotification (createTime, groupId, ownerId, type_[$COLUMN_LENGTH:75$], subtype[$COLUMN_LENGTH:75$], read_);
 
 create unique index IX_12C47BB1 on OSBFaro_FaroPreferences (groupId, ownerId);

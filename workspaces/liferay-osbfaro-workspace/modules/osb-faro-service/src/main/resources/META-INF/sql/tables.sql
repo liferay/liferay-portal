@@ -13,6 +13,22 @@ create table OSBFaro_FaroChannel (
 	workspaceGroupId LONG
 );
 
+create table OSBFaro_FaroDataSourceUsage (
+	mvccVersion LONG default 0 not null,
+	faroDataSourceUsageId LONG not null primary key,
+	companyId LONG,
+	userId LONG,
+	createTime LONG,
+	modifiedTime LONG,
+	billableEventsCount LONG,
+	dataSourceId LONG,
+	dataSourceName VARCHAR(75) null,
+	dataSourceStatus VARCHAR(75) null,
+	faroProjectId LONG,
+	knownIndividualsCount LONG,
+	usageTime LONG
+);
+
 create table OSBFaro_FaroNotification (
 	mvccVersion LONG default 0 not null,
 	faroNotificationId LONG not null primary key,
