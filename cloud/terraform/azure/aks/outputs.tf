@@ -16,6 +16,12 @@ output "oidc_issuer_url" {
 output "private_subnet_ids" {
 	value=[azurerm_subnet.main.id]
 }
+output "prometheus_workspace_endpoint" {
+	value=try(azurerm_monitor_workspace.main[0].query_endpoint, "")
+}
+output "prometheus_workspace_id" {
+	value=try(azurerm_monitor_workspace.main[0].id, "")
+}
 output "region" {
 	value=var.region
 }

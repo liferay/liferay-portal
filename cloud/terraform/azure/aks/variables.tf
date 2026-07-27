@@ -19,6 +19,12 @@ variable "machine_type" {
 	default="Standard_D4ds_v4"
 	type=string
 }
+variable "observability_config" {
+	default={}
+	type=object({
+		enabled=optional(bool, false)
+	})
+}
 variable "pod_cidr" {
 	default="10.244.0.0/16"
 	type=string
