@@ -604,7 +604,7 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 		throws PortalException {
 
 		try {
-			return dlAppLocalService.getFileEntry(groupId, folderId, title);
+			return getFileEntry(groupId, folderId, title);
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
 			if (_log.isDebugEnabled()) {
@@ -641,8 +641,7 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 		throws PortalException {
 
 		try {
-			return dlAppLocalService.getFileEntryByFileName(
-				groupId, folderId, fileName);
+			return getFileEntryByFileName(groupId, folderId, fileName);
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
 			if (_log.isDebugEnabled()) {

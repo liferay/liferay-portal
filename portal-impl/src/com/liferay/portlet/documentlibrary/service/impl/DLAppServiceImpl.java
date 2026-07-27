@@ -1046,7 +1046,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 	@Override
 	public FileEntry fetchFileEntry(long fileEntryId) throws PortalException {
 		try {
-			return dlAppService.getFileEntry(fileEntryId);
+			return getFileEntry(fileEntryId);
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
 			if (_log.isDebugEnabled()) {
@@ -1062,7 +1062,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		throws PortalException {
 
 		try {
-			return dlAppService.getFileEntry(groupId, folderId, title);
+			return getFileEntry(groupId, folderId, title);
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
 			if (_log.isDebugEnabled()) {
@@ -1079,7 +1079,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		throws PortalException {
 
 		try {
-			return dlAppService.getFileEntryByExternalReferenceCode(
+			return getFileEntryByExternalReferenceCode(
 				externalReferenceCode, groupId);
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
@@ -1097,8 +1097,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		throws PortalException {
 
 		try {
-			return dlAppService.getFileEntryByFileName(
-				groupId, folderId, fileName);
+			return getFileEntryByFileName(groupId, folderId, fileName);
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
 			if (_log.isDebugEnabled()) {
@@ -1114,7 +1113,7 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 		throws PortalException {
 
 		try {
-			return dlAppService.getFileEntryByUuidAndGroupId(uuid, groupId);
+			return getFileEntryByUuidAndGroupId(uuid, groupId);
 		}
 		catch (NoSuchFileEntryException noSuchFileEntryException) {
 			if (_log.isDebugEnabled()) {
