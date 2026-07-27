@@ -85,6 +85,8 @@ public class OpenAPIResourceImpl {
 
 	private final Set<Class<?>> _resourceClasses = new HashSet<Class<?>>() {
 		{
+			add(DepotScopeResourceImpl.class);
+
 			add(FieldResourceImpl.class);
 
 			add(PlanResourceImpl.class);
@@ -98,4 +100,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:960875346
+// LIFERAY-REST-BUILDER-HASH:-97308440
