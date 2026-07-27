@@ -36,8 +36,7 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 				StringBundler.concat(
 					"select distinct ctCollectionId, friendlyURLEntryId, ",
 					"languageId, urlTitle, groupId, classPK from ",
-					"FriendlyURLEntryLocalization where urlTitle like '%/' ",
-					"and classNameId = ?"))) {
+					"FriendlyURLEntryLocalization where classNameId = ?"));
 
 			long classNameId = _classNameLocalService.getClassNameId(
 				BlogsEntry.class);
