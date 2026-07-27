@@ -68,9 +68,11 @@ public class BuildQueueRebalancerTest
 			"items",
 			new JSONArray(
 			).put(
-				_getQueueItemJSONObject(101, 1)
+				_getQueueItemJSONObject(
+					RandomTestUtil.randomLong(), RandomTestUtil.randomLong())
 			).put(
-				_getQueueItemJSONObject(102, 2)
+				_getQueueItemJSONObject(
+					RandomTestUtil.randomLong(), RandomTestUtil.randomLong())
 			));
 
 		setUrlReaderOutput(
