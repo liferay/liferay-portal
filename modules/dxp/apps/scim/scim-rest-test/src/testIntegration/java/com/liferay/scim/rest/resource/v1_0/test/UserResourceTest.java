@@ -19,9 +19,11 @@ import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.EmailAddressLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -168,6 +170,19 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 
 		assertHttpResponseStatusCode(200, httpResponse);
 		assertValid(User.toDTO(httpResponse.getContent()));
+
+		com.liferay.portal.kernel.model.User portalUser =
+			_userLocalService.getUser(GetterUtil.getLong(user.getId()));
+
+		_emailAddressLocalService.deleteEmailAddresses(
+			portalUser.getCompanyId(), Contact.class.getName(),
+			portalUser.getContactId());
+
+		user = _getUser(user.getId());
+
+		MultiValuedAttribute[] emails = user.getEmails();
+
+		Assert.assertEquals(portalUser.getEmailAddress(), emails[0].getValue());
 
 		_userLocalService.updateStatus(
 			GetterUtil.getLong(user.getId()), WorkflowConstants.STATUS_INACTIVE,
@@ -706,6 +721,9 @@ public class UserResourceTest extends BaseUserResourceTestCase {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private EmailAddressLocalService _emailAddressLocalService;
 
 	@Inject
 	private ExpandoColumnLocalService _expandoColumnLocalService;
