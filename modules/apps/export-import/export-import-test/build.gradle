@@ -4,6 +4,7 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:asset:asset-categories-admin-web-api")
 	testIntegrationImplementation project(":apps:asset:asset-link-api")
 	testIntegrationImplementation project(":apps:asset:asset-tags-api")

@@ -5,6 +5,9 @@
 
 package com.liferay.exportimport.internal.data.handler.test;
 
+import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.BatchEngineTaskExecuteStatus;
 import com.liferay.batch.engine.service.BatchEngineImportTaskLocalService;
@@ -112,6 +115,7 @@ import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -119,6 +123,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
@@ -323,6 +328,128 @@ public class BatchEnginePortletDataHandlerTest {
 			_stagingGroupHelper.fetchCompanyGroup(
 				TestPropsValues.getCompanyId()),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
+	}
+
+	@Test
+	@TestInfo("LPD-66540")
+	public void testExportImportCompanyObjectEntriesWithAccountRestriction()
+		throws Exception {
+
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService,
+				_objectDefinitionLocalService.fetchObjectDefinition(
+					TestPropsValues.getCompanyId(),
+					AccountEntry.class.getSimpleName()),
+				objectDefinition);
+
+		ObjectField accountObjectField =
+			_objectFieldLocalService.fetchObjectField(
+				objectRelationship.getObjectFieldId2());
+
+		objectDefinition.setAccountEntryRestrictedObjectFieldId(
+			accountObjectField.getObjectFieldId());
+
+		objectDefinition.setAccountEntryRestricted(true);
+
+		objectDefinition = _objectDefinitionLocalService.updateObjectDefinition(
+			objectDefinition);
+
+		String accountEntryName = RandomTestUtil.randomString();
+
+		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			AccountConstants.PARENT_ACCOUNT_ENTRY_ID_DEFAULT, accountEntryName,
+			null, null, null, null, null,
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS,
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				accountObjectField.getName(), accountEntry.getAccountEntryId()
+			).put(
+				"textField", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withObjectEntries(
+			objectDefinition
+		).executeExport();
+
+		// Import when the account exists
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).executeImport();
+
+		ObjectEntry importedObjectEntry =
+			_objectEntryLocalService.getObjectEntry(
+				objectEntry.getExternalReferenceCode(),
+				objectEntry.getGroupId(),
+				objectDefinition.getObjectDefinitionId());
+
+		AccountEntry importedAccountEntry =
+			_accountEntryLocalService.fetchAccountEntry(
+				GetterUtil.getLong(
+					importedObjectEntry.getValues(
+					).get(
+						accountObjectField.getName()
+					)));
+
+		Assert.assertNotNull(importedAccountEntry);
+		Assert.assertEquals(
+			accountEntry.getAccountEntryId(),
+			importedAccountEntry.getAccountEntryId());
+
+		// Import when the account does not exist
+
+		_objectEntryLocalService.deleteObjectEntry(importedObjectEntry);
+
+		_accountEntryLocalService.deleteAccountEntry(accountEntry);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).executeImport();
+
+		importedObjectEntry = _objectEntryLocalService.getObjectEntry(
+			objectEntry.getExternalReferenceCode(), objectEntry.getGroupId(),
+			objectDefinition.getObjectDefinitionId());
+
+		importedAccountEntry = _accountEntryLocalService.fetchAccountEntry(
+			GetterUtil.getLong(
+				importedObjectEntry.getValues(
+				).get(
+					accountObjectField.getName()
+				)));
+
+		Assert.assertNotNull(importedAccountEntry);
+		Assert.assertEquals(accountEntryName, importedAccountEntry.getName());
 	}
 
 	@Test
@@ -2444,6 +2571,8 @@ public class BatchEnginePortletDataHandlerTest {
 				StringPool.TRUE);
 		}
 
+		_objectDefinitions.add(objectDefinition);
+
 		return objectDefinition;
 	}
 
@@ -2562,6 +2691,24 @@ public class BatchEnginePortletDataHandlerTest {
 			TempFileEntryUtil.getTempFileName(
 				RandomTestUtil.randomString() + ".txt"),
 			FileUtil.createTempFile(content), ContentTypes.TEXT_PLAIN);
+	}
+
+	private ObjectDefinition _addTextObjectDefinition(String scope)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				ObjectDefinitionTestUtil.getRandomName(),
+				Collections.singletonList(
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
+						RandomTestUtil.randomString(), "textField", false)),
+				scope);
+
+		_objectDefinitions.add(objectDefinition);
+
+		return objectDefinition;
 	}
 
 	private void _assertComments(
@@ -3840,6 +3987,9 @@ public class BatchEnginePortletDataHandlerTest {
 					fileEntry.getGroupId());
 
 	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Inject
 	private BatchEngineImportTaskLocalService
 		_batchEngineImportTaskLocalService;
 
@@ -3889,6 +4039,9 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@DeleteAfterTestRun
+	private List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 
 	@Inject
 	private ObjectDefinitionSettingLocalService
