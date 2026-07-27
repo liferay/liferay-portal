@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -32,7 +33,9 @@ import com.liferay.site.cmp.site.initializer.test.util.CMPTestUtil;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -195,10 +198,14 @@ public class ObjectEntryResourceTest {
 	}
 
 	private DepotEntry _addDepotEntry(int type) throws Exception {
-		return _depotEntryLocalService.addDepotEntry(
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), type,
 			ServiceContextTestUtil.getServiceContext());
+
+		_depotEntries.add(depotEntry);
+
+		return depotEntry;
 	}
 
 	private JSONObject _getCMSBasicWebContentObjectEntryJSONObject() {
@@ -336,6 +343,9 @@ public class ObjectEntryResourceTest {
 	private ObjectDefinition _cmpTaskLinkObjectDefinition;
 	private ObjectDefinition _cmpTaskObjectDefinition;
 	private ObjectEntry _cmsBasicWebContentObjectEntry;
+
+	@DeleteAfterTestRun
+	private List<DepotEntry> _depotEntries = new ArrayList<>();
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
