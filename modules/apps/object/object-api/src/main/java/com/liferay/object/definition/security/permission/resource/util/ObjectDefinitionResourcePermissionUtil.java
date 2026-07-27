@@ -13,6 +13,7 @@ import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectActionLocalService;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -34,8 +35,10 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.SAXReaderUtil;
 
@@ -44,6 +47,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -66,6 +70,8 @@ public class ObjectDefinitionResourcePermissionUtil {
 
 		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
 				objectDefinition.getCompanyId())) {
+
+			_removeStaleRootModelResource(objectDefinition, resourceActions);
 
 			resourceActions.populateModelResources(document);
 
@@ -316,6 +322,52 @@ public class ObjectDefinitionResourcePermissionUtil {
 					objectDefinition.getPortletId(),
 					objectDefinition.getResourceName()
 				}));
+	}
+
+	private static void _removeStaleRootModelResource(
+		ObjectDefinition objectDefinition, ResourceActions resourceActions) {
+
+		String rootModelResourceName =
+			resourceActions.getPortletRootModelResource(
+				objectDefinition.getPortletId());
+
+		if (Validator.isNull(rootModelResourceName) ||
+			Objects.equals(
+				rootModelResourceName, objectDefinition.getResourceName())) {
+
+			return;
+		}
+
+		long rootObjectDefinitionId = GetterUtil.getLong(
+			rootModelResourceName.substring(
+				rootModelResourceName.indexOf(StringPool.POUND) + 1));
+
+		if (rootObjectDefinitionId <= 0) {
+			return;
+		}
+
+		ObjectDefinition rootObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
+				rootObjectDefinitionId);
+
+		if (rootObjectDefinition != null) {
+			return;
+		}
+
+		Serializable key = rootObjectDefinitionId;
+
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			key =
+				rootObjectDefinitionId + StringPool.AT +
+					objectDefinition.getCompanyId();
+		}
+
+		Document document = _objectDefinitionResourceActionDocumentsMap.remove(
+			key);
+
+		if (document != null) {
+			resourceActions.removeModelResources(document);
+		}
 	}
 
 	private static final Map<Serializable, Document>
