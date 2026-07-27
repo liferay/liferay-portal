@@ -59,7 +59,7 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class
-	AttachmentObjectFieldDownloadActionPortalInstanceLifecycleListenerTest {
+	AttachmentObjectFieldDownloadActionInitialRequestPortalInstanceLifecycleListenerTest {
 
 	@ClassRule
 	@Rule
@@ -191,7 +191,7 @@ public class
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject(
-		filter = "component.name=com.liferay.object.internal.instance.lifecycle.AttachmentObjectFieldDownloadActionPortalInstanceLifecycleListener"
+		filter = "component.name=com.liferay.object.internal.instance.lifecycle.AttachmentObjectFieldDownloadActionInitialRequestPortalInstanceLifecycleListener"
 	)
 	private PortalInstanceLifecycleListener _portalInstanceLifecycleListener;
 
