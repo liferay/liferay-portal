@@ -17,6 +17,7 @@ import FieldValueMessageBalloon from './FieldValueMessageBalloon';
 import ImageMessageBalloon from './ImageMessageBalloon';
 import QuickRepliesMessageBalloon from './QuickRepliesMessageBalloon';
 import SelectComponentMessageBalloon from './SelectComponentMessageBalloon';
+import SpaceSelectorMessageBalloon from './SpaceSelectorMessageBalloon';
 import TranslateContentMessageBalloon from './TranslateContentMessageBalloon';
 import UserMessageBalloon from './UserMessageBalloon';
 
@@ -118,6 +119,26 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 		<SelectComponentMessageBalloon
 			component={component}
 			setIsGenerating={chat.setIsGenerating}
+		/>
+	),
+	'space-selector': ({chat, item}, {contentTypes, spaces}) => (
+		<SpaceSelectorMessageBalloon
+			contextRef={chat.runtimeContextRef}
+			message={item.text}
+			onSelectSpace={(space) =>
+				chat.setMessages((previousMessages) => [
+					...previousMessages,
+					{sender: 'user', text: space.name},
+					{
+						contentTypes,
+						sender: 'assistant',
+						text: Liferay.Language.get(
+							'what-type-of-content-do-you-want-to-generate'
+						),
+					},
+				])
+			}
+			spaces={spaces}
 		/>
 	),
 	'translate': ({chat}, {translate}) => (

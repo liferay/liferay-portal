@@ -7,6 +7,7 @@ import {CategorizeEventPayload} from '../../Categorization/events';
 import {Result} from '../../TranslateContent/types';
 import {ContentType} from '../components/ContentTypeSelectorMessageBalloon';
 import {GENERATE_FIELD_VALUE_AGENT_EXTERNAL_REFERENCE_CODE} from '../events';
+import {Space} from '../services/getSpaces';
 import {AgentComponent, Message} from '../types';
 import getGeneratedFieldValues from './getGeneratedFieldValues';
 import parseContentDraftsMessage from './parseContentDraftsMessage';
@@ -23,6 +24,7 @@ export type ResolvedMessage =
 	| {component: AgentComponent; type: 'quick-replies'}
 	| {component: AgentComponent; type: 'select-component'}
 	| {contentTypes: ContentType[]; type: 'content-types'}
+	| {contentTypes: ContentType[]; spaces: Space[]; type: 'space-selector'}
 	| {fieldValues: Record<string, string>; type: 'field-values'}
 	| {images: string[]; type: 'images'}
 	| {translate: TranslateMessage; type: 'translate'}
@@ -81,6 +83,14 @@ export default function resolveMessage(item: Message): ResolvedMessage {
 
 	if (item.images?.length) {
 		return {images: item.images, type: 'images'};
+	}
+
+	if (item.spaces?.length && item.contentTypes?.length) {
+		return {
+			contentTypes: item.contentTypes,
+			spaces: item.spaces,
+			type: 'space-selector',
+		};
 	}
 
 	if (item.contentTypes) {

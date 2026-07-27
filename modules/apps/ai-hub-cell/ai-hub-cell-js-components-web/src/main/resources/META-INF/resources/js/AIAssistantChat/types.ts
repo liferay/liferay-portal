@@ -5,6 +5,7 @@
 
 import {CategorizeEventPayload} from '../Categorization/events';
 import {ContentType} from './components/ContentTypeSelectorMessageBalloon';
+import {Space} from './services/getSpaces';
 
 export interface HttpRequestAction {
 	body?: Record<string, unknown>;
@@ -31,6 +32,7 @@ export interface Message {
 	error?: boolean;
 	images?: string[];
 	sender: string;
+	spaces?: Space[];
 	text: string;
 }
 
