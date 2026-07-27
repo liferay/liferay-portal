@@ -118,6 +118,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -802,6 +803,57 @@ public class BatchEnginePortletDataHandlerTest {
 			_stagingGroupHelper.fetchCompanyGroup(
 				TestPropsValues.getCompanyId()),
 			ObjectDefinitionConstants.SCOPE_COMPANY);
+	}
+
+	@Test
+	@TestInfo("LPD-43217")
+	public void testExportImportCompanyObjectEntriesWithMissingOriginalCreator()
+		throws Exception {
+
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		ObjectEntry objectEntry = _addTextObjectEntry(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, user.getUserId(),
+			objectDefinition);
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withObjectEntries(
+			objectDefinition
+		).executeExport();
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		_userLocalService.deleteUser(user);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).withUserIdStrategy(
+			UserIdStrategy.CURRENT_USER_ID
+		).executeImport();
+
+		ObjectEntry importedObjectEntry =
+			_objectEntryLocalService.getObjectEntry(
+				objectEntry.getExternalReferenceCode(),
+				objectEntry.getGroupId(),
+				objectDefinition.getObjectDefinitionId());
+
+		Assert.assertEquals(
+			TestPropsValues.getUserId(), importedObjectEntry.getUserId());
 	}
 
 	@Test
@@ -4368,6 +4420,9 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@Inject
 	private SystemEventLocalService _systemEventLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 	@DeleteAfterTestRun
 	private List<User> _users = new ArrayList<>();
