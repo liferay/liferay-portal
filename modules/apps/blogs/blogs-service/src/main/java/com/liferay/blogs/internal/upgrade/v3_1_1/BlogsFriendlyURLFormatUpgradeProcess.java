@@ -13,6 +13,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -52,12 +53,18 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 
 				String urlTitle = resultSet.getString("urlTitle");
 
+				String originalUrlTitle = urlTitle;
+
 				while (urlTitle.endsWith(StringPool.SLASH)) {
 					urlTitle = urlTitle.substring(0, urlTitle.length() - 1);
 				}
 
 				urlTitle = _friendlyURLEntryLocalService.getUniqueUrlTitle(
 					groupId, classNameId, classPK, urlTitle, languageId);
+
+				if (StringUtil.equals(originalUrlTitle, urlTitle)) {
+					continue;
+				}
 
 				_updateURLTitle(
 					classPK, resultSet.getLong("ctCollectionId"), groupId,
