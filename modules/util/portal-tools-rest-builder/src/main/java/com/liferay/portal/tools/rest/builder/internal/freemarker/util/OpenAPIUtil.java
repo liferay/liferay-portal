@@ -367,6 +367,13 @@ public class OpenAPIUtil {
 
 			s = s.substring(0, s.length() - 1);
 		}
+		else if (s.endsWith("ouses") &&
+				 ConfigUtil.isVersionCompatible(configYAML, 16)) {
+
+			// warehouses to warehouse
+
+			s = s.substring(0, s.length() - 1);
+		}
 		else if (s.endsWith("ses") || s.endsWith("xes")) {
 			s = s.substring(0, s.length() - 2);
 		}

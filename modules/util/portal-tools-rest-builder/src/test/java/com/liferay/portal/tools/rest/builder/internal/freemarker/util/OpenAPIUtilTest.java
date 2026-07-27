@@ -46,6 +46,8 @@ public class OpenAPIUtilTest {
 		_testFormatSingular(6, "statu", "status");
 		_testFormatSingular(15, "cars10", "cars10");
 		_testFormatSingular(15, "categories1", "categories1");
+		_testFormatSingular(15, "warehous", "warehouses");
+		_testFormatSingular(15, "warehouses1", "warehouses1");
 		_testFormatSingular(16, StringPool.BLANK, StringPool.BLANK);
 		_testFormatSingular(16, "123", "123");
 		_testFormatSingular(16, "base", "bases");
@@ -60,6 +62,8 @@ public class OpenAPIUtilTest {
 		_testFormatSingular(16, "key", "keys");
 		_testFormatSingular(16, "status", "status");
 		_testFormatSingular(16, "status1", "status1");
+		_testFormatSingular(16, "warehouse", "warehouses");
+		_testFormatSingular(16, "warehouse1", "warehouses1");
 		_testFormatSingular(16, null, null);
 	}
 
