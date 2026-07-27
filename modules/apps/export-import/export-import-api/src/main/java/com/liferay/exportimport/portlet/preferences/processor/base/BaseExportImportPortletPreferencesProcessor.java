@@ -5,28 +5,18 @@
 
 package com.liferay.exportimport.portlet.preferences.processor.base;
 
-import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
-import com.liferay.exportimport.kernel.staging.StagingURLHelperUtil;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
-import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.lang.ThreadContextClassLoaderUtil;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
+import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.security.auth.HttpPrincipal;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.service.http.GroupServiceHttp;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -34,6 +24,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.annotation.versioning.ProviderType;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Máté Thurzó
@@ -57,46 +50,13 @@ public abstract class BaseExportImportPortletPreferencesProcessor
 	protected String getGroupExportPortletPreferencesExternalReferenceCode(
 		PortletDataContext portletDataContext, String externalReferenceCode) {
 
-		Group group = GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, portletDataContext.getCompanyId());
+		ExportImportPortletPreferencesProcessorHelper
+			exportImportPortletPreferencesProcessorHelper =
+				_serviceTracker.getService();
 
-		if (group == null) {
-			return externalReferenceCode;
-		}
-
-		if (ExportImportThreadLocal.isStagingInProcess() &&
-			group.isStagedRemotely()) {
-
-			UnicodeProperties typeSettingsUnicodeProperties =
-				group.getTypeSettingsProperties();
-
-			String remoteGroupExternalReferenceCode =
-				typeSettingsUnicodeProperties.get(
-					"remoteGroupExternalReferenceCode");
-
-			if (Validator.isNull(remoteGroupExternalReferenceCode)) {
-				remoteGroupExternalReferenceCode =
-					_getRemoteGroupExternalReferenceCode(
-						typeSettingsUnicodeProperties);
-			}
-
-			if (Validator.isNotNull(remoteGroupExternalReferenceCode)) {
-				externalReferenceCode = remoteGroupExternalReferenceCode;
-			}
-		}
-
-		if (!group.isStagingGroup()) {
-			return externalReferenceCode;
-		}
-
-		Group liveGroup = GroupLocalServiceUtil.fetchGroup(
-			group.getLiveGroupId());
-
-		if (liveGroup == null) {
-			return externalReferenceCode;
-		}
-
-		return liveGroup.getExternalReferenceCode();
+		return exportImportPortletPreferencesProcessorHelper.
+			getGroupExportPortletPreferencesExternalReferenceCode(
+				portletDataContext.getCompanyId(), externalReferenceCode);
 	}
 
 	protected String getImportPortletPreferencesNewExternalReferenceCode(
@@ -326,58 +286,19 @@ public abstract class BaseExportImportPortletPreferencesProcessor
 		portletPreferences.setValues(key, newValues);
 	}
 
-	private String _getRemoteGroupExternalReferenceCode(
-		UnicodeProperties typeSettingsUnicodeProperties) {
-
-		String remoteAddress = GetterUtil.getString(
-			typeSettingsUnicodeProperties.get("remoteAddress"));
-		long remoteGroupId = GetterUtil.getLong(
-			typeSettingsUnicodeProperties.get("remoteGroupId"));
-
-		if (Validator.isNull(remoteAddress) || (remoteGroupId <= 0)) {
-			return null;
-		}
-
-		int remotePort = GetterUtil.getInteger(
-			typeSettingsUnicodeProperties.get("remotePort"));
-		String remotePathContext = GetterUtil.getString(
-			typeSettingsUnicodeProperties.get("remotePathContext"));
-		boolean secureConnection = GetterUtil.getBoolean(
-			typeSettingsUnicodeProperties.get("secureConnection"));
-
-		String remoteURL = StagingURLHelperUtil.buildRemoteURL(
-			remoteAddress, remotePort, remotePathContext, secureConnection);
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		User user = permissionChecker.getUser();
-
-		try {
-			HttpPrincipal httpPrincipal = new HttpPrincipal(
-				remoteURL, user.getLogin(), user.getPassword(),
-				user.isPasswordEncrypted());
-
-			try (SafeCloseable safeCloseable =
-					ThreadContextClassLoaderUtil.swap(
-						PortalClassLoaderUtil.getClassLoader())) {
-
-				Group group = GroupServiceHttp.getGroup(
-					httpPrincipal, remoteGroupId);
-
-				return group.getExternalReferenceCode();
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		return null;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseExportImportPortletPreferencesProcessor.class);
+
+	private static final ServiceTracker
+		<ExportImportPortletPreferencesProcessorHelper,
+		 ExportImportPortletPreferencesProcessorHelper> _serviceTracker;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(
+			BaseExportImportPortletPreferencesProcessor.class);
+
+		_serviceTracker = ServiceTrackerFactory.open(
+			bundle, ExportImportPortletPreferencesProcessorHelper.class);
+	}
 
 }
