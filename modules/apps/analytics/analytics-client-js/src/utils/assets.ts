@@ -77,11 +77,51 @@ function isTrackable(
 	);
 }
 
+/**
+ * Whether the element is flagged as a download asset.
+ */
+function isDownloadAction(
+	element: Analytics.HTMLElement | Analytics.ObjectEntryHTMLElement
+) {
+	return (
+		element.dataset?.analyticsAssetAction ===
+		Analytics.ElementAction.Download
+	);
+}
+
+/**
+ * Whether the element is flagged as an impression asset.
+ */
+function isImpressionAction(
+	element: Analytics.HTMLElement | Analytics.ObjectEntryHTMLElement
+) {
+	return (
+		element.dataset?.analyticsAssetAction ===
+		Analytics.ElementAction.Impression
+	);
+}
+
+/**
+ * Whether the element is flagged as a view asset, which is the default when no
+ * asset action is set.
+ */
+function isViewAction(
+	element: Analytics.HTMLElement | Analytics.ObjectEntryHTMLElement
+) {
+	return (
+		!element.dataset?.analyticsAssetAction ||
+		element.dataset?.analyticsAssetAction === Analytics.ElementAction.View
+	);
+}
+
 export {
 	closest,
 	getClosestAssetElement,
 	getNumberOfWords,
+	isDownloadAction,
+	isImpressionAction,
 	isTrackable,
+	isViewAction,
 	transformAssetTypeToSelector,
 };
 

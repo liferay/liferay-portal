@@ -53,7 +53,47 @@ function getDimensions(element?: Analytics.HTMLElement) {
 	return positions;
 }
 
-function isPartiallyInViewport(element: Analytics.HTMLElement) {
+/**
+ * Returns whether the element is actually visible on the page: rendered (not
+ * `display: none`), not `visibility: hidden`, and not made transparent by an
+ * `opacity: 0` ancestor. Unlike a bounding-box check, this excludes elements
+ * that occupy space in the viewport but are hidden by CSS (e.g. an asset inside
+ * a closed dropdown menu).
+ */
+function isVisible(element: Element) {
+	if (typeof element.checkVisibility === 'function') {
+		return element.checkVisibility({
+			checkOpacity: true,
+			checkVisibilityCSS: true,
+			opacityProperty: true,
+			visibilityProperty: true,
+		});
+	}
+
+	const {height, width} = element.getBoundingClientRect();
+
+	if (!height || !width) {
+		return false;
+	}
+
+	if (getComputedStyle(element).visibility === 'hidden') {
+		return false;
+	}
+
+	let node: Element | null = element;
+
+	while (node) {
+		if (parseFloat(getComputedStyle(node).opacity) === 0) {
+			return false;
+		}
+
+		node = node.parentElement;
+	}
+
+	return true;
+}
+
+function isPartiallyInViewport(element: Element) {
 	const {bottom, left, right, top} = element.getBoundingClientRect();
 
 	const innerHeight =
@@ -134,4 +174,4 @@ class ScrollTracker {
 	}
 }
 
-export {isPartiallyInViewport, ScrollTracker};
+export {isPartiallyInViewport, isVisible, ScrollTracker};
