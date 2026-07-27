@@ -172,8 +172,8 @@ describe('CreateLifecycle', () => {
 			expect.objectContaining({
 				dataSourceFn: (API as any).catalog.fetchCatalogFields,
 				variables: expect.objectContaining({
-					entity: 'account',
 					pageSize: CATALOG_FIELDS_MAX_PAGE_SIZE,
+					tableName: 'account',
 				}),
 			})
 		);

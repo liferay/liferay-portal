@@ -7,10 +7,10 @@ export interface ICatalogField {
 	dataType: string;
 	description: string;
 	displayName: string;
-	entity: string;
 	id: string;
 	name: string;
 	parentField: string | null;
+	tableName: string;
 }
 
 export interface IFaroFDSResultsDisplay<T> {
@@ -22,33 +22,33 @@ export interface IFaroFDSResultsDisplay<T> {
 }
 
 interface IFetchCatalogFields {
-	entity?: string;
 	groupId: string;
 	page?: number;
 	pageSize?: number;
-	search?: string;
+	query?: string;
 	sort?: string;
+	tableName?: string;
 }
 
 export const CATALOG_FIELDS_MAX_PAGE_SIZE = 200;
 
 export function fetchCatalogFields({
-	entity = 'account',
 	groupId,
 	page = 1,
 	pageSize = 20,
-	search,
+	query,
 	sort = 'displayName:asc',
+	tableName = 'account',
 }: IFetchCatalogFields): Promise<IFaroFDSResultsDisplay<ICatalogField>> {
 	return sendRequest({
 		data: {
-			entity,
 			page,
 			pageSize,
 			sort,
-			...(search && {search}),
+			tableName,
+			...(query && {query}),
 		},
 		method: 'GET',
-		path: `contacts/${groupId}/catalog/fields`,
+		path: `main/${groupId}/catalog/fields`,
 	});
 }

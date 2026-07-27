@@ -39,9 +39,9 @@ export const useLifecycleSettingsForm = (
 	} = useRequest({
 		dataSourceFn: API.catalog.fetchCatalogFields,
 		variables: {
-			entity: 'account',
 			groupId: groupId!,
 			pageSize: CATALOG_FIELDS_MAX_PAGE_SIZE,
+			tableName: 'account',
 		},
 	});
 
