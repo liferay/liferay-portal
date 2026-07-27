@@ -8,10 +8,12 @@ package com.liferay.layout.util.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.LayoutServiceContextHelper;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -26,6 +28,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -66,7 +69,7 @@ public class LayoutServiceContextHelperTest {
 	}
 
 	@Test
-	@TestInfo("LPD-99386")
+	@TestInfo({"LPD-79722", "LPD-99386"})
 	public void testGetServiceContextAutoCloseable() throws Exception {
 		try (AutoCloseable autoCloseable =
 				_layoutServiceContextHelper.getServiceContextAutoCloseable(
@@ -83,6 +86,21 @@ public class LayoutServiceContextHelperTest {
 				httpServletRequest.getLocales());
 
 			Assert.assertFalse(locales.isEmpty());
+
+			Assert.assertEquals(
+				HttpMethods.GET, httpServletRequest.getMethod());
+			Assert.assertEquals(
+				StringPool.SLASH, httpServletRequest.getRequestURI());
+			Assert.assertEquals("http", httpServletRequest.getScheme());
+			Assert.assertNotNull(httpServletRequest.getContextPath());
+			Assert.assertNotNull(httpServletRequest.getServletContext());
+			Assert.assertNotNull(httpServletRequest.getSession());
+			Assert.assertEquals(0, httpServletRequest.getCookies().length);
+
+			Map<String, String[]> parameterMap =
+				httpServletRequest.getParameterMap();
+
+			Assert.assertTrue(parameterMap.isEmpty());
 		}
 	}
 
