@@ -256,6 +256,7 @@ public class TaxonomyCategoryResourceTest
 	public void testGetTaxonomyCategory() throws Exception {
 		super.testGetTaxonomyCategory();
 
+		_testGetTaxonomyCategoryFriendlyUrlPath();
 		_testGetTaxonomyCategoryTaxonomyCategoryUsageCount();
 		_testGetTaxonomyCategoryWithAssetCategoryProperty();
 	}
@@ -952,6 +953,24 @@ public class TaxonomyCategoryResourceTest
 		testGroup = irrelevantGroup;
 	}
 
+	private String _addFriendlyUrlPath(String friendlyUrlPath)
+		throws Exception {
+
+		TaxonomyCategory randomTaxonomyCategory = randomTaxonomyCategory();
+
+		randomTaxonomyCategory.setFriendlyUrlPath(friendlyUrlPath);
+
+		TaxonomyCategory postTaxonomyCategory =
+			taxonomyCategoryResource.postTaxonomyVocabularyTaxonomyCategory(
+				_assetVocabulary.getVocabularyId(), randomTaxonomyCategory);
+
+		TaxonomyCategory getTaxonomyCategory =
+			taxonomyCategoryResource.getTaxonomyCategory(
+				postTaxonomyCategory.getId());
+
+		return getTaxonomyCategory.getFriendlyUrlPath();
+	}
+
 	private TaxonomyCategory _addSystemTaxonomyCategory() throws Exception {
 		TaxonomyCategory randomTaxonomyCategory = randomTaxonomyCategory();
 
@@ -1132,6 +1151,13 @@ public class TaxonomyCategoryResourceTest
 
 		_assetVocabularyLocalService.deleteVocabulary(assetVocabulary1);
 		_assetVocabularyLocalService.deleteVocabulary(assetVocabulary2);
+	}
+
+	private void _testGetTaxonomyCategoryFriendlyUrlPath() throws Exception {
+		Assert.assertEquals(
+			"indoor-sports", _addFriendlyUrlPath("Indoor Sports"));
+		Assert.assertEquals(
+			"indoor-sports-1", _addFriendlyUrlPath("Indoor Sports"));
 	}
 
 	private void _testGetTaxonomyCategoryTaxonomyCategoryUsageCount()
