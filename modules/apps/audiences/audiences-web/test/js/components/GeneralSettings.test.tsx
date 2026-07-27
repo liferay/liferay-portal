@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {render, screen} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, {useState} from 'react';
 
@@ -60,5 +60,36 @@ describe('GeneralSettings', () => {
 				}) as HTMLInputElement
 			).value
 		).toBe('ABC-123');
+	});
+
+	it('expands and shows the error message when it receives one', () => {
+		render(
+			<GeneralSettings
+				errorMessage="error-message"
+				externalReferenceCode="ERC-123"
+				namespace="_test_"
+				onExternalReferenceCodeChange={() => {}}
+			/>
+		);
+
+		const toggle = screen.getByRole('button', {name: 'general-settings'});
+
+		expect(toggle.getAttribute('aria-expanded')).toBe('true');
+
+		expect(screen.getByText('error-message')).toBeVisible();
+	});
+
+	it('expands when the external reference code input turns invalid', () => {
+		render(<GeneralSettingsWrapper />);
+
+		const toggle = screen.getByRole('button', {name: 'general-settings'});
+
+		expect(toggle.getAttribute('aria-expanded')).toBe('false');
+
+		fireEvent.invalid(
+			screen.getByRole('textbox', {hidden: true, name: 'erc'})
+		);
+
+		expect(toggle.getAttribute('aria-expanded')).toBe('true');
 	});
 });

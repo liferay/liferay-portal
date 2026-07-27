@@ -12,6 +12,7 @@ import {waitForAlert} from '../../utils/waitForAlert';
 
 export class AudiencesPage {
 	readonly apiHelpers: DataApiHelpers;
+	readonly externalReferenceCodeErrorMessage: Locator;
 	readonly externalReferenceCodeInput: Locator;
 	readonly generalSettingsButton: Locator;
 	readonly nameInput: Locator;
@@ -23,6 +24,9 @@ export class AudiencesPage {
 
 	constructor(page: Page, apiHelpers: DataApiHelpers) {
 		this.apiHelpers = apiHelpers;
+		this.externalReferenceCodeErrorMessage = page.locator(
+			'.audience-builder-general-settings .form-feedback-item'
+		);
 		this.externalReferenceCodeInput = page.getByRole('textbox', {
 			name: 'ERC',
 		});

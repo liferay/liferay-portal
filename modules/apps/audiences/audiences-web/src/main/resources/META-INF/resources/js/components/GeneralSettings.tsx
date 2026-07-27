@@ -6,22 +6,29 @@
 import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayPanel from '@clayui/panel';
-import React, {useState} from 'react';
+import classNames from 'classnames';
+import React, {useEffect, useState} from 'react';
 
 interface IProps {
-	defaultExpanded?: boolean;
+	errorMessage?: string;
 	externalReferenceCode: string;
 	namespace: string;
 	onExternalReferenceCodeChange: (externalReferenceCode: string) => void;
 }
 
 export default function GeneralSettings({
-	defaultExpanded = false,
+	errorMessage,
 	externalReferenceCode,
 	namespace,
 	onExternalReferenceCodeChange,
 }: IProps) {
-	const [expanded, setExpanded] = useState(defaultExpanded);
+	const [expanded, setExpanded] = useState(false);
+
+	useEffect(() => {
+		if (errorMessage) {
+			setExpanded(true);
+		}
+	}, [errorMessage]);
 
 	return (
 		<ClayPanel
@@ -38,7 +45,11 @@ export default function GeneralSettings({
 			showCollapseIcon
 		>
 			<ClayPanel.Body>
-				<ClayForm.Group className="mb-0">
+				<ClayForm.Group
+					className={classNames('mb-0', {
+						'has-error': !!errorMessage,
+					})}
+				>
 					<label htmlFor={`${namespace}externalReferenceCodeInput`}>
 						{Liferay.Language.get('erc')}
 
@@ -71,6 +82,16 @@ export default function GeneralSettings({
 						type="text"
 						value={externalReferenceCode}
 					/>
+
+					{errorMessage && (
+						<ClayForm.FeedbackGroup>
+							<ClayForm.FeedbackItem>
+								<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
+								{errorMessage}
+							</ClayForm.FeedbackItem>
+						</ClayForm.FeedbackGroup>
+					)}
 				</ClayForm.Group>
 			</ClayPanel.Body>
 		</ClayPanel>

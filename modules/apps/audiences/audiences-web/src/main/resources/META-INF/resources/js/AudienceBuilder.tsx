@@ -10,7 +10,9 @@ import ClayLayout from '@clayui/layout';
 import ClayLink from '@clayui/link';
 import ClayToolbar from '@clayui/toolbar';
 import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-components-web';
-import React, {useMemo, useReducer} from 'react';
+import classNames from 'classnames';
+import {fetch, navigate} from 'frontend-js-web';
+import React, {useMemo, useReducer, useRef, useState} from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
@@ -32,26 +34,55 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 	React.PropsWithChildren<{backend: typeof HTML5Backend}>
 >;
 
+const SAVE_ERROR_TOAST_CLASS = 'audience-builder-save-error';
+
+function dismissSaveErrorToast() {
+	const closeButton = document.querySelector<HTMLElement>(
+		`.${SAVE_ERROR_TOAST_CLASS} button.close`
+	);
+
+	closeButton?.click();
+}
+
+function showSaveErrorToast(message?: string) {
+	Liferay.Util.openToast({
+		autoClose: false,
+		message:
+			message || Liferay.Language.get('an-unexpected-error-occurred'),
+		toastProps: {className: SAVE_ERROR_TOAST_CLASS},
+		type: 'danger',
+	});
+}
+
+interface SaveError {
+	field?: string;
+	message: string;
+}
+
 interface IProps {
 	audiencesCriteriaTypes?: AudiencesCriteriaType[];
+	audiencesEntryId?: number;
 	backURL?: string;
 	backURLTitle?: string;
-	expandGeneralSettings?: boolean;
 	externalReferenceCode?: string;
 	name?: string;
 	namespace?: string;
+	redirect?: string;
 	rulesGroup?: AudiencesCriteriaRulesGroup;
+	updateAudiencesEntryActionURL?: string;
 }
 
 export default function AudienceBuilder({
 	audiencesCriteriaTypes = [],
+	audiencesEntryId = 0,
 	backURL,
 	backURLTitle,
-	expandGeneralSettings = false,
 	externalReferenceCode,
 	name,
 	namespace = '',
+	redirect = '',
 	rulesGroup,
+	updateAudiencesEntryActionURL = '',
 }: IProps) {
 	const [state, dispatch] = useReducer(
 		reducer,
@@ -64,17 +95,72 @@ export default function AudienceBuilder({
 		[audiencesCriteriaTypes]
 	);
 
+	const formRef = useRef<HTMLFormElement>(null);
+
+	const [saveError, setSaveError] = useState<SaveError | null>(null);
+	const [saving, setSaving] = useState(false);
+
+	const handleSave = () => {
+		const form = formRef.current;
+
+		if (!form || !form.reportValidity()) {
+			return;
+		}
+
+		dismissSaveErrorToast();
+
+		setSaveError(null);
+		setSaving(true);
+
+		fetch(updateAudiencesEntryActionURL, {
+			body: new FormData(form),
+			method: 'POST',
+		})
+			.then((response) => {
+				if (response.ok) {
+					navigate(redirect);
+
+					return;
+				}
+
+				return response.json().then(({errorField, errorMessage}) => {
+					setSaving(false);
+
+					if (errorField) {
+						setSaveError({
+							field: errorField,
+							message: errorMessage,
+						});
+					}
+					else {
+						showSaveErrorToast(errorMessage);
+					}
+				});
+			})
+			.catch(() => {
+				setSaving(false);
+
+				showSaveErrorToast();
+			});
+	};
+
 	return (
 		<ScreenReaderAnnouncerContextProvider>
 			<KeyboardMovementContextProvider>
 				<DragAndDropProvider backend={HTML5Backend}>
 					<DragPreviewWrapper />
 
-					<div className="d-flex flex-column overflow-hidden">
+					<form
+						className="d-flex flex-column overflow-hidden"
+						onSubmit={(event) => event.preventDefault()}
+						ref={formRef}
+					>
 						<AudienceBuilderToolbar
 							backURL={backURL}
 							backURLTitle={backURLTitle}
 							name={state.name}
+							onSave={handleSave}
+							saving={saving}
 						/>
 
 						<div className="audience-builder-content d-flex">
@@ -87,7 +173,12 @@ export default function AudienceBuilder({
 							</div>
 
 							<div className="d-flex flex-column flex-grow-1 overflow-auto p-4">
-								<ClayForm.Group>
+								<ClayForm.Group
+									className={classNames({
+										'has-error':
+											saveError?.field === 'name',
+									})}
+								>
 									<label
 										className="font-weight-semi-bold text-3"
 										htmlFor={`${namespace}name`}
@@ -104,12 +195,16 @@ export default function AudienceBuilder({
 										id={`${namespace}name`}
 										maxLength={NAME_MAX_LENGTH}
 										name={`${namespace}name`}
-										onChange={(event) =>
+										onChange={(event) => {
+											if (saveError?.field === 'name') {
+												setSaveError(null);
+											}
+
 											dispatch({
 												name: event.target.value,
 												type: 'SET_NAME',
-											})
-										}
+											});
+										}}
 										placeholder={Liferay.Language.get(
 											'new-audience'
 										)}
@@ -117,23 +212,51 @@ export default function AudienceBuilder({
 										type="text"
 										value={state.name}
 									/>
+
+									{saveError?.field === 'name' && (
+										<ClayForm.FeedbackGroup>
+											<ClayForm.FeedbackItem>
+												<ClayForm.FeedbackIndicator symbol="exclamation-full" />
+
+												{saveError.message}
+											</ClayForm.FeedbackItem>
+										</ClayForm.FeedbackGroup>
+									)}
 								</ClayForm.Group>
 
 								<GeneralSettings
-									defaultExpanded={expandGeneralSettings}
+									errorMessage={
+										saveError?.field ===
+										'externalReferenceCode'
+											? saveError.message
+											: undefined
+									}
 									externalReferenceCode={
 										state.externalReferenceCode
 									}
 									namespace={namespace}
 									onExternalReferenceCodeChange={(
 										newExternalReferenceCode
-									) =>
+									) => {
+										if (
+											saveError?.field ===
+											'externalReferenceCode'
+										) {
+											setSaveError(null);
+										}
+
 										dispatch({
 											externalReferenceCode:
 												newExternalReferenceCode,
 											type: 'SET_EXTERNAL_REFERENCE_CODE',
-										})
-									}
+										});
+									}}
+								/>
+
+								<input
+									name={`${namespace}audiencesEntryId`}
+									type="hidden"
+									value={audiencesEntryId}
 								/>
 
 								<input
@@ -160,7 +283,7 @@ export default function AudienceBuilder({
 								/>
 							</div>
 						</div>
-					</div>
+					</form>
 				</DragAndDropProvider>
 			</KeyboardMovementContextProvider>
 		</ScreenReaderAnnouncerContextProvider>
@@ -171,12 +294,16 @@ interface AudienceBuilderToolbarProps {
 	backURL?: string;
 	backURLTitle?: string;
 	name: string;
+	onSave: () => void;
+	saving: boolean;
 }
 
 function AudienceBuilderToolbar({
 	backURL,
 	backURLTitle,
 	name,
+	onSave,
+	saving,
 }: AudienceBuilderToolbarProps) {
 	return (
 		<ClayToolbar>
@@ -216,9 +343,11 @@ function AudienceBuilderToolbar({
 
 					<ClayToolbar.Item>
 						<ClayButton
+							disabled={saving}
 							displayType="primary"
+							onClick={onSave}
 							size="sm"
-							type="submit"
+							type="button"
 						>
 							{Liferay.Language.get('save')}
 						</ClayButton>

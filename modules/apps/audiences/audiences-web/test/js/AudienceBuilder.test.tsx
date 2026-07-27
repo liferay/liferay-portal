@@ -4,12 +4,19 @@
  */
 
 import '@testing-library/jest-dom';
-import {render, screen, within} from '@testing-library/react';
+import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 
 import AudienceBuilder from '../../src/main/resources/META-INF/resources/js/AudienceBuilder';
 import {AudiencesCriteriaType} from '../../src/main/resources/META-INF/resources/js/types';
+
+jest.mock('frontend-js-web', () => ({
+	...(jest.requireActual('frontend-js-web') as object),
+	fetch: jest.fn(),
+	navigate: jest.fn(),
+}));
 
 const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 	{
@@ -88,6 +95,153 @@ describe('AudienceBuilder', () => {
 
 		expect(getByText('My Audience')).toBeTruthy();
 		expect(queryByText('new-audience')).toBeNull();
+	});
+
+	describe('save', () => {
+		const renderAudienceBuilder = () =>
+			render(
+				<AudienceBuilder
+					audiencesEntryId={42}
+					externalReferenceCode="ERC-123"
+					name="My Audience"
+					namespace="_test_"
+					redirect="/audiences"
+					updateAudiencesEntryActionURL="/update"
+				/>
+			);
+
+		beforeEach(() => {
+			jest.clearAllMocks();
+		});
+
+		it('posts the values and navigates to the redirect on success', async () => {
+			(fetch as jest.Mock).mockResolvedValue({ok: true});
+
+			renderAudienceBuilder();
+
+			const saveButton = screen.getByRole('button', {name: 'save'});
+
+			await userEvent.click(saveButton);
+
+			const [url, {body}] = (fetch as jest.Mock).mock.calls[0];
+
+			expect(url).toBe('/update');
+
+			expect(body.get('_test_audiencesEntryId')).toBe('42');
+			expect(body.get('_test_externalReferenceCode')).toBe('ERC-123');
+			expect(body.get('_test_json')).not.toBeNull();
+			expect(body.get('_test_name')).toBe('My Audience');
+
+			await waitFor(() =>
+				expect(navigate).toHaveBeenCalledWith('/audiences')
+			);
+
+			expect(saveButton).toBeDisabled();
+			expect(Liferay.Util.openToast).not.toHaveBeenCalled();
+		});
+
+		it('shows the error on the external reference code and keeps the values when the save fails', async () => {
+			(fetch as jest.Mock).mockResolvedValue({
+				json: () =>
+					Promise.resolve({
+						errorField: 'externalReferenceCode',
+						errorMessage: 'error-message',
+					}),
+				ok: false,
+			});
+
+			renderAudienceBuilder();
+
+			const saveButton = screen.getByRole('button', {name: 'save'});
+
+			await userEvent.click(saveButton);
+
+			expect(await screen.findByText('error-message')).toBeVisible();
+
+			expect(screen.getByRole('textbox', {name: 'erc'})).toBeVisible();
+
+			expect(navigate).not.toHaveBeenCalled();
+			expect(Liferay.Util.openToast).not.toHaveBeenCalled();
+
+			expect(saveButton).toBeEnabled();
+			expect(screen.getByLabelText('name')).toHaveValue('My Audience');
+		});
+
+		it('clears the error on the external reference code when it changes', async () => {
+			(fetch as jest.Mock).mockResolvedValue({
+				json: () =>
+					Promise.resolve({
+						errorField: 'externalReferenceCode',
+						errorMessage: 'error-message',
+					}),
+				ok: false,
+			});
+
+			renderAudienceBuilder();
+
+			await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+			expect(await screen.findByText('error-message')).toBeVisible();
+
+			await userEvent.type(
+				screen.getByRole('textbox', {name: 'erc'}),
+				'4'
+			);
+
+			expect(screen.queryByText('error-message')).toBeNull();
+		});
+
+		it('shows the error on the name when the save fails', async () => {
+			(fetch as jest.Mock).mockResolvedValue({
+				json: () =>
+					Promise.resolve({
+						errorField: 'name',
+						errorMessage: 'error-message',
+					}),
+				ok: false,
+			});
+
+			renderAudienceBuilder();
+
+			await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+			expect(await screen.findByText('error-message')).toBeVisible();
+
+			expect(Liferay.Util.openToast).not.toHaveBeenCalled();
+		});
+
+		it('shows the error in a toast when the save fails without a field', async () => {
+			(fetch as jest.Mock).mockResolvedValue({
+				json: () => Promise.resolve({errorMessage: 'error-message'}),
+				ok: false,
+			});
+
+			renderAudienceBuilder();
+
+			const saveButton = screen.getByRole('button', {name: 'save'});
+
+			await userEvent.click(saveButton);
+
+			await waitFor(() =>
+				expect(Liferay.Util.openToast).toHaveBeenCalledWith({
+					autoClose: false,
+					message: 'error-message',
+					toastProps: {className: 'audience-builder-save-error'},
+					type: 'danger',
+				})
+			);
+
+			expect(navigate).not.toHaveBeenCalled();
+			expect(saveButton).toBeEnabled();
+		});
+
+		it('does not save when pressing enter on an input', async () => {
+			renderAudienceBuilder();
+
+			await userEvent.type(screen.getByLabelText('name'), '{Enter}');
+
+			expect(fetch).not.toHaveBeenCalled();
+		});
 	});
 
 	describe('keyboard movement', () => {

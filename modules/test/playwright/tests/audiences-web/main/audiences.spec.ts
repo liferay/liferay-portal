@@ -435,17 +435,15 @@ test(
 
 		await audiencesPage.saveButton.click();
 
-		await waitForAlert(
-			page,
-			'Please enter a unique external reference code.',
-			{autoClose: false, type: 'danger'}
-		);
+		// The specific error shows inline on the field instead of a toast
 
-		// Only the specific error shows, not the generic failure message
+		await expect(
+			audiencesPage.externalReferenceCodeErrorMessage
+		).toHaveText('Please enter a unique external reference code.');
 
 		await expect(
 			page.locator('#ToastAlertContainer .alert-danger')
-		).toHaveCount(1);
+		).toHaveCount(0);
 
 		// The values survive and the general settings stay expanded
 

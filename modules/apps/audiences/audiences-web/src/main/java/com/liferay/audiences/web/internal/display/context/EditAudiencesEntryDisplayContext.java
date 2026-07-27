@@ -17,9 +17,11 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
@@ -58,11 +60,6 @@ public class EditAudiencesEntryDisplayContext {
 
 	public JSONObject getAudiencesEntryJSONObject() {
 		try {
-			if (_hasSubmittedValues()) {
-				return JSONFactoryUtil.createJSONObject(
-					ParamUtil.getString(_httpServletRequest, "json"));
-			}
-
 			AudiencesEntry audiencesEntry = _getAudiencesEntry();
 
 			if (audiencesEntry != null) {
@@ -153,11 +150,11 @@ public class EditAudiencesEntryDisplayContext {
 					"label", audiencesCriteriaType.getLabel()
 				).build())
 		).put(
+			"audiencesEntryId", getAudiencesEntryId()
+		).put(
 			"backURL", getBackURL()
 		).put(
 			"backURLTitle", getBackURLTitle()
-		).put(
-			"expandGeneralSettings", _hasSubmittedValues()
 		).put(
 			"externalReferenceCode", _getExternalReferenceCode()
 		).put(
@@ -165,7 +162,16 @@ public class EditAudiencesEntryDisplayContext {
 		).put(
 			"namespace", _renderResponse.getNamespace()
 		).put(
+			"redirect", getRedirect()
+		).put(
 			"rulesGroup", getAudiencesEntryJSONObject()
+		).put(
+			"updateAudiencesEntryActionURL",
+			PortletURLBuilder.createActionURL(
+				PortalUtil.getLiferayPortletResponse(_renderResponse)
+			).setActionName(
+				"/audiences/update_audiences_entry"
+			).buildString()
 		).build();
 	}
 
@@ -190,19 +196,12 @@ public class EditAudiencesEntryDisplayContext {
 			return _title;
 		}
 
-		if (_hasSubmittedValues()) {
-			_title = ParamUtil.getString(_httpServletRequest, "name");
+		AudiencesEntry audiencesEntry = _getAudiencesEntry();
+
+		if (audiencesEntry != null) {
+			_title = audiencesEntry.getName();
 		}
-
-		if (Validator.isNull(_title)) {
-			AudiencesEntry audiencesEntry = _getAudiencesEntry();
-
-			if (audiencesEntry != null) {
-				_title = audiencesEntry.getName();
-			}
-		}
-
-		if (Validator.isNull(_title)) {
+		else {
 			_title = LanguageUtil.get(_httpServletRequest, "new-audience");
 		}
 
@@ -227,11 +226,6 @@ public class EditAudiencesEntryDisplayContext {
 	}
 
 	private String _getExternalReferenceCode() {
-		if (_hasSubmittedValues()) {
-			return ParamUtil.getString(
-				_httpServletRequest, "externalReferenceCode");
-		}
-
 		try {
 			AudiencesEntry audiencesEntry = _getAudiencesEntry();
 
@@ -249,10 +243,6 @@ public class EditAudiencesEntryDisplayContext {
 	}
 
 	private String _getName() {
-		if (_hasSubmittedValues()) {
-			return ParamUtil.getString(_httpServletRequest, "name");
-		}
-
 		try {
 			AudiencesEntry audiencesEntry = _getAudiencesEntry();
 
@@ -267,10 +257,6 @@ public class EditAudiencesEntryDisplayContext {
 		}
 
 		return StringPool.BLANK;
-	}
-
-	private boolean _hasSubmittedValues() {
-		return ParamUtil.getBoolean(_httpServletRequest, "redisplay");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
