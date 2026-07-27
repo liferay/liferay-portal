@@ -12,17 +12,26 @@ import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormInstanceRecordTestUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.exportimport.test.util.lar.BasePortletExportImportTestCase;
+import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.portlet.PortletPreferences;
+
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -109,5 +118,42 @@ public class DDMFormDisplayExportImportTest
 	@Test
 	public void testExportImportAssetLinks() throws Exception {
 	}
+
+	@Test
+	@TestInfo("LPD-98716")
+	public void testGetPortletConfigurationWithLocalStaging() throws Exception {
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			new ServiceContext());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			TestPropsValues.getUserId(), layout, getPortletId(), "column-1",
+			HashMapBuilder.put(
+				"groupExternalReferenceCode",
+				new String[] {
+					group.getStagingGroup(
+					).getExternalReferenceCode()
+				}
+			).build());
+
+		ExportImportThreadLocal.setPortletStagingInProcess(true);
+
+		try {
+			Map<String, Object> portletConfiguration =
+				_portletPreferencesPortletConfigurationExporter.
+					getPortletConfiguration(layout.getPlid(), portletId);
+
+			Assert.assertEquals(
+				group.getExternalReferenceCode(),
+				portletConfiguration.get("groupExternalReferenceCode"));
+		}
+		finally {
+			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		}
+	}
+
+	@Inject
+	private PortletPreferencesPortletConfigurationExporter
+		_portletPreferencesPortletConfigurationExporter;
 
 }
