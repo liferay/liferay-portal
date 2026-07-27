@@ -75,79 +75,79 @@ Format format = FastDateFormatFactoryUtil.getSimpleDateFormat(_SIMPLE_DATE_FORMA
 </span>
 
 <aui:script use="aui-timepicker-native">
-	Liferay.component(
-		'<%= nameId %>TimePicker',
-		function () {
-			var timePicker = new A.TimePickerNative(
-				{
-					container: '#<%= randomNamespace %>displayTime',
-					on: {
-						enterKey: function(event) {
-							var instance = this;
+	Liferay.component('<%= nameId %>TimePicker', function () {
+		var timePicker = new A.TimePickerNative({
+			container: '#<%= randomNamespace %>displayTime',
+			on: {
+				enterKey: function (event) {
+					var instance = this;
 
-							var inputVal = instance.get('activeInput').val();
+					var inputVal = instance.get('activeInput').val();
 
-							var date = instance.getParsedDatesFromInputValue(inputVal).pop();
+					var date = instance
+						.getParsedDatesFromInputValue(inputVal)
+						.pop();
 
-							instance.updateTime(date);
-						},
-						selectionChange: function(event) {
-							var instance = this;
+					instance.updateTime(date);
+				},
+				selectionChange: function (event) {
+					var instance = this;
 
-							var date = event.newSelection[0];
+					var date = event.newSelection[0];
 
-							instance.updateTime(date);
-						}
-					},
-					trigger: '#<%= nameId %>',
-				}
+					instance.updateTime(date);
+				},
+			},
+			trigger: '#<%= nameId %>',
+		});
+
+		timePicker.getTime = function () {
+			var instance = this;
+
+			var container = instance.get('container');
+
+			var amPm = A.Lang.toInt(container.one('#<%= amPmParamId %>').val());
+			var hours = A.Lang.toInt(container.one('#<%= hourParamId %>').val());
+			var minutes = container.one('#<%= minuteParamId %>').val();
+
+			if (amPm) {
+				hours += 12;
+			}
+
+			var time = A.Date.parse(
+				A.Date.aggregates.T,
+				hours + ':' + minutes + ':0'
 			);
 
-			timePicker.getTime = function () {
-				var instance = this;
+			return time;
+		};
 
-				var container = instance.get('container');
+		timePicker.updateTime = function (date) {
+			var instance = this;
 
-				var amPm = A.Lang.toInt(container.one('#<%= amPmParamId %>').val());
-				var hours = A.Lang.toInt(container.one('#<%= hourParamId %>').val());
-				var minutes = container.one('#<%= minuteParamId %>').val();
+			var container = instance.get('container');
 
-				if (amPm) {
-					hours += 12;
+			var hours = date.getHours();
+
+			var amPm = 0;
+
+			<c:if test="<%= amPm %>">
+				if (hours > 11) {
+					amPm = 1;
+					hours -= 12;
 				}
+			</c:if>
 
-				var time = A.Date.parse(A.Date.aggregates.T, hours + ':' + minutes + ':0');
+			if (date) {
+				container.one('#<%= hourParamId %>').val(hours);
+				container.one('#<%= minuteParamId %>').val(date.getMinutes());
+				container.one('#<%= amPmParamId %>').val(amPm);
+				container.one('#<%= dateParamId %>').val(date);
+			}
+		};
 
-				return time;
-			};
-
-			timePicker.updateTime = function(date) {
-				var instance = this;
-
-				var container = instance.get('container');
-
-				var hours = date.getHours();
-
-				var amPm = 0;
-
-				<c:if test="<%= amPm %>">
-					if (hours > 11) {
-						amPm = 1;
-						hours -= 12;
-					}
-				</c:if>
-
-				if (date) {
-					container.one('#<%= hourParamId %>').val(hours);
-					container.one('#<%= minuteParamId %>').val(date.getMinutes());
-					container.one('#<%= amPmParamId %>').val(amPm);
-					container.one('#<%= dateParamId %>').val(date);
-				}
-			};
-
-			return timePicker;
-		}
-	);
+		return timePicker;
+	});
 
 	Liferay.component('<%= nameId %>TimePicker');
 </aui:script>
