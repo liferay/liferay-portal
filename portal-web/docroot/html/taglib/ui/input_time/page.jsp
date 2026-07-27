@@ -66,7 +66,7 @@ Format format = FastDateFormatFactoryUtil.getSimpleDateFormat(_SIMPLE_DATE_FORMA
 %>
 
 <span class="lfr-input-time" id="<%= randomNamespace %>displayTime">
-	<input <%= Validator.isNotNull(autoComplete) ? "autocomplete=\"" + autoComplete + "\"" : StringPool.BLANK %> class="form-control <%= cssClass %>" <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= nameId %>" name="<%= namespace + HtmlUtil.escapeAttribute(name) %>" type="time" value="<%= format.format(calendar.getTime()) %>" />
+	<input aria-label="<%= HtmlUtil.escapeAttribute(LanguageUtil.get(request, "time")) %>" <%= Validator.isNotNull(autoComplete) ? "autocomplete=\"" + autoComplete + "\"" : StringPool.BLANK %> class="form-control <%= cssClass %>" <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= nameId %>" name="<%= namespace + HtmlUtil.escapeAttribute(name) %>" type="time" value="<%= format.format(calendar.getTime()) %>" />
 
 	<input <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= hourParamId %>" name="<%= namespace + HtmlUtil.escapeAttribute(hourParam) %>" type="hidden" value="<%= hourValue %>" />
 	<input <%= disabled ? "disabled=\"disabled\"" : "" %> id="<%= minuteParamId %>" name="<%= namespace + HtmlUtil.escapeAttribute(minuteParam) %>" type="hidden" value="<%= minuteValue %>" />
