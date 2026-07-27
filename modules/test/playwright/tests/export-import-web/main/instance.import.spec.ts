@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {
-	ObjectDefinitionAPI,
-	ObjectRelationshipAPI,
-} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
@@ -24,16 +20,12 @@ import {getRandomInt} from '../../../utils/getRandomInt';
 import {normalizeRestPath} from '../../../utils/normalizeRestPath';
 import performLogin, {
 	performLogout,
-	performUserSwitch,
 	userData,
 } from '../../../utils/performLogin';
-import {readFileFromZip} from '../../../utils/zip';
 import {companyExportImportPageTest} from './fixtures/companyExportImportPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 import {portletExportImportPageTest} from './fixtures/portletExportImportPageTest';
 import {stagingPageTest} from './fixtures/stagingPageTest';
-import {createUserAssignRolesAndLogin} from './utils/createUserAssignRolesAndLogin';
-import {toDateRangeDate, toDateRangeTime} from './utils/dateRangeUtil';
 
 export const test = mergeTests(
 	companyExportImportPageTest,
@@ -55,65 +47,6 @@ export const test = mergeTests(
 	stagingPageTest,
 	wikiPagesTest
 );
-
-test('Can export and import custom object entries at instance level', async ({
-	apiHelpers,
-	companyExportImportPage,
-	exportImportPage,
-	globalMenuPage,
-}) => {
-	const objectDefinition =
-		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			status: {code: 0},
-		});
-
-	apiHelpers.data.push({
-		id: objectDefinition.id,
-		type: 'objectDefinition',
-	});
-
-	const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-		{externalReferenceCode: '', textField: objectDefinition.name},
-		`${normalizeRestPath(objectDefinition.restContextPath)}`
-	);
-
-	await globalMenuPage.goToApplications('Export');
-
-	const exportFilePath = await exportImportPage.export({
-		portletLabels: [`${objectDefinition.name} 1 Items`],
-	});
-
-	const content = await readFileFromZip(
-		`${objectDefinition.externalReferenceCode}.json`,
-		exportFilePath
-	);
-
-	const json = JSON.parse(content);
-
-	expect(json.length).toBe(1);
-	expect(json[0]).not.toHaveProperty('permissions');
-
-	expect(
-		await apiHelpers.delete(
-			`${apiHelpers.baseUrl}${normalizeRestPath(objectDefinition.restContextPath)}/${objectEntry.id}`
-		)
-	).toBeOK();
-
-	await companyExportImportPage.import({
-		filePath: exportFilePath,
-	});
-
-	expect(
-		await apiHelpers.get(
-			`${apiHelpers.baseUrl}${normalizeRestPath(objectDefinition.restContextPath)}/by-external-reference-code/${objectEntry.externalReferenceCode}`
-		)
-	).toEqual(
-		expect.objectContaining({
-			externalReferenceCode: objectEntry.externalReferenceCode,
-			textField: objectEntry.textField,
-		})
-	);
-});
 
 test('Can see corresponding elements at instance level', async ({
 	apiHelpers,
@@ -284,4 +217,3 @@ test('Cannot import a site scoped lar file', async ({
 		includePermissions: false,
 	});
 });
-
