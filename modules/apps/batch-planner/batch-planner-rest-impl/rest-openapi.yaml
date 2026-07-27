@@ -1,5 +1,12 @@
 components:
     schemas:
+        DepotScope:
+            properties:
+                label:
+                    type: string
+                value:
+                    format: int64
+                    type: integer
         Field:
             properties:
                 anyOfGroup:
@@ -159,6 +166,34 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Plan"
             tags: ["Plan"]
+    /plans/{internalClassNameKey}/depot-scopes:
+        get:
+            operationId: getPlanInternalClassNameKeyDepotScopesPage
+            parameters:
+                -   in: path
+                    name: internalClassNameKey
+                    required: true
+                    schema:
+                        type: string
+                -   in: query
+                    name: export
+                    required: false
+                    schema:
+                        type: boolean
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/DepotScope"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/DepotScope"
+                                type: array
+            tags: ["DepotScope"]
     /plans/{internalClassNameKey}/fields:
         get:
             operationId: getPlanInternalClassNameKeyFieldsPage
