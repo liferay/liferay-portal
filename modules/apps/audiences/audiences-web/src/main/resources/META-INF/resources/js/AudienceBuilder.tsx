@@ -12,7 +12,7 @@ import ClayToolbar from '@clayui/toolbar';
 import {ScreenReaderAnnouncerContextProvider} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
 import {fetch, navigate} from 'frontend-js-web';
-import React, {useMemo, useReducer, useRef, useState} from 'react';
+import React, {useMemo, useReducer, useState} from 'react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
 
@@ -22,7 +22,12 @@ import GeneralSettings from './components/GeneralSettings';
 import DragPreviewWrapper from './keyboard_movement/DragPreviewWrapper';
 import {KeyboardMovementContextProvider} from './keyboard_movement/KeyboardMovementContext';
 import {initState, reducer} from './reducer';
-import {AudiencesCriteriaRulesGroup, AudiencesCriteriaType} from './types';
+import {
+	AudiencesCriteriaRulesGroup,
+	AudiencesCriteriaType,
+	SaveErrorField,
+	SaveErrors,
+} from './types';
 import {getAudiencesCriteriasByKey} from './util/getAudiencesCriteriasByKey';
 import {serializeCriteria} from './util/tree/serializeCriteria';
 
@@ -34,17 +39,46 @@ const DragAndDropProvider = DndProvider as unknown as React.FC<
 	React.PropsWithChildren<{backend: typeof HTML5Backend}>
 >;
 
+const SAVE_ERROR_FIELDS: SaveErrorField[] = ['name', 'externalReferenceCode'];
+
+function getSaveErrors({
+	externalReferenceCode,
+	name,
+}: {
+	externalReferenceCode: string;
+	name: string;
+}): SaveErrors {
+	const saveErrors: SaveErrors = {};
+
+	if (!name.trim()) {
+		saveErrors.name = Liferay.Language.get('please-enter-a-valid-name');
+	}
+
+	if (!externalReferenceCode.trim()) {
+		saveErrors.externalReferenceCode = Liferay.Language.get(
+			'this-field-is-required'
+		);
+	}
+
+	return saveErrors;
+}
+
+function getServerSaveErrors(error: Record<string, string>): SaveErrors {
+	return SAVE_ERROR_FIELDS.reduce<SaveErrors>((saveErrors, field) => {
+		if (error[field]) {
+			saveErrors[field] = error[field];
+		}
+
+		return saveErrors;
+	}, {});
+}
+
 function showSaveErrorToast(message?: string) {
 	Liferay.Util.openToast({
 		message:
 			message || Liferay.Language.get('an-unexpected-error-occurred'),
 		type: 'danger',
 	});
-}
-
-interface SaveError {
-	field?: string;
-	message: string;
 }
 
 interface IProps {
@@ -83,19 +117,32 @@ export default function AudienceBuilder({
 		[audiencesCriteriaTypes]
 	);
 
-	const formRef = useRef<HTMLFormElement>(null);
-
-	const [saveError, setSaveError] = useState<SaveError | null>(null);
+	const [saveErrors, setSaveErrors] = useState<SaveErrors>({});
 	const [saving, setSaving] = useState(false);
 
-	const handleSave = () => {
-		const form = formRef.current;
+	const clearSaveError = (field: SaveErrorField) =>
+		setSaveErrors((previousSaveErrors) => {
+			if (!previousSaveErrors[field]) {
+				return previousSaveErrors;
+			}
 
-		if (!form || !form.reportValidity()) {
+			const nextSaveErrors = {...previousSaveErrors};
+
+			delete nextSaveErrors[field];
+
+			return nextSaveErrors;
+		});
+
+	const handleSave = () => {
+		const nextSaveErrors = getSaveErrors(state);
+
+		if (Object.keys(nextSaveErrors).length) {
+			setSaveErrors(nextSaveErrors);
+
 			return;
 		}
 
-		setSaveError(null);
+		setSaveErrors({});
 		setSaving(true);
 
 		const formData = new FormData();
@@ -118,26 +165,24 @@ export default function AudienceBuilder({
 			body: formData,
 			method: 'POST',
 		})
-			.then((response) => {
-				if (response.ok) {
+			.then((response) => response.json())
+			.then(({error}) => {
+				if (!error) {
 					navigate(redirect);
 
 					return;
 				}
 
-				return response.json().then(({errorField, errorMessage}) => {
-					setSaving(false);
+				setSaving(false);
 
-					if (errorField) {
-						setSaveError({
-							field: errorField,
-							message: errorMessage,
-						});
-					}
-					else {
-						showSaveErrorToast(errorMessage);
-					}
-				});
+				const serverSaveErrors = getServerSaveErrors(error);
+
+				if (Object.keys(serverSaveErrors).length) {
+					setSaveErrors(serverSaveErrors);
+				}
+				else {
+					showSaveErrorToast(error.other);
+				}
 			})
 			.catch(() => {
 				setSaving(false);
@@ -152,11 +197,7 @@ export default function AudienceBuilder({
 				<DragAndDropProvider backend={HTML5Backend}>
 					<DragPreviewWrapper />
 
-					<form
-						className="d-flex flex-column overflow-hidden"
-						onSubmit={(event) => event.preventDefault()}
-						ref={formRef}
-					>
+					<div className="d-flex flex-column overflow-hidden">
 						<AudienceBuilderToolbar
 							backURL={backURL}
 							backURLTitle={backURLTitle}
@@ -177,8 +218,7 @@ export default function AudienceBuilder({
 							<div className="d-flex flex-column flex-grow-1 overflow-auto p-4">
 								<ClayForm.Group
 									className={classNames({
-										'has-error':
-											saveError?.field === 'name',
+										'has-error': !!saveErrors.name,
 									})}
 								>
 									<label
@@ -193,14 +233,18 @@ export default function AudienceBuilder({
 									</label>
 
 									<ClayInput
+										aria-describedby={
+											saveErrors.name &&
+											`${namespace}nameError`
+										}
+										aria-invalid={!!saveErrors.name}
+										aria-required
 										className="bg-white border-0 font-weight-semi-bold h-auto mb-0 p-0 text-8"
 										id={`${namespace}name`}
 										maxLength={NAME_MAX_LENGTH}
 										name={`${namespace}name`}
 										onChange={(event) => {
-											if (saveError?.field === 'name') {
-												setSaveError(null);
-											}
+											clearSaveError('name');
 
 											dispatch({
 												name: event.target.value,
@@ -210,17 +254,18 @@ export default function AudienceBuilder({
 										placeholder={Liferay.Language.get(
 											'new-audience'
 										)}
-										required
 										type="text"
 										value={state.name}
 									/>
 
-									{saveError?.field === 'name' && (
-										<ClayForm.FeedbackGroup>
-											<ClayForm.FeedbackItem>
+									{saveErrors.name && (
+										<ClayForm.FeedbackGroup role="alert">
+											<ClayForm.FeedbackItem
+												id={`${namespace}nameError`}
+											>
 												<ClayForm.FeedbackIndicator symbol="exclamation-full" />
 
-												{saveError.message}
+												{saveErrors.name}
 											</ClayForm.FeedbackItem>
 										</ClayForm.FeedbackGroup>
 									)}
@@ -228,10 +273,7 @@ export default function AudienceBuilder({
 
 								<GeneralSettings
 									errorMessage={
-										saveError?.field ===
-										'externalReferenceCode'
-											? saveError.message
-											: undefined
+										saveErrors.externalReferenceCode
 									}
 									externalReferenceCode={
 										state.externalReferenceCode
@@ -240,12 +282,7 @@ export default function AudienceBuilder({
 									onExternalReferenceCodeChange={(
 										newExternalReferenceCode
 									) => {
-										if (
-											saveError?.field ===
-											'externalReferenceCode'
-										) {
-											setSaveError(null);
-										}
+										clearSaveError('externalReferenceCode');
 
 										dispatch({
 											externalReferenceCode:
@@ -264,7 +301,7 @@ export default function AudienceBuilder({
 								/>
 							</div>
 						</div>
-					</form>
+					</div>
 				</DragAndDropProvider>
 			</KeyboardMovementContextProvider>
 		</ScreenReaderAnnouncerContextProvider>

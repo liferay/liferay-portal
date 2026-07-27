@@ -48,3 +48,7 @@ export interface Rule {
 	operator: string;
 	value: string;
 }
+
+export type SaveErrorField = 'externalReferenceCode' | 'name';
+
+export type SaveErrors = Partial<Record<SaveErrorField, string>>;

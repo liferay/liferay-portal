@@ -78,7 +78,9 @@ describe('AudienceBuilder', () => {
 	});
 
 	beforeEach(() => {
-		(fetch as jest.Mock).mockResolvedValue({ok: true});
+		(fetch as jest.Mock).mockResolvedValue({
+			json: () => Promise.resolve({}),
+		});
 	});
 
 	it('renders editor, updates name, back and cancel link to backURL', async () => {
@@ -98,7 +100,7 @@ describe('AudienceBuilder', () => {
 
 		expect(input.getAttribute('name')).toBe('_test_name');
 		expect(input.getAttribute('maxLength')).toBe('75');
-		expect(input.hasAttribute('required')).toBe(true);
+		expect(input.getAttribute('aria-required')).toBe('true');
 
 		expect((input as HTMLInputElement).value).toBe('');
 		expect(input.getAttribute('placeholder')).toBe('new-audience');
@@ -127,8 +129,6 @@ describe('AudienceBuilder', () => {
 		});
 
 		it('posts the values and navigates to the redirect on success', async () => {
-			(fetch as jest.Mock).mockResolvedValue({ok: true});
-
 			renderAudienceBuilder();
 
 			const saveButton = screen.getByRole('button', {name: 'save'});
@@ -156,10 +156,8 @@ describe('AudienceBuilder', () => {
 			(fetch as jest.Mock).mockResolvedValue({
 				json: () =>
 					Promise.resolve({
-						errorField: 'externalReferenceCode',
-						errorMessage: 'error-message',
+						error: {externalReferenceCode: 'error-message'},
 					}),
-				ok: false,
 			});
 
 			renderAudienceBuilder();
@@ -179,53 +177,9 @@ describe('AudienceBuilder', () => {
 			expect(screen.getByLabelText('name')).toHaveValue('My Audience');
 		});
 
-		it('clears the error on the external reference code when it changes', async () => {
-			(fetch as jest.Mock).mockResolvedValue({
-				json: () =>
-					Promise.resolve({
-						errorField: 'externalReferenceCode',
-						errorMessage: 'error-message',
-					}),
-				ok: false,
-			});
-
-			renderAudienceBuilder();
-
-			await userEvent.click(screen.getByRole('button', {name: 'save'}));
-
-			expect(await screen.findByText('error-message')).toBeVisible();
-
-			await userEvent.type(
-				screen.getByRole('textbox', {name: 'erc'}),
-				'4'
-			);
-
-			expect(screen.queryByText('error-message')).toBeNull();
-		});
-
-		it('shows the error on the name when the save fails', async () => {
-			(fetch as jest.Mock).mockResolvedValue({
-				json: () =>
-					Promise.resolve({
-						errorField: 'name',
-						errorMessage: 'error-message',
-					}),
-				ok: false,
-			});
-
-			renderAudienceBuilder();
-
-			await userEvent.click(screen.getByRole('button', {name: 'save'}));
-
-			expect(await screen.findByText('error-message')).toBeVisible();
-
-			expect(Liferay.Util.openToast).not.toHaveBeenCalled();
-		});
-
 		it('shows the error in a toast when the save fails without a field', async () => {
 			(fetch as jest.Mock).mockResolvedValue({
-				json: () => Promise.resolve({errorMessage: 'error-message'}),
-				ok: false,
+				json: () => Promise.resolve({error: {other: 'error-message'}}),
 			});
 
 			renderAudienceBuilder();
@@ -245,12 +199,36 @@ describe('AudienceBuilder', () => {
 			expect(saveButton).toBeEnabled();
 		});
 
-		it('does not save when pressing enter on an input', async () => {
-			renderAudienceBuilder();
+		it('reports every empty field and clears each error when it changes', async () => {
+			render(
+				<AudienceBuilder
+					externalReferenceCode=" "
+					name=" "
+					namespace="_test_"
+					updateAudiencesEntryActionURL="/update"
+				/>
+			);
 
-			await userEvent.type(screen.getByLabelText('name'), '{Enter}');
+			await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+			expect(screen.getByText('please-enter-a-valid-name')).toBeVisible();
+			expect(screen.getByText('this-field-is-required')).toBeVisible();
+
+			expect(screen.getByRole('textbox', {name: 'erc'})).toBeVisible();
 
 			expect(fetch).not.toHaveBeenCalled();
+			expect(Liferay.Util.openToast).not.toHaveBeenCalled();
+
+			await userEvent.type(screen.getByLabelText('name'), 'A');
+
+			expect(screen.queryByText('please-enter-a-valid-name')).toBeNull();
+
+			await userEvent.type(
+				screen.getByRole('textbox', {name: 'erc'}),
+				'E'
+			);
+
+			expect(screen.queryByText('this-field-is-required')).toBeNull();
 		});
 	});
 

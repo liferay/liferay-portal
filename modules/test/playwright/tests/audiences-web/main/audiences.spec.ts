@@ -415,7 +415,8 @@ test(
 				.locator('button.dropdown-toggle'),
 		});
 
-		// An empty external reference code expands the general settings on save
+		// An empty external reference code reports the error inline and expands
+		// the general settings on save
 
 		await audiencesPage.generalSettingsButton.click();
 
@@ -424,6 +425,10 @@ test(
 		await audiencesPage.generalSettingsButton.click();
 
 		await audiencesPage.saveButton.click();
+
+		await expect(
+			audiencesPage.externalReferenceCodeErrorMessage
+		).toHaveText('This field is required.');
 
 		await expect(audiencesPage.externalReferenceCodeInput).toBeVisible();
 

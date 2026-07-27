@@ -13,24 +13,23 @@ import com.liferay.audiences.exception.NoSuchAudiencesEntryException;
 import com.liferay.audiences.service.AudiencesEntryService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.servlet.MultiSessionMessages;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
-import jakarta.portlet.PortletException;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -45,68 +44,15 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class UpdateAudiencesEntryMVCActionCommand implements MVCActionCommand {
+public class UpdateAudiencesEntryMVCActionCommand extends BaseMVCActionCommand {
 
 	@Override
-	public boolean processAction(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws PortletException {
-
-		try {
-			return _processAction(actionRequest, actionResponse);
-		}
-		catch (Exception exception) {
-			throw new PortletException(exception);
-		}
-	}
-
-	private String _getErrorFieldName(Exception exception) {
-		if (exception instanceof AudiencesEntryNameException) {
-			return "name";
-		}
-
-		if (exception instanceof
-				DuplicateAudiencesEntryExternalReferenceCodeException) {
-
-			return "externalReferenceCode";
-		}
-
-		return null;
-	}
-
-	private String _getErrorMessageKey(Exception exception) {
-		if (exception instanceof AudiencesEntryJSONException) {
-			return "you-have-entered-invalid-json";
-		}
-
-		if (exception instanceof AudiencesEntryNameException) {
-			return "please-enter-a-valid-name";
-		}
-
-		if (exception instanceof
-				DuplicateAudiencesEntryExternalReferenceCodeException) {
-
-			return "please-enter-a-unique-external-reference-code";
-		}
-
-		if (exception instanceof NoSuchAudiencesEntryException) {
-			return "the-audiences-could-not-be-found";
-		}
-
-		if (exception instanceof PrincipalException) {
-			return "you-do-not-have-the-required-permissions";
-		}
-
-		return null;
-	}
-
-	private boolean _processAction(
+	protected void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
 		long audiencesEntryId = ParamUtil.getLong(
 			actionRequest, "audiencesEntryId");
-
 		String externalReferenceCode = ParamUtil.getString(
 			actionRequest, "externalReferenceCode");
 		String json = ParamUtil.getString(actionRequest, "json");
@@ -121,22 +67,17 @@ public class UpdateAudiencesEntryMVCActionCommand implements MVCActionCommand {
 				_audiencesEntryService.updateAudiencesEntry(
 					audiencesEntryId, externalReferenceCode, json, name);
 			}
+
+			MultiSessionMessages.add(
+				actionRequest, "requestProcessed", StringPool.BLANK);
+
+			JSONPortletResponseUtil.writeJSON(
+				actionRequest, actionResponse, _jsonFactory.createJSONObject());
 		}
 		catch (Exception exception) {
-			String errorMessageKey = _getErrorMessageKey(exception);
+			SessionErrors.add(actionRequest, exception.getClass());
 
-			if (errorMessageKey == null) {
-				throw exception;
-			}
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-
-			HttpServletResponse httpServletResponse =
-				_portal.getHttpServletResponse(actionResponse);
-
-			httpServletResponse.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			hideDefaultErrorMessage(actionRequest);
 
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
@@ -144,22 +85,57 @@ public class UpdateAudiencesEntryMVCActionCommand implements MVCActionCommand {
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
 				JSONUtil.put(
-					"errorField", _getErrorFieldName(exception)
-				).put(
-					"errorMessage",
-					_language.get(themeDisplay.getLocale(), errorMessageKey)
-				));
+					"error", _getErrorJSONObject(exception, themeDisplay)));
+		}
+	}
 
-			return false;
+	private JSONObject _getErrorJSONObject(
+		Exception exception, ThemeDisplay themeDisplay) {
+
+		if (exception instanceof AudiencesEntryJSONException) {
+			return JSONUtil.put(
+				"other",
+				_language.get(
+					themeDisplay.getLocale(), "you-have-entered-invalid-json"));
+		}
+		else if (exception instanceof AudiencesEntryNameException) {
+			return JSONUtil.put(
+				"name",
+				_language.get(
+					themeDisplay.getLocale(), "please-enter-a-valid-name"));
+		}
+		else if (exception instanceof
+					DuplicateAudiencesEntryExternalReferenceCodeException) {
+
+			return JSONUtil.put(
+				"externalReferenceCode",
+				_language.get(
+					themeDisplay.getLocale(),
+					"please-enter-a-unique-external-reference-code"));
+		}
+		else if (exception instanceof NoSuchAudiencesEntryException) {
+			return JSONUtil.put(
+				"other",
+				_language.get(
+					themeDisplay.getLocale(),
+					"the-audiences-could-not-be-found"));
+		}
+		else if (exception instanceof PrincipalException) {
+			return JSONUtil.put(
+				"other",
+				_language.get(
+					themeDisplay.getLocale(),
+					"you-do-not-have-the-required-permissions"));
 		}
 
-		MultiSessionMessages.add(
-			actionRequest, "requestProcessed", StringPool.BLANK);
+		if (_log.isDebugEnabled()) {
+			_log.debug(exception);
+		}
 
-		JSONPortletResponseUtil.writeJSON(
-			actionRequest, actionResponse, _jsonFactory.createJSONObject());
-
-		return true;
+		return JSONUtil.put(
+			"other",
+			_language.get(
+				themeDisplay.getLocale(), "an-unexpected-error-occurred"));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -173,8 +149,5 @@ public class UpdateAudiencesEntryMVCActionCommand implements MVCActionCommand {
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private Portal _portal;
 
 }

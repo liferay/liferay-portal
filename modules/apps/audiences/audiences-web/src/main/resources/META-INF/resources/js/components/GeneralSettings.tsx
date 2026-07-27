@@ -73,19 +73,25 @@ export default function GeneralSettings({
 					</label>
 
 					<ClayInput
+						aria-describedby={
+							errorMessage &&
+							`${namespace}externalReferenceCodeError`
+						}
+						aria-invalid={!!errorMessage}
+						aria-required
 						id={`${namespace}externalReferenceCodeInput`}
 						onChange={(event) =>
 							onExternalReferenceCodeChange(event.target.value)
 						}
-						onInvalid={() => setExpanded(true)}
-						required
 						type="text"
 						value={externalReferenceCode}
 					/>
 
 					{errorMessage && (
-						<ClayForm.FeedbackGroup>
-							<ClayForm.FeedbackItem>
+						<ClayForm.FeedbackGroup role="alert">
+							<ClayForm.FeedbackItem
+								id={`${namespace}externalReferenceCodeError`}
+							>
 								<ClayForm.FeedbackIndicator symbol="exclamation-full" />
 
 								{errorMessage}
