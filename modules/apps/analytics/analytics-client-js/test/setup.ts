@@ -23,6 +23,55 @@ if (!global.performance.timing) {
 	});
 }
 
+/**
+ * jsdom does not implement IntersectionObserver, which the visibility tracking
+ * relies on. This mock reports an element as intersecting when its (mocked)
+ * bounding rect overlaps the viewport — mirroring the isPartiallyInViewport
+ * check the tracking used before — and delivers the callback asynchronously
+ * like the real observer. Tests that place an element with `mockVisibleRect`
+ * therefore keep working unchanged.
+ */
+class MockIntersectionObserver {
+	_callback: IntersectionObserverCallback;
+
+	constructor(callback: IntersectionObserverCallback) {
+		this._callback = callback;
+	}
+
+	disconnect() {}
+
+	observe(element: Element) {
+		const {bottom, left, right, top} = element.getBoundingClientRect();
+
+		const isIntersecting =
+			top <= window.innerHeight &&
+			bottom >= 0 &&
+			left <= window.innerWidth &&
+			right >= 0;
+
+		Promise.resolve().then(() =>
+			this._callback(
+				[
+					{isIntersecting, target: element},
+				] as unknown as IntersectionObserverEntry[],
+				this as unknown as IntersectionObserver
+			)
+		);
+	}
+
+	takeRecords() {
+		return [] as IntersectionObserverEntry[];
+	}
+
+	unobserve() {}
+}
+
+(
+	global as unknown as {
+		IntersectionObserver: unknown;
+	}
+).IntersectionObserver = MockIntersectionObserver;
+
 // Liferay.Util.Cookie = {
 // 	TYPES: {
 // 		FUNCTIONAL: 'CONSENT_TYPE_FUNCTIONAL',

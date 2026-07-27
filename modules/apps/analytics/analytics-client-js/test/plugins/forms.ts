@@ -8,7 +8,7 @@
 import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
-import {INITIAL_ANALYTICS_CONFIG} from '../helpers';
+import {INITIAL_ANALYTICS_CONFIG, mockVisibleRect, wait} from '../helpers';
 
 const applicationId = 'Form';
 
@@ -90,7 +90,7 @@ describe('Forms Plugin', () => {
 	});
 
 	describe('formViewed event', () => {
-		it('is fired for every form on the page', async () => {
+		it('is fired for every visible form on the page', async () => {
 			const formElement = document.createElement('form');
 
 			formElement.dataset.analyticsAssetId = 'assetId';
@@ -99,9 +99,11 @@ describe('Forms Plugin', () => {
 
 			document.body.appendChild(formElement);
 
-			const domContentLoaded = new Event('DOMContentLoaded');
+			mockVisibleRect(formElement);
 
-			await document.dispatchEvent(domContentLoaded);
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'formViewed'
@@ -137,9 +139,11 @@ describe('Forms Plugin', () => {
 
 			document.body.appendChild(formElement);
 
-			const domContentLoaded = new Event('DOMContentLoaded');
+			mockVisibleRect(formElement);
 
-			await document.dispatchEvent(domContentLoaded);
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'formViewed'
@@ -175,9 +179,11 @@ describe('Forms Plugin', () => {
 
 			document.body.appendChild(formElement);
 
-			const domContentLoaded = new Event('DOMContentLoaded');
+			mockVisibleRect(formElement);
 
-			await document.dispatchEvent(domContentLoaded);
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'formViewed'
@@ -193,6 +199,68 @@ describe('Forms Plugin', () => {
 					}),
 				}),
 			]);
+
+			document.body.removeChild(formElement);
+		});
+
+		it('is not fired when a form is in the viewport but hidden by CSS', async () => {
+			const formElement = document.createElement('form');
+
+			formElement.dataset.analyticsAssetId = 'assetId';
+			formElement.dataset.analyticsAssetTitle = 'Form Title 1';
+			formElement.dataset.analyticsAssetType = 'form';
+			formElement.style.visibility = 'hidden';
+
+			document.body.appendChild(formElement);
+
+			mockVisibleRect(formElement);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'formViewed'
+			);
+
+			expect(events.length).toBe(0);
+
+			document.body.removeChild(formElement);
+		});
+
+		it('is fired when a hidden form becomes visible after a reveal event', async () => {
+			const formElement = document.createElement('form');
+
+			formElement.dataset.analyticsAssetId = 'assetId';
+			formElement.dataset.analyticsAssetTitle = 'Form Title 1';
+			formElement.dataset.analyticsAssetType = 'form';
+			formElement.style.visibility = 'hidden';
+
+			document.body.appendChild(formElement);
+
+			mockVisibleRect(formElement);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) => eventId === 'formViewed'
+				).length
+			).toBe(0);
+
+			formElement.style.visibility = 'visible';
+
+			formElement.dispatchEvent(new Event('click', {bubbles: true}));
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) => eventId === 'formViewed'
+				).length
+			).toBe(1);
 
 			document.body.removeChild(formElement);
 		});

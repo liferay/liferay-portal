@@ -11,7 +11,7 @@ import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
 import {Analytics as AnalyticsTypes} from '../../src/types';
-import {INITIAL_ANALYTICS_CONFIG, wait} from '../helpers';
+import {INITIAL_ANALYTICS_CONFIG, mockVisibleRect, wait} from '../helpers';
 
 const applicationId = 'WebContent';
 
@@ -258,6 +258,62 @@ describe('WebContent Plugin', () => {
 					}),
 				})
 			);
+
+			document.body.removeChild(webContentElement);
+		});
+	});
+
+	describe('webContentViewed visibility gating', () => {
+		it('is not fired when web-content is in the viewport but hidden by CSS', async () => {
+			const webContentElement = createWebContentElement();
+
+			webContentElement.style.visibility = 'hidden';
+
+			mockVisibleRect(webContentElement);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'webContentViewed'
+			);
+
+			expect(events.length).toBe(0);
+
+			document.body.removeChild(webContentElement);
+		});
+
+		it('is fired when a hidden web-content becomes visible after a reveal event', async () => {
+			const webContentElement = createWebContentElement();
+
+			webContentElement.style.visibility = 'hidden';
+
+			mockVisibleRect(webContentElement);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) => eventId === 'webContentViewed'
+				).length
+			).toBe(0);
+
+			webContentElement.style.visibility = 'visible';
+
+			webContentElement.dispatchEvent(
+				new Event('click', {bubbles: true})
+			);
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) => eventId === 'webContentViewed'
+				).length
+			).toBe(1);
 
 			document.body.removeChild(webContentElement);
 		});

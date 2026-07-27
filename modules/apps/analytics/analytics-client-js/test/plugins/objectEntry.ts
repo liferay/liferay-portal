@@ -11,7 +11,7 @@ import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
 import {Analytics as AnalyticsTypes} from '../../src/types';
-import {INITIAL_ANALYTICS_CONFIG, wait} from '../helpers';
+import {INITIAL_ANALYTICS_CONFIG, mockVisibleRect, wait} from '../helpers';
 
 const applicationId = 'ObjectEntry';
 
@@ -184,6 +184,67 @@ describe('ObjectEntry Plugin', () => {
 			expect(events.length).toBeGreaterThanOrEqual(0);
 
 			document.body.removeChild(objectEntryElement);
+		});
+	});
+
+	describe('objectEntryViewed visibility gating', () => {
+		it('is not fired when objectEntry is in the viewport but hidden by CSS', async () => {
+			const element = createObjectEntryElement(
+				AnalyticsTypes.ElementAction.View
+			);
+
+			element.style.visibility = 'hidden';
+
+			mockVisibleRect(element);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) =>
+					eventId === AnalyticsTypes.EventId.ObjectEntryViewed
+			);
+
+			expect(events.length).toBe(0);
+
+			document.body.removeChild(element);
+		});
+
+		it('is fired when a hidden objectEntry becomes visible after a reveal event', async () => {
+			const element = createObjectEntryElement(
+				AnalyticsTypes.ElementAction.View
+			);
+
+			element.style.visibility = 'hidden';
+
+			mockVisibleRect(element);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) =>
+						eventId === AnalyticsTypes.EventId.ObjectEntryViewed
+				).length
+			).toBe(0);
+
+			element.style.visibility = 'visible';
+
+			element.dispatchEvent(new Event('click', {bubbles: true}));
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) =>
+						eventId === AnalyticsTypes.EventId.ObjectEntryViewed
+				).length
+			).toBe(1);
+
+			document.body.removeChild(element);
 		});
 	});
 

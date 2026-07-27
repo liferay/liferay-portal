@@ -11,7 +11,7 @@ import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
 import {Analytics as AnalyticsTypes} from '../../src/types';
-import {INITIAL_ANALYTICS_CONFIG, wait} from '../helpers';
+import {INITIAL_ANALYTICS_CONFIG, mockVisibleRect, wait} from '../helpers';
 
 const applicationId = 'Blog';
 
@@ -78,12 +78,14 @@ describe('Blogs Plugin', () => {
 	});
 
 	describe('blogViewed event', () => {
-		it('is fired for every blog on the page', async () => {
+		it('is fired for every visible blog on the page', async () => {
 			const blogElement = createBlogElement();
 
-			const domContentLoaded = new Event('DOMContentLoaded');
+			mockVisibleRect(blogElement);
 
-			await document.dispatchEvent(domContentLoaded);
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'blogViewed'
@@ -110,9 +112,11 @@ describe('Blogs Plugin', () => {
 				' my asset title '
 			);
 
-			const domContentLoaded = new Event('DOMContentLoaded');
+			mockVisibleRect(blogElement);
 
-			await document.dispatchEvent(domContentLoaded);
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'blogViewed'
@@ -144,9 +148,11 @@ describe('Blogs Plugin', () => {
 			blogElement.dataset.analyticsAssetVocabularies =
 				'[{"id":"voc1","name":"Vocabulary 1"}]';
 
-			const domContentLoaded = new Event('DOMContentLoaded');
+			mockVisibleRect(blogElement);
 
-			await document.dispatchEvent(domContentLoaded);
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
 
 			const events = Analytics.getEvents().filter(
 				({eventId}) => eventId === 'blogViewed'
@@ -169,6 +175,58 @@ describe('Blogs Plugin', () => {
 					}),
 				})
 			);
+
+			document.body.removeChild(blogElement);
+		});
+
+		it('is not fired when a blog is in the viewport but hidden by CSS', async () => {
+			const blogElement = createBlogElement();
+
+			blogElement.style.visibility = 'hidden';
+
+			mockVisibleRect(blogElement);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'blogViewed'
+			);
+
+			expect(events.length).toBe(0);
+
+			document.body.removeChild(blogElement);
+		});
+
+		it('is fired when a hidden blog becomes visible after a reveal event', async () => {
+			const blogElement = createBlogElement();
+
+			blogElement.style.visibility = 'hidden';
+
+			mockVisibleRect(blogElement);
+
+			document.dispatchEvent(new Event('DOMContentLoaded'));
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) => eventId === 'blogViewed'
+				).length
+			).toBe(0);
+
+			blogElement.style.visibility = 'visible';
+
+			blogElement.dispatchEvent(new Event('click', {bubbles: true}));
+
+			await wait(300);
+
+			expect(
+				Analytics.getEvents().filter(
+					({eventId}) => eventId === 'blogViewed'
+				).length
+			).toBe(1);
 
 			document.body.removeChild(blogElement);
 		});

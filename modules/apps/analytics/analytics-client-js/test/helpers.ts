@@ -96,3 +96,25 @@ export function wait(msToWait: number) {
 		setTimeout(resolve, msToWait);
 	});
 }
+
+/**
+ * Makes an element report a visible, in-viewport bounding box. Pass a partial
+ * rect to override specific fields (e.g. to place it outside the viewport).
+ */
+export function mockVisibleRect(
+	element: HTMLElement,
+	rect: Partial<DOMRect> = {}
+) {
+	jest.spyOn(element, 'getBoundingClientRect').mockImplementation(
+		() =>
+			({
+				bottom: 500,
+				height: 500,
+				left: 0,
+				right: 500,
+				top: 0,
+				width: 500,
+				...rect,
+			}) as DOMRect
+	);
+}
