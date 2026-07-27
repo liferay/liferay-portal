@@ -9,9 +9,11 @@ import ClayForm, {ClayInput} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayPanel from '@clayui/panel';
+import {useId} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
+import FieldWrapper from '../../../../common/components/forms/FieldWrapper';
 import {IPermissionItem} from '../../../../common/components/forms/PermissionsTable';
 import PermissionsFormGroup from '../../components/PermissionsFormGroup';
 
@@ -40,6 +42,8 @@ const EditCategoryGeneralInfoTab = ({
 }: Props) => {
 	const [languageId, setLanguageId] = useState<string>(defaultLanguageId);
 
+	const id = useId();
+
 	const getLanguageLabel = (languageId: string) => {
 		return languageId.replace('_', '-');
 	};
@@ -57,6 +61,20 @@ const EditCategoryGeneralInfoTab = ({
 		}
 	};
 
+	const onChangeLocalizedField = (
+		field: 'description' | 'friendlyUrlPath' | 'name',
+		value: string
+	) => {
+		setCategory(() => ({
+			...category,
+			...(languageId === defaultLanguageId && {[field]: value}),
+			[`${field}_i18n`]: {
+				...category[`${field}_i18n`],
+				[getLanguageLabel(languageId)]: value,
+			},
+		}));
+	};
+
 	const onChangeName = (newName: string) => {
 		if (newName) {
 			setNameInputError('');
@@ -70,27 +88,7 @@ const EditCategoryGeneralInfoTab = ({
 			);
 		}
 
-		setCategory(() => ({
-			...category,
-			...(languageId === defaultLanguageId && {name: newName}),
-			name_i18n: {
-				...category.name_i18n,
-				[getLanguageLabel(languageId)]: newName,
-			},
-		}));
-	};
-
-	const onChangeDescription = (newDescription: string) => {
-		setCategory(() => ({
-			...category,
-			...(languageId === defaultLanguageId && {
-				description: newDescription,
-			}),
-			description_i18n: {
-				...category.description_i18n,
-				[getLanguageLabel(languageId)]: newDescription,
-			},
-		}));
+		onChangeLocalizedField('name', newName);
 	};
 
 	return (
@@ -175,7 +173,7 @@ const EditCategoryGeneralInfoTab = ({
 							disabled={category.system}
 							id="description"
 							onChange={({target: {value}}) =>
-								onChangeDescription(value)
+								onChangeLocalizedField('description', value)
 							}
 							type="text"
 							value={
@@ -187,6 +185,33 @@ const EditCategoryGeneralInfoTab = ({
 							}
 						/>
 					</div>
+
+					<FieldWrapper
+						className="mb-0"
+						disabled={category.system}
+						fieldId={`${id}slug`}
+						helpIcon={sub(
+							Liferay.Language.get(
+								"the-unique-path-for-this-x.-it-is-appended-to-the-channel's-friendly-url"
+							),
+							Liferay.Language.get('category')
+						)}
+						label={Liferay.Language.get('slug')}
+					>
+						<ClayInput
+							disabled={category.system}
+							id={`${id}slug`}
+							onChange={({target: {value}}) =>
+								onChangeLocalizedField('friendlyUrlPath', value)
+							}
+							type="text"
+							value={
+								category.friendlyUrlPath_i18n?.[
+									getLanguageLabel(languageId)
+								] ?? ''
+							}
+						/>
+					</FieldWrapper>
 				</ClayForm.Group>
 			</ClayPanel>
 
