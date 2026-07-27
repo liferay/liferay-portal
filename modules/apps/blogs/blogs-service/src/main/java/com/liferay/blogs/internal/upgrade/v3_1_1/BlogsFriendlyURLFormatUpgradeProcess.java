@@ -10,6 +10,7 @@ import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -38,6 +39,11 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 					"select distinct ctCollectionId, friendlyURLEntryId, ",
 					"languageId, urlTitle, groupId, classPK from ",
 					"FriendlyURLEntryLocalization where classNameId = ?"));
+			PreparedStatement updatePreparedStatement =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"update BlogsEntry set urlTitle = ? where ctCollectionId " +
+						"= ? and entryId = ? and groupId = ?")) {
 
 			long classNameId = _classNameLocalService.getClassNameId(
 				BlogsEntry.class);
@@ -68,12 +74,14 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 
 				_updateURLTitle(
 					classPK, resultSet.getLong("ctCollectionId"), groupId,
-					urlTitle);
+					updatePreparedStatement, urlTitle);
 
 				_updateFriendlyURLEntry(
 					resultSet.getLong("friendlyURLEntryId"), languageId,
 					urlTitle);
 			}
+
+			updatePreparedStatement.executeBatch();
 		}
 	}
 
@@ -90,20 +98,16 @@ public class BlogsFriendlyURLFormatUpgradeProcess extends UpgradeProcess {
 	}
 
 	private void _updateURLTitle(
-			long classPK, long ctCollectionId, long groupId, String urlTitle)
+			long classPK, long ctCollectionId, long groupId,
+			PreparedStatement preparedStatement, String urlTitle)
 		throws Exception {
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"update BlogsEntry set urlTitle = ? where ctCollectionId = ? " +
-					"and entryId = ? and groupId = ?")) {
+		preparedStatement.setString(1, urlTitle);
+		preparedStatement.setLong(2, ctCollectionId);
+		preparedStatement.setLong(3, classPK);
+		preparedStatement.setLong(4, groupId);
 
-			preparedStatement.setString(1, urlTitle);
-			preparedStatement.setLong(2, ctCollectionId);
-			preparedStatement.setLong(3, classPK);
-			preparedStatement.setLong(4, groupId);
-
-			preparedStatement.executeUpdate();
-		}
+		preparedStatement.addBatch();
 	}
 
 	private final ClassNameLocalService _classNameLocalService;
