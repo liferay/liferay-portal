@@ -63,10 +63,13 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -218,6 +221,39 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	protected void activate(BundleContext bundleContext) {
 		_relevantObjectEntryModelListeners = ServiceTrackerListFactory.open(
 			bundleContext, RelevantObjectEntryModelListener.class);
+	}
+
+	private void _addModifiedLocalizedAttributes(
+		List<Attribute> attributes, ObjectField objectField,
+		Map<String, Serializable> originalValues,
+		Map<String, Serializable> values) {
+
+		Map<String, Serializable> originalLocalizedValues = _getLocalizedValues(
+			objectField, originalValues);
+		Map<String, Serializable> localizedValues = _getLocalizedValues(
+			objectField, values);
+
+		Set<String> languageIds = new TreeSet<>(
+			originalLocalizedValues.keySet());
+
+		languageIds.addAll(localizedValues.keySet());
+
+		for (String languageId : languageIds) {
+			Object originalValue = originalLocalizedValues.get(languageId);
+			Object value = localizedValues.get(languageId);
+
+			if (Objects.equals(originalValue, value)) {
+				continue;
+			}
+
+			attributes.add(
+				new Attribute(
+					StringBundler.concat(
+						objectField.getName(), StringPool.OPEN_BRACKET,
+						languageId, StringPool.CLOSE_BRACKET),
+					_getAuditValue(objectField, value),
+					_getAuditValue(objectField, originalValue)));
+		}
 	}
 
 	private void _executeObjectActions(
@@ -380,6 +416,20 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		return value;
 	}
 
+	private Map<String, Serializable> _getLocalizedValues(
+		ObjectField objectField, Map<String, Serializable> values) {
+
+		Map<String, Serializable> localizedValues =
+			(Map<String, Serializable>)values.get(
+				objectField.getI18nObjectFieldName());
+
+		if (localizedValues == null) {
+			return Collections.emptyMap();
+		}
+
+		return localizedValues;
+	}
+
 	private List<Attribute> _getModifiedAttributes(
 		ObjectDefinition objectDefinition,
 		Map<String, Serializable> originalValues,
@@ -390,6 +440,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		for (ObjectField objectField :
 				_objectFieldLocalService.getObjectFields(
 					objectDefinition.getObjectDefinitionId())) {
+
+			if (objectField.isLocalized()) {
+				_addModifiedLocalizedAttributes(
+					attributes, objectField, originalValues, values);
+
+				continue;
+			}
 
 			Object originalValue = originalValues.get(objectField.getName());
 			Object value = values.get(objectField.getName());
