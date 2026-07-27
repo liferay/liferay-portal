@@ -32,10 +32,15 @@ public class ClassLoaderAggregatePropertiesUtil {
 		}
 
 		EnvPropertiesUtil.loadEnvOverrides(
-			_ENV_OVERRIDE_PREFIX, classLoaderAggregateProperties::setProperty);
+			_ENV_OVERRIDE_PREFIX, classLoaderAggregateProperties::setProperty,
+			_DOCKER_IMAGE_ENV_PREFIXES);
 
 		return classLoaderAggregateProperties;
 	}
+
+	private static final String[] _DOCKER_IMAGE_ENV_PREFIXES = {
+		"LIFERAY_CONTAINER_", "LIFERAY_DOCKER_"
+	};
 
 	private static final String _ENV_OVERRIDE_PREFIX = "LIFERAY_";
 

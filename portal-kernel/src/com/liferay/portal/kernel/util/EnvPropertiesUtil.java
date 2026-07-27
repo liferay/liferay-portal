@@ -74,7 +74,8 @@ public class EnvPropertiesUtil {
 	}
 
 	public static void loadEnvOverrides(
-		String envPrefix, BiConsumer<String, String> biConsumer) {
+		String envPrefix, BiConsumer<String, String> biConsumer,
+		String... excludedEnvPrefixes) {
 
 		Map<String, String> env = System.getenv();
 
@@ -82,7 +83,7 @@ public class EnvPropertiesUtil {
 			String key = entry.getKey();
 
 			if (!key.startsWith(envPrefix) ||
-				ArrayUtil.exists(_DOCKER_IMAGE_ENV_PREFIXES, key::startsWith)) {
+				ArrayUtil.exists(excludedEnvPrefixes, key::startsWith)) {
 
 				continue;
 			}
@@ -126,10 +127,6 @@ public class EnvPropertiesUtil {
 			throw new ExceptionInInitializerError(exception);
 		}
 	}
-
-	private static final String[] _DOCKER_IMAGE_ENV_PREFIXES = {
-		"LIFERAY_CONTAINER_", "LIFERAY_DOCKER_"
-	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EnvPropertiesUtil.class);
