@@ -122,17 +122,12 @@ public class AddObjectToProjectBulkSelectionAction
 					serviceContext);
 			}
 			catch (ModelListenerException modelListenerException) {
-				Throwable throwable = modelListenerException.getCause();
-
-				if (!(throwable instanceof
-						ObjectValidationRuleEngineException)) {
+				if (!(modelListenerException.getCause() instanceof
+						ObjectValidationRuleEngineException
+							objectValidationRuleEngineException)) {
 
 					throw modelListenerException;
 				}
-
-				ObjectValidationRuleEngineException
-					objectValidationRuleEngineException =
-						(ObjectValidationRuleEngineException)throwable;
 
 				List<ObjectValidationRuleResult> objectValidationRuleResults =
 					objectValidationRuleEngineException.
