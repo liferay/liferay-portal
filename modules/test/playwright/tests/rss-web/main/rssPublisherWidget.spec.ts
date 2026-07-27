@@ -74,7 +74,7 @@ test(
 		// Assert number of entries per feed allows integer numbers greater than 10
 
 		await configurationIFrame
-			.getByLabel('# of Entries Per Feed', {exact: true})
+			.getByLabel('# of Entries per Feed', {exact: true})
 			.fill('11');
 
 		await widgetPagePage.save('RSS Publisher');
@@ -84,7 +84,7 @@ test(
 			.click();
 
 		await expect(
-			configurationIFrame.getByLabel('# of Entries Per Feed', {
+			configurationIFrame.getByLabel('# of Entries per Feed', {
 				exact: true,
 			})
 		).toHaveValue('11');
