@@ -7,6 +7,7 @@ import {ReactFieldBase as FieldBase} from 'dynamic-data-mapping-form-field-type/
 import React, {useState} from 'react';
 
 const Password = ({
+	id,
 	name,
 	onBlur,
 	onChange,
@@ -22,11 +23,11 @@ const Password = ({
 	);
 
 	return (
-		<FieldBase {...otherProps} name={name} readOnly={disabled}>
+		<FieldBase {...otherProps} id={id} name={name} readOnly={disabled}>
 			<input
 				className="ddm-field-text form-control"
 				disabled={disabled}
-				id={name}
+				id={id ?? name}
 				name={name}
 				onBlur={onBlur}
 				onFocus={onFocus}
