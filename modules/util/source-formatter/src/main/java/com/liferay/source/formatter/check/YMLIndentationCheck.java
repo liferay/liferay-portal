@@ -99,10 +99,6 @@ public class YMLIndentationCheck extends BaseFileCheck {
 				sb1.append(StringUtil.trimLeading(firstLine));
 				sb1.append("\n");
 
-				if (lines.length == 1) {
-					continue;
-				}
-
 				leadingSpacesLength = -1;
 
 				for (int i = 1; i < lines.length; i++) {
