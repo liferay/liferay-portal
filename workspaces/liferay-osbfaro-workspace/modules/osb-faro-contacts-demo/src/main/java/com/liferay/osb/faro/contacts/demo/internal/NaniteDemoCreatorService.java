@@ -27,7 +27,7 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegment;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChange;
 import com.liferay.osb.faro.engine.client.model.Provider;
 import com.liferay.osb.faro.engine.client.model.Results;
-import com.liferay.osb.faro.engine.client.model.credentials.DummyCredentials;
+import com.liferay.osb.faro.engine.client.model.credentials.OAuth2Credentials;
 import com.liferay.osb.faro.engine.client.model.credentials.TokenCredentials;
 import com.liferay.osb.faro.engine.client.model.provider.LiferayProvider;
 import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
@@ -391,7 +391,7 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		LiferayUsersDataCreator liferayUsersDataCreator) {
 
 		DataSource dataSource = createDataSource(
-			faroProject, new DummyCredentials(), getSalesforceProvider(),
+			faroProject, new OAuth2Credentials(), getSalesforceProvider(),
 			_SALESFORCE_DATA_SOURCE_NAME, "http://salesforce.example.faro.com");
 
 		// Accounts
