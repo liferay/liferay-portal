@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -54,7 +55,7 @@ public class RecentGroupManagerTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		LayoutTestUtil.addTypeContentLayout(_group);
+		_layout = LayoutTestUtil.addTypeContentLayout(_group);
 	}
 
 	@Test
@@ -96,6 +97,7 @@ public class RecentGroupManagerTest {
 
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setLayout(_layout);
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 		themeDisplay.setSignedIn(true);
@@ -121,6 +123,8 @@ public class RecentGroupManagerTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	private Layout _layout;
 
 	@Inject
 	private RecentGroupManager _recentGroupManager;
