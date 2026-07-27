@@ -40,7 +40,7 @@ export function createFDSTableTests<
 			seededItemName = await createFDSItem();
 		});
 
-		test('shows the table columns', {tag}, async ({fdsTablePage}) => {
+		test('Shows the table columns', {tag}, async ({fdsTablePage}) => {
 			await fdsTablePage.goto();
 
 			for (const column of columns) {
@@ -48,7 +48,7 @@ export function createFDSTableTests<
 			}
 		});
 
-		test('offers the sort options', {tag}, async ({fdsTablePage}) => {
+		test('Offers the sort options', {tag}, async ({fdsTablePage}) => {
 			await fdsTablePage.goto();
 
 			await fdsTablePage.orderButton.click();
@@ -59,7 +59,7 @@ export function createFDSTableTests<
 		});
 
 		test(
-			'searches the table by item name',
+			'Searches the table by item name',
 			{tag},
 			async ({createFDSItem, fdsTablePage}) => {
 				await createFDSItem();
@@ -74,7 +74,7 @@ export function createFDSTableTests<
 		);
 
 		test(
-			'shows an empty result when searching for a missing item',
+			'Shows an empty result when searching for a missing item',
 			{tag},
 			async ({fdsTablePage}) => {
 				await fdsTablePage.goto();
@@ -85,7 +85,7 @@ export function createFDSTableTests<
 			}
 		);
 
-		test('offers the row actions', {tag}, async ({fdsTablePage, page}) => {
+		test('Offers the row actions', {tag}, async ({fdsTablePage, page}) => {
 			await fdsTablePage.goto();
 
 			await fdsTablePage.search(seededItemName);

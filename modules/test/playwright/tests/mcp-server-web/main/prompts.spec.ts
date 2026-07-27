@@ -97,7 +97,7 @@ createFDSTableTests(test, {
 
 test.describe('Prompts - List View', () => {
 	test(
-		'opens a prompt in edit when clicking its name',
+		'Opens a prompt in edit when clicking its name',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -114,7 +114,7 @@ test.describe('Prompts - List View', () => {
 	);
 
 	test(
-		'edits a prompt from the three-dot menu',
+		'Edits a prompt from the three-dot menu',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -131,7 +131,7 @@ test.describe('Prompts - List View', () => {
 	);
 
 	test(
-		'duplicates a prompt into a Copy of prompt from the three-dot menu',
+		'Duplicates a prompt into a Copy of prompt from the three-dot menu',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -149,7 +149,7 @@ test.describe('Prompts - List View', () => {
 	);
 
 	test(
-		'asks for confirmation with the prompt name before deleting',
+		'Asks for confirmation with the prompt name before deleting',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -172,7 +172,7 @@ test.describe('Prompts - List View', () => {
 	);
 
 	test(
-		'keeps the prompt when the delete confirmation is cancelled',
+		'Keeps the prompt when the delete confirmation is cancelled',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -193,7 +193,7 @@ test.describe('Prompts - List View', () => {
 	);
 
 	test(
-		'deletes a prompt after confirming in the modal',
+		'Deletes a prompt after confirming in the modal',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -217,7 +217,7 @@ test.describe('Prompts - List View', () => {
 
 test.describe('Prompts - Detail (Create / Edit)', () => {
 	test(
-		'creates a prompt from the New Prompt button',
+		'Creates a prompt from the New Prompt button',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -244,7 +244,7 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 	);
 
 	test(
-		'shows a required-field error on Name, Description, and Prompt',
+		'Shows a required-field error on Name, Description, and Prompt',
 		{tag: '@LPD-98309'},
 		async ({promptsPage}) => {
 			await promptsPage.goto();
@@ -265,7 +265,7 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 	);
 
 	test(
-		'clears the required error once the field is filled',
+		'Clears the required error once the field is filled',
 		{tag: '@LPD-98309'},
 		async ({promptsPage}) => {
 			await promptsPage.goto();
@@ -286,7 +286,7 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 	);
 
 	test(
-		'edits a prompt and persists the change',
+		'Edits a prompt and persists the change',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
 			const name = promptName();
@@ -309,7 +309,7 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 	);
 
 	test(
-		'returns to the prompts list when cancelling the form',
+		'Returns to the prompts list when cancelling the form',
 		{tag: '@LPD-98309'},
 		async ({promptsPage}) => {
 			await promptsPage.goto();

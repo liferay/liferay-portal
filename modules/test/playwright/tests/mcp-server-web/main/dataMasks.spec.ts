@@ -124,7 +124,7 @@ createFDSTableTests(test, {
 
 test.describe('Data Masks - List View', () => {
 	test(
-		'opens a system mask read-only and a custom mask in edit when clicking its title',
+		'Opens a system mask read-only and a custom mask in edit when clicking its title',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
@@ -149,7 +149,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'views a system mask read-only from the three-dot menu',
+		'Views a system mask read-only from the three-dot menu',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -164,7 +164,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'duplicates a system mask into a custom Copy of mask from the three-dot menu',
+		'Duplicates a system mask into a custom Copy of mask from the three-dot menu',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -189,7 +189,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'filters the data masks list by type',
+		'Filters the data masks list by type',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
@@ -205,7 +205,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'edits a custom mask from the three-dot menu',
+		'Edits a custom mask from the three-dot menu',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
@@ -225,7 +225,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'deletes a custom mask with no associations after confirming in the modal',
+		'Deletes a custom mask with no associations after confirming in the modal',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
@@ -247,7 +247,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'warns about profile associations when deleting a custom mask used by a profile',
+		'Warns about profile associations when deleting a custom mask used by a profile',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
@@ -271,7 +271,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'duplicates a custom mask into a Copy of mask from the three-dot menu',
+		'Duplicates a custom mask into a Copy of mask from the three-dot menu',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
@@ -287,7 +287,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'creates a custom mask from the New Data Mask button',
+		'Creates a custom mask from the New Data Mask button',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
@@ -310,7 +310,7 @@ test.describe('Data Masks - List View', () => {
 	);
 
 	test(
-		'cannot delete a system mask',
+		'Cannot delete a system mask',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage, page}) => {
 			await dataMasksPage.goto();
@@ -329,7 +329,7 @@ test.describe('Data Masks - List View', () => {
 
 test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 	test(
-		'shows system masks as read-only in the form',
+		'Shows system masks as read-only in the form',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -344,7 +344,7 @@ test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 	);
 
 	test(
-		'tests a system mask and previews the masked output',
+		'Tests a system mask and previews the masked output',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -362,7 +362,7 @@ test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 	);
 
 	test(
-		'requires Title, Regex Pattern, and Replacement when creating a mask',
+		'Requires Title, Regex Pattern, and Replacement when creating a mask',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -379,7 +379,7 @@ test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 	);
 
 	test(
-		'shows a required-field error on Title, Regex Pattern, and Replacement',
+		'Shows a required-field error on Title, Regex Pattern, and Replacement',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -400,7 +400,7 @@ test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 	);
 
 	test(
-		'clears the required error once the field is filled',
+		'Clears the required error once the field is filled',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -421,7 +421,7 @@ test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 	);
 
 	test(
-		'links field help text to its input as an accessible description',
+		'Links field help text to its input as an accessible description',
 		{tag: '@LPD-90205'},
 		async ({dataMasksPage}) => {
 			await dataMasksPage.goto();
@@ -441,7 +441,7 @@ test.describe('Data Masks - Detail (Create / Edit / View)', () => {
 	);
 
 	test(
-		'edits a custom mask and persists the change',
+		'Edits a custom mask and persists the change',
 		{tag: '@LPD-90205'},
 		async ({apiHelpers, dataMasksPage}) => {
 			const name = maskName();
