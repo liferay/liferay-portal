@@ -18,14 +18,11 @@ import com.liferay.osb.faro.contacts.demo.internal.data.creator.MembershipChange
 import com.liferay.osb.faro.contacts.demo.internal.data.creator.PageContextsDataCreator;
 import com.liferay.osb.faro.contacts.demo.internal.data.creator.SalesforceAccountsDataCreator;
 import com.liferay.osb.faro.contacts.demo.internal.data.creator.SalesforceIndividualsDataCreator;
-import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
 import com.liferay.osb.faro.engine.client.model.Author;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelsConfiguration;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DataSource;
-import com.liferay.osb.faro.engine.client.model.FieldMapping;
-import com.liferay.osb.faro.engine.client.model.FieldMappingMap;
 import com.liferay.osb.faro.engine.client.model.IndividualSegment;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChange;
 import com.liferay.osb.faro.engine.client.model.Provider;
@@ -156,26 +153,6 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		return contactsEngineClient.addDataSource(
 			faroProject, credentials, new Author(), name, url, provider, null,
 			DataSource.Status.ACTIVE.name());
-	}
-
-	protected void createFieldMappings(
-		String dataSourceId, List<FieldMappingMap> fieldMappingMaps,
-		String context, String ownerType) {
-
-		for (FieldMappingMap fieldMappingMap : fieldMappingMaps) {
-			FieldMapping fieldMapping = contactsEngineClient.getFieldMapping(
-				faroProject, context, fieldMappingMap.getName());
-
-			if (fieldMapping == null) {
-				contactsEngineClient.addFieldMapping(
-					faroProject, context, Collections.emptyMap(),
-					fieldMappingMap.getName(), fieldMappingMap.getType(),
-					ownerType, false);
-			}
-		}
-
-		contactsEngineClient.patchFieldMappings(
-			faroProject, dataSourceId, context, ownerType, fieldMappingMaps);
 	}
 
 	protected void createIndividualSegments(String channelId) throws Exception {
@@ -314,14 +291,6 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 
 		liferayUsersDataCreator.execute();
 
-		// Field Mappings
-
-		createFieldMappings(
-			dataSource.getId(),
-			FieldMappingConstants.getLiferayFieldMappingMaps(),
-			FieldMappingConstants.CONTEXT_DEMOGRAPHICS,
-			FieldMappingConstants.OWNER_TYPE_INDIVIDUAL);
-
 		return liferayUsersDataCreator;
 	}
 
@@ -455,14 +424,6 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 			_SALESFORCE_INDIVIDUALS_COUNT, false);
 
 		salesforceIndividualsDataCreator.execute();
-
-		// Field Mappings
-
-		createFieldMappings(
-			dataSource.getId(),
-			FieldMappingConstants.getSalesforceIndividualFieldMappingMaps(),
-			FieldMappingConstants.CONTEXT_DEMOGRAPHICS,
-			FieldMappingConstants.OWNER_TYPE_INDIVIDUAL);
 
 		// Nanites
 
