@@ -15,6 +15,14 @@ function resolveModule(name = '') {
 
 const include = [resolveModule()];
 
+const FAVICONS_DIR = path.resolve(
+	__dirname,
+	'src',
+	'main',
+	'images',
+	'favicons'
+);
+
 const config = {
 	entry: [
 		'core-js/fn/array/fill',
@@ -141,6 +149,16 @@ const config = {
 				],
 			},
 			{
+
+				// Favicons are referenced by URL from a link element, so they
+				// are emitted as standalone files instead of sprite symbols.
+
+				include: FAVICONS_DIR,
+				test: /\.svg$/,
+				type: 'asset/resource',
+			},
+			{
+				exclude: FAVICONS_DIR,
 				test: /\.svg$/,
 				use: [
 					{

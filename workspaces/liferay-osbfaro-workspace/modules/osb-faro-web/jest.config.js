@@ -671,6 +671,7 @@ module.exports = {
 	testResultsProcessor: '@liferay/jest-junit-reporter',
 	transform: {
 		'^.+\\.jsx?$': 'babel-jest',
+		'^.+\\.svg$': '<rootDir>/src/main/js/test/svgTransformer.js',
 		'^.+\\.tsx?$': ['ts-jest', {tsconfig: 'tsconfig.test.json'}],
 	},
 	transformIgnorePatterns: ['/node_modules/'],

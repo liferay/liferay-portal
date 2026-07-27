@@ -1,4 +1,5 @@
 import {PropTypes} from 'prop-types';
+import {useDocumentFavicon} from 'shared/hooks/useDocumentFavicon';
 import {useEffect} from 'react';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useParams} from 'react-router-dom';
@@ -8,6 +9,8 @@ const DocumentTitle = ({ldpEnabled, productName, title}) => {
 	const routeLDPEnabled = useLDPEnabled({groupId});
 
 	const LDPEnabled = ldpEnabled ?? routeLDPEnabled;
+
+	useDocumentFavicon(LDPEnabled);
 
 	useEffect(() => {
 		const defaultTitle =

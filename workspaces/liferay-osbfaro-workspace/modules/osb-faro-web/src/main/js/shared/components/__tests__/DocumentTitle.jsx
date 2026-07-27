@@ -1,4 +1,5 @@
 jest.unmock('../DocumentTitle');
+jest.unmock('shared/hooks/useDocumentFavicon');
 
 import DocumentTitle from '../DocumentTitle';
 import React from 'react';
@@ -44,6 +45,24 @@ describe('DocumentTitle', () => {
 		renderWithRouter(<DocumentTitle title='test' />);
 
 		expect(document.title).toEqual('test - Liferay Data Platform');
+	});
+
+	it('should point the favicon at the branding matching the resolved plan', () => {
+		renderWithRouter(<DocumentTitle title='test' />);
+
+		expect(
+			document.querySelector("link[rel~='icon']").getAttribute('href')
+		).toEqual('ac_favicon.svg');
+
+		useLDPEnabled.mockReturnValue(true);
+
+		cleanup();
+
+		renderWithRouter(<DocumentTitle title='test' />);
+
+		expect(
+			document.querySelector("link[rel~='icon']").getAttribute('href')
+		).toEqual('ldp_favicon.svg');
 	});
 
 	it('should prefer an explicit ldpEnabled over the route-derived value', () => {
