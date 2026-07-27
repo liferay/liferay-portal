@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.Portlet;
@@ -74,14 +73,7 @@ public class LayoutSEOLinkManagerPageTitleTest {
 		if (FeatureFlagManagerUtil.isEnabled(
 				_group.getCompanyId(), "LPD-17564")) {
 
-			_cmsGroup = _groupLocalService.fetchGroup(
-				_group.getCompanyId(), GroupConstants.CMS);
-
-			if (_cmsGroup == null) {
-				_cmsGroup = GroupTestUtil.addGroup(
-					_group.getCompanyId(), TestPropsValues.getUserId(),
-					GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
-			}
+			_cmsGroup = GroupTestUtil.getOrAddCMSGroup(_group.getCompanyId());
 		}
 
 		_layout.setGroupId(_group.getGroupId());
