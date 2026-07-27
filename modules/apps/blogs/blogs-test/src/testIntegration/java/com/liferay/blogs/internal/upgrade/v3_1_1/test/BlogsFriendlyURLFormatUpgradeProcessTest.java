@@ -14,6 +14,7 @@ import com.liferay.friendly.url.test.util.BaseFriendlyURLFormatUpgradeProcessTes
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -59,6 +60,35 @@ public class BlogsFriendlyURLFormatUpgradeProcessTest
 		_runUpgrade();
 
 		_assertURLTitle("test/test");
+	}
+
+	@Test
+	public void testUpgradeForCapitalSpecialCharacter() throws Exception {
+		_addBlogsEntry("test001óóóÓ");
+
+		_runUpgrade();
+
+		_assertURLTitle(
+			_friendlyURLNormalizer.normalizeWithEncoding("test001óóóó"));
+	}
+
+	@Test
+	public void testUpgradeKeepsAlreadyNormalizedURLTitleWithDuplicateSibling()
+		throws Exception {
+
+		_addBlogsEntry("test");
+
+		BlogsEntry blogsEntry = _blogsEntry;
+
+		_addBlogsEntry("Test");
+
+		_runUpgrade();
+
+		_assertURLTitle("test-1");
+
+		_blogsEntry = blogsEntry;
+
+		_assertURLTitle("test");
 	}
 
 	@Test
@@ -150,6 +180,9 @@ public class BlogsFriendlyURLFormatUpgradeProcessTest
 	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	private long _classNameId;
+
+	@Inject
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
 
 	@Inject
 	private MultiVMPool _multiVMPool;
