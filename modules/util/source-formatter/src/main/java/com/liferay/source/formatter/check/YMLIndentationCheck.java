@@ -137,10 +137,6 @@ public class YMLIndentationCheck extends BaseFileCheck {
 				continue;
 			}
 
-			leadingSpaces = SourceUtil.getLeadingSpaces(firstLine);
-
-			leadingSpacesLength = leadingSpaces.length();
-
 			String subdefinition = definition.substring(firstLine.length() + 1);
 
 			subdefinition = _checkIndentation(subdefinition);
