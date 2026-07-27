@@ -31,6 +31,7 @@ jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api',
 	() => ({
 		createEventSource: jest.fn(() => Promise.resolve(null)),
+		executeHttpRequestAction: jest.fn(() => Promise.resolve()),
 		postChatByExternalReferenceCodeMessage: jest.fn(() =>
 			Promise.resolve()
 		),
@@ -888,6 +889,51 @@ describe('AIAssistantHost', () => {
 				fakeEventSource.emit(
 					'Chat Message Sent',
 					JSON.stringify({data: 'Here are your tags'})
+				);
+			});
+
+			expect(scrollTo).toHaveBeenCalledWith({
+				behavior: 'smooth',
+				top: SCROLL_HEIGHT,
+			});
+		});
+
+		it('scrolls the conversation to the bottom when the generating indicator appears without a new message', async () => {
+			const fakeEventSource = createFakeEventSource();
+
+			mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+			await renderAndOpen();
+
+			await act(async () => {
+				fakeEventSource.emit(
+					'Chat Message Sent',
+					JSON.stringify({
+						component: {
+							options: [
+								{
+									action: {
+										'http-request': {
+											href: '/o/tags',
+											method: 'POST',
+										},
+									},
+									label: 'generate-tags',
+								},
+							],
+							title: 'what-do-you-want-to-do',
+							type: 'quick-replies',
+						},
+						type: 'component',
+					})
+				);
+			});
+
+			scrollTo.mockClear();
+
+			await act(async () => {
+				fireEvent.click(
+					screen.getByRole('button', {name: 'generate-tags'})
 				);
 			});
 

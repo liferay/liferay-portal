@@ -148,7 +148,7 @@ export default function useAIChat({
 
 	useEffect(() => {
 		scrollToBottom();
-	}, [messages, scrollToBottom]);
+	}, [isGenerating, messages, scrollToBottom]);
 
 	useEffect(() => {
 		const onLocaleChanged = ({languageId}: {languageId: string}) => {
@@ -362,6 +362,8 @@ export default function useAIChat({
 		eventSourceRef.current?.close();
 
 		eventSourceRef.current = null;
+
+		setIsGenerating(false);
 	}, []);
 
 	useEffect(() => {

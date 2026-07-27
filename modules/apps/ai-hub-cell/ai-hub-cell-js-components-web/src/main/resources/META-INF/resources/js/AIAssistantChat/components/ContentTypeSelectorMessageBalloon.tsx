@@ -23,11 +23,12 @@ interface ContentTypeSelectorMessageBalloonProps {
 	contextRef: React.MutableRefObject<ChatContext>;
 	message: string;
 	sendMessage: (text: string) => void;
+	setIsGenerating: (isGenerating: boolean) => void;
 }
 
 const ContentTypeSelectorMessageBalloon: React.FC<
 	ContentTypeSelectorMessageBalloonProps
-> = ({contentTypes, contextRef, message, sendMessage}) => {
+> = ({contentTypes, contextRef, message, sendMessage, setIsGenerating}) => {
 	const [externalReferenceCode, setExternalReferenceCode] = useState('');
 	const [submitted, setSubmitted] = useState(false);
 
@@ -45,6 +46,8 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 		if (!contentType) {
 			return;
 		}
+
+		setIsGenerating(true);
 
 		const objectFields = await getObjectFields(
 			contentType.externalReferenceCode

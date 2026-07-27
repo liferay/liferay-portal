@@ -57,8 +57,11 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 			}
 		/>
 	),
-	'categorization': (context, {categorization}) => (
-		<CategorizationMessageBalloon {...categorization} />
+	'categorization': ({chat}, {categorization}) => (
+		<CategorizationMessageBalloon
+			{...categorization}
+			setIsGenerating={chat.setIsGenerating}
+		/>
 	),
 	'content-drafts': ({item}) => (
 		<ContentsMessageBalloon message={item.text} />
@@ -69,6 +72,7 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 			contextRef={chat.runtimeContextRef}
 			message={item.text}
 			sendMessage={chat.sendMessage}
+			setIsGenerating={chat.setIsGenerating}
 		/>
 	),
 	'field-values': ({chat, index}, {fieldValues}) => {

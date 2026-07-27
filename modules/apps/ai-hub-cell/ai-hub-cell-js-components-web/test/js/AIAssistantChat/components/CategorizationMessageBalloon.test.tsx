@@ -61,6 +61,7 @@ function createFakeEventSource() {
 
 describe('CategorizationMessageBalloon', () => {
 	let mockFire: jest.Mock;
+	let setIsGenerating: jest.Mock;
 
 	beforeEach(() => {
 		mockCreateEventSource.mockReset();
@@ -70,6 +71,7 @@ describe('CategorizationMessageBalloon', () => {
 		mockGetExistingTags.mockReset();
 
 		mockFire = jest.fn();
+		setIsGenerating = jest.fn();
 
 		global.Liferay = {
 			...global.Liferay,
@@ -81,6 +83,45 @@ describe('CategorizationMessageBalloon', () => {
 		(Liferay.Language.get as jest.Mock).mockImplementation(
 			(key: string) => key
 		);
+	});
+
+	it('reports loading through the shared state instead of its own indicator', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetExistingTags.mockResolvedValue([]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					setIsGenerating={setIsGenerating}
+				/>
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-7');
+		});
+
+		expect(screen.queryByText('generating-tags')).not.toBeInTheDocument();
+		expect(setIsGenerating).toHaveBeenLastCalledWith(true);
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"Culture","isNew":true}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		expect(screen.getByText('Culture')).toBeInTheDocument();
+		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
 	});
 
 	it('counts only the tags not already on the content in the confirmation', async () => {
@@ -103,6 +144,7 @@ describe('CategorizationMessageBalloon', () => {
 					content="Japan"
 					currentTagNames={['Japan']}
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 				/>
 			);
 		});
@@ -152,6 +194,7 @@ describe('CategorizationMessageBalloon', () => {
 					content="Japan"
 					currentCategoryIds={[39001, 39002]}
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 				/>
 			);
 		});
@@ -200,6 +243,7 @@ describe('CategorizationMessageBalloon', () => {
 					content="Japan"
 					currentCategoryIds={[39001]}
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 				/>
 			);
 		});
@@ -240,6 +284,7 @@ describe('CategorizationMessageBalloon', () => {
 					cmsGroupId={20124}
 					content="Japan"
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 				/>
 			);
 		});
@@ -303,6 +348,7 @@ describe('CategorizationMessageBalloon', () => {
 					content="Japan"
 					currentTagNames={['japan']}
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 				/>
 			);
 		});
@@ -338,6 +384,7 @@ describe('CategorizationMessageBalloon', () => {
 					cmsGroupId={20124}
 					content="Japan"
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 					targets={['kayaking', 'Japan']}
 				/>
 			);
@@ -365,6 +412,7 @@ describe('CategorizationMessageBalloon', () => {
 					cmsGroupId={20124}
 					content="Japan"
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 					targets={['fishing']}
 				/>
 			);
@@ -389,6 +437,7 @@ describe('CategorizationMessageBalloon', () => {
 					cmsGroupId={20124}
 					content="Japan"
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 					targets={['Fishing']}
 				/>
 			);
@@ -414,6 +463,7 @@ describe('CategorizationMessageBalloon', () => {
 					cmsGroupId={20124}
 					content="Japan"
 					scopeId={555}
+					setIsGenerating={setIsGenerating}
 				/>
 			);
 		});

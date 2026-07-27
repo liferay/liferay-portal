@@ -42,6 +42,7 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 
 		const contextRef = {current: {}};
 		const sendMessage = jest.fn();
+		const setIsGenerating = jest.fn();
 
 		render(
 			<ContentTypeSelectorMessageBalloon
@@ -49,6 +50,7 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 				contextRef={contextRef}
 				message="What type of content do you want to generate?"
 				sendMessage={sendMessage}
+				setIsGenerating={setIsGenerating}
 			/>
 		);
 
@@ -64,6 +66,7 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 				'by-external-reference-code/L_CMS_BASIC_WEB_CONTENT/object-fields'
 			)
 		);
+		expect(setIsGenerating).toHaveBeenCalledWith(true);
 
 		await waitFor(() =>
 			expect(sendMessage).toHaveBeenCalledWith(

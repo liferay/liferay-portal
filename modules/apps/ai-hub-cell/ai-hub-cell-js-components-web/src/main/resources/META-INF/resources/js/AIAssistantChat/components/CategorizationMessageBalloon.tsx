@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayIcon from '@clayui/icon';
-import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
@@ -17,6 +15,11 @@ import {getCandidateCategories} from '../../Categorization/services/getCandidate
 import {getExistingTags} from '../../Categorization/services/getExistingTags';
 import {ECategorizationAgent, Suggestion} from '../../Categorization/types';
 import useCategorizationAgent from '../../Categorization/useCategorizationAgent';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
+
+interface CategorizationMessageBalloonProps extends CategorizeEventPayload {
+	setIsGenerating: (isGenerating: boolean) => void;
+}
 
 function getKey(suggestion: Suggestion): string {
 	return `${suggestion.id ?? suggestion.name}`;
@@ -31,8 +34,9 @@ export default function CategorizationMessageBalloon({
 	currentCategoryIds,
 	currentTagNames,
 	scopeId,
+	setIsGenerating,
 	targets,
-}: CategorizeEventPayload) {
+}: CategorizationMessageBalloonProps) {
 	const [committed, setCommitted] = useState(false);
 	const [dismissed, setDismissed] = useState<string[]>([]);
 
@@ -139,22 +143,19 @@ export default function CategorizationMessageBalloon({
 
 	const isLoading = status === 'idle' || status === 'loading';
 
+	useEffect(() => {
+		setIsGenerating(isLoading);
+	}, [isLoading, setIsGenerating]);
+
+	if (isLoading) {
+		return null;
+	}
+
 	return (
 		<>
 			<div className="ai-assistant-chat__ai-assistant-message-balloon d-flex flex-column mb-2 rounded">
 				<div className="d-flex flex-row">
-					<div
-						className={`align-items-start d-inline-block flex-shrink-0 ml-2 mt-2 text-2 ${isLoading ? '' : 'text-primary'}`}
-					>
-						{isLoading ? (
-							<ClayLoadingIndicator size="sm" />
-						) : (
-							<ClayIcon
-								spritemap={Liferay.Icons.spritemap}
-								symbol="stars"
-							/>
-						)}
-					</div>
+					<AIAssistantMessageBalloonIcon />
 
 					<div className="flex-grow-1 m-2">
 						<CategorizationSuggestions
@@ -181,7 +182,7 @@ export default function CategorizationMessageBalloon({
 
 								regenerate();
 							}}
-							status={status === 'idle' ? 'loading' : status}
+							status={status}
 							suggestions={visibleSuggestions}
 						/>
 					</div>
@@ -191,12 +192,7 @@ export default function CategorizationMessageBalloon({
 			{committed && committedCount > 0 ? (
 				<div className="ai-assistant-chat__ai-assistant-message-balloon d-flex flex-column mb-2 rounded">
 					<div className="d-flex flex-row">
-						<div className="align-items-start d-inline-block flex-shrink-0 ml-2 mt-2 text-2 text-primary">
-							<ClayIcon
-								spritemap={Liferay.Icons.spritemap}
-								symbol="stars"
-							/>
-						</div>
+						<AIAssistantMessageBalloonIcon />
 
 						<div className="flex-grow-1 m-2">
 							{confirmationMessage}
