@@ -21,6 +21,7 @@ import {
 	createEventSource,
 	postChatByExternalReferenceCodeMessage,
 } from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/api';
+import {getSpaces} from '../../../src/main/resources/META-INF/resources/js/AIAssistantChat/services/getSpaces';
 import {CATEGORIZE_EVENT} from '../../../src/main/resources/META-INF/resources/js/Categorization/events';
 import {classifyCategorizationIntent} from '../../../src/main/resources/META-INF/resources/js/Categorization/services/classifyCategorizationIntent';
 import {ECategorizationAgent} from '../../../src/main/resources/META-INF/resources/js/Categorization/types';
@@ -45,6 +46,11 @@ jest.mock(
 );
 
 jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/AIAssistantChat/services/getSpaces',
+	() => ({getSpaces: jest.fn(() => Promise.resolve([]))})
+);
+
+jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/Categorization/services/classifyCategorizationIntent'
 );
 
@@ -58,6 +64,7 @@ const mockClassify = classifyCategorizationIntent as jest.MockedFunction<
 const mockCreateEventSource = createEventSource as jest.MockedFunction<
 	typeof createEventSource
 >;
+const mockGetSpaces = getSpaces as jest.MockedFunction<typeof getSpaces>;
 const mockPostChat =
 	postChatByExternalReferenceCodeMessage as jest.MockedFunction<
 		typeof postChatByExternalReferenceCodeMessage
@@ -133,6 +140,24 @@ function fireCategorizeEvent(payload: unknown) {
 	getLiferayHandler(CATEGORIZE_EVENT)?.(payload);
 }
 
+async function openWithContentTypes() {
+	await act(async () => {
+		renderHost();
+	});
+
+	await act(async () => {
+		getLiferayHandler('openAIAssistantChat')?.({
+			contentTypes: [
+				{
+					externalReferenceCode: 'L_CMS_BLOG',
+					label: 'Blog',
+					name: 'C_Blog',
+				},
+			],
+		});
+	});
+}
+
 function getSidebar() {
 	return screen.getByRole('complementary', {name: 'ai-assistant'});
 }
@@ -172,6 +197,8 @@ describe('AIAssistantHost', () => {
 
 		mockCreateEventSource.mockReset();
 		mockCreateEventSource.mockResolvedValue(null);
+		mockGetSpaces.mockReset();
+		mockGetSpaces.mockResolvedValue([]);
 		mockPostChat.mockReset();
 		mockPostChat.mockResolvedValue(undefined);
 		mockPostAIIssueReport.mockReset();
@@ -861,5 +888,85 @@ describe('AIAssistantHost', () => {
 		expect(
 			screen.getByText('ai-generated-responses-may-be-inaccurate')
 		).toBeInTheDocument();
+	});
+
+	it('asks for the space before the content type when there are several spaces', async () => {
+		mockGetSpaces.mockResolvedValue([
+			{
+				externalReferenceCode: 'MARKETING',
+				id: 1,
+				name: 'Marketing',
+				siteId: 1,
+			},
+			{
+				externalReferenceCode: 'SALES',
+				id: 2,
+				name: 'Sales',
+				siteId: 2,
+			},
+		]);
+
+		await openWithContentTypes();
+
+		expect(
+			screen.getByText(
+				'in-which-space-do-you-want-to-generate-the-content'
+			)
+		).toBeInTheDocument();
+		expect(screen.queryByLabelText('content-type')).toBeNull();
+
+		await act(async () => {
+			fireEvent.change(screen.getByLabelText('space'), {
+				target: {value: '2'},
+			});
+		});
+
+		expect(
+			screen.getByText('Sales', {selector: 'span'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByText('what-type-of-content-do-you-want-to-generate')
+		).toBeInTheDocument();
+		expect(screen.getByLabelText('content-type')).toBeInTheDocument();
+	});
+
+	it('skips the space question when there is a single space', async () => {
+		mockGetSpaces.mockResolvedValue([
+			{
+				externalReferenceCode: 'MARKETING',
+				id: 1,
+				name: 'Marketing',
+				siteId: 7,
+			},
+		]);
+
+		await openWithContentTypes();
+
+		expect(screen.queryByLabelText('space')).toBeNull();
+		expect(screen.getByLabelText('content-type')).toBeInTheDocument();
+	});
+
+	it('skips the space question when there are no spaces', async () => {
+		mockGetSpaces.mockResolvedValue([]);
+
+		await openWithContentTypes();
+
+		expect(screen.queryByLabelText('space')).toBeNull();
+		expect(screen.getByLabelText('content-type')).toBeInTheDocument();
+	});
+
+	it('warns and falls back to the content type when the spaces fail to load', async () => {
+		mockGetSpaces.mockRejectedValue(new Error('Request failed'));
+
+		await openWithContentTypes();
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+			expect.objectContaining({
+				message: 'the-spaces-could-not-be-loaded',
+				type: 'danger',
+			})
+		);
+		expect(screen.queryByLabelText('space')).toBeNull();
+		expect(screen.getByLabelText('content-type')).toBeInTheDocument();
 	});
 });
