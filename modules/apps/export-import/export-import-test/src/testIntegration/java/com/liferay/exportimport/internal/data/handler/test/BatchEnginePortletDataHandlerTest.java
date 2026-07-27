@@ -25,6 +25,7 @@ import com.liferay.exportimport.data.handler.base.BaseStagedModelDataHandler;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.exception.MissingPortletDataHandlerException;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ManifestSummary;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
@@ -121,6 +122,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -135,6 +137,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
@@ -172,6 +175,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -450,6 +454,83 @@ public class BatchEnginePortletDataHandlerTest {
 
 		Assert.assertNotNull(importedAccountEntry);
 		Assert.assertEquals(accountEntryName, importedAccountEntry.getName());
+	}
+
+	@Test
+	@TestInfo("LPD-65043")
+	public void testExportImportCompanyObjectEntriesWithDateRange()
+		throws Exception {
+
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectEntry objectEntry = _addTextObjectEntry(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, TestPropsValues.getUserId(),
+			objectDefinition);
+
+		Date date = new Date();
+
+		// Export with a date range that excludes the entry
+
+		File larFile = new ExportImportExecutor(
+		).withDateRange(
+			new Date(date.getTime() - (2 * Time.DAY)),
+			new Date(date.getTime() - Time.DAY)
+		).withGroupId(
+			group.getGroupId()
+		).withObjectEntries(
+			objectDefinition
+		).executeExport();
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).executeImport();
+
+		Assert.assertEquals(
+			0,
+			_objectEntryLocalService.getObjectEntriesCount(
+				objectDefinition.getObjectDefinitionId()));
+
+		// Export with a "last 12 hours" range that includes the entry
+
+		objectEntry = _addTextObjectEntry(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, TestPropsValues.getUserId(),
+			objectDefinition);
+
+		larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLastHours(
+			12
+		).withObjectEntries(
+			objectDefinition
+		).executeExport();
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).executeImport();
+
+		Assert.assertEquals(
+			1,
+			_objectEntryLocalService.getObjectEntriesCount(
+				objectDefinition.getObjectDefinitionId()));
 	}
 
 	@Test
@@ -2711,6 +2792,20 @@ public class BatchEnginePortletDataHandlerTest {
 		return objectDefinition;
 	}
 
+	private ObjectEntry _addTextObjectEntry(
+			long groupId, long userId, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		return _objectEntryLocalService.addObjectEntry(
+			groupId, userId, objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"textField", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	private void _assertComments(
 			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 			ObjectEntryComment... objectEntryComments)
@@ -4320,12 +4415,7 @@ public class BatchEnginePortletDataHandlerTest {
 								TestPropsValues.getUser(), _groupId,
 								_privateLayouts,
 								ArrayUtil.toLongArray(_layoutIds),
-								_getExportImportParameterMap(
-									_deletions, _includeDocumentLibrary,
-									_includeLayoutSetLayouts,
-									_includeListTypeDefinitions,
-									_includeObjectDefinitions,
-									_objectDefinitions))));
+								_getParameterMap())));
 		}
 
 		public ExportImportConfiguration executeImport() throws Exception {
@@ -4340,12 +4430,7 @@ public class BatchEnginePortletDataHandlerTest {
 								buildImportLayoutSettingsMap(
 									TestPropsValues.getUser(), _groupId,
 									_privateLayouts, null,
-									_getExportImportParameterMap(
-										_deletions, _includeDocumentLibrary,
-										_includeLayoutSetLayouts,
-										_includeListTypeDefinitions,
-										_includeObjectDefinitions,
-										_objectDefinitions)));
+									_getParameterMap()));
 
 				if (_deletions) {
 					_exportImportLocalService.importLayoutsDataDeletions(
@@ -4357,6 +4442,15 @@ public class BatchEnginePortletDataHandlerTest {
 
 				return exportImportConfiguration;
 			}
+		}
+
+		public ExportImportExecutor withDateRange(
+			Date startDate, Date endDate) {
+
+			_startDate = startDate;
+			_endDate = endDate;
+
+			return this;
 		}
 
 		public ExportImportExecutor withDeletions() {
@@ -4409,6 +4503,12 @@ public class BatchEnginePortletDataHandlerTest {
 			return this;
 		}
 
+		public ExportImportExecutor withLastHours(int lastHours) {
+			_lastHours = lastHours;
+
+			return this;
+		}
+
 		public ExportImportExecutor withLayoutId(long layoutId) {
 			_layoutIds.add(layoutId);
 
@@ -4429,7 +4529,70 @@ public class BatchEnginePortletDataHandlerTest {
 			return this;
 		}
 
+		private Map<String, String[]> _getParameterMap() throws Exception {
+			Map<String, String[]> parameterMap = _getExportImportParameterMap(
+				_deletions, _includeDocumentLibrary, _includeLayoutSetLayouts,
+				_includeListTypeDefinitions, _includeObjectDefinitions,
+				_objectDefinitions);
+
+			if (_lastHours > 0) {
+				parameterMap.put(
+					ExportImportDateUtil.RANGE,
+					new String[] {ExportImportDateUtil.RANGE_LAST});
+				parameterMap.put(
+					"last", new String[] {String.valueOf(_lastHours)});
+			}
+			else if (_startDate != null) {
+				parameterMap.put(
+					ExportImportDateUtil.RANGE,
+					new String[] {ExportImportDateUtil.RANGE_DATE_RANGE});
+
+				_putDateParameters(parameterMap, "startDate", _startDate);
+				_putDateParameters(parameterMap, "endDate", _endDate);
+			}
+
+			return parameterMap;
+		}
+
+		private void _putDateParameters(
+				Map<String, String[]> parameterMap, String prefix, Date date)
+			throws Exception {
+
+			User user = TestPropsValues.getUser();
+
+			Calendar calendar = CalendarFactoryUtil.getCalendar(
+				user.getTimeZone(), user.getLocale());
+
+			calendar.setTime(date);
+
+			int hour = calendar.get(Calendar.HOUR_OF_DAY);
+
+			parameterMap.put(
+				prefix + "AmPm",
+				new String[] {
+					String.valueOf((hour < 12) ? Calendar.AM : Calendar.PM)
+				});
+			parameterMap.put(
+				prefix + "Hour", new String[] {String.valueOf(hour % 12)});
+
+			parameterMap.put(
+				prefix + "Day",
+				new String[] {
+					String.valueOf(calendar.get(Calendar.DAY_OF_MONTH))
+				});
+			parameterMap.put(
+				prefix + "Minute",
+				new String[] {String.valueOf(calendar.get(Calendar.MINUTE))});
+			parameterMap.put(
+				prefix + "Month",
+				new String[] {String.valueOf(calendar.get(Calendar.MONTH))});
+			parameterMap.put(
+				prefix + "Year",
+				new String[] {String.valueOf(calendar.get(Calendar.YEAR))});
+		}
+
 		private boolean _deletions;
+		private Date _endDate;
 		private boolean _expectError;
 		private long _groupId;
 		private boolean _includeDocumentLibrary;
@@ -4437,9 +4600,11 @@ public class BatchEnginePortletDataHandlerTest {
 		private boolean _includeListTypeDefinitions;
 		private boolean _includeObjectDefinitions;
 		private File _larFile;
+		private int _lastHours;
 		private List<Long> _layoutIds = new ArrayList<>();
 		private List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
 		private boolean _privateLayouts;
+		private Date _startDate;
 
 	}
 
