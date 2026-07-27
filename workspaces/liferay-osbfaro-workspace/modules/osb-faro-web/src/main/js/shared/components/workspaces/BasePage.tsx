@@ -103,7 +103,7 @@ export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps
 		return (
 			<BasePageContext.Provider value={{currentUser}}>
 				<div className={getCN('workspaces-base-page-root', className)}>
-					<DocumentTitle title={title} />
+					<DocumentTitle ldpEnabled={ldpEnabled} title={title} />
 
 					<div className="header-container">
 						<ClayLink href="https://liferay.com" target="_blank">

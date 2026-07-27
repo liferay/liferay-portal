@@ -3,9 +3,11 @@ import {useEffect} from 'react';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useParams} from 'react-router-dom';
 
-const DocumentTitle = ({productName, title}) => {
+const DocumentTitle = ({ldpEnabled, productName, title}) => {
 	const {groupId = ''} = useParams();
-	const LDPEnabled = useLDPEnabled({groupId});
+	const routeLDPEnabled = useLDPEnabled({groupId});
+
+	const LDPEnabled = ldpEnabled ?? routeLDPEnabled;
 
 	useEffect(() => {
 		const defaultTitle =
@@ -21,6 +23,7 @@ const DocumentTitle = ({productName, title}) => {
 };
 
 DocumentTitle.propTypes = {
+	ldpEnabled: PropTypes.bool,
 	productName: PropTypes.string,
 	title: PropTypes.string
 };

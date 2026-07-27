@@ -46,6 +46,20 @@ describe('DocumentTitle', () => {
 		expect(document.title).toEqual('test - Liferay Data Platform');
 	});
 
+	it('should prefer an explicit ldpEnabled over the route-derived value', () => {
+		renderWithRouter(<DocumentTitle ldpEnabled title='test' />);
+
+		expect(document.title).toEqual('test - Liferay Data Platform');
+	});
+
+	it('should prefer an explicit ldpEnabled of false over the route-derived value', () => {
+		useLDPEnabled.mockReturnValue(true);
+
+		renderWithRouter(<DocumentTitle ldpEnabled={false} title='test' />);
+
+		expect(document.title).toEqual('test - Analytics Cloud');
+	});
+
 	it('should prefer an explicit product name over the LDP-computed default', () => {
 		useLDPEnabled.mockReturnValue(true);
 
