@@ -129,6 +129,17 @@
 
 		<column name="name" type="String" />
 	</entity>
+	<entity local-service="false" name="CompoundPKEntry" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="companyId" primary="true" type="long" />
+		<column name="classNameId" primary="true" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="name" type="String" />
+	</entity>
 	<entity cache-enabled="true" local-service="true" name="DataLimitEntry" remote-service="false">
 
 		<!-- PK fields -->
