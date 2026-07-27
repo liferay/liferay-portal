@@ -309,7 +309,8 @@ public class DDMIndexerImplTest {
 		_testFormWithRepeatableField("keyword");
 		_testFormWithRepeatableField("text");
 		_testFormWithRepeatableRichTextField();
-		_testFormWithRepeatableSelectField();
+		_testFormWithRepeatableSelectField(false);
+		_testFormWithRepeatableSelectField(true);
 	}
 
 	@Test
@@ -732,7 +733,14 @@ public class DDMIndexerImplTest {
 					_FIELD_NAME, "_en_US_String_sortable")));
 	}
 
-	private void _testFormWithRepeatableSelectField() {
+	private void _testFormWithRepeatableSelectField(
+		boolean enableLegacyDDMIndexFields) {
+
+		DDMIndexer ddmIndexer = _createDDMIndexer(enableLegacyDDMIndexFields);
+
+		ReflectionTestUtil.setFieldValue(
+			ddmIndexer, "_jsonFactory", new JSONFactoryImpl());
+
 		Document document = _createDocument();
 
 		Locale[] availableLocales = {LocaleUtil.BRAZIL, LocaleUtil.US};
@@ -753,8 +761,10 @@ public class DDMIndexerImplTest {
 				optionValue + "_2", optionLabel + "_2"
 			).build());
 
-		_ddmIndexer.addAttributes(
-			document, _createDDMStructure(ddmForm),
+		DDMStructure ddmStructure = _createDDMStructure(ddmForm);
+
+		ddmIndexer.addAttributes(
+			document, ddmStructure,
 			_createDDMFormValues(
 				ddmForm,
 				DDMFormValuesTestUtil.createDDMFormFieldValue(
@@ -773,6 +783,12 @@ public class DDMIndexerImplTest {
 		String prefix =
 			"ddmFieldArray.ddmFieldValue" +
 				StringUtil.upperCaseFirstLetter(indexType);
+
+		if (enableLegacyDDMIndexFields) {
+			prefix = StringBundler.concat(
+				"ddm__keyword__", ddmStructure.getStructureId(), "__",
+				_FIELD_NAME);
+		}
 
 		FieldValuesAssert.assertFieldValues(
 			HashMapBuilder.put(
