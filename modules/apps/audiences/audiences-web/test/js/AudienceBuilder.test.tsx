@@ -10,7 +10,10 @@ import {fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 
 import AudienceBuilder from '../../src/main/resources/META-INF/resources/js/AudienceBuilder';
-import {AudiencesCriteriaType} from '../../src/main/resources/META-INF/resources/js/types';
+import {
+	AudiencesCriteriaRulesGroup,
+	AudiencesCriteriaType,
+} from '../../src/main/resources/META-INF/resources/js/types';
 
 jest.mock('frontend-js-web', () => ({
 	...(jest.requireActual('frontend-js-web') as object),
@@ -43,11 +46,16 @@ const AUDIENCES_CRITERIA_TYPES: AudiencesCriteriaType[] = [
 	},
 ];
 
-const getSerializedRuleAttributes = (container: HTMLElement) => {
-	const input =
-		container.querySelector<HTMLInputElement>('input[name="json"]');
+const getSerializedCriteria = async () => {
+	await userEvent.click(screen.getByRole('button', {name: 'save'}));
 
-	const serializedCriteria = JSON.parse(input!.value);
+	const [, {body}] = (fetch as jest.Mock).mock.calls.at(-1);
+
+	return JSON.parse(body.get('json'));
+};
+
+const getSerializedRuleAttributes = async () => {
+	const serializedCriteria = await getSerializedCriteria();
 
 	return serializedCriteria.rules.map(
 		(rule: {attribute: string}) => rule.attribute
@@ -67,6 +75,10 @@ describe('AudienceBuilder', () => {
 		(Liferay.Language as {direction: Record<string, string>}).direction = {
 			en_US: 'ltr',
 		};
+	});
+
+	beforeEach(() => {
+		(fetch as jest.Mock).mockResolvedValue({ok: true});
 	});
 
 	it('renders editor, updates name, back and cancel link to backURL', async () => {
@@ -245,18 +257,24 @@ describe('AudienceBuilder', () => {
 	});
 
 	describe('keyboard movement', () => {
-		it('adds a condition from the sidebar at the chosen position', async () => {
-			const {container} = render(
+		const renderAudienceBuilder = (
+			rulesGroup?: AudiencesCriteriaRulesGroup
+		) =>
+			render(
 				<AudienceBuilder
 					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
-						rules: [
-							{attribute: 'age', operator: 'gt', value: '18'},
-						],
-					}}
+					externalReferenceCode="ERC-123"
+					name="My Audience"
+					rulesGroup={rulesGroup}
+					updateAudiencesEntryActionURL="/update"
 				/>
 			);
+
+		it('adds a condition from the sidebar at the chosen position', async () => {
+			const {container} = renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [{attribute: 'age', operator: 'gt', value: '18'}],
+			});
 
 			await userEvent.click(getAttributeElement('City'));
 			await userEvent.keyboard('{Enter}');
@@ -275,40 +293,29 @@ describe('AudienceBuilder', () => {
 
 			await userEvent.keyboard('{Enter}');
 
-			expect(getSerializedRuleAttributes(container)).toEqual([
+			expect(await getSerializedRuleAttributes()).toEqual([
 				'city',
 				'age',
 			]);
 		});
 
 		it('adds a condition at the end when confirming the initial target', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
-						rules: [
-							{attribute: 'age', operator: 'gt', value: '18'},
-						],
-					}}
-				/>
-			);
+			renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [{attribute: 'age', operator: 'gt', value: '18'}],
+			});
 
 			await userEvent.click(getAttributeElement('City'));
 			await userEvent.keyboard('{Enter}{Enter}');
 
-			expect(getSerializedRuleAttributes(container)).toEqual([
+			expect(await getSerializedRuleAttributes()).toEqual([
 				'age',
 				'city',
 			]);
 		});
 
 		it('adds the condition immediately when there are no conditions', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-				/>
-			);
+			renderAudienceBuilder();
 
 			await userEvent.click(getAttributeElement('City'));
 			await userEvent.keyboard('{Enter}');
@@ -317,26 +324,17 @@ describe('AudienceBuilder', () => {
 				screen.getByText('a-condition-was-added')
 			).toBeInTheDocument();
 
-			expect(getSerializedRuleAttributes(container)).toEqual(['city']);
+			expect(await getSerializedRuleAttributes()).toEqual(['city']);
 		});
 
 		it('reorders a condition', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
-						rules: [
-							{attribute: 'age', operator: 'gt', value: '18'},
-							{
-								attribute: 'city',
-								operator: 'eq',
-								value: 'Madrid',
-							},
-						],
-					}}
-				/>
-			);
+			renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [
+					{attribute: 'age', operator: 'gt', value: '18'},
+					{attribute: 'city', operator: 'eq', value: 'Madrid'},
+				],
+			});
 
 			screen.getAllByTitle('move-x')[0].focus();
 
@@ -344,29 +342,20 @@ describe('AudienceBuilder', () => {
 
 			await userEvent.keyboard('{ArrowDown}{Enter}');
 
-			expect(getSerializedRuleAttributes(container)).toEqual([
+			expect(await getSerializedRuleAttributes()).toEqual([
 				'city',
 				'age',
 			]);
 		});
 
 		it('commits the movement with space', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
-						rules: [
-							{attribute: 'age', operator: 'gt', value: '18'},
-							{
-								attribute: 'city',
-								operator: 'eq',
-								value: 'Madrid',
-							},
-						],
-					}}
-				/>
-			);
+			renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [
+					{attribute: 'age', operator: 'gt', value: '18'},
+					{attribute: 'city', operator: 'eq', value: 'Madrid'},
+				],
+			});
 
 			screen.getAllByTitle('move-x')[0].focus();
 
@@ -374,25 +363,20 @@ describe('AudienceBuilder', () => {
 
 			await userEvent.keyboard('{ArrowDown}[Space]');
 
-			expect(getSerializedRuleAttributes(container)).toEqual([
+			expect(await getSerializedRuleAttributes()).toEqual([
 				'city',
 				'age',
 			]);
 		});
 
 		it('reorders a condition above a removed-criteria error row', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
-						rules: [
-							{attribute: 'removed', operator: 'eq', value: ''},
-							{attribute: 'age', operator: 'gt', value: '18'},
-						],
-					}}
-				/>
-			);
+			renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [
+					{attribute: 'removed', operator: 'eq', value: ''},
+					{attribute: 'age', operator: 'gt', value: '18'},
+				],
+			});
 
 			screen.getByTitle('move-x').focus();
 
@@ -400,39 +384,30 @@ describe('AudienceBuilder', () => {
 
 			await userEvent.keyboard('{ArrowUp}{ArrowUp}{ArrowUp}{Enter}');
 
-			expect(getSerializedRuleAttributes(container)).toEqual([
+			expect(await getSerializedRuleAttributes()).toEqual([
 				'age',
 				'removed',
 			]);
 		});
 
 		it('moves a nested condition out of its group', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
+			renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [
+					{attribute: 'age', operator: 'gt', value: '18'},
+					{
+						conjunction: 'OR',
 						rules: [
-							{attribute: 'age', operator: 'gt', value: '18'},
 							{
-								conjunction: 'OR',
-								rules: [
-									{
-										attribute: 'city',
-										operator: 'eq',
-										value: 'Madrid',
-									},
-									{
-										attribute: 'country',
-										operator: 'eq',
-										value: 'ES',
-									},
-								],
+								attribute: 'city',
+								operator: 'eq',
+								value: 'Madrid',
 							},
+							{attribute: 'country', operator: 'eq', value: 'ES'},
 						],
-					}}
-				/>
-			);
+					},
+				],
+			});
 
 			screen.getAllByTitle('move-x')[1].focus();
 
@@ -442,7 +417,7 @@ describe('AudienceBuilder', () => {
 				'{ArrowUp}{ArrowUp}{ArrowUp}{ArrowUp}{Enter}'
 			);
 
-			expect(getSerializedRuleAttributes(container)).toEqual([
+			expect(await getSerializedRuleAttributes()).toEqual([
 				'city',
 				'age',
 				'country',
@@ -450,23 +425,14 @@ describe('AudienceBuilder', () => {
 		});
 
 		it('groups two conditions with the keyboard', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
-						rules: [
-							{attribute: 'age', operator: 'gt', value: '18'},
-							{
-								attribute: 'city',
-								operator: 'eq',
-								value: 'Madrid',
-							},
-							{attribute: 'country', operator: 'eq', value: 'ES'},
-						],
-					}}
-				/>
-			);
+			renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [
+					{attribute: 'age', operator: 'gt', value: '18'},
+					{attribute: 'city', operator: 'eq', value: 'Madrid'},
+					{attribute: 'country', operator: 'eq', value: 'ES'},
+				],
+			});
 
 			screen.getAllByTitle('move-x')[0].focus();
 
@@ -474,10 +440,7 @@ describe('AudienceBuilder', () => {
 
 			await userEvent.keyboard('{ArrowDown}{Enter}');
 
-			const input =
-				container.querySelector<HTMLInputElement>('input[name="json"]');
-
-			const serializedCriteria = JSON.parse(input!.value);
+			const serializedCriteria = await getSerializedCriteria();
 
 			expect(
 				serializedCriteria.rules[0].rules.map(
@@ -488,22 +451,13 @@ describe('AudienceBuilder', () => {
 		});
 
 		it('cancels the movement with escape', async () => {
-			const {container} = render(
-				<AudienceBuilder
-					audiencesCriteriaTypes={AUDIENCES_CRITERIA_TYPES}
-					rulesGroup={{
-						conjunction: 'AND',
-						rules: [
-							{attribute: 'age', operator: 'gt', value: '18'},
-							{
-								attribute: 'city',
-								operator: 'eq',
-								value: 'Madrid',
-							},
-						],
-					}}
-				/>
-			);
+			renderAudienceBuilder({
+				conjunction: 'AND',
+				rules: [
+					{attribute: 'age', operator: 'gt', value: '18'},
+					{attribute: 'city', operator: 'eq', value: 'Madrid'},
+				],
+			});
 
 			screen.getAllByTitle('move-x')[0].focus();
 
@@ -511,7 +465,7 @@ describe('AudienceBuilder', () => {
 
 			await userEvent.keyboard('{ArrowDown}{Escape}');
 
-			expect(getSerializedRuleAttributes(container)).toEqual([
+			expect(await getSerializedRuleAttributes()).toEqual([
 				'age',
 				'city',
 			]);

@@ -112,8 +112,24 @@ export default function AudienceBuilder({
 		setSaveError(null);
 		setSaving(true);
 
+		const formData = new FormData();
+
+		formData.append(
+			`${namespace}audiencesEntryId`,
+			String(audiencesEntryId)
+		);
+		formData.append(
+			`${namespace}externalReferenceCode`,
+			state.externalReferenceCode
+		);
+		formData.append(
+			`${namespace}json`,
+			serializeCriteria(state.root, audiencesCriteriasByKey)
+		);
+		formData.append(`${namespace}name`, state.name);
+
 		fetch(updateAudiencesEntryActionURL, {
-			body: new FormData(form),
+			body: formData,
 			method: 'POST',
 		})
 			.then((response) => {
@@ -251,27 +267,6 @@ export default function AudienceBuilder({
 											type: 'SET_EXTERNAL_REFERENCE_CODE',
 										});
 									}}
-								/>
-
-								<input
-									name={`${namespace}audiencesEntryId`}
-									type="hidden"
-									value={audiencesEntryId}
-								/>
-
-								<input
-									name={`${namespace}externalReferenceCode`}
-									type="hidden"
-									value={state.externalReferenceCode}
-								/>
-
-								<input
-									name={`${namespace}json`}
-									type="hidden"
-									value={serializeCriteria(
-										state.root,
-										audiencesCriteriasByKey
-									)}
 								/>
 
 								<ConditionsPanel
