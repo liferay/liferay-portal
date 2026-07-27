@@ -5,7 +5,7 @@
 
 import {DataMask, DataMaskPayload} from '../types';
 import ApiHelper, {RequestResult} from './ApiHelper';
-import {DATA_MASKS_URL} from './dataMasksURL';
+import {DATA_MASKS_URL} from './constants';
 
 export function postDataMask(
 	payload: DataMaskPayload

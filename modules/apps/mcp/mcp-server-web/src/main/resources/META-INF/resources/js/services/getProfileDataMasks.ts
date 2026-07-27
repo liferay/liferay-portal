@@ -7,8 +7,7 @@ import {addParams} from 'frontend-js-web';
 
 import {toODataStringLiteral} from '../utils';
 import ApiHelper, {RequestResult} from './ApiHelper';
-
-const PROFILE_DATA_MASKS_URL = '/o/mcp/server-profile-data-masks';
+import {PROFILE_DATA_MASKS_URL} from './constants';
 
 export interface ProfileDataMaskAssociation {
 	dataMaskExternalReferenceCode?: string;

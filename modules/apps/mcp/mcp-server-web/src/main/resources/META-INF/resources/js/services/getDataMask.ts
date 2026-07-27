@@ -5,7 +5,7 @@
 
 import {DataMask} from '../types';
 import ApiHelper, {RequestResult} from './ApiHelper';
-import {DATA_MASKS_URL} from './dataMasksURL';
+import {DATA_MASKS_URL} from './constants';
 
 export function getDataMask(id: number): Promise<RequestResult<DataMask>> {
 	return ApiHelper.get<DataMask>(`${DATA_MASKS_URL}/${id}`);

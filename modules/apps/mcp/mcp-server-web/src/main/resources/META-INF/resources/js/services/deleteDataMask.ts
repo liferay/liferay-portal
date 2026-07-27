@@ -4,7 +4,7 @@
  */
 
 import ApiHelper, {RequestResult} from './ApiHelper';
-import {DATA_MASKS_URL} from './dataMasksURL';
+import {DATA_MASKS_URL} from './constants';
 
 export function deleteDataMask(id: number): Promise<RequestResult<void>> {
 	return ApiHelper.del<void>(`${DATA_MASKS_URL}/${id}`);

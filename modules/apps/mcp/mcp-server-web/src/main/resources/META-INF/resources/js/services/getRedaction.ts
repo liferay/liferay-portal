@@ -6,8 +6,7 @@
 import {addParams} from 'frontend-js-web';
 
 import ApiHelper, {RequestResult} from './ApiHelper';
-
-const REDACTION_URL = '/o/headless-data-mask/v1.0/redaction';
+import {REDACTION_URL} from './constants';
 
 export type RedactionRequest = {
 	detectionRegex: string;
