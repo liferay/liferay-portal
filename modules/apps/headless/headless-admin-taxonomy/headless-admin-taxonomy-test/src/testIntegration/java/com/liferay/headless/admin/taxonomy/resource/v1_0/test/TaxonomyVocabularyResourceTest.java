@@ -472,12 +472,10 @@ public class TaxonomyVocabularyResourceTest
 				RoleConstants.TYPE_REGULAR, null, null);
 		}
 
-		irrelevantGroup = GroupTestUtil.addGroup(
-			testDepotEntryGroup.getCompanyId(), TestPropsValues.getUserId(),
-			GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
-		testGroup = GroupTestUtil.addGroup(
-			testDepotEntryGroup.getCompanyId(), TestPropsValues.getUserId(),
-			GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
+		irrelevantGroup = GroupTestUtil.getOrAddCMSGroup(
+			testDepotEntryGroup.getCompanyId());
+
+		testGroup = irrelevantGroup;
 	}
 
 	private <T> void _assertSingletonArrayEquals(
