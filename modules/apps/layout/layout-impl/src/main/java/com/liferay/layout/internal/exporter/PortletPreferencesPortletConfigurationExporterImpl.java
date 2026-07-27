@@ -51,7 +51,7 @@ public class PortletPreferencesPortletConfigurationExporterImpl
 
 		PortletPreferences portletPreferences =
 			PortletPreferencesFactoryUtil.getLayoutPortletSetup(
-				layout.getPlid(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				layout.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
 				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, plid, portletId,
 				portlet.getDefaultPreferences());
 
