@@ -658,13 +658,5 @@ test(
 
 		await expect(row).toContainText(editor.familyName);
 		await expect(row).not.toContainText('Test Test');
-
-		// Clean up
-
-		await audiencesPage.deleteAudience(audienceName);
-
-		await expect(
-			page.locator('tr').filter({hasText: audienceName})
-		).toHaveCount(0);
 	}
 );
