@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
-import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -400,9 +399,8 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 
 		testGroup = CMSTestUtil.getOrAddGroup(KeywordResourceTest.class);
 
-		irrelevantGroup = GroupTestUtil.addGroup(
-			testDepotEntryGroup.getCompanyId(), TestPropsValues.getUserId(),
-			GroupConstants.DEFAULT_PARENT_GROUP_ID, GroupConstants.CMS);
+		irrelevantGroup = GroupTestUtil.getOrAddCMSGroup(
+			testDepotEntryGroup.getCompanyId());
 
 		super.testGetSiteKeywordsPage();
 
