@@ -7,7 +7,7 @@ application:
 author: Alicia García
 changeTrackingEnabled: true
 clientDir: ../headless-object-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 generatePermissions: true
 javaEEPackage: jakarta

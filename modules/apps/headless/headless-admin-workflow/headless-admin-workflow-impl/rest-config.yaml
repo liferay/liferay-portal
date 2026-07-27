@@ -6,6 +6,6 @@ application:
     name: Liferay.Headless.Admin.Workflow
 author: Javier Gamarra
 clientDir: ../headless-admin-workflow-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 javaEEPackage: jakarta
 testDir: ../headless-admin-workflow-test/src/testIntegration/java

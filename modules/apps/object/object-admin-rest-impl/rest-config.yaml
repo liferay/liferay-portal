@@ -6,7 +6,7 @@ application:
     name: Liferay.Object.Admin.REST
 author: Javier Gamarra
 clientDir: ../object-admin-rest-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 generateClientJS: true
 javaEEPackage: jakarta

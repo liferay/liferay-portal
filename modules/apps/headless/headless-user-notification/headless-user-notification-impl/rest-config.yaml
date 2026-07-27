@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.User.Notification
 author: Carlos Correa
 clientDir: ../headless-user-notification-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../headless-user-notification-test/src/testIntegration/java

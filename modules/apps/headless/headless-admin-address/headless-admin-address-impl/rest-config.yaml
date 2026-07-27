@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Admin.Address
 author: Drew Brokke
 clientDir: ../headless-admin-address-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 javaEEPackage: jakarta
 testDir: ../headless-admin-address-test/src/testIntegration/java

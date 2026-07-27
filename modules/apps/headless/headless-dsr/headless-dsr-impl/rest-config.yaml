@@ -7,7 +7,7 @@ application:
 author: Stefano Motta
 changeTrackingEnabled: true
 clientDir: ../headless-dsr-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 forcePredictableSchemaPropertyName: true
 generateBatch: false

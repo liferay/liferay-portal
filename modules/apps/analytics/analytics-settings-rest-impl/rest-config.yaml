@@ -6,7 +6,7 @@ application:
     name: Liferay.Analytyics.Settings.REST
 author: Riccardo Ferrari
 clientDir: ../analytics-settings-rest-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 generateBatch: false
 javaEEPackage: jakarta

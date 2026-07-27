@@ -6,7 +6,7 @@ application:
     name: Liferay.OAuth.Client.REST
 author: Manuele Castro
 clientDir: ../oauth-client-rest-client/src/main/java
-compatibilityVersion: 14
+compatibilityVersion: 16
 forcePredictableOperationId: true
 generateBatch: true
 generateGraphQL: false

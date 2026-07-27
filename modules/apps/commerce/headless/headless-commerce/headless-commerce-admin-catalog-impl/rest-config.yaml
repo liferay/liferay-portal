@@ -6,7 +6,7 @@ application:
     name: Liferay.Headless.Commerce.Admin.Catalog
 author: Zoltán Takács
 clientDir: ../headless-commerce-admin-catalog-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 forcePredictableSchemaPropertyName: false
 javaEEPackage: jakarta

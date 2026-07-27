@@ -7,7 +7,7 @@ application:
 author: Javier Gamarra
 changeTrackingEnabled: true
 clientDir: ../headless-admin-taxonomy-client/src/main/java
-compatibilityVersion: 15
+compatibilityVersion: 16
 forcePredictableOperationId: true
 generateActionProviders: true
 generateClientJS: true

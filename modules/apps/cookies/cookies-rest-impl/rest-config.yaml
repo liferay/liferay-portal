@@ -6,7 +6,7 @@ application:
     name: Liferay.Cookies.REST
 author: Christopher Kian
 clientDir: ../cookies-rest-client/src/main/java
-compatibilityVersion: 14
+compatibilityVersion: 16
 forcePredictableOperationId: true
 forcePredictableSchemaPropertyName: true
 generateBatch: false
