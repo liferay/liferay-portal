@@ -1179,7 +1179,7 @@ public abstract class Base${schemaName}ResourceImpl
 
 		@Override
 		public Page<${javaDataType}> read(com.liferay.portal.kernel.search.filter.Filter filter, Pagination pagination, com.liferay.portal.kernel.search.Sort[] sorts, Map<String, Serializable> parameters, String search) throws Exception {
-			<#if freeMarkerTool.hasReadVulcanBatchImplementation(javaMethodSignatures)>
+			<#if freeMarkerTool.hasReadVulcanBatchImplementation(configYAML, javaMethodSignatures)>
 				<#assign parentParameterNames = [] />
 
 				<#list getParentBatchJavaMethodSignatures as getParentBatchJavaMethodSignature>
@@ -2049,7 +2049,7 @@ public abstract class Base${schemaName}ResourceImpl
 	<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
 		<#if stringUtil.equals(javaMethodParameter.parameterName, schemaVarName)>
 			${schemaVarName}
-		<#elseif freeMarkerTool.isExternalReferenceCodeParameter(javaMethodParameter, schemaName) && properties?keys?seq_contains("externalReferenceCode") && freeMarkerTool.isParameterNameSchemaRelated(javaMethodParameter.parameterName, javaMethodSignature.path, schemaName)>
+		<#elseif freeMarkerTool.isExternalReferenceCodeParameter(javaMethodParameter, schemaName) && properties?keys?seq_contains("externalReferenceCode") && freeMarkerTool.isParameterNameSchemaRelated(configYAML, javaMethodParameter.parameterName, javaMethodSignature.path, schemaName)>
 			${schemaVarName}.getExternalReferenceCode()
 		<#elseif stringUtil.equals(javaMethodParameter.parameterName, "multipartBody")>
 			(MultipartBody)null

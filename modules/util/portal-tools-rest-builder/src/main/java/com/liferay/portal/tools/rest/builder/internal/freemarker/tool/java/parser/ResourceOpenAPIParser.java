@@ -96,7 +96,7 @@ public class ResourceOpenAPIParser {
 
 							List<JavaMethodParameter> javaMethodParameters =
 								_getJavaMethodParameters(
-									javaDataTypeMap, operation,
+									configYAML, javaDataTypeMap, operation,
 									requestBodyMediaTypes);
 
 							JavaMethodSignature javaMethodSignature =
@@ -440,7 +440,7 @@ public class ResourceOpenAPIParser {
 	}
 
 	public static boolean hasReadVulcanBatchImplementation(
-		List<JavaMethodSignature> javaMethodSignatures) {
+		ConfigYAML configYAML, List<JavaMethodSignature> javaMethodSignatures) {
 
 		for (JavaMethodSignature javaMethodSignature : javaMethodSignatures) {
 			String methodName = javaMethodSignature.getMethodName();
@@ -454,7 +454,8 @@ public class ResourceOpenAPIParser {
 			if (methodName.equals(
 					StringBundler.concat(
 						"get", parentSchemaName,
-						OpenAPIUtil.formatPlural(schemaName), "Page"))) {
+						OpenAPIUtil.formatPlural(configYAML, schemaName),
+						"Page"))) {
 
 				return true;
 			}
@@ -553,7 +554,8 @@ public class ResourceOpenAPIParser {
 			methodName.equals(
 				StringBundler.concat(
 					"get", parentSchemaName,
-					OpenAPIUtil.formatPlural(schemaName), "Page"))) {
+					OpenAPIUtil.formatPlural(configYAML, schemaName),
+					"Page"))) {
 
 			batchOperationType = BatchOperationType.EXPORT;
 		}
@@ -840,8 +842,8 @@ public class ResourceOpenAPIParser {
 	}
 
 	private static List<JavaMethodParameter> _getJavaMethodParameters(
-		Map<String, String> javaDataTypeMap, Operation operation,
-		Set<String> requestBodyMediaTypes) {
+		ConfigYAML configYAML, Map<String, String> javaDataTypeMap,
+		Operation operation, Set<String> requestBodyMediaTypes) {
 
 		if ((operation == null) || (operation.getParameters() == null)) {
 			return Collections.emptyList();
@@ -966,6 +968,7 @@ public class ResourceOpenAPIParser {
 						elementClassName.lastIndexOf(".") + 1);
 
 					parameterName = OpenAPIUtil.formatPlural(
+						configYAML,
 						TextFormatter.format(simpleClassName, TextFormatter.I));
 				}
 
@@ -1095,7 +1098,8 @@ public class ResourceOpenAPIParser {
 		operationIdSegments.add(OpenAPIParserUtil.getHTTPMethod(operation));
 
 		String[] pathSegments = path.split("/");
-		String pluralSchemaName = OpenAPIUtil.formatPlural(schemaName);
+		String pluralSchemaName = OpenAPIUtil.formatPlural(
+			configYAML, schemaName);
 
 		for (int i = 0; i < pathSegments.length; i++) {
 			String pathSegment = pathSegments[i];

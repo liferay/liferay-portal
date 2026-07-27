@@ -51,11 +51,19 @@ public class OpenAPIUtil {
 		return "v" + matcher.replaceFirst("");
 	}
 
-	public static String formatPlural(String s) {
+	public static String formatPlural(ConfigYAML configYAML, String s) {
+		if (!ConfigUtil.isVersionCompatible(configYAML, 16)) {
+			return TextFormatter.formatPlural(s);
+		}
+
 		return _format(s, TextFormatter::formatPlural);
 	}
 
 	public static String formatSingular(ConfigYAML configYAML, String s) {
+		if (!ConfigUtil.isVersionCompatible(configYAML, 16)) {
+			return _formatSingular(configYAML, s);
+		}
+
 		return _format(s, string -> _formatSingular(configYAML, string));
 	}
 

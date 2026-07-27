@@ -1133,10 +1133,10 @@ public class FreeMarkerTool {
 	}
 
 	public boolean hasReadVulcanBatchImplementation(
-		List<JavaMethodSignature> javaMethodSignatures) {
+		ConfigYAML configYAML, List<JavaMethodSignature> javaMethodSignatures) {
 
 		return ResourceOpenAPIParser.hasReadVulcanBatchImplementation(
-			javaMethodSignatures);
+			configYAML, javaMethodSignatures);
 	}
 
 	public boolean hasRequestBodyMediaType(
@@ -1253,7 +1253,8 @@ public class FreeMarkerTool {
 		String methodName = javaMethodSignature.getMethodName();
 		String parentSchemaName = GetterUtil.getString(
 			javaMethodSignature.getParentSchemaName());
-		String pluralSchemaName = OpenAPIUtil.formatPlural(schemaName);
+		String pluralSchemaName = OpenAPIUtil.formatPlural(
+			configYAML, schemaName);
 
 		if (!(methodName.equals(
 				StringBundler.concat(
@@ -1324,7 +1325,8 @@ public class FreeMarkerTool {
 	}
 
 	public boolean isParameterNameSchemaRelated(
-		String parameterName, String path, String schemaName) {
+		ConfigYAML configYAML, String parameterName, String path,
+		String schemaName) {
 
 		String schemaVarName = TextFormatter.format(
 			schemaName, TextFormatter.I);
@@ -1381,7 +1383,7 @@ public class FreeMarkerTool {
 		String formattedParameterSchemaName = TextFormatter.format(
 			parameterSchemaName, TextFormatter.K);
 		String formattedSchemaNamePlural = TextFormatter.format(
-			OpenAPIUtil.formatPlural(schemaName), TextFormatter.K);
+			OpenAPIUtil.formatPlural(configYAML, schemaName), TextFormatter.K);
 		String formattedSchemaNameSingular = TextFormatter.format(
 			schemaName, TextFormatter.K);
 
