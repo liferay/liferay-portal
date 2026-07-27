@@ -36,12 +36,6 @@ public class BasePortalControllerBuildRunnerTest
 		BasePortalControllerBuildRunner<?> basePortalControllerBuildRunner =
 			Mockito.mock(BasePortalControllerBuildRunner.class);
 
-		Mockito.doReturn(
-			false
-		).when(
-			basePortalControllerBuildRunner
-		).previousBuildHasCurrentSHA();
-
 		Mockito.doCallRealMethod(
 		).when(
 			basePortalControllerBuildRunner
@@ -51,6 +45,12 @@ public class BasePortalControllerBuildRunnerTest
 		).when(
 			basePortalControllerBuildRunner
 		).run();
+
+		Mockito.doReturn(
+			false
+		).when(
+			basePortalControllerBuildRunner
+		).previousBuildHasCurrentSHA();
 
 		basePortalControllerBuildRunner.run();
 
