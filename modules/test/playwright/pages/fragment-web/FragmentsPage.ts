@@ -122,7 +122,7 @@ export class FragmentsPage {
 		}
 		else if (setExists) {
 			await this.page
-				.getByLabel('Fragment Sets')
+				.getByLabel('Fragment Set', {exact: true})
 				.selectOption({label: setName});
 		}
 		else {
