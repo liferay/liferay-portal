@@ -116,63 +116,6 @@ test('Can export and import custom object entries at instance level', async ({
 });
 
 test(
-	'Can import custom object entries with original creator, and creator user exists in the current environment',
-	{tag: '@LPD-43217'},
-	async ({
-		apiHelpers,
-		companyExportImportPage,
-		exportImportPage,
-		globalMenuPage,
-		page,
-	}) => {
-		const objectDefinition =
-			await apiHelpers.objectAdmin.postRandomObjectDefinition({
-				panelCategoryKey: 'control_panel.object',
-				status: {code: 0},
-			});
-		apiHelpers.data.push({
-			id: objectDefinition.id,
-			type: 'objectDefinition',
-		});
-		const user = await createUserAssignRolesAndLogin({apiHelpers, page});
-		const textFieldContent = `${objectDefinition.name} entry by ${user.alternateName}`;
-		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-			{
-				externalReferenceCode: '',
-				name: 'test',
-				textField: textFieldContent,
-			},
-			`${normalizeRestPath(objectDefinition.restContextPath)}`
-		);
-
-		await globalMenuPage.goToApplications('Export');
-
-		const exportFilePath = await exportImportPage.export({
-			portletLabels: [`${objectDefinition.name} 1 Items`],
-		});
-
-		const applicationName = `${normalizeRestPath(objectDefinition.restContextPath)}`;
-		await apiHelpers.delete(
-			`${apiHelpers.baseUrl}${applicationName}/${objectEntry.id}`
-		);
-
-		await performUserSwitch(page, 'test');
-
-		await test.step('Import the file and check the imported entry authorship', async () => {
-			await companyExportImportPage.import({
-				filePath: exportFilePath,
-			});
-			await globalMenuPage.goToObjectDefinition(objectDefinition.name);
-
-			const row = page.locator('tr', {hasText: textFieldContent});
-			await expect(row).toContainText(
-				`${user.givenName} ${user.familyName}`
-			);
-		});
-	}
-);
-
-test(
 	'Can import custom object entries with original creator, but creator user does not exist in the current environment',
 	{tag: '@LPD-43217'},
 	async ({
