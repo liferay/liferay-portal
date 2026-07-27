@@ -265,3 +265,62 @@ test('User can add, edit, delete properties in category.', async ({
 		await expect(page.getByLabel('value')).toHaveCount(2);
 	});
 });
+
+test(
+	'User can edit the friendly URL of a category',
+	{tag: '@LPD-99566'},
+	async ({
+		apiHelpers,
+		assetCategoriesAdminPage,
+		assetCategoriesEditPage,
+		page,
+		site,
+	}) => {
+		const categoryName = 'category-1';
+		const vocabularyName = 'vocabulary-1';
+
+		await createCategories({
+			apiHelpers,
+			categoryNames: [{name: categoryName}],
+			siteId: site.id,
+			vocabularyName,
+		});
+
+		await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+		await assetCategoriesEditPage.goToFriendlyURLTab(categoryName);
+
+		// The site URL holds the vocabulary, the Commerce one does not
+
+		await expect(
+			page.getByText(`/v/${vocabularyName}/${categoryName}`)
+		).toBeVisible();
+		await expect(page.getByText(`/g/${categoryName}`)).toBeVisible();
+
+		// Both URLs follow the field as it is edited, already normalized
+
+		await assetCategoriesEditPage.fillFriendlyURL('Winter Sports');
+
+		await expect(
+			page.getByText(`/v/${vocabularyName}/winter-sports`)
+		).toBeVisible();
+		await expect(page.getByText('/g/winter-sports')).toBeVisible();
+
+		// Switching language repoints the URLs at that language's friendly URL
+
+		await assetCategoriesEditPage.selectLanguage('es-ES');
+
+		await expect(assetCategoriesEditPage.friendlyURLInput).toBeEmpty();
+		await expect(page.locator('[id$=siteURLTitle]')).toBeEmpty();
+
+		await assetCategoriesEditPage.selectLanguage('en-US');
+
+		// The friendly URL is normalized and kept
+
+		await assetCategoriesEditPage.saveButton.click();
+
+		await expect(assetCategoriesEditPage.friendlyURLInput).toHaveValue(
+			'winter-sports'
+		);
+	}
+);

@@ -5,6 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {AssetCategoriesAdminPage} from './AssetCategoriesAdminPage';
 
@@ -15,6 +16,8 @@ export class AssetCategoriesEditPage {
 	readonly deleteButton: Locator;
 	readonly descriptionField: Locator;
 	readonly externalReferenceCodeInput: Locator;
+	readonly friendlyURLInput: Locator;
+	readonly friendlyURLTab: Locator;
 	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly propertiesTab: Locator;
@@ -30,6 +33,10 @@ export class AssetCategoriesEditPage {
 		this.externalReferenceCodeInput = page.getByPlaceholder(
 			'External Reference Code'
 		);
+		this.friendlyURLInput = page.getByRole('textbox', {
+			name: 'Friendly URL',
+		});
+		this.friendlyURLTab = page.getByRole('link', {name: 'Friendly URL'});
 		this.nameInput = page.getByPlaceholder('Name');
 		this.page = page;
 		this.propertiesTab = page.getByRole('link', {name: 'properties'});
@@ -72,6 +79,10 @@ export class AssetCategoriesEditPage {
 		await this.externalReferenceCodeInput.fill(externalReferenceCode);
 	}
 
+	async fillFriendlyURL(friendlyURL: string) {
+		await this.friendlyURLInput.fill(friendlyURL);
+	}
+
 	async fillName(name: string) {
 		await this.descriptionField.waitFor();
 		await this.nameInput.fill(name);
@@ -79,6 +90,11 @@ export class AssetCategoriesEditPage {
 
 	async goto(title: string) {
 		await this.assetCategoriesAdminPage.gotoAction('Edit', title);
+	}
+
+	async goToFriendlyURLTab(title: string) {
+		await this.goto(title);
+		await this.friendlyURLTab.click();
 	}
 
 	async goToPropertiesTab(title: string) {
@@ -110,6 +126,14 @@ export class AssetCategoriesEditPage {
 			.click();
 
 		await waitForAlert(this.page);
+	}
+
+	async selectLanguage(languageId: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.locator('.palette-item', {hasText: languageId}),
+			trigger: this.page.locator('.input-localized-trigger'),
+		});
 	}
 
 	async save(successMessage?: string) {
