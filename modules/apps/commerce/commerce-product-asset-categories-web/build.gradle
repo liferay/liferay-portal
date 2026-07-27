@@ -22,6 +22,7 @@ dependencies {
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:item-selector:item-selector-taglib")
+	compileOnly project(":apps:layout:layout-display-page-api")
 	compileOnly project(":apps:layout:layout-item-selector-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")

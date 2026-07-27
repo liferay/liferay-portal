@@ -9,11 +9,15 @@
 
 <%
 AssetCategory category = (AssetCategory)request.getAttribute("assetCategory");
-String assetCategoryURLSeparator = (String)request.getAttribute("assetCategoryURLSeparator");
+String commerceFriendlyURLBase = (String)request.getAttribute("commerceFriendlyURLBase");
+String commerceFriendlyURLSeparator = (String)request.getAttribute("commerceFriendlyURLSeparator");
+String siteFriendlyURLBase = (String)request.getAttribute("siteFriendlyURLBase");
+String siteFriendlyURLSeparator = (String)request.getAttribute("siteFriendlyURLSeparator");
 String titleMapAsXML = (String)request.getAttribute("titleMapAsXML");
+String urlTitle = (String)request.getAttribute("urlTitle");
 long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
 
-String friendlyURLBase = themeDisplay.getPortalURL() + assetCategoryURLSeparator;
+String friendlyURLHelpMessage = LanguageUtil.format(request, "this-text-is-shared-between-sites-and-commerce.-only-the-prefix-changes-x-for-sites-and-x-for-commerce", new String[] {HtmlUtil.escape(siteFriendlyURLSeparator), HtmlUtil.escape(commerceFriendlyURLSeparator)}, false);
 
 long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId");
 
@@ -49,11 +53,15 @@ renderResponse.setTitle(category.getTitle(locale));
 
 	<liferay-frontend:edit-form-body>
 		<liferay-frontend:fieldset>
-			<label for="<portlet:namespace />urlTitleMapAsXML"><liferay-ui:message key="friendly-url" /><liferay-ui:icon-help message='<%= LanguageUtil.format(request, "for-example-x", "<em>news</em>", false) %>' /></label>
+			<label for="<portlet:namespace />urlTitleMapAsXML"><liferay-ui:message key="friendly-url" /><span aria-label="<%= friendlyURLHelpMessage %>" class="c-ml-1 lfr-portal-tooltip" tabindex="0" title="<%= friendlyURLHelpMessage %>"><clay:icon symbol="question-circle-full" /></span></label>
+
+			<div class="c-mb-2 text-3 text-secondary">
+				<div><%= HtmlUtil.escape(siteFriendlyURLBase) %><strong class="text-dark" id="<portlet:namespace />siteURLTitle"><%= HtmlUtil.escape(urlTitle) %></strong></div>
+				<div><%= HtmlUtil.escape(commerceFriendlyURLBase) %><strong class="text-dark" id="<portlet:namespace />commerceURLTitle"><%= HtmlUtil.escape(urlTitle) %></strong></div>
+			</div>
 
 			<liferay-ui:input-localized
 				defaultLanguageId="<%= LocaleUtil.toLanguageId(themeDisplay.getSiteDefaultLocale()) %>"
-				inputAddon="<%= StringUtil.shorten(friendlyURLBase.toString(), 40) %>"
 				name="urlTitleMapAsXML"
 				xml="<%= HttpComponentsUtil.decodeURL(titleMapAsXML) %>"
 			/>
@@ -66,3 +74,12 @@ renderResponse.setTitle(category.getTitle(locale));
 		/>
 	</liferay-frontend:edit-form-footer>
 </liferay-frontend:edit-form>
+
+<liferay-frontend:component
+	context='<%=
+		HashMapBuilder.<String, Object>put(
+			"portletNamespace", liferayPortletResponse.getNamespace()
+		).build()
+	%>'
+	module="{CategoryCPFriendlyURL} from commerce-product-asset-categories-web"
+/>
