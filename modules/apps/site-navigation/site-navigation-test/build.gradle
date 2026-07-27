@@ -19,6 +19,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
 	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-api")
 	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-test-util")
+	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:object:object-api")
