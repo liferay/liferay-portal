@@ -6,4 +6,5 @@ Export-Package:\
 	com.liferay.commerce.test.util.context,\
 	com.liferay.commerce.test.util.order.status,\
 	com.liferay.commerce.test.util.price.list,\
-	com.liferay.commerce.test.util.pricing
+	com.liferay.commerce.test.util.pricing,\
+	com.liferay.commerce.test.util.validator

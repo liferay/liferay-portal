@@ -800,6 +800,18 @@ public class CommerceOrderEditDisplayContext {
 			return false;
 		}
 
+		ThemeDisplay themeDisplay =
+			_commerceOrderRequestHelper.getThemeDisplay();
+
+		if (!_commerceOrderPortletResourcePermission.contains(
+				themeDisplay.getPermissionChecker(),
+				accountEntry.getAccountEntryGroupId(),
+				CommerceOrderActionKeys.
+					MANAGE_ACCOUNTS_SCOPED_COMMERCE_ORDERS)) {
+
+			return false;
+		}
+
 		Map<String, AccountEntryValidatorResult>
 			accountEntryValidatorResultsMap =
 				_getAccountEntryValidatorResultsMap(accountEntry);

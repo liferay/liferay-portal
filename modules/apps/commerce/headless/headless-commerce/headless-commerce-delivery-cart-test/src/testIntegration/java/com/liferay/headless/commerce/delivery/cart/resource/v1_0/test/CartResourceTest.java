@@ -6,13 +6,11 @@
 package com.liferay.headless.commerce.delivery.cart.resource.v1_0.test;
 
 import com.liferay.account.configuration.AccountEntryAddressSubtypeConfiguration;
-import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.validator.AccountEntryValidator;
-import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceAccountEntryValidationConstants;
@@ -30,6 +28,7 @@ import com.liferay.commerce.order.rule.service.COREntryRelLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.validator.TestAccountEntryValidator;
 import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.Address;
 import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.Cart;
 import com.liferay.headless.commerce.delivery.cart.client.dto.v1_0.CartItem;
@@ -46,7 +45,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.encryptor.Encryptor;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.User;
@@ -418,72 +416,6 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		super.testPutCartByExternalReferenceCode();
 
 		_testPutCartByExternalReferenceCodeWithMoreExternalReferenceCodes();
-	}
-
-	public class TestAccountEntryValidator implements AccountEntryValidator {
-
-		public TestAccountEntryValidator(
-			String classPK, String resultMessage, String resultStatus) {
-
-			_classPK = classPK;
-			_resultMessage = resultMessage;
-			_resultStatus = resultStatus;
-		}
-
-		@Override
-		public AccountEntryValidatorConfiguration
-			getAccountEntryValidatorConfiguration(long companyId) {
-
-			return new AccountEntryValidatorConfiguration() {
-
-				@Override
-				public int checkInterval() {
-					return 0;
-				}
-
-				@Override
-				public boolean enabled() {
-					return true;
-				}
-
-			};
-		}
-
-		@Override
-		public String getClassPK(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			return _classPK;
-		}
-
-		public JSONObject getJSONObject() {
-			return _jsonObject;
-		}
-
-		public void setResultStatus(String resultStatus) {
-			_resultStatus = resultStatus;
-		}
-
-		@Override
-		public AccountEntryValidatorResult validate(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			_jsonObject = jsonObject;
-
-			return AccountEntryValidatorResult.builder(
-				_classPK
-			).resultMessage(
-				_resultMessage
-			).resultStatus(
-				_resultStatus
-			).build();
-		}
-
-		private final String _classPK;
-		private volatile JSONObject _jsonObject;
-		private final String _resultMessage;
-		private String _resultStatus;
-
 	}
 
 	@Override

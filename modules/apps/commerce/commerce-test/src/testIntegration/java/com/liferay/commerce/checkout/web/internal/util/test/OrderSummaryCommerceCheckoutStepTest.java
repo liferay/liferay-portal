@@ -5,12 +5,10 @@
 
 package com.liferay.commerce.checkout.web.internal.util.test;
 
-import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
 import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
-import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceAccountEntryValidationConstants;
@@ -22,6 +20,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.validator.TestAccountEntryValidator;
 import com.liferay.commerce.util.CommerceCheckoutStep;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -227,72 +226,6 @@ public class OrderSummaryCommerceCheckoutStepTest {
 		Assert.assertTrue(
 			_commerceCheckoutStep.showControls(
 				_getMockHttpServletRequest(), null));
-	}
-
-	public class TestAccountEntryValidator implements AccountEntryValidator {
-
-		public TestAccountEntryValidator(
-			String classPK, String resultMessage, String resultStatus) {
-
-			_classPK = classPK;
-			_resultMessage = resultMessage;
-			_resultStatus = resultStatus;
-		}
-
-		@Override
-		public AccountEntryValidatorConfiguration
-			getAccountEntryValidatorConfiguration(long companyId) {
-
-			return new AccountEntryValidatorConfiguration() {
-
-				@Override
-				public int checkInterval() {
-					return 0;
-				}
-
-				@Override
-				public boolean enabled() {
-					return true;
-				}
-
-			};
-		}
-
-		@Override
-		public String getClassPK(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			return _classPK;
-		}
-
-		public JSONObject getJSONObject() {
-			return _jsonObject;
-		}
-
-		public void setResultStatus(String resultStatus) {
-			_resultStatus = resultStatus;
-		}
-
-		@Override
-		public AccountEntryValidatorResult validate(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			_jsonObject = jsonObject;
-
-			return AccountEntryValidatorResult.builder(
-				_classPK
-			).resultMessage(
-				_resultMessage
-			).resultStatus(
-				_resultStatus
-			).build();
-		}
-
-		private final String _classPK;
-		private volatile JSONObject _jsonObject;
-		private final String _resultMessage;
-		private String _resultStatus;
-
 	}
 
 	private HttpServletRequest _getMockHttpServletRequest() {

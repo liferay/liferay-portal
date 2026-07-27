@@ -5,12 +5,10 @@
 
 package com.liferay.commerce.order.web.internal.portlet.action.test;
 
-import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
-import com.liferay.account.validator.AccountEntryValidatorResult;
 import com.liferay.account.validator.vies.configuration.VIESAccountEntryValidatorConfiguration;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
@@ -21,6 +19,7 @@ import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.test.util.AccountEntryValidatorResultTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.validator.TestAccountEntryValidator;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.filter.factory.FilterFactory;
@@ -32,7 +31,6 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -306,59 +304,5 @@ public class AddCommerceOrderAccountValidationMVCActionCommandTest {
 
 	private ServiceRegistration<AccountEntryValidator> _serviceRegistration;
 	private User _user;
-
-	private static class TestAccountEntryValidator
-		implements AccountEntryValidator {
-
-		@Override
-		public AccountEntryValidatorConfiguration
-				getAccountEntryValidatorConfiguration(long companyId)
-			throws ConfigurationException {
-
-			return new AccountEntryValidatorConfiguration() {
-
-				@Override
-				public int checkInterval() {
-					return 0;
-				}
-
-				@Override
-				public boolean enabled() {
-					return true;
-				}
-
-			};
-		}
-
-		@Override
-		public String getClassPK(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			_jsonObject = jsonObject;
-
-			return _key;
-		}
-
-		public JSONObject getJSONObject() {
-			return _jsonObject;
-		}
-
-		@Override
-		public AccountEntryValidatorResult validate(
-			AccountEntry accountEntry, JSONObject jsonObject) {
-
-			_jsonObject = jsonObject;
-
-			AccountEntryValidatorResult.Builder
-				accountEntryValidatorResultBuilder =
-					AccountEntryValidatorResult.builder(_key);
-
-			return accountEntryValidatorResultBuilder.build();
-		}
-
-		private JSONObject _jsonObject;
-		private final String _key = RandomTestUtil.randomString();
-
-	}
 
 }
