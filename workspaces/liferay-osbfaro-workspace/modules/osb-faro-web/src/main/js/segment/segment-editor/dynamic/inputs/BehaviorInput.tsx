@@ -446,6 +446,13 @@ export class BehaviorInput extends React.Component<
 			Map({propertyName: ATTRIBUTE_PROPERTY_PREFIX})
 		).toJS();
 
+		// Event attributes are read per event, so there is nothing to filter on
+		// until an asset type is chosen. Keep the button in place (disabled, like
+		// its "Add Assets" sibling) instead of swapping in a section that renders
+		// nothing.
+
+		const eventId = this.getEventId();
+
 		return (
 			<div className="criteria-statement">
 				<Form.Group autoFit className="page-asset-criteria">
@@ -495,10 +502,10 @@ export class BehaviorInput extends React.Component<
 					</Form.Group>
 				)}
 
-				{this.state.showAttributeFilter ? (
+				{this.state.showAttributeFilter && eventId ? (
 					<AttributeFilterSection
 						conjunctionCriterion={attributeConjunctionCriterion}
-						eventId={this.getEventId()}
+						eventId={eventId}
 						onChange={this.handleAttributeConjunctionChange}
 						onClear={this.handleClearAttributeFilter}
 						touched={touched}
@@ -508,6 +515,7 @@ export class BehaviorInput extends React.Component<
 					<Form.Group autoFit>
 						<ClayButton
 							className="button-root"
+							disabled={!eventId}
 							displayType="secondary"
 							onClick={this.handleShowAttributeFilterClick}
 						>

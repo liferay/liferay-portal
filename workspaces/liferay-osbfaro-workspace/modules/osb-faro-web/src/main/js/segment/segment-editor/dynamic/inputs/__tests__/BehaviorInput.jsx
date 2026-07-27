@@ -258,6 +258,33 @@ describe('BehaviorInput', () => {
 	});
 
 	describe('attribute filter', () => {
+		const valueWithoutAssetType = createCustomValueMap([
+			{key: 'criterionGroup', value: []},
+			{key: 'operator', value: RelationalOperators.GE},
+			{key: 'value', value: ''}
+		]);
+
+		it('should disable the "Add Event Attribute" button until an asset type is selected', () => {
+			const {getByText} = render(
+				<DefaultComponent value={valueWithoutAssetType} />
+			);
+
+			expect(
+				getByText('Add Event Attribute').closest('button').disabled
+			).toBe(true);
+		});
+
+		it('should keep the "Add Event Attribute" button when there is no event to read attributes from', () => {
+			const {getByText, queryByTestId} = render(
+				<DefaultComponent value={valueWithoutAssetType} />
+			);
+
+			fireEvent.click(getByText('Add Event Attribute'));
+
+			expect(queryByTestId('attribute-filter-section')).toBeNull();
+			expect(getByText('Add Event Attribute')).toBeTruthy();
+		});
+
 		it('should show the "Add Event Attribute" button when there is no attribute criterion', () => {
 			const {getByText, queryByTestId} = render(<DefaultComponent />);
 
