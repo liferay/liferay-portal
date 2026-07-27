@@ -53,11 +53,11 @@ public class FIPSModeValidatorTest {
 				FIPSModeValidator.class, "_getPlaintextSecretProperties",
 				new Class<?>[] {Properties.class}, properties);
 
+			Assert.assertTrue(
+				plaintextSecretProperties.contains(obfuscatedKey1));
 			Assert.assertEquals(
 				plaintextSecretProperties.toString(), 1,
 				plaintextSecretProperties.size());
-			Assert.assertTrue(
-				plaintextSecretProperties.contains(obfuscatedKey1));
 		}
 	}
 
