@@ -4,7 +4,7 @@
  */
 
 import classNames from 'classnames';
-import React, {useEffect, useRef, useState} from 'react';
+import React from 'react';
 
 import ContentGapCellActions from './ContentGapCellActions';
 import {TaxonomyTerm} from './types';
@@ -29,19 +29,16 @@ export default function ContentGapCell({
 	selected,
 	totalCount,
 }: ContentGapCellProps) {
-	const [active, setActive] = useState(false);
-
-	const cellRef = useRef<HTMLDivElement>(null);
-
 	const gap = totalCount === 0;
 
 	const tier = gap ? 0 : getCellTier(totalCount, maxRealCount);
 
-	const clickable =
-		Boolean(onFilter) && !isSentinel(persona) && !isSentinel(funnelStage);
+	const clickable = Boolean(onFilter);
+
+	const generatable =
+		Boolean(onGenerate) && !isSentinel(persona) && !isSentinel(funnelStage);
 
 	const className = classNames('lfr-cmp__content-gap-cell', {
-		'lfr-cmp__content-gap-cell--active': active,
 		'lfr-cmp__content-gap-cell--clickable': clickable,
 		'lfr-cmp__content-gap-cell--gap': gap,
 		'lfr-cmp__content-gap-cell--selected': selected,
@@ -54,35 +51,16 @@ export default function ContentGapCell({
 		<span className="lfr-cmp__content-gap-cell-count">{totalCount}</span>
 	);
 
-	useEffect(() => {
-		if (!active) {
-			return;
-		}
-
-		function handleDocumentClick(event: MouseEvent) {
-			if (!cellRef.current?.contains(event.target as Node)) {
-				setActive(false);
-			}
-		}
-
-		document.addEventListener('click', handleDocumentClick);
-
-		return () => document.removeEventListener('click', handleDocumentClick);
-	}, [active]);
+	function handleFilter() {
+		onFilter?.(persona, funnelStage);
+	}
 
 	function handleKeyDown(event: React.KeyboardEvent) {
 		if (event.key === 'Enter' || event.key === ' ') {
 			event.preventDefault();
 
-			toggleActive();
+			handleFilter();
 		}
-		else if (event.key === 'Escape') {
-			setActive(false);
-		}
-	}
-
-	function toggleActive() {
-		setActive((wasActive) => !wasActive);
 	}
 
 	if (!clickable) {
@@ -95,32 +73,23 @@ export default function ContentGapCell({
 
 	return (
 		<div
-			aria-expanded={active}
-			aria-haspopup="true"
 			aria-label={ariaLabel}
 			className={className}
-			onClick={toggleActive}
+			onClick={handleFilter}
 			onKeyDown={handleKeyDown}
-			ref={cellRef}
 			role="gridcell"
 			tabIndex={0}
 		>
 			{cellCount}
 
-			{active ? (
-				<ContentGapCellActions
-					onFilter={() => {
-						onFilter?.(persona, funnelStage);
-
-						setActive(false);
-					}}
-					onGenerate={() => {
-						onGenerate?.(persona, funnelStage);
-
-						setActive(false);
-					}}
-				/>
-			) : null}
+			<ContentGapCellActions
+				onFilter={handleFilter}
+				onGenerate={
+					generatable
+						? () => onGenerate?.(persona, funnelStage)
+						: undefined
+				}
+			/>
 		</div>
 	);
 }

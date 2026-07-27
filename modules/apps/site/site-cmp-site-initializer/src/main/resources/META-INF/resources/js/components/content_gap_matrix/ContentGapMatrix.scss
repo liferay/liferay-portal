@@ -24,13 +24,16 @@ $content-gap-cell-tiers: (
 	&--clickable {
 		cursor: pointer;
 
-		&:focus,
+		&:focus-within,
 		&:hover {
 			border-color: $primary;
+
+			.lfr-cmp__content-gap-cell-actions {
+				visibility: visible;
+			}
 		}
 	}
 
-	&--active,
 	&--selected {
 		border-color: $primary;
 		box-shadow: 0 0 0 0.125rem rgba($primary, 0.25);
@@ -64,6 +67,7 @@ $content-gap-cell-tiers: (
 	left: 0;
 	position: absolute;
 	right: 0;
+	visibility: hidden;
 	white-space: nowrap;
 	z-index: 2;
 }
