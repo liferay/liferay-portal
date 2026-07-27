@@ -6,7 +6,6 @@
 package com.liferay.object.search.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
@@ -22,8 +21,10 @@ import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.test.util.ObjectFieldTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.model.User;
@@ -39,10 +40,8 @@ import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.TempFileEntryUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
@@ -51,6 +50,7 @@ import com.liferay.portal.search.test.util.FieldValuesAssert;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -85,128 +85,110 @@ public class ObjectEntryIndexerReindexTest {
 	@Test
 	public void testReindex() throws Exception {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.object.internal.search.spi.model.index." +
-					"contributor.ObjectEntryModelDocumentContributor",
+				_CLASS_NAME_OBJECT_ENTRY_MODEL_DOCUMENT_CONTRIBUTOR,
 				LoggerTestUtil.WARN)) {
 
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.addCustomObjectDefinition(
-					null, TestPropsValues.getUserId(), 0, null, true, false,
-					true, false, true, false, false, false, false, null,
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString()),
-					ObjectDefinitionTestUtil.getRandomName(), null, null,
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString()),
-					true, ObjectDefinitionConstants.SCOPE_COMPANY,
-					ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-					Collections.emptyList(),
-					Arrays.asList(
-						new DecimalObjectFieldBuilder(
-						).indexed(
-							true
-						).indexedAsKeyword(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"decimalLocalized"
-						).build(),
-						new IntegerObjectFieldBuilder(
-						).indexed(
-							true
-						).indexedAsKeyword(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"integerLocalized"
-						).build(),
-						new LongIntegerObjectFieldBuilder(
-						).indexed(
-							true
-						).indexedAsKeyword(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"longIntegerLocalized"
-						).build(),
-						new LongTextObjectFieldBuilder(
-						).indexed(
-							true
-						).indexedAsKeyword(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"longTextLocalized"
-						).build(),
-						new PrecisionDecimalObjectFieldBuilder(
-						).indexed(
-							true
-						).indexedAsKeyword(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"precisionDecimalLocalized"
-						).build(),
-						new RichTextObjectFieldBuilder(
-						).indexed(
-							true
-						).indexedAsKeyword(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"richTextLocalized"
-						).build(),
-						new TextObjectFieldBuilder(
-						).indexed(
-							true
-						).indexedAsKeyword(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"textLocalized"
-						).objectFieldSettings(
-							Collections.singletonList(
-								new ObjectFieldSettingBuilder(
-								).name(
-									ObjectFieldSettingConstants.
-										NAME_UNIQUE_VALUES
-								).value(
-									Boolean.TRUE.toString()
-								).build())
-						).build()),
-					Collections.emptyList(), new ServiceContext());
-
-			_objectDefinitionLocalService.publishCustomObjectDefinition(
-				TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId());
+			ObjectDefinition objectDefinition = _addObjectDefinition(
+				Arrays.asList(
+					new DecimalObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"decimalLocalized"
+					).build(),
+					new IntegerObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"integerLocalized"
+					).build(),
+					new LongIntegerObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"longIntegerLocalized"
+					).build(),
+					new LongTextObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"longTextLocalized"
+					).build(),
+					new PrecisionDecimalObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"precisionDecimalLocalized"
+					).build(),
+					new RichTextObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"richTextLocalized"
+					).build(),
+					new TextObjectFieldBuilder(
+					).indexed(
+						true
+					).indexedAsKeyword(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"textLocalized"
+					).objectFieldSettings(
+						Collections.singletonList(
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.NAME_UNIQUE_VALUES
+							).value(
+								Boolean.TRUE.toString()
+							).build())
+					).build()));
 
 			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 				0, TestPropsValues.getUserId(),
@@ -319,74 +301,183 @@ public class ObjectEntryIndexerReindexTest {
 		}
 	}
 
+	@FeatureFlag("LPD-17564")
+	@Test
+	public void testReindexIndexesOnlyHeadObjectEntry() throws Exception {
+		ObjectDefinition objectDefinition = _addObjectDefinition(
+			true, true,
+			Collections.singletonList(
+				new TextObjectFieldBuilder(
+				).indexed(
+					true
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).name(
+					"textObjectFieldName"
+				).build()));
+
+		String originalName = PrincipalThreadLocal.getName();
+
+		_user = TestPropsValues.getUser();
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext();
+
+			serviceContext.setWorkflowAction(
+				WorkflowConstants.ACTION_SAVE_DRAFT);
+
+			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"textObjectFieldName", RandomTestUtil.randomString()
+				).build(),
+				serviceContext);
+
+			serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+
+			objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"textObjectFieldName", "approvedValue"
+				).build(),
+				serviceContext);
+
+			serviceContext.setWorkflowAction(
+				WorkflowConstants.ACTION_SAVE_DRAFT);
+
+			objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(),
+				HashMapBuilder.<String, Serializable>put(
+					"textObjectFieldName", "draftValue"
+				).build(),
+				serviceContext);
+
+			ObjectEntry latestApprovedObjectEntry =
+				_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
+					objectEntry.getObjectEntryId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_APPROVED,
+				latestApprovedObjectEntry.getStatus());
+
+			PrincipalThreadLocal.setName(null);
+
+			Indexer<ObjectEntry> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(
+					objectEntry.getModelClassName());
+
+			try (SafeCloseable safeCloseable =
+					ReindexCacheThreadLocal.openReindexMode()) {
+
+				indexer.reindexCompany(_user.getCompanyId());
+			}
+
+			SearchResponse searchResponse = search(
+				objectDefinition.getClassName(), "draftValue",
+				WorkflowConstants.STATUS_ANY);
+
+			Assert.assertEquals(
+				searchResponse.getRequestString() + "->" +
+					searchResponse.getDocuments(),
+				1, searchResponse.getCount());
+
+			searchResponse = search(
+				objectDefinition.getClassName(), "approvedValue",
+				WorkflowConstants.STATUS_ANY);
+
+			Assert.assertEquals(
+				searchResponse.getRequestString() + "->" +
+					searchResponse.getDocuments(),
+				0, searchResponse.getCount());
+
+			_objectEntryLocalService.moveObjectEntryToTrash(
+				TestPropsValues.getUserId(), objectEntry,
+				ServiceContextTestUtil.getServiceContext());
+
+			searchResponse = search(
+				objectDefinition.getClassName(), "draftValue",
+				WorkflowConstants.STATUS_IN_TRASH);
+
+			Assert.assertEquals(
+				searchResponse.getRequestString() + "->" +
+					searchResponse.getDocuments(),
+				1, searchResponse.getCount());
+
+			searchResponse = search(
+				objectDefinition.getClassName(), "approvedValue",
+				WorkflowConstants.STATUS_IN_TRASH);
+
+			Assert.assertEquals(
+				searchResponse.getRequestString() + "->" +
+					searchResponse.getDocuments(),
+				0, searchResponse.getCount());
+		}
+		finally {
+			PrincipalThreadLocal.setName(originalName);
+
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
+	}
+
 	@Test
 	public void testReindexWithLocalizedAttachmentObjectField()
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.object.internal.search.spi.model.index." +
-					"contributor.ObjectEntryModelDocumentContributor",
+				_CLASS_NAME_OBJECT_ENTRY_MODEL_DOCUMENT_CONTRIBUTOR,
 				LoggerTestUtil.WARN)) {
 
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.addCustomObjectDefinition(
-					null, TestPropsValues.getUserId(), 0, null, true, false,
-					true, false, true, false, false, false, false, null,
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString()),
-					ObjectDefinitionTestUtil.getRandomName(), null, null,
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString()),
-					true, ObjectDefinitionConstants.SCOPE_COMPANY,
-					ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
-					Collections.emptyList(),
-					Collections.singletonList(
-						new AttachmentObjectFieldBuilder(
-						).indexed(
-							true
-						).labelMap(
-							LocalizedMapUtil.getLocalizedMap(
-								RandomTestUtil.randomString())
-						).localized(
-							true
-						).name(
-							"attachmentLocalized"
-						).objectFieldSettings(
-							Arrays.asList(
-								new ObjectFieldSettingBuilder(
-								).name(
-									ObjectFieldSettingConstants.
-										NAME_ACCEPTED_FILE_EXTENSIONS
-								).value(
-									"txt"
-								).build(),
-								new ObjectFieldSettingBuilder(
-								).name(
-									ObjectFieldSettingConstants.NAME_FILE_SOURCE
-								).value(
-									ObjectFieldSettingConstants.
-										VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
-								).build(),
-								new ObjectFieldSettingBuilder(
-								).name(
-									ObjectFieldSettingConstants.
-										NAME_MAX_FILE_SIZE
-								).value(
-									"100"
-								).build())
-						).build()),
-					Collections.emptyList(), new ServiceContext());
-
-			_objectDefinitionLocalService.publishCustomObjectDefinition(
-				TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId());
+			ObjectDefinition objectDefinition = _addObjectDefinition(
+				Collections.singletonList(
+					new AttachmentObjectFieldBuilder(
+					).indexed(
+						true
+					).labelMap(
+						LocalizedMapUtil.getLocalizedMap(
+							RandomTestUtil.randomString())
+					).localized(
+						true
+					).name(
+						"attachmentLocalized"
+					).objectFieldSettings(
+						Arrays.asList(
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.
+									NAME_ACCEPTED_FILE_EXTENSIONS
+							).value(
+								"txt"
+							).build(),
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.NAME_FILE_SOURCE
+							).value(
+								ObjectFieldSettingConstants.
+									VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
+							).build(),
+							new ObjectFieldSettingBuilder(
+							).name(
+								ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+							).value(
+								"100"
+							).build())
+					).build()));
 
 			String fileName = RandomTestUtil.randomString() + ".txt";
 
-			FileEntry fileEntry1 = _addTempFileEntry(
+			FileEntry fileEntry1 = ObjectFieldTestUtil.addTempFileEntry(
 				fileName, objectDefinition);
 
-			FileEntry fileEntry2 = _addTempFileEntry(
+			FileEntry fileEntry2 = ObjectFieldTestUtil.addTempFileEntry(
 				RandomTestUtil.randomString() + ".txt", objectDefinition);
 
 			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
@@ -472,23 +563,50 @@ public class ObjectEntryIndexerReindexTest {
 			).build());
 	}
 
+	protected SearchResponse search(
+		String entryClassName, String searchTerm, int status) {
+
+		return searcher.search(
+			searchRequestBuilderFactory.builder(
+			).companyId(
+				_user.getCompanyId()
+			).entryClassNames(
+				entryClassName
+			).queryString(
+				searchTerm
+			).withSearchContext(
+				searchContext -> searchContext.setAttribute(
+					Field.STATUS, status)
+			).build());
+	}
+
 	@Inject
 	protected Searcher searcher;
 
 	@Inject
 	protected SearchRequestBuilderFactory searchRequestBuilderFactory;
 
-	private FileEntry _addTempFileEntry(
-			String fileName, ObjectDefinition objectDefinition)
+	private ObjectDefinition _addObjectDefinition(
+			boolean enableObjectEntryDraft, boolean enableObjectEntryVersioning,
+			List<ObjectField> objectFields)
 		throws Exception {
 
-		return TempFileEntryUtil.addTempFileEntry(
-			TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
-			objectDefinition.getPortletId(),
-			TempFileEntryUtil.getTempFileName(fileName),
-			FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
-			ContentTypes.TEXT_PLAIN);
+		return ObjectDefinitionTestUtil.publishObjectDefinition(
+			enableObjectEntryDraft, false, enableObjectEntryVersioning,
+			objectFields, ObjectDefinitionConstants.SCOPE_COMPANY);
 	}
+
+	private ObjectDefinition _addObjectDefinition(
+			List<ObjectField> objectFields)
+		throws Exception {
+
+		return _addObjectDefinition(false, false, objectFields);
+	}
+
+	private static final String
+		_CLASS_NAME_OBJECT_ENTRY_MODEL_DOCUMENT_CONTRIBUTOR =
+			"com.liferay.object.internal.search.spi.model.index.contributor." +
+				"ObjectEntryModelDocumentContributor";
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
