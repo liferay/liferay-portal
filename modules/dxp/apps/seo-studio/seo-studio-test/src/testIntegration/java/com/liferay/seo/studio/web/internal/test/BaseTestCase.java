@@ -17,6 +17,7 @@ import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -26,9 +27,11 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -39,9 +42,13 @@ import com.liferay.site.initializer.SiteInitializerRegistry;
 
 import java.io.Serializable;
 
+import java.security.Key;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.crypto.KeyGenerator;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -70,6 +77,23 @@ public abstract class BaseTestCase {
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		_objectEncryptionAlgorithmSafeCloseable =
+			PropsValuesTestUtil.swapWithSafeCloseable(
+				"OBJECT_ENCRYPTION_ALGORITHM", "AES");
+		_objectEncryptionEnabledSafeCloseable =
+			PropsValuesTestUtil.swapWithSafeCloseable(
+				"OBJECT_ENCRYPTION_ENABLED", true);
+
+		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
+
+		keyGenerator.init(128);
+
+		Key key = keyGenerator.generateKey();
+
+		_objectEncryptionKeySafeCloseable =
+			PropsValuesTestUtil.swapWithSafeCloseable(
+				"OBJECT_ENCRYPTION_KEY", Base64.encode(key.getEncoded()));
 
 		_group = GroupTestUtil.addGroup();
 
@@ -100,6 +124,10 @@ public abstract class BaseTestCase {
 		_updateSEOStudioScanObjectActions(true);
 
 		ServiceContextThreadLocal.popServiceContext();
+
+		_objectEncryptionAlgorithmSafeCloseable.close();
+		_objectEncryptionEnabledSafeCloseable.close();
+		_objectEncryptionKeySafeCloseable.close();
 
 		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
 
@@ -267,6 +295,9 @@ public abstract class BaseTestCase {
 	@Inject
 	private static ObjectDefinitionLocalService _objectDefinitionLocalService;
 
+	private static SafeCloseable _objectEncryptionAlgorithmSafeCloseable;
+	private static SafeCloseable _objectEncryptionEnabledSafeCloseable;
+	private static SafeCloseable _objectEncryptionKeySafeCloseable;
 	private static String _originalName;
 	private static PermissionChecker _originalPermissionChecker;
 	private static ObjectDefinition _seoStudioInstanceObjectDefinition;
