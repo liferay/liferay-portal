@@ -22,7 +22,9 @@ variable "machine_type" {
 variable "observability_config" {
 	default={}
 	type=object({
+		annotations_allowed=optional(string)
 		enabled=optional(bool, false)
+		labels_allowed=optional(string)
 	})
 }
 variable "pod_cidr" {
