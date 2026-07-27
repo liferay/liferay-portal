@@ -6,7 +6,7 @@ set -o pipefail
 
 function main {
 	local deploy_file="${LIFERAY_LICENSE_DEPLOY_FILE:-/opt/liferay/deploy/license.xml}"
-	local interval="${LIFERAY_LICENSE_SYNC_INTERVAL:-60}"
+	local interval="${LIFERAY_LICENSE_SYNC_INTERVAL:-600}"
 	local marker_file="${LIFERAY_LICENSE_MARKER_FILE:-/opt/liferay/.liferay-license-sync.sha}"
 	local secret_file="${LIFERAY_LICENSE_SECRET_FILE:-/secret/license.xml}"
 
