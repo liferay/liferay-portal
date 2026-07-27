@@ -96,13 +96,17 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -845,6 +849,90 @@ public class BatchEnginePortletDataHandlerTest {
 			_objectEntryLocalService.getObjectEntriesCount(
 				objectDefinition2.getObjectDefinitionId()));
 	}
+
+	@Test
+	@TestInfo("LPD-45733")
+	public void testExportImportCompanyObjectEntriesWithPermissions()
+		throws Exception {
+
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		ObjectEntry objectEntry = _addTextObjectEntry(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, TestPropsValues.getUserId(),
+			objectDefinition);
+
+		long guestRoleId = _getGuestRoleId();
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(objectEntry.getObjectEntryId()), guestRoleId,
+			new String[] {ActionKeys.VIEW});
+
+		// Import with permissions
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withObjectEntries(
+			objectDefinition
+		).withPermissions(
+		).executeExport();
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).withPermissions(
+		).executeImport();
+
+		ObjectEntry importedObjectEntry =
+			_objectEntryLocalService.getObjectEntry(
+				objectEntry.getExternalReferenceCode(),
+				objectEntry.getGroupId(),
+				objectDefinition.getObjectDefinitionId());
+
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(importedObjectEntry.getObjectEntryId()),
+				guestRoleId, ActionKeys.VIEW));
+
+		// Import without permissions
+
+		_objectEntryLocalService.deleteObjectEntry(importedObjectEntry);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).executeImport();
+
+		importedObjectEntry = _objectEntryLocalService.getObjectEntry(
+			objectEntry.getExternalReferenceCode(), objectEntry.getGroupId(),
+			objectDefinition.getObjectDefinitionId());
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(importedObjectEntry.getObjectEntryId()),
+				guestRoleId, ActionKeys.VIEW));
+	}
+
 
 	@Test
 	@TestInfo("LPD-61997")
@@ -3187,6 +3275,13 @@ public class BatchEnginePortletDataHandlerTest {
 		return friendlyURLEntry.getUrlTitle();
 	}
 
+	private long _getGuestRoleId() throws Exception {
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+		return role.getRoleId();
+	}
+
 	private String _getImgTag(String previewURL) {
 		return String.format("<p><img alt=\"\" src=\"%s\" /></p>", previewURL);
 	}
@@ -4158,6 +4253,12 @@ public class BatchEnginePortletDataHandlerTest {
 	private PortletDataHandlerProvider _portletDataHandlerProvider;
 
 	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
 	private SAXReader _saxReader;
 
 	@Inject
@@ -4523,6 +4624,12 @@ public class BatchEnginePortletDataHandlerTest {
 			return this;
 		}
 
+		public ExportImportExecutor withPermissions() {
+			_permissions = true;
+
+			return this;
+		}
+
 		public ExportImportExecutor withPrivateLayouts() {
 			_privateLayouts = true;
 
@@ -4534,6 +4641,12 @@ public class BatchEnginePortletDataHandlerTest {
 				_deletions, _includeDocumentLibrary, _includeLayoutSetLayouts,
 				_includeListTypeDefinitions, _includeObjectDefinitions,
 				_objectDefinitions);
+
+			if (_permissions) {
+				parameterMap.put(
+					PortletDataHandlerKeys.PERMISSIONS,
+					new String[] {Boolean.TRUE.toString()});
+			}
 
 			if (_lastHours > 0) {
 				parameterMap.put(
@@ -4603,6 +4716,7 @@ public class BatchEnginePortletDataHandlerTest {
 		private int _lastHours;
 		private List<Long> _layoutIds = new ArrayList<>();
 		private List<ObjectDefinition> _objectDefinitions = new ArrayList<>();
+		private boolean _permissions;
 		private boolean _privateLayouts;
 		private Date _startDate;
 
