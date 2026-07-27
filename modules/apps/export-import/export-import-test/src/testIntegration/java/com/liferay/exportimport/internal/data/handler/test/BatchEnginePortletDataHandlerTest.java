@@ -1084,7 +1084,6 @@ public class BatchEnginePortletDataHandlerTest {
 				guestRoleId, ActionKeys.VIEW));
 	}
 
-
 	@Test
 	@TestInfo("LPD-61997")
 	public void testExportImportCompanyObjectEntriesWithRelatedObjectEntries()
@@ -4687,8 +4686,7 @@ public class BatchEnginePortletDataHandlerTest {
 							ExportImportConfigurationSettingsMapFactoryUtil.
 								buildImportLayoutSettingsMap(
 									TestPropsValues.getUser(), _groupId,
-									_privateLayouts, null,
-									_getParameterMap()));
+									_privateLayouts, null, _getParameterMap()));
 
 				if (_deletions) {
 					_exportImportLocalService.importLayoutsDataDeletions(
