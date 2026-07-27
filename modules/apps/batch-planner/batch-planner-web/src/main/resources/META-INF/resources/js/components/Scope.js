@@ -15,16 +15,23 @@ function Scope({portletNamespace}) {
 	useEffect(() => {
 		const handleSchemaUpdated = (event) => {
 			if (event.schemaName) {
-				fetch(
-					`${HEADLESS_BATCH_PLANNER_URL}/plans/${event.schemaName.replace(
-						'#',
-						encodeURIComponent('#')
-					)}/site-scopes?export=${event.isExport}`
-				)
-					.then((response) => response.json())
-					.then((json) => {
-						setScopes(json.items);
-					});
+				const planURL = `${HEADLESS_BATCH_PLANNER_URL}/plans/${event.schemaName.replace(
+					'#',
+					encodeURIComponent('#')
+				)}`;
+
+				Promise.all(
+					['depot-scopes', 'site-scopes'].map((scopesPath) =>
+						fetch(
+							`${planURL}/${scopesPath}?export=${event.isExport}`
+						).then((response) => response.json())
+					)
+				).then(([depotScopesJSON, siteScopesJSON]) => {
+					setScopes([
+						...(depotScopesJSON.items || []),
+						...(siteScopesJSON.items || []),
+					]);
+				});
 			}
 			else {
 				setScopes([]);
