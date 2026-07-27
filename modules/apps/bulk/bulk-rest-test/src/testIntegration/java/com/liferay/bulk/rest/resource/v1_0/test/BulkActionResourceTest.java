@@ -289,15 +289,13 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	}
 
 	private void _assertCMPProjectLinks(
-			ObjectEntry[] objectEntries,
-			ObjectDefinition cmpProjectLinkObjectDefinition,
-			long projectGroupId)
+			ObjectDefinition cmpProjectLinkObjectDefinition, long groupId,
+			ObjectEntry[] objectEntries)
 		throws Exception {
 
 		List<ObjectEntry> cmpProjectLinkObjectEntries =
 			_objectEntryLocalService.getObjectEntries(
-				projectGroupId,
-				cmpProjectLinkObjectDefinition.getObjectDefinitionId(),
+				groupId, cmpProjectLinkObjectDefinition.getObjectDefinitionId(),
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
@@ -324,7 +322,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 			Map<String, Serializable> values = valuesMaps.get(
 				objectEntry.getExternalReferenceCode());
 
-			Assert.assertNotNull(valuesMaps.toString(), values);
 			Assert.assertEquals(
 				objectEntry.getModelClassName(),
 				GetterUtil.getString(values.get("className")));
@@ -348,7 +345,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	}
 
 	private void _assertNumberOfFailedItems(
-			int expectedNumberOfFailedItems, BulkActionTask bulkActionTask)
+			BulkActionTask bulkActionTask, int expectedNumberOfFailedItems)
 		throws Exception {
 
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
@@ -713,6 +710,42 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	private void _testPostBulkActionWithTypeAddObjectToProject()
 		throws Exception {
 
+		// Invalid project scope key
+
+		ObjectEntry cmsBasicWebContentObjectEntry1 =
+			ObjectEntryTestUtil.addObjectEntry(
+				_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
+				_getObjectEntryValues());
+		ObjectEntry cmsBasicWebContentObjectEntry2 =
+			ObjectEntryTestUtil.addObjectEntry(
+				_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
+				_getObjectEntryValues());
+
+		AddObjectToProjectBulkSelectionAction bulkAction =
+			new AddObjectToProjectBulkSelectionAction();
+
+		bulkAction.setBulkActionItems(
+			_toBulkActionItems(
+				_cmsBasicWebContentObjectDefinition,
+				cmsBasicWebContentObjectEntry1,
+				cmsBasicWebContentObjectEntry2));
+		bulkAction.setProjectScopeKeys(
+			new String[] {RandomTestUtil.randomString()});
+		bulkAction.setType(
+			BulkAction.Type.ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION);
+
+		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 2);
+
+		// Link basic web content to projects
+
+		bulkAction = new AddObjectToProjectBulkSelectionAction();
+
+		bulkAction.setBulkActionItems(
+			_toBulkActionItems(
+				_cmsBasicWebContentObjectDefinition,
+				cmsBasicWebContentObjectEntry1,
+				cmsBasicWebContentObjectEntry2));
+
 		CMPTestUtil.getOrAddGroup(BulkActionResourceTest.class);
 
 		ObjectEntry cmpProjectObjectEntry1 =
@@ -727,54 +760,42 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		_projectDepotEntry2 = _depotEntryLocalService.fetchGroupDepotEntry(
 			cmpProjectObjectEntry2.getGroupId());
 
-		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-			_getObjectEntryValues());
-		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			_depotEntry2.getGroupId(), _cmsBasicWebContentObjectDefinition,
-			_getObjectEntryValues());
-
-		AddObjectToProjectBulkSelectionAction bulkAction =
-			new AddObjectToProjectBulkSelectionAction();
-
-		bulkAction.setBulkActionItems(
-			_toBulkActionItems(
-				_cmsBasicWebContentObjectDefinition, objectEntry1,
-				objectEntry2));
 		bulkAction.setProjectScopeKeys(
 			new String[] {
 				String.valueOf(cmpProjectObjectEntry1.getGroupId()),
 				String.valueOf(cmpProjectObjectEntry2.getGroupId())
 			});
+
 		bulkAction.setType(
 			BulkAction.Type.ADD_OBJECT_TO_PROJECT_BULK_SELECTION_ACTION);
 
-		_assertNumberOfFailedItems(0, _postBulkAction(bulkAction));
+		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 0);
 
 		ObjectDefinition cmpProjectLinkObjectDefinition =
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT_LINK", testCompany.getCompanyId());
+		ObjectEntry[] cmsBasicWebContentObjectEntries = {
+			cmsBasicWebContentObjectEntry1, cmsBasicWebContentObjectEntry2
+		};
 
 		_assertCMPProjectLinks(
-			new ObjectEntry[] {objectEntry1, objectEntry2},
-			cmpProjectLinkObjectDefinition,
-			cmpProjectObjectEntry1.getGroupId());
+			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry1.getGroupId(),
+			cmsBasicWebContentObjectEntries);
 		_assertCMPProjectLinks(
-			new ObjectEntry[] {objectEntry1, objectEntry2},
-			cmpProjectLinkObjectDefinition,
-			cmpProjectObjectEntry2.getGroupId());
+			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry2.getGroupId(),
+			cmsBasicWebContentObjectEntries);
 
-		_assertNumberOfFailedItems(0, _postBulkAction(bulkAction));
+		// Skip duplicate basic web content
+
+		_assertNumberOfFailedItems(_postBulkAction(bulkAction), 0);
 
 		_assertCMPProjectLinks(
-			new ObjectEntry[] {objectEntry1, objectEntry2},
-			cmpProjectLinkObjectDefinition,
-			cmpProjectObjectEntry1.getGroupId());
+			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry1.getGroupId(),
+			cmsBasicWebContentObjectEntries);
 		_assertCMPProjectLinks(
-			new ObjectEntry[] {objectEntry1, objectEntry2},
-			cmpProjectLinkObjectDefinition,
-			cmpProjectObjectEntry2.getGroupId());
+			cmpProjectLinkObjectDefinition, cmpProjectObjectEntry2.getGroupId(),
+			cmsBasicWebContentObjectEntries);
 	}
 
 	private void _testPostBulkActionWithTypeAssignStructureDefaultWorkflow()
