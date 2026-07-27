@@ -5,7 +5,12 @@
 
 package com.liferay.layout.internal.exporter;
 
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
+import com.liferay.exportimport.kernel.lar.PortletDataException;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorRegistryUtil;
 import com.liferay.layout.exporter.PortletPreferencesPortletConfigurationExporter;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
@@ -41,9 +46,8 @@ public class PortletPreferencesPortletConfigurationExporterImpl
 			return null;
 		}
 
-		String portletName = PortletIdCodec.decodePortletName(portletId);
-
-		Portlet portlet = _portletLocalService.getPortletById(portletName);
+		Portlet portlet = _portletLocalService.getPortletById(
+			PortletIdCodec.decodePortletName(portletId));
 
 		if (portlet == null) {
 			return null;
@@ -58,6 +62,42 @@ public class PortletPreferencesPortletConfigurationExporterImpl
 		if (portletPreferences == null) {
 			return null;
 		}
+
+		_processExportPortletPreferences(
+			layout.getCompanyId(), portletId, portletPreferences);
+
+		return _toPortletConfigurationMap(portletPreferences);
+	}
+
+	private void _processExportPortletPreferences(
+		long companyId, String portletId,
+		PortletPreferences portletPreferences) {
+
+		if (!ExportImportThreadLocal.isStagingInProcess()) {
+			return;
+		}
+
+		ExportImportPortletPreferencesProcessor
+			exportImportPortletPreferencesProcessor =
+				ExportImportPortletPreferencesProcessorRegistryUtil.
+					getExportImportPortletPreferencesProcessor(
+						PortletIdCodec.decodePortletName(portletId));
+
+		if (exportImportPortletPreferencesProcessor == null) {
+			return;
+		}
+
+		try {
+			exportImportPortletPreferencesProcessor.
+				processExportPortletPreferences(companyId, portletPreferences);
+		}
+		catch (PortletDataException portletDataException) {
+			ReflectionUtil.throwException(portletDataException);
+		}
+	}
+
+	private Map<String, Object> _toPortletConfigurationMap(
+		PortletPreferences portletPreferences) {
 
 		Map<String, Object> portletConfigurationMap = new TreeMap<>();
 
