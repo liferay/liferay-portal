@@ -7,12 +7,16 @@ package com.liferay.object.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
+import com.liferay.object.field.setting.builder.ObjectFieldSettingBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryVersionLocalService;
+import com.liferay.object.service.test.util.ObjectFieldTestUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -36,7 +40,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.io.Serializable;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +74,38 @@ public class ObjectEntryVersionModelListenerTest {
 
 		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
 			true, false, true,
-			Collections.singletonList(
+			Arrays.asList(
+				new AttachmentObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).localized(
+					true
+				).name(
+					"attachmentObjectFieldName"
+				).objectFieldSettings(
+					Arrays.asList(
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.
+								NAME_ACCEPTED_FILE_EXTENSIONS
+						).value(
+							"txt"
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_FILE_SOURCE
+						).value(
+							ObjectFieldSettingConstants.
+								VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+						).value(
+							"100"
+						).build())
+				).build(),
 				new TextObjectFieldBuilder(
 				).labelMap(
 					LocalizedMapUtil.getLocalizedMap(
@@ -115,6 +150,39 @@ public class ObjectEntryVersionModelListenerTest {
 			_objectEntry, ServiceContextTestUtil.getServiceContext());
 
 		_assertNullLatestApprovedObjectEntry(_objectEntry.getObjectEntryId());
+
+		_objectEntry = _updateObjectEntry(
+			_objectEntry,
+			HashMapBuilder.<String, Serializable>put(
+				"attachmentObjectFieldName_i18n",
+				(Serializable)HashMapBuilder.<String, Object>put(
+					"en_US",
+					ObjectFieldTestUtil.addTempFileEntry(
+						RandomTestUtil.randomString() + ".txt",
+						_objectDefinition
+					).getFileEntryId()
+				).put(
+					"pt_BR",
+					ObjectFieldTestUtil.addTempFileEntry(
+						RandomTestUtil.randomString() + ".txt",
+						_objectDefinition
+					).getFileEntryId()
+				).build()
+			).put(
+				"textObjectFieldName", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		ObjectEntry headObjectEntry = _objectEntryLocalService.getObjectEntry(
+			_objectEntry.getObjectEntryId());
+
+		Map<String, Serializable> headValues = headObjectEntry.getValues();
+
+		_objectEntry = _updateObjectEntry(_objectEntry, serviceContext);
+
+		_assertLatestApprovedObjectEntry(
+			headValues, 3, "attachmentObjectFieldName_i18n",
+			_objectEntry.getObjectEntryId());
 	}
 
 	@Test
@@ -228,15 +296,46 @@ public class ObjectEntryVersionModelListenerTest {
 		Map<String, Serializable> expectedValues, int expectedVersion,
 		long objectEntryId) {
 
+		_assertLatestApprovedObjectEntry(
+			expectedValues, expectedVersion, null, objectEntryId);
+	}
+
+	private void _assertLatestApprovedObjectEntry(
+		Map<String, Serializable> expectedValues, int expectedVersion,
+		String localizedObjectFieldName, long objectEntryId) {
+
 		ObjectEntry objectEntry =
 			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
 				objectEntryId);
 
 		Assert.assertNotNull(objectEntry);
 
+		Map<String, Serializable> values = objectEntry.getValues();
+
 		Assert.assertEquals(
 			MapUtil.getString(expectedValues, "textObjectFieldName"),
-			MapUtil.getString(objectEntry.getValues(), "textObjectFieldName"));
+			MapUtil.getString(values, "textObjectFieldName"));
+
+		if (localizedObjectFieldName != null) {
+			Map<String, Object> expectedLocalizedValues =
+				(Map<String, Object>)expectedValues.get(
+					localizedObjectFieldName);
+
+			Map<String, Object> localizedValues =
+				(Map<String, Object>)values.get(localizedObjectFieldName);
+
+			Assert.assertNotNull(localizedValues);
+
+			for (String languageId : expectedLocalizedValues.keySet()) {
+				long expectedFileEntryId = MapUtil.getLong(
+					expectedLocalizedValues, languageId);
+
+				Assert.assertNotEquals(0, expectedFileEntryId);
+				Assert.assertEquals(
+					expectedFileEntryId,
+					MapUtil.getLong(localizedValues, languageId));
+			}
+		}
 
 		Assert.assertEquals(expectedVersion, objectEntry.getVersion());
 	}
@@ -248,12 +347,21 @@ public class ObjectEntryVersionModelListenerTest {
 	}
 
 	private ObjectEntry _updateObjectEntry(
-			ObjectEntry objectEntry, ServiceContext serviceContext)
+			ObjectEntry objectEntry, Map<String, Serializable> values,
+			ServiceContext serviceContext)
 		throws Exception {
 
 		return _objectEntryLocalService.updateObjectEntry(
 			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
-			objectEntry.getObjectEntryFolderId(),
+			objectEntry.getObjectEntryFolderId(), values, serviceContext);
+	}
+
+	private ObjectEntry _updateObjectEntry(
+			ObjectEntry objectEntry, ServiceContext serviceContext)
+		throws Exception {
+
+		return _updateObjectEntry(
+			objectEntry,
 			HashMapBuilder.<String, Serializable>put(
 				"textObjectFieldName", RandomTestUtil.randomString()
 			).build(),

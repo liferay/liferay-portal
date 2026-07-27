@@ -220,7 +220,6 @@ import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.JavaDetector;
@@ -9315,12 +9314,8 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	private FileEntry _addTempFileEntry(String title) throws Exception {
-		return TempFileEntryUtil.addTempFileEntry(
-			TestPropsValues.getGroupId(), TestPropsValues.getUserId(),
-			_objectDefinition.getPortletId(),
-			TempFileEntryUtil.getTempFileName(title + ".txt"),
-			FileUtil.createTempFile(DLTestUtil.randomTextFileBytes()),
-			ContentTypes.TEXT_PLAIN);
+		return ObjectFieldTestUtil.addTempFileEntry(
+			title + ".txt", _objectDefinition);
 	}
 
 	private void _assertAssetEntry(
