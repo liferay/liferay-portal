@@ -46,7 +46,7 @@ public class LiferayUserGroupsDataCreator extends DataCreator {
 				"name", country.name()
 			).put(
 				"userGroupId", number.randomNumber(8, false)
-			)
+			).build()
 		).put(
 			"id", number.randomNumber(8, false)
 		).build();

@@ -136,7 +136,7 @@ public class SalesforceIndividualsDataCreator extends DataCreator {
 					"suffix", name.suffix()
 				).put(
 					"title", name.title()
-				)
+				).build()
 			).put(
 				"id", internet.uuid()
 			).build();

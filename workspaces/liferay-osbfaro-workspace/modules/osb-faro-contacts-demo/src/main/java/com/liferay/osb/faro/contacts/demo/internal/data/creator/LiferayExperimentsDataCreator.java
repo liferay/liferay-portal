@@ -73,7 +73,7 @@ public class LiferayExperimentsDataCreator extends DataCreator {
 					"dxpVariantName", "Control"
 				).put(
 					"trafficSplit", 34
-				),
+				).build(),
 				HashMapBuilder.<String, Object>put(
 					"changes", 0
 				).put(
@@ -85,7 +85,7 @@ public class LiferayExperimentsDataCreator extends DataCreator {
 					"dxpVariantName", company.buzzword()
 				).put(
 					"trafficSplit", 33
-				),
+				).build(),
 				HashMapBuilder.<String, Object>put(
 					"changes", 0
 				).put(
@@ -97,7 +97,7 @@ public class LiferayExperimentsDataCreator extends DataCreator {
 					"dxpVariantName", company.buzzword()
 				).put(
 					"trafficSplit", 33
-				))
+				).build())
 		).put(
 			"goal",
 			HashMapBuilder.put(
