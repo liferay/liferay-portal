@@ -15,10 +15,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PIMConnectorRegistry {
 
-	public PIMConnector getConnector(String key);
+	public PIMConnector getPIMConnector(String key);
 
-	public List<PIMConnector> getConnectors(long companyId);
-
-	public List<PIMConnector> getConnectors(long companyId, boolean activeOnly);
+	public List<PIMConnector> getPIMConnectors(long companyId);
 
 }

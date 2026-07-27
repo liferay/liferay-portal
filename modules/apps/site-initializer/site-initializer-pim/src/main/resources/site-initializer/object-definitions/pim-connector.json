@@ -21,31 +21,18 @@
 	],
 	"objectFields": [
 		{
-			"DBType": "String",
-			"businessType": "Text",
-			"externalReferenceCode": "NAME",
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "ACTIVE",
 			"indexed": true,
-			"indexedAsKeyword": true,
+			"indexedAsKeyword": false,
 			"indexedLanguageId": "",
 			"label": {
-				"en_US": "Name"
+				"en_US": "Active"
 			},
-			"name": "name",
-			"required": true,
-			"system": true
-		},
-		{
-			"DBType": "String",
-			"businessType": "Text",
-			"externalReferenceCode": "CONNECTOR_KEY",
-			"indexed": true,
-			"indexedAsKeyword": true,
-			"indexedLanguageId": "",
-			"label": {
-				"en_US": "Connector"
-			},
-			"name": "connectorKey",
-			"required": true,
+			"name": "active",
+			"required": false,
 			"system": true
 		},
 		{
@@ -63,17 +50,31 @@
 			"system": true
 		},
 		{
-			"DBType": "Boolean",
-			"businessType": "Boolean",
-			"externalReferenceCode": "ACTIVE",
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "KEY",
 			"indexed": true,
-			"indexedAsKeyword": false,
+			"indexedAsKeyword": true,
 			"indexedLanguageId": "",
 			"label": {
-				"en_US": "Active"
+				"en_US": "Key"
 			},
-			"name": "active",
-			"required": false,
+			"name": "key",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Name"
+			},
+			"name": "name",
+			"required": true,
 			"system": true
 		}
 	],

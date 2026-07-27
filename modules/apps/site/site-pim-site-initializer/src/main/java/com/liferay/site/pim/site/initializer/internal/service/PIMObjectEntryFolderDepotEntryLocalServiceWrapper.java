@@ -86,7 +86,7 @@ public class PIMObjectEntryFolderDepotEntryLocalServiceWrapper
 		}
 
 		PIMObjectEntryFolderUtil.getOrAddProductsObjectEntryFolder(
-			_objectEntryFolderLocalService, depotEntry.getGroup());
+			depotEntry.getGroup(), _objectEntryFolderLocalService);
 	}
 
 	private void _deleteObjectEntryFolder(DepotEntry depotEntry)

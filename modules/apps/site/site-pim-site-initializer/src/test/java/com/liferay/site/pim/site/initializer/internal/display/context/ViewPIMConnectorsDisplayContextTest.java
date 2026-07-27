@@ -56,17 +56,10 @@ public class ViewPIMConnectorsDisplayContextTest {
 				httpServletRequest, objectDefinition);
 
 		Assert.assertEquals(
-			"/o/pim/connectors",
-			viewPIMConnectorsDisplayContext.getAPIURL());
-	}
+			"/o/pim/connectors", viewPIMConnectorsDisplayContext.getAPIURL());
 
-	@Test
-	public void testGetAPIURLWithNullObjectDefinition() {
-		HttpServletRequest httpServletRequest = Mockito.mock(
-			HttpServletRequest.class);
-
-		ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext =
-			new ViewPIMConnectorsDisplayContext(httpServletRequest, null);
+		viewPIMConnectorsDisplayContext = new ViewPIMConnectorsDisplayContext(
+			httpServletRequest, null);
 
 		Assert.assertEquals(
 			StringPool.BLANK, viewPIMConnectorsDisplayContext.getAPIURL());
@@ -76,10 +69,10 @@ public class ViewPIMConnectorsDisplayContextTest {
 	public void testGetEmptyState() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
+		Language language = Mockito.mock(Language.class);
+
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
-
-		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
 			language.get(
@@ -113,9 +106,10 @@ public class ViewPIMConnectorsDisplayContextTest {
 	public void testGetFDSActionDropdownItems() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
+		Language language = Mockito.mock(Language.class);
+
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
-		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
 			language.get(
@@ -138,20 +132,20 @@ public class ViewPIMConnectorsDisplayContextTest {
 
 		languageUtil.setLanguage(language);
 
-		Group group = Mockito.mock(Group.class);
-
-		Mockito.when(
-			group.getFriendlyURL()
-		).thenReturn(
-			"/cms"
-		);
-
 		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
 
 		Mockito.when(
 			themeDisplay.getPathFriendlyURLPublic()
 		).thenReturn(
 			"/web"
+		);
+
+		Group group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			group.getFriendlyURL()
+		).thenReturn(
+			"/cms"
 		);
 
 		Mockito.when(
@@ -185,11 +179,11 @@ public class ViewPIMConnectorsDisplayContextTest {
 		FDSActionDropdownItem editFDSActionDropdownItem =
 			fdsActionDropdownItems.get(0);
 
-		String editHref = String.valueOf(editFDSActionDropdownItem.get("href"));
+		String href = String.valueOf(editFDSActionDropdownItem.get("href"));
 
-		Assert.assertTrue(editHref, editHref.contains("/edit-connector"));
-		Assert.assertTrue(
-			editHref, editHref.contains("&objectEntryId={id}"));
+		Assert.assertTrue(href, href.contains("/edit-connector"));
+		Assert.assertTrue(href, href.contains("&objectEntryId={id}"));
+
 		Assert.assertEquals("pencil", editFDSActionDropdownItem.get("icon"));
 		Assert.assertEquals("Edit", editFDSActionDropdownItem.get("label"));
 
@@ -203,12 +197,9 @@ public class ViewPIMConnectorsDisplayContextTest {
 			fdsActionDropdownItems.get(1);
 
 		Assert.assertEquals(
-			"{actions.delete.href}",
-			deleteFDSActionDropdownItem.get("href"));
-		Assert.assertEquals(
-			"trash", deleteFDSActionDropdownItem.get("icon"));
-		Assert.assertEquals(
-			"Delete", deleteFDSActionDropdownItem.get("label"));
+			"{actions.delete.href}", deleteFDSActionDropdownItem.get("href"));
+		Assert.assertEquals("trash", deleteFDSActionDropdownItem.get("icon"));
+		Assert.assertEquals("Delete", deleteFDSActionDropdownItem.get("label"));
 		Assert.assertEquals(
 			"headless", deleteFDSActionDropdownItem.get("target"));
 

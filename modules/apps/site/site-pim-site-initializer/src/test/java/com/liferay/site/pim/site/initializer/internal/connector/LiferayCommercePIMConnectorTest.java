@@ -7,6 +7,7 @@ package com.liferay.site.pim.site.initializer.internal.connector;
 
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -63,7 +64,8 @@ public class LiferayCommercePIMConnectorTest {
 		LiferayCommercePIMConnector liferayCommercePIMConnector =
 			new LiferayCommercePIMConnector();
 
-		Assert.assertTrue(liferayCommercePIMConnector.isActive(1L));
+		Assert.assertTrue(
+			liferayCommercePIMConnector.isActive(RandomTestUtil.randomLong()));
 	}
 
 }

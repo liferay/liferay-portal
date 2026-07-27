@@ -47,7 +47,8 @@ public class EditPIMConnectorJSPSectionFragmentRenderer
 						EXTERNAL_REFERENCE_CODE_CONNECTOR,
 					themeDisplay.getCompanyId()),
 			_objectEntryLocalService,
-			_pimConnectorRegistry.getConnectors(themeDisplay.getCompanyId()));
+			_pimConnectorRegistry.getPIMConnectors(
+				themeDisplay.getCompanyId()));
 	}
 
 	@Reference

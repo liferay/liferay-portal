@@ -13,6 +13,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -104,10 +105,10 @@ public class ViewPIMConnectorsDisplayContext {
 	}
 
 	private String _getEditURL() {
+		Group group = _themeDisplay.getScopeGroup();
+
 		return StringBundler.concat(
-			_themeDisplay.getPathFriendlyURLPublic(),
-			_themeDisplay.getScopeGroup(
-			).getFriendlyURL(),
+			_themeDisplay.getPathFriendlyURLPublic(), group.getFriendlyURL(),
 			"/edit-connector?backURL=", _themeDisplay.getURLCurrent());
 	}
 

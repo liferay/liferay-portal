@@ -64,71 +64,9 @@ public class ObjectEntryModelListenerTest {
 	}
 
 	@Test
-	public void testOnBeforeCreateRecreatesProductsFolderWhenMissing()
-		throws Exception {
-
-		long groupId = _addSpaceDepotEntryGroupId();
-
-		long contentsObjectEntryFolderId = _getObjectEntryFolderId(
-			groupId,
-			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
-
-		// Simulate a depot created before the products folder existed
-
-		try (SafeCloseable safeCloseable =
-				ObjectEntryFolderThreadLocal.
-					setForceDeleteSystemObjectEntryFolderWithSafeCloseable(
-						true)) {
-
-			_objectEntryFolderLocalService.
-				deleteObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
-		}
-
-		Assert.assertNull(
-			_objectEntryFolderLocalService.
-				fetchObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId()));
-
-		ObjectEntry objectEntry = _addPIMBaseSkuObjectEntry(
-			groupId, contentsObjectEntryFolderId);
-
-		ObjectEntryFolder productsObjectEntryFolder =
-			_objectEntryFolderLocalService.
-				fetchObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
-
-		Assert.assertNotNull(productsObjectEntryFolder);
-		Assert.assertEquals(
-			productsObjectEntryFolder.getObjectEntryFolderId(),
-			objectEntry.getObjectEntryFolderId());
-	}
-
-	@Test
-	public void testOnBeforeCreateRoutesDefaultContentPlacementToProductsFolder()
-		throws Exception {
-
-		long groupId = _addSpaceDepotEntryGroupId();
-
-		// The REST/batch manager places a product with no explicit folder in
-		// L_CONTENTS; the listener must redirect it to L_PRODUCTS
-
-		long contentsObjectEntryFolderId = _getObjectEntryFolderId(
-			groupId,
-			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
-
-		ObjectEntry objectEntry = _addPIMBaseSkuObjectEntry(
-			groupId, contentsObjectEntryFolderId);
-
-		ObjectEntryFolder productsObjectEntryFolder =
-			_objectEntryFolderLocalService.
-				fetchObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
-
-		Assert.assertNotNull(productsObjectEntryFolder);
-		Assert.assertEquals(
-			productsObjectEntryFolder.getObjectEntryFolderId(),
-			objectEntry.getObjectEntryFolderId());
+	public void testOnBeforeCreate() throws Exception {
+		_testOnBeforeCreateMovesEntryToProductsFolder();
+		_testOnBeforeCreateRecreatesMissingProductsFolder();
 	}
 
 	private ObjectEntry _addPIMBaseSkuObjectEntry(
@@ -174,6 +112,65 @@ public class ObjectEntryModelListenerTest {
 					TestPropsValues.getCompanyId());
 
 		return objectEntryFolder.getObjectEntryFolderId();
+	}
+
+	private void _testOnBeforeCreateMovesEntryToProductsFolder()
+		throws Exception {
+
+		long groupId = _addSpaceDepotEntryGroupId();
+
+		long objectEntryFolderId = _getObjectEntryFolderId(
+			groupId,
+			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
+
+		ObjectEntry objectEntry = _addPIMBaseSkuObjectEntry(
+			groupId, objectEntryFolderId);
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.
+				fetchObjectEntryFolderByExternalReferenceCode(
+					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(
+			objectEntryFolder.getObjectEntryFolderId(),
+			objectEntry.getObjectEntryFolderId());
+	}
+
+	private void _testOnBeforeCreateRecreatesMissingProductsFolder()
+		throws Exception {
+
+		long groupId = _addSpaceDepotEntryGroupId();
+
+		long objectEntryFolderId = _getObjectEntryFolderId(
+			groupId,
+			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS);
+
+		try (SafeCloseable safeCloseable =
+				ObjectEntryFolderThreadLocal.
+					setForceDeleteSystemObjectEntryFolderWithSafeCloseable(
+						true)) {
+
+			_objectEntryFolderLocalService.
+				deleteObjectEntryFolderByExternalReferenceCode(
+					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
+		}
+
+		Assert.assertNull(
+			_objectEntryFolderLocalService.
+				fetchObjectEntryFolderByExternalReferenceCode(
+					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId()));
+
+		ObjectEntry objectEntry = _addPIMBaseSkuObjectEntry(
+			groupId, objectEntryFolderId);
+
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.
+				fetchObjectEntryFolderByExternalReferenceCode(
+					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(
+			objectEntryFolder.getObjectEntryFolderId(),
+			objectEntry.getObjectEntryFolderId());
 	}
 
 	@Inject
