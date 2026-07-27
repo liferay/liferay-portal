@@ -68,7 +68,7 @@ export default function RecycleBinFDSPropsTransformer({
 				{
 					component: ({itemData}) =>
 						SpaceRendererWithCache({
-							scopeKey: itemData.embedded.scopeKey,
+							scopeKey: itemData.embedded?.scopeKey,
 							spaceExternalReferenceCode:
 								getScopeExternalReferenceCode(itemData),
 						}),
@@ -103,7 +103,7 @@ export default function RecycleBinFDSPropsTransformer({
 			loadData: () => {};
 		}) {
 			const title =
-				itemData.embedded.title ||
+				itemData.embedded?.title ||
 				Liferay.Language.get('untitled-asset');
 
 			if (action.data.id === 'delete') {

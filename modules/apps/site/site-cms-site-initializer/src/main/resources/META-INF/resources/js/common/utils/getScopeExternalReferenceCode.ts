@@ -7,8 +7,8 @@ import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from './constants';
 
 export function getScopeExternalReferenceCode(item: any): string {
 	if (item?.entryClassName !== OBJECT_ENTRY_FOLDER_CLASS_NAME) {
-		return item.embedded.systemProperties?.scope?.externalReferenceCode;
+		return item?.embedded?.systemProperties?.scope?.externalReferenceCode;
 	}
 
-	return item.embedded.scope?.externalReferenceCode;
+	return item?.embedded?.scope?.externalReferenceCode;
 }

@@ -332,7 +332,7 @@ export default function AssetsFDSPropsTransformer({
 				{
 					component: ({itemData}) => (
 						<SpaceRendererWithCache
-							scopeKey={itemData.embedded.scopeKey}
+							scopeKey={itemData.embedded?.scopeKey}
 							spaceExternalReferenceCode={getScopeExternalReferenceCode(
 								itemData
 							)}
@@ -467,6 +467,10 @@ export default function AssetsFDSPropsTransformer({
 			if (action?.data?.id === 'addToLaunch') {
 				event?.preventDefault();
 
+				if (!itemData.embedded?.systemProperties?.version) {
+					return;
+				}
+
 				Liferay.fire('addToLaunch', {
 					className: OBJECT_ENTRY_CLASS_NAME,
 					classPK: itemData.embedded.id,
@@ -526,7 +530,7 @@ export default function AssetsFDSPropsTransformer({
 								'edit-and-propagate-default-permissions',
 							apiURL: bulkActionAPIURL,
 							classExternalReferenceCode:
-								itemData.embedded.externalReferenceCode,
+								itemData.embedded?.externalReferenceCode,
 							className: itemData.entryClassName,
 							closeModal,
 							section:
@@ -539,7 +543,7 @@ export default function AssetsFDSPropsTransformer({
 			else if (action?.data?.id === 'delete') {
 				const title =
 					itemData.title ||
-					itemData.embedded.title ||
+					itemData.embedded?.title ||
 					Liferay.Language.get('untitled-asset');
 
 				const confirmationMessage =
@@ -612,11 +616,19 @@ export default function AssetsFDSPropsTransformer({
 			else if (action?.data?.id === 'import-translation') {
 				event?.preventDefault();
 
+				if (!itemData.embedded) {
+					return;
+				}
+
 				const formattedHref = replaceTokens(action.href, itemData);
 
 				ACTIONS.importTranslation(itemData, formattedHref, loadData);
 			}
 			else if (action?.data?.id === 'reset-to-default-permissions') {
+				if (!itemData.embedded) {
+					return;
+				}
+
 				openResetAssetPermissionModal({
 					className: itemData.entryClassName,
 					classPK: itemData.embedded.id,
@@ -624,6 +636,10 @@ export default function AssetsFDSPropsTransformer({
 				});
 			}
 			else if (action?.data?.id === 'share') {
+				if (!itemData.embedded) {
+					return;
+				}
+
 				const {autocompleteURL, collaboratorURLs} = additionalProps;
 
 				shareAction({
@@ -632,7 +648,7 @@ export default function AssetsFDSPropsTransformer({
 					creator: itemData.embedded.creator,
 					entryClassName: itemData.entryClassName,
 					itemId: itemData.embedded.id,
-					title: itemData.embedded?.title,
+					title: itemData.embedded.title,
 				});
 			}
 			else if (
@@ -641,13 +657,17 @@ export default function AssetsFDSPropsTransformer({
 			) {
 				event?.preventDefault();
 
+				if (!itemData.embedded) {
+					return;
+				}
+
 				const filteredItems = items.filter(
 					(item: any) =>
 						item?.entryClassName !== OBJECT_ENTRY_FOLDER_CLASS_NAME
 				);
 
 				const currentItemPos = filteredItems.findIndex(
-					(item: any) => item.embedded.id === itemData.embedded.id
+					(item: any) => item.embedded?.id === itemData.embedded.id
 				);
 
 				openCMSModal({

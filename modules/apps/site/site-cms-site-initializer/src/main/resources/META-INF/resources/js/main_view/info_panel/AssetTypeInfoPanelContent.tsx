@@ -65,7 +65,7 @@ const AssetTypeInfoPanelContent = ({
 		);
 	}
 
-	const asset = selectedAssets[0].embedded;
+	const asset = selectedAssets[0].embedded || {};
 	const stickerClassName = classNames(
 		getFileMimeTypeObjectDefinitionStickerValue(
 			otherProps.fileMimeTypeCssClasses,

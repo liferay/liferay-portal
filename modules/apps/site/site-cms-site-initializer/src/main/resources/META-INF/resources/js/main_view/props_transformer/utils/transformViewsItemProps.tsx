@@ -72,8 +72,8 @@ const getThumbnailProps = (item: any) => {
 		return {symbol: 'folder'};
 	}
 
-	if (item.embedded.file) {
-		const {alternativeText, name, thumbnailURL} = item.embedded.file;
+	if (item.embedded?.file) {
+		const {alternativeText, name, thumbnailURL} = item.embedded?.file;
 
 		if (thumbnailURL) {
 			return {
@@ -88,13 +88,13 @@ const getThumbnailProps = (item: any) => {
 		}
 	}
 
-	if (item.embedded.videoURL) {
-		const videoId = getYouTubeVideoId(item.embedded.videoURL);
+	if (item.embedded?.videoURL) {
+		const videoId = getYouTubeVideoId(item.embedded?.videoURL);
 
 		if (videoId) {
 			return {
 				imgProps: {
-					alt: item.embedded.title || item.title,
+					alt: item.embedded?.title || item.title,
 					src: `https://img.youtube.com/vi/${videoId}/0.jpg`,
 				},
 			};
@@ -120,7 +120,7 @@ export function getFileMimeTypeObjectDefinitionStickerValue(
 	}
 
 	const objectDefinitionExternalReferenceCode =
-		item.embedded.systemProperties?.objectDefinitionBrief
+		item.embedded?.systemProperties?.objectDefinitionBrief
 			?.externalReferenceCode;
 
 	if (objectDefinitionExternalReferenceCode) {
@@ -135,7 +135,7 @@ export function getFileMimeTypeObjectDefinitionStickerValue(
 			fileMimeTypeValues &&
 			objectDefinitionExternalReferenceCode === 'L_CMS_BASIC_DOCUMENT'
 		) {
-			const mimeType = item.embedded.file?.mimeType;
+			const mimeType = item.embedded?.file?.mimeType;
 
 			if (!mimeType) {
 				return fileMimeTypeValues['default'];
@@ -184,10 +184,10 @@ const getLabels = (item: any, props: Card) => {
 		isExpiringSoon(item.embedded?.expirationDate)
 	) {
 		const formattedDate = formatExpirationDate(
-			item.embedded.expirationDate
+			item.embedded?.expirationDate
 		);
 		const formattedDateLong = formatExpirationDateLong(
-			item.embedded.expirationDate
+			item.embedded?.expirationDate
 		);
 
 		if (formattedDate && formattedDateLong) {
@@ -213,10 +213,10 @@ const getLabels = (item: any, props: Card) => {
 		item.embedded?.expirationDate
 	) {
 		const formattedDate = formatExpirationDate(
-			item.embedded.expirationDate
+			item.embedded?.expirationDate
 		);
 		const formattedDateLong = formatExpirationDateLong(
-			item.embedded.expirationDate
+			item.embedded?.expirationDate
 		);
 
 		if (formattedDate && formattedDateLong) {

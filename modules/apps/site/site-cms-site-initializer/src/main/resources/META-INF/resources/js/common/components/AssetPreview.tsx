@@ -23,20 +23,22 @@ interface AssetPreviewProps {
 export default function AssetPreview(props: AssetPreviewProps) {
 	const {item, showContentPreview = true, url} = props;
 
-	if (item.embedded.file) {
-		return <FilePreview file={item.embedded.file} />;
+	if (item.embedded?.file) {
+		return <FilePreview file={item.embedded?.file} />;
 	}
 
-	if (item.embedded.videoURL) {
-		return <VideoPreview previewURL={item.embedded.videoURL} />;
+	if (item.embedded?.videoURL) {
+		return <VideoPreview previewURL={item.embedded?.videoURL} />;
 	}
 
 	if (item.entryClassName === OBJECT_ENTRY_FOLDER_CLASS_NAME) {
 		return (
 			<FolderPreview
-				filesLength={item.embedded.numberOfObjectEntries ?? 0}
-				name={item.embedded.title ?? ''}
-				subfoldersLength={item.embedded.numberOfObjectEntryFolders ?? 0}
+				filesLength={item.embedded?.numberOfObjectEntries ?? 0}
+				name={item.embedded?.title ?? ''}
+				subfoldersLength={
+					item.embedded?.numberOfObjectEntryFolders ?? 0
+				}
 			/>
 		);
 	}

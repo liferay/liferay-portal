@@ -27,9 +27,9 @@ export default function Header({
 	showCommentsPanel: boolean;
 	showInfoPanel: boolean;
 }) {
-	const headerName = item.embedded?.title || item.embedded.file?.name;
+	const headerName = item.embedded?.title || item.embedded?.file?.name;
 
-	const file = item.embedded.file;
+	const file = item.embedded?.file;
 	const link = file?.link;
 
 	return (

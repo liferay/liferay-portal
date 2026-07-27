@@ -26,7 +26,7 @@ export default function TagUsagesFDSPropsTransformer({
 				{
 					component: ({itemData}) =>
 						SpaceRendererWithCache({
-							scopeKey: itemData.embedded.scopeKey,
+							scopeKey: itemData.embedded?.scopeKey,
 							spaceExternalReferenceCode:
 								getScopeExternalReferenceCode(itemData),
 						}),
