@@ -1,4 +1,4 @@
-import FieldValueFilter from '../FieldValueFilter';
+import FilterPicker from '../FilterPicker';
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {LifecycleContextProvider} from '../../context/LifecycleContext';
@@ -13,7 +13,7 @@ jest.mock('react-router-dom', () => ({
 const renderFilter = (props = {}) =>
 	render(
 		<LifecycleContextProvider lifecycleId="1">
-			<FieldValueFilter
+			<FilterPicker
 				entityLabel="Industries"
 				fieldMappingFieldName="industry"
 				filterKey="industryFilter"
@@ -22,7 +22,7 @@ const renderFilter = (props = {}) =>
 		</LifecycleContextProvider>
 	);
 
-describe('FieldValueFilter', () => {
+describe('FilterPicker', () => {
 	afterEach(cleanup);
 
 	it('should render the loading state while the request is pending', () => {

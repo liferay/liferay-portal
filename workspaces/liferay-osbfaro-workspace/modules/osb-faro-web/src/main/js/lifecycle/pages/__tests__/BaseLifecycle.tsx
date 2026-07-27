@@ -43,9 +43,20 @@ jest.mock('react-router-dom', () => ({
 	}),
 }));
 
-jest.mock('lifecycle/components/GlobalFilters', () => ({
+jest.mock('lifecycle/components/FilterPicker', () => ({
 	__esModule: true,
-	default: () => <div data-testid="global-filters" />,
+	default: ({
+		entityLabel,
+		filterKey,
+	}: {
+		entityLabel: string;
+		filterKey: string;
+	}) => (
+		<div
+			data-entity-label={entityLabel}
+			data-testid={`filter-${filterKey}`}
+		/>
+	),
 }));
 
 jest.mock('lifecycle/components/OverviewSection', () => ({
@@ -177,7 +188,7 @@ describe('BaseLifecycle', () => {
 				)
 			).toBeInTheDocument();
 			expect(screen.queryByTestId('overview-section')).toBeNull();
-			expect(screen.queryByTestId('global-filters')).toBeNull();
+			expect(screen.queryByTestId('filter-industryFilter')).toBeNull();
 		});
 
 		it('renders the connect action for admins', () => {
@@ -229,7 +240,7 @@ describe('BaseLifecycle', () => {
 				)
 			).toBeInTheDocument();
 			expect(screen.queryByTestId('overview-section')).toBeNull();
-			expect(screen.queryByTestId('global-filters')).toBeNull();
+			expect(screen.queryByTestId('filter-industryFilter')).toBeNull();
 		});
 
 		it('renders the contact-administrator message for non-admins', () => {
@@ -265,7 +276,7 @@ describe('BaseLifecycle', () => {
 				)
 			).toBeInTheDocument();
 			expect(screen.queryByTestId('overview-section')).toBeNull();
-			expect(screen.queryByTestId('global-filters')).toBeNull();
+			expect(screen.queryByTestId('filter-industryFilter')).toBeNull();
 		});
 
 		it('renders the New Lifecycle action linking to the create route', () => {
@@ -297,7 +308,7 @@ describe('BaseLifecycle', () => {
 				screen.getByText('Your dashboard is almost ready!')
 			).toBeInTheDocument();
 			expect(screen.queryByTestId('overview-section')).toBeNull();
-			expect(screen.queryByTestId('global-filters')).toBeNull();
+			expect(screen.queryByTestId('filter-industryFilter')).toBeNull();
 		});
 	});
 
@@ -339,7 +350,14 @@ describe('BaseLifecycle', () => {
 		expect(screen.getByTestId('overview-section')).toBeInTheDocument();
 		expect(screen.getByTestId('lifecycle-chart')).toBeInTheDocument();
 		expect(screen.getByTestId('accounts-dataset')).toBeInTheDocument();
-		expect(screen.getByTestId('global-filters')).toBeInTheDocument();
+		expect(screen.getByTestId('filter-industryFilter')).toHaveAttribute(
+			'data-entity-label',
+			'Industries'
+		);
+		expect(screen.getByTestId('filter-countryFilter')).toHaveAttribute(
+			'data-entity-label',
+			'Countries'
+		);
 		expect(screen.queryByText('No Account Data Available')).toBeNull();
 	});
 });

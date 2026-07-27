@@ -5,7 +5,7 @@ import BasePage from 'shared/components/base-page';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
 import {ClayButtonWithIcon} from '@clayui/button';
-import GlobalFilters from '../components/GlobalFilters';
+import FilterPicker from '../components/FilterPicker';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
 import Loading from 'shared/components/Loading';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
@@ -365,7 +365,24 @@ const BaseLifecycle = () => {
 				{hasContent && (
 					<BasePage.SubHeader>
 						<div className="d-flex justify-content-between w-100">
-							<GlobalFilters />
+							<div className="d-flex">
+								<FilterPicker
+									className="mr-3"
+									entityLabel={Liferay.Language.get(
+										'industries'
+									)}
+									fieldMappingFieldName="industry"
+									filterKey="industryFilter"
+								/>
+
+								<FilterPicker
+									entityLabel={Liferay.Language.get(
+										'countries'
+									)}
+									fieldMappingFieldName="country"
+									filterKey="countryFilter"
+								/>
+							</div>
 						</div>
 					</BasePage.SubHeader>
 				)}
