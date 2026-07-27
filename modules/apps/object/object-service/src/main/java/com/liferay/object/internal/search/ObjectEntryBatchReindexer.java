@@ -10,6 +10,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
 
 /**
@@ -44,6 +45,10 @@ public class ObjectEntryBatchReindexer {
 
 				dynamicQuery.add(
 					property.eq(_objectDefinition.getObjectDefinitionId()));
+
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eqProperty(
+						"objectEntryId", "headObjectEntryId"));
 			});
 		indexableActionableDynamicQuery.setCompanyId(companyId);
 		indexableActionableDynamicQuery.setPerformActionMethod(

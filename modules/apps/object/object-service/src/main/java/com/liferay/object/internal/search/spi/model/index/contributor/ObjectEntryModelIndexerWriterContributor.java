@@ -21,6 +21,7 @@ import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.search.ReindexCacheThreadLocal;
 import com.liferay.portal.search.indexer.IndexerDocumentBuilder;
 import com.liferay.portal.search.spi.model.index.contributor.ModelIndexerWriterContributor;
@@ -46,9 +47,7 @@ public class ObjectEntryModelIndexerWriterContributor
 		ObjectFieldLocalService objectFieldLocalService,
 		ObjectFolderLocalService objectFolderLocalService) {
 
-		super(
-			IndexerWriterMode.UPDATE,
-			objectEntryLocalService::getIndexableActionableDynamicQuery);
+		super(objectEntryLocalService::getIndexableActionableDynamicQuery);
 
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectFieldLocalService = objectFieldLocalService;
@@ -70,6 +69,10 @@ public class ObjectEntryModelIndexerWriterContributor
 
 				dynamicQuery.add(
 					objectDefinitionIdProperty.eq(_objectDefinitionId));
+
+				dynamicQuery.add(
+					RestrictionsFactoryUtil.eqProperty(
+						"objectEntryId", "headObjectEntryId"));
 			});
 		indexableActionableDynamicQuery.setCacheKeySuffix(
 			String.valueOf(_objectDefinitionId));
@@ -86,6 +89,15 @@ public class ObjectEntryModelIndexerWriterContributor
 
 				return indexerDocumentBuilder.getDocument(objectEntry);
 			});
+	}
+
+	@Override
+	public IndexerWriterMode getIndexerWriterMode(ObjectEntry objectEntry) {
+		if (objectEntry.isHead()) {
+			return IndexerWriterMode.UPDATE;
+		}
+
+		return IndexerWriterMode.DELETE;
 	}
 
 	@Override
