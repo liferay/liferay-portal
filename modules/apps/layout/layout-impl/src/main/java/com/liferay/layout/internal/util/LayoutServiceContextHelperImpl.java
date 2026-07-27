@@ -296,6 +296,23 @@ public class LayoutServiceContextHelperImpl
 						return Collections.emptyEnumeration();
 					}
 
+					public Locale getLocale() {
+						ThemeDisplay themeDisplay =
+							(ThemeDisplay)_attributes.get(
+								WebKeys.THEME_DISPLAY);
+
+						if (themeDisplay == null) {
+							return LocaleUtil.getDefault();
+						}
+
+						return themeDisplay.getLocale();
+					}
+
+					public Enumeration<Locale> getLocales() {
+						return Collections.enumeration(
+							Collections.singletonList(getLocale()));
+					}
+
 					public String getMethod() {
 						return HttpMethods.GET;
 					}
