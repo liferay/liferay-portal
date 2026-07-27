@@ -41,7 +41,7 @@ export interface AIChat {
 	markFeedbackGiven: (index: number) => void;
 	message: string;
 	messages: Message[];
-	messagesEndRef: React.RefObject<HTMLDivElement>;
+	messagesContainerRef: React.RefObject<HTMLDivElement>;
 	reportContext: AIChatReportContext | null;
 	runtimeContextRef: React.MutableRefObject<ChatContext>;
 	scrollToBottom: () => void;
@@ -96,7 +96,7 @@ export default function useAIChat({
 	const instructionDefinitionScopeRef = useRef<string>(
 		instructionDefinitionScope
 	);
-	const messagesEndRef = useRef<HTMLDivElement | null>(null);
+	const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 	const sourceLanguageIdRef = useRef<string>(
 		Liferay.ThemeDisplay.getLanguageId()
 	);
@@ -138,7 +138,12 @@ export default function useAIChat({
 	}, [triggerRef]);
 
 	const scrollToBottom = useCallback(() => {
-		messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
+		const container = messagesContainerRef.current;
+
+		container?.scrollTo?.({
+			behavior: 'smooth',
+			top: container.scrollHeight,
+		});
 	}, []);
 
 	useEffect(() => {
@@ -501,7 +506,7 @@ export default function useAIChat({
 		markFeedbackGiven,
 		message,
 		messages,
-		messagesEndRef,
+		messagesContainerRef,
 		reportContext,
 		runtimeContextRef,
 		scrollToBottom,

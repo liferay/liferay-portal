@@ -193,8 +193,6 @@ describe('AIAssistantHost', () => {
 			value: 1440,
 		});
 
-		window.HTMLElement.prototype.scrollIntoView = jest.fn();
-
 		mockCreateEventSource.mockReset();
 		mockCreateEventSource.mockResolvedValue(null);
 		mockGetSpaces.mockReset();
@@ -850,6 +848,54 @@ describe('AIAssistantHost', () => {
 		expect(
 			within(getSidebar()).getByPlaceholderText('ask-me-anything')
 		).toBe(inputBeforeExpand);
+	});
+
+	describe('scrolling', () => {
+		const SCROLL_HEIGHT = 900;
+
+		let scrollTo: jest.Mock;
+
+		beforeEach(() => {
+			scrollTo = jest.fn();
+
+			Object.defineProperty(
+				window.HTMLElement.prototype,
+				'scrollHeight',
+				{configurable: true, value: SCROLL_HEIGHT}
+			);
+
+			window.HTMLElement.prototype.scrollTo = scrollTo;
+		});
+
+		afterEach(() => {
+			Reflect.deleteProperty(
+				window.HTMLElement.prototype,
+				'scrollHeight'
+			);
+			Reflect.deleteProperty(window.HTMLElement.prototype, 'scrollTo');
+		});
+
+		it('scrolls the conversation to the bottom when a message arrives', async () => {
+			const fakeEventSource = createFakeEventSource();
+
+			mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+			await renderAndOpen();
+
+			scrollTo.mockClear();
+
+			await act(async () => {
+				fakeEventSource.emit(
+					'Chat Message Sent',
+					JSON.stringify({data: 'Here are your tags'})
+				);
+			});
+
+			expect(scrollTo).toHaveBeenCalledWith({
+				behavior: 'smooth',
+				top: SCROLL_HEIGHT,
+			});
+		});
 	});
 
 	it('sends the command initial message when the connection is already subscribed', async () => {

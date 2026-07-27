@@ -7,7 +7,7 @@ import ClayButton from '@clayui/button';
 import ClayForm, {ClayInputGroupAI} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import React, {useEffect} from 'react';
+import React from 'react';
 
 import AIAssistantFooterDisclaimer from './components/AIAssistantFooterDisclaimer';
 import AIAssistantMessageBalloon from './components/AIAssistantMessageBalloon';
@@ -34,7 +34,7 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 		isGenerating,
 		message,
 		messages,
-		messagesEndRef,
+		messagesContainerRef,
 		sendMessage,
 		setMessage,
 	} = chat;
@@ -45,10 +45,6 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 		aiState = 'working';
 	}
 
-	useEffect(() => {
-		messagesEndRef.current?.scrollIntoView();
-	}, [messagesEndRef]);
-
 	function onSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
@@ -57,7 +53,10 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 
 	return (
 		<>
-			<div className="ai-assistant-chat__messages-container">
+			<div
+				className="ai-assistant-chat__messages-container"
+				ref={messagesContainerRef}
+			>
 				{showGreeting && (
 					<AIAssistantMessageBalloon
 						error={false}
@@ -87,8 +86,6 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 						</span>
 					</div>
 				)}
-
-				<div ref={messagesEndRef} />
 			</div>
 
 			{!!quickActions?.length && (
