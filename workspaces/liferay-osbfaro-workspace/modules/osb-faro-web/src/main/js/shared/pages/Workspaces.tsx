@@ -165,6 +165,7 @@ const Workspaces: any = () => {
 			<WorkspacesBasePage
 				details={handleDetails()}
 				ldpEnabled={ldpEnabled}
+				loadingLDPEnabled={loading}
 				title={handleTitle()}
 			>
 				{!loadingPreferences && preferences.incidentAlertEnabled && (

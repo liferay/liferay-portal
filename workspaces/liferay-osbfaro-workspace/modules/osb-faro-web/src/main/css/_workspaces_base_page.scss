@@ -53,6 +53,10 @@
 					letter-spacing: 0.5px;
 					text-transform: uppercase;
 				}
+
+				&.loading {
+					visibility: hidden;
+				}
 			}
 
 			h1 {

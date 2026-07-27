@@ -51,6 +51,22 @@ describe('WorkspacesBasePage', () => {
 		expect(queryByText('Test Details')).toBeTruthy();
 	});
 
+	it('should hide the logo container while the LDP plan check is loading', () => {
+		const {container} = render(<DefaultComponent loadingLDPEnabled />);
+
+		expect(
+			container.querySelector('.logo-container').className
+		).toContain('loading');
+	});
+
+	it('should show the logo container once the LDP plan check resolves', () => {
+		const {container} = render(<DefaultComponent />);
+
+		expect(
+			container.querySelector('.logo-container').className
+		).not.toContain('loading');
+	});
+
 	it('should render with back button', () => {
 		const {queryByText} = render(
 			<DefaultComponent

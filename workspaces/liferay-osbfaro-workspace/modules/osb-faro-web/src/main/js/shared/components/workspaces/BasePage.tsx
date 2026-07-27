@@ -23,6 +23,7 @@ interface IWorkspacesBasePageProps {
 	currentUser?: User;
 	details?: React.ReactNode;
 	ldpEnabled?: boolean;
+	loadingLDPEnabled?: boolean;
 	title?: string;
 }
 
@@ -93,6 +94,7 @@ export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps
 			className,
 			details,
 			ldpEnabled,
+			loadingLDPEnabled,
 			title,
 		} = this.props;
 
@@ -141,7 +143,11 @@ export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps
 							)}
 
 							<div className="title-container">
-								<div className="logo-container">
+								<div
+									className={getCN('logo-container', {
+										loading: loadingLDPEnabled,
+									})}
+								>
 									<ClayIcon
 										className="icon-root logo-icon"
 										symbol={
