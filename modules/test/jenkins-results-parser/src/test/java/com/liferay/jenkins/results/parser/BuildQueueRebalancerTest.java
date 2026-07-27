@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import org.junit.After;
 import org.junit.Test;
 
@@ -59,29 +62,36 @@ public class BuildQueueRebalancerTest
 
 		UrlReader urlReader = mockUrlReader();
 
+		JSONObject queueJSONObject = new JSONObject();
+
+		queueJSONObject.put(
+			"items",
+			new JSONArray(
+			).put(
+				_getQueueItemJSONObject(101, 1)
+			).put(
+				_getQueueItemJSONObject(102, 2)
+			));
+
 		setUrlReaderOutput(
-			JenkinsResultsParserUtil.combine(
-				"{\"items\":[", "{\"id\":101,\"inQueueSince\":1,",
-				"\"task\":{\"name\":",
-				"\"test-portal-acceptance-pullrequest(master)\",",
-				"\"url\":\"http://", _BLACKLISTED_JENKINS_MASTER_NAME,
-				".liferay.com/job/",
-				"test-portal-acceptance-pullrequest(master)/\"},",
-				"\"url\":\"queue/item/101/\",\"why\":\"\"},",
-				"{\"id\":102,\"inQueueSince\":2,", "\"task\":{\"name\":",
-				"\"test-portal-acceptance-pullrequest(master)\",",
-				"\"url\":\"http://", _BLACKLISTED_JENKINS_MASTER_NAME,
-				".liferay.com/job/",
-				"test-portal-acceptance-pullrequest(master)/\"},",
-				"\"url\":\"queue/item/102/\",\"why\":\"\"}", "]}"),
+			String.valueOf(queueJSONObject),
 			_BLACKLISTED_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
 			urlReader);
+
 		setUrlReaderOutput(
-			"{\"mode\":\"NORMAL\"}",
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"mode", "NORMAL"
+				)),
 			_AVAILABLE_JENKINS_MASTER_NAME + ".liferay.com/api/json?tree=mode",
 			urlReader);
 		setUrlReaderOutput(
-			"{\"items\":[]}",
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"items", new JSONArray()
+				)),
 			_AVAILABLE_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
 			urlReader);
 
@@ -163,11 +173,19 @@ public class BuildQueueRebalancerTest
 		);
 
 		setUrlReaderOutput(
-			"{\"mode\":\"NORMAL\"}",
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"mode", "NORMAL"
+				)),
 			_AVAILABLE_JENKINS_MASTER_NAME + ".liferay.com/api/json?tree=mode",
 			urlReader);
 		setUrlReaderOutput(
-			"{\"items\":[]}",
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"items", new JSONArray()
+				)),
 			_AVAILABLE_JENKINS_MASTER_NAME + ".liferay.com/queue/api/json",
 			urlReader);
 
@@ -189,6 +207,35 @@ public class BuildQueueRebalancerTest
 			true,
 			summary.startsWith(
 				"Build queue rebalanced by 0 reinvocations and 0 aborts"));
+	}
+
+	private JSONObject _getQueueItemJSONObject(long id, long inQueueSince) {
+		JSONObject jsonObject = new JSONObject();
+
+		JSONObject taskJSONObject = new JSONObject();
+
+		taskJSONObject.put(
+			"name", _JOB_NAME
+		).put(
+			"url",
+			JenkinsResultsParserUtil.combine(
+				"http://", _BLACKLISTED_JENKINS_MASTER_NAME,
+				".liferay.com/job/", _JOB_NAME, "/")
+		);
+
+		jsonObject.put(
+			"id", id
+		).put(
+			"inQueueSince", inQueueSince
+		).put(
+			"task", taskJSONObject
+		).put(
+			"url", "queue/item/" + id + "/"
+		).put(
+			"why", ""
+		);
+
+		return jsonObject;
 	}
 
 	private void _setJenkinsMasterAWSFleetClouds(String jenkinsMasterName) {
@@ -225,5 +272,8 @@ public class BuildQueueRebalancerTest
 	private static final String _BLACKLISTED_JENKINS_MASTER_NAME = "test-9-1";
 
 	private static final String _JENKINS_COHORT_NAME = "test-9";
+
+	private static final String _JOB_NAME =
+		"test-portal-acceptance-pullrequest(master)";
 
 }
