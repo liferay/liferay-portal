@@ -292,12 +292,23 @@ public class ScimUtil {
 		scimUser.setBirthday(portalUser.getBirthday());
 		scimUser.setCompanyId(portalUser.getCompanyId());
 		scimUser.setCreateDate(_truncateDate(portalUser.getCreateDate()));
-		scimUser.setEmailAddresses(
-			_getEmailAddresses(
-				EmailAddressLocalServiceUtil.getEmailAddresses(
-					portalUser.getCompanyId(), Contact.class.getName(),
-					portalUser.getContactId()),
-				EmailAddress::getAddress, EmailAddress::isPrimary));
+
+		List<EmailAddress> emailAddresses =
+			EmailAddressLocalServiceUtil.getEmailAddresses(
+				portalUser.getCompanyId(), Contact.class.getName(),
+				portalUser.getContactId());
+
+		if (ListUtil.isEmpty(emailAddresses)) {
+			scimUser.setEmailAddresses(
+				new String[] {portalUser.getEmailAddress()});
+		}
+		else {
+			scimUser.setEmailAddresses(
+				_getEmailAddresses(
+					emailAddresses, EmailAddress::getAddress,
+					EmailAddress::isPrimary));
+		}
+
 		scimUser.setExternalReferenceCode(
 			portalUser.getExternalReferenceCode());
 		scimUser.setFirstName(portalUser.getFirstName());
