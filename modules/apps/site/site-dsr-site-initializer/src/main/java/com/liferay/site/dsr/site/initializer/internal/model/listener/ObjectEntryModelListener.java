@@ -592,12 +592,29 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		serviceContext.setCompanyId(objectEntry.getCompanyId());
 		serviceContext.setUserId(objectEntry.getUserId());
 
-		_groupLocalService.updateGroup(
+		group = _groupLocalService.updateGroup(
 			group.getGroupId(), group.getParentGroupId(), nameMap,
 			group.getDescriptionMap(), group.getType(), group.getTypeSettings(),
 			group.isManualMembership(), group.getMembershipRestriction(),
 			friendlyURL, group.isInheritContent(), group.isActive(),
 			serviceContext);
+
+		friendlyURL = StringUtil.removeFirst(group.getFriendlyURL(), "/");
+
+		if (Objects.equals(
+				friendlyURL,
+				MapUtil.getString(objectEntry.getValues(), "friendlyURL"))) {
+
+			return;
+		}
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"friendlyURL", friendlyURL
+			).build(),
+			new ServiceContext());
 	}
 
 	private void _onBeforeCreate(ObjectEntry objectEntry) {

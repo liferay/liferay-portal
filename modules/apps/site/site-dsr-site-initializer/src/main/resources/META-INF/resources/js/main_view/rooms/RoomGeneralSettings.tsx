@@ -17,6 +17,7 @@ import {navigate, sessionStorage} from 'frontend-js-web';
 import React from 'react';
 
 import RoomService from '../../common/services/RoomService';
+import {ensureLeadingSlash} from '../../common/utils/ensureLeadingSlash';
 import {IRoomObjectEntry} from '../../common/utils/types';
 
 const SUCCESS_MESSAGE_SESSION_KEY =
@@ -36,13 +37,14 @@ export default function RoomGeneralSettings({
 		handleBlur,
 		handleChange,
 		handleSubmit,
+		setFieldValue,
 		submitForm,
 		touched,
 		values,
 	} = useFormik({
 		initialValues: {
 			externalReferenceCode: room.externalReferenceCode,
-			friendlyURL: room.friendlyURL ?? '',
+			friendlyURL: ensureLeadingSlash(room.friendlyURL ?? ''),
 			name: room.name,
 		},
 		onSubmit: async (values) => {
@@ -143,7 +145,14 @@ export default function RoomGeneralSettings({
 						)}
 						label={Liferay.Language.get('friendly-url')}
 						name="friendlyURL"
-						onBlur={handleBlur}
+						onBlur={(event: React.FocusEvent<HTMLInputElement>) => {
+							setFieldValue(
+								'friendlyURL',
+								ensureLeadingSlash(event.target.value)
+							);
+
+							handleBlur(event);
+						}}
 						onChange={handleChange}
 						required
 						value={values.friendlyURL}

@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useContext, useEffect} from 'react';
 
+import {ensureLeadingSlash} from '../common/utils/ensureLeadingSlash';
 import {IRoomContext, IRoomStepProps} from '../common/utils/types';
 import FieldErrorMessage from './FieldErrorMessage';
 import {RoomContext} from './RoomInitializer';
@@ -42,10 +43,17 @@ function RoomNameStep({
 		({target: {value}}: React.ChangeEvent<HTMLInputElement>) => {
 			setDataContext((prevState) => ({
 				...prevState,
-				friendlyURL: value
-					.toLowerCase()
-					.replace(/[^a-z0-9-]/g, '-')
-					.replace(/^-+|-+$/g, ''),
+				friendlyURL: value,
+			}));
+		},
+		[setDataContext]
+	);
+
+	const handleFriendlyURLBlur = useCallback(
+		({target: {value}}: React.FocusEvent<HTMLInputElement>) => {
+			setDataContext((prevState) => ({
+				...prevState,
+				friendlyURL: ensureLeadingSlash(value),
 			}));
 		},
 		[setDataContext]
@@ -141,7 +149,7 @@ function RoomNameStep({
 					</label>
 
 					<div className="mb-1 text-2 text-secondary">
-						https://liferay.com/web/
+						https://liferay.com/web
 					</div>
 
 					<ClayInput
@@ -150,6 +158,7 @@ function RoomNameStep({
 						disabled={loading}
 						id="dsr-friendly-url"
 						name="friendlyURL"
+						onBlur={handleFriendlyURLBlur}
 						onChange={handleFriendlyURLChange}
 						type="text"
 						value={dataContext.friendlyURL || ''}
