@@ -11,6 +11,7 @@ import React, {useId, useState} from 'react';
 
 import {patchTaskById} from '../../utils/api';
 import {displayDueDateSuccessToast} from '../../utils/toastUtil';
+import {ITaskObjectEntry} from '../../utils/types';
 import DateField, {dateConfig} from '../DateField';
 
 type Props = {
@@ -19,6 +20,7 @@ type Props = {
 	cmpTaskObjectEntryTitle: string;
 	dueDate?: string;
 	loadData: Function;
+	onTaskUpdated?: (task: ITaskObjectEntry) => void;
 };
 
 export default function UpdateDueDateModalContent({
@@ -27,6 +29,7 @@ export default function UpdateDueDateModalContent({
 	cmpTaskObjectEntryTitle,
 	dueDate: initialDueDate,
 	loadData,
+	onTaskUpdated,
 }: Props) {
 	const initialValue = initialDueDate
 		? moment(initialDueDate.slice(0, 10)).format(dateConfig.momentFormat)
@@ -37,7 +40,7 @@ export default function UpdateDueDateModalContent({
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
-		const {error} = await patchTaskById({
+		const {data, error} = await patchTaskById({
 			body: {
 				dueDate: dueDate
 					? moment(dueDate, dateConfig.momentFormat).format(
@@ -51,7 +54,12 @@ export default function UpdateDueDateModalContent({
 		if (!error) {
 			closeModal();
 
-			loadData();
+			if (onTaskUpdated && data) {
+				onTaskUpdated(data);
+			}
+			else {
+				loadData();
+			}
 
 			displayDueDateSuccessToast(cmpTaskObjectEntryTitle);
 		}

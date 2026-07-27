@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {Immutable} from '@liferay/frontend-js-state-web';
 import {AssigneeValue} from '@liferay/object-dynamic-data-mapping-form-field-type';
 
 import {DISPLAY_TYPES} from './constants';
@@ -123,6 +124,11 @@ export interface ITask {
 	embedded: ITaskObjectEntry;
 	entryClassName: string;
 	score: number;
+}
+
+export interface ITaskItemsActionsTask {
+	actions?: ITaskObjectEntry['actions'];
+	embedded: Immutable<ITaskObjectEntry> | ITaskObjectEntry;
 }
 
 export type TaskAction = {

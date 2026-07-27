@@ -5,7 +5,7 @@
 
 import {ApiHelper} from '@liferay/site-cms-site-initializer';
 
-import {ITask} from './types';
+import {ITaskObjectEntry} from './types';
 
 type WorkflowTaskAssignee = {
 	assignableUsers: Array<{id: number; name: string}>;
@@ -62,6 +62,10 @@ export async function getStateObjectField() {
 	);
 }
 
+export async function getTaskById({taskId}: {taskId: string}) {
+	return await ApiHelper.get<ITaskObjectEntry>(`/o/cmp/tasks/${taskId}`);
+}
+
 export async function getUserAccount(id: string) {
 	return ApiHelper.get(`/o/headless-admin-user/v1.0/user-accounts/${id}`)
 		.then((response) => {
@@ -101,7 +105,10 @@ export async function patchTaskById({
 	body: {[key: string]: any};
 	taskId: string;
 }) {
-	return await ApiHelper.patch<ITask>(body, `/o/cmp/tasks/${taskId}`);
+	return await ApiHelper.patch<ITaskObjectEntry>(
+		body,
+		`/o/cmp/tasks/${taskId}`
+	);
 }
 
 export async function postSubscribeTaskByExternalReferenceCode({
