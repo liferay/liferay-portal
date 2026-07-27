@@ -33,6 +33,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
+import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
@@ -125,6 +126,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -458,6 +460,55 @@ public class BatchEnginePortletDataHandlerTest {
 
 		Assert.assertNotNull(importedAccountEntry);
 		Assert.assertEquals(accountEntryName, importedAccountEntry.getName());
+	}
+
+	@Test
+	@TestInfo("LPD-43217")
+	public void testExportImportCompanyObjectEntriesWithAlwaysCurrentUser()
+		throws Exception {
+
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		ObjectDefinition objectDefinition = _addTextObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		ObjectEntry objectEntry = _addTextObjectEntry(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, user.getUserId(),
+			objectDefinition);
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withObjectEntries(
+			objectDefinition
+		).executeExport();
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withLARFile(
+			larFile
+		).withObjectEntries(
+			objectDefinition
+		).withUserIdStrategy(
+			UserIdStrategy.ALWAYS_CURRENT_USER_ID
+		).executeImport();
+
+		ObjectEntry importedObjectEntry =
+			_objectEntryLocalService.getObjectEntry(
+				objectEntry.getExternalReferenceCode(),
+				objectEntry.getGroupId(),
+				objectDefinition.getObjectDefinitionId());
+
+		Assert.assertEquals(
+			TestPropsValues.getUserId(), importedObjectEntry.getUserId());
 	}
 
 	@Test
@@ -4270,6 +4321,9 @@ public class BatchEnginePortletDataHandlerTest {
 	@Inject
 	private SystemEventLocalService _systemEventLocalService;
 
+	@DeleteAfterTestRun
+	private List<User> _users = new ArrayList<>();
+
 	private static class TestExportImportVulcanBatchEngineTaskItemDelegate
 		implements EntityModelResource,
 				   ExportImportVulcanBatchEngineTaskItemDelegate<TestItem>,
@@ -4636,6 +4690,12 @@ public class BatchEnginePortletDataHandlerTest {
 			return this;
 		}
 
+		public ExportImportExecutor withUserIdStrategy(String userIdStrategy) {
+			_userIdStrategy = userIdStrategy;
+
+			return this;
+		}
+
 		private Map<String, String[]> _getParameterMap() throws Exception {
 			Map<String, String[]> parameterMap = _getExportImportParameterMap(
 				_deletions, _includeDocumentLibrary, _includeLayoutSetLayouts,
@@ -4646,6 +4706,12 @@ public class BatchEnginePortletDataHandlerTest {
 				parameterMap.put(
 					PortletDataHandlerKeys.PERMISSIONS,
 					new String[] {Boolean.TRUE.toString()});
+			}
+
+			if (_userIdStrategy != null) {
+				parameterMap.put(
+					PortletDataHandlerKeys.USER_ID_STRATEGY,
+					new String[] {_userIdStrategy});
 			}
 
 			if (_lastHours > 0) {
@@ -4719,6 +4785,7 @@ public class BatchEnginePortletDataHandlerTest {
 		private boolean _permissions;
 		private boolean _privateLayouts;
 		private Date _startDate;
+		private String _userIdStrategy;
 
 	}
 
