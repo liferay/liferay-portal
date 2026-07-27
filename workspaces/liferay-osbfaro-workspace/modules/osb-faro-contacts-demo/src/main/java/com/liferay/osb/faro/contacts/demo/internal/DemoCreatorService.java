@@ -33,6 +33,7 @@ import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.model.credentials.OAuth1Credentials;
 import com.liferay.osb.faro.engine.client.model.credentials.OAuth2Credentials;
 import com.liferay.osb.faro.engine.client.model.credentials.TokenCredentials;
+import com.liferay.osb.faro.model.FaroChannel;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.provisioning.client.ProvisioningClient;
 import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
@@ -107,6 +108,13 @@ public abstract class DemoCreatorService {
 			portal.getDefaultCompanyId(), "test@liferay.com");
 
 		for (Channel channel : results.getItems()) {
+			FaroChannel faroChannel = faroChannelLocalService.fetchFaroChannel(
+				channel.getId(), faroProject.getGroupId());
+
+			if (faroChannel != null) {
+				continue;
+			}
+
 			faroChannelLocalService.addFaroChannel(
 				user.getUserId(), channel.getName(), channel.getId(),
 				faroProject.getGroupId());

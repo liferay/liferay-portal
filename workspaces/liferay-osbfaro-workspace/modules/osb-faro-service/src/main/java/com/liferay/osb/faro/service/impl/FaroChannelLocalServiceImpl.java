@@ -160,6 +160,13 @@ public class FaroChannelLocalServiceImpl
 	}
 
 	@Override
+	public FaroChannel fetchFaroChannel(
+		String channelId, long workspaceGroupId) {
+
+		return faroChannelPersistence.fetchByC_W(channelId, workspaceGroupId);
+	}
+
+	@Override
 	public FaroChannel getFaroChannel(String channelId, long workspaceGroupId)
 		throws PortalException {
 
