@@ -10,6 +10,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.template.TemplateHandler;
@@ -26,10 +27,14 @@ import jakarta.portlet.PortletPreferences;
 public class PortletDisplayTemplateExportCapability implements Capability {
 
 	public PortletDisplayTemplateExportCapability(
+		ExportImportPortletPreferencesProcessorHelper
+			exportImportPortletPreferencesProcessorHelper,
 		Portal portal, PortletLocalService portletLocalService,
 		PortletDisplayTemplate portletDisplayTemplate,
 		PortletDisplayTemplateRegister portletDisplayTemplateExportRegister) {
 
+		_exportImportPortletPreferencesProcessorHelper =
+			exportImportPortletPreferencesProcessorHelper;
 		_portal = portal;
 		_portletLocalService = portletLocalService;
 		_portletDisplayTemplate = portletDisplayTemplate;
@@ -105,8 +110,15 @@ public class PortletDisplayTemplateExportCapability implements Capability {
 		}
 
 		portletDataContext.setScopeGroupId(previousScopeGroupId);
+
+		_exportImportPortletPreferencesProcessorHelper.
+			updateGroupExportPortletPreferencesExternalReferenceCode(
+				portletDataContext.getCompanyId(),
+				"displayStyleGroupExternalReferenceCode", portletPreferences);
 	}
 
+	private final ExportImportPortletPreferencesProcessorHelper
+		_exportImportPortletPreferencesProcessorHelper;
 	private final Portal _portal;
 	private final PortletDisplayTemplate _portletDisplayTemplate;
 	private final PortletDisplayTemplateRegister

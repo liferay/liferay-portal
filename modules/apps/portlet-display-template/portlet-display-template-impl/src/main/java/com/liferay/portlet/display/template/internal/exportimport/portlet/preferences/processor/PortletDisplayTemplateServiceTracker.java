@@ -6,6 +6,7 @@
 package com.liferay.portlet.display.template.internal.exportimport.portlet.preferences.processor;
 
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
+import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -111,6 +112,7 @@ public class PortletDisplayTemplateServiceTracker {
 					return bundleContext.registerService(
 						Capability.class,
 						new PortletDisplayTemplateExportCapability(
+							_exportImportPortletPreferencesProcessorHelper,
 							_portal, _portletLocalService,
 							_portletDisplayTemplate,
 							bundleContext.getService(serviceReference)),
@@ -159,6 +161,10 @@ public class PortletDisplayTemplateServiceTracker {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortletDisplayTemplateServiceTracker.class);
+
+	@Reference(unbind = "-")
+	private ExportImportPortletPreferencesProcessorHelper
+		_exportImportPortletPreferencesProcessorHelper;
 
 	@Reference(unbind = "-")
 	private Portal _portal;
