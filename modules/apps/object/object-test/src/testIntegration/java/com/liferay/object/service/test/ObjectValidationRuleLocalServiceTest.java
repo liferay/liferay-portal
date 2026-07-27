@@ -8,6 +8,7 @@ package com.liferay.object.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectValidationRuleConstants;
 import com.liferay.object.constants.ObjectValidationRuleSettingConstants;
 import com.liferay.object.exception.NoSuchObjectValidationRuleException;
@@ -134,6 +135,104 @@ public class ObjectValidationRuleLocalServiceTest {
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			_modifiableSystemObjectDefinition);
 		_objectDefinitionLocalService.deleteObjectDefinition(_objectDefinition);
+	}
+
+	@Test
+	public void testAddCompositeKeyObjectValidationRuleWithSystemObjectFields()
+		throws Exception {
+
+		// Metadata field on a modifiable system object definition
+
+		Map<Locale, String> errorLabelMap = LocalizedMapUtil.getLocalizedMap(
+			RandomTestUtil.randomString());
+		ObjectField externalReferenceCodeObjectField =
+			_objectFieldLocalService.fetchObjectField(
+				_modifiableSystemObjectDefinition.getObjectDefinitionId(),
+				"externalReferenceCode");
+		Map<Locale, String> nameLabelMap = LocalizedMapUtil.getLocalizedMap(
+			RandomTestUtil.randomString());
+		ObjectField systemObjectField1 = _addSystemObjectField(
+			StringUtil.randomId(),
+			_modifiableSystemObjectDefinition.getObjectDefinitionId());
+
+		AssertUtils.assertFailure(
+			ObjectValidationRuleSettingValueException.InvalidValue.class,
+			String.format(
+				"The value \"%s\" of the object validation rule setting " +
+					"\"%s\" is invalid",
+				externalReferenceCodeObjectField.getObjectFieldId(),
+				ObjectValidationRuleSettingConstants.
+					NAME_COMPOSITE_KEY_OBJECT_FIELD_ID),
+			() -> _addObjectValidationRule(
+				StringPool.BLANK,
+				_modifiableSystemObjectDefinition.getObjectDefinitionId(),
+				ObjectValidationRuleConstants.ENGINE_TYPE_COMPOSITE_KEY,
+				errorLabelMap, nameLabelMap,
+				ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION,
+				StringPool.BLANK, false,
+				_createCompositeKeyObjectValidationRuleSettings(
+					externalReferenceCodeObjectField, systemObjectField1)));
+
+		// System field on a modifiable system object definition
+
+		ObjectField systemObjectField2 = _addSystemObjectField(
+			StringUtil.randomId(),
+			_modifiableSystemObjectDefinition.getObjectDefinitionId());
+
+		ObjectValidationRule objectValidationRule = _addObjectValidationRule(
+			StringPool.BLANK,
+			_modifiableSystemObjectDefinition.getObjectDefinitionId(),
+			ObjectValidationRuleConstants.ENGINE_TYPE_COMPOSITE_KEY,
+			errorLabelMap, nameLabelMap,
+			ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION,
+			StringPool.BLANK, false,
+			_createCompositeKeyObjectValidationRuleSettings(
+				systemObjectField1, systemObjectField2));
+
+		Assert.assertEquals(
+			ObjectValidationRuleConstants.ENGINE_TYPE_COMPOSITE_KEY,
+			objectValidationRule.getEngine());
+
+		_objectValidationRuleLocalService.deleteObjectValidationRule(
+			objectValidationRule.getObjectValidationRuleId());
+
+		// System field on an unmodifiable system object definition
+
+		ObjectField systemObjectField3 = _createTextObjectField(
+			StringUtil.randomId());
+		ObjectField systemObjectField4 = _createTextObjectField(
+			StringUtil.randomId());
+
+		ObjectDefinition unmodifiableSystemObjectDefinition =
+			ObjectDefinitionTestUtil.addUnmodifiableSystemObjectDefinition(
+				null, TestPropsValues.getUserId(),
+				RandomTestUtil.randomString(), null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionTestUtil.getRandomName(), null, null,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				ObjectDefinitionConstants.SCOPE_COMPANY, null, 1,
+				Arrays.asList(systemObjectField3, systemObjectField4));
+
+		AssertUtils.assertFailure(
+			ObjectValidationRuleSettingValueException.InvalidValue.class,
+			String.format(
+				"The value \"%s\" of the object validation rule setting " +
+					"\"%s\" is invalid",
+				systemObjectField3.getObjectFieldId(),
+				ObjectValidationRuleSettingConstants.
+					NAME_COMPOSITE_KEY_OBJECT_FIELD_ID),
+			() -> _addObjectValidationRule(
+				StringPool.BLANK,
+				unmodifiableSystemObjectDefinition.getObjectDefinitionId(),
+				ObjectValidationRuleConstants.ENGINE_TYPE_COMPOSITE_KEY,
+				errorLabelMap, nameLabelMap,
+				ObjectValidationRuleConstants.OUTPUT_TYPE_FULL_VALIDATION,
+				StringPool.BLANK, false,
+				_createCompositeKeyObjectValidationRuleSettings(
+					systemObjectField3, systemObjectField4)));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(
+			unmodifiableSystemObjectDefinition);
 	}
 
 	@Test
@@ -1036,6 +1135,19 @@ public class ObjectValidationRuleLocalServiceTest {
 			objectValidationRuleSettings);
 	}
 
+	private ObjectField _addSystemObjectField(
+			String name, long objectDefinitionId)
+		throws Exception {
+
+		return _objectFieldLocalService.addSystemObjectField(
+			null, TestPropsValues.getUserId(), 0L, objectDefinitionId,
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT, null, null,
+			ObjectFieldConstants.DB_TYPE_STRING, false, true, "",
+			LocalizedMapUtil.getLocalizedMap(name), false, name,
+			ObjectFieldConstants.READ_ONLY_FALSE, null, false, false,
+			Collections.emptyList());
+	}
+
 	private void _assertObjectValidationRule(
 		boolean expectedActive, String expectedAllowActiveStatusUpdate,
 		String expectedEngine, Map<Locale, String> expectedErrorLabelMap,
@@ -1094,6 +1206,38 @@ public class ObjectValidationRuleLocalServiceTest {
 					ObjectValidationRuleSettingConstants.
 						NAME_OUTPUT_OBJECT_FIELD_ID));
 		}
+	}
+
+	private List<ObjectValidationRuleSetting>
+		_createCompositeKeyObjectValidationRuleSettings(
+			ObjectField... objectFields) {
+
+		List<ObjectValidationRuleSetting> objectValidationRuleSettings =
+			new ArrayList<>();
+
+		for (ObjectField objectField : objectFields) {
+			objectValidationRuleSettings.add(
+				new ObjectValidationRuleSettingBuilder(
+				).name(
+					ObjectValidationRuleSettingConstants.
+						NAME_COMPOSITE_KEY_OBJECT_FIELD_ID
+				).value(
+					String.valueOf(objectField.getObjectFieldId())
+				).build());
+		}
+
+		return objectValidationRuleSettings;
+	}
+
+	private ObjectField _createTextObjectField(String name) {
+		return new TextObjectFieldBuilder(
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).name(
+			name
+		).objectFieldSettings(
+			Collections.emptyList()
+		).build();
 	}
 
 	private Object _getAndSetFieldValue(
