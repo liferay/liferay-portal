@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 
 import '../chat.scss';
 import renderAIAssistantMessageMarkdown from '../utils/renderAIAssistantMessageMarkdown';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
 interface FieldValueMessageBalloonProps {
 	onApply: () => void;
@@ -26,12 +27,7 @@ const FieldValueMessageBalloon: React.FC<FieldValueMessageBalloonProps> = ({
 	return (
 		<div className="ai-assistant-chat__ai-assistant-message-balloon d-flex flex-column mb-2 rounded">
 			<div className="d-flex flex-row font-weight-semi-bold">
-				<div className="align-items-start d-inline-block ml-2 mt-2 text-2 text-primary">
-					<ClayIcon
-						spritemap={Liferay.Icons.spritemap}
-						symbol="stars"
-					/>
-				</div>
+				<AIAssistantMessageBalloonIcon />
 
 				<div
 					className="m-2"

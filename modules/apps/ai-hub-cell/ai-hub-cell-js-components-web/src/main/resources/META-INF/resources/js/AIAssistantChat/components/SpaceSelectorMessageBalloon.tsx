@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import {ChatContext} from '../api';
 import {Space} from '../services/getSpaces';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 import SpaceSelect from './SpaceSelect';
 
 import '../chat.scss';
@@ -36,7 +36,7 @@ const SpaceSelectorMessageBalloon: React.FC<
 	return (
 		<div className="ai-assistant-chat__ai-assistant-message-balloon ai-assistant-chat__content-generation-balloon">
 			<div className="ai-assistant-chat__content-generation-balloon-header">
-				<ClayIcon spritemap={Liferay.Icons.spritemap} symbol="stars" />
+				<AIAssistantMessageBalloonIcon />
 
 				<span>{message}</span>
 			</div>

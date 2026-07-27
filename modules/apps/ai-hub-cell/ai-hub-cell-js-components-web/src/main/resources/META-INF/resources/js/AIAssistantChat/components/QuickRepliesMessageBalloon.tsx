@@ -4,11 +4,11 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
 import React, {useId, useState} from 'react';
 
 import {executeHttpRequestAction} from '../api';
 import {AgentComponent, AgentComponentOption} from '../types';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
 import '../chat.scss';
 
@@ -41,7 +41,7 @@ const QuickRepliesMessageBalloon: React.FC<QuickRepliesMessageBalloonProps> = ({
 	return (
 		<div className="ai-assistant-chat__ai-assistant-message-balloon ai-assistant-chat__content-generation-balloon">
 			<div className="ai-assistant-chat__content-generation-balloon-header">
-				<ClayIcon spritemap={Liferay.Icons.spritemap} symbol="stars" />
+				<AIAssistantMessageBalloonIcon />
 
 				<span
 					className="ai-assistant-chat__content-generation-balloon-title"

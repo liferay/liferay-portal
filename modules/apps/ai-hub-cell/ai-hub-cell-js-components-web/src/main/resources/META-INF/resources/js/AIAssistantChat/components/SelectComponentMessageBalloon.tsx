@@ -4,11 +4,11 @@
  */
 
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import React, {useId, useState} from 'react';
 
 import {executeHttpRequestAction} from '../api';
 import {AgentComponent} from '../types';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
 import '../chat.scss';
 
@@ -51,7 +51,7 @@ const SelectComponentMessageBalloon: React.FC<
 	return (
 		<div className="ai-assistant-chat__ai-assistant-message-balloon ai-assistant-chat__content-generation-balloon">
 			<div className="ai-assistant-chat__content-generation-balloon-header">
-				<ClayIcon spritemap={Liferay.Icons.spritemap} symbol="stars" />
+				<AIAssistantMessageBalloonIcon />
 
 				<span
 					className="ai-assistant-chat__content-generation-balloon-title"

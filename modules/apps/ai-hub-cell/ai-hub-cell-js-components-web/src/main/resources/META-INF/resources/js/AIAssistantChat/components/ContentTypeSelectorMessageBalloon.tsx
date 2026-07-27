@@ -4,13 +4,13 @@
  */
 
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import React, {useId, useState} from 'react';
 
 import {ChatContext} from '../api';
 import {getObjectFields} from '../services/getObjectFields';
 
 import '../chat.scss';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
 export interface ContentType {
 	externalReferenceCode: string;
@@ -65,7 +65,7 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 	return (
 		<div className="ai-assistant-chat__ai-assistant-message-balloon ai-assistant-chat__content-generation-balloon">
 			<div className="ai-assistant-chat__content-generation-balloon-header">
-				<ClayIcon spritemap={Liferay.Icons.spritemap} symbol="stars" />
+				<AIAssistantMessageBalloonIcon />
 
 				<span>{message}</span>
 			</div>

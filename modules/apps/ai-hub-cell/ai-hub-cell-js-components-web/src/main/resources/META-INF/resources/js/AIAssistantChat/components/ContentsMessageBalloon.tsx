@@ -11,6 +11,7 @@ import React from 'react';
 import '../chat.scss';
 import parseContentDraftsMessage from '../utils/parseContentDraftsMessage';
 import renderAIAssistantMessageMarkdown from '../utils/renderAIAssistantMessageMarkdown';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
 interface ContentsMessageBalloonProps {
 	message: string;
@@ -25,10 +26,7 @@ const ContentsMessageBalloon: React.FC<ContentsMessageBalloonProps> = ({
 		<div className="ai-assistant-chat__ai-assistant-message-balloon ai-assistant-chat__content-generation-balloon">
 			{text && (
 				<div className="ai-assistant-chat__content-generation-balloon-header">
-					<ClayIcon
-						spritemap={Liferay.Icons.spritemap}
-						symbol="stars"
-					/>
+					<AIAssistantMessageBalloonIcon />
 
 					<div
 						dangerouslySetInnerHTML={{

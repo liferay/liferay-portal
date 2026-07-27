@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import FeedbackActionsRow from '../../ReportFeedback/FeedbackActionsRow';
 
 import '../chat.scss';
 import renderAIAssistantMessageMarkdown from '../utils/renderAIAssistantMessageMarkdown';
+import AIAssistantMessageBalloonIcon from './AIAssistantMessageBalloonIcon';
 
 interface AssistantMessageBalloonProps {
 	error: boolean;
@@ -31,14 +31,7 @@ const AssistantMessageBalloon: React.FC<AssistantMessageBalloonProps> = ({
 			className={`${error ? 'ai-assistant-chat__ai-assistant-error-message-balloon' : 'ai-assistant-chat__ai-assistant-message-balloon'} d-flex flex-column mb-2 rounded`}
 		>
 			<div className="d-flex flex-row">
-				<div
-					className={`align-items-start d-inline-block flex-shrink-0 ml-2 mt-2 text-2 ${error ? 'text-danger' : 'text-primary'}`}
-				>
-					<ClayIcon
-						spritemap={Liferay.Icons.spritemap}
-						symbol={error ? 'exclamation-full' : 'stars'}
-					/>
-				</div>
+				<AIAssistantMessageBalloonIcon error={error} />
 
 				{error ? (
 					<span className="m-2">
