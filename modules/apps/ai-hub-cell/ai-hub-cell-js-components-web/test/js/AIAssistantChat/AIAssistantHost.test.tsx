@@ -532,7 +532,7 @@ describe('AIAssistantHost', () => {
 	it('keeps the message draft when switching shells', async () => {
 		await renderAndOpen();
 
-		fireEvent.change(screen.getByPlaceholderText('Ask me anything...'), {
+		fireEvent.change(screen.getByPlaceholderText('ask-me-anything'), {
 			target: {value: 'Draft in progress'},
 		});
 
@@ -541,7 +541,7 @@ describe('AIAssistantHost', () => {
 		});
 
 		expect(
-			within(getSidebar()).getByPlaceholderText('Ask me anything...')
+			within(getSidebar()).getByPlaceholderText('ask-me-anything')
 		).toHaveValue('Draft in progress');
 	});
 
@@ -560,7 +560,7 @@ describe('AIAssistantHost', () => {
 			fakeEventSource.emit('Subscribe', 'ref-code');
 		});
 
-		const textArea = screen.getByPlaceholderText('Ask me anything...');
+		const textArea = screen.getByPlaceholderText('ask-me-anything');
 
 		await act(async () => {
 			fireEvent.change(textArea, {target: {value: 'Hello'}});
@@ -665,7 +665,7 @@ describe('AIAssistantHost', () => {
 		const sidebar = await waitForSidebarOpen();
 
 		expect(
-			within(sidebar).getByPlaceholderText('Ask me anything...')
+			within(sidebar).getByPlaceholderText('ask-me-anything')
 		).toBeInTheDocument();
 		expect(
 			screen.queryByRole('button', {name: 'maximize'})
@@ -682,7 +682,7 @@ describe('AIAssistantHost', () => {
 		const sidebar = await waitForSidebarOpen();
 
 		expect(
-			within(sidebar).getByPlaceholderText('Ask me anything...')
+			within(sidebar).getByPlaceholderText('ask-me-anything')
 		).toBeInTheDocument();
 		expect(
 			screen.queryByRole('button', {name: 'minimize'})
@@ -760,14 +760,14 @@ describe('AIAssistantHost', () => {
 		await renderAndOpen();
 
 		const inputBeforeExpand =
-			screen.getByPlaceholderText('Ask me anything...');
+			screen.getByPlaceholderText('ask-me-anything');
 
 		await act(async () => {
 			fireEvent.click(screen.getByRole('button', {name: 'maximize'}));
 		});
 
 		expect(
-			within(getSidebar()).getByPlaceholderText('Ask me anything...')
+			within(getSidebar()).getByPlaceholderText('ask-me-anything')
 		).toBe(inputBeforeExpand);
 	});
 
@@ -797,7 +797,7 @@ describe('AIAssistantHost', () => {
 		await renderAndOpen();
 
 		expect(
-			screen.getByPlaceholderText('Ask me anything...')
+			screen.getByPlaceholderText('ask-me-anything')
 		).toBeInTheDocument();
 	});
 
