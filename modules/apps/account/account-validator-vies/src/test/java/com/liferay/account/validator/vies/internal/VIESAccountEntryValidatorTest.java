@@ -216,6 +216,9 @@ public class VIESAccountEntryValidatorTest {
 				billingAddressId, RandomTestUtil.randomLong(), null);
 
 			Assert.assertEquals(
+				"the-account-is-missing-a-tax-id",
+				accountEntryValidatorResult.getResultMessage());
+			Assert.assertEquals(
 				AccountEntryValidatorConstants.RESULT_FAILURE,
 				accountEntryValidatorResult.getResultStatus());
 			Assert.assertFalse(accountEntryValidatorResult.isValid());

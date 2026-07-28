@@ -89,7 +89,7 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 			return AccountEntryValidatorResult.builder(
 				classPK
 			).resultMessage(
-				"the-account-is-missing-a-vat-number"
+				_RESULT_MESSAGE_MISSING_TAX_ID
 			).resultStatus(
 				AccountEntryValidatorConstants.RESULT_FAILURE
 			).build();
@@ -214,6 +214,9 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 
 		return viesAccountEntryValidatorConfiguration;
 	}
+
+	private static final String _RESULT_MESSAGE_MISSING_TAX_ID =
+		"the-account-is-missing-a-tax-id";
 
 	@Reference
 	private AddressLocalService _addressLocalService;
