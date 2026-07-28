@@ -26,11 +26,11 @@ renderResponse.setTitle(journalEditDDMTemplateDisplayContext.getTitle());
 %>
 
 <portlet:actionURL name="/journal/add_ddm_template" var="addDDMTemplateURL">
-	<portlet:param name="mvcPath" value="/edit_ddm_template.jsp" />
+	<portlet:param name="mvcRenderCommandName" value="/journal/edit_ddm_template" />
 </portlet:actionURL>
 
 <portlet:actionURL name="/journal/update_ddm_template" var="updateDDMTemplateURL">
-	<portlet:param name="mvcPath" value="/edit_ddm_template.jsp" />
+	<portlet:param name="mvcRenderCommandName" value="/journal/edit_ddm_template" />
 </portlet:actionURL>
 
 <aui:form action="<%= (ddmTemplate == null) ? addDDMTemplateURL : updateDDMTemplateURL %>" cssClass="edit-article-form" enctype="multipart/form-data" method="post" name="fm" onSubmit="event.preventDefault();">

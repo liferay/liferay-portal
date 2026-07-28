@@ -116,9 +116,9 @@ public class JournalDDMTemplateManagementToolbarDisplayContext
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
 				dropdownItem.setHref(
-					liferayPortletResponse.createRenderURL(), "mvcPath",
-					"/edit_ddm_template.jsp", "redirect",
-					themeDisplay.getURLCurrent(), "classPK",
+					liferayPortletResponse.createRenderURL(),
+					"mvcRenderCommandName", "/journal/edit_ddm_template",
+					"redirect", themeDisplay.getURLCurrent(), "classPK",
 					_journalDDMTemplateDisplayContext.getClassPK());
 				dropdownItem.setLabel(
 					LanguageUtil.format(

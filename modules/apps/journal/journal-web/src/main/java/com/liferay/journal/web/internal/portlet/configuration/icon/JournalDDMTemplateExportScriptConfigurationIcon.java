@@ -26,7 +26,7 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
-		"path=/edit_ddm_template.jsp"
+		"path=/journal/edit_ddm_template"
 	},
 	service = PortletConfigurationIcon.class
 )

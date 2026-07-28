@@ -78,8 +78,8 @@ public class JournalDDMTemplateVerticalCard extends BaseVerticalCard {
 
 			return PortletURLBuilder.createRenderURL(
 				_renderResponse
-			).setMVCPath(
-				"/edit_ddm_template.jsp"
+			).setMVCRenderCommandName(
+				"/journal/edit_ddm_template"
 			).setRedirect(
 				themeDisplay.getURLCurrent()
 			).setParameter(

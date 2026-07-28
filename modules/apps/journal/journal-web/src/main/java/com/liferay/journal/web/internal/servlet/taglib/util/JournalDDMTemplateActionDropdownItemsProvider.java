@@ -152,8 +152,8 @@ public class JournalDDMTemplateActionDropdownItemsProvider {
 
 		return dropdownItem -> {
 			dropdownItem.setHref(
-				_renderResponse.createRenderURL(), "mvcPath",
-				"/edit_ddm_template.jsp", "redirect",
+				_renderResponse.createRenderURL(), "mvcRenderCommandName",
+				"/journal/edit_ddm_template", "redirect",
 				_themeDisplay.getURLCurrent(), "ddmTemplateId",
 				_ddmTemplate.getTemplateId());
 			dropdownItem.setIcon("pencil");

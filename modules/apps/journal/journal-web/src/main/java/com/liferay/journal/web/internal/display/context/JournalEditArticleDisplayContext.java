@@ -1280,8 +1280,8 @@ public class JournalEditArticleDisplayContext {
 			"editDDMTemplateURL",
 			() -> PortletURLBuilder.createRenderURL(
 				_liferayPortletResponse
-			).setMVCPath(
-				"/edit_ddm_template.jsp"
+			).setMVCRenderCommandName(
+				"/journal/edit_ddm_template"
 			).setRedirect(
 				_themeDisplay.getURLCurrent()
 			).setParameter(

@@ -678,8 +678,8 @@ public class JournalContentDisplayContext {
 			PortalUtil.getControlPanelPortletURL(
 				_portletRequest, JournalPortletKeys.JOURNAL,
 				PortletRequest.RENDER_PHASE)
-		).setMVCPath(
-			"/edit_ddm_template.jsp"
+		).setMVCRenderCommandName(
+			"/journal/edit_ddm_template"
 		).setRedirect(
 			_themeDisplay.getURLCurrent()
 		).setParameter(
