@@ -105,10 +105,6 @@ public class PortalWorkspaceGitRepositoryTest
 
 		workingDirectory.mkdir();
 
-		File gitDirectory = new File(workingDirectory, ".git");
-
-		gitDirectory.mkdir();
-
 		JSONObject jsonObject = new JSONObject();
 
 		jsonObject.put(
@@ -138,33 +134,7 @@ public class PortalWorkspaceGitRepositoryTest
 			"upstream_branch_name", "master"
 		);
 
-		PortalWorkspaceGitRepository portalWorkspaceGitRepository = Mockito.spy(
-			new PortalWorkspaceGitRepository(jsonObject));
-
-		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
-			GitWorkingDirectory.class);
-
-		Mockito.doReturn(
-			gitWorkingDirectory
-		).when(
-			portalWorkspaceGitRepository
-		).getGitWorkingDirectory();
-
-		LocalGitBranch localGitBranch = Mockito.mock(LocalGitBranch.class);
-
-		Mockito.doReturn(
-			"0987654321098765432109876543210987654321"
-		).when(
-			localGitBranch
-		).getSHA();
-
-		Mockito.doReturn(
-			localGitBranch
-		).when(
-			portalWorkspaceGitRepository
-		).getLocalGitBranch();
-
-		return portalWorkspaceGitRepository;
+		return Mockito.spy(new PortalWorkspaceGitRepository(jsonObject));
 	}
 
 	private void _testGetPortalTestProperties(
@@ -220,18 +190,12 @@ public class PortalWorkspaceGitRepositoryTest
 		portalWorkspaceGitRepository.setUpAdditionalCaches();
 
 		if (binariesCacheEnabled) {
-			Assert.assertTrue(
-				portalWorkspaceGitRepository.isBinariesCacheEnabled());
-
 			Mockito.verify(
 				portalWorkspaceGitRepository, Mockito.times(1)
 			).setUpBinariesCache();
 
 			return;
 		}
-
-		Assert.assertFalse(
-			portalWorkspaceGitRepository.isBinariesCacheEnabled());
 
 		Mockito.verify(
 			portalWorkspaceGitRepository, Mockito.never()

@@ -48,11 +48,8 @@ public class WorkspaceGitRepositoryTest
 
 	@Test
 	public void testSetUp() throws Exception {
-		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
-			GitWorkingDirectory.class);
-
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+			_newDefaultWorkspaceGitRepository();
 
 		Mockito.doNothing(
 		).when(
@@ -163,7 +160,13 @@ public class WorkspaceGitRepositoryTest
 		);
 
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+			_newDefaultWorkspaceGitRepository();
+
+		Mockito.doReturn(
+			gitWorkingDirectory
+		).when(
+			defaultWorkspaceGitRepository
+		).getGitWorkingDirectory();
 
 		defaultWorkspaceGitRepository.validateSHAInRemoteGitRef(
 			"master", remoteGitRef, null);
@@ -196,7 +199,13 @@ public class WorkspaceGitRepositoryTest
 		).getWorkingDirectory();
 
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+			_newDefaultWorkspaceGitRepository();
+
+		Mockito.doReturn(
+			gitWorkingDirectory
+		).when(
+			defaultWorkspaceGitRepository
+		).getGitWorkingDirectory();
 
 		return defaultWorkspaceGitRepository.isFullDotGitDirArchiveRequired();
 	}
@@ -205,11 +214,8 @@ public class WorkspaceGitRepositoryTest
 			boolean gitArchiveAvailable, boolean snapshot)
 		throws Exception {
 
-		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
-			GitWorkingDirectory.class);
-
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+			_newDefaultWorkspaceGitRepository();
 
 		Mockito.doReturn(
 			gitArchiveAvailable
@@ -262,11 +268,8 @@ public class WorkspaceGitRepositoryTest
 
 		JenkinsResultsParserUtil.setTopLevelJobNames(topLevelJobNames);
 
-		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
-			GitWorkingDirectory.class);
-
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+			_newDefaultWorkspaceGitRepository();
 
 		Mockito.doNothing(
 		).when(
@@ -311,8 +314,7 @@ public class WorkspaceGitRepositoryTest
 		return defaultWorkspaceGitRepository.isSnapshot();
 	}
 
-	private DefaultWorkspaceGitRepository _newDefaultWorkspaceGitRepository(
-			GitWorkingDirectory gitWorkingDirectory)
+	private DefaultWorkspaceGitRepository _newDefaultWorkspaceGitRepository()
 		throws Exception {
 
 		File workingDirectory = File.createTempFile("workspace-", null);
@@ -350,16 +352,7 @@ public class WorkspaceGitRepositoryTest
 			"upstream_branch_name", "master"
 		);
 
-		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			Mockito.spy(new DefaultWorkspaceGitRepository(jsonObject));
-
-		Mockito.doReturn(
-			gitWorkingDirectory
-		).when(
-			defaultWorkspaceGitRepository
-		).getGitWorkingDirectory();
-
-		return defaultWorkspaceGitRepository;
+		return Mockito.spy(new DefaultWorkspaceGitRepository(jsonObject));
 	}
 
 	private void _testPrepareGitWorkingDirectory(
@@ -373,11 +366,8 @@ public class WorkspaceGitRepositoryTest
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
-		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
-			GitWorkingDirectory.class);
-
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
-			_newDefaultWorkspaceGitRepository(gitWorkingDirectory);
+			_newDefaultWorkspaceGitRepository();
 
 		Mockito.doNothing(
 		).when(
