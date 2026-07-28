@@ -8,10 +8,14 @@ package com.liferay.site.sitemap.web.internal.display.context;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.SelectOption;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.GroupItemSelectorReturnType;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.item.selector.ObjectDefinitionItemSelectorCriterion;
 import com.liferay.object.item.selector.ObjectDefinitionItemSelectorReturnType;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
@@ -49,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lourdes Fernández Besada
@@ -60,6 +65,7 @@ public class SitemapCompanyConfigurationDisplayContext {
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectDefinitionSettingLocalService objectDefinitionSettingLocalService,
 		SitemapConfigurationManager sitemapConfigurationManager,
 		SitemapManager sitemapManager,
 		SitemapStorageHelper sitemapStorageHelper, ThemeDisplay themeDisplay) {
@@ -69,6 +75,8 @@ public class SitemapCompanyConfigurationDisplayContext {
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
+		_objectDefinitionSettingLocalService =
+			objectDefinitionSettingLocalService;
 		_sitemapConfigurationManager = sitemapConfigurationManager;
 		_sitemapManager = sitemapManager;
 		_sitemapStorageHelper = sitemapStorageHelper;
@@ -93,7 +101,7 @@ public class SitemapCompanyConfigurationDisplayContext {
 						_sitemapConfigurationManager.getCompanySitemapGroupIds(
 							_themeDisplay.getCompanyId()),
 						groupId -> _groupLocalService.fetchGroup(groupId)),
-					group -> (group != null) && !group.isGuest()),
+					group -> !group.isGuest()),
 				new GroupNameComparator(true, _themeDisplay.getLocale())));
 
 		searchContainer.setResultsAndTotal(() -> groups, groups.size());
@@ -170,6 +178,11 @@ public class SitemapCompanyConfigurationDisplayContext {
 				_liferayPortletResponse.createRenderURL(), headerNames,
 				"no-objects-or-cms-structures-were-found");
 
+		Map<Long, ObjectDefinitionSetting> objectDefinitionSettingsMap =
+			_objectDefinitionSettingLocalService.getObjectDefinitionSettingsMap(
+				_themeDisplay.getCompanyId(),
+				ObjectDefinitionSettingConstants.NAME_SITEMAPABLE);
+
 		List<ObjectDefinition> objectDefinitions = ListUtil.filter(
 			TransformUtil.transformToList(
 				_sitemapConfigurationManager.
@@ -178,7 +191,11 @@ public class SitemapCompanyConfigurationDisplayContext {
 				objectDefinitionId ->
 					_objectDefinitionLocalService.fetchObjectDefinition(
 						objectDefinitionId)),
-			objectDefinition -> objectDefinition != null);
+			objectDefinition ->
+				objectDefinition.isActive() &&
+				ObjectDefinitionSettingUtil.isEnabled(
+					ObjectDefinitionSettingConstants.NAME_SITEMAPABLE,
+					objectDefinition, objectDefinitionSettingsMap));
 
 		searchContainer.setResultsAndTotal(
 			() -> objectDefinitions, objectDefinitions.size());
@@ -199,6 +216,8 @@ public class SitemapCompanyConfigurationDisplayContext {
 
 		objectDefinitionItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
 			new ObjectDefinitionItemSelectorReturnType());
+		objectDefinitionItemSelectorCriterion.setObjectDefinitionSettingName(
+			ObjectDefinitionSettingConstants.NAME_SITEMAPABLE);
 
 		_objectDefinitionSelectorURL = String.valueOf(
 			_itemSelector.getItemSelectorURL(
@@ -496,6 +515,8 @@ public class SitemapCompanyConfigurationDisplayContext {
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private SearchContainer<ObjectDefinition> _objectDefinitionSearchContainer;
 	private String _objectDefinitionSelectorURL;
+	private final ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
 	private String _selectGroupEventName;
 	private String _selectObjectDefinitionEventName;
 	private final SitemapConfigurationManager _sitemapConfigurationManager;

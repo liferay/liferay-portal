@@ -74,8 +74,8 @@ public class ObjectDefinitionItemSelectorView
 
 		ObjectDefinitionDisplayContext objectDefinitionDisplayContext =
 			new ObjectDefinitionDisplayContext(
-				httpServletRequest, _objectDefinitionLocalService, portletURL,
-				renderRequest);
+				httpServletRequest, objectDefinitionItemSelectorCriterion,
+				_objectDefinitionLocalService, portletURL, renderRequest);
 
 		_itemSelectorViewDescriptorRenderer.renderHTML(
 			httpServletRequest, servletResponse,

@@ -6,8 +6,12 @@
 package com.liferay.site.sitemap.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
@@ -109,38 +113,8 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 		_sitemapConfigurationManager.saveSitemapCompanyConfiguration(
 			cachedGenerationEnabled, companyId,
-			ArrayUtil.filter(
-				ArrayUtil.unique(
-					ParamUtil.getLongValues(
-						actionRequest, "groupsSearchContainerPrimaryKeys")),
-				groupId -> {
-					Group group = _groupLocalService.fetchGroup(groupId);
-
-					if ((group == null) || group.isGuest()) {
-						return false;
-					}
-
-					return true;
-				}),
-			ArrayUtil.filter(
-				ArrayUtil.unique(
-					ParamUtil.getLongValues(
-						actionRequest,
-						"objectDefinitionsSearchContainerPrimaryKeys")),
-				objectDefinitionId -> {
-					ObjectDefinition objectDefinition =
-						_objectDefinitionLocalService.fetchObjectDefinition(
-							objectDefinitionId);
-
-					if ((objectDefinition == null) ||
-						!objectDefinition.isActive() ||
-						objectDefinition.isSystem()) {
-
-						return false;
-					}
-
-					return true;
-				}),
+			_getCompanySitemapGroupIds(actionRequest),
+			_getCompanySitemapObjectDefinitionIds(actionRequest, companyId),
 			ParamUtil.getBoolean(actionRequest, "includeCategories"),
 			ParamUtil.getBoolean(actionRequest, "includePages"),
 			ParamUtil.getBoolean(actionRequest, "includeWebContent"),
@@ -196,6 +170,42 @@ public class SaveCompanyConfigurationMVCActionCommand
 		sendRedirect(actionRequest, actionResponse);
 	}
 
+	private long[] _getCompanySitemapGroupIds(ActionRequest actionRequest) {
+		return ArrayUtil.filter(
+			ArrayUtil.unique(
+				ParamUtil.getLongValues(
+					actionRequest, "groupsSearchContainerPrimaryKeys")),
+			groupId -> {
+				Group group = _groupLocalService.fetchGroup(groupId);
+
+				return (group != null) && !group.isGuest();
+			});
+	}
+
+	private long[] _getCompanySitemapObjectDefinitionIds(
+		ActionRequest actionRequest, long companyId) {
+
+		Map<Long, ObjectDefinitionSetting> objectDefinitionSettingsMap =
+			_objectDefinitionSettingLocalService.getObjectDefinitionSettingsMap(
+				companyId, ObjectDefinitionSettingConstants.NAME_SITEMAPABLE);
+
+		return ArrayUtil.filter(
+			ArrayUtil.unique(
+				ParamUtil.getLongValues(
+					actionRequest,
+					"objectDefinitionsSearchContainerPrimaryKeys")),
+			objectDefinitionId -> {
+				ObjectDefinition objectDefinition =
+					_objectDefinitionLocalService.fetchObjectDefinition(
+						objectDefinitionId);
+
+				return (objectDefinition != null) &&
+					   objectDefinition.isActive() &&
+					   ObjectDefinitionSettingUtil.isSitemapable(
+						   objectDefinition, objectDefinitionSettingsMap);
+			});
+	}
+
 	@Reference
 	private GroupLocalService _groupLocalService;
 
@@ -204,6 +214,10 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
 
 	@Reference
 	private SitemapConfigurationManager _sitemapConfigurationManager;

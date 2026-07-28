@@ -12,4 +12,17 @@ import com.liferay.item.selector.BaseItemSelectorCriterion;
  */
 public class ObjectDefinitionItemSelectorCriterion
 	extends BaseItemSelectorCriterion {
+
+	public String getObjectDefinitionSettingName() {
+		return _objectDefinitionSettingName;
+	}
+
+	public void setObjectDefinitionSettingName(
+		String objectDefinitionSettingName) {
+
+		_objectDefinitionSettingName = objectDefinitionSettingName;
+	}
+
+	private String _objectDefinitionSettingName;
+
 }

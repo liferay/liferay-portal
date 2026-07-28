@@ -6,13 +6,21 @@
 package com.liferay.object.item.selector.web.internal.display.context;
 
 import com.liferay.object.constants.ObjectPortletKeys;
+import com.liferay.object.item.selector.ObjectDefinitionItemSelectorCriterion;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSettingTable;
+import com.liferay.object.model.ObjectDefinitionTable;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.SearchOrderByUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -30,10 +38,14 @@ public class ObjectDefinitionDisplayContext {
 
 	public ObjectDefinitionDisplayContext(
 		HttpServletRequest httpServletRequest,
+		ObjectDefinitionItemSelectorCriterion
+			objectDefinitionItemSelectorCriterion,
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		PortletURL portletURL, RenderRequest renderRequest) {
 
 		_httpServletRequest = httpServletRequest;
+		_objectDefinitionItemSelectorCriterion =
+			objectDefinitionItemSelectorCriterion;
 		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_portletURL = portletURL;
 		_renderRequest = renderRequest;
@@ -64,15 +76,36 @@ public class ObjectDefinitionDisplayContext {
 			columnName = "modifiedDate";
 		}
 
+		OrderByComparator<ObjectDefinition> orderByComparator =
+			OrderByComparatorFactoryUtil.create(
+				"ObjectDefinition", columnName,
+				Objects.equals(_getOrderByType(), "asc"));
+
+		Predicate predicate = _getPredicate(
+			_objectDefinitionItemSelectorCriterion.
+				getObjectDefinitionSettingName());
+
 		objectDefinitionSearchContainer.setResultsAndTotal(
-			_objectDefinitionLocalService.getObjectDefinitions(
-				_themeDisplay.getCompanyId(), true, false,
-				WorkflowConstants.STATUS_APPROVED,
-				objectDefinitionSearchContainer.getStart(),
-				objectDefinitionSearchContainer.getEnd(),
-				OrderByComparatorFactoryUtil.create(
-					"ObjectDefinition", columnName,
-					Objects.equals(_getOrderByType(), "asc"))));
+			() -> _objectDefinitionLocalService.dslQuery(
+				DSLQueryFactoryUtil.select(
+					ObjectDefinitionTable.INSTANCE
+				).from(
+					ObjectDefinitionTable.INSTANCE
+				).where(
+					predicate
+				).orderBy(
+					ObjectDefinitionTable.INSTANCE, orderByComparator
+				).limit(
+					objectDefinitionSearchContainer.getStart(),
+					objectDefinitionSearchContainer.getEnd()
+				)),
+			_objectDefinitionLocalService.dslQueryCount(
+				DSLQueryFactoryUtil.count(
+				).from(
+					ObjectDefinitionTable.INSTANCE
+				).where(
+					predicate
+				)));
 
 		_objectDefinitionSearchContainer = objectDefinitionSearchContainer;
 
@@ -103,7 +136,47 @@ public class ObjectDefinitionDisplayContext {
 		return _orderByType;
 	}
 
+	private Predicate _getPredicate(String objectDefinitionSettingName) {
+		Predicate predicate = ObjectDefinitionTable.INSTANCE.companyId.eq(
+			_themeDisplay.getCompanyId()
+		).and(
+			ObjectDefinitionTable.INSTANCE.active.eq(true)
+		).and(
+			ObjectDefinitionTable.INSTANCE.status.eq(
+				WorkflowConstants.STATUS_APPROVED)
+		);
+
+		if (Validator.isNull(objectDefinitionSettingName)) {
+			return predicate.and(
+				ObjectDefinitionTable.INSTANCE.system.eq(false));
+		}
+
+		return predicate.and(
+			Predicate.withParentheses(
+				Predicate.or(
+					ObjectDefinitionTable.INSTANCE.objectDefinitionId.in(
+						DSLQueryFactoryUtil.select(
+							ObjectDefinitionSettingTable.INSTANCE.
+								objectDefinitionId
+						).from(
+							ObjectDefinitionSettingTable.INSTANCE
+						).where(
+							ObjectDefinitionSettingTable.INSTANCE.companyId.eq(
+								_themeDisplay.getCompanyId()
+							).and(
+								ObjectDefinitionSettingTable.INSTANCE.name.eq(
+									objectDefinitionSettingName)
+							).and(
+								ObjectDefinitionSettingTable.INSTANCE.value.eq(
+									StringPool.TRUE)
+							)
+						)),
+					ObjectDefinitionTable.INSTANCE.system.eq(false))));
+	}
+
 	private final HttpServletRequest _httpServletRequest;
+	private final ObjectDefinitionItemSelectorCriterion
+		_objectDefinitionItemSelectorCriterion;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private SearchContainer<ObjectDefinition> _objectDefinitionSearchContainer;
 	private String _orderByCol;

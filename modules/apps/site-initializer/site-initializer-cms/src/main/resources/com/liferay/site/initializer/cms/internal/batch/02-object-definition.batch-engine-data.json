@@ -87,6 +87,10 @@
 					"value": "space"
 				},
 				{
+					"name": "sitemapable",
+					"value": "true"
+				},
+				{
 					"name": "visible",
 					"value": "true"
 				}
@@ -399,6 +403,10 @@
 					"value": "space"
 				},
 				{
+					"name": "sitemapable",
+					"value": "true"
+				},
+				{
 					"name": "visible",
 					"value": "true"
 				}
@@ -681,6 +689,10 @@
 				{
 					"name": "domain",
 					"value": "space"
+				},
+				{
+					"name": "sitemapable",
+					"value": "true"
 				},
 				{
 					"name": "visible",
@@ -1632,6 +1644,10 @@
 				{
 					"name": "domain",
 					"value": "space"
+				},
+				{
+					"name": "sitemapable",
+					"value": "true"
 				},
 				{
 					"name": "visible",

@@ -5,9 +5,13 @@
 
 package com.liferay.object.definition.setting.util;
 
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
+import com.liferay.portal.kernel.util.GetterUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -27,6 +31,33 @@ public class ObjectDefinitionSettingUtil {
 		}
 
 		return null;
+	}
+
+	public static boolean isSitemapable(
+		ObjectDefinition objectDefinition,
+		Map<Long, ObjectDefinitionSetting> objectDefinitionSettingsMap) {
+
+		if (!objectDefinition.isSystem()) {
+			return true;
+		}
+
+		if (objectDefinition.isUnmodifiableSystemObject()) {
+			return false;
+		}
+
+		ObjectDefinitionSetting objectDefinitionSetting =
+			objectDefinitionSettingsMap.get(
+				objectDefinition.getObjectDefinitionId());
+
+		if ((objectDefinitionSetting == null) ||
+			!Objects.equals(
+				objectDefinitionSetting.getName(),
+				ObjectDefinitionSettingConstants.NAME_SITEMAPABLE)) {
+
+			return false;
+		}
+
+		return GetterUtil.getBoolean(objectDefinitionSetting.getValue());
 	}
 
 }
