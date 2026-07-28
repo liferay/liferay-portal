@@ -72,14 +72,26 @@ public class WorkspaceGitRepositoryTest
 		InOrder inOrder = Mockito.inOrder(defaultWorkspaceGitRepository);
 
 		inOrder.verify(
-			defaultWorkspaceGitRepository, Mockito.times(1)
+			defaultWorkspaceGitRepository
 		).prepareGitWorkingDirectory();
 
 		inOrder.verify(
-			defaultWorkspaceGitRepository, Mockito.times(1)
+			defaultWorkspaceGitRepository
 		).setUpAdditionalCaches();
 
 		inOrder.verify(
+			defaultWorkspaceGitRepository
+		).uploadGitArchives();
+
+		Mockito.verify(
+			defaultWorkspaceGitRepository, Mockito.times(1)
+		).prepareGitWorkingDirectory();
+
+		Mockito.verify(
+			defaultWorkspaceGitRepository, Mockito.times(1)
+		).setUpAdditionalCaches();
+
+		Mockito.verify(
 			defaultWorkspaceGitRepository, Mockito.times(1)
 		).uploadGitArchives();
 	}
