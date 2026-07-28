@@ -125,7 +125,7 @@ public class JenkinsGitRepositoryJobTest
 		buildProperties.setProperty(
 			"jenkins.pull.request.jobs" +
 				"[root-cause-analysis-tool-rule][relevant]",
-			"root-cause-analysis-tool");
+			"root-cause-analysis-tool,test-portal-source-format");
 		buildProperties.setProperty(
 			"modified.files.includes[build-common-rule][relevant]",
 			"commands/build-common.xml,lib/jenkins/*");
