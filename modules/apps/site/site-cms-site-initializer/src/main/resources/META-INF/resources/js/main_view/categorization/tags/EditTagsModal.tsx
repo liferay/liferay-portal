@@ -17,38 +17,64 @@ import {
 	displayErrorToast,
 	displayNameInUseErrorToast,
 } from '../../../common/utils/toastUtil';
+import CategorizationProjects from '../components/CategorizationProjects';
 import CategorizationSpaces from '../components/CategorizationSpaces';
+
+const CONFIRMATION_MESSAGES = {
+	BOTH: {
+		message: Liferay.Language.get(
+			'removing-both-will-make-the-tag-unavailable'
+		),
+		title: Liferay.Language.get('confirm-changes'),
+	},
+	PROJECTS: {
+		message: Liferay.Language.get(
+			'removing-a-project-will-make-the-tag-unavailable'
+		),
+		title: Liferay.Language.get('confirm-project-change'),
+	},
+	SPACES: {
+		message: Liferay.Language.get(
+			'removing-a-space-will-make-the-tag-unavailable'
+		),
+		title: Liferay.Language.get('confirm-space-change'),
+	},
+};
 
 export default function EditTagsModalContent({
 	assetLibraries,
 	closeModal,
 	editTagURL,
 	loadData,
+	projects,
 	tagId,
 	tagName,
 }: {
-	assetLibraries: any;
+	assetLibraries: AssetLibraryType[];
 	closeModal: () => void;
 	editTagURL: string;
 	loadData: () => {};
+	projects?: AssetLibraryType[];
 	tagId: number;
 	tagName: string;
 }) {
 	const [nameInputError, setNameInputError] = useState<string>('');
+	const [projectChange, setProjectChange] = useState(false);
+	const [projectInputError, setProjectInputError] = useState('');
+	const [selectedProjects, setSelectedProjects] = useState<string[]>(
+		projects?.map((project) => project.scopeKey) ?? []
+	);
 	const [selectedSpaces, setSelectedSpaces] = useState<string[]>(
 		assetLibraries.map((item: {scopeKey: string}) => item.scopeKey)
 	);
 	const [spaceChange, setSpaceChange] = useState(false);
 	const [spaceInputError, setSpaceInputError] = useState('');
 
-	const assetLibraryIds = selectedSpaces.map((string) => ({
-		scopeKey: string,
-	}));
-
 	const updateTag = (values: any) => {
 		const body = {
-			assetLibraries: assetLibraryIds,
+			assetLibraries: selectedSpaces.map((scopeKey) => ({scopeKey})),
 			name: values.tagName,
+			projects: selectedProjects.map((scopeKey) => ({scopeKey})),
 		};
 
 		ApiHelper.put(editTagURL, body).then(({error, status}) => {
@@ -92,36 +118,53 @@ export default function EditTagsModalContent({
 		useFormik({
 			initialValues: {
 				assetLibraries,
+				projects: projects ?? [],
 				tagId,
 				tagName,
 			},
 			onSubmit: (values) => {
-				if (spaceChange) {
-					openConfirmModal({
-						message: Liferay.Language.get(
-							'removing-a-space-will-make-the-tag-unavailable'
-						),
-						onConfirm: (isConfirm: boolean) => {
-							if (isConfirm) {
-								updateTag(values);
-							}
-						},
-						status: 'info',
-						title: Liferay.Language.get('confirm-space-change'),
-					});
-				}
-				else {
+				if (!projectChange && !spaceChange) {
 					updateTag(values);
+
+					return;
 				}
+
+				const confirmationMessages = (() => {
+					if (projectChange && spaceChange) {
+						return CONFIRMATION_MESSAGES.BOTH;
+					}
+					else if (projectChange) {
+						return CONFIRMATION_MESSAGES.PROJECTS;
+					}
+
+					return CONFIRMATION_MESSAGES.SPACES;
+				})();
+
+				openConfirmModal({
+					message: confirmationMessages.message,
+					onConfirm: (isConfirm: boolean) => {
+						if (isConfirm) {
+							updateTag(values);
+						}
+					},
+					status: 'info',
+					title: confirmationMessages.title,
+				});
 			},
 			validate: (values) => {
 				const errors = validate(
 					{
 						assetLibraries: [required],
+						projects: [required],
 						tagName: [required],
 					},
 					values
 				);
+
+				if (projectInputError) {
+					errors.projects = projectInputError;
+				}
+
 				if (spaceInputError) {
 					errors.assetLibraries = spaceInputError;
 				}
@@ -169,13 +212,23 @@ export default function EditTagsModalContent({
 					value={values.tagName}
 				/>
 
-				<CategorizationSpaces
-					assetLibraries={assetLibraries}
-					checkboxText="tag"
-					setSelectedSpaces={setSelectedSpaces}
-					setSpaceChange={setSpaceChange}
-					setSpaceInputError={setSpaceInputError}
-				/>
+				<div className="c-gap-4 d-flex flex-column">
+					<CategorizationSpaces
+						assetLibraries={assetLibraries}
+						checkboxText="tag"
+						setSelectedSpaces={setSelectedSpaces}
+						setSpaceChange={setSpaceChange}
+						setSpaceInputError={setSpaceInputError}
+					/>
+
+					<CategorizationProjects
+						checkboxText="tag"
+						projects={projects}
+						setProjectChange={setProjectChange}
+						setProjectInputError={setProjectInputError}
+						setSelectedProjects={setSelectedProjects}
+					/>
+				</div>
 			</ClayModal.Body>
 
 			<ClayModal.Footer

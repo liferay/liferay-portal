@@ -23,6 +23,7 @@ import {
 	displayErrorToast,
 	displayNameInUseErrorToast,
 } from '../../../common/utils/toastUtil';
+import CategorizationProjects from '../components/CategorizationProjects';
 import CategorizationSpaces from '../components/CategorizationSpaces';
 
 const FDS_EVENT_UPDATE_DISPLAY = 'fds-update-display';
@@ -39,6 +40,8 @@ export default function CreateTagsModalContent({
 	invalidTagCharacters: string;
 }) {
 	const [nameInputError, setNameInputError] = useState<string>('');
+	const [projectInputError, setProjectInputError] = useState('');
+	const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
 	const [selectedSpaces, setSelectedSpaces] = useState<string[]>([]);
 	const [spaceInputError, setSpaceInputError] = useState('');
 	const [close, setClose] = useState(false);
@@ -55,15 +58,19 @@ export default function CreateTagsModalContent({
 	} = useFormik({
 		initialValues: {
 			assetLibraries: [],
+			projects: [],
 			tagName: '',
 		},
 		onSubmit: (values) => {
 			const url = `/o/headless-admin-taxonomy/v1.0/sites/${cmsGroupId}/keywords`;
 			const body = {
-				assetLibraries: selectedSpaces.map((string) => ({
-					scopeKey: string,
+				assetLibraries: selectedSpaces.map((scopeKey) => ({
+					scopeKey,
 				})),
 				name: values.tagName,
+				projects: selectedProjects.map((scopeKey) => ({
+					scopeKey,
+				})),
 			};
 
 			return ApiHelper.post(url, body).then(({error, status}) => {
@@ -96,7 +103,7 @@ export default function CreateTagsModalContent({
 					}
 
 					throw new Error(
-						`POST request failed to create a new tag with name ${body.name} in the following asset libraries: ${JSON.stringify(body.assetLibraries)}`
+						`POST request failed to create a new tag with name ${body.name} using the following data: ${JSON.stringify(body)}`
 					);
 				}
 				else {
@@ -123,6 +130,7 @@ export default function CreateTagsModalContent({
 			const errors = validate(
 				{
 					assetLibraries: [required],
+					projects: [required],
 					tagName: [
 						required,
 						invalidCharacters(invalidTagCharacters.split('')),
@@ -131,6 +139,11 @@ export default function CreateTagsModalContent({
 				},
 				values
 			);
+
+			if (projectInputError) {
+				errors.projects = projectInputError;
+			}
+
 			if (spaceInputError) {
 				errors.assetLibraries = spaceInputError;
 			}
@@ -140,7 +153,10 @@ export default function CreateTagsModalContent({
 	});
 
 	const shouldDisableSaveBtn =
-		isSubmitting || !values.tagName || !!spaceInputError;
+		isSubmitting ||
+		!values.tagName ||
+		!!projectInputError ||
+		!!spaceInputError;
 
 	const errorMessage = sub(
 		Liferay.Language.get('the-x-field-is-required'),
@@ -185,11 +201,19 @@ export default function CreateTagsModalContent({
 					value={values.tagName}
 				/>
 
-				<CategorizationSpaces
-					checkboxText="tag"
-					setSelectedSpaces={setSelectedSpaces}
-					setSpaceInputError={setSpaceInputError}
-				/>
+				<div className="c-gap-4 d-flex flex-column">
+					<CategorizationSpaces
+						checkboxText="tag"
+						setSelectedSpaces={setSelectedSpaces}
+						setSpaceInputError={setSpaceInputError}
+					/>
+
+					<CategorizationProjects
+						checkboxText="tag"
+						setProjectInputError={setProjectInputError}
+						setSelectedProjects={setSelectedProjects}
+					/>
+				</div>
 			</ClayModal.Body>
 
 			<ClayModal.Footer
