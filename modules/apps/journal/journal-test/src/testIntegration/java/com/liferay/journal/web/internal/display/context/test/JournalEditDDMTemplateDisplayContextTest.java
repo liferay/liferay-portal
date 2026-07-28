@@ -6,14 +6,21 @@
 package com.liferay.journal.web.internal.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMTemplate;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
+import com.liferay.dynamic.data.mapping.test.util.DDMTemplateTestUtil;
 import com.liferay.journal.configuration.JournalServiceConfiguration;
+import com.liferay.journal.model.JournalArticle;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
@@ -25,6 +32,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -88,27 +96,162 @@ public class JournalEditDDMTemplateDisplayContextTest {
 		}
 	}
 
-	private MockLiferayPortletRenderRequest
-			_getMockLiferayPortletRenderRequest()
+	@Test
+	public void testRenderAddViewWithAddTemplatePermission() throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				UserTestUtil.getAdminUser(_group.getCompanyId()));
+
+		_render(mockLiferayPortletRenderRequest);
+
+		Assert.assertNotNull(
+			mockLiferayPortletRenderRequest.getAttribute(
+				_DISPLAY_CONTEXT_ATTRIBUTE_NAME));
+		Assert.assertFalse(
+			SessionErrors.contains(
+				mockLiferayPortletRenderRequest,
+				PrincipalException.MustHavePermission.class));
+	}
+
+	@Test
+	public void testRenderAddViewWithoutAddTemplatePermission()
+		throws Exception {
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				UserTestUtil.addUser(_group.getGroupId()));
+
+		_render(mockLiferayPortletRenderRequest);
+
+		_assertMustHavePermission(mockLiferayPortletRenderRequest);
+	}
+
+	@Test
+	public void testRenderEditViewWithoutUpdatePermission() throws Exception {
+		DDMTemplate ddmTemplate = _addDDMTemplate();
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				UserTestUtil.addUser(_group.getGroupId()));
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"ddmTemplateId", String.valueOf(ddmTemplate.getTemplateId()));
+
+		_render(mockLiferayPortletRenderRequest);
+
+		_assertMustHavePermission(mockLiferayPortletRenderRequest);
+	}
+
+	@Test
+	public void testRenderEditViewWithUpdatePermission() throws Exception {
+		DDMTemplate ddmTemplate = _addDDMTemplate();
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				UserTestUtil.getAdminUser(_group.getCompanyId()));
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"ddmTemplateId", String.valueOf(ddmTemplate.getTemplateId()));
+
+		_render(mockLiferayPortletRenderRequest);
+
+		Assert.assertNotNull(
+			mockLiferayPortletRenderRequest.getAttribute(
+				_DISPLAY_CONTEXT_ATTRIBUTE_NAME));
+		Assert.assertFalse(
+			SessionErrors.contains(
+				mockLiferayPortletRenderRequest,
+				PrincipalException.MustHavePermission.class));
+	}
+
+	@Test
+	public void testRenderPropertiesViewWithoutUpdatePermission()
+		throws Exception {
+
+		DDMTemplate ddmTemplate = _addDDMTemplate();
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				UserTestUtil.addUser(_group.getGroupId()));
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"ddmTemplateId", String.valueOf(ddmTemplate.getTemplateId()));
+		mockLiferayPortletRenderRequest.setParameter(
+			"editProperties", Boolean.TRUE.toString());
+
+		_render(mockLiferayPortletRenderRequest);
+
+		_assertMustHavePermission(mockLiferayPortletRenderRequest);
+	}
+
+	@Test
+	public void testRenderPropertiesViewWithUpdatePermission()
+		throws Exception {
+
+		DDMTemplate ddmTemplate = _addDDMTemplate();
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(
+				UserTestUtil.getAdminUser(_group.getCompanyId()));
+
+		mockLiferayPortletRenderRequest.setParameter(
+			"ddmTemplateId", String.valueOf(ddmTemplate.getTemplateId()));
+		mockLiferayPortletRenderRequest.setParameter(
+			"editProperties", Boolean.TRUE.toString());
+
+		_render(mockLiferayPortletRenderRequest);
+
+		Assert.assertNotNull(
+			mockLiferayPortletRenderRequest.getAttribute(
+				_DISPLAY_CONTEXT_ATTRIBUTE_NAME));
+		Assert.assertFalse(
+			SessionErrors.contains(
+				mockLiferayPortletRenderRequest,
+				PrincipalException.MustHavePermission.class));
+	}
+
+	private DDMTemplate _addDDMTemplate() throws Exception {
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		return DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), ddmStructure.getStructureId(),
+			_portal.getClassNameId(JournalArticle.class));
+	}
+
+	private void _assertMustHavePermission(RenderRequest renderRequest) {
+		Assert.assertTrue(
+			SessionErrors.contains(
+				renderRequest, PrincipalException.MustHavePermission.class));
+		Assert.assertNull(
+			renderRequest.getAttribute(_DISPLAY_CONTEXT_ATTRIBUTE_NAME));
+	}
+
+	private MockLiferayPortletRenderRequest _getMockLiferayPortletRenderRequest(
+			User user)
 		throws Exception {
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
 
-		String path = "/edit_ddm_template.jsp";
+		for (String path :
+				new String[] {
+					"/ddm_template/edit_properties.jsp",
+					"/edit_ddm_template.jsp", "/error.jsp"
+				}) {
 
-		mockLiferayPortletRenderRequest.setAttribute(
-			MVCRenderConstants.
-				PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX + path,
-			new MockLiferayPortletContext(path));
+			mockLiferayPortletRenderRequest.setAttribute(
+				MVCRenderConstants.
+					PORTLET_CONTEXT_OVERRIDE_REQUEST_ATTIBUTE_NAME_PREFIX +
+						path,
+				new MockLiferayPortletContext(path));
+		}
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
 		themeDisplay.setLocale(LocaleUtil.getDefault());
-
-		User user = UserTestUtil.getAdminUser(_group.getCompanyId());
 
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(user));
@@ -119,36 +262,47 @@ public class JournalEditDDMTemplateDisplayContextTest {
 		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		mockLiferayPortletRenderRequest.setParameter("mvcPath", path);
+		mockLiferayPortletRenderRequest.setParameter(
+			"mvcRenderCommandName", "/journal/edit_ddm_template");
 
 		return mockLiferayPortletRenderRequest;
 	}
 
 	private boolean _isAutogenerateDDMTemplateKey() throws Exception {
 		RenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest();
+			_getMockLiferayPortletRenderRequest(
+				UserTestUtil.getAdminUser(_group.getCompanyId()));
 
-		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
-
-		mvcPortlet.render(
-			mockLiferayPortletRenderRequest,
-			new MockLiferayPortletRenderResponse());
+		_render(mockLiferayPortletRenderRequest);
 
 		Object journalEditDDMTemplateDisplayContext =
 			mockLiferayPortletRenderRequest.getAttribute(
-				"com.liferay.journal.web.internal.display.context." +
-					"JournalEditDDMTemplateDisplayContext");
+				_DISPLAY_CONTEXT_ATTRIBUTE_NAME);
 
 		return ReflectionTestUtil.invoke(
 			journalEditDDMTemplateDisplayContext, "autogenerateDDMTemplateKey",
 			new Class<?>[0]);
 	}
 
+	private void _render(RenderRequest renderRequest) throws Exception {
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
+
+		mvcPortlet.render(
+			renderRequest, new MockLiferayPortletRenderResponse());
+	}
+
+	private static final String _DISPLAY_CONTEXT_ATTRIBUTE_NAME =
+		"com.liferay.journal.web.internal.display.context." +
+			"JournalEditDDMTemplateDisplayContext";
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private Portal _portal;
 
 	@Inject(
 		filter = "component.name=com.liferay.journal.web.internal.portlet.JournalPortlet"
