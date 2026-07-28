@@ -152,13 +152,11 @@ public class JournalEditDDMTemplateDisplayContext {
 			() -> PortletURLBuilder.createRenderURL(
 				_renderResponse
 			).setMVCRenderCommandName(
-				"/journal/edit_ddm_template"
+				"/journal/edit_ddm_template_properties"
 			).setParameter(
 				"classPK", getClassPK()
 			).setParameter(
 				"ddmTemplateId", getDDMTemplateId()
-			).setParameter(
-				"editProperties", true
 			).setWindowState(
 				LiferayWindowState.EXCLUSIVE
 			).buildString()

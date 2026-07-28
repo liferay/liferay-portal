@@ -11,21 +11,21 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Shakir Shamim
+ * @author Jürgen Kappler
  */
 @Component(
 	property = {
 		"jakarta.portlet.name=" + JournalPortletKeys.JOURNAL,
-		"mvc.command.name=/journal/edit_ddm_template"
+		"mvc.command.name=/journal/edit_ddm_template_properties"
 	},
 	service = MVCRenderCommand.class
 )
-public class EditDDMTemplateMVCRenderCommand
+public class EditDDMTemplatePropertiesMVCRenderCommand
 	extends BaseDDMTemplateMVCRenderCommand {
 
 	@Override
 	protected String getPath() {
-		return "/edit_ddm_template.jsp";
+		return "/ddm_template/edit_properties.jsp";
 	}
 
 }
