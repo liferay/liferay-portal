@@ -41,6 +41,31 @@ import java.util.regex.Pattern;
  */
 public class FIPSModeValidator {
 
+	public static FIPSHealthCheckResult runSelfTests() {
+		if (!PropsValues.FIPS_ENABLED) {
+			return FIPSHealthCheckResult.notApplicable();
+		}
+
+		synchronized (_selfTestLock) {
+			try {
+				String providerName = _fipsSelfTestExecutor.execute();
+
+				return FIPSHealthCheckResult.healthy(providerName);
+			}
+			catch (FIPSSelfTestException fipsSelfTestException) {
+				return FIPSHealthCheckResult.failed(
+					fipsSelfTestException.getProviderName(),
+					fipsSelfTestException.getFailedTest(),
+					fipsSelfTestException.getFipsState(),
+					fipsSelfTestException.getProviderMessage());
+			}
+			catch (Exception exception) {
+				return FIPSHealthCheckResult.failed(
+					null, "self-test-execution", null, exception.getMessage());
+			}
+		}
+	}
+
 	public static void validate() {
 		Provider[] providers = Security.getProviders();
 
@@ -336,7 +361,10 @@ public class FIPSModeValidator {
 			List.of(
 				"BCJSSE", "JdkLDAP", "JdkSASL", "SUN", "SunJCE", "SunJGSS",
 				"SunSASL", "XMLDSig"));
+	private static final FIPSSelfTestExecutor _fipsSelfTestExecutor =
+		new ReflectionFIPSSelfTestExecutor();
 	private static final Pattern _pbkdf2Pattern = Pattern.compile(
 		"^[^/]*(?:/([0-9]+))?/([0-9]+)$");
+	private static final Object _selfTestLock = new Object();
 
 }
