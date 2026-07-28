@@ -117,22 +117,47 @@ public class ContentCoverageResourceTest
 	public void testGraphQLGetProjectContentCoverageNotFound() {
 	}
 
-	private ObjectEntry _addCMPProjectObjectEntry(
-			long[] assetCategoryIds, String assetTagName)
+	private ObjectEntry _addCMPProjectObjectEntry(long[] assetCategoryIds)
 		throws Exception {
 
-		ObjectEntry objectEntry = CMPTestUtil.addCMPProjectObjectEntry();
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
 
-		_partialUpdateObjectEntry(assetCategoryIds, new String[0], objectEntry);
-		_partialUpdateObjectEntry(
-			new long[0], new String[] {assetTagName},
-			CMPTestUtil.addCMPTaskObjectEntry(objectEntry));
+		_partialUpdateObjectEntry(assetCategoryIds, cmpProjectObjectEntry);
 
-		return objectEntry;
+		return cmpProjectObjectEntry;
 	}
 
-	private ObjectEntry _addContentObjectEntry(
-			long[] assetCategoryIds, String[] assetTagNames)
+	private ObjectEntry _addCMPTaskLinkObjectEntry(
+			ObjectEntry cmpTaskObjectEntry, ObjectEntry linkedObjectEntry)
+		throws Exception {
+
+		ObjectDefinition cmpTaskLinkObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_TASK_LINK", TestPropsValues.getCompanyId());
+
+		Group group = _depotEntry.getGroup();
+
+		return _objectEntryLocalService.addObjectEntry(
+			cmpTaskObjectEntry.getGroupId(), cmpTaskObjectEntry.getUserId(),
+			cmpTaskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode",
+				linkedObjectEntry.getExternalReferenceCode()
+			).put(
+				"className", linkedObjectEntry.getModelClassName()
+			).put(
+				"groupExternalReferenceCode", group.getExternalReferenceCode()
+			).put(
+				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
+				cmpTaskObjectEntry.getObjectEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addCMSBasicWebContentObjectEntry(
+			long[] assetCategoryIds, ObjectEntry cmpTaskObjectEntry)
 		throws Exception {
 
 		ObjectDefinition objectDefinition =
@@ -157,21 +182,13 @@ public class ContentCoverageResourceTest
 			).build(),
 			ServiceContextTestUtil.getServiceContext(_depotEntry.getGroupId()));
 
-		_partialUpdateObjectEntry(assetCategoryIds, assetTagNames, objectEntry);
+		if (cmpTaskObjectEntry != null) {
+			_addCMPTaskLinkObjectEntry(cmpTaskObjectEntry, objectEntry);
+		}
+
+		_partialUpdateObjectEntry(assetCategoryIds, objectEntry);
 
 		return objectEntry;
-	}
-
-	private void _addContentObjectEntry(
-			long[] assetCategoryIds, String[] assetTagNames, int status)
-		throws Exception {
-
-		ObjectEntry objectEntry = _addContentObjectEntry(
-			assetCategoryIds, assetTagNames);
-
-		_objectEntryLocalService.updateStatus(
-			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(), status,
-			ServiceContextTestUtil.getServiceContext(_depotEntry.getGroupId()));
 	}
 
 	private void _assertContentCoverage(
@@ -194,15 +211,13 @@ public class ContentCoverageResourceTest
 	}
 
 	private void _partialUpdateObjectEntry(
-			long[] assetCategoryIds, String[] assetTagNames,
-			ObjectEntry objectEntry)
+			long[] assetCategoryIds, ObjectEntry objectEntry)
 		throws Exception {
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(objectEntry.getGroupId());
 
 		serviceContext.setAssetCategoryIds(assetCategoryIds);
-		serviceContext.setAssetTagNames(assetTagNames);
 
 		_objectEntryLocalService.partialUpdateObjectEntry(
 			objectEntry.getUserId(), objectEntry.getObjectEntryId(),
@@ -216,19 +231,24 @@ public class ContentCoverageResourceTest
 		AssetCategory awarenessAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_AWARENESS");
 
-		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
+		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
+			new long[] {awarenessAssetCategory.getCategoryId()});
 
-		ObjectEntry objectEntry = _addCMPProjectObjectEntry(
-			new long[] {awarenessAssetCategory.getCategoryId()}, assetTagName);
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry);
 
-		_addContentObjectEntry(new long[0], new String[] {assetTagName});
-		_addContentObjectEntry(
+		_addCMSBasicWebContentObjectEntry(new long[0], cmpTaskObjectEntry);
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {awarenessAssetCategory.getCategoryId()},
-			new String[] {assetTagName});
+			cmpTaskObjectEntry);
 
-		_addContentObjectEntry(
+		ObjectEntry unrelatedCMPTaskObjectEntry =
+			CMPTestUtil.addCMPTaskObjectEntry();
+
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {awarenessAssetCategory.getCategoryId()},
-			new String[] {"L_CMP_TASK_" + RandomTestUtil.randomString(10)});
+			unrelatedCMPTaskObjectEntry);
+
 		_assertContentCoverage(
 			_toContentCoverage(
 				2,
@@ -239,7 +259,7 @@ public class ContentCoverageResourceTest
 				},
 				new AssetCategory[] {awarenessAssetCategory},
 				new AssetCategory[0]),
-			objectEntry);
+			cmpProjectObjectEntry);
 	}
 
 	private void _testGetProjectContentCoverageWithFunnelStagesAndPersonas()
@@ -254,50 +274,50 @@ public class ContentCoverageResourceTest
 		AssetCategory decisionMakerAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_DECISION_MAKER");
 
-		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
-
 		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
 			new long[] {
 				awarenessAssetCategory.getCategoryId(),
 				championAssetCategory.getCategoryId(),
 				considerationAssetCategory.getCategoryId(),
 				decisionMakerAssetCategory.getCategoryId()
-			},
-			assetTagName);
+			});
 
-		_addContentObjectEntry(new long[0], new String[] {assetTagName});
-		_addContentObjectEntry(
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry);
+
+		_addCMSBasicWebContentObjectEntry(new long[0], cmpTaskObjectEntry);
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {
 				awarenessAssetCategory.getCategoryId(),
 				championAssetCategory.getCategoryId(),
 				considerationAssetCategory.getCategoryId()
 			},
-			new String[] {assetTagName});
-		_addContentObjectEntry(
+			cmpTaskObjectEntry);
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {
 				awarenessAssetCategory.getCategoryId(),
 				championAssetCategory.getCategoryId(),
 				decisionMakerAssetCategory.getCategoryId()
 			},
-			new String[] {assetTagName});
-		_addContentObjectEntry(
+			cmpTaskObjectEntry);
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {
 				awarenessAssetCategory.getCategoryId(),
 				considerationAssetCategory.getCategoryId()
 			},
-			new String[] {assetTagName});
-		_addContentObjectEntry(
+			cmpTaskObjectEntry);
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {
 				championAssetCategory.getCategoryId(),
 				decisionMakerAssetCategory.getCategoryId()
 			},
-			new String[] {assetTagName});
-		_addContentObjectEntry(
+			cmpTaskObjectEntry);
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {
 				considerationAssetCategory.getCategoryId(),
 				decisionMakerAssetCategory.getCategoryId()
 			},
-			new String[] {assetTagName});
+			cmpTaskObjectEntry);
 
 		_assertContentCoverage(
 			_toContentCoverage(
@@ -346,23 +366,24 @@ public class ContentCoverageResourceTest
 	private void _testGetProjectContentCoverageWithoutFunnelStagesAndPersonas()
 		throws Exception {
 
-		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
+		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
+			new long[0]);
 
-		ObjectEntry objectEntry = _addCMPProjectObjectEntry(
-			new long[0], assetTagName);
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry);
 
 		AssetCategory decisionMakerAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_DECISION_MAKER");
 
-		_addContentObjectEntry(
+		_addCMSBasicWebContentObjectEntry(
 			new long[] {decisionMakerAssetCategory.getCategoryId()},
-			new String[] {assetTagName});
+			cmpTaskObjectEntry);
 
 		_assertContentCoverage(
 			_toContentCoverage(
 				1, new ContentCoverageEntry[0], new AssetCategory[0],
 				new AssetCategory[0]),
-			objectEntry);
+			cmpProjectObjectEntry);
 	}
 
 	private void _testGetProjectContentCoverageWithStatuses() throws Exception {
@@ -371,14 +392,14 @@ public class ContentCoverageResourceTest
 		AssetCategory championAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_CHAMPION");
 
-		String assetTagName = "L_CMP_TASK_" + RandomTestUtil.randomString(10);
-
-		ObjectEntry objectEntry = _addCMPProjectObjectEntry(
+		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
 			new long[] {
 				awarenessAssetCategory.getCategoryId(),
 				championAssetCategory.getCategoryId()
-			},
-			assetTagName);
+			});
+
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry);
 
 		long[] assetCategoryIds = {
 			awarenessAssetCategory.getCategoryId(),
@@ -394,8 +415,15 @@ public class ContentCoverageResourceTest
 					WorkflowConstants.STATUS_SCHEDULED
 				}) {
 
-			_addContentObjectEntry(
-				assetCategoryIds, new String[] {assetTagName}, status);
+			ObjectEntry cmsBasicWebContentObjectEntry =
+				_addCMSBasicWebContentObjectEntry(
+					assetCategoryIds, cmpTaskObjectEntry);
+
+			_objectEntryLocalService.updateStatus(
+				TestPropsValues.getUserId(),
+				cmsBasicWebContentObjectEntry.getObjectEntryId(), status,
+				ServiceContextTestUtil.getServiceContext(
+					_depotEntry.getGroupId()));
 		}
 
 		for (int status :
@@ -407,8 +435,15 @@ public class ContentCoverageResourceTest
 					WorkflowConstants.STATUS_INCOMPLETE
 				}) {
 
-			_addContentObjectEntry(
-				assetCategoryIds, new String[] {assetTagName}, status);
+			ObjectEntry cmsBasicWebContentObjectEntry =
+				_addCMSBasicWebContentObjectEntry(
+					assetCategoryIds, cmpTaskObjectEntry);
+
+			_objectEntryLocalService.updateStatus(
+				TestPropsValues.getUserId(),
+				cmsBasicWebContentObjectEntry.getObjectEntryId(), status,
+				ServiceContextTestUtil.getServiceContext(
+					_depotEntry.getGroupId()));
 		}
 
 		_assertContentCoverage(
@@ -421,7 +456,7 @@ public class ContentCoverageResourceTest
 				},
 				new AssetCategory[] {awarenessAssetCategory},
 				new AssetCategory[] {championAssetCategory}),
-			objectEntry);
+			cmpProjectObjectEntry);
 	}
 
 	private ContentCoverage _toContentCoverage(
