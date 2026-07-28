@@ -37,65 +37,76 @@ const test = mergeTests(
 	pageManagementSiteTest
 );
 
-test('LPD-47067 check that two forms on same page with simplecaptcha could refresh both captchas', async ({
-	apiHelpers,
-	captchaConfigPage,
-	formBuilderPage,
-	formBuilderSidePanelPage,
-	formSettingsModalPage,
-	formWidgetPage,
-	page,
-	site,
-	widgetPagePage,
-}) => {
-	await captchaConfigPage.goTo();
+test(
+	'LPD-47067 check that two forms on same page with simplecaptcha could refresh both captchas',
+	{tag: ['@LPD-47067', '@LPD-98644']},
+	async ({
+		apiHelpers,
+		captchaConfigPage,
+		formBuilderPage,
+		formBuilderSidePanelPage,
+		formSettingsModalPage,
+		formWidgetPage,
+		page,
+		site,
+		widgetPagePage,
+	}) => {
+		await captchaConfigPage.goTo();
 
-	await captchaConfigPage.resetCaptchaConfiguration();
+		await captchaConfigPage.resetCaptchaConfiguration();
 
-	await formBuilderPage.goToNew(site.friendlyUrlPath);
+		await formBuilderPage.goToNew(site.friendlyUrlPath);
 
-	await expect(formBuilderPage.newFormHeading).toBeVisible();
+		await expect(formBuilderPage.newFormHeading).toBeVisible();
 
-	const formName = 'Form' + getRandomInt();
+		const formName = 'Form' + getRandomInt();
 
-	await formBuilderPage.fillFormTitle(formName);
+		await formBuilderPage.fillFormTitle(formName);
 
-	await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
+		await formBuilderSidePanelPage.addFieldByDoubleClick('Text');
 
-	await formBuilderPage.formSettingsButton.click();
+		await formBuilderPage.formSettingsButton.click();
 
-	await formBuilderPage.requireCaptchaToggle.click();
+		await formBuilderPage.requireCaptchaToggle.click();
 
-	await formSettingsModalPage.clickDoneButton();
+		await formSettingsModalPage.clickDoneButton();
 
-	await formBuilderPage.publishButton.click();
+		await formBuilderPage.publishButton.click();
 
-	await expect(
-		page.getByText('Your request completed successfully')
-	).toBeVisible();
+		await expect(
+			page.getByText('Your request completed successfully')
+		).toBeVisible();
 
-	const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-		groupId: site.id,
-		options: {
-			type: 'portlet',
-		},
-		title: getRandomString(),
-	});
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			options: {
+				type: 'portlet',
+			},
+			title: getRandomString(),
+		});
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
 
-	await addAndConfigureForms(formName, formWidgetPage, widgetPagePage);
+		await addAndConfigureForms(formName, formWidgetPage, widgetPagePage);
 
-	await refreshAndCheckCaptcha(2, page);
+		const container = page.locator('[data-captcha-id]').first();
 
-	await performLogout(page);
+		await expect(container).toHaveAttribute('data-captcha-id', /.+/);
 
-	await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+		await expect(container.locator('.captcha')).toBeVisible();
+		await expect(container.locator('.refresh')).toBeVisible();
 
-	await refreshAndCheckCaptcha(2, page);
+		await refreshAndCheckCaptcha(2, page);
 
-	await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
-});
+		await performLogout(page);
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await refreshAndCheckCaptcha(2, page);
+
+		await apiHelpers.jsonWebServicesLayout.deleteLayout(layout.plid);
+	}
+);
 
 test('LPD-66742 Check if image refresh works when multiple elements have the modal-body class', async ({
 	apiHelpers,
