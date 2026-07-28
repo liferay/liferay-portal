@@ -14,6 +14,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -73,8 +76,31 @@ public class ObjectActionExecutorRegistryImplTest {
 			new TestObjectActionExecutor(1, Collections.emptyList(), true);
 
 		ServiceRegistration<ObjectActionExecutor>
+			objectActionExecutorServiceRegistration1 = null;
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.internal.action.executor." +
+					"ObjectActionExecutorRegistryImpl",
+				LoggerTestUtil.ERROR)) {
+
 			objectActionExecutorServiceRegistration1 = _register(
 				testObjectActionExecutor1);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Unable to get object action executor service",
+				logEntry.getMessage());
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertSame(RuntimeException.class, throwable.getClass());
+		}
 
 		TestObjectActionExecutor testObjectActionExecutor2 =
 			new TestObjectActionExecutor(1, Collections.emptyList(), false);
