@@ -123,7 +123,11 @@ const Form: React.FC<{
 						touchpoint,
 						type,
 					}}
-					routeQueries={pickBy(rangeSelectorsFromQuery)}
+					routeQueries={pickBy({
+						...rangeSelectorsFromQuery,
+						accountId,
+						accountName,
+					})}
 				/>
 			</BasePage.Header>
 

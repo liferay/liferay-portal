@@ -224,5 +224,35 @@ describe.each(DASHBOARDS)(
 
 			expect(screen.queryByText('Known Individuals')).toBeNull();
 		});
+
+		it('carries the account filter and the date range over to the tab links', () => {
+			(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+			renderDashboard(['/?accountId=100&accountName=Account+100']);
+
+			const href = screen
+				.getByText('Visitors')
+				.closest('a')
+				?.getAttribute('href');
+
+			expect(href).toContain('accountId=100');
+			expect(href).toContain('accountName=Account');
+			expect(href).toContain('rangeKey=30');
+		});
+
+		it('leaves the tab links free of account params when no account is selected', () => {
+			(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+			renderDashboard();
+
+			const href = screen
+				.getByText('Visitors')
+				.closest('a')
+				?.getAttribute('href');
+
+			expect(href).not.toContain('accountId');
+			expect(href).not.toContain('accountName');
+			expect(href).toContain('rangeKey=30');
+		});
 	}
 );

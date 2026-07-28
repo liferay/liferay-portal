@@ -140,7 +140,11 @@ function TouchpointRoutes({className, router}) {
 						title,
 						touchpoint
 					}}
-					routeQueries={pickBy({...rangeSelectors})}
+					routeQueries={pickBy({
+						...rangeSelectors,
+						accountId,
+						accountName
+					})}
 				/>
 			</BasePage.Header>
 

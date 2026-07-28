@@ -443,4 +443,66 @@ describe('TouchpointRoutes', () => {
 			'100'
 		);
 	});
+
+	it('carries the account filter and the date range over to the tab links', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter
+					initialEntries={['/?accountId=100&accountName=Account+100']}
+				>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		const href = screen.getByText('Path').closest('a').getAttribute('href');
+
+		expect(href).toContain('accountId=100');
+		expect(href).toContain('accountName=Account');
+		expect(href).toContain('rangeKey=30');
+	});
+
+	it('leaves the tab links free of account params when no account is selected', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		const href = screen.getByText('Path').closest('a').getAttribute('href');
+
+		expect(href).not.toContain('accountId');
+		expect(href).not.toContain('accountName');
+		expect(href).toContain('rangeKey=30');
+	});
 });
