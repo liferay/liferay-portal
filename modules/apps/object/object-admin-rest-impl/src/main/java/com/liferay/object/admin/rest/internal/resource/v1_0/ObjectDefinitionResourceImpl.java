@@ -1038,9 +1038,9 @@ public class ObjectDefinitionResourceImpl
 				com.liferay.object.model.ObjectAction
 					serviceBuilderObjectAction = null;
 
-				if (StringUtil.equals(
-						objectAction.getName(),
-						ObjectActionNameConstants.NAME_ASSIGN_TO_ME) &&
+				if (ArrayUtil.contains(
+						ObjectActionNameConstants.OBJECT_ACTION_NAMES,
+						objectAction.getName()) &&
 					GetterUtil.getBoolean(objectAction.getSystem())) {
 
 					serviceBuilderObjectAction =

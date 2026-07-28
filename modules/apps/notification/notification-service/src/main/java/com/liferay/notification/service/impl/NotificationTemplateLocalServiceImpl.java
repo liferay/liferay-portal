@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -62,6 +64,37 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class NotificationTemplateLocalServiceImpl
 	extends NotificationTemplateLocalServiceBaseImpl {
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public NotificationTemplate addAssigneeNotificationTemplate(
+			String externalReferenceCode, long userId, String termName)
+		throws PortalException {
+
+		User user = _userLocalService.getUser(userId);
+
+		NotificationTemplate notificationTemplate = _addNotificationTemplate(
+			externalReferenceCode, user,
+			_language.get(
+				LocaleUtil.getDefault(), "you-have-been-assigned-to-an-entry"),
+			"Assignee Notification", NotificationRecipientConstants.TYPE_TERM,
+			_language.get(LocaleUtil.getDefault(), "you-have-a-new-assignment"),
+			true, NotificationConstants.TYPE_USER_NOTIFICATION);
+
+		NotificationRecipient notificationRecipient =
+			_notificationRecipientLocalService.addNotificationRecipient(
+				user.getUserId(),
+				_portal.getClassNameId(NotificationTemplate.class),
+				notificationTemplate.getNotificationTemplateId());
+
+		_notificationRecipientSettingLocalService.
+			addNotificationRecipientSetting(
+				user.getUserId(),
+				notificationRecipient.getNotificationRecipientId(),
+				NotificationRecipientSettingConstants.NAME_TERM, termName);
+
+		return notificationTemplate;
+	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
@@ -492,6 +525,9 @@ public class NotificationTemplateLocalServiceImpl
 
 		notificationType.validateNotificationTemplate(notificationContext);
 	}
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private NotificationQueueEntryPersistence

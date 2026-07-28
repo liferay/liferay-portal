@@ -12,4 +12,15 @@ public class ObjectActionNameConstants {
 
 	public static final String NAME_ASSIGN_TO_ME = "assignToMe";
 
+	public static final String NAME_NOTIFY_ASSIGNEE_ON_AFTER_ADD =
+		"notifyAssigneeOnAfterAdd";
+
+	public static final String NAME_NOTIFY_ASSIGNEE_ON_AFTER_UPDATE =
+		"notifyAssigneeOnAfterUpdate";
+
+	public static final String[] OBJECT_ACTION_NAMES = {
+		NAME_ASSIGN_TO_ME, NAME_NOTIFY_ASSIGNEE_ON_AFTER_ADD,
+		NAME_NOTIFY_ASSIGNEE_ON_AFTER_UPDATE
+	};
+
 }
