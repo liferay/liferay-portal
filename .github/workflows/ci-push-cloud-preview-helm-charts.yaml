@@ -33,6 +33,13 @@ jobs:
             chart_name: liferay-default
             image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
             working_directory: ./cloud/helm/default
+    push-dxp-operator:
+        needs: set-up-variables
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-dxp-operator
+            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            working_directory: ./cloud/helm/dxp-operator
     push-gcp:
         needs: set-up-variables
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
