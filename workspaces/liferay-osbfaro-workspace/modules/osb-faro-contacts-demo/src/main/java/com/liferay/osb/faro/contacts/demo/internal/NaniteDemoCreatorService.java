@@ -569,10 +569,17 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 
 		salesforceProvider.setAccountsConfiguration(accountsConfiguration);
 
+		SalesforceProvider.CampaignsConfiguration campaignsConfiguration =
+			new SalesforceProvider.CampaignsConfiguration();
+
+		campaignsConfiguration.setEnableAllCampaigns(false);
+
+		salesforceProvider.setCampaignsConfiguration(campaignsConfiguration);
+
 		ChannelsConfiguration channelsConfiguration =
 			new ChannelsConfiguration();
 
-		channelsConfiguration.setEnableAllChannels(false);
+		channelsConfiguration.setEnableAllChannels(true);
 
 		salesforceProvider.setChannelsConfiguration(channelsConfiguration);
 
@@ -583,6 +590,15 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		contactsConfiguration.setEnableAllLeads(true);
 
 		salesforceProvider.setContactsConfiguration(contactsConfiguration);
+
+		SalesforceProvider.OpportunitiesConfiguration
+			opportunitiesConfiguration =
+				new SalesforceProvider.OpportunitiesConfiguration();
+
+		opportunitiesConfiguration.setEnableAllOpportunities(false);
+
+		salesforceProvider.setOpportunitiesConfiguration(
+			opportunitiesConfiguration);
 
 		return salesforceProvider;
 	}
