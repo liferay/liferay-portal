@@ -365,6 +365,14 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 					individualSegmentMembershipChange :
 						individualSegmentMembershipChangeResults.getItems()) {
 
+				if ((individualSegmentMembershipChange.getDateChanged() ==
+						null) ||
+					(individualSegmentMembershipChange.getDateFirst() ==
+						null)) {
+
+					continue;
+				}
+
 				membershipChangesDataCreator.create(
 					new Object[] {individualSegmentMembershipChange});
 			}
