@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.dsr.site.initializer.constants.DSRRoleConstants;
 
 import java.io.ByteArrayOutputStream;
 
@@ -171,6 +172,7 @@ public class GetEmailNotificationRolesMVCResourceCommandTest {
 						AccountRoleConstants.ROLE_NAME_ORDER_ADMINISTRATOR),
 					JSONUtil.put(
 						"name", AccountRoleConstants.ROLE_NAME_SUPPLIER),
+					JSONUtil.put("name", DSRRoleConstants.NAME_DSR_SELLER),
 					JSONUtil.put("name", RoleConstants.ADMINISTRATOR),
 					JSONUtil.put("name", RoleConstants.ANALYTICS_ADMINISTRATOR),
 					JSONUtil.put("name", RoleConstants.OWNER),
