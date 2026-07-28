@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.mockito.verification.VerificationMode;
 
 /**
  * @author Michael Hashimoto
@@ -195,6 +196,14 @@ public class WorkspaceGitRepositoryTest
 		);
 	}
 
+	private VerificationMode _getVerificationMode(boolean invoked) {
+		if (invoked) {
+			return Mockito.times(1);
+		}
+
+		return Mockito.never();
+	}
+
 	private boolean _isFullDotGitDirArchiveRequired(String workingDirectoryName)
 		throws Exception {
 
@@ -299,26 +308,17 @@ public class WorkspaceGitRepositoryTest
 
 		defaultWorkspaceGitRepository.uploadGitArchives();
 
-		if (gitArchiveEnabled && !snapshot &&
-			topLevelJobNames.contains(jobName)) {
+		VerificationMode verificationMode = _getVerificationMode(
+			gitArchiveEnabled && !snapshot &&
+			topLevelJobNames.contains(jobName));
 
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.times(1)
-			).uploadDotGitArchive();
+		Mockito.verify(
+			defaultWorkspaceGitRepository, verificationMode
+		).uploadDotGitArchive();
 
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.times(1)
-			).uploadGitArchive();
-		}
-		else {
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.never()
-			).uploadDotGitArchive();
-
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.never()
-			).uploadGitArchive();
-		}
+		Mockito.verify(
+			defaultWorkspaceGitRepository, verificationMode
+		).uploadGitArchive();
 
 		return defaultWorkspaceGitRepository.isSnapshot();
 	}
@@ -406,38 +406,20 @@ public class WorkspaceGitRepositoryTest
 
 		defaultWorkspaceGitRepository.prepareGitWorkingDirectory();
 
-		if (!gitArchiveEnabled || !snapshot) {
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.never()
-			).downloadGitArchives();
-		}
-		else {
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.times(1)
-			).downloadGitArchives();
-		}
+		Mockito.verify(
+			defaultWorkspaceGitRepository,
+			_getVerificationMode(gitArchiveEnabled && snapshot)
+		).downloadGitArchives();
 
-		if (gitArchiveEnabled && snapshot) {
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.never()
-			).initializeGitWorkingDirectory();
-		}
-		else {
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.times(1)
-			).initializeGitWorkingDirectory();
-		}
+		Mockito.verify(
+			defaultWorkspaceGitRepository,
+			_getVerificationMode(!gitArchiveEnabled || !snapshot)
+		).initializeGitWorkingDirectory();
 
-		if (!gitArchiveEnabled) {
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.never()
-			).promoteGitArchive();
-		}
-		else {
-			Mockito.verify(
-				defaultWorkspaceGitRepository, Mockito.times(1)
-			).promoteGitArchive();
-		}
+		Mockito.verify(
+			defaultWorkspaceGitRepository,
+			_getVerificationMode(gitArchiveEnabled)
+		).promoteGitArchive();
 	}
 
 }
