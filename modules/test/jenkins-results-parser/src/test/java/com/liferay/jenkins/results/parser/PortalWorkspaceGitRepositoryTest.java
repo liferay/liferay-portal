@@ -30,19 +30,16 @@ public class PortalWorkspaceGitRepositoryTest
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty("portal.bundle.tomcat[version.0]", "url.0");
-		buildProperties.setProperty(
-			"portal.latest.bundle.version", "version.0");
-
 		buildProperties.setProperty("portal.bundle.tomcat[version.1]", "url.1");
-		buildProperties.setProperty(
-			"portal.latest.bundle.version[master]", "version.1");
-
 		buildProperties.setProperty("portal.bundle.tomcat[version.2]", "url.2");
 		buildProperties.setProperty(
-			"portal.latest.bundle.version[7.0.x]", "version.2");
-
-		buildProperties.setProperty(
 			"portal.bundle.tomcat[version.env]", "url.env");
+		buildProperties.setProperty(
+			"portal.latest.bundle.version", "version.0");
+		buildProperties.setProperty(
+			"portal.latest.bundle.version[7.0.x]", "version.2");
+		buildProperties.setProperty(
+			"portal.latest.bundle.version[master]", "version.1");
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
@@ -61,9 +58,9 @@ public class PortalWorkspaceGitRepositoryTest
 		_testGetPortalTestProperties(
 			"url.env", "version.env", environmentValues, null);
 		_testGetPortalTestProperties(
-			"url.env", "version.env", environmentValues, "master");
-		_testGetPortalTestProperties(
 			"url.env", "version.env", environmentValues, "7.0.x");
+		_testGetPortalTestProperties(
+			"url.env", "version.env", environmentValues, "master");
 	}
 
 	@Test
@@ -73,27 +70,24 @@ public class PortalWorkspaceGitRepositoryTest
 		buildProperties.setProperty("binaries.cache.enabled", "false");
 		buildProperties.setProperty("binaries.cache.enabled[job*]", "true");
 		buildProperties.setProperty("binaries.cache.enabled[job-1]", "false");
+		buildProperties.setProperty("binaries.cache.enabled[one][two]", "true");
 		buildProperties.setProperty("binaries.cache.enabled[suite*]", "true");
 		buildProperties.setProperty("binaries.cache.enabled[suite-1]", "false");
-		buildProperties.setProperty("binaries.cache.enabled[one][two]", "true");
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
 		_testSetUpAdditionalCaches(false, null, null);
-
-		_testSetUpAdditionalCaches(true, "suite", null);
-		_testSetUpAdditionalCaches(true, "suite-0", null);
+		_testSetUpAdditionalCaches(false, null, "job-1");
+		_testSetUpAdditionalCaches(false, null, "two");
+		_testSetUpAdditionalCaches(false, null, "wrong");
+		_testSetUpAdditionalCaches(false, "one", null);
 		_testSetUpAdditionalCaches(false, "suite-1", null);
 		_testSetUpAdditionalCaches(false, "wrong", null);
-
 		_testSetUpAdditionalCaches(true, null, "job");
 		_testSetUpAdditionalCaches(true, null, "job-0");
-		_testSetUpAdditionalCaches(false, null, "job-1");
-		_testSetUpAdditionalCaches(false, null, "wrong");
-
-		_testSetUpAdditionalCaches(false, "one", null);
-		_testSetUpAdditionalCaches(false, null, "two");
 		_testSetUpAdditionalCaches(true, "one", "two");
+		_testSetUpAdditionalCaches(true, "suite", null);
+		_testSetUpAdditionalCaches(true, "suite-0", null);
 	}
 
 	private PortalWorkspaceGitRepository _newPortalWorkspaceGitRepository()
@@ -157,13 +151,13 @@ public class PortalWorkspaceGitRepositoryTest
 			portalWorkspaceGitRepository.getPortalTestProperties();
 
 		Assert.assertEquals(
-			bundleVersion,
-			portalTestProperties.getProperty(
-				"test.released.release.bundle.version"));
-		Assert.assertEquals(
 			bundleURL,
 			portalTestProperties.getProperty(
 				"test.released.test.portal.bundle.zip.url"));
+		Assert.assertEquals(
+			bundleVersion,
+			portalTestProperties.getProperty(
+				"test.released.release.bundle.version"));
 	}
 
 	private void _testSetUpAdditionalCaches(

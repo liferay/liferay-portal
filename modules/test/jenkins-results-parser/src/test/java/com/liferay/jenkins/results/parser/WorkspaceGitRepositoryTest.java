@@ -29,29 +29,29 @@ public class WorkspaceGitRepositoryTest
 
 	@Test
 	public void testIsFullDotGitDirArchiveRequired() throws Exception {
+		Assert.assertFalse(_isFullDotGitDirArchiveRequired("liferay-portal"));
+		Assert.assertFalse(
+			_isFullDotGitDirArchiveRequired("liferay-portal-7.0.x"));
 		Assert.assertTrue(
 			_isFullDotGitDirArchiveRequired("liferay-plugins-ee-6.2.x"));
 		Assert.assertTrue(
 			_isFullDotGitDirArchiveRequired("liferay-portal-ee-6.2.x"));
-		Assert.assertFalse(_isFullDotGitDirArchiveRequired("liferay-portal"));
-		Assert.assertFalse(
-			_isFullDotGitDirArchiveRequired("liferay-portal-7.0.x"));
 	}
 
 	@Test
 	public void testPrepareGitWorkingDirectory() throws Exception {
-		_testPrepareGitWorkingDirectory(true, true);
-		_testPrepareGitWorkingDirectory(true, false);
-		_testPrepareGitWorkingDirectory(false, true);
 		_testPrepareGitWorkingDirectory(false, false);
+		_testPrepareGitWorkingDirectory(false, true);
+		_testPrepareGitWorkingDirectory(true, false);
+		_testPrepareGitWorkingDirectory(true, true);
 	}
 
 	@Test
 	public void testPromoteGitArchive() throws Exception {
-		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, true));
-		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, false));
-		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(false, true));
 		Assert.assertFalse(_isSnapshotAfterPromoteGitArchive(false, false));
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(false, true));
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, false));
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, true));
 	}
 
 	@Test
@@ -106,49 +106,46 @@ public class WorkspaceGitRepositoryTest
 
 	@Test
 	public void testUploadGitArchives() throws Exception {
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("top-level-job", true, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("top-level-job", true, false));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("top-level-job", false, true));
-		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives("top-level-job", false, false));
-
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("downstream-job", true, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("downstream-job", true, false));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("downstream-job", false, true));
 		Assert.assertFalse(
 			_isSnapshotAfterUploadGitArchives("downstream-job", false, false));
-
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool", true, true));
-		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool", true, false));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool", false, true));
 		Assert.assertFalse(
 			_isSnapshotAfterUploadGitArchives(
 				"root-cause-analysis-tool", false, false));
-
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool-batch", true, true));
 		Assert.assertFalse(
 			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool-batch", true, false));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool-batch", false, true));
+				"root-cause-analysis-tool", true, false));
 		Assert.assertFalse(
 			_isSnapshotAfterUploadGitArchives(
 				"root-cause-analysis-tool-batch", false, false));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool-batch", true, false));
+		Assert.assertFalse(
+			_isSnapshotAfterUploadGitArchives("top-level-job", false, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("downstream-job", false, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("downstream-job", true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("downstream-job", true, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool", false, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool", true, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool-batch", false, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(
+				"root-cause-analysis-tool-batch", true, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("top-level-job", false, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("top-level-job", true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives("top-level-job", true, true));
 	}
 
 	@Test
@@ -229,12 +226,6 @@ public class WorkspaceGitRepositoryTest
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
 			_newDefaultWorkspaceGitRepository();
 
-		Mockito.doReturn(
-			gitArchiveAvailable
-		).when(
-			defaultWorkspaceGitRepository
-		).isGitArchivesAvailable();
-
 		Mockito.doNothing(
 		).when(
 			defaultWorkspaceGitRepository
@@ -244,6 +235,12 @@ public class WorkspaceGitRepositoryTest
 		).when(
 			defaultWorkspaceGitRepository
 		).updateBuildDatabase();
+
+		Mockito.doReturn(
+			gitArchiveAvailable
+		).when(
+			defaultWorkspaceGitRepository
+		).isGitArchivesAvailable();
 
 		defaultWorkspaceGitRepository.setSnapshot(snapshot);
 
@@ -286,7 +283,7 @@ public class WorkspaceGitRepositoryTest
 		Mockito.doNothing(
 		).when(
 			defaultWorkspaceGitRepository
-		).uploadGitArchive();
+		).updateBuildDatabase();
 
 		Mockito.doNothing(
 		).when(
@@ -296,7 +293,7 @@ public class WorkspaceGitRepositoryTest
 		Mockito.doNothing(
 		).when(
 			defaultWorkspaceGitRepository
-		).updateBuildDatabase();
+		).uploadGitArchive();
 
 		defaultWorkspaceGitRepository.setSnapshot(snapshot);
 
@@ -307,20 +304,20 @@ public class WorkspaceGitRepositoryTest
 
 			Mockito.verify(
 				defaultWorkspaceGitRepository, Mockito.times(1)
-			).uploadGitArchive();
+			).uploadDotGitArchive();
 
 			Mockito.verify(
 				defaultWorkspaceGitRepository, Mockito.times(1)
-			).uploadDotGitArchive();
+			).uploadGitArchive();
 		}
 		else {
 			Mockito.verify(
 				defaultWorkspaceGitRepository, Mockito.never()
-			).uploadGitArchive();
+			).uploadDotGitArchive();
 
 			Mockito.verify(
 				defaultWorkspaceGitRepository, Mockito.never()
-			).uploadDotGitArchive();
+			).uploadGitArchive();
 		}
 
 		return defaultWorkspaceGitRepository.isSnapshot();
@@ -386,12 +383,6 @@ public class WorkspaceGitRepositoryTest
 			defaultWorkspaceGitRepository
 		).downloadGitArchives();
 
-		Mockito.doReturn(
-			snapshot
-		).when(
-			defaultWorkspaceGitRepository
-		).isSnapshot();
-
 		Mockito.doNothing(
 		).when(
 			defaultWorkspaceGitRepository
@@ -401,6 +392,12 @@ public class WorkspaceGitRepositoryTest
 		).when(
 			defaultWorkspaceGitRepository
 		).promoteGitArchive();
+
+		Mockito.doReturn(
+			snapshot
+		).when(
+			defaultWorkspaceGitRepository
+		).isSnapshot();
 
 		defaultWorkspaceGitRepository.prepareGitWorkingDirectory();
 
