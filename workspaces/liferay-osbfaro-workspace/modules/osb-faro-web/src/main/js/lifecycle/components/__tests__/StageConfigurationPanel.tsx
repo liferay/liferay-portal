@@ -385,6 +385,48 @@ describe('StageConfigurationPanel', () => {
 		expect(screen.queryByText('Uncategorized Field')).toBeNull();
 	});
 
+	const unlabeledField: ICatalogField = {
+		dataCategory: 'Text',
+		dataType: 'STRING',
+		description: null,
+		displayName: null,
+		id: 'accountName',
+		name: 'accountName',
+		parentField: null,
+		tableName: 'account',
+	};
+
+	it('falls back to the field name when the catalog omits a label', () => {
+		renderPanel({fields: [...mockFields, unlabeledField]});
+
+		fireEvent.click(screen.getByText('Select Field'));
+
+		expect(screen.getByText('accountName')).toBeInTheDocument();
+	});
+
+	it('names a selected field that has no label', () => {
+		renderPanel({
+			fields: [...mockFields, unlabeledField],
+			value: {...baseValue, field: 'accountName'},
+		});
+
+		expect(screen.getByText('accountName')).toBeInTheDocument();
+	});
+
+	it('orders the offered fields by their visible label', () => {
+		renderPanel({fields: [...mockFields, unlabeledField]});
+
+		fireEvent.click(screen.getByText('Select Field'));
+
+		const labels = screen
+			.getAllByRole('option')
+			.map((option) => option.textContent);
+
+		expect(labels).toEqual(
+			[...labels].sort((a, b) => a!.localeCompare(b!))
+		);
+	});
+
 	it('still names a selected field that is no longer offered', () => {
 		renderPanel({
 			fields: [...mockFields, unresolvableField],

@@ -5,8 +5,8 @@ export type CatalogFieldDataCategory = 'Boolean' | 'Date' | 'Number' | 'Text';
 export interface ICatalogField {
 	dataCategory: CatalogFieldDataCategory;
 	dataType: string;
-	description: string;
-	displayName: string;
+	description: string | null;
+	displayName: string | null;
 	id: string;
 	name: string;
 	parentField: string | null;

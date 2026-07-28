@@ -49,6 +49,8 @@ const PickerTriggerButton = React.forwardRef<
 const selectPlaceholder = (label: string) =>
 	sub(Liferay.Language.get('select-x'), [label]) as string;
 
+const getFieldLabel = (field: ICatalogField) => field.displayName || field.name;
+
 interface IStageConfigurationPanelProps {
 	defaultExpanded?: boolean;
 	fields?: ICatalogField[];
@@ -93,14 +95,16 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 			<Picker
 				aria-label={selectPlaceholder(Liferay.Language.get('field'))}
 				as={PickerTriggerButton}
-				items={selectableFields.map((field) => ({
-					isCalculated: !!field.parentField,
-					label: field.displayName,
-					value: field.name,
-				}))}
+				items={selectableFields
+					.map((field) => ({
+						isCalculated: !!field.parentField,
+						label: getFieldLabel(field),
+						value: field.name,
+					}))
+					.sort((a, b) => a.label.localeCompare(b.label))}
 				label={
 					selectedField
-						? selectedField.displayName
+						? getFieldLabel(selectedField)
 						: selectPlaceholder(Liferay.Language.get('field'))
 				}
 				onSelectionChange={(key) => {
