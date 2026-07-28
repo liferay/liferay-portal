@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.GuestOrUserUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -800,8 +801,16 @@ public class SegmentsExperienceLocalServiceImpl
 			layoutPageTemplateEntryPlid = layout.getClassPK();
 		}
 
+		LayoutPageTemplateEntryLocalService
+			layoutPageTemplateEntryLocalService =
+				_layoutPageTemplateEntryLocalServiceSnapshot.get();
+
+		if (layoutPageTemplateEntryLocalService == null) {
+			return;
+		}
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryLocalService.
+			layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
 
 		if (layoutPageTemplateEntry != null) {
@@ -849,15 +858,16 @@ public class SegmentsExperienceLocalServiceImpl
 		}
 	}
 
+	private static final Snapshot<LayoutPageTemplateEntryLocalService>
+		_layoutPageTemplateEntryLocalServiceSnapshot = new Snapshot<>(
+			SegmentsExperienceLocalServiceImpl.class,
+			LayoutPageTemplateEntryLocalService.class);
+
 	@Reference
 	private Language _language;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
-
-	@Reference
-	private LayoutPageTemplateEntryLocalService
-		_layoutPageTemplateEntryLocalService;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;
