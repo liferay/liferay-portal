@@ -121,6 +121,83 @@ public class BaseDownstreamBuildTest
 	}
 
 	@Test
+	public void testSaveBadBuildURLsInBuildDatabase() {
+		String axisVariable = RandomTestUtil.randomString();
+		String buildURL = RandomTestUtil.randomString();
+		String jobVariant = RandomTestUtil.randomString();
+
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+		BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getAxisName();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getBadBuildCount();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getBadBuildURLs();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).saveBuildURLInBuildDatabase();
+
+		Mockito.when(
+			baseDownstreamBuild.getAxisVariable()
+		).thenReturn(
+			axisVariable
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getBuildDatabase()
+		).thenReturn(
+			buildDatabase
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getBuildURL()
+		).thenReturn(
+			buildURL
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getJobVariant()
+		).thenReturn(
+			jobVariant
+		);
+
+		String firstBuildURL = "https://test-1-1.liferay.com/job/test/1";
+
+		Build.Invocation firstInvocation = new Build.Invocation(
+			baseDownstreamBuild);
+
+		firstInvocation.setBuildURL(firstBuildURL);
+
+		ReflectionTestUtil.setFieldValue(
+			baseDownstreamBuild, "_invocations",
+			Arrays.asList(
+				firstInvocation, new Build.Invocation(baseDownstreamBuild),
+				new Build.Invocation(baseDownstreamBuild)));
+
+		baseDownstreamBuild.saveBuildURLInBuildDatabase();
+
+		Mockito.verify(
+			buildDatabase
+		).putProperty(
+			BaseBuild.BAD_BUILD_URLS_PROPERTIES_KEY,
+			jobVariant + "/" + axisVariable, firstBuildURL + ",unknown", false
+		);
+	}
+
+	@Test
 	public void testSaveBuildURLInBuildDatabase() {
 		_testSaveBuildURLInBuildDatabase(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true);

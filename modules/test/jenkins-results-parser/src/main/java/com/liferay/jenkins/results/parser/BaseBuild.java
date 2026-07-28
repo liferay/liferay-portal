@@ -2368,6 +2368,14 @@ public abstract class BaseBuild implements Build {
 		}
 	}
 
+	protected int getBadBuildCount() {
+		if (_invocations.size() <= 1) {
+			return 0;
+		}
+
+		return _invocations.size() - 1;
+	}
+
 	protected String getBaseGitRepositoryType() {
 		if (_jobName.startsWith("test-subrepository-acceptance-pullrequest")) {
 			return getBaseGitRepositoryName();

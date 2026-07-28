@@ -720,7 +720,7 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		buildDatabase.putProperty(
 			BUILD_URLS_PROPERTIES_KEY, axisName, buildURL, false);
 
-		_saveBadBuildURLsInBuildDatabase(getBadBuildURLs());
+		_saveBadBuildURLsInBuildDatabase();
 	}
 
 	protected BaseDownstreamBuild(
@@ -1213,9 +1213,17 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 		return sb.toString();
 	}
 
-	private void _saveBadBuildURLsInBuildDatabase(List<String> badBuildURLs) {
-		if (badBuildURLs.isEmpty()) {
+	private void _saveBadBuildURLsInBuildDatabase() {
+		int badBuildCount = getBadBuildCount();
+
+		if (badBuildCount == 0) {
 			return;
+		}
+
+		List<String> badBuildURLs = new ArrayList<>(getBadBuildURLs());
+
+		while (badBuildURLs.size() < badBuildCount) {
+			badBuildURLs.add(_BAD_BUILD_URL_UNKNOWN);
 		}
 
 		BuildDatabase buildDatabase = getBuildDatabase();
@@ -1273,6 +1281,8 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			JenkinsResultsParserUtil.delete(testrayUploadBaseDir);
 		}
 	}
+
+	private static final String _BAD_BUILD_URL_UNKNOWN = "unknown";
 
 	private static final FailureMessageGenerator[] _FAILURE_MESSAGE_GENERATORS =
 	{
