@@ -8,10 +8,15 @@ package com.liferay.batch.engine.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.batch.engine.configuration.BatchEngineTaskCompanyConfiguration;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -20,12 +25,6 @@ import java.net.URI;
 
 import java.util.Collections;
 import java.util.Objects;
-
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 
 /**
  * @author Ivica Cardic
@@ -47,21 +46,21 @@ public class BatchEngineTaskCallbackUtil {
 			return;
 		}
 
-		HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+		try {
+			Http.Options options = new Http.Options();
 
-		try (CloseableHttpClient closeableHttpClient =
-				httpClientBuilder.useSystemProperties(
-				).build()) {
+			options.addHeader(
+				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
 
-			HttpPost httpPost = new HttpPost(callbackURL);
+			options.setBody(
+				_objectMapper.writeValueAsString(
+					Collections.singletonMap(id, executeStatus)),
+				ContentTypes.APPLICATION_JSON, StringPool.UTF8);
+			options.setFollowRedirects(false);
+			options.setLocation(callbackURL);
+			options.setPost(true);
 
-			httpPost.setEntity(
-				new StringEntity(
-					_objectMapper.writeValueAsString(
-						Collections.singletonMap(id, executeStatus)),
-					ContentType.APPLICATION_JSON));
-
-			closeableHttpClient.execute(httpPost);
+			HttpUtil.URLtoString(options);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
