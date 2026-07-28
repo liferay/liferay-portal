@@ -8,6 +8,7 @@ package com.liferay.portal.security.key.internal.crypto;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -29,7 +30,6 @@ import java.security.Key;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -301,23 +301,8 @@ public class CryptoManagerImpl implements CryptoManager {
 			CryptoProvider cryptoProvider = _getCryptoProvider(
 				companyId, cryptoProviderId);
 
-			List<String> keyIdentifiers = cryptoProvider.getKeyIdentifiers(
-				companyId);
-
-			if (keyIdentifiers == null) {
-				return Collections.emptyList();
-			}
-
-			List<KeyReference> keyReferences = new ArrayList<>();
-
-			for (String keyIdentifier : keyIdentifiers) {
-				keyReferences.add(
-					new KeyReference(
-						keyIdentifier, cryptoProviderId,
-						KeyReference.Type.CRYPTO));
-			}
-
-			return keyReferences;
+			return _toKeyReferences(
+				cryptoProviderId, cryptoProvider.getKeyIdentifiers(companyId));
 		}
 		catch (CryptoException cryptoException) {
 			if (_log.isWarnEnabled()) {
@@ -376,9 +361,7 @@ public class CryptoManagerImpl implements CryptoManager {
 			throw cryptoException;
 		}
 		finally {
-			if (keyBytes != null) {
-				Arrays.fill(keyBytes, (byte)0);
-			}
+			Arrays.fill(keyBytes, (byte)0);
 		}
 	}
 
@@ -402,7 +385,7 @@ public class CryptoManagerImpl implements CryptoManager {
 		}
 
 		if (wrappedKeyBytes == null) {
-			throw new IllegalArgumentException("Wrapped key bytes is null");
+			throw new IllegalArgumentException("Wrapped key bytes are null");
 		}
 
 		try {
@@ -618,10 +601,10 @@ public class CryptoManagerImpl implements CryptoManager {
 			return cryptoProviderId;
 		}
 
-		KeyManagerProfile activeProfile =
+		KeyManagerProfile activeKeyManagerProfile =
 			_keyManagerProfileRegistry.getActiveKeyManagerProfile();
 
-		if (activeProfile == null) {
+		if (activeKeyManagerProfile == null) {
 			throw new CryptoException(
 				StringBundler.concat(
 					"No active key manager profile found to resolve the ",
@@ -630,17 +613,21 @@ public class CryptoManagerImpl implements CryptoManager {
 
 		if (companyId == CompanyConstants.SYSTEM) {
 			if (providerRole == ProviderRole.DEK) {
-				cryptoProviderId = activeProfile.getSystemDEKProviderId();
+				cryptoProviderId =
+					activeKeyManagerProfile.getSystemDEKProviderId();
 			}
 			else {
-				cryptoProviderId = activeProfile.getSystemKEKProviderId();
+				cryptoProviderId =
+					activeKeyManagerProfile.getSystemKEKProviderId();
 			}
 		}
 		else if (providerRole == ProviderRole.DEK) {
-			cryptoProviderId = activeProfile.getCompanyDEKProviderId();
+			cryptoProviderId =
+				activeKeyManagerProfile.getCompanyDEKProviderId();
 		}
 		else {
-			cryptoProviderId = activeProfile.getCompanyKEKProviderId();
+			cryptoProviderId =
+				activeKeyManagerProfile.getCompanyKEKProviderId();
 		}
 
 		if (Validator.isNull(cryptoProviderId)) {
@@ -651,6 +638,15 @@ public class CryptoManagerImpl implements CryptoManager {
 		}
 
 		return cryptoProviderId;
+	}
+
+	private List<KeyReference> _toKeyReferences(
+		String cryptoProviderId, List<String> keyIdentifiers) {
+
+		return TransformUtil.transform(
+			keyIdentifiers,
+			keyIdentifier -> new KeyReference(
+				keyIdentifier, cryptoProviderId, KeyReference.Type.CRYPTO));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
