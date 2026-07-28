@@ -31,6 +31,17 @@ public class NotificationTemplateLocalServiceWrapper
 
 	@Override
 	public com.liferay.notification.model.NotificationTemplate
+			addAssigneeNotificationTemplate(
+				String externalReferenceCode, long userId, String termName)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _notificationTemplateLocalService.
+			addAssigneeNotificationTemplate(
+				externalReferenceCode, userId, termName);
+	}
+
+	@Override
+	public com.liferay.notification.model.NotificationTemplate
 			addNotificationTemplate(
 				com.liferay.notification.context.NotificationContext
 					notificationContext)
@@ -479,4 +490,4 @@ public class NotificationTemplateLocalServiceWrapper
 	private NotificationTemplateLocalService _notificationTemplateLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1018852765
+// LIFERAY-SERVICE-BUILDER-HASH:-1281534340

@@ -36,6 +36,14 @@ public class NotificationTemplateLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.notification.service.impl.NotificationTemplateLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static NotificationTemplate addAssigneeNotificationTemplate(
+			String externalReferenceCode, long userId, String termName)
+		throws PortalException {
+
+		return getService().addAssigneeNotificationTemplate(
+			externalReferenceCode, userId, termName);
+	}
+
 	public static NotificationTemplate addNotificationTemplate(
 			com.liferay.notification.context.NotificationContext
 				notificationContext)
@@ -403,4 +411,4 @@ public class NotificationTemplateLocalServiceUtil {
 			NotificationTemplateLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-298831699
+// LIFERAY-SERVICE-BUILDER-HASH:-628580951
