@@ -80,6 +80,54 @@ public class FIPSModeValidator {
 		return true;
 	}
 
+	public static FIPSHealthCheckResult runSelfTests() {
+		if (!PropsValues.FIPS_ENABLED) {
+			return FIPSHealthCheckResult.notApplicable();
+		}
+
+		FIPSApplicationState fipsApplicationState =
+			FIPSApplicationStateMachineUtil.transitionOrGetBlockingState(
+				FIPSApplicationState.SELF_TEST);
+
+		if (fipsApplicationState != null) {
+			if ((fipsApplicationState == FIPSApplicationState.ERROR) ||
+				(fipsApplicationState == FIPSApplicationState.POWER_OFF)) {
+
+				return FIPSHealthCheckResult.failed(
+					null, "fips-application-state", fipsApplicationState.name(),
+					"The FIPS application is in a non-operational state");
+			}
+
+			return FIPSHealthCheckResult.inProgress();
+		}
+
+		try {
+			String providerName = _fipsSelfTestExecutor.execute();
+
+			FIPSApplicationStateMachineUtil.transitionOrGetBlockingState(
+				FIPSApplicationState.OPERATIONAL);
+
+			return FIPSHealthCheckResult.healthy(providerName);
+		}
+		catch (FIPSSelfTestException fipsSelfTestException) {
+			FIPSApplicationStateMachineUtil.transitionOrGetBlockingState(
+				FIPSApplicationState.ERROR);
+
+			return FIPSHealthCheckResult.failed(
+				fipsSelfTestException.getProviderName(),
+				fipsSelfTestException.getFailedTest(),
+				fipsSelfTestException.getFipsState(),
+				fipsSelfTestException.getMessage());
+		}
+		catch (Exception exception) {
+			FIPSApplicationStateMachineUtil.transitionOrGetBlockingState(
+				FIPSApplicationState.ERROR);
+
+			return FIPSHealthCheckResult.failed(
+				null, "self-test-execution", null, exception.getMessage());
+		}
+	}
+
 	public static void validate() {
 		Provider[] providers = Security.getProviders();
 
@@ -385,6 +433,8 @@ public class FIPSModeValidator {
 		"TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384");
 	private static final Set<String> _allowedTLSProtocols = Set.of(
 		"TLSv1.2", "TLSv1.3");
+	private static final FIPSSelfTestExecutor _fipsSelfTestExecutor =
+		new ReflectionFIPSSelfTestExecutor();
 	private static final Pattern _pbkdf2Pattern = Pattern.compile(
 		"^[^/]*(?:/([0-9]+))?/([0-9]+)$");
 
