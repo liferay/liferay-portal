@@ -701,7 +701,9 @@ public class DisplayPageTemplateFolderResourceTest
 		throws Exception {
 
 		_assertProblemException(
-			"BAD_REQUEST", null,
+			"BAD_REQUEST",
+			"The parent display page template folder type does not match the " +
+				"display page type",
 			() -> _testPutSiteDisplayPageTemplateFolder(
 				randomDisplayPageTemplateFolder(),
 				RandomTestUtil.randomString()));
@@ -748,8 +750,7 @@ public class DisplayPageTemplateFolderResourceTest
 
 			Problem problem = problemException.getProblem();
 
-			Assert.assertEquals(
-				"UnsupportedOperationException", problem.getType());
+			Assert.assertEquals("IllegalArgumentException", problem.getType());
 		}
 
 		try (SafeCloseable safeCloseable =
