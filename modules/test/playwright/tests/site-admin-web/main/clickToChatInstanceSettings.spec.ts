@@ -57,6 +57,7 @@ const providers = [
 		iconKey: 'liveChatIcon',
 		name: 'LiveChat',
 		passwordKey: 'livechat',
+		skip: true,
 	},
 	{
 		iconKey: 'livePersonIcon',
