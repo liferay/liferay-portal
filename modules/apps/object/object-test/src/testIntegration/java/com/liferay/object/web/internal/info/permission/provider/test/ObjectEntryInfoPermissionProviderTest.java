@@ -208,8 +208,6 @@ public class ObjectEntryInfoPermissionProviderTest {
 
 	private void _testHasViewPermissionForSiteRole() throws Exception {
 		Group group = GroupTestUtil.addGroup();
-		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
-			true);
 		Role siteRole = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
 		User siteUser = UserTestUtil.addUser();
 
@@ -218,6 +216,9 @@ public class ObjectEntryInfoPermissionProviderTest {
 			new long[] {siteRole.getRoleId()});
 		_userLocalService.addGroupUsers(
 			group.getGroupId(), new long[] {siteUser.getUserId()});
+
+		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
+			true);
 
 		Portlet portlet = _portletLocalService.getPortletById(
 			objectDefinition.getCompanyId(), objectDefinition.getPortletId());
