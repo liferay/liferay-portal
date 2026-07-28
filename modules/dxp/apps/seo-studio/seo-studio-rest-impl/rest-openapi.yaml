@@ -1,5 +1,18 @@
 components:
     schemas:
+        Autofix:
+            properties:
+                insightType:
+                    type: string
+                pageURL:
+                    type: string
+                value:
+                    type: string
+            required:
+                -   insightType
+                -   pageURL
+                -   value
+            type: object
         CrawlHit:
             properties:
                 canonicalUrl:
@@ -15,6 +28,11 @@ components:
             required:
                 -   url
             type: object
+        PageContent:
+            properties:
+                content:
+                    type: string
+            type: object
 info:
     description:
         "Liferay SEO Studio REST API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.seo.studio.rest.client', and version '1.0.0'."
@@ -25,6 +43,39 @@ info:
     version: v1.0
 openapi: 3.0.1
 paths:
+    "/autofix":
+        post:
+            operationId: postAutofix
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Autofix"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/Autofix"
+            responses:
+                204: {}
+            tags: ["Autofix"]
+    "/page-content":
+        get:
+            operationId: getPageContent
+            parameters:
+                -   in: query
+                    name: pageURL
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageContent"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageContent"
+            tags: ["PageContent"]
     "/seo-studio-domains/{seoStudioDomainId}/crawl-hits":
         get:
             operationId: getSeoStudioDomainCrawlHitsPage
