@@ -34,6 +34,12 @@ describe('connector registry', () => {
 			expect(config?.type).toBe(DataSourceTypes.MarketoEventStream);
 		});
 
+		it('resolves each connector from the provider type literal the backend sends', () => {
+			expect(getConnectorConfig('DEMANDBASE')?.slug).toBe('demandbase');
+			expect(getConnectorConfig('HUBSPOT')?.slug).toBe('hubspot');
+			expect(getConnectorConfig('MARKETO')?.slug).toBe('marketo');
+		});
+
 		it('is case-insensitive on the lookup key', () => {
 			expect(getConnectorConfig('demandbase')?.slug).toBe('demandbase');
 			expect(getConnectorConfig('HuBsPoT')?.slug).toBe('hubspot');
