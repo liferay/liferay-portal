@@ -13,6 +13,7 @@ import (
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	corev1 "k8s.io/api/core/v1"
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
@@ -46,8 +47,49 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 	liferayEnvironment.Status.EnvironmentID = environmentID
 
-	if _, error := liferayEnvironmentReconciler.ensureIdentity(context, liferayEnvironment); error != nil {
+	privateKey, error := liferayEnvironmentReconciler.ensureIdentity(context, liferayEnvironment)
+
+	if error != nil {
 		return controllerruntime.Result{}, error
+	}
+
+	if liferayEnvironment.Status.ActivatedAt == nil {
+		publicKey, error := publicKeyPEM(privateKey)
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		activationCode, error := liferayEnvironmentReconciler.readActivationCode(context, liferayEnvironment)
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		if error := liferayEnvironmentReconciler.Provisioning.Activate(
+			provisioning.ActivationRequest{
+				ActivationCode:  activationCode,
+				EnvironmentID:   environmentID,
+				EnvironmentName: liferayEnvironment.Name,
+				PublicKey:       publicKey,
+			}, context, privateKey); error != nil {
+
+			liferayEnvironment.Status.Phase = "Degraded"
+
+			return liferayEnvironmentReconciler.finish(context, liferayEnvironment)
+		}
+
+		now := metav1.Now()
+		liferayEnvironment.Status.ActivatedAt = &now
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Reason: "Activated",
+				Status: metav1.ConditionTrue,
+				Type:   "Activated",
+			},
+		)
 	}
 
 	if liferayEnvironment.Status.Phase == "" {
@@ -113,22 +155,22 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 		return nil, getError
 	}
 
-	privateKey, generateKeyError := rsa.GenerateKey(rand.Reader, 2048)
+	privateKey, error := rsa.GenerateKey(rand.Reader, 2048)
 
-	if generateKeyError != nil {
-		return nil, generateKeyError
+	if error != nil {
+		return nil, error
 	}
 
-	privateBytes, marshalKeyError := x509.MarshalPKCS8PrivateKey(privateKey)
+	privateBytes, error := x509.MarshalPKCS8PrivateKey(privateKey)
 
-	if marshalKeyError != nil {
-		return nil, marshalKeyError
+	if error != nil {
+		return nil, error
 	}
 
-	publicPEM, publicKeyError := publicKeyPEM(privateKey)
+	publicPEM, error := publicKeyPEM(privateKey)
 
-	if publicKeyError != nil {
-		return nil, publicKeyError
+	if error != nil {
+		return nil, error
 	}
 
 	secret = &corev1.Secret{
@@ -157,6 +199,24 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 	}
 
 	return privateKey, nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finish(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) (controllerruntime.Result, error) {
+
+	status := liferayEnvironmentReconciler.Status()
+
+	if error := status.Update(context, liferayEnvironment); error != nil {
+		if errors.IsConflict(error) {
+			return controllerruntime.Result{RequeueAfter: time.Second}, nil
+		}
+
+		return controllerruntime.Result{}, error
+	}
+
+	return controllerruntime.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
 }
 
 func parsePrivateKey(privatePEM []byte) (*rsa.PrivateKey, error) {
@@ -198,6 +258,34 @@ func publicKeyPEM(privateKey *rsa.PrivateKey) (string, error) {
 	), nil
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivationCode(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) (string, error) {
+	reference := liferayEnvironment.Spec.ActivationCodeSecretRef
+
+	key := types.NamespacedName{
+		Name:      reference.Name,
+		Namespace: liferayEnvironment.Namespace,
+	}
+
+	secret := &corev1.Secret{}
+
+	if error := liferayEnvironmentReconciler.Get(context, key, secret); error != nil {
+		return "", error
+	}
+
+	code, ok := secret.Data[reference.Key]
+
+	if !ok {
+		return "", fmt.Errorf(
+			"activation code secret %q missing key %q",
+			reference.Name, reference.Key)
+	}
+
+	return string(code), nil
+}
+
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnvironmentID(
 	context context.Context,
 	namespaceName string,
@@ -215,4 +303,5 @@ type LiferayEnvironmentReconciler struct {
 	client.Client
 
 	HeartbeatInterval time.Duration
+	Provisioning      provisioning.Client
 }

@@ -7,10 +7,12 @@ import (
 	env "github.com/caarlos0/env/v11"
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	licensingcontroller "github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
+	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	healthz "sigs.k8s.io/controller-runtime/pkg/healthz"
 	zap "sigs.k8s.io/controller-runtime/pkg/log/zap"
@@ -59,6 +61,7 @@ func main() {
 	liferayEnvironmentReconciler := &licensingcontroller.LiferayEnvironmentReconciler{
 		Client:            manager.GetClient(),
 		HeartbeatInterval: config.HeartbeatInterval,
+		Provisioning:      provisioning.NewHTTPClient(config.ProvisioningBaseURL),
 	}
 
 	if error := liferayEnvironmentReconciler.SetupWithManager(manager); error != nil {
@@ -75,9 +78,10 @@ func main() {
 }
 
 type config struct {
-	HeartbeatInterval time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
-	MetricsAddress    string        `env:"METRICS_ADDRESS" envDefault:":8080"`
-	ProbeAddress      string        `env:"PROBE_ADDRESS" envDefault:":8081"`
+	HeartbeatInterval   time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
+	MetricsAddress      string        `env:"METRICS_ADDRESS" envDefault:":8080"`
+	ProbeAddress        string        `env:"PROBE_ADDRESS" envDefault:":8081"`
+	ProvisioningBaseURL string        `env:"PROVISIONING_BASE_URL" envDefault:"https://webserver-lrprovisioning-uat.lfr.cloud/o/provisioning-rest/v1.0/"`
 }
 
 var (

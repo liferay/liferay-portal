@@ -14,7 +14,7 @@ type ActivationRequest struct {
 }
 
 type Client interface {
-	Activate(context context.Context, privateKey *rsa.PrivateKey, activationRequest ActivationRequest) error
+	Activate(activationRequest ActivationRequest, context context.Context, privateKey *rsa.PrivateKey) error
 }
 
 var ErrorActivationRejected = errors.New("provisioning: activation rejected")
