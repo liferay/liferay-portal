@@ -92,11 +92,10 @@ public class JenkinsGitRepositoryJobTest
 			Arrays.asList("test-portal-acceptance-pullrequest(master)"), null,
 			"default", "commands/build-common.xml");
 		_testGetInvokedJobNames(
-			Arrays.asList("test-portal-release"),
-			"com/liferay/jenkins/results/parser/PortalRelease$1.class",
+			Arrays.asList("test-portal-release"), _ENTRY_NAME_PORTAL_RELEASE,
 			"relevant", _JAR_FILE_NAME);
 		_testGetInvokedJobNames(
-			Arrays.asList("test-portal-source-format"), "META-INF/MANIFEST.MF",
+			Arrays.asList("test-portal-source-format"), _ENTRY_NAME_MANIFEST,
 			"relevant", _JAR_FILE_NAME);
 	}
 
@@ -213,12 +212,16 @@ public class JenkinsGitRepositoryJobTest
 		}
 	}
 
+	private static final String _ENTRY_NAME_MANIFEST = "META-INF/MANIFEST.MF";
+
+	private static final String _ENTRY_NAME_PORTAL_RELEASE =
+		"com/liferay/jenkins/results/parser/PortalRelease$1.class";
+
 	private static final String _JAR_FILE_NAME =
 		"lib/jenkins/com.liferay.jenkins.results.parser.jar";
 
 	private static final List<String> _entryNames = Arrays.asList(
-		"META-INF/MANIFEST.MF",
-		"com/liferay/jenkins/results/parser/PortalRelease$1.class");
+		_ENTRY_NAME_MANIFEST, _ENTRY_NAME_PORTAL_RELEASE);
 
 	private File _gitRepositoryDir;
 	private GitWorkingDirectory _gitWorkingDirectory;
