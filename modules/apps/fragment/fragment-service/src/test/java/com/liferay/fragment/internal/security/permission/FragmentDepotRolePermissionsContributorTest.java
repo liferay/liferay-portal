@@ -11,9 +11,9 @@ import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -36,30 +36,19 @@ public class FragmentDepotRolePermissionsContributorTest {
 			fragmentDepotRolePermissionsContributor =
 				new FragmentDepotRolePermissionsContributor();
 
-		List<DepotRolePermission> depotRolePermissions =
-			fragmentDepotRolePermissionsContributor.getDepotRolePermissions();
+		List<String> expectedRoleNames = new ArrayList<>(
+			Arrays.asList(
+				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER));
 
-		Assert.assertEquals(
-			depotRolePermissions.toString(), 3, depotRolePermissions.size());
+		for (DepotRolePermission depotRolePermission :
+				fragmentDepotRolePermissionsContributor.
+					getDepotRolePermissions()) {
 
-		Map<String, DepotRolePermission> depotRolePermissionsMap =
-			new HashMap<>();
-
-		for (DepotRolePermission depotRolePermission : depotRolePermissions) {
-			depotRolePermissionsMap.put(
-				depotRolePermission.getRoleName(), depotRolePermission);
-		}
-
-		for (String roleName :
-				List.of(
-					DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-					DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-					DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
-
-			DepotRolePermission depotRolePermission =
-				depotRolePermissionsMap.get(roleName);
-
-			Assert.assertNotNull(roleName, depotRolePermission);
+			Assert.assertTrue(
+				depotRolePermission.getRoleName(),
+				expectedRoleNames.remove(depotRolePermission.getRoleName()));
 			Assert.assertEquals(
 				FragmentConstants.RESOURCE_NAME,
 				depotRolePermission.getResourceName());
@@ -67,6 +56,9 @@ public class FragmentDepotRolePermissionsContributorTest {
 				new String[] {FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES},
 				depotRolePermission.getActionKeys());
 		}
+
+		Assert.assertTrue(
+			expectedRoleNames.toString(), expectedRoleNames.isEmpty());
 	}
 
 }
