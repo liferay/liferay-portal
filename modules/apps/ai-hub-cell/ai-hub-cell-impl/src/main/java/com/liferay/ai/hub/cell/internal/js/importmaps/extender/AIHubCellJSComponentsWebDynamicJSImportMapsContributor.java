@@ -44,8 +44,8 @@ public class AIHubCellJSComponentsWebDynamicJSImportMapsContributor
 		writer.write(esModuleAbsolutePortalURLBuilder.build());
 
 		writer.write(
-			"\", \"@liferay/ai-hub-cell-js-components-web" +
-				"/renderAIAssistantTrigger\": \"");
+			"\", \"@liferay/ai-hub-cell-js-components-web/renderAIAssistant" +
+				"Trigger\": \"");
 
 		esModuleAbsolutePortalURLBuilder = absolutePortalURLBuilder.forESModule(
 			"ai-hub-cell-js-components-web", "renderAIAssistantTrigger.js");
