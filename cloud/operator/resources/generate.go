@@ -1,2 +1,3 @@
+//go:generate go tool controller-gen crd paths=./... output:crd:artifacts:config=../../helm/dxp-operator/crds/
 //go:generate go tool controller-gen object paths=./api/...
 package main
