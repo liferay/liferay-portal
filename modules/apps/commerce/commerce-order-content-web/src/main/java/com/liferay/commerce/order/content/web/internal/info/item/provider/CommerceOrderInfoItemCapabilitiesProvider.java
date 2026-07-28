@@ -9,7 +9,6 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.info.item.capability.InfoItemCapability;
 import com.liferay.info.item.provider.InfoItemCapabilitiesProvider;
 import com.liferay.layout.page.template.info.item.capability.DisplayPageInfoItemCapability;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.template.info.item.capability.TemplateInfoItemCapability;
 
@@ -27,12 +26,8 @@ public class CommerceOrderInfoItemCapabilitiesProvider
 
 	@Override
 	public List<InfoItemCapability> getInfoItemCapabilities() {
-		if (CompanyThreadLocal.getCompanyId() > 0) {
-			return ListUtil.fromArray(
-				_displayPageInfoItemCapability, _templateInfoItemCapability);
-		}
-
-		return ListUtil.fromArray();
+		return ListUtil.fromArray(
+			_displayPageInfoItemCapability, _templateInfoItemCapability);
 	}
 
 	@Reference(
