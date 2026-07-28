@@ -141,7 +141,8 @@ public class ClientCredentialsHTTPAuthorizationTest
 					".liferay.com/o/oauth2/token"));
 	}
 
-	private void _verifyTokenRequestCount(int expectedCount, UrlReader urlReader)
+	private void _verifyTokenRequestCount(
+			int expectedCount, UrlReader urlReader)
 		throws Exception {
 
 		Mockito.verify(

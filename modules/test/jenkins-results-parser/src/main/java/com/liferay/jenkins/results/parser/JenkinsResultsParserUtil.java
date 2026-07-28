@@ -5959,7 +5959,7 @@ public class JenkinsResultsParserUtil {
 					String.valueOf(_tokenURL)));
 		}
 
-		synchronized void invalidateToken(String authorization) {
+		public synchronized void invalidateToken(String authorization) {
 			if ((authorization == null) ||
 				!authorization.equals(_tokenType + " " + _token)) {
 

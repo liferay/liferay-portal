@@ -263,11 +263,12 @@ public class UrlReader {
 						buildProperties, "testray.oauth2.client.secret",
 						lxcEnvironment);
 
-					httpAuthorization = _testrayHTTPAuthorizations.computeIfAbsent(
-						baseURL,
-						testrayBaseURL ->
-							new ClientCredentialsHTTPAuthorization(
-								clientId, clientSecret, tokenURL));
+					httpAuthorization =
+						_testrayHTTPAuthorizations.computeIfAbsent(
+							baseURL,
+							testrayBaseURL ->
+								new ClientCredentialsHTTPAuthorization(
+									clientId, clientSecret, tokenURL));
 				}
 
 				URL urlObject = new URL(url);
