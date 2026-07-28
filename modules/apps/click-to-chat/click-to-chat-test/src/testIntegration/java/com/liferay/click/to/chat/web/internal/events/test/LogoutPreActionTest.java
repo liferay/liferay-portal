@@ -9,6 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
+import com.liferay.portal.kernel.events.LifecycleAction;
+import com.liferay.portal.kernel.events.LifecycleEvent;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -105,8 +107,9 @@ public class LogoutPreActionTest {
 						"enabled", true
 					).build())) {
 
-			AuthenticatedSessionManagerUtil.logout(
-				_mockHttpServletRequest, new MockHttpServletResponse());
+			_logoutPreAction.processLifecycleEvent(
+				new LifecycleEvent(
+					_mockHttpServletRequest, new MockHttpServletResponse()));
 		}
 
 		Assert.assertNull(
@@ -151,6 +154,11 @@ public class LogoutPreActionTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
+
+	@Inject(
+		filter = "component.name=com.liferay.click.to.chat.web.internal.events.LogoutPreAction"
+	)
+	private LifecycleAction _logoutPreAction;
 
 	private final MockHttpServletRequest _mockHttpServletRequest =
 		new MockHttpServletRequest();
