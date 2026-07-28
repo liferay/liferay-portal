@@ -1,0 +1,3 @@
+dependencies {
+	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+}

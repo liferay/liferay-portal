@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Portal Security FIPS REST API
+Bundle-SymbolicName: com.liferay.portal.security.fips.rest.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.portal.security.fips.rest.dto.v1_0,\
+	com.liferay.portal.security.fips.rest.resource.v1_0

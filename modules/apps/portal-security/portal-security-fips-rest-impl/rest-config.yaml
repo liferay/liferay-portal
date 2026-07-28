@@ -1,0 +1,12 @@
+apiDir: ../portal-security-fips-rest-api/src/main/java
+apiPackagePath: com.liferay.portal.security.fips.rest
+application:
+    baseURI: /crypto-health
+    className: CryptoHealthApplication
+    name: Liferay.Crypto.Health.REST
+author: Lucas Miranda
+clientDir: ../portal-security-fips-rest-client/src/main/java
+compatibilityVersion: 15
+forcePredictableOperationId: true
+javaEEPackage: jakarta
+testDir: ../portal-security-fips-rest-test/src/testIntegration/java

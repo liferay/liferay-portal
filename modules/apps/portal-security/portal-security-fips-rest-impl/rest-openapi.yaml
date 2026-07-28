@@ -1,0 +1,60 @@
+components:
+    schemas:
+        HealthVerification:
+            description:
+                "Result of an on-demand cryptographic provider self-test re-verification."
+            properties:
+                date:
+                    description:
+                        "When the verification ran."
+                    format: date-time
+                    type: string
+                failedTest:
+                    description:
+                        "The self-test that failed, if any."
+                    type: string
+                fipsState:
+                    description:
+                        "The provider FIPS state at the time of failure."
+                    type: string
+                providerMessage:
+                    description:
+                        "The provider exception message on failure."
+                    type: string
+                providerName:
+                    description:
+                        "The active FIPS provider name."
+                    type: string
+                status:
+                    description:
+                        "The verification outcome."
+                    enum: ["HEALTHY", "FAILED", "NOT_APPLICABLE"]
+                    type: string
+            type: object
+info:
+    description:
+        "Periodic cryptographic health verification.. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.portal.security.fips.rest.client', and version '1.0.0'."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: Crypto Health
+    version: v1.0
+openapi: 3.0.1
+paths:
+    /health-verifications:
+        post:
+            description:
+                "Re-verifies the validated FIPS provider on demand and confirms it reports an approved, ready status."
+            operationId: postHealthVerification
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/HealthVerification"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/HealthVerification"
+            tags: ["HealthVerification"]
+tags:
+    -   name: HealthVerification

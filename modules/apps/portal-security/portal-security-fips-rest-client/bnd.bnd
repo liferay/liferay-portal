@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Portal Security FIPS REST Client
+Bundle-SymbolicName: com.liferay.portal.security.fips.rest.client
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.portal.security.fips.rest.client.dto.v1_0,\
+	com.liferay.portal.security.fips.rest.client.function
