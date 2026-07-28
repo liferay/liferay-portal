@@ -264,7 +264,7 @@ public class ViewDesignLibraryResourcesDisplayContext {
 	}
 
 	public boolean hasContentAccess() {
-		if (_hasManageFragmentEntriesPermission(_depotEntry.getGroupId()) &&
+		if (_hasManageFragmentEntriesPermission(_depotEntry.getGroupId()) ||
 			_hasManageStyleBookEntriesPermission(_depotEntry.getGroupId())) {
 
 			return true;
