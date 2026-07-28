@@ -74,6 +74,8 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.chrono.IsoChronology;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
@@ -623,6 +625,27 @@ public class FragmentEntryProcessorHelperImpl
 
 			return labeledFieldValue.getLabel(
 				fragmentEntryProcessorContext.getLocale());
+		}
+		else if (value instanceof LocalDateTime) {
+			HttpServletRequest httpServletRequest =
+				fragmentEntryProcessorContext.getHttpServletRequest();
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			LocalDateTime localDateTime = (LocalDateTime)value;
+
+			TimeZone timeZone = themeDisplay.getTimeZone();
+
+			ZonedDateTime zonedDateTime = localDateTime.atZone(
+				timeZone.toZoneId());
+
+			return _getDateValue(
+				editableValueJSONObject, Date.from(zonedDateTime.toInstant()),
+				_getShortTimeStylePattern(
+					fragmentEntryProcessorContext.getLocale()),
+				fragmentEntryProcessorContext.getLocale(), timeZone);
 		}
 		else if (value instanceof String) {
 			infoField = infoFieldValue.getInfoField();

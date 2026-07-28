@@ -77,7 +77,7 @@ function filterFields(
 	return fields.reduce((acc, fieldSet) => {
 		const newFields = fieldSet.fields.filter((field) => {
 			if (fieldType === EDITABLE_TYPES['date-time']) {
-				return field.type === 'date';
+				return field.type === 'date' || field.type === 'date-time';
 			}
 			else if (fieldType === EDITABLE_TYPES.link && filterLinkTypes) {
 				return (
