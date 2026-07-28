@@ -220,6 +220,7 @@ import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.security.script.management.test.rule.ScriptManagementConfigurationTestRule;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -2739,23 +2740,45 @@ public class DefaultObjectEntryManagerImplTest
 	public void testAddObjectEntryWithLocalizedRichTextObjectField()
 		throws Exception {
 
-		ObjectEntry objectEntry = _defaultObjectEntryManager.addObjectEntry(
-			_simpleDTOConverterContext, _objectDefinition2,
-			new ObjectEntry() {
-				{
-					properties = HashMapBuilder.<String, Object>put(
-						"localizedRichTextObjectFieldName_i18n",
-						HashMapBuilder.<String, Object>put(
-							"en_US",
-							"en_US <script>console.log('XSS');</script>"
-						).put(
-							"pt_BR",
-							"pt_BR <script>console.log('XSS');</script>"
-						).build()
-					).build();
-				}
-			},
-			null);
+		ObjectEntry objectEntry = null;
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.security.antisamy.internal." +
+					"AntiSamySanitizerImpl",
+				LoggerTestUtil.WARN)) {
+
+			objectEntry = _defaultObjectEntryManager.addObjectEntry(
+				_simpleDTOConverterContext, _objectDefinition2,
+				new ObjectEntry() {
+					{
+						properties = HashMapBuilder.<String, Object>put(
+							"localizedRichTextObjectFieldName_i18n",
+							HashMapBuilder.<String, Object>put(
+								"en_US",
+								"en_US <script>console.log('XSS');</script>"
+							).put(
+								"pt_BR",
+								"pt_BR <script>console.log('XSS');</script>"
+							).build()
+						).build();
+					}
+				},
+				null);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
+
+			for (LogEntry logEntry : logEntries) {
+				Assert.assertEquals(
+					LoggerTestUtil.WARN, logEntry.getPriority());
+				Assert.assertEquals(
+					"The script tag is not allowed for security reasons. " +
+						"This tag should not affect the display of the input. ",
+					logEntry.getMessage());
+				Assert.assertNull(logEntry.getThrowable());
+			}
+		}
 
 		Assert.assertEquals(
 			"en_US",
