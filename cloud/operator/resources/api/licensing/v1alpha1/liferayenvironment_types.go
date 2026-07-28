@@ -65,7 +65,7 @@ type LiferayEnvironmentStatus struct {
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 
 	// +optional
-	EnvironmentId string `json:"environmentId,omitempty"`
+	EnvironmentID string `json:"environmentId,omitempty"`
 
 	// +optional
 	License LicenseStatus `json:"license,omitempty"`
