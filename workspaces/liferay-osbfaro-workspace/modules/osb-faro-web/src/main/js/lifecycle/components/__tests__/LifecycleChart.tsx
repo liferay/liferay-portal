@@ -128,6 +128,77 @@ describe('LifecycleChart', () => {
 		).toHaveLength(4);
 	});
 
+	it('should render account counts abbreviated from a thousand upwards', () => {
+		const stagesWithLargeCounts: ILifecycleStage[] = [
+			{
+				accountCount: 5350,
+				averageStageDuration: 0,
+				conversionRateToNextStage: 10,
+				description: '',
+				percentage: 83.62,
+				stageType: LifecycleStages.AWARE,
+			},
+			{
+				accountCount: 1656000,
+				averageStageDuration: 0,
+				conversionRateToNextStage: 10,
+				description: '',
+				percentage: 15.38,
+				stageType: LifecycleStages.ENGAGED,
+			},
+			{
+				accountCount: 999,
+				averageStageDuration: 0,
+				conversionRateToNextStage: null,
+				description: '',
+				percentage: 1,
+				stageType: LifecycleStages.PIPELINE,
+			},
+		];
+
+		const {getByText, queryByText} = renderChart({
+			stages: stagesWithLargeCounts,
+		});
+
+		expect(getByText('5.35K')).toBeInTheDocument();
+		expect(getByText('1.66M')).toBeInTheDocument();
+		expect(getByText('999')).toBeInTheDocument();
+
+		expect(queryByText('5350')).toBeNull();
+		expect(queryByText('1656000')).toBeNull();
+	});
+
+	it('should render the percentage of all accounts rounded to a single decimal', () => {
+		const stagesWithLongPercentages: ILifecycleStage[] = [
+			{
+				accountCount: 1,
+				averageStageDuration: 0,
+				conversionRateToNextStage: 10,
+				description: '',
+				percentage: 83.62,
+				stageType: LifecycleStages.AWARE,
+			},
+			{
+				accountCount: 1,
+				averageStageDuration: 0,
+				conversionRateToNextStage: null,
+				description: '',
+				percentage: 50,
+				stageType: LifecycleStages.ENGAGED,
+			},
+		];
+
+		const {getByText, queryByText} = renderChart({
+			stages: stagesWithLongPercentages,
+		});
+
+		expect(getByText('83.6% of all accounts')).toBeInTheDocument();
+		expect(getByText('50% of all accounts')).toBeInTheDocument();
+
+		expect(queryByText('83.62% of all accounts')).toBeNull();
+		expect(queryByText('50.00% of all accounts')).toBeNull();
+	});
+
 	it('should show "avg. day" for non-zero averages and "no activity" otherwise', () => {
 		const {getAllByText, getByText} = renderChart({stages: sampleStages});
 

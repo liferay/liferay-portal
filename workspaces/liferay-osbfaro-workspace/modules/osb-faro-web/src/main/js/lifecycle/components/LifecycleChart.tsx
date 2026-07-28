@@ -11,6 +11,7 @@ import {
 } from 'contacts/pages/account/utils/constants';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {sub} from 'shared/util/lang';
+import {toRounded, toThousands} from 'shared/util/numbers';
 import {useLifecycle} from 'lifecycle/context/LifecycleContext';
 
 const EMPTY_STAGES: ILifecycleStage[] = [
@@ -96,7 +97,7 @@ const StageMetrics = ({
 				<div>
 					<p className="mb-0">
 						<Text size={7} weight="bold">
-							{accountCount}
+							{toThousands(accountCount)}
 						</Text>
 					</p>
 					<Text color="secondary" size={4}>
@@ -105,7 +106,7 @@ const StageMetrics = ({
 								Liferay.Language.get(
 									'x-percent-of-all-accounts'
 								),
-								[percentage.toFixed(2)]
+								[toRounded(percentage)]
 							) as string
 						).toLowerCase()}
 					</Text>
