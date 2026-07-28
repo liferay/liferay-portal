@@ -4,10 +4,6 @@ import React, {useMemo} from 'react';
 import {getSafeDecodedURIComponent, getSafeTouchpoint} from 'shared/util/util';
 import {useParams} from 'react-router-dom';
 
-// `searchAccounts` pages from zero and defaults its own `pageSize`.
-
-const getPageVariables = (page: number) => ({page});
-
 interface IAccountDropdownProps {
 	assetType?: string;
 	className?: string;
@@ -50,7 +46,6 @@ const AccountDropdown: React.FC<IAccountDropdownProps> = ({
 			className={className}
 			dataSourceFn={API.accounts.searchAccounts}
 			entityLabel={Liferay.Language.get('accounts')}
-			getPageVariables={getPageVariables}
 			onFilterChange={onFilterChange}
 			selected={selected}
 			variables={{

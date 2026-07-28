@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import ClayButton from '@clayui/button';
 import DropDown from '@clayui/drop-down';
 import Loading, {Align} from 'shared/components/Loading';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {ClayInput} from '@clayui/form';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {Icon} from '@clayui/core';
@@ -21,20 +21,6 @@ const MENU_WIDTH = 240;
  */
 
 const SEARCH_DELAY = 300;
-
-/**
- * How close to the bottom of the option list the scroll has to get before the
- * next page is requested.
- */
-
-const SCROLL_THRESHOLD = 24;
-
-/**
- * Middle-button autoscroll emits scroll events continuously, so the paging
- * check is rate limited rather than run on every one of them.
- */
-
-const SCROLL_THROTTLE = 150;
 
 /**
  * Sentinel id for the "all items" entry. The option list is keyed by string
@@ -165,15 +151,6 @@ interface IFilterPickerProps {
 	entityLabel: string;
 
 	/**
-	 * Maps a zero-based page number onto the pagination arguments the endpoint
-	 * expects, which differ across the filter endpoints (`page`/`pageSize` on
-	 * some, `cur`/`delta` on others). Providing it turns on paging as the
-	 * option list is scrolled; leaving it out keeps the single-page behavior.
-	 */
-
-	getPageVariables?: (page: number) => object;
-
-	/**
 	 * Options owned by the caller, for the rare list that cannot be expressed
 	 * as a single request (e.g. one whose entries are enriched by a second
 	 * query). Ignored when `dataSourceFn` is set.
@@ -222,7 +199,6 @@ const FilterPicker: React.FC<IFilterPickerProps> = ({
 	className,
 	dataSourceFn,
 	entityLabel,
-	getPageVariables,
 	items = NO_ITEMS,
 	loading,
 	normalize = defaultNormalize,
@@ -253,15 +229,6 @@ const FilterPicker: React.FC<IFilterPickerProps> = ({
 
 	const query = useDebounce(search.toLowerCase(), SEARCH_DELAY);
 
-	const [page, setPage] = useState(0);
-
-	// A new search starts over at the first page, so it costs one request
-	// rather than one for the page being viewed and another for page zero.
-
-	useEffect(() => {
-		setPage(0);
-	}, [query]);
-
 	// `query` is omitted while empty so the request keeps the caller's own
 	// shape; every filter endpoint already defaults it to the empty string.
 	// Not memoized: `useRequest` compares `variables` deeply, so the identity
@@ -270,7 +237,6 @@ const FilterPicker: React.FC<IFilterPickerProps> = ({
 	const requestVariables = {
 		...variables,
 		...(query ? {query} : {}),
-		...(getPageVariables ? getPageVariables(page) : {}),
 	};
 
 	const {
@@ -301,82 +267,17 @@ const FilterPicker: React.FC<IFilterPickerProps> = ({
 
 	const optionsReady = fetching ? settled : !loading;
 
-	// Only the first load reaches the trigger. Swapping its caret for a spinner
-	// changes the button's width, and the menu is aligned to the button, so
-	// doing that mid-scroll makes the whole dropdown jump on every page.
+	// Normalized here rather than through `useRequest`'s own `normalize`, which
+	// is captured in a `useCallback([])` and would go stale.
 
-	const triggerLoading = fetching ? requestLoading && !settled : loading;
+	const fetchedItems = useMemo(
+		() => (data === null ? NO_ITEMS : normalize(data)),
+		[data, normalize]
+	);
 
-	const loadingMorePages = fetching && requestLoading && settled;
+	const resolvedItems: IFilterPickerItem[] = fetching ? fetchedItems : items;
 
-	// Read through refs so the accumulator below can depend on `data` alone. A
-	// caller passing an inline `normalize` would otherwise change its identity
-	// every render and append the same page over and over.
-
-	const normalizeRef = useRef(normalize);
-	const pageRef = useRef(page);
-
-	normalizeRef.current = normalize;
-	pageRef.current = page;
-
-	// Pages accumulate, so scrolling extends the list instead of replacing it.
-	// Page zero replaces, which is what a new search needs.
-
-	const [loadedItems, setLoadedItems] =
-		useState<IFilterPickerItem[]>(NO_ITEMS);
-
-	useEffect(() => {
-		if (data === null) {
-			return;
-		}
-
-		const incoming = normalizeRef.current(data);
-
-		setLoadedItems((previous) =>
-			pageRef.current === 0 ? incoming : [...previous, ...incoming]
-		);
-	}, [data]);
-
-	const resolvedItems: IFilterPickerItem[] = fetching ? loadedItems : items;
-
-	// `account-names` reports `totalCount`, the other filter endpoints report
-	// `total`, and the ones returning a bare array report neither — those just
-	// never page.
-
-	const totalItems: number | undefined =
-		data?.totalCount ?? data?.total ?? undefined;
-
-	const hasMorePages =
-		Boolean(getPageVariables) &&
-		totalItems !== undefined &&
-		loadedItems.length < totalItems;
-
-	const lastScrollRef = useRef(0);
-
-	const handleScroll = (event: React.UIEvent<HTMLUListElement>) => {
-		if (!hasMorePages || requestLoading) {
-			return;
-		}
-
-		const now = Date.now();
-
-		if (now - lastScrollRef.current < SCROLL_THROTTLE) {
-			return;
-		}
-
-		// Stamped before the geometry read, not after a page is triggered.
-		// Stamping inside the branch below would leave the timestamp frozen
-		// between pages, so every event would still force a layout — the exact
-		// cost the throttle exists to avoid.
-
-		lastScrollRef.current = now;
-
-		const {clientHeight, scrollHeight, scrollTop} = event.currentTarget;
-
-		if (scrollHeight - scrollTop - clientHeight <= SCROLL_THRESHOLD) {
-			setPage((current) => current + 1);
-		}
-	};
+	const resolvedLoading = fetching ? requestLoading : loading;
 
 	const controlled = selected !== undefined;
 
@@ -464,7 +365,7 @@ const FilterPicker: React.FC<IFilterPickerProps> = ({
 									)
 								: allValuesLabel
 						}
-						loading={triggerLoading}
+						loading={resolvedLoading}
 						role="combobox"
 					/>
 				}
@@ -490,27 +391,13 @@ const FilterPicker: React.FC<IFilterPickerProps> = ({
 					</ClayInput.Group>
 				</div>
 
-				<DropDown.ItemList
-					className="inline-scroller"
-					onScroll={handleScroll}
-					role="listbox"
-				>
+				<DropDown.ItemList className="inline-scroller" role="listbox">
 					{options.map((item) =>
 						renderOption(
 							item,
 							item.id === selectedKey,
 							handleSelectionChange
 						)
-					)}
-
-					{loadingMorePages && (
-						<li
-							className="py-2"
-							key="loading-more"
-							role="presentation"
-						>
-							<Loading />
-						</li>
 					)}
 				</DropDown.ItemList>
 			</DropDown>

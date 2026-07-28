@@ -84,29 +84,6 @@ describe('AccountDropdown', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('should ask for the first page so the list can page as it scrolls', async () => {
-		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
-			Promise.resolve({
-				items: [MOCK_ACCOUNT('100', 'Account 100')],
-				totalCount: 1,
-			})
-		);
-
-		render(
-			<Wrapper>
-				<AccountDropdown assetType="page" onFilterChange={jest.fn()} />
-			</Wrapper>
-		);
-
-		openPicker();
-
-		await waitFor(() =>
-			expect(API.accounts.searchAccounts).toHaveBeenCalledWith(
-				expect.objectContaining({page: 0})
-			)
-		);
-	});
-
 	it('should not search accounts until the picker is opened', async () => {
 		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
 			Promise.resolve({
