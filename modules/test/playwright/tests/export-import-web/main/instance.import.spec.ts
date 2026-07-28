@@ -103,104 +103,106 @@ test('Can see corresponding elements at instance level', async ({
 	await expect(page.getByText('Copy as New:')).not.toBeVisible();
 });
 
-test('Can/not view Import menu item in Application menu depending on permissions', async ({
-	apiHelpers,
-	exportImportPage,
-	globalMenuPage,
-	page,
-}) => {
-	const companyId = await page.evaluate(() => {
-		return Liferay.ThemeDisplay.getCompanyId();
-	});
+test(
+	'Can/not view Import menu item in Application menu depending on permissions',
+	{tag: '@LPD-99799'},
+	async ({apiHelpers, exportImportPage, globalMenuPage, page}) => {
+		const companyId = await page.evaluate(() => {
+			return Liferay.ThemeDisplay.getCompanyId();
+		});
 
-	const roleWithPermissions = await apiHelpers.headlessAdminUser.postRole({
-		name: 'role' + getRandomInt(),
-		rolePermissions: [
+		const roleWithPermissions = await apiHelpers.headlessAdminUser.postRole(
 			{
-				actionIds: ['VIEW_CONTROL_PANEL'],
-				primaryKey: companyId,
-				resourceName: '90',
-				scope: 1,
-			},
-			{
-				actionIds: ['ACCESS_IN_CONTROL_PANEL'],
-				primaryKey: companyId,
-				resourceName:
-					'com_liferay_exportimport_web_portlet_CompanyImportPortlet',
-				scope: 1,
-			},
-		],
-	});
+				name: 'role' + getRandomInt(),
+				rolePermissions: [
+					{
+						actionIds: ['VIEW_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName: '90',
+						scope: 1,
+					},
+					{
+						actionIds: ['ACCESS_IN_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName:
+							'com_liferay_exportimport_web_portlet_CompanyImportPortlet',
+						scope: 1,
+					},
+				],
+			}
+		);
 
-	const roleWithoutPermissions = await apiHelpers.headlessAdminUser.postRole({
-		name: 'role' + getRandomInt(),
-		rolePermissions: [
-			{
-				actionIds: ['VIEW_CONTROL_PANEL'],
-				primaryKey: companyId,
-				resourceName: '90',
-				scope: 1,
-			},
-		],
-	});
+		const roleWithoutPermissions =
+			await apiHelpers.headlessAdminUser.postRole({
+				name: 'role' + getRandomInt(),
+				rolePermissions: [
+					{
+						actionIds: ['VIEW_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName: '90',
+						scope: 1,
+					},
+				],
+			});
 
-	const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user1 = await apiHelpers.headlessAdminUser.postUserAccount();
 
-	userData[user1.alternateName] = {
-		name: user1.givenName,
-		password: 'test',
-		surname: user1.familyName,
-	};
+		userData[user1.alternateName] = {
+			name: user1.givenName,
+			password: 'test',
+			surname: user1.familyName,
+		};
 
-	await apiHelpers.headlessAdminUser.assignUserToRole(
-		roleWithPermissions.externalReferenceCode,
-		user1.id
-	);
+		await apiHelpers.headlessAdminUser.assignUserToRole(
+			roleWithPermissions.externalReferenceCode,
+			user1.id
+		);
 
-	const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
+		const user2 = await apiHelpers.headlessAdminUser.postUserAccount();
 
-	userData[user2.alternateName] = {
-		name: user2.givenName,
-		password: 'test',
-		surname: user2.familyName,
-	};
+		userData[user2.alternateName] = {
+			name: user2.givenName,
+			password: 'test',
+			surname: user2.familyName,
+		};
 
-	await apiHelpers.headlessAdminUser.assignUserToRole(
-		roleWithoutPermissions.externalReferenceCode,
-		user2.id
-	);
+		await apiHelpers.headlessAdminUser.assignUserToRole(
+			roleWithoutPermissions.externalReferenceCode,
+			user2.id
+		);
 
-	await performLogout(page);
+		await performLogout(page);
 
-	await performLogin(page, user1.alternateName);
+		await performLogin(page, user1.alternateName);
 
-	await globalMenuPage.goToApplications();
+		await globalMenuPage.goToApplications();
 
-	const importMenuItem = page.getByRole('menuitem', {
-		exact: true,
-		name: 'Import',
-	});
+		const importMenuItem = page.getByRole('menuitem', {
+			exact: true,
+			name: 'Import',
+		});
 
-	const importUrl = await importMenuItem.getAttribute('href');
+		const importUrl = await importMenuItem.getAttribute('href');
 
-	await expect(importMenuItem).toBeVisible();
+		await expect(importMenuItem).toBeVisible();
 
-	await globalMenuPage.goToApplications('Import');
+		await globalMenuPage.goToApplications('Import');
 
-	await expect(exportImportPage.newImportButton).toBeVisible();
+		await expect(exportImportPage.newImportButton).toBeVisible();
 
-	await performLogout(page);
+		await performLogout(page);
 
-	await performLogin(page, user2.alternateName);
+		await performLogin(page, user2.alternateName);
 
-	await expect(globalMenuPage.globalMenuButton).toBeHidden();
+		await expect(globalMenuPage.globalMenuButton).toBeHidden();
 
-	// Try to access the Import page directly using the stored URL
+		// Try to access the Import page directly using the stored URL
 
-	await page.goto(importUrl);
+		await page.goto(importUrl);
 
-	await expect(exportImportPage.newImportButton).toBeHidden();
-});
+		await expect(exportImportPage.newImportButton).toBeHidden();
+	}
+);
 
 test('Cannot import a site scoped lar file', async ({
 	companyExportImportPage,

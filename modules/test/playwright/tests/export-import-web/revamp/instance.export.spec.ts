@@ -78,7 +78,7 @@ test(
 
 test(
 	'Can view the Export menu item only with permissions',
-	{tag: '@LPD-57655'},
+	{tag: ['@LPD-57655', '@LPD-99799']},
 	async ({apiHelpers, exportImportPage, globalMenuPage, page}) => {
 		const companyId = await page.evaluate(() => {
 			return Liferay.ThemeDisplay.getCompanyId();
