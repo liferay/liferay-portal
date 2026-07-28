@@ -5,8 +5,12 @@
 
 package com.liferay.seo.studio.rest.internal.resource.v1_0;
 
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -14,7 +18,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.rest.dto.v1_0.Autofix;
 import com.liferay.seo.studio.rest.internal.auto.fix.AutofixTracker;
-import com.liferay.seo.studio.rest.internal.instance.SEOStudioObjectEntryResolver;
 import com.liferay.seo.studio.rest.internal.web.cache.SEOStudioInstanceAccessTokenWebCacheItem;
 import com.liferay.seo.studio.rest.resource.v1_0.AutofixResource;
 import com.liferay.seo.studio.spi.autofix.AutofixResult;
@@ -28,7 +31,9 @@ import java.io.Serializable;
 
 import java.net.URI;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -61,10 +66,9 @@ public class AutofixResourceImpl extends BaseAutofixResourceImpl {
 
 		URI uri = new URI(autofix.getPageURL());
 
-		ObjectEntry objectEntry =
-			_seoStudioObjectEntryResolver.getObjectEntryByHostname(
-				contextCompany.getCompanyId(), "L_SEO_STUDIO_INSTANCE",
-				uri.getAuthority());
+		ObjectEntry objectEntry = _getObjectEntryByHostname(
+			contextCompany.getCompanyId(), "L_SEO_STUDIO_INSTANCE",
+			uri.getAuthority());
 
 		if (objectEntry == null) {
 			throw new NotFoundException(
@@ -107,13 +111,43 @@ public class AutofixResourceImpl extends BaseAutofixResourceImpl {
 		).build();
 	}
 
+	private ObjectEntry _getObjectEntryByHostname(
+			long companyId, String externalReferenceCode, String hostname)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		for (ObjectEntry objectEntry : objectEntries) {
+			Map<String, Serializable> values = objectEntry.getValues();
+
+			if (Objects.equals(
+					GetterUtil.getString(values.get("hostname")), hostname)) {
+
+				return objectEntry;
+			}
+		}
+
+		return null;
+	}
+
 	@Reference
 	private AutofixTracker _autofixTracker;
 
 	@Reference
-	private ObjectEntryService _objectEntryService;
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
-	private SEOStudioObjectEntryResolver _seoStudioObjectEntryResolver;
+	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectEntryService _objectEntryService;
 
 }

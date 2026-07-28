@@ -18,7 +18,7 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author David Truong
  */
-@Component(service = {})
+@Component(service = AutofixTracker.class)
 public class AutofixTracker {
 
 	public Autofix getAutofix(String insightType) {

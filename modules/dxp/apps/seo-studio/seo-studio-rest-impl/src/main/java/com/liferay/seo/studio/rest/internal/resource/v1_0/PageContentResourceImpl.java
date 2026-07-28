@@ -5,8 +5,12 @@
 
 package com.liferay.seo.studio.rest.internal.resource.v1_0;
 
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -19,15 +23,17 @@ import com.liferay.portal.search.hits.SearchHit;
 import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.seo.studio.rest.dto.v1_0.PageContent;
-import com.liferay.seo.studio.rest.internal.instance.SEOStudioObjectEntryResolver;
 import com.liferay.seo.studio.rest.resource.v1_0.PageContentResource;
 
 import jakarta.ws.rs.NotFoundException;
+
+import java.io.Serializable;
 
 import java.net.URI;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -46,10 +52,9 @@ public class PageContentResourceImpl extends BasePageContentResourceImpl {
 	public PageContent getPageContent(String pageURL) throws Exception {
 		URI uri = new URI(pageURL);
 
-		ObjectEntry objectEntry =
-			_seoStudioObjectEntryResolver.getObjectEntryByHostname(
-				contextCompany.getCompanyId(), "L_SEO_STUDIO_DOMAIN",
-				uri.getAuthority());
+		ObjectEntry objectEntry = _getObjectEntryByHostname(
+			contextCompany.getCompanyId(), "L_SEO_STUDIO_DOMAIN",
+			uri.getAuthority());
 
 		if (objectEntry == null) {
 			throw new NotFoundException(
@@ -108,13 +113,43 @@ public class PageContentResourceImpl extends BasePageContentResourceImpl {
 		return pageContent;
 	}
 
+	private ObjectEntry _getObjectEntryByHostname(
+			long companyId, String externalReferenceCode, String hostname)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		List<ObjectEntry> objectEntries =
+			_objectEntryLocalService.getObjectEntries(
+				0, objectDefinition.getObjectDefinitionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		for (ObjectEntry objectEntry : objectEntries) {
+			Map<String, Serializable> values = objectEntry.getValues();
+
+			if (Objects.equals(
+					GetterUtil.getString(values.get("hostname")), hostname)) {
+
+				return objectEntry;
+			}
+		}
+
+		return null;
+	}
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
+
 	@Reference
 	private ObjectEntryService _objectEntryService;
 
 	@Reference
 	private SearchEngineAdapter _searchEngineAdapter;
-
-	@Reference
-	private SEOStudioObjectEntryResolver _seoStudioObjectEntryResolver;
 
 }
