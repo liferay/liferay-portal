@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
-import React, {useId, useState} from 'react';
+import React from 'react';
 
 import {ChatContext} from '../api';
 import {Space} from '../services/getSpaces';
+import SpaceSelect from './SpaceSelect';
 
 import '../chat.scss';
 
@@ -22,29 +22,13 @@ interface SpaceSelectorMessageBalloonProps {
 const SpaceSelectorMessageBalloon: React.FC<
 	SpaceSelectorMessageBalloonProps
 > = ({contextRef, message, onSelectSpace, spaces}) => {
-	const [siteId, setSiteId] = useState('');
-	const [submitted, setSubmitted] = useState(false);
-
-	const selectId = useId();
-
-	function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
-		const value = event.target.value;
-
-		setSiteId(value);
-
-		const space = spaces.find((space) => String(space.siteId) === value);
-
-		if (!space) {
-			return;
-		}
+	function handleSelectSpace(space: Space) {
 
 		// eslint-disable-next-line react-compiler/react-compiler
 		contextRef.current = {
 			...contextRef.current,
-			spaceId: value,
+			spaceId: String(space.siteId),
 		};
-
-		setSubmitted(true);
 
 		onSelectSpace(space);
 	}
@@ -58,29 +42,10 @@ const SpaceSelectorMessageBalloon: React.FC<
 			</div>
 
 			<div className="ai-assistant-chat__content-generation-balloon-form">
-				<ClayForm.Group>
-					<label htmlFor={selectId}>
-						{Liferay.Language.get('space')}
-					</label>
-
-					<ClaySelectWithOption
-						disabled={submitted}
-						id={selectId}
-						onChange={handleChange}
-						options={[
-							{
-								disabled: true,
-								label: Liferay.Language.get('select-a-space'),
-								value: '',
-							},
-							...spaces.map((space) => ({
-								label: space.name,
-								value: String(space.siteId),
-							})),
-						]}
-						value={siteId}
-					/>
-				</ClayForm.Group>
+				<SpaceSelect
+					onSelectSpace={handleSelectSpace}
+					spaces={spaces}
+				/>
 			</div>
 		</div>
 	);
