@@ -183,8 +183,17 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 			return _axisName;
 		}
 
+		String axisVariable = getAxisVariable();
+		String jobVariant = getJobVariant();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(axisVariable) ||
+			JenkinsResultsParserUtil.isNullOrEmpty(jobVariant)) {
+
+			return null;
+		}
+
 		_axisName = JenkinsResultsParserUtil.combine(
-			getJobVariant(), "/", getAxisVariable());
+			jobVariant, "/", axisVariable);
 
 		return _axisName;
 	}

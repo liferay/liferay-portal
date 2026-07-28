@@ -21,6 +21,18 @@ public class BaseDownstreamBuildTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testGetAxisName() {
+		String axisVariable = RandomTestUtil.randomString();
+		String jobVariant = RandomTestUtil.randomString();
+
+		_testGetAxisName(
+			axisVariable, jobVariant + "/" + axisVariable, jobVariant);
+
+		_testGetAxisName(axisVariable, null, null);
+		_testGetAxisName(null, null, jobVariant);
+	}
+
+	@Test
 	public void testGetGitHubMessageElement() {
 		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
 			BaseDownstreamBuild.class);
@@ -106,6 +118,33 @@ public class BaseDownstreamBuildTest
 		Assert.assertTrue(
 			gitHubMessageUpstreamJobFailureXML.contains(
 				upstreamJobFailureMarker));
+	}
+
+	private void _testGetAxisName(
+		String axisVariable, String expectedAxisName, String jobVariant) {
+
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getAxisName();
+
+		Mockito.when(
+			baseDownstreamBuild.getAxisVariable()
+		).thenReturn(
+			axisVariable
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getJobVariant()
+		).thenReturn(
+			jobVariant
+		);
+
+		Assert.assertEquals(
+			expectedAxisName, baseDownstreamBuild.getAxisName());
 	}
 
 }
