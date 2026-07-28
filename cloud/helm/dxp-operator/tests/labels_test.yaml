@@ -1,0 +1,122 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Labels
+templates:
+    -   templates/deployment.yaml
+    -   templates/rbac.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.labels['app.liferay.com/tier']
+                    value: control-plane
+            -   equal:
+                    path: metadata.labels.environment
+                    value: prod
+            -   equal:
+                    path: spec.template.metadata.labels.environment
+                    value: prod
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Adds every custom label to the deployment and the pod template
+        set:
+            customLabels:
+                app.liferay.com/tier: control-plane
+                environment: prod
+    -   asserts:
+            -   equal:
+                    path: spec.selector.matchLabels
+                    value:
+                        app.kubernetes.io/instance: my-release
+                        app.kubernetes.io/name: liferay-dxp-operator
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Keeps the custom labels out of the selector labels
+        set:
+            customLabels:
+                environment: prod
+    -   asserts:
+            -   equal:
+                    path: metadata.labels
+                    value:
+                        app.kubernetes.io/instance: my-release
+                        app.kubernetes.io/managed-by: Helm
+                        app.kubernetes.io/name: liferay-dxp-operator
+                        app.kubernetes.io/version: latest
+                        component: liferay-dxp-operator
+                        helm.sh/chart: liferay-dxp-operator-0.0.1
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: ClusterRoleBinding
+        it: Labels the cluster role binding with the shared label set
+    -   asserts:
+            -   equal:
+                    path: metadata.labels
+                    value:
+                        app.kubernetes.io/instance: my-release
+                        app.kubernetes.io/managed-by: Helm
+                        app.kubernetes.io/name: liferay-dxp-operator
+                        app.kubernetes.io/version: latest
+                        component: liferay-dxp-operator
+                        helm.sh/chart: liferay-dxp-operator-0.0.1
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: ClusterRole
+        it: Labels the cluster role with the shared label set
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.labels
+                    value:
+                        app.kubernetes.io/instance: my-release
+                        app.kubernetes.io/managed-by: Helm
+                        app.kubernetes.io/name: liferay-dxp-operator
+                        app.kubernetes.io/version: latest
+                        component: liferay-dxp-operator
+                        helm.sh/chart: liferay-dxp-operator-0.0.1
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Labels the pod template with the shared label set
+    -   asserts:
+            -   equal:
+                    path: metadata.labels['app.kubernetes.io/version']
+                    value: 7.4.13-u108
+        chart:
+            appVersion: 7.4.13-u108
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: ServiceAccount
+        it: Reflects the chart app version in the version label
+    -   asserts:
+            -   equal:
+                    path: metadata.labels['helm.sh/chart']
+                    value: liferay-dxp-operator-1.2.3
+        chart:
+            version: 1.2.3
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Reflects the chart name and version in the helm.sh/chart label
+    -   asserts:
+            -   equal:
+                    path: metadata.labels['app.kubernetes.io/name']
+                    value: operator
+            -   equal:
+                    path: spec.selector.matchLabels['app.kubernetes.io/name']
+                    value: operator
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Renames the name label through nameOverride
+        set:
+            nameOverride: operator

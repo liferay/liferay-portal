@@ -23,6 +23,7 @@ function main {
 		aws-infrastructure-provider
 		aws-marketplace
 		default
+		dxp-operator
 		gcp
 		gcp-infrastructure
 		gcp-infrastructure-provider

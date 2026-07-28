@@ -1,0 +1,215 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Deployment
+templates:
+    -   templates/deployment.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.imagePullSecrets
+                    value:
+                        -   name: artifactory-credentials
+                        -   name: registry-credentials
+        it: Adds every image pull secret through the pullSecrets loop
+        set:
+            image.pullSecrets:
+                -   name: artifactory-credentials
+                -   name: registry-credentials
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.affinity.nodeAffinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[0].matchExpressions[0].key
+                    value: kubernetes.io/arch
+            -   equal:
+                    path: spec.template.spec.nodeSelector
+                    value:
+                        kubernetes.io/os: linux
+            -   equal:
+                    path: spec.template.spec.tolerations
+                    value:
+                        -   effect: NoSchedule
+                            key: dedicated
+                            operator: Equal
+                            value: operator
+        it: Applies the affinity, node selector, and tolerations when configured
+        set:
+            affinity:
+                nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                        nodeSelectorTerms:
+                            -   matchExpressions:
+                                    -   key: kubernetes.io/arch
+                                        operator: In
+                                        values:
+                                            -   amd64
+            nodeSelector:
+                kubernetes.io/os: linux
+            tolerations:
+                -   effect: NoSchedule
+                    key: dedicated
+                    operator: Equal
+                    value: operator
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].image
+                    value: registry.example.com/liferay-dxp-operator:2
+            -   equal:
+                    path: spec.template.spec.containers[0].imagePullPolicy
+                    value: Always
+        it: Builds the image reference from the repository and a numeric tag
+        set:
+            image.pullPolicy: Always
+            image.repository: registry.example.com/liferay-dxp-operator
+            image.tag: 2
+    -   asserts:
+            -   notExists:
+                    path: spec.template.spec.containers[0].securityContext
+            -   notExists:
+                    path: spec.template.spec.securityContext
+        it: Drops the pod and container security contexts when they are emptied
+        set:
+            podSecurityContext: null
+            securityContext: null
+    -   asserts:
+            -   contains:
+                    content:
+                        containerPort: 9090
+                        name: metrics
+                        protocol: TCP
+                    path: spec.template.spec.containers[0].ports
+            -   contains:
+                    content:
+                        containerPort: 9091
+                        name: health
+                        protocol: TCP
+                    path: spec.template.spec.containers[0].ports
+            -   lengthEqual:
+                    count: 2
+                    path: spec.template.spec.containers[0].ports
+        it: Exposes a container port for the metrics and probe ports
+        set:
+            metrics.port: 9090
+            probes.port: 9091
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.serviceAccountName
+                    value: default
+        it: Falls back to the default service account when the chart does not create one
+        set:
+            serviceAccount.create: false
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.serviceAccountName
+                    value: my-release-liferay-dxp-operator
+        it: Names the service account after the release when the chart creates it
+        set:
+            serviceAccount.create: true
+    -   asserts:
+            -   notExists:
+                    path: spec.template.spec.affinity
+            -   notExists:
+                    path: spec.template.spec.nodeSelector
+            -   notExists:
+                    path: spec.template.spec.tolerations
+        it: Omits the affinity, node selector, and tolerations by default
+    -   asserts:
+            -   notExists:
+                    path: spec.template.spec.imagePullSecrets
+        it: Omits the image pull secrets by default
+    -   asserts:
+            -   notExists:
+                    path: spec.template.metadata.annotations
+        it: Omits the pod annotations by default
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="METRICS_ADDRESS")].value
+                    value: :9090
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="PROBE_ADDRESS")].value
+                    value: :9091
+        it: Points the metrics and probe addresses at the configured ports
+        set:
+            metrics.port: 9090
+            probes.port: 9091
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="HEARTBEAT_INTERVAL")].value
+                    value: 30m
+        it: Propagates the heartbeat interval as a quoted environment variable
+        set:
+            heartbeatInterval: 30m
+    -   asserts:
+            -   equal:
+                    path: spec.replicas
+                    value: 3
+            -   isKind:
+                    of: Deployment
+        it: Reflects the configured replica count
+        set:
+            replicaCount: 3
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.annotations
+                    value:
+                        prometheus.io/port: "8080"
+                        prometheus.io/scrape: "true"
+        it: Renders the pod annotations when configured
+        set:
+            podAnnotations:
+                prometheus.io/port: "8080"
+                prometheus.io/scrape: "true"
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].livenessProbe.httpGet
+                    value:
+                        path: /healthz
+                        port: health
+            -   equal:
+                    path: spec.template.spec.containers[0].readinessProbe.httpGet
+                    value:
+                        path: /readyz
+                        port: health
+        it: Serves the liveness and readiness probes on the health port
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].securityContext
+                    value:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                            drop:
+                                -   ALL
+                        readOnlyRootFilesystem: true
+                        runAsNonRoot: true
+            -   equal:
+                    path: spec.template.spec.securityContext
+                    value:
+                        runAsNonRoot: true
+                        seccompProfile:
+                            type: RuntimeDefault
+        it: Sets the pod and container security contexts from the values
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.containers[0].resources
+                    value:
+                        limits:
+                            cpu: 1
+                            memory: 512Mi
+                        requests:
+                            cpu: 200m
+                            memory: 256Mi
+        it: Sets the resource requests and limits from the values
+        set:
+            resources:
+                limits:
+                    cpu: 1
+                    memory: 512Mi
+                requests:
+                    cpu: 200m
+                    memory: 256Mi
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.serviceAccountName
+                    value: existing-operator
+        it: Uses the named service account when one is configured
+        set:
+            serviceAccount.name: existing-operator

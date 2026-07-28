@@ -1,0 +1,124 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: RBAC
+templates:
+    -   templates/rbac.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations
+                    value:
+                        eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/operator
+        documentSelector:
+            path: kind
+            value: ServiceAccount
+        it: Annotates the service account when annotations are configured
+        set:
+            serviceAccount.annotations:
+                eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/operator
+    -   asserts:
+            -   equal:
+                    path: roleRef
+                    value:
+                        apiGroup: rbac.authorization.k8s.io
+                        kind: ClusterRole
+                        name: my-release-liferay-dxp-operator
+        documentSelector:
+            path: kind
+            value: ClusterRoleBinding
+        it: Binds the cluster role that the chart creates
+    -   asserts:
+            -   equal:
+                    path: subjects
+                    value:
+                        -   kind: ServiceAccount
+                            name: operator-sa
+                            namespace: my-namespace
+        documentSelector:
+            path: kind
+            value: ClusterRoleBinding
+        it: Binds the named service account in the release namespace
+        set:
+            serviceAccount.name: operator-sa
+    -   asserts:
+            -   equal:
+                    path: rules[?(@.resources[0]=="liferayenvironments")].verbs
+                    value:
+                        -   get
+                        -   list
+                        -   patch
+                        -   update
+                        -   watch
+            -   equal:
+                    path: rules[?(@.resources[0]=="liferayenvironments/finalizers")].verbs
+                    value:
+                        -   update
+            -   equal:
+                    path: rules[?(@.resources[0]=="liferayenvironments/status")].verbs
+                    value:
+                        -   get
+                        -   patch
+                        -   update
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Grants the verbs each LiferayEnvironment subresource needs
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: ServiceAccount
+        it: Keeps the service account but drops the cluster role when RBAC is disabled
+        set:
+            rbac.create: false
+    -   asserts:
+            -   notExists:
+                    path: metadata.annotations
+            -   notExists:
+                    path: metadata.namespace
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Leaves the cluster role unnamespaced and unannotated
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: my-release-liferay-dxp-operator
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace
+        documentSelector:
+            path: kind
+            value: ServiceAccount
+        it: Names the service account after the release in the release namespace
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits every RBAC resource when the chart does not create a service account
+        set:
+            rbac.create: true
+            serviceAccount.create: false
+    -   asserts:
+            -   notExists:
+                    path: metadata.annotations
+        documentSelector:
+            path: kind
+            value: ServiceAccount
+        it: Omits the service account annotations by default
+    -   asserts:
+            -   equal:
+                    path: rules[0].apiGroups
+                    value:
+                        -   licensing.liferay.com
+            -   lengthEqual:
+                    count: 3
+                    path: rules
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Renders one rule per LiferayEnvironment resource in the licensing API group
+    -   asserts:
+            -   hasDocuments:
+                    count: 3
+        it: Renders the service account, cluster role, and cluster role binding by default

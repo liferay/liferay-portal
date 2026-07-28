@@ -1,0 +1,107 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: Naming
+templates:
+    -   templates/deployment.yaml
+    -   templates/rbac.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: my-release-liferay-dxp-operator
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Combines the release name and the chart name into the full name
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: my-namespace
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Defaults the namespace to the release namespace
+    -   asserts:
+            -   equal:
+                    path: subjects[0].namespace
+                    value: operator-system
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: ClusterRoleBinding
+        it: Follows the namespace override in the cluster role binding subject
+        set:
+            namespaceOverride: operator-system
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: my-release-operator
+            -   equal:
+                    path: spec.selector.matchLabels['app.kubernetes.io/name']
+                    value: operator
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Overrides the chart name through nameOverride
+        set:
+            nameOverride: operator
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: dxp-operator
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Overrides the full name through fullnameOverride
+        set:
+            fullnameOverride: dxp-operator
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: operator-system
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: ServiceAccount
+        it: Overrides the namespace through namespaceOverride
+        set:
+            namespaceOverride: operator-system
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: liferay-dxp-operator-prod
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Reuses the release name as the full name when it already contains the chart name
+        release:
+            name: liferay-dxp-operator-prod
+            namespace: my-namespace
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Trims the trailing dash left behind by truncating the full name
+        set:
+            fullnameOverride: bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb-suffix
+    -   asserts:
+            -   equal:
+                    path: metadata.name
+                    value: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: Deployment
+        it: Truncates the full name to 63 characters
+        set:
+            fullnameOverride: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
