@@ -292,6 +292,38 @@ public class PortletPreferencesUpgradeProcessTest {
 			layout.getPlid(), groupControlPanelPortletPreferences.getPlid());
 	}
 
+	@Test
+	public void testUpgradeWithGroupWithoutControlPanelLayout()
+		throws Exception {
+
+		Layout layout1 = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout controlPanelLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		_layoutLocalService.updateType(
+			controlPanelLayout.getPlid(), LayoutConstants.TYPE_CONTROL_PANEL);
+
+		_clonePortletPreferences(
+			controlPanelLayout.getPlid(),
+			_getPortletPreferences(
+				layout1, _addPortletFragmentEntryLink(layout1)));
+
+		Group group2 = GroupTestUtil.addGroup();
+
+		Layout layout2 = LayoutTestUtil.addTypeContentLayout(group2);
+
+		PortletPreferences portletPreferences2 = _getPortletPreferences(
+			layout2, _addPortletFragmentEntryLink(layout2));
+
+		_assertUpgrade();
+
+		portletPreferences2 =
+			_portletPreferencesLocalService.fetchPortletPreferences(
+				portletPreferences2.getPortletPreferencesId());
+
+		Assert.assertEquals(layout2.getPlid(), portletPreferences2.getPlid());
+	}
+
 	private void _addFragmentEntryLink(Layout layout) throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
