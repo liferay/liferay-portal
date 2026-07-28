@@ -232,6 +232,36 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 		companyLocalService.deleteLogo(companyId);
 	}
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public Company exportCompany(long companyId) throws PortalException {
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+		}
+
+		Company company = companyLocalService.exportCompany(companyId);
+
+		if (AuditRouterUtil.isDeployed()) {
+			long userId = getUserId();
+
+			AuditRouterUtil.route(
+				new AuditMessage(
+					0, company.getCompanyId(), userId,
+					PortalUtil.getUserName(userId, StringPool.BLANK), null,
+					JSONUtil.put(
+						"virtualHostname", company.getVirtualHostname()
+					).put(
+						"webId", company.getWebId()
+					),
+					Company.class.getName(),
+					String.valueOf(company.getCompanyId()), "EXPORT", null));
+		}
+
+		return company;
+	}
+
 	@Override
 	public void forEachCompany(
 			UnsafeConsumer<Company, Exception> unsafeConsumer)
