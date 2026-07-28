@@ -30,6 +30,7 @@ import java.util.Set;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BailErrorStrategy;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 /**
@@ -99,9 +100,15 @@ public class DDMExpressionImpl<T> implements DDMExpression<T> {
 			throw new IllegalArgumentException();
 		}
 
+		DDMExpressionLexer ddmExpressionLexer = new DDMExpressionLexer(
+			new ANTLRInputStream(expression));
+
+		ddmExpressionLexer.removeErrorListener(ConsoleErrorListener.INSTANCE);
+
 		DDMExpressionParser ddmExpressionParser = new DDMExpressionParser(
-			new CommonTokenStream(
-				new DDMExpressionLexer(new ANTLRInputStream(expression))));
+			new CommonTokenStream(ddmExpressionLexer));
+
+		ddmExpressionParser.removeErrorListener(ConsoleErrorListener.INSTANCE);
 
 		ddmExpressionParser.setErrorHandler(new BailErrorStrategy());
 
