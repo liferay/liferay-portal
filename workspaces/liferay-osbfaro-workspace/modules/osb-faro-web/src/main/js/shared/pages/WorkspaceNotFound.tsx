@@ -11,6 +11,7 @@ const WorkspaceNotFound: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 }) => (
 	<WorkspacesBasePage
 		className={getCN('workspace-not-found-root text-center', className)}
+		title=""
 	>
 		<Sheet>
 			<Sheet.Header>

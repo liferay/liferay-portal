@@ -5,8 +5,6 @@
 <html dir="<@liferay.language key="lang.dir" />" lang="${w3c_language_id}">
 
 <head>
-	<title>Analytics Cloud</title>
-
 	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
 
 	<link href="/o/osb-faro-theme/css/fonts.css" ${nonceAttribute} rel="stylesheet" type = "text/css" />

@@ -24,7 +24,7 @@ interface IWorkspacesBasePageProps {
 	details?: React.ReactNode;
 	ldpEnabled?: boolean;
 	loadingLDPEnabled?: boolean;
-	title?: string;
+	title: string;
 }
 
 export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps> {
@@ -103,7 +103,11 @@ export class WorkspacesBasePage extends React.Component<IWorkspacesBasePageProps
 		return (
 			<BasePageContext.Provider value={{currentUser}}>
 				<div className={getCN('workspaces-base-page-root', className)}>
-					<DocumentTitle ldpEnabled={ldpEnabled} title={title} />
+					<DocumentTitle
+						ldpEnabled={ldpEnabled}
+						loadingLDPEnabled={loadingLDPEnabled}
+						title={title}
+					/>
 
 					<div className="header-container">
 						<ClayLink href="https://liferay.com" target="_blank">
