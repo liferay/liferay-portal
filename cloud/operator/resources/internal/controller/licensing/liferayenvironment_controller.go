@@ -1,29 +1,28 @@
-// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments,verbs=get;list;watch;update;patch
+// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments,verbs=get;list;patch;update;watch
 // +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments/finalizers,verbs=update
-// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=licensing.liferay.com,resources=liferayenvironments/status,verbs=get;patch;update
 package licensing
 
 import (
 	"context"
 	"time"
 
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/meta"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	ctrl "sigs.k8s.io/controller-runtime"
-	client "sigs.k8s.io/controller-runtime/pkg/client"
-
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	errors "k8s.io/apimachinery/pkg/api/errors"
+	meta "k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	controllerRuntime "sigs.k8s.io/controller-runtime"
+	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
-	request ctrl.Request,
-) (ctrl.Result, error) {
+	request controllerRuntime.Request,
+) (controllerRuntime.Result, error) {
 	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{}
 
 	if error := liferayEnvironmentReconciler.Get(context, request.NamespacedName, liferayEnvironment); error != nil {
-		return ctrl.Result{}, client.IgnoreNotFound(error)
+		return controllerRuntime.Result{}, client.IgnoreNotFound(error)
 	}
 
 	if liferayEnvironment.Status.Phase == "" {
@@ -43,20 +42,20 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	status := liferayEnvironmentReconciler.Status()
 
 	if error := status.Update(context, liferayEnvironment); error != nil {
-		if apierrors.IsConflict(error) {
-			return ctrl.Result{RequeueAfter: time.Second}, nil
+		if errors.IsConflict(error) {
+			return controllerRuntime.Result{RequeueAfter: time.Second}, nil
 		}
 
-		return ctrl.Result{}, error
+		return controllerRuntime.Result{}, error
 	}
 
-	return ctrl.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
+	return controllerRuntime.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(
-	manager ctrl.Manager,
+	manager controllerRuntime.Manager,
 ) error {
-	return ctrl.NewControllerManagedBy(
+	return controllerRuntime.NewControllerManagedBy(
 		manager,
 	).For(
 		&licensingv1alpha1.LiferayEnvironment{},
