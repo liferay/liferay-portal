@@ -43,7 +43,12 @@ export class SitesAdminPage {
 		).toBeVisible();
 
 		if (closeModal) {
-			await this.page.locator('.modal').getByLabel('Close').click();
+			await this.page
+				.locator('.modal')
+				.getByRole('button', {exact: true, name: 'Close'})
+				.click({force: true});
+
+			await expect(this.page.locator('.modal')).toBeHidden();
 
 			await expect(
 				this.page.getByRole('heading', {name: 'Provided by Liferay'})
