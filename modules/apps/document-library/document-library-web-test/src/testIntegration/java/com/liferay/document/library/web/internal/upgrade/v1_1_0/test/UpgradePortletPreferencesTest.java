@@ -154,6 +154,22 @@ public class UpgradePortletPreferencesTest {
 	}
 
 	@Test
+	public void testUpgradeSubfolderSelectedMissingRepository()
+		throws Exception {
+
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		_testUpgrade(
+			HashMapBuilder.put(
+				"rootFolderExternalReferenceCode",
+				folder.getExternalReferenceCode()
+			).build(),
+			HashMapBuilder.put(
+				"rootFolderId", String.valueOf(folder.getFolderId())
+			).build());
+	}
+
+	@Test
 	public void testUpgradeWithoutSelectedFolder() throws Exception {
 		_testUpgrade(Collections.emptyMap(), Collections.emptyMap());
 	}
