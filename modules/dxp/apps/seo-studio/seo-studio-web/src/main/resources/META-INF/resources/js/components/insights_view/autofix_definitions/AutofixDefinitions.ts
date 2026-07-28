@@ -4,8 +4,10 @@
  */
 
 import {AutofixDefinition} from './AutofixDefinition';
+import {DESCRIPTION_AUTOFIX_DEFINITION} from './DescriptionAutofixDefinition';
 import {TITLE_AUTOFIX_DEFINITION} from './TitleAutofixDefinition';
 
 export const AUTOFIX_DEFINITIONS: Record<string, AutofixDefinition> = {
+	missingOrEmptyMetaDescription: DESCRIPTION_AUTOFIX_DEFINITION,
 	missingOrEmptyTitleTag: TITLE_AUTOFIX_DEFINITION,
 };
