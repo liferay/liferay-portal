@@ -121,7 +121,7 @@ const ProcessingLifecycleEmptyState = () => (
 		icon={{
 			border: false,
 			size: Sizes.XXXLarge,
-			symbol: 'ac_ready_to_use',
+			symbol: 'ac_no_sites',
 		}}
 		spacer
 		title={Liferay.Language.get('your-dashboard-is-almost-ready')}
