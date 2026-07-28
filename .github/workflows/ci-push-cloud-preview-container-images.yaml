@@ -1,0 +1,44 @@
+concurrency:
+    cancel-in-progress: true
+    group: push-cloud-preview-container-images-${{github.ref_name}}
+defaults:
+    run:
+        shell: bash
+jobs:
+    push-dxp-operator:
+        needs: set-up-variables
+        uses: ./.github/workflows/ci-reusable-push-container-image.yaml
+        with:
+            image_name: liferay-dxp-operator
+            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            sparse_checkout: cloud/operator
+            working_directory: ./cloud/operator
+    set-up-variables:
+        if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
+        outputs:
+            image_tag_suffix: ${{steps.vars.outputs.image_tag_suffix}}
+        runs-on: ubuntu-latest
+        steps:
+            -   id: vars
+                name: Set up variables
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        echo "image_tag_suffix=-${GITHUB_SHA::7}" >> ${GITHUB_OUTPUT}
+                    }
+
+                    main "${@}"
+on:
+    push:
+        branches:
+            -   LCD-*
+        paths:
+            -   .github/workflows/ci-push-cloud-preview-container-images.yaml
+            -   .github/workflows/ci-reusable-push-container-image.yaml
+            -   cloud/operator/**
+permissions:
+    contents: read
+    id-token: write
