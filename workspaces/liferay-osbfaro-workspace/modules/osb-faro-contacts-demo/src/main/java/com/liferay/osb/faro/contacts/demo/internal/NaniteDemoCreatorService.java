@@ -36,6 +36,7 @@ import com.liferay.osb.faro.util.DateUtil;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.util.FaroThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -79,17 +80,6 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		contactsEngineClient.addNanite(
 			faroProject, "DXPEntitiesNanite", Collections.emptyMap());
 
-		FaroThreadLocal.setCacheEnabled(false);
-
-		int individualsCount =
-			_LIFERAY_INDIVIDUALS_COUNT + _SALESFORCE_INDIVIDUALS_COUNT;
-
-		poll(
-			() -> contactsEngineClient.getIndividuals(
-				faroProject, (String)null, false, 1, 0, null),
-			individualsCount, individualsCount * 2 * Time.SECOND,
-			"individuals");
-
 		PageContextsDataCreator pageContextsDataCreator =
 			new PageContextsDataCreator();
 
@@ -105,13 +95,17 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		createAnalyticEvents(
 			analyticEventsDataCreator, liferayUsersDataCreator);
 
+		createIdentities(liferayUsersDataCreator);
+
+		FaroThreadLocal.setCacheEnabled(false);
+
 		poll(
-			() -> contactsEngineClient.getActivities(
-				faroProject, null, null, null, null, null, null, -2, 1, 0,
+			() -> contactsEngineClient.getIndividuals(
+				faroProject, null, null, null, channelId, null, null, null,
+				false, null, null, null, null, null, null, null, null, 1, 0,
 				null),
-			analyticEventsDataCreator.getActivitiesCount(),
-			analyticEventsDataCreator.getActivitiesCount() * Time.SECOND / 2,
-			"activities");
+			_LIFERAY_INDIVIDUALS_COUNT,
+			_LIFERAY_INDIVIDUALS_COUNT * 2 * Time.SECOND, "individuals");
 
 		createMembershipChanges(channelId, _individualSegments.size());
 
@@ -163,6 +157,61 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		return contactsEngineClient.addDataSource(
 			faroProject, credentials, new Author(), name, url, provider, null,
 			DataSource.Status.ACTIVE.name());
+	}
+
+	protected void createIdentities(
+		LiferayUsersDataCreator liferayUsersDataCreator) {
+
+		for (Map<String, Object> dxpEntity :
+				liferayUsersDataCreator.getObjects()) {
+
+			Http.Options options = new Http.Options();
+
+			Map<String, Object> liferayUser =
+				(Map<String, Object>)dxpEntity.get("objectJSONObject");
+
+			String uuid = (String)liferayUser.get("uuid");
+
+			options.setBody(
+				JSONUtil.put(
+					"dataSourceId", liferayUsersDataCreator.getDataSourceId()
+				).put(
+					"id", StringUtil.removeChar(uuid, CharPool.DASH)
+				).put(
+					"identity",
+					JSONUtil.put("email", liferayUser.get("emailAddress"))
+				).put(
+					"userId", uuid
+				).toString(),
+				ContentTypes.APPLICATION_JSON, StandardCharsets.UTF_8.name());
+
+			options.setHeaders(
+				HashMapBuilder.put(
+					"Content-Type", ContentTypes.APPLICATION_JSON
+				).put(
+					"OSB-Asah-Project-ID", faroProject.getProjectId()
+				).build());
+			options.setLocation(
+				FaroPropsValues.OSB_ASAH_PUBLISHER_URL + "/identity");
+			options.setPost(true);
+
+			try {
+				String responseString = _http.URLtoString(options);
+
+				Http.Response response = options.getResponse();
+
+				if (response.getResponseCode() != 200) {
+					log.error(
+						StringBundler.concat(
+							"Unable to add an identity for ",
+							liferayUser.get("emailAddress"), ": ",
+							response.getResponseCode(), " ", responseString));
+				}
+			}
+			catch (Exception exception) {
+				log.error(exception);
+			}
+		}
 	}
 
 	protected void createIndividualSegments(String channelId) throws Exception {
