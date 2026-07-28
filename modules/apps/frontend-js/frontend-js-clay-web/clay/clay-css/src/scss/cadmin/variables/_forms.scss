@@ -2218,7 +2218,9 @@ $cadmin-input-group-stacked-sm-down: map-deep-merge(
 $cadmin-input-group-ai: () !default;
 $cadmin-input-group-ai: map-deep-merge(
 	(
-		align-items: center,
+		'.input-group-item-shrink': (
+			padding-top: 0.25rem,
+		),
 
 		'.form-control': (
 			padding: 0 0 0 $cadmin-input-padding-x,
@@ -2285,8 +2287,12 @@ $cadmin-input-group-ai: map-deep-merge(
 			margin-right: -0.25rem,
 
 			'.autofit-col': (
-				padding-left: 0.25rem,
-				padding-right: 0.25rem,
+				padding: 0.75rem 0.25rem,
+			),
+
+			'.autofit-col-expand': (
+				padding-bottom: 0,
+				padding-top: 0,
 			),
 
 			'.lexicon-icon': (
