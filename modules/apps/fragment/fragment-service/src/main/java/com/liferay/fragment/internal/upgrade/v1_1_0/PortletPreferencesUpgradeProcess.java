@@ -108,7 +108,9 @@ public class PortletPreferencesUpgradeProcess extends UpgradeProcess {
 			preparedStatement.setString(1, namespace);
 			preparedStatement.setLong(2, groupId);
 			preparedStatement.setLong(
-				3, _companyControlPanelPlids.get(companyId));
+				3,
+				_companyControlPanelPlids.getOrDefault(
+					companyId, LayoutConstants.DEFAULT_PLID));
 
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -161,9 +163,11 @@ public class PortletPreferencesUpgradeProcess extends UpgradeProcess {
 					List<Long> layoutPortletPreferencesIds = new ArrayList<>();
 
 					long companyControlPanelPlid =
-						_companyControlPanelPlids.get(companyId);
-					long groupControlPanelPlid = _groupControlPanelPlids.get(
-						groupId);
+						_companyControlPanelPlids.getOrDefault(
+							companyId, LayoutConstants.DEFAULT_PLID);
+					long groupControlPanelPlid =
+						_groupControlPanelPlids.getOrDefault(
+							groupId, LayoutConstants.DEFAULT_PLID);
 					long layoutPlid = classPK;
 
 					for (Map.Entry<Long, Long> entry :
