@@ -2256,12 +2256,21 @@ public abstract class BaseTopLevelBuild
 			return;
 		}
 
+		String buildURL = getBuildURL();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(buildURL)) {
+			System.out.println(
+				"Unable to archive properties to " + archiveFile);
+
+			return;
+		}
+
 		long start = JenkinsResultsParserUtil.getCurrentTimeMillis();
 
 		Properties archiveProperties = new Properties();
 
 		archiveProperties.setProperty(
-			"top.level.build.url", replaceBuildURL(getBuildURL()));
+			"top.level.build.url", replaceBuildURL(buildURL));
 
 		StringWriter sw = new StringWriter();
 
