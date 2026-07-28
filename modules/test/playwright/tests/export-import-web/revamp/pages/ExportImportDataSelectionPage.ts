@@ -29,4 +29,16 @@ export class ExportImportDataSelectionPage {
 			trigger: this.expandSectionButton(name),
 		});
 	}
+
+	async selectOnlyObjectDefinition(label: string) {
+		const checkboxes = await this.section.getByRole('checkbox').all();
+
+		for (const checkbox of checkboxes) {
+			await checkbox.uncheck();
+		}
+
+		await this.expandSection('Objects');
+
+		await this.section.getByRole('checkbox', {name: label}).check();
+	}
 }
