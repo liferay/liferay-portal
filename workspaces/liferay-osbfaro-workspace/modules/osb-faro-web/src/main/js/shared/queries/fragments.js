@@ -67,6 +67,7 @@ export const INDIVIDUALS_FRAGMENT = gql`
 	fragment individualsFragment on Metric {
 		individuals(keywords: $keywords, size: $size, start: $start) {
 			individuals {
+				accountName
 				id
 				name
 				email
