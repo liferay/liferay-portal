@@ -173,7 +173,7 @@ public class LayoutPageTemplateEntryLayoutProviderUtilTest {
 		Mockito.verify(
 			_log
 		).debug(
-			"Layout page template entry layout provider is not available"
+			"Layout page template entry layout provider is null"
 		);
 	}
 

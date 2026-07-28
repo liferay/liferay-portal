@@ -61,8 +61,7 @@ public class LayoutPageTemplateEntryLayoutProviderUtil {
 		if ((layoutPageTemplateEntryLayoutProvider == null) &&
 			_log.isDebugEnabled()) {
 
-			_log.debug(
-				"Layout page template entry layout provider is not available");
+			_log.debug("Layout page template entry layout provider is null");
 		}
 
 		return layoutPageTemplateEntryLayoutProvider;
