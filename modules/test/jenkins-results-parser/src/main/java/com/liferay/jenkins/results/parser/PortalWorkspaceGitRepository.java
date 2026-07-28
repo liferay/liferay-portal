@@ -329,7 +329,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			return Boolean.parseBoolean(
 				JenkinsResultsParserUtil.getBuildProperty(
 					"binaries.cache.enabled", Environment.get("CI_TEST_SUITE"),
-					Environment.get("JOB_NAME")));
+					Environment.get("JOB_NAME"), getUpstreamBranchName()));
 		}
 		catch (IOException ioException) {
 			return true;
@@ -352,7 +352,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			return Boolean.parseBoolean(
 				JenkinsResultsParserUtil.getBuildProperty(
 					"yarn.cache.enabled", Environment.get("CI_TEST_SUITE"),
-					Environment.get("JOB_NAME")));
+					Environment.get("JOB_NAME"), getUpstreamBranchName()));
 		}
 		catch (IOException ioException) {
 			return true;
