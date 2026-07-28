@@ -25,7 +25,7 @@ public class SalesforceAccountsDataCreator extends DataCreator {
 
 		super(
 			contactsEngineClient, faroProject, "osbasahsalesforceraw",
-			"Account");
+			"accounts");
 
 		_dataSourceId = dataSourceId;
 
@@ -43,62 +43,67 @@ public class SalesforceAccountsDataCreator extends DataCreator {
 
 	@Override
 	protected Map<String, Object> doCreate(Object[] params) {
+		String uuid = internet.uuid();
+
 		Map<String, Object> salesforceAccount =
 			HashMapBuilder.<String, Object>put(
+				"accountName", company.name()
+			).put(
 				"dataSourceId", _dataSourceId
 			).put(
 				"fields",
-				HashMapBuilder.<String, Object>put(
-					"AnnualRevenue", number.numberBetween(0, 1000) * 1000
-				).put(
-					"BillingCity", address.city()
-				).put(
-					"BillingCountry", address.country()
-				).put(
-					"BillingPostalCode", address.zipCode()
-				).put(
-					"BillingState", address.state()
-				).put(
-					"BillingStreet", address.streetAddress()
-				).put(
-					"CurrencyIsoCode",
-					_currencyIsoCodes.get(
-						random.nextInt(_currencyIsoCodes.size()))
-				).put(
-					"Description", company.catchPhrase()
-				).put(
-					"Fax", phoneNumber.phoneNumber()
-				).put(
-					"Industry", company.industry()
-				).put(
-					"LastModifiedDate", formatDate(new Date())
-				).put(
-					"Name", company.name()
-				).put(
-					"NumberOfEmployees", number.numberBetween(1, 100000)
-				).put(
-					"Ownership", "Private"
-				).put(
-					"Phone", phoneNumber.phoneNumber()
-				).put(
-					"ShippingCity", address.city()
-				).put(
-					"ShippingCountry", address.country()
-				).put(
-					"ShippingPostalCode", address.zipCode()
-				).put(
-					"ShippingState", address.state()
-				).put(
-					"ShippingStreet", address.streetAddress()
-				).put(
-					"Type", "Customer"
-				).put(
-					"Website", "https://" + internet.url()
-				).put(
-					"YearStarted", number.numberBetween(1900, 2019)
-				).build()
+				toFields(
+					HashMapBuilder.<String, Object>put(
+						"accountType", "Customer"
+					).put(
+						"annualRevenue", number.numberBetween(0, 1000) * 1000
+					).put(
+						"billingCity", address.city()
+					).put(
+						"billingPostalCode", address.zipCode()
+					).put(
+						"billingStreet", address.streetAddress()
+					).put(
+						"country", address.country()
+					).put(
+						"currencyCode",
+						_currencyIsoCodes.get(
+							random.nextInt(_currencyIsoCodes.size()))
+					).put(
+						"description", company.catchPhrase()
+					).put(
+						"fax", phoneNumber.phoneNumber()
+					).put(
+						"industry", company.industry()
+					).put(
+						"numberOfEmployees", number.numberBetween(1, 100000)
+					).put(
+						"ownership", "Private"
+					).put(
+						"phone", phoneNumber.phoneNumber()
+					).put(
+						"shippingCity", address.city()
+					).put(
+						"shippingCountry", address.country()
+					).put(
+						"shippingPostalCode", address.zipCode()
+					).put(
+						"shippingState", address.state()
+					).put(
+						"shippingStreet", address.streetAddress()
+					).put(
+						"state", address.state()
+					).put(
+						"website", "https://" + internet.url()
+					).put(
+						"yearStarted", number.numberBetween(1900, 2019)
+					).build())
 			).put(
-				"id", internet.uuid()
+				"id", uuid
+			).put(
+				"modifiedDate", formatDate(new Date())
+			).put(
+				"salesforceId", uuid
 			).build();
 
 		_salesforceAuditEventsDataCreator.create(
