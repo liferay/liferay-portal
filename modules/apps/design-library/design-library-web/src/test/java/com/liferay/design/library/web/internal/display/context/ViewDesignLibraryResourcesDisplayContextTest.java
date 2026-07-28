@@ -27,12 +27,14 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 
@@ -199,6 +201,15 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 
 		_assertFDSAdditionalProps(_depotEntry.getGroupId(), false);
 		_assertFDSAdditionalProps(_depotEntry.getGroupId(), true);
+	}
+
+	@Test
+	@TestInfo("LPD-96528")
+	public void testHasContentAccess() throws Exception {
+		_testHasContentAccess(false, false, false);
+		_testHasContentAccess(true, false, true);
+		_testHasContentAccess(true, true, false);
+		_testHasContentAccess(true, true, true);
 	}
 
 	private void _assertFDSActionDropdownItem(
@@ -486,7 +497,7 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 
 				@Override
 				public PortletResourcePermission get() {
-					return null;
+					return _styleBookPortletResourcePermission;
 				}
 
 			});
@@ -511,6 +522,32 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 				_depotEntry, _mockHttpServletRequest, _liferayPortletResponse);
 	}
 
+	private void _testHasContentAccess(
+			boolean expected, boolean manageFragmentEntriesPermission,
+			boolean manageStyleBookEntriesPermission)
+		throws Exception {
+
+		Mockito.when(
+			_fragmentPortletResourcePermission.contains(
+				_permissionChecker, _depotEntry.getGroupId(),
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES)
+		).thenReturn(
+			manageFragmentEntriesPermission
+		);
+
+		Mockito.when(
+			_styleBookPortletResourcePermission.contains(
+				_permissionChecker, _depotEntry.getGroupId(),
+				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES)
+		).thenReturn(
+			manageStyleBookEntriesPermission
+		);
+
+		Assert.assertEquals(
+			expected,
+			_viewDesignLibraryResourcesDisplayContext.hasContentAccess());
+	}
+
 	private static final long _DEPOT_ENTRY_ID = 12345;
 
 	private final DepotEntry _depotEntry = Mockito.mock(DepotEntry.class);
@@ -529,6 +566,9 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 		PermissionChecker.class);
 	private final MockedStatic<PortalUtil> _portalUtilMockedStatic =
 		Mockito.mockStatic(PortalUtil.class);
+	private final PortletResourcePermission
+		_styleBookPortletResourcePermission = Mockito.mock(
+			PortletResourcePermission.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
 	private ViewDesignLibraryResourcesDisplayContext
 		_viewDesignLibraryResourcesDisplayContext;
