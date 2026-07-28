@@ -466,11 +466,11 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 
 		Assert.assertEquals("{}", mockHttpServletResponse.getContentAsString());
 
-		// A shared system object definition like AccountEntry can be extended
+		// A shared system object definition like account entry can be extended
 		// with relationships by other deployed modules: an account entry
-		// restricted object definition adds a relationship to AccountEntry. Its
-		// relationship set is therefore not deterministic, so exclude it from
-		// the comparison.
+		// restricted object definition adds a relationship to account entry.
+		// Its relationship set is therefore not deterministic, so exclude it
+		// from the comparison.
 
 		JSONObject expectedJSONObject = jsonFactory.createJSONObject(json);
 
