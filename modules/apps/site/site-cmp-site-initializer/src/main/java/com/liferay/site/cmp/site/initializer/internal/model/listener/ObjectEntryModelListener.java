@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -144,9 +145,16 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	private String[] _getProjectContributorActionIds(
 		ObjectDefinition objectDefinition) {
 
-		if (StringUtil.equals(
-				objectDefinition.getExternalReferenceCode(), "L_CMP_TASK")) {
+		String externalReferenceCode =
+			objectDefinition.getExternalReferenceCode();
 
+		if (StringUtil.equals(externalReferenceCode, "L_CMP_PROJECT_LINK") ||
+			StringUtil.equals(externalReferenceCode, "L_CMP_TASK_LINK")) {
+
+			return new String[] {ActionKeys.DELETE, ActionKeys.VIEW};
+		}
+
+		if (StringUtil.equals(externalReferenceCode, "L_CMP_TASK")) {
 			return new String[] {
 				ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW
 			};
@@ -213,17 +221,17 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				objectEntry.getObjectDefinitionId());
 
 		if (!StringUtil.equals(
-				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT") &&
-			!StringUtil.equals(
-				objectDefinition.getExternalReferenceCode(), "L_CMP_TASK")) {
+				objectDefinition.getObjectFolderExternalReferenceCode(),
+				"L_CMP_PROJECT_MANAGEMENT_DEFINITIONS")) {
 
 			return;
 		}
 
 		JSONObject defaultPermissionsJSONObject =
-			_getCMPDefaultPermissionJSONObject(
-				_objectDefinitionLocalService.fetchObjectDefinition(
-					objectEntry.getObjectDefinitionId()));
+			_getCMPDefaultPermissionJSONObject(objectDefinition);
+
+		List<String> resourceActions = ResourceActionsUtil.getResourceActions(
+			objectEntry.getModelClassName());
 
 		for (Role role :
 				TransformUtil.transformToList(
@@ -244,7 +252,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				objectEntry.getCompanyId(), objectEntry.getModelClassName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(objectEntry.getObjectEntryId()),
-				role.getRoleId(), actionIds);
+				role.getRoleId(),
+				ArrayUtil.filter(actionIds, resourceActions::contains));
 		}
 	}
 
