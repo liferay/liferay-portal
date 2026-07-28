@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -246,10 +247,24 @@ public abstract class DemoCreatorService {
 	}
 
 	protected boolean hasExistingData() {
-		Results<Individual> individuals = contactsEngineClient.getIndividuals(
-			faroProject, (String)null, false, 1, 0, null);
+		Results<Channel> channelResults = contactsEngineClient.getChannels(
+			faroProject, 0, 1, null, null);
 
-		if (individuals.getTotal() > 0) {
+		List<Channel> channels = channelResults.getItems();
+
+		if (channels.isEmpty()) {
+			return false;
+		}
+
+		Channel channel = channels.get(0);
+
+		Results<Individual> individualResults =
+			contactsEngineClient.getIndividuals(
+				faroProject, null, null, null, channel.getId(), null, null,
+				null, false, null, null, null, null, null, null, null, null, 1,
+				0, null);
+
+		if (individualResults.getTotal() > 0) {
 			return true;
 		}
 
