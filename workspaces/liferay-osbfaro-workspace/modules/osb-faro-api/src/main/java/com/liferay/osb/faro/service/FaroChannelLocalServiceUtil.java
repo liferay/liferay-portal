@@ -234,6 +234,12 @@ public class FaroChannelLocalServiceUtil {
 		return getService().fetchFaroChannel(faroChannelId);
 	}
 
+	public static FaroChannel fetchFaroChannel(
+		String channelId, long workspaceGroupId) {
+
+		return getService().fetchFaroChannel(channelId, workspaceGroupId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -372,4 +378,4 @@ public class FaroChannelLocalServiceUtil {
 			FaroChannelLocalServiceUtil.class, FaroChannelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:201385132
+// LIFERAY-SERVICE-BUILDER-HASH:430529940

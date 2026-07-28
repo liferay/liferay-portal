@@ -211,6 +211,10 @@ public interface FaroChannelLocalService
 	public FaroChannel fetchFaroChannel(long faroChannelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FaroChannel fetchFaroChannel(
+		String channelId, long workspaceGroupId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -307,4 +311,4 @@ public interface FaroChannelLocalService
 	public FaroChannel updateFaroChannel(FaroChannel faroChannel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1262431248
+// LIFERAY-SERVICE-BUILDER-HASH:1926882048

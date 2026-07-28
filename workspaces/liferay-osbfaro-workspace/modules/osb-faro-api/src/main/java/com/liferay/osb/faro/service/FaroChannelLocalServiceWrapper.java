@@ -265,6 +265,14 @@ public class FaroChannelLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.osb.faro.model.FaroChannel fetchFaroChannel(
+		String channelId, long workspaceGroupId) {
+
+		return _faroChannelLocalService.fetchFaroChannel(
+			channelId, workspaceGroupId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -437,4 +445,4 @@ public class FaroChannelLocalServiceWrapper
 	private FaroChannelLocalService _faroChannelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1326222689
+// LIFERAY-SERVICE-BUILDER-HASH:-1105062712
