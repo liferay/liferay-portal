@@ -17,9 +17,6 @@ import com.liferay.portal.kernel.webcache.WebCacheItem;
 import com.liferay.portal.kernel.webcache.WebCachePoolUtil;
 
 /**
- * The pool doesn't consult the refresh time on a cache hit, so expiration is
- * checked manually here.
- *
  * @author David Truong
  */
 public class SEOStudioInstanceAccessTokenWebCacheItem implements WebCacheItem {
