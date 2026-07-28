@@ -4,17 +4,17 @@ import (
 	"os"
 	"time"
 
-	"github.com/caarlos0/env/v11"
-	"k8s.io/apimachinery/pkg/runtime"
-	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	ctrl "sigs.k8s.io/controller-runtime"
-	"sigs.k8s.io/controller-runtime/pkg/healthz"
-	"sigs.k8s.io/controller-runtime/pkg/log/zap"
-	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
-
+	env "github.com/caarlos0/env/v11"
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	licensingcontroller "github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
+
+	runtime "k8s.io/apimachinery/pkg/runtime"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
+	controllerruntime "sigs.k8s.io/controller-runtime"
+	healthz "sigs.k8s.io/controller-runtime/pkg/healthz"
+	zap "sigs.k8s.io/controller-runtime/pkg/log/zap"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
 
 func init() {
@@ -25,11 +25,11 @@ func init() {
 func main() {
 	config, _ := env.ParseAs[config]()
 
-	ctrl.SetLogger(zap.New())
+	controllerruntime.SetLogger(zap.New())
 
-	manager, error := ctrl.NewManager(
-		ctrl.GetConfigOrDie(),
-		ctrl.Options{
+	manager, error := controllerruntime.NewManager(
+		controllerruntime.GetConfigOrDie(),
+		controllerruntime.Options{
 			HealthProbeBindAddress: config.ProbeAddress,
 			Metrics: metricsserver.Options{
 				BindAddress: config.MetricsAddress,
@@ -67,7 +67,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if error := manager.Start(ctrl.SetupSignalHandler()); error != nil {
+	if error := manager.Start(controllerruntime.SetupSignalHandler()); error != nil {
 		setupLog.Error(error, "Unexpected error while running manager.")
 
 		os.Exit(1)
@@ -82,5 +82,5 @@ type config struct {
 
 var (
 	scheme   = runtime.NewScheme()
-	setupLog = ctrl.Log.WithName("setup")
+	setupLog = controllerruntime.Log.WithName("setup")
 )

@@ -11,18 +11,18 @@ import (
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	controllerRuntime "sigs.k8s.io/controller-runtime"
+	controllerruntime "sigs.k8s.io/controller-runtime"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
-	request controllerRuntime.Request,
-) (controllerRuntime.Result, error) {
+	request controllerruntime.Request,
+) (controllerruntime.Result, error) {
 	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{}
 
 	if error := liferayEnvironmentReconciler.Get(context, request.NamespacedName, liferayEnvironment); error != nil {
-		return controllerRuntime.Result{}, client.IgnoreNotFound(error)
+		return controllerruntime.Result{}, client.IgnoreNotFound(error)
 	}
 
 	if liferayEnvironment.Status.Phase == "" {
@@ -43,19 +43,19 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 	if error := status.Update(context, liferayEnvironment); error != nil {
 		if errors.IsConflict(error) {
-			return controllerRuntime.Result{RequeueAfter: time.Second}, nil
+			return controllerruntime.Result{RequeueAfter: time.Second}, nil
 		}
 
-		return controllerRuntime.Result{}, error
+		return controllerruntime.Result{}, error
 	}
 
-	return controllerRuntime.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
+	return controllerruntime.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(
-	manager controllerRuntime.Manager,
+	manager controllerruntime.Manager,
 ) error {
-	return controllerRuntime.NewControllerManagedBy(
+	return controllerruntime.NewControllerManagedBy(
 		manager,
 	).For(
 		&licensingv1alpha1.LiferayEnvironment{},
