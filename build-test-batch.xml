@@ -1556,20 +1556,6 @@ app.server.type=@{app.server.type}]]></echo>
 			<if>
 				<equals arg1="@{rest.builder.or.service.builder}" arg2="service" />
 				<then>
-					<if>
-						<and>
-							<available file="modules/yarn.lock" />
-							<isset property="nodejs.npm.ci.registry" />
-						</and>
-						<then>
-							<replace
-								file="modules/yarn.lock"
-								token="${nodejs.npm.ci.registry}"
-								value="https://registry.yarnpkg.com"
-							/>
-						</then>
-					</if>
-
 					<exec executable="git" output="${tstamp}.diff">
 						<arg value="diff" />
 						<arg value="--" />
