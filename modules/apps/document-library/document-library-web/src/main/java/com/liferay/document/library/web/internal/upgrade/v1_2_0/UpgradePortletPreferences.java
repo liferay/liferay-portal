@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.upgrade.BasePortletPreferencesUpgradeProcess;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -83,6 +84,12 @@ public class UpgradePortletPreferences
 
 				return _toXML(portletPreferences);
 			}
+		}
+
+		if (Validator.isNotNull(rootFolderExternalReferenceCode)) {
+			portletPreferences.setValue(
+				"rootFolderExternalReferenceCode",
+				rootFolderExternalReferenceCode);
 		}
 
 		long selectedRepositoryId = GetterUtil.getLong(
