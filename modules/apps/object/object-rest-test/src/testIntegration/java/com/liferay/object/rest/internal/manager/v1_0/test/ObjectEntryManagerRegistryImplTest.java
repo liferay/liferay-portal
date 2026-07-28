@@ -14,6 +14,9 @@ import com.liferay.object.scope.CompanyScoped;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.aggregation.Aggregation;
@@ -74,8 +77,30 @@ public class ObjectEntryManagerRegistryImplTest {
 			new TestObjectEntryManager(1, true);
 
 		ServiceRegistration<ObjectEntryManager>
+			objectEntryManagerServiceRegistration1 = null;
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.object.rest.internal.manager.v1_0." +
+					"ObjectEntryManagerRegistryImpl",
+				LoggerTestUtil.ERROR)) {
+
 			objectEntryManagerServiceRegistration1 = _register(
 				testObjectEntryManager1);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+			Assert.assertEquals(
+				"Unable to get object entry manager", logEntry.getMessage());
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(RuntimeException.class, throwable.getClass());
+		}
 
 		TestObjectEntryManager testObjectEntryManager2 =
 			new TestObjectEntryManager(1, false);
