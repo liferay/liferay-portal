@@ -20,6 +20,7 @@ import selectStructureUuid from '../../selectors/selectStructureUuid';
 import ERCInput from '../ERCInput';
 import Input from '../Input';
 import {LocalizedInput} from '../LocalizedInput';
+import SlugInput from '../SlugInput';
 import SpacesSelector from '../SpacesSelector';
 import WorkflowTab from './WorkflowTab';
 
@@ -117,7 +118,7 @@ function GeneralTab() {
 
 	const {data: objectDefinitions} = useCache('object-definitions');
 
-	const {erc, name, status, system} = structure;
+	const {erc, name, slug, status, system} = structure;
 
 	return (
 		<div>
@@ -144,6 +145,15 @@ function GeneralTab() {
 					dispatch({erc: value, type: 'update-structure'})
 				}
 				value={erc}
+			/>
+
+			<SlugInput
+				disabled={system}
+				error={errors.get('slug')}
+				onValueChange={(value) =>
+					dispatch({slug: value, type: 'update-structure'})
+				}
+				value={slug}
 			/>
 
 			<SpacesSelector structure={structure} />
