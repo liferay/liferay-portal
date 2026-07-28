@@ -2284,20 +2284,21 @@ public class ObjectDefinitionResourceTest
 		return objectDefinition;
 	}
 
-	private void _assertAssignToMeObjectAction(
+	private void _assertAssigneeObjectActions(
 		ObjectDefinition objectDefinition) {
 
 		ObjectAction[] objectActions = objectDefinition.getObjectActions();
 
 		Assert.assertEquals(
-			Arrays.toString(objectActions), 1, objectActions.length);
+			Arrays.toString(objectActions), 3, objectActions.length);
 
-		ObjectAction objectAction = objectActions[0];
-
-		Assert.assertEquals(
-			ObjectActionNameConstants.NAME_ASSIGN_TO_ME,
-			objectAction.getName());
-		Assert.assertTrue(objectAction.getSystem());
+		for (ObjectAction objectAction : objectActions) {
+			Assert.assertTrue(
+				ArrayUtil.contains(
+					ObjectActionNameConstants.OBJECT_ACTION_NAMES,
+					objectAction.getName()));
+			Assert.assertTrue(objectAction.getSystem());
+		}
 	}
 
 	private void _assertGetObjectDefinitionsPageWithFilter(
@@ -3250,7 +3251,7 @@ public class ObjectDefinitionResourceTest
 			testPostObjectDefinition_addObjectDefinition(
 				randomObjectDefinition);
 
-		_assertAssignToMeObjectAction(postObjectDefinition);
+		_assertAssigneeObjectActions(postObjectDefinition);
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			postObjectDefinition.getId());
@@ -3258,7 +3259,7 @@ public class ObjectDefinitionResourceTest
 		postObjectDefinition = testPostObjectDefinition_addObjectDefinition(
 			postObjectDefinition);
 
-		_assertAssignToMeObjectAction(postObjectDefinition);
+		_assertAssigneeObjectActions(postObjectDefinition);
 	}
 
 	private void _testPostObjectDefinitionWithPermissions() throws Exception {

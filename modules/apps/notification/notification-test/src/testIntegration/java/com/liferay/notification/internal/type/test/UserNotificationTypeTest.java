@@ -23,11 +23,13 @@ import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -58,6 +60,7 @@ import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -229,15 +232,35 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 						"assignee"
 					).build()));
 
-		addNotificationTemplateObjectAction(
-			Collections.singletonList(
-				NotificationRecipientSettingUtil.
-					createNotificationRecipientSetting(
-						NotificationRecipientConstants.TYPE_TERM,
-						getObjectFieldTermName(objectDefinition, "assignee"))),
-			objectDefinition,
+		ObjectField objectField = objectFieldLocalService.getObjectField(
+			objectDefinition.getObjectDefinitionId(), "assignee");
+
+		NotificationTemplate notificationTemplate =
+			notificationTemplateLocalService.
+				fetchNotificationTemplateByExternalReferenceCode(
+					objectField.getExternalReferenceCode() +
+						"_ASSIGNEE_NOTIFICATION_TEMPLATE",
+					TestPropsValues.getCompanyId());
+
+		NotificationRecipient notificationRecipient =
+			notificationTemplate.getNotificationRecipient();
+
+		NotificationRecipientSetting notificationRecipientSetting =
+			notificationRecipientSettingLocalService.
+				fetchNotificationRecipientSetting(
+					notificationRecipient.getNotificationRecipientId(),
+					NotificationRecipientSettingConstants.NAME_TERM);
+
+		Assert.assertEquals(
 			getObjectFieldTermName(objectDefinition, "assignee"),
-			NotificationConstants.TYPE_USER_NOTIFICATION);
+			notificationRecipientSetting.getValue(LocaleUtil.getDefault()));
+
+		resourcePermissionLocalService.addResourcePermission(
+			TestPropsValues.getCompanyId(), objectDefinition.getResourceName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			BaseNotificationTypeTest.role.getRoleId(),
+			ObjectActionKeys.ADD_OBJECT_ENTRY);
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -247,7 +270,7 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 
 		_roleLocalService.addUserRole(user1.getUserId(), role.getRoleId());
 
-		objectEntryManager.addObjectEntry(
+		ObjectEntry objectEntry = objectEntryManager.addObjectEntry(
 			dtoConverterContext, objectDefinition,
 			new ObjectEntry() {
 				{
@@ -268,7 +291,10 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			1,
 			_userNotificationEventLocalService.getUserNotificationEventsCount(
 				user1.getUserId()));
-		assertNotificationQueueEntrySubject(user1.getFullName());
+
+		assertNotificationQueueEntrySubject(
+			LanguageUtil.get(
+				LocaleUtil.getDefault(), "you-have-a-new-assignment"));
 
 		User user2 = UserTestUtil.addUser();
 
@@ -299,7 +325,40 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			1,
 			_userNotificationEventLocalService.getUserNotificationEventsCount(
 				user2.getUserId()));
-		assertNotificationQueueEntrySubject(role.getName());
+		assertNotificationQueueEntrySubject(
+			LanguageUtil.get(
+				LocaleUtil.getDefault(), "you-have-a-new-assignment"));
+
+		User user3 = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user3.getUserId(), role.getRoleId());
+
+		objectEntryManager.updateObjectEntry(
+			TestPropsValues.getCompanyId(), dtoConverterContext,
+			objectEntry.getExternalReferenceCode(), objectDefinition,
+			new ObjectEntry() {
+				{
+					properties = HashMapBuilder.<String, Object>put(
+						"assignee",
+						HashMapBuilder.put(
+							"externalReferenceCode",
+							user3.getExternalReferenceCode()
+						).put(
+							"type", "User"
+						).build()
+					).build();
+				}
+			},
+			null);
+
+		Assert.assertEquals(
+			1,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user3.getUserId()));
+
+		assertNotificationQueueEntrySubject(
+			LanguageUtil.get(
+				LocaleUtil.getDefault(), "you-have-a-new-assignment"));
 
 		objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}

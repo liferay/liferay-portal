@@ -907,6 +907,10 @@ public class BaseNotificationTypeTest {
 		notificationRecipientLocalService;
 
 	@Inject
+	protected NotificationRecipientSettingLocalService
+		notificationRecipientSettingLocalService;
+
+	@Inject
 	protected NotificationTemplateLocalService notificationTemplateLocalService;
 
 	@Inject
@@ -956,10 +960,6 @@ public class BaseNotificationTypeTest {
 
 	@Inject
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
-
-	@Inject
-	private NotificationRecipientSettingLocalService
-		_notificationRecipientSettingLocalService;
 
 	private Map<String, Object> _parentAuthorTermValues;
 
