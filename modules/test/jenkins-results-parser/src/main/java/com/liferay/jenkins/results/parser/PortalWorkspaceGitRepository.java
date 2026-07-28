@@ -243,8 +243,9 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			JenkinsResultsParserUtil.unzip(yarnCacheFile, getDirectory());
 
 			System.out.println(
-				"Successfully unzipped " + yarnCacheS3ObjectPath + " to " +
-					getDirectory());
+				JenkinsResultsParserUtil.combine(
+					"Successfully unzipped ", yarnCacheS3ObjectPath, " to ",
+					JenkinsResultsParserUtil.getCanonicalPath(getDirectory())));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -491,12 +492,12 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 			JenkinsResultsParserUtil.delete(yarnCacheFile);
 
-			String yarnCacheS3ObjectPath = _getYarnCacheS3ObjectPath();
-
 			PortalGitWorkingDirectory portalGitWorkingDirectory =
 				(PortalGitWorkingDirectory)getGitWorkingDirectory();
 
 			portalGitWorkingDirectory.createYarnCache(yarnCacheFile.getName());
+
+			String yarnCacheS3ObjectPath = _getYarnCacheS3ObjectPath();
 
 			CloudBucketUtil.uploadS3File(yarnCacheS3ObjectPath, yarnCacheFile);
 
