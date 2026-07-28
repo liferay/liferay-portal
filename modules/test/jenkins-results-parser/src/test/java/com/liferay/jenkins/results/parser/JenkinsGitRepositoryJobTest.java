@@ -144,12 +144,12 @@ public class JenkinsGitRepositoryJobTest
 	}
 
 	private void _testGetInvokedJobNames(
-			List<String> expectedInvokedJobNames, String modifiedJarEntryName,
+			List<String> expectedInvokedJobNames, String modifiedEntryName,
 			String testSuiteName, String... modifiedFileNames)
 		throws Exception {
 
 		_writeJarFile(
-			new File(_gitRepositoryDir, _JAR_FILE_NAME), modifiedJarEntryName);
+			new File(_gitRepositoryDir, _JAR_FILE_NAME), modifiedEntryName);
 
 		List<File> modifiedFiles = new ArrayList<>();
 
