@@ -45,9 +45,9 @@
 		/]
 
 		[#list navItems as navItem]
-			[#if navItem.isBrowsable() || navItem.getChildren()?has_content]
-				[#assign navLayout = navItem.getLayout()! /]
+			[#assign navLayout = navItem.getLayout()! /]
 
+			[#if isVisibleNavItem(navItem)]
 				[#if !firstNavItem]
 					[#assign navItemsJSONArray = navItemsJSONArray + "," /]
 				[/#if]
@@ -113,6 +113,22 @@
 		[#assign navItemsJSONArray = navItemsJSONArray + "]" /]
 	[/#if]
 [/#macro]
+
+[#function hasVisibleNavItems navItems]
+	[#list navItems as navItem]
+		[#if isVisibleNavItem(navItem)]
+			[#return true]
+		[/#if]
+	[/#list]
+
+	[#return false]
+[/#function]
+
+[#function isVisibleNavItem navItem]
+	[#local navLayout = navItem.getLayout()! /]
+
+	[#return !((navLayout.isHidden())!false) && (navItem.isBrowsable() || hasVisibleNavItems(navItem.getChildren()))]
+[/#function]
 
 [#macro labelWithIcon navItem]
 	<div class="autofit-row">
