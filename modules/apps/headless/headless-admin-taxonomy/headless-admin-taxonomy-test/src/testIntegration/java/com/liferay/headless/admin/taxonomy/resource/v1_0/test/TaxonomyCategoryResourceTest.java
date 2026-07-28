@@ -75,6 +75,7 @@ import com.liferay.portal.vulcan.scope.Scope;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -476,6 +477,7 @@ public class TaxonomyCategoryResourceTest
 		_testPatchTaxonomyCategoryFriendlyUrlPathWithPeriodsAndSlashes();
 		_testPatchTaxonomyCategorySystem();
 		_testPatchTaxonomyCategorySystemParent();
+		_testPatchTaxonomyCategoryUpdatesTaxonomyCategoryProperty();
 		_testPatchTaxonomyCategoryWithExistingParentTaxonomyCategory(
 			testPatchTaxonomyCategory_addTaxonomyCategory(),
 			_addAssetVocabulary());
@@ -582,6 +584,7 @@ public class TaxonomyCategoryResourceTest
 		super.testPutSiteTaxonomyCategoryByExternalReferenceCode();
 
 		_testPutSiteTaxonomyCategoryByExternalReferenceCodeUpdatesParentToDefault();
+		_testPutSiteTaxonomyCategoryByExternalReferenceCodeUpdatesTaxonomyCategoryProperty();
 		_testPutSiteTaxonomyCategoryByExternalReferenceCodeWithParentTaxonomyCategory();
 	}
 
@@ -1636,6 +1639,53 @@ public class TaxonomyCategoryResourceTest
 		}
 	}
 
+	private void _testPatchTaxonomyCategoryUpdatesTaxonomyCategoryProperty()
+		throws Exception {
+
+		TaxonomyCategory taxonomyCategory =
+			testPatchTaxonomyCategory_addTaxonomyCategory();
+
+		long categoryId = GetterUtil.getLong(taxonomyCategory.getId());
+
+		String key1 = RandomTestUtil.randomString();
+
+		_assetCategoryPropertyLocalService.addCategoryProperty(
+			TestPropsValues.getUserId(), categoryId, key1,
+			RandomTestUtil.randomString());
+
+		String key2 = RandomTestUtil.randomString();
+		String value2 = RandomTestUtil.randomString();
+
+		_assetCategoryPropertyLocalService.addCategoryProperty(
+			TestPropsValues.getUserId(), categoryId, key2, value2);
+
+		String value1 = RandomTestUtil.randomString();
+
+		TaxonomyCategory patchTaxonomyCategory =
+			taxonomyCategoryResource.patchTaxonomyCategory(
+				taxonomyCategory.getId(),
+				new TaxonomyCategory() {
+					{
+						taxonomyCategoryProperties =
+							new TaxonomyCategoryProperty[] {
+								new TaxonomyCategoryProperty() {
+									{
+										key = key1;
+										value = value1;
+									}
+								}
+							};
+					}
+				});
+
+		Map<String, String> map = _toMap(
+			patchTaxonomyCategory.getTaxonomyCategoryProperties());
+
+		Assert.assertEquals(map.toString(), 2, map.size());
+		Assert.assertEquals(value1, map.get(key1));
+		Assert.assertEquals(value2, map.get(key2));
+	}
+
 	private void _testPatchTaxonomyCategoryWithExistingParentTaxonomyCategory(
 			TaxonomyCategory taxonomyCategory, AssetVocabulary assetVocabulary)
 		throws Exception {
@@ -2178,6 +2228,45 @@ public class TaxonomyCategoryResourceTest
 		}
 	}
 
+	private void _testPutSiteTaxonomyCategoryByExternalReferenceCodeUpdatesTaxonomyCategoryProperty()
+		throws Exception {
+
+		TaxonomyCategory taxonomyCategory =
+			testPutSiteTaxonomyCategoryByExternalReferenceCode_addTaxonomyCategory();
+
+		String propertyKey = RandomTestUtil.randomString();
+
+		_assetCategoryPropertyLocalService.addCategoryProperty(
+			TestPropsValues.getUserId(),
+			GetterUtil.getLong(taxonomyCategory.getId()), propertyKey,
+			RandomTestUtil.randomString());
+
+		String propertyValue = RandomTestUtil.randomString();
+
+		taxonomyCategory.setTaxonomyCategoryProperties(
+			new TaxonomyCategoryProperty[] {
+				new TaxonomyCategoryProperty() {
+					{
+						key = propertyKey;
+						value = propertyValue;
+					}
+				}
+			});
+
+		TaxonomyCategory putTaxonomyCategory =
+			taxonomyCategoryResource.
+				putSiteTaxonomyCategoryByExternalReferenceCode(
+					taxonomyCategory.getSiteId(),
+					taxonomyCategory.getExternalReferenceCode(),
+					taxonomyCategory);
+
+		Map<String, String> map = _toMap(
+			putTaxonomyCategory.getTaxonomyCategoryProperties());
+
+		Assert.assertEquals(map.toString(), 1, map.size());
+		Assert.assertEquals(propertyValue, map.get(propertyKey));
+	}
+
 	private void _testPutSiteTaxonomyCategoryByExternalReferenceCodeWithParentTaxonomyCategory()
 		throws Exception {
 
@@ -2237,6 +2326,22 @@ public class TaxonomyCategoryResourceTest
 				putParentTaxonomyCategory.getId(),
 				Long.valueOf(assetCategory.getParentCategoryId()));
 		}
+	}
+
+	private Map<String, String> _toMap(
+		TaxonomyCategoryProperty[] taxonomyCategoryProperties) {
+
+		Map<String, String> map = new HashMap<>();
+
+		for (TaxonomyCategoryProperty taxonomyCategoryProperty :
+				taxonomyCategoryProperties) {
+
+			map.put(
+				taxonomyCategoryProperty.getKey(),
+				taxonomyCategoryProperty.getValue());
+		}
+
+		return map;
 	}
 
 	private void _waitForFinish(JSONObject jsonObject) throws Exception {
