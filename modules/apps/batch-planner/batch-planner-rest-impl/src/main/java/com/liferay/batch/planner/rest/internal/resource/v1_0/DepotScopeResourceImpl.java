@@ -5,21 +5,17 @@
 
 package com.liferay.batch.planner.rest.internal.resource.v1_0;
 
-import com.liferay.batch.planner.batch.engine.task.TaskItemUtil;
 import com.liferay.batch.planner.rest.dto.v1_0.DepotScope;
+import com.liferay.batch.planner.rest.internal.vulcan.batch.engine.util.EntityScopesUtil;
 import com.liferay.batch.planner.rest.internal.vulcan.yaml.openapi.OpenAPIYAMLProvider;
 import com.liferay.batch.planner.rest.resource.v1_0.DepotScopeResource;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryService;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.portal.vulcan.util.OpenAPIUtil;
-import com.liferay.portal.vulcan.yaml.openapi.OpenAPIYAML;
 
 import java.util.Collections;
 import java.util.List;
@@ -44,8 +40,10 @@ public class DepotScopeResourceImpl extends BaseDepotScopeResourceImpl {
 
 		return Page.of(
 			_getDepotScopes(
-				_getEntityScopes(
-					GetterUtil.getBoolean(export), internalClassNameKey)));
+				EntityScopesUtil.getEntityScopes(
+					contextCompany.getCompanyId(),
+					GetterUtil.getBoolean(export), internalClassNameKey,
+					_objectDefinitionLocalService, _openAPIYAMLProvider)));
 	}
 
 	private List<DepotScope> _getDepotScopes(List<String> entityScopes)
@@ -61,32 +59,6 @@ public class DepotScopeResourceImpl extends BaseDepotScopeResourceImpl {
 					contextCompany.getCompanyId(), contextUser.getUserId(),
 					DepotConstants.TYPE_SPACE),
 				_groupService::getGroup));
-	}
-
-	private List<String> _getEntityScopes(
-			boolean export, String internalClassNameKey)
-		throws Exception {
-
-		if (internalClassNameKey.contains(StringPool.POUND)) {
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.getObjectDefinition(
-					contextCompany.getCompanyId(),
-					TaskItemUtil.getTaskItemDelegateName(internalClassNameKey));
-
-			return Collections.singletonList(objectDefinition.getScope());
-		}
-
-		OpenAPIYAML openAPIYAML = _openAPIYAMLProvider.getOpenAPIYAML(
-			contextCompany.getCompanyId(), internalClassNameKey);
-
-		if (export) {
-			return OpenAPIUtil.getReadEntityScopes(
-				TaskItemUtil.getSimpleClassName(internalClassNameKey),
-				openAPIYAML);
-		}
-
-		return OpenAPIUtil.getCreateEntityScopes(
-			TaskItemUtil.getSimpleClassName(internalClassNameKey), openAPIYAML);
 	}
 
 	private List<DepotScope> _toDepotScopes(List<Group> groups) {
