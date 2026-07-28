@@ -47,6 +47,7 @@ type FakeCustomDataRenderers = {
 		itemData: {id: string | number};
 		value: string;
 	}) => React.ReactElement;
+	activitiesCountRenderer: (props: {value?: number}) => React.ReactElement;
 };
 
 let lastApiURL: string | undefined;
@@ -287,6 +288,44 @@ describe('AccountsDataSet', () => {
 			'href',
 			'/workspace/23/123/contacts/accounts/abc'
 		);
+	});
+
+	it('should render 0 recent activities when the account has no events', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const {container} = render(
+			lastCustomDataRenderers!.activitiesCountRenderer({
+				value: undefined,
+			})
+		);
+
+		expect(container).toHaveTextContent('0');
+	});
+
+	it('should render the recent activities count when the account has events', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const {container} = render(
+			lastCustomDataRenderers!.activitiesCountRenderer({value: 42})
+		);
+
+		expect(container).toHaveTextContent('42');
+	});
+
+	it('should not expose a filter for recent activities', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const activitiesCountFilter = lastFilters?.find(
+			(f) => f.id === 'activitiesCount'
+		);
+
+		expect(activitiesCountFilter).toBeUndefined();
 	});
 
 	it('should remount the FrontendDataSet when stageSelectionNonce changes even if lifecycleStageFilter is unchanged', () => {
