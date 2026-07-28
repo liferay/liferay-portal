@@ -1,6 +1,13 @@
+import * as API from 'shared/api';
 import FilterPicker from '../FilterPicker';
 import React from 'react';
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+} from '@testing-library/react';
 import {LifecycleContextProvider} from '../../context/LifecycleContext';
 
 jest.unmock('react-dom');
@@ -9,6 +16,8 @@ jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({channelId: '456', groupId: '2000'}),
 }));
+
+const fetchFieldValues = API.accounts.fetchFieldValues as jest.Mock;
 
 const renderFilter = (props = {}) =>
 	render(
@@ -22,85 +31,116 @@ const renderFilter = (props = {}) =>
 		</LifecycleContextProvider>
 	);
 
+const getTrigger = (name = 'Filter By Industries') =>
+	screen.getByRole('combobox', {name});
+
 describe('FilterPicker', () => {
 	afterEach(cleanup);
 
-	it('should render the loading state while the request is pending', () => {
-		const useRequest = require('shared/hooks/useRequest');
-		useRequest.useRequest = jest.fn(() => ({loading: true}));
+	beforeEach(() => {
+		fetchFieldValues.mockReset();
+		fetchFieldValues.mockResolvedValue({items: ['Tech', 'Finance']});
+	});
+
+	it('should not request the field values until the picker is opened', () => {
+		renderFilter();
+
+		expect(fetchFieldValues).not.toHaveBeenCalled();
+	});
+
+	it('should render the loading state while the request is pending', async () => {
+		let resolveRequest: (value: unknown) => void = () => {};
+
+		fetchFieldValues.mockImplementation(
+			() =>
+				new Promise((resolve) => {
+					resolveRequest = resolve;
+				})
+		);
 
 		const {container} = renderFilter();
 
+		fireEvent.click(getTrigger());
+
+		await waitFor(() => expect(fetchFieldValues).toHaveBeenCalled());
+
 		expect(container.querySelector('.loading-root')).toBeInTheDocument();
+
+		resolveRequest({items: ['Tech']});
+
+		await waitFor(() =>
+			expect(
+				container.querySelector('.loading-root')
+			).not.toBeInTheDocument()
+		);
 	});
 
 	it('should render the "all-x" label when the filter is empty', () => {
-		const useRequest = require('shared/hooks/useRequest');
-		useRequest.useRequest = jest.fn(() => ({
-			data: {items: ['Tech', 'Finance']},
-			loading: false,
-		}));
+		renderFilter();
 
-		const {getByText} = renderFilter();
-
-		expect(getByText('All Industries')).toBeInTheDocument();
+		expect(screen.getByText('All Industries')).toBeInTheDocument();
 	});
 
 	it('should expose an accessible name on the filter trigger', () => {
-		const useRequest = require('shared/hooks/useRequest');
-		useRequest.useRequest = jest.fn(() => ({
-			data: {items: ['Tech', 'Finance']},
-			loading: false,
-		}));
+		renderFilter();
 
-		const {getByRole} = renderFilter();
+		expect(getTrigger()).toBeInTheDocument();
+	});
+
+	it('should list the fetched field values as options', async () => {
+		renderFilter();
+
+		fireEvent.click(getTrigger());
 
 		expect(
-			getByRole('combobox', {name: 'Filter By Industries'})
+			await screen.findByRole('option', {name: 'Tech'})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('option', {name: 'Finance'})
 		).toBeInTheDocument();
 	});
 
-	it('should constrain the dropdown menu width so long values do not overflow', () => {
-		const useRequest = require('shared/hooks/useRequest');
+	it('should constrain the dropdown menu width so long values do not overflow', async () => {
+		fetchFieldValues.mockResolvedValue({
+			items: [
+				'A very very very long industry value that would overflow the filter',
+			],
+		});
 
-		useRequest.useRequest = jest.fn(() => ({
-			data: {
-				items: [
-					'A very very very long industry value that would overflow the filter',
-				],
-			},
-			loading: false,
-		}));
+		const {baseElement} = renderFilter();
 
-		const {baseElement, getByRole} = renderFilter();
+		fireEvent.click(getTrigger());
 
-		fireEvent.click(getByRole('combobox', {name: 'Filter By Industries'}));
+		// The menu is held back until the options land.
+
+		await waitFor(() =>
+			expect(
+				baseElement.querySelector('.dropdown-menu')
+			).toBeInTheDocument()
+		);
 
 		const menu = baseElement.querySelector('.dropdown-menu');
 
-		expect(menu).toBeInTheDocument();
 		expect(menu).toHaveStyle({maxWidth: 'none', width: '240px'});
 	});
 
-	it('should pass the fieldMappingFieldName through to the request', () => {
-		const useRequest = require('shared/hooks/useRequest');
-		const spy = jest.fn(() => ({data: {items: []}, loading: false}));
-		useRequest.useRequest = spy;
-
+	it('should pass the fieldMappingFieldName through to the request', async () => {
 		renderFilter({
 			entityLabel: 'Countries',
 			fieldMappingFieldName: 'country',
 			filterKey: 'countryFilter',
 		});
 
-		expect(spy).toHaveBeenCalledWith(
-			expect.objectContaining({
-				variables: expect.objectContaining({
+		fireEvent.click(getTrigger('Filter By Countries'));
+
+		await waitFor(() =>
+			expect(fetchFieldValues).toHaveBeenCalledWith(
+				expect.objectContaining({
 					channelId: '456',
 					fieldMappingFieldName: 'country',
 					groupId: '2000',
-				}),
-			})
+				})
+			)
 		);
 	});
 });

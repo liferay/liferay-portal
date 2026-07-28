@@ -28,7 +28,7 @@ export function fetchFieldValues({
 	channelId,
 	fieldMappingFieldName,
 	groupId,
-	query,
+	query = '',
 }) {
 	return sendRequest({
 		data: {

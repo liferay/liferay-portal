@@ -47,18 +47,21 @@ const SiteWrapper = ({children}: {children: React.ReactNode}) => (
 	</MemoryRouter>
 );
 
-const openPicker = async () => {
-	const trigger = screen.getByRole('combobox', {name: 'Filter By Accounts'});
+// Opening the picker is what triggers the accounts request.
 
-	// The trigger is disabled while its request is in flight.
-
-	await waitFor(() => expect(trigger).toBeEnabled());
-
-	fireEvent.click(trigger);
+const openPicker = () => {
+	fireEvent.click(screen.getByRole('combobox', {name: 'Filter By Accounts'}));
 };
 
 describe('AccountDropdown', () => {
 	afterEach(cleanup);
+
+	// The api mock is shared across the suite, so a test that opens the picker
+	// would otherwise leave calls behind for the next one to trip over.
+
+	beforeEach(() => {
+		(API.accounts.searchAccounts as jest.Mock).mockClear();
+	});
 
 	it('should render with "All Accounts" as the default value', async () => {
 		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
@@ -78,11 +81,53 @@ describe('AccountDropdown', () => {
 			screen.getByRole('combobox', {name: 'Filter By Accounts'})
 		).toHaveTextContent('All Accounts');
 
-		await waitFor(() =>
-			expect(API.accounts.searchAccounts).toHaveBeenCalled()
+		expect(container).toMatchSnapshot();
+	});
+
+	it('should ask for the first page so the list can page as it scrolls', async () => {
+		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
+			Promise.resolve({
+				items: [MOCK_ACCOUNT('100', 'Account 100')],
+				totalCount: 1,
+			})
 		);
 
-		expect(container).toMatchSnapshot();
+		render(
+			<Wrapper>
+				<AccountDropdown assetType="page" onFilterChange={jest.fn()} />
+			</Wrapper>
+		);
+
+		openPicker();
+
+		await waitFor(() =>
+			expect(API.accounts.searchAccounts).toHaveBeenCalledWith(
+				expect.objectContaining({page: 0})
+			)
+		);
+	});
+
+	it('should not search accounts until the picker is opened', async () => {
+		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
+			Promise.resolve({
+				items: [MOCK_ACCOUNT('100', 'Account 100')],
+				total: 1,
+			})
+		);
+
+		render(
+			<Wrapper>
+				<AccountDropdown assetType="page" onFilterChange={jest.fn()} />
+			</Wrapper>
+		);
+
+		expect(API.accounts.searchAccounts).not.toHaveBeenCalled();
+
+		openPicker();
+
+		await waitFor(() =>
+			expect(API.accounts.searchAccounts).toHaveBeenCalledTimes(1)
+		);
 	});
 
 	it('should list the fetched accounts when opened', async () => {
@@ -102,11 +147,11 @@ describe('AccountDropdown', () => {
 			</Wrapper>
 		);
 
+		openPicker();
+
 		await waitFor(() =>
 			expect(API.accounts.searchAccounts).toHaveBeenCalled()
 		);
-
-		await openPicker();
 
 		expect(
 			await screen.findByRole('option', {name: 'Account 100'})
@@ -138,11 +183,11 @@ describe('AccountDropdown', () => {
 			</Wrapper>
 		);
 
+		openPicker();
+
 		await waitFor(() =>
 			expect(API.accounts.searchAccounts).toHaveBeenCalled()
 		);
-
-		await openPicker();
 
 		fireEvent.click(
 			await screen.findByRole('option', {name: 'Account 100'})
@@ -172,17 +217,17 @@ describe('AccountDropdown', () => {
 			</Wrapper>
 		);
 
+		openPicker();
+
 		await waitFor(() =>
 			expect(API.accounts.searchAccounts).toHaveBeenCalled()
 		);
-
-		await openPicker();
 
 		fireEvent.click(
 			await screen.findByRole('option', {name: 'Account 100'})
 		);
 
-		await openPicker();
+		openPicker();
 
 		fireEvent.click(
 			await screen.findByRole('option', {name: 'All Accounts'})
@@ -202,6 +247,8 @@ describe('AccountDropdown', () => {
 			</Wrapper>
 		);
 
+		openPicker();
+
 		await waitFor(() =>
 			expect(API.accounts.searchAccounts).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -213,7 +260,7 @@ describe('AccountDropdown', () => {
 		);
 	});
 
-	it('should preselect the account passed via initialAccountId/initialAccountName', async () => {
+	it('should preselect the account passed via initialAccountId/initialAccountName', () => {
 		(API.accounts.searchAccounts as jest.Mock).mockReturnValue(
 			Promise.resolve({
 				items: [MOCK_ACCOUNT('200', 'Account 200')],
@@ -235,10 +282,6 @@ describe('AccountDropdown', () => {
 		expect(
 			screen.getByRole('combobox', {name: 'Filter By Accounts'})
 		).toHaveTextContent('Account 100');
-
-		await waitFor(() =>
-			expect(API.accounts.searchAccounts).toHaveBeenCalled()
-		);
 	});
 
 	it('should fall back to the raw id when initialAccountName is missing', () => {
@@ -272,6 +315,8 @@ describe('AccountDropdown', () => {
 			</AssetWrapper>
 		);
 
+		openPicker();
+
 		await waitFor(() =>
 			expect(API.accounts.searchAccounts).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -297,6 +342,8 @@ describe('AccountDropdown', () => {
 			</SiteWrapper>
 		);
 
+		openPicker();
+
 		await waitFor(() =>
 			expect(API.accounts.searchAccounts).toHaveBeenCalledWith(
 				expect.objectContaining({
@@ -308,7 +355,7 @@ describe('AccountDropdown', () => {
 			)
 		);
 
-		await openPicker();
+		openPicker();
 
 		expect(
 			await screen.findByRole('option', {name: 'Account 100'})

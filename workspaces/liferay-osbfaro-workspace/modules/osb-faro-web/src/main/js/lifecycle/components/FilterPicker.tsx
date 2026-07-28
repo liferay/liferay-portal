@@ -1,9 +1,15 @@
 import * as API from 'shared/api';
-import React, {useMemo} from 'react';
-import SharedFilterPicker from 'shared/components/FilterPicker';
+import React from 'react';
+import SharedFilterPicker, {
+	IFilterPickerItem,
+} from 'shared/components/FilterPicker';
 import {useLifecycle} from '../context/LifecycleContext';
 import {useParams} from 'react-router-dom';
-import {useRequest} from 'shared/hooks/useRequest';
+
+// Field values are plain strings, so each one is its own id and name.
+
+const normalizeFieldValues = (data: {items?: string[]}): IFilterPickerItem[] =>
+	(data?.items ?? []).map((item) => ({id: item, name: item}));
 
 interface IProps {
 	className?: string;
@@ -22,41 +28,25 @@ const FilterPicker = ({
 
 	const {channelId, groupId} = useParams();
 
-	const {data, loading} = useRequest({
-		dataSourceFn: API.accounts.fetchFieldValues,
-		variables: {
-			channelId,
-			fieldMappingFieldName,
-			groupId,
-			query: '',
-		},
-	});
-
-	// Field values are plain strings, so each one is its own id and name.
-
-	const items = useMemo(
-		() =>
-			((data?.items ?? []) as string[]).map((item) => ({
-				id: item,
-				name: item,
-			})),
-		[data]
-	);
-
 	const selectedValue = filters[filterKey];
 
 	return (
 		<SharedFilterPicker
 			className={className}
+			dataSourceFn={API.accounts.fetchFieldValues}
 			entityLabel={entityLabel}
-			items={items}
-			loading={loading}
+			normalize={normalizeFieldValues}
 			onFilterChange={(item) =>
 				updateFilters({[filterKey]: item?.id ?? ''})
 			}
 			selected={
 				selectedValue ? {id: selectedValue, name: selectedValue} : null
 			}
+			variables={{
+				channelId,
+				fieldMappingFieldName,
+				groupId,
+			}}
 		/>
 	);
 };

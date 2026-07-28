@@ -6,6 +6,8 @@ export const fetchDetails = jest.fn(() =>
 	Promise.resolve(data.mockAccountDetails())
 );
 
+export const fetchFieldValues = jest.fn(() => Promise.resolve({items: []}));
+
 export const search = jest.fn(() =>
 	Promise.resolve(data.mockSearch(data.mockAccount))
 );
