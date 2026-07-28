@@ -1044,6 +1044,8 @@ public class ObjectFieldLocalServiceImpl
 			catch (Exception exception) {
 				ReflectionUtil.throwException(exception);
 			}
+
+			addOrUpdateObjectFieldPLOEntries(objectField);
 		}
 
 		if (!objectField.compareBusinessType(

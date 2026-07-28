@@ -217,9 +217,6 @@ public class ObjectDefinitionResourcePermissionUtil {
 				continue;
 			}
 
-			objectFieldLocalService.addOrUpdateObjectFieldPLOEntries(
-				objectField);
-
 			objectFieldPermissionKeys = StringBundler.concat(
 				objectFieldPermissionKeys, "<action-key>",
 				objectField.getAttachmentDownloadActionKey(), "</action-key>");

@@ -2540,6 +2540,13 @@ public class ObjectDefinitionLocalServiceImpl
 			_objectRelationshipLocalService, _objectRelationshipPersistence);
 
 		for (ObjectField objectField : objectFields) {
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
+
+				_objectFieldLocalService.addOrUpdateObjectFieldPLOEntries(
+					objectField);
+			}
+
 			if (objectField.isSystem() ||
 				Objects.equals(
 					objectField.getDBTableName(),
