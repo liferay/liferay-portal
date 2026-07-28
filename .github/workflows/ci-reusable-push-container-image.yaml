@@ -45,16 +45,11 @@ jobs:
 
                         docker \
                             build \
-                            --file "${{inputs.dockerfile}}" \
                             --pull \
                             --tag "${image_ref}" \
                             .
 
                         docker push "${image_ref}"
-
-                        echo "image_ref=${image_ref}" >> ${GITHUB_OUTPUT}
-
-                        echo "\`${image_ref}\` was pushed." >> ${GITHUB_STEP_SUMMARY}
                     }
 
                     main "${@}"
@@ -62,10 +57,6 @@ jobs:
 on:
     workflow_call:
         inputs:
-            dockerfile:
-                default: Dockerfile
-                required: false
-                type: string
             image_name:
                 required: true
                 type: string

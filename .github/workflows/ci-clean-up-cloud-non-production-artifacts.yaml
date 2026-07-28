@@ -50,7 +50,7 @@ jobs:
                     }
 
                     main "${@}"
-            -   name: Clean up DXP operator images
+            -   name: Clean up Docker images
                 run: |
                     set -o errexit
                     set -o nounset
