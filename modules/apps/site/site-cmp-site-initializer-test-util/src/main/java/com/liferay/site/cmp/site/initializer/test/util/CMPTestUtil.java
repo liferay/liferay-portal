@@ -42,6 +42,32 @@ import java.util.Collections;
  */
 public class CMPTestUtil {
 
+	public static ObjectEntry addCMPProjectLinkObjectEntry(
+			ObjectEntry cmpProjectObjectEntry)
+		throws PortalException {
+
+		ObjectDefinition cmpProjectLinkObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT_LINK", TestPropsValues.getCompanyId());
+
+		return ObjectEntryLocalServiceUtil.addObjectEntry(
+			cmpProjectObjectEntry.getGroupId(),
+			cmpProjectObjectEntry.getUserId(),
+			cmpProjectLinkObjectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode", RandomTestUtil.randomString()
+			).put(
+				"className", RandomTestUtil.randomString()
+			).put(
+				"groupExternalReferenceCode", RandomTestUtil.randomString()
+			).put(
+				"r_cmpProjectToCMPProjectLinks_c_cmpProjectId",
+				cmpProjectObjectEntry.getObjectEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	public static ObjectEntry addCMPProjectObjectEntry()
 		throws PortalException {
 
@@ -70,6 +96,31 @@ public class CMPTestUtil {
 				"title", RandomTestUtil.randomString()
 			).build(),
 			serviceContext);
+	}
+
+	public static ObjectEntry addCMPTaskLinkObjectEntry(
+			ObjectEntry cmpTaskObjectEntry)
+		throws PortalException {
+
+		ObjectDefinition cmpTaskLinkObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_TASK_LINK", TestPropsValues.getCompanyId());
+
+		return ObjectEntryLocalServiceUtil.addObjectEntry(
+			cmpTaskObjectEntry.getGroupId(), cmpTaskObjectEntry.getUserId(),
+			cmpTaskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode", RandomTestUtil.randomString()
+			).put(
+				"className", RandomTestUtil.randomString()
+			).put(
+				"groupExternalReferenceCode", RandomTestUtil.randomString()
+			).put(
+				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
+				cmpTaskObjectEntry.getObjectEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	public static ObjectEntry addCMPTaskObjectEntry() throws PortalException {

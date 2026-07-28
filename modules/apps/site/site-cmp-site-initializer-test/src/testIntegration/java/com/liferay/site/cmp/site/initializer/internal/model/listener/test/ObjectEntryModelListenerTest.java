@@ -107,6 +107,24 @@ public class ObjectEntryModelListenerTest {
 			cmpProjectObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
 
+		ObjectEntry cmpProjectLinkObjectEntry =
+			CMPTestUtil.addCMPProjectLinkObjectEntry(cmpProjectObjectEntry);
+
+		_assertResourceActions(
+			cmpProjectLinkObjectEntry, role.getName(), ActionKeys.DELETE,
+			ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW);
+
+		_assertResourceActions(
+			cmpProjectLinkObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
+			ActionKeys.DELETE, ActionKeys.VIEW);
+		_assertResourceActions(
+			cmpProjectLinkObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
+			ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
+			ActionKeys.VIEW);
+		_assertResourceActions(
+			cmpProjectLinkObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
+			ActionKeys.VIEW);
+
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
 			cmpProjectObjectEntry);
 
@@ -130,6 +148,24 @@ public class ObjectEntryModelListenerTest {
 		_assertResourceActions(
 			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
+
+		ObjectEntry cmpTaskLinkObjectEntry =
+			CMPTestUtil.addCMPTaskLinkObjectEntry(cmpTaskObjectEntry);
+
+		_assertResourceActions(
+			cmpTaskLinkObjectEntry, role.getName(), ActionKeys.DELETE,
+			ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW);
+
+		_assertResourceActions(
+			cmpTaskLinkObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
+			ActionKeys.DELETE, ActionKeys.VIEW);
+		_assertResourceActions(
+			cmpTaskLinkObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
+			ActionKeys.DELETE, ActionKeys.PERMISSIONS, ActionKeys.UPDATE,
+			ActionKeys.VIEW);
+		_assertResourceActions(
+			cmpTaskLinkObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
+			ActionKeys.VIEW);
 	}
 
 	@Test

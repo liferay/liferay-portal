@@ -6,6 +6,7 @@
 package com.liferay.site.cmp.site.initializer.internal.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -16,6 +17,7 @@ import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFolderLocalService;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -69,6 +71,26 @@ public class CMPPermissionsObjectDefinitionLocalServiceWrapperTest {
 
 	@Test
 	public void testPublishSystemObjectDefinition() throws Exception {
+		_testPublishSystemObjectDefinition();
+		_testPublishSystemObjectDefinition("L_CMP_PROJECT_LINK");
+		_testPublishSystemObjectDefinition("L_CMP_TASK");
+		_testPublishSystemObjectDefinition("L_CMP_TASK_LINK");
+	}
+
+	private void _assertHasResourcePermission(
+			String actionId, ObjectDefinition objectDefinition, long roleId)
+		throws Exception {
+
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				objectDefinition.getCompanyId(),
+				objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(objectDefinition.getCompanyId()), roleId,
+				actionId));
+	}
+
+	private void _testPublishSystemObjectDefinition() throws Exception {
 		ObjectFolder objectFolder =
 			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
 				"L_CMP_PROJECT_MANAGEMENT_DEFINITIONS",
@@ -119,17 +141,40 @@ public class CMPPermissionsObjectDefinitionLocalServiceWrapperTest {
 			ActionKeys.VIEW, objectDefinition, role.getRoleId());
 	}
 
-	private void _assertHasResourcePermission(
-			String actionId, ObjectDefinition objectDefinition, long roleId)
+	private void _testPublishSystemObjectDefinition(
+			String externalReferenceCode)
 		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				getObjectDefinitionByExternalReferenceCode(
+					externalReferenceCode, TestPropsValues.getCompanyId());
+
+		Role projectContributorRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			DepotRolesConstants.PROJECT_CONTRIBUTOR);
 
 		Assert.assertTrue(
 			_resourcePermissionLocalService.hasResourcePermission(
 				objectDefinition.getCompanyId(),
-				objectDefinition.getClassName(),
-				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(objectDefinition.getCompanyId()), roleId,
-				actionId));
+				objectDefinition.getResourceName(),
+				ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+				projectContributorRole.getRoleId(),
+				ObjectActionKeys.ADD_OBJECT_ENTRY));
+
+		Role projectManagerRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			DepotRolesConstants.PROJECT_MANAGER);
+
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				objectDefinition.getCompanyId(),
+				objectDefinition.getResourceName(),
+				ResourceConstants.SCOPE_GROUP_TEMPLATE,
+				String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID),
+				projectManagerRole.getRoleId(),
+				ObjectActionKeys.ADD_OBJECT_ENTRY));
 	}
 
 	@Inject
