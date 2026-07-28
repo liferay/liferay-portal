@@ -244,7 +244,7 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 
 	@Override
 	public String getBuildName() {
-		return getAxisName();
+		return getDisplayName();
 	}
 
 	@Override
@@ -278,7 +278,13 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 
 	@Override
 	public String getDisplayName() {
-		return getAxisName();
+		String axisName = getAxisName();
+
+		if (axisName != null) {
+			return axisName;
+		}
+
+		return super.getDisplayName();
 	}
 
 	@Override
