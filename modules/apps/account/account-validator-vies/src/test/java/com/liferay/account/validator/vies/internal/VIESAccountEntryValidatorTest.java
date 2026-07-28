@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -140,6 +141,16 @@ public class VIESAccountEntryValidatorTest {
 			_viesAccountEntryValidator.getClassPK(
 				accountEntry,
 				JSONUtil.put("billingAddressId", billingAddressId)));
+	}
+
+	@Test
+	public void testGetResultMessages() {
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				"account-validation-failed", "the-account-is-missing-a-tax-id",
+				"vies-invalid-input-error", "vies-unexpected-error",
+				"vies-vat-blocked-error"),
+			_viesAccountEntryValidator.getResultMessages());
 	}
 
 	@Test

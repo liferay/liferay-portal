@@ -26,8 +26,10 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -164,6 +166,16 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 		}
 
 		return accountEntry.getAccountEntryId() + "_" + billingAddressId;
+	}
+
+	@Override
+	public Set<String> getResultMessages() {
+		Set<String> resultMessages = new HashSet<>(super.getResultMessages());
+
+		resultMessages.add(_RESULT_MESSAGE_MISSING_TAX_ID);
+		resultMessages.addAll(_resultMessages.values());
+
+		return resultMessages;
 	}
 
 	private AccountEntryValidatorResult _getAccountEntryValidatorResult(

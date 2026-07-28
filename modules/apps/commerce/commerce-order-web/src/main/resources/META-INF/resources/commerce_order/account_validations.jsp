@@ -42,10 +42,12 @@ long commerceOrderId = ParamUtil.getLong(request, "commerceOrderId");
 		title='<%= LanguageUtil.get(request, "history") %>'
 	>
 		<frontend-data-set:headless-display
+			additionalProps="<%= commerceOrderAccountValidationsDisplayContext.getAdditionalProps() %>"
 			apiURL="<%= commerceOrderAccountValidationsDisplayContext.getAccountValidationsURL() %>"
 			fdsFilters="<%= commerceOrderAccountValidationsDisplayContext.getFDSFilters() %>"
 			id="<%= CommerceOrderFDSNames.ACCOUNT_VALIDATIONS %>"
 			itemsPerPage="<%= 10 %>"
+			propsTransformer="{AccountValidationsFDSPropsTransformer} from commerce-order-web"
 			showManagementBar="<%= true %>"
 			showSearch="<%= false %>"
 			style="fluid"

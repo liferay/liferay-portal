@@ -12,6 +12,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collections;
+import java.util.Set;
+
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -19,6 +22,11 @@ import org.osgi.service.component.annotations.Reference;
  */
 public abstract class BaseAccountEntryValidator
 	implements AccountEntryValidator {
+
+	@Override
+	public Set<String> getResultMessages() {
+		return Collections.singleton("account-validation-failed");
+	}
 
 	@Override
 	public final AccountEntryValidatorResult validate(

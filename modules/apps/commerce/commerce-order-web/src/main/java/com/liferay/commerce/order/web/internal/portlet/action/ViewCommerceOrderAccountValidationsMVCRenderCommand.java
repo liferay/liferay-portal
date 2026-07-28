@@ -49,7 +49,8 @@ public class ViewCommerceOrderAccountValidationsMVCRenderCommand
 						_accountEntryValidatorRegistry,
 						_commerceOrderService.getCommerceOrder(
 							ParamUtil.getLong(
-								renderRequest, "commerceOrderId")));
+								renderRequest, "commerceOrderId")),
+						renderRequest.getLocale());
 
 			if (Validator.isNull(
 					commerceOrderAccountValidationsDisplayContext.

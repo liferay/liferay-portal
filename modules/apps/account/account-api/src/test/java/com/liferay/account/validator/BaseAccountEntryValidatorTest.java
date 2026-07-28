@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.Collections;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -48,6 +50,16 @@ public class BaseAccountEntryValidatorTest {
 		_classPK = RandomTestUtil.randomString();
 		_jsonObject = JSONUtil.put(
 			"billingAddressId", RandomTestUtil.randomLong());
+	}
+
+	@Test
+	public void testGetResultMessages() {
+		TestAccountEntryValidator testAccountEntryValidator =
+			new TestAccountEntryValidator();
+
+		Assert.assertEquals(
+			Collections.singleton("account-validation-failed"),
+			testAccountEntryValidator.getResultMessages());
 	}
 
 	@Test

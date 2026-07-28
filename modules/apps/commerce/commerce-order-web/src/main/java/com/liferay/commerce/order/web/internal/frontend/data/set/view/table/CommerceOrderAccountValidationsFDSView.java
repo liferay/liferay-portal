@@ -6,8 +6,10 @@
 package com.liferay.commerce.order.web.internal.frontend.data.set.view.table;
 
 import com.liferay.commerce.order.web.internal.constants.CommerceOrderFDSNames;
+import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
+import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
@@ -34,14 +36,40 @@ public class CommerceOrderAccountValidationsFDSView extends BaseTableFDSView {
 		return fdsTableSchemaBuilder.add(
 			"resultStatus", "result"
 		).add(
-			"resultMessage", "message"
+			"resultMessage", "message",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"accountValidationResultMessageDataRenderer")
 		).add(
 			"className", "class-name"
 		).add(
 			"creator.name", "created-by"
 		).add(
-			"dateCreated", "date"
+			_getDateTimeFDSTableSchemaField("dateCreated", "date")
 		).build();
+	}
+
+	private DateTimeFDSTableSchemaField _getDateTimeFDSTableSchemaField(
+		String fieldName, String label) {
+
+		DateTimeFDSTableSchemaField dateTimeFDSTableSchemaField =
+			new DateTimeFDSTableSchemaField();
+
+		dateTimeFDSTableSchemaField.setContentRenderer(
+			"dateTime"
+		).setFieldName(
+			fieldName
+		).setLabel(
+			label
+		).setLocalizeLabel(
+			true
+		).setSortable(
+			true
+		);
+
+		dateTimeFDSTableSchemaField.setTimeZoneBehavior(
+			FDSTimeZoneBehaviorConstants.APPLY_THEME_DISPLAY_TIME_ZONE);
+
+		return dateTimeFDSTableSchemaField;
 	}
 
 	@Reference

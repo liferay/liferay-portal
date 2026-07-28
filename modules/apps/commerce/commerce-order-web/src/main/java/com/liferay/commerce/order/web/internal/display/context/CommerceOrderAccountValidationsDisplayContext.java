@@ -19,13 +19,17 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -36,10 +40,11 @@ public class CommerceOrderAccountValidationsDisplayContext {
 
 	public CommerceOrderAccountValidationsDisplayContext(
 		AccountEntryValidatorRegistry accountEntryValidatorRegistry,
-		CommerceOrder commerceOrder) {
+		CommerceOrder commerceOrder, Locale locale) {
 
 		_accountEntryValidatorRegistry = accountEntryValidatorRegistry;
 		_commerceOrder = commerceOrder;
+		_locale = locale;
 	}
 
 	public String getAccountValidationsURL() throws PortalException {
@@ -51,6 +56,30 @@ public class CommerceOrderAccountValidationsDisplayContext {
 
 		return "/o/account/validator-results?filter=" +
 			URLCodec.encodeURL(filterString) + "&sort=dateCreated:desc";
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"resultMessages",
+			() -> {
+				Map<String, String> resultMessages = new HashMap<>();
+
+				for (AccountEntryValidator accountEntryValidator :
+						_accountEntryValidatorRegistry.
+							getAccountEntryValidators()) {
+
+					for (String resultMessage :
+							accountEntryValidator.getResultMessages()) {
+
+						resultMessages.put(
+							resultMessage,
+							LanguageUtil.get(_locale, resultMessage));
+					}
+				}
+
+				return resultMessages;
+			}
+		).build();
 	}
 
 	public List<FDSFilter> getFDSFilters() {
@@ -159,5 +188,6 @@ public class CommerceOrderAccountValidationsDisplayContext {
 	private final CommerceOrder _commerceOrder;
 	private String _filterString;
 	private JSONObject _jsonObject;
+	private final Locale _locale;
 
 }
