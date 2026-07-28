@@ -44,6 +44,10 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 	</model>
+	<model name="com.liferay.portal.tools.service.builder.test.model.DateEntry">
+		<field name="dateEntryId" type="long" />
+		<field name="value" type="Date" />
+	</model>
 	<model name="com.liferay.portal.tools.service.builder.test.model.DefinedDefaultOrderEntry">
 		<field name="definedDefaultOrderEntryId" type="long" />
 		<field name="modifiedDate" type="Date" />

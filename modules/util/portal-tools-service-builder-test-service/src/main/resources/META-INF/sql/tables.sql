@@ -68,6 +68,11 @@ create table DataLimitEntry (
 	modifiedDate DATE null
 );
 
+create table DateEntry (
+	dateEntryId LONG not null primary key,
+	value DATE null
+);
+
 create table DefinedDefaultOrderEntry (
 	definedDefaultOrderEntryId LONG not null primary key,
 	modifiedDate DATE null,

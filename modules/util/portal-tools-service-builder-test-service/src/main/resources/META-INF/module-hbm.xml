@@ -10,6 +10,7 @@
 	<import class="com.liferay.portal.tools.service.builder.test.model.CacheReplicatorEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.ColumnNameEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.DataLimitEntry" />
+	<import class="com.liferay.portal.tools.service.builder.test.model.DateEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.DefinedDefaultOrderEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.DSLQueryEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.DSLQueryStatusEntry" />
@@ -96,6 +97,12 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="userName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="createDate" type="timestamp" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="modifiedDate" type="timestamp" />
+	</class>
+	<class name="com.liferay.portal.tools.service.builder.test.model.impl.DateEntryImpl" table="DateEntry">
+		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="dateEntryId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="value" type="timestamp" />
 	</class>
 	<class name="com.liferay.portal.tools.service.builder.test.model.impl.DefinedDefaultOrderEntryImpl" table="DefinedDefaultOrderEntry">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="definedDefaultOrderEntryId" type="long">
