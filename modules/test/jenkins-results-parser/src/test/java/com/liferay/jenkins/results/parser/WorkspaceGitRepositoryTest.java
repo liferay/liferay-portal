@@ -47,6 +47,14 @@ public class WorkspaceGitRepositoryTest
 	}
 
 	@Test
+	public void testPromoteGitArchive() throws Exception {
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, true));
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, false));
+		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(false, true));
+		Assert.assertFalse(_isSnapshotAfterPromoteGitArchive(false, false));
+	}
+
+	@Test
 	public void testSetUp() throws Exception {
 		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
 			_newDefaultWorkspaceGitRepository();
@@ -97,15 +105,7 @@ public class WorkspaceGitRepositoryTest
 	}
 
 	@Test
-	public void testSnapshotStateAfterPromoteGitArchive() throws Exception {
-		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, true));
-		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(true, false));
-		Assert.assertTrue(_isSnapshotAfterPromoteGitArchive(false, true));
-		Assert.assertFalse(_isSnapshotAfterPromoteGitArchive(false, false));
-	}
-
-	@Test
-	public void testSnapshotStateAfterUploadGitArchives() throws Exception {
+	public void testUploadGitArchives() throws Exception {
 		Assert.assertTrue(
 			_isSnapshotAfterUploadGitArchives("top-level-job", true, true));
 		Assert.assertTrue(
