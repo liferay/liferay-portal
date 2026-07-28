@@ -33,6 +33,37 @@ public class BaseDownstreamBuildTest
 	}
 
 	@Test
+	public void testGetDisplayName() {
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		String jobName = RandomTestUtil.randomString();
+
+		Mockito.when(
+			baseDownstreamBuild.getJobName()
+		).thenReturn(
+			jobName
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getDisplayName();
+
+		Assert.assertEquals(jobName, baseDownstreamBuild.getDisplayName());
+
+		String axisName = RandomTestUtil.randomString();
+
+		Mockito.when(
+			baseDownstreamBuild.getAxisName()
+		).thenReturn(
+			axisName
+		);
+
+		Assert.assertEquals(axisName, baseDownstreamBuild.getDisplayName());
+	}
+
+	@Test
 	public void testGetGitHubMessageElement() {
 		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
 			BaseDownstreamBuild.class);

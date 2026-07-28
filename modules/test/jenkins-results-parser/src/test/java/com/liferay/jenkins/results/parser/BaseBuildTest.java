@@ -5,7 +5,10 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,6 +19,23 @@ import org.mockito.Mockito;
  * @author Kenji Heigel
  */
 public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testBuildDisplayNameComparator() {
+		BaseDownstreamBuild firstBaseDownstreamBuild = _mockDownstreamBuild(
+			"mock-downstream-1");
+		BaseDownstreamBuild lastBaseDownstreamBuild = _mockDownstreamBuild(
+			"mock-downstream-2");
+
+		List<Build> builds = new ArrayList<>(
+			Arrays.asList(lastBaseDownstreamBuild, firstBaseDownstreamBuild));
+
+		Collections.sort(builds, new BaseBuild.BuildDisplayNameComparator());
+
+		Assert.assertEquals(
+			Arrays.asList(firstBaseDownstreamBuild, lastBaseDownstreamBuild),
+			builds);
+	}
 
 	@Test
 	public void testGetBadBuildURLs() {
@@ -53,6 +73,24 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 			RandomTestUtil.randomString(), null, false);
 		_testSaveBuildURLInBuildDatabase(
 			null, RandomTestUtil.randomString(), false);
+	}
+
+	private BaseDownstreamBuild _mockDownstreamBuild(String jobName) {
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+
+		Mockito.when(
+			baseDownstreamBuild.getJobName()
+		).thenReturn(
+			jobName
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getDisplayName();
+
+		return baseDownstreamBuild;
 	}
 
 	private void _testSaveBuildURLInBuildDatabase(
