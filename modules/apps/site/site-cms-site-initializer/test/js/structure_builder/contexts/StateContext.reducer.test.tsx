@@ -48,6 +48,7 @@ function buildInitialState({
 		label: structureLabel,
 		name: 'MyStructure',
 		path: '',
+		slug: '',
 		spaces: 'all',
 		status: 'new',
 		system: false,
@@ -63,6 +64,7 @@ function buildInitialState({
 			deletedGroupERCs: [],
 			deletedRelationships: [],
 			modifiedNames: new Set(),
+			modifiedSlugs: new Set(),
 		},
 		invalids: new Map(),
 		publishedChildren: new Set(),
@@ -215,5 +217,104 @@ describe('StateContext reducer — rename-item', () => {
 			en_US: 'root',
 			es_ES: 'root',
 		});
+	});
+});
+
+describe('StateContext reducer — update-structure friendly URL', () => {
+	beforeEach(() => {
+		jest.spyOn(Liferay.ThemeDisplay, 'getLanguageId').mockReturnValue(
+			'en_US'
+		);
+		jest.spyOn(
+			Liferay.ThemeDisplay,
+			'getDefaultLanguageId'
+		).mockReturnValue('en_US');
+	});
+
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
+	it('auto-generates the friendly URL slug from the label', () => {
+		const refs = renderWithState(
+			buildInitialState({
+				childLabel: {en_US: 'child'} as any,
+				structureLabel: {en_US: ''} as any,
+			})
+		);
+
+		act(() => {
+			refs.dispatch!({
+				label: {en_US: 'Product Categories'} as any,
+				objectDefinitions: {},
+				type: 'update-structure',
+			});
+		});
+
+		expect(refs.state!.structure.slug).toBe('product-categories');
+	});
+
+	it('stops auto-generating once the friendly URL is edited manually', () => {
+		const refs = renderWithState(
+			buildInitialState({
+				childLabel: {en_US: 'child'} as any,
+				structureLabel: {en_US: ''} as any,
+			})
+		);
+
+		act(() => {
+			refs.dispatch!({
+				label: {en_US: 'Product Categories'} as any,
+				objectDefinitions: {},
+				type: 'update-structure',
+			});
+		});
+
+		act(() => {
+			refs.dispatch!({
+				slug: 'custom-slug',
+				type: 'update-structure',
+			});
+		});
+
+		act(() => {
+			refs.dispatch!({
+				label: {en_US: 'Something Else'} as any,
+				objectDefinitions: {},
+				type: 'update-structure',
+			});
+		});
+
+		expect(refs.state!.structure.slug).toBe('custom-slug');
+	});
+
+	it('resumes auto-generating when the friendly URL is cleared', () => {
+		const refs = renderWithState(
+			buildInitialState({
+				childLabel: {en_US: 'child'} as any,
+				structureLabel: {en_US: ''} as any,
+			})
+		);
+
+		act(() => {
+			refs.dispatch!({
+				slug: 'custom-slug',
+				type: 'update-structure',
+			});
+		});
+
+		act(() => {
+			refs.dispatch!({slug: '', type: 'update-structure'});
+		});
+
+		act(() => {
+			refs.dispatch!({
+				label: {en_US: 'Product Categories'} as any,
+				objectDefinitions: {},
+				type: 'update-structure',
+			});
+		});
+
+		expect(refs.state!.structure.slug).toBe('product-categories');
 	});
 });
