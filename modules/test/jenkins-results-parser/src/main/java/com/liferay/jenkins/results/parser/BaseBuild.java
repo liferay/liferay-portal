@@ -1679,10 +1679,19 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public void saveBuildURLInBuildDatabase() {
+		String buildURL = getBuildURL();
+		String jobVariant = getJobVariant();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(buildURL) ||
+			JenkinsResultsParserUtil.isNullOrEmpty(jobVariant)) {
+
+			return;
+		}
+
 		BuildDatabase buildDatabase = getBuildDatabase();
 
 		buildDatabase.putProperty(
-			BUILD_URLS_PROPERTIES_KEY, getJobVariant(), getBuildURL(), false);
+			BUILD_URLS_PROPERTIES_KEY, jobVariant, buildURL, false);
 	}
 
 	@Override

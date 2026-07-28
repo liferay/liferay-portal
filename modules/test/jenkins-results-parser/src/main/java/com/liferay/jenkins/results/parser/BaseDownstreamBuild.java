@@ -696,17 +696,29 @@ public class BaseDownstreamBuild extends BaseBuild implements DownstreamBuild {
 
 	@Override
 	public void saveBuildURLInBuildDatabase() {
+		String buildURL = getBuildURL();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(buildURL)) {
+			return;
+		}
+
 		BuildDatabase buildDatabase = getBuildDatabase();
 
 		if (isBuildCached()) {
 			buildDatabase.putProperty(
-				CACHED_BUILD_URLS_PROPERTIES_KEY, getBuildURL(), "", false);
+				CACHED_BUILD_URLS_PROPERTIES_KEY, buildURL, "", false);
 
 			return;
 		}
 
+		String axisName = getAxisName();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(axisName)) {
+			return;
+		}
+
 		buildDatabase.putProperty(
-			BUILD_URLS_PROPERTIES_KEY, getAxisName(), getBuildURL(), false);
+			BUILD_URLS_PROPERTIES_KEY, axisName, buildURL, false);
 
 		_saveBadBuildURLsInBuildDatabase(getBadBuildURLs());
 	}

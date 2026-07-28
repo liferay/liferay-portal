@@ -45,4 +45,57 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 			Arrays.asList(firstBuildURL), baseBuild.getBadBuildURLs());
 	}
 
+	@Test
+	public void testSaveBuildURLInBuildDatabase() {
+		_testSaveBuildURLInBuildDatabase(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true);
+		_testSaveBuildURLInBuildDatabase(
+			RandomTestUtil.randomString(), null, false);
+		_testSaveBuildURLInBuildDatabase(
+			null, RandomTestUtil.randomString(), false);
+	}
+
+	private void _testSaveBuildURLInBuildDatabase(
+		String buildURL, String jobVariant, boolean saved) {
+
+		BaseBuild baseBuild = Mockito.mock(BaseBuild.class);
+		BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).saveBuildURLInBuildDatabase();
+
+		Mockito.when(
+			baseBuild.getBuildDatabase()
+		).thenReturn(
+			buildDatabase
+		);
+
+		Mockito.when(
+			baseBuild.getBuildURL()
+		).thenReturn(
+			buildURL
+		);
+
+		Mockito.when(
+			baseBuild.getJobVariant()
+		).thenReturn(
+			jobVariant
+		);
+
+		baseBuild.saveBuildURLInBuildDatabase();
+
+		if (saved) {
+			Mockito.verify(
+				buildDatabase
+			).putProperty(
+				BaseBuild.BUILD_URLS_PROPERTIES_KEY, jobVariant, buildURL, false
+			);
+		}
+		else {
+			Mockito.verifyNoInteractions(buildDatabase);
+		}
+	}
+
 }

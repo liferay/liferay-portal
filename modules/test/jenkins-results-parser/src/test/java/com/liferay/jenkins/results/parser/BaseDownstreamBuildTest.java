@@ -120,6 +120,16 @@ public class BaseDownstreamBuildTest
 				upstreamJobFailureMarker));
 	}
 
+	@Test
+	public void testSaveBuildURLInBuildDatabase() {
+		_testSaveBuildURLInBuildDatabase(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true);
+		_testSaveBuildURLInBuildDatabase(
+			RandomTestUtil.randomString(), null, false);
+		_testSaveBuildURLInBuildDatabase(
+			null, RandomTestUtil.randomString(), false);
+	}
+
 	private void _testGetAxisName(
 		String axisVariable, String expectedAxisName, String jobVariant) {
 
@@ -145,6 +155,64 @@ public class BaseDownstreamBuildTest
 
 		Assert.assertEquals(
 			expectedAxisName, baseDownstreamBuild.getAxisName());
+	}
+
+	private void _testSaveBuildURLInBuildDatabase(
+		String buildURL, String jobVariant, boolean saved) {
+
+		String axisVariable = RandomTestUtil.randomString();
+
+		BaseDownstreamBuild baseDownstreamBuild = Mockito.mock(
+			BaseDownstreamBuild.class);
+		BuildDatabase buildDatabase = Mockito.mock(BuildDatabase.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).getAxisName();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseDownstreamBuild
+		).saveBuildURLInBuildDatabase();
+
+		Mockito.when(
+			baseDownstreamBuild.getAxisVariable()
+		).thenReturn(
+			axisVariable
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getBuildDatabase()
+		).thenReturn(
+			buildDatabase
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getBuildURL()
+		).thenReturn(
+			buildURL
+		);
+
+		Mockito.when(
+			baseDownstreamBuild.getJobVariant()
+		).thenReturn(
+			jobVariant
+		);
+
+		baseDownstreamBuild.saveBuildURLInBuildDatabase();
+
+		if (saved) {
+			Mockito.verify(
+				buildDatabase
+			).putProperty(
+				BaseBuild.BUILD_URLS_PROPERTIES_KEY,
+				jobVariant + "/" + axisVariable, buildURL, false
+			);
+		}
+		else {
+			Mockito.verifyNoInteractions(buildDatabase);
+		}
 	}
 
 }
