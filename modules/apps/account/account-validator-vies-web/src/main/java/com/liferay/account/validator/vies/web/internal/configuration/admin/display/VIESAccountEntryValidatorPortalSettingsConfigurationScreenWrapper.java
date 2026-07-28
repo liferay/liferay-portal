@@ -9,7 +9,9 @@ import com.liferay.account.validator.vies.web.internal.display.context.VIESAccou
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CountryService;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenContributor;
 import com.liferay.portal.settings.configuration.admin.display.PortalSettingsConfigurationScreenFactory;
@@ -88,6 +90,12 @@ public class VIESAccountEntryValidatorPortalSettingsConfigurationScreenWrapper
 		@Override
 		public ServletContext getServletContext() {
 			return _servletContext;
+		}
+
+		@Override
+		public boolean isVisible() {
+			return FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-89850");
 		}
 
 		@Override

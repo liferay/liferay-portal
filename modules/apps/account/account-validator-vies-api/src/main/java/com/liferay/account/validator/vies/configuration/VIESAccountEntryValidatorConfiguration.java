@@ -14,7 +14,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
  * @author Crescenzo Rega
  */
 @ExtendedObjectClassDefinition(
-	category = "accounts", generateUI = false,
+	category = "accounts", featureFlagKey = "LPD-89850", generateUI = false,
 	scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(
