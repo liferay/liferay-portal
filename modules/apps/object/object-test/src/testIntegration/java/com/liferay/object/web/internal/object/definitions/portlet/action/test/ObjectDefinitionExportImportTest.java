@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -49,6 +50,11 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
+
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Gabriel Albuquerque
@@ -391,8 +397,7 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 		ObjectDefinition objectDefinition = _getObjectDefinition(
 			"AccountEntry");
 
-		testExportImport(
-			"test-account-entry-system-object-definition.json",
+		_testExportImportSystemObjectDefinition(
 			"test-account-entry-system-object-definition.json",
 			objectDefinition.getExternalReferenceCode(), "AccountEntry");
 	}
@@ -444,6 +449,41 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 		List<ObjectDefinition> items = (List<ObjectDefinition>)page.getItems();
 
 		return items.get(0);
+	}
+
+	private void _testExportImportSystemObjectDefinition(
+			String fileName, String externalReferenceCode, String name)
+		throws Exception {
+
+		String json = read(fileName);
+
+		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
+			importJSON(externalReferenceCode, json, name);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			(MockHttpServletResponse)
+				mockLiferayPortletActionResponse.getHttpServletResponse();
+
+		Assert.assertEquals("{}", mockHttpServletResponse.getContentAsString());
+
+		// A shared system object definition like AccountEntry can be extended
+		// with relationships by other deployed modules: an account entry
+		// restricted object definition adds a relationship to AccountEntry. Its
+		// relationship set is therefore not deterministic, so exclude it from
+		// the comparison.
+
+		JSONObject expectedJSONObject = jsonFactory.createJSONObject(json);
+
+		expectedJSONObject.remove("objectRelationships");
+
+		JSONObject exportJSONObject = jsonFactory.createJSONObject(
+			getExportJSON(name));
+
+		exportJSONObject.remove("objectRelationships");
+
+		JSONAssert.assertEquals(
+			expectedJSONObject.toString(), exportJSONObject.toString(),
+			JSONCompareMode.LENIENT);
 	}
 
 	private static ListTypeDefinitionResource _listTypeDefinitionResource;
