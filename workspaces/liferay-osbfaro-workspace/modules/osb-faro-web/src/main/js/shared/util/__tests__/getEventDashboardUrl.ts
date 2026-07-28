@@ -172,14 +172,64 @@ describe('getEventDashboardUrl', () => {
 		expect(url).toContain('accountName=Acme');
 	});
 
-	it('does not include accountId or accountName on an asset dashboard link', () => {
+	it('includes accountId and accountName as query params on an asset dashboard link when provided', () => {
 		const url = getEventDashboardUrl(buildEvent(), {
 			...CONTEXT,
 			accountId: 'acc-1',
 			accountName: 'Acme Corporation',
 		});
 
-		expect(url).not.toContain('accountId');
-		expect(url).not.toContain('accountName');
+		expect(url).toContain(
+			'/workspace/liferay.com/420253908131944590/assets/web-content/521827670/page/Any/Company%20-%20Nav%20Item%201/webContent'
+		);
+		expect(url).toContain('rangeKey=30');
+		expect(url).toContain('accountId=acc-1');
+		expect(url).toContain('accountName=Acme');
+	});
+
+	it('includes accountId and accountName as query params on an object-entry dashboard link when provided', () => {
+		const event = buildEvent({
+			applicationId: 'ObjectEntry',
+			assetTitle: 'England vs Argentina',
+			name: 'objectEntryViewed',
+			properties: [
+				{name: 'externalReferenceCode', value: 'match-102'},
+				{name: 'objectDefinitionName', value: 'WorldCupMatch'},
+			],
+		});
+
+		const url = getEventDashboardUrl(event, {
+			...CONTEXT,
+			accountId: 'acc-1',
+			accountName: 'Acme Corporation',
+		});
+
+		expect(url).toContain(
+			'/workspace/liferay.com/420253908131944590/assets/object-entry/match-102/page/Any/England%20vs%20Argentina/WorldCupMatch'
+		);
+		expect(url).toContain('accountId=acc-1');
+		expect(url).toContain('accountName=Acme');
+	});
+
+	it('omits the account query params when the timeline provides no account context', () => {
+		const assetUrl = getEventDashboardUrl(buildEvent(), CONTEXT);
+
+		expect(assetUrl).not.toContain('accountId');
+		expect(assetUrl).not.toContain('accountName');
+
+		const objectEntryEvent = buildEvent({
+			applicationId: 'ObjectEntry',
+			assetTitle: 'England vs Argentina',
+			name: 'objectEntryViewed',
+			properties: [
+				{name: 'externalReferenceCode', value: 'match-102'},
+				{name: 'objectDefinitionName', value: 'WorldCupMatch'},
+			],
+		});
+
+		const objectEntryUrl = getEventDashboardUrl(objectEntryEvent, CONTEXT);
+
+		expect(objectEntryUrl).not.toContain('accountId');
+		expect(objectEntryUrl).not.toContain('accountName');
 	});
 });

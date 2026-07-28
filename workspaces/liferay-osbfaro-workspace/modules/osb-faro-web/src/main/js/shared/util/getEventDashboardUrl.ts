@@ -77,10 +77,14 @@ const buildQuery = (rangeSelectors?: RangeSelectors): string => {
  *   external reference code as the asset id and the object definition name as
  *   the dashboard type.
  * - pageViewed events link to the page (touchpoint) dashboard, using the
- *   canonical URL as the touchpoint. The account timeline additionally passes
- *   `accountId`/`accountName`, so the page dashboard opens pre-filtered by
- *   that account; the individual timeline never provides them.
- * - Anything else (e.g. unmapped application ids) returns undefined.
+ *   canonical URL as the touchpoint.
+ *
+ * Every dashboard link carries `accountId`/`accountName` when the caller
+ * provides them, so the destination opens pre-filtered by the same account the
+ * timeline is scoped to. Only the account timeline passes them; the individual
+ * timeline never does, so its links stay untouched.
+ *
+ * Anything else (e.g. unmapped application ids) returns undefined.
  */
 export const getEventDashboardUrl = (
 	event: UserSessionEvent,
@@ -97,6 +101,18 @@ export const getEventDashboardUrl = (
 		return undefined;
 	}
 
+	// One statement of how a dashboard link is assembled: the route, the date
+	// range, then the account. The account params are left off entirely when
+	// there is no account context, so the individual timeline never gains them.
+
+	const link = (route: string, params: object): string => {
+		const href = `${toRoute(route, params)}${buildQuery(rangeSelectors)}`;
+
+		return accountId || accountName
+			? setUriQueryValues({accountId, accountName}, href)
+			: href;
+	};
+
 	const assetApplication = ASSET_APPLICATIONS[event.applicationId];
 
 	if (assetApplication) {
@@ -108,14 +124,14 @@ export const getEventDashboardUrl = (
 
 		const title = event.assetTitle || event.pageTitle;
 
-		return `${toRoute(assetApplication.route, {
+		return link(assetApplication.route, {
 			assetId,
 			channelId,
 			groupId,
 			touchpoint: 'Any',
 			type: assetApplication.type,
 			...(title && {title}),
-		})}${buildQuery(rangeSelectors)}`;
+		});
 	}
 
 	if (event.applicationId === AssetTypes.ObjectEntry) {
@@ -128,29 +144,25 @@ export const getEventDashboardUrl = (
 
 		const title = event.assetTitle || event.pageTitle;
 
-		return `${toRoute(Routes.ASSETS_OBJECT_ENTRY_OVERVIEW, {
+		return link(Routes.ASSETS_OBJECT_ENTRY_OVERVIEW, {
 			assetId,
 			channelId,
 			groupId,
 			touchpoint: 'Any',
 			type,
 			...(title && {title}),
-		})}${buildQuery(rangeSelectors)}`;
+		});
 	}
 
 	if (event.applicationId === AssetTypes.WebPage && event.canonicalUrl) {
 		const title = event.pageTitle || event.assetTitle;
 
-		const href = `${toRoute(Routes.SITES_TOUCHPOINTS_OVERVIEW, {
+		return link(Routes.SITES_TOUCHPOINTS_OVERVIEW, {
 			channelId,
 			groupId,
 			touchpoint: event.canonicalUrl,
 			...(title && {title}),
-		})}${buildQuery(rangeSelectors)}`;
-
-		return accountId || accountName
-			? setUriQueryValues({accountId, accountName}, href)
-			: href;
+		});
 	}
 
 	return undefined;
