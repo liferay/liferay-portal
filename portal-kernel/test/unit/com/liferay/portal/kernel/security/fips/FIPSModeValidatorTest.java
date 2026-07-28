@@ -16,7 +16,9 @@ import java.security.Provider;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
@@ -25,6 +27,15 @@ import org.junit.function.ThrowingRunnable;
  * @author Caio Farias
  */
 public class FIPSModeValidatorTest {
+
+	@After
+	public void tearDown() {
+		_setFIPSApplicationState(FIPSApplicationState.INITIALIZING);
+
+		ReflectionTestUtil.setFieldValue(
+			FIPSModeValidator.class, "_fipsSelfTestExecutor",
+			new ReflectionFIPSSelfTestExecutor());
+	}
 
 	@Test
 	public void testGetAllowedTLSCipherSuites() {
@@ -106,6 +117,127 @@ public class FIPSModeValidatorTest {
 			Assert.assertEquals(
 				plaintextSecretProperties.toString(), 1,
 				plaintextSecretProperties.size());
+		}
+	}
+
+	@Test
+	public void testRunSelfTests() {
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", false)) {
+
+			FIPSHealthCheckResult fipsHealthCheckResult =
+				FIPSModeValidator.runSelfTests();
+
+			Assert.assertEquals(
+				FIPSHealthCheckStatus.NOT_APPLICABLE,
+				fipsHealthCheckResult.getStatus());
+		}
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"FIPS_ENABLED", true)) {
+
+			_swapExecutor(
+				new FIPSSelfTestExecutor() {
+
+					@Override
+					public String execute() {
+						return "BCFIPS";
+					}
+
+				});
+
+			FIPSHealthCheckResult fipsHealthCheckResult =
+				FIPSModeValidator.runSelfTests();
+
+			Assert.assertEquals(
+				"BCFIPS", fipsHealthCheckResult.getProviderName());
+			Assert.assertEquals(
+				FIPSHealthCheckStatus.HEALTHY,
+				fipsHealthCheckResult.getStatus());
+
+			_swapExecutor(
+				new FIPSSelfTestExecutor() {
+
+					@Override
+					public String execute() throws Exception {
+						throw new FIPSSelfTestException(
+							"BCFIPS", "AES-KAT", "ERROR", "integrity failure");
+					}
+
+				});
+
+			fipsHealthCheckResult = FIPSModeValidator.runSelfTests();
+
+			Assert.assertEquals(
+				"AES-KAT", fipsHealthCheckResult.getFailedTest());
+			Assert.assertEquals(
+				FIPSHealthCheckStatus.FAILED,
+				fipsHealthCheckResult.getStatus());
+
+			Assert.assertEquals(
+				FIPSApplicationState.ERROR,
+				FIPSApplicationStateMachineUtil.getFIPSApplicationState());
+
+			_swapExecutor(
+				new FIPSSelfTestExecutor() {
+
+					@Override
+					public String execute() {
+						throw new AssertionError(
+							"The executor must not run in an error state");
+					}
+
+				});
+
+			fipsHealthCheckResult = FIPSModeValidator.runSelfTests();
+
+			Assert.assertEquals(
+				"fips-application-state",
+				fipsHealthCheckResult.getFailedTest());
+			Assert.assertEquals("ERROR", fipsHealthCheckResult.getFipsState());
+			Assert.assertNull(fipsHealthCheckResult.getProviderName());
+			Assert.assertEquals(
+				FIPSHealthCheckStatus.FAILED,
+				fipsHealthCheckResult.getStatus());
+
+			_setFIPSApplicationState(FIPSApplicationState.INITIALIZING);
+
+			_swapExecutor(
+				new FIPSSelfTestExecutor() {
+
+					@Override
+					public String execute() {
+						throw new RuntimeException("reflection blew up");
+					}
+
+				});
+
+			fipsHealthCheckResult = FIPSModeValidator.runSelfTests();
+
+			Assert.assertEquals(
+				FIPSHealthCheckStatus.FAILED,
+				fipsHealthCheckResult.getStatus());
+
+			_setFIPSApplicationState(FIPSApplicationState.SELF_TEST);
+
+			_swapExecutor(
+				new FIPSSelfTestExecutor() {
+
+					@Override
+					public String execute() {
+						throw new AssertionError(
+							"The executor must not run during a self-test");
+					}
+
+				});
+
+			fipsHealthCheckResult = FIPSModeValidator.runSelfTests();
+
+			Assert.assertEquals(
+				FIPSHealthCheckStatus.IN_PROGRESS,
+				fipsHealthCheckResult.getStatus());
 		}
 	}
 
@@ -293,6 +425,24 @@ public class FIPSModeValidatorTest {
 			name, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString()) {
 		};
+	}
+
+	private void _setFIPSApplicationState(
+		FIPSApplicationState fipsApplicationState) {
+
+		AtomicReference<FIPSApplicationState>
+			fipsApplicationStateAtomicReference =
+				ReflectionTestUtil.getFieldValue(
+					FIPSApplicationStateMachineUtil.class,
+					"_fipsApplicationStateAtomicReference");
+
+		fipsApplicationStateAtomicReference.set(fipsApplicationState);
+	}
+
+	private void _swapExecutor(FIPSSelfTestExecutor fipsSelfTestExecutor) {
+		ReflectionTestUtil.setFieldValue(
+			FIPSModeValidator.class, "_fipsSelfTestExecutor",
+			fipsSelfTestExecutor);
 	}
 
 }
