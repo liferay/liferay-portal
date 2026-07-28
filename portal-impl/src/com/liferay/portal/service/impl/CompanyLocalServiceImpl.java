@@ -569,11 +569,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		Company fromCompany = companyPersistence.findByPrimaryKey(
 			fromCompanyId);
 
-		if (fromCompany == null) {
-			throw new IllegalArgumentException(
-				"Company ID " + fromCompanyId + " does not exist");
-		}
-
 		if (fromCompanyId == PortalInstancePool.getDefaultCompanyId()) {
 			throw new IllegalArgumentException(
 				"Company ID " + fromCompanyId + " is the default company ID");
