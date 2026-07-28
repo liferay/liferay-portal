@@ -6,8 +6,6 @@ import (
 	"errors"
 )
 
-var ErrorActivationRejected = errors.New("provisioning: activation rejected")
-
 type ActivationRequest struct {
 	ActivationCode  string
 	EnvironmentID   string
@@ -18,3 +16,5 @@ type ActivationRequest struct {
 type Client interface {
 	Activate(context context.Context, privateKey *rsa.PrivateKey, activationRequest ActivationRequest) error
 }
+
+var ErrorActivationRejected = errors.New("provisioning: activation rejected")
