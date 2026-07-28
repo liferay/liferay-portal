@@ -5978,7 +5978,7 @@ public class JenkinsResultsParserUtil {
 			return string.substring(0, 10) + "...";
 		}
 
-		private void _refreshToken() {
+		private synchronized void _refreshToken() {
 			Date currentDate = new Date();
 
 			if ((_tokenExpirationDate != null) &&
@@ -6011,9 +6011,9 @@ public class JenkinsResultsParserUtil {
 
 		private final String _clientId;
 		private final String _clientSecret;
-		private String _token;
-		private Date _tokenExpirationDate;
-		private String _tokenType;
+		private volatile String _token;
+		private volatile Date _tokenExpirationDate;
+		private volatile String _tokenType;
 		private final URL _tokenURL;
 
 	}

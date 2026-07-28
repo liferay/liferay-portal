@@ -28,7 +28,9 @@ import java.security.NoSuchAlgorithmException;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -243,12 +245,12 @@ public class UrlReader {
 				if ((httpAuthorization == null) && testray2URLMatcher.find() &&
 					!url.contains("/o/oauth2/token")) {
 
+					String baseURL = testray2URLMatcher.group("baseURL");
+
 					Properties buildProperties =
 						JenkinsResultsParserUtil.getBuildProperties();
 
-					URL tokenURL = new URL(
-						testray2URLMatcher.group("baseURL") +
-							"/o/oauth2/token");
+					URL tokenURL = new URL(baseURL + "/o/oauth2/token");
 
 					String lxcEnvironment = testray2URLMatcher.group(
 						"lxcEnvironment");
@@ -260,8 +262,11 @@ public class UrlReader {
 						buildProperties, "testray.oauth2.client.secret",
 						lxcEnvironment);
 
-					httpAuthorization = new ClientCredentialsHTTPAuthorization(
-						clientId, clientSecret, tokenURL);
+					httpAuthorization = _testrayHTTPAuthorizations.computeIfAbsent(
+						baseURL,
+						testrayBaseURL ->
+							new ClientCredentialsHTTPAuthorization(
+								clientId, clientSecret, tokenURL));
 				}
 
 				URL urlObject = new URL(url);
@@ -492,6 +497,8 @@ public class UrlReader {
 	private static final Pattern _testray2URLPattern = Pattern.compile(
 		"(?<baseURL>https://webserver-testray2(-(?<lxcEnvironment>.+))?" +
 			"\\.lfr\\.cloud|https://testray\\.liferay\\.com).*");
+	private static final Map<String, HTTPAuthorization>
+		_testrayHTTPAuthorizations = new ConcurrentHashMap<>();
 	private static final List<HttpRequestMethod> _updatingHttpRequestMethods =
 		Arrays.asList(
 			HttpRequestMethod.POST, HttpRequestMethod.PATCH,
