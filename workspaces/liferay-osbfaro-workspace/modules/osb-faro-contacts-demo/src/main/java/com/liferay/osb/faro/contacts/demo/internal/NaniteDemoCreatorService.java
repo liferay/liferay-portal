@@ -76,6 +76,9 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 
 		createIndividualSegments(channelId);
 
+		contactsEngineClient.addNanite(
+			faroProject, "DXPEntitiesNanite", Collections.emptyMap());
+
 		FaroThreadLocal.setCacheEnabled(false);
 
 		int individualsCount =
