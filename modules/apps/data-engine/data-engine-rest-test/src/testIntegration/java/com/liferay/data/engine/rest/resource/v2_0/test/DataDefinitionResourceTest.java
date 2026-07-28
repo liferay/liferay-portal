@@ -25,6 +25,7 @@ import com.liferay.data.engine.rest.resource.v2_0.test.util.content.type.test.ut
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceWrapper;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -56,6 +57,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.test.rule.Inject;
@@ -726,6 +728,8 @@ public class DataDefinitionResourceTest
 					_portal.getClassNameId(
 						TestDataDefinitionContentType.class)));
 		}
+
+		_testPostSiteDataDefinitionByContentTypeWithNestedFieldsets();
 	}
 
 	@Override
@@ -1083,6 +1087,28 @@ public class DataDefinitionResourceTest
 			testGroup.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
 	}
 
+	private DataDefinition _addDataDefinitionWithFieldsets(
+			String fileName, DataDefinition... fieldsetDataDefinitions)
+		throws Exception {
+
+		DataDefinition dataDefinition = DataDefinition.toDTO(
+			DataDefinitionTestUtil.read(fileName));
+
+		DataDefinitionField[] dataDefinitionFields =
+			dataDefinition.getDataDefinitionFields();
+
+		for (int i = 0; i < fieldsetDataDefinitions.length; i++) {
+			Map<String, Object> customProperties =
+				dataDefinitionFields[i].getCustomProperties();
+
+			customProperties.put(
+				"ddmStructureId", fieldsetDataDefinitions[i].getId());
+		}
+
+		return dataDefinitionResource.postSiteDataDefinitionByContentType(
+			testGroup.getGroupId(), _CONTENT_TYPE, dataDefinition);
+	}
+
 	private DataDefinition _createDataDefinition(
 			String description, String name)
 		throws Exception {
@@ -1106,6 +1132,26 @@ public class DataDefinitionResourceTest
 		dataDefinition.setSiteId(testGroup.getGroupId());
 
 		return dataDefinition;
+	}
+
+	private List<DataDefinitionField> _getAllDataDefinitionFields(
+		DataDefinitionField[] dataDefinitionFields) {
+
+		List<DataDefinitionField> allDataDefinitionFields = new ArrayList<>();
+
+		for (DataDefinitionField dataDefinitionField : dataDefinitionFields) {
+			allDataDefinitionFields.add(dataDefinitionField);
+
+			DataDefinitionField[] nestedDataDefinitionFields =
+				dataDefinitionField.getNestedDataDefinitionFields();
+
+			if (nestedDataDefinitionFields != null) {
+				allDataDefinitionFields.addAll(
+					_getAllDataDefinitionFields(nestedDataDefinitionFields));
+			}
+		}
+
+		return allDataDefinitionFields;
 	}
 
 	private List<String> _getDataLayoutColumnFieldNames(DataLayout dataLayout) {
@@ -1218,6 +1264,61 @@ public class DataDefinitionResourceTest
 		assertValid(page);
 
 		dataDefinitionResource.deleteDataDefinition(dataDefinition.getId());
+	}
+
+	private void _testPostSiteDataDefinitionByContentTypeWithNestedFieldsets()
+		throws Exception {
+
+		DataDefinition fieldsetDataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				testGroup.getGroupId(), _CONTENT_TYPE,
+				DataDefinition.toDTO(
+					DataDefinitionTestUtil.read(
+						"data-definition-fieldset-structure.json")));
+
+		DataDefinition dataDefinition = _addDataDefinitionWithFieldsets(
+			"data-definition-with-nested-fieldsets.json",
+			fieldsetDataDefinition,
+			_addDataDefinitionWithFieldsets(
+				"data-definition-with-fieldset.json", fieldsetDataDefinition));
+
+		List<DataDefinitionField> allDataDefinitionFields =
+			_getAllDataDefinitionFields(
+				dataDefinition.getDataDefinitionFields());
+
+		Assert.assertEquals(
+			allDataDefinitionFields.toString(), 5,
+			allDataDefinitionFields.size());
+
+		List<String> names = TransformUtil.transform(
+			allDataDefinitionFields, DataDefinitionField::getName);
+
+		Assert.assertEquals(
+			names.toString(), names.size(),
+			SetUtil.fromCollection(
+				names
+			).size());
+
+		List<String> fieldReferences = TransformUtil.transform(
+			allDataDefinitionFields,
+			dataDefinitionField -> MapUtil.getString(
+				dataDefinitionField.getCustomProperties(), "fieldReference"));
+
+		Assert.assertEquals(
+			fieldReferences.toString(), fieldReferences.size(),
+			SetUtil.fromCollection(
+				fieldReferences
+			).size());
+
+		DataDefinitionField fieldsetDataDefinitionField =
+			fieldsetDataDefinition.getDataDefinitionFields()[0];
+
+		Assert.assertTrue(
+			names.toString(),
+			names.contains(fieldsetDataDefinitionField.getName()));
+		Assert.assertTrue(
+			names.toString(),
+			names.contains(fieldsetDataDefinitionField.getName() + "_1"));
 	}
 
 	private static final String _CONTENT_TYPE = "test";

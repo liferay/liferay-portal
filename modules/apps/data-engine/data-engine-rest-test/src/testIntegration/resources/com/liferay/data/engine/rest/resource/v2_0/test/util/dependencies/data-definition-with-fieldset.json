@@ -1,0 +1,61 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"collapsible": false,
+				"ddmStructureId": "0",
+				"ddmStructureLayoutId": "",
+				"fieldReference": "NestedFieldset1",
+				"labelAtStructureLevel": true,
+				"rows": "[]",
+				"upgradedStructure": false
+			},
+			"fieldType": "fieldset",
+			"label": {
+				"en_US": "Nested Fieldset 1"
+			},
+			"name": "NestedFieldset1",
+			"nestedDataDefinitionFields": [
+			],
+			"repeatable": false,
+			"required": false,
+			"showLabel": true
+		}
+	],
+	"defaultDataLayout": {
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"NestedFieldset1"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"en_US": ""
+				},
+				"title": {
+					"en_US": ""
+				}
+			}
+		],
+		"name": {
+			"en_US": "Data Definition With Fieldset"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"name": {
+		"en_US": "Data Definition With Fieldset"
+	},
+	"storageType": "default"
+}

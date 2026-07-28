@@ -1,0 +1,92 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"collapsible": false,
+				"ddmStructureId": "0",
+				"ddmStructureLayoutId": "",
+				"fieldReference": "Fieldset1",
+				"labelAtStructureLevel": true,
+				"rows": "[]",
+				"upgradedStructure": false
+			},
+			"fieldType": "fieldset",
+			"label": {
+				"en_US": "Fieldset 1"
+			},
+			"name": "Fieldset1",
+			"nestedDataDefinitionFields": [
+			],
+			"repeatable": false,
+			"required": false,
+			"showLabel": true
+		},
+		{
+			"customProperties": {
+				"collapsible": false,
+				"ddmStructureId": "0",
+				"ddmStructureLayoutId": "",
+				"fieldReference": "Fieldset2",
+				"labelAtStructureLevel": true,
+				"rows": "[]",
+				"upgradedStructure": false
+			},
+			"fieldType": "fieldset",
+			"label": {
+				"en_US": "Fieldset 2"
+			},
+			"name": "Fieldset2",
+			"nestedDataDefinitionFields": [
+			],
+			"repeatable": false,
+			"required": false,
+			"showLabel": true
+		}
+	],
+	"defaultDataLayout": {
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"Fieldset1"
+								]
+							}
+						]
+					},
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"Fieldset2"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"en_US": ""
+				},
+				"title": {
+					"en_US": ""
+				}
+			}
+		],
+		"name": {
+			"en_US": "Data Definition With Nested Fieldsets"
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"name": {
+		"en_US": "Data Definition With Nested Fieldsets"
+	},
+	"storageType": "default"
+}
