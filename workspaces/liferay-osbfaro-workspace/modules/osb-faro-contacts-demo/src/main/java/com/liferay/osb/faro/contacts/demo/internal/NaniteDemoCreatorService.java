@@ -33,14 +33,20 @@ import com.liferay.osb.faro.engine.client.model.provider.LiferayProvider;
 import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.util.DateUtil;
+import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.util.FaroThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
+
+import java.nio.charset.StandardCharsets;
 
 import java.util.Collections;
 import java.util.Date;
@@ -51,6 +57,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Cristina González
@@ -280,6 +287,8 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		DataSource dataSource = createDataSource(
 			faroProject, new TokenCredentials(), getLiferayProvider(),
 			_LIFERAY_DATA_SOURCE_NAME, "beryl.com");
+
+		updateDataSourceDetails(dataSource.getId());
 
 		// Individuals
 
@@ -555,6 +564,42 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 			entityName);
 	}
 
+	protected void updateDataSourceDetails(String dataSourceId) {
+		Http.Options options = new Http.Options();
+
+		options.setBody(
+			JSONUtil.put(
+				"contactsSelected", true
+			).toString(),
+			ContentTypes.APPLICATION_JSON, StandardCharsets.UTF_8.name());
+		options.setHeaders(
+			HashMapBuilder.put(
+				"Content-Type", ContentTypes.APPLICATION_JSON
+			).put(
+				"OSB-Asah-Project-ID", faroProject.getProjectId()
+			).build());
+		options.setLocation(
+			StringBundler.concat(
+				FaroPropsValues.OSB_ASAH_BACKEND_URL, "/api/1.0/data-sources/",
+				dataSourceId, "/details"));
+		options.setPut(true);
+
+		try {
+			String responseString = _http.URLtoString(options);
+
+			Http.Response response = options.getResponse();
+
+			if (response.getResponseCode() != 200) {
+				log.error(
+					"Unable to enable contact synchronization: " +
+						responseString);
+			}
+		}
+		catch (Exception exception) {
+			log.error(exception);
+		}
+	}
+
 	private static final int _LIFERAY_ANALYTIC_EVENTS_MAX_COUNT_PER_USER = 50;
 
 	private static final int _LIFERAY_ANONYMOUS_EVENTS_COUNT = 1000;
@@ -580,5 +625,8 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		).put(
 			"managers", "contains(demographics/jobTitle/value, 'manager')"
 		).build();
+
+	@Reference
+	private Http _http;
 
 }
