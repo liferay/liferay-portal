@@ -1,6 +1,7 @@
 import CopyButton from '../CopyButton';
 import React from 'react';
-import {cleanup, render} from '@testing-library/react';
+import StopClickPropagation from 'shared/components/table/cell-components/StopClickPropagation';
+import {cleanup, fireEvent, render} from '@testing-library/react';
 
 jest.unmock('react-dom');
 
@@ -13,5 +14,19 @@ describe('CopyButton', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('should copy the text when an ancestor stops the click propagation', () => {
+		document.execCommand = jest.fn(() => true);
+
+		const {getByRole} = render(
+			<StopClickPropagation>
+				<CopyButton displayType='secondary' text='foo' />
+			</StopClickPropagation>
+		);
+
+		fireEvent.click(getByRole('button'));
+
+		expect(document.execCommand).toHaveBeenCalledWith('copy');
 	});
 });

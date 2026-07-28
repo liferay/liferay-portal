@@ -1,7 +1,7 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import Clipboard from 'clipboard';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {ButtonProps} from '@clayui/button';
 
 interface ICopyButtonProps {
@@ -21,9 +21,19 @@ const CopyButton: React.FC<ICopyButtonProps> = ({
 	...otherProps
 }) => {
 	const [title, setTitle] = useState(Liferay.Language.get('click-to-copy'));
+	const buttonRef = useRef(null);
 
 	useEffect(() => {
-		const _clipboard = new Clipboard('[data-clipboard-text]');
+		if (!buttonRef.current) {
+			return;
+		}
+
+		// Bind to the button itself instead of the '[data-clipboard-text]'
+		// selector: a selector delegates the listener to document.body, which
+		// never sees the click when an ancestor stops its propagation (as the
+		// table row actions do to keep the row from being selected).
+
+		const _clipboard = new Clipboard(buttonRef.current);
 
 		_clipboard.on('success', (event) => {
 			setTitle(Liferay.Language.get('copied'));
@@ -41,6 +51,7 @@ const CopyButton: React.FC<ICopyButtonProps> = ({
 			data-clipboard-text={text}
 			displayType={displayType}
 			onClick={onClick}
+			ref={buttonRef}
 			title={title}
 			{...otherProps}
 		>
