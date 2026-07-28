@@ -170,7 +170,11 @@ public class PortalInstanceResourceTest
 
 		Assume.assumeTrue(db.isSupportsDBPartition());
 
-		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
+			_testPostPortalInstanceCopyWithDBPartitionDisabled();
+
+			return;
+		}
 
 		_testPostPortalInstanceCopyMissingRequiredFields();
 		_testPostPortalInstanceCopySuccess();
@@ -201,7 +205,11 @@ public class PortalInstanceResourceTest
 
 		Assume.assumeTrue(db.isSupportsDBPartition());
 
-		Assume.assumeTrue(PropsValues.DATABASE_PARTITION_ENABLED);
+		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
+			_testPostPortalInstanceImportWithDBPartitionDisabled();
+
+			return;
+		}
 
 		_testPostPortalInstanceImportInvalidSchemaName();
 		_testPostPortalInstanceImportSuccess();
@@ -662,6 +670,33 @@ public class PortalInstanceResourceTest
 			portalInstanceCopy, destinationCompanyId);
 	}
 
+	private void _testPostPortalInstanceCopyWithDBPartitionDisabled()
+		throws Exception {
+
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
+		portalInstanceCopy.setName(RandomTestUtil.randomString());
+		portalInstanceCopy.setVirtualHost(RandomTestUtil.randomString());
+		portalInstanceCopy.setWebId(RandomTestUtil.randomString());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL,
+				LoggerTestUtil.ERROR)) {
+
+			portalInstanceResource.postPortalInstanceCopy(
+				_portalInstance.getPortalInstanceId(), portalInstanceCopy);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Database partitioning must be enabled", problem.getTitle());
+		}
+	}
+
 	private void _testPostPortalInstanceCopyWithNonexistentPortalInstance()
 		throws Exception {
 
@@ -890,8 +925,7 @@ public class PortalInstanceResourceTest
 		portalInstanceImport.setSchemaName(RandomTestUtil.randomString());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.headless.portal.instances.internal.resource." +
-					"v1_0.PortalInstanceResourceImpl",
+				_CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL,
 				LoggerTestUtil.ERROR)) {
 
 			portalInstanceResource.postPortalInstanceImport(
@@ -948,6 +982,33 @@ public class PortalInstanceResourceTest
 			_deletePortalInstance(portalInstance);
 
 			_dropExportedSchema(companyId);
+		}
+	}
+
+	private void _testPostPortalInstanceImportWithDBPartitionDisabled()
+		throws Exception {
+
+		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
+		portalInstanceImport.setSchemaName(
+			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX +
+				RandomTestUtil.randomLong());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL,
+				LoggerTestUtil.ERROR)) {
+
+			portalInstanceResource.postPortalInstanceImport(
+				portalInstanceImport);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Database partitioning must be enabled", problem.getTitle());
 		}
 	}
 
@@ -1054,6 +1115,10 @@ public class PortalInstanceResourceTest
 			}
 		}
 	}
+
+	private static final String _CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL =
+		"com.liferay.headless.portal.instances.internal.resource.v1_0." +
+			"PortalInstanceResourceImpl";
 
 	private static Company _company;
 
