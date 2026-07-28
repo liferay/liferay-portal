@@ -187,6 +187,11 @@ public class PortalWorkspaceGitRepositoryTest
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			_newPortalWorkspaceGitRepository();
 
+		Mockito.doNothing(
+		).when(
+			portalWorkspaceGitRepository
+		).setUpBinariesCache();
+
 		portalWorkspaceGitRepository.setUpAdditionalCaches();
 
 		if (binariesCacheEnabled) {
