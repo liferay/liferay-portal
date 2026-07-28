@@ -12,20 +12,18 @@ import getRandomId from '../../structure_builder/utils/getRandomId';
 import {ObjectDefinition} from '../types/ObjectDefinition';
 import ApiHelper from './ApiHelper';
 
-export type StructureServiceError = 'in-use' | 'unexpected';
-
-const NAME_COLLISION_EXCEPTION_TYPES = [
-	'ObjectDefinitionFriendlyURLSeparatorException',
-	'ObjectDefinitionNameException',
-];
+export type StructureServiceError = 'slug-in-use' | 'in-use' | 'unexpected';
 
 function classifyError(type?: string | null): StructureServiceError {
-	if (
-		type &&
-		NAME_COLLISION_EXCEPTION_TYPES.some((collisionType) =>
-			type.startsWith(collisionType)
-		)
-	) {
+	if (!type) {
+		return 'unexpected';
+	}
+
+	if (type.startsWith('ObjectDefinitionFriendlyURLSeparatorException')) {
+		return 'slug-in-use';
+	}
+
+	if (type.startsWith('ObjectDefinitionNameException')) {
 		return 'in-use';
 	}
 
@@ -39,6 +37,7 @@ async function createStructure({
 	name,
 	publishedChildren,
 	settings,
+	slug,
 	spaces,
 	status,
 	workflows,
@@ -49,6 +48,7 @@ async function createStructure({
 	name: Structure['name'];
 	publishedChildren: State['publishedChildren'];
 	settings: Structure['settings'];
+	slug: Structure['slug'];
 	spaces: Structure['spaces'];
 	status: Structure['status'];
 	workflows: Structure['workflows'];
@@ -80,6 +80,7 @@ async function createStructure({
 		label,
 		name,
 		settings,
+		slug,
 		spaces,
 		status,
 		workflows,
@@ -125,6 +126,7 @@ async function updateStructure({
 	name,
 	publishedChildren,
 	settings,
+	slug,
 	spaces,
 	status,
 	workflows,
@@ -137,6 +139,7 @@ async function updateStructure({
 	name: Structure['name'];
 	publishedChildren: State['publishedChildren'];
 	settings: Structure['settings'];
+	slug: Structure['slug'];
 	spaces: Structure['spaces'];
 	status: Structure['status'];
 	workflows: Structure['workflows'];
@@ -153,6 +156,7 @@ async function updateStructure({
 		label,
 		name,
 		settings,
+		slug,
 		spaces,
 		status,
 		workflows,

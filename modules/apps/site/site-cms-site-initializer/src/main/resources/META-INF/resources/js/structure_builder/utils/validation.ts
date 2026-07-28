@@ -25,6 +25,7 @@ const ERC_MAX_LENGTH = 75;
 
 export type ValidationProperty =
 	| 'erc'
+	| 'slug'
 	| 'global'
 	| 'name'
 	| 'label'
@@ -310,6 +311,14 @@ export function getErrorMessage(
 		}
 		else if (error === 'prefix-reserved') {
 			return sub(Liferay.Language.get('the-prefix-x-is-reserved'), 'L_');
+		}
+	}
+
+	if (property === 'slug') {
+		if (error === 'in-use') {
+			return Liferay.Language.get(
+				'the-friendly-url-is-already-in-use.-please-enter-a-unique-friendly-url'
+			);
 		}
 	}
 

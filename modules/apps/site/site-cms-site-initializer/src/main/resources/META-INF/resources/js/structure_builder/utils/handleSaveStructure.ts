@@ -19,6 +19,7 @@ import selectStructureLabel from '../selectors/selectStructureLabel';
 import selectStructureLocalizedLabel from '../selectors/selectStructureLocalizedLabel';
 import selectStructureName from '../selectors/selectStructureName';
 import selectStructureSettings from '../selectors/selectStructureSettings';
+import selectStructureSlug from '../selectors/selectStructureSlug';
 import selectStructureSpaces from '../selectors/selectStructureSpaces';
 import selectStructureStatus from '../selectors/selectStructureStatus';
 import selectStructureUuid from '../selectors/selectStructureUuid';
@@ -44,6 +45,7 @@ export default async function handleSaveStructure({
 
 	const children = selectStructureChildren(state);
 	const erc = selectStructureERC(state);
+	const slug = selectStructureSlug(state);
 	const history = selectHistory(state);
 	const id = selectStructureId(state);
 	const label = selectStructureLabel(state);
@@ -71,6 +73,7 @@ export default async function handleSaveStructure({
 			name,
 			publishedChildren,
 			settings,
+			slug,
 			spaces,
 			status: 'draft',
 			workflows,
@@ -95,6 +98,7 @@ export default async function handleSaveStructure({
 			name,
 			publishedChildren,
 			settings,
+			slug,
 			spaces,
 			status: 'draft',
 			workflows,

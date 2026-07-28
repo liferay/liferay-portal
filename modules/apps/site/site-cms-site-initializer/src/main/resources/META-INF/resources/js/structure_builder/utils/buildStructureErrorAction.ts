@@ -17,6 +17,16 @@ export default function buildStructureErrorAction({
 	previousStatus: Structure['status'];
 	uuid: Uuid;
 }): Action {
+	if (error === 'slug-in-use') {
+		return {
+			error: 'in-use',
+			property: 'slug',
+			status: previousStatus,
+			type: 'add-error',
+			uuid,
+		};
+	}
+
 	if (error === 'in-use') {
 		return {
 			error: 'in-use',

@@ -29,6 +29,7 @@ import selectStructureLocalizedLabel from '../selectors/selectStructureLocalized
 import selectStructureName from '../selectors/selectStructureName';
 import selectStructurePath from '../selectors/selectStructurePath';
 import selectStructureSettings from '../selectors/selectStructureSettings';
+import selectStructureSlug from '../selectors/selectStructureSlug';
 import selectStructureSpaces from '../selectors/selectStructureSpaces';
 import selectStructureStatus from '../selectors/selectStructureStatus';
 import selectStructureUuid from '../selectors/selectStructureUuid';
@@ -123,6 +124,7 @@ export default async function handlePublishStructure({
 
 	const children = selectStructureChildren(state);
 	const erc = selectStructureERC(state);
+	const slug = selectStructureSlug(state);
 	const id = selectStructureId(state);
 	const label = selectStructureLabel(state);
 	const localizedLabel = selectStructureLocalizedLabel(state);
@@ -278,6 +280,7 @@ export default async function handlePublishStructure({
 			name,
 			publishedChildren,
 			settings,
+			slug,
 			spaces,
 			status: 'published',
 			workflows,
@@ -304,6 +307,7 @@ export default async function handlePublishStructure({
 			name,
 			publishedChildren,
 			settings,
+			slug,
 			spaces,
 			status: 'published',
 			workflows,
