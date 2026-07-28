@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.security.auth.EmailAddressValidator;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.CompanyService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -218,7 +217,7 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 		long companyId = company.getCompanyId();
 
 		try {
-			_companyLocalService.exportCompany(companyId);
+			_companyService.exportCompany(companyId);
 
 			_exportConfigurations(companyId);
 		}
@@ -476,9 +475,6 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		PortalInstanceResourceImpl.class);
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private CompanyService _companyService;
