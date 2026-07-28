@@ -657,22 +657,22 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		}
 
 		for (DataDefinitionField dataDefinitionField : dataDefinitionFields) {
-			_createDataDefinitionFieldsMap(
-				contentType,
-				dataDefinitionField.getNestedDataDefinitionFields(),
-				dataDefinitionFieldsMap, groupId);
+			DDMStructure ddmStructure = null;
 
 			Map<String, Object> customProperties =
 				dataDefinitionField.getCustomProperties();
 
-			if (customProperties == null) {
-				continue;
+			if (customProperties != null) {
+				ddmStructure = _getDDMStructure(
+					contentType, groupId, customProperties);
 			}
 
-			DDMStructure ddmStructure = _getDDMStructure(
-				contentType, groupId, customProperties);
-
 			if (ddmStructure == null) {
+				_createDataDefinitionFieldsMap(
+					contentType,
+					dataDefinitionField.getNestedDataDefinitionFields(),
+					dataDefinitionFieldsMap, groupId);
+
 				continue;
 			}
 
@@ -1032,7 +1032,25 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 	private void _normalizeDataDefinitionFields(
 			String contentType, DataDefinitionField[] dataDefinitionFields,
-			long groupId, long structureArticlesCount)
+			long ddmStructureId, long groupId, long structureArticlesCount)
+		throws Exception {
+
+		Set<Long> ddmStructureIds = new HashSet<>();
+
+		if (ddmStructureId > 0) {
+			ddmStructureIds.add(ddmStructureId);
+		}
+
+		_normalizeDataDefinitionFields(
+			contentType, dataDefinitionFields, new HashMap<>(), ddmStructureIds,
+			groupId, structureArticlesCount);
+	}
+
+	private void _normalizeDataDefinitionFields(
+			String contentType, DataDefinitionField[] dataDefinitionFields,
+			Map<Long, Integer> dataDefinitionFieldsCounts,
+			Set<Long> ddmStructureIds, long groupId,
+			long structureArticlesCount)
 		throws Exception {
 
 		Map<Long, DataDefinitionField[]> dataDefinitionFieldsMap =
@@ -1049,9 +1067,15 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		for (Map.Entry<Long, DataDefinitionField[]> entry :
 				dataDefinitionFieldsMap.entrySet()) {
 
+			long ddmStructureId = entry.getKey();
+
+			if (ddmStructureIds.contains(ddmStructureId)) {
+				continue;
+			}
+
 			DataDefinition dataDefinition = DataDefinitionUtil.toDataDefinition(
 				_ddmFormFieldTypeServicesRegistry,
-				_ddmStructureLocalService.getDDMStructure(entry.getKey()),
+				_ddmStructureLocalService.getDDMStructure(ddmStructureId),
 				_ddmStructureLayoutLocalService, _ddmStructureLocalService,
 				contextHttpServletRequest, _spiDDMFormRuleConverter);
 
@@ -1065,7 +1089,8 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 				continue;
 			}
 
-			int dataDefinitionFieldsCount = 0;
+			int dataDefinitionFieldsCount =
+				dataDefinitionFieldsCounts.getOrDefault(ddmStructureId, 0);
 
 			for (DataDefinitionField dataDefinitionField : entry.getValue()) {
 				Map<String, Object> customProperties =
@@ -1112,6 +1137,19 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 				customProperties.put("normalizedStructure", true);
 
 				dataDefinitionFieldsCount += 1;
+
+				dataDefinitionFieldsCounts.put(
+					ddmStructureId, dataDefinitionFieldsCount);
+
+				ddmStructureIds.add(ddmStructureId);
+
+				_normalizeDataDefinitionFields(
+					contentType,
+					dataDefinitionField.getNestedDataDefinitionFields(),
+					dataDefinitionFieldsCounts, ddmStructureIds, groupId,
+					structureArticlesCount);
+
+				ddmStructureIds.remove(ddmStructureId);
 			}
 		}
 	}
@@ -1212,7 +1250,7 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 			DataActionKeys.ADD_DATA_DEFINITION);
 
 		_normalizeDataDefinitionFields(
-			contentType, dataDefinition.getDataDefinitionFields(),
+			contentType, dataDefinition.getDataDefinitionFields(), 0,
 			GetterUtil.getLong(siteId), 0);
 
 		DDMForm ddmForm = DataDefinitionDDMFormUtil.toDDMForm(
@@ -1341,7 +1379,8 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 		_normalizeDataDefinitionFields(
 			dataDefinitionContentType.getContentType(),
-			dataDefinition.getDataDefinitionFields(), ddmStructure.getGroupId(),
+			dataDefinition.getDataDefinitionFields(),
+			ddmStructure.getStructureId(), ddmStructure.getGroupId(),
 			_journalArticleLocalService.getStructureArticlesCount(
 				ddmStructure.getGroupId(), ddmStructure.getStructureId()));
 
