@@ -78,6 +78,16 @@ const testFolderProps = {
 	value: 'Folder Test',
 };
 
+const testReadOnlyProps = {
+	...testBaseProps,
+	itemData: {
+		...testBaseProps.itemData,
+		actions: {
+			get: {},
+		},
+	},
+};
+
 describe('SimpleActionLinkRenderer. Render the value only.', () => {
 	it('there are no actions', () => {
 		render(<SimpleActionLinkRenderer {...testBaseProps} actions={[]} />);
@@ -111,6 +121,29 @@ describe('SimpleActionLinkRenderer. Render the value only.', () => {
 		expect(screen.queryByRole('link')).not.toBeInTheDocument();
 
 		expect(screen.getByText(testBaseProps.value)).toBeInTheDocument();
+	});
+});
+
+describe('SimpleActionLinkRenderer. Require update permission.', () => {
+	it('renders a link when update permission is not required', () => {
+		render(
+			<SimpleActionLinkRenderer
+				{...testReadOnlyProps}
+				requiresUpdatePermission={false}
+			/>
+		);
+
+		expect(
+			screen.getByRole('link', {name: testReadOnlyProps.value})
+		).toHaveAttribute('href', testActionBase.href);
+	});
+
+	it('renders the value only when update permission is missing', () => {
+		render(<SimpleActionLinkRenderer {...testReadOnlyProps} />);
+
+		expect(screen.queryByRole('link')).not.toBeInTheDocument();
+
+		expect(screen.getByText(testReadOnlyProps.value)).toBeInTheDocument();
 	});
 });
 
