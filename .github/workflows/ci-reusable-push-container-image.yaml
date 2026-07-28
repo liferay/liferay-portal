@@ -4,7 +4,7 @@ defaults:
 jobs:
     push:
         outputs:
-            image_ref: ${{steps.vars.outputs.image_ref}}
+            image_ref: ${{steps.push.outputs.image_ref}}
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout code
@@ -23,10 +23,12 @@ jobs:
                 uses: google-github-actions/setup-gcloud@v2
                 with:
                     project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
+            -   name: Log in to GAR
+                run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
             -   env:
                     CONTAINER_IMAGE_REGISTRY_NONPRODUCTION: ${{vars.CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}}
-                id: vars
-                name: Set up variables
+                id: push
+                name: Build and push image
                 run: |
                     set -o errexit
                     set -o nounset
@@ -39,32 +41,20 @@ jobs:
 
                         local registry_path="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${sanitized_branch}"
 
-                        local image_ref="${registry_path}/${{inputs.image_name}}:${sanitized_branch}${{inputs.image_tag_suffix}}"
+                        local image_ref="${registry_path}/${{inputs.image_name}}:${sanitized_branch}-${GITHUB_SHA::7}${{inputs.image_tag_suffix}}"
 
-                        echo "IMAGE_REF=${image_ref}" >> ${GITHUB_ENV}
-                        echo "image_ref=${image_ref}" >> ${GITHUB_OUTPUT}
-                    }
-
-                    main "${@}"
-            -   name: Log in to GAR
-                run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-            -   name: Build and push image
-                run: |
-                    set -o errexit
-                    set -o nounset
-                    set -o pipefail
-
-                    function main {
                         docker \
                             build \
                             --file "${{inputs.dockerfile}}" \
                             --pull \
-                            --tag "${IMAGE_REF}" \
+                            --tag "${image_ref}" \
                             .
 
-                        docker push "${IMAGE_REF}"
+                        docker push "${image_ref}"
 
-                        echo "\`${IMAGE_REF}\` was pushed." >> ${GITHUB_STEP_SUMMARY}
+                        echo "image_ref=${image_ref}" >> ${GITHUB_OUTPUT}
+
+                        echo "\`${image_ref}\` was pushed." >> ${GITHUB_STEP_SUMMARY}
                     }
 
                     main "${@}"
