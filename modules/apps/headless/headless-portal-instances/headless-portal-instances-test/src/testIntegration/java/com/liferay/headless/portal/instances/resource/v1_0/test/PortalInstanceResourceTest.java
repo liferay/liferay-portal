@@ -176,6 +176,7 @@ public class PortalInstanceResourceTest
 			return;
 		}
 
+		_testPostPortalInstanceCopyDefaultCompany();
 		_testPostPortalInstanceCopyMissingRequiredFields();
 		_testPostPortalInstanceCopySuccess();
 		_testPostPortalInstanceCopySuccessWithDestinationCompanyId();
@@ -608,6 +609,36 @@ public class PortalInstanceResourceTest
 			false, false, false, false, true);
 
 		_testPatchPortalInstace(portalInstance, false, false, false);
+	}
+
+	private void _testPostPortalInstanceCopyDefaultCompany() throws Exception {
+		Company defaultCompany = _companyLocalService.getCompany(
+			PortalInstancePool.getDefaultCompanyId());
+
+		PortalInstanceCopy portalInstanceCopy = new PortalInstanceCopy();
+
+		portalInstanceCopy.setName(RandomTestUtil.randomString());
+		portalInstanceCopy.setVirtualHost(RandomTestUtil.randomString());
+		portalInstanceCopy.setWebId(RandomTestUtil.randomString());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL,
+				LoggerTestUtil.ERROR)) {
+
+			portalInstanceResource.postPortalInstanceCopy(
+				defaultCompany.getWebId(), portalInstanceCopy);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Company ID " + defaultCompany.getCompanyId() +
+					" is the default company ID",
+				problem.getTitle());
+		}
 	}
 
 	private void _testPostPortalInstanceCopyMissingRequiredFields()
