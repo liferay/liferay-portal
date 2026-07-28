@@ -212,7 +212,9 @@ public class PortalInstanceResourceTest
 			return;
 		}
 
+		_testPostPortalInstanceImportExistingDBPartition();
 		_testPostPortalInstanceImportInvalidSchemaName();
+		_testPostPortalInstanceImportNonexistentDBPartition();
 		_testPostPortalInstanceImportSuccess();
 		_testPostPortalInstanceImportWithoutOmniadminPermission();
 	}
@@ -948,6 +950,53 @@ public class PortalInstanceResourceTest
 		}
 	}
 
+	private void _testPostPortalInstanceImportExistingDBPartition()
+		throws Exception {
+
+		Company company = CompanyTestUtil.addCompany();
+
+		long companyId = company.getCompanyId();
+
+		_companyLocalService.exportCompany(companyId);
+
+		String randomId = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
+		portalInstanceImport.setSchemaName(
+			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX +
+				companyId);
+		portalInstanceImport.setVirtualHost(
+			randomId + "." +
+				StringUtil.toLowerCase(RandomTestUtil.randomString(3)));
+		portalInstanceImport.setWebId(randomId);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL,
+				LoggerTestUtil.ERROR)) {
+
+			portalInstanceResource.postPortalInstanceImport(
+				portalInstanceImport);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Database partition " +
+					DBPartitionUtil.getPartitionName(companyId) +
+						" already exists",
+				problem.getTitle());
+		}
+		finally {
+			_companyLocalService.deleteCompany(company);
+
+			_dropExportedSchema(companyId);
+		}
+	}
+
 	private void _testPostPortalInstanceImportInvalidSchemaName()
 		throws Exception {
 
@@ -968,6 +1017,37 @@ public class PortalInstanceResourceTest
 			Problem problem = problemException.getProblem();
 
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		}
+	}
+
+	private void _testPostPortalInstanceImportNonexistentDBPartition()
+		throws Exception {
+
+		String schemaName =
+			DBPartitionUtil.DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX +
+				RandomTestUtil.randomLong();
+
+		PortalInstanceImport portalInstanceImport = new PortalInstanceImport();
+
+		portalInstanceImport.setSchemaName(schemaName);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_PORTAL_INSTANCE_RESOURCE_IMPL,
+				LoggerTestUtil.ERROR)) {
+
+			portalInstanceResource.postPortalInstanceImport(
+				portalInstanceImport);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(
+				"Unable to insert the database partition " + schemaName +
+					" because it does not exist",
+				problem.getTitle());
 		}
 	}
 
