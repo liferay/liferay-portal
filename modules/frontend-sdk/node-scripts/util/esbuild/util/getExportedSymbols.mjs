@@ -37,6 +37,15 @@ export default async function getExportedSymbols(
 		}
 		else {
 			symbols = await loadSymbols(moduleName);
+
+			// A CommonJS module has no `default` symbol of its own, so mimic
+			// what Babel and webpack do and make `module.exports` the default
+			// export. Modules tagged with `__esModule` are left alone because
+			// they already export `default` when they have one.
+
+			if (!symbols.__esModule) {
+				symbols.default = true;
+			}
 		}
 	}
 	catch (error) {
@@ -64,9 +73,15 @@ async function loadSymbols(moduleName) {
 		return symbols;
 	}, {});
 
-	// Some modules config __esModule as non-enumerable, so we explicitly check for it
+	// Some modules config __esModule as non-enumerable, so we explicitly check
+	// for it.
+	//
+	// Node.js 20.19 and above can require() native ES modules, returning a
+	// module namespace object that carries no __esModule symbol. We detect
+	// those through their @@toStringTag so that they are treated the same way
+	// no matter which Node.js version runs the build.
 
-	if (module.__esModule) {
+	if (module.__esModule || module[Symbol.toStringTag] === 'Module') {
 		symbols.__esModule = true;
 	}
 

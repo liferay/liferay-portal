@@ -11,7 +11,7 @@ import projectScopeRequire from '../projectScopeRequire.mjs';
  * Something like:
  *
  * {
- *   '@clayui/charts': ['__esModule', 'bb', 'default']
+ *   '@clayui/charts': ['bb', 'default']
  * }
  */
 export default async function getOverriddenPackageSymbols() {
