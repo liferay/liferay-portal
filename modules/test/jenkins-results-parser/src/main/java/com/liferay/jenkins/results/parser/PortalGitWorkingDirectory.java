@@ -395,29 +395,6 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return _testProperties;
 	}
 
-	public boolean isGitArchiveYarnCacheEnabled() {
-		String gitArchiveYarnCacheEnabled = null;
-
-		try {
-			gitArchiveYarnCacheEnabled =
-				JenkinsResultsParserUtil.getBuildProperty(
-					"git.archive.yarn.cache.enabled",
-					Environment.get("CI_TEST_SUITE"),
-					Environment.get("JOB_NAME"));
-		}
-		catch (IOException ioException) {
-			return true;
-		}
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(
-				gitArchiveYarnCacheEnabled)) {
-
-			return true;
-		}
-
-		return Boolean.parseBoolean(gitArchiveYarnCacheEnabled);
-	}
-
 	public synchronized void setUpYarn() {
 		if (_setUpYarn) {
 			return;
@@ -612,6 +589,29 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		}
 
 		return filteredEnv;
+	}
+
+	protected boolean isGitArchiveYarnCacheEnabled() {
+		String gitArchiveYarnCacheEnabled = null;
+
+		try {
+			gitArchiveYarnCacheEnabled =
+				JenkinsResultsParserUtil.getBuildProperty(
+					"git.archive.yarn.cache.enabled",
+					Environment.get("CI_TEST_SUITE"),
+					Environment.get("JOB_NAME"), getUpstreamBranchName());
+		}
+		catch (IOException ioException) {
+			return true;
+		}
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(
+				gitArchiveYarnCacheEnabled)) {
+
+			return true;
+		}
+
+		return Boolean.parseBoolean(gitArchiveYarnCacheEnabled);
 	}
 
 	private boolean _isNPMTestModuleDir(File moduleDir) {
