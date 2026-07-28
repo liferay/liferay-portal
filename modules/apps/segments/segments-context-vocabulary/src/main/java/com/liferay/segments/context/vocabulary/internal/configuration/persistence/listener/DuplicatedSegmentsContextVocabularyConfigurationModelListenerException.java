@@ -18,9 +18,12 @@ public class
 
 	public DuplicatedSegmentsContextVocabularyConfigurationModelListenerException(
 		String causeMessage, Class<?> configurationClass,
-		Class<?> listenerClass, Dictionary<String, Object> properties) {
+		Class<?> configurationModelListenerClass,
+		Dictionary<String, Object> properties) {
 
-		super(causeMessage, configurationClass, listenerClass, properties);
+		super(
+			causeMessage, configurationClass, configurationModelListenerClass,
+			properties);
 	}
 
 }

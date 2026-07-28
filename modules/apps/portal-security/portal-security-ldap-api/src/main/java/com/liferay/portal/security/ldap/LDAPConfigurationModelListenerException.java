@@ -17,10 +17,12 @@ public class LDAPConfigurationModelListenerException
 
 	public LDAPConfigurationModelListenerException(
 		String causeMessage, Class<?> configurationClass,
-		Class<?> listenerClass, Object[] messageArguments, String messageKey,
-		Dictionary<String, Object> properties) {
+		Class<?> configurationModelListenerClass, Object[] messageArguments,
+		String messageKey, Dictionary<String, Object> properties) {
 
-		super(causeMessage, configurationClass, listenerClass, properties);
+		super(
+			causeMessage, configurationClass, configurationModelListenerClass,
+			properties);
 
 		_messageArguments = messageArguments;
 		_messageKey = messageKey;
