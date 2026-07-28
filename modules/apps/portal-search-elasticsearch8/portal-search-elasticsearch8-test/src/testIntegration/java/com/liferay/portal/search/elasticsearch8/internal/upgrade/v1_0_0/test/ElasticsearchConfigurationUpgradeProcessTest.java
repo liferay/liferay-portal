@@ -13,11 +13,15 @@ import com.liferay.portal.kernel.upgrade.UpgradeStep;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.search.elasticsearch8.configuration.ElasticsearchConfiguration;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import java.util.Dictionary;
+import java.util.List;
 import java.util.Objects;
 
 import org.junit.After;
@@ -99,7 +103,22 @@ public class ElasticsearchConfigurationUpgradeProcessTest {
 	public void testUpgrade() throws Exception {
 		UpgradeProcess upgradeProcess = _getUpgradeProcess();
 
-		upgradeProcess.upgrade();
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_UPGRADE_PROCESS, LoggerTestUtil.WARN)) {
+
+			upgradeProcess.upgrade();
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			LogEntry logEntry = logEntries.get(0);
+
+			String logEntryMessage = logEntry.getMessage();
+
+			Assert.assertTrue(
+				logEntryMessage.contains(
+					"Elasticsearch 7 configuration detected. Attempting to " +
+						"migrate properties to Elasticsearch 8."));
+		}
 
 		Configuration configuration = _getConfiguration(
 			ElasticsearchConfiguration.class.getName());
