@@ -21,14 +21,14 @@ import java.util.List;
 public interface CryptoProvider {
 
 	public CryptoServiceResult<byte[]> decrypt(
-			byte[] cipherText, long companyId, String keyIdentifier)
+			byte[] ciphertext, long companyId, String keyIdentifier)
 		throws CryptoException;
 
 	public void deleteKey(long companyId, String keyIdentifier)
 		throws CryptoException;
 
 	public CryptoServiceResult<byte[]> encrypt(
-			long companyId, String keyIdentifier, byte[] plainText)
+			long companyId, String keyIdentifier, byte[] plaintext)
 		throws CryptoException;
 
 	public CryptoServiceResult<Key> exportKey(

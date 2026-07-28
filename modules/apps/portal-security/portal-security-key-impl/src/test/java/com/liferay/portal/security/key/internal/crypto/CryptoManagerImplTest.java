@@ -58,14 +58,14 @@ public class CryptoManagerImplTest {
 
 	@Test
 	public void testDecrypt() throws Exception {
-		byte[] plainText = RandomTestUtil.randomBytes();
+		byte[] plaintext = RandomTestUtil.randomBytes();
 
 		Mockito.when(
 			_cryptoProvider.decrypt(
 				Mockito.any(byte[].class), Mockito.anyLong(),
 				Mockito.anyString())
 		).thenReturn(
-			_cryptoServiceResult(plainText)
+			_cryptoServiceResult(plaintext)
 		);
 
 		Mockito.when(
@@ -87,7 +87,7 @@ public class CryptoManagerImplTest {
 				RandomTestUtil.randomBytes(), RandomTestUtil.randomLong(),
 				_keyReference(cryptoProviderId));
 
-		Assert.assertArrayEquals(plainText, cryptoServiceResult.getValue());
+		Assert.assertArrayEquals(plaintext, cryptoServiceResult.getValue());
 	}
 
 	@Test

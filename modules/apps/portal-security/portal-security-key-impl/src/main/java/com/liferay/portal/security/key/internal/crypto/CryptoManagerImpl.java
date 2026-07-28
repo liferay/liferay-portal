@@ -48,10 +48,10 @@ public class CryptoManagerImpl implements CryptoManager {
 
 	@Override
 	public CryptoServiceResult<byte[]> decrypt(
-			byte[] cipherText, long companyId, KeyReference keyReference)
+			byte[] ciphertext, long companyId, KeyReference keyReference)
 		throws CryptoException {
 
-		if (cipherText == null) {
+		if (ciphertext == null) {
 			throw new IllegalArgumentException("Ciphertext is null");
 		}
 
@@ -65,7 +65,7 @@ public class CryptoManagerImpl implements CryptoManager {
 
 			CryptoServiceResult<byte[]> cryptoServiceResult =
 				cryptoProvider.decrypt(
-					cipherText, companyId, keyReference.getIdentifier());
+					ciphertext, companyId, keyReference.getIdentifier());
 
 			_auditServiceIndicator(
 				companyId, "decrypt",
@@ -107,14 +107,14 @@ public class CryptoManagerImpl implements CryptoManager {
 
 	@Override
 	public CryptoServiceResult<byte[]> encrypt(
-			long companyId, KeyReference keyReference, byte[] plainText)
+			long companyId, KeyReference keyReference, byte[] plaintext)
 		throws CryptoException {
 
 		if (keyReference == null) {
 			throw new IllegalArgumentException("Key reference is null");
 		}
 
-		if (plainText == null) {
+		if (plaintext == null) {
 			throw new IllegalArgumentException("Plaintext is null");
 		}
 
@@ -124,7 +124,7 @@ public class CryptoManagerImpl implements CryptoManager {
 
 			CryptoServiceResult<byte[]> cryptoServiceResult =
 				cryptoProvider.encrypt(
-					companyId, keyReference.getIdentifier(), plainText);
+					companyId, keyReference.getIdentifier(), plaintext);
 
 			_auditServiceIndicator(
 				companyId, "encrypt",
