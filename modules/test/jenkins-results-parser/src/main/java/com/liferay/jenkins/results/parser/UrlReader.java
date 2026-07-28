@@ -164,6 +164,7 @@ public class UrlReader {
 		int retryCount = 0;
 
 		while (true) {
+			String authorization = null;
 			URLConnection urlConnection = null;
 
 			try {
@@ -319,10 +320,12 @@ public class UrlReader {
 					}
 
 					if (httpAuthorization != null) {
+						authorization = httpAuthorization.toString();
+
 						httpURLConnection.setRequestProperty(
 							"accept", "application/json");
 						httpURLConnection.setRequestProperty(
-							"Authorization", httpAuthorization.toString());
+							"Authorization", authorization);
 
 						if (!testray1Request) {
 							httpURLConnection.setRequestProperty(
@@ -467,6 +470,18 @@ public class UrlReader {
 					}
 
 					System.out.println(sb.toString());
+
+					if (httpAuthorization instanceof
+							ClientCredentialsHTTPAuthorization) {
+
+						ClientCredentialsHTTPAuthorization
+							clientCredentialsHTTPAuthorization =
+								(ClientCredentialsHTTPAuthorization)
+									httpAuthorization;
+
+						clientCredentialsHTTPAuthorization.invalidateToken(
+							authorization);
+					}
 				}
 
 				Integer retryPeriodOverride = null;
