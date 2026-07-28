@@ -5,6 +5,7 @@ jobs:
     clean-up-artifacts:
         env:
             BOOTSTRAP_STORAGE_PATH_NONPRODUCTION: ${{vars.BOOTSTRAP_STORAGE_PATH_NONPRODUCTION}}
+            CONTAINER_IMAGE_REGISTRY_NONPRODUCTION: ${{vars.CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}}
             EVENT_REF: ${{github.event.ref}}
             HELM_CHART_REGISTRY_NONPRODUCTION: ${{vars.HELM_CHART_REGISTRY_NONPRODUCTION}}
         if: |-
@@ -35,6 +36,28 @@ jobs:
 
                     function main {
                         local registry_path="${HELM_CHART_REGISTRY_NONPRODUCTION}/$(echo "${EVENT_REF}" | tr 'A-Z/' 'a-z-')"
+
+                        local images
+
+                        images=$(gcloud artifacts docker images list "${registry_path}" --format="value(package)" | sort --unique) || true
+
+                        local image
+
+                        for image in ${images}
+                        do
+                            gcloud artifacts docker images delete "${image}" --delete-tags --quiet || true
+                        done
+                    }
+
+                    main "${@}"
+            -   name: Clean up DXP operator images
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local registry_path="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/$(echo "${EVENT_REF}" | tr 'A-Z/' 'a-z-')"
 
                         local images
 
