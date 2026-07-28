@@ -46,6 +46,13 @@ create table ColumnNameEntry (
 	name VARCHAR(75) null
 );
 
+create table CompoundPKEntry (
+	companyId LONG not null,
+	classNameId LONG not null,
+	name VARCHAR(75) null,
+	primary key (companyId, classNameId)
+);
+
 create table DSLQueryEntry (
 	dslQueryEntryId LONG not null primary key,
 	name VARCHAR(75) null
