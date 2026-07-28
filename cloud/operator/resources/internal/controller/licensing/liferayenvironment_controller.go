@@ -16,12 +16,6 @@ import (
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 )
 
-type LiferayEnvironmentReconciler struct {
-	client.Client
-
-	HeartbeatInterval time.Duration
-}
-
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
 	request ctrl.Request,
@@ -69,4 +63,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 	).Complete(
 		liferayEnvironmentReconciler,
 	)
+}
+
+type LiferayEnvironmentReconciler struct {
+	client.Client
+
+	HeartbeatInterval time.Duration
 }
