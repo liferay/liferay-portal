@@ -62,8 +62,6 @@ import com.liferay.journal.util.JournalHelper;
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.display.context.JournalDisplayContext;
 import com.liferay.journal.web.internal.display.context.JournalEditDDMStructuresDisplayContext;
-import com.liferay.journal.web.internal.display.context.JournalEditDDMTemplateDisplayContext;
-import com.liferay.journal.web.internal.helper.JournalDDMTemplateHelper;
 import com.liferay.journal.web.internal.portlet.action.ActionUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.LocaleException;
@@ -213,16 +211,6 @@ public class JournalPortlet extends MVCPortlet {
 					JournalEditDDMStructuresDisplayContext.class.getName(),
 					new JournalEditDDMStructuresDisplayContext(
 						_portal, renderRequest, renderResponse));
-			}
-			else if (Objects.equals(
-						path, "/ddm_template/edit_properties.jsp") ||
-					 Objects.equals(path, "/edit_ddm_template.jsp")) {
-
-				renderRequest.setAttribute(
-					JournalEditDDMTemplateDisplayContext.class.getName(),
-					new JournalEditDDMTemplateDisplayContext(
-						_ddmTemplateHelper, _journalDDMTemplateHelper, _portal,
-						renderRequest, renderResponse));
 			}
 		}
 		catch (ConfigurationException configurationException) {
@@ -438,9 +426,6 @@ public class JournalPortlet extends MVCPortlet {
 
 	@Reference
 	private JournalConverter _journalConverter;
-
-	@Reference
-	private JournalDDMTemplateHelper _journalDDMTemplateHelper;
 
 	@Reference
 	private JournalFolderService _journalFolderService;
