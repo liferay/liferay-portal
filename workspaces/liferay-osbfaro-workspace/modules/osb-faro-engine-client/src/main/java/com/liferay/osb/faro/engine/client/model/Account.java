@@ -21,6 +21,10 @@ public class Account {
 		return _accountType;
 	}
 
+	public Long getActivitiesCount() {
+		return _activitiesCount;
+	}
+
 	public Double getAnnualRevenue() {
 		return _annualRevenue;
 	}
@@ -79,6 +83,10 @@ public class Account {
 
 	public void setAccountType(String accountType) {
 		_accountType = accountType;
+	}
+
+	public void setActivitiesCount(Long activitiesCount) {
+		_activitiesCount = activitiesCount;
 	}
 
 	public void setAnnualRevenue(Double annualRevenue) {
@@ -152,6 +160,7 @@ public class Account {
 
 	private String _accountName;
 	private String _accountType;
+	private Long _activitiesCount;
 	private Double _annualRevenue;
 	private String _country;
 	private Date _firstActivityDate;
