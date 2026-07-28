@@ -53,7 +53,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	return ctrl.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(manager ctrl.Manager) error {
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(
+	manager ctrl.Manager,
+) error {
 	return ctrl.NewControllerManagedBy(
 		manager,
 	).For(
