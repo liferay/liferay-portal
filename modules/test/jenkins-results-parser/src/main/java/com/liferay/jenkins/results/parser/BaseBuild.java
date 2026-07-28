@@ -176,7 +176,11 @@ public abstract class BaseBuild implements Build {
 		for (Invocation invocation :
 				_invocations.subList(0, _invocations.size() - 1)) {
 
-			badBuildURLs.add(invocation.getBuildURL());
+			String buildURL = invocation.getBuildURL();
+
+			if (buildURL != null) {
+				badBuildURLs.add(buildURL);
+			}
 		}
 
 		return badBuildURLs;
@@ -2438,9 +2442,12 @@ public abstract class BaseBuild implements Build {
 				Invocation previousInvocation = getPreviousInvocation();
 
 				if (previousInvocation != null) {
-					sb.append(" ");
+					String previousBuildURL = previousInvocation.getBuildURL();
 
-					sb.append(previousInvocation.getBuildURL());
+					if (previousBuildURL != null) {
+						sb.append(" ");
+						sb.append(previousBuildURL);
+					}
 
 					sb.append(" restarted at ");
 				}
