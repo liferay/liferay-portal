@@ -22,8 +22,5 @@ module.exports = {
 	main: './src/main/resources/META-INF/resources/js/index.ts',
 	symbols: {
 		'prop-types': ['*', 'bigint', 'default'],
-		'react': ['*', 'default'],
-		'react-dnd': ['*'],
-		'react-dom': ['*', 'default'],
 	},
 };
