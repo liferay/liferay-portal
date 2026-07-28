@@ -1,10 +1,11 @@
 /**
  * Feature flags for osb-faro-web.
  *
- * Analytics Cloud ships on its own release cadence, decoupled from the portal
- * master branch, so we cannot rely on `Liferay.Util.FeatureFlags` (which tracks
- * portal master). Instead, flags live here as a registry and are resolved at
- * module load time from `localStorage`, falling back to each flag's default.
+ * Liferay Data Platform ships on its own release cadence, decoupled from the
+ * portal master branch, so we cannot rely on `Liferay.Util.FeatureFlags`
+ * (which tracks portal master). Instead, flags live here as a registry and
+ * are resolved at module load time from `localStorage`, falling back to each
+ * flag's default.
  *
  * They can be toggled at runtime through the hidden panel at
  * `/workspace/:groupId/settings/feature-flags`. Because the exported `const`

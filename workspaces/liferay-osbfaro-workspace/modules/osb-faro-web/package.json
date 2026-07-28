@@ -77,7 +77,7 @@
 		"uuid": "9.0.0",
 		"whatwg-fetch": "^3.0.0"
 	},
-	"description": "Liferay Analytics Cloud",
+	"description": "Liferay Data Platform",
 	"devDependencies": {
 		"@babel/core": "^7.22.0",
 		"@babel/plugin-proposal-class-properties": "^7.4.4",
