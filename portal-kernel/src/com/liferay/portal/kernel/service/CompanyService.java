@@ -111,6 +111,9 @@ public interface CompanyService extends BaseService {
 	 */
 	public void deleteLogo(long companyId) throws PortalException;
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	public Company exportCompany(long companyId) throws PortalException;
+
 	public void forEachCompany(
 			UnsafeConsumer<Company, Exception> unsafeConsumer)
 		throws Exception;
@@ -334,4 +337,4 @@ public interface CompanyService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:172773636
+// LIFERAY-SERVICE-BUILDER-HASH:-1902148685

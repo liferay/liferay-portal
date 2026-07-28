@@ -110,6 +110,10 @@ public class CompanyServiceUtil {
 		getService().deleteLogo(companyId);
 	}
 
+	public static Company exportCompany(long companyId) throws PortalException {
+		return getService().exportCompany(companyId);
+	}
+
 	public static void forEachCompany(
 			com.liferay.petra.function.UnsafeConsumer<Company, Exception>
 				unsafeConsumer)
@@ -396,4 +400,4 @@ public class CompanyServiceUtil {
 	private static volatile CompanyService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-643211755
+// LIFERAY-SERVICE-BUILDER-HASH:-1880922067

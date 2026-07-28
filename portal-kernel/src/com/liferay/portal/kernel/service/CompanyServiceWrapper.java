@@ -118,6 +118,13 @@ public class CompanyServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portal.kernel.model.Company exportCompany(long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _companyService.exportCompany(companyId);
+	}
+
+	@Override
 	public void forEachCompany(
 			com.liferay.petra.function.UnsafeConsumer
 				<com.liferay.portal.kernel.model.Company, java.lang.Exception>
@@ -436,4 +443,4 @@ public class CompanyServiceWrapper
 	private CompanyService _companyService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-414763894
+// LIFERAY-SERVICE-BUILDER-HASH:-1263371068
