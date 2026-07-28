@@ -107,46 +107,49 @@ public class WorkspaceGitRepositoryTest
 
 	@Test
 	public void testUploadGitArchives() throws Exception {
+		String jobName = "downstream-job";
+
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives("downstream-job", false, false));
+			_isSnapshotAfterUploadGitArchives(jobName, false, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(jobName, false, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(jobName, true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(jobName, true, true));
+
+		jobName = "root-cause-analysis-tool";
+
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool", false, false));
+			_isSnapshotAfterUploadGitArchives(jobName, false, false));
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool", true, false));
+			_isSnapshotAfterUploadGitArchives(jobName, true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(jobName, false, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(jobName, true, true));
+
+		jobName = "root-cause-analysis-tool-batch";
+
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool-batch", false, false));
+			_isSnapshotAfterUploadGitArchives(jobName, false, false));
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool-batch", true, false));
+			_isSnapshotAfterUploadGitArchives(jobName, true, false));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(jobName, false, true));
+		Assert.assertTrue(
+			_isSnapshotAfterUploadGitArchives(jobName, true, true));
+
+		jobName = "top-level-job";
+
 		Assert.assertFalse(
-			_isSnapshotAfterUploadGitArchives("top-level-job", false, false));
+			_isSnapshotAfterUploadGitArchives(jobName, false, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("downstream-job", false, true));
+			_isSnapshotAfterUploadGitArchives(jobName, false, true));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("downstream-job", true, false));
+			_isSnapshotAfterUploadGitArchives(jobName, true, false));
 		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("downstream-job", true, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool", false, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool", true, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool-batch", false, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives(
-				"root-cause-analysis-tool-batch", true, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("top-level-job", false, true));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("top-level-job", true, false));
-		Assert.assertTrue(
-			_isSnapshotAfterUploadGitArchives("top-level-job", true, true));
+			_isSnapshotAfterUploadGitArchives(jobName, true, true));
 	}
 
 	@Test
