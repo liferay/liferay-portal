@@ -76,18 +76,18 @@ public class PortalWorkspaceGitRepositoryTest
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
-		_testSetUpAdditionalCaches(false, null, null);
-		_testSetUpAdditionalCaches(false, null, "job-1");
-		_testSetUpAdditionalCaches(false, null, "two");
-		_testSetUpAdditionalCaches(false, null, "wrong");
 		_testSetUpAdditionalCaches(false, "one", null);
 		_testSetUpAdditionalCaches(false, "suite-1", null);
 		_testSetUpAdditionalCaches(false, "wrong", null);
-		_testSetUpAdditionalCaches(true, null, "job");
-		_testSetUpAdditionalCaches(true, null, "job-0");
+		_testSetUpAdditionalCaches(false, null, "job-1");
+		_testSetUpAdditionalCaches(false, null, "two");
+		_testSetUpAdditionalCaches(false, null, "wrong");
+		_testSetUpAdditionalCaches(false, null, null);
 		_testSetUpAdditionalCaches(true, "one", "two");
 		_testSetUpAdditionalCaches(true, "suite", null);
 		_testSetUpAdditionalCaches(true, "suite-0", null);
+		_testSetUpAdditionalCaches(true, null, "job");
+		_testSetUpAdditionalCaches(true, null, "job-0");
 	}
 
 	private PortalWorkspaceGitRepository _newPortalWorkspaceGitRepository()
