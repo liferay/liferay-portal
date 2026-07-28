@@ -24,6 +24,7 @@ export default function SimpleActionLinkRenderer({
 	itemData,
 	onViewClick,
 	options,
+	requiresUpdatePermission = true,
 	systemIconLabel,
 	trailingIcon,
 	value,
@@ -38,6 +39,7 @@ export default function SimpleActionLinkRenderer({
 	itemData: any;
 	onViewClick?: (itemData: any) => void;
 	options: {actionId: string};
+	requiresUpdatePermission?: boolean;
 	systemIconLabel?: string;
 	trailingIcon?: React.ReactNode;
 	value: string;
@@ -50,7 +52,8 @@ export default function SimpleActionLinkRenderer({
 	const isFolder =
 		itemData?.entryClassName === OBJECT_ENTRY_FOLDER_CLASS_NAME;
 
-	const hasUpdatePermission = Boolean(itemData?.actions?.update);
+	const hasUpdatePermission =
+		!requiresUpdatePermission || Boolean(itemData?.actions?.update);
 
 	let formattedHref = null;
 	let shouldOpenModal = false;

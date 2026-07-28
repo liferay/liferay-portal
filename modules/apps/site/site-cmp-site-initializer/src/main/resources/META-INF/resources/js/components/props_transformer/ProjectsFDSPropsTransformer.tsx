@@ -96,6 +96,7 @@ export default function ProjectsFDSPropsTransformer({
 							additionalProps,
 							itemData,
 							options,
+							requiresUpdatePermission: false,
 							value,
 						}),
 					name: 'simpleActionLinkTableCellRenderer',
