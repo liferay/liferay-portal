@@ -71,6 +71,7 @@ import com.liferay.object.exception.ObjectFieldNameException;
 import com.liferay.object.exception.ObjectFieldRelationshipTypeException;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.field.builder.AssigneeObjectFieldBuilder;
+import com.liferay.object.field.builder.AttachmentObjectFieldBuilder;
 import com.liferay.object.field.builder.BooleanObjectFieldBuilder;
 import com.liferay.object.field.builder.DateObjectFieldBuilder;
 import com.liferay.object.field.builder.DateTimeObjectFieldBuilder;
@@ -3361,6 +3362,91 @@ public class ObjectDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testPublishCustomObjectDefinitionWithAttachmentObjectField()
+		throws Exception {
+
+		ObjectField objectField = ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
+			ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
+			RandomTestUtil.randomString(), "attachment",
+			Arrays.asList(
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_ACCEPTED_FILE_EXTENSIONS
+				).value(
+					"jpg, jpeg, png, svg, txt"
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_FILE_SOURCE
+				).value(
+					ObjectFieldSettingConstants.
+						VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
+				).build(),
+				new ObjectFieldSettingBuilder(
+				).name(
+					ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+				).value(
+					"100"
+				).build()),
+			false);
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField));
+
+		List<ObjectField> attachmentObjectFields =
+			_objectFieldLocalService.getObjectFieldsByBusinessType(
+				objectDefinition.getObjectDefinitionId(),
+				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+
+		_assertAttachmentObjectFieldPLOEntries(attachmentObjectFields.get(0));
+
+		// Add an attachment object field after the object definition was
+		// already published
+
+		ObjectField attachmentObjectField =
+			ObjectFieldUtil.addCustomObjectField(
+				new AttachmentObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).name(
+					"attachment2"
+				).objectDefinitionId(
+					objectDefinition.getObjectDefinitionId()
+				).objectFieldSettings(
+					Arrays.asList(
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.
+								NAME_ACCEPTED_FILE_EXTENSIONS
+						).value(
+							"jpg, jpeg, png, svg, txt"
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_FILE_SOURCE
+						).value(
+							ObjectFieldSettingConstants.
+								VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA
+						).build(),
+						new ObjectFieldSettingBuilder(
+						).name(
+							ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+						).value(
+							"100"
+						).build())
+				).userId(
+					TestPropsValues.getUserId()
+				).build());
+
+		_assertAttachmentObjectFieldPLOEntries(attachmentObjectField);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testPublishObjectDefinitionWithFriendlyURLSeparator()
 		throws Exception {
 
@@ -4481,6 +4567,25 @@ public class ObjectDefinitionLocalServiceTest {
 				).name(
 					StringUtil.randomId()
 				).build()));
+	}
+
+	private void _assertAttachmentObjectFieldPLOEntries(
+		ObjectField attachmentObjectField) {
+
+		String key =
+			"action." + attachmentObjectField.getAttachmentDownloadActionKey();
+
+		for (Locale locale : LanguageUtil.getAvailableLocales()) {
+			PLOEntry ploEntry = _ploEntryLocalService.fetchPLOEntry(
+				attachmentObjectField.getCompanyId(), key,
+				LocaleUtil.toLanguageId(locale));
+
+			Assert.assertEquals(
+				LanguageUtil.format(
+					locale, "download-x",
+					attachmentObjectField.getLabel(locale)),
+				ploEntry.getValue());
+		}
 	}
 
 	private void _assertLabelAndPluralLabel(
