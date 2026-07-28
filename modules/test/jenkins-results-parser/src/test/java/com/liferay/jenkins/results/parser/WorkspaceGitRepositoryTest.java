@@ -332,15 +332,17 @@ public class WorkspaceGitRepositoryTest
 
 		workingDirectory.mkdir();
 
+		String baseBranchSHA = RandomTestUtil.randomSHA();
 		String baseBranchUsername = RandomTestUtil.randomString();
 		String repositoryName = RandomTestUtil.randomString();
+		String senderBranchSHA = RandomTestUtil.randomSHA();
 
 		JSONObject jsonObject = new JSONObject();
 
 		jsonObject.put(
-			"base_branch_head_sha", "1234567890123456789012345678901234567890"
+			"base_branch_head_sha", baseBranchSHA
 		).put(
-			"base_branch_sha", "1234567890123456789012345678901234567890"
+			"base_branch_sha", baseBranchSHA
 		).put(
 			"base_branch_username", baseBranchUsername
 		).put(
@@ -355,11 +357,11 @@ public class WorkspaceGitRepositoryTest
 		).put(
 			"name", repositoryName
 		).put(
-			"sender_branch_head_sha", "0987654321098765432109876543210987654321"
+			"sender_branch_head_sha", senderBranchSHA
 		).put(
 			"sender_branch_name", "master"
 		).put(
-			"sender_branch_sha", "0987654321098765432109876543210987654321"
+			"sender_branch_sha", senderBranchSHA
 		).put(
 			"sender_branch_username", RandomTestUtil.randomString()
 		).put(
