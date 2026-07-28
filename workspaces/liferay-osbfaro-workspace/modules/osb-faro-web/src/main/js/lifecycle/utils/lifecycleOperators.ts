@@ -77,13 +77,13 @@ export const resolveOperatorType = (
 		return null;
 	}
 
-	if (dataType === 'DURATION') {
+	if (dataType?.toUpperCase() === 'DURATION') {
 		return OperatorType.Duration;
 	}
 
-	if (dataCategory in OPERATORS_BY_TYPE) {
-		return dataCategory as OperatorType;
-	}
+	const operatorType = Object.keys(OPERATORS_BY_TYPE).find(
+		(key) => key.toLowerCase() === dataCategory.toLowerCase()
+	);
 
-	return null;
+	return (operatorType as OperatorType) ?? null;
 };

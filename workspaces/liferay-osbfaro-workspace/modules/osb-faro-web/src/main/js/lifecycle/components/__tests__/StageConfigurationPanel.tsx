@@ -349,4 +349,48 @@ describe('StageConfigurationPanel', () => {
 			maxTimeEnabled: false,
 		});
 	});
+
+	const unresolvableField = {
+		dataCategory: null,
+		dataType: 'STRING',
+		description: '',
+		displayName: 'Uncategorized Field',
+		id: 'account.uncategorized',
+		name: 'account.uncategorized',
+		parentField: null,
+		tableName: 'account',
+	} as unknown as ICatalogField;
+
+	it('offers a field whose data category only differs in casing', () => {
+		renderPanel({
+			fields: [
+				{
+					...mockFields[0],
+					dataCategory: 'TEXT',
+				} as unknown as ICatalogField,
+			],
+		});
+
+		fireEvent.click(screen.getByText('Select Field'));
+
+		expect(screen.getByText('Industry')).toBeInTheDocument();
+	});
+
+	it('leaves out a field no condition can be built from', () => {
+		renderPanel({fields: [...mockFields, unresolvableField]});
+
+		fireEvent.click(screen.getByText('Select Field'));
+
+		expect(screen.getByText('Industry')).toBeInTheDocument();
+		expect(screen.queryByText('Uncategorized Field')).toBeNull();
+	});
+
+	it('still names a selected field that is no longer offered', () => {
+		renderPanel({
+			fields: [...mockFields, unresolvableField],
+			value: {...baseValue, field: 'account.uncategorized'},
+		});
+
+		expect(screen.getByText('Uncategorized Field')).toBeInTheDocument();
+	});
 });

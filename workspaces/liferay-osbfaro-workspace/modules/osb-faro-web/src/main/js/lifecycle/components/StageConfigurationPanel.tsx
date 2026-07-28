@@ -85,11 +85,15 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 			(field) => field.name === value.field
 		);
 
+		const selectableFields = fields.filter((field) =>
+			resolveOperatorType(field.dataCategory, field.dataType)
+		);
+
 		return (
 			<Picker
 				aria-label={selectPlaceholder(Liferay.Language.get('field'))}
 				as={PickerTriggerButton}
-				items={fields.map((field) => ({
+				items={selectableFields.map((field) => ({
 					isCalculated: !!field.parentField,
 					label: field.displayName,
 					value: field.name,
