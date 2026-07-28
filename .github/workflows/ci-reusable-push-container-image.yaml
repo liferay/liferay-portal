@@ -1,0 +1,97 @@
+defaults:
+    run:
+        shell: bash
+jobs:
+    push:
+        outputs:
+            image_ref: ${{steps.vars.outputs.image_ref}}
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 1
+                    filter: tree:0
+                    show-progress: false
+                    sparse-checkout: ${{inputs.sparse_checkout}}
+            -   name: Authenticate to Google Cloud
+                uses: google-github-actions/auth@v3
+                with:
+                    project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
+                    workload_identity_provider: ${{vars.GCP_WORKLOAD_IDENTITY_PROVIDER_EXTERNAL_NONPRODUCTION}}
+            -   name: Set up Google Cloud CLI
+                uses: google-github-actions/setup-gcloud@v2
+                with:
+                    project_id: ${{vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
+            -   env:
+                    CONTAINER_IMAGE_REGISTRY_NONPRODUCTION: ${{vars.CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}}
+                id: vars
+                name: Set up variables
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local sanitized_branch
+
+                        sanitized_branch=$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')
+
+                        local registry_path="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${sanitized_branch}"
+
+                        local image_ref="${registry_path}/${{inputs.image_name}}:${sanitized_branch}${{inputs.image_tag_suffix}}"
+
+                        echo "IMAGE_REF=${image_ref}" >> ${GITHUB_ENV}
+                        echo "image_ref=${image_ref}" >> ${GITHUB_OUTPUT}
+                    }
+
+                    main "${@}"
+            -   name: Log in to GAR
+                run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+            -   name: Build and push image
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        docker \
+                            build \
+                            --file "${{inputs.dockerfile}}" \
+                            --pull \
+                            --tag "${IMAGE_REF}" \
+                            .
+
+                        docker push "${IMAGE_REF}"
+
+                        echo "\`${IMAGE_REF}\` was pushed." >> ${GITHUB_STEP_SUMMARY}
+                    }
+
+                    main "${@}"
+                working-directory: ${{inputs.working_directory}}
+on:
+    workflow_call:
+        inputs:
+            dockerfile:
+                default: Dockerfile
+                required: false
+                type: string
+            image_name:
+                required: true
+                type: string
+            image_tag_suffix:
+                default: ""
+                required: false
+                type: string
+            sparse_checkout:
+                required: true
+                type: string
+            working_directory:
+                required: true
+                type: string
+        outputs:
+            image_ref:
+                value: ${{jobs.push.outputs.image_ref}}
+permissions:
+    contents: read
+    id-token: write
