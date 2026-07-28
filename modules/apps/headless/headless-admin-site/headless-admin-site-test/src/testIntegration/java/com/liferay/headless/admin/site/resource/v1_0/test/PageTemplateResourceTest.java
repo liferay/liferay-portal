@@ -1796,7 +1796,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			});
 
 		_assertProblemException(
-			"BAD_REQUEST", null,
+			"BAD_REQUEST",
+			"The page specification is invalid or has not been approved",
 			() -> _postSitePageTemplate(
 				pageTemplate, testGroup.getExternalReferenceCode()));
 
@@ -1816,7 +1817,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			});
 
 		_assertProblemException(
-			"BAD_REQUEST", null,
+			"BAD_REQUEST", "Exactly one page specification is required",
 			() -> _postSitePageTemplate(
 				pageTemplate, testGroup.getExternalReferenceCode()));
 
@@ -1826,7 +1827,8 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 			() -> new PageSpecification[] {widgetPageSpecification});
 
 		_assertProblemException(
-			"BAD_REQUEST", null,
+			"BAD_REQUEST",
+			"The page specification is invalid or has not been approved",
 			() -> _postSitePageTemplate(
 				pageTemplate, testGroup.getExternalReferenceCode()));
 
