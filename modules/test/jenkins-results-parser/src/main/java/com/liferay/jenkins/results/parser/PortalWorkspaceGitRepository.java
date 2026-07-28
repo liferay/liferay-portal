@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import org.json.JSONObject;
 
 /**
@@ -222,6 +224,38 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		super(remoteGitRef, upstreamBranchName);
 	}
 
+	protected void downloadYarnCache() {
+		String yarnCacheS3ObjectPath = _getYarnCacheS3ObjectPath();
+
+		if (!CloudBucketUtil.isS3ObjectPathAvailable(yarnCacheS3ObjectPath)) {
+			return;
+		}
+
+		File yarnCacheFile = null;
+
+		try {
+			yarnCacheFile = File.createTempFile(
+				"yarn-cache", ".zip", getDirectory());
+
+			CloudBucketUtil.downloadS3File(
+				yarnCacheFile, yarnCacheS3ObjectPath);
+
+			JenkinsResultsParserUtil.unzip(yarnCacheFile, getDirectory());
+
+			System.out.println(
+				"Successfully unzipped " + yarnCacheS3ObjectPath + " to " +
+					getDirectory());
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+		finally {
+			if (yarnCacheFile != null) {
+				JenkinsResultsParserUtil.delete(yarnCacheFile);
+			}
+		}
+	}
+
 	protected Properties getPortalTestProperties() {
 		Properties testProperties = getProperties("portal.test.properties");
 
@@ -302,10 +336,37 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		}
 	}
 
+	protected boolean isYarnCacheAvailable() {
+		if (!JenkinsResultsParserUtil.isCloudCINode() ||
+			!CloudBucketUtil.isS3ObjectPathAvailable(
+				_getYarnCacheS3ObjectPath())) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	protected boolean isYarnCacheEnabled() {
+		try {
+			return Boolean.parseBoolean(
+				JenkinsResultsParserUtil.getBuildProperty(
+					"yarn.cache.enabled", Environment.get("CI_TEST_SUITE"),
+					Environment.get("JOB_NAME")));
+		}
+		catch (IOException ioException) {
+			return true;
+		}
+	}
+
 	@Override
 	protected void setUpAdditionalCaches() throws IOException {
 		if (isBinariesCacheEnabled()) {
 			setUpBinariesCache();
+		}
+
+		if (isYarnCacheEnabled()) {
+			setUpYarnCache();
 		}
 	}
 
@@ -367,6 +428,91 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		}
 	}
 
+	protected synchronized void setUpYarn() {
+		if (_setUpYarn || isSnapshot()) {
+			return;
+		}
+
+		PortalGitWorkingDirectory portalGitWorkingDirectory =
+			(PortalGitWorkingDirectory)getGitWorkingDirectory();
+
+		portalGitWorkingDirectory.setUpYarn();
+
+		_setUpYarn = true;
+	}
+
+	protected synchronized void setUpYarnCache() {
+		if (_setUpYarnCache || !isYarnCacheEnabled()) {
+			_setUpYarnCache = true;
+
+			return;
+		}
+
+		if (isSnapshot()) {
+			downloadYarnCache();
+
+			_setUpYarnCache = true;
+
+			return;
+		}
+
+		if (isYarnCacheAvailable()) {
+			downloadYarnCache();
+
+			touchYarnCache();
+
+			_setUpYarnCache = true;
+
+			return;
+		}
+
+		setUpYarn();
+
+		uploadYarnCache();
+
+		_setUpYarnCache = true;
+	}
+
+	protected void touchYarnCache() {
+		try {
+			CloudBucketUtil.touchS3File(_getYarnCacheS3ObjectPath());
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+	}
+
+	protected synchronized void uploadYarnCache() {
+		File yarnCacheFile = null;
+
+		try {
+			yarnCacheFile = File.createTempFile(
+				"yarn-cache", ".zip", getDirectory());
+
+			JenkinsResultsParserUtil.delete(yarnCacheFile);
+
+			String yarnCacheS3ObjectPath = _getYarnCacheS3ObjectPath();
+
+			PortalGitWorkingDirectory portalGitWorkingDirectory =
+				(PortalGitWorkingDirectory)getGitWorkingDirectory();
+
+			portalGitWorkingDirectory.createYarnCache(yarnCacheFile.getName());
+
+			CloudBucketUtil.uploadS3File(yarnCacheS3ObjectPath, yarnCacheFile);
+
+			System.out.println(
+				"Successfully uploaded to " + yarnCacheS3ObjectPath);
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+		finally {
+			if (yarnCacheFile != null) {
+				JenkinsResultsParserUtil.delete(yarnCacheFile);
+			}
+		}
+	}
+
 	private String _getLiferayFacesURL(
 		String repositoryName, String propertyName) {
 
@@ -404,6 +550,64 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			null, portalGitWorkingDirectory, upstreamBranchName, null,
 			portalGitWorkingDirectory.getGitRepositoryName(), "relevant",
 			upstreamBranchName);
+	}
+
+	private String _getYarnCacheS3ObjectPath() {
+		String yarnLockDigest = _getYarnLockDigest();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(yarnLockDigest)) {
+			return null;
+		}
+
+		try {
+			return JenkinsResultsParserUtil.combine(
+				JenkinsResultsParserUtil.getBuildProperty(
+					"cloud.ci.s3.bucket.yarn.caches.path"),
+				"/", getName(), "/", yarnLockDigest, "/yarn-cache.zip");
+		}
+		catch (IOException ioException) {
+			System.out.println(
+				"WARNING: Unable to get " +
+					"\"cloud.ci.s3.bucket.yarn.caches.path\"");
+
+			return null;
+		}
+	}
+
+	private synchronized String _getYarnLockDigest() {
+		if (_yarnLockDigest != null) {
+			return _yarnLockDigest;
+		}
+
+		File yarnLockFile = new File(getDirectory(), "modules/yarn.lock");
+
+		if (!yarnLockFile.exists()) {
+			_yarnLockDigest = "";
+
+			return _yarnLockDigest;
+		}
+
+		try {
+			String yarnLockFileContent = JenkinsResultsParserUtil.read(
+				yarnLockFile);
+
+			yarnLockFileContent = yarnLockFileContent.replace(
+				"https://registry.yarnpkg.com",
+				JenkinsResultsParserUtil.getBuildProperty(
+					"portal.build.properties[nodejs.npm.ci.registry]"));
+
+			JenkinsResultsParserUtil.write(yarnLockFile, yarnLockFileContent);
+
+			_yarnLockDigest = DigestUtils.sha256Hex(
+				JenkinsResultsParserUtil.read(yarnLockFile));
+		}
+		catch (IOException ioException) {
+			_yarnLockDigest = "";
+
+			return _yarnLockDigest;
+		}
+
+		return _yarnLockDigest;
 	}
 
 	private void _writeAppServerPropertiesFile() {
@@ -453,5 +657,8 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 	private Properties _appServerProperties;
 	private boolean _setUpBinariesCache;
+	private boolean _setUpYarn;
+	private boolean _setUpYarnCache;
+	private String _yarnLockDigest;
 
 }
