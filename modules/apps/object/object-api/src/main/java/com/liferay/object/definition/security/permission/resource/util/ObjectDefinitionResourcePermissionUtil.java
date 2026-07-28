@@ -336,26 +336,26 @@ public class ObjectDefinitionResourcePermissionUtil {
 			return;
 		}
 
-		long rootObjectDefinitionId = GetterUtil.getLong(
+		long objectDefinitionId = GetterUtil.getLong(
 			StringUtil.extractLast(resourceName, StringPool.POUND));
 
-		if (rootObjectDefinitionId <= 0) {
+		if (objectDefinitionId <= 0) {
 			return;
 		}
 
 		ObjectDefinition originalObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
-				rootObjectDefinitionId);
+				objectDefinitionId);
 
 		if (originalObjectDefinition != null) {
 			return;
 		}
 
-		Serializable key = rootObjectDefinitionId;
+		Serializable key = objectDefinitionId;
 
 		if (PropsValues.DATABASE_PARTITION_ENABLED) {
 			key =
-				rootObjectDefinitionId + StringPool.AT +
+				objectDefinitionId + StringPool.AT +
 					objectDefinition.getCompanyId();
 		}
 
