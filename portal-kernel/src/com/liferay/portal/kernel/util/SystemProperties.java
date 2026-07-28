@@ -189,7 +189,7 @@ public class SystemProperties {
 		PropertiesUtil.fromProperties(properties, _properties);
 
 		EnvPropertiesUtil.loadEnvOverrides(
-			SYSTEM_ENV_OVERRIDE_PREFIX, SystemProperties::set);
+			SystemProperties::set, SYSTEM_ENV_OVERRIDE_PREFIX);
 
 		if (urls != null) {
 			for (URL url : urls) {
