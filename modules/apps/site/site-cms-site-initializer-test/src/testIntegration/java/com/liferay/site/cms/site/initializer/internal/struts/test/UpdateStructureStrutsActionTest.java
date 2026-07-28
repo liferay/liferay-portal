@@ -172,6 +172,43 @@ public class UpdateStructureStrutsActionTest {
 				objectRelationship.getObjectRelationshipId()));
 	}
 
+	@Test
+	@TestInfo("LPD-99742")
+	public void testExecuteDoesNotDeleteReferencedStructureRelationship()
+		throws Exception {
+
+		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		com.liferay.object.model.ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				StringUtil.randomId(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+
+		Assert.assertTrue(objectRelationship.isEdge());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_updateStructureStrutsAction.execute(
+			_getMockHttpServletRequest(_objectDefinition2),
+			mockHttpServletResponse);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
+
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship.getObjectRelationshipId()));
+	}
+
 	private HttpServletRequest _getMockHttpServletRequest(
 			com.liferay.object.model.ObjectDefinition objectDefinition)
 		throws Exception {
