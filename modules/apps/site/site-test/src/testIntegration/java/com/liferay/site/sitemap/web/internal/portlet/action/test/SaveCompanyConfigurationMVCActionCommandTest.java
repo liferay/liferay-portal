@@ -539,13 +539,10 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		mockLiferayPortletActionRequest.addParameter(
 			"cachedGenerationEnabled", String.valueOf(cachedGenerationEnabled));
 		mockLiferayPortletActionRequest.addParameter(
-			"includeCategories",
-			String.valueOf(RandomTestUtil.randomBoolean()));
+			"includeCategories", "true");
+		mockLiferayPortletActionRequest.addParameter("includePages", "true");
 		mockLiferayPortletActionRequest.addParameter(
-			"includePages", String.valueOf(RandomTestUtil.randomBoolean()));
-		mockLiferayPortletActionRequest.addParameter(
-			"includeWebContent",
-			String.valueOf(RandomTestUtil.randomBoolean()));
+			"includeWebContent", "true");
 		mockLiferayPortletActionRequest.addParameter(
 			"saveAndGenerate", String.valueOf(saveAndGenerate));
 		mockLiferayPortletActionRequest.addParameter(
