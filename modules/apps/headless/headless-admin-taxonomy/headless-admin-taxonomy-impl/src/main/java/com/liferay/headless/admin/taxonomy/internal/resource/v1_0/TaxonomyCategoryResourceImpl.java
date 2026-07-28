@@ -1027,6 +1027,14 @@ public class TaxonomyCategoryResourceImpl
 
 		Map<String, String> map = new HashMap<>();
 
+		for (AssetCategoryProperty assetCategoryProperty :
+				assetCategoryProperties) {
+
+			map.put(
+				assetCategoryProperty.getKey(),
+				assetCategoryProperty.getValue());
+		}
+
 		if (taxonomyCategoryProperties != null) {
 			for (TaxonomyCategoryProperty taxonomyCategoryProperty :
 					taxonomyCategoryProperties) {
@@ -1035,14 +1043,6 @@ public class TaxonomyCategoryResourceImpl
 					taxonomyCategoryProperty.getKey(),
 					taxonomyCategoryProperty.getValue());
 			}
-		}
-
-		for (AssetCategoryProperty assetCategoryProperty :
-				assetCategoryProperties) {
-
-			map.put(
-				assetCategoryProperty.getKey(),
-				assetCategoryProperty.getValue());
 		}
 
 		String[] strings = new String[map.size()];
