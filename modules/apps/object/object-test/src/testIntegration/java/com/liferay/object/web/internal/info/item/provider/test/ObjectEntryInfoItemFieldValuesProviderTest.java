@@ -8,6 +8,7 @@ package com.liferay.object.web.internal.info.item.provider.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
@@ -212,8 +213,8 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "test.png",
-			ContentTypes.IMAGE_PNG, RandomTestUtil.randomBytes(), null, null,
-			null,
+			ContentTypes.IMAGE_PNG, DLTestUtil.imageFileBytes("png"), null,
+			null, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		LocalDateTime localDateTime = LocalDateTime.of(2026, 1, 1, 23, 30);
@@ -319,8 +320,8 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "test.png",
-			ContentTypes.IMAGE_PNG, RandomTestUtil.randomBytes(), null, null,
-			null,
+			ContentTypes.IMAGE_PNG, DLTestUtil.imageFileBytes("png"), null,
+			null, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		ObjectField objectField = _objectFieldLocalService.fetchObjectField(

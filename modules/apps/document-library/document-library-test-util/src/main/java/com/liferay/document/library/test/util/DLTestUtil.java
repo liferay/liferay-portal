@@ -24,7 +24,13 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringUtil;
 
+import java.awt.image.BufferedImage;
+
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 /**
  * @author Adolfo Pérez
@@ -95,6 +101,18 @@ public class DLTestUtil {
 		throws PortalException {
 
 		return addDLFolder(groupId, true, serviceContext);
+	}
+
+	public static byte[] imageFileBytes(String formatName) throws IOException {
+		BufferedImage bufferedImage = new BufferedImage(
+			1, 1, BufferedImage.TYPE_INT_RGB);
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+
+		ImageIO.write(bufferedImage, formatName, byteArrayOutputStream);
+
+		return byteArrayOutputStream.toByteArray();
 	}
 
 	public static byte[] randomTextFileBytes() {
