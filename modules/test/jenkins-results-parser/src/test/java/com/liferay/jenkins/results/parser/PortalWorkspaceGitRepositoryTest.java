@@ -106,7 +106,7 @@ public class PortalWorkspaceGitRepositoryTest
 		).put(
 			"base_branch_sha", "1234567890123456789012345678901234567890"
 		).put(
-			"base_branch_username", "liferay"
+			"base_branch_username", RandomTestUtil.randomString()
 		).put(
 			"directory",
 			JenkinsResultsParserUtil.getCanonicalPath(workingDirectory)
@@ -123,7 +123,7 @@ public class PortalWorkspaceGitRepositoryTest
 		).put(
 			"sender_branch_sha", "0987654321098765432109876543210987654321"
 		).put(
-			"sender_branch_username", "test"
+			"sender_branch_username", RandomTestUtil.randomString()
 		).put(
 			"upstream_branch_name", "master"
 		);

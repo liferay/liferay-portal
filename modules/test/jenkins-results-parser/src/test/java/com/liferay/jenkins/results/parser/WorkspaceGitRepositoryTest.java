@@ -332,6 +332,9 @@ public class WorkspaceGitRepositoryTest
 
 		workingDirectory.mkdir();
 
+		String baseBranchUsername = RandomTestUtil.randomString();
+		String repositoryName = RandomTestUtil.randomString();
+
 		JSONObject jsonObject = new JSONObject();
 
 		jsonObject.put(
@@ -339,16 +342,18 @@ public class WorkspaceGitRepositoryTest
 		).put(
 			"base_branch_sha", "1234567890123456789012345678901234567890"
 		).put(
-			"base_branch_username", "liferay"
+			"base_branch_username", baseBranchUsername
 		).put(
 			"directory",
 			JenkinsResultsParserUtil.getCanonicalPath(workingDirectory)
 		).put(
-			"directory_name", "test-repository"
+			"directory_name", repositoryName
 		).put(
-			"git_hub_url", "https://github.com/liferay/test-repository"
+			"git_hub_url",
+			JenkinsResultsParserUtil.combine(
+				"https://github.com/", baseBranchUsername, "/", repositoryName)
 		).put(
-			"name", "test-repository"
+			"name", repositoryName
 		).put(
 			"sender_branch_head_sha", "0987654321098765432109876543210987654321"
 		).put(
@@ -356,7 +361,7 @@ public class WorkspaceGitRepositoryTest
 		).put(
 			"sender_branch_sha", "0987654321098765432109876543210987654321"
 		).put(
-			"sender_branch_username", "test"
+			"sender_branch_username", RandomTestUtil.randomString()
 		).put(
 			"upstream_branch_name", "master"
 		);
