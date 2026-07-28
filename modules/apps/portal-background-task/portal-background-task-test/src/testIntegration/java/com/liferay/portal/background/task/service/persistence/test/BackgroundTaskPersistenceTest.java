@@ -639,4 +639,4 @@ public class BackgroundTaskPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-510098229
+// LIFERAY-SERVICE-BUILDER-HASH:-345996177

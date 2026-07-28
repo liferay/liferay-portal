@@ -607,4 +607,4 @@ public class DLOpenerFileEntryReferencePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:833611621
+// LIFERAY-SERVICE-BUILDER-HASH:-1265236571

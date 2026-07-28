@@ -865,4 +865,4 @@ public class
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1928368371
+// LIFERAY-SERVICE-BUILDER-HASH:844105925

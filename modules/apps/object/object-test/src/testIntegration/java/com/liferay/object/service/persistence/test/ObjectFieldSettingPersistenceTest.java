@@ -564,4 +564,4 @@ public class ObjectFieldSettingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:543232313
+// LIFERAY-SERVICE-BUILDER-HASH:-1498063239

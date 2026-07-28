@@ -692,4 +692,4 @@ public class CommerceMLForecastAlertEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1601129870
+// LIFERAY-SERVICE-BUILDER-HASH:1013613584

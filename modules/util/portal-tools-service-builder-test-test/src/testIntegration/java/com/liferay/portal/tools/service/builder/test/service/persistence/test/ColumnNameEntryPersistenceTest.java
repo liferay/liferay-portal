@@ -361,4 +361,4 @@ public class ColumnNameEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:12840868
+// LIFERAY-SERVICE-BUILDER-HASH:174225832

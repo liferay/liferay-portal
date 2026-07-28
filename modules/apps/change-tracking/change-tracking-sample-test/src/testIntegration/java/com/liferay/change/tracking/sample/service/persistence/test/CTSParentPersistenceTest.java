@@ -419,4 +419,4 @@ public class CTSParentPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-750146600
+// LIFERAY-SERVICE-BUILDER-HASH:1676312628

@@ -617,4 +617,4 @@ public class CommerceWishListItemPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1661026957
+// LIFERAY-SERVICE-BUILDER-HASH:-51701049

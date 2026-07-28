@@ -692,4 +692,4 @@ public class CPDefinitionInventoryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1539306494
+// LIFERAY-SERVICE-BUILDER-HASH:-111747836

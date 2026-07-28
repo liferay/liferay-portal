@@ -699,4 +699,4 @@ public class UserNotificationEventPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:938821427
+// LIFERAY-SERVICE-BUILDER-HASH:-2007732887

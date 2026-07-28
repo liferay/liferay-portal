@@ -539,4 +539,4 @@ public class DDMFieldPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:657708727
+// LIFERAY-SERVICE-BUILDER-HASH:-1591994999

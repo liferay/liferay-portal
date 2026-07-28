@@ -563,4 +563,4 @@ public class CSDiagramSettingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1532356934
+// LIFERAY-SERVICE-BUILDER-HASH:-834061210

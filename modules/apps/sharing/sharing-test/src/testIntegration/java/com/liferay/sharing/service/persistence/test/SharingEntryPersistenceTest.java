@@ -732,4 +732,4 @@ public class SharingEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:482754459
+// LIFERAY-SERVICE-BUILDER-HASH:-201598475

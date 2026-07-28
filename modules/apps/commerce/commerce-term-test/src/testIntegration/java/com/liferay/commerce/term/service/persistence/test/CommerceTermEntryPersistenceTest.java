@@ -752,4 +752,4 @@ public class CommerceTermEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1180750757
+// LIFERAY-SERVICE-BUILDER-HASH:-1661615149

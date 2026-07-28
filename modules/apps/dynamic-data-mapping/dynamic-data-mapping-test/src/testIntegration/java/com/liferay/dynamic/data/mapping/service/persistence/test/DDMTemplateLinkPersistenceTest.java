@@ -501,4 +501,4 @@ public class DDMTemplateLinkPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-483966005
+// LIFERAY-SERVICE-BUILDER-HASH:-1456036899

@@ -759,4 +759,4 @@ public class MBThreadPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:266197960
+// LIFERAY-SERVICE-BUILDER-HASH:2121578578

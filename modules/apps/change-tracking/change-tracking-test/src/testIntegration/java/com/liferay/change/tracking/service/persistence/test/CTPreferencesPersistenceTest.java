@@ -505,4 +505,4 @@ public class CTPreferencesPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-852589490
+// LIFERAY-SERVICE-BUILDER-HASH:2036796056

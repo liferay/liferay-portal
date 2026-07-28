@@ -497,4 +497,4 @@ public class CommerceOrderPaymentPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-145142081
+// LIFERAY-SERVICE-BUILDER-HASH:-1826010483

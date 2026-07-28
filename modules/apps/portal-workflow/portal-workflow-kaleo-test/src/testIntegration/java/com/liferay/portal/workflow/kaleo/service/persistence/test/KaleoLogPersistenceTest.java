@@ -641,4 +641,4 @@ public class KaleoLogPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:760193821
+// LIFERAY-SERVICE-BUILDER-HASH:-200066889

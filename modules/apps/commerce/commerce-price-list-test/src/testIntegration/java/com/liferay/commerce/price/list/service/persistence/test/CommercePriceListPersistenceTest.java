@@ -846,4 +846,4 @@ public class CommercePriceListPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:826078797
+// LIFERAY-SERVICE-BUILDER-HASH:-1902118147

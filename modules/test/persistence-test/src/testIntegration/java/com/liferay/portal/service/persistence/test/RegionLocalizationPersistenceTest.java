@@ -484,4 +484,4 @@ public class RegionLocalizationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-476112908
+// LIFERAY-SERVICE-BUILDER-HASH:469783804

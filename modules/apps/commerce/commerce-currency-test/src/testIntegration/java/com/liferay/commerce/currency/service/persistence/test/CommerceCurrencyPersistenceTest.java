@@ -706,4 +706,4 @@ public class CommerceCurrencyPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1101771107
+// LIFERAY-SERVICE-BUILDER-HASH:1525736261

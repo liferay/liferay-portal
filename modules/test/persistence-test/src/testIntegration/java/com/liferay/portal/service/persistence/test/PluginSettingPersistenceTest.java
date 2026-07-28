@@ -502,4 +502,4 @@ public class PluginSettingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:365344405
+// LIFERAY-SERVICE-BUILDER-HASH:-965387399

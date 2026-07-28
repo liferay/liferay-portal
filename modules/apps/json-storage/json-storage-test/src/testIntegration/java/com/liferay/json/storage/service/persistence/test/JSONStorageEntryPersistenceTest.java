@@ -579,4 +579,4 @@ public class JSONStorageEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:364213623
+// LIFERAY-SERVICE-BUILDER-HASH:2105899283

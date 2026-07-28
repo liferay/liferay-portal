@@ -798,4 +798,4 @@ public class WorkflowMetricsSLADefinitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1858835348
+// LIFERAY-SERVICE-BUILDER-HASH:1715948344

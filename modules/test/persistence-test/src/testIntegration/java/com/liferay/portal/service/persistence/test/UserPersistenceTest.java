@@ -903,4 +903,4 @@ public class UserPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2019496854
+// LIFERAY-SERVICE-BUILDER-HASH:-1597367390

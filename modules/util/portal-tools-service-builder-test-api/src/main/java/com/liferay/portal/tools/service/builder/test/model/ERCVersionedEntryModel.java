@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
 import com.liferay.portal.kernel.model.version.VersionedModel;
 
+import java.sql.Blob;
+
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -160,6 +162,20 @@ public interface ERCVersionedEntryModel
 	@Override
 	public void setCompanyId(long companyId);
 
+	/**
+	 * Returns the blob of this erc versioned entry.
+	 *
+	 * @return the blob of this erc versioned entry
+	 */
+	public Blob getBlob();
+
+	/**
+	 * Sets the blob of this erc versioned entry.
+	 *
+	 * @param blob the blob of this erc versioned entry
+	 */
+	public void setBlob(Blob blob);
+
 	@Override
 	public ERCVersionedEntry cloneWithOriginalValues();
 
@@ -168,4 +184,4 @@ public interface ERCVersionedEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-801384982
+// LIFERAY-SERVICE-BUILDER-HASH:-1688053007

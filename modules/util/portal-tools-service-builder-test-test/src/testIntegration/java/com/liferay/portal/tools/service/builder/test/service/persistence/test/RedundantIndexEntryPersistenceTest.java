@@ -490,4 +490,4 @@ public class RedundantIndexEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-761136072
+// LIFERAY-SERVICE-BUILDER-HASH:498873980

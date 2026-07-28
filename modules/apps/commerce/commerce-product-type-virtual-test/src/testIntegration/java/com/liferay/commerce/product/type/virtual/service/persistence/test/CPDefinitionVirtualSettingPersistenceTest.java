@@ -725,4 +725,4 @@ public class CPDefinitionVirtualSettingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1037519849
+// LIFERAY-SERVICE-BUILDER-HASH:-1393964915

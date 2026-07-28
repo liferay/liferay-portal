@@ -36,7 +36,6 @@ import java.io.Serializable;
 import java.sql.Blob;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -153,10 +152,8 @@ public class EagerBlobEntryPersistenceTest {
 			newEagerBlobEntry.getGroupId());
 		Blob existingBlob = existingEagerBlobEntry.getBlob();
 
-		Assert.assertTrue(
-			Arrays.equals(
-				existingBlob.getBytes(1, (int)existingBlob.length()),
-				newBlobBytes));
+		Assert.assertArrayEquals(
+			existingBlob.getBytes(1, (int)existingBlob.length()), newBlobBytes);
 	}
 
 	@Test
@@ -511,4 +508,4 @@ public class EagerBlobEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-816442755
+// LIFERAY-SERVICE-BUILDER-HASH:363374027

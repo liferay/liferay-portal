@@ -461,4 +461,4 @@ public class ObjectLayoutBoxPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1746601135
+// LIFERAY-SERVICE-BUILDER-HASH:-837797387

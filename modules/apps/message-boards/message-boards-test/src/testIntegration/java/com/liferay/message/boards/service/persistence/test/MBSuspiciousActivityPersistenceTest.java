@@ -654,4 +654,4 @@ public class MBSuspiciousActivityPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1038066977
+// LIFERAY-SERVICE-BUILDER-HASH:1465313819

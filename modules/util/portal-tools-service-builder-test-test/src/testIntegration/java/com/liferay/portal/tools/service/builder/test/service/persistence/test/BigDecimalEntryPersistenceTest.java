@@ -395,4 +395,4 @@ public class BigDecimalEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1910733508
+// LIFERAY-SERVICE-BUILDER-HASH:-19423512

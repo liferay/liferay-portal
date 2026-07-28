@@ -664,4 +664,4 @@ public class KaleoTaskAssignmentInstancePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1096969283
+// LIFERAY-SERVICE-BUILDER-HASH:1600257595

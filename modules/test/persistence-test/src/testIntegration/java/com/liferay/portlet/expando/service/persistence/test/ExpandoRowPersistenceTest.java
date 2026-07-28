@@ -491,4 +491,4 @@ public class ExpandoRowPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1771448455
+// LIFERAY-SERVICE-BUILDER-HASH:-592650561

@@ -983,4 +983,4 @@ public class MBMessagePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1489612658
+// LIFERAY-SERVICE-BUILDER-HASH:2049504174

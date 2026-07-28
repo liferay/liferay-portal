@@ -540,4 +540,4 @@ public class DDMStorageLinkPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1986717300
+// LIFERAY-SERVICE-BUILDER-HASH:1602423268

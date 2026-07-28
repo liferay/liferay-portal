@@ -8,6 +8,8 @@ package com.liferay.portal.tools.service.builder.test.model;
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.model.wrapper.BaseModelWrapper;
 
+import java.sql.Blob;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +41,7 @@ public class ERCVersionedEntryWrapper
 		attributes.put("ercVersionedEntryId", getErcVersionedEntryId());
 		attributes.put("groupId", getGroupId());
 		attributes.put("companyId", getCompanyId());
+		attributes.put("blob", getBlob());
 
 		return attributes;
 	}
@@ -87,11 +90,27 @@ public class ERCVersionedEntryWrapper
 		if (companyId != null) {
 			setCompanyId(companyId);
 		}
+
+		Blob blob = (Blob)attributes.get("blob");
+
+		if (blob != null) {
+			setBlob(blob);
+		}
 	}
 
 	@Override
 	public ERCVersionedEntry cloneWithOriginalValues() {
 		return wrap(model.cloneWithOriginalValues());
+	}
+
+	/**
+	 * Returns the blob of this erc versioned entry.
+	 *
+	 * @return the blob of this erc versioned entry
+	 */
+	@Override
+	public Blob getBlob() {
+		return model.getBlob();
 	}
 
 	/**
@@ -177,6 +196,16 @@ public class ERCVersionedEntryWrapper
 	@Override
 	public void persist() {
 		model.persist();
+	}
+
+	/**
+	 * Sets the blob of this erc versioned entry.
+	 *
+	 * @param blob the blob of this erc versioned entry
+	 */
+	@Override
+	public void setBlob(Blob blob) {
+		model.setBlob(blob);
 	}
 
 	/**
@@ -284,4 +313,4 @@ public class ERCVersionedEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1214024493
+// LIFERAY-SERVICE-BUILDER-HASH:352160151

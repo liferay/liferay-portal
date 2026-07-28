@@ -32,7 +32,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -63,7 +62,7 @@ public class ERCVersionedEntryVersionModelImpl
 		{"version", Types.INTEGER}, {"uuid_", Types.VARCHAR},
 		{"externalReferenceCode", Types.VARCHAR},
 		{"ercVersionedEntryId", Types.BIGINT}, {"groupId", Types.BIGINT},
-		{"companyId", Types.BIGINT}
+		{"companyId", Types.BIGINT}, {"blob_", Types.BLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -77,10 +76,11 @@ public class ERCVersionedEntryVersionModelImpl
 		TABLE_COLUMNS_MAP.put("ercVersionedEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("groupId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("blob_", Types.BLOB);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ERCVersionedEntryVersion (ercVersionedEntryVersionId LONG not null primary key,version INTEGER,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,ercVersionedEntryId LONG,groupId LONG,companyId LONG)";
+		"create table ERCVersionedEntryVersion (ercVersionedEntryVersionId LONG not null primary key,version INTEGER,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,ercVersionedEntryId LONG,groupId LONG,companyId LONG,blob_ BLOB)";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table ERCVersionedEntryVersion";
@@ -103,49 +103,13 @@ public class ERCVersionedEntryVersionModelImpl
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
 	 */
 	@Deprecated
-	public static final boolean ENTITY_CACHE_ENABLED = true;
+	public static final boolean ENTITY_CACHE_ENABLED = false;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
 	 */
 	@Deprecated
-	public static final boolean FINDER_CACHE_ENABLED = true;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	public static final boolean COLUMN_BITMASK_ENABLED = true;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long ERCVERSIONEDENTRYID_COLUMN_BITMASK = 2L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long GROUPID_COLUMN_BITMASK = 4L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 8L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long VERSION_COLUMN_BITMASK = 16L;
+	public static final boolean FINDER_CACHE_ENABLED = false;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.tools.service.builder.test.service.util.ServiceProps.
@@ -267,6 +231,8 @@ public class ERCVersionedEntryVersionModelImpl
 				"groupId", ERCVersionedEntryVersion::getGroupId);
 			attributeGetterFunctions.put(
 				"companyId", ERCVersionedEntryVersion::getCompanyId);
+			attributeGetterFunctions.put(
+				"blob", ERCVersionedEntryVersion::getBlob);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -314,6 +280,10 @@ public class ERCVersionedEntryVersionModelImpl
 				"companyId",
 				(BiConsumer<ERCVersionedEntryVersion, Long>)
 					ERCVersionedEntryVersion::setCompanyId);
+			attributeSetterBiConsumers.put(
+				"blob",
+				(BiConsumer<ERCVersionedEntryVersion, Blob>)
+					ERCVersionedEntryVersion::setBlob);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -332,6 +302,7 @@ public class ERCVersionedEntryVersionModelImpl
 		ercVersionedEntry.setExternalReferenceCode(getExternalReferenceCode());
 		ercVersionedEntry.setGroupId(getGroupId());
 		ercVersionedEntry.setCompanyId(getCompanyId());
+		ercVersionedEntry.setBlob(getBlob());
 	}
 
 	@Override
@@ -507,28 +478,18 @@ public class ERCVersionedEntryVersionModelImpl
 			this.<Long>getColumnOriginalValue("companyId"));
 	}
 
-	public long getColumnBitmask() {
-		if (_columnBitmask > 0) {
-			return _columnBitmask;
+	@Override
+	public Blob getBlob() {
+		return _blob;
+	}
+
+	@Override
+	public void setBlob(Blob blob) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
 		}
 
-		if ((_columnOriginalValues == null) ||
-			(_columnOriginalValues == Collections.EMPTY_MAP)) {
-
-			return 0;
-		}
-
-		for (Map.Entry<String, Object> entry :
-				_columnOriginalValues.entrySet()) {
-
-			if (!Objects.equals(
-					entry.getValue(), getColumnValue(entry.getKey()))) {
-
-				_columnBitmask |= _columnBitmasks.get(entry.getKey());
-			}
-		}
-
-		return _columnBitmask;
+		_blob = blob;
 	}
 
 	@Override
@@ -676,8 +637,6 @@ public class ERCVersionedEntryVersionModelImpl
 	@Override
 	public void resetOriginalValues() {
 		_columnOriginalValues = Collections.emptyMap();
-
-		_columnBitmask = 0;
 	}
 
 	@Override
@@ -787,6 +746,7 @@ public class ERCVersionedEntryVersionModelImpl
 	private long _ercVersionedEntryId;
 	private long _groupId;
 	private long _companyId;
+	private Blob _blob;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -827,6 +787,7 @@ public class ERCVersionedEntryVersionModelImpl
 		_columnOriginalValues.put("ercVersionedEntryId", _ercVersionedEntryId);
 		_columnOriginalValues.put("groupId", _groupId);
 		_columnOriginalValues.put("companyId", _companyId);
+		_columnOriginalValues.put("blob_", _blob);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -835,40 +796,13 @@ public class ERCVersionedEntryVersionModelImpl
 		Map<String, String> attributeNames = new HashMap<>();
 
 		attributeNames.put("uuid_", "uuid");
+		attributeNames.put("blob_", "blob");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
-
-	public static long getColumnBitmask(String columnName) {
-		return _columnBitmasks.get(columnName);
-	}
-
-	private static final Map<String, Long> _columnBitmasks;
-
-	static {
-		Map<String, Long> columnBitmasks = new HashMap<>();
-
-		columnBitmasks.put("ercVersionedEntryVersionId", 1L);
-
-		columnBitmasks.put("version", 2L);
-
-		columnBitmasks.put("uuid_", 4L);
-
-		columnBitmasks.put("externalReferenceCode", 8L);
-
-		columnBitmasks.put("ercVersionedEntryId", 16L);
-
-		columnBitmasks.put("groupId", 32L);
-
-		columnBitmasks.put("companyId", 64L);
-
-		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
-	}
-
-	private long _columnBitmask;
 	private ERCVersionedEntryVersion _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1636105583
+// LIFERAY-SERVICE-BUILDER-HASH:-1264360358

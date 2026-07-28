@@ -566,4 +566,4 @@ public class MemberRequestPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-380862921
+// LIFERAY-SERVICE-BUILDER-HASH:2017623315

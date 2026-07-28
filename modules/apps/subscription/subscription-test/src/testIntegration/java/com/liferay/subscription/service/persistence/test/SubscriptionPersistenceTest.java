@@ -591,4 +591,4 @@ public class SubscriptionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1914057814
+// LIFERAY-SERVICE-BUILDER-HASH:-1006227702

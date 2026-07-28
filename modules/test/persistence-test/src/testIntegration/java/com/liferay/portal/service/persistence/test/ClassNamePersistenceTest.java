@@ -450,4 +450,4 @@ public class ClassNamePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-550688839
+// LIFERAY-SERVICE-BUILDER-HASH:-1912573359

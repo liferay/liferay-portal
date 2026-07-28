@@ -485,4 +485,4 @@ public class ObjectLayoutPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1809303522
+// LIFERAY-SERVICE-BUILDER-HASH:1340447686

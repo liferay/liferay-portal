@@ -727,4 +727,4 @@ public class LayoutPageTemplateStructureRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1489402410
+// LIFERAY-SERVICE-BUILDER-HASH:1463971842

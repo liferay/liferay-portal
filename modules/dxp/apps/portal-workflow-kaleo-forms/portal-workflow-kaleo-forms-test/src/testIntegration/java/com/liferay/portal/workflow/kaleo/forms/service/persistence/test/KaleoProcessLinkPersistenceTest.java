@@ -496,4 +496,4 @@ public class KaleoProcessLinkPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1591684145
+// LIFERAY-SERVICE-BUILDER-HASH:-217969029

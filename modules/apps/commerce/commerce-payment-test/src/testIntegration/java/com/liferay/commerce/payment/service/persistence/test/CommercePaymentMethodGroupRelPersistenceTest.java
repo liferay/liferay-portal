@@ -678,4 +678,4 @@ public class CommercePaymentMethodGroupRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1884356129
+// LIFERAY-SERVICE-BUILDER-HASH:210158533

@@ -737,4 +737,4 @@ public class WorkflowDefinitionLinkPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-281089987
+// LIFERAY-SERVICE-BUILDER-HASH:-206007213

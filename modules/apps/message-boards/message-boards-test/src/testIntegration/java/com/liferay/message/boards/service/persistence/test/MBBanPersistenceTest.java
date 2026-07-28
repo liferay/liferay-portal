@@ -557,4 +557,4 @@ public class MBBanPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:460789613
+// LIFERAY-SERVICE-BUILDER-HASH:1815716769

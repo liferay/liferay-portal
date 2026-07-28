@@ -508,4 +508,4 @@ public class CacheReplicatorEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-635750484
+// LIFERAY-SERVICE-BUILDER-HASH:489683320

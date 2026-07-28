@@ -562,4 +562,4 @@ public class PatcherProductVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1374297588
+// LIFERAY-SERVICE-BUILDER-HASH:1167712812

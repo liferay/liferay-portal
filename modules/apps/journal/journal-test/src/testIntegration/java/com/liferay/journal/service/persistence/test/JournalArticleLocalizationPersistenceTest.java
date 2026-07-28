@@ -539,4 +539,4 @@ public class JournalArticleLocalizationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1041766921
+// LIFERAY-SERVICE-BUILDER-HASH:923538711

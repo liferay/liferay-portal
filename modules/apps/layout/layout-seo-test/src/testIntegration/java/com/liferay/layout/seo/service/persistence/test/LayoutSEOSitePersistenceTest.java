@@ -567,4 +567,4 @@ public class LayoutSEOSitePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1294938591
+// LIFERAY-SERVICE-BUILDER-HASH:-120256083

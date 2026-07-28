@@ -558,4 +558,4 @@ public class NotificationQueueEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2060431417
+// LIFERAY-SERVICE-BUILDER-HASH:1075912757

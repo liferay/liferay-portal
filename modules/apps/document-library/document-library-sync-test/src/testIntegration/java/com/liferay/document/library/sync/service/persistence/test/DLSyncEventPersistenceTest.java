@@ -481,4 +481,4 @@ public class DLSyncEventPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1277682018
+// LIFERAY-SERVICE-BUILDER-HASH:-1408738176

@@ -13,8 +13,7 @@ import com.liferay.portal.tools.service.builder.test.model.ERCVersionedEntryTabl
 import com.liferay.portal.tools.service.builder.test.model.impl.ERCVersionedEntryImpl;
 import com.liferay.portal.tools.service.builder.test.model.impl.ERCVersionedEntryModelImpl;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Objects;
 
 /**
  * The arguments resolver class for retrieving value from ERCVersionedEntry.
@@ -50,28 +49,9 @@ public class ERCVersionedEntryModelArgumentsResolver
 		ERCVersionedEntryModelImpl ercVersionedEntryModelImpl =
 			(ERCVersionedEntryModelImpl)baseModel;
 
-		long columnBitmask = ercVersionedEntryModelImpl.getColumnBitmask();
+		if (!checkColumn ||
+			_hasModifiedColumns(ercVersionedEntryModelImpl, columnNames)) {
 
-		if (!checkColumn || (columnBitmask == 0)) {
-			return _getValue(ercVersionedEntryModelImpl, finderPath, original);
-		}
-
-		Long finderPathColumnBitmask = _finderPathColumnBitmasksCache.get(
-			finderPath);
-
-		if (finderPathColumnBitmask == null) {
-			finderPathColumnBitmask = 0L;
-
-			for (String columnName : columnNames) {
-				finderPathColumnBitmask |=
-					ercVersionedEntryModelImpl.getColumnBitmask(columnName);
-			}
-
-			_finderPathColumnBitmasksCache.put(
-				finderPath, finderPathColumnBitmask);
-		}
-
-		if ((columnBitmask & finderPathColumnBitmask) != 0) {
 			return _getValue(ercVersionedEntryModelImpl, finderPath, original);
 		}
 
@@ -115,8 +95,26 @@ public class ERCVersionedEntryModelArgumentsResolver
 		return arguments;
 	}
 
-	private static final Map<FinderPath, Long> _finderPathColumnBitmasksCache =
-		new ConcurrentHashMap<>();
+	private static boolean _hasModifiedColumns(
+		ERCVersionedEntryModelImpl ercVersionedEntryModelImpl,
+		String[] columnNames) {
+
+		if (columnNames.length == 0) {
+			return false;
+		}
+
+		for (String columnName : columnNames) {
+			if (!Objects.equals(
+					ercVersionedEntryModelImpl.getColumnOriginalValue(
+						columnName),
+					ercVersionedEntryModelImpl.getColumnValue(columnName))) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1682090847
+// LIFERAY-SERVICE-BUILDER-HASH:1792999623

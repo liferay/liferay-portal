@@ -572,4 +572,4 @@ public class CompanyPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1071339307
+// LIFERAY-SERVICE-BUILDER-HASH:-1203230343

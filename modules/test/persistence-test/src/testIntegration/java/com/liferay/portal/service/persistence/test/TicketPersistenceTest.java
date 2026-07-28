@@ -526,4 +526,4 @@ public class TicketPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2077138468
+// LIFERAY-SERVICE-BUILDER-HASH:1606166898

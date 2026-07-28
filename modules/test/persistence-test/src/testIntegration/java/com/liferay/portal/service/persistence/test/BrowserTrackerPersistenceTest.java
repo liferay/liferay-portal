@@ -470,4 +470,4 @@ public class BrowserTrackerPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2093663700
+// LIFERAY-SERVICE-BUILDER-HASH:1805768462

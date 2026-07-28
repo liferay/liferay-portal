@@ -651,4 +651,4 @@ public class OpenIdConnectSessionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:207899442
+// LIFERAY-SERVICE-BUILDER-HASH:-1665544494

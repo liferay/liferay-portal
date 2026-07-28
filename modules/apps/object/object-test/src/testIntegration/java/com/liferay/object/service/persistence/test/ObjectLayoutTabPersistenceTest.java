@@ -489,4 +489,4 @@ public class ObjectLayoutTabPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1390226969
+// LIFERAY-SERVICE-BUILDER-HASH:491821579

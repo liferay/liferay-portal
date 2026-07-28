@@ -569,4 +569,4 @@ public class KaleoInstanceTokenPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:544838431
+// LIFERAY-SERVICE-BUILDER-HASH:122205957

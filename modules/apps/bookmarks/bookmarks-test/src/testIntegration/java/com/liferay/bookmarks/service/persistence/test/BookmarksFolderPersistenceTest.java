@@ -681,4 +681,4 @@ public class BookmarksFolderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:43402575
+// LIFERAY-SERVICE-BUILDER-HASH:589968457

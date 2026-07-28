@@ -580,4 +580,4 @@ public class AnnouncementsEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2091431160
+// LIFERAY-SERVICE-BUILDER-HASH:42058478

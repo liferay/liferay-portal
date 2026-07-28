@@ -638,4 +638,4 @@ public class TranslationEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:164542002
+// LIFERAY-SERVICE-BUILDER-HASH:637822852

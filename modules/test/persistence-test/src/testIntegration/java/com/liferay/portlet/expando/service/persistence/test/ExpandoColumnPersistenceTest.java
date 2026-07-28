@@ -523,4 +523,4 @@ public class ExpandoColumnPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2074061614
+// LIFERAY-SERVICE-BUILDER-HASH:382523140

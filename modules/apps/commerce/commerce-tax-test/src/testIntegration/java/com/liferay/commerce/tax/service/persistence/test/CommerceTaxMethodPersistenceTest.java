@@ -570,4 +570,4 @@ public class CommerceTaxMethodPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:240740727
+// LIFERAY-SERVICE-BUILDER-HASH:-4016139

@@ -687,4 +687,4 @@ public class MBMailingListPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1808532294
+// LIFERAY-SERVICE-BUILDER-HASH:-93569594

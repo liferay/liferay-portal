@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.portal.kernel.dao.jdbc.OutputBlob;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
@@ -30,7 +31,10 @@ import com.liferay.portal.tools.service.builder.test.service.ERCVersionedEntryLo
 import com.liferay.portal.tools.service.builder.test.service.persistence.ERCVersionedEntryPersistence;
 import com.liferay.portal.tools.service.builder.test.service.persistence.ERCVersionedEntryUtil;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+
+import java.sql.Blob;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -127,10 +131,24 @@ public class ERCVersionedEntryPersistenceTest {
 		newERCVersionedEntry.setGroupId(RandomTestUtil.nextLong());
 
 		newERCVersionedEntry.setCompanyId(RandomTestUtil.nextLong());
+		String newBlobString = RandomTestUtil.randomString();
+
+		byte[] newBlobBytes = newBlobString.getBytes("UTF-8");
+
+		Blob newBlobBlob = new OutputBlob(
+			new ByteArrayInputStream(newBlobBytes), newBlobBytes.length);
+
+		newERCVersionedEntry.setBlob(newBlobBlob);
 
 		newERCVersionedEntry = _persistence.update(newERCVersionedEntry);
 
 		_ercVersionedEntries.add(newERCVersionedEntry);
+
+		Session session = _persistence.openSession();
+
+		session.flush();
+
+		session.clear();
 
 		ERCVersionedEntry existingERCVersionedEntry =
 			_persistence.findByPrimaryKey(newERCVersionedEntry.getPrimaryKey());
@@ -156,6 +174,10 @@ public class ERCVersionedEntryPersistenceTest {
 		Assert.assertEquals(
 			existingERCVersionedEntry.getCompanyId(),
 			newERCVersionedEntry.getCompanyId());
+		Blob existingBlob = existingERCVersionedEntry.getBlob();
+
+		Assert.assertArrayEquals(
+			existingBlob.getBytes(1, (int)existingBlob.length()), newBlobBytes);
 	}
 
 	@Test
@@ -172,6 +194,7 @@ public class ERCVersionedEntryPersistenceTest {
 		draftERCVersionedEntry.setHeadId(-ercVersionedEntry.getHeadId());
 		draftERCVersionedEntry.setGroupId(ercVersionedEntry.getGroupId());
 		draftERCVersionedEntry.setCompanyId(ercVersionedEntry.getCompanyId());
+		draftERCVersionedEntry.setBlob(ercVersionedEntry.getBlob());
 
 		_ercVersionedEntries.add(_persistence.update(draftERCVersionedEntry));
 
@@ -191,6 +214,12 @@ public class ERCVersionedEntryPersistenceTest {
 		Assert.assertEquals(
 			ercVersionedEntry.getCompanyId(),
 			draftERCVersionedEntry.getCompanyId());
+		Blob Blob = ercVersionedEntry.getBlob();
+		Blob draftBlob = draftERCVersionedEntry.getBlob();
+
+		Assert.assertArrayEquals(
+			Blob.getBytes(1, (int)Blob.length()),
+			draftBlob.getBytes(1, (int)draftBlob.length()));
 	}
 
 	@Test(
@@ -215,6 +244,14 @@ public class ERCVersionedEntryPersistenceTest {
 		ercVersionedEntry2.setGroupId(ercVersionedEntry1.getGroupId());
 
 		ercVersionedEntry2.setCompanyId(RandomTestUtil.nextLong());
+		String blobString = RandomTestUtil.randomString();
+
+		byte[] blobBytes = blobString.getBytes("UTF-8");
+
+		Blob blobBlob = new OutputBlob(
+			new ByteArrayInputStream(blobBytes), blobBytes.length);
+
+		ercVersionedEntry2.setBlob(blobBlob);
 
 		_ercVersionedEntries.add(_persistence.update(ercVersionedEntry2));
 	}
@@ -677,6 +714,14 @@ public class ERCVersionedEntryPersistenceTest {
 		ercVersionedEntry.setGroupId(RandomTestUtil.nextLong());
 
 		ercVersionedEntry.setCompanyId(RandomTestUtil.nextLong());
+		String blobString = RandomTestUtil.randomString();
+
+		byte[] blobBytes = blobString.getBytes("UTF-8");
+
+		Blob blobBlob = new OutputBlob(
+			new ByteArrayInputStream(blobBytes), blobBytes.length);
+
+		ercVersionedEntry.setBlob(blobBlob);
 
 		_ercVersionedEntries.add(_persistence.update(ercVersionedEntry));
 
@@ -689,4 +734,4 @@ public class ERCVersionedEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-167456421
+// LIFERAY-SERVICE-BUILDER-HASH:-13325117

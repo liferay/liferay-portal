@@ -635,4 +635,4 @@ public class CPOptionCategoryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:55873155
+// LIFERAY-SERVICE-BUILDER-HASH:1837429045

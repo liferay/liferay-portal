@@ -746,4 +746,4 @@ public class AddressPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1751152363
+// LIFERAY-SERVICE-BUILDER-HASH:-568103679

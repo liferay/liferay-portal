@@ -588,4 +588,4 @@ public class SharepointOAuth2TokenEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:932257762
+// LIFERAY-SERVICE-BUILDER-HASH:763001746

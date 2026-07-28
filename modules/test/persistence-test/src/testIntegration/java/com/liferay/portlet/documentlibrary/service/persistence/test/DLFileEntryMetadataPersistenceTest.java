@@ -610,4 +610,4 @@ public class DLFileEntryMetadataPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-949263586
+// LIFERAY-SERVICE-BUILDER-HASH:561571646

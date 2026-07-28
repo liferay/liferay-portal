@@ -494,4 +494,4 @@ public class SamlPeerBindingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-316055613
+// LIFERAY-SERVICE-BUILDER-HASH:256845079

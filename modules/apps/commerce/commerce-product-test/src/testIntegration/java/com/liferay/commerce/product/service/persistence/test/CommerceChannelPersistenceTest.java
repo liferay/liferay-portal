@@ -648,4 +648,4 @@ public class CommerceChannelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1802377063
+// LIFERAY-SERVICE-BUILDER-HASH:1930838379

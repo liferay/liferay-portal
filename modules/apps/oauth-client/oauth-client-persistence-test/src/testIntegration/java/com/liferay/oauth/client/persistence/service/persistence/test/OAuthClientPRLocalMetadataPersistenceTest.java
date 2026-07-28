@@ -718,4 +718,4 @@ public class OAuthClientPRLocalMetadataPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1497845597
+// LIFERAY-SERVICE-BUILDER-HASH:1397138195

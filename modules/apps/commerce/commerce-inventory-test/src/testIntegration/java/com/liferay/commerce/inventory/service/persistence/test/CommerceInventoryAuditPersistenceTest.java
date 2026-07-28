@@ -519,4 +519,4 @@ public class CommerceInventoryAuditPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1190988874
+// LIFERAY-SERVICE-BUILDER-HASH:-390962234

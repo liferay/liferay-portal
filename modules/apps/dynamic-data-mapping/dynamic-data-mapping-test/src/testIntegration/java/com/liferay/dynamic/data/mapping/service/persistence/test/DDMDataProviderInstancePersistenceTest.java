@@ -670,4 +670,4 @@ public class DDMDataProviderInstancePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-39555662
+// LIFERAY-SERVICE-BUILDER-HASH:-672955112

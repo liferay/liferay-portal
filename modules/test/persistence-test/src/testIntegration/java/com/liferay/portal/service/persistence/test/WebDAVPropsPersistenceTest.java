@@ -493,4 +493,4 @@ public class WebDAVPropsPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1942885153
+// LIFERAY-SERVICE-BUILDER-HASH:-1428473767

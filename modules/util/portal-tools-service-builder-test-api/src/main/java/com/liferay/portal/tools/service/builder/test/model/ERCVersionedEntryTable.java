@@ -8,6 +8,7 @@ package com.liferay.portal.tools.service.builder.test.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.sql.Blob;
 import java.sql.Types;
 
 /**
@@ -43,10 +44,12 @@ public class ERCVersionedEntryTable extends BaseTable<ERCVersionedEntryTable> {
 		"groupId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<ERCVersionedEntryTable, Long> companyId = createColumn(
 		"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<ERCVersionedEntryTable, Blob> blob = createColumn(
+		"blob_", Blob.class, Types.BLOB, Column.FLAG_DEFAULT);
 
 	private ERCVersionedEntryTable() {
 		super("ERCVersionedEntry", ERCVersionedEntryTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:489743092
+// LIFERAY-SERVICE-BUILDER-HASH:1767433638

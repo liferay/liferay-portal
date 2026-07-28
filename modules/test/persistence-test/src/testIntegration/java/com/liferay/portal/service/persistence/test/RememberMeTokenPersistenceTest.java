@@ -434,4 +434,4 @@ public class RememberMeTokenPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-916237966
+// LIFERAY-SERVICE-BUILDER-HASH:827317060

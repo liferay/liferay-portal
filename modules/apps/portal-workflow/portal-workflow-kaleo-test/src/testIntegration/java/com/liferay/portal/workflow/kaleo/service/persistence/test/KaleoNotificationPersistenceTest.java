@@ -560,4 +560,4 @@ public class KaleoNotificationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1274619000
+// LIFERAY-SERVICE-BUILDER-HASH:-1239777768

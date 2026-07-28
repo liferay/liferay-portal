@@ -520,4 +520,4 @@ public class VirtualHostPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:621608833
+// LIFERAY-SERVICE-BUILDER-HASH:1304388921

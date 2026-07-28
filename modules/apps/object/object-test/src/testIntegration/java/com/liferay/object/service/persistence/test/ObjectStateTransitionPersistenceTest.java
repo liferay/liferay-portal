@@ -528,4 +528,4 @@ public class ObjectStateTransitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-989519734
+// LIFERAY-SERVICE-BUILDER-HASH:962860206

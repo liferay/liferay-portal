@@ -589,4 +589,4 @@ public class ObjectFolderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-933257862
+// LIFERAY-SERVICE-BUILDER-HASH:1047035788

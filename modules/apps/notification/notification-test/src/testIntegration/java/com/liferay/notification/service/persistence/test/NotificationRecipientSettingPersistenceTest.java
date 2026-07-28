@@ -618,4 +618,4 @@ public class NotificationRecipientSettingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1765690740
+// LIFERAY-SERVICE-BUILDER-HASH:886039922

@@ -169,6 +169,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="head" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="blob_" name="blob" type="blob" />
 	</class>
 	<class name="com.liferay.portal.tools.service.builder.test.model.impl.ERCVersionedEntryVersionImpl" table="ERCVersionedEntryVersion">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="ercVersionedEntryVersionId" type="long">
@@ -180,6 +181,7 @@
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="ercVersionedEntryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="blob_" name="blob" type="blob" />
 	</class>
 	<class name="com.liferay.portal.tools.service.builder.test.model.impl.FinderWhereClauseEntryImpl" table="FinderWhereClauseEntry">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="finderWhereClauseEntryId" type="long">

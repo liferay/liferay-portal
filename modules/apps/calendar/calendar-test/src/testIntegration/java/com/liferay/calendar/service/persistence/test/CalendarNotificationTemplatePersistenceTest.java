@@ -699,4 +699,4 @@ public class CalendarNotificationTemplatePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-10957153
+// LIFERAY-SERVICE-BUILDER-HASH:29972543

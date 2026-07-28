@@ -741,4 +741,4 @@ public class SiteNavigationMenuItemPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1881215620
+// LIFERAY-SERVICE-BUILDER-HASH:-1740702342

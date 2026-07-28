@@ -690,4 +690,4 @@ public class CommerceTaxCategoryMappingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1543232884
+// LIFERAY-SERVICE-BUILDER-HASH:-1155136862

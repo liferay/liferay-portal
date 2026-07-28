@@ -374,4 +374,4 @@ public class AutoEscapeEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1544286561
+// LIFERAY-SERVICE-BUILDER-HASH:-1862800223

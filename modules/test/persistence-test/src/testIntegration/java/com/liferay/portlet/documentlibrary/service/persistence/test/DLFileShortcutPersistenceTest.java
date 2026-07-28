@@ -738,4 +738,4 @@ public class DLFileShortcutPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:56616404
+// LIFERAY-SERVICE-BUILDER-HASH:-1221094150
