@@ -94,6 +94,19 @@ export class ObjectEntryApiHelper {
 		);
 	}
 
+	async getObjectEntryByName(
+		applicationName: string,
+		name: string
+	): Promise<ObjectEntry> {
+		const response = await this.apiHelpers.get(
+			`${this.apiHelpers.baseUrl}${applicationName}?filter=${encodeURIComponent(
+				`name eq '${name}'`
+			)}&pageSize=1`
+		);
+
+		return response?.items?.[0];
+	}
+
 	async postObjectDefinitionRandomObjectEntries(
 		fieldName: any,
 		fieldValue: String,

@@ -26,34 +26,36 @@ const baseTest = mergeTests(
 
 const DATA_MASKS_API = 'data-masks';
 
+const PROFILE_DATA_MASKS_API = 'mcp/server-profile-data-masks';
+
 const SYSTEM_MASK = 'Email Address';
 
-const TOKEN = 'pwmask';
-
-interface DataMaskEntry {
-	externalReferenceCode?: string;
-	id: number;
-	maskType?: {key?: string};
-	name?: string;
-}
-
 function maskName() {
-	return `${TOKEN}-${getRandomString()}`;
+	return `pwmask-${getRandomString()}`;
 }
 
 async function createCustomMask(
 	apiHelpers: DataApiHelpers,
 	name: string
-): Promise<DataMaskEntry> {
-	return apiHelpers.post(`${apiHelpers.baseUrl}${DATA_MASKS_API}`, {
-		data: {
+): Promise<ObjectEntry> {
+	const dataMask = await apiHelpers.objectEntry.postObjectEntry(
+		{
 			description: 'Created by Playwright',
 			detectionRegex: '\\bzz\\b',
 			maskType: {key: 'custom'},
 			name,
 			replacementValue: '[ZZ]',
 		},
+		DATA_MASKS_API
+	);
+
+	apiHelpers.data.push({
+		applicationName: DATA_MASKS_API,
+		id: dataMask.id,
+		type: 'objectEntry',
 	});
+
+	return dataMask;
 }
 
 async function associateMaskWithProfile(
@@ -64,16 +66,22 @@ async function associateMaskWithProfile(
 		`${apiHelpers.baseUrl}mcp/server-profiles?pageSize=1`
 	);
 
-	return apiHelpers.post(
-		`${apiHelpers.baseUrl}mcp/server-profile-data-masks`,
+	const association = await apiHelpers.objectEntry.postObjectEntry(
 		{
-			data: {
-				dataMaskExternalReferenceCode,
-				mcpServerProfileExternalReferenceCode:
-					profiles.items[0].externalReferenceCode,
-			},
-		}
+			dataMaskExternalReferenceCode,
+			mcpServerProfileExternalReferenceCode:
+				profiles.items[0].externalReferenceCode,
+		},
+		PROFILE_DATA_MASKS_API
 	);
+
+	apiHelpers.data.push({
+		applicationName: PROFILE_DATA_MASKS_API,
+		id: association.id,
+		type: 'objectEntry',
+	});
+
+	return association;
 }
 
 const test = baseTest.extend<{
@@ -92,27 +100,6 @@ const test = baseTest.extend<{
 	fdsTablePage: async ({dataMasksPage}, use) => {
 		await use(dataMasksPage);
 	},
-});
-
-test.afterEach(async ({apiHelpers}) => {
-	const response = await apiHelpers.get(
-		`${apiHelpers.baseUrl}${DATA_MASKS_API}?pageSize=200`
-	);
-
-	const items: DataMaskEntry[] = response?.items ?? [];
-
-	for (const item of items) {
-		const name = item.name ?? '';
-
-		if (
-			item.maskType?.key === 'custom' &&
-			(name.includes(TOKEN) || name.startsWith('Copy of '))
-		) {
-			await apiHelpers.delete(
-				`${apiHelpers.baseUrl}${DATA_MASKS_API}/${item.id}`
-			);
-		}
-	}
 });
 
 createFDSTableTests(test, {
@@ -175,16 +162,18 @@ test.describe('Data Masks - List View', () => {
 				dataMasksPage.row(`Copy of ${SYSTEM_MASK}`)
 			).toBeVisible();
 
-			const response = await apiHelpers.get(
-				`${apiHelpers.baseUrl}${DATA_MASKS_API}?search=${encodeURIComponent(
-					`Copy of ${SYSTEM_MASK}`
-				)}&pageSize=5`
-			);
-			const copy = response.items.find(
-				(item: DataMaskEntry) => item.name === `Copy of ${SYSTEM_MASK}`
+			const copy = await apiHelpers.objectEntry.getObjectEntryByName(
+				DATA_MASKS_API,
+				`Copy of ${SYSTEM_MASK}`
 			);
 
-			expect(copy?.maskType?.key).toBe('custom');
+			apiHelpers.data.push({
+				applicationName: DATA_MASKS_API,
+				id: copy.id,
+				type: 'objectEntry',
+			});
+
+			expect(copy.maskType?.key).toBe('custom');
 		}
 	);
 
@@ -283,6 +272,17 @@ test.describe('Data Masks - List View', () => {
 			await dataMasksPage.clickAction(name, 'Duplicate');
 
 			await expect(dataMasksPage.row(`Copy of ${name}`)).toBeVisible();
+
+			const copy = await apiHelpers.objectEntry.getObjectEntryByName(
+				DATA_MASKS_API,
+				`Copy of ${name}`
+			);
+
+			apiHelpers.data.push({
+				applicationName: DATA_MASKS_API,
+				id: copy.id,
+				type: 'objectEntry',
+			});
 		}
 	);
 
@@ -302,10 +302,18 @@ test.describe('Data Masks - List View', () => {
 
 			await expect(dataMasksPage.row(name)).toBeVisible();
 
-			const response = await apiHelpers.get(
-				`${apiHelpers.baseUrl}${DATA_MASKS_API}?search=${name}&pageSize=5`
+			const dataMask = await apiHelpers.objectEntry.getObjectEntryByName(
+				DATA_MASKS_API,
+				name
 			);
-			expect(response.items[0]?.maskType?.key).toBe('custom');
+
+			apiHelpers.data.push({
+				applicationName: DATA_MASKS_API,
+				id: dataMask.id,
+				type: 'objectEntry',
+			});
+
+			expect(dataMask.maskType?.key).toBe('custom');
 		}
 	);
 

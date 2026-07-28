@@ -26,30 +26,30 @@ const baseTest = mergeTests(
 
 const PROMPTS_API = 'mcp/server-prompts';
 
-const TOKEN = 'pwprompt';
-
-interface PromptEntry {
-	description?: string;
-	id: number;
-	name?: string;
-	prompt?: string;
-}
-
 function promptName() {
-	return `${TOKEN}-${getRandomString()}`;
+	return `pwprompt-${getRandomString()}`;
 }
 
 async function createPrompt(
 	apiHelpers: DataApiHelpers,
 	name: string
-): Promise<PromptEntry> {
-	return apiHelpers.post(`${apiHelpers.baseUrl}${PROMPTS_API}`, {
-		data: {
+): Promise<ObjectEntry> {
+	const prompt = await apiHelpers.objectEntry.postObjectEntry(
+		{
 			description: `Created by Playwright ${name}`,
 			name,
 			prompt: 'Prompt body created by Playwright',
 		},
+		PROMPTS_API
+	);
+
+	apiHelpers.data.push({
+		applicationName: PROMPTS_API,
+		id: prompt.id,
+		type: 'objectEntry',
 	});
+
+	return prompt;
 }
 
 const test = baseTest.extend<{
@@ -68,24 +68,6 @@ const test = baseTest.extend<{
 	fdsTablePage: async ({promptsPage}, use) => {
 		await use(promptsPage);
 	},
-});
-
-test.afterEach(async ({apiHelpers}) => {
-	const response = await apiHelpers.get(
-		`${apiHelpers.baseUrl}${PROMPTS_API}?pageSize=200`
-	);
-
-	const items: PromptEntry[] = response?.items ?? [];
-
-	for (const item of items) {
-		const name = item.name ?? '';
-
-		if (name.includes(TOKEN) || name.startsWith('Copy of ')) {
-			await apiHelpers.delete(
-				`${apiHelpers.baseUrl}${PROMPTS_API}/${item.id}`
-			);
-		}
-	}
 });
 
 createFDSTableTests(test, {
@@ -145,6 +127,17 @@ test.describe('Prompts - List View', () => {
 			await promptsPage.search(`Copy of ${name}`);
 
 			await expect(promptsPage.row(`Copy of ${name}`)).toBeVisible();
+
+			const copy = await apiHelpers.objectEntry.getObjectEntryByName(
+				PROMPTS_API,
+				`Copy of ${name}`
+			);
+
+			apiHelpers.data.push({
+				applicationName: PROMPTS_API,
+				id: copy.id,
+				type: 'objectEntry',
+			});
 		}
 	);
 
@@ -234,12 +227,18 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 
 			await expect(promptsPage.row(name)).toBeVisible();
 
-			const response = await apiHelpers.get(
-				`${apiHelpers.baseUrl}${PROMPTS_API}?search=${name}&pageSize=5`
+			const prompt = await apiHelpers.objectEntry.getObjectEntryByName(
+				PROMPTS_API,
+				name
 			);
-			expect(response.items[0]?.prompt).toBe(
-				'Answer as a friendly robot.'
-			);
+
+			apiHelpers.data.push({
+				applicationName: PROMPTS_API,
+				id: prompt.id,
+				type: 'objectEntry',
+			});
+
+			expect(prompt.prompt).toBe('Answer as a friendly robot.');
 		}
 	);
 
