@@ -69,9 +69,12 @@ public class CMPPermissionsObjectDefinitionLocalServiceWrapper
 					ActionKeys.UPDATE, ActionKeys.VIEW
 				});
 
-			if (Objects.equals(
-					objectDefinition.getExternalReferenceCode(),
-					"L_CMP_TASK")) {
+			String externalReferenceCode =
+				objectDefinition.getExternalReferenceCode();
+
+			if (Objects.equals(externalReferenceCode, "L_CMP_PROJECT_LINK") ||
+				Objects.equals(externalReferenceCode, "L_CMP_TASK") ||
+				Objects.equals(externalReferenceCode, "L_CMP_TASK_LINK")) {
 
 				_addResourcePermission(
 					objectDefinition, "0",
