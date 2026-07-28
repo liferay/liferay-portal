@@ -102,9 +102,8 @@ public class PortalWorkspaceGitRepositoryTest
 		String baseBranchSHA = RandomTestUtil.randomSHA();
 		String senderBranchSHA = RandomTestUtil.randomSHA();
 
-		JSONObject jsonObject = new JSONObject();
-
-		jsonObject.put(
+		JSONObject jsonObject = new JSONObject(
+		).put(
 			"base_branch_head_sha", baseBranchSHA
 		).put(
 			"base_branch_sha", baseBranchSHA

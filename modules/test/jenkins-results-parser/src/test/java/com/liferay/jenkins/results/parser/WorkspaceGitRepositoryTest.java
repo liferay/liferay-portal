@@ -76,6 +76,9 @@ public class WorkspaceGitRepositoryTest
 		).uploadGitArchives();
 
 		defaultWorkspaceGitRepository.setUp();
+
+		defaultWorkspaceGitRepository.setUp();
+
 		defaultWorkspaceGitRepository.setUp();
 
 		InOrder inOrder = Mockito.inOrder(defaultWorkspaceGitRepository);
