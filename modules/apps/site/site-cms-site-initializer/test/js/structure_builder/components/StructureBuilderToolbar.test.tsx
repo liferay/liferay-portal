@@ -206,6 +206,7 @@ describe('StructureBuilderToolbar', () => {
 				deletedGroupERCs: [],
 				deletedRelationships: [],
 				modifiedNames: new Set(),
+				modifiedSlugs: new Set(),
 			},
 			structure: {status: 'published'},
 		});
@@ -282,6 +283,7 @@ describe('StructureBuilderToolbar', () => {
 				deletedGroupERCs: [],
 				deletedRelationships: [],
 				modifiedNames: new Set(),
+				modifiedSlugs: new Set(),
 			},
 			structure: {status: 'published'},
 		});

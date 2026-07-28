@@ -20,6 +20,7 @@ const ROOT: Structure = {
 	label: {},
 	name: 'Root',
 	path: '',
+	slug: '',
 	spaces: 'all',
 	status: 'new',
 	system: false,

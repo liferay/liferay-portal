@@ -87,6 +87,7 @@ const STRUCTURE: Structure = {
 	label: {en_US: 'Structure'} as any,
 	name: 'Structure',
 	path: '/my-structure',
+	slug: '',
 	spaces: [SPACE_1.externalReferenceCode, SPACE_2.externalReferenceCode],
 	status: 'draft',
 	system: false,
