@@ -704,6 +704,7 @@ public class BatchEngineImportTaskExecutorImpl
 
 		BatchEngineTaskCallbackUtil.sendCallback(
 			batchEngineImportTask.getCallbackURL(),
+			batchEngineImportTask.getCompanyId(),
 			batchEngineImportTask.getExecuteStatus(),
 			batchEngineImportTask.getBatchEngineImportTaskId());
 	}

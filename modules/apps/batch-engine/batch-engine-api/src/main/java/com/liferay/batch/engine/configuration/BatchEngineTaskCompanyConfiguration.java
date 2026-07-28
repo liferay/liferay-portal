@@ -23,6 +23,19 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 )
 public interface BatchEngineTaskCompanyConfiguration {
 
+	@Meta.AD(
+		description = "callback-url-hosts-allowed-description",
+		name = "callback-url-hosts-allowed", required = false
+	)
+	public String[] callbackURLHostsAllowed();
+
+	@Meta.AD(
+		deflt = "false",
+		description = "callback-url-local-network-access-enabled-description",
+		name = "callback-url-local-network-access-enabled", required = false
+	)
+	public boolean callbackURLLocalNetworkAccessEnabled();
+
 	@Meta.AD(deflt = ",", name = "csv-file-column-delimiter", required = false)
 	public String csvFileColumnDelimiter();
 

@@ -7,11 +7,19 @@ package com.liferay.batch.engine.internal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.liferay.batch.engine.configuration.BatchEngineTaskCompanyConfiguration;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.InetAddressUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.URI;
+
 import java.util.Collections;
+import java.util.Objects;
 
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -25,9 +33,17 @@ import org.apache.http.impl.client.HttpClientBuilder;
 public class BatchEngineTaskCallbackUtil {
 
 	public static void sendCallback(
-		String callbackURL, String executeStatus, long id) {
+		String callbackURL, long companyId, String executeStatus, long id) {
 
 		if (Validator.isBlank(callbackURL)) {
+			return;
+		}
+
+		if (!_isAllowedCallbackURL(callbackURL, companyId)) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Skipping callback to disallowed URL " + callbackURL);
+			}
+
 			return;
 		}
 
@@ -49,6 +65,58 @@ public class BatchEngineTaskCallbackUtil {
 		}
 		catch (Exception exception) {
 			_log.error(exception);
+		}
+	}
+
+	private static boolean _isAllowedCallbackURL(
+		String callbackURL, long companyId) {
+
+		try {
+			URI uri = new URI(callbackURL);
+
+			String scheme = StringUtil.toLowerCase(uri.getScheme());
+
+			if (!Objects.equals(scheme, "http") &&
+				!Objects.equals(scheme, "https")) {
+
+				return false;
+			}
+
+			String host = uri.getHost();
+
+			if (Validator.isNull(host)) {
+				return false;
+			}
+
+			BatchEngineTaskCompanyConfiguration
+				batchEngineTaskCompanyConfiguration =
+					ConfigurationProviderUtil.getCompanyConfiguration(
+						BatchEngineTaskCompanyConfiguration.class, companyId);
+
+			String[] callbackURLHostsAllowed =
+				batchEngineTaskCompanyConfiguration.callbackURLHostsAllowed();
+
+			if (ArrayUtil.isNotEmpty(callbackURLHostsAllowed) &&
+				!ArrayUtil.contains(callbackURLHostsAllowed, host, true)) {
+
+				return false;
+			}
+
+			if (batchEngineTaskCompanyConfiguration.
+					callbackURLLocalNetworkAccessEnabled()) {
+
+				return true;
+			}
+
+			return !InetAddressUtil.isLocalInetAddress(
+				InetAddressUtil.getInetAddressByName(host));
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return false;
 		}
 	}
 

@@ -599,6 +599,7 @@ public class BatchEngineExportTaskExecutorImpl
 
 		BatchEngineTaskCallbackUtil.sendCallback(
 			batchEngineExportTask.getCallbackURL(),
+			batchEngineExportTask.getCompanyId(),
 			batchEngineExportTask.getExecuteStatus(),
 			batchEngineExportTask.getBatchEngineExportTaskId());
 
