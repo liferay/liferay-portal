@@ -21,6 +21,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -122,6 +123,9 @@ public class AttachmentObjectFieldDownloadActionFeatureFlagListenerTest {
 			String.valueOf(objectEntry.getObjectEntryId()),
 			powerUserRole.getRoleId(), new String[] {ActionKeys.VIEW});
 
+		boolean lpd17564Enabled = FeatureFlagManagerUtil.isEnabled(
+			objectDefinition.getCompanyId(), "LPD-17564");
+
 		try (PropsTemporarySwapper propsTemporarySwapper =
 				new PropsTemporarySwapper(
 					FeatureFlagConstants.getKey("LPD-17564"),
@@ -178,6 +182,13 @@ public class AttachmentObjectFieldDownloadActionFeatureFlagListenerTest {
 					ResourceConstants.SCOPE_INDIVIDUAL,
 					String.valueOf(objectEntry.getObjectEntryId()),
 					userRole.getRoleId(), attachmentDownloadActionKey));
+		}
+		finally {
+			if (!lpd17564Enabled) {
+				FeatureFlagTestUtil.invokeFeatureFlagListeners(
+					objectDefinition.getCompanyId(), lpd17564Enabled,
+					"LPD-17564");
+			}
 		}
 	}
 
