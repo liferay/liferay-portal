@@ -20,6 +20,7 @@ import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -68,6 +69,14 @@ public class JenkinsGitRepositoryJobTest
 			Mockito.anyInt(), Mockito.anyLong(), Mockito.anyLong(),
 			Mockito.anyString()
 		);
+	}
+
+	@After
+	@Override
+	public void tearDown() {
+		super.tearDown();
+
+		JenkinsResultsParserUtil.setBuildProperties(new Properties());
 	}
 
 	@Test
