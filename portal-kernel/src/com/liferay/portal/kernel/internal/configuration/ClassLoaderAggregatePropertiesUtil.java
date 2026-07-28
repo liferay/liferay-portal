@@ -32,17 +32,13 @@ public class ClassLoaderAggregatePropertiesUtil {
 		}
 
 		EnvPropertiesUtil.loadEnvOverrides(
-			_ENV_OVERRIDE_PREFIX, classLoaderAggregateProperties::setProperty,
-			_DOCKER_IMAGE_ENV_PREFIXES);
+			classLoaderAggregateProperties::setProperty, "LIFERAY_",
+			new String[] {
+				"LIFERAY_CONTAINER_", "LIFERAY_DOCKER_"
+			});
 
 		return classLoaderAggregateProperties;
 	}
-
-	private static final String[] _DOCKER_IMAGE_ENV_PREFIXES = {
-		"LIFERAY_CONTAINER_", "LIFERAY_DOCKER_"
-	};
-
-	private static final String _ENV_OVERRIDE_PREFIX = "LIFERAY_";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ClassLoaderAggregatePropertiesUtil.class);

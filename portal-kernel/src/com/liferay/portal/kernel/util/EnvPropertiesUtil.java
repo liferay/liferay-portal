@@ -74,7 +74,7 @@ public class EnvPropertiesUtil {
 	}
 
 	public static void loadEnvOverrides(
-		String envPrefix, BiConsumer<String, String> biConsumer,
+		BiConsumer<String, String> biConsumer, String envPrefix,
 		String... excludedEnvPrefixes) {
 
 		Map<String, String> env = System.getenv();
