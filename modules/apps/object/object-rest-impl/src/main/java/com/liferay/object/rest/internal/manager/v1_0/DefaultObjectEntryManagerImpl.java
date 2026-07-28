@@ -3846,6 +3846,24 @@ public class DefaultObjectEntryManagerImpl
 					properties);
 			}
 
+			if (objectField.isLocalized()) {
+				ObjectFieldBusinessType objectFieldBusinessType =
+					_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
+						objectField.getBusinessType());
+
+				Map<String, Object> localizedValues =
+					objectFieldBusinessType.getLocalizedValues(
+						objectField, serviceContext.getUserId(), properties);
+
+				if (localizedValues != null) {
+					values.put(
+						objectField.getI18nObjectFieldName(),
+						(Serializable)localizedValues);
+
+					continue;
+				}
+			}
+
 			Object value = ObjectEntryValuesUtil.getValue(
 				getGroupId(objectDefinition, scopeKey),
 				_objectDefinitionLocalService, objectEntryLocalService,
@@ -3865,20 +3883,7 @@ public class DefaultObjectEntryManagerImpl
 			}
 
 			if (objectField.isLocalized()) {
-				ObjectFieldBusinessType objectFieldBusinessType =
-					_objectFieldBusinessTypeRegistry.getObjectFieldBusinessType(
-						objectField.getBusinessType());
-
-				Map<String, Object> localizedValues =
-					objectFieldBusinessType.getLocalizedValues(
-						objectField, serviceContext.getUserId(), properties);
-
-				if (localizedValues != null) {
-					values.put(
-						objectField.getI18nObjectFieldName(),
-						(Serializable)localizedValues);
-				}
-				else if (value != null) {
+				if (value != null) {
 					String defaultLanguageId =
 						objectEntry.getDefaultLanguageId();
 
