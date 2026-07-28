@@ -12,9 +12,16 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
 import com.liferay.exportimport.test.util.lar.BasePortletExportImportTestCase;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
+import com.liferay.fragment.model.FragmentEntryLink;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.layout.set.prototype.constants.LayoutSetPrototypePortletKeys;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -23,6 +30,7 @@ import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -35,10 +43,12 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
 import java.io.File;
 
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -259,6 +269,111 @@ public class LayoutSetPrototypeExportImportTest
 	}
 
 	@Test
+	@TestInfo("LPS-86501")
+	public void testExportImportLayoutSetPrototypeWithContentPageFragmentEditableValues()
+		throws Exception {
+
+		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototypes();
+
+		LayoutSetPrototype exportedLayoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
+
+		Layout contentLayout = LayoutTestUtil.addTypeContentLayout(
+			exportedLayoutSetPrototype.getGroup(), true, false);
+
+		Layout draftLayout = contentLayout.fetchDraftLayout();
+
+		String editableId = RandomTestUtil.randomString();
+		String editableValue = RandomTestUtil.randomString();
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			JSONUtil.put(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR,
+				JSONUtil.put(editableId, JSONUtil.put("en_US", editableValue))
+			).toString(),
+			draftLayout,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, contentLayout);
+
+		long companyId = exportedLayoutSetPrototype.getCompanyId();
+		String uuid = exportedLayoutSetPrototype.getUuid();
+
+		User user = TestPropsValues.getUser();
+
+		ExportImportConfiguration exportImportConfiguration =
+			ExportImportConfigurationLocalServiceUtil.
+				addDraftExportImportConfiguration(
+					user.getUserId(),
+					ExportImportConfigurationConstants.
+						TYPE_PUBLISH_PORTLET_LOCAL,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildExportPortletSettingsMap(
+							user, layout.getPlid(), layout.getGroupId(),
+							getPortletId(), getExportParameterMap(),
+							StringPool.BLANK));
+
+		File larFile = ExportImportLocalServiceUtil.exportPortletInfoAsFile(
+			exportImportConfiguration);
+
+		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
+			exportedLayoutSetPrototype);
+
+		importedLayout = LayoutTestUtil.addTypePortletLayout(importedGroup);
+
+		exportImportConfiguration =
+			ExportImportConfigurationLocalServiceUtil.
+				updateExportImportConfiguration(
+					user.getUserId(),
+					exportImportConfiguration.getExportImportConfigurationId(),
+					StringPool.BLANK, StringPool.BLANK,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildImportPortletSettingsMap(
+							user, importedLayout.getPlid(),
+							importedGroup.getGroupId(), getPortletId(),
+							getImportParameterMap()),
+					new ServiceContext());
+
+		ExportImportLocalServiceUtil.importPortletInfo(
+			exportImportConfiguration, larFile);
+
+		LayoutSetPrototype importedLayoutSetPrototype =
+			LayoutSetPrototypeLocalServiceUtil.
+				getLayoutSetPrototypeByUuidAndCompanyId(uuid, companyId);
+
+		Group importedLayoutSetPrototypeGroup =
+			importedLayoutSetPrototype.getGroup();
+
+		Layout importedContentLayout =
+			_layoutLocalService.fetchLayoutByExternalReferenceCode(
+				contentLayout.getExternalReferenceCode(),
+				importedLayoutSetPrototypeGroup.getGroupId());
+
+		FragmentEntryLink importedFragmentEntryLink = _getFragmentEntryLink(
+			importedContentLayout);
+
+		JSONObject editableValuesJSONObject = JSONFactoryUtil.createJSONObject(
+			importedFragmentEntryLink.getEditableValues());
+
+		JSONObject editableProcessorJSONObject =
+			editableValuesJSONObject.getJSONObject(
+				FragmentEntryProcessorConstants.
+					KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		JSONObject editableJSONObject =
+			editableProcessorJSONObject.getJSONObject(editableId);
+
+		Assert.assertEquals(
+			editableValuesJSONObject.toString(), editableValue,
+			editableJSONObject.getString("en_US"));
+
+		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
+			importedLayoutSetPrototype);
+	}
+
+	@Test
 	public void testExportImportLayoutSetPrototypeWithLayoutPrototype()
 		throws Exception {
 
@@ -333,6 +448,34 @@ public class LayoutSetPrototypeExportImportTest
 	protected void testExportImportDisplayStyle(long groupId, String scopeType)
 		throws Exception {
 	}
+
+	private FragmentEntryLink _getFragmentEntryLink(Layout layout) {
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+				layout.getGroupId(), draftLayout.getPlid());
+
+		if (fragmentEntryLinks.isEmpty()) {
+			fragmentEntryLinks =
+				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+					layout.getGroupId(), layout.getPlid());
+		}
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
+
+		return fragmentEntryLinks.get(0);
+	}
+
+	@Inject
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Inject
+	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Inject
 	private Sites _sites;
