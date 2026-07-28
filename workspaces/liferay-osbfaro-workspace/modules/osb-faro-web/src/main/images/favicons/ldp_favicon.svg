@@ -1,11 +1,11 @@
-<svg fill="none" height="25" viewBox="-2.5 -2.5 25 25" width="25" xmlns="http://www.w3.org/2000/svg">
-	<path d="M0 10L10 0L20 10L10 20L0 10Z" fill="#B3CDFF" />
-	<path d="M10 10H0L5 5L10 10Z" fill="#80ACFF" />
-	<path d="M10 10L5 15L0 10L5 5L10 10Z" fill="#5791FF" />
-	<path d="M4 10L10 4L15.7578 10L10 16L4 10Z" fill="#D6E4FF" />
-	<path d="M10 10H4L7 7L10 10Z" fill="#5791FF" />
-	<path d="M5 15L0 10H10L5 15Z" fill="#5791FF" />
-	<path d="M7 13L4 10H10L7 13Z" fill="#5791FF" />
-	<path d="M20 10L10 20V16L15.7578 10L10 4V0L20 10Z" fill="#80ACFF" />
-	<path d="M11.5 8.5H18.503L20 10L18.503 11.5H11.5L10 10L11.5 8.5Z" fill="#0053F0" />
+<svg fill="none" height="50" viewBox="-5 -5 50 50" width="50" xmlns="http://www.w3.org/2000/svg">
+	<path d="M0 20L20 0L40 20L20 40L0 20Z" fill="#B3CDFF" />
+	<path d="M20 20H0L10 10L20 20Z" fill="#80ACFF" />
+	<path d="M20 20L10 30L0 20L10 10L20 20Z" fill="#0B5FFF" />
+	<path d="M8 20L20 8L31.5156 20L20 32L8 20Z" fill="#D6E4FF" />
+	<path d="M20 20H8L14 14L20 20Z" fill="#5791FF" />
+	<path d="M10 30L0 20H20L10 30Z" fill="#5791FF" />
+	<path d="M14 26L8 20H20L14 26Z" fill="#80ACFF" />
+	<path d="M40 20L20 40V32L31.5156 20L20 8V0L40 20Z" fill="#5791FF" />
+	<path d="M23 17H37.0059L40 20L37.0059 23H23L20 20L23 17Z" fill="#0053F0" />
 </svg>
