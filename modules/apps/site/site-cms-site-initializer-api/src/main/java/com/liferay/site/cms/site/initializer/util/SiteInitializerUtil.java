@@ -45,8 +45,12 @@ public class SiteInitializerUtil {
 			return;
 		}
 
-		Group group = GroupLocalServiceUtil.getGroup(
+		Group group = GroupLocalServiceUtil.fetchGroup(
 			companyId, GroupConstants.CMS);
+
+		if (group == null) {
+			return;
+		}
 
 		String friendlyURL = FriendlyURLNormalizerUtil.normalizeWithEncoding(
 			"/dashboard");
