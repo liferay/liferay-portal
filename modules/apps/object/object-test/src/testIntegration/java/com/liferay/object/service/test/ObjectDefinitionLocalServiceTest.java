@@ -3061,13 +3061,10 @@ public class ObjectDefinitionLocalServiceTest {
 				_objectDefinitionLocalService.addCustomObjectDefinition(
 					null, user.getUserId(), 0, objectDefinition1.getClassName(),
 					true, false, true, false, true, false, false, false, false,
-					null,
-					LocalizedMapUtil.getLocalizedMap(
-						objectDefinition1.getLabel()),
+					null, objectDefinition1.getLabelMap(),
 					objectDefinition1.getShortName(), null, null,
-					LocalizedMapUtil.getLocalizedMap(
-						objectDefinition1.getPluralLabel()),
-					true, ObjectDefinitionConstants.SCOPE_COMPANY,
+					objectDefinition1.getPluralLabelMap(), true,
+					ObjectDefinitionConstants.SCOPE_COMPANY,
 					ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT,
 					Collections.emptyList(),
 					Arrays.asList(
