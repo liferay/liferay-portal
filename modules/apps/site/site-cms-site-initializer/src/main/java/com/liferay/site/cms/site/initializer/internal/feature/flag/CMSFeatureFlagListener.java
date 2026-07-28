@@ -72,8 +72,8 @@ public class CMSFeatureFlagListener implements FeatureFlagListener {
 			return;
 		}
 
-		// Cover the disabling side: undo what enabling provisioned so the
-		// feature flag change leaves no state behind.
+		// Undo what enabling provisioned so the feature flag change leaves no
+		// state behind
 
 		if (group == null) {
 			return;
@@ -116,7 +116,7 @@ public class CMSFeatureFlagListener implements FeatureFlagListener {
 
 		// GroupLocalServiceImpl#_systemGroupsMap caches system groups and is
 		// never invalidated on delete, so fetchGroup would keep returning the
-		// deleted CMS group as a phantom for the JVM's life.
+		// deleted CMS group as a phantom for the JVM's life
 
 		_evictCachedSystemGroup(group);
 	}
