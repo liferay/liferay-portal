@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {DESCRIPTION_AUTOFIX_DEFINITION} from '../../../../js/components/insights_view/autofix_definitions/DescriptionAutofixDefinition';
 import {TITLE_AUTOFIX_DEFINITION} from '../../../../js/components/insights_view/autofix_definitions/TitleAutofixDefinition';
 import {
 	WORKFLOW_STATUS_APPROVED,
@@ -136,6 +137,22 @@ describe('generateCandidates', () => {
 
 		expect(mockInvokeAgent).toHaveBeenCalledWith({
 			agentExternalReferenceCode: 'L_SEO_STUDIO_TITLE_GENERATOR',
+			context: {pageContent: 'my page content'},
+		});
+	});
+
+	it('invokes the description generator agent with the page content', async () => {
+		mockInvokeAgent.mockResolvedValue(
+			JSON.stringify({candidates: [{title: 'A'}]})
+		);
+
+		await generateCandidates(
+			DESCRIPTION_AUTOFIX_DEFINITION,
+			'my page content'
+		);
+
+		expect(mockInvokeAgent).toHaveBeenCalledWith({
+			agentExternalReferenceCode: 'L_SEO_STUDIO_DESCRIPTION_GENERATOR',
 			context: {pageContent: 'my page content'},
 		});
 	});
