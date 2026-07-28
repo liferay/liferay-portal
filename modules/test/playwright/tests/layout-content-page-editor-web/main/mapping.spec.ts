@@ -20,6 +20,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {pageManagementSiteTest} from '../../../fixtures/pageManagementSiteTest';
 import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
@@ -953,5 +954,155 @@ test(
 				.getByLabel('Field', {exact: true})
 				.locator('option:checked')
 		).toHaveText('Fruit Size');
+	}
+);
+
+test(
+	'Allows mapping a date and time field to a date editable',
+	{
+		tag: '@LPD-99757',
+	},
+	async ({apiHelpers, page, pageEditorPage, site}) => {
+
+		// Create an object definition with a date and time field
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const objectDefinitionName = 'Event' + getRandomInt();
+
+		const {body: objectDefinition} =
+			await objectDefinitionAPIClient.postObjectDefinition({
+				active: true,
+				label: {
+					en_US: objectDefinitionName,
+				},
+				name: objectDefinitionName,
+				objectFields: [
+					{
+						DBType: 'String',
+						businessType: 'Text',
+						indexed: true,
+						indexedAsKeyword: false,
+						label: {
+							en_US: 'Name',
+						},
+						localized: false,
+						name: 'name',
+						required: false,
+					},
+					{
+						DBType: 'DateTime',
+						businessType: 'DateTime',
+						indexed: true,
+						indexedAsKeyword: false,
+						label: {
+							en_US: 'Date And Time',
+						},
+						localized: false,
+						name: 'dateAndTime',
+						objectFieldSettings: [
+							{
+								name: 'timeStorage',
+								value: 'useInputAsEntered' as unknown as object,
+							},
+						],
+						required: false,
+					},
+				],
+				pluralLabel: {
+					en_US: objectDefinitionName,
+				},
+				scope: 'company',
+				status: {
+					code: 0,
+				},
+				titleObjectFieldName: 'name',
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		// Add an object entry with a date and time value
+
+		const objectEntryName = getRandomString();
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				dateAndTime: '2026-07-28T14:30:00.000Z',
+				name: objectEntryName,
+			},
+			'c/' + objectDefinition.name.toLowerCase() + 's'
+		);
+
+		// Create content page with a date fragment and go to edit mode
+
+		const dateId = getRandomString();
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: dateId,
+					key: 'BASIC_COMPONENT-date',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		// Map the date editable to the date and time field
+
+		await pageEditorPage.selectEditable(dateId, 'element-date');
+
+		await pageEditorPage.setMappingConfiguration({
+			mapping: {
+				entity: objectDefinitionName,
+				entry: objectEntryName,
+				field: 'Date And Time',
+			},
+		});
+
+		// Check the value is rendered with the default format
+
+		const editable = pageEditorPage.getEditable({
+			editableId: 'element-date',
+			fragmentId: dateId,
+		});
+
+		await expect(editable).toContainText('7/28/26');
+
+		await expect(editable).toContainText('2:30 PM');
+
+		// Check the value honors a custom format
+
+		await pageEditorPage.changeEditableConfiguration({
+			editableId: 'element-date',
+			fieldLabel: 'Date Format',
+			fragmentId: dateId,
+			tab: 'Mapping',
+			value: 'custom',
+		});
+
+		await pageEditorPage.changeEditableConfiguration({
+			editableId: 'element-date',
+			fieldLabel: 'Custom Format',
+			fragmentId: dateId,
+			tab: 'Mapping',
+			value: 'yyyy-MM-dd HH:mm',
+		});
+
+		await expect(editable).toHaveText('2026-07-28 14:30');
+
+		// Publish and check the published page
+
+		await pageEditorPage.publishPage();
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(page.getByText('2026-07-28 14:30')).toBeVisible();
 	}
 );
