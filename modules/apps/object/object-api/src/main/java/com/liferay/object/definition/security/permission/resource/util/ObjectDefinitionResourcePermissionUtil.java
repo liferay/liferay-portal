@@ -71,7 +71,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
 				objectDefinition.getCompanyId())) {
 
-			_removeStaleRootModelResource(objectDefinition, resourceActions);
+			_removeStaleModelResource(objectDefinition, resourceActions);
 
 			resourceActions.populateModelResources(document);
 
@@ -324,33 +324,30 @@ public class ObjectDefinitionResourcePermissionUtil {
 				}));
 	}
 
-	private static void _removeStaleRootModelResource(
+	private static void _removeStaleModelResource(
 		ObjectDefinition objectDefinition, ResourceActions resourceActions) {
 
-		String rootModelResourceName =
-			resourceActions.getPortletRootModelResource(
-				objectDefinition.getPortletId());
+		String resourceName = resourceActions.getPortletRootModelResource(
+			objectDefinition.getPortletId());
 
-		if (Validator.isNull(rootModelResourceName) ||
-			Objects.equals(
-				rootModelResourceName, objectDefinition.getResourceName())) {
+		if (Validator.isNull(resourceName) ||
+			Objects.equals(resourceName, objectDefinition.getResourceName())) {
 
 			return;
 		}
 
 		long rootObjectDefinitionId = GetterUtil.getLong(
-			rootModelResourceName.substring(
-				rootModelResourceName.indexOf(StringPool.POUND) + 1));
+			StringUtil.extractLast(resourceName, StringPool.POUND));
 
 		if (rootObjectDefinitionId <= 0) {
 			return;
 		}
 
-		ObjectDefinition rootObjectDefinition =
+		ObjectDefinition originalObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
 				rootObjectDefinitionId);
 
-		if (rootObjectDefinition != null) {
+		if (originalObjectDefinition != null) {
 			return;
 		}
 
