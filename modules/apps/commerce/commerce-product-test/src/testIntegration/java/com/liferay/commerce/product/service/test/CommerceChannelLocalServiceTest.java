@@ -103,7 +103,7 @@ public class CommerceChannelLocalServiceTest {
 			Assert.assertNotNull(noSuchChannelException);
 		}
 
-		CommerceChannel commerceChannel;
+		CommerceChannel commerceChannel = null;
 
 		try (SafeCloseable safeCloseable =
 				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
