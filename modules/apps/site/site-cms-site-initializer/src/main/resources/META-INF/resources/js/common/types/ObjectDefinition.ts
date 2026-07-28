@@ -61,6 +61,7 @@ export type ObjectDefinition = {
 	enableObjectEntrySchedule: boolean;
 	enableObjectEntryVersioning: boolean;
 	externalReferenceCode: string;
+	friendlyURLSeparator?: string;
 	id?: number;
 	label: Liferay.Language.LocalizedValue<string>;
 	name?: string;

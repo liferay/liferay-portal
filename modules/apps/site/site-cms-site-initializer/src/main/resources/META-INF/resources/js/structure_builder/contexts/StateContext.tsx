@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {normalizeFriendlyURL} from 'frontend-js-web';
 import React, {
 	Dispatch,
 	ReactNode,
@@ -60,6 +61,7 @@ type History = {
 		structureERC: string;
 	}>;
 	modifiedNames: Set<Uuid>;
+	modifiedSlugs: Set<Uuid>;
 };
 
 export type Clipboard = {
@@ -84,6 +86,7 @@ const INITIAL_STATE: State = {
 		deletedGroupERCs: [],
 		deletedRelationships: [],
 		modifiedNames: new Set(),
+		modifiedSlugs: new Set(),
 	},
 	invalids: new Map(),
 	publishedChildren: new Set(),
@@ -96,6 +99,7 @@ const INITIAL_STATE: State = {
 		name: '',
 		path: '',
 		settings: {},
+		slug: '',
 		spaces: 'all',
 		status: 'new',
 		system: false,
@@ -228,6 +232,7 @@ type UpdateStructureAction = {
 	label?: Liferay.Language.LocalizedValue<string>;
 	name?: string;
 	objectDefinitions?: ObjectDefinitions;
+	slug?: string;
 	spaces?: Structure['spaces'];
 	type: 'update-structure';
 };
@@ -955,7 +960,7 @@ function reducer(state: State, action: Action): State {
 
 			// Prepare updated state
 
-			const {erc, label, name, objectDefinitions, spaces} = action;
+			const {erc, label, name, objectDefinitions, slug, spaces} = action;
 
 			const {history, structure} = state;
 
@@ -965,6 +970,20 @@ function reducer(state: State, action: Action): State {
 
 			if (name && name !== structure.name) {
 				modifiedNames.add(structure.uuid);
+			}
+
+			// If the slug is being updated manually, mark it so it stops
+			// tracking the label. An empty value resumes auto-generation.
+
+			const modifiedSlugs = new Set(history.modifiedSlugs);
+
+			if (slug !== undefined) {
+				if (slug) {
+					modifiedSlugs.add(structure.uuid);
+				}
+				else {
+					modifiedSlugs.delete(structure.uuid);
+				}
 			}
 
 			// Calculate new name
@@ -980,17 +999,28 @@ function reducer(state: State, action: Action): State {
 				});
 			}
 
+			// Calculate new slug
+
+			const nextSlug = getNextSlug({
+				action,
+				isPublished,
+				modifiedSlugs,
+				structure,
+			});
+
 			const nextState: State = {
 				...state,
 				history: {
 					...history,
 					modifiedNames,
+					modifiedSlugs,
 				},
 				structure: {
 					...state.structure,
 					erc: erc ?? structure.erc,
 					label: label ?? structure.label,
 					name: nextName,
+					slug: nextSlug,
 					spaces: spaces ?? structure.spaces,
 				},
 			};
@@ -1127,6 +1157,28 @@ function getDefaultChildren(structureUuid: Uuid) {
 	}
 
 	return children;
+}
+
+function getNextSlug({
+	action,
+	isPublished,
+	modifiedSlugs,
+	structure,
+}: {
+	action: UpdateStructureAction;
+	isPublished: boolean;
+	modifiedSlugs: State['history']['modifiedSlugs'];
+	structure: Structure;
+}): string {
+	if ('slug' in action) {
+		return action.slug!;
+	}
+
+	if (isPublished || !action.label || modifiedSlugs.has(structure.uuid)) {
+		return structure.slug;
+	}
+
+	return normalizeFriendlyURL(getLocalizedValue(action.label));
 }
 
 function getNextName({

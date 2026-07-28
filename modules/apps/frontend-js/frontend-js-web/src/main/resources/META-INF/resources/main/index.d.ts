@@ -218,6 +218,8 @@ export function minimizePortlet(
  */
 export function navigate(url: string | URL, listeners?: Object): void;
 
+export function normalizeFriendlyURL(text: string): string;
+
 export function objectToFormData(
 	objectOrNamespace: object | string,
 	formData?: FormData,

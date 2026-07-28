@@ -70,6 +70,7 @@ export type Structure = {
 	name: string;
 	path: string;
 	settings?: StructureSettings;
+	slug: string;
 	spaces: Spaces;
 	status: Status;
 	system: boolean;

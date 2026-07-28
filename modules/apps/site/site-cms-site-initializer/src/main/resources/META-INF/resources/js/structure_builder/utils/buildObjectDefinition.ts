@@ -28,6 +28,7 @@ export default function buildObjectDefinition({
 	label,
 	name,
 	settings,
+	slug,
 	spaces,
 	status = 'draft',
 	workflows,
@@ -38,6 +39,7 @@ export default function buildObjectDefinition({
 	label: Structure['label'];
 	name: Structure['name'];
 	settings?: Structure['settings'];
+	slug?: Structure['slug'];
 	spaces: Structure['spaces'];
 	status?: Structure['status'];
 	workflows?: Structure['workflows'];
@@ -67,6 +69,10 @@ export default function buildObjectDefinition({
 		},
 		titleObjectFieldName: 'title',
 	};
+
+	if (slug) {
+		objectDefinition.friendlyURLSeparator = slug;
+	}
 
 	if (id) {
 		objectDefinition.id = id;

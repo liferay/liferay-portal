@@ -46,6 +46,7 @@ export default function buildStructure({
 		name: mainObjectDefinition.name ?? '',
 		path: mainObjectDefinition.restContextPath ?? '',
 		settings: getSettings(mainObjectDefinition),
+		slug: mainObjectDefinition.friendlyURLSeparator ?? '',
 		spaces: getSpaces(mainObjectDefinition),
 		status: isPublished ? 'published' : 'draft',
 		system: mainObjectDefinition.system ?? false,

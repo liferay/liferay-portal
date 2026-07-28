@@ -34,6 +34,7 @@ export default function buildState({
 			deletedGroupERCs: [],
 			deletedRelationships: [],
 			modifiedNames: new Set(),
+			modifiedSlugs: new Set(),
 		},
 		invalids: new Map(),
 		publishedChildren:
