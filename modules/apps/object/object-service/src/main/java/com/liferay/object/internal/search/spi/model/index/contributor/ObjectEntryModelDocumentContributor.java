@@ -447,6 +447,10 @@ public class ObjectEntryModelDocumentContributor
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
+		if (objectDefinition == null) {
+			return;
+		}
+
 		FieldArray fieldArray = (FieldArray)document.getField(
 			"nestedFieldArray");
 
