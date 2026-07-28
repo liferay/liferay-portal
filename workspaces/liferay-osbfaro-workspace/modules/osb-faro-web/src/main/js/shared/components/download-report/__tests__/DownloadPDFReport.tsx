@@ -1,5 +1,6 @@
 import {
 	fetchSprite,
+	getProductName,
 	inlineSVGIcons,
 	resetSpriteCache,
 } from '../DownloadPDFReport';
@@ -16,6 +17,16 @@ const mockFetch = (text: string) => {
 		text: jest.fn().mockResolvedValue(text),
 	}) as any;
 };
+
+describe('getProductName', () => {
+	it('returns the Liferay Data Platform name for LDP plans', () => {
+		expect(getProductName(true)).toBe('Liferay Data Platform');
+	});
+
+	it('returns the Analytics Cloud name for non LDP plans', () => {
+		expect(getProductName(false)).toBe('Analytics Cloud');
+	});
+});
 
 describe('fetchSprite', () => {
 	let querySelectorSpy: jest.SpyInstance;

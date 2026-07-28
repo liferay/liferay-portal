@@ -17,7 +17,9 @@ import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {useDispatch} from 'react-redux';
 import {useDownloadReportContext} from './DownloadReportContext';
+import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useModal} from '@clayui/modal';
+import {useParams} from 'react-router-dom';
 
 export enum ReportContainer {
 	AcquisitionsCard = 'container.report.acquisitionsCard',
@@ -224,6 +226,16 @@ export const formattedContainers = (
 		return acc;
 	}, {} as ContainerList);
 
+/**
+ * Brands the report header with the product the workspace is subscribed to.
+ * The PDF is generated outside the document, so it cannot pick the name up
+ * from the page and has to resolve it from the plan itself.
+ */
+export const getProductName = (ldpEnabled: boolean): string =>
+	ldpEnabled
+		? Liferay.Language.get('liferay-data-platform')
+		: Liferay.Language.get('analytics-cloud');
+
 let _spriteSVG: Element | null = null;
 
 export const resetSpriteCache = () => {
@@ -343,6 +355,9 @@ const DownloadPDFReport: React.FC<IDownloadReport> = ({
 	const {observer, onOpenChange, open} = useModal();
 	const {reportContainers} = useDownloadReportContext();
 	const [containers, setContainers] = useState<ContainerList | {}>({});
+	const {groupId = ''} = useParams<{groupId?: string}>();
+
+	const ldpEnabled = useLDPEnabled({groupId});
 
 	const dispatch = useDispatch();
 
@@ -423,7 +438,7 @@ const DownloadPDFReport: React.FC<IDownloadReport> = ({
 							doc.addText({
 								color: PRIMARY_COLOR,
 								size: Size.Small,
-								value: 'Analytics Cloud',
+								value: getProductName(ldpEnabled),
 								weight: Weight.Normal,
 							});
 
