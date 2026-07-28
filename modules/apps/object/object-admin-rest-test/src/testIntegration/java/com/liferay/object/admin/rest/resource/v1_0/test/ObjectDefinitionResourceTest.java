@@ -2836,6 +2836,9 @@ public class ObjectDefinitionResourceTest
 		Assert.assertEquals(
 			"/o/c/" + objectDefinitionPluralName,
 			objectDefinition.getRestContextPath());
+
+		objectDefinitionResource.deleteObjectDefinition(
+			objectDefinition.getId());
 	}
 
 	private void _testGetObjectDefinitionsPage(
@@ -2925,6 +2928,13 @@ public class ObjectDefinitionResourceTest
 		Assert.assertTrue(
 			ArrayUtil.isEmpty(
 				objectDefinitionAA.getObjectDefinitionSettings()));
+
+		objectDefinitionResource.deleteObjectDefinition(
+			objectDefinitionA.getId());
+		objectDefinitionResource.deleteObjectDefinition(
+			objectDefinitionAA.getId());
+		objectDefinitionResource.deleteObjectDefinition(
+			objectDefinitionB.getId());
 	}
 
 	@TestInfo("LPD-63538")
