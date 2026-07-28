@@ -49,6 +49,8 @@ public class LiferayAssociationsDataCreator extends DataCreator {
 				"Content-Type", ContentTypes.APPLICATION_JSON
 			).put(
 				"OSB-Asah-Data-Source-ID", dataSourceId
+			).put(
+				"OSB-Asah-Project-ID", faroProject.getProjectId()
 			).build());
 
 		options.setLocation(

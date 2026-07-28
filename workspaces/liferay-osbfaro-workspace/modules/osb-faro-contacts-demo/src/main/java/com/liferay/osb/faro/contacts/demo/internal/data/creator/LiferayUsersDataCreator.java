@@ -52,6 +52,8 @@ public class LiferayUsersDataCreator extends DataCreator {
 			).put(
 				"OSB-Asah-Data-Source-ID", _dataSourceId
 			).put(
+				"OSB-Asah-Project-ID", faroProject.getProjectId()
+			).put(
 				"X-Forwarded-For", internet.publicIpV4Address()
 			).build());
 
