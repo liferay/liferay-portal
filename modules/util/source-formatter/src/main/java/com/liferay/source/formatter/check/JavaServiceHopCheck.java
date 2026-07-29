@@ -596,8 +596,9 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 
 	private static final String[][] _ALL_CAPS_STRINGS = {
 		{"CT", "Ct"}, {"COR", "Cor"}, {"CP", "Cp"}, {"CS", "Cs"},
-		{"DDL", "Ddl"}, {"DDM", "Ddm"}, {"DL", "Dl"}, {"MB", "Mb"},
-		{"PK", "Pk"}, {"PLO", "Plo"}, {"SXP", "Sxp"}, {"URL", "Url"}
+		{"DDL", "Ddl"}, {"DDM", "Ddm"}, {"DL", "Dl"}, {"KB", "Kb"},
+		{"MB", "Mb"}, {"PK", "Pk"}, {"PLO", "Plo"}, {"SXP", "Sxp"},
+		{"URL", "Url"}
 	};
 
 	private static final String[] _SIDE_EFFECTING_ANNOTATIONS = {
