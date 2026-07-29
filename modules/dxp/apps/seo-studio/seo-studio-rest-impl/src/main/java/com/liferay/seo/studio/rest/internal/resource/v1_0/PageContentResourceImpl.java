@@ -52,7 +52,7 @@ public class PageContentResourceImpl extends BasePageContentResourceImpl {
 	public PageContent getPageContent(String pageURL) throws Exception {
 		URI uri = new URI(pageURL);
 
-		ObjectEntry objectEntry = _getObjectEntryByHostname(
+		ObjectEntry objectEntry = _getObjectEntry(
 			contextCompany.getCompanyId(), "L_SEO_STUDIO_DOMAIN",
 			uri.getAuthority());
 
@@ -113,7 +113,7 @@ public class PageContentResourceImpl extends BasePageContentResourceImpl {
 		return pageContent;
 	}
 
-	private ObjectEntry _getObjectEntryByHostname(
+	private ObjectEntry _getObjectEntry(
 			long companyId, String externalReferenceCode, String hostname)
 		throws Exception {
 

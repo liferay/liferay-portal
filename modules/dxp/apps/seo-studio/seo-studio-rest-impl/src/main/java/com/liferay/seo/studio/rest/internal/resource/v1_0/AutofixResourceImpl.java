@@ -66,7 +66,7 @@ public class AutofixResourceImpl extends BaseAutofixResourceImpl {
 
 		URI uri = new URI(autofix.getPageURL());
 
-		ObjectEntry objectEntry = _getObjectEntryByHostname(
+		ObjectEntry objectEntry = _getObjectEntry(
 			contextCompany.getCompanyId(), "L_SEO_STUDIO_INSTANCE",
 			uri.getAuthority());
 
@@ -111,7 +111,7 @@ public class AutofixResourceImpl extends BaseAutofixResourceImpl {
 		).build();
 	}
 
-	private ObjectEntry _getObjectEntryByHostname(
+	private ObjectEntry _getObjectEntry(
 			long companyId, String externalReferenceCode, String hostname)
 		throws Exception {
 
