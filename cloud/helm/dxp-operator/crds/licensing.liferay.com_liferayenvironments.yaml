@@ -15,7 +15,25 @@ spec:
         singular: liferayenvironment
     scope: Namespaced
     versions:
-    -   name: v1alpha1
+    -   additionalPrinterColumns:
+        -   jsonPath: .status.phase
+            name: Phase
+            type: string
+        -   jsonPath: .status.conditions[?(@.type=="Activated")].status
+            name: Activated
+            type: string
+        -   jsonPath: .metadata.creationTimestamp
+            name: Age
+            type: date
+        -   jsonPath: .status.environmentId
+            name: Environment-ID
+            priority: 1
+            type: string
+        -   jsonPath: .status.activatedAt
+            name: Activated-At
+            priority: 1
+            type: date
+        name: v1alpha1
         schema:
             openAPIV3Schema:
                 properties:
