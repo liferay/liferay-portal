@@ -27,9 +27,8 @@ public class DefaultBuildUpdaterTest
 		String buildURL = RandomTestUtil.randomString();
 		long queueId = Math.abs(RandomTestUtil.randomLong());
 
-		JSONObject buildJSONObject = new JSONObject();
-
-		buildJSONObject.put(
+		JSONObject buildJSONObject = new JSONObject(
+		).put(
 			"queueId", queueId
 		).put(
 			"url", buildURL

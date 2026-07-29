@@ -599,9 +599,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 					continue;
 				}
 
-				Map<String, String> parameters = _getParameters(itemJSONObject);
-
 				boolean matchingBuildParameters = true;
+
+				Map<String, String> parameters = _getParameters(itemJSONObject);
 
 				for (Map.Entry<String, String> buildParameter :
 						buildParameters.entrySet()) {
