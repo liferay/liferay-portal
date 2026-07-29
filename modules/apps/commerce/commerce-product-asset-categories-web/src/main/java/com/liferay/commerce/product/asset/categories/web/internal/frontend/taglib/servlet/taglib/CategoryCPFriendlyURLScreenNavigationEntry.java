@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -34,6 +35,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+
+import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -93,17 +96,20 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 					_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
 						classNameId, categoryId);
 
+				Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
+
 				titleMapAsXML = friendlyURLEntry.getUrlTitleMapAsXML();
 				urlTitle = friendlyURLEntry.getUrlTitle(
-					themeDisplay.getLanguageId());
+					LocaleUtil.toLanguageId(siteDefaultLocale));
 
 				commerceFriendlyURLSeparator =
 					_cpFriendlyURL.getAssetCategoryURLSeparator(
 						themeDisplay.getCompanyId());
 
+				String groupFriendlyURL = _getGroupFriendlyURL(themeDisplay);
+
 				commerceFriendlyURLBase =
-					_getGroupFriendlyURL(themeDisplay) +
-						commerceFriendlyURLSeparator;
+					groupFriendlyURL + commerceFriendlyURLSeparator;
 
 				LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 					_layoutDisplayPageProviderRegistry.
@@ -112,7 +118,8 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 							AssetCategory.class.getName());
 
 				siteFriendlyURLBase = _getSiteFriendlyURLBase(
-					assetCategory, layoutDisplayPageProvider, themeDisplay);
+					assetCategory, groupFriendlyURL, layoutDisplayPageProvider,
+					siteDefaultLocale);
 				siteFriendlyURLSeparator =
 					layoutDisplayPageProvider.getURLSeparator();
 			}
@@ -149,10 +156,9 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 	}
 
 	private String _getSiteFriendlyURLBase(
-			AssetCategory assetCategory,
-			LayoutDisplayPageProvider<?> layoutDisplayPageProvider,
-			ThemeDisplay themeDisplay)
-		throws PortalException {
+		AssetCategory assetCategory, String groupFriendlyURL,
+		LayoutDisplayPageProvider<?> layoutDisplayPageProvider,
+		Locale siteDefaultLocale) {
 
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
@@ -161,11 +167,10 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 					assetCategory.getCategoryId()));
 
 		String urlTitle = layoutDisplayPageObjectProvider.getURLTitle(
-			themeDisplay.getLocale());
+			siteDefaultLocale);
 
-		return _getGroupFriendlyURL(themeDisplay) +
-			layoutDisplayPageProvider.getURLSeparator() +
-				urlTitle.substring(0, urlTitle.lastIndexOf(CharPool.SLASH) + 1);
+		return groupFriendlyURL + layoutDisplayPageProvider.getURLSeparator() +
+			urlTitle.substring(0, urlTitle.lastIndexOf(CharPool.SLASH) + 1);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
