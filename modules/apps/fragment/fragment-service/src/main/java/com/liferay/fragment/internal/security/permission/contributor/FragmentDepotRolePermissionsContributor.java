@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.style.book.internal.security.permission;
+package com.liferay.fragment.internal.security.permission.contributor;
 
 import com.liferay.depot.constants.DepotRolesConstants;
-import com.liferay.depot.role.contributor.DepotRolePermission;
-import com.liferay.depot.role.contributor.DepotRolePermissionsContributor;
-import com.liferay.style.book.constants.StyleBookActionKeys;
-import com.liferay.style.book.constants.StyleBookConstants;
+import com.liferay.depot.security.permission.contributor.DepotRolePermission;
+import com.liferay.depot.security.permission.contributor.DepotRolePermissionsContributor;
+import com.liferay.fragment.constants.FragmentActionKeys;
+import com.liferay.fragment.constants.FragmentConstants;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Thiago Buarque
  */
 @Component(service = DepotRolePermissionsContributor.class)
-public class StyleBookDepotRolePermissionsContributor
+public class FragmentDepotRolePermissionsContributor
 	implements DepotRolePermissionsContributor {
 
 	@Override
@@ -27,16 +27,16 @@ public class StyleBookDepotRolePermissionsContributor
 		return List.of(
 			new DepotRolePermission(
 				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				StyleBookConstants.RESOURCE_NAME,
-				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES),
+				FragmentConstants.RESOURCE_NAME,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES),
 			new DepotRolePermission(
 				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				StyleBookConstants.RESOURCE_NAME,
-				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES),
+				FragmentConstants.RESOURCE_NAME,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES),
 			new DepotRolePermission(
 				DepotRolesConstants.DESIGN_LIBRARY_OWNER,
-				StyleBookConstants.RESOURCE_NAME,
-				StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES));
+				FragmentConstants.RESOURCE_NAME,
+				FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES));
 	}
 
 }

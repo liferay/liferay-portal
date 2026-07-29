@@ -7,8 +7,8 @@ package com.liferay.depot.internal.roles;
 
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.role.contributor.DepotRolePermission;
-import com.liferay.depot.role.contributor.DepotRolePermissionsContributor;
+import com.liferay.depot.security.permission.contributor.DepotRolePermission;
+import com.liferay.depot.security.permission.contributor.DepotRolePermissionsContributor;
 import com.liferay.depot.util.DepotRoleUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
