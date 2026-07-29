@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -1260,6 +1261,10 @@ public class TaxonomyCategoryResourceImpl
 				urlTitle = assetCategory.getTitle(locale);
 			}
 
+			urlTitle =
+				_friendlyURLNormalizer.normalizeWithEncodingPeriodsAndSlashes(
+					urlTitle);
+
 			uniqueUrlTitleMap.put(
 				languageId,
 				_friendlyURLEntryLocalService.getUniqueUrlTitle(
@@ -1300,6 +1305,9 @@ public class TaxonomyCategoryResourceImpl
 
 	@Reference
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
+
+	@Reference
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
