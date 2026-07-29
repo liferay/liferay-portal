@@ -71,16 +71,34 @@ describe('HistogramCard', () => {
 		expect(screen.getByText('previous-period')).toBeInTheDocument();
 	});
 
-	it('renders the empty state when there are no histograms', async () => {
+	it('renders a hollow chart when there are no histograms', async () => {
 		jest.spyOn(PerformanceService, 'getHistogramMetric').mockResolvedValue({
 			data: {histograms: []},
 			error: null,
 		});
 
-		renderComponent();
+		const {container} = renderComponent();
+
+		expect(await screen.findByText('current-period')).toBeInTheDocument();
+		expect(screen.getByText('previous-period')).toBeInTheDocument();
+		expect(screen.getByText('there-is-no-data')).toBeInTheDocument();
+
+		// The gridlines stay, with no line, no date and no value to read.
 
 		expect(
-			await screen.findByText('no-data-available')
-		).toBeInTheDocument();
+			container.querySelectorAll('.charts-line-chart__gridline').length
+		).toBeGreaterThan(0);
+		expect(
+			container.querySelectorAll('.charts-line-chart__line')
+		).toHaveLength(0);
+		expect(
+			container.querySelectorAll('.charts-line-chart__category-label')
+		).toHaveLength(0);
+
+		for (const tick of container.querySelectorAll(
+			'.charts-line-chart__tick-label'
+		)) {
+			expect(tick).toHaveTextContent('');
+		}
 	});
 });
