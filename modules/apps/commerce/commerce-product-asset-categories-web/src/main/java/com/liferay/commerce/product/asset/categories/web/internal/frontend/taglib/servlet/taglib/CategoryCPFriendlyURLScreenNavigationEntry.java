@@ -7,6 +7,7 @@ package com.liferay.commerce.product.asset.categories.web.internal.frontend.tagl
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryService;
+import com.liferay.commerce.product.asset.categories.web.internal.constants.CPAssetCategoriesWebKeys;
 import com.liferay.commerce.product.url.CPFriendlyURL;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
@@ -126,17 +127,24 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 			_log.error(exception);
 		}
 
-		httpServletRequest.setAttribute("assetCategory", assetCategory);
 		httpServletRequest.setAttribute(
-			"commerceFriendlyURLBase", commerceFriendlyURLBase);
+			CPAssetCategoriesWebKeys.ASSET_CATEGORY, assetCategory);
 		httpServletRequest.setAttribute(
-			"commerceFriendlyURLSeparator", commerceFriendlyURLSeparator);
+			CPAssetCategoriesWebKeys.COMMERCE_FRIENDLY_URL_BASE,
+			commerceFriendlyURLBase);
 		httpServletRequest.setAttribute(
-			"siteFriendlyURLBase", siteFriendlyURLBase);
+			CPAssetCategoriesWebKeys.COMMERCE_FRIENDLY_URL_SEPARATOR,
+			commerceFriendlyURLSeparator);
 		httpServletRequest.setAttribute(
-			"siteFriendlyURLSeparator", siteFriendlyURLSeparator);
-		httpServletRequest.setAttribute("titleMapAsXML", titleMapAsXML);
-		httpServletRequest.setAttribute("urlTitle", urlTitle);
+			CPAssetCategoriesWebKeys.SITE_FRIENDLY_URL_BASE,
+			siteFriendlyURLBase);
+		httpServletRequest.setAttribute(
+			CPAssetCategoriesWebKeys.SITE_FRIENDLY_URL_SEPARATOR,
+			siteFriendlyURLSeparator);
+		httpServletRequest.setAttribute(
+			CPAssetCategoriesWebKeys.TITLE_MAP_AS_XML, titleMapAsXML);
+		httpServletRequest.setAttribute(
+			CPAssetCategoriesWebKeys.URL_TITLE, urlTitle);
 
 		_jspRenderer.renderJSP(
 			_servletContext, httpServletRequest, httpServletResponse,

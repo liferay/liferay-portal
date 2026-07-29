@@ -8,13 +8,13 @@
 <%@ include file="/init.jsp" %>
 
 <%
-AssetCategory category = (AssetCategory)request.getAttribute("assetCategory");
-String commerceFriendlyURLBase = (String)request.getAttribute("commerceFriendlyURLBase");
-String commerceFriendlyURLSeparator = (String)request.getAttribute("commerceFriendlyURLSeparator");
-String siteFriendlyURLBase = (String)request.getAttribute("siteFriendlyURLBase");
-String siteFriendlyURLSeparator = (String)request.getAttribute("siteFriendlyURLSeparator");
-String titleMapAsXML = (String)request.getAttribute("titleMapAsXML");
-String urlTitle = (String)request.getAttribute("urlTitle");
+AssetCategory category = (AssetCategory)request.getAttribute(CPAssetCategoriesWebKeys.ASSET_CATEGORY);
+String commerceFriendlyURLBase = (String)request.getAttribute(CPAssetCategoriesWebKeys.COMMERCE_FRIENDLY_URL_BASE);
+String commerceFriendlyURLSeparator = (String)request.getAttribute(CPAssetCategoriesWebKeys.COMMERCE_FRIENDLY_URL_SEPARATOR);
+String siteFriendlyURLBase = (String)request.getAttribute(CPAssetCategoriesWebKeys.SITE_FRIENDLY_URL_BASE);
+String siteFriendlyURLSeparator = (String)request.getAttribute(CPAssetCategoriesWebKeys.SITE_FRIENDLY_URL_SEPARATOR);
+String titleMapAsXML = (String)request.getAttribute(CPAssetCategoriesWebKeys.TITLE_MAP_AS_XML);
+String urlTitle = (String)request.getAttribute(CPAssetCategoriesWebKeys.URL_TITLE);
 long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
 
 String friendlyURLHelpMessage = LanguageUtil.format(request, "this-text-is-shared-between-sites-and-commerce.-only-the-prefix-changes-x-for-sites-and-x-for-commerce", new String[] {HtmlUtil.escape(siteFriendlyURLSeparator), HtmlUtil.escape(commerceFriendlyURLSeparator)}, false);
