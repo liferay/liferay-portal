@@ -95,7 +95,54 @@ public class CrawlerJobInsightService {
 			long seoStudioScanId = seoStudioScanJSONObject.getLong("id");
 
 			if (state.equals(SEOStudioScanConstants.STATE_COMPLETED)) {
-				_processInsights(seoStudioScanId, seoStudioScanJSONObject);
+				long seoStudioDomainId = _seoStudioService.getSEOStudioDomainId(
+					seoStudioScanJSONObject);
+
+				JSONObject seoStudioDomainJSONObject =
+					_seoStudioService.fetchSEOStudioDomainJSONObject(
+						seoStudioDomainId);
+
+				if (seoStudioDomainJSONObject == null) {
+					_seoStudioService.patchSEOStudioScan(
+						"Unable to get a domain for SEO Studio domain ID " +
+							seoStudioDomainId,
+						seoStudioScanId, SEOStudioScanConstants.STATE_FAILED);
+
+					continue;
+				}
+
+				List<CrawlHit> crawlHits = _seoStudioService.getCrawlHits(
+					seoStudioDomainId);
+
+				if (ListUtil.isEmpty(crawlHits)) {
+					_seoStudioService.patchSEOStudioScan(
+						"Unable to get crawl hits for SEO Studio domain ID " +
+							seoStudioDomainId,
+						seoStudioScanId, SEOStudioScanConstants.STATE_FAILED);
+
+					continue;
+				}
+
+				String domainURL = _seoStudioService.toDomainURL(
+					_seoStudioService.toCrawlURI(
+						seoStudioDomainJSONObject.getString("hostname")));
+
+				JSONObject orphanPagesInsightJSONObject =
+					_getOrphanPagesInsightJSONObject(
+						crawlHits, domainURL, seoStudioScanId);
+
+				if (orphanPagesInsightJSONObject != null) {
+					long accountEntryId = seoStudioScanJSONObject.getLong(
+						"r_accountToSEOStudioScans_accountEntryId");
+
+					_seoStudioService.postSEOStudioScanInsightsBatch(
+						accountEntryId, orphanPagesInsightJSONObject,
+						seoStudioScanId);
+				}
+
+				_seoStudioService.patchSEOStudioScan(
+					null, seoStudioScanId,
+					SEOStudioScanConstants.STATE_COMPLETED);
 			}
 			else if (state.equals(SEOStudioScanConstants.STATE_FAILED)) {
 				String errorMessage = null;
@@ -106,7 +153,9 @@ public class CrawlerJobInsightService {
 				else {
 					JobStatus jobStatus = job.getStatus();
 
-					for (JobCondition jobCondition : jobStatus.getConditions()) {
+					for (JobCondition jobCondition :
+							jobStatus.getConditions()) {
+
 						if (!Objects.equals(jobCondition.getType(), "Failed") ||
 							!Objects.equals(jobCondition.getStatus(), "True")) {
 
@@ -206,57 +255,6 @@ public class CrawlerJobInsightService {
 		).put(
 			"severity", "2"
 		);
-	}
-
-	private void _processInsights(
-			long seoStudioScanId, JSONObject seoStudioScanJSONObject)
-		throws Exception {
-
-		long seoStudioDomainId = _seoStudioService.getSEOStudioDomainId(
-			seoStudioScanJSONObject);
-
-		JSONObject seoStudioDomainJSONObject =
-			_seoStudioService.fetchSEOStudioDomainJSONObject(seoStudioDomainId);
-
-		if (seoStudioDomainJSONObject == null) {
-			_seoStudioService.patchSEOStudioScan(
-				"Unable to get a domain for SEO Studio domain ID " +
-					seoStudioDomainId,
-				seoStudioScanId, SEOStudioScanConstants.STATE_FAILED);
-
-			return;
-		}
-
-		List<CrawlHit> crawlHits = _seoStudioService.getCrawlHits(
-			seoStudioDomainId);
-
-		if (ListUtil.isEmpty(crawlHits)) {
-			_seoStudioService.patchSEOStudioScan(
-				"Unable to get crawl hits for SEO Studio domain ID " +
-					seoStudioDomainId,
-				seoStudioScanId, SEOStudioScanConstants.STATE_FAILED);
-
-			return;
-		}
-
-		String domainURL = _seoStudioService.toDomainURL(
-			_seoStudioService.toCrawlURI(
-				seoStudioDomainJSONObject.getString("hostname")));
-
-		JSONObject orphanPagesInsightJSONObject =
-			_getOrphanPagesInsightJSONObject(
-				crawlHits, domainURL, seoStudioScanId);
-
-		if (orphanPagesInsightJSONObject != null) {
-			long accountEntryId = seoStudioScanJSONObject.getLong(
-				"r_accountToSEOStudioScans_accountEntryId");
-
-			_seoStudioService.postSEOStudioScanInsightsBatch(
-				accountEntryId, orphanPagesInsightJSONObject, seoStudioScanId);
-		}
-
-		_seoStudioService.patchSEOStudioScan(
-			null, seoStudioScanId, SEOStudioScanConstants.STATE_COMPLETED);
 	}
 
 	private static final Log _log = LogFactory.getLog(
