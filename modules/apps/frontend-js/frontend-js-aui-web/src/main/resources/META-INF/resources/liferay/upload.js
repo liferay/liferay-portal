@@ -524,6 +524,15 @@ AUI.add(
 				_handleDrop(event) {
 					const instance = this;
 
+					const dataTransfer = event._event.dataTransfer;
+
+					const dragDropFiles =
+						dataTransfer && AArray(dataTransfer.files);
+
+					if (!dragDropFiles || !dragDropFiles.length) {
+						return;
+					}
+
 					event.halt();
 
 					const uploaderBoundingBox = instance._uploaderBoundingBox;
@@ -532,15 +541,9 @@ AUI.add(
 
 					const uploader = instance._uploader;
 
-					const dataTransfer = event._event.dataTransfer;
-
-					const dragDropFiles =
-						dataTransfer && AArray(dataTransfer.files);
-
 					if (
-						dragDropFiles &&
-						(target === uploaderBoundingBox ||
-							uploaderBoundingBox.contains(target))
+						target === uploaderBoundingBox ||
+						uploaderBoundingBox.contains(target)
 					) {
 						event.fileList = dragDropFiles.map((item) => {
 							return new A.FileHTML5(item);
