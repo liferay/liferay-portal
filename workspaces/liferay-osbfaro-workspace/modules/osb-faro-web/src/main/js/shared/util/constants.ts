@@ -39,6 +39,24 @@ export enum AssetTypes {
 	WebPage = 'Page',
 }
 
+/**
+ * Application ids produced by Liferay DXP itself. Everything else comes from an
+ * external data source (a webhook), which the activity stream both labels
+ * differently and leaves ungrouped, since only DXP events are page bound.
+ */
+export const LIFERAY_DXP_APPLICATION_IDS = new Set([
+	'Blog',
+	'Comment',
+	'CustomEvent',
+	'Document',
+	'Form',
+	'Layout',
+	'ObjectEntry',
+	'Page',
+	'Ratings',
+	'WebContent',
+]);
+
 export enum ChannelPermissionTypes {
 	AllUsers = 0,
 	SelectUsers = 1,

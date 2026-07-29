@@ -1,355 +1,245 @@
-@use 'sass:math';
+// The activity stream renders as a list of rows — day, session, visited page and
+// event — each one revealing the next level when expanded. Rows are separated by
+// a full width border, and every level is indented one step further than the one
+// that contains it.
 
 .vertical-timeline-root {
-	$borderSize1: 1px;
+	$rowIndent: $baseline * 3;
+	$timeColumnWidth: 76px;
 
 	width: 100%;
 
-	.label-root {
-		color: $mainLighten28;
-		font-size: $fontSizeMedium;
-		font-weight: $fontWeightSemiBold;
-	}
-
-	.timeline-item {
-		.timeline-panel-body {
-			.entity-link {
-				margin-right: 4px;
-			}
-
-			.title {
-				font-weight: $fontWeightSemiBold;
-				line-height: 1;
-			}
-		}
-	}
-
-	.timeline-nested {
-		background-color: $white;
-		padding: 1px 0;
-
-		.timeline-increment {
-			top: 22px;
-
-			.timeline-item-label {
-				color: $mainLighten28;
-				font-size: inherit;
-				left: 30px;
-				margin: 0;
-				width: auto;
-			}
-
-			> .sticker-point {
-				background-color: $mainLighten28;
-				height: 12px;
-				width: 12px;
-			}
-		}
-
-		> .timeline-item {
-			background-color: $white;
-			width: 100%;
-
-			&:not(.expanded) {
-				.timeline-panel-body-content {
-					&.selectable:hover {
-						background-color: $secondaryHover;
-					}
-				}
-			}
-
-			.timeline-panel-body {
-				.timeline-panel-body-content {
-					&.selectable {
-						padding-top: 16px;
-
-						> .icon-root {
-							align-self: normal;
-						}
-					}
-
-					.description {
-						color: $mainLighten28;
-						font-weight: $fontWeightSemiBold;
-						line-height: 18px;
-					}
-
-					.timeline-panel-body-content-details {
-						max-width: none;
-						width: auto;
-					}
-
-					.title {
-						line-height: 1;
-
-						.text-truncate {
-							line-height: normal;
-							margin-bottom: 8px;
-						}
-					}
-				}
-			}
-
-			&.header:first-child {
-				&:before {
-					visibility: visible;
-				}
-			}
-		}
-	}
-
-	.timeline-panel {
-		background-color: transparent;
-	}
-
-	.timeline-panel-body {
+	.timeline-rows {
+		list-style: none;
+		margin: 0;
 		padding: 0;
-		position: relative;
 
-		.item-count {
+		// A nested list's own top border separates the expanded row (a session
+		// or a page) from its first child, since the row's border-bottom only
+		// closes off the whole expanded subtree, not its own header line.
+
+		&.nested {
+			border-top: 1px solid $mainLighten74;
+		}
+	}
+
+	.timeline-row {
+		border-bottom: 1px solid $mainLighten74;
+
+		&:last-child {
+			border-bottom: 0;
+		}
+
+		.row-main {
+			cursor: pointer;
+			padding: $baseline * 2;
+
+			&:hover {
+				background-color: $primaryLighten45;
+			}
+		}
+
+		.row-time {
 			font-size: $fontSizeSmall;
-			margin-left: 6px;
+			width: $timeColumnWidth;
+		}
+
+		.row-icon {
+			font-size: $fontSizeMedium;
+		}
+
+		.row-content {
+			min-width: 0;
+			overflow-x: clip;
+		}
+
+		.row-details {
+			gap: $baseline * 2;
+		}
+
+		.title {
+			font-size: $fontSizeSmall;
+			font-weight: $fontWeightSemiBold;
+			line-height: 1.4;
 		}
 
 		.description,
+		.description-link,
 		.subtitle {
-			color: $mainLighten28;
-
-			span:not(:first-child) {
-				margin-left: 8px;
-			}
+			font-size: $fontSizeSmall;
 		}
 
 		.subtitle {
-			align-items: center;
-			display: inline-flex;
-			max-width: 100%;
-
 			.text-truncate {
-				display: block;
 				min-width: 0;
 			}
 		}
 
-		.timeline-panel-body-content {
+		.attributes-payload {
+			border-top: 1px solid $mainLighten74;
+			font-family: monospace;
+			font-size: $fontSizeExtraSmall;
+			padding: ($baseline * 2) ($baseline * 2) ($baseline * 2)
+				$timeColumnWidth + $baseline * 2;
+			white-space: pre-wrap;
+		}
+	}
+
+	// The count of events a row stands for, shown on the day, session and page
+	// rows.
+
+	.event-count-pill {
+		border: 1px solid $mainLighten74;
+		border-radius: 4px;
+		font-size: $fontSizeSmall;
+		padding: 2px 6px;
+	}
+
+	.data-source-label {
+		font-size: $fontSizeSmall;
+	}
+
+	.device-icon {
+		.icon-root {
+			font-size: $fontSizeMedium;
+		}
+	}
+
+	.day-row {
+		.title {
+			font-size: $fontSizeMedium;
+			margin-right: 12px;
+		}
+	}
+
+	// A plain, unexpandable row — no `.row-main`, so it needs its own padding —
+	// showing which individual the sessions below it belong to.
+
+	.individual-row {
+		padding: $baseline * 2;
+
+		.row-content {
+			gap: $baseline * 2;
+		}
+
+		.individual-sticker {
+			flex-shrink: 0;
+		}
+
+		.individual-info {
+			align-items: flex-start;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+			min-width: 0;
+		}
+
+		.individual-id {
+			word-break: break-all;
+		}
+	}
+
+	.session-row {
+		// The session row is a single line — title, labels and the angle icon all
+		// belong on the same line, so they're vertically centered together
+		// instead of the default top alignment other rows use for their taller,
+		// multi-line content.
+
+		.row-main {
+			align-items: center !important;
+		}
+
+		// The session row has no time column for the payload to align under, so
+		// it only needs the row's own base indent.
+
+		.attributes-payload {
+			padding-left: $baseline * 2;
+		}
+	}
+
+	.page-row,
+	.event-row {
+		.row-content {
+			display: flex;
+			flex-direction: column;
+			row-gap: 4px;
+		}
+
+		.event-count-pill {
+			align-self: flex-start;
+		}
+	}
+
+	// Time, icon and title share one line; the URL and pill stack below it,
+	// indented to align with the title.
+
+	.page-row {
+		.page-row-header {
 			align-items: center;
 			display: flex;
-			padding: 0 1rem 1rem 150px;
-
-			.sticker-container + .timeline-panel-body-content-text {
-				margin-left: 16px;
-			}
-
-			.timeline-panel-body-content-details {
-				align-items: flex-end;
-				display: flex;
-				justify-content: space-between;
-				margin-left: auto;
-				max-width: 30%;
-
-				.icon-group {
-					display: flex;
-
-					.device-icon {
-						height: 25px;
-						margin-left: 42px;
-						width: 25px;
-
-						.icon-root {
-							font-size: $fontSizeMedium;
-						}
-					}
-
-					.label-info {
-						background-color: $cadmin-info-l2;
-						border-color: $cadmin-info-l2;
-						color: $cadmin-info-d1;
-						padding: 2px;
-					}
-
-					.label-item {
-						border-radius: 0.25rem;
-						border-width: 0.0625rem;
-						font-size: 0.75rem;
-						letter-spacing: math.div(
-							$fontSizeExtraSmall * -0.2,
-							13
-						);
-						padding: 0.125rem 0.25rem;
-						text-transform: none;
-					}
-
-					.label-success {
-						background-color: $cadmin-success-l2;
-						border-color: $cadmin-success-l2;
-						color: $cadmin-success-d1;
-						padding: 2px;
-					}
-				}
-			}
-
-			.attributes-payload {
-				color: $mainLighten28;
-				font-family: monospace;
-				font-size: 12px;
-				white-space: pre-wrap;
-				width: 100%;
-			}
-
-			.timeline-panel-body-content-text {
-				overflow-x: clip;
-
-				.event-icon {
-					margin-left: 40px;
-				}
-			}
-
-			&.selectable {
-				padding-bottom: 16px;
-				padding-top: 24px;
-
-				&:hover {
-					cursor: pointer;
-
-					> .icon-root {
-						visibility: visible;
-					}
-				}
-
-				> .icon-root {
-					fill: $mainLighten28;
-					visibility: hidden;
-				}
-
-				.timeline-panel-body-content-text {
-					&:not(.header) {
-						width: 100%;
-					}
-				}
-			}
-		}
-
-		.title {
-			color: $main;
-
-			a {
-				color: $main;
-				font-weight: $fontWeightSemiBold;
-			}
-		}
-	}
-
-	.timeline-item {
-		margin: 0;
-		padding: 0;
-		width: 100%;
-
-		&.expanded {
-			background-color: $primaryLighten45;
-		}
-
-		&.header {
-			background-color: $white;
-			border-bottom: $borderSize1 solid $mainLighten74;
-			margin-bottom: 8px;
-			padding-bottom: 8px;
-			padding-top: 1rem;
-
-			.timeline-panel-body-content {
-				padding: 8px 24px;
-			}
+			gap: $baseline * 2;
 
 			.title {
-				font-size: 16px;
+				flex: 0 1 auto;
+				min-width: 0;
 			}
 		}
 
-		&.user-header {
-			background-color: $white;
-
-			.timeline-panel-body-content.user-header-content {
-				align-items: center;
-				display: flex;
-				padding: 8px 24px 0;
-
-				.user-header-name {
-					color: $primary;
-					font-weight: $fontWeightSemiBold;
-				}
-			}
-		}
-
-		&:not(.header):not(.expanded) {
-			> .timeline-panel {
-				> .timeline-panel-body {
-					.timeline-panel-body-content {
-						&.selectable:hover {
-							background-color: $secondaryHover;
-						}
-					}
-				}
-			}
-		}
-
-		.timeline-line {
-			background-color: $mainLighten52;
-			height: calc(100% + #{$borderSize1});
-			left: 35px;
-			pointer-events: none;
-			position: absolute;
-			width: 2px;
-		}
-
-		&:before {
-			visibility: hidden;
-		}
-	}
-
-	.timeline-item.group-end
-		.timeline-nested
-		> .timeline-item:last-child
-		.timeline-line {
-		height: 26px;
-	}
-
-	.timeline-item.group-start
-		> .timeline-panel
-		> .timeline-panel-body
-		> .timeline-line {
-		height: calc(100% - 33px);
-		top: 34px;
-	}
-
-	.timeline-increment {
-		background-color: transparent;
-		left: 36px;
-		pointer-events: none;
-		top: 34px;
-
-		> .sticker-point {
-			background-color: $primary;
-			border: 2px solid $white;
-			height: 22px;
-			width: 22px;
-		}
-
-		&.timeline-increment-dxp {
-			> .sticker-point {
-				background-color: $primary;
-			}
-		}
-
-		&.timeline-increment-webhook {
-			> .sticker-point {
-				background-color: $cadmin-teal-l1;
-			}
-		}
-
-		.timeline-time-label {
+		.page-info {
 			display: flex;
-			left: 34px;
-			margin: unset;
-			white-space: pre;
+			flex-direction: column;
+			margin-left: $timeColumnWidth + $baseline * 6;
+			row-gap: $baseline;
+		}
+	}
+
+	// The event row follows the same layout as the page row: time and title
+	// share one line, and the details stack below, indented to align with the
+	// title.
+
+	.event-row {
+		.event-header {
+			align-items: center;
+			display: flex;
+			gap: $baseline * 2;
+
+			.title {
+				flex: 0 1 auto;
+				min-width: 0;
+			}
+		}
+
+		.event-info {
+			display: flex;
+			flex-direction: column;
+			margin-left: $timeColumnWidth + $baseline * 2; // time gap
+			row-gap: 4px;
+		}
+
+		.attributes-payload {
+			padding-left: $baseline * 8;
+		}
+	}
+
+	// Each nested list steps one indent further in, so the session, its pages and
+	// their events read as a hierarchy without needing a connecting line.
+
+	.timeline-rows.nested {
+		> .timeline-row > .row-main {
+			padding-left: $baseline * 2 + $rowIndent;
+		}
+
+		.timeline-rows.nested > .timeline-row > .row-main {
+			padding-left: $baseline * 2 + $rowIndent * 2;
+		}
+
+		// The event row's left padding matches the page row's, regardless of
+		// whether the event is nested under a page group or sits loose directly
+		// under a session.
+
+		> .timeline-row.event-row > .row-main,
+		.timeline-rows.nested > .timeline-row.event-row > .row-main {
+			padding-left: $baseline * 2 + $rowIndent;
 		}
 	}
 }

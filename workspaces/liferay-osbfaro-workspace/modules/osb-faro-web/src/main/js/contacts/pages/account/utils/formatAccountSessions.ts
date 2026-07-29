@@ -1,53 +1,94 @@
-import moment from 'moment';
 import {AccountUserSession} from 'shared/queries/AccountUserSessionQuery';
 import {EventDashboardContext} from 'shared/util/getEventDashboardUrl';
 import {
-	formatEvents,
-	formatGroupingTime,
-	markGroupBoundaries,
+	groupBy,
+	groupEventsByPage,
+	groupSessionsByDay,
+	isWebhookUserAgent,
+	VerticalTimelineHeader,
+	VerticalTimelineIndividual,
+	VerticalTimelineSession,
 } from 'shared/util/activities';
 import {Routes, toRoute} from 'shared/util/router';
 import {UserSessionEvent} from 'shared/queries/UserSessionQuery';
 
 const ANONYMOUS_KEY = '__anonymous__';
 
-type VerticalTimelineItem = Record<string, unknown>;
+/**
+ * Resolves the individual shown ahead of their sessions. A session that
+ * carries an `individualId` is a known individual (the user icon); one
+ * without is anonymous (the anonymize icon). An anonymous session always
+ * displays the generic "Anonymous User" label — never the tracked
+ * `userName`, which would otherwise read as if the visitor were identified —
+ * and its raw id goes on a second line, since the anonymous label carries no
+ * information on its own. Either way the name links to the profile page — by
+ * `individualId` when present, otherwise by `userId` — as long as one of the
+ * two ids is available.
+ */
+const getIndividual = (
+	{individualId, userId, userName}: AccountUserSession,
+	{channelId, groupId}: EventDashboardContext
+): VerticalTimelineIndividual => {
+	const isAnonymous = !individualId;
+
+	const linkId = individualId || userId;
+
+	return {
+		...(isAnonymous && userId && {individualId: userId}),
+		individual: true,
+		individualName: isAnonymous
+			? Liferay.Language.get('anonymous-user')
+			: userName || userId || '',
+		...(linkId &&
+			channelId &&
+			groupId && {
+				individualUrl: toRoute(Routes.CONTACTS_INDIVIDUAL, {
+					channelId,
+					groupId,
+					id: linkId,
+				}),
+			}),
+		isAnonymous,
+	};
+};
 
 const toSessionItem = (
 	session: AccountUserSession,
 	context: EventDashboardContext
-): VerticalTimelineItem => ({
-	applicationId: session.events?.[0]?.applicationId ?? '',
-	attributes: {
-		contentLanguageId: session.contentLanguageId,
-		devicePixelRatio: session.devicePixelRatio,
-		header: Liferay.Language.get('session-attributes'),
-		languageId: session.languageId,
-		screenHeight: session.screenHeight,
-		screenWidth: session.screenWidth,
-		timezoneOffset: session.timezoneOffset,
+): VerticalTimelineSession => {
+	const events = (session.events ?? []) as unknown as UserSessionEvent[];
+
+	return {
+		applicationId: events[0]?.applicationId ?? '',
+		attributes: {
+			contentLanguageId: session.contentLanguageId,
+			devicePixelRatio: session.devicePixelRatio,
+			header: Liferay.Language.get('session-attributes'),
+			languageId: session.languageId,
+			screenHeight: session.screenHeight,
+			screenWidth: session.screenWidth,
+			timezoneOffset: session.timezoneOffset,
+			userAgent: session.userAgent,
+		},
+		browserName: session.browserName,
+		device: session.deviceType,
+		endTime: session.completeDate,
+		nestedItems: groupEventsByPage(events, session.userAgent, context),
+		noTimestamps: isWebhookUserAgent(session.userAgent),
+		session: true,
+		time: session.createDate,
+		totalEvents: events.length,
 		userAgent: session.userAgent,
-	},
-	browserName: session.browserName,
-	device: session.deviceType,
-	endTime: session.completeDate,
-	nestedItems: formatEvents(
-		(session.events ?? []) as unknown as UserSessionEvent[],
-		session.userAgent,
-		context
-	),
-	time: session.createDate,
-	userAgent: session.userAgent,
-});
+	};
+};
 
 /**
- * Formats account user sessions for the shared VerticalTimeline component. The
- * sessions are grouped by day and then by individual, so each day renders a
- * header per individual followed by that individual's sessions. A session that
- * carries an `individualId` is resolved (the user icon); one without is
- * anonymous (the anonymize icon). Either way the header links to the profile
- * page — by `individualId` when present, otherwise by `userId` — as long as one
- * of the two ids is available.
+ * Formats account user sessions for the shared VerticalTimeline. The sessions
+ * are grouped by day and then by individual: a plain, unexpandable individual
+ * row comes first, followed by that individual's sessions for the day. Inside
+ * each session the events are grouped by the page they happened on (see
+ * `groupEventsByPage`), so the stream reads as a list of visited pages rather
+ * than a list of raw events.
  *
  * Unlike the individual timeline's shared `formatSessions`, this reads the
  * correct session field names, so account session attributes populate.
@@ -55,81 +96,39 @@ const toSessionItem = (
 export const formatAccountSessions = (
 	sessions: AccountUserSession[] = [],
 	context: EventDashboardContext = {}
-): VerticalTimelineItem[] => {
-	const sessionsByDay = new Map<string, AccountUserSession[]>();
+): (
+	| VerticalTimelineHeader
+	| VerticalTimelineIndividual
+	| VerticalTimelineSession
+)[] => {
+	const items: (
+		| VerticalTimelineHeader
+		| VerticalTimelineIndividual
+		| VerticalTimelineSession
+	)[] = [];
 
-	sessions.forEach((session) => {
-		const dayKey = moment.utc(session.createDate).startOf('day').format();
+	groupSessionsByDay(sessions).forEach(({daySessions, header}) => {
+		items.push(header);
 
-		const daySessions = sessionsByDay.get(dayKey) ?? [];
+		const sessionsByIndividual = groupBy(
+			daySessions,
+			(session) =>
+				session.individualId ??
+				session.userId ??
+				session.userName ??
+				ANONYMOUS_KEY
+		);
 
-		daySessions.push(session);
+		sessionsByIndividual.forEach((individualSessions) => {
+			items.push(getIndividual(individualSessions[0], context));
 
-		sessionsByDay.set(dayKey, daySessions);
-	});
-
-	const orderedDays = Array.from(sessionsByDay.keys()).sort(
-		(a, b) => moment(b).unix() - moment(a).unix()
-	);
-
-	const items: VerticalTimelineItem[] = [];
-
-	orderedDays.forEach((dayKey) => {
-		const daySessions = sessionsByDay.get(dayKey) ?? [];
-
-		items.push({
-			header: true,
-			title: formatGroupingTime(dayKey),
-			totalEvents: daySessions.reduce(
-				(total, {events}) => total + (events?.length ?? 0),
-				0
-			),
-		});
-
-		const sessionsByUser = new Map<string, AccountUserSession[]>();
-
-		daySessions.forEach((session) => {
-			const userKey = session.userId ?? session.userName ?? ANONYMOUS_KEY;
-
-			const userSessions = sessionsByUser.get(userKey) ?? [];
-
-			userSessions.push(session);
-
-			sessionsByUser.set(userKey, userSessions);
-		});
-
-		sessionsByUser.forEach((userSessions) => {
-			const {individualId, userId, userName} = userSessions[0];
-
-			const linkId = individualId || userId;
-
-			items.push({
-				isAnonymous: !individualId,
-				title: userName || userId || Liferay.Language.get('anonymous'),
-				userHeader: true,
-				userHeaderUrl:
-					linkId && context.channelId && context.groupId
-						? toRoute(Routes.CONTACTS_INDIVIDUAL, {
-								channelId: context.channelId,
-								groupId: context.groupId,
-								id: linkId,
-							})
-						: undefined,
-			});
-
-			userSessions
-				.sort(
-					(a, b) =>
-						moment(b.createDate).valueOf() -
-						moment(a.createDate).valueOf()
-				)
-				.forEach((session) =>
-					items.push(toSessionItem(session, context))
-				);
+			individualSessions.forEach((session) =>
+				items.push(toSessionItem(session, context))
+			);
 		});
 	});
 
-	return markGroupBoundaries(items);
+	return items;
 };
 
 export default formatAccountSessions;
