@@ -67,7 +67,6 @@ public class FragmentEntryLinkCTDisplayRenderTest {
 	public void setUp() throws Exception {
 		_company = _companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
-
 		_group = GroupTestUtil.addGroup();
 	}
 
@@ -127,7 +126,6 @@ public class FragmentEntryLinkCTDisplayRenderTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			ContentLayoutTestUtil.getMockHttpServletRequest(
 				_company, _group, LayoutTestUtil.addTypeContentLayout(_group));
-
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
