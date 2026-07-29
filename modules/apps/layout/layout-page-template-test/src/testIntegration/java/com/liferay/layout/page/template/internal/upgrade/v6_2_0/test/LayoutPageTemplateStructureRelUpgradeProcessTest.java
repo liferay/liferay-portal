@@ -18,17 +18,23 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
+import com.liferay.portal.kernel.lock.LockManager;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
@@ -51,8 +57,10 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 
 	@ClassRule
 	@Rule
-	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
-		new LiferayIntegrationTestRule();
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	public void setUp() throws Exception {
@@ -304,6 +312,83 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 		Assert.assertEquals(data, layoutPageTemplateStructureRel.getData());
 	}
 
+	@Test
+	@TestInfo("LPD-97443")
+	public void testUpgradeUnlocksLayoutsAndRepairsOrphanedLayoutPageTemplateStructureRel()
+		throws Exception {
+
+		Layout layout1 = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout1 = layout1.fetchDraftLayout();
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_fetchLayoutPageTemplateStructure(draftLayout1);
+
+		long defaultSegmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout1.getPlid());
+
+		LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
+			_fetchLayoutPageTemplateStructureRel(
+				layoutPageTemplateStructure, defaultSegmentsExperienceId);
+
+		String data = layoutPageTemplateStructureRel.getData();
+
+		_orphanLayoutPageTemplateStructureRel(
+			layoutPageTemplateStructure, defaultSegmentsExperienceId);
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			_segmentsExperienceLocalService.getSegmentsExperience(
+				defaultSegmentsExperienceId));
+
+		Layout layout2 = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout2 = layout2.fetchDraftLayout();
+
+		_user = UserTestUtil.addUser();
+
+		_lockManager.lock(
+			_user.getUserId(), Layout.class.getName(), draftLayout1.getPlid(),
+			null, false, Time.HOUR);
+		_lockManager.lock(
+			_user.getUserId(), Layout.class.getName(), draftLayout2.getPlid(),
+			null, false, Time.HOUR);
+
+		try {
+			_runUpgrade();
+
+			Assert.assertNull(
+				_lockManager.fetchLock(
+					Layout.class.getName(), draftLayout1.getPlid()));
+			Assert.assertNull(
+				_lockManager.fetchLock(
+					Layout.class.getName(), draftLayout2.getPlid()));
+
+			Assert.assertNull(
+				_fetchLayoutPageTemplateStructureRel(
+					layoutPageTemplateStructure,
+					SegmentsExperienceConstants.ID_DEFAULT));
+
+			defaultSegmentsExperienceId =
+				_segmentsExperienceLocalService.
+					fetchDefaultSegmentsExperienceId(draftLayout1.getPlid());
+
+			Assert.assertNotEquals(
+				SegmentsExperienceConstants.ID_DEFAULT,
+				defaultSegmentsExperienceId);
+
+			layoutPageTemplateStructureRel =
+				_fetchLayoutPageTemplateStructureRel(
+					layoutPageTemplateStructure, defaultSegmentsExperienceId);
+
+			Assert.assertEquals(data, layoutPageTemplateStructureRel.getData());
+		}
+		finally {
+			_lockManager.unlock(Layout.class.getName(), draftLayout1.getPlid());
+			_lockManager.unlock(Layout.class.getName(), draftLayout2.getPlid());
+		}
+	}
+
 	private CTCollection _addCTCollection() throws Exception {
 		return _ctCollectionLocalService.addCTCollection(
 			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
@@ -377,6 +462,9 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 		_layoutPageTemplateStructureRelLocalService;
 
 	@Inject
+	private LockManager _lockManager;
+
+	@Inject
 	private MultiVMPool _multiVMPool;
 
 	@Inject
@@ -386,5 +474,8 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 		filter = "(&(component.name=com.liferay.layout.page.template.internal.upgrade.registry.LayoutPageTemplateServiceUpgradeStepRegistrator))"
 	)
 	private UpgradeStepRegistrator _upgradeStepRegistrator;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
