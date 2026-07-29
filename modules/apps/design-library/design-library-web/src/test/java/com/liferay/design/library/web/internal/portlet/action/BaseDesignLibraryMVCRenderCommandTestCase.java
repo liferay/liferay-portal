@@ -8,7 +8,7 @@ package com.liferay.design.library.web.internal.portlet.action;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryService;
-import com.liferay.design.library.web.internal.constants.DesignLibraryConstants;
+import com.liferay.design.library.web.internal.constants.DesignLibraryWebKeys;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -95,7 +95,7 @@ public abstract class BaseDesignLibraryMVCRenderCommandTestCase {
 		Assert.assertSame(
 			depotEntry,
 			mockRenderRequest.getAttribute(
-				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY));
+				DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY));
 	}
 
 	@Test
@@ -142,7 +142,7 @@ public abstract class BaseDesignLibraryMVCRenderCommandTestCase {
 
 		Assert.assertNull(
 			mockRenderRequest.getAttribute(
-				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY));
+				DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY));
 		Assert.assertTrue(
 			SessionErrors.contains(
 				mockRenderRequest,
@@ -163,8 +163,7 @@ public abstract class BaseDesignLibraryMVCRenderCommandTestCase {
 		mockRenderRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
 
 		mockRenderRequest.setParameter(
-			DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
-			String.valueOf(depotEntryId));
+			"designLibraryEntryId", String.valueOf(depotEntryId));
 
 		return mockRenderRequest;
 	}

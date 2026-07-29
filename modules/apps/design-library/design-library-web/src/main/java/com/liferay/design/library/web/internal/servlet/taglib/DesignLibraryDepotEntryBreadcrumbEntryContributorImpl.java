@@ -9,7 +9,6 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
-import com.liferay.design.library.web.internal.constants.DesignLibraryConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -173,8 +172,7 @@ public class DesignLibraryDepotEntryBreadcrumbEntryContributorImpl
 			).setMVCRenderCommandName(
 				"/design_library/view_resources_design_library"
 			).setParameter(
-				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
-				depotEntry.getDepotEntryId()
+				"designLibraryEntryId", depotEntry.getDepotEntryId()
 			).buildString());
 
 		return breadcrumbEntry;

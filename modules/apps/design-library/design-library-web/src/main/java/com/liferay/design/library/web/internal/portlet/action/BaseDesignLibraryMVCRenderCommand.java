@@ -8,7 +8,7 @@ package com.liferay.design.library.web.internal.portlet.action;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryService;
-import com.liferay.design.library.web.internal.constants.DesignLibraryConstants;
+import com.liferay.design.library.web.internal.constants.DesignLibraryWebKeys;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -38,8 +38,7 @@ public abstract class BaseDesignLibraryMVCRenderCommand
 
 		try {
 			long designLibraryEntryId = ParamUtil.getLong(
-				renderRequest,
-				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY);
+				renderRequest, "designLibraryEntryId");
 
 			DepotEntry depotEntry = depotEntryService.getDepotEntry(
 				designLibraryEntryId);
@@ -61,7 +60,7 @@ public abstract class BaseDesignLibraryMVCRenderCommand
 			checkPermissions(permissionChecker, depotEntry);
 
 			renderRequest.setAttribute(
-				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY, depotEntry);
+				DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY, depotEntry);
 		}
 		catch (PrincipalException principalException) {
 			SessionErrors.add(renderRequest, principalException.getClass());

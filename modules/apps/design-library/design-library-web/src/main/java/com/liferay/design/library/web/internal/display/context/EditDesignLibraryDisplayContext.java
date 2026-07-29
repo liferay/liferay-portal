@@ -6,7 +6,6 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.design.library.web.internal.constants.DesignLibraryConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -73,8 +72,7 @@ public class EditDesignLibraryDisplayContext {
 		).setMVCRenderCommandName(
 			"/design_library/view_resources_design_library"
 		).setParameter(
-			DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
-			_depotEntry.getDepotEntryId()
+			"designLibraryEntryId", _depotEntry.getDepotEntryId()
 		).buildString();
 	}
 
