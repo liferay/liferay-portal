@@ -837,14 +837,38 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 			throw new LockedLayoutException();
 		}
 
+		// Layout page template entry
+
+		long classTypeId = LayoutPageTemplateEntryUtil.getClassTypeId(
+			classNameId, classTypeKey, layoutPageTemplateEntry.getGroupId());
+
 		layoutPageTemplateEntry.setModifiedDate(new Date());
 		layoutPageTemplateEntry.setClassNameId(classNameId);
-		layoutPageTemplateEntry.setClassTypeId(
-			layoutPageTemplateEntry.getClassTypeId());
+		layoutPageTemplateEntry.setClassTypeId(classTypeId);
 		layoutPageTemplateEntry.setClassTypeKey(classTypeKey);
 
-		return layoutPageTemplateEntryLocalService.
-			updateLayoutPageTemplateEntry(layoutPageTemplateEntry);
+		layoutPageTemplateEntry =
+			layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
+				layoutPageTemplateEntry);
+
+		// Dynamic data mapping structure link
+
+		long layoutPageTemplateEntryClassNameId =
+			_classNameLocalService.getClassNameId(
+				LayoutPageTemplateEntry.class);
+
+		_ddmStructureLinkLocalService.deleteStructureLinks(
+			layoutPageTemplateEntryClassNameId, layoutPageTemplateEntryId);
+
+		long ddmStructureId = _getDDMStructureId(classNameId, classTypeId);
+
+		if (ddmStructureId > 0) {
+			_ddmStructureLinkLocalService.addStructureLink(
+				layoutPageTemplateEntryClassNameId, layoutPageTemplateEntryId,
+				ddmStructureId);
+		}
+
+		return layoutPageTemplateEntry;
 	}
 
 	@Override
