@@ -508,7 +508,7 @@ public class DataSourceFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/{id}/channel-data-sources")
-	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public FaroResultsDisplay getChannelDataSourceFaroResultsDisplay(
 			@PathParam("groupId") long groupId, @PathParam("id") String id,
 			@QueryParam("enabled") Boolean enabled,

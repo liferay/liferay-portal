@@ -29,7 +29,7 @@ public class DataSourceMetricsFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/{dataSourceId}/accounts_count")
-	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public Long getAccountsCount(
 			@PathParam("groupId") long groupId,
 			@PathParam("dataSourceId") String dataSourceId)
@@ -44,7 +44,7 @@ public class DataSourceMetricsFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/{dataSourceId}/events_count")
-	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public Long getEventsCount(
 			@PathParam("groupId") long groupId,
 			@PathParam("dataSourceId") String dataSourceId)
@@ -59,7 +59,7 @@ public class DataSourceMetricsFaroController extends BaseFaroController {
 
 	@GET
 	@Path("/{dataSourceId}/users_count")
-	@RolesAllowed(RoleConstants.SITE_ADMINISTRATOR)
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public Long getUsersCount(
 			@PathParam("groupId") long groupId,
 			@PathParam("dataSourceId") String dataSourceId)
