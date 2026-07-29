@@ -26,37 +26,10 @@ const PERSONA_FILTER_ID = 'cmpPersonaCategoryIds';
 
 const FUNNEL_STAGE_FILTER_ID = 'cmpFunnelStageCategoryIds';
 
-type SelectedData = {
+type FDSFilterSelectedData = {
 	exclude: boolean;
 	selectedItems: Array<{label?: string; value: string}>;
 };
-
-interface CoverageSelection {
-
-	/**
-	 * The filtered funnel stage's category id, UNCATEGORIZED_ID when the filter
-	 * excludes every funnel stage, or null when the data set is not filtered to a
-	 * single cell.
-	 */
-	funnelStageId: string | null;
-
-	personaId: string | null;
-}
-
-interface CoverageFilter {
-
-	/**
-	 * Filters the project's asset data set by a persona and a funnel-stage
-	 * category.
-	 */
-	applyFilter: (persona: TaxonomyTerm, funnelStage: TaxonomyTerm) => void;
-
-	/**
-	 * The persona and funnel stage the data set is currently filtered by, used to
-	 * highlight the matching cell.
-	 */
-	selection: CoverageSelection;
-}
 
 function getRealTerms(terms: TaxonomyTerm[]): TaxonomyTerm[] {
 	return terms.filter((term) => !isSentinel(term));
@@ -70,18 +43,18 @@ function getRealTerms(terms: TaxonomyTerm[]): TaxonomyTerm[] {
  * uncategorized bucket with. Null when the axis holds no real term, in which
  * case its filter is deactivated rather than left active with nothing to match.
  */
-function getSelectedData(
-	term: TaxonomyTerm,
-	terms: TaxonomyTerm[]
-): SelectedData | null {
-	if (!isSentinel(term)) {
+function getFDSFilterSelectedData(
+	clickedTerm: TaxonomyTerm,
+	axisTerms: TaxonomyTerm[]
+): FDSFilterSelectedData | null {
+	if (!isSentinel(clickedTerm)) {
 		return {
 			exclude: false,
-			selectedItems: [{label: term.name, value: term.id}],
+			selectedItems: [{label: clickedTerm.name, value: clickedTerm.id}],
 		};
 	}
 
-	const realTerms = getRealTerms(terms);
+	const realTerms = getRealTerms(axisTerms);
 
 	if (!realTerms.length) {
 		return null;
@@ -98,29 +71,31 @@ function getSelectedData(
 
 /**
  * The term id one axis of the matrix is filtered by, mirroring what
- * getSelectedData writes. Anything else the user set up by hand in the data set's
- * own filter menu — several terms at once, a partial exclusion — matches no
- * single cell and reads as null.
+ * getFDSFilterSelectedData writes. Anything else the user set up by hand in the
+ * data set's own filter menu — several terms at once, a partial exclusion —
+ * matches no single cell and reads as null.
  */
-function getSelectedTermId(
-	filters: readonly IBaseFilterState[],
-	filterId: string,
-	terms: TaxonomyTerm[]
+function getFDSFilteredTermId(
+	fdsFilters: readonly IBaseFilterState[],
+	fdsFilterId: string,
+	axisTerms: TaxonomyTerm[]
 ): string | null {
-	const filter = filters.find(
-		(currentFilter) => currentFilter.id === filterId
+	const fdsFilter = fdsFilters.find(
+		(currentFDSFilter) => currentFDSFilter.id === fdsFilterId
 	);
 
-	if (!filter?.active) {
+	if (!fdsFilter?.active) {
 		return null;
 	}
 
-	const selectedData = filter.selectedData as SelectedData | undefined;
+	const selectedData = fdsFilter.selectedData as
+		| FDSFilterSelectedData
+		| undefined;
 
 	const selectedItems = selectedData?.selectedItems ?? [];
 
 	if (selectedData?.exclude) {
-		const realTerms = getRealTerms(terms);
+		const realTerms = getRealTerms(axisTerms);
 
 		if (
 			realTerms.length &&
@@ -149,10 +124,26 @@ function getSelectedTermId(
  * set's own state atom, resolved by its id, and reads back which categories are
  * filtered so the matrix can highlight the selected cell.
  */
-export function useCoverageFilter(
+export function useAssetFDSFilter(
 	assetFDSId: string,
 	data: MatrixData
-): CoverageFilter {
+): {
+
+	/**
+	 * Filters the project's asset data set by a persona and a funnel-stage
+	 * category.
+	 */
+	applyFilter: (persona: TaxonomyTerm, funnelStage: TaxonomyTerm) => void;
+
+	/**
+	 * The filtered funnel stage's category id, UNCATEGORIZED_ID when the filter
+	 * excludes every funnel stage, or null when the data set is not filtered to a
+	 * single cell.
+	 */
+	filteredFunnelStageId: string | null;
+
+	filteredPersonaId: string | null;
+} {
 	const assetFDSAtom = useMemo(
 		() => getOrCreateFDSAtom({fdsName: assetFDSId}),
 		[assetFDSId]
@@ -163,34 +154,39 @@ export function useCoverageFilter(
 
 	const applyFilter = useCallback(
 		(persona: TaxonomyTerm, funnelStage: TaxonomyTerm) => {
-			const selectedDataMap = new Map([
+			const selectedDataByFDSFilterId = new Map([
 				[
 					FUNNEL_STAGE_FILTER_ID,
-					getSelectedData(funnelStage, data.funnelStages),
+					getFDSFilterSelectedData(funnelStage, data.funnelStages),
 				],
-				[PERSONA_FILTER_ID, getSelectedData(persona, data.personas)],
+				[
+					PERSONA_FILTER_ID,
+					getFDSFilterSelectedData(persona, data.personas),
+				],
 			]);
 
 			setAssetFDSState({
 				...assetFDSState,
 				filters: (assetFDSState?.filters ?? []).map(
-					(filter: IBaseFilterState) => {
-						if (!selectedDataMap.has(filter.id)) {
-							return filter;
+					(fdsFilter: IBaseFilterState) => {
+						if (!selectedDataByFDSFilterId.has(fdsFilter.id)) {
+							return fdsFilter;
 						}
 
-						const selectedData = selectedDataMap.get(filter.id);
+						const selectedData = selectedDataByFDSFilterId.get(
+							fdsFilter.id
+						);
 
 						if (!selectedData) {
 							return {
-								...filter,
+								...fdsFilter,
 								active: false,
 								odataFilterString: undefined,
 								selectedData: undefined,
 							};
 						}
 
-						return {...filter, active: true, selectedData};
+						return {...fdsFilter, active: true, selectedData};
 					}
 				),
 			});
@@ -198,22 +194,19 @@ export function useCoverageFilter(
 		[assetFDSState, data, setAssetFDSState]
 	);
 
-	const selection = useMemo(() => {
-		const filters = assetFDSState?.filters ?? [];
+	const fdsFilters = assetFDSState?.filters ?? [];
 
-		return {
-			funnelStageId: getSelectedTermId(
-				filters,
-				FUNNEL_STAGE_FILTER_ID,
-				data.funnelStages
-			),
-			personaId: getSelectedTermId(
-				filters,
-				PERSONA_FILTER_ID,
-				data.personas
-			),
-		};
-	}, [assetFDSState, data]);
+	const filteredFunnelStageId = getFDSFilteredTermId(
+		fdsFilters,
+		FUNNEL_STAGE_FILTER_ID,
+		data.funnelStages
+	);
 
-	return {applyFilter, selection};
+	const filteredPersonaId = getFDSFilteredTermId(
+		fdsFilters,
+		PERSONA_FILTER_ID,
+		data.personas
+	);
+
+	return {applyFilter, filteredFunnelStageId, filteredPersonaId};
 }
