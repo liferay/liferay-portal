@@ -16,6 +16,7 @@
 export const FEATURE_FLAGS_STORAGE_KEY = 'faro:feature-flags';
 
 export type FeatureFlagKey =
+	| 'ENABLE_ACCOUNT_OVERVIEW'
 	| 'ENABLE_ASSET_CARD'
 	| 'ENABLE_BLOCKLIST_KEYWORDS'
 	| 'ENABLE_COMMERCE'
@@ -29,6 +30,7 @@ export interface FeatureFlagDefinition {
 }
 
 export const FEATURE_FLAGS: FeatureFlagDefinition[] = [
+	{defaultValue: false, key: 'ENABLE_ACCOUNT_OVERVIEW'},
 	{defaultValue: false, key: 'ENABLE_ASSET_CARD'},
 	{defaultValue: false, key: 'ENABLE_BLOCKLIST_KEYWORDS'},
 	{defaultValue: false, key: 'ENABLE_COMMERCE'},
@@ -92,6 +94,10 @@ export function setFeatureFlag(key: FeatureFlagKey, value: boolean): void {
  * and read just like the former `constants.ts` booleans. Changing a flag in the
  * panel requires a reload because these are evaluated only once, on import.
  */
+
+export const ENABLE_ACCOUNT_OVERVIEW = isFeatureFlagEnabled(
+	'ENABLE_ACCOUNT_OVERVIEW'
+);
 
 export const ENABLE_ASSET_CARD = isFeatureFlagEnabled('ENABLE_ASSET_CARD');
 

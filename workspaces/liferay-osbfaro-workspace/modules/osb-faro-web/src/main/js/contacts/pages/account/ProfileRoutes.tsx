@@ -8,6 +8,7 @@ import React, {lazy, Suspense, useContext} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
 import {ACCOUNTS, Routes, toRoute} from 'shared/util/router';
 import {ChannelContext} from 'shared/context/channel';
+import {ENABLE_ACCOUNT_OVERVIEW} from 'shared/util/feature-flags';
 import {Switch, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -21,12 +22,16 @@ const Overview = lazy(
 	() => import(/* webpackChunkName: "Overview" */ './Overview')
 );
 
-const NAV_ITEMS = [
-	{
-		exact: true,
-		label: Liferay.Language.get('overview'),
-		route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
-	},
+const getNavItems = () => [
+	...(ENABLE_ACCOUNT_OVERVIEW
+		? [
+				{
+					exact: true,
+					label: Liferay.Language.get('overview'),
+					route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
+				},
+			]
+		: []),
 	{
 		exact: true,
 		label: Liferay.Language.get('activities'),
@@ -100,7 +105,7 @@ const AccountProfileRoutes = () => {
 				</BasePage.Row>
 
 				<BasePage.Header.NavBar
-					items={NAV_ITEMS}
+					items={getNavItems()}
 					routeParams={{channelId, groupId, id}}
 				/>
 			</BasePage.Header>
@@ -122,11 +127,13 @@ const AccountProfileRoutes = () => {
 							path={Routes.CONTACTS_ACCOUNT}
 						/>
 
-						<BundleRouter
-							data={Overview}
-							exact
-							path={Routes.CONTACTS_ACCOUNT_OVERVIEW}
-						/>
+						{ENABLE_ACCOUNT_OVERVIEW && (
+							<BundleRouter
+								data={Overview}
+								exact
+								path={Routes.CONTACTS_ACCOUNT_OVERVIEW}
+							/>
+						)}
 
 						<RouteNotFound />
 					</Switch>
