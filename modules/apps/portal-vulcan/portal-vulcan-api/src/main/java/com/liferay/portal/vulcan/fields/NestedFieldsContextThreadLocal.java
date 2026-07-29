@@ -13,16 +13,6 @@ import com.liferay.petra.lang.SafeCloseable;
  */
 public class NestedFieldsContextThreadLocal {
 
-	public static NestedFieldsContext getAndSetNestedFieldsContext(
-		NestedFieldsContext nestedFieldsContext) {
-
-		NestedFieldsContext oldNestedFieldsContext = getNestedFieldsContext();
-
-		setNestedFieldsContext(nestedFieldsContext);
-
-		return oldNestedFieldsContext;
-	}
-
 	public static NestedFieldsContext getNestedFieldsContext() {
 		return _nestedFieldsContext.get();
 	}
