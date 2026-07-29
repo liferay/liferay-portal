@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.DefaultWorkflowNodeSetting;
@@ -23,6 +24,7 @@ import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowNode;
 import com.liferay.portal.kernel.workflow.WorkflowNodeSetting;
+import com.liferay.portal.kernel.workflow.WorkflowTransition;
 import com.liferay.portal.security.script.management.test.util.ScriptManagementConfigurationTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -38,6 +40,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -438,22 +441,30 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 
 	@Test
 	public void testDeployWorkflowDefinitionWithServiceNode() throws Exception {
-		AssertUtils.assertFailure(
-			KaleoDefinitionValidationException.
-				MustNotSetMultipleOutgoingTransitions.class,
-			"The convert node cannot have multiple outgoing transitions",
-			() -> {
-				InputStream inputStream = getResourceInputStream(
-					"service-node-multiple-transitions-workflow-" +
-						"definition.json");
+		InputStream inputStream = getResourceInputStream(
+			"service-node-multiple-transitions-workflow-definition.json");
 
-				_workflowDefinitionManager.deployWorkflowDefinition(
-					FileUtil.getBytes(inputStream),
-					TestPropsValues.getCompanyId(),
-					RandomTestUtil.randomString(),
-					"Service Node Multiple Transitions Workflow Definition",
-					RandomTestUtil.randomString(), TestPropsValues.getUserId());
-			});
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				FileUtil.getBytes(inputStream), TestPropsValues.getCompanyId(),
+				RandomTestUtil.randomString(),
+				"Service Node Multiple Transitions Workflow Definition",
+				RandomTestUtil.randomString(), TestPropsValues.getUserId());
+
+		List<String> targetNodeNames = new ArrayList<>();
+
+		for (WorkflowTransition workflowTransition :
+				workflowDefinition.getWorkflowTransitions()) {
+
+			if (Objects.equals(
+					workflowTransition.getSourceNodeName(), "convert")) {
+
+				targetNodeNames.add(workflowTransition.getTargetNodeName());
+			}
+		}
+
+		Assert.assertEquals(
+			List.of("end", "other"), ListUtil.sort(targetNodeNames));
 
 		byte[] bytes = FileUtil.getBytes(
 			getResourceInputStream("service-node-workflow-definition.json"));
