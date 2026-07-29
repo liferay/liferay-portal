@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
 public class CrawlerJobInsightService {
 
 	@Scheduled(fixedDelay = 60000)
-	public void scheduledUpdateSEOStudioScanStates() {
+	public void scheduledUpdateSEOStudioScanStates() throws Exception {
 		JSONArray itemsJSONArray = new JSONObject(
 			_seoStudioService.getActiveSEOStudioScans()
 		).optJSONArray(
@@ -54,40 +54,32 @@ public class CrawlerJobInsightService {
 		for (Object object : itemsJSONArray) {
 			JSONObject seoStudioScanJSONObject = (JSONObject)object;
 
+			String executionId = seoStudioScanJSONObject.optString(
+				"executionId");
+
+			if (Validator.isNull(executionId)) {
+				continue;
+			}
+
+			Job job = _kubernetesJobService.getJob(executionId);
+
+			String state = _getSEOStudioScanState(job);
+
+			if (Validator.isNull(state) ||
+				state.equals(seoStudioScanJSONObject.optString("state"))) {
+
+				continue;
+			}
+
 			long seoStudioScanId = seoStudioScanJSONObject.getLong("id");
 
-			try {
-				String executionId = seoStudioScanJSONObject.optString(
-					"executionId");
-
-				if (Validator.isNull(executionId)) {
-					continue;
-				}
-
-				Job job = _kubernetesJobService.getJob(executionId);
-
-				String state = _getSEOStudioScanState(job);
-
-				if (Validator.isNull(state) ||
-					state.equals(seoStudioScanJSONObject.optString("state"))) {
-
-					continue;
-				}
-
-				if (state.equals(SEOStudioScanConstants.STATE_COMPLETED)) {
-					_processInsights(seoStudioScanId, seoStudioScanJSONObject);
-				}
-				else if (state.equals(SEOStudioScanConstants.STATE_FAILED)) {
-					_seoStudioService.patchSEOStudioScan(
-						_getErrorMessage(job), seoStudioScanId,
-						SEOStudioScanConstants.STATE_FAILED);
-				}
+			if (state.equals(SEOStudioScanConstants.STATE_COMPLETED)) {
+				_processInsights(seoStudioScanId, seoStudioScanJSONObject);
 			}
-			catch (Exception exception) {
-				_log.error(
-					"Unable to update the state of SEO Studio scan ID " +
-						seoStudioScanId,
-					exception);
+			else if (state.equals(SEOStudioScanConstants.STATE_FAILED)) {
+				_seoStudioService.patchSEOStudioScan(
+					_getErrorMessage(job), seoStudioScanId,
+					SEOStudioScanConstants.STATE_FAILED);
 			}
 		}
 	}
