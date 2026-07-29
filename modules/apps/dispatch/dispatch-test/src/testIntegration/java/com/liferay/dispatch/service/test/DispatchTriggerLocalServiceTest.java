@@ -725,7 +725,7 @@ public class DispatchTriggerLocalServiceTest {
 
 		Assert.assertNotNull(schedulerResponse);
 
-		Date date = _schedulerEngineHelper.getNextFireTime(schedulerResponse);
+		Date date = _schedulerEngineHelper.getNextFireDate(schedulerResponse);
 
 		Calendar nextFireCalendar = CalendarFactoryUtil.getCalendar();
 

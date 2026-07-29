@@ -101,7 +101,7 @@ public class CTCollectionDTOConverter
 			return null;
 		}
 
-		return _schedulerEngineHelper.getStartTime(schedulerResponse);
+		return _schedulerEngineHelper.getStartDate(schedulerResponse);
 	}
 
 	private String _getStatusMessage(
@@ -154,7 +154,7 @@ public class CTCollectionDTOConverter
 					return null;
 				}
 
-				Date scheduledDate = SchedulerEngineHelperUtil.getStartTime(
+				Date scheduledDate = SchedulerEngineHelperUtil.getStartDate(
 					schedulerResponse);
 
 				return _language.format(

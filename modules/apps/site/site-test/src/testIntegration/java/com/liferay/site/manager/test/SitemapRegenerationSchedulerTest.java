@@ -686,7 +686,7 @@ public class SitemapRegenerationSchedulerTest {
 		Assert.assertEquals(
 			schedulerResponses.toString(), 1, schedulerResponses.size());
 
-		return _schedulerEngineHelper.getStartTime(schedulerResponses.get(0));
+		return _schedulerEngineHelper.getStartDate(schedulerResponses.get(0));
 	}
 
 	private static final String _CLASS_NAME_SITEMAP_MANAGER_IMPL =

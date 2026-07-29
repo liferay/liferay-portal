@@ -74,7 +74,7 @@ public class CTCollectionModelDocumentContributor
 				return null;
 			}
 
-			return _schedulerEngineHelper.getStartTime(schedulerResponse);
+			return _schedulerEngineHelper.getStartDate(schedulerResponse);
 		}
 		catch (SchedulerException schedulerException) {
 			if (_log.isWarnEnabled()) {

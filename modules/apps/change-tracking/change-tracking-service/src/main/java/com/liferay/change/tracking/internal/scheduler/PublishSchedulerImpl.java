@@ -65,7 +65,7 @@ public class PublishSchedulerImpl implements PublishScheduler {
 
 		return new ScheduledPublishInfo(
 			ctCollection, schedulerResponse.getJobName(),
-			_schedulerEngineHelper.getStartTime(schedulerResponse),
+			_schedulerEngineHelper.getStartDate(schedulerResponse),
 			message.getLong("userId"));
 	}
 
@@ -96,7 +96,7 @@ public class PublishSchedulerImpl implements PublishScheduler {
 
 				return new ScheduledPublishInfo(
 					ctCollection, schedulerResponse.getJobName(),
-					_schedulerEngineHelper.getStartTime(schedulerResponse),
+					_schedulerEngineHelper.getStartDate(schedulerResponse),
 					message.getLong("userId"));
 			});
 	}

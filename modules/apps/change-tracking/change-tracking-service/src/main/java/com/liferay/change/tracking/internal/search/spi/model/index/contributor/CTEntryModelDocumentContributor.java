@@ -168,7 +168,7 @@ public class CTEntryModelDocumentContributor
 					StorageType.PERSISTED);
 
 			if (schedulerResponse != null) {
-				return _schedulerEngineHelper.getStartTime(schedulerResponse);
+				return _schedulerEngineHelper.getStartDate(schedulerResponse);
 			}
 		}
 		catch (SchedulerException schedulerException) {

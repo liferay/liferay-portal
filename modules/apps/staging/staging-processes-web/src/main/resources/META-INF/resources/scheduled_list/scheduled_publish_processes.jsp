@@ -54,11 +54,11 @@ ScheduledPublishProcessesDisplayContext scheduledPublishProcessesDisplayContext 
 			<liferay-ui:search-container-column-date
 				name="create-date"
 				orderable="<%= true %>"
-				value="<%= SchedulerEngineHelperUtil.getStartTime(schedulerResponse) %>"
+				value="<%= SchedulerEngineHelperUtil.getStartDate(schedulerResponse) %>"
 			/>
 
 			<%
-			Date endDate = SchedulerEngineHelperUtil.getEndTime(schedulerResponse);
+			Date endDate = SchedulerEngineHelperUtil.getEndDate(schedulerResponse);
 			%>
 
 			<c:choose>
@@ -66,7 +66,7 @@ ScheduledPublishProcessesDisplayContext scheduledPublishProcessesDisplayContext 
 					<liferay-ui:search-container-column-date
 						name="end-date"
 						orderable="<%= true %>"
-						value="<%= SchedulerEngineHelperUtil.getEndTime(schedulerResponse) %>"
+						value="<%= SchedulerEngineHelperUtil.getEndDate(schedulerResponse) %>"
 					/>
 				</c:when>
 				<c:otherwise>

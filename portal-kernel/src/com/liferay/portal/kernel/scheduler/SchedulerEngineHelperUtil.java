@@ -48,11 +48,11 @@ public class SchedulerEngineHelperUtil {
 		schedulerEngineHelper.delete(jobName, groupName, storageType);
 	}
 
-	public static Date getEndTime(SchedulerResponse schedulerResponse) {
+	public static Date getEndDate(SchedulerResponse schedulerResponse) {
 		SchedulerEngineHelper schedulerEngineHelper =
 			_schedulerEngineHelperSnapshot.get();
 
-		return schedulerEngineHelper.getEndTime(schedulerResponse);
+		return schedulerEngineHelper.getEndDate(schedulerResponse);
 	}
 
 	public static SchedulerResponse getScheduledJob(
@@ -95,11 +95,11 @@ public class SchedulerEngineHelperUtil {
 		return schedulerEngineHelper.getScheduledJobs(groupName, storageType);
 	}
 
-	public static Date getStartTime(SchedulerResponse schedulerResponse) {
+	public static Date getStartDate(SchedulerResponse schedulerResponse) {
 		SchedulerEngineHelper schedulerEngineHelper =
 			_schedulerEngineHelperSnapshot.get();
 
-		return schedulerEngineHelper.getStartTime(schedulerResponse);
+		return schedulerEngineHelper.getStartDate(schedulerResponse);
 	}
 
 	public static void pause(

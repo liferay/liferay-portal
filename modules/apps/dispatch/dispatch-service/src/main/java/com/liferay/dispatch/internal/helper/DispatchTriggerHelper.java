@@ -118,7 +118,7 @@ public class DispatchTriggerHelper {
 			return null;
 		}
 
-		return _schedulerEngineHelper.getNextFireTime(schedulerResponse);
+		return _schedulerEngineHelper.getNextFireDate(schedulerResponse);
 	}
 
 	public Date getPreviousFireDate(
@@ -134,7 +134,7 @@ public class DispatchTriggerHelper {
 			return null;
 		}
 
-		return _schedulerEngineHelper.getPreviousFireTime(schedulerResponse);
+		return _schedulerEngineHelper.getPreviousFireDate(schedulerResponse);
 	}
 
 	private String _getGroupName(DispatchTrigger dispatchTrigger) {

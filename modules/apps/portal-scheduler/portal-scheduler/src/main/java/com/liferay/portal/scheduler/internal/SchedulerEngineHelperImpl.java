@@ -96,7 +96,7 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 	}
 
 	@Override
-	public Date getEndTime(SchedulerResponse schedulerResponse) {
+	public Date getEndDate(SchedulerResponse schedulerResponse) {
 		Message message = schedulerResponse.getMessage();
 
 		JobState jobState = (JobState)message.get(SchedulerEngine.JOB_STATE);
@@ -122,7 +122,7 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 	}
 
 	@Override
-	public Date getNextFireTime(SchedulerResponse schedulerResponse) {
+	public Date getNextFireDate(SchedulerResponse schedulerResponse) {
 		Message message = schedulerResponse.getMessage();
 
 		JobState jobState = (JobState)message.get(SchedulerEngine.JOB_STATE);
@@ -139,7 +139,7 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 	}
 
 	@Override
-	public Date getPreviousFireTime(SchedulerResponse schedulerResponse) {
+	public Date getPreviousFireDate(SchedulerResponse schedulerResponse) {
 		Message message = schedulerResponse.getMessage();
 
 		JobState jobState = (JobState)message.get(SchedulerEngine.JOB_STATE);
@@ -187,7 +187,7 @@ public class SchedulerEngineHelperImpl implements SchedulerEngineHelper {
 	}
 
 	@Override
-	public Date getStartTime(SchedulerResponse schedulerResponse) {
+	public Date getStartDate(SchedulerResponse schedulerResponse) {
 		Message message = schedulerResponse.getMessage();
 
 		JobState jobState = (JobState)message.get(SchedulerEngine.JOB_STATE);

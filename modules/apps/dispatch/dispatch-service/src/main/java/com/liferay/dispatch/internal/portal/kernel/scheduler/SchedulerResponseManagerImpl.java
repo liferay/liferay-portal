@@ -44,7 +44,7 @@ public class SchedulerResponseManagerImpl implements SchedulerResponseManager {
 			return null;
 		}
 
-		return _schedulerEngineHelper.getNextFireTime(schedulerResponse);
+		return _schedulerEngineHelper.getNextFireDate(schedulerResponse);
 	}
 
 	@Override
