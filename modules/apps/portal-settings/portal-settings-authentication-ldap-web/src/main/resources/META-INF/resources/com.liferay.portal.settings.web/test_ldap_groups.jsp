@@ -22,6 +22,18 @@ if (credentials.equals(Portal.TEMP_OBFUSCATION_VALUE)) {
 	credentials = ldapServerConfiguration.securityCredential();
 }
 
+try {
+	FIPSModeValidator.validateURL(baseProviderURL);
+}
+catch (SecurityException securityException) {
+%>
+
+	<liferay-ui:message arguments='<%= new Object[] {baseProviderURL, "ldaps://"} %>' key="the-base-provider-url-x-must-use-the-x-scheme-in-fips-mode" translateArguments="<%= false %>" />
+
+<%
+	return;
+}
+
 SafePortalLDAP safePortalLDAP = SafePortalLDAPUtil.getSafePortalLDAP();
 
 SafeLdapContext safeLdapContext = safePortalLDAP.getSafeLdapContext(themeDisplay.getCompanyId(), baseProviderURL, principal, credentials);

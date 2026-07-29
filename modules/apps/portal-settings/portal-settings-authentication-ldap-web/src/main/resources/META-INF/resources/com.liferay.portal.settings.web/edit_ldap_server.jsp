@@ -16,10 +16,18 @@ long ldapServerId = ParamUtil.getLong(request, "ldapServerId");
 
 LDAPServerConfiguration ldapServerConfiguration = ldapServerConfigurationProvider.getConfiguration(ActionUtil.getCompanyId(request), ldapServerId);
 
-String ldapServerName = ldapServerConfiguration.serverName();
-String ldapBaseProviderUrl = ldapServerConfiguration.baseProviderURL();
 String ldapBaseDN = ldapServerConfiguration.baseDN();
+String ldapBaseProviderURL = ldapServerConfiguration.baseProviderURL();
 String ldapSecurityPrincipal = ldapServerConfiguration.securityPrincipal();
+String ldapServerName = ldapServerConfiguration.serverName();
+
+if (PropsValues.FIPS_ENABLED) {
+	ldapBaseProviderURL = StringUtil.replace(ldapBaseProviderURL, "ldap://", "ldaps://");
+
+	if (ldapServerId == 0) {
+		ldapBaseProviderURL = ldapBaseProviderURL.replaceFirst(":[0-9]+(/|$)", ":636$1");
+	}
+}
 
 String ldapSecurityCredentials = Portal.TEMP_OBFUSCATION_VALUE;
 
@@ -179,7 +187,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 			<aui:fieldset>
 				<h3><liferay-ui:message key="connection" /></h3>
 
-				<aui:input cssClass="lfr-input-text-container" helpMessage="the-ldap-url-format-is" label="base-provider-url" name='<%= "ldap--" + LDAPConstants.BASE_PROVIDER_URL + "--" %>' type="text" value="<%= ldapBaseProviderUrl %>" />
+				<aui:input cssClass="lfr-input-text-container" helpMessage="the-ldap-url-format-is" label="base-provider-url" name='<%= "ldap--" + LDAPConstants.BASE_PROVIDER_URL + "--" %>' type="text" value="<%= ldapBaseProviderURL %>" />
 
 				<aui:input cssClass="lfr-input-text-container" helpMessage="the-ldap-url-format-is" label="base-dn" name='<%= "ldap--" + LDAPConstants.BASE_DN + "--" %>' type="text" value="<%= ldapBaseDN %>" />
 
@@ -480,6 +488,17 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 			userMappingPassword = 'userPassword';
 			userMappingScreenName = 'cn';
 		}
+
+		<%
+		if (PropsValues.FIPS_ENABLED) {
+		%>
+
+			baseProviderURL = baseProviderURL.replace('ldap://', 'ldaps://');
+			baseProviderURL = baseProviderURL.replace(/:\d+(\/|$)/, ':636$1');
+
+		<%
+		}
+		%>
 
 		Liferay.Util.setFormValues(document.<portlet:namespace />fm, {
 			'ldap--<%= LDAPConstants.BASE_PROVIDER_URL %>--': baseProviderURL,

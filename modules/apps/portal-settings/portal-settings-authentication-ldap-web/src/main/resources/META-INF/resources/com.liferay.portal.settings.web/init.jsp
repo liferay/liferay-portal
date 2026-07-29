@@ -22,6 +22,7 @@ page import="com.liferay.portal.kernel.portlet.LiferayWindowState" %><%@
 page import="com.liferay.portal.kernel.security.auth.AuthTokenUtil" %><%@
 page import="com.liferay.portal.kernel.security.auth.FullNameDefinition" %><%@
 page import="com.liferay.portal.kernel.security.auth.FullNameDefinitionFactory" %><%@
+page import="com.liferay.portal.kernel.security.fips.FIPSModeValidator" %><%@
 page import="com.liferay.portal.kernel.util.Constants" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
