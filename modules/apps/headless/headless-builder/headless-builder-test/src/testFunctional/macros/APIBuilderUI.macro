@@ -262,6 +262,8 @@ definition {
 		}
 
 		Click(locator1 = "APIBuilder#CREATE_BUTTON");
+
+		WaitForElementPresent(locator1 = "APIBuilder#PUBLISH_BUTTON");
 	}
 
 	@summary = "Default summary"
