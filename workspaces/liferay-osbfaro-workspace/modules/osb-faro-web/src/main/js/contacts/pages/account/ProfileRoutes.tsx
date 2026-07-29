@@ -24,6 +24,11 @@ const Overview = lazy(
 const NAV_ITEMS = [
 	{
 		exact: true,
+		label: Liferay.Language.get('overview'),
+		route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
+	},
+	{
+		exact: true,
 		label: Liferay.Language.get('activities'),
 		route: Routes.CONTACTS_ACCOUNT,
 	},
@@ -31,11 +36,6 @@ const NAV_ITEMS = [
 		exact: true,
 		label: Liferay.Language.get('profile'),
 		route: Routes.CONTACTS_ACCOUNT_PROFILE,
-	},
-	{
-		exact: true,
-		label: Liferay.Language.get('overview'),
-		route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
 	},
 ];
 

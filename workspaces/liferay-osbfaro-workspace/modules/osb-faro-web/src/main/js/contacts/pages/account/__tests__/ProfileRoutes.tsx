@@ -2,11 +2,12 @@ import mockStore from 'test/mock-store';
 import ProfileRoutes from '../ProfileRoutes';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, render, screen, within} from '@testing-library/react';
 import {createMemoryHistory} from 'history';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
 import {Router} from 'react-router-dom';
+import {Routes, toRoute} from 'shared/util/router';
 import {useRequest} from 'shared/hooks/useRequest';
 
 jest.unmock('react-dom');
@@ -41,12 +42,19 @@ jest.mock('../Activities', () => ({
 	default: () => <div data-testid="account-activities" />,
 }));
 
+jest.mock('../Overview', () => ({
+	__esModule: true,
+	default: () => <div data-testid="account-overview" />,
+}));
+
 jest.mock('../Profile', () => ({
 	__esModule: true,
 	default: () => <div data-testid="account-profile" />,
 }));
 
 const mockedUseRequest = useRequest as jest.Mock;
+
+const ROUTE_PARAMS = {channelId: '123', groupId: '23', id: 'acc-1'};
 
 const store = mockStore();
 
@@ -139,5 +147,49 @@ describe('AccountProfileRoutes', () => {
 
 		expect(screen.getAllByText('Acme Corp').length).toBeGreaterThan(0);
 		expect(screen.queryByText('Account Not Found')).not.toBeInTheDocument();
+	});
+
+	it('lists overview as the first tab in the account nav bar', () => {
+		mockedUseRequest.mockReturnValue({
+			data: {accountName: 'Acme Corp'},
+			error: false,
+			loading: false,
+		});
+
+		renderProfileRoutes();
+
+		const navTabs = within(screen.getByRole('navigation')).getAllByRole(
+			'link'
+		);
+
+		expect(navTabs.map((navTab) => navTab.textContent)).toEqual([
+			'Overview',
+			'Activities',
+			'Profile',
+		]);
+		expect(navTabs[0]).toHaveAttribute(
+			'href',
+			toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS)
+		);
+	});
+
+	it('renders the overview page on the overview route', async () => {
+		mockedUseRequest.mockReturnValue({
+			data: {accountName: 'Acme Corp'},
+			error: false,
+			loading: false,
+		});
+
+		renderProfileRoutes(
+			createMemoryHistory({
+				initialEntries: [
+					toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS),
+				],
+			})
+		);
+
+		expect(
+			await screen.findByTestId('account-overview')
+		).toBeInTheDocument();
 	});
 });
