@@ -267,7 +267,7 @@ public class CrawlerJobInsightService {
 			long accountEntryId = seoStudioScanJSONObject.getLong(
 				"r_accountToSEOStudioScans_accountEntryId");
 
-			_seoStudioService.addSEOStudioScanInsights(
+			_seoStudioService.postSEOStudioScanInsightsBatch(
 				accountEntryId, orphanPagesInsightJSONObject, seoStudioScanId);
 		}
 

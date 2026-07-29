@@ -43,7 +43,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class SEOStudioService extends BaseService {
 
-	public void addSEOStudioScanInsights(
+	public void postSEOStudioScanInsightsBatch(
 			long accountEntryId, JSONObject insightJSONObject,
 			long seoStudioScanId)
 		throws Exception {
@@ -58,7 +58,7 @@ public class SEOStudioService extends BaseService {
 		List<String> pageURLs = TransformUtil.transform(
 			pageURLsJSONArray.toList(), object -> (String)object);
 
-		_addSEOStudioScanInsights(
+		_postSEOStudioScanInsightsBatch(
 			accountEntryId, insightJSONObject, pageURLs,
 			_resolveSEOStudioPageIdsMap(
 				accountEntryId, pageURLs, seoStudioScanId),
@@ -193,7 +193,7 @@ public class SEOStudioService extends BaseService {
 		return "seo_studio_" + seoStudioDomainId;
 	}
 
-	private void _addSEOStudioPages(
+	private void _postSEOStudioPagesBatch(
 		long accountEntryId, List<String> pageURLs, long seoStudioScanId) {
 
 		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
@@ -212,7 +212,7 @@ public class SEOStudioService extends BaseService {
 		}
 	}
 
-	private void _addSEOStudioScanInsights(
+	private void _postSEOStudioScanInsightsBatch(
 		long accountEntryId, JSONObject insightJSONObject,
 		List<String> pageURLs, Map<String, Long> seoStudioPageIdsMap,
 		long seoStudioScanId) {
@@ -405,7 +405,8 @@ public class SEOStudioService extends BaseService {
 			return seoStudioPageIdsMap;
 		}
 
-		_addSEOStudioPages(accountEntryId, missingPageURLs, seoStudioScanId);
+		_postSEOStudioPagesBatch(
+			accountEntryId, missingPageURLs, seoStudioScanId);
 
 		long deadline = System.currentTimeMillis() + 60000;
 
