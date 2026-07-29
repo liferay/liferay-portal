@@ -129,11 +129,10 @@ public class CrawlerJobInsightService {
 				return;
 			}
 
+			Set<String> canonicalURLs = new LinkedHashSet<>();
 			String domainURL = _seoStudioService.toDomainURL(
 				_seoStudioService.toCrawlURI(
 					seoStudioDomainJSONObject.getString("hostname")));
-
-			Set<String> canonicalURLs = new LinkedHashSet<>();
 			Set<String> linkedURLs = new HashSet<>();
 
 			for (CrawlHit crawlHit : crawlHits) {
