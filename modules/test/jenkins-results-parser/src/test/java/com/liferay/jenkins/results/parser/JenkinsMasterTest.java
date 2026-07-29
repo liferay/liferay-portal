@@ -8,7 +8,6 @@ package com.liferay.jenkins.results.parser;
 import java.io.File;
 
 import java.util.Map;
-import java.util.Properties;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -62,8 +61,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		JenkinsMaster.maxRecentBatchAge = 120 * 1000;
 
 		JenkinsMasterTestUtil.resetCaches();
-
-		JenkinsResultsParserUtil.setBuildProperties(new Properties());
 	}
 
 	@Test

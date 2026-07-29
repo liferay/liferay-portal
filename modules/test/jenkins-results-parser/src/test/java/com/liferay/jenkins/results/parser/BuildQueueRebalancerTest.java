@@ -42,8 +42,6 @@ public class BuildQueueRebalancerTest
 
 		jenkinsCohorts.remove(_JENKINS_COHORT_NAME);
 
-		JenkinsResultsParserUtil.setBuildProperties(new Properties());
-
 		super.tearDown();
 	}
 

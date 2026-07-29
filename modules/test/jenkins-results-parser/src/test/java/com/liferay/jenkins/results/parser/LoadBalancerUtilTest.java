@@ -27,8 +27,6 @@ public class LoadBalancerUtilTest
 		super.tearDown();
 
 		JenkinsMasterTestUtil.resetCaches();
-
-		JenkinsResultsParserUtil.setBuildProperties(new Properties());
 	}
 
 	@Test

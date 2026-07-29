@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.hamcrest.CoreMatchers;
 
@@ -43,6 +44,13 @@ public class Test {
 		BuildDatabaseUtil.clearBuildDatabases();
 
 		Environment.setInstance(new Environment());
+
+		JenkinsResultsParserUtil.setBuildProperties(new Properties());
+
+		Map<String, Job> jobs = ReflectionTestUtil.getFieldValue(
+			JobFactory.class, "_jobs");
+
+		jobs.clear();
 
 		Shell.setInstance(new Shell());
 
