@@ -10,13 +10,28 @@ import {PORTLET_URLS} from '../../../../utils/portletUrls';
 
 export class TagsAdminPage {
 	readonly newButton: Locator;
+	readonly optionsMenu: Locator;
 	readonly page: Page;
 
 	constructor(page: Page) {
 		this.newButton = page.getByRole('link', {
 			name: 'Add Tag',
 		});
+		this.optionsMenu = page
+			.getByTestId('headerOptions')
+			.getByLabel('Options');
 		this.page = page;
+	}
+
+	async goToOptionsMenu(siteUrl?: Site['friendlyUrlPath']) {
+		await this.goto(siteUrl);
+		await this.openOptionsMenu();
+	}
+
+	async openOptionsMenu() {
+		await this.optionsMenu
+			.and(this.page.locator('[aria-haspopup]'))
+			.click();
 	}
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {

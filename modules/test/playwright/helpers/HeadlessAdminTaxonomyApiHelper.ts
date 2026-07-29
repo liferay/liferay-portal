@@ -236,7 +236,10 @@ export class HeadlessAdminTaxonomyApiHelper {
 		assetLibraries,
 		name,
 		siteId,
-	}: postSiteKeywordProps): Promise<{id: number}> {
+	}: postSiteKeywordProps): Promise<{
+		externalReferenceCode: string;
+		id: number;
+	}> {
 		const keyword = await this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/keywords`,
 			{data: {assetLibraries, name}}
