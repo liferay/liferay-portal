@@ -450,8 +450,7 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 
 		if (Objects.equals(
 				layoutPageTemplateEntry.getType(),
-				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE) &&
-			(layoutPageTemplateEntry.getClassTypeId() > 0)) {
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE)) {
 
 			_ddmStructureLinkLocalService.deleteStructureLinks(
 				_classNameLocalService.getClassNameId(
