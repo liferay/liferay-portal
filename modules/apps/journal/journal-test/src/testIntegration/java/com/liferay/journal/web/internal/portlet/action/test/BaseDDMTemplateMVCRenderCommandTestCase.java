@@ -85,7 +85,7 @@ public abstract class BaseDDMTemplateMVCRenderCommandTestCase {
 		return user;
 	}
 
-	protected User addUserWithAddTemplatePermission() throws Exception {
+	protected User addUserWithAddDDMTemplatePermission() throws Exception {
 		return _addUser(
 			JournalConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
 			String.valueOf(_group.getGroupId()), DDMActionKeys.ADD_TEMPLATE);

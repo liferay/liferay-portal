@@ -24,20 +24,20 @@ public class EditDDMTemplateMVCRenderCommandTest
 
 	@Test
 	public void testRender() throws Exception {
-		_testRenderWithAddTemplatePermission();
+		_testRenderWithAddDDMTemplatePermission();
 		_testRenderWithMVCPath();
 		_testRenderWithNonexistentDDMTemplate();
-		_testRenderWithoutAddTemplatePermission();
+		_testRenderWithoutAddDDMTemplatePermission();
 		_testRenderWithoutUpdatePermission();
 		_testRenderWithUpdatePermission();
 	}
 
-	private void _testRenderWithAddTemplatePermission() throws Exception {
+	private void _testRenderWithAddDDMTemplatePermission() throws Exception {
 		String path = "/edit_ddm_template.jsp";
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			getMockLiferayPortletRenderRequest(
-				path, addUserWithAddTemplatePermission());
+				path, addUserWithAddDDMTemplatePermission());
 
 		mockLiferayPortletRenderRequest.setParameter(
 			"mvcRenderCommandName", _MVC_RENDER_COMMAND_NAME);
@@ -81,7 +81,7 @@ public class EditDDMTemplateMVCRenderCommandTest
 		assertNoDDMTemplateDisplayContext(mockLiferayPortletRenderRequest);
 	}
 
-	private void _testRenderWithoutAddTemplatePermission() throws Exception {
+	private void _testRenderWithoutAddDDMTemplatePermission() throws Exception {
 		String path = "/error.jsp";
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
