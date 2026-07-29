@@ -211,7 +211,7 @@ Team team = usersDisplayContext.getTeam();
 							/>
 
 							<liferay-ui:search-container-column-text
-								cssClass="table-cell-expand table-cell-minw-200 text-center"
+								cssClass="table-cell-expand table-cell-minw-200"
 								name="membership"
 							>
 								<c:choose>
