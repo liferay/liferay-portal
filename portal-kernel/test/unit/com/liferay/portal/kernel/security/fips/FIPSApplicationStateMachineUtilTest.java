@@ -52,11 +52,43 @@ public class FIPSApplicationStateMachineUtilTest {
 		_testTransition(
 			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.POWER_OFF);
 		_testTransition(
+			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.SELF_TEST);
+		_testTransition(
 			FIPSApplicationState.SELF_TEST, FIPSApplicationState.ERROR);
 		_testTransition(
 			FIPSApplicationState.SELF_TEST, FIPSApplicationState.OPERATIONAL);
 		_testTransition(
 			FIPSApplicationState.SELF_TEST, FIPSApplicationState.POWER_OFF);
+	}
+
+	@Test
+	public void testTransitionOrGetBlockingState() {
+		_setFIPSApplicationState(FIPSApplicationState.OPERATIONAL);
+
+		Assert.assertNull(
+			FIPSApplicationStateMachineUtil.transitionOrGetBlockingState(
+				FIPSApplicationState.SELF_TEST));
+		Assert.assertEquals(
+			FIPSApplicationState.SELF_TEST,
+			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
+
+		Assert.assertEquals(
+			FIPSApplicationState.SELF_TEST,
+			FIPSApplicationStateMachineUtil.transitionOrGetBlockingState(
+				FIPSApplicationState.SELF_TEST));
+		Assert.assertEquals(
+			FIPSApplicationState.SELF_TEST,
+			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
+
+		_setFIPSApplicationState(FIPSApplicationState.ERROR);
+
+		Assert.assertEquals(
+			FIPSApplicationState.ERROR,
+			FIPSApplicationStateMachineUtil.transitionOrGetBlockingState(
+				FIPSApplicationState.SELF_TEST));
+		Assert.assertEquals(
+			FIPSApplicationState.ERROR,
+			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
 	}
 
 	@Test
@@ -80,8 +112,6 @@ public class FIPSApplicationStateMachineUtilTest {
 			FIPSApplicationState.INITIALIZING);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.OPERATIONAL);
-		_testTransitionWithIllegalState(
-			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.SELF_TEST);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.POWER_OFF, FIPSApplicationState.ERROR);
 		_testTransitionWithIllegalState(
