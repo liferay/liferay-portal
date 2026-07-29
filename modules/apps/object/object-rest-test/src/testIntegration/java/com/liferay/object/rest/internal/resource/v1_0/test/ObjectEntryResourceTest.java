@@ -189,6 +189,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.GroupThreadLocal;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
@@ -21068,7 +21069,17 @@ public class ObjectEntryResourceTest {
 				"id"
 			));
 
-		_assetVocabularyLocalService.deleteVocabulary(systemAssetVocabulary);
+		boolean deleteInProcess = GroupThreadLocal.isDeleteInProcess();
+
+		try {
+			GroupThreadLocal.setDeleteInProcess(true);
+
+			_assetVocabularyLocalService.deleteVocabulary(
+				systemAssetVocabulary);
+		}
+		finally {
+			GroupThreadLocal.setDeleteInProcess(deleteInProcess);
+		}
 
 		// Cannot add a category from an unassociated vocabulary
 
