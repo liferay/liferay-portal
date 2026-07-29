@@ -317,7 +317,7 @@ test(
 
 		// The friendly URL is normalized and kept
 
-		await assetCategoriesEditPage.saveButton.click();
+		await assetCategoriesEditPage.save();
 
 		await expect(assetCategoriesEditPage.friendlyURLInput).toHaveValue(
 			'winter-sports'
