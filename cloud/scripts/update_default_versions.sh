@@ -40,6 +40,8 @@ function main {
 	)
 
 	_check_bootstrap "gcp" "${gcp_bootstrap_sources[@]}"
+
+	_check_operator
 }
 
 function _bump_bootstrap_version {
@@ -67,6 +69,26 @@ function _bump_bootstrap_version {
 		--in-place \
 		--regexp-extended \
 		"${git_blame_line}s/\"liferay-${bootstrap_name}-bootstrap\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-${1}-bootstrap\": \"${new_version}\"/" \
+		"${_VERSIONS_JSON_FILE}"
+}
+
+function _bump_operator_version {
+	local current_version
+
+	current_version=$(jq --raw-output '."liferay-dxp-operator"' "${_VERSIONS_JSON_FILE}")
+
+	local new_version
+
+	new_version=$(echo "${current_version}" | awk -F"." -v OFS="." '{$NF += 1; print}')
+
+	local git_blame_line
+
+	git_blame_line=$(_git_blame_line '"liferay-dxp-operator": "[0-9]+\.[0-9]+\.[0-9]+"' "${_VERSIONS_JSON_FILE}")
+
+	sed \
+		--in-place \
+		--regexp-extended \
+		"${git_blame_line}s/\"liferay-dxp-operator\": \"[0-9]+\.[0-9]+\.[0-9]+\"/\"liferay-dxp-operator\": \"${new_version}\"/" \
 		"${_VERSIONS_JSON_FILE}"
 }
 
@@ -102,6 +124,35 @@ function _check_bootstrap {
 			return
 		fi
 	done
+}
+
+function _check_operator {
+	local git_blame_sha
+
+	git_blame_sha=$(_git_blame_sha '"liferay-dxp-operator": ".*"' "${_VERSIONS_JSON_FILE}")
+
+	git_blame_sha="${git_blame_sha#^}"
+
+	if [ -z "${git_blame_sha}" ] || ! git rev-parse --quiet --verify "${git_blame_sha}^{commit}" > /dev/null
+	then
+		echo "The blame boundary commit for liferay-dxp-operator cannot be resolved." >&2
+
+		return
+	fi
+
+	local commit_count
+
+	commit_count=$(git rev-list --count "${git_blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator")
+
+	if [[ "${commit_count}" -gt 0 ]]
+	then
+		git rev-list --oneline "${git_blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator"
+
+		echo "The version in ${_VERSIONS_JSON_FILE} is outdated. Updating liferay-dxp-operator version." >&2
+		echo "" >&2
+
+		_bump_operator_version
+	fi
 }
 
 function _git_blame_line {
