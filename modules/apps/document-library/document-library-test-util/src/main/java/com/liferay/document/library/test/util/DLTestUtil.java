@@ -103,14 +103,14 @@ public class DLTestUtil {
 		return addDLFolder(groupId, true, serviceContext);
 	}
 
-	public static byte[] imageFileBytes(String formatName) throws IOException {
+	public static byte[] getImageBytes(String suffix) throws IOException {
 		BufferedImage bufferedImage = new BufferedImage(
 			1, 1, BufferedImage.TYPE_INT_RGB);
 
 		ByteArrayOutputStream byteArrayOutputStream =
 			new ByteArrayOutputStream();
 
-		ImageIO.write(bufferedImage, formatName, byteArrayOutputStream);
+		ImageIO.write(bufferedImage, suffix, byteArrayOutputStream);
 
 		return byteArrayOutputStream.toByteArray();
 	}

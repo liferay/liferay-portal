@@ -213,7 +213,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "test.png",
-			ContentTypes.IMAGE_PNG, DLTestUtil.imageFileBytes("png"), null,
+			ContentTypes.IMAGE_PNG, DLTestUtil.getImageBytes("png"), null,
 			null, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
@@ -320,7 +320,7 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "test.png",
-			ContentTypes.IMAGE_PNG, DLTestUtil.imageFileBytes("png"), null,
+			ContentTypes.IMAGE_PNG, DLTestUtil.getImageBytes("png"), null,
 			null, null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
