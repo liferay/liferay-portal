@@ -3187,29 +3187,35 @@ public class ObjectDefinitionResourceTest
 	private void _testPostObjectDefinitionWithAllowStandaloneObjectEntry()
 		throws Exception {
 
-		Assert.assertEquals(
-			400,
-			HTTPTestUtil.invokeToHttpCode(
-				JSONUtil.put(
-					"label", RandomTestUtil.randomLocaleStringMap()
-				).put(
-					"name", ObjectDefinitionTestUtil.getRandomName()
-				).put(
-					"objectDefinitionSettings",
-					JSONUtil.putAll(
-						JSONUtil.put(
-							"name",
-							ObjectDefinitionSettingConstants.
-								NAME_ALLOW_STANDALONE_OBJECT_ENTRY
-						).put(
-							"value", "true"
-						))
-				).put(
-					"pluralLabel", RandomTestUtil.randomLocaleStringMap()
-				).put(
-					"scope", ObjectDefinitionConstants.SCOPE_COMPANY
-				).toString(),
-				"object-admin/v1.0/object-definitions", Http.Method.POST));
+		JSONObject objectDefinitionJSONObject = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"label", RandomTestUtil.randomLocaleStringMap()
+			).put(
+				"name", ObjectDefinitionTestUtil.getRandomName()
+			).put(
+				"objectDefinitionSettings",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"name",
+						ObjectDefinitionSettingConstants.
+							NAME_ALLOW_STANDALONE_OBJECT_ENTRY
+					).put(
+						"value", "true"
+					))
+			).put(
+				"pluralLabel", RandomTestUtil.randomLocaleStringMap()
+			).put(
+				"scope", ObjectDefinitionConstants.SCOPE_COMPANY
+			).toString(),
+			"object-admin/v1.0/object-definitions", Http.Method.POST);
+
+		Assert.assertFalse(
+			objectDefinitionJSONObject.toString(),
+			objectDefinitionJSONObject.getBoolean(
+				"allowStandaloneObjectEntry"));
+
+		objectDefinitionResource.deleteObjectDefinition(
+			objectDefinitionJSONObject.getLong("id"));
 	}
 
 	private void _testPostObjectDefinitionWithAssigneeObjectField()
