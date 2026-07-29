@@ -171,7 +171,7 @@ public class DesignLibraryDepotEntryBreadcrumbEntryContributorImpl
 					DesignLibraryAdminPortletKeys.DESIGN_LIBRARY_ADMIN, 0, 0,
 					PortletRequest.RENDER_PHASE)
 			).setMVCRenderCommandName(
-				"/design_library/design_library_resources"
+				"/design_library/view_resources_design_library"
 			).setParameter(
 				DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
 				depotEntry.getDepotEntryId()

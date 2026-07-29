@@ -105,7 +105,7 @@ test(
 
 				await page.getByRole('button', {name: 'Save'}).click();
 
-				await expect(page).toHaveURL(/design_library_resources/);
+				await expect(page).toHaveURL(/view_resources_design_library/);
 
 				await expect(
 					contentTable.getByRole('row', {

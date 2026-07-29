@@ -18,9 +18,9 @@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ page import="com.liferay.depot.model.DepotEntry" %><%@
 page import="com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames" %><%@
 page import="com.liferay.design.library.web.internal.constants.DesignLibraryConstants" %><%@
-page import="com.liferay.design.library.web.internal.display.context.DesignLibraryResourcesDisplayContext" %><%@
 page import="com.liferay.design.library.web.internal.display.context.EditDesignLibraryDisplayContext" %><%@
-page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryAdminDisplayContext" %>
+page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryAdminDisplayContext" %><%@
+page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryResourcesDisplayContext" %>
 
 <liferay-theme:defineObjects />
 

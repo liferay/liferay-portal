@@ -8,27 +8,27 @@
 <%@ include file="/init.jsp" %>
 
 <%
-long designLibraryEntryId = (long)request.getAttribute(DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY);
+DepotEntry depotEntry = (DepotEntry)request.getAttribute(DesignLibraryConstants.DESIGN_LIBRARY_ENTRY);
 
-DesignLibraryResourcesDisplayContext designLibraryResourcesDisplayContext = new DesignLibraryResourcesDisplayContext(request, liferayPortletResponse);
+ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContext = new ViewDesignLibraryResourcesDisplayContext(depotEntry, request, liferayPortletResponse);
 %>
 
 <div>
 	<div>
 		<react:component
 			module="{DesignLibraryBreadcrumb} from design-library-web"
-			props="<%= designLibraryResourcesDisplayContext.getBreadcrumbProps(designLibraryEntryId) %>"
+			props="<%= viewDesignLibraryResourcesDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
 
 	<c:choose>
-		<c:when test="<%= designLibraryResourcesDisplayContext.hasContentAccess(designLibraryEntryId) %>">
+		<c:when test="<%= viewDesignLibraryResourcesDisplayContext.hasContentAccess() %>">
 			<div class="design-library-fds-wrapper design-library-fds-wrapper--resources">
 				<frontend-data-set:headless-display
-					additionalProps="<%= designLibraryResourcesDisplayContext.getFDSAdditionalProps(designLibraryEntryId) %>"
-					apiURL="<%= designLibraryResourcesDisplayContext.getAPIURL(designLibraryEntryId) %>"
-					emptyState="<%= designLibraryResourcesDisplayContext.getEmptyState() %>"
-					fdsActionDropdownItems="<%= designLibraryResourcesDisplayContext.getFDSActionDropdownItems(designLibraryEntryId) %>"
+					additionalProps="<%= viewDesignLibraryResourcesDisplayContext.getFDSAdditionalProps() %>"
+					apiURL="<%= viewDesignLibraryResourcesDisplayContext.getAPIURL() %>"
+					emptyState="<%= viewDesignLibraryResourcesDisplayContext.getEmptyState() %>"
+					fdsActionDropdownItems="<%= viewDesignLibraryResourcesDisplayContext.getFDSActionDropdownItems() %>"
 					formName="fm"
 					id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_RESOURCES %>"
 					propsTransformer="{DesignLibraryResourcesFDSPropsTransformer} from design-library-web"

@@ -71,7 +71,7 @@ public class EditDesignLibraryDisplayContext {
 		return PortletURLBuilder.createRenderURL(
 			_liferayPortletResponse
 		).setMVCRenderCommandName(
-			"/design_library/design_library_resources"
+			"/design_library/view_resources_design_library"
 		).setParameter(
 			DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
 			_depotEntry.getDepotEntryId()

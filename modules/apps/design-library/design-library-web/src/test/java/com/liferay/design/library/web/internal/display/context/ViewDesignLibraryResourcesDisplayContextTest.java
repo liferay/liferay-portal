@@ -6,7 +6,6 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
@@ -59,8 +58,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Gabriel Prates
  * @author Lourdes Fernández Besada
+ * @author Thiago Buarque
  */
-public class DesignLibraryResourcesDisplayContextTest {
+public class ViewDesignLibraryResourcesDisplayContextTest {
 
 	@ClassRule
 	@Rule
@@ -68,26 +68,21 @@ public class DesignLibraryResourcesDisplayContextTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
-		_setUpDesignLibraryResourcesDisplayContext();
+	public void setUp() throws Exception {
+		_setUpDepotEntry();
 		_setUpJSONFactoryUtil();
+		_setUpViewDesignLibraryResourcesDisplayContext();
 	}
 
 	@After
 	public void tearDown() {
-		_depotEntryLocalServiceUtilMockedStatic.close();
 		_languageUtilMockedStatic.close();
 		_portalUtilMockedStatic.close();
 	}
 
 	@Test
 	public void testGetAPIURL() throws Exception {
-		long designLibraryEntryId = RandomTestUtil.randomLong();
-
-		DepotEntry depotEntry = _mockDepotEntry(designLibraryEntryId);
-
-		String url = _designLibraryResourcesDisplayContext.getAPIURL(
-			designLibraryEntryId);
+		String url = _viewDesignLibraryResourcesDisplayContext.getAPIURL();
 
 		Assert.assertTrue(
 			url,
@@ -95,7 +90,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 				StringBundler.concat(
 					"entryClassNames=", FragmentCollection.class.getName(), ",",
 					StyleBookEntry.class.getName(), "&filter=groupIds/any(g:g ",
-					"eq ", depotEntry.getGroupId(), ")")));
+					"eq ", _depotEntry.getGroupId(), ")")));
 	}
 
 	@Test
@@ -171,15 +166,11 @@ public class DesignLibraryResourcesDisplayContextTest {
 
 	@Test
 	public void testGetFDSActionDropdownItems() throws Exception {
-		long designLibraryEntryId = RandomTestUtil.randomLong();
-
-		_mockDepotEntry(designLibraryEntryId);
-
 		_setUpPortletURLMocks();
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
-			_designLibraryResourcesDisplayContext.getFDSActionDropdownItems(
-				designLibraryEntryId);
+			_viewDesignLibraryResourcesDisplayContext.
+				getFDSActionDropdownItems();
 
 		_assertFDSActionDropdownItem(
 			FragmentCollection.class.getName(), "view", "link",
@@ -206,14 +197,8 @@ public class DesignLibraryResourcesDisplayContextTest {
 	public void testGetFDSAdditionalProps() throws Exception {
 		_setUpPortletURLMocks();
 
-		long designLibraryEntryId = RandomTestUtil.randomLong();
-
-		DepotEntry depotEntry = _mockDepotEntry(designLibraryEntryId);
-
-		_assertFDSAdditionalProps(
-			designLibraryEntryId, depotEntry.getGroupId(), false);
-		_assertFDSAdditionalProps(
-			designLibraryEntryId, depotEntry.getGroupId(), true);
+		_assertFDSAdditionalProps(_depotEntry.getGroupId(), false);
+		_assertFDSAdditionalProps(_depotEntry.getGroupId(), true);
 	}
 
 	private void _assertFDSActionDropdownItem(
@@ -235,8 +220,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 	}
 
 	private void _assertFDSAdditionalProps(
-			long designLibraryEntryId, long groupId,
-			boolean manageFragmentEntriesPermission)
+			long groupId, boolean manageFragmentEntriesPermission)
 		throws Exception {
 
 		Mockito.when(
@@ -248,8 +232,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 		);
 
 		Map<String, Object> fdsAdditionalProps =
-			_designLibraryResourcesDisplayContext.getFDSAdditionalProps(
-				designLibraryEntryId);
+			_viewDesignLibraryResourcesDisplayContext.getFDSAdditionalProps();
 
 		Assert.assertNull(fdsAdditionalProps.get("addStyleBookEntryURL"));
 		Assert.assertFalse((Boolean)fdsAdditionalProps.get("canAddStyleBook"));
@@ -349,16 +332,15 @@ public class DesignLibraryResourcesDisplayContextTest {
 			DepotEntry depotEntry = Mockito.mock(DepotEntry.class);
 
 			Mockito.when(
+				depotEntry.getDepotEntryId()
+			).thenReturn(
+				_DEPOT_ENTRY_ID
+			);
+
+			Mockito.when(
 				depotEntry.getGroup()
 			).thenReturn(
 				group
-			);
-
-			_depotEntryLocalServiceUtilMockedStatic.when(
-				() -> DepotEntryLocalServiceUtil.getDepotEntry(
-					Mockito.anyLong())
-			).thenReturn(
-				depotEntry
 			);
 
 			_languageUtilMockedStatic.when(
@@ -387,17 +369,16 @@ public class DesignLibraryResourcesDisplayContextTest {
 				LocaleUtil.US
 			);
 
-			DesignLibraryResourcesDisplayContext
-				designLibraryResourcesDisplayContext =
-					new DesignLibraryResourcesDisplayContext(
-						httpServletRequest,
+			ViewDesignLibraryResourcesDisplayContext
+				viewDesignLibraryResourcesDisplayContext =
+					new ViewDesignLibraryResourcesDisplayContext(
+						depotEntry, httpServletRequest,
 						Mockito.mock(LiferayPortletResponse.class));
 
 			List<String> labels = new ArrayList<>();
 
 			Map<String, Object> breadcrumbProps =
-				designLibraryResourcesDisplayContext.getBreadcrumbProps(
-					group.getClassPK());
+				viewDesignLibraryResourcesDisplayContext.getBreadcrumbProps();
 
 			JSONArray jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
 
@@ -411,13 +392,9 @@ public class DesignLibraryResourcesDisplayContextTest {
 		}
 	}
 
-	private DepotEntry _mockDepotEntry(long designLibraryEntryId)
-		throws Exception {
-
-		DepotEntry depotEntry = Mockito.mock(DepotEntry.class);
-
+	private void _setUpDepotEntry() throws Exception {
 		Mockito.when(
-			depotEntry.getGroup()
+			_depotEntry.getGroup()
 		).thenReturn(
 			_group
 		);
@@ -425,7 +402,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 		long groupId = RandomTestUtil.randomLong();
 
 		Mockito.when(
-			depotEntry.getGroupId()
+			_depotEntry.getGroupId()
 		).thenReturn(
 			groupId
 		);
@@ -435,75 +412,6 @@ public class DesignLibraryResourcesDisplayContextTest {
 		).thenReturn(
 			groupId
 		);
-
-		_depotEntryLocalServiceUtilMockedStatic.when(
-			() -> DepotEntryLocalServiceUtil.getDepotEntry(designLibraryEntryId)
-		).thenReturn(
-			depotEntry
-		);
-
-		return depotEntry;
-	}
-
-	private void _setUpDesignLibraryResourcesDisplayContext() {
-		ReflectionTestUtil.setFieldValue(
-			DesignLibraryResourcesDisplayContext.class,
-			"_fragmentCollectionLocalServiceSnapshot",
-			new Snapshot<FragmentCollectionLocalService>(
-				DesignLibraryResourcesDisplayContext.class,
-				FragmentCollectionLocalService.class) {
-
-				@Override
-				public FragmentCollectionLocalService get() {
-					return null;
-				}
-
-			});
-		ReflectionTestUtil.setFieldValue(
-			DesignLibraryResourcesDisplayContext.class,
-			"_fragmentPortletResourcePermissionSnapshot",
-			new Snapshot<PortletResourcePermission>(
-				DesignLibraryResourcesDisplayContext.class,
-				PortletResourcePermission.class) {
-
-				@Override
-				public PortletResourcePermission get() {
-					return _fragmentPortletResourcePermission;
-				}
-
-			});
-		ReflectionTestUtil.setFieldValue(
-			DesignLibraryResourcesDisplayContext.class,
-			"_styleBookPortletResourcePermissionSnapshot",
-			new Snapshot<PortletResourcePermission>(
-				DesignLibraryResourcesDisplayContext.class,
-				PortletResourcePermission.class) {
-
-				@Override
-				public PortletResourcePermission get() {
-					return null;
-				}
-
-			});
-
-		Mockito.when(
-			_themeDisplay.getPermissionChecker()
-		).thenReturn(
-			_permissionChecker
-		);
-
-		Mockito.when(
-			_themeDisplay.getLocale()
-		).thenReturn(
-			LocaleUtil.US
-		);
-
-		_mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, _themeDisplay);
-
-		_designLibraryResourcesDisplayContext =
-			new DesignLibraryResourcesDisplayContext(
-				_mockHttpServletRequest, _liferayPortletResponse);
 	}
 
 	private void _setUpJSONFactoryUtil() {
@@ -542,13 +450,70 @@ public class DesignLibraryResourcesDisplayContextTest {
 		);
 	}
 
+	private void _setUpViewDesignLibraryResourcesDisplayContext() {
+		ReflectionTestUtil.setFieldValue(
+			ViewDesignLibraryResourcesDisplayContext.class,
+			"_fragmentCollectionLocalServiceSnapshot",
+			new Snapshot<FragmentCollectionLocalService>(
+				ViewDesignLibraryResourcesDisplayContext.class,
+				FragmentCollectionLocalService.class) {
+
+				@Override
+				public FragmentCollectionLocalService get() {
+					return null;
+				}
+
+			});
+		ReflectionTestUtil.setFieldValue(
+			ViewDesignLibraryResourcesDisplayContext.class,
+			"_fragmentPortletResourcePermissionSnapshot",
+			new Snapshot<PortletResourcePermission>(
+				ViewDesignLibraryResourcesDisplayContext.class,
+				PortletResourcePermission.class) {
+
+				@Override
+				public PortletResourcePermission get() {
+					return _fragmentPortletResourcePermission;
+				}
+
+			});
+		ReflectionTestUtil.setFieldValue(
+			ViewDesignLibraryResourcesDisplayContext.class,
+			"_styleBookPortletResourcePermissionSnapshot",
+			new Snapshot<PortletResourcePermission>(
+				ViewDesignLibraryResourcesDisplayContext.class,
+				PortletResourcePermission.class) {
+
+				@Override
+				public PortletResourcePermission get() {
+					return null;
+				}
+
+			});
+
+		Mockito.when(
+			_themeDisplay.getPermissionChecker()
+		).thenReturn(
+			_permissionChecker
+		);
+
+		Mockito.when(
+			_themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		_mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _themeDisplay);
+
+		_viewDesignLibraryResourcesDisplayContext =
+			new ViewDesignLibraryResourcesDisplayContext(
+				_depotEntry, _mockHttpServletRequest, _liferayPortletResponse);
+	}
+
 	private static final long _DEPOT_ENTRY_ID = 12345;
 
-	private final MockedStatic<DepotEntryLocalServiceUtil>
-		_depotEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
-			DepotEntryLocalServiceUtil.class);
-	private DesignLibraryResourcesDisplayContext
-		_designLibraryResourcesDisplayContext;
+	private final DepotEntry _depotEntry = Mockito.mock(DepotEntry.class);
 	private final PortletResourcePermission _fragmentPortletResourcePermission =
 		Mockito.mock(PortletResourcePermission.class);
 	private final Group _group = Mockito.mock(Group.class);
@@ -565,5 +530,7 @@ public class DesignLibraryResourcesDisplayContextTest {
 	private final MockedStatic<PortalUtil> _portalUtilMockedStatic =
 		Mockito.mockStatic(PortalUtil.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
+	private ViewDesignLibraryResourcesDisplayContext
+		_viewDesignLibraryResourcesDisplayContext;
 
 }

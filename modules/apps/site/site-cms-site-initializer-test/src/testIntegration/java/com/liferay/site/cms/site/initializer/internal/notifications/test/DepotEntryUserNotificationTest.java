@@ -164,7 +164,7 @@ public class DepotEntryUserNotificationTest {
 						"DesignLibraryAdminPortlet",
 					0, 0, PortletRequest.RENDER_PHASE)
 			).setMVCRenderCommandName(
-				"/design_library/design_library_resources"
+				"/design_library/view_resources_design_library"
 			).setParameter(
 				"designLibraryEntryId", _depotEntry2.getDepotEntryId()
 			).buildString(),
