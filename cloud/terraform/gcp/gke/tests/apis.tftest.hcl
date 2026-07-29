@@ -38,7 +38,7 @@ run "should_enable_required_project_apis" {
 		error_message="Project APIs must not be disabled on destroy"
 	}
 	assert {
-		condition=length(google_project_service.apis) == 19
+		condition=length(google_project_service.apis) == 20
 		error_message="All required project APIs must be enabled"
 	}
 	command=plan
