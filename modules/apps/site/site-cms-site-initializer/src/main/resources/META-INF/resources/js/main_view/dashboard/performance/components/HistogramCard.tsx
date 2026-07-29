@@ -55,6 +55,8 @@ export function HistogramCard({
 
 	const metrics = histogram?.metrics ?? [];
 
+	const empty = !metrics.length;
+
 	return (
 		<BaseCard
 			className="d-flex flex-column h-100"
@@ -62,16 +64,17 @@ export function HistogramCard({
 			title={title}
 			uppercaseTitle={false}
 		>
-			<ChartState
-				empty={!loading && !error && !metrics.length}
-				error={error}
-				loading={loading}
-			>
+			<ChartState error={error} loading={loading}>
 				<LineChart
 					categories={metrics.map(({valueKey}) =>
 						formatDate(new Date(valueKey), range.rangeKey)
 					)}
 					className="w-100"
+					description={
+						empty
+							? Liferay.Language.get('there-is-no-data')
+							: undefined
+					}
 					legendValue="name"
 					series={[
 						{
@@ -88,6 +91,7 @@ export function HistogramCard({
 						},
 					]}
 					title=""
+					yFormat={empty ? () => '' : undefined}
 				/>
 			</ChartState>
 		</BaseCard>
