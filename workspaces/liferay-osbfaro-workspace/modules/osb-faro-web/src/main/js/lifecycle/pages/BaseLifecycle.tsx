@@ -239,6 +239,8 @@ const BaseLifecycle = () => {
 
 	const loading = dataSourcesLoading || lifecyclesLoading;
 
+	const title = lifecycle?.name || Liferay.Language.get('lifecycles');
+
 	const hasContent =
 		!loading &&
 		!noDataSources &&
@@ -320,7 +322,7 @@ const BaseLifecycle = () => {
 
 	return (
 		<LifecycleContextProvider lifecycleId={lifecycleId ?? ''}>
-			<BasePage documentTitle={Liferay.Language.get('lifecycles')}>
+			<BasePage documentTitle={title}>
 				<BasePage.Header
 					breadcrumbs={[
 						breadcrumbs.getHome({
@@ -334,7 +336,7 @@ const BaseLifecycle = () => {
 					<BasePage.Row>
 						<BasePage.Header.TitleSection
 							className="mb-3"
-							title={Liferay.Language.get('lifecycles')}
+							title={title}
 						/>
 
 						{hasLifecycles && authorized && (

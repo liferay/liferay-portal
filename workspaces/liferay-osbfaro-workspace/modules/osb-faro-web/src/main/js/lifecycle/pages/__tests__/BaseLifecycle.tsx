@@ -92,7 +92,11 @@ const useRequestImpl =
 		processedDate = 1700000000000,
 		totalCount = 1,
 	}: {
-		lifecycles?: {id: string; processedDate?: number | null}[];
+		lifecycles?: {
+			id: string;
+			name?: string;
+			processedDate?: number | null;
+		}[];
 		metricsLoading?: boolean;
 		processedDate?: number | null;
 		totalCount?: number;
@@ -144,7 +148,35 @@ describe('BaseLifecycle', () => {
 
 	afterEach(cleanup);
 
-	it('renders the page title', () => {
+	it('titles the page with the lifecycle name', () => {
+		mockedUseRequest.mockImplementation(
+			useRequestImpl({
+				lifecycles: [{id: '1', name: "Tiago's Lifecycle"}],
+				totalCount: 5,
+			})
+		);
+
+		renderPage();
+
+		expect(screen.getByText("Tiago's Lifecycle")).toBeInTheDocument();
+		expect(screen.queryByText('Lifecycles')).toBeNull();
+	});
+
+	it('titles the page generically when no lifecycle exists', () => {
+		mockedUseRequest.mockImplementation(
+			useRequestImpl({lifecycles: [], totalCount: 5})
+		);
+
+		renderPage();
+
+		expect(screen.getByText('Lifecycles')).toBeInTheDocument();
+	});
+
+	it('titles the page generically when the lifecycle is unnamed', () => {
+		mockedUseRequest.mockImplementation(
+			useRequestImpl({lifecycles: [{id: '1'}], totalCount: 5})
+		);
+
 		renderPage();
 
 		expect(screen.getByText('Lifecycles')).toBeInTheDocument();
