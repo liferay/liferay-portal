@@ -136,32 +136,34 @@ function Card({
 			uppercaseTitle={false}
 		>
 			<ChartState error={error} loading={loading}>
-				{groupBy === 'categories' ? (
-					<PieChart
-						className="w-100"
-						data={metrics.map(({value, valueKey}) => ({
-							label: valueKey,
-							value,
-						}))}
-						legend={legend}
-						legendPosition="bottom"
-						legendSwatchBorder={false}
-						showCenterLabel={!empty}
-						title=""
-					/>
-				) : (
-					<MapChart
-						data={metrics.map(({value, valueKey}) => ({
-							country: valueKey,
-							value,
-						}))}
-						legend={legend}
-						legendPosition="bottom"
-						legendSwatchBorder={false}
-						title=""
-						variant="choropleth"
-					/>
-				)}
+				<div className="d-flex flex-column flex-grow-1 justify-content-center">
+					{groupBy === 'categories' ? (
+						<PieChart
+							className="w-100"
+							data={metrics.map(({value, valueKey}) => ({
+								label: valueKey,
+								value,
+							}))}
+							legend={legend}
+							legendPosition="bottom"
+							legendSwatchBorder={false}
+							showCenterLabel={!empty}
+							title=""
+						/>
+					) : (
+						<MapChart
+							data={metrics.map(({value, valueKey}) => ({
+								country: valueKey,
+								value,
+							}))}
+							legend={legend}
+							legendPosition="bottom"
+							legendSwatchBorder={false}
+							title=""
+							variant="choropleth"
+						/>
+					)}
+				</div>
 
 				{empty ? (
 					<div className="mt-4 px-8 text-center">
