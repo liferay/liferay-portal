@@ -7,7 +7,9 @@ package com.liferay.headless.cmp.internal.resource.v1_0;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryModel;
+import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.headless.cmp.dto.v1_0.ContentCoverage;
 import com.liferay.headless.cmp.dto.v1_0.ContentCoverageEntry;
 import com.liferay.headless.cmp.dto.v1_0.FunnelStage;
@@ -25,7 +27,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.aggregation.bucket.FilterAggregationResult;
@@ -40,6 +41,7 @@ import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -249,13 +251,23 @@ public class ContentCoverageResourceImpl
 
 	private List<AssetCategory> _filterAssetCategoriesByVocabulary(
 		List<AssetCategory> assetCategories,
-		String vocabularyExternalReferenceCode) {
+		String assetVocabularyExternalReferenceCode) {
 
 		return ListUtil.filter(
 			assetCategories,
-			assetCategory -> StringUtil.startsWith(
-				assetCategory.getExternalReferenceCode(),
-				vocabularyExternalReferenceCode));
+			assetCategory -> {
+				AssetVocabulary assetVocabulary =
+					_assetVocabularyLocalService.fetchAssetVocabulary(
+						assetCategory.getVocabularyId());
+
+				if (assetVocabulary == null) {
+					return false;
+				}
+
+				return Objects.equals(
+					assetVocabulary.getExternalReferenceCode(),
+					assetVocabularyExternalReferenceCode);
+			});
 	}
 
 	private String _getAggregationName(
@@ -341,6 +353,9 @@ public class ContentCoverageResourceImpl
 
 	@Reference
 	private AssetCategoryService _assetCategoryService;
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
