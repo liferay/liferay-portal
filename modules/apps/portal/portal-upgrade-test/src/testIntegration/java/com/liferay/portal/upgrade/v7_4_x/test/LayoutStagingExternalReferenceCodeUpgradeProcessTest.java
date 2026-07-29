@@ -72,11 +72,11 @@ public class LayoutStagingExternalReferenceCodeUpgradeProcessTest {
 			liveLayout.getUuid(), stagingGroup.getGroupId(),
 			liveLayout.isPrivateLayout());
 
-		String liveExternalReferenceCode = String.valueOf(liveLayout.getPlid());
 		String stagingExternalReferenceCode = String.valueOf(
 			stagingLayout.getPlid());
 
-		_updateLayout(liveLayout.getPlid(), liveExternalReferenceCode);
+		_updateLayout(
+			liveLayout.getPlid(), String.valueOf(liveLayout.getPlid()));
 		_updateLayout(stagingLayout.getPlid(), stagingExternalReferenceCode);
 
 		_runUpgrade();
