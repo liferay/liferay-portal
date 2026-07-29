@@ -29,8 +29,8 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -68,6 +68,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -186,12 +187,16 @@ public class UploadFileEntryMVCActionCommandTest {
 		Role role = RoleLocalServiceUtil.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
 
-		Assert.assertFalse(
-			_resourcePermissionLocalService.hasResourcePermission(
-				TestPropsValues.getCompanyId(), DLFileEntry.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(dlFileEntry.getFileEntryId()), role.getRoleId(),
-				ActionKeys.VIEW));
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_resourcePermissionLocalService.
+				getAvailableResourcePermissionActionIds(
+					TestPropsValues.getCompanyId(), DLFileEntry.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(dlFileEntry.getFileEntryId()),
+					role.getRoleId(),
+					_resourceActions.getModelResourceActions(
+						DLFileEntry.class.getName())));
 	}
 
 	@Test
@@ -332,6 +337,9 @@ public class UploadFileEntryMVCActionCommandTest {
 
 	@Inject
 	private PortletFileRepository _portletFileRepository;
+
+	@Inject
+	private ResourceActions _resourceActions;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
