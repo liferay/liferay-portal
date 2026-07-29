@@ -31,7 +31,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Stefano Motta
  */
-@Component(service = PortalInstanceLifecycleListener.class)
+@Component(
+	property = "service.ranking:Integer=" + Integer.MIN_VALUE,
+	service = PortalInstanceLifecycleListener.class
+)
 public class DSRInitialRequestPortalInstanceLifecycleListener
 	extends InitialRequestPortalInstanceLifecycleListener {
 
