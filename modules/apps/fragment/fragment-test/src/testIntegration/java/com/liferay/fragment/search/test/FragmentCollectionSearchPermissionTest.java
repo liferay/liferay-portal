@@ -75,12 +75,16 @@ public class FragmentCollectionSearchPermissionTest {
 	}
 
 	@Test
-	public void testIndexerSearchLogsNoError() throws Exception {
-		_assertNoErrorLogged(() -> _indexer.search(_createSearchContext()));
-	}
+	public void testSearch() throws Exception {
+		UserTestUtil.setUser(_user);
 
-	@Test
-	public void testMultipleIndexerSearchLogsNoError() throws Exception {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		Assert.assertFalse(
+			permissionChecker.isCompanyAdmin(TestPropsValues.getCompanyId()));
+
+		_assertNoErrorLogged(() -> _indexer.search(_createSearchContext()));
 		_assertNoErrorLogged(
 			() -> {
 				SearchResponse searchResponse = _search(
@@ -88,10 +92,6 @@ public class FragmentCollectionSearchPermissionTest {
 
 				Assert.assertEquals(1, searchResponse.getTotalHits());
 			});
-	}
-
-	@Test
-	public void testSingleIndexerSearchLogsNoError() throws Exception {
 		_assertNoErrorLogged(() -> _search(FragmentCollection.class));
 	}
 
@@ -100,14 +100,6 @@ public class FragmentCollectionSearchPermissionTest {
 
 	private void _assertNoErrorLogged(UnsafeRunnable<Exception> unsafeRunnable)
 		throws Exception {
-
-		UserTestUtil.setUser(_user);
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		Assert.assertFalse(
-			permissionChecker.isCompanyAdmin(TestPropsValues.getCompanyId()));
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.portal.search.internal." +
