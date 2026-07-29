@@ -122,8 +122,6 @@ test(
 
 		await expect(globalMenuPage.globalMenuButton).toBeHidden();
 
-		// Try to access the Import page directly using the stored URL
-
 		await page.goto(importURL);
 
 		await expect(exportImportPage.newButton).toBeHidden();
