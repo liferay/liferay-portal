@@ -58,9 +58,10 @@ public class ProductsSectionDisplayContextTest {
 	public void testGetBulkActionDropdownItems() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
+		Language language = Mockito.mock(Language.class);
+
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
-		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
 			language.get(httpServletRequest, "delete")
@@ -133,10 +134,10 @@ public class ProductsSectionDisplayContextTest {
 	public void testGetEmptyState() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
+		Language language = Mockito.mock(Language.class);
+
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
-
-		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
 			language.get(
@@ -171,9 +172,10 @@ public class ProductsSectionDisplayContextTest {
 	public void testGetFDSActionDropdownItems() {
 		LanguageUtil languageUtil = new LanguageUtil();
 
+		Language language = Mockito.mock(Language.class);
+
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
-		Language language = Mockito.mock(Language.class);
 
 		Mockito.when(
 			language.get(
