@@ -166,12 +166,13 @@ public abstract class BaseMockContactsEngineClientImpl
 	public IndividualSegment addIndividualSegment(
 		FaroProject faroProject, long userId, String channelId,
 		String externalReferenceCode, String filterString,
-		boolean includeAnonymousUsers, String name, String segmentType,
-		boolean sequential, String status) {
+		boolean includeAnonymousUsers, String name, String segmentCategory,
+		String segmentType, boolean sequential, String status) {
 
 		return contactsEngineClient.addIndividualSegment(
 			faroProject, userId, channelId, externalReferenceCode, filterString,
-			includeAnonymousUsers, name, segmentType, sequential, status);
+			includeAnonymousUsers, name, segmentCategory, segmentType,
+			sequential, status);
 	}
 
 	@Override

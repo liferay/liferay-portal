@@ -117,8 +117,8 @@ public interface ContactsEngineClient {
 	public IndividualSegment addIndividualSegment(
 		FaroProject faroProject, long userId, String channelId,
 		String externalReferenceCode, String filterString,
-		boolean includeAnonymousUsers, String name, String segmentType,
-		boolean sequential, String status);
+		boolean includeAnonymousUsers, String name, String segmentCategory,
+		String segmentType, boolean sequential, String status);
 
 	public IndividualSegmentMembership addMembership(
 		FaroProject faroProject, String individualSegmentId,
