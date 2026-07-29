@@ -103,14 +103,14 @@ public abstract class BaseDDMTemplateMVCRenderCommandTestCase {
 		RenderRequest renderRequest) {
 
 		Assert.assertNotNull(
-			renderRequest.getAttribute(_DISPLAY_CONTEXT_ATTRIBUTE_NAME));
+			renderRequest.getAttribute(_RENDER_REQUEST_ATTRIBUTE_NAME));
 	}
 
 	protected void assertNoDDMTemplateDisplayContext(
 		RenderRequest renderRequest) {
 
 		Assert.assertNull(
-			renderRequest.getAttribute(_DISPLAY_CONTEXT_ATTRIBUTE_NAME));
+			renderRequest.getAttribute(_RENDER_REQUEST_ATTRIBUTE_NAME));
 	}
 
 	protected void assertSessionError(
@@ -185,7 +185,7 @@ public abstract class BaseDDMTemplateMVCRenderCommandTestCase {
 		return user;
 	}
 
-	private static final String _DISPLAY_CONTEXT_ATTRIBUTE_NAME =
+	private static final String _RENDER_REQUEST_ATTRIBUTE_NAME =
 		"com.liferay.journal.web.internal.display.context." +
 			"JournalEditDDMTemplateDisplayContext";
 
