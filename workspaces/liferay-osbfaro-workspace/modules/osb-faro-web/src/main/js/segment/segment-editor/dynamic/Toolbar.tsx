@@ -17,7 +17,7 @@ import {INDIVIDUALS} from 'shared/util/router';
 import {individualsListColumns} from 'shared/util/table-columns';
 import {Modal} from 'shared/types';
 import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {validateSegmentInputs} from './utils/utils';
 
@@ -29,6 +29,7 @@ interface IToolbarProps {
 	groupId: string;
 	id: string;
 	includeAnonymousUsers: boolean;
+	segmentCategory: SegmentCategories;
 	open: Modal.open;
 	valid: boolean;
 	segmentType: SegmentTypes;
@@ -109,7 +110,20 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 	}, 400);
 
 	fetchMembers(params: Record<string, any>) {
-		const {channelId, criteriaString, groupId} = this.props;
+		const {channelId, criteriaString, groupId, segmentCategory} =
+			this.props;
+
+		if (segmentCategory === SegmentCategories.Account) {
+			return API.accounts
+				.searchByFilter({
+					channelId,
+					filter: criteriaString,
+					groupId,
+				})
+				.then(({totalCount}: {totalCount: number}) => ({
+					total: totalCount,
+				}));
+		}
 
 		return API.individuals.search({
 			channelId,

@@ -128,3 +128,17 @@ export function searchAccounts({
 		path: `contacts/${groupId}/account/account-names`,
 	});
 }
+
+export function searchByFilter({
+	channelId = '',
+	filter = '',
+	groupId,
+	page = 0,
+	pageSize = 0,
+}) {
+	return sendRequest({
+		data: {channelId, filter, page, pageSize},
+		method: 'GET',
+		path: `contacts/${groupId}/account/search`,
+	});
+}

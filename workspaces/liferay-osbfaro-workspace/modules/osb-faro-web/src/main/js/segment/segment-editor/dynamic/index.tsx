@@ -238,6 +238,7 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 					sequential,
 					state: segmentState,
 				},
+				segmentCategory,
 				type,
 			},
 		} = this;
@@ -320,6 +321,7 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 										includeAnonymousUsers={
 											includeAnonymousUsers
 										}
+										segmentCategory={segmentCategory}
 										segmentType={type}
 										valid={isValid && hasChanges}
 									/>
