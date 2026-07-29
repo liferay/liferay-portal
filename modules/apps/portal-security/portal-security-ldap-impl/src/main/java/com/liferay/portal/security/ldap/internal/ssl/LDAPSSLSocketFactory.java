@@ -108,11 +108,10 @@ public class LDAPSSLSocketFactory extends SocketFactory {
 		sslParameters.setCipherSuites(
 			FIPSModeValidator.getAllowedTLSCipherSuites(
 				sslSocket.getSupportedCipherSuites()));
+		sslParameters.setEndpointIdentificationAlgorithm("LDAPS");
 		sslParameters.setProtocols(
 			FIPSModeValidator.getAllowedTLSProtocols(
 				sslSocket.getSupportedProtocols()));
-
-		sslParameters.setEndpointIdentificationAlgorithm("LDAPS");
 
 		sslSocket.setSSLParameters(sslParameters);
 	}

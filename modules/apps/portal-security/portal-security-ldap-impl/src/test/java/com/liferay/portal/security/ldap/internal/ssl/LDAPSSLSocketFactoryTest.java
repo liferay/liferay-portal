@@ -64,12 +64,11 @@ public class LDAPSSLSocketFactoryTest {
 
 		List<SNIServerName> serverNames = sslParameters.getServerNames();
 
-		Assert.assertEquals(serverNames.toString(), 1, serverNames.size());
-		Assert.assertTrue(serverNames.get(0) instanceof SNIHostName);
-
 		SNIHostName sniHostName = (SNIHostName)serverNames.get(0);
 
 		Assert.assertEquals("localhost", sniHostName.getAsciiName());
+
+		Assert.assertEquals(serverNames.toString(), 1, serverNames.size());
 	}
 
 	@Test
