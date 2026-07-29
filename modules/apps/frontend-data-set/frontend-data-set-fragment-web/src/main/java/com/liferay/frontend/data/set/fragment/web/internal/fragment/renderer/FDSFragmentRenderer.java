@@ -14,8 +14,12 @@ import com.liferay.frontend.data.set.renderer.FDSRenderer;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
+import com.liferay.info.item.InfoItemDetails;
 import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
+import com.liferay.info.item.InfoItemServiceRegistry;
+import com.liferay.info.item.provider.InfoItemDetailsProvider;
+import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
@@ -325,6 +329,66 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 		return tokenNames;
 	}
 
+	private String _getExternalReferenceCode(InfoItemDetails infoItemDetails) {
+		if (infoItemDetails == null) {
+			return null;
+		}
+
+		InfoItemReference infoItemReference =
+			infoItemDetails.getInfoItemReference();
+
+		InfoItemIdentifier infoItemIdentifier =
+			infoItemReference.getInfoItemIdentifier();
+
+		if (!(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+			return null;
+		}
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			(ERCInfoItemIdentifier)infoItemIdentifier;
+
+		return ercInfoItemIdentifier.getExternalReferenceCode();
+	}
+
+	private InfoItemDetails _getInfoItemDetails(
+		HttpServletRequest httpServletRequest,
+		InfoItemReference infoItemReference) {
+
+		String className = infoItemReference.getClassName();
+
+		InfoItemIdentifier infoItemIdentifier =
+			infoItemReference.getInfoItemIdentifier();
+
+		InfoItemObjectProvider<Object> infoItemObjectProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemObjectProvider.class, className,
+				infoItemIdentifier.getInfoItemServiceFilter());
+
+		InfoItemDetailsProvider<Object> infoItemDetailsProvider =
+			_infoItemServiceRegistry.getFirstInfoItemService(
+				InfoItemDetailsProvider.class, className);
+
+		if ((infoItemObjectProvider == null) ||
+			(infoItemDetailsProvider == null)) {
+
+			return null;
+		}
+
+		try {
+			return infoItemDetailsProvider.getInfoItemDetails(
+				_portal.getScopeGroupId(httpServletRequest),
+				ERCInfoItemIdentifier.class,
+				infoItemObjectProvider.getInfoItem(infoItemIdentifier));
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return null;
+		}
+	}
+
 	private Set<String> _getTokenNames(
 		String externalReferenceCode, HttpServletRequest httpServletRequest) {
 
@@ -411,13 +475,16 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			InfoItemIdentifier infoItemIdentifier =
 				infoItemReference.getInfoItemIdentifier();
 
-			if (Objects.equals(fieldId, "externalReferenceCode") &&
-				(infoItemIdentifier instanceof ERCInfoItemIdentifier)) {
+			if (Objects.equals(fieldId, "externalReferenceCode")) {
+				if (infoItemIdentifier instanceof ERCInfoItemIdentifier) {
+					ERCInfoItemIdentifier ercInfoItemIdentifier =
+						(ERCInfoItemIdentifier)infoItemIdentifier;
 
-				ERCInfoItemIdentifier ercInfoItemIdentifier =
-					(ERCInfoItemIdentifier)infoItemIdentifier;
+					return ercInfoItemIdentifier.getExternalReferenceCode();
+				}
 
-				return ercInfoItemIdentifier.getExternalReferenceCode();
+				return _getExternalReferenceCode(
+					_getInfoItemDetails(httpServletRequest, infoItemReference));
 			}
 
 			if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
@@ -560,6 +627,9 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 
 	@Reference
 	private FragmentEntryConfigurationParser _fragmentEntryConfigurationParser;
+
+	@Reference
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Reference
 	private JSONFactory _jsonFactory;
