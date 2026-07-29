@@ -14,6 +14,7 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -34,15 +35,17 @@ public class CMSDefaultPermissionObjectEntryModelResourcePermission
 	implements ModelResourcePermission<ObjectEntry> {
 
 	public CMSDefaultPermissionObjectEntryModelResourcePermission(
-		DepotEntryLocalService depotEntryLocalService,
+		String className, DepotEntryLocalService depotEntryLocalService,
 		GroupLocalService groupLocalService,
-		ModelResourcePermission<ObjectEntry> modelResourcePermission,
+		Snapshot<ModelResourcePermission<ObjectEntry>>
+			modelResourcePermissionSnapshot,
 		ObjectEntryFolderLocalService objectEntryFolderLocalService,
 		ObjectEntryLocalService objectEntryLocalService) {
 
+		_className = className;
 		_depotEntryLocalService = depotEntryLocalService;
 		_groupLocalService = groupLocalService;
-		_modelResourcePermission = modelResourcePermission;
+		_modelResourcePermissionSnapshot = modelResourcePermissionSnapshot;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 		_objectEntryLocalService = objectEntryLocalService;
 	}
@@ -55,8 +58,7 @@ public class CMSDefaultPermissionObjectEntryModelResourcePermission
 
 		if (!contains(permissionChecker, primaryKey, actionId)) {
 			throw new PrincipalException.MustHavePermission(
-				permissionChecker, _modelResourcePermission.getModelName(),
-				primaryKey, actionId);
+				permissionChecker, _className, primaryKey, actionId);
 		}
 	}
 
@@ -68,8 +70,8 @@ public class CMSDefaultPermissionObjectEntryModelResourcePermission
 
 		if (!contains(permissionChecker, objectEntry, actionId)) {
 			throw new PrincipalException.MustHavePermission(
-				permissionChecker, _modelResourcePermission.getModelName(),
-				objectEntry.getObjectEntryId(), actionId);
+				permissionChecker, _className, objectEntry.getObjectEntryId(),
+				actionId);
 		}
 	}
 
@@ -149,23 +151,39 @@ public class CMSDefaultPermissionObjectEntryModelResourcePermission
 			}
 		}
 
-		return _modelResourcePermission.contains(
+		ModelResourcePermission<ObjectEntry> modelResourcePermission =
+			_modelResourcePermissionSnapshot.get();
+
+		if (modelResourcePermission == null) {
+			return false;
+		}
+
+		return modelResourcePermission.contains(
 			permissionChecker, objectEntry, actionId);
 	}
 
 	@Override
 	public String getModelName() {
-		return _modelResourcePermission.getModelName();
+		return _className;
 	}
 
 	@Override
 	public PortletResourcePermission getPortletResourcePermission() {
-		return _modelResourcePermission.getPortletResourcePermission();
+		ModelResourcePermission<ObjectEntry> modelResourcePermission =
+			_modelResourcePermissionSnapshot.get();
+
+		if (modelResourcePermission == null) {
+			return null;
+		}
+
+		return modelResourcePermission.getPortletResourcePermission();
 	}
 
+	private final String _className;
 	private final DepotEntryLocalService _depotEntryLocalService;
 	private final GroupLocalService _groupLocalService;
-	private final ModelResourcePermission<ObjectEntry> _modelResourcePermission;
+	private final Snapshot<ModelResourcePermission<ObjectEntry>>
+		_modelResourcePermissionSnapshot;
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 
