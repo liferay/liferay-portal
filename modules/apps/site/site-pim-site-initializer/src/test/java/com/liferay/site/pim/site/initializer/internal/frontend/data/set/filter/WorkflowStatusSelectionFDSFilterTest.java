@@ -41,25 +41,25 @@ public class WorkflowStatusSelectionFDSFilterTest {
 			selectionFDSFilterItems.size());
 
 		_assertSelectionFDSFilterItem(
-			WorkflowConstants.LABEL_APPROVED, WorkflowConstants.STATUS_APPROVED,
-			selectionFDSFilterItems.get(0));
+			WorkflowConstants.LABEL_APPROVED, selectionFDSFilterItems.get(0),
+			WorkflowConstants.STATUS_APPROVED);
 		_assertSelectionFDSFilterItem(
-			WorkflowConstants.LABEL_DRAFT, WorkflowConstants.STATUS_DRAFT,
-			selectionFDSFilterItems.get(1));
+			WorkflowConstants.LABEL_DRAFT, selectionFDSFilterItems.get(1),
+			WorkflowConstants.STATUS_DRAFT);
 		_assertSelectionFDSFilterItem(
-			WorkflowConstants.LABEL_EXPIRED, WorkflowConstants.STATUS_EXPIRED,
-			selectionFDSFilterItems.get(2));
+			WorkflowConstants.LABEL_EXPIRED, selectionFDSFilterItems.get(2),
+			WorkflowConstants.STATUS_EXPIRED);
 		_assertSelectionFDSFilterItem(
-			WorkflowConstants.LABEL_PENDING, WorkflowConstants.STATUS_PENDING,
-			selectionFDSFilterItems.get(3));
+			WorkflowConstants.LABEL_PENDING, selectionFDSFilterItems.get(3),
+			WorkflowConstants.STATUS_PENDING);
 		_assertSelectionFDSFilterItem(
-			WorkflowConstants.LABEL_SCHEDULED,
-			WorkflowConstants.STATUS_SCHEDULED, selectionFDSFilterItems.get(4));
+			WorkflowConstants.LABEL_SCHEDULED, selectionFDSFilterItems.get(4),
+			WorkflowConstants.STATUS_SCHEDULED);
 	}
 
 	private void _assertSelectionFDSFilterItem(
-		String label, int value,
-		SelectionFDSFilterItem selectionFDSFilterItem) {
+		String label, SelectionFDSFilterItem selectionFDSFilterItem,
+		int value) {
 
 		Assert.assertEquals(label, selectionFDSFilterItem.getLabel());
 		Assert.assertEquals(
