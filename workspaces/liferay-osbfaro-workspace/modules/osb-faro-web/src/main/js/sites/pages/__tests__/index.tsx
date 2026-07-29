@@ -50,6 +50,23 @@ jest.mock('shared/components/AccountDropdown', () => ({
 	),
 }));
 
+jest.mock('shared/components/SegmentDropdown', () => ({
+	__esModule: true,
+	default: ({
+		initialSegmentId,
+		initialSegmentName,
+	}: {
+		initialSegmentId?: string;
+		initialSegmentName?: string;
+	}) => (
+		<div
+			data-initial-segment-id={initialSegmentId}
+			data-initial-segment-name={initialSegmentName}
+			data-testid="filter-by-segment"
+		/>
+	),
+}));
+
 jest.mock('shared/context/channel', () => ({
 	useChannelContext: () => ({selectedChannel: {name: 'test channel'}}),
 }));
@@ -128,6 +145,57 @@ describe('Dashboard', () => {
 		expect(screen.getByTestId('filter-by-account')).toHaveAttribute(
 			'data-initial-account-name',
 			'Account 100'
+		);
+	});
+
+	it('shows the segment filter for LDP workspaces', () => {
+		(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<Dashboard router={router as any} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('filter-by-segment')).toBeTruthy();
+	});
+
+	it('hides the segment filter for non-LDP workspaces', () => {
+		(useLDPEnabled as jest.Mock).mockReturnValue(false);
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<Dashboard router={router as any} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('filter-by-segment')).toBeNull();
+	});
+
+	it('seeds the segment filter from the segmentId/segmentName URL query params', () => {
+		(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter
+					initialEntries={['/?segmentId=100&segmentName=Segment+100']}
+				>
+					<Dashboard router={router as any} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.getByTestId('filter-by-segment')).toHaveAttribute(
+			'data-initial-segment-id',
+			'100'
+		);
+		expect(screen.getByTestId('filter-by-segment')).toHaveAttribute(
+			'data-initial-segment-name',
+			'Segment 100'
 		);
 	});
 });

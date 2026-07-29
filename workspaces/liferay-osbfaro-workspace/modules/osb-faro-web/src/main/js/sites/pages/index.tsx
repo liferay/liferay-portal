@@ -9,6 +9,7 @@ import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
+import SegmentDropdown from 'shared/components/SegmentDropdown';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import URLConstants from 'shared/util/url-constants';
 import {CSVType} from 'shared/components/download-report/utils';
@@ -21,6 +22,7 @@ import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDataSources} from 'shared/context/dataSources';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
+import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
 
 const InterestDetails = lazy(
 	() =>
@@ -84,6 +86,7 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 		groupId: string;
 	}>();
 	const {accountId, accountName, setAccount} = useAccountFilter();
+	const {segmentId, segmentName, setSegment} = useSegmentFilter();
 	const dataSourceStates = useDataSources();
 	const LDPEnabled = useLDPEnabled({groupId});
 	const {selectedChannel} = useChannelContext();
@@ -124,7 +127,12 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 				<BasePage.Header.NavBar
 					items={NAV_ITEMS}
 					routeParams={{channelId, groupId}}
-					routeQueries={pickBy({accountId, accountName})}
+					routeQueries={pickBy({
+						accountId,
+						accountName,
+						segmentId,
+						segmentName,
+					})}
 				/>
 			</BasePage.Header>
 
@@ -135,6 +143,15 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 						initialAccountId={accountId}
 						initialAccountName={accountName}
 						onFilterChange={setAccount}
+					/>
+				)}
+
+				{LDPEnabled && (
+					<SegmentDropdown
+						className="mr-2"
+						initialSegmentId={segmentId}
+						initialSegmentName={segmentName}
+						onFilterChange={setSegment}
 					/>
 				)}
 
@@ -171,6 +188,8 @@ export const Dashboard: React.FC<IDashboardProps> = ({router}) => {
 					accountName,
 					filters: {},
 					router,
+					segmentId,
+					segmentName,
 				}}
 			>
 				<BasePage.Body>
