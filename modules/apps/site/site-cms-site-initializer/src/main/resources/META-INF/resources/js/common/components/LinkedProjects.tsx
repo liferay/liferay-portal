@@ -237,16 +237,18 @@ export default function LinkedProjects({
 				)}
 			</Picker>
 
-			<div className="cms-linked-projects-list">
-				{linkedProjects.map((project) => (
-					<ProjectCard
-						key={project.id}
-						onRemove={() => unlinkProject(project)}
-						project={project}
-						projectViewURL={projectViewURL}
-					/>
-				))}
-			</div>
+			{linkedProjects.length ? (
+				<div className="cms-linked-projects-list">
+					{linkedProjects.map((project) => (
+						<ProjectCard
+							key={project.id}
+							onRemove={() => unlinkProject(project)}
+							project={project}
+							projectViewURL={projectViewURL}
+						/>
+					))}
+				</div>
+			) : null}
 		</div>
 	);
 }

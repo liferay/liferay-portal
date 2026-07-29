@@ -185,22 +185,24 @@ export default function AddAssetsToProjectModalContent({
 							)}
 						</Picker>
 
-						<div className="cms-linked-projects-list">
-							{selectedProjects.map((project) => (
-								<ProjectCard
-									key={project.id}
-									onRemove={() =>
-										setSelectedProjects((previous) =>
-											previous.filter(
-												({id}) => id !== project.id
+						{selectedProjects.length ? (
+							<div className="cms-linked-projects-list">
+								{selectedProjects.map((project) => (
+									<ProjectCard
+										key={project.id}
+										onRemove={() =>
+											setSelectedProjects((previous) =>
+												previous.filter(
+													({id}) => id !== project.id
+												)
 											)
-										)
-									}
-									project={project}
-									projectViewURL={cmpProjectViewURL}
-								/>
-							))}
-						</div>
+										}
+										project={project}
+										projectViewURL={cmpProjectViewURL}
+									/>
+								))}
+							</div>
+						) : null}
 					</>
 				)}
 			</ClayModal.Body>
