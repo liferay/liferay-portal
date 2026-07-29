@@ -14,7 +14,7 @@ import {connect} from 'react-redux';
 import {PropTypes} from 'prop-types';
 import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {Segment} from 'shared/util/records';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 
 const MessageKeys = {
@@ -131,9 +131,15 @@ export default WrappedComponent => {
 		}
 
 		getPageTitle() {
-			const {segment} = this.props;
+			const {id, segment, segmentCategory} = this.props;
 
-			return this.props.id && segment
+			if (segmentCategory === SegmentCategories.Account) {
+				return id && segment
+					? Liferay.Language.get('edit-accounts-segment')
+					: Liferay.Language.get('create-accounts-segment');
+			}
+
+			return id && segment
 				? Liferay.Language.get('edit-individuals-segment')
 				: Liferay.Language.get('create-individuals-segment');
 		}
