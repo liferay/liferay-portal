@@ -2439,6 +2439,7 @@ const DEFAULT_ACCOUNT_USER_SESSIONS = [
 				url: 'https://liferay.com/home',
 			},
 		],
+		individualId: 'jane-doe-id',
 		languageId: 'en-US',
 		screenHeight: 1080,
 		screenWidth: 1920,

@@ -5,7 +5,10 @@ import {
 	formatGroupingTime,
 	formatSessions,
 	getActivityLabel,
-	getSafeRangeKey
+	getSafeRangeKey,
+	groupEventsByPage,
+	groupSessionsByDay,
+	isWebhookUserAgent
 } from '../activities';
 
 describe('activities', () => {
@@ -33,6 +36,18 @@ describe('activities', () => {
 
 			expect(typeof result).toBe('string');
 			expect(result.length).toBeGreaterThan(0);
+		});
+	});
+
+	describe('isWebhookUserAgent', () => {
+		it('returns true when the user agent names a webhook', () => {
+			expect(isWebhookUserAgent('HubSpot Webhook')).toBe(true);
+			expect(isWebhookUserAgent('Marketo Webhook')).toBe(true);
+		});
+
+		it('returns false for a regular browser user agent, or when absent', () => {
+			expect(isWebhookUserAgent('Mozilla/5.0')).toBe(false);
+			expect(isWebhookUserAgent(undefined)).toBe(false);
 		});
 	});
 
@@ -142,13 +157,144 @@ describe('activities', () => {
 		});
 	});
 
+	describe('groupEventsByPage', () => {
+		it('groups DXP events that share a canonical URL into a single page entry', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed',
+					pageTitle: 'Home'
+				},
+				{
+					applicationId: 'Form',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:01:00.000Z',
+					name: 'formSubmitted'
+				}
+			]);
+
+			expect(result).toHaveLength(1);
+			expect(result[0]).toMatchObject({
+				pageGroup: true,
+				subtitle: 'https://liferay.com/home',
+				title: 'Home',
+				totalEvents: 2
+			});
+			expect(result[0].nestedItems).toHaveLength(2);
+		});
+
+		it('does not repeat the page subtitle on the group\'s own nested events', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/home',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed'
+				}
+			]);
+
+			expect(result[0].nestedItems[0].subtitle).toBeUndefined();
+		});
+
+		it('leaves an event from an external data source ungrouped', () => {
+			const result = groupEventsByPage(
+				[
+					{
+						applicationId: 'HubSpot',
+						canonicalUrl: 'https://hubspot.com',
+						createDate: '2026-07-16T10:00:00.000Z',
+						name: 'emailViewed'
+					}
+				],
+				'HubSpot Webhook'
+			);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].pageGroup).toBeUndefined();
+			expect(result[0].title).toBe('emailViewed');
+		});
+
+		it('leaves a DXP event with no URL ungrouped', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: null,
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'somethingHappened',
+					url: null
+				}
+			]);
+
+			expect(result).toHaveLength(1);
+			expect(result[0].pageGroup).toBeUndefined();
+		});
+
+		it('orders groups and loose events by their most recent event, newest first', () => {
+			const result = groupEventsByPage([
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/older-page',
+					createDate: '2026-07-16T09:00:00.000Z',
+					name: 'pageViewed',
+					pageTitle: 'Older Page'
+				},
+				{
+					applicationId: 'HubSpot',
+					canonicalUrl: 'https://hubspot.com',
+					createDate: '2026-07-16T11:00:00.000Z',
+					name: 'emailViewed'
+				},
+				{
+					applicationId: 'Page',
+					canonicalUrl: 'https://liferay.com/newer-page',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'pageViewed',
+					pageTitle: 'Newer Page'
+				}
+			]);
+
+			expect(result.map((item) => item.title)).toEqual([
+				'emailViewed',
+				'Newer Page',
+				'Older Page'
+			]);
+		});
+	});
+
+	describe('groupSessionsByDay', () => {
+		it('groups sessions by the day they started and sorts each day newest first', () => {
+			const result = groupSessionsByDay([
+				{createDate: '2026-07-16T08:00:00.000Z'},
+				{createDate: '2026-07-16T10:00:00.000Z'},
+				{createDate: '2026-07-15T10:00:00.000Z'}
+			]);
+
+			expect(result).toHaveLength(2);
+			expect(result[0].daySessions.map((session) => session.createDate)).toEqual([
+				'2026-07-16T10:00:00.000Z',
+				'2026-07-16T08:00:00.000Z'
+			]);
+		});
+
+		it('orders days most-recent first and sums each day\'s event totals in the header', () => {
+			const result = groupSessionsByDay([
+				{createDate: '2026-07-15T10:00:00.000Z', events: [{}, {}]},
+				{createDate: '2026-07-16T10:00:00.000Z', events: [{}]}
+			]);
+
+			expect(result[0].header.totalEvents).toBe(1);
+			expect(result[1].header.totalEvents).toBe(2);
+			expect(result[0].header.header).toBe(true);
+		});
+	});
+
 	describe('formatSessions', () => {
 		it('should format sessions', () => {
-			const result = formatSessions(
-				[data.mockSession(2, {}, {assetType: 'foo'})],
-				'123',
-				'321'
-			);
+			const result = formatSessions([
+				data.mockSession(2, {}, {assetType: 'foo'})
+			]);
 
 			expect(Array.isArray(result)).toBe(true);
 			expect(result.length).toBeGreaterThan(0);
@@ -159,10 +305,17 @@ describe('activities', () => {
 			expect(typeof header.totalEvents).toBe('number');
 
 			const session = result[1];
+			expect(session.session).toBe(true);
 			expect(session).toHaveProperty('attributes');
 			expect(session).toHaveProperty('device');
 			expect(session).toHaveProperty('nestedItems');
 			expect(Array.isArray(session.nestedItems)).toBe(true);
+		});
+
+		it('does not carry a duration, since it is not developed yet', () => {
+			const [, session] = formatSessions([data.mockSession(0)]);
+
+			expect(session.duration).toBeUndefined();
 		});
 	});
 

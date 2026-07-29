@@ -95,7 +95,9 @@ describe('ActivityStreamCard', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		const link = container.querySelector('.subtitle') as HTMLAnchorElement;
+		const link = container.querySelector(
+			'.page-row .title'
+		) as HTMLAnchorElement;
 
 		expect(link.getAttribute('href')).toContain('accountId=abc');
 		expect(link.getAttribute('href')).toContain('accountName=Acme');
