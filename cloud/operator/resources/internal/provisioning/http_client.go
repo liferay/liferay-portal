@@ -95,7 +95,7 @@ func (httpClient *HTTPClient) post(
 		return nil, error
 	}
 
-	request.Header.Set("Content-Type", "application/jwt")
+	request.Header.Set("Content-Type", "text/plain")
 
 	return httpClient.Client.Do(request)
 }
