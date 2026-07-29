@@ -62,7 +62,7 @@ public class ViewAllTasksSectionDisplayContextTest
 				CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN,
 				"&filter=(objectDefinitionId eq ",
 				objectDefinition.getObjectDefinitionId(),
-				" or keywords/any(k:startswith(k, 'L_CMP_TASK')))",
+				" or cmpTaskObjectEntryIds/any(x:x gt 0))",
 				"&nestedFields=cmpProjectToCMPTasks,embedded"),
 			getAPIURL(null));
 	}

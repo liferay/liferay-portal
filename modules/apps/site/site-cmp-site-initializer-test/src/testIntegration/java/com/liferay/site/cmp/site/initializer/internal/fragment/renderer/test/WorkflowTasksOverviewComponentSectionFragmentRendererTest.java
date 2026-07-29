@@ -88,7 +88,7 @@ public class WorkflowTasksOverviewComponentSectionFragmentRendererTest {
 				"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
 				"com.liferay.portal.workflow.kaleo.model.",
 				"KaleoTaskInstanceToken",
-				"&filter=keywords/any(k:startswith(k, 'L_CMP_TASK'))"),
+				"&filter=cmpTaskObjectEntryIds/any(x:x gt 0)"),
 			props.get("filterURL"));
 	}
 

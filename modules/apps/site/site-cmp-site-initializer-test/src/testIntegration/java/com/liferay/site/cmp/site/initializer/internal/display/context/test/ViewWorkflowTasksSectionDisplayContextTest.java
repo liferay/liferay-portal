@@ -60,7 +60,7 @@ public class ViewWorkflowTasksSectionDisplayContextTest
 			StringBundler.concat(
 				"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
 				CLASS_NAME_KALEO_TASK_INSTANCE_TOKEN,
-				"&filter=keywords/any(k:startswith(k, 'L_CMP_TASK'))",
+				"&filter=cmpTaskObjectEntryIds/any(x:x gt 0)",
 				"&nestedFields=embedded"),
 			getAPIURL(null));
 	}
