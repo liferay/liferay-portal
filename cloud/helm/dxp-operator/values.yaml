@@ -19,6 +19,8 @@ podSecurityContext:
         type: RuntimeDefault
 probes:
     port: 8081
+provisioning:
+    baseURL: https://webserver-lrprovisioning-uat.lfr.cloud/o/provisioning-rest/v1.0/
 rbac:
     create: true
 replicaCount: 1

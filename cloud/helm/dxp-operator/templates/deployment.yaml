@@ -31,6 +31,8 @@ spec:
                             value: {{ printf ":%d" (int .Values.metrics.port) | quote }}
                         -   name: PROBE_ADDRESS
                             value: {{ printf ":%d" (int .Values.probes.port) | quote }}
+                        -   name: PROVISIONING_BASE_URL
+                            value: {{ .Values.provisioning.baseURL | quote }}
                     image: {{ printf "%s:%s" .Values.image.repository (.Values.image.tag | toString) }}
                     imagePullPolicy: {{ .Values.image.pullPolicy }}
                     livenessProbe:
