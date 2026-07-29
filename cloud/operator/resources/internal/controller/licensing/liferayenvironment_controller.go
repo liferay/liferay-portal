@@ -13,26 +13,21 @@ import (
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	corev1 "k8s.io/api/core/v1"
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	types "k8s.io/apimachinery/pkg/types"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 const (
 	identitySecretSuffix = "-identity"
-	licenseSecretSuffix  = "-license"
 )
 
-type LiferayEnvironmentReconciler struct {
-	client.Client
-
-	HeartbeatInterval time.Duration
-}
-
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch
-// +kubebuilder:rbac:groups="",resources=secrets,verbs=get;list;watch;create;update;patch
+// +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;patch;update;watch
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
 	request controllerruntime.Request,
@@ -43,19 +38,16 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		return controllerruntime.Result{}, client.IgnoreNotFound(error)
 	}
 
-	// environmentId is the namespace UID: stable, unique, DDOS-allowlisted.
 	environmentId, error := liferayEnvironmentReconciler.resolveEnvironmentId(context, liferayEnvironment.Namespace)
 
 	if error != nil {
-		return ctrl.Result{}, error
+		return controllerruntime.Result{}, error
 	}
 
 	liferayEnvironment.Status.EnvironmentId = environmentId
 
-	// Ensure the cluster keypair exists; the private key never leaves here.
-
 	if _, error := liferayEnvironmentReconciler.ensureIdentity(context, liferayEnvironment); error != nil {
-		return ctrl.Result{}, error
+		return controllerruntime.Result{}, error
 	}
 
 	if liferayEnvironment.Status.Phase == "" {
@@ -72,9 +64,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		},
 	)
 
-	status := liferayEnvironmentReconciler.Status()
-
-	if error := status.Update(context, liferayEnvironment); error != nil {
+	if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
 		if errors.IsConflict(error) {
 			return controllerruntime.Result{RequeueAfter: time.Second}, nil
 		}
@@ -108,17 +98,19 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 
 	identityName := liferayEnvironment.Name + identitySecretSuffix
 
-	key := types.NamespacedName{Namespace: liferayEnvironment.Namespace, Name: identityName}
-
 	secret := &corev1.Secret{}
 
-	getError := liferayEnvironmentReconciler.Get(context, key, secret)
+	getError := liferayEnvironmentReconciler.Get(
+		context, types.NamespacedName{
+			Name:      identityName,
+			Namespace: liferayEnvironment.Namespace,
+		}, secret)
 
 	if getError == nil {
 		return parsePrivateKey(secret.Data["private.pem"])
 	}
 
-	if !apierrors.IsNotFound(getError) {
+	if !errors.IsNotFound(getError) {
 		return nil, getError
 	}
 
@@ -134,10 +126,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 		return nil, marshalKeyError
 	}
 
-	privatePEM := pem.EncodeToMemory(
-		&pem.Block{Type: "PRIVATE KEY", Bytes: privateBytes},
-	)
-
 	publicPEM, publicKeyError := publicKeyPEM(privateKey)
 
 	if publicKeyError != nil {
@@ -146,17 +134,22 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 
 	secret = &corev1.Secret{
 		Data: map[string][]byte{
-			"private.pem": privatePEM,
-			"public.pem":  []byte(publicPEM),
+			"private.pem": pem.EncodeToMemory(
+				&pem.Block{
+					Bytes: privateBytes,
+					Type:  "PRIVATE KEY",
+				},
+			),
+			"public.pem": []byte(publicPEM),
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Namespace: liferayEnvironment.Namespace,
-			Name:      identityName,
 			Labels:    map[string]string{"controller-watched": "yes"},
+			Name:      identityName,
+			Namespace: liferayEnvironment.Namespace,
 		},
 	}
 
-	if err := ctrl.SetControllerReference(liferayEnvironment, secret, liferayEnvironmentReconciler.Scheme()); err != nil {
+	if err := controllerruntime.SetControllerReference(liferayEnvironment, secret, liferayEnvironmentReconciler.Scheme()); err != nil {
 		return nil, err
 	}
 
@@ -167,8 +160,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 	return privateKey, nil
 }
 
-func parsePrivateKey(data []byte) (*rsa.PrivateKey, error) {
-	block, _ := pem.Decode(data)
+func parsePrivateKey(privatePEM []byte) (*rsa.PrivateKey, error) {
+	block, _ := pem.Decode(privatePEM)
 
 	if block == nil {
 		return nil, fmt.Errorf("identity secret: no PEM block in private.pem")
@@ -180,36 +173,39 @@ func parsePrivateKey(data []byte) (*rsa.PrivateKey, error) {
 		return nil, error
 	}
 
-	privateKey, ok := parsed.(*rsa.PrivateKey)
+	parsedPrivateKey, ok := parsed.(*rsa.PrivateKey)
 
 	if !ok {
 		return nil, fmt.Errorf("identity secret: not an RSA private key")
 	}
 
-	return privateKey, nil
+	return parsedPrivateKey, nil
 }
 
 func publicKeyPEM(privateKey *rsa.PrivateKey) (string, error) {
-	publicBytes, err := x509.MarshalPKIXPublicKey(&privateKey.PublicKey)
+	publicBytes, error := x509.MarshalPKIXPublicKey(&privateKey.PublicKey)
 
-	if err != nil {
-		return "", err
+	if error != nil {
+		return "", error
 	}
 
 	return string(
 		pem.EncodeToMemory(
-			&pem.Block{Type: "PUBLIC KEY", Bytes: publicBytes},
+			&pem.Block{
+				Bytes: publicBytes,
+				Type:  "PUBLIC KEY",
+			},
 		),
 	), nil
 }
 
-func (LiferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnvironmentId(
-	context context.Context, namespaceName string,
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnvironmentId(
+	context context.Context,
+	namespaceName string,
 ) (string, error) {
-
 	namespace := &corev1.Namespace{}
 
-	if error := LiferayEnvironmentReconciler.Get(context, types.NamespacedName{Name: namespaceName}, namespace); error != nil {
+	if error := liferayEnvironmentReconciler.Get(context, types.NamespacedName{Name: namespaceName}, namespace); error != nil {
 		return "", error
 	}
 
@@ -221,4 +217,3 @@ type LiferayEnvironmentReconciler struct {
 
 	HeartbeatInterval time.Duration
 }
-=
