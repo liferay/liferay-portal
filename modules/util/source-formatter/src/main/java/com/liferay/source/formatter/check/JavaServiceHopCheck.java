@@ -69,6 +69,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			String entityName = StringUtil.upperCaseFirstLetter(
 				StringUtil.replaceFirst(reference, '_', ""));
 
+			entityName = _getAllCapsName(entityName);
+
 			String localServiceInterface = entityName + "LocalService";
 
 			String localServiceFullyQualifiedName = _getImportedName(
@@ -191,6 +193,34 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 				matchedMethods.add(javaMethod);
 			}
 		}
+	}
+
+	private String _getAllCapsName(String name) {
+		for (String[] array : _ALL_CAPS_STRINGS) {
+			String s = array[1];
+
+			int x = -1;
+
+			while (true) {
+				x = name.indexOf(s, x + 1);
+
+				if (x == -1) {
+					break;
+				}
+
+				int y = x + s.length();
+
+				if ((y != name.length()) &&
+					!Character.isUpperCase(name.charAt(y))) {
+
+					continue;
+				}
+
+				return name.substring(0, x) + array[0] + name.substring(y);
+			}
+		}
+
+		return name;
 	}
 
 	private String _getBaseImplName(String localServiceFullyQualifiedName) {
@@ -563,6 +593,12 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 		return _hasTransactionDisabledMethod(
 			implFile.getName(), FileUtil.read(implFile), methodName);
 	}
+
+	private static final String[][] _ALL_CAPS_STRINGS = {
+		{"CT", "Ct"}, {"COR", "Cor"}, {"CP", "Cp"}, {"CS", "Cs"},
+		{"DDL", "Ddl"}, {"DDM", "Ddm"}, {"DL", "Dl"}, {"MB", "Mb"},
+		{"PK", "Pk"}, {"PLO", "Plo"}, {"SXP", "Sxp"}, {"URL", "Url"}
+	};
 
 	private static final String[] _SIDE_EFFECTING_ANNOTATIONS = {
 		"@AccessControlled", "@Async", "@BufferedIncrement", "@Clusterable",
