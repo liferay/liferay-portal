@@ -10,6 +10,10 @@ export type {
 } from './AIAssistantChat/AIAssistant';
 export {default as AIAssistantTriggerButton} from './AIAssistantChat/AIAssistantTriggerButton';
 export type {ChatContext} from './AIAssistantChat/api';
+export {getObjectFields} from './AIAssistantChat/services/getObjectFields';
+export type {ObjectField} from './AIAssistantChat/services/getObjectFields';
+export {getSpaces} from './AIAssistantChat/services/getSpaces';
+export type {Space} from './AIAssistantChat/services/getSpaces';
 export {default as CategorizationSuggestions} from './Categorization/components/CategorizationSuggestions';
 export {CATEGORIZE_EVENT, COMMIT_EVENT} from './Categorization/events';
 export type {

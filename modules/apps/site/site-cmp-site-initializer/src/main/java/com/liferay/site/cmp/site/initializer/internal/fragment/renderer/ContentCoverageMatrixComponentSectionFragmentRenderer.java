@@ -113,8 +113,6 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 					themeDisplay.getURLCurrent());
 			}
 		).put(
-			"groupId", objectEntry.getGroupId()
-		).put(
 			"hasFunnelStagesOrPersonas",
 			() -> {
 				AssetVocabulary funnelStageAssetVocabulary =

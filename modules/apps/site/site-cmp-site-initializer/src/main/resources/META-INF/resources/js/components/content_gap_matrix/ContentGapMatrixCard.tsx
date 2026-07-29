@@ -23,7 +23,6 @@ interface ContentGapMatrixCardProps {
 	cmpProjectObjectEntryId: string;
 	cmpProjectObjectEntryTitle: string;
 	editProjectURL?: string;
-	groupId: number;
 	hasFunnelStagesOrPersonas: boolean;
 }
 
@@ -34,7 +33,6 @@ export default function ContentGapMatrixCard({
 	cmpProjectObjectEntryId,
 	cmpProjectObjectEntryTitle,
 	editProjectURL,
-	groupId,
 	hasFunnelStagesOrPersonas,
 }: ContentGapMatrixCardProps) {
 	const [data, setData] = useState<MatrixData | null>(null);
@@ -82,7 +80,6 @@ export default function ContentGapMatrixCard({
 				<ContentGapMatrixHeader
 					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 					cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
-					groupId={groupId}
 				/>
 
 				<div className="lfr-cmp__content-gap-matrix-container">
@@ -134,7 +131,6 @@ export default function ContentGapMatrixCard({
 				<ContentGapMatrixHeader
 					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 					cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
-					groupId={groupId}
 				/>
 
 				<div className="lfr-cmp__content-gap-matrix-container">
@@ -154,7 +150,6 @@ export default function ContentGapMatrixCard({
 				cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 				cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
 				data={data}
-				groupId={groupId}
 			/>
 
 			<div className="lfr-cmp__content-gap-matrix-container">

@@ -4,7 +4,7 @@
  */
 
 import '@testing-library/jest-dom';
-import {render} from '@testing-library/react';
+import {render, waitFor} from '@testing-library/react';
 import React from 'react';
 
 import ContentGapMatrixHeader from '../../js/components/content_gap_matrix/ContentGapMatrixHeader';
@@ -14,14 +14,31 @@ import {
 	PARTIAL_COVERAGE_MATRIX,
 } from '../../js/components/content_gap_matrix/services/fixtures';
 
+const mockGetObjectFields = jest.fn();
+const mockGetSpaces = jest.fn();
+const mockRenderAIAssistantTriggerButton = jest.fn();
+
 jest.mock('@liferay/ai-hub-cell-js-components-web', () => ({
-	AIAssistantTriggerButton: (props: {label: string}) =>
-		require('react').createElement('button', null, props.label),
+	AIAssistantTriggerButton: (props: {label: string}) => {
+		mockRenderAIAssistantTriggerButton(props);
+
+		return require('react').createElement('button', null, props.label);
+	},
+	getObjectFields: (externalReferenceCode: string) =>
+		mockGetObjectFields(externalReferenceCode),
+	getSpaces: () => mockGetSpaces(),
 }));
 
 describe('ContentGapMatrixHeader', () => {
+	beforeEach(() => {
+		mockGetObjectFields.mockResolvedValue({items: []});
+		mockGetSpaces.mockResolvedValue([]);
+	});
+
 	afterEach(() => {
 		Liferay.FeatureFlags['LPD-62272'] = false;
+
+		jest.clearAllMocks();
 	});
 
 	it('colors the coverage badge secondary at partial coverage', () => {
@@ -58,6 +75,59 @@ describe('ContentGapMatrixHeader', () => {
 		);
 
 		expect(label).toHaveClass('label-inverse-warning');
+	});
+
+	it('gives the AI assistant the project, its content type, and the available spaces', async () => {
+		Liferay.FeatureFlags['LPD-62272'] = true;
+
+		const objectFields = [
+			{
+				businessType: 'Text',
+				name: 'title',
+				readOnly: 'false',
+				required: true,
+			},
+			{
+				businessType: 'RichText',
+				name: 'content',
+				readOnly: 'false',
+				required: false,
+			},
+		];
+
+		mockGetObjectFields.mockResolvedValue({items: objectFields});
+
+		mockGetSpaces.mockResolvedValue([
+			{id: 1, name: 'Marketing', siteId: 20123},
+			{id: 2, name: 'Support', siteId: 20456},
+		]);
+
+		render(
+			<ContentGapMatrixHeader
+				cmpProjectObjectEntryId="42"
+				data={PARTIAL_COVERAGE_MATRIX}
+			/>
+		);
+
+		expect(mockGetObjectFields).toHaveBeenCalledWith(
+			'L_CMS_BASIC_WEB_CONTENT'
+		);
+
+		await waitFor(() => {
+			const [{getContext}] =
+				mockRenderAIAssistantTriggerButton.mock.calls.at(-1);
+
+			expect(getContext()).toEqual({
+				focusScope: 'full-matrix',
+				objectDefinitionName: 'CMSBasicWebContent',
+				objectFields,
+				projectId: '42',
+				spaceIdsJSONArray: [
+					{label: 'Marketing', value: '20123'},
+					{label: 'Support', value: '20456'},
+				],
+			});
+		});
 	});
 
 	it('replaces the critical gaps count with "No Assets Found" when the project has no assets', () => {

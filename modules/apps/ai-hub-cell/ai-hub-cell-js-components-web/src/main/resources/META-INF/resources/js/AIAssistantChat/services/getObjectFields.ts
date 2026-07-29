@@ -5,7 +5,16 @@
 
 import {fetch} from 'frontend-js-web';
 
-async function getObjectFields(externalReferenceCode: string) {
+export interface ObjectField {
+	businessType: string;
+	name: string;
+	readOnly: string;
+	required: boolean;
+}
+
+async function getObjectFields(
+	externalReferenceCode: string
+): Promise<{items: ObjectField[]}> {
 	const response = await fetch(
 		`/o/object-admin/v1.0/object-definitions/by-external-reference-code/${externalReferenceCode}/object-fields?fields=businessType,name,readOnly,required&pageSize=100`
 	);
