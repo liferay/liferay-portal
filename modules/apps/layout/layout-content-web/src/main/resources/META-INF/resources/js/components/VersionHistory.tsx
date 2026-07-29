@@ -4,7 +4,10 @@
  */
 
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import {useMediaQuery} from '@liferay/layout-js-components-web';
+import {
+	hideProductMenuIfPresent,
+	useMediaQuery,
+} from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
 
@@ -24,12 +27,16 @@ interface Props {
 export default function VersionHistory({config}: Props) {
 	initializeConfig(config);
 
-	const [isPanelOpen, setIsPanelOpen] = useState(true);
+	const [isPanelOpen, setIsPanelOpen] = useState(false);
 	const [search, setSearch] = useState('');
 
 	const [versions, setVersions] = useState<PageVersion[] | null>(null);
 
 	const isScreenLarge = useMediaQuery(LARGE_MEDIA_QUERY);
+
+	useEffect(() => {
+		hideProductMenuIfPresent({onHide: () => setIsPanelOpen(true)});
+	}, []);
 
 	useEffect(() => {
 		const controller = new AbortController();
