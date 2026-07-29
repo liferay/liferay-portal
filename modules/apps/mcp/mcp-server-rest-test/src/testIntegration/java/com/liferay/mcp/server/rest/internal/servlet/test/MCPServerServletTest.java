@@ -20,6 +20,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
+import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -173,6 +175,7 @@ public class MCPServerServletTest {
 							Base64.encode(userNameAndPassword.getBytes()),
 						"Bearer " + _getAccessToken())) {
 
+				_testServiceWithoutAuthTokenCheck(authorization);
 				_testServiceWithDataMasks(authorization);
 				_testServiceWithModifiedProfile(authorization);
 				_testServiceWithNoContentResponse(authorization);
@@ -763,6 +766,36 @@ public class MCPServerServletTest {
 
 		Assert.assertFalse(textContent.text(), callToolResult.isError());
 		Assert.assertEquals("Status code: 204", textContent.text());
+
+		mcpSyncClient.closeGracefully();
+	}
+
+	private void _testServiceWithoutAuthTokenCheck(String authorization)
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+
+		_addObjectEntry(name, "mcp-server-profiles getMCPServerProfilesPage");
+
+		McpSyncClient mcpSyncClient = _getMcpSyncClient(authorization, name);
+
+		mcpSyncClient.initialize();
+
+		try (SafeCloseable safeCloseable =
+				PropsValuesTestUtil.swapWithSafeCloseable(
+					"AUTH_TOKEN_CHECK_ENABLED", false)) {
+
+			McpSchema.CallToolResult callToolResult = mcpSyncClient.callTool(
+				new McpSchema.CallToolRequest(
+					"getMCPServerProfilesPage", Collections.emptyMap()));
+
+			List<McpSchema.Content> contents = callToolResult.content();
+
+			McpSchema.TextContent textContent =
+				(McpSchema.TextContent)contents.get(0);
+
+			Assert.assertFalse(textContent.text(), callToolResult.isError());
+		}
 
 		mcpSyncClient.closeGracefully();
 	}
