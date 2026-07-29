@@ -43,6 +43,8 @@ interface ITableWithDataProps {
 	query: string;
 	rangeSelectors: RangeSelectors;
 	router: Router;
+	segmentId?: string | null;
+	segmentName?: string | null;
 }
 
 const {Last7Days, Last30Days, Last90Days, Yesterday} = RangeKeyTimeRanges;
@@ -69,6 +71,8 @@ const TableWithData: React.FC<ITableWithDataProps> = withRangeKey(
 			channelId,
 			groupId,
 			rangeSelectors,
+			segmentId,
+			segmentName,
 		}: ITableWithDataProps) => [
 			sitePagesListColumns.getTitleUrl({
 				accountId,
@@ -77,6 +81,8 @@ const TableWithData: React.FC<ITableWithDataProps> = withRangeKey(
 				groupId,
 				rangeSelectors,
 				route: Routes.SITES_TOUCHPOINTS_OVERVIEW,
+				segmentId,
+				segmentName,
 			}),
 			metricsListColumns.visitorsMetric,
 			metricsListColumns.viewsMetric,

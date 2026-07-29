@@ -68,6 +68,8 @@ const getTableWithData = (useDB) => {
 				params: {channelId, groupId},
 				query,
 			},
+			segmentId,
+			segmentName,
 		}) => {
 			const rangeSelectors = getRangeSelectorsFromQuery(query);
 
@@ -79,6 +81,8 @@ const getTableWithData = (useDB) => {
 					groupId,
 					rangeSelectors,
 					route: Routes.SITES_TOUCHPOINTS_OVERVIEW,
+					segmentId,
+					segmentName,
 				}),
 				metricsListColumns.visitorsMetric,
 				metricsListColumns.viewsMetric,

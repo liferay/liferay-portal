@@ -1081,11 +1081,15 @@ export const sitePagesListColumns = {
 		groupId,
 		rangeSelectors,
 		route,
+		segmentId,
+		segmentName,
 	}: ChannelGroupParams & {
 		accountId?: string | null;
 		accountName?: string | null;
 		rangeSelectors: Record<string, any>;
 		route: string;
+		segmentId?: string | null;
+		segmentName?: string | null;
 	}) => ({
 		accessor: 'assetTitle',
 		cellRenderer: NameCell,
@@ -1100,7 +1104,13 @@ export const sitePagesListColumns = {
 				data: {assetId: string; assetTitle?: string};
 			}) =>
 				setUriQueryValues(
-					pickBy({accountId, accountName, ...rangeSelectors}),
+					pickBy({
+						accountId,
+						accountName,
+						segmentId,
+						segmentName,
+						...rangeSelectors,
+					}),
 					toRoute(route, {
 						channelId,
 						groupId,

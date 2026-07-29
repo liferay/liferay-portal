@@ -1,15 +1,17 @@
 import AcquisitionsCard from 'sites/components/AcquisitionsCard';
+import BasePage from 'shared/components/base-page';
 import CohortAnalysisCard from 'sites/hocs/CohortAnalysisCard';
 import DevicesCard from 'sites/hocs/DevicesCard';
 import InterestsCard from 'sites/hocs/InterestsCard';
 import LocationsCard from 'sites/hocs/LocationsCard';
-import React, {FC} from 'react';
+import React, {FC, useContext} from 'react';
 import SearchTermsCard from 'sites/hocs/SearchTermsCard';
 import SiteMetricsCard from 'sites/components/SiteMetricCard';
 import TopPagesCard from 'sites/components/TopPagesCard';
 import VisitorsByTimeCard from 'sites/hocs/VisitorsByTimeCard';
 import {CompositionTypes} from 'shared/util/constants';
-import {Routes, toRoute} from 'shared/util/router';
+import {pickBy} from 'lodash';
+import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {useParams} from 'react-router-dom';
 
@@ -19,6 +21,9 @@ interface IOverviewProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Overview: FC<IOverviewProps> = ({channelName}) => {
 	const {channelId, groupId} = useParams();
+	const {accountId, accountName, segmentId, segmentName} = useContext(
+		BasePage.Context
+	);
 
 	return (
 		<div className="sites-dashboard-overview-root overview-root">
@@ -40,10 +45,18 @@ const Overview: FC<IOverviewProps> = ({channelName}) => {
 					<TopPagesCard
 						className="top-pages-card-root table-tabs-root"
 						footer={{
-							href: toRoute(Routes.SITES_TOUCHPOINTS, {
-								channelId,
-								groupId,
-							}),
+							href: setUriQueryValues(
+								pickBy({
+									accountId,
+									accountName,
+									segmentId,
+									segmentName,
+								}),
+								toRoute(Routes.SITES_TOUCHPOINTS, {
+									channelId,
+									groupId,
+								})
+							),
 							label: Liferay.Language.get('view-pages'),
 						}}
 						label={Liferay.Language.get('top-pages')}

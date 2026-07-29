@@ -72,6 +72,8 @@ const TableWithData = withTableData(withData, {
 		groupId,
 		maxCount,
 		rangeSelectors,
+		segmentId,
+		segmentName,
 		totalCount,
 	}: {
 		accountId?: string | null;
@@ -80,6 +82,8 @@ const TableWithData = withTableData(withData, {
 		groupId: string;
 		maxCount: number;
 		rangeSelectors: RangeSelectors;
+		segmentId?: string | null;
+		segmentName?: string | null;
 		totalCount: number;
 	}) => [
 		compositionListColumns.getName({
@@ -88,7 +92,13 @@ const TableWithData = withTableData(withData, {
 			routeFn: ({data: {name}}: {data: {name: string}}) =>
 				name &&
 				setUriQueryValues(
-					pickBy({accountId, accountName, ...rangeSelectors}),
+					pickBy({
+						accountId,
+						accountName,
+						segmentId,
+						segmentName,
+						...rangeSelectors,
+					}),
 					toRoute(Routes.SITES_INTEREST_DETAILS, {
 						channelId,
 						groupId,
@@ -111,7 +121,9 @@ const TableWithData = withTableData(withData, {
 });
 
 const Interests = ({history}: {history: {push: (path: string) => void}}) => {
-	const {accountId, accountName} = useContext(BasePage.Context);
+	const {accountId, accountName, segmentId, segmentName} = useContext(
+		BasePage.Context
+	);
 	const {selectedChannel} = useChannelContext();
 	const {channelId, groupId} = useParams<{
 		channelId: string;
@@ -177,6 +189,8 @@ const Interests = ({history}: {history: {push: (path: string) => void}}) => {
 				page={page}
 				rangeSelectors={rangeSelectors}
 				rowBordered={false}
+				segmentId={segmentId}
+				segmentName={segmentName}
 			/>
 		</Card>
 	);

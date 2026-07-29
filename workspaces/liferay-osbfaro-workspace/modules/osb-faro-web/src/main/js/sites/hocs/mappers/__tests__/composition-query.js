@@ -70,6 +70,28 @@ describe('Composition Query Mapper', () => {
 				})
 			);
 		});
+
+		it('should include segmentId in the mapped options when passed', () => {
+			const rangeKey = '30';
+			const channelId = '321';
+			const segmentId = 'segment-1';
+
+			expect(
+				mapCardPropsToOptions({
+					channelId,
+					rangeSelectors: {
+						rangeKey,
+					},
+					segmentId,
+				})
+			).toEqual(
+				expect.objectContaining({
+					variables: expect.objectContaining({
+						segmentId,
+					}),
+				})
+			);
+		});
 	});
 
 	describe('mapPropsToOptions', () => {
@@ -86,6 +108,20 @@ describe('Composition Query Mapper', () => {
 						rangeKey: parseInt(rangeKey),
 						size: parseInt(delta),
 						start: 5,
+					}),
+				})
+			);
+		});
+
+		it('should include segmentId in the mapped options when passed', () => {
+			const segmentId = 'segment-1';
+
+			expect(
+				mapPropsToOptions({...mockProps, segmentId})
+			).toEqual(
+				expect.objectContaining({
+					variables: expect.objectContaining({
+						segmentId,
 					}),
 				})
 			);

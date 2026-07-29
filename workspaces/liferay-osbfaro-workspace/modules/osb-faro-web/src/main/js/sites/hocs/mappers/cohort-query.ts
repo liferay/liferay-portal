@@ -40,15 +40,18 @@ const mapPropsToOptions = ({
 	accountId,
 	channelId,
 	interval,
+	segmentId,
 }: {
 	accountId?: string | null;
 	channelId: string;
 	interval: Interval;
+	segmentId?: string | null;
 }) => ({
 	variables: {
 		accountId,
 		channelId,
 		interval,
+		segmentId,
 	},
 });
 

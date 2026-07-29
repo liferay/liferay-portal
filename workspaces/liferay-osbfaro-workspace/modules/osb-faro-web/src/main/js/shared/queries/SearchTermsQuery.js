@@ -8,6 +8,7 @@ export default gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$size: Int!
 		$start: Int!
 	) {
@@ -17,6 +18,7 @@ export default gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			size: $size
 			start: $start
 		) {

@@ -30,6 +30,7 @@ interface IMapPropsArgs {
 	id: string;
 	page: number;
 	rangeSelectors: RangeSelectors;
+	segmentId?: string | null;
 }
 
 const mapPropsToOptions = ({
@@ -39,11 +40,13 @@ const mapPropsToOptions = ({
 	id,
 	page,
 	rangeSelectors,
+	segmentId,
 }: IMapPropsArgs) => ({
 	variables: {
 		accountId,
 		channelId,
 		id,
+		segmentId,
 		size: delta,
 		start: (page - 1) * delta,
 		...getSafeRangeSelectors(rangeSelectors),
@@ -55,16 +58,19 @@ const mapCardPropsToOptions = ({
 	activeTabId,
 	channelId,
 	rangeSelectors,
+	segmentId,
 }: {
 	accountId?: string | null;
 	activeTabId: string;
 	channelId: string;
 	rangeSelectors: RangeSelectors;
+	segmentId?: string | null;
 }) => ({
 	variables: {
 		accountId,
 		activeTabId,
 		channelId,
+		segmentId,
 		size: 5,
 		start: 0,
 		...getSafeRangeSelectors(rangeSelectors),

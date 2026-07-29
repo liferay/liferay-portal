@@ -8,6 +8,7 @@ export default gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$size: Int!
 		$sort: Sort!
 		$start: Int!
@@ -20,6 +21,7 @@ export default gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			size: $size
 			sort: $sort
 			start: $start
@@ -65,6 +67,7 @@ export const TOUCHPOINTS_QUERY_TEST = gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$size: Int!
 		$sort: Sort!
 		$start: Int!
@@ -78,6 +81,7 @@ export const TOUCHPOINTS_QUERY_TEST = gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			size: $size
 			sort: $sort
 			start: $start

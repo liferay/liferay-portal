@@ -91,7 +91,7 @@ const TableWithData = withTableData(withData, {
 });
 
 const SearchTerms = ({history}: {history: {push: (path: string) => void}}) => {
-	const {accountId} = useContext(BasePage.Context);
+	const {accountId, segmentId} = useContext(BasePage.Context);
 	const {selectedChannel} = useChannelContext();
 	const {channelId, groupId} = useParams<{
 		channelId: string;
@@ -156,6 +156,7 @@ const SearchTerms = ({history}: {history: {push: (path: string) => void}}) => {
 				page={page}
 				rangeSelectors={rangeSelectors}
 				rowBordered={false}
+				segmentId={segmentId}
 			/>
 		</Card>
 	);

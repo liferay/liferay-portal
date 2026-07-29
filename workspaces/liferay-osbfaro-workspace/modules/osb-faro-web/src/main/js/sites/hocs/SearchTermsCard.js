@@ -72,7 +72,7 @@ const SearchTermsCard = (props) => {
 			legacyDropdownRangeKey={false}
 			reportContainer={ReportContainer.SearchTermsCard}
 		>
-			{({accountId, rangeSelectors}) => (
+			{({accountId, rangeSelectors, segmentId}) => (
 				<>
 					<TableWithData
 						{...props}
@@ -81,6 +81,7 @@ const SearchTermsCard = (props) => {
 						id={id}
 						rangeSelectors={rangeSelectors}
 						rowBordered={false}
+						segmentId={segmentId}
 					/>
 
 					<Card.Footer>
@@ -90,7 +91,7 @@ const SearchTermsCard = (props) => {
 							className="button-root"
 							displayType="secondary"
 							href={setUriQueryValues(
-								pickBy({accountId, ...rangeSelectors}),
+								pickBy({accountId, segmentId, ...rangeSelectors}),
 								toRoute(Routes.SITES_SEARCH_TERMS, {
 									channelId,
 									groupId,

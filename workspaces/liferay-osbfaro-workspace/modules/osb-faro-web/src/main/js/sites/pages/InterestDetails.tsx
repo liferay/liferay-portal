@@ -15,7 +15,7 @@ interface IInterestDetailsProps extends React.HTMLAttributes<HTMLDivElement> {
 const InterestDetailsPage: React.FC<IInterestDetailsProps> = ({router}) => {
 	const {channelId, groupId} = useParams();
 	const rangeSelectors = useQueryRangeSelectors();
-	const {accountId, accountName} = router.query;
+	const {accountId, accountName, segmentId, segmentName} = router.query;
 
 	return (
 		<div className="sites-dashboard-interest-details-root">
@@ -30,6 +30,8 @@ const InterestDetailsPage: React.FC<IInterestDetailsProps> = ({router}) => {
 								pickBy({
 									accountId,
 									accountName,
+									segmentId,
+									segmentName,
 									...rangeSelectors,
 								}),
 

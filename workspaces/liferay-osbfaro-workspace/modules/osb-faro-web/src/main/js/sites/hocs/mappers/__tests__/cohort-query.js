@@ -23,6 +23,24 @@ describe('Cohort Query Mapper', () => {
 				})
 			);
 		});
+
+		it('should include segmentId in the mapped options when passed', () => {
+			const interval = 'D';
+			const channelId = '123';
+			const segmentId = 'segment-1';
+
+			expect(
+				mapPropsToOptions({channelId, interval, segmentId})
+			).toEqual(
+				expect.objectContaining({
+					variables: {
+						channelId,
+						interval,
+						segmentId,
+					},
+				})
+			);
+		});
 	});
 
 	describe('mapResultToProps', () => {

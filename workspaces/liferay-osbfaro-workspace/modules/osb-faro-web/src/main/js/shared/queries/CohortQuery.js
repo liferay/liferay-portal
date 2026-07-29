@@ -5,11 +5,13 @@ export default gql`
 		$accountId: String
 		$channelId: String
 		$interval: String!
+		$segmentId: String
 	) {
 		cohort(
 			accountId: $accountId
 			channelId: $channelId
 			interval: $interval
+			segmentId: $segmentId
 		) {
 			anonymousCohortHeatMapMetrics {
 				retention

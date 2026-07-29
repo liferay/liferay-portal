@@ -77,13 +77,14 @@ const InterestsCard = () => {
 			rangeKeys={rangeKeys}
 			reportContainer={ReportContainer.InterestsCard}
 		>
-			{({accountId, rangeSelectors}) => (
+			{({accountId, rangeSelectors, segmentId}) => (
 				<>
 					<TableWithData
 						accountId={accountId}
 						channelId={channelId}
 						rangeSelectors={rangeSelectors}
 						rowBordered={false}
+						segmentId={segmentId}
 					/>
 
 					<Card.Footer>
@@ -93,7 +94,7 @@ const InterestsCard = () => {
 							className="button-root"
 							displayType="secondary"
 							href={setUriQueryValues(
-								pickBy({accountId, ...rangeSelectors}),
+								pickBy({accountId, segmentId, ...rangeSelectors}),
 								toRoute(Routes.SITES_INTERESTS, {
 									channelId,
 									groupId,
