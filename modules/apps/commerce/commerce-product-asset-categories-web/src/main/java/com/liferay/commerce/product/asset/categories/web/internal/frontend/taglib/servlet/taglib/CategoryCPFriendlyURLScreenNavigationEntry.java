@@ -73,20 +73,14 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 		throws IOException {
 
 		AssetCategory assetCategory = null;
-
 		long categoryId = ParamUtil.getLong(httpServletRequest, "categoryId");
 		long classNameId = _portal.getClassNameId(AssetCategory.class);
-
 		String commerceFriendlyURLBase = StringPool.BLANK;
 		String commerceFriendlyURLSeparator = StringPool.BLANK;
 		String siteFriendlyURLBase = StringPool.BLANK;
 		String siteFriendlyURLSeparator = StringPool.BLANK;
 		String titleMapAsXML = StringPool.BLANK;
 		String urlTitle = StringPool.BLANK;
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
 
 		try {
 			assetCategory = _assetCategoryService.fetchCategory(categoryId);
@@ -95,6 +89,10 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 				FriendlyURLEntry friendlyURLEntry =
 					_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
 						classNameId, categoryId);
+
+				ThemeDisplay themeDisplay =
+					(ThemeDisplay)httpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY);
 
 				Locale siteDefaultLocale = themeDisplay.getSiteDefaultLocale();
 
