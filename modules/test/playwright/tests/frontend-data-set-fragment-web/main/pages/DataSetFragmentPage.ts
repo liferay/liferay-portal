@@ -72,7 +72,7 @@ export class DataSetFragmentPage {
 	// Unresolved API URL preview rendered by the fragment in edit mode
 
 	readonly unresolvedPreview: {
-		alert: Locator;
+		alerts: Locator;
 		container: Locator;
 		skeletonBars: Locator;
 		urlBox: Locator;
@@ -192,7 +192,7 @@ export class DataSetFragmentPage {
 		);
 
 		this.unresolvedPreview = {
-			alert: unresolvedPreviewContainer.locator('.alert-info'),
+			alerts: unresolvedPreviewContainer.locator('.alert-info'),
 			container: unresolvedPreviewContainer,
 			skeletonBars: unresolvedPreviewContainer.locator(
 				'.data-set-skeleton-bar'

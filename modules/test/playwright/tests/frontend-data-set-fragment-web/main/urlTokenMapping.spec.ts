@@ -43,6 +43,9 @@ const MAPPING_MODE = {
 const UNMAPPED_URL_HELP =
 	'The URL is incomplete. Please map all unmapped tokens in the fragment panel to display the data set.';
 
+const UNRESOLVED_CONTEXT_URL_HELP =
+	'The URL is incomplete. Tokens mapped to the page context entity are resolved when the page displays an entity. Use the "Preview With" selector to pick one and display the data set.';
+
 const dataSetERCs: string[] = [];
 let article: any;
 let articleSiteId: string;
@@ -105,6 +108,12 @@ async function createTokenizedDataSet({
 	return dataSet;
 }
 
+/**
+ * The article external reference code is its title, which is also its friendly
+ * URL path. A token filtering on `friendlyUrlPath` therefore matches this
+ * article whichever identifier the mapping resolves to, which is what makes a
+ * token resolved from the external reference code observable in the rows.
+ */
 async function createArticle({apiHelpers, siteId}: any) {
 	const title = getRandomString().toLowerCase();
 
@@ -112,11 +121,37 @@ async function createArticle({apiHelpers, siteId}: any) {
 
 	article = await apiHelpers.jsonWebServicesJournal.addWebContent({
 		ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+		externalReferenceCode: title,
 		groupId: siteId,
 		titleMap: {en_US: title},
 	});
 
 	return title;
+}
+
+async function editBasicWebContentDisplayPageTemplate({
+	apiHelpers,
+	displayPageTemplatesPage,
+	site,
+}: any) {
+	const className = await apiHelpers.jsonWebServicesClassName.fetchClassName(
+		'com.liferay.journal.model.JournalArticle'
+	);
+
+	const displayPageTemplateName = getRandomString();
+
+	await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
+		{
+			classNameId: className.classNameId,
+			classTypeKey: 'BASIC-WEB-CONTENT',
+			groupId: site.id,
+			name: displayPageTemplateName,
+		}
+	);
+
+	await displayPageTemplatesPage.goto(site.friendlyUrlPath);
+
+	await displayPageTemplatesPage.editTemplate(displayPageTemplateName);
 }
 
 test(
@@ -168,9 +203,13 @@ test(
 		});
 
 		await test.step('Assert that the fragment renders the help alert, the URL and the skeleton', async () => {
+
+			// Unmapped tokens are the only reason the URL is incomplete, so the
+			// page context help must stay out.
+
 			await expect(
-				dataSetFragmentPage.unresolvedPreview.alert
-			).toContainText(UNMAPPED_URL_HELP);
+				dataSetFragmentPage.unresolvedPreview.alerts
+			).toContainText([UNMAPPED_URL_HELP]);
 
 			await expect(
 				dataSetFragmentPage.unresolvedPreview.urlBox
@@ -486,7 +525,7 @@ test(
 
 test(
 	'Mapping a token to the page context entity is offered on display page templates',
-	{tag: '@LPD-93809'},
+	{tag: ['@LPD-93809', '@LPD-99359']},
 	async ({
 		apiHelpers,
 		dataSetFragmentPage,
@@ -501,29 +540,12 @@ test(
 					dataSetManagerApiHelpers,
 				}));
 
-		await test.step('Create a display page template for basic web content', async () => {
-			const className =
-				await apiHelpers.jsonWebServicesClassName.fetchClassName(
-					'com.liferay.journal.model.JournalArticle'
-				);
-
-			const displayPageTemplateName = getRandomString();
-
-			await apiHelpers.jsonWebServicesLayoutPageTemplateEntry.addDisplayPageLayoutPageTemplateEntry(
-				{
-					classNameId: className.classNameId,
-					classTypeKey: 'BASIC-WEB-CONTENT',
-					groupId: site.id,
-					name: displayPageTemplateName,
-				}
-			);
-
-			await displayPageTemplatesPage.goto(site.friendlyUrlPath);
-
-			await displayPageTemplatesPage.editTemplate(
-				displayPageTemplateName
-			);
-		});
+		await test.step('Create a display page template for basic web content', async () =>
+			editBasicWebContentDisplayPageTemplate({
+				apiHelpers,
+				displayPageTemplatesPage,
+				site,
+			}));
 
 		await test.step('Add the fragment and assign the data set', async () => {
 			await pageEditorPage.addFragment('Content Display', 'Data Set');
@@ -557,10 +579,168 @@ test(
 			).toHaveText('Completed');
 		});
 
-		await test.step('Assert that the fragment keeps showing the preview: without a page context entity in the editor the value cannot be resolved yet', async () => {
+		await test.step('Assert that the fragment explains why the completed mapping cannot be resolved yet: the editor has no page context entity', async () => {
 			await expect(
 				dataSetFragmentPage.unresolvedPreview.skeletonBars.first()
 			).toBeVisible();
+
+			// Every token is either resolved or mapped to the page context
+			// entity, so the unmapped token help must stay out.
+
+			await expect(
+				dataSetFragmentPage.unresolvedPreview.alerts
+			).toContainText([UNRESOLVED_CONTEXT_URL_HELP]);
+		});
+	}
+);
+
+test(
+	'A token mapped to the external reference code of the page context entity resolves and renders the data set',
+	{tag: '@LPD-99359'},
+	async ({
+		apiHelpers,
+		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		site,
+	}) => {
+		const dataSet =
+			await test.step('Create a data set with tokens in its API URL', async () =>
+				createTokenizedDataSet({
+					dataSetManagerApiHelpers,
+				}));
+
+		const articleTitle =
+			await test.step('Create an article to preview the display page template with', async () =>
+				createArticle({apiHelpers, siteId: site.id}));
+
+		await test.step('Create a display page template for basic web content', async () =>
+			editBasicWebContentDisplayPageTemplate({
+				apiHelpers,
+				displayPageTemplatesPage,
+				site,
+			}));
+
+		await test.step('Add the fragment and assign the data set', async () => {
+			await pageEditorPage.addFragment('Content Display', 'Data Set');
+
+			await dataSetFragmentPage.fragmentSelectionArea.click();
+
+			await dataSetFragmentPage.selectDataSetButton.click();
+
+			await dataSetFragmentPage.selectDataSet(dataSet.label);
+		});
+
+		await test.step('Map {path} to the external reference code of the page context entity', async () => {
+			await dataSetFragmentPage.selectToken('path');
+
+			await dataSetFragmentPage.selectMappingMode(MAPPING_MODE.CONTEXT);
+
+			await dataSetFragmentPage.tokenMappingFieldSelect.selectOption({
+				label: 'External Reference Code',
+			});
+
+			await expect(
+				dataSetFragmentPage.unresolvedPreview.alerts
+			).toContainText([UNRESOLVED_CONTEXT_URL_HELP]);
+		});
+
+		await test.step('Preview the display page template with the article', async () =>
+			pageEditorPage.selectDisplayPagePreviewItem(articleTitle));
+
+		await test.step('Assert that the data set replaces the preview, showing the article the token resolved to', async () => {
+			await expect(
+				dataSetFragmentPage.unresolvedPreview.container
+			).toBeHidden();
+
+			await waitForFDS({page});
+
+			await expect(
+				dataSetFragmentPage.table.bodyRows.getByText(articleTitle)
+			).toBeVisible();
+		});
+	}
+);
+
+test(
+	'Both the unmapped token and the page context entity help are shown when each applies to a different token',
+	{tag: '@LPD-99359'},
+	async ({
+		apiHelpers,
+		dataSetFragmentPage,
+		dataSetManagerApiHelpers,
+		displayPageTemplatesPage,
+		pageEditorPage,
+		site,
+	}) => {
+		const dataSet =
+			await test.step('Create a data set with two manually mapped tokens in its API URL', async () =>
+				createTokenizedDataSet({
+					additionalAPIURLParameters:
+						"filter=contains(friendlyUrlPath,'{path}') and contains(title,'{title}')",
+					dataSetManagerApiHelpers,
+				}));
+
+		await test.step('Create a display page template for basic web content', async () =>
+			editBasicWebContentDisplayPageTemplate({
+				apiHelpers,
+				displayPageTemplatesPage,
+				site,
+			}));
+
+		await test.step('Add the fragment and assign the data set', async () => {
+			await pageEditorPage.addFragment('Content Display', 'Data Set');
+
+			await dataSetFragmentPage.fragmentSelectionArea.click();
+
+			await dataSetFragmentPage.selectDataSetButton.click();
+
+			await dataSetFragmentPage.selectDataSet(dataSet.label);
+		});
+
+		await test.step('Map {path} to the page context entity and leave {title} unmapped', async () => {
+			await dataSetFragmentPage.selectToken('path');
+
+			await dataSetFragmentPage.selectMappingMode(MAPPING_MODE.CONTEXT);
+
+			await dataSetFragmentPage.tokenMappingFieldSelect.selectOption({
+				label: 'External Reference Code',
+			});
+
+			await expect(
+				dataSetFragmentPage.tokenMappingTokenStatusLabel
+			).toHaveText('Mapped');
+
+			await expect(
+				dataSetFragmentPage.tokenMappingStatusLabel
+			).toHaveText('Incomplete');
+		});
+
+		await test.step('Assert that the fragment explains both reasons the URL is incomplete', async () => {
+			await expect(
+				dataSetFragmentPage.unresolvedPreview.skeletonBars.first()
+			).toBeVisible();
+
+			await expect(
+				dataSetFragmentPage.unresolvedPreview.alerts
+			).toContainText([UNRESOLVED_CONTEXT_URL_HELP, UNMAPPED_URL_HELP]);
+		});
+
+		await test.step('Assert that each help alert can be dismissed on its own', async () => {
+
+			// The page editor marks the fragment content as aria-hidden, so
+			// nothing inside it is reachable by role.
+
+			await dataSetFragmentPage.unresolvedPreview.alerts
+				.first()
+				.locator('.close')
+				.click();
+
+			await expect(
+				dataSetFragmentPage.unresolvedPreview.alerts
+			).toContainText([UNMAPPED_URL_HELP]);
 		});
 	}
 );
