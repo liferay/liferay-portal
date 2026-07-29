@@ -53,6 +53,7 @@ export {default as useMediaQuery} from './hooks/useMediaQuery';
 export type {default as ConfigurationCustomComponentProps} from './types/ConfigurationCustomComponentProps';
 export {default as SegmentExperience} from './types/SegmentExperience';
 export {default as convertRGBtoHex} from './utils/convertRGBtoHex';
+export {default as hideProductMenuIfPresent} from './utils/hideProductMenuIfPresent';
 export {default as isCtrlOrMeta} from './utils/isCtrlOrMeta';
 export {default as isNullOrUndefined} from './utils/isNullOrUndefined';
 export {default as isValidStyleValue} from './utils/isValidStyleValue';

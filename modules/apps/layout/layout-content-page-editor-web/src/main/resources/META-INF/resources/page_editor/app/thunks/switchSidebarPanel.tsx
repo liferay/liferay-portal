@@ -3,8 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {hideProductMenuIfPresent} from '@liferay/layout-js-components-web';
+
 import {switchSidebarPanel as switchSidebarPanelAction} from '../actions/index';
-import hideProductMenuIfPresent from '../utils/hideProductMenuIfPresent';
 
 interface Action {
 	hidden?: boolean;

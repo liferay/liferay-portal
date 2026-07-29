@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {hideProductMenuIfPresent} from '@liferay/layout-js-components-web';
 import {useEffect, useRef} from 'react';
 
 import {switchSidebarPanel} from '../../actions/index';
 import {useDispatch, useSelector} from '../../contexts/StoreContext';
 import selectSidebarIsOpened from '../../selectors/selectSidebarIsOpened';
-import hideProductMenuIfPresent from '../../utils/hideProductMenuIfPresent';
 
 export default function useProductMenuHandler() {
 	const dispatch = useDispatch();
