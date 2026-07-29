@@ -43,28 +43,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Component
 public class SEOStudioService extends BaseService {
 
-	public void postSEOStudioScanInsightsBatch(
-			long accountEntryId, JSONObject insightJSONObject,
-			long seoStudioScanId)
-		throws Exception {
-
-		JSONArray pageURLsJSONArray = insightJSONObject.optJSONArray(
-			"pageURLs");
-
-		if ((pageURLsJSONArray == null) || pageURLsJSONArray.isEmpty()) {
-			return;
-		}
-
-		List<String> pageURLs = TransformUtil.transform(
-			pageURLsJSONArray.toList(), object -> (String)object);
-
-		_postSEOStudioScanInsightsBatch(
-			accountEntryId, insightJSONObject, pageURLs,
-			_resolveSEOStudioPageIdsMap(
-				accountEntryId, pageURLs, seoStudioScanId),
-			seoStudioScanId);
-	}
-
 	public JSONObject fetchSEOStudioDomainJSONObject(long seoStudioDomainId) {
 		String responseJSON = _getSEOStudioDomain(seoStudioDomainId);
 
@@ -157,6 +135,28 @@ public class SEOStudioService extends BaseService {
 		return patchSEOStudioScan(jsonObject, seoStudioScanId);
 	}
 
+	public void postSEOStudioScanInsightsBatch(
+			long accountEntryId, JSONObject insightJSONObject,
+			long seoStudioScanId)
+		throws Exception {
+
+		JSONArray pageURLsJSONArray = insightJSONObject.optJSONArray(
+			"pageURLs");
+
+		if ((pageURLsJSONArray == null) || pageURLsJSONArray.isEmpty()) {
+			return;
+		}
+
+		List<String> pageURLs = TransformUtil.transform(
+			pageURLsJSONArray.toList(), object -> (String)object);
+
+		_postSEOStudioScanInsightsBatch(
+			accountEntryId, insightJSONObject, pageURLs,
+			_resolveSEOStudioPageIdsMap(
+				accountEntryId, pageURLs, seoStudioScanId),
+			seoStudioScanId);
+	}
+
 	public URI toCrawlURI(String hostname) {
 		if (Validator.isNull(hostname)) {
 			throw new IllegalArgumentException("Hostname is required");
@@ -191,86 +191,6 @@ public class SEOStudioService extends BaseService {
 
 	public String toIndexName(long seoStudioDomainId) {
 		return "seo_studio_" + seoStudioDomainId;
-	}
-
-	private void _postSEOStudioPagesBatch(
-		long accountEntryId, List<String> pageURLs, long seoStudioScanId) {
-
-		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
-			JSONArray seoStudioPagesJSONArray = new JSONArray();
-
-			List<String> batchPageURLs = ListUtil.subList(
-				pageURLs, i, i + _BATCH_SIZE);
-
-			for (String batchPageURL : batchPageURLs) {
-				seoStudioPagesJSONArray.put(
-					_toSEOStudioPageJSONObject(
-						accountEntryId, batchPageURL, seoStudioScanId));
-			}
-
-			_postSEOStudioPagesBatch(seoStudioPagesJSONArray);
-		}
-	}
-
-	private void _postSEOStudioScanInsightsBatch(
-		long accountEntryId, JSONObject insightJSONObject,
-		List<String> pageURLs, Map<String, Long> seoStudioPageIdsMap,
-		long seoStudioScanId) {
-
-		JSONObject seoStudioInsightTypeJSONObject = new JSONObject(
-			_postSEOStudioInsightType(
-				_toSEOStudioInsightTypeJSONObject(
-					accountEntryId, insightJSONObject, seoStudioScanId)));
-
-		long seoStudioInsightTypeId = seoStudioInsightTypeJSONObject.getLong(
-			"id");
-
-		String detectedDateString = Instant.now(
-		).truncatedTo(
-			ChronoUnit.SECONDS
-		).toString();
-
-		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
-			JSONArray seoStudioScanInsightsJSONArray = new JSONArray();
-
-			List<String> batchPageURLs = ListUtil.subList(
-				pageURLs, i, i + _BATCH_SIZE);
-
-			for (String batchPageURL : batchPageURLs) {
-				Long seoStudioPageId = seoStudioPageIdsMap.get(batchPageURL);
-
-				if (seoStudioPageId == null) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							"Unable to get a page for URL " + batchPageURL);
-					}
-
-					continue;
-				}
-
-				seoStudioScanInsightsJSONArray.put(
-					_toSEOStudioScanInsightJSONObject(
-						accountEntryId,
-						insightJSONObject.getString("classification"),
-						detectedDateString, seoStudioInsightTypeId,
-						seoStudioPageId, seoStudioScanId));
-			}
-
-			if (seoStudioScanInsightsJSONArray.isEmpty()) {
-				continue;
-			}
-
-			_postSEOStudioScanInsightsBatch(seoStudioScanInsightsJSONArray);
-		}
-
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				StringBundler.concat(
-					"Posted ", pageURLs.size(), " ",
-					insightJSONObject.getString("name"),
-					" SEO Studio scan insights for SEO Studio insight type ID ",
-					seoStudioInsightTypeId));
-		}
 	}
 
 	private String _getAuthorization() {
@@ -382,6 +302,25 @@ public class SEOStudioService extends BaseService {
 			_getAuthorization(), jsonArray.toString(), uriComponents.toUri());
 	}
 
+	private void _postSEOStudioPagesBatch(
+		long accountEntryId, List<String> pageURLs, long seoStudioScanId) {
+
+		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
+			JSONArray seoStudioPagesJSONArray = new JSONArray();
+
+			List<String> batchPageURLs = ListUtil.subList(
+				pageURLs, i, i + _BATCH_SIZE);
+
+			for (String batchPageURL : batchPageURLs) {
+				seoStudioPagesJSONArray.put(
+					_toSEOStudioPageJSONObject(
+						accountEntryId, batchPageURL, seoStudioScanId));
+			}
+
+			_postSEOStudioPagesBatch(seoStudioPagesJSONArray);
+		}
+	}
+
 	private String _postSEOStudioScanInsightsBatch(JSONArray jsonArray) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/scan-insights/batch"
@@ -389,6 +328,67 @@ public class SEOStudioService extends BaseService {
 
 		return post(
 			_getAuthorization(), jsonArray.toString(), uriComponents.toUri());
+	}
+
+	private void _postSEOStudioScanInsightsBatch(
+		long accountEntryId, JSONObject insightJSONObject,
+		List<String> pageURLs, Map<String, Long> seoStudioPageIdsMap,
+		long seoStudioScanId) {
+
+		JSONObject seoStudioInsightTypeJSONObject = new JSONObject(
+			_postSEOStudioInsightType(
+				_toSEOStudioInsightTypeJSONObject(
+					accountEntryId, insightJSONObject, seoStudioScanId)));
+
+		long seoStudioInsightTypeId = seoStudioInsightTypeJSONObject.getLong(
+			"id");
+
+		String detectedDateString = Instant.now(
+		).truncatedTo(
+			ChronoUnit.SECONDS
+		).toString();
+
+		for (int i = 0; i < pageURLs.size(); i += _BATCH_SIZE) {
+			JSONArray seoStudioScanInsightsJSONArray = new JSONArray();
+
+			List<String> batchPageURLs = ListUtil.subList(
+				pageURLs, i, i + _BATCH_SIZE);
+
+			for (String batchPageURL : batchPageURLs) {
+				Long seoStudioPageId = seoStudioPageIdsMap.get(batchPageURL);
+
+				if (seoStudioPageId == null) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Unable to get a page for URL " + batchPageURL);
+					}
+
+					continue;
+				}
+
+				seoStudioScanInsightsJSONArray.put(
+					_toSEOStudioScanInsightJSONObject(
+						accountEntryId,
+						insightJSONObject.getString("classification"),
+						detectedDateString, seoStudioInsightTypeId,
+						seoStudioPageId, seoStudioScanId));
+			}
+
+			if (seoStudioScanInsightsJSONArray.isEmpty()) {
+				continue;
+			}
+
+			_postSEOStudioScanInsightsBatch(seoStudioScanInsightsJSONArray);
+		}
+
+		if (_log.isInfoEnabled()) {
+			_log.info(
+				StringBundler.concat(
+					"Posted ", pageURLs.size(), " ",
+					insightJSONObject.getString("name"),
+					" SEO Studio scan insights for SEO Studio insight type ID ",
+					seoStudioInsightTypeId));
+		}
 	}
 
 	private Map<String, Long> _resolveSEOStudioPageIdsMap(
