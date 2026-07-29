@@ -18,7 +18,7 @@ import com.liferay.knowledge.base.service.KBArticleServiceUtil;
 import com.liferay.knowledge.base.service.KBFolderLocalServiceUtil;
 import com.liferay.knowledge.base.service.KBFolderServiceUtil;
 import com.liferay.knowledge.base.service.KBTemplateServiceUtil;
-import com.liferay.knowledge.base.util.comparator.KBArticleTitleComparator;
+import com.liferay.knowledge.base.util.comparator.KBArticlePriorityComparator;
 import com.liferay.knowledge.base.util.comparator.KBObjectsPriorityComparator;
 import com.liferay.knowledge.base.util.comparator.KBTemplateTitleComparator;
 import com.liferay.knowledge.base.web.internal.display.context.helper.KBArticleURLHelper;
@@ -290,7 +290,7 @@ public class KBAdminNavigationDisplayContext {
 		List<KBArticle> kbArticles = KBArticleServiceUtil.getKBArticles(
 			parentKBArticle.getGroupId(), parentKBArticle.getResourcePrimKey(),
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, WorkflowConstants.STATUS_ANY,
-			KBArticleTitleComparator.getInstance(true));
+			KBArticlePriorityComparator.getInstance(true));
 
 		for (KBArticle kbArticle : kbArticles) {
 			if (moveKBObjectId == kbArticle.getResourcePrimKey()) {
