@@ -51,6 +51,7 @@ public class LayoutContentVersionDisplayContextTest {
 
 	@Before
 	public void setUp() throws PortalException {
+		_setUpDraftLayout();
 		_setUpGroup();
 		_setUpLanguage();
 		_setUpLayoutLocalService();
@@ -92,6 +93,8 @@ public class LayoutContentVersionDisplayContextTest {
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(_siteDefaultLocale),
 			config.get("defaultLanguageId"));
+		Assert.assertEquals(_draftName, config.get("draftName"));
+		Assert.assertEquals(Boolean.TRUE, config.get("hasDraft"));
 		Assert.assertEquals(
 			StringBundler.concat(
 				"/o/headless-admin-site/v1.0/sites/",
@@ -245,6 +248,22 @@ public class LayoutContentVersionDisplayContextTest {
 		return themeDisplay;
 	}
 
+	private void _setUpDraftLayout() {
+		_draftName = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_draftLayout.getName(_siteDefaultLocale)
+		).thenReturn(
+			_draftName
+		);
+
+		Mockito.when(
+			_draftLayout.isApproved()
+		).thenReturn(
+			false
+		);
+	}
+
 	private void _setUpGroup() {
 		Mockito.when(
 			_group.getExternalReferenceCode()
@@ -285,6 +304,7 @@ public class LayoutContentVersionDisplayContextTest {
 	}
 
 	private final Layout _draftLayout = Mockito.mock(Layout.class);
+	private String _draftName;
 	private final Group _group = Mockito.mock(Group.class);
 	private final Language _language = Mockito.mock(Language.class);
 	private final LayoutLocalService _layoutLocalService = Mockito.mock(
