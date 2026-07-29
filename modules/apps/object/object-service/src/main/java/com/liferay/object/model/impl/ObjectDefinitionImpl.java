@@ -124,8 +124,7 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 
 	@Override
 	public String getObjectFolderExternalReferenceCode() {
-		ObjectFolder objectFolder =
-			ObjectFolderLocalServiceUtil.fetchObjectFolder(getObjectFolderId());
+		ObjectFolder objectFolder = getObjectFolder();
 
 		if (objectFolder == null) {
 			return null;
