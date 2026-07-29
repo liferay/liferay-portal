@@ -84,9 +84,22 @@ public class CrawlerRestController extends BaseRestController {
 				_seoStudioService.toCrawlURI(
 					seoStudioDomainJSONObject.getString("hostname")));
 
-			String canonicalDomainURL = _resolveCanonicalDomainURL(domainURL);
+			HttpResponse<Void> httpResponse = _httpClient.send(
+				HttpRequest.newBuilder(
+					URI.create(domainURL)
+				).timeout(
+					Duration.ofSeconds(60)
+				).GET(
+				).build(),
+				HttpResponse.BodyHandlers.discarding());
 
-			String sitemapURL = canonicalDomainURL + "/sitemap.xml";
+			URI uri = httpResponse.uri();
+
+			if ((uri != null) && Validator.isNotNull(uri.getHost())) {
+				domainURL = _seoStudioService.toDomainURL(uri);
+			}
+
+			String sitemapURL = domainURL + "/sitemap.xml";
 
 			if (!_isSitemapReachable(sitemapURL)) {
 				if (_log.isWarnEnabled()) {
@@ -108,7 +121,7 @@ public class CrawlerRestController extends BaseRestController {
 			Job job = _kubernetesJobService.createJob(
 				valuesJSONObject.getLong(
 					"r_accountToSEOStudioScans_accountEntryId"),
-				canonicalDomainURL,
+				domainURL,
 				scopeConfigJSONObject.getInt("maxCrawlDepth"),
 				scopeConfigJSONObject.getInt("maxDuration"),
 				_seoStudioService.toIndexName(seoStudioDomainId), sitemapURL);
@@ -160,27 +173,6 @@ public class CrawlerRestController extends BaseRestController {
 
 			return false;
 		}
-	}
-
-	private String _resolveCanonicalDomainURL(String domainURL)
-		throws Exception {
-
-		HttpResponse<Void> httpResponse = _httpClient.send(
-			HttpRequest.newBuilder(
-				URI.create(domainURL)
-			).timeout(
-				Duration.ofSeconds(60)
-			).GET(
-			).build(),
-			HttpResponse.BodyHandlers.discarding());
-
-		URI uri = httpResponse.uri();
-
-		if ((uri == null) || Validator.isNull(uri.getHost())) {
-			return domainURL;
-		}
-
-		return _seoStudioService.toDomainURL(uri);
 	}
 
 	private static final Log _log = LogFactory.getLog(
