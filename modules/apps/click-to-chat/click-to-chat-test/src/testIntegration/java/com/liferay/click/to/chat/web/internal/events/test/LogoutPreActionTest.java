@@ -107,7 +107,7 @@ public class LogoutPreActionTest {
 						"enabled", true
 					).build())) {
 
-			_logoutPreAction.processLifecycleEvent(
+			_lifecycleAction.processLifecycleEvent(
 				new LifecycleEvent(
 					_mockHttpServletRequest, new MockHttpServletResponse()));
 		}
@@ -158,7 +158,7 @@ public class LogoutPreActionTest {
 	@Inject(
 		filter = "component.name=com.liferay.click.to.chat.web.internal.events.LogoutPreAction"
 	)
-	private LifecycleAction _logoutPreAction;
+	private LifecycleAction _lifecycleAction;
 
 	private final MockHttpServletRequest _mockHttpServletRequest =
 		new MockHttpServletRequest();
