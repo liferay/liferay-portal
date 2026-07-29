@@ -35,13 +35,24 @@ jobs:
                     set -o pipefail
 
                     function main {
+                        local version
+
+                        version=$(jq --arg key "${{inputs.image_name}}" --raw-output '.[$key]' "${GITHUB_WORKSPACE}/cloud/scripts/versions.json")
+
+                        if [[ -z "${version}" ]] || [[ "${version}" == "null" ]]
+                        then
+                            echo "The version for ${{inputs.image_name}} cannot be read from cloud/scripts/versions.json." >&2
+
+                            exit 1
+                        fi
+
                         local sanitized_branch
 
                         sanitized_branch=$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')
 
                         local registry_path="${CONTAINER_IMAGE_REGISTRY_NONPRODUCTION}/${sanitized_branch}"
 
-                        local image_ref="${registry_path}/${{inputs.image_name}}:${sanitized_branch}-${GITHUB_SHA::7}${{inputs.image_tag_suffix}}"
+                        local image_ref="${registry_path}/${{inputs.image_name}}:${version}-g${GITHUB_SHA::7}${{inputs.image_tag_suffix}}"
 
                         docker \
                             build \
@@ -50,6 +61,8 @@ jobs:
                             .
 
                         docker push "${image_ref}"
+
+                        echo "image_ref=${image_ref}" >> ${GITHUB_OUTPUT}
                     }
 
                     main "${@}"

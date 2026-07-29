@@ -10,7 +10,9 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-container-image.yaml
         with:
             image_name: liferay-dxp-operator
-            sparse_checkout: cloud/operator
+            sparse_checkout: |
+                cloud/operator
+                cloud/scripts
             working_directory: ./cloud/operator
 on:
     push:
@@ -20,6 +22,7 @@ on:
             -   .github/workflows/ci-push-cloud-preview-container-images.yaml
             -   .github/workflows/ci-reusable-push-container-image.yaml
             -   cloud/operator/**
+            -   cloud/scripts/versions.json
 permissions:
     contents: read
     id-token: write
