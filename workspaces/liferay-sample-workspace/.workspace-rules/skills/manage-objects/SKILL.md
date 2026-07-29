@@ -257,7 +257,15 @@ Picklist values in API responses are objects:
 }
 ```
 
-Always destructure before use: `const key = entry.status?.key || ''`. Rendering `entry.status` directly outputs `[object Object]`.
+Always destructure before use: `const key = entry.registrationStatus?.key || ''`. Rendering the object directly outputs `[object Object]`.
+
+Do **not** reach for `entry.status` here. Every object has a *system* `status` field — the workflow status — and it has a different shape, so `entry.status?.key` is always `undefined`:
+
+```json
+{"code": 0, "label": "approved", "label_i18n": "Approved"}
+```
+
+`status` is also a reserved name, so a custom picklist can never be called `status` (see "Reserved Field Names").
 
 ### Schema Discovery Before Write Operations
 
@@ -273,6 +281,25 @@ The OpenAPI spec for `object-admin` and the per object `/o/c/<pluralLabel>` endp
 - **Type storage**: every `DateTime` or `Date` field MUST have `timeStorage` set in `objectFieldSettings` (e.g., `"convertToUTC"`).
 - **Indexed language**: `indexedLanguageId` is valid only on `String` and `Clob` field types. Never set it on `Date`/`DateTime` or other non-text fields.
 
+### Reserved Field Names
+
+Liferay creates these as system fields on every object, so a custom field cannot claim the name. Rejected with `ObjectFieldNameException$MustNotBeReserved`, compared lowercased — `Status` fails exactly as `status` does. Check a new definition's field names against this list before deploying:
+
+```
+actions, companyid, createdate, creator, currentdate, datecreated, datemodified,
+displaydate, expirationdate, externalreferencecode, groupid, id, keywords,
+lastpublishdate, modifieddate, reviewdate, status, statusbyuserid,
+statusbyusername, statusdate, taxonomycategoryids, userid, username
+```
+
+Also enforced: letters and digits only, must begin with a lowercase letter, under 41 characters, and must not equal the primary key field name.
+
+**`status` is the trap** — the obvious name for any workflow like model, and always taken. Use `<entity>Status` (`registrationStatus`, `orderStatus`) with `"label": {"en_US": "Status"}` so the UI still reads "Status".
+
+Inside a `siteInitializer` this failure is disproportionate: the exception aborts initialization and **rolls back the whole site creation transaction**, leaving no site, no objects, and no picklists. It looks like the CET never deployed. Check for `MustNotBeReserved` in the log before assuming that.
+
+Source: `_reservedNames` in `modules/apps/object/object-service/src/main/java/com/liferay/object/service/impl/ObjectFieldLocalServiceImpl.java`.
+
 ## Field Settings Gotchas
 
 `objectFieldSettings` entries that use generic string `value` fields (e.g., `fileSource`, `acceptedFileExtensions`, `maximumFileSize`) are **not documented as enums in the OpenAPI schema** and are not discoverable via GraphQL introspection — the `value` field resolves as a generic `Object` scalar. Guessing common values will produce `400 Bad Request` with no enum hint in the response.
@@ -286,6 +313,8 @@ After granting permissions via the Headless API, always verify with a follow up 
 ## Batch Initialization via Client Extension
 
 Use a Batch Client Extension (CX) to initialize Object Definitions, Folders, and seed data at deploy time. Do **not** mix Batch CX with Custom Element CX in the same project or `client-extension.yaml`.
+
+> **This applies to the `batch` CET type only — not to `siteInitializer`.** A site initializer does not read a `batch/` directory and silently ignores `*.batch-engine-data.json` files placed in its tree. To define objects inside a site initializer, use its own `object-definitions/`, `list-type-definitions/`, and `object-relationships/` directories, which take raw DTOs with no `configuration` envelope. See `rules/site-initializer-format.md` → "Objects and Picklists".
 
 **Permissions are not importable via batch.** The Batch Engine does not apply object or entry permissions from the JSON payload — do not put a `permissions` block in a `*.batch-engine-data.json` file expecting it to take effect. Grant permissions after deploy via Control Panel → Objects → [Object] → Permissions (or the Headless permissions API; see "Permission Grants" above).
 

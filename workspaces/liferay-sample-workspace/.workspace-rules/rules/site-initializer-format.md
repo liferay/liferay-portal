@@ -11,7 +11,7 @@ The site-initializer CET tree is the **single source of truth** for the site. Bu
 | Change Type | How to Apply It | Reprovision the Site? |
 | --- | --- | --- |
 | Theme / design | Deploy the `themeCSS` CET (`blade gw deploy`) | No |
-| Object definition or data | `object-admin` API + batch import | No |
+| Object definition or data | `object-admin` API, or edit `object-definitions/` and reprovision | No |
 | Fragment content or new fragment | Edit the source tree, then reprovision — there is no portable live fragment import endpoint | Yes |
 | New page, page composition change, or fragment placement on a page | Reprovision: delete the site, recreate from the initializer | Yes |
 
@@ -31,8 +31,22 @@ curl \
 
 # Step 2. Redeploy the initializer CET. A siteInitializer CET that declares a
 #    siteExternalReferenceCode autoprovisions the site on deploy.
+#
+#    Liferay retriggers the initializer when the file install watcher sees a CHANGED
+#    zip in bundles/osgi/client-extensions — not when the Gradle task runs. Gradle's
+#    up to date check is content based, so with no source edit `blade gw deploy`
+#    prints BUILD SUCCESSFUL / "N up to date", rewrites nothing, and the site stays
+#    deleted. Force a new artifact when reprovisioning without a source change:
 
-blade gw deploy
+rm -f bundles/osgi/client-extensions/<name>.zip
+
+cd client-extensions/<name> && blade gw clean deploy
+```
+
+Confirm the initializer actually ran — the count must increase, and `BUILD SUCCESSFUL` alone does not prove it did:
+
+```bash
+grep -c "Initializing <Site Name>" bundles/tomcat/logs/catalina.out
 ```
 
 **Sites are addressed by external reference code in the REST path** (`/sites/<erc>`) for these admin operations — passing the numeric site ID returns 404.
@@ -51,8 +65,6 @@ Fragments live in the initializer tree under `fragments/group/<collection-key>/f
 client-extensions/<name>/
   client-extension.yaml
   site-initializer/
-    batch/                        # Bulk data import via Headless Batch Engine
-      <NN-entity-name>.batch-engine-data.json
     documents/                    # Documents and media
       group/
         <folder-name>/
@@ -91,6 +103,17 @@ client-extensions/<name>/
         <NN-child-page>/          # Nested child pages
           page.json
           page-definition.json
+    list-type-definitions/        # Picklists; one raw ListTypeDefinition DTO per file
+      <name>.json
+      <name>.list-type-entries.json   # optional; bare JSON array of entries
+    object-definitions/           # One raw ObjectDefinition DTO per file
+      <NN-name>.json
+    object-relationships/         # One raw ObjectRelationship DTO per file
+      <name>.json
+    object-fields/                # Fields added to already existing objects
+    object-folders/               # Object folders
+    object-actions/               # Object actions
+    object-entries/               # Seed object entry data
     roles.json                    # Site roles
     style-books/                  # Style book entries
       <style-book-name>/
@@ -98,49 +121,131 @@ client-extensions/<name>/
     thumbnail.png                 # Site thumbnail (displayed in Site Admin)
 ```
 
-## Batch Engine Data Format
+## Objects and Picklists
 
-Files under `batch/` are named `<NN-entity-name>.batch-engine-data.json`. The `NN` prefix controls import order (lower numbers first).
+> **There is no `batch/` directory in a site initializer.** `BundleSiteInitializer` reads a fixed set of directories, and `batch/` is not one of them. Files placed in `site-initializer/batch/*.batch-engine-data.json` are packaged into the deployed zip and then silently ignored: the build succeeds, the site provisions, and no objects appear. The only signal is `Invoking addOrUpdateListTypeDefinitions took 0 ms` in the log. The `*.batch-engine-data.json` envelope with a `configuration.className` block belongs to the separate **`batch` CET type**, not here.
+
+Each file holds a single **raw DTO** — no `configuration` wrapper and no `items` array. Handlers run in a fixed order, so a file may reference anything produced by an earlier handler:
+
+`list-type-definitions` → `object-folders` → `object-definitions` → `object-relationships` → `object-fields` → `publishObjectDefinitions` → `object-actions` → `object-entries`
+
+Because `publishObjectDefinitions` runs after the definitions are created, **omit `status` from an object definition file** — the initializer publishes it.
+
+### `list-type-definitions/<name>.json`
+
+A raw `ListTypeDefinition`. `listTypeEntries` may be inline (as below), or in a sibling `<name>.list-type-entries.json` holding a bare JSON array — the definition loop skips files ending in `.list-type-entries.json`.
 
 ```json
 {
-	"configuration": {
-		"className": "com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition",
-		"multiCompany": true,
-		"parameters": {
-			"containsHeaders": "true",
-			"createStrategy": "UPSERT",
-			"importStrategy": "ON_ERROR_FAIL",
-			"updateStrategy": "UPDATE"
-		},
-		"taskItemDelegateName": "DEFAULT"
-	},
-	"items": [
+	"externalReferenceCode": "REGISTRATION_STATUS",
+	"listTypeEntries": [
 		{
-			"externalReferenceCode": "<ERC>",
-			...
+			"externalReferenceCode": "REGISTRATION_STATUS_PENDING",
+			"key": "pending",
+			"name": "Pending"
 		}
-	]
+	],
+	"name": "Registration Status"
 }
 ```
 
-| Field | Purpose |
-| --- | --- |
-| `configuration.className` | Fully qualified DTO class name; determines which Headless endpoint is called |
-| `configuration.multiCompany` | `true` to import on all virtual instances |
-| `parameters.createStrategy` | `INSERT` (fail on duplicate) or `UPSERT` (update if exists) |
-| `parameters.importStrategy` | `ON_ERROR_FAIL` (halt on first error) or `ON_ERROR_CONTINUE` |
-| `items` | Array of entity objects matching the DTO schema |
+### `object-definitions/<NN-name>.json`
 
-Common `className` values:
+A raw `ObjectDefinition`. Reference a picklist by **ERC**, via `listTypeDefinitionExternalReferenceCode` on the field:
 
-| Entity | `className` |
+```json
+{
+	"externalReferenceCode": "REGISTRATION",
+	"label": {
+		"en_US": "Registration"
+	},
+	"name": "Registration",
+	"objectFields": [
+		{
+			"businessType": "Picklist",
+			"label": {
+				"en_US": "Status"
+			},
+			"listTypeDefinitionExternalReferenceCode": "REGISTRATION_STATUS",
+			"name": "registrationStatus",
+			"required": true
+		}
+	],
+	"pluralLabel": {
+		"en_US": "Registrations"
+	},
+	"scope": "company",
+	"titleObjectFieldName": "attendeeName"
+}
+```
+
+Custom field names are validated against a reserved list. `name`, `email`, and `location` are fine; `status`, `id`, `creator`, `keywords`, and `userId` are rejected. A collision throws `ObjectFieldNameException$MustNotBeReserved`, which **aborts initialization and rolls back the entire site creation transaction**, leaving no site, no objects, and no picklists. See `skills/manage-objects/SKILL.md` for the full list.
+
+### `object-relationships/<name>.json`
+
+A raw `ObjectRelationship`. This handler resolves the parent by **numeric ID** (`getObjectDefinitionId1()`), so ERC fields alone do not work here — use `[$OBJECT_DEFINITION_ID:<Name>$]` tokens, keyed on the object definition `name`:
+
+```json
+{
+	"deletionType": "cascade",
+	"externalReferenceCode": "EVENT_REGISTRATIONS",
+	"label": {
+		"en_US": "Registrations"
+	},
+	"name": "eventRegistrations",
+	"objectDefinitionId1": "[$OBJECT_DEFINITION_ID:Event$]",
+	"objectDefinitionId2": "[$OBJECT_DEFINITION_ID:Registration$]",
+	"objectDefinitionName2": "Registration",
+	"type": "oneToMany"
+}
+```
+
+`deletionType` is `cascade`, `disassociate`, or `prevent`. Creating the relationship adds an `r_<relationshipName>_c_<parent>Id` field to the child object; set that field when creating a child entry over REST.
+
+Do **not** copy `"system": true` from portal internal initializers (seo-studio, ai-hub) — it makes the object or picklist nonmodifiable.
+
+## Token Substitution
+
+Every file the initializer reads is passed through token replacement before it is parsed as JSON. Delimiters are `[$` and `$]`. This is how a file references an entity whose numeric ID cannot be known at authoring time.
+
+Context tokens: `[$COMPANY_ID$]`, `[$GROUP_ID$]`, `[$GROUP_KEY$]`, `[$GROUP_FRIENDLY_URL$]`, `[$PORTAL_URL$]`.
+
+Entity tokens are keyed by the entity's name or ERC, and are registered by the handler that creates the entity — so they resolve only for entities created by an **earlier** handler in the order above:
+
+| Token | Resolves To |
 | --- | --- |
-| Picklist | `com.liferay.headless.admin.list.type.dto.v1_0.ListTypeDefinition` |
-| Object Definition | `com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition` |
-| Object Folder | `com.liferay.object.admin.rest.dto.v1_0.ObjectFolder` |
-| Role | `com.liferay.headless.admin.user.dto.v1_0.Role` |
-| User | `com.liferay.headless.admin.user.dto.v1_0.UserAccount` |
+| `[$OBJECT_DEFINITION_ID:<Name>$]` | Numeric object definition ID |
+| `[$OBJECT_DEFINITION_CLASS_NAME:<Name>$]` | Fully qualified class name |
+| `[$OBJECT_DEFINITION_PORTLET_ID:<Name>$]` | Portlet ID |
+| `[$LIST_TYPE_DEFINITION_ID:<Name>$]` | Numeric picklist ID |
+| `[$ROLE_ID:<Name>$]` | Numeric role ID |
+| `[$LAYOUT_ID:<friendly-url>$]` | Numeric layout ID |
+| `[$DDM_STRUCTURE_ID:<Name>$]`, `[$DDM_TEMPLATE_ID:<Name>$]` | Structure / template IDs |
+| `[$JOURNAL_ARTICLE_ID:<ERC>$]`, `[$BLOG_POSTING_ID:<ERC>$]` | Content IDs |
+| `[$DOCUMENT_FILE_ENTRY_ID:<name>$]`, `[$DOCUMENT_URL:<name>$]` | Document ID / URL |
+| `[$TAXONOMY_CATEGORY_ID:<Name>$]`, `[$TAXONOMY_VOCABULARY_ID:<Name>$]` | Taxonomy IDs |
+| `[$ASSET_LIST_ENTRY_ID:<Name>$]`, `[$SEGMENTS_ENTRY_ID:<Name>$]` | Collection / segment IDs |
+| `[$CLIENT_EXTENSION_ENTRY_ERC:<name>$]` | Client extension entry ERC |
+
+The authoritative list is `stringUtilReplaceValues` in `BundleSiteInitializer`; the delimiters are in `SiteInitializerUtil.replace`.
+
+## Verifying What the Initializer Actually Did
+
+The handler log lines are the fastest diagnosis — a step reporting `took 0 ms` found no files, which is how a wrong directory name presents:
+
+```bash
+grep -E 'Initializing|Invoking (addOrUpdateListTypeDefinitions|addObjectDefinitions|addOrUpdateObjectRelationships)' \
+	bundles/tomcat/logs/catalina.out | tail -20
+```
+
+`catalina.out` timestamps are UTC while a local shell is typically not, so a line that looks hours ahead may be the current run.
+
+A failed initialization rolls the site back, so "the site does not exist" and "the initializer threw" are the same symptom. Search for the cause with:
+
+```bash
+grep -E 'InitializationException|MustNotBeReserved|Unable to transform' \
+	bundles/tomcat/logs/catalina.out | head
+```
 
 ## `page.json` Format
 
