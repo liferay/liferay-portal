@@ -4,6 +4,7 @@
  */
 
 import {SidePanel} from '@clayui/core';
+import {SearchForm} from '@liferay/layout-js-components-web';
 import React, {useRef} from 'react';
 
 import '../../css/VersionHistory.scss';
@@ -11,10 +12,12 @@ import '../../css/VersionHistory.scss';
 export default function ResponsivePanel({
 	children,
 	onOpenChange,
+	onSearch,
 	open,
 }: {
 	children: React.ReactNode;
 	onOpenChange: (open: boolean) => void;
+	onSearch: (search: string) => void;
 	open: boolean;
 }) {
 	const wrapperRef = useRef<HTMLElement | null>(
@@ -31,15 +34,24 @@ export default function ResponsivePanel({
 			open={open}
 			position="fixed"
 		>
-			<SidePanel.Header
-				messages={{closeAriaLabel: Liferay.Language.get('close')}}
-			>
-				<SidePanel.Title>
-					{Liferay.Language.get('version-history')}
-				</SidePanel.Title>
-			</SidePanel.Header>
+			<div className="border-bottom pb-3">
+				<SidePanel.Header
+					className="pb-0 px-3"
+					messages={{closeAriaLabel: Liferay.Language.get('close')}}
+				>
+					<SidePanel.Title className="m-0">
+						{Liferay.Language.get('version-history')}
+					</SidePanel.Title>
+				</SidePanel.Header>
 
-			<SidePanel.Body>{children}</SidePanel.Body>
+				<SearchForm
+					className="mb-0 mt-4 px-3"
+					onChange={onSearch}
+					size="sm"
+				/>
+			</div>
+
+			<SidePanel.Body className="p-3">{children}</SidePanel.Body>
 		</SidePanel>
 	);
 }
