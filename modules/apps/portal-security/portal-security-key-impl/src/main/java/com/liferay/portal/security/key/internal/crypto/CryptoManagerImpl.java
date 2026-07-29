@@ -607,7 +607,7 @@ public class CryptoManagerImpl implements CryptoManager {
 			throw new CryptoException(
 				StringBundler.concat(
 					"The active key manager profile does not configure a ",
-					"crypto provider ID for role ", providerRole,
+					"crypto provider ID for provider role ", providerRole,
 					" and company ID ", companyId));
 		}
 

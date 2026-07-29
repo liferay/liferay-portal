@@ -160,7 +160,7 @@ public class CryptoManagerImplTest {
 	}
 
 	@Test
-	public void testEncryptThrows() {
+	public void testEncryptThrowsCryptoException() {
 		Mockito.when(
 			_keyManagerProfileRegistry.getActiveKeyManagerProfile()
 		).thenReturn(
