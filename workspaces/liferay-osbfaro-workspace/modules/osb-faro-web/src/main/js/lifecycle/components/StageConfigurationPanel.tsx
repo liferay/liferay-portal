@@ -288,7 +288,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				</div>
 
 				<div className="align-items-center c-gap-2 d-flex mb-4">
-					<Text weight="semi-bold">
+					<Text size={3} weight="semi-bold">
 						{Liferay.Language.get('account')}
 					</Text>
 

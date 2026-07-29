@@ -151,7 +151,7 @@ describe('buildStageFilter', () => {
 });
 
 describe('buildCreateLifecyclePayload', () => {
-	it('maps every stage with its order, type, and derived segment', () => {
+	it('maps every stage with its order, type, and derived rule', () => {
 		const payload = buildCreateLifecyclePayload({
 			channelId: '123',
 			groupId: '23',
@@ -164,8 +164,15 @@ describe('buildCreateLifecyclePayload', () => {
 		expect(payload.stages).toHaveLength(6);
 		expect(payload.stages[0].displayOrder).toBe(1);
 		expect(payload.stages[0].stageType).toBe('AWARE');
-		expect(payload.stages[0].segment).toHaveProperty('filter');
-		expect(payload.stages[0].segment).toHaveProperty('filterMetadata');
+		expect(payload.stages[0].accountLifecycleStageRule).toHaveProperty(
+			'filterString'
+		);
+		expect(payload.stages[0].accountLifecycleStageRule).toHaveProperty(
+			'filterMetadata'
+		);
+		expect(payload.stages[0].accountLifecycleStageRule.name).toBe(
+			'My Lifecycle Stage AWARE Criteria'
+		);
 	});
 
 	it('sends a null maxDuration when the stage limit is disabled', () => {
@@ -200,15 +207,15 @@ describe('buildUpdateLifecyclePayload', () => {
 });
 
 describe('stageConfigsFromLifecycle', () => {
-	it('rebuilds every stage config from the saved segment metadata', () => {
+	it('rebuilds every stage config from the saved rule metadata', () => {
 		const configs = stageConfigsFromLifecycle([
 			{
 				description: 'Saved description',
 				displayOrder: 1,
 				id: 'stage-1',
 				maxDuration: 30,
-				segment: {
-					filter: '(account.annualRevenue gt 1000)',
+				accountLifecycleStageRule: {
+					filterString: '(account.annualRevenue gt 1000)',
 					filterMetadata: JSON.stringify({
 						conditionValue: '1000',
 						field: 'account.annualRevenue',

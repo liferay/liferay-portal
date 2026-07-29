@@ -41,8 +41,8 @@ const buildStages = (): ILifecycleStage[] =>
 		displayOrder: index + 1,
 		id: `stage-${index}`,
 		maxDuration: 30,
-		segment: {
-			filter: '(account.annualRevenue gt 1000)',
+		accountLifecycleStageRule: {
+			filterString: '(account.annualRevenue gt 1000)',
 			filterMetadata: JSON.stringify({
 				conditionValue: '1000',
 				field: 'account.annualRevenue',

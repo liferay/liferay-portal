@@ -8,17 +8,18 @@ export interface ILifecycle {
 	segmentId?: string;
 }
 
-export interface ILifecycleStageSegment {
-	filter: string;
-	filterMetadata: string;
+export interface IAccountLifecycleStageRule {
+	filterMetadata: string | null;
+	filterString: string;
+	name?: string;
 }
 
 export interface ILifecycleStage {
+	accountLifecycleStageRule?: IAccountLifecycleStageRule;
 	description: string;
 	displayOrder: number;
 	id: string;
 	maxDuration: number | null;
-	segment?: ILifecycleStageSegment;
 	stageType: string;
 }
 
@@ -55,11 +56,11 @@ export async function fetchLifecycle({
 }
 
 interface ILifecycleStagePayload {
+	accountLifecycleStageRule: IAccountLifecycleStageRule;
 	description: string;
 	displayOrder: number;
 	id?: string;
 	maxDuration: number | null;
-	segment: ILifecycleStageSegment;
 	stageType: string;
 }
 

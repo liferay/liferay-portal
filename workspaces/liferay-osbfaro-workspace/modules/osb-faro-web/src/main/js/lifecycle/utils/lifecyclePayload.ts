@@ -11,17 +11,18 @@ import {
 	resolveOperatorType,
 } from 'lifecycle/utils/lifecycleOperators';
 
-export interface IStageSegmentPayload {
-	filter: string;
+export interface IStageRulePayload {
 	filterMetadata: string;
+	filterString: string;
+	name: string;
 }
 
 export interface IStagePayload {
+	accountLifecycleStageRule: IStageRulePayload;
 	description: string;
 	displayOrder: number;
 	id?: string;
 	maxDuration: number | null;
-	segment: IStageSegmentPayload;
 	stageType: string;
 }
 
@@ -118,17 +119,22 @@ export const buildStageFilterMetadata = (stage: IStageConfig): string =>
 		operator: stage.operator,
 	});
 
+export const buildStageRuleName = (lifecycleName: string, stageType: string) =>
+	`${lifecycleName} Stage ${stageType} Criteria`;
+
 const buildStagePayload = (
 	stage: IStageConfig,
-	index: number
+	index: number,
+	lifecycleName: string
 ): IStagePayload => ({
+	accountLifecycleStageRule: {
+		filterMetadata: buildStageFilterMetadata(stage),
+		filterString: buildStageFilter(stage),
+		name: buildStageRuleName(lifecycleName, LIFECYCLE_STAGE_ORDER[index]),
+	},
 	description: stage.description,
 	displayOrder: index + 1,
 	maxDuration: stage.maxTimeEnabled ? stage.maxTimeDays : null,
-	segment: {
-		filter: buildStageFilter(stage),
-		filterMetadata: buildStageFilterMetadata(stage),
-	},
 	stageType: LIFECYCLE_STAGE_ORDER[index],
 });
 
@@ -146,7 +152,9 @@ export const buildCreateLifecyclePayload = ({
 	channelId,
 	groupId,
 	name,
-	stages: stageConfigs.map(buildStagePayload),
+	stages: stageConfigs.map((stage, index) =>
+		buildStagePayload(stage, index, name)
+	),
 });
 
 export const buildUpdateLifecyclePayload = ({
@@ -164,7 +172,7 @@ export const buildUpdateLifecyclePayload = ({
 	lifecycleId,
 	name,
 	stages: stageConfigs.map((stage, index) => ({
-		...buildStagePayload(stage, index),
+		...buildStagePayload(stage, index, name),
 		...(stage.id ? {id: stage.id} : {}),
 	})),
 });
@@ -177,7 +185,9 @@ interface IStageFilterMetadata {
 	operator?: string | null;
 }
 
-const parseFilterMetadata = (filterMetadata?: string): IStageFilterMetadata => {
+const parseFilterMetadata = (
+	filterMetadata?: string | null
+): IStageFilterMetadata => {
 	if (!filterMetadata) {
 		return {};
 	}
@@ -202,7 +212,9 @@ export const stageConfigsFromLifecycle = (
 			return defaults[index];
 		}
 
-		const metadata = parseFilterMetadata(stage.segment?.filterMetadata);
+		const metadata = parseFilterMetadata(
+			stage.accountLifecycleStageRule?.filterMetadata
+		);
 
 		return {
 			conditionValue: metadata.conditionValue ?? null,
