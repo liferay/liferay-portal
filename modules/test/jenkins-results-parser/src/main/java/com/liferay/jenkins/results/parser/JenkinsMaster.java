@@ -405,6 +405,61 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return idleSlavesCount;
 	}
 
+	public JSONObject getInProgressBuildJSONObject(
+		String jobName, Map<String, String> buildParameters) {
+
+		try {
+			JSONObject jobJSONObject = JenkinsResultsParserUtil.toJSONObject(
+				JenkinsResultsParserUtil.combine(
+					getURL(), "/job/", jobName, "/api/json?",
+					"tree=builds[actions[parameters[name,value]],queueId,",
+					"result,url]"),
+				false, 5000);
+
+			JSONArray buildsJSONArray = jobJSONObject.optJSONArray("builds");
+
+			for (int i = 0; i < buildsJSONArray.length(); i++) {
+				JSONObject buildJSONObject = buildsJSONArray.optJSONObject(i);
+
+				if ((buildJSONObject == JSONObject.NULL) ||
+					!JenkinsResultsParserUtil.isNullOrEmpty(
+						buildJSONObject.optString("result"))) {
+
+					continue;
+				}
+
+				Map<String, String> parameters = _getParameters(
+					buildJSONObject);
+
+				boolean matchingBuildParameters = true;
+
+				for (Map.Entry<String, String> buildParameter :
+						buildParameters.entrySet()) {
+
+					String parameterValue = parameters.get(
+						buildParameter.getKey());
+
+					if (!Objects.equals(
+							buildParameter.getValue(), parameterValue)) {
+
+						matchingBuildParameters = false;
+
+						break;
+					}
+				}
+
+				if (matchingBuildParameters) {
+					return buildJSONObject;
+				}
+			}
+		}
+		catch (Exception exception) {
+			return null;
+		}
+
+		return null;
+	}
+
 	@Override
 	public JenkinsCohort getJenkinsCohort() {
 		if (_jenkinsCohort != null) {
@@ -514,6 +569,65 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		return onlineJenkinsSlavesCount;
+	}
+
+	public JSONObject getQueuedBuildJSONObject(
+		String jobName, Map<String, String> buildParameters) {
+
+		try {
+			JSONObject queueJSONObject = JenkinsResultsParserUtil.toJSONObject(
+				JenkinsResultsParserUtil.combine(
+					getURL(), "/queue/api/json?",
+					"tree=items[actions[parameters[name,value]],id,task[url]]"),
+				false, 5000);
+
+			JSONArray itemsJSONArray = queueJSONObject.optJSONArray("items");
+
+			for (int i = 0; i < itemsJSONArray.length(); i++) {
+				JSONObject itemJSONObject = itemsJSONArray.optJSONObject(i);
+
+				if (itemJSONObject == JSONObject.NULL) {
+					continue;
+				}
+
+				JSONObject taskJSONObject = itemJSONObject.optJSONObject(
+					"task");
+
+				String taskURL = taskJSONObject.optString("url", "");
+
+				if (!taskURL.contains("/" + jobName + "/")) {
+					continue;
+				}
+
+				Map<String, String> parameters = _getParameters(itemJSONObject);
+
+				boolean matchingBuildParameters = true;
+
+				for (Map.Entry<String, String> buildParameter :
+						buildParameters.entrySet()) {
+
+					String parameterValue = parameters.get(
+						buildParameter.getKey());
+
+					if (!Objects.equals(
+							buildParameter.getValue(), parameterValue)) {
+
+						matchingBuildParameters = false;
+
+						break;
+					}
+				}
+
+				if (matchingBuildParameters) {
+					return itemJSONObject;
+				}
+			}
+		}
+		catch (Exception exception) {
+			return null;
+		}
+
+		return null;
 	}
 
 	public Map<String, JSONObject> getQueuedBuildURLs() {
@@ -766,52 +880,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	public boolean isBuildInProgress(
 		String jobName, Map<String, String> buildParameters) {
 
-		try {
-			JSONObject jobJSONObject = JenkinsResultsParserUtil.toJSONObject(
-				JenkinsResultsParserUtil.combine(
-					getURL(), "/job/", jobName, "/api/json?",
-					"tree=builds[actions[parameters[name,value]],result,url]"),
-				false, 5000);
-
-			JSONArray buildsJSONArray = jobJSONObject.optJSONArray("builds");
-
-			for (int i = 0; i < buildsJSONArray.length(); i++) {
-				JSONObject buildJSONObject = buildsJSONArray.optJSONObject(i);
-
-				if ((buildJSONObject == JSONObject.NULL) ||
-					!JenkinsResultsParserUtil.isNullOrEmpty(
-						buildJSONObject.optString("result"))) {
-
-					continue;
-				}
-
-				Map<String, String> parameters = _getParameters(
-					buildJSONObject);
-
-				boolean matchingBuildParameters = true;
-
-				for (Map.Entry<String, String> buildParameter :
-						buildParameters.entrySet()) {
-
-					String parameterValue = parameters.get(
-						buildParameter.getKey());
-
-					if (!Objects.equals(
-							buildParameter.getValue(), parameterValue)) {
-
-						matchingBuildParameters = false;
-
-						break;
-					}
-				}
-
-				if (matchingBuildParameters) {
-					return true;
-				}
-			}
-		}
-		catch (Exception exception) {
-			return false;
+		if (getInProgressBuildJSONObject(jobName, buildParameters) != null) {
+			return true;
 		}
 
 		return false;
@@ -820,57 +890,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	public boolean isBuildQueued(
 		String jobName, Map<String, String> buildParameters) {
 
-		try {
-			JSONObject queueJSONObject = JenkinsResultsParserUtil.toJSONObject(
-				JenkinsResultsParserUtil.combine(
-					getURL(), "/queue/api/json?",
-					"tree=items[actions[parameters[name,value]],task[url]]"),
-				false, 5000);
-
-			JSONArray itemsJSONArray = queueJSONObject.optJSONArray("items");
-
-			for (int i = 0; i < itemsJSONArray.length(); i++) {
-				JSONObject itemJSONObject = itemsJSONArray.optJSONObject(i);
-
-				if (itemJSONObject == JSONObject.NULL) {
-					continue;
-				}
-
-				JSONObject taskJSONObject = itemJSONObject.optJSONObject(
-					"task");
-
-				String taskURL = taskJSONObject.optString("url", "");
-
-				if (!taskURL.contains("/" + jobName + "/")) {
-					continue;
-				}
-
-				Map<String, String> parameters = _getParameters(itemJSONObject);
-
-				boolean matchingBuildParameters = true;
-
-				for (Map.Entry<String, String> buildParameter :
-						buildParameters.entrySet()) {
-
-					String parameterValue = parameters.get(
-						buildParameter.getKey());
-
-					if (!Objects.equals(
-							buildParameter.getValue(), parameterValue)) {
-
-						matchingBuildParameters = false;
-
-						break;
-					}
-				}
-
-				if (matchingBuildParameters) {
-					return true;
-				}
-			}
-		}
-		catch (Exception exception) {
-			return false;
+		if (getQueuedBuildJSONObject(jobName, buildParameters) != null) {
+			return true;
 		}
 
 		return false;
