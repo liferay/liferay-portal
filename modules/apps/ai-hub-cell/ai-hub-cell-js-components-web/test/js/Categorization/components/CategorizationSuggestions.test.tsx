@@ -20,57 +20,72 @@ const baseProps = {
 };
 
 describe('CategorizationSuggestions', () => {
-	it('renders nothing when idle', () => {
-		const {container} = render(
-			<CategorizationSuggestions
-				{...baseProps}
-				kind="categories"
-				status="idle"
-			/>
-		);
-
-		expect(container).toBeEmptyDOMElement();
-	});
-
-	it('shows the categories loading text', () => {
+	it('disables the actions once committed', () => {
 		render(
 			<CategorizationSuggestions
 				{...baseProps}
+				committed
 				kind="categories"
-				status="loading"
+				status="ready"
+				suggestions={[{id: 1, name: 'International'}]}
 			/>
 		);
 
 		expect(
-			screen.getByText('searching-for-categories')
-		).toBeInTheDocument();
+			screen.getByRole('button', {name: 'add-categories'})
+		).toBeDisabled();
+		expect(screen.getByRole('button', {name: 'try-again'})).toBeDisabled();
 	});
 
-	it('shows the tags loading text', () => {
+	it('fires dismiss when a label close button is clicked', () => {
+		const onDismiss = jest.fn();
+		const suggestion = {isNew: false, name: 'Japan'};
+
 		render(
 			<CategorizationSuggestions
 				{...baseProps}
 				kind="tags"
-				status="loading"
+				onDismiss={onDismiss}
+				status="ready"
+				suggestions={[suggestion]}
 			/>
 		);
 
-		expect(screen.getByText('generating-tags')).toBeInTheDocument();
+		fireEvent.click(screen.getByRole('button', {name: 'remove'}));
+
+		expect(onDismiss).toHaveBeenCalledWith(suggestion);
 	});
 
-	it('shows the no-match text when empty', () => {
+	it('fires try again', () => {
+		const onRegenerate = jest.fn();
+
 		render(
 			<CategorizationSuggestions
 				{...baseProps}
-				kind="categories"
-				status="empty"
+				kind="tags"
+				onRegenerate={onRegenerate}
+				status="ready"
+				suggestions={[{isNew: false, name: 'Japan'}]}
+			/>
+		);
+
+		fireEvent.click(screen.getByRole('button', {name: 'try-again'}));
+
+		expect(onRegenerate).toHaveBeenCalled();
+	});
+
+	it('flags new tags with the new class', () => {
+		const {container} = render(
+			<CategorizationSuggestions
+				{...baseProps}
+				kind="tags"
+				status="ready"
+				suggestions={[{isNew: true, name: 'Culture'}]}
 			/>
 		);
 
 		expect(
-			screen.getByText(
-				'i-have-not-found-any-matching-categories-what-would-you-like-to-do'
-			)
+			container.querySelector('.categorization-suggestion-label--new')
 		).toBeInTheDocument();
 	});
 
@@ -99,72 +114,57 @@ describe('CategorizationSuggestions', () => {
 		expect(onCommit).toHaveBeenCalledWith(suggestions);
 	});
 
-	it('fires regenerate', () => {
-		const onRegenerate = jest.fn();
-
-		render(
-			<CategorizationSuggestions
-				{...baseProps}
-				kind="tags"
-				onRegenerate={onRegenerate}
-				status="ready"
-				suggestions={[{isNew: false, name: 'Japan'}]}
-			/>
-		);
-
-		fireEvent.click(screen.getByRole('button', {name: 'try-again'}));
-
-		expect(onRegenerate).toHaveBeenCalled();
-	});
-
-	it('fires dismiss when a label close button is clicked', () => {
-		const onDismiss = jest.fn();
-		const suggestion = {isNew: false, name: 'Japan'};
-
-		render(
-			<CategorizationSuggestions
-				{...baseProps}
-				kind="tags"
-				onDismiss={onDismiss}
-				status="ready"
-				suggestions={[suggestion]}
-			/>
-		);
-
-		fireEvent.click(screen.getByRole('button', {name: 'remove'}));
-
-		expect(onDismiss).toHaveBeenCalledWith(suggestion);
-	});
-
-	it('flags new tags with the new class', () => {
+	it('renders nothing when idle', () => {
 		const {container} = render(
 			<CategorizationSuggestions
 				{...baseProps}
-				kind="tags"
-				status="ready"
-				suggestions={[{isNew: true, name: 'Culture'}]}
+				kind="categories"
+				status="idle"
 			/>
 		);
 
-		expect(
-			container.querySelector('.categorization-suggestion-label--new')
-		).toBeInTheDocument();
+		expect(container).toBeEmptyDOMElement();
 	});
 
-	it('disables the actions once committed', () => {
+	it('shows the categories loading text', () => {
 		render(
 			<CategorizationSuggestions
 				{...baseProps}
-				committed
 				kind="categories"
-				status="ready"
-				suggestions={[{id: 1, name: 'International'}]}
+				status="loading"
 			/>
 		);
 
 		expect(
-			screen.getByRole('button', {name: 'add-categories'})
-		).toBeDisabled();
-		expect(screen.getByRole('button', {name: 'try-again'})).toBeDisabled();
+			screen.getByText('searching-for-categories')
+		).toBeInTheDocument();
+	});
+
+	it('shows the no-match text when empty', () => {
+		render(
+			<CategorizationSuggestions
+				{...baseProps}
+				kind="categories"
+				status="empty"
+			/>
+		);
+
+		expect(
+			screen.getByText(
+				'i-have-not-found-any-matching-categories-what-would-you-like-to-do'
+			)
+		).toBeInTheDocument();
+	});
+
+	it('shows the tags loading text', () => {
+		render(
+			<CategorizationSuggestions
+				{...baseProps}
+				kind="tags"
+				status="loading"
+			/>
+		);
+
+		expect(screen.getByText('generating-tags')).toBeInTheDocument();
 	});
 });
