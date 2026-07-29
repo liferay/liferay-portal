@@ -5,6 +5,13 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.util.Arrays;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -15,6 +22,98 @@ import org.mockito.verification.VerificationMode;
  */
 public class BasePortalControllerBuildRunnerTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@After
+	@Override
+	public void tearDown() {
+		super.tearDown();
+
+		JenkinsMasterTestUtil.resetCaches();
+	}
+
+	@Test
+	public void testExpirePreviousBuild() throws Exception {
+		JenkinsMasterTestUtil.getJenkinsMaster("test-1-48", "http://test-1-48");
+
+		String controllerBuildURL =
+			"https://test-1-0-aws.liferay.com/job/test-portal-testsuite-" +
+				"upstream-controller(master_content-management)/339/";
+		String invocationJobName = "test-portal-testsuite-upstream(master)";
+
+		UrlReader urlReader = mockUrlReader();
+
+		setUrlReaderOutput(
+			new JSONObject(
+			).put(
+				"items",
+				new JSONArray(
+				).put(
+					new JSONObject(
+					).put(
+						"actions",
+						new JSONArray(
+						).put(
+							new JSONObject(
+							).put(
+								"_class", "hudson.model.ParametersAction"
+							).put(
+								"parameters",
+								new JSONArray(
+								).put(
+									new JSONObject(
+									).put(
+										"name", "CONTROLLER_BUILD_URL"
+									).put(
+										"value", controllerBuildURL
+									)
+								)
+							)
+						)
+					).put(
+						"task",
+						new JSONObject(
+						).put(
+							"url",
+							"http://test-1-48/job/" + invocationJobName + "/"
+						)
+					)
+				)
+			).toString(),
+			"queue/api/json", urlReader);
+
+		BasePortalControllerBuildRunner<?> basePortalControllerBuildRunner =
+			Mockito.mock(BasePortalControllerBuildRunner.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePortalControllerBuildRunner
+		).expirePreviousBuild();
+
+		Mockito.doReturn(
+			Arrays.asList(
+				new JSONObject(
+				).put(
+					"description",
+					"<a href=\"https://test-1-48.liferay.com/job/" +
+						invocationJobName + "\"><strong>IN QUEUE</strong></a>"
+				).put(
+					"url", controllerBuildURL
+				))
+		).when(
+			basePortalControllerBuildRunner
+		).getPreviousBuildJSONObjects();
+
+		Assert.assertFalse(
+			basePortalControllerBuildRunner.expirePreviousBuild());
+
+		Mockito.verify(
+			urlReader
+		).doRead(
+			Mockito.anyBoolean(), Mockito.any(), Mockito.any(),
+			Mockito.anyInt(), Mockito.any(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.contains("queue/api/json")
+		);
+	}
 
 	@Test
 	public void testRun() {

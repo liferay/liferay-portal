@@ -412,8 +412,8 @@ public abstract class BasePortalControllerBuildRunner
 		1000 * 60 * 60 * 24;
 
 	private static final Pattern _buildURLPattern = Pattern.compile(
-		"https://(?<masterHostname>test-\\d+-\\d+)\\.liferay\\.com/job/" +
-			"(?<jobName>[^/]+)/(?<buildNumber>\\d+)/?");
+		"https://(?<masterHostname>test-\\d+-\\d+)(-aws)?\\.liferay\\.com/" +
+			"job/(?<jobName>[^/]+)/(?<buildNumber>\\d+)/?");
 	private static final Pattern _jobURLPattern = Pattern.compile(
 		"https://(?<masterHostname>test-\\d+-\\d+)\\.liferay\\.com/job/" +
 			"(?<jobName>[^/\"]+)/?");
