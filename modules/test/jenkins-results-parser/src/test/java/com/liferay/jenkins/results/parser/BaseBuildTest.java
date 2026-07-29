@@ -42,11 +42,12 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 		BaseBuild baseBuild = Mockito.mock(BaseBuild.class);
 
 		Build.Invocation firstInvocation = new Build.Invocation(baseBuild);
-		Build.Invocation lastInvocation = new Build.Invocation(baseBuild);
 
 		String firstBuildURL = "https://test-1-1.liferay.com/job/test/1";
 
 		firstInvocation.setBuildURL(firstBuildURL);
+
+		Build.Invocation lastInvocation = new Build.Invocation(baseBuild);
 
 		lastInvocation.setBuildURL("https://test-1-1.liferay.com/job/test/3");
 
