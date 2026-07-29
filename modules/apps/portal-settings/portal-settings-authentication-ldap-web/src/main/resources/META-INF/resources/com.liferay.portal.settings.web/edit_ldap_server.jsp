@@ -17,7 +17,17 @@ long ldapServerId = ParamUtil.getLong(request, "ldapServerId");
 LDAPServerConfiguration ldapServerConfiguration = ldapServerConfigurationProvider.getConfiguration(ActionUtil.getCompanyId(request), ldapServerId);
 
 String ldapServerName = ldapServerConfiguration.serverName();
+
 String ldapBaseProviderUrl = ldapServerConfiguration.baseProviderURL();
+
+if (PropsValues.FIPS_ENABLED) {
+	ldapBaseProviderUrl = StringUtil.replace(ldapBaseProviderUrl, "ldap://", "ldaps://");
+
+	if (ldapServerId == 0) {
+		ldapBaseProviderUrl = ldapBaseProviderUrl.replaceFirst(":[0-9]+(/|$)", ":636$1");
+	}
+}
+
 String ldapBaseDN = ldapServerConfiguration.baseDN();
 String ldapSecurityPrincipal = ldapServerConfiguration.securityPrincipal();
 
@@ -480,6 +490,17 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 			userMappingPassword = 'userPassword';
 			userMappingScreenName = 'cn';
 		}
+
+		<%
+		if (PropsValues.FIPS_ENABLED) {
+		%>
+
+			baseProviderURL = baseProviderURL.replace('ldap://', 'ldaps://');
+			baseProviderURL = baseProviderURL.replace(/:\d+(\/|$)/, ':636$1');
+
+		<%
+		}
+		%>
 
 		Liferay.Util.setFormValues(document.<portlet:namespace />fm, {
 			'ldap--<%= LDAPConstants.BASE_PROVIDER_URL %>--': baseProviderURL,
