@@ -9,6 +9,7 @@ import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
+import com.liferay.dynamic.data.mapping.info.item.provider.DDMStructureInfoItemFormVariationsProvider;
 import com.liferay.info.item.InfoItemFormVariation;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.info.localized.InfoLocalizedValue;
@@ -33,7 +34,20 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = InfoItemFormVariationsProvider.class)
 public class FileEntryInfoItemFormVariationsProvider
-	implements InfoItemFormVariationsProvider<FileEntry> {
+	implements DDMStructureInfoItemFormVariationsProvider<FileEntry> {
+
+	@Override
+	public long getDDMStructureId(String formVariationKey) {
+		DLFileEntryType dlFileEntryType =
+			_dlFileEntryTypeLocalService.fetchDLFileEntryType(
+				GetterUtil.getLong(formVariationKey, -1));
+
+		if (dlFileEntryType == null) {
+			return 0;
+		}
+
+		return dlFileEntryType.getDataDefinitionId();
+	}
 
 	@Override
 	public InfoItemFormVariation getInfoItemFormVariation(
