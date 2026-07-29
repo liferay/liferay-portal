@@ -6,6 +6,7 @@
 package com.liferay.portal.settings.authentication.ldap.web.internal.portlet.action;
 
 import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseFormMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.ldap.LDAPConfigurationModelListenerException;
 import com.liferay.portal.security.ldap.authenticator.configuration.LDAPAuthConfiguration;
 import com.liferay.portal.security.ldap.configuration.ConfigurationProvider;
 import com.liferay.portal.security.ldap.configuration.LDAPServerConfiguration;
@@ -70,24 +72,39 @@ public class LDAPFormMVCActionCommand extends BaseFormMVCActionCommand {
 
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
-		if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_AUTH)) {
-			_updateLDAPAuthConfigurationProvider(
-				actionRequest, _ldapAuthConfigurationProvider, companyId);
+		try {
+			if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_AUTH)) {
+				_updateLDAPAuthConfigurationProvider(
+					actionRequest, _ldapAuthConfigurationProvider, companyId);
+			}
+			else if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_EXPORT)) {
+				_updateLDAPExportConfigurationProvider(
+					actionRequest, _ldapExportConfigurationProvider, companyId);
+			}
+			else if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_IMPORT)) {
+				_updateLDAPImportConfigurationProvider(
+					actionRequest, _ldapImportConfigurationProvider, companyId);
+			}
+			else if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_SERVER)) {
+				_sortLdapServerConfigurations(
+					companyId,
+					ParamUtil.getString(
+						actionRequest,
+						"ldap--" + LDAPConstants.AUTH_SERVER_PRIORITY + "--"));
+			}
 		}
-		else if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_EXPORT)) {
-			_updateLDAPExportConfigurationProvider(
-				actionRequest, _ldapExportConfigurationProvider, companyId);
-		}
-		else if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_IMPORT)) {
-			_updateLDAPImportConfigurationProvider(
-				actionRequest, _ldapImportConfigurationProvider, companyId);
-		}
-		else if (cmd.equals(LDAPSettingsConstants.CMD_UPDATE_SERVER)) {
-			_sortLdapServerConfigurations(
-				companyId,
-				ParamUtil.getString(
-					actionRequest,
-					"ldap--" + LDAPConstants.AUTH_SERVER_PRIORITY + "--"));
+		catch (SystemException systemException) {
+			Throwable throwable = systemException.getCause();
+
+			if (!(throwable instanceof
+					LDAPConfigurationModelListenerException)) {
+
+				throw systemException;
+			}
+
+			SessionErrors.add(
+				actionRequest, LDAPConfigurationModelListenerException.class,
+				throwable);
 		}
 	}
 

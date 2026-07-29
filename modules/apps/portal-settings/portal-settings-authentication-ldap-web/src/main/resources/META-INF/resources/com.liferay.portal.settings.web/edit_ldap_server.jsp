@@ -136,6 +136,16 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 
 <aui:form action="<%= editLDAPServerURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveEntry(false);" %>'>
 	<liferay-ui:error exception="<%= DuplicateLDAPServerNameException.class %>" message="please-enter-a-unique-ldap-server-name" />
+
+	<liferay-ui:error exception="<%= LDAPConfigurationModelListenerException.class %>">
+
+		<%
+		LDAPConfigurationModelListenerException ldapConfigurationModelListenerException = (LDAPConfigurationModelListenerException)errorException;
+		%>
+
+		<liferay-ui:message arguments="<%= ldapConfigurationModelListenerException.getMessageArguments() %>" key="<%= ldapConfigurationModelListenerException.getMessageKey() %>" translateArguments="<%= false %>" />
+	</liferay-ui:error>
+
 	<liferay-ui:error exception="<%= LDAPFilterException.class %>" message="please-enter-a-valid-ldap-search-filter" />
 	<liferay-ui:error exception="<%= LDAPServerNameException.class %>" message="please-enter-a-valid-ldap-server-name" />
 

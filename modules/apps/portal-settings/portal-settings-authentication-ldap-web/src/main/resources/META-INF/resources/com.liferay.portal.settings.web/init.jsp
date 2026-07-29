@@ -32,6 +32,7 @@ page import="com.liferay.portal.kernel.util.PropsValues" %><%@
 page import="com.liferay.portal.kernel.util.StringUtil" %><%@
 page import="com.liferay.portal.kernel.util.Validator" %><%@
 page import="com.liferay.portal.security.ldap.DuplicateLDAPServerNameException" %><%@
+page import="com.liferay.portal.security.ldap.LDAPConfigurationModelListenerException" %><%@
 page import="com.liferay.portal.security.ldap.LDAPServerNameException" %><%@
 page import="com.liferay.portal.security.ldap.SafeLdapContext" %><%@
 page import="com.liferay.portal.security.ldap.SafeLdapFilter" %><%@

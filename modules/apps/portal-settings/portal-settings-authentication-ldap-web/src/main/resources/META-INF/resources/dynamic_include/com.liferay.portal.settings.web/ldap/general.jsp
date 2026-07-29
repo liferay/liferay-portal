@@ -18,6 +18,15 @@ LDAPAuthConfiguration ldapAuthConfiguration = ldapAuthConfigurationProvider.getC
 
 	<liferay-ui:error key="ldapExportAndImportOnPasswordAutogeneration" message="ldap-export-must-not-be-enabled-when-autogeneration-of-user-passwords-is-enabled-for-ldap-import" />
 
+	<liferay-ui:error exception="<%= LDAPConfigurationModelListenerException.class %>">
+
+		<%
+		LDAPConfigurationModelListenerException ldapConfigurationModelListenerException = (LDAPConfigurationModelListenerException)errorException;
+		%>
+
+		<liferay-ui:message arguments="<%= ldapConfigurationModelListenerException.getMessageArguments() %>" key="<%= ldapConfigurationModelListenerException.getMessageKey() %>" translateArguments="<%= false %>" />
+	</liferay-ui:error>
+
 	<aui:input label="enabled" name='<%= "ldap--" + LDAPConstants.AUTH_ENABLED + "--" %>' type="checkbox" value="<%= ldapAuthConfiguration.enabled() %>" />
 
 	<aui:input label="required" name='<%= "ldap--" + LDAPConstants.AUTH_REQUIRED + "--" %>' type="checkbox" value="<%= ldapAuthConfiguration.required() %>" />
