@@ -17,8 +17,6 @@ String titleMapAsXML = (String)request.getAttribute(CPAssetCategoriesWebKeys.TIT
 String urlTitle = (String)request.getAttribute(CPAssetCategoriesWebKeys.URL_TITLE);
 long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
 
-String friendlyURLHelpMessage = LanguageUtil.format(request, "this-text-is-shared-between-sites-and-commerce.-only-the-prefix-changes-x-for-sites-and-x-for-commerce", new String[] {HtmlUtil.escape(siteFriendlyURLSeparator), HtmlUtil.escape(commerceFriendlyURLSeparator)}, false);
-
 long parentCategoryId = BeanParamUtil.getLong(category, request, "parentCategoryId");
 
 PortletURL categoryRedirectURL = PortletURLBuilder.createRenderURL(
@@ -53,6 +51,11 @@ renderResponse.setTitle(category.getTitle(locale));
 
 	<liferay-frontend:edit-form-body>
 		<liferay-frontend:fieldset>
+
+			<%
+			String friendlyURLHelpMessage = LanguageUtil.format(request, "this-text-is-shared-between-sites-and-commerce.-only-the-prefix-changes-x-for-sites-and-x-for-commerce", new String[] {HtmlUtil.escape(siteFriendlyURLSeparator), HtmlUtil.escape(commerceFriendlyURLSeparator)}, false);
+			%>
+
 			<label for="<portlet:namespace />urlTitleMapAsXML"><liferay-ui:message key="friendly-url" /><span aria-label="<%= friendlyURLHelpMessage %>" class="c-ml-1 lfr-portal-tooltip" tabindex="0" title="<%= friendlyURLHelpMessage %>"><clay:icon symbol="question-circle-full" /></span></label>
 
 			<div class="c-mb-2 text-3 text-secondary">
