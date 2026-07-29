@@ -44,9 +44,6 @@ public class LayoutClassedModelUsagesDisplayContextTest {
 
 	@Test
 	public void testGetUsagesData() {
-		String className = RandomTestUtil.randomString();
-		long classPK = RandomTestUtil.randomLong();
-
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
 
@@ -78,6 +75,9 @@ public class LayoutClassedModelUsagesDisplayContextTest {
 			portalURL
 		);
 
+		String className = RandomTestUtil.randomString();
+		long classPK = RandomTestUtil.randomLong();
+
 		LayoutClassedModelUsagesDisplayContext
 			layoutClassedModelUsagesDisplayContext =
 				new LayoutClassedModelUsagesDisplayContext(
@@ -90,8 +90,8 @@ public class LayoutClassedModelUsagesDisplayContextTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				portalURL, pathMain,
-				"/portal/get_layout_classed_model_usages?className=", className,
-				"&classPK=", classPK, "&p_l_id=", plid),
+				"/portal/get_layout_classed_model_usages?p_l_id=", plid,
+				"&className=", className, "&classPK=", classPK),
 			usagesData.get("getUsagesURL"));
 	}
 

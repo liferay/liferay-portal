@@ -407,12 +407,13 @@ public class LayoutClassedModelUsagesDisplayContext {
 			PortalUtil.getPortalURL(
 				PortalUtil.getHttpServletRequest(_renderRequest)));
 		sb.append(_themeDisplay.getPathMain());
-		sb.append("/portal/get_layout_classed_model_usages?className=");
+		sb.append("/portal/get_layout_classed_model_usages?p_l_id=");
+		sb.append(_themeDisplay.getPlid());
+		sb.append("&className=");
 		sb.append(className);
 		sb.append("&classPK=");
 		sb.append(String.valueOf(classPK));
 		sb.append("&p_l_id=");
-		sb.append(_themeDisplay.getPlid());
 
 		return sb.toString();
 	}
