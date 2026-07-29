@@ -16,7 +16,7 @@ import {
 	FunctionalOperators,
 	RelationalOperators,
 } from '../utils/constants';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {
 	AttributeConjunctionChangeParams,
 	Criterion,
@@ -62,6 +62,7 @@ interface IBehaviorInputProps extends ISegmentEditorCustomInputBase {
 	channelId: string;
 	close: Modal.close;
 	open: Modal.open;
+	segmentCategory: SegmentCategories;
 	segmentType: SegmentTypes;
 	touched: Touched;
 	valid: Valid;
@@ -430,6 +431,7 @@ export class BehaviorInput extends React.Component<
 			groupId = '',
 			operatorRenderer: OperatorDropdown,
 			property,
+			segmentCategory,
 			segmentType,
 			touched,
 			valid,
@@ -453,6 +455,8 @@ export class BehaviorInput extends React.Component<
 
 		const eventId = this.getEventId();
 
+		const isAccountSegment = segmentCategory === SegmentCategories.Account;
+
 		return (
 			<div className="criteria-statement">
 				<Form.Group autoFit className="page-asset-criteria">
@@ -461,6 +465,12 @@ export class BehaviorInput extends React.Component<
 					</Form.GroupItem>
 
 					<OperatorDropdown />
+
+					{isAccountSegment && (
+						<Form.GroupItem className="entity-name" label shrink>
+							{Liferay.Language.get('individual-who')}
+						</Form.GroupItem>
+					)}
 
 					<Form.GroupItem className="entity-name" label shrink>
 						{Liferay.Language.get('triggered').toLowerCase()}

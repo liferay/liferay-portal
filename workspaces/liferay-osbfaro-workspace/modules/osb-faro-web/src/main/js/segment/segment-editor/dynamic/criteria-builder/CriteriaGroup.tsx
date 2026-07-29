@@ -35,7 +35,7 @@ import {
 	replaceWithMultipleAtIndex,
 } from 'shared/util/array';
 import {isArray} from 'lodash';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 
 /**
  * Passes the required values to the drop target.
@@ -92,6 +92,7 @@ interface ICriteriaGroupProps {
 	onMove: OnMove;
 	parentGroupId?: string;
 	root?: boolean;
+	segmentCategory: SegmentCategories;
 	segmentType: SegmentTypes;
 	sequential: boolean;
 	stepNumber?: number;
@@ -273,6 +274,7 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 			id,
 			onMove,
 			root,
+			segmentCategory,
 			segmentType,
 			sequential,
 		} = this.props;
@@ -304,6 +306,7 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 						onChange={this.handleCriterionChange(index)}
 						onMove={onMove}
 						parentGroupId={criteriaGroupId}
+						segmentCategory={segmentCategory}
 						segmentType={segmentType}
 						sequential={sequential}
 						stepNumber={stepNumber}
@@ -321,6 +324,7 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 						onChange={this.handleCriterionChange(index)}
 						onDelete={this.handleCriterionDelete}
 						onMove={onMove}
+						segmentCategory={segmentCategory}
 						segmentType={segmentType}
 						sequential={sequential}
 						stepNumber={stepNumber}

@@ -4,7 +4,7 @@ import React from 'react';
 import {Criteria, Criterion, CriterionGroup} from '../utils/types';
 import {insertAtIndex, removeAtIndex, replaceAtIndex} from 'shared/util/array';
 import {isCriterionGroup} from '../utils/utils';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {wrapInCriteriaGroup} from '../utils/odata';
 
 interface ICriteriaBuilderProps {
@@ -13,6 +13,7 @@ interface ICriteriaBuilderProps {
 	groupId: string;
 	id?: string;
 	onChange: (items: Criteria) => void;
+	segmentCategory: SegmentCategories;
 	segmentType: SegmentTypes;
 	sequential: boolean;
 }
@@ -178,8 +179,15 @@ class CriteriaBuilder extends React.Component<ICriteriaBuilderProps> {
 	}
 
 	render() {
-		const {channelId, criteria, groupId, id, segmentType, sequential} =
-			this.props;
+		const {
+			channelId,
+			criteria,
+			groupId,
+			id,
+			segmentCategory,
+			segmentType,
+			sequential,
+		} = this.props;
 
 		const showClearAll = (criteria?.items?.length ?? 0) > 1;
 
@@ -197,6 +205,7 @@ class CriteriaBuilder extends React.Component<ICriteriaBuilderProps> {
 							.handleCriterionMove as import('../utils/types').OnMove
 					}
 					root
+					segmentCategory={segmentCategory}
 					segmentType={segmentType}
 					sequential={sequential}
 				/>

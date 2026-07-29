@@ -14,10 +14,10 @@ import {
 	SegmentTypes,
 } from 'shared/util/constants';
 import {
+	createWebBehaviors,
 	INDIVIDUAL_PROPERTIES,
 	ORGANIZATION_PROPERTIES,
 	SESSION_PROPERTIES,
-	WEB_BEHAVIORS,
 } from '../utils/properties';
 import {List} from 'immutable';
 import {PropertyGroup, PropertySubgroup} from 'shared/util/records';
@@ -63,7 +63,13 @@ const fetchPropertyGroups = ({
 			groupId,
 			ownerType: FieldOwnerTypes.Organization,
 		}),
-		Promise.resolve(WEB_BEHAVIORS),
+		Promise.resolve(
+			createWebBehaviors(
+				segmentCategory === SegmentCategories.Account
+					? Liferay.Language.get('account')
+					: Liferay.Language.get('individual')
+			)
+		),
 		type === SegmentTypes.Batch &&
 		segmentCategory !== SegmentCategories.Account
 			? API.interests.searchKeywords({
@@ -92,9 +98,10 @@ const mapResultToProps = (
 		type,
 	}: {segmentCategory: SegmentCategories; type: SegmentTypes}
 ) => {
+	const isAccountSegment = segmentCategory === SegmentCategories.Account;
+
 	const individualCriteriaEnabled =
-		type === SegmentTypes.Batch &&
-		segmentCategory !== SegmentCategories.Account;
+		type === SegmentTypes.Batch && !isAccountSegment;
 
 	const individualDemographicProperties =
 		individualDemographicsMappings.items.map(
