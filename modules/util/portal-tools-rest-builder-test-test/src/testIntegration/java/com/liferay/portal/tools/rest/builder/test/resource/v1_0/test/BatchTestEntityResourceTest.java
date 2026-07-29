@@ -9,11 +9,15 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -41,6 +45,74 @@ import org.springframework.mock.web.MockHttpServletResponse;
 @RunWith(Arquillian.class)
 public class BatchTestEntityResourceTest
 	extends BaseBatchTestEntityResourceTestCase {
+
+	@Override
+	@Test
+	public void testGetBatchTestEntity() throws Exception {
+		super.testGetBatchTestEntity();
+
+		BatchTestEntity postBatchTestEntity =
+			batchTestEntityResource.postBatchTestEntity(
+				randomBatchTestEntity());
+
+		BatchTestEntity batchTestEntity =
+			batchTestEntityResource.getBatchTestEntity(
+				postBatchTestEntity.getId());
+
+		Assert.assertNull(batchTestEntity.getEmbeddedNestedField());
+
+		JSONObject batchTestEntityJSONObject = _getBatchTestEntityJSONObject(
+			postBatchTestEntity.getId(), "nestedFields=embeddedNestedField");
+
+		Assert.assertEquals(
+			postBatchTestEntity.getName(),
+			JSONUtil.getValueAsString(
+				batchTestEntityJSONObject, "JSONObject/embeddedNestedField",
+				"Object/name"));
+		Assert.assertNull(
+			JSONUtil.getValue(
+				batchTestEntityJSONObject, "JSONObject/embeddedNestedField",
+				"Object/nestedField2"));
+
+		batchTestEntityJSONObject = _getBatchTestEntityJSONObject(
+			postBatchTestEntity.getId(),
+			"nestedFields=embeddedNestedField.nestedField2");
+
+		Assert.assertNull(
+			JSONUtil.getValue(
+				batchTestEntityJSONObject, "JSONObject/embeddedNestedField"));
+
+		batchTestEntityJSONObject = _getBatchTestEntityJSONObject(
+			postBatchTestEntity.getId(),
+			"nestedFields=embeddedNestedField,embeddedNestedField." +
+				"nestedField2");
+
+		Assert.assertEquals(
+			postBatchTestEntity.getName(),
+			JSONUtil.getValueAsString(
+				batchTestEntityJSONObject, "JSONObject/embeddedNestedField",
+				"Object/name"));
+		Assert.assertNull(
+			JSONUtil.getValue(
+				batchTestEntityJSONObject, "JSONObject/embeddedNestedField",
+				"Object/nestedField2"));
+
+		batchTestEntityJSONObject = _getBatchTestEntityJSONObject(
+			postBatchTestEntity.getId(),
+			"nestedFields=embeddedNestedField,embeddedNestedField." +
+				"nestedField2&nestedFieldsDepth=2");
+
+		Assert.assertEquals(
+			postBatchTestEntity.getName(),
+			JSONUtil.getValueAsString(
+				batchTestEntityJSONObject, "JSONObject/embeddedNestedField",
+				"Object/name"));
+		Assert.assertEquals(
+			"nestedField2-" + postBatchTestEntity.getId(),
+			JSONUtil.getValueAsString(
+				batchTestEntityJSONObject, "JSONObject/embeddedNestedField",
+				"Object/nestedField2"));
+	}
 
 	@Override
 	@Test
@@ -229,6 +301,18 @@ public class BatchTestEntityResourceTest
 		).user(
 			testVulcanCRUDItemDelegate_getUser()
 		).build();
+	}
+
+	private JSONObject _getBatchTestEntityJSONObject(
+			Long batchTestEntityId, String queryString)
+		throws Exception {
+
+		return HTTPTestUtil.invokeToJSONObject(
+			null,
+			StringBundler.concat(
+				"portal-tools-rest-builder-test/v1.0/batch-test-entities/",
+				batchTestEntityId, "?", queryString),
+			Http.Method.GET);
 	}
 
 	@Inject
