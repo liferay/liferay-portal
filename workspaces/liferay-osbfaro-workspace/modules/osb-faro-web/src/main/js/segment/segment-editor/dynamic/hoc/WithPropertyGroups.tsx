@@ -10,6 +10,7 @@ import {
 import {
 	FieldContexts,
 	FieldOwnerTypes,
+	SegmentCategories,
 	SegmentTypes,
 } from 'shared/util/constants';
 import {
@@ -27,10 +28,12 @@ const MAX_DELTA = 500;
 const fetchPropertyGroups = ({
 	channelId,
 	groupId,
+	segmentCategory,
 	type,
 }: {
 	channelId: string;
 	groupId: string;
+	segmentCategory?: string;
 	type?: string;
 }): Promise<any> =>
 	Promise.all([
@@ -61,7 +64,8 @@ const fetchPropertyGroups = ({
 			ownerType: FieldOwnerTypes.Organization,
 		}),
 		Promise.resolve(WEB_BEHAVIORS),
-		type === SegmentTypes.Batch
+		type === SegmentTypes.Batch &&
+		segmentCategory !== SegmentCategories.Account
 			? API.interests.searchKeywords({
 					channelId,
 					delta: MAX_DELTA,
@@ -83,8 +87,15 @@ const mapResultToProps = (
 		interestKeywords,
 		sessionProperties,
 	]: any[],
-	{type}: {type: SegmentTypes}
+	{
+		segmentCategory,
+		type,
+	}: {segmentCategory: SegmentCategories; type: SegmentTypes}
 ) => {
+	const individualCriteriaEnabled =
+		type === SegmentTypes.Batch &&
+		segmentCategory !== SegmentCategories.Account;
+
 	const individualDemographicProperties =
 		individualDemographicsMappings.items.map(
 			convertFieldMappingToIndividualProperty
@@ -121,7 +132,7 @@ const mapResultToProps = (
 					}),
 				]),
 			}),
-			type === SegmentTypes.Batch &&
+			individualCriteriaEnabled &&
 				new PropertyGroup({
 					label: Liferay.Language.get('individual'),
 					propertyKey: FieldOwnerTypes.Individual,
@@ -141,7 +152,7 @@ const mapResultToProps = (
 						}),
 					]),
 				}),
-			type === SegmentTypes.Batch &&
+			individualCriteriaEnabled &&
 				new PropertyGroup({
 					label: Liferay.Language.get('interests'),
 					propertyKey: 'interest',
@@ -155,7 +166,7 @@ const mapResultToProps = (
 						}),
 					]),
 				}),
-			type === SegmentTypes.Batch &&
+			individualCriteriaEnabled &&
 				new PropertyGroup({
 					label: Liferay.Language.get('session'),
 					propertyKey: 'session',
@@ -165,7 +176,7 @@ const mapResultToProps = (
 						}),
 					]),
 				}),
-			type === SegmentTypes.Batch &&
+			individualCriteriaEnabled &&
 				new PropertyGroup({
 					label: Liferay.Language.get('vocabularies-and-categories'),
 					propertyKey: 'vocabulary',
@@ -173,7 +184,7 @@ const mapResultToProps = (
 						new PropertySubgroup({properties: List()}),
 					]),
 				}),
-			type === SegmentTypes.Batch &&
+			individualCriteriaEnabled &&
 				new PropertyGroup({
 					label: Liferay.Language.get('tags'),
 					propertyKey: 'tag',
@@ -184,7 +195,7 @@ const mapResultToProps = (
 		].filter(Boolean) as PropertyGroup[]
 	);
 
-	if (type === SegmentTypes.Batch) {
+	if (individualCriteriaEnabled) {
 		const organizationPropertyGroup = new PropertyGroup({
 			label: Liferay.Language.get('organization'),
 			propertyKey: FieldOwnerTypes.Organization,
