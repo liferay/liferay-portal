@@ -395,6 +395,14 @@ public abstract class BaseTasksSectionDisplayContext
 			));
 	}
 
+	public String getSelectionType() throws Exception {
+		if (!hasAddObjectEntryPortletResourcePermission()) {
+			return null;
+		}
+
+		return "multiple";
+	}
+
 	public List<FDSActionDropdownItem>
 		getWorkflowTasksFDSActionDropdownItems() {
 

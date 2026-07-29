@@ -25,6 +25,6 @@ ViewAllTasksSectionDisplayContext viewAllTasksSectionDisplayContext = (ViewAllTa
 		itemsPerPage="<%= 20 %>"
 		propsTransformer="{AllTasksFDSPropsTransformer} from site-cmp-site-initializer"
 		selectedItemsKey="embedded.id"
-		selectionType="multiple"
+		selectionType="<%= viewAllTasksSectionDisplayContext.getSelectionType() %>"
 	/>
 </div>

@@ -32,6 +32,6 @@ ViewProjectTasksSectionDisplayContext viewProjectTasksSectionDisplayContext = (V
 		itemsPerPage="<%= 20 %>"
 		propsTransformer="{ProjectTasksFDSPropsTransformer} from site-cmp-site-initializer"
 		selectedItemsKey="embedded.id"
-		selectionType="multiple"
+		selectionType="<%= viewProjectTasksSectionDisplayContext.getSelectionType() %>"
 	/>
 </div>
