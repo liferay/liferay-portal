@@ -325,6 +325,7 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			1,
 			_userNotificationEventLocalService.getUserNotificationEventsCount(
 				user2.getUserId()));
+
 		assertNotificationQueueEntrySubject(
 			LanguageUtil.get(
 				LocaleUtil.getDefault(), "you-have-a-new-assignment"));
