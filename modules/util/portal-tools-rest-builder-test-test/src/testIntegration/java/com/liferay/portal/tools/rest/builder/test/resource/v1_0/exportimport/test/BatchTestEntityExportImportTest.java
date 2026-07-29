@@ -120,7 +120,7 @@ public class BatchTestEntityExportImportTest {
 			LocaleUtil.getDefault()
 		).parameters(
 			"nestedFields",
-			"customFields.attributeType,nestedField,relatedCompanyTestEntity"
+			"customFields.attributeType,nestedField1,relatedCompanyTestEntity"
 		).build();
 		_companyTestEntityResource = CompanyTestEntityResource.builder(
 		).authentication(
@@ -204,7 +204,7 @@ public class BatchTestEntityExportImportTest {
 							RandomTestUtil.randomString());
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 					}
 				});
@@ -233,7 +233,7 @@ public class BatchTestEntityExportImportTest {
 							RandomTestUtil.randomString());
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 					}
 				});
@@ -310,7 +310,7 @@ public class BatchTestEntityExportImportTest {
 							RandomTestUtil.randomString());
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 						relatedCompanyTestEntity = companyTestEntity1;
 					}
@@ -335,7 +335,7 @@ public class BatchTestEntityExportImportTest {
 							RandomTestUtil.randomString());
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 						relatedCompanyTestEntity = companyTestEntity2;
 					}
@@ -435,7 +435,7 @@ public class BatchTestEntityExportImportTest {
 							RandomTestUtil.randomString());
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 						relatedCompanyTestEntity = companyTestEntity1;
 					}
@@ -460,7 +460,7 @@ public class BatchTestEntityExportImportTest {
 						externalReferenceCode = externalReferenceCode2;
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 						relatedCompanyTestEntity = companyTestEntity2;
 					}
@@ -565,7 +565,7 @@ public class BatchTestEntityExportImportTest {
 							RandomTestUtil.randomString());
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 					}
 				});
@@ -776,7 +776,7 @@ public class BatchTestEntityExportImportTest {
 							RandomTestUtil.randomString());
 						name = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
-						nestedField = StringUtil.toLowerCase(
+						nestedField1 = StringUtil.toLowerCase(
 							RandomTestUtil.randomString());
 					}
 				});
@@ -840,8 +840,8 @@ public class BatchTestEntityExportImportTest {
 		Assert.assertEquals(
 			batchTestEntity.getName(), batchTestEntity2.getName());
 		Assert.assertEquals(
-			batchTestEntity.getNestedField(),
-			batchTestEntity2.getNestedField());
+			batchTestEntity.getNestedField1(),
+			batchTestEntity2.getNestedField1());
 
 		CompanyTestEntity relatedCompanyTestEntity1 =
 			batchTestEntity.getRelatedCompanyTestEntity();

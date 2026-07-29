@@ -60,7 +60,8 @@ public class BatchTestEntityResourceTest
 					BatchTestEntity)vulcanCRUDItemDelegate.fetchItem(
 						postBatchTestEntity.getId());
 
-		Assert.assertNull(batchTestEntity1.getNestedField());
+		Assert.assertNull(batchTestEntity1.getNestedField1());
+		Assert.assertNull(batchTestEntity1.getNestedField2());
 
 		com.liferay.portal.tools.rest.builder.test.dto.v1_0.BatchTestEntity
 			batchTestEntity2 =
@@ -68,12 +69,13 @@ public class BatchTestEntityResourceTest
 					BatchTestEntity)vulcanCRUDItemDelegate.getItem(
 						postBatchTestEntity.getId());
 
-		Assert.assertNull(batchTestEntity2.getNestedField());
+		Assert.assertNull(batchTestEntity2.getNestedField1());
+		Assert.assertNull(batchTestEntity2.getNestedField2());
 
 		NestedFieldsContext oldNestedFieldsContext =
 			NestedFieldsContextThreadLocal.getAndSetNestedFieldsContext(
 				new NestedFieldsContext(
-					1, Arrays.asList("nestedField"), "v1.0"));
+					1, Arrays.asList("nestedField1", "nestedField2"), "v1.0"));
 
 		try {
 			vulcanCRUDItemDelegate = _buildVulcanCRUDItemDelegate();
@@ -85,8 +87,11 @@ public class BatchTestEntityResourceTest
 							postBatchTestEntity.getId());
 
 			Assert.assertEquals(
-				batchTestEntity.getNestedField(),
-				batchTestEntity3.getNestedField());
+				batchTestEntity.getNestedField1(),
+				batchTestEntity3.getNestedField1());
+			Assert.assertEquals(
+				"nestedField2-" + postBatchTestEntity.getId(),
+				batchTestEntity3.getNestedField2());
 
 			com.liferay.portal.tools.rest.builder.test.dto.v1_0.BatchTestEntity
 				batchTestEntity4 =
@@ -95,8 +100,11 @@ public class BatchTestEntityResourceTest
 							postBatchTestEntity.getId());
 
 			Assert.assertEquals(
-				batchTestEntity.getNestedField(),
-				batchTestEntity4.getNestedField());
+				batchTestEntity.getNestedField1(),
+				batchTestEntity4.getNestedField1());
+			Assert.assertEquals(
+				"nestedField2-" + postBatchTestEntity.getId(),
+				batchTestEntity4.getNestedField2());
 		}
 		finally {
 			NestedFieldsContextThreadLocal.setNestedFieldsContext(
