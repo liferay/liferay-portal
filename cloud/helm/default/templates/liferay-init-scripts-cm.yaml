@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
-    license-sync.sh: |
-{{ .Files.Get "scripts/license-sync.sh" | nindent 8 }}
+    deploy-sync.sh: |
+{{ .Files.Get "scripts/deploy-sync.sh" | nindent 8 }}
     overlay-sync.sh: |
 {{ .Files.Get "scripts/overlay-sync.sh" | nindent 8 }}
 kind: ConfigMap

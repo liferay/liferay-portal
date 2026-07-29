@@ -33,9 +33,9 @@ tests:
             -   contains:
                     any: true
                     content:
-                        mountPath: /liferay-init-scripts/license-sync.sh
+                        mountPath: /liferay-init-scripts/deploy-sync.sh
                         name: liferay-init-scripts-default
-                        subPath: license-sync.sh
+                        subPath: deploy-sync.sh
                     path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].volumeMounts
             -   contains:
                     any: true
@@ -103,9 +103,9 @@ tests:
             license.enabled: false
     -   asserts:
             -   isNotEmpty:
-                    path: data['license-sync.sh']
+                    path: data['deploy-sync.sh']
         documentSelector:
             path: metadata.name
             skipEmptyTemplates: true
             value: liferay-init-scripts-default
-        it: Publishes the license sync script in the init scripts ConfigMap
+        it: Publishes the deploy sync script in the init scripts ConfigMap

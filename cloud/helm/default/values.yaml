@@ -56,7 +56,7 @@ customInitContainers:
                 {{- if .license.enabled }}
                 -   command:
                         -   bash
-                        -   /liferay-init-scripts/license-sync.sh
+                        -   /liferay-init-scripts/deploy-sync.sh
                     env:
                         -   name: LIFERAY_SYNC_DEST
                             value: /opt/liferay/deploy/license.xml
@@ -78,9 +78,9 @@ customInitContainers:
                         seccompProfile:
                             type: RuntimeDefault
                     volumeMounts:
-                        -   mountPath: /liferay-init-scripts/license-sync.sh
+                        -   mountPath: /liferay-init-scripts/deploy-sync.sh
                             name: {{ .license.initScriptsVolumeName }}
-                            subPath: license-sync.sh
+                            subPath: deploy-sync.sh
                         -   mountPath: /secret
                             name: liferay-license
                         -   mountPath: /opt/liferay
