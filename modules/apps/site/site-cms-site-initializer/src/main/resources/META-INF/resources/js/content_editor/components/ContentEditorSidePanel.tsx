@@ -13,7 +13,7 @@ import {datetimeUtils} from '@liferay/object-js-components-web';
 import {LiferayEditorConfig} from 'frontend-editor-ckeditor-web';
 import {openToast} from 'frontend-js-components-web';
 import {fetch, objectToFormData} from 'frontend-js-web';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import VocabularyService from '../../common/services/VocabularyService';
 import {IAssetObjectEntry} from '../../common/types/AssetType';
@@ -111,7 +111,7 @@ export type UpdateScheduleProps = BaseScheduleData & {
 	name: keyof ScheduleFields;
 };
 
-const items: Item[] = [
+const DEFAULT_ITEMS: Item[] = [
 	{
 		component: GeneralPanel,
 		icon: 'info-circle',
@@ -136,13 +136,14 @@ const items: Item[] = [
 		id: 'comments',
 		title: Liferay.Language.get('comments'),
 	},
-	{
-		component: ProjectsPanel,
-		icon: 'archive',
-		id: 'projects',
-		title: Liferay.Language.get('projects'),
-	},
 ];
+
+const PROJECTS_ITEM: Item = {
+	component: ProjectsPanel,
+	icon: 'archive',
+	id: 'projects',
+	title: Liferay.Language.get('projects'),
+};
 
 export default function ContentEditorSidePanel(props: Props) {
 	const [formId, setFormId] = useState<string | undefined>();
@@ -333,6 +334,14 @@ function SidePanel(props: SidePanelProps) {
 	const buttonRef = useRef<HTMLButtonElement>(null);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [panel, setPanel] = useState<React.Key | null>(null);
+
+	const items = useMemo(
+		() =>
+			Liferay.FeatureFlags['LPD-58677']
+				? [...DEFAULT_ITEMS, PROJECTS_ITEM]
+				: DEFAULT_ITEMS,
+		[]
+	);
 
 	const showErrorInPanel = useCallback((panelId: React.Key) => {
 		setPanel(panelId);
