@@ -6549,9 +6549,9 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.pdfbox.jar!fontbox.jar</file-name>
-				<version>2.0.24</version>
+				<version>2.0.35</version>
 				<project-name>Apache FontBox</project-name>
-				<project-url>http://pdfbox.apache.org/</project-url>
+				<project-url>https://pdfbox.apache.org</project-url>
 				<licenses>
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
@@ -6607,9 +6607,9 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.pdfbox.jar!pdfbox.jar</file-name>
-				<version>2.0.24</version>
+				<version>2.0.35</version>
 				<project-name>Apache PDFBox</project-name>
-				<project-url>http://pdfbox.apache.org</project-url>
+				<project-url>https://pdfbox.apache.org</project-url>
 				<licenses>
 					<license>
 						<license-name>Apache License, Version 2.0</license-name>
