@@ -29,15 +29,28 @@ export function CategoryCPFriendlyURL({portletNamespace}) {
 
 	input.addEventListener('input', () => syncURLTitles(input.value));
 
-	Liferay.on('inputLocalized:localeChanged', ({item}) => {
-		const languageInput = document.getElementById(
-			`${portletNamespace}urlTitleMapAsXML_${item.getAttribute(
-				'data-value'
-			)}`
-		);
+	const localeChangedHandler = Liferay.after(
+		'inputLocalized:localeChanged',
+		({item}) => {
+			const languageId = item?.getAttribute('data-value');
 
-		syncURLTitles(languageInput ? languageInput.value : '');
-	});
+			if (!languageId) {
+				return;
+			}
+
+			const languageInput = document.getElementById(
+				`${portletNamespace}urlTitleMapAsXML_${languageId}`
+			);
+
+			syncURLTitles(languageInput ? languageInput.value : '');
+		}
+	);
+
+	return {
+		dispose() {
+			localeChangedHandler.detach();
+		},
+	};
 }
 
 export function EditAssetCategoryCPDisplayLayout({
