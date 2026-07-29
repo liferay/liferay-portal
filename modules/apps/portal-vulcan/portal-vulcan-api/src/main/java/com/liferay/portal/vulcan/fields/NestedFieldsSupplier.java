@@ -7,6 +7,8 @@ package com.liferay.portal.vulcan.fields;
 
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.HashMap;
@@ -83,6 +85,30 @@ public class NestedFieldsSupplier<T> {
 		return nestedFieldValues;
 	}
 
+	public static <T> UnsafeSupplier<T, Exception> supplyScopedUnsafeSupplier(
+		String nestedField, UnsafeSupplier<T, Exception> unsafeSupplier) {
+
+		NestedFieldsContext oldNestedFieldsContext =
+			NestedFieldsContextThreadLocal.getNestedFieldsContext();
+
+		if (oldNestedFieldsContext == null) {
+			return () -> null;
+		}
+
+		NestedFieldsContext nestedFieldsContext = _createNestedFieldsContext(
+			nestedField, oldNestedFieldsContext);
+
+		return () -> {
+			try (SafeCloseable safeCloseable =
+					NestedFieldsContextThreadLocal.
+						setNestedFieldsContextWithSafeCloseable(
+							nestedFieldsContext)) {
+
+				return supply(nestedField, __ -> unsafeSupplier.get());
+			}
+		};
+	}
+
 	public static Map<String, UnsafeSupplier<Object, Exception>>
 			supplyUnsafeSupplier(
 				UnsafeFunction
@@ -134,6 +160,38 @@ public class NestedFieldsSupplier<T> {
 		nestedFieldsContext.decrementCurrentDepth();
 
 		return nestedFieldUnsafeSuppliers;
+	}
+
+	private static NestedFieldsContext _createNestedFieldsContext(
+		String nestedField, NestedFieldsContext nestedFieldsContext) {
+
+		String prefix = nestedField + ".";
+
+		List<String> nestedFields = TransformUtil.transform(
+			nestedFieldsContext.getNestedFields(),
+			currentNestedField -> {
+				if (currentNestedField.equals(nestedField)) {
+					return nestedField;
+				}
+
+				if (currentNestedField.startsWith(prefix)) {
+					return currentNestedField.substring(prefix.length());
+				}
+
+				return null;
+			});
+
+		NestedFieldsContext scopedNestedFieldsContext = new NestedFieldsContext(
+			nestedFieldsContext.getDepth(), nestedFieldsContext.getMessage(),
+			nestedFields, nestedFieldsContext.getPathParameters(),
+			nestedFieldsContext.getQueryParameters(),
+			nestedFieldsContext.getResourceVersion());
+
+		for (int i = 0; i < nestedFieldsContext.getCurrentDepth(); i++) {
+			scopedNestedFieldsContext.incrementCurrentDepth();
+		}
+
+		return scopedNestedFieldsContext;
 	}
 
 	private static boolean _mustProcessNestedFields(
