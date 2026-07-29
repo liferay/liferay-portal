@@ -1,0 +1,6 @@
+dependencies {
+	testIntegrationImplementation project(":apps:configuration-admin:configuration-admin-api")
+	testIntegrationImplementation project(":apps:portal-security:portal-security-ldap-api")
+	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
