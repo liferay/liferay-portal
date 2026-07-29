@@ -103,15 +103,18 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 			@FormParam("filter") String filterString,
 			@FormParam("includeAnonymousUsers") boolean includeAnonymousUsers,
 			@FormParam("name") String name,
+			@DefaultValue("INDIVIDUAL") @FormParam("segmentCategory") String
+				segmentCategory,
 			@FormParam("segmentType") String segmentType,
 			@FormParam("sequential") boolean sequential)
 		throws Exception {
 
-		validateCreate(channelId, segmentType);
+		validateCreate(channelId, segmentCategory, segmentType);
 
 		return createIndividualSegment(
 			channelId, groupId, externalReferenceCode, filterString,
-			includeAnonymousUsers, name, segmentType, sequential);
+			includeAnonymousUsers, name, segmentCategory, segmentType,
+			sequential);
 	}
 
 	@DELETE
@@ -428,7 +431,7 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 	protected IndividualSegmentDisplay createIndividualSegment(
 			String channelId, long groupId, String externalReferenceCode,
 			String filterString, boolean includeAnonymousUsers, String name,
-			String segmentType, boolean sequential)
+			String segmentCategory, String segmentType, boolean sequential)
 		throws Exception {
 
 		FaroProject faroProject =
@@ -437,8 +440,9 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 		return new IndividualSegmentDisplay(
 			contactsEngineClient.addIndividualSegment(
 				faroProject, getUserId(), channelId, externalReferenceCode,
-				filterString, includeAnonymousUsers, name, segmentType,
-				sequential, IndividualSegment.Status.ACTIVE.name()));
+				filterString, includeAnonymousUsers, name, segmentCategory,
+				segmentType, sequential,
+				IndividualSegment.Status.ACTIVE.name()));
 	}
 
 	protected FaroResultsDisplay<IndividualSegment> search(
@@ -557,11 +561,25 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 		return new IndividualSegmentDisplay(individualSegment);
 	}
 
-	protected void validateCreate(String channelId, String segmentType) {
+	protected void validateCategory(String segmentCategory) {
+		if (!segmentCategory.equals(
+				IndividualSegment.Category.ACCOUNT.name()) &&
+			!segmentCategory.equals(
+				IndividualSegment.Category.INDIVIDUAL.name())) {
+
+			throw new FaroException(
+				"Invalid segment category: " + segmentCategory);
+		}
+	}
+
+	protected void validateCreate(
+		String channelId, String segmentCategory, String segmentType) {
+
 		if (Validator.isNull(channelId)) {
 			throw new FaroException("Invalid channel ID: " + channelId);
 		}
 
+		validateCategory(segmentCategory);
 		validateType(segmentType);
 	}
 
