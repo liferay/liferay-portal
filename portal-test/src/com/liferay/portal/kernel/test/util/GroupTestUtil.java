@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
+import com.liferay.portal.kernel.test.randomizerbumpers.SiteFriendlyURLKeywordRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -81,6 +82,7 @@ public class GroupTestUtil {
 
 		String name = RandomTestUtil.randomString(
 			NumericStringRandomizerBumper.INSTANCE,
+			SiteFriendlyURLKeywordRandomizerBumper.INSTANCE,
 			UniqueStringRandomizerBumper.INSTANCE);
 
 		Group group = GroupLocalServiceUtil.fetchGroup(companyId, name);
@@ -157,6 +159,7 @@ public class GroupTestUtil {
 
 		String name = RandomTestUtil.randomString(
 			NumericStringRandomizerBumper.INSTANCE,
+			SiteFriendlyURLKeywordRandomizerBumper.INSTANCE,
 			UniqueStringRandomizerBumper.INSTANCE);
 
 		return addGroup(parentGroupId, name, serviceContext);
@@ -231,6 +234,7 @@ public class GroupTestUtil {
 
 		String name = RandomTestUtil.randomString(
 			NumericStringRandomizerBumper.INSTANCE,
+			SiteFriendlyURLKeywordRandomizerBumper.INSTANCE,
 			UniqueStringRandomizerBumper.INSTANCE);
 
 		Group group = GroupLocalServiceUtil.fetchGroup(companyId, name);
