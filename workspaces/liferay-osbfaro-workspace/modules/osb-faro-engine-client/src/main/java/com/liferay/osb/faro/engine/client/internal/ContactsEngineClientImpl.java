@@ -3044,8 +3044,8 @@ public class ContactsEngineClientImpl
 	public Results<IndividualSegment> getIndividualSegments(
 		FaroProject faroProject, String channelId, String dataSourceId,
 		String query, List<String> fields, String name,
-		List<String> segmentTypes, String state, String status, int cur,
-		int delta, List<OrderByField> orderByFields) {
+		List<String> segmentCategories, List<String> segmentTypes, String state,
+		String status, int cur, int delta, List<OrderByField> orderByFields) {
 
 		PagedModel<?, IndividualSegment> pagedModel = null;
 
@@ -3072,6 +3072,19 @@ public class ContactsEngineClientImpl
 			"state", FilterConstants.COMPARISON_OPERATOR_EQUALS, state);
 		filterBuilder.addFilter(
 			"status", FilterConstants.COMPARISON_OPERATOR_EQUALS, status);
+
+		if (segmentCategories != null) {
+			FilterBuilder segmentCategoryFilterBuilder = new FilterBuilder();
+
+			for (String segmentCategory : segmentCategories) {
+				segmentCategoryFilterBuilder.addFilter(
+					"segmentCategory",
+					FilterConstants.COMPARISON_OPERATOR_EQUALS, segmentCategory,
+					false);
+			}
+
+			filterBuilder.addFilter(segmentCategoryFilterBuilder.build());
+		}
 
 		if (segmentTypes != null) {
 			FilterBuilder segmentTypeFilterBuilder = new FilterBuilder();

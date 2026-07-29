@@ -1121,12 +1121,13 @@ public abstract class BaseMockContactsEngineClientImpl
 	public Results<IndividualSegment> getIndividualSegments(
 		FaroProject faroProject, String channelId, String dataSourceId,
 		String query, List<String> fields, String name,
-		List<String> segmentTypes, String state, String status, int cur,
-		int delta, List<OrderByField> orderByFields) {
+		List<String> segmentCategories, List<String> segmentTypes, String state,
+		String status, int cur, int delta, List<OrderByField> orderByFields) {
 
 		return contactsEngineClient.getIndividualSegments(
 			faroProject, channelId, dataSourceId, query, fields, name,
-			segmentTypes, state, status, cur, delta, orderByFields);
+			segmentCategories, segmentTypes, state, status, cur, delta,
+			orderByFields);
 	}
 
 	@Override
