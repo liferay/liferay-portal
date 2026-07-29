@@ -84,9 +84,13 @@ describe('BasicRendering', () => {
 		expect(textArea!.value).toBe('A generated suggestion');
 	});
 
-	it('only renders the retry button in the result state', () => {
+	it('only renders the retry button in the result state with an onRetryClick handler', () => {
 		const {rerender} = render(
-			<ClayInputGroupAI onChange={() => {}} value="" />
+			<ClayInputGroupAI
+				onChange={() => {}}
+				onRetryClick={() => {}}
+				value=""
+			/>
 		);
 
 		expect(
@@ -95,6 +99,19 @@ describe('BasicRendering', () => {
 
 		rerender(
 			<ClayInputGroupAI aiState="result" onChange={() => {}} value="" />
+		);
+
+		expect(
+			screen.queryByRole('button', {name: 'Retry'})
+		).not.toBeInTheDocument();
+
+		rerender(
+			<ClayInputGroupAI
+				aiState="result"
+				onChange={() => {}}
+				onRetryClick={() => {}}
+				value=""
+			/>
 		);
 
 		expect(screen.getByRole('button', {name: 'Retry'})).toBeInTheDocument();
@@ -106,6 +123,7 @@ describe('BasicRendering', () => {
 				aiState="result"
 				messages={{retry: 'Reintentar', submit: 'Enviar'}}
 				onChange={() => {}}
+				onRetryClick={() => {}}
 				value=""
 			/>
 		);
@@ -152,7 +170,7 @@ describe('IncrementalInteractions', () => {
 		expect(group!.getAttribute('data-ai-state')).toBe('result');
 	});
 
-	it('submits the enclosing form when Enter is pressed', () => {
+	it('submits the enclosing form and resets the textarea height when Enter is pressed', () => {
 		const onSubmit = jest.fn((event) => event.preventDefault());
 
 		const {container} = render(
@@ -161,14 +179,17 @@ describe('IncrementalInteractions', () => {
 			</form>
 		);
 
-		fireEvent.keyDown(container.querySelector('textarea')!, {
-			key: 'Enter',
-		});
+		const textArea = container.querySelector('textarea')!;
+
+		textArea.style.height = '96px';
+
+		fireEvent.keyDown(textArea, {key: 'Enter'});
 
 		expect(onSubmit).toHaveBeenCalledTimes(1);
+		expect(textArea.style.height).toBe('');
 	});
 
-	it('does not submit the form when Shift + Enter is pressed', () => {
+	it('does not submit the form or reset the textarea height when Shift + Enter is pressed', () => {
 		const onSubmit = jest.fn((event) => event.preventDefault());
 
 		const {container} = render(
@@ -177,12 +198,44 @@ describe('IncrementalInteractions', () => {
 			</form>
 		);
 
-		fireEvent.keyDown(container.querySelector('textarea')!, {
-			key: 'Enter',
-			shiftKey: true,
-		});
+		const textArea = container.querySelector('textarea')!;
+
+		textArea.style.height = '96px';
+
+		fireEvent.keyDown(textArea, {key: 'Enter', shiftKey: true});
 
 		expect(onSubmit).not.toHaveBeenCalled();
+		expect(textArea.style.height).toBe('96px');
+	});
+
+	it('resets the textarea height when the submit button is clicked', () => {
+		const {container} = render(
+			<form onSubmit={(event) => event.preventDefault()}>
+				<ClayInputGroupAI onChange={() => {}} value="Hello" />
+			</form>
+		);
+
+		const textArea = container.querySelector('textarea')!;
+
+		textArea.style.height = '96px';
+
+		fireEvent.click(screen.getByRole('button', {name: 'Submit'}));
+
+		expect(textArea.style.height).toBe('');
+	});
+
+	it('resets the textarea height when the value is cleared externally', () => {
+		const {container, rerender} = render(
+			<ClayInputGroupAI onChange={() => {}} value={'multi\nline'} />
+		);
+
+		const textArea = container.querySelector('textarea')!;
+
+		textArea.style.height = '96px';
+
+		rerender(<ClayInputGroupAI onChange={() => {}} value="" />);
+
+		expect(textArea.style.height).toBe('');
 	});
 
 	it('calls onRetryClick when the retry button is clicked', () => {
