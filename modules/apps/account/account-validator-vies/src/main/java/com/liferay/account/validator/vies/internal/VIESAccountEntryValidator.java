@@ -53,6 +53,22 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 			AccountEntry accountEntry, JSONObject jsonObject)
 		throws PortalException {
 
+		if (jsonObject == null) {
+			return null;
+		}
+
+		if (accountEntry == null) {
+			return AccountEntryValidatorResult.builder(
+				null
+			).additionalProps(
+				_getAdditionalPropsJSONObject(accountEntry, jsonObject)
+			).resultMessage(
+				"vies-missing-account-error"
+			).resultStatus(
+				AccountEntryValidatorConstants.RESULT_FAILURE
+			).build();
+		}
+
 		VIESAccountEntryValidatorConfiguration
 			viesAccountEntryValidatorConfiguration =
 				_getVIESAccountEntryValidatorConfiguration(
@@ -65,50 +81,74 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 		Address address = _addressLocalService.fetchAddress(
 			jsonObject.getLong("billingAddressId", 0));
 
-		if ((address == null) ||
-			!Objects.equals(
-				AccountEntry.class.getName(), address.getClassName()) ||
-			(address.getClassPK() != accountEntry.getAccountEntryId())) {
-
-			return null;
-		}
-
-		Country country = address.getCountry();
-
-		if ((country == null) ||
-			!ArrayUtil.contains(
-				viesAccountEntryValidatorConfiguration.countryCodes(),
-				country.getA2())) {
-
+		if (address == null) {
 			return null;
 		}
 
 		String classPK = getClassPK(accountEntry, jsonObject);
+
+		if (!_isAccountEntryAddress(accountEntry, address, jsonObject)) {
+			return AccountEntryValidatorResult.builder(
+				classPK
+			).additionalProps(
+				_getAdditionalPropsJSONObject(accountEntry, jsonObject)
+			).resultMessage(
+				"vies-invalid-billing-address-error"
+			).resultStatus(
+				AccountEntryValidatorConstants.RESULT_FAILURE
+			).build();
+		}
+
+		Country country = address.getCountry();
+
+		if (country == null) {
+			return null;
+		}
+
+		String countryA2 = country.getA2();
+
+		if (!ArrayUtil.contains(
+				viesAccountEntryValidatorConfiguration.countryCodes(),
+				countryA2)) {
+
+			return null;
+		}
 
 		String taxIdNumber = accountEntry.getTaxIdNumber();
 
 		if (Validator.isNull(taxIdNumber)) {
 			return AccountEntryValidatorResult.builder(
 				classPK
+			).additionalProps(
+				_getAdditionalPropsJSONObject(accountEntry, jsonObject)
 			).resultMessage(
-				_RESULT_MESSAGE_MISSING_TAX_ID
+				"the-account-is-missing-a-tax-id"
 			).resultStatus(
 				AccountEntryValidatorConstants.RESULT_FAILURE
 			).build();
 		}
 
+		JSONObject requestJSONObject = JSONUtil.put(
+			"countryCode", countryA2
+		).put(
+			"vatNumber", taxIdNumber
+		);
+
 		VIESClient viesClient = new VIESClient();
 
-		JSONObject checkVatNumberJSONObject = viesClient.checkVatNumber(
-			accountEntry.getCompanyId(),
-			JSONUtil.put(
-				"countryCode", country.getA2()
-			).put(
-				"vatNumber", taxIdNumber
-			));
+		JSONObject responseJSONObject = viesClient.checkVatNumber(
+			accountEntry.getCompanyId(), requestJSONObject);
 
-		JSONArray errorWrappersJSONArray =
-			checkVatNumberJSONObject.getJSONArray("errorWrappers");
+		JSONObject additionalPropsJSONObject = _getAdditionalPropsJSONObject(
+			accountEntry, jsonObject
+		).put(
+			"request", requestJSONObject
+		).put(
+			"response", responseJSONObject
+		);
+
+		JSONArray errorWrappersJSONArray = responseJSONObject.getJSONArray(
+			"errorWrappers");
 
 		if ((errorWrappersJSONArray != null) &&
 			(errorWrappersJSONArray.length() > 0)) {
@@ -117,12 +157,15 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 				errorWrappersJSONArray.getJSONObject(0);
 
 			return _getAccountEntryValidatorResult(
-				classPK, errorWrapperJSONObject.getString("error"));
+				additionalPropsJSONObject, classPK,
+				errorWrapperJSONObject.getString("error"));
 		}
 
-		if (checkVatNumberJSONObject.getBoolean("valid", false)) {
+		if (responseJSONObject.getBoolean("valid", false)) {
 			return AccountEntryValidatorResult.builder(
 				classPK
+			).additionalProps(
+				additionalPropsJSONObject
 			).resultStatus(
 				AccountEntryValidatorConstants.RESULT_SUCCESS
 			).build();
@@ -130,6 +173,8 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 
 		return AccountEntryValidatorResult.builder(
 			classPK
+		).additionalProps(
+			additionalPropsJSONObject
 		).resultMessage(
 			"vies-unexpected-error"
 		).resultStatus(
@@ -172,14 +217,16 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 	public Set<String> getResultMessages() {
 		Set<String> resultMessages = new HashSet<>(super.getResultMessages());
 
-		resultMessages.add(_RESULT_MESSAGE_MISSING_TAX_ID);
+		resultMessages.add("the-account-is-missing-a-tax-id");
+		resultMessages.add("vies-invalid-billing-address-error");
+		resultMessages.add("vies-missing-account-error");
 		resultMessages.addAll(_resultMessages.values());
 
 		return resultMessages;
 	}
 
 	private AccountEntryValidatorResult _getAccountEntryValidatorResult(
-		String classPK, String error) {
+		JSONObject additionalPropsJSONObject, String classPK, String error) {
 
 		String resultMessage = _resultMessages.getOrDefault(
 			error, "vies-unexpected-error");
@@ -192,11 +239,31 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 
 		return AccountEntryValidatorResult.builder(
 			classPK
+		).additionalProps(
+			additionalPropsJSONObject
 		).resultMessage(
 			resultMessage
 		).resultStatus(
 			resultStatus
 		).build();
+	}
+
+	private JSONObject _getAdditionalPropsJSONObject(
+		AccountEntry accountEntry, JSONObject jsonObject) {
+
+		long accountEntryId = 0;
+
+		if (accountEntry != null) {
+			accountEntryId = accountEntry.getAccountEntryId();
+		}
+
+		return JSONUtil.put(
+			"accountEntryId", accountEntryId
+		).put(
+			"billingAddressId", jsonObject.getLong("billingAddressId", 0)
+		).put(
+			"commerceOrderId", jsonObject.getLong("commerceOrderId", 0)
+		);
 	}
 
 	private VIESAccountEntryValidatorConfiguration
@@ -227,8 +294,32 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 		return viesAccountEntryValidatorConfiguration;
 	}
 
-	private static final String _RESULT_MESSAGE_MISSING_TAX_ID =
-		"the-account-is-missing-a-tax-id";
+	private boolean _isAccountEntryAddress(
+		AccountEntry accountEntry, Address address, JSONObject jsonObject) {
+
+		String className = address.getClassName();
+		long classPK = address.getClassPK();
+
+		if (Objects.equals(AccountEntry.class.getName(), className)) {
+			if (classPK == accountEntry.getAccountEntryId()) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if (Objects.equals(
+				className, "com.liferay.commerce.model.CommerceOrder")) {
+
+			if (classPK == jsonObject.getLong("commerceOrderId", 0)) {
+				return true;
+			}
+
+			return false;
+		}
+
+		return false;
+	}
 
 	@Reference
 	private AddressLocalService _addressLocalService;
