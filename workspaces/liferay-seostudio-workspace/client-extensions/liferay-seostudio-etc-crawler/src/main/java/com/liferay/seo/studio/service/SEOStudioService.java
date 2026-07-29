@@ -202,10 +202,10 @@ public class SEOStudioService extends BaseService {
 			List<String> batchPageURLs = ListUtil.subList(
 				pageURLs, i, i + _BATCH_SIZE);
 
-			for (String pageURL : batchPageURLs) {
+			for (String batchPageURL : batchPageURLs) {
 				seoStudioPagesJSONArray.put(
 					_toSEOStudioPageJSONObject(
-						accountEntryId, pageURL, seoStudioScanId));
+						accountEntryId, batchPageURL, seoStudioScanId));
 			}
 
 			_postSEOStudioPagesBatch(seoStudioPagesJSONArray);
@@ -236,12 +236,13 @@ public class SEOStudioService extends BaseService {
 			List<String> batchPageURLs = ListUtil.subList(
 				pageURLs, i, i + _BATCH_SIZE);
 
-			for (String pageURL : batchPageURLs) {
-				Long seoStudioPageId = seoStudioPageIdsMap.get(pageURL);
+			for (String batchPageURL : batchPageURLs) {
+				Long seoStudioPageId = seoStudioPageIdsMap.get(batchPageURL);
 
 				if (seoStudioPageId == null) {
 					if (_log.isWarnEnabled()) {
-						_log.warn("Unable to get a page for URL " + pageURL);
+						_log.warn(
+							"Unable to get a page for URL " + batchPageURL);
 					}
 
 					continue;
