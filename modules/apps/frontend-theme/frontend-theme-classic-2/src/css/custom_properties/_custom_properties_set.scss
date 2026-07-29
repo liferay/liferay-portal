@@ -1,0 +1,71 @@
+// Aspect ratio
+
+.aspect-ratio:not([class*='aspect-ratio-']) {
+	padding-bottom: var(--aspect-ratio, 100%);
+}
+
+.aspect-ratio-4-to-3 {
+	padding-bottom: var(--aspect-ratio-4-to-3, 75%);
+}
+
+.aspect-ratio-8-to-3 {
+	padding-bottom: var(--aspect-ratio-8-to-3, 37.5%);
+}
+
+.aspect-ratio-16-to-9 {
+	padding-bottom: var(--aspect-ratio-16-to-9, 56.25%);
+}
+
+.card-type-asset .aspect-ratio {
+	padding-bottom: var(--aspect-ratio-16-to-9, 56.25%);
+}
+
+// Body
+
+#wrapper {
+	--portlet-topper-bg: var(--primary);
+	--portlet-topper-color: var(--white);
+	--portlet-topper-link-color: var(--portlet-topper-color);
+
+	background-color: var(--body-bg, $body-bg);
+	color: var(--body-color, $body-color);
+	font-size: var(--font-size-base, $font-size-base);
+}
+
+// Portlet
+
+.portlet {
+	.portlet-content {
+		background-color: var(--portlet-bg, transparent);
+	}
+
+	@at-root .controls-visible {
+		.portlet-content-editable {
+			@include media-breakpoint-down(sm) {
+				border-color: $portlet-topper-border;
+			}
+		}
+
+		.portlet:hover,
+		.portlet.open,
+		.portlet.focus {
+			> .portlet-content-editable {
+				@include media-breakpoint-up(sm) {
+					border-color: $portlet-topper-border;
+				}
+			}
+		}
+	}
+}
+
+.portlet-layout {
+	.portlet-header {
+		margin-bottom: $portlet-header-margin-bottom;
+	}
+}
+
+// Theme footer
+
+#footer {
+	background-color: var(--brand-color-4, #30313f);
+}
