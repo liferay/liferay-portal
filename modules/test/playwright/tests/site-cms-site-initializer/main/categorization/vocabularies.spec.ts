@@ -896,7 +896,7 @@ systemVocabularyTest.describe('System vocabulary tests', () => {
 				assetLibraries: [{id: -1}],
 				assetTypes: [
 					{
-						required: true,
+						required: false,
 						subtype: 'AllAssetSubtypes',
 						type: 'AllAssetTypes',
 					},
