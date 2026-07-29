@@ -19,6 +19,38 @@ const GAP_ANSWER = JSON.stringify({
 });
 
 describe('buildAssistantMessage', () => {
+	it('builds a component message carrying the agent component', () => {
+		const component = {
+			options: [
+				{
+					action: {
+						'http-request': {
+							body: {transitionName: 'yes'},
+							href: '/o/ai-hub/v1.0/agent-instances/123/resume',
+							method: 'PUT',
+						},
+					},
+					label: 'Yes',
+				},
+			],
+			title: 'Would you like me to add all suggested assets?',
+			type: 'select' as const,
+		};
+
+		expect(
+			buildAssistantMessage({
+				agentDefinitionExternalReferenceCodes: ['L_GAP_ANALISYS'],
+				component,
+				type: 'component',
+			})
+		).toEqual({
+			agentDefinitionExternalReferenceCodes: ['L_GAP_ANALISYS'],
+			component,
+			sender: 'assistant',
+			text: '',
+		});
+	});
+
 	it('builds an image message with a base64 data URI', () => {
 		expect(
 			buildAssistantMessage({
