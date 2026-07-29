@@ -36,8 +36,10 @@ import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.comparator.UserFirstNameComparator;
+import com.liferay.portal.kernel.util.comparator.UserIdComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -271,13 +273,28 @@ public class UserFinderTest {
 		String[] screenNames = {null};
 		String[] emailAddresses = {null};
 
-		_userFinder.findByC_FN_MN_LN_SN_EA_S(
+		List<User> users = _userFinder.findByC_FN_MN_LN_SN_EA_S(
 			TestPropsValues.getCompanyId(), firstNames, middleNames, lastNames,
-			screenNames, emailAddresses, 0,
+			screenNames, emailAddresses, WorkflowConstants.STATUS_APPROVED,
 			LinkedHashMapBuilder.<String, Object>put(
 				"announcementsDeliveryEmailOrSms", "general"
 			).build(),
 			true, 0, 1, null);
+
+		Assert.assertTrue(users.toString(), users.isEmpty());
+
+		users = _userFinder.findByC_FN_MN_LN_SN_EA_S(
+			TestPropsValues.getCompanyId(), firstNames, middleNames, lastNames,
+			screenNames, emailAddresses, WorkflowConstants.STATUS_APPROVED,
+			LinkedHashMapBuilder.<String, Object>put(
+				"usersGroups", _group.getGroupId()
+			).build(),
+			true, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			UserIdComparator.getInstance(true));
+
+		Assert.assertEquals(
+			users.toString(),
+			ListUtil.fromArray(TestPropsValues.getUser(), _groupUser), users);
 	}
 
 	@Test
