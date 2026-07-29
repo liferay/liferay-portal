@@ -88,7 +88,7 @@ definition {
 
 			var siteNameURL = StringUtil.lowerCase(${siteNameURL});
 
-			Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteNameURL}/~/control_panel/manage");
+			Navigator.openWithAppendToBaseURL(urlAppend = "group/${siteNameURL}/~/control_panel/manage?p_p_id=com_liferay_layout_admin_web_portlet_GroupPagesPortlet");
 		}
 		else if (IsElementNotPresent(locator1 = "ProductMenu#TOGGLE")) {
 			ApplicationsMenu.gotoSite(site = ${site});
