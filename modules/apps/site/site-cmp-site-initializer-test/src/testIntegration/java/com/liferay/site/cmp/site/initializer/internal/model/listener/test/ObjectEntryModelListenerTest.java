@@ -113,7 +113,6 @@ public class ObjectEntryModelListenerTest {
 		_assertResourceActions(
 			cmpProjectLinkObjectEntry, role.getName(), ActionKeys.DELETE,
 			ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW);
-
 		_assertResourceActions(
 			cmpProjectLinkObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
 			ActionKeys.DELETE, ActionKeys.VIEW);
@@ -134,7 +133,6 @@ public class ObjectEntryModelListenerTest {
 			ActionKeys.PERMISSIONS, ActionKeys.SUBSCRIBE, ActionKeys.UPDATE,
 			ActionKeys.UPDATE_DISCUSSION, ActionKeys.VIEW,
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
-
 		_assertResourceActions(
 			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW);
@@ -155,7 +153,6 @@ public class ObjectEntryModelListenerTest {
 		_assertResourceActions(
 			cmpTaskLinkObjectEntry, role.getName(), ActionKeys.DELETE,
 			ActionKeys.PERMISSIONS, ActionKeys.UPDATE, ActionKeys.VIEW);
-
 		_assertResourceActions(
 			cmpTaskLinkObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
 			ActionKeys.DELETE, ActionKeys.VIEW);
