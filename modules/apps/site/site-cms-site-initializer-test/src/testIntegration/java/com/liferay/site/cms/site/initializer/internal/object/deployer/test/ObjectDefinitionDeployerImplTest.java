@@ -11,7 +11,6 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
-import com.liferay.object.deployer.ObjectDefinitionDeployer;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -94,8 +93,6 @@ public class ObjectDefinitionDeployerImplTest {
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_DEFAULT_PERMISSION", TestPropsValues.getCompanyId());
-
-		_objectDefinitionDeployer.deploy(objectDefinition);
 
 		ModelResourcePermission<ObjectEntry> modelResourcePermission =
 			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
@@ -266,11 +263,6 @@ public class ObjectDefinitionDeployerImplTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject(
-		filter = "component.name=com.liferay.site.cms.site.initializer.internal.object.deployer.ObjectDefinitionDeployerImpl"
-	)
-	private ObjectDefinitionDeployer _objectDefinitionDeployer;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
