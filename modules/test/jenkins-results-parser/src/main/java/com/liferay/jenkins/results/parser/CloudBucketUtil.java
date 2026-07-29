@@ -374,7 +374,7 @@ public class CloudBucketUtil {
 	}
 
 	public static boolean isS3ObjectPathAvailable(String s3ObjectPath) {
-		if (!_isValidS3ObjectPath(s3ObjectPath)) {
+		if (!isValidS3ObjectPath(s3ObjectPath)) {
 			return false;
 		}
 
@@ -396,7 +396,7 @@ public class CloudBucketUtil {
 	}
 
 	public static boolean isS3ObjectRefAvailable(String s3ObjectPath) {
-		if (!_isValidS3ObjectPath(s3ObjectPath)) {
+		if (!isValidS3ObjectPath(s3ObjectPath)) {
 			System.out.println(
 				"WARNING: Invalid s3 object path: " + s3ObjectPath);
 
@@ -406,6 +406,17 @@ public class CloudBucketUtil {
 		File s3ObjectRefFile = _getS3ObjectRefFile(s3ObjectPath);
 
 		return s3ObjectRefFile.exists();
+	}
+
+	public static boolean isValidS3ObjectPath(String s3ObjectPath) {
+		if (s3ObjectPath == null) {
+			return false;
+		}
+
+		Matcher s3ObjectPathMatcher = _s3ObjectPathPattern.matcher(
+			s3ObjectPath);
+
+		return s3ObjectPathMatcher.find();
 	}
 
 	public static String listGCPFiles(String path, String... args)
@@ -962,17 +973,6 @@ public class CloudBucketUtil {
 		return false;
 	}
 
-	private static boolean _isValidS3ObjectPath(String s3ObjectPath) {
-		if (s3ObjectPath == null) {
-			return false;
-		}
-
-		Matcher s3ObjectPathMatcher = _s3ObjectPathPattern.matcher(
-			s3ObjectPath);
-
-		return s3ObjectPathMatcher.find();
-	}
-
 	private static String _replaceS3ObjectPath(String s3ObjectPath) {
 		Matcher s3ObjectPathMatcher = _s3ObjectPathPattern.matcher(
 			s3ObjectPath);
@@ -1061,7 +1061,7 @@ public class CloudBucketUtil {
 	}
 
 	private static void _validateS3ObjectPath(String s3ObjectPath) {
-		if (!_isValidS3ObjectPath(s3ObjectPath)) {
+		if (!isValidS3ObjectPath(s3ObjectPath)) {
 			throw new RuntimeException(
 				"Invalid S3 object path: " + s3ObjectPath);
 		}

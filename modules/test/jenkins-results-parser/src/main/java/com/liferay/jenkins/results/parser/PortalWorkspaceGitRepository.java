@@ -484,6 +484,12 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	}
 
 	protected synchronized void uploadYarnCache() {
+		String yarnCacheS3ObjectPath = _getYarnCacheS3ObjectPath();
+
+		if (!CloudBucketUtil.isValidS3ObjectPath(yarnCacheS3ObjectPath)) {
+			return;
+		}
+
 		File yarnCacheFile = null;
 
 		try {
@@ -496,8 +502,6 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 				(PortalGitWorkingDirectory)getGitWorkingDirectory();
 
 			portalGitWorkingDirectory.createYarnCache(yarnCacheFile.getName());
-
-			String yarnCacheS3ObjectPath = _getYarnCacheS3ObjectPath();
 
 			CloudBucketUtil.uploadS3File(yarnCacheS3ObjectPath, yarnCacheFile);
 
