@@ -456,12 +456,6 @@ public class LayoutSetPrototypeExportImportTest
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
 				layout.getGroupId(), draftLayout.getPlid());
 
-		if (fragmentEntryLinks.isEmpty()) {
-			fragmentEntryLinks =
-				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
-					layout.getGroupId(), layout.getPlid());
-		}
-
 		Assert.assertEquals(
 			fragmentEntryLinks.toString(), 1, fragmentEntryLinks.size());
 
