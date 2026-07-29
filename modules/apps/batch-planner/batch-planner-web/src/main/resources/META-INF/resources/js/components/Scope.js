@@ -4,6 +4,7 @@
  */
 
 import ClayForm, {ClaySelect} from '@clayui/form';
+import {openToast} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
@@ -24,14 +25,31 @@ function Scope({portletNamespace}) {
 					['depot-scopes', 'site-scopes'].map((scopesPath) =>
 						fetch(
 							`${planURL}/${scopesPath}?export=${event.isExport}`
-						).then((response) => response.json())
+						).then((response) => {
+							if (!response.ok) {
+								throw new Error();
+							}
+
+							return response.json();
+						})
 					)
-				).then(([depotScopesJSON, siteScopesJSON]) => {
-					setScopes([
-						...(depotScopesJSON.items || []),
-						...(siteScopesJSON.items || []),
-					]);
-				});
+				)
+					.then(([depotScopesJSON, siteScopesJSON]) => {
+						setScopes([
+							...(depotScopesJSON.items || []),
+							...(siteScopesJSON.items || []),
+						]);
+					})
+					.catch(() => {
+						setScopes([]);
+
+						openToast({
+							message: Liferay.Language.get(
+								'an-unexpected-error-occurred'
+							),
+							type: 'danger',
+						});
+					});
 			}
 			else {
 				setScopes([]);
