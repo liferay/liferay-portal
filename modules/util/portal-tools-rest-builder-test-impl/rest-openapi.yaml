@@ -27,6 +27,8 @@ components:
                     items:
                         type: customField
                     type: array
+                embeddedNestedField:
+                    type: object
                 externalReferenceCode:
                     type: string
                 id:
