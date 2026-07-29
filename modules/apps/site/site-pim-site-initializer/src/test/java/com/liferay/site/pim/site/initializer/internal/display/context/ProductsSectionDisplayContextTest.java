@@ -6,10 +6,12 @@
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -50,6 +52,81 @@ public class ProductsSectionDisplayContextTest {
 				"&nestedFields=embedded,systemProperties.",
 				"objectDefinitionBrief"),
 			productsSectionDisplayContext.getAPIURL());
+	}
+
+	@Test
+	public void testGetBulkActionDropdownItems() {
+		LanguageUtil languageUtil = new LanguageUtil();
+
+		HttpServletRequest httpServletRequest = Mockito.mock(
+			HttpServletRequest.class);
+		Language language = Mockito.mock(Language.class);
+
+		Mockito.when(
+			language.get(httpServletRequest, "delete")
+		).thenReturn(
+			"Delete"
+		);
+
+		languageUtil.setLanguage(language);
+
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			themeDisplay.getCompanyId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
+		).thenReturn(
+			themeDisplay
+		);
+
+		ProductsSectionDisplayContext productsSectionDisplayContext =
+			new ProductsSectionDisplayContext(httpServletRequest);
+
+		try (MockedStatic<FeatureFlagManagerUtil>
+				featureFlagManagerUtilMockedStatic = Mockito.mockStatic(
+					FeatureFlagManagerUtil.class)) {
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				false
+			);
+
+			List<DropdownItem> bulkActionDropdownItems =
+				productsSectionDisplayContext.getBulkActionDropdownItems();
+
+			Assert.assertTrue(bulkActionDropdownItems.isEmpty());
+
+			featureFlagManagerUtilMockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96666"))
+			).thenReturn(
+				true
+			);
+
+			bulkActionDropdownItems =
+				productsSectionDisplayContext.getBulkActionDropdownItems();
+
+			Assert.assertEquals(
+				bulkActionDropdownItems.toString(), 1,
+				bulkActionDropdownItems.size());
+
+			DropdownItem deleteDropdownItem = bulkActionDropdownItems.get(0);
+
+			Assert.assertEquals("#", deleteDropdownItem.get("href"));
+			Assert.assertEquals("trash", deleteDropdownItem.get("icon"));
+			Assert.assertEquals("Delete", deleteDropdownItem.get("label"));
+
+			Map<?, ?> data = (Map<?, ?>)deleteDropdownItem.get("data");
+
+			Assert.assertEquals("delete", data.get("id"));
+		}
 	}
 
 	@Test
