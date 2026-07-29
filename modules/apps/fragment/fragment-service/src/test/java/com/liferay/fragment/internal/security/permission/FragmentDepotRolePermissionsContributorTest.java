@@ -9,6 +9,7 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.role.contributor.DepotRolePermission;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.ArrayList;
@@ -31,6 +32,7 @@ public class FragmentDepotRolePermissionsContributorTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	@TestInfo("LPD-96528")
 	public void testGetDepotRolePermissions() {
 		FragmentDepotRolePermissionsContributor
 			fragmentDepotRolePermissionsContributor =

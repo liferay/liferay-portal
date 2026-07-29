@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -76,6 +77,7 @@ public class FragmentCollectionSearchPermissionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-96528")
 	public void testSearch() throws Exception {
 		UserTestUtil.setUser(_user);
 
