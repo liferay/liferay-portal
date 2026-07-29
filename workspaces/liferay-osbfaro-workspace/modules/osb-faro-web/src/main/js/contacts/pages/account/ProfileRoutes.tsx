@@ -9,7 +9,7 @@ import RouteNotFound from 'shared/components/RouteNotFound';
 import {ACCOUNTS, Routes, toRoute} from 'shared/util/router';
 import {ChannelContext} from 'shared/context/channel';
 import {ENABLE_ACCOUNT_OVERVIEW} from 'shared/util/feature-flags';
-import {Switch, useParams} from 'react-router-dom';
+import {Redirect, Switch, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Activities = lazy(
@@ -35,7 +35,7 @@ const getNavItems = () => [
 	{
 		exact: true,
 		label: Liferay.Language.get('activities'),
-		route: Routes.CONTACTS_ACCOUNT,
+		route: Routes.CONTACTS_ACCOUNT_ACTIVITIES,
 	},
 	{
 		exact: true,
@@ -113,6 +113,21 @@ const AccountProfileRoutes = () => {
 			<BasePage.Body>
 				<Suspense fallback={<Loading />}>
 					<Switch>
+						<Redirect
+							exact
+							from={Routes.CONTACTS_ACCOUNT}
+							to={toRoute(
+								ENABLE_ACCOUNT_OVERVIEW
+									? Routes.CONTACTS_ACCOUNT_OVERVIEW
+									: Routes.CONTACTS_ACCOUNT_ACTIVITIES,
+								{
+									channelId: channelId!,
+									groupId: groupId!,
+									id: id!,
+								}
+							)}
+						/>
+
 						<BundleRouter
 							componentProps={{account: data, loading}}
 							data={Profile}
@@ -124,7 +139,7 @@ const AccountProfileRoutes = () => {
 							componentProps={{accountName}}
 							data={Activities}
 							exact
-							path={Routes.CONTACTS_ACCOUNT}
+							path={Routes.CONTACTS_ACCOUNT_ACTIVITIES}
 						/>
 
 						{ENABLE_ACCOUNT_OVERVIEW && (

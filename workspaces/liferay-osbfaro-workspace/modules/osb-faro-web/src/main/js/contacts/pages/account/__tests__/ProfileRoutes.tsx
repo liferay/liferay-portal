@@ -202,6 +202,50 @@ describe('AccountProfileRoutes', () => {
 		).toBeInTheDocument();
 	});
 
+	it('renders the activities page on the activities route', async () => {
+		mockedUseRequest.mockReturnValue({
+			data: {accountName: 'Acme Corp'},
+			error: false,
+			loading: false,
+		});
+
+		renderProfileRoutes(
+			createMemoryHistory({
+				initialEntries: [
+					toRoute(Routes.CONTACTS_ACCOUNT_ACTIVITIES, ROUTE_PARAMS),
+				],
+			})
+		);
+
+		expect(
+			await screen.findByTestId('account-activities')
+		).toBeInTheDocument();
+	});
+
+	it('lands on overview when opening an account', async () => {
+		mockedUseRequest.mockReturnValue({
+			data: {accountName: 'Acme Corp'},
+			error: false,
+			loading: false,
+		});
+
+		const history = createMemoryHistory({
+			initialEntries: [toRoute(Routes.CONTACTS_ACCOUNT, ROUTE_PARAMS)],
+		});
+
+		renderProfileRoutes(history);
+
+		await waitFor(() =>
+			expect(history.location.pathname).toBe(
+				toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS)
+			)
+		);
+
+		expect(
+			await screen.findByTestId('account-overview')
+		).toBeInTheDocument();
+	});
+
 	describe('when the account overview flag is disabled', () => {
 		beforeEach(() => {
 			featureFlags.ENABLE_ACCOUNT_OVERVIEW = false;
@@ -242,6 +286,26 @@ describe('AccountProfileRoutes', () => {
 			expect(
 				screen.queryByTestId('account-overview')
 			).not.toBeInTheDocument();
+		});
+
+		it('lands on activities when opening an account', async () => {
+			const history = createMemoryHistory({
+				initialEntries: [
+					toRoute(Routes.CONTACTS_ACCOUNT, ROUTE_PARAMS),
+				],
+			});
+
+			renderProfileRoutes(history);
+
+			await waitFor(() =>
+				expect(history.location.pathname).toBe(
+					toRoute(Routes.CONTACTS_ACCOUNT_ACTIVITIES, ROUTE_PARAMS)
+				)
+			);
+
+			expect(
+				await screen.findByTestId('account-activities')
+			).toBeInTheDocument();
 		});
 	});
 });
