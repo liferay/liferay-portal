@@ -44,7 +44,7 @@ public class IndividualSegmentResourceImpl
 		Results<com.liferay.osb.faro.engine.client.model.IndividualSegment>
 			results = _contactsEngineClient.getIndividualSegments(
 				faroProject, channelId, null, search, null, name, null, null,
-				status, FaroPaginationUtil.getCur(pagination),
+				null, status, FaroPaginationUtil.getCur(pagination),
 				FaroPaginationUtil.getDelta(pagination), null);
 
 		return Page.of(

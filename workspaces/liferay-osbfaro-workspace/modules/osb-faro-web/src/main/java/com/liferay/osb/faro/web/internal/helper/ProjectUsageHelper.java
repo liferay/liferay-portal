@@ -230,7 +230,7 @@ public class ProjectUsageHelper {
 
 		Results<IndividualSegment> results =
 			_contactsEngineClient.getIndividualSegments(
-				faroProject, null, null, null, null, null, null, null,
+				faroProject, null, null, null, null, null, null, null, null,
 				IndividualSegment.Status.ACTIVE.name(), 1, 10000, null);
 
 		for (IndividualSegment individualSegment : results.getItems()) {

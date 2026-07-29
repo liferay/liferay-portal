@@ -309,8 +309,8 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 
 		return search(
 			groupId, null, null, 0, null, faroSearchContext.getQuery(), null,
-			null, faroSearchContext.getCur(), faroSearchContext.getDelta(),
-			faroSearchContext.getOrderByFields());
+			null, null, faroSearchContext.getCur(),
+			faroSearchContext.getDelta(), faroSearchContext.getOrderByFields());
 	}
 
 	@GET
@@ -322,6 +322,8 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 			@QueryParam("contactsEntityType") int contactsEntityType,
 			@QueryParam("dataSourceId") String dataSourceId,
 			@QueryParam("query") String query,
+			@DefaultValue(StringPool.BLANK) @QueryParam("segmentCategories")
+				FaroParam<List<String>> segmentCategoriesFaroParam,
 			@DefaultValue(StringPool.BLANK) @QueryParam("segmentTypes")
 				FaroParam<List<String>> segmentTypesFaroParam,
 			@QueryParam("state") String state, @QueryParam("cur") int cur,
@@ -338,8 +340,8 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 
 		return search(
 			groupId, channelId, contactsEntityId, contactsEntityType,
-			dataSourceId, query, segmentTypes, state, cur, delta,
-			orderByFieldsFaroParam.getValue());
+			dataSourceId, query, segmentCategoriesFaroParam.getValue(),
+			segmentTypes, state, cur, delta, orderByFieldsFaroParam.getValue());
 	}
 
 	@GET
@@ -350,6 +352,8 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 			@QueryParam("channelId") String channelId,
 			@QueryParam("dataSourceId") String dataSourceId,
 			@QueryParam("search") String search,
+			@DefaultValue(StringPool.BLANK) @QueryParam("segmentCategories")
+				FaroParam<List<String>> segmentCategoriesFaroParam,
 			@DefaultValue(StringPool.BLANK) @QueryParam("segmentTypes")
 				FaroParam<List<String>> segmentTypesFaroParam,
 			@QueryParam("state") String state, @QueryParam("page") int page,
@@ -368,7 +372,8 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getIndividualSegments(
 				faroProject, channelId, dataSourceId, search,
-				Arrays.asList("authorName", "name"), null, segmentTypes, state,
+				Arrays.asList("authorName", "name"), null,
+				segmentCategoriesFaroParam.getValue(), segmentTypes, state,
 				IndividualSegment.Status.ACTIVE.name(), page, pageSize, null),
 			IndividualSegmentDisplay::new, page, pageSize);
 	}
@@ -448,8 +453,8 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 	protected FaroResultsDisplay<IndividualSegment> search(
 			long groupId, String channelId, String contactsEntityId,
 			int contactsEntityType, String dataSourceId, String query,
-			List<String> segmentTypes, String state, int cur, int delta,
-			List<OrderByField> orderByFields)
+			List<String> segmentCategories, List<String> segmentTypes,
+			String state, int cur, int delta, List<OrderByField> orderByFields)
 		throws Exception {
 
 		Results<IndividualSegment> results = null;
@@ -460,9 +465,9 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 		if (Validator.isNull(contactsEntityId)) {
 			results = contactsEngineClient.getIndividualSegments(
 				faroProject, channelId, dataSourceId, query,
-				List.of("authorName", "name"), null, segmentTypes, state,
-				IndividualSegment.Status.ACTIVE.name(), cur, delta,
-				orderByFields);
+				List.of("authorName", "name"), null, segmentCategories,
+				segmentTypes, state, IndividualSegment.Status.ACTIVE.name(),
+				cur, delta, orderByFields);
 		}
 		else if (contactsEntityType == FaroConstants.TYPE_ACCOUNT) {
 			results = contactsEngineClient.getAccountIndividualSegments(
