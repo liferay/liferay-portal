@@ -8,6 +8,9 @@ package com.liferay.jenkins.results.parser;
 import java.util.Collections;
 import java.util.Map;
 
+import org.json.JSONObject;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -22,31 +25,72 @@ public class BaseBuildUpdaterTest
 	@Test
 	public void testRunMissing() {
 		_testRunMissing(false, false, 1, false, 1);
+		_testRunMissing(false, false, 2, true, 100);
 		_testRunMissing(false, true, 0, false, 1);
+		_testRunMissing(false, true, 0, false, 100);
 		_testRunMissing(true, false, 0, false, 1);
-		_testRunMissing(true, false, 0, true, 100);
+		_testRunMissing(true, false, 0, false, 100);
+	}
+
+	@Test
+	public void testRunMissingReattaches() {
+		_testRunMissingReattaches(false, true, _BUILD_QUEUED_ITEM_ID);
+		_testRunMissingReattaches(true, false, _BUILD_IN_PROGRESS_QUEUE_ID);
+	}
+
+	@Test
+	public void testRunMissingWithoutBuildParameters() {
+		BaseBuildUpdater baseBuildUpdater = _mockBaseBuildUpdater(
+			true, true, Collections.emptyMap());
+
+		ReflectionTestUtil.setFieldValue(
+			baseBuildUpdater, "_missingTickCount", Integer.MAX_VALUE - 1);
+
+		baseBuildUpdater.runMissing();
+
+		Mockito.verify(
+			baseBuildUpdater
+		).reinvoke();
 	}
 
 	private BaseBuildUpdater _mockBaseBuildUpdater(
-		boolean buildInProgress, boolean buildQueued) {
+		boolean buildInProgress, boolean buildQueued,
+		Map<String, String> parameters) {
 
 		String jobName = RandomTestUtil.randomString();
 
-		Map<String, String> parameters = Collections.singletonMap(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
 		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
 
-		Mockito.when(
-			jenkinsMaster.isBuildInProgress(jobName, parameters)
-		).thenReturn(
-			buildInProgress
-		);
+		JSONObject inProgressBuildJSONObject = null;
+
+		if (buildInProgress) {
+			inProgressBuildJSONObject = new JSONObject();
+
+			inProgressBuildJSONObject.put(
+				"queueId", _BUILD_IN_PROGRESS_QUEUE_ID
+			).put(
+				"url", RandomTestUtil.randomString()
+			);
+		}
 
 		Mockito.when(
-			jenkinsMaster.isBuildQueued(jobName, parameters)
+			jenkinsMaster.getInProgressBuildJSONObject(jobName, parameters)
 		).thenReturn(
-			buildQueued
+			inProgressBuildJSONObject
+		);
+
+		JSONObject queuedBuildJSONObject = null;
+
+		if (buildQueued) {
+			queuedBuildJSONObject = new JSONObject();
+
+			queuedBuildJSONObject.put("id", _BUILD_QUEUED_ITEM_ID);
+		}
+
+		Mockito.when(
+			jenkinsMaster.getQueuedBuildJSONObject(jobName, parameters)
+		).thenReturn(
+			queuedBuildJSONObject
 		);
 
 		Build build = Mockito.mock(Build.class);
@@ -94,7 +138,9 @@ public class BaseBuildUpdaterTest
 		int tickCount) {
 
 		BaseBuildUpdater baseBuildUpdater = _mockBaseBuildUpdater(
-			buildInProgress, buildQueued);
+			buildInProgress, buildQueued,
+			Collections.singletonMap(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
 
 		for (int i = 0; i < tickCount; i++) {
 			ReflectionTestUtil.setFieldValue(
@@ -119,5 +165,33 @@ public class BaseBuildUpdaterTest
 			"reporting"
 		);
 	}
+
+	private void _testRunMissingReattaches(
+		boolean buildInProgress, boolean buildQueued, long expectedQueueId) {
+
+		BaseBuildUpdater baseBuildUpdater = _mockBaseBuildUpdater(
+			buildInProgress, buildQueued,
+			Collections.singletonMap(
+				RandomTestUtil.randomString(), RandomTestUtil.randomString()));
+
+		ReflectionTestUtil.setFieldValue(
+			baseBuildUpdater, "_missingTickCount", Integer.MAX_VALUE - 1);
+
+		baseBuildUpdater.runMissing();
+
+		Build build = baseBuildUpdater.getBuild();
+
+		Build.Invocation currentInvocation = build.getCurrentInvocation();
+
+		Assert.assertEquals(expectedQueueId, currentInvocation.getQueueId());
+
+		Mockito.verify(
+			baseBuildUpdater, Mockito.never()
+		).reinvoke();
+	}
+
+	private static final long _BUILD_IN_PROGRESS_QUEUE_ID = 1234;
+
+	private static final long _BUILD_QUEUED_ITEM_ID = 5678;
 
 }
