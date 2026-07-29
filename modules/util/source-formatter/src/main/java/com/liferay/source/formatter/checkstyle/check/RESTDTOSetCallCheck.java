@@ -77,13 +77,14 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 			if ((childDetailAST == null) ||
 				(childDetailAST.findFirstToken(TokenTypes.METHOD_REF) !=
 					null) ||
-				(childDetailAST.getType() == TokenTypes.LAMBDA)) {
+				(childDetailAST.getType() == TokenTypes.LAMBDA) ||
+				_hasUnsafeSupplierReturnType(absolutePath, childDetailAST)) {
 
 				return;
 			}
 		}
 
-		JavaClass javaClass = _getDTOJavaClass(
+		JavaClass javaClass = _getJavaClass(
 			absolutePath, fullyQualifiedTypeName);
 
 		if ((javaClass == null) ||
@@ -228,11 +229,11 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		return _bundleSymbolicNamesMap;
 	}
 
-	private JavaClass _getDTOJavaClass(
+	private JavaClass _getJavaClass(
 		String absolutePath, String fullyQualifiedTypeName) {
 
-		if (_dtoJavaClasses.containsKey(fullyQualifiedTypeName)) {
-			return _dtoJavaClasses.get(fullyQualifiedTypeName);
+		if (_javaClasses.containsKey(fullyQualifiedTypeName)) {
+			return _javaClasses.get(fullyQualifiedTypeName);
 		}
 
 		File javaFile = JavaSourceUtil.getJavaFile(
@@ -249,7 +250,7 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 			javaClass = JavaClassParser.parseJavaClass(
 				SourceUtil.getAbsolutePath(javaFile), FileUtil.read(javaFile));
 
-			_dtoJavaClasses.put(fullyQualifiedTypeName, javaClass);
+			_javaClasses.put(fullyQualifiedTypeName, javaClass);
 
 			return javaClass;
 		}
@@ -306,6 +307,84 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		return false;
 	}
 
+	private boolean _hasUnsafeSupplierReturnType(
+		String absolutePath, DetailAST detailAST) {
+
+		if (detailAST.getType() != TokenTypes.EXPR) {
+			return false;
+		}
+
+		DetailAST methodCallDetailAST = detailAST.getFirstChild();
+
+		if ((methodCallDetailAST == null) ||
+			(methodCallDetailAST.getType() != TokenTypes.METHOD_CALL)) {
+
+			return false;
+		}
+
+		DetailAST firstChildDetailAST = methodCallDetailAST.getFirstChild();
+
+		if (firstChildDetailAST.getType() != TokenTypes.DOT) {
+			return false;
+		}
+
+		DetailAST qualifierDetailAST = firstChildDetailAST.getFirstChild();
+
+		if (qualifierDetailAST.getType() != TokenTypes.IDENT) {
+			return false;
+		}
+
+		String fullyQualifiedTypeName = null;
+
+		String qualifierName = qualifierDetailAST.getText();
+
+		if (Character.isUpperCase(qualifierName.charAt(0))) {
+			fullyQualifiedTypeName = getFullyQualifiedTypeName(
+				qualifierName, detailAST, false);
+		}
+		else {
+			fullyQualifiedTypeName = getVariableTypeName(
+				detailAST, qualifierName, false, false, true);
+		}
+
+		if (fullyQualifiedTypeName == null) {
+			return false;
+		}
+
+		JavaClass javaClass = _getJavaClass(
+			absolutePath, fullyQualifiedTypeName);
+
+		if (javaClass == null) {
+			return false;
+		}
+
+		String methodName = getMethodName(methodCallDetailAST);
+
+		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {
+			if (!javaTerm.isJavaMethod()) {
+				continue;
+			}
+
+			JavaMethod javaMethod = (JavaMethod)javaTerm;
+
+			if (!StringUtil.equals(methodName, javaMethod.getName())) {
+				continue;
+			}
+
+			JavaSignature javaSignature = javaMethod.getSignature();
+
+			String returnType = javaSignature.getReturnType();
+
+			if ((returnType != null) &&
+				returnType.startsWith("UnsafeSupplier")) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private static final String _MSG_MOVE_STATEMENT = "statement.move";
 
 	private static final String _MSG_USE_SET_METHOD_INSTEAD =
@@ -315,7 +394,7 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		RESTDTOSetCallCheck.class);
 
 	private volatile Map<String, String> _bundleSymbolicNamesMap;
-	private final Map<String, JavaClass> _dtoJavaClasses = new HashMap<>();
+	private final Map<String, JavaClass> _javaClasses = new HashMap<>();
 	private volatile String _rootDirName;
 
 }
