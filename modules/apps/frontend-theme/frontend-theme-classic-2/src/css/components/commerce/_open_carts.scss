@@ -1,0 +1,17 @@
+.portlet-commerce-open-order-content {
+	.order-details-container {
+		margin-bottom: var(--spacer-4);
+
+		.lfr-icon-menu {
+			float: right;
+
+			.position-fixed {
+				position: initial !important;
+			}
+		}
+
+		.commerce-cta > div {
+			display: inline-block;
+		}
+	}
+}

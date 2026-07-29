@@ -1,0 +1,14 @@
+.info-panel {
+	@include media-breakpoint-up(md) {
+		bottom: 0;
+		position: absolute;
+		top: 0;
+
+		> .sidenav-menu {
+			bottom: 0;
+			position: absolute;
+			right: 0 !important;
+			top: 0;
+		}
+	}
+}

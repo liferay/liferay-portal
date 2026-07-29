@@ -1,0 +1,13 @@
+@each $color, $value in $theme-color-palette {
+	.bg-#{$color} {
+		background-color: $value !important;
+	}
+
+	.border-#{$color} {
+		border-color: $value !important;
+	}
+
+	.text-#{$color} {
+		color: $value !important;
+	}
+}
