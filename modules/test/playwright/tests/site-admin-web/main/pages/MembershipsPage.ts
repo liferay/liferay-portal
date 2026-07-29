@@ -51,21 +51,15 @@ export class MembershipsPage {
 	}
 
 	async assignSiteAdministratorRole() {
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.getByRole('button', {name: 'Assign Roles'}),
-			timeout: 500,
-			trigger: this.page.getByLabel('Select All Items on the Page'),
-		});
+		await this.page.getByLabel('Select All Items on the Page').check();
+
+		await this.page.getByRole('button', {name: 'Assign Roles'}).click();
 
 		await this.page
 			.frameLocator('iframe[title="Assign Roles"]')
-			.locator(
-				'[id="_com_liferay_site_memberships_web_portlet_SiteMembershipsPortlet_roles_1"] svg'
-			)
-			.click();
-
-		await this.page.waitForTimeout(500);
+			.locator('.file-card', {hasText: 'Site Administrator'})
+			.getByRole('checkbox')
+			.check();
 
 		await this.page.getByRole('button', {name: 'Done'}).click();
 
@@ -90,6 +84,10 @@ export class MembershipsPage {
 				this.page.getByRole('heading', {name: 'Search Results'})
 			).toBeVisible({timeout: 1000});
 		}).toPass();
+
+		await expect(
+			this.page.getByLabel('Select All Items on the Page')
+		).toBeVisible();
 	}
 
 	async goto() {
@@ -130,14 +128,11 @@ export class MembershipsPage {
 			dialog.accept();
 		});
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.page.getByRole('button', {
-				name: 'Remove Role: Site Administrator',
-			}),
-			timeout: 500,
-			trigger: this.page.getByLabel('Select All Items on the Page'),
-		});
+		await this.page.getByLabel('Select All Items on the Page').check();
+
+		await this.page
+			.getByRole('button', {name: 'Remove Role: Site Administrator'})
+			.click();
 
 		await waitForAlert(this.page);
 	}
