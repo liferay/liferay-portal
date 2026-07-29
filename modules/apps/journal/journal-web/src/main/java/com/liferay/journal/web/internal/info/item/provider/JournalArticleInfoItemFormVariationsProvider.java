@@ -6,6 +6,7 @@
 package com.liferay.journal.web.internal.info.item.provider;
 
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
+import com.liferay.dynamic.data.mapping.info.item.provider.DDMStructureInfoItemFormVariationsProvider;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.info.item.InfoItemFormVariation;
@@ -30,7 +31,12 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = InfoItemFormVariationsProvider.class)
 public class JournalArticleInfoItemFormVariationsProvider
-	implements InfoItemFormVariationsProvider<JournalArticle> {
+	implements DDMStructureInfoItemFormVariationsProvider<JournalArticle> {
+
+	@Override
+	public long getDDMStructureId(String formVariationKey) {
+		return GetterUtil.getLong(formVariationKey);
+	}
 
 	@Override
 	public InfoItemFormVariation getInfoItemFormVariation(
