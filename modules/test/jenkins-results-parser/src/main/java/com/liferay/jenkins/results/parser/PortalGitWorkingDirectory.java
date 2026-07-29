@@ -42,7 +42,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 		if (!JenkinsResultsParserUtil.isCloudCINode() ||
 			upstreamBranchName.startsWith("ee-") ||
-			!isGitArchiveYarnCacheEnabled()) {
+			!_isGitArchiveYarnCacheEnabled()) {
 
 			return archiveFile;
 		}
@@ -591,7 +591,7 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		return filteredEnv;
 	}
 
-	protected boolean isGitArchiveYarnCacheEnabled() {
+	private boolean _isGitArchiveYarnCacheEnabled() {
 		String gitArchiveYarnCacheEnabled = null;
 
 		try {

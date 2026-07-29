@@ -443,7 +443,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	}
 
 	protected synchronized void setUpYarnCache() {
-		if (_setUpYarnCache || !isYarnCacheEnabled()) {
+		if (_setUpYarnCache) {
 			_setUpYarnCache = true;
 
 			return;
@@ -495,8 +495,6 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		try {
 			yarnCacheFile = File.createTempFile(
 				"yarn-cache", ".zip", getDirectory());
-
-			JenkinsResultsParserUtil.delete(yarnCacheFile);
 
 			PortalGitWorkingDirectory portalGitWorkingDirectory =
 				(PortalGitWorkingDirectory)getGitWorkingDirectory();
