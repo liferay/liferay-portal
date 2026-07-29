@@ -42,7 +42,6 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -212,11 +211,11 @@ public class UploadFileEntryMVCActionCommand extends BaseMVCActionCommand {
 			Role role = _roleLocalService.getRole(
 				themeDisplay.getCompanyId(), RoleConstants.GUEST);
 
-			_resourcePermissionLocalService.removeResourcePermission(
+			_resourcePermissionLocalService.setResourcePermissions(
 				themeDisplay.getCompanyId(), DLFileEntry.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(fileEntry.getFileEntryId()), role.getRoleId(),
-				ActionKeys.VIEW);
+				new String[0]);
 
 			return fileEntry;
 		}
