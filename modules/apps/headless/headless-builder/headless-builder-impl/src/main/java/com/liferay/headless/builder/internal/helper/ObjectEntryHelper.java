@@ -19,6 +19,7 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -296,19 +297,13 @@ public class ObjectEntryHelper {
 			UnsafeSupplier<T, Exception> unsafeSupplier)
 		throws Exception {
 
-		NestedFieldsContext nestedFieldsContext = new NestedFieldsContext(
-			nestedFields.size(), nestedFields);
+		try (SafeCloseable safeCloseable =
+				NestedFieldsContextThreadLocal.
+					setNestedFieldsContextWithSafeCloseable(
+						new NestedFieldsContext(
+							nestedFields.size(), nestedFields))) {
 
-		NestedFieldsContext oldNestedFieldsContext =
-			NestedFieldsContextThreadLocal.getAndSetNestedFieldsContext(
-				nestedFieldsContext);
-
-		try {
 			return unsafeSupplier.get();
-		}
-		finally {
-			NestedFieldsContextThreadLocal.setNestedFieldsContext(
-				oldNestedFieldsContext);
 		}
 	}
 

@@ -229,43 +229,40 @@ public class BatchEngineExportTaskExecutorImpl
 			BatchEngineExportTask batchEngineExportTask, Settings settings)
 		throws Exception {
 
-		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
-			new UnsyncByteArrayOutputStream();
-
 		Map<String, Serializable> parameters = _getParameters(
 			batchEngineExportTask);
 
-		NestedFieldsContext oldNestedFieldsContext = null;
+		BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
+			_batchEngineTaskItemDelegateRegistry.getBatchEngineTaskItemDelegate(
+				batchEngineExportTask.getCompanyId(),
+				batchEngineExportTask.getClassName(),
+				batchEngineExportTask.getTaskItemDelegateName());
+
+		if (batchEngineTaskItemDelegate == null) {
+			throw new IllegalStateException(
+				"No batch engine delegate available for class name " +
+					batchEngineExportTask.getClassName());
+		}
+
+		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
+			new UnsyncByteArrayOutputStream();
 
 		try (BatchEngineExportTaskItemWriter batchEngineExportTaskItemWriter =
 				_getBatchEngineExportTaskItemWriter(
 					batchEngineExportTask, parameters, settings,
-					unsyncByteArrayOutputStream)) {
+					unsyncByteArrayOutputStream);
 
-			BatchEngineTaskItemDelegate<?> batchEngineTaskItemDelegate =
-				_batchEngineTaskItemDelegateRegistry.
-					getBatchEngineTaskItemDelegate(
-						batchEngineExportTask.getCompanyId(),
-						batchEngineExportTask.getClassName(),
-						batchEngineExportTask.getTaskItemDelegateName());
-
-			if (batchEngineTaskItemDelegate == null) {
-				throw new IllegalStateException(
-					"No batch engine delegate available for class name " +
-						batchEngineExportTask.getClassName());
-			}
-
-			oldNestedFieldsContext =
-				NestedFieldsContextThreadLocal.getNestedFieldsContext();
-
-			NestedFieldsContextThreadLocal.setNestedFieldsContext(
-				new NestedFieldsContext(
-					NestedFieldsContextUtil.limitDepth(
-						GetterUtil.getInteger(
-							parameters.get("batchNestedFieldsDepth"))),
-					NestedFieldsContextUtil.toList(
-						MapUtil.getString(parameters, "batchNestedFields")),
-					batchEngineTaskItemDelegate.getVersion()));
+			SafeCloseable safeCloseable =
+				NestedFieldsContextThreadLocal.
+					setNestedFieldsContextWithSafeCloseable(
+						new NestedFieldsContext(
+							NestedFieldsContextUtil.limitDepth(
+								GetterUtil.getInteger(
+									parameters.get("batchNestedFieldsDepth"))),
+							NestedFieldsContextUtil.toList(
+								MapUtil.getString(
+									parameters, "batchNestedFields")),
+							batchEngineTaskItemDelegate.getVersion()))) {
 
 			int maxItems = settings.getMaxItems();
 
@@ -371,10 +368,6 @@ public class BatchEngineExportTaskExecutorImpl
 					_backgroundTaskStatusMessageSender,
 					batchEngineExportTask.getProcessedItemsCount());
 			}
-		}
-		finally {
-			NestedFieldsContextThreadLocal.setNestedFieldsContext(
-				oldNestedFieldsContext);
 		}
 
 		byte[] content = unsyncByteArrayOutputStream.toByteArray();

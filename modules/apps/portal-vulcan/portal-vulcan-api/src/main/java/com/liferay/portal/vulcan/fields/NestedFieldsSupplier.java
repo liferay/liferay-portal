@@ -142,17 +142,12 @@ public class NestedFieldsSupplier<T> {
 			nestedFieldUnsafeSuppliers.put(
 				nestedField,
 				() -> {
-					NestedFieldsContext oldNestedFieldsContext =
-						NestedFieldsContextThreadLocal.
-							getAndSetNestedFieldsContext(
-								clonedNestedFieldsContext);
+					try (SafeCloseable safeCloseable =
+							NestedFieldsContextThreadLocal.
+								setNestedFieldsContextWithSafeCloseable(
+									clonedNestedFieldsContext)) {
 
-					try {
 						return unsafeSupplier.get();
-					}
-					finally {
-						NestedFieldsContextThreadLocal.setNestedFieldsContext(
-							oldNestedFieldsContext);
 					}
 				});
 		}

@@ -7,6 +7,7 @@ package com.liferay.portal.tools.rest.builder.test.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -72,12 +73,13 @@ public class BatchTestEntityResourceTest
 		Assert.assertNull(batchTestEntity2.getNestedField1());
 		Assert.assertNull(batchTestEntity2.getNestedField2());
 
-		NestedFieldsContext oldNestedFieldsContext =
-			NestedFieldsContextThreadLocal.getAndSetNestedFieldsContext(
-				new NestedFieldsContext(
-					1, Arrays.asList("nestedField1", "nestedField2"), "v1.0"));
+		try (SafeCloseable safeCloseable =
+				NestedFieldsContextThreadLocal.
+					setNestedFieldsContextWithSafeCloseable(
+						new NestedFieldsContext(
+							1, Arrays.asList("nestedField1", "nestedField2"),
+							"v1.0"))) {
 
-		try {
 			vulcanCRUDItemDelegate = _buildVulcanCRUDItemDelegate();
 
 			com.liferay.portal.tools.rest.builder.test.dto.v1_0.BatchTestEntity
@@ -105,10 +107,6 @@ public class BatchTestEntityResourceTest
 			Assert.assertEquals(
 				"nestedField2-" + postBatchTestEntity.getId(),
 				batchTestEntity4.getNestedField2());
-		}
-		finally {
-			NestedFieldsContextThreadLocal.setNestedFieldsContext(
-				oldNestedFieldsContext);
 		}
 	}
 
