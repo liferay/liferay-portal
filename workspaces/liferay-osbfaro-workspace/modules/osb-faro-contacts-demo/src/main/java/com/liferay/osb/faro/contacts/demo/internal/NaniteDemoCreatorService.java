@@ -167,10 +167,10 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 
 			Http.Options options = new Http.Options();
 
-			Map<String, Object> objectJSONObject =
+			Map<String, Object> liferayUser =
 				(Map<String, Object>)dxpEntity.get("objectJSONObject");
 
-			String uuid = (String)objectJSONObject.get("uuid");
+			String uuid = (String)liferayUser.get("uuid");
 
 			options.setBody(
 				JSONUtil.put(
@@ -179,7 +179,7 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 					"id", StringUtil.removeChar(uuid, CharPool.DASH)
 				).put(
 					"identity",
-					JSONUtil.put("email", objectJSONObject.get("emailAddress"))
+					JSONUtil.put("email", liferayUser.get("emailAddress"))
 				).put(
 					"userId", uuid
 				).toString(),
@@ -204,7 +204,7 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 					log.error(
 						StringBundler.concat(
 							"Unable to add an identity for ",
-							objectJSONObject.get("emailAddress"), ": ",
+							liferayUser.get("emailAddress"), ": ",
 							response.getResponseCode(), " ", responseString));
 				}
 			}
