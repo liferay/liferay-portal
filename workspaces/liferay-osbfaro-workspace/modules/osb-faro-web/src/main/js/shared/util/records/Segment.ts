@@ -1,4 +1,4 @@
-import {EntityTypes, SegmentTypes} from '../constants';
+import {EntityTypes, SegmentCategories, SegmentTypes} from '../constants';
 import {fromJS, Map, Record} from 'immutable';
 import {SegmentActivationDetails} from 'segment/components/SegmentActivationCard';
 
@@ -20,6 +20,7 @@ interface ISegment {
 	name: string;
 	properties: Map<string, any>;
 	referencedObjects?: Map<string, any>;
+	segmentCategory: SegmentCategories | null;
 	segmentType: SegmentTypes | null;
 	sequential: boolean;
 	state: string;
@@ -52,6 +53,7 @@ export default class Segment
 			events: Map(),
 			fieldMappings: Map(),
 		}),
+		segmentCategory: null,
 		segmentType: null,
 		sequential: false,
 		state: '',
@@ -78,6 +80,7 @@ export default class Segment
 	declare name: string;
 	declare properties: Map<string, any>;
 	declare referencedObjects?: Map<string, any>;
+	declare segmentCategory: SegmentCategories | null;
 	declare segmentType: SegmentTypes | null;
 	declare sequential: boolean;
 	declare state: string;

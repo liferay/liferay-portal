@@ -62,6 +62,7 @@ export function create({
 	groupId,
 	includeAnonymousUsers = false,
 	name,
+	segmentCategory,
 	segmentType,
 	sequential = false,
 }) {
@@ -71,6 +72,7 @@ export function create({
 		filter: criteriaString,
 		includeAnonymousUsers,
 		name,
+		segmentCategory,
 		segmentType,
 		sequential,
 	};
@@ -90,6 +92,7 @@ export function update({
 	id,
 	includeAnonymousUsers = false,
 	name,
+	segmentCategory,
 	segmentType,
 	sequential = false,
 }) {
@@ -99,6 +102,7 @@ export function update({
 		filter: criteriaString,
 		includeAnonymousUsers,
 		name,
+		segmentCategory,
 		segmentType,
 		sequential,
 	};

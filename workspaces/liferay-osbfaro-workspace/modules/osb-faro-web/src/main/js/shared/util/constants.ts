@@ -272,6 +272,11 @@ export enum SegmentActivationFrequencyTypes {
 	Indefinitely = 'INDEFINITELY',
 }
 
+export enum SegmentCategories {
+	Account = 'ACCOUNT',
+	Individual = 'INDIVIDUAL',
+}
+
 export enum SegmentStates {
 	Disabled = 'DISABLED',
 	InProgress = 'IN_PROGRESS',

@@ -5,7 +5,7 @@ import {get} from 'lodash';
 import {optional} from 'shared/hoc';
 import {PropTypes} from 'prop-types';
 import {Segment} from 'shared/util/records';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {withSegment} from 'shared/hoc/WithSegment';
 
 export class Edit extends React.Component {
@@ -14,20 +14,30 @@ export class Edit extends React.Component {
 	};
 
 	static propTypes = {
+		category: PropTypes.oneOf([
+			SegmentCategories.Account,
+			SegmentCategories.Individual
+		]),
 		segment: PropTypes.instanceOf(Segment),
 		type: PropTypes.oneOf([SegmentTypes.RealTime, SegmentTypes.Batch])
 	};
 
 	render() {
-		const {segment, type, ...otherProps} = this.props;
+		const {category, segment, type, ...otherProps} = this.props;
 
 		const segmentType = get(segment, 'segmentType') || type;
+
+		const segmentCategory =
+			get(segment, 'segmentCategory') ||
+			category ||
+			SegmentCategories.Individual;
 
 		if (segmentType) {
 			return (
 				<DynamicSegment
 					{...omitDefinedProps(otherProps, Edit.propTypes)}
 					segment={segment}
+					segmentCategory={segmentCategory}
 					type={segmentType}
 				/>
 			);
