@@ -159,6 +159,7 @@ public class MockProvisioningClientImpl extends BaseMockProvisioningClientImpl {
 				}
 
 				enterpriseOSBOfferingEntry.setProductEntryId(productEntryId);
+
 				enterpriseOSBOfferingEntry.setQuantity(1);
 				enterpriseOSBOfferingEntry.setStartDate(
 					new Date(1546329600000L));
