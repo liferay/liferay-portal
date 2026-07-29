@@ -10,6 +10,8 @@ package com.liferay.design.library.web.internal.constants;
  */
 public class DesignLibraryConstants {
 
+	public static final String DESIGN_LIBRARY_ENTRY = "designLibraryEntry";
+
 	public static final String DESIGN_LIBRARY_ENTRY_ID_KEY =
 		"designLibraryEntryId";
 
