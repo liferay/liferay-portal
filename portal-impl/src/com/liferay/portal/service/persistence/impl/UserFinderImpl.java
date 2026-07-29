@@ -814,6 +814,10 @@ public class UserFinderImpl extends UserFinderBaseImpl implements UserFinder {
 		sb.append("DISTINCT User_.userId AS userId");
 
 		for (String field : orderByFields) {
+			if (field.equals("userId")) {
+				continue;
+			}
+
 			sb.append(", User_.");
 			sb.append(field);
 			sb.append(" AS ");
