@@ -58,6 +58,23 @@ jest.mock('shared/components/AccountDropdown', () => ({
 	),
 }));
 
+jest.mock('shared/components/SegmentDropdown', () => ({
+	__esModule: true,
+	default: ({
+		initialSegmentId,
+		initialSegmentName,
+	}: {
+		initialSegmentId?: string;
+		initialSegmentName?: string;
+	}) => (
+		<div
+			data-initial-segment-id={initialSegmentId}
+			data-initial-segment-name={initialSegmentName}
+			data-testid="filter-by-segment"
+		/>
+	),
+}));
+
 jest.mock('shared/context/channel', () => ({
 	useChannelContext: () => ({selectedChannel: {name: 'test channel'}}),
 }));
@@ -193,6 +210,37 @@ describe.each(DASHBOARDS)(
 			);
 		});
 
+		it('shows the segment filter on the overview route for LDP workspaces', () => {
+			(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+			renderDashboard();
+
+			expect(screen.getByTestId('filter-by-segment')).toBeInTheDocument();
+		});
+
+		it('hides the segment filter on the overview route for non-LDP workspaces', () => {
+			(useLDPEnabled as jest.Mock).mockReturnValue(false);
+
+			renderDashboard();
+
+			expect(screen.queryByTestId('filter-by-segment')).toBeNull();
+		});
+
+		it('seeds the segment filter from the segmentId/segmentName URL query params', () => {
+			(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+			renderDashboard(['/?segmentId=100&segmentName=Segment+100']);
+
+			expect(screen.getByTestId('filter-by-segment')).toHaveAttribute(
+				'data-initial-segment-id',
+				'100'
+			);
+			expect(screen.getByTestId('filter-by-segment')).toHaveAttribute(
+				'data-initial-segment-name',
+				'Segment 100'
+			);
+		});
+
 		it('shows the visitors tab for LDP workspaces', () => {
 			(useLDPEnabled as jest.Mock).mockReturnValue(true);
 
@@ -253,6 +301,34 @@ describe.each(DASHBOARDS)(
 			expect(href).not.toContain('accountId');
 			expect(href).not.toContain('accountName');
 			expect(href).toContain('rangeKey=30');
+		});
+
+		it('carries the segment filter over to the tab links', () => {
+			(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+			renderDashboard(['/?segmentId=100&segmentName=Segment+100']);
+
+			const href = screen
+				.getByText('Visitors')
+				.closest('a')
+				?.getAttribute('href');
+
+			expect(href).toContain('segmentId=100');
+			expect(href).toContain('segmentName=Segment');
+		});
+
+		it('leaves the tab links free of segment params when no segment is selected', () => {
+			(useLDPEnabled as jest.Mock).mockReturnValue(true);
+
+			renderDashboard();
+
+			const href = screen
+				.getByText('Visitors')
+				.closest('a')
+				?.getAttribute('href');
+
+			expect(href).not.toContain('segmentId');
+			expect(href).not.toContain('segmentName');
 		});
 	}
 );
