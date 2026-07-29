@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.fragment.internal.security.permission;
+package com.liferay.fragment.internal.security.permission.contributor;
 
 import com.liferay.depot.constants.DepotRolesConstants;
-import com.liferay.depot.role.contributor.DepotRolePermission;
+import com.liferay.depot.security.permission.contributor.DepotRolePermission;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.portal.kernel.test.TestInfo;

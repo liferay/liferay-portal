@@ -6,7 +6,7 @@
 package com.liferay.depot.internal.feature.flag;
 
 import com.liferay.depot.internal.roles.DepotDesignLibraryRolesHelper;
-import com.liferay.depot.role.contributor.DepotRolePermissionsContributor;
+import com.liferay.depot.security.permission.contributor.DepotRolePermissionsContributor;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
