@@ -17,6 +17,7 @@ type DocumentMetricResult = {
 
 const GEOLOCATION_QUERY = gql`
 	query DocumentsAndMediaMetrics(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -28,6 +29,7 @@ const GEOLOCATION_QUERY = gql`
 		$touchpoint: String
 	) {
 		document(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId
