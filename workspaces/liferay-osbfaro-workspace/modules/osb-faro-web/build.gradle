@@ -38,6 +38,10 @@ dependencies {
 	testImplementation project(":modules:osb-faro-provisioning-client")
 }
 
+check {
+	dependsOn packageRunCheckFormat
+}
+
 generateJSPJava {
 	enabled = false
 }
@@ -69,6 +73,10 @@ osbYarnWebpack {
 	dependsOn osbYarnInstall
 	executable = new File(osbYarnInstall.nodeDir, "bin/node")
 	workingDir = projectDir
+}
+
+packageRunCheckFormat {
+	dependsOn osbYarnInstall
 }
 
 packageRunTest {
