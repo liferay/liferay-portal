@@ -26,6 +26,10 @@ module "eks" {
 			most_recent=true
 			service_account_role_arn=aws_iam_role.ebs_csi_driver.arn
 		}
+		aws-efs-csi-driver={
+			most_recent=true
+			service_account_role_arn=aws_iam_role.efs_csi_driver.arn
+		}
 		coredns={
 			before_compute=true
 			most_recent=true
@@ -106,6 +110,30 @@ resource "aws_iam_role" "ebs_csi_driver" {
 	force_detach_policies=true
 	name="${var.deployment_name}-ebs_csi_driver"
 }
+resource "aws_iam_role" "efs_csi_driver" {
+	assume_role_policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action="sts:AssumeRoleWithWebIdentity"
+					Condition={
+						StringEquals={
+							"${module.eks.oidc_provider}:aud"="sts.amazonaws.com"
+							"${module.eks.oidc_provider}:sub"="system:serviceaccount:kube-system:efs-csi-controller-sa"
+						}
+					}
+					Effect="Allow"
+					Principal={
+						Federated=local.oidc_provider_arn
+					}
+				}
+			]
+			Version="2012-10-17"
+		}
+	)
+	force_detach_policies=true
+	name="${var.deployment_name}-efs_csi_driver"
+}
 resource "aws_iam_role" "irsa" {
 	assume_role_policy=jsonencode(
 		{
@@ -179,6 +207,10 @@ resource "aws_iam_role_policy" "this" {
 resource "aws_iam_role_policy_attachment" "role_policy_attachment_ebs_csi_driver" {
 	policy_arn="arn:${var.arn_partition}:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 	role=aws_iam_role.ebs_csi_driver.name
+}
+resource "aws_iam_role_policy_attachment" "role_policy_attachment_efs_csi_driver" {
+	policy_arn="arn:${var.arn_partition}:iam::aws:policy/service-role/AmazonEFSCSIDriverPolicy"
+	role=aws_iam_role.efs_csi_driver.name
 }
 resource "aws_kms_alias" "eks_kms_alias" {
 	depends_on=[aws_kms_key.eks_secrets]
