@@ -50,20 +50,18 @@ test(
 			});
 
 		try {
-			const newStyleBookButton = page.getByRole('button', {
-				name: 'New Style Book',
-			});
-
 			await test.step('Open the design library resources view', async () => {
 				await designLibrariesPage.goToDesignLibrary(designLibraryName);
 
-				await expect(newStyleBookButton).toBeVisible();
+				await expect(
+					page.getByRole('button', {exact: true, name: 'New'})
+				).toBeVisible();
 			});
 
 			const modal = page.getByRole('dialog');
 
 			await test.step('Cancelling the modal does not create an entry', async () => {
-				await newStyleBookButton.click();
+				await designLibrariesPage.clickNewStyleBook();
 
 				await expect(modal).toBeVisible();
 				await expect(
@@ -76,7 +74,7 @@ test(
 			});
 
 			await test.step('Submitting the modal redirects to the style book editor', async () => {
-				await newStyleBookButton.click();
+				await designLibrariesPage.clickNewStyleBook();
 
 				await expect(modal).toBeVisible();
 
@@ -118,7 +116,7 @@ test(
 );
 
 test(
-	'New Style Book button is not visible without permissions',
+	'New button is not visible without permissions',
 	{tag: '@LPD-88092'},
 	async ({apiHelpers, designLibrariesPage, page}) => {
 		const designLibraryName = getRandomString();
@@ -149,8 +147,8 @@ test(
 			});
 
 		try {
-			const newStyleBookButton = page.getByRole('button', {
-				name: 'New Style Book',
+			const newButton = page.getByRole('button', {
+				name: 'New',
 			});
 
 			const designLibraryURL =
@@ -159,7 +157,7 @@ test(
 						designLibraryName
 					);
 
-					await expect(newStyleBookButton).toBeVisible();
+					await expect(newButton).toBeVisible();
 
 					return page.url();
 				});
@@ -176,7 +174,7 @@ test(
 			await test.step('New Style Book button is not visible without permissions', async () => {
 				await page.goto(designLibraryURL);
 
-				await expect(newStyleBookButton).toBeHidden();
+				await expect(newButton).toBeHidden();
 			});
 		}
 		finally {

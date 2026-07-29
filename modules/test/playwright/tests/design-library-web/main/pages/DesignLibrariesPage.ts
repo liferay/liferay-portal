@@ -59,6 +59,22 @@ export class DesignLibrariesPage extends POM {
 		}
 	}
 
+	async clickNewStyleBook() {
+		await this.page
+			.getByRole('button', {name: 'New Style Book'})
+			.or(this.page.getByRole('button', {exact: true, name: 'New'}))
+			.first()
+			.click();
+
+		const newStyleBookMenuItem = this.page.getByRole('menuitem', {
+			name: 'New Style Book',
+		});
+
+		if (await newStyleBookMenuItem.isVisible()) {
+			await newStyleBookMenuItem.click();
+		}
+	}
+
 	async createStyleBook(
 		designLibraryName: string,
 		styleBookName: string,
@@ -66,7 +82,7 @@ export class DesignLibrariesPage extends POM {
 	) {
 		await this.goToDesignLibrary(designLibraryName);
 
-		await this.page.getByRole('button', {name: 'New Style Book'}).click();
+		await this.clickNewStyleBook();
 
 		const modal = this.page.getByRole('dialog');
 
