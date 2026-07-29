@@ -1,5 +1,6 @@
 {
 	"liferay-aws-bootstrap": "1.1.0",
 	"liferay-azure-bootstrap": "0.0.1",
+	"liferay-dxp-operator": "0.0.1",
 	"liferay-gcp-bootstrap": "1.1.0"
 }
