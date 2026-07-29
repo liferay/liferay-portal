@@ -946,6 +946,11 @@
 			<category name="Styling" />
 			<description name="Applies rules to enforce consistency in code style." />
 		</check>
+		<check name="JavaServiceHopCheck">
+			<category name="Performance" />
+			<description name="Flags a service method that delegates to a same-bundle service pass-through method, so it can call persistence directly and skip the AOP proxy hop." />
+			<property name="enabled" value="true" />
+		</check>
 		<check name="JavaServiceImplGetFetchCheck">
 			<category name="Bug Prevention" />
 			<description name="Flags a get-prefixed service method that returns a nullable fetch result, violating the non-null promise its name implies." />

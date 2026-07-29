@@ -8,6 +8,7 @@ package com.liferay.source.formatter.check;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.source.formatter.check.util.JavaSourceUtil;
+import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.parser.JavaClass;
 import com.liferay.source.formatter.parser.JavaClassParser;
 import com.liferay.source.formatter.parser.JavaMethod;
@@ -27,11 +28,11 @@ import java.util.regex.Pattern;
 /**
  * @author Shuyang Zhou
  */
-public class JavaServiceHopCheck extends BaseServiceImplCheck {
+public class JavaServiceHopCheck extends BaseJavaTermCheck {
 
 	@Override
-	public boolean isModuleSourceCheck() {
-		return false;
+	public boolean isLiferaySourceCheck() {
+		return true;
 	}
 
 	@Override
@@ -46,14 +47,6 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 			return javaTerm.getContent();
 		}
 
-		for (String allowedFileName :
-				getAttributeValues(_ALLOWED_FILE_NAMES_KEY, absolutePath)) {
-
-			if (absolutePath.endsWith(allowedFileName)) {
-				return javaTerm.getContent();
-			}
-		}
-
 		String content = javaTerm.getContent();
 
 		// A method that disables transaction management has no transaction
@@ -66,29 +59,26 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 			return javaTerm.getContent();
 		}
 
-		int contentStart = fileContent.indexOf(content);
-
 		boolean hasLambda = content.contains("->");
 
-		Matcher matcher = _callPattern.matcher(content);
+		Matcher matcher = _localServiceCallPattern.matcher(content);
 
 		while (matcher.find()) {
 			String reference = matcher.group(1);
 
 			String entityName = StringUtil.upperCaseFirstLetter(
-				StringUtil.removeChar(reference, '_'));
+				StringUtil.replaceFirst(reference, '_', ""));
 
 			String localServiceInterface = entityName + "LocalService";
 
 			String localServiceFullyQualifiedName = _getImportedName(
-				fileContent, localServiceInterface);
+				getImportNames(javaTerm), localServiceInterface);
+
+			// Self-hop: the caller's own service interface is not imported,
+			// so derive it from the caller's package
 
 			if (localServiceFullyQualifiedName == null) {
-
-				// Self-hop: the caller's own service interface is not imported,
-				// so derive it from the caller's package
-
-				String packageName = _getPackageName(fileContent);
+				String packageName = JavaSourceUtil.getPackageName(fileContent);
 
 				if (packageName.endsWith(".service.impl")) {
 					localServiceFullyQualifiedName = StringUtil.replaceLast(
@@ -100,31 +90,30 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 				continue;
 			}
 
-			String baseImplFullyQualifiedName = _toBaseImplName(
+			String baseImplFullyQualifiedName = _getBaseImplName(
 				localServiceFullyQualifiedName);
 
-			String rootDirName = getBaseDirName();
-
-			if (rootDirName.isEmpty()) {
-				rootDirName = _getRootDirName(absolutePath);
-			}
+			String rootDirName = SourceUtil.getRootDirName(absolutePath);
 
 			File baseImplFile = JavaSourceUtil.getJavaFile(
 				baseImplFullyQualifiedName, rootDirName,
 				getBundleSymbolicNamesMap(absolutePath));
 
 			if ((baseImplFile == null) ||
-				!_isSameBundle(absolutePath, baseImplFile.getAbsolutePath())) {
+				!Objects.equals(
+					_getModuleKey(absolutePath),
+					_getModuleKey(baseImplFile.getAbsolutePath()))) {
 
 				continue;
 			}
 
-			int callArgsCount = _getArgumentsCount(content, matcher.end() - 1);
+			List<String> parameterList = JavaSourceUtil.getParameterList(
+				content.substring(matcher.start()));
 
 			String methodName = matcher.group(2);
 
 			String persistenceCall = _getPassthroughPersistenceCall(
-				baseImplFile, methodName, callArgsCount);
+				baseImplFile, methodName, parameterList.size());
 
 			if (persistenceCall == null) {
 				continue;
@@ -139,7 +128,7 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 			if (hasLambda &&
 				_isInTransactionDisabledLambda(
 					content, matcher.start(), fileName, fileContent,
-					absolutePath, rootDirName)) {
+					absolutePath, rootDirName, getImportNames(javaTerm))) {
 
 				continue;
 			}
@@ -150,30 +139,19 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 					"Avoid the AOP proxy hop: \"", reference, "LocalService.",
 					methodName, "\" is a pass-through, call \"",
 					persistenceCall, "\" directly"),
-				getLineNumber(fileContent, contentStart + matcher.start()));
+				javaTerm.getLineNumber(matcher.start()));
 		}
 
 		return javaTerm.getContent();
 	}
 
-	private String _bundleRoot(String absolutePath) {
-		int x = absolutePath.indexOf("/portal-impl/");
-
-		if (x != -1) {
-			return "portal-impl";
-		}
-
-		x = absolutePath.indexOf("-service/");
-
-		if (x != -1) {
-			return absolutePath.substring(0, x + 8);
-		}
-
-		return absolutePath;
+	@Override
+	protected String[] getCheckableJavaTermNames() {
+		return new String[] {JAVA_METHOD};
 	}
 
-	private void _collectMatchingMethods(
-			File file, String methodName, int callArgsCount,
+	private void _collectMatchedMethods(
+			File file, String methodName, int parameterCount,
 			List<JavaMethod> matchedMethods)
 		throws Exception {
 
@@ -181,14 +159,14 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 			return;
 		}
 
-		String fileContent = FileUtil.read(file);
+		String content = FileUtil.read(file);
 
-		if (_hasSideEffectingClassAnnotation(fileContent)) {
+		if (_hasSideEffectingClassAnnotation(content)) {
 			return;
 		}
 
 		JavaClass javaClass = JavaClassParser.parseJavaClass(
-			file.getName(), fileContent);
+			file.getName(), content);
 
 		for (JavaTerm childJavaTerm : javaClass.getChildJavaTerms()) {
 			if (!(childJavaTerm instanceof JavaMethod)) {
@@ -197,7 +175,11 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 
 			JavaMethod javaMethod = (JavaMethod)childJavaTerm;
 
-			if (!Objects.equals(methodName, javaMethod.getName())) {
+			String accessModifier = javaMethod.getAccessModifier();
+
+			if (accessModifier.equals("private") ||
+				!Objects.equals(methodName, javaMethod.getName())) {
+
 				continue;
 			}
 
@@ -205,43 +187,32 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 
 			List<JavaParameter> javaParameters = javaSignature.getParameters();
 
-			if (javaParameters.size() == callArgsCount) {
+			if (javaParameters.size() == parameterCount) {
 				matchedMethods.add(javaMethod);
 			}
 		}
 	}
 
-	private int _getArgumentsCount(String content, int openParenPos) {
-		int depth = 0;
-		int count = 0;
-		boolean sawArgument = false;
+	private String _getBaseImplName(String localServiceFullyQualifiedName) {
 
-		for (int i = openParenPos; i < content.length(); i++) {
-			char c = content.charAt(i);
+		// A kernel service interface is implemented in portal-impl, where the
+		// base impl package drops the ".kernel" segment
 
-			if ((c == '(') || (c == '<') || (c == '[')) {
-				depth++;
-			}
-			else if ((c == ')') || (c == '>') || (c == ']')) {
-				depth--;
+		if (localServiceFullyQualifiedName.contains(".kernel.service.")) {
+			String baseName = StringUtil.replace(
+				localServiceFullyQualifiedName, ".kernel.service.",
+				".service.base.");
 
-				if (depth == 0) {
-					if (sawArgument) {
-						return count + 1;
-					}
-
-					return 0;
-				}
-			}
-			else if ((c == ',') && (depth == 1)) {
-				count++;
-			}
-			else if ((depth == 1) && !Character.isWhitespace(c)) {
-				sawArgument = true;
-			}
+			return baseName + "BaseImpl";
 		}
 
-		return count;
+		int index = localServiceFullyQualifiedName.lastIndexOf('.');
+
+		String className = localServiceFullyQualifiedName.substring(index + 1);
+		String packageName = localServiceFullyQualifiedName.substring(0, index);
+
+		return StringBundler.concat(
+			packageName, ".base.", className, "BaseImpl");
 	}
 
 	private List<String> _getEnclosingLambdaTargets(String content, int pos) {
@@ -263,7 +234,7 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 				}
 
 				// This is an enclosing block opener. It is a lambda body when
-				// the preceding non-whitespace characters are the "->" arrow.
+				// the preceding nonwhitespace characters are the "->" arrow.
 
 				int j = i - 1;
 
@@ -290,7 +261,7 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 		String localServiceFullyQualifiedName, String rootDirName,
 		String absolutePath) {
 
-		String baseImplFullyQualifiedName = _toBaseImplName(
+		String baseImplFullyQualifiedName = _getBaseImplName(
 			localServiceFullyQualifiedName);
 
 		File baseImplFile = JavaSourceUtil.getJavaFile(
@@ -308,9 +279,11 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 				"BaseImpl.java", "Impl.java"));
 	}
 
-	private String _getImportedName(String fileContent, String simpleName) {
-		for (String importName : JavaSourceUtil.getImportNames(fileContent)) {
-			if (importName.endsWith("." + simpleName)) {
+	private String _getImportedName(
+		List<String> importNames, String className) {
+
+		for (String importName : importNames) {
+			if (importName.endsWith("." + className)) {
 				return importName;
 			}
 		}
@@ -411,30 +384,36 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 		return content.substring(i + 1, nameEnd);
 	}
 
-	private String _getPackageName(String fileContent) {
-		Matcher matcher = _packagePattern.matcher(fileContent);
+	private String _getModuleKey(String absolutePath) {
+		int index = absolutePath.indexOf("/portal-impl/");
 
-		if (matcher.find()) {
-			return matcher.group(1);
+		if (index != -1) {
+			return "portal-impl";
 		}
 
-		return "";
+		index = absolutePath.indexOf("-service/");
+
+		if (index != -1) {
+			return absolutePath.substring(0, index + 8);
+		}
+
+		return absolutePath;
 	}
 
 	private String _getPassthroughPersistenceCall(
-			File baseImplFile, String methodName, int callArgsCount)
+			File baseImplFile, String methodName, int parameterCount)
 		throws Exception {
 
 		// Collect matching overloads from BOTH the generated base impl and the
-		// hand-written impl. A hand-written overload of the same name and
+		// handwritten impl. A handwritten overload of the same name and
 		// argument count (for example fetchRelease(String) alongside the
 		// generated fetchRelease(long)) makes the target ambiguous without type
 		// resolution, so conservatively skip.
 
 		List<JavaMethod> matchedMethods = new ArrayList<>();
 
-		_collectMatchingMethods(
-			baseImplFile, methodName, callArgsCount, matchedMethods);
+		_collectMatchedMethods(
+			baseImplFile, methodName, parameterCount, matchedMethods);
 
 		File implFile = new File(
 			StringUtil.replace(
@@ -442,33 +421,35 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 					baseImplFile.getAbsolutePath(), "/base/", "/impl/"),
 				"BaseImpl.java", "Impl.java"));
 
-		_collectMatchingMethods(
-			implFile, methodName, callArgsCount, matchedMethods);
+		_collectMatchedMethods(
+			implFile, methodName, parameterCount, matchedMethods);
 
 		if (matchedMethods.size() != 1) {
 			return null;
 		}
 
-		return _passthroughPersistenceCall(matchedMethods.get(0));
+		return _getPassthroughPersistenceCall(matchedMethods.get(0));
 	}
 
-	private String _getRootDirName(String absolutePath) {
-		int x = absolutePath.indexOf("/portal-impl/");
+	private String _getPassthroughPersistenceCall(JavaMethod javaMethod) {
+		String content = javaMethod.getContent();
 
-		if (x == -1) {
-			x = absolutePath.indexOf("/modules/");
+		if (_hasSideEffectingAnnotation(content)) {
+			return null;
 		}
 
-		if (x == -1) {
-			return "";
+		Matcher matcher = _passthroughBodyPattern.matcher(content);
+
+		if (!matcher.find()) {
+			return null;
 		}
 
-		return absolutePath.substring(0, x + 1);
+		return matcher.group(1) + "." + matcher.group(2);
 	}
 
-	private boolean _hasSideEffectingAnnotation(String methodContent) {
+	private boolean _hasSideEffectingAnnotation(String content) {
 		for (String annotation : _SIDE_EFFECTING_ANNOTATIONS) {
-			if (methodContent.contains(annotation)) {
+			if (content.contains(annotation)) {
 				return true;
 			}
 		}
@@ -476,8 +457,8 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 		return false;
 	}
 
-	private boolean _hasSideEffectingClassAnnotation(String fileContent) {
-		Matcher matcher = _classDeclarationPattern.matcher(fileContent);
+	private boolean _hasSideEffectingClassAnnotation(String content) {
+		Matcher matcher = _classDeclarationPattern.matcher(content);
 
 		if (!matcher.find()) {
 			return false;
@@ -500,11 +481,17 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 
 			JavaMethod javaMethod = (JavaMethod)childJavaTerm;
 
+			String accessModifier = javaMethod.getAccessModifier();
+
+			if (accessModifier.equals("private") ||
+				!Objects.equals(methodName, javaMethod.getName())) {
+
+				continue;
+			}
+
 			String methodContent = javaMethod.getContent();
 
-			if (methodName.equals(javaMethod.getName()) &&
-				methodContent.contains("@Transactional(enabled = false)")) {
-
+			if (methodContent.contains("@Transactional(enabled = false)")) {
 				return true;
 			}
 		}
@@ -514,12 +501,13 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 
 	private boolean _isInTransactionDisabledLambda(
 			String content, int pos, String fileName, String fileContent,
-			String absolutePath, String rootDirName)
+			String absolutePath, String rootDirName, List<String> importNames)
 		throws Exception {
 
 		for (String target : _getEnclosingLambdaTargets(content, pos)) {
 			if (_isTransactionDisabledTarget(
-					target, fileName, fileContent, absolutePath, rootDirName)) {
+					target, fileName, fileContent, absolutePath, rootDirName,
+					importNames)) {
 
 				return true;
 			}
@@ -528,46 +516,38 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 		return false;
 	}
 
-	private boolean _isSameBundle(
-		String callerAbsolutePath, String targetAbsolutePath) {
-
-		return Objects.equals(
-			_bundleRoot(callerAbsolutePath), _bundleRoot(targetAbsolutePath));
-	}
-
 	private boolean _isTransactionDisabledTarget(
-			String reference, String fileName, String fileContent,
-			String absolutePath, String rootDirName)
+			String methodCall, String fileName, String fileContent,
+			String absolutePath, String rootDirName, List<String> importNames)
 		throws Exception {
 
-		int x = reference.lastIndexOf('.');
+		int index = methodCall.lastIndexOf('.');
 
-		String methodName = reference.substring(x + 1);
+		// A call with no receiver runs on the caller's own service, so the
+		// method is declared in this file.
 
-		if (x == -1) {
-
-			// A call with no receiver runs on the caller's own service, so the
-			// method is declared in this file.
-
+		if (index == -1) {
 			return _hasTransactionDisabledMethod(
-				fileName, fileContent, methodName);
+				fileName, fileContent, methodCall);
 		}
 
-		String receiver = reference.substring(0, x);
+		String methodName = methodCall.substring(index + 1);
 
-		int y = receiver.lastIndexOf('.');
+		String variableName = methodCall.substring(0, index);
 
-		String fieldName = receiver.substring(y + 1);
+		index = variableName.lastIndexOf('.');
 
-		String localServiceInterface = StringUtil.upperCaseFirstLetter(
-			StringUtil.removeChar(fieldName, '_'));
+		variableName = variableName.substring(index + 1);
 
-		if (!localServiceInterface.endsWith("LocalService")) {
+		if (!variableName.endsWith("LocalService")) {
 			return false;
 		}
 
+		String localServiceInterface = StringUtil.upperCaseFirstLetter(
+			StringUtil.removeChar(variableName, '_'));
+
 		String localServiceFullyQualifiedName = _getImportedName(
-			fileContent, localServiceInterface);
+			importNames, localServiceInterface);
 
 		if (localServiceFullyQualifiedName == null) {
 			return false;
@@ -584,60 +564,18 @@ public class JavaServiceHopCheck extends BaseServiceImplCheck {
 			implFile.getName(), FileUtil.read(implFile), methodName);
 	}
 
-	private String _passthroughPersistenceCall(JavaMethod javaMethod) {
-		String methodContent = javaMethod.getContent();
-
-		if (_hasSideEffectingAnnotation(methodContent)) {
-			return null;
-		}
-
-		Matcher matcher = _passthroughBodyPattern.matcher(methodContent);
-
-		if (!matcher.find()) {
-			return null;
-		}
-
-		return matcher.group(1) + "." + matcher.group(2);
-	}
-
-	private String _toBaseImplName(String localServiceFullyQualifiedName) {
-
-		// A kernel service interface is implemented in portal-impl, where the
-		// base impl package drops the ".kernel" segment
-
-		if (localServiceFullyQualifiedName.contains(".kernel.service.")) {
-			String baseName = StringUtil.replace(
-				localServiceFullyQualifiedName, ".kernel.service.",
-				".service.base.");
-
-			return baseName + "BaseImpl";
-		}
-
-		int x = localServiceFullyQualifiedName.lastIndexOf('.');
-
-		String packageName = localServiceFullyQualifiedName.substring(0, x);
-		String simpleName = localServiceFullyQualifiedName.substring(x + 1);
-
-		return StringBundler.concat(
-			packageName, ".base.", simpleName, "BaseImpl");
-	}
-
-	private static final String _ALLOWED_FILE_NAMES_KEY = "allowedFileNames";
-
 	private static final String[] _SIDE_EFFECTING_ANNOTATIONS = {
 		"@AccessControlled", "@Async", "@BufferedIncrement", "@Clusterable",
 		"@Indexable", "@Retry", "@SystemEvent", "@ThreadLocalCachable"
 	};
 
-	private static final Pattern _callPattern = Pattern.compile(
-		"\\b(_?\\w+?)LocalService\\.(\\w+)\\s*\\(");
 	private static final Pattern _classDeclarationPattern = Pattern.compile(
 		"((?:@\\w+(?:\\([^)]*\\))?\\s*)*)public\\s+(?:abstract\\s+)?class\\s");
-	private static final Pattern _packagePattern = Pattern.compile(
-		"(?m)^package\\s+([\\w.]+);");
+	private static final Pattern _localServiceCallPattern = Pattern.compile(
+		"\\b(\\w+?)LocalService\\.(\\w+)\\s*\\(");
 	private static final Pattern _passthroughBodyPattern = Pattern.compile(
 		"\\)\\s*(?:throws[\\w\\s,.]*)?\\{\\s*return\\s+(\\w+Persistence)\\.(" +
-			"(?:fetch|find|count|filterFind|filterCount)\\w*)\\([^;]*\\);" +
+			"(?:count|fetch|filterCount|filterFind|find)\\w*)\\([^;]*\\);" +
 				"\\s*\\}\\s*\\z");
 
 }
