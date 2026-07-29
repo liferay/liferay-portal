@@ -343,7 +343,7 @@ public class BatchEnginePortletDataHandlerTest {
 
 	@Test
 	@TestInfo("LPD-66540")
-	public void testExportImportCompanyObjectEntriesWithAccountRestriction()
+	public void testExportImportCompanyObjectEntriesWithAccountEntryRestriction()
 		throws Exception {
 
 		Group group = _stagingGroupHelper.fetchCompanyGroup(
@@ -401,8 +401,6 @@ public class BatchEnginePortletDataHandlerTest {
 			objectDefinition
 		).executeExport();
 
-		// Import when the account exists
-
 		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 
 		new ExportImportExecutor(
@@ -433,8 +431,6 @@ public class BatchEnginePortletDataHandlerTest {
 			accountEntry.getAccountEntryId(),
 			importedAccountEntry.getAccountEntryId());
 
-		// Import when the account does not exist
-
 		_objectEntryLocalService.deleteObjectEntry(importedObjectEntry);
 
 		_accountEntryLocalService.deleteAccountEntry(accountEntry);
@@ -459,7 +455,6 @@ public class BatchEnginePortletDataHandlerTest {
 					accountObjectField.getName()
 				)));
 
-		Assert.assertNotNull(importedAccountEntry);
 		Assert.assertEquals(accountEntryName, importedAccountEntry.getName());
 	}
 
@@ -529,8 +524,6 @@ public class BatchEnginePortletDataHandlerTest {
 
 		Date date = new Date();
 
-		// Export with a date range that excludes the entry
-
 		File larFile = new ExportImportExecutor(
 		).withDateRange(
 			new Date(date.getTime() - (2 * Time.DAY)),
@@ -556,8 +549,6 @@ public class BatchEnginePortletDataHandlerTest {
 			0,
 			_objectEntryLocalService.getObjectEntriesCount(
 				objectDefinition.getObjectDefinitionId()));
-
-		// Export with a "last 12 hours" range that includes the entry
 
 		objectEntry = _addTextObjectEntry(
 			GroupConstants.DEFAULT_PARENT_GROUP_ID, TestPropsValues.getUserId(),
