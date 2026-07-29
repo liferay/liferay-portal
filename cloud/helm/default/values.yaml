@@ -58,8 +58,14 @@ customInitContainers:
                         -   bash
                         -   /liferay-init-scripts/license-sync.sh
                     env:
-                        -   name: LIFERAY_LICENSE_SYNC_INTERVAL
+                        -   name: LIFERAY_SYNC_DEST
+                            value: /opt/liferay/deploy/license.xml
+                        -   name: LIFERAY_SYNC_INTERVAL
                             value: {{ .license.syncInterval | quote }}
+                        -   name: LIFERAY_SYNC_MARKER
+                            value: /opt/liferay/.liferay-license-sync.sha
+                        -   name: LIFERAY_SYNC_SOURCE
+                            value: /secret/license.xml
                     image: {{ printf "%s:%s" .image.repository (.image.tag | toString) }}
                     imagePullPolicy: {{ .image.pullPolicy }}
                     name: liferay-license-sync

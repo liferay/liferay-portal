@@ -5,16 +5,17 @@ set -o nounset
 set -o pipefail
 
 function main {
-	local deploy_file="${LIFERAY_LICENSE_DEPLOY_FILE:-/opt/liferay/deploy/license.xml}"
-	local interval="${LIFERAY_LICENSE_SYNC_INTERVAL:-600}"
-	local marker_file="${LIFERAY_LICENSE_MARKER_FILE:-/opt/liferay/.liferay-license-sync.sha}"
-	local secret_file="${LIFERAY_LICENSE_SECRET_FILE:-/secret/license.xml}"
+	local dest="${LIFERAY_SYNC_DEST:?LIFERAY_SYNC_DEST must be set}"
+	local interval="${LIFERAY_SYNC_INTERVAL:-600}"
+	local marker="${LIFERAY_SYNC_MARKER:?LIFERAY_SYNC_MARKER must be set}"
+	local pattern="${LIFERAY_SYNC_PATTERN:-*}"
+	local source="${LIFERAY_SYNC_SOURCE:?LIFERAY_SYNC_SOURCE must be set}"
 
-	_log_json "Watching \"${secret_file}\" every ${interval}s. Syncing to \"${deploy_file}\" on content change."
+	_log_json "Watching \"${source}\" every ${interval}s. Syncing to \"${dest}\" on content change."
 
 	while true
 	do
-		_sync_license "${deploy_file}" "${marker_file}" "${secret_file}"
+		_sync "${dest}" "${marker}" "${pattern}" "${source}"
 
 		sleep "${interval}"
 	done
@@ -38,25 +39,82 @@ function _log_json {
 	printf '{"message": "%s", "script": "%s", "severity": "%s", "timestamp": "%s"}\n' "${escaped_message}" "${script_name}" "${severity}" "${timestamp}"
 }
 
-function _sync_license {
-	local deploy_file=${1}
-	local marker_file=${2}
-	local secret_file=${3}
+function _sync {
+	local dest=${1}
+	local marker=${2}
+	local pattern=${3}
+	local source=${4}
 
-	if [ ! -f "${secret_file}" ]
+	if [ -d "${source}" ]
 	then
-		return 0
+		_sync_directory "${dest}" "${marker}" "${pattern}" "${source}"
+	elif [ -f "${source}" ]
+	then
+		_sync_file "${dest}" "${marker}" "${source}"
 	fi
+}
+
+function _sync_directory {
+	local dest=${1}
+	local marker=${2}
+	local pattern=${3}
+	local source=${4}
+
+	mkdir --parents "${dest}" "${marker}"
+
+	local source_file
+
+	for source_file in "${source}"/${pattern}
+	do
+		if [ ! -f "${source_file}" ]
+		then
+			continue
+		fi
+
+		local name
+
+		name=$(basename "${source_file}")
+
+		local current_hash
+
+		current_hash=$(sha256sum "${source_file}" | awk '{print $1}')
+
+		local marker_file="${marker}/${name}.sha"
+
+		local last_hash=""
+
+		if [ -f "${marker_file}" ]
+		then
+			last_hash=$(cat "${marker_file}")
+		fi
+
+		if [ "${current_hash}" = "${last_hash}" ]
+		then
+			continue
+		fi
+
+		cp "${source_file}" "${dest}/${name}"
+
+		echo "${current_hash}" > "${marker_file}"
+
+		_log_json "Content of \"${source_file}\" was changed. Copied to \"${dest}/${name}\"."
+	done
+}
+
+function _sync_file {
+	local dest=${1}
+	local marker=${2}
+	local source=${3}
 
 	local current_hash
 
-	current_hash=$(sha256sum "${secret_file}" | awk '{print $1}')
+	current_hash=$(sha256sum "${source}" | awk '{print $1}')
 
 	local last_hash=""
 
-	if [ -f "${marker_file}" ]
+	if [ -f "${marker}" ]
 	then
-		last_hash=$(cat "${marker_file}")
+		last_hash=$(cat "${marker}")
 	fi
 
 	if [ "${current_hash}" = "${last_hash}" ]
@@ -64,13 +122,13 @@ function _sync_license {
 		return 0
 	fi
 
-	mkdir --parents "$(dirname "${deploy_file}")"
+	mkdir --parents "$(dirname "${dest}")"
 
-	cp "${secret_file}" "${deploy_file}"
+	cp "${source}" "${dest}"
 
-	echo "${current_hash}" > "${marker_file}"
+	echo "${current_hash}" > "${marker}"
 
-	_log_json "License content was changed. Copied to \"${deploy_file}\"."
+	_log_json "Content of \"${source}\" was changed. Copied to \"${dest}\"."
 }
 
 main

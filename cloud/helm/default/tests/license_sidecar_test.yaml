@@ -2,6 +2,7 @@ suite: License Sync Sidecar
 templates:
     -   templates/configmap.yaml
     -   templates/liferay-init-scripts-cm.yaml
+    -   templates/liferay-network-cm.yaml
     -   templates/workloads.yaml
 tests:
     -   asserts:
@@ -76,7 +77,7 @@ tests:
             -   contains:
                     any: true
                     content:
-                        name: LIFERAY_LICENSE_SYNC_INTERVAL
+                        name: LIFERAY_SYNC_INTERVAL
                         value: "120"
                     path: spec.template.spec.initContainers[?(@.name=="liferay-license-sync")].env
         documentSelector:
