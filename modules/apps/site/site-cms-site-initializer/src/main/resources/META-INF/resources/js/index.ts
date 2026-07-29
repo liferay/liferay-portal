@@ -96,6 +96,7 @@ export {default as AuthorRenderer} from './main_view/props_transformer/cell_rend
 export {default as SimpleActionLinkRenderer} from './main_view/props_transformer/cell_renderers/SimpleActionLinkRenderer';
 export {default as SpaceRendererWithCache} from './main_view/props_transformer/cell_renderers/SpaceRendererWithCache';
 export {default as addOnClickToCreationMenuItems} from './main_view/props_transformer/utils/addOnClickToCreationMenuItems';
+export {default as transformFDSBulkActions} from './main_view/props_transformer/utils/transformFDSBulkActions';
 export {default as AllQuickFilters} from './main_view/quick_filters/AllQuickFilters';
 export {default as RecycleBinToolbar} from './main_view/recycle_bin/RecycleBinToolbar';
 export {default as AddSpaceMembers} from './main_view/spaces/AddSpaceMembers';

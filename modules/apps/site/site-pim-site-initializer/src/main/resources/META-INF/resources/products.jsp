@@ -27,12 +27,17 @@ ProductsSectionDisplayContext productsSectionDisplayContext = (ProductsSectionDi
 	<div class="cms-section custom-empty-state">
 		<frontend-data-set:headless-display
 			apiURL="<%= productsSectionDisplayContext.getAPIURL() %>"
+			bulkActionDropdownItems="<%= productsSectionDisplayContext.getBulkActionDropdownItems() %>"
 			creationMenu="<%= productsSectionDisplayContext.getCreationMenu() %>"
 			emptyState="<%= productsSectionDisplayContext.getEmptyState() %>"
 			fdsActionDropdownItems="<%= productsSectionDisplayContext.getFDSActionDropdownItems() %>"
+			formName="fm"
 			id="<%= PIMFDSNames.PRODUCTS %>"
 			itemsPerPage="<%= 20 %>"
 			propsTransformer="{ProductsFDSPropsTransformer} from site-pim-site-initializer"
+			selectedItemsKey="embedded.id"
+			selectionType="multiple"
+			showSelectAll="<%= true %>"
 		/>
 	</div>
 </div>

@@ -8,22 +8,29 @@ import {
 	AuthorRenderer,
 	SpaceRendererWithCache,
 	addOnClickToCreationMenuItems,
+	deleteAssetEntriesBulkAction,
 	getScopeExternalReferenceCode,
+	transformFDSBulkActions,
 } from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
 import ProductNameRenderer from './cell_renderers/ProductNameRenderer';
 
 export default function propsTransformer({
+	bulkActions = [],
 	creationMenu,
 	itemsActions,
 	...props
 }: {
+	apiURL?: string;
+	bulkActions?: any[];
 	creationMenu: any;
+	id?: string;
 	itemsActions?: any[];
 }) {
 	return {
 		...props,
+		bulkActions: transformFDSBulkActions(bulkActions),
 		creationMenu: creationMenu && {
 			...creationMenu,
 			primaryItems: addOnClickToCreationMenuItems(
@@ -63,5 +70,20 @@ export default function propsTransformer({
 				? {...action, className: 'text-danger'}
 				: action
 		),
+		onBulkActionItemClick: ({
+			action,
+			selectedData,
+		}: {
+			action: any;
+			selectedData: any;
+		}) => {
+			if (action?.data?.id === 'delete') {
+				deleteAssetEntriesBulkAction({
+					apiURL: props.apiURL,
+					dataSetId: props.id,
+					selectedData,
+				});
+			}
+		},
 	};
 }

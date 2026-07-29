@@ -70,6 +70,27 @@ public class ProductsSectionDisplayContext {
 				"&nestedFields=embedded,systemProperties.objectDefinitionBrief";
 	}
 
+	public List<DropdownItem> getBulkActionDropdownItems() {
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-96666")) {
+
+			return Collections.emptyList();
+		}
+
+		return ListUtil.fromArray(
+			FDSActionDropdownItemBuilder.setHref(
+				"#"
+			).setIcon(
+				"trash"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "delete")
+			).build(
+				"delete"
+			));
+	}
+
 	public CreationMenu getCreationMenu() {
 		CreationMenu creationMenu = new CreationMenu();
 
