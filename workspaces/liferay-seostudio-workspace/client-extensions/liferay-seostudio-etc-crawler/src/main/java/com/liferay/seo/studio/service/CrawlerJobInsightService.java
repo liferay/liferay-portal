@@ -77,41 +77,38 @@ public class CrawlerJobInsightService {
 				_processInsights(seoStudioScanId, seoStudioScanJSONObject);
 			}
 			else if (state.equals(SEOStudioScanConstants.STATE_FAILED)) {
+				String errorMessage = null;
+
+				if (job == null) {
+					errorMessage = "Kubernetes job does not exist";
+				}
+				else {
+					JobStatus jobStatus = job.getStatus();
+
+					for (JobCondition jobCondition : jobStatus.getConditions()) {
+						if (!Objects.equals(jobCondition.getType(), "Failed") ||
+							!Objects.equals(jobCondition.getStatus(), "True")) {
+
+							continue;
+						}
+
+						if (Validator.isNotNull(jobCondition.getMessage())) {
+							errorMessage = jobCondition.getMessage();
+
+							break;
+						}
+					}
+
+					if (errorMessage == null) {
+						errorMessage = "Kubernetes job failed";
+					}
+				}
+
 				_seoStudioService.patchSEOStudioScan(
-					_getErrorMessage(job), seoStudioScanId,
+					errorMessage, seoStudioScanId,
 					SEOStudioScanConstants.STATE_FAILED);
 			}
 		}
-	}
-
-	private String _getErrorMessage(Job job) {
-		if (job == null) {
-			return "Kubernetes job does not exist";
-		}
-
-		JobStatus jobStatus = job.getStatus();
-
-		List<JobCondition> jobConditions = jobStatus.getConditions();
-
-		if (ListUtil.isEmpty(jobConditions)) {
-			return "Kubernetes job failed";
-		}
-
-		for (JobCondition jobCondition : jobConditions) {
-			if (!Objects.equals(jobCondition.getType(), "Failed") ||
-				!Objects.equals(jobCondition.getStatus(), "True")) {
-
-				continue;
-			}
-
-			String errorMessage = jobCondition.getMessage();
-
-			if (Validator.isNotNull(errorMessage)) {
-				return errorMessage;
-			}
-		}
-
-		return "Kubernetes job failed";
 	}
 
 	private JSONObject _getOrphanPagesInsightJSONObject(
