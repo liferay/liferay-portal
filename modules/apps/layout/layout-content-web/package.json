@@ -2,8 +2,15 @@
 	"dependencies": {
 		"@clayui/button": "^3.165.0",
 		"@clayui/core": "^3.165.0",
+		"@clayui/empty-state": "^3.165.0",
+		"@clayui/icon": "^3.165.0",
+		"@clayui/label": "^3.165.0",
+		"@clayui/list": "^3.165.0",
+		"@clayui/loading-indicator": "^3.165.0",
+		"@clayui/sticker": "^3.165.0",
 		"@clayui/toolbar": "^3.165.0",
 		"@liferay/layout-js-components-web": "*",
+		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
 		"react": "18.2.0",
 		"react-dom": "18.2.0"
