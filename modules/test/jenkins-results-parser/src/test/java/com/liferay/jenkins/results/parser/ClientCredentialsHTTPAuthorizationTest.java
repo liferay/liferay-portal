@@ -105,19 +105,16 @@ public class ClientCredentialsHTTPAuthorizationTest
 
 		Mockito.doAnswer(
 			invocation -> {
-				JSONObject jsonObject = new JSONObject();
-
-				jsonObject.put(
+				String json = new JSONObject(
+				).put(
 					"access_token", RandomTestUtil.randomString()
 				).put(
 					"expires_in", 600
 				).put(
 					"token_type", "Bearer"
-				);
+				).toString();
 
-				String jsonObjectString = jsonObject.toString();
-
-				return new ByteArrayInputStream(jsonObjectString.getBytes());
+				return new ByteArrayInputStream(json.getBytes());
 			}
 		).when(
 			urlReader
