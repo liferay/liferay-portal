@@ -211,7 +211,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -770,24 +769,16 @@ public class ObjectDefinitionLocalServiceImpl
 	public void deployObjectDefinition(ObjectDefinition objectDefinition) {
 		undeployObjectDefinition(objectDefinition);
 
+		_deploy(
+			_objectDefinitionDeployer,
+			_objectDefinitionDeployerServiceRegistrationsMap, objectDefinition);
+
 		for (Map.Entry
 				<ObjectDefinitionDeployer,
 				 Map<String, List<ServiceRegistration<?>>>> entry :
 					_activeServiceRegistrationsMaps.entrySet()) {
 
-			ObjectDefinitionDeployer objectDefinitionDeployer = entry.getKey();
-			Map<String, List<ServiceRegistration<?>>> serviceRegistrationsMap =
-				entry.getValue();
-
-			try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
-					objectDefinition.getCompanyId())) {
-
-				serviceRegistrationsMap.computeIfAbsent(
-					DBPartitionUtil.getPartitionKey(
-						objectDefinition.getObjectDefinitionId()),
-					objectDefinitionId -> objectDefinitionDeployer.deploy(
-						objectDefinition));
-			}
+			_deploy(entry.getKey(), entry.getValue(), objectDefinition);
 		}
 	}
 
@@ -1083,31 +1074,29 @@ public class ObjectDefinitionLocalServiceImpl
 	public void setAopProxy(Object aopProxy) {
 		super.setAopProxy(aopProxy);
 
-		Map<String, List<ServiceRegistration<?>>>
-			activeServiceRegistrationsMap = new ConcurrentHashMap<>();
-		ObjectDefinitionDeployer objectDefinitionDeployer =
-			new ObjectDefinitionDeployerImpl(
-				_accountEntryLocalService,
-				_accountEntryOrganizationRelLocalService,
-				_assetEntryLocalService, _bundleContext,
-				_depotEntryGroupRelLocalService, _depotEntryLocalService,
-				_dlFileEntryLocalService, _groupLocalService,
-				_kaleoDefinitionLocalService, _listTypeLocalService,
-				_objectActionLocalService, objectDefinitionLocalService,
-				_objectDefinitionSettingLocalService,
-				_objectEntryFolderLocalService, _objectEntryLocalService,
-				_objectEntryService, _objectFieldBusinessTypeRegistry,
-				_objectFieldLocalService, _objectFolderLocalService,
-				_objectLayoutLocalService, _objectLayoutTabLocalService,
-				_objectRelationshipLocalService, _objectScopeProviderRegistry,
-				_objectViewLocalService, _organizationLocalService, _portal,
-				_portletLocalService, _resourceActions, _userLocalService,
-				_resourcePermissionLocalService, _searchLocalizationHelper,
-				_sharingModelResourcePermissionConfigurator,
-				_systemEventLocalService, _textEmbeddingDocumentContributor,
-				_workflowDefinitionLinkLocalService,
-				_workflowStatusModelPreFilterContributor,
-				_userGroupRoleLocalService);
+		_objectDefinitionDeployerServiceRegistrationsMap =
+			new ConcurrentHashMap<>();
+		_objectDefinitionDeployer = new ObjectDefinitionDeployerImpl(
+			_accountEntryLocalService, _accountEntryOrganizationRelLocalService,
+			_assetEntryLocalService, _bundleContext,
+			_depotEntryGroupRelLocalService, _depotEntryLocalService,
+			_dlFileEntryLocalService, _groupLocalService,
+			_kaleoDefinitionLocalService, _listTypeLocalService,
+			_objectActionLocalService, objectDefinitionLocalService,
+			_objectDefinitionSettingLocalService,
+			_objectEntryFolderLocalService, _objectEntryLocalService,
+			_objectEntryService, _objectFieldBusinessTypeRegistry,
+			_objectFieldLocalService, _objectFolderLocalService,
+			_objectLayoutLocalService, _objectLayoutTabLocalService,
+			_objectRelationshipLocalService, _objectScopeProviderRegistry,
+			_objectViewLocalService, _organizationLocalService, _portal,
+			_portletLocalService, _resourceActions, _userLocalService,
+			_resourcePermissionLocalService, _searchLocalizationHelper,
+			_sharingModelResourcePermissionConfigurator,
+			_systemEventLocalService, _textEmbeddingDocumentContributor,
+			_workflowDefinitionLinkLocalService,
+			_workflowStatusModelPreFilterContributor,
+			_userGroupRoleLocalService);
 
 		_companyLocalService.forEachCompanyId(
 			companyId -> {
@@ -1115,8 +1104,8 @@ public class ObjectDefinitionLocalServiceImpl
 					objectDefinitionLocalService.getObjectDefinitions(
 						companyId, WorkflowConstants.STATUS_APPROVED);
 
-				activeServiceRegistrationsMap.putAll(
-					objectDefinitionDeployer.deploy(
+				_objectDefinitionDeployerServiceRegistrationsMap.putAll(
+					_objectDefinitionDeployer.deploy(
 						companyId,
 						ListUtil.filter(
 							objectDefinitions,
@@ -1136,9 +1125,6 @@ public class ObjectDefinitionLocalServiceImpl
 							_objectRelationshipLocalService, objectDefinition));
 				}
 			});
-
-		_activeServiceRegistrationsMaps.put(
-			objectDefinitionDeployer, activeServiceRegistrationsMap);
 
 		_objectDefinitionDeployerServiceTracker = new ServiceTracker<>(
 			_bundleContext, ObjectDefinitionDeployer.class,
@@ -1215,30 +1201,16 @@ public class ObjectDefinitionLocalServiceImpl
 			return;
 		}
 
+		_undeploy(
+			_objectDefinitionDeployer,
+			_objectDefinitionDeployerServiceRegistrationsMap, objectDefinition);
+
 		for (Map.Entry
 				<ObjectDefinitionDeployer,
 				 Map<String, List<ServiceRegistration<?>>>> entry :
 					_activeServiceRegistrationsMaps.entrySet()) {
 
-			ObjectDefinitionDeployer objectDefinitionDeployer = entry.getKey();
-
-			objectDefinitionDeployer.undeploy(objectDefinition);
-
-			Map<String, List<ServiceRegistration<?>>> serviceRegistrationsMap =
-				entry.getValue();
-
-			List<ServiceRegistration<?>> serviceRegistrations =
-				serviceRegistrationsMap.remove(
-					DBPartitionUtil.getPartitionKey(
-						objectDefinition.getObjectDefinitionId()));
-
-			if (serviceRegistrations != null) {
-				for (ServiceRegistration<?> serviceRegistration :
-						serviceRegistrations) {
-
-					serviceRegistration.unregister();
-				}
-			}
+			_undeploy(entry.getKey(), entry.getValue(), objectDefinition);
 		}
 
 		_invalidatePortalCache(objectDefinition);
@@ -2307,6 +2279,22 @@ public class ObjectDefinitionLocalServiceImpl
 			"model.resource." + objectDefinition.getClassName());
 	}
 
+	private void _deploy(
+		ObjectDefinitionDeployer objectDefinitionDeployer,
+		Map<String, List<ServiceRegistration<?>>> serviceRegistrationsMap,
+		ObjectDefinition objectDefinition) {
+
+		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
+				objectDefinition.getCompanyId())) {
+
+			serviceRegistrationsMap.computeIfAbsent(
+				DBPartitionUtil.getPartitionKey(
+					objectDefinition.getObjectDefinitionId()),
+				objectDefinitionId -> objectDefinitionDeployer.deploy(
+					objectDefinition));
+		}
+	}
+
 	private void _dropTable(String dbTableName) {
 		runSQL("DROP_TABLE_IF_EXISTS(" + dbTableName + ")");
 	}
@@ -2693,6 +2681,27 @@ public class ObjectDefinitionLocalServiceImpl
 				setValidationErrors(validationErrors);
 			}
 		};
+	}
+
+	private void _undeploy(
+		ObjectDefinitionDeployer objectDefinitionDeployer,
+		Map<String, List<ServiceRegistration<?>>> serviceRegistrationsMap,
+		ObjectDefinition objectDefinition) {
+
+		objectDefinitionDeployer.undeploy(objectDefinition);
+
+		List<ServiceRegistration<?>> serviceRegistrations =
+			serviceRegistrationsMap.remove(
+				DBPartitionUtil.getPartitionKey(
+					objectDefinition.getObjectDefinitionId()));
+
+		if (serviceRegistrations != null) {
+			for (ServiceRegistration<?> serviceRegistration :
+					serviceRegistrations) {
+
+				serviceRegistration.unregister();
+			}
+		}
 	}
 
 	private ObjectDefinition _update(ObjectDefinition objectDefinition) {
@@ -4036,8 +4045,7 @@ public class ObjectDefinitionLocalServiceImpl
 
 	private final Map
 		<ObjectDefinitionDeployer, Map<String, List<ServiceRegistration<?>>>>
-			_activeServiceRegistrationsMaps = Collections.synchronizedMap(
-				new LinkedHashMap<>());
+			_activeServiceRegistrationsMaps = new ConcurrentHashMap<>();
 	private final Set<String>
 		_allowedModifiableSystemObjectDefinitionSettingNames = Set.of(
 			ObjectDefinitionSettingConstants.NAME_AUTOGENERATED_GROUP_ID,
@@ -4113,6 +4121,9 @@ public class ObjectDefinitionLocalServiceImpl
 	@Reference
 	private ObjectActionLocalService _objectActionLocalService;
 
+	private ObjectDefinitionDeployer _objectDefinitionDeployer;
+	private Map<String, List<ServiceRegistration<?>>>
+		_objectDefinitionDeployerServiceRegistrationsMap;
 	private ServiceTracker<ObjectDefinitionDeployer, ObjectDefinitionDeployer>
 		_objectDefinitionDeployerServiceTracker;
 
