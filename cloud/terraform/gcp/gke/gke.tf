@@ -1,5 +1,8 @@
 resource "google_container_cluster" "primary" {
 	addons_config {
+		gcp_filestore_csi_driver_config {
+			enabled=true
+		}
 		horizontal_pod_autoscaling {
 			disabled=false
 		}

@@ -19,6 +19,7 @@ resource "google_project_service" "apis" {
 			"config.googleapis.com",
 			"connectgateway.googleapis.com",
 			"container.googleapis.com",
+			"file.googleapis.com",
 			"gkehub.googleapis.com",
 			"iam.googleapis.com",
 			"iamcredentials.googleapis.com",
