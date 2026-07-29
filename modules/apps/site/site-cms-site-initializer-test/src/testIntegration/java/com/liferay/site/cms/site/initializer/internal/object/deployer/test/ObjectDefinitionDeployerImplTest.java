@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -33,6 +34,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -103,6 +105,12 @@ public class ObjectDefinitionDeployerImplTest {
 		Assert.assertEquals(
 			"CMSDefaultPermissionObjectEntryModelResourcePermission",
 			clazz.getSimpleName());
+
+		Snapshot<ModelResourcePermission<ObjectEntry>>
+			modelResourcePermissionSnapshot = ReflectionTestUtil.getFieldValue(
+				modelResourcePermission, "_modelResourcePermissionSnapshot");
+
+		Assert.assertNotNull(modelResourcePermissionSnapshot.get());
 
 		Role role = _roleLocalService.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.USER);
