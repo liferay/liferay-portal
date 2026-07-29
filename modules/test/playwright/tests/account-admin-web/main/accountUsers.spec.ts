@@ -12,7 +12,6 @@ import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {serverAdministrationPageTest} from '../../../fixtures/serverAdministrationPageTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
-import {virtualInstancesPagesTest} from '../../../fixtures/virtualInstancesPagesTest';
 import {liferayConfig} from '../../../liferay.config';
 import {AccountUserSelectorPage} from '../../../pages/account-admin-web/AccountUserSelectorPage';
 import {AccountUsersPage} from '../../../pages/account-admin-web/AccountUsersPage';
@@ -21,7 +20,7 @@ import {EditAccountPage} from '../../../pages/account-admin-web/EditAccountPage'
 import {EditUserPage} from '../../../pages/users-admin-web/EditUserPage';
 import getRandomString from '../../../utils/getRandomString';
 import {nextPage, setItemsPerPage} from '../../../utils/pagination';
-import performLogin from '../../../utils/performLogin';
+import {performLoginViaApi} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
@@ -33,8 +32,7 @@ export const test = mergeTests(
 	}),
 	loginTest(),
 	serverAdministrationPageTest,
-	usersAndOrganizationsPagesTest,
-	virtualInstancesPagesTest
+	usersAndOrganizationsPagesTest
 );
 
 test(
@@ -1597,10 +1595,10 @@ test(
 		editUserPage,
 		emailDomainsInstanceSettingsPage,
 		page,
-		virtualInstancesPage,
 	}) => {
 		test.setTimeout(160000);
 
+		const DEFAULT_VIRTUAL_INSTANCE_DOMAIN = 'able.com';
 		const DEFAULT_VIRTUAL_INSTANCE_NAME = 'www.able.com';
 
 		await emailDomainsInstanceSettingsPage.enableEmailDomainValidation(
@@ -1652,9 +1650,17 @@ test(
 				type: 'danger',
 			});
 
-			await virtualInstancesPage.addNewVirtualInstance(
-				DEFAULT_VIRTUAL_INSTANCE_NAME
-			);
+			const virtualInstance =
+				await apiHelpers.headlessPortalInstance.addVirtualInstance({
+					domain: DEFAULT_VIRTUAL_INSTANCE_DOMAIN,
+					portalInstanceId: DEFAULT_VIRTUAL_INSTANCE_NAME,
+					virtualHost: DEFAULT_VIRTUAL_INSTANCE_NAME,
+				});
+
+			apiHelpers.data.push({
+				id: virtualInstance.portalInstanceId,
+				type: 'virtual-instance',
+			});
 
 			newPage = await browser.newPage({
 				baseURL: `http://${DEFAULT_VIRTUAL_INSTANCE_NAME}:${liferayConfig.environment.port}`,
@@ -1666,12 +1672,12 @@ test(
 			editAccountPage = new EditAccountPage(newPage);
 			editUserPage = new EditUserPage(newPage);
 
-			await performLogin(
-				newPage,
-				'test',
-				'',
-				`@${DEFAULT_VIRTUAL_INSTANCE_NAME}.com`
-			);
+			await performLoginViaApi({
+				domain: `@${DEFAULT_VIRTUAL_INSTANCE_DOMAIN}`,
+				loginUrl: `http://${DEFAULT_VIRTUAL_INSTANCE_NAME}:${liferayConfig.environment.port}`,
+				page: newPage,
+				screenName: 'test',
+			});
 
 			await accountsPage.goto(false);
 
@@ -1713,9 +1719,6 @@ test(
 				await newPage.close();
 			}
 
-			await virtualInstancesPage.deleteVirtualInstance(
-				DEFAULT_VIRTUAL_INSTANCE_NAME
-			);
 			await emailDomainsInstanceSettingsPage.enableEmailDomainValidation(
 				false,
 				''
