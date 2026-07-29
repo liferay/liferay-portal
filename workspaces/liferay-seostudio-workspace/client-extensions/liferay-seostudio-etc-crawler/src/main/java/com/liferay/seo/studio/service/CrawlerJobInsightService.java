@@ -40,7 +40,7 @@ import org.springframework.stereotype.Service;
 public class CrawlerJobInsightService {
 
 	@Scheduled(fixedDelay = 60000)
-	public void updateSEOStudioScanStates() {
+	public void scheduledUpdateSEOStudioScanStates() {
 		JSONArray itemsJSONArray = new JSONObject(
 			_seoStudioService.getActiveSEOStudioScans()
 		).optJSONArray(
