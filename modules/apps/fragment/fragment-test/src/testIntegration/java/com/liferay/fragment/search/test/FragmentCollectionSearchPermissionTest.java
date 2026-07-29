@@ -9,7 +9,8 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
-import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -84,35 +85,21 @@ public class FragmentCollectionSearchPermissionTest {
 		Assert.assertFalse(
 			permissionChecker.isCompanyAdmin(TestPropsValues.getCompanyId()));
 
-		_assertNoErrorLogged(() -> _indexer.search(_createSearchContext()));
-		_assertNoErrorLogged(
-			() -> {
-				SearchResponse searchResponse = _search(
-					FragmentCollection.class, FragmentEntry.class);
-
-				Assert.assertEquals(1, searchResponse.getTotalHits());
-			});
-		_assertNoErrorLogged(() -> _search(FragmentCollection.class));
+		_testSearch(
+			hits -> Assert.assertEquals(1, hits.getLength()),
+			() -> _indexer.search(_createSearchContext()));
+		_testSearch(
+			searchResponse -> Assert.assertEquals(
+				1, searchResponse.getTotalHits()),
+			() -> _search(FragmentCollection.class, FragmentEntry.class));
+		_testSearch(
+			searchResponse -> Assert.assertEquals(
+				1, searchResponse.getTotalHits()),
+			() -> _search(FragmentCollection.class));
 	}
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
-
-	private void _assertNoErrorLogged(UnsafeRunnable<Exception> unsafeRunnable)
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.search.internal." +
-					"SearchPermissionCheckerImpl",
-				LoggerTestUtil.ERROR)) {
-
-			unsafeRunnable.run();
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
-		}
-	}
 
 	private SearchContext _createSearchContext() throws Exception {
 		SearchContext searchContext = new SearchContext();
@@ -141,6 +128,24 @@ public class FragmentCollectionSearchPermissionTest {
 			).withSearchContext(
 				searchContext -> searchContext.setUserId(_user.getUserId())
 			).build());
+	}
+
+	private <T> void _testSearch(
+			UnsafeConsumer<T, Exception> unsafeConsumer,
+			UnsafeSupplier<T, Exception> unsafeSupplier)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.search.internal." +
+					"SearchPermissionCheckerImpl",
+				LoggerTestUtil.ERROR)) {
+
+			unsafeConsumer.accept(unsafeSupplier.get());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+		}
 	}
 
 	private FragmentCollection _fragmentCollection;
