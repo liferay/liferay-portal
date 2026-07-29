@@ -15,7 +15,14 @@ export type TAIState = 'focused' | 'result' | 'result-readonly' | 'working';
 const MAX_ROWS = 4;
 
 function adjustTextAreaHeight(textArea: HTMLTextAreaElement) {
+	if (!textArea.value) {
+		resetTextAreaHeight(textArea);
+
+		return;
+	}
+
 	const style = window.getComputedStyle(textArea);
+
 	const lineHeight =
 		parseFloat(style.lineHeight) || parseFloat(style.fontSize) * 1.2;
 	const maxHeight = lineHeight * MAX_ROWS;
@@ -24,6 +31,11 @@ function adjustTextAreaHeight(textArea: HTMLTextAreaElement) {
 	textArea.style.height = `${Math.min(textArea.scrollHeight, maxHeight)}px`;
 	textArea.style.overflowY =
 		textArea.scrollHeight > maxHeight ? 'auto' : 'hidden';
+}
+
+function resetTextAreaHeight(textArea: HTMLTextAreaElement) {
+	textArea.style.height = '';
+	textArea.style.overflowY = '';
 }
 
 interface IProps
@@ -95,6 +107,22 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 	) => {
 		const [focused, setFocused] = React.useState<boolean>(false);
 
+		const textAreaRef = React.useRef<HTMLTextAreaElement | null>(null);
+
+		const mergedRef = React.useCallback(
+			(node: HTMLTextAreaElement | null) => {
+				textAreaRef.current = node;
+
+				if (typeof ref === 'function') {
+					ref(node);
+				}
+				else if (ref) {
+					ref.current = node;
+				}
+			},
+			[ref]
+		);
+
 		const {retry, submit, working} = {...DEFAULT_MESSAGES, ...messages};
 
 		if (!aiState && focused) {
@@ -102,6 +130,14 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 		}
 
 		const isWorking = aiState === 'working';
+
+		const displayValue = isWorking ? working : value;
+
+		React.useEffect(() => {
+			if (textAreaRef.current) {
+				adjustTextAreaHeight(textAreaRef.current);
+			}
+		}, [displayValue]);
 
 		const handleKeyDown = (
 			event: React.KeyboardEvent<HTMLTextAreaElement>
@@ -137,6 +173,8 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 					})
 				);
 			}
+
+			resetTextAreaHeight(textArea);
 		};
 
 		return (
@@ -146,7 +184,7 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 			>
 				<ClayInput.GroupItem>
 					<div className="form-control">
-						<div className="autofit-row autofit-row-center">
+						<div className="autofit-row">
 							{isWorking && (
 								<div className="autofit-col">
 									<ClayIcon
@@ -181,9 +219,9 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 										isWorking ||
 										aiState === 'result-readonly'
 									}
-									ref={ref}
+									ref={mergedRef}
 									rows={1}
-									value={isWorking ? working : value}
+									value={displayValue}
 								/>
 							</div>
 						</div>
@@ -199,6 +237,11 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 							}
 							displayType="primary"
 							monospaced
+							onClick={() => {
+								if (textAreaRef.current) {
+									resetTextAreaHeight(textAreaRef.current);
+								}
+							}}
 							size="sm"
 							type="submit"
 						>
@@ -207,7 +250,7 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 					</ClayInput.GroupItem>
 				)}
 
-				{aiState === 'result' && (
+				{aiState === 'result' && onRetryClick && (
 					<ClayInput.GroupItem shrink>
 						<ClayButton
 							aria-label={retry}
