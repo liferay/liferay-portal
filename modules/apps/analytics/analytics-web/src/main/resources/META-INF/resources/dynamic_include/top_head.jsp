@@ -23,6 +23,14 @@
 	var analyticsExternalReferenceCode =
 		'<%= (String)request.getAttribute(AnalyticsWebKeys.ANALYTICS_EXTERNAL_REFERENCE_CODE) %>';
 
+	// Snapshot the page title in the same script block that publishes
+	// themeDisplay, so both are refreshed at the same point of a SPA
+	// transition. Reading document.title when the event is created instead
+	// pairs the incoming page's title with the outgoing page's canonical URL,
+	// because SPA updates the title before it re-evaluates this block.
+
+	var analyticsPageTitle = document.title;
+
 	var cookieManagers = {
 		'cookie.onetrust': {
 			checkConsent: () => {
@@ -148,6 +156,7 @@
 						themeDisplay.getScopeGroupIdOrLiveGroupId();
 					request.context.layoutExternalReferenceCode =
 						analyticsExternalReferenceCode;
+					request.context.title = analyticsPageTitle;
 
 					return request;
 				};
