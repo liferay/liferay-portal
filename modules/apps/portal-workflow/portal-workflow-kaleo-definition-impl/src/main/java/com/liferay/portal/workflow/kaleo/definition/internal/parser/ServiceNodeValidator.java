@@ -55,12 +55,6 @@ public class ServiceNodeValidator extends BaseNodeValidator<ServiceNode> {
 			throw new KaleoDefinitionValidationException.
 				MustSetOutgoingTransition(serviceNode.getDefaultLabel());
 		}
-
-		if (serviceNode.getOutgoingTransitionsCount() > 1) {
-			throw new KaleoDefinitionValidationException.
-				MustNotSetMultipleOutgoingTransitions(
-					serviceNode.getDefaultLabel());
-		}
 	}
 
 }
