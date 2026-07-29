@@ -78,6 +78,8 @@ public class NestedFieldsSetterUtil {
 			NestedFieldsContextThreadLocal.getNestedFieldsContext();
 
 		if ((nestedFieldsContext == null) ||
+			(nestedFieldsContext.getCurrentDepth() >=
+				nestedFieldsContext.getDepth()) ||
 			ListUtil.isEmpty(nestedFieldsContext.getNestedFields())) {
 
 			return;
