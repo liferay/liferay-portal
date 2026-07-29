@@ -60,9 +60,7 @@ public class AssetCategoryFriendlyURLUpgradeProcessTest {
 	}
 
 	@Test
-	public void testUpgradeMigratesLegacyCategoryFriendlyURLs()
-		throws Exception {
-
+	public void testUpgrade() throws Exception {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_group.getGroupId(),
 			StringUtil.toLowerCase(StringUtil.randomString()));
