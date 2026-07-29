@@ -11,22 +11,9 @@ import React, {useEffect} from 'react';
 
 import AIAssistantFooterDisclaimer from './components/AIAssistantFooterDisclaimer';
 import AIAssistantMessageBalloon from './components/AIAssistantMessageBalloon';
-import CategorizationMessageBalloon from './components/CategorizationMessageBalloon';
-import ContentTypeSelectorMessageBalloon from './components/ContentTypeSelectorMessageBalloon';
-import ContentsMessageBalloon from './components/ContentsMessageBalloon';
-import FieldValueMessageBalloon from './components/FieldValueMessageBalloon';
-import ImageMessageBalloon from './components/ImageMessageBalloon';
-import TranslateContentMessageBalloon from './components/TranslateContentMessageBalloon';
-import UserMessageBalloon from './components/UserMessageBalloon';
-import MESSAGE_BALLOON_COMPONENTS from './components/messageBalloonComponents';
-import {
-	APPLY_OBJECT_FIELD_VALUES_EVENT,
-	GENERATE_FIELD_VALUE_AGENT_EXTERNAL_REFERENCE_CODE,
-} from './events';
+import {renderMessageBalloon} from './components/messageBalloonRenderers';
 import {AIChat} from './useAIChat';
-import getGeneratedFieldValues from './utils/getGeneratedFieldValues';
-import parseContentDraftsMessage from './utils/parseContentDraftsMessage';
-import resolveMessageType from './utils/resolveMessageType';
+import resolveMessage from './utils/resolveMessage';
 
 type AIState = 'focused' | 'result' | 'result-readonly' | 'working';
 
@@ -44,21 +31,12 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 	showGreeting,
 }) => {
 	const {
-		contextRef,
-		feedbackGiven,
-		fileUploadSelectorRef,
-		getContextRef,
-		giveThumbsUp,
 		isGenerating,
 		message,
 		messages,
 		messagesEndRef,
-		runtimeContextRef,
 		sendMessage,
-		setIsGenerating,
 		setMessage,
-		setReportContext,
-		sourceLanguageIdRef,
 	} = chat;
 
 	let aiState = controlledAIState;
@@ -89,172 +67,14 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 					/>
 				)}
 
-				{messages.map((item, index) => {
-					const messageType = resolveMessageType(item);
-
-					if (messageType === 'select-component' && item.component) {
-						const SelectComponentMessageBalloon =
-							MESSAGE_BALLOON_COMPONENTS[messageType];
-
-						return (
-							<SelectComponentMessageBalloon
-								component={item.component}
-								key={index}
-								setIsGenerating={setIsGenerating}
-							/>
-						);
-					}
-
-					if (item.sender === 'user') {
-						return (
-							<UserMessageBalloon
-								key={index}
-								message={item.text}
-							/>
-						);
-					}
-
-					if (item.categorization) {
-						return (
-							<CategorizationMessageBalloon
-								key={index}
-								{...item.categorization}
-							/>
-						);
-					}
-
-					if (item.images?.length) {
-						const context = {
-							...contextRef.current,
-							...getContextRef.current?.(),
-						};
-
-						return (
-							<ImageMessageBalloon
-								images={item.images}
-								key={index}
-								saveProps={{
-									fileUploadSelector:
-										context.fileUploadSelector ??
-										fileUploadSelectorRef.current,
-									groupId: context.groupId,
-									objectEntryFolderExternalReferenceCode:
-										context.objectEntryFolderExternalReferenceCode,
-								}}
-							/>
-						);
-					}
-
-					if (item.contentTypes) {
-						return (
-							<ContentTypeSelectorMessageBalloon
-								contentTypes={item.contentTypes}
-								contextRef={runtimeContextRef}
-								key={index}
-								message={item.text}
-								sendMessage={sendMessage}
-							/>
-						);
-					}
-
-					if (parseContentDraftsMessage(item.text).drafts.length) {
-						return (
-							<ContentsMessageBalloon
-								key={index}
-								message={item.text}
-							/>
-						);
-					}
-
-					try {
-						const json = JSON.parse(
-							item.text
-								.trim()
-								.replace(/^```(?:json)?/i, '')
-								.replace(/```$/, '')
-								.trim()
-						);
-
-						if (json?.action === 'translate') {
-							const {
-								agentInstanceId,
-								availableLanguageIds,
-								results,
-								targetLanguageIds,
-							} = json;
-
-							return (
-								<TranslateContentMessageBalloon
-									agentInstanceId={agentInstanceId}
-									availableLanguageIds={availableLanguageIds}
-									key={index}
-									requestedLanguageIds={targetLanguageIds}
-									results={results}
-									setIsGenerating={setIsGenerating}
-									sourceLanguageIdRef={sourceLanguageIdRef}
-								/>
-							);
-						}
-					}
-					catch {}
-
-					const fieldValues =
-						!item.error &&
-						item.agentDefinitionExternalReferenceCodes?.includes(
-							GENERATE_FIELD_VALUE_AGENT_EXTERNAL_REFERENCE_CODE
-						)
-							? getGeneratedFieldValues(item.text)
-							: {};
-
-					if (Object.keys(fieldValues).length) {
-						const previousMessage = messages[index - 1];
-
-						return (
-							<FieldValueMessageBalloon
-								key={index}
-								onApply={() =>
-									Liferay.fire(
-										APPLY_OBJECT_FIELD_VALUES_EVENT,
-										{
-											values: fieldValues,
-										}
-									)
-								}
-								onRegenerate={() => {
-									if (previousMessage?.sender === 'user') {
-										sendMessage(previousMessage.text);
-									}
-								}}
-								values={fieldValues}
-							/>
-						);
-					}
-
-					return (
-						<AIAssistantMessageBalloon
-							error={item.error ?? false}
-							feedbackGiven={Boolean(feedbackGiven[index])}
-							key={index}
-							message={item.text}
-							onReport={
-								!item.error
-									? () =>
-											setReportContext({
-												agentDefinitionExternalReferenceCodes:
-													item.agentDefinitionExternalReferenceCodes ??
-													[],
-												index,
-											})
-									: undefined
-							}
-							onThumbsUp={
-								!item.error
-									? () => giveThumbsUp(index, item)
-									: undefined
-							}
-						/>
-					);
-				})}
+				{messages.map((item, index) => (
+					<React.Fragment key={index}>
+						{renderMessageBalloon(
+							{chat, index, item},
+							resolveMessage(item)
+						)}
+					</React.Fragment>
+				))}
 
 				{isGenerating && (
 					<div className="ai-assistant-chat__generating-balloon">
