@@ -7,8 +7,8 @@ FileTree jasperZipTree = zipTree(jasperFile)
 
 dependencies {
 	testIntegrationImplementation group: "commons-io", name: "commons-io", version: "2.19.0"
-	testIntegrationImplementation group: "org.apache.pdfbox", name: "fontbox", version: "2.0.24"
-	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox", version: "2.0.24"
+	testIntegrationImplementation group: "org.apache.pdfbox", name: "fontbox", version: "2.0.35"
+	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox", version: "2.0.35"
 	testIntegrationImplementation project(":apps:portal-reports-engine:portal-reports-engine-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
