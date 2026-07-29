@@ -503,11 +503,7 @@ export const List: React.FC<IListProps> = ({
 											)
 										)}
 									>
-										<ClayIcon
-											className="mr-2"
-											symbol="organizations"
-										/>
-										{Liferay.Language.get('batch')}
+										{Liferay.Language.get('batch-segment')}
 									</ClayDropDown.Item>
 								</ClayDropDown.Group>
 
@@ -524,11 +520,7 @@ export const List: React.FC<IListProps> = ({
 											)
 										)}
 									>
-										<ClayIcon
-											className="mr-2"
-											symbol="diagram"
-										/>
-										{Liferay.Language.get('batch')}
+										{Liferay.Language.get('batch-segment')}
 									</ClayDropDown.Item>
 
 									{ENABLE_REAL_TIME_SEGMENTS && (
@@ -542,11 +534,9 @@ export const List: React.FC<IListProps> = ({
 												)
 											)}
 										>
-											<ClayIcon
-												className="mr-2"
-												symbol="bolt"
-											/>
-											{Liferay.Language.get('real-time')}
+											{Liferay.Language.get(
+												'real-time-segment'
+											)}
 										</ClayDropDown.Item>
 									)}
 								</ClayDropDown.Group>
