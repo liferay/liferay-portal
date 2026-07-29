@@ -67,7 +67,7 @@ public class CryptoManagerImpl implements CryptoManager {
 				cryptoProvider.decrypt(
 					ciphertext, companyId, keyReference.getIdentifier());
 
-			_auditServiceIndicator(
+			_logServiceIndicator(
 				companyId, "decrypt",
 				cryptoServiceResult.getServiceIndicator());
 
@@ -126,7 +126,7 @@ public class CryptoManagerImpl implements CryptoManager {
 				cryptoProvider.encrypt(
 					companyId, keyReference.getIdentifier(), plaintext);
 
-			_auditServiceIndicator(
+			_logServiceIndicator(
 				companyId, "encrypt",
 				cryptoServiceResult.getServiceIndicator());
 
@@ -158,7 +158,7 @@ public class CryptoManagerImpl implements CryptoManager {
 				cryptoProvider.exportKey(
 					companyId, keyReference.getIdentifier());
 
-			_auditServiceIndicator(
+			_logServiceIndicator(
 				companyId, "exportKey",
 				cryptoServiceResult.getServiceIndicator());
 
@@ -187,9 +187,10 @@ public class CryptoManagerImpl implements CryptoManager {
 		}
 
 		try {
-			return _generate(
+			return _generateKeyReference(
 				algorithm, companyId,
-				CryptoProvider::generateAsymmetricKeyIdentifier, keyReference);
+				CryptoProvider::generateAsymmetricKeyIdentifier, keyReference,
+				"generateAsymmetricKeyReference");
 		}
 		catch (CryptoException cryptoException) {
 			if (_log.isWarnEnabled()) {
@@ -216,9 +217,10 @@ public class CryptoManagerImpl implements CryptoManager {
 		}
 
 		try {
-			return _generate(
+			return _generateKeyReference(
 				algorithm, companyId,
-				CryptoProvider::generateSecretKeyIdentifier, keyReference);
+				CryptoProvider::generateSecretKeyIdentifier, keyReference,
+				"generateSecretKeyReference");
 		}
 		catch (CryptoException cryptoException) {
 			if (_log.isWarnEnabled()) {
@@ -343,7 +345,7 @@ public class CryptoManagerImpl implements CryptoManager {
 					algorithm, companyId, keyBytes,
 					keyReference.getIdentifier());
 
-			_auditServiceIndicator(
+			_logServiceIndicator(
 				companyId, "importSecretKey",
 				cryptoServiceResult.getServiceIndicator());
 
@@ -390,19 +392,7 @@ public class CryptoManagerImpl implements CryptoManager {
 
 		try {
 			String cryptoProviderId = _getCryptoProviderId(
-				companyId, keyReference.getProviderId(), ProviderRole.DEK);
-
-			String masterCryptoProviderId = _getCryptoProviderId(
-				companyId, masterKeyReference.getProviderId(),
-				ProviderRole.KEK);
-
-			if (!Objects.equals(cryptoProviderId, masterCryptoProviderId)) {
-				throw new CryptoException(
-					StringBundler.concat(
-						"Key provider ", cryptoProviderId,
-						" does not match master key provider ",
-						masterCryptoProviderId));
-			}
+				companyId, keyReference, masterKeyReference);
 
 			CryptoProvider cryptoProvider = _getCryptoProvider(
 				companyId, cryptoProviderId);
@@ -413,7 +403,7 @@ public class CryptoManagerImpl implements CryptoManager {
 					masterKeyReference.getIdentifier(), wrappedKeyAlgorithm,
 					wrappedKeyBytes, wrappedKeyCipherType);
 
-			_auditServiceIndicator(
+			_logServiceIndicator(
 				companyId, "unwrap", cryptoServiceResult.getServiceIndicator());
 
 			return new CryptoServiceResult<>(
@@ -446,30 +436,17 @@ public class CryptoManagerImpl implements CryptoManager {
 		}
 
 		try {
-			String cryptoProviderId = _getCryptoProviderId(
-				companyId, keyReference.getProviderId(), ProviderRole.DEK);
-
-			String masterCryptoProviderId = _getCryptoProviderId(
-				companyId, masterKeyReference.getProviderId(),
-				ProviderRole.KEK);
-
-			if (!Objects.equals(cryptoProviderId, masterCryptoProviderId)) {
-				throw new CryptoException(
-					StringBundler.concat(
-						"Key provider ", cryptoProviderId,
-						" does not match master key provider ",
-						masterCryptoProviderId));
-			}
-
 			CryptoProvider cryptoProvider = _getCryptoProvider(
-				companyId, cryptoProviderId);
+				companyId,
+				_getCryptoProviderId(
+					companyId, keyReference, masterKeyReference));
 
 			CryptoServiceResult<byte[]> cryptoServiceResult =
 				cryptoProvider.wrap(
 					companyId, keyReference.getIdentifier(),
 					masterKeyReference.getIdentifier());
 
-			_auditServiceIndicator(
+			_logServiceIndicator(
 				companyId, "wrap", cryptoServiceResult.getServiceIndicator());
 
 			return cryptoServiceResult;
@@ -499,35 +476,9 @@ public class CryptoManagerImpl implements CryptoManager {
 		}
 	}
 
-	private void _auditServiceIndicator(
-		long companyId, String operation, ServiceIndicator serviceIndicator) {
-
-		if (serviceIndicator == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"Operation ", operation, " for company ID ", companyId,
-						" returned a null service indicator"));
-			}
-
-			return;
-		}
-
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				StringBundler.concat(
-					"Operation ", operation, " for company ID ", companyId,
-					" used ",
-					serviceIndicator.isApproved() ? "an approved " :
-						"a nonapproved ",
-					"security function ",
-					serviceIndicator.getSecurityFunctionName()));
-		}
-	}
-
-	private CryptoServiceResult<KeyReference> _generate(
+	private CryptoServiceResult<KeyReference> _generateKeyReference(
 			String algorithm, long companyId, KeyGenerator keyGenerator,
-			KeyReference keyReference)
+			KeyReference keyReference, String operation)
 		throws CryptoException {
 
 		String cryptoProviderId = _getCryptoProviderId(
@@ -537,8 +488,8 @@ public class CryptoManagerImpl implements CryptoManager {
 			_getCryptoProvider(companyId, cryptoProviderId), algorithm,
 			companyId, keyReference.getIdentifier());
 
-		_auditServiceIndicator(
-			companyId, "generate", cryptoServiceResult.getServiceIndicator());
+		_logServiceIndicator(
+			companyId, operation, cryptoServiceResult.getServiceIndicator());
 
 		return new CryptoServiceResult<>(
 			cryptoServiceResult.getServiceIndicator(),
@@ -550,10 +501,6 @@ public class CryptoManagerImpl implements CryptoManager {
 	private CryptoProvider _getCryptoProvider(
 			long companyId, String cryptoProviderId)
 		throws CryptoException {
-
-		if (Validator.isNull(cryptoProviderId)) {
-			throw new CryptoException("Crypto provider ID is null");
-		}
 
 		List<CryptoProvider> cryptoProviders = _serviceTrackerMap.getService(
 			cryptoProviderId);
@@ -594,8 +541,34 @@ public class CryptoManagerImpl implements CryptoManager {
 	}
 
 	private String _getCryptoProviderId(
+			long companyId, KeyReference keyReference,
+			KeyReference masterKeyReference)
+		throws CryptoException {
+
+		String cryptoProviderId = _getCryptoProviderId(
+			companyId, keyReference.getProviderId(), ProviderRole.DEK);
+
+		String masterCryptoProviderId = _getCryptoProviderId(
+			companyId, masterKeyReference.getProviderId(), ProviderRole.KEK);
+
+		if (!Objects.equals(cryptoProviderId, masterCryptoProviderId)) {
+			throw new CryptoException(
+				StringBundler.concat(
+					"Key provider ", cryptoProviderId,
+					" does not match master key provider ",
+					masterCryptoProviderId));
+		}
+
+		return cryptoProviderId;
+	}
+
+	private String _getCryptoProviderId(
 			long companyId, String cryptoProviderId, ProviderRole providerRole)
 		throws CryptoException {
+
+		if (Validator.isNull(cryptoProviderId)) {
+			throw new IllegalArgumentException("Crypto provider ID is null");
+		}
 
 		if (!Objects.equals(cryptoProviderId, StringPool.STAR)) {
 			return cryptoProviderId;
@@ -633,11 +606,41 @@ public class CryptoManagerImpl implements CryptoManager {
 		if (Validator.isNull(cryptoProviderId)) {
 			throw new CryptoException(
 				StringBundler.concat(
-					"Active key manager profile resolved a null provider ID ",
-					"for role ", providerRole, " and company ID ", companyId));
+					"The active key manager profile does not configure a ",
+					"crypto provider ID for role ", providerRole,
+					" and company ID ", companyId));
 		}
 
 		return cryptoProviderId;
+	}
+
+	private void _logServiceIndicator(
+		long companyId, String operation, ServiceIndicator serviceIndicator) {
+
+		if (serviceIndicator == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Operation ", operation, " for company ID ", companyId,
+						" returned a null service indicator"));
+			}
+
+			return;
+		}
+
+		if (_log.isInfoEnabled()) {
+			String approval = "a nonapproved";
+
+			if (serviceIndicator.isApproved()) {
+				approval = "an approved";
+			}
+
+			_log.info(
+				StringBundler.concat(
+					"Operation ", operation, " for company ID ", companyId,
+					" used ", approval, " security function ",
+					serviceIndicator.getSecurityFunctionName()));
+		}
 	}
 
 	private List<KeyReference> _toKeyReferences(
