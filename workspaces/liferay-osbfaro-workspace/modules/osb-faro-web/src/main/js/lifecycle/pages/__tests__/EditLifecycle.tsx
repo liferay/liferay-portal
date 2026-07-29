@@ -37,12 +37,7 @@ const mockedUseRequest = useRequest as jest.Mock;
 
 const buildStages = (): ILifecycleStage[] =>
 	LIFECYCLE_STAGE_ORDER.map((stageType, index) => ({
-		description: 'A configured stage',
-		displayOrder: index + 1,
-		id: `stage-${index}`,
-		maxDuration: 30,
 		accountLifecycleStageRule: {
-			filterString: '(account.annualRevenue gt 1000)',
 			filterMetadata: JSON.stringify({
 				conditionValue: '1000',
 				field: 'account.annualRevenue',
@@ -50,7 +45,12 @@ const buildStages = (): ILifecycleStage[] =>
 				fieldDataType: 'NUMERIC',
 				operator: 'gt',
 			}),
+			filterString: '(account.annualRevenue gt 1000)',
 		},
+		description: 'A configured stage',
+		displayOrder: index + 1,
+		id: `stage-${index}`,
+		maxDuration: 30,
 		stageType,
 	}));
 

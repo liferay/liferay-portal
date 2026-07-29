@@ -210,12 +210,7 @@ describe('stageConfigsFromLifecycle', () => {
 	it('rebuilds every stage config from the saved rule metadata', () => {
 		const configs = stageConfigsFromLifecycle([
 			{
-				description: 'Saved description',
-				displayOrder: 1,
-				id: 'stage-1',
-				maxDuration: 30,
 				accountLifecycleStageRule: {
-					filterString: '(account.annualRevenue gt 1000)',
 					filterMetadata: JSON.stringify({
 						conditionValue: '1000',
 						field: 'account.annualRevenue',
@@ -223,7 +218,12 @@ describe('stageConfigsFromLifecycle', () => {
 						fieldDataType: 'NUMERIC',
 						operator: 'gt',
 					}),
+					filterString: '(account.annualRevenue gt 1000)',
 				},
+				description: 'Saved description',
+				displayOrder: 1,
+				id: 'stage-1',
+				maxDuration: 30,
 				stageType: 'AWARE',
 			},
 		]);
