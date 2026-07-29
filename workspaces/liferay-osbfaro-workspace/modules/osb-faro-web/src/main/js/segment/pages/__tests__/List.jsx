@@ -169,7 +169,7 @@ describe('List', () => {
 			featureFlags.ENABLE_REAL_TIME_SEGMENTS = false;
 		});
 
-		it('creates a batch segment directly without a type dropdown', async () => {
+		it('hides the real time segment option', async () => {
 			render(<DefaultComponent />);
 
 			await act(async () => {
@@ -177,12 +177,12 @@ describe('List', () => {
 			});
 
 			expect(
-				screen.getByTestId('batch-segment-button')
+				screen.getByTestId('account-batch-segment-dropdown-item')
+			).toBeInTheDocument();
+			expect(
+				screen.getByTestId('batch-segment-dropdown-item')
 			).toBeInTheDocument();
 
-			expect(
-				screen.queryByTestId('batch-segment-dropdown-item')
-			).not.toBeInTheDocument();
 			expect(
 				screen.queryByTestId('real-time-segment-dropdown-item')
 			).not.toBeInTheDocument();
@@ -197,13 +197,24 @@ describe('List', () => {
 		});
 
 		expect(
+			screen.getByTestId('account-batch-segment-dropdown-item')
+		).toBeInTheDocument();
+		expect(
 			screen.getByTestId('batch-segment-dropdown-item')
 		).toBeInTheDocument();
 		expect(
 			screen.getByTestId('real-time-segment-dropdown-item')
 		).toBeInTheDocument();
-		expect(
-			screen.queryByTestId('batch-segment-button')
-		).not.toBeInTheDocument();
+
+		const accountOption = screen.getByTestId(
+			'account-batch-segment-dropdown-item'
+		);
+
+		const [accountGroup, individualGroup] = accountOption
+			.closest('.dropdown-menu')
+			.querySelectorAll('.dropdown-subheader');
+
+		expect(accountGroup).toHaveTextContent('Account');
+		expect(individualGroup).toHaveTextContent('Individual');
 	});
 });
