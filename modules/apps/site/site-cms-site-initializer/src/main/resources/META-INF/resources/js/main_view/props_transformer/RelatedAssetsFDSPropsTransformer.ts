@@ -10,7 +10,10 @@ import {
 } from '@liferay/frontend-data-set-web';
 import {openToast} from 'frontend-js-components-web';
 
-import ApiHelper from '../../common/services/ApiHelper';
+import ObjectEntryLinkService, {
+	ObjectEntryLinkContext,
+	toLinkedAsset,
+} from '../../common/services/ObjectEntryLinkService';
 import AssetsFDSPropsTransformer, {
 	AdditionalProps,
 } from './AssetsFDSPropsTransformer';
@@ -27,7 +30,10 @@ export default function RelatedAssetsFDSPropsTransformer({
 	views,
 	...otherProps
 }: {
-	additionalProps: AdditionalProps & MultipleFileUploaderData;
+	additionalProps: AdditionalProps &
+		MultipleFileUploaderData & {
+			objectEntryLinkProps: ObjectEntryLinkContext;
+		};
 	bulkActions: Array<IBulkActionItem>;
 	creationMenu: any;
 	id: string;
@@ -77,19 +83,16 @@ export default function RelatedAssetsFDSPropsTransformer({
 			loadData: () => {};
 		}) {
 			if (action.data.id === 'unlink-asset') {
-				const {actions, embedded} = itemData;
+				const {error} = await ObjectEntryLinkService.unlinkAsset({
+					context: additionalProps.objectEntryLinkProps,
+					linkedAsset: toLinkedAsset(itemData),
+				});
 
-				await ApiHelper.patch(
-					{
-						keywords: embedded.keywords?.filter(
-							(keyword) =>
-								!additionalProps.keywords
-									?.split(',')
-									.includes(keyword)
-						),
-					},
-					actions.update.href
-				);
+				if (error) {
+					openToast({message: error, type: 'danger'});
+
+					return;
+				}
 
 				openToast({
 					message: Liferay.Language.get(

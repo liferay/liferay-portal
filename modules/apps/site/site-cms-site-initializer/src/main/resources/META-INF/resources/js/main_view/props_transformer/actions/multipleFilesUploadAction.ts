@@ -5,14 +5,20 @@
 
 import {FileData} from 'frontend-js-components-web';
 
+import {ObjectEntryLinkContext} from '../../../common/services/ObjectEntryLinkService';
 import {AssetLibrary} from '../../../common/types/AssetLibrary';
 import {openCMSModal} from '../../../common/utils/openCMSModal';
 import MultipleFilesUploadModalContent from '../../modal/MultipleFilesUploadModalContent';
 
-export type MultipleFileUploaderData = {
+/**
+ * The link fields are partial because the plain content list uploads files
+ * without an object entry to link them to. They are only complete when the
+ * upload starts from a task's or a project's related assets view.
+ */
+export type MultipleFileUploaderData = Partial<ObjectEntryLinkContext> & {
 	assetLibraries: AssetLibrary[];
 	baseAssetLibraryViewURL: string;
-	keywords?: string;
+	documentClassName?: string;
 	parentObjectEntryFolderExternalReferenceCode: string;
 };
 

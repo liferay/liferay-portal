@@ -8,24 +8,26 @@ import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
 import {openToast} from 'frontend-js-components-web';
 import {v4 as uuidv4} from 'uuid';
 
-import ApiHelper from '../../../common/services/ApiHelper';
+import ObjectEntryLinkService, {
+	ObjectEntryLinkContext,
+	toLinkedAsset,
+} from '../../../common/services/ObjectEntryLinkService';
 
 type Asset = {
-	actions: {
-		update: {href: string};
-	};
 	embedded: {
+		externalReferenceCode: string;
 		file?: {
 			mimeType: string;
 		};
 		id: number;
-		keywords: string[];
+		systemProperties?: {scope?: {externalReferenceCode?: string}};
 		title: string;
 	};
+	entryClassName: string;
 };
 
 export default function selectAssetsAction(
-	{keywords, searchAPIURL}: {keywords: string; searchAPIURL: string},
+	{searchAPIURL, ...context}: ObjectEntryLinkContext & {searchAPIURL: string},
 	loadData?: () => void
 ) {
 	openItemSelectorModal({
@@ -83,21 +85,22 @@ export default function selectAssetsAction(
 		},
 		multiSelect: true,
 		onItemsChange: async (assets: Asset[]) => {
-			await Promise.all(
-				assets.map(async (asset: Asset) => {
-					const {actions, embedded} = asset;
-
-					await ApiHelper.patch(
-						{
-							keywords: [
-								...keywords.split(','),
-								...embedded.keywords,
-							],
-						},
-						actions.update.href
-					);
-				})
+			const results = await Promise.all(
+				assets.map((asset: Asset) =>
+					ObjectEntryLinkService.linkAsset({
+						context,
+						linkedAsset: toLinkedAsset(asset),
+					})
+				)
 			);
+
+			const failedResult = results.find(({error}) => error);
+
+			if (failedResult?.error) {
+				openToast({message: failedResult.error, type: 'danger'});
+
+				return;
+			}
 
 			openToast({
 				message: Liferay.Language.get(

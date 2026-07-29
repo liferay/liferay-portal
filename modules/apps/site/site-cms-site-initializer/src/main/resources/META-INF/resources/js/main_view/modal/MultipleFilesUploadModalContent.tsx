@@ -16,7 +16,11 @@ import {getFileAsBase64, sub} from 'frontend-js-web';
 import React, {useId, useState} from 'react';
 
 import SpaceSelector from '../../common/components/SpaceSelector';
-import ApiHelper from '../../common/services/ApiHelper';
+import ApiHelper, {RequestResult} from '../../common/services/ApiHelper';
+import ObjectEntryLinkService, {
+	ObjectEntryLinkContext,
+	toLinkContext,
+} from '../../common/services/ObjectEntryLinkService';
 import {AssetLibrary} from '../../common/types/AssetLibrary';
 import {Space} from '../../common/types/Space';
 
@@ -26,16 +30,17 @@ const sequentialUploadBatches: UploadBatchesCallback = (files) =>
 export default function MultipleFilesUploadModalContent({
 	assetLibraries,
 	baseAssetLibraryViewURL,
+	documentClassName,
 	filesToUpload,
-	keywords,
 	loadData,
 	onModalClose,
 	parentObjectEntryFolderExternalReferenceCode,
-}: {
+	...linkFields
+}: Partial<ObjectEntryLinkContext> & {
 	assetLibraries: AssetLibrary[];
 	baseAssetLibraryViewURL: string;
+	documentClassName?: string;
 	filesToUpload?: FileData[];
-	keywords?: string;
 	loadData?: () => void;
 	onModalClose: () => void;
 	parentObjectEntryFolderExternalReferenceCode: string;
@@ -66,6 +71,41 @@ export default function MultipleFilesUploadModalContent({
 		return `<a href="${baseAssetLibraryViewURL}${assetLibrary?.groupId}" class="alert-link lead"><strong>${assetLibrary?.name}</strong></a>`;
 	};
 
+	const linkUploadedDocument = async (
+		result: RequestResult<{externalReferenceCode: string}>
+	) => {
+		if (result.error !== null) {
+			return;
+		}
+
+		const context = toLinkContext(linkFields);
+
+		if (!context || !documentClassName) {
+			return;
+		}
+
+		const assetLibrary = assetLibraries?.find(
+			(assetLibrary) => Number(assetLibrary.groupId) === Number(groupId)
+		);
+
+		if (!assetLibrary) {
+			return;
+		}
+
+		const {error} = await ObjectEntryLinkService.linkAsset({
+			context,
+			linkedAsset: {
+				classExternalReferenceCode: result.data.externalReferenceCode,
+				className: documentClassName,
+				groupExternalReferenceCode: assetLibrary.externalReferenceCode,
+			},
+		});
+
+		if (error) {
+			openToast({message: error, type: 'danger'});
+		}
+	};
+
 	const uploadRequest: UploadRequestCallback = async ({
 		fileData,
 	}: {
@@ -84,19 +124,22 @@ export default function MultipleFilesUploadModalContent({
 
 		const fileBase64 = await getFileAsBase64(fileData.file);
 
-		return await ApiHelper.post(
+		const result = await ApiHelper.post<{externalReferenceCode: string}>(
 			`/o/cms/basic-documents/scopes/${groupId}`,
 			{
 				file: {
 					fileBase64,
 					name: fileData.name,
 				},
-				keywords: keywords?.split(','),
 				objectEntryFolderExternalReferenceCode:
 					parentObjectEntryFolderExternalReferenceCode || 'L_FILES',
 				title: fileData.name,
 			}
 		);
+
+		await linkUploadedDocument(result);
+
+		return result;
 	};
 
 	const onUploadComplete = ({

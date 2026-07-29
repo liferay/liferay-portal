@@ -5,6 +5,7 @@
 
 import {navigate} from 'frontend-js-web';
 
+import {ObjectEntryLinkContext} from '../../../common/services/ObjectEntryLinkService';
 import {AssetLibrary} from '../../../common/types/AssetLibrary';
 import multipleFilesUploadAction, {
 	MultipleFileUploaderData,
@@ -15,6 +16,7 @@ export default function fileDropAction(
 		baseFolderViewURL: string;
 		candidateAssetLibraries: AssetLibrary[];
 		loadData?: () => void;
+		objectEntryLinkProps?: ObjectEntryLinkContext;
 		redirect: string;
 	},
 	droppedFiles: any,
@@ -28,16 +30,19 @@ export default function fileDropAction(
 		baseAssetLibraryViewURL,
 		baseFolderViewURL,
 		candidateAssetLibraries,
-		keywords,
+		documentClassName,
 		loadData,
+		objectEntryLinkProps,
 		parentObjectEntryFolderExternalReferenceCode,
 		redirect,
 	} = additionalProps;
 
 	multipleFilesUploadAction(
 		{
+			...objectEntryLinkProps,
 			assetLibraries: candidateAssetLibraries,
 			baseAssetLibraryViewURL,
+			documentClassName,
 			filesToUpload: droppedFiles.map((file: any) => ({
 				errorMessage: '',
 				failed: false,
@@ -45,7 +50,6 @@ export default function fileDropAction(
 				name: file.name,
 				size: file.size,
 			})),
-			keywords,
 			parentObjectEntryFolderExternalReferenceCode: dropTarget
 				? dropTarget.embedded?.externalReferenceCode
 				: parentObjectEntryFolderExternalReferenceCode,
