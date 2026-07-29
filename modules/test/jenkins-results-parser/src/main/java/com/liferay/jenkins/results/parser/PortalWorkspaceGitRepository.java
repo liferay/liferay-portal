@@ -496,10 +496,13 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			yarnCacheFile = File.createTempFile(
 				"yarn-cache", ".zip", getDirectory());
 
+			JenkinsResultsParserUtil.delete(yarnCacheFile);
+
 			PortalGitWorkingDirectory portalGitWorkingDirectory =
 				(PortalGitWorkingDirectory)getGitWorkingDirectory();
 
-			portalGitWorkingDirectory.createYarnCache(yarnCacheFile.getName());
+			yarnCacheFile = portalGitWorkingDirectory.createYarnCache(
+				yarnCacheFile.getName());
 
 			CloudBucketUtil.uploadS3File(yarnCacheS3ObjectPath, yarnCacheFile);
 
