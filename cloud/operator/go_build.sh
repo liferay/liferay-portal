@@ -7,7 +7,19 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 function main {
+	local mode="${1:-full}"
+
 	cd resources
+
+	if [ "${mode}" == "fast" ]; then
+		go generate ./...
+
+		mkdir -p build
+
+		CGO_ENABLED=0 GOOS=linux go build -o build/manager .
+
+		return
+	fi
 
 	go mod download
 
