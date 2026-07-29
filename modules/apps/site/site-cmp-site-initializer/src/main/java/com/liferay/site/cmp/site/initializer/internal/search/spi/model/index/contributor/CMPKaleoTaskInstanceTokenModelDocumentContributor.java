@@ -5,16 +5,24 @@
 
 package com.liferay.site.cmp.site.initializer.internal.search.spi.model.index.contributor;
 
-import com.liferay.asset.kernel.model.AssetEntry;
-import com.liferay.asset.kernel.service.AssetEntryLocalService;
+import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.rest.filter.factory.FilterFactory;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
+import com.liferay.site.cmp.site.initializer.internal.util.CMPLinkedObjectEntryUtil;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,13 +44,37 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributor
 	public void contribute(
 		Document document, KaleoTaskInstanceToken kaleoTaskInstanceToken) {
 
-		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-			kaleoTaskInstanceToken.getClassName(),
+		try {
+			_contribute(document, kaleoTaskInstanceToken);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+	}
+
+	private void _contribute(
+			Document document, KaleoTaskInstanceToken kaleoTaskInstanceToken)
+		throws PortalException {
+
+		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			kaleoTaskInstanceToken.getClassPK());
 
-		if ((assetEntry == null) || !_hasCMPTaskTag(assetEntry)) {
+		if (objectEntry == null) {
 			return;
 		}
+
+		long[] cmpTaskObjectEntryIds =
+			CMPLinkedObjectEntryUtil.getLinkedObjectEntryIds(
+				_filterFactory, _groupLocalService, "L_CMP_TASK_LINK",
+				_objectDefinitionLocalService, objectEntry,
+				_objectEntryLocalService,
+				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId");
+
+		if (cmpTaskObjectEntryIds.length == 0) {
+			return;
+		}
+
+		document.addKeyword("cmpTaskObjectEntryIds", cmpTaskObjectEntryIds);
 
 		Set<String> cmpAssignTos = new HashSet<>();
 
@@ -63,22 +95,24 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributor
 		}
 	}
 
-	private boolean _hasCMPTaskTag(AssetEntry assetEntry) {
-		for (String assetTagName : assetEntry.getTagNames()) {
-			if (StringUtil.startsWith(
-					StringUtil.toLowerCase(assetTagName), "l_cmp_task")) {
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	@Reference
-	private AssetEntryLocalService _assetEntryLocalService;
+	private static final Log _log = LogFactoryUtil.getLog(
+		CMPKaleoTaskInstanceTokenModelDocumentContributor.class);
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference(
+		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
+	)
+	private FilterFactory<Predicate> _filterFactory;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
