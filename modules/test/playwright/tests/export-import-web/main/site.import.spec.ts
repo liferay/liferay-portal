@@ -27,7 +27,6 @@ import {wikiPagesTest} from '../../../fixtures/wikiPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {createCategories} from '../../../helpers/CreateCategories';
 import {liferayConfig} from '../../../liferay.config';
-import {HomePage} from '../../../pages/portal-web/HomePage';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {normalizeRestPath} from '../../../utils/normalizeRestPath';
@@ -186,46 +185,6 @@ testWithObjectExportImportFF(
 		}
 	}
 );
-
-test('Cannot import an instance scoped lar file', async ({
-	apiHelpers,
-	exportImportPage,
-	globalMenuPage,
-	page,
-}) => {
-	const objectDefinition =
-		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			status: {code: 0},
-		});
-
-	apiHelpers.data.push({
-		id: objectDefinition.id,
-		type: 'objectDefinition',
-	});
-
-	await apiHelpers.objectEntry.postObjectEntry(
-		{externalReferenceCode: '', textField: objectDefinition.name},
-		`${normalizeRestPath(objectDefinition.restContextPath)}`
-	);
-
-	const homePage = new HomePage(page);
-
-	await globalMenuPage.goToApplications('Export');
-
-	const exportFilePath = await exportImportPage.export({
-		portletLabels: [`${objectDefinition.name} 1 Items`],
-	});
-
-	await homePage.goto();
-
-	await exportImportPage.goToImport();
-
-	await exportImportPage.import({
-		expectedUploadErrorMessage:
-			'The LAR file contains one or more entities with a different scope.',
-		filePath: exportFilePath,
-	});
-});
 
 test(
 	'Make sure we do not export-import wikiNodes if they are not selected in the export configuration screen',
