@@ -18,6 +18,7 @@ const buildAssetTabsBody = (metrics: Metric[]) =>
 
 export const AssetTabsQuery = (metrics: Metric[], name: string) => gql`
 	query ${tabsOperationName(name)}(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -29,6 +30,7 @@ export const AssetTabsQuery = (metrics: Metric[], name: string) => gql`
 		$touchpoint: String
 	) {
 		${name}(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId
@@ -49,6 +51,7 @@ export const AssetTabsQuery = (metrics: Metric[], name: string) => gql`
 export const AssetMetricQuery = (queryName: string) => (metricName: string) =>
 	gql`
 	query ${metricOperationName(queryName)}(
+		$accountId: String
 		$assetId: String!
 		$channelId: String
 		$devices: String
@@ -60,6 +63,7 @@ export const AssetMetricQuery = (queryName: string) => (metricName: string) =>
 		$touchpoint: String
 	) {
 		${queryName}(
+			accountId: $accountId
 			assetId: $assetId
 			canonicalUrl: $touchpoint
 			channelId: $channelId
