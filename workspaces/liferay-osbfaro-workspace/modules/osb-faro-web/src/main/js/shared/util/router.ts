@@ -50,6 +50,7 @@ export const USERS = 'users';
 /* Filter Key Constants */
 
 export const PERIOD = 'rangeKey';
+export const SEGMENT_CATEGORY = 'segmentCategory';
 export const SEGMENT_STATE = 'state';
 export const SEGMENT_TYPE = 'segmentType';
 export const INDIVIDUAL_COUNT = 'individualCount';
