@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.searcher.SearchRequestBuilderFactory;
 import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
@@ -140,8 +139,7 @@ public class FragmentCollectionSearchPermissionTest {
 			).companyId(
 				TestPropsValues.getCompanyId()
 			).entryClassNames(
-				TransformUtil.transformToArray(
-					ListUtil.fromArray(clazzes), Class::getName, String.class)
+				TransformUtil.transform(clazzes, Class::getName, String.class)
 			).groupIds(
 				_group.getGroupId()
 			).modelIndexerClasses(
