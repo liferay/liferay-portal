@@ -48,10 +48,10 @@ public class FaroDataSourceUsageLocalServiceImpl
 		faroDataSourceUsage.setCompanyId(user.getCompanyId());
 		faroDataSourceUsage.setUserId(user.getUserId());
 
-		long now = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 
-		faroDataSourceUsage.setCreateTime(now);
-		faroDataSourceUsage.setModifiedTime(now);
+		faroDataSourceUsage.setCreateTime(time);
+		faroDataSourceUsage.setModifiedTime(time);
 
 		faroDataSourceUsage.setBillableEventsCount(billableEventsCount);
 		faroDataSourceUsage.setDataSourceId(dataSourceId);
@@ -107,7 +107,6 @@ public class FaroDataSourceUsageLocalServiceImpl
 		dynamicQuery.add(
 			RestrictionsFactoryUtil.between(
 				"usageTime", startDate.getTime(), endDate.getTime()));
-
 		dynamicQuery.addOrder(OrderFactoryUtil.asc("dataSourceId"));
 		dynamicQuery.addOrder(OrderFactoryUtil.asc("usageTime"));
 
