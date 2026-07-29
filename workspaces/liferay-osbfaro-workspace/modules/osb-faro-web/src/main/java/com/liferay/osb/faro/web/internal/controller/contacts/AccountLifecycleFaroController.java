@@ -119,7 +119,7 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 			@PathParam("groupId") long groupId, @PathParam("id") String id,
 			@QueryParam("filter") String filterString,
 			@QueryParam("page") int page, @QueryParam("pageSize") int pageSize,
-			@QueryParam("query") String query,
+			@QueryParam("search") String search,
 			@DefaultValue(StringPool.BLANK) @QueryParam("sort") String
 				sortString)
 		throws Exception {
@@ -127,7 +127,7 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 		Results<Account> results =
 			contactsEngineClient.getAccountLifecycleAccounts(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				filterString, id, query, page, pageSize, sortString);
+				filterString, id, search, page, pageSize, sortString);
 
 		Function<Account, AccountDisplay> function = AccountDisplay::new;
 
