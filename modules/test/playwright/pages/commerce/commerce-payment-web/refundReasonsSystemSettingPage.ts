@@ -99,7 +99,7 @@ export class RefundReasonsSystemSettingPage {
 		await this.systemSettingsPage.goToSystemSetting(
 			'Payment',
 			'Refund Reasons',
-			'Virtual Instance Scope'
+			'System Scope'
 		);
 	}
 }
