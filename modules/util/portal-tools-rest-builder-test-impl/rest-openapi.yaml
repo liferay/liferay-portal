@@ -35,7 +35,9 @@ components:
                     type: integer
                 name:
                     type: string
-                nestedField:
+                nestedField1:
+                    type: string
+                nestedField2:
                     type: string
                 relatedCompanyTestEntity:
                     $ref: "#/components/schemas/CompanyTestEntity"
