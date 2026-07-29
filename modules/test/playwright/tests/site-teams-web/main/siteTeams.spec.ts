@@ -1176,7 +1176,7 @@ test(
 
 test(
 	'Inherited team members are labeled and removal affects only direct memberships',
-	{tag: ['@LPD-87301']},
+	{tag: ['@LPD-87301', '@LPD-99754']},
 	async ({
 		apiHelpers,
 		page,
@@ -1290,9 +1290,12 @@ test(
 			true
 		);
 
-		await expect(
-			inheritedRow.row.getByText('Inherited', {exact: true})
-		).toBeVisible();
+		const inheritedLabel = inheritedRow.row.getByText('Inherited', {
+			exact: true,
+		});
+
+		await expect(inheritedLabel).toBeVisible();
+		await expect(inheritedLabel).not.toHaveCSS('text-align', 'center');
 
 		let confirmationMessage = '';
 
