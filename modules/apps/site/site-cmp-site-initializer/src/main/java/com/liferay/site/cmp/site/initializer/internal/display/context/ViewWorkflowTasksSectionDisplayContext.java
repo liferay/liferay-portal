@@ -65,10 +65,8 @@ public class ViewWorkflowTasksSectionDisplayContext
 
 	@Override
 	public String getAPIURL() {
-		String searchURL = WorkflowTaskSearchURLUtil.getSearchURL(
-			objectDefinition.getExternalReferenceCode());
-
-		return searchURL + "&nestedFields=embedded";
+		return WorkflowTaskSearchURLUtil.getSearchURL() +
+			"&nestedFields=embedded";
 	}
 
 	@Override

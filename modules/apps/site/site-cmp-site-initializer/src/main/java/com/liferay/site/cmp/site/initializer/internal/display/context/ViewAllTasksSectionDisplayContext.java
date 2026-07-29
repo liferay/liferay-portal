@@ -61,7 +61,7 @@ public class ViewAllTasksSectionDisplayContext
 
 	@Override
 	public String getAPIURL() {
-		StringBundler sb = new StringBundler(9);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append("/o/search/v1.0/search?emptySearch=true&entryClassNames=");
 		sb.append(HtmlUtil.escapeURL(objectDefinition.getClassName()));
@@ -69,9 +69,8 @@ public class ViewAllTasksSectionDisplayContext
 		sb.append(KaleoTaskInstanceToken.class.getName());
 		sb.append("&filter=(objectDefinitionId eq ");
 		sb.append(objectDefinition.getObjectDefinitionId());
-		sb.append(" or keywords/any(k:startswith(k, '");
-		sb.append(objectDefinition.getExternalReferenceCode());
-		sb.append("')))&nestedFields=cmpProjectToCMPTasks,embedded");
+		sb.append(" or cmpTaskObjectEntryIds/any(x:x gt 0))");
+		sb.append("&nestedFields=cmpProjectToCMPTasks,embedded");
 
 		return sb.toString();
 	}

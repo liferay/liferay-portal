@@ -68,9 +68,7 @@ public class WorkflowTasksOverviewComponentSectionFragmentRenderer
 		}
 
 		return HashMapBuilder.<String, Object>put(
-			"filterURL",
-			WorkflowTaskSearchURLUtil.getSearchURL(
-				objectDefinition.getExternalReferenceCode())
+			"filterURL", WorkflowTaskSearchURLUtil.getSearchURL()
 		).build();
 	}
 

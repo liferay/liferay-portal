@@ -13,12 +13,11 @@ import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
  */
 public class WorkflowTaskSearchURLUtil {
 
-	public static String getSearchURL(String externalReferenceCode) {
+	public static String getSearchURL() {
 		return StringBundler.concat(
 			"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
 			KaleoTaskInstanceToken.class.getName(),
-			"&filter=keywords/any(k:startswith(k, '", externalReferenceCode,
-			"'))");
+			"&filter=cmpTaskObjectEntryIds/any(x:x gt 0)");
 	}
 
 }
