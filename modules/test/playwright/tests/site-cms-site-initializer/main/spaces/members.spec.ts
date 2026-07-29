@@ -83,7 +83,7 @@ test(
 			page.getByRole('listitem').filter({hasText: userFullName})
 		).toHaveCount(1);
 
-		await spaceSummaryPage.closeButton.click();
+		await spaceSummaryPage.closeMembersDialog();
 
 		await spaceSummaryPage.removeUserOrUserGroup(userFullName, 'users');
 

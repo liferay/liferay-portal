@@ -79,6 +79,13 @@ export class SpaceSummaryPage {
 		}).toPass();
 	}
 
+	async closeMembersDialog() {
+		await Promise.all([
+			this.page.waitForEvent('load', {timeout: 15000}),
+			this.closeButton.click(),
+		]);
+	}
+
 	async openMembersDialog() {
 		await clickAndExpectToBeVisible({
 			target: this.page.getByRole('dialog'),
@@ -174,7 +181,7 @@ export class SpaceSummaryPage {
 			{autoClose: false}
 		);
 
-		await this.closeButton.click();
+		await this.closeMembersDialog();
 	}
 
 	async createContentFolder(name: string) {
