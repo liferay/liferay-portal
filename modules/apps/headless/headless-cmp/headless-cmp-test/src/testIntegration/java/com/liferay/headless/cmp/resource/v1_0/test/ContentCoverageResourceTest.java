@@ -7,7 +7,9 @@ package com.liferay.headless.cmp.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -26,6 +28,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -41,7 +44,9 @@ import com.liferay.site.cmp.site.initializer.test.util.CMPTestUtil;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -112,6 +117,25 @@ public class ContentCoverageResourceTest
 	@Override
 	@Test
 	public void testGraphQLGetProjectContentCoverageNotFound() {
+	}
+
+	private AssetCategory _addAssetCategory(
+			String assetVocabularyExternalReferenceCode)
+		throws Exception {
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.
+				getAssetVocabularyByExternalReferenceCode(
+					assetVocabularyExternalReferenceCode, _group.getGroupId());
+
+		AssetCategory assetCategory = _assetCategoryLocalService.addCategory(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), assetVocabulary.getVocabularyId(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_assetCategories.add(assetCategory);
+
+		return assetCategory;
 	}
 
 	private ObjectEntry _addCMPProjectObjectEntry(long[] assetCategoryIds)
@@ -261,6 +285,35 @@ public class ContentCoverageResourceTest
 
 	private void _testGetProjectContentCoverageWithFunnelStagesAndPersonas()
 		throws Exception {
+
+		AssetCategory customFunnelStageAssetCategory = _addAssetCategory(
+			"L_CMP_FUNNEL_STAGE");
+		AssetCategory customPersonaAssetCategory = _addAssetCategory(
+			"L_CMP_PERSONAS");
+
+		long[] customAssetCategoryIds = {
+			customFunnelStageAssetCategory.getCategoryId(),
+			customPersonaAssetCategory.getCategoryId()
+		};
+
+		ObjectEntry customCMPProjectObjectEntry = _addCMPProjectObjectEntry(
+			customAssetCategoryIds);
+
+		_addCMSBasicWebContentObjectEntry(
+			customAssetCategoryIds,
+			CMPTestUtil.addCMPTaskObjectEntry(customCMPProjectObjectEntry));
+
+		_assertContentCoverage(
+			_toContentCoverage(
+				1,
+				new ContentCoverageEntry[] {
+					_toContentCoverageEntry(
+						1, customFunnelStageAssetCategory.getCategoryId(),
+						customPersonaAssetCategory.getCategoryId())
+				},
+				new AssetCategory[] {customFunnelStageAssetCategory},
+				new AssetCategory[] {customPersonaAssetCategory}),
+			customCMPProjectObjectEntry);
 
 		AssetCategory awarenessAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_AWARENESS");
@@ -509,8 +562,14 @@ public class ContentCoverageResourceTest
 		return contentCoverageEntry;
 	}
 
+	@DeleteAfterTestRun
+	private List<AssetCategory> _assetCategories = new ArrayList<>();
+
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Inject
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 	private DepotEntry _depotEntry;
 
