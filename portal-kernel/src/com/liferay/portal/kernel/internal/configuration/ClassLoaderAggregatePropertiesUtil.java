@@ -33,9 +33,7 @@ public class ClassLoaderAggregatePropertiesUtil {
 
 		EnvPropertiesUtil.loadEnvOverrides(
 			classLoaderAggregateProperties::setProperty, "LIFERAY_",
-			new String[] {
-				"LIFERAY_CONTAINER_", "LIFERAY_DOCKER_"
-			});
+			new String[] {"LIFERAY_CONTAINER_", "LIFERAY_DOCKER_"});
 
 		return classLoaderAggregateProperties;
 	}
