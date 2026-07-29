@@ -1,7 +1,7 @@
 .criteria-group-root {
 	border: 1px $mainLighten65 solid;
 	border-radius: 4px;
-	box-shadow: 0 0 8px 1px rgba(33, 34, 35, 0.05);
+	box-shadow: 0 0 8px 1px rgb(from var(--cadmin-dark-d1) r g b / 0.05);
 	position: relative;
 	width: 100%;
 

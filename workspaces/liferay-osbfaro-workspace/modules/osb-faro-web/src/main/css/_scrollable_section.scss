@@ -30,8 +30,8 @@
 		&::after {
 			background: linear-gradient(
 				270deg,
-				rgba(255, 255, 255, 0.48081239331670167) 11%,
-				rgba(255, 255, 255, 0.8001401244091386) 25%
+				rgb(from var(--cadmin-white) r g b / 0.5) 11%,
+				rgb(from var(--cadmin-white) r g b / 0.8) 25%
 			);
 			right: -12px;
 		}
@@ -43,8 +43,8 @@
 		&::after {
 			background: linear-gradient(
 				90deg,
-				rgba(255, 255, 255, 0.48081239331670167) 11%,
-				rgba(255, 255, 255, 0.8001401244091386) 25%
+				rgb(from var(--cadmin-white) r g b / 0.5) 11%,
+				rgb(from var(--cadmin-white) r g b / 0.8) 25%
 			);
 			left: -12px;
 		}

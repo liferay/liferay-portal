@@ -32,7 +32,7 @@ $c: '.analytics-add-report';
 		padding: 0;
 
 		button {
-			background-color: #f7f8f9;
+			background-color: var(--cadmin-gray-100);
 			border: 0.063rem solid transparent;
 			border-radius: $cadmin-border-radius;
 			cursor: pointer;
@@ -43,8 +43,8 @@ $c: '.analytics-add-report';
 		button:active,
 		button:focus,
 		button.selected {
-			background-color: #f0f5ff;
-			border-color: #80acff;
+			background-color: var(--cadmin-primary-l3);
+			border-color: var(--cadmin-primary-l1);
 			outline: none;
 		}
 	}

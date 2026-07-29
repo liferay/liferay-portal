@@ -2,13 +2,14 @@
  * Chart
  */
 
-$chartBlue: #4b9bff;
-$chartBlueLighten30: #97c5ff;
-$chartLimeGreen: #9ce269;
-$chartOrange: #ffb46e;
-$chartPurple: #af78ff;
-$chartRed: #ff5f5f;
-$chartSeaGreen: #50d2a0;
+$chartBlue: var(--cadmin-blue-l1);
+$chartBlueLighten30: var(--cadmin-blue-l3);
+$chartCyan: var(--cadmin-cyan-l3);
+$chartLimeGreen: var(--cadmin-green-l4);
+$chartOrange: var(--cadmin-orange-l3);
+$chartPurple: var(--cadmin-purple-l1);
+$chartRed: var(--cadmin-red-l2);
+$chartSeaGreen: var(--cadmin-teal-l2);
 
 /**
  * Criteria sidebar
@@ -20,7 +21,7 @@ $propertyGroupsColors: (
 	'event': $chartSeaGreen,
 	'individual': $chartBlue,
 	'interest': $chartRed,
-	'organization': #5fc8ff,
+	'organization': $chartCyan,
 	'session': $chartPurple,
 	'web': $chartSeaGreen,
 );
@@ -28,10 +29,10 @@ $propertyGroupsColors: (
 /**
  * Field types
  */
-$fieldDarkBlue: #849ae8;
-$fieldGreen: #96dc7a;
-$fieldLightBlue: #54b7ff;
-$fieldPurple: #ad7aff;
+$fieldDarkBlue: var(--cadmin-indigo-l1);
+$fieldGreen: var(--cadmin-green-l3);
+$fieldLightBlue: var(--cadmin-blue-l2);
+$fieldPurple: var(--cadmin-purple-l2);
 
 /**
  * Layout
@@ -64,42 +65,42 @@ $liferayDataSourceCardSideMinWidth: 280px;
 /**
  * Lexicon
  */
-$main: #272833;
-$mainLighten4: #30313f;
-$mainLighten8: #393a4a;
-$mainLighten28: #6b6c7e;
-$mainLighten52: #a7a9bc;
-$mainLighten65: #cdced9;
-$mainLighten74: #e7e7ed;
+$main: var(--cadmin-gray-900);
+$mainLighten4: var(--cadmin-dark-l1);
+$mainLighten8: var(--cadmin-gray-800);
+$mainLighten28: var(--cadmin-gray-600);
+$mainLighten52: var(--cadmin-gray-500);
+$mainLighten65: var(--cadmin-gray-400);
+$mainLighten74: var(--cadmin-gray-300);
 $secondary: $mainLighten28;
-$secondaryHover: #f7f8f9;
+$secondaryHover: var(--cadmin-gray-100);
 
-$primary: #0b5fff;
-$primaryDarken5: #0053f0;
-$primaryDarken10: #004ad7;
-$primaryLighten23: #80acff;
-$primaryLighten33: #b3cdff;
-$primaryLighten45: #f0f5ff;
+$primary: var(--cadmin-primary);
+$primaryDarken5: var(--cadmin-primary-d1);
+$primaryDarken10: var(--cadmin-primary-d2);
+$primaryLighten23: var(--cadmin-primary-l1);
+$primaryLighten33: var(--cadmin-primary-l2);
+$primaryLighten45: var(--cadmin-primary-l3);
 
-$black: #000;
-$lightBackground: #f1f2f5;
-$white: #fff;
+$black: var(--cadmin-black);
+$lightBackground: var(--cadmin-gray-200);
+$white: var(--cadmin-white);
 
-$error: #da1414;
-$errorLighten28: #f48989;
-$errorLighten50: #feefef;
+$error: var(--cadmin-danger);
+$errorLighten28: var(--cadmin-danger-l1);
+$errorLighten50: var(--cadmin-danger-l2);
 
-$success: #287d3c;
-$successLighten25: #5aca75;
-$successLighten63: #edf9f0;
+$success: var(--cadmin-success);
+$successLighten25: var(--cadmin-success-l1);
+$successLighten63: var(--cadmin-success-l2);
 
-$warning: #b95000;
-$warningLighten25: #ff8f39;
-$warningLighten60: #fff4ec;
+$warning: var(--cadmin-warning);
+$warningLighten25: var(--cadmin-warning-l1);
+$warningLighten60: var(--cadmin-warning-l2);
 
-$info: #2e5aac;
-$infoLighten28: #89a7e0;
-$infoLighten53: #eef2fa;
+$info: var(--cadmin-info);
+$infoLighten28: var(--cadmin-info-l1);
+$infoLighten53: var(--cadmin-info-l2);
 
 $colors: (
 	main: $main,

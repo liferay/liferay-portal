@@ -3,7 +3,7 @@
 		background-color: transparent;
 
 		&:hover {
-			background-color: rgba($main, 0.06);
+			background-color: rgb(from var(--cadmin-gray-900) r g b / 0.06);
 		}
 	}
 

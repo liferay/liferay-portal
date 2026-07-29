@@ -6,7 +6,7 @@
 		font-weight: $fontWeightRegular;
 
 		&:disabled {
-			background-color: rgb(222, 226, 236);
+			background-color: var(--cadmin-light-d1);
 		}
 	}
 }

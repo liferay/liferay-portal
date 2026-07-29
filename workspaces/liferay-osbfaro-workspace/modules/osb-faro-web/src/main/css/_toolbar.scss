@@ -37,7 +37,7 @@
 
 	.subnav-tbar-root {
 		.view-selected-link-container:not(:only-child) {
-			border-right: 1px solid #c4c4c4;
+			border-right: 1px solid var(--cadmin-gray-400);
 			margin: 0.5rem 1rem 0.5rem 0;
 			padding-right: 1rem;
 		}

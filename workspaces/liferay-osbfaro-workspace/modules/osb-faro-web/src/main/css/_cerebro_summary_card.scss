@@ -52,11 +52,11 @@ $status-secondary-color-red: $errorLighten50;
 
 		&-active {
 			border: 1px solid $primary !important;
-			box-shadow: 0 8px 16px rgba(39, 40, 51, 0.16) !important;
+			box-shadow: var(--cadmin-box-shadow) !important;
 		}
 
 		&-complete {
-			background-color: #f2f3f4 !important;
+			background-color: var(--cadmin-gray-200) !important;
 			border: 1px solid transparent !important;
 		}
 
