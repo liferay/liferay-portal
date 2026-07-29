@@ -420,12 +420,10 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				group = _groupLocalService.updateGroup(group);
 			}
 
-			_updateFriendlyURL(assetLibrary, group.getGroupId());
-
 			_updateDLSizeLimitConfiguration(
 				assetLibrary, group.getGroupId(), mimeTypeSizeLimits);
 
-			return _depotEntryService.updateDepotEntry(
+			DepotEntry updatedDepotEntry = _depotEntryService.updateDepotEntry(
 				depotEntry.getDepotEntryId(), nameMap, descriptionMap,
 				_getDepotAppCustomizationMap(
 					depotEntry.getCompanyId(), externalReferenceCode),
@@ -435,6 +433,10 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 					unicodeProperties
 				).build(),
 				serviceContext);
+
+			_updateFriendlyURL(assetLibrary, group.getGroupId());
+
+			return updatedDepotEntry;
 		}
 
 		if (Validator.isNotNull(externalReferenceCode)) {
