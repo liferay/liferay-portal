@@ -269,5 +269,39 @@ describe('mappers', () => {
 
 			expect(variables.channelId).toEqual('12345');
 		});
+
+		it('should include segmentId in the variables object if it was passed', () => {
+			const {variables} = getVariables({
+				filters,
+				params: {},
+				rangeSelectors: {rangeKey},
+				segmentId: 'segment-1',
+			});
+
+			expect(variables.segmentId).toEqual('segment-1');
+		});
+
+		it('should not include segmentId in the variables object if it was not passed', () => {
+			const {variables} = getVariables({
+				filters,
+				params: {},
+				rangeSelectors: {rangeKey},
+			});
+
+			expect(variables.segmentId).toBeUndefined();
+		});
+
+		it('should include both accountId and segmentId when both are passed', () => {
+			const {variables} = getVariables({
+				accountId: 'account-1',
+				filters,
+				params: {},
+				rangeSelectors: {rangeKey},
+				segmentId: 'segment-1',
+			});
+
+			expect(variables.accountId).toEqual('account-1');
+			expect(variables.segmentId).toEqual('segment-1');
+		});
 	});
 });

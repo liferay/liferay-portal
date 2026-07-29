@@ -106,6 +106,7 @@ export function getVariables({
 	interval,
 	params,
 	rangeSelectors = {},
+	segmentId,
 }) {
 	const {
 		assetId: assetIdFromParams,
@@ -160,6 +161,13 @@ export function getVariables({
 		variables = {
 			...variables,
 			accountId,
+		};
+	}
+
+	if (segmentId) {
+		variables = {
+			...variables,
+			segmentId,
 		};
 	}
 

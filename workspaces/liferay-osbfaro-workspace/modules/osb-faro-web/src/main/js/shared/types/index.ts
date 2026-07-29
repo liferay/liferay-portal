@@ -56,6 +56,8 @@ export interface IBasePageContext {
 	filters: any;
 	router: any;
 	rangeSelectors?: RangeSelectors;
+	segmentId?: string | null;
+	segmentName?: string | null;
 }
 
 export interface IPagination {
@@ -130,6 +132,8 @@ export type Router = {
 		rangeEnd?: string;
 		rangeKey?: RangeKeyTimeRanges;
 		rangeStart?: string;
+		segmentId?: string;
+		segmentName?: string;
 		sortOrder?: OrderByDirections;
 		state?: string;
 	};
