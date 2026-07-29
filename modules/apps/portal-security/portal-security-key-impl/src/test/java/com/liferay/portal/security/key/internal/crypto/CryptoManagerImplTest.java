@@ -120,6 +120,40 @@ public class CryptoManagerImplTest {
 	}
 
 	@Test
+	public void testEncrypt() throws Exception {
+		byte[] ciphertext = RandomTestUtil.randomBytes();
+
+		Mockito.when(
+			_cryptoProvider.encrypt(
+				Mockito.anyLong(), Mockito.anyString(),
+				Mockito.any(byte[].class))
+		).thenReturn(
+			_getCryptoServiceResult(ciphertext)
+		);
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+		).thenReturn(
+			true
+		);
+
+		String cryptoProviderId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_serviceTrackerMap.getService(cryptoProviderId)
+		).thenReturn(
+			Collections.singletonList(_cryptoProvider)
+		);
+
+		CryptoServiceResult<byte[]> cryptoServiceResult =
+			_cryptoManagerImpl.encrypt(
+				RandomTestUtil.randomLong(), _getKeyReference(cryptoProviderId),
+				RandomTestUtil.randomBytes());
+
+		Assert.assertArrayEquals(ciphertext, cryptoServiceResult.getValue());
+	}
+
+	@Test
 	public void testEncryptResolvesProviderWildcard() throws Exception {
 		_testEncryptResolvesProviderWildcard(CompanyConstants.SYSTEM);
 		_testEncryptResolvesProviderWildcard(RandomTestUtil.randomLong());
@@ -278,8 +312,10 @@ public class CryptoManagerImplTest {
 
 	@Test
 	public void testGetCryptoProviderIds() {
+		long companyId = RandomTestUtil.randomLong();
+
 		Mockito.when(
-			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
+			_cryptoProvider.isAllowedCompany(companyId)
 		).thenReturn(
 			true
 		);
@@ -300,8 +336,17 @@ public class CryptoManagerImplTest {
 
 		Assert.assertEquals(
 			Collections.singletonList(cryptoProviderId),
-			_cryptoManagerImpl.getCryptoProviderIds(
-				RandomTestUtil.randomLong()));
+			_cryptoManagerImpl.getCryptoProviderIds(companyId));
+
+		Mockito.when(
+			_cryptoProvider.isAllowedCompany(companyId)
+		).thenReturn(
+			false
+		);
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_cryptoManagerImpl.getCryptoProviderIds(companyId));
 	}
 
 	@Test
@@ -335,6 +380,7 @@ public class CryptoManagerImplTest {
 
 		KeyReference keyReference = keyReferences.get(0);
 
+		Assert.assertEquals(KeyReference.Type.CRYPTO, keyReference.getType());
 		Assert.assertEquals(cryptoProviderId, keyReference.getProviderId());
 		Assert.assertEquals(keyIdentifier, keyReference.getIdentifier());
 	}
@@ -365,16 +411,19 @@ public class CryptoManagerImplTest {
 			Collections.singletonList(_cryptoProvider)
 		);
 
+		byte[] keyBytes = RandomTestUtil.randomBytes();
+
 		CryptoServiceResult<KeyReference> cryptoServiceResult =
 			_cryptoManagerImpl.importSecretKey(
 				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
-				RandomTestUtil.randomBytes(),
-				_getKeyReference(cryptoProviderId));
+				keyBytes, _getKeyReference(cryptoProviderId));
 
 		KeyReference keyReference = cryptoServiceResult.getValue();
 
 		Assert.assertEquals(cryptoProviderId, keyReference.getProviderId());
 		Assert.assertEquals(keyIdentifier, keyReference.getIdentifier());
+
+		Assert.assertArrayEquals(new byte[keyBytes.length], keyBytes);
 	}
 
 	@Test
@@ -411,13 +460,20 @@ public class CryptoManagerImplTest {
 				RandomTestUtil.randomString(), RandomTestUtil.randomLong(),
 				keyBytes, _getKeyReference(cryptoProviderId)));
 
-		for (byte b : keyBytes) {
-			Assert.assertEquals(0, b);
-		}
+		Assert.assertArrayEquals(new byte[keyBytes.length], keyBytes);
 	}
 
 	@Test
 	public void testUnwrap() throws Exception {
+		Assert.assertThrows(
+			CryptoException.class,
+			() -> _cryptoManagerImpl.unwrap(
+				RandomTestUtil.randomLong(),
+				_getKeyReference(RandomTestUtil.randomString()),
+				_getKeyReference(RandomTestUtil.randomString()),
+				RandomTestUtil.randomString(), RandomTestUtil.randomBytes(),
+				RandomTestUtil.randomInt()));
+
 		Mockito.when(
 			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
 		).thenReturn(
@@ -459,6 +515,13 @@ public class CryptoManagerImplTest {
 
 	@Test
 	public void testWrap() throws Exception {
+		Assert.assertThrows(
+			CryptoException.class,
+			() -> _cryptoManagerImpl.wrap(
+				RandomTestUtil.randomLong(),
+				_getKeyReference(RandomTestUtil.randomString()),
+				_getKeyReference(RandomTestUtil.randomString())));
+
 		Mockito.when(
 			_cryptoProvider.isAllowedCompany(Mockito.anyLong())
 		).thenReturn(
@@ -490,16 +553,6 @@ public class CryptoManagerImplTest {
 		Assert.assertSame(wrappedKeyBytes, cryptoServiceResult.getValue());
 	}
 
-	@Test
-	public void testWrapThrowsWhenProvidersDiffer() {
-		Assert.assertThrows(
-			CryptoException.class,
-			() -> _cryptoManagerImpl.wrap(
-				RandomTestUtil.randomLong(),
-				_getKeyReference(RandomTestUtil.randomString()),
-				_getKeyReference(RandomTestUtil.randomString())));
-	}
-
 	private <T> CryptoServiceResult<T> _getCryptoServiceResult(T value) {
 		return new CryptoServiceResult<>(
 			new ServiceIndicator(true, RandomTestUtil.randomString()), value);
@@ -527,7 +580,7 @@ public class CryptoManagerImplTest {
 				Mockito.eq(companyId), Mockito.eq(keyIdentifier),
 				Mockito.any(byte[].class))
 		).thenReturn(
-			_getCryptoServiceResult(new byte[0])
+			_getCryptoServiceResult(RandomTestUtil.randomBytes())
 		);
 
 		Mockito.when(
@@ -571,12 +624,12 @@ public class CryptoManagerImplTest {
 
 		if (companyId == CompanyConstants.SYSTEM) {
 			Mockito.verify(
-				_keyManagerProfile, Mockito.atLeastOnce()
+				_keyManagerProfile
 			).getSystemDEKProviderId();
 		}
 		else {
 			Mockito.verify(
-				_keyManagerProfile, Mockito.atLeastOnce()
+				_keyManagerProfile
 			).getCompanyDEKProviderId();
 		}
 	}
