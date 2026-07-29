@@ -301,9 +301,9 @@ public class JournalExportImportTest extends BasePortletExportImportTestCase {
 			group.getGroupId(), JournalArticle.class.getName(),
 			ddmFormDeserializerDeserializeResponse.getDDMForm());
 
-		Class<?> clazz = getClass();
-
 		JournalArticle journalArticle = null;
+
+		Class<?> clazz = getClass();
 
 		try (InputStream inputStream = clazz.getResourceAsStream(
 				"/com/liferay/journal/dependencies/liferay.png")) {
