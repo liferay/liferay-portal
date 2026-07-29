@@ -7,38 +7,10 @@
 
 <%@ include file="/com.liferay.portal.settings.web/init.jsp" %>
 
-<%
-long ldapServerId = ParamUtil.getLong(request, "ldapServerId");
-
-String baseProviderURL = ParamUtil.getString(request, "baseProviderURL");
-String baseDN = ParamUtil.getString(request, "baseDN");
-String principal = ParamUtil.getString(request, "principal");
-
-String credentials = request.getParameter("credentials");
-
-long companyId = ActionUtil.getCompanyId(request);
-
-if (credentials.equals(Portal.TEMP_OBFUSCATION_VALUE)) {
-	LDAPServerConfiguration ldapServerConfiguration = ldapServerConfigurationProvider.getConfiguration(companyId, ldapServerId);
-
-	credentials = ldapServerConfiguration.securityCredential();
-}
-
-try {
-	FIPSModeValidator.validateURL(baseProviderURL);
-}
-catch (SecurityException securityException) {
-%>
-
-	<liferay-ui:message arguments='<%= new Object[] {baseProviderURL, "ldaps://"} %>' key="the-base-provider-url-x-must-use-the-x-scheme-in-fips-mode" translateArguments="<%= false %>" />
+<%@ include file="/com.liferay.portal.settings.web/test_ldap_init.jspf" %>
 
 <%
-	return;
-}
-
-SafePortalLDAP safePortalLDAP = SafePortalLDAPUtil.getSafePortalLDAP();
-
-SafeLdapContext safeLdapContext = safePortalLDAP.getSafeLdapContext(companyId, baseProviderURL, principal, credentials);
+SafeLdapContext safeLdapContext = ldapTestDisplayContext.getSafeLdapContext();
 
 if (safeLdapContext == null) {
 %>
@@ -73,45 +45,16 @@ if (!ldapFilterValidator.isValid(userFilter)) {
 	return;
 }
 
-StringBundler sb = new StringBundler(23);
-
-sb.append("screenName=");
-sb.append(ParamUtil.getString(request, "userMappingScreenName"));
-sb.append("\n");
-sb.append("password=");
-sb.append(ParamUtil.getString(request, "userMappingPassword"));
-sb.append("\n");
-sb.append("emailAddress=");
-sb.append(ParamUtil.getString(request, "userMappingEmailAddress"));
-sb.append("\n");
-sb.append("fullName=");
-sb.append(ParamUtil.getString(request, "userMappingFullName"));
-sb.append("\n");
-sb.append("firstName=");
-sb.append(ParamUtil.getString(request, "userMappingFirstName"));
-sb.append("\n");
-sb.append("lastName=");
-sb.append(ParamUtil.getString(request, "userMappingLastName"));
-sb.append("\n");
-sb.append("jobTitle=");
-sb.append(ParamUtil.getString(request, "userMappingJobTitle"));
-sb.append("\n");
-sb.append("group=");
-sb.append(ParamUtil.getString(request, "userMappingGroup"));
-
-String userMappingsParams = sb.toString();
-
-Properties userMappings = PropertiesUtil.load(userMappingsParams);
+Map<String, String> userMappings = ldapTestDisplayContext.getUserMappings();
 
 String[] attributeIds = StringUtil.split(StringUtil.merge(userMappings.values()));
 
-List<SearchResult> searchResults = new ArrayList<SearchResult>();
+List<SearchResult> searchResults = Collections.emptyList();
 
 if (Validator.isNotNull(userFilter) && !userFilter.equals(StringPool.STAR)) {
-	try {
-		safePortalLDAP.getUsers(themeDisplay.getCompanyId(), safeLdapContext, new byte[0], 20, SafeLdapNameFactory.fromUnsafe(baseDN), SafeLdapFilterFactory.fromUnsafeFilter(userFilter, ldapFilterValidator), attributeIds, searchResults);
-	}
-	catch (InvalidNameException | NameNotFoundException exception) {
+	searchResults = ldapTestDisplayContext.getUserSearchResults(attributeIds, safeLdapContext, SafeLdapFilterFactory.fromUnsafeFilter(userFilter, ldapFilterValidator));
+
+	if (searchResults == null) {
 %>
 
 		<liferay-ui:message key="please-enter-a-valid-ldap-base-dn" />
@@ -149,15 +92,15 @@ boolean showMissingAttributeMessage = false;
 		<%
 		Attributes attributes = searchResult.getAttributes();
 
-		String emailAddress = LDAPUtil.getAttributeString(attributes, userMappings.getProperty("emailAddress"));
-		String firstName = LDAPUtil.getAttributeString(attributes, userMappings.getProperty("firstName"));
-		String lastName = LDAPUtil.getAttributeString(attributes, userMappings.getProperty("lastName"));
-		String jobTitle = LDAPUtil.getAttributeString(attributes, userMappings.getProperty("jobTitle"));
+		String emailAddress = LDAPUtil.getAttributeString(attributes, userMappings.get("emailAddress"));
+		String firstName = LDAPUtil.getAttributeString(attributes, userMappings.get("firstName"));
+		String lastName = LDAPUtil.getAttributeString(attributes, userMappings.get("lastName"));
+		String jobTitle = LDAPUtil.getAttributeString(attributes, userMappings.get("jobTitle"));
 
-		String password = StringUtil.toLowerCase(LDAPUtil.getAttributeString(attributes, userMappings.getProperty("password")));
-		String screenName = StringUtil.toLowerCase(LDAPUtil.getAttributeString(attributes, userMappings.getProperty("screenName")));
+		String password = StringUtil.toLowerCase(LDAPUtil.getAttributeString(attributes, userMappings.get("password")));
+		String screenName = StringUtil.toLowerCase(LDAPUtil.getAttributeString(attributes, userMappings.get("screenName")));
 
-		Attribute attribute = attributes.get(userMappings.getProperty("group"));
+		Attribute attribute = attributes.get(userMappings.get("group"));
 
 		if ((PropsValues.USERS_EMAIL_ADDRESS_REQUIRED && Validator.isNull(emailAddress)) || Validator.isNull(firstName) || (fullNameDefinition.isFieldRequired("last-name") && Validator.isNull(lastName)) || Validator.isNull(password) || Validator.isNull(screenName)) {
 			showMissingAttributeMessage = true;

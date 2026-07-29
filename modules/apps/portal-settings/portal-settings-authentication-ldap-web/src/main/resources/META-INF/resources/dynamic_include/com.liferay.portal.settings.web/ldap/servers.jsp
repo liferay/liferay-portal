@@ -10,13 +10,7 @@
 <%
 ConfigurationProvider<LDAPAuthConfiguration> ldapAuthConfigurationProvider = ConfigurationProviderUtil.getLDAPAuthConfigurationProvider();
 
-long companyId = 0L;
-
-String portletId = PortalUtil.getPortletId(request);
-
-if (portletId.equals(ConfigurationAdminPortletKeys.INSTANCE_SETTINGS)) {
-	companyId = themeDisplay.getCompanyId();
-}
+long companyId = ActionUtil.getCompanyId(request);
 
 LDAPAuthConfiguration ldapAuthConfiguration = ldapAuthConfigurationProvider.getConfiguration(companyId);
 
@@ -53,8 +47,9 @@ boolean ldapAuthEnabled = ldapAuthConfiguration.enabled();
 
 <aui:fieldset>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= LDAPSettingsConstants.CMD_UPDATE_SERVER %>" />
-
 	<aui:input name='<%= "ldap--" + LDAPConstants.AUTH_SERVER_PRIORITY + "--" %>' type="hidden" />
+
+	<%@ include file="/error_ldap_configuration_model_listener_exception.jspf" %>
 
 	<c:if test="<%= !ldapServerConfigurations.isEmpty() %>">
 		<br /><br />

@@ -16,14 +16,7 @@ LDAPAuthConfiguration ldapAuthConfiguration = ldapAuthConfigurationProvider.getC
 <aui:fieldset>
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= LDAPSettingsConstants.CMD_UPDATE_AUTH %>" />
 
-	<liferay-ui:error exception="<%= LDAPConfigurationModelListenerException.class %>">
-
-		<%
-		LDAPConfigurationModelListenerException ldapConfigurationModelListenerException = (LDAPConfigurationModelListenerException)errorException;
-		%>
-
-		<liferay-ui:message arguments="<%= ldapConfigurationModelListenerException.getMessageArguments() %>" key="<%= ldapConfigurationModelListenerException.getMessageKey() %>" translateArguments="<%= false %>" />
-	</liferay-ui:error>
+	<%@ include file="/error_ldap_configuration_model_listener_exception.jspf" %>
 
 	<liferay-ui:error key="ldapExportAndImportOnPasswordAutogeneration" message="ldap-export-must-not-be-enabled-when-autogeneration-of-user-passwords-is-enabled-for-ldap-import" />
 

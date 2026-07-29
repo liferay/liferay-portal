@@ -17,17 +17,8 @@ long ldapServerId = ParamUtil.getLong(request, "ldapServerId");
 LDAPServerConfiguration ldapServerConfiguration = ldapServerConfigurationProvider.getConfiguration(ActionUtil.getCompanyId(request), ldapServerId);
 
 String ldapBaseDN = ldapServerConfiguration.baseDN();
-String ldapBaseProviderURL = ldapServerConfiguration.baseProviderURL();
 String ldapSecurityPrincipal = ldapServerConfiguration.securityPrincipal();
 String ldapServerName = ldapServerConfiguration.serverName();
-
-if (PropsValues.FIPS_ENABLED) {
-	ldapBaseProviderURL = StringUtil.replace(ldapBaseProviderURL, "ldap://", "ldaps://");
-
-	if (ldapServerId == 0) {
-		ldapBaseProviderURL = ldapBaseProviderURL.replaceFirst(":[0-9]+(/|$)", ":636$1");
-	}
-}
 
 String ldapSecurityCredentials = Portal.TEMP_OBFUSCATION_VALUE;
 
@@ -40,99 +31,9 @@ String[] ldapUserDefaultObjectClasses = ldapServerConfiguration.userDefaultObjec
 String ldapGroupsDN = ldapServerConfiguration.groupsDN();
 String[] ldapGroupDefaultObjectClasses = ldapServerConfiguration.groupDefaultObjectClasses();
 
-String[] userMappingArray = ldapServerConfiguration.userMappings();
+LDAPServerDisplayContext ldapServerDisplayContext = new LDAPServerDisplayContext(ldapServerConfiguration, ldapServerId);
 
-String userMappingEmailAddress = StringPool.BLANK;
-String userMappingFirstName = StringPool.BLANK;
-String userMappingFullName = StringPool.BLANK;
-String userMappingGroup = StringPool.BLANK;
-String userMappingJobTitle = StringPool.BLANK;
-String userMappingLastName = StringPool.BLANK;
-String userMappingMiddleName = StringPool.BLANK;
-String userMappingPassword = StringPool.BLANK;
-String userMappingPortrait = StringPool.BLANK;
-String userMappingScreenName = StringPool.BLANK;
-String userMappingStatus = StringPool.BLANK;
-String userMappingUuid = StringPool.BLANK;
-
-for (int i = 0; i < userMappingArray.length; i++) {
-	if (!userMappingArray[i].contains("=")) {
-		continue;
-	}
-
-	String[] mapping = userMappingArray[i].split("=");
-
-	if (mapping.length != 2) {
-		continue;
-	}
-
-	if (mapping[0].equals("emailAddress")) {
-		userMappingEmailAddress = mapping[1];
-	}
-	else if (mapping[0].equals("firstName")) {
-		userMappingFirstName = mapping[1];
-	}
-	else if (mapping[0].equals("fullName")) {
-		userMappingFullName = mapping[1];
-	}
-	else if (mapping[0].equals("group")) {
-		userMappingGroup = mapping[1];
-	}
-	else if (mapping[0].equals("jobTitle")) {
-		userMappingJobTitle = mapping[1];
-	}
-	else if (mapping[0].equals("lastName")) {
-		userMappingLastName = mapping[1];
-	}
-	else if (mapping[0].equals("middleName")) {
-		userMappingMiddleName = mapping[1];
-	}
-	else if (mapping[0].equals("password")) {
-		userMappingPassword = mapping[1];
-	}
-	else if (mapping[0].equals("portrait")) {
-		userMappingPortrait = mapping[1];
-	}
-	else if (mapping[0].equals("screenName")) {
-		userMappingScreenName = mapping[1];
-	}
-	else if (mapping[0].equals("status")) {
-		userMappingStatus = mapping[1];
-	}
-	else if (mapping[0].equals("uuid")) {
-		userMappingUuid = mapping[1];
-	}
-
-	mapping[1] = "";
-}
-
-String[] groupMappingArray = ldapServerConfiguration.groupMappings();
-
-String groupMappingDescription = StringPool.BLANK;
-String groupMappingGroupName = StringPool.BLANK;
-String groupMappingUser = StringPool.BLANK;
-
-for (int i = 0; i < groupMappingArray.length; i++) {
-	if (!groupMappingArray[i].contains("=")) {
-		continue;
-	}
-
-	String[] mapping = groupMappingArray[i].split("=");
-
-	if (mapping.length != 2) {
-		continue;
-	}
-
-	if (mapping[0].equals("description")) {
-		groupMappingDescription = mapping[1];
-	}
-	else if (mapping[0].equals("groupName")) {
-		groupMappingGroupName = mapping[1];
-	}
-	else if (mapping[0].equals("user")) {
-		groupMappingUser = mapping[1];
-	}
-}
+String defaultBaseProviderURL = PropsValues.FIPS_ENABLED ? "ldaps://localhost:636" : "ldap://localhost:389";
 
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(backURL);
@@ -145,14 +46,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 <aui:form action="<%= editLDAPServerURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm" onSubmit='<%= "event.preventDefault(); " + liferayPortletResponse.getNamespace() + "saveEntry(false);" %>'>
 	<liferay-ui:error exception="<%= DuplicateLDAPServerNameException.class %>" message="please-enter-a-unique-ldap-server-name" />
 
-	<liferay-ui:error exception="<%= LDAPConfigurationModelListenerException.class %>">
-
-		<%
-		LDAPConfigurationModelListenerException ldapConfigurationModelListenerException = (LDAPConfigurationModelListenerException)errorException;
-		%>
-
-		<liferay-ui:message arguments="<%= ldapConfigurationModelListenerException.getMessageArguments() %>" key="<%= ldapConfigurationModelListenerException.getMessageKey() %>" translateArguments="<%= false %>" />
-	</liferay-ui:error>
+	<%@ include file="/error_ldap_configuration_model_listener_exception.jspf" %>
 
 	<liferay-ui:error exception="<%= LDAPFilterException.class %>" message="please-enter-a-valid-ldap-search-filter" />
 	<liferay-ui:error exception="<%= LDAPServerNameException.class %>" message="please-enter-a-valid-ldap-server-name" />
@@ -187,7 +81,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 			<aui:fieldset>
 				<h3><liferay-ui:message key="connection" /></h3>
 
-				<aui:input cssClass="lfr-input-text-container" helpMessage="the-ldap-url-format-is" label="base-provider-url" name='<%= "ldap--" + LDAPConstants.BASE_PROVIDER_URL + "--" %>' type="text" value="<%= ldapBaseProviderURL %>" />
+				<aui:input cssClass="lfr-input-text-container" helpMessage="the-ldap-url-format-is" label="base-provider-url" name='<%= "ldap--" + LDAPConstants.BASE_PROVIDER_URL + "--" %>' type="text" value="<%= ldapServerDisplayContext.getBaseProviderURL() %>" />
 
 				<aui:input cssClass="lfr-input-text-container" helpMessage="the-ldap-url-format-is" label="base-dn" name='<%= "ldap--" + LDAPConstants.BASE_DN + "--" %>' type="text" value="<%= ldapBaseDN %>" />
 
@@ -216,23 +110,23 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 
 				<div class="h4"><liferay-ui:message key="user-mapping" /></div>
 
-				<aui:input cssClass="lfr-input-text-container" label="uuid" name="userMappingUuid" type="text" value="<%= userMappingUuid %>" />
+				<aui:input cssClass="lfr-input-text-container" label="uuid" name="userMappingUuid" type="text" value='<%= ldapServerDisplayContext.getUserMapping("uuid") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="screen-name" name="userMappingScreenName" type="text" value="<%= userMappingScreenName %>" />
+				<aui:input cssClass="lfr-input-text-container" label="screen-name" name="userMappingScreenName" type="text" value='<%= ldapServerDisplayContext.getUserMapping("screenName") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="email-address" name="userMappingEmailAddress" type="text" value="<%= userMappingEmailAddress %>" />
+				<aui:input cssClass="lfr-input-text-container" label="email-address" name="userMappingEmailAddress" type="text" value='<%= ldapServerDisplayContext.getUserMapping("emailAddress") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="password" name="userMappingPassword" type="text" value="<%= userMappingPassword %>" />
+				<aui:input cssClass="lfr-input-text-container" label="password" name="userMappingPassword" type="text" value='<%= ldapServerDisplayContext.getUserMapping("password") %>' />
 
 				<%@ include file="/com.liferay.portal.settings.web/edit_ldap_server_user_name.jspf" %>
 
-				<aui:input cssClass="lfr-input-text-container" label="job-title" name="userMappingJobTitle" type="text" value="<%= userMappingJobTitle %>" />
+				<aui:input cssClass="lfr-input-text-container" label="job-title" name="userMappingJobTitle" type="text" value='<%= ldapServerDisplayContext.getUserMapping("jobTitle") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="status" name="userMappingStatus" type="text" value="<%= userMappingStatus %>" />
+				<aui:input cssClass="lfr-input-text-container" label="status" name="userMappingStatus" type="text" value='<%= ldapServerDisplayContext.getUserMapping("status") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="group" name="userMappingGroup" type="text" value="<%= userMappingGroup %>" />
+				<aui:input cssClass="lfr-input-text-container" label="group" name="userMappingGroup" type="text" value='<%= ldapServerDisplayContext.getUserMapping("group") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="portrait" name="userMappingPortrait" type="text" value="<%= userMappingPortrait %>" />
+				<aui:input cssClass="lfr-input-text-container" label="portrait" name="userMappingPortrait" type="text" value='<%= ldapServerDisplayContext.getUserMapping("portrait") %>' />
 
 				<aui:input cssClass="lfr-textarea" helpMessage="enter-properties-file-synxtax-comma-delimiter" label="custom-user-mapping" name='<%= "ldap--" + LDAPConstants.USER_CUSTOM_MAPPINGS + "--" %>' type="textarea" value="<%= StringUtil.merge(ldapServerConfiguration.userCustomMappings(), StringPool.COMMA) %>" />
 
@@ -261,11 +155,11 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 
 				<div class="h4"><liferay-ui:message key="group-mapping" /></div>
 
-				<aui:input cssClass="lfr-input-text-container" label="group-name" name="groupMappingGroupName" type="text" value="<%= groupMappingGroupName %>" />
+				<aui:input cssClass="lfr-input-text-container" label="group-name" name="groupMappingGroupName" type="text" value='<%= ldapServerDisplayContext.getGroupMapping("groupName") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="description" name="groupMappingDescription" type="text" value="<%= groupMappingDescription %>" />
+				<aui:input cssClass="lfr-input-text-container" label="description" name="groupMappingDescription" type="text" value='<%= ldapServerDisplayContext.getGroupMapping("description") %>' />
 
-				<aui:input cssClass="lfr-input-text-container" label="user" name="groupMappingUser" type="text" value="<%= groupMappingUser %>" />
+				<aui:input cssClass="lfr-input-text-container" label="user" name="groupMappingUser" type="text" value='<%= ldapServerDisplayContext.getGroupMapping("user") %>' />
 
 				<aui:input name='<%= "ldap--" + LDAPConstants.GROUP_MAPPINGS + "--" %>' type="hidden" />
 
@@ -405,7 +299,8 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 
 		if (ldapType === 'apache') {
 			baseDN = 'dc=example,dc=com';
-			baseProviderURL = 'ldap://localhost:10389';
+			baseProviderURL =
+				'<%= PropsValues.FIPS_ENABLED ? "ldaps://localhost:10636" : "ldap://localhost:10389" %>';
 			credentials = 'secret';
 			exportMappingGroupDefaultObjectClass = 'top,groupOfUniqueNames';
 			exportMappingUserDefaultObjectClass =
@@ -426,7 +321,8 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 		}
 		else if (ldapType === 'fedora') {
 			baseDN = 'dc=localdomain';
-			baseProviderURL = 'ldap://localhost:19389';
+			baseProviderURL =
+				'<%= PropsValues.FIPS_ENABLED ? "ldaps://localhost:19636" : "ldap://localhost:19389" %>';
 			importUserSearchFilter = '(objectClass=inetOrgPerson)';
 			principal = 'cn=Directory Manager';
 			searchFilter = '(mail=@email_address@)';
@@ -440,7 +336,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 		}
 		else if (ldapType === 'microsoft') {
 			baseDN = 'dc=example,dc=com';
-			baseProviderURL = 'ldap://localhost:389';
+			baseProviderURL = '<%= defaultBaseProviderURL %>';
 			credentials = 'secret';
 			groupMappingDescription = 'sAMAccountName';
 			groupMappingGroupName = 'cn';
@@ -459,7 +355,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 			userMappingScreenName = 'sAMAccountName';
 		}
 		else if (ldapType === 'novell') {
-			baseProviderURL = 'ldap://localhost:389';
+			baseProviderURL = '<%= defaultBaseProviderURL %>';
 			credentials = 'secret';
 			principal = 'cn=admin,ou=test';
 			searchFilter = '(mail=@email_address@)';
@@ -472,7 +368,7 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 		}
 		else if (ldapType === 'open') {
 			baseDN = 'dc=example,dc=com';
-			baseProviderURL = 'ldap://localhost:389';
+			baseProviderURL = '<%= defaultBaseProviderURL %>';
 			credentials = 'secret';
 			groupMappingDescription = 'description';
 			groupMappingGroupName = 'cn';
@@ -488,17 +384,6 @@ renderResponse.setTitle((ldapServerId == 0) ? LanguageUtil.get(resourceBundle, "
 			userMappingPassword = 'userPassword';
 			userMappingScreenName = 'cn';
 		}
-
-		<%
-		if (PropsValues.FIPS_ENABLED) {
-		%>
-
-			baseProviderURL = baseProviderURL.replace('ldap://', 'ldaps://');
-			baseProviderURL = baseProviderURL.replace(/:\d+(\/|$)/, ':636$1');
-
-		<%
-		}
-		%>
 
 		Liferay.Util.setFormValues(document.<portlet:namespace />fm, {
 			'ldap--<%= LDAPConstants.BASE_PROVIDER_URL %>--': baseProviderURL,

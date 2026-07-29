@@ -7,36 +7,10 @@
 
 <%@ include file="/com.liferay.portal.settings.web/init.jsp" %>
 
-<%
-long ldapServerId = ParamUtil.getLong(request, "ldapServerId");
-
-String baseProviderURL = ParamUtil.getString(request, "baseProviderURL");
-String baseDN = ParamUtil.getString(request, "baseDN");
-String principal = ParamUtil.getString(request, "principal");
-
-String credentials = request.getParameter("credentials");
-
-if (credentials.equals(Portal.TEMP_OBFUSCATION_VALUE)) {
-	LDAPServerConfiguration ldapServerConfiguration = ldapServerConfigurationProvider.getConfiguration(themeDisplay.getCompanyId(), ldapServerId);
-
-	credentials = ldapServerConfiguration.securityCredential();
-}
-
-try {
-	FIPSModeValidator.validateURL(baseProviderURL);
-}
-catch (SecurityException securityException) {
-%>
-
-	<liferay-ui:message arguments='<%= new Object[] {baseProviderURL, "ldaps://"} %>' key="the-base-provider-url-x-must-use-the-x-scheme-in-fips-mode" translateArguments="<%= false %>" />
+<%@ include file="/com.liferay.portal.settings.web/test_ldap_init.jspf" %>
 
 <%
-	return;
-}
-
-SafePortalLDAP safePortalLDAP = SafePortalLDAPUtil.getSafePortalLDAP();
-
-SafeLdapContext safeLdapContext = safePortalLDAP.getSafeLdapContext(themeDisplay.getCompanyId(), baseProviderURL, principal, credentials);
+SafeLdapContext safeLdapContext = ldapTestDisplayContext.getSafeLdapContext();
 
 if (safeLdapContext == null) {
 %>
@@ -71,18 +45,13 @@ if (!ldapFilterValidator.isValid(groupFilter)) {
 
 SafeLdapFilter groupSafeLdapFilter = SafeLdapFilterFactory.fromUnsafeFilter(groupFilter, ldapFilterValidator);
 
-String groupMappingsParam = "groupName=" + ParamUtil.getString(request, "groupMappingGroupName") + "\ndescription=" + ParamUtil.getString(request, "groupMappingDescription") + "\nuser=" + ParamUtil.getString(request, "groupMappingUser");
-
-Properties groupMappings = PropertiesUtil.load(groupMappingsParam);
+Map<String, String> groupMappings = ldapTestDisplayContext.getGroupMappings();
 
 String[] attributeIds = StringUtil.split(StringUtil.merge(groupMappings.values()));
 
-List<SearchResult> searchResults = new ArrayList<SearchResult>();
+List<SearchResult> searchResults = ldapTestDisplayContext.getGroupSearchResults(attributeIds, safeLdapContext, groupSafeLdapFilter);
 
-try {
-	safePortalLDAP.getGroups(themeDisplay.getCompanyId(), safeLdapContext, new byte[0], 20, SafeLdapNameFactory.fromUnsafe(baseDN), groupSafeLdapFilter, attributeIds, searchResults);
-}
-catch (InvalidNameException | NameNotFoundException exception) {
+if (searchResults == null) {
 %>
 
 	<liferay-ui:message key="please-enter-a-valid-ldap-base-dn" />
@@ -110,18 +79,18 @@ catch (InvalidNameException | NameNotFoundException exception) {
 	for (SearchResult searchResult : searchResults) {
 		Attributes attributes = searchResult.getAttributes();
 
-		String name = LDAPUtil.getAttributeString(attributes, groupMappings.getProperty("groupName"));
-		String description = LDAPUtil.getAttributeString(attributes, groupMappings.getProperty("description"));
-		Attribute attribute = attributes.get(groupMappings.getProperty("user"));
+		String name = LDAPUtil.getAttributeString(attributes, groupMappings.get("groupName"));
+		String description = LDAPUtil.getAttributeString(attributes, groupMappings.get("description"));
+		Attribute attribute = attributes.get(groupMappings.get("user"));
 
 		if (Validator.isNull(name)) {
 			showMissingAttributeMessage = true;
 		}
 
 		if (attribute != null) {
-			SafeLdapFilter safeLdapFilter = groupSafeLdapFilter.and(SafeLdapFilterConstraints.eq(groupMappings.getProperty("groupName"), name));
+			SafeLdapFilter safeLdapFilter = groupSafeLdapFilter.and(SafeLdapFilterConstraints.eq(groupMappings.get("groupName"), name));
 
-			attribute = safePortalLDAP.getMultivaluedAttribute(themeDisplay.getCompanyId(), safeLdapContext, SafeLdapNameFactory.fromUnsafe(baseDN), safeLdapFilter, attribute);
+			attribute = ldapTestDisplayContext.getMultivaluedAttribute(attribute, safeLdapContext, safeLdapFilter);
 		}
 	%>
 

@@ -7,37 +7,10 @@
 
 <%@ include file="/com.liferay.portal.settings.web/init.jsp" %>
 
-<%
-long ldapServerId = ParamUtil.getLong(request, "ldapServerId");
-
-String baseProviderURL = ParamUtil.getString(request, "baseProviderURL");
-String principal = ParamUtil.getString(request, "principal");
-
-String credentials = request.getParameter("credentials");
-
-long companyId = ActionUtil.getCompanyId(request);
-
-if (credentials.equals(Portal.TEMP_OBFUSCATION_VALUE)) {
-	LDAPServerConfiguration ldapServerConfiguration = ldapServerConfigurationProvider.getConfiguration(companyId, ldapServerId);
-
-	credentials = ldapServerConfiguration.securityCredential();
-}
-
-try {
-	FIPSModeValidator.validateURL(baseProviderURL);
-}
-catch (SecurityException securityException) {
-%>
-
-	<liferay-ui:message arguments='<%= new Object[] {baseProviderURL, "ldaps://"} %>' key="the-base-provider-url-x-must-use-the-x-scheme-in-fips-mode" translateArguments="<%= false %>" />
+<%@ include file="/com.liferay.portal.settings.web/test_ldap_init.jspf" %>
 
 <%
-	return;
-}
-
-SafePortalLDAP safePortalLDAP = SafePortalLDAPUtil.getSafePortalLDAP();
-
-SafeLdapContext safeLdapContext = safePortalLDAP.getSafeLdapContext(companyId, baseProviderURL, principal, credentials);
+SafeLdapContext safeLdapContext = ldapTestDisplayContext.getSafeLdapContext();
 %>
 
 <c:choose>
