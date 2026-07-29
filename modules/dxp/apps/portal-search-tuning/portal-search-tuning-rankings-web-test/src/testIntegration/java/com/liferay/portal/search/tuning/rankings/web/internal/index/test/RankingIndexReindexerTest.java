@@ -35,7 +35,7 @@ public class RankingIndexReindexerTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testReindexInSyncModeWhenIndexIsMissing() throws Exception {
+	public void testReindex() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 
 		RankingIndexName rankingIndexName =

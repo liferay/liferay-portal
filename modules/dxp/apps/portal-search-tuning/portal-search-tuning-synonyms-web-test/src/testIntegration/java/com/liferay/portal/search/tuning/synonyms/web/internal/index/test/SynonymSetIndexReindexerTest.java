@@ -35,7 +35,7 @@ public class SynonymSetIndexReindexerTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testReindexInSyncModeWhenIndexIsMissing() throws Exception {
+	public void testReindex() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 
 		SynonymSetIndexName synonymSetIndexName =
