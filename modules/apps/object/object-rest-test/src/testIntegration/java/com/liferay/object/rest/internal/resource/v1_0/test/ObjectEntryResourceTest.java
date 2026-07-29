@@ -1238,18 +1238,35 @@ public class ObjectEntryResourceTest {
 				_objectRelationship7);
 		}
 
-		_objectDefinitionLocalService.deleteObjectDefinition(
-			_objectDefinition1);
-		_objectDefinitionLocalService.deleteObjectDefinition(
-			_objectDefinition2);
-		_objectDefinitionLocalService.deleteObjectDefinition(
-			_objectDefinition3);
-		_objectDefinitionLocalService.deleteObjectDefinition(
-			_objectDefinition4);
-		_objectDefinitionLocalService.deleteObjectDefinition(
-			_siteScopedObjectDefinition1);
-		_objectDefinitionLocalService.deleteObjectDefinition(
-			_siteScopedObjectDefinition2);
+		if (_objectDefinition1 != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				_objectDefinition1);
+		}
+
+		if (_objectDefinition2 != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				_objectDefinition2);
+		}
+
+		if (_objectDefinition3 != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				_objectDefinition3);
+		}
+
+		if (_objectDefinition4 != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				_objectDefinition4);
+		}
+
+		if (_siteScopedObjectDefinition1 != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				_siteScopedObjectDefinition1);
+		}
+
+		if (_siteScopedObjectDefinition2 != null) {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				_siteScopedObjectDefinition2);
+		}
 
 		_listTypeDefinitionLocalService.deleteListTypeDefinition(
 			_listTypeDefinition);
