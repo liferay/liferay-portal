@@ -6,12 +6,14 @@
 import {Locator, Page} from '@playwright/test';
 
 import {waitForAlert} from '../../utils/waitForAlert';
+import {InstanceSettingsPage} from '../configuration-admin-web/InstanceSettingsPage';
 import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenuPage';
 
 export class UserPersonalBarPage {
 	readonly backArrow: Locator;
 	readonly editConfigurationSubmitButton: Locator;
 	readonly globalMenuPage: GlobalMenuPage;
+	readonly instanceSettingsPage: InstanceSettingsPage;
 	readonly notificationBadge: Locator;
 	readonly notificationsMenuItem: Locator;
 	readonly page: Page;
@@ -23,7 +25,6 @@ export class UserPersonalBarPage {
 	readonly showNotificationBadgeInPersonalMenuLabel: Locator;
 	readonly submitForWorkflowButton: Locator;
 	readonly userMenuButton: Locator;
-	readonly usersSetting: Locator;
 	readonly workflowDefinitionLinkCancelButton: Locator;
 	readonly workflowDefinitionLinkEditButton: Locator;
 	readonly workflowDefinitionLinkSaveButton: Locator;
@@ -35,6 +36,7 @@ export class UserPersonalBarPage {
 			'submitConfiguration'
 		);
 		this.globalMenuPage = new GlobalMenuPage(page);
+		this.instanceSettingsPage = new InstanceSettingsPage(page);
 		this.notificationBadge = page.getByLabel('New Notification');
 		this.notificationsMenuItem = page.getByRole('menuitem', {
 			exact: true,
@@ -67,9 +69,6 @@ export class UserPersonalBarPage {
 			name: 'Submit for Workflow',
 		});
 		this.userMenuButton = page.getByTestId('userPersonalMenu');
-		this.usersSetting = page.getByRole('link', {
-			name: 'Users',
-		});
 		this.workflowDefinitionLinkCancelButton = page
 			.getByTestId('actionProduct')
 			.getByRole('button', {name: 'Cancel'});
@@ -84,8 +83,10 @@ export class UserPersonalBarPage {
 	}
 
 	async disableNotificationBadgeInPersonalMenu() {
-		await this.globalMenuPage.goToControlPanel('Instance Settings');
-		await this.usersSetting.click();
+		await this.instanceSettingsPage.goToInstanceSetting(
+			'Users',
+			'Personal Menu'
+		);
 		await this.showNotificationBadgeInPersonalMenuLabel.uncheck();
 		await this.editConfigurationSubmitButton.click();
 
@@ -107,8 +108,10 @@ export class UserPersonalBarPage {
 	}
 
 	async enableNotificationBadgeInPersonalMenu() {
-		await this.globalMenuPage.goToControlPanel('Instance Settings');
-		await this.usersSetting.click();
+		await this.instanceSettingsPage.goToInstanceSetting(
+			'Users',
+			'Personal Menu'
+		);
 		await this.showNotificationBadgeInPersonalMenuLabel.check();
 		await this.editConfigurationSubmitButton.click();
 
