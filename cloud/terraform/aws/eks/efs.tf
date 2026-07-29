@@ -1,6 +1,7 @@
 resource "aws_efs_file_system" "this" {
 	creation_token="${var.deployment_name}-lpkg"
 	encrypted=true
+	kms_key_id=aws_kms_key.efs.arn
 	tags={
 		Name="${var.deployment_name}-lpkg"
 	}
@@ -10,6 +11,42 @@ resource "aws_efs_mount_target" "this" {
 	for_each=toset(module.vpc.private_subnets)
 	security_groups=[aws_security_group.efs.id]
 	subnet_id=each.value
+}
+resource "aws_kms_key" "efs" {
+	deletion_window_in_days=7
+	description="KMS key for EFS encryption"
+	enable_key_rotation=true
+	policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action="kms:*"
+					Effect="Allow"
+					Principal={
+						AWS="arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+					}
+					Resource="*"
+					Sid="EnableIAMUserPermissions"
+				},
+				{
+					Action=[
+						"kms:CreateGrant",
+						"kms:Decrypt",
+						"kms:DescribeKey",
+						"kms:Encrypt",
+						"kms:GenerateDataKey*",
+						"kms:ReEncrypt*",
+					]
+					Effect="Allow"
+					Principal={
+						Service="elasticfilesystem.amazonaws.com"
+					}
+					Resource="*"
+					Sid="KMSAllowEFS"
+				},
+			]
+			Version="2012-10-17"
+		})
 }
 resource "aws_security_group" "efs" {
 	description="Allow NFS from the cluster to the EFS mount targets"
