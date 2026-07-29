@@ -74,6 +74,10 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 		long categoryId = ParamUtil.getLong(httpServletRequest, "categoryId");
 		long classNameId = _portal.getClassNameId(AssetCategory.class);
 
+		String commerceFriendlyURLBase = StringPool.BLANK;
+		String commerceFriendlyURLSeparator = StringPool.BLANK;
+		String siteFriendlyURLBase = StringPool.BLANK;
+		String siteFriendlyURLSeparator = StringPool.BLANK;
 		String titleMapAsXML = StringPool.BLANK;
 		String urlTitle = StringPool.BLANK;
 
@@ -93,17 +97,13 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 				urlTitle = friendlyURLEntry.getUrlTitle(
 					themeDisplay.getLanguageId());
 
-				String commerceFriendlyURLSeparator =
+				commerceFriendlyURLSeparator =
 					_cpFriendlyURL.getAssetCategoryURLSeparator(
 						themeDisplay.getCompanyId());
 
-				httpServletRequest.setAttribute(
-					"commerceFriendlyURLBase",
+				commerceFriendlyURLBase =
 					_getGroupFriendlyURL(themeDisplay) +
-						commerceFriendlyURLSeparator);
-				httpServletRequest.setAttribute(
-					"commerceFriendlyURLSeparator",
-					commerceFriendlyURLSeparator);
+						commerceFriendlyURLSeparator;
 
 				LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 					_layoutDisplayPageProviderRegistry.
@@ -111,14 +111,10 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 							themeDisplay.getCompanyId(),
 							AssetCategory.class.getName());
 
-				httpServletRequest.setAttribute(
-					"siteFriendlyURLBase",
-					_getSiteFriendlyURLBase(
-						assetCategory, layoutDisplayPageProvider,
-						themeDisplay));
-				httpServletRequest.setAttribute(
-					"siteFriendlyURLSeparator",
-					layoutDisplayPageProvider.getURLSeparator());
+				siteFriendlyURLBase = _getSiteFriendlyURLBase(
+					assetCategory, layoutDisplayPageProvider, themeDisplay);
+				siteFriendlyURLSeparator =
+					layoutDisplayPageProvider.getURLSeparator();
 			}
 		}
 		catch (Exception exception) {
@@ -126,6 +122,14 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 		}
 
 		httpServletRequest.setAttribute("assetCategory", assetCategory);
+		httpServletRequest.setAttribute(
+			"commerceFriendlyURLBase", commerceFriendlyURLBase);
+		httpServletRequest.setAttribute(
+			"commerceFriendlyURLSeparator", commerceFriendlyURLSeparator);
+		httpServletRequest.setAttribute(
+			"siteFriendlyURLBase", siteFriendlyURLBase);
+		httpServletRequest.setAttribute(
+			"siteFriendlyURLSeparator", siteFriendlyURLSeparator);
 		httpServletRequest.setAttribute("titleMapAsXML", titleMapAsXML);
 		httpServletRequest.setAttribute("urlTitle", urlTitle);
 
