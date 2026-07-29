@@ -22,7 +22,6 @@ import com.liferay.depot.service.DepotEntryService;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
-import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.ParentTaxonomyCategory;
 import com.liferay.headless.admin.taxonomy.dto.v1_0.ParentTaxonomyVocabulary;
@@ -1257,24 +1256,11 @@ public class TaxonomyCategoryResourceImpl
 					languageId));
 		}
 
-		FriendlyURLEntry friendlyURLEntry =
-			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
-				classNameId, assetCategory.getCategoryId());
-
-		if (friendlyURLEntry == null) {
-			_friendlyURLEntryLocalService.addFriendlyURLEntry(
-				assetCategory.getGroupId(), classNameId, parentClassPK,
-				assetCategory.getCategoryId(),
-				assetCategory.getDefaultLanguageId(), uniqueUrlTitleMap,
-				new ServiceContext());
-
-			return;
-		}
-
-		_friendlyURLEntryLocalService.updateFriendlyURLEntry(
-			friendlyURLEntry.getFriendlyURLEntryId(), classNameId,
-			parentClassPK, assetCategory.getCategoryId(),
-			assetCategory.getDefaultLanguageId(), uniqueUrlTitleMap, null);
+		_friendlyURLEntryLocalService.addFriendlyURLEntry(
+			assetCategory.getGroupId(), classNameId, parentClassPK,
+			assetCategory.getCategoryId(),
+			assetCategory.getDefaultLanguageId(), uniqueUrlTitleMap,
+			new ServiceContext());
 	}
 
 	private static final EntityModel _entityModel = new CategoryEntityModel();
