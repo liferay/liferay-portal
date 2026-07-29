@@ -1,0 +1,125 @@
+load("ext://restart_process", "docker_build_with_restart")
+
+context = k8s_context()
+
+if not context.startswith("k3d-"):
+	fail(
+	    (
+	        "This Tiltfile targets a local k3d cluster, but the current " +
+	        "kube context is '{}'. Switch with: " +
+	        "kubectl config use-context k3d-<name>"
+	    ).format(context)
+	)
+
+allow_k8s_contexts(context)
+
+activation_code = os.getenv("ACTIVATION_CODE")
+
+if not activation_code:
+	fail(
+	    "ACTIVATION_CODE is not set. Usage: ACTIVATION_CODE=<code> tilt up"
+	)
+
+docker_build_with_restart(
+    "liferay/liferay-dxp-operator",
+    context="resources/build",
+    dockerfile="Dockerfile",
+    entrypoint="/home/nonroot/manager",
+    live_update=[
+        sync("resources/build/manager", "/home/nonroot/manager"),
+    ],
+    target="dev",
+)
+
+local_resource(
+    "operator-build",
+    cmd="./go_build.sh fast",
+    deps=["resources"],
+    ignore=[
+        "resources/api/licensing/v1alpha1/zz_generated.deepcopy.go",
+        "resources/build",
+    ],
+    labels=["operator"],
+)
+
+k8s_resource(
+    labels=["operator"],
+    port_forwards=["8080:8080", "8081:8081"],
+    resource_deps=["operator-build"],
+    workload="liferay-dxp-operator",
+)
+
+k8s_resource(
+    labels=["operator"],
+    new_name="operator-infra",
+    objects=[
+        "liferayenvironments.licensing.liferay.com:customresourcedefinition",
+        "liferay-dxp-operator:serviceaccount",
+        "liferay-dxp-operator:clusterrole",
+        "liferay-dxp-operator:clusterrolebinding",
+        "liferay-system:namespace",
+    ],
+)
+
+k8s_resource(
+    labels=["operator"],
+    new_name="sample-environment",
+    objects=[
+        "dev-activation:secret",
+        "dev:liferayenvironment",
+    ],
+    resource_deps=[
+        "liferay-dxp-operator",
+        "operator-infra",
+    ],
+)
+
+k8s_yaml(
+    blob("\n".join([
+        "apiVersion: v1",
+        "kind: Namespace",
+        "metadata:",
+        "  name: liferay-system",
+    ]))
+)
+
+k8s_yaml(
+    helm(
+        "../helm/dxp-operator",
+        name="liferay-dxp-operator",
+        namespace="liferay-system",
+        set=[
+            "image.repository=liferay/liferay-dxp-operator",
+            "securityContext.readOnlyRootFilesystem=false",
+        ],
+    )
+)
+
+k8s_yaml(
+    blob("\n".join([
+        "apiVersion: licensing.liferay.com/v1alpha1",
+        "kind: LiferayEnvironment",
+        "metadata:",
+        "    name: dev",
+        "    namespace: liferay-system",
+        "spec:",
+        "    activationCodeSecretRef:",
+        "      name: dev-activation",
+        "      key: activationCode",
+        "    environmentName: \"Local dev\"",
+        "    workloadRef:",
+        "      name: dev-liferay",
+    ]))
+)
+
+k8s_yaml(
+    blob("\n".join([
+        "apiVersion: v1",
+        "kind: Secret",
+        "metadata:",
+        "    name: dev-activation",
+        "    namespace: liferay-system",
+        "stringData:",
+        "    activationCode: \"" + activation_code + "\"",
+    ]))
+)
