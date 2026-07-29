@@ -56,6 +56,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Objects;
@@ -213,19 +214,24 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 			boolean hasTokens = _hasTokens(
 				externalReferenceCode, httpServletRequest);
 
+			JSONObject apiURLTokenMappingsJSONObject =
+				_getAPIURLTokenMappingsJSONObject(
+					(String)_fragmentEntryConfigurationParser.getFieldValue(
+						configurationJSONObject,
+						fragmentEntryLink.getEditableValuesJSONObject(),
+						fragmentRendererContext.getLocale(),
+						"apiURLTokenMappings"));
+
 			JSONObject tokenResolutionsJSONObject =
 				_getTokenResolutionsJSONObject(
-					_getAPIURLTokenMappingsJSONObject(
-						(String)_fragmentEntryConfigurationParser.getFieldValue(
-							configurationJSONObject,
-							fragmentEntryLink.getEditableValuesJSONObject(),
-							fragmentRendererContext.getLocale(),
-							"apiURLTokenMappings")),
-					externalReferenceCode, httpServletRequest);
+					apiURLTokenMappingsJSONObject, externalReferenceCode,
+					httpServletRequest);
 
-			boolean resolved = _isResolved(
+			Set<String> unresolvedTokenNames = _getUnresolvedTokenNames(
 				externalReferenceCode, httpServletRequest,
 				tokenResolutionsJSONObject);
+
+			boolean resolved = unresolvedTokenNames.isEmpty();
 
 			if (fragmentRendererContext.isEditMode()) {
 				if (hasTokens) {
@@ -243,6 +249,11 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 					printWriter);
 
 				if (hasTokens && !resolved) {
+					Set<String> unresolvedContextTokenNames =
+						_getUnresolvedContextTokenNames(
+							apiURLTokenMappingsJSONObject, httpServletRequest,
+							unresolvedTokenNames);
+
 					_reactRenderer.renderReact(
 						new ComponentDescriptor(
 							"{UnresolvedDataSetPreview} from " +
@@ -253,6 +264,13 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 							_fdsRenderer.getFDSAPIURL(
 								externalReferenceCode, httpServletRequest, true,
 								tokenResolutionsJSONObject)
+						).put(
+							"hasUnmappedTokens",
+							unresolvedTokenNames.size() >
+								unresolvedContextTokenNames.size()
+						).put(
+							"hasUnresolvedContextTokens",
+							!unresolvedContextTokenNames.isEmpty()
 						).build(),
 						httpServletRequest, printWriter);
 				}
@@ -504,6 +522,63 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 		return mappingJSONObject.getString("classPK");
 	}
 
+	private Set<String> _getUnresolvedContextTokenNames(
+		JSONObject apiURLTokenMappingsJSONObject,
+		HttpServletRequest httpServletRequest,
+		Set<String> unresolvedTokenNames) {
+
+		InfoItemReference infoItemReference =
+			(InfoItemReference)httpServletRequest.getAttribute(
+				InfoDisplayWebKeys.INFO_ITEM_REFERENCE);
+
+		if (infoItemReference != null) {
+			return Collections.emptySet();
+		}
+
+		Set<String> unresolvedContextTokenNames = new HashSet<>();
+
+		for (String unresolvedTokenName : unresolvedTokenNames) {
+			JSONObject mappingJSONObject =
+				apiURLTokenMappingsJSONObject.getJSONObject(
+					unresolvedTokenName);
+
+			if (mappingJSONObject == null) {
+				continue;
+			}
+
+			// A token mapped to the page context entity through a field is
+			// fully configured. It stays unresolved only because the page is
+			// being edited without a page context entity.
+
+			if (Objects.equals(
+					mappingJSONObject.getString("mappingMode"), "context") &&
+				Validator.isNotNull(mappingJSONObject.getString("fieldId"))) {
+
+				unresolvedContextTokenNames.add(unresolvedTokenName);
+			}
+		}
+
+		return unresolvedContextTokenNames;
+	}
+
+	private Set<String> _getUnresolvedTokenNames(
+		String externalReferenceCode, HttpServletRequest httpServletRequest,
+		JSONObject tokenResolutionsJSONObject) {
+
+		Set<String> unresolvedTokenNames = new HashSet<>();
+
+		Matcher matcher = _pattern.matcher(
+			_fdsRenderer.getFDSAPIURL(
+				externalReferenceCode, httpServletRequest, true,
+				tokenResolutionsJSONObject));
+
+		while (matcher.find()) {
+			unresolvedTokenNames.add(matcher.group(1));
+		}
+
+		return unresolvedTokenNames;
+	}
+
 	private boolean _hasManualMapping(
 		JSONObject apiURLTokenMappingsJSONObject, String tokenName) {
 
@@ -530,18 +605,6 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 				externalReferenceCode, httpServletRequest, false, null));
 
 		return matcher.find();
-	}
-
-	private boolean _isResolved(
-		String externalReferenceCode, HttpServletRequest httpServletRequest,
-		JSONObject tokenResolutionsJSONObject) {
-
-		Matcher matcher = _pattern.matcher(
-			_fdsRenderer.getFDSAPIURL(
-				externalReferenceCode, httpServletRequest, true,
-				tokenResolutionsJSONObject));
-
-		return !matcher.find();
 	}
 
 	private void _writeAutoResolvedTokenNames(
