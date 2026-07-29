@@ -58,6 +58,7 @@ import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilder;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -511,32 +512,34 @@ public class SearchResultResourceImpl extends BaseSearchResultResourceImpl {
 
 		if (vulcanCRUDItemDelegateBuilder != null) {
 			searchResult.setEmbedded(
-				() -> {
-					VulcanCRUDItemDelegate vulcanCRUDItemDelegate =
-						vulcanCRUDItemDelegateBuilder.acceptLanguage(
-							contextAcceptLanguage
-						).groupLocalService(
-							groupLocalService
-						).httpServletRequest(
-							contextHttpServletRequest
-						).httpServletResponse(
-							contextHttpServletResponse
-						).resourceActionLocalService(
-							resourceActionLocalService
-						).resourcePermissionLocalService(
-							resourcePermissionLocalService
-						).roleLocalService(
-							roleLocalService
-						).scopeChecker(
-							contextScopeChecker
-						).uriInfo(
-							contextUriInfo
-						).user(
-							contextUser
-						).build();
+				NestedFieldsSupplier.supplyScopedUnsafeSupplier(
+					"embedded",
+					() -> {
+						VulcanCRUDItemDelegate vulcanCRUDItemDelegate =
+							vulcanCRUDItemDelegateBuilder.acceptLanguage(
+								contextAcceptLanguage
+							).groupLocalService(
+								groupLocalService
+							).httpServletRequest(
+								contextHttpServletRequest
+							).httpServletResponse(
+								contextHttpServletResponse
+							).resourceActionLocalService(
+								resourceActionLocalService
+							).resourcePermissionLocalService(
+								resourcePermissionLocalService
+							).roleLocalService(
+								roleLocalService
+							).scopeChecker(
+								contextScopeChecker
+							).uriInfo(
+								contextUriInfo
+							).user(
+								contextUser
+							).build();
 
-					return vulcanCRUDItemDelegate.fetchItem(entryClassPK);
-				});
+						return vulcanCRUDItemDelegate.fetchItem(entryClassPK);
+					}));
 		}
 	}
 

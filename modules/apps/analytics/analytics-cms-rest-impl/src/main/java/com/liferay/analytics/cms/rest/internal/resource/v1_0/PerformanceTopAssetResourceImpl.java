@@ -27,6 +27,7 @@ import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilder;
 import com.liferay.portal.vulcan.crud.VulcanCRUDItemDelegateBuilderRegistry;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -211,30 +212,32 @@ public class PerformanceTopAssetResourceImpl
 		}
 
 		performanceTopAsset.setEmbedded(
-			() -> vulcanCRUDItemDelegateBuilder.acceptLanguage(
-				contextAcceptLanguage
-			).groupLocalService(
-				groupLocalService
-			).httpServletRequest(
-				contextHttpServletRequest
-			).httpServletResponse(
-				contextHttpServletResponse
-			).resourceActionLocalService(
-				resourceActionLocalService
-			).resourcePermissionLocalService(
-				resourcePermissionLocalService
-			).roleLocalService(
-				roleLocalService
-			).scopeChecker(
-				contextScopeChecker
-			).uriInfo(
-				contextUriInfo
-			).user(
-				contextUser
-			).build(
-			).fetchItem(
-				objectEntry.getObjectEntryId()
-			));
+			NestedFieldsSupplier.supplyScopedUnsafeSupplier(
+				"embedded",
+				() -> vulcanCRUDItemDelegateBuilder.acceptLanguage(
+					contextAcceptLanguage
+				).groupLocalService(
+					groupLocalService
+				).httpServletRequest(
+					contextHttpServletRequest
+				).httpServletResponse(
+					contextHttpServletResponse
+				).resourceActionLocalService(
+					resourceActionLocalService
+				).resourcePermissionLocalService(
+					resourcePermissionLocalService
+				).roleLocalService(
+					roleLocalService
+				).scopeChecker(
+					contextScopeChecker
+				).uriInfo(
+					contextUriInfo
+				).user(
+					contextUser
+				).build(
+				).fetchItem(
+					objectEntry.getObjectEntryId()
+				)));
 	}
 
 	@Reference
