@@ -19,6 +19,10 @@ spec:
             labels:
                 {{- include "dxp-operator.labels" . | nindent 16 }}
         spec:
+            {{- with .Values.affinity }}
+            affinity:
+                {{- toYaml . | nindent 16 }}
+            {{- end }}
             containers:
                 -   env:
                         -   name: HEARTBEAT_INTERVAL
@@ -70,9 +74,5 @@ spec:
             serviceAccountName: {{ include "dxp-operator.serviceAccountName" . }}
             {{- with .Values.tolerations }}
             tolerations:
-                {{- toYaml . | nindent 16 }}
-            {{- end }}
-            {{- with .Values.affinity }}
-            affinity:
                 {{- toYaml . | nindent 16 }}
             {{- end }}

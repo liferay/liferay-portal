@@ -1,18 +1,4 @@
-{{- if .Values.serviceAccount.create -}}
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-    {{- with .Values.serviceAccount.annotations }}
-    annotations:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    labels:
-        {{- include "dxp-operator.labels" . | nindent 8 }}
-    name: {{ include "dxp-operator.serviceAccountName" . }}
-    namespace: {{ include "dxp-operator.namespace" . }}
-{{- end }}
 {{- if and .Values.rbac.create .Values.serviceAccount.create }}
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -59,4 +45,18 @@ subjects:
     -   kind: ServiceAccount
         name: {{ include "dxp-operator.serviceAccountName" . }}
         namespace: {{ include "dxp-operator.namespace" . }}
+{{- end }}
+{{- if .Values.serviceAccount.create -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+    {{- with .Values.serviceAccount.annotations }}
+    annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: {{ include "dxp-operator.serviceAccountName" . }}
+    namespace: {{ include "dxp-operator.namespace" . }}
 {{- end }}
