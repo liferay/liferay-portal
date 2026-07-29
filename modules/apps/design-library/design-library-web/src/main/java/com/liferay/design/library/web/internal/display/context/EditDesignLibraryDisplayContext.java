@@ -6,7 +6,6 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.design.library.web.internal.constants.DesignLibraryConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -26,21 +25,21 @@ import java.util.Map;
 
 /**
  * @author Mario Leandro
+ * @author Thiago Buarque
  */
-public class DesignLibrarySettingsDisplayContext {
+public class EditDesignLibraryDisplayContext {
 
-	public DesignLibrarySettingsDisplayContext(
-		HttpServletRequest httpServletRequest,
-		LiferayPortletResponse liferayPortletResponse,
-		long designLibraryEntryId) {
+	public EditDesignLibraryDisplayContext(
+		DepotEntry depotEntry, HttpServletRequest httpServletRequest,
+		LiferayPortletResponse liferayPortletResponse) {
 
+		_depotEntry = depotEntry;
 		_httpServletRequest = httpServletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
-		_designLibraryEntryId = designLibraryEntryId;
 	}
 
 	public Map<String, Object> getProps() throws PortalException {
-		Group group = _getGroup();
+		Group group = _depotEntry.getGroup();
 
 		return HashMapBuilder.<String, Object>put(
 			"backURL", _getBackURL()
@@ -60,7 +59,7 @@ public class DesignLibrarySettingsDisplayContext {
 		portletDisplay.setShowBackIcon(true);
 		portletDisplay.setURLBack(_getBackURL());
 
-		Group group = _getGroup();
+		Group group = _depotEntry.getGroup();
 
 		renderResponse.setTitle(
 			LanguageUtil.format(
@@ -75,21 +74,8 @@ public class DesignLibrarySettingsDisplayContext {
 			"/design_library/design_library_resources"
 		).setParameter(
 			DesignLibraryConstants.DESIGN_LIBRARY_ENTRY_ID_KEY,
-			_designLibraryEntryId
+			_depotEntry.getDepotEntryId()
 		).buildString();
-	}
-
-	private Group _getGroup() throws PortalException {
-		if (_group != null) {
-			return _group;
-		}
-
-		DepotEntry depotEntry = DepotEntryLocalServiceUtil.getDepotEntry(
-			_designLibraryEntryId);
-
-		_group = depotEntry.getGroup();
-
-		return _group;
 	}
 
 	private ThemeDisplay _getThemeDisplay() {
@@ -97,8 +83,7 @@ public class DesignLibrarySettingsDisplayContext {
 			WebKeys.THEME_DISPLAY);
 	}
 
-	private final long _designLibraryEntryId;
-	private Group _group;
+	private final DepotEntry _depotEntry;
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 
