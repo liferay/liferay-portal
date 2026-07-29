@@ -276,7 +276,7 @@ definition {
 		ImportExport.selectEntity(entityType = ${entityType});
 
 		if (isSet(scope)) {
-			var scope = TestCase.getSiteName();
+			var scope = TestCase.getSiteName(siteName = "Liferay DXP Site");
 
 			Select(
 				locator1 = "Select#SCOPE_CONFIGURATION",
