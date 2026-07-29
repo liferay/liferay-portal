@@ -110,6 +110,10 @@ public class IndividualSegment {
 		return _segmentActivation;
 	}
 
+	public String getSegmentCategory() {
+		return _segmentCategory;
+	}
+
 	public String getSegmentType() {
 		return _segmentType;
 	}
@@ -219,6 +223,10 @@ public class IndividualSegment {
 		_segmentActivation = segmentActivation;
 	}
 
+	public void setSegmentCategory(String segmentCategory) {
+		_segmentCategory = segmentCategory;
+	}
+
 	public void setSegmentType(String segmentType) {
 		_segmentType = segmentType;
 	}
@@ -233,6 +241,12 @@ public class IndividualSegment {
 
 	public void setStatus(String status) {
 		_status = status;
+	}
+
+	public enum Category {
+
+		ACCOUNT, INDIVIDUAL
+
 	}
 
 	public enum Scope {
@@ -279,6 +293,7 @@ public class IndividualSegment {
 	private String _name;
 	private String _scope = Scope.PROJECT.name();
 	private SegmentActivation _segmentActivation;
+	private String _segmentCategory = Category.INDIVIDUAL.name();
 	private String _segmentType = Type.BATCH.name();
 	private boolean _sequential;
 	private String _state = State.READY.name();
