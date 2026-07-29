@@ -17,6 +17,9 @@ const Activities = lazy(
 const Profile = lazy(
 	() => import(/* webpackChunkName: "AccountProfile" */ './Profile')
 );
+const Overview = lazy(
+	() => import(/* webpackChunkName: "Overview" */ './Overview')
+);
 
 const NAV_ITEMS = [
 	{
@@ -28,6 +31,11 @@ const NAV_ITEMS = [
 		exact: true,
 		label: Liferay.Language.get('profile'),
 		route: Routes.CONTACTS_ACCOUNT_PROFILE,
+	},
+	{
+		exact: true,
+		label: Liferay.Language.get('overview'),
+		route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
 	},
 ];
 
@@ -112,6 +120,12 @@ const AccountProfileRoutes = () => {
 							data={Activities}
 							exact
 							path={Routes.CONTACTS_ACCOUNT}
+						/>
+
+						<BundleRouter
+							data={Overview}
+							exact
+							path={Routes.CONTACTS_ACCOUNT_OVERVIEW}
 						/>
 
 						<RouteNotFound />
