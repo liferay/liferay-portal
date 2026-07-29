@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Portal Security Audit Configuration Web
+Bundle-SymbolicName: com.liferay.portal.security.audit.configuration.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /portal-security-audit-configuration-web

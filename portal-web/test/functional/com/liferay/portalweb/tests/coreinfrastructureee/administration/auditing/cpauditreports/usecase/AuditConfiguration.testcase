@@ -2,6 +2,7 @@
 definition {
 
 	property ci.retries.disabled = "true";
+	property custom.properties = "feature.flag.LPD-6417=false";
 	property osgi.module.configuration.file.names = "com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration.config";
 	property osgi.module.configurations = "bufferSize=\"0\"";
 	property portal.release = "true";
@@ -82,7 +83,7 @@ definition {
 			configurationName = "Audit",
 			configurationScope = "System Scope");
 
-		FormFields.viewCheckboxNotChecked(fieldName = "Enabled");
+		FormFields.viewCheckboxNotChecked(fieldName = "enabled");
 
 		Audit.openAuditAdmin();
 
@@ -98,7 +99,7 @@ definition {
 			configurationName = "Audit",
 			configurationScope = "System Scope");
 
-		FormFields.enableCheckbox(fieldName = "Enabled");
+		FormFields.enableCheckbox(fieldName = "enabled");
 
 		SystemSettings.saveConfiguration();
 
