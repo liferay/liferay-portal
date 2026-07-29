@@ -1243,23 +1243,33 @@ public class TaxonomyCategoryResourceImpl
 		long classNameId = _portal.getClassNameId(AssetCategory.class);
 		long parentClassPK = _getFriendlyURLEntryParentClassPK(assetCategory);
 
+		String defaultLanguageId = assetCategory.getDefaultLanguageId();
+
 		Map<String, String> uniqueUrlTitleMap = new HashMap<>();
 
 		for (Map.Entry<Locale, String> entry : urlTitleMap.entrySet()) {
-			String languageId = LocaleUtil.toLanguageId(entry.getKey());
+			Locale locale = entry.getKey();
+
+			String languageId = LocaleUtil.toLanguageId(locale);
+
+			String urlTitle = entry.getValue();
+
+			if (Validator.isNull(urlTitle) &&
+				languageId.equals(defaultLanguageId)) {
+
+				urlTitle = assetCategory.getTitle(locale);
+			}
 
 			uniqueUrlTitleMap.put(
 				languageId,
 				_friendlyURLEntryLocalService.getUniqueUrlTitle(
 					assetCategory.getGroupId(), classNameId, parentClassPK,
-					assetCategory.getCategoryId(), entry.getValue(),
-					languageId));
+					assetCategory.getCategoryId(), urlTitle, languageId));
 		}
 
 		_friendlyURLEntryLocalService.addFriendlyURLEntry(
 			assetCategory.getGroupId(), classNameId, parentClassPK,
-			assetCategory.getCategoryId(),
-			assetCategory.getDefaultLanguageId(), uniqueUrlTitleMap,
+			assetCategory.getCategoryId(), defaultLanguageId, uniqueUrlTitleMap,
 			new ServiceContext());
 	}
 
