@@ -1610,12 +1610,10 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro selectAttachmentFileInObjectEntryViaUI(fileName = null, objectName = null, objectEntryId = null) {
+	macro selectAttachmentFileInObjectEntryViaUI(externalReferenceCode = null, fileName = null, objectName = null) {
 		ObjectAdmin.goToCustomObject(objectName = ${objectName});
 
-		Click(
-			key_entry = ${objectEntryId},
-			locator1 = "ObjectPortlet#ENTRY_VALUE");
+		Click(locator1 = "xpath=//tbody//a[contains(@href,'externalReferenceCode=${externalReferenceCode}')]");
 
 		var filePath = TestCase.getDependenciesDirPath(fileName = ${fileName});
 

@@ -59,7 +59,7 @@ definition {
 		}
 
 		task ("And Given creating a Student entry with: name 'Jane', an uploaded file 'diploma', subjectStudents 'Math'") {
-			var studentEntryId = CustomObjectAPI.createObjectRelatedToAnotherObject(
+			CustomObjectAPI.createObjectRelatedToAnotherObject(
 				en_US_plural_label = "students",
 				externalReferenceCode = "studentErc",
 				name = "Jane",
@@ -68,8 +68,8 @@ definition {
 				relationshipName = "subjectStudents");
 
 			ObjectAdmin.selectAttachmentFileInObjectEntryViaUI(
+				externalReferenceCode = "studentErc",
 				fileName = "Document_1.jpg",
-				key_entry = ${studentEntryId},
 				objectName = "Student");
 		}
 	}
