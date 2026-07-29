@@ -128,6 +128,7 @@ jest.mock(
 				browser: {label: 'Browser', sidebarPanelId: 'browser'},
 			},
 		},
+		initializeConfig: jest.fn(),
 	})
 );
 
