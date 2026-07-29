@@ -61,9 +61,30 @@ public class CrawlerJobInsightService {
 				continue;
 			}
 
+			String state = null;
+
 			Job job = _kubernetesJobService.getJob(executionId);
 
-			String state = _getSEOStudioScanState(job);
+			if (job == null) {
+				state = SEOStudioScanConstants.STATE_FAILED;
+			}
+			else {
+				JobStatus jobStatus = job.getStatus();
+
+				if (jobStatus != null) {
+					if (GetterUtil.getInteger(jobStatus.getActive()) > 0) {
+						state = SEOStudioScanConstants.STATE_RUNNING;
+					}
+
+					if (GetterUtil.getInteger(jobStatus.getFailed()) > 0) {
+						state = SEOStudioScanConstants.STATE_FAILED;
+					}
+
+					if (GetterUtil.getInteger(jobStatus.getSucceeded()) > 0) {
+						state = SEOStudioScanConstants.STATE_COMPLETED;
+					}
+				}
+			}
 
 			if (Validator.isNull(state) ||
 				state.equals(seoStudioScanJSONObject.optString("state"))) {
@@ -185,32 +206,6 @@ public class CrawlerJobInsightService {
 		).put(
 			"severity", "2"
 		);
-	}
-
-	private String _getSEOStudioScanState(Job job) {
-		if (job == null) {
-			return SEOStudioScanConstants.STATE_FAILED;
-		}
-
-		JobStatus jobStatus = job.getStatus();
-
-		if (jobStatus == null) {
-			return null;
-		}
-
-		if (GetterUtil.getInteger(jobStatus.getActive()) > 0) {
-			return SEOStudioScanConstants.STATE_RUNNING;
-		}
-
-		if (GetterUtil.getInteger(jobStatus.getFailed()) > 0) {
-			return SEOStudioScanConstants.STATE_FAILED;
-		}
-
-		if (GetterUtil.getInteger(jobStatus.getSucceeded()) > 0) {
-			return SEOStudioScanConstants.STATE_COMPLETED;
-		}
-
-		return null;
 	}
 
 	private void _processInsights(
