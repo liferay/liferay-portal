@@ -16,3 +16,4 @@ on:
             -   workspaces/liferay-sample-workspace/.gemini/**
             -   workspaces/liferay-sample-workspace/.windsurf/**
             -   workspaces/liferay-sample-workspace/.workspace-rules/**
+    workflow_dispatch:
