@@ -213,8 +213,8 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "test.png",
-			ContentTypes.IMAGE_PNG, DLTestUtil.getImageBytes("png"), null,
-			null, null,
+			ContentTypes.IMAGE_PNG, DLTestUtil.getImageBytes("png"), null, null,
+			null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		LocalDateTime localDateTime = LocalDateTime.of(2026, 1, 1, 23, 30);
@@ -320,8 +320,8 @@ public class ObjectEntryInfoItemFieldValuesProviderTest {
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "test.png",
-			ContentTypes.IMAGE_PNG, DLTestUtil.getImageBytes("png"), null,
-			null, null,
+			ContentTypes.IMAGE_PNG, DLTestUtil.getImageBytes("png"), null, null,
+			null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		ObjectField objectField = _objectFieldLocalService.fetchObjectField(
