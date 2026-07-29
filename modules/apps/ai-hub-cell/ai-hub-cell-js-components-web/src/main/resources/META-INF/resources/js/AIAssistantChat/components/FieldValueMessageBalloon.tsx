@@ -57,7 +57,7 @@ const FieldValueMessageBalloon: React.FC<FieldValueMessageBalloonProps> = ({
 						symbol="reload"
 					/>
 
-					{Liferay.Language.get('regenerate')}
+					{Liferay.Language.get('try-again')}
 				</ClayButton>
 
 				<ClayButton

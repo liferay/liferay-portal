@@ -94,7 +94,7 @@ describe('CategorizationSuggestions', () => {
 		expect(screen.getByText('International')).toBeInTheDocument();
 		expect(screen.getByText('Roadtrip')).toBeInTheDocument();
 
-		fireEvent.click(screen.getByRole('button', {name: 'save-categories'}));
+		fireEvent.click(screen.getByRole('button', {name: 'add-categories'}));
 
 		expect(onCommit).toHaveBeenCalledWith(suggestions);
 	});
@@ -112,7 +112,7 @@ describe('CategorizationSuggestions', () => {
 			/>
 		);
 
-		fireEvent.click(screen.getByRole('button', {name: 'regenerate'}));
+		fireEvent.click(screen.getByRole('button', {name: 'try-again'}));
 
 		expect(onRegenerate).toHaveBeenCalled();
 	});
@@ -163,7 +163,7 @@ describe('CategorizationSuggestions', () => {
 		);
 
 		expect(
-			screen.getByRole('button', {name: 'save-categories'})
+			screen.getByRole('button', {name: 'add-categories'})
 		).toBeDisabled();
 		expect(screen.getByRole('button', {name: 'try-again'})).toBeDisabled();
 	});

@@ -170,7 +170,7 @@ describe('CategorizationMessageBalloon', () => {
 			);
 		});
 
-		fireEvent.click(screen.getByRole('button', {name: 'save-categories'}));
+		fireEvent.click(screen.getByRole('button', {name: 'add-categories'}));
 
 		expect(
 			screen.queryByText(/Great! I have added/)
@@ -218,7 +218,7 @@ describe('CategorizationMessageBalloon', () => {
 			);
 		});
 
-		fireEvent.click(screen.getByRole('button', {name: 'save-categories'}));
+		fireEvent.click(screen.getByRole('button', {name: 'add-categories'}));
 
 		expect(
 			screen.getByText(/Great! I have added 1 categories/)
@@ -271,7 +271,7 @@ describe('CategorizationMessageBalloon', () => {
 
 		expect(screen.getByText('International')).toBeInTheDocument();
 
-		fireEvent.click(screen.getByRole('button', {name: 'save-categories'}));
+		fireEvent.click(screen.getByRole('button', {name: 'add-categories'}));
 
 		expect(mockFire).toHaveBeenCalledWith(
 			'cms:aiAssistant:commit',
@@ -372,7 +372,7 @@ describe('CategorizationMessageBalloon', () => {
 
 		expect(screen.getByText('Fishing')).toBeInTheDocument();
 		expect(
-			screen.getByRole('button', {name: 'save-categories'})
+			screen.getByRole('button', {name: 'add-categories'})
 		).toBeInTheDocument();
 		expect(mockCreateEventSource).not.toHaveBeenCalled();
 	});

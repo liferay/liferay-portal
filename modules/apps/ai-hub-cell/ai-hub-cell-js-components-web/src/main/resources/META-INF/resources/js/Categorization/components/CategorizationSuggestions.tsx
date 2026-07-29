@@ -130,9 +130,7 @@ export default function CategorizationSuggestions({
 						symbol="reload"
 					/>
 
-					{kind === 'categories'
-						? Liferay.Language.get('try-again')
-						: Liferay.Language.get('regenerate')}
+					{Liferay.Language.get('try-again')}
 				</ClayButton>
 
 				<ClayButton
@@ -142,7 +140,7 @@ export default function CategorizationSuggestions({
 					size="sm"
 				>
 					{kind === 'categories'
-						? Liferay.Language.get('save-categories')
+						? Liferay.Language.get('add-categories')
 						: Liferay.Language.get('add-tags')}
 				</ClayButton>
 			</div>
