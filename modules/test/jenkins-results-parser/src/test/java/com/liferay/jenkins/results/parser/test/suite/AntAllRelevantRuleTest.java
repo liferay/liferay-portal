@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,6 +31,11 @@ public class AntAllRelevantRuleTest {
 	@BeforeClass
 	public static void setUpClass() throws Exception {
 		Class.forName("com.liferay.jenkins.results.parser.GitWorkingDirectory");
+	}
+
+	@After
+	public void tearDown() {
+		RelevantRuleEngine.clear();
 	}
 
 	@Test

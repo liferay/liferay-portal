@@ -11,6 +11,7 @@ import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.JobFactory;
 import com.liferay.jenkins.results.parser.PortalAcceptancePullRequestJob;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
+import com.liferay.jenkins.results.parser.Test;
 
 import java.io.File;
 
@@ -23,10 +24,13 @@ import org.junit.After;
 /**
  * @author Kenji Heigel
  */
-public abstract class BaseRelevantRuleTestCase {
+public abstract class BaseRelevantRuleTestCase extends Test {
 
 	@After
+	@Override
 	public void tearDown() {
+		super.tearDown();
+
 		RelevantRuleEngine.clear();
 	}
 
