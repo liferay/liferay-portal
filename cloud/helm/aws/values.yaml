@@ -204,7 +204,13 @@ liferay-default:
             -   configMap:
                     name: liferay-search-config-aws
                 name: liferay-search-config-aws
+        x-lpkg:
+            -   name: liferay-lpkg
+                persistentVolumeClaim:
+                    claimName: liferay-lpkg
     license:
+        enabled: true
+    lpkg:
         enabled: true
     network:
         enabled: true
