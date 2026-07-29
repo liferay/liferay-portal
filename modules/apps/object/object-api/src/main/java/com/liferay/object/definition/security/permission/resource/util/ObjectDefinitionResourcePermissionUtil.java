@@ -71,7 +71,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
 				objectDefinition.getCompanyId())) {
 
-			_removeStaleModelResource(objectDefinition, resourceActions);
+			_removeModelResources(objectDefinition, resourceActions);
 
 			resourceActions.populateModelResources(document);
 
@@ -324,7 +324,7 @@ public class ObjectDefinitionResourcePermissionUtil {
 				}));
 	}
 
-	private static void _removeStaleModelResource(
+	private static void _removeModelResources(
 		ObjectDefinition objectDefinition, ResourceActions resourceActions) {
 
 		String resourceName = resourceActions.getPortletRootModelResource(
