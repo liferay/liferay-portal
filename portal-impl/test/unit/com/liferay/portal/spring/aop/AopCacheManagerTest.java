@@ -131,10 +131,10 @@ public class AopCacheManagerTest {
 
 		@Override
 		public Object createMethodContext(
-			Class<?> targetClass, Method method,
+			Object target, Method method,
 			Map<Class<? extends Annotation>, Annotation> annotations) {
 
-			Assert.assertSame(TestInterfaceImpl.class, targetClass);
+			Assert.assertSame(TestInterfaceImpl.class, target.getClass());
 
 			return nullResult;
 		}

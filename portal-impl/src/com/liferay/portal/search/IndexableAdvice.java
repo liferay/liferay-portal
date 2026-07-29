@@ -41,7 +41,7 @@ public class IndexableAdvice extends ChainableMethodAdvice {
 
 	@Override
 	public Object createMethodContext(
-		Class<?> targetClass, Method method,
+		Object target, Method method,
 		Map<Class<? extends Annotation>, Annotation> annotations) {
 
 		Indexable indexable = (Indexable)annotations.get(Indexable.class);

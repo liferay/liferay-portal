@@ -28,8 +28,10 @@ public class TransactionInterceptor extends ChainableMethodAdvice {
 
 	@Override
 	public TransactionAttributeAdapter createMethodContext(
-		Class<?> targetClass, Method method,
+		Object target, Method method,
 		Map<Class<? extends Annotation>, Annotation> annotations) {
+
+		Class<?> targetClass = target.getClass();
 
 		Transactional transactional = targetClass.getAnnotation(
 			Transactional.class);

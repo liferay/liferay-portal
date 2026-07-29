@@ -83,7 +83,7 @@ public class SystemEventAdvice extends ChainableMethodAdvice {
 
 	@Override
 	public Object createMethodContext(
-		Class<?> targetClass, Method method,
+		Object target, Method method,
 		Map<Class<? extends Annotation>, Annotation> annotations) {
 
 		return annotations.get(SystemEvent.class);

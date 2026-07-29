@@ -20,7 +20,7 @@ public interface AopMethodInvocation {
 
 	/**
 	 * @return The cached context object defined in {@link
-	 *         ChainableMethodAdvice#createMethodContext(Class, Method,
+	 *         ChainableMethodAdvice#createMethodContext(Object, Method,
 	 *         java.util.Map)}
 	 */
 	public <T> T getAdviceMethodContext();

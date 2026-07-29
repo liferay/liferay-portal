@@ -28,7 +28,7 @@ public class RetryAdvice extends ChainableMethodAdvice {
 
 	@Override
 	public Object createMethodContext(
-		Class<?> targetClass, Method method,
+		Object target, Method method,
 		Map<Class<? extends Annotation>, Annotation> annotations) {
 
 		Retry retry = (Retry)annotations.get(Retry.class);

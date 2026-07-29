@@ -35,7 +35,7 @@ public class BufferedIncrementAdvice extends ChainableMethodAdvice {
 
 	@Override
 	public Object createMethodContext(
-		Class<?> targetClass, Method method,
+		Object target, Method method,
 		Map<Class<? extends Annotation>, Annotation> annotations) {
 
 		BufferedIncrement bufferedIncrement =

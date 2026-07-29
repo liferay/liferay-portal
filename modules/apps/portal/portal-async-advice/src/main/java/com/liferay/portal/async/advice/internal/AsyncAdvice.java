@@ -40,7 +40,7 @@ public class AsyncAdvice extends ChainableMethodAdvice {
 
 	@Override
 	public Object createMethodContext(
-		Class<?> targetClass, Method method,
+		Object target, Method method,
 		Map<Class<? extends Annotation>, Annotation> annotations) {
 
 		Annotation annotation = annotations.get(Async.class);
@@ -62,6 +62,8 @@ public class AsyncAdvice extends ChainableMethodAdvice {
 		String destinationName = null;
 
 		if (_destinationNames != null) {
+			Class<?> targetClass = target.getClass();
+
 			destinationName = _destinationNames.get(targetClass.getName());
 		}
 
