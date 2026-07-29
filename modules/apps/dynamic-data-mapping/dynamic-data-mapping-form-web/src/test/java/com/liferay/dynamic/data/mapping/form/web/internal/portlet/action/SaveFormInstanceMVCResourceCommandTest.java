@@ -5,6 +5,7 @@
 
 package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.JavaDetector;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -46,26 +47,22 @@ public class SaveFormInstanceMVCResourceCommandTest {
 
 		Date date = calendar.getTime();
 
-		if (!JavaDetector.isJDK8()) {
-			Assert.assertEquals(
-				"Apr 18, 2018, 11:00 AM",
-				_saveFormInstanceMVCResourceCommand.formatDate(
-					date, LocaleUtil.US, "America/Sao_Paulo"));
-			Assert.assertEquals(
-				"Apr 18, 2018, 2:00 PM",
-				_saveFormInstanceMVCResourceCommand.formatDate(
-					date, LocaleUtil.US, "UTC"));
+		Assert.assertEquals(
+			_getExpectedFormattedDate("AM", "11:00"),
+			_saveFormInstanceMVCResourceCommand.formatDate(
+				date, LocaleUtil.US, "America/Sao_Paulo"));
+		Assert.assertEquals(
+			_getExpectedFormattedDate("PM", "2:00"),
+			_saveFormInstanceMVCResourceCommand.formatDate(
+				date, LocaleUtil.US, "UTC"));
+	}
+
+	private String _getExpectedFormattedDate(String amPm, String time) {
+		if (JavaDetector.getJavaSpecificationVersion() >= 20) {
+			return StringBundler.concat("Apr 18, 2018, ", time, "\u202F", amPm);
 		}
-		else {
-			Assert.assertEquals(
-				"Apr 18, 2018 11:00 AM",
-				_saveFormInstanceMVCResourceCommand.formatDate(
-					date, LocaleUtil.US, "America/Sao_Paulo"));
-			Assert.assertEquals(
-				"Apr 18, 2018 2:00 PM",
-				_saveFormInstanceMVCResourceCommand.formatDate(
-					date, LocaleUtil.US, "UTC"));
-		}
+
+		return StringBundler.concat("Apr 18, 2018, ", time, " ", amPm);
 	}
 
 	private void _setUpSaveFormInstanceMVCResourceCommand() throws Exception {
