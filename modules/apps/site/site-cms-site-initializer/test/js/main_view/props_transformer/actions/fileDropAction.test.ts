@@ -25,12 +25,20 @@ const allAssetLibraries = [
 
 const currentSpaceAssetLibraries = [allAssetLibraries[0]];
 
+const objectEntryLinkProps = {
+	objectEntryId: '55',
+	relationshipObjectFieldName: 'r_cmpTaskToCMPTaskLinks_c_cmpTaskId',
+	restContextPath: '/o/cmp/task-links',
+	scopeGroupId: '1001',
+};
+
 const baseAdditionalProps = {
 	assetLibraries: allAssetLibraries,
 	baseAssetLibraryViewURL: '/space/',
 	baseFolderViewURL: '/folder/',
 	candidateAssetLibraries: currentSpaceAssetLibraries,
-	keywords: '',
+	documentClassName: 'com.example.CMSBasicDocument',
+	objectEntryLinkProps,
 	parentObjectEntryFolderExternalReferenceCode: 'L_FILES',
 	redirect: '/back',
 };
@@ -46,6 +54,29 @@ describe('fileDropAction', () => {
 		fileDropAction(baseAdditionalProps, null);
 
 		expect(multipleFilesUploadAction).not.toHaveBeenCalled();
+	});
+
+	it('flattens the object entry link context into the upload data', () => {
+		fileDropAction(baseAdditionalProps, [droppedFile]);
+
+		const [data] = (multipleFilesUploadAction as jest.Mock).mock.calls[0];
+
+		expect(data).toMatchObject({
+			...objectEntryLinkProps,
+			documentClassName: 'com.example.CMSBasicDocument',
+		});
+	});
+
+	it('omits the link fields when the drop has no object entry to link to', () => {
+		const {objectEntryLinkProps: _unused, ...withoutContext} =
+			baseAdditionalProps;
+
+		fileDropAction(withoutContext, [droppedFile]);
+
+		const [data] = (multipleFilesUploadAction as jest.Mock).mock.calls[0];
+
+		expect(data.objectEntryId).toBeUndefined();
+		expect(data.restContextPath).toBeUndefined();
 	});
 
 	it('passes candidateAssetLibraries to the upload modal so the current Space is implicit', () => {
