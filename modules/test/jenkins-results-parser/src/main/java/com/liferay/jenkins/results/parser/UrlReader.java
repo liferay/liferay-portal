@@ -250,9 +250,6 @@ public class UrlReader {
 
 					Properties buildProperties =
 						JenkinsResultsParserUtil.getBuildProperties();
-
-					URL tokenURL = new URL(baseURL + "/o/oauth2/token");
-
 					String lxcEnvironment = testray2URLMatcher.group(
 						"lxcEnvironment");
 
@@ -262,6 +259,8 @@ public class UrlReader {
 					String clientSecret = JenkinsResultsParserUtil.getProperty(
 						buildProperties, "testray.oauth2.client.secret",
 						lxcEnvironment);
+
+					URL tokenURL = new URL(baseURL + "/o/oauth2/token");
 
 					httpAuthorization =
 						_testrayHTTPAuthorizations.computeIfAbsent(
