@@ -55,18 +55,26 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 	public File createYarnCache(String fileName) {
 		setUpYarn();
 
+		StringBuilder sb = new StringBuilder();
+
+		for (String excludeRegex : _BINARIES_CACHE_EXCLUDE_REGEXES) {
+			sb.append(" | grep -v '");
+			sb.append(excludeRegex);
+			sb.append("'");
+		}
+
 		GitUtil.ExecutionResult executionResult = executeBashCommands(
 			3, GitUtil.MILLIS_RETRY_DELAY, 1000 * 60 * 10,
 			JenkinsResultsParserUtil.combine(
-				"zip -r -y ", fileName,
-				" $(git ls-files --directory --no-empty-directory --others | ",
-				"grep -v \\\\.gradle/) modules/yarn.lock"));
+				"zip -q -r -y ", fileName,
+				" $(git ls-files --directory --no-empty-directory --others ",
+				sb.toString(), ") modules/yarn.lock"));
 
 		if (executionResult.getExitValue() != 0) {
 			throw new GitWorkingDirectoryRuntimeException(
 				this,
 				JenkinsResultsParserUtil.combine(
-					"Failed to add build/node to ", fileName, "\n",
+					"Unable to create the yarn cache ", fileName, "\n",
 					executionResult.getStandardError()));
 		}
 
@@ -653,6 +661,10 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 
 		return false;
 	}
+
+	private static final String[] _BINARIES_CACHE_EXCLUDE_REGEXES = {
+		"\\.gradle/", "\\.yarn/", "modules/\\.tsc/", "node_modules_cache/"
+	};
 
 	private static final Pattern _esBuildFileNamePattern = Pattern.compile(
 		"@esbuild-(linux-.*?)-.*");
