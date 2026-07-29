@@ -13,6 +13,7 @@
 	export class BatchTestEntity {
 			"acceptAllLanguages"?: boolean;
 			"customFields"?: Array<any>;
+			"embeddedNestedField"?: object;
 			"externalReferenceCode"?: string;
 			"id"?: number;
 			"name"?: string;
@@ -36,6 +37,11 @@
 			baseName: "customFields",
 			name: "customFields",
 			type: "Array<any>",
+		},
+		{
+			baseName: "embeddedNestedField",
+			name: "embeddedNestedField",
+			type: "object",
 		},
 		{
 			baseName: "externalReferenceCode",

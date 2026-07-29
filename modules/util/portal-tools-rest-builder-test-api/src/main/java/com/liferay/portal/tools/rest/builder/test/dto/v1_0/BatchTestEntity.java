@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -24,6 +25,8 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -137,6 +140,48 @@ public class BatchTestEntity implements Serializable {
 	@JsonIgnore
 	private Supplier<com.liferay.portal.vulcan.custom.field.CustomField[]>
 		_customFieldsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	@Valid
+	public Object getEmbeddedNestedField() {
+		if (_embeddedNestedFieldSupplier != null) {
+			embeddedNestedField = _embeddedNestedFieldSupplier.get();
+
+			_embeddedNestedFieldSupplier = null;
+		}
+
+		return embeddedNestedField;
+	}
+
+	public void setEmbeddedNestedField(Object embeddedNestedField) {
+		this.embeddedNestedField = embeddedNestedField;
+
+		_embeddedNestedFieldSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setEmbeddedNestedField(
+		UnsafeSupplier<Object, Exception> embeddedNestedFieldUnsafeSupplier) {
+
+		_embeddedNestedFieldSupplier = () -> {
+			try {
+				return embeddedNestedFieldUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Object embeddedNestedField;
+
+	@JsonIgnore
+	private Supplier<Object> _embeddedNestedFieldSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public String getExternalReferenceCode() {
@@ -446,6 +491,40 @@ public class BatchTestEntity implements Serializable {
 			sb.append("]");
 		}
 
+		Object embeddedNestedField = getEmbeddedNestedField();
+
+		if (embeddedNestedField != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"embeddedNestedField\": ");
+
+			if (embeddedNestedField instanceof Collection) {
+				sb.append(
+					JSONFactoryUtil.createJSONArray(
+						(Collection<?>)embeddedNestedField));
+			}
+			else if (embeddedNestedField instanceof Map) {
+				sb.append(
+					JSONFactoryUtil.createJSONObject(
+						(Map<?, ?>)embeddedNestedField));
+			}
+			else if (embeddedNestedField instanceof Object[]) {
+				sb.append(
+					JSONFactoryUtil.createJSONArray(
+						Arrays.asList((Object[])embeddedNestedField)));
+			}
+			else if (embeddedNestedField instanceof String) {
+				sb.append("\"");
+				sb.append(_escape((String)embeddedNestedField));
+				sb.append("\"");
+			}
+			else {
+				sb.append(embeddedNestedField);
+			}
+		}
+
 		String externalReferenceCode = getExternalReferenceCode();
 
 		if (externalReferenceCode != null) {
@@ -636,4 +715,4 @@ public class BatchTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-891969782
+// LIFERAY-REST-BUILDER-HASH:-1419626643

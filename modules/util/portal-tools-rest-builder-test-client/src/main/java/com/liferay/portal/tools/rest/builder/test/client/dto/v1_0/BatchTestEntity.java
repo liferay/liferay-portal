@@ -78,6 +78,27 @@ public class BatchTestEntity implements Cloneable, Serializable {
 		com.liferay.portal.tools.rest.builder.test.client.custom.field.
 			CustomField[] customFields;
 
+	public Object getEmbeddedNestedField() {
+		return embeddedNestedField;
+	}
+
+	public void setEmbeddedNestedField(Object embeddedNestedField) {
+		this.embeddedNestedField = embeddedNestedField;
+	}
+
+	public void setEmbeddedNestedField(
+		UnsafeSupplier<Object, Exception> embeddedNestedFieldUnsafeSupplier) {
+
+		try {
+			embeddedNestedField = embeddedNestedFieldUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Object embeddedNestedField;
+
 	public String getExternalReferenceCode() {
 		return externalReferenceCode;
 	}
@@ -236,4 +257,4 @@ public class BatchTestEntity implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2110654550
+// LIFERAY-REST-BUILDER-HASH:-1455668970

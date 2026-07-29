@@ -76,6 +76,23 @@ public class BatchTestEntitySerDes {
 			sb.append("]");
 		}
 
+		if (batchTestEntity.getEmbeddedNestedField() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"embeddedNestedField\": ");
+
+			if (batchTestEntity.getEmbeddedNestedField() instanceof String) {
+				sb.append("\"");
+				sb.append((String)batchTestEntity.getEmbeddedNestedField());
+				sb.append("\"");
+			}
+			else {
+				sb.append(batchTestEntity.getEmbeddedNestedField());
+			}
+		}
+
 		if (batchTestEntity.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -190,6 +207,15 @@ public class BatchTestEntitySerDes {
 				String.valueOf(batchTestEntity.getCustomFields()));
 		}
 
+		if (batchTestEntity.getEmbeddedNestedField() == null) {
+			map.put("embeddedNestedField", null);
+		}
+		else {
+			map.put(
+				"embeddedNestedField",
+				String.valueOf(batchTestEntity.getEmbeddedNestedField()));
+		}
+
 		if (batchTestEntity.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
@@ -265,6 +291,11 @@ public class BatchTestEntitySerDes {
 				return false;
 			}
 			else if (Objects.equals(
+						jsonParserFieldName, "embeddedNestedField")) {
+
+				return false;
+			}
+			else if (Objects.equals(
 						jsonParserFieldName, "externalReferenceCode")) {
 
 				return false;
@@ -320,6 +351,14 @@ public class BatchTestEntitySerDes {
 					}
 
 					batchTestEntity.setCustomFields(customFieldsArray);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "embeddedNestedField")) {
+
+				if (jsonParserFieldValue != null) {
+					batchTestEntity.setEmbeddedNestedField(
+						(Object)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -443,4 +482,4 @@ public class BatchTestEntitySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1571080986
+// LIFERAY-REST-BUILDER-HASH:282030032

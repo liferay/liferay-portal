@@ -1308,6 +1308,16 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"embeddedNestedField", additionalAssertFieldName)) {
+
+				if (batchTestEntity.getEmbeddedNestedField() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (batchTestEntity.getExternalReferenceCode() == null) {
@@ -1500,6 +1510,19 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"embeddedNestedField", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						batchTestEntity1.getEmbeddedNestedField(),
+						batchTestEntity2.getEmbeddedNestedField())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
@@ -1682,6 +1705,11 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 		}
 
 		if (entityFieldName.equals("customFields")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("embeddedNestedField")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -2208,4 +2236,4 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1018030429
+// LIFERAY-REST-BUILDER-HASH:-1399474926
