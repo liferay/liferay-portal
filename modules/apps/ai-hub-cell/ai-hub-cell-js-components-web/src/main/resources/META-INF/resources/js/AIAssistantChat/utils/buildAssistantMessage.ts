@@ -36,6 +36,15 @@ export default function buildAssistantMessage(
 
 	const data = dataJSON.data ?? '';
 
+	if (dataJSON.type === 'component' && dataJSON.component) {
+		return {
+			agentDefinitionExternalReferenceCodes,
+			component: dataJSON.component,
+			sender: 'assistant',
+			text: '',
+		};
+	}
+
 	if (dataJSON.type === 'image') {
 		return {
 			agentDefinitionExternalReferenceCodes,
