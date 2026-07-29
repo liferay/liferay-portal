@@ -234,13 +234,22 @@ export default function CalendarView({
 			items: [{...item, embedded: {...task, dueDate}}],
 		});
 
-		const {error} = await patchTaskById({
+		const {error, status} = await patchTaskById({
 			body: {dueDate},
 			taskId: String(task.id),
 		});
 
 		if (error) {
-			displayErrorToast();
+			if (status === 'FORBIDDEN') {
+				displayErrorToast(
+					Liferay.Language.get(
+						'you-do-not-have-permission-to-update-this-task'
+					)
+				);
+			}
+			else {
+				displayErrorToast();
+			}
 
 			onItemsChange({itemKey: 'embedded.id', items: [item]});
 
@@ -508,11 +517,26 @@ export default function CalendarView({
 							String(item.embedded?.id) === droppedTaskId
 					);
 
-					if (droppedItem) {
-						await rescheduleTask(droppedItem, droppedDate);
+					if (!droppedItem) {
+						return;
 					}
+
+					if (!droppedItem.embedded?.actions?.update) {
+						displayErrorToast(
+							Liferay.Language.get(
+								'you-do-not-have-permission-to-update-this-task'
+							)
+						);
+
+						return;
+					}
+
+					await rescheduleTask(droppedItem, droppedDate);
 				}}
 				droppable
+				eventAllow={(_dateSpan, draggedEvent) =>
+					!!draggedEvent?.extendedProps.task?.actions?.update
+				}
 				eventContent={(arg) => (
 					<CalendarTaskCard
 						expanded={currentView !== 'dayGridMonth'}
@@ -525,9 +549,17 @@ export default function CalendarView({
 				eventDragStart={() =>
 					document.body.classList.add(TASK_DRAGGING_CLASS_NAME)
 				}
-				eventDragStop={() =>
-					document.body.classList.remove(TASK_DRAGGING_CLASS_NAME)
-				}
+				eventDragStop={(arg) => {
+					document.body.classList.remove(TASK_DRAGGING_CLASS_NAME);
+
+					if (!arg.event.extendedProps.task?.actions?.update) {
+						displayErrorToast(
+							Liferay.Language.get(
+								'you-do-not-have-permission-to-update-this-task'
+							)
+						);
+					}
+				}}
 				eventDrop={async (arg) => {
 
 					// Task in calendar dropped into another date.
