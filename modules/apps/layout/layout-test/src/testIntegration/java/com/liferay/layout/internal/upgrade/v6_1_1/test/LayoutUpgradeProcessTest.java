@@ -71,7 +71,8 @@ public class LayoutUpgradeProcessTest {
 		Group stagingGroup = _group.getStagingGroup();
 
 		Layout stagingLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
-			liveLayout.getUuid(), stagingGroup.getGroupId(), false);
+			liveLayout.getUuid(), stagingGroup.getGroupId(),
+			liveLayout.isPrivateLayout());
 
 		String liveExternalReferenceCode = String.valueOf(liveLayout.getPlid());
 		String stagingExternalReferenceCode = String.valueOf(
