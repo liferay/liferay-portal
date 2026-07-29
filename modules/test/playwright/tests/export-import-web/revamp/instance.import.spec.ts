@@ -146,10 +146,9 @@ test(
 
 		await exportImportPage.newButton.click();
 
-		await exportImportPage.import({
-			expectedUploadErrorMessage:
-				'The LAR file contains one or more entities with a different scope.',
+		await exportImportPage.expectUploadError(
 			folderPath,
-		});
+			'The LAR file contains one or more entities with a different scope.'
+		);
 	}
 );

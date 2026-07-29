@@ -97,6 +97,12 @@ export class ExportImportPage {
 		return filePath;
 	}
 
+	async expectUploadError(folderPath: string, message: string) {
+		await this.selectFile(folderPath);
+
+		await expect(this.page.getByText(message)).toBeVisible();
+	}
+
 	async export(name: string) {
 		await this.clickNew();
 
@@ -126,33 +132,18 @@ export class ExportImportPage {
 		await this.viewReportEntriesMenuItem.click();
 	}
 
-	async import(
-		options:
-			| {
-					expectedUploadErrorMessage: string;
-					folderPath: string;
-			  }
-			| {
-					folderPath: string;
-					name: string;
-					taskStatus?: taskStatus;
-			  }
-	) {
-		if ('name' in options) {
-			await this.nameInput.fill(options.name);
-		}
+	async import({
+		folderPath,
+		name,
+		taskStatus = 'success',
+	}: {
+		folderPath: string;
+		name: string;
+		taskStatus?: taskStatus;
+	}) {
+		await this.nameInput.fill(name);
 
-		await this.selectFile(options.folderPath);
-
-		if ('expectedUploadErrorMessage' in options) {
-			await expect(
-				this.page.getByText(options.expectedUploadErrorMessage)
-			).toBeVisible();
-
-			return;
-		}
-
-		const {name, taskStatus = 'success'} = options;
+		await this.selectFile(folderPath);
 
 		await this.completedLabel.waitFor();
 
