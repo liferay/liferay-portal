@@ -212,7 +212,8 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 
 		batchTestEntity.setExternalReferenceCode(regex);
 		batchTestEntity.setName(regex);
-		batchTestEntity.setNestedField(regex);
+		batchTestEntity.setNestedField1(regex);
+		batchTestEntity.setNestedField2(regex);
 
 		String json = BatchTestEntitySerDes.toJSON(batchTestEntity);
 
@@ -222,7 +223,8 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 
 		Assert.assertEquals(regex, batchTestEntity.getExternalReferenceCode());
 		Assert.assertEquals(regex, batchTestEntity.getName());
-		Assert.assertEquals(regex, batchTestEntity.getNestedField());
+		Assert.assertEquals(regex, batchTestEntity.getNestedField1());
+		Assert.assertEquals(regex, batchTestEntity.getNestedField2());
 	}
 
 	@Test
@@ -1323,8 +1325,16 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("nestedField", additionalAssertFieldName)) {
-				if (batchTestEntity.getNestedField() == null) {
+			if (Objects.equals("nestedField1", additionalAssertFieldName)) {
+				if (batchTestEntity.getNestedField1() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("nestedField2", additionalAssertFieldName)) {
+				if (batchTestEntity.getNestedField2() == null) {
 					valid = false;
 				}
 
@@ -1523,10 +1533,21 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 				continue;
 			}
 
-			if (Objects.equals("nestedField", additionalAssertFieldName)) {
+			if (Objects.equals("nestedField1", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						batchTestEntity1.getNestedField(),
-						batchTestEntity2.getNestedField())) {
+						batchTestEntity1.getNestedField1(),
+						batchTestEntity2.getNestedField1())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("nestedField2", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						batchTestEntity1.getNestedField2(),
+						batchTestEntity2.getNestedField2())) {
 
 					return false;
 				}
@@ -1762,8 +1783,54 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 			return sb.toString();
 		}
 
-		if (entityFieldName.equals("nestedField")) {
-			Object object = batchTestEntity.getNestedField();
+		if (entityFieldName.equals("nestedField1")) {
+			Object object = batchTestEntity.getNestedField1();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("nestedField2")) {
+			Object object = batchTestEntity.getNestedField2();
 
 			String value = String.valueOf(object);
 
@@ -1865,7 +1932,9 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				nestedField = StringUtil.toLowerCase(
+				nestedField1 = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				nestedField2 = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 			}
 		};
@@ -2139,4 +2208,4 @@ public abstract class BaseBatchTestEntityResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-787316301
+// LIFERAY-REST-BUILDER-HASH:1018030429

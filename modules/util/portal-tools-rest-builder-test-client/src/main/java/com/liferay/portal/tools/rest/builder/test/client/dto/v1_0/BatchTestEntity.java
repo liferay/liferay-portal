@@ -137,26 +137,47 @@ public class BatchTestEntity implements Cloneable, Serializable {
 
 	protected String name;
 
-	public String getNestedField() {
-		return nestedField;
+	public String getNestedField1() {
+		return nestedField1;
 	}
 
-	public void setNestedField(String nestedField) {
-		this.nestedField = nestedField;
+	public void setNestedField1(String nestedField1) {
+		this.nestedField1 = nestedField1;
 	}
 
-	public void setNestedField(
-		UnsafeSupplier<String, Exception> nestedFieldUnsafeSupplier) {
+	public void setNestedField1(
+		UnsafeSupplier<String, Exception> nestedField1UnsafeSupplier) {
 
 		try {
-			nestedField = nestedFieldUnsafeSupplier.get();
+			nestedField1 = nestedField1UnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String nestedField;
+	protected String nestedField1;
+
+	public String getNestedField2() {
+		return nestedField2;
+	}
+
+	public void setNestedField2(String nestedField2) {
+		this.nestedField2 = nestedField2;
+	}
+
+	public void setNestedField2(
+		UnsafeSupplier<String, Exception> nestedField2UnsafeSupplier) {
+
+		try {
+			nestedField2 = nestedField2UnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String nestedField2;
 
 	public CompanyTestEntity getRelatedCompanyTestEntity() {
 		return relatedCompanyTestEntity;
@@ -215,4 +236,4 @@ public class BatchTestEntity implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2072763945
+// LIFERAY-REST-BUILDER-HASH:2110654550

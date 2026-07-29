@@ -114,16 +114,30 @@ public class BatchTestEntitySerDes {
 			sb.append("\"");
 		}
 
-		if (batchTestEntity.getNestedField() != null) {
+		if (batchTestEntity.getNestedField1() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"nestedField\": ");
+			sb.append("\"nestedField1\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(batchTestEntity.getNestedField()));
+			sb.append(_escape(batchTestEntity.getNestedField1()));
+
+			sb.append("\"");
+		}
+
+		if (batchTestEntity.getNestedField2() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nestedField2\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(batchTestEntity.getNestedField2()));
 
 			sb.append("\"");
 		}
@@ -199,13 +213,22 @@ public class BatchTestEntitySerDes {
 			map.put("name", String.valueOf(batchTestEntity.getName()));
 		}
 
-		if (batchTestEntity.getNestedField() == null) {
-			map.put("nestedField", null);
+		if (batchTestEntity.getNestedField1() == null) {
+			map.put("nestedField1", null);
 		}
 		else {
 			map.put(
-				"nestedField",
-				String.valueOf(batchTestEntity.getNestedField()));
+				"nestedField1",
+				String.valueOf(batchTestEntity.getNestedField1()));
+		}
+
+		if (batchTestEntity.getNestedField2() == null) {
+			map.put("nestedField2", null);
+		}
+		else {
+			map.put(
+				"nestedField2",
+				String.valueOf(batchTestEntity.getNestedField2()));
 		}
 
 		if (batchTestEntity.getRelatedCompanyTestEntity() == null) {
@@ -252,7 +275,10 @@ public class BatchTestEntitySerDes {
 			else if (Objects.equals(jsonParserFieldName, "name")) {
 				return false;
 			}
-			else if (Objects.equals(jsonParserFieldName, "nestedField")) {
+			else if (Objects.equals(jsonParserFieldName, "nestedField1")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "nestedField2")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -315,9 +341,15 @@ public class BatchTestEntitySerDes {
 					batchTestEntity.setName((String)jsonParserFieldValue);
 				}
 			}
-			else if (Objects.equals(jsonParserFieldName, "nestedField")) {
+			else if (Objects.equals(jsonParserFieldName, "nestedField1")) {
 				if (jsonParserFieldValue != null) {
-					batchTestEntity.setNestedField(
+					batchTestEntity.setNestedField1(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "nestedField2")) {
+				if (jsonParserFieldValue != null) {
+					batchTestEntity.setNestedField2(
 						(String)jsonParserFieldValue);
 				}
 			}
@@ -411,4 +443,4 @@ public class BatchTestEntitySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-527591277
+// LIFERAY-REST-BUILDER-HASH:1571080986

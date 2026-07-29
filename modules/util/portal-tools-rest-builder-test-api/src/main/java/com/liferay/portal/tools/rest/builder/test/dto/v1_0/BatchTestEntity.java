@@ -258,29 +258,29 @@ public class BatchTestEntity implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
-	public String getNestedField() {
-		if (_nestedFieldSupplier != null) {
-			nestedField = _nestedFieldSupplier.get();
+	public String getNestedField1() {
+		if (_nestedField1Supplier != null) {
+			nestedField1 = _nestedField1Supplier.get();
 
-			_nestedFieldSupplier = null;
+			_nestedField1Supplier = null;
 		}
 
-		return nestedField;
+		return nestedField1;
 	}
 
-	public void setNestedField(String nestedField) {
-		this.nestedField = nestedField;
+	public void setNestedField1(String nestedField1) {
+		this.nestedField1 = nestedField1;
 
-		_nestedFieldSupplier = null;
+		_nestedField1Supplier = null;
 	}
 
 	@JsonIgnore
-	public void setNestedField(
-		UnsafeSupplier<String, Exception> nestedFieldUnsafeSupplier) {
+	public void setNestedField1(
+		UnsafeSupplier<String, Exception> nestedField1UnsafeSupplier) {
 
-		_nestedFieldSupplier = () -> {
+		_nestedField1Supplier = () -> {
 			try {
-				return nestedFieldUnsafeSupplier.get();
+				return nestedField1UnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -293,10 +293,51 @@ public class BatchTestEntity implements Serializable {
 
 	@GraphQLField
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String nestedField;
+	protected String nestedField1;
 
 	@JsonIgnore
-	private Supplier<String> _nestedFieldSupplier;
+	private Supplier<String> _nestedField1Supplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
+	public String getNestedField2() {
+		if (_nestedField2Supplier != null) {
+			nestedField2 = _nestedField2Supplier.get();
+
+			_nestedField2Supplier = null;
+		}
+
+		return nestedField2;
+	}
+
+	public void setNestedField2(String nestedField2) {
+		this.nestedField2 = nestedField2;
+
+		_nestedField2Supplier = null;
+	}
+
+	@JsonIgnore
+	public void setNestedField2(
+		UnsafeSupplier<String, Exception> nestedField2UnsafeSupplier) {
+
+		_nestedField2Supplier = () -> {
+			try {
+				return nestedField2UnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String nestedField2;
+
+	@JsonIgnore
+	private Supplier<String> _nestedField2Supplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
@@ -449,18 +490,34 @@ public class BatchTestEntity implements Serializable {
 			sb.append("\"");
 		}
 
-		String nestedField = getNestedField();
+		String nestedField1 = getNestedField1();
 
-		if (nestedField != null) {
+		if (nestedField1 != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"nestedField\": ");
+			sb.append("\"nestedField1\": ");
 
 			sb.append("\"");
 
-			sb.append(_escape(nestedField));
+			sb.append(_escape(nestedField1));
+
+			sb.append("\"");
+		}
+
+		String nestedField2 = getNestedField2();
+
+		if (nestedField2 != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"nestedField2\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(nestedField2));
 
 			sb.append("\"");
 		}
@@ -579,4 +636,4 @@ public class BatchTestEntity implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:306781238
+// LIFERAY-REST-BUILDER-HASH:-891969782
