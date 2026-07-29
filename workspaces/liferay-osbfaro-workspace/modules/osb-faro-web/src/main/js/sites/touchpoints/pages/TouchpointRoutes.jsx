@@ -10,7 +10,7 @@ import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
 import React, {lazy, Suspense, useEffect, useState} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
-import SegmentDropdown from '../components/SegmentDropdown';
+import SegmentDropdown from 'shared/components/SegmentDropdown';
 import TextTruncate from 'shared/components/TextTruncate';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
@@ -25,6 +25,7 @@ import {useChannelContext} from 'shared/context/channel';
 import {useDataSources} from 'shared/context/dataSources';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
 
 const Accounts = lazy(() =>
 	import(/* webpackChunkName: "TouchpointAccountsPage" */ './Accounts')
@@ -54,6 +55,7 @@ function TouchpointRoutes({className, router}) {
 		touchpoint
 	} = router.params;
 	const {accountId, accountName, setAccount} = useAccountFilter();
+	const {segmentId, segmentName, setSegment} = useSegmentFilter();
 	const LDPEnabled = useLDPEnabled({groupId});
 	const NAV_ITEMS = [
 		{
@@ -83,7 +85,6 @@ function TouchpointRoutes({className, router}) {
 	const matchedRoute = getMatchedRoute(NAV_ITEMS);
 	const decodedTitle = getSafeDecodedURIComponent(title);
 	const decodedTouchpoint = getSafeDecodedURIComponent(touchpoint);
-	const [selectedSegment, setSelectedSegment] = useState({});
 	const [experienceId, setExperienceId] = useState(experienceIdfromURL);
 	const history = useHistory();
 
@@ -94,6 +95,15 @@ function TouchpointRoutes({className, router}) {
 			initialAccountId={accountId}
 			initialAccountName={accountName}
 			onFilterChange={setAccount}
+		/>
+	);
+
+	const segmentDropdown = LDPEnabled && (
+		<SegmentDropdown
+			className='mr-2'
+			initialSegmentId={segmentId}
+			initialSegmentName={segmentName}
+			onFilterChange={setSegment}
 		/>
 	);
 
@@ -143,7 +153,9 @@ function TouchpointRoutes({className, router}) {
 					routeQueries={pickBy({
 						...rangeSelectors,
 						accountId,
-						accountName
+						accountName,
+						segmentId,
+						segmentName
 					})}
 				/>
 			</BasePage.Header>
@@ -151,6 +163,8 @@ function TouchpointRoutes({className, router}) {
 			{matchedRoute === Routes.SITES_TOUCHPOINTS_OVERVIEW && (
 				<BasePage.SubHeader>
 					{accountDropdown}
+
+					{segmentDropdown}
 
 					{LDPEnabled && (
 						<ExperienceDropdown
@@ -217,17 +231,16 @@ function TouchpointRoutes({className, router}) {
 					experienceId,
 					filters: {},
 					rangeSelectors: pathRangeSelectors,
-					router
+					router,
+					segmentId,
+					segmentName
 				}}
 			>
 				{matchedRoute === Routes.SITES_TOUCHPOINTS_PATH && (
 					<BasePage.SubHeader>
 						{accountDropdown}
 
-						<SegmentDropdown
-							onFilterChange={setSelectedSegment}
-							rangeSelectors={pathRangeSelectors}
-						/>
+						{segmentDropdown}
 
 						<div className='d-flex justify-content-end w-100'>
 							<DropdownRangeKey
@@ -260,8 +273,7 @@ function TouchpointRoutes({className, router}) {
 
 							<BundleRouter
 								componentProps={{
-									rangeSelectors: pathRangeSelectors,
-									selectedSegment
+									rangeSelectors: pathRangeSelectors
 								}}
 								data={TouchpointPathPage}
 								destructured={false}

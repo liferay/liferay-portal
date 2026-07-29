@@ -56,9 +56,15 @@ jest.mock('shared/components/AccountDropdown', () => ({
 	)
 }));
 
-jest.mock('../../components/SegmentDropdown', () => ({
+jest.mock('shared/components/SegmentDropdown', () => ({
 	__esModule: true,
-	default: () => null
+	default: ({initialSegmentId, initialSegmentName}) => (
+		<div
+			data-initial-segment-id={initialSegmentId}
+			data-initial-segment-name={initialSegmentName}
+			data-testid='segment-dropdown'
+		/>
+	)
 }));
 
 jest.mock('shared/context/channel', () => ({
@@ -444,6 +450,176 @@ describe('TouchpointRoutes', () => {
 		);
 	});
 
+	it('shows the segment filter on the overview route for LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('segment-dropdown')).toBeTruthy();
+	});
+
+	it('hides the segment filter on the overview route for non-LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(false);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('segment-dropdown')).toBeNull();
+	});
+
+	it('shows the segment filter on the path route for LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_PATH);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('segment-dropdown')).toBeTruthy();
+	});
+
+	it('hides the segment filter on the path route for non-LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_PATH);
+		useLDPEnabled.mockReturnValue(false);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('segment-dropdown')).toBeNull();
+	});
+
+	it('seeds the segment filter from the segmentId/segmentName URL query params on the overview route', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter
+					initialEntries={['/?segmentId=100&segmentName=Segment+100']}
+				>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.getByTestId('segment-dropdown')).toHaveAttribute(
+			'data-initial-segment-id',
+			'100'
+		);
+		expect(screen.getByTestId('segment-dropdown')).toHaveAttribute(
+			'data-initial-segment-name',
+			'Segment 100'
+		);
+	});
+
+	it('seeds the segment filter from the segmentId/segmentName URL query params on the path route', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_PATH);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter
+					initialEntries={['/?segmentId=100&segmentName=Segment+100']}
+				>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.getByTestId('segment-dropdown')).toHaveAttribute(
+			'data-initial-segment-id',
+			'100'
+		);
+	});
+
 	it('carries the account filter and the date range over to the tab links', () => {
 		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
 		useLDPEnabled.mockReturnValue(true);
@@ -504,5 +680,65 @@ describe('TouchpointRoutes', () => {
 		expect(href).not.toContain('accountId');
 		expect(href).not.toContain('accountName');
 		expect(href).toContain('rangeKey=30');
+	});
+
+	it('carries the segment filter over to the tab links', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter
+					initialEntries={['/?segmentId=100&segmentName=Segment+100']}
+				>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		const href = screen.getByText('Path').closest('a').getAttribute('href');
+
+		expect(href).toContain('segmentId=100');
+		expect(href).toContain('segmentName=Segment');
+	});
+
+	it('leaves the tab links free of segment params when no segment is selected', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_OVERVIEW);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		const href = screen.getByText('Path').closest('a').getAttribute('href');
+
+		expect(href).not.toContain('segmentId');
+		expect(href).not.toContain('segmentName');
 	});
 });

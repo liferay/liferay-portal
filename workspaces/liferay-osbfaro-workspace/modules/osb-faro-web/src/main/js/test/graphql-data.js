@@ -63,7 +63,6 @@ import {getSafeRangeSelectors} from 'shared/util/util';
 import {INTERVAL_KEY_MAP} from 'shared/util/time';
 import {isArray, mapValues, range} from 'lodash';
 import {PageAudienceReportQuery} from 'shared/components/audience-report/queries';
-import {SegmentPageViewsQuery} from 'shared/queries/SegmentPageViewsQuery';
 
 const METRIC_TYPENAME_MAP = {
 	histogram: 'HistogramMetric',
@@ -1710,34 +1709,6 @@ export function mockSearchStringListReq() {
 					key: 'search-query-strings',
 					value: JSON.stringify(['jackson']),
 				},
-			},
-		},
-	};
-}
-
-export function mockSegmentPageViewsReq({segmentPageViews}) {
-	return {
-		request: {
-			fetchPolicy: 'network-only',
-			query: SegmentPageViewsQuery,
-			variables: {
-				canonicalUrl: 'http://liferay.com',
-				channelId: '456',
-				rangeEnd: null,
-				rangeKey: 0,
-				rangeStart: null,
-				segmentIds: segmentPageViews.map(
-					(segment) => segment.segmentId
-				),
-				title: 'Liferay DXP - Home',
-			},
-		},
-		result: {
-			data: {
-				segmentPageViews: segmentPageViews.map((segment) => ({
-					...segment,
-					__typename: 'SegmentPageView',
-				})),
 			},
 		},
 	};

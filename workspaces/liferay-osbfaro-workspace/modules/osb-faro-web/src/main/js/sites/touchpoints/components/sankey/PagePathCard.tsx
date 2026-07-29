@@ -100,15 +100,11 @@ function formatData({pagePath}: {pagePath: pagePathNode}) {
 
 interface IPagePathCardProps {
 	rangeSelectors: RangeSelectors;
-	selectedSegment?: {id: string};
 }
 
-const PagePathCard: React.FC<IPagePathCardProps> = ({
-	rangeSelectors,
-	selectedSegment,
-}) => {
+const PagePathCard: React.FC<IPagePathCardProps> = ({rangeSelectors}) => {
 	const cardRef = useRef(null);
-	const {accountId} = useContext(BasePage.Context);
+	const {accountId, segmentId} = useContext(BasePage.Context);
 	const {channelId, title, touchpoint} = useParams<{
 		channelId: string;
 		title: string;
@@ -120,9 +116,7 @@ const PagePathCard: React.FC<IPagePathCardProps> = ({
 			channelId,
 			title: getSafeDecodedURIComponent(title ?? ''),
 			...(accountId && {accountId}),
-			...(selectedSegment?.id && {
-				segmentId: selectedSegment.id,
-			}),
+			...(segmentId && {segmentId}),
 			...getSafeRangeSelectors(rangeSelectors),
 		},
 	});

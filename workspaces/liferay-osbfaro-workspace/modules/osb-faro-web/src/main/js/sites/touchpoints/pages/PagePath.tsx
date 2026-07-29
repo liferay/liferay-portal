@@ -4,7 +4,6 @@ import {RangeSelectors} from 'shared/types';
 
 interface ITouchpointPathPageProps {
 	rangeSelectors: RangeSelectors;
-	selectedSegment?: {id: string};
 }
 
 const TouchpointPathPage = (props: ITouchpointPathPageProps) => (

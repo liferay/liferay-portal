@@ -120,11 +120,13 @@ const WrapperComponent = ({
 		rangeStart: '',
 	},
 	reqOptions = {},
+	segmentId,
 }: {
 	accountId?: string;
 	data: any;
 	rangeSelectors?: RangeSelectors;
 	reqOptions?: Record<string, unknown>;
+	segmentId?: string;
 }) => (
 	<MemoryRouter
 		initialEntries={[
@@ -133,13 +135,14 @@ const WrapperComponent = ({
 	>
 		<Route path="/workspace/:groupId/:channelId/sites/pages/overview/:touchpoint/:title">
 			<BasePage.Context.Provider
-				value={{accountId, filters: {}, router: {}}}
+				value={{accountId, filters: {}, router: {}, segmentId}}
 			>
 				<MockedProvider
 					cache={new InMemoryCache({freezeResults: false} as any)}
 					mocks={[
 						mockPagePathReq(data, {
 							accountId,
+							segmentId,
 							...reqOptions,
 						} as any),
 					]}
@@ -165,6 +168,16 @@ describe('PagePathCard', () => {
 	it('should filter by the selected account', async () => {
 		const {container} = render(
 			<WrapperComponent accountId="100" data={DATA} />
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(container).toMatchSnapshot();
+	});
+
+	it('should filter by the selected segment', async () => {
+		const {container} = render(
+			<WrapperComponent data={DATA} segmentId="segment-100" />
 		);
 
 		await waitForLoadingToBeRemoved(container);
