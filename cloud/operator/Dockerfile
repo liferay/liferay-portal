@@ -7,6 +7,10 @@ COPY resources resources
 
 RUN ./go_build.sh
 
+FROM gcr.io/distroless/static:debug-nonroot AS dev
+
+COPY --chown=65532:65532 manager /home/nonroot/manager
+
 FROM gcr.io/distroless/static:nonroot
 
 ENTRYPOINT ["/manager"]
