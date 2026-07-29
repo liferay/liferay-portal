@@ -9,6 +9,15 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
+import com.liferay.document.library.kernel.model.DLFileEntryType;
+import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalService;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.model.DDMStructureLink;
+import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
+import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
@@ -21,6 +30,8 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
@@ -32,6 +43,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -44,6 +56,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -55,6 +68,8 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -635,6 +650,55 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 			draftLayout.getStyleBookEntryERC());
 	}
 
+	@Test
+	@TestInfo("LPD-99704")
+	public void testUpdateLayoutPageTemplateEntryWithDDMStructureLink()
+		throws Exception {
+
+		_testAddLayoutPageTemplateEntryWithDDMStructureClassType();
+		_testAddLayoutPageTemplateEntryWithDLFileEntryTypeClassType();
+		_testAddLayoutPageTemplateEntryWithBasicDocumentDLFileEntryTypeClassType();
+		_testAddLayoutPageTemplateEntryWithoutDDMStructureClassType();
+		_testDeleteLayoutPageTemplateEntryWithDDMStructureClassType();
+		_testDeleteLayoutPageTemplateEntryWithoutDDMStructureClassType();
+		_testUpdateLayoutPageTemplateEntryClassTypeKey();
+		_testUpdateLayoutPageTemplateEntryClassNameId();
+	}
+
+	private LayoutPageTemplateEntry _addLayoutPageTemplateEntry(
+			long classNameId, String classTypeKey)
+		throws Exception {
+
+		return _layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			LayoutPageTemplateConstants.
+				PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+			null, classNameId, classTypeKey, RandomTestUtil.randomString(),
+			LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
+			WorkflowConstants.STATUS_APPROVED, _serviceContext);
+	}
+
+	private void _assertDDMStructureLinks(
+		LayoutPageTemplateEntry layoutPageTemplateEntry,
+		long... expectedStructureIds) {
+
+		List<DDMStructureLink> ddmStructureLinks =
+			_ddmStructureLinkLocalService.getStructureLinks(
+				_portal.getClassNameId(LayoutPageTemplateEntry.class),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+		Assert.assertEquals(
+			ddmStructureLinks.toString(), expectedStructureIds.length,
+			ddmStructureLinks.size());
+
+		for (int i = 0; i < expectedStructureIds.length; i++) {
+			DDMStructureLink ddmStructureLink = ddmStructureLinks.get(i);
+
+			Assert.assertEquals(
+				expectedStructureIds[i], ddmStructureLink.getStructureId());
+		}
+	}
+
 	private void _assertExternalReferenceCodes(
 			Layout layout,
 			UnsafeBiFunction<String, String, Boolean, Exception>
@@ -736,6 +800,75 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 					layoutPageTemplateEntryLayoutPageTemplateCollectionIdException);
 			}
 		}
+	}
+
+	private void _testAddLayoutPageTemplateEntryWithBasicDocumentDLFileEntryTypeClassType()
+		throws Exception {
+
+		DLFileEntryType dlFileEntryType =
+			_dlFileEntryTypeLocalService.getBasicDocumentDLFileEntryType();
+
+		Assert.assertEquals(0, dlFileEntryType.getDataDefinitionId());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				_portal.getClassNameId(FileEntry.class.getName()),
+				dlFileEntryType.getFileEntryTypeKey());
+
+		Assert.assertEquals(
+			DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT,
+			layoutPageTemplateEntry.getClassTypeId());
+
+		_assertDDMStructureLinks(layoutPageTemplateEntry);
+	}
+
+	private void _testAddLayoutPageTemplateEntryWithDDMStructureClassType()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey());
+
+		Assert.assertEquals(
+			ddmStructure.getStructureId(),
+			layoutPageTemplateEntry.getClassTypeId());
+
+		_assertDDMStructureLinks(
+			layoutPageTemplateEntry, ddmStructure.getStructureId());
+	}
+
+	private void _testAddLayoutPageTemplateEntryWithDLFileEntryTypeClassType()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), DLFileEntryMetadata.class.getName());
+
+		DLFileEntryType dlFileEntryType =
+			_dlFileEntryTypeLocalService.addFileEntryType(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				ddmStructure.getStructureId(), null,
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), RandomTestUtil.randomString()
+				).build(),
+				new HashMap<>(),
+				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_SCOPE_DEFAULT,
+				_serviceContext);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				_portal.getClassNameId(FileEntry.class.getName()),
+				dlFileEntryType.getFileEntryTypeKey());
+
+		Assert.assertEquals(
+			dlFileEntryType.getFileEntryTypeId(),
+			layoutPageTemplateEntry.getClassTypeId());
+
+		_assertDDMStructureLinks(
+			layoutPageTemplateEntry, ddmStructure.getStructureId());
 	}
 
 	private void _testAddLayoutPageTemplateEntryWithExternalReferenceCode()
@@ -851,6 +984,63 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		}
 	}
 
+	private void _testAddLayoutPageTemplateEntryWithoutDDMStructureClassType()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				_portal.getClassNameId(objectDefinition.getClassName()), null);
+
+		Assert.assertEquals(0, layoutPageTemplateEntry.getClassTypeId());
+
+		_assertDDMStructureLinks(layoutPageTemplateEntry);
+	}
+
+	private void _testDeleteLayoutPageTemplateEntryWithDDMStructureClassType()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey());
+
+		_assertDDMStructureLinks(
+			layoutPageTemplateEntry, ddmStructure.getStructureId());
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+		_assertDDMStructureLinks(layoutPageTemplateEntry);
+	}
+
+	private void _testDeleteLayoutPageTemplateEntryWithoutDDMStructureClassType()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				_portal.getClassNameId(objectDefinition.getClassName()), null);
+
+		_ddmStructureLinkLocalService.addStructureLink(
+			_portal.getClassNameId(LayoutPageTemplateEntry.class),
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(), 0);
+
+		_assertDDMStructureLinks(layoutPageTemplateEntry, 0);
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+		_assertDDMStructureLinks(layoutPageTemplateEntry);
+	}
+
 	private void _testMoveLayoutPageTemplateEntry(
 			long layoutPageTemplateEntryId, long layoutPageTemplateCollectionId)
 		throws Exception {
@@ -886,11 +1076,78 @@ public class LayoutPageTemplateEntryLocalServiceTest {
 		}
 	}
 
+	private void _testUpdateLayoutPageTemplateEntryClassNameId()
+		throws Exception {
+
+		DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				_portal.getClassNameId(JournalArticle.class.getName()),
+				ddmStructure.getStructureKey());
+
+		_assertDDMStructureLinks(
+			layoutPageTemplateEntry, ddmStructure.getStructureId());
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
+				TestPropsValues.getUserId(),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+				_portal.getClassNameId(objectDefinition.getClassName()), null);
+
+		Assert.assertEquals(0, layoutPageTemplateEntry.getClassTypeId());
+
+		_assertDDMStructureLinks(layoutPageTemplateEntry);
+	}
+
+	private void _testUpdateLayoutPageTemplateEntryClassTypeKey()
+		throws Exception {
+
+		long classNameId = _portal.getClassNameId(
+			JournalArticle.class.getName());
+
+		DDMStructure ddmStructure1 = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_addLayoutPageTemplateEntry(
+				classNameId, ddmStructure1.getStructureKey());
+
+		_assertDDMStructureLinks(
+			layoutPageTemplateEntry, ddmStructure1.getStructureId());
+
+		DDMStructure ddmStructure2 = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.updateLayoutPageTemplateEntry(
+				TestPropsValues.getUserId(),
+				layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+				classNameId, ddmStructure2.getStructureKey());
+
+		Assert.assertEquals(
+			ddmStructure2.getStructureId(),
+			layoutPageTemplateEntry.getClassTypeId());
+
+		_assertDDMStructureLinks(
+			layoutPageTemplateEntry, ddmStructure2.getStructureId());
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutPageTemplateEntryLocalServiceTest.class);
 
 	@Inject
+	private DDMStructureLinkLocalService _ddmStructureLinkLocalService;
+
+	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private DLFileEntryTypeLocalService _dlFileEntryTypeLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
