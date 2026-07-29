@@ -173,7 +173,7 @@ public class CrawlerJobInsightService {
 				}
 			}
 			else {
-				JSONObject orphanPagesInsightJSONObject = new JSONObject(
+				JSONObject insightJSONObject = new JSONObject(
 				).put(
 					"category", "linksAndURLs"
 				).put(
@@ -208,8 +208,7 @@ public class CrawlerJobInsightService {
 					"r_accountToSEOStudioScans_accountEntryId");
 
 				_seoStudioService.postSEOStudioScanInsightsBatch(
-					accountEntryId, orphanPagesInsightJSONObject,
-					seoStudioScanId);
+					accountEntryId, insightJSONObject, seoStudioScanId);
 			}
 
 			_seoStudioService.patchSEOStudioScan(
