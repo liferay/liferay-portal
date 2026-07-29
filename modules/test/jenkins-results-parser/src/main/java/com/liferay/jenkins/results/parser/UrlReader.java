@@ -465,7 +465,9 @@ public class UrlReader {
 						sb.append(ioException2.getMessage());
 					}
 
-					if (!JenkinsResultsParserUtil.isNullOrEmpty(postContent)) {
+					if ((maxRetries >= 0) && (retryCount >= maxRetries) &&
+						!JenkinsResultsParserUtil.isNullOrEmpty(postContent)) {
+
 						sb.append("\nPost content:\n");
 						sb.append(postContent);
 					}
