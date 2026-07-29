@@ -12,4 +12,6 @@ public class DSRConstants {
 
 	public static final String DSR_FRIENDLY_URL = "/dsr";
 
+	public static final String DSR_HOME_FRIENDLY_URL = "/home";
+
 }

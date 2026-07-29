@@ -71,7 +71,7 @@ public class DSRInitialRequestPortalInstanceLifecycleListener
 			}
 
 			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-				group.getGroupId(), false, "/home");
+				group.getGroupId(), false, DSRConstants.DSR_HOME_FRIENDLY_URL);
 
 			if (layout != null) {
 				return;

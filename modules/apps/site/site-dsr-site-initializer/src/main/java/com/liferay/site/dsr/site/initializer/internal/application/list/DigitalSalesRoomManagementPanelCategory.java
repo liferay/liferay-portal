@@ -12,10 +12,14 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
+import com.liferay.site.dsr.site.initializer.internal.constants.DSRConstants;
 import com.liferay.site.dsr.site.initializer.internal.util.DSRUtil;
 
 import java.util.Locale;
@@ -56,6 +60,16 @@ public class DigitalSalesRoomManagementPanelCategory extends BasePanelCategory {
 			return false;
 		}
 
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			group.getGroupId(), false, DSRConstants.DSR_HOME_FRIENDLY_URL);
+
+		if ((layout == null) ||
+			!LayoutPermissionUtil.contains(
+				permissionChecker, layout, ActionKeys.VIEW)) {
+
+			return false;
+		}
+
 		return PortalPermissionUtil.contains(
 			permissionChecker, ActionKeys.VIEW_CONTROL_PANEL);
 	}
@@ -67,5 +81,8 @@ public class DigitalSalesRoomManagementPanelCategory extends BasePanelCategory {
 
 	@Reference
 	private Language _language;
+
+	@Reference
+	private LayoutLocalService _layoutLocalService;
 
 }
