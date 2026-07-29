@@ -5970,7 +5970,7 @@ public class JenkinsResultsParserUtil {
 		}
 
 		@Override
-		public String toString() {
+		public synchronized String toString() {
 			_refreshToken();
 
 			return _tokenType + " " + _token;
@@ -6021,9 +6021,9 @@ public class JenkinsResultsParserUtil {
 
 		private final String _clientId;
 		private final String _clientSecret;
-		private volatile String _token;
-		private volatile Date _tokenExpirationDate;
-		private volatile String _tokenType;
+		private String _token;
+		private Date _tokenExpirationDate;
+		private String _tokenType;
 		private final URL _tokenURL;
 
 	}
