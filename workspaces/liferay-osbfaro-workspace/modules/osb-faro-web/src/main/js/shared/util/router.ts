@@ -171,6 +171,8 @@ export const Routes = buildRoutes({
 											CONTACTS_ACCOUNT_INTEREST_DETAILS: `/interests/:interestId/:tabId(${INDIVIDUALS}|${PAGES})?`,
 											CONTACTS_ACCOUNT_INTERESTS:
 												'/interests',
+											CONTACTS_ACCOUNT_OVERVIEW:
+												'/overview',
 											CONTACTS_ACCOUNT_PROFILE:
 												'/profile',
 											CONTACTS_ACCOUNT_SEGMENTS: `/${SEGMENTS}`,
