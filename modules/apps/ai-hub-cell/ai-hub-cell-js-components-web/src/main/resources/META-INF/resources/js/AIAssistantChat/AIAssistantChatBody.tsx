@@ -18,6 +18,7 @@ import FieldValueMessageBalloon from './components/FieldValueMessageBalloon';
 import ImageMessageBalloon from './components/ImageMessageBalloon';
 import TranslateContentMessageBalloon from './components/TranslateContentMessageBalloon';
 import UserMessageBalloon from './components/UserMessageBalloon';
+import MESSAGE_BALLOON_COMPONENTS from './components/messageBalloonComponents';
 import {
 	APPLY_OBJECT_FIELD_VALUES_EVENT,
 	GENERATE_FIELD_VALUE_AGENT_EXTERNAL_REFERENCE_CODE,
@@ -25,6 +26,7 @@ import {
 import {AIChat} from './useAIChat';
 import getGeneratedFieldValues from './utils/getGeneratedFieldValues';
 import parseContentDraftsMessage from './utils/parseContentDraftsMessage';
+import resolveMessageType from './utils/resolveMessageType';
 
 type AIState = 'focused' | 'result' | 'result-readonly' | 'working';
 
@@ -88,6 +90,21 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 				)}
 
 				{messages.map((item, index) => {
+					const messageType = resolveMessageType(item);
+
+					if (messageType === 'select-component' && item.component) {
+						const SelectComponentMessageBalloon =
+							MESSAGE_BALLOON_COMPONENTS[messageType];
+
+						return (
+							<SelectComponentMessageBalloon
+								component={item.component}
+								key={index}
+								setIsGenerating={setIsGenerating}
+							/>
+						);
+					}
+
 					if (item.sender === 'user') {
 						return (
 							<UserMessageBalloon

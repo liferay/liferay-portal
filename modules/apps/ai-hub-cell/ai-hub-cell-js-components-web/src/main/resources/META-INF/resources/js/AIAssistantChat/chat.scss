@@ -385,6 +385,10 @@ html#{$cadmin-selector} .cadmin {
 				background: transparent;
 				margin: 0 0.5rem 0.5rem;
 			}
+
+			&-title {
+				font-weight: 600;
+			}
 		}
 
 		.ai-assistant-chat__language-select {
