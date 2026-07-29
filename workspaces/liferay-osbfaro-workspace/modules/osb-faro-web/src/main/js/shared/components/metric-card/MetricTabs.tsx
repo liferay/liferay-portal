@@ -38,6 +38,7 @@ const MetricTabsRenderer: React.FC<ICommonMetricProps> = ({
 	filters,
 	interval,
 	rangeSelectors,
+	segmentId,
 }) => {
 	const {activeItemIndex, metrics, queries, variables} = useData();
 	const {changeActiveItemIndex} = useActions();
@@ -49,6 +50,7 @@ const MetricTabsRenderer: React.FC<ICommonMetricProps> = ({
 		interval,
 		Query: queries.TabsQuery,
 		rangeSelectors,
+		segmentId,
 		variables,
 	});
 

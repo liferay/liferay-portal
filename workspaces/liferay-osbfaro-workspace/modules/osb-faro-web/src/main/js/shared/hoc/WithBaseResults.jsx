@@ -58,7 +58,7 @@ const withBaseResults = (withData, configs) => {
 
 		render() {
 			const {
-				context: {accountId, accountName, filters},
+				context: {accountId, accountName, filters, segmentId, segmentName},
 				props: {
 					delta,
 					orderIOMap,
@@ -85,6 +85,8 @@ const withBaseResults = (withData, configs) => {
 						rangeSelectors={rangeSelectors}
 						router={router}
 						rowIdentifier={rowIdentifier}
+						segmentId={segmentId}
+						segmentName={segmentName}
 					/>
 				</div>
 			);

@@ -42,6 +42,7 @@ type TMetricQueryParams = {
 	interval: Interval;
 	Query: DocumentNode;
 	rangeSelectors: RangeSelectors;
+	segmentId?: string;
 	variables: (commonVariables: ICommonVariables) => any;
 };
 
@@ -51,6 +52,7 @@ const buildQueryVariables = ({
 	filters,
 	interval,
 	rangeSelectors,
+	segmentId,
 	variables,
 }: Omit<TMetricQueryParams, 'Query'>) =>
 	variables({
@@ -59,6 +61,7 @@ const buildQueryVariables = ({
 		...getSafeRangeSelectors(rangeSelectors),
 		...(accountId && {accountId}),
 		...(experienceId && {experienceId}),
+		...(segmentId && {segmentId}),
 	});
 
 export const useMetricQuery = ({
@@ -68,6 +71,7 @@ export const useMetricQuery = ({
 	filters,
 	interval,
 	rangeSelectors,
+	segmentId,
 	variables,
 }: TMetricQueryParams) => {
 	const {data, error, loading} = useQuery(Query, {
@@ -78,6 +82,7 @@ export const useMetricQuery = ({
 			filters,
 			interval,
 			rangeSelectors,
+			segmentId,
 			variables,
 		}),
 	});

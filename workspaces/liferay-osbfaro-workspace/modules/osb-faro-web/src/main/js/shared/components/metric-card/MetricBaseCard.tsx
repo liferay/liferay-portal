@@ -38,6 +38,7 @@ export interface ICommonMetricProps {
 	experienceId?: string;
 	interval: Interval;
 	rangeSelectors: RangeSelectors;
+	segmentId?: string;
 }
 
 export interface IGenericMetricBaseCardProps {
@@ -118,6 +119,7 @@ function MetricBaseCard<TChartData>({
 						filters,
 						interval,
 						rangeSelectors,
+						segmentId,
 					}) => {
 						const sharedProps: ICommonMetricProps = {
 							accountId,
@@ -127,6 +129,7 @@ function MetricBaseCard<TChartData>({
 							filters,
 							interval,
 							rangeSelectors,
+							segmentId,
 						};
 
 						return (

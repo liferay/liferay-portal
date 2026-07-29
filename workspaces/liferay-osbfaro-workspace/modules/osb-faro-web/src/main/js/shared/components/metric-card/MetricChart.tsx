@@ -418,6 +418,7 @@ const MetricChartRenderer: React.FC<ICommonMetricProps> = ({
 	filters,
 	interval,
 	rangeSelectors,
+	segmentId,
 }) => {
 	const {activeItemIndex, metrics, queries, variables} = useData();
 
@@ -430,6 +431,7 @@ const MetricChartRenderer: React.FC<ICommonMetricProps> = ({
 		interval,
 		Query: queries.MetricQuery(metricName),
 		rangeSelectors,
+		segmentId,
 		variables,
 	});
 
