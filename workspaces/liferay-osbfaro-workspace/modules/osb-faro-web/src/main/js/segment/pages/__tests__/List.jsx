@@ -5,12 +5,12 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {act} from '@testing-library/react';
 import {ChannelContext} from 'shared/context/channel';
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, render, screen, within} from '@testing-library/react';
 import {MemoryRouter, Route} from 'react-router-dom';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
-import {SegmentTypes} from 'shared/util/constants';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {UnassignedSegmentsContext} from 'shared/context/unassignedSegments';
 import {User} from 'shared/util/records';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -216,5 +216,49 @@ describe('List', () => {
 
 		expect(accountGroup).toHaveTextContent('Account');
 		expect(individualGroup).toHaveTextContent('Individual');
+	});
+
+	it('shows the account count for account segments', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					accountCount: 1800,
+					individualCount: 2300,
+					segmentCategory: SegmentCategories.Account
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('Account')).toBeInTheDocument();
+		expect(within(row).getByText('1.8K')).toBeInTheDocument();
+	});
+
+	it('shows the individual count for individual segments', async () => {
+		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(
+				data.mockSearch(data.mockSegment, 1, {
+					accountCount: 1800,
+					individualCount: 2300,
+					segmentCategory: SegmentCategories.Individual
+				})
+			)
+		);
+
+		render(<DefaultComponent />);
+
+		await waitForLoadingToBeRemoved(document.body);
+
+		const row = screen.getByText('Seattle0').closest('tr');
+
+		expect(within(row).getByText('Individual')).toBeInTheDocument();
+		expect(within(row).getByText('2.3K')).toBeInTheDocument();
 	});
 });
