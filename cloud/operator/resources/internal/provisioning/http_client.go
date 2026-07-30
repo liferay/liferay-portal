@@ -122,7 +122,7 @@ func signJWT(
 
 	headerJSON, error := json.Marshal(
 		map[string]string{
-			"alg": "RS256", 
+			"alg": "RS256",
 			"typ": "JWT",
 		},
 	)
