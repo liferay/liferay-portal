@@ -15,6 +15,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
@@ -61,11 +62,20 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				objectDefinition.getCompanyId(), RoleConstants.USER);
 
 			if (role != null) {
-				_resourcePermissionLocalService.addResourcePermission(
-					objectDefinition.getCompanyId(), className,
-					ResourceConstants.SCOPE_COMPANY,
-					String.valueOf(objectDefinition.getCompanyId()),
-					role.getRoleId(), ActionKeys.VIEW);
+				ResourcePermission resourcePermission =
+					_resourcePermissionLocalService.fetchResourcePermission(
+						objectDefinition.getCompanyId(), className,
+						ResourceConstants.SCOPE_COMPANY,
+						String.valueOf(objectDefinition.getCompanyId()),
+						role.getRoleId());
+
+				if (resourcePermission == null) {
+					_resourcePermissionLocalService.addResourcePermission(
+						objectDefinition.getCompanyId(), className,
+						ResourceConstants.SCOPE_COMPANY,
+						String.valueOf(objectDefinition.getCompanyId()),
+						role.getRoleId(), ActionKeys.VIEW);
+				}
 			}
 		}
 		catch (Exception exception) {
