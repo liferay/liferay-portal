@@ -86,6 +86,8 @@ public class UpgradeAssetCategoryTest {
 		AssetCategory category = _assetCategoryLocalService.createAssetCategory(
 			_counterLocalService.increment());
 
+		category.setGroupId(_group.getGroupId());
+		category.setCompanyId(_group.getCompanyId());
 		category.setParentCategoryId(parentCategoryId);
 		category.setVocabularyId(_assetVocabulary.getVocabularyId());
 
