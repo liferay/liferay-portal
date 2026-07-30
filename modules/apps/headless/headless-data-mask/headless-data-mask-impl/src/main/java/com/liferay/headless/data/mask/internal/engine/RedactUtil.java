@@ -122,6 +122,8 @@ public class RedactUtil {
 		return sb.toString();
 	}
 
+	private static final int _DEADLINE_CHECK_INTERVAL = 1024;
+
 	private static final long _TIMEOUT = 1000;
 
 	private static final Map<String, Pattern> _patterns =
@@ -136,7 +138,9 @@ public class RedactUtil {
 
 		@Override
 		public char charAt(int index) {
-			if (System.currentTimeMillis() > _deadline) {
+			if (((++_charAtCount % _DEADLINE_CHECK_INTERVAL) == 0) &&
+				(System.currentTimeMillis() > _deadline)) {
+
 				throw new RedactTimeoutException(_TIMEOUT);
 			}
 
@@ -159,6 +163,7 @@ public class RedactUtil {
 			return _charSequence.toString();
 		}
 
+		private int _charAtCount;
 		private final CharSequence _charSequence;
 		private final long _deadline;
 
