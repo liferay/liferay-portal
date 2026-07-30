@@ -441,6 +441,8 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 
 	@Test
 	public void testDeployWorkflowDefinitionWithServiceNode() throws Exception {
+		List<String> targetNodeNames = new ArrayList<>();
+
 		InputStream inputStream = getResourceInputStream(
 			"service-node-multiple-transitions-workflow-definition.json");
 
@@ -450,8 +452,6 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 				RandomTestUtil.randomString(),
 				"Service Node Multiple Transitions Workflow Definition",
 				RandomTestUtil.randomString(), TestPropsValues.getUserId());
-
-		List<String> targetNodeNames = new ArrayList<>();
 
 		for (WorkflowTransition workflowTransition :
 				workflowDefinition.getWorkflowTransitions()) {
