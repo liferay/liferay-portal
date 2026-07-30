@@ -674,7 +674,9 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			userFullName, notificationRecipientSetting.getValue());
 	}
 
-	private void _assertNotificationRecipientSettings(User... users) {
+	private void _assertNotificationRecipientSettings(User... users)
+		throws Exception {
+
 		NotificationRecipient notificationRecipient =
 			notificationQueueEntry.getNotificationRecipient();
 

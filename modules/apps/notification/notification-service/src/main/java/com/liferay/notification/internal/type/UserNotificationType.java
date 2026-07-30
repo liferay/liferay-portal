@@ -90,7 +90,11 @@ public class UserNotificationType extends BaseNotificationType {
 		NotificationQueueEntry notificationQueueEntry) {
 
 		NotificationRecipient notificationRecipient =
-			notificationQueueEntry.getNotificationRecipient();
+			notificationQueueEntry.fetchNotificationRecipient();
+
+		if (notificationRecipient == null) {
+			return StringPool.BLANK;
+		}
 
 		List<String> values = new ArrayList<>();
 

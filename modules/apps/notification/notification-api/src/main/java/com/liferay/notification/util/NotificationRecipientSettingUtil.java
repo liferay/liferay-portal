@@ -53,7 +53,7 @@ public class NotificationRecipientSettingUtil {
 		NotificationQueueEntry notificationQueueEntry) {
 
 		NotificationRecipient notificationRecipient =
-			notificationQueueEntry.getNotificationRecipient();
+			notificationQueueEntry.fetchNotificationRecipient();
 
 		if (notificationRecipient == null) {
 			return Collections.emptyMap();
