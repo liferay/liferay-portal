@@ -8,7 +8,6 @@ package com.liferay.site.cmp.site.initializer.internal.frontend.data.set.view.ta
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
@@ -20,9 +19,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Pedro Leite
  */
-@FeatureFlags(
-	featureFlags = {@FeatureFlag("LPD-17564"), @FeatureFlag("LPD-58677")}
-)
+@FeatureFlag("LPD-58677")
 @RunWith(Arquillian.class)
 public class ProjectMembersUsersSummarySectionTableFDSViewTest
 	extends BaseSectionTableFDSViewTestCase {

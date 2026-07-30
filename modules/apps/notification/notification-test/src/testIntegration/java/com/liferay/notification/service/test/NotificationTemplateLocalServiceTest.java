@@ -183,7 +183,6 @@ public class NotificationTemplateLocalServiceTest {
 			notificationTemplate);
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Test
 	public void testDeleteNotificationTemplateWithMissingNotificationRecipient()
 		throws Exception {

@@ -2642,9 +2642,6 @@ public class DefaultObjectEntryManagerImpl
 				() -> {
 					if (!FeatureFlagManagerUtil.isEnabled(
 							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564") ||
-						!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
 							"LPD-72278") ||
 						!objectEntryVersion.isApproved()) {
 
@@ -3550,9 +3547,6 @@ public class DefaultObjectEntryManagerImpl
 				"addToLaunch",
 				() -> {
 					if (!FeatureFlagManagerUtil.isEnabled(
-							serviceBuilderObjectEntry.getCompanyId(),
-							"LPD-17564") ||
-						!FeatureFlagManagerUtil.isEnabled(
 							serviceBuilderObjectEntry.getCompanyId(),
 							"LPD-72278") ||
 						!serviceBuilderObjectEntry.isDraft()) {
