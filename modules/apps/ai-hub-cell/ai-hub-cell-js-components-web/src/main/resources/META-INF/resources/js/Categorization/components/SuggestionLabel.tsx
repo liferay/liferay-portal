@@ -33,7 +33,7 @@ export default function SuggestionLabel({
 			}}
 			displayType="secondary"
 			inverse
-			style={{textTransform: 'none'}}
+			size="lg"
 		>
 			<span className="align-items-center d-inline-flex">
 				{suggestion.isNew && (
