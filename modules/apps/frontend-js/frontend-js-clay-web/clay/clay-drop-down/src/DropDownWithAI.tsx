@@ -340,6 +340,12 @@ export type Props = {
 	onReset?: () => void;
 
 	/**
+	 * Callback fired when the running request is stopped (`working` state).
+	 * Use it to cancel the in-flight AI request; the flow returns to `menu`.
+	 */
+	onStop?: () => void;
+
+	/**
 	 * Callback fired with the prompt value when it is submitted (`prompt`
 	 * state). Resolving the AI request and moving to `result` is the
 	 * consumer's responsibility.
@@ -402,6 +408,7 @@ export function ClayDropDownWithAI({
 	onAiStateChange,
 	onItemClick,
 	onReset,
+	onStop,
 	onSubmit,
 	openOnClick = true,
 	placeholder = 'What do you need?',
@@ -488,7 +495,11 @@ export function ClayDropDownWithAI({
 		),
 		working: (
 			<AIWorkingState
-				onStop={() => setAiState('menu')}
+				onStop={() => {
+					onStop?.();
+
+					setAiState('menu');
+				}}
 				spritemap={spritemap}
 				stopAriaLabel={stopAriaLabel}
 				workingLabel={workingLabel}
