@@ -5,6 +5,7 @@
 
 package com.liferay.headless.data.mask.internal.jaxrs.writer.interceptor;
 
+import com.liferay.headless.data.mask.internal.engine.RedactTimeoutException;
 import com.liferay.headless.data.mask.internal.engine.RedactUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.annotation.Priority;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.core.Context;
@@ -143,6 +145,20 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 
 			outputStream.write(output.getBytes(charset));
 		}
+		catch (RedactTimeoutException redactTimeoutException) {
+
+			// A data mask that exceeded the redaction timeout has masked
+			// nothing, so emitting the text would leak what the data mask
+			// exists to hide. Discard it and fail the response instead.
+
+			_log.error(redactTimeoutException);
+
+			if (!_httpServletResponse.isCommitted()) {
+				_httpServletResponse.reset();
+				_httpServletResponse.setStatus(
+					HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			}
+		}
 		finally {
 			writerInterceptorContext.setOutputStream(outputStream);
 		}
@@ -184,6 +200,14 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 					MapUtil.getString(values, "replacementRegex"),
 					replacementValue, text);
 			}
+			catch (RedactTimeoutException redactTimeoutException) {
+				throw new RedactTimeoutException(
+					StringBundler.concat(
+						"Unable to apply data mask \"",
+						MapUtil.getString(values, "name"), "\": ",
+						redactTimeoutException.getMessage()),
+					redactTimeoutException);
+			}
 			catch (RuntimeException runtimeException) {
 				if (_log.isWarnEnabled()) {
 					_log.warn(
@@ -203,6 +227,9 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 
 	@Context
 	private HttpServletRequest _httpServletRequest;
+
+	@Context
+	private HttpServletResponse _httpServletResponse;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
