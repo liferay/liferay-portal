@@ -45,6 +45,7 @@ public class IndividualSegmentDisplay implements FaroEntityDisplay {
 	}
 
 	public IndividualSegmentDisplay(IndividualSegment individualSegment) {
+		_accountCount = individualSegment.getAccountCount();
 		_activeIndividualCount = individualSegment.getActiveIndividualCount();
 		_activitiesCount = individualSegment.getActivitiesCount();
 		_anonymousIndividualCount =
@@ -223,6 +224,7 @@ public class IndividualSegmentDisplay implements FaroEntityDisplay {
 		_referencedObjects.put(name, objectsMap);
 	}
 
+	private long _accountCount;
 	private long _activeIndividualCount;
 	private long _activitiesCount;
 	private long _anonymousIndividualCount;
