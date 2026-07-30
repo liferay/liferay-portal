@@ -50,7 +50,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewRoomsJSPSectionFragmentRenderer"
+						"key": "dsr-view-rooms"
 					},
 					"fragmentConfig": {
 						"isHomePage": false

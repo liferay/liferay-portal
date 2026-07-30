@@ -11,7 +11,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.RoomSettingsComponentSectionFragmentRenderer"
+								"key": "dsr-room-settings-component-section"
 							},
 							"fragmentConfig": {
 							},

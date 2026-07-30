@@ -12,7 +12,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewAnalyticsNavigationJSPSectionFragmentRenderer"
+								"key": "dsr-view-analytics-navigation"
 							},
 							"fragmentConfig": {
 								"disableFilters": false,
@@ -28,7 +28,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewAnalyticsEngagementChartJSPSectionFragmentRenderer"
+								"key": "dsr-view-analytics-engagement-chart"
 							},
 							"fragmentConfig": {
 								"type": "timeline"
@@ -42,7 +42,7 @@
 					{
 						"definition": {
 							"fragment": {
-								"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewAnalyticsActivityLogJSPSectionFragmentRenderer"
+								"key": "dsr-view-analytics-activity-log"
 							},
 							"fragmentConfig": {
 							},

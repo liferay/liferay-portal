@@ -4,7 +4,7 @@
 			{
 				"definition": {
 					"fragment": {
-						"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.ViewAnalyticsJSPSectionFragmentRenderer"
+						"key": "dsr-view-analytics"
 					},
 					"fragmentConfig": {
 					},

@@ -30,7 +30,7 @@
 							{
 								"definition": {
 									"fragment": {
-										"key": "com.liferay.site.dsr.site.initializer.internal.fragment.renderer.LicenseExpirationAlertComponentSectionFragmentRenderer"
+										"key": "dsr-license-expiration-alert-component-section"
 									},
 									"fragmentConfig": {
 									},
