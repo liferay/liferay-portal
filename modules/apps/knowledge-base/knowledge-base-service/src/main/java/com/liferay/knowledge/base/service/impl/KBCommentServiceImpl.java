@@ -12,6 +12,7 @@ import com.liferay.knowledge.base.model.KBArticle;
 import com.liferay.knowledge.base.model.KBComment;
 import com.liferay.knowledge.base.service.KBArticleLocalService;
 import com.liferay.knowledge.base.service.base.KBCommentServiceBaseImpl;
+import com.liferay.knowledge.base.service.persistence.KBArticlePersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -62,7 +63,7 @@ public class KBCommentServiceImpl extends KBCommentServiceBaseImpl {
 		_kbCommentModelResourcePermission.check(
 			getPermissionChecker(), kbCommentId, KBActionKeys.VIEW);
 
-		return kbCommentLocalService.getKBComment(kbCommentId);
+		return kbCommentPersistence.findByPrimaryKey(kbCommentId);
 	}
 
 	@Override
@@ -266,7 +267,7 @@ public class KBCommentServiceImpl extends KBCommentServiceBaseImpl {
 				"Only KB articles support suggestions");
 		}
 
-		KBArticle kbArticle = _kbArticleLocalService.fetchKBArticle(classPK);
+		KBArticle kbArticle = _kbArticlePersistence.fetchByPrimaryKey(classPK);
 
 		if (kbArticle != null) {
 			kbArticle = _kbArticleLocalService.getLatestKBArticle(
@@ -296,6 +297,9 @@ public class KBCommentServiceImpl extends KBCommentServiceBaseImpl {
 	)
 	private ModelResourcePermission<KBArticle>
 		_kbArticleModelResourcePermission;
+
+	@Reference
+	private KBArticlePersistence _kbArticlePersistence;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.knowledge.base.model.KBComment)"
