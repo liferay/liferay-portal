@@ -1,0 +1,18 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "content",
+					"name": "itemSelector",
+					"type": "itemSelector"
+				},
+				{
+					"label": "message",
+					"name": "message",
+					"type": "text"
+				}
+			]
+		}
+	]
+}

@@ -1,0 +1,13 @@
+{
+	"fieldSets": [
+		{
+			"fields": [
+				{
+					"label": "content",
+					"name": "itemSelector",
+					"type": "itemSelector"
+				}
+			]
+		}
+	]
+}
