@@ -13,6 +13,7 @@ import com.liferay.digital.signature.model.DSRecipient;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.rest.filter.factory.FilterFactory;
@@ -151,6 +152,75 @@ public class DSRequestManagerTest {
 	}
 
 	@Test
+	public void testGetRecipientStatusesByFileEntryId() throws Exception {
+		long companyId = TestPropsValues.getCompanyId();
+		long userId = TestPropsValues.getUserId();
+
+		ObjectDefinition requestObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DS_REQUEST", companyId);
+		ObjectDefinition recipientObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DS_REQUEST_RECIPIENT", companyId);
+
+		long fileEntryId = RandomTestUtil.randomInt();
+
+		String languageId = LocaleUtil.toLanguageId(
+			LocaleUtil.getSiteDefault());
+
+		ObjectEntry requestObjectEntry =
+			_objectEntryLocalService.addObjectEntry(
+				0, userId, requestObjectDefinition.getObjectDefinitionId(), 0,
+				languageId,
+				HashMapBuilder.<String, Serializable>put(
+					"fileEntryId", fileEntryId
+				).put(
+					"providerKey", "docusign"
+				).put(
+					"providerRequestId", "test-" + fileEntryId
+				).put(
+					"requestStatus", "sent"
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), userId));
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				requestObjectDefinition.getObjectDefinitionId(),
+				"dsRequestToDSRequestRecipients");
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		_objectEntryLocalService.addObjectEntry(
+			0, userId, recipientObjectDefinition.getObjectDefinitionId(), 0,
+			languageId,
+			HashMapBuilder.<String, Serializable>put(
+				objectField.getName(), requestObjectEntry.getObjectEntryId()
+			).put(
+				"r_userToDSRequestRecipient_userId", userId
+			).put(
+				"requestRecipientStatus", "sent"
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), userId));
+
+		Map<Long, Map<Long, String>> recipientStatusesByFileEntryId =
+			_dsRequestManager.getRecipientStatusesByFileEntryId(
+				companyId, Collections.singletonList(fileEntryId));
+
+		Assert.assertEquals(
+			"sent",
+			recipientStatusesByFileEntryId.get(
+				fileEntryId
+			).get(
+				userId
+			));
+	}
+
+	@Test
 	public void testGetRequestStatuses() throws Exception {
 		long companyId = TestPropsValues.getCompanyId();
 
@@ -199,6 +269,74 @@ public class DSRequestManagerTest {
 				Collections.singletonList(RandomTestUtil.randomLong()));
 
 		Assert.assertTrue(requestStatuses.isEmpty());
+	}
+
+	@Test
+	public void testGetSignatureRequiredFileEntryIds() throws Exception {
+		long companyId = TestPropsValues.getCompanyId();
+		long userId = TestPropsValues.getUserId();
+
+		ObjectDefinition requestObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DS_REQUEST", companyId);
+		ObjectDefinition recipientObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DS_REQUEST_RECIPIENT", companyId);
+
+		long fileEntryId = RandomTestUtil.randomInt();
+
+		String languageId = LocaleUtil.toLanguageId(
+			LocaleUtil.getSiteDefault());
+
+		ObjectEntry requestObjectEntry =
+			_objectEntryLocalService.addObjectEntry(
+				0, userId, requestObjectDefinition.getObjectDefinitionId(), 0,
+				languageId,
+				HashMapBuilder.<String, Serializable>put(
+					"fileEntryId", fileEntryId
+				).put(
+					"providerKey", "docusign"
+				).put(
+					"providerRequestId", "test-" + fileEntryId
+				).put(
+					"requestStatus", "sent"
+				).build(),
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), userId));
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				requestObjectDefinition.getObjectDefinitionId(),
+				"dsRequestToDSRequestRecipients");
+
+		ObjectField objectField = _objectFieldLocalService.getObjectField(
+			objectRelationship.getObjectFieldId2());
+
+		_objectEntryLocalService.addObjectEntry(
+			0, userId, recipientObjectDefinition.getObjectDefinitionId(), 0,
+			languageId,
+			HashMapBuilder.<String, Serializable>put(
+				objectField.getName(), requestObjectEntry.getObjectEntryId()
+			).put(
+				"r_userToDSRequestRecipient_userId", userId
+			).put(
+				"requestRecipientStatus", "sent"
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), userId));
+
+		Set<Long> signatureRequiredFileEntryIds =
+			_dsRequestManager.getSignatureRequiredFileEntryIds(
+				companyId, userId, Collections.singletonList(fileEntryId));
+
+		Assert.assertTrue(
+			signatureRequiredFileEntryIds.toString(),
+			signatureRequiredFileEntryIds.contains(fileEntryId));
+
+		Assert.assertTrue(
+			_dsRequestManager.getSignatureRequiredCount(companyId, userId) > 0);
 	}
 
 	private DSEnvelope _createDSEnvelope(long fileEntryId) {
