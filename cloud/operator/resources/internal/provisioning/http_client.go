@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"net/http"
 	"strings"
 	"time"
@@ -21,7 +22,7 @@ func (httpClient *HTTPClient) Activate(
 	context context.Context,
 	privateKey *rsa.PrivateKey,
 ) error {
-	token, signError := signJWT(
+	token, error := signJWT(
 		map[string]any{
 			"activationCode":  activationRequest.ActivationCode,
 			"environmentID":   activationRequest.EnvironmentID,
@@ -32,19 +33,19 @@ func (httpClient *HTTPClient) Activate(
 		privateKey,
 	)
 
-	if signError != nil {
-		return signError
+	if error != nil {
+		return error
 	}
 
-	url := fmt.Sprintf(
-		"%s/o/provisioning-rest/v1.0/cloud/environment/%s/activation",
-		httpClient.BaseURL, activationRequest.EnvironmentID,
+	response, error := httpClient.post(
+		context, fmt.Sprintf(
+			"%s/o/provisioning-rest/v1.0/cloud/environment/%s/activation",
+			httpClient.BaseURL, activationRequest.EnvironmentID,
+		), token,
 	)
 
-	response, postError := httpClient.post(context, url, token)
-
-	if postError != nil {
-		return postError
+	if error != nil {
+		return error
 	}
 
 	defer response.Body.Close()
@@ -67,6 +68,16 @@ func NewHTTPClient(baseURL string) *HTTPClient {
 	}
 }
 
+func encodeRandomID() (string, error) {
+	buffer := make([]byte, 16)
+
+	if _, error := rand.Read(buffer); error != nil {
+		return "", error
+	}
+
+	return hex.EncodeToString(buffer), nil
+}
+
 func encodeSegment(bytes []byte) string {
 	return base64.RawURLEncoding.EncodeToString(bytes)
 }
@@ -76,7 +87,6 @@ func (httpClient *HTTPClient) post(
 	url string,
 	token string,
 ) (*http.Response, error) {
-
 	request, error := http.NewRequestWithContext(
 		context, http.MethodPost, url, bytes.NewReader([]byte(token)),
 	)
@@ -90,16 +100,6 @@ func (httpClient *HTTPClient) post(
 	return httpClient.Client.Do(request)
 }
 
-func randomID() (string, error) {
-	buffer := make([]byte, 16)
-
-	if _, error := rand.Read(buffer); error != nil {
-		return "", error
-	}
-
-	return hex.EncodeToString(buffer), nil
-}
-
 func signJWT(
 	claims map[string]any,
 	issuer string,
@@ -107,13 +107,9 @@ func signJWT(
 ) (string, error) {
 	now := time.Now()
 
-	payload := map[string]any{}
+	payload := maps.Clone(claims)
 
-	for key, value := range claims {
-		payload[key] = value
-	}
-
-	randomID, error := randomID()
+	randomID, error := encodeRandomID()
 
 	if error != nil {
 		return "", error
@@ -124,19 +120,24 @@ func signJWT(
 	payload["iss"] = issuer
 	payload["jti"] = randomID
 
-	header, error := json.Marshal(map[string]string{"alg": "RS256", "typ": "JWT"})
+	headerJSON, error := json.Marshal(
+		map[string]string{
+			"alg": "RS256", 
+			"typ": "JWT",
+		},
+	)
 
 	if error != nil {
 		return "", error
 	}
 
-	body, error := json.Marshal(payload)
+	payloadJSON, error := json.Marshal(payload)
 
 	if error != nil {
 		return "", error
 	}
 
-	signingInput := encodeSegment(header) + "." + encodeSegment(body)
+	signingInput := encodeSegment(headerJSON) + "." + encodeSegment(payloadJSON)
 
 	digest := sha256.Sum256([]byte(signingInput))
 
