@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -349,7 +350,11 @@ public class AccountEntryLocalServiceImpl
 
 		// Group
 
-		_groupLocalService.deleteGroup(accountEntry.getAccountEntryGroup());
+		Group group = accountEntry.getAccountEntryGroup();
+
+		if (group != null) {
+			_groupLocalService.deleteGroup(group);
+		}
 
 		// Asset
 
