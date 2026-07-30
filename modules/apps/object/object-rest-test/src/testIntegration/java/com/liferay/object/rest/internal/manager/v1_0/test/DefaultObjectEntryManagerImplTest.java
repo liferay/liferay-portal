@@ -3291,10 +3291,26 @@ public class DefaultObjectEntryManagerImplTest
 			ObjectEntryValuesException.Required.class,
 			"No value was provided for required object field \"" +
 				_objectRelationshipFieldName + "\"",
+			() -> _addObjectEntry(_objectDefinition2, new HashMap<>()));
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.Required.class,
+			"No value was provided for required object field \"" +
+				_objectRelationshipFieldName + "\"",
 			() -> _addObjectEntry(
 				_objectDefinition2,
 				HashMapBuilder.<String, Object>put(
 					_objectRelationshipFieldName, 0
+				).build()));
+
+		AssertUtils.assertFailure(
+			ObjectEntryValuesException.Required.class,
+			"No value was provided for required object field \"" +
+				_objectRelationshipFieldName + "\"",
+			() -> _addObjectEntry(
+				_objectDefinition2,
+				HashMapBuilder.<String, Object>put(
+					_objectRelationshipFieldName, 0L
 				).build()));
 
 		ObjectEntry objectEntry1 = _addObjectEntry(
