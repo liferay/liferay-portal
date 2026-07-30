@@ -221,7 +221,7 @@ const TopPagesCardWithStatesRenderer: React.FC<
 	ITopPagesCardWithStatesRendererProps
 > = ({children, empty, error, loading}) => (
 	<StatesRenderer empty={empty} error={!!error} loading={loading}>
-		<StatesRenderer.Loading />
+		<StatesRenderer.Loading spacer />
 		<StatesRenderer.Empty
 			description={
 				<>

@@ -167,7 +167,7 @@ exports[`Sites Dashboard Overview render 1`] = `
             </ul>
             <span
               aria-hidden="true"
-              class="loading-root center loading-animation"
+              class="loading-root spacer loading-animation"
             />
           </div>
           <div
