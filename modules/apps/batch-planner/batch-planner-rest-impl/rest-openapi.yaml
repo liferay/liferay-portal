@@ -1,6 +1,6 @@
 components:
     schemas:
-        DepotScope:
+        AssetLibraryScope:
             properties:
                 label:
                     type: string
@@ -166,9 +166,9 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Plan"
             tags: ["Plan"]
-    /plans/{internalClassNameKey}/depot-scopes:
+    /plans/{internalClassNameKey}/asset-library-scopes:
         get:
-            operationId: getPlanInternalClassNameKeyDepotScopesPage
+            operationId: getPlanInternalClassNameKeyAssetLibraryScopesPage
             parameters:
                 -   in: path
                     name: internalClassNameKey
@@ -186,14 +186,14 @@ paths:
                         application/json:
                             schema:
                                 items:
-                                    $ref: "#/components/schemas/DepotScope"
+                                    $ref: "#/components/schemas/AssetLibraryScope"
                                 type: array
                         application/xml:
                             schema:
                                 items:
-                                    $ref: "#/components/schemas/DepotScope"
+                                    $ref: "#/components/schemas/AssetLibraryScope"
                                 type: array
-            tags: ["DepotScope"]
+            tags: ["AssetLibraryScope"]
     /plans/{internalClassNameKey}/fields:
         get:
             operationId: getPlanInternalClassNameKeyFieldsPage
