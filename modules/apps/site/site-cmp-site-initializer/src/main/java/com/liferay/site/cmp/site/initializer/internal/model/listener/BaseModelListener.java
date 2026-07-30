@@ -14,7 +14,6 @@ import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
@@ -37,11 +36,7 @@ public abstract class BaseModelListener<T extends BaseModel<T>>
 
 		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
 
-		if ((group == null) ||
-			!FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-58677") ||
-			!group.isDepot()) {
-
+		if ((group == null) || !group.isDepot()) {
 			return;
 		}
 

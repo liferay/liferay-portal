@@ -11,7 +11,6 @@ import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
@@ -84,12 +83,6 @@ public class CMPProjectSelectionFDSFilter extends BaseSelectionFDSFilter {
 	@Override
 	public boolean isAutocompleteEnabled() {
 		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return FeatureFlagManagerUtil.isEnabled(
-			CompanyThreadLocal.getCompanyId(), "LPD-58677");
 	}
 
 	@Reference

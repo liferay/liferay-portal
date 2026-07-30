@@ -10,7 +10,6 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -43,10 +42,6 @@ public class SiteInitializerUtil {
 	public static void initialize(
 			long companyId, SiteInitializer siteInitializer)
 		throws PortalException {
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-58677")) {
-			return;
-		}
 
 		Group group = GroupLocalServiceUtil.getGroup(
 			companyId, GroupConstants.CMS);
@@ -109,9 +104,7 @@ public class SiteInitializerUtil {
 			SiteInitializer cmsSiteInitializer, long companyId)
 		throws PortalException {
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-58677") ||
-			!LicenseManagerUtil.isAppEnabled(App.CMP)) {
-
+		if (!LicenseManagerUtil.isAppEnabled(App.CMP)) {
 			return;
 		}
 

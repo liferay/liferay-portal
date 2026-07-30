@@ -2,7 +2,6 @@ Bundle-Name: Liferay Site Initializer CMP
 Bundle-SymbolicName: com.liferay.site.initializer.cmp
 Bundle-Version: 1.0.12
 Liferay-Client-Extension-Batch: com/liferay/site/initializer/cmp/internal/batch
-Liferay-Site-Initializer-Feature-Flag: LPD-58677
 Liferay-Site-Initializer-Name: CMP
 Provide-Capability: liferay.site.initializer
 Web-ContextPath: /site-initializer-cmp
