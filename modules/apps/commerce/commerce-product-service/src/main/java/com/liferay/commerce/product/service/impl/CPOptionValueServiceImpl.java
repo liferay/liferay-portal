@@ -72,8 +72,8 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 	public void deleteCPOptionValue(long cpOptionValueId)
 		throws PortalException {
 
-		CPOptionValue cpOptionValue =
-			cpOptionValuePersistence.fetchByPrimaryKey(cpOptionValueId);
+		CPOptionValue cpOptionValue = cpOptionValuePersistence.findByPrimaryKey(
+			cpOptionValueId);
 
 		_cpOptionModelResourcePermission.check(
 			getPermissionChecker(), cpOptionValue.getCPOptionId(),
