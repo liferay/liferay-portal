@@ -153,6 +153,10 @@ const ORDER_BY_OPTIONS = [
 		value: NAME,
 	},
 	{
+		label: Liferay.Language.get('type'),
+		value: SEGMENT_CATEGORY,
+	},
+	{
 		label: Liferay.Language.get('sync-frequency'),
 		value: SEGMENT_TYPE,
 	},
