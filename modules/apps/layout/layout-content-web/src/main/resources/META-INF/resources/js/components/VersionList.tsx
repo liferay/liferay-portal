@@ -37,9 +37,11 @@ type Row = {
 
 export default function VersionList({
 	draftName,
+	searching,
 	versions,
 }: {
 	draftName?: string;
+	searching: boolean;
 	versions: PageVersion[];
 }) {
 	const rows: Row[] = [
@@ -52,6 +54,19 @@ export default function VersionList({
 	];
 
 	if (!rows.length) {
+		if (searching) {
+			return (
+				<ClayEmptyState
+					description={Liferay.Language.get(
+						'try-again-with-a-different-search'
+					)}
+					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+					small
+					title={Liferay.Language.get('no-results-found')}
+				/>
+			);
+		}
+
 		return (
 			<ClayEmptyState
 				description=""

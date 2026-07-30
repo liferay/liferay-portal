@@ -86,6 +86,7 @@ export default function VersionHistory({config}: Props) {
 								? config.draftName
 								: undefined
 						}
+						searching={Boolean(keywords)}
 						versions={versions.filter(({creator, name}) =>
 							matches(name, creator?.name)
 						)}
