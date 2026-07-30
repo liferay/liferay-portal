@@ -64,6 +64,7 @@ const ActivityStreamCardHeader: React.FC<IActivityStreamCardHeaderProps> = ({
 				{showRangeKey && (
 					<div className="mr-3">
 						<DropdownRangeKey
+							bordered
 							legacy={legacy}
 							onRangeSelectorChange={handleRangeSelectorsChange}
 							rangeSelectors={rangeSelectors}

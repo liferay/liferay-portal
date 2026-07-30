@@ -19,6 +19,7 @@ export const DropdownRangeKeyContent: React.FC<
 	DropdownRangeKeyIProps & {data: Data}
 > = ({
 	alignmentPosition = Align.BottomRight,
+	bordered = false,
 	data,
 
 	/**
@@ -122,7 +123,7 @@ export const DropdownRangeKeyContent: React.FC<
 			}}
 			trigger={
 				<ClayButton
-					borderless
+					borderless={!bordered}
 					className="button-root"
 					displayType="secondary"
 					size="sm"
