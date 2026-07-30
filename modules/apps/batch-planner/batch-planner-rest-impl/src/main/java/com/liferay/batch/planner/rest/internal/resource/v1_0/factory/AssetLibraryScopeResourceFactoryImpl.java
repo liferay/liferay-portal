@@ -6,7 +6,7 @@
 package com.liferay.batch.planner.rest.internal.resource.v1_0.factory;
 
 import com.liferay.batch.planner.rest.internal.security.permission.LiberalPermissionChecker;
-import com.liferay.batch.planner.rest.resource.v1_0.DepotScopeResource;
+import com.liferay.batch.planner.rest.resource.v1_0.AssetLibraryScopeResource;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -55,29 +55,29 @@ import org.osgi.service.component.annotations.ReferenceScope;
  * @generated
  */
 @Component(
-	property = "resource.locator.key=/batch-planner/v1.0/DepotScope",
-	service = DepotScopeResource.Factory.class
+	property = "resource.locator.key=/batch-planner/v1.0/AssetLibraryScope",
+	service = AssetLibraryScopeResource.Factory.class
 )
 @Generated("")
-public class DepotScopeResourceFactoryImpl
-	implements DepotScopeResource.Factory {
+public class AssetLibraryScopeResourceFactoryImpl
+	implements AssetLibraryScopeResource.Factory {
 
 	@Override
-	public DepotScopeResource.Builder create() {
-		return new DepotScopeResource.Builder() {
+	public AssetLibraryScopeResource.Builder create() {
+		return new AssetLibraryScopeResource.Builder() {
 
 			@Override
-			public DepotScopeResource build() {
+			public AssetLibraryScopeResource build() {
 				if (_user == null) {
 					throw new IllegalArgumentException("User is not set");
 				}
 
-				Function<InvocationHandler, DepotScopeResource>
-					depotScopeResourceProxyProviderFunction =
+				Function<InvocationHandler, AssetLibraryScopeResource>
+					assetLibraryScopeResourceProxyProviderFunction =
 						ResourceProxyProviderFunctionHolder.
-							_depotScopeResourceProxyProviderFunction;
+							_assetLibraryScopeResourceProxyProviderFunction;
 
-				return depotScopeResourceProxyProviderFunction.apply(
+				return assetLibraryScopeResourceProxyProviderFunction.apply(
 					(proxy, method, arguments) -> _invoke(
 						method, arguments, _checkPermissions,
 						_httpServletRequest, _httpServletResponse,
@@ -85,7 +85,7 @@ public class DepotScopeResourceFactoryImpl
 			}
 
 			@Override
-			public DepotScopeResource.Builder checkPermissions(
+			public AssetLibraryScopeResource.Builder checkPermissions(
 				boolean checkPermissions) {
 
 				_checkPermissions = checkPermissions;
@@ -94,7 +94,7 @@ public class DepotScopeResourceFactoryImpl
 			}
 
 			@Override
-			public DepotScopeResource.Builder httpServletRequest(
+			public AssetLibraryScopeResource.Builder httpServletRequest(
 				HttpServletRequest httpServletRequest) {
 
 				_httpServletRequest = httpServletRequest;
@@ -103,7 +103,7 @@ public class DepotScopeResourceFactoryImpl
 			}
 
 			@Override
-			public DepotScopeResource.Builder httpServletResponse(
+			public AssetLibraryScopeResource.Builder httpServletResponse(
 				HttpServletResponse httpServletResponse) {
 
 				_httpServletResponse = httpServletResponse;
@@ -112,7 +112,7 @@ public class DepotScopeResourceFactoryImpl
 			}
 
 			@Override
-			public DepotScopeResource.Builder preferredLocale(
+			public AssetLibraryScopeResource.Builder preferredLocale(
 				Locale preferredLocale) {
 
 				_preferredLocale = preferredLocale;
@@ -121,14 +121,14 @@ public class DepotScopeResourceFactoryImpl
 			}
 
 			@Override
-			public DepotScopeResource.Builder uriInfo(UriInfo uriInfo) {
+			public AssetLibraryScopeResource.Builder uriInfo(UriInfo uriInfo) {
 				_uriInfo = uriInfo;
 
 				return this;
 			}
 
 			@Override
-			public DepotScopeResource.Builder user(User user) {
+			public AssetLibraryScopeResource.Builder user(User user) {
 				_user = user;
 
 				return this;
@@ -144,17 +144,17 @@ public class DepotScopeResourceFactoryImpl
 		};
 	}
 
-	private static Function<InvocationHandler, DepotScopeResource>
+	private static Function<InvocationHandler, AssetLibraryScopeResource>
 		_getProxyProviderFunction() {
 
 		Class<?> proxyClass = ProxyUtil.getProxyClass(
-			DepotScopeResource.class.getClassLoader(),
-			DepotScopeResource.class);
+			AssetLibraryScopeResource.class.getClassLoader(),
+			AssetLibraryScopeResource.class);
 
 		try {
-			Constructor<DepotScopeResource> constructor =
-				(Constructor<DepotScopeResource>)proxyClass.getConstructor(
-					InvocationHandler.class);
+			Constructor<AssetLibraryScopeResource> constructor =
+				(Constructor<AssetLibraryScopeResource>)
+					proxyClass.getConstructor(InvocationHandler.class);
 
 			return invocationHandler -> {
 				try {
@@ -195,38 +195,41 @@ public class DepotScopeResourceFactoryImpl
 				new LiberalPermissionChecker(user));
 		}
 
-		DepotScopeResource depotScopeResource =
+		AssetLibraryScopeResource assetLibraryScopeResource =
 			_componentServiceObjects.getService();
 
-		depotScopeResource.setContextAcceptLanguage(
+		assetLibraryScopeResource.setContextAcceptLanguage(
 			new AcceptLanguageImpl(httpServletRequest, preferredLocale, user));
 
 		Company company = _companyLocalService.getCompany(user.getCompanyId());
 
-		depotScopeResource.setContextCompany(company);
+		assetLibraryScopeResource.setContextCompany(company);
 
-		depotScopeResource.setContextHttpServletRequest(httpServletRequest);
-		depotScopeResource.setContextHttpServletResponse(httpServletResponse);
-		depotScopeResource.setContextUriInfo(uriInfo);
-		depotScopeResource.setContextUser(user);
-		depotScopeResource.setExpressionConvert(_expressionConvert);
-		depotScopeResource.setFilterParserProvider(_filterParserProvider);
-		depotScopeResource.setGroupLocalService(_groupLocalService);
-		depotScopeResource.setResourceActionLocalService(
+		assetLibraryScopeResource.setContextHttpServletRequest(
+			httpServletRequest);
+		assetLibraryScopeResource.setContextHttpServletResponse(
+			httpServletResponse);
+		assetLibraryScopeResource.setContextUriInfo(uriInfo);
+		assetLibraryScopeResource.setContextUser(user);
+		assetLibraryScopeResource.setExpressionConvert(_expressionConvert);
+		assetLibraryScopeResource.setFilterParserProvider(
+			_filterParserProvider);
+		assetLibraryScopeResource.setGroupLocalService(_groupLocalService);
+		assetLibraryScopeResource.setResourceActionLocalService(
 			_resourceActionLocalService);
-		depotScopeResource.setResourcePermissionLocalService(
+		assetLibraryScopeResource.setResourcePermissionLocalService(
 			_resourcePermissionLocalService);
-		depotScopeResource.setRoleLocalService(_roleLocalService);
-		depotScopeResource.setSortParserProvider(_sortParserProvider);
+		assetLibraryScopeResource.setRoleLocalService(_roleLocalService);
+		assetLibraryScopeResource.setSortParserProvider(_sortParserProvider);
 
 		try {
-			return method.invoke(depotScopeResource, arguments);
+			return method.invoke(assetLibraryScopeResource, arguments);
 		}
 		catch (InvocationTargetException invocationTargetException) {
 			throw invocationTargetException.getTargetException();
 		}
 		finally {
-			_componentServiceObjects.ungetService(depotScopeResource);
+			_componentServiceObjects.ungetService(assetLibraryScopeResource);
 
 			PrincipalThreadLocal.setName(name);
 
@@ -238,7 +241,7 @@ public class DepotScopeResourceFactoryImpl
 	private CompanyLocalService _companyLocalService;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<DepotScopeResource>
+	private ComponentServiceObjects<AssetLibraryScopeResource>
 		_componentServiceObjects;
 
 	@Reference
@@ -272,9 +275,10 @@ public class DepotScopeResourceFactoryImpl
 
 	private static class ResourceProxyProviderFunctionHolder {
 
-		private static final Function<InvocationHandler, DepotScopeResource>
-			_depotScopeResourceProxyProviderFunction =
-				_getProxyProviderFunction();
+		private static final Function
+			<InvocationHandler, AssetLibraryScopeResource>
+				_assetLibraryScopeResourceProxyProviderFunction =
+					_getProxyProviderFunction();
 
 	}
 
@@ -329,4 +333,4 @@ public class DepotScopeResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1503332962
+// LIFERAY-REST-BUILDER-HASH:-602553799

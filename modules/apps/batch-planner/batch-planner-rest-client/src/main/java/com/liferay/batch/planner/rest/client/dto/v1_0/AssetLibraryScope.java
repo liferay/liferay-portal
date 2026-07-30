@@ -6,7 +6,7 @@
 package com.liferay.batch.planner.rest.client.dto.v1_0;
 
 import com.liferay.batch.planner.rest.client.function.UnsafeSupplier;
-import com.liferay.batch.planner.rest.client.serdes.v1_0.DepotScopeSerDes;
+import com.liferay.batch.planner.rest.client.serdes.v1_0.AssetLibraryScopeSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class DepotScope implements Cloneable, Serializable {
+public class AssetLibraryScope implements Cloneable, Serializable {
 
-	public static DepotScope toDTO(String json) {
-		return DepotScopeSerDes.toDTO(json);
+	public static AssetLibraryScope toDTO(String json) {
+		return AssetLibraryScopeSerDes.toDTO(json);
 	}
 
 	public String getLabel() {
@@ -66,8 +66,8 @@ public class DepotScope implements Cloneable, Serializable {
 	protected Long value;
 
 	@Override
-	public DepotScope clone() throws CloneNotSupportedException {
-		return (DepotScope)super.clone();
+	public AssetLibraryScope clone() throws CloneNotSupportedException {
+		return (AssetLibraryScope)super.clone();
 	}
 
 	@Override
@@ -76,13 +76,13 @@ public class DepotScope implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof DepotScope)) {
+		if (!(object instanceof AssetLibraryScope)) {
 			return false;
 		}
 
-		DepotScope depotScope = (DepotScope)object;
+		AssetLibraryScope assetLibraryScope = (AssetLibraryScope)object;
 
-		return Objects.equals(toString(), depotScope.toString());
+		return Objects.equals(toString(), assetLibraryScope.toString());
 	}
 
 	@Override
@@ -93,8 +93,8 @@ public class DepotScope implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return DepotScopeSerDes.toJSON(this);
+		return AssetLibraryScopeSerDes.toJSON(this);
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:244192970
+// LIFERAY-REST-BUILDER-HASH:1553045769

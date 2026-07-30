@@ -5,8 +5,8 @@
 
 package com.liferay.batch.planner.rest.internal.resource.v1_0;
 
-import com.liferay.batch.planner.rest.dto.v1_0.DepotScope;
-import com.liferay.batch.planner.rest.resource.v1_0.DepotScopeResource;
+import com.liferay.batch.planner.rest.dto.v1_0.AssetLibraryScope;
+import com.liferay.batch.planner.rest.resource.v1_0.AssetLibraryScopeResource;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -41,12 +41,13 @@ import java.util.Map;
  */
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
-public abstract class BaseDepotScopeResourceImpl implements DepotScopeResource {
+public abstract class BaseAssetLibraryScopeResourceImpl
+	implements AssetLibraryScopeResource {
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/batch-planner/v1.0/plans/{internalClassNameKey}/depot-scopes'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/batch-planner/v1.0/plans/{internalClassNameKey}/asset-library-scopes'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -61,20 +62,23 @@ public abstract class BaseDepotScopeResourceImpl implements DepotScopeResource {
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "DepotScope")}
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "AssetLibraryScope")
+		}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/plans/{internalClassNameKey}/depot-scopes")
+	@jakarta.ws.rs.Path("/plans/{internalClassNameKey}/asset-library-scopes")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<DepotScope> getPlanInternalClassNameKeyDepotScopesPage(
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.validation.constraints.NotNull
-			@jakarta.ws.rs.PathParam("internalClassNameKey")
-			String internalClassNameKey,
-			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
-			@jakarta.ws.rs.QueryParam("export")
-			Boolean export)
+	public Page<AssetLibraryScope>
+			getPlanInternalClassNameKeyAssetLibraryScopesPage(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("internalClassNameKey")
+				String internalClassNameKey,
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.ws.rs.QueryParam("export")
+				Boolean export)
 		throws Exception {
 
 		return Page.of(Collections.emptyList());
@@ -522,7 +526,7 @@ public abstract class BaseDepotScopeResourceImpl implements DepotScopeResource {
 	protected SortParserProvider sortParserProvider;
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BaseDepotScopeResourceImpl.class);
+		LogFactoryUtil.getLog(BaseAssetLibraryScopeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1795261606
+// LIFERAY-REST-BUILDER-HASH:1381329072

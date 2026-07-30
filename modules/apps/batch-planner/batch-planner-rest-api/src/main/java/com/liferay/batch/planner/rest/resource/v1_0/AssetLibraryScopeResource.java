@@ -5,7 +5,7 @@
 
 package com.liferay.batch.planner.rest.resource.v1_0;
 
-import com.liferay.batch.planner.rest.dto.v1_0.DepotScope;
+import com.liferay.batch.planner.rest.dto.v1_0.AssetLibraryScope;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -40,10 +40,11 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface DepotScopeResource {
+public interface AssetLibraryScopeResource {
 
-	public Page<DepotScope> getPlanInternalClassNameKeyDepotScopesPage(
-			String internalClassNameKey, Boolean export)
+	public Page<AssetLibraryScope>
+			getPlanInternalClassNameKeyAssetLibraryScopesPage(
+				String internalClassNameKey, Boolean export)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -108,7 +109,7 @@ public interface DepotScopeResource {
 	@ProviderType
 	public interface Builder {
 
-		public DepotScopeResource build();
+		public AssetLibraryScopeResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -134,4 +135,4 @@ public interface DepotScopeResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1446697505
+// LIFERAY-REST-BUILDER-HASH:-1036438956

@@ -13,12 +13,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
-import com.liferay.batch.planner.rest.client.dto.v1_0.DepotScope;
+import com.liferay.batch.planner.rest.client.dto.v1_0.AssetLibraryScope;
 import com.liferay.batch.planner.rest.client.dto.v1_0.Field;
 import com.liferay.batch.planner.rest.client.http.HttpInvoker;
 import com.liferay.batch.planner.rest.client.pagination.Page;
-import com.liferay.batch.planner.rest.client.resource.v1_0.DepotScopeResource;
-import com.liferay.batch.planner.rest.client.serdes.v1_0.DepotScopeSerDes;
+import com.liferay.batch.planner.rest.client.resource.v1_0.AssetLibraryScopeResource;
+import com.liferay.batch.planner.rest.client.serdes.v1_0.AssetLibraryScopeSerDes;
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -27,8 +30,10 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -74,7 +79,7 @@ import org.junit.Test;
  * @generated
  */
 @Generated("")
-public abstract class BaseDepotScopeResourceTestCase {
+public abstract class BaseAssetLibraryScopeResourceTestCase {
 
 	@ClassRule
 	@Rule
@@ -95,12 +100,35 @@ public abstract class BaseDepotScopeResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
-		_depotScopeResource.setContextCompany(testCompany);
+		irrelevantDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		irrelevantDepotEntryGroup = irrelevantDepotEntry.getGroup();
+		testDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			null, DepotConstants.TYPE_ASSET_LIBRARY,
+			new ServiceContext() {
+				{
+					setCompanyId(testCompany.getCompanyId());
+					setUserId(TestPropsValues.getUserId());
+				}
+			});
+		testDepotEntryGroup = testDepotEntry.getGroup();
+
+		_assetLibraryScopeResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
 			testCompany.getCompanyId());
 
-		depotScopeResource = DepotScopeResource.builder(
+		assetLibraryScopeResource = AssetLibraryScopeResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -114,6 +142,9 @@ public abstract class BaseDepotScopeResourceTestCase {
 
 	@After
 	public void tearDown() throws Exception {
+		DepotEntryLocalServiceUtil.deleteDepotEntry(irrelevantDepotEntry);
+		DepotEntryLocalServiceUtil.deleteDepotEntry(testDepotEntry);
+
 		GroupTestUtil.deleteGroup(irrelevantGroup);
 		GroupTestUtil.deleteGroup(testGroup);
 	}
@@ -122,23 +153,24 @@ public abstract class BaseDepotScopeResourceTestCase {
 	public void testClientSerDesToDTO() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		DepotScope depotScope1 = randomDepotScope();
+		AssetLibraryScope assetLibraryScope1 = randomAssetLibraryScope();
 
-		String json = objectMapper.writeValueAsString(depotScope1);
+		String json = objectMapper.writeValueAsString(assetLibraryScope1);
 
-		DepotScope depotScope2 = DepotScopeSerDes.toDTO(json);
+		AssetLibraryScope assetLibraryScope2 = AssetLibraryScopeSerDes.toDTO(
+			json);
 
-		Assert.assertTrue(equals(depotScope1, depotScope2));
+		Assert.assertTrue(equals(assetLibraryScope1, assetLibraryScope2));
 	}
 
 	@Test
 	public void testClientSerDesToJSON() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		DepotScope depotScope = randomDepotScope();
+		AssetLibraryScope assetLibraryScope = randomAssetLibraryScope();
 
-		String json1 = objectMapper.writeValueAsString(depotScope);
-		String json2 = DepotScopeSerDes.toJSON(depotScope);
+		String json1 = objectMapper.writeValueAsString(assetLibraryScope);
+		String json2 = AssetLibraryScopeSerDes.toJSON(assetLibraryScope);
 
 		Assert.assertEquals(
 			objectMapper.readTree(json1), objectMapper.readTree(json2));
@@ -166,77 +198,84 @@ public abstract class BaseDepotScopeResourceTestCase {
 	public void testEscapeRegexInStringFields() throws Exception {
 		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
 
-		DepotScope depotScope = randomDepotScope();
+		AssetLibraryScope assetLibraryScope = randomAssetLibraryScope();
 
-		depotScope.setLabel(regex);
+		assetLibraryScope.setLabel(regex);
 
-		String json = DepotScopeSerDes.toJSON(depotScope);
+		String json = AssetLibraryScopeSerDes.toJSON(assetLibraryScope);
 
 		Assert.assertFalse(json.contains(regex));
 
-		depotScope = DepotScopeSerDes.toDTO(json);
+		assetLibraryScope = AssetLibraryScopeSerDes.toDTO(json);
 
-		Assert.assertEquals(regex, depotScope.getLabel());
+		Assert.assertEquals(regex, assetLibraryScope.getLabel());
 	}
 
 	@Test
-	public void testGetPlanInternalClassNameKeyDepotScopesPage()
+	public void testGetPlanInternalClassNameKeyAssetLibraryScopesPage()
 		throws Exception {
 
 		String internalClassNameKey =
-			testGetPlanInternalClassNameKeyDepotScopesPage_getInternalClassNameKey();
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_getInternalClassNameKey();
 		String irrelevantInternalClassNameKey =
-			testGetPlanInternalClassNameKeyDepotScopesPage_getIrrelevantInternalClassNameKey();
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_getIrrelevantInternalClassNameKey();
 
-		Page<DepotScope> page =
-			depotScopeResource.getPlanInternalClassNameKeyDepotScopesPage(
-				internalClassNameKey, null);
+		Page<AssetLibraryScope> page =
+			assetLibraryScopeResource.
+				getPlanInternalClassNameKeyAssetLibraryScopesPage(
+					internalClassNameKey, null);
 
 		long totalCount = page.getTotalCount();
 
 		if (irrelevantInternalClassNameKey != null) {
-			DepotScope irrelevantDepotScope =
-				testGetPlanInternalClassNameKeyDepotScopesPage_addDepotScope(
+			AssetLibraryScope irrelevantAssetLibraryScope =
+				testGetPlanInternalClassNameKeyAssetLibraryScopesPage_addAssetLibraryScope(
 					irrelevantInternalClassNameKey,
-					randomIrrelevantDepotScope());
+					randomIrrelevantAssetLibraryScope());
 
 			page =
-				depotScopeResource.getPlanInternalClassNameKeyDepotScopesPage(
-					irrelevantInternalClassNameKey, null);
+				assetLibraryScopeResource.
+					getPlanInternalClassNameKeyAssetLibraryScopesPage(
+						irrelevantInternalClassNameKey, null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
 			assertContains(
-				irrelevantDepotScope, (List<DepotScope>)page.getItems());
+				irrelevantAssetLibraryScope,
+				(List<AssetLibraryScope>)page.getItems());
 			assertValid(
 				page,
-				testGetPlanInternalClassNameKeyDepotScopesPage_getExpectedActions(
+				testGetPlanInternalClassNameKeyAssetLibraryScopesPage_getExpectedActions(
 					irrelevantInternalClassNameKey));
 		}
 
-		DepotScope depotScope1 =
-			testGetPlanInternalClassNameKeyDepotScopesPage_addDepotScope(
-				internalClassNameKey, randomDepotScope());
+		AssetLibraryScope assetLibraryScope1 =
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_addAssetLibraryScope(
+				internalClassNameKey, randomAssetLibraryScope());
 
-		DepotScope depotScope2 =
-			testGetPlanInternalClassNameKeyDepotScopesPage_addDepotScope(
-				internalClassNameKey, randomDepotScope());
+		AssetLibraryScope assetLibraryScope2 =
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_addAssetLibraryScope(
+				internalClassNameKey, randomAssetLibraryScope());
 
-		page = depotScopeResource.getPlanInternalClassNameKeyDepotScopesPage(
-			internalClassNameKey, null);
+		page =
+			assetLibraryScopeResource.
+				getPlanInternalClassNameKeyAssetLibraryScopesPage(
+					internalClassNameKey, null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
-		assertContains(depotScope1, (List<DepotScope>)page.getItems());
-		assertContains(depotScope2, (List<DepotScope>)page.getItems());
+		assertContains(
+			assetLibraryScope1, (List<AssetLibraryScope>)page.getItems());
+		assertContains(
+			assetLibraryScope2, (List<AssetLibraryScope>)page.getItems());
 		assertValid(
 			page,
-			testGetPlanInternalClassNameKeyDepotScopesPage_getExpectedActions(
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_getExpectedActions(
 				internalClassNameKey));
 	}
 
 	protected Map<String, Map<String, String>>
-			testGetPlanInternalClassNameKeyDepotScopesPage_getExpectedActions(
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_getExpectedActions(
 				String internalClassNameKey)
 		throws Exception {
 
@@ -245,9 +284,10 @@ public abstract class BaseDepotScopeResourceTestCase {
 		return expectedActions;
 	}
 
-	protected DepotScope
-			testGetPlanInternalClassNameKeyDepotScopesPage_addDepotScope(
-				String internalClassNameKey, DepotScope depotScope)
+	protected AssetLibraryScope
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_addAssetLibraryScope(
+				String internalClassNameKey,
+				AssetLibraryScope assetLibraryScope)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -255,7 +295,7 @@ public abstract class BaseDepotScopeResourceTestCase {
 	}
 
 	protected String
-			testGetPlanInternalClassNameKeyDepotScopesPage_getInternalClassNameKey()
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_getInternalClassNameKey()
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -263,19 +303,20 @@ public abstract class BaseDepotScopeResourceTestCase {
 	}
 
 	protected String
-			testGetPlanInternalClassNameKeyDepotScopesPage_getIrrelevantInternalClassNameKey()
+			testGetPlanInternalClassNameKeyAssetLibraryScopesPage_getIrrelevantInternalClassNameKey()
 		throws Exception {
 
 		return null;
 	}
 
 	protected void assertContains(
-		DepotScope depotScope, List<DepotScope> depotScopes) {
+		AssetLibraryScope assetLibraryScope,
+		List<AssetLibraryScope> assetLibraryScopes) {
 
 		boolean contains = false;
 
-		for (DepotScope item : depotScopes) {
-			if (equals(depotScope, item)) {
+		for (AssetLibraryScope item : assetLibraryScopes) {
+			if (equals(assetLibraryScope, item)) {
 				contains = true;
 
 				break;
@@ -283,7 +324,8 @@ public abstract class BaseDepotScopeResourceTestCase {
 		}
 
 		Assert.assertTrue(
-			depotScopes + " does not contain " + depotScope, contains);
+			assetLibraryScopes + " does not contain " + assetLibraryScope,
+			contains);
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -295,36 +337,41 @@ public abstract class BaseDepotScopeResourceTestCase {
 	}
 
 	protected void assertEquals(
-		DepotScope depotScope1, DepotScope depotScope2) {
+		AssetLibraryScope assetLibraryScope1,
+		AssetLibraryScope assetLibraryScope2) {
 
 		Assert.assertTrue(
-			depotScope1 + " does not equal " + depotScope2,
-			equals(depotScope1, depotScope2));
+			assetLibraryScope1 + " does not equal " + assetLibraryScope2,
+			equals(assetLibraryScope1, assetLibraryScope2));
 	}
 
 	protected void assertEquals(
-		List<DepotScope> depotScopes1, List<DepotScope> depotScopes2) {
+		List<AssetLibraryScope> assetLibraryScopes1,
+		List<AssetLibraryScope> assetLibraryScopes2) {
 
-		Assert.assertEquals(depotScopes1.size(), depotScopes2.size());
+		Assert.assertEquals(
+			assetLibraryScopes1.size(), assetLibraryScopes2.size());
 
-		for (int i = 0; i < depotScopes1.size(); i++) {
-			DepotScope depotScope1 = depotScopes1.get(i);
-			DepotScope depotScope2 = depotScopes2.get(i);
+		for (int i = 0; i < assetLibraryScopes1.size(); i++) {
+			AssetLibraryScope assetLibraryScope1 = assetLibraryScopes1.get(i);
+			AssetLibraryScope assetLibraryScope2 = assetLibraryScopes2.get(i);
 
-			assertEquals(depotScope1, depotScope2);
+			assertEquals(assetLibraryScope1, assetLibraryScope2);
 		}
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<DepotScope> depotScopes1, List<DepotScope> depotScopes2) {
+		List<AssetLibraryScope> assetLibraryScopes1,
+		List<AssetLibraryScope> assetLibraryScopes2) {
 
-		Assert.assertEquals(depotScopes1.size(), depotScopes2.size());
+		Assert.assertEquals(
+			assetLibraryScopes1.size(), assetLibraryScopes2.size());
 
-		for (DepotScope depotScope1 : depotScopes1) {
+		for (AssetLibraryScope assetLibraryScope1 : assetLibraryScopes1) {
 			boolean contains = false;
 
-			for (DepotScope depotScope2 : depotScopes2) {
-				if (equals(depotScope1, depotScope2)) {
+			for (AssetLibraryScope assetLibraryScope2 : assetLibraryScopes2) {
+				if (equals(assetLibraryScope1, assetLibraryScope2)) {
 					contains = true;
 
 					break;
@@ -332,18 +379,21 @@ public abstract class BaseDepotScopeResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				depotScopes2 + " does not contain " + depotScope1, contains);
+				assetLibraryScopes2 + " does not contain " + assetLibraryScope1,
+				contains);
 		}
 	}
 
-	protected void assertValid(DepotScope depotScope) throws Exception {
+	protected void assertValid(AssetLibraryScope assetLibraryScope)
+		throws Exception {
+
 		boolean valid = true;
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals("label", additionalAssertFieldName)) {
-				if (depotScope.getLabel() == null) {
+				if (assetLibraryScope.getLabel() == null) {
 					valid = false;
 				}
 
@@ -351,7 +401,7 @@ public abstract class BaseDepotScopeResourceTestCase {
 			}
 
 			if (Objects.equals("value", additionalAssertFieldName)) {
-				if (depotScope.getValue() == null) {
+				if (assetLibraryScope.getValue() == null) {
 					valid = false;
 				}
 
@@ -366,19 +416,20 @@ public abstract class BaseDepotScopeResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<DepotScope> page) {
+	protected void assertValid(Page<AssetLibraryScope> page) {
 		assertValid(page, Collections.emptyMap());
 	}
 
 	protected void assertValid(
-		Page<DepotScope> page,
+		Page<AssetLibraryScope> page,
 		Map<String, Map<String, String>> expectedActions) {
 
 		boolean valid = false;
 
-		java.util.Collection<DepotScope> depotScopes = page.getItems();
+		java.util.Collection<AssetLibraryScope> assetLibraryScopes =
+			page.getItems();
 
-		int size = depotScopes.size();
+		int size = assetLibraryScopes.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -418,7 +469,8 @@ public abstract class BaseDepotScopeResourceTestCase {
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
-					com.liferay.batch.planner.rest.dto.v1_0.DepotScope.class)) {
+					com.liferay.batch.planner.rest.dto.v1_0.AssetLibraryScope.
+						class)) {
 
 			if (!ArrayUtil.contains(
 					getAdditionalAssertFieldNames(), field.getName())) {
@@ -466,8 +518,11 @@ public abstract class BaseDepotScopeResourceTestCase {
 		return new String[0];
 	}
 
-	protected boolean equals(DepotScope depotScope1, DepotScope depotScope2) {
-		if (depotScope1 == depotScope2) {
+	protected boolean equals(
+		AssetLibraryScope assetLibraryScope1,
+		AssetLibraryScope assetLibraryScope2) {
+
+		if (assetLibraryScope1 == assetLibraryScope2) {
 			return true;
 		}
 
@@ -476,7 +531,8 @@ public abstract class BaseDepotScopeResourceTestCase {
 
 			if (Objects.equals("label", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						depotScope1.getLabel(), depotScope2.getLabel())) {
+						assetLibraryScope1.getLabel(),
+						assetLibraryScope2.getLabel())) {
 
 					return false;
 				}
@@ -486,7 +542,8 @@ public abstract class BaseDepotScopeResourceTestCase {
 
 			if (Objects.equals("value", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						depotScope1.getValue(), depotScope2.getValue())) {
+						assetLibraryScope1.getValue(),
+						assetLibraryScope2.getValue())) {
 
 					return false;
 				}
@@ -550,13 +607,13 @@ public abstract class BaseDepotScopeResourceTestCase {
 	protected java.util.Collection<EntityField> getEntityFields()
 		throws Exception {
 
-		if (!(_depotScopeResource instanceof EntityModelResource)) {
+		if (!(_assetLibraryScopeResource instanceof EntityModelResource)) {
 			throw new UnsupportedOperationException(
 				"Resource is not an instance of EntityModelResource");
 		}
 
 		EntityModelResource entityModelResource =
-			(EntityModelResource)_depotScopeResource;
+			(EntityModelResource)_assetLibraryScopeResource;
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
@@ -589,7 +646,8 @@ public abstract class BaseDepotScopeResourceTestCase {
 	}
 
 	protected String getFilterString(
-		EntityField entityField, String operator, DepotScope depotScope) {
+		EntityField entityField, String operator,
+		AssetLibraryScope assetLibraryScope) {
 
 		StringBundler sb = new StringBundler();
 
@@ -602,7 +660,7 @@ public abstract class BaseDepotScopeResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("label")) {
-			Object object = depotScope.getLabel();
+			Object object = assetLibraryScope.getLabel();
 
 			String value = String.valueOf(object);
 
@@ -696,8 +754,8 @@ public abstract class BaseDepotScopeResourceTestCase {
 			invoke(queryGraphQLField.toString()));
 	}
 
-	protected DepotScope randomDepotScope() throws Exception {
-		return new DepotScope() {
+	protected AssetLibraryScope randomAssetLibraryScope() throws Exception {
+		return new AssetLibraryScope() {
 			{
 				label = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				value = RandomTestUtil.randomLong();
@@ -705,19 +763,28 @@ public abstract class BaseDepotScopeResourceTestCase {
 		};
 	}
 
-	protected DepotScope randomIrrelevantDepotScope() throws Exception {
-		DepotScope randomIrrelevantDepotScope = randomDepotScope();
+	protected AssetLibraryScope randomIrrelevantAssetLibraryScope()
+		throws Exception {
 
-		return randomIrrelevantDepotScope;
+		AssetLibraryScope randomIrrelevantAssetLibraryScope =
+			randomAssetLibraryScope();
+
+		return randomIrrelevantAssetLibraryScope;
 	}
 
-	protected DepotScope randomPatchDepotScope() throws Exception {
-		return randomDepotScope();
+	protected AssetLibraryScope randomPatchAssetLibraryScope()
+		throws Exception {
+
+		return randomAssetLibraryScope();
 	}
 
-	protected DepotScopeResource depotScopeResource;
+	protected AssetLibraryScopeResource assetLibraryScopeResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
+	protected DepotEntry irrelevantDepotEntry;
+	protected com.liferay.portal.kernel.model.Group irrelevantDepotEntryGroup;
+	protected DepotEntry testDepotEntry;
+	protected com.liferay.portal.kernel.model.Group testDepotEntryGroup;
 	protected com.liferay.portal.kernel.model.Group testGroup;
 
 	protected static class BeanTestUtil {
@@ -914,15 +981,16 @@ public abstract class BaseDepotScopeResourceTestCase {
 	}
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BaseDepotScopeResourceTestCase.class);
+		LogFactoryUtil.getLog(BaseAssetLibraryScopeResourceTestCase.class);
 
 	private static Format _format;
 
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private com.liferay.batch.planner.rest.resource.v1_0.DepotScopeResource
-		_depotScopeResource;
+	private
+		com.liferay.batch.planner.rest.resource.v1_0.AssetLibraryScopeResource
+			_assetLibraryScopeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1685096798
+// LIFERAY-REST-BUILDER-HASH:576159744

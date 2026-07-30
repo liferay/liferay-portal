@@ -33,17 +33,17 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("DepotScope")
+@GraphQLName("AssetLibraryScope")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "DepotScope")
-public class DepotScope implements Serializable {
+@XmlRootElement(name = "AssetLibraryScope")
+public class AssetLibraryScope implements Serializable {
 
-	public static DepotScope toDTO(String json) {
-		return ObjectMapperUtil.readValue(DepotScope.class, json);
+	public static AssetLibraryScope toDTO(String json) {
+		return ObjectMapperUtil.readValue(AssetLibraryScope.class, json);
 	}
 
-	public static DepotScope unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(DepotScope.class, json);
+	public static AssetLibraryScope unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AssetLibraryScope.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
@@ -132,13 +132,13 @@ public class DepotScope implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof DepotScope)) {
+		if (!(object instanceof AssetLibraryScope)) {
 			return false;
 		}
 
-		DepotScope depotScope = (DepotScope)object;
+		AssetLibraryScope assetLibraryScope = (AssetLibraryScope)object;
 
-		return Objects.equals(toString(), depotScope.toString());
+		return Objects.equals(toString(), assetLibraryScope.toString());
 	}
 
 	@Override
@@ -188,7 +188,7 @@ public class DepotScope implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.batch.planner.rest.dto.v1_0.DepotScope",
+		defaultValue = "com.liferay.batch.planner.rest.dto.v1_0.AssetLibraryScope",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -282,4 +282,4 @@ public class DepotScope implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-907137703
+// LIFERAY-REST-BUILDER-HASH:661752300

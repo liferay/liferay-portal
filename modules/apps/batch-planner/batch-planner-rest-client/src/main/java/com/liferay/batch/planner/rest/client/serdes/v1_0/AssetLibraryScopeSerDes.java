@@ -5,7 +5,7 @@
 
 package com.liferay.batch.planner.rest.client.serdes.v1_0;
 
-import com.liferay.batch.planner.rest.client.dto.v1_0.DepotScope;
+import com.liferay.batch.planner.rest.client.dto.v1_0.AssetLibraryScope;
 import com.liferay.batch.planner.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -21,22 +21,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class DepotScopeSerDes {
+public class AssetLibraryScopeSerDes {
 
-	public static DepotScope toDTO(String json) {
-		DepotScopeJSONParser depotScopeJSONParser = new DepotScopeJSONParser();
+	public static AssetLibraryScope toDTO(String json) {
+		AssetLibraryScopeJSONParser assetLibraryScopeJSONParser =
+			new AssetLibraryScopeJSONParser();
 
-		return depotScopeJSONParser.parseToDTO(json);
+		return assetLibraryScopeJSONParser.parseToDTO(json);
 	}
 
-	public static DepotScope[] toDTOs(String json) {
-		DepotScopeJSONParser depotScopeJSONParser = new DepotScopeJSONParser();
+	public static AssetLibraryScope[] toDTOs(String json) {
+		AssetLibraryScopeJSONParser assetLibraryScopeJSONParser =
+			new AssetLibraryScopeJSONParser();
 
-		return depotScopeJSONParser.parseToDTOs(json);
+		return assetLibraryScopeJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(DepotScope depotScope) {
-		if (depotScope == null) {
+	public static String toJSON(AssetLibraryScope assetLibraryScope) {
+		if (assetLibraryScope == null) {
 			return "null";
 		}
 
@@ -44,7 +46,7 @@ public class DepotScopeSerDes {
 
 		sb.append("{");
 
-		if (depotScope.getLabel() != null) {
+		if (assetLibraryScope.getLabel() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -53,19 +55,19 @@ public class DepotScopeSerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(depotScope.getLabel()));
+			sb.append(_escape(assetLibraryScope.getLabel()));
 
 			sb.append("\"");
 		}
 
-		if (depotScope.getValue() != null) {
+		if (assetLibraryScope.getValue() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
 			sb.append("\"value\": ");
 
-			sb.append(depotScope.getValue());
+			sb.append(assetLibraryScope.getValue());
 		}
 
 		sb.append("}");
@@ -74,46 +76,49 @@ public class DepotScopeSerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		DepotScopeJSONParser depotScopeJSONParser = new DepotScopeJSONParser();
+		AssetLibraryScopeJSONParser assetLibraryScopeJSONParser =
+			new AssetLibraryScopeJSONParser();
 
-		return depotScopeJSONParser.parseToMap(json);
+		return assetLibraryScopeJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(DepotScope depotScope) {
-		if (depotScope == null) {
+	public static Map<String, String> toMap(
+		AssetLibraryScope assetLibraryScope) {
+
+		if (assetLibraryScope == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (depotScope.getLabel() == null) {
+		if (assetLibraryScope.getLabel() == null) {
 			map.put("label", null);
 		}
 		else {
-			map.put("label", String.valueOf(depotScope.getLabel()));
+			map.put("label", String.valueOf(assetLibraryScope.getLabel()));
 		}
 
-		if (depotScope.getValue() == null) {
+		if (assetLibraryScope.getValue() == null) {
 			map.put("value", null);
 		}
 		else {
-			map.put("value", String.valueOf(depotScope.getValue()));
+			map.put("value", String.valueOf(assetLibraryScope.getValue()));
 		}
 
 		return map;
 	}
 
-	public static class DepotScopeJSONParser
-		extends BaseJSONParser<DepotScope> {
+	public static class AssetLibraryScopeJSONParser
+		extends BaseJSONParser<AssetLibraryScope> {
 
 		@Override
-		protected DepotScope createDTO() {
-			return new DepotScope();
+		protected AssetLibraryScope createDTO() {
+			return new AssetLibraryScope();
 		}
 
 		@Override
-		protected DepotScope[] createDTOArray(int size) {
-			return new DepotScope[size];
+		protected AssetLibraryScope[] createDTOArray(int size) {
+			return new AssetLibraryScope[size];
 		}
 
 		@Override
@@ -130,17 +135,17 @@ public class DepotScopeSerDes {
 
 		@Override
 		protected void setField(
-			DepotScope depotScope, String jsonParserFieldName,
+			AssetLibraryScope assetLibraryScope, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "label")) {
 				if (jsonParserFieldValue != null) {
-					depotScope.setLabel((String)jsonParserFieldValue);
+					assetLibraryScope.setLabel((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "value")) {
 				if (jsonParserFieldValue != null) {
-					depotScope.setValue(
+					assetLibraryScope.setValue(
 						Long.valueOf((String)jsonParserFieldValue));
 				}
 			}
@@ -225,4 +230,4 @@ public class DepotScopeSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1677778716
+// LIFERAY-REST-BUILDER-HASH:1987613380

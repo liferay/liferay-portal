@@ -5,11 +5,11 @@
 
 package com.liferay.batch.planner.rest.client.resource.v1_0;
 
-import com.liferay.batch.planner.rest.client.dto.v1_0.DepotScope;
+import com.liferay.batch.planner.rest.client.dto.v1_0.AssetLibraryScope;
 import com.liferay.batch.planner.rest.client.http.HttpInvoker;
 import com.liferay.batch.planner.rest.client.pagination.Page;
 import com.liferay.batch.planner.rest.client.problem.Problem;
-import com.liferay.batch.planner.rest.client.serdes.v1_0.DepotScopeSerDes;
+import com.liferay.batch.planner.rest.client.serdes.v1_0.AssetLibraryScopeSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -27,18 +27,19 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface DepotScopeResource {
+public interface AssetLibraryScopeResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public Page<DepotScope> getPlanInternalClassNameKeyDepotScopesPage(
-			String internalClassNameKey, Boolean export)
+	public Page<AssetLibraryScope>
+			getPlanInternalClassNameKeyAssetLibraryScopesPage(
+				String internalClassNameKey, Boolean export)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			getPlanInternalClassNameKeyDepotScopesPageHttpResponse(
+			getPlanInternalClassNameKeyAssetLibraryScopesPageHttpResponse(
 				String internalClassNameKey, Boolean export)
 		throws Exception;
 
@@ -55,8 +56,8 @@ public interface DepotScopeResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public DepotScopeResource build() {
-			return new DepotScopeResourceImpl(this);
+		public AssetLibraryScopeResource build() {
+			return new AssetLibraryScopeResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -148,14 +149,16 @@ public interface DepotScopeResource {
 
 	}
 
-	public static class DepotScopeResourceImpl implements DepotScopeResource {
+	public static class AssetLibraryScopeResourceImpl
+		implements AssetLibraryScopeResource {
 
-		public Page<DepotScope> getPlanInternalClassNameKeyDepotScopesPage(
-				String internalClassNameKey, Boolean export)
+		public Page<AssetLibraryScope>
+				getPlanInternalClassNameKeyAssetLibraryScopesPage(
+					String internalClassNameKey, Boolean export)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getPlanInternalClassNameKeyDepotScopesPageHttpResponse(
+				getPlanInternalClassNameKeyAssetLibraryScopesPageHttpResponse(
 					internalClassNameKey, export);
 
 			String content = httpResponse.getContent();
@@ -206,7 +209,7 @@ public interface DepotScopeResource {
 			}
 
 			try {
-				return Page.of(content, DepotScopeSerDes::toDTO);
+				return Page.of(content, AssetLibraryScopeSerDes::toDTO);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -218,7 +221,7 @@ public interface DepotScopeResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getPlanInternalClassNameKeyDepotScopesPageHttpResponse(
+				getPlanInternalClassNameKeyAssetLibraryScopesPageHttpResponse(
 					String internalClassNameKey, Boolean export)
 			throws Exception {
 
@@ -250,7 +253,7 @@ public interface DepotScopeResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/batch-planner/v1.0/plans/{internalClassNameKey}/depot-scopes");
+						"/o/batch-planner/v1.0/plans/{internalClassNameKey}/asset-library-scopes");
 
 			httpInvoker.path("internalClassNameKey", internalClassNameKey);
 
@@ -262,16 +265,16 @@ public interface DepotScopeResource {
 			return httpInvoker.invoke();
 		}
 
-		private DepotScopeResourceImpl(Builder builder) {
+		private AssetLibraryScopeResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			DepotScopeResource.class.getName());
+			AssetLibraryScopeResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-327368428
+// LIFERAY-REST-BUILDER-HASH:793937384
