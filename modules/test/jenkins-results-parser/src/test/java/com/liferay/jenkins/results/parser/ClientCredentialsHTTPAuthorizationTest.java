@@ -14,6 +14,7 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +29,20 @@ public class ClientCredentialsHTTPAuthorizationTest
 
 	@Before
 	public void setUpBuildProperties() {
-		JenkinsMasterTestUtil.resetCaches();
-
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty(
 			"jenkins.local.url[test-1-1]", "http://test-1-1");
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+	}
+
+	@After
+	@Override
+	public void tearDown() {
+		super.tearDown();
+
+		JenkinsMasterTestUtil.resetCaches();
 	}
 
 	@Test
