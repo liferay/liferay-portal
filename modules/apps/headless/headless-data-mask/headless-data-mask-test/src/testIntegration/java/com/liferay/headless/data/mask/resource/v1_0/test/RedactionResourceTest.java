@@ -45,6 +45,17 @@ public class RedactionResourceTest extends BaseRedactionResourceTestCase {
 		Assert.assertNotNull(redaction.getError());
 		Assert.assertEquals("example@example.com", redaction.getOutput());
 
+		// A catastrophically backtracking regex must be aborted instead of
+		// pinning a CPU core for an unbounded amount of time
+
+		String repeatedText = "a".repeat(40);
+
+		redaction = redactionResource.getRedaction(
+			"(.*a){40}", null, "R", repeatedText);
+
+		Assert.assertNotNull(redaction.getError());
+		Assert.assertEquals(repeatedText, redaction.getOutput());
+
 		Problem.ProblemException problemException = Assert.assertThrows(
 			Problem.ProblemException.class,
 			() -> redactionResource.getRedaction(

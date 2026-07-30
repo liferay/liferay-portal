@@ -13,6 +13,9 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -24,6 +27,7 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -129,6 +133,43 @@ public class DataMaskWriterInterceptorTest {
 					}
 				).build(),
 				Http.Method.GET));
+
+		// A data mask that exceeds the redaction timeout has masked nothing, so
+		// the response must not carry the unmasked text
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.headless.data.mask.internal.jaxrs.writer." +
+					"interceptor.DataMaskWriterInterceptor",
+				LoggerTestUtil.ERROR)) {
+
+			Assert.assertNotEquals(
+				_REPEATED_TEXT,
+				HTTPTestUtil.invokeToString(
+					null, "test-data-mask/repeated-text",
+					HashMapBuilder.put(
+						"X-Liferay-Data-Masks",
+						() -> {
+							ObjectEntry objectEntry =
+								DataMaskTestUtil.addDataMaskObjectEntry(
+									RandomTestUtil.randomString(), "(.*a){40}",
+									"[REDACTED]");
+
+							return objectEntry.getExternalReferenceCode();
+						}
+					).build(),
+					Http.Method.GET));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(
+				message, message.contains("Redaction exceeded the timeout of"));
+		}
 	}
 
 	@FeatureFlags(
@@ -162,6 +203,13 @@ public class DataMaskWriterInterceptorTest {
 		}
 
 		@GET
+		@Path("/repeated-text")
+		@Produces(MediaType.TEXT_PLAIN)
+		public String repeatedText() {
+			return _REPEATED_TEXT;
+		}
+
+		@GET
 		@Path("/test")
 		@Produces(MediaType.TEXT_PLAIN)
 		public String test() {
@@ -169,6 +217,8 @@ public class DataMaskWriterInterceptorTest {
 		}
 
 	}
+
+	private static final String _REPEATED_TEXT = "a".repeat(60);
 
 	private ServiceRegistration<Application> _serviceRegistration;
 
