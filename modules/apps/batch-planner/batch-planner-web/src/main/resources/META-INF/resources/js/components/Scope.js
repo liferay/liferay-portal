@@ -22,7 +22,7 @@ function Scope({portletNamespace}) {
 				)}`;
 
 				Promise.all(
-					['depot-scopes', 'site-scopes'].map((scopesPath) =>
+					['asset-library-scopes', 'site-scopes'].map((scopesPath) =>
 						fetch(
 							`${planURL}/${scopesPath}?export=${event.isExport}`
 						).then((response) => {
@@ -34,9 +34,9 @@ function Scope({portletNamespace}) {
 						})
 					)
 				)
-					.then(([depotScopesJSON, siteScopesJSON]) => {
+					.then(([assetLibraryScopesJSON, siteScopesJSON]) => {
 						setScopes([
-							...(depotScopesJSON.items || []),
+							...(assetLibraryScopesJSON.items || []),
 							...(siteScopesJSON.items || []),
 						]);
 					})
