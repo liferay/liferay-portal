@@ -29,9 +29,7 @@ describe('Cohort Query Mapper', () => {
 			const channelId = '123';
 			const segmentId = 'segment-1';
 
-			expect(
-				mapPropsToOptions({channelId, interval, segmentId})
-			).toEqual(
+			expect(mapPropsToOptions({channelId, interval, segmentId})).toEqual(
 				expect.objectContaining({
 					variables: {
 						channelId,

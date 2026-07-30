@@ -91,7 +91,11 @@ const SearchTermsCard = (props) => {
 							className="button-root"
 							displayType="secondary"
 							href={setUriQueryValues(
-								pickBy({accountId, segmentId, ...rangeSelectors}),
+								pickBy({
+									accountId,
+									segmentId,
+									...rangeSelectors,
+								}),
 								toRoute(Routes.SITES_SEARCH_TERMS, {
 									channelId,
 									groupId,

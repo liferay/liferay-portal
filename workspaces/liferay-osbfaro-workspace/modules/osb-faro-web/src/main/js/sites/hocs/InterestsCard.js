@@ -94,7 +94,11 @@ const InterestsCard = () => {
 							className="button-root"
 							displayType="secondary"
 							href={setUriQueryValues(
-								pickBy({accountId, segmentId, ...rangeSelectors}),
+								pickBy({
+									accountId,
+									segmentId,
+									...rangeSelectors,
+								}),
 								toRoute(Routes.SITES_INTERESTS, {
 									channelId,
 									groupId,

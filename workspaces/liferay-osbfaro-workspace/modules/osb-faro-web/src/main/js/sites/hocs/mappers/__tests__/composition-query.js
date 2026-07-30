@@ -116,9 +116,7 @@ describe('Composition Query Mapper', () => {
 		it('should include segmentId in the mapped options when passed', () => {
 			const segmentId = 'segment-1';
 
-			expect(
-				mapPropsToOptions({...mockProps, segmentId})
-			).toEqual(
+			expect(mapPropsToOptions({...mockProps, segmentId})).toEqual(
 				expect.objectContaining({
 					variables: expect.objectContaining({
 						segmentId,

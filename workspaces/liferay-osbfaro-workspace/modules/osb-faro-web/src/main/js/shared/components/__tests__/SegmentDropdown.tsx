@@ -213,7 +213,10 @@ describe('SegmentDropdown', () => {
 
 		render(
 			<Wrapper>
-				<SegmentDropdown initialSegmentId="100" onFilterChange={jest.fn()} />
+				<SegmentDropdown
+					initialSegmentId="100"
+					onFilterChange={jest.fn()}
+				/>
 			</Wrapper>
 		);
 
