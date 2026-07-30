@@ -431,6 +431,10 @@ public class CPConfigurationEntryLocalServiceImpl
 				parentCPConfigurationList.getCPConfigurationListId();
 		}
 
+		if (parentCPConfigurationEntry == null) {
+			return null;
+		}
+
 		return _cpConfigurationEntrySettingLocalService.
 			fetchCPConfigurationEntrySetting(
 				parentCPConfigurationEntry.getCPConfigurationEntryId(),
