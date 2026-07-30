@@ -23,12 +23,26 @@ public class RedactUtil {
 		_patterns.remove(regex);
 	}
 
+	public static long newDeadline() {
+		return System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(_TIMEOUT);
+	}
+
 	public static String redact(
 		String detectionRegex, String replacementRegex, String replacementValue,
 		String text) {
 
+		return redact(
+			detectionRegex, replacementRegex, replacementValue, text,
+			newDeadline());
+	}
+
+	public static String redact(
+		String detectionRegex, String replacementRegex, String replacementValue,
+		String text, long deadline) {
+
 		return _redact(
-			detectionRegex, replacementRegex, replacementValue, text, true);
+			detectionRegex, replacementRegex, replacementValue, text, deadline,
+			true);
 	}
 
 	public static String redactWithoutCaching(
@@ -36,7 +50,8 @@ public class RedactUtil {
 		String text) {
 
 		return _redact(
-			detectionRegex, replacementRegex, replacementValue, text, false);
+			detectionRegex, replacementRegex, replacementValue, text,
+			newDeadline(), false);
 	}
 
 	private static Pattern _getPattern(String regex, boolean cache) {
@@ -67,7 +82,7 @@ public class RedactUtil {
 
 	private static String _redact(
 		String detectionRegex, String replacementRegex, String replacementValue,
-		String text, boolean cache) {
+		String text, long deadline, boolean cache) {
 
 		if (text == null) {
 			return text;
@@ -78,9 +93,6 @@ public class RedactUtil {
 		if (detectionPattern == null) {
 			return text;
 		}
-
-		long deadline =
-			System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(_TIMEOUT);
 
 		StringBuffer sb = new StringBuffer();
 

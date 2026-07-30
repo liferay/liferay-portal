@@ -176,6 +176,8 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 	}
 
 	private String _redact(List<ObjectEntry> objectEntries, String text) {
+		long deadline = RedactUtil.newDeadline();
+
 		for (ObjectEntry objectEntry : objectEntries) {
 			Map<String, Serializable> values = objectEntry.getValues();
 
@@ -193,7 +195,7 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 				text = RedactUtil.redact(
 					detectionRegex,
 					MapUtil.getString(values, "replacementRegex"),
-					replacementValue, text);
+					replacementValue, text, deadline);
 			}
 			catch (RedactTimeoutException redactTimeoutException) {
 				throw new RedactTimeoutException(
