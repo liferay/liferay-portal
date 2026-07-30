@@ -1,0 +1,138 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import {expect, mergeTests} from '@playwright/test';
+
+import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
+import {loginTest} from '../../../../fixtures/loginTest';
+import {applyFDSSelectionFilter} from '../../../../utils/applyFDSSelectionFilter';
+import getRandomString from '../../../../utils/getRandomString';
+import {cmsPagesTest} from '../fixtures/cmsPagesTest';
+
+const test = mergeTests(
+	cmsPagesTest,
+	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPD-17564': {enabled: true},
+	}),
+	loginTest()
+);
+
+test(
+	'Combining Space, content type, and keyword filters in the All section narrows to only matching items',
+	{tag: ['@LPD-95544', '@LPD-95544/TC-21.e']},
+	async ({apiHelpers, assetsPage, page}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const keyword = getRandomString();
+		const matchingTitle = `${keyword} Match`;
+		const wrongKeywordTitle = getRandomString();
+
+		let space1Name: string;
+
+		await test.step('Create two Spaces with content covering each filter combination', async () => {
+			const space1 =
+				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+					name: `Space ${getRandomString()}`,
+					type: 'Space',
+				});
+
+			const space2 =
+				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+					name: `Space ${getRandomString()}`,
+					type: 'Space',
+				});
+
+			space1Name = space1.name;
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: matchingTitle,
+				},
+				applicationName,
+				space1.name
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: wrongKeywordTitle,
+				},
+				applicationName,
+				space1.name
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {
+						fileBase64: 'R0lGODlhAQABAAAAACw=',
+						name: `${matchingTitle} File.png`,
+					},
+					objectEntryFolderExternalReferenceCode: 'L_FILES',
+					title: `${matchingTitle} File`,
+				},
+				'cms/basic-documents',
+				space1.name
+			);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					title: `${keyword} Other Space`,
+				},
+				applicationName,
+				space2.name
+			);
+		});
+
+		await test.step('Apply Space and Type filters, then search by keyword', async () => {
+			await assetsPage.gotoAll();
+
+			await applyFDSSelectionFilter(page, {
+				filter: 'Space',
+				value: space1Name,
+			});
+
+			await page
+				.getByRole('button', {exact: true, name: 'Filter'})
+				.click();
+			await page.getByRole('button', {exact: true, name: 'Back'}).click();
+			await page
+				.getByRole('menuitem', {exact: true, name: 'Type'})
+				.click();
+			await page
+				.getByRole('checkbox', {
+					exact: true,
+					name: 'Basic Web Content',
+				})
+				.check();
+			await page
+				.getByRole('button', {exact: true, name: 'Add Filter'})
+				.click();
+			await expect(
+				page.getByRole('button', {name: 'Type: Basic Web Content'})
+			).toBeVisible();
+
+			const searchInput = page.getByRole('searchbox', {name: 'Search'});
+
+			await searchInput.fill(keyword);
+			await searchInput.press('Enter');
+		});
+
+		await test.step('Only the item matching all three criteria remains', async () => {
+			await expect(assetsPage.getItem(matchingTitle)).toBeVisible({
+				timeout: 15000,
+			});
+			await expect(assetsPage.getItem(wrongKeywordTitle)).toBeHidden();
+			await expect(
+				assetsPage.getItem(`${matchingTitle} File`)
+			).toBeHidden();
+			await expect(
+				assetsPage.getItem(`${keyword} Other Space`)
+			).toBeHidden();
+		});
+	}
+);
