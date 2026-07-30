@@ -5,6 +5,21 @@ $version-history-toolbar-height: 3rem;
 $version-history-side-panel-width: 320px;
 
 .version-history {
+	&__list {
+		.list-group-item {
+			cursor: pointer;
+
+			&:focus-visible {
+				box-shadow: $component-focus-inset-box-shadow;
+				outline: 0;
+			}
+
+			&:hover:not(.active) {
+				background-color: $gray-100;
+			}
+		}
+	}
+
 	&__side-panel {
 		border-right-style: solid;
 		border-right-width: 1px;

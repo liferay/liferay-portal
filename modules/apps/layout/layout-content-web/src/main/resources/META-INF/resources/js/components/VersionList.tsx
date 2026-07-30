@@ -9,8 +9,9 @@ import ClayLabel from '@clayui/label';
 import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
 import {dateUtils, sub} from 'frontend-js-web';
-import React from 'react';
+import React, {useState} from 'react';
 
+import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 import {PageVersion, VersionStatus} from '../types/PageVersion';
 
 const DRAFT_KEY = 'draft';
@@ -44,6 +45,8 @@ export default function VersionList({
 	searching: boolean;
 	versions: PageVersion[];
 }) {
+	const [selectedKey, setSelectedKey] = useState<string>();
+
 	const rows: Row[] = [
 		...(draftName ? [{key: DRAFT_KEY, name: draftName}] : []),
 		...versions.map((version) => ({
@@ -52,6 +55,8 @@ export default function VersionList({
 			version,
 		})),
 	];
+
+	const {getItemProps} = useKeyboardNavigation({itemCount: rows.length});
 
 	if (!rows.length) {
 		if (searching) {
@@ -76,15 +81,46 @@ export default function VersionList({
 		);
 	}
 
+	const activeKey = selectedKey ?? rows[0].key;
+
 	return (
-		<ClayList className="mb-0">
-			{rows.map(({key, name, version}) => {
+		<ClayList
+			aria-label={Liferay.Language.get('version-history')}
+			className="mb-0 version-history__list"
+			role="listbox"
+		>
+			{rows.map(({key, name, version}, index) => {
+				const navigationProps = getItemProps(index);
+
+				const selected = activeKey === key;
+
 				const status = version
 					? STATUSES[version.status]
 					: STATUSES.Draft;
 
 				return (
-					<ClayList.Item flex key={key}>
+					<ClayList.Item
+						active={selected}
+						aria-selected={selected}
+						flex
+						key={key}
+						onClick={() => setSelectedKey(key)}
+						onFocus={navigationProps.onFocus}
+						onKeyDown={(event) => {
+							if (event.key === 'Enter' || event.key === ' ') {
+								event.preventDefault();
+
+								setSelectedKey(key);
+
+								return;
+							}
+
+							navigationProps.onKeyDown(event);
+						}}
+						ref={navigationProps.ref}
+						role="option"
+						tabIndex={navigationProps.tabIndex}
+					>
 						<ClayList.ItemField className="px-2">
 							{version?.creator ? (
 								<ClaySticker shape="circle">
