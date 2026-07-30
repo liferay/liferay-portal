@@ -98,6 +98,44 @@ export function wait(msToWait: number) {
 }
 
 /**
+ * jsdom does not implement the User Timing API, which the timing plugin relies
+ * on to measure how long a page has been viewed. An unknown start mark resolves
+ * to the time origin, mirroring the legacy `navigationStart` timing attribute
+ * the plugin falls back to.
+ */
+export function mockUserTiming() {
+	const marks = new Map<string, number>();
+	const measures = new Map<string, number>();
+
+	Object.assign(global.performance, {
+		clearMarks(name: string) {
+			marks.delete(name);
+		},
+		getEntriesByName(name: string) {
+			if (marks.has(name)) {
+				return [{duration: 0, name, startTime: marks.get(name)}];
+			}
+
+			if (measures.has(name)) {
+				return [{duration: measures.get(name), name, startTime: 0}];
+			}
+
+			return [];
+		},
+		mark(name: string) {
+			marks.set(name, global.performance.now());
+		},
+		measure(name: string, startMark: string, endMark?: string) {
+			const endTime = endMark
+				? marks.get(endMark) || 0
+				: global.performance.now();
+
+			measures.set(name, endTime - (marks.get(startMark) || 0));
+		},
+	});
+}
+
+/**
  * Makes an element report a visible, in-viewport bounding box. Pass a partial
  * rect to override specific fields (e.g. to place it outside the viewport).
  */

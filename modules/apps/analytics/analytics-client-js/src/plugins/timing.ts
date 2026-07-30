@@ -6,7 +6,7 @@
 import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
 import {MARK_NAVIGATION_START, MARK_VIEW_DURATION} from '../utils/constants';
-import {getDuration} from '../utils/performance';
+import {createMark, getDuration} from '../utils/performance';
 
 /**
  * Sends page load information on the window load event
@@ -30,9 +30,9 @@ function onload(analytics: Analytics) {
 }
 
 /**
- * Sends view duration information on the window unload event
+ * Sends view duration information on the window pagehide event
  */
-function unload(analytics: Analytics) {
+function pagehide(analytics: Analytics) {
 	const navigationStartMark = window.performance.getEntriesByName(
 		MARK_NAVIGATION_START
 	);
@@ -56,6 +56,17 @@ function unload(analytics: Analytics) {
 }
 
 /**
+ * Restarts the view duration measurement when the page is restored from the
+ * back/forward cache, so that the next pagehide event reports the duration of
+ * the new view instead of the time the page spent frozen
+ */
+function pageshow(event: PageTransitionEvent) {
+	if (event.persisted) {
+		createMark(MARK_NAVIGATION_START);
+	}
+}
+
+/**
  * Plugin function that registers listeners against browser time events
  */
 function timing(analytics: Analytics) {
@@ -63,13 +74,15 @@ function timing(analytics: Analytics) {
 
 	window.addEventListener('load', onLoad);
 
-	const onUnload = unload.bind(null, analytics);
+	const onPageHide = pagehide.bind(null, analytics);
 
-	window.addEventListener('unload', onUnload);
+	window.addEventListener('pagehide', onPageHide);
+	window.addEventListener('pageshow', pageshow);
 
 	return () => {
 		window.removeEventListener('load', onLoad);
-		window.removeEventListener('unload', onUnload);
+		window.removeEventListener('pagehide', onPageHide);
+		window.removeEventListener('pageshow', pageshow);
 	};
 }
 

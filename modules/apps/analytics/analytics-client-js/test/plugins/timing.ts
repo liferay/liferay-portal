@@ -8,7 +8,8 @@
 import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
-import {INITIAL_ANALYTICS_CONFIG} from '../helpers';
+import {MARK_NAVIGATION_START} from '../../src/utils/constants';
+import {INITIAL_ANALYTICS_CONFIG, mockUserTiming} from '../helpers';
 
 const applicationId = 'Page';
 
@@ -23,6 +24,8 @@ describe('Timing Plugin', () => {
 			value: 'loading',
 			writable: false,
 		});
+
+		mockUserTiming();
 
 		fetchMock.mock('*', () => 200);
 
@@ -58,6 +61,66 @@ describe('Timing Plugin', () => {
 					}),
 				})
 			);
+		});
+	});
+
+	describe('pageUnloaded event', () => {
+		it('is fired on the window pagehide event with the view duration', () => {
+			window.dispatchEvent(new Event('pagehide'));
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'pageUnloaded'
+			);
+
+			expect(events.length).toBe(1);
+
+			expect(events[0]).toEqual(
+				expect.objectContaining({
+					applicationId,
+					eventId: 'pageUnloaded',
+					properties: expect.objectContaining({
+						viewDuration: expect.any(Number),
+					}),
+				})
+			);
+		});
+
+		it('is not fired on the deprecated window unload event', () => {
+			window.dispatchEvent(new Event('unload'));
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'pageUnloaded'
+			);
+
+			expect(events.length).toBe(0);
+		});
+	});
+
+	describe('back/forward cache', () => {
+		it('restarts the view duration when the page is restored', () => {
+			window.performance.clearMarks(MARK_NAVIGATION_START);
+
+			const event = new Event('pageshow');
+
+			Object.defineProperty(event, 'persisted', {value: true});
+
+			window.dispatchEvent(event);
+
+			expect(
+				window.performance.getEntriesByName(MARK_NAVIGATION_START)
+					.length
+			).toBe(1);
+		});
+
+		it('keeps the current measurement when the page is not restored', () => {
+			window.performance.clearMarks(MARK_NAVIGATION_START);
+
+			window.dispatchEvent(new Event('pageshow'));
+
+			expect(
+				window.performance.getEntriesByName(MARK_NAVIGATION_START)
+					.length
+			).toBe(0);
 		});
 	});
 });
