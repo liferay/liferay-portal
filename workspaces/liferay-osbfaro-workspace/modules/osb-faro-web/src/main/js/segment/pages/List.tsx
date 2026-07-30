@@ -47,7 +47,6 @@ import {
 } from 'shared/util/router';
 import {DateCell} from 'shared/components/table/cell-components';
 import {ENABLE_REAL_TIME_SEGMENTS} from 'shared/util/feature-flags';
-import {FeatureName, useLimitReached} from 'shared/hooks/useLimitReached';
 import {formatDateToTimeZone} from 'shared/util/date';
 import {
 	getDefaultSortOrder,
@@ -207,64 +206,6 @@ export const List: React.FC<IListProps> = ({
 		},
 	});
 
-	const {
-		data: usageData = [],
-		loading: usageLoading,
-		refetch: refetchUsage,
-	} = useRequest({
-		dataSourceFn: API.projects.fetchFeatureUsages,
-		variables: {groupId},
-	});
-
-	const isBatchDisabled = useLimitReached({
-		data: usageData,
-		featureName: FeatureName.Batch,
-	});
-
-	const realTimeLimitReached = useLimitReached({
-		data: usageData,
-		featureName: FeatureName.RealTime,
-	});
-
-	const isRealTimeDisabled =
-		ENABLE_REAL_TIME_SEGMENTS && realTimeLimitReached;
-
-	const allActionsDisabled = isBatchDisabled && isRealTimeDisabled;
-
-	const getUsageTooltipMessage = () => {
-		if (isBatchDisabled && isRealTimeDisabled) {
-			return Liferay.Language.get(
-				'the-maximum-number-of-segments-has-been-reached-delete-an-existing-segment-to-create-a-new-one'
-			);
-		}
-		if (isBatchDisabled) {
-			return Liferay.Language.get(
-				'a-maximum-of-five-batch-segments-has-been-reached-delete-an-existing-segment-to-create-a-new-one'
-			);
-		}
-		if (isRealTimeDisabled) {
-			return Liferay.Language.get(
-				'a-maximum-of-three-real-time-segments-has-been-reached-delete-an-existing-segment-to-create-a-new-one'
-			);
-		}
-		return null;
-	};
-
-	const getUsageDropDownMessage = () => {
-		if (isBatchDisabled) {
-			return Liferay.Language.get('batch-segment-limit-has-been-reached');
-		}
-		if (isRealTimeDisabled) {
-			return Liferay.Language.get(
-				'real-time-segments-limit-has-been-reached'
-			);
-		}
-		return null;
-	};
-
-	const usageMessage = getUsageTooltipMessage();
-	const usageDropDownMessage = getUsageDropDownMessage();
-
 	const getDisabledSegmentsAlert = (abortSignal: AbortSignal) =>
 		fetchDisabledSegments(channelId, groupId, orderIOMap).then(
 			({total}: {total: number}) => {
@@ -419,7 +360,6 @@ export const List: React.FC<IListProps> = ({
 						selectionDispatch?.({type: ActionTypes.ClearAll});
 
 						refetch?.();
-						refetchUsage?.();
 					})
 					.catch(() => {
 						addAlert({
@@ -500,11 +440,7 @@ export const List: React.FC<IListProps> = ({
 												Liferay.Language.get('menu')
 											}
 											className="button-root p-2 rounded-lg"
-											disabled={
-												error ||
-												loading ||
-												allActionsDisabled
-											}
+											disabled={error || loading}
 											displayType="primary"
 											size="sm"
 										>
@@ -518,20 +454,8 @@ export const List: React.FC<IListProps> = ({
 										</ClayButton>
 									}
 								>
-									{usageDropDownMessage && (
-										<div
-											className="alert alert-fluid alert-info"
-											role="alert"
-										>
-											{usageDropDownMessage}
-										</div>
-									)}
-
 									<ClayDropDown.Item
 										data-testid="batch-segment-dropdown-item"
-										disabled={
-											usageLoading || isBatchDisabled
-										}
 										href={setUriQueryValues(
 											{type: SegmentTypes.Batch},
 											toRoute(
@@ -549,9 +473,6 @@ export const List: React.FC<IListProps> = ({
 
 									<ClayDropDown.Item
 										data-testid="real-time-segment-dropdown-item"
-										disabled={
-											usageLoading || isRealTimeDisabled
-										}
 										href={setUriQueryValues(
 											{type: SegmentTypes.RealTime},
 											toRoute(
@@ -572,9 +493,7 @@ export const List: React.FC<IListProps> = ({
 									aria-label={pageActionsLabel}
 									className="button-root p-2 rounded-lg"
 									data-testid="batch-segment-button"
-									disabled={
-										error || loading || isBatchDisabled
-									}
+									disabled={error || loading}
 									displayType="primary"
 									onClick={() =>
 										history.push(
@@ -590,22 +509,6 @@ export const List: React.FC<IListProps> = ({
 									size="sm"
 								>
 									{pageActionsLabel}
-								</ClayButton>
-							)}
-
-							{usageMessage && (
-								<ClayButton
-									borderless
-									className="ml-2"
-									data-tooltip-align="right"
-									displayType="unstyled"
-									size="sm"
-									title={usageMessage}
-								>
-									<ClayIcon
-										className="text-secondary"
-										symbol="exclamation-full"
-									/>
 								</ClayButton>
 							)}
 						</div>
@@ -659,7 +562,7 @@ export const List: React.FC<IListProps> = ({
 					/>
 					<BasePage.Header.Section>
 						<BasePage.Header.PageActions
-							disabled={error || loading || allActionsDisabled}
+							disabled={error || loading}
 							label={pageActionsLabel}
 						/>
 					</BasePage.Header.Section>

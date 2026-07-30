@@ -1,6 +1,4 @@
 export enum FeatureName {
-	Batch = 'batch',
-	RealTime = 'real time',
 	EventAnalysis = 'event analysis',
 }
 

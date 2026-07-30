@@ -75,22 +75,9 @@ describe('List', () => {
 		jest.useRealTimers();
 	});
 
-	it('should disable batch segment when limit is reached', async () => {
-		API.projects.fetchFeatureUsages.mockReturnValueOnce(
-			Promise.resolve([
-				{
-					currentUsage: 1,
-					limit: 3,
-					name: 'Segment',
-					type: 'Real Time'
-				},
-				{
-					currentUsage: 5,
-					limit: 5,
-					name: 'Segment',
-					type: 'Batch'
-				}
-			])
+	it('should enable every segment option regardless of the segment count', async () => {
+		API.individualSegment.search.mockReturnValue(
+			Promise.resolve(data.mockSearch(data.mockSegment, 20))
 		);
 
 		render(<DefaultComponent />);
@@ -98,131 +85,23 @@ describe('List', () => {
 		await act(async () => {
 			jest.runAllTimers();
 		});
-
-		const batchOption = screen.getByTestId('batch-segment-dropdown-item');
-		expect(batchOption.closest('a')).toHaveClass('disabled');
-
-		const realTimeOption = screen.getByTestId(
-			'real-time-segment-dropdown-item'
-		);
-		expect(realTimeOption.closest('a')).not.toHaveClass('disabled');
-	});
-
-	it('should disable real time segment when limit is reached', async () => {
-		API.projects.fetchFeatureUsages.mockReturnValueOnce(
-			Promise.resolve([
-				{
-					currentUsage: 3,
-					limit: 3,
-					name: 'Segment',
-					type: 'Real Time'
-				},
-				{
-					currentUsage: 2,
-					limit: 5,
-					name: 'Segment',
-					type: 'Batch'
-				}
-			])
-		);
-
-		render(<DefaultComponent />);
-
-		await act(async () => {
-			jest.runAllTimers();
-		});
-
-		const realTimeOption = screen.getByTestId(
-			'real-time-segment-dropdown-item'
-		);
-		expect(realTimeOption.closest('a')).toHaveClass('disabled');
 
 		const batchOption = screen.getByTestId('batch-segment-dropdown-item');
 		expect(batchOption.closest('a')).not.toHaveClass('disabled');
-	});
-
-	it('should enable segments when usage is under the limit', async () => {
-		API.projects.fetchFeatureUsages.mockReturnValueOnce(
-			Promise.resolve([
-				{
-					currentUsage: 2,
-					limit: 3,
-					name: 'Segment',
-					type: 'Real Time'
-				},
-				{
-					currentUsage: 2,
-					limit: 5,
-					name: 'Segment',
-					type: 'Batch'
-				}
-			])
-		);
-
-		render(<DefaultComponent />);
-
-		await act(async () => {
-			jest.runAllTimers();
-		});
 
 		const realTimeOption = screen.getByTestId(
 			'real-time-segment-dropdown-item'
 		);
 		expect(realTimeOption.closest('a')).not.toHaveClass('disabled');
 
-		const batchOption = screen.getByTestId('batch-segment-dropdown-item');
-		expect(batchOption.closest('a')).not.toHaveClass('disabled');
-	});
+		expect(
+			screen.getByText('New Segment').closest('button')
+		).not.toBeDisabled();
 
-	it('should enable segment options when the limit is set to -1 (unlimited)', async () => {
-		API.projects.fetchFeatureUsages.mockReturnValueOnce(
-			Promise.resolve([
-				{
-					currentUsage: 2,
-					limit: -1,
-					name: 'Segment',
-					type: 'Real Time'
-				},
-				{
-					currentUsage: 2,
-					limit: -1,
-					name: 'Segment',
-					type: 'Batch'
-				}
-			])
-		);
-
-		render(<DefaultComponent />);
-
-		await act(async () => {
-			jest.runAllTimers();
-		});
-
-		const realTimeOption = screen.getByTestId(
-			'real-time-segment-dropdown-item'
-		);
-		expect(realTimeOption.closest('a')).not.toHaveClass('disabled');
-
-		const batchOption = screen.getByTestId('batch-segment-dropdown-item');
-		expect(batchOption.closest('a')).not.toHaveClass('disabled');
+		expect(API.projects.fetchFeatureUsages).not.toHaveBeenCalled();
 	});
 
 	it('should render', async () => {
-		API.projects.fetchFeatureUsages.mockResolvedValueOnce([
-			{
-				currentUsage: 0,
-				limit: -1,
-				name: 'Segment',
-				type: 'Real Time'
-			},
-			{
-				currentUsage: 0,
-				limit: -1,
-				name: 'Segment',
-				type: 'Batch'
-			}
-		]);
-
 		render(<DefaultComponent />);
 
 		await waitForLoadingToBeRemoved(document.body);
@@ -231,7 +110,6 @@ describe('List', () => {
 	});
 
 	it('should show the sequential info icon for real time sequential segments', async () => {
-		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
 				data.mockSearch(data.mockSegment, 1, {
@@ -249,7 +127,6 @@ describe('List', () => {
 	});
 
 	it('should not show the sequential info icon for real time non-sequential segments', async () => {
-		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
 				data.mockSearch(data.mockSegment, 1, {
@@ -269,7 +146,6 @@ describe('List', () => {
 	});
 
 	it('should not show the sequential info icon for batch segments', async () => {
-		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
 				data.mockSearch(data.mockSegment, 1, {
@@ -294,8 +170,6 @@ describe('List', () => {
 		});
 
 		it('creates a batch segment directly without a type dropdown', async () => {
-			API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
-
 			render(<DefaultComponent />);
 
 			await act(async () => {
@@ -313,32 +187,9 @@ describe('List', () => {
 				screen.queryByTestId('real-time-segment-dropdown-item')
 			).not.toBeInTheDocument();
 		});
-
-		it('disables the new segment button when the batch limit is reached', async () => {
-			API.projects.fetchFeatureUsages.mockReturnValueOnce(
-				Promise.resolve([
-					{
-						currentUsage: 5,
-						limit: 5,
-						name: 'Segment',
-						type: 'Batch'
-					}
-				])
-			);
-
-			render(<DefaultComponent />);
-
-			await act(async () => {
-				jest.runAllTimers();
-			});
-
-			expect(screen.getByTestId('batch-segment-button')).toBeDisabled();
-		});
 	});
 
 	it('shows the segment type dropdown when real time segments are enabled', async () => {
-		API.projects.fetchFeatureUsages.mockResolvedValueOnce([]);
-
 		render(<DefaultComponent />);
 
 		await act(async () => {
