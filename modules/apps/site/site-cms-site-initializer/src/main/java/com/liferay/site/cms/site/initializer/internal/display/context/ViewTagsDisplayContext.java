@@ -6,6 +6,8 @@
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.asset.util.AssetHelper;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -34,6 +36,8 @@ public class ViewTagsDisplayContext {
 			"actionItems",
 			ExportImportUtil.getCategorizationActionItemsJSONArray(
 				_httpServletRequest, _themeDisplay)
+		).put(
+			"cmpEnabled", LicenseManagerUtil.isAppEnabled(App.CMP)
 		).put(
 			"cmsGroupId", _themeDisplay.getScopeGroupId()
 		).put(

@@ -27,6 +27,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -139,6 +141,8 @@ public abstract class BaseSectionDisplayContext {
 			SectionDisplayContextUtil.getDepotEntriesJSONArray(
 				httpServletRequest,
 				getRootObjectEntryFolderExternalReferenceCode())
+		).put(
+			"cmpEnabled", LicenseManagerUtil.isAppEnabled(App.CMP)
 		).put(
 			"cmpProjectLinkObjectDefinitionId",
 			() -> {

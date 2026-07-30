@@ -33,6 +33,7 @@ type Props = {
 	addCommentURL: string;
 	assetLibraryId: string;
 	assetType: number;
+	cmpEnabled?: boolean;
 	cmpProjectLinkObjectDefinitionId?: number | null;
 	cmpProjectObjectDefinitionId?: number | null;
 	cmpProjectViewURL?: string;
@@ -331,7 +332,13 @@ function SidePanel(props: SidePanelProps) {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [panel, setPanel] = useState<React.Key | null>(null);
 
-	const items = useMemo(() => [...DEFAULT_ITEMS, PROJECTS_ITEM], []);
+	const items = useMemo(
+		() =>
+			props.cmpEnabled
+				? [...DEFAULT_ITEMS, PROJECTS_ITEM]
+				: DEFAULT_ITEMS,
+		[props.cmpEnabled]
+	);
 
 	const showErrorInPanel = useCallback((panelId: React.Key) => {
 		setPanel(panelId);

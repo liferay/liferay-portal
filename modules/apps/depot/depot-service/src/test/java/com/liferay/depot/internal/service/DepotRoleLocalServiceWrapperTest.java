@@ -8,6 +8,8 @@ package com.liferay.depot.internal.service;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.portal.kernel.exception.RoleSubtypeException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -39,8 +41,27 @@ public class DepotRoleLocalServiceWrapperTest {
 		depotRoleLocalServiceWrapper.setWrappedService(
 			Mockito.mock(RoleLocalService.class));
 
-		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
+		try (MockedStatic<LicenseManagerUtil> licenseManagerUtilMockedStatic =
+				Mockito.mockStatic(LicenseManagerUtil.class);
+			MockedStatic<FeatureFlagManagerUtil> mockedStatic =
 				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
+
+			licenseManagerUtilMockedStatic.when(
+				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
+			).thenReturn(
+				false
+			);
+
+			_assertAddRole(
+				depotRoleLocalServiceWrapper,
+				DepotRolesConstants.SUBTYPE_PROJECT, RoleConstants.TYPE_DEPOT,
+				false);
+
+			licenseManagerUtilMockedStatic.when(
+				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
+			).thenReturn(
+				true
+			);
 
 			_assertAddRole(
 				depotRoleLocalServiceWrapper, DepotRolesConstants.SUBTYPE_SPACE,

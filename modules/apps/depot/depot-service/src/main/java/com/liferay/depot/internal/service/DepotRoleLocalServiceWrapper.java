@@ -9,6 +9,8 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RoleSubtypeException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -75,7 +77,8 @@ public class DepotRoleLocalServiceWrapper extends RoleLocalServiceWrapper {
 			return;
 		}
 
-		if (Objects.equals(DepotRolesConstants.SUBTYPE_PROJECT, subtype) ||
+		if ((Objects.equals(DepotRolesConstants.SUBTYPE_PROJECT, subtype) &&
+			 LicenseManagerUtil.isAppEnabled(App.CMP)) ||
 			Objects.equals(DepotRolesConstants.SUBTYPE_SPACE, subtype)) {
 
 			return;

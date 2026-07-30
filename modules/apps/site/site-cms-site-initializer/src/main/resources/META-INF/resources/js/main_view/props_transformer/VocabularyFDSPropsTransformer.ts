@@ -12,14 +12,17 @@ import SimpleActionLinkRenderer from './cell_renderers/SimpleActionLinkRenderer'
 import VocabularyRenderer from './cell_renderers/VocabularyRenderer';
 
 export default function VocabularyFDSPropsTransformer({
+	additionalProps,
 	itemsActions,
 	...otherProps
 }: {
+	additionalProps?: {cmpEnabled?: boolean};
 	itemsActions: IItemsActions[];
 	otherProps: any;
 }) {
 	return {
 		...otherProps,
+		additionalProps,
 		customRenderers: {
 			tableCell: [
 				{
@@ -28,7 +31,11 @@ export default function VocabularyFDSPropsTransformer({
 					type: 'internal',
 				} as IInternalRenderer,
 				{
-					component: MultipleScopesRenderer,
+					component: (props: any) =>
+						MultipleScopesRenderer({
+							...props,
+							cmpEnabled: additionalProps?.cmpEnabled,
+						}),
 					name: 'scopeTableCellRenderer',
 					type: 'internal',
 				} as IInternalRenderer,
