@@ -28,7 +28,7 @@ const AssetTypeInfoPanelFilesView = () => {
 
 	const DROPDOWN_TABS = [
 		...(href ? [TABS.VERSIONS, TABS.COMMENTS] : []),
-		...(Liferay.FeatureFlags['LPD-58677'] ? [TABS.PROJECTS] : []),
+		TABS.PROJECTS,
 	];
 
 	const ALL_TABS = [...MAIN_TABS, ...DROPDOWN_TABS];
