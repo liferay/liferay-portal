@@ -69,19 +69,19 @@ public class DepotRolesPortalInstanceLifecycleListenerTest {
 
 		_assertRole(
 			companyId,
-			"depot-administrators-are-super-users-of-their-depot-but-cannot-" +
-				"make-other-users-into-depot-administrators",
+			"space-administrators-are-super-users-of-their-space-but-cannot-" +
+				"make-other-users-into-space-administrators",
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-			"depot-administrator");
+			"space-administrator");
 		_assertRole(
 			companyId,
-			"all-users-who-belong-to-a-depot-have-this-role-within-that-depot",
-			DepotRolesConstants.ASSET_LIBRARY_MEMBER, "depot-member");
+			"all-users-who-belong-to-a-space-have-this-role-within-that-space",
+			DepotRolesConstants.ASSET_LIBRARY_MEMBER, "space-member");
 		_assertRole(
 			companyId,
-			"depot-owners-are-super-users-of-their-depot-and-can-assign-" +
-				"depot-roles-to-users",
-			DepotRolesConstants.ASSET_LIBRARY_OWNER, "depot-owner");
+			"space-owners-are-super-users-of-their-space-and-can-assign-" +
+				"space-roles-to-users",
+			DepotRolesConstants.ASSET_LIBRARY_OWNER, "space-owner");
 		_assertRoleResourcePermissions(
 			companyId, DepotEntry.class.getName(),
 			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
