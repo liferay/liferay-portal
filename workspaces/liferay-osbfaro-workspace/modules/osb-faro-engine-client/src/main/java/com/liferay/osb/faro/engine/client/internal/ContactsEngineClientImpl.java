@@ -943,18 +943,9 @@ public class ContactsEngineClientImpl
 	@Override
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,
-		String query, int cur, int delta, String sortString) {
-
-		return getAccounts(
-			faroProject, channelId, filterString, query, null, null, null, cur,
-			delta, sortString);
-	}
-
-	@Override
-	public Results<Account> getAccounts(
-		FaroProject faroProject, String channelId, String filterString,
-		String query, String rangeEnd, Integer rangeKey, String rangeStart,
-		int cur, int delta, String sortString) {
+		boolean includeAnonymousUsers, String query, String rangeEnd,
+		Integer rangeKey, String rangeStart, int cur, int delta,
+		String sortString) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
@@ -966,6 +957,8 @@ public class ContactsEngineClientImpl
 		if (Validator.isNotNull(filterString)) {
 			uriVariables.put("filter", filterString);
 		}
+
+		uriVariables.put("includeAnonymousUsers", includeAnonymousUsers);
 
 		if (Validator.isNotNull(query)) {
 			uriVariables.put("query", query);
@@ -998,6 +991,16 @@ public class ContactsEngineClientImpl
 			uriVariables);
 
 		return pagedModel.getResults();
+	}
+
+	@Override
+	public Results<Account> getAccounts(
+		FaroProject faroProject, String channelId, String filterString,
+		String query, int cur, int delta, String sortString) {
+
+		return getAccounts(
+			faroProject, channelId, filterString, true, query, null, null, null,
+			cur, delta, sortString);
 	}
 
 	@Override

@@ -437,22 +437,23 @@ public abstract class BaseMockContactsEngineClientImpl
 	@Override
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,
-		String query, int cur, int delta, String sortString) {
+		boolean includeAnonymousUsers, String query, String rangeEnd,
+		Integer rangeKey, String rangeStart, int cur, int delta,
+		String sortString) {
 
 		return contactsEngineClient.getAccounts(
-			faroProject, channelId, filterString, query, cur, delta,
-			sortString);
+			faroProject, channelId, filterString, includeAnonymousUsers, query,
+			rangeEnd, rangeKey, rangeStart, cur, delta, sortString);
 	}
 
 	@Override
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,
-		String query, String rangeEnd, Integer rangeKey, String rangeStart,
-		int cur, int delta, String sortString) {
+		String query, int cur, int delta, String sortString) {
 
 		return contactsEngineClient.getAccounts(
-			faroProject, channelId, filterString, query, rangeEnd, rangeKey,
-			rangeStart, cur, delta, sortString);
+			faroProject, channelId, filterString, query, cur, delta,
+			sortString);
 	}
 
 	@Override
