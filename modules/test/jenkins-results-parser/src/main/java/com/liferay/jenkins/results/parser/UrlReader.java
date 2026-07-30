@@ -48,9 +48,20 @@ public class UrlReader {
 			int timeout, String url)
 		throws IOException {
 
+		return getResponseHeader(
+			headerName, httpAuthorization, httpRequestMethod, postContent, null,
+			timeout, url);
+	}
+
+	public static String getResponseHeader(
+			String headerName, HTTPAuthorization httpAuthorization,
+			HttpRequestMethod httpRequestMethod, String postContent,
+			Map<String, String> requestHeaders, int timeout, String url)
+		throws IOException {
+
 		return _urlReader.doGetResponseHeader(
 			headerName, httpAuthorization, httpRequestMethod, postContent,
-			timeout, url);
+			requestHeaders, timeout, url);
 	}
 
 	public static InputStream read(
@@ -71,7 +82,7 @@ public class UrlReader {
 	protected String doGetResponseHeader(
 			String headerName, HTTPAuthorization httpAuthorization,
 			HttpRequestMethod httpRequestMethod, String postContent,
-			int timeout, String url)
+			Map<String, String> requestHeaders, int timeout, String url)
 		throws IOException {
 
 		URL urlObject = new URL(JenkinsResultsParserUtil.fixURL(url));
@@ -86,6 +97,15 @@ public class UrlReader {
 		if (httpAuthorization != null) {
 			httpURLConnection.setRequestProperty(
 				"Authorization", httpAuthorization.toString());
+		}
+
+		if (requestHeaders != null) {
+			for (Map.Entry<String, String> requestHeader :
+					requestHeaders.entrySet()) {
+
+				httpURLConnection.setRequestProperty(
+					requestHeader.getKey(), requestHeader.getValue());
+			}
 		}
 
 		if (timeout != 0) {

@@ -3687,34 +3687,42 @@ public class JenkinsResultsParserUtil {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(jenkinsMaster.getRemoteURL());
-		sb.append("job/");
-		sb.append(jenkinsJobName);
-		sb.append("/buildWithParameters?");
+		try {
+			if (buildParameters != null) {
+				for (Map.Entry<String, String> buildParameter :
+						buildParameters.entrySet()) {
 
-		for (Map.Entry<String, String> buildParameter :
-				buildParameters.entrySet()) {
+					String value = buildParameter.getValue();
 
-			String value = buildParameter.getValue();
+					if (isNullOrEmpty(value)) {
+						continue;
+					}
 
-			if (isNullOrEmpty(value)) {
-				continue;
+					sb.append(
+						URLEncoder.encode(buildParameter.getKey(), "UTF-8"));
+					sb.append("=");
+					sb.append(URLEncoder.encode(value, "UTF-8"));
+					sb.append("&");
+				}
 			}
 
-			sb.append(buildParameter.getKey());
-			sb.append("=");
-			sb.append(value);
-			sb.append("&");
-		}
+			if (sb.length() > 0) {
+				sb.deleteCharAt(sb.length() - 1);
+			}
 
-		try {
-			sb.append("token=");
-			sb.append(getBuildProperty("jenkins.authentication.token"));
+			Map<String, String> requestHeaders = new HashMap<>();
+
+			requestHeaders.put(
+				"Content-Type", "application/x-www-form-urlencoded");
 
 			return getJenkinsBuildQueueId(
 				UrlReader.getResponseHeader(
 					"Location", getJenkinsHTTPAuthorization(),
-					HttpRequestMethod.GET, null, timeout, sb.toString()));
+					HttpRequestMethod.POST, sb.toString(), requestHeaders,
+					timeout,
+					combine(
+						jenkinsMaster.getRemoteURL(), "job/", jenkinsJobName,
+						"/buildWithParameters")));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
