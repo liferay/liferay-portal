@@ -520,7 +520,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			_cpDefinitionOptionRelPersistence.fetchByPrimaryKey(
 				cpDefinitionOptionRelId);
 
-		if (cpDefinitionOptionRel.isDefinedExternally()) {
+		if ((cpDefinitionOptionRel != null) &&
+			cpDefinitionOptionRel.isDefinedExternally()) {
+
 			return _cpCollectionProviderHelper.getCPDefinitionOptionValueRels(
 				cpDefinitionOptionRel, null, null);
 		}
@@ -557,7 +559,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			_cpDefinitionOptionRelPersistence.fetchByPrimaryKey(
 				cpDefinitionOptionRelId);
 
-		if (cpDefinitionOptionRel.isDefinedExternally()) {
+		if ((cpDefinitionOptionRel != null) &&
+			cpDefinitionOptionRel.isDefinedExternally()) {
+
 			return _cpCollectionProviderHelper.getCPDefinitionOptionValueRels(
 				cpDefinitionOptionRel, null, Pagination.of(end, start));
 		}
@@ -762,7 +766,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			_cpDefinitionOptionRelPersistence.fetchByPrimaryKey(
 				cpDefinitionOptionRelId);
 
-		if (cpDefinitionOptionRel.isDefinedExternally()) {
+		if ((cpDefinitionOptionRel != null) &&
+			cpDefinitionOptionRel.isDefinedExternally()) {
+
 			return new BaseModelSearchResult<>(
 				_cpCollectionProviderHelper.getCPDefinitionOptionValueRels(
 					companyId, groupId, cpDefinitionOptionRel, keywords,
@@ -788,7 +794,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			_cpDefinitionOptionRelPersistence.fetchByPrimaryKey(
 				cpDefinitionOptionRelId);
 
-		if (cpDefinitionOptionRel.isDefinedExternally()) {
+		if ((cpDefinitionOptionRel != null) &&
+			cpDefinitionOptionRel.isDefinedExternally()) {
+
 			return _cpCollectionProviderHelper.
 				getCPDefinitionOptionValueRelsCount(
 					companyId, groupId, cpDefinitionOptionRel, keywords);
