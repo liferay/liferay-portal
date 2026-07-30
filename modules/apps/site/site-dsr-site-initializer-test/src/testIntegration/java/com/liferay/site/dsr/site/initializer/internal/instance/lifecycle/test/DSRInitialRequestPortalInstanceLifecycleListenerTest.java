@@ -102,34 +102,31 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 
 		IndexStatusManagerThreadLocal.setIndexReadOnly(true);
 
-		try {
-			_company = CompanyTestUtil.addCompany(true);
+		_company = CompanyTestUtil.addCompany(true);
 
-			Assert.assertNotNull(
-				_objectDefinitionLocalService.
-					fetchObjectDefinitionByExternalReferenceCode(
-						"L_DSR_ROOM", _company.getCompanyId()));
+		Assert.assertNotNull(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DSR_ROOM", _company.getCompanyId()));
 
-			group = _groupLocalService.fetchGroup(
-				_company.getCompanyId(), GroupConstants.DSR);
+		group = _groupLocalService.fetchGroup(
+			_company.getCompanyId(), GroupConstants.DSR);
 
-			_layoutLocalService.deleteLayout(
-				_layoutLocalService.fetchLayoutByFriendlyURL(
-					group.getGroupId(), false, "/home"));
+		_layoutLocalService.deleteLayout(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/home"));
 
-			_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
+		_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
 
-			Assert.assertNotNull(
-				_layoutLocalService.fetchLayoutByFriendlyURL(
-					group.getGroupId(), false, "/home"));
-			Assert.assertNotNull(
-				_objectDefinitionLocalService.
-					fetchObjectDefinitionByExternalReferenceCode(
-						"L_DSR_ROOM", _company.getCompanyId()));
-		}
-		finally {
-			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
-		}
+		Assert.assertNotNull(
+			_layoutLocalService.fetchLayoutByFriendlyURL(
+				group.getGroupId(), false, "/home"));
+		Assert.assertNotNull(
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DSR_ROOM", _company.getCompanyId()));
+
+		IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
 	}
 
 	@DeleteAfterTestRun
