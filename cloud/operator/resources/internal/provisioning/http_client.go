@@ -38,10 +38,10 @@ func (httpClient *HTTPClient) Activate(
 	}
 
 	response, error := httpClient.post(
-		context, fmt.Sprintf(
+		context, token, fmt.Sprintf(
 			"%s/o/provisioning-rest/v1.0/cloud/environment/%s/activation",
 			httpClient.BaseURL, activationRequest.EnvironmentID,
-		), token,
+		),
 	)
 
 	if error != nil {
@@ -84,8 +84,8 @@ func encodeSegment(bytes []byte) string {
 
 func (httpClient *HTTPClient) post(
 	context context.Context,
-	url string,
 	token string,
+	url string,
 ) (*http.Response, error) {
 	request, error := http.NewRequestWithContext(
 		context, http.MethodPost, url, bytes.NewReader([]byte(token)),
