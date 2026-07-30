@@ -9,6 +9,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
+import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {FDSTablePage} from '../../../pages/mcp-server-web/FDSTablePage';
 import getRandomString from '../../../utils/getRandomString';
 import {createFDSTableTests} from './utils/createFDSTableTests';
@@ -27,6 +28,30 @@ const PROMPTS_API = 'mcp/server-prompts';
 
 function promptName() {
 	return `pwprompt-${getRandomString()}`;
+}
+
+async function createPrompt(
+	apiHelpers: DataApiHelpers,
+	name: string
+): Promise<ObjectEntry> {
+	const prompt = await apiHelpers.objectEntry.postObjectEntry(
+		{
+			description: `Created by Playwright ${name}`,
+			identifier: name,
+			name,
+			prompt: 'Prompt body created by Playwright',
+			promptStatus: {key: 'active'},
+		},
+		PROMPTS_API
+	);
+
+	apiHelpers.data.push({
+		applicationName: PROMPTS_API,
+		id: prompt.id,
+		type: 'objectEntry',
+	});
+
+	return prompt;
 }
 
 const test = baseTest.extend<{
@@ -61,7 +86,7 @@ const test = baseTest.extend<{
 });
 
 createFDSTableTests(test, {
-	columns: ['Name', 'Description', 'Last Modified'],
+	columns: ['Name', 'Identifier', 'Description', 'Status', 'Last Modified'],
 	rowActions: ['Edit', 'Duplicate', 'Delete'],
 	sortOptions: ['Name', 'Last Modified'],
 	tag: '@LPD-98309',
@@ -103,8 +128,9 @@ test.describe('Prompts - List View', () => {
 	test(
 		'Duplicates a prompt into a Copy of prompt from the three-dot menu',
 		{tag: '@LPD-98309'},
-		async ({apiHelpers, createFDSItem, promptsPage}) => {
-			const name = await createFDSItem();
+		async ({apiHelpers, promptsPage}) => {
+			const name = promptName();
+			const prompt = await createPrompt(apiHelpers, name);
 
 			await promptsPage.goto();
 			await promptsPage.search(name);
@@ -125,6 +151,9 @@ test.describe('Prompts - List View', () => {
 				id: copy.id,
 				type: 'objectEntry',
 			});
+
+			expect(copy.identifier).toBe(`copy-of-${prompt.identifier}`);
+			expect(copy.promptStatus.key).toBe('inactive');
 		}
 	);
 
@@ -201,7 +230,7 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 		'Creates a prompt from the New Prompt button',
 		{tag: '@LPD-98309'},
 		async ({apiHelpers, promptsPage}) => {
-			const name = promptName();
+			const name = `Auto Generated ${getRandomString()}`;
 
 			await promptsPage.goto();
 			await promptsPage.newPromptButton.click();
@@ -209,8 +238,23 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 			await expect(promptsPage.formHeading).toHaveText('New Prompt');
 
 			await promptsPage.nameInput.fill(name);
+
+			await expect(promptsPage.identifierInput).toHaveValue(
+				name.toLowerCase().replace(/\s/g, '-')
+			);
+
+			const identifier = promptName();
+
+			await promptsPage.identifierInput.fill(identifier);
 			await promptsPage.descriptionInput.fill('Created from the UI');
 			await promptsPage.promptInput.fill('Answer as a friendly robot.');
+
+			await expect(promptsPage.statusToggle).not.toBeChecked();
+
+			await promptsPage.statusToggle.click();
+
+			await expect(promptsPage.statusToggle).toBeChecked();
+
 			await promptsPage.saveButton.click();
 
 			await expect(promptsPage.row(name)).toBeVisible();
@@ -226,12 +270,53 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 				type: 'objectEntry',
 			});
 
+			expect(prompt.identifier).toBe(identifier);
 			expect(prompt.prompt).toBe('Answer as a friendly robot.');
+			expect(prompt.promptStatus.key).toBe('active');
 		}
 	);
 
 	test(
-		'Shows a required-field error on Name, Description, and Prompt',
+		'Stops auto-generating the identifier after a manual edit',
+		{tag: '@LPD-98450'},
+		async ({promptsPage}) => {
+			await promptsPage.goto();
+			await promptsPage.newPromptButton.click();
+
+			await promptsPage.nameInput.fill('First Name');
+
+			await expect(promptsPage.identifierInput).toHaveValue('first-name');
+
+			const identifier = promptName();
+
+			await promptsPage.identifierInput.fill(identifier);
+
+			await promptsPage.nameInput.fill('Second Name');
+
+			await expect(promptsPage.identifierInput).toHaveValue(identifier);
+		}
+	);
+
+	test(
+		'Shows a format error for an invalid identifier',
+		{tag: '@LPD-98450'},
+		async ({promptsPage}) => {
+			await promptsPage.goto();
+			await promptsPage.newPromptButton.click();
+
+			await promptsPage.identifierInput.fill('Invalid_Identifier');
+			await promptsPage.saveButton.click();
+
+			await expect(
+				promptsPage.identifierInput
+			).toHaveAccessibleDescription(
+				/Please enter a valid identifier \(lowercase letters and numbers separated by single hyphens\)\./
+			);
+		}
+	);
+
+	test(
+		'Shows a required-field error on Name, Identifier, Description, and Prompt',
 		{tag: '@LPD-98309'},
 		async ({promptsPage}) => {
 			await promptsPage.goto();
@@ -242,6 +327,9 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 			await expect(promptsPage.nameInput).toHaveAccessibleDescription(
 				/This field is required\./
 			);
+			await expect(
+				promptsPage.identifierInput
+			).toHaveAccessibleDescription(/This field is required\./);
 			await expect(
 				promptsPage.descriptionInput
 			).toHaveAccessibleDescription(/This field is required\./);
@@ -281,6 +369,9 @@ test.describe('Prompts - Detail (Create / Edit)', () => {
 			await promptsPage.goto();
 			await promptsPage.search(name);
 			await promptsPage.clickAction(name, 'Edit');
+
+			await expect(promptsPage.identifierInput).toHaveValue(name);
+			await expect(promptsPage.statusToggle).toBeChecked();
 
 			await promptsPage.promptInput.fill('Edited by Playwright');
 			await promptsPage.saveButton.click();

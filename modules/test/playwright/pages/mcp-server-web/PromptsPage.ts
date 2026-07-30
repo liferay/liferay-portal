@@ -37,6 +37,14 @@ export class PromptsPage extends FDSTablePage {
 		return this.page.locator('#promptName');
 	}
 
+	get identifierInput(): Locator {
+		return this.page.locator('#promptIdentifier');
+	}
+
+	get statusToggle(): Locator {
+		return this.page.locator('.toggle-switch-check');
+	}
+
 	get descriptionInput(): Locator {
 		return this.page.locator('#promptDescription');
 	}
