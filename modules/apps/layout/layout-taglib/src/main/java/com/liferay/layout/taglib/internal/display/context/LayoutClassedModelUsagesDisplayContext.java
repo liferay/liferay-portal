@@ -401,7 +401,7 @@ public class LayoutClassedModelUsagesDisplayContext {
 	private String _getLayoutClassedModelUsagesURL(
 		String className, long classPK) {
 
-		StringBundler sb = new StringBundler(9);
+		StringBundler sb = new StringBundler(8);
 
 		sb.append(
 			PortalUtil.getPortalURL(
