@@ -15,3 +15,7 @@ export const search = jest.fn(() =>
 export const searchAccounts = jest.fn(() =>
 	Promise.resolve(data.mockSearch(data.mockAccount))
 );
+
+export const searchByFilter = jest.fn(() =>
+	Promise.resolve({items: [data.mockAccount()], totalCount: 1})
+);
