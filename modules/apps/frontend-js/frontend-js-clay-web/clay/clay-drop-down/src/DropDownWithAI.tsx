@@ -10,8 +10,9 @@ import {
 	InternalDispatch,
 	getFocusableList,
 	useControlledState,
+	useId,
 } from '@clayui/shared';
-import React, {useId, useRef} from 'react';
+import React, {useRef, useState} from 'react';
 
 import DropDown from './DropDown';
 import {FocusMenu} from './FocusMenu';
@@ -41,26 +42,12 @@ interface IItem {
 	symbolRight?: string;
 }
 
-interface IPromptProps
-	extends Omit<
-		React.InputHTMLAttributes<HTMLInputElement>,
-		'onChange' | 'onSubmit'
-	> {
+interface IPromptProps {
 
 	/**
 	 * Aria label for the close button.
 	 */
 	closeAriaLabel?: string;
-
-	/**
-	 * Initial value of the input (uncontrolled).
-	 */
-	defaultValue?: string;
-
-	/**
-	 * Callback for when the input value changes (controlled).
-	 */
-	onChange?: InternalDispatch<string>;
 
 	/**
 	 * Callback for when the composer is dismissed with the close button.
@@ -73,6 +60,11 @@ interface IPromptProps
 	onSubmit?: (value: string) => void;
 
 	/**
+	 * Placeholder for the prompt input.
+	 */
+	placeholder?: string;
+
+	/**
 	 * Path to the location of the spritemap resource.
 	 */
 	spritemap?: string;
@@ -81,11 +73,6 @@ interface IPromptProps
 	 * Aria label for the submit button.
 	 */
 	submitAriaLabel?: string;
-
-	/**
-	 * Current value of the input (controlled).
-	 */
-	value?: string;
 }
 
 // The inline prompt composer (input + AI submit + close) shown in the `prompt`
@@ -93,24 +80,13 @@ interface IPromptProps
 
 function Prompt({
 	closeAriaLabel = 'Close',
-	defaultValue = '',
-	onChange,
 	onClose,
 	onSubmit,
 	placeholder = 'What do you need?',
 	spritemap,
 	submitAriaLabel = 'Submit prompt',
-	value: valueProp,
-	...otherProps
 }: IPromptProps) {
-	const [value, setValue] = useControlledState({
-		defaultName: 'defaultValue',
-		defaultValue,
-		handleName: 'onChange',
-		name: 'value',
-		onChange,
-		value: valueProp,
-	});
+	const [value, setValue] = useState('');
 
 	return (
 		<div className="dropdown-section">
@@ -126,7 +102,6 @@ function Prompt({
 				<ClayInput.Group>
 					<ClayInput.GroupItem>
 						<ClayInput
-							{...otherProps}
 							autoFocus
 							className="form-control-sm rounded-lg"
 							onChange={(event) => setValue(event.target.value)}
@@ -466,6 +441,12 @@ export function ClayDropDownWithAI({
 
 	const dismissable = aiState === 'menu' || aiState === 'prompt';
 
+	const toggle = () => {
+		if (!internalActive || dismissable) {
+			setInternalActive(!internalActive);
+		}
+	};
+
 	const states: Record<AIState, React.ReactNode> = {
 		menu: (
 			<AIMenuState
@@ -524,8 +505,8 @@ export function ClayDropDownWithAI({
 				'onClick': (event: React.MouseEvent) => {
 					trigger.props.onClick?.(event);
 
-					if (openOnClick && (!internalActive || dismissable)) {
-						setInternalActive(!internalActive);
+					if (openOnClick) {
+						toggle();
 					}
 				},
 				'onKeyDown': (event: React.KeyboardEvent) => {
@@ -533,12 +514,11 @@ export function ClayDropDownWithAI({
 
 					if (
 						openOnClick &&
-						(event.key === 'Enter' || event.key === ' ') &&
-						(!internalActive || dismissable)
+						(event.key === 'Enter' || event.key === ' ')
 					) {
 						event.preventDefault();
 
-						setInternalActive(!internalActive);
+						toggle();
 					}
 				},
 				'ref': (node: HTMLElement | null) => {
