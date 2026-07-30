@@ -25,6 +25,7 @@ import (
 	types "k8s.io/apimachinery/pkg/types"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 const (
@@ -41,6 +42,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
 	request controllerruntime.Request,
 ) (controllerruntime.Result, error) {
+	logger := logf.FromContext(context)
+
 	liferayEnvironment := &licensingv1alpha1.LiferayEnvironment{}
 
 	if error := liferayEnvironmentReconciler.Get(context, request.NamespacedName, liferayEnvironment); error != nil {
@@ -74,6 +77,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 			return controllerruntime.Result{}, error
 		}
 
+		logger.Info(
+			"Activating environment",
+			"environmentID", environmentID,
+			"environmentName", liferayEnvironment.Spec.EnvironmentName,
+		)
+
 		if error := liferayEnvironmentReconciler.Provisioning.Activate(
 			provisioning.ActivationRequest{
 				ActivationCode:  activationCode,
@@ -81,6 +90,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 				EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
 				PublicKey:       publicKey,
 			}, context, privateKey); error != nil {
+			logger.Error(error, "Activation rejected", "environmentID", environmentID)
+
 			meta.SetStatusCondition(
 				&liferayEnvironment.Status.Conditions,
 				metav1.Condition{
@@ -99,6 +110,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		now := metav1.Now()
 
 		liferayEnvironment.Status.ActivatedAt = &now
+
+		logger.Info("Environment activated", "environmentID", environmentID)
 
 		meta.SetStatusCondition(
 			&liferayEnvironment.Status.Conditions,
@@ -120,6 +133,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	)
 
 	if error != nil {
+		logger.Error(error, "Entitlements fetch failed", "environmentID", environmentID)
+
 		meta.SetStatusCondition(
 			&liferayEnvironment.Status.Conditions,
 			metav1.Condition{
@@ -134,6 +149,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 		return liferayEnvironmentReconciler.finish(context, liferayEnvironment)
 	}
+
+	logger.Info(
+		"Entitlements fetched",
+		"environmentID", environmentID,
+		"maxClusterNodes", entitlements.MaxClusterNodes,
+	)
 
 	meta.SetStatusCondition(
 		&liferayEnvironment.Status.Conditions,
@@ -249,6 +270,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 		return nil, error
 	}
 
+	logf.FromContext(context).Info("Generated identity keypair", "secret", identityName)
+
 	return privateKey, nil
 }
 
@@ -319,7 +342,13 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistLicense
 			"license.xml": licenseXML,
 		}
 
-		return liferayEnvironmentReconciler.Update(context, secret)
+		if error := liferayEnvironmentReconciler.Update(context, secret); error != nil {
+			return error
+		}
+
+		logf.FromContext(context).Info("Updated license secret", "secret", licenseName)
+
+		return nil
 	}
 
 	if !errors.IsNotFound(getError) {
@@ -344,6 +373,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistLicense
 	if error := liferayEnvironmentReconciler.Create(context, secret); error != nil {
 		return error
 	}
+
+	logf.FromContext(context).Info("Created license secret", "secret", licenseName)
 
 	return nil
 }
