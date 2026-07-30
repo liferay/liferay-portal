@@ -3,7 +3,8 @@ import {
 	AddDataSourceNav,
 	DataSourceName,
 	disableRow,
-	StatusRenderer
+	StatusRenderer,
+	typeFormatter
 } from '../DataSourceList';
 import {DataSourceStates, DataSourceTypes} from 'shared/util/constants';
 import {MemoryRouter} from 'react-router-dom';
@@ -27,6 +28,32 @@ describe('DataSourceList exports', () => {
 			expect(disableRow({state: DataSourceStates.Disconnected})).toBe(
 				false
 			);
+		});
+	});
+
+	describe('typeFormatter', () => {
+		it.each([
+			['.CSV', DataSourceTypes.Csv],
+			['Liferay Portal', DataSourceTypes.Liferay],
+			['Marketo Campaign', DataSourceTypes.MarketoCampaign],
+			['Salesforce', DataSourceTypes.Salesforce]
+		])('renders %s for standalone data sources', (label, providerType) => {
+			expect(typeFormatter(providerType)).toBe(label);
+		});
+
+		it.each([
+			['Demandbase', DataSourceTypes.Demandbase],
+			['HubSpot', DataSourceTypes.Hubspot],
+			['Marketo Event Stream', DataSourceTypes.MarketoEventStream]
+		])(
+			'renders %s for connectors registered in the 3rd-party connector framework',
+			(label, providerType) => {
+				expect(typeFormatter(providerType)).toBe(label);
+			}
+		);
+
+		it('renders an empty string when the providerType is unknown', () => {
+			expect(typeFormatter('NOT_A_REGISTERED_CONNECTOR')).toBe('');
 		});
 	});
 

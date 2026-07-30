@@ -452,7 +452,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
                         class="form-control"
                         readonly=""
                         type="text"
-                        value="Marketo"
+                        value="Marketo Campaign"
                       />
                     </div>
                     <div
@@ -1187,7 +1187,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
                         class="form-control"
                         readonly=""
                         type="text"
-                        value="Marketo"
+                        value="Marketo Campaign"
                       />
                     </div>
                     <div
@@ -2223,7 +2223,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                         class="form-control"
                         readonly=""
                         type="text"
-                        value="Marketo"
+                        value="Marketo Campaign"
                       />
                     </div>
                     <div
