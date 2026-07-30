@@ -1547,7 +1547,7 @@ definition {
 
 	@summary = "Default summary"
 	macro increaseDisplayDate(minuteIncrease = null) {
-		var displayDate = DateUtil.getDateOffsetByMinutes(${minuteIncrease}, "yyyy-MM-dd HH:mm", "UTC");
+		var displayDate = DateUtil.getDateOffsetByMinutes(${minuteIncrease}, "yyyy-MM-dd hh:mm a", "UTC");
 
 		WebContent.scheduleWCArticleWithPermissions(displayDate = ${displayDate});
 

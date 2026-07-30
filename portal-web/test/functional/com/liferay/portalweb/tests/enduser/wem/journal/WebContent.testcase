@@ -1113,7 +1113,7 @@ definition {
 				webContentContent = "Web Content Content",
 				webContentTitle = "Web Content Title");
 
-			WebContent.scheduleWCArticleWithPermissions(displayDate = "2100-11-20 01:01");
+			WebContent.scheduleWCArticleWithPermissions(displayDate = "2100-11-20 01:01 AM");
 		}
 
 		task ("Add a page with a Web Content Display widget and display the Web Content article in the Web Content Display widget") {
