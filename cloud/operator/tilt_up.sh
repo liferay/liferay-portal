@@ -6,27 +6,31 @@ set -o pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-CLUSTER_NAME="operator-dev"
-KUBE_CONTEXT="k3d-operator-dev"
-
 function main {
-	if [ -z "${ACTIVATION_CODE:-}" ]
+	if [[ -z ${ACTIVATION_CODE:-} ]]
 	then
-		echo "ERROR: ACTIVATION_CODE is not set." >&2
-		echo "Usage: export ACTIVATION_CODE=<code> ./tilt_up.sh" >&2
+		echo "Usage: ${0}"
+		echo ""
+		echo "The script reads the following environment variables:"
+		echo ""
+		echo "    ACTIVATION_CODE: Liferay DXP activation code stored in the dev-activation secret"
 
 		exit 1
 	fi
 
-	if k3d cluster list "${CLUSTER_NAME}" >/dev/null 2>&1; then
-		k3d cluster start "${CLUSTER_NAME}"
+	if k3d cluster list ${_CLUSTER_NAME} > /dev/null 2>&1
+	then
+		k3d cluster start ${_CLUSTER_NAME}
 	else
-		k3d cluster create "${CLUSTER_NAME}" --registry-create liferay-registry:0.0.0.0:5001
+		k3d cluster create ${_CLUSTER_NAME} --registry-create liferay-registry:0.0.0.0:5001
 	fi
 
-	kubectl config use-context "${KUBE_CONTEXT}"
+	kubectl config use-context ${_KUBE_CONTEXT}
 
 	tilt up
 }
+
+_CLUSTER_NAME=operator-dev
+_KUBE_CONTEXT=k3d-operator-dev
 
 main "${@}"

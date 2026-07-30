@@ -7,11 +7,12 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 function main {
-	local mode="${1:-full}"
+	local mode=${1:-full}
 
 	cd resources
 
-	if [ "${mode}" == "fast" ]; then
+	if [[ ${mode} == "fast" ]]
+	then
 		go generate ./...
 
 		mkdir -p build
