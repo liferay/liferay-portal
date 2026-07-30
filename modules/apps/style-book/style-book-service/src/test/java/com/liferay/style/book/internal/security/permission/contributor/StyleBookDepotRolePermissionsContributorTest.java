@@ -7,13 +7,14 @@ package com.liferay.style.book.internal.security.permission.contributor;
 
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.security.permission.contributor.DepotRolePermission;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookConstants;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -31,35 +32,25 @@ public class StyleBookDepotRolePermissionsContributorTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	@TestInfo("LPD-96528")
 	public void testGetDepotRolePermissions() {
 		StyleBookDepotRolePermissionsContributor
 			styleBookDepotRolePermissionsContributor =
 				new StyleBookDepotRolePermissionsContributor();
 
-		List<DepotRolePermission> depotRolePermissions =
-			styleBookDepotRolePermissionsContributor.getDepotRolePermissions();
+		List<String> expectedRoleNames = new ArrayList<>(
+			Arrays.asList(
+				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+				DepotRolesConstants.DESIGN_LIBRARY_OWNER));
 
-		Assert.assertEquals(
-			depotRolePermissions.toString(), 3, depotRolePermissions.size());
+		for (DepotRolePermission depotRolePermission :
+				styleBookDepotRolePermissionsContributor.
+					getDepotRolePermissions()) {
 
-		Map<String, DepotRolePermission> depotRolePermissionsMap =
-			new HashMap<>();
-
-		for (DepotRolePermission depotRolePermission : depotRolePermissions) {
-			depotRolePermissionsMap.put(
-				depotRolePermission.getRoleName(), depotRolePermission);
-		}
-
-		for (String roleName :
-				List.of(
-					DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-					DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-					DepotRolesConstants.DESIGN_LIBRARY_OWNER)) {
-
-			DepotRolePermission depotRolePermission =
-				depotRolePermissionsMap.get(roleName);
-
-			Assert.assertNotNull(roleName, depotRolePermission);
+			Assert.assertTrue(
+				depotRolePermission.getRoleName(),
+				expectedRoleNames.remove(depotRolePermission.getRoleName()));
 			Assert.assertEquals(
 				StyleBookConstants.RESOURCE_NAME,
 				depotRolePermission.getResourceName());
@@ -67,6 +58,9 @@ public class StyleBookDepotRolePermissionsContributorTest {
 				new String[] {StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES},
 				depotRolePermission.getActionKeys());
 		}
+
+		Assert.assertTrue(
+			expectedRoleNames.toString(), expectedRoleNames.isEmpty());
 	}
 
 }
