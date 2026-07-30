@@ -302,7 +302,7 @@ public class CPDefinitionLinkServiceImpl
 
 		for (int i = 0; i < cProductIds.length; i++) {
 			CPDefinition cpDefinition =
-				_cpDefinitionPersistence.fetchByPrimaryKey(cpDefinitionIds2[i]);
+				_cpDefinitionPersistence.findByPrimaryKey(cpDefinitionIds2[i]);
 
 			cProductIds[i] = cpDefinition.getCProductId();
 		}
