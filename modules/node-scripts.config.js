@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-/** AUTO-GENERATED: DO NOT EDIT
- *
+/** AUTO-GENERATED: DO NOT EDIT 
+ * 
  * This is generated based on each module's `node-scripts.config.js`
- *
- */
+ * 
+*/
 
 module.exports = {
 	hash: '24aa43ec5dabe28f0554d2074fa6511856dca3b3251e2c15c8709fb794b3e064',
