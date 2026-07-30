@@ -622,6 +622,23 @@ export const List: React.FC<IListProps> = ({
 									title: true,
 								},
 								{
+									accessor: 'segmentCategory',
+									cellRenderer: (item: {
+										data: {
+											segmentCategory: SegmentCategories;
+										};
+									}) => (
+										<td>
+											{
+												SEGMENT_CATEGORIES_LABEL_MAP[
+													item.data.segmentCategory
+												]
+											}
+										</td>
+									),
+									label: Liferay.Language.get('type'),
+								},
+								{
 									accessor: 'segmentType',
 									cellRenderer: (item: {
 										data: {
