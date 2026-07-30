@@ -32,6 +32,12 @@
 		<field name="companyId" type="long" />
 		<field name="name" type="String" />
 	</model>
+	<model name="com.liferay.portal.tools.service.builder.test.model.ClobEntry">
+		<field name="clobEntryId" type="long" />
+		<field name="content" type="String">
+			<hint-collection name="CLOB" />
+		</field>
+	</model>
 	<model name="com.liferay.portal.tools.service.builder.test.model.ColumnNameEntry">
 		<field name="columnNameEntryId" type="long" />
 		<field name="name" type="String" />

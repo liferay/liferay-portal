@@ -119,6 +119,16 @@
 			<finder-column name="name" />
 		</finder>
 	</entity>
+	<entity local-service="false" name="ClobEntry" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="clobEntryId" primary="true" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="content" type="String" />
+	</entity>
 	<entity local-service="false" name="ColumnNameEntry" remote-service="false">
 
 		<!-- PK fields -->
