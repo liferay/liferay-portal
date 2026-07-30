@@ -49,7 +49,9 @@ jest.mock('../Activities', () => ({
 
 jest.mock('../Overview', () => ({
 	__esModule: true,
-	default: () => <div data-testid="account-overview" />,
+	default: ({account}: {account?: {accountName?: string}}) => (
+		<div data-testid="account-overview">{account?.accountName}</div>
+	),
 }));
 
 jest.mock('../Profile', () => ({
@@ -200,6 +202,26 @@ describe('AccountProfileRoutes', () => {
 		expect(
 			await screen.findByTestId('account-overview')
 		).toBeInTheDocument();
+	});
+
+	it('passes the account to the overview page', async () => {
+		mockedUseRequest.mockReturnValue({
+			data: {accountName: 'Acme Corp'},
+			error: false,
+			loading: false,
+		});
+
+		renderProfileRoutes(
+			createMemoryHistory({
+				initialEntries: [
+					toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS),
+				],
+			})
+		);
+
+		expect(await screen.findByTestId('account-overview')).toHaveTextContent(
+			'Acme Corp'
+		);
 	});
 
 	it('renders the activities page on the activities route', async () => {

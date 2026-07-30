@@ -22,7 +22,7 @@ interface IAccountInfoBarProps {
 	annualRevenue?: number;
 	country?: string;
 	industry?: string;
-	lifecycleStage?: string;
+	lifecycleStage?: string | null;
 }
 
 const infoItem = (symbol: string, value: string) => (

@@ -85,6 +85,20 @@ describe('AccountInfoBar', () => {
 			expect(screen.queryByText(/Type:/)).not.toBeInTheDocument();
 		});
 
+		it('should not render the lifecycle label when the backend returns null', () => {
+			const {container} = render(
+				<AccountInfoBar
+					accountName="Hydrofield"
+					accountType="Prospect"
+					lifecycleStage={null}
+				/>
+			);
+
+			expect(screen.queryByText(/Lifecycle/)).not.toBeInTheDocument();
+			expect(container.querySelectorAll('.label')).toHaveLength(1);
+			expect(screen.getByText('Type: Prospect')).toBeInTheDocument();
+		});
+
 		it('should render a zeroed annual revenue blank', () => {
 			render(
 				<AccountInfoBar accountName="Hydrofield" annualRevenue={0} />

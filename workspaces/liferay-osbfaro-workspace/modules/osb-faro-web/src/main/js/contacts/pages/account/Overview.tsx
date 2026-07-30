@@ -1,21 +1,21 @@
 import AccountInfoBar from './components/AccountInfoBar';
 import React from 'react';
+import {IAccount} from './components/AccountInfo';
 
-// LPD-100078 - TODO Feed the bar from the account DTO returned by
-// API.accounts.fetch instead of this mock.
+interface IOverviewProps {
+	account?: IAccount;
+}
 
-const MOCK_ACCOUNT = {
-	accountName: 'Hydrofield',
-	accountType: 'Prospect',
-	annualRevenue: 120000000,
-	country: 'Australia',
-	industry: 'Health Sector',
-	lifecycleStage: 'ENGAGED',
-};
-
-const Overview: React.FC = () => (
+const Overview: React.FC<IOverviewProps> = ({account}) => (
 	<section>
-		<AccountInfoBar {...MOCK_ACCOUNT} />
+		<AccountInfoBar
+			accountName={account?.accountName}
+			accountType={account?.accountType}
+			annualRevenue={account?.annualRevenue}
+			country={account?.country}
+			industry={account?.industry}
+			lifecycleStage={account?.lifecycleStage}
+		/>
 	</section>
 );
 

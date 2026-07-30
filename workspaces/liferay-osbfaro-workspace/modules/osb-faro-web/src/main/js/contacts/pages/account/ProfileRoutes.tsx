@@ -144,6 +144,7 @@ const AccountProfileRoutes = () => {
 
 						{ENABLE_ACCOUNT_OVERVIEW && (
 							<BundleRouter
+								componentProps={{account: data}}
 								data={Overview}
 								exact
 								path={Routes.CONTACTS_ACCOUNT_OVERVIEW}

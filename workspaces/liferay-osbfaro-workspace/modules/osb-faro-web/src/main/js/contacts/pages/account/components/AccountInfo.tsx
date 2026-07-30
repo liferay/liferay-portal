@@ -14,6 +14,7 @@ export interface IAccount {
 	accountName?: string;
 	accountType?: string;
 	annualRevenue?: number;
+	country?: string;
 	fields?: Array<{
 		dataSourceId?: string;
 		dataSourceName?: string;
@@ -22,6 +23,7 @@ export interface IAccount {
 	}>;
 	id?: string;
 	industry?: string;
+	lifecycleStage?: string | null;
 	numberOfEmployees?: number;
 	website?: string;
 }
