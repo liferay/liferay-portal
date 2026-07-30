@@ -27,7 +27,7 @@ import performLogin, {
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
-import {miniumSetUp} from '../../utils/commerce';
+import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
 import {
 	customFormatDateTimeYY,
 	customFormatDateTimeYYYY,
@@ -1927,3 +1927,67 @@ test('LPD-41398 Local date format', async ({
 		).toBeChecked();
 	}
 });
+
+test(
+	'ERC is displayed in the placed order details page',
+	{tag: ['@COMMERCE-8931', '@LPD-100094']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		placedOrdersPage,
+		site,
+	}) => {
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOrderContentPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const externalReferenceCode = getRandomString();
+
+		await apiHelpers.headlessCommerceAdminOrder.postOrder({
+			accountId: account.id,
+			channelId: channel.id,
+			externalReferenceCode,
+			orderStatus: '0',
+		});
+
+		await performLogout(page);
+		await performLogin(page, buyerUser.alternateName);
+
+		await page.goto(
+			`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
+			{waitUntil: 'networkidle'}
+		);
+
+		await expect(placedOrdersPage.table).toBeVisible();
+
+		await placedOrdersPage.viewButton.click();
+
+		await expect(placedOrdersPage.orderDetailsValue('ERC')).toHaveText(
+			externalReferenceCode
+		);
+	}
+);

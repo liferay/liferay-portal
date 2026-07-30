@@ -90,66 +90,6 @@ definition {
 		}
 	}
 
-	@description = "Verify the external reference code (ERC) of an order is present in the placed order details."
-	@priority = 3
-	test AssertERCInPlacedOrderDetails {
-		property custom.properties = "company.security.strangers.verify=false${line.separator}jsonws.web.service.paths.excludes=";
-		property portal.acceptance = "false";
-
-		task ("Given a buyer user connected to the Commerce Account") {
-			CommerceEntry.addAccountEntryUser(
-				accountName = "Commerce Account",
-				agreeToTermsAndAnswerReminderQuery = "true",
-				requireReset = "false",
-				userEmailAddress = "buyer@liferay.com",
-				userFirstName = "Buyer",
-				userLastName = "User",
-				userRole = "Buyer",
-				userScreenName = "buyeruser",
-				userSiteMembership = "Minium");
-		}
-
-		task ("And given the buyer completes the checkout process for an order") {
-			User.logoutPG();
-
-			CommerceLogin.miniumLogin(
-				password = PropsUtil.get("default.admin.password"),
-				urlAppend = "web/minium",
-				userEmailAddress = "buyer@liferay.com");
-
-			FrontStore.addInitializerProductToCart(
-				productName = "U-Joint",
-				productQuantity = 1);
-
-			CommerceCheckout.gotoCheckoutViaMiniCart();
-
-			CommerceCheckout.initializersCheckout(
-				newAddressAddress = "Test Address",
-				newAddressCity = "Test City",
-				newAddressCountry = "United States",
-				newAddressName = "Address Name",
-				newAddressZipCode = "Test Zip Code",
-				productName = "U-Joint",
-				productQuantity = 1,
-				productUnitPrice = 24,
-				shippingMethod = "Standard");
-		}
-
-		task ("And given an ERC is created for the order") {
-			CommerceJSONOrdersAPI._updateCommerceOrderERC(externalReferenceCode = "Test101");
-		}
-
-		task ("When the buyer goes to the order details") {
-			Button.click(button = "Go to Order Details");
-		}
-
-		task ("Then the ERC field is present in the order details and populated with Test101") {
-			AssertElementPresent(
-				key_ERC = "Test101",
-				locator1 = "CommerceOrders#ORDER_DETAILS_ERC");
-		}
-	}
-
 	@description = "Verify the shipping and billing addresses of an order are present in the placed order details."
 	@priority = 5
 	test AssertNameOfTheShippingAndBillingAddressInPlacedOrderDetails {
