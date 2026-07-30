@@ -62,6 +62,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author Adolfo Pérez
@@ -401,6 +402,22 @@ public class DLViewEntriesDisplayContext {
 		return true;
 	}
 
+	public boolean isSignatureRequired(FileEntry fileEntry) {
+		if (_dsRequestManager == null) {
+			return false;
+		}
+
+		if (_signatureRequiredFileEntryIds == null) {
+			_signatureRequiredFileEntryIds =
+				_dsRequestManager.getSignatureRequiredFileEntryIds(
+					_themeDisplay.getCompanyId(), _themeDisplay.getUserId(),
+					_getPageFileEntryIds());
+		}
+
+		return _signatureRequiredFileEntryIds.contains(
+			fileEntry.getFileEntryId());
+	}
+
 	public boolean isVersioningStrategyOverridable() {
 		return _dlAdminDisplayContext.isVersioningStrategyOverridable();
 	}
@@ -518,6 +535,7 @@ public class DLViewEntriesDisplayContext {
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private String _redirect;
+	private Set<Long> _signatureRequiredFileEntryIds;
 	private Map<Long, String> _signatureStatuses;
 	private final ThemeDisplay _themeDisplay;
 

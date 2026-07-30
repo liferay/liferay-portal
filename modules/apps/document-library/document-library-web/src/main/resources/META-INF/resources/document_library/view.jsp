@@ -38,6 +38,13 @@ DLViewDisplayContext dlViewDisplayContext = new DLViewDisplayContext(dlAdminDisp
 
 		<liferay-util:include page="/document_library/navigation.jsp" servletContext="<%= application %>" />
 
+		<c:if test="<%= dlViewDisplayContext.isSignatureRequiredNoticeVisible() %>">
+			<clay:alert
+				displayType="warning"
+				message='<%= LanguageUtil.format(request, "you-have-x-documents-awaiting-your-signature", dlViewDisplayContext.getSignatureRequiredCount()) %>'
+			/>
+		</c:if>
+
 		<clay:management-toolbar
 			additionalProps='<%=
 				HashMapBuilder.<String, Object>put(

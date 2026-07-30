@@ -9,6 +9,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
+import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.servlet.BrowserSnifferUtil;
@@ -278,6 +280,31 @@ public class DLViewDisplayContext {
 		return resourceURL.toString();
 	}
 
+	public int getSignatureRequiredCount() {
+		if (_signatureRequiredCount != null) {
+			return _signatureRequiredCount;
+		}
+
+		DSRequestManager dsRequestManager =
+			(DSRequestManager)_httpServletRequest.getAttribute(
+				DSRequestManager.class.getName());
+
+		if (dsRequestManager == null) {
+			_signatureRequiredCount = 0;
+
+			return _signatureRequiredCount;
+		}
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		_signatureRequiredCount = dsRequestManager.getSignatureRequiredCount(
+			themeDisplay.getCompanyId(), themeDisplay.getUserId());
+
+		return _signatureRequiredCount;
+	}
+
 	public String getUploadURL() throws PortalException {
 		if (!isUploadable()) {
 			return StringPool.BLANK;
@@ -386,6 +413,20 @@ public class DLViewDisplayContext {
 		return false;
 	}
 
+	public boolean isSignatureRequiredNoticeVisible() {
+		if (getSignatureRequiredCount() <= 0) {
+			return false;
+		}
+
+		if (!_dlAdminDisplayContext.hasFilterParameters()) {
+			return true;
+		}
+
+		return ArrayUtil.contains(
+			_dlAdminDisplayContext.getSignatureRecipientStatuses(),
+			"signature-required");
+	}
+
 	public boolean isUploadable() throws PortalException {
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)_httpServletRequest.getAttribute(
@@ -445,5 +486,6 @@ public class DLViewDisplayContext {
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private Integer _signatureRequiredCount;
 
 }

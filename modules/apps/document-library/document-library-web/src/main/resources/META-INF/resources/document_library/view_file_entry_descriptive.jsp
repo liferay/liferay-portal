@@ -182,3 +182,12 @@ else {
 		/>
 	</c:if>
 </span>
+
+<c:if test="<%= dlViewEntriesDisplayContext.isSignatureRequired(fileEntry) %>">
+	<div class="c-mt-1">
+		<clay:label
+			displayType="warning"
+			label='<%= LanguageUtil.get(request, "signature-required") %>'
+		/>
+	</div>
+</c:if>

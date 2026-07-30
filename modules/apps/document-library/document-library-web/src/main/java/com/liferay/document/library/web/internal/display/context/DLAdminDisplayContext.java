@@ -472,6 +472,15 @@ public class DLAdminDisplayContext {
 			getSelectedRepositoryId(), getRootFolderId());
 	}
 
+	public String[] getSignatureRecipientStatuses() {
+		if (_signatureRecipientStatuses == null) {
+			_signatureRecipientStatuses = ParamUtil.getStringValues(
+				_httpServletRequest, "signatureRecipientStatus");
+		}
+
+		return _signatureRecipientStatuses;
+	}
+
 	public String[] getSignatureStatuses() {
 		if (_signatureStatuses == null) {
 			_signatureStatuses = ParamUtil.getStringValues(
@@ -500,6 +509,7 @@ public class DLAdminDisplayContext {
 			(getFileEntryTypeId() >= 0) ||
 			ArrayUtil.isNotEmpty(getAssetTagIds()) ||
 			ArrayUtil.isNotEmpty(getExtensions()) ||
+			ArrayUtil.isNotEmpty(getSignatureRecipientStatuses()) ||
 			ArrayUtil.isNotEmpty(getSignatureStatuses()) ||
 			isNavigationMine() || isNavigationRecent()) {
 
@@ -691,7 +701,8 @@ public class DLAdminDisplayContext {
 
 	private BooleanClause<Query>[] _getBooleanClauses(
 		long[] assetCategoryIds, String[] assetTagNames, String[] extensions,
-		long fileEntryTypeId, String[] signatureStatuses, long userId) {
+		long fileEntryTypeId, String[] signatureRecipientStatuses,
+		String[] signatureStatuses, long userId) {
 
 		BooleanQuery booleanQuery = new BooleanQuery();
 
@@ -717,6 +728,13 @@ public class DLAdminDisplayContext {
 		if (fileEntryTypeId >= 0) {
 			booleanFilter.addTerm(
 				"fileEntryTypeId", String.valueOf(fileEntryTypeId),
+				BooleanClauseOccur.MUST);
+		}
+
+		if (ArrayUtil.isNotEmpty(signatureRecipientStatuses)) {
+			booleanFilter.add(
+				_getSignatureRecipientStatusesFilter(
+					signatureRecipientStatuses),
 				BooleanClauseOccur.MUST);
 		}
 
@@ -1133,6 +1151,34 @@ public class DLAdminDisplayContext {
 		return searchContainer;
 	}
 
+	private Filter _getSignatureRecipientStatusesFilter(
+		String[] signatureRecipientStatuses) {
+
+		BooleanFilter booleanFilter = new BooleanFilter();
+
+		String userId = String.valueOf(_themeDisplay.getUserId());
+
+		for (String signatureRecipientStatus : signatureRecipientStatuses) {
+			if (Objects.equals(
+					signatureRecipientStatus, "signature-required")) {
+
+				booleanFilter.addTerm(
+					"signatureRecipientStatuses", userId + "_sent",
+					BooleanClauseOccur.SHOULD);
+			}
+			else if (Objects.equals(signatureRecipientStatus, "signed")) {
+				booleanFilter.addTerm(
+					"signatureRecipientStatuses", userId + "_completed",
+					BooleanClauseOccur.SHOULD);
+				booleanFilter.addTerm(
+					"signatureRecipientStatuses", userId + "_signed",
+					BooleanClauseOccur.SHOULD);
+			}
+		}
+
+		return booleanFilter;
+	}
+
 	private Filter _getSignatureStatusesFilter(String[] signatureStatuses) {
 		BooleanFilter booleanFilter = new BooleanFilter();
 
@@ -1202,7 +1248,8 @@ public class DLAdminDisplayContext {
 		searchContext.setBooleanClauses(
 			_getBooleanClauses(
 				getAssetCategoryIds(), getAssetTagIds(), getExtensions(),
-				getFileEntryTypeId(), getSignatureStatuses(), userId));
+				getFileEntryTypeId(), getSignatureRecipientStatuses(),
+				getSignatureStatuses(), userId));
 
 		long folderId = ParamUtil.getLong(
 			_httpServletRequest, "folderId", getFolderId());
@@ -1328,6 +1375,7 @@ public class DLAdminDisplayContext {
 	private Long _searchFolderId;
 	private Long _searchRepositoryId;
 	private long _selectedRepositoryId;
+	private String[] _signatureRecipientStatuses;
 	private String[] _signatureStatuses;
 	private final ThemeDisplay _themeDisplay;
 	private final TrashHelper _trashHelper;

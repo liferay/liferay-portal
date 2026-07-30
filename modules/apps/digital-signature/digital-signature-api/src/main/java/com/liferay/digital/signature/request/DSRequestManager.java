@@ -9,6 +9,7 @@ import com.liferay.digital.signature.model.DSEnvelope;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -22,8 +23,16 @@ public interface DSRequestManager {
 		long companyId, long groupId, long userId, DSEnvelope dsEnvelope,
 		long[] fileEntryIds);
 
+	public Map<Long, Map<Long, String>> getRecipientStatusesByFileEntryId(
+		long companyId, Collection<Long> fileEntryIds);
+
 	public Map<Long, String> getRequestStatusesByFileEntryId(
 		long companyId, Collection<Long> fileEntryIds);
+
+	public int getSignatureRequiredCount(long companyId, long userId);
+
+	public Set<Long> getSignatureRequiredFileEntryIds(
+		long companyId, long userId, Collection<Long> fileEntryIds);
 
 	public void updateDSRequest(
 		long companyId, long groupId, String providerRequestId);

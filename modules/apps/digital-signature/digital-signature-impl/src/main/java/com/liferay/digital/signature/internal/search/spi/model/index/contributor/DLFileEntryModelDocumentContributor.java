@@ -7,7 +7,9 @@ package com.liferay.digital.signature.internal.search.spi.model.index.contributo
 
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 
 import java.util.Collections;
@@ -28,18 +30,36 @@ public class DLFileEntryModelDocumentContributor
 
 	@Override
 	public void contribute(Document document, DLFileEntry dlFileEntry) {
+		long companyId = dlFileEntry.getCompanyId();
 		long fileEntryId = dlFileEntry.getFileEntryId();
 
 		Map<Long, String> requestStatusesByFileEntryId =
 			_dsRequestManager.getRequestStatusesByFileEntryId(
-				dlFileEntry.getCompanyId(),
-				Collections.singletonList(fileEntryId));
+				companyId, Collections.singletonList(fileEntryId));
 
 		String requestStatus = requestStatusesByFileEntryId.get(fileEntryId);
 
 		if (requestStatus != null) {
 			document.addKeyword("signatureStatus", requestStatus);
 		}
+
+		Map<Long, Map<Long, String>> recipientStatusesByFileEntryId =
+			_dsRequestManager.getRecipientStatusesByFileEntryId(
+				companyId, Collections.singletonList(fileEntryId));
+
+		Map<Long, String> statusesByUserId = recipientStatusesByFileEntryId.get(
+			fileEntryId);
+
+		if (MapUtil.isEmpty(statusesByUserId)) {
+			return;
+		}
+
+		document.addKeyword(
+			"signatureRecipientStatuses",
+			TransformUtil.transformToArray(
+				statusesByUserId.entrySet(),
+				entry -> entry.getKey() + "_" + entry.getValue(),
+				String.class));
 	}
 
 	@Reference
