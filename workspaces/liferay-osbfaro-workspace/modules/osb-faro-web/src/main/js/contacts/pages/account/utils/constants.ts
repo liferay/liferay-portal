@@ -7,7 +7,12 @@ export enum LifecycleStages {
 	PIPELINE = 'PIPELINE',
 }
 
-type DisplayType = 'danger' | 'info' | 'secondary' | 'success' | 'warning';
+export type DisplayType =
+	| 'danger'
+	| 'info'
+	| 'secondary'
+	| 'success'
+	| 'warning';
 
 export const lifecycleStagesLabelMap: Record<
 	LifecycleStages,
