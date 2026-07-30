@@ -8,6 +8,7 @@ import ProjectMembersModal from '../../members/ProjectMembersModal';
 
 export interface ManageMembersData {
 	assetLibraryCreatorUserId: string;
+	cmpProjectObjectEntryId?: number;
 	externalReferenceCode: string;
 	filter?: string;
 	hasAssignMembersPermission: boolean;
@@ -20,6 +21,7 @@ export default function manageMembersAction(
 ) {
 	const {
 		assetLibraryCreatorUserId,
+		cmpProjectObjectEntryId,
 		externalReferenceCode,
 		filter,
 		hasAssignMembersPermission,
@@ -30,6 +32,7 @@ export default function manageMembersAction(
 		contentComponent: () =>
 			ProjectMembersModal({
 				assetLibraryCreatorUserId,
+				cmpProjectObjectEntryId,
 				externalReferenceCode,
 				filter,
 				hasAssignMembersPermission,

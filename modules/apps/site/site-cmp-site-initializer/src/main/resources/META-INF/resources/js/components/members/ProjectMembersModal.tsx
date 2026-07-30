@@ -11,11 +11,13 @@ import {PROJECT_MEMBERS_CONFIG} from './projectMembersConfig';
 
 export default function ProjectMembersModal({
 	assetLibraryCreatorUserId,
+	cmpProjectObjectEntryId,
 	externalReferenceCode,
 	filter,
 	hasAssignMembersPermission,
 }: {
 	assetLibraryCreatorUserId: string;
+	cmpProjectObjectEntryId?: number;
 	externalReferenceCode: string;
 	filter?: string;
 	hasAssignMembersPermission: boolean;
@@ -31,7 +33,16 @@ export default function ProjectMembersModal({
 			hasAssignMembersPermission={hasAssignMembersPermission}
 			headerTitle={Liferay.Language.get('all-members')}
 			ownerId={assetLibraryCreatorUserId}
-			renderAddMembersInput={(api) => <AddMembersInput {...api} />}
+			renderAddMembersInput={(api) => (
+				<AddMembersInput
+					{...api}
+					userAccountsAPIURL={
+						cmpProjectObjectEntryId
+							? `${location.origin}/o/headless-cmp/v1.0/projects/${cmpProjectObjectEntryId}/user-accounts`
+							: undefined
+					}
+				/>
+			)}
 		/>
 	);
 }

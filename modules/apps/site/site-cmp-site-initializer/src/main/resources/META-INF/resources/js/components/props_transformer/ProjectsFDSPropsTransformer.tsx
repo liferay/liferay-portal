@@ -165,6 +165,7 @@ export default function ProjectsFDSPropsTransformer({
 
 				manageMembersAction({
 					assetLibraryCreatorUserId: creatorUserId,
+					cmpProjectObjectEntryId: itemData.embedded.id,
 					externalReferenceCode: scopeExternalReferenceCode,
 					filter: additionalProps?.filter,
 					hasAssignMembersPermission: 'assign-members' in actions,
