@@ -20,7 +20,7 @@ describe('DesignLibraryConnectedSitesSectionHeader', () => {
 		render(<DesignLibraryConnectedSitesSectionHeader {...DEFAULT_PROPS} />);
 
 		expect(Liferay.Util.sub).toHaveBeenCalledWith(
-			'x-x',
+			'x-z',
 			'connected-sites',
 			'2'
 		);

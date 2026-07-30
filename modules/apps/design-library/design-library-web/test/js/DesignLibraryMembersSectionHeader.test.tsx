@@ -20,7 +20,7 @@ describe('DesignLibraryMembersSectionHeader', () => {
 	it('localizes the member count into the title', () => {
 		render(<DesignLibraryMembersSectionHeader {...DEFAULT_PROPS} />);
 
-		expect(Liferay.Util.sub).toHaveBeenCalledWith('x-x', 'members', '3');
+		expect(Liferay.Util.sub).toHaveBeenCalledWith('x-z', 'members', '3');
 	});
 
 	it('shows the manage action when the user can assign members and there are members', () => {

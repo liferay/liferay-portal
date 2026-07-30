@@ -24,7 +24,7 @@ export default function SummarySectionHeader({
 			<h2 className="font-weight-semi-bold m-0 text-4">
 				{typeof count === 'number'
 					? Liferay.Util.sub(
-							Liferay.Language.get('x-x'),
+							Liferay.Language.get('x-z'),
 							title,
 							String(count)
 						)
