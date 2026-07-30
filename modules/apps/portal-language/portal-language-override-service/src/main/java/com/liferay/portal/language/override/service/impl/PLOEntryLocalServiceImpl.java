@@ -6,24 +6,32 @@
 package com.liferay.portal.language.override.service.impl;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.cluster.ClusterExecutor;
 import com.liferay.portal.kernel.cluster.ClusterInvokeThreadLocal;
+import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.language.override.exception.PLOEntryExternalReferenceCodeException;
 import com.liferay.portal.language.override.exception.PLOEntryImportException;
 import com.liferay.portal.language.override.exception.PLOEntryKeyException;
 import com.liferay.portal.language.override.exception.PLOEntryLanguageIdException;
 import com.liferay.portal.language.override.exception.PLOEntryValueException;
 import com.liferay.portal.language.override.internal.PLOEntryModelListener;
 import com.liferay.portal.language.override.model.PLOEntry;
+import com.liferay.portal.language.override.model.PLOEntryTable;
 import com.liferay.portal.language.override.service.base.PLOEntryLocalServiceBaseImpl;
 
 import java.util.List;
@@ -38,6 +46,7 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Brian Wing Shun Chan
  * @author Drew Brokke
+ * @author Thiago Buarque
  */
 @Component(
 	property = "model.class.name=com.liferay.portal.language.override.model.PLOEntry",
@@ -53,9 +62,24 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 		languageId = _normalizeLanguageId(languageId);
 
-		_validate(key, languageId, value);
+		_validate(null, key, languageId, value);
 
-		return _addOrUpdatePLOEntry(companyId, userId, key, languageId, value);
+		return _addOrUpdatePLOEntry(
+			null, companyId, userId, key, languageId, value);
+	}
+
+	@Override
+	public PLOEntry addOrUpdatePLOEntry(
+			String externalReferenceCode, long companyId, long userId,
+			String key, String languageId, String value)
+		throws PortalException {
+
+		languageId = _normalizeLanguageId(languageId);
+
+		_validate(externalReferenceCode, key, languageId, value);
+
+		return _addOrUpdatePLOEntry(
+			externalReferenceCode, companyId, userId, key, languageId, value);
 	}
 
 	@Override
@@ -77,6 +101,16 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public PLOEntry deletePLOEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return deletePLOEntry(
+			getPLOEntryByExternalReferenceCode(
+				externalReferenceCode, companyId));
+	}
+
+	@Override
 	public PLOEntry fetchPLOEntry(
 		long companyId, String key, String languageId) {
 
@@ -89,13 +123,59 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<PLOEntry> getPLOEntries(
+		long companyId, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return getPLOEntries(companyId, null, start, end, orderByComparator);
+	}
+
+	@Override
 	public List<PLOEntry> getPLOEntries(long companyId, String languageId) {
 		return ploEntryPersistence.findByC_L(companyId, languageId);
 	}
 
 	@Override
+	public List<PLOEntry> getPLOEntries(
+		long companyId, String keywords, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return ploEntryPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				PLOEntryTable.INSTANCE
+			).from(
+				PLOEntryTable.INSTANCE
+			).where(
+				_getPredicate(companyId, keywords)
+			).orderBy(
+				orderByStep -> {
+					if (orderByComparator == null) {
+						return orderByStep.orderBy(
+							PLOEntryTable.INSTANCE.key.ascending());
+					}
+
+					return orderByStep.orderBy(
+						PLOEntryTable.INSTANCE, orderByComparator);
+				}
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
 	public int getPLOEntriesCount(long companyId) {
 		return ploEntryPersistence.countByCompanyId(companyId);
+	}
+
+	@Override
+	public int getPLOEntriesCount(long companyId, String keywords) {
+		return ploEntryPersistence.dslQueryCount(
+			DSLQueryFactoryUtil.count(
+			).from(
+				PLOEntryTable.INSTANCE
+			).where(
+				_getPredicate(companyId, keywords)
+			));
 	}
 
 	@Override
@@ -111,7 +191,7 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 			try {
 				_validate(
-					(String)entry.getKey(), languageId,
+					null, (String)entry.getKey(), languageId,
 					(String)entry.getValue());
 			}
 			catch (Exception exception) {
@@ -133,7 +213,7 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 			for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 				_addOrUpdatePLOEntry(
-					companyId, userId, (String)entry.getKey(), languageId,
+					null, companyId, userId, (String)entry.getKey(), languageId,
 					(String)entry.getValue());
 			}
 		}
@@ -161,30 +241,94 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 	}
 
 	private PLOEntry _addOrUpdatePLOEntry(
-		long companyId, long userId, String key, String languageId,
-		String value) {
+			String externalReferenceCode, long companyId, long userId,
+			String key, String languageId, String value)
+		throws PortalException {
 
-		PLOEntry ploEntry = fetchPLOEntry(companyId, key, languageId);
+		PLOEntry ploEntry = null;
 
-		if (ploEntry == null) {
-			ploEntry = createPLOEntry(counterLocalService.increment());
+		if (Validator.isNotNull(externalReferenceCode)) {
+			ploEntry = ploEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
+		}
 
-			ploEntry.setCompanyId(companyId);
-			ploEntry.setUserId(userId);
+		PLOEntry keyLanguageIdPLOEntry = fetchPLOEntry(
+			companyId, key, languageId);
+
+		if (ploEntry != null) {
+			if ((keyLanguageIdPLOEntry != null) &&
+				(keyLanguageIdPLOEntry.getPloEntryId() !=
+					ploEntry.getPloEntryId())) {
+
+				throw new PLOEntryKeyException.MustNotBeDuplicate(
+					key, languageId);
+			}
+
+			if (Objects.equals(ploEntry.getKey(), key) &&
+				Objects.equals(ploEntry.getLanguageId(), languageId) &&
+				Objects.equals(ploEntry.getValue(), value)) {
+
+				return ploEntry;
+			}
+
 			ploEntry.setKey(key);
 			ploEntry.setLanguageId(languageId);
 			ploEntry.setValue(value);
 
-			return addPLOEntry(ploEntry);
+			return updatePLOEntry(ploEntry);
 		}
 
-		if (Objects.equals(ploEntry.getValue(), value)) {
-			return ploEntry;
+		if (keyLanguageIdPLOEntry != null) {
+			if (Validator.isNotNull(externalReferenceCode)) {
+				keyLanguageIdPLOEntry.setExternalReferenceCode(
+					externalReferenceCode);
+			}
+			else if (Objects.equals(keyLanguageIdPLOEntry.getValue(), value)) {
+				return keyLanguageIdPLOEntry;
+			}
+
+			keyLanguageIdPLOEntry.setValue(value);
+
+			return updatePLOEntry(keyLanguageIdPLOEntry);
 		}
 
+		ploEntry = createPLOEntry(counterLocalService.increment());
+
+		ploEntry.setExternalReferenceCode(externalReferenceCode);
+		ploEntry.setCompanyId(companyId);
+		ploEntry.setUserId(userId);
+		ploEntry.setKey(key);
+		ploEntry.setLanguageId(languageId);
 		ploEntry.setValue(value);
 
-		return updatePLOEntry(ploEntry);
+		return addPLOEntry(ploEntry);
+	}
+
+	private Predicate _getPredicate(long companyId, String keywords) {
+		return PLOEntryTable.INSTANCE.companyId.eq(
+			companyId
+		).and(
+			() -> {
+				if (Validator.isNull(keywords)) {
+					return null;
+				}
+
+				String[] keywordsArray = _customSQL.keywords(
+					keywords, true, WildcardMode.SURROUND);
+
+				return Predicate.withParentheses(
+					Predicate.or(
+						_customSQL.getKeywordsPredicate(
+							DSLFunctionFactoryUtil.lower(
+								PLOEntryTable.INSTANCE.key),
+							keywordsArray),
+						_customSQL.getKeywordsPredicate(
+							DSLFunctionFactoryUtil.lower(
+								DSLFunctionFactoryUtil.castClobText(
+									PLOEntryTable.INSTANCE.value)),
+							keywordsArray)));
+			}
+		);
 	}
 
 	private String _normalizeLanguageId(String languageId) {
@@ -214,8 +358,22 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		return languageId;
 	}
 
-	private void _validate(String key, String languageId, String value)
+	private void _validate(
+			String externalReferenceCode, String key, String languageId,
+			String value)
 		throws PortalException {
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			int externalReferenceCodeMaxLength = ModelHintsUtil.getMaxLength(
+				PLOEntry.class.getName(), "externalReferenceCode");
+
+			if (externalReferenceCode.length() >
+					externalReferenceCodeMaxLength) {
+
+				throw new PLOEntryExternalReferenceCodeException.
+					MustNotExceedMaximumLength(externalReferenceCodeMaxLength);
+			}
+		}
 
 		if (Validator.isBlank(key)) {
 			throw new PLOEntryKeyException.MustNotBeNull();
@@ -240,6 +398,9 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 	@Reference
 	private ClusterExecutor _clusterExecutor;
+
+	@Reference
+	private CustomSQL _customSQL;
 
 	@Reference
 	private Language _language;
