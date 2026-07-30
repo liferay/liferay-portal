@@ -413,7 +413,6 @@ public class LayoutClassedModelUsagesDisplayContext {
 		sb.append(className);
 		sb.append("&classPK=");
 		sb.append(String.valueOf(classPK));
-		sb.append("&p_l_id=");
 
 		return sb.toString();
 	}
