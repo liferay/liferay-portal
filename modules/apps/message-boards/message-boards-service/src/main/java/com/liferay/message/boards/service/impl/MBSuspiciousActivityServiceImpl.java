@@ -61,15 +61,14 @@ public class MBSuspiciousActivityServiceImpl
 	public List<MBSuspiciousActivity> getMessageSuspiciousActivities(
 		long messageId) {
 
-		return mbSuspiciousActivityLocalService.getMessageSuspiciousActivities(
-			messageId);
+		return mbSuspiciousActivityPersistence.findByMessageId(messageId);
 	}
 
 	@Override
 	public MBSuspiciousActivity getSuspiciousActivity(long suspiciousActivityId)
 		throws PortalException {
 
-		return mbSuspiciousActivityLocalService.getSuspiciousActivity(
+		return mbSuspiciousActivityPersistence.findByPrimaryKey(
 			suspiciousActivityId);
 	}
 
@@ -77,8 +76,7 @@ public class MBSuspiciousActivityServiceImpl
 	public List<MBSuspiciousActivity> getThreadSuspiciousActivities(
 		long threadId) {
 
-		return mbSuspiciousActivityLocalService.getThreadSuspiciousActivities(
-			threadId);
+		return mbSuspiciousActivityPersistence.findByThreadId(threadId);
 	}
 
 	@Override
