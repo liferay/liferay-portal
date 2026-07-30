@@ -18,19 +18,16 @@ function main {
 		exit 1
 	fi
 
-	if k3d cluster list ${_CLUSTER_NAME} > /dev/null 2>&1
+	if k3d cluster list operator-dev > /dev/null 2>&1
 	then
-		k3d cluster start ${_CLUSTER_NAME}
+		k3d cluster start operator-dev
 	else
-		k3d cluster create ${_CLUSTER_NAME} --registry-create liferay-registry:0.0.0.0:5001
+		k3d cluster create operator-dev --registry-create liferay-registry:0.0.0.0:5001
 	fi
 
-	kubectl config use-context ${_KUBE_CONTEXT}
+	kubectl config use-context k3d-operator-dev
 
 	tilt up
 }
-
-_CLUSTER_NAME=operator-dev
-_KUBE_CONTEXT=k3d-operator-dev
 
 main "${@}"
