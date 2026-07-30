@@ -328,23 +328,23 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 			return false;
 		}
 
-		DetailAST qualifierDetailAST = firstChildDetailAST.getFirstChild();
+		List<String> names = getNames(firstChildDetailAST, false);
 
-		if (qualifierDetailAST.getType() != TokenTypes.IDENT) {
+		if (names.size() != 2) {
 			return false;
 		}
 
 		String fullyQualifiedTypeName = null;
 
-		String qualifierName = qualifierDetailAST.getText();
+		String methodCallClassName = names.get(0);
 
-		if (Character.isUpperCase(qualifierName.charAt(0))) {
+		if (Character.isUpperCase(methodCallClassName.charAt(0))) {
 			fullyQualifiedTypeName = getFullyQualifiedTypeName(
-				qualifierName, detailAST, false);
+				methodCallClassName, detailAST, false);
 		}
 		else {
 			fullyQualifiedTypeName = getVariableTypeName(
-				detailAST, qualifierName, false, false, true);
+				detailAST, methodCallClassName, false, false, true);
 		}
 
 		if (fullyQualifiedTypeName == null) {
@@ -358,8 +358,6 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 			return false;
 		}
 
-		String methodName = getMethodName(methodCallDetailAST);
-
 		for (JavaTerm javaTerm : javaClass.getChildJavaTerms()) {
 			if (!javaTerm.isJavaMethod()) {
 				continue;
@@ -367,7 +365,7 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 
 			JavaMethod javaMethod = (JavaMethod)javaTerm;
 
-			if (!StringUtil.equals(methodName, javaMethod.getName())) {
+			if (!StringUtil.equals(names.get(1), javaMethod.getName())) {
 				continue;
 			}
 
