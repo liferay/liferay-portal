@@ -48,54 +48,52 @@ exports[`TopPagesCard renders 1`] = `
       class="card-body w-100 d-flex flex-column flex-grow-1 no-padding"
     >
       <ul
-        class="card-tabs-root"
+        class="nav nav-tabs mb-3"
+        role="tablist"
       >
         <li
-          class="card-tab active"
-          data-testid="visitorsMetric"
+          class="nav-item"
+          role="none"
         >
           <button
-            class="button-root btn btn-unstyled"
+            aria-selected="true"
+            class="nav-link active btn btn-unstyled"
+            data-testid="tabItem"
+            role="tab"
+            tabindex="0"
             type="button"
           >
-            <span
-              class="title"
-            >
-              Visited Pages
-            </span>
-            <div />
+            Visited Pages
           </button>
         </li>
         <li
-          class="card-tab"
-          data-testid="entrancesMetric"
+          class="nav-item"
+          role="none"
         >
           <button
-            class="button-root btn btn-unstyled"
+            aria-selected="false"
+            class="nav-link btn btn-unstyled"
+            data-testid="tabItem"
+            role="tab"
+            tabindex="-1"
             type="button"
           >
-            <span
-              class="title"
-            >
-              Entrance Pages
-            </span>
-            <div />
+            Entrance Pages
           </button>
         </li>
         <li
-          class="card-tab"
-          data-testid="exitRateMetric"
+          class="nav-item"
+          role="none"
         >
           <button
-            class="button-root btn btn-unstyled"
+            aria-selected="false"
+            class="nav-link btn btn-unstyled"
+            data-testid="tabItem"
+            role="tab"
+            tabindex="-1"
             type="button"
           >
-            <span
-              class="title"
-            >
-              Exit Pages
-            </span>
-            <div />
+            Exit Pages
           </button>
         </li>
       </ul>
@@ -142,7 +140,12 @@ exports[`TopPagesCard renders 1`] = `
                       <div
                         class="table-title text-truncate"
                       >
-                        My asset A
+                        <a
+                          class="text-truncate"
+                          href="/workspace/456/123/sites/pages/overview/123/My%20asset%20A"
+                        >
+                          My asset A
+                        </a>
                       </div>
                       <div
                         class="secondary-info text-truncate"
@@ -203,21 +206,13 @@ exports[`TopPagesCard renders 1`] = `
       </div>
     </div>
     <div
-      class="card-footer"
+      class="card-footer d-flex pt-0"
     >
       <a
-        class="button-root btn btn-outline-borderless btn-sm btn-outline-secondary"
+        class="ml-auto mt-2 rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
         href="/link-to-the-next-page?rangeKey=30&field=visitorsMetric&sortOrder=DESC"
       >
         view pages
-        <svg
-          class="lexicon-icon lexicon-icon-angle-right-small icon-root ml-2"
-          role="presentation"
-        >
-          <use
-            href="#angle-right-small"
-          />
-        </svg>
       </a>
     </div>
   </div>

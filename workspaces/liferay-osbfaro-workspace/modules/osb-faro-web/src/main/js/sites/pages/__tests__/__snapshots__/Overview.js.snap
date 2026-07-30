@@ -87,7 +87,7 @@ exports[`Sites Dashboard Overview render 1`] = `
         class="col-xl-6"
       >
         <div
-          class="card card-root top-pages-card-root table-tabs-root"
+          class="card card-root top-pages-card-root"
           id="container.report.topPagesCard"
         >
           <div
@@ -116,54 +116,52 @@ exports[`Sites Dashboard Overview render 1`] = `
             class="card-body w-100 d-flex flex-column flex-grow-1 no-padding"
           >
             <ul
-              class="card-tabs-root"
+              class="nav nav-tabs mb-3"
+              role="tablist"
             >
               <li
-                class="card-tab active"
-                data-testid="visitorsMetric"
+                class="nav-item"
+                role="none"
               >
                 <button
-                  class="button-root btn btn-unstyled"
+                  aria-selected="true"
+                  class="nav-link active btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="0"
                   type="button"
                 >
-                  <span
-                    class="title"
-                  >
-                    Visited Pages
-                  </span>
-                  <div />
+                  Visited Pages
                 </button>
               </li>
               <li
-                class="card-tab"
-                data-testid="entrancesMetric"
+                class="nav-item"
+                role="none"
               >
                 <button
-                  class="button-root btn btn-unstyled"
+                  aria-selected="false"
+                  class="nav-link btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="-1"
                   type="button"
                 >
-                  <span
-                    class="title"
-                  >
-                    Entrance Pages
-                  </span>
-                  <div />
+                  Entrance Pages
                 </button>
               </li>
               <li
-                class="card-tab"
-                data-testid="exitRateMetric"
+                class="nav-item"
+                role="none"
               >
                 <button
-                  class="button-root btn btn-unstyled"
+                  aria-selected="false"
+                  class="nav-link btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="-1"
                   type="button"
                 >
-                  <span
-                    class="title"
-                  >
-                    Exit Pages
-                  </span>
-                  <div />
+                  Exit Pages
                 </button>
               </li>
             </ul>
@@ -173,21 +171,13 @@ exports[`Sites Dashboard Overview render 1`] = `
             />
           </div>
           <div
-            class="card-footer"
+            class="card-footer d-flex pt-0"
           >
             <a
-              class="button-root btn btn-outline-borderless btn-sm btn-outline-secondary"
+              class="ml-auto mt-2 rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
               href="/workspace/23/123123/sites/pages?rangeKey=30&field=visitorsMetric&sortOrder=DESC"
             >
-              View Pages
-              <svg
-                class="lexicon-icon lexicon-icon-angle-right-small icon-root ml-2"
-                role="presentation"
-              >
-                <use
-                  href="#angle-right-small"
-                />
-              </svg>
+              View All
             </a>
           </div>
         </div>
@@ -561,10 +551,10 @@ exports[`Sites Dashboard Overview render 1`] = `
               >
                 <button
                   aria-activedescendant="visitors"
-                  aria-controls="clay-id-2"
+                  aria-controls="clay-id-3"
                   aria-expanded="true"
                   aria-haspopup="listbox"
-                  aria-owns="clay-id-2"
+                  aria-owns="clay-id-3"
                   class="form-control form-control-select form-control-select-secondary visitors-type-select show"
                   role="combobox"
                   style=""

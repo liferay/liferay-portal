@@ -43,7 +43,7 @@ const Overview: FC<IOverviewProps> = ({channelName}) => {
 			<div className="row">
 				<div className="col-xl-6">
 					<TopPagesCard
-						className="top-pages-card-root table-tabs-root"
+						className="top-pages-card-root"
 						footer={{
 							href: setUriQueryValues(
 								pickBy({
@@ -57,7 +57,7 @@ const Overview: FC<IOverviewProps> = ({channelName}) => {
 									groupId,
 								})
 							),
-							label: Liferay.Language.get('view-pages'),
+							label: Liferay.Language.get('view-all'),
 						}}
 						label={Liferay.Language.get('top-pages')}
 						legacyDropdownRangeKey={false}
