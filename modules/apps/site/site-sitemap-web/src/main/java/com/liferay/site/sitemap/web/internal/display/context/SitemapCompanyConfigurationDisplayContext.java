@@ -420,11 +420,11 @@ public class SitemapCompanyConfigurationDisplayContext {
 	}
 
 	private String _getDateString(Date date) {
-		Format dateFormat = FastDateFormatFactoryUtil.getSimpleDateFormat(
+		Format format = FastDateFormatFactoryUtil.getSimpleDateFormat(
 			"MMM d, yyyy HH:mm:ss", _themeDisplay.getLocale(),
 			_themeDisplay.getTimeZone());
 
-		return dateFormat.format(date);
+		return format.format(date);
 	}
 
 	private Group _getGuestGroup() throws Exception {

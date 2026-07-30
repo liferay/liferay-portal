@@ -91,9 +91,10 @@ public class SaveCompanyConfigurationMVCActionCommand
 			actionRequest, "xmlSitemapRegenerationDateHour", -1);
 
 		if (xmlSitemapRegenerationDateHour >= 0) {
+			int hour = xmlSitemapRegenerationDateHour;
+
 			int xmlSitemapRegenerationDateAmPm = ParamUtil.getInteger(
 				actionRequest, "xmlSitemapRegenerationDateAmPm");
-			int hour = xmlSitemapRegenerationDateHour;
 
 			if (xmlSitemapRegenerationDateAmPm == Calendar.PM) {
 				hour += 12;
