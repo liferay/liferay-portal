@@ -6,9 +6,14 @@
 package com.liferay.site.cmp.site.initializer.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -23,10 +28,13 @@ import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -67,6 +75,16 @@ public class ObjectEntryModelListenerTest {
 	@Before
 	public void setUp() throws Exception {
 		CMPTestUtil.getOrAddGroup(ObjectEntryModelListenerTest.class);
+
+		_depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Test
@@ -196,6 +214,120 @@ public class ObjectEntryModelListenerTest {
 			cmpProjectObjectEntry.getGroupId(), user2.getUserId());
 	}
 
+	@Test
+	public void testOnBeforeRemove() throws Exception {
+		ObjectEntry cmsBasicWebContentObjectEntry =
+			_addCMSBasicWebContentObjectEntry();
+
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		ObjectEntry cmpProjectLinkObjectEntry = _addCMPProjectLinkObjectEntry(
+			cmsBasicWebContentObjectEntry, cmpProjectObjectEntry);
+
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
+			cmpProjectObjectEntry);
+
+		ObjectEntry cmpTaskLinkObjectEntry = _addCMPTaskLinkObjectEntry(
+			cmsBasicWebContentObjectEntry, cmpTaskObjectEntry);
+
+		Assert.assertNotNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				cmpProjectLinkObjectEntry.getObjectEntryId()));
+		Assert.assertNotNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				cmpTaskLinkObjectEntry.getObjectEntryId()));
+
+		_objectEntryLocalService.deleteObjectEntry(
+			cmsBasicWebContentObjectEntry.getObjectEntryId());
+
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				cmpProjectLinkObjectEntry.getObjectEntryId()));
+		Assert.assertNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				cmpTaskLinkObjectEntry.getObjectEntryId()));
+
+		_testOnBeforeRemoveWhenObjectEntryIsNotCMSObjectEntry();
+	}
+
+	private ObjectEntry _addCMPProjectLinkObjectEntry(
+			ObjectEntry linkedObjectEntry, ObjectEntry cmpProjectObjectEntry)
+		throws Exception {
+
+		ObjectDefinition cmpProjectLinkObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT_LINK", cmpProjectObjectEntry.getCompanyId());
+
+		Group group = _groupLocalService.getGroup(
+			linkedObjectEntry.getGroupId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			cmpProjectObjectEntry.getGroupId(),
+			cmpProjectObjectEntry.getUserId(),
+			cmpProjectLinkObjectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode",
+				linkedObjectEntry.getExternalReferenceCode()
+			).put(
+				"className", linkedObjectEntry.getModelClassName()
+			).put(
+				"groupExternalReferenceCode", group.getExternalReferenceCode()
+			).put(
+				"r_cmpProjectToCMPProjectLinks_c_cmpProjectId",
+				cmpProjectObjectEntry.getObjectEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addCMPTaskLinkObjectEntry(
+			ObjectEntry linkedObjectEntry, ObjectEntry cmpTaskObjectEntry)
+		throws Exception {
+
+		ObjectDefinition cmpTaskLinkObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_TASK_LINK", cmpTaskObjectEntry.getCompanyId());
+
+		Group group = _groupLocalService.getGroup(
+			linkedObjectEntry.getGroupId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			cmpTaskObjectEntry.getGroupId(), cmpTaskObjectEntry.getUserId(),
+			cmpTaskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode",
+				linkedObjectEntry.getExternalReferenceCode()
+			).put(
+				"className", linkedObjectEntry.getModelClassName()
+			).put(
+				"groupExternalReferenceCode", group.getExternalReferenceCode()
+			).put(
+				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
+				cmpTaskObjectEntry.getObjectEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addCMSBasicWebContentObjectEntry() throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_BASIC_WEB_CONTENT", _depotEntry.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			_depotEntry.getGroupId(), _depotEntry.getUserId(),
+			objectDefinition.getObjectDefinitionId(), 0, "en_US",
+			HashMapBuilder.<String, Serializable>put(
+				"title_i18n",
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).build()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	private void _assertResourceActions(
 			ObjectEntry objectEntry, String roleName, String... actionIds)
 		throws Exception {
@@ -239,8 +371,36 @@ public class ObjectEntryModelListenerTest {
 			userGroupRoleNames.containsAll(expectedUserGroupRoleNames));
 	}
 
+	private void _testOnBeforeRemoveWhenObjectEntryIsNotCMSObjectEntry()
+		throws Exception {
+
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
+
+		ObjectEntry cmpTaskLinkObjectEntry = _addCMPTaskLinkObjectEntry(
+			cmpProjectObjectEntry, cmpTaskObjectEntry);
+
+		_objectEntryLocalService.deleteObjectEntry(
+			cmpProjectObjectEntry.getObjectEntryId());
+
+		Assert.assertNotNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				cmpTaskLinkObjectEntry.getObjectEntryId()));
+	}
+
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry;
+
+	@Inject
+	private DepotEntryLocalService _depotEntryLocalService;
+
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
