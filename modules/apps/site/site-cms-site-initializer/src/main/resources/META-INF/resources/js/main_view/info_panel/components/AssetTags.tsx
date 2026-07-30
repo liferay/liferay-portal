@@ -230,7 +230,9 @@ const AssetTags = ({
 					</div>
 
 					{Liferay.FeatureFlags?.['LPD-62272'] &&
-					hasUpdatePermission ? (
+					hasUpdatePermission &&
+					(getContent ||
+						(objectEntry as IAssetObjectEntry).contentRawText) ? (
 						<ClayButtonWithIcon
 							aria-label={Liferay.Language.get(
 								'generate-tags-with-ai'

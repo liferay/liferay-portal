@@ -227,13 +227,17 @@ describe('AssetTags', () => {
 		expect(apiURL).toContain("groupIds in ('-1')");
 	});
 
-	it('fires the categorize event when the sparkle is clicked', async () => {
+	it('fires the categorize event when the generate tags button is clicked', async () => {
 		const fire = jest.fn();
 
 		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
 		(global as any).Liferay.fire = fire;
 
-		renderComponent({cmsGroupId: 456, scopeId: 123});
+		renderComponent({
+			cmsGroupId: 456,
+			contentRawText: 'persisted content',
+			scopeId: 123,
+		});
 
 		fireEvent.click(
 			screen.getByRole('button', {name: 'generate-tags-with-ai'})
@@ -291,5 +295,27 @@ describe('AssetTags', () => {
 				expect.objectContaining({content: 'persisted content'})
 			)
 		);
+	});
+
+	it('does not render the generate tags button when there is no content source', () => {
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+
+		renderComponent();
+
+		expect(
+			screen.queryByRole('button', {name: 'generate-tags-with-ai'})
+		).not.toBeInTheDocument();
+	});
+
+	it('renders the generate tags button when only getContent supplies the content', () => {
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+
+		renderComponent({
+			getContent: jest.fn().mockResolvedValue('edited content'),
+		});
+
+		expect(
+			screen.getByRole('button', {name: 'generate-tags-with-ai'})
+		).toBeInTheDocument();
 	});
 });
