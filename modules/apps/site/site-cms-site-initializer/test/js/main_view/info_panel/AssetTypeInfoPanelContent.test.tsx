@@ -79,13 +79,9 @@ describe('CMS Asset Type Info Panel', () => {
 	afterEach(() => {
 		jest.resetAllMocks();
 		cleanup();
-
-		(global as any).Liferay.FeatureFlags = {};
 	});
 
-	it('does not render the Projects tab when the CMP feature flag is disabled', async () => {
-		(global as any).Liferay.FeatureFlags = {};
-
+	it('renders the Versions and Projects tabs in the More dropdown', async () => {
 		render(
 			<SidePanel containerRef={{current: null}}>
 				<AssetTypeInfoPanelContent
@@ -98,23 +94,6 @@ describe('CMS Asset Type Info Panel', () => {
 		await userEvent.click(screen.getByRole('tab', {name: 'more'}));
 
 		expect(screen.getByText('versions')).toBeInTheDocument();
-
-		expect(screen.queryByText('projects')).not.toBeInTheDocument();
-	});
-
-	it('renders the Projects tab when the CMP feature flag is enabled', async () => {
-		(global as any).Liferay.FeatureFlags = {'LPD-58677': true};
-
-		render(
-			<SidePanel containerRef={{current: null}}>
-				<AssetTypeInfoPanelContent
-					additionalProps={testAdditionalProps}
-					items={[CONTENT_OBJECT_ENTRY] as any}
-				/>
-			</SidePanel>
-		);
-
-		await userEvent.click(screen.getByRole('tab', {name: 'more'}));
 
 		expect(screen.getByText('projects')).toBeInTheDocument();
 	});

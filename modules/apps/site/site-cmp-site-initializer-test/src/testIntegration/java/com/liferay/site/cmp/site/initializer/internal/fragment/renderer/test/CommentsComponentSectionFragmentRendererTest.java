@@ -11,8 +11,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -28,7 +26,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Carolina Barbosa
  */
-@FeatureFlags(featureFlags = @FeatureFlag("LPD-58677"))
 @RunWith(Arquillian.class)
 public class CommentsComponentSectionFragmentRendererTest
 	extends BaseComponentSectionFragmentRendererTestCase {

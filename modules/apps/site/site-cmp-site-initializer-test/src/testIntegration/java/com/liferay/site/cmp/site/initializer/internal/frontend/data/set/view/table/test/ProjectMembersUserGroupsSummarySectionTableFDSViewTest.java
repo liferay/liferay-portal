@@ -7,7 +7,6 @@ package com.liferay.site.cmp.site.initializer.internal.frontend.data.set.view.ta
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
@@ -19,7 +18,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Pedro Leite
  */
-@FeatureFlag("LPD-58677")
 @RunWith(Arquillian.class)
 public class ProjectMembersUserGroupsSummarySectionTableFDSViewTest
 	extends BaseSectionTableFDSViewTestCase {
