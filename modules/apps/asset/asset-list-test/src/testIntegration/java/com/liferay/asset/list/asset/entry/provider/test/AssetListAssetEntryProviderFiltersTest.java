@@ -87,6 +87,11 @@ public class AssetListAssetEntryProviderFiltersTest {
 					false),
 				ObjectFieldUtil.createObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, true, true, null,
+					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_KEYWORD,
+					false),
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					ObjectFieldConstants.DB_TYPE_STRING, true, false, null,
 					RandomTestUtil.randomString(), _OBJECT_FIELD_NAME_TEXT,
 					false)),
@@ -138,6 +143,105 @@ public class AssetListAssetEntryProviderFiltersTest {
 				_buildFilterJSONObject(
 					"not-eq", _OBJECT_FIELD_NAME_INTEGER,
 					String.valueOf(priority))),
+			objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageWithKeywordTextContainsFilters()
+		throws Exception {
+
+		String keyword = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, keyword
+			).build());
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
+			objectEntry1);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_KEYWORD, RandomTestUtil.randomString()
+			).build());
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
+			objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageWithMultipleFiltersJoinedWithMust()
+		throws Exception {
+
+		int priority = RandomTestUtil.randomInt();
+		String title = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_INTEGER, priority
+			).put(
+				_OBJECT_FIELD_NAME_TEXT, title
+			).build());
+
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_INTEGER, RandomTestUtil.randomInt()
+			).put(
+				_OBJECT_FIELD_NAME_TEXT, title
+			).build());
+
+		_addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_INTEGER, priority
+			).put(
+				_OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+			).build());
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_TEXT, title),
+				_buildFilterJSONObject(
+					"eq", _OBJECT_FIELD_NAME_INTEGER,
+					String.valueOf(priority))),
+			objectEntry1);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageWithTextContainsFilters()
+		throws Exception {
+
+		String title = RandomTestUtil.randomString();
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, title
+			).build());
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"contains", _OBJECT_FIELD_NAME_TEXT, title)),
+			objectEntry1);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+			).build());
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"not-contains", _OBJECT_FIELD_NAME_TEXT, title)),
 			objectEntry2);
 	}
 
@@ -349,6 +453,9 @@ public class AssetListAssetEntryProviderFiltersTest {
 
 	private static final String _OBJECT_FIELD_NAME_INTEGER =
 		"xInteger" + RandomTestUtil.randomString();
+
+	private static final String _OBJECT_FIELD_NAME_KEYWORD =
+		"xKeyword" + RandomTestUtil.randomString();
 
 	private static final String _OBJECT_FIELD_NAME_TEXT =
 		"xText" + RandomTestUtil.randomString();
