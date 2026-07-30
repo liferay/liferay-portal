@@ -206,11 +206,11 @@ test(
 
 			await page
 				.getByPlaceholder('Unassigned')
-				.fill('Asset Library Content Reviewer');
+				.fill('Project Member');
 
 			await page
 				.getByRole('option', {
-					name: 'Asset Library Content Reviewer',
+					name: 'Project Member',
 				})
 				.click();
 
@@ -221,7 +221,7 @@ test(
 
 				await expect(
 					page.getByRole('row', {
-						name: 'Asset Library Content Reviewer',
+						name: 'Project Member',
 					})
 				).toHaveCount(2, {timeout: 1000});
 			}).toPass({timeout: 10000});
