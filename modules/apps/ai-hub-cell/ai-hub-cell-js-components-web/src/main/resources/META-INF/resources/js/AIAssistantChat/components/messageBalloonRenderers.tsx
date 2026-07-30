@@ -8,6 +8,7 @@ import React from 'react';
 import {APPLY_OBJECT_FIELD_VALUES_EVENT} from '../events';
 import {Message} from '../types';
 import {AIChat} from '../useAIChat';
+import buildContentTypeMessage from '../utils/buildContentTypeMessage';
 import {ResolvedMessage} from '../utils/resolveMessage';
 import AIAssistantMessageBalloon from './AIAssistantMessageBalloon';
 import CategorizationMessageBalloon from './CategorizationMessageBalloon';
@@ -129,13 +130,7 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 				chat.setMessages((previousMessages) => [
 					...previousMessages,
 					{sender: 'user', text: space.name},
-					{
-						contentTypes,
-						sender: 'assistant',
-						text: Liferay.Language.get(
-							'what-type-of-content-do-you-want-to-generate'
-						),
-					},
+					buildContentTypeMessage(contentTypes),
 				])
 			}
 			spaces={spaces}

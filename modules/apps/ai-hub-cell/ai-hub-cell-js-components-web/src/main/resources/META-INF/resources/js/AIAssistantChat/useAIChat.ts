@@ -24,6 +24,7 @@ import {subscribeToServerEvents} from './serverEvents';
 import {getSpaces} from './services/getSpaces';
 import {ChatMessageSentData, Message} from './types';
 import buildAssistantMessage from './utils/buildAssistantMessage';
+import buildContentTypeMessage from './utils/buildContentTypeMessage';
 
 export interface AIChatReportContext {
 	agentDefinitionExternalReferenceCodes: string[];
@@ -387,13 +388,7 @@ export default function useAIChat({
 				const askForContentType = () =>
 					setMessages((previousMessages) => [
 						...previousMessages,
-						{
-							contentTypes,
-							sender: 'assistant',
-							text: Liferay.Language.get(
-								'what-type-of-content-do-you-want-to-generate'
-							),
-						},
+						buildContentTypeMessage(contentTypes),
 					]);
 
 				setMessages((previousMessages) => [
