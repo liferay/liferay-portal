@@ -9,9 +9,13 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.ItemSelectorViewDescriptor;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.item.selector.ObjectDefinitionItemSelectorCriterion;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -30,6 +34,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -62,7 +67,8 @@ public class ObjectDefinitionItemSelectorViewDescriptorTest {
 	@Test
 	public void testGetPayload() throws Exception {
 		ItemSelectorViewDescriptor<Object> itemSelectorViewDescriptor =
-			_getItemSelectorViewDescriptor(new MockHttpServletRequest());
+			_getItemSelectorViewDescriptor(
+				new ObjectDefinitionItemSelectorCriterion());
 
 		ItemSelectorViewDescriptor.ItemDescriptor itemDescriptor =
 			itemSelectorViewDescriptor.getItemDescriptor(_objectDefinition);
@@ -80,7 +86,8 @@ public class ObjectDefinitionItemSelectorViewDescriptorTest {
 	@Test
 	public void testGetSearchContainer() throws Exception {
 		ItemSelectorViewDescriptor<Object> itemSelectorViewDescriptor =
-			_getItemSelectorViewDescriptor(new MockHttpServletRequest());
+			_getItemSelectorViewDescriptor(
+				new ObjectDefinitionItemSelectorCriterion());
 
 		SearchContainer<Object> searchContainer =
 			itemSelectorViewDescriptor.getSearchContainer();
@@ -92,9 +99,60 @@ public class ObjectDefinitionItemSelectorViewDescriptorTest {
 		Assert.assertEquals(_objectDefinition, objectDefinitions.get(0));
 	}
 
-	private ItemSelectorViewDescriptor<Object> _getItemSelectorViewDescriptor(
-			MockHttpServletRequest mockHttpServletRequest)
+	@Test
+	public void testGetSearchContainerWithObjectDefinitionSettingName()
 		throws Exception {
+
+		_nonsitemapableSystemObjectDefinition =
+			ObjectDefinitionTestUtil.publishSystemObjectDefinition();
+
+		_sitemapableSystemObjectDefinition =
+			ObjectDefinitionTestUtil.publishSystemObjectDefinition();
+
+		_objectDefinitionLocalService.updateSystemObjectDefinition(
+			_sitemapableSystemObjectDefinition.getExternalReferenceCode(),
+			_sitemapableSystemObjectDefinition.getObjectDefinitionId(),
+			_sitemapableSystemObjectDefinition.getObjectFolderId(),
+			_sitemapableSystemObjectDefinition.getTitleObjectFieldId(),
+			Collections.singletonList(
+				new ObjectDefinitionSettingBuilder(
+				).name(
+					ObjectDefinitionSettingConstants.NAME_SITEMAPABLE
+				).value(
+					StringPool.TRUE
+				).build()),
+			Collections.emptyList(), Collections.emptyList());
+
+		ObjectDefinitionItemSelectorCriterion
+			objectDefinitionItemSelectorCriterion =
+				new ObjectDefinitionItemSelectorCriterion();
+
+		objectDefinitionItemSelectorCriterion.setObjectDefinitionSettingName(
+			ObjectDefinitionSettingConstants.NAME_SITEMAPABLE);
+
+		ItemSelectorViewDescriptor<Object> itemSelectorViewDescriptor =
+			_getItemSelectorViewDescriptor(
+				objectDefinitionItemSelectorCriterion);
+
+		SearchContainer<Object> searchContainer =
+			itemSelectorViewDescriptor.getSearchContainer();
+
+		List<Object> objectDefinitions = searchContainer.getResults();
+
+		Assert.assertFalse(
+			objectDefinitions.contains(_nonsitemapableSystemObjectDefinition));
+		Assert.assertTrue(objectDefinitions.contains(_objectDefinition));
+		Assert.assertTrue(
+			objectDefinitions.contains(_sitemapableSystemObjectDefinition));
+	}
+
+	private ItemSelectorViewDescriptor<Object> _getItemSelectorViewDescriptor(
+			ObjectDefinitionItemSelectorCriterion
+				objectDefinitionItemSelectorCriterion)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
 
 		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
 			new MockLiferayPortletRenderRequest();
@@ -114,8 +172,8 @@ public class ObjectDefinitionItemSelectorViewDescriptorTest {
 
 		_objectDefinitionItemSelectorView.renderHTML(
 			mockHttpServletRequest, new MockHttpServletResponse(),
-			new ObjectDefinitionItemSelectorCriterion(),
-			new MockLiferayPortletURL(), RandomTestUtil.randomString(), true);
+			objectDefinitionItemSelectorCriterion, new MockLiferayPortletURL(),
+			RandomTestUtil.randomString(), true);
 
 		Object itemSelectorViewDescriptorRendererDisplayContext =
 			mockHttpServletRequest.getAttribute(
@@ -144,6 +202,9 @@ public class ObjectDefinitionItemSelectorViewDescriptorTest {
 	private final Locale _locale = LocaleUtil.US;
 
 	@DeleteAfterTestRun
+	private ObjectDefinition _nonsitemapableSystemObjectDefinition;
+
+	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
 
 	@Inject(
@@ -152,5 +213,11 @@ public class ObjectDefinitionItemSelectorViewDescriptorTest {
 	)
 	private ItemSelectorView<ItemSelectorCriterion>
 		_objectDefinitionItemSelectorView;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@DeleteAfterTestRun
+	private ObjectDefinition _sitemapableSystemObjectDefinition;
 
 }

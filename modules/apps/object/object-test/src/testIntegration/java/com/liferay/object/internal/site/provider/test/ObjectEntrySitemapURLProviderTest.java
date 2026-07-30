@@ -10,7 +10,9 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.seo.service.LayoutSEOEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.definition.setting.builder.ObjectDefinitionSettingBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -41,6 +43,7 @@ import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -141,33 +144,95 @@ public class ObjectEntrySitemapURLProviderTest {
 	}
 
 	@Test
+	public void testIsIncludeWithSystemObjectDefinition() throws Exception {
+		_systemObjectDefinition =
+			ObjectDefinitionTestUtil.publishSystemObjectDefinition();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"companySitemapObjectDefinitionIds",
+							new String[] {
+								String.valueOf(
+									_systemObjectDefinition.
+										getObjectDefinitionId())
+							}
+						).build())) {
+
+			Assert.assertFalse(
+				_objectEntrySitemapURLProvider.isInclude(
+					TestPropsValues.getCompanyId(), _group.getGroupId()));
+
+			// Sitemapable system object definition
+
+			_objectDefinitionLocalService.updateSystemObjectDefinition(
+				_systemObjectDefinition.getExternalReferenceCode(),
+				_systemObjectDefinition.getObjectDefinitionId(),
+				_systemObjectDefinition.getObjectFolderId(),
+				_systemObjectDefinition.getTitleObjectFieldId(),
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_SITEMAPABLE
+					).value(
+						StringPool.TRUE
+					).build()),
+				Collections.emptyList(), Collections.emptyList());
+
+			Assert.assertTrue(
+				_objectEntrySitemapURLProvider.isInclude(
+					TestPropsValues.getCompanyId(), _group.getGroupId()));
+		}
+	}
+
+	@Test
 	public void testVisitLayout() throws Exception {
-		Element rootElement = _getRootElement();
-
-		ObjectEntry objectEntry = _addObjectEntry();
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_addDisplayPageTemplate();
-
-		_assertRootElement(
-			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
-			_objectDefinition, objectEntry, rootElement);
-
-		rootElement = _getRootElement();
 
 		Layout layout = _layoutLocalService.getLayout(
 			layoutPageTemplateEntry.getPlid());
 
-		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
-			TestPropsValues.getUserId(), _group.getGroupId(),
-			layout.isPrivateLayout(), layout.getLayoutId(), true,
-			new HashMap<>(),
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		ObjectEntry objectEntry = _addObjectEntry();
 
-		_objectEntrySitemapURLProvider.visitLayout(
-			rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
+		Element rootElement = _getRootElement();
 
-		Assert.assertFalse(rootElement.hasContent());
+		_assertRootElement(layout, _objectDefinition, objectEntry, rootElement);
+
+		// Inactive object definition
+
+		_updateObjectDefinition(false);
+
+		try {
+			rootElement = _getRootElement();
+
+			_objectEntrySitemapURLProvider.visitLayout(
+				rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
+
+			Assert.assertFalse(rootElement.hasContent());
+		}
+		finally {
+			_updateObjectDefinition(true);
+		}
+
+		// Layout excluded from the sitemap
+
+		_updateLayoutSEOEntry(true, layout);
+
+		try {
+			rootElement = _getRootElement();
+
+			_objectEntrySitemapURLProvider.visitLayout(
+				rootElement, layout.getUuid(), _layoutSet, _themeDisplay);
+
+			Assert.assertFalse(rootElement.hasContent());
+		}
+		finally {
+			_updateLayoutSEOEntry(false, layout);
+		}
 	}
 
 	@Test
@@ -207,6 +272,38 @@ public class ObjectEntrySitemapURLProviderTest {
 		finally {
 			PermissionThreadLocal.setPermissionChecker(
 				originalPermissionChecker);
+		}
+	}
+
+	@Test
+	public void testVisitLayoutSet() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry();
+
+		try {
+			_addDisplayPageTemplate();
+
+			Element rootElement = _getRootElement();
+
+			_objectEntrySitemapURLProvider.visitLayoutSet(
+				rootElement, _layoutSet, _themeDisplay);
+
+			Assert.assertTrue(rootElement.hasContent());
+
+			// Inactive object definition
+
+			_updateObjectDefinition(false);
+
+			rootElement = _getRootElement();
+
+			_objectEntrySitemapURLProvider.visitLayoutSet(
+				rootElement, _layoutSet, _themeDisplay);
+
+			Assert.assertFalse(rootElement.hasContent());
+		}
+		finally {
+			_updateObjectDefinition(true);
+
+			_objectEntryLocalService.deleteObjectEntry(objectEntry);
 		}
 	}
 
@@ -330,6 +427,27 @@ public class ObjectEntrySitemapURLProviderTest {
 		return rootElement;
 	}
 
+	private void _updateLayoutSEOEntry(
+			boolean canonicalURLEnabled, Layout layout)
+		throws Exception {
+
+		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			layout.isPrivateLayout(), layout.getLayoutId(), canonicalURLEnabled,
+			new HashMap<>(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private void _updateObjectDefinition(boolean active) throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				_objectDefinition.getObjectDefinitionId());
+
+		objectDefinition.setActive(active);
+
+		_objectDefinitionLocalService.updateObjectDefinition(objectDefinition);
+	}
+
 	private static final String _PID_SITEMAP_COMPANY_CONFIGURATION =
 		"com.liferay.site.internal.configuration.SitemapCompanyConfiguration";
 
@@ -377,6 +495,9 @@ public class ObjectEntrySitemapURLProviderTest {
 
 	@Inject
 	private SAXReader _saxReader;
+
+	@DeleteAfterTestRun
+	private ObjectDefinition _systemObjectDefinition;
 
 	@Inject
 	private UserLocalService _userLocalService;

@@ -1078,6 +1078,23 @@ public class ObjectDefinitionLocalServiceTest {
 		AssertUtils.assertFailure(
 			ObjectDefinitionSettingNameException.NotAllowedNames.class,
 			StringBundler.concat(
+				"The settings ",
+				ObjectDefinitionSettingConstants.NAME_SITEMAPABLE,
+				" are not allowed for object definition ",
+				randomObjectDefinitionName),
+			() -> _publishCustomObjectDefinition(
+				randomObjectDefinitionName,
+				ObjectDefinitionConstants.SCOPE_COMPANY,
+				Collections.singletonList(
+					new ObjectDefinitionSettingBuilder(
+					).name(
+						ObjectDefinitionSettingConstants.NAME_SITEMAPABLE
+					).value(
+						RandomTestUtil.randomString()
+					).build())));
+		AssertUtils.assertFailure(
+			ObjectDefinitionSettingNameException.NotAllowedNames.class,
+			StringBundler.concat(
 				"The settings ", ObjectDefinitionSettingConstants.NAME_VISIBLE,
 				" are not allowed for object definition ",
 				randomObjectDefinitionName),

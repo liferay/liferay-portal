@@ -100,7 +100,9 @@ public class OneToManyObjectRelationshipInfoCollectionProviderTest {
 			ObjectDefinitionTestUtil.addModifiableSystemObjectDefinition(
 				TestPropsValues.getUserId(), null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				"Test" + RandomTestUtil.randomString(), null, null,
+				ObjectDefinitionTestUtil.
+					getRandomModifiableSystemObjectDefinitionName(),
+				null, null,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				ObjectDefinitionConstants.SCOPE_SITE, null, 1,
 				Arrays.asList(

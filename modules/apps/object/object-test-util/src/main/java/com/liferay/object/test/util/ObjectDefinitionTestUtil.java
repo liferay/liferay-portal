@@ -160,6 +160,10 @@ public class ObjectDefinitionTestUtil {
 			Collections.emptyList(), objectFields, Collections.emptyList());
 	}
 
+	public static String getRandomModifiableSystemObjectDefinitionName() {
+		return "Test" + RandomTestUtil.randomString();
+	}
+
 	public static String getRandomName() {
 		return "A" + RandomTestUtil.randomString();
 	}
@@ -309,7 +313,7 @@ public class ObjectDefinitionTestUtil {
 		ObjectDefinition objectDefinition = addModifiableSystemObjectDefinition(
 			TestPropsValues.getUserId(), null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-			"Test", null, null,
+			getRandomModifiableSystemObjectDefinitionName(), null, null,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			ObjectDefinitionConstants.SCOPE_COMPANY, null, 1, objectFields);
 

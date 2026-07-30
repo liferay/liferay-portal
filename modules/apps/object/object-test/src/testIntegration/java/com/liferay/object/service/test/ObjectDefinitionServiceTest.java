@@ -531,8 +531,9 @@ public class ObjectDefinitionServiceTest {
 				ObjectDefinitionUtil.generateRandomClassName(), true, false,
 				true, false, true, false, false, false, false, false, null,
 				RandomTestUtil.randomLocaleStringMap(),
-				"Test" + RandomTestUtil.randomString(), null, null,
-				RandomTestUtil.randomLocaleStringMap(), false,
+				ObjectDefinitionTestUtil.
+					getRandomModifiableSystemObjectDefinitionName(),
+				null, null, RandomTestUtil.randomLocaleStringMap(), false,
 				ObjectDefinitionConstants.SCOPE_COMPANY,
 				Collections.emptyList(),
 				Arrays.asList(

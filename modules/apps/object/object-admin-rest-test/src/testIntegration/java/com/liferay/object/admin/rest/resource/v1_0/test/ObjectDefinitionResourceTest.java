@@ -2697,7 +2697,9 @@ public class ObjectDefinitionResourceTest
 		objectDefinition.setExternalReferenceCode(
 			randomObjectDefinitionExternalReferenceCode);
 
-		objectDefinition.setName("Test" + RandomTestUtil.randomString());
+		objectDefinition.setName(
+			ObjectDefinitionTestUtil.
+				getRandomModifiableSystemObjectDefinitionName());
 		objectDefinition.setObjectDefinitionSettings(objectDefinitionSettings);
 		objectDefinition.setObjectFields(
 			new ObjectField[] {
