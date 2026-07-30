@@ -76,7 +76,7 @@ public class ToolSetUtil {
 		return OpenAPIUtil.getTool(
 			!Objects.equals(toolSetName, _TOOL_SET_NAME),
 			_getOpenAPIJSONObject(
-				_getOpenAPIBrief(toolSetName), httpServletRequest),
+				httpServletRequest, _getOpenAPIBrief(toolSetName)),
 			toolName);
 	}
 
@@ -106,7 +106,7 @@ public class ToolSetUtil {
 		return Page.of(
 			OpenAPIUtil.getToolSummaries(
 				_getOpenAPIJSONObject(
-					_getOpenAPIBrief(toolSetName), httpServletRequest)));
+					httpServletRequest, _getOpenAPIBrief(toolSetName))));
 	}
 
 	public static Response invokeTool(
@@ -175,7 +175,7 @@ public class ToolSetUtil {
 							dataMaskExternalReferenceCodes, StringPool.COMMA)
 					).build(),
 					inputJSONObject,
-					_getOpenAPIJSONObject(openAPIBrief, httpServletRequest),
+					_getOpenAPIJSONObject(httpServletRequest, openAPIBrief),
 					toolName, _getUser(httpServletRequest)));
 
 		String content = response.getContent();
@@ -294,7 +294,7 @@ public class ToolSetUtil {
 	}
 
 	private static JSONObject _getOpenAPIJSONObject(
-		OpenAPIBrief openAPIBrief, HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest, OpenAPIBrief openAPIBrief) {
 
 		return _openAPIJSONObjectCache.computeIfAbsent(
 			StringBundler.concat(
