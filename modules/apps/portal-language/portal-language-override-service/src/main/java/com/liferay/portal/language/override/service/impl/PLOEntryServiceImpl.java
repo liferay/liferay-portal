@@ -78,7 +78,7 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 		PortalPermissionUtil.check(
 			getPermissionChecker(), PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
 
-		return ploEntryLocalService.getPLOEntries(companyId);
+		return ploEntryPersistence.findByCompanyId(companyId);
 	}
 
 	@Override
@@ -86,7 +86,7 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 		PortalPermissionUtil.check(
 			getPermissionChecker(), PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
 
-		return ploEntryLocalService.getPLOEntriesCount(companyId);
+		return ploEntryPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
