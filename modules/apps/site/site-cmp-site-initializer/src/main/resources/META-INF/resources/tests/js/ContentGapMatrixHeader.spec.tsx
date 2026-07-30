@@ -174,4 +174,26 @@ describe('ContentGapMatrixHeader', () => {
 
 		expect(getByText('get-ai-insights')).toBeInTheDocument();
 	});
+
+	it('passes the project scope key to the AI insights trigger context', () => {
+		Liferay.FeatureFlags['LPD-62272'] = true;
+
+		render(
+			<ContentGapMatrixHeader
+				cmpProjectObjectEntryId="42"
+				cmpProjectScopeKey="my-project-scope"
+				data={PARTIAL_COVERAGE_MATRIX}
+			/>
+		);
+
+		const [{getContext}] =
+			mockRenderAIAssistantTriggerButton.mock.calls.at(-1);
+
+		expect(getContext()).toEqual(
+			expect.objectContaining({
+				cmpProjectScopeKey: 'my-project-scope',
+				projectId: '42',
+			})
+		);
+	});
 });

@@ -24,10 +24,12 @@ const CMS_BASIC_WEB_CONTENT_NAME = 'CMSBasicWebContent';
 export default function ContentGapMatrixHeader({
 	cmpProjectObjectEntryId,
 	cmpProjectObjectEntryTitle,
+	cmpProjectScopeKey,
 	data,
 }: {
 	cmpProjectObjectEntryId?: string;
 	cmpProjectObjectEntryTitle?: string;
+	cmpProjectScopeKey?: string;
 	data?: MatrixData;
 }) {
 	const [objectFields, setObjectFields] = useState<ObjectField[]>();
@@ -101,6 +103,7 @@ export default function ContentGapMatrixHeader({
 			{Liferay.FeatureFlags['LPD-62272'] && (
 				<AIAssistantTriggerButton
 					getContext={() => ({
+						cmpProjectScopeKey,
 						focusScope: 'full-matrix',
 						objectDefinitionName: CMS_BASIC_WEB_CONTENT_NAME,
 						objectFields,

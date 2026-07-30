@@ -92,6 +92,9 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 			"cmpProjectObjectEntryTitle",
 			MapUtil.getString(objectEntry.getValues(), "title")
 		).put(
+			"cmpProjectScopeKey",
+			MapUtil.getString(objectEntry.getValues(), "scopeKey")
+		).put(
 			"editProjectURL",
 			() -> {
 				ModelResourcePermission<ObjectEntry> modelResourcePermission =
