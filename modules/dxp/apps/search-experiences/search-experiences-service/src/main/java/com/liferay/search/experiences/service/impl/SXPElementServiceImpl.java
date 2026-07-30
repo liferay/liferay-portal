@@ -79,7 +79,7 @@ public class SXPElementServiceImpl extends SXPElementServiceBaseImpl {
 	public SXPElement fetchSXPElement(long sxpElementId)
 		throws PortalException {
 
-		SXPElement sxpElement = sxpElementLocalService.fetchSXPElement(
+		SXPElement sxpElement = sxpElementPersistence.fetchByPrimaryKey(
 			sxpElementId);
 
 		if (sxpElement != null) {
@@ -95,9 +95,8 @@ public class SXPElementServiceImpl extends SXPElementServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		SXPElement sxpElement =
-			sxpElementLocalService.fetchSXPElementByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		SXPElement sxpElement = sxpElementPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (sxpElement != null) {
 			_sxpElementModelResourcePermission.check(
@@ -109,7 +108,7 @@ public class SXPElementServiceImpl extends SXPElementServiceBaseImpl {
 
 	@Override
 	public SXPElement getSXPElement(long sxpElementId) throws PortalException {
-		SXPElement sxpElement = sxpElementLocalService.getSXPElement(
+		SXPElement sxpElement = sxpElementPersistence.findByPrimaryKey(
 			sxpElementId);
 
 		_sxpElementModelResourcePermission.check(
@@ -123,9 +122,8 @@ public class SXPElementServiceImpl extends SXPElementServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		SXPElement sxpElement =
-			sxpElementLocalService.getSXPElementByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		SXPElement sxpElement = sxpElementPersistence.findByERC_C(
+			externalReferenceCode, companyId);
 
 		_sxpElementModelResourcePermission.check(
 			getPermissionChecker(), sxpElement, ActionKeys.VIEW);

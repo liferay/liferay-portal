@@ -68,7 +68,7 @@ public class SXPBlueprintServiceImpl extends SXPBlueprintServiceBaseImpl {
 	public SXPBlueprint fetchSXPBlueprint(long sxpBlueprintId)
 		throws PortalException {
 
-		SXPBlueprint sxpBlueprint = sxpBlueprintLocalService.fetchSXPBlueprint(
+		SXPBlueprint sxpBlueprint = sxpBlueprintPersistence.fetchByPrimaryKey(
 			sxpBlueprintId);
 
 		if (sxpBlueprint != null) {
@@ -84,9 +84,8 @@ public class SXPBlueprintServiceImpl extends SXPBlueprintServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		SXPBlueprint sxpBlueprint =
-			sxpBlueprintLocalService.fetchSXPBlueprintByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		SXPBlueprint sxpBlueprint = sxpBlueprintPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (sxpBlueprint != null) {
 			_sxpBlueprintModelResourcePermission.check(
@@ -100,7 +99,7 @@ public class SXPBlueprintServiceImpl extends SXPBlueprintServiceBaseImpl {
 	public SXPBlueprint getSXPBlueprint(long sxpBlueprintId)
 		throws PortalException {
 
-		SXPBlueprint sxpBlueprint = sxpBlueprintLocalService.getSXPBlueprint(
+		SXPBlueprint sxpBlueprint = sxpBlueprintPersistence.findByPrimaryKey(
 			sxpBlueprintId);
 
 		_sxpBlueprintModelResourcePermission.check(
@@ -115,9 +114,8 @@ public class SXPBlueprintServiceImpl extends SXPBlueprintServiceBaseImpl {
 			long companyId, String externalReferenceCode)
 		throws PortalException {
 
-		SXPBlueprint sxpBlueprint =
-			sxpBlueprintLocalService.getSXPBlueprintByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		SXPBlueprint sxpBlueprint = sxpBlueprintPersistence.findByERC_C(
+			externalReferenceCode, companyId);
 
 		_sxpBlueprintModelResourcePermission.check(
 			getPermissionChecker(), sxpBlueprint,
