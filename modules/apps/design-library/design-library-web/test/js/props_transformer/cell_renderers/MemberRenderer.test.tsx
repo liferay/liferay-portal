@@ -16,21 +16,9 @@ const _renderMember = (props: {
 }) => render(<MemberRenderer {...(props as any)} />);
 
 describe('MemberRenderer', () => {
-	it('marks a user as the owner when a role identifies the owner', () => {
-		_renderMember({
-			itemData: {
-				id: 1,
-				roles: [{externalReferenceCode: 'L_DESIGN_LIBRARY_OWNER'}],
-			},
-			value: 'Jane Owner',
-		});
-
-		expect(screen.getByText('(owner)')).toBeInTheDocument();
-	});
-
 	it('marks a user as the owner when the id matches the ownerId', () => {
 		_renderMember({
-			itemData: {id: 123, roles: []},
+			itemData: {id: 123},
 			ownerId: '123',
 			value: 'Jane Owner',
 		});
@@ -40,10 +28,7 @@ describe('MemberRenderer', () => {
 
 	it('renders a non-owner user with a portrait and no owner badge', () => {
 		_renderMember({
-			itemData: {
-				id: 1,
-				roles: [{externalReferenceCode: 'L_DESIGN_LIBRARY_MEMBER'}],
-			},
+			itemData: {id: 1},
 			ownerId: '999',
 			value: 'John Member',
 		});

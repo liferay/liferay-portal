@@ -15,6 +15,7 @@ interface MembersAdditionalProps {
 	externalReferenceCode?: string;
 	hasAssignMembersPermission?: boolean;
 	ownerId?: string;
+	refreshDataSetIds?: string[];
 }
 
 export default function DesignLibraryMembersFDSPropsTransformer(
@@ -24,6 +25,7 @@ export default function DesignLibraryMembersFDSPropsTransformer(
 		externalReferenceCode = '',
 		hasAssignMembersPermission = false,
 		ownerId = '',
+		refreshDataSetIds,
 	} = props.additionalProps ?? {};
 
 	return {
@@ -40,6 +42,7 @@ export default function DesignLibraryMembersFDSPropsTransformer(
 									headerTitle:
 										Liferay.Language.get('manage-members'),
 									ownerId,
+									refreshDataSetIds,
 								}),
 						},
 					],

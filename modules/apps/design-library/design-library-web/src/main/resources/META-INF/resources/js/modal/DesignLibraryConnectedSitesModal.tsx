@@ -28,8 +28,10 @@ const showSuccessMessage = (message: string) => {
 
 export default function DesignLibraryConnectedSitesModal({
 	externalReferenceCode,
+	onChange,
 }: {
 	externalReferenceCode: string;
+	onChange?: () => void;
 }) {
 	const [connectedSites, setConnectedSites] = useState<Site[]>([]);
 	const listLabelId = useId();
@@ -88,6 +90,7 @@ export default function DesignLibraryConnectedSitesModal({
 						site.externalReferenceCode
 					);
 				onSiteConnected(data);
+				onChange?.();
 				showSuccessMessage(
 					sub(
 						Liferay.Language.get(
@@ -119,6 +122,7 @@ export default function DesignLibraryConnectedSitesModal({
 				site.externalReferenceCode
 			);
 			onSiteDisconnected?.(site);
+			onChange?.();
 			showSuccessMessage(
 				sub(
 					Liferay.Language.get(

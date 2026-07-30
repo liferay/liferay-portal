@@ -13,6 +13,7 @@ import {Action} from './membersReducer';
 export interface OptimisticMutation {
 	errorMessage: string;
 	name: string;
+	onSuccess?: () => void;
 	optimisticAction: Action;
 	performMutation: () => Promise<ServiceResult>;
 	rollbackAction: Action;
@@ -35,6 +36,7 @@ export async function runOptimisticMutation(
 	{
 		errorMessage,
 		name,
+		onSuccess,
 		optimisticAction,
 		performMutation,
 		rollbackAction,
@@ -51,6 +53,8 @@ export async function runOptimisticMutation(
 		showMemberToast(errorMessage, name, 'danger');
 	}
 	else {
+		onSuccess?.();
+
 		showMemberToast(successMessage, name, 'success');
 	}
 }

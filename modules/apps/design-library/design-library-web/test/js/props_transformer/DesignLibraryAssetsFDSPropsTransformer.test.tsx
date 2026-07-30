@@ -32,7 +32,7 @@ describe('DesignLibraryAssetsFDSPropsTransformer', () => {
 		).toEqual([]);
 	});
 
-	it('exposes a single table view', () => {
+	it('exposes the table view', () => {
 		expect(
 			DesignLibraryAssetsFDSPropsTransformer(BASE_PROPS).views?.map(
 				(view) => view.name

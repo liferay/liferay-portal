@@ -19,6 +19,7 @@ interface ManageMembersListProps {
 	externalReferenceCode: string;
 	filter?: string;
 	hasAssignMembersPermission: boolean;
+	onChange?: () => void;
 	onHasSelectedMembersChange?: (hasSelectedMembers: boolean) => void;
 	ownerId?: string;
 	pageSize?: number;
@@ -34,6 +35,7 @@ export function ManageMembersList({
 	externalReferenceCode,
 	filter,
 	hasAssignMembersPermission,
+	onChange,
 	onHasSelectedMembersChange,
 	ownerId,
 	pageSize = DEFAULT_PAGE_SIZE,
@@ -48,7 +50,7 @@ export function ManageMembersList({
 		search,
 		state,
 		updateMemberRoles,
-	} = useMembers(config, externalReferenceCode, pageSize);
+	} = useMembers(config, externalReferenceCode, pageSize, onChange);
 	const {
 		groups,
 		isFetching: isFetchingMembers,

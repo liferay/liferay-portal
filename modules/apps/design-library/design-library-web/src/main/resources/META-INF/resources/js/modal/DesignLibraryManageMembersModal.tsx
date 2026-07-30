@@ -66,11 +66,13 @@ export default function DesignLibraryManageMembersModal({
 	externalReferenceCode,
 	hasAssignMembersPermission,
 	headerTitle,
+	onChange,
 	ownerId,
 }: {
 	externalReferenceCode: string;
 	hasAssignMembersPermission: boolean;
 	headerTitle: string;
+	onChange?: () => void;
 	ownerId: string;
 }) {
 	return (
@@ -82,6 +84,7 @@ export default function DesignLibraryManageMembersModal({
 			externalReferenceCode={externalReferenceCode}
 			hasAssignMembersPermission={hasAssignMembersPermission}
 			headerTitle={headerTitle}
+			onChange={onChange}
 			ownerId={ownerId}
 			renderAddMembersInput={(api) => <AddMembersInput {...api} />}
 		/>

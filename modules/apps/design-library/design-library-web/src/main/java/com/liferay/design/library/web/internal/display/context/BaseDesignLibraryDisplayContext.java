@@ -10,9 +10,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -42,7 +39,7 @@ public abstract class BaseDesignLibraryDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"description", LanguageUtil.get(httpServletRequest, descriptionKey)
 		).put(
-			"image", "/states/resources_empty_state.svg"
+			"image", "/states/design_library_empty_state.svg"
 		).put(
 			"title", LanguageUtil.get(httpServletRequest, titleKey)
 		).build();
@@ -56,23 +53,6 @@ public abstract class BaseDesignLibraryDisplayContext {
 
 	protected Group getGroup() throws PortalException {
 		return depotEntry.getGroup();
-	}
-
-	protected boolean hasAssignMembersPermission(Group group)
-		throws PortalException {
-
-		return GroupPermissionUtil.contains(
-			themeDisplay.getPermissionChecker(), group.getGroupId(),
-			ActionKeys.ASSIGN_MEMBERS);
-	}
-
-	protected boolean hasUpdatePermission(Group group) {
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
-		return permissionChecker.hasPermission(
-			group, DepotEntry.class.getName(), group.getClassPK(),
-			ActionKeys.UPDATE);
 	}
 
 	protected final DepotEntry depotEntry;

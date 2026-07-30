@@ -7,9 +7,12 @@ package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,7 +50,12 @@ public class DesignLibraryConnectedSitesDisplayContext
 		return HashMapBuilder.<String, Object>put(
 			"externalReferenceCode", group.getExternalReferenceCode()
 		).put(
-			"hasConnectSitesPermission", hasUpdatePermission(group)
+			"hasConnectSitesPermission", _hasUpdatePermission(group)
+		).put(
+			"refreshDataSetIds",
+			new String[] {
+				DesignLibraryAdminFDSNames.DESIGN_LIBRARY_CONNECTED_SITES
+			}
 		).build();
 	}
 
@@ -71,6 +79,15 @@ public class DesignLibraryConnectedSitesDisplayContext
 
 		return depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
 			depotEntry);
+	}
+
+	private boolean _hasUpdatePermission(Group group) {
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		return permissionChecker.hasPermission(
+			group, DepotEntry.class.getName(), group.getClassPK(),
+			ActionKeys.UPDATE);
 	}
 
 	private static final Snapshot<DepotEntryGroupRelLocalService>
