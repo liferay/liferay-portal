@@ -311,17 +311,19 @@ public class NotificationTemplateLocalServiceImpl
 			notificationTemplate, ResourceConstants.SCOPE_INDIVIDUAL);
 
 		NotificationRecipient notificationRecipient =
-			notificationTemplate.getNotificationRecipient();
+			notificationTemplate.fetchNotificationRecipient();
 
-		_notificationRecipientLocalService.deleteNotificationRecipient(
-			notificationRecipient);
+		if (notificationRecipient != null) {
+			_notificationRecipientLocalService.deleteNotificationRecipient(
+				notificationRecipient);
 
-		for (NotificationRecipientSetting notificationRecipientSetting :
-				notificationRecipient.getNotificationRecipientSettings()) {
+			for (NotificationRecipientSetting notificationRecipientSetting :
+					notificationRecipient.getNotificationRecipientSettings()) {
 
-			_notificationRecipientSettingLocalService.
-				deleteNotificationRecipientSetting(
-					notificationRecipientSetting);
+				_notificationRecipientSettingLocalService.
+					deleteNotificationRecipientSetting(
+						notificationRecipientSetting);
+			}
 		}
 
 		List<NotificationQueueEntry> notificationQueueEntries =

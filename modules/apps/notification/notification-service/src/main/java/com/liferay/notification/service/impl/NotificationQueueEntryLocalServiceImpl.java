@@ -188,17 +188,19 @@ public class NotificationQueueEntryLocalServiceImpl
 				notificationQueueEntry.getNotificationQueueEntryId());
 
 		NotificationRecipient notificationRecipient =
-			notificationQueueEntry.getNotificationRecipient();
+			notificationQueueEntry.fetchNotificationRecipient();
 
-		_notificationRecipientLocalService.deleteNotificationRecipient(
-			notificationRecipient);
+		if (notificationRecipient != null) {
+			_notificationRecipientLocalService.deleteNotificationRecipient(
+				notificationRecipient);
 
-		for (NotificationRecipientSetting notificationRecipientSetting :
-				notificationRecipient.getNotificationRecipientSettings()) {
+			for (NotificationRecipientSetting notificationRecipientSetting :
+					notificationRecipient.getNotificationRecipientSettings()) {
 
-			_notificationRecipientSettingLocalService.
-				deleteNotificationRecipientSetting(
-					notificationRecipientSetting);
+				_notificationRecipientSettingLocalService.
+					deleteNotificationRecipientSetting(
+						notificationRecipientSetting);
+			}
 		}
 
 		Repository repository = _getRepository(notificationQueueEntry);
