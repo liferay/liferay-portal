@@ -140,10 +140,7 @@ public class PLOPortlet extends MVCPortlet {
 
 			Map<String, List<PLOEntry>> keyPLOEntries = new HashMap<>();
 
-			for (PLOEntry ploEntry :
-					_ploEntryService.getPLOEntries(
-						_portal.getCompanyId(resourceRequest))) {
-
+			for (PLOEntry ploEntry : _ploEntryService.getPLOEntries()) {
 				List<PLOEntry> ploEntries = keyPLOEntries.computeIfAbsent(
 					ploEntry.getLanguageId(), key -> new ArrayList<>());
 

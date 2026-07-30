@@ -106,6 +106,17 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 	}
 
 	@Override
+	public List<PLOEntry> getPLOEntries() throws PortalException {
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		PortalPermissionUtil.check(
+			permissionChecker, PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
+
+		return ploEntryPersistence.findByCompanyId(
+			permissionChecker.getCompanyId());
+	}
+
+	@Override
 	public List<PLOEntry> getPLOEntries(
 			int start, int end, OrderByComparator<PLOEntry> orderByComparator)
 		throws PortalException {
@@ -117,14 +128,6 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 
 		return ploEntryLocalService.getPLOEntries(
 			permissionChecker.getCompanyId(), start, end, orderByComparator);
-	}
-
-	@Override
-	public List<PLOEntry> getPLOEntries(long companyId) throws PortalException {
-		PortalPermissionUtil.check(
-			getPermissionChecker(), PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
-
-		return ploEntryPersistence.findByCompanyId(companyId);
 	}
 
 	@Override
@@ -144,11 +147,14 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 	}
 
 	@Override
-	public int getPLOEntriesCount(long companyId) throws PortalException {
-		PortalPermissionUtil.check(
-			getPermissionChecker(), PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
+	public int getPLOEntriesCount() throws PortalException {
+		PermissionChecker permissionChecker = getPermissionChecker();
 
-		return ploEntryPersistence.countByCompanyId(companyId);
+		PortalPermissionUtil.check(
+			permissionChecker, PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
+
+		return ploEntryPersistence.countByCompanyId(
+			permissionChecker.getCompanyId());
 	}
 
 	@Override
