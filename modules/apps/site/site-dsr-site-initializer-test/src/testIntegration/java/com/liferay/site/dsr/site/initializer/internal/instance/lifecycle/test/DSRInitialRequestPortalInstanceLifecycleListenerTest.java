@@ -6,15 +6,19 @@
 package com.liferay.site.dsr.site.initializer.internal.instance.lifecycle.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.search.IndexStatusManagerThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -93,7 +97,43 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 		Assert.assertNotNull(
 			_layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false, "/rooms"));
+
+		boolean indexReadOnly = IndexStatusManagerThreadLocal.isIndexReadOnly();
+
+		IndexStatusManagerThreadLocal.setIndexReadOnly(true);
+
+		try {
+			_company = CompanyTestUtil.addCompany(true);
+
+			Assert.assertNotNull(
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_DSR_ROOM", _company.getCompanyId()));
+
+			group = _groupLocalService.fetchGroup(
+				_company.getCompanyId(), GroupConstants.DSR);
+
+			_layoutLocalService.deleteLayout(
+				_layoutLocalService.fetchLayoutByFriendlyURL(
+					group.getGroupId(), false, "/home"));
+
+			_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
+
+			Assert.assertNotNull(
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_DSR_ROOM", _company.getCompanyId()));
+			Assert.assertNotNull(
+				_layoutLocalService.fetchLayoutByFriendlyURL(
+					group.getGroupId(), false, "/home"));
+		}
+		finally {
+			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
+		}
 	}
+
+	@DeleteAfterTestRun
+	private Company _company;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
@@ -103,6 +143,9 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.site.dsr.site.initializer.internal.instance.lifecycle.DSRInitialRequestPortalInstanceLifecycleListener"
