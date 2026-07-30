@@ -65,9 +65,12 @@ export function stringifyValues(data) {
 }
 
 /**
- * Remove undefined values from object authData
+ * Serializes a request payload and drops every undefined value. Undefined keys
+ * must never reach `getFormData`: it coerces each value to a string, so an
+ * undefined field would be sent as the literal string "undefined" and
+ * overwrite the stored value.
  */
-function getAuthData(data) {
+export function getRequestData(data) {
 	return Object.entries({
 		...stringifyValues(data),
 	})
@@ -89,7 +92,7 @@ export default (request) => {
 
 	let requestURL = `${baseURL}/${path}`;
 
-	const authData = data && getAuthData(data);
+	const authData = data && getRequestData(data);
 
 	const config = {method};
 
