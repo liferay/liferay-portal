@@ -60,8 +60,10 @@ import com.liferay.portal.security.audit.event.generators.util.Attribute;
 import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuilder;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
+import com.liferay.site.cmp.site.initializer.internal.util.CMPLinkObjectEntryUtil;
 import com.liferay.site.cmp.site.initializer.internal.util.RoleUtil;
 import com.liferay.site.cmp.site.initializer.internal.util.SiteInitializerUtil;
+import com.liferay.site.cms.site.initializer.util.CMSObjectEntryUtil;
 import com.liferay.site.initializer.SiteInitializer;
 
 import java.io.Serializable;
@@ -125,6 +127,40 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 		catch (Exception exception) {
 			throw new ModelListenerException(exception);
+		}
+	}
+
+	@Override
+	public void onBeforeRemove(ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		try {
+			_deleteLinkObjectEntries(objectEntry);
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
+
+	private void _deleteLinkObjectEntries(ObjectEntry objectEntry)
+		throws Exception {
+
+		if (!CMSObjectEntryUtil.isCMSObjectEntry(objectEntry)) {
+			return;
+		}
+
+		for (String linkObjectDefinitionExternalReferenceCode :
+				new String[] {"L_CMP_PROJECT_LINK", "L_CMP_TASK_LINK"}) {
+
+			for (long linkObjectEntryId :
+					CMPLinkObjectEntryUtil.getLinkObjectEntryIds(
+						_filterFactory, _groupLocalService,
+						linkObjectDefinitionExternalReferenceCode,
+						_objectDefinitionLocalService, objectEntry,
+						_objectEntryLocalService)) {
+
+				_objectEntryLocalService.deleteObjectEntry(linkObjectEntryId);
+			}
 		}
 	}
 
