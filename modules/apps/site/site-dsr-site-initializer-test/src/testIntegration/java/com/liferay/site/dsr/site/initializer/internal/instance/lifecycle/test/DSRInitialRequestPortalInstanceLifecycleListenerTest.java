@@ -120,12 +120,12 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 			_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
 
 			Assert.assertNotNull(
+				_layoutLocalService.fetchLayoutByFriendlyURL(
+					group.getGroupId(), false, "/home"));
+			Assert.assertNotNull(
 				_objectDefinitionLocalService.
 					fetchObjectDefinitionByExternalReferenceCode(
 						"L_DSR_ROOM", _company.getCompanyId()));
-			Assert.assertNotNull(
-				_layoutLocalService.fetchLayoutByFriendlyURL(
-					group.getGroupId(), false, "/home"));
 		}
 		finally {
 			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
