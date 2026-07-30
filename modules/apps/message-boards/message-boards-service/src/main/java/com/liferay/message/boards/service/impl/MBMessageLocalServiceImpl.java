@@ -47,6 +47,7 @@ import com.liferay.message.boards.service.MBDiscussionLocalService;
 import com.liferay.message.boards.service.MBThreadLocalService;
 import com.liferay.message.boards.service.base.MBMessageLocalServiceBaseImpl;
 import com.liferay.message.boards.service.persistence.MBCategoryPersistence;
+import com.liferay.message.boards.service.persistence.MBDiscussionPersistence;
 import com.liferay.message.boards.service.persistence.MBThreadPersistence;
 import com.liferay.message.boards.settings.MBGroupServiceSettings;
 import com.liferay.message.boards.social.MBActivityKeys;
@@ -781,7 +782,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 			if (message.isDiscussion()) {
 				MBDiscussion discussion =
-					_mbDiscussionLocalService.getThreadDiscussion(
+					_mbDiscussionPersistence.findByThreadId(
 						message.getThreadId());
 
 				_mbDiscussionLocalService.deleteMBDiscussion(
@@ -907,7 +908,8 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 				IndexerRegistryUtil.nullSafeGetIndexer(MBMessage.class);
 
 			mbMessageIndexer.reindex(
-				mbMessageLocalService.getMBMessage(thread.getRootMessageId()));
+				mbMessagePersistence.findByPrimaryKey(
+					thread.getRootMessageId()));
 		}
 
 		// Asset
@@ -2476,9 +2478,8 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		CommentGroupServiceConfiguration commentGroupServiceConfiguration =
 			_getCommentGroupServiceConfiguration(message.getGroupId());
 
-		MBDiscussion mbDiscussion =
-			_mbDiscussionLocalService.getThreadDiscussion(
-				message.getThreadId());
+		MBDiscussion mbDiscussion = _mbDiscussionPersistence.findByThreadId(
+			message.getThreadId());
 
 		String contentURL = (String)serviceContext.getAttribute("contentURL");
 
@@ -2689,7 +2690,7 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		if (message.getParentMessageId() !=
 				MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID) {
 
-			MBMessage parentMessage = mbMessageLocalService.getMessage(
+			MBMessage parentMessage = mbMessagePersistence.findByPrimaryKey(
 				message.getParentMessageId());
 
 			Date modifiedDate = parentMessage.getModifiedDate();
@@ -3170,6 +3171,9 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 	@Reference
 	private MBDiscussionLocalService _mbDiscussionLocalService;
+
+	@Reference
+	private MBDiscussionPersistence _mbDiscussionPersistence;
 
 	@Reference
 	private MBThreadLocalService _mbThreadLocalService;

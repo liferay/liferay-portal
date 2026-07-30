@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -108,9 +109,8 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 	public void deleteCategory(String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		MBCategory category =
-			mbCategoryLocalService.getMBCategoryByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		MBCategory category = mbCategoryPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		_categoryModelResourcePermission.check(
 			getPermissionChecker(), category, ActionKeys.DELETE);
@@ -122,8 +122,10 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 	public MBCategory fetchMBCategory(long groupId, String friendlyURL)
 		throws PortalException {
 
-		MBCategory mbCategory = mbCategoryLocalService.fetchMBCategory(
-			groupId, friendlyURL);
+		MBCategory mbCategory = mbCategoryPersistence.fetchByG_F(
+			groupId,
+			_friendlyURLNormalizer.normalizeWithEncodingPeriodsAndSlashes(
+				friendlyURL));
 
 		if (mbCategory == null) {
 			return null;
@@ -432,8 +434,10 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 	public MBCategory getMBCategory(long groupId, String friendlyURL)
 		throws PortalException {
 
-		MBCategory mbCategory = mbCategoryLocalService.getMBCategory(
-			groupId, friendlyURL);
+		MBCategory mbCategory = mbCategoryPersistence.findByG_F(
+			groupId,
+			_friendlyURLNormalizer.normalizeWithEncodingPeriodsAndSlashes(
+				friendlyURL));
 
 		_categoryModelResourcePermission.check(
 			getPermissionChecker(), mbCategory, ActionKeys.VIEW);
@@ -611,5 +615,8 @@ public class MBCategoryServiceImpl extends MBCategoryServiceBaseImpl {
 	)
 	private ModelResourcePermission<MBCategory>
 		_categoryModelResourcePermission;
+
+	@Reference
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
 
 }

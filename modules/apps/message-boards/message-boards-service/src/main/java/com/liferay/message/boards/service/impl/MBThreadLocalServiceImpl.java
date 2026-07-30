@@ -25,6 +25,7 @@ import com.liferay.message.boards.model.impl.MBTreeWalkerImpl;
 import com.liferay.message.boards.service.MBDiscussionLocalService;
 import com.liferay.message.boards.service.base.MBThreadLocalServiceBaseImpl;
 import com.liferay.message.boards.service.persistence.MBCategoryPersistence;
+import com.liferay.message.boards.service.persistence.MBDiscussionPersistence;
 import com.liferay.message.boards.service.persistence.MBMessageFinder;
 import com.liferay.message.boards.service.persistence.MBMessagePersistence;
 import com.liferay.message.boards.util.comparator.MessageCreateDateComparator;
@@ -190,9 +191,8 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 
 		// Discussion
 
-		MBDiscussion discussion =
-			_mbDiscussionLocalService.fetchThreadDiscussion(
-				thread.getThreadId());
+		MBDiscussion discussion = _mbDiscussionPersistence.fetchByThreadId(
+			thread.getThreadId());
 
 		if (discussion != null) {
 			_mbDiscussionLocalService.deleteMBDiscussion(
@@ -543,7 +543,7 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 
 		Set<Long> userIds = new HashSet<>();
 
-		MBThread thread = mbThreadLocalService.getThread(threadId);
+		MBThread thread = mbThreadPersistence.findByPrimaryKey(threadId);
 
 		List<MBMessage> messages = _mbMessagePersistence.findByThreadId(
 			threadId);
@@ -781,7 +781,7 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 
 		Set<Long> userIds = new HashSet<>();
 
-		MBThread thread = mbThreadLocalService.getThread(threadId);
+		MBThread thread = mbThreadPersistence.findByPrimaryKey(threadId);
 
 		List<MBMessage> messages = _mbMessagePersistence.findByThreadId(
 			threadId);
@@ -1210,6 +1210,9 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 
 	@Reference
 	private MBDiscussionLocalService _mbDiscussionLocalService;
+
+	@Reference
+	private MBDiscussionPersistence _mbDiscussionPersistence;
 
 	@Reference
 	private MBMessageFinder _mbMessageFinder;

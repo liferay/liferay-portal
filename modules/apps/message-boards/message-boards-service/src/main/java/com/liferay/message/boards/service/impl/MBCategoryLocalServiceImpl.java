@@ -16,6 +16,7 @@ import com.liferay.message.boards.model.impl.MBCategoryImpl;
 import com.liferay.message.boards.service.MBMailingListLocalService;
 import com.liferay.message.boards.service.MBThreadLocalService;
 import com.liferay.message.boards.service.base.MBCategoryLocalServiceBaseImpl;
+import com.liferay.message.boards.service.persistence.MBMailingListPersistence;
 import com.liferay.message.boards.service.persistence.MBMessagePersistence;
 import com.liferay.message.boards.service.persistence.MBThreadPersistence;
 import com.liferay.petra.string.StringPool;
@@ -261,9 +262,8 @@ public class MBCategoryLocalServiceImpl extends MBCategoryLocalServiceBaseImpl {
 
 		// Mailing list
 
-		MBMailingList mbMailingList =
-			_mbMailingListLocalService.fetchCategoryMailingList(
-				category.getGroupId(), category.getCategoryId());
+		MBMailingList mbMailingList = _mbMailingListPersistence.fetchByG_C(
+			category.getGroupId(), category.getCategoryId());
 
 		if (mbMailingList != null) {
 			_mbMailingListLocalService.deleteMailingList(mbMailingList);
@@ -845,9 +845,8 @@ public class MBCategoryLocalServiceImpl extends MBCategoryLocalServiceBaseImpl {
 
 		// Mailing list
 
-		MBMailingList mailingList =
-			_mbMailingListLocalService.fetchCategoryMailingList(
-				category.getGroupId(), category.getCategoryId());
+		MBMailingList mailingList = _mbMailingListPersistence.fetchByG_C(
+			category.getGroupId(), category.getCategoryId());
 
 		if (mailingList != null) {
 			_mbMailingListLocalService.updateMailingList(
@@ -1224,6 +1223,9 @@ public class MBCategoryLocalServiceImpl extends MBCategoryLocalServiceBaseImpl {
 
 	@Reference
 	private MBMailingListLocalService _mbMailingListLocalService;
+
+	@Reference
+	private MBMailingListPersistence _mbMailingListPersistence;
 
 	@Reference
 	private MBMessagePersistence _mbMessagePersistence;

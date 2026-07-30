@@ -15,8 +15,9 @@ import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBMessageDisplay;
 import com.liferay.message.boards.model.MBThread;
 import com.liferay.message.boards.service.MBCategoryLocalService;
-import com.liferay.message.boards.service.MBThreadLocalService;
 import com.liferay.message.boards.service.base.MBMessageServiceBaseImpl;
+import com.liferay.message.boards.service.persistence.MBCategoryPersistence;
+import com.liferay.message.boards.service.persistence.MBThreadPersistence;
 import com.liferay.message.boards.util.comparator.MessageCreateDateComparator;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.HtmlParser;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
@@ -279,7 +281,7 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 			long messageId, String fileName, File file, String mimeType)
 		throws PortalException {
 
-		MBMessage message = mbMessageLocalService.getMBMessage(messageId);
+		MBMessage message = mbMessagePersistence.findByPrimaryKey(messageId);
 
 		if (_lockManager.isLocked(
 				MBThread.class.getName(), message.getThreadId())) {
@@ -374,8 +376,10 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 	public MBMessage fetchMBMessageByUrlSubject(long groupId, String urlSubject)
 		throws PortalException {
 
-		MBMessage mbMessage = mbMessageLocalService.fetchMBMessageByUrlSubject(
-			groupId, urlSubject);
+		MBMessage mbMessage = mbMessagePersistence.fetchByG_US(
+			groupId,
+			_friendlyURLNormalizer.normalizeWithEncodingPeriodsAndSlashes(
+				urlSubject));
 
 		if (mbMessage == null) {
 			return null;
@@ -424,7 +428,7 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 		String name = StringPool.BLANK;
 		String description = StringPool.BLANK;
 
-		MBCategory category = _mbCategoryLocalService.fetchMBCategory(
+		MBCategory category = _mbCategoryPersistence.fetchByPrimaryKey(
 			categoryId);
 
 		if (category == null) {
@@ -687,9 +691,8 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		MBMessage mbMessage =
-			mbMessageLocalService.getMBMessageByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		MBMessage mbMessage = mbMessagePersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		_messageModelResourcePermission.check(
 			getPermissionChecker(), mbMessage, ActionKeys.VIEW);
@@ -702,7 +705,7 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 		_messageModelResourcePermission.check(
 			getPermissionChecker(), messageId, ActionKeys.VIEW);
 
-		return mbMessageLocalService.getMessage(messageId);
+		return mbMessagePersistence.findByPrimaryKey(messageId);
 	}
 
 	@Override
@@ -771,7 +774,7 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 
 		List<MBMessage> messages = new ArrayList<>();
 
-		MBThread thread = _mbThreadLocalService.getThread(threadId);
+		MBThread thread = _mbThreadPersistence.findByPrimaryKey(threadId);
 
 		if (_messageModelResourcePermission.contains(
 				getPermissionChecker(), thread.getRootMessageId(),
@@ -927,7 +930,7 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 				message.getGroupId(), message.getCategoryId(),
 				ActionKeys.UPDATE_THREAD_PRIORITY)) {
 
-			MBThread thread = _mbThreadLocalService.getThread(
+			MBThread thread = _mbThreadPersistence.findByPrimaryKey(
 				message.getThreadId());
 
 			priority = thread.getPriority();
@@ -1065,6 +1068,9 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 	private DiscussionPermission _discussionPermission;
 
 	@Reference
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
+
+	@Reference
 	private GroupLocalService _groupLocalService;
 
 	@Reference
@@ -1080,7 +1086,10 @@ public class MBMessageServiceImpl extends MBMessageServiceBaseImpl {
 	private MBCategoryLocalService _mbCategoryLocalService;
 
 	@Reference
-	private MBThreadLocalService _mbThreadLocalService;
+	private MBCategoryPersistence _mbCategoryPersistence;
+
+	@Reference
+	private MBThreadPersistence _mbThreadPersistence;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.message.boards.model.MBMessage)"

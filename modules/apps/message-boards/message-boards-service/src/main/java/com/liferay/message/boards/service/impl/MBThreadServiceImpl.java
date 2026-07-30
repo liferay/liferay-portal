@@ -14,6 +14,7 @@ import com.liferay.message.boards.service.MBCategoryService;
 import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.message.boards.service.base.MBThreadServiceBaseImpl;
 import com.liferay.message.boards.service.persistence.MBMessageFinder;
+import com.liferay.message.boards.service.persistence.MBMessagePersistence;
 import com.liferay.message.boards.service.persistence.impl.constants.MBPersistenceConstants;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
@@ -371,7 +372,7 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 					MBThread.class.getName(), " and class PK ", threadId));
 		}
 
-		MBThread thread = mbThreadLocalService.getThread(threadId);
+		MBThread thread = mbThreadPersistence.findByPrimaryKey(threadId);
 
 		ModelResourcePermissionUtil.check(
 			_categoryModelResourcePermission, getPermissionChecker(),
@@ -390,7 +391,7 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 	public MBThread moveThreadFromTrash(long categoryId, long threadId)
 		throws PortalException {
 
-		MBThread thread = mbThreadLocalService.getThread(threadId);
+		MBThread thread = mbThreadPersistence.findByPrimaryKey(threadId);
 
 		ModelResourcePermissionUtil.check(
 			_categoryModelResourcePermission, getPermissionChecker(),
@@ -462,7 +463,7 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
 
-		MBMessage message = _mbMessageLocalService.getMessage(messageId);
+		MBMessage message = _mbMessagePersistence.findByPrimaryKey(messageId);
 
 		ModelResourcePermissionUtil.check(
 			_categoryModelResourcePermission, getPermissionChecker(),
@@ -478,7 +479,7 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 
 	@Override
 	public void unlockThread(long threadId) throws PortalException {
-		MBThread thread = mbThreadLocalService.getThread(threadId);
+		MBThread thread = mbThreadPersistence.findByPrimaryKey(threadId);
 
 		ModelResourcePermissionUtil.check(
 			_categoryModelResourcePermission, getPermissionChecker(),
@@ -572,6 +573,9 @@ public class MBThreadServiceImpl extends MBThreadServiceBaseImpl {
 
 	@Reference
 	private MBMessageLocalService _mbMessageLocalService;
+
+	@Reference
+	private MBMessagePersistence _mbMessagePersistence;
 
 	private long _mbThreadLockExpirationTime;
 
