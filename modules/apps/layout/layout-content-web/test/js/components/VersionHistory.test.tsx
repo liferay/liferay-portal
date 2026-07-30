@@ -7,7 +7,7 @@ import {
 	hideProductMenuIfPresent,
 	useMediaQuery,
 } from '@liferay/layout-js-components-web';
-import {render, screen, waitFor} from '@testing-library/react';
+import {render, screen, waitFor, within} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {fetch} from 'frontend-js-web';
 import React from 'react';
@@ -91,6 +91,10 @@ function mockVersions(versions: PageVersion[]) {
 			ok: true,
 		})
 	);
+}
+
+function queryDraftItem() {
+	return document.querySelector('.lexicon-icon-sheets')?.closest('li');
 }
 
 function renderComponent({hasDraft = false} = {}) {
@@ -184,6 +188,27 @@ describe('VersionHistory', () => {
 		expect(screen.queryByText('no-results-found')).not.toBeInTheDocument();
 	});
 
+	it('shows the search empty state when nothing matches the search', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(2)
+		);
+
+		await userEvent.type(screen.getByLabelText('search-form'), 'zzz');
+
+		expect(screen.getByText('no-results-found')).toBeInTheDocument();
+		expect(
+			screen.getByText('try-again-with-a-different-search')
+		).toBeInTheDocument();
+		expect(
+			screen.queryByText('there-are-no-results')
+		).not.toBeInTheDocument();
+	});
+
 	it('renders one item per version', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
@@ -196,6 +221,206 @@ describe('VersionHistory', () => {
 
 		expect(screen.getByText('Home Halloween')).toBeInTheDocument();
 		expect(screen.getByText('Home')).toBeInTheDocument();
+	});
+
+	it('does not render a draft item when there is no draft', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(2)
+		);
+
+		expect(queryDraftItem()).toBeUndefined();
+	});
+
+	it('renders the draft on top when there is a draft', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [first] = screen.getAllByRole('option');
+
+		expect(first).toBe(queryDraftItem());
+		expect(first).toHaveTextContent('Home');
+		expect(first).toHaveTextContent('draft');
+	});
+
+	it('renders the draft even when the page has no versions', async () => {
+		mockLargeScreen();
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(1)
+		);
+
+		expect(
+			screen.queryByText('there-are-no-results')
+		).not.toBeInTheDocument();
+	});
+
+	it('filters out the draft when it does not match the search', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		await userEvent.type(screen.getByLabelText('search-form'), 'Halloween');
+
+		expect(screen.getAllByRole('option')).toHaveLength(1);
+		expect(queryDraftItem()).toBeUndefined();
+	});
+
+	it('selects the draft by default when there is a draft', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [draft, ...rest] = screen.getAllByRole('option');
+
+		expect(draft).toHaveClass('active');
+
+		for (const item of rest) {
+			expect(item).not.toHaveClass('active');
+		}
+	});
+
+	it('selects the first version by default when there is no draft', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(2)
+		);
+
+		const [first, second] = screen.getAllByRole('option');
+
+		expect(first).toHaveClass('active');
+		expect(second).not.toHaveClass('active');
+	});
+
+	it('selects an item when it is clicked', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [draft, version] = screen.getAllByRole('option');
+
+		await userEvent.click(version);
+
+		expect(version).toHaveClass('active');
+		expect(version).toHaveAttribute('aria-selected', 'true');
+		expect(draft).not.toHaveClass('active');
+
+		await userEvent.click(draft);
+
+		expect(draft).toHaveClass('active');
+		expect(version).not.toHaveClass('active');
+	});
+
+	it('only keeps the navigation target in the tab order', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const items = screen.getAllByRole('option');
+
+		expect(items[0]).toHaveAttribute('tabindex', '0');
+		expect(items[1]).toHaveAttribute('tabindex', '-1');
+		expect(items[2]).toHaveAttribute('tabindex', '-1');
+
+		expect(items.every((item) => !within(item).queryByRole('button'))).toBe(
+			true
+		);
+	});
+
+	it('walks the list with the arrow keys and selects with Enter', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [draft, second, third] = screen.getAllByRole('option');
+
+		draft.focus();
+
+		expect(draft).toHaveFocus();
+
+		await userEvent.keyboard('{ArrowDown}');
+
+		expect(second).toHaveFocus();
+		expect(second).toHaveAttribute('tabindex', '0');
+
+		await userEvent.keyboard('{ArrowDown}');
+
+		expect(third).toHaveFocus();
+
+		await userEvent.keyboard('{Enter}');
+
+		expect(third).toHaveClass('active');
+
+		await userEvent.keyboard('{ArrowUp}');
+
+		expect(second).toHaveFocus();
+		expect(third).toHaveClass('active');
+	});
+
+	it('stops at the ends of the list', async () => {
+		mockLargeScreen();
+		mockVersions(VERSIONS);
+
+		renderComponent({hasDraft: true});
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const items = screen.getAllByRole('option');
+
+		items[0].focus();
+
+		await userEvent.keyboard('{ArrowUp}');
+
+		expect(items[0]).toHaveFocus();
+
+		items[2].focus();
+
+		await userEvent.keyboard('{ArrowDown}');
+
+		expect(items[2]).toHaveFocus();
 	});
 
 	it('renders the portrait of the user who modified every version', async () => {
