@@ -61,6 +61,10 @@ import org.osgi.service.jaxrs.runtime.dto.RuntimeDTO;
  */
 public class ToolSetUtil {
 
+	public static void clearOpenAPIJSONObjectCache() {
+		_openAPIJSONObjectCache.clear();
+	}
+
 	public static Tool getTool(
 		HttpServletRequest httpServletRequest, String toolName,
 		String toolSetName) {
