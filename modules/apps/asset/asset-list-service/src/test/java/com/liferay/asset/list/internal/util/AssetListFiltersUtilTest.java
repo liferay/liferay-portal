@@ -10,6 +10,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.QueryTerm;
 import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -258,6 +260,113 @@ public class AssetListFiltersUtilTest {
 	}
 
 	@Test
+	public void testFilterQueriesWithNumericRangeOperators() {
+		String doubleFieldName = RandomTestUtil.randomString();
+
+		_setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_DECIMAL,
+			ObjectFieldConstants.DB_TYPE_DOUBLE, doubleFieldName);
+
+		String doubleLowerFieldValue = "1.5";
+		String doubleUpperFieldValue = "2.5";
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_double", true, true, doubleLowerFieldValue,
+			doubleUpperFieldValue,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"between", doubleFieldName,
+					JSONUtil.putAll(
+						doubleLowerFieldValue, doubleUpperFieldValue)),
+				doubleFieldName));
+
+		String doubleFieldValue = String.valueOf(RandomTestUtil.randomDouble());
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_double", false, false, doubleFieldValue,
+			null,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject("gt", doubleFieldName, doubleFieldValue),
+				doubleFieldName));
+
+		String integerFieldName = RandomTestUtil.randomString();
+
+		_setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_INTEGER,
+			ObjectFieldConstants.DB_TYPE_INTEGER, integerFieldName);
+
+		String integerLowerFieldValue = "1";
+		String integerUpperFieldValue = "2";
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_integer", true, true,
+			integerLowerFieldValue, integerUpperFieldValue,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"between", integerFieldName,
+					JSONUtil.putAll(
+						integerLowerFieldValue, integerUpperFieldValue)),
+				integerFieldName));
+
+		String integerFieldValue = String.valueOf(RandomTestUtil.randomInt());
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_integer", true, false, integerFieldValue,
+			null,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"ge", integerFieldName, integerFieldValue),
+				integerFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_integer", false, false, integerFieldValue,
+			null,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"gt", integerFieldName, integerFieldValue),
+				integerFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_integer", false, true, null,
+			integerFieldValue,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"le", integerFieldName, integerFieldValue),
+				integerFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_integer", false, false, null,
+			integerFieldValue,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"lt", integerFieldName, integerFieldValue),
+				integerFieldName));
+
+		String longIntegerFieldName = RandomTestUtil.randomString();
+
+		_setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
+			ObjectFieldConstants.DB_TYPE_LONG, longIntegerFieldName);
+
+		String longLowerFieldValue = "1";
+		String longUpperFieldValue = "2";
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_long", true, true, longLowerFieldValue,
+			longUpperFieldValue,
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"between", longIntegerFieldName,
+					JSONUtil.putAll(longLowerFieldValue, longUpperFieldValue)),
+				longIntegerFieldName));
+	}
+
+	@Test
 	public void testFilterQueriesWithTextContainsOperators() {
 		String textFieldName = RandomTestUtil.randomString();
 
@@ -391,6 +500,24 @@ public class AssetListFiltersUtilTest {
 		Assert.assertEquals(expectedValue, queryTerm.getValue());
 	}
 
+	private void _assertTermRangeQuery(
+		String expectedField, boolean expectedIncludesLower,
+		boolean expectedIncludesUpper, String expectedLowerTerm,
+		String expectedUpperTerm, Query query) {
+
+		Assert.assertTrue(query.toString(), query instanceof TermRangeQuery);
+
+		TermRangeQuery termRangeQuery = (TermRangeQuery)query;
+
+		Assert.assertEquals(expectedField, termRangeQuery.getField());
+		Assert.assertEquals(
+			expectedIncludesLower, termRangeQuery.includesLower());
+		Assert.assertEquals(
+			expectedIncludesUpper, termRangeQuery.includesUpper());
+		Assert.assertEquals(expectedLowerTerm, termRangeQuery.getLowerTerm());
+		Assert.assertEquals(expectedUpperTerm, termRangeQuery.getUpperTerm());
+	}
+
 	private void _assertWildcardQuery(
 		String expectedField, String expectedValue, Query query) {
 
@@ -402,6 +529,22 @@ public class AssetListFiltersUtilTest {
 
 		Assert.assertEquals(expectedField, queryTerm.getField());
 		Assert.assertEquals(expectedValue, queryTerm.getValue());
+	}
+
+	private JSONObject _buildFilterJSONObject(
+		String operatorName, String propertyName, JSONArray valueJSONArray) {
+
+		return JSONUtil.put(
+			"classNameId", _CLASS_NAME_ID
+		).put(
+			"classTypeId", _CLASS_TYPE_ID
+		).put(
+			"operatorName", operatorName
+		).put(
+			"propertyName", propertyName
+		).put(
+			"value", valueJSONArray
+		);
 	}
 
 	private JSONObject _buildFilterJSONObject(

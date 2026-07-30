@@ -23,7 +23,9 @@ import com.liferay.portal.kernel.search.MatchQuery;
 import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -169,7 +171,7 @@ public class AssetListFiltersUtil {
 
 		String subfield = _getSubfield(locale, objectField);
 
-		Query query = _toValueQuery(operatorName, subfield, value);
+		Query query = _toValueQuery(jsonObject, operatorName, subfield, value);
 
 		if (query == null) {
 			return null;
@@ -193,8 +195,53 @@ public class AssetListFiltersUtil {
 		return new NestedQuery("nestedFieldArray", booleanQuery);
 	}
 
+	private static Query _toRangeQuery(
+		JSONObject filterJSONObject, String operatorName, String subfield) {
+
+		if (operatorName.equals("between")) {
+			JSONArray valueJSONArray = filterJSONObject.getJSONArray("value");
+
+			if ((valueJSONArray == null) || (valueJSONArray.length() < 2)) {
+				return null;
+			}
+
+			String lowerTerm = GetterUtil.getString(
+				valueJSONArray.getString(0), null);
+			String upperTerm = GetterUtil.getString(
+				valueJSONArray.getString(1), null);
+
+			return new TermRangeQuery(
+				subfield, lowerTerm, upperTerm, true, true);
+		}
+
+		String value = filterJSONObject.getString("value");
+
+		if (Validator.isNull(value)) {
+			return null;
+		}
+
+		if (operatorName.equals("ge")) {
+			return new TermRangeQuery(subfield, value, null, true, false);
+		}
+
+		if (operatorName.equals("gt")) {
+			return new TermRangeQuery(subfield, value, null, false, false);
+		}
+
+		if (operatorName.equals("le")) {
+			return new TermRangeQuery(subfield, null, value, false, true);
+		}
+
+		if (operatorName.equals("lt")) {
+			return new TermRangeQuery(subfield, null, value, false, false);
+		}
+
+		return null;
+	}
+
 	private static Query _toValueQuery(
-		String operatorName, String subfield, String value) {
+		JSONObject filterJSONObject, String operatorName, String subfield,
+		String value) {
 
 		if ((operatorName.equals("contains") ||
 			 operatorName.equals("not-contains")) &&
@@ -204,6 +251,13 @@ public class AssetListFiltersUtil {
 				subfield,
 				StringPool.STAR + StringUtil.toLowerCase(value) +
 					StringPool.STAR);
+		}
+
+		if (operatorName.equals("between") || operatorName.equals("ge") ||
+			operatorName.equals("gt") || operatorName.equals("le") ||
+			operatorName.equals("lt")) {
+
+			return _toRangeQuery(filterJSONObject, operatorName, subfield);
 		}
 
 		if (subfield.endsWith(".value_keyword")) {
