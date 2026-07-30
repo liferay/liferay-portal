@@ -1,8 +1,14 @@
 import React from 'react';
 import {toThousands} from 'shared/util/numbers';
 
-const ToThousandsCell = ({data}: {data: any}) => {
-	const formattedCount = toThousands(data.individualCount);
+const ToThousandsCell = ({
+	data,
+	getCount = ({individualCount}: any) => individualCount,
+}: {
+	data: any;
+	getCount?: (data: any) => number;
+}) => {
+	const formattedCount = toThousands(getCount(data));
 
 	return (
 		<td className="table-cell-expand ">

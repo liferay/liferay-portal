@@ -679,6 +679,21 @@ export const List: React.FC<IListProps> = ({
 								{
 									accessor: 'individualCount',
 									cellRenderer: ToThousandsCell,
+									cellRendererProps: {
+										getCount: ({
+											accountCount,
+											individualCount,
+											segmentCategory,
+										}: {
+											accountCount: number;
+											individualCount: number;
+											segmentCategory: SegmentCategories;
+										}) =>
+											segmentCategory ===
+											SegmentCategories.Account
+												? accountCount
+												: individualCount,
+									},
 									label: Liferay.Language.get('membership'),
 								},
 								{
