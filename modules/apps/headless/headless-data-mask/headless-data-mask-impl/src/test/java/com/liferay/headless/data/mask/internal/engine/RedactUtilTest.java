@@ -145,6 +145,16 @@ public class RedactUtilTest {
 			RedactTimeoutException.class,
 			() -> RedactUtil.redact(
 				"a+", _CATASTROPHIC_REGEX, "R", catastrophicText));
+
+		Assert.assertEquals(
+			"[X]" + _LONG_TEXT,
+			RedactUtil.redact(
+				"www\\d+www", null, "[X]", "www123www" + _LONG_TEXT,
+				RedactUtil.newDeadline()));
+		Assert.assertThrows(
+			RedactTimeoutException.class,
+			() -> RedactUtil.redact(
+				"a", null, "R", _LONG_TEXT, System.nanoTime() - 1));
 	}
 
 	@Test
@@ -167,5 +177,7 @@ public class RedactUtilTest {
 	}
 
 	private static final String _CATASTROPHIC_REGEX = "(.*a){40}";
+
+	private static final String _LONG_TEXT = "b".repeat(2000);
 
 }
