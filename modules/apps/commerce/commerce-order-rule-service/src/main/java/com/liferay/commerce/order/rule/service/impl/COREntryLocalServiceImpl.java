@@ -373,7 +373,7 @@ public class COREntryLocalServiceImpl extends COREntryLocalServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		COREntry corEntry = corEntryLocalService.getCOREntry(corEntryId);
+		COREntry corEntry = corEntryPersistence.findByPrimaryKey(corEntryId);
 
 		corEntry.setActive(active);
 		corEntry.setDescription(description);
