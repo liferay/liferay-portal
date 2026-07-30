@@ -145,7 +145,7 @@ export function searchByFilter({
 			filter,
 			includeAnonymousUsers,
 			page,
-			pageSize,
+			pageSize: Math.max(1, pageSize),
 			search: query,
 			sort: orderIOMap
 				? buildSortString(orderIOMap.first(), ACCOUNTS)
