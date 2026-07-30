@@ -104,10 +104,6 @@ public abstract class BaseSectionDisplayContext {
 			ObjectDefinitionLocalServiceUtil.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", themeDisplay.getCompanyId());
-		ObjectDefinition cmpTaskObjectDefinition =
-			ObjectDefinitionLocalServiceUtil.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK", themeDisplay.getCompanyId());
 
 		return HashMapBuilder.<String, Object>put(
 			"additionalAPIURLParameters",
@@ -178,39 +174,11 @@ public abstract class BaseSectionDisplayContext {
 					return null;
 				}
 
-				return _getCMPViewURL(cmpProjectObjectDefinition, "project");
-			}
-		).put(
-			"cmpTaskLinkObjectDefinitionId",
-			() -> {
-				ObjectDefinition cmpTaskLinkObjectDefinition =
-					ObjectDefinitionLocalServiceUtil.
-						fetchObjectDefinitionByExternalReferenceCode(
-							"L_CMP_TASK_LINK", themeDisplay.getCompanyId());
-
-				if (cmpTaskLinkObjectDefinition == null) {
-					return null;
-				}
-
-				return cmpTaskLinkObjectDefinition.getObjectDefinitionId();
-			}
-		).put(
-			"cmpTaskObjectDefinitionId",
-			() -> {
-				if (cmpTaskObjectDefinition == null) {
-					return null;
-				}
-
-				return cmpTaskObjectDefinition.getObjectDefinitionId();
-			}
-		).put(
-			"cmpTaskViewURL",
-			() -> {
-				if (cmpTaskObjectDefinition == null) {
-					return null;
-				}
-
-				return _getCMPViewURL(cmpTaskObjectDefinition, "task");
+				return StringBundler.concat(
+					themeDisplay.getPortalURL(),
+					portal.getPathFriendlyURLPublic(), "/cms/e/project/",
+					portal.getClassNameId(
+						cmpProjectObjectDefinition.getClassName()));
 			}
 		).put(
 			"cmsGroupId",
@@ -384,15 +352,6 @@ public abstract class BaseSectionDisplayContext {
 	protected final ObjectEntryFolder objectEntryFolder;
 	protected final Portal portal;
 	protected final ThemeDisplay themeDisplay;
-
-	private String _getCMPViewURL(
-		ObjectDefinition objectDefinition, String type) {
-
-		return StringBundler.concat(
-			themeDisplay.getPortalURL(), portal.getPathFriendlyURLPublic(),
-			"/cms/e/", type, "/",
-			portal.getClassNameId(objectDefinition.getClassName()));
-	}
 
 	private JSONObject _getExportFileFormatJSONObject(
 		TranslationInfoItemFieldValuesExporter

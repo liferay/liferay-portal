@@ -132,10 +132,6 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", themeDisplay.getCompanyId());
-		ObjectDefinition cmpTaskObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK", themeDisplay.getCompanyId());
 
 		return HashMapBuilder.<String, Object>put(
 			"addCommentURL",
@@ -190,41 +186,11 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 					return null;
 				}
 
-				return _getCMPViewURL(
-					cmpProjectObjectDefinition, themeDisplay, "project");
-			}
-		).put(
-			"cmpTaskLinkObjectDefinitionId",
-			() -> {
-				ObjectDefinition cmpTaskLinkObjectDefinition =
-					_objectDefinitionLocalService.
-						fetchObjectDefinitionByExternalReferenceCode(
-							"L_CMP_TASK_LINK", themeDisplay.getCompanyId());
-
-				if (cmpTaskLinkObjectDefinition == null) {
-					return null;
-				}
-
-				return cmpTaskLinkObjectDefinition.getObjectDefinitionId();
-			}
-		).put(
-			"cmpTaskObjectDefinitionId",
-			() -> {
-				if (cmpTaskObjectDefinition == null) {
-					return null;
-				}
-
-				return cmpTaskObjectDefinition.getObjectDefinitionId();
-			}
-		).put(
-			"cmpTaskViewURL",
-			() -> {
-				if (cmpTaskObjectDefinition == null) {
-					return null;
-				}
-
-				return _getCMPViewURL(
-					cmpTaskObjectDefinition, themeDisplay, "task");
+				return StringBundler.concat(
+					themeDisplay.getPortalURL(),
+					_portal.getPathFriendlyURLPublic(), "/cms/e/project/",
+					_classNameLocalService.getClassNameId(
+						cmpProjectObjectDefinition.getClassName()));
 			}
 		).put(
 			"cmsGroupId", themeDisplay.getScopeGroupId()
@@ -397,17 +363,6 @@ public class ContentEditorSidePanelComponentSectionFragmentRenderer
 		).put(
 			"version", () -> String.valueOf(objectEntry.getVersion())
 		).build();
-	}
-
-	private String _getCMPViewURL(
-		ObjectDefinition objectDefinition, ThemeDisplay themeDisplay,
-		String type) {
-
-		return StringBundler.concat(
-			themeDisplay.getPortalURL(), _portal.getPathFriendlyURLPublic(),
-			"/cms/e/", type, "/",
-			_classNameLocalService.getClassNameId(
-				objectDefinition.getClassName()));
 	}
 
 	@Reference
