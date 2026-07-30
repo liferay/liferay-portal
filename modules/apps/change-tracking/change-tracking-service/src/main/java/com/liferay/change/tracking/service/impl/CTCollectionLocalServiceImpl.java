@@ -1093,7 +1093,7 @@ public class CTCollectionLocalServiceImpl
 		moveCTEntries(
 			fromCTCollectionId, toCTCollectionId,
 			Collections.singletonList(
-				_ctEntryPersistence.fetchByC_MCNI_MCPK(
+				_ctEntryPersistence.findByC_MCNI_MCPK(
 					fromCTCollectionId, modelClassNameId, modelClassPK)));
 	}
 
