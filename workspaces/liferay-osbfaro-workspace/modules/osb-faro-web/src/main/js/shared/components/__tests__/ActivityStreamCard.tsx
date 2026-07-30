@@ -96,6 +96,27 @@ describe('ActivityStreamCard', () => {
 		expect(container.querySelector('.trend-summary')).toBeNull();
 	});
 
+	it('renders the chart as a line when the line view is selected', () => {
+		const {container} = renderCard({
+			activityHistory: [
+				{
+					intervalInitDate: 1717200000000,
+					totalEvents: 3,
+					totalSessions: 2,
+				},
+				{
+					intervalInitDate: 1717286400000,
+					totalEvents: 5,
+					totalSessions: 4,
+				},
+			],
+			chartView: 'line',
+		});
+
+		expect(container.querySelector('.recharts-line')).toBeInTheDocument();
+		expect(container.querySelector('.recharts-bar')).toBeNull();
+	});
+
 	it('renders the no-results content when there are events but no sessions', () => {
 		const {container, getByText} = renderCard({
 			sessionsMappedResults: {
