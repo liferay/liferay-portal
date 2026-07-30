@@ -135,10 +135,6 @@ public class RedactUtilTest {
 			"Email [EMAIL_ADDRESS], IBAN [BANK_ACCOUNT_NUMBER], SSN [SSN].",
 			text);
 
-		// A catastrophically backtracking regular expression must be aborted
-		// once the timeout passes, whether it is the detection regular
-		// expression or the replacement one
-
 		String catastrophicText = "a".repeat(40);
 
 		Assert.assertThrows(
