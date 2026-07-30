@@ -13,6 +13,7 @@ type TOrder = {
 	channelId?: number;
 	createDate?: string;
 	currencyCode?: string;
+	externalReferenceCode?: string;
 	id?: number;
 	name?: string;
 	orderItems?: TOrderItem[];

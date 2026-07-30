@@ -22,6 +22,7 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 	readonly orderCell: (orderId: string) => Locator;
 	readonly orderColumn: (rowIndex: number, rowColumn: number) => Locator;
 	readonly orderDateSortButton: Locator;
+	readonly orderDetailsValue: (label: string) => Locator;
 	readonly orderRowLink: (orderId: number | string) => Locator;
 	readonly orderItemActionsButton: Locator;
 	readonly orderItemActionsButtonEdit: Locator;
@@ -77,6 +78,11 @@ export class PlacedOrdersPage extends CommerceDNDTablePage {
 		this.orderDateSortButton = page
 			.getByRole('columnheader', {name: 'Order Date'})
 			.getByRole('button');
+		this.orderDetailsValue = (label: string) =>
+			page
+				.locator('dl.commerce-list')
+				.filter({has: page.getByText(label, {exact: true})})
+				.locator('dd');
 		this.orderRowLink = (orderId: number | string) =>
 			page
 				.locator('.table-list-title')
