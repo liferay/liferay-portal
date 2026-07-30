@@ -232,6 +232,23 @@ public abstract class PLOEntryLocalServiceBaseImpl
 		return ploEntryPersistence.fetchByPrimaryKey(ploEntryId);
 	}
 
+	@Override
+	public PLOEntry fetchPLOEntryByExternalReferenceCode(
+		String externalReferenceCode, long companyId) {
+
+		return ploEntryPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
+	}
+
+	@Override
+	public PLOEntry getPLOEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return ploEntryPersistence.findByERC_C(
+			externalReferenceCode, companyId);
+	}
+
 	/**
 	 * Returns the plo entry with the primary key.
 	 *
@@ -444,4 +461,4 @@ public abstract class PLOEntryLocalServiceBaseImpl
 		PLOEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1916479833
+// LIFERAY-SERVICE-BUILDER-HASH:-1581281660

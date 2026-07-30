@@ -270,6 +270,47 @@ public interface PLOEntryPersistence extends BasePersistence<PLOEntry> {
 	public int countByC_K_L(long companyId, String key, String languageId);
 
 	/**
+	 * Returns the plo entry where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchPLOEntryException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching plo entry
+	 * @throws NoSuchPLOEntryException if a matching plo entry could not be found
+	 */
+	public PLOEntry findByERC_C(String externalReferenceCode, long companyId)
+		throws NoSuchPLOEntryException;
+
+	/**
+	 * Returns the plo entry where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching plo entry, or <code>null</code> if a matching plo entry could not be found
+	 */
+	public PLOEntry fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache);
+
+	/**
+	 * Removes the plo entry where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the plo entry that was removed
+	 */
+	public PLOEntry removeByERC_C(String externalReferenceCode, long companyId)
+		throws NoSuchPLOEntryException;
+
+	/**
+	 * Returns the number of plo entries where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching plo entries
+	 */
+	public int countByERC_C(String externalReferenceCode, long companyId);
+
+	/**
 	 * Creates a new plo entry with the primary key. Does not add the plo entry to the database.
 	 *
 	 * @param ploEntryId the primary key for the new plo entry
@@ -318,6 +359,19 @@ public interface PLOEntryPersistence extends BasePersistence<PLOEntry> {
 		long companyId, String key, String languageId) {
 
 		return fetchByC_K_L(companyId, key, languageId, true);
+	}
+
+	/**
+	 * Returns the plo entry where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching plo entry, or <code>null</code> if a matching plo entry could not be found
+	 */
+	public default PLOEntry fetchByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return fetchByERC_C(externalReferenceCode, companyId, true);
 	}
 
 	/**
@@ -486,4 +540,4 @@ public interface PLOEntryPersistence extends BasePersistence<PLOEntry> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:535633313
+// LIFERAY-SERVICE-BUILDER-HASH:-1499583201

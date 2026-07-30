@@ -7,6 +7,7 @@ package com.liferay.portal.language.override.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.language.override.model.PLOEntry;
 
 import java.util.List;
@@ -38,6 +39,15 @@ public class PLOEntryServiceUtil {
 		return getService().addOrUpdatePLOEntry(key, languageId, value);
 	}
 
+	public static PLOEntry addOrUpdatePLOEntry(
+			String externalReferenceCode, String key, String languageId,
+			String value)
+		throws PortalException {
+
+		return getService().addOrUpdatePLOEntry(
+			externalReferenceCode, key, languageId, value);
+	}
+
 	public static void deletePLOEntries(String key) throws PortalException {
 		getService().deletePLOEntries(key);
 	}
@@ -46,6 +56,14 @@ public class PLOEntryServiceUtil {
 		throws PortalException {
 
 		return getService().deletePLOEntry(key, languageId);
+	}
+
+	public static PLOEntry deletePLOEntryByExternalReferenceCode(
+			String externalReferenceCode)
+		throws PortalException {
+
+		return getService().deletePLOEntryByExternalReferenceCode(
+			externalReferenceCode);
 	}
 
 	/**
@@ -57,16 +75,46 @@ public class PLOEntryServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
+	public static List<PLOEntry> getPLOEntries(
+			int start, int end, OrderByComparator<PLOEntry> orderByComparator)
+		throws PortalException {
+
+		return getService().getPLOEntries(start, end, orderByComparator);
+	}
+
 	public static List<PLOEntry> getPLOEntries(long companyId)
 		throws PortalException {
 
 		return getService().getPLOEntries(companyId);
 	}
 
+	public static List<PLOEntry> getPLOEntries(
+			String keywords, int start, int end,
+			OrderByComparator<PLOEntry> orderByComparator)
+		throws PortalException {
+
+		return getService().getPLOEntries(
+			keywords, start, end, orderByComparator);
+	}
+
 	public static int getPLOEntriesCount(long companyId)
 		throws PortalException {
 
 		return getService().getPLOEntriesCount(companyId);
+	}
+
+	public static int getPLOEntriesCount(String keywords)
+		throws PortalException {
+
+		return getService().getPLOEntriesCount(keywords);
+	}
+
+	public static PLOEntry getPLOEntryByExternalReferenceCode(
+			String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getPLOEntryByExternalReferenceCode(
+			externalReferenceCode);
 	}
 
 	public static void importPLOEntries(
@@ -91,4 +139,4 @@ public class PLOEntryServiceUtil {
 		new Snapshot<>(PLOEntryServiceUtil.class, PLOEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1213474530
+// LIFERAY-SERVICE-BUILDER-HASH:-1104114206
