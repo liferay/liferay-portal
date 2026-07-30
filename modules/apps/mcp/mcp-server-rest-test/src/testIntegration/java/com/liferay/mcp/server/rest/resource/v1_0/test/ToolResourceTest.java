@@ -10,15 +10,25 @@ import com.liferay.mcp.server.rest.client.dto.v1_0.Tool;
 import com.liferay.mcp.server.rest.client.http.HttpInvoker;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -80,6 +90,61 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 				"JSONObject/body", "JSONObject/properties"),
 			false);
 
+		// Object definition with the same name in another company
+
+		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
+		String objectFieldName = "a" + RandomTestUtil.randomString(8);
+
+		ObjectDefinition companyObjectDefinition = _publishObjectDefinition(
+			objectDefinitionName, objectFieldName, TestPropsValues.getUserId());
+
+		Company company = CompanyTestUtil.addCompany();
+
+		User user = UserTestUtil.getAdminUser(company.getCompanyId());
+
+		String otherObjectFieldName = "a" + RandomTestUtil.randomString(8);
+
+		_publishObjectDefinition(
+			objectDefinitionName, otherObjectFieldName, user.getUserId());
+
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				objectFieldName, JSONUtil.put("type", "string")
+			).toString(),
+			JSONUtil.getValueAsString(
+				JSONFactoryUtil.createJSONObject(
+					String.valueOf(_getTool(companyObjectDefinition))),
+				"JSONObject/inputSchema", "JSONObject/properties",
+				"JSONObject/body", "JSONObject/properties"),
+			false);
+
+		// Same tool requested by the other company
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).apply(
+			() -> JSONAssert.assertEquals(
+				JSONUtil.put(
+					otherObjectFieldName, JSONUtil.put("type", "string")
+				).toString(),
+				JSONUtil.getValueAsString(
+					JSONFactoryUtil.createJSONObject(
+						HTTPTestUtil.invokeToString(
+							null,
+							StringBundler.concat(
+								"mcp-server/v1.0/tool-sets/",
+								_getToolSetName(companyObjectDefinition),
+								"/tools/post",
+								companyObjectDefinition.getShortName()),
+							HashMapBuilder.put(
+								"Host", company.getVirtualHostname()
+							).build(),
+							Http.Method.GET)),
+					"JSONObject/inputSchema", "JSONObject/properties",
+					"JSONObject/body", "JSONObject/properties"),
+				false)
+		);
 	}
 
 	@Override
@@ -168,6 +233,27 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 		return StringUtil.replace(
 			restContextPath.substring(1), CharPool.SLASH, CharPool.DASH);
 	}
+
+	private ObjectDefinition _publishObjectDefinition(
+			String name, String objectFieldName, long userId)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition(name, userId);
+
+		_objectFieldLocalService.addCustomObjectField(
+			null, userId, 0, objectDefinition.getObjectDefinitionId(),
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, false, false, null,
+			LocalizedMapUtil.getLocalizedMap(objectFieldName), false,
+			objectFieldName, null, null, false, false, Collections.emptyList());
+
+		return _objectDefinitionLocalService.publishCustomObjectDefinition(
+			userId, objectDefinition.getObjectDefinitionId());
+	}
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;
