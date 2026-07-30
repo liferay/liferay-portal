@@ -4,7 +4,7 @@
 <service-builder auto-import-default-references="false" auto-namespace-tables="false" mvcc-enabled="true" package-path="com.liferay.portal.language.override" short-no-such-exception-enabled="false">
 	<author>Drew Brokke</author>
 	<namespace>PLO</namespace>
-	<entity local-service="true" name="PLOEntry">
+	<entity external-reference-code="company" local-service="true" name="PLOEntry">
 
 		<!-- PK fields -->
 
