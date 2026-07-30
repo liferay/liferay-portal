@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
-import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -67,7 +66,7 @@ public class CTEntryDTOConverter
 	private Document _getDocument(
 			DTOConverterContext dtoConverterContext,
 			com.liferay.change.tracking.model.CTEntry ctEntry)
-		throws SearchException {
+		throws Exception {
 
 		Document document = (Document)dtoConverterContext.getAttribute(
 			"document");
