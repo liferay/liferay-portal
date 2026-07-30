@@ -42,13 +42,6 @@ public class DepotRoleLocalServiceWrapperTest {
 		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
 				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
 
-			mockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-58677"))
-			).thenReturn(
-				true
-			);
-
 			_assertAddRole(
 				depotRoleLocalServiceWrapper, DepotRolesConstants.SUBTYPE_SPACE,
 				RoleConstants.TYPE_DEPOT, true);
