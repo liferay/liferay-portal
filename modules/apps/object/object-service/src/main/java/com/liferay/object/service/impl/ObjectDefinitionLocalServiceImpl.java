@@ -1074,8 +1074,6 @@ public class ObjectDefinitionLocalServiceImpl
 	public void setAopProxy(Object aopProxy) {
 		super.setAopProxy(aopProxy);
 
-		_objectDefinitionDeployerServiceRegistrationsMap =
-			new ConcurrentHashMap<>();
 		_objectDefinitionDeployer = new ObjectDefinitionDeployerImpl(
 			_accountEntryLocalService, _accountEntryOrganizationRelLocalService,
 			_assetEntryLocalService, _bundleContext,
@@ -4123,7 +4121,8 @@ public class ObjectDefinitionLocalServiceImpl
 
 	private ObjectDefinitionDeployer _objectDefinitionDeployer;
 	private Map<String, List<ServiceRegistration<?>>>
-		_objectDefinitionDeployerServiceRegistrationsMap;
+		_objectDefinitionDeployerServiceRegistrationsMap =
+			new ConcurrentHashMap<>();
 	private ServiceTracker<ObjectDefinitionDeployer, ObjectDefinitionDeployer>
 		_objectDefinitionDeployerServiceTracker;
 
