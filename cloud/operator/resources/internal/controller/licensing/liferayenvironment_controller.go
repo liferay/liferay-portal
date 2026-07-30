@@ -203,6 +203,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnviron
 	context context.Context,
 	namespaceName string,
 ) (string, error) {
+
 	namespace := &corev1.Namespace{}
 
 	if error := liferayEnvironmentReconciler.Get(context, types.NamespacedName{Name: namespaceName}, namespace); error != nil {
