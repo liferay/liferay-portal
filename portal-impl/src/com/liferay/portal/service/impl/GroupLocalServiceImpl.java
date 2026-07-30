@@ -5635,7 +5635,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	private void _validateFriendlyURLKeyword(String friendlyURL)
 		throws PortalException {
 
-		String keyword = FriendlyURLKeywordsUtil.getFriendlyURLKeyword(
+		String keyword = FriendlyURLKeywordsUtil.getSiteFriendlyURLKeyword(
 			friendlyURL);
 
 		if (Validator.isNull(keyword)) {

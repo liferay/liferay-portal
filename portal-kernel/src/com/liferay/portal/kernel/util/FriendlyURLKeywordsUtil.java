@@ -12,10 +12,10 @@ import com.liferay.petra.string.StringPool;
  */
 public class FriendlyURLKeywordsUtil {
 
-	public static String getFriendlyURLKeyword(String friendlyURL) {
+	public static String getSiteFriendlyURLKeyword(String friendlyURL) {
 		friendlyURL = StringUtil.toLowerCase(friendlyURL);
 
-		for (String keyword : _FRIENDLY_URL_KEYWORDS) {
+		for (String keyword : _SITE_FRIENDLY_URL_KEYWORDS) {
 			if (friendlyURL.startsWith(keyword)) {
 				return keyword;
 			}
@@ -28,16 +28,16 @@ public class FriendlyURLKeywordsUtil {
 		return null;
 	}
 
-	public static boolean hasFriendlyURLKeyword(String friendlyURL) {
-		String keyword = getFriendlyURLKeyword(friendlyURL);
+	public static boolean hasSiteFriendlyURLKeyword(String friendlyURL) {
+		String keyword = getSiteFriendlyURLKeyword(friendlyURL);
 
 		return Validator.isNotNull(keyword);
 	}
 
-	private static final String[] _FRIENDLY_URL_KEYWORDS;
+	private static final String[] _SITE_FRIENDLY_URL_KEYWORDS;
 
 	static {
-		_FRIENDLY_URL_KEYWORDS =
+		_SITE_FRIENDLY_URL_KEYWORDS =
 			new String[PropsValues.SITES_FRIENDLY_URL_KEYWORDS.length];
 
 		for (int i = 0; i < PropsValues.SITES_FRIENDLY_URL_KEYWORDS.length;
@@ -56,7 +56,7 @@ public class FriendlyURLKeywordsUtil {
 				}
 			}
 
-			_FRIENDLY_URL_KEYWORDS[i] = StringUtil.toLowerCase(keyword);
+			_SITE_FRIENDLY_URL_KEYWORDS[i] = StringUtil.toLowerCase(keyword);
 		}
 	}
 

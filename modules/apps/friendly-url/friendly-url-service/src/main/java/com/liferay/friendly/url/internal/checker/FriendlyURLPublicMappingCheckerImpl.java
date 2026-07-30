@@ -162,7 +162,7 @@ public class FriendlyURLPublicMappingCheckerImpl
 		String title) {
 
 		if (Validator.isNull(friendlyURL) ||
-			!FriendlyURLKeywordsUtil.hasFriendlyURLKeyword(friendlyURL)) {
+			!FriendlyURLKeywordsUtil.hasSiteFriendlyURLKeyword(friendlyURL)) {
 
 			return;
 		}
