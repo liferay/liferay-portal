@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
@@ -11,6 +12,8 @@ import {dateUtils, sub} from 'frontend-js-web';
 import React from 'react';
 
 import {PageVersion, VersionStatus} from '../types/PageVersion';
+
+const DRAFT_KEY = 'draft';
 
 const STATUSES: Record<
 	VersionStatus,
@@ -29,15 +32,24 @@ const STATUSES: Record<
 type Row = {
 	key: string;
 	name: string;
-	version: PageVersion;
+	version?: PageVersion;
 };
 
-export default function VersionList({versions}: {versions: PageVersion[]}) {
-	const rows: Row[] = versions.map((version) => ({
-		key: version.externalReferenceCode,
-		name: version.name,
-		version,
-	}));
+export default function VersionList({
+	draftName,
+	versions,
+}: {
+	draftName?: string;
+	versions: PageVersion[];
+}) {
+	const rows: Row[] = [
+		...(draftName ? [{key: DRAFT_KEY, name: draftName}] : []),
+		...versions.map((version) => ({
+			key: version.externalReferenceCode,
+			name: version.name,
+			version,
+		})),
+	];
 
 	if (!rows.length) {
 		return (
@@ -52,25 +64,31 @@ export default function VersionList({versions}: {versions: PageVersion[]}) {
 	return (
 		<ClayList className="mb-0">
 			{rows.map(({key, name, version}) => {
-				const status = STATUSES[version.status];
+				const status = version
+					? STATUSES[version.status]
+					: STATUSES.Draft;
 
 				return (
 					<ClayList.Item flex key={key}>
-						{version.creator ? (
-							<ClayList.ItemField className="px-2">
+						<ClayList.ItemField className="px-2">
+							{version?.creator ? (
 								<ClaySticker shape="circle">
 									<ClaySticker.Image
 										alt={version.creator.name}
 										src={version.creator.image}
 									/>
 								</ClaySticker>
-							</ClayList.ItemField>
-						) : null}
+							) : (
+								<ClaySticker displayType="secondary">
+									<ClayIcon symbol="sheets" />
+								</ClaySticker>
+							)}
+						</ClayList.ItemField>
 
 						<ClayList.ItemField className="px-2" expand>
 							<ClayList.ItemTitle>{name}</ClayList.ItemTitle>
 
-							{version.creator ? (
+							{version?.creator ? (
 								<ClayList.ItemText>
 									{sub(
 										Liferay.Language.get(
@@ -84,11 +102,13 @@ export default function VersionList({versions}: {versions: PageVersion[]}) {
 								</ClayList.ItemText>
 							) : null}
 
-							<ClayList.ItemText>
-								{sub(Liferay.Language.get('version-x'), [
-									version.version,
-								])}
-							</ClayList.ItemText>
+							{version ? (
+								<ClayList.ItemText>
+									{sub(Liferay.Language.get('version-x'), [
+										version.version,
+									])}
+								</ClayList.ItemText>
+							) : null}
 
 							<ClayList.ItemText>
 								<ClayLabel displayType={status.displayType}>

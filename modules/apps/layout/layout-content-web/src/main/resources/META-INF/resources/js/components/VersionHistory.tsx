@@ -81,6 +81,11 @@ export default function VersionHistory({config}: Props) {
 			>
 				{versions ? (
 					<VersionList
+						draftName={
+							config.hasDraft && matches(config.draftName)
+								? config.draftName
+								: undefined
+						}
 						versions={versions.filter(({creator, name}) =>
 							matches(name, creator?.name)
 						)}
