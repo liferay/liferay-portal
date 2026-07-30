@@ -23,6 +23,23 @@ describe('ContentGapMatrixCard', () => {
 		expect(screen.queryByText('edit-project')).not.toBeInTheDocument();
 	});
 
+	it('sizes the unconfigured state to its content so the asset list stays above the fold', () => {
+		render(
+			<ContentGapMatrixCard
+				assetFDSId="fdsId"
+				cmpProjectObjectEntryId="123"
+				cmpProjectObjectEntryTitle="Project"
+				hasFunnelStagesOrPersonas={false}
+			/>
+		);
+
+		expect(
+			screen
+				.getByText('no-personas-or-funnel-stages-configured')
+				.closest('.c-empty-state')
+		).toHaveClass('c-empty-state-sm');
+	});
+
 	it('shows the edit project button on the unconfigured state when an edit project URL is provided', () => {
 		render(
 			<ContentGapMatrixCard
