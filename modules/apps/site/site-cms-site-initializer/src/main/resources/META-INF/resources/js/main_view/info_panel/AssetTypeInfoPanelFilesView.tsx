@@ -22,7 +22,7 @@ const AssetTypeInfoPanelFilesView = () => {
 		TABS.PERFORMANCE,
 		...(actions?.versions?.href ? [TABS.VERSIONS] : []),
 		TABS.COMMENTS,
-		...(Liferay.FeatureFlags['LPD-58677'] ? [TABS.PROJECTS] : []),
+		TABS.PROJECTS,
 	];
 
 	return (
