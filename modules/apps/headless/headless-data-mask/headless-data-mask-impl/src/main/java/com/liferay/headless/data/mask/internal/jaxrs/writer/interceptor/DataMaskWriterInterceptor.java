@@ -146,11 +146,6 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 			outputStream.write(output.getBytes(charset));
 		}
 		catch (RedactTimeoutException redactTimeoutException) {
-
-			// A data mask that exceeded the redaction timeout has masked
-			// nothing, so emitting the text would leak what the data mask
-			// exists to hide. Discard it and fail the response instead.
-
 			_log.error(redactTimeoutException);
 
 			if (!_httpServletResponse.isCommitted()) {

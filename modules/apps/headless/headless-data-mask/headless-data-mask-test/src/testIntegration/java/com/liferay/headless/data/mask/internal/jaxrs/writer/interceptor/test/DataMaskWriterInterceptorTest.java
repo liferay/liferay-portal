@@ -134,9 +134,6 @@ public class DataMaskWriterInterceptorTest {
 				).build(),
 				Http.Method.GET));
 
-		// A data mask that exceeds the redaction timeout has masked nothing, so
-		// the response must not carry the unmasked text
-
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.headless.data.mask.internal.jaxrs.writer." +
 					"interceptor.DataMaskWriterInterceptor",
