@@ -18,7 +18,7 @@ public class ImageServiceImpl extends ImageServiceBaseImpl {
 
 	@Override
 	public Image getImage(long imageId) throws PortalException {
-		return imageLocalService.getImage(imageId);
+		return imagePersistence.findByPrimaryKey(imageId);
 	}
 
 }
