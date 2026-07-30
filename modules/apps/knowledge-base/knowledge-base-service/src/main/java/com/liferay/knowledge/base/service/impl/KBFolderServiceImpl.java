@@ -84,7 +84,7 @@ public class KBFolderServiceImpl extends KBFolderServiceBaseImpl {
 
 	@Override
 	public KBFolder fetchKBFolder(long kbFolderId) throws PortalException {
-		KBFolder kbFolder = kbFolderLocalService.fetchKBFolder(kbFolderId);
+		KBFolder kbFolder = kbFolderPersistence.fetchByPrimaryKey(kbFolderId);
 
 		if (kbFolder != null) {
 			_kbFolderModelResourcePermission.check(
@@ -117,7 +117,7 @@ public class KBFolderServiceImpl extends KBFolderServiceBaseImpl {
 		_kbFolderModelResourcePermission.check(
 			getPermissionChecker(), kbFolderId, KBActionKeys.VIEW);
 
-		return kbFolderLocalService.getKBFolder(kbFolderId);
+		return kbFolderPersistence.findByPrimaryKey(kbFolderId);
 	}
 
 	@Override
@@ -125,9 +125,8 @@ public class KBFolderServiceImpl extends KBFolderServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		KBFolder kbFolder =
-			kbFolderLocalService.getKBFolderByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		KBFolder kbFolder = kbFolderPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		_kbFolderModelResourcePermission.check(
 			getPermissionChecker(), kbFolder, KBActionKeys.VIEW);
@@ -203,7 +202,8 @@ public class KBFolderServiceImpl extends KBFolderServiceBaseImpl {
 
 		_kbFolderModelResourcePermission.check(
 			getPermissionChecker(),
-			kbFolderLocalService.getKBFolder(kbFolderId), ActionKeys.DELETE);
+			kbFolderPersistence.findByPrimaryKey(kbFolderId),
+			ActionKeys.DELETE);
 
 		return kbFolderLocalService.moveKBFolderToTrash(
 			getUserId(), kbFolderId);

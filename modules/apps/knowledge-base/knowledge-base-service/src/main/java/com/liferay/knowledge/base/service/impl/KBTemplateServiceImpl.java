@@ -101,7 +101,7 @@ public class KBTemplateServiceImpl extends KBTemplateServiceBaseImpl {
 		_kbTemplateModelResourcePermission.check(
 			getPermissionChecker(), kbTemplateId, KBActionKeys.VIEW);
 
-		return kbTemplateLocalService.getKBTemplate(kbTemplateId);
+		return kbTemplatePersistence.findByPrimaryKey(kbTemplateId);
 	}
 
 	@Override
