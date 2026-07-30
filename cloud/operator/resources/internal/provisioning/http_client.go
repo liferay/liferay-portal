@@ -39,7 +39,7 @@ func (httpClient *HTTPClient) Activate(
 
 	response, error := httpClient.post(
 		context, token, fmt.Sprintf(
-			"%s/o/provisioning-rest/v1.0/cloud/environment/%s/activation",
+			"%s/o/provisioning-rest/v1.0/cloud/environments/%s/activation",
 			httpClient.BaseURL, activationRequest.EnvironmentID,
 		),
 	)

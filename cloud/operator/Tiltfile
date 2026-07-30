@@ -90,6 +90,7 @@ k8s_yaml(
         namespace="liferay-system",
         set=[
             "image.repository=liferay/liferay-dxp-operator",
+            "provisioning.baseURL=https://webserver-lrprovisioning-uat.lfr.cloud",
             "securityContext.readOnlyRootFilesystem=false",
         ],
     )
