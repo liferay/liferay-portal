@@ -75,17 +75,15 @@ public class PLOEntryServiceUtil {
 		return getService().getOSGiServiceIdentifier();
 	}
 
+	public static List<PLOEntry> getPLOEntries() throws PortalException {
+		return getService().getPLOEntries();
+	}
+
 	public static List<PLOEntry> getPLOEntries(
 			int start, int end, OrderByComparator<PLOEntry> orderByComparator)
 		throws PortalException {
 
 		return getService().getPLOEntries(start, end, orderByComparator);
-	}
-
-	public static List<PLOEntry> getPLOEntries(long companyId)
-		throws PortalException {
-
-		return getService().getPLOEntries(companyId);
 	}
 
 	public static List<PLOEntry> getPLOEntries(
@@ -97,10 +95,8 @@ public class PLOEntryServiceUtil {
 			keywords, start, end, orderByComparator);
 	}
 
-	public static int getPLOEntriesCount(long companyId)
-		throws PortalException {
-
-		return getService().getPLOEntriesCount(companyId);
+	public static int getPLOEntriesCount() throws PortalException {
+		return getService().getPLOEntriesCount();
 	}
 
 	public static int getPLOEntriesCount(String keywords)
@@ -139,4 +135,4 @@ public class PLOEntryServiceUtil {
 		new Snapshot<>(PLOEntryServiceUtil.class, PLOEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1104114206
+// LIFERAY-SERVICE-BUILDER-HASH:622589886
