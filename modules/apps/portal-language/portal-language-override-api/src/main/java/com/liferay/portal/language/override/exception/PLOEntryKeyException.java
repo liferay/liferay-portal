@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Drew Brokke
+ * @author Thiago Buarque
  */
 public class PLOEntryKeyException extends PortalException {
 
@@ -23,6 +24,23 @@ public class PLOEntryKeyException extends PortalException {
 		}
 
 		public final long maxLength;
+
+	}
+
+	public static class MustNotBeDuplicate extends PLOEntryKeyException {
+
+		public MustNotBeDuplicate(String key, String languageId) {
+			super(
+				String.format(
+					"Key \"%s\" is already overridden for language \"%s\"", key,
+					languageId));
+
+			this.key = key;
+			this.languageId = languageId;
+		}
+
+		public final String key;
+		public final String languageId;
 
 	}
 
