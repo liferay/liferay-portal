@@ -19,6 +19,7 @@ import org.junit.Test;
 
 /**
  * @author Jose Luis Navarro
+ * @author Alejandro Tardín
  */
 public class RedactUtilTest {
 
@@ -133,6 +134,42 @@ public class RedactUtilTest {
 		Assert.assertEquals(
 			"Email [EMAIL_ADDRESS], IBAN [BANK_ACCOUNT_NUMBER], SSN [SSN].",
 			text);
+
+		// A catastrophically backtracking regular expression must be aborted
+		// once the timeout passes, whether it is the detection regular
+		// expression or the replacement one
+
+		String catastrophicText = "a".repeat(40);
+
+		Assert.assertThrows(
+			RedactTimeoutException.class,
+			() -> RedactUtil.redact(
+				_CATASTROPHIC_REGEX, null, "R", catastrophicText));
+		Assert.assertThrows(
+			RedactTimeoutException.class,
+			() -> RedactUtil.redact(
+				"a+", _CATASTROPHIC_REGEX, "R", catastrophicText));
 	}
+
+	@Test
+	public void testRedactWithoutCaching() {
+		String detectionRegex = "yyy\\d+yyy";
+
+		Map<String, Pattern> patterns = ReflectionTestUtil.getFieldValue(
+			RedactUtil.class, "_patterns");
+
+		Assert.assertEquals(
+			"[X]",
+			RedactUtil.redactWithoutCaching(
+				detectionRegex, null, "[X]", "yyy123yyy"));
+		Assert.assertFalse(patterns.containsKey(detectionRegex));
+
+		Assert.assertThrows(
+			RedactTimeoutException.class,
+			() -> RedactUtil.redactWithoutCaching(
+				_CATASTROPHIC_REGEX, null, "R", "a".repeat(40)));
+	}
+
+	private static final String _CATASTROPHIC_REGEX = "(.*a){40}";
 
 }
