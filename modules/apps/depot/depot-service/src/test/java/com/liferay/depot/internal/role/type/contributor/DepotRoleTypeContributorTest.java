@@ -7,6 +7,7 @@ package com.liferay.depot.internal.role.type.contributor;
 
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.internal.roles.admin.role.type.contributor.DepotRoleTypeContributor;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Role;
@@ -34,6 +35,71 @@ public class DepotRoleTypeContributorTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testGetDefaultSubtype() {
+		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
+				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-17564"))
+			).thenReturn(
+				false
+			);
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96750"))
+			).thenReturn(
+				false
+			);
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				_depotRoleTypeContributor.getDefaultSubtype());
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-17564"))
+			).thenReturn(
+				true
+			);
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				_depotRoleTypeContributor.getDefaultSubtype());
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-17564"))
+			).thenReturn(
+				false
+			);
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-96750"))
+			).thenReturn(
+				true
+			);
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				_depotRoleTypeContributor.getDefaultSubtype());
+
+			mockedStatic.when(
+				() -> FeatureFlagManagerUtil.isEnabled(
+					Mockito.anyLong(), Mockito.eq("LPD-17564"))
+			).thenReturn(
+				true
+			);
+
+			Assert.assertEquals(
+				DepotRolesConstants.SUBTYPE_SPACE,
+				_depotRoleTypeContributor.getDefaultSubtype());
+		}
+	}
 
 	@Test
 	public void testGetExcludedRoleNames() {
