@@ -27,7 +27,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
-import com.liferay.site.cmp.site.initializer.internal.util.CMPLinkedObjectEntryUtil;
+import com.liferay.site.cmp.site.initializer.internal.util.CMPLinkObjectEntryUtil;
 
 /**
  * @author Pedro Leite
@@ -100,7 +100,7 @@ public class CMPObjectEntryModelDocumentContributor
 		}
 
 		long[] cmpTaskObjectEntryIds =
-			CMPLinkedObjectEntryUtil.getLinkedObjectEntryIds(
+			CMPLinkObjectEntryUtil.getRelatedObjectEntryIds(
 				_filterFactory, _groupLocalService, "L_CMP_TASK_LINK",
 				_objectDefinitionLocalService, objectEntry,
 				_objectEntryLocalService,
@@ -118,7 +118,7 @@ public class CMPObjectEntryModelDocumentContributor
 
 		return ArrayUtil.unique(
 			ArrayUtil.append(
-				CMPLinkedObjectEntryUtil.getLinkedObjectEntryIds(
+				CMPLinkObjectEntryUtil.getRelatedObjectEntryIds(
 					_filterFactory, _groupLocalService, "L_CMP_PROJECT_LINK",
 					_objectDefinitionLocalService, objectEntry,
 					_objectEntryLocalService,

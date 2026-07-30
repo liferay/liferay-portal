@@ -22,7 +22,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskAssignmentInstance;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
-import com.liferay.site.cmp.site.initializer.internal.util.CMPLinkedObjectEntryUtil;
+import com.liferay.site.cmp.site.initializer.internal.util.CMPLinkObjectEntryUtil;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -64,7 +64,7 @@ public class CMPKaleoTaskInstanceTokenModelDocumentContributor
 		}
 
 		long[] cmpTaskObjectEntryIds =
-			CMPLinkedObjectEntryUtil.getLinkedObjectEntryIds(
+			CMPLinkObjectEntryUtil.getRelatedObjectEntryIds(
 				_filterFactory, _groupLocalService, "L_CMP_TASK_LINK",
 				_objectDefinitionLocalService, objectEntry,
 				_objectEntryLocalService,

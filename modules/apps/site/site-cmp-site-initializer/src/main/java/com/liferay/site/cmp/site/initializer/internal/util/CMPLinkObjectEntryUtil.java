@@ -19,27 +19,27 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author Guilherme Camacho
  */
-public class CMPLinkedObjectEntryUtil {
+public class CMPLinkObjectEntryUtil {
 
-	public static long[] getLinkedObjectEntryIds(
+	public static List<Long> getLinkObjectEntryIds(
 			FilterFactory<Predicate> filterFactory,
 			GroupLocalService groupLocalService,
 			String objectDefinitionExternalReferenceCode,
 			ObjectDefinitionLocalService objectDefinitionLocalService,
 			ObjectEntry objectEntry,
-			ObjectEntryLocalService objectEntryLocalService,
-			String relationshipObjectFieldName)
+			ObjectEntryLocalService objectEntryLocalService)
 		throws PortalException {
 
 		Group group = groupLocalService.fetchGroup(objectEntry.getGroupId());
 
 		if (group == null) {
-			return new long[0];
+			return Collections.emptyList();
 		}
 
 		ObjectDefinition objectDefinition =
@@ -49,10 +49,10 @@ public class CMPLinkedObjectEntryUtil {
 					objectEntry.getCompanyId());
 
 		if (objectDefinition == null) {
-			return new long[0];
+			return Collections.emptyList();
 		}
 
-		List<Long> objectEntryIds = objectEntryLocalService.getPrimaryKeys(
+		return objectEntryLocalService.getPrimaryKeys(
 			new Long[0], objectEntry.getCompanyId(), 0,
 			objectDefinition.getObjectDefinitionId(),
 			filterFactory.create(
@@ -64,9 +64,24 @@ public class CMPLinkedObjectEntryUtil {
 					group.getExternalReferenceCode(), "'"),
 				objectDefinition),
 			false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	public static long[] getRelatedObjectEntryIds(
+			FilterFactory<Predicate> filterFactory,
+			GroupLocalService groupLocalService,
+			String objectDefinitionExternalReferenceCode,
+			ObjectDefinitionLocalService objectDefinitionLocalService,
+			ObjectEntry objectEntry,
+			ObjectEntryLocalService objectEntryLocalService,
+			String relationshipObjectFieldName)
+		throws PortalException {
 
 		return TransformUtil.transformToLongArray(
-			objectEntryIds,
+			getLinkObjectEntryIds(
+				filterFactory, groupLocalService,
+				objectDefinitionExternalReferenceCode,
+				objectDefinitionLocalService, objectEntry,
+				objectEntryLocalService),
 			objectEntryId -> MapUtil.getLong(
 				objectEntryLocalService.getValues(objectEntryId),
 				relationshipObjectFieldName));
