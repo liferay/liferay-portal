@@ -63,6 +63,25 @@ public class CTEntryDTOConverter
 		return _toCTEntry(dtoConverterContext, ctEntry);
 	}
 
+	private Document _getDocument(
+			DTOConverterContext dtoConverterContext,
+			com.liferay.change.tracking.model.CTEntry ctEntry)
+		throws Exception {
+
+		Document document = (Document)dtoConverterContext.getAttribute(
+			"document");
+
+		if (document != null) {
+			return document;
+		}
+
+		Indexer<com.liferay.change.tracking.model.CTEntry> indexer =
+			_indexerRegistry.getIndexer(
+				com.liferay.change.tracking.model.CTEntry.class);
+
+		return indexer.getDocument(ctEntry);
+	}
+
 	private String _getLocalizedValue(Field field, Locale locale) {
 		if (field == null) {
 			return StringPool.BLANK;
@@ -114,11 +133,7 @@ public class CTEntryDTOConverter
 			com.liferay.change.tracking.model.CTEntry ctEntry)
 		throws Exception {
 
-		Indexer<com.liferay.change.tracking.model.CTEntry> indexer =
-			_indexerRegistry.getIndexer(
-				com.liferay.change.tracking.model.CTEntry.class);
-
-		Document document = indexer.getDocument(ctEntry);
+		Document document = _getDocument(dtoConverterContext, ctEntry);
 
 		return new CTEntry() {
 			{
