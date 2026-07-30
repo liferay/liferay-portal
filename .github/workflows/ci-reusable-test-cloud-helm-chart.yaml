@@ -18,9 +18,10 @@ jobs:
             -   name: Lint chart
                 run: helm lint "cloud/helm/${{matrix.chart}}"
             -   name: Render and validate manifests
-                run: cloud/scripts/tests/render_helm_manifests.sh
-            -   name: Run unit tests
-                run: cloud/scripts/tests/run_helm_tests.sh
+                run: cloud/scripts/tests/render_helm_manifests.sh "${{matrix.chart}}"
+            -   if: ${{!cancelled()}}
+                name: Run unit tests
+                run: cloud/scripts/tests/run_helm_tests.sh "${{matrix.chart}}"
             -   if: ${{!cancelled() && hashFiles(format('cloud/scripts/tests/test-results/helm-unittest-{0}.xml', matrix.chart)) != ''}}
                 name: Publish test report
                 uses: dorny/test-reporter@v2
