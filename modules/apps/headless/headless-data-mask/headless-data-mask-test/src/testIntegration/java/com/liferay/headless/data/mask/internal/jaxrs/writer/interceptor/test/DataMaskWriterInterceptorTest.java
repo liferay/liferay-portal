@@ -139,8 +139,8 @@ public class DataMaskWriterInterceptorTest {
 					"interceptor.DataMaskWriterInterceptor",
 				LoggerTestUtil.ERROR)) {
 
-			Assert.assertNotEquals(
-				_REPEATED_TEXT,
+			Assert.assertEquals(
+				"",
 				HTTPTestUtil.invokeToString(
 					null, "test-data-mask/repeated-text",
 					HashMapBuilder.put(
