@@ -4120,7 +4120,7 @@ public class ObjectDefinitionLocalServiceImpl
 	private ObjectActionLocalService _objectActionLocalService;
 
 	private ObjectDefinitionDeployer _objectDefinitionDeployer;
-	private Map<String, List<ServiceRegistration<?>>>
+	private final Map<String, List<ServiceRegistration<?>>>
 		_objectDefinitionDeployerServiceRegistrationsMap =
 			new ConcurrentHashMap<>();
 	private ServiceTracker<ObjectDefinitionDeployer, ObjectDefinitionDeployer>
