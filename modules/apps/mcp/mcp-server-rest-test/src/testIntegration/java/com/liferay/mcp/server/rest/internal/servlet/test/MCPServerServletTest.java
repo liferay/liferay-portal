@@ -175,13 +175,13 @@ public class MCPServerServletTest {
 							Base64.encode(userNameAndPassword.getBytes()),
 						"Bearer " + _getAccessToken())) {
 
-				_testServiceWithoutAuthTokenCheck(authorization);
 				_testServiceWithDataMasks(authorization);
 				_testServiceWithModifiedProfile(authorization);
 				_testServiceWithNoContentResponse(authorization);
+				_testServiceWithProfile(authorization);
+				_testServiceWithoutAuthTokenCheck(authorization);
 				_testServiceWithoutProfile(authorization);
 				_testServiceWithoutSession(authorization);
-				_testServiceWithProfile(authorization);
 			}
 		}
 	}
