@@ -609,7 +609,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	private static final Pattern _classDeclarationPattern = Pattern.compile(
 		"((?:@\\w+(?:\\([^)]*\\))?\\s*)*)public\\s+(?:abstract\\s+)?class\\s");
 	private static final Pattern _localServiceCallPattern = Pattern.compile(
-		"\\b(\\w+?)LocalService\\.(\\w+)\\s*\\(");
+		"\\b(\\w+?)LocalService\\.\\s*(\\w+)\\s*\\(");
 	private static final Pattern _passthroughBodyPattern = Pattern.compile(
 		"\\)\\s*(?:throws[\\w\\s,.]*)?\\{\\s*return\\s+(\\w+Persistence)\\.(" +
 			"(?:count|fetch|filterCount|filterFind|find)\\w*)\\([^;]*\\);" +
