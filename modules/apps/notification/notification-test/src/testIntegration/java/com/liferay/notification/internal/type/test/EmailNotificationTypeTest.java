@@ -51,6 +51,7 @@ import com.liferay.object.action.trigger.ObjectActionTriggerRegistry;
 import com.liferay.object.action.util.ObjectActionThreadLocal;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionKeys;
+import com.liferay.object.constants.ObjectActionNameConstants;
 import com.liferay.object.constants.ObjectActionTriggerConstants;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
@@ -1036,6 +1037,22 @@ public class EmailNotificationTypeTest extends BaseNotificationTypeTest {
 					).name(
 						"assignee"
 					).build()));
+
+		ObjectAction objectAction = objectActionLocalService.fetchObjectAction(
+			objectDefinition.getObjectDefinitionId(),
+			ObjectActionNameConstants.NAME_NOTIFY_ASSIGNEE_ON_AFTER_ADD);
+
+		if (objectAction != null) {
+			objectActionLocalService.deleteObjectAction(objectAction);
+		}
+
+		objectAction = objectActionLocalService.fetchObjectAction(
+			objectDefinition.getObjectDefinitionId(),
+			ObjectActionNameConstants.NAME_NOTIFY_ASSIGNEE_ON_AFTER_UPDATE);
+
+		if (objectAction != null) {
+			objectActionLocalService.deleteObjectAction(objectAction);
+		}
 
 		addNotificationTemplateObjectAction(
 			Arrays.asList(
