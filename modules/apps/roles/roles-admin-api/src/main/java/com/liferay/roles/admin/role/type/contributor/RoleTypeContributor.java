@@ -5,6 +5,7 @@
 
 package com.liferay.roles.admin.role.type.contributor;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.search.SearchPaginationUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -35,6 +36,16 @@ public interface RoleTypeContributor {
 	 */
 	public default String getClassName() {
 		return null;
+	}
+
+	/**
+	 * Returns the subtype to preselect when a role of this type has no
+	 * subtype, or when a new role of this type is being created.
+	 *
+	 * @return the default subtype for this role type
+	 */
+	public default String getDefaultSubtype() {
+		return StringPool.BLANK;
 	}
 
 	/**

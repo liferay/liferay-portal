@@ -26,6 +26,10 @@ String subtype = BeanParamUtil.getString(role, request, "subtype");
 
 RoleTypeContributor currentRoleTypeContributor = RoleTypeContributorRetrieverUtil.getCurrentRoleTypeContributor(request);
 
+if (Validator.isNull(subtype)) {
+	subtype = currentRoleTypeContributor.getDefaultSubtype();
+}
+
 portletDisplay.setShowBackIcon(true);
 portletDisplay.setURLBack(backURL);
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
@@ -87,7 +91,6 @@ renderResponse.setTitle((role == null) ? LanguageUtil.get(request, "new-role") :
 
 				<c:if test="<%= subtypes.length > 0 %>">
 					<aui:select name="subtype">
-						<aui:option value="" />
 
 						<%
 						for (String curSubtype : subtypes) {
