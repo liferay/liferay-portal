@@ -95,7 +95,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) (*rsa.PrivateKey, error) {
-
 	identityName := liferayEnvironment.Name + identitySecretSuffix
 
 	secret := &corev1.Secret{}
@@ -203,7 +202,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnviron
 	context context.Context,
 	namespaceName string,
 ) (string, error) {
-
 	namespace := &corev1.Namespace{}
 
 	if error := liferayEnvironmentReconciler.Get(context, types.NamespacedName{Name: namespaceName}, namespace); error != nil {
