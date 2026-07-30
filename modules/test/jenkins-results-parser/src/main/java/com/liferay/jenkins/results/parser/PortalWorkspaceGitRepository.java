@@ -228,7 +228,8 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		String yarnCacheS3ObjectPath = _getYarnCacheS3ObjectPath();
 
 		if (!CloudBucketUtil.isS3ObjectPathAvailable(yarnCacheS3ObjectPath)) {
-			return;
+			throw new RuntimeException(
+				"Unable to download " + yarnCacheS3ObjectPath);
 		}
 
 		File yarnCacheFile = null;
