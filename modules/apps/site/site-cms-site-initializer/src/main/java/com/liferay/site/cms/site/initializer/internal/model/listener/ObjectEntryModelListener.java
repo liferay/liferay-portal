@@ -5,10 +5,8 @@
 
 package com.liferay.site.cms.site.initializer.internal.model.listener;
 
-import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -43,6 +41,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
+import com.liferay.site.cms.site.initializer.util.CMSObjectEntryUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +61,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
-			if (_isCMSObjectEntry(objectEntry)) {
+			if (CMSObjectEntryUtil.isCMSObjectEntry(objectEntry)) {
 				_setResourcePermissions(objectEntry);
 			}
 		}
@@ -77,7 +76,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
-			if (!_isCMSObjectEntry(objectEntry)) {
+			if (!CMSObjectEntryUtil.isCMSObjectEntry(objectEntry)) {
 				return;
 			}
 
@@ -174,31 +173,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			GetterUtil.getLong(parts[1]));
 	}
 
-	private boolean _isCMSObjectEntry(ObjectEntry objectEntry)
-		throws Exception {
-
-		if (objectEntry.getGroupId() == 0) {
-			return false;
-		}
-
-		Group group = _groupLocalService.fetchGroup(objectEntry.getGroupId());
-
-		if ((group == null) || !group.isDepot()) {
-			return false;
-		}
-
-		DepotEntry depotEntry = _depotEntryLocalService.fetchDepotEntry(
-			group.getClassPK());
-
-		if ((depotEntry == null) ||
-			(depotEntry.getType() != DepotConstants.TYPE_SPACE)) {
-
-			return false;
-		}
-
-		return true;
-	}
-
 	private void _setResourcePermissions(ObjectEntry objectEntry)
 		throws Exception {
 
@@ -256,9 +230,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 					action -> resourceActions.contains(action)));
 		}
 	}
-
-	@Reference
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
