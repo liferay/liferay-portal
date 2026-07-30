@@ -5698,6 +5698,213 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetPrimaryKeysWithLocalizedObjectFieldSearch()
+		throws Exception {
+
+		// Integer object field
+
+		Locale themeDisplayLocale = LocaleThreadLocal.getThemeDisplayLocale();
+
+		ObjectField objectField1 = new IntegerObjectFieldBuilder(
+		).indexed(
+			true
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).localized(
+			true
+		).name(
+			"a" + RandomTestUtil.randomString()
+		).build();
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField1),
+				ObjectDefinitionConstants.SCOPE_SITE);
+
+		int intValue = RandomTestUtil.randomInt();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField1.getI18nObjectFieldName(),
+				HashMapBuilder.<String, Serializable>put(
+					"en_US", intValue
+				).build()
+			).build());
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.US);
+
+		_assertGetPrimaryKeys(
+			Collections.singletonList(objectEntry.getObjectEntryId()),
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(), String.valueOf(intValue));
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.BRAZIL);
+
+		_assertGetPrimaryKeys(
+			Collections.emptyList(), TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(), String.valueOf(intValue));
+
+		LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		// Rich text object field
+
+		ObjectField objectField2 = new RichTextObjectFieldBuilder(
+		).indexed(
+			true
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).localized(
+			true
+		).name(
+			"a" + RandomTestUtil.randomString()
+		).build();
+
+		objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+			Collections.singletonList(objectField2),
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		String value = RandomTestUtil.randomString();
+
+		objectEntry = _addObjectEntry(
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField2.getI18nObjectFieldName(),
+				HashMapBuilder.put(
+					"en_US", value
+				).build()
+			).build());
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.BRAZIL);
+
+		_assertGetPrimaryKeys(
+			Collections.singletonList(objectEntry.getObjectEntryId()),
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(), value);
+
+		LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		// Text object field
+
+		ObjectField objectField3 = _getLocalizedTextObjectField();
+
+		objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+			Collections.singletonList(objectField3),
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		value = RandomTestUtil.randomString();
+
+		objectEntry = _addObjectEntry(
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField3.getI18nObjectFieldName(),
+				HashMapBuilder.put(
+					"en_US", value
+				).build()
+			).build());
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.BRAZIL);
+
+		_assertGetPrimaryKeys(
+			Collections.singletonList(objectEntry.getObjectEntryId()),
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(), value);
+
+		_assertGetPrimaryKeys(
+			Collections.emptyList(), TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(),
+			RandomTestUtil.randomString());
+
+		LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		// Translated object field
+
+		ObjectField objectField4 = _getLocalizedTextObjectField();
+
+		objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+			Collections.singletonList(objectField4),
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		String defaultLanguageValue = RandomTestUtil.randomString();
+		value = RandomTestUtil.randomString();
+
+		objectEntry = _addObjectEntry(
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField4.getI18nObjectFieldName(),
+				HashMapBuilder.put(
+					"en_US", defaultLanguageValue
+				).put(
+					"pt_BR", value
+				).build()
+			).build());
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.BRAZIL);
+
+		_assertGetPrimaryKeys(
+			Collections.singletonList(objectEntry.getObjectEntryId()),
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(), value);
+
+		_assertGetPrimaryKeys(
+			Collections.emptyList(), TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(), defaultLanguageValue);
+
+		LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+
+		// Untranslated object field with a translated sibling
+
+		ObjectField objectField5 = _getLocalizedTextObjectField();
+		ObjectField objectField6 = _getLocalizedTextObjectField();
+
+		objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition(
+			Arrays.asList(objectField5, objectField6),
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		value = RandomTestUtil.randomString();
+
+		objectEntry = _addObjectEntry(
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField5.getI18nObjectFieldName(),
+				HashMapBuilder.put(
+					"en_US", value
+				).build()
+			).put(
+				objectField6.getI18nObjectFieldName(),
+				HashMapBuilder.put(
+					"en_US", RandomTestUtil.randomString()
+				).put(
+					"pt_BR", RandomTestUtil.randomString()
+				).build()
+			).build());
+
+		LocaleThreadLocal.setThemeDisplayLocale(LocaleUtil.BRAZIL);
+
+		_assertGetPrimaryKeys(
+			Collections.singletonList(objectEntry.getObjectEntryId()),
+			TestPropsValues.getGroupId(),
+			objectDefinition.getObjectDefinitionId(), value);
+
+		LocaleThreadLocal.setThemeDisplayLocale(themeDisplayLocale);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testGetValuesList() throws Exception {
 		Sort[] sorts = {new Sort("id", false)};
 
@@ -8976,6 +9183,19 @@ public class ObjectEntryLocalServiceTest {
 			friendlyURLEntries.toString(), 0, friendlyURLEntries.size());
 	}
 
+	private void _assertGetPrimaryKeys(
+			List<Long> expectedObjectEntryIds, long groupId,
+			long objectDefinitionId, String search)
+		throws Exception {
+
+		Assert.assertEquals(
+			expectedObjectEntryIds,
+			_objectEntryLocalService.getPrimaryKeys(
+				new Long[] {groupId}, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), objectDefinitionId, null, false,
+				search, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+	}
+
 	private void _assertGetWorkflowInstancesSize(
 			String assetClassName, long assetClassPK, int expectedSize)
 		throws Exception {
@@ -9181,6 +9401,19 @@ public class ObjectEntryLocalServiceTest {
 				"com/liferay/object/service/test/dependencies/" + fileName));
 
 		return content.getBytes();
+	}
+
+	private ObjectField _getLocalizedTextObjectField() {
+		return new TextObjectFieldBuilder(
+		).indexed(
+			true
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).localized(
+			true
+		).name(
+			"a" + RandomTestUtil.randomString()
+		).build();
 	}
 
 	private String _getMultiselectPicklistObjectFieldValue(
