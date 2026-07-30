@@ -34,6 +34,8 @@ Import-Package:\
 	\
 	*
 -exportcontents:\
+	com.microsoft.schemas.vml.*,\
+	\
 	org.apache.poi.*,\
 	org.apache.xmlbeans.*,\
 	\
