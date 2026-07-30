@@ -1,4 +1,8 @@
 import Card from 'shared/components/Card';
+import ChartViewSelector, {
+	ChartView,
+	DEFAULT_CHART_VIEW,
+} from 'shared/components/ChartViewSelector';
 import IntervalSelector from 'shared/components/IntervalSelector';
 import React, {useCallback} from 'react';
 import {BaseCardHeaderDefaultIProps} from 'shared/components/base-card/HeaderDefault';
@@ -6,12 +10,19 @@ import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRan
 import {INTERVAL_KEY_MAP, isHourlyRangeKey} from 'shared/util/time';
 import {Text} from '@clayui/core';
 
-const ActivityStreamCardHeader: React.FC<BaseCardHeaderDefaultIProps> = ({
+interface IActivityStreamCardHeaderProps extends BaseCardHeaderDefaultIProps {
+	chartView?: ChartView;
+	onChartViewChange?: (chartView: ChartView) => void;
+}
+
+const ActivityStreamCardHeader: React.FC<IActivityStreamCardHeaderProps> = ({
+	chartView = DEFAULT_CHART_VIEW,
 	description = '',
 	interval,
 	label,
 	legacy,
 	onChangeInterval,
+	onChartViewChange,
 	onRangeSelectorsChange,
 	rangeSelectors,
 	showInterval,
@@ -51,10 +62,19 @@ const ActivityStreamCardHeader: React.FC<BaseCardHeaderDefaultIProps> = ({
 				)}
 
 				{showRangeKey && (
-					<DropdownRangeKey
-						legacy={legacy}
-						onRangeSelectorChange={handleRangeSelectorsChange}
-						rangeSelectors={rangeSelectors}
+					<div className="mr-3">
+						<DropdownRangeKey
+							legacy={legacy}
+							onRangeSelectorChange={handleRangeSelectorsChange}
+							rangeSelectors={rangeSelectors}
+						/>
+					</div>
+				)}
+
+				{onChartViewChange && (
+					<ChartViewSelector
+						chartView={chartView}
+						onChange={onChartViewChange}
 					/>
 				)}
 			</div>

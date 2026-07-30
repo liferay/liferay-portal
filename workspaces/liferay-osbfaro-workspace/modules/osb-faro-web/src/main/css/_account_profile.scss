@@ -1,3 +1,9 @@
+.account-activity-stream-card {
+	> .card-header {
+		gap: 160px;
+	}
+}
+
 .account-profile-cards {
 	display: grid;
 	gap: 1rem;

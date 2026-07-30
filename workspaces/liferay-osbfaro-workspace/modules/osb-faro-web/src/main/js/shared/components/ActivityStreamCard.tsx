@@ -7,6 +7,7 @@ import React from 'react';
 import SearchInput from 'shared/components/SearchInput';
 import VerticalTimeline from 'shared/components/VerticalTimeline';
 import {ActivityHistoryPoint} from 'shared/util/activities';
+import {ChartView} from 'shared/components/ChartViewSelector';
 import {compose, withPaginationBar} from 'shared/hoc';
 import {getIcon, getStatsColor} from 'shared/util/metrics';
 import {Interval, RangeSelectors} from 'shared/types';
@@ -39,6 +40,7 @@ interface IActivityStreamCardProps {
 	chartTooltipRenderRows?: (
 		data: ActivityHistoryPoint
 	) => {label: string; value: string}[];
+	chartView?: ChartView;
 	delta: number;
 	emptyChartContent?: React.ReactNode;
 	footerLabel: React.ReactNode;
@@ -75,6 +77,7 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 	chartError,
 	chartLoading,
 	chartTooltipRenderRows,
+	chartView,
 	delta,
 	emptyChartContent,
 	footerLabel,
@@ -205,6 +208,7 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 							<div className="position-relative">
 								<ActivitiesChart
 									alwaysShowSelectedTooltip
+									chartView={chartView}
 									hideGrid={isChartEmpty}
 									history={activityHistory}
 									interval={interval}
