@@ -140,9 +140,41 @@ public class UpdateStructureStrutsActionTest {
 			serviceBuilderObjectDefinition2.getObjectDefinitionId());
 	}
 
+	@FeatureFlag("LPD-17564")
+	@Test
+	@TestInfo("LPD-92696")
+	public void testExecuteDoesNotDeleteObjectRelationships() throws Exception {
+		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		com.liferay.object.model.ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _objectDefinition1,
+				_objectDefinition2);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_updateStructureStrutsAction.execute(
+			_getMockHttpServletRequest(_objectDefinition1),
+			mockHttpServletResponse);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
+
+		Assert.assertNotNull(
+			_objectFieldLocalService.fetchObjectField(
+				objectRelationship.getObjectFieldId2()));
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship.getObjectRelationshipId()));
+	}
+
 	@Test
 	@TestInfo("LPD-99742")
-	public void testExecuteDoesNotDeleteEdgeObjectRelationships()
+	public void testExecuteDoesNotDeleteReferencedStructureRelationship()
 		throws Exception {
 
 		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
@@ -172,38 +204,6 @@ public class UpdateStructureStrutsActionTest {
 
 		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
 
-		Assert.assertNotNull(
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship.getObjectRelationshipId()));
-	}
-
-	@FeatureFlag("LPD-17564")
-	@Test
-	@TestInfo("LPD-92696")
-	public void testExecuteDoesNotDeleteObjectRelationships() throws Exception {
-		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
-
-		com.liferay.object.model.ObjectRelationship objectRelationship =
-			ObjectRelationshipTestUtil.addObjectRelationship(
-				_objectRelationshipLocalService, _objectDefinition1,
-				_objectDefinition2);
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_updateStructureStrutsAction.execute(
-			_getMockHttpServletRequest(_objectDefinition1),
-			mockHttpServletResponse);
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			mockHttpServletResponse.getContentAsString());
-
-		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
-
-		Assert.assertNotNull(
-			_objectFieldLocalService.fetchObjectField(
-				objectRelationship.getObjectFieldId2()));
 		Assert.assertNotNull(
 			_objectRelationshipLocalService.fetchObjectRelationship(
 				objectRelationship.getObjectRelationshipId()));
