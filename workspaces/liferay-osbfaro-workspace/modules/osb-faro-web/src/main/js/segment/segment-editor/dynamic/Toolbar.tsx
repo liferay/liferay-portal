@@ -10,11 +10,14 @@ import React from 'react';
 import TitleEditor from 'shared/components/TitleEditor';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {connect} from 'react-redux';
-import {createOrderIOMap, NAME} from 'shared/util/pagination';
+import {ACCOUNT_NAME, createOrderIOMap, NAME} from 'shared/util/pagination';
 import {Criteria} from './utils/types';
 import {hasChanges} from 'shared/util/react';
-import {INDIVIDUALS} from 'shared/util/router';
-import {individualsListColumns} from 'shared/util/table-columns';
+import {ACCOUNTS, INDIVIDUALS} from 'shared/util/router';
+import {
+	accountsListColumns,
+	individualsListColumns,
+} from 'shared/util/table-columns';
 import {Modal} from 'shared/types';
 import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
@@ -114,15 +117,27 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 			this.props;
 
 		if (segmentCategory === SegmentCategories.Account) {
+			const {delta, orderIOMap, page, query} = params;
+
 			return API.accounts
 				.searchByFilter({
 					channelId,
 					filter: criteriaString,
 					groupId,
+					orderIOMap,
+					page,
+					pageSize: delta,
+					query,
 				})
-				.then(({totalCount}: {totalCount: number}) => ({
-					total: totalCount,
-				}));
+				.then(
+					({
+						items,
+						totalCount,
+					}: {
+						items: Array<Record<string, any>>;
+						totalCount: number;
+					}) => ({items, total: totalCount})
+				);
 		}
 
 		return API.individuals.search({
@@ -134,18 +149,31 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 	}
 
 	handlePreviewClick() {
-		const {close, open} = this.props;
+		const {channelId, close, groupId, open, segmentCategory} = this.props;
+
+		const isAccountSegment = segmentCategory === SegmentCategories.Account;
 
 		open(modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL, {
-			columns: [individualsListColumns.name],
+			...(isAccountSegment && {initialDelta: 20}),
+			columns: [
+				isAccountSegment
+					? accountsListColumns.getAccountName({channelId, groupId})
+					: individualsListColumns.name,
+			],
 			dataSourceFn: this.fetchMembers,
-			entityLabel: Liferay.Language.get('individuals'),
-			entityType: INDIVIDUALS,
-			initialOrderIOMap: createOrderIOMap(NAME),
+			entityLabel: isAccountSegment
+				? Liferay.Language.get('accounts')
+				: Liferay.Language.get('individuals'),
+			entityType: isAccountSegment ? ACCOUNTS : INDIVIDUALS,
+			initialOrderIOMap: createOrderIOMap(
+				isAccountSegment ? ACCOUNT_NAME : NAME
+			),
 			onClose: close,
 			rowIdentifier: 'id',
 			size: 'lg',
-			title: Liferay.Language.get('known-segment-members'),
+			title: isAccountSegment
+				? Liferay.Language.get('segment-accounts')
+				: Liferay.Language.get('known-segment-members'),
 		});
 	}
 
