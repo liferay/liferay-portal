@@ -162,6 +162,11 @@ public class NotificationQueueEntryWrapper
 		return wrap(model.cloneWithOriginalValues());
 	}
 
+	@Override
+	public NotificationRecipient fetchNotificationRecipient() {
+		return model.fetchNotificationRecipient();
+	}
+
 	/**
 	 * Returns the body of this notification queue entry.
 	 *
@@ -253,7 +258,9 @@ public class NotificationQueueEntryWrapper
 	}
 
 	@Override
-	public NotificationRecipient getNotificationRecipient() {
+	public NotificationRecipient getNotificationRecipient()
+		throws com.liferay.portal.kernel.exception.PortalException {
+
 		return model.getNotificationRecipient();
 	}
 
@@ -560,4 +567,4 @@ public class NotificationQueueEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-590199076
+// LIFERAY-SERVICE-BUILDER-HASH:-805724170
