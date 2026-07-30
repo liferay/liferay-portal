@@ -50,6 +50,8 @@ public class TestAccountEntryValidator implements AccountEntryValidator {
 
 	@Override
 	public String getClassPK(AccountEntry accountEntry, JSONObject jsonObject) {
+		_jsonObject = jsonObject;
+
 		return _classPK;
 	}
 
