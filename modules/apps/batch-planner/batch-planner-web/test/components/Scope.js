@@ -17,10 +17,10 @@ jest.mock('frontend-js-components-web', () => ({
 
 const PORTLET_NAMESPACE = 'test';
 
-function mockScopesResponses({depotItems, siteItems}) {
+function mockScopesResponses({assetLibraryItems, siteItems}) {
 	fetch.mockResponse(async (request) => {
-		if (request.url.includes('depot-scopes')) {
-			return JSON.stringify({items: depotItems});
+		if (request.url.includes('asset-library-scopes')) {
+			return JSON.stringify({items: assetLibraryItems});
 		}
 
 		return JSON.stringify({items: siteItems});
@@ -32,9 +32,9 @@ describe('Scope', () => {
 		jest.clearAllMocks();
 	});
 
-	it('renders depot and site scopes together after a schema is selected', async () => {
+	it('renders asset library and site scopes together after a schema is selected', async () => {
 		mockScopesResponses({
-			depotItems: [{label: 'Depot A', value: 11}],
+			assetLibraryItems: [{label: 'Asset Library A', value: 11}],
 			siteItems: [{label: 'Site B', value: 22}],
 		});
 
@@ -53,7 +53,7 @@ describe('Scope', () => {
 
 		expect(options).toHaveLength(2);
 		expect(options[0]).toHaveValue('11');
-		expect(options[0]).toHaveTextContent('Depot A');
+		expect(options[0]).toHaveTextContent('Asset Library A');
 		expect(options[1]).toHaveValue('22');
 		expect(options[1]).toHaveTextContent('Site B');
 	});
@@ -77,7 +77,7 @@ describe('Scope', () => {
 
 	it('clears the scopes when the schema is deselected', async () => {
 		mockScopesResponses({
-			depotItems: [],
+			assetLibraryItems: [],
 			siteItems: [{label: 'Site B', value: 22}],
 		});
 
@@ -101,7 +101,7 @@ describe('Scope', () => {
 
 	it('hides the scopes and opens a toast when a request fails', async () => {
 		mockScopesResponses({
-			depotItems: [],
+			assetLibraryItems: [],
 			siteItems: [{label: 'Site B', value: 22}],
 		});
 
