@@ -5,8 +5,8 @@ import AcquisitionsQuery, {
 import BaseCard from 'shared/components/base-card';
 import BasePage from 'shared/components/base-page';
 import Card from 'shared/components/Card';
-import CardTabs from 'shared/components/CardTabs';
 import ClayLink from '@clayui/link';
+import ClayTabs from '@clayui/tabs';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
 import React, {useContext, useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
@@ -128,8 +128,12 @@ const AcquisitionsCardWithData: React.FC<IAcquisitionsCard> = ({
 		},
 	});
 
-	const activeTab = tabs.find(({tabId}) => tabId === activeTabId) ?? tabs[0];
-	const {getColumns, rowIdentifier} = activeTab;
+	const activeIndex = Math.max(
+		tabs.findIndex(({tabId}) => tabId === activeTabId),
+		0
+	);
+
+	const {getColumns, rowIdentifier} = tabs[activeIndex];
 
 	const {
 		compositions = [],
@@ -142,11 +146,17 @@ const AcquisitionsCardWithData: React.FC<IAcquisitionsCard> = ({
 
 	return (
 		<Card.Body className="w-100 d-flex flex-column flex-grow-1" noPadding>
-			<CardTabs
-				activeTabId={activeTabId}
-				onChange={(tabId) => setActiveTabId(tabId)}
-				tabs={tabs.map(({tabId, title}) => ({tabId, title}))}
-			/>
+			<ClayTabs
+				active={activeIndex}
+				className="mb-3"
+				onActiveChange={(index) =>
+					setActiveTabId(tabs[Number(index)].tabId)
+				}
+			>
+				{tabs.map(({tabId, title}) => (
+					<ClayTabs.Item key={tabId}>{title}</ClayTabs.Item>
+				))}
+			</ClayTabs>
 
 			<AcquisitionsCardWithStatesRenderer
 				empty={!total}

@@ -186,7 +186,7 @@ exports[`Sites Dashboard Overview render 1`] = `
         class="col-xl-6"
       >
         <div
-          class="card card-root acquisitions-card-root table-tabs-root"
+          class="card card-root acquisitions-card-root"
           id="container.report.acquisitionsCard"
         >
           <div
@@ -215,54 +215,52 @@ exports[`Sites Dashboard Overview render 1`] = `
             class="card-body w-100 d-flex flex-column flex-grow-1 no-padding"
           >
             <ul
-              class="card-tabs-root"
+              class="nav nav-tabs mb-3"
+              role="tablist"
             >
               <li
-                class="card-tab active"
-                data-testid="CHANNEL"
+                class="nav-item"
+                role="none"
               >
                 <button
-                  class="button-root btn btn-unstyled"
+                  aria-selected="true"
+                  class="nav-link active btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="0"
                   type="button"
                 >
-                  <span
-                    class="title"
-                  >
-                    Channels
-                  </span>
-                  <div />
+                  Channels
                 </button>
               </li>
               <li
-                class="card-tab"
-                data-testid="SOURCE_MEDIUM"
+                class="nav-item"
+                role="none"
               >
                 <button
-                  class="button-root btn btn-unstyled"
+                  aria-selected="false"
+                  class="nav-link btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="-1"
                   type="button"
                 >
-                  <span
-                    class="title"
-                  >
-                    Source | Medium
-                  </span>
-                  <div />
+                  Source | Medium
                 </button>
               </li>
               <li
-                class="card-tab"
-                data-testid="REFERRER"
+                class="nav-item"
+                role="none"
               >
                 <button
-                  class="button-root btn btn-unstyled"
+                  aria-selected="false"
+                  class="nav-link btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="-1"
                   type="button"
                 >
-                  <span
-                    class="title"
-                  >
-                    Referrers
-                  </span>
-                  <div />
+                  Referrers
                 </button>
               </li>
             </ul>
@@ -551,10 +549,10 @@ exports[`Sites Dashboard Overview render 1`] = `
               >
                 <button
                   aria-activedescendant="visitors"
-                  aria-controls="clay-id-3"
+                  aria-controls="clay-id-4"
                   aria-expanded="true"
                   aria-haspopup="listbox"
-                  aria-owns="clay-id-3"
+                  aria-owns="clay-id-4"
                   class="form-control form-control-select form-control-select-secondary visitors-type-select show"
                   role="combobox"
                   style=""

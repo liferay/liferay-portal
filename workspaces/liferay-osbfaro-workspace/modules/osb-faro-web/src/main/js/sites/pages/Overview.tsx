@@ -66,7 +66,7 @@ const Overview: FC<IOverviewProps> = ({channelName}) => {
 
 				<div className="col-xl-6">
 					<AcquisitionsCard
-						className="acquisitions-card-root table-tabs-root"
+						className="acquisitions-card-root"
 						compositionBagName={CompositionTypes.Acquisitions}
 						label={Liferay.Language.get('acquisitions')}
 						legacyDropdownRangeKey={false}
