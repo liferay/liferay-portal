@@ -156,7 +156,7 @@ test.describe('Prompts - List View', () => {
 			await expect(promptsPage.dialog).toBeVisible();
 			await expect(promptsPage.dialog).toContainText('Delete MCP Prompt');
 			await expect(promptsPage.dialog).toContainText(
-				`This will permanently delete "${name}" prompt from your MCP Server configuration.`
+				`This will permanently delete "${name}" prompt from your MCP server configuration.`
 			);
 			await expect(promptsPage.dialog).toContainText(
 				'Do you want to proceed?'
