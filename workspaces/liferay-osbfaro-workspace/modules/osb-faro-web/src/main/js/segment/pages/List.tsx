@@ -117,7 +117,7 @@ const SEGMENT_TYPES_LABEL_MAP = {
 const FILTER_BY_OPTIONS = [
 	{
 		key: SEGMENT_CATEGORY,
-		label: Liferay.Language.get('segment-category'),
+		label: Liferay.Language.get('type'),
 		values: [
 			{
 				label: SEGMENT_CATEGORIES_LABEL_MAP[SegmentCategories.Account],
@@ -133,7 +133,7 @@ const FILTER_BY_OPTIONS = [
 	},
 	{
 		key: SEGMENT_TYPE,
-		label: Liferay.Language.get('segment-type'),
+		label: Liferay.Language.get('sync-frequency'),
 		values: [
 			{
 				label: SEGMENT_TYPES_LABEL_MAP[SegmentTypes.Batch],
