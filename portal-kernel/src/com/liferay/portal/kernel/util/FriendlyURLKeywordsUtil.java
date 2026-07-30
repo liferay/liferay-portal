@@ -12,15 +12,34 @@ import com.liferay.petra.string.StringPool;
  */
 public class FriendlyURLKeywordsUtil {
 
+	public static String getLayoutFriendlyURLKeyword(String friendlyURL) {
+		return _getFriendlyURLKeyword(
+			friendlyURL, _LAYOUT_FRIENDLY_URL_KEYWORDS);
+	}
+
 	public static String getSiteFriendlyURLKeyword(String friendlyURL) {
+		return _getFriendlyURLKeyword(friendlyURL, _SITE_FRIENDLY_URL_KEYWORDS);
+	}
+
+	public static boolean hasLayoutFriendlyURLKeyword(String friendlyURL) {
+		return Validator.isNotNull(getLayoutFriendlyURLKeyword(friendlyURL));
+	}
+
+	public static boolean hasSiteFriendlyURLKeyword(String friendlyURL) {
+		return Validator.isNotNull(getSiteFriendlyURLKeyword(friendlyURL));
+	}
+
+	private static String _getFriendlyURLKeyword(
+		String friendlyURL, String[] friendlyURLKeywords) {
+
 		friendlyURL = StringUtil.toLowerCase(friendlyURL);
 
-		for (String keyword : _SITE_FRIENDLY_URL_KEYWORDS) {
-			if (friendlyURL.startsWith(keyword)) {
-				return keyword;
+		for (String friendlyURLKeyword : friendlyURLKeywords) {
+			if (friendlyURL.startsWith(friendlyURLKeyword)) {
+				return friendlyURLKeyword;
 			}
 
-			if (keyword.equals(friendlyURL + StringPool.SLASH)) {
+			if (friendlyURLKeyword.equals(friendlyURL + StringPool.SLASH)) {
 				return friendlyURL;
 			}
 		}
@@ -28,24 +47,11 @@ public class FriendlyURLKeywordsUtil {
 		return null;
 	}
 
-	public static boolean hasSiteFriendlyURLKeyword(String friendlyURL) {
-		String keyword = getSiteFriendlyURLKeyword(friendlyURL);
+	private static String[] _toFriendlyURLKeywords(String[] keywords) {
+		String[] friendlyURLKeywords = new String[keywords.length];
 
-		return Validator.isNotNull(keyword);
-	}
-
-	private static final String[] _SITE_FRIENDLY_URL_KEYWORDS;
-
-	static {
-		_SITE_FRIENDLY_URL_KEYWORDS =
-			new String[PropsValues.SITES_FRIENDLY_URL_KEYWORDS.length];
-
-		for (int i = 0; i < PropsValues.SITES_FRIENDLY_URL_KEYWORDS.length;
-			 i++) {
-
-			String keyword = PropsValues.SITES_FRIENDLY_URL_KEYWORDS[i];
-
-			keyword = StringPool.SLASH + keyword;
+		for (int i = 0; i < keywords.length; i++) {
+			String keyword = StringPool.SLASH + keywords[i];
 
 			if (!keyword.contains(StringPool.PERIOD)) {
 				if (keyword.endsWith(StringPool.STAR)) {
@@ -56,8 +62,16 @@ public class FriendlyURLKeywordsUtil {
 				}
 			}
 
-			_SITE_FRIENDLY_URL_KEYWORDS[i] = StringUtil.toLowerCase(keyword);
+			friendlyURLKeywords[i] = StringUtil.toLowerCase(keyword);
 		}
+
+		return friendlyURLKeywords;
 	}
+
+	private static final String[] _LAYOUT_FRIENDLY_URL_KEYWORDS =
+		_toFriendlyURLKeywords(PropsValues.LAYOUT_FRIENDLY_URL_KEYWORDS);
+
+	private static final String[] _SITE_FRIENDLY_URL_KEYWORDS =
+		_toFriendlyURLKeywords(PropsValues.SITES_FRIENDLY_URL_KEYWORDS);
 
 }
