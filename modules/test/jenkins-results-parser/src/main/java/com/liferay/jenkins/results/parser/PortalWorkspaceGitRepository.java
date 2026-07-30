@@ -444,8 +444,10 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	}
 
 	protected synchronized void setUpYarnCache() {
-		if (_setUpYarnCache) {
-			_setUpYarnCache = true;
+		String upstreamBranchName = getUpstreamBranchName();
+
+		if (!JenkinsResultsParserUtil.isCloudCINode() || _setUpYarnCache ||
+			upstreamBranchName.startsWith("ee-")) {
 
 			return;
 		}
