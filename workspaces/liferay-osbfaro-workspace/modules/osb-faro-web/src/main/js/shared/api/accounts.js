@@ -133,6 +133,7 @@ export function searchByFilter({
 	channelId = '',
 	filter = '',
 	groupId,
+	includeAnonymousUsers = false,
 	orderIOMap,
 	page = 0,
 	pageSize = 0,
@@ -142,6 +143,7 @@ export function searchByFilter({
 		data: {
 			channelId,
 			filter,
+			includeAnonymousUsers,
 			page,
 			pageSize,
 			search: query,

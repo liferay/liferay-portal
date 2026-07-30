@@ -113,8 +113,13 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 	}, 400);
 
 	fetchMembers(params: Record<string, any>) {
-		const {channelId, criteriaString, groupId, segmentCategory} =
-			this.props;
+		const {
+			channelId,
+			criteriaString,
+			groupId,
+			includeAnonymousUsers,
+			segmentCategory,
+		} = this.props;
 
 		if (segmentCategory === SegmentCategories.Account) {
 			const {delta, orderIOMap, page, query} = params;
@@ -124,6 +129,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 					channelId,
 					filter: criteriaString,
 					groupId,
+					includeAnonymousUsers,
 					orderIOMap,
 					page,
 					pageSize: delta,
