@@ -153,11 +153,11 @@ const ORDER_BY_OPTIONS = [
 		value: NAME,
 	},
 	{
-		label: Liferay.Language.get('type'),
+		label: Liferay.Language.get('sync-frequency'),
 		value: SEGMENT_TYPE,
 	},
 	{
-		label: Liferay.Language.get('segment-membership'),
+		label: Liferay.Language.get('membership'),
 		value: INDIVIDUAL_COUNT,
 	},
 	{
@@ -655,14 +655,14 @@ export const List: React.FC<IListProps> = ({
 											</td>
 										);
 									},
-									label: Liferay.Language.get('type'),
+									label: Liferay.Language.get(
+										'sync-frequency'
+									),
 								},
 								{
 									accessor: 'individualCount',
 									cellRenderer: ToThousandsCell,
-									label: Liferay.Language.get(
-										'segment-membership'
-									),
+									label: Liferay.Language.get('membership'),
 								},
 								{
 									accessor: 'lastMembershipUpdateDate',
