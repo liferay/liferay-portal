@@ -47,10 +47,16 @@ public class DesignLibraryConnectedSitesDisplayContext
 
 		Group group = getGroup();
 
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
 		return HashMapBuilder.<String, Object>put(
 			"externalReferenceCode", group.getExternalReferenceCode()
 		).put(
-			"hasConnectSitesPermission", _hasUpdatePermission(group)
+			"hasConnectSitesPermission",
+			permissionChecker.hasPermission(
+				group, DepotEntry.class.getName(), group.getClassPK(),
+				ActionKeys.UPDATE)
 		).put(
 			"refreshDataSetIds",
 			new String[] {
@@ -65,29 +71,19 @@ public class DesignLibraryConnectedSitesDisplayContext
 		return HashMapBuilder.<String, Object>putAll(
 			getConnectedSitesFDSAdditionalProps()
 		).put(
-			"count", _getConnectedSitesCount()
+			"count",
+			() -> {
+				DepotEntryGroupRelLocalService depotEntryGroupRelLocalService =
+					_depotEntryGroupRelLocalServiceSnapshot.get();
+
+				if (depotEntryGroupRelLocalService == null) {
+					return 0;
+				}
+
+				return depotEntryGroupRelLocalService.
+					getDepotEntryGroupRelsCount(depotEntry);
+			}
 		).build();
-	}
-
-	private int _getConnectedSitesCount() {
-		DepotEntryGroupRelLocalService depotEntryGroupRelLocalService =
-			_depotEntryGroupRelLocalServiceSnapshot.get();
-
-		if (depotEntryGroupRelLocalService == null) {
-			return 0;
-		}
-
-		return depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
-			depotEntry);
-	}
-
-	private boolean _hasUpdatePermission(Group group) {
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
-		return permissionChecker.hasPermission(
-			group, DepotEntry.class.getName(), group.getClassPK(),
-			ActionKeys.UPDATE);
 	}
 
 	private static final Snapshot<DepotEntryGroupRelLocalService>
