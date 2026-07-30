@@ -605,13 +605,9 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(nodejsNpmCiRegistry)) {
 				yarnLockFileContent = yarnLockFileContent.replace(
 					"https://registry.yarnpkg.com", nodejsNpmCiRegistry);
-
-				JenkinsResultsParserUtil.write(
-					yarnLockFile, yarnLockFileContent);
 			}
 
-			_yarnLockDigest = DigestUtils.sha256Hex(
-				JenkinsResultsParserUtil.read(yarnLockFile));
+			_yarnLockDigest = DigestUtils.sha256Hex(yarnLockFileContent);
 		}
 		catch (IOException ioException) {
 			_yarnLockDigest = "";
