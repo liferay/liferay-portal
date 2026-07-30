@@ -16,10 +16,12 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
+import com.liferay.portal.kernel.search.MatchQuery;
 import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.QueryTerm;
 import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
@@ -225,6 +227,78 @@ public class AssetListFiltersUtilTest {
 			Arrays.toString(booleanClauses), 0, booleanClauses.length);
 	}
 
+	@Test
+	public void testFilterQueriesWithKeywordTextContainsOperators() {
+		String keywordTextFieldName = RandomTestUtil.randomString();
+
+		ObjectField keywordObjectField = _setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, keywordTextFieldName);
+
+		Mockito.when(
+			keywordObjectField.isIndexedAsKeyword()
+		).thenReturn(
+			true
+		);
+
+		_assertWildcardQuery(
+			"nestedFieldArray.value_keyword", "*alpha*",
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"contains", keywordTextFieldName, "Alpha"),
+				keywordTextFieldName));
+		_assertWildcardQuery(
+			"nestedFieldArray.value_keyword", "*alpha*",
+			_assertNestedRowAndGetQuery(
+				BooleanClauseOccur.MUST_NOT,
+				_buildFilterJSONObject(
+					"not-contains", keywordTextFieldName, "Alpha"),
+				keywordTextFieldName));
+	}
+
+	@Test
+	public void testFilterQueriesWithTextContainsOperators() {
+		String textFieldName = RandomTestUtil.randomString();
+
+		_setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, textFieldName);
+
+		String textFieldValue = RandomTestUtil.randomString();
+
+		Query containsQuery = _assertNestedRowAndGetQuery(
+			BooleanClauseOccur.MUST,
+			_buildFilterJSONObject("contains", textFieldName, textFieldValue),
+			textFieldName);
+
+		Assert.assertTrue(
+			containsQuery.toString(), containsQuery instanceof MatchQuery);
+
+		Query containsWithQuantifierQuery = _assertNestedRowAndGetQuery(
+			BooleanClauseOccur.MUST,
+			_buildFilterJSONObject(
+				"contains", textFieldName, textFieldValue
+			).put(
+				"quantifier", "any"
+			),
+			textFieldName);
+
+		Assert.assertTrue(
+			containsWithQuantifierQuery.toString(),
+			containsWithQuantifierQuery instanceof MatchQuery);
+
+		Query notContainsQuery = _assertNestedRowAndGetQuery(
+			BooleanClauseOccur.MUST_NOT,
+			_buildFilterJSONObject(
+				"not-contains", textFieldName, textFieldValue),
+			textFieldName);
+
+		Assert.assertTrue(
+			notContainsQuery.toString(),
+			notContainsQuery instanceof MatchQuery);
+	}
+
 	private Query _assertNestedRowAndGetQuery(
 		BooleanClauseOccur expectedBooleanClauseOccur,
 		JSONObject filterJSONObject, String propertyName) {
@@ -312,6 +386,19 @@ public class AssetListFiltersUtilTest {
 		TermQuery termQuery = (TermQuery)query;
 
 		QueryTerm queryTerm = termQuery.getQueryTerm();
+
+		Assert.assertEquals(expectedField, queryTerm.getField());
+		Assert.assertEquals(expectedValue, queryTerm.getValue());
+	}
+
+	private void _assertWildcardQuery(
+		String expectedField, String expectedValue, Query query) {
+
+		Assert.assertTrue(query.toString(), query instanceof WildcardQuery);
+
+		WildcardQuery wildcardQuery = (WildcardQuery)query;
+
+		QueryTerm queryTerm = wildcardQuery.getQueryTerm();
 
 		Assert.assertEquals(expectedField, queryTerm.getField());
 		Assert.assertEquals(expectedValue, queryTerm.getValue());

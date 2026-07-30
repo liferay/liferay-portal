@@ -11,6 +11,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -18,9 +19,11 @@ import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.MatchQuery;
 import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.TermQuery;
+import com.liferay.portal.kernel.search.WildcardQuery;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -162,9 +165,11 @@ public class AssetListFiltersUtil {
 			return null;
 		}
 
+		String operatorName = jsonObject.getString("operatorName", "contains");
+
 		String subfield = _getSubfield(locale, objectField);
 
-		Query query = _toValueQuery(subfield, value);
+		Query query = _toValueQuery(operatorName, subfield, value);
 
 		if (query == null) {
 			return null;
@@ -180,9 +185,6 @@ public class AssetListFiltersUtil {
 				"nestedFieldArray.valueFieldName",
 				subfield.substring(subfield.indexOf(CharPool.PERIOD) + 1)),
 			BooleanClauseOccur.MUST);
-
-		String operatorName = jsonObject.getString("operatorName", "contains");
-
 		booleanQuery.add(
 			query,
 			_isNegatedOperator(operatorName) ? BooleanClauseOccur.MUST_NOT :
@@ -191,12 +193,33 @@ public class AssetListFiltersUtil {
 		return new NestedQuery("nestedFieldArray", booleanQuery);
 	}
 
-	private static Query _toValueQuery(String subfield, String value) {
+	private static Query _toValueQuery(
+		String operatorName, String subfield, String value) {
+
+		if ((operatorName.equals("contains") ||
+			 operatorName.equals("not-contains")) &&
+			subfield.endsWith(".value_keyword")) {
+
+			return new WildcardQuery(
+				subfield,
+				StringPool.STAR + StringUtil.toLowerCase(value) +
+					StringPool.STAR);
+		}
+
 		if (subfield.endsWith(".value_keyword")) {
 			return new TermQuery(subfield, StringUtil.toLowerCase(value));
 		}
 
-		return new TermQuery(subfield, value);
+		if (operatorName.equals("eq") || operatorName.equals("not-eq") ||
+			subfield.endsWith(".value_boolean") ||
+			subfield.endsWith(".value_double") ||
+			subfield.endsWith(".value_integer") ||
+			subfield.endsWith(".value_long")) {
+
+			return new TermQuery(subfield, value);
+		}
+
+		return new MatchQuery(subfield, value);
 	}
 
 }
