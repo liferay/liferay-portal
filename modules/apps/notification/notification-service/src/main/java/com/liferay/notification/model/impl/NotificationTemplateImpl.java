@@ -7,6 +7,7 @@ package com.liferay.notification.model.impl;
 
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.service.NotificationRecipientLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Gabriel Albuquerque
@@ -14,9 +15,17 @@ import com.liferay.notification.service.NotificationRecipientLocalServiceUtil;
 public class NotificationTemplateImpl extends NotificationTemplateBaseImpl {
 
 	@Override
-	public NotificationRecipient getNotificationRecipient() {
+	public NotificationRecipient fetchNotificationRecipient() {
 		return NotificationRecipientLocalServiceUtil.
 			fetchNotificationRecipientByClassPK(getNotificationTemplateId());
+	}
+
+	@Override
+	public NotificationRecipient getNotificationRecipient()
+		throws PortalException {
+
+		return NotificationRecipientLocalServiceUtil.
+			getNotificationRecipientByClassPK(getNotificationTemplateId());
 	}
 
 }
