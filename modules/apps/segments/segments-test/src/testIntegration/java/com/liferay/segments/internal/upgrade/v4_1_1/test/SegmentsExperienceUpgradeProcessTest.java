@@ -55,7 +55,6 @@ public class SegmentsExperienceUpgradeProcessTest {
 	@Before
 	public void setUp() throws Exception {
 		_connection = DataAccess.getConnection();
-
 		_group = GroupTestUtil.addGroup();
 	}
 
