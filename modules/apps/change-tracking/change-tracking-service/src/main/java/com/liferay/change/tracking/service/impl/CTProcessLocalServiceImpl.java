@@ -11,6 +11,7 @@ import com.liferay.change.tracking.model.CTProcess;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.service.base.CTProcessLocalServiceBaseImpl;
+import com.liferay.change.tracking.service.persistence.CTCollectionPersistence;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.background.task.model.BackgroundTask;
@@ -54,7 +55,7 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 	public CTProcess addCTProcess(long userId, long ctCollectionId)
 		throws PortalException {
 
-		CTCollection ctCollection = _ctCollectionLocalService.getCTCollection(
+		CTCollection ctCollection = _ctCollectionPersistence.findByPrimaryKey(
 			ctCollectionId);
 
 		if (ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {
@@ -143,7 +144,7 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 					BackgroundTaskConstants.STATUS_SUCCESSFUL) {
 
 				CTCollection ctCollection =
-					_ctCollectionLocalService.fetchCTCollection(
+					_ctCollectionPersistence.fetchByPrimaryKey(
 						ctProcess.getCtCollectionId());
 
 				if (ctCollection != null) {
@@ -184,6 +185,9 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 
 	@Reference
 	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Reference
+	private CTCollectionPersistence _ctCollectionPersistence;
 
 	@Reference
 	private CTPreferencesLocalService _ctPreferencesLocalService;

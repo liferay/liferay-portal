@@ -45,6 +45,7 @@ import com.liferay.change.tracking.service.persistence.CTCommentPersistence;
 import com.liferay.change.tracking.service.persistence.CTEntryPersistence;
 import com.liferay.change.tracking.service.persistence.CTMessagePersistence;
 import com.liferay.change.tracking.service.persistence.CTPreferencesPersistence;
+import com.liferay.change.tracking.service.persistence.CTSchemaVersionPersistence;
 import com.liferay.change.tracking.service.persistence.CTScorePersistence;
 import com.liferay.change.tracking.spi.display.CTDisplayRenderer;
 import com.liferay.change.tracking.spi.resolver.ConstraintResolver;
@@ -594,7 +595,7 @@ public class CTCollectionLocalServiceImpl
 
 		if (count == 1) {
 			CTSchemaVersion ctSchemaVersion =
-				_ctSchemaVersionLocalService.fetchCTSchemaVersion(
+				_ctSchemaVersionPersistence.fetchByPrimaryKey(
 					ctCollection.getSchemaVersionId());
 
 			if ((ctSchemaVersion != null) &&
@@ -1092,7 +1093,7 @@ public class CTCollectionLocalServiceImpl
 		moveCTEntries(
 			fromCTCollectionId, toCTCollectionId,
 			Collections.singletonList(
-				_ctEntryLocalService.fetchCTEntry(
+				_ctEntryPersistence.fetchByC_MCNI_MCPK(
 					fromCTCollectionId, modelClassNameId, modelClassPK)));
 	}
 
@@ -1871,6 +1872,9 @@ public class CTCollectionLocalServiceImpl
 
 	@Reference
 	private CTSchemaVersionLocalService _ctSchemaVersionLocalService;
+
+	@Reference
+	private CTSchemaVersionPersistence _ctSchemaVersionPersistence;
 
 	@Reference
 	private CTScorePersistence _ctScorePersistence;
