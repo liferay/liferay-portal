@@ -45,49 +45,47 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 
 	return (
 		<Card className="mb-3">
-				<Card.Body className="align-items-center d-flex flex-row flex-wrap justify-content-between p-3">
-					<Text size={5} weight="semi-bold">
-						{accountName}
-					</Text>
+			<Card.Body className="align-items-center d-flex flex-row flex-wrap justify-content-between p-3">
+				<Text size={5} weight="semi-bold">
+					{accountName}
+				</Text>
 
-					<div className="align-items-center d-flex flex-wrap">
-						{country && infoItem('globe', country)}
+				<div className="align-items-center d-flex flex-wrap">
+					{country && infoItem('globe', country)}
 
-						{revenue &&
-							infoItem(
-								'dollar-symbol',
-								sub(Liferay.Language.get('x-revenue'), [
-									revenue,
-								]) as string
-							)}
-
-						{industry && infoItem('briefcase', industry)}
-
-						{(lifecycleStageValue || accountType) && (
-							<span className="align-self-stretch border-left mr-4" />
+					{revenue &&
+						infoItem(
+							'dollar-symbol',
+							sub(Liferay.Language.get('x-revenue'), [
+								revenue,
+							]) as string
 						)}
 
-						{lifecycleStageValue && (
-							<Label
-								className="mr-2"
-								displayType={lifecycleStageValue.displayType}
-								inverse
-							>
-								{sub(Liferay.Language.get('lifecycle-x'), [
-									lifecycleStageValue.label,
-								])}
-							</Label>
-						)}
+					{industry && infoItem('briefcase', industry)}
 
-						{accountType && (
-							<Label displayType="info" inverse>
-								{sub(Liferay.Language.get('type-x'), [
-									accountType,
-								])}
-							</Label>
-						)}
-					</div>
-				</Card.Body>
+					{(lifecycleStageValue || accountType) && (
+						<span className="align-self-stretch border-left mr-4" />
+					)}
+
+					{lifecycleStageValue && (
+						<Label
+							className="mr-2"
+							displayType={lifecycleStageValue.displayType}
+							inverse
+						>
+							{sub(Liferay.Language.get('lifecycle-x'), [
+								lifecycleStageValue.label,
+							])}
+						</Label>
+					)}
+
+					{accountType && (
+						<Label displayType="info" inverse>
+							{sub(Liferay.Language.get('type-x'), [accountType])}
+						</Label>
+					)}
+				</div>
+			</Card.Body>
 		</Card>
 	);
 };
