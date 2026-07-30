@@ -198,7 +198,7 @@ public class DLFileShortcutLocalServiceImpl
 	@Override
 	public void deleteFileShortcut(long fileShortcutId) throws PortalException {
 		DLFileShortcut fileShortcut =
-			dlFileShortcutLocalService.getDLFileShortcut(fileShortcutId);
+			dlFileShortcutPersistence.findByPrimaryKey(fileShortcutId);
 
 		dlFileShortcutLocalService.deleteFileShortcut(fileShortcut);
 	}

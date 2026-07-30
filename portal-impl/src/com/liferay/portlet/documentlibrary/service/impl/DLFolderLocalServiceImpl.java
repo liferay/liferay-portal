@@ -645,7 +645,7 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 		String uuid, long groupId, long parentFolderId, String name,
 		int count) {
 
-		DLFolder dlFolder = dlFolderLocalService.fetchFolder(
+		DLFolder dlFolder = dlFolderPersistence.fetchByG_P_N(
 			groupId, parentFolderId, name);
 
 		if (dlFolder == null) {

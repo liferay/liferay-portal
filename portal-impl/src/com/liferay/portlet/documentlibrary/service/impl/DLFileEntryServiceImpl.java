@@ -246,7 +246,7 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 
 	@Override
 	public DLFileEntry fetchFileEntry(long fileEntryId) throws PortalException {
-		DLFileEntry dlFileEntry = dlFileEntryLocalService.fetchDLFileEntry(
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.fetchByPrimaryKey(
 			fileEntryId);
 
 		if (dlFileEntry != null) {
@@ -266,7 +266,7 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 	public DLFileEntry fetchFileEntry(long groupId, long folderId, String title)
 		throws PortalException {
 
-		DLFileEntry dlFileEntry = dlFileEntryLocalService.fetchFileEntry(
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.fetchByG_F_T(
 			groupId, folderId, title);
 
 		if (dlFileEntry != null) {
@@ -287,9 +287,8 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		DLFileEntry dlFileEntry =
-			dlFileEntryLocalService.fetchFileEntryByExternalReferenceCode(
-				groupId, externalReferenceCode);
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.fetchByERC_G(
+			externalReferenceCode, groupId);
 
 		if (dlFileEntry != null) {
 			ModelResourcePermission<DLFileEntry>
@@ -566,7 +565,7 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 		fileEntryModelResourcePermission.check(
 			getPermissionChecker(), fileEntryId, ActionKeys.VIEW);
 
-		return dlFileEntryLocalService.getFileEntry(fileEntryId);
+		return dlFileEntryPersistence.findByPrimaryKey(fileEntryId);
 	}
 
 	@Override
@@ -616,9 +615,8 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 				ModelResourcePermissionRegistryUtil.getModelResourcePermission(
 					DLFileEntry.class.getName());
 
-		DLFileEntry dlFileEntry =
-			dlFileEntryLocalService.getFileEntryByFileName(
-				groupId, folderId, fileName);
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByG_F_FN(
+			groupId, folderId, fileName);
 
 		dlFileEntryModelResourcePermission.check(
 			getPermissionChecker(), dlFileEntry, ActionKeys.VIEW);

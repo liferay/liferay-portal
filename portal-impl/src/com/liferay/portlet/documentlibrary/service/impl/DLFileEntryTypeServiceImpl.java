@@ -140,7 +140,7 @@ public class DLFileEntryTypeServiceImpl extends DLFileEntryTypeServiceBaseImpl {
 				getPermissionChecker(), fileEntryTypeId, ActionKeys.VIEW);
 		}
 
-		return dlFileEntryTypeLocalService.getFileEntryType(fileEntryTypeId);
+		return dlFileEntryTypePersistence.findByPrimaryKey(fileEntryTypeId);
 	}
 
 	@Override
@@ -175,7 +175,7 @@ public class DLFileEntryTypeServiceImpl extends DLFileEntryTypeServiceBaseImpl {
 			dlFileEntryTypePersistence.filterFindByGroupId(groupIds));
 
 		DLFileEntryType basicDocumentDLFileEntryType =
-			dlFileEntryTypeLocalService.fetchDLFileEntryType(
+			dlFileEntryTypePersistence.fetchByPrimaryKey(
 				DLFileEntryTypeConstants.FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT);
 
 		if (basicDocumentDLFileEntryType != null) {

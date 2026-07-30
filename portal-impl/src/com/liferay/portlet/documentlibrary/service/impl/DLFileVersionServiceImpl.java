@@ -28,7 +28,7 @@ public class DLFileVersionServiceImpl extends DLFileVersionServiceBaseImpl {
 			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
 				FileEntry.class.getName());
 
-		DLFileVersion fileVersion = dlFileVersionLocalService.getFileVersion(
+		DLFileVersion fileVersion = dlFileVersionPersistence.findByPrimaryKey(
 			fileVersionId);
 
 		fileEntryModelResourcePermission.check(

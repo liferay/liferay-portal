@@ -1874,7 +1874,7 @@ public class DLFileEntryLocalServiceImpl
 
 		serviceContext.setCommand(Constants.REVERT);
 
-		DLFileEntry dlFileEntry = dlFileEntryLocalService.getFileEntry(
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(
 			fileEntryId);
 
 		long fileEntryTypeId = _getValidFileEntryTypeId(
@@ -2082,7 +2082,7 @@ public class DLFileEntryLocalServiceImpl
 
 		User user = _userPersistence.findByPrimaryKey(userId);
 
-		DLFileEntry dlFileEntry = dlFileEntryLocalService.getFileEntry(
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(
 			fileEntryId);
 
 		dlFileEntry.setFileEntryTypeId(fileEntryTypeId);
@@ -2311,7 +2311,7 @@ public class DLFileEntryLocalServiceImpl
 			return Objects.equals(lock.getUuid(), lockUuid);
 		}
 
-		DLFileEntry dlFileEntry = dlFileEntryLocalService.getFileEntry(
+		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(
 			fileEntryId);
 
 		return _dlFolderLocalService.verifyInheritableLock(
