@@ -19,7 +19,6 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 
 import java.time.LocalDate;
 
@@ -43,12 +42,6 @@ public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 	public TaskStatistics getProjectTaskStatistics(Long projectId)
 		throws Exception {
 
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-58677")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return _toTaskStatistics(
 			_objectEntryService.getObjectEntry(projectId),
 			_objectDefinitionLocalService.
@@ -58,12 +51,6 @@ public class TaskStatisticsResourceImpl extends BaseTaskStatisticsResourceImpl {
 
 	@Override
 	public TaskStatistics getTaskStatistics() throws Exception {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-58677")) {
-
-			throw new UnsupportedOperationException();
-		}
-
 		return _toTaskStatistics(
 			null,
 			_objectDefinitionLocalService.
