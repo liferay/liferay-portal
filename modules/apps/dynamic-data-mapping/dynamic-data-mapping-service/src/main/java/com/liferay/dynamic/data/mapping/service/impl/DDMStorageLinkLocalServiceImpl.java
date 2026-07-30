@@ -7,8 +7,8 @@ package com.liferay.dynamic.data.mapping.service.impl;
 
 import com.liferay.dynamic.data.mapping.model.DDMStorageLink;
 import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
-import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.base.DDMStorageLinkLocalServiceBaseImpl;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMStructureVersionPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -37,7 +37,7 @@ public class DDMStorageLinkLocalServiceImpl
 		throws PortalException {
 
 		DDMStructureVersion ddmStructureVersion =
-			_ddmStructureVersionLocalService.getDDMStructureVersion(
+			_ddmStructureVersionPersistence.findByPrimaryKey(
 				structureVersionId);
 
 		long storageLinkId = counterLocalService.increment();
@@ -111,8 +111,7 @@ public class DDMStorageLinkLocalServiceImpl
 	public List<DDMStorageLink> getStructureStorageLinks(long structureId) {
 		return ddmStorageLinkPersistence.findByStructureVersionId(
 			ListUtil.toLongArray(
-				_ddmStructureVersionLocalService.getStructureVersions(
-					structureId),
+				_ddmStructureVersionPersistence.findByStructureId(structureId),
 				DDMStructureVersion::getStructureVersionId));
 	}
 
@@ -120,8 +119,7 @@ public class DDMStorageLinkLocalServiceImpl
 	public int getStructureStorageLinksCount(long structureId) {
 		return ddmStorageLinkPersistence.countByStructureVersionId(
 			ListUtil.toLongArray(
-				_ddmStructureVersionLocalService.getStructureVersions(
-					structureId),
+				_ddmStructureVersionPersistence.findByStructureId(structureId),
 				DDMStructureVersion::getStructureVersionId));
 	}
 
@@ -154,6 +152,6 @@ public class DDMStorageLinkLocalServiceImpl
 	}
 
 	@Reference
-	private DDMStructureVersionLocalService _ddmStructureVersionLocalService;
+	private DDMStructureVersionPersistence _ddmStructureVersionPersistence;
 
 }

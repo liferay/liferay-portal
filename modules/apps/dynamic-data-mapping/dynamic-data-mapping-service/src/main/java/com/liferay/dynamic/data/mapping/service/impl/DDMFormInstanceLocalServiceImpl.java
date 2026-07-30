@@ -26,6 +26,7 @@ import com.liferay.dynamic.data.mapping.service.DDMFormInstanceVersionLocalServi
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.base.DDMFormInstanceLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstanceVersionPersistence;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMStructurePersistence;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.StorageType;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
@@ -244,7 +245,7 @@ public class DDMFormInstanceLocalServiceImpl
 
 		long structureId = ddmFormInstance.getStructureId();
 
-		if (_ddmStructureLocalService.fetchDDMStructure(structureId) != null) {
+		if (_ddmStructurePersistence.fetchByPrimaryKey(structureId) != null) {
 			_ddmStructureLocalService.deleteStructure(structureId);
 		}
 
@@ -497,7 +498,7 @@ public class DDMFormInstanceLocalServiceImpl
 	private Locale _getDDMFormDefaultLocale(long ddmStructureId)
 		throws PortalException {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getDDMStructure(
+		DDMStructure ddmStructure = _ddmStructurePersistence.findByPrimaryKey(
 			ddmStructureId);
 
 		DDMForm ddmForm = ddmStructure.getDDMForm();
@@ -552,7 +553,7 @@ public class DDMFormInstanceLocalServiceImpl
 	private long _getStructureVersionId(long ddmStructureId)
 		throws PortalException {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+		DDMStructure ddmStructure = _ddmStructurePersistence.findByPrimaryKey(
 			ddmStructureId);
 
 		DDMStructureVersion ddmStructureVersion =
@@ -741,7 +742,7 @@ public class DDMFormInstanceLocalServiceImpl
 	private void _validateStructureId(long ddmStructureId)
 		throws PortalException {
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.fetchStructure(
+		DDMStructure ddmStructure = _ddmStructurePersistence.fetchByPrimaryKey(
 			ddmStructureId);
 
 		if (ddmStructure == null) {
@@ -773,6 +774,9 @@ public class DDMFormInstanceLocalServiceImpl
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Reference
+	private DDMStructurePersistence _ddmStructurePersistence;
 
 	@Reference(target = "(ddm.form.values.deserializer.type=json)")
 	private DDMFormValuesDeserializer _jsonDDMFormValuesDeserializer;
