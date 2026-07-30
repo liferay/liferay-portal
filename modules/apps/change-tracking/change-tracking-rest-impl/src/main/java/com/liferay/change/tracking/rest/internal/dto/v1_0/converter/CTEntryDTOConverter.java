@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
@@ -63,6 +64,25 @@ public class CTEntryDTOConverter
 		return _toCTEntry(dtoConverterContext, ctEntry);
 	}
 
+	private Document _getDocument(
+			DTOConverterContext dtoConverterContext,
+			com.liferay.change.tracking.model.CTEntry ctEntry)
+		throws SearchException {
+
+		Document document = (Document)dtoConverterContext.getAttribute(
+			"document");
+
+		if (document != null) {
+			return document;
+		}
+
+		Indexer<com.liferay.change.tracking.model.CTEntry> indexer =
+			_indexerRegistry.getIndexer(
+				com.liferay.change.tracking.model.CTEntry.class);
+
+		return indexer.getDocument(ctEntry);
+	}
+
 	private String _getLocalizedValue(Field field, Locale locale) {
 		if (field == null) {
 			return StringPool.BLANK;
@@ -76,6 +96,10 @@ public class CTEntryDTOConverter
 		int ctCollectionStatus, Date ctCollectionStatusDate,
 		String ctCollectionStatusUserName,
 		HttpServletRequest httpServletRequest) {
+
+		if (ctCollectionStatusDate == null) {
+			return StringPool.BLANK;
+		}
 
 		if (ctCollectionStatus == WorkflowConstants.STATUS_APPROVED) {
 			return _language.format(
@@ -110,11 +134,7 @@ public class CTEntryDTOConverter
 			com.liferay.change.tracking.model.CTEntry ctEntry)
 		throws Exception {
 
-		Indexer<com.liferay.change.tracking.model.CTEntry> indexer =
-			_indexerRegistry.getIndexer(
-				com.liferay.change.tracking.model.CTEntry.class);
-
-		Document document = indexer.getDocument(ctEntry);
+		Document document = _getDocument(dtoConverterContext, ctEntry);
 
 		return new CTEntry() {
 			{
