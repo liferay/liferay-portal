@@ -29,7 +29,7 @@ public class RedactionResourceImpl extends BaseRedactionResourceImpl {
 		Redaction redaction = new Redaction();
 
 		try {
-			String output = RedactUtil.redact(
+			String output = RedactUtil.redactWithoutCaching(
 				detectionRegex, replacementRegex, replacementValue, text);
 
 			redaction.setOutput(() -> output);
