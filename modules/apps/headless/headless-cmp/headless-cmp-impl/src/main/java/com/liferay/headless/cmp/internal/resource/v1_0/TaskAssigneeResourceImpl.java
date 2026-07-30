@@ -15,7 +15,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.pagination.Page;
-import com.liferay.site.cms.site.initializer.util.CMSUserUtil;
+import com.liferay.site.cms.site.initializer.users.provider.CMSUsersProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +71,7 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 
 			taskAssignees.addAll(
 				transform(
-					CMSUserUtil.getUsers(search, 0, 20),
+					_cmsUsersProvider.getUsers(search, 0, 20),
 					user -> new TaskAssignee() {
 						{
 							setExternalReferenceCode(
@@ -99,6 +99,9 @@ public class TaskAssigneeResourceImpl extends BaseTaskAssigneeResourceImpl {
 
 		return Page.of(taskAssignees);
 	}
+
+	@Reference
+	private CMSUsersProvider _cmsUsersProvider;
 
 	@Reference
 	private Portal _portal;
