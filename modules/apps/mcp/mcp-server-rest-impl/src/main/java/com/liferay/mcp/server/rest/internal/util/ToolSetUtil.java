@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -61,8 +63,10 @@ import org.osgi.service.jaxrs.runtime.dto.RuntimeDTO;
  */
 public class ToolSetUtil {
 
-	public static void clearOpenAPIJSONObjectCache() {
-		_openAPIJSONObjectCache.clear();
+	public static void clearOpenAPIJSONObjectCache(long companyId) {
+		Set<String> keys = _openAPIJSONObjectCache.keySet();
+
+		keys.removeIf(key -> key.startsWith(companyId + StringPool.POUND));
 	}
 
 	public static Tool getTool(
@@ -293,8 +297,13 @@ public class ToolSetUtil {
 		OpenAPIBrief openAPIBrief, HttpServletRequest httpServletRequest) {
 
 		return _openAPIJSONObjectCache.computeIfAbsent(
-			openAPIBrief._basePath + openAPIBrief._openAPIPath,
-			path -> {
+			StringBundler.concat(
+				PortalUtil.getCompanyId(httpServletRequest), StringPool.POUND,
+				openAPIBrief._basePath, openAPIBrief._openAPIPath),
+			key -> {
+				String path =
+					openAPIBrief._basePath + openAPIBrief._openAPIPath;
+
 				try {
 					VulcanRequestForwarder vulcanRequestForwarder =
 						_vulcanRequestForwarderSnapshot.get();

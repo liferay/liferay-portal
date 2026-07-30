@@ -21,12 +21,14 @@ public class ObjectDefinitionModelListener
 
 	@Override
 	public void onAfterCreate(ObjectDefinition objectDefinition) {
-		ToolSetUtil.clearOpenAPIJSONObjectCache();
+		ToolSetUtil.clearOpenAPIJSONObjectCache(
+			objectDefinition.getCompanyId());
 	}
 
 	@Override
 	public void onAfterRemove(ObjectDefinition objectDefinition) {
-		ToolSetUtil.clearOpenAPIJSONObjectCache();
+		ToolSetUtil.clearOpenAPIJSONObjectCache(
+			objectDefinition.getCompanyId());
 	}
 
 	@Override
@@ -34,7 +36,8 @@ public class ObjectDefinitionModelListener
 		ObjectDefinition originalObjectDefinition,
 		ObjectDefinition objectDefinition) {
 
-		ToolSetUtil.clearOpenAPIJSONObjectCache();
+		ToolSetUtil.clearOpenAPIJSONObjectCache(
+			objectDefinition.getCompanyId());
 	}
 
 }

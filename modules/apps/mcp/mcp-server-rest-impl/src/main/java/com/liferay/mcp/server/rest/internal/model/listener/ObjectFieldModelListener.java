@@ -20,19 +20,19 @@ public class ObjectFieldModelListener extends BaseModelListener<ObjectField> {
 
 	@Override
 	public void onAfterCreate(ObjectField objectField) {
-		ToolSetUtil.clearOpenAPIJSONObjectCache();
+		ToolSetUtil.clearOpenAPIJSONObjectCache(objectField.getCompanyId());
 	}
 
 	@Override
 	public void onAfterRemove(ObjectField objectField) {
-		ToolSetUtil.clearOpenAPIJSONObjectCache();
+		ToolSetUtil.clearOpenAPIJSONObjectCache(objectField.getCompanyId());
 	}
 
 	@Override
 	public void onAfterUpdate(
 		ObjectField originalObjectField, ObjectField objectField) {
 
-		ToolSetUtil.clearOpenAPIJSONObjectCache();
+		ToolSetUtil.clearOpenAPIJSONObjectCache(objectField.getCompanyId());
 	}
 
 }
