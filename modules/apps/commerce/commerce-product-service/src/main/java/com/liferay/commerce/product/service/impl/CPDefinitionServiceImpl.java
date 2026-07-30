@@ -197,7 +197,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 	public CPDefinition fetchCPDefinition(long cpDefinitionId)
 		throws PortalException {
 
-		CPDefinition cpDefinition = cpDefinitionLocalService.fetchCPDefinition(
+		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
 			cpDefinitionId);
 
 		if (cpDefinition != null) {
@@ -284,7 +284,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 
 		_checkCommerceCatalogByCPDefinitionId(cpDefinitionId, ActionKeys.VIEW);
 
-		return cpDefinitionLocalService.getCPDefinition(cpDefinitionId);
+		return cpDefinitionPersistence.findByPrimaryKey(cpDefinitionId);
 	}
 
 	@Override
@@ -316,8 +316,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 
 		_checkCommerceCatalog(cProduct.getGroupId(), ActionKeys.VIEW);
 
-		return cpDefinitionLocalService.getCProductCPDefinition(
-			cProductId, version);
+		return cpDefinitionPersistence.findByC_V(cProductId, version);
 	}
 
 	@Override
@@ -329,7 +328,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 
 		_checkCommerceCatalog(cProduct.getGroupId(), ActionKeys.VIEW);
 
-		return cpDefinitionLocalService.getCProductCPDefinitions(
+		return cpDefinitionPersistence.findByC_S(
 			cProduct.getCProductId(), status, start, end);
 	}
 
@@ -595,7 +594,7 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 			long cpDefinitionId, String actionId)
 		throws PortalException {
 
-		CPDefinition cpDefinition = cpDefinitionLocalService.fetchCPDefinition(
+		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
 			cpDefinitionId);
 
 		if (cpDefinition == null) {

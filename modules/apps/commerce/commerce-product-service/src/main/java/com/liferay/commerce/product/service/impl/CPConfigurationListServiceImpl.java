@@ -105,7 +105,7 @@ public class CPConfigurationListServiceImpl
 		throws PortalException {
 
 		CPConfigurationList cpConfigurationList =
-			cpConfigurationListLocalService.getCPConfigurationList(
+			cpConfigurationListPersistence.findByPrimaryKey(
 				cpConfigurationListId);
 
 		_checkCommerceCatalog(
@@ -138,7 +138,7 @@ public class CPConfigurationListServiceImpl
 		throws PortalException {
 
 		CPConfigurationList cpConfigurationList =
-			cpConfigurationListLocalService.getCPConfigurationList(
+			cpConfigurationListPersistence.findByPrimaryKey(
 				cpConfigurationLisId);
 
 		_checkCommerceCatalog(
@@ -194,8 +194,8 @@ public class CPConfigurationListServiceImpl
 
 		_checkCommerceCatalog(groupId, ActionKeys.VIEW);
 
-		return cpConfigurationListLocalService.getMasterCPConfigurationList(
-			groupId);
+		return cpConfigurationListPersistence.findByG_M_First(
+			groupId, true, null);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

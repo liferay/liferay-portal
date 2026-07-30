@@ -203,7 +203,7 @@ public class CPConfigurationListLocalServiceImpl
 				}
 
 				CPConfigurationList parentCPConfigurationList =
-					cpConfigurationListLocalService.getCPConfigurationList(
+					cpConfigurationListPersistence.findByPrimaryKey(
 						parentCPConfigurationListId);
 
 				parentCPConfigurationListId =
@@ -681,7 +681,7 @@ public class CPConfigurationListLocalServiceImpl
 			}
 
 			CPConfigurationList cpConfigurationList =
-				cpConfigurationListLocalService.fetchCPConfigurationList(
+				cpConfigurationListPersistence.fetchByPrimaryKey(
 					parentCPConfigurationListId);
 
 			if ((cpConfigurationList != null) &&

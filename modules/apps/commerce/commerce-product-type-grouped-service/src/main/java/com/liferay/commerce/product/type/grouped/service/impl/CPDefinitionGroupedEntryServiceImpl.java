@@ -151,7 +151,7 @@ public class CPDefinitionGroupedEntryServiceImpl
 		throws PortalException {
 
 		CPDefinitionGroupedEntry cpDefinitionGroupedEntry =
-			cpDefinitionGroupedEntryLocalService.getCPDefinitionGroupedEntry(
+			cpDefinitionGroupedEntryPersistence.findByPrimaryKey(
 				cpDefinitionGroupedEntryId);
 
 		if (cpDefinitionGroupedEntry != null) {

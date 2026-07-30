@@ -97,7 +97,7 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 			getPermissionChecker(), null,
 			CPActionKeys.VIEW_COMMERCE_PRODUCT_TAX_CATEGORIES);
 
-		return cpTaxCategoryLocalService.getCPTaxCategories(companyId);
+		return cpTaxCategoryPersistence.findByCompanyId(companyId);
 	}
 
 	@Override
@@ -110,7 +110,7 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 			getPermissionChecker(), null,
 			CPActionKeys.VIEW_COMMERCE_PRODUCT_TAX_CATEGORIES);
 
-		return cpTaxCategoryLocalService.getCPTaxCategories(
+		return cpTaxCategoryPersistence.findByCompanyId(
 			companyId, start, end, orderByComparator);
 	}
 
@@ -120,7 +120,7 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 			getPermissionChecker(), null,
 			CPActionKeys.VIEW_COMMERCE_PRODUCT_TAX_CATEGORIES);
 
-		return cpTaxCategoryLocalService.getCPTaxCategoriesCount(companyId);
+		return cpTaxCategoryPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 		_modelResourcePermission.check(
 			getPermissionChecker(), cpTaxCategoryId, ActionKeys.VIEW);
 
-		return cpTaxCategoryLocalService.getCPTaxCategory(cpTaxCategoryId);
+		return cpTaxCategoryPersistence.findByPrimaryKey(cpTaxCategoryId);
 	}
 
 	@Override

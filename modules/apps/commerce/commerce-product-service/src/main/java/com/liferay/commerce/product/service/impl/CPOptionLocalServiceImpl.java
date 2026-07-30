@@ -270,7 +270,7 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 			String externalReferenceCode, long cpOptionId)
 		throws PortalException {
 
-		CPOption cpOption = cpOptionLocalService.getCPOption(cpOptionId);
+		CPOption cpOption = cpOptionPersistence.findByPrimaryKey(cpOptionId);
 
 		cpOption.setExternalReferenceCode(externalReferenceCode);
 

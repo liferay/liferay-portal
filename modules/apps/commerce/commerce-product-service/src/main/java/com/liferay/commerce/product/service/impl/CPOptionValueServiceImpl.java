@@ -55,9 +55,8 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		CPOptionValue cpOptionValue =
-			cpOptionValueLocalService.fetchCPOptionValueByExternalReferenceCode(
-				externalReferenceCode, serviceContext.getCompanyId());
+		CPOptionValue cpOptionValue = cpOptionValuePersistence.fetchByERC_C(
+			externalReferenceCode, serviceContext.getCompanyId());
 
 		if (cpOptionValue == null) {
 			_cpOptionModelResourcePermission.check(
@@ -74,7 +73,7 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 		throws PortalException {
 
 		CPOptionValue cpOptionValue =
-			cpOptionValueLocalService.fetchCPOptionValue(cpOptionValueId);
+			cpOptionValuePersistence.fetchByPrimaryKey(cpOptionValueId);
 
 		_cpOptionModelResourcePermission.check(
 			getPermissionChecker(), cpOptionValue.getCPOptionId(),
@@ -88,7 +87,7 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 		throws PortalException {
 
 		CPOptionValue cpOptionValue =
-			cpOptionValueLocalService.fetchCPOptionValue(cpOptionValueId);
+			cpOptionValuePersistence.fetchByPrimaryKey(cpOptionValueId);
 
 		if (cpOptionValue != null) {
 			_cpOptionModelResourcePermission.check(
@@ -104,9 +103,8 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		CPOptionValue cpOptionValue =
-			cpOptionValueLocalService.fetchCPOptionValueByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		CPOptionValue cpOptionValue = cpOptionValuePersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (cpOptionValue != null) {
 			_cpOptionModelResourcePermission.check(
@@ -121,8 +119,8 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 	public CPOptionValue getCPOptionValue(long cpOptionValueId)
 		throws PortalException {
 
-		CPOptionValue cpOptionValue =
-			cpOptionValueLocalService.getCPOptionValue(cpOptionValueId);
+		CPOptionValue cpOptionValue = cpOptionValuePersistence.findByPrimaryKey(
+			cpOptionValueId);
 
 		_cpOptionModelResourcePermission.check(
 			getPermissionChecker(), cpOptionValue.getCPOptionId(),
@@ -139,7 +137,7 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 		_cpOptionModelResourcePermission.check(
 			getPermissionChecker(), cpOptionId, ActionKeys.VIEW);
 
-		return cpOptionValueLocalService.getCPOptionValues(
+		return cpOptionValuePersistence.findByCPOptionId(
 			cpOptionId, start, end);
 	}
 
@@ -148,7 +146,7 @@ public class CPOptionValueServiceImpl extends CPOptionValueServiceBaseImpl {
 		_cpOptionModelResourcePermission.check(
 			getPermissionChecker(), cpOptionId, ActionKeys.VIEW);
 
-		return cpOptionValueLocalService.getCPOptionValuesCount(cpOptionId);
+		return cpOptionValuePersistence.countByCPOptionId(cpOptionId);
 	}
 
 	@Override

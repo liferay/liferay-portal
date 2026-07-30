@@ -67,7 +67,7 @@ public class CPConfigurationEntryServiceImpl
 		throws PortalException {
 
 		CPConfigurationEntry cpConfigurationEntry =
-			cpConfigurationEntryLocalService.getCPConfigurationEntry(
+			cpConfigurationEntryPersistence.findByPrimaryKey(
 				cpConfigurationEntryId);
 
 		_checkCommerceCatalog(
@@ -83,7 +83,7 @@ public class CPConfigurationEntryServiceImpl
 		throws PortalException {
 
 		CPConfigurationEntry cpConfigurationEntry =
-			cpConfigurationEntryLocalService.getCPConfigurationEntry(
+			cpConfigurationEntryPersistence.findByPrimaryKey(
 				cpConfigurationEntryId);
 
 		_checkCommerceCatalog(
@@ -98,7 +98,7 @@ public class CPConfigurationEntryServiceImpl
 		throws PortalException {
 
 		CPConfigurationEntry cpConfigurationEntry =
-			cpConfigurationEntryLocalService.getCPConfigurationEntry(
+			cpConfigurationEntryPersistence.findByC_C_C(
 				classNameId, classPK, cpConfigurationListId);
 
 		_checkCommerceCatalog(
@@ -139,7 +139,7 @@ public class CPConfigurationEntryServiceImpl
 		throws PortalException {
 
 		CPConfigurationEntry cpConfigurationEntry =
-			cpConfigurationEntryLocalService.getCPConfigurationEntry(
+			cpConfigurationEntryPersistence.findByPrimaryKey(
 				cpConfigurationEntryId);
 
 		_checkCommerceCatalog(

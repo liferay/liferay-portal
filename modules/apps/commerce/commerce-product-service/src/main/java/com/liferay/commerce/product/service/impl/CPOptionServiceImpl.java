@@ -64,9 +64,8 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 			String key, ServiceContext serviceContext)
 		throws PortalException {
 
-		CPOption cpOption =
-			cpOptionLocalService.fetchCPOptionByExternalReferenceCode(
-				externalReferenceCode, serviceContext.getCompanyId());
+		CPOption cpOption = cpOptionPersistence.fetchByERC_C(
+			externalReferenceCode, serviceContext.getCompanyId());
 
 		if (cpOption == null) {
 			PortletResourcePermission portletResourcePermission =
@@ -93,7 +92,7 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 
 	@Override
 	public CPOption fetchCPOption(long cpOptionId) throws PortalException {
-		CPOption cpOption = cpOptionLocalService.fetchCPOption(cpOptionId);
+		CPOption cpOption = cpOptionPersistence.fetchByPrimaryKey(cpOptionId);
 
 		if (cpOption != null) {
 			_cpOptionModelResourcePermission.check(
@@ -107,7 +106,7 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 	public CPOption fetchCPOption(long companyId, String key)
 		throws PortalException {
 
-		CPOption cpOption = cpOptionLocalService.fetchCPOption(companyId, key);
+		CPOption cpOption = cpOptionPersistence.fetchByC_K(companyId, key);
 
 		if (cpOption != null) {
 			_cpOptionModelResourcePermission.check(
@@ -122,9 +121,8 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		CPOption cpOption =
-			cpOptionLocalService.fetchCPOptionByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		CPOption cpOption = cpOptionPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (cpOption != null) {
 			_cpOptionModelResourcePermission.check(
@@ -140,7 +138,7 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 			OrderByComparator<CPOption> orderByComparator)
 		throws PortalException {
 
-		return cpOptionLocalService.findCPOptionByCompanyId(
+		return cpOptionPersistence.filterFindByCompanyId(
 			companyId, start, end, orderByComparator);
 	}
 
@@ -149,7 +147,7 @@ public class CPOptionServiceImpl extends CPOptionServiceBaseImpl {
 		_cpOptionModelResourcePermission.check(
 			getPermissionChecker(), cpOptionId, ActionKeys.VIEW);
 
-		return cpOptionLocalService.getCPOption(cpOptionId);
+		return cpOptionPersistence.findByPrimaryKey(cpOptionId);
 	}
 
 	@Override

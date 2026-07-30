@@ -645,7 +645,7 @@ public class CPAttachmentFileEntryLocalServiceImpl
 					start, end
 				)),
 			cpAttachmentFileEntryId ->
-				cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
+				cpAttachmentFileEntryPersistence.findByPrimaryKey(
 					(Long)cpAttachmentFileEntryId));
 	}
 

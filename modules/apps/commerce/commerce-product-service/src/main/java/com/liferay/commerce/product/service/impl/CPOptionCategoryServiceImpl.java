@@ -71,9 +71,8 @@ public class CPOptionCategoryServiceImpl
 					externalReferenceCode, serviceContext.getCompanyId());
 
 		if ((cpOptionCategory == null) && (cpOptionCategoryId > 0)) {
-			cpOptionCategory =
-				cpOptionCategoryLocalService.fetchCPOptionCategory(
-					cpOptionCategoryId);
+			cpOptionCategory = cpOptionCategoryPersistence.fetchByPrimaryKey(
+				cpOptionCategoryId);
 		}
 
 		if (cpOptionCategory == null) {
@@ -111,8 +110,7 @@ public class CPOptionCategoryServiceImpl
 		throws PortalException {
 
 		CPOptionCategory cpOptionCategory =
-			cpOptionCategoryLocalService.fetchCPOptionCategory(
-				cpOptionCategoryId);
+			cpOptionCategoryPersistence.fetchByPrimaryKey(cpOptionCategoryId);
 
 		if (cpOptionCategory != null) {
 			_cpOptionCategoryModelResourcePermission.check(
@@ -148,8 +146,7 @@ public class CPOptionCategoryServiceImpl
 		_cpOptionCategoryModelResourcePermission.check(
 			getPermissionChecker(), cpOptionCategoryId, ActionKeys.VIEW);
 
-		return cpOptionCategoryLocalService.getCPOptionCategory(
-			cpOptionCategoryId);
+		return cpOptionCategoryPersistence.findByPrimaryKey(cpOptionCategoryId);
 	}
 
 	@Override

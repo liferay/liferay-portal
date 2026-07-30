@@ -8,6 +8,7 @@ package com.liferay.commerce.product.service.impl;
 import com.liferay.commerce.product.constants.CPActionKeys;
 import com.liferay.commerce.product.model.CPMeasurementUnit;
 import com.liferay.commerce.product.service.base.CPMeasurementUnitServiceBaseImpl;
+import com.liferay.commerce.product.util.comparator.CPMeasurementUnitPriorityComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -68,8 +69,7 @@ public class CPMeasurementUnitServiceImpl
 		throws PortalException {
 
 		CPMeasurementUnit cpMeasurementUnit =
-			cpMeasurementUnitLocalService.fetchCPMeasurementUnit(
-				cpMeasurementUnitId);
+			cpMeasurementUnitPersistence.fetchByPrimaryKey(cpMeasurementUnitId);
 
 		if (cpMeasurementUnit != null) {
 			_cpMeasurementUnitModelResourcePermission.check(
@@ -84,8 +84,7 @@ public class CPMeasurementUnitServiceImpl
 		throws PortalException {
 
 		CPMeasurementUnit cpMeasurementUnit =
-			cpMeasurementUnitLocalService.fetchCPMeasurementUnit(
-				companyId, key);
+			cpMeasurementUnitPersistence.fetchByC_K(companyId, key);
 
 		if (cpMeasurementUnit != null) {
 			_cpMeasurementUnitModelResourcePermission.check(
@@ -121,8 +120,9 @@ public class CPMeasurementUnitServiceImpl
 		throws PortalException {
 
 		CPMeasurementUnit cpMeasurementUnit =
-			cpMeasurementUnitLocalService.fetchPrimaryCPMeasurementUnit(
-				companyId, type);
+			cpMeasurementUnitPersistence.fetchByC_P_T_First(
+				companyId, true, type,
+				CPMeasurementUnitPriorityComparator.getInstance(false));
 
 		if (cpMeasurementUnit != null) {
 			_cpMeasurementUnitModelResourcePermission.check(
@@ -140,7 +140,7 @@ public class CPMeasurementUnitServiceImpl
 		_cpMeasurementUnitModelResourcePermission.check(
 			getPermissionChecker(), cpMeasurementUnitId, ActionKeys.VIEW);
 
-		return cpMeasurementUnitLocalService.getCPMeasurementUnit(
+		return cpMeasurementUnitPersistence.findByPrimaryKey(
 			cpMeasurementUnitId);
 	}
 
@@ -153,7 +153,7 @@ public class CPMeasurementUnitServiceImpl
 		_checkPortletResourcePermission(
 			CPActionKeys.VIEW_COMMERCE_PRODUCT_MEASUREMENT_UNITS);
 
-		return cpMeasurementUnitLocalService.getCPMeasurementUnits(
+		return cpMeasurementUnitPersistence.findByC_T(
 			companyId, type, start, end, orderByComparator);
 	}
 
@@ -166,7 +166,7 @@ public class CPMeasurementUnitServiceImpl
 		_checkPortletResourcePermission(
 			CPActionKeys.VIEW_COMMERCE_PRODUCT_MEASUREMENT_UNITS);
 
-		return cpMeasurementUnitLocalService.getCPMeasurementUnits(
+		return cpMeasurementUnitPersistence.findByCompanyId(
 			companyId, start, end, orderByComparator);
 	}
 
@@ -177,8 +177,7 @@ public class CPMeasurementUnitServiceImpl
 		_checkPortletResourcePermission(
 			CPActionKeys.VIEW_COMMERCE_PRODUCT_MEASUREMENT_UNITS);
 
-		return cpMeasurementUnitLocalService.getCPMeasurementUnitsCount(
-			companyId);
+		return cpMeasurementUnitPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
@@ -188,8 +187,7 @@ public class CPMeasurementUnitServiceImpl
 		_checkPortletResourcePermission(
 			CPActionKeys.VIEW_COMMERCE_PRODUCT_MEASUREMENT_UNITS);
 
-		return cpMeasurementUnitLocalService.getCPMeasurementUnitsCount(
-			companyId, type);
+		return cpMeasurementUnitPersistence.countByC_T(companyId, type);
 	}
 
 	@Override

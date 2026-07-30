@@ -109,8 +109,7 @@ public class CPInstanceUnitOfMeasureLocalServiceImpl
 		throws PortalException {
 
 		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure =
-			cpInstanceUnitOfMeasureLocalService.fetchCPInstanceUnitOfMeasure(
-				cpInstanceId, key);
+			cpInstanceUnitOfMeasurePersistence.fetchByC_K(cpInstanceId, key);
 
 		if (cpInstanceUnitOfMeasure == null) {
 			return cpInstanceUnitOfMeasureLocalService.
