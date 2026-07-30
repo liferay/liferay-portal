@@ -344,6 +344,16 @@ public class DLAdminManagementToolbarDisplayContext
 				dropdownGroupItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "filter-by"));
 			}
+		).addGroup(
+			() -> ArrayUtil.contains(
+				_dlPortletInstanceSettingsHelper.getEntryColumns(),
+				"signature-status"),
+			dropdownGroupItem -> {
+				dropdownGroupItem.setDropdownItems(
+					_getSignatureStatusFilterDropdownItems());
+				dropdownGroupItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "signature-status"));
+			}
 		).build();
 	}
 
@@ -558,6 +568,35 @@ public class DLAdminManagementToolbarDisplayContext
 		}
 	}
 
+	private void _addSignatureStatusFilterLabelItems(
+		LabelItemListBuilder.LabelItemListWrapper labelItemListWrapper) {
+
+		String[] signatureStatuses =
+			_dlAdminDisplayContext.getSignatureStatuses();
+
+		if (ArrayUtil.isEmpty(signatureStatuses)) {
+			return;
+		}
+
+		for (String signatureStatus : signatureStatuses) {
+			labelItemListWrapper.add(
+				labelItem -> {
+					labelItem.putData(
+						"removeLabelURL",
+						_getRemoveLabelURL(
+							"signatureStatus",
+							() -> ArrayUtil.remove(
+								signatureStatuses, signatureStatus)));
+					labelItem.setCloseable(true);
+					labelItem.setLabel(
+						_getLabel(
+							"signature-status",
+							LanguageUtil.get(
+								_httpServletRequest, signatureStatus)));
+				});
+		}
+	}
+
 	private long[] _getAssetCategoryIds() {
 		return _dlAdminDisplayContext.getAssetCategoryIds();
 	}
@@ -699,6 +738,8 @@ public class DLAdminManagementToolbarDisplayContext
 		_addAssetCategoriesFilterLabelItems(labelItemListWrapper);
 
 		_addExtensionFilterLabelItems(labelItemListWrapper);
+
+		_addSignatureStatusFilterLabelItems(labelItemListWrapper);
 
 		_addAssetTagsFilterLabelItems(labelItemListWrapper);
 
@@ -1008,6 +1049,51 @@ public class DLAdminManagementToolbarDisplayContext
 		).buildString();
 	}
 
+	private List<DropdownItem> _getSignatureStatusFilterDropdownItems() {
+		String[] signatureStatuses =
+			_dlAdminDisplayContext.getSignatureStatuses();
+
+		DropdownItemListBuilder.DropdownItemListWrapper
+			dropdownItemListWrapper =
+				new DropdownItemListBuilder.DropdownItemListWrapper();
+
+		for (String signatureStatus : _SIGNATURE_STATUSES) {
+			boolean active = ArrayUtil.contains(
+				signatureStatuses, signatureStatus);
+
+			String[] newSignatureStatuses = null;
+
+			if (active) {
+				newSignatureStatuses = ArrayUtil.remove(
+					signatureStatuses, signatureStatus);
+			}
+			else {
+				newSignatureStatuses = ArrayUtil.append(
+					signatureStatuses, signatureStatus);
+			}
+
+			String[] hrefSignatureStatuses = newSignatureStatuses;
+
+			dropdownItemListWrapper.add(
+				dropdownItem -> {
+					dropdownItem.setActive(active);
+					dropdownItem.setHref(
+						PortletURLBuilder.create(
+							PortletURLUtil.clone(
+								_currentURLObj, _liferayPortletResponse)
+						).setMVCRenderCommandName(
+							"/document_library/view"
+						).setParameter(
+							"signatureStatus", hrefSignatureStatuses
+						).buildPortletURL());
+					dropdownItem.setLabel(
+						LanguageUtil.get(_httpServletRequest, signatureStatus));
+				});
+		}
+
+		return dropdownItemListWrapper.build();
+	}
+
 	private boolean _hasValidAssetVocabularies() {
 		if (_hasValidAssetVocabularies != null) {
 			return _hasValidAssetVocabularies;
@@ -1072,6 +1158,10 @@ public class DLAdminManagementToolbarDisplayContext
 
 		return false;
 	}
+
+	private static final String[] _SIGNATURE_STATUSES = {
+		"sent", "completed", "declined", "voided"
+	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DLAdminManagementToolbarDisplayContext.class.getName());

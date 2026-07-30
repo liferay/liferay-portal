@@ -9,6 +9,7 @@ import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfiguration;
 import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfigurationFactory;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
 import com.liferay.depot.group.provider.SiteConnectedGroupGroupProvider;
+import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.configuration.DLFileOrderConfigurationProvider;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeService;
 import com.liferay.document.library.kernel.versioning.VersioningStrategy;
@@ -18,6 +19,7 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.trash.TrashHelper;
 
@@ -41,6 +43,13 @@ public class DLAdminDisplayContextProvider {
 
 		httpServletRequest.setAttribute(
 			ItemSelector.class.getName(), _itemSelector);
+
+		DSRequestManager dsRequestManager = _dsRequestManagerSnapshot.get();
+
+		if (dsRequestManager != null) {
+			httpServletRequest.setAttribute(
+				DSRequestManager.class.getName(), dsRequestManager);
+		}
 
 		DLRequestHelper dlRequestHelper = new DLRequestHelper(
 			httpServletRequest);
@@ -83,6 +92,11 @@ public class DLAdminDisplayContextProvider {
 			return ReflectionUtil.throwException(portalException);
 		}
 	}
+
+	private static final Snapshot<DSRequestManager> _dsRequestManagerSnapshot =
+		new Snapshot<>(
+			DLAdminDisplayContextProvider.class, DSRequestManager.class, null,
+			true);
 
 	@Reference
 	private AssetAutoTaggerConfigurationFactory

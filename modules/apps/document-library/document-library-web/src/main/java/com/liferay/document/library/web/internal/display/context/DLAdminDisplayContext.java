@@ -472,6 +472,15 @@ public class DLAdminDisplayContext {
 			getSelectedRepositoryId(), getRootFolderId());
 	}
 
+	public String[] getSignatureStatuses() {
+		if (_signatureStatuses == null) {
+			_signatureStatuses = ParamUtil.getStringValues(
+				_httpServletRequest, "signatureStatus");
+		}
+
+		return _signatureStatuses;
+	}
+
 	public PortletURL getViewRenderURL() {
 		PortletURL renderURL = PortletURLBuilder.createRenderURL(
 			_liferayPortletResponse
@@ -490,8 +499,9 @@ public class DLAdminDisplayContext {
 		if (ArrayUtil.isNotEmpty(getAssetCategoryIds()) ||
 			(getFileEntryTypeId() >= 0) ||
 			ArrayUtil.isNotEmpty(getAssetTagIds()) ||
-			ArrayUtil.isNotEmpty(getExtensions()) || isNavigationMine() ||
-			isNavigationRecent()) {
+			ArrayUtil.isNotEmpty(getExtensions()) ||
+			ArrayUtil.isNotEmpty(getSignatureStatuses()) ||
+			isNavigationMine() || isNavigationRecent()) {
 
 			return true;
 		}
@@ -681,7 +691,7 @@ public class DLAdminDisplayContext {
 
 	private BooleanClause<Query>[] _getBooleanClauses(
 		long[] assetCategoryIds, String[] assetTagNames, String[] extensions,
-		long fileEntryTypeId, long userId) {
+		long fileEntryTypeId, String[] signatureStatuses, long userId) {
 
 		BooleanQuery booleanQuery = new BooleanQuery();
 
@@ -707,6 +717,12 @@ public class DLAdminDisplayContext {
 		if (fileEntryTypeId >= 0) {
 			booleanFilter.addTerm(
 				"fileEntryTypeId", String.valueOf(fileEntryTypeId),
+				BooleanClauseOccur.MUST);
+		}
+
+		if (ArrayUtil.isNotEmpty(signatureStatuses)) {
+			booleanFilter.add(
+				_getSignatureStatusesFilter(signatureStatuses),
 				BooleanClauseOccur.MUST);
 		}
 
@@ -1117,6 +1133,17 @@ public class DLAdminDisplayContext {
 		return searchContainer;
 	}
 
+	private Filter _getSignatureStatusesFilter(String[] signatureStatuses) {
+		BooleanFilter booleanFilter = new BooleanFilter();
+
+		for (String signatureStatus : signatureStatuses) {
+			booleanFilter.addTerm(
+				"signatureStatus", signatureStatus, BooleanClauseOccur.SHOULD);
+		}
+
+		return booleanFilter;
+	}
+
 	private Sort _getSort(String orderByCol, String orderByType) {
 		int type = Sort.STRING_TYPE;
 		String fieldName = orderByCol;
@@ -1175,7 +1202,7 @@ public class DLAdminDisplayContext {
 		searchContext.setBooleanClauses(
 			_getBooleanClauses(
 				getAssetCategoryIds(), getAssetTagIds(), getExtensions(),
-				getFileEntryTypeId(), userId));
+				getFileEntryTypeId(), getSignatureStatuses(), userId));
 
 		long folderId = ParamUtil.getLong(
 			_httpServletRequest, "folderId", getFolderId());
@@ -1301,6 +1328,7 @@ public class DLAdminDisplayContext {
 	private Long _searchFolderId;
 	private Long _searchRepositoryId;
 	private long _selectedRepositoryId;
+	private String[] _signatureStatuses;
 	private final ThemeDisplay _themeDisplay;
 	private final TrashHelper _trashHelper;
 	private final VersioningStrategy _versioningStrategy;

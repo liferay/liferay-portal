@@ -5,6 +5,8 @@
 
 package com.liferay.document.library.web.internal.display.context.helper;
 
+import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
+import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
@@ -13,6 +15,7 @@ import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
@@ -101,6 +104,27 @@ public class DLPortletInstanceSettingsHelper {
 			_dlRequestHelper.getDLPortletInstanceSettings();
 
 		String[] entryColumns = dlPortletInstanceSettings.getEntryColumns();
+
+		if (_isSignatureStatusColumnEnabled()) {
+			if (!ArrayUtil.contains(entryColumns, "signature-status")) {
+				List<String> entryColumnsList = ListUtil.fromArray(
+					entryColumns);
+
+				int index = entryColumnsList.indexOf("status");
+
+				if (index < 0) {
+					entryColumnsList.add("signature-status");
+				}
+				else {
+					entryColumnsList.add(index + 1, "signature-status");
+				}
+
+				entryColumns = ArrayUtil.toStringArray(entryColumnsList);
+			}
+		}
+		else {
+			entryColumns = ArrayUtil.remove(entryColumns, "signature-status");
+		}
 
 		String portletName = _dlRequestHelper.getPortletName();
 
@@ -229,6 +253,12 @@ public class DLPortletInstanceSettingsHelper {
 	private String[] _getAllEntryColumns() {
 		String allEntryColumns = "name,description,document-type,size,status";
 
+		if (FeatureFlagManagerUtil.isEnabled(
+				_dlRequestHelper.getCompanyId(), "LPD-69290")) {
+
+			allEntryColumns += ",signature-status";
+		}
+
 		if (ViewCountManagerUtil.isViewCountEnabled(
 				ClassNameLocalServiceUtil.getClassNameId(
 					DLFileEntryConstants.getClassName()))) {
@@ -271,6 +301,32 @@ public class DLPortletInstanceSettingsHelper {
 		}
 
 		return group;
+	}
+
+	private boolean _isSignatureStatusColumnEnabled() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_dlRequestHelper.getCompanyId(), "LPD-69290")) {
+
+			return false;
+		}
+
+		ThemeDisplay themeDisplay = _dlRequestHelper.getThemeDisplay();
+
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
+				themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId());
+
+		if (digitalSignatureConfiguration == null) {
+			return false;
+		}
+
+		if (digitalSignatureConfiguration.enabled() &&
+			digitalSignatureConfiguration.enableEmbeddedView()) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _populateDisplayViews() {
