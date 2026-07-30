@@ -38,17 +38,6 @@ public class SitemapConfigurationManagerImpl
 	implements SitemapConfigurationManager {
 
 	@Override
-	public boolean cachedGenerationCompanyEnabled(long companyId)
-		throws ConfigurationException {
-
-		SitemapCompanyConfiguration sitemapCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SitemapCompanyConfiguration.class, companyId);
-
-		return sitemapCompanyConfiguration.cachedGenerationEnabled();
-	}
-
-	@Override
 	public Long[] getCompanySitemapGroupIds(long companyId) throws Exception {
 		SitemapCompanyConfiguration sitemapCompanyConfiguration =
 			_configurationProvider.getCompanyConfiguration(
@@ -70,6 +59,28 @@ public class SitemapConfigurationManagerImpl
 		return TransformUtil.transform(
 			sitemapCompanyConfiguration.companySitemapObjectDefinitionIds(),
 			GetterUtil::getLong, Long.class);
+	}
+
+	@Override
+	public String getXMLSitemapIndexMode(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.xmlSitemapIndexMode();
+	}
+
+	@Override
+	public String getXMLSitemapRegenerationDayOfWeek(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.xmlSitemapRegenerationDayOfWeek();
 	}
 
 	@Override
@@ -140,6 +151,39 @@ public class SitemapConfigurationManagerImpl
 
 		return (nextCalendar.getTimeInMillis() - calendar.getTimeInMillis()) /
 			Time.SECOND;
+	}
+
+	@Override
+	public String getXMLSitemapRegenerationFrequency(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.xmlSitemapRegenerationFrequency();
+	}
+
+	@Override
+	public String getXMLSitemapRegenerationTime(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.xmlSitemapRegenerationTime();
+	}
+
+	@Override
+	public String getXMLSitemapRegenerationTimeZoneId(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.xmlSitemapRegenerationTimeZoneId();
 	}
 
 	@Override
@@ -221,7 +265,18 @@ public class SitemapConfigurationManagerImpl
 	}
 
 	@Override
-	public boolean indexModeAssetTypeCompanyEnabled(long companyId)
+	public boolean isCachedGenerationCompanyEnabled(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.cachedGenerationEnabled();
+	}
+
+	@Override
+	public boolean isIndexModeAssetTypeCompanyEnabled(long companyId)
 		throws ConfigurationException {
 
 		SitemapCompanyConfiguration sitemapCompanyConfiguration =
@@ -251,6 +306,17 @@ public class SitemapConfigurationManagerImpl
 		return ArrayUtil.contains(
 			sitemapCompanyConfiguration.companySitemapObjectDefinitionIds(),
 			objectDefinitionId);
+	}
+
+	@Override
+	public boolean isXMLSitemapIndexCompanyEnabled(long companyId)
+		throws ConfigurationException {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.xmlSitemapIndexEnabled();
 	}
 
 	@Override
@@ -316,72 +382,6 @@ public class SitemapConfigurationManagerImpl
 			).put(
 				"includeWebContent", includeWebContent
 			).build());
-	}
-
-	@Override
-	public boolean xmlSitemapIndexCompanyEnabled(long companyId)
-		throws ConfigurationException {
-
-		SitemapCompanyConfiguration sitemapCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SitemapCompanyConfiguration.class, companyId);
-
-		return sitemapCompanyConfiguration.xmlSitemapIndexEnabled();
-	}
-
-	@Override
-	public String xmlSitemapIndexMode(long companyId)
-		throws ConfigurationException {
-
-		SitemapCompanyConfiguration sitemapCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SitemapCompanyConfiguration.class, companyId);
-
-		return sitemapCompanyConfiguration.xmlSitemapIndexMode();
-	}
-
-	@Override
-	public String xmlSitemapRegenerationDayOfWeek(long companyId)
-		throws ConfigurationException {
-
-		SitemapCompanyConfiguration sitemapCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SitemapCompanyConfiguration.class, companyId);
-
-		return sitemapCompanyConfiguration.xmlSitemapRegenerationDayOfWeek();
-	}
-
-	@Override
-	public String xmlSitemapRegenerationFrequency(long companyId)
-		throws ConfigurationException {
-
-		SitemapCompanyConfiguration sitemapCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SitemapCompanyConfiguration.class, companyId);
-
-		return sitemapCompanyConfiguration.xmlSitemapRegenerationFrequency();
-	}
-
-	@Override
-	public String xmlSitemapRegenerationTime(long companyId)
-		throws ConfigurationException {
-
-		SitemapCompanyConfiguration sitemapCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SitemapCompanyConfiguration.class, companyId);
-
-		return sitemapCompanyConfiguration.xmlSitemapRegenerationTime();
-	}
-
-	@Override
-	public String xmlSitemapRegenerationTimeZoneId(long companyId)
-		throws ConfigurationException {
-
-		SitemapCompanyConfiguration sitemapCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SitemapCompanyConfiguration.class, companyId);
-
-		return sitemapCompanyConfiguration.xmlSitemapRegenerationTimeZoneId();
 	}
 
 	private int[] _parseHourAndMinuteParts(String xmlSitemapRegenerationTime) {

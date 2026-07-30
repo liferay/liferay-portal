@@ -357,11 +357,12 @@ public class SitemapManagerImpl implements SitemapManager {
 				_serviceTrackerMap.getService(assetTypeClassNameId);
 
 			if ((sitemapURLProvider == null) ||
-				!_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
-					companyId) ||
 				!StringUtil.equals(
-					_sitemapConfigurationManager.xmlSitemapIndexMode(companyId),
+					_sitemapConfigurationManager.getXMLSitemapIndexMode(
+						companyId),
 					SitemapConstants.INDEX_MODE_ASSET_TYPE) ||
+				!_sitemapConfigurationManager.isXMLSitemapIndexCompanyEnabled(
+					companyId) ||
 				!sitemapURLProvider.isInclude(companyId, groupId)) {
 
 				return null;
@@ -373,7 +374,7 @@ public class SitemapManagerImpl implements SitemapManager {
 		}
 
 		if (Validator.isNull(layoutUuid) &&
-			_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
+			_sitemapConfigurationManager.isXMLSitemapIndexCompanyEnabled(
 				themeDisplay.getCompanyId())) {
 
 			return _getIndexSitemap(groupId, privateLayout, themeDisplay);
@@ -399,13 +400,13 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		long companyId = themeDisplay.getCompanyId();
 
-		if (_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+		if (StringUtil.equals(
+				_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId),
+				SitemapConstants.INDEX_MODE_ASSET_TYPE) &&
+			_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 				companyId) &&
-			_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
-				companyId) &&
-			StringUtil.equals(
-				_sitemapConfigurationManager.xmlSitemapIndexMode(companyId),
-				SitemapConstants.INDEX_MODE_ASSET_TYPE)) {
+			_sitemapConfigurationManager.isXMLSitemapIndexCompanyEnabled(
+				companyId)) {
 
 			try {
 				if (assetTypeKey == null) {
@@ -456,7 +457,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			String assetTypeKey, long companyId, long groupId)
 		throws PortalException {
 
-		if (!_sitemapConfigurationManager.indexModeAssetTypeCompanyEnabled(
+		if (!_sitemapConfigurationManager.isIndexModeAssetTypeCompanyEnabled(
 				companyId)) {
 
 			return;
@@ -491,7 +492,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 			_getIndexSitemap(groupId, false, themeDisplay);
 
-			if (_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+			if (_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 					companyId)) {
 
 				_sitemapStorageHelper.storeLastRegenerateSitemapDateFile(
@@ -508,10 +509,10 @@ public class SitemapManagerImpl implements SitemapManager {
 		String assetTypeKey, long companyId, long groupId, Date startDate) {
 
 		try {
-			if (!_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+			if (!_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 					companyId) ||
-				!_sitemapConfigurationManager.indexModeAssetTypeCompanyEnabled(
-					companyId)) {
+				!_sitemapConfigurationManager.
+					isIndexModeAssetTypeCompanyEnabled(companyId)) {
 
 				return;
 			}
@@ -914,7 +915,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 		long companyId = themeDisplay.getCompanyId();
 
-		if (!_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+		if (!_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 				companyId)) {
 
 			String[] xml = {null};
@@ -1023,10 +1024,10 @@ public class SitemapManagerImpl implements SitemapManager {
 		long companyId = themeDisplay.getCompanyId();
 
 		String xmlSitemapIndexMode =
-			_sitemapConfigurationManager.xmlSitemapIndexMode(companyId);
+			_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId);
 
 		boolean cachedGenerationCompanyEnabled =
-			_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+			_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 				companyId);
 
 		if (StringUtil.equals(

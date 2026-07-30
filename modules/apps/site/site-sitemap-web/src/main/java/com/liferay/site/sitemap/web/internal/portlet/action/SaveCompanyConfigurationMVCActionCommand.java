@@ -75,16 +75,17 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 		boolean cachedGenerationEnabled = ParamUtil.getBoolean(
 			actionRequest, "cachedGenerationEnabled",
-			_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+			_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 				companyId));
 		boolean xmlSitemapIndexEnabled = ParamUtil.getBoolean(
 			actionRequest, "xmlSitemapIndexEnabled");
 		String xmlSitemapIndexMode = ParamUtil.getString(
 			actionRequest, "xmlSitemapIndexMode",
-			_sitemapConfigurationManager.xmlSitemapIndexMode(companyId));
+			_sitemapConfigurationManager.getXMLSitemapIndexMode(companyId));
 
 		String xmlSitemapRegenerationTime =
-			_sitemapConfigurationManager.xmlSitemapRegenerationTime(companyId);
+			_sitemapConfigurationManager.getXMLSitemapRegenerationTime(
+				companyId);
 
 		int xmlSitemapRegenerationDateHour = ParamUtil.getInteger(
 			actionRequest, "xmlSitemapRegenerationDateHour", -1);
@@ -145,17 +146,17 @@ public class SaveCompanyConfigurationMVCActionCommand
 			xmlSitemapIndexEnabled, xmlSitemapIndexMode,
 			ParamUtil.getString(
 				actionRequest, "xmlSitemapRegenerationDayOfWeek",
-				_sitemapConfigurationManager.xmlSitemapRegenerationDayOfWeek(
+				_sitemapConfigurationManager.getXMLSitemapRegenerationDayOfWeek(
 					companyId)),
 			ParamUtil.getString(
 				actionRequest, "xmlSitemapRegenerationFrequency",
-				_sitemapConfigurationManager.xmlSitemapRegenerationFrequency(
+				_sitemapConfigurationManager.getXMLSitemapRegenerationFrequency(
 					companyId)),
 			xmlSitemapRegenerationTime,
 			ParamUtil.getString(
 				actionRequest, "xmlSitemapRegenerationTimeZoneId",
-				_sitemapConfigurationManager.xmlSitemapRegenerationTimeZoneId(
-					companyId)));
+				_sitemapConfigurationManager.
+					getXMLSitemapRegenerationTimeZoneId(companyId)));
 
 		String successMessageKey = "xml-sitemap-settings-have-been-saved";
 

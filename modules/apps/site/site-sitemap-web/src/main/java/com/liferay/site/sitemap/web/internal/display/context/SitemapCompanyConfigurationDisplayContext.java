@@ -75,11 +75,6 @@ public class SitemapCompanyConfigurationDisplayContext {
 		_themeDisplay = themeDisplay;
 	}
 
-	public boolean cachedGenerationEnabled() throws ConfigurationException {
-		return _sitemapConfigurationManager.cachedGenerationCompanyEnabled(
-			_themeDisplay.getCompanyId());
-	}
-
 	public SearchContainer<Group> getGroupSearchContainer() throws Exception {
 		if (_groupSearchContainer != null) {
 			return _groupSearchContainer;
@@ -265,10 +260,15 @@ public class SitemapCompanyConfigurationDisplayContext {
 						_themeDisplay.getLocale(), "group-by-x", indexModeName),
 					sitemapIndexMode,
 					StringUtil.equals(
-						sitemapIndexMode, xmlSitemapIndexMode())));
+						sitemapIndexMode, getXMLSitemapIndexMode())));
 		}
 
 		return selectOptions;
+	}
+
+	public String getXMLSitemapIndexMode() throws ConfigurationException {
+		return _sitemapConfigurationManager.getXMLSitemapIndexMode(
+			_themeDisplay.getCompanyId());
 	}
 
 	public int getXMLSitemapRegenerationDateAmPm()
@@ -318,13 +318,20 @@ public class SitemapCompanyConfigurationDisplayContext {
 		return selectOptions;
 	}
 
+	public String getXMLSitemapRegenerationFrequency()
+		throws ConfigurationException {
+
+		return _sitemapConfigurationManager.getXMLSitemapRegenerationFrequency(
+			_themeDisplay.getCompanyId());
+	}
+
 	public List<SelectOption> getXMLSitemapRegenerationFrequencySelectOptions()
 		throws ConfigurationException {
 
 		List<SelectOption> selectOptions = new ArrayList<>();
 
 		String xmlSitemapRegenerationFrequency =
-			xmlSitemapRegenerationFrequency();
+			getXMLSitemapRegenerationFrequency();
 
 		String[] regenerationFrequencies = {
 			SitemapConstants.REGENERATION_FREQUENCY_HOURLY,
@@ -342,6 +349,13 @@ public class SitemapCompanyConfigurationDisplayContext {
 		}
 
 		return selectOptions;
+	}
+
+	public String getXMLSitemapRegenerationTimeZoneId()
+		throws ConfigurationException {
+
+		return _sitemapConfigurationManager.getXMLSitemapRegenerationTimeZoneId(
+			_themeDisplay.getCompanyId());
 	}
 
 	public boolean hasVirtualHost(Group group) {
@@ -371,8 +385,13 @@ public class SitemapCompanyConfigurationDisplayContext {
 			_themeDisplay.getCompanyId());
 	}
 
-	public boolean indexModeAssetTypeEnabled() throws ConfigurationException {
-		return _sitemapConfigurationManager.indexModeAssetTypeCompanyEnabled(
+	public boolean isCachedGenerationEnabled() throws ConfigurationException {
+		return _sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
+			_themeDisplay.getCompanyId());
+	}
+
+	public boolean isIndexModeAssetTypeEnabled() throws ConfigurationException {
+		return _sitemapConfigurationManager.isIndexModeAssetTypeCompanyEnabled(
 			_themeDisplay.getCompanyId());
 	}
 
@@ -381,42 +400,23 @@ public class SitemapCompanyConfigurationDisplayContext {
 			_themeDisplay.getCompanyId());
 	}
 
-	public boolean xmlSitemapIndexEnabled() throws ConfigurationException {
-		return _sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
+	public boolean isXMLSitemapIndexEnabled() throws ConfigurationException {
+		return _sitemapConfigurationManager.isXMLSitemapIndexCompanyEnabled(
 			_themeDisplay.getCompanyId());
 	}
 
-	public String xmlSitemapIndexMode() throws ConfigurationException {
-		return _sitemapConfigurationManager.xmlSitemapIndexMode(
-			_themeDisplay.getCompanyId());
-	}
-
-	public String xmlSitemapRegenerationFrequency()
-		throws ConfigurationException {
-
-		return _sitemapConfigurationManager.xmlSitemapRegenerationFrequency(
-			_themeDisplay.getCompanyId());
-	}
-
-	public boolean xmlSitemapRegenerationFrequencyHourly()
+	public boolean isXMLSitemapRegenerationFrequencyHourly()
 		throws ConfigurationException {
 
 		return SitemapConstants.REGENERATION_FREQUENCY_HOURLY.equals(
-			xmlSitemapRegenerationFrequency());
+			getXMLSitemapRegenerationFrequency());
 	}
 
-	public boolean xmlSitemapRegenerationFrequencyWeekly()
+	public boolean isXMLSitemapRegenerationFrequencyWeekly()
 		throws ConfigurationException {
 
 		return SitemapConstants.REGENERATION_FREQUENCY_WEEKLY.equals(
-			xmlSitemapRegenerationFrequency());
-	}
-
-	public String xmlSitemapRegenerationTimeZoneId()
-		throws ConfigurationException {
-
-		return _sitemapConfigurationManager.xmlSitemapRegenerationTimeZoneId(
-			_themeDisplay.getCompanyId());
+			getXMLSitemapRegenerationFrequency());
 	}
 
 	private String _getDateString(Date date) {
@@ -475,14 +475,14 @@ public class SitemapCompanyConfigurationDisplayContext {
 	private String _getXMLSitemapRegenerationDayOfWeek()
 		throws ConfigurationException {
 
-		return _sitemapConfigurationManager.xmlSitemapRegenerationDayOfWeek(
+		return _sitemapConfigurationManager.getXMLSitemapRegenerationDayOfWeek(
 			_themeDisplay.getCompanyId());
 	}
 
 	private String _getXMLSitemapRegenerationTime()
 		throws ConfigurationException {
 
-		return _sitemapConfigurationManager.xmlSitemapRegenerationTime(
+		return _sitemapConfigurationManager.getXMLSitemapRegenerationTime(
 			_themeDisplay.getCompanyId());
 	}
 

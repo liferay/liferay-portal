@@ -99,7 +99,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			group.getGroupId(), true);
 
 		_originalCachedGenerationEnabled =
-			_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+			_sitemapConfigurationManager.isCachedGenerationCompanyEnabled(
 				_company.getCompanyId());
 		_originalCompanySitemapGroupIds =
 			_sitemapConfigurationManager.getCompanySitemapGroupIds(
@@ -117,22 +117,22 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			_sitemapConfigurationManager.includeWebContentCompanyEnabled(
 				_company.getCompanyId());
 		_originalXMLSitemapIndexEnabled =
-			_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
+			_sitemapConfigurationManager.isXMLSitemapIndexCompanyEnabled(
 				_company.getCompanyId());
 		_originalXMLSitemapIndexMode =
-			_sitemapConfigurationManager.xmlSitemapIndexMode(
+			_sitemapConfigurationManager.getXMLSitemapIndexMode(
 				_company.getCompanyId());
 		_originalXMLSitemapRegenerationDayOfWeek =
-			_sitemapConfigurationManager.xmlSitemapRegenerationDayOfWeek(
+			_sitemapConfigurationManager.getXMLSitemapRegenerationDayOfWeek(
 				_company.getCompanyId());
 		_originalXMLSitemapRegenerationFrequency =
-			_sitemapConfigurationManager.xmlSitemapRegenerationFrequency(
+			_sitemapConfigurationManager.getXMLSitemapRegenerationFrequency(
 				_company.getCompanyId());
 		_originalXMLSitemapRegenerationTime =
-			_sitemapConfigurationManager.xmlSitemapRegenerationTime(
+			_sitemapConfigurationManager.getXMLSitemapRegenerationTime(
 				_company.getCompanyId());
 		_originalXMLSitemapRegenerationTimeZoneId =
-			_sitemapConfigurationManager.xmlSitemapRegenerationTimeZoneId(
+			_sitemapConfigurationManager.getXMLSitemapRegenerationTimeZoneId(
 				_company.getCompanyId());
 
 		_originalName = PrincipalThreadLocal.getName();

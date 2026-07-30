@@ -11,7 +11,7 @@
 SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayContext = (SitemapCompanyConfigurationDisplayContext)request.getAttribute(SitemapCompanyConfigurationDisplayContext.class.getName());
 %>
 
-<c:if test="<%= sitemapCompanyConfigurationDisplayContext.cachedGenerationEnabled() %>">
+<c:if test="<%= sitemapCompanyConfigurationDisplayContext.isCachedGenerationEnabled() %>">
 	<p class="c-mb-0 small text-secondary"><liferay-ui:message key="last-updated" />: <%= sitemapCompanyConfigurationDisplayContext.getLastRegenerateSitemapDateString() %></p>
 
 	<p class="c-mb-3 small text-secondary"><liferay-ui:message key="next-scheduled" />: <%= sitemapCompanyConfigurationDisplayContext.isRegenerateSitemapInProgress() ? LanguageUtil.get(request, "generating-now") : sitemapCompanyConfigurationDisplayContext.getNextRegenerateSitemapDateString() %></p>
@@ -56,7 +56,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			expand="<%= true %>"
 		>
 			<clay:checkbox
-				checked="<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapIndexEnabled() %>"
+				checked="<%= sitemapCompanyConfigurationDisplayContext.isXMLSitemapIndexEnabled() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapIndexEnabled" %>'
 				label='<%= LanguageUtil.get(request, "xml-sitemap-index-enabled") %>'
 				name='<%= liferayPortletResponse.getNamespace() + "xmlSitemapIndexEnabled" %>'
@@ -92,7 +92,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			<clay:select
 				aria-label='<%= LanguageUtil.get(request, "xml-sitemap-index-mode") %>'
 				data-qa-id="xmlSitemapIndexModeSelector"
-				disabled="<%= !sitemapCompanyConfigurationDisplayContext.xmlSitemapIndexEnabled() %>"
+				disabled="<%= !sitemapCompanyConfigurationDisplayContext.isXMLSitemapIndexEnabled() %>"
 				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapIndexMode" %>'
 				label='<%= LanguageUtil.get(request, "xml-sitemap-index-mode") %>'
 				name="xmlSitemapIndexMode"
@@ -102,10 +102,10 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 	</clay:content-row>
 </clay:sheet-section>
 
-<c:if test="<%= sitemapCompanyConfigurationDisplayContext.indexModeAssetTypeEnabled() %>">
+<c:if test="<%= sitemapCompanyConfigurationDisplayContext.isIndexModeAssetTypeEnabled() %>">
 
 	<%
-	boolean cachedGenerationEnabled = sitemapCompanyConfigurationDisplayContext.cachedGenerationEnabled();
+	boolean cachedGenerationEnabled = sitemapCompanyConfigurationDisplayContext.isCachedGenerationEnabled();
 	%>
 
 	<clay:sheet-section
@@ -172,7 +172,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			</clay:content-col>
 
 			<clay:content-col
-				cssClass='<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationFrequencyWeekly() ? "c-pr-2" : "hide" %>'
+				cssClass='<%= sitemapCompanyConfigurationDisplayContext.isXMLSitemapRegenerationFrequencyWeekly() ? "c-pr-2" : "hide" %>'
 				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationDayField" %>'
 			>
 				<clay:select
@@ -184,7 +184,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			</clay:content-col>
 
 			<clay:content-col
-				cssClass='<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationFrequencyHourly() ? "hide" : "c-pr-2" %>'
+				cssClass='<%= sitemapCompanyConfigurationDisplayContext.isXMLSitemapRegenerationFrequencyHourly() ? "hide" : "c-pr-2" %>'
 				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationTimeField" %>'
 			>
 				<div class="form-group">
@@ -203,7 +203,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 			</clay:content-col>
 
 			<clay:content-col
-				cssClass='<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationFrequencyHourly() ? "hide" : "" %>'
+				cssClass='<%= sitemapCompanyConfigurationDisplayContext.isXMLSitemapRegenerationFrequencyHourly() ? "hide" : "" %>'
 				expand="<%= true %>"
 				id='<%= liferayPortletResponse.getNamespace() + "xmlSitemapRegenerationTimeZoneField" %>'
 			>
@@ -215,7 +215,7 @@ SitemapCompanyConfigurationDisplayContext sitemapCompanyConfigurationDisplayCont
 						displayStyle="<%= 0 %>"
 						name="xmlSitemapRegenerationTimeZoneId"
 						nullable="<%= true %>"
-						value="<%= sitemapCompanyConfigurationDisplayContext.xmlSitemapRegenerationTimeZoneId() %>"
+						value="<%= sitemapCompanyConfigurationDisplayContext.getXMLSitemapRegenerationTimeZoneId() %>"
 					/>
 				</div>
 			</clay:content-col>

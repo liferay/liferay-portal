@@ -167,7 +167,7 @@ public class XMLSitemapIndexEnabledConfigurationUpgradeProcessTest {
 				_company.getCompanyId()));
 		Assert.assertEquals(
 			expectedXMLSitemapIndexEnabled,
-			_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
+			_sitemapConfigurationManager.isXMLSitemapIndexCompanyEnabled(
 				_company.getCompanyId()));
 	}
 
