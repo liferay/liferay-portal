@@ -39,7 +39,7 @@ jobs:
                     LIFERAY_GCP_IMAGE_REF: ${{inputs.liferay_gcp_image_ref}}
                     PAAS_STAGING_APPLICATIONS_FILE: charts/${{vars.PAAS_STAGING_APPLICATIONS_FILE}}
                 if: ${{inputs.liferay_gcp_image_ref != ''}}
-                name: Point the liferay-applicationset to the RC chart
+                name: Point the dev liferay-applicationset to the RC chart
                 run: |
                     set -o errexit
                     set -o nounset
@@ -62,7 +62,7 @@ jobs:
                     LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF: ${{inputs.liferay_gcp_infrastructure_image_ref}}
                     PAAS_STAGING_APPLICATIONS_FILE: charts/${{vars.PAAS_STAGING_APPLICATIONS_FILE}}
                 if: ${{inputs.liferay_gcp_infrastructure_image_ref != ''}}
-                name: Point the liferay-infrastructure-applicationset to the RC chart
+                name: Point the dev liferay-infrastructure-applicationset to the RC chart
                 run: |
                     set -o errexit
                     set -o nounset
@@ -82,10 +82,33 @@ jobs:
 
                     main "${@}"
             -   env:
+                    LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF: ${{inputs.liferay_gcp_infrastructure_image_ref}}
+                    PAAS_STAGING_INFRASTRUCTURE_CHART_FILE: charts/${{vars.PAAS_STAGING_INFRASTRUCTURE_CHART_FILE}}
+                if: ${{inputs.liferay_gcp_infrastructure_image_ref != ''}}
+                name: Point the dev infrastructure dependency at the RC chart
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        CHART_REPOSITORY="oci://${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF%/*}" \
+                        CHART_VERSION="${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF##*:}" \
+                            yq \
+                                --inplace \
+                                '
+                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure" and .alias == "dev").repository) = strenv(CHART_REPOSITORY) |
+                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure" and .alias == "dev").version) = strenv(CHART_VERSION)
+                                ' \
+                                "${PAAS_STAGING_INFRASTRUCTURE_CHART_FILE}"
+                    }
+
+                    main "${@}"
+            -   env:
                     LIFERAY_GCP_INFRASTRUCTURE_PROVIDER_IMAGE_REF: ${{inputs.liferay_gcp_infrastructure_provider_image_ref}}
                     PAAS_STAGING_INFRASTRUCTURE_PROVIDER_CHART_FILE: charts/${{vars.PAAS_STAGING_INFRASTRUCTURE_PROVIDER_CHART_FILE}}
                 if: ${{inputs.liferay_gcp_infrastructure_provider_image_ref != ''}}
-                name: Point the infrastructure provider dependency at the RC chart
+                name: Point the dev infrastructure provider dependency at the RC chart
                 run: |
                     set -o errexit
                     set -o nounset
@@ -97,8 +120,8 @@ jobs:
                             yq \
                                 --inplace \
                                 '
-                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure-provider").repository) = strenv(CHART_REPOSITORY) |
-                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure-provider").version) = strenv(CHART_VERSION)
+                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure-provider" and .alias == "dev").repository) = strenv(CHART_REPOSITORY) |
+                                    (.dependencies[] | select(.name == "liferay-gcp-infrastructure-provider" and .alias == "dev").version) = strenv(CHART_VERSION)
                                 ' \
                                 "${PAAS_STAGING_INFRASTRUCTURE_PROVIDER_CHART_FILE}"
                     }
@@ -111,9 +134,9 @@ jobs:
                     body: |
                         Automated by the ${{github.repository}} release pipeline for `${{github.ref_name}}`.
 
-                        Points the staging cluster at the release candidate charts.
+                        Points the dev environment of the staging cluster at the release candidate charts. Only the dev environment files are touched — stg and prd keep their pinned versions.
 
-                        Merge to deploy the RC to the staging cluster so product can validate it before promotion.
+                        Merge to deploy the RC to the staging cluster's dev environment so product can validate it before promotion.
                     branch: ${{steps.vars.outputs.jira_issue}}
                     commit-message: ${{steps.vars.outputs.jira_issue}} Update staging PaaS images
                     path: charts
