@@ -224,6 +224,27 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async postKnowledgeBaseArticleKnowledgeBaseArticle({
+		articleBody,
+		parentKnowledgeBaseArticleId,
+		title,
+	}: {
+		articleBody: string;
+		parentKnowledgeBaseArticleId: string;
+		title: string;
+	}): Promise<KnowledgeBaseArticle> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/knowledge-base-articles/${parentKnowledgeBaseArticleId}/knowledge-base-articles`,
+			{
+				data: {
+					articleBody,
+					title,
+				},
+				failOnStatusCode: true,
+			}
+		);
+	}
+
 	async postMessageBoardSectionMessageBoardThread({
 		articleBody,
 		headline,
