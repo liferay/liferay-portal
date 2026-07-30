@@ -10,6 +10,8 @@ import com.liferay.depot.internal.roles.admin.role.type.contributor.DepotRoleTyp
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -85,8 +87,26 @@ public class DepotRoleTypeContributorTest {
 
 	@Test
 	public void testGetSubtypes() {
-		try (MockedStatic<FeatureFlagManagerUtil> mockedStatic =
+		try (MockedStatic<LicenseManagerUtil> licenseManagerUtilMockedStatic =
+				Mockito.mockStatic(LicenseManagerUtil.class);
+			MockedStatic<FeatureFlagManagerUtil> mockedStatic =
 				Mockito.mockStatic(FeatureFlagManagerUtil.class)) {
+
+			licenseManagerUtilMockedStatic.when(
+				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
+			).thenReturn(
+				false
+			);
+
+			Assert.assertArrayEquals(
+				new String[] {DepotRolesConstants.SUBTYPE_SPACE},
+				_depotRoleTypeContributor.getSubtypes());
+
+			licenseManagerUtilMockedStatic.when(
+				() -> LicenseManagerUtil.isAppEnabled(App.CMP)
+			).thenReturn(
+				true
+			);
 
 			Assert.assertArrayEquals(
 				new String[] {

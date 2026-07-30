@@ -153,6 +153,7 @@ export type AdditionalProps = {
 	breadcrumbProps?: IBreadcrumbProps;
 	brokenLinksCheckerEnabled: boolean;
 	candidateAssetLibraries: AssetLibrary[];
+	cmpEnabled?: boolean;
 	cmpProjectLinkObjectDefinitionId?: number;
 	cmpProjectObjectDefinitionId?: number;
 	cmpProjectViewURL?: string;

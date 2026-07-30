@@ -14,7 +14,7 @@ import {TABS} from './tab_content';
 const DEFAULT_MAIN_TABS = [TABS.DETAILS, TABS.CATEGORIZATION, TABS.PERFORMANCE];
 
 const AssetTypeInfoPanelFilesView = () => {
-	const {actions}: IAssetTypeInfoPanelContext = useContext(
+	const {actions, cmpEnabled}: IAssetTypeInfoPanelContext = useContext(
 		AssetTypeInfoPanelContext
 	);
 
@@ -28,7 +28,7 @@ const AssetTypeInfoPanelFilesView = () => {
 
 	const DROPDOWN_TABS = [
 		...(href ? [TABS.VERSIONS, TABS.COMMENTS] : []),
-		TABS.PROJECTS,
+		...(cmpEnabled ? [TABS.PROJECTS] : []),
 	];
 
 	const ALL_TABS = [...MAIN_TABS, ...DROPDOWN_TABS];

@@ -31,12 +31,13 @@ jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/common/services/CategorizationSuggestionService'
 );
 
-const renderComponent = ({isSubscribed = false} = {}) => {
+const renderComponent = ({cmpEnabled = true, isSubscribed = false} = {}) => {
 	return render(
 		<ContentEditorSidePanel
 			addCommentURL="addCommentURL"
 			assetLibraryId="123"
 			assetType={30982}
+			cmpEnabled={cmpEnabled}
 			cmsGroupId="21000"
 			comments={[]}
 			contentAPIURL="contentAPIURL"
@@ -359,6 +360,12 @@ describe('ContentEditorSidePanel', () => {
 		].forEach((name) =>
 			expect(screen.getByTitle(name)).toBeInTheDocument()
 		);
+	});
+
+	it('renders no Projects panel when CMP is disabled', () => {
+		renderComponent({cmpEnabled: false});
+
+		expect(screen.queryByTitle('projects')).not.toBeInTheDocument();
 	});
 
 	it('renders the hidden inputs with initial values', async () => {

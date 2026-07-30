@@ -17,6 +17,7 @@ interface ScopeData {
 }
 
 export interface MultipleScopesRendererProps {
+	cmpEnabled?: boolean;
 	itemData: {
 		assetLibraries: ScopeData[];
 		projects?: ScopeData[];
@@ -52,11 +53,12 @@ const getScopes = (scopes: ScopeData[] | undefined): Promise<Scope[]> => {
 };
 
 export default function MultipleScopesRenderer({
+	cmpEnabled,
 	itemData,
 }: MultipleScopesRendererProps) {
 	const {assetLibraries, projects} = itemData;
 
-	const renderProjects = Array.isArray(projects);
+	const renderProjects = Array.isArray(projects) && !!cmpEnabled;
 
 	const [projectScopes, setProjectScopes] = useState<Scope[]>([]);
 	const [spaceScopes, setSpaceScopes] = useState<Scope[]>([]);

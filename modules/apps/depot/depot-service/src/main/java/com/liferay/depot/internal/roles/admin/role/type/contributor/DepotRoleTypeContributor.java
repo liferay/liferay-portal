@@ -8,6 +8,8 @@ package com.liferay.depot.internal.roles.admin.role.type.contributor;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -66,7 +68,10 @@ public class DepotRoleTypeContributor implements RoleTypeContributor {
 			subtypes.add(DepotRolesConstants.SUBTYPE_DESIGN_LIBRARY);
 		}
 
-		subtypes.add(DepotRolesConstants.SUBTYPE_PROJECT);
+		if (LicenseManagerUtil.isAppEnabled(App.CMP)) {
+			subtypes.add(DepotRolesConstants.SUBTYPE_PROJECT);
+		}
+
 		subtypes.add(DepotRolesConstants.SUBTYPE_SPACE);
 
 		return subtypes.toArray(new String[0]);

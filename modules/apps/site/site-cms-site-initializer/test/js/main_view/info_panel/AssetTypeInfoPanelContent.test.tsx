@@ -54,6 +54,7 @@ const testAdditionalProps = {
 		size: 'sm',
 	},
 	candidateAssetLibraries: [testSpace.id],
+	cmpEnabled: true,
 	fileMimeTypeIcons: {
 		default: 'document-default',
 		image: 'document-image',
@@ -96,6 +97,26 @@ describe('CMS Asset Type Info Panel', () => {
 		expect(screen.getByText('versions')).toBeInTheDocument();
 
 		expect(screen.getByText('projects')).toBeInTheDocument();
+	});
+
+	it('renders no Projects tab when CMP is disabled', async () => {
+		render(
+			<SidePanel containerRef={{current: null}}>
+				<AssetTypeInfoPanelContent
+					additionalProps={{
+						...testAdditionalProps,
+						cmpEnabled: false,
+					}}
+					items={[CONTENT_OBJECT_ENTRY] as any}
+				/>
+			</SidePanel>
+		);
+
+		await userEvent.click(screen.getByRole('tab', {name: 'more'}));
+
+		expect(screen.getByText('versions')).toBeInTheDocument();
+
+		expect(screen.queryByText('projects')).not.toBeInTheDocument();
 	});
 
 	it('renders the component for a Web Content asset type', async () => {

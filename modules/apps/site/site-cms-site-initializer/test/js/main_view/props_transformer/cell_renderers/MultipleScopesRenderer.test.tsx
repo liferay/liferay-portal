@@ -170,13 +170,25 @@ describe('MultipleScopesRenderer', () => {
 			assetLibraries: [{id: -1, name: ''}],
 		} as MultipleScopesRendererProps['itemData'];
 
+		render(<MultipleScopesRenderer cmpEnabled itemData={itemData} />);
+
+		expect(screen.getByText('all-spaces')).toBeInTheDocument();
+		expect(screen.queryByText('all-projects')).not.toBeInTheDocument();
+	});
+
+	it('does not render projects when CMP is disabled', () => {
+		const itemData = {
+			assetLibraries: [{id: -1, name: ''}],
+			projects: [{id: -1, name: ''}],
+		} as MultipleScopesRendererProps['itemData'];
+
 		render(<MultipleScopesRenderer itemData={itemData} />);
 
 		expect(screen.getByText('all-spaces')).toBeInTheDocument();
 		expect(screen.queryByText('all-projects')).not.toBeInTheDocument();
 	});
 
-	describe('When itemData has projects', () => {
+	describe('When itemData has projects and CMP is enabled', () => {
 		beforeEach(() => {
 			mockGetSpaceWithCache();
 		});
@@ -187,7 +199,7 @@ describe('MultipleScopesRenderer', () => {
 				projects: [{id: -1, name: ''}],
 			} as MultipleScopesRendererProps['itemData'];
 
-			render(<MultipleScopesRenderer itemData={itemData} />);
+			render(<MultipleScopesRenderer cmpEnabled itemData={itemData} />);
 
 			await waitFor(() => {
 				expect(screen.getByText('all-spaces')).toBeInTheDocument();
@@ -206,7 +218,7 @@ describe('MultipleScopesRenderer', () => {
 				],
 			} as MultipleScopesRendererProps['itemData'];
 
-			render(<MultipleScopesRenderer itemData={itemData} />);
+			render(<MultipleScopesRenderer cmpEnabled itemData={itemData} />);
 
 			await waitFor(() => {
 				expect(screen.getByText('Project 1')).toBeInTheDocument();
@@ -230,7 +242,7 @@ describe('MultipleScopesRenderer', () => {
 				projects: [{id: -1, name: ''}],
 			} as MultipleScopesRendererProps['itemData'];
 
-			render(<MultipleScopesRenderer itemData={itemData} />);
+			render(<MultipleScopesRenderer cmpEnabled itemData={itemData} />);
 
 			await waitFor(() => {
 				expect(screen.getByText('Space 1')).toBeInTheDocument();
@@ -258,7 +270,7 @@ describe('MultipleScopesRenderer', () => {
 				],
 			} as MultipleScopesRendererProps['itemData'];
 
-			render(<MultipleScopesRenderer itemData={itemData} />);
+			render(<MultipleScopesRenderer cmpEnabled itemData={itemData} />);
 
 			await waitFor(() => {
 				expect(screen.getByText('Space 1')).toBeInTheDocument();
