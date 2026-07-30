@@ -66,8 +66,7 @@ public class ExportPLOEntriesPortletConfigurationIcon
 	@Override
 	public boolean isShow(PortletRequest portletRequest) {
 		try {
-			int ploEntriesCount = _ploEntryService.getPLOEntriesCount(
-				_portal.getCompanyId(portletRequest));
+			int ploEntriesCount = _ploEntryService.getPLOEntriesCount();
 
 			if (ploEntriesCount > 0) {
 				return true;

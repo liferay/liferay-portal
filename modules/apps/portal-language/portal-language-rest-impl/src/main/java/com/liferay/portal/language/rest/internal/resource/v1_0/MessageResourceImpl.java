@@ -139,8 +139,7 @@ public class MessageResourceImpl extends BaseMessageResourceImpl {
 		throws Exception {
 
 		List<String> keys = transform(
-			_ploEntryService.getPLOEntries(contextCompany.getCompanyId()),
-			PLOEntryModel::getKey);
+			_ploEntryService.getPLOEntries(), PLOEntryModel::getKey);
 
 		String languageId = GetterUtil.getString(parameters.get("languageId"));
 
