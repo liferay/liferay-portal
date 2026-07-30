@@ -21,11 +21,40 @@ jest.mock('frontend-js-components-web', () => ({
 	ManageMembersModal: jest.fn(() => null),
 }));
 
+const mockAddMembersInput = AddMembersInput as unknown as jest.Mock;
 const mockManageMembersModal = ManageMembersModal as unknown as jest.Mock;
 
 describe('ProjectMembersModal', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
+	});
+
+	it('builds the user accounts URL from the project id', () => {
+		render(
+			<ProjectMembersModal
+				assetLibraryCreatorUserId="1"
+				cmpProjectObjectEntryId={42}
+				externalReferenceCode="ERC"
+				hasAssignMembersPermission={true}
+			/>
+		);
+
+		const {renderAddMembersInput} = mockManageMembersModal.mock.calls[0][0];
+
+		render(
+			renderAddMembersInput({
+				excludeMembers: [],
+				onAutocompleteItemSelected: jest.fn(),
+				onSelectChange: jest.fn(),
+				selectValue: 'users',
+			})
+		);
+
+		const props = mockAddMembersInput.mock.calls[0][0];
+
+		expect(props.userAccountsAPIURL).toBe(
+			`${location.origin}/o/headless-cmp/v1.0/projects/42/user-accounts`
+		);
 	});
 
 	it('renders the shared ManageMembersModal with the project configuration', () => {
