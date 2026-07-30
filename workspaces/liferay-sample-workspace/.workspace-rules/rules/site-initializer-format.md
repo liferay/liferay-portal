@@ -114,7 +114,9 @@ client-extensions/<name>/
     object-folders/               # Object folders
     object-actions/               # Object actions
     object-entries/               # Seed object entry data
+    resource-permissions.json     # Role grants on objects and other resources
     roles.json                    # Site roles
+    site-navigation-menus.json    # Navigation menus (array of menus)
     style-books/                  # Style book entries
       <style-book-name>/
         style-book.json
@@ -203,6 +205,37 @@ A raw `ObjectRelationship`. This handler resolves the parent by **numeric ID** (
 `deletionType` is `cascade`, `disassociate`, or `prevent`. Creating the relationship adds an `r_<relationshipName>_c_<parent>Id` field to the child object; set that field when creating a child entry over REST.
 
 Do **not** copy `"system": true` from portal internal initializers (seo-studio, ai-hub) — it makes the object or picklist nonmodifiable.
+
+## `resource-permissions.json`
+
+A flat array of grants, applied by the `addOrUpdateResourcePermissions` handler. This is how an object becomes visible to Guest — required before an object backed Collection renders anything on a public page.
+
+```json
+[
+	{
+		"actionIds": [
+			"VIEW"
+		],
+		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:<Name>$]",
+		"roleName": "Guest",
+		"scope": "1"
+	}
+]
+```
+
+**`scope` is the trap.** It is a `ResourceConstants` integer, and the wrong value fails silently — the handler reports no error and grants nothing useful:
+
+| `scope` | Constant | Grants |
+| --- | --- | --- |
+| `"1"` | `SCOPE_COMPANY` | The role may act on **all existing and future** entries of that resource. This is the one that makes a public listing work. |
+| `"2"` | `SCOPE_GROUP` | The same, limited to the current site. |
+| `"3"` | `SCOPE_GROUP_TEMPLATE` | Only the **default permissions applied to newly created** entries. Does nothing for entries that already exist. |
+| `"4"` | `SCOPE_INDIVIDUAL` | One specific entry, named by `primKey`. Used by `page.json` permissions. |
+
+Several portal initializers (seo-studio, ai-hub) use `"3"`, so copying from them without checking produces a grant that appears to apply and changes nothing. For scopes `1` and `2` the handler overwrites `primKey` with the company or group id, so `"0"` is a fine placeholder.
+
+The handler **warns rather than fails** on a bad `resourceName` or an unknown `roleName` — `No resource action found` / `No role found` in the log. A silent 2 ms run with no warning means the grant was applied as written; if behavior did not change, suspect `scope`.
 
 ## Token Substitution
 

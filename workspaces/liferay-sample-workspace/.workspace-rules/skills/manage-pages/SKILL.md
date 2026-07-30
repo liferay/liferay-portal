@@ -88,7 +88,25 @@ Trigger (or, for `layouts/` changes on an existing site, reprovision) the site �
 
 ## Display Object Data on a Page
 
-To show a list of object entries on a page, use a **server side Collection Display**, not a client side `fetch`. A browser `fetch` to `/o/c/<pluralLabel>` carries the visitor's cookies, so the headless object API evaluates the request as the Guest user and typically returns **0 items** (Guest lacks entry level view permission). The Collection element renders on the server with the page's own permission context, so it returns the entries.
+To show a list of object entries on a page, use a **server side Collection Display**, not a client side `fetch`. A browser `fetch` to `/o/c/<pluralLabel>` carries the visitor's cookies, so the headless object API evaluates the request as the Guest user and typically returns **0 items** (Guest lacks entry level view permission).
+
+> **The Collection element does not sidestep that permission.** It renders on the server, but it still evaluates **entry level** permissions as the visiting user, and page level VIEW does not confer object entry VIEW. On a public page, an object backed Collection therefore renders **empty for anonymous visitors** until the object is explicitly granted to Guest — while rendering correctly for the signed in author, which is why this is usually discovered late.
+>
+> Grant it in the initializer tree so the grant is reproducible, using `site-initializer/resource-permissions.json` (see `rules/site-initializer-format.md`):
+>
+> ```json
+> [
+> 	{
+> 		"actionIds": ["VIEW"],
+> 		"primKey": "0",
+> 		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:<Name>$]",
+> 		"roleName": "Guest",
+> 		"scope": "1"
+> 	}
+> ]
+> ```
+>
+> Grant only the objects the page must display. Do **not** grant Guest VIEW on an object holding personal data (registrations, orders, applications) just to make a count work — see "Mapping Limits" below for the denormalization pattern that exposes a derived number without exposing the rows.
 
 Compose it in `page-definition.json` (see the `Collection` / `CollectionItem` element types in `rules/page-types.md`):
 
@@ -132,15 +150,40 @@ Compose it in `page-definition.json` (see the `Collection` / `CollectionItem` el
 	]
 	```
 
+### Setting Literal Text (Not Mapped)
+
+The same `fragmentFields` array also sets a fixed value, using `value_i18n` where a mapped field would use `mapping`. Use it whenever one section fragment appears on several pages — without it every instance renders the fragment's default text, so a shared heading silently reads "Upcoming Events" on the register page:
+
+```json
+"fragmentFields": [
+	{
+		"id": "<editable-id>",
+		"value": {
+			"fragmentLink": {},
+			"text": {
+				"value_i18n": {
+					"en_US": "<literal text>"
+				}
+			}
+		}
+	}
+]
+```
+
 ### Mapping Limits — Denormalize Into Display Fields
 
 Field mapping renders the raw stored value and cannot transform it. In particular:
 
 - **`DateTime` values cannot be formatted** through mapping (no date format option).
 - **Related object fields cannot be mapped** — you cannot reach across a relationship to display a field from the related entry.
+- **Aggregates over a relationship cannot be mapped** — a count of related entries (registrations for an event, items in an order) is not a field, so it cannot be mapped.
 - **Per record presentation values** (e.g. a color that varies by entry) cannot be driven from mapping.
 
 The workaround is to **denormalize**: add a plain `Text` display field on the object and populate it with the presentation ready value, then map that field. For example add `timeLabel` (a preformatted time string instead of the raw `DateTime`) or `speakerName` (the related person's name copied onto the entry), and map `ObjectField_timeLabel` / `ObjectField_speakerName`.
+
+Denormalizing is also the way to publish a number derived from private records. To show remaining capacity, keep a `registeredCount` field on the public object and maintain it with an object action on the private one (`manage-object-logic`); the visitor reads a count without the underlying rows ever being granted to Guest.
+
+**Do not compute these in fragment JavaScript instead.** It looks equivalent for the signed in author and silently misreports for everyone else: the browser call runs as Guest, returns 0 rows, and a full event renders as "500 of 500" rather than failing visibly. If a value cannot be derived from data the visitor may read, denormalize it or do not display it.
 
 ## Fallback: Live API
 
@@ -326,6 +369,20 @@ curl \
 ```
 
 Expect `200 OK` on the page probe.
+
+**`200 OK` is not evidence the page works.** A page whose Collection returned no rows, whose fragment reused another page's placeholder text, or whose mapping silently failed all return 200 with fragments present. Verify content, and verify it as the audience:
+
+1. **Probe without credentials.** `curl` with no `--user` and no cookie jar is exactly a Guest request, and it is the only cheap way to see what a visitor sees. Signed in verification hides every permission gap in this skill.
+
+	```bash
+	curl --silent --url "http://localhost:${PORT}/web/<site>/<page>" > /tmp/page.html
+	```
+
+1. **Assert real data, not markup presence.** Grep for a value that only exists in the database (an actual event name) *and* confirm the fragment's placeholder strings are absent — placeholders still present means the mapping did not resolve.
+
+1. **Check each page's own text.** Reusing a section fragment across pages carries its default text with it; a heading that reads "Upcoming Events" on the register page is a 200 with wrong content. Set per page values with a literal `fragmentFields` entry rather than relying on the fragment default.
+
+1. **Open it in a browser before declaring success.** Anything driven by JavaScript — a computed value, a populated `select` — is invisible to `curl`, which executes none of it. Confirm signed out too: sign in state changes what client side calls return.
 
 ## Live API Patterns and Gotchas
 
