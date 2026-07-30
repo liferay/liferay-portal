@@ -419,6 +419,65 @@ public class PLOEntryUtil {
 	}
 
 	/**
+	 * Returns the plo entry where externalReferenceCode = &#63; and companyId = &#63; or throws a <code>NoSuchPLOEntryException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching plo entry
+	 * @throws NoSuchPLOEntryException if a matching plo entry could not be found
+	 */
+	public static PLOEntry findByERC_C(
+			String externalReferenceCode, long companyId)
+		throws com.liferay.portal.language.override.exception.
+			NoSuchPLOEntryException {
+
+		return getPersistence().findByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
+	 * Returns the plo entry where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching plo entry, or <code>null</code> if a matching plo entry could not be found
+	 */
+	public static PLOEntry fetchByERC_C(
+		String externalReferenceCode, long companyId, boolean useFinderCache) {
+
+		return getPersistence().fetchByERC_C(
+			externalReferenceCode, companyId, useFinderCache);
+	}
+
+	/**
+	 * Removes the plo entry where externalReferenceCode = &#63; and companyId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the plo entry that was removed
+	 */
+	public static PLOEntry removeByERC_C(
+			String externalReferenceCode, long companyId)
+		throws com.liferay.portal.language.override.exception.
+			NoSuchPLOEntryException {
+
+		return getPersistence().removeByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
+	 * Returns the number of plo entries where externalReferenceCode = &#63; and companyId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the number of matching plo entries
+	 */
+	public static int countByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return getPersistence().countByERC_C(externalReferenceCode, companyId);
+	}
+
+	/**
 	 * Creates a new plo entry with the primary key. Does not add the plo entry to the database.
 	 *
 	 * @param ploEntryId the primary key for the new plo entry
@@ -482,6 +541,19 @@ public class PLOEntryUtil {
 		long companyId, String key, String languageId) {
 
 		return getPersistence().fetchByC_K_L(companyId, key, languageId);
+	}
+
+	/**
+	 * Returns the plo entry where externalReferenceCode = &#63; and companyId = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @return the matching plo entry, or <code>null</code> if a matching plo entry could not be found
+	 */
+	public static PLOEntry fetchByERC_C(
+		String externalReferenceCode, long companyId) {
+
+		return getPersistence().fetchByERC_C(externalReferenceCode, companyId);
 	}
 
 	/**
@@ -648,4 +720,4 @@ public class PLOEntryUtil {
 	private static volatile PLOEntryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-450222567
+// LIFERAY-SERVICE-BUILDER-HASH:-1029797121

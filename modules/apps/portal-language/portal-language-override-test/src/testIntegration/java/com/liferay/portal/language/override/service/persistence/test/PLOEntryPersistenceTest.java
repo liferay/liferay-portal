@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.IntegerWrapper;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.language.override.exception.DuplicatePLOEntryExternalReferenceCodeException;
 import com.liferay.portal.language.override.exception.NoSuchPLOEntryException;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.service.PLOEntryLocalServiceUtil;
@@ -114,6 +115,8 @@ public class PLOEntryPersistenceTest {
 	public void testUpdateExisting() throws Exception {
 		PLOEntry newPLOEntry = addPLOEntry();
 
+		newPLOEntry.setExternalReferenceCode(RandomTestUtil.randomString());
+
 		newPLOEntry.setCompanyId(RandomTestUtil.nextLong());
 
 		newPLOEntry.setUserId(RandomTestUtil.nextLong());
@@ -138,6 +141,9 @@ public class PLOEntryPersistenceTest {
 		Assert.assertEquals(
 			existingPLOEntry.getMvccVersion(), newPLOEntry.getMvccVersion());
 		Assert.assertEquals(
+			existingPLOEntry.getExternalReferenceCode(),
+			newPLOEntry.getExternalReferenceCode());
+		Assert.assertEquals(
 			existingPLOEntry.getPloEntryId(), newPLOEntry.getPloEntryId());
 		Assert.assertEquals(
 			existingPLOEntry.getCompanyId(), newPLOEntry.getCompanyId());
@@ -154,6 +160,26 @@ public class PLOEntryPersistenceTest {
 			existingPLOEntry.getLanguageId(), newPLOEntry.getLanguageId());
 		Assert.assertEquals(
 			existingPLOEntry.getValue(), newPLOEntry.getValue());
+	}
+
+	@Test(expected = DuplicatePLOEntryExternalReferenceCodeException.class)
+	public void testUpdateWithExistingExternalReferenceCode() throws Exception {
+		PLOEntry ploEntry = addPLOEntry();
+
+		PLOEntry newPLOEntry = addPLOEntry();
+
+		newPLOEntry.setCompanyId(ploEntry.getCompanyId());
+
+		newPLOEntry = _persistence.update(newPLOEntry);
+
+		Session session = _persistence.getCurrentSession();
+
+		session.evict(newPLOEntry);
+
+		newPLOEntry.setExternalReferenceCode(
+			ploEntry.getExternalReferenceCode());
+
+		_persistence.update(newPLOEntry);
 	}
 
 	@Test
@@ -191,6 +217,15 @@ public class PLOEntryPersistenceTest {
 	}
 
 	@Test
+	public void testCountByERC_C() throws Exception {
+		_persistence.countByERC_C("", RandomTestUtil.nextLong());
+
+		_persistence.countByERC_C("null", 0L);
+
+		_persistence.countByERC_C((String)null, 0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		PLOEntry newPLOEntry = addPLOEntry();
 
@@ -215,9 +250,9 @@ public class PLOEntryPersistenceTest {
 
 	protected OrderByComparator<PLOEntry> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"PLOEntry", "mvccVersion", true, "ploEntryId", true, "companyId",
-			true, "userId", true, "createDate", true, "modifiedDate", true,
-			"key", true, "languageId", true);
+			"PLOEntry", "mvccVersion", true, "externalReferenceCode", true,
+			"ploEntryId", true, "companyId", true, "userId", true, "createDate",
+			true, "modifiedDate", true, "key", true, "languageId", true);
 	}
 
 	@Test
@@ -492,12 +527,25 @@ public class PLOEntryPersistenceTest {
 			ReflectionTestUtil.invoke(
 				ploEntry, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "languageId"));
+
+		Assert.assertEquals(
+			ploEntry.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				ploEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(ploEntry.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				ploEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
 	}
 
 	protected PLOEntry addPLOEntry() throws Exception {
 		long pk = RandomTestUtil.nextLong();
 
 		PLOEntry ploEntry = _persistence.create(pk);
+
+		ploEntry.setExternalReferenceCode(RandomTestUtil.randomString());
 
 		ploEntry.setCompanyId(RandomTestUtil.nextLong());
 
@@ -523,4 +571,4 @@ public class PLOEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-847040590
+// LIFERAY-SERVICE-BUILDER-HASH:-1481192143

@@ -7,6 +7,7 @@ package com.liferay.portal.language.override.model;
 
 import com.liferay.portal.kernel.bean.AutoEscape;
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.MVCCModel;
 import com.liferay.portal.kernel.model.ShardedModel;
 
@@ -27,7 +28,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface PLOEntryModel
-	extends BaseModel<PLOEntry>, MVCCModel, ShardedModel {
+	extends BaseModel<PLOEntry>, ExternalReferenceCodeModel, MVCCModel,
+			ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -64,6 +66,23 @@ public interface PLOEntryModel
 	 */
 	@Override
 	public void setMvccVersion(long mvccVersion);
+
+	/**
+	 * Returns the external reference code of this plo entry.
+	 *
+	 * @return the external reference code of this plo entry
+	 */
+	@AutoEscape
+	@Override
+	public String getExternalReferenceCode();
+
+	/**
+	 * Sets the external reference code of this plo entry.
+	 *
+	 * @param externalReferenceCode the external reference code of this plo entry
+	 */
+	@Override
+	public void setExternalReferenceCode(String externalReferenceCode);
 
 	/**
 	 * Returns the plo entry ID of this plo entry.
@@ -204,4 +223,4 @@ public interface PLOEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:108619947
+// LIFERAY-SERVICE-BUILDER-HASH:563496299

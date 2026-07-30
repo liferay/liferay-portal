@@ -60,6 +60,11 @@ public interface PLOEntryLocalService
 			String value)
 		throws PortalException;
 
+	public PLOEntry addOrUpdatePLOEntry(
+			String externalReferenceCode, long companyId, long userId,
+			String key, String languageId, String value)
+		throws PortalException;
+
 	/**
 	 * Adds the plo entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -126,6 +131,10 @@ public interface PLOEntryLocalService
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	public PLOEntry deletePLOEntry(PLOEntry ploEntry);
+
+	public PLOEntry deletePLOEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
@@ -207,6 +216,10 @@ public interface PLOEntryLocalService
 		long companyId, String key, String languageId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PLOEntry fetchPLOEntryByExternalReferenceCode(
+		String externalReferenceCode, long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -245,7 +258,17 @@ public interface PLOEntryLocalService
 	public List<PLOEntry> getPLOEntries(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PLOEntry> getPLOEntries(
+		long companyId, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PLOEntry> getPLOEntries(long companyId, String languageId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<PLOEntry> getPLOEntries(
+		long companyId, String keywords, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator);
 
 	/**
 	 * Returns the number of plo entries.
@@ -258,6 +281,9 @@ public interface PLOEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getPLOEntriesCount(long companyId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getPLOEntriesCount(long companyId, String keywords);
+
 	/**
 	 * Returns the plo entry with the primary key.
 	 *
@@ -267,6 +293,11 @@ public interface PLOEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PLOEntry getPLOEntry(long ploEntryId) throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public PLOEntry getPLOEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException;
 
 	public void importPLOEntries(
 			long companyId, long userId, String languageId,
@@ -292,4 +323,4 @@ public interface PLOEntryLocalService
 	public PLOEntry updatePLOEntry(PLOEntry ploEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1691152071
+// LIFERAY-SERVICE-BUILDER-HASH:1915745739

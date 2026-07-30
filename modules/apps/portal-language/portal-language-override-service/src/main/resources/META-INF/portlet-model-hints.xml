@@ -3,6 +3,7 @@
 <model-hints>
 	<model name="com.liferay.portal.language.override.model.PLOEntry">
 		<field name="mvccVersion" type="long" />
+		<field name="externalReferenceCode" type="String" />
 		<field name="ploEntryId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />

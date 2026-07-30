@@ -46,6 +46,15 @@ public class PLOEntryLocalServiceUtil {
 			companyId, userId, key, languageId, value);
 	}
 
+	public static PLOEntry addOrUpdatePLOEntry(
+			String externalReferenceCode, long companyId, long userId,
+			String key, String languageId, String value)
+		throws PortalException {
+
+		return getService().addOrUpdatePLOEntry(
+			externalReferenceCode, companyId, userId, key, languageId, value);
+	}
+
 	/**
 	 * Adds the plo entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -129,6 +138,14 @@ public class PLOEntryLocalServiceUtil {
 	 */
 	public static PLOEntry deletePLOEntry(PLOEntry ploEntry) {
 		return getService().deletePLOEntry(ploEntry);
+	}
+
+	public static PLOEntry deletePLOEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().deletePLOEntryByExternalReferenceCode(
+			externalReferenceCode, companyId);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -226,6 +243,13 @@ public class PLOEntryLocalServiceUtil {
 		return getService().fetchPLOEntry(companyId, key, languageId);
 	}
 
+	public static PLOEntry fetchPLOEntryByExternalReferenceCode(
+		String externalReferenceCode, long companyId) {
+
+		return getService().fetchPLOEntryByExternalReferenceCode(
+			externalReferenceCode, companyId);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -277,9 +301,25 @@ public class PLOEntryLocalServiceUtil {
 	}
 
 	public static List<PLOEntry> getPLOEntries(
+		long companyId, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return getService().getPLOEntries(
+			companyId, start, end, orderByComparator);
+	}
+
+	public static List<PLOEntry> getPLOEntries(
 		long companyId, String languageId) {
 
 		return getService().getPLOEntries(companyId, languageId);
+	}
+
+	public static List<PLOEntry> getPLOEntries(
+		long companyId, String keywords, int start, int end,
+		OrderByComparator<PLOEntry> orderByComparator) {
+
+		return getService().getPLOEntries(
+			companyId, keywords, start, end, orderByComparator);
 	}
 
 	/**
@@ -295,6 +335,10 @@ public class PLOEntryLocalServiceUtil {
 		return getService().getPLOEntriesCount(companyId);
 	}
 
+	public static int getPLOEntriesCount(long companyId, String keywords) {
+		return getService().getPLOEntriesCount(companyId, keywords);
+	}
+
 	/**
 	 * Returns the plo entry with the primary key.
 	 *
@@ -304,6 +348,14 @@ public class PLOEntryLocalServiceUtil {
 	 */
 	public static PLOEntry getPLOEntry(long ploEntryId) throws PortalException {
 		return getService().getPLOEntry(ploEntryId);
+	}
+
+	public static PLOEntry getPLOEntryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().getPLOEntryByExternalReferenceCode(
+			externalReferenceCode, companyId);
 	}
 
 	public static void importPLOEntries(
@@ -346,4 +398,4 @@ public class PLOEntryLocalServiceUtil {
 			PLOEntryLocalServiceUtil.class, PLOEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1576929088
+// LIFERAY-SERVICE-BUILDER-HASH:1079879422
