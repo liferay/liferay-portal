@@ -41,6 +41,11 @@ public class RoomSettingsComponentSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-room-settings-component-section";
+	}
+
+	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "room-settings");
 	}

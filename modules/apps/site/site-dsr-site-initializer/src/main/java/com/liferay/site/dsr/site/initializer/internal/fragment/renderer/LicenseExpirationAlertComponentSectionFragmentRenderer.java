@@ -41,6 +41,11 @@ public class LicenseExpirationAlertComponentSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-license-expiration-alert-component-section";
+	}
+
+	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "license-expiration-alert");
 	}

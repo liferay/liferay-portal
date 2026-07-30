@@ -31,6 +31,11 @@ public class ViewAnalyticsRoomGeneralJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-room-general";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "room-general";
 	}

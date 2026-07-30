@@ -63,6 +63,11 @@ public class ViewAnalyticsNavigationJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-navigation";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "navigation";
 	}

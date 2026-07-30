@@ -31,6 +31,11 @@ public class ViewAnalyticsDocumentsStatisticsJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-documents-statistics";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "documents-statistics";
 	}

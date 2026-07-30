@@ -31,6 +31,11 @@ public class ViewAnalyticsLatestActivityJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-latest-activity";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "latest-activity";
 	}

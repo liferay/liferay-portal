@@ -31,6 +31,11 @@ public class ViewAnalyticsMostActiveVisitorsJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-most-active-visitors";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "most-active-visitors";
 	}

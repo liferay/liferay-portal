@@ -31,6 +31,11 @@ public class ViewAnalyticsRoomTrendJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-room-trend";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "room-trend";
 	}

@@ -33,6 +33,11 @@ public class ViewAnalyticsJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics";
+	}
+
+	@Override
 	public String getLabel(Locale locale) {
 		return language.get(locale, "analytics");
 	}

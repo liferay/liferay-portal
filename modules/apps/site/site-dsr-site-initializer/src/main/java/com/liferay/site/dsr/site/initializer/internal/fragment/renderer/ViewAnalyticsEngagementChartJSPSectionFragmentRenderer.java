@@ -63,6 +63,11 @@ public class ViewAnalyticsEngagementChartJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-engagement-chart";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "engagement-chart";
 	}

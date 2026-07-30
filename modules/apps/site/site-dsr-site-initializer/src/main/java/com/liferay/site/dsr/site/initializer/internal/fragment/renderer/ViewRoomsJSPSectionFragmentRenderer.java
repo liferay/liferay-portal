@@ -31,6 +31,11 @@ public class ViewRoomsJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-rooms";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "rooms";
 	}

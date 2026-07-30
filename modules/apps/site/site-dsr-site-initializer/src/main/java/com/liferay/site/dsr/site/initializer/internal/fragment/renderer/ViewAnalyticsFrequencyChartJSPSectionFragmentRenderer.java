@@ -31,6 +31,11 @@ public class ViewAnalyticsFrequencyChartJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-frequency-chart";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "frequency-chart";
 	}

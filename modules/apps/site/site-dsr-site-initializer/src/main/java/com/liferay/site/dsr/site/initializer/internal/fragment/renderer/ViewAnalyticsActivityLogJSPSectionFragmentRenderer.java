@@ -31,6 +31,11 @@ public class ViewAnalyticsActivityLogJSPSectionFragmentRenderer
 	}
 
 	@Override
+	public String getKey() {
+		return "dsr-view-analytics-activity-log";
+	}
+
+	@Override
 	public String getLabelKey() {
 		return "activity-log";
 	}
