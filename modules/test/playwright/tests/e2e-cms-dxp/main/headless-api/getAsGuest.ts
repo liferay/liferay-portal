@@ -5,14 +5,14 @@
 
 import {Browser} from '@playwright/test';
 
-// Sends a GET request as an anonymous client (no credentials). The request runs
-// inside a fresh browser context with an empty storage state, from the portal
-// origin so relative paths resolve. redirect: 'manual' keeps an authentication
-// redirect from being silently followed into a 200.
+// Sends a GET request as an anonymous client, from a fresh browser context with
+// an empty storage state. An absolute URL is reduced to its path to keep the
+// request same-origin, and redirect: 'manual' keeps an authentication redirect
+// from being followed into a 200.
 
 export async function getAsGuest(
 	browser: Browser,
-	path: string
+	url: string
 ): Promise<{body: Record<string, unknown> | null; status: number}> {
 	const context = await browser.newContext({
 		storageState: {cookies: [], origins: []},
@@ -23,8 +23,10 @@ export async function getAsGuest(
 
 		await page.goto('/');
 
-		return await page.evaluate(async (url) => {
-			const response = await fetch(url, {redirect: 'manual'});
+		const {pathname, search} = new URL(url, page.url());
+
+		return await page.evaluate(async (path) => {
+			const response = await fetch(path, {redirect: 'manual'});
 
 			const contentType = response.headers.get('content-type') || '';
 
@@ -36,7 +38,7 @@ export async function getAsGuest(
 				: null;
 
 			return {body, status: response.status};
-		}, path);
+		}, pathname + search);
 	}
 	finally {
 		await context.close();
