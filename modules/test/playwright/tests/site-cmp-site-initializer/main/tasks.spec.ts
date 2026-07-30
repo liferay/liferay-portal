@@ -204,9 +204,7 @@ test(
 
 			await expect(tasksPage.assignTaskToDialog).toBeVisible();
 
-			await page
-				.getByPlaceholder('Unassigned')
-				.fill('Project Member');
+			await page.getByPlaceholder('Unassigned').fill('Project Member');
 
 			await page
 				.getByRole('option', {
