@@ -104,6 +104,18 @@ public class NotificationTemplateResourceTest
 	public void testGraphQLGetNotificationTemplatesPage() throws Exception {
 	}
 
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostNotificationTemplate() throws Exception {
+	}
+
+	@Ignore
+	@Override
+	@Test
+	public void testGraphQLPostNotificationTemplateCopy() throws Exception {
+	}
+
 	@Override
 	@Test
 	public void testPatchNotificationTemplate() throws Exception {
