@@ -34,6 +34,10 @@ public class Individual {
 		return _activityStatus;
 	}
 
+	public Long getAverageSessionDuration() {
+		return _averageSessionDuration;
+	}
+
 	public Map<String, String> getContext() {
 		return _context;
 	}
@@ -99,6 +103,10 @@ public class Individual {
 		return _profileType;
 	}
 
+	public Long getSessionsCount() {
+		return _sessionsCount;
+	}
+
 	public void setAccountName(String accountName) {
 		_accountName = accountName;
 	}
@@ -113,6 +121,10 @@ public class Individual {
 
 	public void setActivityStatus(String activityStatus) {
 		_activityStatus = activityStatus;
+	}
+
+	public void setAverageSessionDuration(Long averageSessionDuration) {
+		_averageSessionDuration = averageSessionDuration;
 	}
 
 	public void setContext(Map<String, String> context) {
@@ -171,6 +183,10 @@ public class Individual {
 
 	public void setProfileType(String profileType) {
 		_profileType = profileType;
+	}
+
+	public void setSessionsCount(Long sessionsCount) {
+		_sessionsCount = sessionsCount;
 	}
 
 	public static class Account {
@@ -335,6 +351,7 @@ public class Individual {
 	private List<Account> _accounts;
 	private Long _activitiesCount;
 	private String _activityStatus;
+	private Long _averageSessionDuration;
 	private Map<String, String> _context = new HashMap<>();
 	private Map<String, List<Field>> _custom = new HashMap<>();
 	private List<DataSourceIndividualPK> _dataSourceIndividualPKs =
@@ -348,5 +365,6 @@ public class Individual {
 	private Date _lastActivityDate;
 	private String _lastSessionCountry;
 	private String _profileType;
+	private Long _sessionsCount;
 
 }

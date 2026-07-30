@@ -44,6 +44,7 @@ public class IndividualDisplay implements FaroEntityDisplay {
 
 		_accountName = individual.getAccountName();
 		_activitiesCount = individual.getActivitiesCount();
+		_averageSessionDuration = individual.getAverageSessionDuration();
 		_activityStatus = individual.getActivityStatus();
 		_context = individual.getContext();
 		_dataSourceIndividualPKs = individual.getDataSourceIndividualPKs();
@@ -70,6 +71,7 @@ public class IndividualDisplay implements FaroEntityDisplay {
 		}
 
 		_profileType = individual.getProfileType();
+		_sessionsCount = individual.getSessionsCount();
 		_type = FaroConstants.TYPE_INDIVIDUAL;
 
 		addProperties(_propertyNames);
@@ -125,6 +127,7 @@ public class IndividualDisplay implements FaroEntityDisplay {
 	private List<Individual.Account> _accounts;
 	private Long _activitiesCount;
 	private String _activityStatus;
+	private Long _averageSessionDuration;
 
 	@JsonProperty("context")
 	private Map<String, String> _context = new HashMap<>();
@@ -145,6 +148,7 @@ public class IndividualDisplay implements FaroEntityDisplay {
 	@JsonProperty("properties")
 	private Map<String, Object> _propertiesMap = new HashMap<>();
 
+	private Long _sessionsCount;
 	private int _type;
 
 }

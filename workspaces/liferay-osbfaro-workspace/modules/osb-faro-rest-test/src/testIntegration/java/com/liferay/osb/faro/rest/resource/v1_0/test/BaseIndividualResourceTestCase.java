@@ -789,6 +789,10 @@ public abstract class BaseIndividualResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("averageSessionDuration", additionalAssertFieldName)) {
+				continue;
+			}
+
 			if (Objects.equals("demographics", additionalAssertFieldName)) {
 				if (individual.getDemographics() == null) {
 					valid = false;
@@ -830,6 +834,10 @@ public abstract class BaseIndividualResourceTestCase {
 					valid = false;
 				}
 
+				continue;
+			}
+
+			if (Objects.equals("sessionsCount", additionalAssertFieldName)) {
 				continue;
 			}
 
@@ -973,6 +981,17 @@ public abstract class BaseIndividualResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("averageSessionDuration", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						individual1.getAverageSessionDuration(),
+						individual2.getAverageSessionDuration())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("dateCreated", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						individual1.getDateCreated(),
@@ -1057,6 +1076,17 @@ public abstract class BaseIndividualResourceTestCase {
 				if (!Objects.deepEquals(
 						individual1.getProfileType(),
 						individual2.getProfileType())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("sessionsCount", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						individual1.getSessionsCount(),
+						individual2.getSessionsCount())) {
 
 					return false;
 				}
@@ -1218,6 +1248,11 @@ public abstract class BaseIndividualResourceTestCase {
 		}
 
 		if (entityFieldName.equals("activitiesCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("averageSessionDuration")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -1440,6 +1475,11 @@ public abstract class BaseIndividualResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("sessionsCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1490,6 +1530,7 @@ public abstract class BaseIndividualResourceTestCase {
 				accountName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				activitiesCount = RandomTestUtil.randomLong();
+				averageSessionDuration = RandomTestUtil.randomLong();
 				dateCreated = RandomTestUtil.nextDate();
 				dateModified = RandomTestUtil.nextDate();
 				firstActivityDate = RandomTestUtil.nextDate();
@@ -1497,6 +1538,7 @@ public abstract class BaseIndividualResourceTestCase {
 				lastActivityDate = RandomTestUtil.nextDate();
 				lastSessionCountry = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				sessionsCount = RandomTestUtil.randomLong();
 			}
 		};
 	}

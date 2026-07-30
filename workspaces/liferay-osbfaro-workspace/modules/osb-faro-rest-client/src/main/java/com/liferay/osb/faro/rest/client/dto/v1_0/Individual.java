@@ -40,8 +40,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			accountName = accountNameUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -61,12 +61,33 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			activitiesCount = activitiesCountUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
 	protected Long activitiesCount;
+
+	public Long getAverageSessionDuration() {
+		return averageSessionDuration;
+	}
+
+	public void setAverageSessionDuration(Long averageSessionDuration) {
+		this.averageSessionDuration = averageSessionDuration;
+	}
+
+	public void setAverageSessionDuration(
+		UnsafeSupplier<Long, Exception> averageSessionDurationUnsafeSupplier) {
+
+		try {
+			averageSessionDuration = averageSessionDurationUnsafeSupplier.get();
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
+	protected Long averageSessionDuration;
 
 	public Date getDateCreated() {
 		return dateCreated;
@@ -82,8 +103,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			dateCreated = dateCreatedUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -103,8 +124,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			dateModified = dateModifiedUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -124,8 +145,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			demographics = demographicsUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -145,8 +166,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			firstActivityDate = firstActivityDateUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -164,8 +185,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			id = idUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -185,8 +206,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			lastActivityDate = lastActivityDateUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -206,8 +227,8 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			lastSessionCountry = lastSessionCountryUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
@@ -235,12 +256,33 @@ public class Individual implements Cloneable, Serializable {
 		try {
 			profileType = profileTypeUnsafeSupplier.get();
 		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
 		}
 	}
 
 	protected ProfileType profileType;
+
+	public Long getSessionsCount() {
+		return sessionsCount;
+	}
+
+	public void setSessionsCount(Long sessionsCount) {
+		this.sessionsCount = sessionsCount;
+	}
+
+	public void setSessionsCount(
+		UnsafeSupplier<Long, Exception> sessionsCountUnsafeSupplier) {
+
+		try {
+			sessionsCount = sessionsCountUnsafeSupplier.get();
+		}
+		catch (Exception exception) {
+			throw new RuntimeException(exception);
+		}
+	}
+
+	protected Long sessionsCount;
 
 	@Override
 	public Individual clone() throws CloneNotSupportedException {
