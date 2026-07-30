@@ -39,8 +39,13 @@ public class PromptsTableFDSView extends BaseTableFDSView {
 				true
 			)
 		).add(
+			"identifier", "identifier",
+			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
+		).add(
 			"description", "description",
 			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
+		).add(
+			"promptStatus.name", "status"
 		).add(
 			"dateModified", "last-modified",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
