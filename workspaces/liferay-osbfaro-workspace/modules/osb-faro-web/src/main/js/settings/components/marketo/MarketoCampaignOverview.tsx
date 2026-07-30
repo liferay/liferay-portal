@@ -225,7 +225,7 @@ const MarketoCampaignOverview: React.FC<IMarketoCampaignOverviewProps> = ({
 							<ClayInput
 								readOnly
 								type="text"
-								value={Liferay.Language.get('marketo')}
+								value={Liferay.Language.get('marketo-campaign')}
 							/>
 						</ClayInput.GroupItem>
 
