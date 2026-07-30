@@ -37,7 +37,7 @@ export const test = mergeTests(
 
 test(
 	'Account Selector in Minium theme working as expected',
-	{tag: ['@COMMERCE-6215', '@LPD-56172', '@LPD-48266']},
+	{tag: ['@COMMERCE-5957', '@COMMERCE-6215', '@LPD-56172', '@LPD-48266']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
@@ -195,8 +195,18 @@ test(
 				).not.toHaveText(order2Id);
 			});
 
-			await test.step('Change order from orders list in account selector and assert that the new order is selected', async () => {
+			await test.step('Search for an order in the account selector and select it as active', async () => {
 				await commerceThemeMiniumCatalogPage.accountSelectorButton.click();
+
+				await commerceThemeMiniumCatalogPage.accountSelectorSearchOrderInput.fill(
+					order2Id
+				);
+
+				await expect(
+					commerceThemeMiniumCatalogPage.accountSelectorOrdersList.locator(
+						'.table-list-title'
+					)
+				).toHaveCount(1);
 
 				await commerceThemeMiniumCatalogPage.accountSelectorOrdersList
 					.getByText(order2Id, {exact: true})

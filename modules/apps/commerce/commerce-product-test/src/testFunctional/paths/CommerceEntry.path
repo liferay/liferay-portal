@@ -1258,11 +1258,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SEARCH_ORDER_ID</td>
-	<td>//input[@type='text'][contains(@class,'form-control')][contains(@placeholder,'Search Order')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>SUGGESTION_ACTIVE_ORDER_KEY</td>
 	<td>//div[contains(@class,'commerce-item__content') and contains(.,'${key_value}')]</td>
 	<td></td>
@@ -1280,11 +1275,6 @@
 <tr>
 	<td>SEARCH_ORDER_ID_RESULT</td>
 	<td>//p[@class='table-list-title' and contains(.,'${key_entryName}')]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>ORDER_ID_FIRST_RESULT</td>
-	<td>(//*[contains(@class, 'table-list-title')])[1]/a</td>
 	<td></td>
 </tr>
 <tr>

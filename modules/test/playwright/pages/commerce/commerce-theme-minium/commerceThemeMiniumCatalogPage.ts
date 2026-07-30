@@ -11,6 +11,7 @@ export class CommerceThemeMiniumCatalogPage {
 	readonly accountSelectorButton: Locator;
 	readonly accountSelectorOrdersList: Locator;
 	readonly accountSelectorOrderWorkflowStatus: Locator;
+	readonly accountSelectorSearchOrderInput: Locator;
 	readonly catalogSearch: Locator;
 	readonly clearSearchButton: Locator;
 	readonly configurationIFrame: FrameLocator;
@@ -58,6 +59,9 @@ export class CommerceThemeMiniumCatalogPage {
 		this.accountSelectorOrdersList = page.locator('.orders-list');
 		this.accountSelectorOrderWorkflowStatus =
 			this.accountSelectorButton.locator('.workflow-status');
+		this.accountSelectorSearchOrderInput = page
+			.locator('.account-selector-dropdown-menu')
+			.getByPlaceholder('Search Order');
 		this.catalogSearch = page.getByTestId('searchInput');
 		this.clearSearchButton = page.getByRole('button', {
 			name: 'Clear Search',
