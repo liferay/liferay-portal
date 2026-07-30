@@ -5,21 +5,27 @@ import TopPagesCard from '../TopPagesCard';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
-import {mockPreferenceReq, mockTimeRangeReq} from 'test/graphql-data';
+import {
+	mockPreferenceReq,
+	mockSitesTopPagesReq,
+	mockTimeRangeReq,
+} from 'test/graphql-data';
 import {Provider} from 'react-redux';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
+const ACCOUNT_ID = 'acc-1';
+
 const MOCK_CONTEXT = {
-	accountId: 'acc-1',
+	accountId: ACCOUNT_ID,
 	filters: {},
 	router: {
 		params: {
 			channelId: '123',
 			groupId: '456',
-			id: 'acc-1',
+			id: ACCOUNT_ID,
 		},
 		query: {
 			rangeKey: RangeKeyTimeRanges.Last30Days,
@@ -34,7 +40,18 @@ const renderTopPagesCard = () =>
 				<MemoryRouter>
 					<MockedProvider
 						addTypename={false}
-						mocks={[mockTimeRangeReq(), mockPreferenceReq()]}
+						mocks={[
+							mockTimeRangeReq(),
+							mockPreferenceReq(),
+							mockSitesTopPagesReq({accountId: ACCOUNT_ID}),
+							mockSitesTopPagesReq({
+								accountId: ACCOUNT_ID,
+								sort: {
+									column: 'entrancesMetric',
+									type: 'DESC',
+								},
+							}),
+						]}
 					>
 						<TopPagesCard />
 					</MockedProvider>
@@ -57,16 +74,13 @@ describe('TopPagesCard', () => {
 		expect(screen.getByText('Exit Pages')).toBeInTheDocument();
 	});
 
-	it('should render the unique visitors of the visited pages tab', async () => {
+	it('should render the unique visitors of the pages of the account', async () => {
 		const {container} = renderTopPagesCard();
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(screen.getByText('Excavator Maintenance')).toBeInTheDocument();
-		expect(
-			screen.getByText('/group/guest/excavator-maintenance')
-		).toBeInTheDocument();
-		expect(screen.getByText('18')).toBeInTheDocument();
+		expect(screen.getByText('My asset A')).toBeInTheDocument();
+		expect(screen.getByText('20')).toBeInTheDocument();
 	});
 
 	it('should link the page title to the page dashboard', async () => {
@@ -75,24 +89,19 @@ describe('TopPagesCard', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			screen
-				.getByText('Excavator Maintenance')
-				.closest('a')
-				?.getAttribute('href')
-		).toBe(
-			'/workspace/456/123/sites/pages/overview/%2Fgroup%2Fguest%2Fexcavator-maintenance/Excavator%20Maintenance'
-		);
+			screen.getByText('My asset A').closest('a')?.getAttribute('href')
+		).toBe('/workspace/456/123/sites/pages/overview/123/My%20asset%20A');
 	});
 
-	it('should render the entrances of the entrance pages tab', async () => {
+	it('should sort by entrances on the entrance pages tab', async () => {
 		const {container} = renderTopPagesCard();
 
 		await waitForLoadingToBeRemoved(container);
 
 		fireEvent.click(screen.getByText('Entrance Pages'));
 
-		expect(screen.getByText('Excavator Maintenance')).toBeInTheDocument();
-		expect(screen.getByText('12')).toBeInTheDocument();
+		expect(await screen.findByText('My asset A')).toBeInTheDocument();
+		expect(screen.getByText('10')).toBeInTheDocument();
 	});
 
 	it('should point the footer action to the site pages list', async () => {

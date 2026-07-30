@@ -992,7 +992,7 @@ export function mockSitesTabsReq({rangeKey}) {
 	};
 }
 
-export function mockSitesTopPagesReq() {
+export function mockSitesTopPagesReq(variables = {}) {
 	return {
 		request: {
 			query: SitesTopPagesQuery,
@@ -1007,6 +1007,7 @@ export function mockSitesTopPagesReq() {
 					type: 'DESC',
 				},
 				start: 0,
+				...variables,
 			},
 		},
 		result: {

@@ -1,54 +1,18 @@
 import BaseCard from 'shared/components/base-card';
 import BasePage from 'shared/components/base-page';
 import React, {useContext, useState} from 'react';
+import SitesTopPagesQuery, {
+	SitesTopPagesQueryData,
+	SitesTopPagesQueryVariables,
+} from 'shared/queries/SitesTopPagesQuery';
 import TopPagesCardContent, {
-	ITopPagesCardItem,
 	TOP_PAGES_TABS,
 } from 'shared/components/TopPagesCardContent';
+import {getSafeRangeSelectors} from 'shared/util/util';
+import {OrderByDirections} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
 import {Routes, toRoute} from 'shared/util/router';
-
-/**
- * TODO LPD-100208: replace with the page metrics of the account in focus.
- */
-
-const MOCK_ITEMS: ITopPagesCardItem[] = [
-	{
-		assetId: '/group/guest/excavator-maintenance',
-		assetTitle: 'Excavator Maintenance',
-		entrancesMetric: {value: 12},
-		exitRateMetric: {value: 0.24},
-		visitorsMetric: {value: 18},
-	},
-	{
-		assetId: '/group/guest/hydraulic-systems',
-		assetTitle: 'Hydraulic Systems',
-		entrancesMetric: {value: 9},
-		exitRateMetric: {value: 0.18},
-		visitorsMetric: {value: 14},
-	},
-	{
-		assetId: '/group/guest/crane-safety-tips',
-		assetTitle: 'Crane Safety Tips',
-		entrancesMetric: {value: 8},
-		exitRateMetric: {value: 0.15},
-		visitorsMetric: {value: 14},
-	},
-	{
-		assetId: '/group/guest/welding-techniques',
-		assetTitle: 'Welding Techniques',
-		entrancesMetric: {value: 5},
-		exitRateMetric: {value: 0.11},
-		visitorsMetric: {value: 9},
-	},
-	{
-		assetId: '/group/guest/engine-overhauls',
-		assetTitle: 'Engine Overhauls',
-		entrancesMetric: {value: 4},
-		exitRateMetric: {value: 0.09},
-		visitorsMetric: {value: 9},
-	},
-];
+import {useQuery} from '@apollo/client';
 
 const TopPagesCard: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 	className,
@@ -73,19 +37,44 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 }) => {
 	const [activeTabId, setActiveTabId] = useState(TOP_PAGES_TABS[0].tabId);
 	const {
+		accountId,
 		router: {
 			params: {channelId, groupId},
 		},
 	} = useContext(BasePage.Context);
 
+	const {
+		data,
+		error,
+		loading = false,
+	} = useQuery<SitesTopPagesQueryData, SitesTopPagesQueryVariables>(
+		SitesTopPagesQuery,
+		{
+			variables: {
+				...getSafeRangeSelectors(rangeSelectors),
+				accountId,
+				channelId,
+				size: 5,
+				sort: {
+					column: activeTabId,
+					type: OrderByDirections.Descending,
+				},
+				start: 0,
+			},
+		}
+	);
+
 	return (
 		<TopPagesCardContent
 			activeTabId={activeTabId}
+			empty={!data?.pages.total}
+			error={error}
 			footer={{
 				href: toRoute(Routes.SITES_TOUCHPOINTS, {channelId, groupId}),
 				label: Liferay.Language.get('view-all'),
 			}}
-			items={MOCK_ITEMS}
+			items={data?.pages.assetMetrics ?? []}
+			loading={loading}
 			onActiveTabIdChange={setActiveTabId}
 			rangeSelectors={rangeSelectors}
 		/>
