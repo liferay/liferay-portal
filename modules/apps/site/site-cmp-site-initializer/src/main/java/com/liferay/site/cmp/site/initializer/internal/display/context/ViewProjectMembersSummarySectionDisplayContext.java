@@ -9,6 +9,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItemListBuilder;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -35,23 +36,22 @@ import java.util.Map;
 public class ViewProjectMembersSummarySectionDisplayContext {
 
 	public ViewProjectMembersSummarySectionDisplayContext(
-			long groupId, GroupLocalService groupLocalService,
+			GroupLocalService groupLocalService,
 			ModelResourcePermission<Group> groupModelResourcePermission,
 			HttpServletRequest httpServletRequest, Language language,
+			ObjectEntry objectEntry,
 			UserGroupLocalService userGroupLocalService,
 			UserLocalService userLocalService)
 		throws PortalException {
 
-		_groupId = groupId;
 		_groupModelResourcePermission = groupModelResourcePermission;
 		_httpServletRequest = httpServletRequest;
 		_language = language;
+		_objectEntry = objectEntry;
 		_userGroupLocalService = userGroupLocalService;
 		_userLocalService = userLocalService;
 
-		_group = groupLocalService.getGroup(groupId);
-
-		_externalReferenceCode = _group.getExternalReferenceCode();
+		_group = groupLocalService.getGroup(objectEntry.getGroupId());
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
@@ -61,7 +61,7 @@ public class ViewProjectMembersSummarySectionDisplayContext {
 		StringBundler sb = new StringBundler(9);
 
 		sb.append("/o/headless-asset-library/v1.0/asset-libraries/");
-		sb.append(_externalReferenceCode);
+		sb.append(_group.getExternalReferenceCode());
 		sb.append("/");
 		sb.append(type);
 		sb.append("?page=");
@@ -91,7 +91,10 @@ public class ViewProjectMembersSummarySectionDisplayContext {
 					"assetLibraryCreatorUserId",
 					_getAssetLibraryCreatorUserId());
 				dropdownItem.putData(
-					"externalReferenceCode", _externalReferenceCode);
+					"cmpProjectObjectEntryId",
+					String.valueOf(_objectEntry.getObjectEntryId()));
+				dropdownItem.putData(
+					"externalReferenceCode", _group.getExternalReferenceCode());
 				dropdownItem.putData(
 					"filter", CMPDepotEntryGroupUtil.getFilterString());
 				dropdownItem.putData(
@@ -132,7 +135,9 @@ public class ViewProjectMembersSummarySectionDisplayContext {
 			).put(
 				"assetLibraryCreatorUserId", _getAssetLibraryCreatorUserId()
 			).put(
-				"externalReferenceCode", _externalReferenceCode
+				"cmpProjectObjectEntryId", _objectEntry.getObjectEntryId()
+			).put(
+				"externalReferenceCode", _group.getExternalReferenceCode()
 			).put(
 				"filter", CMPDepotEntryGroupUtil.getFilterString()
 			).build()
@@ -163,17 +168,19 @@ public class ViewProjectMembersSummarySectionDisplayContext {
 	}
 
 	private String _getHeaderTitle() {
+		long groupId = _group.getGroupId();
+
 		return StringBundler.concat(
 			_language.get(_httpServletRequest, "members"), StringPool.SPACE,
 			StringPool.OPEN_PARENTHESIS,
-			_userGroupLocalService.getGroupUserGroupsCount(_groupId) +
-				_userLocalService.getGroupUsersCount(_groupId),
+			_userGroupLocalService.getGroupUserGroupsCount(groupId) +
+				_userLocalService.getGroupUsersCount(groupId),
 			StringPool.CLOSE_PARENTHESIS);
 	}
 
 	private boolean _hasAssignMembersPermission() throws Exception {
 		return _groupModelResourcePermission.contains(
-			_themeDisplay.getPermissionChecker(), _groupId,
+			_themeDisplay.getPermissionChecker(), _group.getGroupId(),
 			ActionKeys.ASSIGN_MEMBERS);
 	}
 
@@ -181,12 +188,11 @@ public class ViewProjectMembersSummarySectionDisplayContext {
 
 	private static final int _PAGE_SIZE = 8;
 
-	private final String _externalReferenceCode;
 	private final Group _group;
-	private final long _groupId;
 	private final ModelResourcePermission<Group> _groupModelResourcePermission;
 	private final HttpServletRequest _httpServletRequest;
 	private final Language _language;
+	private final ObjectEntry _objectEntry;
 	private final ThemeDisplay _themeDisplay;
 	private final UserGroupLocalService _userGroupLocalService;
 	private final UserLocalService _userLocalService;

@@ -45,9 +45,9 @@ public class ViewProjectMembersSummaryJSPSectionFragmentRenderer
 		}
 
 		return new ViewProjectMembersSummarySectionDisplayContext(
-			objectEntry.getGroupId(), _groupLocalService,
-			_groupModelResourcePermission, httpServletRequest, language,
-			_userGroupLocalService, _userLocalService);
+			_groupLocalService, _groupModelResourcePermission,
+			httpServletRequest, language, objectEntry, _userGroupLocalService,
+			_userLocalService);
 	}
 
 	@Override

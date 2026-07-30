@@ -29,16 +29,30 @@ interface AdminUserGroup {
 	usersCount: number;
 }
 
+interface AddMembersInputProps extends AddMembersInputApi {
+	userAccountsAPIURL?: string;
+}
+
 export default function AddMembersInput({
 	excludeMembers,
 	filter,
 	onAutocompleteItemSelected,
 	onSelectChange,
 	selectValue,
-}: AddMembersInputApi) {
+	userAccountsAPIURL,
+}: AddMembersInputProps) {
 	const [value, setValue] = useState('');
 
+	const excludeMemberIds = useMemo(
+		() => new Set(excludeMembers?.map((member) => String(member.id))),
+		[excludeMembers]
+	);
+
 	const apiURL = useMemo(() => {
+		if (selectValue === MemberType.USERS && userAccountsAPIURL) {
+			return userAccountsAPIURL;
+		}
+
 		const endpoint =
 			selectValue === MemberType.USERS
 				? `${location.origin}/o/headless-admin-user/v1.0/user-accounts`
@@ -64,7 +78,7 @@ export default function AddMembersInput({
 		return filters.length
 			? `${endpoint}?filter=${filters.join(' and ')}`
 			: endpoint;
-	}, [excludeMembers, filter, selectValue]);
+	}, [excludeMembers, filter, selectValue, userAccountsAPIURL]);
 
 	const renderUserAccountItem = (item: AdminUserAccount) => {
 		return (
@@ -147,6 +161,9 @@ export default function AddMembersInput({
 				<ItemSelector<AdminUserAccount>
 					apiURL={apiURL}
 					id="autocomplete"
+					itemsFilter={(item) =>
+						!excludeMemberIds.has(String(item.id))
+					}
 					key={apiURL}
 					locator={{
 						id: 'id',
