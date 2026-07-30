@@ -79,10 +79,6 @@ public class FIPSAuditEventEmitterTest {
 			ndjson.matches(
 				"(?s).*\"timestamp\":\"\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:" +
 					"\\d{2}\\.\\d{3}Z\".*"));
-
-		Assert.assertTrue(
-			ndjson,
-			ndjson.indexOf("provider-name") < ndjson.indexOf("from-state"));
 	}
 
 	@Test
@@ -137,40 +133,6 @@ public class FIPSAuditEventEmitterTest {
 	}
 
 	@Test
-	public void testEmitPreservesEnvelopeKeyOrder() {
-		RecordingAppendable recordingAppendable = new RecordingAppendable();
-
-		FIPSAuditEventEmitter fipsAuditEventEmitter = new FIPSAuditEventEmitter(
-			recordingAppendable, () -> "", () -> "", () -> "", () -> "");
-
-		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
-			"", FIPSAuditSeverity.CRITICAL);
-
-		fipsAuditEvent.put("from-state", "");
-		fipsAuditEvent.put("to-state", "");
-
-		fipsAuditEventEmitter.emit(fipsAuditEvent);
-
-		String ndjson = recordingAppendable.toString();
-
-		String[] keys = {
-			"event-schema-version", "timestamp", "severity", "event-type",
-			"deployment-instance-id", "provider-name", "provider-version",
-			"cmvp-certificate-id", "fields", "from-state", "to-state"
-		};
-
-		int previousIndex = -1;
-
-		for (String key : keys) {
-			int index = ndjson.indexOf("\"" + key);
-
-			Assert.assertTrue(key, index > previousIndex);
-
-			previousIndex = index;
-		}
-	}
-
-	@Test
 	public void testEmitRendersTypedFieldValues() {
 		RecordingAppendable recordingAppendable = new RecordingAppendable();
 
@@ -194,6 +156,41 @@ public class FIPSAuditEventEmitterTest {
 		Assert.assertTrue(
 			ndjson, ndjson.contains("\"duration-ms\":" + duration));
 		Assert.assertTrue(ndjson, ndjson.contains("\"passed\":true"));
+	}
+
+	@Test
+	public void testEmitSortsRecordKeys() {
+		RecordingAppendable recordingAppendable = new RecordingAppendable();
+
+		FIPSAuditEventEmitter fipsAuditEventEmitter = new FIPSAuditEventEmitter(
+			recordingAppendable, () -> "", () -> "", () -> "", () -> "");
+
+		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+			"", FIPSAuditSeverity.CRITICAL);
+
+		fipsAuditEvent.put("from-state", "");
+		fipsAuditEvent.put("to-state", "");
+
+		fipsAuditEventEmitter.emit(fipsAuditEvent);
+
+		String ndjson = recordingAppendable.toString();
+
+		String[] keys = {
+			"cmvp-certificate-id", "deployment-instance-id",
+			"event-schema-version", "event-type", "fields", "from-state",
+			"to-state", "provider-name", "provider-version", "severity",
+			"timestamp"
+		};
+
+		int previousIndex = -1;
+
+		for (String key : keys) {
+			int index = ndjson.indexOf("\"" + key);
+
+			Assert.assertTrue(key, index > previousIndex);
+
+			previousIndex = index;
+		}
 	}
 
 	private static class RecordingAppendable implements Appendable, Flushable {

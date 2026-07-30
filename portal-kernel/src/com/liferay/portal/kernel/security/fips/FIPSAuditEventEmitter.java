@@ -17,11 +17,11 @@ import java.util.function.Supplier;
 
 /**
  * Writes FIPS audit events as NDJSON records, one per line, each sharing a
- * common envelope: event schema version, the §5.1 timestamp, severity, event
- * type, deployment instance ID, and the validated provider name, provider
- * version, and CMVP certificate ID active at emission. Every record is flushed
- * synchronously, so an Error State entry reaches disk before the process
- * continues; nothing is buffered in memory.
+ * common envelope, in key order: the CMVP certificate ID and deployment
+ * instance ID, event schema version, event type, the validated provider name
+ * and version active at emission, severity, and the §5.1 timestamp. Every
+ * record is flushed synchronously, so an Error State entry reaches disk before
+ * the process continues; nothing is buffered in memory.
  *
  * <p>
  * Event specific fields are nested under a single {@code fields} object rather
@@ -33,9 +33,7 @@ import java.util.function.Supplier;
  * The emitter is intentionally free of OSGi and framework dependencies. FIPS
  * finite-state-model transitions are emitted during boot, before the audit
  * router is available, so the envelope sources are injected as suppliers and
- * records are written straight to the supplied {@link Appendable}. The NDJSON
- * key order is stable, keeping the trail forward-compatible with §5.4
- * audit-log-integrity chaining.
+ * records are written straight to the supplied {@link Appendable}.
  * </p>
  *
  * @author Jorge García Jiménez
@@ -57,25 +55,25 @@ public class FIPSAuditEventEmitter {
 
 	public void emit(FIPSAuditEvent fipsAuditEvent) {
 		Map<String, Object> record = LinkedHashMapBuilder.<String, Object>put(
+			"cmvp-certificate-id", _cmvpCertificateIdSupplier.get()
+		).put(
+			"deployment-instance-id", _deploymentInstanceIdSupplier.get()
+		).put(
 			"event-schema-version", "1.0"
-		).put(
-			"timestamp", FIPSAuditTimestamp.now()
-		).put(
-			"severity",
-			fipsAuditEvent.getFIPSAuditSeverity(
-			).getValue()
 		).put(
 			"event-type", fipsAuditEvent.getEventType()
 		).put(
-			"deployment-instance-id", _deploymentInstanceIdSupplier.get()
+			"fields", fipsAuditEvent.getFields()
 		).put(
 			"provider-name", _providerNameSupplier.get()
 		).put(
 			"provider-version", _providerVersionSupplier.get()
 		).put(
-			"cmvp-certificate-id", _cmvpCertificateIdSupplier.get()
+			"severity",
+			fipsAuditEvent.getFIPSAuditSeverity(
+			).getValue()
 		).put(
-			"fields", fipsAuditEvent.getFields()
+			"timestamp", FIPSAuditTimestamp.now()
 		).build();
 
 		try {
