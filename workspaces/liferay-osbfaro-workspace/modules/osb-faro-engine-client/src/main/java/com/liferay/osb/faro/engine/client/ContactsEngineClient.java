@@ -242,8 +242,8 @@ public interface ContactsEngineClient {
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,
 		boolean includeAnonymousUsers, String query, String rangeEnd,
-		Integer rangeKey, String rangeStart, int cur, int delta,
-		String sortString);
+		Integer rangeKey, String rangeStart, String segmentId, int cur,
+		int delta, String sortString);
 
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,

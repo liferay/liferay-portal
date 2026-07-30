@@ -944,8 +944,8 @@ public class ContactsEngineClientImpl
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,
 		boolean includeAnonymousUsers, String query, String rangeEnd,
-		Integer rangeKey, String rangeStart, int cur, int delta,
-		String sortString) {
+		Integer rangeKey, String rangeStart, String segmentId, int cur,
+		int delta, String sortString) {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
@@ -976,6 +976,10 @@ public class ContactsEngineClientImpl
 			uriVariables.put("rangeStart", rangeStart);
 		}
 
+		if (Validator.isNotNull(segmentId)) {
+			uriVariables.put("segmentId", segmentId);
+		}
+
 		if (Validator.isNotNull(sortString)) {
 			uriVariables.put(
 				"sort",
@@ -1000,7 +1004,7 @@ public class ContactsEngineClientImpl
 
 		return getAccounts(
 			faroProject, channelId, filterString, true, query, null, null, null,
-			cur, delta, sortString);
+			null, cur, delta, sortString);
 	}
 
 	@Override
