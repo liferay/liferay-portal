@@ -5,6 +5,7 @@
 
 package com.liferay.portal.search.elasticsearch8.internal.search.engine.adapter.document;
 
+import co.elastic.clients.elasticsearch._types.Conflicts;
 import co.elastic.clients.elasticsearch.core.DeleteByQueryRequest;
 
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -45,6 +46,30 @@ public class DeleteByQueryDocumentRequestExecutorTest {
 	@Test
 	public void testDocumentRequestTranslationWithNoRefresh() {
 		doTestDocumentRequestTranslation(false);
+	}
+
+	@Test
+	public void testDocumentRequestTranslationWithProceedOnConflicts() {
+		BooleanQuery booleanQuery = new BooleanQuery();
+
+		booleanQuery.addExactTerm(_FIELD_NAME, true);
+
+		DeleteByQueryDocumentRequest deleteByQueryDocumentRequest =
+			new DeleteByQueryDocumentRequest(
+				booleanQuery, new String[] {_INDEX_NAME});
+
+		deleteByQueryDocumentRequest.setProceedOnConflicts(true);
+
+		DeleteByQueryDocumentRequestExecutor
+			deleteByQueryDocumentRequestExecutor =
+				new DeleteByQueryDocumentRequestExecutor(_elasticsearchFixture);
+
+		DeleteByQueryRequest deleteByQueryRequest =
+			deleteByQueryDocumentRequestExecutor.createDeleteByQueryRequest(
+				deleteByQueryDocumentRequest);
+
+		Assert.assertEquals(
+			Conflicts.Proceed, deleteByQueryRequest.conflicts());
 	}
 
 	@Test
