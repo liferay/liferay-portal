@@ -12,8 +12,9 @@ export interface TaxonomyTerm {
 }
 
 export interface SpaceOption {
+	externalReferenceCode: string;
+	id: string;
 	label: string;
-	value: string;
 }
 
 export interface MatrixCell {

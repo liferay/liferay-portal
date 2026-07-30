@@ -98,8 +98,18 @@ describe('ContentGapMatrixHeader', () => {
 		mockGetObjectFields.mockResolvedValue({items: objectFields});
 
 		mockGetSpaces.mockResolvedValue([
-			{id: 1, name: 'Marketing', siteId: 20123},
-			{id: 2, name: 'Support', siteId: 20456},
+			{
+				externalReferenceCode: 'MARKETING_ERC',
+				id: 1,
+				name: 'Marketing',
+				siteId: 20123,
+			},
+			{
+				externalReferenceCode: 'SUPPORT_ERC',
+				id: 2,
+				name: 'Support',
+				siteId: 20456,
+			},
 		]);
 
 		render(
@@ -122,12 +132,43 @@ describe('ContentGapMatrixHeader', () => {
 				objectDefinitionName: 'CMSBasicWebContent',
 				objectFields,
 				projectId: '42',
-				spaceIdsJSONArray: [
-					{label: 'Marketing', value: '20123'},
-					{label: 'Support', value: '20456'},
+				projectScopeKey: undefined,
+				spacesJSONArray: [
+					{
+						externalReferenceCode: 'MARKETING_ERC',
+						id: '20123',
+						label: 'Marketing',
+					},
+					{
+						externalReferenceCode: 'SUPPORT_ERC',
+						id: '20456',
+						label: 'Support',
+					},
 				],
 			});
 		});
+	});
+
+	it('passes the project scope key to the AI insights trigger context', () => {
+		Liferay.FeatureFlags['LPD-62272'] = true;
+
+		render(
+			<ContentGapMatrixHeader
+				cmpProjectObjectEntryId="42"
+				cmpProjectScopeKey="my-project-scope"
+				data={PARTIAL_COVERAGE_MATRIX}
+			/>
+		);
+
+		const [{getContext}] =
+			mockRenderAIAssistantTriggerButton.mock.calls.at(-1);
+
+		expect(getContext()).toEqual(
+			expect.objectContaining({
+				projectId: '42',
+				projectScopeKey: 'my-project-scope',
+			})
+		);
 	});
 
 	it('replaces the critical gaps count with "No Assets Found" when the project has no assets', () => {
@@ -173,27 +214,5 @@ describe('ContentGapMatrixHeader', () => {
 		);
 
 		expect(getByText('get-ai-insights')).toBeInTheDocument();
-	});
-
-	it('passes the project scope key to the AI insights trigger context', () => {
-		Liferay.FeatureFlags['LPD-62272'] = true;
-
-		render(
-			<ContentGapMatrixHeader
-				cmpProjectObjectEntryId="42"
-				cmpProjectScopeKey="my-project-scope"
-				data={PARTIAL_COVERAGE_MATRIX}
-			/>
-		);
-
-		const [{getContext}] =
-			mockRenderAIAssistantTriggerButton.mock.calls.at(-1);
-
-		expect(getContext()).toEqual(
-			expect.objectContaining({
-				cmpProjectScopeKey: 'my-project-scope',
-				projectId: '42',
-			})
-		);
 	});
 });

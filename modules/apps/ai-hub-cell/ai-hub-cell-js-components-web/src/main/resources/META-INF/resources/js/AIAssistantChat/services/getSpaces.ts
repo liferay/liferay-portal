@@ -6,6 +6,7 @@
 import {fetch} from 'frontend-js-web';
 
 export interface Space {
+	externalReferenceCode: string;
 	id: number;
 	name: string;
 	siteId: number;

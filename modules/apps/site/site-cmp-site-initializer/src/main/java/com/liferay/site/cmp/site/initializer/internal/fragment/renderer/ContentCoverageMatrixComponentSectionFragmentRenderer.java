@@ -15,9 +15,11 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -93,7 +95,16 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 			MapUtil.getString(objectEntry.getValues(), "title")
 		).put(
 			"cmpProjectScopeKey",
-			MapUtil.getString(objectEntry.getValues(), "scopeKey")
+			() -> {
+				Group group = _groupLocalService.fetchGroup(
+					objectEntry.getGroupId());
+
+				if (group == null) {
+					return null;
+				}
+
+				return group.getGroupKey();
+			}
 		).put(
 			"editProjectURL",
 			() -> {
@@ -154,6 +165,9 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 
 	@Reference
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

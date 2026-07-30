@@ -174,7 +174,12 @@ export default function ContentGapMatrixCard({
 					</p>
 				</div>
 
-				<ContentGapMatrixGrid assetFDSId={assetFDSId} data={data} />
+				<ContentGapMatrixGrid
+					assetFDSId={assetFDSId}
+					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
+					cmpProjectScopeKey={cmpProjectScopeKey}
+					data={data}
+				/>
 			</div>
 		</div>
 	);
