@@ -74,7 +74,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 				EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
 				PublicKey:       publicKey,
 			}, context, privateKey); error != nil {
-
 			meta.SetStatusCondition(
 				&liferayEnvironment.Status.Conditions,
 				metav1.Condition{
@@ -207,7 +206,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finish(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) (controllerruntime.Result, error) {
-
 	status := liferayEnvironmentReconciler.Status()
 
 	if error := status.Update(context, liferayEnvironment); error != nil {
