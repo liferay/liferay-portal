@@ -217,6 +217,65 @@ public class AssetListAssetEntryProviderFiltersTest {
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
 	@Test
+	public void testGetAssetEntriesInfoPageWithNumericRangeFilters()
+		throws Exception {
+
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_INTEGER, RandomTestUtil.randomInt(1, 100)
+			).build());
+
+		int priority1 = RandomTestUtil.randomInt(101, 200);
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"lt", _OBJECT_FIELD_NAME_INTEGER,
+					String.valueOf(priority1))),
+			objectEntry1);
+
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_INTEGER, priority1
+			).build());
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"le", _OBJECT_FIELD_NAME_INTEGER,
+					String.valueOf(priority1))),
+			objectEntry1, objectEntry2);
+
+		int priority2 = RandomTestUtil.randomInt(201, 300);
+
+		ObjectEntry objectEntry3 = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_INTEGER, priority2
+			).build());
+
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"between", _OBJECT_FIELD_NAME_INTEGER,
+					JSONUtil.putAll(
+						String.valueOf(priority1), String.valueOf(priority2)))),
+			objectEntry2, objectEntry3);
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"ge", _OBJECT_FIELD_NAME_INTEGER,
+					String.valueOf(priority1))),
+			objectEntry2, objectEntry3);
+		_assertFilteredClassPKs(
+			_buildFiltersJSONArray(
+				_buildFilterJSONObject(
+					"gt", _OBJECT_FIELD_NAME_INTEGER,
+					String.valueOf(priority1))),
+			objectEntry3);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
 	public void testGetAssetEntriesInfoPageWithTextContainsFilters()
 		throws Exception {
 
