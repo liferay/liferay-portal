@@ -30,12 +30,9 @@ describe('ProjectsPanel', () => {
 	it('forwards the editor props to the linked projects component', () => {
 		render(
 			<ProjectsPanel
-				assetKeywords={['L_CMP_TASK_X']}
 				cmpProjectLinkObjectDefinitionId={11}
 				cmpProjectObjectDefinitionId={22}
 				cmpProjectViewURL="/project"
-				cmpTaskObjectDefinitionId={33}
-				cmpTaskViewURL="/task"
 				entryClassName="com.example.Content"
 				entryExternalReferenceCode="ASSET-1"
 				entryGroupExternalReferenceCode="SPACE-1"
@@ -43,15 +40,12 @@ describe('ProjectsPanel', () => {
 		);
 
 		expect(mockLinkedProjects).toHaveBeenCalledWith({
-			assetKeywords: ['L_CMP_TASK_X'],
 			cmpProjectLinkObjectDefinitionId: 11,
 			cmpProjectObjectDefinitionId: 22,
-			cmpTaskObjectDefinitionId: 33,
 			entryClassName: 'com.example.Content',
 			entryExternalReferenceCode: 'ASSET-1',
 			entryGroupExternalReferenceCode: 'SPACE-1',
 			projectViewURL: '/project',
-			taskViewURL: '/task',
 		});
 	});
 });

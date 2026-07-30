@@ -17,23 +17,6 @@ const PROJECT: CMPProject = {
 };
 
 describe('ProjectCard', () => {
-	it('links a task to its view URL and id', () => {
-		render(
-			<ProjectCard
-				expanded
-				onRemove={jest.fn()}
-				onToggleTasks={jest.fn()}
-				project={PROJECT}
-				taskViewURL="/task"
-				tasks={[{id: 42, title: 'Review Blog Post'}]}
-			/>
-		);
-
-		expect(
-			screen.getByRole('link', {name: 'Review Blog Post'})
-		).toHaveAttribute('href', '/task/42');
-	});
-
 	it('links the project to its view URL and id', () => {
 		render(
 			<ProjectCard

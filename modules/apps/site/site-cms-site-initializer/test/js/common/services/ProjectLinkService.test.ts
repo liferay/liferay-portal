@@ -86,53 +86,6 @@ describe('ProjectLinkService', () => {
 		expect(fetchCall(1)[0]).toContain('page=2');
 	});
 
-	it('groups the asset tasks by project id', async () => {
-		mockFetch.mockResolvedValueOnce(
-			mockSearchResponse([
-				{
-					embedded: {
-						id: 101,
-						r_cmpProjectToCMPTasks_c_cmpProjectId: 1,
-						title: 'Task A',
-					},
-				},
-				{
-					embedded: {
-						id: 102,
-						r_cmpProjectToCMPTasks_c_cmpProjectId: 1,
-						title: 'Task B',
-					},
-				},
-				{
-					embedded: {
-						id: 201,
-						r_cmpProjectToCMPTasks_c_cmpProjectId: 2,
-						title: 'Task C',
-					},
-				},
-				{embedded: {id: 301, title: 'Orphan'}},
-			])
-		);
-
-		const {data} = await ProjectLinkService.getLinkedTasks({
-			assetKeywords: ["L_CMP_TASK_O'BRIEN", 'unrelated-tag'],
-			cmpTaskObjectDefinitionId: 42,
-		});
-
-		expect(data).toEqual({
-			1: [
-				{id: 101, title: 'Task A'},
-				{id: 102, title: 'Task B'},
-			],
-			2: [{id: 201, title: 'Task C'}],
-		});
-
-		const [url] = fetchCall(0);
-
-		expect(url).toContain("O''BRIEN");
-		expect(url).not.toContain('unrelated-tag');
-	});
-
 	it('links a project in the scope of its depot', async () => {
 		mockFetch.mockResolvedValueOnce({
 			json: async () => ({id: 99}),
@@ -197,14 +150,9 @@ describe('ProjectLinkService', () => {
 		const projectsResult = await ProjectLinkService.getProjects({
 			cmpProjectObjectDefinitionId: null,
 		});
-		const tasksResult = await ProjectLinkService.getLinkedTasks({
-			assetKeywords: ['L_CMP_TASK_X'],
-			cmpTaskObjectDefinitionId: null,
-		});
 
 		expect(linksResult.data).toEqual([]);
 		expect(projectsResult.data).toEqual([]);
-		expect(tasksResult.data).toEqual({});
 
 		expect(mockFetch).not.toHaveBeenCalled();
 	});
