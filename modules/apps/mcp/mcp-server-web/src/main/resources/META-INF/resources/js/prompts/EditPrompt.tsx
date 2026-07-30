@@ -12,11 +12,17 @@ import React, {useEffect, useState} from 'react';
 
 import {FormField} from '../forms/FormField';
 import {FormSection} from '../forms/FormSection';
+import {FormToggle} from '../forms/FormToggle';
 import {getPrompt} from '../services/getPrompt';
 import {patchPrompt} from '../services/patchPrompt';
 import {postPrompt} from '../services/postPrompt';
 import {Prompt, PromptFormValues, PromptPayload} from '../types';
-import {openErrorToast, openSuccessToast} from '../utils';
+import {
+	openErrorToast,
+	openSuccessToast,
+	required,
+	toIdentifier,
+} from '../utils';
 
 interface EditPromptProps {
 	backURL: string;
@@ -75,18 +81,38 @@ interface EditPromptViewProps {
 	prompt: Prompt | null;
 }
 
+function validateIdentifier(value: string): string | undefined {
+	const requiredError = required(value);
+
+	if (requiredError) {
+		return requiredError;
+	}
+
+	return /^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)
+		? undefined
+		: Liferay.Language.get(
+				'please-enter-a-valid-identifier-lowercase-letters-and-numbers-separated-by-single-hyphens'
+			);
+}
+
 function EditPromptView({backURL, prompt}: EditPromptViewProps) {
+	const [identifierChanged, setIdentifierChanged] = useState(false);
+
 	const formik = useFormik<PromptFormValues>({
 		initialValues: {
+			active: prompt?.promptStatus?.key === 'active',
 			description: prompt?.description ?? '',
+			identifier: prompt?.identifier ?? '',
 			name: prompt?.name ?? '',
 			prompt: prompt?.prompt ?? '',
 		},
 		onSubmit: async (values) => {
 			const payload: PromptPayload = {
 				description: values.description,
+				identifier: values.identifier,
 				name: values.name,
 				prompt: values.prompt,
+				promptStatus: {key: values.active ? 'active' : 'inactive'},
 			};
 
 			const {data: saved, error} = prompt?.id
@@ -112,15 +138,50 @@ function EditPromptView({backURL, prompt}: EditPromptViewProps) {
 		},
 	});
 
+	const {setFieldValue, values} = formik;
+
+	useEffect(() => {
+		if (!prompt?.id && !identifierChanged) {
+			setFieldValue('identifier', toIdentifier(values.name));
+		}
+	}, [identifierChanged, prompt?.id, setFieldValue, values.name]);
+
 	return (
 		<FormikProvider value={formik}>
 			<Form className="prompt-form" noValidate>
-				<FormSection title={Liferay.Language.get('prompt-information')}>
+				<FormSection title={Liferay.Language.get('prompt-status')}>
+					<div className="align-items-center d-flex justify-content-between">
+						<span className="text-secondary">
+							{Liferay.Language.get(
+								'activate-to-make-this-prompt-available-to-mcp-clients-by-identifier'
+							)}
+						</span>
+
+						<FormToggle name="active" />
+					</div>
+				</FormSection>
+
+				<FormSection
+					className="mt-4"
+					title={Liferay.Language.get('prompt-information')}
+				>
 					<FormField
 						id="promptName"
 						label={Liferay.Language.get('name')}
 						name="name"
 						required
+					/>
+
+					<FormField
+						helpMessage={Liferay.Language.get(
+							'unique-key-used-by-mcp-clients-to-request-this-prompt-auto-generated-from-name-can-be-modified'
+						)}
+						id="promptIdentifier"
+						label={Liferay.Language.get('identifier')}
+						name="identifier"
+						onChange={() => setIdentifierChanged(true)}
+						required
+						validate={validateIdentifier}
 					/>
 
 					<FormField

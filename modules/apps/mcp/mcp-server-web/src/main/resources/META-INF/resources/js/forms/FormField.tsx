@@ -17,6 +17,7 @@ interface FormFieldProps {
 	id: string;
 	label: string;
 	name: string;
+	onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 	required?: boolean;
 	validate?: FieldValidator;
 }
@@ -28,6 +29,7 @@ export function FormField({
 	id,
 	label,
 	name,
+	onChange,
 	required: isRequired,
 	validate,
 }: FormFieldProps) {
@@ -52,6 +54,11 @@ export function FormField({
 				component={component}
 				disabled={disabled}
 				id={id}
+				onChange={(event) => {
+					field.onChange(event);
+
+					onChange?.(event);
+				}}
 				required={isRequired}
 				type="text"
 			/>

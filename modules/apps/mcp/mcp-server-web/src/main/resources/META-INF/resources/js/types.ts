@@ -44,19 +44,30 @@ export type ActionContext = {
 	loadData: () => void;
 };
 
+export type PromptStatusKey = 'active' | 'inactive';
+
+export type PromptStatusPicklistValue = {
+	key: PromptStatusKey;
+	name: string;
+};
+
 export type Prompt = {
 	dateModified?: string;
 	description: string;
 	externalReferenceCode?: string;
 	id?: number;
+	identifier: string;
 	name: string;
 	prompt: string;
+	promptStatus: PromptStatusPicklistValue;
 };
 
 export type PromptPayload = {
 	description: string;
+	identifier: string;
 	name: string;
 	prompt: string;
+	promptStatus: {key: PromptStatusKey};
 };
 
 export type PromptActionContext = {
@@ -65,7 +76,9 @@ export type PromptActionContext = {
 };
 
 export type PromptFormValues = {
+	active: boolean;
 	description: string;
+	identifier: string;
 	name: string;
 	prompt: string;
 };

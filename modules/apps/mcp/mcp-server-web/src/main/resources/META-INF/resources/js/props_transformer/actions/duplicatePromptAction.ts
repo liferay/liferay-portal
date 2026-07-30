@@ -13,11 +13,13 @@ export default async function duplicatePromptAction({
 }: PromptActionContext) {
 	const {data: saved, error} = await postPrompt({
 		description: itemData.description ?? '',
+		identifier: `copy-of-${itemData.identifier}`,
 		name: Liferay.Util.sub(
 			Liferay.Language.get('copy-of-x'),
 			itemData.name
 		),
 		prompt: itemData.prompt,
+		promptStatus: {key: 'inactive'},
 	});
 
 	if (error) {

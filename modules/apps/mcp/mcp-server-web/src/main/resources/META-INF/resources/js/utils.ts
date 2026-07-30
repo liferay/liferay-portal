@@ -41,6 +41,13 @@ export function required(value: string): string | undefined {
 		: Liferay.Language.get('this-field-is-required');
 }
 
+export function toIdentifier(name: string): string {
+	return name
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+}
+
 export function toODataStringLiteral(value: string): string {
 	return `'${value.replace(/'/g, "''")}'`;
 }
