@@ -45,19 +45,19 @@ public class SalesforceIndividualsDataCreator extends DataCreator {
 
 	@Override
 	protected Map<String, Object> doCreate(Object[] params) {
-		Map<String, Object> liferayUser = new HashMap<>();
+		Map<String, Object> liferayUserMap = new HashMap<>();
 		Map<String, Object> salesforceAccount = new HashMap<>();
 
 		if (params != null) {
-			liferayUser.putAll((Map<String, Object>)params[0]);
+			liferayUserMap.putAll((Map<String, Object>)params[0]);
 			salesforceAccount.putAll((Map<String, Object>)params[1]);
 		}
 
 		Object accountPKs = salesforceAccount.get("id");
 
-		String firstName = (String)liferayUser.getOrDefault(
+		String firstName = (String)liferayUserMap.getOrDefault(
 			"firstName", name.firstName());
-		String lastName = (String)liferayUser.getOrDefault(
+		String lastName = (String)liferayUserMap.getOrDefault(
 			"lastName", name.lastName());
 
 		Map<String, Object> salesforceIndividual =
@@ -76,7 +76,7 @@ public class SalesforceIndividualsDataCreator extends DataCreator {
 					}
 				).put(
 					"birthDate",
-					liferayUser.getOrDefault(
+					liferayUserMap.getOrDefault(
 						"birthday", dateAndTime.past(18250, TimeUnit.DAYS))
 				).put(
 					"city", address.city()
@@ -102,7 +102,7 @@ public class SalesforceIndividualsDataCreator extends DataCreator {
 					"doNotCall", bool.bool()
 				).put(
 					"email",
-					liferayUser.getOrDefault(
+					liferayUserMap.getOrDefault(
 						"emailAddress",
 						internet.emailAddress(
 							firstName + StringPool.PERIOD + lastName))

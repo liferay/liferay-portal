@@ -123,14 +123,14 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		for (Map<String, Object> dxpEntity :
 				liferayUsersDataCreator.getObjects()) {
 
-			Map<String, Object> liferayUser =
+			Map<String, Object> liferayUserMap =
 				(Map<String, Object>)dxpEntity.get("objectJSONObject");
 
 			analyticEventsDataCreator.createRandom(
 				_LIFERAY_ANALYTIC_EVENTS_MAX_COUNT_PER_USER, false,
 				new Object[] {
 					liferayUsersDataCreator.getDataSourceId(),
-					liferayUser.get("uuid")
+					liferayUserMap.get("uuid")
 				});
 		}
 
@@ -167,10 +167,10 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 
 			Http.Options options = new Http.Options();
 
-			Map<String, Object> liferayUser =
+			Map<String, Object> liferayUserMap =
 				(Map<String, Object>)dxpEntity.get("objectJSONObject");
 
-			String uuid = (String)liferayUser.get("uuid");
+			String uuid = (String)liferayUserMap.get("uuid");
 
 			options.setBody(
 				JSONUtil.put(
@@ -179,7 +179,7 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 					"id", StringUtil.removeChar(uuid, CharPool.DASH)
 				).put(
 					"identity",
-					JSONUtil.put("email", liferayUser.get("emailAddress"))
+					JSONUtil.put("email", liferayUserMap.get("emailAddress"))
 				).put(
 					"userId", uuid
 				).toString(),
@@ -204,7 +204,7 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 					log.error(
 						StringBundler.concat(
 							"Unable to add an identity for ",
-							liferayUser.get("emailAddress"), ": ",
+							liferayUserMap.get("emailAddress"), ": ",
 							response.getResponseCode(), " ", responseString));
 				}
 			}
@@ -326,10 +326,11 @@ public class NaniteDemoCreatorService extends DemoCreatorService {
 		for (Map<String, Object> dxpEntity :
 				liferayUsersDataCreator.getObjects()) {
 
-			Map<String, Object> liferayUser =
+			Map<String, Object> liferayUserMap =
 				(Map<String, Object>)dxpEntity.get("objectJSONObject");
 
-			liferayAssociationsDataCreator.create(new Object[] {liferayUser});
+			liferayAssociationsDataCreator.create(
+				new Object[] {liferayUserMap});
 		}
 
 		liferayAssociationsDataCreator.execute();
