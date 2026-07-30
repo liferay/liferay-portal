@@ -198,9 +198,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		}
 
 		if (objectDefinition.isUnmodifiableSystemObject() ||
-			Objects.equals(
+			!Objects.equals(
 				objectDefinition.getScope(),
-				ObjectDefinitionConstants.SCOPE_COMPANY)) {
+				ObjectDefinitionConstants.SCOPE_SITE)) {
 
 			return Collections.emptyList();
 		}
