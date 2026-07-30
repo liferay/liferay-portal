@@ -59,6 +59,17 @@ export const accountsListColumns = {
 		label: Liferay.Language.get('email'),
 		sortable: false,
 	},
+	getAccountName: ({channelId, groupId}: ChannelGroupParams) => ({
+		accessor: 'accountName',
+		cellRenderer: NameCell,
+		cellRendererProps: {
+			nameKey: 'accountName',
+			routeFn: ({data: {id}}: {data: {id: string}}) =>
+				toRoute(Routes.CONTACTS_ACCOUNT, {channelId, groupId, id}),
+		},
+		className: 'table-cell-expand',
+		label: Liferay.Language.get('account'),
+	}),
 	getName: ({channelId, groupId}: ChannelGroupParams) => ({
 		accessor: 'name',
 		cellRenderer: NameCell,

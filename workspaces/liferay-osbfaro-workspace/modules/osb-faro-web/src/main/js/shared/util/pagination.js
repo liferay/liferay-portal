@@ -170,6 +170,16 @@ export function buildOrderByFields({field, sortOrder}, entityType) {
 	}
 }
 
+export function buildSortString(orderParams, entityType) {
+	const [{fieldName}] = buildOrderByFields(orderParams, entityType);
+
+	const {sortOrder} = orderParams;
+
+	return `${fieldName}:${
+		sortOrder === OrderByDirections.Descending ? 'desc' : 'asc'
+	}`;
+}
+
 const ORDER_BY_DIRECTIONS_MAP = {
 	[OrderByDirections.Ascending]: orderAscending,
 	[OrderByDirections.Descending]: orderDescending,

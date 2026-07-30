@@ -1,7 +1,7 @@
 import FaroConstants from 'shared/util/constants';
 import sendRequest from 'shared/util/request';
 import {ACCOUNTS} from 'shared/util/router';
-import {buildOrderByFields} from 'shared/util/pagination';
+import {buildOrderByFields, buildSortString} from 'shared/util/pagination';
 import {escapeSingleQuotes} from 'segment/segment-editor/dynamic/utils/odata';
 
 const {
@@ -133,11 +133,22 @@ export function searchByFilter({
 	channelId = '',
 	filter = '',
 	groupId,
+	orderIOMap,
 	page = 0,
 	pageSize = 0,
+	query = '',
 }) {
 	return sendRequest({
-		data: {channelId, filter, page, pageSize},
+		data: {
+			channelId,
+			filter,
+			page,
+			pageSize,
+			search: query,
+			sort: orderIOMap
+				? buildSortString(orderIOMap.first(), ACCOUNTS)
+				: '',
+		},
 		method: 'GET',
 		path: `contacts/${groupId}/account/search`,
 	});
