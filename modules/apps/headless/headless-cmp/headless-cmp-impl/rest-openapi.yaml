@@ -100,6 +100,28 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+        UserAccount:
+            properties:
+                emailAddress:
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                image:
+                    readOnly: true
+                    type: string
+                imageId:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                name:
+                    readOnly: true
+                    type: string
 info:
     license:
         name: Apache 2.0
@@ -152,6 +174,42 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/TaskStatistics"
             tags: ["TaskStatistics"]
+    "/projects/{projectId}/user-accounts":
+        get:
+            operationId: getProjectUserAccountsPage
+            parameters:
+                -   in: path
+                    name: projectId
+                    required: true
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UserAccount"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UserAccount"
+                                type: array
+            tags: ["UserAccount"]
     "/task-assignees":
         get:
             operationId: getTaskAssigneesPage
