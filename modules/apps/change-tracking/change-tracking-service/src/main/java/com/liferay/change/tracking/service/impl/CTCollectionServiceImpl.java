@@ -219,7 +219,7 @@ public class CTCollectionServiceImpl extends CTCollectionServiceBaseImpl {
 		_ctCollectionModelResourcePermission.check(
 			getPermissionChecker(), ctCollectionId, CTActionKeys.PUBLISH);
 
-		CTCollection ctCollection = ctCollectionLocalService.getCTCollection(
+		CTCollection ctCollection = ctCollectionPersistence.findByPrimaryKey(
 			ctCollectionId);
 
 		if (ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {

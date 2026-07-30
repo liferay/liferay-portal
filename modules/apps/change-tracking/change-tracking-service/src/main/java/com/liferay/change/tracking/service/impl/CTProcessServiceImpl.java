@@ -49,7 +49,8 @@ public class CTProcessServiceImpl extends CTProcessServiceBaseImpl {
 		_ctProcessModelResourcePermission.check(
 			getPermissionChecker(), ctProcessId, ActionKeys.DELETE);
 
-		CTProcess ctProcess = ctProcessLocalService.getCTProcess(ctProcessId);
+		CTProcess ctProcess = ctProcessPersistence.findByPrimaryKey(
+			ctProcessId);
 
 		return ctProcessLocalService.deleteCTProcess(ctProcess);
 	}
