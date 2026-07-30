@@ -5,8 +5,12 @@
 
 package com.liferay.portal.kernel.upgrade;
 
+import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -24,6 +28,7 @@ import jakarta.portlet.ReadOnlyException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -365,6 +370,28 @@ public abstract class BasePortletPreferencesUpgradeProcess
 		return preferenceValuesMap;
 	}
 
+	private void _process(
+			String sql,
+			UnsafeFunction<ResultSet, Object[], Exception> unsafeFunction,
+			UnsafeConsumer<Object[], Exception> unsafeConsumer)
+		throws Exception {
+
+		if (DBManagerUtil.getDBType() != DBType.DB2) {
+			processConcurrently(sql, unsafeFunction, unsafeConsumer, null);
+
+			return;
+		}
+
+		try (Statement statement = connection.createStatement();
+
+			ResultSet resultSet = statement.executeQuery(sql)) {
+
+			while (resultSet.next()) {
+				unsafeConsumer.accept(unsafeFunction.apply(resultSet));
+			}
+		}
+	}
+
 	private String _toXMLString(Map<String, PreferenceValues> preferenceMap) {
 		if (preferenceMap.isEmpty()) {
 			return PortletConstants.DEFAULT_PREFERENCES;
@@ -409,7 +436,7 @@ public abstract class BasePortletPreferencesUpgradeProcess
 			sb.append(whereClause);
 		}
 
-		processConcurrently(
+		_process(
 			sb.toString(),
 			resultSet -> {
 				long portletPreferencesId = resultSet.getLong(
@@ -426,7 +453,7 @@ public abstract class BasePortletPreferencesUpgradeProcess
 					portletId, preferences
 				};
 			},
-			values -> _updatePortletPreferences(values), null);
+			values -> _updatePortletPreferences(values));
 	}
 
 	private void _updatePortletPreferences(Object[] values) throws Exception {
@@ -511,7 +538,7 @@ public abstract class BasePortletPreferencesUpgradeProcess
 			sb.append(whereClause);
 		}
 
-		processConcurrently(
+		_process(
 			sb.toString(),
 			resultSet -> {
 				long portletPreferencesId = resultSet.getLong(
@@ -528,7 +555,7 @@ public abstract class BasePortletPreferencesUpgradeProcess
 					portletId, ctCollectionId
 				};
 			},
-			values -> _updatePortletPreferenceValues(values), null);
+			values -> _updatePortletPreferenceValues(values));
 	}
 
 	private void _updatePortletPreferenceValues(Object[] values)
