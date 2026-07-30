@@ -80,6 +80,37 @@ describe('TopPagesCardContent', () => {
 		);
 	});
 
+	it('should not carry the account of the page context into the link', () => {
+		render(
+			<Provider store={mockStore()}>
+				<BasePage.Context.Provider
+					value={{
+						...MOCK_CONTEXT,
+						accountId: 'acc-1',
+						accountName: 'IQVIA',
+					}}
+				>
+					<MemoryRouter>
+						<TopPagesCardContent
+							activeTabId={TOP_PAGES_TABS[0].tabId}
+							items={[item({})]}
+							onActiveTabIdChange={noop}
+							rangeSelectors={RANGE_SELECTORS}
+						/>
+					</MemoryRouter>
+				</BasePage.Context.Provider>
+			</Provider>
+		);
+
+		const href = screen
+			.getByText('A page')
+			.closest('a')
+			?.getAttribute('href');
+
+		expect(href).not.toContain('accountId');
+		expect(href).not.toContain('accountName');
+	});
+
 	it('should link a page with no title, leaving the title out of the route', () => {
 		const {container} = renderContent([item({assetTitle: ''})]);
 

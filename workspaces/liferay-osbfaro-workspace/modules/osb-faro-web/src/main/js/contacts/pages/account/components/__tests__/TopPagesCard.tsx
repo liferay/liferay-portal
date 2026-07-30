@@ -34,11 +34,6 @@ const MOCK_CONTEXT = {
 	},
 };
 
-/**
- * Every mock is keyed to the account in focus, so a request that forgets to
- * narrow by account finds no mock and renders no rows.
- */
-
 const renderTopPagesCard = () =>
 	render(
 		<Provider store={mockStore()}>
@@ -89,14 +84,21 @@ describe('TopPagesCard', () => {
 		expect(screen.getByText('20')).toBeInTheDocument();
 	});
 
-	it('should link the page title to the page dashboard', async () => {
+	it('should link the page title to the account filtered page dashboard', async () => {
 		const {container} = renderTopPagesCard();
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(
-			screen.getByText('My asset A').closest('a')?.getAttribute('href')
-		).toBe('/workspace/456/123/sites/pages/overview/123/My%20asset%20A');
+		const href = screen
+			.getByText('My asset A')
+			.closest('a')
+			?.getAttribute('href');
+
+		expect(href).toContain(
+			'/workspace/456/123/sites/pages/overview/123/My%20asset%20A'
+		);
+		expect(href).toContain('accountId=acc-1');
+		expect(href).toContain('accountName=IQVIA');
 	});
 
 	it('should sort by entrances on the entrance pages tab', async () => {

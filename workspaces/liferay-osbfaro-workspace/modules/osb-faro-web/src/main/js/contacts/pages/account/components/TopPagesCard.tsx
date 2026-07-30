@@ -66,6 +66,8 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 		}
 	);
 
+	const routeQueries = pickBy({accountId, accountName});
+
 	return (
 		<TopPagesCardContent
 			activeTabId={activeTabId}
@@ -73,7 +75,7 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 			error={error}
 			footer={{
 				href: setUriQueryValues(
-					pickBy({accountId, accountName}),
+					routeQueries,
 					toRoute(Routes.SITES_TOUCHPOINTS, {channelId, groupId})
 				),
 				label: Liferay.Language.get('view-all'),
@@ -82,6 +84,7 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 			loading={loading}
 			onActiveTabIdChange={setActiveTabId}
 			rangeSelectors={rangeSelectors}
+			routeQueries={routeQueries}
 		/>
 	);
 };

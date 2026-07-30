@@ -22,9 +22,11 @@ const ROW_IDENTIFIER = ['assetId', 'assetTitle'];
 const getAssetTitleColumn = ({
 	channelId,
 	groupId,
+	routeQueries,
 }: {
 	channelId?: string;
 	groupId?: string;
+	routeQueries: {[key: string]: any};
 }) => ({
 	cellRenderer: NameCell,
 	cellRendererProps: {
@@ -41,11 +43,14 @@ const getAssetTitleColumn = ({
 				touchpoint: encodeURIComponent(assetId),
 			};
 
-			return toRoute(
-				Routes.SITES_TOUCHPOINTS_OVERVIEW,
-				assetTitle
-					? {...params, title: encodeURIComponent(assetTitle)}
-					: params
+			return setUriQueryValues(
+				routeQueries,
+				toRoute(
+					Routes.SITES_TOUCHPOINTS_OVERVIEW,
+					assetTitle
+						? {...params, title: encodeURIComponent(assetTitle)}
+						: params
+				)
 			);
 		},
 	},
@@ -115,6 +120,7 @@ interface ITopPagesCardContentProps {
 	loading?: boolean;
 	onActiveTabIdChange: (tabId: string) => void;
 	rangeSelectors: RangeSelectors;
+	routeQueries?: {[key: string]: any};
 }
 
 const TopPagesCardContent: React.FC<ITopPagesCardContentProps> = ({
@@ -126,6 +132,7 @@ const TopPagesCardContent: React.FC<ITopPagesCardContentProps> = ({
 	loading,
 	onActiveTabIdChange,
 	rangeSelectors,
+	routeQueries = {},
 }) => {
 	const {
 		router: {
@@ -141,7 +148,7 @@ const TopPagesCardContent: React.FC<ITopPagesCardContentProps> = ({
 	const {metricColumn, rowIdentifier, tabId} = TOP_PAGES_TABS[activeIndex];
 
 	const columns = [
-		getAssetTitleColumn({channelId, groupId}),
+		getAssetTitleColumn({channelId, groupId, routeQueries}),
 		{
 			...DEFAULT_METRIC_COLUMN,
 			...metricColumn,
