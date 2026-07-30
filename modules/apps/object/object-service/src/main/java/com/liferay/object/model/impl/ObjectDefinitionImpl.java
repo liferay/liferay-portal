@@ -242,13 +242,10 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 			return false;
 		}
 
-		if (Objects.equals(getExternalReferenceCode(), "L_CMP_PROJECT") ||
-			Objects.equals(getExternalReferenceCode(), "L_CMP_TASK")) {
-
-			return true;
-		}
-
-		return false;
+		return Objects.equals(
+			getObjectFolderExternalReferenceCode(),
+			ObjectFolderConstants.
+				EXTERNAL_REFERENCE_CODE_PROJECT_MANAGEMENT_DEFINITIONS);
 	}
 
 	@Override
