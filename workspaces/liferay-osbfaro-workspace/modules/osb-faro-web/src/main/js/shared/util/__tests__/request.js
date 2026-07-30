@@ -4,6 +4,7 @@ import 'whatwg-fetch';
 import request, {
 	addParams,
 	getFormData,
+	getRequestData,
 	getServiceError,
 	parseFromJSON,
 	serializeQueryString,
@@ -236,6 +237,32 @@ describe('request', () => {
 		);
 
 		return expect(request({})).rejects.toBeInstanceOf(SyntaxError);
+	});
+});
+
+describe('getRequestData', () => {
+	it('should omit undefined values so they are not sent as the string "undefined"', () => {
+		const data = getRequestData({
+			channelsConfiguration: {enableAllChannels: true},
+			name: undefined,
+		});
+
+		expect(data).not.toHaveProperty('name');
+		expect(data.channelsConfiguration).toBe(
+			JSON.stringify({enableAllChannels: true})
+		);
+	});
+
+	it('should keep values that are defined but falsy', () => {
+		const data = getRequestData({
+			enabled: false,
+			name: '',
+			total: 0,
+		});
+
+		expect(data.enabled).toBe(false);
+		expect(data.name).toBe('');
+		expect(data.total).toBe(0);
 	});
 });
 

@@ -82,6 +82,35 @@ describe('Marketo Data Source API', () => {
 		expect(config.body instanceof FormData).toBe(true);
 	});
 
+	it('should omit the name on an update that does not change it', () => {
+		fetch.mockReturnValue(
+			Promise.resolve(new Response('{}', {status: 200}))
+		);
+
+		updateMarketoCampaign({
+			channelsConfiguration: {channels: [], enableAllChannels: true},
+			groupId: '23',
+			id: '7',
+		});
+
+		const [, config] = fetch.mock.calls[0];
+
+		expect(config.body.has('name')).toBe(false);
+		expect(config.body.get('name')).not.toBe('undefined');
+	});
+
+	it('should send the name on an update that changes it', () => {
+		fetch.mockReturnValue(
+			Promise.resolve(new Response('{}', {status: 200}))
+		);
+
+		updateMarketoCampaign({groupId: '23', id: '7', name: 'Renamed'});
+
+		const [, config] = fetch.mock.calls[0];
+
+		expect(config.body.get('name')).toBe('Renamed');
+	});
+
 	it('should reject with the HTTP status on a failed update', async () => {
 		fetch.mockReturnValue(Promise.resolve(new Response('', {status: 401})));
 
