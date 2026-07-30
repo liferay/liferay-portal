@@ -10,7 +10,6 @@ import java.io.ByteArrayInputStream;
 import java.net.URL;
 
 import java.util.Date;
-import java.util.Properties;
 
 import org.json.JSONObject;
 
@@ -29,12 +28,7 @@ public class ClientCredentialsHTTPAuthorizationTest
 
 	@Before
 	public void setUpBuildProperties() {
-		Properties buildProperties = new Properties();
-
-		buildProperties.setProperty(
-			"jenkins.local.url[test-1-1]", "http://test-1-1");
-
-		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+		JenkinsMasterTestUtil.getJenkinsCohortProperties("test-9", 1);
 	}
 
 	@After
