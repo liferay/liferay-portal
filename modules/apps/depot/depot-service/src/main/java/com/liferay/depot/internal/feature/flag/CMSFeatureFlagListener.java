@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.RoleLocalService;
 
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +33,7 @@ public class CMSFeatureFlagListener implements FeatureFlagListener {
 	public void onValue(
 		long companyId, String featureFlagKey, boolean enabled) {
 
-		if (!Objects.equals(featureFlagKey, "LPD-17564")) {
+		if (!enabled || !Objects.equals(featureFlagKey, "LPD-17564")) {
 			return;
 		}
 
@@ -48,11 +47,8 @@ public class CMSFeatureFlagListener implements FeatureFlagListener {
 					continue;
 				}
 
-				Map<Locale, String> titleMap = Collections.emptyMap();
-
-				if (enabled) {
-					titleMap = DepotRoleUtil.getTitleMap(_language, name);
-				}
+				Map<Locale, String> titleMap = DepotRoleUtil.getTitleMap(
+					_language, name);
 
 				if (Objects.equals(titleMap, role.getTitleMap())) {
 					continue;

@@ -131,8 +131,8 @@ public class DepotRoleUtil {
 			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
 				return ResourceBundleUtil.getString(
 					resourceBundle,
-					"depot-administrators-are-super-users-of-their-depot-but-" +
-						"cannot-make-other-users-into-depot-administrators");
+					"space-administrators-are-super-users-of-their-space-but-" +
+						"cannot-make-other-users-into-space-administrators");
 			}
 
 			return ResourceBundleUtil.getString(
@@ -147,8 +147,8 @@ public class DepotRoleUtil {
 			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
 				return ResourceBundleUtil.getString(
 					resourceBundle,
-					"all-users-who-belong-to-a-depot-have-this-role-within-" +
-						"that-depot");
+					"all-users-who-belong-to-a-space-have-this-role-within-" +
+						"that-space");
 			}
 
 			return ResourceBundleUtil.getString(
@@ -162,8 +162,8 @@ public class DepotRoleUtil {
 			if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564")) {
 				return ResourceBundleUtil.getString(
 					resourceBundle,
-					"depot-owners-are-super-users-of-their-depot-and-can-" +
-						"assign-depot-roles-to-users");
+					"space-owners-are-super-users-of-their-space-and-can-" +
+						"assign-space-roles-to-users");
 			}
 
 			return ResourceBundleUtil.getString(
@@ -219,17 +219,17 @@ public class DepotRoleUtil {
 		_titleKeys = Collections.unmodifiableMap(
 			HashMapBuilder.put(
 				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR,
-				"depot-administrator"
+				"space-administrator"
 			).put(
 				DepotRolesConstants.ASSET_LIBRARY_CONNECTED_SITE_MEMBER,
-				"depot-connected-site-member"
+				"space-connected-site-member"
 			).put(
 				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
-				"depot-content-reviewer"
+				"space-content-reviewer"
 			).put(
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER, "depot-member"
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER, "space-member"
 			).put(
-				DepotRolesConstants.ASSET_LIBRARY_OWNER, "depot-owner"
+				DepotRolesConstants.ASSET_LIBRARY_OWNER, "space-owner"
 			).put(
 				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
 				"design-library-administrator"
