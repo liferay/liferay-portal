@@ -10,10 +10,10 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogService;
 import com.liferay.commerce.product.service.base.CPInstanceServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
 import com.liferay.commerce.product.service.persistence.CProductPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
@@ -169,7 +169,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 	public CPInstance fetchCPInstance(long cpInstanceId)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.fetchCPInstance(
+		CPInstance cpInstance = cpInstancePersistence.fetchByPrimaryKey(
 			cpInstanceId);
 
 		if (cpInstance != null) {
@@ -185,9 +185,8 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		CPInstance cpInstance =
-			cpInstanceLocalService.fetchCPInstanceByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		CPInstance cpInstance = cpInstancePersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (cpInstance != null) {
 			_checkCommerceCatalogByCPDefinitionId(
@@ -239,7 +238,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 
 	@Override
 	public CPInstance getCPInstance(long cpInstanceId) throws PortalException {
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
+		CPInstance cpInstance = cpInstancePersistence.findByPrimaryKey(
 			cpInstanceId);
 
 		_checkCommerceCatalogByCPDefinitionId(
@@ -365,7 +364,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
+		CPInstance cpInstance = cpInstancePersistence.findByPrimaryKey(
 			cpInstanceId);
 
 		_checkCommerceCatalogByCPDefinitionId(
@@ -394,7 +393,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			long cpInstanceId, String externalReferenceCode)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
+		CPInstance cpInstance = cpInstancePersistence.findByPrimaryKey(
 			cpInstanceId);
 
 		_checkCommerceCatalogByCPDefinitionId(
@@ -410,7 +409,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			BigDecimal cost, ServiceContext serviceContext)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
+		CPInstance cpInstance = cpInstancePersistence.findByPrimaryKey(
 			cpInstanceId);
 
 		_checkCommerceCatalogByCPDefinitionId(
@@ -426,7 +425,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			double weight, ServiceContext serviceContext)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
+		CPInstance cpInstance = cpInstancePersistence.findByPrimaryKey(
 			cpInstanceId);
 
 		_checkCommerceCatalogByCPDefinitionId(
@@ -448,7 +447,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			long deliveryMaxSubscriptionCycles)
 		throws PortalException {
 
-		CPInstance cpInstance = cpInstanceLocalService.getCPInstance(
+		CPInstance cpInstance = cpInstancePersistence.findByPrimaryKey(
 			cpInstanceId);
 
 		_checkCommerceCatalogByCPDefinitionId(
@@ -482,7 +481,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			long cpDefinitionId, String actionId)
 		throws PortalException {
 
-		CPDefinition cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
+		CPDefinition cpDefinition = _cpDefinitionPersistence.fetchByPrimaryKey(
 			cpDefinitionId);
 
 		if (cpDefinition == null) {
@@ -514,7 +513,7 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 	private CommerceCatalogService _commerceCatalogService;
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CPDefinitionPersistence _cpDefinitionPersistence;
 
 	@Reference
 	private CProductPersistence _cProductPersistence;

@@ -10,10 +10,10 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CommerceCatalog;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
-import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.base.CPDefinitionOptionValueRelServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
+import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -56,7 +56,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		_checkCommerceCatalog(
@@ -77,7 +77,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		_checkCommerceCatalog(
@@ -99,7 +99,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
 		_checkCommerceCatalog(
@@ -120,7 +120,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 		if (cpDefinitionOptionValueRel != null) {
 			CPDefinitionOptionRel cpDefinitionOptionRel =
-				_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+				_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
 			_checkCommerceCatalog(
@@ -141,7 +141,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 
 		if (cpDefinitionOptionValueRel != null) {
 			CPDefinitionOptionRel cpDefinitionOptionRel =
-				_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+				_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
 			_checkCommerceCatalog(
@@ -161,7 +161,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
 		_checkCommerceCatalog(
@@ -177,7 +177,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		_checkCommerceCatalog(
@@ -194,7 +194,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		_checkCommerceCatalog(
@@ -225,7 +225,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		_checkCommerceCatalog(
@@ -245,7 +245,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
 		_checkCommerceCatalog(
@@ -264,7 +264,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		_checkCommerceCatalog(
@@ -283,7 +283,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		_checkCommerceCatalog(
@@ -307,7 +307,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
 		_checkCommerceCatalog(
@@ -331,7 +331,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
 
 		_checkCommerceCatalog(
@@ -345,7 +345,7 @@ public class CPDefinitionOptionValueRelServiceImpl
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)
 		throws PortalException {
 
-		CPDefinition cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
+		CPDefinition cpDefinition = _cpDefinitionPersistence.fetchByPrimaryKey(
 			cpDefinitionId);
 
 		if (cpDefinition == null) {
@@ -374,10 +374,9 @@ public class CPDefinitionOptionValueRelServiceImpl
 		_commerceCatalogModelResourcePermission;
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CPDefinitionOptionRelPersistence _cpDefinitionOptionRelPersistence;
 
 	@Reference
-	private CPDefinitionOptionRelLocalService
-		_cpDefinitionOptionRelLocalService;
+	private CPDefinitionPersistence _cpDefinitionPersistence;
 
 }

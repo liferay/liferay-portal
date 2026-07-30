@@ -19,10 +19,11 @@ import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
-import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.base.CPDefinitionOptionRelLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelPersistence;
+import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
+import com.liferay.commerce.product.service.persistence.CPOptionPersistence;
 import com.liferay.commerce.product.util.CPJSONUtil;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.petra.string.StringPool;
@@ -99,7 +100,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		CPOption cpOption = _cpOptionLocalService.getCPOption(cpOptionId);
+		CPOption cpOption = _cpOptionPersistence.findByPrimaryKey(cpOptionId);
 
 		return cpDefinitionOptionRelLocalService.addCPDefinitionOptionRel(
 			cpDefinitionId, cpOptionId, cpOption.getNameMap(),
@@ -137,7 +138,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		_validateCommerceOptionTypeKey(commerceOptionTypeKey, skuContributor);
 
-		CPOption cpOption = _cpOptionLocalService.getCPOption(cpOptionId);
+		CPOption cpOption = _cpOptionPersistence.findByPrimaryKey(cpOptionId);
 
 		_validateCPDefinitionOptionKey(cpDefinitionId, cpOption.getKey());
 
@@ -227,7 +228,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		_validateCommerceOptionTypeKey(commerceOptionTypeKey, skuContributor);
 
-		CPOption cpOption = _cpOptionLocalService.getCPOption(cpOptionId);
+		CPOption cpOption = _cpOptionPersistence.findByPrimaryKey(cpOptionId);
 
 		_validateCPDefinitionOptionKey(cpDefinitionId, cpOption.getKey());
 
@@ -408,7 +409,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		throws PortalException {
 
 		List<CPDefinitionOptionRel> cpDefinitionOptionRels =
-			cpDefinitionOptionRelLocalService.getCPDefinitionOptionRels(
+			cpDefinitionOptionRelPersistence.findByCPDefinitionId(
 				cpDefinitionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (CPDefinitionOptionRel cpDefinitionOptionRel :
@@ -612,7 +613,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 				long cpInstanceId)
 		throws PortalException {
 
-		CPInstance cpInstance = _cpInstanceLocalService.getCPInstance(
+		CPInstance cpInstance = _cpInstancePersistence.findByPrimaryKey(
 			cpInstanceId);
 
 		if (cpInstance.isInactive()) {
@@ -862,7 +863,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			cpDefinitionOptionRelLocalService.getCPDefinitionOptionRel(
+			cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
 
 		return cpDefinitionOptionRelLocalService.updateCPDefinitionOptionRel(
@@ -1236,7 +1237,10 @@ public class CPDefinitionOptionRelLocalServiceImpl
 		_cpInstanceOptionValueRelPersistence;
 
 	@Reference
-	private CPOptionLocalService _cpOptionLocalService;
+	private CPInstancePersistence _cpInstancePersistence;
+
+	@Reference
+	private CPOptionPersistence _cpOptionPersistence;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;

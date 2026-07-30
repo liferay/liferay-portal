@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 
 import java.util.Locale;
 import java.util.Map;
@@ -75,8 +76,8 @@ public class CPSpecificationOptionServiceImpl
 		throws PortalException {
 
 		CPSpecificationOption cpSpecificationOption =
-			cpSpecificationOptionLocalService.fetchCPSpecificationOption(
-				companyId, key);
+			cpSpecificationOptionPersistence.fetchByC_K(
+				companyId, _friendlyURLNormalizer.normalize(key));
 
 		if (cpSpecificationOption != null) {
 			_cpSpecificationOptionModelResourcePermission.check(
@@ -115,7 +116,7 @@ public class CPSpecificationOptionServiceImpl
 		_cpSpecificationOptionModelResourcePermission.check(
 			getPermissionChecker(), cpSpecificationOptionId, ActionKeys.VIEW);
 
-		return cpSpecificationOptionLocalService.getCPSpecificationOption(
+		return cpSpecificationOptionPersistence.findByPrimaryKey(
 			cpSpecificationOptionId);
 	}
 
@@ -125,8 +126,8 @@ public class CPSpecificationOptionServiceImpl
 		throws PortalException {
 
 		CPSpecificationOption cpSpecificationOption =
-			cpSpecificationOptionLocalService.getCPSpecificationOption(
-				companyId, key);
+			cpSpecificationOptionPersistence.findByC_K(
+				companyId, _friendlyURLNormalizer.normalize(key));
 
 		_cpSpecificationOptionModelResourcePermission.check(
 			getPermissionChecker(), cpSpecificationOption, ActionKeys.VIEW);
@@ -168,5 +169,8 @@ public class CPSpecificationOptionServiceImpl
 	)
 	private ModelResourcePermission<CPSpecificationOption>
 		_cpSpecificationOptionModelResourcePermission;
+
+	@Reference
+	private FriendlyURLNormalizer _friendlyURLNormalizer;
 
 }

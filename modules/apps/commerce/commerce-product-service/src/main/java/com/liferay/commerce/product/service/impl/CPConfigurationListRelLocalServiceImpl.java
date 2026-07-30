@@ -17,8 +17,8 @@ import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPConfigurationListRel;
 import com.liferay.commerce.product.model.CPConfigurationListRelTable;
 import com.liferay.commerce.product.model.CPConfigurationListTable;
-import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.base.CPConfigurationListRelLocalServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPConfigurationListPersistence;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.Table;
@@ -365,7 +365,7 @@ public class CPConfigurationListRelLocalServiceImpl
 		throws PortalException {
 
 		CPConfigurationList cpConfigurationList =
-			_cpConfigurationListLocalService.getCPConfigurationList(
+			_cpConfigurationListPersistence.findByPrimaryKey(
 				cpConfigurationListId);
 
 		if (cpConfigurationList.isMaster()) {
@@ -385,7 +385,7 @@ public class CPConfigurationListRelLocalServiceImpl
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
-	private CPConfigurationListLocalService _cpConfigurationListLocalService;
+	private CPConfigurationListPersistence _cpConfigurationListPersistence;
 
 	@Reference
 	private CustomSQL _customSQL;

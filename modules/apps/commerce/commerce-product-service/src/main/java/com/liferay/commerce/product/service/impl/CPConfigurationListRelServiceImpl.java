@@ -8,15 +8,16 @@ package com.liferay.commerce.product.service.impl;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPConfigurationListRel;
 import com.liferay.commerce.product.model.CommerceCatalog;
-import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.base.CPConfigurationListRelServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPConfigurationListPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
@@ -69,7 +70,7 @@ public class CPConfigurationListRelServiceImpl
 		throws PortalException {
 
 		CPConfigurationListRel cpConfigurationListRel =
-			cpConfigurationListRelLocalService.getCPConfigurationListRel(
+			cpConfigurationListRelPersistence.findByPrimaryKey(
 				cpConfigurationListRelId);
 
 		_checkCommerceCatalog(
@@ -108,8 +109,9 @@ public class CPConfigurationListRelServiceImpl
 
 		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
 
-		return cpConfigurationListRelLocalService.fetchCPConfigurationListRel(
-			className, classPK, cpConfigurationListId);
+		return cpConfigurationListRelPersistence.fetchByC_C_C(
+			_classNameLocalService.getClassNameId(className), classPK,
+			cpConfigurationListId);
 	}
 
 	@Override
@@ -190,7 +192,7 @@ public class CPConfigurationListRelServiceImpl
 			long cpConfigurationListRelId)
 		throws PortalException {
 
-		return cpConfigurationListRelLocalService.getCPConfigurationListRel(
+		return cpConfigurationListRelPersistence.findByPrimaryKey(
 			cpConfigurationListRelId);
 	}
 
@@ -201,7 +203,7 @@ public class CPConfigurationListRelServiceImpl
 
 		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
 
-		return cpConfigurationListRelLocalService.getCPConfigurationListRels(
+		return cpConfigurationListRelPersistence.findByCPConfigurationListId(
 			cpConfigurationListId);
 	}
 
@@ -213,7 +215,7 @@ public class CPConfigurationListRelServiceImpl
 
 		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
 
-		return cpConfigurationListRelLocalService.getCPConfigurationListRels(
+		return cpConfigurationListRelPersistence.findByCPConfigurationListId(
 			cpConfigurationListId, start, end, orderByComparator);
 	}
 
@@ -236,8 +238,9 @@ public class CPConfigurationListRelServiceImpl
 
 		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
 
-		return cpConfigurationListRelLocalService.getCPConfigurationListRels(
-			className, cpConfigurationListId, start, end, orderByComparator);
+		return cpConfigurationListRelPersistence.findByC_C(
+			_classNameLocalService.getClassNameId(className),
+			cpConfigurationListId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -266,7 +269,7 @@ public class CPConfigurationListRelServiceImpl
 		throws PortalException {
 
 		CPConfigurationList cpConfigurationList =
-			_cpConfigurationListLocalService.getCPConfigurationList(
+			_cpConfigurationListPersistence.findByPrimaryKey(
 				cpConfigurationListId);
 
 		CommerceCatalog commerceCatalog =
@@ -282,6 +285,9 @@ public class CPConfigurationListRelServiceImpl
 	}
 
 	@Reference
+	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
 	@Reference(
@@ -291,6 +297,6 @@ public class CPConfigurationListRelServiceImpl
 		_commerceCatalogModelResourcePermission;
 
 	@Reference
-	private CPConfigurationListLocalService _cpConfigurationListLocalService;
+	private CPConfigurationListPersistence _cpConfigurationListPersistence;
 
 }

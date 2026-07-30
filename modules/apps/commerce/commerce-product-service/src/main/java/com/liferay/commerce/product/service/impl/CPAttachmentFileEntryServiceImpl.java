@@ -13,9 +13,9 @@ import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceCatalog;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.base.CPAttachmentFileEntryServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -139,7 +139,7 @@ public class CPAttachmentFileEntryServiceImpl
 		throws PortalException {
 
 		CPAttachmentFileEntry cpAttachmentFileEntry =
-			cpAttachmentFileEntryLocalService.fetchCPAttachmentFileEntry(
+			cpAttachmentFileEntryPersistence.fetchByPrimaryKey(
 				cpAttachmentFileEntryId);
 
 		if (cpAttachmentFileEntry != null) {
@@ -322,7 +322,7 @@ public class CPAttachmentFileEntryServiceImpl
 		throws PortalException {
 
 		CPAttachmentFileEntry cpAttachmentFileEntry =
-			cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
+			cpAttachmentFileEntryPersistence.findByPrimaryKey(
 				cpAttachmentFileEntryId);
 
 		if (cpAttachmentFileEntry != null) {
@@ -379,7 +379,7 @@ public class CPAttachmentFileEntryServiceImpl
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)
 		throws PortalException {
 
-		CPDefinition cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
+		CPDefinition cpDefinition = _cpDefinitionPersistence.fetchByPrimaryKey(
 			cpDefinitionId);
 
 		if (cpDefinition == null) {
@@ -414,7 +414,7 @@ public class CPAttachmentFileEntryServiceImpl
 		throws PortalException {
 
 		_checkCPAttachmentFileEntryPermissions(
-			cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
+			cpAttachmentFileEntryPersistence.findByPrimaryKey(
 				cpAttachmentFileEntryId));
 	}
 
@@ -461,7 +461,7 @@ public class CPAttachmentFileEntryServiceImpl
 		_commerceCatalogModelResourcePermission;
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CPDefinitionPersistence _cpDefinitionPersistence;
 
 	@Reference
 	private DLFileEntryLocalService _dlFileEntryLocalService;

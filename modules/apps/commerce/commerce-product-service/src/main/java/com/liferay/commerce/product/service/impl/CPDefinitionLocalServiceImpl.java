@@ -54,7 +54,6 @@ import com.liferay.commerce.product.model.impl.CPDefinitionImpl;
 import com.liferay.commerce.product.model.impl.CPDefinitionModelImpl;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
-import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
@@ -67,6 +66,8 @@ import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.service.base.CPDefinitionLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPAttachmentFileEntryPersistence;
+import com.liferay.commerce.product.service.persistence.CPConfigurationEntryPersistence;
+import com.liferay.commerce.product.service.persistence.CPConfigurationListPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionLinkPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionValueRelPersistence;
@@ -498,7 +499,7 @@ public class CPDefinitionLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		CPDefinition originalCPDefinition =
-			cpDefinitionLocalService.getCPDefinition(cpDefinitionId);
+			cpDefinitionPersistence.findByPrimaryKey(cpDefinitionId);
 
 		CPDefinition newCPDefinition =
 			(CPDefinition)originalCPDefinition.clone();
@@ -863,7 +864,7 @@ public class CPDefinitionLocalServiceImpl
 		throws PortalException {
 
 		CPDefinition sourceCPDefinition =
-			cpDefinitionLocalService.getCPDefinition(sourceCPDefinitionId);
+			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
 
 		return cpDefinitionLocalService.copyCPDefinition(
 			sourceCPDefinitionId, sourceCPDefinition.getGroupId(),
@@ -877,7 +878,7 @@ public class CPDefinitionLocalServiceImpl
 		throws PortalException {
 
 		CPDefinition sourceCPDefinition =
-			cpDefinitionLocalService.getCPDefinition(sourceCPDefinitionId);
+			cpDefinitionPersistence.findByPrimaryKey(sourceCPDefinitionId);
 
 		CProduct sourceCProduct = sourceCPDefinition.getCProduct();
 
@@ -898,7 +899,7 @@ public class CPDefinitionLocalServiceImpl
 			(status == WorkflowConstants.STATUS_DRAFT)) {
 
 			for (CPDefinition cProductCPDefinition :
-					cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinitionPersistence.findByC_S(
 						sourceCPDefinition.getCProductId(),
 						WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS)) {
@@ -997,11 +998,11 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		CPConfigurationList masterCPConfigurationList =
-			_cpConfigurationListLocalService.getMasterCPConfigurationList(
-				sourceCPDefinition.getGroupId());
+			_cpConfigurationListPersistence.findByG_M_First(
+				sourceCPDefinition.getGroupId(), true, null);
 
 		CPConfigurationEntry cpConfigurationEntry =
-			_cpConfigurationEntryLocalService.fetchCPConfigurationEntry(
+			_cpConfigurationEntryPersistence.fetchByC_C_C(
 				_classNameLocalService.getClassNameId(
 					CPDefinition.class.getName()),
 				sourceCPDefinitionId, masterCPConfigurationList.getGroupId());
@@ -1331,7 +1332,7 @@ public class CPDefinitionLocalServiceImpl
 
 			if (publishedCPDefinitionId == cpDefinition.getCPDefinitionId()) {
 				List<CPDefinition> cpDefinitions =
-					cpDefinitionLocalService.getCProductCPDefinitions(
+					cpDefinitionPersistence.findByC_S(
 						cProduct.getCProductId(),
 						WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS,
@@ -1970,8 +1971,10 @@ public class CPDefinitionLocalServiceImpl
 		long groupId, long cpDefinitionId) {
 
 		CPDisplayLayout cpDisplayLayout =
-			_cpDisplayLayoutLocalService.fetchCPDisplayLayout(
-				groupId, CPDefinition.class, cpDefinitionId);
+			_cpDisplayLayoutPersistence.fetchByG_C_C(
+				groupId,
+				_classNameLocalService.getClassNameId(CPDefinition.class),
+				cpDefinitionId);
 
 		if (cpDisplayLayout == null) {
 			return null;
@@ -1983,8 +1986,10 @@ public class CPDefinitionLocalServiceImpl
 	@Override
 	public String getLayoutUuid(long groupId, long cpDefinitionId) {
 		CPDisplayLayout cpDisplayLayout =
-			_cpDisplayLayoutLocalService.fetchCPDisplayLayout(
-				groupId, CPDefinition.class, cpDefinitionId);
+			_cpDisplayLayoutPersistence.fetchByG_C_C(
+				groupId,
+				_classNameLocalService.getClassNameId(CPDefinition.class),
+				cpDefinitionId);
 
 		if (cpDisplayLayout == null) {
 			return null;
@@ -2060,9 +2065,8 @@ public class CPDefinitionLocalServiceImpl
 
 	@Override
 	public boolean hasChildCPDefinitions(long cpDefinitionId) {
-		int count =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRelsCount(
-				cpDefinitionId);
+		int count = _cpDefinitionOptionRelPersistence.countByCPDefinitionId(
+			cpDefinitionId);
 
 		if ((count <= 0) ||
 			!_cpDefinitionOptionRelLocalService.
@@ -2091,7 +2095,7 @@ public class CPDefinitionLocalServiceImpl
 
 	@Override
 	public boolean isPublishedCPDefinition(long cpDefinitionId) {
-		CPDefinition cpDefinition = cpDefinitionLocalService.fetchCPDefinition(
+		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
 			cpDefinitionId);
 
 		if (cpDefinition == null) {
@@ -2115,7 +2119,7 @@ public class CPDefinitionLocalServiceImpl
 	@Override
 	public boolean isVersionable(long cpDefinitionId) {
 		return cpDefinitionLocalService.isVersionable(
-			cpDefinitionLocalService.fetchCPDefinition(cpDefinitionId));
+			cpDefinitionPersistence.fetchByPrimaryKey(cpDefinitionId));
 	}
 
 	@Override
@@ -2390,7 +2394,7 @@ public class CPDefinitionLocalServiceImpl
 			long cpDefinitionId, boolean enable)
 		throws PortalException {
 
-		CPDefinition cpDefinition = cpDefinitionLocalService.getCPDefinition(
+		CPDefinition cpDefinition = cpDefinitionPersistence.findByPrimaryKey(
 			cpDefinitionId);
 
 		cpDefinition.setAccountGroupFilterEnabled(enable);
@@ -2439,7 +2443,7 @@ public class CPDefinitionLocalServiceImpl
 			long cpDefinitionId, boolean enable)
 		throws PortalException {
 
-		CPDefinition cpDefinition = cpDefinitionLocalService.getCPDefinition(
+		CPDefinition cpDefinition = cpDefinitionPersistence.findByPrimaryKey(
 			cpDefinitionId);
 
 		cpDefinition.setChannelFilterEnabled(enable);
@@ -2484,13 +2488,13 @@ public class CPDefinitionLocalServiceImpl
 			String externalReferenceCode, long cpDefinitionId)
 		throws PortalException {
 
-		CPDefinition cpDefinition = cpDefinitionLocalService.getCPDefinition(
+		CPDefinition cpDefinition = cpDefinitionPersistence.findByPrimaryKey(
 			cpDefinitionId);
 
 		_cProductLocalService.updateCProductExternalReferenceCode(
 			externalReferenceCode, cpDefinition.getCProductId());
 
-		return cpDefinitionLocalService.getCPDefinition(cpDefinitionId);
+		return cpDefinitionPersistence.findByPrimaryKey(cpDefinitionId);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -2585,7 +2589,7 @@ public class CPDefinitionLocalServiceImpl
 						cProduct.getPublishedCPDefinitionId())) {
 
 					CPDefinition publishedCPDefinition =
-						cpDefinitionLocalService.fetchCPDefinition(
+						cpDefinitionPersistence.fetchByPrimaryKey(
 							cProduct.getPublishedCPDefinitionId());
 
 					if (publishedCPDefinition != null) {
@@ -3050,8 +3054,7 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		int cpDefinitionOptionRelsCount =
-			_cpDefinitionOptionRelLocalService.getCPDefinitionOptionRelsCount(
-				cpDefinitionId, true);
+			_cpDefinitionOptionRelPersistence.countByC_SC(cpDefinitionId, true);
 
 		if (cpDefinitionOptionRelsCount == 0) {
 			return;
@@ -3628,7 +3631,10 @@ public class CPDefinitionLocalServiceImpl
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
 
 	@Reference
-	private CPConfigurationListLocalService _cpConfigurationListLocalService;
+	private CPConfigurationEntryPersistence _cpConfigurationEntryPersistence;
+
+	@Reference
+	private CPConfigurationListPersistence _cpConfigurationListPersistence;
 
 	@Reference
 	private CPDefinitionLinkLocalService _cpDefinitionLinkLocalService;

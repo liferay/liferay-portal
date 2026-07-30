@@ -10,9 +10,9 @@ import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.model.CommerceCatalog;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.base.CPDisplayLayoutServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPDefinitionPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Layout;
@@ -62,7 +62,7 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		throws PortalException {
 
 		CPDisplayLayout cpDisplayLayout =
-			cpDisplayLayoutLocalService.getCPDisplayLayout(cpDisplayLayoutId);
+			cpDisplayLayoutPersistence.findByPrimaryKey(cpDisplayLayoutId);
 
 		GroupPermissionUtil.check(
 			getPermissionChecker(), cpDisplayLayout.getGroupId(),
@@ -80,7 +80,7 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		throws PortalException {
 
 		CPDisplayLayout cpDisplayLayout =
-			cpDisplayLayoutLocalService.fetchCPDisplayLayout(cpDisplayLayoutId);
+			cpDisplayLayoutPersistence.fetchByPrimaryKey(cpDisplayLayoutId);
 
 		if (cpDisplayLayout != null) {
 			if (Validator.isNotNull(cpDisplayLayout.getLayoutUuid())) {
@@ -102,7 +102,7 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		throws PortalException {
 
 		CPDisplayLayout cpDisplayLayout =
-			cpDisplayLayoutLocalService.getCPDisplayLayout(cpDisplayLayoutId);
+			cpDisplayLayoutPersistence.findByPrimaryKey(cpDisplayLayoutId);
 
 		if (Validator.isNotNull(cpDisplayLayout.getLayoutUuid())) {
 			LayoutPermissionUtil.check(
@@ -137,7 +137,7 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		throws PortalException {
 
 		CPDisplayLayout cpDisplayLayout =
-			cpDisplayLayoutLocalService.getCPDisplayLayout(cpDisplayLayoutId);
+			cpDisplayLayoutPersistence.findByPrimaryKey(cpDisplayLayoutId);
 
 		if (Validator.isNotNull(layoutUuid)) {
 			LayoutPermissionUtil.check(
@@ -159,7 +159,7 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 
 		if (className.equals(CPDefinition.class.getName())) {
 			CPDefinition cpDefinition =
-				_cpDefinitionLocalService.fetchCPDefinition(classPK);
+				_cpDefinitionPersistence.fetchByPrimaryKey(classPK);
 
 			if (cpDefinition == null) {
 				throw new NoSuchCPDefinitionException();
@@ -202,7 +202,7 @@ public class CPDisplayLayoutServiceImpl extends CPDisplayLayoutServiceBaseImpl {
 		_commerceCatalogModelResourcePermission;
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private CPDefinitionPersistence _cpDefinitionPersistence;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
