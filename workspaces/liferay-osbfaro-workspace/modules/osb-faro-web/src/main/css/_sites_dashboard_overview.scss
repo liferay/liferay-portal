@@ -11,14 +11,6 @@ $visitorsPreviousPeriod: var(--cadmin-gray-800);
 		}
 	}
 
-	.card-root {
-		height: auto;
-
-		@include media-breakpoint-up(xl) {
-			height: 536px;
-		}
-	}
-
 	.site-metrics {
 		.card-header {
 			padding-bottom: 8px;
