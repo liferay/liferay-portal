@@ -75,10 +75,12 @@ function visibility(analytics: Analytics) {
 		const onVisibilityChange = handleVisibilityChange.bind(null, analytics);
 
 		window.addEventListener('beforeunload', enableTabEventHandle);
+		window.addEventListener('pageshow', pageShowHandle);
 		document.addEventListener(visibilityChange, onVisibilityChange);
 
 		return () => {
 			window.removeEventListener('beforeunload', enableTabEventHandle);
+			window.removeEventListener('pageshow', pageShowHandle);
 			document.removeEventListener(visibilityChange, onVisibilityChange);
 		};
 	}
@@ -86,6 +88,17 @@ function visibility(analytics: Analytics) {
 
 function enableTabEventHandle() {
 	enableTabEvent = false;
+}
+
+/**
+ * Leaving the page disables the tab events so that the visibility change it
+ * causes is not reported. A page restored from the back/forward cache is being
+ * viewed again, so the events must be enabled back.
+ */
+function pageShowHandle(event: PageTransitionEvent) {
+	if (event.persisted) {
+		enableTabEvent = true;
+	}
 }
 
 export {visibility};

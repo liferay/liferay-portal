@@ -8,7 +8,7 @@
 import fetchMock from 'fetch-mock';
 
 import AnalyticsClient from '../../src/analytics';
-import {INITIAL_ANALYTICS_CONFIG} from '../helpers';
+import {INITIAL_ANALYTICS_CONFIG, mockUserTiming} from '../helpers';
 
 const applicationId = 'Page';
 
@@ -23,6 +23,8 @@ describe('Visibility Plugin', () => {
 			value: 'loading',
 			writable: false,
 		});
+
+		mockUserTiming();
 
 		fetchMock.mock('*', () => 200);
 
@@ -81,6 +83,47 @@ describe('Visibility Plugin', () => {
 					eventId: 'tabFocused',
 				})
 			);
+		});
+	});
+
+	describe('back/forward cache', () => {
+		beforeEach(() => {
+			Object.defineProperty(document, 'hidden', {
+				configurable: true,
+				value: true,
+			});
+
+			// Leaving the page disables the tab events
+
+			window.dispatchEvent(new Event('beforeunload'));
+		});
+
+		it('reports the tab events again when the page is restored', () => {
+			const event = new Event('pageshow');
+
+			Object.defineProperty(event, 'persisted', {value: true});
+
+			window.dispatchEvent(event);
+
+			document.dispatchEvent(new Event('visibilitychange'));
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'tabBlurred'
+			);
+
+			expect(events.length).toBe(1);
+		});
+
+		it('keeps the tab events disabled when the page is not restored', () => {
+			window.dispatchEvent(new Event('pageshow'));
+
+			document.dispatchEvent(new Event('visibilitychange'));
+
+			const events = Analytics.getEvents().filter(
+				({eventId}) => eventId === 'tabBlurred'
+			);
+
+			expect(events.length).toBe(0);
 		});
 	});
 });
