@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.RecentLayoutSetBranchLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.persistence.ImagePersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutBranchPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutRevisionPersistence;
@@ -123,7 +124,7 @@ public class LayoutSetBranchLocalServiceImpl
 		layoutSetBranch.setLogoId(logoId);
 
 		if (logo) {
-			Image logoImage = _imageLocalService.getImage(logoId);
+			Image logoImage = _imagePersistence.findByPrimaryKey(logoId);
 
 			long layoutSetBranchLogoId = counterLocalService.increment();
 
@@ -667,6 +668,9 @@ public class LayoutSetBranchLocalServiceImpl
 
 	@BeanReference(type = ImageLocalService.class)
 	private ImageLocalService _imageLocalService;
+
+	@BeanReference(type = ImagePersistence.class)
+	private ImagePersistence _imagePersistence;
 
 	@BeanReference(type = LayoutBranchLocalService.class)
 	private LayoutBranchLocalService _layoutBranchLocalService;
