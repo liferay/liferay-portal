@@ -18,10 +18,16 @@ import java.util.function.Supplier;
 /**
  * Writes FIPS audit events as NDJSON records, one per line, each sharing a
  * common envelope: event schema version, the §5.1 timestamp, severity, event
- * type, deployment instance ID, and the validated provider name and CMVP
- * certificate ID active at emission. Every record is flushed synchronously, so
- * an Error State entry reaches disk before the process continues; nothing is
- * buffered in memory.
+ * type, deployment instance ID, and the validated provider name, provider
+ * version, and CMVP certificate ID active at emission. Every record is flushed
+ * synchronously, so an Error State entry reaches disk before the process
+ * continues; nothing is buffered in memory.
+ *
+ * <p>
+ * Event specific fields are nested under a single {@code fields} object rather
+ * than merged into the envelope, so an event can never overwrite an envelope
+ * key and misattribute the record.
+ * </p>
  *
  * <p>
  * The emitter is intentionally free of OSGi and framework dependencies. FIPS
@@ -39,12 +45,14 @@ public class FIPSAuditEventEmitter {
 	public FIPSAuditEventEmitter(
 		Appendable appendable, Supplier<String> cmvpCertificateIdSupplier,
 		Supplier<String> deploymentInstanceIdSupplier,
-		Supplier<String> providerNameSupplier) {
+		Supplier<String> providerNameSupplier,
+		Supplier<String> providerVersionSupplier) {
 
 		_appendable = appendable;
 		_cmvpCertificateIdSupplier = cmvpCertificateIdSupplier;
 		_deploymentInstanceIdSupplier = deploymentInstanceIdSupplier;
 		_providerNameSupplier = providerNameSupplier;
+		_providerVersionSupplier = providerVersionSupplier;
 	}
 
 	public void emit(FIPSAuditEvent fipsAuditEvent) {
@@ -63,9 +71,11 @@ public class FIPSAuditEventEmitter {
 		).put(
 			"provider-name", _providerNameSupplier.get()
 		).put(
+			"provider-version", _providerVersionSupplier.get()
+		).put(
 			"cmvp-certificate-id", _cmvpCertificateIdSupplier.get()
-		).putAll(
-			fipsAuditEvent.getFields()
+		).put(
+			"fields", fipsAuditEvent.getFields()
 		).build();
 
 		try {
@@ -115,6 +125,31 @@ public class FIPSAuditEventEmitter {
 		return sb.toString();
 	}
 
+	private String _toJSONObject(Map<?, ?> map) {
+		StringBundler sb = new StringBundler();
+
+		sb.append("{");
+
+		boolean first = true;
+
+		for (Map.Entry<?, ?> entry : map.entrySet()) {
+			if (!first) {
+				sb.append(",");
+			}
+
+			first = false;
+
+			sb.append("\"");
+			sb.append(_escape(String.valueOf(entry.getKey())));
+			sb.append("\":");
+			sb.append(_toJSONValue(entry.getValue()));
+		}
+
+		sb.append("}");
+
+		return sb.toString();
+	}
+
 	private String _toJSONValue(Object value) {
 		if (value == null) {
 			return "null";
@@ -124,37 +159,21 @@ public class FIPSAuditEventEmitter {
 			return value.toString();
 		}
 
+		if (value instanceof Map) {
+			return _toJSONObject((Map<?, ?>)value);
+		}
+
 		return "\"" + _escape(value.toString()) + "\"";
 	}
 
 	private String _toNDJSON(Map<String, Object> record) {
-		StringBundler sb = new StringBundler();
-
-		sb.append("{");
-
-		boolean first = true;
-
-		for (Map.Entry<String, Object> entry : record.entrySet()) {
-			if (!first) {
-				sb.append(",");
-			}
-
-			first = false;
-
-			sb.append("\"");
-			sb.append(_escape(entry.getKey()));
-			sb.append("\":");
-			sb.append(_toJSONValue(entry.getValue()));
-		}
-
-		sb.append("}\n");
-
-		return sb.toString();
+		return _toJSONObject(record) + "\n";
 	}
 
 	private final Appendable _appendable;
 	private final Supplier<String> _cmvpCertificateIdSupplier;
 	private final Supplier<String> _deploymentInstanceIdSupplier;
 	private final Supplier<String> _providerNameSupplier;
+	private final Supplier<String> _providerVersionSupplier;
 
 }

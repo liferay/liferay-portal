@@ -59,6 +59,7 @@ public class FIPSAuditEventEmitterUtilTest {
 			Assert.assertTrue(
 				ndjson, ndjson.contains("\"from-state\":\"Operational\""));
 			Assert.assertTrue(ndjson, ndjson.contains("\"provider-name\":"));
+			Assert.assertTrue(ndjson, ndjson.contains("\"provider-version\":"));
 		}
 		finally {
 			_delete(liferayHome);

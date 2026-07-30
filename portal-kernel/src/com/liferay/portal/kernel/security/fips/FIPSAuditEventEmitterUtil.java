@@ -36,8 +36,8 @@ import java.util.UUID;
  * runtime exists, so the sink and envelope sources are wired without any
  * framework dependency: the CMVP certificate ID and deployment instance ID come
  * from deployment configuration (a {@link PropsKeys} property), the provider
- * name from the validated JCE provider, and each record is appended and
- * {@code fsync}ed to disk so a critical Error State entry survives a crash.
+ * name and version from the validated JCE provider, and each record is appended
+ * and {@code fsync}ed to disk so a critical Error State entry survives a crash.
  * </p>
  *
  * @author Jorge García Jiménez
@@ -46,6 +46,16 @@ public class FIPSAuditEventEmitterUtil {
 
 	public static synchronized void emit(FIPSAuditEvent fipsAuditEvent) {
 		_fipsAuditEventEmitter.emit(fipsAuditEvent);
+	}
+
+	private static Provider _fetchProvider() {
+		Provider[] providers = Security.getProviders();
+
+		if (ArrayUtil.isEmpty(providers)) {
+			return null;
+		}
+
+		return providers[0];
 	}
 
 	private static String _getCMVPCertificateId() {
@@ -72,15 +82,13 @@ public class FIPSAuditEventEmitterUtil {
 				return persistedId.trim();
 			}
 
-			String deploymentInstanceUUID = UUID.randomUUID(
-			).toString();
+			String generatedId = String.valueOf(UUID.randomUUID());
 
 			Files.createDirectories(path.getParent());
 
-			Files.write(
-				path, deploymentInstanceUUID.getBytes(StandardCharsets.UTF_8));
+			Files.write(path, generatedId.getBytes(StandardCharsets.UTF_8));
 
-			return deploymentInstanceUUID;
+			return generatedId;
 		}
 		catch (IOException ioException) {
 			throw new UncheckedIOException(
@@ -90,22 +98,31 @@ public class FIPSAuditEventEmitterUtil {
 	}
 
 	private static String _getProviderName() {
-		Provider[] providers = Security.getProviders();
+		Provider provider = _fetchProvider();
 
-		if (ArrayUtil.isEmpty(providers)) {
+		if (provider == null) {
 			return "";
 		}
 
-		Provider provider = providers[0];
-
 		return provider.getName();
+	}
+
+	private static String _getProviderVersion() {
+		Provider provider = _fetchProvider();
+
+		if (provider == null) {
+			return "";
+		}
+
+		return provider.getVersionStr();
 	}
 
 	private static final FIPSAuditEventEmitter _fipsAuditEventEmitter =
 		new FIPSAuditEventEmitter(
 			new FileSink(), FIPSAuditEventEmitterUtil::_getCMVPCertificateId,
 			FIPSAuditEventEmitterUtil::_getDeploymentInstanceId,
-			FIPSAuditEventEmitterUtil::_getProviderName);
+			FIPSAuditEventEmitterUtil::_getProviderName,
+			FIPSAuditEventEmitterUtil::_getProviderVersion);
 
 	private static class FileSink implements Appendable, Flushable {
 

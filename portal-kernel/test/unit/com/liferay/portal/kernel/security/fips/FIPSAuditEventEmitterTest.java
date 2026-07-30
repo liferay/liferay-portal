@@ -24,10 +24,12 @@ public class FIPSAuditEventEmitterTest {
 		String cmvpCertificateId = RandomTestUtil.randomString();
 		String deploymentInstanceId = RandomTestUtil.randomString();
 		String providerName = RandomTestUtil.randomString();
+		String providerVersion = RandomTestUtil.randomString();
 
 		FIPSAuditEventEmitter fipsAuditEventEmitter = new FIPSAuditEventEmitter(
 			recordingAppendable, () -> cmvpCertificateId,
-			() -> deploymentInstanceId, () -> providerName);
+			() -> deploymentInstanceId, () -> providerName,
+			() -> providerVersion);
 
 		String eventType = RandomTestUtil.randomString();
 
@@ -62,6 +64,10 @@ public class FIPSAuditEventEmitterTest {
 		Assert.assertTrue(
 			ndjson,
 			ndjson.contains(
+				"\"provider-version\":\"" + providerVersion + "\""));
+		Assert.assertTrue(
+			ndjson,
+			ndjson.contains(
 				"\"cmvp-certificate-id\":\"" + cmvpCertificateId + "\""));
 		Assert.assertTrue(
 			ndjson, ndjson.contains("\"from-state\":\"" + fromState + "\""));
@@ -84,7 +90,7 @@ public class FIPSAuditEventEmitterTest {
 		RecordingAppendable recordingAppendable = new RecordingAppendable();
 
 		FIPSAuditEventEmitter fipsAuditEventEmitter = new FIPSAuditEventEmitter(
-			recordingAppendable, () -> "", () -> "", () -> "");
+			recordingAppendable, () -> "", () -> "", () -> "", () -> "");
 
 		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 			RandomTestUtil.randomString(), FIPSAuditSeverity.INFO);
@@ -100,11 +106,42 @@ public class FIPSAuditEventEmitterTest {
 	}
 
 	@Test
+	public void testEmitNestsFields() {
+		RecordingAppendable recordingAppendable = new RecordingAppendable();
+
+		String providerName = RandomTestUtil.randomString();
+
+		FIPSAuditEventEmitter fipsAuditEventEmitter = new FIPSAuditEventEmitter(
+			recordingAppendable, () -> "", () -> "", () -> providerName,
+			() -> "");
+
+		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
+			RandomTestUtil.randomString(), FIPSAuditSeverity.INFO);
+
+		String spoofedProviderName = RandomTestUtil.randomString();
+
+		fipsAuditEvent.put("provider-name", spoofedProviderName);
+
+		fipsAuditEventEmitter.emit(fipsAuditEvent);
+
+		String ndjson = recordingAppendable.toString();
+
+		Assert.assertTrue(
+			ndjson,
+			ndjson.contains("\"provider-name\":\"" + providerName + "\""));
+		Assert.assertTrue(
+			ndjson,
+			ndjson.contains(
+				"\"fields\":{\"provider-name\":\"" + spoofedProviderName +
+					"\"}"));
+	}
+
+	@Test
 	public void testEmitPreservesEnvelopeKeyOrder() {
 		RecordingAppendable recordingAppendable = new RecordingAppendable();
 
 		FIPSAuditEventEmitter fipsAuditEventEmitter = new FIPSAuditEventEmitter(
-			recordingAppendable, () -> "", () -> "", () -> "");
+			recordingAppendable, () -> "", () -> "", () -> "", () -> "");
 
 		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 			"", FIPSAuditSeverity.CRITICAL);
@@ -118,8 +155,8 @@ public class FIPSAuditEventEmitterTest {
 
 		String[] keys = {
 			"event-schema-version", "timestamp", "severity", "event-type",
-			"deployment-instance-id", "provider-name", "cmvp-certificate-id",
-			"from-state", "to-state"
+			"deployment-instance-id", "provider-name", "provider-version",
+			"cmvp-certificate-id", "fields", "from-state", "to-state"
 		};
 
 		int previousIndex = -1;
@@ -138,7 +175,7 @@ public class FIPSAuditEventEmitterTest {
 		RecordingAppendable recordingAppendable = new RecordingAppendable();
 
 		FIPSAuditEventEmitter fipsAuditEventEmitter = new FIPSAuditEventEmitter(
-			recordingAppendable, () -> "", () -> "", () -> "");
+			recordingAppendable, () -> "", () -> "", () -> "", () -> "");
 
 		FIPSAuditEvent fipsAuditEvent = new FIPSAuditEvent(
 			RandomTestUtil.randomString(), FIPSAuditSeverity.INFO);
