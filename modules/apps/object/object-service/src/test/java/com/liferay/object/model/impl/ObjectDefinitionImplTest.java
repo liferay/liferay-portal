@@ -94,7 +94,7 @@ public class ObjectDefinitionImplTest {
 			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES,
 			objectDefinition -> Assert.assertTrue(objectDefinition.isCMS()));
 		_testIsCMS(
-			RandomTestUtil.randomString(),
+			null,
 			objectDefinition -> Assert.assertFalse(objectDefinition.isCMS()));
 	}
 
@@ -123,28 +123,35 @@ public class ObjectDefinitionImplTest {
 	}
 
 	private void _testIsCMS(
-			String externalReferenceCode,
+			String objectFolderExternalReferenceCode,
 			UnsafeConsumer<ObjectDefinition, Exception> unsafeConsumer)
 		throws Exception {
 
-		ObjectFolder objectFolder = Mockito.mock(ObjectFolder.class);
-
-		Mockito.when(
-			objectFolder.getExternalReferenceCode()
-		).thenReturn(
-			externalReferenceCode
-		);
-
+		long companyId = RandomTestUtil.randomLong();
 		long objectFolderId = RandomTestUtil.randomLong();
 
-		_objectFolderLocalServiceUtilMockedStatic.when(
-			() -> ObjectFolderLocalServiceUtil.fetchObjectFolder(objectFolderId)
-		).thenReturn(
-			objectFolder
-		);
+		if (objectFolderExternalReferenceCode != null) {
+			ObjectFolder objectFolder = Mockito.mock(ObjectFolder.class);
+
+			Mockito.when(
+				objectFolder.getObjectFolderId()
+			).thenReturn(
+				objectFolderId
+			);
+
+			_objectFolderLocalServiceUtilMockedStatic.when(
+				() ->
+					ObjectFolderLocalServiceUtil.
+						fetchObjectFolderByExternalReferenceCode(
+							objectFolderExternalReferenceCode, companyId)
+			).thenReturn(
+				objectFolder
+			);
+		}
 
 		ObjectDefinition objectDefinition = new ObjectDefinitionImpl();
 
+		objectDefinition.setCompanyId(companyId);
 		objectDefinition.setObjectFolderId(objectFolderId);
 
 		unsafeConsumer.accept(objectDefinition);

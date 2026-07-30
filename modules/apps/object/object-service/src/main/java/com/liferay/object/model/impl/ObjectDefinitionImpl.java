@@ -253,13 +253,27 @@ public class ObjectDefinitionImpl extends ObjectDefinitionBaseImpl {
 
 	@Override
 	public boolean isCMS() {
-		if (Objects.equals(
-				getObjectFolderExternalReferenceCode(),
-				ObjectFolderConstants.
-					EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES) ||
-			Objects.equals(
-				getObjectFolderExternalReferenceCode(),
-				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES)) {
+		ObjectFolder contentStructuresObjectFolder =
+			ObjectFolderLocalServiceUtil.
+				fetchObjectFolderByExternalReferenceCode(
+					ObjectFolderConstants.
+						EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES,
+					getCompanyId());
+		ObjectFolder fileTypesObjectFolder =
+			ObjectFolderLocalServiceUtil.
+				fetchObjectFolderByExternalReferenceCode(
+					ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES,
+					getCompanyId());
+
+		if ((contentStructuresObjectFolder != null) &&
+			(contentStructuresObjectFolder.getObjectFolderId() ==
+				getObjectFolderId())) {
+
+			return true;
+		}
+		else if ((fileTypesObjectFolder != null) &&
+				 (fileTypesObjectFolder.getObjectFolderId() ==
+					 getObjectFolderId())) {
 
 			return true;
 		}
