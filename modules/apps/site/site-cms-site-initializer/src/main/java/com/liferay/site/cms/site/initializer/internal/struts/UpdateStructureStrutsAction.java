@@ -125,8 +125,9 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 
 		for (com.liferay.object.model.ObjectRelationship
 				serviceBuilderObjectRelationship :
-					_objectRelationshipLocalService.getObjectRelationships(
-						objectDefinitionId, true)) {
+					_objectRelationshipLocalService.
+						getObjectRelationshipsByObjectDefinitionId2(
+							objectDefinitionId, true)) {
 
 			if (serviceBuilderObjectRelationship.isReverse()) {
 				continue;
