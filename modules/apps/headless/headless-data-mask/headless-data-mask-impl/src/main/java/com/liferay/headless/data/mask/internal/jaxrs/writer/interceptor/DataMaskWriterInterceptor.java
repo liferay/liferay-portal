@@ -5,7 +5,7 @@
 
 package com.liferay.headless.data.mask.internal.jaxrs.writer.interceptor;
 
-import com.liferay.headless.data.mask.internal.engine.RedactTimeoutException;
+import com.liferay.headless.data.mask.internal.engine.RedactException;
 import com.liferay.headless.data.mask.internal.engine.RedactUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -145,8 +145,8 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 
 			outputStream.write(output.getBytes(charset));
 		}
-		catch (RedactTimeoutException redactTimeoutException) {
-			_log.error(redactTimeoutException);
+		catch (RedactException redactException) {
+			_log.error(redactException);
 
 			if (!_httpServletResponse.isCommitted()) {
 				_httpServletResponse.reset();
@@ -197,13 +197,13 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 					MapUtil.getString(values, "replacementRegex"),
 					replacementValue, text, deadline);
 			}
-			catch (RedactTimeoutException redactTimeoutException) {
-				throw new RedactTimeoutException(
+			catch (RedactException redactException) {
+				throw new RedactException(
 					StringBundler.concat(
 						"Unable to apply data mask \"",
 						MapUtil.getString(values, "name"), "\": ",
-						redactTimeoutException.getMessage()),
-					redactTimeoutException);
+						redactException.getMessage()),
+					redactException);
 			}
 			catch (RuntimeException runtimeException) {
 				if (_log.isWarnEnabled()) {

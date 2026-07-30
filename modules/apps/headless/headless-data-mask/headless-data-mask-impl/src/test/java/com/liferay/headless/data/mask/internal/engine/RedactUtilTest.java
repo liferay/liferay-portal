@@ -137,12 +137,17 @@ public class RedactUtilTest {
 
 		String catastrophicText = "a".repeat(40);
 
-		Assert.assertThrows(
-			RedactTimeoutException.class,
+		RedactException redactException = Assert.assertThrows(
+			RedactException.class,
 			() -> RedactUtil.redact(
 				_CATASTROPHIC_REGEX, null, "R", catastrophicText));
+
+		Assert.assertEquals(
+			"Redaction exceeded the timeout of 1000 milliseconds",
+			redactException.getMessage());
+
 		Assert.assertThrows(
-			RedactTimeoutException.class,
+			RedactException.class,
 			() -> RedactUtil.redact(
 				"a+", _CATASTROPHIC_REGEX, "R", catastrophicText));
 
@@ -152,7 +157,7 @@ public class RedactUtilTest {
 				"www\\d+www", null, "[X]", "www123www" + _LONG_TEXT,
 				RedactUtil.newDeadline()));
 		Assert.assertThrows(
-			RedactTimeoutException.class,
+			RedactException.class,
 			() -> RedactUtil.redact("a", null, "R", _LONG_TEXT, 0));
 	}
 
@@ -170,7 +175,7 @@ public class RedactUtilTest {
 		Assert.assertFalse(patterns.containsKey(detectionRegex));
 
 		Assert.assertThrows(
-			RedactTimeoutException.class,
+			RedactException.class,
 			() -> RedactUtil.redactWithoutCaching(
 				_CATASTROPHIC_REGEX, null, "R", "a".repeat(40)));
 	}

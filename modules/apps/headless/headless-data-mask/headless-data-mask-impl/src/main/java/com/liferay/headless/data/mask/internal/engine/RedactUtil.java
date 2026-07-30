@@ -80,25 +80,13 @@ public class RedactUtil {
 	}
 
 	private static String _redact(
-		String detectionRegex, String replacementRegex, String replacementValue,
-		String text, long deadline, boolean cache) {
-
-		if (text == null) {
-			return text;
-		}
-
-		Pattern detectionPattern = _getPattern(detectionRegex, cache);
-
-		if (detectionPattern == null) {
-			return text;
-		}
+		Pattern detectionPattern, Pattern replacementPattern,
+		String replacementValue, String text, long deadline) {
 
 		StringBuffer sb = new StringBuffer();
 
 		Matcher matcher = detectionPattern.matcher(
 			new DeadlineCharSequence(text, deadline));
-
-		Pattern replacementPattern = _getPattern(replacementRegex, cache);
 
 		boolean found = false;
 
@@ -122,6 +110,31 @@ public class RedactUtil {
 		return sb.toString();
 	}
 
+	private static String _redact(
+		String detectionRegex, String replacementRegex, String replacementValue,
+		String text, long deadline, boolean cache) {
+
+		if (text == null) {
+			return text;
+		}
+
+		Pattern detectionPattern = _getPattern(detectionRegex, cache);
+
+		if (detectionPattern == null) {
+			return text;
+		}
+
+		try {
+			return _redact(
+				detectionPattern, _getPattern(replacementRegex, cache),
+				replacementValue, text, deadline);
+		}
+		catch (StackOverflowError stackOverflowError) {
+			throw new RedactException(
+				"Redaction overflowed the stack", stackOverflowError);
+		}
+	}
+
 	private static final int _DEADLINE_CHECK_INTERVAL = 1024;
 
 	private static final long _TIMEOUT = 1000;
@@ -141,7 +154,9 @@ public class RedactUtil {
 			if (((++_charAtCount % _DEADLINE_CHECK_INTERVAL) == 0) &&
 				(System.currentTimeMillis() > _deadline)) {
 
-				throw new RedactTimeoutException(_TIMEOUT);
+				throw new RedactException(
+					"Redaction exceeded the timeout of " + _TIMEOUT +
+						" milliseconds");
 			}
 
 			return _charSequence.charAt(index);
