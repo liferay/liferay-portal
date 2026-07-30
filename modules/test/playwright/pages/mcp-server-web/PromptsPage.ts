@@ -20,9 +20,7 @@ export class PromptsPage extends FDSTablePage {
 	constructor(page: Page) {
 		super(page);
 
-		this.newPromptButton = page.getByRole('button', {
-			name: 'New Prompt',
-		});
+		this.newPromptButton = page.getByLabel('New Prompt');
 	}
 
 	async goto() {

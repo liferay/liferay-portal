@@ -209,6 +209,10 @@ test.describe('Prompts - List View', () => {
 });
 
 test.describe('Prompts - Detail (Create / Edit)', () => {
+	test.beforeEach(async ({createFDSItem}) => {
+		await createFDSItem();
+	});
+
 	test(
 		'Creates a prompt from the New Prompt button',
 		{tag: '@LPD-98309'},
