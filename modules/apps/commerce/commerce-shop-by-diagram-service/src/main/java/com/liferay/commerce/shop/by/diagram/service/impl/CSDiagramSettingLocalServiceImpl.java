@@ -112,8 +112,7 @@ public class CSDiagramSettingLocalServiceImpl
 		throws PortalException {
 
 		CSDiagramSetting csDiagramSetting =
-			csDiagramSettingLocalService.getCSDiagramSetting(
-				csDiagramSettingId);
+			csDiagramSettingPersistence.findByPrimaryKey(csDiagramSettingId);
 
 		csDiagramSetting.setCPAttachmentFileEntryId(cpAttachmentFileEntryId);
 		csDiagramSetting.setColor(color);

@@ -78,7 +78,7 @@ public class CSDiagramEntryServiceImpl extends CSDiagramEntryServiceBaseImpl {
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
 
-		return csDiagramEntryLocalService.fetchCSDiagramEntry(
+		return csDiagramEntryPersistence.fetchByCPDI_S(
 			cpDefinitionId, sequence);
 	}
 
@@ -119,7 +119,7 @@ public class CSDiagramEntryServiceImpl extends CSDiagramEntryServiceBaseImpl {
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
 
-		return csDiagramEntryLocalService.getCSDiagramEntries(
+		return csDiagramEntryPersistence.findByCPDefinitionId(
 			cpDefinitionId, start, end);
 	}
 
@@ -130,8 +130,7 @@ public class CSDiagramEntryServiceImpl extends CSDiagramEntryServiceBaseImpl {
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
 
-		return csDiagramEntryLocalService.getCSDiagramEntriesCount(
-			cpDefinitionId);
+		return csDiagramEntryPersistence.countByCPDefinitionId(cpDefinitionId);
 	}
 
 	@Override
@@ -139,7 +138,7 @@ public class CSDiagramEntryServiceImpl extends CSDiagramEntryServiceBaseImpl {
 		throws PortalException {
 
 		CSDiagramEntry csDiagramEntry =
-			csDiagramEntryLocalService.getCSDiagramEntry(csDiagramEntryId);
+			csDiagramEntryPersistence.findByPrimaryKey(csDiagramEntryId);
 
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), csDiagramEntry.getCPDefinitionId(),
@@ -168,7 +167,7 @@ public class CSDiagramEntryServiceImpl extends CSDiagramEntryServiceBaseImpl {
 		throws PortalException {
 
 		CSDiagramEntry csDiagramEntry =
-			csDiagramEntryLocalService.getCSDiagramEntry(csDiagramEntryId);
+			csDiagramEntryPersistence.findByPrimaryKey(csDiagramEntryId);
 
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), csDiagramEntry.getCPDefinitionId(),

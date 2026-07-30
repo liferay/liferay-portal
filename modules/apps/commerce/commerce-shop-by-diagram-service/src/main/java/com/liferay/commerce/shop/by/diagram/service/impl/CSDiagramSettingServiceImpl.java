@@ -60,8 +60,7 @@ public class CSDiagramSettingServiceImpl
 		throws PortalException {
 
 		CSDiagramSetting csDiagramSetting =
-			csDiagramSettingLocalService.getCSDiagramSetting(
-				csDiagramSettingId);
+			csDiagramSettingPersistence.findByPrimaryKey(csDiagramSettingId);
 
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), csDiagramSetting.getCPDefinitionId(),
@@ -78,8 +77,7 @@ public class CSDiagramSettingServiceImpl
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
 
-		return csDiagramSettingLocalService.getCSDiagramSettingByCPDefinitionId(
-			cpDefinitionId);
+		return csDiagramSettingPersistence.findByCPDefinitionId(cpDefinitionId);
 	}
 
 	@Override
@@ -89,8 +87,7 @@ public class CSDiagramSettingServiceImpl
 		throws PortalException {
 
 		CSDiagramSetting csDiagramSetting =
-			csDiagramSettingLocalService.getCSDiagramSetting(
-				csDiagramSettingId);
+			csDiagramSettingPersistence.findByPrimaryKey(csDiagramSettingId);
 
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), csDiagramSetting.getCPDefinitionId(),

@@ -91,7 +91,7 @@ public class CSDiagramPinLocalServiceImpl
 			String sequence)
 		throws PortalException {
 
-		CSDiagramPin csDiagramPin = csDiagramPinLocalService.getCSDiagramPin(
+		CSDiagramPin csDiagramPin = csDiagramPinPersistence.findByPrimaryKey(
 			csDiagramPinId);
 
 		csDiagramPin.setPositionX(positionX);

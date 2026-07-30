@@ -66,14 +66,14 @@ public class CSDiagramPinServiceImpl extends CSDiagramPinServiceBaseImpl {
 
 	@Override
 	public CSDiagramPin fetchCSDiagramPin(long csDiagramPinId) {
-		return csDiagramPinLocalService.fetchCSDiagramPin(csDiagramPinId);
+		return csDiagramPinPersistence.fetchByPrimaryKey(csDiagramPinId);
 	}
 
 	@Override
 	public CSDiagramPin getCSDiagramPin(long csDiagramPinId)
 		throws PortalException {
 
-		CSDiagramPin csDiagramPin = csDiagramPinLocalService.getCSDiagramPin(
+		CSDiagramPin csDiagramPin = csDiagramPinPersistence.findByPrimaryKey(
 			csDiagramPinId);
 
 		_cpDefinitionModelResourcePermission.check(
@@ -91,7 +91,7 @@ public class CSDiagramPinServiceImpl extends CSDiagramPinServiceBaseImpl {
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
 
-		return csDiagramPinLocalService.getCSDiagramPins(
+		return csDiagramPinPersistence.findByCPDefinitionId(
 			cpDefinitionId, start, end);
 	}
 
@@ -102,7 +102,7 @@ public class CSDiagramPinServiceImpl extends CSDiagramPinServiceBaseImpl {
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
 
-		return csDiagramPinLocalService.getCSDiagramPinsCount(cpDefinitionId);
+		return csDiagramPinPersistence.countByCPDefinitionId(cpDefinitionId);
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public class CSDiagramPinServiceImpl extends CSDiagramPinServiceBaseImpl {
 			String sequence)
 		throws PortalException {
 
-		CSDiagramPin csDiagramPin = csDiagramPinLocalService.getCSDiagramPin(
+		CSDiagramPin csDiagramPin = csDiagramPinPersistence.findByPrimaryKey(
 			csDiagramPinId);
 
 		_cpDefinitionModelResourcePermission.check(
