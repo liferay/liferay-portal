@@ -56,12 +56,48 @@ export async function deletePopulatedFolder(page: Page, folderName: string) {
 	});
 }
 
+export async function gotoAndOpenFolder(
+	page: Page,
+	gotoList: () => Promise<void>,
+	folderName: string
+) {
+	await expect(async () => {
+		await gotoList();
+
+		await expect(
+			page.getByRole('link', {exact: true, name: folderName})
+		).toBeVisible({timeout: 5000});
+	}).toPass({timeout: 60000});
+
+	await openFolder(page, folderName);
+}
+
 export async function openFolder(page: Page, folderName: string) {
 	await page.getByRole('link', {exact: true, name: folderName}).click();
 
 	await page.waitForURL('**/view-folder/**');
 
 	await page.locator('.fds').waitFor();
+}
+
+export async function renameFolder(
+	page: Page,
+	folderName: string,
+	newName: string
+) {
+	await clickItemAction(page, folderName, 'Edit');
+
+	const nameInput = page.getByLabel('NameRequired');
+
+	await expect(nameInput).toHaveValue(folderName);
+
+	await nameInput.fill(newName);
+
+	await expect(nameInput).toHaveValue(newName);
+
+	await page.getByRole('button', {name: 'Save'}).click();
+
+	await page.waitForURL((url) => !url.pathname.includes('/edit-folder/'));
 }
 
 export async function searchContentList(page: Page, title: string) {
