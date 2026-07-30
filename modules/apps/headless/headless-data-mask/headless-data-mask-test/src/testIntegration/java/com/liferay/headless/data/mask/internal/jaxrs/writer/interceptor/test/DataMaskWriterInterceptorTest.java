@@ -134,39 +134,10 @@ public class DataMaskWriterInterceptorTest {
 				).build(),
 				Http.Method.GET));
 
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.headless.data.mask.internal.jaxrs.writer." +
-					"interceptor.DataMaskWriterInterceptor",
-				LoggerTestUtil.ERROR)) {
-
-			Assert.assertEquals(
-				"",
-				HTTPTestUtil.invokeToString(
-					null, "test-data-mask/repeated-text",
-					HashMapBuilder.put(
-						"X-Liferay-Data-Masks",
-						() -> {
-							ObjectEntry objectEntry =
-								DataMaskTestUtil.addDataMaskObjectEntry(
-									RandomTestUtil.randomString(), "(.*a){40}",
-									"[REDACTED]");
-
-							return objectEntry.getExternalReferenceCode();
-						}
-					).build(),
-					Http.Method.GET));
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			String message = logEntry.getMessage();
-
-			Assert.assertTrue(
-				message, message.contains("Redaction exceeded the timeout of"));
-		}
+		_assertRedactionFails(
+			"(.*a){40}", "repeated-text", "Redaction exceeded the timeout of");
+		_assertRedactionFails(
+			"(a|aa)+$", "long-repeated-text", "Redaction overflowed the stack");
 	}
 
 	@FeatureFlags(
@@ -200,6 +171,13 @@ public class DataMaskWriterInterceptorTest {
 		}
 
 		@GET
+		@Path("/long-repeated-text")
+		@Produces(MediaType.TEXT_PLAIN)
+		public String longRepeatedText() {
+			return _LONG_REPEATED_TEXT;
+		}
+
+		@GET
 		@Path("/repeated-text")
 		@Produces(MediaType.TEXT_PLAIN)
 		public String repeatedText() {
@@ -214,6 +192,42 @@ public class DataMaskWriterInterceptorTest {
 		}
 
 	}
+
+	private void _assertRedactionFails(
+			String detectionRegex, String path, String expectedMessage)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.headless.data.mask.internal.jaxrs.writer." +
+					"interceptor.DataMaskWriterInterceptor",
+				LoggerTestUtil.ERROR)) {
+
+			ObjectEntry objectEntry = DataMaskTestUtil.addDataMaskObjectEntry(
+				RandomTestUtil.randomString(), detectionRegex, "[REDACTED]");
+
+			Assert.assertEquals(
+				"",
+				HTTPTestUtil.invokeToString(
+					null, "test-data-mask/" + path,
+					HashMapBuilder.put(
+						"X-Liferay-Data-Masks",
+						objectEntry.getExternalReferenceCode()
+					).build(),
+					Http.Method.GET));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(message, message.contains(expectedMessage));
+		}
+	}
+
+	private static final String _LONG_REPEATED_TEXT = "a".repeat(100000) + "b";
 
 	private static final String _REPEATED_TEXT = "a".repeat(60);
 

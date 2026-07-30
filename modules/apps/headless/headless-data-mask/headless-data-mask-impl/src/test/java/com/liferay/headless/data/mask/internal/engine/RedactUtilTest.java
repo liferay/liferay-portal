@@ -115,6 +115,11 @@ public class RedactUtilTest {
 				"\\b\\d{3}-\\d{2}-\\d{4}\\b", null, "[SSN]",
 				"SSN: 123-45-6789."));
 		Assert.assertEquals(
+			"[X]" + _LONG_TEXT,
+			RedactUtil.redact(
+				"www\\d+www", null, "[X]", "www123www" + _LONG_TEXT,
+				RedactUtil.newDeadline()));
+		Assert.assertEquals(
 			"value: [$1\\X]",
 			RedactUtil.redact("secret", null, "[$1\\X]", "value: secret"));
 
@@ -135,30 +140,19 @@ public class RedactUtilTest {
 			"Email [EMAIL_ADDRESS], IBAN [BANK_ACCOUNT_NUMBER], SSN [SSN].",
 			text);
 
-		String catastrophicText = "a".repeat(40);
+		_testRedactFails(
+			"(a|aa)+$", null, "a".repeat(100000) + "b",
+			"Redaction overflowed the stack");
+		_testRedactFails(
+			"a+", _CATASTROPHIC_REGEX, _CATASTROPHIC_TEXT,
+			"Redaction exceeded the timeout of 1000 milliseconds");
+		_testRedactFails(
+			_CATASTROPHIC_REGEX, null, _CATASTROPHIC_TEXT,
+			"Redaction exceeded the timeout of 1000 milliseconds");
 
-		RedactException redactException = Assert.assertThrows(
-			RedactException.class,
-			() -> RedactUtil.redact(
-				_CATASTROPHIC_REGEX, null, "R", catastrophicText));
-
-		Assert.assertEquals(
-			"Redaction exceeded the timeout of 1000 milliseconds",
-			redactException.getMessage());
-
-		Assert.assertThrows(
-			RedactException.class,
-			() -> RedactUtil.redact(
-				"a+", _CATASTROPHIC_REGEX, "R", catastrophicText));
-
-		Assert.assertEquals(
-			"[X]" + _LONG_TEXT,
-			RedactUtil.redact(
-				"www\\d+www", null, "[X]", "www123www" + _LONG_TEXT,
-				RedactUtil.newDeadline()));
-		Assert.assertThrows(
-			RedactException.class,
-			() -> RedactUtil.redact("a", null, "R", _LONG_TEXT, 0));
+		_testRedactFails(
+			"a", null, _LONG_TEXT, 0,
+			"Redaction exceeded the timeout of 1000 milliseconds");
 	}
 
 	@Test
@@ -177,10 +171,36 @@ public class RedactUtilTest {
 		Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redactWithoutCaching(
-				_CATASTROPHIC_REGEX, null, "R", "a".repeat(40)));
+				_CATASTROPHIC_REGEX, null, "R", _CATASTROPHIC_TEXT));
+	}
+
+	private void _testRedactFails(
+		String detectionRegex, String replacementRegex, String text,
+		long deadline, String expectedMessage) {
+
+		RedactException redactException = Assert.assertThrows(
+			RedactException.class,
+			() -> RedactUtil.redact(
+				detectionRegex, replacementRegex, "R", text, deadline));
+
+		Assert.assertEquals(expectedMessage, redactException.getMessage());
+	}
+
+	private void _testRedactFails(
+		String detectionRegex, String replacementRegex, String text,
+		String expectedMessage) {
+
+		RedactException redactException = Assert.assertThrows(
+			RedactException.class,
+			() -> RedactUtil.redact(
+				detectionRegex, replacementRegex, "R", text));
+
+		Assert.assertEquals(expectedMessage, redactException.getMessage());
 	}
 
 	private static final String _CATASTROPHIC_REGEX = "(.*a){40}";
+
+	private static final String _CATASTROPHIC_TEXT = "a".repeat(40);
 
 	private static final String _LONG_TEXT = "b".repeat(2000);
 
