@@ -8,24 +8,18 @@ import React from 'react';
 import LinkedProjects from '../../../common/components/LinkedProjects';
 
 type ProjectsPanelProps = {
-	assetKeywords?: string[];
 	cmpProjectLinkObjectDefinitionId?: number | null;
 	cmpProjectObjectDefinitionId?: number | null;
 	cmpProjectViewURL?: string;
-	cmpTaskObjectDefinitionId?: number | null;
-	cmpTaskViewURL?: string;
 	entryClassName?: string;
 	entryExternalReferenceCode?: string;
 	entryGroupExternalReferenceCode?: string;
 };
 
 export default function ProjectsPanel({
-	assetKeywords,
 	cmpProjectLinkObjectDefinitionId,
 	cmpProjectObjectDefinitionId,
 	cmpProjectViewURL,
-	cmpTaskObjectDefinitionId,
-	cmpTaskViewURL,
 	entryClassName,
 	entryExternalReferenceCode,
 	entryGroupExternalReferenceCode,
@@ -33,19 +27,16 @@ export default function ProjectsPanel({
 	return (
 		<div className="px-3">
 			<LinkedProjects
-				assetKeywords={assetKeywords}
 				cmpProjectLinkObjectDefinitionId={
 					cmpProjectLinkObjectDefinitionId
 				}
 				cmpProjectObjectDefinitionId={cmpProjectObjectDefinitionId}
-				cmpTaskObjectDefinitionId={cmpTaskObjectDefinitionId}
 				entryClassName={entryClassName}
 				entryExternalReferenceCode={entryExternalReferenceCode}
 				entryGroupExternalReferenceCode={
 					entryGroupExternalReferenceCode
 				}
 				projectViewURL={cmpProjectViewURL}
-				taskViewURL={cmpTaskViewURL}
 			/>
 		</div>
 	);

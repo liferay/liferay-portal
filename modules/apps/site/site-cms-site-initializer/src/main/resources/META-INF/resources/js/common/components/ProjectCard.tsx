@@ -7,19 +7,15 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import ClayLabel from '@clayui/label';
 import React from 'react';
 
-import {CMPProject, CMPTask} from '../services/ProjectLinkService';
+import {CMPProject} from '../services/ProjectLinkService';
 import dateFormat from '../utils/dateFormat';
 
 import '../../../css/components/LinkedProjects.scss';
 
 type ProjectCardProps = {
-	expanded?: boolean;
 	onRemove: () => void;
-	onToggleTasks?: () => void;
 	project: CMPProject;
 	projectViewURL?: string;
-	taskViewURL?: string;
-	tasks?: CMPTask[];
 };
 
 const DUE_DATE_FORMAT = {
@@ -56,26 +52,20 @@ function getStatus(project: CMPProject): {key: string; name: string} | null {
 }
 
 /**
- * A CMP project card: title, due date, and status badge, with a remove button
- * and an optional expandable task list. Shared by the LinkedProjects panels
- * and the bulk add-assets-to-project modal.
+ * A CMP project card: title, due date, and status badge, with a remove button.
+ * Shared by the LinkedProjects panels and the bulk add-assets-to-project
+ * modal.
  */
 export default function ProjectCard({
-	expanded = false,
 	onRemove,
-	onToggleTasks,
 	project,
 	projectViewURL,
-	taskViewURL,
-	tasks = [],
 }: ProjectCardProps) {
 	const status = getStatus(project);
 
 	const projectURL = projectViewURL
 		? `${projectViewURL}/${project.id}`
 		: undefined;
-
-	const hasTasks = !!tasks.length;
 
 	return (
 		<div className="cms-linked-projects-card">
@@ -113,49 +103,9 @@ export default function ProjectCard({
 						{status.name}
 					</ClayLabel>
 				) : null}
-
-				{hasTasks && expanded ? (
-					<ul className="cms-linked-projects-tasks">
-						{tasks.map((task) => {
-							const taskURL = taskViewURL
-								? `${taskViewURL}/${task.id}`
-								: undefined;
-
-							return (
-								<li key={task.id}>
-									{taskURL ? (
-										<a href={taskURL}>{task.title}</a>
-									) : (
-										task.title
-									)}
-								</li>
-							);
-						})}
-					</ul>
-				) : null}
 			</div>
 
 			<div className="cms-linked-projects-card-actions">
-				{hasTasks && onToggleTasks ? (
-					<ClayButtonWithIcon
-						aria-label={
-							expanded
-								? Liferay.Language.get('collapse')
-								: Liferay.Language.get('expand')
-						}
-						borderless
-						displayType="secondary"
-						onClick={onToggleTasks}
-						size="sm"
-						symbol={expanded ? 'angle-down' : 'angle-right'}
-						title={
-							expanded
-								? Liferay.Language.get('collapse')
-								: Liferay.Language.get('expand')
-						}
-					/>
-				) : null}
-
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('remove')}
 					borderless

@@ -28,11 +28,6 @@ export type CMPProject = {
 	title: string;
 };
 
-export type CMPTask = {
-	id: number;
-	title: string;
-};
-
 /**
  * A CMPProjectLink entry reduced to what the panels need: the
  * entry id (required to unlink) and the linked project id.
@@ -62,17 +57,7 @@ type ProjectSearchItem = {
 	};
 };
 
-type TaskSearchItem = {
-	embedded: {
-		id: number;
-		r_cmpProjectToCMPTasks_c_cmpProjectId?: number;
-		title: string;
-	};
-};
-
 const PROJECT_LINKS_URL = '/o/cmp/project-links';
-
-const TASK_TAG_PREFIX = 'L_CMP_TASK';
 
 function buildSearchURL(
 	objectDefinitionId: number,
@@ -125,64 +110,6 @@ async function fetchAllSearchItems<T>({
 	}
 
 	return {data: items, error: null};
-}
-
-/**
- * Lists the asset's associated tasks grouped by project id, resolved from the
- * asset's keywords (see TASK_TAG_PREFIX) in a single search. A project id
- * absent from the result simply has no associated tasks.
- */
-async function getLinkedTasks({
-	assetKeywords,
-	cmpTaskObjectDefinitionId,
-	signal,
-}: {
-	assetKeywords?: string[];
-	cmpTaskObjectDefinitionId?: number | null;
-	signal?: AbortSignal;
-}): Promise<RequestResult<{[projectId: number]: CMPTask[]}>> {
-	const taskTags = (assetKeywords ?? []).filter((keyword) =>
-		keyword.startsWith(TASK_TAG_PREFIX)
-	);
-
-	if (!cmpTaskObjectDefinitionId || !taskTags.length) {
-		return {data: {}, error: null};
-	}
-
-	const {data, error, status, type} =
-		await fetchAllSearchItems<TaskSearchItem>({
-			filter: `keywords/any(k:k in (${taskTags
-				.map((tag) => `'${tag.replace(/'/g, "''")}'`)
-				.join(',')}))`,
-			objectDefinitionId: cmpTaskObjectDefinitionId,
-			signal,
-		});
-
-	if (error !== null) {
-		return {data: null, error, status, type};
-	}
-
-	const tasksByProjectId: {[projectId: number]: CMPTask[]} = {};
-
-	data.forEach(({embedded}) => {
-		const cmpProjectObjectEntryId =
-			embedded.r_cmpProjectToCMPTasks_c_cmpProjectId;
-
-		if (cmpProjectObjectEntryId === undefined) {
-			return;
-		}
-
-		if (!tasksByProjectId[cmpProjectObjectEntryId]) {
-			tasksByProjectId[cmpProjectObjectEntryId] = [];
-		}
-
-		tasksByProjectId[cmpProjectObjectEntryId].push({
-			id: embedded.id,
-			title: embedded.title,
-		});
-	});
-
-	return {data: tasksByProjectId, error: null};
 }
 
 /**
@@ -312,7 +239,6 @@ async function unlinkProject({
 }
 
 const ProjectLinkService = {
-	getLinkedTasks,
 	getProjectLinks,
 	getProjects,
 	linkProject,
