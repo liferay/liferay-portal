@@ -76,14 +76,12 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 			sendRedirect(actionRequest, actionResponse);
 		}
 		catch (Exception exception) {
-			Throwable causeThrowable = exception.getCause();
+			Throwable throwable = exception.getCause();
 
-			Throwable throwable = exception;
+			if (!(throwable instanceof
+					LDAPConfigurationModelListenerException)) {
 
-			if (causeThrowable instanceof
-					LDAPConfigurationModelListenerException) {
-
-				throwable = causeThrowable;
+				throwable = exception;
 			}
 
 			if (throwable instanceof DuplicateLDAPServerNameException ||
@@ -100,8 +98,7 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 						ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
 						PortletRequest.RENDER_PHASE)
 				).setMVCRenderCommandName(
-					"/portal_settings_authentication_ldap" +
-						"/portal_settings_edit_ldap_server"
+					"/portal_settings_authentication_ldap/edit_ldap_server"
 				).buildPortletURL();
 
 				String redirect = ParamUtil.getString(
