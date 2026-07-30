@@ -197,7 +197,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 			).put(
 				_OBJECT_FIELD_NAME_TEXT, title
 			).build());
-
 		_addObjectEntry(
 			HashMapBuilder.<String, Serializable>put(
 				_OBJECT_FIELD_NAME_INTEGER, priority
