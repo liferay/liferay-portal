@@ -28,6 +28,8 @@ const CONTENT_TYPES = [
 describe('ContentTypeSelectorMessageBalloon', () => {
 	beforeEach(() => {
 		mockFetch.mockReset();
+
+		(Liferay.Util.openToast as jest.Mock).mockClear();
 	});
 
 	it('stores the selected type and its object fields in the context ref and sends the message', async () => {
@@ -78,5 +80,37 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 			objectDefinitionName: 'C_BasicWebContent',
 			objectFields: JSON.stringify(objectFields),
 		});
+	});
+
+	it('stops generating and reports the failure when the object fields cannot be fetched', async () => {
+		mockFetch.mockResolvedValue({ok: false} as never);
+
+		const sendMessage = jest.fn();
+		const setIsGenerating = jest.fn();
+
+		render(
+			<ContentTypeSelectorMessageBalloon
+				contentTypes={CONTENT_TYPES}
+				contextRef={{current: {}}}
+				message="What type of content do you want to generate?"
+				sendMessage={sendMessage}
+				setIsGenerating={setIsGenerating}
+			/>
+		);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('content-type'),
+			'L_CMS_BASIC_WEB_CONTENT'
+		);
+
+		await waitFor(() =>
+			expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+				expect.objectContaining({type: 'danger'})
+			)
+		);
+
+		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
+		expect(sendMessage).not.toHaveBeenCalled();
+		expect(screen.getByLabelText('content-type')).toBeEnabled();
 	});
 });

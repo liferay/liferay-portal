@@ -49,20 +49,32 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 
 		setIsGenerating(true);
 
-		const objectFields = await getObjectFields(
-			contentType.externalReferenceCode
-		);
+		try {
+			const objectFields = await getObjectFields(
+				contentType.externalReferenceCode
+			);
 
-		// eslint-disable-next-line react-compiler/react-compiler
-		contextRef.current = {
-			...contextRef.current,
-			objectDefinitionName: contentType.name,
-			objectFields: JSON.stringify(objectFields),
-		};
+			// eslint-disable-next-line react-compiler/react-compiler
+			contextRef.current = {
+				...contextRef.current,
+				objectDefinitionName: contentType.name,
+				objectFields: JSON.stringify(objectFields),
+			};
 
-		setSubmitted(true);
+			setSubmitted(true);
 
-		sendMessage(`${Liferay.Language.get('generate')} ${contentType.label}`);
+			sendMessage(
+				`${Liferay.Language.get('generate')} ${contentType.label}`
+			);
+		}
+		catch {
+			setIsGenerating(false);
+
+			Liferay.Util.openToast({
+				message: Liferay.Language.get('an-unexpected-error-occurred'),
+				type: 'danger',
+			});
+		}
 	}
 
 	return (
