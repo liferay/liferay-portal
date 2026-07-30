@@ -374,15 +374,15 @@ const EventInput: React.FC<IEventInputProps> = ({
 
 				<OperatorDropdown />
 
-				{isAccountSegment && (
+				{isAccountSegment ? (
 					<Form.GroupItem className="entity-name" label shrink>
-						{Liferay.Language.get('individual-who')}
+						{Liferay.Language.get('individual-who-triggered')}
+					</Form.GroupItem>
+				) : (
+					<Form.GroupItem className="entity-name" label shrink>
+						{Liferay.Language.get('triggered').toLowerCase()}
 					</Form.GroupItem>
 				)}
-
-				<Form.GroupItem className="entity-name" label shrink>
-					{Liferay.Language.get('triggered').toLowerCase()}
-				</Form.GroupItem>
 
 				<Form.GroupItem className="display-value" label shrink>
 					<b>{displayValue}</b>
