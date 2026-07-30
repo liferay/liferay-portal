@@ -17,12 +17,6 @@ describe('AccountInfoBar', () => {
 	afterEach(cleanup);
 
 	describe('rendering', () => {
-		it('should render the section title', () => {
-			render(<AccountInfoBar {...mockAccount} />);
-
-			expect(screen.getByText('ACCOUNT INFO')).toBeInTheDocument();
-		});
-
 		it('should render the account name', () => {
 			render(<AccountInfoBar {...mockAccount} />);
 
@@ -108,12 +102,11 @@ describe('AccountInfoBar', () => {
 			expect(screen.queryByText('0')).not.toBeInTheDocument();
 		});
 
-		it('should render nothing but the section title for an empty account', () => {
+		it('should render nothing for an empty account', () => {
 			const {container} = render(<AccountInfoBar />);
 
-			expect(screen.getByText('ACCOUNT INFO')).toBeInTheDocument();
 			expect(container.querySelectorAll('.label')).toHaveLength(0);
-			expect(container.querySelectorAll('.lexicon-icon')).toHaveLength(1);
+			expect(container.querySelectorAll('.lexicon-icon')).toHaveLength(0);
 		});
 	});
 });

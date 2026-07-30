@@ -3,7 +3,6 @@ import ClayIcon from '@clayui/icon';
 import Label from '@clayui/label';
 import React from 'react';
 import {getAccountInfoDisplayValues} from 'contacts/pages/account/utils/accountInfo';
-import {SectionHeader} from 'shared/components/SectionHeader';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 
@@ -45,13 +44,7 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 		getAccountInfoDisplayValues({annualRevenue, lifecycleStage});
 
 	return (
-		<>
-			<SectionHeader
-				icon="box-container"
-				title={Liferay.Language.get('account-info')}
-			/>
-
-			<Card className="mb-3">
+		<Card className="mb-3">
 				<Card.Body className="align-items-center d-flex flex-row flex-wrap justify-content-between p-3">
 					<Text size={5} weight="semi-bold">
 						{accountName}
@@ -95,8 +88,7 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 						)}
 					</div>
 				</Card.Body>
-			</Card>
-		</>
+		</Card>
 	);
 };
 
