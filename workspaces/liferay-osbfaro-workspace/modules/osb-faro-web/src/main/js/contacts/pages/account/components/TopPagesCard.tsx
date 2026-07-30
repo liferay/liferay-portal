@@ -10,8 +10,9 @@ import TopPagesCardContent, {
 } from 'shared/components/TopPagesCardContent';
 import {getSafeRangeSelectors} from 'shared/util/util';
 import {OrderByDirections} from 'shared/util/constants';
+import {pickBy} from 'lodash';
 import {RangeSelectors} from 'shared/types';
-import {Routes, toRoute} from 'shared/util/router';
+import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {useQuery} from '@apollo/client';
 
 const TopPagesCard: React.FC<React.HTMLAttributes<HTMLElement>> = ({
@@ -38,6 +39,7 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 	const [activeTabId, setActiveTabId] = useState(TOP_PAGES_TABS[0].tabId);
 	const {
 		accountId,
+		accountName,
 		router: {
 			params: {channelId, groupId},
 		},
@@ -70,7 +72,10 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 			empty={!data?.pages.total}
 			error={error}
 			footer={{
-				href: toRoute(Routes.SITES_TOUCHPOINTS, {channelId, groupId}),
+				href: setUriQueryValues(
+					pickBy({accountId, accountName}),
+					toRoute(Routes.SITES_TOUCHPOINTS, {channelId, groupId})
+				),
 				label: Liferay.Language.get('view-all'),
 			}}
 			items={data?.pages.assetMetrics ?? []}

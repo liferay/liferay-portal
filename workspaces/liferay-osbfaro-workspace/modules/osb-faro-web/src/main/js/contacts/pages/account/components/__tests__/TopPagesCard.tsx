@@ -20,6 +20,7 @@ const ACCOUNT_ID = 'acc-1';
 
 const MOCK_CONTEXT = {
 	accountId: ACCOUNT_ID,
+	accountName: 'IQVIA',
 	filters: {},
 	router: {
 		params: {
@@ -32,6 +33,11 @@ const MOCK_CONTEXT = {
 		},
 	},
 };
+
+/**
+ * Every mock is keyed to the account in focus, so a request that forgets to
+ * narrow by account finds no mock and renders no rows.
+ */
 
 const renderTopPagesCard = () =>
 	render(
@@ -104,14 +110,19 @@ describe('TopPagesCard', () => {
 		expect(screen.getByText('10')).toBeInTheDocument();
 	});
 
-	it('should point the footer action to the site pages list', async () => {
+	it('should point the footer action to the account filtered pages list', async () => {
 		const {container} = renderTopPagesCard();
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(
-			screen.getByText('View All').closest('a')?.getAttribute('href')
-		).toContain('/workspace/456/123/sites/pages');
+		const href = screen
+			.getByText('View All')
+			.closest('a')
+			?.getAttribute('href');
+
+		expect(href).toContain('/workspace/456/123/sites/pages');
+		expect(href).toContain('accountId=acc-1');
+		expect(href).toContain('accountName=IQVIA');
 	});
 
 	it('should render the footer action like the account info one', async () => {
