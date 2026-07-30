@@ -6,6 +6,7 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
@@ -311,6 +312,10 @@ public class ViewDesignLibraryResourcesDisplayContext {
 				"label",
 				LanguageUtil.get(_httpServletRequest, "connected-sites")
 			).put(
+				"refreshDataSetIds",
+				JSONUtil.putAll(
+					DesignLibraryAdminFDSNames.DESIGN_LIBRARY_CONNECTED_SITES)
+			).put(
 				"symbolLeft", "globe"
 			).put(
 				"target", "connected-sites"
@@ -330,6 +335,12 @@ public class ViewDesignLibraryResourcesDisplayContext {
 						"view-members")
 			).put(
 				"ownerId", String.valueOf(group.getCreatorUserId())
+			).put(
+				"refreshDataSetIds",
+				JSONUtil.putAll(
+					DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS,
+					DesignLibraryAdminFDSNames.
+						DESIGN_LIBRARY_MEMBERS_USER_GROUPS)
 			).put(
 				"symbolLeft", "users"
 			).put(

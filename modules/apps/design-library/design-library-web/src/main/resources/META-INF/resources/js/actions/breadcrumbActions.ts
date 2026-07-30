@@ -42,13 +42,26 @@ export function confirmDeleteDesignLibrary({
 
 export function openConnectedSitesModal({
 	externalReferenceCode,
+	refreshDataSetIds,
 }: {
 	externalReferenceCode: string;
+	refreshDataSetIds?: string[];
 }) {
+	let changed = false;
+
 	openModal({
 		contentComponent: () =>
-			DesignLibraryConnectedSitesModal({externalReferenceCode}),
-		onClose: () => window.location.reload(),
+			DesignLibraryConnectedSitesModal({
+				externalReferenceCode,
+				onChange: () => {
+					changed = true;
+				},
+			}),
+		onClose: () => {
+			if (changed) {
+				refreshDataSets(refreshDataSetIds);
+			}
+		},
 		size: 'md',
 	});
 }
@@ -58,21 +71,38 @@ export function openManageMembersModal({
 	hasAssignMembersPermission,
 	headerTitle,
 	ownerId,
+	refreshDataSetIds,
 }: {
 	externalReferenceCode: string;
 	hasAssignMembersPermission: boolean;
 	headerTitle: string;
 	ownerId: string;
+	refreshDataSetIds?: string[];
 }) {
+	let changed = false;
+
 	openModal({
 		contentComponent: () =>
 			DesignLibraryManageMembersModal({
 				externalReferenceCode,
 				hasAssignMembersPermission,
 				headerTitle,
+				onChange: () => {
+					changed = true;
+				},
 				ownerId,
 			}),
-		onClose: () => window.location.reload(),
+		onClose: () => {
+			if (changed) {
+				refreshDataSets(refreshDataSetIds);
+			}
+		},
 		size: 'md',
+	});
+}
+
+function refreshDataSets(dataSetIds?: string[]) {
+	(dataSetIds || []).forEach((dataSetId) => {
+		Liferay.fire('fds-update-display', {id: dataSetId});
 	});
 }

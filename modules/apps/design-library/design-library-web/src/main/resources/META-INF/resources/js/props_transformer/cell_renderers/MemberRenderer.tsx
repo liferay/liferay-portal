@@ -9,13 +9,10 @@ import React from 'react';
 
 import ItemWithStickerRenderer from './ItemWithStickerRenderer';
 
-const OWNER_ROLE_EXTERNAL_REFERENCE_CODE = 'L_DESIGN_LIBRARY_OWNER';
-
 export interface MemberData {
 	id: number;
 	image?: string;
 	numberOfUserAccounts?: number;
-	roles?: Array<{externalReferenceCode: string}>;
 }
 
 const MemberRenderer = ({
@@ -46,15 +43,7 @@ const MemberRenderer = ({
 		);
 	}
 
-	const roles = itemData.roles || [];
-
-	const isOwner =
-		(ownerId !== undefined && String(itemData.id) === String(ownerId)) ||
-		roles.some(
-			(role) =>
-				role.externalReferenceCode ===
-				OWNER_ROLE_EXTERNAL_REFERENCE_CODE
-		);
+	const isOwner = String(itemData.id) === ownerId;
 
 	return (
 		<ItemWithStickerRenderer

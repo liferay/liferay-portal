@@ -18,6 +18,7 @@ export interface ManageMembersModalProps {
 	filter?: string;
 	hasAssignMembersPermission: boolean;
 	headerTitle: string;
+	onChange?: () => void;
 	ownerId?: string;
 	renderAddMembersInput?: (api: AddMembersInputApi) => React.ReactNode;
 }
@@ -29,6 +30,7 @@ export default function ManageMembersModal({
 	filter,
 	hasAssignMembersPermission,
 	headerTitle,
+	onChange,
 	ownerId,
 	renderAddMembersInput,
 }: ManageMembersModalProps) {
@@ -47,6 +49,7 @@ export default function ManageMembersModal({
 					externalReferenceCode={externalReferenceCode}
 					filter={filter}
 					hasAssignMembersPermission={hasAssignMembersPermission}
+					onChange={onChange}
 					ownerId={ownerId}
 					renderAddMembersInput={renderAddMembersInput}
 				/>

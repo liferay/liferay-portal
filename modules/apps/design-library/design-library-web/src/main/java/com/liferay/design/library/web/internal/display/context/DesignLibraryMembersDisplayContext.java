@@ -6,6 +6,7 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItemListBuilder;
 import com.liferay.petra.string.StringBundler;
@@ -13,8 +14,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,9 +50,15 @@ public class DesignLibraryMembersDisplayContext
 		return HashMapBuilder.<String, Object>put(
 			"externalReferenceCode", group.getExternalReferenceCode()
 		).put(
-			"hasAssignMembersPermission", hasAssignMembersPermission(group)
+			"hasAssignMembersPermission", _hasAssignMembersPermission(group)
 		).put(
 			"ownerId", String.valueOf(group.getCreatorUserId())
+		).put(
+			"refreshDataSetIds",
+			new String[] {
+				DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS,
+				DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USER_GROUPS
+			}
 		).build();
 	}
 
@@ -84,13 +93,14 @@ public class DesignLibraryMembersDisplayContext
 		return _getMembersAPIURL("user-accounts", "roles");
 	}
 
-	private String _getMembersAPIURL(String type, String nestedFields)
+	private String _getMembersAPIURL(String resourcePath, String nestedFields)
 		throws PortalException {
 
 		return getAssetLibraryURL(
 			getGroup(),
 			StringBundler.concat(
-				"/", type, "?page=1&pageSize=10&nestedFields=", nestedFields));
+				"/", resourcePath, "?page=1&pageSize=10&nestedFields=",
+				nestedFields));
 	}
 
 	private int _getMembersCount() throws PortalException {
@@ -108,6 +118,14 @@ public class DesignLibraryMembersDisplayContext
 
 		return userLocalService.getGroupUsersCount(groupId) +
 			userGroupLocalService.getGroupUserGroupsCount(groupId);
+	}
+
+	private boolean _hasAssignMembersPermission(Group group)
+		throws PortalException {
+
+		return GroupPermissionUtil.contains(
+			themeDisplay.getPermissionChecker(), group.getGroupId(),
+			ActionKeys.ASSIGN_MEMBERS);
 	}
 
 	private static final Snapshot<UserGroupLocalService>

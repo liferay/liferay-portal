@@ -14,6 +14,7 @@ import SiteRenderer from './cell_renderers/SiteRenderer';
 interface ConnectedSitesAdditionalProps {
 	externalReferenceCode?: string;
 	hasConnectSitesPermission?: boolean;
+	refreshDataSetIds?: string[];
 }
 
 export default function DesignLibraryConnectedSitesFDSPropsTransformer(
@@ -21,8 +22,11 @@ export default function DesignLibraryConnectedSitesFDSPropsTransformer(
 		additionalProps?: ConnectedSitesAdditionalProps;
 	}
 ): IFrontendDataSetProps {
-	const {externalReferenceCode = '', hasConnectSitesPermission = false} =
-		props.additionalProps ?? {};
+	const {
+		externalReferenceCode = '',
+		hasConnectSitesPermission = false,
+		refreshDataSetIds,
+	} = props.additionalProps ?? {};
 
 	return {
 		...props,
@@ -34,6 +38,7 @@ export default function DesignLibraryConnectedSitesFDSPropsTransformer(
 							onClick: () =>
 								openConnectedSitesModal({
 									externalReferenceCode,
+									refreshDataSetIds,
 								}),
 						},
 					],
