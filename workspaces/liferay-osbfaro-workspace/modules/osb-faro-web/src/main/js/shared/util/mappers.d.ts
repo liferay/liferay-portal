@@ -40,4 +40,5 @@ export function getVariables(args: {
 	interval?: string;
 	params: Record<string, string | undefined>;
 	rangeSelectors?: any;
+	segmentId?: string;
 }): {variables: Record<string, any>};
