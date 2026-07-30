@@ -10,8 +10,6 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 
-import java.util.Objects;
-
 /**
  * @author Alberto Chaparro
  */
@@ -22,7 +20,6 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 		processConcurrently(
 			StringBundler.concat(
 				"select SegmentsExperience.ctCollectionId, ",
-				"SegmentsExperience.externalReferenceCode, ",
 				"SegmentsExperience.segmentsExperienceId, ",
 				"Layout.externalReferenceCode from SegmentsExperience inner ",
 				"join Layout on Layout.ctCollectionId = ",
@@ -30,25 +27,24 @@ public class SegmentsExperienceUpgradeProcess extends UpgradeProcess {
 				"SegmentsExperience.plid where ",
 				"SegmentsExperience.segmentsExperienceKey = '",
 				SegmentsExperienceConstants.KEY_DEFAULT,
-				"' and Layout.externalReferenceCode is not null"),
+				"' and Layout.externalReferenceCode is not null and ",
+				"(SegmentsExperience.externalReferenceCode is null or ",
+				"SegmentsExperience.externalReferenceCode != ",
+				"CONCAT(Layout.externalReferenceCode, '",
+				LayoutConstants.EXTERNAL_REFERENCE_CODE_SUFFIX_DEFAULT, "'))"),
 			"update SegmentsExperience set externalReferenceCode = ? where " +
 				"ctCollectionId = ? and segmentsExperienceId = ?",
 			resultSet -> new Object[] {
-				resultSet.getLong(1), resultSet.getString(2),
-				resultSet.getLong(3), resultSet.getString(4)
+				resultSet.getLong(1), resultSet.getLong(2),
+				resultSet.getString(3)
 			},
 			(values, preparedStatement) -> {
-				String externalReferenceCode =
-					values[3] +
-						LayoutConstants.EXTERNAL_REFERENCE_CODE_SUFFIX_DEFAULT;
-
-				if (Objects.equals(externalReferenceCode, values[1])) {
-					return;
-				}
-
-				preparedStatement.setString(1, externalReferenceCode);
+				preparedStatement.setString(
+					1,
+					values[2] +
+						LayoutConstants.EXTERNAL_REFERENCE_CODE_SUFFIX_DEFAULT);
 				preparedStatement.setLong(2, (long)values[0]);
-				preparedStatement.setLong(3, (long)values[2]);
+				preparedStatement.setLong(3, (long)values[1]);
 
 				preparedStatement.addBatch();
 			},
