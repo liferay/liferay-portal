@@ -101,7 +101,7 @@ public class DDMFormInstanceServiceImpl extends DDMFormInstanceServiceBaseImpl {
 		throws PortalException {
 
 		DDMFormInstance ddmFormInstance =
-			ddmFormInstanceLocalService.fetchFormInstance(ddmFormInstanceId);
+			ddmFormInstancePersistence.fetchByPrimaryKey(ddmFormInstanceId);
 
 		if (ddmFormInstance == null) {
 			return null;
@@ -121,7 +121,7 @@ public class DDMFormInstanceServiceImpl extends DDMFormInstanceServiceBaseImpl {
 		_ddmFormInstanceModelResourcePermission.check(
 			getPermissionChecker(), ddmFormInstanceId, ActionKeys.VIEW);
 
-		return ddmFormInstanceLocalService.getFormInstance(ddmFormInstanceId);
+		return ddmFormInstancePersistence.findByPrimaryKey(ddmFormInstanceId);
 	}
 
 	@Override

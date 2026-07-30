@@ -231,9 +231,8 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			String externalReferenceCode, long groupId, long classNameId)
 		throws PortalException {
 
-		DDMStructure ddmStructure =
-			ddmStructureLocalService.fetchStructureByExternalReferenceCode(
-				externalReferenceCode, groupId, classNameId);
+		DDMStructure ddmStructure = ddmStructurePersistence.fetchByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
 
 		if (ddmStructure != null) {
 			_ddmStructureModelResourcePermission.check(
@@ -322,9 +321,8 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 			String externalReferenceCode, long groupId, long classNameId)
 		throws PortalException {
 
-		DDMStructure structure =
-			ddmStructureLocalService.getStructureByExternalReferenceCode(
-				externalReferenceCode, groupId, classNameId);
+		DDMStructure structure = ddmStructurePersistence.findByERC_G_C(
+			externalReferenceCode, groupId, classNameId);
 
 		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), structure, ActionKeys.VIEW);

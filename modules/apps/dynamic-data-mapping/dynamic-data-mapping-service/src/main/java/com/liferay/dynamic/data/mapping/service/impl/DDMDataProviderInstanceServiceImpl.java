@@ -79,7 +79,7 @@ public class DDMDataProviderInstanceServiceImpl
 		throws PortalException {
 
 		DDMDataProviderInstance dataProviderInstance =
-			ddmDataProviderInstanceLocalService.fetchDataProviderInstance(
+			ddmDataProviderInstancePersistence.fetchByPrimaryKey(
 				dataProviderInstanceId);
 
 		if (dataProviderInstance == null) {
@@ -120,7 +120,7 @@ public class DDMDataProviderInstanceServiceImpl
 		_ddmDataProviderInstanceModelResourcePermission.check(
 			getPermissionChecker(), dataProviderInstanceId, ActionKeys.VIEW);
 
-		return ddmDataProviderInstanceLocalService.getDataProviderInstance(
+		return ddmDataProviderInstancePersistence.findByPrimaryKey(
 			dataProviderInstanceId);
 	}
 

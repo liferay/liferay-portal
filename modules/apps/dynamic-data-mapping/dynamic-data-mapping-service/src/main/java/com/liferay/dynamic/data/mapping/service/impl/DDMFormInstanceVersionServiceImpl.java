@@ -39,7 +39,7 @@ public class DDMFormInstanceVersionServiceImpl
 		throws PortalException {
 
 		DDMFormInstanceVersion ddmFormInstanceVersion =
-			ddmFormInstanceVersionLocalService.getFormInstanceVersion(
+			ddmFormInstanceVersionPersistence.findByPrimaryKey(
 				ddmFormInstanceVersionId);
 
 		_ddmFormInstanceVersionPermissionModelResourcePermission.check(
@@ -58,7 +58,7 @@ public class DDMFormInstanceVersionServiceImpl
 		_ddmFormInstanceVersionPermissionModelResourcePermission.check(
 			getPermissionChecker(), ddmFormInstanceId, ActionKeys.VIEW);
 
-		return ddmFormInstanceVersionLocalService.getFormInstanceVersions(
+		return ddmFormInstanceVersionPersistence.findByFormInstanceId(
 			ddmFormInstanceId, start, end, orderByComparator);
 	}
 
@@ -69,7 +69,7 @@ public class DDMFormInstanceVersionServiceImpl
 		_ddmFormInstanceVersionPermissionModelResourcePermission.check(
 			getPermissionChecker(), ddmFormInstanceId, ActionKeys.VIEW);
 
-		return ddmFormInstanceVersionLocalService.getFormInstanceVersionsCount(
+		return ddmFormInstanceVersionPersistence.countByFormInstanceId(
 			ddmFormInstanceId);
 	}
 

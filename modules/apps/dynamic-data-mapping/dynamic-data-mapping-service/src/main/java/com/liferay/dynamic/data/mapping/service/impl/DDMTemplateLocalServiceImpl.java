@@ -1016,8 +1016,7 @@ public class DDMTemplateLocalServiceImpl
 		throws PortalException {
 
 		DDMTemplateVersion templateVersion =
-			_ddmTemplateVersionLocalService.getTemplateVersion(
-				templateId, version);
+			_ddmTemplateVersionPersistence.findByT_V(templateId, version);
 
 		if (!templateVersion.isApproved()) {
 			throw new InvalidTemplateVersionException(
@@ -1483,7 +1482,7 @@ public class DDMTemplateLocalServiceImpl
 
 		byte[] smallImageBytes = null;
 
-		DDMTemplate template = ddmTemplateLocalService.getDDMTemplate(
+		DDMTemplate template = ddmTemplatePersistence.findByPrimaryKey(
 			templateId);
 
 		if (smallImage) {
@@ -1592,7 +1591,7 @@ public class DDMTemplateLocalServiceImpl
 			boolean cacheable, ServiceContext serviceContext)
 		throws PortalException {
 
-		DDMTemplate template = ddmTemplateLocalService.getDDMTemplate(
+		DDMTemplate template = ddmTemplatePersistence.findByPrimaryKey(
 			templateId);
 
 		File smallImageFile = _getSmallImageFile(template);

@@ -48,8 +48,7 @@ public class DDMTemplateVersionServiceImpl
 		throws PortalException {
 
 		DDMTemplateVersion templateVersion =
-			ddmTemplateVersionLocalService.getTemplateVersion(
-				templateVersionId);
+			ddmTemplateVersionPersistence.findByPrimaryKey(templateVersionId);
 
 		_ddmTemplateModelResourcePermission.check(
 			getPermissionChecker(), templateVersion.getTemplateId(),
@@ -67,7 +66,7 @@ public class DDMTemplateVersionServiceImpl
 		_ddmTemplateModelResourcePermission.check(
 			getPermissionChecker(), templateId, ActionKeys.VIEW);
 
-		return ddmTemplateVersionLocalService.getTemplateVersions(
+		return ddmTemplateVersionPersistence.findByTemplateId(
 			templateId, start, end, orderByComparator);
 	}
 
@@ -78,8 +77,7 @@ public class DDMTemplateVersionServiceImpl
 		_ddmTemplateModelResourcePermission.check(
 			getPermissionChecker(), templateId, ActionKeys.VIEW);
 
-		return ddmTemplateVersionLocalService.getTemplateVersionsCount(
-			templateId);
+		return ddmTemplateVersionPersistence.countByTemplateId(templateId);
 	}
 
 	@Reference(

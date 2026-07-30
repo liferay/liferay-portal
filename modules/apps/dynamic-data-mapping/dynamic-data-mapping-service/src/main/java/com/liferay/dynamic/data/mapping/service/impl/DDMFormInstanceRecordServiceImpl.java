@@ -72,7 +72,7 @@ public class DDMFormInstanceRecordServiceImpl
 		_ddmFormInstanceRecordModelResourcePermission.check(
 			getPermissionChecker(), ddmFormInstanceRecordId, ActionKeys.VIEW);
 
-		return ddmFormInstanceRecordLocalService.getFormInstanceRecord(
+		return ddmFormInstanceRecordPersistence.findByPrimaryKey(
 			ddmFormInstanceRecordId);
 	}
 
@@ -84,7 +84,7 @@ public class DDMFormInstanceRecordServiceImpl
 		_ddmFormInstanceModelResourcePermission.check(
 			getPermissionChecker(), ddmFormInstanceId, ActionKeys.VIEW);
 
-		return ddmFormInstanceRecordLocalService.getFormInstanceRecords(
+		return ddmFormInstanceRecordPersistence.findByFormInstanceId(
 			ddmFormInstanceId);
 	}
 
@@ -108,7 +108,7 @@ public class DDMFormInstanceRecordServiceImpl
 		_ddmFormInstanceModelResourcePermission.check(
 			getPermissionChecker(), ddmFormInstanceId, ActionKeys.VIEW);
 
-		return ddmFormInstanceRecordLocalService.getFormInstanceRecordsCount(
+		return ddmFormInstanceRecordPersistence.countByFormInstanceId(
 			ddmFormInstanceId);
 	}
 
@@ -119,7 +119,7 @@ public class DDMFormInstanceRecordServiceImpl
 		throws PortalException {
 
 		DDMFormInstanceRecord ddmFormInstanceRecord =
-			ddmFormInstanceRecordLocalService.getFormInstanceRecord(
+			ddmFormInstanceRecordPersistence.findByPrimaryKey(
 				ddmFormInstanceRecordId);
 
 		_ddmFormInstanceRecordModelResourcePermission.check(

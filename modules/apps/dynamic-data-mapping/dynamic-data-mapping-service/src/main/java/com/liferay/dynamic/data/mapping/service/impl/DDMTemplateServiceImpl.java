@@ -366,9 +366,8 @@ public class DDMTemplateServiceImpl extends DDMTemplateServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		DDMTemplate ddmTemplate =
-			ddmTemplateLocalService.getDDMTemplateByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		DDMTemplate ddmTemplate = ddmTemplatePersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		_ddmTemplateModelResourcePermission.check(
 			getPermissionChecker(), ddmTemplate, ActionKeys.VIEW);

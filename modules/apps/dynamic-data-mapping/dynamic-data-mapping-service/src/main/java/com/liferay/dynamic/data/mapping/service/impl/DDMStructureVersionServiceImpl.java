@@ -48,8 +48,7 @@ public class DDMStructureVersionServiceImpl
 		throws PortalException {
 
 		DDMStructureVersion structureVersion =
-			ddmStructureVersionLocalService.getStructureVersion(
-				structureVersionId);
+			ddmStructureVersionPersistence.findByPrimaryKey(structureVersionId);
 
 		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), structureVersion.getStructureId(),
@@ -67,7 +66,7 @@ public class DDMStructureVersionServiceImpl
 		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), structureId, ActionKeys.VIEW);
 
-		return ddmStructureVersionLocalService.getStructureVersions(
+		return ddmStructureVersionPersistence.findByStructureId(
 			structureId, start, end, orderByComparator);
 	}
 
@@ -78,8 +77,7 @@ public class DDMStructureVersionServiceImpl
 		_ddmStructureModelResourcePermission.check(
 			getPermissionChecker(), structureId, ActionKeys.VIEW);
 
-		return ddmStructureVersionLocalService.getStructureVersionsCount(
-			structureId);
+		return ddmStructureVersionPersistence.countByStructureId(structureId);
 	}
 
 	@Reference(

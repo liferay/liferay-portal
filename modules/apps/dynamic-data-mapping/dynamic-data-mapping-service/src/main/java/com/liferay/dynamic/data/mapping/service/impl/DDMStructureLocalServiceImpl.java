@@ -546,7 +546,7 @@ public class DDMStructureLocalServiceImpl
 		// Structure versions
 
 		List<DDMStructureVersion> structureVersions =
-			_ddmStructureVersionLocalService.getStructureVersions(
+			_ddmStructureVersionPersistence.findByStructureId(
 				structure.getStructureId());
 
 		for (DDMStructureVersion structureVersion : structureVersions) {
@@ -1318,8 +1318,7 @@ public class DDMStructureLocalServiceImpl
 		throws PortalException {
 
 		DDMStructureVersion structureVersion =
-			_ddmStructureVersionLocalService.getStructureVersion(
-				structureId, version);
+			_ddmStructureVersionPersistence.findByS_V(structureId, version);
 
 		if (!structureVersion.isApproved()) {
 			throw new InvalidStructureVersionException(
