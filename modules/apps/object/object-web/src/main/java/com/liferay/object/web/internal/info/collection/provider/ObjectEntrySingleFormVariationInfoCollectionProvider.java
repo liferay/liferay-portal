@@ -802,7 +802,6 @@ public class ObjectEntrySingleFormVariationInfoCollectionProvider
 	};
 
 	private static final Sort[] _SORTS_DEFAULT_OBJECT_ENTRY = {
-		new Sort(Field.CREATE_DATE, Sort.LONG_TYPE, false),
 		new Sort("id", Sort.LONG_TYPE, false)
 	};
 
