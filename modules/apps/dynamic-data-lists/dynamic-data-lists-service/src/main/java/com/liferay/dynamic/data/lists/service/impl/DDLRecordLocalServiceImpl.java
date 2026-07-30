@@ -15,7 +15,6 @@ import com.liferay.dynamic.data.lists.model.DDLFormRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecord;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordVersion;
-import com.liferay.dynamic.data.lists.service.DDLRecordVersionLocalService;
 import com.liferay.dynamic.data.lists.service.base.DDLRecordLocalServiceBaseImpl;
 import com.liferay.dynamic.data.lists.service.persistence.DDLRecordSetPersistence;
 import com.liferay.dynamic.data.lists.service.persistence.DDLRecordVersionPersistence;
@@ -584,8 +583,8 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		DDLRecordVersion recordVersion =
-			_ddlRecordVersionLocalService.getRecordVersion(recordId, version);
+		DDLRecordVersion recordVersion = _ddlRecordVersionPersistence.findByR_V(
+			recordId, version);
 
 		if (!recordVersion.isApproved()) {
 			return;
@@ -1355,9 +1354,6 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 
 	@Reference
 	private DDLRecordSetPersistence _ddlRecordSetPersistence;
-
-	@Reference
-	private DDLRecordVersionLocalService _ddlRecordVersionLocalService;
 
 	@Reference
 	private DDLRecordVersionPersistence _ddlRecordVersionPersistence;

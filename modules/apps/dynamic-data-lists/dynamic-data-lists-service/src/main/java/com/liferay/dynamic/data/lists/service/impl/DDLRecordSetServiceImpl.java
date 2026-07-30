@@ -108,7 +108,7 @@ public class DDLRecordSetServiceImpl extends DDLRecordSetServiceBaseImpl {
 	public DDLRecordSet fetchRecordSet(long recordSetId)
 		throws PortalException {
 
-		DDLRecordSet recordSet = ddlRecordSetLocalService.fetchRecordSet(
+		DDLRecordSet recordSet = ddlRecordSetPersistence.fetchByPrimaryKey(
 			recordSetId);
 
 		if (recordSet == null) {
@@ -135,7 +135,7 @@ public class DDLRecordSetServiceImpl extends DDLRecordSetServiceBaseImpl {
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), recordSetId, ActionKeys.VIEW);
 
-		return ddlRecordSetLocalService.getRecordSet(recordSetId);
+		return ddlRecordSetPersistence.findByPrimaryKey(recordSetId);
 	}
 
 	/**

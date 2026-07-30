@@ -52,8 +52,7 @@ public class DDLRecordSetVersionServiceImpl
 		throws PortalException {
 
 		DDLRecordSetVersion recordSetVersion =
-			ddlRecordSetVersionLocalService.getRecordSetVersion(
-				recordSetVersionId);
+			ddlRecordSetVersionPersistence.findByPrimaryKey(recordSetVersionId);
 
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), recordSetVersion.getRecordSetId(),
@@ -71,7 +70,7 @@ public class DDLRecordSetVersionServiceImpl
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), recordSetId, ActionKeys.VIEW);
 
-		return ddlRecordSetVersionLocalService.getRecordSetVersions(
+		return ddlRecordSetVersionPersistence.findByRecordSetId(
 			recordSetId, start, end, orderByComparator);
 	}
 
@@ -82,8 +81,7 @@ public class DDLRecordSetVersionServiceImpl
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), recordSetId, ActionKeys.VIEW);
 
-		return ddlRecordSetVersionLocalService.getRecordSetVersionsCount(
-			recordSetId);
+		return ddlRecordSetVersionPersistence.countByRecordSetId(recordSetId);
 	}
 
 	@Reference(

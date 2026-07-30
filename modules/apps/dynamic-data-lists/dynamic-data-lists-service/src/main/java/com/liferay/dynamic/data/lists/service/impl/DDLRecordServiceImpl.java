@@ -106,7 +106,7 @@ public class DDLRecordServiceImpl extends DDLRecordServiceBaseImpl {
 	 */
 	@Override
 	public void deleteRecord(long recordId) throws PortalException {
-		DDLRecord record = ddlRecordLocalService.getDDLRecord(recordId);
+		DDLRecord record = ddlRecordPersistence.findByPrimaryKey(recordId);
 
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), record.getRecordSetId(), ActionKeys.DELETE);
@@ -123,7 +123,7 @@ public class DDLRecordServiceImpl extends DDLRecordServiceBaseImpl {
 	 */
 	@Override
 	public DDLRecord getRecord(long recordId) throws PortalException {
-		DDLRecord record = ddlRecordLocalService.getDDLRecord(recordId);
+		DDLRecord record = ddlRecordPersistence.findByPrimaryKey(recordId);
 
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), record.getRecordSetId(), ActionKeys.VIEW);
@@ -160,7 +160,7 @@ public class DDLRecordServiceImpl extends DDLRecordServiceBaseImpl {
 			long recordId, String version, ServiceContext serviceContext)
 		throws PortalException {
 
-		DDLRecord record = ddlRecordLocalService.getDDLRecord(recordId);
+		DDLRecord record = ddlRecordPersistence.findByPrimaryKey(recordId);
 
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), record.getRecordSetId(), ActionKeys.UPDATE);
@@ -190,7 +190,7 @@ public class DDLRecordServiceImpl extends DDLRecordServiceBaseImpl {
 			DDMFormValues ddmFormValues, ServiceContext serviceContext)
 		throws PortalException {
 
-		DDLRecord record = ddlRecordLocalService.getDDLRecord(recordId);
+		DDLRecord record = ddlRecordPersistence.findByPrimaryKey(recordId);
 
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), record.getRecordSetId(), ActionKeys.UPDATE);
@@ -222,7 +222,7 @@ public class DDLRecordServiceImpl extends DDLRecordServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		DDLRecord record = ddlRecordLocalService.getDDLRecord(recordId);
+		DDLRecord record = ddlRecordPersistence.findByPrimaryKey(recordId);
 
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), record.getRecordSetId(), ActionKeys.UPDATE);

@@ -51,7 +51,7 @@ public class DDLRecordVersionServiceImpl
 		throws PortalException {
 
 		DDLRecordVersion recordVersion =
-			ddlRecordVersionLocalService.getRecordVersion(recordVersionId);
+			ddlRecordVersionPersistence.findByPrimaryKey(recordVersionId);
 
 		_ddlRecordSetModelResourcePermission.check(
 			getPermissionChecker(), recordVersion.getRecordSetId(),
