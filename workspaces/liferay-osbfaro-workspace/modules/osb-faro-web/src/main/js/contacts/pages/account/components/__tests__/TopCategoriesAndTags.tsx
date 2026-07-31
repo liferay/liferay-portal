@@ -1,3 +1,5 @@
+import BasePage from 'shared/components/base-page';
+import mockStore from 'test/mock-store';
 import React from 'react';
 import TopCategoriesAndTags, {
 	ITopCategory,
@@ -10,7 +12,13 @@ import {
 	screen,
 	within,
 } from '@testing-library/react';
+import {MemoryRouter} from 'react-router-dom';
+import {MockedProvider} from '@apollo/client/testing';
+import {mockPreferenceReq, mockTimeRangeReq} from 'test/graphql-data';
+import {Provider} from 'react-redux';
+import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {useRequest} from 'shared/hooks/useRequest';
+import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
@@ -35,6 +43,32 @@ jest.mock('react-router-dom', () => ({
 const mockedUseRequest = useRequest as jest.Mock;
 
 const ACCOUNT = {accountName: 'Acme', id: 'acc-1'};
+
+const MOCK_CONTEXT = {
+	accountId: ACCOUNT.id,
+	accountName: ACCOUNT.accountName,
+	filters: {},
+	router: {
+		params: {channelId: '5', groupId: '23', id: ACCOUNT.id},
+		query: {rangeKey: RangeKeyTimeRanges.Last30Days},
+	},
+};
+
+const renderTopCategoriesAndTags = () =>
+	render(
+		<Provider store={mockStore()}>
+			<BasePage.Context.Provider value={MOCK_CONTEXT}>
+				<MemoryRouter>
+					<MockedProvider
+						addTypename={false}
+						mocks={[mockTimeRangeReq(), mockPreferenceReq()]}
+					>
+						<TopCategoriesAndTags account={ACCOUNT} />
+					</MockedProvider>
+				</MemoryRouter>
+			</BasePage.Context.Provider>
+		</Provider>
+	);
 
 const buildCategory = (
 	overrides: Partial<ITopCategory> = {}
@@ -125,7 +159,7 @@ describe('TopCategoriesAndTags', () => {
 
 	describe('rendering', () => {
 		it('should render the card title', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(
 				screen.getByText('TOP ASSET CATEGORIES AND TAGS')
@@ -133,7 +167,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should render both tab labels', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(
 				screen.getByRole('tab', {name: 'Category'})
@@ -142,7 +176,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should render the Group By picker with the default metric (Impressions)', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(screen.getAllByText('Group By').length).toBeGreaterThan(0);
 			expect(screen.getAllByText('Impressions').length).toBeGreaterThan(
@@ -153,7 +187,7 @@ describe('TopCategoriesAndTags', () => {
 
 	describe('data rendering', () => {
 		it('should render the name of every item returned', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(
 				screen.getAllByText('Department Names').length
@@ -173,7 +207,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should render the metric values for the default Impressions metric', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(screen.getAllByText('12K').length).toBeGreaterThan(0);
 			expect(screen.getAllByText('9.5K').length).toBeGreaterThan(0);
@@ -183,9 +217,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should render the Category Name and Vocabulary column headers on the Category tab', () => {
-			const {container} = render(
-				<TopCategoriesAndTags account={ACCOUNT} />
-			);
+			const {container} = renderTopCategoriesAndTags();
 
 			const tabPanel = container.querySelector(
 				'.tab-pane'
@@ -200,7 +232,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should render the vocabulary name of every category returned', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(screen.getAllByText('Department').length).toBeGreaterThan(0);
 			expect(screen.getAllByText('Document Type').length).toBeGreaterThan(
@@ -212,9 +244,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should use the Tag Name header and omit the Vocabulary column on the Tag tab', () => {
-			const {container} = render(
-				<TopCategoriesAndTags account={ACCOUNT} />
-			);
+			const {container} = renderTopCategoriesAndTags();
 
 			mockUseRequestWith({
 				data: {
@@ -239,9 +269,35 @@ describe('TopCategoriesAndTags', () => {
 		});
 	});
 
+	describe('time range', () => {
+		it('should render the range key dropdown', async () => {
+			const {container} = renderTopCategoriesAndTags();
+
+			await waitForLoadingToBeRemoved(container);
+
+			expect(
+				container.querySelector('.card-header .dropdown-range-key-root')
+			).toBeInTheDocument();
+		});
+
+		it('should request the taxonomy for the selected range', () => {
+			renderTopCategoriesAndTags();
+
+			expect(mockedUseRequest).toHaveBeenCalledWith(
+				expect.objectContaining({
+					variables: expect.objectContaining({
+						rangeEnd: null,
+						rangeKey: 30,
+						rangeStart: null,
+					}),
+				})
+			);
+		});
+	});
+
 	describe('group by picker', () => {
 		it('should refetch with viewsMetric when the user picks Views', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			fireEvent.click(
 				screen.getAllByRole('combobox', {name: 'Group By'})[0]
@@ -258,7 +314,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should refetch with downloadsMetric when the user picks Downloads', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			fireEvent.click(
 				screen.getAllByRole('combobox', {name: 'Group By'})[0]
@@ -281,7 +337,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should query the categories data source on initial render', () => {
 			const API = jest.requireMock('shared/api');
 
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			const firstCall = mockedUseRequest.mock.calls[0][0];
 
@@ -296,7 +352,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should query the tags data source when the Tag tab is clicked', () => {
 			const API = jest.requireMock('shared/api');
 
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			fireEvent.click(screen.getByRole('tab', {name: 'Tag'}));
 
@@ -316,7 +372,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should change the request variables when switching tabs so the request refetches', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			const categoryVariables =
 				mockedUseRequest.mock.calls[0][0].variables;
@@ -334,7 +390,7 @@ describe('TopCategoriesAndTags', () => {
 		});
 
 		it('should render tag items after switching to the Tag tab', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			mockUseRequestWith({
 				data: {
@@ -356,7 +412,7 @@ describe('TopCategoriesAndTags', () => {
 
 	describe('request shape', () => {
 		it('should forward accountId, channelId, and groupId to the data source', () => {
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			const firstCall = mockedUseRequest.mock.calls[0][0];
 
@@ -370,9 +426,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should render the loading indicator while the request is in flight', () => {
 			mockUseRequestWith({loading: true});
 
-			const {container} = render(
-				<TopCategoriesAndTags account={ACCOUNT} />
-			);
+			const {container} = renderTopCategoriesAndTags();
 
 			expect(
 				container.querySelector('.loading-root')
@@ -382,7 +436,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should not render rows while loading', () => {
 			mockUseRequestWith({loading: true});
 
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(screen.queryByText('Department Names')).toBeNull();
 		});
@@ -392,7 +446,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should render the categories empty message on the Category tab when no items are returned', () => {
 			mockUseRequestWith({data: {items: []}});
 
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(
 				screen.getAllByText('No Categories Available').length
@@ -407,7 +461,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should render the tags empty message on the Tag tab when no items are returned', () => {
 			mockUseRequestWith({data: {items: []}});
 
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			fireEvent.click(screen.getByRole('tab', {name: 'Tag'}));
 
@@ -423,7 +477,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should keep tabs visible in the empty state', () => {
 			mockUseRequestWith({data: {items: []}});
 
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(
 				screen.getByRole('tab', {name: 'Category'})
@@ -434,7 +488,7 @@ describe('TopCategoriesAndTags', () => {
 		it('should not render rows when no items are returned', () => {
 			mockUseRequestWith({data: {items: []}});
 
-			render(<TopCategoriesAndTags account={ACCOUNT} />);
+			renderTopCategoriesAndTags();
 
 			expect(screen.queryByText('Department Names')).toBeNull();
 		});
@@ -456,9 +510,7 @@ describe('TopCategoriesAndTags', () => {
 				},
 			});
 
-			const {container} = render(
-				<TopCategoriesAndTags account={ACCOUNT} />
-			);
+			const {container} = renderTopCategoriesAndTags();
 
 			const tabPanel = container.querySelector(
 				'.tab-pane'

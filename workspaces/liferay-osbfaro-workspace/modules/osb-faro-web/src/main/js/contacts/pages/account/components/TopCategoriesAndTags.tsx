@@ -1,4 +1,5 @@
 import * as API from 'shared/api';
+import BaseCard from 'shared/components/base-card';
 import Card from 'shared/components/Card';
 import classNames from 'classnames';
 import ClayButton from '@clayui/button';
@@ -8,8 +9,10 @@ import ClayTable from '@clayui/table';
 import ClayTabs from '@clayui/tabs';
 import React, {useCallback, useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
+import {getSafeRangeSelectors} from 'shared/util/util';
 import {IAccount} from './AccountInfo';
 import {Option, Picker, Text} from '@clayui/core';
+import {RangeSelectors} from 'shared/types';
 import {toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -200,7 +203,32 @@ const TabContent: React.FC<ITabContentProps> = ({
 const TopCategoriesAndTags: React.FC<ITopCategoriesAndTagsProps> = ({
 	account,
 	className,
-}) => {
+}) => (
+	<BaseCard
+		className={classNames('top-categories-and-tags', className)}
+		label={Liferay.Language.get(
+			'top-asset-categories-and-tags'
+		).toUpperCase()}
+		legacyDropdownRangeKey={false}
+		minHeight={260}
+	>
+		{({rangeSelectors}: {rangeSelectors: RangeSelectors}) => (
+			<TopCategoriesAndTagsWithData
+				account={account}
+				rangeSelectors={rangeSelectors}
+			/>
+		)}
+	</BaseCard>
+);
+
+interface ITopCategoriesAndTagsWithDataProps {
+	account?: IAccount;
+	rangeSelectors: RangeSelectors;
+}
+
+const TopCategoriesAndTagsWithData: React.FC<
+	ITopCategoriesAndTagsWithDataProps
+> = ({account, rangeSelectors}) => {
 	const {channelId, groupId} = useParams<{
 		channelId: string;
 		groupId: string;
@@ -226,6 +254,9 @@ const TopCategoriesAndTags: React.FC<ITopCategoriesAndTagsProps> = ({
 			channelId: string;
 			groupId: string;
 			isCategory: boolean;
+			rangeEnd: string | null;
+			rangeKey: number | null;
+			rangeStart: string | null;
 			selectedMetric: TaxonomyMetric;
 		}) =>
 			isCategory
@@ -240,6 +271,9 @@ const TopCategoriesAndTags: React.FC<ITopCategoriesAndTagsProps> = ({
 			channelId: string;
 			groupId: string;
 			isCategory: boolean;
+			rangeEnd: string | null;
+			rangeKey: number | null;
+			rangeStart: string | null;
 			selectedMetric: TaxonomyMetric;
 		},
 		{items: TaxonomyItem[]}
@@ -247,6 +281,7 @@ const TopCategoriesAndTags: React.FC<ITopCategoriesAndTagsProps> = ({
 		dataSourceFn,
 		skipRequest: !accountId,
 		variables: {
+			...getSafeRangeSelectors(rangeSelectors),
 			accountId: accountId!,
 			channelId,
 			groupId,
@@ -269,35 +304,23 @@ const TopCategoriesAndTags: React.FC<ITopCategoriesAndTagsProps> = ({
 	);
 
 	return (
-		<Card
-			className={classNames('top-categories-and-tags', className)}
-			minHeight={260}
-		>
-			<Card.Title className="p-3">
-				<Text weight="semi-bold">
-					{Liferay.Language.get(
-						'top-asset-categories-and-tags'
-					).toUpperCase()}
-				</Text>
-			</Card.Title>
-			<Card.Body className="p-0">
-				<ClayTabs active={activeTab} onActiveChange={setActiveTab}>
-					<ClayTabs.Item>
-						{Liferay.Language.get('category')}
-					</ClayTabs.Item>
-					<ClayTabs.Item>{Liferay.Language.get('tag')}</ClayTabs.Item>
-				</ClayTabs>
+		<Card.Body className="p-0">
+			<ClayTabs active={activeTab} onActiveChange={setActiveTab}>
+				<ClayTabs.Item>
+					{Liferay.Language.get('category')}
+				</ClayTabs.Item>
+				<ClayTabs.Item>{Liferay.Language.get('tag')}</ClayTabs.Item>
+			</ClayTabs>
 
-				<ClayTabs.Content activeIndex={activeTab} fade>
-					<ClayTabs.TabPane className="pb-0">
-						{tabContent}
-					</ClayTabs.TabPane>
-					<ClayTabs.TabPane className="pb-0">
-						{tabContent}
-					</ClayTabs.TabPane>
-				</ClayTabs.Content>
-			</Card.Body>
-		</Card>
+			<ClayTabs.Content activeIndex={activeTab} fade>
+				<ClayTabs.TabPane className="pb-0">
+					{tabContent}
+				</ClayTabs.TabPane>
+				<ClayTabs.TabPane className="pb-0">
+					{tabContent}
+				</ClayTabs.TabPane>
+			</ClayTabs.Content>
+		</Card.Body>
 	);
 };
 

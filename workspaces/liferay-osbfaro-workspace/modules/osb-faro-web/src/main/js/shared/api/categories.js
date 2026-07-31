@@ -19,6 +19,9 @@ export function fetchAccountTopCategories({
 	accountId,
 	channelId,
 	groupId,
+	rangeEnd,
+	rangeKey,
+	rangeStart,
 	selectedMetric,
 }) {
 	return sendRequest({
@@ -28,6 +31,8 @@ export function fetchAccountTopCategories({
 			pageSize: 5,
 			selectedMetric,
 			sort: `${selectedMetric},desc`,
+			...(rangeKey ? {rangeKey} : {}),
+			...(rangeEnd && rangeStart ? {rangeEnd, rangeStart} : {}),
 		},
 		method: 'GET',
 		path: `contacts/${groupId}/asset-summary-categories`,
