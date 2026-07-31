@@ -6,6 +6,7 @@
 package com.liferay.commerce.order.web.internal.display.context.test;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.vies.configuration.VIESAccountEntryValidatorConfiguration;
@@ -21,6 +22,10 @@ import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.test.util.AccountEntryValidatorResultTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.validator.TestAccountEntryValidator;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -30,6 +35,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -47,12 +53,15 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.io.Serializable;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -95,14 +104,14 @@ public class CommerceOrderEditDisplayContextTest {
 					"enabled", "false"
 				).build());
 
-		User user = UserTestUtil.addUser();
+		_user = UserTestUtil.addUser();
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), user.getUserId());
+				_group.getGroupId(), _user.getUserId());
 
 		_accountEntry = CommerceAccountTestUtil.addBusinessAccountEntry(
-			user.getUserId(), RandomTestUtil.randomString(),
+			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString() + "@liferay.com", serviceContext);
 
 		CommerceCurrency commerceCurrency =
@@ -115,12 +124,13 @@ public class CommerceOrderEditDisplayContextTest {
 			commerceCurrency.getCode(), serviceContext);
 
 		_commerceOrder = CommerceTestUtil.addB2BCommerceOrder(
-			_group.getGroupId(), user.getUserId(),
+			_group.getGroupId(), _user.getUserId(),
 			_accountEntry.getAccountEntryId(),
 			commerceCurrency.getCommerceCurrencyId());
 
-		AccountEntryValidatorResultTestUtil.getOrAddObjectDefinition(
-			CommerceOrderEditDisplayContextTest.class);
+		_objectDefinition =
+			AccountEntryValidatorResultTestUtil.getOrAddObjectDefinition(
+				CommerceOrderEditDisplayContextTest.class);
 
 		Bundle bundle = FrameworkUtil.getBundle(
 			CommerceOrderEditDisplayContextTest.class);
@@ -128,7 +138,7 @@ public class CommerceOrderEditDisplayContextTest {
 		BundleContext bundleContext = bundle.getBundleContext();
 
 		_serviceRegistration = bundleContext.registerService(
-			AccountEntryValidator.class, new TestAccountEntryValidator(),
+			AccountEntryValidator.class, _testAccountEntryValidator,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"account.entry.validator.key", RandomTestUtil.randomString()
 			).build());
@@ -143,6 +153,33 @@ public class CommerceOrderEditDisplayContextTest {
 		if (_companyConfigurationTemporarySwapper != null) {
 			_companyConfigurationTemporarySwapper.close();
 		}
+	}
+
+	@FeatureFlag("LPD-89850")
+	@Test
+	@TestInfo("LPD-99093")
+	public void testGetValidationButtonCssClass() throws Exception {
+		Assert.assertEquals("text-secondary", _getValidationButtonCssClass());
+
+		_testAccountEntryValidator.setSkipped(true);
+
+		Assert.assertEquals("text-info", _getValidationButtonCssClass());
+
+		_testAccountEntryValidator.setSkipped(false);
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			AccountEntryValidatorConstants.RESULT_SUCCESS);
+
+		Assert.assertEquals("text-success", _getValidationButtonCssClass());
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
+
+		objectEntry = _addObjectEntry(
+			AccountEntryValidatorConstants.RESULT_FAILURE);
+
+		Assert.assertEquals("text-danger", _getValidationButtonCssClass());
+
+		_objectEntryLocalService.deleteObjectEntry(objectEntry);
 	}
 
 	@FeatureFlag("LPD-89850")
@@ -182,6 +219,67 @@ public class CommerceOrderEditDisplayContextTest {
 		Assert.assertTrue(_isValidationButtonVisible(user));
 	}
 
+	private ObjectEntry _addObjectEntry(String resultStatus) throws Exception {
+		return _objectEntryLocalService.addObjectEntry(
+			0, _user.getUserId(), _objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"className", TestAccountEntryValidator.class.getName()
+			).put(
+				"classPK",
+				_testAccountEntryValidator.getClassPK(_accountEntry, null)
+			).put(
+				"r_accountToAccountValidatorResults_accountEntryId",
+				_accountEntry.getAccountEntryId()
+			).put(
+				"resultStatus", resultStatus
+			).build(),
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), _user.getUserId()));
+	}
+
+	private Object _getCommerceOrderEditDisplayContext(
+			PermissionChecker permissionChecker, User user)
+		throws Exception {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(_group.getCompanyId()));
+		themeDisplay.setPermissionChecker(permissionChecker);
+		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+		themeDisplay.setUser(user);
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		mockHttpServletRequest.setParameter(
+			"commerceOrderId",
+			String.valueOf(_commerceOrder.getCommerceOrderId()));
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
+
+		_mvcRenderCommand.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		return mockLiferayPortletRenderRequest.getAttribute(
+			WebKeys.PORTLET_DISPLAY_CONTEXT);
+	}
+
+	private String _getValidationButtonCssClass() throws Exception {
+		return ReflectionTestUtil.invoke(
+			_getCommerceOrderEditDisplayContext(
+				PermissionThreadLocal.getPermissionChecker(), _user),
+			"getValidationButtonCssClass", new Class<?>[0]);
+	}
+
 	private boolean _isValidationButtonVisible(User user) throws Exception {
 		PermissionChecker permissionChecker =
 			PermissionCheckerFactoryUtil.create(user);
@@ -189,39 +287,9 @@ public class CommerceOrderEditDisplayContextTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, permissionChecker)) {
 
-			MockHttpServletRequest mockHttpServletRequest =
-				new MockHttpServletRequest();
-
-			ThemeDisplay themeDisplay = new ThemeDisplay();
-
-			themeDisplay.setCompany(
-				_companyLocalService.getCompany(_group.getCompanyId()));
-			themeDisplay.setPermissionChecker(permissionChecker);
-			themeDisplay.setScopeGroupId(_group.getGroupId());
-			themeDisplay.setSiteGroupId(_group.getGroupId());
-			themeDisplay.setUser(user);
-
-			mockHttpServletRequest.setAttribute(
-				WebKeys.THEME_DISPLAY, themeDisplay);
-
-			mockHttpServletRequest.setParameter(
-				"commerceOrderId",
-				String.valueOf(_commerceOrder.getCommerceOrderId()));
-
-			MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-				new MockLiferayPortletRenderRequest(mockHttpServletRequest);
-
-			_mvcRenderCommand.render(
-				mockLiferayPortletRenderRequest,
-				new MockLiferayPortletRenderResponse());
-
-			Object commerceOrderEditDisplayContext =
-				mockLiferayPortletRenderRequest.getAttribute(
-					WebKeys.PORTLET_DISPLAY_CONTEXT);
-
 			return ReflectionTestUtil.invoke(
-				commerceOrderEditDisplayContext, "isValidationButtonVisible",
-				new Class<?>[0]);
+				_getCommerceOrderEditDisplayContext(permissionChecker, user),
+				"isValidationButtonVisible", new Class<?>[0]);
 		}
 	}
 
@@ -241,6 +309,11 @@ public class CommerceOrderEditDisplayContextTest {
 	)
 	private MVCRenderCommand _mvcRenderCommand;
 
+	private ObjectDefinition _objectDefinition;
+
+	@Inject
+	private ObjectEntryLocalService _objectEntryLocalService;
+
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
@@ -248,5 +321,8 @@ public class CommerceOrderEditDisplayContextTest {
 	private RoleLocalService _roleLocalService;
 
 	private ServiceRegistration<AccountEntryValidator> _serviceRegistration;
+	private final TestAccountEntryValidator _testAccountEntryValidator =
+		new TestAccountEntryValidator();
+	private User _user;
 
 }
