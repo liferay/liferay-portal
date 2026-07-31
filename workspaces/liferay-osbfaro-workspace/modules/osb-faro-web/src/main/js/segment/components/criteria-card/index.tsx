@@ -1,3 +1,4 @@
+import Card from 'shared/components/Card';
 import CriteriaView from './CriteriaView';
 import Label from 'shared/components/Label';
 import Panel from '@clayui/panel';
@@ -7,7 +8,6 @@ import {ReferencedObjectsContext} from 'segment/segment-editor/dynamic/context/r
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {SegmentTypes} from 'shared/util/constants';
 import {translateQueryToCriteria} from 'segment/segment-editor/dynamic/utils/odata';
-import {useDownloadReportContext} from 'shared/components/download-report/DownloadReportContext';
 
 interface ICriteriaCardProps {
 	channelId?: string;
@@ -30,21 +30,12 @@ const CriteriaCard: React.FC<ICriteriaCardProps> = ({
 }) => {
 	const _criteriaViewRef = React.createRef<HTMLDivElement>();
 
-	const {clearReportContainers, setReportContainer} =
-		useDownloadReportContext();
-
 	const {addProperty} = useContext(ReferencedObjectsContext);
 
 	const criteria = useMemo(
 		() => translateQueryToCriteria(criteriaString),
 		[criteriaString]
 	);
-
-	useEffect(() => {
-		setReportContainer(ReportContainer.SegmentCriteriaCard);
-
-		return clearReportContainers;
-	}, []);
 
 	useEffect(() => {
 		if (!channelId || !groupId || !addProperty) {
@@ -59,41 +50,44 @@ const CriteriaCard: React.FC<ICriteriaCardProps> = ({
 	}, [channelId, groupId, criteria]);
 
 	return (
-		<Panel
-			className="card-root"
-			collapsable
-			defaultExpanded
-			displayTitle={
-				<Panel.Title className="card-title">
-					{Liferay.Language.get('segment-criteria')}
-				</Panel.Title>
-			}
-			id={ReportContainer.SegmentCriteriaCard}
-		>
-			<Panel.Body className="criteria-card-root">
-				{includeAnonymousUsers && (
-					<Label display="info" size="lg" uppercase>
-						{Liferay.Language.get('includes-anonymous-individuals')}
-					</Label>
-				)}
+		<Card reportContainer={ReportContainer.SegmentCriteriaCard}>
+			<Panel
+				className="card-root"
+				collapsable
+				defaultExpanded
+				displayTitle={
+					<Panel.Title className="card-title">
+						{Liferay.Language.get('segment-criteria')}
+					</Panel.Title>
+				}
+			>
+				<Panel.Body className="criteria-card-root">
+					{includeAnonymousUsers && (
+						<Label display="info" size="lg" uppercase>
+							{Liferay.Language.get(
+								'includes-anonymous-individuals'
+							)}
+						</Label>
+					)}
 
-				{segmentType === SegmentTypes.RealTime && sequential && (
-					<Label display="info" size="lg" uppercase>
-						{Liferay.Language.get('sequential-events')}
-					</Label>
-				)}
+					{segmentType === SegmentTypes.RealTime && sequential && (
+						<Label display="info" size="lg" uppercase>
+							{Liferay.Language.get('sequential-events')}
+						</Label>
+					)}
 
-				{criteria && (
-					<CriteriaView
-						criteria={criteria}
-						ref={_criteriaViewRef}
-						segmentType={segmentType}
-						sequential={sequential}
-						timeZoneId={timeZoneId}
-					/>
-				)}
-			</Panel.Body>
-		</Panel>
+					{criteria && (
+						<CriteriaView
+							criteria={criteria}
+							ref={_criteriaViewRef}
+							segmentType={segmentType}
+							sequential={sequential}
+							timeZoneId={timeZoneId}
+						/>
+					)}
+				</Panel.Body>
+			</Panel>
+		</Card>
 	);
 };
 
