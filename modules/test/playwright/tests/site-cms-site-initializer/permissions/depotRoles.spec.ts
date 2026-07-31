@@ -221,13 +221,13 @@ test(
 
 test(
 	'Subtype selector is shown for depot role type',
-	{tag: '@LPD-97885'},
+	{tag: ['@LPD-97885', '@LPD-97886']},
 	async ({rolePage, rolesPage}) => {
 		await rolesPage.goto();
 
-		await expect(rolesPage.rolesLink('Depot')).toBeVisible();
+		await expect(rolesPage.rolesLink('Space')).toBeVisible();
 
-		await rolesPage.rolesLink('Depot').click();
+		await rolesPage.rolesLink('Space').click();
 
 		await expect(rolesPage.rolesTable.newButton).toBeVisible();
 
@@ -237,5 +237,29 @@ test(
 			await expect(rolePage.subtypeInput).toBeVisible();
 			await expect(rolePage.typeInput).toBeDisabled();
 		}).toPass();
+
+		await expect(
+			rolePage.subtypeInput.locator('option[value=""]')
+		).toHaveCount(0);
+		await expect(rolePage.subtypeInput).toHaveValue('space');
+	}
+);
+
+test(
+	'Subtype selector preselects Space for a depot role without a subtype',
+	{tag: '@LPD-97886'},
+	async ({apiHelpers, rolePage, rolesPage}) => {
+		const role = await apiHelpers.headlessAdminUser.postRole({
+			name: 'RoleNoSubtype' + getRandomInt(),
+			roleType: 'depot',
+		});
+
+		await rolesPage.goto();
+		await rolesPage.rolesLink('Space').click();
+
+		await rolesPage.rolesTable.search(role.name);
+		await rolesPage.selectRole(role.name);
+
+		await expect(rolePage.subtypeInput).toHaveValue('space');
 	}
 );
