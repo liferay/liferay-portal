@@ -14,6 +14,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.model.Group;
@@ -85,6 +86,62 @@ public class UpgradePortletPreferencesTest {
 				"displayStyleGroupExternalReferenceCode",
 				_group.getExternalReferenceCode()
 			).build());
+	}
+
+	@Test
+	public void testUpgradePortletPreferencesKeepsAssetVocabulariesOrder()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			_group.getGroupId());
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			_group.getCompanyId());
+
+		AssetVocabulary companyAssetVocabulary1 = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId());
+		AssetVocabulary companyAssetVocabulary2 = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId());
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			_layout,
+			AssetCategoriesNavigationPortletKeys.ASSET_CATEGORIES_NAVIGATION,
+			_getPreferenceMap(
+				HashMapBuilder.put(
+					"assetVocabularyIds",
+					StringUtil.merge(
+						new Long[] {
+							companyAssetVocabulary1.getVocabularyId(),
+							assetVocabulary.getVocabularyId(),
+							companyAssetVocabulary2.getVocabularyId()
+						})
+				).build()));
+
+		_runUpgrade();
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(_layout, portletId);
+
+		Assert.assertArrayEquals(
+			new String[] {
+				companyGroup.getExternalReferenceCode(), StringPool.BLANK,
+				companyGroup.getExternalReferenceCode()
+			},
+			portletPreferences.getValues(
+				"assetVocabularyGroupExternalReferenceCodes", null));
+		Assert.assertArrayEquals(
+			new String[] {assetVocabulary.getExternalReferenceCode()},
+			portletPreferences.getValues(
+				"assetVocabularyExternalReferenceCodes", null));
+		Assert.assertArrayEquals(
+			new String[] {
+				companyAssetVocabulary1.getExternalReferenceCode(),
+				companyAssetVocabulary2.getExternalReferenceCode()
+			},
+			portletPreferences.getValues(
+				"assetVocabularyExternalReferenceCodes_" +
+					companyGroup.getExternalReferenceCode(),
+				null));
 	}
 
 	@Test
