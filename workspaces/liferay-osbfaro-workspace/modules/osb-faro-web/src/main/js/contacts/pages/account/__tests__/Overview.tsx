@@ -18,6 +18,10 @@ jest.mock('react-router-dom', () => ({
 	}),
 }));
 
+jest.mock('shared/hooks/useRequest', () => ({
+	useRequest: () => ({data: {items: []}, loading: false}),
+}));
+
 const mockAccount = {
 	accountName: 'IQVIA',
 	accountType: 'Prospect',
@@ -82,5 +86,14 @@ describe('Overview', () => {
 
 		expect(screen.getByText('ENGAGEMENT SUMMARY')).toBeInTheDocument();
 		expect(screen.getByText('TOP PAGES')).toBeInTheDocument();
+	});
+
+	it('should render the Top Assets card in a half-width column', () => {
+		const {container} = renderOverview({account: mockAccount});
+
+		expect(screen.getByText('TOP ASSETS')).toBeInTheDocument();
+		expect(
+			container.querySelector('.col-xl-6 .top-assets')
+		).toBeInTheDocument();
 	});
 });

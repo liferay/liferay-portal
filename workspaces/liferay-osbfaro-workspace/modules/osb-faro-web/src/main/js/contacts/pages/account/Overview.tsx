@@ -2,6 +2,7 @@ import AccountInfoBar from './components/AccountInfoBar';
 import BasePage from 'shared/components/base-page';
 import ClayLayout from '@clayui/layout';
 import React from 'react';
+import TopAssets from './components/TopAssets';
 import TopPagesCard from './components/TopPagesCard';
 import {IAccount} from './components/AccountInfo';
 import {SectionHeader} from 'shared/components/SectionHeader';
@@ -55,6 +56,12 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 			<ClayLayout.Row>
 				<ClayLayout.Col size={12}>
 					<TopPagesCard className="top-pages-card-root" />
+				</ClayLayout.Col>
+			</ClayLayout.Row>
+
+			<ClayLayout.Row>
+				<ClayLayout.Col size={12} xl={6}>
+					<TopAssets account={account} />
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 		</BasePage.Context.Provider>
