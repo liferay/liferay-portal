@@ -301,21 +301,49 @@ public class AssetCategoriesNavigationDisplayContext {
 
 		groupIdsMap.put(StringPool.BLANK, _themeDisplay.getScopeGroupId());
 
-		for (Map.Entry<String, Queue<String>> entry :
-				assetVocabularyExternalReferenceCodesMap.entrySet()) {
+		if (_isOrdered(
+				assetVocabularyExternalReferenceCodesMap,
+				groupExternalReferenceCodes)) {
 
-			Long groupId = groupIdsMap.get(entry.getKey());
+			for (String groupExternalReferenceCode :
+					groupExternalReferenceCodes) {
 
-			if (groupId == null) {
-				continue;
+				Long groupId = groupIdsMap.get(groupExternalReferenceCode);
+
+				if (groupId == null) {
+					continue;
+				}
+
+				Queue<String> assetVocabularyExternalReferenceCodes =
+					assetVocabularyExternalReferenceCodesMap.get(
+						groupExternalReferenceCode);
+
+				Long assetVocabularyId = _getAssetVocabularyId(
+					assetVocabularyExternalReferenceCodes.poll(), groupId);
+
+				if (assetVocabularyId != null) {
+					assetVocabularyIds.add(assetVocabularyId);
+				}
 			}
+		}
+		else {
+			for (Map.Entry<String, Queue<String>> entry :
+					assetVocabularyExternalReferenceCodesMap.entrySet()) {
 
-			assetVocabularyIds.addAll(
-				TransformUtil.transform(
-					entry.getValue(),
-					assetVocabularyExternalReferenceCode ->
-						_getAssetVocabularyId(
-							assetVocabularyExternalReferenceCode, groupId)));
+				Long groupId = groupIdsMap.get(entry.getKey());
+
+				if (groupId == null) {
+					continue;
+				}
+
+				assetVocabularyIds.addAll(
+					TransformUtil.transform(
+						entry.getValue(),
+						assetVocabularyExternalReferenceCode ->
+							_getAssetVocabularyId(
+								assetVocabularyExternalReferenceCode,
+								groupId)));
+			}
 		}
 
 		return ArrayUtil.toStringArray(assetVocabularyIds);
@@ -335,6 +363,35 @@ public class AssetCategoriesNavigationDisplayContext {
 		}
 
 		return title;
+	}
+
+	private boolean _isOrdered(
+		Map<String, Queue<String>> assetVocabularyExternalReferenceCodesMap,
+		String[] groupExternalReferenceCodes) {
+
+		Map<String, Integer> countsMap = new HashMap<>();
+
+		for (String groupExternalReferenceCode : groupExternalReferenceCodes) {
+			int count = GetterUtil.getInteger(
+				countsMap.get(groupExternalReferenceCode));
+
+			countsMap.put(groupExternalReferenceCode, count + 1);
+		}
+
+		for (Map.Entry<String, Queue<String>> entry :
+				assetVocabularyExternalReferenceCodesMap.entrySet()) {
+
+			Queue<String> assetVocabularyExternalReferenceCodes =
+				entry.getValue();
+
+			if (assetVocabularyExternalReferenceCodes.size() !=
+					GetterUtil.getInteger(countsMap.get(entry.getKey()))) {
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private KeyValuePair _toKeyValuePair(AssetVocabulary assetVocabulary) {
