@@ -21,6 +21,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
+import com.liferay.object.rest.manager.exception.ObjectEntryManagerHttpException;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.test.util.BaseObjectEntryManagerImplTestCase;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
@@ -66,6 +67,7 @@ import java.util.Map;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -266,6 +268,17 @@ public class SalesforceObjectEntryManagerImplTest
 			objectDefinitionLocalService.publishCustomObjectDefinition(
 				adminUser.getUserId(),
 				_objectDefinition.getObjectDefinitionId());
+
+		try {
+			getObjectEntries(Collections.<String, String>emptyMap(), null);
+		}
+		catch (ObjectEntryManagerHttpException
+					objectEntryManagerHttpException) {
+
+			Assume.assumeNoException(
+				"Unable to authenticate with Salesforce",
+				objectEntryManagerHttpException);
+		}
 	}
 
 	@After
