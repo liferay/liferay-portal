@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -318,15 +317,6 @@ public abstract class TopLevelBuildRunner<T extends TopLevelBuildData>
 		String cohortName, String jobName,
 		Map<String, String> invocationParameters) {
 
-		Properties buildProperties;
-
-		try {
-			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
 		invocationParameters.put(
 			"PARENT_BUILD_URL", _topLevelBuild.getBuildURL());
 
@@ -335,19 +325,22 @@ public abstract class TopLevelBuildRunner<T extends TopLevelBuildData>
 		sb.append(getBaseInvocationURL(cohortName, jobName));
 		sb.append("/job/");
 		sb.append(jobName);
-		sb.append("/buildWithParameters?token=");
-		sb.append(buildProperties.getProperty("jenkins.authentication.token"));
+		sb.append("/buildWithParameters?");
 
 		for (Map.Entry<String, String> invocationParameter :
 				invocationParameters.entrySet()) {
 
-			sb.append("&");
 			sb.append(
 				JenkinsResultsParserUtil.fixURL(invocationParameter.getKey()));
 			sb.append("=");
 			sb.append(
 				JenkinsResultsParserUtil.fixURL(
 					invocationParameter.getValue()));
+			sb.append("&");
+		}
+
+		if (sb.charAt(sb.length() - 1) == '&') {
+			sb.deleteCharAt(sb.length() - 1);
 		}
 
 		_topLevelBuild.addDownstreamBuilds(sb.toString());

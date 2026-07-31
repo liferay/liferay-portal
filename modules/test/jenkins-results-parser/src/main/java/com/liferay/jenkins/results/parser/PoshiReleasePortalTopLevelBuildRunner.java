@@ -246,13 +246,9 @@ public class PoshiReleasePortalTopLevelBuildRunner
 
 		sb.append("/job/");
 		sb.append(jobName);
-		sb.append("/buildWithParameters?token=");
+		sb.append("/buildWithParameters?");
 
 		try {
-			sb.append(
-				JenkinsResultsParserUtil.getBuildProperty(
-					"jenkins.authentication.token"));
-
 			Map<String, String> invocationParameters = new HashMap<>();
 
 			invocationParameters.put(
@@ -321,14 +317,18 @@ public class PoshiReleasePortalTopLevelBuildRunner
 					continue;
 				}
 
-				sb.append("&");
 				sb.append(invocationParameter.getKey());
 				sb.append("=");
 				sb.append(invocationParameterValue);
+				sb.append("&");
 			}
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
+		}
+
+		if (sb.charAt(sb.length() - 1) == '&') {
+			sb.deleteCharAt(sb.length() - 1);
 		}
 
 		return sb.toString();
