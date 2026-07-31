@@ -9,6 +9,7 @@ import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import React, {useRef, useState} from 'react';
 
+import {fireContentChanged} from '../serverEvents';
 import {saveGeneratedImages} from '../services/saveGeneratedImages';
 
 import '../chat.scss';
@@ -76,6 +77,8 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 				groupId: targetGroupId,
 				objectEntryFolderExternalReferenceCode,
 			});
+
+			fireContentChanged();
 		}
 		catch {
 			Liferay.Util.openToast({
