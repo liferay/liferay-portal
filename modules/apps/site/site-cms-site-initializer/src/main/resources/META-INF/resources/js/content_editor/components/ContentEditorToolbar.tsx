@@ -258,21 +258,17 @@ export default function ContentEditorToolbar({
 			title={headerTitle}
 		>
 			{Liferay.FeatureFlags['LPD-62272'] && (
-				<>
-					<Toolbar.Item>
-						<AIAssistantTriggerButton
-							context={{groupId}}
-							enableFreeFormCategorization
-							getContext={getContext}
-							hideLabel
-							instructionDefinitionScope="cms"
-							presentation="dropdown"
-							round
-						/>
-					</Toolbar.Item>
-
-					<div className="ai-assistant__separator" />
-				</>
+				<Toolbar.Item className="nav-divider-end">
+					<AIAssistantTriggerButton
+						context={{groupId}}
+						enableFreeFormCategorization
+						getContext={getContext}
+						hideLabel
+						instructionDefinitionScope="cms"
+						presentation="dropdown"
+						round
+					/>
+				</Toolbar.Item>
 			)}
 
 			<Toolbar.Item className="nav-divider-end">
