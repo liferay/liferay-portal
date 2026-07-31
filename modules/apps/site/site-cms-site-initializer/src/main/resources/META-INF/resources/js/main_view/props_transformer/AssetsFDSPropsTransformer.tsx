@@ -263,7 +263,7 @@ export default function AssetsFDSPropsTransformer({
 				ACTIONS
 			).map((item) =>
 				GENERATE_WITH_AI_ACTIONS.includes(item.data?.action ?? '')
-					? {...item, className: 'cms-generate-content-with-ai'}
+					? {...item, className: 'cms-generate-with-ai'}
 					: item
 			),
 		},

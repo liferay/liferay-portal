@@ -62,7 +62,7 @@ const AssetTags = ({
 	const apiURL = useMemo(() => {
 		const baseURL = `${Liferay.ThemeDisplay.getPortalURL()}/o/headless-admin-taxonomy/v1.0/sites`;
 
-		if (scopeId >= 0) {
+		if (scopeId > 0) {
 			return `${baseURL}/${scopeId}/keywords`;
 		}
 
@@ -237,9 +237,10 @@ const AssetTags = ({
 							aria-label={Liferay.Language.get(
 								'generate-tags-with-ai'
 							)}
-							className="ml-2"
+							className="cms-generate-with-ai ml-2"
 							displayType="unstyled"
 							onClick={handleGenerateTags}
+							rounded={true}
 							symbol="stars"
 							title={Liferay.Language.get(
 								'generate-tags-with-ai'

@@ -342,9 +342,10 @@ const AssetCategories = ({
 							aria-label={Liferay.Language.get(
 								'add-categories-with-ai'
 							)}
-							className="ml-2"
+							className="cms-generate-with-ai ml-2"
 							displayType="unstyled"
 							onClick={handleGenerateCategories}
+							rounded={true}
 							symbol="stars"
 							title={Liferay.Language.get(
 								'add-categories-with-ai'

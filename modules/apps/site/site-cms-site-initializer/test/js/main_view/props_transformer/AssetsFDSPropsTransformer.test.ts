@@ -250,8 +250,8 @@ describe('AssetsFDSPropsTransformer', () => {
 		const [contentItem, imageItem, folderItem] =
 			result.creationMenu.primaryItems;
 
-		expect(contentItem.className).toBe('cms-generate-content-with-ai');
-		expect(imageItem.className).toBe('cms-generate-content-with-ai');
+		expect(contentItem.className).toBe('cms-generate-with-ai');
+		expect(imageItem.className).toBe('cms-generate-with-ai');
 		expect(folderItem.className).toBeUndefined();
 	});
 });

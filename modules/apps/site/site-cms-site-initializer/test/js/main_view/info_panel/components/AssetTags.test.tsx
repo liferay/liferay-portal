@@ -239,6 +239,16 @@ describe('AssetTags', () => {
 		);
 	});
 
+	it('styles the sparkle with the shared AI class', () => {
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+
+		renderComponent({cmsGroupId: 456, scopeId: 123});
+
+		expect(
+			screen.getByRole('button', {name: 'generate-tags-with-ai'})
+		).toHaveClass('cms-generate-with-ai');
+	});
+
 	it('prefers the edited content from getContent over the persisted content', async () => {
 		const fire = jest.fn();
 		const getContent = jest.fn().mockResolvedValue('edited content');

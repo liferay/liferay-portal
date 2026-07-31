@@ -261,6 +261,16 @@ describe('AssetCategories', () => {
 		);
 	});
 
+	it('styles the sparkle with the shared AI class', () => {
+		(global as any).Liferay.FeatureFlags = {'LPD-62272': true};
+
+		renderComponent({classNameId: 1, cmsGroupId: 456, scopeId: 123});
+
+		expect(
+			screen.getByRole('button', {name: 'add-categories-with-ai'})
+		).toHaveClass('cms-generate-with-ai');
+	});
+
 	it('hides categories from system vocabularies', () => {
 		renderComponent({
 			systemVocabularyIds: [10],

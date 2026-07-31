@@ -23,24 +23,24 @@ describe('CreationMenu', () => {
 
 	it('forwards the item className to the dropdown item', async () => {
 		renderCreationMenu([
-			{className: 'cms-generate-content-with-ai', label: 'Generate'},
+			{className: 'cms-generate-with-ai', label: 'Generate'},
 			{label: 'Create Folder'},
 		]);
 
 		await userEvent.click(screen.getByTestId('fdsCreationActionButton'));
 
 		expect(screen.getByText('Generate')).toHaveClass(
-			'cms-generate-content-with-ai'
+			'cms-generate-with-ai'
 		);
 	});
 
 	it('forwards the item className to the single creation button', () => {
 		renderCreationMenu([
-			{className: 'cms-generate-content-with-ai', label: 'Generate'},
+			{className: 'cms-generate-with-ai', label: 'Generate'},
 		]);
 
 		expect(screen.getByText('Generate')).toHaveClass(
-			'cms-generate-content-with-ai'
+			'cms-generate-with-ai'
 		);
 	});
 });
