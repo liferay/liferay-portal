@@ -1069,7 +1069,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 
 			if ((group.isCompany() || group.isControlPanel() ||
 				 group.isGuest()) &&
-				(site.getActive() == false)) {
+				!_isActive(site.getActive())) {
 
 				throw new RequiredGroupException.MustNotDeactivateSystemGroup(
 					site.getExternalReferenceCode());
