@@ -145,6 +145,7 @@ const DocumentAndMedia: React.FC<{
 					{LDPEnabled && (
 						<AccountDropdown
 							assetType="document"
+							className="mr-3"
 							initialAccountId={accountId}
 							initialAccountName={accountName}
 							onFilterChange={setAccount}

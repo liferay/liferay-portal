@@ -142,6 +142,7 @@ const Form: React.FC<{
 					{LDPEnabled && (
 						<AccountDropdown
 							assetType="form"
+							className="mr-3"
 							initialAccountId={accountId}
 							initialAccountName={accountName}
 							onFilterChange={setAccount}

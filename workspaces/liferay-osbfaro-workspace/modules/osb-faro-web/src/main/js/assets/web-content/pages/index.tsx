@@ -143,6 +143,7 @@ const WebContent: React.FC<{
 					{LDPEnabled && (
 						<AccountDropdown
 							assetType="journal"
+							className="mr-3"
 							initialAccountId={accountId}
 							initialAccountName={accountName}
 							onFilterChange={setAccount}

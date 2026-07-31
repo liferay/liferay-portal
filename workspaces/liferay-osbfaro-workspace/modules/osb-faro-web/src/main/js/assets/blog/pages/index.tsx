@@ -138,6 +138,7 @@ const Blog: React.FC<{
 					{LDPEnabled && (
 						<AccountDropdown
 							assetType="blog"
+							className="mr-3"
 							initialAccountId={accountId}
 							initialAccountName={accountName}
 							onFilterChange={setAccount}
