@@ -103,7 +103,8 @@ public class ObjectEntryModelListenerTest {
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 		_assertResourceActions(
 			cmpProjectObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
-			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
+			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW,
+			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 
 		ObjectEntry cmpProjectLinkObjectEntry =
 			CMPTestUtil.addCMPProjectLinkObjectEntry(cmpProjectObjectEntry);
@@ -133,7 +134,8 @@ public class ObjectEntryModelListenerTest {
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 		_assertResourceActions(
 			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_CONTRIBUTOR,
-			ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW);
+			ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW,
+			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 		_assertResourceActions(
 			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_MANAGER,
 			ActionKeys.ADD_DISCUSSION, ActionKeys.DELETE,
@@ -143,7 +145,8 @@ public class ObjectEntryModelListenerTest {
 			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 		_assertResourceActions(
 			cmpTaskObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
-			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW);
+			ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW,
+			ObjectActionKeys.OBJECT_ENTRY_HISTORY);
 
 		ObjectEntry cmpTaskLinkObjectEntry =
 			CMPTestUtil.addCMPTaskLinkObjectEntry(cmpTaskObjectEntry);
