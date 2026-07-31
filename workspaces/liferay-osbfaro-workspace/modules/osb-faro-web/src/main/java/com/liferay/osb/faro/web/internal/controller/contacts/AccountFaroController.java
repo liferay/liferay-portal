@@ -13,6 +13,7 @@ import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
 import com.liferay.osb.faro.engine.client.model.AccountName;
 import com.liferay.osb.faro.engine.client.model.Individual;
+import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.osb.faro.web.internal.constants.FaroConstants;
@@ -172,6 +173,19 @@ public class AccountFaroController extends BaseFaroController {
 				assetId, assetTitle, assetType, channelId, keywords, rangeEnd,
 				rangeKey, rangeStart, page, pageSize),
 			page, pageSize);
+	}
+
+	@GET
+	@Path("/{id}/overview")
+	@RolesAllowed(RoleConstants.SITE_MEMBER)
+	public List<Metric> getAccountOverviewMetrics(
+			@PathParam("groupId") long groupId, @PathParam("id") String id,
+			@QueryParam("channelId") Long channelId)
+		throws Exception {
+
+		return contactsEngineClient.getAccountOverviewMetrics(
+			faroProjectLocalService.getFaroProjectByGroupId(groupId), channelId,
+			id);
 	}
 
 	@Override
