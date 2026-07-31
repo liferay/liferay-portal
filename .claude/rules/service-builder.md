@@ -1,37 +1,52 @@
----
-
-paths:
-  - "modules/**/*-api/bnd.bnd"
-  - "modules/**/*-api/src/main/java/**/service/*Service.java"
-  - "modules/**/*-api/src/main/java/**/service/*ServiceUtil.java"
-  - "modules/**/*-api/src/main/java/**/service/*ServiceWrapper.java"
-  - "modules/**/*-api/src/main/resources/**/packageinfo"
-  - "modules/**/*-service/service.xml"
-  - "modules/**/*-service/src/main/java/**/service/impl/*Impl.java"
-  - "modules/**/*-test/src/testIntegration/java/**/service/persistence/test/*PersistenceTest.java"
-
----
-
 # Service Builder
 
-All Service Builder API artifacts — `*LocalService.java`, `*Service.java`, `*LocalServiceUtil.java`, `*ServiceUtil.java`, `*LocalServiceWrapper.java`, `*ServiceWrapper.java`, `packageinfo`, and the `bnd.bnd` version bump in the `*-api` module — are generated. Do not hand-edit them. Add or change methods on the `*LocalServiceImpl` or `*ServiceImpl` class in the `*-service` module and let `buildService` regenerate the API. Entity, column, and finder definitions live in `service.xml`; changing them regenerates models, persistence, and base service classes the same way.
+Use these procedures whenever a task requires modifying a Liferay Service Builder module bundle.
 
-## Adding or Updating Entities
+## Module Bundle Layout
 
-1. Edit `modules/.../<module>-service/service.xml`.
+A Service Builder feature lives in three sibling modules under `modules/apps/<area>`:
 
-1. Commit the `service.xml` edit.
+- `<name>-api` — generated public API.
+- `<name>-service` — implementation. Hand-written `service.xml` and the `*Impl` classes drive everything else.
+- `<name>-test` — integration tests.
 
-1. Run `<gradlew> buildService` from `modules/.../<module>-service` to regenerate the model, persistence, base service, and API artifacts.
+Portal core follows the same split, with `portal-impl/service.xml` driving the API in `portal-kernel`.
 
-1. Commit the generated files.
+## Files To Leave Alone
 
-## Adding or Updating Service Methods
+Every generated Java file is tagged `@generated` in its javadoc — do not hand-edit anything carrying that tag; `buildService` rewrites it on each run. The same applies to the generated resources under `<name>-service/src/main/resources/META-INF`: `module-hbm.xml`, `portlet-model-hints.xml`, and `sql`.
 
-1. Edit the impl in `modules/.../<module>-service/src/main/java/.../service/impl/<Entity>LocalServiceImpl.java` or `<Entity>ServiceImpl.java`.
+## Editing a Service
 
-1. Commit the impl edit.
+Hand edits are confined to two inputs in the `<name>-service` module:
 
-1. Run `<gradlew> buildService` from `modules/.../<module>-service` to regenerate the API interface, `*Util`, `*Wrapper`, `packageinfo`, and `bnd.bnd`.
+- `service.xml` — entity, column, and finder definitions. Changing them regenerates the model, persistence, and base service classes.
+- The `*Impl` classes `buildService` scaffolds on first run and preserves on every subsequent run — `model/impl/<Entity>Impl.java`, `service/impl/<Entity>LocalServiceImpl.java`, and `service/impl/<Entity>ServiceImpl.java`. Add or change methods here and let the tool regenerate the API interface, `*Util`, and `*Wrapper`.
 
-1. Commit the generated files.
+Every edit must be regenerated and committed before any further work continues.
+
+### Workflow
+
+Run every step without asking for confirmation, including the commits.
+
+1. Commit the hand-written `service.xml` or `*Impl` edit.
+
+1. Run Service Builder.
+
+1. Commit the changes the tool produces or rewrites, titled `<TICKET> buildService`. Keep the regenerated output on its own, separate from the edit that caused it.
+
+1. Continue with the work.
+
+## Running Service Builder
+
+### A Single Module
+
+Run `<gradlew> buildService` from the `<name>-service` module to regenerate that module alone.
+
+### Every Module
+
+To regenerate every Service Builder module in one pass, run `ant build-services` from `portal-impl`:
+
+```bash
+(cd "${REPO_ROOT}/portal-impl" && ant build-services)
+```
