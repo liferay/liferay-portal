@@ -23,10 +23,17 @@ import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {getMatchedRoute, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {Segment} from 'shared/util/records';
-import {SegmentStates, SegmentTypes} from 'shared/util/constants';
+import {
+	SegmentCategories,
+	SegmentStates,
+	SegmentTypes
+} from 'shared/util/constants';
 import {Switch, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
+const AccountProfile = lazy(() =>
+	import(/* webpackChunkName: "SegmentAccountProfile" */ './AccountProfile')
+);
 const Overview = lazy(() =>
 	import(/* webpackChunkName: "SegmentOverview" */ './Overview')
 );
@@ -124,6 +131,18 @@ export const SegmentProfileRoutes = () => {
 				)}
 				subtitle={Liferay.Language.get('segment-not-found')}
 			/>
+		);
+	}
+
+	if (segment.segmentCategory === SegmentCategories.Account) {
+		return (
+			<Suspense fallback={<Loading />}>
+				<AccountProfile
+					channelId={channelId}
+					groupId={groupId}
+					segment={segment}
+				/>
+			</Suspense>
 		);
 	}
 

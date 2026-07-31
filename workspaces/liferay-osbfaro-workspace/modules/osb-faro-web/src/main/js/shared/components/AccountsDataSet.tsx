@@ -21,6 +21,7 @@ interface IAccountsDataSetProps {
 	apiURL: string;
 	channelId: string;
 	countryFilter?: string;
+	dataSetId?: string;
 	groupId: string;
 	industryFilter?: string;
 	lifecycleStageFilter?: LifecycleStages;
@@ -47,6 +48,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	apiURL,
 	channelId,
 	countryFilter,
+	dataSetId = 'accounts-list-dataset',
 	groupId,
 	industryFilter,
 	lifecycleStageFilter,
@@ -193,7 +195,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 						type: 'selection',
 					},
 				]}
-				id="accounts-list-dataset"
+				id={dataSetId}
 				key={[
 					countryFilter,
 					industryFilter,
