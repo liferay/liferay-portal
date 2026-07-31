@@ -53,16 +53,11 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 	@Override
 	@Test
 	public void testGetToolSetToolSetNameTool() throws Exception {
-
-		// Tool from a REST application
-
 		Tool tool = toolResource.getToolSetToolSetNameTool(
 			"mcp-server-v1.0", "getToolSetsPage");
 
 		Assert.assertEquals("getToolSetsPage", tool.getName());
 		Assert.assertNotNull(tool.getInputSchema());
-
-		// Object field added after the tool was requested
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
@@ -90,8 +85,6 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 				"JSONObject/body", "JSONObject/properties"),
 			false);
 
-		// Object definition with the same name in another company
-
 		String objectDefinitionName = ObjectDefinitionTestUtil.getRandomName();
 		String objectFieldName = "a" + RandomTestUtil.randomString(8);
 
@@ -117,8 +110,6 @@ public class ToolResourceTest extends BaseToolResourceTestCase {
 				"JSONObject/inputSchema", "JSONObject/properties",
 				"JSONObject/body", "JSONObject/properties"),
 			false);
-
-		// Same tool requested by the other company
 
 		HTTPTestUtil.customize(
 		).withCredentials(
