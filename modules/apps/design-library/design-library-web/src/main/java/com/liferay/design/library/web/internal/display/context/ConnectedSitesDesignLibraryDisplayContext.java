@@ -22,10 +22,10 @@ import java.util.Map;
 /**
  * @author Mario Leandro
  */
-public class DesignLibraryConnectedSitesDisplayContext
+public class ConnectedSitesDesignLibraryDisplayContext
 	extends BaseDesignLibraryDisplayContext {
 
-	public DesignLibraryConnectedSitesDisplayContext(
+	public ConnectedSitesDesignLibraryDisplayContext(
 		DepotEntry depotEntry, HttpServletRequest httpServletRequest) {
 
 		super(depotEntry, httpServletRequest);
@@ -88,7 +88,7 @@ public class DesignLibraryConnectedSitesDisplayContext
 
 	private static final Snapshot<DepotEntryGroupRelLocalService>
 		_depotEntryGroupRelLocalServiceSnapshot = new Snapshot<>(
-			DesignLibraryConnectedSitesDisplayContext.class,
+			ConnectedSitesDesignLibraryDisplayContext.class,
 			DepotEntryGroupRelLocalService.class);
 
 }
