@@ -170,6 +170,16 @@ const Form: React.FC<{
 				</BasePage.SubHeader>
 			)}
 
+			{getMatchedRoute(NAV_ITEMS) === Routes.ASSETS_FORMS_ACCOUNTS && (
+				<BasePage.SubHeader>
+					<SegmentDropdown
+						initialSegmentId={segmentId}
+						initialSegmentName={segmentName}
+						onFilterChange={setSegment}
+					/>
+				</BasePage.SubHeader>
+			)}
+
 			{getMatchedRoute(NAV_ITEMS) ===
 				Routes.ASSETS_FORMS_KNOWN_INDIVIDUALS && (
 				<BasePage.SubHeader>

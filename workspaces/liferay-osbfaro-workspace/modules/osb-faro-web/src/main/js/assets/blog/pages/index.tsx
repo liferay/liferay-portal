@@ -166,6 +166,16 @@ const Blog: React.FC<{
 				</BasePage.SubHeader>
 			)}
 
+			{getMatchedRoute(NAV_ITEMS) === Routes.ASSETS_BLOGS_ACCOUNTS && (
+				<BasePage.SubHeader>
+					<SegmentDropdown
+						initialSegmentId={segmentId}
+						initialSegmentName={segmentName}
+						onFilterChange={setSegment}
+					/>
+				</BasePage.SubHeader>
+			)}
+
 			{getMatchedRoute(NAV_ITEMS) ===
 				Routes.ASSETS_BLOGS_KNOWN_INDIVIDUALS && (
 				<BasePage.SubHeader>

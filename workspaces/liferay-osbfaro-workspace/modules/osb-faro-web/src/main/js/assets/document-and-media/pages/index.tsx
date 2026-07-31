@@ -174,6 +174,17 @@ const DocumentAndMedia: React.FC<{
 			)}
 
 			{getMatchedRoute(NAV_ITEMS) ===
+				Routes.ASSETS_DOCUMENTS_AND_MEDIA_ACCOUNTS && (
+				<BasePage.SubHeader>
+					<SegmentDropdown
+						initialSegmentId={segmentId}
+						initialSegmentName={segmentName}
+						onFilterChange={setSegment}
+					/>
+				</BasePage.SubHeader>
+			)}
+
+			{getMatchedRoute(NAV_ITEMS) ===
 				Routes.ASSETS_DOCUMENTS_AND_MEDIA_KNOWN_INDIVIDUALS && (
 				<BasePage.SubHeader>
 					<div className="d-flex justify-content-end w-100">

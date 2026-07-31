@@ -170,6 +170,17 @@ const ObjectEntry: React.FC<{
 				</BasePage.SubHeader>
 			)}
 
+			{getMatchedRoute(NAV_ITEMS) ===
+				Routes.ASSETS_OBJECT_ENTRY_ACCOUNTS && (
+				<BasePage.SubHeader>
+					<SegmentDropdown
+						initialSegmentId={segmentId}
+						initialSegmentName={segmentName}
+						onFilterChange={setSegment}
+					/>
+				</BasePage.SubHeader>
+			)}
+
 			<BasePage.Context.Provider
 				value={{
 					accountId,

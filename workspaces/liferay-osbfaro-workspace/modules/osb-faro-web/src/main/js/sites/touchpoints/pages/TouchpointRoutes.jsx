@@ -211,6 +211,12 @@ function TouchpointRoutes({className, router}) {
 				</BasePage.SubHeader>
 			)}
 
+			{matchedRoute === Routes.SITES_TOUCHPOINTS_ACCOUNTS && (
+				<BasePage.SubHeader>
+					{segmentDropdown}
+				</BasePage.SubHeader>
+			)}
+
 			{matchedRoute === Routes.SITES_TOUCHPOINTS_KNOWN_INDIVIDUALS && (
 				<BasePage.SubHeader>
 					<div className='d-flex justify-content-end w-100'>
