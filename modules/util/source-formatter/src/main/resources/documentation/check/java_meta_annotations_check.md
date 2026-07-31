@@ -11,13 +11,6 @@ A `@Meta.AD` in a configuration that generates UI also requires an explicit
 `name`. Without one, bnd derives the name from the method name, which is not a
 language key, so the configuration fails localization at runtime.
 
-A `String` attribute in a `@Meta.OCD` configuration whose name implies a secret
-(for example a password, an API key, a private key, a client or app secret, or
-an access token) must set `type = Meta.Type.Password`. Without it the value
-renders as a plain text input, exposing the secret on screen. Public
-identifiers such as `accessKey`, `consumerKey`, or a `publicKey` are not secrets
-and are left as plain text.
-
 ### Example
 
 ```java

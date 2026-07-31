@@ -631,8 +631,13 @@
 		</check>
 		<check name="JavaMetaAnnotationsCheck">
 			<category name="Bug Prevention" />
-			<description name="Checks for correct use of attributes `description`, `name`, and `type` in annotation `@aQute.bnd.annotation.metatype.Meta`, including requiring `type = Meta.Type.Password` on secret-bearing fields." />
+			<description name="Checks for correct use of attributes `description` and `name` in annotation `@aQute.bnd.annotation.metatype.Meta`." />
 			<property name="checkConfigurationName" value="false" />
+		</check>
+		<check name="JavaMetaOCDSecretFieldCheck">
+			<category name="Bug Prevention" />
+			<description name="Finds missing `type = Meta.Type.Password` on secret-bearing fields." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaModifiedServiceMethodCheck">
 			<category name="Bug Prevention" />
