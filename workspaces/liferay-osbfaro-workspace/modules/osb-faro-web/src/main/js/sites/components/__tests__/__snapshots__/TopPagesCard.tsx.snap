@@ -206,10 +206,11 @@ exports[`TopPagesCard renders 1`] = `
       </div>
     </div>
     <div
-      class="card-footer d-flex pt-0"
+      class="card-footer d-flex"
     >
       <a
-        class="ml-auto mt-2 rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
+        aria-label="View All Pages"
+        class="ml-auto rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
         href="/link-to-the-next-page?rangeKey=30&field=visitorsMetric&sortOrder=DESC"
       >
         view pages

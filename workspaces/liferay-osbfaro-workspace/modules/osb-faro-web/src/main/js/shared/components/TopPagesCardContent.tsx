@@ -208,11 +208,12 @@ const TopPagesCardContent: React.FC<ITopPagesCardContentProps> = ({
 			</Card.Body>
 
 			{footer && !!Object.keys(footer).length && (
-				<Card.Footer className="d-flex pt-0">
+				<Card.Footer className="d-flex">
 					<ClayLink
+						aria-label={Liferay.Language.get('view-all-pages')}
 						borderless
 						button
-						className="ml-auto mt-2 rounded-lg"
+						className="ml-auto rounded-lg"
 						displayType="primary"
 						href={footerHref}
 						small

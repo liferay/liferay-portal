@@ -172,10 +172,11 @@ exports[`Sites Dashboard Overview render 1`] = `
             />
           </div>
           <div
-            class="card-footer d-flex pt-0"
+            class="card-footer d-flex"
           >
             <a
-              class="ml-auto mt-2 rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
+              aria-label="View All Pages"
+              class="ml-auto rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
               href="/workspace/23/123123/sites/pages?rangeKey=30&field=visitorsMetric&sortOrder=DESC"
             >
               View All
@@ -358,21 +359,14 @@ exports[`Sites Dashboard Overview render 1`] = `
             />
           </div>
           <div
-            class="card-footer"
+            class="card-footer d-flex"
           >
             <a
-              class="button-root btn btn-outline-borderless btn-sm btn-outline-secondary"
+              aria-label="View All Search Terms"
+              class="ml-auto rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
               href="/workspace/23/123123/sites/search-terms?rangeKey=30"
             >
-              All Search Terms
-              <svg
-                class="lexicon-icon lexicon-icon-angle-right-small icon-root ml-2"
-                role="presentation"
-              >
-                <use
-                  href="#angle-right-small"
-                />
-              </svg>
+              View All
             </a>
           </div>
         </div>
@@ -416,21 +410,14 @@ exports[`Sites Dashboard Overview render 1`] = `
             />
           </div>
           <div
-            class="card-footer"
+            class="card-footer d-flex"
           >
             <a
-              class="button-root btn btn-outline-borderless btn-sm btn-outline-secondary"
+              aria-label="View All Interests"
+              class="ml-auto rounded-lg btn btn-outline-borderless btn-sm btn-outline-primary"
               href="/workspace/23/123123/sites/interests?rangeKey=30"
             >
-              All Interests
-              <svg
-                class="lexicon-icon lexicon-icon-angle-right-small icon-root ml-2"
-                role="presentation"
-              >
-                <use
-                  href="#angle-right-small"
-                />
-              </svg>
+              View All
             </a>
           </div>
         </div>

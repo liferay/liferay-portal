@@ -76,7 +76,7 @@ describe('Sites Dashboard Overview', () => {
 	});
 
 	it('render', () => {
-		const {container, getAllByText, getByText} = render(
+		const {container, getAllByText, getByLabelText, getByText} = render(
 			<ApolloProvider client={client}>
 				<MemoryRouter initialEntries={['/workspace/23/123123/sites']}>
 					<Route path={Routes.SITES}>
@@ -102,7 +102,9 @@ describe('Sites Dashboard Overview', () => {
 		expect(getAllByText('All Visitors')[1]).toBeTruthy();
 		expect(getByText('Anonymous Visitors')).toBeTruthy();
 		expect(getByText('Known Visitors')).toBeTruthy();
-		expect(getByText('All Search Terms')).toBeInTheDocument();
+		expect(getByLabelText('View All Pages')).toBeInTheDocument();
+		expect(getByLabelText('View All Search Terms')).toBeInTheDocument();
+		expect(getByLabelText('View All Interests')).toBeInTheDocument();
 
 		expect(container).toMatchSnapshot();
 	});
