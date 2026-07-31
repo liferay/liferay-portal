@@ -64,7 +64,7 @@ import org.osgi.service.jaxrs.runtime.dto.RuntimeDTO;
 public class ToolSetUtil {
 
 	public static void clearOpenAPIJSONObjectCache(long companyId) {
-		Set<String> keys = _openAPIJSONObjectCache.keySet();
+		Set<String> keys = _openAPIJSONObjects.keySet();
 
 		keys.removeIf(key -> key.startsWith(companyId + StringPool.POUND));
 	}
@@ -296,7 +296,7 @@ public class ToolSetUtil {
 	private static JSONObject _getOpenAPIJSONObject(
 		HttpServletRequest httpServletRequest, OpenAPIBrief openAPIBrief) {
 
-		return _openAPIJSONObjectCache.computeIfAbsent(
+		return _openAPIJSONObjects.computeIfAbsent(
 			StringBundler.concat(
 				PortalUtil.getCompanyId(httpServletRequest), StringPool.POUND,
 				openAPIBrief._basePath, openAPIBrief._openAPIPath),
@@ -462,7 +462,7 @@ public class ToolSetUtil {
 	private static final Snapshot<JaxrsServiceRuntime>
 		_jaxrsServiceRuntimeSnapshot = new Snapshot<>(
 			ToolSetUtil.class, JaxrsServiceRuntime.class);
-	private static final Map<String, JSONObject> _openAPIJSONObjectCache =
+	private static final Map<String, JSONObject> _openAPIJSONObjects =
 		new ConcurrentHashMap<>();
 	private static final Snapshot<VulcanRequestForwarder>
 		_vulcanRequestForwarderSnapshot = new Snapshot<>(
