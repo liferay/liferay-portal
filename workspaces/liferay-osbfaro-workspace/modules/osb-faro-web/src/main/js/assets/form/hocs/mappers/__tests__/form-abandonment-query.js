@@ -242,4 +242,27 @@ describe('FormAbandonmentQuery mapper', () => {
 			},
 		});
 	});
+
+	it('should include segmentId in the options when provided', () => {
+		const options = mapPropsToOptions({
+			filters: {},
+			rangeSelectors: {rangeKey: '7'},
+			router,
+			segmentId: 'segment-100',
+		});
+
+		expect(options).toEqual({
+			variables: {
+				assetId: 'formId',
+				devices: 'Any',
+				location: 'Any',
+				rangeEnd: null,
+				rangeKey: 7,
+				rangeStart: null,
+				segmentId: 'segment-100',
+				title: 'Liferay',
+				touchpoint: null,
+			},
+		});
+	});
 });

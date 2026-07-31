@@ -126,7 +126,16 @@ const mapPropsToOptions = ({
 	filters,
 	interval,
 	rangeSelectors,
-	router: {params}
-}) => getVariables({accountId, filters, interval, params, rangeSelectors});
+	router: {params},
+	segmentId
+}) =>
+	getVariables({
+		accountId,
+		filters,
+		interval,
+		params,
+		rangeSelectors,
+		segmentId
+	});
 
 export {mapPropsToOptions, mapResultToProps};
