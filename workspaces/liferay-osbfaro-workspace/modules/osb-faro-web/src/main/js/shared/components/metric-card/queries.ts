@@ -201,6 +201,7 @@ export const PageMetricQuery = (metricName: string) => gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$title: String
 		$touchpoint: String
 	) {
@@ -214,6 +215,7 @@ export const PageMetricQuery = (metricName: string) => gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			title: $title
 		) {
 			${metricName} {
@@ -235,6 +237,7 @@ export const PageMetricTabsQuery = gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$title: String
 		$touchpoint: String
 	) {
@@ -248,6 +251,7 @@ export const PageMetricTabsQuery = gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			title: $title
 		) {
 			visitorsMetric {
