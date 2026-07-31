@@ -1613,6 +1613,11 @@
 			<category name="Bug Prevention" />
 			<description name="Finds legacy `packageinfo` files." />
 		</check>
+		<check name="PackageinfoBreakingChangeCommitMessageCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that commit message should contain the schematized breaking changes." />
+			<property name="enabled" value="false" />
+		</check>
 		<check name="WhitespaceCheck">
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary whitespace." />
