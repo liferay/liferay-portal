@@ -38,4 +38,24 @@ describe('VisitorsByTimeQuery Mappers', () => {
 			})
 		);
 	});
+
+	it('should include segmentId in the options when provided', () => {
+		const mockProps = {
+			rangeSelectors: {rangeKey: '30'},
+			router: {params: {channelId: 123}},
+			segmentId: 'segment-100',
+		};
+
+		expect(mapPropsToOptions(mockProps)).toEqual(
+			expect.objectContaining({
+				variables: {
+					channelId: 123,
+					rangeEnd: null,
+					rangeKey: parseInt('30'),
+					rangeStart: null,
+					segmentId: 'segment-100',
+				},
+			})
+		);
+	});
 });
