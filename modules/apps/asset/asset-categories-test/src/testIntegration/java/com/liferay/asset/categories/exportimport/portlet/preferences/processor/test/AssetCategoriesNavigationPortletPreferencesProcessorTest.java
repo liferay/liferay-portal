@@ -13,12 +13,15 @@ import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -86,14 +89,35 @@ public class AssetCategoriesNavigationPortletPreferencesProcessorTest {
 	public void testProcessAssetVocabularyExternalReferenceCode()
 		throws Exception {
 
+		_portletPreferences.setValue(
+			"allAssetVocabularies", Boolean.FALSE.toString());
+
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_group.getGroupId());
 
-		_portletPreferences.setValue(
-			"allAssetVocabularies", Boolean.FALSE.toString());
 		_portletPreferences.setValues(
 			"assetVocabularyExternalReferenceCodes",
 			assetVocabulary.getExternalReferenceCode());
+
+		Group companyGroup = _groupLocalService.getCompanyGroup(
+			_group.getCompanyId());
+
+		AssetVocabulary companyAssetVocabulary1 = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId());
+		AssetVocabulary companyAssetVocabulary2 = AssetTestUtil.addVocabulary(
+			companyGroup.getGroupId());
+
+		_portletPreferences.setValues(
+			"assetVocabularyExternalReferenceCodes_" +
+				companyGroup.getExternalReferenceCode(),
+			companyAssetVocabulary1.getExternalReferenceCode(),
+			companyAssetVocabulary2.getExternalReferenceCode());
+
+		_portletPreferences.setValues(
+			"assetVocabularyGroupExternalReferenceCodes",
+			companyGroup.getExternalReferenceCode(), StringPool.BLANK,
+			companyGroup.getExternalReferenceCode(),
+			RandomTestUtil.randomString());
 
 		_portletPreferences.store();
 
@@ -102,28 +126,52 @@ public class AssetCategoriesNavigationPortletPreferencesProcessorTest {
 				processExportPortletPreferences(
 					_portletDataContextExport, _portletPreferences);
 
-		String[] exportedAssetVocabularyExternalReferenceCodes =
+		Assert.assertArrayEquals(
+			new String[] {
+				companyGroup.getExternalReferenceCode(), StringPool.BLANK,
+				companyGroup.getExternalReferenceCode()
+			},
 			exportedPortletPreferences.getValues(
-				"assetVocabularyExternalReferenceCodes", null);
-
-		Assert.assertNotNull(exportedAssetVocabularyExternalReferenceCodes);
-
-		Assert.assertEquals(
-			assetVocabulary.getExternalReferenceCode(),
-			exportedAssetVocabularyExternalReferenceCodes[0]);
+				"assetVocabularyGroupExternalReferenceCodes", null));
+		Assert.assertArrayEquals(
+			new String[] {assetVocabulary.getExternalReferenceCode()},
+			exportedPortletPreferences.getValues(
+				"assetVocabularyExternalReferenceCodes", null));
+		Assert.assertArrayEquals(
+			new String[] {
+				companyAssetVocabulary1.getExternalReferenceCode(),
+				companyAssetVocabulary2.getExternalReferenceCode()
+			},
+			exportedPortletPreferences.getValues(
+				"assetVocabularyExternalReferenceCodes_" +
+					companyGroup.getExternalReferenceCode(),
+				null));
 
 		PortletPreferences importedPortletPreferences =
 			_exportImportPortletPreferencesProcessor.
 				processImportPortletPreferences(
 					_portletDataContextImport, exportedPortletPreferences);
 
-		String[] importedAssetVocabularyExternalReferenceCodes =
+		Assert.assertArrayEquals(
+			new String[] {
+				companyGroup.getExternalReferenceCode(), StringPool.BLANK,
+				companyGroup.getExternalReferenceCode()
+			},
 			importedPortletPreferences.getValues(
-				"assetVocabularyExternalReferenceCodes", null);
-
-		Assert.assertEquals(
-			assetVocabulary.getExternalReferenceCode(),
-			importedAssetVocabularyExternalReferenceCodes[0]);
+				"assetVocabularyGroupExternalReferenceCodes", null));
+		Assert.assertArrayEquals(
+			new String[] {assetVocabulary.getExternalReferenceCode()},
+			importedPortletPreferences.getValues(
+				"assetVocabularyExternalReferenceCodes", null));
+		Assert.assertArrayEquals(
+			new String[] {
+				companyAssetVocabulary1.getExternalReferenceCode(),
+				companyAssetVocabulary2.getExternalReferenceCode()
+			},
+			importedPortletPreferences.getValues(
+				"assetVocabularyExternalReferenceCodes_" +
+					companyGroup.getExternalReferenceCode(),
+				null));
 	}
 
 	@Inject(
@@ -134,6 +182,9 @@ public class AssetCategoriesNavigationPortletPreferencesProcessorTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	private Layout _layout;
 	private PortletDataContext _portletDataContextExport;
