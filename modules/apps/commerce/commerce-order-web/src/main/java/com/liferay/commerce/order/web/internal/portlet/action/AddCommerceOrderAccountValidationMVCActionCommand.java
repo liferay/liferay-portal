@@ -159,6 +159,9 @@ public class AddCommerceOrderAccountValidationMVCActionCommand
 					AccountEntryValidatorConstants.RESULT_MANUAL,
 					accountEntryValidatorResult.getResultStatus()) &&
 				 !Objects.equals(
+					 AccountEntryValidatorConstants.RESULT_SKIPPED,
+					 accountEntryValidatorResult.getResultStatus()) &&
+				 !Objects.equals(
 					 AccountEntryValidatorConstants.RESULT_SUCCESS,
 					 accountEntryValidatorResult.getResultStatus()))) {
 

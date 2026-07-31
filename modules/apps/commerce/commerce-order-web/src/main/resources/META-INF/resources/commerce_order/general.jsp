@@ -99,9 +99,13 @@ boolean hasPermission = commerceOrderEditDisplayContext.hasModelPermission(comme
 										String validationButtonIcon = "check-circle-full";
 										String validationButtonLabel = "all-account-validations-have-succeeded";
 
-										if (Objects.equals(validationButtonCssClass, "text-warning")) {
+										if (Objects.equals(validationButtonCssClass, "text-danger")) {
 											validationButtonIcon = "warning-full";
 											validationButtonLabel = "one-or-more-validations-have-failed-for-this-account";
+										}
+										else if (Objects.equals(validationButtonCssClass, "text-info")) {
+											validationButtonIcon = "info-circle";
+											validationButtonLabel = "account-validations-were-skipped-because-no-validator-is-active-for-the-account";
 										}
 										else if (Objects.equals(validationButtonCssClass, "text-secondary")) {
 											validationButtonIcon = "time";
