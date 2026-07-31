@@ -8,6 +8,7 @@ export default gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 	) {
 		site(
 			accountId: $accountId
@@ -16,6 +17,7 @@ export default gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 		) {
 			sessionsMetric {
 				...browserFragment

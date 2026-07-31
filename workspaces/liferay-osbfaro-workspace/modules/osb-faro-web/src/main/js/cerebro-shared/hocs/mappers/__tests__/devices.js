@@ -259,6 +259,37 @@ describe('Shared HOCs Mappers - Devices', () => {
 		});
 	});
 
+	it('should include segmentId in the request variables when provided', () => {
+		const mapper = getDevicesMapper(
+			(result) => result.form.submissionsMetric
+		);
+
+		const optionsResult = mapper.options({
+			router: {
+				params: {},
+			},
+			segmentId: 'segment-100',
+		});
+
+		expect(optionsResult.variables).toMatchObject({
+			segmentId: 'segment-100',
+		});
+	});
+
+	it('should not include segmentId in the request variables when not provided', () => {
+		const mapper = getDevicesMapper(
+			(result) => result.form.submissionsMetric
+		);
+
+		const optionsResult = mapper.options({
+			router: {
+				params: {},
+			},
+		});
+
+		expect(optionsResult.variables).not.toHaveProperty('segmentId');
+	});
+
 	it('should map devices information in correct order', () => {
 		const mapper = getDevicesMapper(
 			(result) => result.form.submissionsMetric

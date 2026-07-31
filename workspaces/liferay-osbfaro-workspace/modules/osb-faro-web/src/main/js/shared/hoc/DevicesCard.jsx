@@ -126,7 +126,8 @@ const withDevicesCard = (
 					filters,
 					interval,
 					rangeSelectors,
-					router
+					router,
+					segmentId
 				}) => (
 					<Card.Body
 						className='w-100 d-flex flex-column flex-grow-1'
@@ -154,6 +155,7 @@ const withDevicesCard = (
 								metricLabel={metricLabel}
 								rangeSelectors={rangeSelectors}
 								router={router}
+								segmentId={segmentId}
 							/>
 						</div>
 					</Card.Body>

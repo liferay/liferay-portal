@@ -109,6 +109,7 @@ const getDevicesMapper = (getMetric) => {
 		interval,
 		rangeSelectors,
 		router: {params},
+		segmentId,
 	}) =>
 		getVariables({
 			accountId,
@@ -117,6 +118,7 @@ const getDevicesMapper = (getMetric) => {
 			interval,
 			params,
 			rangeSelectors,
+			segmentId,
 		});
 
 	return {
