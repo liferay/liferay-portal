@@ -18,7 +18,7 @@ copyCSS {
 }
 
 dependencies {
-	api group: "com.liferay", name: "org.freemarker", transitive: false, version: "2.3.33.LIFERAY-PATCHED-2"
+	api group: "com.liferay", name: "org.freemarker", transitive: false, version: "2.3.33.LIFERAY-PATCHED-3"
 	api group: "com.puppycrawl.tools", name: "checkstyle", version: "8.43"
 	api group: "commons-io", name: "commons-io", version: "2.19.0"
 	compileInclude group: "com.beust", name: "jcommander", version: "1.82"

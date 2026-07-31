@@ -24,7 +24,7 @@ copyCSS {
 
 dependencies {
 	compileInclude group: "com.beust", name: "jcommander", version: "1.82"
-	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
+	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
 	compileInclude group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileInclude group: "commons-io", name: "commons-io", version: "2.19.0"
 	compileInclude group: "org.apache.commons", name: "commons-compress", version: "1.26.0"

@@ -2,7 +2,7 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 dependencies {
-	api group: "com.liferay", name: "org.freemarker", version: "2.3.33.LIFERAY-PATCHED-2"
+	api group: "com.liferay", name: "org.freemarker", version: "2.3.33.LIFERAY-PATCHED-3"
 	api group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	api group: "org.osgi", name: "osgi.core", version: "6.0.0"
 }

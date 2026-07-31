@@ -1,5 +1,5 @@
 dependencies {
-	compileInclude group: "com.liferay", name: "org.freemarker", version: "2.3.33.LIFERAY-PATCHED-2"
+	compileInclude group: "com.liferay", name: "org.freemarker", version: "2.3.33.LIFERAY-PATCHED-3"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"

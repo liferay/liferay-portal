@@ -21,7 +21,7 @@ dependencies {
 	compileInclude group: "com.google.oauth-client", name: "google-oauth-client", version: "1.37.0"
 	compileInclude group: "com.google.protobuf", name: "protobuf-java", version: "3.25.5"
 	compileInclude group: "com.google.protobuf", name: "protobuf-java-util", version: "3.25.5"
-	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
+	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
 	compileInclude group: "io.grpc", name: "grpc-context", version: "1.75.0"
 	compileInclude group: "io.opencensus", name: "opencensus-api", version: "0.31.1"
 	compileInclude group: "io.opencensus", name: "opencensus-contrib-http-util", version: "0.31.1"

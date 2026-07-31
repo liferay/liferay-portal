@@ -25,7 +25,7 @@ dependencies {
 	implementation group: "com.liferay", name: "com.liferay.headless.admin.workflow.client", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.headless.delivery.client", version: "latest.release"
 	implementation group: "com.liferay", name: "com.liferay.petra.string", version: "latest.release"
-	implementation group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
+	implementation group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-3"
 	implementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "latest.release"
 	implementation group: "org.springframework.boot", name: "spring-boot", version: "2.7.18"
 	implementation group: "org.springframework.boot", name: "spring-boot-starter-oauth2-client", version: "2.7.18"
