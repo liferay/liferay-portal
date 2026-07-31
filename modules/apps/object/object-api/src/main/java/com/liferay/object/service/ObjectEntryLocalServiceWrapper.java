@@ -411,12 +411,12 @@ public class ObjectEntryLocalServiceWrapper
 	public java.util.Map<Object, Long> getAggregationCounts(
 			long groupId, long objectDefinitionId, String aggregationTerm,
 			com.liferay.petra.sql.dsl.expression.Predicate predicate,
-			boolean preferApproved, int start, int end)
+			boolean preferApproved)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectEntryLocalService.getAggregationCounts(
 			groupId, objectDefinitionId, aggregationTerm, predicate,
-			preferApproved, start, end);
+			preferApproved);
 	}
 
 	@Override
@@ -658,12 +658,12 @@ public class ObjectEntryLocalServiceWrapper
 			long groupId, long objectDefinitionId, long objectEntryId,
 			long objectRelationshipId, String aggregationTerm,
 			com.liferay.petra.sql.dsl.expression.Predicate predicate,
-			boolean related, String search, int start, int end)
+			boolean related, String search)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _objectEntryLocalService.getOneToManyAggregationCounts(
 			groupId, objectDefinitionId, objectEntryId, objectRelationshipId,
-			aggregationTerm, predicate, related, search, start, end);
+			aggregationTerm, predicate, related, search);
 	}
 
 	@Override
@@ -1042,4 +1042,4 @@ public class ObjectEntryLocalServiceWrapper
 	private ObjectEntryLocalService _objectEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:428269909
+// LIFERAY-SERVICE-BUILDER-HASH:1063774189
