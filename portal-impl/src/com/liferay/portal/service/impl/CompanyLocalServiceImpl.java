@@ -109,6 +109,7 @@ import com.liferay.portal.kernel.service.persistence.PortletPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.service.persistence.VirtualHostPersistence;
+import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -328,16 +329,32 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			return updatedCompany;
 		};
 
+		// Statement routing reads the live company thread local, so session
+		// state left pending under the current scope must flush before the
+		// switch, and state created under the raw scope must flush before the
+		// restore, or it would execute against the wrong company's partition
+
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+			LastSessionRecorderHelperUtil.syncLastSessionState(false);
+		}
+
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
 					companyId)) {
 
-			if (PropsValues.DATABASE_PARTITION_ENABLED) {
-				return TransactionInvokerUtil.invoke(
-					_transactionConfig, callable);
-			}
+			try {
+				if (PropsValues.DATABASE_PARTITION_ENABLED) {
+					return TransactionInvokerUtil.invoke(
+						_transactionConfig, callable);
+				}
 
-			return callable.call();
+				return callable.call();
+			}
+			finally {
+				if (PropsValues.DATABASE_PARTITION_ENABLED) {
+					LastSessionRecorderHelperUtil.syncLastSessionState(false);
+				}
+			}
 		}
 		catch (Throwable throwable) {
 			if (newDBPartitionAdded) {
