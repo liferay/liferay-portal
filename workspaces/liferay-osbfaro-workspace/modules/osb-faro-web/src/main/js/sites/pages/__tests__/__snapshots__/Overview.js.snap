@@ -512,12 +512,51 @@ exports[`Sites Dashboard Overview render 1`] = `
             </div>
           </div>
           <div
-            class="card-body"
+            class="card-body w-100 d-flex flex-column flex-grow-1 no-padding"
           >
-            <span
-              aria-hidden="true"
-              class="loading-root center loading-animation"
-            />
+            <ul
+              class="nav nav-tabs mb-3"
+              role="tablist"
+            >
+              <li
+                class="nav-item"
+                role="none"
+              >
+                <button
+                  aria-selected="true"
+                  class="nav-link active btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="0"
+                  type="button"
+                >
+                  Devices
+                </button>
+              </li>
+              <li
+                class="nav-item"
+                role="none"
+              >
+                <button
+                  aria-selected="false"
+                  class="nav-link btn btn-unstyled"
+                  data-testid="tabItem"
+                  role="tab"
+                  tabindex="-1"
+                  type="button"
+                >
+                  Browsers
+                </button>
+              </li>
+            </ul>
+            <div
+              class="px-4 pb-4"
+            >
+              <span
+                aria-hidden="true"
+                class="loading-root center loading-animation"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -554,10 +593,10 @@ exports[`Sites Dashboard Overview render 1`] = `
               >
                 <button
                   aria-activedescendant="visitors"
-                  aria-controls="clay-id-16"
+                  aria-controls="clay-id-19"
                   aria-expanded="true"
                   aria-haspopup="listbox"
-                  aria-owns="clay-id-16"
+                  aria-owns="clay-id-19"
                   class="form-control form-control-select form-control-select-secondary visitors-type-select show"
                   role="combobox"
                   style=""

@@ -1,7 +1,7 @@
 import BaseCard from 'shared/components/base-card';
 import Card from 'shared/components/Card';
-import CardTabs from 'shared/components/CardTabs';
 import ClayLink from '@clayui/link';
+import ClayTabs from '@clayui/tabs';
 import OperatingSystem from 'shared/components/OperatingSystem';
 import React, {useCallback, useState} from 'react';
 import WebBrowser from 'shared/components/WebBrowser';
@@ -13,10 +13,11 @@ import {withEmpty, withError, withLoading} from 'shared/hoc';
 const OPERATING_SYSTEM = Liferay.Language.get('devices');
 const WEB_BROWSER = Liferay.Language.get('browsers');
 
+const TAB_LABELS = [OPERATING_SYSTEM, WEB_BROWSER];
+
 const defaultProps = {
 	browsers: [],
 	devices: [],
-	items: [],
 	metricLabel: Liferay.Language.get('views')
 };
 
@@ -32,57 +33,23 @@ const propTypes = {
 			type: PropTypes.string
 		})
 	),
-	items: PropTypes.array,
 	metricLabel: PropTypes.string,
-	onChange: PropTypes.func,
 	total: PropTypes.number
 };
 
-const Tabs = ({
-	activeTab,
-	browsers,
-	devices,
-	items,
-	metricLabel,
-	onChange,
-	total
-}) => {
-	/**
-	 * Change Active Tab
-	 * @param {object} activeTab
-	 */
-	const changeActiveTab = useCallback(
-		newVal => onChange && onChange(newVal),
-		[]
+const TabContent = ({activeTab, browsers, devices, metricLabel, total}) =>
+	activeTab === OPERATING_SYSTEM ? (
+		<OperatingSystem devices={devices} metricLabel={metricLabel} />
+	) : (
+		<WebBrowser
+			browsers={browsers}
+			metricLabel={metricLabel}
+			total={total}
+		/>
 	);
 
-	return (
-		<div className='w-100'>
-			<CardTabs
-				activeTabId={activeTab}
-				onChange={changeActiveTab}
-				tabs={items.map(({label, ...otherParams}) => ({
-					tabId: label,
-					title: label,
-					...otherParams
-				}))}
-			/>
-
-			{activeTab === OPERATING_SYSTEM ? (
-				<OperatingSystem devices={devices} metricLabel={metricLabel} />
-			) : (
-				<WebBrowser
-					browsers={browsers}
-					metricLabel={metricLabel}
-					total={total}
-				/>
-			)}
-		</div>
-	);
-};
-
-Tabs.defaultProps = defaultProps;
-Tabs.propTypes = propTypes;
+TabContent.defaultProps = defaultProps;
+TabContent.propTypes = propTypes;
 
 /**
  * HOC
@@ -117,7 +84,7 @@ const withDevicesCard = (
 			),
 			title
 		})
-	)(Tabs);
+	)(TabContent);
 
 	TabsWithDevices.propTypes = HOC_CARD_PROPTYPES;
 
@@ -139,9 +106,11 @@ const withDevicesCard = (
 		const [activeTab, setActiveTab] = useState(OPERATING_SYSTEM);
 
 		const handleActiveTabChange = useCallback(
-			newVal => setActiveTab(newVal),
+			index => setActiveTab(TAB_LABELS[Number(index)]),
 			[]
 		);
+
+		const activeIndex = Math.max(TAB_LABELS.indexOf(activeTab), 0);
 
 		return (
 			<BaseCard
@@ -159,26 +128,34 @@ const withDevicesCard = (
 					rangeSelectors,
 					router
 				}) => (
-					<Card.Body>
-						<TabsWithDevices
-							accountId={accountId}
-							activeTab={activeTab}
-							experienceId={experienceId}
-							filters={filters}
-							interval={interval}
-							items={[
-								{
-									label: OPERATING_SYSTEM
-								},
-								{
-									label: WEB_BROWSER
-								}
-							]}
-							metricLabel={metricLabel}
-							onChange={handleActiveTabChange}
-							rangeSelectors={rangeSelectors}
-							router={router}
-						/>
+					<Card.Body
+						className='w-100 d-flex flex-column flex-grow-1'
+						noPadding
+					>
+						<ClayTabs
+							active={activeIndex}
+							className='mb-3'
+							onActiveChange={handleActiveTabChange}
+						>
+							{TAB_LABELS.map(tabLabel => (
+								<ClayTabs.Item key={tabLabel}>
+									{tabLabel}
+								</ClayTabs.Item>
+							))}
+						</ClayTabs>
+
+						<div className='px-4 pb-4'>
+							<TabsWithDevices
+								accountId={accountId}
+								activeTab={activeTab}
+								experienceId={experienceId}
+								filters={filters}
+								interval={interval}
+								metricLabel={metricLabel}
+								rangeSelectors={rangeSelectors}
+								router={router}
+							/>
+						</div>
 					</Card.Body>
 				)}
 			</BaseCard>
