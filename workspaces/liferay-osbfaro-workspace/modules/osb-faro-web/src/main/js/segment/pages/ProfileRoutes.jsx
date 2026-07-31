@@ -76,8 +76,10 @@ const NAV_ITEMS = [
 ];
 
 const SEGMENTS_LANGUAGE_MAP = {
-	[SegmentTypes.Batch]: Liferay.Language.get('batch-segment'),
-	[SegmentTypes.RealTime]: Liferay.Language.get('real-time-segment')
+	[SegmentTypes.Batch]: Liferay.Language.get('individual-batch-segment'),
+	[SegmentTypes.RealTime]: Liferay.Language.get(
+		'individual-real-time-segment'
+	)
 };
 
 export const SegmentProfileRoutes = () => {
