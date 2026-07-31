@@ -28,10 +28,10 @@ import java.util.Map;
 /**
  * @author Mario Leandro
  */
-public class DesignLibraryMembersDisplayContext
+public class MembersDesignLibraryDisplayContext
 	extends BaseDesignLibraryDisplayContext {
 
-	public DesignLibraryMembersDisplayContext(
+	public MembersDesignLibraryDisplayContext(
 		DepotEntry depotEntry, HttpServletRequest httpServletRequest) {
 
 		super(depotEntry, httpServletRequest);
@@ -130,10 +130,10 @@ public class DesignLibraryMembersDisplayContext
 
 	private static final Snapshot<UserGroupLocalService>
 		_userGroupLocalServiceSnapshot = new Snapshot<>(
-			DesignLibraryMembersDisplayContext.class,
+			MembersDesignLibraryDisplayContext.class,
 			UserGroupLocalService.class);
 	private static final Snapshot<UserLocalService> _userLocalServiceSnapshot =
 		new Snapshot<>(
-			DesignLibraryMembersDisplayContext.class, UserLocalService.class);
+			MembersDesignLibraryDisplayContext.class, UserLocalService.class);
 
 }

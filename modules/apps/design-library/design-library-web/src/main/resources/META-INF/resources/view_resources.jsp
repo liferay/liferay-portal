@@ -10,9 +10,9 @@
 <%
 DepotEntry depotEntry = (DepotEntry)request.getAttribute(DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY);
 
-DesignLibraryConnectedSitesDisplayContext designLibraryConnectedSitesDisplayContext = new DesignLibraryConnectedSitesDisplayContext(depotEntry, request);
+ConnectedSitesDesignLibraryDisplayContext connectedSitesDesignLibraryDisplayContext = new ConnectedSitesDesignLibraryDisplayContext(depotEntry, request);
 
-DesignLibraryMembersDisplayContext designLibraryMembersDisplayContext = new DesignLibraryMembersDisplayContext(depotEntry, request);
+MembersDesignLibraryDisplayContext membersDesignLibraryDisplayContext = new MembersDesignLibraryDisplayContext(depotEntry, request);
 
 ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContext = new ViewDesignLibraryResourcesDisplayContext(depotEntry, request, liferayPortletResponse);
 %>
@@ -31,7 +31,7 @@ ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContex
 			<%
 			Map<String, Object> fdsAdditionalProps = viewDesignLibraryResourcesDisplayContext.getFDSAdditionalProps();
 
-			Map<String, Object> membersFDSAdditionalProps = designLibraryMembersDisplayContext.getMembersFDSAdditionalProps();
+			Map<String, Object> membersFDSAdditionalProps = membersDesignLibraryDisplayContext.getMembersFDSAdditionalProps();
 			%>
 
 			<div class="p-4">
@@ -67,19 +67,19 @@ ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContex
 								<div>
 									<react:component
 										module="{DesignLibraryMembersSectionHeader} from design-library-web"
-										props="<%= designLibraryMembersDisplayContext.getMembersSectionHeaderProps() %>"
+										props="<%= membersDesignLibraryDisplayContext.getMembersSectionHeaderProps() %>"
 									/>
 								</div>
 
 								<clay:tabs
-									tabsItems="<%= designLibraryMembersDisplayContext.getMembersTabsItems() %>"
+									tabsItems="<%= membersDesignLibraryDisplayContext.getMembersTabsItems() %>"
 								>
 									<clay:tabs-panel>
 										<div class="design-library-summary-fds">
 											<frontend-data-set:headless-display
 												additionalProps="<%= membersFDSAdditionalProps %>"
-												apiURL="<%= designLibraryMembersDisplayContext.getMembersUsersAPIURL() %>"
-												emptyState="<%= designLibraryMembersDisplayContext.getMembersEmptyState() %>"
+												apiURL="<%= membersDesignLibraryDisplayContext.getMembersUsersAPIURL() %>"
+												emptyState="<%= membersDesignLibraryDisplayContext.getMembersEmptyState() %>"
 												formName="fm"
 												id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS %>"
 												propsTransformer="{DesignLibraryMembersFDSPropsTransformer} from design-library-web"
@@ -96,8 +96,8 @@ ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContex
 										<div class="design-library-summary-fds">
 											<frontend-data-set:headless-display
 												additionalProps="<%= membersFDSAdditionalProps %>"
-												apiURL="<%= designLibraryMembersDisplayContext.getMembersUserGroupsAPIURL() %>"
-												emptyState="<%= designLibraryMembersDisplayContext.getMembersEmptyState() %>"
+												apiURL="<%= membersDesignLibraryDisplayContext.getMembersUserGroupsAPIURL() %>"
+												emptyState="<%= membersDesignLibraryDisplayContext.getMembersEmptyState() %>"
 												formName="fm"
 												id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USER_GROUPS %>"
 												propsTransformer="{DesignLibraryMembersFDSPropsTransformer} from design-library-web"
@@ -118,15 +118,15 @@ ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContex
 								<div>
 									<react:component
 										module="{DesignLibraryConnectedSitesSectionHeader} from design-library-web"
-										props="<%= designLibraryConnectedSitesDisplayContext.getConnectedSitesSectionHeaderProps() %>"
+										props="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesSectionHeaderProps() %>"
 									/>
 								</div>
 
 								<div class="design-library-summary-fds">
 									<frontend-data-set:headless-display
-										additionalProps="<%= designLibraryConnectedSitesDisplayContext.getConnectedSitesFDSAdditionalProps() %>"
-										apiURL="<%= designLibraryConnectedSitesDisplayContext.getConnectedSitesAPIURL() %>"
-										emptyState="<%= designLibraryConnectedSitesDisplayContext.getConnectedSitesEmptyState() %>"
+										additionalProps="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesFDSAdditionalProps() %>"
+										apiURL="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesAPIURL() %>"
+										emptyState="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesEmptyState() %>"
 										formName="fm"
 										id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_CONNECTED_SITES %>"
 										propsTransformer="{DesignLibraryConnectedSitesFDSPropsTransformer} from design-library-web"
