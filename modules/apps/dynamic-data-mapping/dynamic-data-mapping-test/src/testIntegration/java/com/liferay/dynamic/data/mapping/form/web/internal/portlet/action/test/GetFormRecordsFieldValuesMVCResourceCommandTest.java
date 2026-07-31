@@ -17,10 +17,13 @@ import com.liferay.dynamic.data.mapping.test.util.DDMFormInstanceRecordTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormInstanceTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayResourceResponse;
@@ -30,12 +33,16 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import jakarta.portlet.PortletException;
 
 import java.io.ByteArrayOutputStream;
 
@@ -122,19 +129,32 @@ public class GetFormRecordsFieldValuesMVCResourceCommandTest {
 		Assert.assertEquals(_FIELD_VALUE, jsonArray.get(0));
 	}
 
+	@Test
+	public void testServeResourceWithError() throws Exception {
+		DDMFormInstance ddmFormInstance =
+			DDMFormInstanceTestUtil.addDDMFormInstance(
+				DDMFormTestUtil.createDDMForm(_FIELD_NAME), _group,
+				TestPropsValues.getUserId());
+
+		AssertUtils.assertFailure(
+			PortletException.class,
+			StringBundler.concat(
+				PrincipalException.MustBeAuthenticated.class.getName(),
+				": User ", TestPropsValues.getUserId(),
+				" must be authenticated"),
+			() -> _mvcResourceCommand.serveResource(
+				_getMockLiferayResourceRequest(
+					ddmFormInstance.getFormInstanceId(), false),
+				new MockLiferayResourceResponse()));
+	}
+
 	private JSONArray _getJSONArray(long formInstanceId) throws Exception {
-		MockLiferayResourceRequest mockLiferayResourceRequest =
-			new MockLiferayResourceRequest();
-
-		mockLiferayResourceRequest.addParameter("fieldName", _FIELD_NAME);
-		mockLiferayResourceRequest.addParameter(
-			"formInstanceId", String.valueOf(formInstanceId));
-
 		MockLiferayResourceResponse mockLiferayResourceResponse =
 			new MockLiferayResourceResponse();
 
 		_mvcResourceCommand.serveResource(
-			mockLiferayResourceRequest, mockLiferayResourceResponse);
+			_getMockLiferayResourceRequest(formInstanceId, true),
+			mockLiferayResourceResponse);
 
 		ByteArrayOutputStream byteArrayOutputStream =
 			(ByteArrayOutputStream)
@@ -142,6 +162,31 @@ public class GetFormRecordsFieldValuesMVCResourceCommandTest {
 
 		return JSONFactoryUtil.createJSONArray(
 			byteArrayOutputStream.toString());
+	}
+
+	private MockLiferayResourceRequest _getMockLiferayResourceRequest(
+			long formInstanceId, boolean signedIn)
+		throws Exception {
+
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		mockLiferayResourceRequest.addParameter("fieldName", _FIELD_NAME);
+		mockLiferayResourceRequest.addParameter(
+			"formInstanceId", String.valueOf(formInstanceId));
+		mockLiferayResourceRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(signedIn));
+
+		return mockLiferayResourceRequest;
+	}
+
+	private ThemeDisplay _getThemeDisplay(boolean signedIn) throws Exception {
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setSignedIn(signedIn);
+		themeDisplay.setUser(TestPropsValues.getUser());
+
+		return themeDisplay;
 	}
 
 	private static final String _FIELD_NAME = RandomTestUtil.randomString();
