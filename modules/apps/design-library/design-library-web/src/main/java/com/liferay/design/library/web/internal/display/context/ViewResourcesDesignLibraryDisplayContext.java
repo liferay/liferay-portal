@@ -5,7 +5,6 @@
 
 package com.liferay.design.library.web.internal.display.context;
 
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
 import com.liferay.fragment.constants.FragmentActionKeys;
@@ -53,10 +52,10 @@ public class ViewResourcesDesignLibraryDisplayContext
 	extends BaseDesignLibraryDisplayContext {
 
 	public ViewResourcesDesignLibraryDisplayContext(
-		DepotEntry depotEntry, HttpServletRequest httpServletRequest,
+		HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
-		super(depotEntry, httpServletRequest);
+		super(httpServletRequest);
 
 		_liferayPortletResponse = liferayPortletResponse;
 	}

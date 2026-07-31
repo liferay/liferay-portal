@@ -5,7 +5,6 @@
 
 package com.liferay.design.library.web.internal.display.context;
 
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.TabsItemListBuilder;
@@ -30,9 +29,9 @@ public class MembersDesignLibraryDisplayContext
 	extends BaseDesignLibraryDisplayContext {
 
 	public MembersDesignLibraryDisplayContext(
-		DepotEntry depotEntry, HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest) {
 
-		super(depotEntry, httpServletRequest);
+		super(httpServletRequest);
 	}
 
 	public Map<String, Object> getEmptyState() {

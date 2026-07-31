@@ -5,7 +5,6 @@
 
 package com.liferay.design.library.web.internal.display.context;
 
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -25,9 +24,9 @@ public class ConnectedSitesDesignLibraryDisplayContext
 	extends BaseDesignLibraryDisplayContext {
 
 	public ConnectedSitesDesignLibraryDisplayContext(
-		DepotEntry depotEntry, HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest) {
 
-		super(depotEntry, httpServletRequest);
+		super(httpServletRequest);
 	}
 
 	public String getAPIURL() throws PortalException {
