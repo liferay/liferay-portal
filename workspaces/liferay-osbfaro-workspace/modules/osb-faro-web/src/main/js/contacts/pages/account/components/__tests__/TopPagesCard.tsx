@@ -61,6 +61,39 @@ const renderTopPagesCard = () =>
 		</Provider>
 	);
 
+const mockEmptySitesTopPagesReq = () => ({
+	...mockSitesTopPagesReq({accountId: ACCOUNT_ID}),
+	result: {
+		data: {
+			pages: {
+				__typename: 'AssetMetricBag',
+				assetMetrics: [],
+				total: 0,
+			},
+		},
+	},
+});
+
+const renderTopPagesCardWithoutPages = () =>
+	render(
+		<Provider store={mockStore()}>
+			<BasePage.Context.Provider value={MOCK_CONTEXT}>
+				<MemoryRouter>
+					<MockedProvider
+						addTypename={false}
+						mocks={[
+							mockTimeRangeReq(),
+							mockPreferenceReq(),
+							mockEmptySitesTopPagesReq(),
+						]}
+					>
+						<TopPagesCard />
+					</MockedProvider>
+				</MemoryRouter>
+			</BasePage.Context.Provider>
+		</Provider>
+	);
+
 describe('TopPagesCard', () => {
 	afterEach(cleanup);
 
@@ -140,6 +173,33 @@ describe('TopPagesCard', () => {
 			'btn-sm',
 			'ml-auto',
 			'rounded-lg'
+		);
+	});
+
+	it('should render the empty state when the account has no pages', async () => {
+		const {container} = renderTopPagesCardWithoutPages();
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(
+			await screen.findByText('No Pages Available')
+		).toBeInTheDocument();
+		expect(
+			screen.getByText('Pages will appear here when available.')
+		).toBeInTheDocument();
+	});
+
+	it('should render the empty state like the Top Assets one', async () => {
+		const {container} = renderTopPagesCardWithoutPages();
+
+		await waitForLoadingToBeRemoved(container);
+
+		await screen.findByText('No Pages Available');
+
+		expect(container.querySelector('.c-empty-state')).toHaveClass(
+			'c-empty-state-sm',
+			'py-3',
+			'text-center'
 		);
 	});
 });

@@ -111,6 +111,12 @@ export interface ITopPagesCardItem {
 interface ITopPagesCardContentProps {
 	activeTabId: string;
 	empty?: boolean;
+
+	/**
+	 * Replaces the default empty state, which points at the Site Dashboard
+	 * documentation and only makes sense there.
+	 */
+	emptyState?: React.ReactElement;
 	error?: ApolloError;
 	footer?: {
 		label: string;
@@ -126,6 +132,7 @@ interface ITopPagesCardContentProps {
 const TopPagesCardContent: React.FC<ITopPagesCardContentProps> = ({
 	activeTabId,
 	empty,
+	emptyState,
 	error,
 	footer,
 	items,
@@ -187,6 +194,7 @@ const TopPagesCardContent: React.FC<ITopPagesCardContentProps> = ({
 
 				<TopPagesCardWithStatesRenderer
 					empty={empty}
+					emptyState={emptyState}
 					error={error}
 					loading={loading}
 				>
@@ -220,38 +228,43 @@ const TopPagesCardContent: React.FC<ITopPagesCardContentProps> = ({
 interface ITopPagesCardWithStatesRendererProps
 	extends React.HTMLAttributes<HTMLElement> {
 	empty?: boolean;
+	emptyState?: React.ReactElement;
 	error?: ApolloError;
 	loading?: boolean;
 }
 
 const TopPagesCardWithStatesRenderer: React.FC<
 	ITopPagesCardWithStatesRendererProps
-> = ({children, empty, error, loading}) => (
+> = ({children, empty, emptyState, error, loading}) => (
 	<StatesRenderer empty={empty} error={!!error} loading={loading}>
 		<StatesRenderer.Loading spacer />
-		<StatesRenderer.Empty
-			description={
-				<>
-					<span className="mr-1">
-						{Liferay.Language.get(
-							'check-back-later-to-verify-if-data-has-been-received-from-your-data-sources'
-						)}
-					</span>
+		{emptyState ? (
+			<StatesRenderer.Empty>{emptyState}</StatesRenderer.Empty>
+		) : (
+			<StatesRenderer.Empty
+				description={
+					<>
+						<span className="mr-1">
+							{Liferay.Language.get(
+								'check-back-later-to-verify-if-data-has-been-received-from-your-data-sources'
+							)}
+						</span>
 
-					<ClayLink
-						href={URLConstants.SitesDashboardTopPages}
-						key="DOCUMENTATION"
-						target="_blank"
-					>
-						{Liferay.Language.get('learn-more-about-pages')}
-					</ClayLink>
-				</>
-			}
-			showIcon={false}
-			title={Liferay.Language.get(
-				'there-are-no-visitors-on-the-selected-period'
-			)}
-		/>
+						<ClayLink
+							href={URLConstants.SitesDashboardTopPages}
+							key="DOCUMENTATION"
+							target="_blank"
+						>
+							{Liferay.Language.get('learn-more-about-pages')}
+						</ClayLink>
+					</>
+				}
+				showIcon={false}
+				title={Liferay.Language.get(
+					'there-are-no-visitors-on-the-selected-period'
+				)}
+			/>
+		)}
 		<StatesRenderer.Error apolloError={error}>
 			<ErrorDisplay />
 		</StatesRenderer.Error>
