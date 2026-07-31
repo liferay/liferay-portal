@@ -716,8 +716,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					).build()));
 		}
 
-		if (objectDefinition.isCMS() &&
-			Objects.equals(
+		if (Objects.equals(
 				objectDefinition.getObjectFolderExternalReferenceCode(),
 				ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_FILE_TYPES)) {
 
