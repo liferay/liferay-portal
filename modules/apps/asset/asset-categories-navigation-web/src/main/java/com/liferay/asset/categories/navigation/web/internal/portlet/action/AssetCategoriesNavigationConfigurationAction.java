@@ -8,6 +8,7 @@ package com.liferay.asset.categories.navigation.web.internal.portlet.action;
 import com.liferay.asset.categories.navigation.constants.AssetCategoriesNavigationPortletKeys;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetVocabularyService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.Group;
@@ -28,7 +29,7 @@ import jakarta.portlet.ReadOnlyException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,15 +76,11 @@ public class AssetCategoriesNavigationConfigurationAction
 		long[] assetVocabularyIds = GetterUtil.getLongValues(
 			StringUtil.split(assetVocabularyIdsString, ','));
 
-		Map<Long, List<String>> groupAssetVocabularyIdsMap =
-			_getGroupAssetVocabularyExternalReferenceCodesMap(
-				assetVocabularyIds);
-
 		try {
 			_resetPortletPreferences(portletPreferences);
 
 			_setPortletPreferences(
-				portletPreferences, portletRequest, groupAssetVocabularyIdsMap);
+				assetVocabularyIds, portletPreferences, portletRequest);
 
 			portletPreferences.reset("assetVocabularyIds");
 			portletPreferences.reset("displayStyleGroupId");
@@ -91,33 +88,6 @@ public class AssetCategoriesNavigationConfigurationAction
 		catch (ReadOnlyException readOnlyException) {
 			throw new SystemException(readOnlyException);
 		}
-	}
-
-	private Map<Long, List<String>>
-			_getGroupAssetVocabularyExternalReferenceCodesMap(
-				long[] assetVocabularyIds)
-		throws PortalException {
-
-		Map<Long, List<String>> groupAssetVocabularyExternalReferenceCodesMap =
-			new HashMap<>();
-
-		for (long assetVocabularyId : assetVocabularyIds) {
-			AssetVocabulary assetVocabulary =
-				_assetVocabularyService.fetchVocabulary(assetVocabularyId);
-
-			if (assetVocabulary == null) {
-				continue;
-			}
-
-			List<String> groupAssetVocabularyExternalReferenceCodes =
-				groupAssetVocabularyExternalReferenceCodesMap.computeIfAbsent(
-					assetVocabulary.getGroupId(), key -> new ArrayList<>());
-
-			groupAssetVocabularyExternalReferenceCodes.add(
-				assetVocabulary.getExternalReferenceCode());
-		}
-
-		return groupAssetVocabularyExternalReferenceCodesMap;
 	}
 
 	private void _resetPortletPreferences(PortletPreferences portletPreferences)
@@ -138,35 +108,55 @@ public class AssetCategoriesNavigationConfigurationAction
 	}
 
 	private void _setPortletPreferences(
-			PortletPreferences portletPreferences,
-			PortletRequest portletRequest,
-			Map<Long, List<String>> groupAssetVocabularyIdsMap)
+			long[] assetVocabularyIds, PortletPreferences portletPreferences,
+			PortletRequest portletRequest)
 		throws PortalException, ReadOnlyException {
 
+		Map<String, List<String>> assetVocabularyExternalReferenceCodesMap =
+			new LinkedHashMap<>();
 		List<String> groupExternalReferenceCodes = new ArrayList<>();
 
 		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		for (Map.Entry<Long, List<String>> entries :
-				groupAssetVocabularyIdsMap.entrySet()) {
+		for (long assetVocabularyId : assetVocabularyIds) {
+			AssetVocabulary assetVocabulary =
+				_assetVocabularyService.fetchVocabulary(assetVocabularyId);
 
-			Group group = _groupLocalService.getGroup(entries.getKey());
-
-			if (group.getGroupId() == themeDisplay.getScopeGroupId()) {
-				portletPreferences.setValues(
-					"assetVocabularyExternalReferenceCodes",
-					ArrayUtil.toStringArray(entries.getValue()));
+			if (assetVocabulary == null) {
+				continue;
 			}
-			else {
-				groupExternalReferenceCodes.add(
-					group.getExternalReferenceCode());
 
-				portletPreferences.setValues(
-					"assetVocabularyExternalReferenceCodes_" +
-						group.getExternalReferenceCode(),
-					ArrayUtil.toStringArray(entries.getValue()));
+			Group group = _groupLocalService.getGroup(
+				assetVocabulary.getGroupId());
+
+			String groupExternalReferenceCode = StringPool.BLANK;
+
+			if (group.getGroupId() != themeDisplay.getScopeGroupId()) {
+				groupExternalReferenceCode = group.getExternalReferenceCode();
 			}
+
+			groupExternalReferenceCodes.add(groupExternalReferenceCode);
+
+			String key = "assetVocabularyExternalReferenceCodes";
+
+			if (Validator.isNotNull(groupExternalReferenceCode)) {
+				key += "_" + groupExternalReferenceCode;
+			}
+
+			List<String> assetVocabularyExternalReferenceCodes =
+				assetVocabularyExternalReferenceCodesMap.computeIfAbsent(
+					key, curKey -> new ArrayList<>());
+
+			assetVocabularyExternalReferenceCodes.add(
+				assetVocabulary.getExternalReferenceCode());
+		}
+
+		for (Map.Entry<String, List<String>> entry :
+				assetVocabularyExternalReferenceCodesMap.entrySet()) {
+
+			portletPreferences.setValues(
+				entry.getKey(), ArrayUtil.toStringArray(entry.getValue()));
 		}
 
 		portletPreferences.setValues(
