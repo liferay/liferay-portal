@@ -105,6 +105,70 @@ describe('AIAssistant single-host invariants', () => {
 });
 
 describe('AIAssistantTriggerButton', () => {
+	it('anchors the assistant to the anchorId element when it is on the page', () => {
+		const anchor = document.createElement('div');
+
+		anchor.id = 'toolbar-anchor';
+
+		document.body.appendChild(anchor);
+
+		renderTL(
+			<AIAssistantTriggerButton
+				anchorId="toolbar-anchor"
+				instructionDefinitionScope="cms"
+				label="Generate"
+				triggerId="generate"
+			/>
+		);
+
+		fireEvent.click(screen.getByRole('button', {name: 'Generate'}));
+
+		expect(getState().command?.anchorId).toBe('toolbar-anchor');
+		expect(getState().command?.triggerId).toBe('generate');
+
+		anchor.remove();
+	});
+
+	it('anchors the assistant to itself when the anchorId element is absent', () => {
+		renderTL(
+			<AIAssistantTriggerButton
+				anchorId="missing-anchor"
+				instructionDefinitionScope="cms"
+				label="Generate"
+				triggerId="generate"
+			/>
+		);
+
+		fireEvent.click(screen.getByRole('button', {name: 'Generate'}));
+
+		expect(getState().command?.anchorId).toBe('generate');
+	});
+
+	it('invokes onOpen when opening but not when toggling closed', () => {
+		const onOpen = jest.fn();
+
+		renderTL(
+			<AIAssistantTriggerButton
+				instructionDefinitionScope="cms"
+				label="Generate"
+				onOpen={onOpen}
+				triggerId="generate"
+			/>
+		);
+
+		const trigger = screen.getByRole('button', {name: 'Generate'});
+
+		fireEvent.click(trigger);
+
+		expect(onOpen).toHaveBeenCalledTimes(1);
+		expect(getState().command?.triggerId).toBe('generate');
+
+		fireEvent.click(trigger);
+
+		expect(onOpen).toHaveBeenCalledTimes(1);
+		expect(getState().command).toBeNull();
+	});
+
 	it('marks only the trigger that is driving the host as expanded', () => {
 		renderTL(
 			<>

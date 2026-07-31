@@ -19,17 +19,21 @@ type AIAssistantTriggerButtonProps = Omit<
 	AIAssistantOpenCommand,
 	'anchorId' | 'triggerId'
 > & {
+	anchorId?: string;
 	className?: string;
 	hideLabel?: boolean;
 	label?: string;
+	onOpen?: () => void;
 	round?: boolean;
 	triggerId?: string;
 };
 
 const AIAssistantTriggerButton: React.FC<AIAssistantTriggerButtonProps> = ({
+	anchorId,
 	className,
 	hideLabel,
 	label,
+	onOpen,
 	round = true,
 	triggerId,
 	...command
@@ -54,9 +58,12 @@ const AIAssistantTriggerButton: React.FC<AIAssistantTriggerButtonProps> = ({
 		open({
 			presentation: 'sidebar',
 			...command,
-			anchorId: id,
+			anchorId:
+				anchorId && document.getElementById(anchorId) ? anchorId : id,
 			triggerId: id,
 		});
+
+		onOpen?.();
 	};
 
 	return (
