@@ -40,12 +40,14 @@ public class CheckNotificationQueueEntrySchedulerJobConfiguration
 				_notificationTypeServiceTracker.getNotificationType(
 					NotificationConstants.TYPE_EMAIL);
 
-			notificationType.resendNotifications(
-				NotificationQueueEntryConstants.STATUS_FAILED,
-				NotificationConstants.TYPE_EMAIL);
-			notificationType.resendNotifications(
-				NotificationQueueEntryConstants.STATUS_UNSENT,
-				NotificationConstants.TYPE_EMAIL);
+			if (notificationType != null) {
+				notificationType.resendNotifications(
+					NotificationQueueEntryConstants.STATUS_FAILED,
+					NotificationConstants.TYPE_EMAIL);
+				notificationType.resendNotifications(
+					NotificationQueueEntryConstants.STATUS_UNSENT,
+					NotificationConstants.TYPE_EMAIL);
+			}
 
 			NotificationQueueConfiguration notificationQueueConfiguration =
 				_configurationProvider.getSystemConfiguration(
