@@ -6,8 +6,8 @@ task patch(type: PatchTask)
 
 dependencies {
 	api group: "javax.servlet.jsp", name: "javax.servlet.jsp-api", transitive: false, version: "2.3.2-b01"
-	api group: "org.apache.logging.log4j", name: "log4j-api", transitive: false, version: "2.20.0"
-	api group: "org.apache.logging.log4j", name: "log4j-core", transitive: false, version: "2.20.0"
+	api group: "org.apache.logging.log4j", name: "log4j-api", transitive: false, version: "2.25.5"
+	api group: "org.apache.logging.log4j", name: "log4j-core", transitive: false, version: "2.25.5"
 	api group: "org.freemarker", name: "freemarker", transitive: false, version: "2.3.33"
 	api group: "org.slf4j", name: "slf4j-api", transitive: false, version: "1.7.26"
 }

@@ -7,8 +7,8 @@ task patch(type: PatchTask)
 
 dependencies {
 	compileOnly group: "commons-logging", name: "commons-logging", version: "1.2"
-	compileOnly group: "org.apache.logging.log4j", name: "log4j-api", version: "2.20.0"
-	compileOnly group: "org.apache.logging.log4j", name: "log4j-core", version: "2.20.0"
+	compileOnly group: "org.apache.logging.log4j", name: "log4j-api", version: "2.25.5"
+	compileOnly group: "org.apache.logging.log4j", name: "log4j-core", version: "2.25.5"
 }
 
 deploy {
