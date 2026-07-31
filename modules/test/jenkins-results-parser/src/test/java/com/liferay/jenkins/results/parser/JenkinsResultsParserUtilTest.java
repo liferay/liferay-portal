@@ -388,8 +388,6 @@ public class JenkinsResultsParserUtilTest
 			"jenkins.admin.user.name", RandomTestUtil.randomString());
 		buildProperties.setProperty(
 			"jenkins.admin.user.token", RandomTestUtil.randomString());
-		buildProperties.setProperty(
-			"jenkins.authentication.token", RandomTestUtil.randomString());
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
@@ -401,7 +399,7 @@ public class JenkinsResultsParserUtilTest
 			urlReader
 		).doGetResponseHeader(
 			Mockito.eq("Location"), Mockito.any(), Mockito.any(), Mockito.any(),
-			Mockito.anyInt(), Mockito.anyString()
+			Mockito.any(), Mockito.anyInt(), Mockito.anyString()
 		);
 
 		JenkinsMaster jenkinsMaster = Mockito.mock(JenkinsMaster.class);
