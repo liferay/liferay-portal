@@ -52,17 +52,17 @@ public class JavaMetaOCDSecretFieldCheck extends BaseJavaTermCheck {
 			Matcher matcher = _stringAccessorPattern.matcher(content);
 
 			while (matcher.find()) {
-				String name = matcher.group(2);
+				String name = matcher.group(1);
 
 				if (!_isSecretName(name)) {
 					continue;
 				}
 
-				int previousSemicolon = content.lastIndexOf(
+				int index = content.lastIndexOf(
 					CharPool.SEMICOLON, matcher.start());
 
 				String annotation = content.substring(
-					previousSemicolon + 1, matcher.start());
+					index + 1, matcher.start());
 
 				if (annotation.contains("Meta.Type.Password")) {
 					continue;
@@ -88,8 +88,8 @@ public class JavaMetaOCDSecretFieldCheck extends BaseJavaTermCheck {
 	private boolean _isSecretName(String name) {
 		String lowerCaseName = StringUtil.toLowerCase(name);
 
-		for (String excludeKeyword : _EXCLUDED_SECRET_KEYWORDS) {
-			if (lowerCaseName.contains(excludeKeyword)) {
+		for (String excludedKeyword : _EXCLUDED_SECRET_KEYWORDS) {
+			if (lowerCaseName.contains(excludedKeyword)) {
 				return false;
 			}
 		}
@@ -116,6 +116,6 @@ public class JavaMetaOCDSecretFieldCheck extends BaseJavaTermCheck {
 	};
 
 	private static final Pattern _stringAccessorPattern = Pattern.compile(
-		"public\\s+String(\\[\\])?\\s+(\\w+)\\s*\\(\\s*\\)\\s*;");
+		"public\\s+String(?:\\[\\])?\\s+(\\w+)\\s*\\(\\s*\\)\\s*;");
 
 }
