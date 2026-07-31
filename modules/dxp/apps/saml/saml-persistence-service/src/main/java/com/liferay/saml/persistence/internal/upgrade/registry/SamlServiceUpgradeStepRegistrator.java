@@ -155,6 +155,11 @@ public class SamlServiceUpgradeStepRegistrator
 				"SamlSpAuthRequest", "samlRelayState VARCHAR(2048) null"));
 
 		registry.register("3.1.0", "3.2.0", SamlIbSloMessageTable.create());
+
+		registry.register(
+			"3.2.0", "3.2.1",
+			UpgradeProcessFactory.alterColumnType(
+				"SamlSpMessage", "samlIdpResponseKey", "VARCHAR(256) null"));
 	}
 
 	@Reference
