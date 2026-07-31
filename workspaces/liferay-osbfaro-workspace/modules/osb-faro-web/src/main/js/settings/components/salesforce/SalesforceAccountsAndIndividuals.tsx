@@ -4,6 +4,7 @@ import ClaySticker from '@clayui/sticker';
 import React from 'react';
 import {ClayCheckbox} from '@clayui/form';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 
 interface ISalesforceAccountsAndIndividualsProps {
 	accountsSyncedCount?: number;
@@ -63,7 +64,7 @@ const SalesforceAccountsAndIndividuals: React.FC<
 						accountsSyncedCount >= 0 && (
 							<ClayList.ItemText>
 								{sub(Liferay.Language.get('x-items-synced'), [
-									accountsSyncedCount,
+									toLocale(accountsSyncedCount),
 								])}
 							</ClayList.ItemText>
 						)}
@@ -103,7 +104,7 @@ const SalesforceAccountsAndIndividuals: React.FC<
 						individualsSyncedCount >= 0 && (
 							<ClayList.ItemText>
 								{sub(Liferay.Language.get('x-items-synced'), [
-									individualsSyncedCount,
+									toLocale(individualsSyncedCount),
 								])}
 							</ClayList.ItemText>
 						)}

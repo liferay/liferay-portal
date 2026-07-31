@@ -4,6 +4,7 @@ import ClaySticker from '@clayui/sticker';
 import React from 'react';
 import {ClayCheckbox} from '@clayui/form';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 
 interface IMarketoCampaignEntitiesProps {
 	disabled?: boolean;
@@ -54,7 +55,7 @@ const MarketoCampaignEntities: React.FC<IMarketoCampaignEntitiesProps> = ({
 						individualsSyncedCount >= 0 && (
 							<ClayList.ItemText>
 								{sub(Liferay.Language.get('x-items-synced'), [
-									individualsSyncedCount,
+									toLocale(individualsSyncedCount),
 								])}
 							</ClayList.ItemText>
 						)}

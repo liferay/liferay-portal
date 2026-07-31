@@ -6,6 +6,7 @@ import React from 'react';
 import {ConnectorEntityDescriptor, ConnectorStatus} from './types';
 import {getEntityDisplay} from './getEntityDisplay';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 
 interface IConnectorEntitiesProps {
 	connectorStatus?: ConnectorStatus;
@@ -44,7 +45,7 @@ const ConnectorEntities: React.FC<IConnectorEntitiesProps> = ({
 						{typeof count === 'number' && count >= 0 && (
 							<ClayList.ItemText>
 								{sub(Liferay.Language.get('x-items-synced'), [
-									count,
+									toLocale(count),
 								])}
 							</ClayList.ItemText>
 						)}
