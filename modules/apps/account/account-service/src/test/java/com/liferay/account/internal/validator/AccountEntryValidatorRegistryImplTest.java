@@ -316,6 +316,30 @@ public class AccountEntryValidatorRegistryImplTest {
 			accountEntryValidatorResult.getResultStatus());
 
 		Mockito.when(
+			accountEntryValidator.isSkipped(accountEntry, null)
+		).thenReturn(
+			true
+		);
+
+		accountEntryValidatorResultsMap =
+			_accountEntryValidatorRegistryImpl.
+				getLastAccountEntryValidatorResultsMap(accountEntry, null);
+
+		accountEntryValidatorResult = accountEntryValidatorResultsMap.get(
+			className);
+
+		Assert.assertEquals(classPK, accountEntryValidatorResult.getClassPK());
+		Assert.assertEquals(
+			AccountEntryValidatorConstants.RESULT_SKIPPED,
+			accountEntryValidatorResult.getResultStatus());
+
+		Mockito.when(
+			accountEntryValidator.isSkipped(accountEntry, null)
+		).thenReturn(
+			false
+		);
+
+		Mockito.when(
 			_objectEntryLocalService.getValuesList(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyLong(),
 				Mockito.anyLong(), Mockito.any(), Mockito.any(),

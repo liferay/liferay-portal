@@ -6,6 +6,7 @@
 package com.liferay.account.internal.validator;
 
 import com.liferay.account.configuration.AccountEntryValidatorConfiguration;
+import com.liferay.account.constants.AccountEntryValidatorConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.validator.AccountEntryValidator;
 import com.liferay.account.validator.AccountEntryValidatorRegistry;
@@ -120,6 +121,18 @@ public class AccountEntryValidatorRegistryImpl
 
 			String classPK = accountEntryValidator.getClassPK(
 				accountEntry, jsonObject);
+
+			if (accountEntryValidator.isSkipped(accountEntry, jsonObject)) {
+				accountEntryValidatorResultsMap.put(
+					className,
+					AccountEntryValidatorResult.builder(
+						classPK
+					).resultStatus(
+						AccountEntryValidatorConstants.RESULT_SKIPPED
+					).build());
+
+				continue;
+			}
 
 			String filterString = StringBundler.concat(
 				"(className eq '", className, "') and (classPK eq '", classPK,

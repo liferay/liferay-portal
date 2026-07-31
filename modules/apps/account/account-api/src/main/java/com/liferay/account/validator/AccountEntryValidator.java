@@ -29,6 +29,13 @@ public interface AccountEntryValidator {
 		return Collections.emptySet();
 	}
 
+	public default boolean isSkipped(
+			AccountEntry accountEntry, JSONObject jsonObject)
+		throws PortalException {
+
+		return false;
+	}
+
 	public AccountEntryValidatorResult validate(
 			AccountEntry accountEntry, JSONObject jsonObject)
 		throws PortalException;

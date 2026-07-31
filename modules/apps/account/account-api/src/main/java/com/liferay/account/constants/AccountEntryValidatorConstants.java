@@ -14,6 +14,8 @@ public class AccountEntryValidatorConstants {
 
 	public static final String RESULT_MANUAL = "MANUAL";
 
+	public static final String RESULT_SKIPPED = "SKIPPED";
+
 	public static final String RESULT_SUCCESS = "SUCCESS";
 
 	public static final String RESULT_WARNING = "WARNING";
