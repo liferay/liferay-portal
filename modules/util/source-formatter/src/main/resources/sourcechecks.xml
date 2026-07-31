@@ -2263,6 +2263,10 @@
 			<description name="Checks that the `finder name` in `service.xml`." />
 			<property name="enabled" value="false" />
 		</check>
+		<check name="XMLServiceFinderWhereClauseCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that a `finder` `where` clause in `service.xml` uses the entity property name instead of the database column name." />
+		</check>
 		<check name="XMLServiceMissingCompanyIdCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds missing `companyId` column in `service.xml`." />
