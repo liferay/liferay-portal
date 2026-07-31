@@ -29,6 +29,17 @@ describe('ConnectorEntities', () => {
 		expect(getByText(/42/)).toBeTruthy();
 	});
 
+	it('renders the synced count with comma separators when it is large', () => {
+		const {getByText} = render(
+			<ConnectorEntities
+				entities={[{entity: Entity.Accounts}]}
+				syncedCounts={{[Entity.Accounts]: 279089}}
+			/>
+		);
+
+		expect(getByText('279,089 Items Synced')).toBeTruthy();
+	});
+
 	it('renders the synced count when it is zero', () => {
 		const {getByText} = render(
 			<ConnectorEntities
