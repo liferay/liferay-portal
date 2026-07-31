@@ -15,7 +15,7 @@ export async function clickAndExpectToBeHidden({
 	trigger: Locator;
 }) {
 	await expect(async () => {
-		if (await target.isVisible()) {
+		if (await trigger.isVisible()) {
 			await trigger.click({timeout});
 		}
 
