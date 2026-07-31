@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
@@ -112,17 +111,7 @@ public class ObjectDefinitionDeployerImplTest {
 
 		Assert.assertNotNull(modelResourcePermissionSnapshot.get());
 
-		Role role = _roleLocalService.getRole(
-			TestPropsValues.getCompanyId(), RoleConstants.USER);
-
-		Assert.assertTrue(
-			_resourcePermissionLocalService.hasResourcePermission(
-				TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
-				ResourceConstants.SCOPE_COMPANY,
-				String.valueOf(TestPropsValues.getCompanyId()),
-				role.getRoleId(), ActionKeys.VIEW));
-
-		role = RoleTestUtil.addRole(RoleConstants.TYPE_DEPOT);
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_DEPOT);
 
 		User user = UserTestUtil.addUser();
 
@@ -280,9 +269,6 @@ public class ObjectDefinitionDeployerImplTest {
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

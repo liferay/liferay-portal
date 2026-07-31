@@ -90,6 +90,16 @@ public class CMSPermissionsObjectDefinitionLocalServiceWrapperTest {
 			ObjectDefinition.class.getName(),
 			_roleLocalService.getRole(
 				TestPropsValues.getCompanyId(), RoleConstants.USER));
+
+		objectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMS_DEFAULT_PERMISSION", TestPropsValues.getCompanyId());
+
+		_assertResourcePermission(
+			ActionKeys.VIEW, objectDefinition.getClassName(),
+			_roleLocalService.getRole(
+				TestPropsValues.getCompanyId(), RoleConstants.USER));
 	}
 
 	private void _assertResourcePermission(
