@@ -392,9 +392,18 @@ public class FragmentEntryLocalServiceImpl
 	public FragmentEntry fetchFragmentEntry(
 		long groupId, String fragmentEntryKey) {
 
+		fragmentEntryKey = _getFragmentEntryKey(fragmentEntryKey);
+
+		int fragmentEntryKeyMaxLength = ModelHintsUtil.getMaxLength(
+			FragmentEntry.class.getName(), "fragmentEntryKey");
+
+		if (fragmentEntryKey.length() > fragmentEntryKeyMaxLength) {
+			return null;
+		}
+
 		FragmentEntry fragmentEntry =
 			fragmentEntryPersistence.fetchByG_FEK_First(
-				groupId, _getFragmentEntryKey(fragmentEntryKey), null);
+				groupId, fragmentEntryKey, null);
 
 		if (fragmentEntry == null) {
 			return null;
