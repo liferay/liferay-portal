@@ -104,6 +104,7 @@ import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.model.ObjectEntryTable;
+import com.liferay.object.model.ObjectEntryVersion;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFieldSetting;
 import com.liferay.object.model.ObjectFolder;
@@ -122,6 +123,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectEntryVersionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
@@ -8544,6 +8546,279 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateStatusWithObjectEntrySchedule() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", _getRandomEmailAddress()
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).build());
+
+		Assert.assertNull(objectEntry.getDisplayDate());
+
+		_objectDefinition = _updateEnableObjectEntryDraft(_objectDefinition);
+
+		_enableObjectEntrySchedule();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		objectEntry = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", _getRandomEmailAddress()
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).build(),
+			serviceContext);
+
+		Assert.assertNull(objectEntry.getDisplayDate());
+
+		Date displayDate = new Date(System.currentTimeMillis() - Time.DAY);
+
+		serviceContext = ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setModifiedDate(displayDate);
+
+		objectEntry = _objectEntryLocalService.updateStatus(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			WorkflowConstants.STATUS_APPROVED, serviceContext);
+
+		Assert.assertEquals(displayDate, objectEntry.getDisplayDate());
+
+		displayDate = new Date(System.currentTimeMillis() + Time.DAY);
+
+		objectEntry = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"displayDate", displayDate
+			).put(
+				"emailAddressRequired", _getRandomEmailAddress()
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).build());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_SCHEDULED, objectEntry.getStatus());
+		Assert.assertEquals(displayDate, objectEntry.getDisplayDate());
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			Collections.singletonMap("displayDate", null),
+			ServiceContextTestUtil.getServiceContext());
+
+		objectEntry = _objectEntryLocalService.updateStatus(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, objectEntry.getStatus());
+		Assert.assertEquals(
+			objectEntry.getStatusDate(), objectEntry.getDisplayDate());
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", _getRandomEmailAddress()
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		objectEntry = _objectEntryLocalService.updateStatus(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertEquals(
+			objectEntry.getStatusDate(), objectEntry.getDisplayDate());
+	}
+
+	@Test
+	public void testUpdateStatusWithObjectEntryScheduleAndExpirationDate()
+		throws Exception {
+
+		_enableObjectEntrySchedule();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", _getRandomEmailAddress()
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).build());
+
+		Date expirationDate = new Date(System.currentTimeMillis() - Time.DAY);
+
+		objectEntry.setDisplayDate(null);
+		objectEntry.setExpirationDate(expirationDate);
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, objectEntry.getStatus());
+
+		objectEntry = _objectEntryLocalService.updateStatus(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			WorkflowConstants.STATUS_APPROVED,
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertNotNull(objectEntry.getDisplayDate());
+
+		Assert.assertEquals(expirationDate, objectEntry.getExpirationDate());
+	}
+
+	@Test
+	public void testUpdateStatusWithObjectEntryScheduleAndHierarchy()
+		throws Exception {
+
+		ObjectField objectField = new TextObjectFieldBuilder(
+		).labelMap(
+			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+		).name(
+			"a" + RandomTestUtil.randomString()
+		).build();
+
+		ObjectDefinition objectDefinitionA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField));
+		ObjectDefinition objectDefinitionAA =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField));
+
+		TreeTestUtil.bind(
+			_objectRelationshipLocalService,
+			Collections.singletonList(
+				ObjectRelationshipTestUtil.addObjectRelationship(
+					_objectRelationshipLocalService, objectDefinitionA,
+					objectDefinitionAA,
+					ObjectRelationshipConstants.DELETION_TYPE_CASCADE,
+					"objectRelationship1")));
+
+		objectDefinitionA.setEnableObjectEntrySchedule(true);
+
+		objectDefinitionA =
+			_objectDefinitionLocalService.updateObjectDefinition(
+				objectDefinitionA);
+
+		Assert.assertTrue(objectDefinitionA.isRootNode());
+
+		ObjectEntry objectEntryA = _addObjectEntry(
+			0, objectDefinitionA.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField.getName(), RandomTestUtil.randomString()
+			).build());
+
+		ObjectEntry objectEntryAA = _addObjectEntry(
+			0, objectDefinitionAA.getObjectDefinitionId(),
+			HashMapBuilder.<String, Serializable>put(
+				objectField.getName(), RandomTestUtil.randomString()
+			).put(
+				"r_objectRelationship1_" +
+					objectDefinitionA.getPKObjectFieldName(),
+				objectEntryA.getObjectEntryId()
+			).build());
+
+		objectEntryAA = _objectEntryLocalService.updateStatus(
+			TestPropsValues.getUserId(), objectEntryAA.getObjectEntryId(),
+			WorkflowConstants.STATUS_EXPIRED,
+			ServiceContextTestUtil.getServiceContext());
+
+		Date expirationDate = objectEntryAA.getExpirationDate();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EXPIRED, objectEntryAA.getStatus());
+
+		Assert.assertNotNull(expirationDate);
+
+		Map<String, Serializable> values = new HashMap<>();
+
+		values.put("displayDate", null);
+		values.put(objectField.getName(), RandomTestUtil.randomString());
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntryA.getObjectEntryId(),
+			objectEntryA.getObjectEntryFolderId(), values,
+			ServiceContextTestUtil.getServiceContext());
+
+		objectEntryA = _objectEntryLocalService.getObjectEntry(
+			objectEntryA.getObjectEntryId());
+
+		Assert.assertNotNull(objectEntryA.getDisplayDate());
+
+		objectEntryAA = _objectEntryLocalService.getObjectEntry(
+			objectEntryAA.getObjectEntryId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_EXPIRED, objectEntryAA.getStatus());
+		Assert.assertEquals(expirationDate, objectEntryAA.getExpirationDate());
+	}
+
+	@Test
+	public void testUpdateStatusWithObjectEntryScheduleAndObjectEntryVersioning()
+		throws Exception {
+
+		_enableObjectEntrySchedule();
+		_enableObjectEntryVersioning();
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				"emailAddressRequired", _getRandomEmailAddress()
+			).put(
+				"listTypeEntryKeyRequired", "listTypeEntryKey1"
+			).build());
+
+		long objectEntryId = objectEntry.getObjectEntryId();
+
+		Assert.assertEquals(
+			objectEntry.getStatusDate(), objectEntry.getDisplayDate());
+
+		Assert.assertEquals(
+			1,
+			_objectEntryVersionLocalService.getObjectEntryVersionsCount(
+				objectEntryId));
+
+		Date displayDate = new Date(System.currentTimeMillis() - Time.HOUR);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		serviceContext.setModifiedDate(displayDate);
+
+		Map<String, Serializable> values = new HashMap<>();
+
+		values.put("displayDate", null);
+		values.put("emailAddressRequired", _getRandomEmailAddress());
+		values.put("listTypeEntryKeyRequired", "listTypeEntryKey1");
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntryId,
+			objectEntry.getObjectEntryFolderId(), values, serviceContext);
+
+		objectEntry = _objectEntryLocalService.getObjectEntry(objectEntryId);
+
+		Assert.assertEquals(displayDate, objectEntry.getDisplayDate());
+
+		Assert.assertEquals(
+			2,
+			_objectEntryVersionLocalService.getObjectEntryVersionsCount(
+				objectEntryId));
+
+		ObjectEntryVersion objectEntryVersion =
+			_objectEntryVersionLocalService.fetchLatestObjectEntryVersion(
+				objectEntryId);
+
+		Assert.assertEquals(displayDate, objectEntryVersion.getDisplayDate());
+
+		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+			_objectDefinition.getClassName(), objectEntryId);
+
+		Assert.assertEquals(displayDate, assetEntry.getPublishDate());
+	}
+
+	@Test
 	public void testUpdateSystemObjectEntryWithDDMObjectValidationRule()
 		throws Exception {
 
@@ -9377,6 +9652,14 @@ public class ObjectEntryLocalServiceTest {
 
 		return _objectDefinitionLocalService.updateObjectDefinition(
 			objectDefinition);
+	}
+
+	private void _enableObjectEntrySchedule() {
+		_objectDefinition.setEnableObjectEntrySchedule(true);
+
+		_objectDefinition =
+			_objectDefinitionLocalService.updateObjectDefinition(
+				_objectDefinition);
 	}
 
 	private void _enableObjectEntryVersioning() {
@@ -11317,6 +11600,9 @@ public class ObjectEntryLocalServiceTest {
 		filter = "component.name=com.liferay.object.internal.model.listener.ObjectEntryModelListener"
 	)
 	private ModelListener<ObjectEntry> _objectEntryModelListener;
+
+	@Inject
+	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;

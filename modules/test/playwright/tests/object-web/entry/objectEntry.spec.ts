@@ -884,7 +884,7 @@ cmsTest.describe('Manage object entries schedule properties', () => {
 	});
 
 	cmsTest(
-		'can create, read, update, and delete a displayDate of an object entry',
+		'can create, read, and update a displayDate of an object entry',
 		async ({page, viewObjectEntriesPage}) => {
 			await viewObjectEntriesPage.goto(_objectDefinition.className);
 
@@ -937,7 +937,7 @@ cmsTest.describe('Manage object entries schedule properties', () => {
 			await viewObjectEntriesPage.choosePublicationOption('schedule');
 
 			await expect(viewObjectEntriesPage.publishDateInput).toHaveValue(
-				''
+				new RegExp(`^${today.split(' ')[0]}`)
 			);
 
 			await page.getByRole('button', {name: 'Close'}).click();

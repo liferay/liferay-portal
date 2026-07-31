@@ -48,6 +48,7 @@ public class ObjectEntryUtilTest {
 
 		objectEntry.setDateCreated(new Date());
 		objectEntry.setDateModified(new Date());
+		objectEntry.setDisplayDate(new Date());
 
 		try (MockedStatic<ObjectEntryLocalServiceUtil>
 				objectEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
@@ -81,6 +82,9 @@ public class ObjectEntryUtilTest {
 			Assert.assertEquals(
 				objectEntry.getDateModified(),
 				serviceBuilderObjectEntry.getModifiedDate());
+			Assert.assertEquals(
+				objectEntry.getDisplayDate(),
+				serviceBuilderObjectEntry.getDisplayDate());
 
 			objectEntryLocalServiceUtilMockedStatic.verify(
 				() -> ObjectEntryLocalServiceUtil.createObjectEntry(
