@@ -8,8 +8,6 @@ package com.liferay.portal.language.override.internal;
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.language.override.internal.provider.PLOOriginalTranslationThreadLocal;
 import com.liferay.portal.language.override.model.PLOEntry;
@@ -23,7 +21,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -35,13 +32,31 @@ import org.osgi.service.component.annotations.Reference;
 public class PLOOverrideResourceBundleManager {
 
 	public ResourceBundle getOverrideResourceBundle(Locale locale) {
-		Map<Long, Map<String, OverrideResourceBundle>> overrideResourceBundles =
-			_overrideResourceBundlesDCLSingleton.getSingleton(_supplier);
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		DCLSingleton<Map<String, OverrideResourceBundle>>
+			overrideResourceBundleDCLSingleton =
+				_overrideResourceBundleMaps.get(companyId);
+
+		if (overrideResourceBundleDCLSingleton == null) {
+			overrideResourceBundleDCLSingleton = new DCLSingleton<>();
+
+			DCLSingleton<Map<String, OverrideResourceBundle>>
+				previousOverrideResourceBundleDCLSingleton =
+					_overrideResourceBundleMaps.putIfAbsent(
+						companyId, overrideResourceBundleDCLSingleton);
+
+			if (previousOverrideResourceBundleDCLSingleton != null) {
+				overrideResourceBundleDCLSingleton =
+					previousOverrideResourceBundleDCLSingleton;
+			}
+		}
 
 		Map<String, OverrideResourceBundle> companyOverrideResourceBundles =
-			overrideResourceBundles.get(CompanyThreadLocal.getCompanyId());
+			overrideResourceBundleDCLSingleton.getSingleton(
+				() -> _createOverrideResourceBundles(companyId));
 
-		if (MapUtil.isEmpty(companyOverrideResourceBundles) ||
+		if (companyOverrideResourceBundles.isEmpty() ||
 			PLOOriginalTranslationThreadLocal.isUseOriginalTranslation()) {
 
 			return null;
@@ -52,61 +67,45 @@ public class PLOOverrideResourceBundleManager {
 	}
 
 	protected static void clearCache() {
-		_overrideResourceBundlesDCLSingleton.destroy(null);
+		_overrideResourceBundleMaps.clear();
 
 		LanguageResources.clearResourceBundles();
 	}
 
-	private Map<Long, Map<String, OverrideResourceBundle>>
-		_createOverrideResourceBundles() {
+	private Map<String, OverrideResourceBundle> _createOverrideResourceBundles(
+		long companyId) {
 
-		Map<Long, Map<String, OverrideResourceBundle>> overrideResourceBundles =
-			new ConcurrentHashMap<>();
+		Map<String, OverrideResourceBundle> companyOverrideResourceBundles =
+			new HashMap<>();
 
-		_companyLocalService.forEachCompanyId(
-			companyId -> {
-				Map<String, OverrideResourceBundle>
-					companyOverrideResourceBundles = new HashMap<>();
+		for (PLOEntry ploEntry :
+				_ploEntryLocalService.getPLOEntries(companyId)) {
 
-				for (PLOEntry ploEntry :
-						_ploEntryLocalService.getPLOEntries(companyId)) {
+			companyOverrideResourceBundles.compute(
+				ploEntry.getLanguageId(),
+				(key, value) -> {
+					if (value == null) {
+						value = new OverrideResourceBundle(new HashMap<>());
+					}
 
-					companyOverrideResourceBundles.compute(
-						ploEntry.getLanguageId(),
-						(key, value) -> {
-							if (value == null) {
-								value = new OverrideResourceBundle(
-									new HashMap<>());
-							}
+					value.put(ploEntry.getKey(), ploEntry.getValue());
 
-							value.put(ploEntry.getKey(), ploEntry.getValue());
+					return value;
+				});
+		}
 
-							return value;
-						});
-				}
-
-				overrideResourceBundles.put(
-					companyId, companyOverrideResourceBundles);
-			});
-
-		return overrideResourceBundles;
+		return companyOverrideResourceBundles;
 	}
 
-	private static final DCLSingleton
-		<Map<Long, Map<String, OverrideResourceBundle>>>
-			_overrideResourceBundlesDCLSingleton = new DCLSingleton<>();
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
+	private static final Map
+		<Long, DCLSingleton<Map<String, OverrideResourceBundle>>>
+			_overrideResourceBundleMaps = new ConcurrentHashMap<>();
 
 	@Reference
 	private Language _language;
 
 	@Reference
 	private PLOEntryLocalService _ploEntryLocalService;
-
-	private final Supplier<Map<Long, Map<String, OverrideResourceBundle>>>
-		_supplier = this::_createOverrideResourceBundles;
 
 	private static class OverrideResourceBundle extends ResourceBundle {
 
