@@ -1,5 +1,5 @@
 import * as breadcrumbs from 'shared/util/breadcrumbs';
-import AccountsDataSet from 'shared/components/AccountsDataSet';
+import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
 import CriteriaCard from 'segment/components/criteria-card';
 import React from 'react';

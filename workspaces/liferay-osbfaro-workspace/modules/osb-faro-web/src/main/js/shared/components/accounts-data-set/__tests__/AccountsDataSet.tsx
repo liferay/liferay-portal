@@ -1,6 +1,8 @@
 import AccountsDataSet from '../AccountsDataSet';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
+import {CatalogFieldDataCategory, ICatalogField} from 'shared/api/catalog';
+import {IViewField} from '../utils';
 import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -10,6 +12,65 @@ const DEFAULT_STAGE_ITEMS = [
 	{id: '9991', stageType: LifecycleStages.ENGAGED},
 	{id: '9992', stageType: LifecycleStages.PIPELINE},
 	{id: '9993', stageType: LifecycleStages.AT_RISK},
+];
+
+const buildCatalogField = (
+	name: string,
+	dataCategory: CatalogFieldDataCategory,
+	displayName: string | null = null
+): ICatalogField => ({
+	dataCategory,
+	dataType: dataCategory,
+	description: null,
+	displayName,
+	id: name,
+	name,
+	parentField: null,
+	tableName: 'account',
+});
+
+const DEFAULT_VIEW_FIELD_NAMES = [
+	'accountName',
+	'industry',
+	'lifecycleStage',
+	'annualRevenue',
+	'country',
+	'firstActive',
+	'lastActive',
+	'activitiesCount',
+	'lastEnriched',
+	'accountEngagement',
+];
+
+const DEFAULT_VIEW_FIELD_CATALOG: ICatalogField[] = [
+	buildCatalogField('accountName', 'Text'),
+	buildCatalogField('industry', 'Text'),
+	buildCatalogField('lifecycleStage', 'Text'),
+	buildCatalogField('annualRevenue', 'Number'),
+	buildCatalogField('country', 'Text'),
+	buildCatalogField('lastActive', 'Date'),
+	buildCatalogField('lastEnriched', 'Date'),
+	buildCatalogField('firstActive', 'Date'),
+	buildCatalogField('accountEngagement', 'Text'),
+];
+
+const CALCULATED_CATALOG_FIELD: ICatalogField = {
+	dataCategory: 'Number',
+	dataType: 'INT64',
+	description: null,
+	displayName: 'Closed-Won Opportunities',
+	id: '15',
+	name: 'salesforce/closedWonOpportunityCount',
+	parentField: 'calculatedFields',
+	tableName: 'account',
+};
+
+const ALL_ATTRIBUTES_FIELD_CATALOG: ICatalogField[] = [
+	buildCatalogField('accountName', 'Boolean'),
+	buildCatalogField('description', 'Text', 'Description'),
+	buildCatalogField('employeeCount', 'Number'),
+	buildCatalogField('signupDate', 'Date'),
+	buildCatalogField('isPartner', 'Boolean'),
 ];
 
 jest.unmock('react-dom');
@@ -51,10 +112,24 @@ type FakeCustomDataRenderers = {
 	activitiesCountRenderer: (props: {value?: number}) => React.ReactElement;
 };
 
+type FakeView = {
+	default?: boolean;
+	label: string;
+	name: string;
+	schema: {fields: IViewField[]};
+};
+
 let lastApiURL: string | undefined;
 let lastCustomDataRenderers: FakeCustomDataRenderers | undefined;
 let lastFilters: FakeFilter[] | undefined;
+let lastViews: FakeView[] | undefined;
 let mountCount = 0;
+
+const allAttributesFields = () =>
+	lastViews!.find((view) => !view.default)!.schema.fields;
+
+const byFieldName = (name: string) =>
+	allAttributesFields().find((field) => field.fieldName === name);
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
@@ -63,15 +138,18 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 		customDataRenderers,
 		filters,
 		id,
+		views,
 	}: {
 		apiURL: string;
 		customDataRenderers: FakeCustomDataRenderers;
 		filters: FakeFilter[];
 		id: string;
+		views: FakeView[];
 	}) => {
 		lastApiURL = apiURL;
 		lastCustomDataRenderers = customDataRenderers;
 		lastFilters = filters;
+		lastViews = views;
 
 		React.useEffect(() => {
 			mountCount += 1;
@@ -88,6 +166,7 @@ describe('AccountsDataSet', () => {
 		lastApiURL = undefined;
 		lastCustomDataRenderers = undefined;
 		lastFilters = undefined;
+		lastViews = undefined;
 		mountCount = 0;
 	});
 
@@ -443,5 +522,288 @@ describe('AccountsDataSet', () => {
 		);
 
 		expect(mountCount).toBe(2);
+	});
+
+	describe('when fieldCatalog is not provided', () => {
+		it('should build only the Default View', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					groupId="23"
+				/>
+			);
+
+			expect(lastViews).toHaveLength(1);
+
+			const [view] = lastViews!;
+
+			expect(view.name).toBe('table');
+			expect(view.default).toBe(true);
+			expect(view.label).toBe('Default View');
+
+			expect(view.schema.fields.map((f) => f.fieldName)).toEqual([
+				'accountName',
+				'industry',
+				'lifecycleStage',
+				'annualRevenue',
+				'country',
+				'firstActive',
+				'lastActive',
+				'activitiesCount',
+				'lastEnriched',
+				'accountEngagement',
+			]);
+		});
+	});
+
+	describe('when fieldCatalog is provided', () => {
+		it('should build two views', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={ALL_ATTRIBUTES_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			expect(lastViews).toHaveLength(2);
+		});
+
+		it('should build only the Default View when every catalog field is already curated', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={DEFAULT_VIEW_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			expect(lastViews).toHaveLength(1);
+			expect(lastViews![0].name).toBe('table');
+		});
+
+		it('should resolve the date renderer whatever case the catalog reports', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={[
+						buildCatalogField(
+							'shoutedDate',
+							'DATE' as CatalogFieldDataCategory
+						),
+						buildCatalogField(
+							'whisperedDate',
+							'date' as CatalogFieldDataCategory
+						),
+					]}
+					groupId="23"
+				/>
+			);
+
+			expect(byFieldName('shoutedDate')?.contentRenderer).toBe(
+				'dateRenderer'
+			);
+			expect(byFieldName('whisperedDate')?.contentRenderer).toBe(
+				'dateRenderer'
+			);
+		});
+
+		it('should carry a calculated catalog field through verbatim', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={[CALCULATED_CATALOG_FIELD]}
+					groupId="23"
+				/>
+			);
+
+			const field = byFieldName('salesforce/closedWonOpportunityCount');
+
+			expect(field?.label).toBe('Closed-Won Opportunities');
+			expect(field?.sortable).toBe(false);
+			expect(field?.contentRenderer).toBeUndefined();
+		});
+
+		it('should build the Default View with the 10 fixed fields in order, with the correct renderers', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={DEFAULT_VIEW_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			const defaultView = lastViews!.find((v) => v.default);
+
+			expect(defaultView).toBeDefined();
+			expect(defaultView!.label).toBe('Default View');
+			expect(defaultView!.schema.fields.map((f) => f.fieldName)).toEqual([
+				'accountName',
+				'industry',
+				'lifecycleStage',
+				'annualRevenue',
+				'country',
+				'firstActive',
+				'lastActive',
+				'activitiesCount',
+				'lastEnriched',
+				'accountEngagement',
+			]);
+
+			expect(
+				defaultView!.schema.fields.map((f) => f.contentRenderer)
+			).toEqual([
+				'accountNameRenderer',
+				undefined,
+				'accountLifecycleStageRenderer',
+				'annualRevenueRenderer',
+				undefined,
+				'dateRenderer',
+				'dateRenderer',
+				'activitiesCountRenderer',
+				'dateRenderer',
+				undefined,
+			]);
+
+			const activitiesCountField = defaultView!.schema.fields.find(
+				(f) => f.fieldName === 'activitiesCount'
+			);
+			const firstActiveField = defaultView!.schema.fields.find(
+				(f) => f.fieldName === 'firstActive'
+			);
+			const accountEngagementField = defaultView!.schema.fields.find(
+				(f) => f.fieldName === 'accountEngagement'
+			);
+
+			expect(activitiesCountField?.label).toBe('Recent Activities');
+			expect(firstActiveField?.label).toBe('First Active');
+			expect(accountEngagementField?.label).toBe('Account Engagement');
+			expect(accountEngagementField?.contentRenderer).toBeUndefined();
+		});
+
+		it('should build the All Attributes View from the full catalog, resolving renderers by type and letting known overrides win', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={ALL_ATTRIBUTES_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			const allAttributesView = lastViews!.find((v) => !v.default);
+
+			expect(allAttributesView).toBeDefined();
+			expect(allAttributesView!.label).toBe('All Attributes');
+			expect(allAttributesView!.schema.fields).toHaveLength(
+				DEFAULT_VIEW_FIELD_NAMES.length +
+					ALL_ATTRIBUTES_FIELD_CATALOG.filter(
+						({name}) => !DEFAULT_VIEW_FIELD_NAMES.includes(name)
+					).length
+			);
+
+			expect(byFieldName('accountName')?.contentRenderer).toBe(
+				'accountNameRenderer'
+			);
+			expect(byFieldName('description')?.contentRenderer).toBeUndefined();
+			expect(
+				byFieldName('employeeCount')?.contentRenderer
+			).toBeUndefined();
+			expect(byFieldName('signupDate')?.contentRenderer).toBe(
+				'dateRenderer'
+			);
+			expect(byFieldName('isPartner')?.contentRenderer).toBeUndefined();
+		});
+
+		it('should order the All Attributes View with the default columns first, then the remaining catalog fields in catalog order', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={[
+						buildCatalogField('website', 'Text'),
+						buildCatalogField('lastActive', 'Date'),
+						buildCatalogField('city', 'Text'),
+						buildCatalogField('accountName', 'Text'),
+						buildCatalogField('industry', 'Text'),
+					]}
+					groupId="23"
+				/>
+			);
+
+			const allAttributesView = lastViews!.find((v) => !v.default);
+
+			expect(
+				allAttributesView!.schema.fields.map((f) => f.fieldName)
+			).toEqual([...DEFAULT_VIEW_FIELD_NAMES, 'website', 'city']);
+		});
+
+		it('should build only the Default View when the catalog comes back empty', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={[]}
+					groupId="23"
+				/>
+			);
+
+			expect(lastViews).toHaveLength(1);
+			expect(lastViews![0].name).toBe('table');
+		});
+
+		it('should not repeat a catalog field that appears twice', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={[
+						buildCatalogField('website', 'Text'),
+						buildCatalogField('website', 'Text'),
+					]}
+					groupId="23"
+				/>
+			);
+
+			expect(
+				allAttributesFields().filter(
+					(field) => field.fieldName === 'website'
+				)
+			).toHaveLength(1);
+		});
+
+		it('should leave catalog columns unsortable, since the engine does not know their names', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={ALL_ATTRIBUTES_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			expect(byFieldName('description')?.sortable).toBe(false);
+			expect(byFieldName('accountName')?.sortable).toBe(true);
+		});
+
+		it('should label catalog fields with displayName, falling back to the field name when the catalog omits it', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={ALL_ATTRIBUTES_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			expect(byFieldName('description')?.label).toBe('Description');
+			expect(byFieldName('signupDate')?.label).toBe('signupDate');
+		});
 	});
 });

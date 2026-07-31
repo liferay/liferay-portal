@@ -69,7 +69,7 @@ jest.mock('lifecycle/components/LifecycleChart', () => ({
 	default: () => <div data-testid="lifecycle-chart" />,
 }));
 
-jest.mock('shared/components/AccountsDataSet', () => ({
+jest.mock('shared/components/accounts-data-set/AccountsDataSet', () => ({
 	__esModule: true,
 	default: () => <div data-testid="accounts-dataset" />,
 }));

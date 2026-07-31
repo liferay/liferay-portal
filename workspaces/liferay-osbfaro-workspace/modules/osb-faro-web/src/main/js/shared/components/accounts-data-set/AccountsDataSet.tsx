@@ -11,6 +11,8 @@ import {
 	LifecycleStages,
 	lifecycleStagesLabelMap,
 } from 'contacts/pages/account/utils/constants';
+import {buildViews} from './utils';
+import {ICatalogField} from 'shared/api/catalog';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
@@ -22,6 +24,7 @@ interface IAccountsDataSetProps {
 	channelId: string;
 	countryFilter?: string;
 	dataSetId?: string;
+	fieldCatalog?: ICatalogField[];
 	groupId: string;
 	industryFilter?: string;
 	lifecycleStageFilter?: LifecycleStages;
@@ -50,6 +53,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	channelId,
 	countryFilter,
 	dataSetId = 'accounts-list-dataset',
+	fieldCatalog,
 	groupId,
 	industryFilter,
 	lifecycleStageFilter,
@@ -221,81 +225,7 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 						label: Liferay.Language.get('last-active'),
 					},
 				]}
-				views={[
-					{
-						contentRenderer: 'table',
-						default: true,
-						label: Liferay.Language.get('default-view'),
-						name: 'table',
-						schema: {
-							fields: [
-								{
-									contentRenderer: 'accountNameRenderer',
-									fieldName: 'accountName',
-									label: Liferay.Language.get('account'),
-									sortable: true,
-									truncate: true,
-								},
-								{
-									fieldName: 'industry',
-									label: Liferay.Language.get('industry'),
-									sortable: true,
-								},
-								{
-									contentRenderer:
-										'accountLifecycleStageRenderer',
-									fieldName: 'lifecycleStage',
-									label: Liferay.Language.get(
-										'lifecycle-stage'
-									),
-									sortable: true,
-								},
-								{
-									contentRenderer: 'annualRevenueRenderer',
-									fieldName: 'annualRevenue',
-									label: Liferay.Language.get(
-										'annual-revenue'
-									),
-									sortable: true,
-								},
-								{
-									fieldName: 'country',
-									label: Liferay.Language.get('country'),
-									sortable: true,
-								},
-								{
-									contentRenderer: 'dateRenderer',
-									fieldName: 'firstActive',
-									label: Liferay.Language.get('first-active'),
-									sortable: true,
-								},
-								{
-									contentRenderer: 'dateRenderer',
-									fieldName: 'lastActive',
-									label: Liferay.Language.get('last-active'),
-									sortable: true,
-								},
-								{
-									contentRenderer: 'activitiesCountRenderer',
-									fieldName: 'activitiesCount',
-									label: Liferay.Language.get(
-										'recent-activities'
-									),
-									sortable: true,
-								},
-								{
-									contentRenderer: 'dateRenderer',
-									fieldName: 'lastEnriched',
-									label: Liferay.Language.get(
-										'last-enriched'
-									),
-									sortable: true,
-								},
-							],
-						},
-						thumbnail: 'table',
-					},
-				]}
+				views={buildViews(fieldCatalog)}
 			/>
 		</Card>
 	);

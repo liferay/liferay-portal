@@ -7,7 +7,7 @@ import Panel from '@clayui/panel';
 import React, {useState} from 'react';
 import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
 import {DEFAULT_DATE_FORMAT, getDateNow} from 'shared/util/date';
-import {ICatalogField} from 'shared/api/catalog';
+import {getCatalogFieldLabel, ICatalogField} from 'shared/api/catalog';
 import {Icon, Option, Picker, Text} from '@clayui/core';
 import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
 import {
@@ -48,8 +48,6 @@ const PickerTriggerButton = React.forwardRef<
 
 const selectPlaceholder = (label: string) =>
 	sub(Liferay.Language.get('select-x'), [label]) as string;
-
-const getFieldLabel = (field: ICatalogField) => field.displayName || field.name;
 
 interface IStageConfigurationPanelProps {
 	defaultExpanded?: boolean;
@@ -98,13 +96,13 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				items={selectableFields
 					.map((field) => ({
 						isCalculated: !!field.parentField,
-						label: getFieldLabel(field),
+						label: getCatalogFieldLabel(field),
 						value: field.name,
 					}))
 					.sort((a, b) => a.label.localeCompare(b.label))}
 				label={
 					selectedField
-						? getFieldLabel(selectedField)
+						? getCatalogFieldLabel(selectedField)
 						: selectPlaceholder(Liferay.Language.get('field'))
 				}
 				onSelectionChange={(key) => {

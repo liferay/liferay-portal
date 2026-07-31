@@ -66,10 +66,10 @@ const buildHistory = (path = '/workspace/23/123/accounts') => {
 
 const store = mockStore();
 
-// `useRequest` is consumed by both `List` (fetchChannels, expects an object
-// with `total`) and `TotalAccounts` (account metrics, expects an array of
-// `IAccountMetric`). Differentiate by `variables.channelIds`, which is only
-// present in the fetchChannels call.
+// `useRequest` is consumed by `List` twice (fetchChannels, expects an object
+// with `total`; fetchCatalogFields, expects `items`) and by `TotalAccounts`
+// (account metrics, expects an array of `IAccountMetric`). Differentiate by
+// `variables.channelIds` and `variables.tableName`, each unique to one call.
 
 const accountMetricsMock = [
 	{
@@ -89,12 +89,46 @@ const accountMetricsMock = [
 	},
 ];
 
+const catalogFieldsMock = [
+	{
+		dataCategory: 'Text',
+		dataType: 'STRING',
+		description: null,
+		displayName: 'Account Type',
+		id: '1',
+		name: 'accountType',
+		parentField: null,
+		tableName: 'account',
+	},
+];
+
 const useRequestImpl =
-	({total = 1}: {total?: number} = {}) =>
-	({variables}: {variables: {[key: string]: any}}) =>
-		variables?.channelIds !== undefined
-			? {data: {total}}
-			: {data: accountMetricsMock};
+	({
+		catalogError = false,
+		catalogLoading = false,
+		total = 1,
+	}: {
+		catalogError?: boolean;
+		catalogLoading?: boolean;
+		total?: number;
+	} = {}) =>
+	({variables}: {variables: {[key: string]: any}}) => {
+		if (variables?.channelIds !== undefined) {
+			return {data: {total}};
+		}
+
+		if (variables?.tableName !== undefined) {
+			if (catalogLoading) {
+				return {loading: true};
+			}
+
+			return catalogError
+				? {error: true}
+				: {data: {items: catalogFieldsMock}};
+		}
+
+		return {data: accountMetricsMock};
+	};
 
 const renderList = (
 	{queryString = ''}: {queryString?: string} = {},
@@ -141,6 +175,29 @@ describe('List', () => {
 		});
 
 		it('should render the FrontendDataSet component', () => {
+			renderList();
+
+			expect(screen.getByTestId('fds-component')).toBeInTheDocument();
+		});
+
+		it('should withhold the data set until the field catalog resolves, without blanking the page', async () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({catalogLoading: true})
+			);
+
+			renderList();
+
+			expect(
+				await screen.findByRole('heading', {name: 'Accounts'})
+			).toBeInTheDocument();
+			expect(screen.queryByTestId('fds-component')).toBeNull();
+		});
+
+		it('should still render the data set when the field catalog request fails', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({catalogError: true})
+			);
+
 			renderList();
 
 			expect(screen.getByTestId('fds-component')).toBeInTheDocument();
