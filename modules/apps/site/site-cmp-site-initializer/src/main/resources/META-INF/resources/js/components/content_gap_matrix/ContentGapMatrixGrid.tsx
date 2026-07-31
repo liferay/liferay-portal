@@ -4,8 +4,10 @@
  */
 
 import {ClayTooltipProvider} from '@clayui/tooltip';
+import {CONTENT_CHANGED_EVENT} from '@liferay/ai-hub-cell-js-components-web';
+import {FDS_EVENT} from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import ContentGapCell from './ContentGapCell';
 import {MatrixData, TaxonomyTerm} from './types';
@@ -31,6 +33,18 @@ export default function ContentGapMatrixGrid({
 
 	const {applyFilter, filteredFunnelStageId, filteredPersonaId} =
 		useAssetFDSFilter(assetFDSId, data);
+
+	useEffect(() => {
+		const handleContentChanged = () => {
+			Liferay.fire(FDS_EVENT.UPDATE_DISPLAY, {id: assetFDSId});
+		};
+
+		Liferay.on(CONTENT_CHANGED_EVENT, handleContentChanged);
+
+		return () => {
+			Liferay.detach(CONTENT_CHANGED_EVENT, handleContentChanged);
+		};
+	}, [assetFDSId]);
 
 	const getCount = (personaId: string, funnelStageId: string) =>
 		countsByCellKey.get(getCellKey(personaId, funnelStageId)) ?? 0;

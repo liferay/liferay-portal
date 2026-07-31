@@ -238,6 +238,80 @@ describe('ContentGapMatrixGrid', () => {
 		).toHaveLength(0);
 	});
 
+	describe('when the assistant generates content', () => {
+		let fireSpy: jest.SpyInstance;
+		let onSpy: jest.SpyInstance;
+
+		function getContentChangedHandler() {
+			const registrations = onSpy.mock.calls.filter(
+				([eventName]) => eventName === 'cms:aiAssistant:contentChanged'
+			);
+
+			expect(registrations).toHaveLength(1);
+
+			return registrations[0][1];
+		}
+
+		beforeEach(() => {
+			fireSpy = jest.spyOn(Liferay, 'fire').mockImplementation(() => {});
+			onSpy = jest
+				.spyOn(Liferay, 'on')
+				.mockImplementation((() => {}) as never);
+
+			fireSpy.mockClear();
+			onSpy.mockClear();
+		});
+
+		afterEach(() => {
+			fireSpy.mockRestore();
+			onSpy.mockRestore();
+		});
+
+		it('refreshes the asset data set when content is generated', () => {
+			render(
+				<ContentGapMatrixGrid
+					assetFDSId="assetFDSId"
+					data={PARTIAL_COVERAGE_MATRIX}
+				/>
+			);
+
+			const handler = getContentChangedHandler();
+
+			handler();
+
+			expect(fireSpy).toHaveBeenCalledWith('fds-update-display', {
+				id: 'assetFDSId',
+			});
+		});
+
+		it('detaches the listener on unmount', () => {
+			const detachSpy = jest
+				.spyOn(Liferay, 'detach')
+				.mockImplementation((() => {}) as never);
+
+			try {
+				const {unmount} = render(
+					<ContentGapMatrixGrid
+						assetFDSId="assetFDSId"
+						data={PARTIAL_COVERAGE_MATRIX}
+					/>
+				);
+
+				const handler = getContentChangedHandler();
+
+				unmount();
+
+				expect(detachSpy).toHaveBeenCalledWith(
+					'cms:aiAssistant:contentChanged',
+					handler
+				);
+			}
+			finally {
+				detachSpy.mockRestore();
+			}
+		});
+	});
+
 	it('leaves the filter of an axis without real terms inactive', () => {
 		const data: MatrixData = {
 			cells: [
