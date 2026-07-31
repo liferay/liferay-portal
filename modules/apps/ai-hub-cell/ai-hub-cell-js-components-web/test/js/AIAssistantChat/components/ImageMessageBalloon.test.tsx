@@ -85,6 +85,7 @@ describe('ImageMessageBalloon', () => {
 		mockFetch.mockReset();
 		mockFetch.mockResolvedValue(response() as never);
 		(Liferay.Util.openToast as jest.Mock).mockClear();
+		(Liferay.fire as jest.Mock).mockClear();
 	});
 
 	afterEach(() => {
@@ -233,6 +234,80 @@ describe('ImageMessageBalloon', () => {
 				expect.objectContaining({method: 'POST'})
 			)
 		);
+	});
+
+	it('fires the content-changed event a few seconds after a successful save', async () => {
+		jest.useFakeTimers();
+
+		try {
+			render(
+				<ImageMessageBalloon
+					images={[IMAGE_ONE]}
+					saveProps={{groupId: 123}}
+				/>
+			);
+
+			fireEvent.click(screen.getByRole('button', {name: 'save-image'}));
+
+			// Let the save request's promise chain settle before the timers
+			// run; fake timers freeze waitFor, so flush microtasks manually.
+
+			await act(async () => {
+				await Promise.resolve();
+			});
+
+			expect(Liferay.fire).not.toHaveBeenCalledWith(
+				'cms:aiAssistant:contentChanged'
+			);
+
+			act(() => {
+				jest.runAllTimers();
+			});
+
+			expect(Liferay.fire).toHaveBeenCalledWith(
+				'cms:aiAssistant:contentChanged'
+			);
+		}
+		finally {
+			jest.useRealTimers();
+		}
+	});
+
+	it('does not fire the content-changed event when the save fails', async () => {
+		jest.useFakeTimers();
+
+		try {
+			mockFetch.mockResolvedValue({
+				ok: false,
+				statusText: 'Boom',
+			} as never);
+
+			render(
+				<ImageMessageBalloon
+					images={[IMAGE_ONE]}
+					saveProps={{groupId: 123}}
+				/>
+			);
+
+			fireEvent.click(screen.getByRole('button', {name: 'save-image'}));
+
+			await waitFor(() =>
+				expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+					expect.objectContaining({type: 'danger'})
+				)
+			);
+
+			act(() => {
+				jest.runAllTimers();
+			});
+
+			expect(Liferay.fire).not.toHaveBeenCalledWith(
+				'cms:aiAssistant:contentChanged'
+			);
+		}
+		finally {
+			jest.useRealTimers();
+		}
 	});
 
 	it('shows an error toast when the save request fails', async () => {
