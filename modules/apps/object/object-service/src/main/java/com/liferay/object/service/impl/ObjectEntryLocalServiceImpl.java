@@ -1093,7 +1093,7 @@ public class ObjectEntryLocalServiceImpl
 	@Override
 	public Map<Object, Long> getAggregationCounts(
 			long groupId, long objectDefinitionId, String aggregationTerm,
-			Predicate predicate, boolean preferApproved, int start, int end)
+			Predicate predicate, boolean preferApproved)
 		throws PortalException {
 
 		Map<Object, Long> aggregationCounts = new HashMap<>();
@@ -1145,8 +1145,6 @@ public class ObjectEntryLocalServiceImpl
 			)
 		).groupBy(
 			table.getColumn(objectField.getDBColumnName())
-		).limit(
-			start, end
 		);
 
 		for (Object[] values : (List<Object[]>)dslQuery(dslQuery)) {
@@ -1449,8 +1447,7 @@ public class ObjectEntryLocalServiceImpl
 	public Map<Object, Long> getOneToManyAggregationCounts(
 			long groupId, long objectDefinitionId, long objectEntryId,
 			long objectRelationshipId, String aggregationTerm,
-			Predicate predicate, boolean related, String search, int start,
-			int end)
+			Predicate predicate, boolean related, String search)
 		throws PortalException {
 
 		ObjectDefinition objectDefinition =
@@ -1477,8 +1474,6 @@ public class ObjectEntryLocalServiceImpl
 			related, search
 		).groupBy(
 			table.getColumn(objectField.getDBColumnName())
-		).limit(
-			start, end
 		);
 
 		Map<Object, Long> aggregationCounts = new HashMap<>();

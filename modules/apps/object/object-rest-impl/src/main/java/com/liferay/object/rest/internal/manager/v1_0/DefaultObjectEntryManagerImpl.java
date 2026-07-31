@@ -866,8 +866,7 @@ public class DefaultObjectEntryManagerImpl
 					groupId, objectDefinition.getObjectDefinitionId(),
 					aggregationTerm, predicate,
 					GetterUtil.getBoolean(
-						dtoConverterContext.getAttribute("preferApproved")),
-					start, end)),
+						dtoConverterContext.getAttribute("preferApproved")))),
 			TransformUtil.transform(
 				objectEntryLocalService.getPrimaryKeys(
 					groupIds, companyId, dtoConverterContext.getUserId(),
@@ -2952,7 +2951,7 @@ public class DefaultObjectEntryManagerImpl
 						groupId, objectDefinition.getObjectDefinitionId(),
 						serviceBuilderObjectEntry.getObjectEntryId(),
 						objectRelationship.getObjectRelationshipId(),
-						aggregationTerm, predicate, true, search, start, end)),
+						aggregationTerm, predicate, true, search)),
 			_toObjectEntries(
 				dtoConverterContext,
 				objectRelatedModelsProvider.getRelatedModels(

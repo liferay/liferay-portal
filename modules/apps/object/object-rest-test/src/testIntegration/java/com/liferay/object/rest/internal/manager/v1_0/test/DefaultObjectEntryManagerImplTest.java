@@ -233,6 +233,7 @@ import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsContextThreadLocal;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -6585,14 +6586,20 @@ public class DefaultObjectEntryManagerImplTest
 
 		Page<ObjectEntry> page = _getPage(
 			Collections.singletonMap("textObjectFieldName", StringPool.BLANK),
-			_objectDefinition1);
+			_objectDefinition1, null);
 
-		assertFacets(
-			page.getFacets(),
-			List.of(
-				new Facet(
-					"textObjectFieldName",
-					List.of(new Facet.FacetValue(2, textObjectFieldValue)))));
+		List<Facet> expectedFacets = List.of(
+			new Facet(
+				"textObjectFieldName",
+				List.of(new Facet.FacetValue(2, textObjectFieldValue))));
+
+		assertFacets(page.getFacets(), expectedFacets);
+
+		page = _getPage(
+			Collections.singletonMap("textObjectFieldName", StringPool.BLANK),
+			_objectDefinition1, Pagination.of(2, 1));
+
+		assertFacets(page.getFacets(), expectedFacets);
 
 		PermissionThreadLocal.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(adminUser));
@@ -6621,18 +6628,25 @@ public class DefaultObjectEntryManagerImplTest
 		page = _getPage(
 			Collections.singletonMap(
 				_objectRelationshipFieldName, StringPool.BLANK),
-			_objectDefinition2);
+			_objectDefinition2, null);
 
-		assertFacets(
-			page.getFacets(),
-			List.of(
-				new Facet(
-					_objectRelationshipFieldName,
-					List.of(
-						new Facet.FacetValue(
-							1, String.valueOf(parentObjectEntry1.getId())),
-						new Facet.FacetValue(
-							2, String.valueOf(parentObjectEntry2.getId()))))));
+		expectedFacets = List.of(
+			new Facet(
+				_objectRelationshipFieldName,
+				List.of(
+					new Facet.FacetValue(
+						1, String.valueOf(parentObjectEntry1.getId())),
+					new Facet.FacetValue(
+						2, String.valueOf(parentObjectEntry2.getId())))));
+
+		assertFacets(page.getFacets(), expectedFacets);
+
+		page = _getPage(
+			Collections.singletonMap(
+				_objectRelationshipFieldName, StringPool.BLANK),
+			_objectDefinition2, Pagination.of(2, 1));
+
+		assertFacets(page.getFacets(), expectedFacets);
 
 		_defaultObjectEntryManager.updateObjectEntry(
 			_simpleDTOConverterContext, _objectDefinition2,
@@ -6648,7 +6662,7 @@ public class DefaultObjectEntryManagerImplTest
 		page = _getPage(
 			Collections.singletonMap(
 				_objectRelationshipFieldName, StringPool.BLANK),
-			_objectDefinition2);
+			_objectDefinition2, null);
 
 		assertFacets(
 			page.getFacets(),
@@ -6667,7 +6681,7 @@ public class DefaultObjectEntryManagerImplTest
 		page = _getPage(
 			Collections.singletonMap(
 				_objectRelationshipFieldName, StringPool.BLANK),
-			_objectDefinition2);
+			_objectDefinition2, null);
 
 		assertFacets(
 			page.getFacets(),
@@ -7368,25 +7382,18 @@ public class DefaultObjectEntryManagerImplTest
 				},
 				_companyObjectEntryA.getId(), _companyObjectRelationshipA_AA);
 
-		Page<ObjectEntry> page =
-			_defaultObjectEntryManager.getRelatedObjectEntries(
-				new Aggregation() {
-					{
-						setAggregationTerms(
-							Collections.singletonMap(
-								"textObjectFieldName", StringPool.BLANK));
-					}
-				},
-				_createDTOConverterContext(),
-				_companyObjectEntryA.getExternalReferenceCode(), null,
-				_companyObjectRelationshipA_AA, null, null, null, null);
+		List<Facet> expectedFacets = List.of(
+			new Facet(
+				"textObjectFieldName",
+				List.of(new Facet.FacetValue(2, textObjectFieldValue))));
 
-		assertFacets(
-			page.getFacets(),
-			List.of(
-				new Facet(
-					"textObjectFieldName",
-					List.of(new Facet.FacetValue(2, textObjectFieldValue)))));
+		Page<ObjectEntry> page = _getRelatedObjectEntriesPage(null);
+
+		assertFacets(page.getFacets(), expectedFacets);
+
+		page = _getRelatedObjectEntriesPage(Pagination.of(2, 1));
+
+		assertFacets(page.getFacets(), expectedFacets);
 
 		_objectEntryLocalService.deleteObjectEntry(objectEntryAA1.getId());
 		_objectEntryLocalService.deleteObjectEntry(objectEntryAA2.getId());
@@ -11539,7 +11546,7 @@ public class DefaultObjectEntryManagerImplTest
 
 	private Page<ObjectEntry> _getPage(
 			Map<String, String> aggregationTerms,
-			ObjectDefinition objectDefinition)
+			ObjectDefinition objectDefinition, Pagination pagination)
 		throws Exception {
 
 		return _defaultObjectEntryManager.getObjectEntries(
@@ -11552,7 +11559,24 @@ public class DefaultObjectEntryManagerImplTest
 			new DefaultDTOConverterContext(
 				false, Collections.emptyMap(), dtoConverterRegistry, null,
 				LocaleUtil.getDefault(), null, _user),
-			StringPool.BLANK, null, null, null);
+			StringPool.BLANK, pagination, null, null);
+	}
+
+	private Page<ObjectEntry> _getRelatedObjectEntriesPage(
+			Pagination pagination)
+		throws Exception {
+
+		return _defaultObjectEntryManager.getRelatedObjectEntries(
+			new Aggregation() {
+				{
+					setAggregationTerms(
+						Collections.singletonMap(
+							"textObjectFieldName", StringPool.BLANK));
+				}
+			},
+			_createDTOConverterContext(),
+			_companyObjectEntryA.getExternalReferenceCode(), null,
+			_companyObjectRelationshipA_AA, pagination, null, null, null);
 	}
 
 	private Timestamp _getTimestamp(String dateString) throws Exception {
