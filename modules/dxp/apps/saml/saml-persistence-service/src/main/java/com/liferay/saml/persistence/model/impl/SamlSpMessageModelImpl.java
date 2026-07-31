@@ -75,7 +75,7 @@ public class SamlSpMessageModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table SamlSpMessage (samlSpMessageId LONG not null primary key,companyId LONG,createDate DATE null,samlIdpEntityId VARCHAR(1024) null,expirationDate DATE null,samlIdpResponseKey VARCHAR(75) null)";
+		"create table SamlSpMessage (samlSpMessageId LONG not null primary key,companyId LONG,createDate DATE null,samlIdpEntityId VARCHAR(1024) null,expirationDate DATE null,samlIdpResponseKey VARCHAR(256) null)";
 
 	public static final String TABLE_SQL_DROP = "drop table SamlSpMessage";
 
@@ -741,4 +741,4 @@ public class SamlSpMessageModelImpl
 	private SamlSpMessage _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-402995272
+// LIFERAY-SERVICE-BUILDER-HASH:-1228998859

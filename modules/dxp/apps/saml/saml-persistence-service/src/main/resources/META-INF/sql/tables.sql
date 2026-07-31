@@ -104,7 +104,7 @@ create table SamlSpMessage (
 	createDate DATE null,
 	samlIdpEntityId VARCHAR(1024) null,
 	expirationDate DATE null,
-	samlIdpResponseKey VARCHAR(75) null
+	samlIdpResponseKey VARCHAR(256) null
 );
 
 create table SamlSpSession (
