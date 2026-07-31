@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -27,10 +28,11 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletPreferences;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -231,36 +233,76 @@ public class AssetCategoriesNavigationPortletPreferencesProcessor
 			return;
 		}
 
-		for (int i = 0; i < assetVocabularyGroupExternalReferenceCodes.length;
-			 i++) {
+		Map<String, String[]> assetVocabularyExternalReferenceCodesMap =
+			new HashMap<>();
 
-			String assetVocabularyGroupExternalReferenceCode =
-				assetVocabularyGroupExternalReferenceCodes[i];
-			String newAssetVocabularyGroupExternalReferenceCode =
-				newAssetVocabularyGroupExternalReferenceCodes[i];
+		for (String assetVocabularyGroupExternalReferenceCode :
+				assetVocabularyGroupExternalReferenceCodes) {
 
-			if (Objects.equals(
-					assetVocabularyGroupExternalReferenceCode,
-					newAssetVocabularyGroupExternalReferenceCode)) {
+			if (Validator.isNull(assetVocabularyGroupExternalReferenceCode) ||
+				assetVocabularyExternalReferenceCodesMap.containsKey(
+					assetVocabularyGroupExternalReferenceCode)) {
 
 				continue;
 			}
 
-			String[] assetVocabularyExternalReferenceCodesValues =
+			String[] assetVocabularyExternalReferenceCodes =
 				portletPreferences.getValues(
 					"assetVocabularyExternalReferenceCodes_" +
 						assetVocabularyGroupExternalReferenceCode,
 					null);
 
-			portletPreferences.setValues(
-				"assetVocabularyExternalReferenceCodes_" +
-					newAssetVocabularyGroupExternalReferenceCode,
-				assetVocabularyExternalReferenceCodesValues);
+			if (assetVocabularyExternalReferenceCodes == null) {
+				continue;
+			}
+
+			assetVocabularyExternalReferenceCodesMap.put(
+				assetVocabularyGroupExternalReferenceCode,
+				assetVocabularyExternalReferenceCodes);
 
 			portletPreferences.reset(
 				"assetVocabularyExternalReferenceCodes_" +
 					assetVocabularyGroupExternalReferenceCode);
 		}
+
+		List<String> groupExternalReferenceCodes = new ArrayList<>();
+
+		for (int i = 0; i < assetVocabularyGroupExternalReferenceCodes.length;
+			 i++) {
+
+			String assetVocabularyGroupExternalReferenceCode =
+				assetVocabularyGroupExternalReferenceCodes[i];
+
+			if (Validator.isNull(assetVocabularyGroupExternalReferenceCode)) {
+				groupExternalReferenceCodes.add(
+					assetVocabularyGroupExternalReferenceCode);
+
+				continue;
+			}
+
+			String[] assetVocabularyExternalReferenceCodes =
+				assetVocabularyExternalReferenceCodesMap.get(
+					assetVocabularyGroupExternalReferenceCode);
+
+			if (assetVocabularyExternalReferenceCodes == null) {
+				continue;
+			}
+
+			String newAssetVocabularyGroupExternalReferenceCode =
+				newAssetVocabularyGroupExternalReferenceCodes[i];
+
+			groupExternalReferenceCodes.add(
+				newAssetVocabularyGroupExternalReferenceCode);
+
+			portletPreferences.setValues(
+				"assetVocabularyExternalReferenceCodes_" +
+					newAssetVocabularyGroupExternalReferenceCode,
+				assetVocabularyExternalReferenceCodes);
+		}
+
+		portletPreferences.setValues(
+			"assetVocabularyGroupExternalReferenceCodes",
+			ArrayUtil.toStringArray(groupExternalReferenceCodes));
 	}
 
 	@Reference
