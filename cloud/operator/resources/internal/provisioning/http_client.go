@@ -98,7 +98,7 @@ func (httpClient *HTTPClient) Entitlements(
 		)
 	}
 
-	var entitlementsReponse struct {
+	var entitlementsResponse struct {
 		Apps []struct {
 			LpkgDownloadLink string `json:"lpkgDownloadLink"`
 			Name             string `json:"name"`
@@ -107,16 +107,16 @@ func (httpClient *HTTPClient) Entitlements(
 		MaxClusterNodes int32  `json:"maxClusterNodes"`
 	}
 
-	if error := json.NewDecoder(response.Body).Decode(&entitlementsReponse); error != nil {
+	if error := json.NewDecoder(response.Body).Decode(&entitlementsResponse); error != nil {
 		return nil, fmt.Errorf("entitlements: decode response: %w", error)
 	}
 
 	entitlements := &Entitlements{
-		LicenseXML:      []byte(entitlementsReponse.LicenseXML),
-		MaxClusterNodes: entitlementsReponse.MaxClusterNodes,
+		LicenseXML:      []byte(entitlementsResponse.LicenseXML),
+		MaxClusterNodes: entitlementsResponse.MaxClusterNodes,
 	}
 
-	for _, app := range entitlementsReponse.Apps {
+	for _, app := range entitlementsResponse.Apps {
 		entitlements.Apps = append(
 			entitlements.Apps, App{
 				LpkgDownloadLink: app.LpkgDownloadLink,
