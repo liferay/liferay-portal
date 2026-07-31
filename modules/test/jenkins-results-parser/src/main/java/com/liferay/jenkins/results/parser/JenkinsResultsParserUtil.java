@@ -3685,6 +3685,22 @@ public class JenkinsResultsParserUtil {
 		JenkinsMaster jenkinsMaster, String jenkinsJobName,
 		Map<String, String> buildParameters, int timeout) {
 
+		return invokeJenkinsBuild(
+			combine(jenkinsMaster.getRemoteURL(), "job/", jenkinsJobName),
+			buildParameters, timeout);
+	}
+
+	public static long invokeJenkinsBuild(
+		String jenkinsJobURL, Map<String, String> buildParameters) {
+
+		return invokeJenkinsBuild(
+			jenkinsJobURL, buildParameters, _MILLIS_TIMEOUT_DEFAULT);
+	}
+
+	public static long invokeJenkinsBuild(
+		String jenkinsJobURL, Map<String, String> buildParameters,
+		int timeout) {
+
 		StringBuilder sb = new StringBuilder();
 
 		try {
@@ -3719,10 +3735,7 @@ public class JenkinsResultsParserUtil {
 				UrlReader.getResponseHeader(
 					"Location", getJenkinsHTTPAuthorization(),
 					HttpRequestMethod.POST, sb.toString(), requestHeaders,
-					timeout,
-					combine(
-						jenkinsMaster.getRemoteURL(), "job/", jenkinsJobName,
-						"/buildWithParameters")));
+					timeout, combine(jenkinsJobURL, "/buildWithParameters")));
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
