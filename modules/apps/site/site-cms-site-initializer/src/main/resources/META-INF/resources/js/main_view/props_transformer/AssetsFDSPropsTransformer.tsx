@@ -30,6 +30,7 @@ import {getFormattedLabel} from '../../common/utils/getFormattedText';
 import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
 import {openBulkActionConfirmationModal} from '../../common/utils/openBulkActionConfirmationModal';
 import {openCMSModal} from '../../common/utils/openCMSModal';
+import refreshOnContentChanged from '../../common/utils/refreshOnContentChanged';
 import EditAssetCategoriesModalContent from '../categorization/modal/EditAssetCategoriesModalContent';
 import EditAssetTagsModalContent from '../categorization/modal/EditAssetTagsModalContent';
 import {defaultPermissionsBulkAction} from '../default_permission/BulkDefaultPermissionModalContent';
@@ -186,6 +187,8 @@ export default function AssetsFDSPropsTransformer({
 	itemsActions?: any[];
 	views: IView[];
 }) {
+	refreshOnContentChanged(otherProps?.id);
+
 	let mergedViews = views;
 
 	const isAllSectionView = otherProps?.id?.endsWith(
