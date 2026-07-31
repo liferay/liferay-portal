@@ -27,7 +27,7 @@ func init() {
 func main() {
 	config, _ := env.ParseAs[config]()
 
-	controllerruntime.SetLogger(zap.New())
+	controllerruntime.SetLogger(zap.New(zap.UseDevMode(config.Debug)))
 
 	manager, error := controllerruntime.NewManager(
 		controllerruntime.GetConfigOrDie(),
@@ -78,6 +78,7 @@ func main() {
 }
 
 type config struct {
+	Debug               bool          `env:"DEBUG" envDefault:"false"`
 	HeartbeatInterval   time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
 	MetricsAddress      string        `env:"METRICS_ADDRESS" envDefault:":8080"`
 	ProbeAddress        string        `env:"PROBE_ADDRESS" envDefault:":8081"`

@@ -1,5 +1,6 @@
 affinity: {}
 customLabels: {}
+debug: false
 fullnameOverride: ""
 heartbeatInterval: 10m
 image:
