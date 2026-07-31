@@ -35,15 +35,13 @@ public class MembersDesignLibraryDisplayContext
 		super(depotEntry, httpServletRequest);
 	}
 
-	public Map<String, Object> getMembersEmptyState() {
+	public Map<String, Object> getEmptyState() {
 		return buildEmptyState(
 			"add-members-to-this-design-library",
 			"/states/design_library_empty_state.svg", "no-members-yet");
 	}
 
-	public Map<String, Object> getMembersFDSAdditionalProps()
-		throws PortalException {
-
+	public Map<String, Object> getFDSAdditionalProps() throws PortalException {
 		Group group = getGroup();
 
 		return HashMapBuilder.<String, Object>put(
@@ -61,17 +59,15 @@ public class MembersDesignLibraryDisplayContext
 		).build();
 	}
 
-	public Map<String, Object> getMembersSectionHeaderProps()
-		throws PortalException {
-
+	public Map<String, Object> getSectionHeaderProps() throws PortalException {
 		return HashMapBuilder.<String, Object>putAll(
-			getMembersFDSAdditionalProps()
+			getFDSAdditionalProps()
 		).put(
-			"count", _getMembersCount()
+			"count", _getCount()
 		).build();
 	}
 
-	public List<TabsItem> getMembersTabsItems() {
+	public List<TabsItem> getTabsItems() {
 		return TabsItemListBuilder.add(
 			tabsItem -> {
 				tabsItem.setActive(true);
@@ -84,15 +80,15 @@ public class MembersDesignLibraryDisplayContext
 		).build();
 	}
 
-	public String getMembersUserGroupsAPIURL() throws PortalException {
-		return _getMembersAPIURL("user-groups", "numberOfUserAccounts");
+	public String getUserGroupsAPIURL() throws PortalException {
+		return _getAPIURL("user-groups", "numberOfUserAccounts");
 	}
 
-	public String getMembersUsersAPIURL() throws PortalException {
-		return _getMembersAPIURL("user-accounts", "roles");
+	public String getUsersAPIURL() throws PortalException {
+		return _getAPIURL("user-accounts", "roles");
 	}
 
-	private String _getMembersAPIURL(String resourcePath, String nestedFields)
+	private String _getAPIURL(String resourcePath, String nestedFields)
 		throws PortalException {
 
 		return getAssetLibraryURL(
@@ -102,7 +98,7 @@ public class MembersDesignLibraryDisplayContext
 				nestedFields));
 	}
 
-	private int _getMembersCount() throws PortalException {
+	private int _getCount() throws PortalException {
 		UserGroupLocalService userGroupLocalService =
 			_userGroupLocalServiceSnapshot.get();
 		UserLocalService userLocalService = _userLocalServiceSnapshot.get();

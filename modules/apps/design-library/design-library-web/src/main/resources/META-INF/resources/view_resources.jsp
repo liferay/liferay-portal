@@ -31,7 +31,7 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 			<%
 			Map<String, Object> fdsAdditionalProps = viewResourcesDesignLibraryDisplayContext.getFDSAdditionalProps();
 
-			Map<String, Object> membersFDSAdditionalProps = membersDesignLibraryDisplayContext.getMembersFDSAdditionalProps();
+			Map<String, Object> membersFDSAdditionalProps = membersDesignLibraryDisplayContext.getFDSAdditionalProps();
 			%>
 
 			<div class="p-4">
@@ -67,19 +67,19 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 								<div>
 									<react:component
 										module="{DesignLibraryMembersSectionHeader} from design-library-web"
-										props="<%= membersDesignLibraryDisplayContext.getMembersSectionHeaderProps() %>"
+										props="<%= membersDesignLibraryDisplayContext.getSectionHeaderProps() %>"
 									/>
 								</div>
 
 								<clay:tabs
-									tabsItems="<%= membersDesignLibraryDisplayContext.getMembersTabsItems() %>"
+									tabsItems="<%= membersDesignLibraryDisplayContext.getTabsItems() %>"
 								>
 									<clay:tabs-panel>
 										<div class="design-library-summary-fds">
 											<frontend-data-set:headless-display
 												additionalProps="<%= membersFDSAdditionalProps %>"
-												apiURL="<%= membersDesignLibraryDisplayContext.getMembersUsersAPIURL() %>"
-												emptyState="<%= membersDesignLibraryDisplayContext.getMembersEmptyState() %>"
+												apiURL="<%= membersDesignLibraryDisplayContext.getUsersAPIURL() %>"
+												emptyState="<%= membersDesignLibraryDisplayContext.getEmptyState() %>"
 												formName="fm"
 												id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS %>"
 												propsTransformer="{DesignLibraryMembersFDSPropsTransformer} from design-library-web"
@@ -96,8 +96,8 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 										<div class="design-library-summary-fds">
 											<frontend-data-set:headless-display
 												additionalProps="<%= membersFDSAdditionalProps %>"
-												apiURL="<%= membersDesignLibraryDisplayContext.getMembersUserGroupsAPIURL() %>"
-												emptyState="<%= membersDesignLibraryDisplayContext.getMembersEmptyState() %>"
+												apiURL="<%= membersDesignLibraryDisplayContext.getUserGroupsAPIURL() %>"
+												emptyState="<%= membersDesignLibraryDisplayContext.getEmptyState() %>"
 												formName="fm"
 												id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USER_GROUPS %>"
 												propsTransformer="{DesignLibraryMembersFDSPropsTransformer} from design-library-web"
@@ -118,15 +118,15 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 								<div>
 									<react:component
 										module="{DesignLibraryConnectedSitesSectionHeader} from design-library-web"
-										props="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesSectionHeaderProps() %>"
+										props="<%= connectedSitesDesignLibraryDisplayContext.getSectionHeaderProps() %>"
 									/>
 								</div>
 
 								<div class="design-library-summary-fds">
 									<frontend-data-set:headless-display
-										additionalProps="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesFDSAdditionalProps() %>"
-										apiURL="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesAPIURL() %>"
-										emptyState="<%= connectedSitesDesignLibraryDisplayContext.getConnectedSitesEmptyState() %>"
+										additionalProps="<%= connectedSitesDesignLibraryDisplayContext.getFDSAdditionalProps() %>"
+										apiURL="<%= connectedSitesDesignLibraryDisplayContext.getAPIURL() %>"
+										emptyState="<%= connectedSitesDesignLibraryDisplayContext.getEmptyState() %>"
 										formName="fm"
 										id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_CONNECTED_SITES %>"
 										propsTransformer="{DesignLibraryConnectedSitesFDSPropsTransformer} from design-library-web"
