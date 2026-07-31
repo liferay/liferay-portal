@@ -220,6 +220,17 @@ html#{$cadmin-selector} .cadmin {
 			}
 		}
 
+		.ai-assistant-chat__quick-replies {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.5rem;
+			padding: 0 0.5rem 0.5rem;
+		}
+
+		.ai-assistant-chat__quick-reply {
+			border-radius: 0.625rem;
+		}
+
 		.ai-assistant-chat__form {
 			@include ai-assistant-chat-gutter;
 

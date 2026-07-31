@@ -15,6 +15,7 @@ import ContentTypeSelectorMessageBalloon from './ContentTypeSelectorMessageBallo
 import ContentsMessageBalloon from './ContentsMessageBalloon';
 import FieldValueMessageBalloon from './FieldValueMessageBalloon';
 import ImageMessageBalloon from './ImageMessageBalloon';
+import QuickRepliesMessageBalloon from './QuickRepliesMessageBalloon';
 import SelectComponentMessageBalloon from './SelectComponentMessageBalloon';
 import TranslateContentMessageBalloon from './TranslateContentMessageBalloon';
 import UserMessageBalloon from './UserMessageBalloon';
@@ -107,6 +108,12 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 			/>
 		);
 	},
+	'quick-replies': ({chat}, {component}) => (
+		<QuickRepliesMessageBalloon
+			component={component}
+			setIsGenerating={chat.setIsGenerating}
+		/>
+	),
 	'select-component': ({chat}, {component}) => (
 		<SelectComponentMessageBalloon
 			component={component}

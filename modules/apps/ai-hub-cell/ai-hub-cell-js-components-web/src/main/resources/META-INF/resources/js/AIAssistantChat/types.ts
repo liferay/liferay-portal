@@ -20,7 +20,7 @@ export interface AgentComponentOption {
 export interface AgentComponent {
 	options: AgentComponentOption[];
 	title: string;
-	type: 'select';
+	type: 'quick-replies' | 'select';
 }
 
 export interface Message {

@@ -20,6 +20,7 @@ export interface TranslateMessage {
 
 export type ResolvedMessage =
 	| {categorization: CategorizeEventPayload; type: 'categorization'}
+	| {component: AgentComponent; type: 'quick-replies'}
 	| {component: AgentComponent; type: 'select-component'}
 	| {contentTypes: ContentType[]; type: 'content-types'}
 	| {fieldValues: Record<string, string>; type: 'field-values'}
@@ -62,6 +63,10 @@ function parseTranslateMessage(text: string): TranslateMessage | null {
 }
 
 export default function resolveMessage(item: Message): ResolvedMessage {
+	if (item.component?.type === 'quick-replies') {
+		return {component: item.component, type: 'quick-replies'};
+	}
+
 	if (item.component?.type === 'select') {
 		return {component: item.component, type: 'select-component'};
 	}
