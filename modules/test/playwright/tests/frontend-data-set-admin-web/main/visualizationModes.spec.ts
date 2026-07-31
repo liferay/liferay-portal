@@ -495,7 +495,7 @@ test('Configure table visualization mode @LPD-11049', async ({
 				.getRowByText(sampleScalarFieldName)
 				.locator('td')
 				.nth(visualizationModesPage.SORTABLE_COLUMN_INDEX)
-		).toHaveText('true');
+		).toHaveText('false');
 
 		await expect(
 			visualizationModesPage
@@ -542,7 +542,7 @@ test('Configure table visualization mode @LPD-11049', async ({
 		).toHaveText('false');
 	});
 
-	await test.step('Check if object field has disabled sortable option', async () => {
+	await test.step('Check if object field has an editable sortable option', async () => {
 		await clickActionInRow({
 			actionName: 'Edit',
 			page,
@@ -554,7 +554,9 @@ test('Configure table visualization mode @LPD-11049', async ({
 
 		await expect(sortableLabel).toBeInViewport();
 
-		await expect(sortableLabel).toBeDisabled();
+		await expect(sortableLabel).toBeEnabled();
+
+		await expect(sortableLabel).not.toBeChecked();
 
 		await visualizationModesPage.cancelAddFieldsModal();
 	});
