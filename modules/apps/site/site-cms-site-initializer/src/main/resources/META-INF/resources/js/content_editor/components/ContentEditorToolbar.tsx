@@ -19,6 +19,7 @@ import React, {useCallback, useEffect, useId, useRef, useState} from 'react';
 import {flushSync} from 'react-dom';
 
 import Toolbar from '../../common/components/Toolbar';
+import {AI_ASSISTANT_TOOLBAR_TRIGGER_ID} from '../../common/utils/constants';
 import applyFieldValues from '../utils/applyFieldValues';
 import getFieldValues from '../utils/getFieldValues';
 import {toMomentDate} from './ScheduleField';
@@ -267,6 +268,7 @@ export default function ContentEditorToolbar({
 						instructionDefinitionScope="cms"
 						presentation="dropdown"
 						round
+						triggerId={AI_ASSISTANT_TOOLBAR_TRIGGER_ID}
 					/>
 				</Toolbar.Item>
 			)}
