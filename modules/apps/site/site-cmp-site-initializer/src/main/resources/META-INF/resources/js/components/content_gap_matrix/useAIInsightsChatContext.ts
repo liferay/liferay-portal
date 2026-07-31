@@ -17,9 +17,11 @@ const CMS_BASIC_WEB_CONTENT_EXTERNAL_REFERENCE_CODE = 'L_CMS_BASIC_WEB_CONTENT';
 const CMS_BASIC_WEB_CONTENT_NAME = 'CMSBasicWebContent';
 
 export function useAIInsightsChatContext({
+	cmpProjectObjectEntryDescription,
 	cmpProjectObjectEntryId,
 	cmpProjectScopeKey,
 }: {
+	cmpProjectObjectEntryDescription?: string;
 	cmpProjectObjectEntryId?: string;
 	cmpProjectScopeKey?: string;
 }) {
@@ -52,6 +54,7 @@ export function useAIInsightsChatContext({
 		focusScope: 'full-matrix',
 		objectDefinitionName: CMS_BASIC_WEB_CONTENT_NAME,
 		objectFields,
+		projectDescription: cmpProjectObjectEntryDescription,
 		projectId: cmpProjectObjectEntryId,
 		projectScopeKey: cmpProjectScopeKey,
 		spacesJSONArray: spaces,

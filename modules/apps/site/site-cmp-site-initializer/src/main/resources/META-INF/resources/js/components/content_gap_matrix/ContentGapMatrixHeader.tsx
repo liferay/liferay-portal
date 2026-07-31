@@ -14,17 +14,20 @@ import {useAIInsightsChatContext} from './useAIInsightsChatContext';
 import {computeCoveragePercentage, countCriticalGaps} from './utils';
 
 export default function ContentGapMatrixHeader({
+	cmpProjectObjectEntryDescription,
 	cmpProjectObjectEntryId,
 	cmpProjectObjectEntryTitle,
 	cmpProjectScopeKey,
 	data,
 }: {
+	cmpProjectObjectEntryDescription?: string;
 	cmpProjectObjectEntryId?: string;
 	cmpProjectObjectEntryTitle?: string;
 	cmpProjectScopeKey?: string;
 	data?: MatrixData;
 }) {
 	const getAIInsightsChatContext = useAIInsightsChatContext({
+		cmpProjectObjectEntryDescription,
 		cmpProjectObjectEntryId,
 		cmpProjectScopeKey,
 	});

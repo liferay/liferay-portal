@@ -20,6 +20,7 @@ import './ContentGapMatrix.scss';
 
 interface ContentGapMatrixCardProps {
 	assetFDSId: string;
+	cmpProjectObjectEntryDescription?: string;
 	cmpProjectObjectEntryId: string;
 	cmpProjectObjectEntryTitle: string;
 	cmpProjectScopeKey?: string;
@@ -31,6 +32,7 @@ const contentCoverageService = ContentCoverageServiceImpl;
 
 export default function ContentGapMatrixCard({
 	assetFDSId,
+	cmpProjectObjectEntryDescription,
 	cmpProjectObjectEntryId,
 	cmpProjectObjectEntryTitle,
 	cmpProjectScopeKey,
@@ -80,6 +82,9 @@ export default function ContentGapMatrixCard({
 		return (
 			<div className="lfr-cmp__content-gap-matrix-card">
 				<ContentGapMatrixHeader
+					cmpProjectObjectEntryDescription={
+						cmpProjectObjectEntryDescription
+					}
 					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 					cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
 					cmpProjectScopeKey={cmpProjectScopeKey}
@@ -132,6 +137,9 @@ export default function ContentGapMatrixCard({
 		return (
 			<div className="lfr-cmp__content-gap-matrix-card">
 				<ContentGapMatrixHeader
+					cmpProjectObjectEntryDescription={
+						cmpProjectObjectEntryDescription
+					}
 					cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 					cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
 					cmpProjectScopeKey={cmpProjectScopeKey}
@@ -151,6 +159,9 @@ export default function ContentGapMatrixCard({
 	return (
 		<div className="lfr-cmp__content-gap-matrix-card">
 			<ContentGapMatrixHeader
+				cmpProjectObjectEntryDescription={
+					cmpProjectObjectEntryDescription
+				}
 				cmpProjectObjectEntryId={cmpProjectObjectEntryId}
 				cmpProjectObjectEntryTitle={cmpProjectObjectEntryTitle}
 				cmpProjectScopeKey={cmpProjectScopeKey}

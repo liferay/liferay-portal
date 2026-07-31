@@ -89,6 +89,9 @@ public class ContentCoverageMatrixComponentSectionFragmentRenderer
 			"assetFDSId",
 			"com.liferay.site.cms.site.initializer-allRelatedAssetsSection"
 		).put(
+			"cmpProjectObjectEntryDescription",
+			MapUtil.getString(objectEntry.getValues(), "description")
+		).put(
 			"cmpProjectObjectEntryId", objectEntry.getObjectEntryId()
 		).put(
 			"cmpProjectObjectEntryTitle",
