@@ -151,13 +151,21 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 	@Test
 	public void testDeleteDocument() throws SearchException {
-		SearchContext searchContext = new SearchContext();
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
-		searchContext.setCompanyId(_COMPANY_ID);
+			SearchContext searchContext = new SearchContext();
 
-		IndexWriter indexWriter = getIndexWriter();
+			searchContext.setCompanyId(_COMPANY_ID);
 
-		indexWriter.deleteDocument(searchContext, _UID);
+			IndexWriter indexWriter = getIndexWriter();
+
+			indexWriter.deleteDocument(searchContext, _UID);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+		}
 	}
 
 	@Test
