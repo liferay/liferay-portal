@@ -165,17 +165,24 @@ public class DataGuardTestRuleUtil {
 			}
 		}
 
+		BaseModel<?> persistedBaseModel = (BaseModel<?>)persistedModel;
+
+		PersistedModel refetchedPersistedModel =
+			persistedModelLocalService.fetchPersistedModel(
+				persistedBaseModel.getPrimaryKeyObj());
+
+		if (refetchedPersistedModel == null) {
+			return;
+		}
+
 		try {
 			if (deleteMethod == null) {
-				persistedModelLocalService.deletePersistedModel(persistedModel);
+				persistedModelLocalService.deletePersistedModel(
+					refetchedPersistedModel);
 			}
 			else {
-				BaseModel<?> baseModel = (BaseModel<?>)persistedModel;
-
 				deleteMethod.invoke(
-					persistedModelLocalService,
-					persistedModelLocalService.getPersistedModel(
-						baseModel.getPrimaryKeyObj()));
+					persistedModelLocalService, refetchedPersistedModel);
 			}
 		}
 		catch (Throwable throwable1) {
