@@ -191,6 +191,60 @@ public class VIESAccountEntryValidatorTest {
 	}
 
 	@Test
+	public void testIsSkipped() throws Exception {
+		_mockVIESAccountEntryValidatorConfiguration(
+			new String[] {RandomTestUtil.randomString()}, false);
+
+		AccountEntry accountEntry = _mockAccountEntry(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
+
+		Assert.assertFalse(
+			_viesAccountEntryValidator.isSkipped(
+				null,
+				JSONUtil.put("billingAddressId", RandomTestUtil.randomLong())));
+
+		Assert.assertFalse(
+			_viesAccountEntryValidator.isSkipped(accountEntry, null));
+
+		Assert.assertTrue(
+			_viesAccountEntryValidator.isSkipped(
+				accountEntry,
+				JSONUtil.put("billingAddressId", RandomTestUtil.randomLong())));
+
+		_mockVIESAccountEntryValidatorConfiguration(
+			new String[] {RandomTestUtil.randomString()}, true);
+
+		Assert.assertTrue(
+			_viesAccountEntryValidator.isSkipped(
+				_mockAccountEntry(AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON),
+				JSONUtil.put("billingAddressId", RandomTestUtil.randomLong())));
+
+		Assert.assertFalse(
+			_viesAccountEntryValidator.isSkipped(
+				accountEntry,
+				JSONUtil.put("billingAddressId", RandomTestUtil.randomLong())));
+
+		long billingAddressId = RandomTestUtil.randomLong();
+		String countryA2 = RandomTestUtil.randomString();
+
+		_mockAddress(
+			billingAddressId, AccountEntry.class.getName(), 0, countryA2);
+
+		Assert.assertTrue(
+			_viesAccountEntryValidator.isSkipped(
+				accountEntry,
+				JSONUtil.put("billingAddressId", billingAddressId)));
+
+		_mockVIESAccountEntryValidatorConfiguration(
+			new String[] {countryA2}, true);
+
+		Assert.assertFalse(
+			_viesAccountEntryValidator.isSkipped(
+				accountEntry,
+				JSONUtil.put("billingAddressId", billingAddressId)));
+	}
+
+	@Test
 	public void testValidate() throws Exception {
 		try (MockedStatic<ConfigurationProviderUtil>
 				configurationProviderUtilMockedStatic = Mockito.mockStatic(

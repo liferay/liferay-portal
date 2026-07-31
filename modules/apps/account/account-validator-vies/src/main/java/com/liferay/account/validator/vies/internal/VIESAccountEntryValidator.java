@@ -101,16 +101,7 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 
 		Country country = address.getCountry();
 
-		if (country == null) {
-			return null;
-		}
-
-		String countryA2 = country.getA2();
-
-		if (!ArrayUtil.contains(
-				viesAccountEntryValidatorConfiguration.countryCodes(),
-				countryA2)) {
-
+		if (!_isValidCountry(country, viesAccountEntryValidatorConfiguration)) {
 			return null;
 		}
 
@@ -127,6 +118,8 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 				AccountEntryValidatorConstants.RESULT_FAILURE
 			).build();
 		}
+
+		String countryA2 = country.getA2();
 
 		JSONObject requestJSONObject = JSONUtil.put(
 			"countryCode", countryA2
@@ -225,6 +218,34 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 		return resultMessages;
 	}
 
+	@Override
+	public boolean isSkipped(AccountEntry accountEntry, JSONObject jsonObject)
+		throws PortalException {
+
+		if ((accountEntry == null) || (jsonObject == null)) {
+			return false;
+		}
+
+		VIESAccountEntryValidatorConfiguration
+			viesAccountEntryValidatorConfiguration =
+				_getVIESAccountEntryValidatorConfiguration(
+					accountEntry, jsonObject);
+
+		if (viesAccountEntryValidatorConfiguration == null) {
+			return true;
+		}
+
+		Address address = _addressLocalService.fetchAddress(
+			jsonObject.getLong("billingAddressId", 0));
+
+		if (address == null) {
+			return false;
+		}
+
+		return !_isValidCountry(
+			address.getCountry(), viesAccountEntryValidatorConfiguration);
+	}
+
 	private AccountEntryValidatorResult _getAccountEntryValidatorResult(
 		JSONObject additionalPropsJSONObject, String classPK, String error) {
 
@@ -319,6 +340,21 @@ public class VIESAccountEntryValidator extends BaseAccountEntryValidator {
 		}
 
 		return false;
+	}
+
+	private boolean _isValidCountry(
+		Country country,
+		VIESAccountEntryValidatorConfiguration
+			viesAccountEntryValidatorConfiguration) {
+
+		if (country == null) {
+			return false;
+		}
+
+		String countryA2 = country.getA2();
+
+		return ArrayUtil.contains(
+			viesAccountEntryValidatorConfiguration.countryCodes(), countryA2);
 	}
 
 	@Reference
