@@ -165,6 +165,10 @@ public class HTTPTestUtil {
 		String body, String endpoint, Map<String, String> headers,
 		Http.Method httpMethod) {
 
+		if (_modulePath) {
+			JAXRSWhiteboardTestUtil.ensureReady();
+		}
+
 		Http.Options options = new Http.Options();
 
 		options.addHeader(
