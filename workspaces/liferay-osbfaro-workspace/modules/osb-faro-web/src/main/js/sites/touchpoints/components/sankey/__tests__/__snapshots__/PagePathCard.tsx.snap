@@ -998,6 +998,44 @@ exports[`PagePathCard should filter by the selected account 1`] = `
 </div>
 `;
 
+exports[`PagePathCard should filter by the selected segment 1`] = `
+<div>
+  <div
+    class="card card-root"
+    style="min-height: 600px;"
+  >
+    <div
+      class="card-header"
+    >
+      <div
+        class="card-title"
+      >
+        Path Analysis
+      </div>
+    </div>
+    <div>
+      <div
+        class="card-body d-flex align-items-center justify-content-center"
+      >
+        <div
+          class="error-display-root flex-grow-1 no-results-root flex-grow-1"
+        >
+          <div
+            class="no-results-content"
+          >
+            <div
+              class="h4 no-results-title"
+            >
+              An unexpected error occurred.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`PagePathCard should render 1`] = `
 <div>
   <div
