@@ -88,7 +88,6 @@ public class SiteInitializerRegistryImpl implements SiteInitializerRegistry {
 	private static final Set<String> _excludedSiteInitializerKeys = Set.of(
 		"com.liferay.ai.hub.pricing.site.initializer",
 		"com.liferay.digital.sales.room.site.initializer",
-		"com.liferay.seo.studio.site.initializer",
 		"com.liferay.site.initializer.cmp", "com.liferay.site.initializer.cms",
 		"com.liferay.site.initializer.cms.standalone",
 		"com.liferay.site.initializer.dsr", "com.liferay.site.initializer.pim");
