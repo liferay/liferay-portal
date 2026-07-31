@@ -480,7 +480,9 @@ test(
 			});
 
 			await test.step('Check versions tab is not visible', async () => {
-				await expect(infoPanelPage.selectTab('More')).not.toBeVisible();
+				await expect(
+					infoPanelPage.dropdownTab('Versions')
+				).not.toBeVisible();
 				await expect(
 					infoPanelPage.selectTab('Versions')
 				).not.toBeVisible();
