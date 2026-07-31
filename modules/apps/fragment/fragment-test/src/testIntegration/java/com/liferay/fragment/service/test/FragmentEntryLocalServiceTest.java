@@ -919,7 +919,10 @@ public class FragmentEntryLocalServiceTest {
 				ServiceContextTestUtil.getServiceContext(
 					_group.getGroupId(), TestPropsValues.getUserId()));
 
-		Assert.assertEquals(fragmentEntry, fragmentEntry);
+		Assert.assertEquals(
+			fragmentEntry,
+			_fragmentEntryLocalService.fetchFragmentEntry(
+				_group.getGroupId(), fragmentEntryKey));
 	}
 
 	private void _testGetFragmentEntriesByFragmentCollectionId()
