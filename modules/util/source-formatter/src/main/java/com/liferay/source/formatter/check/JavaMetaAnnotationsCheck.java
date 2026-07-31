@@ -29,7 +29,9 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 
 		JavaClass javaClass = (JavaClass)javaTerm;
 
-		if (javaClass.getParentJavaClass() == null) {
+		if (isAttributeValue(_CHECK_MISSING_PASSWORD_TYPE_KEY, absolutePath) &&
+			(javaClass.getParentJavaClass() == null)) {
+
 			_checkMissingPasswordType(fileName, absolutePath, fileContent);
 		}
 
@@ -240,6 +242,9 @@ public class JavaMetaAnnotationsCheck extends JavaAnnotationsCheck {
 		"checkConfigurationName";
 
 	private static final String _CHECK_MISSING_NAME_KEY = "checkMissingName";
+
+	private static final String _CHECK_MISSING_PASSWORD_TYPE_KEY =
+		"checkMissingPasswordType";
 
 	private static final String[] _EXCLUDED_SECRET_KEYWORDS = {
 		"algorithm", "field", "keyword", "providerid", "sapentry", "type",
