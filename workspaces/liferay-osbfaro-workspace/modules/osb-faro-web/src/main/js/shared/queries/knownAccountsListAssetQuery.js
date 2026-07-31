@@ -18,6 +18,7 @@ export default (queryName, metricName) => gql`
 			$rangeEnd: String
 			$rangeKey: Int
 			$rangeStart: String
+			$segmentId: String
 			$size: Int!
 			$start: Int!
 			$title: String

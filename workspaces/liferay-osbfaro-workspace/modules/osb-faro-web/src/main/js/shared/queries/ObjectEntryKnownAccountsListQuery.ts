@@ -10,6 +10,7 @@ export default gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$size: Int!
 		$start: Int!
 		$touchpoint: String

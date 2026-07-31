@@ -2,7 +2,12 @@ import {gql} from '@apollo/client';
 
 export const ACCOUNTS_FRAGMENT = gql`
 	fragment accountsFragment on Metric {
-		accounts(keywords: $keywords, size: $size, start: $start) {
+		accounts(
+			keywords: $keywords
+			segmentId: $segmentId
+			size: $size
+			start: $start
+		) {
 			accountNames {
 				id
 				name
