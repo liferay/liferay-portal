@@ -117,7 +117,7 @@ const VisitorsByTimeCard: React.FC<IVisitorsByTimeCardProps> = ({
 	label,
 	minHeight,
 }) => {
-	const {accountId, router} = useContext(
+	const {accountId, router, segmentId} = useContext(
 		BasePage.Context as React.Context<IBasePageContext>
 	);
 
@@ -138,6 +138,7 @@ const VisitorsByTimeCard: React.FC<IVisitorsByTimeCardProps> = ({
 						renderTooltip={renderTooltip}
 						router={router}
 						rowAxisFormatter={formatHour}
+						segmentId={segmentId}
 					/>
 				</Card.Body>
 			)}

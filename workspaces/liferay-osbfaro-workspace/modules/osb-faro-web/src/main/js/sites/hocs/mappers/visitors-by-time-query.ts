@@ -33,14 +33,17 @@ const mapPropsToOptions = ({
 	router: {
 		params: {channelId},
 	},
+	segmentId,
 }: {
 	accountId?: string | null;
 	rangeSelectors: RangeSelectors;
 	router: {params: {channelId: string}};
+	segmentId?: string | null;
 }) => ({
 	variables: {
 		accountId,
 		channelId,
+		segmentId,
 		...getSafeRangeSelectors(rangeSelectors),
 	},
 });
