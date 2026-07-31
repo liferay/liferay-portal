@@ -17,6 +17,7 @@ const GEOLOCATION_QUERY = gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$touchpoint: String
 	) {
 		objectEntry(
@@ -28,6 +29,7 @@ const GEOLOCATION_QUERY = gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 		) {
 			assetId
 			viewsMetric {

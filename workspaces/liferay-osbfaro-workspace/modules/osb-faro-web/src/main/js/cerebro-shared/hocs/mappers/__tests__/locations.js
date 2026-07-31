@@ -179,6 +179,40 @@ describe('Shared HOCs Mappers - Locations', () => {
 		});
 	});
 
+	it('should include segmentId in the request variables when provided', () => {
+		const mapper = getLocationsMapper(
+			(result) => result.form.submissionsMetric
+		);
+
+		const optionsResult = mapper.options({
+			filters: {
+				location: ['Any'],
+			},
+			rangeSelectors: {rangeKey: '0'},
+			router: {
+				params: {
+					assetId: ASSET_ID,
+					touchpoint: TOUCHPOINT,
+				},
+			},
+			segmentId: 'segment-100',
+		});
+
+		expect(optionsResult).toEqual({
+			variables: {
+				assetId: 'formId',
+				devices: 'Any',
+				location: 'Any',
+				rangeEnd: null,
+				rangeKey: 0,
+				rangeStart: null,
+				segmentId: 'segment-100',
+				title: '',
+				touchpoint: null,
+			},
+		});
+	});
+
 	it('should map locations information with region Brazil', () => {
 		const mapper = getLocationsMapper(
 			(result) => result.form.submissionsMetric
@@ -384,6 +418,40 @@ describe('Shared HOCs Mappers - Locations Countries', () => {
 				rangeEnd: null,
 				rangeKey: 0,
 				rangeStart: null,
+				title: '',
+				touchpoint: null,
+			},
+		});
+	});
+
+	it('should include segmentId in the countries request variables when provided', () => {
+		const mapper = getLocationsMapperCountries(
+			(result) => result.form.submissionsMetric
+		);
+
+		const optionsResult = mapper.options({
+			filters: {
+				location: ['Any'],
+			},
+			rangeSelectors: {rangeKey: '0'},
+			router: {
+				params: {
+					assetId: ASSET_ID,
+					touchpoint: TOUCHPOINT,
+				},
+			},
+			segmentId: 'segment-100',
+		});
+
+		expect(optionsResult).toEqual({
+			variables: {
+				assetId: 'formId',
+				devices: 'Any',
+				location: 'Any',
+				rangeEnd: null,
+				rangeKey: 0,
+				rangeStart: null,
+				segmentId: 'segment-100',
 				title: '',
 				touchpoint: null,
 			},

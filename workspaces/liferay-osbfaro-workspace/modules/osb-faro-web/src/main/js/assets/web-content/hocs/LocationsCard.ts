@@ -24,6 +24,7 @@ const GEOLOCATION_QUERY = gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$title: String
 		$touchpoint: String
 	) {
@@ -37,6 +38,7 @@ const GEOLOCATION_QUERY = gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			title: $title
 		) {
 			assetId
