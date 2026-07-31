@@ -20,9 +20,7 @@ import {fetch} from 'frontend-js-web';
 import fuzzy from 'fuzzy';
 import React, {useEffect, useState} from 'react';
 
-import FieldSelectModalContent, {
-	visit,
-} from '../../../components/AddDataSourceFieldsModalContent';
+import FieldSelectModalContent from '../../../components/AddDataSourceFieldsModalContent';
 import OrderableTable from '../../../components/OrderableTable';
 import {
 	DEFAULT_FETCH_HEADERS,
@@ -47,7 +45,6 @@ import {
 	IDataSet,
 	IDataSetTableSection,
 	IField,
-	IFieldTreeItem,
 } from '../../../utils/types';
 
 const defaultLanguageId = Liferay.ThemeDisplay.getDefaultLanguageId();
@@ -124,7 +121,6 @@ const EditTableSectionModalContent = ({
 	dataSet,
 	namespace,
 	onSaveButtonClick,
-	sortable,
 	tableSection,
 }: {
 	cellClientExtensionRenderers: IClientExtensionRenderer[];
@@ -132,7 +128,6 @@ const EditTableSectionModalContent = ({
 	dataSet: IDataSet;
 	namespace: string;
 	onSaveButtonClick: Function;
-	sortable: boolean;
 	tableSection: IDataSetTableSection;
 }) => {
 	const [selectedRenderer, setSelectedRenderer] = useState(
@@ -322,7 +317,6 @@ const EditTableSectionModalContent = ({
 				<ClayForm.Group>
 					<ClayCheckbox
 						checked={tableSectionSortable}
-						disabled={!sortable}
 						inline
 						label={Liferay.Language.get('sortable')}
 						onChange={({target: {checked}}) =>
@@ -630,7 +624,7 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 					onSaveButtonClick={({name}: {name: string}) => {
 						saveDataSetTableColumns({
 							closeModal,
-							fields: [{name, sortable: true}] as IField[],
+							fields: [{name, sortable: false}] as IField[],
 						});
 					}}
 				/>
@@ -666,7 +660,6 @@ function Table(props: IDataSetSectionProps & {title?: string}) {
 							}) || null
 						);
 					}}
-					sortable={isSortable(fieldTreeItems, item)}
 					tableSection={item}
 				/>
 			),
@@ -773,23 +766,6 @@ export function Fields(props: IDataSetSectionProps) {
 			<Table {...props} title={Liferay.Language.get('fields')} />
 		</ClayLayout.ContainerFluid>
 	);
-}
-
-function isSortable(
-	fieldTreeItems: Array<IFieldTreeItem>,
-	selectedItem: IDataSetTableSection
-): boolean {
-	let isSortable = false;
-
-	visit(fieldTreeItems, (fieldTreeItem: IFieldTreeItem) => {
-		if (fieldTreeItem.name === selectedItem.fieldName) {
-			isSortable = fieldTreeItem.sortable || false;
-
-			return;
-		}
-	});
-
-	return isSortable;
 }
 
 export default Table;
