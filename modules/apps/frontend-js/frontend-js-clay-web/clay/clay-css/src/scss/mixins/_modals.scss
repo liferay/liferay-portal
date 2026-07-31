@@ -111,16 +111,17 @@
 
 		$map: map-remove(
 			$map,
-			'header-bg',
-			'header-border-color',
-			'header-color',
-			'header-close-color',
-			'btn-focus-box-shadow',
-			'btn-focus-outline',
 			'body-bg',
 			'body-color',
+			'btn-focus-box-shadow',
+			'btn-focus-outline',
 			'footer-bg',
-			'footer-border-color'
+			'footer-border-color',
+			'header-bg',
+			'header-border-color',
+			'header-close-color',
+			'header-color',
+			'modal-header'
 		);
 
 		@if ($enabled) {

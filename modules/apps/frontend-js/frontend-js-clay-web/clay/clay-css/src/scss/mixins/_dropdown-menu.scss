@@ -85,18 +85,14 @@
 			'breakpoint-down',
 			'font-size-mobile',
 			'max-height-mobile',
-			'max-width-mobile'
+			'max-width-mobile',
+			'media-breakpoint-down',
+			'media-breakpoint-up'
 		);
 
 		@if ($enabled) {
 			@if (length($base) != 0) {
 				@include clay-css($base);
-			}
-
-			@if ($breakpoint-down) {
-				@include media-breakpoint-down($breakpoint-down) {
-					@include clay-css($mobile);
-				}
 			}
 
 			$_before: map-get($map, before);
@@ -302,6 +298,17 @@
 				.inline-scroller {
 					@include clay-css($_inline-scroller);
 				}
+			}
+
+			@if ($breakpoint-down) {
+				$map: map-deep-merge(
+					$map,
+					(
+						media-breakpoint-down: (
+							$breakpoint-down: $mobile,
+						),
+					)
+				);
 			}
 
 			$_media-breakpoint-down: map-get($map, media-breakpoint-down);

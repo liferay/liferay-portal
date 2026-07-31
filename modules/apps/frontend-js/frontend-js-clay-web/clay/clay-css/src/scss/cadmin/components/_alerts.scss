@@ -66,36 +66,57 @@
 }
 
 .alert-notifications-absolute {
-	$breakpoint-down: map-get(
+	$_breakpoint-down: map-get(
 		$cadmin-alert-notifications-absolute,
 		breakpoint-down
 	);
+	$_mobile: map-get($cadmin-alert-notifications-absolute, mobile);
+
+	$cadmin-alert-notifications-absolute: map-remove(
+		$cadmin-alert-notifications-absolute,
+		'breakpoint-down',
+		'mobile'
+	);
+
+	@if ($_breakpoint-down) {
+		$cadmin-alert-notifications-absolute: map-deep-merge(
+			$cadmin-alert-notifications-absolute,
+			(
+				media-breakpoint-down: (
+					$_breakpoint-down: $_mobile,
+				),
+			)
+		);
+	}
 
 	@include clay-css($cadmin-alert-notifications-absolute);
-
-	@include clay-scale-component(null, $breakpoint-down) {
-		$mobile: setter(
-			map-get($cadmin-alert-notifications-absolute, mobile),
-			()
-		);
-
-		@include clay-css($mobile);
-	}
 }
 
 .alert-notifications-fixed {
-	$breakpoint-down: map-get(
+	$_breakpoint-down: map-get(
 		$cadmin-alert-notifications-fixed,
 		breakpoint-down
 	);
+	$_mobile: map-get($cadmin-alert-notifications-fixed, mobile);
+
+	$cadmin-alert-notifications-fixed: map-remove(
+		$cadmin-alert-notifications-fixed,
+		'breakpoint-down',
+		'mobile'
+	);
+
+	@if ($_breakpoint-down) {
+		$cadmin-alert-notifications-fixed: map-deep-merge(
+			$cadmin-alert-notifications-fixed,
+			(
+				media-breakpoint-down: (
+					$_breakpoint-down: $_mobile,
+				),
+			)
+		);
+	}
 
 	@include clay-css($cadmin-alert-notifications-fixed);
-
-	@include clay-scale-component(null, $breakpoint-down) {
-		$mobile: setter(map-get($cadmin-alert-notifications-fixed, mobile), ());
-
-		@include clay-css($mobile);
-	}
 }
 
 // Alert List

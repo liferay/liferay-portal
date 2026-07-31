@@ -1305,6 +1305,17 @@
 				@extend %#{$loading-animation} !optional;
 			}
 
+			@if ($breakpoint-down) {
+				$map: map-deep-merge(
+					$map,
+					(
+						media-breakpoint-down: (
+							$breakpoint-down: $mobile,
+						),
+					)
+				);
+			}
+
 			$_media-breakpoint-down: map-get($map, media-breakpoint-down);
 			$_media-breakpoint-up: map-get($map, media-breakpoint-up);
 

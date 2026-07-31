@@ -68,23 +68,51 @@
 }
 
 .alert-notifications-absolute {
-	$breakpoint-down: map-get($alert-notifications-absolute, breakpoint-down);
+	$_breakpoint-down: map-get($alert-notifications-absolute, breakpoint-down);
+	$_mobile: map-get($alert-notifications-absolute, mobile);
+
+	$alert-notifications-absolute: map-remove(
+		$alert-notifications-absolute,
+		'breakpoint-down',
+		'mobile'
+	);
+
+	@if ($_breakpoint-down) {
+		$alert-notifications-absolute: map-deep-merge(
+			$alert-notifications-absolute,
+			(
+				media-breakpoint-down: (
+					$_breakpoint-down: $_mobile,
+				),
+			)
+		);
+	}
 
 	@include clay-css($alert-notifications-absolute);
-
-	@include clay-scale-component(null, $breakpoint-down) {
-		@include clay-css(map-get($alert-notifications-absolute, mobile));
-	}
 }
 
 .alert-notifications-fixed {
-	$breakpoint-down: map-get($alert-notifications-fixed, breakpoint-down);
+	$_breakpoint-down: map-get($alert-notifications-fixed, breakpoint-down);
+	$_mobile: map-get($alert-notifications-fixed, mobile);
+
+	$alert-notifications-fixed: map-remove(
+		$alert-notifications-fixed,
+		'breakpoint-down',
+		'mobile'
+	);
+
+	@if ($_breakpoint-down) {
+		$alert-notifications-fixed: map-deep-merge(
+			$alert-notifications-fixed,
+			(
+				media-breakpoint-down: (
+					$_breakpoint-down: $_mobile,
+				),
+			)
+		);
+	}
 
 	@include clay-css($alert-notifications-fixed);
-
-	@include clay-scale-component(null, $breakpoint-down) {
-		@include clay-css(map-get($alert-notifications-fixed, mobile));
-	}
 }
 
 // Alert List

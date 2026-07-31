@@ -1269,6 +1269,29 @@
 
 		$map: map-remove($map, 'breakpoint-down');
 
+		$_mobile: map-get($map, mobile);
+
+		@if ($_mobile) {
+			$map: map-deep-merge(
+				$map,
+				(
+					media-breakpoint-down: (
+						$breakpoint-down: $_mobile,
+					),
+				)
+			);
+		}
+
+		$_media-breakpoint-down: map-get($map, media-breakpoint-down);
+		$_media-breakpoint-up: map-get($map, media-breakpoint-up);
+
+		$map: map-remove(
+			$map,
+			'mobile',
+			'media-breakpoint-down',
+			'media-breakpoint-up'
+		);
+
 		@if (length($map) != 0) {
 			@include clay-css($map);
 		}
@@ -1394,143 +1417,11 @@
 			}
 		}
 
-		@include media-breakpoint-down($breakpoint-down) {
-			$_mobile: map-get($map, mobile);
-
-			@if ($_mobile) {
-				@include clay-css($_mobile);
-
-				$_toggle-switch-check-bar: map-get(
-					$_mobile,
-					toggle-switch-check-bar
-				);
-
-				@if ($_toggle-switch-check-bar) {
-					.toggle-switch-check-bar {
-						@include clay-css($_toggle-switch-check-bar);
-
-						$_before: map-get($_toggle-switch-check-bar, before);
-
-						@if ($_before) {
-							&::before {
-								@include clay-css($_before);
-							}
-						}
-
-						$_after: map-get($_toggle-switch-check-bar, after);
-
-						@if ($_after) {
-							&::after {
-								@include clay-css($_after);
-							}
-						}
-					}
-				}
-
-				$_toggle-switch-check: map-get($_mobile, toggle-switch-check);
-
-				@if ($_toggle-switch-check) {
-					.toggle-switch-check {
-						@include clay-toggle-switch-check-variant(
-							$_toggle-switch-check
-						);
-					}
-				}
-
-				$_toggle-switch-label: map-get($_mobile, toggle-switch-label);
-
-				@if ($_toggle-switch-label) {
-					.toggle-switch-label {
-						@include clay-css($_toggle-switch-label);
-					}
-				}
-
-				$_toggle-switch-text: map-get($_mobile, toggle-switch-text);
-
-				@if ($_toggle-switch-text) {
-					.toggle-switch-text {
-						@include clay-css($_toggle-switch-text);
-					}
-				}
-
-				$_toggle-switch-text-left: map-get(
-					$_mobile,
-					toggle-switch-text-left
-				);
-
-				@if ($_toggle-switch-text-left) {
-					.toggle-switch-text-left {
-						@include clay-css($_toggle-switch-text-left);
-					}
-				}
-
-				$_toggle-switch-text-right: map-get(
-					$_mobile,
-					toggle-switch-text-right
-				);
-
-				@if ($_toggle-switch-text-right) {
-					.toggle-switch-text-right {
-						@include clay-css($_toggle-switch-text-right);
-					}
-				}
-
-				$_disabled: map-get($_mobile, disabled);
-
-				@if ($_disabled) {
-					&.disabled {
-						@include clay-css($_disabled);
-
-						$_toggle-switch-label: map-get(
-							$_disabled,
-							toggle-switch-label
-						);
-
-						@if ($_toggle-switch-label) {
-							.toggle-switch-label {
-								@include clay-css($_toggle-switch-label);
-							}
-
-							$_toggle-switch-text: map-get(
-								$_disabled,
-								toggle-switch-text
-							);
-
-							@if ($_toggle-switch-text) {
-								.toggle-switch-text {
-									@include clay-css($_toggle-switch-text);
-								}
-							}
-
-							$_toggle-switch-text-left: map-get(
-								$_disabled,
-								toggle-switch-text-left
-							);
-
-							@if ($_toggle-switch-text-left) {
-								.toggle-switch-text-left {
-									@include clay-css(
-										$_toggle-switch-text-left
-									);
-								}
-							}
-
-							$_toggle-switch-text-right: map-get(
-								$_disabled,
-								toggle-switch-text-right
-							);
-
-							@if ($_toggle-switch-text-right) {
-								.toggle-switch-text-right {
-									@include clay-css(
-										$_toggle-switch-text-right
-									);
-								}
-							}
-						}
-					}
-				}
-			}
+		@if ($_media-breakpoint-down) or ($_media-breakpoint-up) {
+			@include clay-generate-media-breakpoints(
+				$map,
+				'clay-toggle-switch-variant'
+			);
 		}
 	}
 }

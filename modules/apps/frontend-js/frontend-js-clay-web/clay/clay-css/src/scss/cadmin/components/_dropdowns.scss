@@ -7,13 +7,27 @@
 }
 
 .dropdown-header {
-	@include clay-css($cadmin-dropdown-header);
+	$_breakpoint-down: map-get($cadmin-dropdown-header, breakpoint-down);
+	$_mobile: map-get($cadmin-dropdown-header, mobile);
 
-	@include media-breakpoint-down(
-		map-get($cadmin-dropdown-header, breakpoint-down)
-	) {
-		@include clay-css(setter(map-get($cadmin-dropdown-header, mobile), ()));
+	$cadmin-dropdown-header: map-remove(
+		$cadmin-dropdown-header,
+		'breakpoint-down',
+		'mobile'
+	);
+
+	@if ($_breakpoint-down) {
+		$cadmin-dropdown-header: map-deep-merge(
+			$cadmin-dropdown-header,
+			(
+				media-breakpoint-down: (
+					$_breakpoint-down: $_mobile,
+				),
+			)
+		);
 	}
+
+	@include clay-css($cadmin-dropdown-header);
 
 	&:first-child {
 		@include clay-css(

@@ -25,29 +25,53 @@
 }
 
 .toggle-switch-text-left {
-	$breakpoint-down: setter(
+	$_breakpoint-down: setter(
 		map-get($toggle-switch-text-left, breakpoint-down),
 		sm
 	);
+	$_mobile: map-get($toggle-switch-text-left, mobile);
+
+	$toggle-switch-text-left: map-remove(
+		$toggle-switch-text-left,
+		'breakpoint-down',
+		'mobile'
+	);
+
+	$toggle-switch-text-left: map-deep-merge(
+		$toggle-switch-text-left,
+		(
+			media-breakpoint-down: (
+				$_breakpoint-down: $_mobile,
+			),
+		)
+	);
 
 	@include clay-css($toggle-switch-text-left);
-
-	@include media-breakpoint-down($breakpoint-down) {
-		@include clay-css(map-get($toggle-switch-text-left, mobile));
-	}
 }
 
 .toggle-switch-text-right {
-	$breakpoint-down: setter(
+	$_breakpoint-down: setter(
 		map-get($toggle-switch-text-right, breakpoint-down),
 		sm
 	);
+	$_mobile: map-get($toggle-switch-text-right, mobile);
+
+	$toggle-switch-text-right: map-remove(
+		$toggle-switch-text-right,
+		'breakpoint-down',
+		'mobile'
+	);
+
+	$toggle-switch-text-right: map-deep-merge(
+		$toggle-switch-text-right,
+		(
+			media-breakpoint-down: (
+				$_breakpoint-down: $_mobile,
+			),
+		)
+	);
 
 	@include clay-css($toggle-switch-text-right);
-
-	@include media-breakpoint-down($breakpoint-down) {
-		@include clay-css(map-get($toggle-switch-text-right, mobile));
-	}
 }
 
 // Simple Toggle Switch

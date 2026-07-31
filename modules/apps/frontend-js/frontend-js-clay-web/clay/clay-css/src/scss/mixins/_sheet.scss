@@ -16,7 +16,6 @@
 	$enabled: setter(map-get($map, enabled), true);
 
 	$breakpoint-down: map-get($map, breakpoint-down);
-
 	$mobile: setter(map-get($map, mobile), ());
 
 	$btn-mobile: setter(map-get($mobile, btn), ());
@@ -31,33 +30,41 @@
 		)
 	);
 
+	$mobile: map-deep-merge(
+		(
+			'.btn': $btn-mobile,
+			'.btn-group': map-get($mobile, btn-group),
+			'.btn-group-item': map-get($mobile, btn-group-item),
+		),
+		$mobile
+	);
+
+	@if ($breakpoint-down) {
+		$map: map-deep-merge(
+			$map,
+			(
+				media-breakpoint-down: (
+					$breakpoint-down: $mobile,
+				),
+			)
+		);
+	}
+
+	$map: map-remove(
+		$map,
+		'breakpoint-down',
+		'btn',
+		'btn-group',
+		'btn-group-item',
+		'mobile'
+	);
+
 	@if ($enabled) {
-		@include media-breakpoint-down($breakpoint-down) {
-			@if (length($mobile) != 0) {
-				@include clay-css($mobile);
-			}
+		$_media-breakpoint-down: map-get($map, media-breakpoint-down);
+		$_media-breakpoint-up: map-get($map, media-breakpoint-up);
 
-			@if (length($btn-mobile) != 0) {
-				.btn {
-					@include clay-css($btn-mobile);
-				}
-			}
-
-			$_btn-group: map-get($mobile, btn-group);
-
-			@if ($_btn-group) {
-				.btn-group {
-					@include clay-css($_btn-group);
-				}
-			}
-
-			$_btn-group-item: map-get($mobile, btn-group-item);
-
-			@if ($_btn-group-item) {
-				.btn-group-item {
-					@include clay-css($_btn-group-item);
-				}
-			}
+		@if ($_media-breakpoint-down) or ($_media-breakpoint-up) {
+			@include clay-generate-media-breakpoints($map, 'clay-map-to-css');
 		}
 	}
 }

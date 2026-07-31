@@ -144,11 +144,18 @@
 
 	$_modal-header: map-remove($_modal-header, breakpoint-down, mobile);
 
-	@include clay-map-to-css($_modal-header);
-
-	@include clay-scale-component(null, $_breakpoint-down) {
-		@include clay-css(map-get($_modal-header, mobile));
+	@if ($_breakpoint-down) {
+		$_modal-header: map-deep-merge(
+			$_modal-header,
+			(
+				media-breakpoint-down: (
+					$_breakpoint-down: $_mobile,
+				),
+			)
+		);
 	}
+
+	@include clay-map-to-css($_modal-header);
 }
 
 .modal-body,

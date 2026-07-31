@@ -760,6 +760,8 @@
 
 @mixin clay-tbar-inline-down($map) {
 	@if (type-of($map) == 'map') {
+		$enabled: setter(map-get($map, enabled), true);
+
 		$breakpoint-down: map-get($map, breakpoint-down);
 
 		$tbar-item: setter(map-get($map, tbar-item), ());
@@ -780,28 +782,52 @@
 			)
 		);
 
-		$map: map-remove($map, 'item-padding-left', 'item-padding-right');
+		$mobile: map-deep-merge(
+			(
+				display: block,
+
+				'.container, .container-fluid': (
+					display: block,
+				),
+
+				'.component-title, .tbar-nav, .tbar-section': (
+					display: inline,
+				),
+
+				'.tbar-item': $tbar-item,
+			),
+			setter(map-get($map, mobile), ())
+		);
 
 		@if ($breakpoint-down) {
-			@include media-breakpoint-down($breakpoint-down) {
-				display: block;
+			$map: map-deep-merge(
+				$map,
+				(
+					media-breakpoint-down: (
+						$breakpoint-down: $mobile,
+					),
+				)
+			);
+		}
 
-				.container,
-				.container-fluid {
-					display: block;
-				}
+		$map: map-remove(
+			$map,
+			'breakpoint-down',
+			'item-padding-left',
+			'item-padding-right',
+			'mobile',
+			'tbar-item'
+		);
 
-				.component-title,
-				.tbar-nav,
-				.tbar-section {
-					display: inline;
-				}
+		@if ($enabled) {
+			$_media-breakpoint-down: map-get($map, media-breakpoint-down);
+			$_media-breakpoint-up: map-get($map, media-breakpoint-up);
 
-				@if (length($tbar-item) != 0) {
-					.tbar-item {
-						@include clay-css($tbar-item);
-					}
-				}
+			@if ($_media-breakpoint-down) or ($_media-breakpoint-up) {
+				@include clay-generate-media-breakpoints(
+					$map,
+					'clay-map-to-css'
+				);
 			}
 		}
 	}
