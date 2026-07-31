@@ -877,7 +877,7 @@ public class BatchEngineImportTaskExecutorTest
 				).build());
 
 		try {
-			_assertFailedCallbackURL(testApplication, "255.255.255.255");
+			_assertAllowedAndFailedCallbackURL(testApplication, "255.255.255.255");
 			_assertSkippedCallbackURL(testApplication, "localhost");
 
 			try (CompanyConfigurationTemporarySwapper
@@ -1111,7 +1111,7 @@ public class BatchEngineImportTaskExecutorTest
 				new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
 	}
 
-	private void _assertFailedCallbackURL(
+	private void _assertAllowedAndFailedCallbackURL(
 			TestApplication testApplication, String host)
 		throws Exception {
 
