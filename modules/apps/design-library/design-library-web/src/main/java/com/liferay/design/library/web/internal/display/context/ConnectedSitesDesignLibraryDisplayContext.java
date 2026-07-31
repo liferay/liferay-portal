@@ -30,21 +30,19 @@ public class ConnectedSitesDesignLibraryDisplayContext
 		super(depotEntry, httpServletRequest);
 	}
 
-	public String getConnectedSitesAPIURL() throws PortalException {
+	public String getAPIURL() throws PortalException {
 		return getAssetLibraryURL(
 			getGroup(), "/connected-sites?page=1&pageSize=10");
 	}
 
-	public Map<String, Object> getConnectedSitesEmptyState() {
+	public Map<String, Object> getEmptyState() {
 		return buildEmptyState(
 			"connect-sites-to-this-design-library",
 			"/states/design_library_empty_state.svg",
 			"no-sites-are-connected-yet");
 	}
 
-	public Map<String, Object> getConnectedSitesFDSAdditionalProps()
-		throws PortalException {
-
+	public Map<String, Object> getFDSAdditionalProps() throws PortalException {
 		Group group = getGroup();
 
 		return HashMapBuilder.<String, Object>put(
@@ -60,11 +58,9 @@ public class ConnectedSitesDesignLibraryDisplayContext
 		).build();
 	}
 
-	public Map<String, Object> getConnectedSitesSectionHeaderProps()
-		throws PortalException {
-
+	public Map<String, Object> getSectionHeaderProps() throws PortalException {
 		return HashMapBuilder.<String, Object>putAll(
-			getConnectedSitesFDSAdditionalProps()
+			getFDSAdditionalProps()
 		).put(
 			"count",
 			() -> {
