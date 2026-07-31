@@ -71,6 +71,10 @@ export default function KeyboardMovementManager({
 			)
 		: -1;
 
+	const initialIndex = getInitialIndex(targets, sourceIndex);
+
+	const targetIndex = currentIndex === -1 ? initialIndex : currentIndex;
+
 	useEffect(() => {
 		if (target.nodeId !== null) {
 			return;
@@ -92,7 +96,7 @@ export default function KeyboardMovementManager({
 			return;
 		}
 
-		setTarget(toMovementTarget(getInitialTarget(targets, sourceIndex)));
+		setTarget(toMovementTarget(targets[initialIndex]));
 
 		setText(
 			Liferay.Language.get(
@@ -102,17 +106,17 @@ export default function KeyboardMovementManager({
 	}, [
 		disableMovement,
 		dispatch,
+		initialIndex,
 		setTarget,
 		setText,
 		source,
-		sourceIndex,
 		target,
 		targets,
 	]);
 
 	useEffect(() => {
 		const confirmPlacement = () => {
-			const moveTarget = targets[currentIndex];
+			const moveTarget = targets[targetIndex];
 
 			if (!moveTarget) {
 				return;
@@ -201,10 +205,10 @@ export default function KeyboardMovementManager({
 			event.stopPropagation();
 
 			if (event.code === ARROW_DOWN_KEY_CODE) {
-				moveTo(currentIndex + 1);
+				moveTo(targetIndex + 1);
 			}
 			else if (event.code === ARROW_UP_KEY_CODE) {
-				moveTo(currentIndex - 1);
+				moveTo(targetIndex - 1);
 			}
 			else if (event.code === END_KEY_CODE) {
 				moveTo(targets.length - 1);
@@ -245,15 +249,12 @@ function getPositionLabel(position: DropZone): string {
 	return Liferay.Language.get('bottom');
 }
 
-function getInitialTarget(
-	targets: MoveTarget[],
-	sourceIndex: number
-): MoveTarget {
+function getInitialIndex(targets: MoveTarget[], sourceIndex: number): number {
 	if (sourceIndex !== -1) {
-		return targets[sourceIndex + 1] ?? targets[sourceIndex];
+		return Math.min(sourceIndex + 1, targets.length - 1);
 	}
 
-	return targets[targets.length - 1];
+	return targets.length - 1;
 }
 
 function toMovementTarget(moveTarget: MoveTarget): MovementTarget {
