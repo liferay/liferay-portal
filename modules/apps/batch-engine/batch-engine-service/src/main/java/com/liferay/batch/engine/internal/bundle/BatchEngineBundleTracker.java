@@ -13,7 +13,7 @@ import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
+import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 
 import java.util.ArrayList;
@@ -46,7 +46,12 @@ public class BatchEngineBundleTracker {
 			bundleContext, Bundle.ACTIVE,
 			new BatchEngineBundleTrackerCustomizer());
 
-		_bundleTracker.open();
+		InitialRequestSyncUtil.registerSyncCallable(
+			() -> {
+				_bundleTracker.open();
+
+				return null;
+			});
 	}
 
 	@Deactivate
@@ -64,9 +69,6 @@ public class BatchEngineBundleTracker {
 	private BatchEngineUnitReader _batchEngineUnitReader;
 
 	private BundleTracker<Bundle> _bundleTracker;
-
-	@Reference(target = ModuleServiceLifecycle.PORTLETS_INITIALIZED)
-	private ModuleServiceLifecycle _moduleServiceLifecycle;
 
 	@Reference
 	private MultiCompanyBatchEngineUnitProcessor
