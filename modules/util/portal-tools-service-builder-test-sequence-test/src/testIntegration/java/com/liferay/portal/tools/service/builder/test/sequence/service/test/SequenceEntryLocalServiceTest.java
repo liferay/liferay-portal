@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.tools.service.builder.test.sequence.model.SequenceEntry;
 import com.liferay.portal.tools.service.builder.test.sequence.service.SequenceEntryLocalService;
 
 import java.io.IOException;
@@ -93,9 +94,21 @@ public class SequenceEntryLocalServiceTest {
 
 	@Test
 	public void testAddSequenceEntry() {
-		Assert.assertNotNull(
-			_sequenceEntryLocalService.addSequenceEntry(
-				_sequenceEntryLocalService.createSequenceEntry(0)));
+		Assert.assertNotNull(_addSequenceEntry());
+	}
+
+	@Test
+	public void testAddSequenceEntryIncrementsPrimaryKeyByOne() {
+		SequenceEntry sequenceEntry1 = _addSequenceEntry();
+		SequenceEntry sequenceEntry2 = _addSequenceEntry();
+		SequenceEntry sequenceEntry3 = _addSequenceEntry();
+
+		Assert.assertEquals(
+			sequenceEntry1.getSequenceEntryId() + 1,
+			sequenceEntry2.getSequenceEntryId());
+		Assert.assertEquals(
+			sequenceEntry2.getSequenceEntryId() + 1,
+			sequenceEntry3.getSequenceEntryId());
 	}
 
 	private static void _deleteRelease() {
@@ -123,6 +136,11 @@ public class SequenceEntryLocalServiceTest {
 				_log.debug(exception);
 			}
 		}
+	}
+
+	private SequenceEntry _addSequenceEntry() {
+		return _sequenceEntryLocalService.addSequenceEntry(
+			_sequenceEntryLocalService.createSequenceEntry(0));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
