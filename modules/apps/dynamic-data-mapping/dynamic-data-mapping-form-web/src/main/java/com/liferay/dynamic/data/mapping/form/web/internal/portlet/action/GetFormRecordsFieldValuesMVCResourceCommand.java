@@ -21,8 +21,11 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.portlet.ResourceRequest;
@@ -54,10 +57,21 @@ public class GetFormRecordsFieldValuesMVCResourceCommand
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
+		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
+			resourceRequest);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!themeDisplay.isSignedIn()) {
+			throw new PrincipalException.MustBeAuthenticated(
+				themeDisplay.getUserId());
+		}
+
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse,
-			_getFieldValuesJSONArray(
-				_portal.getHttpServletRequest(resourceRequest)));
+			_getFieldValuesJSONArray(httpServletRequest));
 	}
 
 	private JSONArray _getFieldValuesJSONArray(
