@@ -611,8 +611,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	private static final Pattern _localServiceCallPattern = Pattern.compile(
 		"\\b(\\w+?)LocalService\\.\\s*(\\w+)\\s*\\(");
 	private static final Pattern _passthroughBodyPattern = Pattern.compile(
-		"\\)\\s*(?:throws[\\w\\s,.]*)?\\{\\s*return\\s+(\\w+Persistence)\\.(" +
-			"(?:count|fetch|filterCount|filterFind|find)\\w*)\\([^;]*\\);" +
-				"\\s*\\}\\s*\\z");
+		"\\)\\s*(?:throws[\\w\\s,.]*)?\\{\\s*return\\s+(\\w+Persistence)\\.\\" +
+			"s*(\\s*(?:count|fetch|filterCount|filterFind|find)\\w*)\\([^;]*" +
+				"\\);\\s*\\}\\s*\\z");
 
 }
