@@ -20,6 +20,7 @@ import {
 	postChatByExternalReferenceCodeMessage,
 } from './api';
 import {ContentType} from './components/ContentTypeSelectorMessageBalloon';
+import {subscribeToServerEvents} from './serverEvents';
 import {ChatMessageSentData, Message} from './types';
 import buildAssistantMessage from './utils/buildAssistantMessage';
 
@@ -251,6 +252,8 @@ export default function useAIChat({
 			}
 
 			eventSourceRef.current = eventSource;
+
+			subscribeToServerEvents(eventSource);
 
 			eventSourceRef.current.addEventListener(
 				'Chat Message Sent',
