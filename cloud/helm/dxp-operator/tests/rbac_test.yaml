@@ -107,17 +107,26 @@ tests:
             value: ServiceAccount
         it: Omits the service account annotations by default
     -   asserts:
-            -   equal:
-                    path: rules[0].apiGroups
-                    value:
-                        -   licensing.liferay.com
             -   lengthEqual:
-                    count: 3
+                    count: 5
                     path: rules
+            -   contains:
+                    path: rules
+                    content:
+                        apiGroups:
+                            -   licensing.liferay.com
+                        resources:
+                            -   liferayenvironments
+                        verbs:
+                            -   get
+                            -   list
+                            -   patch
+                            -   update
+                            -   watch
         documentSelector:
             path: kind
             value: ClusterRole
-        it: Renders one rule per LiferayEnvironment resource in the licensing API group
+        it: Renders the operator cluster role rules for namespaces, secrets, and the licensing API group
     -   asserts:
             -   hasDocuments:
                     count: 3
