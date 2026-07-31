@@ -12,6 +12,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyServiceUtil;
 import com.liferay.depot.util.SiteConnectedGroupGroupProviderUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -36,8 +37,14 @@ import jakarta.portlet.RenderRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 
 /**
  * @author Eudaldo Alonso
@@ -222,6 +229,15 @@ public class AssetCategoriesNavigationDisplayContext {
 		return _displayStyleGroupId;
 	}
 
+	private Queue<String> _getAssetVocabularyExternalReferenceCodes(
+		String key, PortletPreferences portletPreferences) {
+
+		return new ArrayDeque<>(
+			Arrays.asList(
+				GetterUtil.getStringValues(
+					portletPreferences.getValues(key, null))));
+	}
+
 	private Long _getAssetVocabularyId(
 		String assetVocabularyExternalReferenceCode, long groupId) {
 
@@ -242,72 +258,67 @@ public class AssetCategoriesNavigationDisplayContext {
 	}
 
 	private String[] _getAssetVocabularyIds() {
+		Map<String, Queue<String>> assetVocabularyExternalReferenceCodesMap =
+			new LinkedHashMap<>();
 		List<Long> assetVocabularyIds = new ArrayList<>();
 
 		PortletPreferences portletPreferences = _renderRequest.getPreferences();
 
-		assetVocabularyIds.addAll(
-			_getExternalAssetVocabularyIds(portletPreferences));
-		assetVocabularyIds.addAll(
-			_getLocalAssetVocabularyIds(portletPreferences));
+		String[] groupExternalReferenceCodes = GetterUtil.getStringValues(
+			portletPreferences.getValues(
+				"assetVocabularyGroupExternalReferenceCodes", null));
 
-		return ArrayUtil.toStringArray(assetVocabularyIds);
-	}
+		Map<String, Long> groupIdsMap = new HashMap<>();
 
-	private List<Long> _getExternalAssetVocabularyIds(
-		PortletPreferences portletPreferences) {
+		for (String groupExternalReferenceCode : groupExternalReferenceCodes) {
+			if (Validator.isNull(groupExternalReferenceCode) ||
+				assetVocabularyExternalReferenceCodesMap.containsKey(
+					groupExternalReferenceCode)) {
 
-		List<Long> assetVocabularyIds = new ArrayList<>();
-
-		String[] assetVocabularyGroupExternalReferenceCodes =
-			GetterUtil.getStringValues(
-				portletPreferences.getValues(
-					"assetVocabularyGroupExternalReferenceCodes", null));
-
-		for (String assetVocabularyGroupExternalReferenceCode :
-				assetVocabularyGroupExternalReferenceCodes) {
-
-			Group group =
-				GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
-					assetVocabularyGroupExternalReferenceCode,
-					_themeDisplay.getCompanyId());
-
-			if (group == null) {
 				continue;
 			}
 
-			String[] assetVocabularyExternalReferenceCodes =
-				GetterUtil.getStringValues(
-					portletPreferences.getValues(
-						"assetVocabularyExternalReferenceCodes_" +
-							assetVocabularyGroupExternalReferenceCode,
-						null));
+			assetVocabularyExternalReferenceCodesMap.put(
+				groupExternalReferenceCode,
+				_getAssetVocabularyExternalReferenceCodes(
+					"assetVocabularyExternalReferenceCodes_" +
+						groupExternalReferenceCode,
+					portletPreferences));
 
-			assetVocabularyIds.addAll(
-				(List<Long>)TransformUtil.transformToList(
-					assetVocabularyExternalReferenceCodes,
-					assetVocabularyExternalReferenceCode ->
-						_getAssetVocabularyId(
-							assetVocabularyExternalReferenceCode,
-							group.getGroupId())));
+			Group group =
+				GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
+					groupExternalReferenceCode, _themeDisplay.getCompanyId());
+
+			if (group != null) {
+				groupIdsMap.put(groupExternalReferenceCode, group.getGroupId());
+			}
 		}
 
-		return assetVocabularyIds;
-	}
+		assetVocabularyExternalReferenceCodesMap.put(
+			StringPool.BLANK,
+			_getAssetVocabularyExternalReferenceCodes(
+				"assetVocabularyExternalReferenceCodes", portletPreferences));
 
-	private List<Long> _getLocalAssetVocabularyIds(
-		PortletPreferences portletPreferences) {
+		groupIdsMap.put(StringPool.BLANK, _themeDisplay.getScopeGroupId());
 
-		String[] assetVocabularyExternalReferenceCodes =
-			GetterUtil.getStringValues(
-				portletPreferences.getValues(
-					"assetVocabularyExternalReferenceCodes", null));
+		for (Map.Entry<String, Queue<String>> entry :
+				assetVocabularyExternalReferenceCodesMap.entrySet()) {
 
-		return TransformUtil.transformToList(
-			assetVocabularyExternalReferenceCodes,
-			assetVocabularyExternalReferenceCode -> _getAssetVocabularyId(
-				assetVocabularyExternalReferenceCode,
-				_themeDisplay.getScopeGroupId()));
+			Long groupId = groupIdsMap.get(entry.getKey());
+
+			if (groupId == null) {
+				continue;
+			}
+
+			assetVocabularyIds.addAll(
+				TransformUtil.transform(
+					entry.getValue(),
+					assetVocabularyExternalReferenceCode ->
+						_getAssetVocabularyId(
+							assetVocabularyExternalReferenceCode, groupId)));
+		}
+
+		return ArrayUtil.toStringArray(assetVocabularyIds);
 	}
 
 	private String _getTitle(AssetVocabulary assetVocabulary) {
