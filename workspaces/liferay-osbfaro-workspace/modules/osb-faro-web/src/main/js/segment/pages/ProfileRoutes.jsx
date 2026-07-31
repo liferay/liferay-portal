@@ -6,7 +6,6 @@ import DownloadPDFReport from 'shared/components/download-report/DownloadPDFRepo
 import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
 import ErrorPage from 'shared/pages/ErrorPage';
 import getCN from 'classnames';
-import Label from 'shared/components/Label';
 import Loading from 'shared/components/Loading';
 import React, {
 	lazy,
@@ -204,11 +203,10 @@ export const SegmentProfileRoutes = () => {
 							segment.externalReferenceCode
 						}`}
 						title={title}
-					>
-						<Label display='secondary' size='lg' uppercase>
-							{SEGMENTS_LANGUAGE_MAP[segmentDetails.segmentType]}
-						</Label>
-					</BasePage.Header.TitleSection>
+						topLabel={
+							SEGMENTS_LANGUAGE_MAP[segmentDetails.segmentType]
+						}
+					/>
 
 					<BasePage.Header.Section>
 						<BasePage.Header.PageActions

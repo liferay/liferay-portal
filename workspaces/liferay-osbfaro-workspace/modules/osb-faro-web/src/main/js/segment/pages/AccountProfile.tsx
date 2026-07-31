@@ -2,7 +2,6 @@ import * as breadcrumbs from 'shared/util/breadcrumbs';
 import AccountsDataSet from 'shared/components/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
 import CriteriaCard from 'segment/components/criteria-card';
-import Label from 'shared/components/Label';
 import React from 'react';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
@@ -54,11 +53,8 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 							'erc'
 						)}: ${segment.externalReferenceCode}`}
 						title={name}
-					>
-						<Label display="secondary" size="lg" uppercase>
-							{Liferay.Language.get('account-batch-segment')}
-						</Label>
-					</BasePage.Header.TitleSection>
+						topLabel={Liferay.Language.get('account-batch-segment')}
+					/>
 
 					<BasePage.Header.Section>
 						<BasePage.Header.PageActions

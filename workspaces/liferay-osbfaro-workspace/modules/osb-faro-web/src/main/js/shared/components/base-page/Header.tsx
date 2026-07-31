@@ -8,6 +8,7 @@ import ClayLabel from '@clayui/label';
 import ClayLink from '@clayui/link';
 import ClayNavigationBar from '@clayui/navigation-bar';
 import getCN from 'classnames';
+import Label from 'shared/components/Label';
 import NotificationAlertList, {
 	useNotificationsAPI,
 } from '../NotificationAlertList';
@@ -185,6 +186,7 @@ interface ITitleSectionProps extends React.HTMLAttributes<HTMLDivElement> {
 	label?: boolean;
 	subtitle?: React.ReactNode | string;
 	title?: string;
+	topLabel?: string;
 }
 
 export interface IActionProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -204,8 +206,17 @@ const TitleSection: React.FC<ITitleSectionProps> = ({
 	label = false,
 	subtitle,
 	title,
+	topLabel,
 }) => (
 	<Section className={getCN('title-section', className, {subtitle})}>
+		{topLabel && (
+			<div className="mb-1">
+				<Label display="secondary" size="lg" uppercase>
+					{topLabel}
+				</Label>
+			</div>
+		)}
+
 		<span className="align-items-center d-flex">
 			<h1 className="title text-truncate">
 				<TextTruncate title={title} />
