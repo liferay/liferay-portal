@@ -48,7 +48,8 @@ public class XMLServiceFinderWhereClauseCheck extends BaseFileCheck {
 					continue;
 				}
 
-				String s = finderWhere.replaceAll("'[^']*'", StringPool.BLANK);
+				String s = finderWhere.replaceAll(
+					"'([^'\\\\]|\\\\.)*'", StringPool.BLANK);
 
 				if (!s.contains(StringPool.UNDERLINE)) {
 					continue;
