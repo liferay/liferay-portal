@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringBundler;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Jorge García Jiménez
@@ -16,39 +17,40 @@ import java.util.Set;
 public class FIPSApplicationStateMachineUtil {
 
 	public static FIPSApplicationState getFIPSApplicationState() {
-		return _fipsApplicationState;
+		return _fipsApplicationStateAtomicReference.get();
 	}
 
 	public static void selfTest(Runnable runnable) {
-		transition(FIPSApplicationState.SELF_TEST);
+		_transition(FIPSApplicationState.SELF_TEST);
 
 		try {
 			runnable.run();
 		}
 		catch (Throwable throwable) {
-			transition(FIPSApplicationState.ERROR);
+			_transition(FIPSApplicationState.ERROR);
 
 			throw throwable;
 		}
 
-		transition(FIPSApplicationState.OPERATIONAL);
+		_transition(FIPSApplicationState.OPERATIONAL);
 	}
 
-	public static synchronized void transition(
-		FIPSApplicationState fipsApplicationState) {
+	private static void _transition(FIPSApplicationState fipsApplicationState) {
+		_fipsApplicationStateAtomicReference.updateAndGet(
+			currentFIPSApplicationState -> {
+				Set<FIPSApplicationState> nextFIPSApplicationStates =
+					_allowedTransitions.get(currentFIPSApplicationState);
 
-		Set<FIPSApplicationState> nextFIPSApplicationStates =
-			_allowedTransitions.get(_fipsApplicationState);
+				if (!nextFIPSApplicationStates.contains(fipsApplicationState)) {
+					throw new IllegalStateException(
+						StringBundler.concat(
+							"Unable to transition the FIPS application state ",
+							"from \"", currentFIPSApplicationState, "\" to \"",
+							fipsApplicationState, "\""));
+				}
 
-		if (!nextFIPSApplicationStates.contains(fipsApplicationState)) {
-			throw new IllegalStateException(
-				StringBundler.concat(
-					"Unable to transition the FIPS application state from \"",
-					_fipsApplicationState, "\" to \"", fipsApplicationState,
-					"\""));
-		}
-
-		_fipsApplicationState = fipsApplicationState;
+				return fipsApplicationState;
+			});
 	}
 
 	private static final Map<FIPSApplicationState, Set<FIPSApplicationState>>
@@ -65,7 +67,8 @@ public class FIPSApplicationStateMachineUtil {
 			Set.of(
 				FIPSApplicationState.ERROR, FIPSApplicationState.OPERATIONAL,
 				FIPSApplicationState.POWER_OFF));
-	private static volatile FIPSApplicationState _fipsApplicationState =
-		FIPSApplicationState.INITIALIZING;
+	private static final AtomicReference<FIPSApplicationState>
+		_fipsApplicationStateAtomicReference = new AtomicReference<>(
+			FIPSApplicationState.INITIALIZING);
 
 }

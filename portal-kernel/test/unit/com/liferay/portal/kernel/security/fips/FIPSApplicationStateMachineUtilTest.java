@@ -7,6 +7,8 @@ package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -101,8 +103,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		Assert.assertThrows(
 			IllegalStateException.class,
-			() -> FIPSApplicationStateMachineUtil.transition(
-				toFIPSApplicationState));
+			() -> _transition(toFIPSApplicationState));
 
 		Assert.assertEquals(
 			fromFIPSApplicationState,
@@ -115,7 +116,7 @@ public class FIPSApplicationStateMachineUtilTest {
 
 		_setFIPSApplicationState(fromFIPSApplicationState);
 
-		FIPSApplicationStateMachineUtil.transition(toFIPSApplicationState);
+		_transition(toFIPSApplicationState);
 
 		Assert.assertEquals(
 			toFIPSApplicationState,
@@ -125,9 +126,13 @@ public class FIPSApplicationStateMachineUtilTest {
 	private void _setFIPSApplicationState(
 		FIPSApplicationState fipsApplicationState) {
 
-		ReflectionTestUtil.setFieldValue(
-			FIPSApplicationStateMachineUtil.class, "_fipsApplicationState",
-			fipsApplicationState);
+		AtomicReference<FIPSApplicationState>
+			fipsApplicationStateAtomicReference =
+				ReflectionTestUtil.getFieldValue(
+					FIPSApplicationStateMachineUtil.class,
+					"_fipsApplicationStateAtomicReference");
+
+		fipsApplicationStateAtomicReference.set(fipsApplicationState);
 	}
 
 	private void _testSelfTest(RuntimeException runtimeException) {
@@ -143,6 +148,12 @@ public class FIPSApplicationStateMachineUtilTest {
 		Assert.assertEquals(
 			FIPSApplicationState.ERROR,
 			FIPSApplicationStateMachineUtil.getFIPSApplicationState());
+	}
+
+	private void _transition(FIPSApplicationState fipsApplicationState) {
+		ReflectionTestUtil.invoke(
+			FIPSApplicationStateMachineUtil.class, "_transition",
+			new Class<?>[] {FIPSApplicationState.class}, fipsApplicationState);
 	}
 
 }
