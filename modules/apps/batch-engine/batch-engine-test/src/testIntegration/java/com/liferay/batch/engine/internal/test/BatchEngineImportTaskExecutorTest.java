@@ -877,7 +877,8 @@ public class BatchEngineImportTaskExecutorTest
 				).build());
 
 		try {
-			_assertAllowedAndFailedCallbackURL(testApplication, "255.255.255.255");
+			_assertAllowedAndFailedCallbackURL(
+				testApplication, "255.255.255.255");
 			_assertSkippedCallbackURL(testApplication, "localhost");
 
 			try (CompanyConfigurationTemporarySwapper
@@ -1063,6 +1064,22 @@ public class BatchEngineImportTaskExecutorTest
 
 	}
 
+	private void _assertAllowedAndFailedCallbackURL(
+			TestApplication testApplication, String host)
+		throws Exception {
+
+		int count = testApplication.getCount();
+
+		List<LogEntry> logEntries = _importBlogPostings(_getCallbackURL(host));
+
+		Assert.assertEquals(count, testApplication.getCount());
+		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+		LogEntry logEntry = logEntries.get(0);
+
+		Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
+	}
+
 	private void _assertAllowedCallbackURL(
 			TestApplication testApplication, String host)
 		throws Exception {
@@ -1109,22 +1126,6 @@ public class BatchEngineImportTaskExecutorTest
 			blogsEntryLocalService.getGroupEntriesCount(
 				TestPropsValues.getGroupId(),
 				new QueryDefinition<>(WorkflowConstants.STATUS_ANY)));
-	}
-
-	private void _assertAllowedAndFailedCallbackURL(
-			TestApplication testApplication, String host)
-		throws Exception {
-
-		int count = testApplication.getCount();
-
-		List<LogEntry> logEntries = _importBlogPostings(_getCallbackURL(host));
-
-		Assert.assertEquals(count, testApplication.getCount());
-		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-		LogEntry logEntry = logEntries.get(0);
-
-		Assert.assertEquals(LoggerTestUtil.ERROR, logEntry.getPriority());
 	}
 
 	private void _assertInvalidFileImportWithOnErrorContinueStrategy(
