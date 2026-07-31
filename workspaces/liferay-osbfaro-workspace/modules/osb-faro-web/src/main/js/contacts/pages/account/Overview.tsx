@@ -61,12 +61,15 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 			</ClayLayout.Row>
 
 			<ClayLayout.Row>
-				<ClayLayout.Col size={12} xl={6}>
-					<TopAssets account={account} />
+				<ClayLayout.Col className="d-flex flex-column" size={12} xl={6}>
+					<TopAssets account={account} className="flex-grow-1" />
 				</ClayLayout.Col>
 
-				<ClayLayout.Col size={12} xl={6}>
-					<TopCategoriesAndTags account={account} />
+				<ClayLayout.Col className="d-flex flex-column" size={12} xl={6}>
+					<TopCategoriesAndTags
+						account={account}
+						className="flex-grow-1"
+					/>
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 		</BasePage.Context.Provider>

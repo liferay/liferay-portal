@@ -109,4 +109,14 @@ describe('Overview', () => {
 			)
 		).toHaveLength(2);
 	});
+
+	it('should stretch both engagement cards so they stay aligned', () => {
+		const {container} = renderOverview({account: mockAccount});
+
+		expect(
+			container.querySelectorAll(
+				'.col-xl-6.d-flex.flex-column > .flex-grow-1.top-assets, .col-xl-6.d-flex.flex-column > .flex-grow-1.top-categories-and-tags'
+			)
+		).toHaveLength(2);
+	});
 });
