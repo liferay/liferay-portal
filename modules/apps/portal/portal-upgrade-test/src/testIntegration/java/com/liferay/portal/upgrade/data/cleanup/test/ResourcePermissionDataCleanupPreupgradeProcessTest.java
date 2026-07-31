@@ -6,6 +6,7 @@
 package com.liferay.portal.upgrade.data.cleanup.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -109,6 +110,15 @@ public class ResourcePermissionDataCleanupPreupgradeProcessTest
 			_hasResourcePermission(
 				Layout.class.getName(), String.valueOf(layoutId)));
 
+		long ctCollectionId = RandomTestUtil.nextLong();
+
+		_setResourcePermission(
+			CTCollection.class.getName(), String.valueOf(ctCollectionId));
+
+		Assert.assertTrue(
+			_hasResourcePermission(
+				CTCollection.class.getName(), String.valueOf(ctCollectionId)));
+
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.addCustomObjectDefinition(
 				Collections.singletonList(
@@ -167,6 +177,9 @@ public class ResourcePermissionDataCleanupPreupgradeProcessTest
 		Assert.assertFalse(
 			_hasResourcePermission(
 				Layout.class.getName(), String.valueOf(layoutId)));
+		Assert.assertFalse(
+			_hasResourcePermission(
+				CTCollection.class.getName(), String.valueOf(ctCollectionId)));
 		Assert.assertFalse(
 			_hasResourcePermission(
 				compositeClassName, String.valueOf(compositeClassNameId)));

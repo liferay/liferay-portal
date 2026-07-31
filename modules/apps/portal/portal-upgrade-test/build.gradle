@@ -8,6 +8,7 @@ dependencies {
 	testIntegrationImplementation group: "org.ow2.asm", name: "asm", version: "9.7"
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
+	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
 	testIntegrationImplementation project(":apps:dispatch:dispatch-api")
 	testIntegrationImplementation project(":apps:dispatch:dispatch-test-util")
