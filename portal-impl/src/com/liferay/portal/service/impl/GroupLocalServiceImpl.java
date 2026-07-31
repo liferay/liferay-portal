@@ -460,8 +460,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				  groupKey.equals(GroupConstants.CMS) ||
 				  groupKey.equals(GroupConstants.CONTROL_PANEL) ||
 				  groupKey.equals(GroupConstants.DSR) ||
-				  groupKey.equals(GroupConstants.FORMS) ||
-				  groupKey.equals(GroupConstants.SEO_STUDIO))) {
+				  groupKey.equals(GroupConstants.FORMS))) {
 
 				throw new IllegalArgumentException();
 			}

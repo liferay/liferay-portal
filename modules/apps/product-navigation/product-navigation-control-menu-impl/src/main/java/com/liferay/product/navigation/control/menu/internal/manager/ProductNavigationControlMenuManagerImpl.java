@@ -66,8 +66,7 @@ public class ProductNavigationControlMenuManagerImpl
 		Layout layout = themeDisplay.getLayout();
 
 		if ((!group.isCMS() && !group.isSite() &&
-			 !Objects.equals(GroupConstants.DSR, group.getGroupKey()) &&
-			 !Objects.equals(GroupConstants.SEO_STUDIO, group.getGroupKey())) ||
+			 !Objects.equals(GroupConstants.DSR, group.getGroupKey())) ||
 			layout.isDraftLayout() || layout.isTypeControlPanel()) {
 
 			return hasRelevantProductNavigationControlMenuEntries;

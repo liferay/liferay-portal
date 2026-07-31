@@ -90,9 +90,7 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 
 		if (liveGroup.isCMS() || liveGroup.isLayoutPrototype() ||
 			liveGroup.isLayoutSetPrototype() ||
-			Objects.equals(GroupConstants.DSR, liveGroup.getGroupKey()) ||
-			Objects.equals(
-				GroupConstants.SEO_STUDIO, liveGroup.getGroupKey())) {
+			Objects.equals(GroupConstants.DSR, liveGroup.getGroupKey())) {
 
 			return;
 		}

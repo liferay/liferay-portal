@@ -52,10 +52,6 @@ public class GroupConstants {
 
 	public static final int MEMBERSHIP_RESTRICTION_TO_PARENT_SITE_MEMBERS = 1;
 
-	public static final String SEO_STUDIO = "SEO Studio";
-
-	public static final String SEO_STUDIO_FRIENDLY_URL = "/seo-studio";
-
 	public static final String[] SYSTEM_GROUPS = {
 		CALENDAR, CMS, CONTROL_PANEL, FORMS, GUEST,
 		GroupConstants.USER_PERSONAL_SITE
