@@ -39,7 +39,8 @@ public class FIPSApplicationStateMachineUtil {
 		_fipsApplicationStateAtomicReference.updateAndGet(
 			currentFIPSApplicationState -> {
 				Set<FIPSApplicationState> nextFIPSApplicationStates =
-					_allowedTransitions.get(currentFIPSApplicationState);
+					_allowedTransitions.getOrDefault(
+						currentFIPSApplicationState, Set.of());
 
 				if (!nextFIPSApplicationStates.contains(fipsApplicationState)) {
 					throw new IllegalStateException(
