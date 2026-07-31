@@ -24,8 +24,56 @@ const MOCK_CONTEXT = {
 	},
 };
 
+const renderOverview = () =>
+	render(
+		<ApolloProvider client={client}>
+			<MemoryRouter initialEntries={['/workspace/23/123123/sites']}>
+				<Route path={Routes.SITES}>
+					<ChannelContext.Provider value={mockChannelContext()}>
+						<BasePage.Context.Provider value={MOCK_CONTEXT}>
+							<Overview
+								channelName="Test Channel"
+								router={{
+									params: {
+										channelId: '123123',
+										groupId: '23',
+									},
+								}}
+							/>
+						</BasePage.Context.Provider>
+					</ChannelContext.Provider>
+				</Route>
+			</MemoryRouter>
+		</ApolloProvider>
+	);
+
 describe('Sites Dashboard Overview', () => {
 	afterEach(cleanup);
+
+	it('should give the Top Pages and Acquisitions cards the same minimum height', () => {
+		const {container} = renderOverview();
+
+		expect(container.querySelector('.top-pages-card-root')).toHaveStyle(
+			'min-height: 575px'
+		);
+		expect(container.querySelector('.acquisitions-card-root')).toHaveStyle(
+			'min-height: 575px'
+		);
+	});
+
+	it('should give the Visitors by Time, Search Terms and Interests cards the same minimum height', () => {
+		const {container} = renderOverview();
+
+		expect(container.querySelector('.visitors-by-time-card')).toHaveStyle(
+			'min-height: 545px'
+		);
+		expect(container.querySelector('.search-terms-card-root')).toHaveStyle(
+			'min-height: 545px'
+		);
+		expect(container.querySelector('.interests-card-root')).toHaveStyle(
+			'min-height: 545px'
+		);
+	});
 
 	it('render', () => {
 		const {container, getAllByText, getByText} = render(

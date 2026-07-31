@@ -62,7 +62,7 @@ const TableWithData = withTableData(withData, {
 	rowIdentifier: 'name',
 });
 
-const SearchTermsCard = (props) => {
+const SearchTermsCard = ({minHeight, ...props}) => {
 	const {channelId, groupId, id} = useParams();
 
 	return (
@@ -70,6 +70,7 @@ const SearchTermsCard = (props) => {
 			className="search-terms-card-root"
 			label={Liferay.Language.get('search-terms')}
 			legacyDropdownRangeKey={false}
+			minHeight={minHeight}
 			reportContainer={ReportContainer.SearchTermsCard}
 		>
 			{({accountId, rangeSelectors, segmentId}) => (

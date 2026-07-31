@@ -76,6 +76,7 @@ interface IAcquisitionsCardProps extends React.HTMLAttributes<HTMLElement> {
 	compositionBagName: CompositionTypes;
 	label: string;
 	legacyDropdownRangeKey?: boolean;
+	minHeight?: number;
 }
 
 const AcquisitionsCard: React.FC<IAcquisitionsCardProps> = ({
@@ -83,11 +84,13 @@ const AcquisitionsCard: React.FC<IAcquisitionsCardProps> = ({
 	compositionBagName,
 	label,
 	legacyDropdownRangeKey,
+	minHeight,
 }) => (
 	<BaseCard
 		className={className}
 		label={label}
 		legacyDropdownRangeKey={legacyDropdownRangeKey ?? true}
+		minHeight={minHeight}
 		reportContainer={ReportContainer.AcquisitionsCard}
 	>
 		{({rangeSelectors}) => (

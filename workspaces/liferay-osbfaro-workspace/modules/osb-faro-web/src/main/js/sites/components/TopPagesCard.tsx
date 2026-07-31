@@ -21,6 +21,7 @@ interface ITopPagesCardProps extends React.HTMLAttributes<HTMLElement> {
 	};
 	label: string;
 	legacyDropdownRangeKey?: boolean;
+	minHeight?: number;
 }
 
 const TopPagesCard: React.FC<ITopPagesCardProps> = ({
@@ -28,11 +29,13 @@ const TopPagesCard: React.FC<ITopPagesCardProps> = ({
 	footer,
 	label,
 	legacyDropdownRangeKey,
+	minHeight,
 }) => (
 	<BaseCard
 		className={className}
 		label={label}
 		legacyDropdownRangeKey={legacyDropdownRangeKey ?? true}
+		minHeight={minHeight}
 		reportContainer={ReportContainer.TopPagesCard}
 	>
 		{({rangeSelectors}) => (

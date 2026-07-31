@@ -62,7 +62,7 @@ const TableWithData = withTableData(withData, {
 	rowIdentifier: 'name',
 });
 
-const InterestsCard = () => {
+const InterestsCard = ({minHeight}) => {
 	const {channelId, groupId} = useParams();
 
 	const {Last7Days, Last30Days, Last90Days, Yesterday} = RangeKeyTimeRanges;
@@ -74,6 +74,7 @@ const InterestsCard = () => {
 			className="interests-card-root"
 			label={Liferay.Language.get('interests')}
 			legacyDropdownRangeKey={false}
+			minHeight={minHeight}
 			rangeKeys={rangeKeys}
 			reportContainer={ReportContainer.InterestsCard}
 		>

@@ -109,11 +109,13 @@ const HeatmapChartWithData = compose<any>(
 
 interface IVisitorsByTimeCardProps extends React.HTMLAttributes<HTMLElement> {
 	label: string;
+	minHeight?: number;
 }
 
 const VisitorsByTimeCard: React.FC<IVisitorsByTimeCardProps> = ({
 	className,
 	label,
+	minHeight,
 }) => {
 	const {accountId, router} = useContext(
 		BasePage.Context as React.Context<IBasePageContext>
@@ -124,6 +126,7 @@ const VisitorsByTimeCard: React.FC<IVisitorsByTimeCardProps> = ({
 			className={className}
 			label={label}
 			legacyDropdownRangeKey={false}
+			minHeight={minHeight}
 			reportContainer={ReportContainer.VisitorsByTimeCard}
 		>
 			{({rangeSelectors}) => (

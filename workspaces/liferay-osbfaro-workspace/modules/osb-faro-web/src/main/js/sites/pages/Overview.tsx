@@ -61,6 +61,7 @@ const Overview: FC<IOverviewProps> = ({channelName}) => {
 						}}
 						label={Liferay.Language.get('top-pages')}
 						legacyDropdownRangeKey={false}
+						minHeight={575}
 					/>
 				</div>
 
@@ -70,6 +71,7 @@ const Overview: FC<IOverviewProps> = ({channelName}) => {
 						compositionBagName={CompositionTypes.Acquisitions}
 						label={Liferay.Language.get('acquisitions')}
 						legacyDropdownRangeKey={false}
+						minHeight={575}
 					/>
 				</div>
 			</div>
@@ -79,15 +81,16 @@ const Overview: FC<IOverviewProps> = ({channelName}) => {
 					<VisitorsByTimeCard
 						className="visitors-by-time-card"
 						label={Liferay.Language.get('visitors-by-day-and-time')}
+						minHeight={545}
 					/>
 				</div>
 
 				<div className="col-xl-4">
-					<SearchTermsCard />
+					<SearchTermsCard minHeight={545} />
 				</div>
 
 				<div className="col-xl-4">
-					<InterestsCard />
+					<InterestsCard minHeight={545} />
 				</div>
 			</div>
 
