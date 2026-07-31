@@ -9,6 +9,7 @@ export default gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$selectedMetrics: [String]
 		$size: Int!
 		$start: Int!
@@ -22,6 +23,7 @@ export default gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			selectedMetrics: $selectedMetrics
 			size: $size
 			start: $start

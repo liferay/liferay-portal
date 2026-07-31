@@ -71,7 +71,7 @@ export const AssetAppearsOnCard: React.FC<IAssetAppearsOnCardProps> = ({
 		minHeight={536}
 		reportContainer={ReportContainer.AssetAppearsOnCard}
 	>
-		{({accountId, rangeSelectors}) => (
+		{({accountId, rangeSelectors, segmentId}) => (
 			<AssetAppearsOnStateRenderer
 				accessors={accessors}
 				accountId={accountId}
@@ -79,6 +79,7 @@ export const AssetAppearsOnCard: React.FC<IAssetAppearsOnCardProps> = ({
 				emptyStateLink={emptyStateLink}
 				emptyStateText={emptyStateText}
 				rangeSelectors={rangeSelectors}
+				segmentId={segmentId}
 			/>
 		)}
 	</BaseCard>
@@ -91,6 +92,7 @@ const AssetAppearsOnStateRenderer = ({
 	emptyStateLink,
 	emptyStateText,
 	rangeSelectors,
+	segmentId,
 }: any) => {
 	const {assetId, channelId, title} = useParams();
 	const [pagination, setPagination] = useState({
@@ -108,6 +110,7 @@ const AssetAppearsOnStateRenderer = ({
 				assetType === AssetTypes.ObjectEntry
 					? 'OBJECT_ENTRY'
 					: assetType.toUpperCase(),
+			segmentId,
 			selectedMetrics: accessors,
 			...(assetType !== AssetTypes.ObjectEntry && {
 				channelId,
