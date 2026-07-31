@@ -108,6 +108,7 @@ k8s_yaml(
         "    activationCodeSecretRef:",
         "      name: dev-activation",
         "      key: activationCode",
+        "    dxpVersion: 2026.q3.0",
         "    environmentName: \"Local dev\"",
         "    workloadRef:",
         "      name: dev-liferay",
