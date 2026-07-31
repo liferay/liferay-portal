@@ -19,13 +19,16 @@ import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.osgi.util.service.OSGiServiceUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -197,6 +200,40 @@ public class ObjectEntrySharingEntryDropdownItemContributorTest {
 		return themeDisplay;
 	}
 
+	private boolean _isTracked(ObjectDefinition objectDefinition)
+		throws Exception {
+
+		Bundle bundle = BundleUtil.getBundle(
+			_bundleContext, "com.liferay.sharing.web");
+
+		return OSGiServiceUtil.callService(
+			_bundleContext,
+			bundle.loadClass(
+				"com.liferay.sharing.web.internal.servlet.taglib.ui." +
+					"SharingEntryDropdownItemContributorRegistry"),
+			sharingEntryDropdownItemContributorRegistry -> {
+				Assert.assertNotNull(
+					sharingEntryDropdownItemContributorRegistry);
+
+				Object serviceTrackerMap = ReflectionTestUtil.getFieldValue(
+					sharingEntryDropdownItemContributorRegistry,
+					"_serviceTrackerMap");
+
+				List<SharingEntryDropdownItemContributor>
+					sharingEntryDropdownItemContributors =
+						ReflectionTestUtil.invoke(
+							serviceTrackerMap, "getService",
+							new Class<?>[] {Object.class},
+							objectDefinition.getClassName());
+
+				if (sharingEntryDropdownItemContributors == null) {
+					return false;
+				}
+
+				return !sharingEntryDropdownItemContributors.isEmpty();
+			});
+	}
+
 	private void _testGetSharingEntryDropdownItemsWithCMSBasicDocument()
 		throws Exception {
 
@@ -204,6 +241,9 @@ public class ObjectEntrySharingEntryDropdownItemContributorTest {
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BASIC_DOCUMENT", _group.getCompanyId());
+
+		Assert.assertTrue(
+			objectDefinition.getClassName(), _isTracked(objectDefinition));
 
 		List<DropdownItem> dropdownItems = _getSharingEntryDropdownItems(
 			objectDefinition,
@@ -243,6 +283,9 @@ public class ObjectEntrySharingEntryDropdownItemContributorTest {
 			_objectDefinitionLocalService.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_CMS_BASIC_WEB_CONTENT", _group.getCompanyId());
+
+		Assert.assertFalse(
+			objectDefinition.getClassName(), _isTracked(objectDefinition));
 
 		List<DropdownItem> dropdownItems = _getSharingEntryDropdownItems(
 			objectDefinition,
