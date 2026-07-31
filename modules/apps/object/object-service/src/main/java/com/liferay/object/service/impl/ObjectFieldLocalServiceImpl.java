@@ -1572,14 +1572,15 @@ public class ObjectFieldLocalServiceImpl
 				objectField.setDBType(objectFieldBusinessType.getDBType());
 			}
 		}
-		else if (objectFieldDBTypes.contains(dbType) &&
+		else if (Validator.isNull(businessType) &&
+				 objectFieldDBTypes.contains(dbType) &&
 				 _businessTypes.containsKey(dbType)) {
 
 			objectField.setBusinessType(_businessTypes.get(dbType));
 			objectField.setDBType(dbType);
 		}
 		else {
-			if (!businessType.isEmpty()) {
+			if (Validator.isNotNull(businessType)) {
 				_handleException(
 					new ObjectFieldBusinessTypeException(
 						"Invalid business type " + businessType),
