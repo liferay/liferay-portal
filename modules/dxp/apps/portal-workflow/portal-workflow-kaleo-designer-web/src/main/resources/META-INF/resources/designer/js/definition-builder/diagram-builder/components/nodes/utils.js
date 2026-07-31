@@ -6,6 +6,7 @@
 import {v4 as uuidv4} from 'uuid';
 
 import {defaultLanguageId} from '../../../constants';
+import {isAIHubInstance} from '../../../util/isAIHubInstance';
 import {insertNodeAt} from '../../util/insertNodeAt';
 import AIDecisionNode from './AIDecisionNode';
 import AIHubAgentNode from './AIHubAgentNode';
@@ -77,10 +78,13 @@ let nodeTypes = {
 
 if (Liferay.FeatureFlags['LPD-62272']) {
 	nodeTypes = insertNodeAt(nodeTypes, 'ai-hub-agent', AIHubAgentNode, 1);
-	nodeTypes = insertNodeAt(nodeTypes, 'ai-decision', AIDecisionNode, 2);
-	nodeTypes = insertNodeAt(nodeTypes, 'llm', LLMNode, 7);
-	nodeTypes = insertNodeAt(nodeTypes, 'http-request', HTTPRequestNode, 8);
-	nodeTypes = insertNodeAt(nodeTypes, 'service', ServiceNode, 9);
+
+	if (isAIHubInstance()) {
+		nodeTypes = insertNodeAt(nodeTypes, 'ai-decision', AIDecisionNode, 2);
+		nodeTypes = insertNodeAt(nodeTypes, 'llm', LLMNode, 7);
+		nodeTypes = insertNodeAt(nodeTypes, 'http-request', HTTPRequestNode, 8);
+		nodeTypes = insertNodeAt(nodeTypes, 'service', ServiceNode, 9);
+	}
 }
 
 export {defaultNodes, nodeDescription, nodeTypes};
