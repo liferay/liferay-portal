@@ -502,6 +502,32 @@ describe('TouchpointRoutes', () => {
 		expect(screen.queryByTestId('segment-dropdown')).toBeNull();
 	});
 
+	it('shows the segment filter on the accounts route for LDP workspaces', () => {
+		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_ACCOUNTS);
+		useLDPEnabled.mockReturnValue(true);
+
+		const router = {
+			params: {
+				channelId: '1',
+				experienceId: '',
+				groupId: '2',
+				title: 'page',
+				touchpoint: 'http://example.com/web/site/home'
+			},
+			query: {}
+		};
+
+		render(
+			<Provider store={mockStore()}>
+				<MemoryRouter>
+					<TouchpointRoutes router={router} />
+				</MemoryRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByTestId('segment-dropdown')).toBeTruthy();
+	});
+
 	it('shows the segment filter on the path route for LDP workspaces', () => {
 		getMatchedRoute.mockReturnValue(Routes.SITES_TOUCHPOINTS_PATH);
 		useLDPEnabled.mockReturnValue(true);
