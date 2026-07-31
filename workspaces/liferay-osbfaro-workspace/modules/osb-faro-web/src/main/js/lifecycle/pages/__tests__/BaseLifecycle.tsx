@@ -74,6 +74,23 @@ jest.mock('shared/components/AccountsDataSet', () => ({
 	default: () => <div data-testid="accounts-dataset" />,
 }));
 
+jest.mock('shared/components/SegmentDropdown', () => ({
+	__esModule: true,
+	default: ({
+		initialSegmentId,
+		initialSegmentName,
+	}: {
+		initialSegmentId?: string;
+		initialSegmentName?: string;
+	}) => (
+		<div
+			data-initial-segment-id={initialSegmentId}
+			data-initial-segment-name={initialSegmentName}
+			data-testid="segment-dropdown"
+		/>
+	),
+}));
+
 const mockedUseCurrentUser = useCurrentUser as jest.Mock;
 const mockedUseDataSources = useDataSources as jest.Mock;
 const mockedUseRequest = useRequest as jest.Mock;
@@ -390,6 +407,7 @@ describe('BaseLifecycle', () => {
 			'data-entity-label',
 			'Countries'
 		);
+		expect(screen.getByTestId('segment-dropdown')).toBeInTheDocument();
 		expect(screen.queryByText('No Account Data Available')).toBeNull();
 	});
 });

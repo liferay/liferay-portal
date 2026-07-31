@@ -34,6 +34,7 @@ const mockStages = (items: typeof DEFAULT_STAGE_ITEMS | undefined) => {
 };
 
 type FakeFilter = {
+	apiURL?: string;
 	id: string;
 	items?: Array<{label: string; value: string}>;
 	preloadedData?: {
@@ -326,6 +327,81 @@ describe('AccountsDataSet', () => {
 		);
 
 		expect(activitiesCountFilter).toBeUndefined();
+	});
+
+	it('should not append segmentFilter as a query param on the apiURL', () => {
+		render(
+			<AccountsDataSet
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+				segmentFilter="segment-100"
+			/>
+		);
+
+		expect(lastApiURL).toBe('fake-url');
+	});
+
+	it('should leave the segment filter without preloadedData when no segmentFilter prop is passed', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const segmentFilter = lastFilters?.find((f) => f.id === 'segmentId');
+
+		expect(segmentFilter?.preloadedData).toBeUndefined();
+	});
+
+	it('should preload the segment filter with the segment name when segmentFilter and segmentName props are provided', () => {
+		render(
+			<AccountsDataSet
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+				segmentFilter="segment-100"
+				segmentName="VIP Customers"
+			/>
+		);
+
+		const segmentFilter = lastFilters?.find((f) => f.id === 'segmentId');
+
+		expect(segmentFilter?.preloadedData).toEqual({
+			exclude: false,
+			selectedItems: [
+				{label: 'VIP Customers', value: 'segment-100'},
+			],
+		});
+	});
+
+	it('should point the segment filter apiURL at the individual segment search endpoint', () => {
+		render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const segmentFilter = lastFilters?.find((f) => f.id === 'segmentId');
+
+		expect(segmentFilter?.apiURL).toBe(
+			'/o/faro/contacts/23/individual_segment?channelId=123'
+		);
+	});
+
+	it('should remount the FrontendDataSet when segmentFilter changes', () => {
+		const {rerender} = render(
+			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		expect(mountCount).toBe(1);
+
+		rerender(
+			<AccountsDataSet
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+				segmentFilter="segment-100"
+			/>
+		);
+
+		expect(mountCount).toBe(2);
 	});
 
 	it('should remount the FrontendDataSet when stageSelectionNonce changes even if lifecycleStageFilter is unchanged', () => {
