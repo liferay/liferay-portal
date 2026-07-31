@@ -102,12 +102,9 @@ func (httpClient *HTTPClient) Manifest(
 	}
 
 	var entitlementsResponse struct {
-		Apps []struct {
-			LpkgDownloadLink string `json:"lpkgDownloadLink"`
-			Name             string `json:"name"`
-		} `json:"apps"`
-		LicenseXML      string `json:"licenseXML"`
-		MaxClusterNodes int32  `json:"maxClusterNodes"`
+		AddOns          []AddOn `json:"add-ons"`
+		LicenseXML      string  `json:"licenseXML"`
+		MaxClusterNodes int32   `json:"maxClusterNodes"`
 	}
 
 	if error := json.NewDecoder(response.Body).Decode(&entitlementsResponse); error != nil {
@@ -121,17 +118,9 @@ func (httpClient *HTTPClient) Manifest(
 	}
 
 	entitlements := &Entitlements{
+		AddOns:          entitlementsResponse.AddOns,
 		LicenseXML:      licenseXML,
 		MaxClusterNodes: entitlementsResponse.MaxClusterNodes,
-	}
-
-	for _, app := range entitlementsResponse.Apps {
-		entitlements.Apps = append(
-			entitlements.Apps, App{
-				LpkgDownloadLink: app.LpkgDownloadLink,
-				Name:             app.Name,
-			},
-		)
 	}
 
 	return entitlements, nil

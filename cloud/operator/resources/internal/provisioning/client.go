@@ -13,9 +13,13 @@ type ActivationRequest struct {
 	PublicKey       string
 }
 
-type App struct {
-	LpkgDownloadLink string
-	Name             string
+type AddOn struct {
+	DownloadURL    string `json:"downloadURL"`
+	ProductID      string `json:"productId"`
+	ProductName    string `json:"productName"`
+	SHA256Checksum string `json:"sha256Checksum"`
+	Version        string `json:"version"`
+	VirtualEntryID int64  `json:"virtualEntryId"`
 }
 
 type Client interface {
@@ -24,7 +28,7 @@ type Client interface {
 }
 
 type Entitlements struct {
-	Apps            []App
+	AddOns          []AddOn
 	LicenseXML      []byte
 	MaxClusterNodes int32
 }

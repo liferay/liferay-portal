@@ -327,20 +327,20 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistEntitle
 ) error {
 	entitlementsName := liferayEnvironment.Name + entitlementsSecretSuffix
 
-	apps := entitlements.Apps
+	addOns := entitlements.AddOns
 
-	if apps == nil {
-		apps = []provisioning.App{}
+	if addOns == nil {
+		addOns = []provisioning.AddOn{}
 	}
 
-	appsJSON, error := json.Marshal(apps)
+	addOnsJSON, error := json.Marshal(addOns)
 
 	if error != nil {
 		return error
 	}
 
 	data := map[string][]byte{
-		"apps.json":       appsJSON,
+		"add-ons.json":    addOnsJSON,
 		"license.xml":     entitlements.LicenseXML,
 		"maxClusterNodes": []byte(fmt.Sprintf("%d", entitlements.MaxClusterNodes)),
 	}
