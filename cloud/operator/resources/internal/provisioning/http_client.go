@@ -61,6 +61,73 @@ func (httpClient *HTTPClient) Activate(
 	return nil
 }
 
+func (httpClient *HTTPClient) Entitlements(
+	context context.Context,
+	entitlementsRequest EntitlementsRequest,
+	privateKey *rsa.PrivateKey,
+) (*Entitlements, error) {
+	token, error := signJWT(
+		map[string]any{
+			"dxpVersion":    entitlementsRequest.DxpVersion,
+			"environmentID": entitlementsRequest.EnvironmentID,
+		},
+		entitlementsRequest.EnvironmentID,
+		privateKey,
+	)
+
+	if error != nil {
+		return nil, error
+	}
+
+	response, error := httpClient.post(
+		context, token, fmt.Sprintf(
+			"%s/o/provisioning-rest/v1.0/cloud/environments/%s/entitlements",
+			httpClient.BaseURL, entitlementsRequest.EnvironmentID,
+		),
+	)
+
+	if error != nil {
+		return nil, error
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf(
+			"entitlements: unexpected status %d", response.StatusCode,
+		)
+	}
+
+	var entitlementsReponse struct {
+		Apps []struct {
+			LpkgDownloadLink string `json:"lpkgDownloadLink"`
+			Name             string `json:"name"`
+		} `json:"apps"`
+		LicenseXML      string `json:"licenseXML"`
+		MaxClusterNodes int32  `json:"maxClusterNodes"`
+	}
+
+	if error := json.NewDecoder(response.Body).Decode(&entitlementsReponse); error != nil {
+		return nil, fmt.Errorf("entitlements: decode response: %w", error)
+	}
+
+	entitlements := &Entitlements{
+		LicenseXML:      []byte(entitlementsReponse.LicenseXML),
+		MaxClusterNodes: entitlementsReponse.MaxClusterNodes,
+	}
+
+	for _, app := range entitlementsReponse.Apps {
+		entitlements.Apps = append(
+			entitlements.Apps, App{
+				LpkgDownloadLink: app.LpkgDownloadLink,
+				Name:             app.Name,
+			},
+		)
+	}
+
+	return entitlements, nil
+}
+
 func NewHTTPClient(baseURL string) *HTTPClient {
 	return &HTTPClient{
 		BaseURL: strings.TrimRight(baseURL, "/"),
