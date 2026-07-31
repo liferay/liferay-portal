@@ -24,6 +24,11 @@ const SELECT_COMPONENT: AgentComponent = {
 	type: 'select',
 };
 
+const QUICK_REPLIES_COMPONENT: AgentComponent = {
+	...SELECT_COMPONENT,
+	type: 'quick-replies',
+};
+
 describe('resolveMessage', () => {
 	it('resolves a categorization message', () => {
 		const categorization = {assetTags: ['news']} as never;
@@ -72,6 +77,19 @@ describe('resolveMessage', () => {
 		).toEqual({
 			fieldValues: {headline: 'A headline'},
 			type: 'field-values',
+		});
+	});
+
+	it('resolves a message carrying a quick replies component', () => {
+		expect(
+			resolveMessage({
+				component: QUICK_REPLIES_COMPONENT,
+				sender: 'assistant',
+				text: '',
+			})
+		).toEqual({
+			component: QUICK_REPLIES_COMPONENT,
+			type: 'quick-replies',
 		});
 	});
 

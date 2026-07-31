@@ -1,0 +1,163 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+import {render, screen, waitFor} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import {fetch} from 'frontend-js-web';
+import React from 'react';
+
+import '@testing-library/jest-dom';
+
+import QuickRepliesMessageBalloon from '../../../../src/main/resources/META-INF/resources/js/AIAssistantChat/components/QuickRepliesMessageBalloon';
+import {AgentComponent} from '../../../../src/main/resources/META-INF/resources/js/AIAssistantChat/types';
+
+jest.mock('frontend-js-web', () => ({fetch: jest.fn()}));
+
+const mockFetch = fetch as jest.MockedFunction<typeof fetch>;
+
+const COMPONENT: AgentComponent = {
+	options: [
+		{
+			action: {
+				'http-request': {
+					body: {transitionName: 'findMatchingAssets'},
+					href: '/o/ai-hub/v1.0/agent-instances/123/resume',
+					method: 'PUT',
+				},
+			},
+			label: 'Find Matching Assets in CMS',
+		},
+		{
+			action: {
+				'http-request': {
+					body: {context: {transitionName: 'generateContent'}},
+					href: '/o/ai-hub/v1.0/agent-instances/123/resume',
+					method: 'PUT',
+				},
+			},
+			label: 'Generate Content for Gaps',
+		},
+	],
+	title: 'What would you like to do next?',
+	type: 'quick-replies',
+};
+
+describe('QuickRepliesMessageBalloon', () => {
+	beforeEach(() => {
+		mockFetch.mockReset();
+
+		mockFetch.mockImplementation((resource) => {
+			if (String(resource).includes('authorization-tokens')) {
+				return Promise.resolve({
+					json: () =>
+						Promise.resolve({
+							accessToken: 'access-token',
+							serviceURL: 'http://ai-hub',
+							userToken: 'user-token',
+						}),
+					ok: true,
+				} as never);
+			}
+
+			return Promise.resolve({ok: true} as never);
+		});
+	});
+
+	it('disables every reply button after one is clicked', async () => {
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				setIsGenerating={jest.fn()}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		);
+
+		expect(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		).toBeDisabled();
+
+		expect(
+			screen.getByRole('button', {name: 'Generate Content for Gaps'})
+		).toBeDisabled();
+	});
+
+	it('renders the title and one button per option', () => {
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				setIsGenerating={jest.fn()}
+			/>
+		);
+
+		expect(
+			screen.getByRole('group', {name: 'What would you like to do next?'})
+		).toBeInTheDocument();
+
+		expect(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		).toBeInTheDocument();
+
+		expect(
+			screen.getByRole('button', {name: 'Generate Content for Gaps'})
+		).toBeInTheDocument();
+	});
+
+	it('sends a nested context body verbatim', async () => {
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				setIsGenerating={jest.fn()}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Generate Content for Gaps'})
+		);
+
+		await waitFor(() =>
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/o/ai-hub/v1.0/agent-instances/123/resume',
+				expect.objectContaining({
+					body: JSON.stringify({
+						context: {transitionName: 'generateContent'},
+					}),
+					method: 'PUT',
+				})
+			)
+		);
+	});
+
+	it('sends the clicked option action request with its body verbatim', async () => {
+		const setIsGenerating = jest.fn();
+
+		render(
+			<QuickRepliesMessageBalloon
+				component={COMPONENT}
+				setIsGenerating={setIsGenerating}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Find Matching Assets in CMS'})
+		);
+
+		expect(setIsGenerating).toHaveBeenCalledWith(true);
+
+		await waitFor(() =>
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/o/ai-hub/v1.0/agent-instances/123/resume',
+				expect.objectContaining({
+					body: JSON.stringify({
+						transitionName: 'findMatchingAssets',
+					}),
+					method: 'PUT',
+				})
+			)
+		);
+	});
+});
