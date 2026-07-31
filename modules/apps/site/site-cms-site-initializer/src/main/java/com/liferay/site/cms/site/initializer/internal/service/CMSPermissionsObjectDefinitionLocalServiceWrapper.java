@@ -53,6 +53,24 @@ public class CMSPermissionsObjectDefinitionLocalServiceWrapper
 			super.publishSystemObjectDefinition(userId, objectDefinitionId));
 	}
 
+	private void _addCMSDefaultPermissionResourcePermission(
+			ObjectDefinition objectDefinition)
+		throws PortalException {
+
+		Role role = _roleLocalService.fetchRole(
+			objectDefinition.getCompanyId(), RoleConstants.USER);
+
+		if (role == null) {
+			return;
+		}
+
+		_resourcePermissionLocalService.addResourcePermission(
+			objectDefinition.getCompanyId(), objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(objectDefinition.getCompanyId()), role.getRoleId(),
+			ActionKeys.VIEW);
+	}
+
 	private void _addResourcePermission(
 		ObjectDefinition objectDefinition, String roleName) {
 
@@ -130,7 +148,15 @@ public class CMSPermissionsObjectDefinitionLocalServiceWrapper
 	}
 
 	private ObjectDefinition _setResourcePermissions(
-		ObjectDefinition objectDefinition) {
+			ObjectDefinition objectDefinition)
+		throws PortalException {
+
+		if (Objects.equals(
+				objectDefinition.getExternalReferenceCode(),
+				"L_CMS_DEFAULT_PERMISSION")) {
+
+			_addCMSDefaultPermissionResourcePermission(objectDefinition);
+		}
 
 		String objectFolderExternalReferenceCode =
 			objectDefinition.getObjectFolderExternalReferenceCode();
