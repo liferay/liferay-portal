@@ -72,7 +72,7 @@ public class ViewDesignLibraryResourcesDisplayContext {
 			"&entryClassNames=com.liferay.fragment.model.FragmentCollection",
 			",com.liferay.style.book.model.StyleBookEntry",
 			"&filter=groupIds/any(g:g eq ", _depotEntry.getGroupId(), ")",
-			"&nestedFields=embedded&page=1&pageSize=20");
+			"&nestedFields=embedded");
 	}
 
 	public Map<String, Object> getBreadcrumbProps() throws PortalException {
