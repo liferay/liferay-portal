@@ -12,9 +12,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.PortletDisplay;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.RenderResponse;
 
@@ -26,19 +24,20 @@ import java.util.Map;
  * @author Mario Leandro
  * @author Thiago Buarque
  */
-public class EditDesignLibraryDisplayContext {
+public class EditDesignLibraryDisplayContext
+	extends BaseDesignLibraryDisplayContext {
 
 	public EditDesignLibraryDisplayContext(
 		DepotEntry depotEntry, HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
-		_depotEntry = depotEntry;
-		_httpServletRequest = httpServletRequest;
+		super(depotEntry, httpServletRequest);
+
 		_liferayPortletResponse = liferayPortletResponse;
 	}
 
 	public Map<String, Object> getProps() throws PortalException {
-		Group group = _depotEntry.getGroup();
+		Group group = getGroup();
 
 		return HashMapBuilder.<String, Object>put(
 			"backURL", _getBackURL()
@@ -47,7 +46,7 @@ public class EditDesignLibraryDisplayContext {
 		).put(
 			"groupId", group.getGroupId()
 		).put(
-			"portletId", _getThemeDisplay().getPpid()
+			"portletId", themeDisplay.getPpid()
 		).build();
 	}
 
@@ -58,12 +57,12 @@ public class EditDesignLibraryDisplayContext {
 		portletDisplay.setShowBackIcon(true);
 		portletDisplay.setURLBack(_getBackURL());
 
-		Group group = _depotEntry.getGroup();
+		Group group = getGroup();
 
 		renderResponse.setTitle(
 			LanguageUtil.format(
-				_httpServletRequest, "x-settings",
-				group.getName(_getThemeDisplay().getLocale()), false));
+				httpServletRequest, "x-settings",
+				group.getName(themeDisplay.getLocale()), false));
 	}
 
 	private String _getBackURL() {
@@ -72,17 +71,10 @@ public class EditDesignLibraryDisplayContext {
 		).setMVCRenderCommandName(
 			"/design_library/view_resources_design_library"
 		).setParameter(
-			"designLibraryEntryId", _depotEntry.getDepotEntryId()
+			"designLibraryEntryId", depotEntry.getDepotEntryId()
 		).buildString();
 	}
 
-	private ThemeDisplay _getThemeDisplay() {
-		return (ThemeDisplay)_httpServletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-	}
-
-	private final DepotEntry _depotEntry;
-	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 
 }
