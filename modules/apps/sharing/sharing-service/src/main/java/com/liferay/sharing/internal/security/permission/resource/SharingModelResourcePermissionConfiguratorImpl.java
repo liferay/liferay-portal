@@ -41,6 +41,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -97,6 +98,12 @@ public class SharingModelResourcePermissionConfiguratorImpl
 		_sharingPermissionSQLContributorServiceRegistration.unregister();
 	}
 
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_sharingSystemConfiguration = ConfigurableUtil.createConfigurable(
+			SharingSystemConfiguration.class, properties);
+	}
+
 	private static Map<String, SharingEntryAction> _getSharingEntryActions() {
 		Map<String, SharingEntryAction> sharingEntryActions = new HashMap<>();
 
@@ -133,7 +140,7 @@ public class SharingModelResourcePermissionConfiguratorImpl
 
 	private ServiceRegistration<PermissionSQLContributor>
 		_sharingPermissionSQLContributorServiceRegistration;
-	private SharingSystemConfiguration _sharingSystemConfiguration;
+	private volatile SharingSystemConfiguration _sharingSystemConfiguration;
 
 	@Reference
 	private UserGroupLocalService _userGroupLocalService;
