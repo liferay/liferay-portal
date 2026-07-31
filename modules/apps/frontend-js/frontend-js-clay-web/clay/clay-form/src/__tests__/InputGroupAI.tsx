@@ -53,6 +53,19 @@ describe('BasicRendering', () => {
 		expect(screen.getByRole('button', {name: 'Submit'})).toBeEnabled();
 	});
 
+	it('renders custom children instead of the default submit button', () => {
+		render(
+			<ClayInputGroupAI onChange={() => {}} value="Hello">
+				<button type="button">Custom action</button>
+			</ClayInputGroupAI>
+		);
+
+		expect(screen.queryByRole('button', {name: 'Submit'})).toBeNull();
+		expect(
+			screen.getByRole('button', {name: 'Custom action'})
+		).toBeInTheDocument();
+	});
+
 	it('renders the working state with a readonly textarea and message', () => {
 		const {container} = render(
 			<ClayInputGroupAI aiState="working" onChange={() => {}} value="" />

@@ -51,6 +51,12 @@ interface IProps
 	aiState?: TAIState;
 
 	/**
+	 * Custom controls rendered after the input, replacing the component's
+	 * default submit and retry buttons. When omitted, the defaults render.
+	 */
+	children?: React.ReactNode;
+
+	/**
 	 * Messages used by the component. Use this to translate the labels.
 	 */
 	messages?: {
@@ -80,7 +86,8 @@ const DEFAULT_MESSAGES = {
 /**
  * Multiline prompt input for AI interactions. Renders as an `input-group-ai`
  * with an auto-growing textarea and a submit button, plus a retry button and
- * readonly behavior depending on `aiState`.
+ * readonly behavior depending on `aiState`. Passing `children` replaces the
+ * default submit and retry buttons with custom controls.
  *
  * Pressing `Enter` submits the closest enclosing form; `Shift + Enter`
  * inserts a line break. Textarea props (`value`, `onChange`, `placeholder`,
@@ -91,6 +98,7 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 	(
 		{
 			aiState,
+			children,
 			className,
 			messages,
 			onBlur,
@@ -228,43 +236,56 @@ const InputGroupAI = React.forwardRef<HTMLTextAreaElement, IProps>(
 					</div>
 				</ClayInput.GroupItem>
 
-				{!isWorking && (
-					<ClayInput.GroupItem shrink>
-						<ClayButton
-							aria-label={submit}
-							disabled={
-								typeof value === 'string' && !value.trim()
-							}
-							displayType="primary"
-							monospaced
-							onClick={() => {
-								if (textAreaRef.current) {
-									resetTextAreaHeight(textAreaRef.current);
-								}
-							}}
-							size="sm"
-							type="submit"
-						>
-							<ClayIcon spritemap={spritemap} symbol="check" />
-						</ClayButton>
-					</ClayInput.GroupItem>
-				)}
+				{children ?? (
+					<>
+						{!isWorking && (
+							<ClayInput.GroupItem shrink>
+								<ClayButton
+									aria-label={submit}
+									disabled={
+										typeof value === 'string' &&
+										!value.trim()
+									}
+									displayType="primary"
+									monospaced
+									onClick={() => {
+										if (textAreaRef.current) {
+											resetTextAreaHeight(
+												textAreaRef.current
+											);
+										}
+									}}
+									size="sm"
+									type="submit"
+								>
+									<ClayIcon
+										spritemap={spritemap}
+										symbol="check"
+									/>
+								</ClayButton>
+							</ClayInput.GroupItem>
+						)}
 
-				{aiState === 'result' && onRetryClick && (
-					<ClayInput.GroupItem shrink>
-						<ClayButton
-							aria-label={retry}
-							displayType="ai"
-							monospaced
-							onClick={onRetryClick}
-							outline
-							rounded
-							size="sm"
-							type="button"
-						>
-							<ClayIcon spritemap={spritemap} symbol="reload" />
-						</ClayButton>
-					</ClayInput.GroupItem>
+						{aiState === 'result' && onRetryClick && (
+							<ClayInput.GroupItem shrink>
+								<ClayButton
+									aria-label={retry}
+									displayType="ai"
+									monospaced
+									onClick={onRetryClick}
+									outline
+									rounded
+									size="sm"
+									type="button"
+								>
+									<ClayIcon
+										spritemap={spritemap}
+										symbol="reload"
+									/>
+								</ClayButton>
+							</ClayInput.GroupItem>
+						)}
+					</>
 				)}
 			</ClayInput.Group>
 		);

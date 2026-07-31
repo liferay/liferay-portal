@@ -3,9 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayAIButton} from '@clayui/button';
 import React, {useState} from 'react';
 
-import {ClayInputGroupAI} from '../src';
+import {ClayInput, ClayInputGroupAI} from '../src';
 import ClayForm from '../src/Form';
 
 export default {
@@ -86,6 +87,44 @@ export function Working() {
 					onChange={() => {}}
 					value=""
 				/>
+			</ClayForm>
+		</div>
+	);
+}
+
+export function CustomButtons() {
+	const [value, setValue] = useState('');
+
+	return (
+		<div className="sheet">
+			<ClayForm onSubmit={(event) => event.preventDefault()}>
+				<ClayInputGroupAI
+					onChange={(event) => setValue(event.target.value)}
+					placeholder="Ask me anything..."
+					value={value}
+				>
+					<ClayInput.GroupItem shrink>
+						<ClayAIButton
+							aria-label="Submit prompt"
+							disabled={!value.trim()}
+							monospaced
+							size="sm"
+							type="submit"
+						/>
+					</ClayInput.GroupItem>
+
+					<ClayInput.GroupItem shrink>
+						<ClayAIButton
+							aria-label="Close"
+							link
+							monospaced
+							onClick={() => setValue('')}
+							size="sm"
+							symbol="times"
+							type="button"
+						/>
+					</ClayInput.GroupItem>
+				</ClayInputGroupAI>
 			</ClayForm>
 		</div>
 	);
