@@ -17,7 +17,7 @@ import com.liferay.portlet.display.template.upgrade.BaseUpgradePortletPreference
 import jakarta.portlet.PortletPreferences;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,50 +75,9 @@ public class UpgradePortletPreferences extends BaseUpgradePortletPreferences {
 			return;
 		}
 
-		Map<Long, List<String>> groupAssetVocabularyExternalReferenceCodesMap =
-			_getGroupAssetVocabularyExternalReferenceCodesMap(
-				assetVocabularyIds);
-
-		if (groupAssetVocabularyExternalReferenceCodesMap.isEmpty()) {
-			return;
-		}
-
-		portletPreferences.reset("assetVocabularyIds");
-
+		Map<String, List<String>> assetVocabularyExternalReferenceCodesMap =
+			new LinkedHashMap<>();
 		List<String> groupExternalReferenceCodes = new ArrayList<>();
-
-		for (Map.Entry<Long, List<String>> entries :
-				groupAssetVocabularyExternalReferenceCodesMap.entrySet()) {
-
-			String scopeExternalReferenceCode = getScopeExternalReferenceCode(
-				companyId, ownerId, ownerType, plid, entries.getKey());
-
-			if (Validator.isNull(scopeExternalReferenceCode)) {
-				portletPreferences.setValues(
-					"assetVocabularyExternalReferenceCodes",
-					ArrayUtil.toStringArray(entries.getValue()));
-			}
-			else {
-				groupExternalReferenceCodes.add(scopeExternalReferenceCode);
-
-				portletPreferences.setValues(
-					"assetVocabularyExternalReferenceCodes_" +
-						scopeExternalReferenceCode,
-					ArrayUtil.toStringArray(entries.getValue()));
-			}
-		}
-
-		portletPreferences.setValues(
-			"assetVocabularyGroupExternalReferenceCodes",
-			ArrayUtil.toStringArray(groupExternalReferenceCodes));
-	}
-
-	private Map<Long, List<String>>
-		_getGroupAssetVocabularyExternalReferenceCodesMap(
-			long[] assetVocabularyIds) {
-
-		Map<Long, List<String>> groupAssetVocabularyExternalReferenceCodesMap =
-			new HashMap<>();
 
 		for (long assetVocabularyId : assetVocabularyIds) {
 			AssetVocabulary assetVocabulary =
@@ -129,15 +88,43 @@ public class UpgradePortletPreferences extends BaseUpgradePortletPreferences {
 				continue;
 			}
 
-			List<String> groupAssetVocabularyExternalReferenceCodes =
-				groupAssetVocabularyExternalReferenceCodesMap.computeIfAbsent(
-					assetVocabulary.getGroupId(), key -> new ArrayList<>());
+			String scopeExternalReferenceCode = GetterUtil.getString(
+				getScopeExternalReferenceCode(
+					companyId, ownerId, ownerType, plid,
+					assetVocabulary.getGroupId()));
 
-			groupAssetVocabularyExternalReferenceCodes.add(
+			groupExternalReferenceCodes.add(scopeExternalReferenceCode);
+
+			String key = "assetVocabularyExternalReferenceCodes";
+
+			if (Validator.isNotNull(scopeExternalReferenceCode)) {
+				key += "_" + scopeExternalReferenceCode;
+			}
+
+			List<String> assetVocabularyExternalReferenceCodes =
+				assetVocabularyExternalReferenceCodesMap.computeIfAbsent(
+					key, curKey -> new ArrayList<>());
+
+			assetVocabularyExternalReferenceCodes.add(
 				assetVocabulary.getExternalReferenceCode());
 		}
 
-		return groupAssetVocabularyExternalReferenceCodesMap;
+		if (groupExternalReferenceCodes.isEmpty()) {
+			return;
+		}
+
+		portletPreferences.reset("assetVocabularyIds");
+
+		for (Map.Entry<String, List<String>> entry :
+				assetVocabularyExternalReferenceCodesMap.entrySet()) {
+
+			portletPreferences.setValues(
+				entry.getKey(), ArrayUtil.toStringArray(entry.getValue()));
+		}
+
+		portletPreferences.setValues(
+			"assetVocabularyGroupExternalReferenceCodes",
+			ArrayUtil.toStringArray(groupExternalReferenceCodes));
 	}
 
 	private final AssetVocabularyLocalService _assetVocabularyLocalService;
