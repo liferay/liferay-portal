@@ -7,6 +7,7 @@ import {ChannelContext} from 'shared/context/channel';
 import {cleanup, render, screen} from '@testing-library/react';
 import {mockChannelContext} from 'test/mock-channel-context';
 import {mockSegment} from 'test/data';
+import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {Provider} from 'react-redux';
 import {SegmentProfileRoutes} from '../ProfileRoutes';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -47,6 +48,61 @@ describe('SegmentProfileRoutes', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(screen.getAllByText('Seattle0').length).toBeGreaterThan(0);
+	});
+
+	it('should render the account dashboard for an account segment', async () => {
+		window.location = {pathname: '/'};
+
+		API.individualSegment.fetch.mockReturnValueOnce(
+			Promise.resolve(
+				mockSegment(0, {segmentCategory: SegmentCategories.Account})
+			)
+		);
+
+		const {container} = render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<ChannelContext.Provider value={mockChannelContext()}>
+						<DataSourcesProvider groupId='23'>
+							<SegmentProfileRoutes />
+						</DataSourcesProvider>
+					</ChannelContext.Provider>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(screen.getByText('Account Batch Segment')).toBeTruthy();
+		expect(screen.getByText('SEGMENT MEMBERSHIP')).toBeTruthy();
+	});
+
+	it('should offer the edit action and no report actions for a real time segment', async () => {
+		window.location = {pathname: '/'};
+
+		API.individualSegment.fetch.mockReturnValueOnce(
+			Promise.resolve(
+				mockSegment(0, {segmentType: SegmentTypes.RealTime})
+			)
+		);
+
+		const {container} = render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<ChannelContext.Provider value={mockChannelContext()}>
+						<DataSourcesProvider groupId='23'>
+							<SegmentProfileRoutes />
+						</DataSourcesProvider>
+					</ChannelContext.Provider>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		await waitForLoadingToBeRemoved(container);
+
+		expect(screen.getByText('Edit Segment')).toBeTruthy();
+		expect(screen.queryByText('Download Reports')).toBeNull();
+		expect(screen.queryByText('Refresh Data')).toBeNull();
 	});
 
 	it('should render the external reference code with its label', async () => {
