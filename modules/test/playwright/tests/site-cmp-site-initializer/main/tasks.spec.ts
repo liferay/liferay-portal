@@ -348,7 +348,7 @@ test(
 
 		await test.step('Dragging an unscheduled task into the calendar schedules it', async () => {
 			await expect(calendarView.unscheduledTasksButton).toContainText(
-				'3 Unscheduled Tasks'
+				'3 Tasks With No Due Date'
 			);
 
 			await clickAndExpectToBeVisible({
@@ -377,7 +377,7 @@ test(
 			).toBeHidden();
 
 			await expect(calendarView.unscheduledTasksButton).toContainText(
-				'2 Unscheduled Tasks'
+				'2 Tasks With No Due Date'
 			);
 		});
 
@@ -399,7 +399,7 @@ test(
 			).toBeVisible();
 
 			await expect(calendarView.unscheduledTasksButton).toContainText(
-				'2 Unscheduled Tasks'
+				'2 Tasks With No Due Date'
 			);
 		});
 	}
@@ -799,7 +799,7 @@ test(
 			await expect(calendarView.unscheduledTasksButton).toBeVisible();
 
 			await expect(calendarView.unscheduledTasksButton).toContainText(
-				/\d+ Unscheduled Tasks?/
+				/\d+ Tasks? With No Due Date/
 			);
 		});
 

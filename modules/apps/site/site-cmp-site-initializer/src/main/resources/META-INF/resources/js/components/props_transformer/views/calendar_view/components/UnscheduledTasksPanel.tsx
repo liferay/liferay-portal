@@ -149,7 +149,7 @@ export default function UnscheduledTasksPanel({
 						/>
 					</span>
 
-					{Liferay.Language.get('unscheduled-tasks')}
+					{Liferay.Language.get('no-due-date')}
 				</SidePanel.Title>
 			</SidePanel.Header>
 

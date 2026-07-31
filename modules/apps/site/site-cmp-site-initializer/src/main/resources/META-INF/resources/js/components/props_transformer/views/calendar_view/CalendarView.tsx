@@ -298,9 +298,11 @@ export default function CalendarView({
 
 							{sub(
 								unscheduledTasks.length === 1
-									? Liferay.Language.get('x-unscheduled-task')
+									? Liferay.Language.get(
+											'x-task-with-no-due-date'
+										)
 									: Liferay.Language.get(
-											'x-unscheduled-tasks'
+											'x-tasks-with-no-due-date'
 										),
 								[unscheduledTasks.length]
 							)}
