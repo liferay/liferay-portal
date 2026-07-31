@@ -630,6 +630,17 @@ describe('AIAssistantHost', () => {
 		).toBeInTheDocument();
 	});
 
+	it('renders the panel header actions as small buttons', async () => {
+		await renderAndOpen();
+
+		expect(screen.getByRole('button', {name: 'maximize'})).toHaveClass(
+			'btn-sm'
+		);
+		expect(screen.getByRole('button', {name: 'close'})).toHaveClass(
+			'btn-sm'
+		);
+	});
+
 	it('reopens with the last presentation for an open event', async () => {
 		await renderAndOpen();
 

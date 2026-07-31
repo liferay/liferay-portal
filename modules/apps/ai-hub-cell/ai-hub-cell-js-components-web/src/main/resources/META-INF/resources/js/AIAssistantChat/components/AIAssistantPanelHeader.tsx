@@ -39,6 +39,7 @@ const AIAssistantPanelHeader: React.FC<AIAssistantPanelHeaderProps> = ({
 									borderless
 									displayType="unstyled"
 									onClick={onToggleExpanded}
+									size="sm"
 								>
 									<ClayIcon
 										className="ai-assistant-chat__panel-expand-button"
@@ -58,6 +59,7 @@ const AIAssistantPanelHeader: React.FC<AIAssistantPanelHeaderProps> = ({
 							borderless
 							displayType="unstyled"
 							onClick={onClose}
+							size="sm"
 						>
 							<ClayIcon
 								className="ai-assistant-chat__panel-close-button"
