@@ -32,14 +32,23 @@ $type-size: 100px;
 	.recharts-legend-item {
 		align-items: center;
 		display: flex !important;
+		margin-bottom: 10px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
 
 		.recharts-legend-item-text {
 			color: $mainLighten28;
 			display: flex;
-			font-size: $fontSizeMedium;
-			font-weight: $fontWeightSemiBold;
+			font-size: $fontSizeSmall;
+			font-weight: $fontWeightRegular;
 			justify-content: space-between;
 			width: 100%;
+
+			.legend-percentage {
+				font-weight: $fontWeightSemiBold;
+			}
 
 			.text-truncate {
 				margin-right: 8px;

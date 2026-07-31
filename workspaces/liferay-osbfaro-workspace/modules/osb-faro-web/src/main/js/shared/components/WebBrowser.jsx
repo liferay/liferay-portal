@@ -132,7 +132,12 @@ class WebBrowser extends React.Component {
 						<Legend
 							align='right'
 							formatter={(val, {payload: {value, valueKey}}) => (
-								<>
+
+								// Recharts colors the legend label after its
+								// series. Override it so only the icon and the
+								// slice carry the series color.
+
+								<span style={{color: Colors.neutral}}>
 									<TextTruncate
 										inline
 										maxCharLength={24}
@@ -142,7 +147,7 @@ class WebBrowser extends React.Component {
 									<span className='legend-percentage'>
 										{getChartPercentage(value, total)}
 									</span>
-								</>
+								</span>
 							)}
 							iconSize={14}
 							layout='vertical'
