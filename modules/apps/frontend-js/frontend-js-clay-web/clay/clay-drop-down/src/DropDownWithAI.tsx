@@ -4,7 +4,7 @@
  */
 
 import {ClayAIButton} from '@clayui/button';
-import {ClayInput} from '@clayui/form';
+import {ClayInput, ClayInputGroupAI} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {
 	InternalDispatch,
@@ -98,18 +98,12 @@ function Prompt({
 					}
 				}}
 			>
-				<ClayInput.Group>
-					<ClayInput.GroupItem>
-						<ClayInput
-							autoFocus
-							className="form-control-sm rounded-lg"
-							onChange={(event) => setValue(event.target.value)}
-							placeholder={placeholder}
-							type="text"
-							value={value}
-						/>
-					</ClayInput.GroupItem>
-
+				<ClayInputGroupAI
+					autoFocus
+					onChange={(event) => setValue(event.target.value)}
+					placeholder={placeholder}
+					value={value}
+				>
 					<ClayInput.GroupItem shrink>
 						<ClayAIButton
 							aria-label={submitAriaLabel}
@@ -133,7 +127,7 @@ function Prompt({
 							type="button"
 						/>
 					</ClayInput.GroupItem>
-				</ClayInput.Group>
+				</ClayInputGroupAI>
 			</form>
 		</div>
 	);
