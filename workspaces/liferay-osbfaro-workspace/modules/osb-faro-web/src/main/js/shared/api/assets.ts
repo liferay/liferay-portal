@@ -25,6 +25,9 @@ interface IFetchAccountTopAssets {
 	// TODO(LPD-91217): confirm `objectType` query param name once backend lands.
 
 	objectType?: TopAssetObjectType;
+	rangeEnd?: string | null;
+	rangeKey?: number | null;
+	rangeStart?: string | null;
 	selectedMetric: TopAssetMetric;
 }
 
@@ -33,6 +36,9 @@ export async function fetchAccountTopAssets({
 	channelId,
 	groupId,
 	objectType,
+	rangeEnd,
+	rangeKey,
+	rangeStart,
 	selectedMetric,
 }: IFetchAccountTopAssets): Promise<{items: ITopAsset[]}> {
 	return sendRequest({
@@ -43,6 +49,8 @@ export async function fetchAccountTopAssets({
 			selectedMetric,
 			sort: `${selectedMetric},desc`,
 			...(objectType && {objectType}),
+			...(rangeKey ? {rangeKey} : {}),
+			...(rangeEnd && rangeStart ? {rangeEnd, rangeStart} : {}),
 		},
 		method: 'GET',
 		path: `contacts/${groupId}/asset-summary`,
