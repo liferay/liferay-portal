@@ -68,7 +68,7 @@ public class AssetCategoriesNavigationConfigurationAction
 		String assetVocabularyIdsString = portletPreferences.getValue(
 			"assetVocabularyIds", null);
 
-		if (Validator.isNull(assetVocabularyIdsString)) {
+		if (assetVocabularyIdsString == null) {
 			return;
 		}
 
@@ -131,7 +131,7 @@ public class AssetCategoriesNavigationConfigurationAction
 
 			String key = entry.getKey();
 
-			if (key.startsWith("assetVocabularyExternalReferenceCodes_")) {
+			if (key.startsWith("assetVocabularyExternalReferenceCodes")) {
 				portletPreferences.reset(key);
 			}
 		}
