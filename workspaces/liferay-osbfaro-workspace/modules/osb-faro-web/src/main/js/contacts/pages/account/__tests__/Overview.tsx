@@ -96,4 +96,17 @@ describe('Overview', () => {
 			container.querySelector('.col-xl-6 .top-assets')
 		).toBeInTheDocument();
 	});
+
+	it('should render the Top Asset Categories and Tags card beside the Top Assets card', () => {
+		const {container} = renderOverview({account: mockAccount});
+
+		expect(
+			screen.getByText('TOP ASSET CATEGORIES AND TAGS')
+		).toBeInTheDocument();
+		expect(
+			container.querySelectorAll(
+				'.col-xl-6 .top-assets, .col-xl-6 .top-categories-and-tags'
+			)
+		).toHaveLength(2);
+	});
 });

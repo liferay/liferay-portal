@@ -128,7 +128,7 @@ describe('TopCategoriesAndTags', () => {
 			render(<TopCategoriesAndTags account={ACCOUNT} />);
 
 			expect(
-				screen.getByText('TOP ASSET VOCABULARIES AND CATEGORIES')
+				screen.getByText('TOP ASSET CATEGORIES AND TAGS')
 			).toBeInTheDocument();
 		});
 

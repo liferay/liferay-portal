@@ -276,7 +276,7 @@ const TopCategoriesAndTags: React.FC<ITopCategoriesAndTagsProps> = ({
 			<Card.Title className="p-3">
 				<Text weight="semi-bold">
 					{Liferay.Language.get(
-						'top-asset-vocabularies-and-categories'
+						'top-asset-categories-and-tags'
 					).toUpperCase()}
 				</Text>
 			</Card.Title>
