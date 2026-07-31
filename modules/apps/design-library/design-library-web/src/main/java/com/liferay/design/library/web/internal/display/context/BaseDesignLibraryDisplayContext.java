@@ -10,6 +10,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -20,6 +25,7 @@ import java.util.Map;
 
 /**
  * @author Mario Leandro
+ * @author Thiago Buarque
  */
 public abstract class BaseDesignLibraryDisplayContext {
 
@@ -34,12 +40,12 @@ public abstract class BaseDesignLibraryDisplayContext {
 	}
 
 	protected Map<String, Object> buildEmptyState(
-		String descriptionKey, String titleKey) {
+		String descriptionKey, String image, String titleKey) {
 
 		return HashMapBuilder.<String, Object>put(
 			"description", LanguageUtil.get(httpServletRequest, descriptionKey)
 		).put(
-			"image", "/states/design_library_empty_state.svg"
+			"image", image
 		).put(
 			"title", LanguageUtil.get(httpServletRequest, titleKey)
 		).build();
@@ -53,6 +59,34 @@ public abstract class BaseDesignLibraryDisplayContext {
 
 	protected Group getGroup() throws PortalException {
 		return depotEntry.getGroup();
+	}
+
+	protected String getViewResourcesURL(
+		LiferayPortletResponse liferayPortletResponse) {
+
+		return PortletURLBuilder.createRenderURL(
+			liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/design_library/view_resources_design_library"
+		).setParameter(
+			"designLibraryEntryId", depotEntry.getDepotEntryId()
+		).buildString();
+	}
+
+	protected boolean hasAssignMembersPermission(Group group)
+		throws PortalException {
+
+		return GroupPermissionUtil.contains(
+			themeDisplay.getPermissionChecker(), group.getGroupId(),
+			ActionKeys.ASSIGN_MEMBERS);
+	}
+
+	protected boolean hasDepotEntryPermission(Group group, String actionId) {
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		return permissionChecker.hasPermission(
+			group, DepotEntry.class.getName(), group.getClassPK(), actionId);
 	}
 
 	protected final DepotEntry depotEntry;

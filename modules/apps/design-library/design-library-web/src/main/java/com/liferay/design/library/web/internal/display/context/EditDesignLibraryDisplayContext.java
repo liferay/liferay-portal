@@ -10,7 +10,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
@@ -40,7 +39,7 @@ public class EditDesignLibraryDisplayContext
 		Group group = getGroup();
 
 		return HashMapBuilder.<String, Object>put(
-			"backURL", _getBackURL()
+			"backURL", getViewResourcesURL(_liferayPortletResponse)
 		).put(
 			"externalReferenceCode", group.getExternalReferenceCode()
 		).put(
@@ -55,7 +54,7 @@ public class EditDesignLibraryDisplayContext
 		throws PortalException {
 
 		portletDisplay.setShowBackIcon(true);
-		portletDisplay.setURLBack(_getBackURL());
+		portletDisplay.setURLBack(getViewResourcesURL(_liferayPortletResponse));
 
 		Group group = getGroup();
 
@@ -63,16 +62,6 @@ public class EditDesignLibraryDisplayContext
 			LanguageUtil.format(
 				httpServletRequest, "x-settings",
 				group.getName(themeDisplay.getLocale()), false));
-	}
-
-	private String _getBackURL() {
-		return PortletURLBuilder.createRenderURL(
-			_liferayPortletResponse
-		).setMVCRenderCommandName(
-			"/design_library/view_resources_design_library"
-		).setParameter(
-			"designLibraryEntryId", depotEntry.getDepotEntryId()
-		).buildString();
 	}
 
 	private final LiferayPortletResponse _liferayPortletResponse;
