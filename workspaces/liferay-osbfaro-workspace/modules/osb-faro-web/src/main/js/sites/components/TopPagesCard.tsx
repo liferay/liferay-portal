@@ -61,6 +61,7 @@ const TopPagesCardWithData: React.FC<ITopPageCardWithData> = ({
 		router: {
 			params: {channelId},
 		},
+		segmentId,
 	} = useContext(BasePage.Context);
 	const {
 		data,
@@ -73,6 +74,7 @@ const TopPagesCardWithData: React.FC<ITopPageCardWithData> = ({
 				...getSafeRangeSelectors(rangeSelectors),
 				accountId,
 				channelId,
+				segmentId,
 				size: 5,
 				sort: {
 					column: activeTabId,

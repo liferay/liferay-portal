@@ -24,6 +24,7 @@ export interface SitesTopPagesQueryData {
 export interface SitesTopPagesQueryVariables extends SafeRangeSelectors {
 	accountId?: string | null;
 	channelId?: string;
+	segmentId?: string | null;
 	size: number;
 	sort: {
 		column: string;
@@ -39,6 +40,7 @@ export default gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$size: Int!
 		$sort: Sort!
 		$start: Int!
@@ -49,6 +51,7 @@ export default gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			size: $size
 			sort: $sort
 			start: $start
