@@ -222,6 +222,25 @@ public class AssetCategoriesNavigationDisplayContext {
 		return _displayStyleGroupId;
 	}
 
+	private Long _getAssetVocabularyId(
+		String assetVocabularyExternalReferenceCode, long groupId) {
+
+		if (assetVocabularyExternalReferenceCode == null) {
+			return null;
+		}
+
+		AssetVocabulary assetVocabulary =
+			AssetVocabularyLocalServiceUtil.
+				fetchAssetVocabularyByExternalReferenceCode(
+					assetVocabularyExternalReferenceCode, groupId);
+
+		if (assetVocabulary == null) {
+			return null;
+		}
+
+		return assetVocabulary.getVocabularyId();
+	}
+
 	private String[] _getAssetVocabularyIds() {
 		List<Long> assetVocabularyIds = new ArrayList<>();
 
@@ -267,19 +286,10 @@ public class AssetCategoriesNavigationDisplayContext {
 			assetVocabularyIds.addAll(
 				(List<Long>)TransformUtil.transformToList(
 					assetVocabularyExternalReferenceCodes,
-					assetVocabularyExternalReferenceCode -> {
-						AssetVocabulary assetVocabulary =
-							AssetVocabularyLocalServiceUtil.
-								fetchAssetVocabularyByExternalReferenceCode(
-									assetVocabularyExternalReferenceCode,
-									group.getGroupId());
-
-						if (assetVocabulary == null) {
-							return null;
-						}
-
-						return assetVocabulary.getVocabularyId();
-					}));
+					assetVocabularyExternalReferenceCode ->
+						_getAssetVocabularyId(
+							assetVocabularyExternalReferenceCode,
+							group.getGroupId())));
 		}
 
 		return assetVocabularyIds;
@@ -295,19 +305,9 @@ public class AssetCategoriesNavigationDisplayContext {
 
 		return TransformUtil.transformToList(
 			assetVocabularyExternalReferenceCodes,
-			assetVocabularyExternalReferenceCode -> {
-				AssetVocabulary assetVocabulary =
-					AssetVocabularyLocalServiceUtil.
-						fetchAssetVocabularyByExternalReferenceCode(
-							assetVocabularyExternalReferenceCode,
-							_themeDisplay.getScopeGroupId());
-
-				if (assetVocabulary == null) {
-					return null;
-				}
-
-				return assetVocabulary.getVocabularyId();
-			});
+			assetVocabularyExternalReferenceCode -> _getAssetVocabularyId(
+				assetVocabularyExternalReferenceCode,
+				_themeDisplay.getScopeGroupId()));
 	}
 
 	private String _getTitle(AssetVocabulary assetVocabulary) {
