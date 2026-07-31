@@ -123,9 +123,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		)
 	}
 
-	entitlements, error := liferayEnvironmentReconciler.Provisioning.Entitlements(
+	entitlements, error := liferayEnvironmentReconciler.Provisioning.Manifest(
 		context,
-		provisioning.EntitlementsRequest{
+		provisioning.ManifestRequest{
 			DxpVersion:    liferayEnvironmentReconciler.resolveDxpVersion(liferayEnvironment),
 			EnvironmentID: environmentID,
 		},

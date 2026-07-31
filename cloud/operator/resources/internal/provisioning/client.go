@@ -20,7 +20,7 @@ type App struct {
 
 type Client interface {
 	Activate(activationRequest ActivationRequest, context context.Context, privateKey *rsa.PrivateKey) error
-	Entitlements(context context.Context, entitlementsRequest EntitlementsRequest, privateKey *rsa.PrivateKey) (*Entitlements, error)
+	Manifest(context context.Context, manifestRequest ManifestRequest, privateKey *rsa.PrivateKey) (*Entitlements, error)
 }
 
 type Entitlements struct {
@@ -29,7 +29,7 @@ type Entitlements struct {
 	MaxClusterNodes int32
 }
 
-type EntitlementsRequest struct {
+type ManifestRequest struct {
 	DxpVersion    string
 	EnvironmentID string
 }

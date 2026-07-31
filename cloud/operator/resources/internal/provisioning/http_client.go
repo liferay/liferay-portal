@@ -15,6 +15,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 func (httpClient *HTTPClient) Activate(
@@ -61,17 +63,17 @@ func (httpClient *HTTPClient) Activate(
 	return nil
 }
 
-func (httpClient *HTTPClient) Entitlements(
+func (httpClient *HTTPClient) Manifest(
 	context context.Context,
-	entitlementsRequest EntitlementsRequest,
+	manifestRequest ManifestRequest,
 	privateKey *rsa.PrivateKey,
 ) (*Entitlements, error) {
 	token, error := signJWT(
 		map[string]any{
-			"dxpVersion":    entitlementsRequest.DxpVersion,
-			"environmentID": entitlementsRequest.EnvironmentID,
+			"dxpVersion":    manifestRequest.DxpVersion,
+			"environmentID": manifestRequest.EnvironmentID,
 		},
-		entitlementsRequest.EnvironmentID,
+		manifestRequest.EnvironmentID,
 		privateKey,
 	)
 
@@ -81,8 +83,8 @@ func (httpClient *HTTPClient) Entitlements(
 
 	response, error := httpClient.post(
 		context, token, fmt.Sprintf(
-			"%s/o/provisioning-rest/v1.0/cloud/environments/%s/entitlements",
-			httpClient.BaseURL, entitlementsRequest.EnvironmentID,
+			"%s/o/provisioning-rest/v1.0/cloud/environments/%s/manifest",
+			httpClient.BaseURL, manifestRequest.EnvironmentID,
 		),
 	)
 
@@ -111,8 +113,14 @@ func (httpClient *HTTPClient) Entitlements(
 		return nil, fmt.Errorf("entitlements: decode response: %w", error)
 	}
 
+	licenseXML, error := base64.StdEncoding.DecodeString(entitlementsResponse.LicenseXML)
+
+	if error != nil {
+		return nil, fmt.Errorf("entitlements: decode licenseXML: %w", error)
+	}
+
 	entitlements := &Entitlements{
-		LicenseXML:      []byte(entitlementsResponse.LicenseXML),
+		LicenseXML:      licenseXML,
 		MaxClusterNodes: entitlementsResponse.MaxClusterNodes,
 	}
 
@@ -135,6 +143,22 @@ func NewHTTPClient(baseURL string) *HTTPClient {
 	}
 }
 
+func decodeJWTPayload(token string) string {
+	segments := strings.Split(token, ".")
+
+	if len(segments) != 3 {
+		return token
+	}
+
+	payload, error := base64.RawURLEncoding.DecodeString(segments[1])
+
+	if error != nil {
+		return token
+	}
+
+	return string(payload)
+}
+
 func encodeRandomID() (string, error) {
 	buffer := make([]byte, 16)
 
@@ -154,6 +178,10 @@ func (httpClient *HTTPClient) post(
 	token string,
 	url string,
 ) (*http.Response, error) {
+	logf.FromContext(context).V(1).Info(
+		"Provisioning POST", "payload", decodeJWTPayload(token), "url", url,
+	)
+
 	request, error := http.NewRequestWithContext(
 		context, http.MethodPost, url, bytes.NewReader([]byte(token)),
 	)
