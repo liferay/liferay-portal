@@ -14,10 +14,8 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +37,8 @@ public class MembersDesignLibraryDisplayContext
 
 	public Map<String, Object> getMembersEmptyState() {
 		return buildEmptyState(
-			"add-members-to-this-design-library", "no-members-yet");
+			"add-members-to-this-design-library",
+			"/states/design_library_empty_state.svg", "no-members-yet");
 	}
 
 	public Map<String, Object> getMembersFDSAdditionalProps()
@@ -50,7 +49,7 @@ public class MembersDesignLibraryDisplayContext
 		return HashMapBuilder.<String, Object>put(
 			"externalReferenceCode", group.getExternalReferenceCode()
 		).put(
-			"hasAssignMembersPermission", _hasAssignMembersPermission(group)
+			"hasAssignMembersPermission", hasAssignMembersPermission(group)
 		).put(
 			"ownerId", String.valueOf(group.getCreatorUserId())
 		).put(
@@ -118,14 +117,6 @@ public class MembersDesignLibraryDisplayContext
 
 		return userLocalService.getGroupUsersCount(groupId) +
 			userGroupLocalService.getGroupUserGroupsCount(groupId);
-	}
-
-	private boolean _hasAssignMembersPermission(Group group)
-		throws PortalException {
-
-		return GroupPermissionUtil.contains(
-			themeDisplay.getPermissionChecker(), group.getGroupId(),
-			ActionKeys.ASSIGN_MEMBERS);
 	}
 
 	private static final Snapshot<UserGroupLocalService>

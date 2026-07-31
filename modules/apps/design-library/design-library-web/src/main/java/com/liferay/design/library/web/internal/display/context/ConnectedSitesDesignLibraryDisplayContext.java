@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +38,7 @@ public class ConnectedSitesDesignLibraryDisplayContext
 	public Map<String, Object> getConnectedSitesEmptyState() {
 		return buildEmptyState(
 			"connect-sites-to-this-design-library",
+			"/states/design_library_empty_state.svg",
 			"no-sites-are-connected-yet");
 	}
 
@@ -47,16 +47,11 @@ public class ConnectedSitesDesignLibraryDisplayContext
 
 		Group group = getGroup();
 
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
 		return HashMapBuilder.<String, Object>put(
 			"externalReferenceCode", group.getExternalReferenceCode()
 		).put(
 			"hasConnectSitesPermission",
-			permissionChecker.hasPermission(
-				group, DepotEntry.class.getName(), group.getClassPK(),
-				ActionKeys.UPDATE)
+			hasDepotEntryPermission(group, ActionKeys.UPDATE)
 		).put(
 			"refreshDataSetIds",
 			new String[] {

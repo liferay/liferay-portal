@@ -15,6 +15,7 @@ import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -27,9 +28,7 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
-import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -82,17 +81,9 @@ public class ViewResourcesDesignLibraryDisplayContext
 	}
 
 	public Map<String, Object> getEmptyState() {
-		return HashMapBuilder.<String, Object>put(
-			"description",
-			LanguageUtil.get(
-				httpServletRequest,
-				"click-new-to-create-or-import-your-design-resource")
-		).put(
-			"image", "/states/resources_empty_state.svg"
-		).put(
-			"title",
-			LanguageUtil.get(httpServletRequest, "no-design-resources-yet")
-		).build();
+		return buildEmptyState(
+			"click-new-to-create-or-import-your-design-resource",
+			"/states/resources_empty_state.svg", "no-design-resources-yet");
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
@@ -100,7 +91,8 @@ public class ViewResourcesDesignLibraryDisplayContext
 
 		Group depotGroup = getGroup();
 
-		String designLibraryResourcesURL = _getDesignLibraryResourcesURL();
+		String designLibraryResourcesURL = getViewResourcesURL(
+			_liferayPortletResponse);
 
 		String viewFragmentCollectionURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
@@ -274,11 +266,10 @@ public class ViewResourcesDesignLibraryDisplayContext
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		boolean hasAssignMembersPermission = GroupPermissionUtil.contains(
-			themeDisplay.getPermissionChecker(), group.getGroupId(),
-			ActionKeys.ASSIGN_MEMBERS);
+		boolean hasAssignMembersPermission = hasAssignMembersPermission(group);
 
-		boolean hasUpdatePermission = _hasPermission(group, ActionKeys.UPDATE);
+		boolean hasUpdatePermission = hasDepotEntryPermission(
+			group, ActionKeys.UPDATE);
 
 		if (hasUpdatePermission) {
 			jsonArray.put(
@@ -366,14 +357,12 @@ public class ViewResourcesDesignLibraryDisplayContext
 			);
 		}
 
-		if (_hasPermission(group, ActionKeys.DELETE)) {
+		if (hasDepotEntryPermission(group, ActionKeys.DELETE)) {
 			jsonArray.put(
 				JSONUtil.put(
 					"descriptiveName", group.getDescriptiveName()
 				).put(
-					"href",
-					"/o/headless-asset-library/v1.0/asset-libraries/" +
-						group.getExternalReferenceCode()
+					"href", getAssetLibraryURL(group, StringPool.BLANK)
 				).put(
 					"label", LanguageUtil.get(httpServletRequest, "delete")
 				).put(
@@ -410,7 +399,7 @@ public class ViewResourcesDesignLibraryDisplayContext
 		).setActionName(
 			"/fragment/add_fragment_entry"
 		).setRedirect(
-			_getDesignLibraryResourcesURL()
+			getViewResourcesURL(_liferayPortletResponse)
 		).setParameter(
 			"type", FragmentConstants.TYPE_COMPONENT
 		).buildString();
@@ -424,7 +413,7 @@ public class ViewResourcesDesignLibraryDisplayContext
 		).setActionName(
 			"/style_book/add_style_book_entry"
 		).setRedirect(
-			_getDesignLibraryResourcesURL()
+			getViewResourcesURL(_liferayPortletResponse)
 		).setParameter(
 			"backURLTitle", depotGroup.getName(themeDisplay.getLocale())
 		).buildString();
@@ -450,16 +439,6 @@ public class ViewResourcesDesignLibraryDisplayContext
 			).put(
 				"label", group.getName(httpServletRequest.getLocale())
 			));
-	}
-
-	private String _getDesignLibraryResourcesURL() {
-		return PortletURLBuilder.createRenderURL(
-			_liferayPortletResponse
-		).setMVCRenderCommandName(
-			"/design_library/view_resources_design_library"
-		).setParameter(
-			"designLibraryEntryId", depotEntry.getDepotEntryId()
-		).buildString();
 	}
 
 	private String _getExportImportPortletURL(Group group, String portletId) {
@@ -517,14 +496,6 @@ public class ViewResourcesDesignLibraryDisplayContext
 		return portletResourcePermission.contains(
 			themeDisplay.getPermissionChecker(), groupId,
 			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
-	}
-
-	private boolean _hasPermission(Group group, String actionId) {
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
-		return permissionChecker.hasPermission(
-			group, DepotEntry.class.getName(), group.getClassPK(), actionId);
 	}
 
 	private static final Snapshot<FragmentCollectionLocalService>
