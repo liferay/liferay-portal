@@ -22,7 +22,7 @@ page import="com.liferay.design.library.web.internal.display.context.ConnectedSi
 page import="com.liferay.design.library.web.internal.display.context.EditDesignLibraryDisplayContext" %><%@
 page import="com.liferay.design.library.web.internal.display.context.MembersDesignLibraryDisplayContext" %><%@
 page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryAdminDisplayContext" %><%@
-page import="com.liferay.design.library.web.internal.display.context.ViewDesignLibraryResourcesDisplayContext" %>
+page import="com.liferay.design.library.web.internal.display.context.ViewResourcesDesignLibraryDisplayContext" %>
 
 <%@ page import="java.util.Map" %>
 

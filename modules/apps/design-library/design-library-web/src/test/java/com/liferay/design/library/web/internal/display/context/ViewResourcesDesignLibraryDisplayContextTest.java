@@ -62,7 +62,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Lourdes Fernández Besada
  * @author Thiago Buarque
  */
-public class ViewDesignLibraryResourcesDisplayContextTest {
+public class ViewResourcesDesignLibraryDisplayContextTest {
 
 	@ClassRule
 	@Rule
@@ -73,7 +73,7 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 	public void setUp() throws Exception {
 		_setUpDepotEntry();
 		_setUpJSONFactoryUtil();
-		_setUpViewDesignLibraryResourcesDisplayContext();
+		_setUpViewResourcesDesignLibraryDisplayContext();
 	}
 
 	@After
@@ -84,7 +84,7 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 
 	@Test
 	public void testGetAPIURL() throws Exception {
-		String url = _viewDesignLibraryResourcesDisplayContext.getAPIURL();
+		String url = _viewResourcesDesignLibraryDisplayContext.getAPIURL();
 
 		Assert.assertTrue(
 			url,
@@ -171,7 +171,7 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 		_setUpPortletURLMocks();
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
-			_viewDesignLibraryResourcesDisplayContext.
+			_viewResourcesDesignLibraryDisplayContext.
 				getFDSActionDropdownItems();
 
 		_assertFDSActionDropdownItem(
@@ -243,7 +243,7 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 		);
 
 		Map<String, Object> fdsAdditionalProps =
-			_viewDesignLibraryResourcesDisplayContext.getFDSAdditionalProps();
+			_viewResourcesDesignLibraryDisplayContext.getFDSAdditionalProps();
 
 		Assert.assertNull(fdsAdditionalProps.get("addStyleBookEntryURL"));
 		Assert.assertFalse((Boolean)fdsAdditionalProps.get("canAddStyleBook"));
@@ -380,16 +380,16 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 				LocaleUtil.US
 			);
 
-			ViewDesignLibraryResourcesDisplayContext
-				viewDesignLibraryResourcesDisplayContext =
-					new ViewDesignLibraryResourcesDisplayContext(
+			ViewResourcesDesignLibraryDisplayContext
+				viewResourcesDesignLibraryDisplayContext =
+					new ViewResourcesDesignLibraryDisplayContext(
 						depotEntry, httpServletRequest,
 						Mockito.mock(LiferayPortletResponse.class));
 
 			List<String> labels = new ArrayList<>();
 
 			Map<String, Object> breadcrumbProps =
-				viewDesignLibraryResourcesDisplayContext.getBreadcrumbProps();
+				viewResourcesDesignLibraryDisplayContext.getBreadcrumbProps();
 
 			JSONArray jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
 
@@ -461,12 +461,12 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 		);
 	}
 
-	private void _setUpViewDesignLibraryResourcesDisplayContext() {
+	private void _setUpViewResourcesDesignLibraryDisplayContext() {
 		ReflectionTestUtil.setFieldValue(
-			ViewDesignLibraryResourcesDisplayContext.class,
+			ViewResourcesDesignLibraryDisplayContext.class,
 			"_fragmentCollectionLocalServiceSnapshot",
 			new Snapshot<FragmentCollectionLocalService>(
-				ViewDesignLibraryResourcesDisplayContext.class,
+				ViewResourcesDesignLibraryDisplayContext.class,
 				FragmentCollectionLocalService.class) {
 
 				@Override
@@ -476,10 +476,10 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 
 			});
 		ReflectionTestUtil.setFieldValue(
-			ViewDesignLibraryResourcesDisplayContext.class,
+			ViewResourcesDesignLibraryDisplayContext.class,
 			"_fragmentPortletResourcePermissionSnapshot",
 			new Snapshot<PortletResourcePermission>(
-				ViewDesignLibraryResourcesDisplayContext.class,
+				ViewResourcesDesignLibraryDisplayContext.class,
 				PortletResourcePermission.class) {
 
 				@Override
@@ -489,10 +489,10 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 
 			});
 		ReflectionTestUtil.setFieldValue(
-			ViewDesignLibraryResourcesDisplayContext.class,
+			ViewResourcesDesignLibraryDisplayContext.class,
 			"_styleBookPortletResourcePermissionSnapshot",
 			new Snapshot<PortletResourcePermission>(
-				ViewDesignLibraryResourcesDisplayContext.class,
+				ViewResourcesDesignLibraryDisplayContext.class,
 				PortletResourcePermission.class) {
 
 				@Override
@@ -517,8 +517,8 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _themeDisplay);
 
-		_viewDesignLibraryResourcesDisplayContext =
-			new ViewDesignLibraryResourcesDisplayContext(
+		_viewResourcesDesignLibraryDisplayContext =
+			new ViewResourcesDesignLibraryDisplayContext(
 				_depotEntry, _mockHttpServletRequest, _liferayPortletResponse);
 	}
 
@@ -545,7 +545,7 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 
 		Assert.assertEquals(
 			expected,
-			_viewDesignLibraryResourcesDisplayContext.hasContentAccess());
+			_viewResourcesDesignLibraryDisplayContext.hasContentAccess());
 	}
 
 	private static final long _DEPOT_ENTRY_ID = 12345;
@@ -570,7 +570,7 @@ public class ViewDesignLibraryResourcesDisplayContextTest {
 		_styleBookPortletResourcePermission = Mockito.mock(
 			PortletResourcePermission.class);
 	private final ThemeDisplay _themeDisplay = Mockito.mock(ThemeDisplay.class);
-	private ViewDesignLibraryResourcesDisplayContext
-		_viewDesignLibraryResourcesDisplayContext;
+	private ViewResourcesDesignLibraryDisplayContext
+		_viewResourcesDesignLibraryDisplayContext;
 
 }

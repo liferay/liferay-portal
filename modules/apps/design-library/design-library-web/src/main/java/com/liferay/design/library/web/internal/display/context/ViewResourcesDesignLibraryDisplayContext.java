@@ -52,9 +52,9 @@ import java.util.Map;
  * @author Gabriel Prates
  * @author Thiago Buarque
  */
-public class ViewDesignLibraryResourcesDisplayContext {
+public class ViewResourcesDesignLibraryDisplayContext {
 
-	public ViewDesignLibraryResourcesDisplayContext(
+	public ViewResourcesDesignLibraryDisplayContext(
 		DepotEntry depotEntry, HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
@@ -536,16 +536,16 @@ public class ViewDesignLibraryResourcesDisplayContext {
 
 	private static final Snapshot<FragmentCollectionLocalService>
 		_fragmentCollectionLocalServiceSnapshot = new Snapshot<>(
-			ViewDesignLibraryResourcesDisplayContext.class,
+			ViewResourcesDesignLibraryDisplayContext.class,
 			FragmentCollectionLocalService.class);
 	private static final Snapshot<PortletResourcePermission>
 		_fragmentPortletResourcePermissionSnapshot = new Snapshot<>(
-			ViewDesignLibraryResourcesDisplayContext.class,
+			ViewResourcesDesignLibraryDisplayContext.class,
 			PortletResourcePermission.class,
 			"(resource.name=" + FragmentConstants.RESOURCE_NAME + ")");
 	private static final Snapshot<PortletResourcePermission>
 		_styleBookPortletResourcePermissionSnapshot = new Snapshot<>(
-			ViewDesignLibraryResourcesDisplayContext.class,
+			ViewResourcesDesignLibraryDisplayContext.class,
 			PortletResourcePermission.class,
 			"(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")");
 

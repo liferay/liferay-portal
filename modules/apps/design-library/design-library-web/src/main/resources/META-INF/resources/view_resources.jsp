@@ -14,22 +14,22 @@ ConnectedSitesDesignLibraryDisplayContext connectedSitesDesignLibraryDisplayCont
 
 MembersDesignLibraryDisplayContext membersDesignLibraryDisplayContext = new MembersDesignLibraryDisplayContext(depotEntry, request);
 
-ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContext = new ViewDesignLibraryResourcesDisplayContext(depotEntry, request, liferayPortletResponse);
+ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContext = new ViewResourcesDesignLibraryDisplayContext(depotEntry, request, liferayPortletResponse);
 %>
 
 <div>
 	<div>
 		<react:component
 			module="{DesignLibraryBreadcrumb} from design-library-web"
-			props="<%= viewDesignLibraryResourcesDisplayContext.getBreadcrumbProps() %>"
+			props="<%= viewResourcesDesignLibraryDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
 
 	<c:choose>
-		<c:when test="<%= viewDesignLibraryResourcesDisplayContext.hasContentAccess() %>">
+		<c:when test="<%= viewResourcesDesignLibraryDisplayContext.hasContentAccess() %>">
 
 			<%
-			Map<String, Object> fdsAdditionalProps = viewDesignLibraryResourcesDisplayContext.getFDSAdditionalProps();
+			Map<String, Object> fdsAdditionalProps = viewResourcesDesignLibraryDisplayContext.getFDSAdditionalProps();
 
 			Map<String, Object> membersFDSAdditionalProps = membersDesignLibraryDisplayContext.getMembersFDSAdditionalProps();
 			%>
@@ -49,9 +49,9 @@ ViewDesignLibraryResourcesDisplayContext viewDesignLibraryResourcesDisplayContex
 								<div class="design-library-fds-wrapper design-library-fds-wrapper--resources">
 									<frontend-data-set:headless-display
 										additionalProps="<%= fdsAdditionalProps %>"
-										apiURL="<%= viewDesignLibraryResourcesDisplayContext.getAPIURL() %>"
-										emptyState="<%= viewDesignLibraryResourcesDisplayContext.getEmptyState() %>"
-										fdsActionDropdownItems="<%= viewDesignLibraryResourcesDisplayContext.getFDSActionDropdownItems() %>"
+										apiURL="<%= viewResourcesDesignLibraryDisplayContext.getAPIURL() %>"
+										emptyState="<%= viewResourcesDesignLibraryDisplayContext.getEmptyState() %>"
+										fdsActionDropdownItems="<%= viewResourcesDesignLibraryDisplayContext.getFDSActionDropdownItems() %>"
 										formName="fm"
 										id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_RESOURCES %>"
 										propsTransformer="{DesignLibraryAssetsFDSPropsTransformer} from design-library-web"
