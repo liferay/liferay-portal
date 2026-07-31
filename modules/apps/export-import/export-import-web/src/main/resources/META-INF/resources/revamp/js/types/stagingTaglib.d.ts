@@ -6,6 +6,14 @@
 declare module 'staging-taglib' {
 	import {ComponentType} from 'react';
 
+	export interface ExportReportEntriesModalProps {
+		closeModal: () => void;
+		filename: string;
+		importProcessId: string;
+	}
+
+	export const ExportReportEntriesModal: ComponentType<ExportReportEntriesModalProps>;
+
 	export interface PagesTreeProps {
 		config: {
 			changeItemSelectionURL: string;

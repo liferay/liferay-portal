@@ -4,6 +4,7 @@
  */
 
 export {ExportReportEntriesAction} from './components/ExportReportEntriesAction';
+export {ExportReportEntriesModal} from './components/ExportReportEntriesModal';
 
 // @ts-ignore
 

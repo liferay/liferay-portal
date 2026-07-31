@@ -35,6 +35,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Daniel Raposo
@@ -109,6 +110,14 @@ public class ExportImportProcessesDisplayContext {
 	}
 
 	public List<FDSActionDropdownItem> getImportFDSActionDropdownItems() {
+		Map<String, Object> visibilityFilters =
+			HashMapBuilder.<String, Object>put(
+				"status.code",
+				Arrays.asList(
+					BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
+					BackgroundTaskConstants.STATUS_FAILED)
+			).build();
+
 		return ListUtil.fromArray(
 			new FDSActionDropdownItem(
 				PortletURLBuilder.createRenderURL(
@@ -122,13 +131,11 @@ public class ExportImportProcessesDisplayContext {
 				).buildString(),
 				"list-ul", "view-report-entries",
 				LanguageUtil.get(_httpServletRequest, "view-report-entries"),
-				"get", null, "link",
-				HashMapBuilder.<String, Object>put(
-					"status.code",
-					Arrays.asList(
-						BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS,
-						BackgroundTaskConstants.STATUS_FAILED)
-				).build()),
+				"get", null, "link", visibilityFilters),
+			new FDSActionDropdownItem(
+				null, "download", "exportReportEntries",
+				LanguageUtil.get(_httpServletRequest, "export-report-entries"),
+				"get", null, null, visibilityFilters),
 			_getDeleteFDSActionDropdownItem("/import-processes/{id}"),
 			_getClearFDSActionDropdownItem("/import-processes/{id}"));
 	}

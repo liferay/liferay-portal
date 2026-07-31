@@ -4,7 +4,7 @@
  */
 
 import ClayButton from '@clayui/button';
-import {useModal} from '@clayui/modal';
+import ClayModal, {useModal} from '@clayui/modal';
 import React from 'react';
 
 import {ExportReportEntriesModal} from './ExportReportEntriesModal';
@@ -30,12 +30,13 @@ export function ExportReportEntriesAction({
 			</ClayButton>
 
 			{open && (
-				<ExportReportEntriesModal
-					filename={filename}
-					importProcessId={backgroundTaskId}
-					observer={observer}
-					onOpenChange={onOpenChange}
-				/>
+				<ClayModal disableAutoClose observer={observer}>
+					<ExportReportEntriesModal
+						closeModal={() => onOpenChange(false)}
+						filename={filename}
+						importProcessId={backgroundTaskId}
+					/>
+				</ClayModal>
 			)}
 		</>
 	);

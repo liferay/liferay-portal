@@ -4,7 +4,9 @@
  */
 
 import {IInternalRenderer} from '@liferay/frontend-data-set-web';
+import {openModal} from 'frontend-js-components-web';
 import React from 'react';
+import {ExportReportEntriesModal} from 'staging-taglib';
 
 import ProcessAuthorRenderer from './cell_renderers/ProcessAuthorRenderer';
 import ProcessCompletionDateRenderer from './cell_renderers/ProcessCompletionDateRenderer';
@@ -50,5 +52,37 @@ export default function ImportProcessesFDSPropsTransformer({
 			],
 		},
 		itemsActions: itemsActions?.map(toLiveVisibilityAction),
+		onActionDropdownItemClick({
+			action,
+			event,
+			itemData,
+		}: {
+			action: {data: {id: string}};
+			event: Event;
+			itemData: {id: number; name?: string};
+		}) {
+			if (action.data.id === 'exportReportEntries') {
+				event?.preventDefault();
+
+				const filename = `${(itemData.name ?? '').replace(
+					/\.lar$/,
+					''
+				)}_report_entries.zip`;
+
+				openModal({
+					contentComponent: ({
+						closeModal,
+					}: {
+						closeModal: () => void;
+					}) => (
+						<ExportReportEntriesModal
+							closeModal={closeModal}
+							filename={filename}
+							importProcessId={String(itemData.id)}
+						/>
+					),
+				});
+			}
+		},
 	};
 }

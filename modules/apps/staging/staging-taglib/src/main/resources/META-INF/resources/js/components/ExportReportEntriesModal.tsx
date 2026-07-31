@@ -6,7 +6,7 @@
 import ClayButton from '@clayui/button';
 import ClayLabel from '@clayui/label';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import Modal from '@clayui/modal';
+import ClayModal from '@clayui/modal';
 import ClayProgressBar from '@clayui/progress-bar';
 import classNames from 'classnames';
 import React from 'react';
@@ -16,8 +16,6 @@ import {
 	useBatchEngineExportTask,
 } from '../hooks/useBatchEngineExportTask';
 import {downloadFile} from '../utils/downloadFile';
-
-import type {Observer} from '@clayui/modal/src/types';
 
 type StatusInfo = {
 	displayType: 'success' | 'info' | 'danger';
@@ -48,15 +46,13 @@ const STATUS_MAP: Record<Status, StatusInfo> = {
 };
 
 export function ExportReportEntriesModal({
+	closeModal,
 	filename,
 	importProcessId,
-	observer,
-	onOpenChange,
 }: {
+	closeModal: () => void;
 	filename: string;
 	importProcessId: string;
-	observer: Observer;
-	onOpenChange: (value: boolean) => void;
 }) {
 	const {downloadURL, errorMessage, progress, status} =
 		useBatchEngineExportTask(importProcessId);
@@ -67,16 +63,12 @@ export function ExportReportEntriesModal({
 			: STATUS_MAP[status].message;
 
 	return (
-		<Modal
-			disableAutoClose
-			observer={observer}
-			status={STATUS_MAP[status].displayType}
-		>
-			<Modal.Header>
+		<>
+			<ClayModal.Header>
 				{Liferay.Language.get('export-report-entries')}
-			</Modal.Header>
+			</ClayModal.Header>
 
-			<Modal.Body className="text-3">
+			<ClayModal.Body className="text-3">
 				<div id={`${importProcessId}status`} role="status">
 					<p className="mb-0">{currentMessage}</p>
 
@@ -100,14 +92,14 @@ export function ExportReportEntriesModal({
 					}}
 					value={progress}
 				/>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer
+			<ClayModal.Footer
 				last={
 					<ClayButton.Group spaced>
 						<ClayButton
 							displayType="secondary"
-							onClick={() => onOpenChange(false)}
+							onClick={closeModal}
 						>
 							{Liferay.Language.get('cancel')}
 						</ClayButton>
@@ -136,6 +128,6 @@ export function ExportReportEntriesModal({
 					</ClayButton.Group>
 				}
 			/>
-		</Modal>
+		</>
 	);
 }
