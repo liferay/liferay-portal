@@ -24,6 +24,8 @@ interface IAccountsDataSetProps {
 	groupId: string;
 	industryFilter?: string;
 	lifecycleStageFilter?: LifecycleStages;
+	segmentFilter?: string;
+	segmentName?: string;
 	stageSelectionNonce?: number;
 }
 
@@ -48,6 +50,8 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	groupId,
 	industryFilter,
 	lifecycleStageFilter,
+	segmentFilter,
+	segmentName,
 	stageSelectionNonce,
 }) => {
 	const {data: lifecycleStageFieldValues} = useRequest({
@@ -175,12 +179,26 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 							buildSelectionPreloadedData(countryFilter),
 						type: 'selection',
 					},
+					{
+						apiURL: `/o/faro/contacts/${groupId}/individual_segment?channelId=${channelId}`,
+						entityFieldType: 'string',
+						id: 'segmentId',
+						itemKey: 'id',
+						itemLabel: 'name',
+						label: Liferay.Language.get('segment'),
+						preloadedData: buildSelectionPreloadedData(
+							segmentFilter,
+							segmentName
+						),
+						type: 'selection',
+					},
 				]}
 				id="accounts-list-dataset"
 				key={[
 					countryFilter,
 					industryFilter,
 					lifecycleStageFilter,
+					segmentFilter,
 					stageSelectionNonce,
 					lifecycleStages.length,
 				].join()}
