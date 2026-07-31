@@ -78,6 +78,18 @@ public class NotificationRecipientSettingLocalServiceWrapper
 			createNotificationRecipientSetting(notificationRecipientSettingId);
 	}
 
+	@Override
+	public java.util.List
+		<com.liferay.notification.model.NotificationRecipientSetting>
+			createNotificationRecipientSettings(
+				long notificationRecipientId, Object[] recipients,
+				com.liferay.portal.kernel.model.User user) {
+
+		return _notificationRecipientSettingLocalService.
+			createNotificationRecipientSettings(
+				notificationRecipientId, recipients, user);
+	}
+
 	/**
 	 * @throws PortalException
 	 */
@@ -459,4 +471,4 @@ public class NotificationRecipientSettingLocalServiceWrapper
 		_notificationRecipientSettingLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-663938303
+// LIFERAY-SERVICE-BUILDER-HASH:1661326029
