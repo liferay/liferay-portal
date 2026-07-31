@@ -5,11 +5,8 @@
 
 package com.liferay.jenkins.results.parser;
 
-import java.io.IOException;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * @author Michael Hashimoto
@@ -28,31 +25,7 @@ public class ArchiveBinariesCachePortalControllerBuildRunner
 
 	@Override
 	protected void invokeBuild() {
-		StringBuilder sb = new StringBuilder();
-
-		String invocationJobURL = _getInvocationJobURL();
-
-		sb.append(invocationJobURL);
-
-		sb.append("/buildWithParameters?");
-
-		String jenkinsAuthenticationToken;
-
-		try {
-			Properties buildProperties =
-				JenkinsResultsParserUtil.getBuildProperties();
-
-			jenkinsAuthenticationToken = buildProperties.getProperty(
-				"jenkins.authentication.token");
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
 		S buildData = getBuildData();
-
-		sb.append("token=");
-		sb.append(jenkinsAuthenticationToken);
 
 		Map<String, String> invocationParameters = new HashMap<>();
 
@@ -84,33 +57,18 @@ public class ArchiveBinariesCachePortalControllerBuildRunner
 		invocationParameters.put(
 			"TEST_PORTAL_BUILD_PROFILE", _TEST_PORTAL_BUILD_PROFILE);
 
-		for (Map.Entry<String, String> invocationParameter :
-				invocationParameters.entrySet()) {
+		String invocationJobURL = _getInvocationJobURL();
 
-			String invocationParameterValue = invocationParameter.getValue();
+		long queueId = JenkinsResultsParserUtil.invokeJenkinsBuild(
+			invocationJobURL, invocationParameters);
 
-			if (JenkinsResultsParserUtil.isNullOrEmpty(
-					invocationParameterValue)) {
-
-				continue;
-			}
-
-			sb.append("&");
-			sb.append(invocationParameter.getKey());
-			sb.append("=");
-			sb.append(invocationParameterValue);
+		if (queueId == 0) {
+			throw new RuntimeException("Unable to invoke " + invocationJobURL);
 		}
 
-		try {
-			JenkinsResultsParserUtil.toString(sb.toString());
+		keepJenkinsBuild(true);
 
-			keepJenkinsBuild(true);
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
 		sb.append("<a href=\"");
 		sb.append(invocationJobURL);

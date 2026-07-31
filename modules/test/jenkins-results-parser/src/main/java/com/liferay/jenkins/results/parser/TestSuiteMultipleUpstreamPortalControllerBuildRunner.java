@@ -40,19 +40,6 @@ public class TestSuiteMultipleUpstreamPortalControllerBuildRunner
 			return;
 		}
 
-		String jenkinsAuthenticationToken = null;
-
-		try {
-			Properties buildProperties =
-				JenkinsResultsParserUtil.getBuildProperties();
-
-			jenkinsAuthenticationToken = buildProperties.getProperty(
-				"jenkins.authentication.token");
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
 		S buildData = getBuildData();
 
 		String portalBranchSHA = buildData.getPortalBranchSHA();
@@ -73,13 +60,6 @@ public class TestSuiteMultipleUpstreamPortalControllerBuildRunner
 			}
 
 			String invocationJobURL = getInvocationJobURL(testSuiteName);
-
-			StringBuilder sb = new StringBuilder();
-
-			sb.append(invocationJobURL);
-			sb.append("/buildWithParameters?");
-			sb.append("token=");
-			sb.append(jenkinsAuthenticationToken);
 
 			Map<String, String> invocationParameters = new HashMap<>();
 
@@ -139,26 +119,14 @@ public class TestSuiteMultipleUpstreamPortalControllerBuildRunner
 				"TESTRAY_SLACK_USERNAME",
 				getTestraySlackUsername(testSuiteName));
 
-			for (Map.Entry<String, String> invocationParameter :
-					invocationParameters.entrySet()) {
-
-				String invocationParameterValue =
-					invocationParameter.getValue();
-
-				if (JenkinsResultsParserUtil.isNullOrEmpty(
-						invocationParameterValue)) {
-
-					continue;
-				}
-
-				sb.append("&");
-				sb.append(invocationParameter.getKey());
-				sb.append("=");
-				sb.append(invocationParameterValue);
-			}
-
 			try {
-				JenkinsResultsParserUtil.toString(sb.toString());
+				long queueId = JenkinsResultsParserUtil.invokeJenkinsBuild(
+					invocationJobURL, invocationParameters);
+
+				if (queueId == 0) {
+					throw new RuntimeException(
+						"Unable to invoke " + invocationJobURL);
+				}
 
 				System.out.println(
 					JenkinsResultsParserUtil.combine(
@@ -167,13 +135,13 @@ public class TestSuiteMultipleUpstreamPortalControllerBuildRunner
 
 				_invokedTestSuiteNames.add(testSuiteName);
 			}
-			catch (IOException ioException) {
+			catch (Exception exception) {
 				System.out.println(
 					JenkinsResultsParserUtil.combine(
 						"Unable to invoke a new build for test suite, '",
 						testSuiteName, "'"));
 
-				ioException.printStackTrace();
+				exception.printStackTrace();
 			}
 		}
 

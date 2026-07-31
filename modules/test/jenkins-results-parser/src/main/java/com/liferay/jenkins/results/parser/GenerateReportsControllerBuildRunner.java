@@ -230,58 +230,29 @@ public class GenerateReportsControllerBuildRunner
 
 		invocationParameters.put("PARENT_BUILD_URL", buildData.getBuildURL());
 
-		Properties buildProperties = null;
-
-		try {
-			buildProperties = JenkinsResultsParserUtil.getBuildProperties();
-		}
-		catch (IOException ioException) {
-			throw new RuntimeException(ioException);
-		}
-
-		StringBuilder sb = new StringBuilder();
-
 		String jobURL = JenkinsResultsParserUtil.combine(
 			JenkinsResultsParserUtil.getMostAvailableMasterURL(
 				"http://" + buildData.getCohortName() + ".liferay.com", null, 1,
 				"generate-reports"),
 			"/job/generate-reports");
 
-		sb.append(jobURL);
-
-		sb.append("/buildWithParameters?token=");
-
-		sb.append(buildProperties.getProperty("jenkins.authentication.token"));
-
-		for (Map.Entry<String, String> invocationParameter :
-				invocationParameters.entrySet()) {
-
-			String invocationParameterValue = invocationParameter.getValue();
-
-			if (JenkinsResultsParserUtil.isNullOrEmpty(
-					invocationParameterValue)) {
-
-				continue;
-			}
-
-			sb.append("&");
-			sb.append(invocationParameter.getKey());
-			sb.append("=");
-			sb.append(invocationParameterValue);
-		}
-
 		try {
-			JenkinsResultsParserUtil.toString(sb.toString());
+			long queueId = JenkinsResultsParserUtil.invokeJenkinsBuild(
+				jobURL, invocationParameters);
+
+			if (queueId == 0) {
+				throw new RuntimeException("Unable to invoke " + jobURL);
+			}
 
 			System.out.println(
 				"The " + invocationParameters.get("REPORT_NAMES") +
 					" report(s) will be generated at: " + jobURL);
 		}
-		catch (IOException ioException) {
+		catch (Exception exception) {
 			System.out.println(
 				"Unable to invoke a new build to generate reports");
 
-			ioException.printStackTrace();
+			exception.printStackTrace();
 		}
 	}
 
