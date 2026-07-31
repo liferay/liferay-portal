@@ -2,9 +2,6 @@ import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
 import BundleRouter from 'route-middleware/BundleRouter';
-import ClayButton from '@clayui/button';
-import ClayIcon from '@clayui/icon';
-import ClayLink from '@clayui/link';
 import DownloadPDFReport from 'shared/components/download-report/DownloadPDFReport';
 import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
 import ErrorPage from 'shared/pages/ErrorPage';
@@ -23,15 +20,11 @@ import RouteNotFound from 'shared/components/RouteNotFound';
 import {AlertTypes} from 'shared/components/Alert';
 import {ChannelContext} from 'shared/context/channel';
 import {CSVType} from 'shared/components/download-report/utils';
-import {DownloadReportDropdown} from 'shared/components/download-report/DownloadReportDropdown';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
-import {formatUTCDate} from 'shared/util/date';
 import {getMatchedRoute, Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {Segment} from 'shared/util/records';
 import {SegmentStates, SegmentTypes} from 'shared/util/constants';
-import {sub} from 'shared/util/lang';
 import {Switch, useParams} from 'react-router-dom';
-import {Text} from '@clayui/core';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const Overview = lazy(() =>
@@ -86,7 +79,7 @@ export const SegmentProfileRoutes = () => {
 
 	const {channelId, groupId, id} = useParams();
 
-	const {data, error, loading, refetch} = useRequest({
+	const {data, error, loading} = useRequest({
 		dataSourceFn: API.individualSegment.fetch,
 		variables: {
 			groupId,
@@ -98,7 +91,6 @@ export const SegmentProfileRoutes = () => {
 	const segment = useMemo(() => new Segment(data), [data]);
 
 	const [segmentDetails, setSegmentDetails] = useState({
-		dateModified: segment.dateModified,
 		name: segment.name,
 		segmentType: segment.segmentType
 	});
@@ -106,7 +98,6 @@ export const SegmentProfileRoutes = () => {
 	useEffect(() => {
 		if (data && !loading) {
 			setSegmentDetails({
-				dateModified: segment.dateModified,
 				name: segment.name,
 				segmentType: segment.segmentType
 			});
@@ -163,11 +154,6 @@ export const SegmentProfileRoutes = () => {
 	};
 
 	const isBatch = segmentDetails.segmentType === SegmentTypes.Batch;
-	const lastUpdateMessage = sub(Liferay.Language.get('last-update-x'), [
-		formatUTCDate(segmentDetails.dateModified, 'MMM DD, YYYY hh:mm a')
-			.replace('am', 'a.m.')
-			.replace('pm', 'p.m.')
-	]);
 
 	return (
 		<BasePage
@@ -205,30 +191,23 @@ export const SegmentProfileRoutes = () => {
 						</Label>
 					</BasePage.Header.TitleSection>
 
-					{isBatch && (
-						<BasePage.Header.Section>
-							<BasePage.Header.PageActions
-								actions={[
-									{
-										button: true,
-										displayType: 'secondary',
-										href: toRoute(
-											Routes.CONTACTS_SEGMENT_EDIT,
-											{
-												channelId,
-												groupId,
-												id,
-												type: SEGMENTS
-											}
-										),
-										label: Liferay.Language.get(
-											'edit-segment'
-										)
-									}
-								]}
-							/>
-						</BasePage.Header.Section>
-					)}
+					<BasePage.Header.Section>
+						<BasePage.Header.PageActions
+							actions={[
+								{
+									button: true,
+									displayType: 'secondary',
+									href: toRoute(Routes.CONTACTS_SEGMENT_EDIT, {
+										channelId,
+										groupId,
+										id,
+										type: SEGMENTS
+									}),
+									label: Liferay.Language.get('edit-segment')
+								}
+							]}
+						/>
+					</BasePage.Header.Section>
 				</BasePage.Row>
 
 				{isBatch && (
@@ -269,60 +248,6 @@ export const SegmentProfileRoutes = () => {
 						</div>
 					</BasePage.SubHeader>
 				)}
-
-			{!isBatch && (
-				<BasePage.SubHeader>
-					<div className='align-items-center d-flex justify-content-end w-100'>
-						<Text color='secondary' size={3}>
-							{lastUpdateMessage}
-						</Text>
-
-						<span className='mr-2 ml-3'>{'|'}</span>
-
-						<DownloadReportDropdown
-							className='button-root'
-							label={Liferay.Language.get('real-time-segment')}
-							segmentId={segment.id}
-							subtitle={lastUpdateMessage}
-							title={segmentDetails.name}
-						/>
-
-						<ClayButton
-							borderless
-							button
-							className='button-root'
-							disabled={loading}
-							displayType='secondary'
-							key={Liferay.Language.get('refresh-data')}
-							onClick={refetch}
-							size='sm'
-						>
-							{loading ? (
-								<Loading align='false' className='mr-2 mt-n1' />
-							) : (
-								<ClayIcon className='mr-2' symbol='reload' />
-							)}
-							{Liferay.Language.get('refresh-data')}
-						</ClayButton>
-
-						<ClayLink
-							borderless
-							button
-							className='button-root'
-							displayType='secondary'
-							href={toRoute(Routes.CONTACTS_SEGMENT_EDIT, {
-								channelId,
-								groupId,
-								id
-							})}
-							small
-						>
-							<ClayIcon className='mr-2' symbol='pencil' />
-							{Liferay.Language.get('edit-segment')}
-						</ClayLink>
-					</div>
-				</BasePage.SubHeader>
-			)}
 
 			<EmbeddedAlertList alerts={getAlerts()} />
 
