@@ -261,13 +261,22 @@ public class OpenSearchIndexWriterLogExceptionsOnlyTest
 
 	@Test
 	public void testPartiallyUpdateDocument() throws SearchException {
-		Document document = new DocumentImpl();
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OpenSearchIndexWriter.class.getName(), LoggerTestUtil.ERROR)) {
 
-		document.addKeyword(Field.UID, _UID);
+			Document document = new DocumentImpl();
 
-		IndexWriter indexWriter = getIndexWriter();
+			document.addKeyword(Field.UID, _UID);
 
-		indexWriter.partiallyUpdateDocument(createSearchContext(), document);
+			IndexWriter indexWriter = getIndexWriter();
+
+			indexWriter.partiallyUpdateDocument(
+				createSearchContext(), document);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+		}
 	}
 
 	@Test
