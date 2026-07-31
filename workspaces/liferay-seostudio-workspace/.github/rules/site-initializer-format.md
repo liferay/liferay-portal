@@ -1,1 +1,0 @@
-../../.workspace-rules/rules/site-initializer-format.md
