@@ -6,6 +6,7 @@
 package com.liferay.site.cmp.site.initializer.internal.model.listener;
 
 import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -153,7 +154,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			DepotRolesConstants.PROJECT_MANAGER, actionIds
 		).put(
 			DepotRolesConstants.PROJECT_MEMBER,
-			new String[] {ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW}
+			new String[] {
+				ActionKeys.ADD_DISCUSSION, ActionKeys.VIEW,
+				ObjectActionKeys.OBJECT_ENTRY_HISTORY
+			}
 		).put(
 			RoleConstants.CMS_ADMINISTRATOR, actionIds
 		).put(
@@ -200,7 +204,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		if (StringUtil.equals(externalReferenceCode, "L_CMP_TASK")) {
 			return new String[] {
-				ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW
+				ActionKeys.ADD_DISCUSSION, ActionKeys.UPDATE, ActionKeys.VIEW,
+				ObjectActionKeys.OBJECT_ENTRY_HISTORY
 			};
 		}
 
