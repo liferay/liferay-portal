@@ -4,11 +4,14 @@
 package licensing
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/pem"
 	"fmt"
 	"time"
@@ -25,7 +28,11 @@ import (
 )
 
 const (
-	identitySecretSuffix = "-identity"
+	conditionActivated             = "Activated"
+	conditionLicenseValid          = "LicenseValid"
+	conditionProvisioningReachable = "ProvisioningReachable"
+	identitySecretSuffix           = "-identity"
+	licenseSecretSuffix            = "-license"
 )
 
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch
@@ -80,7 +87,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 					Message: error.Error(),
 					Reason:  "ActivationRejected",
 					Status:  metav1.ConditionFalse,
-					Type:    "Activated",
+					Type:    conditionActivated,
 				},
 			)
 
@@ -98,24 +105,67 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 			metav1.Condition{
 				Reason: "Activated",
 				Status: metav1.ConditionTrue,
-				Type:   "Activated",
+				Type:   conditionActivated,
 			},
 		)
 	}
 
-	if liferayEnvironment.Status.Phase == "" {
-		liferayEnvironment.Status.Phase = "Pending"
+	entitlements, error := liferayEnvironmentReconciler.Provisioning.Entitlements(
+		context,
+		provisioning.EntitlementsRequest{
+			DxpVersion:    liferayEnvironmentReconciler.resolveDxpVersion(liferayEnvironment),
+			EnvironmentID: environmentID,
+		},
+		privateKey,
+	)
+
+	if error != nil {
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: error.Error(),
+				Reason:  "EntitlementsFetchFailed",
+				Status:  metav1.ConditionFalse,
+				Type:    conditionProvisioningReachable,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		return liferayEnvironmentReconciler.finish(context, liferayEnvironment)
 	}
 
-	if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
-		if errors.IsConflict(error) {
-			return controllerruntime.Result{RequeueAfter: time.Second}, nil
-		}
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Reason: "Reachable",
+			Status: metav1.ConditionTrue,
+			Type:   conditionProvisioningReachable,
+		},
+	)
 
+	if error := liferayEnvironmentReconciler.persistLicenseSecret(context, entitlements.LicenseXML, liferayEnvironment); error != nil {
 		return controllerruntime.Result{}, error
 	}
 
-	return controllerruntime.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
+	now := metav1.Now()
+
+	liferayEnvironment.Status.License.Checksum = licenseChecksum(entitlements.LicenseXML)
+	liferayEnvironment.Status.License.LastVerified = &now
+	liferayEnvironment.Status.License.MaxClusterNodes = entitlements.MaxClusterNodes
+
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Reason: "LicensePresent",
+			Status: metav1.ConditionTrue,
+			Type:   conditionLicenseValid,
+		},
+	)
+
+	liferayEnvironment.Status.Phase = "Ready"
+
+	return liferayEnvironmentReconciler.finish(context, liferayEnvironment)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(
@@ -191,12 +241,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 		},
 	}
 
-	if err := controllerruntime.SetControllerReference(liferayEnvironment, secret, liferayEnvironmentReconciler.Scheme()); err != nil {
-		return nil, err
+	if error := controllerruntime.SetControllerReference(liferayEnvironment, secret, liferayEnvironmentReconciler.Scheme()); error != nil {
+		return nil, error
 	}
 
-	if err := liferayEnvironmentReconciler.Create(context, secret); err != nil {
-		return nil, err
+	if error := liferayEnvironmentReconciler.Create(context, secret); error != nil {
+		return nil, error
 	}
 
 	return privateKey, nil
@@ -206,9 +256,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finish(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) (controllerruntime.Result, error) {
-	status := liferayEnvironmentReconciler.Status()
-
-	if error := status.Update(context, liferayEnvironment); error != nil {
+	if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
 		if errors.IsConflict(error) {
 			return controllerruntime.Result{RequeueAfter: time.Second}, nil
 		}
@@ -217,6 +265,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finish(
 	}
 
 	return controllerruntime.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
+}
+
+func licenseChecksum(licenseXML []byte) string {
+	sum := sha256.Sum256(licenseXML)
+
+	return hex.EncodeToString(sum[:])
 }
 
 func parsePrivateKey(privatePEM []byte) (*rsa.PrivateKey, error) {
@@ -239,6 +293,59 @@ func parsePrivateKey(privatePEM []byte) (*rsa.PrivateKey, error) {
 	}
 
 	return parsedPrivateKey, nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistLicenseSecret(
+	context context.Context,
+	licenseXML []byte,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) error {
+	licenseName := liferayEnvironment.Name + licenseSecretSuffix
+
+	secret := &corev1.Secret{}
+
+	getError := liferayEnvironmentReconciler.Get(
+		context, types.NamespacedName{
+			Name:      licenseName,
+			Namespace: liferayEnvironment.Namespace,
+		}, secret)
+
+	if getError == nil {
+		if bytes.Equal(secret.Data["license.xml"], licenseXML) {
+			return nil
+		}
+
+		secret.Data = map[string][]byte{
+			"license.xml": licenseXML,
+		}
+
+		return liferayEnvironmentReconciler.Update(context, secret)
+	}
+
+	if !errors.IsNotFound(getError) {
+		return getError
+	}
+
+	secret = &corev1.Secret{
+		Data: map[string][]byte{
+			"license.xml": licenseXML,
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Labels:    map[string]string{"controller-watched": "yes"},
+			Name:      licenseName,
+			Namespace: liferayEnvironment.Namespace,
+		},
+	}
+
+	if error := controllerruntime.SetControllerReference(liferayEnvironment, secret, liferayEnvironmentReconciler.Scheme()); error != nil {
+		return error
+	}
+
+	if error := liferayEnvironmentReconciler.Create(context, secret); error != nil {
+		return error
+	}
+
+	return nil
 }
 
 func publicKeyBase64(privateKey *rsa.PrivateKey) (string, error) {
@@ -277,6 +384,18 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivation
 	}
 
 	return string(code), nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveDxpVersion(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) string {
+	if liferayEnvironment.Spec.DxpVersion != "" {
+		return liferayEnvironment.Spec.DxpVersion
+	}
+
+	// TODO derive from the workload's container image tag
+
+	return ""
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnvironmentID(
