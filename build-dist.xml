@@ -1012,9 +1012,15 @@ org.apache.level=WARNING]]>
 			file="${app.server.tomcat.dir}/conf/server.xml"
 		>
 			<replacetoken><![CDATA[pattern="%h %l %u %t &quot;%r&quot; %s %b" />]]></replacetoken>
-			<replacevalue><![CDATA[pattern="%h %l %u %t &quot;%r&quot; %s %b" />-->
-				<Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false" />]]>
-			</replacevalue>
+			<replacevalue><![CDATA[pattern="%h %l %u %t &quot;%r&quot; %s %b" />-->]]></replacevalue>
+		</replace>
+
+		<replace
+			failOnNoReplacements="true"
+			file="${app.server.tomcat.dir}/conf/server.xml"
+		>
+			<replacetoken><![CDATA[unpackWARs="true" autoDeploy="true">]]></replacetoken>
+			<replacevalue><![CDATA[unpackWARs="true" autoDeploy="true" errorReportValveClass="">]]></replacevalue>
 		</replace>
 
 		<replace
