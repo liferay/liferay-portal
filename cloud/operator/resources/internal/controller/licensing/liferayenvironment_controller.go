@@ -12,8 +12,10 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/hex"
+	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"maps"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
@@ -32,8 +34,8 @@ const (
 	conditionActivated             = "Activated"
 	conditionLicenseValid          = "LicenseValid"
 	conditionProvisioningReachable = "ProvisioningReachable"
+	entitlementsSecretSuffix       = "-entitlements"
 	identitySecretSuffix           = "-identity"
-	licenseSecretSuffix            = "-license"
 )
 
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch
@@ -165,7 +167,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		},
 	)
 
-	if error := liferayEnvironmentReconciler.persistLicenseSecret(context, entitlements.LicenseXML, liferayEnvironment); error != nil {
+	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(context, entitlements, liferayEnvironment); error != nil {
 		return controllerruntime.Result{}, error
 	}
 
@@ -318,35 +320,51 @@ func parsePrivateKey(privatePEM []byte) (*rsa.PrivateKey, error) {
 	return parsedPrivateKey, nil
 }
 
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistLicenseSecret(
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistEntitlementsSecret(
 	context context.Context,
-	licenseXML []byte,
+	entitlements *provisioning.Entitlements,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) error {
-	licenseName := liferayEnvironment.Name + licenseSecretSuffix
+	entitlementsName := liferayEnvironment.Name + entitlementsSecretSuffix
+
+	apps := entitlements.Apps
+
+	if apps == nil {
+		apps = []provisioning.App{}
+	}
+
+	appsJSON, error := json.Marshal(apps)
+
+	if error != nil {
+		return error
+	}
+
+	data := map[string][]byte{
+		"apps.json":       appsJSON,
+		"license.xml":     entitlements.LicenseXML,
+		"maxClusterNodes": []byte(fmt.Sprintf("%d", entitlements.MaxClusterNodes)),
+	}
 
 	secret := &corev1.Secret{}
 
 	getError := liferayEnvironmentReconciler.Get(
 		context, types.NamespacedName{
-			Name:      licenseName,
+			Name:      entitlementsName,
 			Namespace: liferayEnvironment.Namespace,
 		}, secret)
 
 	if getError == nil {
-		if bytes.Equal(secret.Data["license.xml"], licenseXML) {
+		if maps.EqualFunc(secret.Data, data, bytes.Equal) {
 			return nil
 		}
 
-		secret.Data = map[string][]byte{
-			"license.xml": licenseXML,
-		}
+		secret.Data = data
 
 		if error := liferayEnvironmentReconciler.Update(context, secret); error != nil {
 			return error
 		}
 
-		logf.FromContext(context).Info("Updated license secret", "secret", licenseName)
+		logf.FromContext(context).Info("Updated entitlements secret", "secret", entitlementsName)
 
 		return nil
 	}
@@ -356,12 +374,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistLicense
 	}
 
 	secret = &corev1.Secret{
-		Data: map[string][]byte{
-			"license.xml": licenseXML,
-		},
+		Data: data,
 		ObjectMeta: metav1.ObjectMeta{
 			Labels:    map[string]string{"controller-watched": "yes"},
-			Name:      licenseName,
+			Name:      entitlementsName,
 			Namespace: liferayEnvironment.Namespace,
 		},
 	}
@@ -374,7 +390,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistLicense
 		return error
 	}
 
-	logf.FromContext(context).Info("Created license secret", "secret", licenseName)
+	logf.FromContext(context).Info("Created entitlements secret", "secret", entitlementsName)
 
 	return nil
 }
