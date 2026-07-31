@@ -131,6 +131,7 @@ describe('ContentGapMatrixHeader', () => {
 				focusScope: 'full-matrix',
 				objectDefinitionName: 'CMSBasicWebContent',
 				objectFields,
+				projectDescription: undefined,
 				projectId: '42',
 				projectScopeKey: undefined,
 				spacesJSONArray: [
@@ -147,6 +148,28 @@ describe('ContentGapMatrixHeader', () => {
 				],
 			});
 		});
+	});
+
+	it('passes the project description to the AI insights trigger context', () => {
+		Liferay.FeatureFlags['LPD-62272'] = true;
+
+		render(
+			<ContentGapMatrixHeader
+				cmpProjectObjectEntryDescription="A description of the project"
+				cmpProjectObjectEntryId="42"
+				data={PARTIAL_COVERAGE_MATRIX}
+			/>
+		);
+
+		const [{getContext}] =
+			mockRenderAIAssistantTriggerButton.mock.calls.at(-1);
+
+		expect(getContext()).toEqual(
+			expect.objectContaining({
+				projectDescription: 'A description of the project',
+				projectId: '42',
+			})
+		);
 	});
 
 	it('passes the project scope key to the AI insights trigger context', () => {
