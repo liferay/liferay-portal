@@ -178,6 +178,7 @@ public class ObjectEntryUtil {
 			objectDefinition.getObjectDefinitionId());
 		serviceBuilderObjectEntry.setDefaultLanguageId(
 			objectEntry.getDefaultLanguageId());
+		serviceBuilderObjectEntry.setDisplayDate(objectEntry.getDisplayDate());
 
 		Status status = objectEntry.getStatus();
 

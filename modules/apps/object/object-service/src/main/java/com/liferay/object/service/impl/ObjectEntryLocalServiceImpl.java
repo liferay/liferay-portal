@@ -2356,9 +2356,28 @@ public class ObjectEntryLocalServiceImpl
 		Date date = new Date();
 		Date displayDate = objectEntry.getDisplayDate();
 
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.fetchByPrimaryKey(
+				objectEntry.getObjectDefinitionId());
+
+		boolean recordDisplayDate = false;
+
+		if ((status == WorkflowConstants.STATUS_APPROVED) &&
+			(displayDate == null) &&
+			objectDefinition.isEnableObjectEntrySchedule()) {
+
+			recordDisplayDate = true;
+		}
+
+		boolean skipStatusChangeSideEffects = false;
+
 		if ((objectEntry.getStatus() == status) &&
 			((displayDate == null) || displayDate.before(date))) {
 
+			skipStatusChangeSideEffects = true;
+		}
+
+		if (!recordDisplayDate && skipStatusChangeSideEffects) {
 			return objectEntry;
 		}
 
@@ -2370,7 +2389,8 @@ public class ObjectEntryLocalServiceImpl
 
 		Date expirationDate = objectEntry.getExpirationDate();
 
-		if ((status == WorkflowConstants.STATUS_APPROVED) &&
+		if (!skipStatusChangeSideEffects &&
+			(status == WorkflowConstants.STATUS_APPROVED) &&
 			(expirationDate != null) && expirationDate.before(date)) {
 
 			objectEntry.setExpirationDate(null);
@@ -2391,6 +2411,10 @@ public class ObjectEntryLocalServiceImpl
 
 		objectEntry.setStatusDate(serviceContext.getModifiedDate(null));
 
+		if (recordDisplayDate) {
+			objectEntry.setDisplayDate(objectEntry.getStatusDate());
+		}
+
 		if (_skipModelListeners.get()) {
 			while (objectEntry instanceof ModelWrapper) {
 				ModelWrapper<ObjectEntry> modelWrapper =
@@ -2404,10 +2428,6 @@ public class ObjectEntryLocalServiceImpl
 		else {
 			objectEntry = objectEntryPersistence.update(objectEntry);
 		}
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.fetchByPrimaryKey(
-				objectEntry.getObjectDefinitionId());
 
 		if (serviceContext.isStrictAdd()) {
 			boolean indexingEnabled = serviceContext.isIndexingEnabled();
@@ -2446,12 +2466,14 @@ public class ObjectEntryLocalServiceImpl
 					userId, objectDefinition, objectEntry);
 			}
 		}
-		else if (!objectEntry.isInTrash() && !originalObjectEntry.isInTrash()) {
+		else if (!skipStatusChangeSideEffects && !objectEntry.isInTrash() &&
+				 !originalObjectEntry.isInTrash()) {
+
 			objectEntry = _addObjectEntryVersion(
 				userId, objectDefinition, objectEntry);
 		}
 
-		if (objectDefinition.isRootNode() &&
+		if (!skipStatusChangeSideEffects && objectDefinition.isRootNode() &&
 			(status != WorkflowConstants.STATUS_IN_TRASH) &&
 			!originalObjectEntry.isInTrash()) {
 
