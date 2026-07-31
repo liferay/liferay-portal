@@ -12,18 +12,9 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.ResourcePermission;
-import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.site.cms.site.initializer.internal.security.permission.resource.CMSDefaultPermissionObjectEntryModelResourcePermission;
@@ -57,33 +48,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 		String className = objectDefinition.getClassName();
 
-		try {
-			Role role = _roleLocalService.fetchRole(
-				objectDefinition.getCompanyId(), RoleConstants.USER);
-
-			if (role != null) {
-				ResourcePermission resourcePermission =
-					_resourcePermissionLocalService.fetchResourcePermission(
-						objectDefinition.getCompanyId(), className,
-						ResourceConstants.SCOPE_COMPANY,
-						String.valueOf(objectDefinition.getCompanyId()),
-						role.getRoleId());
-
-				if (resourcePermission == null) {
-					_resourcePermissionLocalService.addResourcePermission(
-						objectDefinition.getCompanyId(), className,
-						ResourceConstants.SCOPE_COMPANY,
-						String.valueOf(objectDefinition.getCompanyId()),
-						role.getRoleId(), ActionKeys.VIEW);
-				}
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(exception);
-			}
-		}
-
 		Snapshot<ModelResourcePermission<ObjectEntry>>
 			modelResourcePermissionSnapshot = new Snapshot<>(
 				CMSDefaultPermissionObjectEntryModelResourcePermission.class,
@@ -111,9 +75,6 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		_bundleContext = bundleContext;
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		ObjectDefinitionDeployerImpl.class);
-
 	private BundleContext _bundleContext;
 
 	@Reference
@@ -127,11 +88,5 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
-
-	@Reference
-	private ResourcePermissionLocalService _resourcePermissionLocalService;
-
-	@Reference
-	private RoleLocalService _roleLocalService;
 
 }
