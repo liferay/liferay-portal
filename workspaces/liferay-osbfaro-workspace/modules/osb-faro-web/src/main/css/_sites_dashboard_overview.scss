@@ -11,6 +11,14 @@ $visitorsPreviousPeriod: var(--cadmin-gray-800);
 		}
 	}
 
+	.interests-card-root,
+	.search-terms-card-root,
+	.top-pages-card-root {
+		.table-responsive {
+			margin-bottom: 0;
+		}
+	}
+
 	.site-metrics {
 		.card-header {
 			padding-bottom: 8px;
