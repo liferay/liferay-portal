@@ -140,6 +140,7 @@ INSTANCE_SETTINGS: 'com_liferay_configuration_admin_web_portlet_InstanceSettings
 ITEM_SELECTOR: 'com_liferay_item_selector_web_portlet_ItemSelectorPortlet',
 },
 PropsValues: {
+ENTERPRISE_PRODUCT_AI_HUB_ENABLED: false,
 JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT: 0,
 UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE: 0,
 },

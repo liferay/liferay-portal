@@ -806,6 +806,10 @@ public class PropsValues {
 	public static final String EDITOR_WYSIWYG_DEFAULT = PropsUtil.get(
 		PropsKeys.EDITOR_WYSIWYG_DEFAULT);
 
+	public static final boolean ENTERPRISE_PRODUCT_AI_HUB_ENABLED =
+		GetterUtil.getBoolean(
+			PropsUtil.get(PropsKeys.ENTERPRISE_PRODUCT_AI_HUB_ENABLED));
+
 	public static final boolean ENTERPRISE_PRODUCT_NOTIFICATION_ENABLED =
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.ENTERPRISE_PRODUCT_NOTIFICATION_ENABLED));

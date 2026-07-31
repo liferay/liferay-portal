@@ -1018,6 +1018,9 @@ public interface PropsKeys {
 	public static final String EHCACHE_SINGLE_VM_CONFIG_LOCATION =
 		"ehcache.single.vm.config.location";
 
+	public static final String ENTERPRISE_PRODUCT_AI_HUB_ENABLED =
+		"enterprise.product.ai.hub.enabled";
+
 	public static final String ENTERPRISE_PRODUCT_NOTIFICATION_ENABLED =
 		"enterprise.product.notification.enabled";
 

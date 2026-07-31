@@ -535,6 +535,10 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 				WebKeys.THEME_DISPLAY);
 
 		_renderValue(
+			"ENTERPRISE_PRODUCT_AI_HUB_ENABLED", sb,
+			PropsValues.ENTERPRISE_PRODUCT_AI_HUB_ENABLED);
+
+		_renderValue(
 			"JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT", sb,
 			_prefsProps.getInteger(
 				themeDisplay.getCompanyId(),
