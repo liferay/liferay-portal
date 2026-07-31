@@ -1,7 +1,0 @@
-Bundle-Name: Liferay SEO Studio Site Initializer
-Bundle-SymbolicName: com.liferay.seo.studio.site.initializer
-Bundle-Version: 1.0.3
-Liferay-Site-Initializer-Feature-Flag: LPD-44511
-Liferay-Site-Initializer-Name: SEO Studio
-Provide-Capability: liferay.site.initializer
-Web-ContextPath: /site-initializer-seo-studio
