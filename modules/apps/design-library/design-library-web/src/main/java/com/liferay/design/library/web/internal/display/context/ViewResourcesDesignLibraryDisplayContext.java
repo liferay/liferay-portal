@@ -30,11 +30,9 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
@@ -52,18 +50,16 @@ import java.util.Map;
  * @author Gabriel Prates
  * @author Thiago Buarque
  */
-public class ViewResourcesDesignLibraryDisplayContext {
+public class ViewResourcesDesignLibraryDisplayContext
+	extends BaseDesignLibraryDisplayContext {
 
 	public ViewResourcesDesignLibraryDisplayContext(
 		DepotEntry depotEntry, HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
-		_depotEntry = depotEntry;
-		_httpServletRequest = httpServletRequest;
-		_liferayPortletResponse = liferayPortletResponse;
+		super(depotEntry, httpServletRequest);
 
-		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		_liferayPortletResponse = liferayPortletResponse;
 	}
 
 	public String getAPIURL() {
@@ -71,12 +67,12 @@ public class ViewResourcesDesignLibraryDisplayContext {
 			"/o/search/v1.0/search?emptySearch=true",
 			"&entryClassNames=com.liferay.fragment.model.FragmentCollection",
 			",com.liferay.style.book.model.StyleBookEntry",
-			"&filter=groupIds/any(g:g eq ", _depotEntry.getGroupId(), ")",
+			"&filter=groupIds/any(g:g eq ", depotEntry.getGroupId(), ")",
 			"&nestedFields=embedded");
 	}
 
 	public Map<String, Object> getBreadcrumbProps() throws PortalException {
-		Group group = _depotEntry.getGroup();
+		Group group = getGroup();
 
 		return HashMapBuilder.<String, Object>put(
 			"actionItems", _getActionItemsJSONArray(group)
@@ -89,27 +85,27 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"description",
 			LanguageUtil.get(
-				_httpServletRequest,
+				httpServletRequest,
 				"click-new-to-create-or-import-your-design-resource")
 		).put(
 			"image", "/states/resources_empty_state.svg"
 		).put(
 			"title",
-			LanguageUtil.get(_httpServletRequest, "no-design-resources-yet")
+			LanguageUtil.get(httpServletRequest, "no-design-resources-yet")
 		).build();
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
 		throws PortalException {
 
-		Group depotGroup = _depotEntry.getGroup();
+		Group depotGroup = getGroup();
 
 		String designLibraryResourcesURL = _getDesignLibraryResourcesURL();
 
 		String viewFragmentCollectionURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
-				0, 0, PortletRequest.RENDER_PHASE)
+				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
+				0, PortletRequest.RENDER_PHASE)
 		).setBackURL(
 			designLibraryResourcesURL
 		).setParameter(
@@ -118,8 +114,8 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		).buildString();
 		String editFragmentCollectionURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
-				0, 0, PortletRequest.RENDER_PHASE)
+				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
+				0, PortletRequest.RENDER_PHASE)
 		).setMVCRenderCommandName(
 			"/fragment/edit_fragment_collection"
 		).setRedirect(
@@ -130,15 +126,14 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		).buildString();
 		String editStyleBookEntryURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, depotGroup,
-				StyleBookPortletKeys.STYLE_BOOK, 0, 0,
-				PortletRequest.RENDER_PHASE)
+				httpServletRequest, depotGroup, StyleBookPortletKeys.STYLE_BOOK,
+				0, 0, PortletRequest.RENDER_PHASE)
 		).setMVCRenderCommandName(
 			"/style_book/edit_style_book_entry"
 		).setRedirect(
 			designLibraryResourcesURL
 		).setParameter(
-			"backURLTitle", depotGroup.getName(_themeDisplay.getLocale())
+			"backURLTitle", depotGroup.getName(themeDisplay.getLocale())
 		).setParameter(
 			"styleBookEntryId", "{embedded.id}"
 		).buildString();
@@ -146,14 +141,14 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		return ListUtil.fromArray(
 			new FDSActionDropdownItem(
 				viewFragmentCollectionURL, "view", "view",
-				LanguageUtil.get(_httpServletRequest, "view"), null, null,
+				LanguageUtil.get(httpServletRequest, "view"), null, null,
 				"link",
 				HashMapBuilder.<String, Object>put(
 					"entryClassName", FragmentCollection.class.getName()
 				).build()),
 			new FDSActionDropdownItem(
 				editFragmentCollectionURL, "pencil", "edit",
-				LanguageUtil.get(_httpServletRequest, "edit"), null, null,
+				LanguageUtil.get(httpServletRequest, "edit"), null, null,
 				"link",
 				HashMapBuilder.<String, Object>put(
 					"entryClassName", FragmentCollection.class.getName()
@@ -161,21 +156,21 @@ public class ViewResourcesDesignLibraryDisplayContext {
 			new FDSActionDropdownItem(
 				editStyleBookEntryURL, "pencil", "edit",
 				LanguageUtil.get(
-					_httpServletRequest, "edit-in-style-book-editor"),
+					httpServletRequest, "edit-in-style-book-editor"),
 				null, "get", "link",
 				HashMapBuilder.<String, Object>put(
 					"entryClassName", StyleBookEntry.class.getName()
 				).build()),
 			new FDSActionDropdownItem(
 				"{actions.delete.href}", "trash", "delete",
-				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
+				LanguageUtil.get(httpServletRequest, "delete"), "delete",
 				"delete", "async",
 				HashMapBuilder.<String, Object>put(
 					"entryClassName", FragmentCollection.class.getName()
 				).build()),
 			new FDSActionDropdownItem(
 				"{actions.delete.href}", "trash", "delete",
-				LanguageUtil.get(_httpServletRequest, "delete"), "delete",
+				LanguageUtil.get(httpServletRequest, "delete"), "delete",
 				"delete", "async",
 				HashMapBuilder.<String, Object>put(
 					"entryClassName", StyleBookEntry.class.getName()
@@ -183,7 +178,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 	}
 
 	public Map<String, Object> getFDSAdditionalProps() throws PortalException {
-		Group depotGroup = _depotEntry.getGroup();
+		Group depotGroup = getGroup();
 
 		boolean manageFragmentEntriesPermission =
 			_hasManageFragmentEntriesPermission(depotGroup.getGroupId());
@@ -249,7 +244,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 				}
 
 				return StyleBookUtil.getFrontendTokenDefinitionProviders(
-					_themeDisplay.getCompanyId(), _themeDisplay.getLocale());
+					themeDisplay.getCompanyId(), themeDisplay.getLocale());
 			}
 		).put(
 			"styleBookNamespace",
@@ -265,8 +260,8 @@ public class ViewResourcesDesignLibraryDisplayContext {
 	}
 
 	public boolean hasContentAccess() {
-		if (_hasManageFragmentEntriesPermission(_depotEntry.getGroupId()) ||
-			_hasManageStyleBookEntriesPermission(_depotEntry.getGroupId())) {
+		if (_hasManageFragmentEntriesPermission(depotEntry.getGroupId()) ||
+			_hasManageStyleBookEntriesPermission(depotEntry.getGroupId())) {
 
 			return true;
 		}
@@ -280,7 +275,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
 		boolean hasAssignMembersPermission = GroupPermissionUtil.contains(
-			_themeDisplay.getPermissionChecker(), group.getGroupId(),
+			themeDisplay.getPermissionChecker(), group.getGroupId(),
 			ActionKeys.ASSIGN_MEMBERS);
 
 		boolean hasUpdatePermission = _hasPermission(group, ActionKeys.UPDATE);
@@ -294,10 +289,10 @@ public class ViewResourcesDesignLibraryDisplayContext {
 					).setMVCRenderCommandName(
 						"/design_library/edit_design_library"
 					).setParameter(
-						"designLibraryEntryId", _depotEntry.getDepotEntryId()
+						"designLibraryEntryId", depotEntry.getDepotEntryId()
 					).buildString()
 				).put(
-					"label", LanguageUtil.get(_httpServletRequest, "settings")
+					"label", LanguageUtil.get(httpServletRequest, "settings")
 				).put(
 					"symbolLeft", "cog"
 				));
@@ -309,8 +304,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 			).put(
 				"href", "#connected-sites"
 			).put(
-				"label",
-				LanguageUtil.get(_httpServletRequest, "connected-sites")
+				"label", LanguageUtil.get(httpServletRequest, "connected-sites")
 			).put(
 				"refreshDataSetIds",
 				JSONUtil.putAll(
@@ -330,7 +324,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 			).put(
 				"label",
 				LanguageUtil.get(
-					_httpServletRequest,
+					httpServletRequest,
 					hasAssignMembersPermission ? "manage-members" :
 						"view-members")
 			).put(
@@ -355,7 +349,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 					_getExportImportPortletURL(
 						group, ExportImportPortletKeys.EXPORT)
 				).put(
-					"label", LanguageUtil.get(_httpServletRequest, "export")
+					"label", LanguageUtil.get(httpServletRequest, "export")
 				).put(
 					"symbolLeft", "export"
 				)
@@ -365,7 +359,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 					_getExportImportPortletURL(
 						group, ExportImportPortletKeys.IMPORT)
 				).put(
-					"label", LanguageUtil.get(_httpServletRequest, "import")
+					"label", LanguageUtil.get(httpServletRequest, "import")
 				).put(
 					"symbolLeft", "import"
 				)
@@ -381,7 +375,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 					"/o/headless-asset-library/v1.0/asset-libraries/" +
 						group.getExternalReferenceCode()
 				).put(
-					"label", LanguageUtil.get(_httpServletRequest, "delete")
+					"label", LanguageUtil.get(httpServletRequest, "delete")
 				).put(
 					"redirect",
 					PortletURLBuilder.createActionURL(
@@ -400,8 +394,8 @@ public class ViewResourcesDesignLibraryDisplayContext {
 	private String _getAddFragmentCollectionURL(Group depotGroup) {
 		LiferayPortletURL portletURL =
 			(LiferayPortletURL)PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
-				0, 0, PortletRequest.RESOURCE_PHASE);
+				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
+				0, PortletRequest.RESOURCE_PHASE);
 
 		portletURL.setResourceID("/fragment/add_fragment_collection");
 
@@ -411,8 +405,8 @@ public class ViewResourcesDesignLibraryDisplayContext {
 	private String _getAddFragmentEntryURL(Group depotGroup) {
 		return PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT,
-				0, 0, PortletRequest.ACTION_PHASE)
+				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
+				0, PortletRequest.ACTION_PHASE)
 		).setActionName(
 			"/fragment/add_fragment_entry"
 		).setRedirect(
@@ -425,15 +419,14 @@ public class ViewResourcesDesignLibraryDisplayContext {
 	private String _getAddStyleBookEntryURL(Group depotGroup) {
 		return PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, depotGroup,
-				StyleBookPortletKeys.STYLE_BOOK, 0, 0,
-				PortletRequest.ACTION_PHASE)
+				httpServletRequest, depotGroup, StyleBookPortletKeys.STYLE_BOOK,
+				0, 0, PortletRequest.ACTION_PHASE)
 		).setActionName(
 			"/style_book/add_style_book_entry"
 		).setRedirect(
 			_getDesignLibraryResourcesURL()
 		).setParameter(
-			"backURLTitle", depotGroup.getName(_themeDisplay.getLocale())
+			"backURLTitle", depotGroup.getName(themeDisplay.getLocale())
 		).buildString();
 	}
 
@@ -448,14 +441,14 @@ public class ViewResourcesDesignLibraryDisplayContext {
 				).buildString()
 			).put(
 				"label",
-				LanguageUtil.get(_httpServletRequest, "design-libraries")
+				LanguageUtil.get(httpServletRequest, "design-libraries")
 			),
 			JSONUtil.put(
 				"active", true
 			).put(
 				"href", "#top"
 			).put(
-				"label", group.getName(_httpServletRequest.getLocale())
+				"label", group.getName(httpServletRequest.getLocale())
 			));
 	}
 
@@ -465,17 +458,17 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		).setMVCRenderCommandName(
 			"/design_library/view_resources_design_library"
 		).setParameter(
-			"designLibraryEntryId", _depotEntry.getDepotEntryId()
+			"designLibraryEntryId", depotEntry.getDepotEntryId()
 		).buildString();
 	}
 
 	private String _getExportImportPortletURL(Group group, String portletId) {
 		return PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
-				_httpServletRequest, group, portletId, 0, 0,
+				httpServletRequest, group, portletId, 0, 0,
 				PortletRequest.RENDER_PHASE)
 		).setBackURL(
-			PortalUtil.getCurrentURL(_httpServletRequest)
+			PortalUtil.getCurrentURL(httpServletRequest)
 		).buildString();
 	}
 
@@ -509,7 +502,7 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		}
 
 		return portletResourcePermission.contains(
-			_themeDisplay.getPermissionChecker(), groupId,
+			themeDisplay.getPermissionChecker(), groupId,
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 	}
 
@@ -522,13 +515,13 @@ public class ViewResourcesDesignLibraryDisplayContext {
 		}
 
 		return portletResourcePermission.contains(
-			_themeDisplay.getPermissionChecker(), groupId,
+			themeDisplay.getPermissionChecker(), groupId,
 			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 	}
 
 	private boolean _hasPermission(Group group, String actionId) {
 		PermissionChecker permissionChecker =
-			_themeDisplay.getPermissionChecker();
+			themeDisplay.getPermissionChecker();
 
 		return permissionChecker.hasPermission(
 			group, DepotEntry.class.getName(), group.getClassPK(), actionId);
@@ -549,9 +542,6 @@ public class ViewResourcesDesignLibraryDisplayContext {
 			PortletResourcePermission.class,
 			"(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")");
 
-	private final DepotEntry _depotEntry;
-	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
-	private final ThemeDisplay _themeDisplay;
 
 }
