@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io"
 	"maps"
 	"net/http"
 	"strings"
@@ -178,7 +179,9 @@ func (httpClient *HTTPClient) post(
 	token string,
 	url string,
 ) (*http.Response, error) {
-	logf.FromContext(context).V(1).Info(
+	logger := logf.FromContext(context)
+
+	logger.V(1).Info(
 		"Provisioning POST", "payload", decodeJWTPayload(token), "url", url,
 	)
 
@@ -192,7 +195,30 @@ func (httpClient *HTTPClient) post(
 
 	request.Header.Set("Content-Type", "text/plain")
 
-	return httpClient.Client.Do(request)
+	response, error := httpClient.Client.Do(request)
+
+	if error != nil {
+		return nil, error
+	}
+
+	if logger.V(1).Enabled() {
+		body, error := io.ReadAll(response.Body)
+
+		response.Body.Close()
+
+		if error != nil {
+			return nil, error
+		}
+
+		logger.V(1).Info(
+			"Provisioning response", "body", string(body),
+			"status", response.StatusCode, "url", url,
+		)
+
+		response.Body = io.NopCloser(bytes.NewReader(body))
+	}
+
+	return response, nil
 }
 
 func signJWT(
