@@ -100,8 +100,6 @@ public class QAWebsitesControllerBuildRunner
 	}
 
 	protected void invokeBuild() {
-		String jobInvocationURL = getJobInvocationURL();
-
 		BuildData buildData = getBuildData();
 
 		Map<String, String> invocationParameters = new HashMap<>();
@@ -138,6 +136,8 @@ public class QAWebsitesControllerBuildRunner
 		}
 
 		invocationParameters.putAll(buildData.getBuildParameters());
+
+		String jobInvocationURL = getJobInvocationURL();
 
 		long queueId = JenkinsResultsParserUtil.invokeJenkinsBuild(
 			jobInvocationURL, invocationParameters);

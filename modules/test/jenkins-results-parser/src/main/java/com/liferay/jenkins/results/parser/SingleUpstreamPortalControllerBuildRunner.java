@@ -30,8 +30,6 @@ public class SingleUpstreamPortalControllerBuildRunner
 
 		String testSuiteName = buildData.getTestSuiteName();
 
-		String invocationJobURL = getInvocationJobURL(testSuiteName);
-
 		Map<String, String> invocationParameters = new HashMap<>();
 
 		invocationParameters.putAll(buildData.getBuildParameters());
@@ -84,6 +82,8 @@ public class SingleUpstreamPortalControllerBuildRunner
 			getTestraySlackIconEmoji(testSuiteName));
 		invocationParameters.put(
 			"TESTRAY_SLACK_USERNAME", getTestraySlackUsername(testSuiteName));
+
+		String invocationJobURL = getInvocationJobURL(testSuiteName);
 
 		long queueId = JenkinsResultsParserUtil.invokeJenkinsBuild(
 			invocationJobURL, invocationParameters);
