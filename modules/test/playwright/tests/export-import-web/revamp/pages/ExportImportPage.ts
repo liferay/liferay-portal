@@ -15,11 +15,16 @@ export type taskStatus = 'completedWithErrors' | 'success';
 
 export class ExportImportPage {
 	readonly actionsButton: (name: string) => Locator;
+	readonly clearMenuItem: Locator;
 	readonly completedLabel: Locator;
 	readonly continueButton: Locator;
 	readonly downloadMenuItem: Locator;
 	readonly exportButton: Locator;
 	readonly exportMenuItem: Locator;
+	readonly exportReportEntriesMenuItem: Locator;
+	readonly exportReportEntriesModal: Locator;
+	readonly exportReportEntriesModalDownloadButton: Locator;
+	readonly exportReportEntriesModalProgressbar: Locator;
 	readonly fileSelector: Locator;
 	readonly importButton: Locator;
 	readonly importMenuItem: Locator;
@@ -35,6 +40,7 @@ export class ExportImportPage {
 	constructor(page: Page) {
 		this.actionsButton = (name) =>
 			page.getByRole('button', {name: `${name} Actions`});
+		this.clearMenuItem = page.getByRole('menuitem', {name: 'Clear'});
 		this.completedLabel = page.getByText('completed');
 		this.continueButton = page.getByRole('button', {name: 'Continue'});
 		this.downloadMenuItem = page.getByRole('menuitem', {
@@ -45,6 +51,18 @@ export class ExportImportPage {
 		this.exportMenuItem = page.getByRole('menuitem', {
 			name: 'Export',
 		});
+		this.exportReportEntriesMenuItem = page.getByRole('menuitem', {
+			name: 'Export Report Entries',
+		});
+		this.exportReportEntriesModal = page.getByRole('dialog', {
+			name: 'Export Report Entries',
+		});
+		this.exportReportEntriesModalDownloadButton =
+			this.exportReportEntriesModal.getByRole('button', {
+				name: 'Download',
+			});
+		this.exportReportEntriesModalProgressbar =
+			this.exportReportEntriesModal.getByRole('progressbar');
 		this.fileSelector = page.getByText('Select Files');
 		this.importButton = page.getByRole('button', {name: 'Import'});
 		this.importMenuItem = page.getByRole('menuitem', {
@@ -156,6 +174,17 @@ export class ExportImportPage {
 		await this.importButton.click();
 
 		await this.taskStatusLabel(name, taskStatus).waitFor();
+	}
+
+	async openExportReportEntriesModal(name: string) {
+		await clickAndExpectToBeVisible({
+			target: this.exportReportEntriesMenuItem,
+			trigger: this.actionsButton(name),
+		});
+
+		await this.exportReportEntriesMenuItem.click();
+
+		await this.exportReportEntriesModal.waitFor();
 	}
 
 	async selectFile(folderPath: string) {

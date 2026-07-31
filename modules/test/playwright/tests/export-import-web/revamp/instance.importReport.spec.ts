@@ -10,6 +10,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {normalizeRestPath} from '../../../utils/normalizeRestPath';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
@@ -28,7 +29,7 @@ export const test = mergeTests(
 
 test(
 	'Can see error report and details',
-	{tag: '@LPD-99382'},
+	{tag: ['@LPD-99382', '@LPD-99982']},
 	async ({
 		apiHelpers,
 		exportImportDataSelectionPage,
@@ -96,7 +97,16 @@ test(
 			taskStatus: 'completedWithErrors',
 		});
 
-		await exportImportPage.goToImportDetails(name);
+		await clickAndExpectToBeVisible({
+			target: exportImportPage.viewReportEntriesMenuItem,
+			trigger: exportImportPage.actionsButton(name),
+		});
+
+		await expect(
+			exportImportPage.exportReportEntriesMenuItem
+		).toBeVisible();
+
+		await exportImportPage.viewReportEntriesMenuItem.click();
 
 		await expect(
 			page.getByRole('cell', {name: objectEntry.externalReferenceCode})
@@ -118,7 +128,7 @@ test(
 
 test(
 	'Report entries actions are not visible for a successful import',
-	{tag: '@LPD-99382'},
+	{tag: ['@LPD-99382', '@LPD-99982']},
 	async ({
 		apiHelpers,
 		exportImportDataSelectionPage,
@@ -164,7 +174,14 @@ test(
 
 		await exportImportPage.import({folderPath, name});
 
-		await exportImportPage.actionsButton(name).click();
+		await clickAndExpectToBeVisible({
+			target: exportImportPage.clearMenuItem,
+			trigger: exportImportPage.actionsButton(name),
+		});
+
+		await expect(
+			exportImportPage.exportReportEntriesMenuItem
+		).not.toBeVisible();
 
 		await expect(
 			exportImportPage.viewReportEntriesMenuItem

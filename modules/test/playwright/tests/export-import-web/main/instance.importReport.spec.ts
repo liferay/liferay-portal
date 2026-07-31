@@ -11,23 +11,18 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
-import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
-import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import {normalizeRestPath} from '../../../utils/normalizeRestPath';
-import {companyExportImportPageTest} from './fixtures/companyExportImportPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
 	exportImportPagesTest,
-	companyExportImportPageTest,
 	featureFlagsTest({
 		'LPD-57655': {enabled: false},
 	}),
-	globalMenuPagesTest,
 	loginTest()
 );
 
@@ -247,114 +242,3 @@ test(
 		await exportImportPage.removeReportFilter();
 	}
 );
-
-test('Can see error report and details', async ({
-	apiHelpers,
-	companyExportImportPage,
-	exportImportPage,
-	globalMenuPage,
-}) => {
-	const {objectDefinition3, objectEntry} =
-		await setupImportReportScenario(apiHelpers);
-
-	await globalMenuPage.goToApplications('Export');
-
-	const exportFilePath = await exportImportPage.export({
-		portletLabels: [`${objectDefinition3.name} 1 Items`],
-	});
-
-	const objectFieldAPIClient =
-		await apiHelpers.buildRestClient(ObjectFieldAPI);
-
-	await objectFieldAPIClient.postObjectDefinitionObjectField(
-		objectDefinition3.id,
-		{
-			DBType: 'String',
-			businessType: 'Text',
-			label: {en_US: 'mandatoryField'},
-			name: 'mandatoryField',
-			required: true,
-		}
-	);
-
-	await companyExportImportPage.import({
-		filePath: exportFilePath,
-		includePermissions: true,
-		taskStatus: 'completedWithErrors',
-	});
-
-	const exportName = exportFilePath.slice(
-		exportFilePath.lastIndexOf('/') + 1
-	);
-
-	await clickAndExpectToBeVisible({
-		target: exportImportPage.clearMenuItem,
-		trigger: exportImportPage.taskActionsMenu(exportName),
-	});
-
-	await expect(exportImportPage.viewReportEntriesMenuItem).toBeVisible();
-
-	await expect(exportImportPage.exportReportEntriesMenuItem).toBeVisible();
-
-	await exportImportPage.goToImportDetails(exportName);
-
-	await expect(
-		exportImportPage.page.getByRole('cell', {
-			name: objectEntry.externalReferenceCode,
-		})
-	).toBeVisible();
-
-	await exportImportPage.goToImportReportEntryDetails(
-		objectEntry.externalReferenceCode
-	);
-
-	await expect(
-		exportImportPage.page.getByText(
-			'No value was provided for required object field'
-		)
-	).toBeVisible();
-
-	await expect(exportImportPage.page.getByText('ScopeCompany')).toBeVisible();
-
-	await expect(
-		exportImportPage.page.getByText('SiteLiferay DXP')
-	).not.toBeVisible();
-
-	await expect(
-		exportImportPage.page.getByText(objectEntry.externalReferenceCode)
-	).toBeVisible();
-});
-
-test('Report entries actions are not visible for a successful import', async ({
-	apiHelpers,
-	exportImportPage,
-}) => {
-	const {objectDefinition1} = await setupImportReportScenario(apiHelpers);
-
-	await exportImportPage.goToExport();
-
-	const exportFilePath = await exportImportPage.export({
-		portletLabels: [`${objectDefinition1.name} 1 Items`],
-	});
-
-	await exportImportPage.goToImport();
-
-	await exportImportPage.import({
-		filePath: exportFilePath,
-	});
-
-	const exportName = exportFilePath.slice(
-		exportFilePath.lastIndexOf('/') + 1
-	);
-
-	await clickAndExpectToBeVisible({
-		target: exportImportPage.clearMenuItem,
-		trigger: exportImportPage.taskActionsMenu(exportName),
-	});
-
-	await expect(exportImportPage.viewReportEntriesMenuItem).not.toBeVisible();
-
-	await expect(
-		exportImportPage.exportReportEntriesMenuItem
-	).not.toBeVisible();
-});
