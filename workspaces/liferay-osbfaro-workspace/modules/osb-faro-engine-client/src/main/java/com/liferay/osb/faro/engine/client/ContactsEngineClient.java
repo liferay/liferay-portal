@@ -53,6 +53,7 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChang
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentRealTimeMembership;
 import com.liferay.osb.faro.engine.client.model.IndividualTransformation;
 import com.liferay.osb.faro.engine.client.model.Interest;
+import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.PageExperience;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
 import com.liferay.osb.faro.engine.client.model.ProjectMetric;
@@ -238,6 +239,10 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, String assetId, String assetTitle,
 		String assetType, Long channelId, String keywords, String rangeEnd,
 		Integer rangeKey, String rangeStart, int page, int pageSize);
+
+	public List<Metric> getAccountOverviewMetrics(
+			FaroProject faroProject, Long channelId, String id)
+		throws FaroEngineClientException;
 
 	public Results<Account> getAccounts(
 		FaroProject faroProject, String channelId, String filterString,

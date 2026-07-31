@@ -64,6 +64,7 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChang
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentRealTimeMembership;
 import com.liferay.osb.faro.engine.client.model.IndividualTransformation;
 import com.liferay.osb.faro.engine.client.model.Interest;
+import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.PageExperience;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
 import com.liferay.osb.faro.engine.client.model.PagedModel;
@@ -938,6 +939,24 @@ public class ContactsEngineClientImpl
 			uriVariables);
 
 		return pagedModel.getResults();
+	}
+
+	@Override
+	public List<Metric> getAccountOverviewMetrics(
+			FaroProject faroProject, Long channelId, String id)
+		throws FaroEngineClientException {
+
+		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
+
+		if (Validator.isNotNull(channelId)) {
+			uriVariables.put("channelId", channelId);
+		}
+
+		return get(
+			faroProject, Rels.ACCOUNT_OVERVIEW,
+			new ParameterizedTypeReference<List<Metric>>() {
+			},
+			uriVariables);
 	}
 
 	@Override

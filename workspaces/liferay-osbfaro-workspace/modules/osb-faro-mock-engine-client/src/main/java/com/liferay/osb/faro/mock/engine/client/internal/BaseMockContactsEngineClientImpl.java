@@ -53,6 +53,7 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChang
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentRealTimeMembership;
 import com.liferay.osb.faro.engine.client.model.IndividualTransformation;
 import com.liferay.osb.faro.engine.client.model.Interest;
+import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.PageExperience;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
 import com.liferay.osb.faro.engine.client.model.Provider;
@@ -432,6 +433,15 @@ public abstract class BaseMockContactsEngineClientImpl
 		return contactsEngineClient.getAccountNames(
 			faroProject, assetId, assetTitle, assetType, channelId, keywords,
 			rangeEnd, rangeKey, rangeStart, page, pageSize);
+	}
+
+	@Override
+	public List<Metric> getAccountOverviewMetrics(
+			FaroProject faroProject, Long channelId, String id)
+		throws FaroEngineClientException {
+
+		return contactsEngineClient.getAccountOverviewMetrics(
+			faroProject, channelId, id);
 	}
 
 	@Override
