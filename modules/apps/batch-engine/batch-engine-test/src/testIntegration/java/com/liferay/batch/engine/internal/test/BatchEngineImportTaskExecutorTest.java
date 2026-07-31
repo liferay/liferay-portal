@@ -880,6 +880,7 @@ public class BatchEngineImportTaskExecutorTest
 			_assertAllowedAndFailedCallbackURL(
 				"255.255.255.255", testApplication);
 			_assertSkippedCallbackURL("localhost", testApplication);
+			_assertSkippedCallbackURL("www.able.com", testApplication);
 
 			try (CompanyConfigurationTemporarySwapper
 					companyConfigurationTemporarySwapper =
@@ -890,7 +891,10 @@ public class BatchEngineImportTaskExecutorTest
 								"callbackURLLocalNetworkAccessEnabled", true
 							).build())) {
 
+				_assertAllowedAndFailedCallbackURL(
+					"255.255.255.255", testApplication);
 				_assertAllowedCallbackURL("localhost", testApplication);
+				_assertAllowedCallbackURL("www.able.com", testApplication);
 			}
 
 			try (CompanyConfigurationTemporarySwapper
@@ -905,6 +909,7 @@ public class BatchEngineImportTaskExecutorTest
 
 				_assertSkippedCallbackURL("255.255.255.255", testApplication);
 				_assertSkippedCallbackURL("localhost", testApplication);
+				_assertSkippedCallbackURL("www.able.com", testApplication);
 			}
 
 			try (CompanyConfigurationTemporarySwapper
@@ -920,6 +925,7 @@ public class BatchEngineImportTaskExecutorTest
 							).build())) {
 
 				_assertAllowedCallbackURL("www.able.com", testApplication);
+				_assertSkippedCallbackURL("255.255.255.255", testApplication);
 				_assertSkippedCallbackURL("localhost", testApplication);
 			}
 		}
