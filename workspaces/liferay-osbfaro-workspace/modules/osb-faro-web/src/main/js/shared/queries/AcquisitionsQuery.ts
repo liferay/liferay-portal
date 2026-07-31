@@ -20,6 +20,7 @@ export interface AcquisitionsQueryVariables extends SafeRangeSelectors {
 	accountId?: string | null;
 	activeTabId: string;
 	channelId?: string;
+	segmentId?: string | null;
 	size: number;
 	start: number;
 }
@@ -32,6 +33,7 @@ export default gql`
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$size: Int!
 		$start: Int!
 	) {
@@ -42,6 +44,7 @@ export default gql`
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			size: $size
 			start: $start
 		) {

@@ -116,6 +116,7 @@ const AcquisitionsCardWithData: React.FC<IAcquisitionsCard> = ({
 		router: {
 			params: {channelId},
 		},
+		segmentId,
 	} = useContext(BasePage.Context);
 	const {data, error, loading} = useQuery<
 		AcquisitionsQueryData,
@@ -126,6 +127,7 @@ const AcquisitionsCardWithData: React.FC<IAcquisitionsCard> = ({
 			accountId,
 			activeTabId,
 			channelId,
+			segmentId,
 			size: 5,
 			start: 0,
 		},
