@@ -53,7 +53,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -411,7 +410,7 @@ public class DataGuardTestRuleUtil {
 		Map<String, PersistedModelLocalService> persistedModelLocalServices =
 			_getPersistedModelLocalServices();
 
-		Map<String, List<BaseModel<?>>> dataMap = new HashMap<>();
+		Map<String, List<BaseModel<?>>> dataMap = new LinkedHashMap<>();
 
 		for (Map.Entry<String, PersistedModelLocalService> entry :
 				persistedModelLocalServices.entrySet()) {
