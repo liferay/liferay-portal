@@ -195,17 +195,16 @@ public class VIESAccountEntryValidatorTest {
 		_mockVIESAccountEntryValidatorConfiguration(
 			new String[] {RandomTestUtil.randomString()}, false);
 
-		AccountEntry accountEntry = _mockAccountEntry(
-			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
-
 		Assert.assertFalse(
 			_viesAccountEntryValidator.isSkipped(
 				null,
 				JSONUtil.put("billingAddressId", RandomTestUtil.randomLong())));
 
+		AccountEntry accountEntry = _mockAccountEntry(
+			AccountConstants.ACCOUNT_ENTRY_TYPE_BUSINESS);
+
 		Assert.assertFalse(
 			_viesAccountEntryValidator.isSkipped(accountEntry, null));
-
 		Assert.assertTrue(
 			_viesAccountEntryValidator.isSkipped(
 				accountEntry,
@@ -218,7 +217,6 @@ public class VIESAccountEntryValidatorTest {
 			_viesAccountEntryValidator.isSkipped(
 				_mockAccountEntry(AccountConstants.ACCOUNT_ENTRY_TYPE_PERSON),
 				JSONUtil.put("billingAddressId", RandomTestUtil.randomLong())));
-
 		Assert.assertFalse(
 			_viesAccountEntryValidator.isSkipped(
 				accountEntry,
