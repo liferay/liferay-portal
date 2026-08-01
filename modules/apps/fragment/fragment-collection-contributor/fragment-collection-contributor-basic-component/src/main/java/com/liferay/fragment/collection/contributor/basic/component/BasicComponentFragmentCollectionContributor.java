@@ -32,16 +32,6 @@ public class BasicComponentFragmentCollectionContributor
 	}
 
 	@Override
-	public List<FragmentEntry> getFragmentEntries() {
-		return super.getFragmentEntries();
-	}
-
-	@Override
-	public List<FragmentEntry> getFragmentEntries(int type) {
-		return super.getFragmentEntries(type);
-	}
-
-	@Override
 	public ServletContext getServletContext() {
 		return _servletContext;
 	}
