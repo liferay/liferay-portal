@@ -176,10 +176,6 @@ public class PreviewableResolverUtil {
 				PersistedModel toPersistedModel = toPersistedModels.get(toPK);
 
 				if (toPersistedModel == null) {
-
-					// Missing preview target is not allowed, collect exceptions
-					// for rethrowing.
-
 					try {
 						persistedModelLocalService.getPersistedModel(toPK);
 					}

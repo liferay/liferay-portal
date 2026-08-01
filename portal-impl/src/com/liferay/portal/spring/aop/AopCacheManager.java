@@ -60,7 +60,6 @@ public class AopCacheManager {
 		List<ChainableMethodAdvice> chainableMethodAdvices = new ArrayList<>();
 
 		chainableMethodAdvices.add(new AccessControlAdvice());
-
 		chainableMethodAdvices.add(new BufferedIncrementAdvice());
 
 		if (PropsValues.CLUSTER_LINK_ENABLED) {
@@ -68,15 +67,10 @@ public class AopCacheManager {
 		}
 
 		chainableMethodAdvices.add(new IndexableAdvice());
-
 		chainableMethodAdvices.add(new PreviewableAdvice());
-
 		chainableMethodAdvices.add(new RetryAdvice());
-
 		chainableMethodAdvices.add(new ServiceContextAdvice());
-
 		chainableMethodAdvices.add(new SystemEventAdvice());
-
 		chainableMethodAdvices.add(new ThreadLocalCacheAdvice());
 
 		chainableMethodAdvices.sort(_CHAINABLE_METHOD_ADVICE_COMPARATOR);
