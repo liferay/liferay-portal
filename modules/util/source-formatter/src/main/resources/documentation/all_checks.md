@@ -40,6 +40,7 @@ BNDStylingCheck | [Styling](styling_checks.md#styling-checks) | .bnd | Applies r
 BNDWebServiceTrackingCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .bnd | Finds missing `Web-ServiceTracking: false`. |
 BNDWhitespaceCheck | [Styling](styling_checks.md#styling-checks) | .bnd | Finds missing and unnecessary whitespace in `.bnd` files. |
 [BatchableUpdateCheck](check/batchable_update_check.md#batchableupdatecheck) | [Performance](performance_checks.md#performance-checks) | .java | Checks for cases where batch updates should be used inside a loop instead of individual executeUpdate calls. |
+BouncyCastleFIPSCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .gradle or .java | Finds non-FIPS BouncyCastle artifacts in `build.gradle` files. |
 BrandNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks the correct brand name. |
 CDNCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | | Checks the URL in `artifact.properties` files. |
 CIMergeAndGitRepoFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .gitrepo or ci-merge | Checks that `ci-merge` and `.gitrepo` files can not be added or modified. |

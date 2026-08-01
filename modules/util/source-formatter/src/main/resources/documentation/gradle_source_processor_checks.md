@@ -2,6 +2,7 @@
 
 Check | Category | Description
 ----- | -------- | -----------
+BouncyCastleFIPSCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds non-FIPS BouncyCastle artifacts in `build.gradle` files. |
 GradleBlockOrderCheck | [Styling](styling_checks.md#styling-checks) | Sorts logic in gradle build files. |
 GradleBodyCheck | [Styling](styling_checks.md#styling-checks) | Applies rules to enforce consistency in the body of gradle build files. |
 GradleCommerceDependenciesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks the modules that are outside of Commerce are not allowed to depend on Commerce modules. |
