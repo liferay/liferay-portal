@@ -450,6 +450,11 @@ public class ObjectEntryModelDocumentContributor
 			return;
 		}
 
+		document.addDate(Field.DISPLAY_DATE, objectEntry.getDisplayDate());
+		document.addDate(
+			Field.EXPIRATION_DATE, objectEntry.getExpirationDate());
+		document.addDate(Field.REVIEW_DATE, objectEntry.getReviewDate());
+
 		FieldArray fieldArray = (FieldArray)document.getField(
 			"nestedFieldArray");
 
@@ -565,11 +570,6 @@ public class ObjectEntryModelDocumentContributor
 
 		document.addKeyword(
 			"rootDescendantNode", objectEntry.isRootDescendantNode());
-
-		document.addDate(Field.DISPLAY_DATE, objectEntry.getDisplayDate());
-		document.addDate(
-			Field.EXPIRATION_DATE, objectEntry.getExpirationDate());
-		document.addDate(Field.REVIEW_DATE, objectEntry.getReviewDate());
 
 		_contributeObjectEntryFolder(
 			document, objectEntry.getObjectEntryFolderId());
