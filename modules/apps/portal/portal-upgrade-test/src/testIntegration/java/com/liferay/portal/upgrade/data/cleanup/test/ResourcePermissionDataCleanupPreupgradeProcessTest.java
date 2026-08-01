@@ -172,14 +172,14 @@ public class ResourcePermissionDataCleanupPreupgradeProcessTest
 
 		Assert.assertFalse(
 			_hasResourcePermission(
+				CTCollection.class.getName(), String.valueOf(ctCollectionId)));
+		Assert.assertFalse(
+			_hasResourcePermission(
 				JournalArticle.class.getName(),
 				String.valueOf(journalArticle.getResourcePrimKey())));
 		Assert.assertFalse(
 			_hasResourcePermission(
 				Layout.class.getName(), String.valueOf(layoutId)));
-		Assert.assertFalse(
-			_hasResourcePermission(
-				CTCollection.class.getName(), String.valueOf(ctCollectionId)));
 		Assert.assertFalse(
 			_hasResourcePermission(
 				compositeClassName, String.valueOf(compositeClassNameId)));
