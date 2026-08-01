@@ -12,9 +12,17 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceAddressConstants;
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceAddress;
+import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.service.CommerceAddressService;
+import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -30,6 +38,7 @@ import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -233,6 +242,74 @@ public class CommerceAddressServiceTest {
 	}
 
 	@Test
+	public void testGetBillingCommerceAddresses() throws Exception {
+		CommerceAddress commerceAddress1 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId(), _country.getCountryId(),
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING);
+		CommerceAddress commerceAddress2 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId(), _country.getCountryId(),
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING);
+		CommerceAddress commerceAddress3 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId(), _country.getCountryId(),
+			CommerceAddressConstants.ADDRESS_TYPE_SHIPPING);
+
+		CommerceChannel commerceChannel1 = _addCommerceChannel();
+		CommerceChannel commerceChannel2 = _addCommerceChannel();
+
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			Address.class.getName(), commerceAddress1.getCommerceAddressId(),
+			commerceChannel1.getCommerceChannelId(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId()));
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			Address.class.getName(), _commerceAddress.getCommerceAddressId(),
+			commerceChannel2.getCommerceChannelId(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId()));
+
+		long[] commerceAddressIds = _getBillingCommerceAddressIds(
+			commerceChannel1.getCommerceChannelId());
+
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, _commerceAddress.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress3.getCommerceAddressId()));
+
+		commerceAddressIds = _getBillingCommerceAddressIds(
+			commerceChannel2.getCommerceChannelId());
+
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, _commerceAddress.getCommerceAddressId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+
+		commerceAddressIds = _getBillingCommerceAddressIds(0);
+
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, _commerceAddress.getCommerceAddressId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+	}
+
+	@Test
 	public void testGetCommerceAddress() throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
@@ -288,6 +365,74 @@ public class CommerceAddressServiceTest {
 	}
 
 	@Test
+	public void testGetShippingCommerceAddresses() throws Exception {
+		CommerceAddress commerceAddress1 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId(), _country.getCountryId(),
+			CommerceAddressConstants.ADDRESS_TYPE_SHIPPING);
+		CommerceAddress commerceAddress2 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId(), _country.getCountryId(),
+			CommerceAddressConstants.ADDRESS_TYPE_SHIPPING);
+		CommerceAddress commerceAddress3 = _addCommerceAddress(
+			_accountEntry.getAccountEntryId(), _country.getCountryId(),
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING);
+
+		CommerceChannel commerceChannel1 = _addCommerceChannel();
+		CommerceChannel commerceChannel2 = _addCommerceChannel();
+
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			Address.class.getName(), commerceAddress1.getCommerceAddressId(),
+			commerceChannel1.getCommerceChannelId(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId()));
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			Address.class.getName(), _commerceAddress.getCommerceAddressId(),
+			commerceChannel2.getCommerceChannelId(),
+			ServiceContextTestUtil.getServiceContext(
+				TestPropsValues.getGroupId()));
+
+		long[] commerceAddressIds = _getShippingCommerceAddressIds(
+			commerceChannel1.getCommerceChannelId());
+
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, _commerceAddress.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress3.getCommerceAddressId()));
+
+		commerceAddressIds = _getShippingCommerceAddressIds(
+			commerceChannel2.getCommerceChannelId());
+
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, _commerceAddress.getCommerceAddressId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+
+		commerceAddressIds = _getShippingCommerceAddressIds(0);
+
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, _commerceAddress.getCommerceAddressId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress1.getCommerceAddressId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				commerceAddressIds, commerceAddress2.getCommerceAddressId()));
+	}
+
+	@Test
 	public void testUpdateCommerceAddress() throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				UserTestUtil.addUser(TestPropsValues.getCompanyId()))) {
@@ -325,17 +470,33 @@ public class CommerceAddressServiceTest {
 			long accountEntryId, long countryId)
 		throws Exception {
 
+		return _addCommerceAddress(
+			accountEntryId, countryId,
+			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING);
+	}
+
+	private CommerceAddress _addCommerceAddress(
+			long accountEntryId, long countryId, int type)
+		throws Exception {
+
 		return _commerceAddressService.addCommerceAddress(
 			StringPool.BLANK, AccountEntry.class.getName(), accountEntryId,
 			countryId, 0, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			StringPool.BLANK,
-			CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING,
-			RandomTestUtil.randomString(),
+			StringPool.BLANK, type, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId()));
+	}
+
+	private CommerceChannel _addCommerceChannel() throws Exception {
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyTestUtil.addCommerceCurrency(
+				TestPropsValues.getCompanyId());
+
+		return CommerceTestUtil.addCommerceChannel(
+			TestPropsValues.getGroupId(), commerceCurrency.getCode());
 	}
 
 	private AccountEntry _addGuestAccountEntry() throws Exception {
@@ -356,6 +517,28 @@ public class CommerceAddressServiceTest {
 			_accountEntry.getAccountEntryId(), principalException.resourceId);
 		Assert.assertEquals(
 			AccountEntry.class.getName(), principalException.resourceName);
+	}
+
+	private long[] _getBillingCommerceAddressIds(long commerceChannelId)
+		throws Exception {
+
+		return TransformUtil.transformToLongArray(
+			_commerceAddressService.getBillingCommerceAddresses(
+				commerceChannelId, AccountEntry.class.getName(),
+				_accountEntry.getAccountEntryId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			CommerceAddress::getCommerceAddressId);
+	}
+
+	private long[] _getShippingCommerceAddressIds(long commerceChannelId)
+		throws Exception {
+
+		return TransformUtil.transformToLongArray(
+			_commerceAddressService.getShippingCommerceAddresses(
+				commerceChannelId, AccountEntry.class.getName(),
+				_accountEntry.getAccountEntryId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			CommerceAddress::getCommerceAddressId);
 	}
 
 	private CommerceAddress _updateCommerceAddress(
@@ -384,6 +567,9 @@ public class CommerceAddressServiceTest {
 
 	@Inject
 	private CommerceAddressService _commerceAddressService;
+
+	@Inject
+	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	private Country _country;
 
