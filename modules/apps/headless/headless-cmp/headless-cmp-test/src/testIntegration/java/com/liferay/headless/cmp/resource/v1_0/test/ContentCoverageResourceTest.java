@@ -317,18 +317,18 @@ public class ContentCoverageResourceTest
 
 		AssetCategory cmpFunnelStageAwarenessAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_AWARENESS");
-		AssetCategory cmpPersonasChampionAssetCategory = _getAssetCategory(
-			"L_CMP_PERSONAS_CHAMPION");
 		AssetCategory cmpFunnelStageConsiderationAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_CONSIDERATION");
+		AssetCategory cmpPersonasChampionAssetCategory = _getAssetCategory(
+			"L_CMP_PERSONAS_CHAMPION");
 		AssetCategory cmpPersonasDecisionMakerAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_DECISION_MAKER");
 
 		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
 			new long[] {
 				cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
-				cmpPersonasChampionAssetCategory.getCategoryId(),
 				cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+				cmpPersonasChampionAssetCategory.getCategoryId(),
 				cmpPersonasDecisionMakerAssetCategory.getCategoryId()
 			});
 
@@ -339,8 +339,8 @@ public class ContentCoverageResourceTest
 		_addCMSBasicWebContentObjectEntry(
 			new long[] {
 				cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
-				cmpPersonasChampionAssetCategory.getCategoryId(),
-				cmpFunnelStageConsiderationAssetCategory.getCategoryId()
+				cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+				cmpPersonasChampionAssetCategory.getCategoryId()
 			},
 			cmpTaskObjectEntry);
 		_addCMSBasicWebContentObjectEntry(
