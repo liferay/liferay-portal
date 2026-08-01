@@ -90,6 +90,11 @@ public class UrlReader {
 		HttpURLConnection httpURLConnection =
 			(HttpURLConnection)urlObject.openConnection();
 
+		if (timeout != 0) {
+			httpURLConnection.setConnectTimeout(timeout);
+			httpURLConnection.setReadTimeout(timeout);
+		}
+
 		if (httpRequestMethod != null) {
 			httpURLConnection.setRequestMethod(httpRequestMethod.name());
 		}
@@ -106,11 +111,6 @@ public class UrlReader {
 				httpURLConnection.setRequestProperty(
 					requestHeader.getKey(), requestHeader.getValue());
 			}
-		}
-
-		if (timeout != 0) {
-			httpURLConnection.setConnectTimeout(timeout);
-			httpURLConnection.setReadTimeout(timeout);
 		}
 
 		if (postContent != null) {
