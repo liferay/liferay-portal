@@ -13,10 +13,10 @@ Require-Capability:\
 	osgi.contract;\
 		osgi.contract=JakartaAnnotations;\
 		uses:="jakarta.ws.rs,jakarta.ws.rs.client";\
-		version:List<Version>="2.1.0",\
+		version="2.1.0",\
 	osgi.contract;\
 		osgi.contract=JakartaCDI;\
 		uses:="jakarta.ws.rs,jakarta.ws.rs.client";\
-		version:Version="4.0.0",\
+		version="4.0.0",\
 	osgi.contract;\
 		filter:="(&(osgi.contract=JakartaExpressionLanguage)(version=5.0.0))"
