@@ -10,10 +10,9 @@ import com.liferay.depot.security.permission.contributor.DepotRolePermission;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -38,11 +37,10 @@ public class FragmentDepotRolePermissionsContributorTest {
 			fragmentDepotRolePermissionsContributor =
 				new FragmentDepotRolePermissionsContributor();
 
-		List<String> expectedRoleNames = new ArrayList<>(
-			Arrays.asList(
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER));
+		List<String> expectedRoleNames = ListUtil.fromArray(
+			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+			DepotRolesConstants.DESIGN_LIBRARY_OWNER);
 
 		for (DepotRolePermission depotRolePermission :
 				fragmentDepotRolePermissionsContributor.

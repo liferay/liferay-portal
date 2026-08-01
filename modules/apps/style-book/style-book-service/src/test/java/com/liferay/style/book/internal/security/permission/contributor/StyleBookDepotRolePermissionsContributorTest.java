@@ -8,6 +8,7 @@ package com.liferay.style.book.internal.security.permission.contributor;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.security.permission.contributor.DepotRolePermission;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookConstants;
@@ -38,11 +39,10 @@ public class StyleBookDepotRolePermissionsContributorTest {
 			styleBookDepotRolePermissionsContributor =
 				new StyleBookDepotRolePermissionsContributor();
 
-		List<String> expectedRoleNames = new ArrayList<>(
-			Arrays.asList(
-				DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
-				DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
-				DepotRolesConstants.DESIGN_LIBRARY_OWNER));
+		List<String> expectedRoleNames = ListUtil.fromArray(
+			DepotRolesConstants.DESIGN_LIBRARY_ADMINISTRATOR,
+			DepotRolesConstants.DESIGN_LIBRARY_CONTENT_REVIEWER,
+			DepotRolesConstants.DESIGN_LIBRARY_OWNER);
 
 		for (DepotRolePermission depotRolePermission :
 				styleBookDepotRolePermissionsContributor.
