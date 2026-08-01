@@ -3402,9 +3402,6 @@ public class ObjectDefinitionLocalServiceTest {
 
 		_assertAttachmentObjectFieldPLOEntries(attachmentObjectFields.get(0));
 
-		// Add an attachment object field after the object definition was
-		// already published
-
 		ObjectField attachmentObjectField =
 			ObjectFieldUtil.addCustomObjectField(
 				new AttachmentObjectFieldBuilder(
