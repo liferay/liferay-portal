@@ -68,14 +68,14 @@ public class TrashEntryLocalServiceTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = _groupLocalService.getGroup(
+		Group cmsGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null, DepotConstants.TYPE_SPACE,
-			ServiceContextTestUtil.getServiceContext(_cmsGroup.getGroupId()));
+			ServiceContextTestUtil.getServiceContext(cmsGroup.getGroupId()));
 
 		_updateTrashEntriesMaxAge(_depotEntry.getGroup(), 5);
 
@@ -190,8 +190,6 @@ public class TrashEntryLocalServiceTest {
 
 		_groupLocalService.updateGroup(group);
 	}
-
-	private Group _cmsGroup;
 
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;

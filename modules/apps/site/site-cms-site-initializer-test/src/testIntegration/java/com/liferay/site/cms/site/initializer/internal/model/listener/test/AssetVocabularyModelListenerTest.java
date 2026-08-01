@@ -26,7 +26,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,21 +44,18 @@ public class AssetVocabularyModelListenerTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Before
-	public void setUp() throws Exception {
-		_group = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-	}
-
 	@Test
 	@TestInfo("LPD-93226")
 	public void testOnAfterCreate() throws Exception {
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.addVocabulary(
-				TestPropsValues.getUserId(), _group.getGroupId(),
+				TestPropsValues.getUserId(), cmsGroup.getGroupId(),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
+					cmsGroup.getGroupId(), TestPropsValues.getUserId()));
 
 		List<AssetVocabularyGroupRel> projectAssetVocabularyGroupRels =
 			_assetVocabularyGroupRelLocalService.
@@ -102,8 +98,6 @@ public class AssetVocabularyModelListenerTest {
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
-
-	private Group _group;
 
 	@Inject
 	private GroupLocalService _groupLocalService;

@@ -55,14 +55,14 @@ public class DepotPermissionCheckerWrapperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = _groupLocalService.getGroup(
+		Group cmsGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null, DepotConstants.TYPE_SPACE,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+			ServiceContextTestUtil.getServiceContext(cmsGroup.getGroupId()));
 	}
 
 	@Test
@@ -99,8 +99,6 @@ public class DepotPermissionCheckerWrapperTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	private Group _group;
 
 	@Inject
 	private GroupLocalService _groupLocalService;

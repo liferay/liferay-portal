@@ -58,8 +58,6 @@ public class CMSAssetVocabularyLocalServiceWrapperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 		_group = GroupTestUtil.addGroup();
 		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition();
 	}
@@ -78,8 +76,11 @@ public class CMSAssetVocabularyLocalServiceWrapperTest {
 			long classTypePK, long... groupIds)
 		throws Exception {
 
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
-			_cmsGroup.getGroupId(),
+			cmsGroup.getGroupId(),
 			_portal.getClassNameId(_objectDefinition.getClassName()),
 			classTypePK, false);
 
@@ -246,8 +247,6 @@ public class CMSAssetVocabularyLocalServiceWrapperTest {
 	@DeleteAfterTestRun
 	private final List<AssetVocabulary> _cmsAssetVocabularies =
 		new ArrayList<>();
-
-	private Group _cmsGroup;
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();

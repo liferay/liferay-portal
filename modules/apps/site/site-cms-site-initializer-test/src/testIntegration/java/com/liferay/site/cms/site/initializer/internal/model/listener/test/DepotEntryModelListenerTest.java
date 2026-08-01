@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,12 +48,6 @@ public class DepotEntryModelListenerTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Before
-	public void setUp() throws Exception {
-		_group = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-	}
-
 	@Test
 	@TestInfo("LPD-83676")
 	public void testOnBeforeRemoveUpdateAssetVocabularyGroupRel()
@@ -70,12 +63,15 @@ public class DepotEntryModelListenerTest {
 			int depotEntryType)
 		throws Exception {
 
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.addVocabulary(
-				TestPropsValues.getUserId(), _group.getGroupId(),
+				TestPropsValues.getUserId(), cmsGroup.getGroupId(),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(
-					_group.getGroupId(), TestPropsValues.getUserId()));
+					cmsGroup.getGroupId(), TestPropsValues.getUserId()));
 
 		List<AssetVocabularyGroupRel> assetVocabularyGroupRels =
 			_assetVocabularyGroupRelLocalService.
@@ -98,14 +94,14 @@ public class DepotEntryModelListenerTest {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null, depotEntryType,
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+				cmsGroup.getGroupId(), TestPropsValues.getUserId()));
 
 		DepotEntry depotEntry2 = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null, depotEntryType,
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+				cmsGroup.getGroupId(), TestPropsValues.getUserId()));
 
 		long[] groupIds = {depotEntry1.getGroupId(), depotEntry2.getGroupId()};
 
@@ -190,8 +186,6 @@ public class DepotEntryModelListenerTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	private Group _group;
 
 	@Inject
 	private GroupLocalService _groupLocalService;

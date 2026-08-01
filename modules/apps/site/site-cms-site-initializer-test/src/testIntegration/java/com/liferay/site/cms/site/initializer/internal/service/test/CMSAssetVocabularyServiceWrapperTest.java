@@ -56,8 +56,6 @@ public class CMSAssetVocabularyServiceWrapperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 		_group = GroupTestUtil.addGroup();
 	}
 
@@ -74,16 +72,19 @@ public class CMSAssetVocabularyServiceWrapperTest {
 			long groupId, int visibilityType)
 		throws Exception {
 
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.addVocabulary(
-				TestPropsValues.getUserId(), _cmsGroup.getGroupId(),
+				TestPropsValues.getUserId(), cmsGroup.getGroupId(),
 				RandomTestUtil.randomString(),
 				HashMapBuilder.put(
 					LocaleUtil.US, RandomTestUtil.randomString()
 				).build(),
 				null, null, visibilityType,
 				ServiceContextTestUtil.getServiceContext(
-					_cmsGroup.getGroupId()));
+					cmsGroup.getGroupId()));
 
 		_cmsAssetVocabularies.add(assetVocabulary);
 
@@ -229,8 +230,6 @@ public class CMSAssetVocabularyServiceWrapperTest {
 	@DeleteAfterTestRun
 	private final List<AssetVocabulary> _cmsAssetVocabularies =
 		new ArrayList<>();
-
-	private Group _cmsGroup;
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();

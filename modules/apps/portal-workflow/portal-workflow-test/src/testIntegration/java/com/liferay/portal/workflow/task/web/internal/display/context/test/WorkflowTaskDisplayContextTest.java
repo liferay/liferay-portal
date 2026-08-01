@@ -86,14 +86,15 @@ public class WorkflowTaskDisplayContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_cmsGroup = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 		_group = GroupTestUtil.addGroup();
 	}
 
 	@Test
 	public void testGetTaglibEditURL() throws Exception {
-		String taglibEditURL = _getTaglibEditURL(_cmsGroup);
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
+		String taglibEditURL = _getTaglibEditURL(cmsGroup);
 
 		Assert.assertTrue(taglibEditURL.contains("cms/edit_content_item"));
 
@@ -281,8 +282,6 @@ public class WorkflowTaskDisplayContextTest {
 
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;
-
-	private Group _cmsGroup;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

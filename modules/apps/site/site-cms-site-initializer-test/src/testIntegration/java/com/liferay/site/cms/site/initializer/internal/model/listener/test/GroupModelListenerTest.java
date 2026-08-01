@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -55,12 +54,6 @@ public class GroupModelListenerTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
-
-	@Before
-	public void setUp() throws Exception {
-		_cmsGroup = _groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-	}
 
 	@Test
 	@TestInfo("LPD-92888")
@@ -135,8 +128,11 @@ public class GroupModelListenerTest {
 	}
 
 	private void _testOnAfterUpdateWithTrashEnabled() throws Exception {
+		Group cmsGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), GroupConstants.CMS);
+
 		Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-			_cmsGroup.getGroupId(), false, "/recycle-bin");
+			cmsGroup.getGroupId(), false, "/recycle-bin");
 
 		Assert.assertFalse(layout.isHidden());
 
@@ -156,8 +152,6 @@ public class GroupModelListenerTest {
 			GetterUtil.getBoolean(
 				depotGroup.getTypeSettingsProperty("trashEnabled")));
 	}
-
-	private Group _cmsGroup;
 
 	@DeleteAfterTestRun
 	private final List<DepotEntry> _depotEntries = new ArrayList<>();
