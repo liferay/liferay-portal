@@ -38,12 +38,6 @@ public interface RoleTypeContributor {
 		return null;
 	}
 
-	/**
-	 * Returns the subtype to preselect when a role of this type has no
-	 * subtype, or when a new role of this type is being created.
-	 *
-	 * @return the default subtype for this role type
-	 */
 	public default String getDefaultSubtype() {
 		return StringPool.BLANK;
 	}
