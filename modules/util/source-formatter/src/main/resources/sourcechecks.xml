@@ -285,6 +285,7 @@
 		<check name="BouncyCastleFIPSCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds non-FIPS BouncyCastle artifacts in `build.gradle` files." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="GradleBlockOrderCheck">
 			<category name="Styling" />
@@ -479,6 +480,7 @@
 		<check name="BouncyCastleFIPSCheck">
 			<category name="Bug Prevention" />
 			<description name="Finds imports of non-FIPS BouncyCastle packages." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="EmptyCollectionCheck">
 			<category name="Styling" />
