@@ -51,14 +51,19 @@ public class PLOOverrideResourceBundleManagerTest {
 			SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId)) {
 
-			String key = RandomTestUtil.randomString();
-			Locale locale = LocaleUtil.getDefault();
-			String value = RandomTestUtil.randomString();
-
 			preparedStatement.setLong(1, RandomTestUtil.randomLong());
 			preparedStatement.setLong(2, companyId);
+
+			String key = RandomTestUtil.randomString();
+
 			preparedStatement.setString(3, key);
+
+			Locale locale = LocaleUtil.getDefault();
+
 			preparedStatement.setString(4, LanguageUtil.getLanguageId(locale));
+
+			String value = RandomTestUtil.randomString();
+
 			preparedStatement.setString(5, value);
 
 			preparedStatement.executeUpdate();
