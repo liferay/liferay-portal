@@ -1681,9 +1681,9 @@ public class TaxonomyCategoryResourceTest
 		Map<String, String> map = _toMap(
 			patchTaxonomyCategory.getTaxonomyCategoryProperties());
 
-		Assert.assertEquals(map.toString(), 2, map.size());
 		Assert.assertEquals(value1, map.get(key1));
 		Assert.assertEquals(value2, map.get(key2));
+		Assert.assertEquals(map.toString(), 2, map.size());
 	}
 
 	private void _testPatchTaxonomyCategoryWithExistingParentTaxonomyCategory(
@@ -2263,8 +2263,8 @@ public class TaxonomyCategoryResourceTest
 		Map<String, String> map = _toMap(
 			putTaxonomyCategory.getTaxonomyCategoryProperties());
 
-		Assert.assertEquals(map.toString(), 1, map.size());
 		Assert.assertEquals(propertyValue, map.get(propertyKey));
+		Assert.assertEquals(map.toString(), 1, map.size());
 	}
 
 	private void _testPutSiteTaxonomyCategoryByExternalReferenceCodeWithParentTaxonomyCategory()
