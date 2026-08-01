@@ -20,7 +20,6 @@ public class OpenAPIUtilTest {
 	public void testFormatPlural() {
 		_testFormatPlural(15, "car10s", "car10");
 		_testFormatPlural(15, "category1s", "category1");
-		_testFormatPlural(16, StringPool.BLANK, StringPool.BLANK);
 		_testFormatPlural(16, "123", "123");
 		_testFormatPlural(16, "batches", "batch");
 		_testFormatPlural(16, "boxes", "box");
@@ -35,6 +34,7 @@ public class OpenAPIUtilTest {
 		_testFormatPlural(16, "guys", "guy");
 		_testFormatPlural(16, "keys", "key");
 		_testFormatPlural(16, "quizes", "quiz");
+		_testFormatPlural(16, StringPool.BLANK, StringPool.BLANK);
 		_testFormatPlural(16, null, null);
 	}
 
@@ -42,13 +42,10 @@ public class OpenAPIUtilTest {
 	public void testFormatSingular() {
 		_testFormatSingular(1, "clas", "class");
 		_testFormatSingular(1, "status1", "status1");
-		_testFormatSingular(6, "class", "class");
-		_testFormatSingular(6, "statu", "status");
 		_testFormatSingular(15, "cars10", "cars10");
 		_testFormatSingular(15, "categories1", "categories1");
 		_testFormatSingular(15, "warehous", "warehouses");
 		_testFormatSingular(15, "warehouses1", "warehouses1");
-		_testFormatSingular(16, StringPool.BLANK, StringPool.BLANK);
 		_testFormatSingular(16, "123", "123");
 		_testFormatSingular(16, "base", "bases");
 		_testFormatSingular(16, "box", "boxes");
@@ -64,7 +61,10 @@ public class OpenAPIUtilTest {
 		_testFormatSingular(16, "status1", "status1");
 		_testFormatSingular(16, "warehouse", "warehouses");
 		_testFormatSingular(16, "warehouse1", "warehouses1");
+		_testFormatSingular(16, StringPool.BLANK, StringPool.BLANK);
 		_testFormatSingular(16, null, null);
+		_testFormatSingular(6, "class", "class");
+		_testFormatSingular(6, "statu", "status");
 	}
 
 	private void _testFormatPlural(
