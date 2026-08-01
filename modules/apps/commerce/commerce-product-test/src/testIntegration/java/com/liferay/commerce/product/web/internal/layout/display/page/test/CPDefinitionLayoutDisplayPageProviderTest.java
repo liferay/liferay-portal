@@ -116,6 +116,8 @@ public class CPDefinitionLayoutDisplayPageProviderTest {
 			layoutDisplayPageObjectProvider.getClassName());
 		Assert.assertEquals(
 			_cpDefinition, layoutDisplayPageObjectProvider.getDisplayObject());
+		Assert.assertEquals(
+			_group.getGroupId(), layoutDisplayPageObjectProvider.getGroupId());
 
 		Company company = _companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
