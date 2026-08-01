@@ -613,7 +613,7 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 			).addExpectedMessage(
 				"Use \"type = Meta.Type.Password\" in \"@Meta.AD\" for " +
 					"\"apiKey\", which appears to hold a secret",
-				24
+				23
 			).addExpectedMessage(
 				"Use \"type = Meta.Type.Password\" in \"@Meta.AD\" for " +
 					"\"clientSecret\", which appears to hold a secret",
