@@ -810,6 +810,18 @@ public class ObjectEntryRelatedObjectsResourceTest {
 					"href", href
 				)
 			).put(
+				"get-by-scope",
+				JSONFactoryUtil.createJSONObject(
+				).put(
+					"method", "GET"
+				).put(
+					"href",
+					StringBundler.concat(
+						"http://localhost:",
+						PortalUtil.getPortalServerPort(false), "/o",
+						_objectDefinition1.getRESTContextPath(), "/scopes/0")
+				)
+			).put(
 				"update",
 				JSONFactoryUtil.createJSONObject(
 				).put(
@@ -875,6 +887,18 @@ public class ObjectEntryRelatedObjectsResourceTest {
 					"method", "GET"
 				).put(
 					"href", href
+				)
+			).put(
+				"get-by-scope",
+				JSONFactoryUtil.createJSONObject(
+				).put(
+					"method", "GET"
+				).put(
+					"href",
+					StringBundler.concat(
+						"http://localhost:",
+						PortalUtil.getPortalServerPort(false), "/o",
+						_objectDefinition2.getRESTContextPath(), "/scopes/0")
 				)
 			).put(
 				"update",
@@ -944,6 +968,18 @@ public class ObjectEntryRelatedObjectsResourceTest {
 					"method", "GET"
 				).put(
 					"href", href
+				)
+			).put(
+				"get-by-scope",
+				JSONFactoryUtil.createJSONObject(
+				).put(
+					"method", "GET"
+				).put(
+					"href",
+					StringBundler.concat(
+						"http://localhost:",
+						PortalUtil.getPortalServerPort(false), "/o",
+						_objectDefinition1.getRESTContextPath(), "/scopes/0")
 				)
 			).put(
 				"update",
