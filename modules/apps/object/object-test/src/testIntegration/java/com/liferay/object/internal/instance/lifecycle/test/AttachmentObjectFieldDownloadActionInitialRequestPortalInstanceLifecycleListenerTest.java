@@ -126,9 +126,6 @@ public class
 		String attachmentDownloadActionKey =
 			objectField.getAttachmentDownloadActionKey();
 
-		// Simulate the pre-back-fill state by removing the download resource
-		// action that the object field publication creates
-
 		ResourceAction resourceAction =
 			_resourceActionLocalService.fetchResourceAction(
 				objectDefinition.getClassName(), attachmentDownloadActionKey);
