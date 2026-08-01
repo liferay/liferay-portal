@@ -249,25 +249,25 @@ public class ContentCoverageResourceTest
 	private void _testGetProjectContentCoverageWithFunnelStages()
 		throws Exception {
 
-		AssetCategory awarenessAssetCategory = _getAssetCategory(
+		AssetCategory cmpFunnelStageAwarenessAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_AWARENESS");
 
 		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
-			new long[] {awarenessAssetCategory.getCategoryId()});
+			new long[] {cmpFunnelStageAwarenessAssetCategory.getCategoryId()});
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
 			cmpProjectObjectEntry);
 
 		_addCMSBasicWebContentObjectEntry(new long[0], cmpTaskObjectEntry);
 		_addCMSBasicWebContentObjectEntry(
-			new long[] {awarenessAssetCategory.getCategoryId()},
+			new long[] {cmpFunnelStageAwarenessAssetCategory.getCategoryId()},
 			cmpTaskObjectEntry);
 
 		ObjectEntry unrelatedCMPTaskObjectEntry =
 			CMPTestUtil.addCMPTaskObjectEntry();
 
 		_addCMSBasicWebContentObjectEntry(
-			new long[] {awarenessAssetCategory.getCategoryId()},
+			new long[] {cmpFunnelStageAwarenessAssetCategory.getCategoryId()},
 			unrelatedCMPTaskObjectEntry);
 
 		_assertContentCoverage(
@@ -276,9 +276,9 @@ public class ContentCoverageResourceTest
 				new ContentCoverageEntry[] {
 					_toContentCoverageEntry(1, -1, -1),
 					_toContentCoverageEntry(
-						1, awarenessAssetCategory.getCategoryId(), -1)
+						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(), -1)
 				},
-				new AssetCategory[] {awarenessAssetCategory},
+				new AssetCategory[] {cmpFunnelStageAwarenessAssetCategory},
 				new AssetCategory[0]),
 			cmpProjectObjectEntry);
 	}
@@ -286,14 +286,14 @@ public class ContentCoverageResourceTest
 	private void _testGetProjectContentCoverageWithFunnelStagesAndPersonas()
 		throws Exception {
 
-		AssetCategory customFunnelStageAssetCategory = _addAssetCategory(
+		AssetCategory cmpFunnelStageAssetCategory = _addAssetCategory(
 			"L_CMP_FUNNEL_STAGE");
-		AssetCategory customPersonaAssetCategory = _addAssetCategory(
+		AssetCategory cmpPersonasStageAssetCategory = _addAssetCategory(
 			"L_CMP_PERSONAS");
 
 		long[] customAssetCategoryIds = {
-			customFunnelStageAssetCategory.getCategoryId(),
-			customPersonaAssetCategory.getCategoryId()
+			cmpFunnelStageAssetCategory.getCategoryId(),
+			cmpPersonasStageAssetCategory.getCategoryId()
 		};
 
 		ObjectEntry customCMPProjectObjectEntry = _addCMPProjectObjectEntry(
@@ -308,28 +308,28 @@ public class ContentCoverageResourceTest
 				1,
 				new ContentCoverageEntry[] {
 					_toContentCoverageEntry(
-						1, customFunnelStageAssetCategory.getCategoryId(),
-						customPersonaAssetCategory.getCategoryId())
+						1, cmpFunnelStageAssetCategory.getCategoryId(),
+						cmpPersonasStageAssetCategory.getCategoryId())
 				},
-				new AssetCategory[] {customFunnelStageAssetCategory},
-				new AssetCategory[] {customPersonaAssetCategory}),
+				new AssetCategory[] {cmpFunnelStageAssetCategory},
+				new AssetCategory[] {cmpPersonasStageAssetCategory}),
 			customCMPProjectObjectEntry);
 
-		AssetCategory awarenessAssetCategory = _getAssetCategory(
+		AssetCategory cmpFunnelStageAwarenessAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_AWARENESS");
-		AssetCategory championAssetCategory = _getAssetCategory(
+		AssetCategory cmpPersonasChampionAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_CHAMPION");
-		AssetCategory considerationAssetCategory = _getAssetCategory(
+		AssetCategory cmpFunnelStageConsiderationAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_CONSIDERATION");
-		AssetCategory decisionMakerAssetCategory = _getAssetCategory(
+		AssetCategory cmpPersonasDecisionMakerAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_DECISION_MAKER");
 
 		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
 			new long[] {
-				awarenessAssetCategory.getCategoryId(),
-				championAssetCategory.getCategoryId(),
-				considerationAssetCategory.getCategoryId(),
-				decisionMakerAssetCategory.getCategoryId()
+				cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+				cmpPersonasChampionAssetCategory.getCategoryId(),
+				cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+				cmpPersonasDecisionMakerAssetCategory.getCategoryId()
 			});
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
@@ -338,34 +338,34 @@ public class ContentCoverageResourceTest
 		_addCMSBasicWebContentObjectEntry(new long[0], cmpTaskObjectEntry);
 		_addCMSBasicWebContentObjectEntry(
 			new long[] {
-				awarenessAssetCategory.getCategoryId(),
-				championAssetCategory.getCategoryId(),
-				considerationAssetCategory.getCategoryId()
+				cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+				cmpPersonasChampionAssetCategory.getCategoryId(),
+				cmpFunnelStageConsiderationAssetCategory.getCategoryId()
 			},
 			cmpTaskObjectEntry);
 		_addCMSBasicWebContentObjectEntry(
 			new long[] {
-				awarenessAssetCategory.getCategoryId(),
-				championAssetCategory.getCategoryId(),
-				decisionMakerAssetCategory.getCategoryId()
+				cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+				cmpPersonasChampionAssetCategory.getCategoryId(),
+				cmpPersonasDecisionMakerAssetCategory.getCategoryId()
 			},
 			cmpTaskObjectEntry);
 		_addCMSBasicWebContentObjectEntry(
 			new long[] {
-				awarenessAssetCategory.getCategoryId(),
-				considerationAssetCategory.getCategoryId()
+				cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+				cmpFunnelStageConsiderationAssetCategory.getCategoryId()
 			},
 			cmpTaskObjectEntry);
 		_addCMSBasicWebContentObjectEntry(
 			new long[] {
-				championAssetCategory.getCategoryId(),
-				decisionMakerAssetCategory.getCategoryId()
+				cmpPersonasChampionAssetCategory.getCategoryId(),
+				cmpPersonasDecisionMakerAssetCategory.getCategoryId()
 			},
 			cmpTaskObjectEntry);
 		_addCMSBasicWebContentObjectEntry(
 			new long[] {
-				considerationAssetCategory.getCategoryId(),
-				decisionMakerAssetCategory.getCategoryId()
+				cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+				cmpPersonasDecisionMakerAssetCategory.getCategoryId()
 			},
 			cmpTaskObjectEntry);
 
@@ -375,31 +375,31 @@ public class ContentCoverageResourceTest
 				new ContentCoverageEntry[] {
 					_toContentCoverageEntry(1, -1, -1),
 					_toContentCoverageEntry(
-						1, -1, championAssetCategory.getCategoryId()),
+						1, -1, cmpPersonasChampionAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, -1, decisionMakerAssetCategory.getCategoryId()),
+						1, -1, cmpPersonasDecisionMakerAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, awarenessAssetCategory.getCategoryId(), -1),
+						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(), -1),
 					_toContentCoverageEntry(
-						1, awarenessAssetCategory.getCategoryId(),
-						decisionMakerAssetCategory.getCategoryId()),
+						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+						cmpPersonasDecisionMakerAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, considerationAssetCategory.getCategoryId(), -1),
+						1, cmpFunnelStageConsiderationAssetCategory.getCategoryId(), -1),
 					_toContentCoverageEntry(
-						1, considerationAssetCategory.getCategoryId(),
-						championAssetCategory.getCategoryId()),
+						1, cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+						cmpPersonasChampionAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, considerationAssetCategory.getCategoryId(),
-						decisionMakerAssetCategory.getCategoryId()),
+						1, cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+						cmpPersonasDecisionMakerAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						2, awarenessAssetCategory.getCategoryId(),
-						championAssetCategory.getCategoryId())
+						2, cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+						cmpPersonasChampionAssetCategory.getCategoryId())
 				},
 				new AssetCategory[] {
-					awarenessAssetCategory, considerationAssetCategory
+					cmpFunnelStageAwarenessAssetCategory, cmpFunnelStageConsiderationAssetCategory
 				},
 				new AssetCategory[] {
-					championAssetCategory, decisionMakerAssetCategory
+					cmpPersonasChampionAssetCategory, cmpPersonasDecisionMakerAssetCategory
 				}),
 			cmpProjectObjectEntry);
 	}
@@ -422,11 +422,11 @@ public class ContentCoverageResourceTest
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
 			cmpProjectObjectEntry);
 
-		AssetCategory decisionMakerAssetCategory = _getAssetCategory(
+		AssetCategory cmpPersonasDecisionMakerAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_DECISION_MAKER");
 
 		_addCMSBasicWebContentObjectEntry(
-			new long[] {decisionMakerAssetCategory.getCategoryId()},
+			new long[] {cmpPersonasDecisionMakerAssetCategory.getCategoryId()},
 			cmpTaskObjectEntry);
 
 		_assertContentCoverage(
@@ -437,23 +437,23 @@ public class ContentCoverageResourceTest
 	}
 
 	private void _testGetProjectContentCoverageWithStatuses() throws Exception {
-		AssetCategory awarenessAssetCategory = _getAssetCategory(
+		AssetCategory cmpFunnelStageAwarenessAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_AWARENESS");
-		AssetCategory championAssetCategory = _getAssetCategory(
+		AssetCategory cmpPersonasChampionAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_CHAMPION");
 
 		ObjectEntry cmpProjectObjectEntry = _addCMPProjectObjectEntry(
 			new long[] {
-				awarenessAssetCategory.getCategoryId(),
-				championAssetCategory.getCategoryId()
+				cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+				cmpPersonasChampionAssetCategory.getCategoryId()
 			});
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
 			cmpProjectObjectEntry);
 
 		long[] assetCategoryIds = {
-			awarenessAssetCategory.getCategoryId(),
-			championAssetCategory.getCategoryId()
+			cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+			cmpPersonasChampionAssetCategory.getCategoryId()
 		};
 
 		for (int status :
@@ -501,11 +501,11 @@ public class ContentCoverageResourceTest
 				5,
 				new ContentCoverageEntry[] {
 					_toContentCoverageEntry(
-						5, awarenessAssetCategory.getCategoryId(),
-						championAssetCategory.getCategoryId())
+						5, cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+						cmpPersonasChampionAssetCategory.getCategoryId())
 				},
-				new AssetCategory[] {awarenessAssetCategory},
-				new AssetCategory[] {championAssetCategory}),
+				new AssetCategory[] {cmpFunnelStageAwarenessAssetCategory},
+				new AssetCategory[] {cmpPersonasChampionAssetCategory}),
 			cmpProjectObjectEntry);
 	}
 
