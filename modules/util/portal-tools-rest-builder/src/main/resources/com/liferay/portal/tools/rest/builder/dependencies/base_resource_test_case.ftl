@@ -694,7 +694,7 @@ public abstract class Base${schemaName}ResourceTestCase {
 					page = ${schemaVarName}Resource.${javaMethodSignature.methodName}(
 						<#list javaMethodSignature.javaMethodParameters as javaMethodParameter>
 							<#if stringUtil.equals(javaMethodParameter.parameterName, "pagination")>
-								Pagination.of(1, 10)
+								Pagination.of(1, (int) totalCount + 2)
 							<#elseif freeMarkerTool.isPathParameter(javaMethodParameter, javaMethodSignature.operation)>
 								${javaMethodParameter.parameterName}
 							<#else>
