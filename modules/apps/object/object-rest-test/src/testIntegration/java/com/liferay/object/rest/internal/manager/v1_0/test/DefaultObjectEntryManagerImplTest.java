@@ -1896,9 +1896,6 @@ public class DefaultObjectEntryManagerImplTest
 	public void testAddObjectEntryWithDefaultObjectEntryFolder()
 		throws Exception {
 
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
 		_depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
 		Group group = _depotEntry.getGroup();
@@ -3779,9 +3776,6 @@ public class DefaultObjectEntryManagerImplTest
 	@Test
 	public void testAddRelatedObjectEntryWithoutObjectEntryFolder()
 		throws Exception {
-
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 

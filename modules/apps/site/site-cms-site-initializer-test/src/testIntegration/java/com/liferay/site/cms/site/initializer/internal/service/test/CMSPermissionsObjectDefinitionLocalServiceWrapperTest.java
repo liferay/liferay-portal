@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -39,7 +38,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,12 +55,6 @@ public class CMSPermissionsObjectDefinitionLocalServiceWrapperTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-	}
 
 	@Test
 	public void testPublishCustomObjectDefinition() throws Exception {
@@ -276,9 +268,6 @@ public class CMSPermissionsObjectDefinitionLocalServiceWrapperTest {
 				assetLibraryContentReviewerRole.getRoleId(),
 				ObjectActionKeys.ADD_OBJECT_ENTRY));
 	}
-
-	@Inject
-	private static GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

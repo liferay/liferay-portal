@@ -29,8 +29,6 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.object.test.util.TreeTestUtil;
-import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -78,9 +76,6 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 	@Before
 	public void setUp() throws Exception {
 		UserTestUtil.setUser(TestPropsValues.getUser());
-
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_cmsContentStructuresObjectFolder =
 			_objectFolderLocalService.getObjectFolderByExternalReferenceCode(
@@ -551,9 +546,6 @@ public class CMSObjectRelationshipEdgeUpgradeProcessTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

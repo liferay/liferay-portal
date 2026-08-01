@@ -19,8 +19,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -171,9 +169,6 @@ public class PerformanceAssetConsumptionResourceTest
 
 	private void _testGetPerformanceAssetConsumptionGroupByStructure()
 		throws Exception {
-
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		ObjectDefinition basicWebContentObjectDefinition =
 			_objectDefinitionLocalService.
@@ -370,9 +365,6 @@ public class PerformanceAssetConsumptionResourceTest
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private Http _http;

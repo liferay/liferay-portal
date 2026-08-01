@@ -7,7 +7,6 @@ package com.liferay.site.cms.site.initializer.internal.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -16,7 +15,6 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -55,9 +53,6 @@ public class DepotLayoutSetPrototypeServiceWrapperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
 		_layoutSetPrototype =
 			_layoutSetPrototypeLocalService.addLayoutSetPrototype(
 				TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
@@ -119,9 +114,6 @@ public class DepotLayoutSetPrototypeServiceWrapperTest {
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@DeleteAfterTestRun
 	private LayoutSetPrototype _layoutSetPrototype;

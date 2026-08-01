@@ -7,11 +7,8 @@ package com.liferay.fragment.collection.contributor.basic.component;
 
 import com.liferay.fragment.contributor.BaseFragmentCollectionContributor;
 import com.liferay.fragment.contributor.FragmentCollectionContributor;
-import com.liferay.fragment.model.FragmentEntry;
 
 import jakarta.servlet.ServletContext;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

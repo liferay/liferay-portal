@@ -16,11 +16,9 @@ import com.liferay.headless.asset.library.client.problem.Problem;
 import com.liferay.headless.asset.library.client.resource.v1_0.UserAccountResource;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -69,9 +67,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_spaceDepotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
@@ -346,9 +341,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			(entityField, userAccount1, userAccount2) -> {
 			});
 	}
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;

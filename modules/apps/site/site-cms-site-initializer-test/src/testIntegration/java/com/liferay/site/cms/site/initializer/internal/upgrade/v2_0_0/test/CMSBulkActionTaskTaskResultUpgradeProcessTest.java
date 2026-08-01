@@ -11,8 +11,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
-import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
@@ -41,9 +39,6 @@ public class CMSBulkActionTaskTaskResultUpgradeProcessTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
 		_objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
@@ -89,9 +84,6 @@ public class CMSBulkActionTaskTaskResultUpgradeProcessTest {
 	private static final String _CLASS_NAME =
 		"com.liferay.site.cms.site.initializer.internal.upgrade.v2_0_0." +
 			"CMSBulkActionTaskTaskResultUpgradeProcess";
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	private ObjectDefinition _objectDefinition;
 

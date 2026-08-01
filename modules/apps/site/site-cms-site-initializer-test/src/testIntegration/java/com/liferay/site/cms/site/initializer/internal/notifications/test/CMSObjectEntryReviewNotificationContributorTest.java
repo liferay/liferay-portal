@@ -21,7 +21,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -38,7 +37,6 @@ import java.io.Serializable;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -57,12 +55,6 @@ public class CMSObjectEntryReviewNotificationContributorTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
-
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -127,9 +119,6 @@ public class CMSObjectEntryReviewNotificationContributorTest {
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 	}
-
-	@Inject
-	private static GroupLocalService _groupLocalService;
 
 	private DepotEntry _depotEntry;
 

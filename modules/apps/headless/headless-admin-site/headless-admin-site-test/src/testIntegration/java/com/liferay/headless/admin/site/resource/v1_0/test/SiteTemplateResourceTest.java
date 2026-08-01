@@ -14,11 +14,9 @@ import com.liferay.headless.admin.site.client.dto.v1_0.SiteTemplate;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.resource.v1_0.SiteTemplateResource;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -67,9 +65,6 @@ public class SiteTemplateResourceTest extends BaseSiteTemplateResourceTestCase {
 	@Test
 	public void testGetSiteTemplatesPage() throws Exception {
 		super.testGetSiteTemplatesPage();
-
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_testGetSiteTemplatesPageWithAssetLibraryMember();
 		_testGetSiteTemplatesPageWithExcludedSiteExternalReferenceCodes();
@@ -288,9 +283,6 @@ public class SiteTemplateResourceTest extends BaseSiteTemplateResourceTestCase {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;

@@ -1450,9 +1450,6 @@ public class ObjectEntryLocalServiceTest {
 
 	@Test
 	public void testAddObjectEntryWithAssetTag() throws Exception {
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
 		ObjectFolder objectFolder =
 			_objectFolderLocalService.getOrAddEmptyObjectFolder(
 				ObjectFolderConstants.
@@ -8533,9 +8530,6 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	private ObjectEntry _addCMSBasicDocumentObjectEntry() throws Exception {
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
-
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), DepotConstants.TYPE_SPACE,

@@ -19,7 +19,6 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -78,9 +77,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	@Override
 	public void setUp() throws Exception {
 		super.setUp();
-
-		_groupLocalService.getGroup(
-			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
 		_userGroup = UserGroupTestUtil.addUserGroup();
 
