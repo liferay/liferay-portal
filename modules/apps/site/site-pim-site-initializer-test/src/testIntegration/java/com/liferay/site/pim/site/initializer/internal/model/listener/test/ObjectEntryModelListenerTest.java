@@ -57,7 +57,7 @@ public class ObjectEntryModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
-		PIMTestUtil.getOrAddGroup(ObjectEntryModelListenerTest.class);
+		PIMTestUtil.getOrAddGroup();
 	}
 
 	@Test
