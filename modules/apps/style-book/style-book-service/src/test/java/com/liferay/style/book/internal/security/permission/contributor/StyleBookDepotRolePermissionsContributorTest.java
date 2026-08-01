@@ -13,8 +13,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.constants.StyleBookConstants;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
