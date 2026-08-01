@@ -530,13 +530,13 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 
 		sb.append("PropsValues: {\n");
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		_renderValue(
 			"ENTERPRISE_PRODUCT_AI_HUB_ENABLED", sb,
 			PropsValues.ENTERPRISE_PRODUCT_AI_HUB_ENABLED);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		_renderValue(
 			"JAVASCRIPT_SINGLE_PAGE_APPLICATION_TIMEOUT", sb,
