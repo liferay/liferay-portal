@@ -42,15 +42,16 @@ public class BouncyCastleFIPSCheck extends BaseFileCheck {
 		while (matcher.find()) {
 			addMessage(
 				fileName, "Do not use non-FIPS BouncyCastle, see LPD-90318",
-				getLineNumber(content, matcher.start(1)));
+				getLineNumber(content, matcher.start()));
 		}
 	}
 
 	private static final Pattern _artifactPattern = Pattern.compile(
-		"name: \"(bc(?:mail|pkix|prov|util)-jdk[^\"]*)\"");
+		"name: \"(bc(mail|pkix|prov|util)-jdk[^\"]*)\"");
 	private static final Pattern _importPattern = Pattern.compile(
-		"\nimport (?:static )?(org\\.bouncycastle\\.(?:crypto\\.(?:engines|" +
+		"^import (static )?(org\\.bouncycastle\\.(crypto\\.(engines|" +
 			"generators|macs|modes|paddings|params|prng|signers)|jce" +
-				"\\.provider|jcajce\\.provider)\\.[^;]+);");
+				"\\.provider|jcajce\\.provider)\\.[^;]+);",
+		Pattern.MULTILINE);
 
 }
