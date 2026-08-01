@@ -123,37 +123,35 @@ public class CPDefinitionLayoutDisplayPageProvider
 			return null;
 		}
 
+		CPDefinition cpDefinition = null;
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext != null) {
+			companyId = serviceContext.getCompanyId();
+			groupId = serviceContext.getScopeGroupId();
+		}
+
 		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
 			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
 				(ClassPKInfoItemIdentifier)
 					infoItemReference.getInfoItemIdentifier();
 
-			CPDefinition cpDefinition =
-				_cpDefinitionLocalService.fetchCPDefinition(
-					classPKInfoItemIdentifier.getClassPK());
-
-			if ((cpDefinition == null) ||
-				(cpDefinition.getStatus() ==
-					WorkflowConstants.STATUS_IN_TRASH)) {
-
-				return null;
-			}
-
-			return new CPDefinitionLayoutDisplayPageObjectProvider(
-				cpDefinition, groupId);
+			cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
+				classPKInfoItemIdentifier.getClassPK());
 		}
+		else {
+			ERCInfoItemIdentifier ercInfoItemIdentifier =
+				(ERCInfoItemIdentifier)infoItemIdentifier;
 
-		ERCInfoItemIdentifier ercInfoItemIdentifier =
-			(ERCInfoItemIdentifier)infoItemIdentifier;
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		CPDefinition cpDefinition =
-			_cpDefinitionLocalService.
-				fetchCPDefinitionByCProductExternalReferenceCode(
-					ercInfoItemIdentifier.getExternalReferenceCode(),
-					serviceContext.getCompanyId(), true);
+			cpDefinition =
+				_cpDefinitionLocalService.
+					fetchCPDefinitionByCProductExternalReferenceCode(
+						ercInfoItemIdentifier.getExternalReferenceCode(),
+						companyId, true);
+		}
 
 		if ((cpDefinition == null) ||
 			(cpDefinition.getStatus() == WorkflowConstants.STATUS_IN_TRASH)) {
@@ -162,7 +160,7 @@ public class CPDefinitionLayoutDisplayPageProvider
 		}
 
 		return new CPDefinitionLayoutDisplayPageObjectProvider(
-			cpDefinition, cpDefinition.getGroupId());
+			cpDefinition, groupId);
 	}
 
 	@Reference

@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 
@@ -93,33 +94,38 @@ public class CommerceOrderLayoutDisplayPageProvider
 			return null;
 		}
 
+		CommerceOrder commerceOrder = null;
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		if (serviceContext != null) {
+			companyId = serviceContext.getCompanyId();
+			groupId = serviceContext.getScopeGroupId();
+		}
+
 		if (infoItemIdentifier instanceof ClassPKInfoItemIdentifier) {
 			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
 				(ClassPKInfoItemIdentifier)
 					infoItemReference.getInfoItemIdentifier();
 
-			CommerceOrder commerceOrder =
-				_commerceOrderLocalService.fetchCommerceOrder(
-					classPKInfoItemIdentifier.getClassPK());
+			commerceOrder = _commerceOrderLocalService.fetchCommerceOrder(
+				classPKInfoItemIdentifier.getClassPK());
+		}
+		else {
+			ERCInfoItemIdentifier ercInfoItemIdentifier =
+				(ERCInfoItemIdentifier)infoItemIdentifier;
 
-			return new CommerceOrderLayoutDisplayPageObjectProvider(
-				commerceOrder, groupId);
+			commerceOrder =
+				_commerceOrderLocalService.
+					fetchCommerceOrderByExternalReferenceCode(
+						ercInfoItemIdentifier.getExternalReferenceCode(),
+						companyId);
 		}
 
-		ERCInfoItemIdentifier ercInfoItemIdentifier =
-			(ERCInfoItemIdentifier)infoItemIdentifier;
-
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
-		CommerceOrder commerceOrder =
-			_commerceOrderLocalService.
-				fetchCommerceOrderByExternalReferenceCode(
-					ercInfoItemIdentifier.getExternalReferenceCode(),
-					serviceContext.getCompanyId());
-
 		return new CommerceOrderLayoutDisplayPageObjectProvider(
-			commerceOrder, commerceOrder.getGroupId());
+			commerceOrder, groupId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
