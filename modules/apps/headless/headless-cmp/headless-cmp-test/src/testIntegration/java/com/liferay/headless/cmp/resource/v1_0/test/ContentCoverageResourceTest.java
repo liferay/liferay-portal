@@ -276,7 +276,8 @@ public class ContentCoverageResourceTest
 				new ContentCoverageEntry[] {
 					_toContentCoverageEntry(1, -1, -1),
 					_toContentCoverageEntry(
-						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(), -1)
+						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+						-1)
 				},
 				new AssetCategory[] {cmpFunnelStageAwarenessAssetCategory},
 				new AssetCategory[0]),
@@ -317,8 +318,8 @@ public class ContentCoverageResourceTest
 
 		AssetCategory cmpFunnelStageAwarenessAssetCategory = _getAssetCategory(
 			"L_CMP_FUNNEL_STAGE_AWARENESS");
-		AssetCategory cmpFunnelStageConsiderationAssetCategory = _getAssetCategory(
-			"L_CMP_FUNNEL_STAGE_CONSIDERATION");
+		AssetCategory cmpFunnelStageConsiderationAssetCategory =
+			_getAssetCategory("L_CMP_FUNNEL_STAGE_CONSIDERATION");
 		AssetCategory cmpPersonasChampionAssetCategory = _getAssetCategory(
 			"L_CMP_PERSONAS_CHAMPION");
 		AssetCategory cmpPersonasDecisionMakerAssetCategory = _getAssetCategory(
@@ -375,31 +376,43 @@ public class ContentCoverageResourceTest
 				new ContentCoverageEntry[] {
 					_toContentCoverageEntry(1, -1, -1),
 					_toContentCoverageEntry(
-						1, -1, cmpPersonasChampionAssetCategory.getCategoryId()),
+						1, -1,
+						cmpPersonasChampionAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, -1, cmpPersonasDecisionMakerAssetCategory.getCategoryId()),
+						1, -1,
+						cmpPersonasDecisionMakerAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(), -1),
+						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
+						-1),
 					_toContentCoverageEntry(
 						1, cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
 						cmpPersonasDecisionMakerAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, cmpFunnelStageConsiderationAssetCategory.getCategoryId(), -1),
+						1,
+						cmpFunnelStageConsiderationAssetCategory.
+							getCategoryId(),
+						-1),
 					_toContentCoverageEntry(
-						1, cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+						1,
+						cmpFunnelStageConsiderationAssetCategory.
+							getCategoryId(),
 						cmpPersonasChampionAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
-						1, cmpFunnelStageConsiderationAssetCategory.getCategoryId(),
+						1,
+						cmpFunnelStageConsiderationAssetCategory.
+							getCategoryId(),
 						cmpPersonasDecisionMakerAssetCategory.getCategoryId()),
 					_toContentCoverageEntry(
 						2, cmpFunnelStageAwarenessAssetCategory.getCategoryId(),
 						cmpPersonasChampionAssetCategory.getCategoryId())
 				},
 				new AssetCategory[] {
-					cmpFunnelStageAwarenessAssetCategory, cmpFunnelStageConsiderationAssetCategory
+					cmpFunnelStageAwarenessAssetCategory,
+					cmpFunnelStageConsiderationAssetCategory
 				},
 				new AssetCategory[] {
-					cmpPersonasChampionAssetCategory, cmpPersonasDecisionMakerAssetCategory
+					cmpPersonasChampionAssetCategory,
+					cmpPersonasDecisionMakerAssetCategory
 				}),
 			cmpProjectObjectEntry);
 	}
