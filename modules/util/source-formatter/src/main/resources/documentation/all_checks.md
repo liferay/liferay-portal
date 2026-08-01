@@ -282,7 +282,8 @@ JavaLogClassNameCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention
 [JavaLogLevelCheck](check/java_log_level_check.md#javaloglevelcheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks that the correct log messages are printed. |
 JavaLongLinesCheck | [Styling](styling_checks.md#styling-checks) | .java | Finds lines that are longer than the specified maximum line length. |
 JavaMapBuilderGenericsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing or unnecessary generics on `*MapBuilder.put` calls. |
-[JavaMetaAnnotationsCheck](check/java_meta_annotations_check.md#javametaannotationscheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks for correct use of attributes `description`, `name`, and `type` in annotation `@aQute.bnd.annotation.metatype.Meta`, including requiring `type = Meta.Type.Password` on secret-bearing fields. |
+[JavaMetaAnnotationsCheck](check/java_meta_annotations_check.md#javametaannotationscheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Checks for correct use of attributes `description` and `name` in annotation `@aQute.bnd.annotation.metatype.Meta`. |
+JavaMetaOCDSecretFieldCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing `type = Meta.Type.Password` on secret-bearing fields. |
 JavaMissingOverrideCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing @Override annotations. |
 JavaMissingXMLPublicIdsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing public IDs for check XML files. |
 JavaModifiedServiceMethodCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing empty lines before `removedService` or `addingService` calls. |
