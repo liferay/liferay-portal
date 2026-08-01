@@ -1666,51 +1666,46 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		Group guestGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.GUEST);
 
-		try {
-			Site site = new Site() {
-				{
-					externalReferenceCode =
-						guestGroup.getExternalReferenceCode();
-					name = GroupConstants.GUEST;
-				}
-			};
+		Site site = new Site() {
+			{
+				externalReferenceCode = guestGroup.getExternalReferenceCode();
+				name = GroupConstants.GUEST;
+			}
+		};
 
-			Site putSite = siteResource.putSiteSiteInitializer(
+		Site putSite = siteResource.putSiteSiteInitializer(
+			guestGroup.getExternalReferenceCode(), site, getMultipartFiles());
+
+		Assert.assertTrue(putSite.getActive());
+
+		site.setActive(false);
+
+		try {
+			siteResource.putSiteSiteInitializer(
 				guestGroup.getExternalReferenceCode(), site,
 				getMultipartFiles());
 
-			Assert.assertTrue(putSite.getActive());
-
-			site.setActive(false);
-
-			try {
-				siteResource.putSiteSiteInitializer(
-					guestGroup.getExternalReferenceCode(), site,
-					getMultipartFiles());
-
-				Assert.fail();
-			}
-			catch (Problem.ProblemException problemException) {
-				Problem problem = problemException.getProblem();
-
-				Assert.assertEquals("METHOD_NOT_ALLOWED", problem.getStatus());
-				Assert.assertEquals(
-					String.format(
-						"Site %s cannot be deactivated because it is a " +
-							"system required site",
-						guestGroup.getExternalReferenceCode()),
-					problem.getTitle());
-			}
+			Assert.fail();
 		}
-		finally {
-			Group group = _groupLocalService.getGroup(guestGroup.getGroupId());
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
 
-			group.setType(guestGroup.getType());
-			group.setTypeSettings(guestGroup.getTypeSettings());
-			group.setManualMembership(guestGroup.isManualMembership());
-
-			_groupLocalService.updateGroup(group);
+			Assert.assertEquals("METHOD_NOT_ALLOWED", problem.getStatus());
+			Assert.assertEquals(
+				String.format(
+					"Site %s cannot be deactivated because it is a system " +
+						"required site",
+					guestGroup.getExternalReferenceCode()),
+				problem.getTitle());
 		}
+
+		Group group = _groupLocalService.getGroup(guestGroup.getGroupId());
+
+		group.setType(guestGroup.getType());
+		group.setTypeSettings(guestGroup.getTypeSettings());
+		group.setManualMembership(guestGroup.isManualMembership());
+
+		_groupLocalService.updateGroup(group);
 	}
 
 	private void _testPutSiteWithExcludedTypeSettings() throws Exception {
