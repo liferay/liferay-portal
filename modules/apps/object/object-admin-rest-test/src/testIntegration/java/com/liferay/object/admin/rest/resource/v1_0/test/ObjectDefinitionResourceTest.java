@@ -189,7 +189,7 @@ public class ObjectDefinitionResourceTest
 
 		JSONArray jsonArray = jsonObject.getJSONArray("objectFields");
 
-		Assert.assertEquals(jsonArray.toString(), 7, jsonArray.length());
+		Assert.assertEquals(jsonArray.toString(), 10, jsonArray.length());
 	}
 
 	@Override
