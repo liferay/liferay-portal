@@ -72,7 +72,6 @@ public class FragmentCollectionSearchPermissionTest {
 				false,
 				ServiceContextTestUtil.getServiceContext(
 					_group, TestPropsValues.getUserId()));
-
 		_user = UserTestUtil.addGroupUser(_group, RoleConstants.POWER_USER);
 	}
 
@@ -93,11 +92,11 @@ public class FragmentCollectionSearchPermissionTest {
 		_testSearch(
 			searchResponse -> Assert.assertEquals(
 				1, searchResponse.getTotalHits()),
-			() -> _search(FragmentCollection.class, FragmentEntry.class));
+			() -> _search(FragmentCollection.class));
 		_testSearch(
 			searchResponse -> Assert.assertEquals(
 				1, searchResponse.getTotalHits()),
-			() -> _search(FragmentCollection.class));
+			() -> _search(FragmentCollection.class, FragmentEntry.class));
 	}
 
 	@Rule
