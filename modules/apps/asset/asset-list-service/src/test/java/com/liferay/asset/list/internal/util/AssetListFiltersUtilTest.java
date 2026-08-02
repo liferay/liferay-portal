@@ -91,7 +91,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"nestedFieldArray.value_boolean", "true",
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject("eq", booleanFieldName, "true"),
 				booleanFieldName));
@@ -106,7 +106,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"nestedFieldArray.value_double", doubleFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject("eq", doubleFieldName, doubleFieldValue),
 				doubleFieldName));
@@ -121,14 +121,14 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"nestedFieldArray.value_integer", integerFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"eq", integerFieldName, integerFieldValue),
 				integerFieldName));
 		_assertTermQuery(
 			"nestedFieldArray.value_integer", integerFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_buildFilterJSONObject(
 					"not-eq", integerFieldName, integerFieldValue),
@@ -148,7 +148,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"nestedFieldArray.value_keyword", "alpha",
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject("eq", keywordTextFieldName, "Alpha"),
 				keywordTextFieldName));
@@ -169,7 +169,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"nestedFieldArray.value_en_US", localizedTextFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"eq", localizedTextFieldName, localizedTextFieldValue),
@@ -185,7 +185,7 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"nestedFieldArray.value_long", longFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"eq", longIntegerFieldName, longFieldValue),
@@ -201,13 +201,13 @@ public class AssetListFiltersUtilTest {
 
 		_assertTermQuery(
 			"nestedFieldArray.value_text", textFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject("eq", textFieldName, textFieldValue),
 				textFieldName));
 		_assertTermQuery(
 			"nestedFieldArray.value_text", textFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_buildFilterJSONObject("not-eq", textFieldName, textFieldValue),
 				textFieldName));
@@ -245,14 +245,14 @@ public class AssetListFiltersUtilTest {
 
 		_assertWildcardQuery(
 			"nestedFieldArray.value_keyword", "*alpha*",
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"contains", keywordTextFieldName, "Alpha"),
 				keywordTextFieldName));
 		_assertWildcardQuery(
 			"nestedFieldArray.value_keyword", "*alpha*",
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_buildFilterJSONObject(
 					"not-contains", keywordTextFieldName, "Alpha"),
@@ -273,7 +273,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_double", true, true, doubleLowerFieldValue,
 			doubleUpperFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"between", doubleFieldName,
@@ -286,7 +286,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_double", false, false, doubleFieldValue,
 			null,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject("gt", doubleFieldName, doubleFieldValue),
 				doubleFieldName));
@@ -303,7 +303,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", true, true,
 			integerLowerFieldValue, integerUpperFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"between", integerFieldName,
@@ -316,7 +316,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", true, false, integerFieldValue,
 			null,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"ge", integerFieldName, integerFieldValue),
@@ -324,7 +324,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", false, false, integerFieldValue,
 			null,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"gt", integerFieldName, integerFieldValue),
@@ -332,7 +332,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", false, true, null,
 			integerFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"le", integerFieldName, integerFieldValue),
@@ -340,7 +340,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", false, false, null,
 			integerFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"lt", integerFieldName, integerFieldValue),
@@ -358,7 +358,7 @@ public class AssetListFiltersUtilTest {
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_long", true, true, longLowerFieldValue,
 			longUpperFieldValue,
-			_assertNestedRowAndGetQuery(
+			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
 					"between", longIntegerFieldName,
@@ -376,7 +376,7 @@ public class AssetListFiltersUtilTest {
 
 		String textFieldValue = RandomTestUtil.randomString();
 
-		Query containsQuery = _assertNestedRowAndGetQuery(
+		Query containsQuery = _assertNestedQuery(
 			BooleanClauseOccur.MUST,
 			_buildFilterJSONObject("contains", textFieldName, textFieldValue),
 			textFieldName);
@@ -384,7 +384,7 @@ public class AssetListFiltersUtilTest {
 		Assert.assertTrue(
 			containsQuery.toString(), containsQuery instanceof MatchQuery);
 
-		Query containsWithQuantifierQuery = _assertNestedRowAndGetQuery(
+		Query containsWithQuantifierQuery = _assertNestedQuery(
 			BooleanClauseOccur.MUST,
 			_buildFilterJSONObject(
 				"contains", textFieldName, textFieldValue
@@ -397,7 +397,7 @@ public class AssetListFiltersUtilTest {
 			containsWithQuantifierQuery.toString(),
 			containsWithQuantifierQuery instanceof MatchQuery);
 
-		Query notContainsQuery = _assertNestedRowAndGetQuery(
+		Query notContainsQuery = _assertNestedQuery(
 			BooleanClauseOccur.MUST_NOT,
 			_buildFilterJSONObject(
 				"not-contains", textFieldName, textFieldValue),
@@ -408,7 +408,22 @@ public class AssetListFiltersUtilTest {
 			notContainsQuery instanceof MatchQuery);
 	}
 
-	private Query _assertNestedRowAndGetQuery(
+	private QueryTerm _assertNestedFieldQueryTerm(
+		BooleanClause<Query> booleanClause, String expectedField) {
+
+		Assert.assertEquals(
+			BooleanClauseOccur.MUST, booleanClause.getBooleanClauseOccur());
+
+		TermQuery termQuery = (TermQuery)booleanClause.getClause();
+
+		QueryTerm queryTerm = termQuery.getQueryTerm();
+
+		Assert.assertEquals(expectedField, queryTerm.getField());
+
+		return queryTerm;
+	}
+
+	private Query _assertNestedQuery(
 		BooleanClauseOccur expectedBooleanClauseOccur,
 		JSONObject filterJSONObject, String propertyName) {
 
@@ -419,72 +434,51 @@ public class AssetListFiltersUtilTest {
 		Assert.assertEquals(
 			Arrays.toString(booleanClauses), 1, booleanClauses.length);
 
-		BooleanClause<?> outerBooleanClause = booleanClauses[0];
+		BooleanClause<?> filtersBooleanClause = booleanClauses[0];
 
 		Assert.assertEquals(
 			BooleanClauseOccur.MUST,
-			outerBooleanClause.getBooleanClauseOccur());
+			filtersBooleanClause.getBooleanClauseOccur());
 
-		BooleanQuery outerBooleanQuery =
-			(BooleanQuery)outerBooleanClause.getClause();
+		BooleanQuery filtersBooleanQuery =
+			(BooleanQuery)filtersBooleanClause.getClause();
 
-		List<BooleanClause<Query>> rowBooleanClauses =
-			outerBooleanQuery.clauses();
+		List<BooleanClause<Query>> filterBooleanClauses =
+			filtersBooleanQuery.clauses();
 
-		BooleanClause<Query> rowBooleanClause = rowBooleanClauses.get(0);
+		BooleanClause<Query> filterBooleanClause = filterBooleanClauses.get(0);
 
-		NestedQuery nestedQuery = (NestedQuery)rowBooleanClause.getClause();
+		NestedQuery nestedQuery = (NestedQuery)filterBooleanClause.getClause();
 
 		Assert.assertEquals("nestedFieldArray", nestedQuery.getPath());
 
-		BooleanQuery innerBooleanQuery = (BooleanQuery)nestedQuery.getQuery();
+		BooleanQuery nestedFieldBooleanQuery =
+			(BooleanQuery)nestedQuery.getQuery();
 
-		List<BooleanClause<Query>> innerBooleanClauses =
-			innerBooleanQuery.clauses();
-
-		Assert.assertEquals(
-			innerBooleanClauses.toString(), 3, innerBooleanClauses.size());
-
-		BooleanClause<Query> fieldNameBooleanClause = innerBooleanClauses.get(
-			0);
-
-		TermQuery fieldNameTermQuery =
-			(TermQuery)fieldNameBooleanClause.getClause();
-
-		QueryTerm fieldNameQueryTerm = fieldNameTermQuery.getQueryTerm();
+		List<BooleanClause<Query>> nestedFieldBooleanClauses =
+			nestedFieldBooleanQuery.clauses();
 
 		Assert.assertEquals(
-			"nestedFieldArray.fieldName", fieldNameQueryTerm.getField());
-		Assert.assertEquals(propertyName, fieldNameQueryTerm.getValue());
+			nestedFieldBooleanClauses.toString(), 3,
+			nestedFieldBooleanClauses.size());
 
-		Assert.assertEquals(
-			BooleanClauseOccur.MUST,
-			fieldNameBooleanClause.getBooleanClauseOccur());
+		QueryTerm nestedFieldQueryTerm = _assertNestedFieldQueryTerm(
+			nestedFieldBooleanClauses.get(0), "nestedFieldArray.fieldName");
 
-		BooleanClause<Query> valueFieldNameBooleanClause =
-			innerBooleanClauses.get(1);
+		Assert.assertEquals(propertyName, nestedFieldQueryTerm.getValue());
 
-		TermQuery valueFieldNameTermQuery =
-			(TermQuery)valueFieldNameBooleanClause.getClause();
+		_assertNestedFieldQueryTerm(
+			nestedFieldBooleanClauses.get(1),
+			"nestedFieldArray.valueFieldName");
 
-		QueryTerm valueFieldNameQueryTerm =
-			valueFieldNameTermQuery.getQueryTerm();
-
-		Assert.assertEquals(
-			"nestedFieldArray.valueFieldName",
-			valueFieldNameQueryTerm.getField());
-
-		Assert.assertEquals(
-			BooleanClauseOccur.MUST,
-			valueFieldNameBooleanClause.getBooleanClauseOccur());
-
-		BooleanClause<Query> valueBooleanClause = innerBooleanClauses.get(2);
+		BooleanClause<Query> nestedFieldBooleanClause =
+			nestedFieldBooleanClauses.get(2);
 
 		Assert.assertEquals(
 			expectedBooleanClauseOccur,
-			valueBooleanClause.getBooleanClauseOccur());
+			nestedFieldBooleanClause.getBooleanClauseOccur());
 
-		return valueBooleanClause.getClause();
+		return nestedFieldBooleanClause.getClause();
 	}
 
 	private void _assertTermQuery(
