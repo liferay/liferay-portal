@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal K8s Agent API
 Bundle-SymbolicName: com.liferay.portal.k8s.agent.api
-Bundle-Version: 4.0.2
+Bundle-Version: 4.0.3
 Export-Package:\
 	com.liferay.portal.k8s.agent,\
 	com.liferay.portal.k8s.agent.configuration,\
