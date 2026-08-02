@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Store GCS
 Bundle-SymbolicName: com.liferay.portal.store.gcs
-Bundle-Version: 3.0.42
+Bundle-Version: 3.0.43
 Import-Package:\
 	!com.google.cloud.monitoring.*,\
 	!com.google.monitoring.*,\
