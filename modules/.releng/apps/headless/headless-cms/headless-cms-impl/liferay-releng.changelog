@@ -62,3 +62,8 @@ c597df3be8a084587f01bf3dd9f600d5f7d3794f^..f7f49e8b8c50ffac15f801df8ce9170bda743
 # Bundle Version 1.0.14
 #
 f7f49e8b8c50ffac15f801df8ce9170bda743449^..29c5bf0f904b5fc1bc5f3b585ac95f3e20cc2d8c=LPD-92633
+
+#
+# Bundle Version 1.0.15
+#
+29c5bf0f904b5fc1bc5f3b585ac95f3e20cc2d8c^..795a4f2a44b2b01a0316a03ed3cb94ff7da4a72b=LPD-68399 LPD-95976 LPD-97865 LPD-99210
