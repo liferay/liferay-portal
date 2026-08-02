@@ -1,6 +1,6 @@
 Bundle-Name: Liferay AI Creator OpenAI API
 Bundle-SymbolicName: com.liferay.ai.creator.openai.api
-Bundle-Version: 3.0.3
+Bundle-Version: 3.0.4
 Export-Package:\
 	com.liferay.ai.creator.openai.configuration,\
 	com.liferay.ai.creator.openai.configuration.manager,\
