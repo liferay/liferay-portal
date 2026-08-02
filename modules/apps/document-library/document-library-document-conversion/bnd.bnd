@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Document Library Document Conversion
 Bundle-SymbolicName: com.liferay.document.library.document.conversion
-Bundle-Version: 4.0.45
+Bundle-Version: 4.0.46
 Import-Package:\
 	!com.google.common.collect.*,\
 	\
