@@ -1,0 +1,56 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author Alan Huang
+ */
+public class RedundantContainsCalls {
+
+	protected String method1(
+		Map<String, String> map, String name, String value) {
+
+		if (!map.containsKey(name)) {
+			map.put(name, value);
+
+			return value;
+		}
+
+		return null;
+	}
+
+	protected String method2(Map<String, String> map, String name) {
+		if (map.containsKey(name)) {
+			return map.get(name);
+		}
+
+		return "";
+	}
+
+	protected String method3(Map<String, String> map, String name) {
+		if (map.containsKey(name)) {
+			return map.remove(name);
+		}
+
+		return "";
+	}
+
+	protected void method4(Set<String> set, String name) {
+		if (!set.contains(name)) {
+			set.add(name);
+		}
+	}
+
+	protected void method5(Set<String> set, String name) {
+		if (set.contains(name)) {
+			set.remove(name);
+		}
+	}
+
+}
