@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Organizations Service
 Bundle-SymbolicName: com.liferay.organizations.service
-Bundle-Version: 4.0.56
+Bundle-Version: 4.0.57
 Require-Capability:\
 	osgi.extender;\
 		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
