@@ -1,4 +1,4 @@
 Bundle-Name: Liferay OAuth Client Test Utilities
 Bundle-SymbolicName: com.liferay.oauth.client.test.util
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Export-Package: com.liferay.oauth.client.test.util
