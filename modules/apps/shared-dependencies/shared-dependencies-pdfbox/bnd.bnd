@@ -1,7 +1,7 @@
 Bundle-Activator: com.liferay.shared.dependencies.pdfbox.internal.activator.SharedDependenciesPDFBoxBundleActivator
 Bundle-Name: Liferay Shared Dependencies PDFBox
 Bundle-SymbolicName: com.liferay.shared.dependencies.pdfbox
-Bundle-Version: 1.0.5
+Bundle-Version: 1.0.6
 Import-Package:\
 	!org.bouncycastle.*,\
 	\
