@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Adaptive Media Editor Configuration
 Bundle-SymbolicName: com.liferay.adaptive.media.editor.configuration
-Bundle-Version: 1.0.7
+Bundle-Version: 1.0.8
 -dsannotations-options: inherit
