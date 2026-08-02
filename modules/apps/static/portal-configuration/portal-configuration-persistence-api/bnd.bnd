@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Configuration Persistence API
 Bundle-SymbolicName: com.liferay.portal.configuration.persistence.api
-Bundle-Version: 6.0.0
+Bundle-Version: 6.0.1
 Export-Package:\
 	com.liferay.portal.configuration.persistence,\
 	com.liferay.portal.configuration.persistence.listener,\
