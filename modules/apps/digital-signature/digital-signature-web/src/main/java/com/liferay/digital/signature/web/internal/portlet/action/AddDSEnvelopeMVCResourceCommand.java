@@ -17,6 +17,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
@@ -86,6 +87,19 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 			}
 		}
 
+		int expireAfterDays = ParamUtil.getInteger(
+			resourceRequest, "expireAfter");
+		int expireWarnDays = ParamUtil.getInteger(
+			resourceRequest, "expireWarn");
+
+		if ((expireAfterDays > 0) && (expireWarnDays >= expireAfterDays)) {
+			throw new PortalException(
+				_language.get(
+					themeDisplay.getLocale(),
+					"days-to-warn-signers-must-be-fewer-than-days-until-" +
+						"expiration"));
+		}
+
 		User user = themeDisplay.getUser();
 
 		DSEnvelope dsEnvelope = _dsEnvelopeManager.addDSEnvelope(
@@ -98,6 +112,8 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 						resourceRequest, "emailMessage");
 					emailSubject = ParamUtil.getString(
 						resourceRequest, "emailSubject");
+					expireAfter = expireAfterDays;
+					expireWarn = expireWarnDays;
 					name = ParamUtil.getString(resourceRequest, "envelopeName");
 					senderEmailAddress = user.getEmailAddress();
 					status = "sent";
@@ -162,5 +178,8 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Language _language;
 
 }

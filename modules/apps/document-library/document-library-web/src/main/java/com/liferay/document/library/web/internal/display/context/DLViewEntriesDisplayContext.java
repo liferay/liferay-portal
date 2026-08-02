@@ -292,7 +292,9 @@ public class DLViewEntriesDisplayContext {
 	}
 
 	public String getSignatureStatusDisplayType(String signatureStatus) {
-		if (Objects.equals(signatureStatus, "completed")) {
+		if (Objects.equals(signatureStatus, "completed") ||
+			Objects.equals(signatureStatus, "signed")) {
+
 			return "success";
 		}
 
@@ -300,6 +302,10 @@ public class DLViewEntriesDisplayContext {
 			Objects.equals(signatureStatus, "voided")) {
 
 			return "danger";
+		}
+
+		if (Objects.equals(signatureStatus, "expired")) {
+			return "warning";
 		}
 
 		return "info";

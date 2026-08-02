@@ -1276,7 +1276,7 @@ public class DLAdminManagementToolbarDisplayContext
 	};
 
 	private static final String[] _SIGNATURE_STATUSES = {
-		"sent", "completed", "declined", "voided"
+		"sent", "completed", "declined", "voided", "expired"
 	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
