@@ -23,6 +23,9 @@ public interface DSRequestManager {
 		long companyId, long groupId, long userId, DSEnvelope dsEnvelope,
 		long[] fileEntryIds);
 
+	public Map<Long, String> getProviderRequestIds(
+		long companyId, long userId, Collection<String> statuses);
+
 	public Map<Long, Map<Long, String>> getRecipientStatusesByFileEntryId(
 		long companyId, Collection<Long> fileEntryIds);
 

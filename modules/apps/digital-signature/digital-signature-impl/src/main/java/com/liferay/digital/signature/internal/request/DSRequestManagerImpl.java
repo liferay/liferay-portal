@@ -178,6 +178,98 @@ public class DSRequestManagerImpl implements DSRequestManager {
 	}
 
 	@Override
+	public Map<Long, String> getProviderRequestIds(
+		long companyId, long userId, Collection<String> statuses) {
+
+		Map<Long, String> providerRequestIds = new HashMap<>();
+
+		if (!_isEnabled(companyId, 0) || (statuses == null) ||
+			statuses.isEmpty()) {
+
+			return providerRequestIds;
+		}
+
+		ObjectDefinition documentObjectDefinition = _fetchObjectDefinition(
+			companyId, "L_DS_REQUEST_DOCUMENT");
+		ObjectDefinition recipientObjectDefinition = _fetchObjectDefinition(
+			companyId, "L_DS_REQUEST_RECIPIENT");
+		ObjectDefinition requestObjectDefinition = _fetchObjectDefinition(
+			companyId, "L_DS_REQUEST");
+
+		if ((documentObjectDefinition == null) ||
+			(recipientObjectDefinition == null) ||
+			(requestObjectDefinition == null)) {
+
+			return providerRequestIds;
+		}
+
+		try {
+			String documentFieldName = _getRelationshipFieldName(
+				requestObjectDefinition, "dsRequestToDSRequestDocuments");
+			String recipientFieldName = _getRelationshipFieldName(
+				requestObjectDefinition, "dsRequestToDSRequestRecipients");
+
+			if ((documentFieldName == null) || (recipientFieldName == null)) {
+				return providerRequestIds;
+			}
+
+			Set<Long> requestIds = new HashSet<>(
+				TransformUtil.transform(
+					_getValuesList(
+						companyId, recipientObjectDefinition,
+						StringBundler.concat(
+							"(r_userToDSRequestRecipient_userId eq '", userId,
+							"') and (requestRecipientStatus in ('",
+							StringUtil.merge(statuses, "', '"), "'))"),
+						null),
+					recipientValues -> GetterUtil.getLong(
+						recipientValues.get(recipientFieldName))));
+
+			if (requestIds.isEmpty()) {
+				return providerRequestIds;
+			}
+
+			Map<Long, String> providerRequestIdsByRequestId = new HashMap<>();
+
+			for (long requestId : requestIds) {
+				Map<String, Serializable> requestValues =
+					_objectEntryLocalService.getValues(requestId);
+
+				providerRequestIdsByRequestId.put(
+					requestId,
+					GetterUtil.getString(
+						requestValues.get("providerRequestId")));
+			}
+
+			for (Map<String, Serializable> documentValues :
+					_getValuesList(
+						companyId, documentObjectDefinition,
+						StringBundler.concat(
+							"(", documentFieldName, " in ('",
+							StringUtil.merge(requestIds, "', '"), "'))"),
+						null)) {
+
+				String providerRequestId = providerRequestIdsByRequestId.get(
+					GetterUtil.getLong(documentValues.get(documentFieldName)));
+
+				if (Validator.isNotNull(providerRequestId)) {
+					providerRequestIds.put(
+						GetterUtil.getLong(documentValues.get("fileEntryId")),
+						providerRequestId);
+				}
+			}
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to load the signature requests awaiting the " +
+					"signature of user " + userId,
+				exception);
+		}
+
+		return providerRequestIds;
+	}
+
+	@Override
 	public Map<Long, Map<Long, String>> getRecipientStatusesByFileEntryId(
 		long companyId, Collection<Long> fileEntryIds) {
 
