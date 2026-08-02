@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Initializer DSR
 Bundle-SymbolicName: com.liferay.site.initializer.dsr
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Liferay-Site-Initializer-Name: DSR
 Provide-Capability: liferay.site.initializer
 Web-ContextPath: /site-initializer-dsr
