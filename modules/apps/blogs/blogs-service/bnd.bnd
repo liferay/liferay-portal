@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Blogs Service
 Bundle-SymbolicName: com.liferay.blogs.service
-Bundle-Version: 5.0.114
+Bundle-Version: 5.0.115
 Liferay-Require-SchemaVersion: 3.1.1
 Liferay-Service: true
 -dsannotations-options: inherit
