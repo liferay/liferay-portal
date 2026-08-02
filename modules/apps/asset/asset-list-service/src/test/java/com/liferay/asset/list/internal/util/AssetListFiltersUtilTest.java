@@ -510,12 +510,12 @@ public class AssetListFiltersUtilTest {
 		TermRangeQuery termRangeQuery = (TermRangeQuery)query;
 
 		Assert.assertEquals(expectedField, termRangeQuery.getField());
+		Assert.assertEquals(expectedLowerTerm, termRangeQuery.getLowerTerm());
+		Assert.assertEquals(expectedUpperTerm, termRangeQuery.getUpperTerm());
 		Assert.assertEquals(
 			expectedIncludesLower, termRangeQuery.includesLower());
 		Assert.assertEquals(
 			expectedIncludesUpper, termRangeQuery.includesUpper());
-		Assert.assertEquals(expectedLowerTerm, termRangeQuery.getLowerTerm());
-		Assert.assertEquals(expectedUpperTerm, termRangeQuery.getUpperTerm());
 	}
 
 	private void _assertWildcardQuery(
