@@ -169,6 +169,29 @@ const DigitalSignatureFormBase = ({
 				type="textarea"
 				value={values.emailMessage}
 			/>
+
+			{Liferay.FeatureFlags['LPD-69290'] && (
+				<>
+					<Input
+						label={Liferay.Language.get('days-until-expiration')}
+						name="expireAfter"
+						onChange={handleChange}
+						type="number"
+						value={values.expireAfter}
+					/>
+
+					<Input
+						error={errors.expireWarn}
+						label={Liferay.Language.get(
+							'days-to-warn-signers-before-expiration'
+						)}
+						name="expireWarn"
+						onChange={handleChange}
+						type="number"
+						value={values.expireWarn}
+					/>
+				</>
+			)}
 		</>
 	);
 };

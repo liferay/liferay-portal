@@ -44,8 +44,16 @@ public class DSEnvelope {
 		return emailSubject;
 	}
 
+	public int getExpireAfter() {
+		return expireAfter;
+	}
+
 	public LocalDateTime getExpireLocalDateTime() {
 		return expireLocalDateTime;
+	}
+
+	public int getExpireWarn() {
+		return expireWarn;
 	}
 
 	public String getName() {
@@ -88,8 +96,16 @@ public class DSEnvelope {
 		this.emailSubject = emailSubject;
 	}
 
+	public void setExpireAfter(int expireAfter) {
+		this.expireAfter = expireAfter;
+	}
+
 	public void setExpireLocalDateTime(LocalDateTime expireLocalDateTime) {
 		this.expireLocalDateTime = expireLocalDateTime;
+	}
+
+	public void setExpireWarn(int expireWarn) {
+		this.expireWarn = expireWarn;
 	}
 
 	public void setName(String name) {
@@ -126,6 +142,26 @@ public class DSEnvelope {
 		).put(
 			"name", getName()
 		).put(
+			"notification",
+			() -> {
+				if (getExpireAfter() <= 0) {
+					return null;
+				}
+
+				return JSONUtil.put(
+					"expirations",
+					JSONUtil.put(
+						"expireAfter", String.valueOf(getExpireAfter())
+					).put(
+						"expireEnabled", "true"
+					).put(
+						"expireWarn", String.valueOf(getExpireWarn())
+					)
+				).put(
+					"useAccountDefaults", "false"
+				);
+			}
+		).put(
 			"recipients",
 			JSONUtil.put(
 				"signers",
@@ -150,7 +186,9 @@ public class DSEnvelope {
 	protected List<DSRecipient> dsRecipients;
 	protected String emailBlurb;
 	protected String emailSubject;
+	protected int expireAfter;
 	protected LocalDateTime expireLocalDateTime;
+	protected int expireWarn;
 	protected String name;
 	protected String senderEmailAddress;
 	protected String status;

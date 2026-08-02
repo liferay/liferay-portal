@@ -55,6 +55,8 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 			[`${portletNamespace}emailMessage`]: values.emailMessage,
 			[`${portletNamespace}emailSubject`]: values.emailSubject,
 			[`${portletNamespace}envelopeName`]: values.envelopeName,
+			[`${portletNamespace}expireAfter`]: values.expireAfter,
+			[`${portletNamespace}expireWarn`]: values.expireWarn,
 			[`${portletNamespace}fileEntryIds`]: fileEntryIds,
 			[`${portletNamespace}recipients`]: JSON.stringify(
 				values.recipients
@@ -123,6 +125,12 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 			),
 		};
 
+		if (values.expireAfter > 0 && values.expireWarn >= values.expireAfter) {
+			errorList.expireWarn = Liferay.Language.get(
+				'days-to-warn-signers-must-be-fewer-than-days-until-expiration'
+			);
+		}
+
 		const recipientErrors = values.recipients.map((recipient) =>
 			validate(
 				{
@@ -158,6 +166,8 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 			emailMessage: '',
 			emailSubject: '',
 			envelopeName: '',
+			expireAfter: 120,
+			expireWarn: 3,
 			fileEntries,
 			recipients: [defaultRecipient],
 		},

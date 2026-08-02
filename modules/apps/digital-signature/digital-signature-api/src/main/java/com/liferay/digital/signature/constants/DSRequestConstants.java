@@ -16,13 +16,15 @@ public class DSRequestConstants {
 
 	public static final String STATUS_DECLINED = "declined";
 
+	public static final String STATUS_EXPIRED = "expired";
+
 	public static final String STATUS_SENT = "sent";
 
 	public static final String STATUS_VOIDED = "voided";
 
 	public static final String[] STATUSES = {
-		STATUS_COMPLETED, STATUS_CREATED, STATUS_DECLINED, STATUS_SENT,
-		STATUS_VOIDED
+		STATUS_COMPLETED, STATUS_CREATED, STATUS_DECLINED, STATUS_EXPIRED,
+		STATUS_SENT, STATUS_VOIDED
 	};
 
 }
