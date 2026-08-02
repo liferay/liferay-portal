@@ -546,10 +546,6 @@ public class FDSFragmentRenderer implements FragmentRenderer {
 				continue;
 			}
 
-			// A token mapped to the page context entity through a field is
-			// fully configured. It stays unresolved only because the page is
-			// being edited without a page context entity.
-
 			if (Objects.equals(
 					mappingJSONObject.getString("mappingMode"), "context") &&
 				Validator.isNotNull(mappingJSONObject.getString("fieldId"))) {
