@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Dispatch Talend API
 Bundle-SymbolicName: com.liferay.dispatch.talend.api
-Bundle-Version: 1.1.12
+Bundle-Version: 1.1.13
 Export-Package:\
 	com.liferay.dispatch.talend.archive,\
 	com.liferay.dispatch.talend.archive.exception
