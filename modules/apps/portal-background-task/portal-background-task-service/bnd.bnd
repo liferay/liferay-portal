@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Background Task Service
 Bundle-SymbolicName: com.liferay.portal.background.task.service
-Bundle-Version: 7.0.80
+Bundle-Version: 7.0.81
 Import-Package:\
 	com.liferay.portal.kernel.backgroundtask.display;version="[2.0.0,9999.0.0)",\
 	\
