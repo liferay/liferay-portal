@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Frontend CSS Common
 Bundle-SymbolicName: com.liferay.frontend.css.common
-Bundle-Version: 6.0.22
+Bundle-Version: 6.0.23
 Web-ContextPath: /frontend-css-common
 -donotcopy: (\.npmignore|npm-debug\.log|package\.json)
 -includeresource: META-INF/resources=tmp/META-INF/resources
