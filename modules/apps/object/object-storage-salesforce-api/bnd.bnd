@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Object Storage Salesforce API
 Bundle-SymbolicName: com.liferay.object.storage.salesforce.api
-Bundle-Version: 1.0.5
+Bundle-Version: 1.0.6
 Export-Package: com.liferay.object.storage.salesforce.configuration
