@@ -591,6 +591,15 @@ public class AssetListFiltersUtilTest {
 			_CLASS_TYPE_ID
 		);
 
+		_objectDefinitionLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByClassName(
+						_COMPANY_ID, "com.liferay.test.Class" + _CLASS_NAME_ID)
+		).thenReturn(
+			objectDefinition
+		);
+
 		ObjectField objectField = Mockito.mock(ObjectField.class);
 
 		Mockito.when(
@@ -609,15 +618,6 @@ public class AssetListFiltersUtilTest {
 			objectField.getName()
 		).thenReturn(
 			fieldName
-		);
-
-		_objectDefinitionLocalServiceUtilMockedStatic.when(
-			() ->
-				ObjectDefinitionLocalServiceUtil.
-					fetchObjectDefinitionByClassName(
-						_COMPANY_ID, "com.liferay.test.Class" + _CLASS_NAME_ID)
-		).thenReturn(
-			objectDefinition
 		);
 
 		_objectFieldLocalServiceUtilMockedStatic.when(
