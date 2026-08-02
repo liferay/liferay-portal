@@ -270,7 +270,7 @@ public class JiraTicketResolverUtilTest {
 		}
 		catch (PortalException portalException) {
 			Assert.assertEquals(
-				"multiple-related-lpd-tickets-found-for-x",
+				"multiple-related-lpd-tickets-were-found-for-x",
 				portalException.getMessage());
 		}
 	}
@@ -294,7 +294,7 @@ public class JiraTicketResolverUtilTest {
 		}
 		catch (PortalException portalException) {
 			Assert.assertEquals(
-				"no-related-lpd-ticket-found-for-x",
+				"no-related-lpd-ticket-were-found-for-x",
 				portalException.getMessage());
 		}
 	}

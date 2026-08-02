@@ -93,14 +93,15 @@ public class JiraTicketResolverUtil {
 				throw new PortalException(
 					LanguageUtil.format(
 						LocaleUtil.getMostRelevantLocale(),
-						"no-related-lpd-ticket-found-for-x", ticket));
+						"no-related-lpd-ticket-were-found-for-x", ticket));
 			}
 
 			if (lpdKeys.size() > 1) {
 				throw new PortalException(
 					LanguageUtil.format(
 						LocaleUtil.getMostRelevantLocale(),
-						"multiple-related-lpd-tickets-found-for-x", ticket));
+						"multiple-related-lpd-tickets-were-found-for-x",
+						ticket));
 			}
 
 			String lpdKey = lpdKeys.get(0);
