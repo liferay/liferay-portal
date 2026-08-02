@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Lock Service
 Bundle-SymbolicName: com.liferay.portal.lock.service
-Bundle-Version: 6.0.51
+Bundle-Version: 6.0.52
 Liferay-Require-SchemaVersion: 2.0.1
 Liferay-Service: true
 -dsannotations-options: inherit
