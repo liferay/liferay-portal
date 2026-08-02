@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Wiki Engine Creole
 Bundle-SymbolicName: com.liferay.wiki.engine.creole
-Bundle-Version: 6.0.28
+Bundle-Version: 6.0.29
 Import-Package:\
 	!antlr.*,\
 	\
