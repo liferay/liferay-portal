@@ -72,5 +72,5 @@
 		"storybook:build": "NODE_OPTIONS=--max_old_space_size=8192 build-storybook -c ./clay/.storybook -o .storybook-static",
 		"test": "node-scripts test"
 	},
-	"version": "1.0.9"
+	"version": "1.0.10"
 }
