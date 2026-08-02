@@ -13,6 +13,8 @@ import com.liferay.digital.signature.model.DSRecipient;
 import com.liferay.digital.signature.request.DSRequestManager;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
@@ -24,13 +26,17 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.IntegerWrapper;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -56,10 +62,31 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		User user = themeDisplay.getUser();
-
 		long[] fileEntryIds = ParamUtil.getLongValues(
 			resourceRequest, "fileEntryIds");
+
+		Map<Long, String> requestStatusesByFileEntryId =
+			_dsRequestManager.getRequestStatusesByFileEntryId(
+				themeDisplay.getCompanyId(), ListUtil.fromArray(fileEntryIds));
+
+		for (Map.Entry<Long, String> entry :
+				requestStatusesByFileEntryId.entrySet()) {
+
+			String requestStatus = entry.getValue();
+
+			if (Validator.isNotNull(requestStatus) &&
+				!Objects.equals(requestStatus, "declined") &&
+				!Objects.equals(requestStatus, "voided")) {
+
+				throw new PortalException(
+					StringBundler.concat(
+						"File entry ", entry.getKey(),
+						" already has a signature request with status \"",
+						requestStatus, "\""));
+			}
+		}
+
+		User user = themeDisplay.getUser();
 
 		DSEnvelope dsEnvelope = _dsEnvelopeManager.addDSEnvelope(
 			themeDisplay.getCompanyId(), themeDisplay.getSiteGroupId(),
