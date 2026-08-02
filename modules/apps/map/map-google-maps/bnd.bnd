@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Map Google Maps
 Bundle-SymbolicName: com.liferay.map.google.maps
-Bundle-Version: 5.0.49
+Bundle-Version: 5.0.50
 Web-ContextPath: /map-google-maps
