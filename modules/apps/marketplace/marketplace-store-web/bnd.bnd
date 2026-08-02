@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Marketplace Store Web
 Bundle-SymbolicName: com.liferay.marketplace.store.web
-Bundle-Version: 7.0.55
+Bundle-Version: 7.0.56
 Web-ContextPath: /marketplace-store-web
 -dsannotations-options: inherit
