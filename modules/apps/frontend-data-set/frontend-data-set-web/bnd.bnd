@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Frontend Data Set Web
 Bundle-SymbolicName: com.liferay.frontend.data.set.web
-Bundle-Version: 1.0.142
+Bundle-Version: 1.0.143
 Web-ContextPath: /frontend-data-set-web
