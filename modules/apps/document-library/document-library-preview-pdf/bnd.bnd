@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Document Library Preview PDF
 Bundle-SymbolicName: com.liferay.document.library.preview.pdf
-Bundle-Version: 1.0.25
+Bundle-Version: 1.0.26
 Web-ContextPath: /document-library-preview-pdf
 -dsannotations-options: inherit
