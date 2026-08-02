@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site API
 Bundle-SymbolicName: com.liferay.site.api
-Bundle-Version: 30.0.0
+Bundle-Version: 30.0.1
 Export-Package:\
 	com.liferay.site.configuration,\
 	com.liferay.site.configuration.manager,\
