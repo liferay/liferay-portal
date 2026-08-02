@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Cluster Multiple
 Bundle-SymbolicName: com.liferay.portal.cluster.multiple
-Bundle-Version: 5.0.56
+Bundle-Version: 5.0.57
 Import-Package:\
 	!COM.ibm.netrexx.*,\
 	\
