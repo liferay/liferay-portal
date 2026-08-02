@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Machine Learning Forecast Alert Web
 Bundle-SymbolicName: com.liferay.commerce.machine.learning.forecast.alert.web
-Bundle-Version: 5.0.24
+Bundle-Version: 5.0.25
 Web-ContextPath: /commerce-machine-learning-forecast-alert-web
