@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Change Tracking Store Service
 Bundle-SymbolicName: com.liferay.change.tracking.store.service
-Bundle-Version: 2.0.51
+Bundle-Version: 2.0.52
 Liferay-Require-SchemaVersion: 1.0.0
 Liferay-Service: true
 -dsannotations-options: inherit
