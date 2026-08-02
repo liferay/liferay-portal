@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Mail Messaging Implementation
 Bundle-SymbolicName: com.liferay.mail.messaging.impl
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
 Import-Package:\
 	org.eclipse.angus.mail,\
 	org.eclipse.angus.mail.imap,\
