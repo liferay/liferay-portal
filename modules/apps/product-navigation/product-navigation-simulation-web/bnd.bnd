@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Product Navigation Simulation Web
 Bundle-SymbolicName: com.liferay.product.navigation.simulation.web
-Bundle-Version: 7.0.44
+Bundle-Version: 7.0.45
 Web-ContextPath: /product-navigation-simulation-web
