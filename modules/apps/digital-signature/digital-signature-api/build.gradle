@@ -7,4 +7,5 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-reflect")
+	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 }
