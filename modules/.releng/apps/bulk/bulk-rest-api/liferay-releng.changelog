@@ -167,3 +167,8 @@ a7af70df08c306c310feeeda1c038181c3ee7c59^..0046a14ba6c9fe822bca86fea728a8dee5072
 # Bundle Version 11.1.1
 #
 bb8e29482ee5ef4f7906af92726f68c3573b544a^..e109b320ebd2fdbe851f7cdbdbd6b703b38b5a1d=LPD-28402 LPD-92633 LPD-94447
+
+#
+# Bundle Version 11.2.0
+#
+e109b320ebd2fdbe851f7cdbdbd6b703b38b5a1d^..30c629b39d42be4c8c71aaa6bcf6afb23dcc2a2f=LPD-97810
