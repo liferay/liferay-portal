@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Document Library Asset Auto Tagger Microsoft Cognitive Services
 Bundle-SymbolicName: com.liferay.document.library.asset.auto.tagger.microsoft.cognitive.services
-Bundle-Version: 3.0.24
+Bundle-Version: 3.0.25
 Web-ContextPath: /document-library-asset-auto-tagger-microsoft-cognitive-services
