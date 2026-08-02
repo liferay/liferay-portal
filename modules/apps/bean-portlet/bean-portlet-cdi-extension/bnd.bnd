@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Bean Portlet CDI Extension
 Bundle-SymbolicName: com.liferay.bean.portlet.cdi.extension
-Bundle-Version: 4.0.28
+Bundle-Version: 4.0.29
 Provide-Capability:\
 	osgi.cdi.extension;\
 		osgi.cdi.extension="${Bundle-SymbolicName}";\
