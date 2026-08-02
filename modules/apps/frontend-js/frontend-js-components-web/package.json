@@ -46,5 +46,5 @@
 		"format": "node-scripts format",
 		"test": "node-scripts test"
 	},
-	"version": "2.0.105"
+	"version": "2.0.106"
 }
