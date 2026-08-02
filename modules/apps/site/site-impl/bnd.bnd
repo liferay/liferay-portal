@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Implementation
 Bundle-SymbolicName: com.liferay.site.impl
-Bundle-Version: 4.0.56
+Bundle-Version: 4.0.57
 -dsannotations-options: inherit
