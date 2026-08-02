@@ -973,7 +973,6 @@
 				"chatProviderAccountId",
 				"chatProviderId",
 				"chatProviderKeyId",
-				"chatProviderSecretKey",
 				"enabled",
 				"guestUsersAllowed",
 				"hideInControlPanel",
@@ -1905,6 +1904,24 @@
 		},
 		{
 			"properties": {
+				"maximumVersionsPerEntry": {
+					"default": 10,
+					"description": "Define the maximum number of versions to be stored per fragment entry. Once this limit is reached, the oldest versions will be automatically deleted to optimize storage space.",
+					"title": "Maximum Versions per Fragment Entry",
+					"type": "number"
+				},
+				"pid": {
+					"const": "com.liferay.fragment.configuration.FragmentEntryVersionConfiguration",
+					"title": "Fragment Entry Version"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Fragment Entry Version"
+		},
+		{
+			"properties": {
 				"javaScriptModuleEnabled": {
 					"default": true,
 					"description": "When enabled, fragment JavaScript is embedded in a script as a module instead of as a function.",
@@ -2612,7 +2629,7 @@
 			"title": "Mail Settings"
 		},
 		{
-			"description": "The settings in this configuration let you control the MCP Server.",
+			"description": "The settings in this configuration let you control the MCP server.",
 			"properties": {
 				"enabled": {
 					"default": false,
@@ -2621,7 +2638,7 @@
 				},
 				"pid": {
 					"const": "com.liferay.mcp.server.rest.internal.configuration.MCPServerConfiguration",
-					"description": "The settings in this configuration let you control the MCP Server.",
+					"description": "The settings in this configuration let you control the MCP server.",
 					"title": "MCP Server"
 				}
 			},
@@ -5215,6 +5232,7 @@
 				"com.liferay.document.library.web.internal.configuration.CacheControlConfiguration",
 				"com.liferay.exportimport.configuration.ExportImportServiceConfiguration",
 				"com.liferay.flags.configuration.FlagsGroupServiceConfiguration",
+				"com.liferay.fragment.configuration.FragmentEntryVersionConfiguration",
 				"com.liferay.fragment.configuration.FragmentJavaScriptConfiguration",
 				"com.liferay.fragment.configuration.FragmentServiceConfiguration",
 				"com.liferay.fragment.entry.processor.freemarker.internal.configuration.FreeMarkerFragmentEntryProcessorConfiguration",
