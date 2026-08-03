@@ -148,18 +148,7 @@ public class LayoutLocalServiceWrapper
 			targetSegmentsExperiencesIds);
 
 		if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
-			LayoutContentVersionCreator layoutContentVersionCreator =
-				_layoutContentVersionCreatorSnapshot.get();
-
-			if (layoutContentVersionCreator == null) {
-				if (_log.isDebugEnabled()) {
-					_log.debug("Layout content version creator is null");
-				}
-			}
-			else {
-				layoutContentVersionCreator.createLayoutContentVersion(
-					sourceLayout);
-			}
+			_createLayoutContentVersion(sourceLayout);
 		}
 
 		return layout;
@@ -800,6 +789,21 @@ public class LayoutLocalServiceWrapper
 						String.class),
 					segmentsExperienceERC);
 		}
+	}
+
+	private void _createLayoutContentVersion(Layout sourceLayout) {
+		LayoutContentVersionCreator layoutContentVersionCreator =
+			_layoutContentVersionCreatorSnapshot.get();
+
+		if (layoutContentVersionCreator == null) {
+			if (_log.isDebugEnabled()) {
+				_log.debug("Layout content version creator is null");
+			}
+
+			return;
+		}
+
+		layoutContentVersionCreator.createLayoutContentVersion(sourceLayout);
 	}
 
 	private void _deleteLayoutClassedModelUsages(
