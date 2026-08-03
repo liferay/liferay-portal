@@ -32,6 +32,15 @@ $cms-tab-navigation-height: 48px;
 			align-items: center;
 			cursor: grab;
 		}
+
+		.list-group-title > a,
+		.list-group-title > span {
+			-webkit-box-orient: vertical;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			overflow: hidden;
+			overflow-wrap: anywhere;
+		}
 	}
 
 	&-pagination {
