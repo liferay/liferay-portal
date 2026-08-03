@@ -56,6 +56,7 @@ import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactory;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -147,8 +148,18 @@ public class LayoutLocalServiceWrapper
 			targetSegmentsExperiencesIds);
 
 		if (sourceLayout.getClassPK() == targetLayout.getPlid()) {
-			_layoutContentVersionCreator.createLayoutContentVersion(
-				sourceLayout);
+			LayoutContentVersionCreator layoutContentVersionCreator =
+				_layoutContentVersionCreatorSnapshot.get();
+
+			if (layoutContentVersionCreator == null) {
+				if (_log.isDebugEnabled()) {
+					_log.debug("Layout content version creator is null");
+				}
+			}
+			else {
+				layoutContentVersionCreator.createLayoutContentVersion(
+					sourceLayout);
+			}
 		}
 
 		return layout;
@@ -1396,6 +1407,10 @@ public class LayoutLocalServiceWrapper
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutLocalServiceWrapper.class);
 
+	private static final Snapshot<LayoutContentVersionCreator>
+		_layoutContentVersionCreatorSnapshot = new Snapshot<>(
+			LayoutLocalServiceWrapper.class, LayoutContentVersionCreator.class,
+			null, true);
 	private static final TransactionConfig _transactionConfig =
 		TransactionConfig.Factory.create(
 			Propagation.REQUIRED, new Class<?>[] {Exception.class});
@@ -1431,9 +1446,6 @@ public class LayoutLocalServiceWrapper
 	@Reference
 	private LayoutClassedModelUsageLocalService
 		_layoutClassedModelUsageLocalService;
-
-	@Reference
-	private LayoutContentVersionCreator _layoutContentVersionCreator;
 
 	@Reference
 	private LayoutFriendlyURLEntryHelper _layoutFriendlyURLEntryHelper;
