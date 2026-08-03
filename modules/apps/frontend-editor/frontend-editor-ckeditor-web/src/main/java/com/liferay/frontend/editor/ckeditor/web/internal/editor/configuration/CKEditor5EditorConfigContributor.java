@@ -72,7 +72,8 @@ public class CKEditor5EditorConfigContributor
 		).put(
 			"preset", "advanced"
 		).put(
-			"showPasteFromOfficeEnhanced"
+			"showPasteFromOfficeEnhanced",
+			ReleaseInfo.isDXP() && _isLicenseKeyValid(licenseKey)
 		).put(
 			"showSourceEditingEnhanced",
 			ReleaseInfo.isDXP() && _isLicenseKeyValid(licenseKey)
