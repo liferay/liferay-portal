@@ -139,19 +139,58 @@ A style book maps Clay token names to site specific values. It overrides the the
 
 A token only takes effect if its name is declared in the active theme's `frontend-token-definition.json`. An invented name is discarded with **no error**: the initializer logs `addStyleBookEntries took N ms`, nothing warns, and the page keeps the default value. Do not guess — enumerate first:
 
+Each entry needs **two** things — the token `name` (the JSON key) and its `cssVariableMapping`. The mapping is not derivable from the name (`primaryD1Color` → `primary-d1`, `btnPrimaryBackgroundColor` → `btn-primary-background-color`, `fontFamilyBase` → `font-family-base`), so dump both at once rather than guessing the kebab-case form:
+
 ```bash
 python3 -c "
 import json
 d = json.load(open('modules/apps/frontend-theme/frontend-theme-classic/src/WEB-INF/frontend-token-definition.json'))
-print(sorted(ft['name']
-    for c in d['frontendTokenCategories']
-    for s in c.get('frontendTokenSets', [])
-    for ft in s.get('frontendTokens', [])))"
+for c in d['frontendTokenCategories']:
+    for s in c.get('frontendTokenSets', []):
+        for ft in s.get('frontendTokens', []):
+            for m in ft.get('mappings', []):
+                print(f\"{ft['name']:36s} -> {m.get('value')}\")" | sort
 ```
 
-Classic declares 252 tokens. Useful ones: `bodyBgColor`, `bodyColor`, `primaryColor`, `primaryD1Color`, `primaryD2Color`, `secondaryColor`, `warningColor`, `fontFamilyBase`, `fontSizeBase`, `h1FontSize`…`h6FontSize`, `btnPrimaryBackgroundColor`.
+Filter that list to what you need (`grep -E '^(primary|btnPrimary|body|font|h[1-6])'`) rather than reading all 252.
 
-**Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Heading typography must come from the themeCSS CET or from fragment CSS.
+Classic declares 252 tokens. Useful ones: `bodyBgColor`, `bodyColor`, `primaryColor`, `primaryD1Color`, `primaryD2Color`, `primaryL1Color`…`primaryL3Color`, `secondaryColor`, `warningColor`, `warningD1Color`, `fontFamilyBase`, `fontSizeBase`, `fontWeightBold`, `fontWeightBolder`, `h1FontSize`…`h6FontSize`, and the full `btnPrimary*` / `btnSecondary*` sets (`BackgroundColor`, `BorderColor`, `Color`, and their `Hover` variants).
+
+Recolouring buttons takes the whole `btnPrimary*` set, not just the background — leaving `btnPrimaryColor` alone gives white label text on a light accent.
+
+**Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Only the *sizes* are tokenised (`h1FontSize`…`h6FontSize`); heading **family** and **weight** have no token.
+
+#### Site Wide CSS With No Token — Put It in a Master Page Fragment
+
+This is the gap the two constraints at the top of this skill create: the value has no style book token, and a themeCSS CET reverts to unselected on every reprovision. The reproducible answer is the **master page's header fragment**.
+
+A fragment's `index.css` is a stylesheet on the page, so its rules can target anything — they are not confined to the fragment's markup. A fragment placed in the master page loads on **every page using that master**, which makes it the one place site-wide CSS can live and still survive delete-and-redeploy:
+
+```css
+/* site-header/index.css — deliberately NOT scoped to the fragment wrapper */
+
+#wrapper h1,
+#wrapper h2,
+#wrapper h3 {
+	font-family: 'Your Face', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+	font-weight: 800;
+	letter-spacing: -0.022em;
+}
+```
+
+This is a deliberate exception to "Fragment Scoping" in `scaffold-fragment` — that rule exists to stop *accidental* cascade leakage between sibling fragments on one page. Keep the exception narrow (headings and brand chrome), keep it in the master's fragment rather than a content fragment, and comment why, or the next reader will "fix" it back into scope.
+
+Weigh it against the alternatives before reaching for it:
+
+| Need | Put it in |
+| --- | --- |
+| Value has a style book token | Style book — always first choice |
+| Site wide, no token, must survive reprovision | Master page fragment CSS (above) |
+| Site wide, no token, reprovision not a concern | `themeCSS` CET + manual Design → Theme selection |
+| Truly instance wide, every site | `globalCSS` CET (no per site scoping available) |
+| One section's look | That fragment's own scoped CSS |
+
+A webfont still needs a file served from a CET; a system font stack at weight 800/900 gets a heavy sans with no external dependency.
 
 Verify the book landed by fetching a page and checking the override lands *after* the theme default — two declarations, e.g. `--primary: #0b5fff;` from Classic then `--primary: #14284b;` from the book. One declaration means the tokens were dropped.
 

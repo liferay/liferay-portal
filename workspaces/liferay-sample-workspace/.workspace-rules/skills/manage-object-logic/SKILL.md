@@ -102,15 +102,22 @@ A term is `[%` + the object's **short name** + `_` + the **field name**, all upp
 
 Tokens work in `subject`, in the body HTML, and in `recipients[].to`, which is how a confirmation is addressed to the address the visitor just typed.
 
-Only fields **on that object** resolve. A token reaching across a relationship stays in the output as literal `[%…%]` text, so verify after sending:
+Only fields **on that object** resolve. A token reaching across a relationship stays in the output as literal `[%…%]` text.
+
+**The fix is to denormalize.** Add a plain `Text` field to the object holding the related value, populate it when the entry is created, and token that field instead. A registration confirmation that must name the event needs an `eventName` copied onto `Registration` — `[%REGISTRATION_EVENTNAME%]` resolves, a reach through `eventRegistrations` does not. Same pattern as `manage-pages` → "Mapping Limits"; the relationship stays authoritative, the copy is for display.
+
+Verify after sending:
 
 ```bash
 curl --silent --user "test@liferay.com:test" \
-	"http://localhost:${PORT}/o/notification/v1.0/notification-queue-entries?pageSize=5" \
-	| jq '.items[] | {id, recipientsSummary, status, unresolved: (.body | test("\\[%"))}'
+	"http://localhost:${PORT}/o/notification/v1.0/notification-queue-entries?pageSize=50" \
+	| jq '.items | sort_by(.id) | last
+		| {id, recipientsSummary, status, unresolved: (.body | test("\\[%"))}'
 ```
 
-`status: 1` with `unresolved: false` and the right `recipientsSummary` is a delivered, correctly addressed notification. On a local bundle without SMTP the queue entry is the evidence — actual delivery is out of scope.
+> **Do not add `sort=` to that URL.** `notification-queue-entries` does not support the common `sort` parameter and **fails silently** — `?sort=id:desc` returns `{"totalCount": null, "items": []}` with a `200`, which reads exactly like "the action never fired". Fetch unsorted and sort in `jq`, as above.
+
+`status: 1` with `unresolved: false` and the right `recipientsSummary` means Liferay built and queued a correctly addressed message. **It does not mean the mail was delivered** — `sent` stays `null` on a bundle with no SMTP configured. Say so plainly rather than reporting the email as sent; queueing is the furthest verification goes locally.
 
 ### Object Action — Notification (Live API)
 
@@ -134,6 +141,43 @@ curl \
 	--url "http://localhost:${PORT}/o/notification/v1.0/notification-templates" \
 	--user "test@liferay.com:test"
 ```
+
+That shape mails a **portal user**. A public form has no user — the address was typed into a field — so `recipientType: "user"` is wrong there and there is no `recipients` block to carry the address.
+
+#### Mailing an Address Held in a Field (Public Forms)
+
+Combine the live create with the tree format's `recipients` array. This is the shape a registration or enquiry confirmation needs:
+
+```bash
+curl \
+	--data '{
+		"body": {"en_US": "<p>Hi [%REGISTRATION_ATTENDEENAME%], we received your registration for [%REGISTRATION_EVENTNAME%].</p>"},
+		"editorType": "richText",
+		"externalReferenceCode": "REGISTRATION_CONFIRMATION",
+		"name": "Registration Confirmation",
+		"objectDefinitionExternalReferenceCode": "REGISTRATION",
+		"recipientType": "email",
+		"recipients": [
+			{
+				"from": "noreply@example.com",
+				"fromName": {"en_US": "DevCon Registration"},
+				"singleRecipient": true,
+				"to": {"en_US": "[%REGISTRATION_EMAIL%]"}
+			}
+		],
+		"subject": {"en_US": "We received your registration"},
+		"type": "email"
+	}' \
+	--header "Content-Type: application/json" \
+	--request POST \
+	--silent \
+	--url "http://localhost:${PORT}/o/notification/v1.0/notification-templates" \
+	--user "test@liferay.com:test"
+```
+
+`recipients[].to` takes a token, which is what addresses the mail to whatever the visitor typed. **`from` is accepted and then dropped** — it reads back `null` on the created template while `fromName` persists, so set the sender at the mail server rather than expecting this field to carry it.
+
+The `NotificationTemplate` schema exposes no enums for `type` or `recipientType` and publishes no `Recipient` sub-schema, so the OpenAPI spec will not confirm this shape — it is verified by creating one and reading the queue entry.
 
 Save the returned `id` as `<template-id>`. Then create the action:
 

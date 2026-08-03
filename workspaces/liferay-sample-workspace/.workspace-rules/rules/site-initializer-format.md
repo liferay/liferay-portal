@@ -274,7 +274,7 @@ Every file the initializer reads is passed through token replacement before it i
 
 Context tokens: `[$COMPANY_ID$]`, `[$GROUP_ID$]`, `[$GROUP_KEY$]`, `[$GROUP_FRIENDLY_URL$]`, `[$PORTAL_URL$]`.
 
-Entity tokens are keyed by the entity's name or ERC, and are registered by the handler that creates the entity — so they resolve only for entities created by an **earlier** handler in the order above:
+Entity tokens are keyed by the entity's name or ERC, and are registered by the handler that creates the entity — so they generally resolve only for entities created by an **earlier** handler in the order above. **Object definition tokens are the exception**: they are registered company wide for every published object, including ones created outside the tree — see "Object Definition Tokens Are the Exception" below before concluding a token will not resolve.
 
 | Token | Resolves To |
 | --- | --- |
@@ -293,16 +293,47 @@ Entity tokens are keyed by the entity's name or ERC, and are registered by the h
 
 The authoritative list is `stringUtilReplaceValues` in `BundleSiteInitializer`; the delimiters are in `SiteInitializerUtil.replace`.
 
+### Object Definition Tokens Are the Exception — They See the Whole Company
+
+The "registered by the handler that creates the entity" rule holds for most tokens, but **object definitions are exempt**, and assuming otherwise leads to needlessly abandoning the tree. `_addObjectDefinitions` runs a company wide pre-pass *before* it reads a single file:
+
+```java
+getObjectDefinitions(companyId, true, WorkflowConstants.STATUS_APPROVED)
+	-> _replaceObjectDefinitionValues(className, shortName, id, ...)
+```
+
+That registers `[$OBJECT_DEFINITION_ID:<Name>$]` and `[$OBJECT_DEFINITION_CLASS_NAME:<Name>$]` for **every published object definition in the company**, whoever created it, and only then registers them again for the ones it creates from `object-definitions/`.
+
+So a tree may freely reference objects created live over `object-admin` — `resource-permissions.json`, `object-actions/`, `notification-templates/*.object-actions.json`, and `object-relationships/` all resolve against them. Two conditions:
+
+- The object must be **published**. The pre-pass filters on `STATUS_APPROVED`, so a draft definition registers no token.
+- The token is keyed on the definition's **short name**, which equals `name` for a custom object.
+
+**Do not generalise this to other entity types.** `[$LIST_TYPE_DEFINITION_ID:<Name>$]` is registered inside the per file loop in `_addOrUpdateListTypeDefinitions`, with no pre-pass, so it resolves only for picklists in this tree. When in doubt, find where the handler calls `stringUtilReplaceValues.put` — inside the loop means tree only, before the loop means company wide.
+
+The practical upshot is that a **mixed layout is workable**: objects managed live over `object-admin`, their logic and permissions still authored in the tree and version controlled. Object definitions, fields, actions, notification templates, and entries are all company scoped and survive site deletion, so they persist across the reprovisions that page and fragment work require. What is *not* reproducible is the objects themselves — a fresh bundle or a different environment starts without them, so say plainly which half of the data layer the tree actually rebuilds.
+
 ## Verifying What the Initializer Actually Did
 
-The handler log lines are the fastest diagnosis — a step reporting `took 0 ms` found no files, which is how a wrong directory name presents:
+The handler log lines are the fastest diagnosis — a step reporting `took 0 ms` (or `1 ms`) found no files, which is how a wrong directory name presents. Grep the handler for whatever you just added, not only the object ones:
 
 ```bash
-grep -E 'Initializing|Invoking (addOrUpdateListTypeDefinitions|addObjectDefinitions|addOrUpdateObjectRelationships)' \
+grep -E 'Initializing|Invoking (addOrUpdateListTypeDefinitions|addObjectDefinitions|addOrUpdateObjectRelationships|addOrUpdateLayouts|addOrUpdateLayoutsContent|addLayoutPageTemplates|addStyleBookEntries|addOrUpdateFragmentEntries|addOrUpdateResourcePermissions|addOrUpdateSiteNavigationMenus)' \
 	bundles/tomcat/logs/catalina.out | tail -20
 ```
 
-`catalina.out` timestamps are UTC while a local shell is typically not, so a line that looks hours ahead may be the current run.
+The signal is the **jump between runs**, not the absolute number. Observed on a run that added a style book and a master page to an existing tree:
+
+```text
+Invoking addStyleBookEntries took 1 ms      <- before: directory absent
+Invoking addStyleBookEntries took 21 ms     <- after: files found
+Invoking addLayoutPageTemplates took 0 ms   <- before: no master page
+Invoking addLayoutPageTemplates took 134 ms <- after: master page imported
+```
+
+So keep the previous run's numbers to compare against. A handler that stays at `0`/`1 ms` after you added its directory means the path is wrong — the build still succeeds and the site still provisions.
+
+`catalina.out` timestamps are UTC while a local shell is typically not, so a line that looks hours ahead may be the current run. When several runs are in the file, the earlier failures stay there — match on timestamp before concluding the newest run failed.
 
 A failed initialization rolls the site back, so "the site does not exist" and "the initializer threw" are the same symptom. Search for the cause with:
 
