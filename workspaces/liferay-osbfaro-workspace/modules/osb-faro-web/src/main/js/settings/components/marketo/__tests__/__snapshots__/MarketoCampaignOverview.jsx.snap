@@ -1375,7 +1375,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
                             <span
                               class="label-item label-item-expand"
                             >
-                              CONFIGURED
+                              Configured
                             </span>
                           </span>
                         </div>
@@ -2367,7 +2367,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                             <span
                               class="label-item label-item-expand"
                             >
-                              CONFIGURED
+                              Configured
                             </span>
                           </span>
                         </div>
