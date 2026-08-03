@@ -25,9 +25,6 @@ public interface PatcherConfiguration {
 	public String githubURL();
 
 	@Meta.AD(deflt = "", required = false)
-	public String googleCloudHotfixBucket();
-
-	@Meta.AD(deflt = "", required = false)
 	public String helpCenterURL();
 
 	@Meta.AD(deflt = "", required = false)
@@ -140,12 +137,6 @@ public interface PatcherConfiguration {
 
 	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
 	public String supportLiferayAPIClientSecret();
-
-	@Meta.AD(deflt = "", required = false)
-	public String supportLiferayLFUURL();
-
-	@Meta.AD(deflt = "", required = false)
-	public String supportLiferayTicketAttachmentAPIEndpoint();
 
 	@Meta.AD(deflt = "", required = false)
 	public String supportLiferayURL();
