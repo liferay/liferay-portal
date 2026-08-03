@@ -7,6 +7,13 @@ package com.liferay.jenkins.results.parser.monitor;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
+import io.prometheus.metrics.config.EscapingScheme;
+import io.prometheus.metrics.expositionformats.PrometheusTextFormatWriter;
+import io.prometheus.metrics.model.snapshots.GaugeSnapshot;
+import io.prometheus.metrics.model.snapshots.Labels;
+import io.prometheus.metrics.model.snapshots.MetricSnapshots;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -43,61 +50,72 @@ public class MonitorMetricsWriter {
 			StandardCopyOption.ATOMIC_MOVE);
 	}
 
-	private String _escapeLabelValue(String labelValue) {
-		labelValue = labelValue.replace("\\", "\\\\");
+	private GaugeSnapshot _getCheckLastRunTimestampSnapshot() {
+		GaugeSnapshot.Builder builder = GaugeSnapshot.builder();
 
-		labelValue = labelValue.replace("\"", "\\\"");
-
-		return labelValue.replace("\n", "\\n");
-	}
-
-	private String _getCheckLastRunTimestampLine(Monitor monitor) {
-		return JenkinsResultsParserUtil.combine(
-			"monitor_check_last_run_timestamp_seconds{", _getLabels(monitor),
-			"} ", String.valueOf(_getLastRunTimestampSeconds(monitor)));
-	}
-
-	private String _getCheckStatusLine(Monitor monitor) {
-		return JenkinsResultsParserUtil.combine(
-			"monitor_check_status{", _getLabels(monitor), "} ",
-			String.valueOf(_getSeverityRank(monitor)));
-	}
-
-	private String _getContent() {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(
-			"# HELP monitor_check_status Monitor status severity rank, 0 OK, " +
-				"1 UNKNOWN, 2 WARN, 3 CRITICAL\n");
-		sb.append("# TYPE monitor_check_status gauge\n");
+		builder.name("monitor_check_last_run_timestamp_seconds");
+		builder.help("Unix timestamp of the last check run, 0 if never run");
 
 		for (Monitor monitor : _monitors) {
-			sb.append(_getCheckStatusLine(monitor));
-			sb.append("\n");
+			builder.dataPoint(
+				_newGaugeDataPointSnapshot(
+					monitor, _getLastRunTimestampSeconds(monitor)));
 		}
 
-		sb.append(
-			"# HELP monitor_check_last_run_timestamp_seconds Unix timestamp " +
-				"of the last check run, 0 if never run\n");
-		sb.append("# TYPE monitor_check_last_run_timestamp_seconds gauge\n");
-
-		for (Monitor monitor : _monitors) {
-			sb.append(_getCheckLastRunTimestampLine(monitor));
-			sb.append("\n");
-		}
-
-		sb.append(
-			"# HELP monitor_heartbeat_timestamp_seconds Unix timestamp of " +
-				"the last metrics write\n");
-		sb.append("# TYPE monitor_heartbeat_timestamp_seconds gauge\n");
-		sb.append("monitor_heartbeat_timestamp_seconds ");
-		sb.append(JenkinsResultsParserUtil.getCurrentTimeMillis() / 1000);
-		sb.append("\n");
-
-		return sb.toString();
+		return builder.build();
 	}
 
-	private String _getLabels(Monitor monitor) {
+	private GaugeSnapshot _getCheckStatusSnapshot() {
+		GaugeSnapshot.Builder builder = GaugeSnapshot.builder();
+
+		builder.name("monitor_check_status");
+		builder.help(
+			"Monitor status severity rank, 0 OK, 1 UNKNOWN, 2 WARN, 3 " +
+				"CRITICAL");
+
+		for (Monitor monitor : _monitors) {
+			builder.dataPoint(
+				_newGaugeDataPointSnapshot(monitor, _getSeverityRank(monitor)));
+		}
+
+		return builder.build();
+	}
+
+	private String _getContent() throws IOException {
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+
+		PrometheusTextFormatWriter prometheusTextFormatWriter =
+			PrometheusTextFormatWriter.create();
+
+		prometheusTextFormatWriter.write(
+			byteArrayOutputStream,
+			MetricSnapshots.of(
+				_getCheckLastRunTimestampSnapshot(), _getCheckStatusSnapshot(),
+				_getHeartbeatTimestampSnapshot()),
+			EscapingScheme.DEFAULT);
+
+		return byteArrayOutputStream.toString("UTF-8");
+	}
+
+	private GaugeSnapshot _getHeartbeatTimestampSnapshot() {
+		GaugeSnapshot.Builder builder = GaugeSnapshot.builder();
+
+		builder.name("monitor_heartbeat_timestamp_seconds");
+		builder.help("Unix timestamp of the last metrics write");
+
+		GaugeSnapshot.GaugeDataPointSnapshot.Builder dataPointBuilder =
+			GaugeSnapshot.GaugeDataPointSnapshot.builder();
+
+		dataPointBuilder.value(
+			JenkinsResultsParserUtil.getCurrentTimeMillis() / 1000);
+
+		builder.dataPoint(dataPointBuilder.build());
+
+		return builder.build();
+	}
+
+	private Labels _getLabels(Monitor monitor) {
 		MonitorConfig monitorConfig = monitor.getMonitorConfig();
 
 		MonitorConfig.Severity severity = monitorConfig.getSeverity();
@@ -114,10 +132,9 @@ public class MonitorMetricsWriter {
 			type = "unknown";
 		}
 
-		return JenkinsResultsParserUtil.combine(
-			"check=\"", _escapeLabelValue(monitor.getId()), "\",severity=\"",
-			severityName.toLowerCase(Locale.ENGLISH), "\",type=\"",
-			_escapeLabelValue(type), "\"");
+		return Labels.of(
+			"check", monitor.getId(), "severity",
+			severityName.toLowerCase(Locale.ENGLISH), "type", type);
 	}
 
 	private long _getLastRunTimestampSeconds(Monitor monitor) {
@@ -146,6 +163,18 @@ public class MonitorMetricsWriter {
 		}
 
 		return status.getSeverityRank();
+	}
+
+	private GaugeSnapshot.GaugeDataPointSnapshot _newGaugeDataPointSnapshot(
+		Monitor monitor, double value) {
+
+		GaugeSnapshot.GaugeDataPointSnapshot.Builder dataPointBuilder =
+			GaugeSnapshot.GaugeDataPointSnapshot.builder();
+
+		dataPointBuilder.labels(_getLabels(monitor));
+		dataPointBuilder.value(value);
+
+		return dataPointBuilder.build();
 	}
 
 	private final File _metricsFile;
