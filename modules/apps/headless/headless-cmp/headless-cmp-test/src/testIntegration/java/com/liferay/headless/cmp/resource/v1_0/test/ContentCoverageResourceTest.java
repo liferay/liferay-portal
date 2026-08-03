@@ -17,12 +17,7 @@ import com.liferay.headless.cmp.client.dto.v1_0.ContentCoverage;
 import com.liferay.headless.cmp.client.dto.v1_0.ContentCoverageEntry;
 import com.liferay.headless.cmp.client.dto.v1_0.FunnelStage;
 import com.liferay.headless.cmp.client.dto.v1_0.Persona;
-import com.liferay.object.constants.ObjectEntryFolderConstants;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.model.ObjectEntryFolder;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -41,8 +36,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.cmp.site.initializer.test.util.CMPTestUtil;
-
-import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,67 +142,23 @@ public class ContentCoverageResourceTest
 		return cmpProjectObjectEntry;
 	}
 
-	private ObjectEntry _addCMPTaskLinkObjectEntry(
-			ObjectEntry cmpTaskObjectEntry, ObjectEntry linkedObjectEntry)
-		throws Exception {
-
-		ObjectDefinition cmpTaskLinkObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK_LINK", TestPropsValues.getCompanyId());
-
-		Group group = _depotEntry.getGroup();
-
-		return _objectEntryLocalService.addObjectEntry(
-			cmpTaskObjectEntry.getGroupId(), cmpTaskObjectEntry.getUserId(),
-			cmpTaskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"classExternalReferenceCode",
-				linkedObjectEntry.getExternalReferenceCode()
-			).put(
-				"className", linkedObjectEntry.getModelClassName()
-			).put(
-				"groupExternalReferenceCode", group.getExternalReferenceCode()
-			).put(
-				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
-				cmpTaskObjectEntry.getObjectEntryId()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
 	private ObjectEntry _addCMSBasicWebContentObjectEntry(
 			long[] assetCategoryIds, ObjectEntry cmpTaskObjectEntry)
 		throws Exception {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMS_BASIC_WEB_CONTENT", TestPropsValues.getCompanyId());
-		ObjectEntryFolder objectEntryFolder =
-			_objectEntryFolderLocalService.
-				getObjectEntryFolderByExternalReferenceCode(
-					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
-					_depotEntry.getGroupId(), _depotEntry.getCompanyId());
-
-		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-			_depotEntry.getGroupId(), TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
-			objectEntryFolder.getObjectEntryFolderId(), null,
-			HashMapBuilder.<String, Serializable>put(
-				"title_i18n",
-				(Serializable)HashMapBuilder.put(
-					"en_US", RandomTestUtil.randomString()
-				).build()
-			).build(),
-			ServiceContextTestUtil.getServiceContext(_depotEntry.getGroupId()));
+		ObjectEntry cmsBasicWebContentObjectEntry =
+			CMPTestUtil.addCMSBasicWebContentObjectEntry(
+				_depotEntry, RandomTestUtil.randomString());
 
 		if (cmpTaskObjectEntry != null) {
-			_addCMPTaskLinkObjectEntry(cmpTaskObjectEntry, objectEntry);
+			CMPTestUtil.addCMPTaskLinkObjectEntry(
+				cmpTaskObjectEntry, cmsBasicWebContentObjectEntry);
 		}
 
-		_partialUpdateObjectEntry(assetCategoryIds, objectEntry);
+		_partialUpdateObjectEntry(
+			assetCategoryIds, cmsBasicWebContentObjectEntry);
 
-		return objectEntry;
+		return cmsBasicWebContentObjectEntry;
 	}
 
 	private void _assertContentCoverage(
@@ -590,12 +539,6 @@ public class ContentCoverageResourceTest
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _group;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Inject
-	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

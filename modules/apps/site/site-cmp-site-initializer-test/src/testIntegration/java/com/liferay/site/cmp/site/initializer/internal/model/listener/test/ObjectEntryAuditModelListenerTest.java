@@ -9,16 +9,12 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelListener;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -36,8 +32,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.cmp.site.initializer.test.util.CMPTestUtil;
-
-import java.io.Serializable;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -112,7 +106,9 @@ public class ObjectEntryAuditModelListenerTest {
 	public void testOnAfterCreate() throws Exception {
 		String title = RandomTestUtil.randomString();
 
-		_addCMPTaskLinkObjectEntry(_addCMSBasicWebContentObjectEntry(title));
+		CMPTestUtil.addCMPTaskLinkObjectEntry(
+			_cmpTaskObjectEntry,
+			CMPTestUtil.addCMSBasicWebContentObjectEntry(_depotEntry, title));
 
 		_assertAuditMessage("CMP_ADD_ASSET", title);
 	}
@@ -121,63 +117,17 @@ public class ObjectEntryAuditModelListenerTest {
 	public void testOnAfterRemove() throws Exception {
 		String title = RandomTestUtil.randomString();
 
-		ObjectEntry cmpTaskLinkObjectEntry = _addCMPTaskLinkObjectEntry(
-			_addCMSBasicWebContentObjectEntry(title));
+		ObjectEntry cmpTaskLinkObjectEntry =
+			CMPTestUtil.addCMPTaskLinkObjectEntry(
+				_cmpTaskObjectEntry,
+				CMPTestUtil.addCMSBasicWebContentObjectEntry(
+					_depotEntry, title));
 
 		_assertAuditMessage("CMP_ADD_ASSET", title);
 
 		_objectEntryLocalService.deleteObjectEntry(cmpTaskLinkObjectEntry);
 
 		_assertAuditMessage("CMP_REMOVE_ASSET", title);
-	}
-
-	private ObjectEntry _addCMPTaskLinkObjectEntry(
-			ObjectEntry linkedObjectEntry)
-		throws Exception {
-
-		ObjectDefinition cmpTaskLinkObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK_LINK", _cmpTaskObjectEntry.getCompanyId());
-
-		Group group = _groupLocalService.getGroup(
-			linkedObjectEntry.getGroupId());
-
-		return _objectEntryLocalService.addObjectEntry(
-			_cmpTaskObjectEntry.getGroupId(), _cmpTaskObjectEntry.getUserId(),
-			cmpTaskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"classExternalReferenceCode",
-				linkedObjectEntry.getExternalReferenceCode()
-			).put(
-				"className", linkedObjectEntry.getModelClassName()
-			).put(
-				"groupExternalReferenceCode", group.getExternalReferenceCode()
-			).put(
-				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
-				_cmpTaskObjectEntry.getObjectEntryId()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private ObjectEntry _addCMSBasicWebContentObjectEntry(String title)
-		throws Exception {
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMS_BASIC_WEB_CONTENT", _depotEntry.getCompanyId());
-
-		return _objectEntryLocalService.addObjectEntry(
-			_depotEntry.getGroupId(), _depotEntry.getUserId(),
-			objectDefinition.getObjectDefinitionId(), 0, "en_US",
-			HashMapBuilder.<String, Serializable>put(
-				"title_i18n",
-				HashMapBuilder.put(
-					"en_US", title
-				).build()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _assertAuditMessage(
@@ -213,12 +163,6 @@ public class ObjectEntryAuditModelListenerTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;

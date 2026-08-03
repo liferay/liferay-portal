@@ -11,9 +11,7 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -216,20 +214,26 @@ public class ObjectEntryModelListenerTest {
 
 	@Test
 	public void testOnBeforeRemove() throws Exception {
+
+		// CMS object entry
+
 		ObjectEntry cmsBasicWebContentObjectEntry =
-			_addCMSBasicWebContentObjectEntry();
+			CMPTestUtil.addCMSBasicWebContentObjectEntry(
+				_depotEntry, RandomTestUtil.randomString());
 
 		ObjectEntry cmpProjectObjectEntry =
 			CMPTestUtil.addCMPProjectObjectEntry();
 
-		ObjectEntry cmpProjectLinkObjectEntry = _addCMPProjectLinkObjectEntry(
-			cmsBasicWebContentObjectEntry, cmpProjectObjectEntry);
+		ObjectEntry cmpProjectLinkObjectEntry =
+			CMPTestUtil.addCMPProjectLinkObjectEntry(
+				cmpProjectObjectEntry, cmsBasicWebContentObjectEntry);
 
 		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry(
 			cmpProjectObjectEntry);
 
-		ObjectEntry cmpTaskLinkObjectEntry = _addCMPTaskLinkObjectEntry(
-			cmsBasicWebContentObjectEntry, cmpTaskObjectEntry);
+		ObjectEntry cmpTaskLinkObjectEntry =
+			CMPTestUtil.addCMPTaskLinkObjectEntry(
+				cmpTaskObjectEntry, cmsBasicWebContentObjectEntry);
 
 		Assert.assertNotNull(
 			_objectEntryLocalService.fetchObjectEntry(
@@ -248,84 +252,21 @@ public class ObjectEntryModelListenerTest {
 			_objectEntryLocalService.fetchObjectEntry(
 				cmpTaskLinkObjectEntry.getObjectEntryId()));
 
-		_testOnBeforeRemoveWhenObjectEntryIsNotCMSObjectEntry();
-	}
+		// Non-CMS object entry
 
-	private ObjectEntry _addCMPProjectLinkObjectEntry(
-			ObjectEntry linkedObjectEntry, ObjectEntry cmpProjectObjectEntry)
-		throws Exception {
+		cmpProjectObjectEntry = CMPTestUtil.addCMPProjectObjectEntry();
 
-		ObjectDefinition cmpProjectLinkObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_PROJECT_LINK", cmpProjectObjectEntry.getCompanyId());
+		cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
 
-		Group group = _groupLocalService.getGroup(
-			linkedObjectEntry.getGroupId());
+		cmpTaskLinkObjectEntry = CMPTestUtil.addCMPTaskLinkObjectEntry(
+			cmpTaskObjectEntry, cmpProjectObjectEntry);
 
-		return _objectEntryLocalService.addObjectEntry(
-			cmpProjectObjectEntry.getGroupId(),
-			cmpProjectObjectEntry.getUserId(),
-			cmpProjectLinkObjectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"classExternalReferenceCode",
-				linkedObjectEntry.getExternalReferenceCode()
-			).put(
-				"className", linkedObjectEntry.getModelClassName()
-			).put(
-				"groupExternalReferenceCode", group.getExternalReferenceCode()
-			).put(
-				"r_cmpProjectToCMPProjectLinks_c_cmpProjectId",
-				cmpProjectObjectEntry.getObjectEntryId()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
+		_objectEntryLocalService.deleteObjectEntry(
+			cmpProjectObjectEntry.getObjectEntryId());
 
-	private ObjectEntry _addCMPTaskLinkObjectEntry(
-			ObjectEntry linkedObjectEntry, ObjectEntry cmpTaskObjectEntry)
-		throws Exception {
-
-		ObjectDefinition cmpTaskLinkObjectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMP_TASK_LINK", cmpTaskObjectEntry.getCompanyId());
-
-		Group group = _groupLocalService.getGroup(
-			linkedObjectEntry.getGroupId());
-
-		return _objectEntryLocalService.addObjectEntry(
-			cmpTaskObjectEntry.getGroupId(), cmpTaskObjectEntry.getUserId(),
-			cmpTaskLinkObjectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"classExternalReferenceCode",
-				linkedObjectEntry.getExternalReferenceCode()
-			).put(
-				"className", linkedObjectEntry.getModelClassName()
-			).put(
-				"groupExternalReferenceCode", group.getExternalReferenceCode()
-			).put(
-				"r_cmpTaskToCMPTaskLinks_c_cmpTaskId",
-				cmpTaskObjectEntry.getObjectEntryId()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
-	}
-
-	private ObjectEntry _addCMSBasicWebContentObjectEntry() throws Exception {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					"L_CMS_BASIC_WEB_CONTENT", _depotEntry.getCompanyId());
-
-		return _objectEntryLocalService.addObjectEntry(
-			_depotEntry.getGroupId(), _depotEntry.getUserId(),
-			objectDefinition.getObjectDefinitionId(), 0, "en_US",
-			HashMapBuilder.<String, Serializable>put(
-				"title_i18n",
-				HashMapBuilder.put(
-					"en_US", RandomTestUtil.randomString()
-				).build()
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
+		Assert.assertNotNull(
+			_objectEntryLocalService.fetchObjectEntry(
+				cmpTaskLinkObjectEntry.getObjectEntryId()));
 	}
 
 	private void _assertResourceActions(
@@ -371,25 +312,6 @@ public class ObjectEntryModelListenerTest {
 			userGroupRoleNames.containsAll(expectedUserGroupRoleNames));
 	}
 
-	private void _testOnBeforeRemoveWhenObjectEntryIsNotCMSObjectEntry()
-		throws Exception {
-
-		ObjectEntry cmpProjectObjectEntry =
-			CMPTestUtil.addCMPProjectObjectEntry();
-
-		ObjectEntry cmpTaskObjectEntry = CMPTestUtil.addCMPTaskObjectEntry();
-
-		ObjectEntry cmpTaskLinkObjectEntry = _addCMPTaskLinkObjectEntry(
-			cmpProjectObjectEntry, cmpTaskObjectEntry);
-
-		_objectEntryLocalService.deleteObjectEntry(
-			cmpProjectObjectEntry.getObjectEntryId());
-
-		Assert.assertNotNull(
-			_objectEntryLocalService.fetchObjectEntry(
-				cmpTaskLinkObjectEntry.getObjectEntryId()));
-	}
-
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
 
@@ -398,9 +320,6 @@ public class ObjectEntryModelListenerTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
