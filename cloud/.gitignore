@@ -4,3 +4,4 @@
 .terraform/
 operator/resources/api/licensing/v1alpha1/zz_generated.deepcopy.go
 operator/resources/manager
+operator/resources/build/manager
