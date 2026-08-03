@@ -70,28 +70,28 @@ public class MonitorMetricsWriterTest
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"# HELP monitor_check_status Monitor status severity rank, ",
-				"0 OK, 1 UNKNOWN, 2 WARN, 3 CRITICAL\n",
-				"# TYPE monitor_check_status gauge\n",
-				"monitor_check_status{check=\"disk\",severity=\"high\",",
-				"type=\"resource-threshold\"} 3\n",
-				"monitor_check_status{check=\"queue\",severity=\"medium\",",
-				"type=\"job-health\"} 0\n",
-				"monitor_check_status{check=\"testray\",severity=\"low\",",
-				"type=\"external-status\"} 1\n",
 				"# HELP monitor_check_last_run_timestamp_seconds Unix ",
 				"timestamp of the last check run, 0 if never run\n",
 				"# TYPE monitor_check_last_run_timestamp_seconds gauge\n",
 				"monitor_check_last_run_timestamp_seconds{check=\"disk\",",
-				"severity=\"high\",type=\"resource-threshold\"} 1750000000\n",
+				"severity=\"high\",type=\"resource-threshold\"} 1.75E9\n",
 				"monitor_check_last_run_timestamp_seconds{check=\"queue\",",
-				"severity=\"medium\",type=\"job-health\"} 1749999000\n",
+				"severity=\"medium\",type=\"job-health\"} 1.749999E9\n",
 				"monitor_check_last_run_timestamp_seconds{check=\"testray\",",
-				"severity=\"low\",type=\"external-status\"} 0\n",
+				"severity=\"low\",type=\"external-status\"} 0.0\n",
+				"# HELP monitor_check_status Monitor status severity rank, ",
+				"0 OK, 1 UNKNOWN, 2 WARN, 3 CRITICAL\n",
+				"# TYPE monitor_check_status gauge\n",
+				"monitor_check_status{check=\"disk\",severity=\"high\",",
+				"type=\"resource-threshold\"} 3.0\n",
+				"monitor_check_status{check=\"queue\",severity=\"medium\",",
+				"type=\"job-health\"} 0.0\n",
+				"monitor_check_status{check=\"testray\",severity=\"low\",",
+				"type=\"external-status\"} 1.0\n",
 				"# HELP monitor_heartbeat_timestamp_seconds Unix timestamp of ",
 				"the last metrics write\n",
 				"# TYPE monitor_heartbeat_timestamp_seconds gauge\n",
-				"monitor_heartbeat_timestamp_seconds 1750000000\n"),
+				"monitor_heartbeat_timestamp_seconds 1.75E9\n"),
 			read(metricsFile));
 	}
 
@@ -120,7 +120,7 @@ public class MonitorMetricsWriterTest
 			content,
 			content.contains(
 				"monitor_check_status{check=\"a\\\"b\\\\c\"," +
-					"severity=\"medium\",type=\"d\\ne\"} 2\n"));
+					"severity=\"medium\",type=\"d\\ne\"} 2.0\n"));
 	}
 
 	@Test
@@ -149,7 +149,7 @@ public class MonitorMetricsWriterTest
 			content,
 			content.contains(
 				"monitor_check_status{check=\"disk\"," +
-					"severity=\"medium\",type=\"unknown\"} 0\n"));
+					"severity=\"medium\",type=\"unknown\"} 0.0\n"));
 	}
 
 	@Test
@@ -176,7 +176,7 @@ public class MonitorMetricsWriterTest
 			content,
 			content.contains(
 				"monitor_check_status{check=\"disk\",severity=\"high\"," +
-					"type=\"resource-threshold\"} 1\n"));
+					"type=\"resource-threshold\"} 1.0\n"));
 	}
 
 	@Test
