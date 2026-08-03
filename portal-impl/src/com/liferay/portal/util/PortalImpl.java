@@ -1575,16 +1575,6 @@ public class PortalImpl implements Portal {
 			groupFriendlyURL.endsWith(
 				StringPool.SLASH + layout.getLayoutId())) {
 
-			if (!(layout instanceof VirtualLayout)) {
-				String decodedDefaultLayoutFriendlyURL =
-					HttpComponentsUtil.decodePath(defaultLayoutFriendlyURL);
-
-				if (Validator.isNotNull(decodedDefaultLayoutFriendlyURL)) {
-					defaultLayoutFriendlyURL = HttpComponentsUtil.encodePath(
-						decodedDefaultLayoutFriendlyURL);
-				}
-			}
-
 			canonicalLayoutFriendlyURL = defaultLayoutFriendlyURL;
 		}
 
