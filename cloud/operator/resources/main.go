@@ -6,7 +6,9 @@ import (
 
 	env "github.com/caarlos0/env/v11"
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
-	licensingcontroller "github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
+	"github.com/liferay/liferay-portal/cloud/operator/internal/controller"
+	"github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
+	"github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 
 	runtime "k8s.io/apimachinery/pkg/runtime"
@@ -58,14 +60,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	liferayEnvironmentReconciler := &licensingcontroller.LiferayEnvironmentReconciler{
-		Client:            manager.GetClient(),
-		HeartbeatInterval: config.HeartbeatInterval,
-		Provisioning:      provisioning.NewHTTPClient(config.ProvisioningBaseURL),
-	}
-
-	if error := liferayEnvironmentReconciler.SetupWithManager(manager); error != nil {
-		setupLog.Error(error, "Unable to create liferayenvironment controller.")
+	if error := controller.SetupWithManager(
+		manager,
+		&licensing.LiferayEnvironmentReconciler{
+			Client:            manager.GetClient(),
+			HeartbeatInterval: config.HeartbeatInterval,
+			Provisioning:      provisioning.NewHTTPClient(config.ProvisioningBaseURL),
+		},
+		&liferay.LiferayStatefulSetReconciler{
+			Client:            manager.GetClient(),
+			HeartbeatInterval: config.HeartbeatInterval,
+		},
+	); error != nil {
+		setupLog.Error(error, "Unable to set up controllers")
 
 		os.Exit(1)
 	}
