@@ -184,6 +184,24 @@
 		}
 	],
 	"objectFolderExternalReferenceCode": "default",
+	"objectViews": [
+		{
+			"defaultObjectView": true,
+			"externalReferenceCode": "TESTOBJECTVIEW",
+			"name": {
+				"en_US": "Default View"
+			},
+			"objectViewColumns": [
+				{
+					"label": {
+						"en_US": "Name"
+					},
+					"objectFieldName": "name",
+					"priority": 0
+				}
+			]
+		}
+	],
 	"pluralLabel": {
 		"en_US": "Definições de Objeto Teste",
 		"pt_BR": "Definições de Objeto Teste"

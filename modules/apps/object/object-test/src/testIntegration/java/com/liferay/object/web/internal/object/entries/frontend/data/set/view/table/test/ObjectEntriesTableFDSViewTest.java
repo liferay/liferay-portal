@@ -131,7 +131,8 @@ public class ObjectEntriesTableFDSViewTest {
 			objectField.getName());
 
 		_objectViewLocalService.addObjectView(
-			_user.getUserId(), _objectDefinition1.getObjectDefinitionId(), true,
+			null, _user.getUserId(), _objectDefinition1.getObjectDefinitionId(),
+			true,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			Arrays.asList(
 				_createObjectViewColumn("Create Date", "createDate"),

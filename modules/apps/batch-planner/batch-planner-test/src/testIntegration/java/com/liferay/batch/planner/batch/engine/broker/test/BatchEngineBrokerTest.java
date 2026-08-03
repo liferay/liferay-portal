@@ -1505,7 +1505,7 @@ public class BatchEngineBrokerTest {
 			"isEmailAddress(textObjectField)", false, Collections.emptyList());
 
 		_objectViewLocalService.addObjectView(
-			TestPropsValues.getUserId(),
+			null, TestPropsValues.getUserId(),
 			_objectDefinition1.getObjectDefinitionId(), true,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			Arrays.asList(_createObjectViewColumn("createDate")),
