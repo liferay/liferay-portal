@@ -52,8 +52,8 @@ public class MembersDesignLibraryDisplayContext
 		).put(
 			"refreshDataSetIds",
 			new String[] {
-				DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS,
-				DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USER_GROUPS
+				DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USER_GROUPS,
+				DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS
 			}
 		).build();
 	}

@@ -90,15 +90,14 @@ public class ViewResourcesDesignLibraryDisplayContext
 
 		Group depotGroup = getGroup();
 
-		String designLibraryResourcesURL = getViewResourcesURL(
-			_liferayPortletResponse);
+		String viewResourcesURL = getViewResourcesURL(_liferayPortletResponse);
 
 		String viewFragmentCollectionURL = PortletURLBuilder.create(
 			PortalUtil.getControlPanelPortletURL(
 				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
 				0, PortletRequest.RENDER_PHASE)
 		).setBackURL(
-			designLibraryResourcesURL
+			viewResourcesURL
 		).setParameter(
 			"fragmentCollectionExternalReferenceCode",
 			"{embedded.externalReferenceCode}"
@@ -110,7 +109,7 @@ public class ViewResourcesDesignLibraryDisplayContext
 		).setMVCRenderCommandName(
 			"/fragment/edit_fragment_collection"
 		).setRedirect(
-			designLibraryResourcesURL
+			viewResourcesURL
 		).setParameter(
 			"fragmentCollectionExternalReferenceCode",
 			"{embedded.externalReferenceCode}"
@@ -122,7 +121,7 @@ public class ViewResourcesDesignLibraryDisplayContext
 		).setMVCRenderCommandName(
 			"/style_book/edit_style_book_entry"
 		).setRedirect(
-			designLibraryResourcesURL
+			viewResourcesURL
 		).setParameter(
 			"backURLTitle", depotGroup.getName(themeDisplay.getLocale())
 		).setParameter(
@@ -265,8 +264,6 @@ public class ViewResourcesDesignLibraryDisplayContext
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
-		boolean hasAssignMembersPermission = hasAssignMembersPermission(group);
-
 		boolean hasUpdatePermission = hasDepotEntryPermission(
 			group, ActionKeys.UPDATE);
 
@@ -287,6 +284,8 @@ public class ViewResourcesDesignLibraryDisplayContext
 					"symbolLeft", "cog"
 				));
 		}
+
+		boolean hasAssignMembersPermission = hasAssignMembersPermission(group);
 
 		jsonArray.put(
 			JSONUtil.put(
@@ -322,9 +321,9 @@ public class ViewResourcesDesignLibraryDisplayContext
 			).put(
 				"refreshDataSetIds",
 				JSONUtil.putAll(
-					DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS,
 					DesignLibraryAdminFDSNames.
-						DESIGN_LIBRARY_MEMBERS_USER_GROUPS)
+						DESIGN_LIBRARY_MEMBERS_USER_GROUPS,
+					DesignLibraryAdminFDSNames.DESIGN_LIBRARY_MEMBERS_USERS)
 			).put(
 				"symbolLeft", "users"
 			).put(

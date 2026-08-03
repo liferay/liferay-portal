@@ -18,8 +18,8 @@ const PORTLET_URL =
 	`?p_p_id=${PORTLET_NAME}`;
 
 export class DesignLibrariesPage extends POM {
-	readonly portletName = PORTLET_NAME;
 	readonly emptyStateContainer: Locator;
+	readonly portletName = PORTLET_NAME;
 
 	constructor(page: Page) {
 		super(page, PORTLET_URL);
@@ -27,10 +27,17 @@ export class DesignLibrariesPage extends POM {
 		this.emptyStateContainer = page.locator('.fds .c-empty-state');
 	}
 
-	override async waitFor() {
-		await this.page
-			.locator('.data-set-content-wrapper')
-			.waitFor({state: 'visible'});
+	async clickNewStyleBook() {
+		const newStyleBookMenuItem = this.page.getByRole('menuitem', {
+			name: 'New Style Book',
+		});
+
+		await clickAndExpectToBeVisible({
+			target: newStyleBookMenuItem,
+			trigger: this.page.getByRole('button', {name: 'Add Asset'}),
+		});
+
+		await newStyleBookMenuItem.click();
 	}
 
 	async create({
@@ -58,19 +65,6 @@ export class DesignLibrariesPage extends POM {
 		if (await saveButton.isEnabled()) {
 			await saveButton.click();
 		}
-	}
-
-	async clickNewStyleBook() {
-		const newStyleBookMenuItem = this.page.getByRole('menuitem', {
-			name: 'New Style Book',
-		});
-
-		await clickAndExpectToBeVisible({
-			target: newStyleBookMenuItem,
-			trigger: this.page.getByRole('button', {name: 'Add Asset'}),
-		});
-
-		await newStyleBookMenuItem.click();
 	}
 
 	async createStyleBook(
@@ -140,5 +134,11 @@ export class DesignLibrariesPage extends POM {
 		await expect(designLibraryLink).toBeVisible();
 
 		await designLibraryLink.click();
+	}
+
+	override async waitFor() {
+		await this.page
+			.locator('.data-set-content-wrapper')
+			.waitFor({state: 'visible'});
 	}
 }

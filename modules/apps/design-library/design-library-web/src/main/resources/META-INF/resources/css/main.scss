@@ -16,22 +16,46 @@
 	}
 }
 
-.design-library-members-fds {
-	.nav-tabs {
-		margin-inline: -1rem;
+.design-library-fds-wrapper--landing {
+	.card-item-first {
+		background-color: $teal-l3;
 
-		& + .tab-content .tab-pane {
-			margin-top: -0.5rem;
-			padding: 0;
+		.card-type-asset-icon {
+			color: $teal;
 		}
+	}
+
+	.design-library-fds-sticker-designlibrary {
+		background-color: $teal-l3;
+		color: $teal;
 	}
 }
 
-.design-library-summary-card {
-	overflow: hidden;
+.design-library-fds-wrapper--resources {
+	.card-item-first .card-type-asset-icon,
+	.design-library-fds-sticker-stylebook {
+		color: $purple;
+	}
 
-	.card-body {
-		padding-bottom: 0;
+	.container-fluid {
+		padding-inline: 0;
+	}
+
+	.design-library-fds-sticker-fragment-set {
+		color: $pink;
+	}
+
+	.navbar {
+		margin-inline: 0 !important;
+		padding-inline: 0;
+	}
+
+	.navbar .nav-item:has([data-testid='fdsCreationActionButton']) {
+		display: none;
+	}
+
+	.navbar-form {
+		padding-inline: 0;
 	}
 }
 
@@ -66,6 +90,25 @@
 	}
 }
 
+.design-library-members-fds {
+	.nav-tabs {
+		margin-inline: -1rem;
+
+		& + .tab-content .tab-pane {
+			margin-top: -0.5rem;
+			padding: 0;
+		}
+	}
+}
+
+.design-library-summary-card {
+	overflow: hidden;
+
+	.card-body {
+		padding-bottom: 0;
+	}
+}
+
 .design-library-summary-fds {
 	.container-fluid {
 		padding: 0;
@@ -89,48 +132,5 @@
 	.visualization-mode-table {
 		border: 0 !important;
 		margin-inline: -1rem;
-	}
-}
-
-.design-library-fds-wrapper--landing {
-	.card-item-first {
-		background-color: $teal-l3;
-
-		.card-type-asset-icon {
-			color: $teal;
-		}
-	}
-
-	.design-library-fds-sticker-designlibrary {
-		background-color: $teal-l3;
-		color: $teal;
-	}
-}
-
-.design-library-fds-wrapper--resources {
-	.container-fluid {
-		padding-inline: 0;
-	}
-
-	.navbar {
-		margin-inline: 0 !important;
-		padding-inline: 0;
-	}
-
-	.navbar .nav-item:has([data-testid='fdsCreationActionButton']) {
-		display: none;
-	}
-
-	.navbar-form {
-		padding-inline: 0;
-	}
-
-	.card-item-first .card-type-asset-icon,
-	.design-library-fds-sticker-stylebook {
-		color: $purple;
-	}
-
-	.design-library-fds-sticker-fragment-set {
-		color: $pink;
 	}
 }

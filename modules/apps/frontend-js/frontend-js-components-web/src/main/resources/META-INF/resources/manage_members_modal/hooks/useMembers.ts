@@ -132,7 +132,7 @@ export function useMembers(
 				});
 			}
 		},
-		[state.isFetching, state.users, state.groups, state.keywords, fetchPage]
+		[fetchPage, state.groups, state.isFetching, state.keywords, state.users]
 	);
 
 	const search = useCallback(
@@ -166,7 +166,7 @@ export function useMembers(
 				});
 			}
 		},
-		[state.isSearching, fetchInitialData, fetchPage]
+		[fetchInitialData, fetchPage, state.isSearching]
 	);
 
 	const addMember = useCallback(
@@ -214,8 +214,8 @@ export function useMembers(
 			config.messages,
 			externalReferenceCode,
 			onChange,
-			state.users.items,
 			state.groups.items,
+			state.users.items,
 		]
 	);
 
