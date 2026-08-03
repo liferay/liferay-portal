@@ -10,17 +10,26 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Lourdes Fernández Besada
  */
 public class CreatorUtil {
 
-	public static Creator toCreator(long userId) {
+	public static Creator toCreator(long userId, String userName) {
 		User user = UserLocalServiceUtil.fetchUser(userId);
 
 		if (user == null) {
-			return null;
+			if (Validator.isNull(userName)) {
+				return null;
+			}
+
+			return new Creator() {
+				{
+					setName(() -> userName);
+				}
+			};
 		}
 
 		return new Creator() {

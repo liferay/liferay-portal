@@ -36,7 +36,8 @@ public class PageSpecificationVersionDTOConverter
 			{
 				setCreator(
 					() -> CreatorUtil.toCreator(
-						layoutContentVersion.getUserId()));
+						layoutContentVersion.getUserId(),
+						layoutContentVersion.getUserName()));
 				setDateCreated(layoutContentVersion::getCreateDate);
 				setDateModified(layoutContentVersion::getModifiedDate);
 				setExternalReferenceCode(
