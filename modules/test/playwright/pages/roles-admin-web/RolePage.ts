@@ -41,7 +41,7 @@ export class RolePage {
 		);
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
-		this.subtypeInput = page.getByLabel('Subtype');
+		this.subtypeInput = page.getByLabel('Subtype', {exact: true});
 		this.titleInput = page.getByLabel('Title').first();
 		this.typeInput = page.getByLabel('Type', {exact: true});
 		this.uniqueNameError = page.getByText('Please enter a unique name');

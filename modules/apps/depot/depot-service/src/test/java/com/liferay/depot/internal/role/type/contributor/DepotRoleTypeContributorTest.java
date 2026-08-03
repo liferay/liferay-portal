@@ -43,13 +43,6 @@ public class DepotRoleTypeContributorTest {
 
 			mockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-17564"))
-			).thenReturn(
-				false
-			);
-
-			mockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
 					Mockito.anyLong(), Mockito.eq("LPD-96750"))
 			).thenReturn(
 				false
@@ -61,36 +54,7 @@ public class DepotRoleTypeContributorTest {
 
 			mockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-17564"))
-			).thenReturn(
-				true
-			);
-
-			Assert.assertEquals(
-				StringPool.BLANK,
-				_depotRoleTypeContributor.getDefaultSubtype());
-
-			mockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-17564"))
-			).thenReturn(
-				false
-			);
-
-			mockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
 					Mockito.anyLong(), Mockito.eq("LPD-96750"))
-			).thenReturn(
-				true
-			);
-
-			Assert.assertEquals(
-				StringPool.BLANK,
-				_depotRoleTypeContributor.getDefaultSubtype());
-
-			mockedStatic.when(
-				() -> FeatureFlagManagerUtil.isEnabled(
-					Mockito.anyLong(), Mockito.eq("LPD-17564"))
 			).thenReturn(
 				true
 			);
