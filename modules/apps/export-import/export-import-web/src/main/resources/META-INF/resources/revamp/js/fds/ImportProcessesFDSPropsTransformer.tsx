@@ -81,6 +81,7 @@ export default function ImportProcessesFDSPropsTransformer({
 							importProcessId={String(itemData.id)}
 						/>
 					),
+					disableAutoClose: true,
 				});
 			}
 		},

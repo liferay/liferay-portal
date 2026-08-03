@@ -162,6 +162,12 @@ test(
 		await test.step('Open Export Report Entries modal', async () => {
 			await exportImportPage.openExportReportEntriesModal(name);
 
+			await page.keyboard.press('Escape');
+
+			await expect(
+				exportImportPage.exportReportEntriesModal
+			).toBeVisible();
+
 			await checkAccessibility({
 				page,
 				selectors: ['.modal'],
