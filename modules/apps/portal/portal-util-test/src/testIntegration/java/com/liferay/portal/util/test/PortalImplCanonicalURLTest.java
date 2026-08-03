@@ -10,12 +10,14 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
@@ -24,9 +26,11 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
+import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.ClassTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -51,6 +55,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.TreeMap;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -59,6 +64,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 /**
@@ -70,7 +76,41 @@ public class PortalImplCanonicalURLTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			false,
+			new ClassTestRule<TreeMap<String, String>>() {
+
+				@Override
+				public void afterClass(
+						Description description,
+						TreeMap<String, String> virtualHostnames)
+					throws PortalException {
+
+					VirtualHostLocalServiceUtil.updateVirtualHosts(
+						TestPropsValues.getCompanyId(), 0, virtualHostnames);
+				}
+
+				@Override
+				public TreeMap<String, String> beforeClass(
+						Description description)
+					throws PortalException {
+
+					TreeMap<String, String> virtualHostnames = new TreeMap<>();
+
+					for (VirtualHost virtualHost :
+							VirtualHostLocalServiceUtil.getVirtualHosts(
+								TestPropsValues.getCompanyId(), 0)) {
+
+						virtualHostnames.put(
+							virtualHost.getHostname(),
+							GetterUtil.getString(virtualHost.getLanguageId()));
+					}
+
+					return virtualHostnames;
+				}
+
+			},
+			new LiferayIntegrationTestRule());
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {

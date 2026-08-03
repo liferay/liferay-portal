@@ -28,13 +28,16 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
+import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.ClassTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -66,6 +69,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -74,6 +78,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -87,7 +92,41 @@ public class PortalImplAlternateURLTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			false,
+			new ClassTestRule<TreeMap<String, String>>() {
+
+				@Override
+				public void afterClass(
+						Description description,
+						TreeMap<String, String> virtualHostnames)
+					throws PortalException {
+
+					VirtualHostLocalServiceUtil.updateVirtualHosts(
+						TestPropsValues.getCompanyId(), 0, virtualHostnames);
+				}
+
+				@Override
+				public TreeMap<String, String> beforeClass(
+						Description description)
+					throws PortalException {
+
+					TreeMap<String, String> virtualHostnames = new TreeMap<>();
+
+					for (VirtualHost virtualHost :
+							VirtualHostLocalServiceUtil.getVirtualHosts(
+								TestPropsValues.getCompanyId(), 0)) {
+
+						virtualHostnames.put(
+							virtualHost.getHostname(),
+							GetterUtil.getString(virtualHost.getLanguageId()));
+					}
+
+					return virtualHostnames;
+				}
+
+			},
+			new LiferayIntegrationTestRule());
 
 	@BeforeClass
 	public static void setUpClass() throws PortalException {
