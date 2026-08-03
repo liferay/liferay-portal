@@ -43,19 +43,19 @@ func main() {
 	)
 
 	if error != nil {
-		setupLog.Error(error, "Unable to start manager.")
+		setupLog.Error(error, "Unable to start manager")
 
 		os.Exit(1)
 	}
 
 	if error := manager.AddHealthzCheck("healthz", healthz.Ping); error != nil {
-		setupLog.Error(error, "Unable to set up health check.")
+		setupLog.Error(error, "Unable to set up health check")
 
 		os.Exit(1)
 	}
 
 	if error := manager.AddReadyzCheck("readyz", healthz.Ping); error != nil {
-		setupLog.Error(error, "Unable to set up ready check.")
+		setupLog.Error(error, "Unable to set up ready check")
 
 		os.Exit(1)
 	}
@@ -78,7 +78,7 @@ func main() {
 	}
 
 	if error := manager.Start(controllerruntime.SetupSignalHandler()); error != nil {
-		setupLog.Error(error, "Unexpected error while running manager.")
+		setupLog.Error(error, "Unexpected error while running manager")
 
 		os.Exit(1)
 	}
