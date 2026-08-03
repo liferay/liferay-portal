@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.search.test.util.FieldValuesAssert;
 import com.liferay.portal.search.test.util.HitsAssert;
-import com.liferay.portal.search.test.util.IndexerFixture;
 import com.liferay.portal.search.test.util.SearchContextTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -61,8 +60,6 @@ public class LayoutMultiLanguageSearchTest {
 		setUpUserSearchFixture();
 
 		setUpLayoutFixture();
-
-		setUpLayoutIndexerFixture();
 
 		defaultLocale = LocaleThreadLocal.getDefaultLocale();
 	}
@@ -101,19 +98,32 @@ public class LayoutMultiLanguageSearchTest {
 
 		_addLayoutMultiLanguage();
 
-		Document document = layoutIndexerFixture.searchOnlyOne(
-			_ENGLISH_KEYWORD, LocaleUtil.US);
+		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(Layout.class);
+
+		Hits hits = indexer.search(
+			SearchContextTestUtil.getSearchContext(
+				TestPropsValues.getUserId(), new long[] {_group.getGroupId()},
+				_ENGLISH_KEYWORD, LocaleUtil.US));
+
+		Document document = HitsAssert.assertOnlyOne(_ENGLISH_KEYWORD, hits);
 
 		Assert.assertEquals(
 			_ENGLISH_KEYWORD, document.get("localized_title_en_US"));
 	}
 
 	protected void assertFieldValues(
-		String prefix, Locale locale, Map<String, String> titleStrings,
-		String searchTerm) {
+			String prefix, Locale locale, Map<String, String> titleStrings,
+			String searchTerm)
+		throws Exception {
 
-		Document document = layoutIndexerFixture.searchOnlyOne(
-			searchTerm, locale);
+		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(Layout.class);
+
+		Hits hits = indexer.search(
+			SearchContextTestUtil.getSearchContext(
+				TestPropsValues.getUserId(), new long[] {_group.getGroupId()},
+				searchTerm, locale));
+
+		Document document = HitsAssert.assertOnlyOne(searchTerm, hits);
 
 		FieldValuesAssert.assertFieldValues(
 			titleStrings, prefix, document, searchTerm);
@@ -131,10 +141,6 @@ public class LayoutMultiLanguageSearchTest {
 		_layouts = layoutFixture.getLayouts();
 	}
 
-	protected void setUpLayoutIndexerFixture() {
-		layoutIndexerFixture = new IndexerFixture<>(Layout.class);
-	}
-
 	protected void setUpUserSearchFixture() throws Exception {
 		userSearchFixture = new UserSearchFixture();
 
@@ -149,7 +155,6 @@ public class LayoutMultiLanguageSearchTest {
 
 	protected Locale defaultLocale;
 	protected LayoutFixture layoutFixture;
-	protected IndexerFixture<Layout> layoutIndexerFixture;
 	protected UserSearchFixture userSearchFixture;
 
 	private void _addLayoutMultiLanguage() throws Exception {
