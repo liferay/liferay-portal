@@ -3108,10 +3108,6 @@
 					"default": "",
 					"type": "string"
 				},
-				"googleCloudHotfixBucket": {
-					"default": "",
-					"type": "string"
-				},
 				"helpCenterURL": {
 					"default": "",
 					"type": "string"
@@ -3160,11 +3156,19 @@
 					"default": "",
 					"type": "string"
 				},
+				"jiraBrowseURL": {
+					"default": "",
+					"type": "string"
+				},
 				"jiraEmailAddress": {
 					"default": "",
 					"type": "string"
 				},
-				"jiraURL": {
+				"jiraServiceManagementUserEmailAddress": {
+					"default": "",
+					"type": "string"
+				},
+				"jiraServiceManagementUserToken": {
 					"default": "",
 					"type": "string"
 				},
@@ -3259,14 +3263,6 @@
 					"type": "string"
 				},
 				"supportLiferayAccountSearchAPIEndpoint": {
-					"default": "",
-					"type": "string"
-				},
-				"supportLiferayLFUURL": {
-					"default": "",
-					"type": "string"
-				},
-				"supportLiferayTicketAttachmentAPIEndpoint": {
 					"default": "",
 					"type": "string"
 				},
