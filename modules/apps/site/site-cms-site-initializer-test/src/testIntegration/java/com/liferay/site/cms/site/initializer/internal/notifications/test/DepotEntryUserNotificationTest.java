@@ -323,6 +323,7 @@ public class DepotEntryUserNotificationTest {
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setPathFriendlyURLPublic("/path-friendly-url-public");
+		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
 
 		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
 
