@@ -45,8 +45,9 @@ public class PLOOriginalTranslationProviderTest {
 		Assert.assertNotNull(originalValue);
 
 		PLOEntry ploEntry = _ploEntryLocalService.addOrUpdatePLOEntry(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(), key,
-			LanguageUtil.getLanguageId(locale), RandomTestUtil.randomString());
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			key, LanguageUtil.getLanguageId(locale),
+			RandomTestUtil.randomString());
 
 		Assert.assertEquals(ploEntry.getValue(), LanguageUtil.get(locale, key));
 

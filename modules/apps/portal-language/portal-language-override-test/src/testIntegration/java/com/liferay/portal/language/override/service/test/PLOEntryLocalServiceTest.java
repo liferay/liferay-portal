@@ -262,9 +262,7 @@ public class PLOEntryLocalServiceTest {
 			String key, String languageId, String value)
 		throws PortalException {
 
-		return _ploEntryLocalService.addOrUpdatePLOEntry(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(), key,
-			languageId, value);
+		return _addOrUpdatePLOEntry(null, key, languageId, value);
 	}
 
 	private PLOEntry _addOrUpdatePLOEntry(

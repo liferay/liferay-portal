@@ -282,12 +282,12 @@ public class ObjectDefinitionLocalServiceImpl
 				String languageId = LocaleUtil.toLanguageId(locale);
 
 				_ploEntryLocalService.addOrUpdatePLOEntry(
-					objectDefinition.getCompanyId(),
+					null, objectDefinition.getCompanyId(),
 					objectDefinition.getUserId(),
 					"model.resource." + objectDefinition.getClassName(),
 					languageId, objectDefinition.getLabel(locale));
 				_ploEntryLocalService.addOrUpdatePLOEntry(
-					objectDefinition.getCompanyId(),
+					null, objectDefinition.getCompanyId(),
 					objectDefinition.getUserId(),
 					"model.resource." + objectDefinition.getResourceName(),
 					languageId, objectDefinition.getPluralLabel(locale));

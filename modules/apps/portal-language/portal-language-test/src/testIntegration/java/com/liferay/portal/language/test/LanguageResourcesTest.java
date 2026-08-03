@@ -105,8 +105,9 @@ public class LanguageResourcesTest {
 					_locale, TestResourceBundle.class.getName()));
 
 			ploEntry = _ploEntryLocalService.addOrUpdatePLOEntry(
-				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-				TestResourceBundle.class.getName(), _languageId, _VALUE_2);
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), TestResourceBundle.class.getName(),
+				_languageId, _VALUE_2);
 
 			Assert.assertEquals(
 				_VALUE_2,
@@ -165,11 +166,12 @@ public class LanguageResourcesTest {
 			Assert.assertFalse(keys.contains(testKey));
 
 			ploEntry1 = _ploEntryLocalService.addOrUpdatePLOEntry(
-				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-				TestResourceBundle.class.getName(), _languageId, _VALUE_2);
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), TestResourceBundle.class.getName(),
+				_languageId, _VALUE_2);
 			ploEntry2 = _ploEntryLocalService.addOrUpdatePLOEntry(
-				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-				testKey, _languageId, _VALUE_3);
+				null, TestPropsValues.getCompanyId(),
+				TestPropsValues.getUserId(), testKey, _languageId, _VALUE_3);
 
 			Assert.assertEquals(
 				_VALUE_2,

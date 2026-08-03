@@ -179,7 +179,8 @@ public class MessageResourceImpl extends BaseMessageResourceImpl {
 		throws PortalException {
 
 		PLOEntry ploEntry = _ploEntryService.addOrUpdatePLOEntry(
-			message.getKey(), message.getLanguageId(), message.getValue());
+			null, message.getKey(), message.getLanguageId(),
+			message.getValue());
 
 		message.setKey(ploEntry::getKey);
 		message.setLanguageId(ploEntry::getLanguageId);

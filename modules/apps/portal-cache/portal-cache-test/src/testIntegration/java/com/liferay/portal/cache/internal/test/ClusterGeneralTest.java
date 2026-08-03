@@ -409,7 +409,7 @@ public class ClusterGeneralTest implements Serializable {
 
 					PLOEntry ploEntry =
 						PLOEntryLocalServiceUtil.addOrUpdatePLOEntry(
-							companyId, TestPropsValues.getUserId(), key,
+							null, companyId, TestPropsValues.getUserId(), key,
 							languageId, value);
 
 					return ploEntry.getPloEntryId();

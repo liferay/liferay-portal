@@ -221,7 +221,7 @@ public class ObjectFieldLocalServiceImpl
 				objectField.getAttachmentDownloadActionKey();
 
 			_ploEntryLocalService.addOrUpdatePLOEntry(
-				objectField.getCompanyId(), objectField.getUserId(),
+				null, objectField.getCompanyId(), objectField.getUserId(),
 				"action." + attachmentDownloadActionKey,
 				LocaleUtil.toLanguageId(locale),
 				_language.format(
