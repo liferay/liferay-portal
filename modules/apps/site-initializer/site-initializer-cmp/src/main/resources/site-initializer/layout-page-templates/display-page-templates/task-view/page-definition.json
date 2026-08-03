@@ -331,7 +331,9 @@
 			},
 			{
 				"definition": {
-					"customCSS": ".[$FRAGMENT_CLASS$] {\n .cms-related-assets-header{\n margin-left: 16px;\n}\n}",
+					"cssClasses": [
+						"px-4"
+					],
 					"fragment": {
 						"key": "com.liferay.site.cms.site.initializer.internal.fragment.renderer.ViewRelatedAssetsJSPSectionFragmentRenderer"
 					},
