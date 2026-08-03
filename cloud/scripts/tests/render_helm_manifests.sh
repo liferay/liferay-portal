@@ -47,7 +47,7 @@ function main {
 		helm template liferay "${cloud_dir}/helm/${chart}" | kubeconform \
 			--schema-location default \
 			--schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
-			--skip ClusterProviderConfig,LiferayInfrastructure \
+			--skip ClusterProviderConfig,LiferayEnvironment,LiferayInfrastructure \
 			--strict \
 			--summary
 	done

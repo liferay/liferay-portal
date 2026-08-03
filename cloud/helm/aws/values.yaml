@@ -204,14 +204,14 @@ liferay-default:
             -   configMap:
                     name: liferay-search-config-aws
                 name: liferay-search-config-aws
-        x-lpkg:
-            -   name: liferay-lpkg
-                persistentVolumeClaim:
-                    claimName: liferay-lpkg
     license:
         enabled: true
     lpkg:
         enabled: true
+    marketplace:
+        enabled: true
+        size: 10Gi
+        storageClassName: efs-sc
     network:
         enabled: true
         timeouts:

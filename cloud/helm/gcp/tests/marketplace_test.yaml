@@ -1,0 +1,19 @@
+suite: Marketplace Volume
+templates:
+    -   charts/liferay-default/templates/liferayenvironment.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.marketplaceVolume.storageClassName
+                    value: standard-rwx
+            -   equal:
+                    path: spec.workloadRef.name
+                    value: liferay-default
+        it: Requests a Filestore backed ReadWriteMany volume by default
+    -   asserts:
+            -   equal:
+                    path: spec.marketplaceVolume.storageClassName
+                    value: premium-rwx
+        it: Honors an overridden storage class
+        set:
+            liferay-default.marketplace.storageClassName: premium-rwx

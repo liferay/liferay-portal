@@ -1,0 +1,19 @@
+suite: Marketplace Volume
+templates:
+    -   charts/liferay-default/templates/liferayenvironment.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.marketplaceVolume.storageClassName
+                    value: efs-sc
+            -   equal:
+                    path: spec.workloadRef.name
+                    value: liferay-default
+        it: Requests an EFS backed ReadWriteMany volume by default
+    -   asserts:
+            -   equal:
+                    path: spec.marketplaceVolume.storageClassName
+                    value: efs-custom-sc
+        it: Overrides storage class
+        set:
+            liferay-default.marketplace.storageClassName: efs-custom-sc

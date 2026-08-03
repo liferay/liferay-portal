@@ -127,14 +127,14 @@ liferay-default:
                     defaultMode: 0755
                     name: liferay-init-scripts-gcp
                 name: liferay-init-scripts-gcp
-        x-lpkg:
-            -   name: liferay-lpkg
-                persistentVolumeClaim:
-                    claimName: liferay-lpkg
     license:
         enabled: true
     lpkg:
         enabled: true
+    marketplace:
+        enabled: true
+        size: 10Gi
+        storageClassName: standard-rwx
     network:
         enabled: true
         hostnames: []
