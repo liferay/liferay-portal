@@ -5,18 +5,20 @@
 
 import {Browser} from '@playwright/test';
 
+export const ADMIN_EMAIL_ADDRESS = 'test@liferay.com';
+
 // Sends a GET request authenticated with a Basic Authorization header, from a
 // fresh browser context with an empty storage state, so the credentials are
-// the only authentication in play (no portal session cookie). An absolute URL
-// is reduced to its path to keep the request same-origin, and
-// redirect: 'manual' keeps an authentication redirect from being followed
-// into a 200.
+// the only authentication in play (no portal session cookie). An optional
+// language becomes the Accept-Language header. An absolute URL is reduced to
+// its path to keep the request same-origin, and redirect: 'manual' keeps an
+// authentication redirect from being followed into a 200.
 
 export async function getWithBasicAuth(
 	browser: Browser,
 	url: string,
 	emailAddress: string,
-	password: string = 'test'
+	{language, password = 'test'}: {language?: string; password?: string} = {}
 ): Promise<{body: Record<string, unknown> | null; status: number}> {
 	const context = await browser.newContext({
 		storageState: {cookies: [], origins: []},
@@ -30,11 +32,17 @@ export async function getWithBasicAuth(
 		const {pathname, search} = new URL(url, page.url());
 
 		return await page.evaluate(
-			async ({credentials, path}) => {
+			async ({credentials, language, path}) => {
+				const headers: Record<string, string> = {
+					Authorization: `Basic ${btoa(credentials)}`,
+				};
+
+				if (language) {
+					headers['Accept-Language'] = language;
+				}
+
 				const response = await fetch(path, {
-					headers: {
-						Authorization: `Basic ${btoa(credentials)}`,
-					},
+					headers,
 					redirect: 'manual',
 				});
 
@@ -48,6 +56,7 @@ export async function getWithBasicAuth(
 			},
 			{
 				credentials: `${emailAddress}:${password}`,
+				language,
 				path: pathname + search,
 			}
 		);

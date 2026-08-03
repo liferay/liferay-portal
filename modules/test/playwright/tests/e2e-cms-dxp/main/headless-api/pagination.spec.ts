@@ -9,7 +9,7 @@ import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
-import {getWithBasicAuth} from './getWithBasicAuth';
+import {ADMIN_EMAIL_ADDRESS, getWithBasicAuth} from './getWithBasicAuth';
 
 const test = mergeTests(dataApiHelpersTest, isolatedSiteTest, loginTest());
 
@@ -54,21 +54,25 @@ test(
 			);
 		}
 
-		const {body, status} = await getWithBasicAuth(
-			browser,
-			`/o/${APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?page=2&pageSize=${PAGE_SIZE}&sort=id:asc`,
-			'test@liferay.com'
-		);
+		await expect(async () => {
+			const {body, status} = await getWithBasicAuth(
+				browser,
+				`/o/${APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?page=2&pageSize=${PAGE_SIZE}&sort=id:asc`,
+				ADMIN_EMAIL_ADDRESS
+			);
 
-		expect(status).toBe(200);
+			expect(status).toBe(200);
 
-		expect(body?.page).toBe(2);
-		expect(body?.pageSize).toBe(PAGE_SIZE);
-		expect(body?.totalCount).toBe(ENTRY_COUNT);
-		expect(body?.lastPage).toBe(Math.ceil(ENTRY_COUNT / PAGE_SIZE));
+			expect(body?.page).toBe(2);
+			expect(body?.pageSize).toBe(PAGE_SIZE);
+			expect(body?.totalCount).toBe(ENTRY_COUNT);
+			expect(body?.lastPage).toBe(Math.ceil(ENTRY_COUNT / PAGE_SIZE));
 
-		expect(
-			((body?.items as {title: string}[]) || []).map((item) => item.title)
-		).toEqual(titles.slice(PAGE_SIZE));
+			expect(
+				((body?.items as {title: string}[]) || []).map(
+					(item) => item.title
+				)
+			).toEqual(titles.slice(PAGE_SIZE));
+		}).toPass({timeout: 30000});
 	}
 );

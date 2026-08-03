@@ -3,62 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Browser, expect, mergeTests} from '@playwright/test';
+import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
+import {ADMIN_EMAIL_ADDRESS, getWithBasicAuth} from './getWithBasicAuth';
 
 const test = mergeTests(dataApiHelpersTest, isolatedSiteTest, loginTest());
 
 const APPLICATION_NAME = 'cms/basic-web-contents';
-
-async function getWithLanguage(
-	browser: Browser,
-	url: string,
-	language: string
-): Promise<{body: Record<string, unknown> | null; status: number}> {
-	const context = await browser.newContext({
-		storageState: {cookies: [], origins: []},
-	});
-
-	try {
-		const page = await context.newPage();
-
-		await page.goto('/');
-
-		const {pathname, search} = new URL(url, page.url());
-
-		return await page.evaluate(
-			async ({credentials, language, path}) => {
-				const response = await fetch(path, {
-					headers: {
-						'Accept-Language': language,
-						'Authorization': `Basic ${btoa(credentials)}`,
-					},
-					redirect: 'manual',
-				});
-
-				const contentType = response.headers.get('content-type') || '';
-
-				const body = contentType.includes('application/json')
-					? await response.json()
-					: null;
-
-				return {body, status: response.status};
-			},
-			{
-				credentials: 'test@liferay.com:test',
-				language,
-				path: pathname + search,
-			}
-		);
-	}
-	finally {
-		await context.close();
-	}
-}
 
 test(
 	'Requesting a translated language returns the translated values for all localizable fields',
@@ -97,10 +52,11 @@ test(
 			spaceName
 		);
 
-		const {body, status} = await getWithLanguage(
+		const {body, status} = await getWithBasicAuth(
 			browser,
 			`/o/${APPLICATION_NAME}/${entry.id}`,
-			'es-ES'
+			ADMIN_EMAIL_ADDRESS,
+			{language: 'es-ES'}
 		);
 
 		expect(status).toBe(200);
@@ -138,10 +94,11 @@ test(
 			spaceName
 		);
 
-		const {body, status} = await getWithLanguage(
+		const {body, status} = await getWithBasicAuth(
 			browser,
 			`/o/${APPLICATION_NAME}/${entry.id}`,
-			'fr-FR'
+			ADMIN_EMAIL_ADDRESS,
+			{language: 'fr-FR'}
 		);
 
 		expect(status).toBe(200);

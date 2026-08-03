@@ -12,7 +12,7 @@ import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import getRandomString from '../../../../utils/getRandomString';
 import {getAsGuest} from './getAsGuest';
-import {getWithBasicAuth} from './getWithBasicAuth';
+import {ADMIN_EMAIL_ADDRESS, getWithBasicAuth} from './getWithBasicAuth';
 
 const test = mergeTests(dataApiHelpersTest, isolatedSiteTest, loginTest());
 
@@ -118,7 +118,7 @@ test(
 				const {body, status} = await getWithBasicAuth(
 					browser,
 					`/o/${applicationName}/${id}`,
-					'test@liferay.com'
+					ADMIN_EMAIL_ADDRESS
 				);
 
 				expect(status).toBe(404);

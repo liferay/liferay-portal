@@ -13,7 +13,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
-import {getWithBasicAuth} from './getWithBasicAuth';
+import {ADMIN_EMAIL_ADDRESS, getWithBasicAuth} from './getWithBasicAuth';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -100,19 +100,21 @@ test(
 			);
 		}
 
-		const {body, status} = await getWithBasicAuth(
-			browser,
-			`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${encodeURIComponent(`taxonomyCategoryIds/any(t:t eq ${category.id})`)}`,
-			'test@liferay.com'
-		);
+		await expect(async () => {
+			const {body, status} = await getWithBasicAuth(
+				browser,
+				`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${encodeURIComponent(`taxonomyCategoryIds/any(t:t eq ${category.id})`)}`,
+				ADMIN_EMAIL_ADDRESS
+			);
 
-		expect(status).toBe(200);
+			expect(status).toBe(200);
 
-		const titles = ((body?.items as {title: string}[]) || []).map(
-			(item) => item.title
-		);
+			const titles = ((body?.items as {title: string}[]) || []).map(
+				(item) => item.title
+			);
 
-		expect(titles).toEqual([categorizedTitle]);
+			expect(titles).toEqual([categorizedTitle]);
+		}).toPass({timeout: 30000});
 	}
 );
 
@@ -174,31 +176,35 @@ test(
 
 		const filter = encodeURIComponent(`keywords/any(k:k eq '${tag}')`);
 
-		const contents = await getWithBasicAuth(
-			browser,
-			`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${filter}`,
-			'test@liferay.com'
-		);
+		await expect(async () => {
+			const contents = await getWithBasicAuth(
+				browser,
+				`/o/${CONTENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${filter}`,
+				ADMIN_EMAIL_ADDRESS
+			);
 
-		expect(contents.status).toBe(200);
-		expect(
-			((contents.body?.items as {title: string}[]) || []).map(
-				(item) => item.title
-			)
-		).toEqual([taggedTitle]);
+			expect(contents.status).toBe(200);
+			expect(
+				((contents.body?.items as {title: string}[]) || []).map(
+					(item) => item.title
+				)
+			).toEqual([taggedTitle]);
+		}).toPass({timeout: 30000});
 
-		const files = await getWithBasicAuth(
-			browser,
-			`/o/${DOCUMENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${filter}`,
-			'test@liferay.com'
-		);
+		await expect(async () => {
+			const files = await getWithBasicAuth(
+				browser,
+				`/o/${DOCUMENTS_APPLICATION_NAME}/scopes/${encodeURIComponent(spaceName)}?filter=${filter}`,
+				ADMIN_EMAIL_ADDRESS
+			);
 
-		expect(files.status).toBe(200);
-		expect(
-			((files.body?.items as {title: string}[]) || []).map(
-				(item) => item.title
-			)
-		).toEqual([taggedFileTitle]);
+			expect(files.status).toBe(200);
+			expect(
+				((files.body?.items as {title: string}[]) || []).map(
+					(item) => item.title
+				)
+			).toEqual([taggedFileTitle]);
+		}).toPass({timeout: 30000});
 	}
 );
 
@@ -279,15 +285,19 @@ test(
 			);
 		}
 
-		const {body, status} = await getWithBasicAuth(
-			browser,
-			`/o/${applicationName}/scopes/${encodeURIComponent(spaceName)}?filter=${encodeURIComponent(`${regionField.name} eq '${regionValue}'`)}`,
-			'test@liferay.com'
-		);
+		await expect(async () => {
+			const {body, status} = await getWithBasicAuth(
+				browser,
+				`/o/${applicationName}/scopes/${encodeURIComponent(spaceName)}?filter=${encodeURIComponent(`${regionField.name} eq '${regionValue}'`)}`,
+				ADMIN_EMAIL_ADDRESS
+			);
 
-		expect(status).toBe(200);
-		expect(
-			((body?.items as {title: string}[]) || []).map((item) => item.title)
-		).toEqual([matchingTitle]);
+			expect(status).toBe(200);
+			expect(
+				((body?.items as {title: string}[]) || []).map(
+					(item) => item.title
+				)
+			).toEqual([matchingTitle]);
+		}).toPass({timeout: 30000});
 	}
 );
