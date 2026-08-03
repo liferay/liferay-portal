@@ -123,6 +123,10 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 		Long[] assetSelectedClassTypeIds = ArrayUtil.clone(editAssetListDisplayContext.getClassTypeIds(unicodeProperties, className, classTypes));
 
 		Arrays.sort(assetSelectedClassTypeIds);
+
+		long[] availableClassTypeIds = ListUtil.toLongArray(classTypes, ClassType::getClassTypeId);
+
+		Arrays.sort(availableClassTypeIds);
 	%>
 
 		<div class='asset-subtype <%= (assetSelectedClassTypeIds.length < 1) ? StringPool.BLANK : "hide" %>' data-class-name="<%= className %>" id="<portlet:namespace /><%= className %>Options">
@@ -139,6 +143,17 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 					%>
 
 						<aui:option label="<%= HtmlUtil.escapeAttribute(classType.getName()) %>" selected="<%= !anyAssetSubtype && (assetSelectedClassTypeIds.length == 1) && (assetSelectedClassTypeIds[0]).equals(classType.getClassTypeId()) && !noAssetSubtypeSelected %>" value="<%= classType.getClassTypeId() %>" />
+
+					<%
+					}
+
+					for (Long assetSelectedClassTypeId : assetSelectedClassTypeIds) {
+						if (Arrays.binarySearch(availableClassTypeIds, assetSelectedClassTypeId) >= 0) {
+							continue;
+						}
+					%>
+
+						<aui:option label="<%= String.valueOf(assetSelectedClassTypeId) %>" selected="<%= !anyAssetSubtype && (assetSelectedClassTypeIds.length == 1) && !noAssetSubtypeSelected %>" value="<%= assetSelectedClassTypeId %>" />
 
 					<%
 					}
@@ -215,7 +230,10 @@ List<Map<String, Object>> classTypesList = new ArrayList<>();
 
 					subtypesRightList.add(new KeyValuePair(String.valueOf(subtypeId), HtmlUtil.escape(classType.getName())));
 				}
-				catch (NoSuchModelException nsme) {
+				catch (NoSuchModelException noSuchModelException) {
+				}
+				catch (PortalException portalException) {
+					subtypesRightList.add(new KeyValuePair(String.valueOf(subtypeId), String.valueOf(subtypeId)));
 				}
 			}
 			%>
