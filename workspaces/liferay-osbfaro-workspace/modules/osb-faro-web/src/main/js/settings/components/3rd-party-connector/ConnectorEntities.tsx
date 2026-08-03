@@ -55,9 +55,9 @@ const ConnectorEntities: React.FC<IConnectorEntitiesProps> = ({
 						<Label
 							displayType={configured ? 'success' : 'secondary'}
 						>
-							{Liferay.Language.get(
-								configured ? 'configured' : 'unconfigured'
-							)}
+							{configured
+								? Liferay.Language.get('configured')
+								: Liferay.Language.get('unconfigured')}
 						</Label>
 					</ClayList.ItemField>
 				</ClayList.Item>
