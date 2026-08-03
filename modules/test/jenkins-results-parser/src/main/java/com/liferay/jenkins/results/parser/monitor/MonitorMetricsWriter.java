@@ -55,8 +55,8 @@ public class MonitorMetricsWriter {
 	private GaugeSnapshot _getCheckLastRunTimestampSnapshot() {
 		GaugeSnapshot.Builder builder = GaugeSnapshot.builder();
 
-		builder.name("monitor_check_last_run_timestamp_seconds");
 		builder.help("Unix timestamp of the last check run, 0 if never run");
+		builder.name("monitor_check_last_run_timestamp_seconds");
 
 		for (Monitor monitor : _monitors) {
 			builder.dataPoint(
@@ -70,10 +70,10 @@ public class MonitorMetricsWriter {
 	private GaugeSnapshot _getCheckStatusSnapshot() {
 		GaugeSnapshot.Builder builder = GaugeSnapshot.builder();
 
-		builder.name("monitor_check_status");
 		builder.help(
 			"Monitor status severity rank, 0 OK, 1 UNKNOWN, 2 WARN, 3 " +
 				"CRITICAL");
+		builder.name("monitor_check_status");
 
 		for (Monitor monitor : _monitors) {
 			builder.dataPoint(
@@ -103,8 +103,8 @@ public class MonitorMetricsWriter {
 	private GaugeSnapshot _getHeartbeatTimestampSnapshot() {
 		GaugeSnapshot.Builder builder = GaugeSnapshot.builder();
 
-		builder.name("monitor_heartbeat_timestamp_seconds");
 		builder.help("Unix timestamp of the last metrics write");
+		builder.name("monitor_heartbeat_timestamp_seconds");
 
 		GaugeSnapshot.GaugeDataPointSnapshot.Builder dataPointBuilder =
 			GaugeSnapshot.GaugeDataPointSnapshot.builder();
