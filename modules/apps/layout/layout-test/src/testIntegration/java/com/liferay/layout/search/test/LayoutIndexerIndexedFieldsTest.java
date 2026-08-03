@@ -13,6 +13,9 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.Hits;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.SearchEngineHelper;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -26,8 +29,9 @@ import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.search.model.uid.UIDFactory;
 import com.liferay.portal.search.test.util.FieldValuesAssert;
+import com.liferay.portal.search.test.util.HitsAssert;
 import com.liferay.portal.search.test.util.IndexedFieldsFixture;
-import com.liferay.portal.search.test.util.IndexerFixture;
+import com.liferay.portal.search.test.util.SearchContextTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -68,8 +72,6 @@ public class LayoutIndexerIndexedFieldsTest {
 
 		setUpLayoutFixture();
 
-		setUpLayoutIndexerFixture();
-
 		defaultLocale = LocaleThreadLocal.getDefaultLocale();
 	}
 
@@ -88,8 +90,14 @@ public class LayoutIndexerIndexedFieldsTest {
 
 		String searchTerm = "新しい";
 
-		Document document = layoutIndexerFixture.searchOnlyOne(
-			searchTerm, locale);
+		Indexer<Layout> indexer = IndexerRegistryUtil.getIndexer(Layout.class);
+
+		Hits hits = indexer.search(
+			SearchContextTestUtil.getSearchContext(
+				TestPropsValues.getUserId(), new long[] {_group.getGroupId()},
+				searchTerm, locale));
+
+		Document document = HitsAssert.assertOnlyOne(searchTerm, hits);
 
 		indexedFieldsFixture.postProcessDocument(document);
 
@@ -119,10 +127,6 @@ public class LayoutIndexerIndexedFieldsTest {
 		_layouts = layoutFixture.getLayouts();
 	}
 
-	protected void setUpLayoutIndexerFixture() {
-		layoutIndexerFixture = new IndexerFixture<>(Layout.class);
-	}
-
 	protected void setUpUserSearchFixture() throws Exception {
 		userSearchFixture = new UserSearchFixture();
 
@@ -138,7 +142,6 @@ public class LayoutIndexerIndexedFieldsTest {
 	protected Locale defaultLocale;
 	protected IndexedFieldsFixture indexedFieldsFixture;
 	protected LayoutFixture layoutFixture;
-	protected IndexerFixture<Layout> layoutIndexerFixture;
 
 	@Inject
 	protected ResourcePermissionLocalService resourcePermissionLocalService;
