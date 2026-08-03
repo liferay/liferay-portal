@@ -5,6 +5,7 @@
 
 package com.liferay.portal.workflow.kaleo.definition.util;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -13,6 +14,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.security.xml.SecureXMLFactoryProviderUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 
@@ -112,7 +114,7 @@ public class WorkflowDefinitionContentUtil {
 			sb.append(key);
 			sb.append(StringPool.EQUAL);
 			sb.append(StringPool.QUOTE);
-			sb.append(jsonObject.get(key));
+			sb.append(_escapeXML(jsonObject.getString(key)));
 			sb.append(StringPool.QUOTE);
 		}
 	}
@@ -180,8 +182,18 @@ public class WorkflowDefinitionContentUtil {
 			sb.append(cdataSB);
 		}
 		else if (jsonObject.has("#value")) {
-			sb.append(jsonObject.getString("#value"));
+			sb.append(_escapeXML(jsonObject.getString("#value")));
 		}
+	}
+
+	private static String _escapeXML(String value) {
+		return StringUtil.replace(
+			value,
+			new char[] {
+				CharPool.AMPERSAND, CharPool.APOSTROPHE, CharPool.GREATER_THAN,
+				CharPool.LESS_THAN, CharPool.QUOTE
+			},
+			new String[] {"&amp;", "&apos;", "&gt;", "&lt;", "&quot;"});
 	}
 
 	private static boolean _hasContent(String value) {
