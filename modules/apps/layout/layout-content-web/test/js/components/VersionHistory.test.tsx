@@ -15,7 +15,6 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import VersionHistory from '../../../src/main/resources/META-INF/resources/js/components/VersionHistory';
-import {PageVersion} from '../../../src/main/resources/META-INF/resources/js/types/PageVersion';
 
 jest.mock('@liferay/layout-js-components-web', () => {
 	const react = require('react');
@@ -41,7 +40,7 @@ jest.mock('frontend-js-web', () => ({
 	fetch: jest.fn(),
 }));
 
-const VERSIONS: PageVersion[] = [
+const VERSIONS = [
 	{
 		creator: {
 			externalReferenceCode: 'MARIA_ARCE',
@@ -84,7 +83,7 @@ function mockSmallScreen() {
 	mockUseMediaQuery.mockReturnValue(false);
 }
 
-function mockVersions(versions: PageVersion[]) {
+function mockVersions(versions: typeof VERSIONS) {
 	mockFetch.mockReturnValue(
 		Promise.resolve({
 			json: () => Promise.resolve({items: versions}),
@@ -93,7 +92,7 @@ function mockVersions(versions: PageVersion[]) {
 	);
 }
 
-function queryDraftItem() {
+function queryCurrentItem() {
 	return document.querySelector('.lexicon-icon-sheets')?.closest('li');
 }
 
@@ -103,10 +102,12 @@ function renderComponent({hasDraft = false} = {}) {
 			config={{
 				availableLanguages: {},
 				availableSegmentsExperiences: [],
+				currentVersion: {
+					name: 'Home',
+					status: hasDraft ? 'draft' : 'approved',
+				},
 				defaultLanguageId: 'en_US',
 				defaultUserImageSrc: '/image/user_portrait?img_id=0',
-				draftName: 'Home',
-				hasDraft,
 				pageSpecificationVersionsURL: 'url',
 			}}
 		/>
@@ -177,16 +178,20 @@ describe('VersionHistory', () => {
 		).toBeInTheDocument();
 	});
 
-	it('shows an empty state when there are no versions', async () => {
+	it('only shows the current version item when there are no versions', async () => {
 		mockLargeScreen();
 
 		renderComponent();
 
-		expect(
-			await screen.findByText('there-are-no-results')
-		).toBeInTheDocument();
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(1)
+		);
 
-		expect(screen.queryByText('no-results-found')).not.toBeInTheDocument();
+		expect(screen.getByRole('option')).toBe(queryCurrentItem());
+
+		expect(
+			screen.queryByText('there-are-no-results')
+		).not.toBeInTheDocument();
 	});
 
 	it('shows the search empty state when nothing matches the search', async () => {
@@ -196,7 +201,7 @@ describe('VersionHistory', () => {
 		renderComponent();
 
 		await waitFor(() =>
-			expect(screen.getAllByRole('option')).toHaveLength(2)
+			expect(screen.getAllByRole('option')).toHaveLength(3)
 		);
 
 		await userEvent.type(screen.getByLabelText('search-form'), 'zzz');
@@ -217,27 +222,32 @@ describe('VersionHistory', () => {
 		renderComponent();
 
 		await waitFor(() =>
-			expect(screen.getAllByRole('option')).toHaveLength(2)
+			expect(screen.getAllByRole('option')).toHaveLength(3)
 		);
 
 		expect(screen.getByText('Home Halloween')).toBeInTheDocument();
-		expect(screen.getByText('Home')).toBeInTheDocument();
+		expect(screen.getAllByText('Home')).toHaveLength(2);
 	});
 
-	it('does not render a draft item when there is no draft', async () => {
+	it('renders the current version item as published when there is no draft', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 
 		renderComponent();
 
 		await waitFor(() =>
-			expect(screen.getAllByRole('option')).toHaveLength(2)
+			expect(screen.getAllByRole('option')).toHaveLength(3)
 		);
 
-		expect(queryDraftItem()).toBeUndefined();
+		const [first] = screen.getAllByRole('option');
+
+		expect(first).toBe(queryCurrentItem());
+		expect(first).toHaveTextContent('Home');
+		expect(first).toHaveTextContent('current-version');
+		expect(first).toHaveTextContent('published');
 	});
 
-	it('renders the draft on top when there is a draft', async () => {
+	it('renders the current version item as draft when there is a draft', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 
@@ -249,26 +259,13 @@ describe('VersionHistory', () => {
 
 		const [first] = screen.getAllByRole('option');
 
-		expect(first).toBe(queryDraftItem());
+		expect(first).toBe(queryCurrentItem());
 		expect(first).toHaveTextContent('Home');
+		expect(first).toHaveTextContent('current-version');
 		expect(first).toHaveTextContent('draft');
 	});
 
-	it('renders the draft even when the page has no versions', async () => {
-		mockLargeScreen();
-
-		renderComponent({hasDraft: true});
-
-		await waitFor(() =>
-			expect(screen.getAllByRole('option')).toHaveLength(1)
-		);
-
-		expect(
-			screen.queryByText('there-are-no-results')
-		).not.toBeInTheDocument();
-	});
-
-	it('filters out the draft when it does not match the search', async () => {
+	it('filters out the current version item when it does not match the search', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 
@@ -281,42 +278,26 @@ describe('VersionHistory', () => {
 		await userEvent.type(screen.getByLabelText('search-form'), 'Halloween');
 
 		expect(screen.getAllByRole('option')).toHaveLength(1);
-		expect(queryDraftItem()).toBeUndefined();
+		expect(queryCurrentItem()).toBeUndefined();
 	});
 
-	it('selects the draft by default when there is a draft', async () => {
-		mockLargeScreen();
-		mockVersions(VERSIONS);
-
-		renderComponent({hasDraft: true});
-
-		await waitFor(() =>
-			expect(screen.getAllByRole('option')).toHaveLength(3)
-		);
-
-		const [draft, ...rest] = screen.getAllByRole('option');
-
-		expect(draft).toHaveClass('active');
-
-		for (const item of rest) {
-			expect(item).not.toHaveClass('active');
-		}
-	});
-
-	it('selects the first version by default when there is no draft', async () => {
+	it('selects the current version item by default', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 
 		renderComponent();
 
 		await waitFor(() =>
-			expect(screen.getAllByRole('option')).toHaveLength(2)
+			expect(screen.getAllByRole('option')).toHaveLength(3)
 		);
 
-		const [first, second] = screen.getAllByRole('option');
+		const [current, ...rest] = screen.getAllByRole('option');
 
-		expect(first).toHaveClass('active');
-		expect(second).not.toHaveClass('active');
+		expect(current).toHaveClass('active');
+
+		for (const item of rest) {
+			expect(item).not.toHaveClass('active');
+		}
 	});
 
 	it('selects an item when it is clicked', async () => {
@@ -329,17 +310,17 @@ describe('VersionHistory', () => {
 			expect(screen.getAllByRole('option')).toHaveLength(3)
 		);
 
-		const [draft, version] = screen.getAllByRole('option');
+		const [current, version] = screen.getAllByRole('option');
 
 		await userEvent.click(version);
 
 		expect(version).toHaveClass('active');
 		expect(version).toHaveAttribute('aria-selected', 'true');
-		expect(draft).not.toHaveClass('active');
+		expect(current).not.toHaveClass('active');
 
-		await userEvent.click(draft);
+		await userEvent.click(current);
 
-		expect(draft).toHaveClass('active');
+		expect(current).toHaveClass('active');
 		expect(version).not.toHaveClass('active');
 	});
 
@@ -374,11 +355,11 @@ describe('VersionHistory', () => {
 			expect(screen.getAllByRole('option')).toHaveLength(3)
 		);
 
-		const [draft, second, third] = screen.getAllByRole('option');
+		const [current, second, third] = screen.getAllByRole('option');
 
-		draft.focus();
+		current.focus();
 
-		expect(draft).toHaveFocus();
+		expect(current).toHaveFocus();
 
 		await userEvent.keyboard('{ArrowDown}');
 
@@ -458,7 +439,7 @@ describe('VersionHistory', () => {
 		).toBeInTheDocument();
 
 		expect(screen.getByText('draft')).toBeInTheDocument();
-		expect(screen.getByText('published')).toBeInTheDocument();
+		expect(screen.getAllByText('published')).toHaveLength(2);
 	});
 
 	it('filters the versions by name and by modifier', async () => {
@@ -468,7 +449,7 @@ describe('VersionHistory', () => {
 		renderComponent();
 
 		await waitFor(() =>
-			expect(screen.getAllByRole('option')).toHaveLength(2)
+			expect(screen.getAllByRole('option')).toHaveLength(3)
 		);
 
 		const search = screen.getByLabelText('search-form');

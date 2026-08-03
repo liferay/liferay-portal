@@ -91,15 +91,21 @@ public class LayoutContentVersionDisplayContextTest {
 
 		Map<String, Object> config = (Map<String, Object>)context.get("config");
 
+		Map<String, Object> currentVersion = (Map<String, Object>)config.get(
+			"currentVersion");
+
+		Assert.assertEquals(
+			_draftLayout.getName(_locale), currentVersion.get("name"));
+		Assert.assertEquals(
+			_draftLayout.isApproved() ? "approved" : "draft",
+			currentVersion.get("status"));
+
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(_siteDefaultLocale),
 			config.get("defaultLanguageId"));
 		Assert.assertEquals(
 			_themeDisplay.getPathImage() + "/user_portrait?img_id=0",
 			config.get("defaultUserImageSrc"));
-		Assert.assertEquals(
-			_draftLayout.getName(_locale), config.get("draftName"));
-		Assert.assertEquals(!_draftLayout.isApproved(), config.get("hasDraft"));
 		Assert.assertEquals(
 			StringBundler.concat(
 				"/o/headless-admin-site/v1.0/sites/",
