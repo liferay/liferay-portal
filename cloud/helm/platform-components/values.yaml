@@ -29,8 +29,18 @@ clusterSecretStore:
     provider: {}
 gitops:
     infrastructureRepository:
+        credentialsSecretName: liferay-credentials-gitops
+        githubAppIdProperty: github_app_id
+        githubAppInstallationIdProperty: github_app_installation_id
+        githubAppPrivateKeyProperty: github_app_private_key
+        internalSecretName: git-repo-infrastructure-credentials
+        method: https
+        registerCredentials: true
         revision: ""
+        sshPrivateKeyProperty: git_ssh_private_key
+        tokenProperty: git_access_token
         url: ""
+        usernameProperty: git_machine_user_id
     layout:
         base: liferay/projects/{{path[2]}}/base
         environmentId: "{{path[4]}}"
@@ -44,8 +54,18 @@ gitops:
         projects: liferay/projects/*
         system: liferay/system
     repository:
+        credentialsSecretName: liferay-credentials-gitops
+        githubAppIdProperty: github_app_id
+        githubAppInstallationIdProperty: github_app_installation_id
+        githubAppPrivateKeyProperty: github_app_private_key
+        internalSecretName: git-repo-gitops-credentials
+        method: https
+        registerCredentials: true
         revision: HEAD
+        sshPrivateKeyProperty: git_ssh_private_key
+        tokenProperty: git_access_token
         url: ""
+        usernameProperty: git_machine_user_id
 infrastructure:
     chart: ""
     parameters: []
