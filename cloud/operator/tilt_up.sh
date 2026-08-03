@@ -7,17 +7,6 @@ set -o pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 function main {
-	if [[ -z ${ACTIVATION_CODE:-} ]]
-	then
-		echo "Usage: ${0}"
-		echo ""
-		echo "The script reads the following environment variables:"
-		echo ""
-		echo "    ACTIVATION_CODE: Liferay DXP activation code stored in the dev-activation secret"
-
-		exit 1
-	fi
-
 	if k3d cluster list operator-dev > /dev/null 2>&1
 	then
 		k3d cluster start operator-dev

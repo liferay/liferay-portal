@@ -1,4 +1,5 @@
 load("ext://restart_process", "docker_build_with_restart")
+load("ext://uibutton", "cmd_button", "text_input")
 
 context = k8s_context()
 
@@ -13,12 +14,38 @@ if not context.startswith("k3d-"):
 
 allow_k8s_contexts(context)
 
-activation_code = os.getenv("ACTIVATION_CODE")
+environments = [
+    ("non-production", "Non-Production"),
+    ("production", "Production"),
+    ("uat", "UAT"),
+]
 
-if not activation_code:
-	fail(
-	    "ACTIVATION_CODE is not set. Usage: ACTIVATION_CODE=<code> tilt up"
+def environment_yaml(name, display_name):
+	namespace = "liferay-" + name
+
+	return "\n".join(
+	    [
+	        "apiVersion: v1",
+	        "kind: Namespace",
+	        "metadata:",
+	        "  name: " + namespace,
+	        "---",
+	        "apiVersion: licensing.liferay.com/v1alpha1",
+	        "kind: LiferayEnvironment",
+	        "metadata:",
+	        "    name: " + name,
+	        "    namespace: " + namespace,
+	        "spec:",
+	        "    activationCodeSecretRef:",
+	        "        name: " + name + "-activation",
+	        "        key: activationCode",
+	        "    dxpVersion: 2026.q3.0",
+	        "    environmentName: \"" + display_name + "\"",
+	        "    workloadRef:",
+	        "        name: liferay-default",
+	    ]
 	)
+
 
 docker_build_with_restart(
     "liferay/liferay-dxp-operator",
@@ -30,6 +57,45 @@ docker_build_with_restart(
     ],
     target="dev",
 )
+
+for name, display_name in environments:
+	namespace = "liferay-" + name
+
+	k8s_yaml(blob(environment_yaml(name, display_name)))
+
+	k8s_resource(
+	    labels=["environments"],
+	    new_name=namespace,
+	    objects=[
+	        name + ":liferayenvironment",
+	        namespace + ":namespace",
+	    ],
+	    resource_deps=[
+	        "liferay-dxp-operator",
+	        "operator-infra",
+	    ],
+	)
+
+	cmd_button(
+	    namespace + ":activate",
+	    argv=[
+	        "sh",
+	        "-c",
+	        "kubectl create secret generic " + name + "-activation" +
+	        " --dry-run=client" +
+	        " --from-literal=activationCode=\"$ACTIVATION_CODE\"" +
+	        " --namespace " + namespace + " -o yaml | kubectl apply -f - && " +
+	        "kubectl annotate --namespace " + namespace +
+	        " --overwrite liferayenvironment " + name +
+	        " tilt.dev/activate-requested=\"$(date +%s)\"",
+	    ],
+	    icon_name="key",
+	    inputs=[
+	        text_input("ACTIVATION_CODE", label="Activation code"),
+	    ],
+	    resource=namespace,
+	    text="Activate with a new code",
+	)
 
 local_resource(
     "operator-build",
@@ -61,26 +127,17 @@ k8s_resource(
     ],
 )
 
-k8s_resource(
-    labels=["operator"],
-    new_name="sample-environment",
-    objects=[
-        "dev-activation:secret",
-        "dev:liferayenvironment",
-    ],
-    resource_deps=[
-        "liferay-dxp-operator",
-        "operator-infra",
-    ],
-)
-
 k8s_yaml(
-    blob("\n".join([
-        "apiVersion: v1",
-        "kind: Namespace",
-        "metadata:",
-        "  name: liferay-system",
-    ]))
+    blob(
+        "\n".join(
+            [
+                "apiVersion: v1",
+                "kind: Namespace",
+                "metadata:",
+                "    name: liferay-system",
+            ]
+        )
+    )
 )
 
 k8s_yaml(
@@ -90,39 +147,10 @@ k8s_yaml(
         namespace="liferay-system",
         set=[
             "debug=true",
+            "heartbeatInterval=30s",
             "image.repository=liferay/liferay-dxp-operator",
             "provisioning.baseURL=https://webserver-lrprovisioning-uat.lfr.cloud",
             "securityContext.readOnlyRootFilesystem=false",
         ],
     )
-)
-
-k8s_yaml(
-    blob("\n".join([
-        "apiVersion: licensing.liferay.com/v1alpha1",
-        "kind: LiferayEnvironment",
-        "metadata:",
-        "    name: dev",
-        "    namespace: liferay-system",
-        "spec:",
-        "    activationCodeSecretRef:",
-        "      name: dev-activation",
-        "      key: activationCode",
-        "    dxpVersion: 2026.q3.0",
-        "    environmentName: \"Local dev\"",
-        "    workloadRef:",
-        "      name: dev-liferay",
-    ]))
-)
-
-k8s_yaml(
-    blob("\n".join([
-        "apiVersion: v1",
-        "kind: Secret",
-        "metadata:",
-        "    name: dev-activation",
-        "    namespace: liferay-system",
-        "stringData:",
-        "    activationCode: \"" + activation_code + "\"",
-    ]))
 )
