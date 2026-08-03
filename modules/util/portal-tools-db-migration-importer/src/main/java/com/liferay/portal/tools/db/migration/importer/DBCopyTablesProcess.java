@@ -212,7 +212,7 @@ public class DBCopyTablesProcess {
 
 		String valueString = null;
 
-		if ((sourceType == Types.BIGINT) || (sourceType == Types.NUMERIC)) {
+		if (sourceType == Types.BIGINT) {
 			long value = resultSet.getLong(columnName);
 
 			if ((value == 0L) && resultSet.wasNull()) {
@@ -327,11 +327,31 @@ public class DBCopyTablesProcess {
 				valueString = sb.toString();
 			}
 		}
-		else if (sourceType == Types.DECIMAL) {
+		else if ((sourceType == Types.DECIMAL) ||
+				 (sourceType == Types.NUMERIC)) {
+
 			BigDecimal value = resultSet.getBigDecimal(columnName);
 
 			if (value == null) {
 				preparedStatement.setNull(index, targetType);
+
+				return;
+			}
+
+			if (targetType == Types.BIGINT) {
+				preparedStatement.setLong(index, value.longValue());
+
+				return;
+			}
+
+			if (targetType == Types.BIT) {
+				preparedStatement.setBoolean(index, value.signum() != 0);
+
+				return;
+			}
+
+			if (targetType == Types.INTEGER) {
+				preparedStatement.setInt(index, value.intValue());
 
 				return;
 			}
