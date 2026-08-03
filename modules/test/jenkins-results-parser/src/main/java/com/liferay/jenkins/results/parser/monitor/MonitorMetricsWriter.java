@@ -25,6 +25,8 @@ public class MonitorMetricsWriter {
 		File metricsFile, MonitorResultStore monitorResultStore,
 		List<Monitor> monitors) {
 
+		MonitorIdValidator.validate(monitors);
+
 		_metricsFile = metricsFile;
 		_monitorResultStore = monitorResultStore;
 		_monitors = monitors;

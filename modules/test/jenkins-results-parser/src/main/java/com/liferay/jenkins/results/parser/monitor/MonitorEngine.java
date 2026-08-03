@@ -18,6 +18,8 @@ public class MonitorEngine {
 	public MonitorEngine(
 		MonitorResultStore monitorResultStore, List<Monitor> monitors) {
 
+		MonitorIdValidator.validate(monitors);
+
 		_monitorResultStore = monitorResultStore;
 		_monitors = monitors;
 
