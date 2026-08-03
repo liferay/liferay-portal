@@ -36,7 +36,7 @@ function main {
 	then
 		if [[ ! -d "${cloud_dir}/helm/${requested_chart}" ]]
 		then
-			echo "Unable to find chart ${requested_chart}"
+			echo "Unable to find chart ${requested_chart}."
 
 			exit 1
 		fi
