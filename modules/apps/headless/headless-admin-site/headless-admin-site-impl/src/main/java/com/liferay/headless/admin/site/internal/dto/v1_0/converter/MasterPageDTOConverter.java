@@ -8,12 +8,10 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 import com.liferay.headless.admin.site.dto.v1_0.MasterPage;
 import com.liferay.headless.admin.site.dto.v1_0.util.ThumbnailURLReferenceUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.AssetUtil;
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
@@ -48,21 +46,9 @@ public class MasterPageDTOConverter
 		return new MasterPage() {
 			{
 				setCreator(
-					() -> {
-						User user = _userLocalService.fetchUser(
-							layoutPageTemplateEntry.getUserId());
-
-						if (user == null) {
-							return null;
-						}
-
-						return new Creator() {
-							{
-								setExternalReferenceCode(
-									user::getExternalReferenceCode);
-							}
-						};
-					});
+					() -> CreatorUtil.toCreator(
+						layoutPageTemplateEntry.getUserId(),
+						layoutPageTemplateEntry.getUserName()));
 				setDateCreated(layoutPageTemplateEntry::getCreateDate);
 				setDateModified(layoutPageTemplateEntry::getModifiedDate);
 				setDatePublished(layout::getPublishDate);
@@ -95,8 +81,5 @@ public class MasterPageDTOConverter
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }

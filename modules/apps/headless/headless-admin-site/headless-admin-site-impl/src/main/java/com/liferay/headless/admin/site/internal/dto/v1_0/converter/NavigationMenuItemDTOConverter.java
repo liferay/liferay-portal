@@ -12,16 +12,14 @@ import com.liferay.headless.admin.site.dto.v1_0.PageNavigationMenuItemSettings;
 import com.liferay.headless.admin.site.dto.v1_0.URLNavigationMenuItemSettings;
 import com.liferay.headless.admin.site.dto.v1_0.VocabularyNavigationMenuItemSettings;
 import com.liferay.headless.admin.site.internal.constants.DisplayPageTypeSiteNavigationMenuItemTypeConstants;
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -89,21 +87,9 @@ public class NavigationMenuItemDTOConverter
 							locales.toArray(new Locale[localizedMap.size()]));
 					});
 				setCreator(
-					() -> {
-						User user = _userLocalService.fetchUser(
-							siteNavigationMenuItem.getUserId());
-
-						if (user == null) {
-							return null;
-						}
-
-						return new Creator() {
-							{
-								setExternalReferenceCode(
-									user::getExternalReferenceCode);
-							}
-						};
-					});
+					() -> CreatorUtil.toCreator(
+						siteNavigationMenuItem.getUserId(),
+						siteNavigationMenuItem.getUserName()));
 				setCustomFields(
 					() -> CustomFieldsUtil.toCustomFields(
 						dtoConverterContext.isAcceptAllLanguages(),
@@ -406,8 +392,5 @@ public class NavigationMenuItemDTOConverter
 	@Reference
 	private SiteNavigationMenuItemTypeRegistry
 		_siteNavigationMenuItemTypeRegistry;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }

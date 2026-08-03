@@ -7,11 +7,9 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.admin.site.dto.v1_0.StyleBook;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -63,22 +61,9 @@ public class StyleBookDTOConverter
 			{
 				setActions(dtoConverterContext::getActions);
 				setCreator(
-					() -> {
-						User user = _userLocalService.fetchUser(
-							styleBookEntry.getUserId());
-
-						if (user == null) {
-							return null;
-						}
-
-						return new Creator() {
-							{
-								setExternalReferenceCode(
-									user::getExternalReferenceCode);
-								setName(user::getFullName);
-							}
-						};
-					});
+					() -> CreatorUtil.toCreator(
+						styleBookEntry.getUserId(),
+						styleBookEntry.getUserName()));
 				setDateCreated(styleBookEntry::getCreateDate);
 				setDateModified(
 					() -> GetterUtil.getObject(
@@ -124,8 +109,5 @@ public class StyleBookDTOConverter
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }

@@ -7,15 +7,13 @@ package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.headless.admin.site.dto.v1_0.NavigationMenu;
 import com.liferay.headless.admin.site.dto.v1_0.NavigationMenuItem;
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -60,21 +58,9 @@ public class NavigationMenuDTOConverter
 				setActions(dtoConverterContext::getActions);
 				setAuto(siteNavigationMenu::getAuto);
 				setCreator(
-					() -> {
-						User user = _userLocalService.fetchUser(
-							siteNavigationMenu.getUserId());
-
-						if (user == null) {
-							return null;
-						}
-
-						return new Creator() {
-							{
-								setExternalReferenceCode(
-									user::getExternalReferenceCode);
-							}
-						};
-					});
+					() -> CreatorUtil.toCreator(
+						siteNavigationMenu.getUserId(),
+						siteNavigationMenu.getUserName()));
 				setDateCreated(siteNavigationMenu::getCreateDate);
 				setDateModified(siteNavigationMenu::getModifiedDate);
 				setExternalReferenceCode(
@@ -231,8 +217,5 @@ public class NavigationMenuDTOConverter
 
 	@Reference
 	private SiteNavigationMenuItemService _siteNavigationMenuItemService;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
