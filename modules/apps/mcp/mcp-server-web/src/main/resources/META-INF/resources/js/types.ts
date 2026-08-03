@@ -31,6 +31,12 @@ export type DataMaskPayload = {
 	replacementValue: string;
 };
 
+export type DataMaskTreeItem = {
+	children?: DataMaskTreeItem[];
+	id: string;
+	name: string;
+};
+
 export type DataMaskFormValues = {
 	description: string;
 	detectionRegex: string;
@@ -49,6 +55,42 @@ export type PromptStatusKey = 'active' | 'inactive';
 export type PromptStatusPicklistValue = {
 	key: PromptStatusKey;
 	name: string;
+};
+
+export type Profile = {
+	dateModified?: string;
+	description: string;
+	externalReferenceCode?: string;
+	friendlyUrlPath?: string;
+	id?: number;
+	name: string;
+	tools: string;
+};
+
+export type ProfileActionContext = {
+	itemData: Profile;
+	loadData: () => void;
+};
+
+export type ProfileDataMask = {
+	dataMaskExternalReferenceCode: string;
+	deleteReason?: string;
+	executionOrder?: number;
+	externalReferenceCode?: string;
+	id?: number;
+	mcpServerProfileExternalReferenceCode: string;
+};
+
+export type ProfileFormValues = {
+	description: string;
+	name: string;
+	tools: string;
+};
+
+export type ProfilePayload = {
+	description: string;
+	name: string;
+	tools: string;
 };
 
 export type Prompt = {
