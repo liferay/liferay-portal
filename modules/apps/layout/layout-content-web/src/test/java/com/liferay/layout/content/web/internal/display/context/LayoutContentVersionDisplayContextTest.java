@@ -91,6 +91,28 @@ public class LayoutContentVersionDisplayContextTest {
 
 		Map<String, Object> config = (Map<String, Object>)context.get("config");
 
+		_assertAvailableLanguages(
+			(Map<String, Object>)config.get("availableLanguages"), _locale,
+			_siteDefaultLocale);
+
+		List<Map<String, Object>> availableSegmentsExperiences =
+			(List<Map<String, Object>>)config.get(
+				"availableSegmentsExperiences");
+
+		_assertSegmentsExperience(
+			true, winnerSegmentsExperience,
+			availableSegmentsExperiences.get(0));
+		_assertSegmentsExperience(
+			false, loserSegmentsExperience,
+			availableSegmentsExperiences.get(1));
+		_assertSegmentsExperience(
+			true, defaultSegmentsExperience,
+			availableSegmentsExperiences.get(2));
+
+		Assert.assertEquals(
+			availableSegmentsExperiences.toString(), 3,
+			availableSegmentsExperiences.size());
+
 		Map<String, Object> currentVersion = (Map<String, Object>)config.get(
 			"currentVersion");
 
@@ -113,28 +135,6 @@ public class LayoutContentVersionDisplayContextTest {
 				_publishedLayout.getExternalReferenceCode(),
 				"/page-specification-versions"),
 			config.get("pageSpecificationVersionsURL"));
-
-		_assertAvailableLanguages(
-			(Map<String, Object>)config.get("availableLanguages"), _locale,
-			_siteDefaultLocale);
-
-		List<Map<String, Object>> availableSegmentsExperiences =
-			(List<Map<String, Object>>)config.get(
-				"availableSegmentsExperiences");
-
-		_assertSegmentsExperience(
-			true, winnerSegmentsExperience,
-			availableSegmentsExperiences.get(0));
-		_assertSegmentsExperience(
-			false, loserSegmentsExperience,
-			availableSegmentsExperiences.get(1));
-		_assertSegmentsExperience(
-			true, defaultSegmentsExperience,
-			availableSegmentsExperiences.get(2));
-
-		Assert.assertEquals(
-			availableSegmentsExperiences.toString(), 3,
-			availableSegmentsExperiences.size());
 	}
 
 	private void _assertAvailableLanguages(
