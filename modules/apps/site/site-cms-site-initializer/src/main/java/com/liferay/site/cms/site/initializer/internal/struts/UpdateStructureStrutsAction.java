@@ -38,9 +38,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.osgi.service.component.annotations.Component;
@@ -120,8 +122,28 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		return null;
 	}
 
-	private void _deleteRelationships(long objectDefinitionId)
+	private void _deleteRelationships(
+			long objectDefinitionId,
+			List<ObjectRelationship> objectRelationships)
 		throws Exception {
+
+		// Only relationships whose name is about to be recreated from
+		// objectRelationships are deleted here. A blanket delete of every
+		// edge where this structure is objectDefinitionId2 also catches
+		// relationships this structure never owns in the first place - a
+		// "Referenced Content Structure" field's edge has the *referenced*
+		// structure as objectDefinitionId2 (see buildObjectDefinition.ts's
+		// buildRelationships), so simply republishing the referenced
+		// structure with no changes of its own would otherwise delete the
+		// referencing structure's field, with nothing to recreate it, since
+		// that edge is never part of this structure's own
+		// objectRelationships.
+
+		Set<String> names = new HashSet<>();
+
+		for (ObjectRelationship objectRelationship : objectRelationships) {
+			names.add(objectRelationship.getName());
+		}
 
 		for (com.liferay.object.model.ObjectRelationship
 				serviceBuilderObjectRelationship :
@@ -129,7 +151,9 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 						getObjectRelationshipsByObjectDefinitionId2(
 							objectDefinitionId, true)) {
 
-			if (serviceBuilderObjectRelationship.isReverse()) {
+			if (serviceBuilderObjectRelationship.isReverse() ||
+				!names.contains(serviceBuilderObjectRelationship.getName())) {
+
 				continue;
 			}
 
@@ -408,7 +432,8 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 
 			if (serviceBuilderObjectDefinition != null) {
 				_deleteRelationships(
-					serviceBuilderObjectDefinition.getObjectDefinitionId());
+					serviceBuilderObjectDefinition.getObjectDefinitionId(),
+					_objectRelationships);
 			}
 
 			if (ListUtil.isNotEmpty(_objectRelationships)) {
