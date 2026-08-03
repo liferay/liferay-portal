@@ -1,0 +1,60 @@
+{{- if .Values.operatorApplications.crossplane.enabled }}
+{{- range $name, $function := .Values.operatorApplications.crossplane.functions }}
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: Function
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $name }}
+    name: {{ $name }}
+spec:
+    package: {{ $function.package }}
+    runtimeConfigRef:
+        name: {{ $name }}-runtime-config
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $name }}-runtime-config
+    name: {{ $name }}-runtime-config
+spec:
+    deploymentTemplate:
+        metadata:
+            annotations:
+                {{- include "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" $ | nindent 16 }}
+        spec:
+            selector:
+                matchLabels:
+                    pkg.crossplane.io/function: {{ $name }}
+            template:
+                metadata:
+                    annotations:
+                        {{- include "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" $ | nindent 24 }}
+                spec:
+                    containers:
+                        -   name: package-runtime
+                            resources:
+                                {{- toYaml $function.resources | nindent 32 }}
+                            securityContext:
+                                allowPrivilegeEscalation: false
+                                capabilities:
+                                    drop:
+                                        -   ALL
+                                readOnlyRootFilesystem: true
+                                runAsGroup: 65532
+                                runAsUser: 65532
+                    securityContext:
+                        runAsNonRoot: true
+                        seccompProfile:
+                            type: RuntimeDefault
+{{- end }}
+{{- end }}

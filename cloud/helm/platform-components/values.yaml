@@ -144,11 +144,27 @@ operatorApplications:
                     requests:
                         cpu: 15m
                         memory: 128Mi
+            function-environment-configs:
+                package: xpkg.upbound.io/crossplane-contrib/function-environment-configs:v0.6.0
+                resources:
+                    limits:
+                        memory: 256Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
             function-go-templating:
                 package: xpkg.upbound.io/crossplane-contrib/function-go-templating:v0.11.3
                 resources:
                     limits:
                         memory: 512Mi
+                    requests:
+                        cpu: 15m
+                        memory: 128Mi
+            function-tag-manager:
+                package: xpkg.upbound.io/crossplane-contrib/function-tag-manager:v0.6.0
+                resources:
+                    limits:
+                        memory: 256Mi
                     requests:
                         cpu: 15m
                         memory: 128Mi

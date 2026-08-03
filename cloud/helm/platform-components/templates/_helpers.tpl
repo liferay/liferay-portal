@@ -19,6 +19,14 @@ targetRevision: {{ .targetRevision | quote }}
 {{- printf "%s-secret-store" .Values.clusterIdentity.deploymentName -}}
 {{- end -}}
 
+{{- define "liferay-platform.crossplaneDeploymentRuntimeConfigAnnotations" -}}
+instrumentation.opentelemetry.io/inject-dotnet: "false"
+instrumentation.opentelemetry.io/inject-java: "false"
+instrumentation.opentelemetry.io/inject-nodejs: "false"
+instrumentation.opentelemetry.io/inject-python: "false"
+sidecar.opentelemetry.io/inject: "false"
+{{- end -}}
+
 {{- define "liferay-platform.infrastructureRepositoryRevision" -}}
 {{- .Values.gitops.infrastructureRepository.revision | default .Values.gitops.repository.revision -}}
 {{- end -}}
