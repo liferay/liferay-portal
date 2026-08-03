@@ -63,9 +63,9 @@ export default function UpdateReviewDateModalContent({
 		const success = await onSave(
 			field.neverReview
 				? ''
-				: `${moment(field.value, dateConfig.momentFormat).format(
-						'YYYY-MM-DDTHH:mm:ss'
-					)}Z`
+				: `${moment(field.value, dateConfig.momentFormat)
+						.utc()
+						.format('YYYY-MM-DDTHH:mm:ss')}Z`
 		);
 
 		setSaving(false);
