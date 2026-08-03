@@ -97,6 +97,34 @@ public class MonitorMetricsWriterTest
 	}
 
 	@Test
+	public void testWriteEmptyType() throws Exception {
+		MonitorResultStore monitorResultStore = new MonitorResultStore();
+
+		monitorResultStore.store(
+			"disk",
+			_newMonitorResult(
+				MonitorResult.Status.OK, RandomTestUtil.randomLong()));
+
+		File metricsFile = new File(
+			temporaryFolder.getRoot(), RandomTestUtil.randomString());
+
+		_write(
+			metricsFile, monitorResultStore,
+			Arrays.<Monitor>asList(
+				new TestMonitor(
+					_newMonitorConfig(
+						"disk", MonitorConfig.Severity.HIGH, ""))));
+
+		String content = read(metricsFile);
+
+		Assert.assertTrue(
+			content,
+			content.contains(
+				"monitor_check_status{check=\"disk\",severity=\"high\"," +
+					"type=\"unknown\"} 0.0\n"));
+	}
+
+	@Test
 	public void testWriteEscapesLabelValues() throws Exception {
 		MonitorResultStore monitorResultStore = new MonitorResultStore();
 
