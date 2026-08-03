@@ -23,6 +23,9 @@ const test = mergeTests(
 
 const APPLICATION_NAME = 'cms/basic-web-contents';
 const PAST_DATE = '2020-01-01T00:00:00Z';
+const REVIEW_DATE_DISPLAYED = '12/31/2099, 10:00 AM';
+const REVIEW_DATE_INPUT = '12/31/2099 10:00 AM';
+const TIME_ZONE = 'America/Los_Angeles';
 
 async function fillReviewDateModal(page: Page, reviewDate: string) {
 	await page.locator('.modal input.form-control').first().fill(reviewDate);
@@ -56,6 +59,66 @@ test.beforeEach(async ({apiHelpers, page}) => {
 	);
 
 	await performUserSwitchViaApi(page, user.alternateName);
+});
+
+test.describe('Review date time zone', () => {
+	test.use({timezoneId: TIME_ZONE});
+
+	test(
+		'Stores the review date the user picked in their own time zone',
+		{tag: '@LPD-98462'},
+		async ({apiHelpers, page}) => {
+			const spaceName = `space ${getRandomString()}`;
+			const title = `overdue ${getRandomString()}`;
+
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				type: 'Space',
+			});
+
+			const overdueContent = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					displayDate: PAST_DATE,
+					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+					reviewDate: PAST_DATE,
+					title,
+				},
+				APPLICATION_NAME,
+				spaceName
+			);
+
+			apiHelpers.data.push({id: overdueContent.id, type: 'document'});
+
+			await page.goto('/web/cms/overdue-reviews');
+
+			await updateReviewDate(page, title, REVIEW_DATE_INPUT);
+
+			await expect
+				.poll(
+					async () => {
+						const updatedObjectEntry =
+							await apiHelpers.objectEntry.getObjectEntryById(
+								APPLICATION_NAME,
+								String(overdueContent.id)
+							);
+
+						return new Date(
+							updatedObjectEntry.reviewDate
+						).toLocaleString('en-US', {
+							day: '2-digit',
+							hour: '2-digit',
+							hour12: true,
+							minute: '2-digit',
+							month: '2-digit',
+							timeZone: TIME_ZONE,
+							year: 'numeric',
+						});
+					},
+					{timeout: 3000}
+				)
+				.toBe(REVIEW_DATE_DISPLAYED);
+		}
+	);
 });
 
 test(
@@ -177,11 +240,7 @@ test(
 		});
 
 		await test.step('Update a review date from its row action', async () => {
-			await updateReviewDate(
-				page,
-				secondSpaceTitle,
-				'12/31/2099 10:00 AM'
-			);
+			await updateReviewDate(page, secondSpaceTitle, REVIEW_DATE_INPUT);
 
 			await pollReviewDate(overdueContents[1].id);
 
@@ -208,7 +267,7 @@ test(
 
 			await page.locator('.modal').getByLabel('Never Review').uncheck();
 
-			await fillReviewDateModal(page, '12/31/2099 10:00 AM');
+			await fillReviewDateModal(page, REVIEW_DATE_INPUT);
 
 			for (const overdueContent of overdueContents.slice(2)) {
 				await pollReviewDate(overdueContent.id);
