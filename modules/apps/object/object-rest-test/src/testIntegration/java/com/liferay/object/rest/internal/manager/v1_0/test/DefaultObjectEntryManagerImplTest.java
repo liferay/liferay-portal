@@ -8985,15 +8985,31 @@ public class DefaultObjectEntryManagerImplTest
 
 		Map<String, Map<String, String>> objectEntryActions =
 			HashMapBuilder.<String, Map<String, String>>put(
+				"copy", Collections.emptyMap()
+			).put(
+				"copy-replace", Collections.emptyMap()
+			).put(
 				"delete", Collections.emptyMap()
+			).put(
+				"duplicate", Collections.emptyMap()
 			).put(
 				"expire", Collections.emptyMap()
 			).put(
 				"get", Collections.emptyMap()
 			).put(
+				"get-by-scope", Collections.emptyMap()
+			).put(
+				"move", Collections.emptyMap()
+			).put(
+				"move-replace", Collections.emptyMap()
+			).put(
 				"permissions", Collections.emptyMap()
 			).put(
 				"replace", Collections.emptyMap()
+			).put(
+				"restore", Collections.emptyMap()
+			).put(
+				"share", Collections.emptyMap()
 			).put(
 				"update", Collections.emptyMap()
 			).put(
