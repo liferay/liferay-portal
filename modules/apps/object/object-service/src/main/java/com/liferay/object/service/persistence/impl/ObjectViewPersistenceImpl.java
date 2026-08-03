@@ -19,12 +19,20 @@ import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.sanitizer.Sanitizer;
+import com.liferay.portal.kernel.sanitizer.SanitizerException;
+import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
+import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
+import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -39,6 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.sql.DataSource;
@@ -431,6 +440,90 @@ public class ObjectViewPersistenceImpl
 			finderCache, new Object[] {objectDefinitionId, defaultObjectView});
 	}
 
+	private UniquePersistenceFinder<ObjectView, NoSuchObjectViewException>
+		_uniquePersistenceFinderByERC_C_ODI;
+
+	/**
+	 * Returns the object view where externalReferenceCode = &#63; and companyId = &#63; and objectDefinitionId = &#63; or throws a <code>NoSuchObjectViewException</code> if it could not be found.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param objectDefinitionId the object definition ID
+	 * @return the matching object view
+	 * @throws NoSuchObjectViewException if a matching object view could not be found
+	 */
+	@Override
+	public ObjectView findByERC_C_ODI(
+			String externalReferenceCode, long companyId,
+			long objectDefinitionId)
+		throws NoSuchObjectViewException {
+
+		return _uniquePersistenceFinderByERC_C_ODI.find(
+			finderCache,
+			new Object[] {
+				externalReferenceCode, companyId, objectDefinitionId
+			});
+	}
+
+	/**
+	 * Returns the object view where externalReferenceCode = &#63; and companyId = &#63; and objectDefinitionId = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param objectDefinitionId the object definition ID
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching object view, or <code>null</code> if a matching object view could not be found
+	 */
+	@Override
+	public ObjectView fetchByERC_C_ODI(
+		String externalReferenceCode, long companyId, long objectDefinitionId,
+		boolean useFinderCache) {
+
+		return _uniquePersistenceFinderByERC_C_ODI.fetch(
+			finderCache,
+			new Object[] {externalReferenceCode, companyId, objectDefinitionId},
+			useFinderCache);
+	}
+
+	/**
+	 * Removes the object view where externalReferenceCode = &#63; and companyId = &#63; and objectDefinitionId = &#63; from the database.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param objectDefinitionId the object definition ID
+	 * @return the object view that was removed
+	 */
+	@Override
+	public ObjectView removeByERC_C_ODI(
+			String externalReferenceCode, long companyId,
+			long objectDefinitionId)
+		throws NoSuchObjectViewException {
+
+		ObjectView objectView = findByERC_C_ODI(
+			externalReferenceCode, companyId, objectDefinitionId);
+
+		return remove(objectView);
+	}
+
+	/**
+	 * Returns the number of object views where externalReferenceCode = &#63; and companyId = &#63; and objectDefinitionId = &#63;.
+	 *
+	 * @param externalReferenceCode the external reference code
+	 * @param companyId the company ID
+	 * @param objectDefinitionId the object definition ID
+	 * @return the number of matching object views
+	 */
+	@Override
+	public int countByERC_C_ODI(
+		String externalReferenceCode, long companyId, long objectDefinitionId) {
+
+		return _uniquePersistenceFinderByERC_C_ODI.count(
+			finderCache,
+			new Object[] {
+				externalReferenceCode, companyId, objectDefinitionId
+			});
+	}
+
 	public ObjectViewPersistenceImpl() {
 		Map<String, String> dbColumnNames = new HashMap<String, String>();
 
@@ -539,6 +632,44 @@ public class ObjectViewPersistenceImpl
 			String uuid = PortalUUIDUtil.generate();
 
 			objectView.setUuid(uuid);
+		}
+
+		if (Validator.isNull(objectView.getExternalReferenceCode())) {
+			objectView.setExternalReferenceCode(objectView.getUuid());
+		}
+		else {
+			if (!Objects.equals(
+					objectViewModelImpl.getColumnOriginalValue(
+						"externalReferenceCode"),
+					objectView.getExternalReferenceCode())) {
+
+				long userId = GetterUtil.getLong(
+					PrincipalThreadLocal.getName());
+
+				if (userId > 0) {
+					long companyId = objectView.getCompanyId();
+
+					long groupId = 0;
+
+					long classPK = 0;
+
+					if (!isNew) {
+						classPK = objectView.getPrimaryKey();
+					}
+
+					try {
+						objectView.setExternalReferenceCode(
+							SanitizerUtil.sanitize(
+								companyId, groupId, userId,
+								ObjectView.class.getName(), classPK,
+								ContentTypes.TEXT_HTML, Sanitizer.MODE_ALL,
+								objectView.getExternalReferenceCode(), null));
+					}
+					catch (SanitizerException sanitizerException) {
+						throw new SystemException(sanitizerException);
+					}
+				}
+			}
 		}
 
 		ServiceContext serviceContext =
@@ -769,6 +900,32 @@ public class ObjectViewPersistenceImpl
 					FinderColumn.Type.BOOLEAN, "=", true, true,
 					ObjectView::isDefaultObjectView));
 
+		_uniquePersistenceFinderByERC_C_ODI = new UniquePersistenceFinder<>(
+			this,
+			createUniqueFinderPath(
+				FINDER_CLASS_NAME_ENTITY, "fetchByERC_C_ODI",
+				new String[] {
+					String.class.getName(), Long.class.getName(),
+					Long.class.getName()
+				},
+				new String[] {
+					"externalReferenceCode", "companyId", "objectDefinitionId"
+				},
+				0, 1, false,
+				convertNullFunction(ObjectView::getExternalReferenceCode),
+				ObjectView::getCompanyId, ObjectView::getObjectDefinitionId),
+			_SQL_SELECT_OBJECTVIEW_WHERE, "",
+			new FinderColumn<>(
+				"objectView.", "externalReferenceCode",
+				FinderColumn.Type.STRING, "=", true, true,
+				ObjectView::getExternalReferenceCode),
+			new FinderColumn<>(
+				"objectView.", "companyId", FinderColumn.Type.LONG, "=", true,
+				true, ObjectView::getCompanyId),
+			new FinderColumn<>(
+				"objectView.", "objectDefinitionId", FinderColumn.Type.LONG,
+				"=", true, true, ObjectView::getObjectDefinitionId));
+
 		ObjectViewUtil.setPersistence(this);
 	}
 
@@ -832,4 +989,4 @@ public class ObjectViewPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2038710955
+// LIFERAY-SERVICE-BUILDER-HASH:-1155002380

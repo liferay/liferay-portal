@@ -42,8 +42,8 @@ import com.liferay.portal.kernel.util.MethodKey;
 public class ObjectViewServiceHttp {
 
 	public static com.liferay.object.model.ObjectView addObjectView(
-			HttpPrincipal httpPrincipal, long objectDefinitionId,
-			boolean defaultObjectView,
+			HttpPrincipal httpPrincipal, String externalReferenceCode,
+			long objectDefinitionId, boolean defaultObjectView,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.List<com.liferay.object.model.ObjectViewColumn>
 				objectViewColumns,
@@ -59,9 +59,9 @@ public class ObjectViewServiceHttp {
 				_addObjectViewParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, objectDefinitionId, defaultObjectView, nameMap,
-				objectViewColumns, objectViewFilterColumns,
-				objectViewSortColumns);
+				methodKey, externalReferenceCode, objectDefinitionId,
+				defaultObjectView, nameMap, objectViewColumns,
+				objectViewFilterColumns, objectViewSortColumns);
 
 			Object returnObj = null;
 
@@ -172,8 +172,8 @@ public class ObjectViewServiceHttp {
 	}
 
 	public static com.liferay.object.model.ObjectView updateObjectView(
-			HttpPrincipal httpPrincipal, long objectViewId,
-			boolean defaultObjectView,
+			HttpPrincipal httpPrincipal, String externalReferenceCode,
+			long objectViewId, boolean defaultObjectView,
 			java.util.Map<java.util.Locale, String> nameMap,
 			java.util.List<com.liferay.object.model.ObjectViewColumn>
 				objectViewColumns,
@@ -189,9 +189,9 @@ public class ObjectViewServiceHttp {
 				_updateObjectViewParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, objectViewId, defaultObjectView, nameMap,
-				objectViewColumns, objectViewFilterColumns,
-				objectViewSortColumns);
+				methodKey, externalReferenceCode, objectViewId,
+				defaultObjectView, nameMap, objectViewColumns,
+				objectViewFilterColumns, objectViewSortColumns);
 
 			Object returnObj = null;
 
@@ -226,7 +226,7 @@ public class ObjectViewServiceHttp {
 
 	private static final Class<?>[] _addObjectViewParameterTypes0 =
 		new Class[] {
-			long.class, boolean.class, java.util.Map.class,
+			String.class, long.class, boolean.class, java.util.Map.class,
 			java.util.List.class, java.util.List.class, java.util.List.class
 		};
 	private static final Class<?>[] _deleteObjectViewParameterTypes1 =
@@ -235,9 +235,9 @@ public class ObjectViewServiceHttp {
 		new Class[] {long.class};
 	private static final Class<?>[] _updateObjectViewParameterTypes3 =
 		new Class[] {
-			long.class, boolean.class, java.util.Map.class,
+			String.class, long.class, boolean.class, java.util.Map.class,
 			java.util.List.class, java.util.List.class, java.util.List.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:510148744
+// LIFERAY-SERVICE-BUILDER-HASH:411669410

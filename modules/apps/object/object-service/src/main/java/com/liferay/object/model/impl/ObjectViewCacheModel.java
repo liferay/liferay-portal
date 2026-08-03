@@ -68,12 +68,14 @@ public class ObjectViewCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(23);
+		StringBundler sb = new StringBundler(25);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
 		sb.append(", uuid=");
 		sb.append(uuid);
+		sb.append(", externalReferenceCode=");
+		sb.append(externalReferenceCode);
 		sb.append(", objectViewId=");
 		sb.append(objectViewId);
 		sb.append(", companyId=");
@@ -108,6 +110,13 @@ public class ObjectViewCacheModel
 		}
 		else {
 			objectViewImpl.setUuid(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectViewImpl.setExternalReferenceCode("");
+		}
+		else {
+			objectViewImpl.setExternalReferenceCode(externalReferenceCode);
 		}
 
 		objectViewImpl.setObjectViewId(objectViewId);
@@ -154,6 +163,7 @@ public class ObjectViewCacheModel
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
+		externalReferenceCode = objectInput.readUTF();
 
 		objectViewId = objectInput.readLong();
 
@@ -179,6 +189,13 @@ public class ObjectViewCacheModel
 		}
 		else {
 			objectOutput.writeUTF(uuid);
+		}
+
+		if (externalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(objectViewId);
@@ -211,6 +228,7 @@ public class ObjectViewCacheModel
 
 	public long mvccVersion;
 	public String uuid;
+	public String externalReferenceCode;
 	public long objectViewId;
 	public long companyId;
 	public long userId;
@@ -222,4 +240,4 @@ public class ObjectViewCacheModel
 	public String name;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2134364616
+// LIFERAY-SERVICE-BUILDER-HASH:1244268228

@@ -130,6 +130,7 @@ create unique index IX_7FCFA51D on ObjectValidationRuleSetting (objectValidation
 create index IX_9CCE9B52 on ObjectValidationRuleSetting (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_6AF6C9EA on ObjectView (objectDefinitionId, defaultObjectView);
+create unique index IX_405BB456 on ObjectView (objectDefinitionId, externalReferenceCode[$COLUMN_LENGTH:75$], companyId);
 create index IX_877B3D0A on ObjectView (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_B7B14E3 on ObjectViewColumn (objectViewId, objectFieldName[$COLUMN_LENGTH:75$]);

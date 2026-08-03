@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -113,6 +115,8 @@ public class ObjectViewPersistenceTest {
 
 		newObjectView.setUuid(RandomTestUtil.randomString());
 
+		newObjectView.setExternalReferenceCode(RandomTestUtil.randomString());
+
 		newObjectView.setCompanyId(RandomTestUtil.nextLong());
 
 		newObjectView.setUserId(RandomTestUtil.nextLong());
@@ -141,6 +145,9 @@ public class ObjectViewPersistenceTest {
 			newObjectView.getMvccVersion());
 		Assert.assertEquals(
 			existingObjectView.getUuid(), newObjectView.getUuid());
+		Assert.assertEquals(
+			existingObjectView.getExternalReferenceCode(),
+			newObjectView.getExternalReferenceCode());
 		Assert.assertEquals(
 			existingObjectView.getObjectViewId(),
 			newObjectView.getObjectViewId());
@@ -200,6 +207,16 @@ public class ObjectViewPersistenceTest {
 	}
 
 	@Test
+	public void testCountByERC_C_ODI() throws Exception {
+		_persistence.countByERC_C_ODI(
+			"", RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+
+		_persistence.countByERC_C_ODI("null", 0L, 0L);
+
+		_persistence.countByERC_C_ODI((String)null, 0L, 0L);
+	}
+
+	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		ObjectView newObjectView = addObjectView();
 
@@ -224,10 +241,11 @@ public class ObjectViewPersistenceTest {
 
 	protected OrderByComparator<ObjectView> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"ObjectView", "mvccVersion", true, "uuid", true, "objectViewId",
-			true, "companyId", true, "userId", true, "userName", true,
-			"createDate", true, "modifiedDate", true, "objectDefinitionId",
-			true, "defaultObjectView", true, "name", true);
+			"ObjectView", "mvccVersion", true, "uuid", true,
+			"externalReferenceCode", true, "objectViewId", true, "companyId",
+			true, "userId", true, "userName", true, "createDate", true,
+			"modifiedDate", true, "objectDefinitionId", true,
+			"defaultObjectView", true, "name", true);
 	}
 
 	@Test
@@ -439,12 +457,82 @@ public class ObjectViewPersistenceTest {
 		Assert.assertEquals(0, result.size());
 	}
 
+	@Test
+	public void testResetOriginalValues() throws Exception {
+		ObjectView newObjectView = addObjectView();
+
+		_persistence.clearCache();
+
+		_assertOriginalValues(
+			_persistence.findByPrimaryKey(newObjectView.getPrimaryKey()));
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(true);
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(false);
+	}
+
+	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
+		throws Exception {
+
+		ObjectView newObjectView = addObjectView();
+
+		if (clearSession) {
+			Session session = _persistence.openSession();
+
+			session.flush();
+
+			session.clear();
+		}
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			ObjectView.class, _dynamicQueryClassLoader);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"objectViewId", newObjectView.getObjectViewId()));
+
+		List<ObjectView> result = _persistence.findWithDynamicQuery(
+			dynamicQuery);
+
+		_assertOriginalValues(result.get(0));
+	}
+
+	private void _assertOriginalValues(ObjectView objectView) {
+		Assert.assertEquals(
+			objectView.getExternalReferenceCode(),
+			ReflectionTestUtil.invoke(
+				objectView, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "externalReferenceCode"));
+		Assert.assertEquals(
+			Long.valueOf(objectView.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				objectView, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+		Assert.assertEquals(
+			Long.valueOf(objectView.getObjectDefinitionId()),
+			ReflectionTestUtil.<Long>invoke(
+				objectView, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "objectDefinitionId"));
+	}
+
 	protected ObjectView addObjectView() throws Exception {
 		long pk = RandomTestUtil.nextLong();
 
 		ObjectView objectView = _persistence.create(pk);
 
 		objectView.setUuid(RandomTestUtil.randomString());
+
+		objectView.setExternalReferenceCode(RandomTestUtil.randomString());
 
 		objectView.setCompanyId(RandomTestUtil.nextLong());
 
@@ -472,4 +560,4 @@ public class ObjectViewPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:119573705
+// LIFERAY-SERVICE-BUILDER-HASH:-1307650300

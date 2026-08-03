@@ -429,6 +429,7 @@
 	<model name="com.liferay.object.model.ObjectView">
 		<field name="mvccVersion" type="long" />
 		<field name="uuid" type="String" />
+		<field name="externalReferenceCode" type="String" />
 		<field name="objectViewId" type="long" />
 		<field name="companyId" type="long" />
 		<field name="userId" type="long" />

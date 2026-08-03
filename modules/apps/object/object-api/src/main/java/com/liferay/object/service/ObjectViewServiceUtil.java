@@ -32,8 +32,8 @@ public class ObjectViewServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.object.service.impl.ObjectViewServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static ObjectView addObjectView(
-			long objectDefinitionId, boolean defaultObjectView,
-			Map<java.util.Locale, String> nameMap,
+			String externalReferenceCode, long objectDefinitionId,
+			boolean defaultObjectView, Map<java.util.Locale, String> nameMap,
 			List<com.liferay.object.model.ObjectViewColumn> objectViewColumns,
 			List<com.liferay.object.model.ObjectViewFilterColumn>
 				objectViewFilterColumns,
@@ -42,8 +42,9 @@ public class ObjectViewServiceUtil {
 		throws PortalException {
 
 		return getService().addObjectView(
-			objectDefinitionId, defaultObjectView, nameMap, objectViewColumns,
-			objectViewFilterColumns, objectViewSortColumns);
+			externalReferenceCode, objectDefinitionId, defaultObjectView,
+			nameMap, objectViewColumns, objectViewFilterColumns,
+			objectViewSortColumns);
 	}
 
 	public static ObjectView deleteObjectView(long objectViewId)
@@ -68,8 +69,8 @@ public class ObjectViewServiceUtil {
 	}
 
 	public static ObjectView updateObjectView(
-			long objectViewId, boolean defaultObjectView,
-			Map<java.util.Locale, String> nameMap,
+			String externalReferenceCode, long objectViewId,
+			boolean defaultObjectView, Map<java.util.Locale, String> nameMap,
 			List<com.liferay.object.model.ObjectViewColumn> objectViewColumns,
 			List<com.liferay.object.model.ObjectViewFilterColumn>
 				objectViewFilterColumns,
@@ -78,8 +79,8 @@ public class ObjectViewServiceUtil {
 		throws PortalException {
 
 		return getService().updateObjectView(
-			objectViewId, defaultObjectView, nameMap, objectViewColumns,
-			objectViewFilterColumns, objectViewSortColumns);
+			externalReferenceCode, objectViewId, defaultObjectView, nameMap,
+			objectViewColumns, objectViewFilterColumns, objectViewSortColumns);
 	}
 
 	public static ObjectViewService getService() {
@@ -90,4 +91,4 @@ public class ObjectViewServiceUtil {
 		new Snapshot<>(ObjectViewServiceUtil.class, ObjectViewService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:649967739
+// LIFERAY-SERVICE-BUILDER-HASH:938478427
