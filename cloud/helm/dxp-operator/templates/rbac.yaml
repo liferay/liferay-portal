@@ -17,6 +17,15 @@ rules:
     -   apiGroups:
             -   ""
         resources:
+            -   persistentvolumeclaims
+        verbs:
+            -   create
+            -   get
+            -   list
+            -   watch
+    -   apiGroups:
+            -   ""
+        resources:
             -   secrets
         verbs:
             -   create
@@ -24,6 +33,14 @@ rules:
             -   list
             -   patch
             -   update
+            -   watch
+    -   apiGroups:
+            -   apps
+        resources:
+            -   statefulsets
+        verbs:
+            -   get
+            -   list
             -   watch
     -   apiGroups:
             -   licensing.liferay.com
@@ -49,6 +66,14 @@ rules:
             -   get
             -   patch
             -   update
+    -   apiGroups:
+            -   storage.k8s.io
+        resources:
+            -   storageclasses
+        verbs:
+            -   get
+            -   list
+            -   watch
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
