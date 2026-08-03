@@ -1029,7 +1029,8 @@ public class ObjectFieldLocalServiceImpl
 			return objectField;
 		}
 
-		if (objectField.compareBusinessType(
+		if (!objectDefinition.isUnmodifiableSystemObject() &&
+			objectField.compareBusinessType(
 				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
 			try {
