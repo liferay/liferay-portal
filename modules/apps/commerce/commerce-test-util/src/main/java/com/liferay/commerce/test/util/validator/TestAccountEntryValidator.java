@@ -59,6 +59,10 @@ public class TestAccountEntryValidator implements AccountEntryValidator {
 		return _jsonObject;
 	}
 
+	public int getValidateCount() {
+		return _validateCount;
+	}
+
 	@Override
 	public boolean isSkipped(AccountEntry accountEntry, JSONObject jsonObject) {
 		return _skipped;
@@ -78,6 +82,8 @@ public class TestAccountEntryValidator implements AccountEntryValidator {
 
 		_jsonObject = jsonObject;
 
+		_validateCount++;
+
 		return AccountEntryValidatorResult.builder(
 			_classPK
 		).resultMessage(
@@ -92,5 +98,6 @@ public class TestAccountEntryValidator implements AccountEntryValidator {
 	private final String _resultMessage;
 	private String _resultStatus;
 	private volatile boolean _skipped;
+	private volatile int _validateCount;
 
 }

@@ -78,6 +78,7 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
 
 import java.math.BigDecimal;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -340,17 +341,8 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 
 		for (AccountEntryValidatorResult curAccountEntryValidatorResult :
-				_accountEntryValidatorRegistry.validate(
-					_accountEntryLocalService.fetchAccountEntry(
-						commerceOrder.getCommerceAccountId()),
-					JSONUtil.put(
-						"billingAddressId", commerceOrder.getBillingAddressId()
-					).put(
-						"commerceOrderId", commerceOrder.getCommerceOrderId()
-					).put(
-						"shippingAddressId",
-						commerceOrder.getShippingAddressId()
-					))) {
+				_getAccountEntryValidatorResults(
+					commerceOrder, httpServletRequest)) {
 
 			if (!_isAccountValidationResultValid(
 					curAccountEntryValidatorResult, validationMode)) {
@@ -364,6 +356,35 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 		}
 
 		return null;
+	}
+
+	private List<AccountEntryValidatorResult> _getAccountEntryValidatorResults(
+			CommerceOrder commerceOrder, HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		List<AccountEntryValidatorResult> accountEntryValidatorResults =
+			(List<AccountEntryValidatorResult>)httpServletRequest.getAttribute(
+				_ACCOUNT_ENTRY_VALIDATOR_RESULTS);
+
+		if (accountEntryValidatorResults != null) {
+			return accountEntryValidatorResults;
+		}
+
+		accountEntryValidatorResults = _accountEntryValidatorRegistry.validate(
+			_accountEntryLocalService.fetchAccountEntry(
+				commerceOrder.getCommerceAccountId()),
+			JSONUtil.put(
+				"billingAddressId", commerceOrder.getBillingAddressId()
+			).put(
+				"commerceOrderId", commerceOrder.getCommerceOrderId()
+			).put(
+				"shippingAddressId", commerceOrder.getShippingAddressId()
+			));
+
+		httpServletRequest.setAttribute(
+			_ACCOUNT_ENTRY_VALIDATOR_RESULTS, accountEntryValidatorResults);
+
+		return accountEntryValidatorResults;
 	}
 
 	private boolean _isAccountValidationResultValid(
@@ -500,6 +521,10 @@ public class OrderSummaryCommerceCheckoutStep extends BaseCommerceCheckoutStep {
 			}
 		}
 	}
+
+	private static final String _ACCOUNT_ENTRY_VALIDATOR_RESULTS =
+		OrderSummaryCommerceCheckoutStep.class.getName() +
+			"#ACCOUNT_ENTRY_VALIDATOR_RESULTS";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		OrderSummaryCommerceCheckoutStep.class);
