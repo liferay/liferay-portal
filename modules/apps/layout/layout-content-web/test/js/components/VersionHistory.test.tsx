@@ -122,7 +122,7 @@ describe('VersionHistory', () => {
 		);
 
 		(Liferay.Language.get as jest.Mock).mockImplementation((key: string) =>
-			key === 'modified-by-x-on-x' ? 'Modified by {0}, {1}' : key
+			key === 'modified-by-x,-x' ? 'Modified by {0}, {1}' : key
 		);
 	});
 

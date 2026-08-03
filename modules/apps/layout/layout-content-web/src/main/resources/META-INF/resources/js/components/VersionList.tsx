@@ -147,7 +147,7 @@ export default function VersionList({
 								<ClayList.ItemText>
 									{sub(
 										Liferay.Language.get(
-											'modified-by-x-on-x'
+											'modified-by-x,-x'
 										),
 										[
 											version.creator.name,
