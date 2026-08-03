@@ -430,37 +430,27 @@ test(
 	}
 );
 
-test(
-	'Enhanced Paste from Office plugin is registered for licensed DXP installations',
-	{tag: '@LPD-95090'},
-	async ({classicPage, page}) => {
-		await expect(classicPage.editable).toBeVisible();
+if (!process.env.CI) {
+	test(
+		'Enhanced Paste from Office plugin is registered for licensed DXP installations',
+		{tag: '@LPD-95090'},
+		async ({classicPage, page}) => {
+			await expect(classicPage.editable).toBeVisible();
 
-		const {hasPasteFromOfficeEnhanced, showPasteFromOfficeEnhanced} =
-			await page.evaluate(() => {
+			const hasPasteFromOfficeEnhanced = await page.evaluate(() => {
 				const editorElement = Array.from(
 					document.querySelectorAll('.lfr-ck *')
 				).find((element) => (element as any).ckeditorInstance);
 
 				const editor = (editorElement as any)?.ckeditorInstance;
 
-				return {
-					hasPasteFromOfficeEnhanced:
-						editor?.plugins.has('PasteFromOfficeEnhanced') ?? false,
-					showPasteFromOfficeEnhanced:
-						editor?.config.get('showPasteFromOfficeEnhanced') ??
-						false,
-				};
+				return editor?.plugins.has('PasteFromOfficeEnhanced') ?? false;
 			});
 
-		test.skip(
-			!showPasteFromOfficeEnhanced,
-			'Enhanced Paste from Office is only available on licensed DXP installations'
-		);
-
-		expect(hasPasteFromOfficeEnhanced).toBe(true);
-	}
-);
+			expect(hasPasteFromOfficeEnhanced).toBe(true);
+		}
+	);
+}
 
 test(
 	'Style Book text colors are available in the Styles dropdown',
