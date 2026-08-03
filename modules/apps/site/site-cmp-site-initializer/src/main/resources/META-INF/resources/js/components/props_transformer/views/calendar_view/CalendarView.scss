@@ -25,6 +25,11 @@
 		text-decoration: none !important;
 	}
 
+	.fc-day-today .fc-daygrid-day-number {
+		padding-bottom: 0.125rem;
+		padding-top: 0.125rem;
+	}
+
 	.fc-day-today .lfr__calendar-view-day-number {
 		align-items: center;
 		background-color: $primary;
