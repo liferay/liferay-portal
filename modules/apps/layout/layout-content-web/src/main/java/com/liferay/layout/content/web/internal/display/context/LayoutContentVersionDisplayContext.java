@@ -59,6 +59,9 @@ public class LayoutContentVersionDisplayContext {
 				"defaultLanguageId",
 				LocaleUtil.toLanguageId(_themeDisplay.getSiteDefaultLocale())
 			).put(
+				"defaultUserImageSrc",
+				_themeDisplay.getPathImage() + "/user_portrait?img_id=0"
+			).put(
 				"draftName",
 				() -> {
 					Layout layout = _themeDisplay.getLayout();
