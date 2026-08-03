@@ -56,14 +56,27 @@ public class FIPSApplicationStateMachineUtil {
 
 	private static final Map<FIPSApplicationState, Set<FIPSApplicationState>>
 		_allowedTransitions = Map.of(
-			FIPSApplicationState.ERROR, Set.of(FIPSApplicationState.POWER_OFF),
+			FIPSApplicationState.ERROR,
+			Set.of(
+				FIPSApplicationState.POWER_OFF, FIPSApplicationState.SELF_TEST),
 			FIPSApplicationState.INITIALIZING,
 			Set.of(
 				FIPSApplicationState.ERROR, FIPSApplicationState.POWER_OFF,
 				FIPSApplicationState.SELF_TEST),
+			FIPSApplicationState.KEY_CSP_ENTRY,
+			Set.of(
+				FIPSApplicationState.ERROR, FIPSApplicationState.OPERATIONAL,
+				FIPSApplicationState.POWER_OFF),
 			FIPSApplicationState.OPERATIONAL,
-			Set.of(FIPSApplicationState.ERROR, FIPSApplicationState.POWER_OFF),
+			Set.of(
+				FIPSApplicationState.ERROR, FIPSApplicationState.KEY_CSP_ENTRY,
+				FIPSApplicationState.POWER_OFF, FIPSApplicationState.QUIESCENT),
 			FIPSApplicationState.POWER_OFF, Set.of(),
+			FIPSApplicationState.QUIESCENT,
+			Set.of(
+				FIPSApplicationState.ERROR, FIPSApplicationState.KEY_CSP_ENTRY,
+				FIPSApplicationState.OPERATIONAL,
+				FIPSApplicationState.POWER_OFF),
 			FIPSApplicationState.SELF_TEST,
 			Set.of(
 				FIPSApplicationState.ERROR, FIPSApplicationState.OPERATIONAL,
