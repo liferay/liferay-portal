@@ -16,6 +16,7 @@ export type Config = {
 	>;
 	availableSegmentsExperiences: SegmentExperience[];
 	defaultLanguageId: Liferay.Language.Locale;
+	defaultUserImageSrc: string;
 	draftName: string;
 	hasDraft: boolean;
 	pageSpecificationVersionsURL: string;

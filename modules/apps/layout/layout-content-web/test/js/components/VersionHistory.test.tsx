@@ -104,6 +104,7 @@ function renderComponent({hasDraft = false} = {}) {
 				availableLanguages: {},
 				availableSegmentsExperiences: [],
 				defaultLanguageId: 'en_US',
+				defaultUserImageSrc: '/image/user_portrait?img_id=0',
 				draftName: 'Home',
 				hasDraft,
 				pageSpecificationVersionsURL: 'url',

@@ -7,8 +7,8 @@ export type VersionStatus = 'Approved' | 'Draft';
 
 export type PageVersion = {
 	creator?: {
-		externalReferenceCode: string;
-		image: string;
+		externalReferenceCode?: string;
+		image?: string;
 		name: string;
 	};
 	dateCreated: string;

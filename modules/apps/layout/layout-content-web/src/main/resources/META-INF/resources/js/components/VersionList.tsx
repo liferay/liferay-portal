@@ -11,6 +11,7 @@ import ClaySticker from '@clayui/sticker';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
+import {config} from '../config';
 import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 import {PageVersion, VersionStatus} from '../types/PageVersion';
 
@@ -126,7 +127,10 @@ export default function VersionList({
 								<ClaySticker shape="circle">
 									<ClaySticker.Image
 										alt={version.creator.name}
-										src={version.creator.image}
+										src={
+											version.creator.image ??
+											config.defaultUserImageSrc
+										}
 									/>
 								</ClaySticker>
 							) : (
