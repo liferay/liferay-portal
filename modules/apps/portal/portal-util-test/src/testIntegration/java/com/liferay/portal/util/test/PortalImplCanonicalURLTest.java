@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.model.impl.VirtualLayout;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -260,7 +261,7 @@ public class PortalImplCanonicalURLTest {
 			"/p%C3%B6ge", false, false);
 		_testCanonicalURL(
 			"localhost", "localhost", _group, _addLegacyLayout("/legacy-pöge"),
-			null, null, "/en", "/legacy-p%C3%B6ge", false, false);
+			null, null, "/en", "/legacy-pöge", false, false);
 	}
 
 	@Test
@@ -314,7 +315,10 @@ public class PortalImplCanonicalURLTest {
 			"/en", StringPool.BLANK, false, false);
 		_testCanonicalURL(
 			"localhost", "localhost", _targetGroup, virtualLayout, null, null,
-			"/en", virtualLayout.getFriendlyURL(), true, false);
+			"/en",
+			VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
+				_group.getFriendlyURL() + "/p%C3%B6ge",
+			true, false);
 	}
 
 	@Test
