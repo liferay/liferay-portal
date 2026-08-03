@@ -252,7 +252,7 @@ if (patcherBuild != null) {
 					for (String token : StringUtil.split(patcherFix.getName())) {
 					%>
 
-						<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= token %>" target="_blank"><%= token %></a>,
+						<a class="nobr" href="<%= patcherConfiguration.jiraBrowseURL() %>/<%= token %>" target="_blank"><%= token %></a>,
 
 					<%
 					}

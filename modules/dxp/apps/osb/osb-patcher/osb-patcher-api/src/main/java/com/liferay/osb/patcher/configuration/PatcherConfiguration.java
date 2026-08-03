@@ -64,6 +64,9 @@ public interface PatcherConfiguration {
 	public String jiraAPIURL();
 
 	@Meta.AD(deflt = "", required = false)
+	public String jiraBrowseURL();
+
+	@Meta.AD(deflt = "", required = false)
 	public String jiraEmailAddress();
 
 	@Meta.AD(deflt = "", required = false)
@@ -71,9 +74,6 @@ public interface PatcherConfiguration {
 
 	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
 	public String jiraServiceManagementUserToken();
-
-	@Meta.AD(deflt = "", required = false)
-	public String jiraURL();
 
 	@Meta.AD(deflt = "", required = false)
 	public String lesaURL();

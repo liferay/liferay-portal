@@ -59,7 +59,7 @@ List<PatcherFix> patcherFixes = PatcherFixUtil.getParentPatcherFixes(childPatche
 			for (String jiraTicket : StringUtil.split(patcherFix.getName())) {
 			%>
 
-				<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
+				<a class="nobr" href="<%= patcherConfiguration.jiraBrowseURL() %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
 
 			<%
 			}

@@ -664,7 +664,7 @@ public class PatcherBuildUtil {
 				StringPool.FORWARD_SLASH + supportTicket;
 		}
 
-		return patcherConfiguration.jiraURL() + StringPool.FORWARD_SLASH +
+		return patcherConfiguration.jiraBrowseURL() + StringPool.FORWARD_SLASH +
 			supportTicket;
 	}
 

@@ -52,7 +52,7 @@ long patcherProjectVersionId = ParamUtil.getLong(request, "patcherProjectVersion
 					<a class="nobr" href="<%= viewPatcherFixPackURL %>"><%= ticket %></a>,
 				</c:when>
 				<c:otherwise>
-					<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= ticket %>" target="_blank"><%= ticket %></a>,
+					<a class="nobr" href="<%= patcherConfiguration.jiraBrowseURL() %>/<%= ticket %>" target="_blank"><%= ticket %></a>,
 				</c:otherwise>
 			</c:choose>
 

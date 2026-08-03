@@ -60,7 +60,7 @@ List<PatcherBuild> childPatcherBuilds = PatcherBuildRelUtil.getChildPatcherBuild
 			for (String jiraTicket : StringUtil.split(childPatcherBuild.getName())) {
 			%>
 
-				<a class="nobr" href="<%= patcherConfiguration.jiraURL() %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
+				<a class="nobr" href="<%= patcherConfiguration.jiraBrowseURL() %>/<%= jiraTicket %>" target="_blank"><%= jiraTicket %></a>,
 
 			<%
 			}
