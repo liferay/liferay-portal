@@ -42,15 +42,37 @@ public class FIPSApplicationStateMachineUtilTest {
 		_testTransition(
 			FIPSApplicationState.ERROR, FIPSApplicationState.POWER_OFF);
 		_testTransition(
+			FIPSApplicationState.ERROR, FIPSApplicationState.SELF_TEST);
+		_testTransition(
 			FIPSApplicationState.INITIALIZING, FIPSApplicationState.ERROR);
 		_testTransition(
 			FIPSApplicationState.INITIALIZING, FIPSApplicationState.POWER_OFF);
 		_testTransition(
 			FIPSApplicationState.INITIALIZING, FIPSApplicationState.SELF_TEST);
 		_testTransition(
+			FIPSApplicationState.KEY_CSP_ENTRY, FIPSApplicationState.ERROR);
+		_testTransition(
+			FIPSApplicationState.KEY_CSP_ENTRY,
+			FIPSApplicationState.OPERATIONAL);
+		_testTransition(
+			FIPSApplicationState.KEY_CSP_ENTRY, FIPSApplicationState.POWER_OFF);
+		_testTransition(
 			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.ERROR);
 		_testTransition(
+			FIPSApplicationState.OPERATIONAL,
+			FIPSApplicationState.KEY_CSP_ENTRY);
+		_testTransition(
 			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.POWER_OFF);
+		_testTransition(
+			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.QUIESCENT);
+		_testTransition(
+			FIPSApplicationState.QUIESCENT, FIPSApplicationState.ERROR);
+		_testTransition(
+			FIPSApplicationState.QUIESCENT, FIPSApplicationState.KEY_CSP_ENTRY);
+		_testTransition(
+			FIPSApplicationState.QUIESCENT, FIPSApplicationState.OPERATIONAL);
+		_testTransition(
+			FIPSApplicationState.QUIESCENT, FIPSApplicationState.POWER_OFF);
 		_testTransition(
 			FIPSApplicationState.SELF_TEST, FIPSApplicationState.ERROR);
 		_testTransition(
@@ -66,15 +88,32 @@ public class FIPSApplicationStateMachineUtilTest {
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.ERROR, FIPSApplicationState.INITIALIZING);
 		_testTransitionWithIllegalState(
+			FIPSApplicationState.ERROR, FIPSApplicationState.KEY_CSP_ENTRY);
+		_testTransitionWithIllegalState(
 			FIPSApplicationState.ERROR, FIPSApplicationState.OPERATIONAL);
 		_testTransitionWithIllegalState(
-			FIPSApplicationState.ERROR, FIPSApplicationState.SELF_TEST);
+			FIPSApplicationState.ERROR, FIPSApplicationState.QUIESCENT);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.INITIALIZING,
 			FIPSApplicationState.INITIALIZING);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.INITIALIZING,
+			FIPSApplicationState.KEY_CSP_ENTRY);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.INITIALIZING,
 			FIPSApplicationState.OPERATIONAL);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.INITIALIZING, FIPSApplicationState.QUIESCENT);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.KEY_CSP_ENTRY,
+			FIPSApplicationState.INITIALIZING);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.KEY_CSP_ENTRY,
+			FIPSApplicationState.KEY_CSP_ENTRY);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.KEY_CSP_ENTRY, FIPSApplicationState.QUIESCENT);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.KEY_CSP_ENTRY, FIPSApplicationState.SELF_TEST);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.OPERATIONAL,
 			FIPSApplicationState.INITIALIZING);
@@ -87,13 +126,27 @@ public class FIPSApplicationStateMachineUtilTest {
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.POWER_OFF, FIPSApplicationState.INITIALIZING);
 		_testTransitionWithIllegalState(
+			FIPSApplicationState.POWER_OFF, FIPSApplicationState.KEY_CSP_ENTRY);
+		_testTransitionWithIllegalState(
 			FIPSApplicationState.POWER_OFF, FIPSApplicationState.OPERATIONAL);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.POWER_OFF, FIPSApplicationState.POWER_OFF);
 		_testTransitionWithIllegalState(
+			FIPSApplicationState.POWER_OFF, FIPSApplicationState.QUIESCENT);
+		_testTransitionWithIllegalState(
 			FIPSApplicationState.POWER_OFF, FIPSApplicationState.SELF_TEST);
 		_testTransitionWithIllegalState(
+			FIPSApplicationState.QUIESCENT, FIPSApplicationState.INITIALIZING);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.QUIESCENT, FIPSApplicationState.QUIESCENT);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.QUIESCENT, FIPSApplicationState.SELF_TEST);
+		_testTransitionWithIllegalState(
 			FIPSApplicationState.SELF_TEST, FIPSApplicationState.INITIALIZING);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.SELF_TEST, FIPSApplicationState.KEY_CSP_ENTRY);
+		_testTransitionWithIllegalState(
+			FIPSApplicationState.SELF_TEST, FIPSApplicationState.QUIESCENT);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.SELF_TEST, FIPSApplicationState.SELF_TEST);
 	}
