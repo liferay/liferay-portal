@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -112,6 +113,29 @@ public class DepotEntryLocalServiceTest {
 				depotEntry.getCompanyId(), depotEntry.getUserId(),
 				group.getExternalReferenceCode(),
 				depotEntry.getModelClassName(), _filterFactory));
+		Assert.assertEquals(
+			0,
+			_objectEntryFolderLocalService.getObjectEntryFoldersCount(
+				depotEntry.getGroupId(), depotEntry.getCompanyId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT));
+	}
+
+	@Test
+	@TestInfo("LPD-100521")
+	public void testDeleteDepotEntryWhenGroupIsDeleted() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		_groupLocalService.deleteGroup(depotEntry.getGroupId());
+
+		Assert.assertNull(
+			_depotEntryLocalService.fetchGroupDepotEntry(
+				depotEntry.getGroupId()));
+		Assert.assertNull(
+			CMSDefaultPermissionUtil.fetchObjectEntryByDepotGroupId(
+				depotEntry.getCompanyId(), depotEntry.getUserId(),
+				depotEntry.getGroupId(), depotEntry.getModelClassName(),
+				_filterFactory));
 		Assert.assertEquals(
 			0,
 			_objectEntryFolderLocalService.getObjectEntryFoldersCount(
