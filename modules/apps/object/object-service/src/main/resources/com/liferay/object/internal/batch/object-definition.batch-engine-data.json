@@ -183,6 +183,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "L_BOOKMARK_MAIN_OBJECT_VIEW",
 					"name": {
 						"en_US": "Main"
 					},

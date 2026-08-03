@@ -620,6 +620,8 @@ components:
                     type: string
                 defaultObjectView:
                     type: boolean
+                externalReferenceCode:
+                    type: string
                 id:
                     format: int64
                     readOnly: true

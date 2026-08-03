@@ -473,6 +473,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "U3A2_DISTRIBUTOR_APPLICATION_BASIC_OBJECT_VIEW",
 					"name": {
 						"en_US": "Basic View"
 					},

@@ -38,8 +38,8 @@ public class ObjectViewServiceImpl extends ObjectViewServiceBaseImpl {
 
 	@Override
 	public ObjectView addObjectView(
-			long objectDefinitionId, boolean defaultObjectView,
-			Map<Locale, String> nameMap,
+			String externalReferenceCode, long objectDefinitionId,
+			boolean defaultObjectView, Map<Locale, String> nameMap,
 			List<ObjectViewColumn> objectViewColumns,
 			List<ObjectViewFilterColumn> objectViewFilterColumns,
 			List<ObjectViewSortColumn> objectViewSortColumns)
@@ -53,8 +53,9 @@ public class ObjectViewServiceImpl extends ObjectViewServiceBaseImpl {
 			ActionKeys.UPDATE);
 
 		return objectViewLocalService.addObjectView(
-			getUserId(), objectDefinitionId, defaultObjectView, nameMap,
-			objectViewColumns, objectViewFilterColumns, objectViewSortColumns);
+			externalReferenceCode, getUserId(), objectDefinitionId,
+			defaultObjectView, nameMap, objectViewColumns,
+			objectViewFilterColumns, objectViewSortColumns);
 	}
 
 	@Override
@@ -85,8 +86,8 @@ public class ObjectViewServiceImpl extends ObjectViewServiceBaseImpl {
 
 	@Override
 	public ObjectView updateObjectView(
-			long objectViewId, boolean defaultObjectView,
-			Map<Locale, String> nameMap,
+			String externalReferenceCode, long objectViewId,
+			boolean defaultObjectView, Map<Locale, String> nameMap,
 			List<ObjectViewColumn> objectViewColumns,
 			List<ObjectViewFilterColumn> objectViewFilterColumns,
 			List<ObjectViewSortColumn> objectViewSortColumns)
@@ -100,8 +101,8 @@ public class ObjectViewServiceImpl extends ObjectViewServiceBaseImpl {
 			ActionKeys.UPDATE);
 
 		return objectViewLocalService.updateObjectView(
-			objectViewId, defaultObjectView, nameMap, objectViewColumns,
-			objectViewFilterColumns, objectViewSortColumns);
+			externalReferenceCode, objectViewId, defaultObjectView, nameMap,
+			objectViewColumns, objectViewFilterColumns, objectViewSortColumns);
 	}
 
 	@Reference(

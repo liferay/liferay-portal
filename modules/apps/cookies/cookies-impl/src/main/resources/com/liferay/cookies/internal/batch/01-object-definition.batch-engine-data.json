@@ -115,6 +115,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "L_FUNCTIONAL_COOKIE_ENTRY_MAIN_OBJECT_VIEW",
 					"name": {
 						"en_US": "Main"
 					},
@@ -285,6 +286,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "L_NECESSARY_COOKIE_ENTRY_MAIN_OBJECT_VIEW",
 					"name": {
 						"en_US": "Main"
 					},
@@ -455,6 +457,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "L_PERFORMANCE_COOKIE_ENTRY_MAIN_OBJECT_VIEW",
 					"name": {
 						"en_US": "Main"
 					},
@@ -625,6 +628,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "L_PERSONALIZATION_COOKIE_ENTRY_MAIN_OBJECT_VIEW",
 					"name": {
 						"en_US": "Main"
 					},

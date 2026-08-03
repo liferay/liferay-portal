@@ -56,6 +56,7 @@ public class ObjectViewDTOConverter
 				setDateCreated(objectView::getCreateDate);
 				setDateModified(objectView::getModifiedDate);
 				setDefaultObjectView(objectView::isDefaultObjectView);
+				setExternalReferenceCode(objectView::getExternalReferenceCode);
 				setId(objectView::getObjectViewId);
 				setName(
 					() -> LocalizedMapUtil.getLanguageIdMap(

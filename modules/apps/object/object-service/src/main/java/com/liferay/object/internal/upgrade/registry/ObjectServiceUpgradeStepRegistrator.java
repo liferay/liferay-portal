@@ -741,6 +741,17 @@ public class ObjectServiceUpgradeStepRegistrator
 			new AttachmentObjectFieldDownloadPermissionUpgradeProcess(
 				_language, _localization, _ploEntryLocalService,
 				_resourceActionLocalService));
+
+		registry.register(
+			"13.3.0", "13.4.0",
+			new BaseExternalReferenceCodeUpgradeProcess() {
+
+				@Override
+				protected String[] getTableNames() {
+					return new String[] {"ObjectView"};
+				}
+
+			});
 	}
 
 	@Reference

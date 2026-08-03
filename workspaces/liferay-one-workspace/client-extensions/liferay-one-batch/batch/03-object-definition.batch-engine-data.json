@@ -2959,6 +2959,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "C_PROJECT_DEFAULT_OBJECT_VIEW",
 					"name": {
 						"en_US": "Default View"
 					},
@@ -3035,6 +3036,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "C_PROJECT_MEMBERSHIP_DEFAULT_OBJECT_VIEW",
 					"name": {
 						"en_US": "Default View"
 					},
@@ -3201,6 +3203,7 @@
 			"objectViews": [
 				{
 					"defaultObjectView": true,
+					"externalReferenceCode": "C_PROPERTY_DEFAULT_OBJECT_VIEW",
 					"name": {
 						"en_US": "Default View"
 					},
