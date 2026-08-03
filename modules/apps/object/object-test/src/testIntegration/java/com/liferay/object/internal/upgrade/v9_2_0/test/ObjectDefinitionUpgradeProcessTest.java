@@ -79,10 +79,9 @@ public class ObjectDefinitionUpgradeProcessTest {
 	@Test
 	public void testUpgrade() throws Exception {
 
-		// The upgrade flips enableIndexSearch on every object definition with a
-		// single unscoped SQL statement. Capture the definitions it will change
-		// so tearDown can restore them, keeping this out-of-context run from
-		// polluting the enableIndexSearch state of pre-existing definitions.
+		// A single SQL statement in the upgrade sets "enableIndexSearch" on
+		// every object definition, including those this test did not create.
+		// Capture the ones it will change so "tearDown" restores them.
 
 		for (ObjectDefinition objectDefinition :
 				_objectDefinitionLocalService.getObjectDefinitions(
