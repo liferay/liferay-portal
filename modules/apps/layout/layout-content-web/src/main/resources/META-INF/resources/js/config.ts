@@ -5,9 +5,16 @@
 
 import {SegmentExperience} from '@liferay/layout-js-components-web';
 
+import {Status} from './types/PageVersion';
+
 export type AvailableLanguage = {
 	languageIcon: string;
 	w3cLanguageId: string;
+};
+
+export type CurrentVersion = {
+	name: string;
+	status: Status;
 };
 
 export type Config = {
@@ -15,10 +22,9 @@ export type Config = {
 		Record<Liferay.Language.Locale, AvailableLanguage>
 	>;
 	availableSegmentsExperiences: SegmentExperience[];
+	currentVersion: CurrentVersion;
 	defaultLanguageId: Liferay.Language.Locale;
 	defaultUserImageSrc: string;
-	draftName: string;
-	hasDraft: boolean;
 	pageSpecificationVersionsURL: string;
 };
 

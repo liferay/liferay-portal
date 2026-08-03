@@ -11,21 +11,19 @@ import ClaySticker from '@clayui/sticker';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
-import {config} from '../config';
+import {CurrentVersion, config} from '../config';
 import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
-import {PageVersion, VersionStatus} from '../types/PageVersion';
-
-const DRAFT_KEY = 'draft';
+import {PageVersion, Status} from '../types/PageVersion';
 
 const STATUSES: Record<
-	VersionStatus,
+	Status,
 	{displayType: 'secondary' | 'success'; label: string}
 > = {
-	Approved: {
+	approved: {
 		displayType: 'success',
 		label: Liferay.Language.get('published'),
 	},
-	Draft: {
+	draft: {
 		displayType: 'secondary',
 		label: Liferay.Language.get('draft'),
 	},
@@ -34,25 +32,27 @@ const STATUSES: Record<
 type Row = {
 	key: string;
 	name: string;
+	status: Status;
 	version?: PageVersion;
 };
 
 export default function VersionList({
-	draftName,
+	currentVersion,
 	searching,
 	versions,
 }: {
-	draftName?: string;
+	currentVersion?: CurrentVersion;
 	searching: boolean;
 	versions: PageVersion[];
 }) {
 	const [selectedKey, setSelectedKey] = useState<string>();
 
 	const rows: Row[] = [
-		...(draftName ? [{key: DRAFT_KEY, name: draftName}] : []),
+		...(currentVersion ? [{key: 'current', ...currentVersion}] : []),
 		...versions.map((version) => ({
 			key: version.externalReferenceCode,
 			name: version.name,
+			status: version.status,
 			version,
 		})),
 	];
@@ -90,14 +90,12 @@ export default function VersionList({
 			className="mb-0 version-history__list"
 			role="listbox"
 		>
-			{rows.map(({key, name, version}, index) => {
+			{rows.map(({key, name, status, version}, index) => {
 				const navigationProps = getItemProps(index);
 
 				const selected = activeKey === key;
 
-				const status = version
-					? STATUSES[version.status]
-					: STATUSES.Draft;
+				const {displayType, label} = STATUSES[status];
 
 				return (
 					<ClayList.Item
@@ -157,17 +155,17 @@ export default function VersionList({
 								</ClayList.ItemText>
 							) : null}
 
-							{version ? (
-								<ClayList.ItemText>
-									{sub(Liferay.Language.get('version-x'), [
-										version.version,
-									])}
-								</ClayList.ItemText>
-							) : null}
+							<ClayList.ItemText>
+								{version
+									? sub(Liferay.Language.get('version-x'), [
+											version.version,
+										])
+									: Liferay.Language.get('current-version')}
+							</ClayList.ItemText>
 
 							<ClayList.ItemText>
-								<ClayLabel displayType={status.displayType}>
-									{status.label}
+								<ClayLabel displayType={displayType}>
+									{label}
 								</ClayLabel>
 							</ClayList.ItemText>
 						</ClayList.ItemField>
