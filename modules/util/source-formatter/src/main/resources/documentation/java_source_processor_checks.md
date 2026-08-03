@@ -53,6 +53,7 @@ EqualClauseIfStatementsCheck | [Styling](styling_checks.md#styling-checks) | Fin
 [ExceptionMessageCheck](check/message_check.md#messagecheck) | [Styling](styling_checks.md#styling-checks) | Validates messages that are passed to exceptions. |
 ExceptionPrintStackTraceCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Avoid using printStackTrace. |
 ExceptionVariableNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Validates variable names that have type `*Exception`. |
+FIPSTLSVerificationCheck | [Security](security_checks.md#security-checks) | Finds outbound TLS verification bypasses that are not guarded by `PropsValues.FIPS_ENABLED`, see LPD-93649. |
 FactoryCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where `*Factory` should be used when creating new instances of an object. |
 [FetchContractCatchCheck](check/fetch_contract_catch_check.md#fetchcontractcatchcheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds code blocks that use `try-catch` to handle `NoSuch*Exception` or `PortalException` during entity lookups, which should be replaced by `fetch*` methods. |
 FilterStringWhitespaceCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds missing and unnecessary whitespace in the value of the filter string in `ServiceTrackerFactory.open` or `WaiterUtil.waitForFilter`. |

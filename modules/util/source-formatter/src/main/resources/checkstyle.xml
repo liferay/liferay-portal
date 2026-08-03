@@ -471,6 +471,13 @@
 			<property name="description" value="Finds missing and unnecessary whitespace in the value of the filter string in `ServiceTrackerFactory.open` or `WaiterUtil.waitForFilter`." />
 			<message key="whitespace.incorrect" value="The value of &quot;{0}&quot; should not have spaces around &quot;=&quot;, see LPS-70526" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.FIPSTLSVerificationCheck">
+			<property name="category" value="Security" />
+			<property name="description" value="Finds outbound TLS verification bypasses that are not guarded by `PropsValues.FIPS_ENABLED`, see LPD-93649." />
+			<property name="enabled" value="false" />
+			<message key="guard.class.required" value="Check &quot;PropsValues.FIPS_ENABLED&quot; in the same class as a trust manager, see LPD-93649" />
+			<message key="guard.method.required" value="Check &quot;PropsValues.FIPS_ENABLED&quot; in the same method as &quot;{0}&quot;, see LPD-93649" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.FrameworkBundleCheck">
 			<property name="category" value="Performance" />
 			<property name="description" value="Checks that `org.osgi.framework.Bundle.getHeaders()` is not used." />

@@ -1,0 +1,61 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.portal.kernel.util.PropsValues;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.HttpClientBuilder;
+
+/**
+ * @author Caio Farias
+ */
+public class FIPSTLSVerification2 {
+
+	public HostnameVerifier getHostnameVerifier() {
+		return _hostnameVerifier;
+	}
+
+	public void guarded(HttpClientBuilder httpClientBuilder) {
+		if (PropsValues.FIPS_ENABLED && !_VERIFY_SERVER_HOSTNAME) {
+			throw new SecurityException(
+				"TLS verification must be enabled in FIPS mode");
+		}
+
+		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+	}
+
+	public void guardedWithQuotedBlockComment(
+		HttpClientBuilder httpClientBuilder) {
+
+		if (PropsValues.FIPS_ENABLED && !_VERIFY_SERVER_HOSTNAME) {
+			throw new SecurityException(
+				"TLS verification must be enabled in FIPS mode");
+		}
+
+		httpClientBuilder.setUserAgent("*/*");
+
+		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+	}
+
+	public void unguarded(HttpClientBuilder httpClientBuilder) {
+		httpClientBuilder.setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
+	}
+
+	private static final boolean _VERIFY_SERVER_HOSTNAME = true;
+
+	private static final HostnameVerifier _hostnameVerifier =
+		NoopHostnameVerifier.INSTANCE;
+
+	static {
+		HttpsURLConnection.setDefaultHostnameVerifier(
+			NoopHostnameVerifier.INSTANCE);
+	}
+
+}
