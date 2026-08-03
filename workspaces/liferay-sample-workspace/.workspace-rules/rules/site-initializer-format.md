@@ -1,5 +1,7 @@
 # Site Initializer Format
 
+> **Before authoring:** Load the skill for whatever you are about to author into this tree — `manage-objects`, `manage-pages`, `scaffold-fragment`, `theme-and-design`, or `manage-roles-permissions`. This card is the file format; the skills hold the failure modes.
+
 Reference for the `manage-environments` and `scaffold-client-extension` skills when capturing or building a `siteInitializer` CET.
 
 A site initializer is a client extension of type `siteInitializer`. When deployed and triggered, it creates a fully configured site from the directory tree below.
@@ -393,16 +395,25 @@ A page selects its master through its **own** `page-definition.json`, in a top l
 
 ## `layout-set/public/metadata.json`
 
-Controls navigation menu visibility and theme assignment for the public (nonprivate) layout set:
+Controls theme assignment and theme settings for the public (nonprivate) layout set. A theme is named by `themeId`, or by display name with `themeName`:
 
 ```json
 {
 	"colorSchemeId": "01",
+	"settings": {
+		"lfr-theme:regular:show-footer": false,
+		"lfr-theme:regular:show-header": false,
+		"lfr-theme:regular:show-header-search": false
+	},
 	"themeId": "classic_WAR_classictheme"
 }
 ```
 
-For themeCSS CETs, leave `themeId` as `"classic_WAR_classictheme"` and control appearance entirely from the CET.
+Use the `settings` block to switch off the stock theme chrome when a master page supplies a branded header and footer — otherwise both render, one above the other. Prefer this over hiding `#banner` / `#footer` with CSS: the setting is scoped to this layout set, whereas a `globalCSS` CET is injected instance wide and there is no site specific `body` class to scope such a rule to.
+
+> **A `themeCSS` CET cannot be selected from the initializer tree.** Liferay attaches one through a `ClientExtensionEntryRel` on the layout, the master layout, or the layout set, and `BundleSiteInitializer` has **no handler** that creates that relation — there is no key in `metadata.json` for it either. A deployed themeCSS CET is therefore *available* but not *applied* until someone picks it in Site Administration → Design → Theme, and that selection is lost on every reprovision.
+>
+> Plan accordingly. Appearance that must survive delete-and-redeploy has to come from things the tree can express: a style book (`defaultStyleBookEntry: true`), the master page, fragment CSS, and these layout set settings. Reach for a themeCSS CET for Clay level overrides that have no token — Classic exposes no `headings*` style book tokens, for instance — and state plainly that applying it needs a manual step.
 
 ## `client-extension.yaml` for the Initializer
 

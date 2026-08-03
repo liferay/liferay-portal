@@ -108,7 +108,9 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referencing `"listTypeDefinitionId": <list-type-id>`.
+Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referencing `"listTypeDefinitionId": <list-type-id>`. In a site initializer, reference the picklist by ERC instead — `"listTypeDefinitionExternalReferenceCode": "<ERC>"` — so no numeric id is baked into the tree.
+
+> **A public form cannot fetch this picklist.** Guest gets 403 from the list type REST endpoint, so a `<select>` populated by fetch renders empty and the entry saves blank looking like success. Ship the options in the fragment markup. See `rules/guest-access.md`.
 
 ### Add Relationships
 

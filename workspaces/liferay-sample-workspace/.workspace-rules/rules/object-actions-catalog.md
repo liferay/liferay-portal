@@ -1,5 +1,7 @@
 # Object Actions Catalog
 
+> **Before authoring:** Load `manage-object-logic` before authoring an action, notification template, or workflow — this card is the catalog, that skill is the procedure.
+
 Reference for the `manage-object-logic` skill. Covers triggers, conditions, and all action executor types.
 
 ## Triggers

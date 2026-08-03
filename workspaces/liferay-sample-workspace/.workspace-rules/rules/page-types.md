@@ -1,5 +1,7 @@
 # Page Types
 
+> **Before authoring:** Load `manage-pages` before authoring a page, and `scaffold-fragment` before authoring a fragment placed on one.
+
 Reference for the `manage-pages` skill. Covers all page and template types available in Liferay DXP and which APIs handle each.
 
 ## Renderable Page Types

@@ -51,7 +51,22 @@ Use Blade as the primary CLI. Prefer `blade gw <task>` over invoking Gradle dire
 
 ## Preflight Rule for New Code Generation
 
-Before generating a new Fragment, Client Extension, Object definition, or Commerce product/SKU from scratch, **explicitly load the relevant skill from the Skill Index below**, even if no matching files exist yet in the workspace. Glob based autoloading will not fire on an empty workspace; this preflight step ensures the correct patterns and antihallucination guards are applied from the first line of code.
+Before writing the **first line** of any artifact below, load its skill. Always, and before authoring — not after something fails. Glob based autoloading does not fire on an empty workspace, so nothing else will surface these.
+
+| About to author | Load first |
+| --- | --- |
+| Object definition, field, picklist, relationship | `manage-objects` |
+| Object action, notification template, workflow | `manage-object-logic` |
+| Page, `page-definition.json`, navigation menu | `manage-pages` |
+| Fragment (`fragment.json`, `index.html`) | `scaffold-fragment` |
+| Theme, style book, master page | `theme-and-design` |
+| Any `client-extension.yaml` | `scaffold-client-extension` |
+| Role, or any `resource-permissions.json` grant | `manage-roles-permissions` |
+| Commerce product or SKU | `commerce-catalogs` |
+
+Most real tasks match two or more rows — load all of them. Skipping one is not the smaller risk: much of what these skills document are failures that are **silent**, where the build succeeds and the defect only shows later, and the skill is the only place that behavior is written down. Reading portal source instead is not a substitute — the source shows what the code does, not which of its behaviors have already cost someone a day.
+
+If a skill turns out to be wrong or to omit the answer, fix the skill as part of the task rather than working around it locally.
 
 ## MCP Server
 
@@ -97,12 +112,13 @@ Site building is **site initializer first**: the `siteInitializer` CET tree is t
 
 ## Reference Cards
 
-Reference cards under `rules/` hold the data skills look up. Skills cite the card path explicitly.
+Reference cards under `rules/` hold the data skills look up. Skills cite the card path explicitly. Every card is loaded in every session, so a card states the **fact** and routes to the skill that holds the **procedure** — read the card, then load the skill it names.
 
-- `rules/client-extension-types.md` — client extension types with their yaml and file layout
+- `rules/client-extension-types.md` — client extension types, their yaml, and which types may share a project
+- `rules/guest-access.md` — what an anonymous visitor can and cannot read; read before building anything public
 - `rules/headless-apis.md` — REST modules, base URIs, OAuth scopes
 - `rules/feature-flags-catalog.md` — flag table with defaults and dependencies
-- `rules/site-initializer-format.md` — site initializer directory tree and batch JSON envelope
+- `rules/site-initializer-format.md` — site initializer directory tree and per entity file formats
 - `rules/object-actions-catalog.md` — triggers, conditions, action types
 - `rules/oauth-scopes.md` — `Liferay.*` scope strings for `oAuthApplicationHeadlessServer` blocks in CET scaffolding
 - `rules/page-types.md` — page types and their applicable APIs

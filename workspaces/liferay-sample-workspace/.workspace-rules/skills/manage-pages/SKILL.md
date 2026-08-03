@@ -90,23 +90,7 @@ Trigger (or, for `layouts/` changes on an existing site, reprovision) the site �
 
 To show a list of object entries on a page, use a **server side Collection Display**, not a client side `fetch`. A browser `fetch` to `/o/c/<pluralLabel>` carries the visitor's cookies, so the headless object API evaluates the request as the Guest user and typically returns **0 items** (Guest lacks entry level view permission).
 
-> **The Collection element does not sidestep that permission.** It renders on the server, but it still evaluates **entry level** permissions as the visiting user, and page level VIEW does not confer object entry VIEW. On a public page, an object backed Collection therefore renders **empty for anonymous visitors** until the object is explicitly granted to Guest — while rendering correctly for the signed in author, which is why this is usually discovered late.
->
-> Grant it in the initializer tree so the grant is reproducible, using `site-initializer/resource-permissions.json` (see `rules/site-initializer-format.md`):
->
-> ```json
-> [
-> 	{
-> 		"actionIds": ["VIEW"],
-> 		"primKey": "0",
-> 		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:<Name>$]",
-> 		"roleName": "Guest",
-> 		"scope": "1"
-> 	}
-> ]
-> ```
->
-> Grant only the objects the page must display. Do **not** grant Guest VIEW on an object holding personal data (registrations, orders, applications) just to make a count work — see "Mapping Limits" below for the denormalization pattern that exposes a derived number without exposing the rows.
+> **The Collection element does not sidestep that permission** — it evaluates entry level permissions as the visiting user too, so an object backed listing renders **empty for anonymous visitors** while looking correct to you. Grant the object to Guest in `resource-permissions.json` before assuming the page works. See `rules/guest-access.md`.
 
 Compose it in `page-definition.json` (see the `Collection` / `CollectionItem` element types in `rules/page-types.md`):
 
@@ -183,19 +167,61 @@ The workaround is to **denormalize**: add a plain `Text` display field on the ob
 
 Denormalizing is also the way to publish a number derived from private records. To show remaining capacity, keep a `registeredCount` field on the public object and maintain it with an object action on the private one (`manage-object-logic`); the visitor reads a count without the underlying rows ever being granted to Guest.
 
-**Do not compute these in fragment JavaScript instead.** It looks equivalent for the signed in author and silently misreports for everyone else: the browser call runs as Guest, returns 0 rows, and a full event renders as "500 of 500" rather than failing visibly. If a value cannot be derived from data the visitor may read, denormalize it or do not display it.
+**Do not compute these in fragment JavaScript instead** — the browser call runs as the visitor and silently returns 0 rows, so the number is confidently wrong rather than absent. See `rules/guest-access.md`.
+
+## Verify
+
+Applies to **both** paths — a page authored in the initializer tree and one created over the live API.
+
+```bash
+curl --head --silent --url "http://localhost:${PORT}/web/<site-friendly-url>/<page-url-slug>"
+```
+
+Expect `200 OK`. Listing pages over REST (`GET /sites/<site-erc>/site-pages`) needs flag `LPD-35443`; without it the call returns `400 UnsupportedOperationException`, which says nothing about whether the pages exist.
+
+**`200 OK` is not evidence the page works.** A page whose Collection returned no rows, whose fragment reused another page's placeholder text, or whose mapping silently failed all return 200 with fragments present. Verify content, and verify it as the audience:
+
+1. **Probe without credentials.** `curl` with no `--user` and no cookie jar is exactly a Guest request, and it is the only cheap way to see what a visitor sees. Signed in verification hides every permission gap in this skill — see `rules/guest-access.md`.
+
+	```bash
+	curl --silent --url "http://localhost:${PORT}/web/<site>/<page>" > /tmp/page.html
+	```
+
+1. **Assert real data, not markup presence.** Grep for a value that only exists in the database (an actual event name) *and* confirm the fragment's placeholder strings are absent — placeholders still present means the mapping did not resolve.
+
+1. **Check each page's own text.** Reusing a section fragment across pages carries its default text with it; a heading that reads "Upcoming Events" on the register page is a 200 with wrong content. Set per page values with a literal `fragmentFields` entry rather than relying on the fragment default.
+
+1. **Open it in a browser before declaring success.** Anything driven by JavaScript — a computed value, a populated `select` — is invisible to `curl`, which executes none of it. Confirm signed out too: sign in state changes what client side calls return.
 
 ## Fallback: Live API
 
-Use the Headless Admin Site API (`/o/headless-admin-site/v1.0`) only when reprovisioning is undesirable and the change is small. This path is unreliable for page **creation** in particular. When the MCP server is available, prefer MCP tool calls over raw curl.
+Use the Headless Admin Site API (`/o/headless-admin-site/v1.0`) only when reprovisioning is undesirable and the change is small. It is unreliable for page **creation** in particular. When the MCP server is available, prefer MCP tool calls over raw curl.
 
-> **Field/path corrections for the examples below** (verify against the OpenAPI spec — `get-openapi` MCP tool, or `GET /o/headless-admin-site/v1.0/openapi.json`). This module addresses sites by **`<site-erc>`** (external reference code), not numeric ID, and subresources are nested under `/sites/<site-erc>/…` (there is no top level `/site-pages/{id}`). On the current API the `SitePage` / `DisplayPageTemplate` / `MasterPage` DTOs use **`pageSpecifications`** (not the initializer's `pageDefinition`), `*_i18n` localized maps (`name_i18n`, `friendlyUrlPath_i18n` — `SitePage` has no `title` field), and `DisplayPageTemplate` binds via **`contentTypeReference`** (not flat `contentType`/`contentSubtype`). The illustrative bodies below predate that model — see "Page Specification Workflow (Draft and Publish)" for the verified shape. The `type` enum is **`ContentPage` / `WidgetPage` / `LinkToURLPage` / `EmbeddedPage` / `PageSetPage` / `LinkToPagePage`** (not `content`) — distinct from the site-initializer `page.json` `type` (`Content`/`Portlet`/`URL`/`Embedded`) and `headless-delivery`'s `pageType`. Page element operations also require flag `LPD-74328`.
+Everything below has a tree equivalent that is the verified path. Reach for the live API only for the last row:
+
+| To do this | Author it here instead |
+| --- | --- |
+| Create a page | `layouts/<NN-name>/page.json` + `page-definition.json` |
+| Place fragments on a page | `page-definition.json` — see "Authoring Pages" above |
+| Navigation menu | `site-navigation-menus.json` |
+| Display page template | `layout-page-templates/display-page-templates/<name>/` |
+| SEO settings | No tree equivalent is documented — use the live API below |
+
+### Corrections to Any Live API Example
+
+Published examples for this module — including older ones in this pack's history — predate the current DTOs. Verify against the spec (`get-openapi` MCP tool, or `GET /o/headless-admin-site/v1.0/openapi.json`) and apply these:
+
+- **Sites are addressed by external reference code**, not numeric ID, and subresources nest under `/sites/<site-erc>/…`. There is no top level `/site-pages/{id}`.
+- **The DTOs use `pageSpecifications`**, not the initializer's `pageDefinition`.
+- **Localized fields are `*_i18n` maps** (`name_i18n`, `friendlyUrlPath_i18n`). `SitePage` has no `title` field.
+- **`DisplayPageTemplate` binds through `contentTypeReference`**, not flat `contentType`/`contentSubtype`. For a Liferay Object the class name is `com.liferay.object.model.ObjectEntry` and the subtype is the object definition's ERC.
+- **A custom fragment reference uses `BasicFragment` + `fragmentReferenceType`** over the live API, and `key` + `siteKey` in the initializer tree. Neither accepts `collectionExternalReferenceCode`/`fragmentEntryKey` — that form is silently dropped and the section renders blank. See "Custom Fragment Placement via the Headless API" below.
+- **Three distinct `type` vocabularies.** Live API: `ContentPage` / `WidgetPage` / `LinkToURLPage` / `EmbeddedPage` / `PageSetPage` / `LinkToPagePage`. Initializer `page.json`: `Content` / `Portlet` / `URL` / `Embedded`. `headless-delivery` uses a separate `pageType`.
+- **Page element operations require flag `LPD-74328`**, and public layout access requires `LPD-35443`.
 
 ### Ensure the Site Exists
 
 ```bash
-# List sites
-
 curl \
 	--silent \
 	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites" \
@@ -203,130 +229,11 @@ curl \
 	| jq '[.items[] | {externalReferenceCode, name, friendlyUrlPath}]'
 ```
 
-Save the `externalReferenceCode` as `<site-erc>` — `headless-admin-site` addresses sites by ERC, not numeric ID. If the target site does not exist, create it:
-
-```bash
-curl \
-	--data '{
-		"membershipType": "open",
-		"name": "<Site Name>",
-		"templateType": "blank"
-	}' \
-	--header "Content-Type: application/json" \
-	--request POST \
-	--silent \
-	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites" \
-	--user "test@liferay.com:test"
-```
-
-### Create a Content Page
-
-```bash
-curl \
-	--data '{
-		"friendlyUrlPath_i18n": {"en_US": "/<page-url-slug>"},
-		"name_i18n": {"en_US": "<Page Name>"},
-		"pageSpecifications": [ /* see "Page Specification Workflow" below for the verified shape */ ],
-		"type": "ContentPage"
-	}' \
-	--header "Content-Type: application/json" \
-	--request POST \
-	--silent \
-	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>/site-pages" \
-	--user "test@liferay.com:test"
-```
-
-Save the returned `id` as `<page-id>`.
-
-### Add Fragment Sections to a Content Page
-
-> **Caution:** Prefer the site-initializer `page-definition.json` flow above — it is the verified path. The simple `collectionExternalReferenceCode`/`fragmentEntryKey` form shown below is **not** how either importer resolves a custom fragment: the site-initializer importer uses `key`/`siteKey`, and the live Headless API uses the `BasicFragment` + `fragmentReferenceType` form (see "Custom Fragment Placement via the Headless API" below). A reference written the wrong way is silently dropped and the section renders blank.
-
-After creating the page, update the `pageDefinition` to embed fragment references. Use the fragment's `fragmentEntryKey` (from the deployed collection) and the collection's `fragmentCollectionKey`:
-
-```bash
-curl \
-	--data '{
-		"pageDefinition": {
-			"pageElement": {
-				"pageElements": [
-					{
-						"definition": {
-							"fragment": {
-								"collectionExternalReferenceCode": "<collection-key>",
-								"fragmentEntryKey": "<fragment-key>"
-							}
-						},
-						"type": "Fragment"
-					}
-				],
-				"type": "Root"
-			},
-			"version": "1.0"
-		}
-	}' \
-	--header "Content-Type: application/json" \
-	--request PATCH \
-	--silent \
-	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>/site-pages/<page-erc>" \
-	--user "test@liferay.com:test"
-```
-
-### Create a Display Page Template
-
-Display page templates bind an object or content type to a page layout so each entry has its own URL.
-
-```bash
-curl \
-	--data '{
-		"contentSubtype": "",
-		"contentType": "com.liferay.object.model.ObjectEntry",
-		"contentTypeLabel": {"en_US": "<ObjectName>"},
-		"name": "<Template Name>",
-		"pageDefinition": {
-			"pageElement": {
-				"pageElements": [],
-				"type": "Root"
-			},
-			"version": "1.0"
-		}
-	}' \
-	--header "Content-Type: application/json" \
-	--request POST \
-	--silent \
-	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>/display-page-templates" \
-	--user "test@liferay.com:test"
-```
-
-Replace `contentType` and `contentSubtype` with the Liferay class name string for the target object. For Liferay Objects, use `com.liferay.object.model.ObjectEntry` and set `contentSubtype` to the object definition's ERC.
-
-### Create a Navigation Menu
-
-```bash
-curl \
-	--data '{
-		"name": "Main Navigation",
-		"siteNavigationMenuItems": [
-			{
-				"name": "<Menu Item Label>",
-				"siteNavigationMenuItems": [],
-				"type": "layout",
-				"typeSettings": "privateLayout=false\nuuid=<page-uuid>\n"
-			}
-		]
-	}' \
-	--header "Content-Type: application/json" \
-	--request POST \
-	--silent \
-	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>/navigation-menus" \
-	--user "test@liferay.com:test"
-```
-
-The `uuid` is the `friendlyUrlPath` slug or the page UUID from the create response.
+Save the `externalReferenceCode` as `<site-erc>`. A `siteInitializer` CET that declares `siteExternalReferenceCode` provisions its own site on deploy, so creating one by hand is usually a sign the initializer is not wired up.
 
 ### Configure SEO Settings
 
-Update page SEO fields after creation:
+The one operation with no documented initializer equivalent — no `page.json` in the portal source sets these fields. Patch the page after it exists:
 
 ```bash
 curl \
@@ -349,40 +256,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-### Verify
-
-```bash
-# List pages
-
-curl \
-	--silent \
-	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>/site-pages" \
-	--user "test@liferay.com:test" \
-	| jq '[.items[] | {externalReferenceCode, name, friendlyUrlPath, type}]'
-
-# Probe the page URL
-
-curl \
-	--head \
-	--silent \
-	--url "http://localhost:${PORT}/web/<site-friendly-url>/<page-url-slug>"
-```
-
-Expect `200 OK` on the page probe.
-
-**`200 OK` is not evidence the page works.** A page whose Collection returned no rows, whose fragment reused another page's placeholder text, or whose mapping silently failed all return 200 with fragments present. Verify content, and verify it as the audience:
-
-1. **Probe without credentials.** `curl` with no `--user` and no cookie jar is exactly a Guest request, and it is the only cheap way to see what a visitor sees. Signed in verification hides every permission gap in this skill.
-
-	```bash
-	curl --silent --url "http://localhost:${PORT}/web/<site>/<page>" > /tmp/page.html
-	```
-
-1. **Assert real data, not markup presence.** Grep for a value that only exists in the database (an actual event name) *and* confirm the fragment's placeholder strings are absent — placeholders still present means the mapping did not resolve.
-
-1. **Check each page's own text.** Reusing a section fragment across pages carries its default text with it; a heading that reads "Upcoming Events" on the register page is a 200 with wrong content. Set per page values with a literal `fragmentFields` entry rather than relying on the fragment default.
-
-1. **Open it in a browser before declaring success.** Anything driven by JavaScript — a computed value, a populated `select` — is invisible to `curl`, which executes none of it. Confirm signed out too: sign in state changes what client side calls return.
+Because this is applied live, it is **lost on reprovision**. Record it as a known manual step, or confirm whether `page.json` accepts SEO fields on your version and document the result here.
 
 ## Live API Patterns and Gotchas
 

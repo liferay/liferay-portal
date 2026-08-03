@@ -23,26 +23,51 @@ When iterating on a site built from a site initializer, theme changes apply **li
 
 A `themeCSS` CET injects custom CSS that overrides Clay Design System variables. This replaces the legacy Liferay theme WAR.
 
+> **Two constraints to settle before writing any CSS.**
+>
+> 1. **It needs its own project.** `themeCSS` is classified `frontend`; a `siteInitializer` is `batch`, and the workspace plugin forbids that combination. The theme is always a sibling project — see `rules/client-extension-types.md` → "Which Types May Share a Project".
+>
+> 1. **It cannot be applied from the initializer tree.** Liferay attaches a themeCSS CET via a `ClientExtensionEntryRel` on the layout, master layout, or layout set. `BundleSiteInitializer` has no handler for that relation and `metadata.json` has no key for it, so a deployed CET is available but inert until someone selects it in Site Administration → Design → Theme — and that selection does not survive a reprovision.
+>
+> So decide up front where each part of the look lives. Anything that must survive delete-and-redeploy belongs in the style book, the master page, fragment CSS, or layout set settings. Use the themeCSS CET for Clay level overrides that have no style book token (Classic exposes no `headings*` tokens), and say plainly that it needs the manual selection step.
+
 ### Scaffold
 
 ```
 client-extensions/<name>/
   client-extension.yaml
+  package.json         # drives the theme build
   src/
     css/
       _custom.scss     # Clay variable overrides
-      main.scss        # Entry point
+```
+
+`package.json` is what compiles the SCSS — without it there is no `build/buildTheme` output for the URLs below to point at:
+
+```json
+{
+	"liferayDesignPack": {
+		"baseTheme": "styled"
+	},
+	"main": "package.json",
+	"name": "@liferay/<name>",
+	"version": "0.0.0"
+}
 ```
 
 **`client-extension.yaml`:**
 
 ```yaml
 <workspace-id>-theme-css:
-  clayVersion: "3"
-  mainUrl: "css/main.css"
+  clayRTLURL: css/clay_rtl.css
+  clayURL: css/clay.css
+  mainRTLURL: css/main_rtl.css
+  mainURL: css/main.css
   name: <WorkspaceId> Theme CSS
   type: themeCSS
 ```
+
+The keys are `mainURL` and `clayURL` — capital `URL`. All four paths are outputs of the theme build (`build/buildTheme/css/`), not files you author.
 
 **`src/css/_custom.scss`** — Clay variable overrides:
 
@@ -84,7 +109,51 @@ After deployment, go to Site Administration → Design → Theme → Configure a
 
 ## Layer 2: Style Book
 
-A style book maps Clay token names to site specific values. It overrides the themeCSS tokens without touching the code.
+A style book maps Clay token names to site specific values. It overrides the themeCSS tokens without touching the code. Unlike a themeCSS CET, a style book **can** be applied from the initializer tree, which makes it the reproducible half of the theme layer.
+
+### Author It in the Tree
+
+`site-initializer/style-books/<name>/style-book.json` — `defaultStyleBookEntry` is what applies it to the site with no manual step:
+
+```json
+{
+	"defaultStyleBookEntry": true,
+	"frontendTokensValuesPath": "frontend-tokens-values.json",
+	"name": "<Style Book Name>",
+	"themeId": "classic_WAR_classictheme"
+}
+```
+
+`frontend-tokens-values.json` beside it, one entry per token:
+
+```json
+{
+	"primaryColor": {
+		"cssVariableMapping": "primary",
+		"value": "#14284b"
+	}
+}
+```
+
+### Token Names Must Exist in the Theme — Unknown Ones Are Dropped Silently
+
+A token only takes effect if its name is declared in the active theme's `frontend-token-definition.json`. An invented name is discarded with **no error**: the initializer logs `addStyleBookEntries took N ms`, nothing warns, and the page keeps the default value. Do not guess — enumerate first:
+
+```bash
+python3 -c "
+import json
+d = json.load(open('modules/apps/frontend-theme/frontend-theme-classic/src/WEB-INF/frontend-token-definition.json'))
+print(sorted(ft['name']
+    for c in d['frontendTokenCategories']
+    for s in c.get('frontendTokenSets', [])
+    for ft in s.get('frontendTokens', [])))"
+```
+
+Classic declares 252 tokens. Useful ones: `bodyBgColor`, `bodyColor`, `primaryColor`, `primaryD1Color`, `primaryD2Color`, `secondaryColor`, `warningColor`, `fontFamilyBase`, `fontSizeBase`, `h1FontSize`…`h6FontSize`, `btnPrimaryBackgroundColor`.
+
+**Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Heading typography must come from the themeCSS CET or from fragment CSS.
+
+Verify the book landed by fetching a page and checking the override lands *after* the theme default — two declarations, e.g. `--primary: #0b5fff;` from Classic then `--primary: #14284b;` from the book. One declaration means the tokens were dropped.
 
 > **Verify the StyleBook write shape against the OpenAPI spec** (`get-openapi` MCP tool, or `GET /o/headless-admin-content/v1.0/openapi.json`). On the current API the `StyleBook` DTO exposes only `key`/`name` over `headless-admin-content`; `tokenValues`/`styleBookEntryId` shown below may not be accepted (the book would be created without tokens). If so, author the style book in the site-initializer tree (`style-books/<name>/style-book.json`) or set tokens in Site Administration → Design → Style Book.
 

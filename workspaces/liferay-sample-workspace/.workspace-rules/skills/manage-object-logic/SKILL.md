@@ -45,7 +45,74 @@ Consult `rules/object-actions-catalog.md` for the full catalog. Summary:
 | Groovy Script | Script body | Only on self hosted or PaaS; not available on Liferay SaaS |
 | Client Extension | CET `objectAction` or `workflowAction` externalReferenceCode | Calls a deployed microservice |
 
-### Object Action — Notification
+### Object Action — Notification (Site Initializer, Preferred)
+
+When the object lives in a site initializer, author the template **and** its action in the tree so the whole thing survives delete-and-redeploy. The REST recipe further down is for one off changes to a running instance.
+
+Three files in one directory, `site-initializer/notification-templates/<name>/`:
+
+```
+notification-templates/
+  registration-confirmation/
+    notification-template.json                  # metadata
+    en-US.html                                  # body, one file per locale
+    notification-template.object-actions.json   # the action(s) that fire it
+```
+
+`notification-template.json` — note there is **no `body` key**; the handler builds `body` from every `*.html` in the directory, keyed by filename (`en-US.html` → `en-US`):
+
+```json
+{
+	"editorType": "richText",
+	"externalReferenceCode": "<TEMPLATE_ERC>",
+	"name": "<Template Name>",
+	"recipientType": "email",
+	"recipients": [
+		{
+			"from": "noreply@example.com",
+			"fromName": {"en_US": "<Sender>"},
+			"singleRecipient": true,
+			"to": {"en_US": "[%<OBJECTNAME>_<FIELDNAME>%]"}
+		}
+	],
+	"subject": {"en_US": "<Subject>"},
+	"type": "email"
+}
+```
+
+`notification-template.object-actions.json` — a bare array. **Do not set `notificationTemplateId`**; the handler injects the id of the template it sits beside, which is what makes the pair portable:
+
+```json
+[
+	{
+		"active": true,
+		"externalReferenceCode": "<ACTION_ERC>",
+		"label": {"en_US": "<Action Label>"},
+		"name": "<actionName>",
+		"objectActionExecutorKey": "notification",
+		"objectActionTriggerKey": "onAfterAdd",
+		"objectDefinitionId": "[$OBJECT_DEFINITION_ID:<ObjectName>$]"
+	}
+]
+```
+
+#### Field Tokens
+
+A term is `[%` + the object's **short name** + `_` + the **field name**, all uppercased, + `%]`. For a `Registration` object with fields `attendeeName` and `email`: `[%REGISTRATION_ATTENDEENAME%]` and `[%REGISTRATION_EMAIL%]`. Camel case collapses — there is no separator inside the field name.
+
+Tokens work in `subject`, in the body HTML, and in `recipients[].to`, which is how a confirmation is addressed to the address the visitor just typed.
+
+Only fields **on that object** resolve. A token reaching across a relationship stays in the output as literal `[%…%]` text, so verify after sending:
+
+```bash
+curl --silent --user "test@liferay.com:test" \
+	"http://localhost:${PORT}/o/notification/v1.0/notification-queue-entries?pageSize=5" \
+	| jq '.items[] | {id, recipientsSummary, status, unresolved: (.body | test("\\[%"))}'
+```
+
+`status: 1` with `unresolved: false` and the right `recipientsSummary` is a delivered, correctly addressed notification. On a local bundle without SMTP the queue entry is the evidence — actual delivery is out of scope.
+
+### Object Action — Notification (Live API)
 
 Create a notification template first if one does not exist:
 
