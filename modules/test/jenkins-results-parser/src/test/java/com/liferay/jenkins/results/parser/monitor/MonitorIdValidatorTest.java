@@ -34,6 +34,24 @@ public class MonitorIdValidatorTest
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 		}
+
+		try {
+			MonitorIdValidator.validate(
+				Arrays.<Monitor>asList(_newMonitor("a"), _newMonitor(null)));
+
+			Assert.fail("Expected IllegalArgumentException");
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+		}
+
+		try {
+			MonitorIdValidator.validate(
+				Arrays.<Monitor>asList(_newMonitor("a"), _newMonitor("")));
+
+			Assert.fail("Expected IllegalArgumentException");
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+		}
 	}
 
 	private Monitor _newMonitor(String id) {
