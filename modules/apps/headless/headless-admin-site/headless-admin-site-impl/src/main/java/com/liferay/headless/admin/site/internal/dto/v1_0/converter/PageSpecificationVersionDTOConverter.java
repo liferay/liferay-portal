@@ -6,19 +6,14 @@
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
-import com.liferay.headless.admin.user.dto.v1_0.Creator;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.layout.content.model.LayoutContentVersion;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Lourdes Fernández Besada
@@ -40,30 +35,8 @@ public class PageSpecificationVersionDTOConverter
 		return new PageSpecificationVersion() {
 			{
 				setCreator(
-					() -> {
-						User user = _userLocalService.fetchUser(
-							layoutContentVersion.getUserId());
-
-						if (user == null) {
-							return null;
-						}
-
-						return new Creator() {
-							{
-								setExternalReferenceCode(
-									user::getExternalReferenceCode);
-								setImage(
-									() -> user.getPortraitURL(
-										new ThemeDisplay() {
-											{
-												setPathImage(
-													_portal.getPathImage());
-											}
-										}));
-								setName(user::getFullName);
-							}
-						};
-					});
+					() -> CreatorUtil.toCreator(
+						layoutContentVersion.getUserId()));
 				setDateCreated(layoutContentVersion::getCreateDate);
 				setDateModified(layoutContentVersion::getModifiedDate);
 				setExternalReferenceCode(
@@ -86,11 +59,5 @@ public class PageSpecificationVersionDTOConverter
 			}
 		};
 	}
-
-	@Reference
-	private Portal _portal;
-
-	@Reference
-	private UserLocalService _userLocalService;
 
 }
