@@ -37,6 +37,10 @@ public class CreatorUtil {
 				setExternalReferenceCode(user::getExternalReferenceCode);
 				setImage(
 					() -> {
+						if (user.getPortraitId() == 0) {
+							return null;
+						}
+
 						ThemeDisplay themeDisplay = new ThemeDisplay() {
 							{
 								setPathImage(PortalUtil.getPathImage());
