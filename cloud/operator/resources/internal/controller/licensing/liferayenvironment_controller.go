@@ -75,6 +75,26 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 		activationCode, error := liferayEnvironmentReconciler.readActivationCode(context, liferayEnvironment)
 
+		if errors.IsNotFound(error) {
+			logger.V(1).Info("Awaiting activation code", "environmentID", environmentID)
+
+			meta.SetStatusCondition(
+				&liferayEnvironment.Status.Conditions,
+				metav1.Condition{
+					Message: "Waiting for the activation code secret to be created.",
+					Reason:  "AwaitingActivationCode",
+					Status:  metav1.ConditionFalse,
+					Type:    conditionActivated,
+				},
+			)
+
+			liferayEnvironment.Status.Phase = "Pending"
+
+			return liferayEnvironmentReconciler.finishAfter(
+				context, liferayEnvironment, 15*time.Second,
+			)
+		}
+
 		if error != nil {
 			return controllerruntime.Result{}, error
 		}
@@ -281,6 +301,16 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finish(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 ) (controllerruntime.Result, error) {
+	return liferayEnvironmentReconciler.finishAfter(
+		context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+	)
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	requeueAfter time.Duration,
+) (controllerruntime.Result, error) {
 	if error := liferayEnvironmentReconciler.Status().Update(context, liferayEnvironment); error != nil {
 		if errors.IsConflict(error) {
 			return controllerruntime.Result{RequeueAfter: time.Second}, nil
@@ -289,7 +319,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finish(
 		return controllerruntime.Result{}, error
 	}
 
-	return controllerruntime.Result{RequeueAfter: liferayEnvironmentReconciler.HeartbeatInterval}, nil
+	return controllerruntime.Result{RequeueAfter: requeueAfter}, nil
 }
 
 func licenseChecksum(licenseXML []byte) string {
