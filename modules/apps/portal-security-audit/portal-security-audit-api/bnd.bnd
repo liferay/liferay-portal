@@ -4,4 +4,5 @@ Bundle-Version: 9.1.0
 Export-Package:\
 	com.liferay.portal.security.audit,\
 	com.liferay.portal.security.audit.configuration,\
-	com.liferay.portal.security.audit.formatter
+	com.liferay.portal.security.audit.formatter,\
+	com.liferay.portal.security.audit.router.configuration
