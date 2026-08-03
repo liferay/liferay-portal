@@ -24,7 +24,7 @@ interface InfoSummaryProps {
 export default function InfoSummary({
 	defaultOpen = true,
 	items,
-	title = 'Info',
+	title = Liferay.Language.get('info'),
 }: InfoSummaryProps) {
 	const [isOpen, setIsOpen] = useState(defaultOpen);
 
