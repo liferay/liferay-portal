@@ -252,7 +252,7 @@ public class LayoutContentVersionDisplayContextTest {
 		_draftName = RandomTestUtil.randomString();
 
 		Mockito.when(
-			_draftLayout.getName(_siteDefaultLocale)
+			_draftLayout.getName(_locale)
 		).thenReturn(
 			_draftName
 		);
