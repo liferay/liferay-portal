@@ -32,11 +32,11 @@ tests:
                             storageClassName: nfs-sc
                         workloadRef:
                             name: liferay-default
-        template: templates/liferayenvironment.yaml
         it: Requests the configured marketplace volume through the LiferayEnvironment
         set:
             marketplace.enabled: true
             marketplace.storageClassName: nfs-sc
+        template: templates/liferayenvironment.yaml
     -   asserts:
             -   equal:
                     path: metadata.labels.component
@@ -44,11 +44,11 @@ tests:
             -   equal:
                     path: metadata.name
                     value: liferay-default
-        template: templates/liferayenvironment.yaml
         it: Names the LiferayEnvironment after the Liferay stateful set
         set:
             marketplace.enabled: true
             marketplace.storageClassName: nfs-sc
+        template: templates/liferayenvironment.yaml
     -   asserts:
             -   notExists:
                     path: spec.template.spec.volumes
@@ -67,7 +67,7 @@ tests:
                         image:
                             pullPolicy: IfNotPresent
                             repository: opensearchproject/opensearch
-                            tag: "2.13.0"
+                            tag: 2.13.0
                         replicaCount: 1
                         service:
                             ports:
