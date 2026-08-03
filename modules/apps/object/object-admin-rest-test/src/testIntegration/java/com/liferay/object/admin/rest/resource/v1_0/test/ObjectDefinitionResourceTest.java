@@ -312,27 +312,41 @@ public class ObjectDefinitionResourceTest
 		objectDefinition2 = testGetObjectDefinitionsPage_addObjectDefinition(
 			objectDefinition2);
 
+		Set<Long> objectDefinitionIds = Set.of(
+			objectDefinition1.getId(), objectDefinition2.getId());
+
+		Page<ObjectDefinition> objectDefinitionsPage =
+			objectDefinitionResource.getObjectDefinitionsPage(
+				null, null, null, Pagination.of(1, 1), null);
+
+		Pagination pagination = Pagination.of(
+			1, (int)objectDefinitionsPage.getTotalCount() + 10);
+
 		Page<ObjectDefinition> ascPage =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				null, null, null, null, "name:asc");
+				null, null, null, pagination, "name:asc");
 
-		List<ObjectDefinition> objectDefinitions =
-			(List<ObjectDefinition>)ascPage.getItems();
+		List<ObjectDefinition> objectDefinitions = ListUtil.filter(
+			(List<ObjectDefinition>)ascPage.getItems(),
+			objectDefinition -> objectDefinitionIds.contains(
+				objectDefinition.getId()));
 
 		assertEquals(
 			Arrays.asList(objectDefinition1, objectDefinition2),
-			objectDefinitions.subList(2, 4));
+			objectDefinitions);
 
 		Page<ObjectDefinition> descPage =
 			objectDefinitionResource.getObjectDefinitionsPage(
-				null, null, null, null, "name:desc");
+				null, null, null, pagination, "name:desc");
 
-		objectDefinitions = (List<ObjectDefinition>)descPage.getItems();
+		objectDefinitions = ListUtil.filter(
+			(List<ObjectDefinition>)descPage.getItems(),
+			objectDefinition -> objectDefinitionIds.contains(
+				objectDefinition.getId()));
 
 		assertEquals(
 			Arrays.asList(objectDefinition2, objectDefinition1),
-			objectDefinitions.subList(
-				objectDefinitions.size() - 4, objectDefinitions.size() - 2));
+			objectDefinitions);
 
 		_objectDefinitionLocalService.deleteObjectDefinition(
 			objectDefinition1.getId());
@@ -2299,9 +2313,41 @@ public class ObjectDefinitionResourceTest
 			actualPermissionsJSONArray = jsonObject.getJSONArray("items");
 		}
 
+		// The response includes permissions granted by the environment beyond
+		// this request, for example the company scoped CMS Administrator grant
+		// present on every object definition, so keep only the roles this
+		// request asserts. The comparison still verifies that every requested
+		// permission round trips with its exact action IDs, independent of the
+		// provisioning grants that vary across environments.
+
+		Set<String> expectedRoleNames = new HashSet<>();
+
+		for (int i = 0; i < expectedPermissionsJSONArray.length(); i++) {
+			JSONObject expectedPermissionJSONObject =
+				expectedPermissionsJSONArray.getJSONObject(i);
+
+			expectedRoleNames.add(
+				expectedPermissionJSONObject.getString("roleName"));
+		}
+
+		JSONArray filteredActualPermissionsJSONArray =
+			_jsonFactory.createJSONArray();
+
+		for (int i = 0; i < actualPermissionsJSONArray.length(); i++) {
+			JSONObject actualPermissionJSONObject =
+				actualPermissionsJSONArray.getJSONObject(i);
+
+			if (expectedRoleNames.contains(
+					actualPermissionJSONObject.getString("roleName"))) {
+
+				filteredActualPermissionsJSONArray.put(
+					actualPermissionJSONObject);
+			}
+		}
+
 		JSONAssert.assertEquals(
 			String.valueOf(expectedPermissionsJSONArray),
-			String.valueOf(actualPermissionsJSONArray),
+			String.valueOf(filteredActualPermissionsJSONArray),
 			JSONCompareMode.LENIENT);
 	}
 
