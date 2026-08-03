@@ -276,7 +276,7 @@ definition {
 		ImportExport.selectEntity(entityType = ${entityType});
 
 		if (isSet(scope)) {
-			var scope = TestCase.getSiteName(siteName = "Liferay DXP Site");
+			var scope = ImportExport.getScopeSiteName();
 
 			Select(
 				locator1 = "Select#SCOPE_CONFIGURATION",
@@ -347,6 +347,20 @@ definition {
 		Button.click(button = "Export");
 
 		WaitForElementPresent(locator1 = "ImportExport#EXECUTION_SUCCESS");
+	}
+
+	@summary = "Default summary"
+	macro getScopeSiteName() {
+		var testLiferayVirtualInstance = PropsUtil.get("test.liferay.virtual.instance");
+
+		if (${testLiferayVirtualInstance} == "true") {
+			var siteName = TestCase.getSiteName();
+
+			return ${siteName};
+		}
+		else {
+			return "Liferay DXP Site";
+		}
 	}
 
 	@summary = "Default summary"

@@ -165,7 +165,7 @@ definition {
 		}
 
 		task ("Then 'Scope' is present with default and Global sites in dropdown list") {
-			var scope = TestCase.getSiteName(siteName = "Liferay DXP Site");
+			var scope = ImportExport.getScopeSiteName();
 
 			AssertElementPresent(locator1 = "Select#SCOPE_CONFIGURATION");
 
