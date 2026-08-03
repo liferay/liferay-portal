@@ -83,7 +83,7 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 			meta.SetStatusCondition(
 				&liferayEnvironment.Status.Conditions,
 				metav1.Condition{
-					Message: "Waiting for the activation code secret to be created.",
+					Message: "Waiting for the activation code secret to be created",
 					Reason:  "AwaitingActivationCode",
 					Status:  metav1.ConditionFalse,
 					Type:    conditionActivated,
@@ -128,7 +128,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 			liferayEnvironment.Status.Phase = "Degraded"
 
-			return liferayEnvironmentReconciler.finish(context, liferayEnvironment)
+			return liferayEnvironmentReconciler.finishAfter(
+				context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+			)
 		}
 
 		now := metav1.Now()
@@ -171,7 +173,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 		liferayEnvironment.Status.Phase = "Degraded"
 
-		return liferayEnvironmentReconciler.finish(context, liferayEnvironment)
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		)
 	}
 
 	logger.Info(
@@ -210,7 +214,9 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 
 	liferayEnvironment.Status.Phase = "Ready"
 
-	return liferayEnvironmentReconciler.finish(context, liferayEnvironment)
+	return liferayEnvironmentReconciler.finishAfter(
+		context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+	)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManager(
@@ -303,15 +309,6 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 	logf.FromContext(context).Info("Generated identity keypair", "secret", identityName)
 
 	return privateKey, nil
-}
-
-func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finish(
-	context context.Context,
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-) (controllerruntime.Result, error) {
-	return liferayEnvironmentReconciler.finishAfter(
-		context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
-	)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
