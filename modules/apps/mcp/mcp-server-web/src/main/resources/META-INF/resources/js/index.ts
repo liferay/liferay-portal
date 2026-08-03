@@ -7,4 +7,5 @@ export {default as EditDataMask} from './data_masks/EditDataMask';
 export {default as EditProfile} from './profiles/EditProfile';
 export {default as EditPrompt} from './prompts/EditPrompt';
 export {default as DataMasksFDSPropsTransformer} from './props_transformer/DataMasksFDSPropsTransformer';
+export {default as ProfilesFDSPropsTransformer} from './props_transformer/ProfilesFDSPropsTransformer';
 export {default as PromptsFDSPropsTransformer} from './props_transformer/PromptsFDSPropsTransformer';

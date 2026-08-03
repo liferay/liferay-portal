@@ -5,14 +5,20 @@
 
 package com.liferay.mcp.server.web.internal.display.context;
 
+import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemList;
 import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.List;
 
 /**
  * @author Jorge González
@@ -29,6 +35,39 @@ public class ViewProfilesDisplayContext {
 
 	public String getAPIURL() {
 		return "/o/mcp/server-profiles";
+	}
+
+	public CreationMenu getCreationMenu() {
+		return CreationMenuBuilder.addPrimaryDropdownItem(
+			dropdownItem -> {
+				dropdownItem.setHref(
+					PortletURLBuilder.createRenderURL(
+						_liferayPortletResponse
+					).setMVCRenderCommandName(
+						"/mcp_server/edit_profile"
+					).buildString());
+				dropdownItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "new-profile"));
+			}
+		).build();
+	}
+
+	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
+		return List.of(
+			new FDSActionDropdownItem(
+				PortletURLBuilder.createRenderURL(
+					_liferayPortletResponse
+				).setMVCRenderCommandName(
+					"/mcp_server/edit_profile"
+				).setParameter(
+					"profileId", "{id}"
+				).buildString(),
+				"pencil", "edit", LanguageUtil.get(_httpServletRequest, "edit"),
+				"get", null, null),
+			new FDSActionDropdownItem(
+				"#", "trash", "delete",
+				LanguageUtil.get(_httpServletRequest, "delete"), "get", null,
+				null));
 	}
 
 	public String getFDSName() {

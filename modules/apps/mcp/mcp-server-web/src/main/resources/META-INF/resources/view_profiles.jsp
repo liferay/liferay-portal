@@ -15,7 +15,10 @@ ViewProfilesDisplayContext viewProfilesDisplayContext = new ViewProfilesDisplayC
 
 <frontend-data-set:headless-display
 	apiURL="<%= viewProfilesDisplayContext.getAPIURL() %>"
+	creationMenu="<%= viewProfilesDisplayContext.getCreationMenu() %>"
+	fdsActionDropdownItems="<%= viewProfilesDisplayContext.getFDSActionDropdownItems() %>"
 	fdsSortItemList="<%= viewProfilesDisplayContext.getFDSSortItemList() %>"
 	id="<%= viewProfilesDisplayContext.getFDSName() %>"
+	propsTransformer="{ProfilesFDSPropsTransformer} from mcp-server-web"
 	style="fluid"
 />
