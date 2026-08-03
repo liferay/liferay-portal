@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Headless Admin Language Override API
+Bundle-SymbolicName: com.liferay.headless.admin.language.override.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.liferay.headless.admin.language.override.dto.v1_0,\
+	com.liferay.headless.admin.language.override.resource.v1_0

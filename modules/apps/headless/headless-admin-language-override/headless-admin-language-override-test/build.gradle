@@ -1,0 +1,17 @@
+dependencies {
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
+	testIntegrationImplementation group: "commons-lang", name: "commons-lang", version: "2.6"
+	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	testIntegrationImplementation project(":apps:headless:headless-admin-language-override:headless-admin-language-override-api")
+	testIntegrationImplementation project(":apps:headless:headless-admin-language-override:headless-admin-language-override-client")
+	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
+	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
+	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
+	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}

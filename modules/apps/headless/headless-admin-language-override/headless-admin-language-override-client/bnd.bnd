@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Headless Admin Language Override Client
+Bundle-SymbolicName: com.liferay.headless.admin.language.override.client
+Bundle-Version: 1.0.0

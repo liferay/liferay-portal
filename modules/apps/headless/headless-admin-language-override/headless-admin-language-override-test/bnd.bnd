@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Headless Admin Language Override Test
+Bundle-SymbolicName: com.liferay.headless.admin.language.override.test
+Bundle-Version: 1.0.0
+-includeresource:\
+	com.liferay.headless.admin.language.override.client.jar=com.liferay.headless.admin.language.override.client-*.jar;lib:=true,\
+	com.liferay.headless.batch.engine.client.jar=com.liferay.headless.batch.engine.client-*.jar;lib:=true

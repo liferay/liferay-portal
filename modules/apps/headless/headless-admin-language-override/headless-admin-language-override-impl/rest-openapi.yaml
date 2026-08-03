@@ -1,0 +1,206 @@
+components:
+    schemas:
+        Creator:
+            description:
+                Represents the user account of the content's creator/author. Properties follow the [creator](https://schema.org/creator) specification.
+            properties:
+                additionalName:
+                    readOnly: true
+                    type: string
+                contentType:
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    readOnly: true
+                    type: string
+                familyName:
+                    readOnly: true
+                    type: string
+                givenName:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                image:
+                    format: uri
+                    readOnly: true
+                    type: string
+                name:
+                    readOnly: true
+                    type: string
+                profileURL:
+                    readOnly: true
+                    type: string
+            type: object
+        LanguageOverride:
+            properties:
+                creator:
+                    allOf:
+                        -   $ref: "#/components/schemas/Creator"
+                    description:
+                        The user who created the language override.
+                    readOnly: true
+                dateCreated:
+                    description:
+                        The language override's creation date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                dateModified:
+                    description:
+                        The language override's most recent modification date.
+                    format: date-time
+                    readOnly: true
+                    type: string
+                externalReferenceCode:
+                    description:
+                        The language override's external reference code.
+                    type: string
+                id:
+                    description:
+                        The language override's ID.
+                    format: int64
+                    readOnly: true
+                    type: integer
+                key:
+                    description:
+                        The key being overridden.
+                    type: string
+                languageId:
+                    description:
+                        The language ID (locale) of the translation.
+                    type: string
+                value:
+                    description:
+                        The overridden key value.
+                    type: string
+            required:
+                -   key
+                -   languageId
+                -   value
+            type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.admin.language.override.client', and version '1.0.0'."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: Language Override
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/language-overrides":
+        get:
+            operationId: getLanguageOverridesPage
+            parameters:
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/LanguageOverride"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/LanguageOverride"
+                                type: array
+            tags: ["LanguageOverride"]
+        post:
+            operationId: postLanguageOverride
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/LanguageOverride"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/LanguageOverride"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LanguageOverride"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/LanguageOverride"
+            tags: ["LanguageOverride"]
+    "/language-overrides/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteLanguageOverrideByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["LanguageOverride"]
+        get:
+            operationId: getLanguageOverrideByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LanguageOverride"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/LanguageOverride"
+            tags: ["LanguageOverride"]
+        put:
+            operationId: putLanguageOverrideByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/LanguageOverride"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/LanguageOverride"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/LanguageOverride"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/LanguageOverride"
+            tags: ["LanguageOverride"]
