@@ -293,6 +293,10 @@ export class AssetsPage {
 		await this.dataSetFragmentPage.changeVisualizationMode(...args);
 	}
 
+	async search(...args: Parameters<DataSetPage['search']>) {
+		await this.dataSetFragmentPage.search(...args);
+	}
+
 	async selectItems(titles: string[]) {
 		for (const title of titles) {
 			const card = this.page
