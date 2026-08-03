@@ -1,0 +1,15 @@
+apiVersion: licensing.liferay.com/v1alpha1
+kind: LiferayEnvironment
+metadata:
+    labels:
+        app: {{ include "liferay.name" . }}
+        {{- include "liferay.labels" . | nindent 8 }}
+    name: {{ include "liferay.name" . }}
+    namespace: {{ include "liferay.namespace" . }}
+spec:
+    marketplaceVolume:
+        enabled: {{ .Values.marketplace.enabled }}
+        size: {{ .Values.marketplace.size }}
+        storageClassName: {{ .Values.marketplace.storageClassName }}
+    workloadRef:
+        name: {{ include "liferay.name" . }}
