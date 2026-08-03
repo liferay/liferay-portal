@@ -64,14 +64,12 @@ public class ObjectEntryFolderUtil {
 					setForceDeleteSystemObjectEntryFolderWithSafeCloseable(
 						true)) {
 
-			ObjectEntryFolderLocalServiceUtil.
-				deleteObjectEntryFolderByExternalReferenceCode(
-					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
-					depotEntry.getGroupId(), depotEntry.getCompanyId());
-			ObjectEntryFolderLocalServiceUtil.
-				deleteObjectEntryFolderByExternalReferenceCode(
-					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
-					depotEntry.getGroupId(), depotEntry.getCompanyId());
+			_deleteObjectEntryFolder(
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+				depotEntry);
+			_deleteObjectEntryFolder(
+				ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_FILES,
+				depotEntry);
 		}
 	}
 
@@ -149,6 +147,22 @@ public class ObjectEntryFolderUtil {
 				TempFileEntryUtil.class.getName(), StringPool.BLANK,
 				TempFileEntryUtil.class.getName(), new UnicodeProperties(),
 				true, serviceContext);
+		}
+	}
+
+	private static void _deleteObjectEntryFolder(
+			String externalReferenceCode, DepotEntry depotEntry)
+		throws PortalException {
+
+		ObjectEntryFolder objectEntryFolder =
+			ObjectEntryFolderLocalServiceUtil.
+				fetchObjectEntryFolderByExternalReferenceCode(
+					externalReferenceCode, depotEntry.getGroupId(),
+					depotEntry.getCompanyId());
+
+		if (objectEntryFolder != null) {
+			ObjectEntryFolderLocalServiceUtil.deleteObjectEntryFolder(
+				objectEntryFolder);
 		}
 	}
 
