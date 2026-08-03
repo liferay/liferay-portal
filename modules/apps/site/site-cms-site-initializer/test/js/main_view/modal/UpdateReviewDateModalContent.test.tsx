@@ -29,6 +29,33 @@ describe('UpdateReviewDateModalContent', () => {
 		expect(screen.getByText('cancel')).toBeInTheDocument();
 	});
 
+	it('does not preselect never review when no review date is given', () => {
+		render(
+			<UpdateReviewDateModalContent
+				closeModal={jest.fn()}
+				onSave={jest.fn().mockResolvedValue(true)}
+			/>
+		);
+
+		expect(screen.getByLabelText('never-review')).not.toBeChecked();
+		expect(screen.getAllByRole('textbox')[0]).toBeEnabled();
+	});
+
+	it('does not clear the review date when nothing is picked', async () => {
+		const onSave = jest.fn().mockResolvedValue(true);
+
+		render(
+			<UpdateReviewDateModalContent
+				closeModal={jest.fn()}
+				onSave={onSave}
+			/>
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		expect(onSave).not.toHaveBeenCalled();
+	});
+
 	it('saves the review date as an ISO string with a trailing Z', async () => {
 		const closeModal = jest.fn();
 		const onSave = jest.fn().mockResolvedValue(true);

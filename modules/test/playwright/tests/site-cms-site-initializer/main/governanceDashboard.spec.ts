@@ -265,8 +265,6 @@ test(
 				.getByRole('menuitem', {name: 'Update Review Date'})
 				.click();
 
-			await page.locator('.modal').getByLabel('Never Review').uncheck();
-
 			await fillReviewDateModal(page, REVIEW_DATE_INPUT);
 
 			for (const overdueContent of overdueContents.slice(2)) {
