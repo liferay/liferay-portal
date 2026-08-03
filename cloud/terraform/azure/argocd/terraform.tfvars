@@ -1,1 +1,0 @@
-argocd_helm_chart_version="10.1.3"
