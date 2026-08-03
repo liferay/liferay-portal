@@ -17,12 +17,14 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.Interest;
+import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
 import com.liferay.osb.faro.engine.client.model.credentials.OAuth1Credentials;
 import com.liferay.osb.faro.engine.client.model.credentials.OAuth2Credentials;
 import com.liferay.osb.faro.engine.client.model.credentials.TokenCredentials;
 import com.liferay.osb.faro.web.internal.model.display.contacts.mixin.BaseMixin;
 import com.liferay.osb.faro.web.internal.model.display.contacts.mixin.CredentialsMixin;
+import com.liferay.osb.faro.web.internal.model.display.contacts.mixin.MetricMixin;
 import com.liferay.osb.faro.web.internal.model.display.contacts.mixin.OAuth1CredentialsMixin;
 import com.liferay.osb.faro.web.internal.model.display.contacts.mixin.OAuth2CredentialsMixin;
 import com.liferay.osb.faro.web.internal.model.display.contacts.mixin.PageVisitMixin;
@@ -82,6 +84,7 @@ public class JSONUtil {
 		{
 			addMixIn(Credentials.class, CredentialsMixin.class);
 			addMixIn(Interest.class, BaseMixin.class);
+			addMixIn(Metric.class, MetricMixin.class);
 			addMixIn(OAuth1Credentials.class, OAuth1CredentialsMixin.class);
 			addMixIn(OAuth2Credentials.class, OAuth2CredentialsMixin.class);
 			addMixIn(PageVisited.class, PageVisitMixin.class);
