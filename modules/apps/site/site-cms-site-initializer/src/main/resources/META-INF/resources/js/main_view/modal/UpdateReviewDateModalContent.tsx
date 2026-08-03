@@ -38,7 +38,7 @@ export default function UpdateReviewDateModalContent({
 
 	const [field, setField] = useState({
 		error: '',
-		neverReview: !reviewDate,
+		neverReview: false,
 		value: toMomentDate(reviewDate),
 	});
 	const [saving, setSaving] = useState(false);
