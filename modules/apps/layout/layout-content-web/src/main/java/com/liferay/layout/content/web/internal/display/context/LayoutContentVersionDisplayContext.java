@@ -118,9 +118,9 @@ public class LayoutContentVersionDisplayContext {
 	}
 
 	private String _getDraftName() {
-		Layout draftLayout = _themeDisplay.getLayout();
+		Layout layout = _themeDisplay.getLayout();
 
-		return draftLayout.getName(_themeDisplay.getSiteDefaultLocale());
+		return layout.getName(_themeDisplay.getSiteDefaultLocale());
 	}
 
 	private String _getPageSpecificationVersionsURL() throws PortalException {
@@ -137,9 +137,9 @@ public class LayoutContentVersionDisplayContext {
 	}
 
 	private boolean _hasDraft() {
-		Layout draftLayout = _themeDisplay.getLayout();
+		Layout layout = _themeDisplay.getLayout();
 
-		return !draftLayout.isApproved();
+		return !layout.isApproved();
 	}
 
 	private final HttpServletRequest _httpServletRequest;
