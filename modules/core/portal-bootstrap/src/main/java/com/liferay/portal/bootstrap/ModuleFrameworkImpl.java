@@ -208,6 +208,8 @@ public class ModuleFrameworkImpl implements ModuleFramework {
 	@Override
 	public void initFramework() throws Exception {
 		if (PropsValues.FIPS_ENABLED) {
+			FIPSApplicationStateMachineUtil.registerShutdownHook();
+
 			FIPSApplicationStateMachineUtil.selfTest(
 				FIPSModeValidator::validate);
 		}
