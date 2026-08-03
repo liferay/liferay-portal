@@ -15,6 +15,8 @@ import com.liferay.portal.tools.service.builder.test.model.DateEntry;
 import com.liferay.portal.tools.service.builder.test.service.DateEntryLocalService;
 import com.liferay.portal.tools.service.builder.test.service.persistence.DateEntryPersistence;
 
+import java.sql.Timestamp;
+
 import java.util.Date;
 
 import org.junit.Assert;
@@ -58,7 +60,7 @@ public class DateEntryTest {
 		dateEntry = _dateEntryLocalService.fetchDateEntry(
 			dateEntry.getDateEntryId());
 
-		_assertDate(date, dateEntry.getValue());
+		_assertTimestamp(date, dateEntry.getValue());
 
 		Date newDate = new Date(date.getTime() + 1000);
 
@@ -78,14 +80,21 @@ public class DateEntryTest {
 		dateEntry = _dateEntryLocalService.getDateEntry(
 			dateEntry.getDateEntryId());
 
-		_assertDate(newDate, dateEntry.getValue());
+		_assertTimestamp(newDate, dateEntry.getValue());
 	}
 
 	private void _assertDate(Date date1, Date date2) {
 		Assert.assertEquals(Date.class, date1.getClass());
 		Assert.assertEquals(Date.class, date2.getClass());
 
-		Assert.assertEquals(date1, date2);
+		Assert.assertEquals(date1.getTime(), date2.getTime());
+	}
+
+	private void _assertTimestamp(Date date1, Date date2) {
+		Assert.assertEquals(Date.class, date1.getClass());
+		Assert.assertEquals(Timestamp.class, date2.getClass());
+
+		Assert.assertEquals(date1.getTime(), date2.getTime());
 	}
 
 	@Inject
