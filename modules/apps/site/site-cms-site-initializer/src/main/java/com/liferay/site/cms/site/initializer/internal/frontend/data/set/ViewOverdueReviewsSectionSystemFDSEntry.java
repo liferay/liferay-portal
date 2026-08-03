@@ -6,6 +6,7 @@
 package com.liferay.site.cms.site.initializer.internal.frontend.data.set;
 
 import com.liferay.frontend.data.set.SystemFDSEntry;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
@@ -28,7 +29,12 @@ public class ViewOverdueReviewsSectionSystemFDSEntry implements SystemFDSEntry {
 	public String getAdditionalAPIURLParameters(
 		HttpServletRequest httpServletRequest) {
 
-		String filterString = "dateReview lt now()";
+		String filterString = StringBundler.concat(
+			"dateReview lt now() and (cmsSection eq 'contents' or cmsSection ",
+			"eq 'files') and objectDefinitionExternalReferenceCode ne '",
+			ObjectEntryFolderConstants.
+				EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER,
+			"' and rootDescendantNode eq false");
 
 		long groupId = GetterUtil.getLong(
 			httpServletRequest.getParameter("groupId"));
