@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -36,7 +38,7 @@ public class MonitorMetricsWriter {
 
 		_metricsFile = metricsFile;
 		_monitorResultStore = monitorResultStore;
-		_monitors = monitors;
+		_monitors = Collections.unmodifiableList(new ArrayList<>(monitors));
 	}
 
 	public void write() throws IOException {

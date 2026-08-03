@@ -7,6 +7,8 @@ package com.liferay.jenkins.results.parser.monitor;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ public class MonitorEngine {
 		MonitorIdValidator.validate(monitors);
 
 		_monitorResultStore = monitorResultStore;
-		_monitors = monitors;
+		_monitors = Collections.unmodifiableList(new ArrayList<>(monitors));
 
 		_monitorScheduler = new MonitorScheduler(monitorResultStore);
 	}
