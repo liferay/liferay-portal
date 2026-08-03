@@ -52,38 +52,6 @@ public class MonitorMetricsWriter {
 			StandardCopyOption.ATOMIC_MOVE);
 	}
 
-	private GaugeSnapshot _getCheckLastRunTimestampSnapshot() {
-		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
-
-		gaugeSnapshotBuilder.help(
-			"Unix timestamp of the last check run, 0 if never run");
-		gaugeSnapshotBuilder.name("monitor_check_last_run_timestamp_seconds");
-
-		for (Monitor monitor : _monitors) {
-			gaugeSnapshotBuilder.dataPoint(
-				_newGaugeDataPointSnapshot(
-					monitor, _getLastRunTimestampSeconds(monitor)));
-		}
-
-		return gaugeSnapshotBuilder.build();
-	}
-
-	private GaugeSnapshot _getCheckStatusSnapshot() {
-		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
-
-		gaugeSnapshotBuilder.help(
-			"Monitor status severity rank, 0 OK, 1 UNKNOWN, 2 WARN, 3 " +
-				"CRITICAL");
-		gaugeSnapshotBuilder.name("monitor_check_status");
-
-		for (Monitor monitor : _monitors) {
-			gaugeSnapshotBuilder.dataPoint(
-				_newGaugeDataPointSnapshot(monitor, _getSeverityRank(monitor)));
-		}
-
-		return gaugeSnapshotBuilder.build();
-	}
-
 	private String _getContent() throws IOException {
 		ByteArrayOutputStream byteArrayOutputStream =
 			new ByteArrayOutputStream();
@@ -94,29 +62,11 @@ public class MonitorMetricsWriter {
 		prometheusTextFormatWriter.write(
 			byteArrayOutputStream,
 			MetricSnapshots.of(
-				_getCheckLastRunTimestampSnapshot(), _getCheckStatusSnapshot(),
-				_getHeartbeatTimestampSnapshot()),
+				_newCheckLastRunTimestampSnapshot(), _newCheckStatusSnapshot(),
+				_newHeartbeatTimestampSnapshot()),
 			EscapingScheme.DEFAULT);
 
 		return byteArrayOutputStream.toString("UTF-8");
-	}
-
-	private GaugeSnapshot _getHeartbeatTimestampSnapshot() {
-		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
-
-		gaugeSnapshotBuilder.help("Unix timestamp of the last metrics write");
-		gaugeSnapshotBuilder.name("monitor_heartbeat_timestamp_seconds");
-
-		GaugeSnapshot.GaugeDataPointSnapshot.Builder
-			gaugeDataPointSnapshotBuilder =
-				GaugeSnapshot.GaugeDataPointSnapshot.builder();
-
-		gaugeDataPointSnapshotBuilder.value(
-			JenkinsResultsParserUtil.getCurrentTimeMillis() / 1000);
-
-		gaugeSnapshotBuilder.dataPoint(gaugeDataPointSnapshotBuilder.build());
-
-		return gaugeSnapshotBuilder.build();
 	}
 
 	private Labels _getLabels(Monitor monitor) {
@@ -169,6 +119,38 @@ public class MonitorMetricsWriter {
 		return status.getSeverityRank();
 	}
 
+	private GaugeSnapshot _newCheckLastRunTimestampSnapshot() {
+		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
+
+		gaugeSnapshotBuilder.help(
+			"Unix timestamp of the last check run, 0 if never run");
+		gaugeSnapshotBuilder.name("monitor_check_last_run_timestamp_seconds");
+
+		for (Monitor monitor : _monitors) {
+			gaugeSnapshotBuilder.dataPoint(
+				_newGaugeDataPointSnapshot(
+					monitor, _getLastRunTimestampSeconds(monitor)));
+		}
+
+		return gaugeSnapshotBuilder.build();
+	}
+
+	private GaugeSnapshot _newCheckStatusSnapshot() {
+		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
+
+		gaugeSnapshotBuilder.help(
+			"Monitor status severity rank, 0 OK, 1 UNKNOWN, 2 WARN, 3 " +
+				"CRITICAL");
+		gaugeSnapshotBuilder.name("monitor_check_status");
+
+		for (Monitor monitor : _monitors) {
+			gaugeSnapshotBuilder.dataPoint(
+				_newGaugeDataPointSnapshot(monitor, _getSeverityRank(monitor)));
+		}
+
+		return gaugeSnapshotBuilder.build();
+	}
+
 	private GaugeSnapshot.GaugeDataPointSnapshot _newGaugeDataPointSnapshot(
 		Monitor monitor, double value) {
 
@@ -180,6 +162,24 @@ public class MonitorMetricsWriter {
 		gaugeDataPointSnapshotBuilder.value(value);
 
 		return gaugeDataPointSnapshotBuilder.build();
+	}
+
+	private GaugeSnapshot _newHeartbeatTimestampSnapshot() {
+		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
+
+		gaugeSnapshotBuilder.help("Unix timestamp of the last metrics write");
+		gaugeSnapshotBuilder.name("monitor_heartbeat_timestamp_seconds");
+
+		GaugeSnapshot.GaugeDataPointSnapshot.Builder
+			gaugeDataPointSnapshotBuilder =
+				GaugeSnapshot.GaugeDataPointSnapshot.builder();
+
+		gaugeDataPointSnapshotBuilder.value(
+			JenkinsResultsParserUtil.getCurrentTimeMillis() / 1000);
+
+		gaugeSnapshotBuilder.dataPoint(gaugeDataPointSnapshotBuilder.build());
+
+		return gaugeSnapshotBuilder.build();
 	}
 
 	private final File _metricsFile;
