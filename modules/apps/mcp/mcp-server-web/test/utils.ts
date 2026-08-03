@@ -4,13 +4,148 @@
  */
 
 import {
+	buildDataMaskTree,
+	filterDataMaskTree,
+	getSelectedDataMaskExternalReferenceCodes,
 	isSystemMask,
 	required,
 	toIdentifier,
 	toODataStringLiteral,
 } from '../src/main/resources/META-INF/resources/js/utils';
 
-import type {DataMask} from '../src/main/resources/META-INF/resources/js/types';
+import type {
+	DataMask,
+	DataMaskTypeKey,
+} from '../src/main/resources/META-INF/resources/js/types';
+
+function createDataMask(
+	key: DataMaskTypeKey,
+	name: string,
+	externalReferenceCode?: string
+): DataMask {
+	return {
+		detectionRegex: '\\d+',
+		externalReferenceCode,
+		maskType: {key, name: key === 'system' ? 'System' : 'Custom'},
+		name,
+		replacementValue: '[X]',
+	};
+}
+
+describe('buildDataMaskTree', () => {
+	it('groups the masks by type with system first', () => {
+		const tree = buildDataMaskTree([
+			createDataMask('custom', 'Project Codename', 'CUSTOM_1'),
+			createDataMask('system', 'Email Address', 'SYSTEM_1'),
+			createDataMask('system', 'Phone Number', 'SYSTEM_2'),
+		]);
+
+		expect(tree).toEqual([
+			{
+				children: [
+					{id: 'SYSTEM_1', name: 'Email Address'},
+					{id: 'SYSTEM_2', name: 'Phone Number'},
+				],
+				id: 'maskType:system',
+				name: 'System',
+			},
+			{
+				children: [{id: 'CUSTOM_1', name: 'Project Codename'}],
+				id: 'maskType:custom',
+				name: 'Custom',
+			},
+		]);
+	});
+
+	it('omits a group without masks', () => {
+		const tree = buildDataMaskTree([
+			createDataMask('system', 'Email Address', 'SYSTEM_1'),
+		]);
+
+		expect(tree).toHaveLength(1);
+		expect(tree[0].id).toBe('maskType:system');
+	});
+
+	it('omits masks without an external reference code', () => {
+		const tree = buildDataMaskTree([
+			createDataMask('system', 'Email Address', 'SYSTEM_1'),
+			createDataMask('system', 'Phone Number'),
+		]);
+
+		expect(tree[0].children).toEqual([
+			{id: 'SYSTEM_1', name: 'Email Address'},
+		]);
+	});
+});
+
+describe('filterDataMaskTree', () => {
+	const tree = buildDataMaskTree([
+		createDataMask('system', 'Email Address', 'SYSTEM_1'),
+		createDataMask('system', 'Phone Number', 'SYSTEM_2'),
+		createDataMask('custom', 'Project Codename', 'CUSTOM_1'),
+	]);
+
+	it('returns every group expanded when the query is empty', () => {
+		expect(filterDataMaskTree(tree, '')).toEqual({
+			expandedKeys: ['maskType:system', 'maskType:custom'],
+			items: tree,
+		});
+	});
+
+	it('keeps only the children matching the query, case-insensitively', () => {
+		const {items} = filterDataMaskTree(tree, 'EMAIL');
+
+		expect(items).toEqual([
+			{
+				children: [{id: 'SYSTEM_1', name: 'Email Address'}],
+				id: 'maskType:system',
+				name: 'System',
+			},
+		]);
+	});
+
+	it('expands only the groups with matches', () => {
+		expect(filterDataMaskTree(tree, 'codename').expandedKeys).toEqual([
+			'maskType:custom',
+		]);
+	});
+
+	it('returns no items when nothing matches', () => {
+		expect(filterDataMaskTree(tree, 'iban').items).toEqual([]);
+	});
+});
+
+describe('getSelectedDataMaskExternalReferenceCodes', () => {
+	const tree = buildDataMaskTree([
+		createDataMask('system', 'Email Address', 'SYSTEM_1'),
+		createDataMask('system', 'Phone Number', 'SYSTEM_2'),
+		createDataMask('custom', 'Project Codename', 'CUSTOM_1'),
+	]);
+
+	it('returns the selected masks in tree order', () => {
+		expect(
+			getSelectedDataMaskExternalReferenceCodes(
+				tree,
+				new Set(['CUSTOM_1', 'SYSTEM_2'])
+			)
+		).toEqual(['SYSTEM_2', 'CUSTOM_1']);
+	});
+
+	it('ignores group keys added by a recursive parent selection', () => {
+		expect(
+			getSelectedDataMaskExternalReferenceCodes(
+				tree,
+				new Set(['maskType:system', 'SYSTEM_1', 'SYSTEM_2'])
+			)
+		).toEqual(['SYSTEM_1', 'SYSTEM_2']);
+	});
+
+	it('returns an empty list when nothing is selected', () => {
+		expect(
+			getSelectedDataMaskExternalReferenceCodes(tree, new Set())
+		).toEqual([]);
+	});
+});
 
 describe('required', () => {
 	it('returns an error message for an empty value', () => {
