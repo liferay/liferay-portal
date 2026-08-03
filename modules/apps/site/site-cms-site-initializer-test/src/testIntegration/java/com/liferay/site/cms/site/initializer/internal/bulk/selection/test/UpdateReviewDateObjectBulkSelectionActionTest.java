@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -55,9 +56,30 @@ public class UpdateReviewDateObjectBulkSelectionActionTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testDoExecuteClearsReviewDate() throws Exception {
+	public void testDoExecute() throws Exception {
+		Date displayDate = new Date(System.currentTimeMillis() - Time.MINUTE);
+
 		ObjectEntry objectEntry = _addObjectEntry(
-			_DISPLAY_DATE, _ORIGINAL_REVIEW_DATE);
+			displayDate, new Date(System.currentTimeMillis() - Time.MINUTE));
+
+		Date reviewDate = new Date(System.currentTimeMillis() + Time.MINUTE);
+
+		_invokeDoExecute(objectEntry, reviewDate);
+
+		ObjectEntry updatedObjectEntry =
+			_objectEntryLocalService.getObjectEntry(
+				objectEntry.getObjectEntryId());
+
+		Assert.assertEquals(reviewDate, updatedObjectEntry.getReviewDate());
+		Assert.assertEquals(displayDate, updatedObjectEntry.getDisplayDate());
+	}
+
+	@Test
+	public void testDoExecuteWithNullReviewDate() throws Exception {
+		Date displayDate = new Date(System.currentTimeMillis() - Time.MINUTE);
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			displayDate, new Date(System.currentTimeMillis() - Time.MINUTE));
 
 		_invokeDoExecute(objectEntry, null);
 
@@ -66,25 +88,33 @@ public class UpdateReviewDateObjectBulkSelectionActionTest {
 				objectEntry.getObjectEntryId());
 
 		Assert.assertNull(updatedObjectEntry.getReviewDate());
-		Assert.assertEquals(_DISPLAY_DATE, updatedObjectEntry.getDisplayDate());
+		Assert.assertEquals(displayDate, updatedObjectEntry.getDisplayDate());
 	}
 
 	@Test
-	public void testDoExecuteUpdatesReviewDatePreservingDisplayDate()
-		throws Exception {
-
+	public void testDoExecuteWithPastExpirationDate() throws Exception {
 		ObjectEntry objectEntry = _addObjectEntry(
-			_DISPLAY_DATE, _ORIGINAL_REVIEW_DATE);
+			new Date(System.currentTimeMillis() - Time.MINUTE),
+			new Date(System.currentTimeMillis() - Time.MINUTE));
 
-		_invokeDoExecute(objectEntry, _NEW_REVIEW_DATE);
+		Date expirationDate = new Date(
+			System.currentTimeMillis() - Time.MINUTE);
+
+		objectEntry.setExpirationDate(expirationDate);
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(objectEntry);
+
+		Date reviewDate = new Date(System.currentTimeMillis() + Time.MINUTE);
+
+		_invokeDoExecute(objectEntry, reviewDate);
 
 		ObjectEntry updatedObjectEntry =
 			_objectEntryLocalService.getObjectEntry(
 				objectEntry.getObjectEntryId());
 
+		Assert.assertEquals(reviewDate, updatedObjectEntry.getReviewDate());
 		Assert.assertEquals(
-			_NEW_REVIEW_DATE, updatedObjectEntry.getReviewDate());
-		Assert.assertEquals(_DISPLAY_DATE, updatedObjectEntry.getDisplayDate());
+			expirationDate, updatedObjectEntry.getExpirationDate());
 	}
 
 	private ObjectEntry _addObjectEntry(Date displayDate, Date reviewDate)
@@ -131,12 +161,6 @@ public class UpdateReviewDateObjectBulkSelectionActionTest {
 			).build(),
 			objectEntry);
 	}
-
-	private static final Date _DISPLAY_DATE = new Date(1700000000000L);
-
-	private static final Date _NEW_REVIEW_DATE = new Date(4100000000000L);
-
-	private static final Date _ORIGINAL_REVIEW_DATE = new Date(1700000100000L);
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
