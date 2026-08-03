@@ -5,6 +5,8 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +21,10 @@ public class MonitorIdValidator {
 
 		for (Monitor monitor : monitors) {
 			String id = monitor.getId();
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(id)) {
+				throw new IllegalArgumentException("Null or empty monitor ID");
+			}
 
 			if (!ids.add(id)) {
 				throw new IllegalArgumentException(
