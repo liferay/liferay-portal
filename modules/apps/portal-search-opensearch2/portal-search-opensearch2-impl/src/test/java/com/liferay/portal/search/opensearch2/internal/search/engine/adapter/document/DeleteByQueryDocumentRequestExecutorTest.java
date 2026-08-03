@@ -17,6 +17,7 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.opensearch.client.opensearch._types.Conflicts;
 import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
 
 /**
@@ -36,6 +37,31 @@ public class DeleteByQueryDocumentRequestExecutorTest
 	@Test
 	public void testDocumentRequestTranslationWithNoRefresh() {
 		doTestDocumentRequestTranslation(false);
+	}
+
+	@Test
+	public void testDocumentRequestTranslationWithProceedOnConflicts() {
+		BooleanQuery booleanQuery = new BooleanQuery();
+
+		booleanQuery.addExactTerm(_FIELD_NAME, true);
+
+		DeleteByQueryDocumentRequest deleteByQueryDocumentRequest =
+			new DeleteByQueryDocumentRequest(
+				booleanQuery, new String[] {TEST_INDEX_NAME});
+
+		deleteByQueryDocumentRequest.setProceedOnConflicts(true);
+
+		DeleteByQueryDocumentRequestExecutor
+			deleteByQueryDocumentRequestExecutor =
+				new DeleteByQueryDocumentRequestExecutor(
+					openSearchConnectionManager);
+
+		DeleteByQueryRequest deleteByQueryRequest =
+			deleteByQueryDocumentRequestExecutor.createDeleteByQueryRequest(
+				deleteByQueryDocumentRequest);
+
+		Assert.assertEquals(
+			Conflicts.Proceed, deleteByQueryRequest.conflicts());
 	}
 
 	@Test
