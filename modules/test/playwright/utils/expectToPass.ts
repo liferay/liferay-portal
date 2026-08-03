@@ -9,20 +9,5 @@ export async function expectToPass(
 	callback: () => Promise<void>,
 	{timeout}: {timeout: number}
 ) {
-	const deadline = Date.now() + timeout;
-
-	while (true) {
-		const remaining = deadline - Date.now();
-
-		try {
-			await expect(callback).toPass({timeout: Math.max(remaining, 0)});
-
-			return;
-		}
-		catch (error) {
-			if (Date.now() >= deadline) {
-				throw error;
-			}
-		}
-	}
+	await expect(callback).toPass({timeout});
 }

@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import getRandomString from '../../../../utils/getRandomString';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 import {addRoleMemberAndSwitch} from '../spaces/helpers/roleMembership';
@@ -23,7 +24,7 @@ const test = mergeTests(
 
 const APPLICATION_NAME = 'cms/basic-web-contents';
 
-async function createTwoSpacesWithKeywordContent(apiHelpers: any) {
+async function createTwoSpacesWithKeywordContent(apiHelpers: DataApiHelpers) {
 	const keyword = getRandomString();
 	const ownSpaceTitle = `${keyword} Own Space`;
 	const otherSpaceTitle = `${keyword} Other Space`;

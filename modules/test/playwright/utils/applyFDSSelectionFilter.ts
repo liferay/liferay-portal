@@ -5,15 +5,24 @@
 
 import {Page, expect} from '@playwright/test';
 
+// When a filter is already applied, reopening the Filter dropdown lands on the
+// previous filter's option list; `chained` clicks Back to reach the filter
+// menu before selecting the next one.
+
 export async function applyFDSSelectionFilter(
 	page: Page,
 	{
+		chained = false,
 		exclude = false,
 		filter,
 		value,
-	}: {exclude?: boolean; filter: string; value: string}
+	}: {chained?: boolean; exclude?: boolean; filter: string; value: string}
 ) {
 	await page.getByRole('button', {exact: true, name: 'Filter'}).click();
+
+	if (chained) {
+		await page.getByRole('button', {exact: true, name: 'Back'}).click();
+	}
 
 	await page.getByRole('menuitem', {exact: true, name: filter}).click();
 

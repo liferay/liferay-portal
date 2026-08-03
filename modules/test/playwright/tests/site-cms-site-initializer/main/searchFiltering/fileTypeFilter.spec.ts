@@ -29,7 +29,13 @@ test(
 		const imageTitle = `${getRandomString()}.png`;
 		const textTitle = `${getRandomString()}.txt`;
 
-		await test.step('Upload a PNG image and a plain text file', async () => {
+		await test.step('Upload a PNG image and a plain text file into a fresh Space', async () => {
+			const space =
+				await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+					name: `Space ${getRandomString()}`,
+					type: 'Space',
+				});
+
 			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					file: {
@@ -40,7 +46,7 @@ test(
 					title: imageTitle,
 				},
 				applicationName,
-				'Default'
+				space.name
 			);
 
 			await apiHelpers.objectEntry.postObjectEntry(
@@ -56,7 +62,7 @@ test(
 					title: textTitle,
 				},
 				applicationName,
-				'Default'
+				space.name
 			);
 		});
 

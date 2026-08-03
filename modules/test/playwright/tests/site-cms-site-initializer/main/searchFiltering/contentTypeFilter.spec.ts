@@ -128,9 +128,7 @@ test(
 				value: 'Basic Web Content',
 			});
 
-			await expect(assetsPage.getItem(webContentTitle)).toBeVisible({
-				timeout: 5000,
-			});
+			await expect(assetsPage.getItem(webContentTitle)).toBeVisible();
 			await expect(
 				assetsPage.getItem(structuredContentTitle)
 			).toBeHidden();

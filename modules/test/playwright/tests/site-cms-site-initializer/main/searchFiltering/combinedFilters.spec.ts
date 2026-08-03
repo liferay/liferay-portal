@@ -96,25 +96,11 @@ test(
 				value: space1Name,
 			});
 
-			await page
-				.getByRole('button', {exact: true, name: 'Filter'})
-				.click();
-			await page.getByRole('button', {exact: true, name: 'Back'}).click();
-			await page
-				.getByRole('menuitem', {exact: true, name: 'Type'})
-				.click();
-			await page
-				.getByRole('checkbox', {
-					exact: true,
-					name: 'Basic Web Content',
-				})
-				.check();
-			await page
-				.getByRole('button', {exact: true, name: 'Add Filter'})
-				.click();
-			await expect(
-				page.getByRole('button', {name: 'Type: Basic Web Content'})
-			).toBeVisible();
+			await applyFDSSelectionFilter(page, {
+				chained: true,
+				filter: 'Type',
+				value: 'Basic Web Content',
+			});
 
 			const searchInput = page.getByRole('searchbox', {name: 'Search'});
 
@@ -123,9 +109,7 @@ test(
 		});
 
 		await test.step('Only the item matching all three criteria remains', async () => {
-			await expect(assetsPage.getItem(matchingTitle)).toBeVisible({
-				timeout: 15000,
-			});
+			await expect(assetsPage.getItem(matchingTitle)).toBeVisible();
 			await expect(assetsPage.getItem(wrongKeywordTitle)).toBeHidden();
 			await expect(
 				assetsPage.getItem(`${matchingTitle} File`)
