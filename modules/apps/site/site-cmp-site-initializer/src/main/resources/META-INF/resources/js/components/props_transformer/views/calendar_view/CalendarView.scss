@@ -18,11 +18,14 @@
 
 	.fc-col-header-cell-cushion {
 		color: $secondary;
-		display: inline-block;
+		display: block;
 		font-size: 0.75rem;
 		font-weight: $font-weight-semi-bold;
+		overflow: hidden;
 		padding: 0.5rem 0.75rem;
 		text-decoration: none !important;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.fc-day-today .lfr__calendar-view-day-number {
