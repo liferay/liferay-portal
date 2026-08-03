@@ -11,6 +11,16 @@ argocd:
     sso:
         credentialsSecretKey: ""
         enabled: false
+clusterBootstrap:
+    enabled: true
+    image: alpine:3
+    resources:
+        limits:
+            cpu: 3m
+            memory: 16Mi
+        requests:
+            cpu: 1m
+            memory: 8Mi
 clusterIdentity:
     deploymentName: ""
     region: ""

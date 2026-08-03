@@ -1,10 +1,12 @@
 {{- if .Values.clusterBootstrap.enabled -}}
-{{- $clusterBootstrapConfig := .Values.clusterBootstrap -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
     annotations:
-        argocd.argoproj.io/sync-wave: "-120"
+        argocd.argoproj.io/sync-wave: "-110"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: cluster-bootstrap
     name: cluster-bootstrap
     namespace: cluster-bootstrap-system
 spec:
@@ -20,17 +22,17 @@ spec:
                 -   image: registry.k8s.io/pause:3.9
                     name: pause
                     resources:
-                        {{- $clusterBootstrapConfig.resources | toYaml | nindent 24 }}
+                        {{- .Values.clusterBootstrap.resources | toYaml | nindent 24 }}
             initContainers:
                 -   command:
                         -   sh
                         -   -c
                         -   |
-                            {{- .Values.clusterBootstrap.script | nindent 28 }}
-                    image: {{ $clusterBootstrapConfig.image }}
+                            sysctl -w vm.max_map_count=1048576
+                    image: {{ .Values.clusterBootstrap.image }}
                     name: init-bootstraper
                     resources:
-                        {{- $clusterBootstrapConfig.resources | toYaml | nindent 24 }}
+                        {{- .Values.clusterBootstrap.resources | toYaml | nindent 24 }}
                     securityContext:
                         privileged: true
                         runAsUser: 0
@@ -41,8 +43,9 @@ apiVersion: v1
 kind: Namespace
 metadata:
     annotations:
-        argocd.argoproj.io/sync-wave: "-100"
+        argocd.argoproj.io/sync-wave: "-110"
     labels:
-        name: cluster-bootstrap-system
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: cluster-bootstrap-system
     name: cluster-bootstrap-system
 {{- end -}}
