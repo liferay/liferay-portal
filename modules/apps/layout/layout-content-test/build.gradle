@@ -1,4 +1,5 @@
 dependencies {
+	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:layout:layout-content-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-test-util")
