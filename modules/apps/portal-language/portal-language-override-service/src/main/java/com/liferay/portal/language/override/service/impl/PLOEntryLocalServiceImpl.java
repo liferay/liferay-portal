@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.language.override.exception.PLOEntryExternalReferenceCodeException;
 import com.liferay.portal.language.override.exception.PLOEntryImportException;
 import com.liferay.portal.language.override.exception.PLOEntryKeyException;
 import com.liferay.portal.language.override.exception.PLOEntryLanguageIdException;
@@ -62,7 +61,7 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 		languageId = _normalizeLanguageId(languageId);
 
-		_validate(null, key, languageId, value);
+		_validate(key, languageId, value);
 
 		return _addOrUpdatePLOEntry(
 			null, companyId, userId, key, languageId, value);
@@ -76,7 +75,7 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 		languageId = _normalizeLanguageId(languageId);
 
-		_validate(externalReferenceCode, key, languageId, value);
+		_validate(key, languageId, value);
 
 		return _addOrUpdatePLOEntry(
 			externalReferenceCode, companyId, userId, key, languageId, value);
@@ -191,7 +190,7 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
 			try {
 				_validate(
-					null, (String)entry.getKey(), languageId,
+					(String)entry.getKey(), languageId,
 					(String)entry.getValue());
 			}
 			catch (Exception exception) {
@@ -358,22 +357,8 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 		return languageId;
 	}
 
-	private void _validate(
-			String externalReferenceCode, String key, String languageId,
-			String value)
+	private void _validate(String key, String languageId, String value)
 		throws PortalException {
-
-		if (Validator.isNotNull(externalReferenceCode)) {
-			int externalReferenceCodeMaxLength = ModelHintsUtil.getMaxLength(
-				PLOEntry.class.getName(), "externalReferenceCode");
-
-			if (externalReferenceCode.length() >
-					externalReferenceCodeMaxLength) {
-
-				throw new PLOEntryExternalReferenceCodeException.
-					MustNotExceedMaximumLength(externalReferenceCodeMaxLength);
-			}
-		}
 
 		if (Validator.isBlank(key)) {
 			throw new PLOEntryKeyException.MustNotBeNull();
