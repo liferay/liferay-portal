@@ -39,8 +39,6 @@ $cadmin-dropdown-spacer: 5px !default; // 5px
 $cadmin-dropdown-menu: () !default;
 $cadmin-dropdown-menu: map-deep-merge(
 	(
-		breakpoint-down: md,
-
 		background-clip: padding-box,
 		background-color: $cadmin-dropdown-bg,
 		border-color: $cadmin-dropdown-border-color,
@@ -66,10 +64,12 @@ $cadmin-dropdown-menu: map-deep-merge(
 		top: 100%,
 		z-index: $cadmin-zindex-dropdown,
 
-		mobile: (
-			font-size: $cadmin-dropdown-font-size-mobile,
-			max-height: $cadmin-dropdown-max-height-mobile,
-			max-width: $cadmin-dropdown-max-width-mobile,
+		media-breakpoint-down: (
+			md: (
+				font-size: $cadmin-dropdown-font-size-mobile,
+				max-height: $cadmin-dropdown-max-height-mobile,
+				max-width: $cadmin-dropdown-max-width-mobile,
+			),
 		),
 	),
 	$cadmin-dropdown-menu
@@ -247,7 +247,6 @@ $cadmin-dropdown-header-font-size-mobile: null !default;
 $cadmin-dropdown-header: () !default;
 $cadmin-dropdown-header: map-deep-merge(
 	(
-		breakpoint-down: sm,
 		color: $cadmin-dropdown-header-color,
 		display: block,
 		font-size: $cadmin-dropdown-header-font-size,
@@ -261,12 +260,14 @@ $cadmin-dropdown-header: map-deep-merge(
 		text-transform: $cadmin-dropdown-header-text-transform,
 		word-wrap: break-word,
 
-		mobile: (
-			font-size: $cadmin-dropdown-header-font-size-mobile,
-		),
-
 		first-child: (
 			margin-top: 0px,
+		),
+
+		media-breakpoint-down: (
+			sm: (
+				font-size: $cadmin-dropdown-header-font-size-mobile,
+			),
 		),
 	),
 	$cadmin-dropdown-header

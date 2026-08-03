@@ -94,8 +94,6 @@ $cadmin-modal-header-height-mobile: null !default;
 $cadmin-modal-header: () !default;
 $cadmin-modal-header: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		align-items: center,
 		background-color: $cadmin-modal-header-bg,
 		border-color: $cadmin-modal-header-border-color,
@@ -117,8 +115,10 @@ $cadmin-modal-header: map-deep-merge(
 			margin-top: 0px,
 		),
 
-		mobile: (
-			height: $cadmin-modal-header-height-mobile,
+		media-breakpoint-down: (
+			sm: (
+				height: $cadmin-modal-header-height-mobile,
+			),
 		),
 	),
 	$cadmin-modal-header

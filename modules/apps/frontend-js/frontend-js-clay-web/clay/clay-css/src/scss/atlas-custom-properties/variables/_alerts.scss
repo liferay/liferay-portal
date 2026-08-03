@@ -348,8 +348,6 @@ $alert-notifications-absolute-top-mobile: 4.25rem !default;
 $alert-notifications-absolute: () !default;
 $alert-notifications-absolute: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		bottom: $alert-notifications-absolute-bottom,
 		height: 0rem,
 		left: $alert-notifications-absolute-left,
@@ -358,11 +356,13 @@ $alert-notifications-absolute: map-deep-merge(
 		top: $alert-notifications-absolute-top,
 		z-index: $zindex-alert-notifications,
 
-		mobile: (
-			bottom: $alert-notifications-absolute-bottom-mobile,
-			left: $alert-notifications-absolute-left-mobile,
-			right: $alert-notifications-absolute-right-mobile,
-			top: $alert-notifications-absolute-top-mobile,
+		media-breakpoint-down: (
+			sm: (
+				bottom: $alert-notifications-absolute-bottom-mobile,
+				left: $alert-notifications-absolute-left-mobile,
+				right: $alert-notifications-absolute-right-mobile,
+				top: $alert-notifications-absolute-top-mobile,
+			),
 		),
 	),
 	$alert-notifications-absolute
@@ -387,8 +387,6 @@ $alert-notifications-fixed-top-mobile: null !default;
 $alert-notifications-fixed: () !default;
 $alert-notifications-fixed: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		bottom: $alert-notifications-fixed-bottom,
 		left: $alert-notifications-fixed-left,
 		position: fixed,
@@ -396,11 +394,13 @@ $alert-notifications-fixed: map-deep-merge(
 		top: $alert-notifications-fixed-top,
 		z-index: $zindex-alert-notifications,
 
-		mobile: (
-			bottom: $alert-notifications-fixed-bottom-mobile,
-			left: $alert-notifications-fixed-left-mobile,
-			right: $alert-notifications-fixed-right-mobile,
-			top: $alert-notifications-fixed-top-mobile,
+		media-breakpoint-down: (
+			sm: (
+				bottom: $alert-notifications-fixed-bottom-mobile,
+				left: $alert-notifications-fixed-left-mobile,
+				right: $alert-notifications-fixed-right-mobile,
+				top: $alert-notifications-fixed-top-mobile,
+			),
 		),
 	),
 	$alert-notifications-fixed

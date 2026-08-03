@@ -87,8 +87,6 @@ $modal-header-height-mobile: null !default;
 $modal-header: () !default;
 $modal-header: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		align-items: center,
 		background-color: $modal-header-bg,
 		border-color: $modal-header-border-color,
@@ -111,8 +109,10 @@ $modal-header: map-deep-merge(
 			margin-top: 0rem,
 		),
 
-		mobile: (
-			height: $modal-header-height-mobile,
+		media-breakpoint-down: (
+			sm: (
+				height: $modal-header-height-mobile,
+			),
 		),
 	),
 	$modal-header

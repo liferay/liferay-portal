@@ -52,24 +52,24 @@ $cadmin-sheet-footer-margin-top-mobile: 16px !default; // 16px
 $cadmin-sheet-footer-btn-block-sm-down: () !default;
 $cadmin-sheet-footer-btn-block-sm-down: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
-		mobile: (
-			display: block,
-
-			btn: (
+		media-breakpoint-down: (
+			sm: (
 				display: block,
-				margin-bottom: 16px,
-				width: 100%,
-			),
 
-			btn-group: (
-				display: block,
-			),
+				btn: (
+					display: block,
+					margin-bottom: 16px,
+					width: 100%,
+				),
 
-			btn-group-item: (
-				display: block,
-				margin-right: 0px,
+				btn-group: (
+					display: block,
+				),
+
+				btn-group-item: (
+					display: block,
+					margin-right: 0px,
+				),
 			),
 		),
 	),

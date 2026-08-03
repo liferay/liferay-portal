@@ -351,8 +351,6 @@ $cadmin-alert-notifications-absolute-top-mobile: 68px !default;
 $cadmin-alert-notifications-absolute: () !default;
 $cadmin-alert-notifications-absolute: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		bottom: $cadmin-alert-notifications-absolute-bottom,
 		height: 0px,
 		left: $cadmin-alert-notifications-absolute-left,
@@ -361,11 +359,13 @@ $cadmin-alert-notifications-absolute: map-deep-merge(
 		top: $cadmin-alert-notifications-absolute-top,
 		z-index: $cadmin-zindex-alert-notifications,
 
-		mobile: (
-			bottom: $cadmin-alert-notifications-absolute-bottom-mobile,
-			left: $cadmin-alert-notifications-absolute-left-mobile,
-			right: $cadmin-alert-notifications-absolute-right-mobile,
-			top: $cadmin-alert-notifications-absolute-top-mobile,
+		media-breakpoint-down: (
+			sm: (
+				bottom: $cadmin-alert-notifications-absolute-bottom-mobile,
+				left: $cadmin-alert-notifications-absolute-left-mobile,
+				right: $cadmin-alert-notifications-absolute-right-mobile,
+				top: $cadmin-alert-notifications-absolute-top-mobile,
+			),
 		),
 	),
 	$cadmin-alert-notifications-absolute

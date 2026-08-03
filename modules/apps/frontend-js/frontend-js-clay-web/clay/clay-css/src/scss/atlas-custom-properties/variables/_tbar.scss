@@ -95,9 +95,12 @@ $tbar-stacked: map-deep-merge(
 $tbar-inline-xs-down: () !default;
 $tbar-inline-xs-down: map-deep-merge(
 	(
-		breakpoint-down: nth(map-keys($grid-breakpoints), 1),
-		tbar-item: (
-			padding-left: 0,
+		media-breakpoint-down: (
+			xs: (
+				tbar-item: (
+					padding-left: 0,
+				),
+			),
 		),
 	),
 	$tbar-inline-xs-down
@@ -106,9 +109,12 @@ $tbar-inline-xs-down: map-deep-merge(
 $tbar-inline-sm-down: () !default;
 $tbar-inline-sm-down: map-deep-merge(
 	(
-		breakpoint-down: nth(map-keys($grid-breakpoints), 2),
-		tbar-item: (
-			padding-left: 0,
+		media-breakpoint-down: (
+			sm: (
+				tbar-item: (
+					padding-left: 0,
+				),
+			),
 		),
 	),
 	$tbar-inline-sm-down
@@ -117,9 +123,12 @@ $tbar-inline-sm-down: map-deep-merge(
 $tbar-inline-md-down: () !default;
 $tbar-inline-md-down: map-deep-merge(
 	(
-		breakpoint-down: nth(map-keys($grid-breakpoints), 3),
-		tbar-item: (
-			padding-left: 0,
+		media-breakpoint-down: (
+			md: (
+				tbar-item: (
+					padding-left: 0,
+				),
+			),
 		),
 	),
 	$tbar-inline-md-down
@@ -128,9 +137,12 @@ $tbar-inline-md-down: map-deep-merge(
 $tbar-inline-lg-down: () !default;
 $tbar-inline-lg-down: map-deep-merge(
 	(
-		breakpoint-down: nth(map-keys($grid-breakpoints), 4),
-		tbar-item: (
-			padding-left: 0,
+		media-breakpoint-down: (
+			lg: (
+				tbar-item: (
+					padding-left: 0,
+				),
+			),
 		),
 	),
 	$tbar-inline-lg-down
@@ -139,9 +151,12 @@ $tbar-inline-lg-down: map-deep-merge(
 $tbar-inline-xl-down: () !default;
 $tbar-inline-xl-down: map-deep-merge(
 	(
-		breakpoint-down: nth(map-keys($grid-breakpoints), 5),
-		tbar-item: (
-			padding-left: 0,
+		media-breakpoint-down: (
+			xl: (
+				tbar-item: (
+					padding-left: 0,
+				),
+			),
 		),
 	),
 	$tbar-inline-xl-down

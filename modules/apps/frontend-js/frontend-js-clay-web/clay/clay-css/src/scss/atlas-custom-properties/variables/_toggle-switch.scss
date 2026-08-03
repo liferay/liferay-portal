@@ -164,7 +164,6 @@ $toggle-switch-text-disabled-color: var(
 $toggle-switch: () !default;
 $toggle-switch: map-deep-merge(
 	(
-		breakpoint-down: sm,
 		cursor: $toggle-switch-cursor,
 		display: inline-block,
 		font-weight: $toggle-switch-font-weight,
@@ -229,8 +228,6 @@ $toggle-switch-bar: map-deep-merge(
 $toggle-switch-check: () !default;
 $toggle-switch-check: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		bottom: 0,
 		font-size: var(--togle-switch-check-font-size, 62.5%),
 		height: var(--togle-switch-check-height, $toggle-switch-bar-height),
@@ -414,75 +411,31 @@ $toggle-switch-check: map-deep-merge(
 			),
 		),
 
-		mobile: (
-			height: $toggle-switch-bar-height-mobile,
-			width: $toggle-switch-bar-width-mobile,
-
-			toggle-switch-bar: (
+		media-breakpoint-down: (
+			sm: (
 				height: $toggle-switch-bar-height-mobile,
-				line-height: $toggle-switch-bar-height-mobile,
-				text-indent: 0,
+				width: $toggle-switch-bar-width-mobile,
 
-				before: (
-					width: $toggle-switch-bar-width-mobile,
-				),
-
-				after: (
-					bottom: $toggle-switch-bar-padding-mobile,
-					height: $toggle-switch-button-width-mobile,
-					left: $toggle-switch-bar-padding-mobile,
-					top: $toggle-switch-bar-padding-mobile,
-					width: $toggle-switch-button-width-mobile,
-				),
-
-				toggle-switch-handle: (
-					min-width: $toggle-switch-bar-width-mobile,
-
-					after: (
-						margin-left:
-							clay-data-label-text-position(
-								$toggle-switch-bar-width-mobile,
-								$toggle-switch-bar-padding-mobile
-							),
-					),
-				),
-
-				toggle-switch-icon: (
-					font-size: $toggle-switch-bar-font-size-mobile,
-					left: $toggle-switch-bar-padding-mobile,
-					line-height: $toggle-switch-button-width-mobile,
-					top: $toggle-switch-bar-padding-mobile,
-					width: $toggle-switch-button-width-mobile,
-				),
-
-				toggle-switch-icon-on: (
-					left: $toggle-switch-bar-padding-mobile,
-				),
-
-				toggle-switch-icon-off: (
-					left:
-						calc(
-							#{$toggle-switch-bar-width-mobile} - #{$toggle-switch-bar-padding-mobile} -
-								#{$toggle-switch-button-width-mobile}
-						),
-				),
-
-				button-icon: (
-					font-size: $toggle-switch-button-font-size-mobile,
-				),
-			),
-
-			checked: (
 				toggle-switch-bar: (
+					height: $toggle-switch-bar-height-mobile,
+					line-height: $toggle-switch-bar-height-mobile,
+					text-indent: 0,
+
+					before: (
+						width: $toggle-switch-bar-width-mobile,
+					),
+
 					after: (
-						left:
-							calc(
-								#{$toggle-switch-bar-width-mobile} - #{$toggle-switch-bar-padding-mobile} -
-									#{$toggle-switch-button-width-mobile}
-							),
+						bottom: $toggle-switch-bar-padding-mobile,
+						height: $toggle-switch-button-width-mobile,
+						left: $toggle-switch-bar-padding-mobile,
+						top: $toggle-switch-bar-padding-mobile,
+						width: $toggle-switch-button-width-mobile,
 					),
 
 					toggle-switch-handle: (
+						min-width: $toggle-switch-bar-width-mobile,
+
 						after: (
 							margin-left:
 								clay-data-label-text-position(
@@ -492,22 +445,68 @@ $toggle-switch-check: map-deep-merge(
 						),
 					),
 
-					button-icon: (
+					toggle-switch-icon: (
+						font-size: $toggle-switch-bar-font-size-mobile,
+						left: $toggle-switch-bar-padding-mobile,
+						line-height: $toggle-switch-button-width-mobile,
+						top: $toggle-switch-bar-padding-mobile,
+						width: $toggle-switch-button-width-mobile,
+					),
+
+					toggle-switch-icon-on: (
+						left: $toggle-switch-bar-padding-mobile,
+					),
+
+					toggle-switch-icon-off: (
 						left:
 							calc(
 								#{$toggle-switch-bar-width-mobile} - #{$toggle-switch-bar-padding-mobile} -
 									#{$toggle-switch-button-width-mobile}
 							),
 					),
+
+					button-icon: (
+						font-size: $toggle-switch-button-font-size-mobile,
+					),
 				),
-			),
 
-			toggle-switch-text-left: (
-				line-height: $toggle-switch-bar-height-mobile,
-			),
+				checked: (
+					toggle-switch-bar: (
+						after: (
+							left:
+								calc(
+									#{$toggle-switch-bar-width-mobile} - #{$toggle-switch-bar-padding-mobile} -
+										#{$toggle-switch-button-width-mobile}
+								),
+						),
 
-			toggle-switch-text-right: (
-				line-height: $toggle-switch-bar-height-mobile,
+						toggle-switch-handle: (
+							after: (
+								margin-left:
+									clay-data-label-text-position(
+										$toggle-switch-bar-width-mobile,
+										$toggle-switch-bar-padding-mobile
+									),
+							),
+						),
+
+						button-icon: (
+							left:
+								calc(
+									#{$toggle-switch-bar-width-mobile} - #{$toggle-switch-bar-padding-mobile} -
+										#{$toggle-switch-button-width-mobile}
+								),
+						),
+					),
+				),
+
+				toggle-switch-text-left: (
+					line-height: $toggle-switch-bar-height-mobile,
+				),
+
+				toggle-switch-text-right: (
+					line-height: $toggle-switch-bar-height-mobile,
+				),
 			),
 		),
 	),
@@ -569,8 +568,6 @@ $simple-toggle-switch-label-spacer-x: 8px !default;
 $simple-toggle-switch: () !default;
 $simple-toggle-switch: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		align-items: center,
 		display: inline-flex,
 
@@ -586,15 +583,17 @@ $simple-toggle-switch: map-deep-merge(
 				),
 		),
 
-		mobile: (
-			toggle-switch-label: (
-				max-width:
-					calc(
-						100% - #{clay-data-label-text-position(
-								$toggle-switch-bar-width-mobile,
-								$toggle-switch-bar-padding-mobile
-							)}
-					),
+		media-breakpoint-down: (
+			sm: (
+				toggle-switch-label: (
+					max-width:
+						calc(
+							100% - #{clay-data-label-text-position(
+									$toggle-switch-bar-width-mobile,
+									$toggle-switch-bar-padding-mobile
+								)}
+						),
+				),
 			),
 		),
 	),
@@ -606,8 +605,6 @@ $simple-toggle-switch: map-deep-merge(
 $simple-toggle-switch-reverse: () !default;
 $simple-toggle-switch-reverse: map-deep-merge(
 	(
-		breakpoint-down: sm,
-
 		toggle-switch-label: (
 			margin-right: $simple-toggle-switch-label-spacer-x,
 		),

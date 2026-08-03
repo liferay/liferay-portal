@@ -1963,18 +1963,11 @@ $input-group-addon-padding-y-lg: null !default;
 $input-group-lg-item-btn: () !default;
 $input-group-lg-item-btn: map-deep-merge(
 	(
-		breakpoint-down: null,
 		font-size: $btn-font-size-lg,
 
 		inline-item-font-size: $btn-inline-item-font-size-lg,
 
 		section-font-size: $btn-section-font-size-lg,
-
-		// font-size-mobile: $btn-font-size-lg-mobile,
-		// padding-bottom-mobile: $btn-padding-y-lg-mobile,
-		// padding-left-mobile: $btn-padding-x-lg-mobile,
-		// padding-right-mobile: $btn-padding-x-lg-mobile,
-		// padding-top-mobile: $btn-padding-y-lg-mobile,
 	),
 	$input-group-lg-item-btn
 );
@@ -1982,16 +1975,8 @@ $input-group-lg-item-btn: map-deep-merge(
 $input-group-lg-item-btn-monospaced: () !default;
 $input-group-lg-item-btn-monospaced: map-deep-merge(
 	(
-		breakpoint-down: null,
 		height: $btn-monospaced-size-lg,
 		line-height: 1,
-		// padding-bottom: $btn-monospaced-padding-y-lg,
-		// padding-left: $btn-monospaced-padding-x-lg,
-		// padding-right: $btn-monospaced-padding-x-lg,
-		// padding-top: $btn-monospaced-padding-y-lg,
-		// width: $btn-monospaced-size-lg,
-		// height-mobile: $btn-monospaced-size-lg-mobile,
-		// width-mobile: $btn-monospaced-size-lg-mobile,
 	),
 	$input-group-lg-item-btn-monospaced
 );
@@ -2003,7 +1988,6 @@ $input-group-lg-inset-item-btn-monospaced: () !default;
 $input-group-lg-inset-item-form-file-btn: () !default;
 $input-group-lg-inset-item-form-file-btn: map-deep-merge(
 	(
-		breakpoint-down: null,
 		height: 100%,
 		line-height: 1,
 		padding-bottom: 0px,
