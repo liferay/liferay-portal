@@ -16,9 +16,12 @@ import com.liferay.headless.asset.library.client.problem.Problem;
 import com.liferay.headless.asset.library.client.resource.v1_0.UserAccountResource;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -87,6 +90,24 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testBatchEngineDeleteImportTask() {
 	}
 
+	@Test
+	public void testDeleteAssetLibraryUserAccountWithViewAndAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource viewAndAssignMembersUserAccountResource =
+			_getViewAndAssignMembersUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		userAccountResource.putAssetLibraryUserAccount(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			userAccount.getExternalReferenceCode());
+
+		viewAndAssignMembersUserAccountResource.deleteAssetLibraryUserAccount(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			userAccount.getExternalReferenceCode());
+	}
+
 	@Override
 	@Test
 	public void testGetAssetLibraryUserAccount() throws Exception {
@@ -128,6 +149,41 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			_spaceDepotEntry.getGroup(), cmsAdministratorUserAccountResource);
 
 		_testGetAssetLibraryUserAccountsPageWithSortId();
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountWithoutAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource withoutAssignMembersPermissionUserAccountResource =
+			_getWithoutAssignMembersPermissionUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		_assertFailure(
+			"Forbidden",
+			() ->
+				withoutAssignMembersPermissionUserAccountResource.
+					putAssetLibraryUserAccount(
+						testDepotEntryGroup.getExternalReferenceCode(),
+						userAccount.getExternalReferenceCode()));
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountWithViewAndAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource viewAndAssignMembersUserAccountResource =
+			_getViewAndAssignMembersUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		UserAccount putUserAccount =
+			viewAndAssignMembersUserAccountResource.putAssetLibraryUserAccount(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				userAccount.getExternalReferenceCode());
+
+		assertValid(putUserAccount);
 	}
 
 	@Override
@@ -210,9 +266,15 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			_testUser.getExternalReferenceCode());
 	}
 
-	private void _assertFailure(UnsafeRunnable<Exception> unsafeRunnable) {
+	private void _assertFailure(
+		String message, UnsafeRunnable<Exception> unsafeRunnable) {
+
 		AssertUtils.assertFailure(
-			Problem.ProblemException.class, null, unsafeRunnable);
+			Problem.ProblemException.class, message, unsafeRunnable);
+	}
+
+	private void _assertFailure(UnsafeRunnable<Exception> unsafeRunnable) {
+		_assertFailure(null, unsafeRunnable);
 	}
 
 	private UserAccountResource _getAssetLibraryMemberUserAccountResource(
@@ -274,6 +336,87 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		Group group = testDepotEntry.getGroup();
 
 		return group.getExternalReferenceCode();
+	}
+
+	private UserAccountResource _getViewAndAssignMembersUserAccountResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		RoleTestUtil.addResourcePermission(
+			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testDepotEntry.getGroupId()),
+			ActionKeys.ASSIGN_MEMBERS);
+		RoleTestUtil.addResourcePermission(
+			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testDepotEntry.getGroupId()), ActionKeys.VIEW);
+		RoleTestUtil.addResourcePermission(
+			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+
+		return UserAccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private UserAccountResource
+			_getWithoutAssignMembersPermissionUserAccountResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		RoleTestUtil.addResourcePermission(
+			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+
+		List<String> actionIds = ResourceActionsUtil.getModelResourceActions(
+			DepotEntry.class.getName());
+
+		actionIds.remove(ActionKeys.ASSIGN_MEMBERS);
+
+		for (String actionId : actionIds) {
+			RoleTestUtil.addResourcePermission(
+				role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+				String.valueOf(testDepotEntry.getGroupId()), actionId);
+		}
+
+		return UserAccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private void _testGetAssetLibraryUserAccount(
