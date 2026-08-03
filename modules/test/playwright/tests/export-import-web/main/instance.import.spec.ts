@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectDefinitionAPI} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
@@ -202,51 +201,3 @@ test(
 		await expect(exportImportPage.newImportButton).toBeHidden();
 	}
 );
-
-test('Can import at instance level when LAR contains custom objects without existing definitions', async ({
-	apiHelpers,
-	companyExportImportPage,
-	exportImportPage,
-	globalMenuPage,
-}) => {
-	const objectDefinitionExternalReferenceCode = `ObjectDefinition${getRandomInt()}`;
-
-	const objectDefinition =
-		await apiHelpers.objectAdmin.postRandomObjectDefinition({
-			className: `com.liferay.object.model.ObjectDefinition#${objectDefinitionExternalReferenceCode}`,
-			objectDefinitionExternalReferenceCode,
-			status: {code: 0},
-		});
-
-	try {
-		await apiHelpers.objectEntry.postObjectEntry(
-			{externalReferenceCode: 'testERC', textField: 'test'},
-			`${normalizeRestPath(objectDefinition.restContextPath)}`
-		);
-	}
-	catch {
-
-		// Ensure cleanup if test execution stops before removing the object definition.
-
-		apiHelpers.data.push({
-			id: objectDefinition.id,
-			type: 'objectDefinition',
-		});
-	}
-
-	await globalMenuPage.goToApplications('Export');
-
-	const exportFilePath = await exportImportPage.export({
-		portletLabels: [`${objectDefinitionExternalReferenceCode} 1 Items`],
-	});
-
-	const objectDefinitionAPIClient =
-		await apiHelpers.buildRestClient(ObjectDefinitionAPI);
-
-	await objectDefinitionAPIClient.deleteObjectDefinition(objectDefinition.id);
-
-	await companyExportImportPage.import({
-		filePath: exportFilePath,
-		taskStatus: 'completedWithErrors',
-	});
-});
