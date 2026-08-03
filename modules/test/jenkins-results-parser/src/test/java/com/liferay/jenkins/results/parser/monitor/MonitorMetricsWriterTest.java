@@ -156,50 +156,32 @@ public class MonitorMetricsWriterTest
 	public void testWriteIgnoresMonitorsAddedAfterConstruction()
 		throws Exception {
 
-		MonitorResultStore monitorResultStore = new MonitorResultStore();
-
-		monitorResultStore.store(
-			"disk", _newMonitorResult(MonitorResult.Status.OK, 1750000000000L));
-
 		List<Monitor> monitors = new ArrayList<>();
 
 		monitors.add(
 			new TestMonitor(
 				_newMonitorConfig(
-					"disk", MonitorConfig.Severity.HIGH,
-					"resource-threshold")));
+					"disk", MonitorConfig.Severity.MEDIUM,
+					RandomTestUtil.randomString())));
 
 		File metricsFile = new File(
 			temporaryFolder.getRoot(), RandomTestUtil.randomString());
 
 		MonitorMetricsWriter monitorMetricsWriter = new MonitorMetricsWriter(
-			metricsFile, monitorResultStore, monitors);
+			metricsFile, new MonitorResultStore(), monitors);
 
 		monitors.add(
 			new TestMonitor(
 				_newMonitorConfig(
-					"disk", MonitorConfig.Severity.HIGH,
-					"resource-threshold")));
+					"queue", MonitorConfig.Severity.MEDIUM,
+					RandomTestUtil.randomString())));
 
 		_write(monitorMetricsWriter);
 
-		testEquals(
-			JenkinsResultsParserUtil.combine(
-				"# HELP monitor_check_last_run_timestamp_seconds Unix ",
-				"timestamp of the last check run, 0 if never run\n",
-				"# TYPE monitor_check_last_run_timestamp_seconds gauge\n",
-				"monitor_check_last_run_timestamp_seconds{check=\"disk\",",
-				"severity=\"high\",type=\"resource-threshold\"} 1.75E9\n",
-				"# HELP monitor_check_status Monitor status severity rank, ",
-				"0 OK, 1 UNKNOWN, 2 WARN, 3 CRITICAL\n",
-				"# TYPE monitor_check_status gauge\n",
-				"monitor_check_status{check=\"disk\",severity=\"high\",",
-				"type=\"resource-threshold\"} 0.0\n",
-				"# HELP monitor_heartbeat_timestamp_seconds Unix timestamp of ",
-				"the last metrics write\n",
-				"# TYPE monitor_heartbeat_timestamp_seconds gauge\n",
-				"monitor_heartbeat_timestamp_seconds 1.75E9\n"),
-			read(metricsFile));
+		String content = read(metricsFile);
+
+		Assert.assertTrue(content, content.contains("check=\"disk\""));
+		Assert.assertFalse(content, content.contains("check=\"queue\""));
 	}
 
 	@Test
