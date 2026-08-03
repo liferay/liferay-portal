@@ -70,6 +70,12 @@
 		min-width: 0;
 	}
 
+	&-footer .label-item {
+		display: block;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
 	&-footer-end {
 		align-items: center;
 		display: flex;
