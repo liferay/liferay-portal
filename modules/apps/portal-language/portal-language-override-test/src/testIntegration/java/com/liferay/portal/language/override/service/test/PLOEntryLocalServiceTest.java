@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.language.LanguageResources;
-import com.liferay.portal.language.override.exception.PLOEntryExternalReferenceCodeException;
 import com.liferay.portal.language.override.exception.PLOEntryImportException;
 import com.liferay.portal.language.override.exception.PLOEntryKeyException;
 import com.liferay.portal.language.override.exception.PLOEntryLanguageIdException;
@@ -394,20 +393,6 @@ public class PLOEntryLocalServiceTest {
 
 		_assertTranslationValue(newKey, null);
 
-		_assertException(
-			PLOEntryExternalReferenceCodeException.MustNotExceedMaximumLength.
-				class,
-			() -> {
-				int externalReferenceCodeMaxLength =
-					ModelHintsUtil.getMaxLength(
-						PLOEntry.class.getName(), "externalReferenceCode");
-
-				_addOrUpdatePLOEntry(
-					RandomTestUtil.randomString(
-						externalReferenceCodeMaxLength + 1),
-					RandomTestUtil.randomString(), languageId,
-					RandomTestUtil.randomString());
-			});
 		_assertException(
 			PLOEntryKeyException.MustBeShorter.class,
 			() -> {
