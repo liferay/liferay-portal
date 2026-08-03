@@ -7,6 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.frontend.data.set.model.FDSSortItem;
 import com.liferay.frontend.data.set.model.FDSSortItemBuilder;
 import com.liferay.frontend.data.set.model.FDSSortItemList;
@@ -18,6 +19,7 @@ import com.liferay.object.service.ObjectEntryVersionLocalServiceUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -88,7 +90,7 @@ public class ViewVersionHistoryDisplayContext {
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
-		return ListUtil.fromArray(
+		return FDSActionDropdownItemList.of(
 			new FDSActionDropdownItem(
 				"{file.link.href}", "download", "download",
 				_language.get(_httpServletRequest, "download"), "get", null,
@@ -107,10 +109,7 @@ public class ViewVersionHistoryDisplayContext {
 			new FDSActionDropdownItem(
 				StringPool.BLANK, "view", "view-file",
 				_language.get(_httpServletRequest, "view"), null, null, null),
-			new FDSActionDropdownItem(
-				"{actions.addToLaunch.href}", "rocket", "addToLaunch",
-				_language.get(_httpServletRequest, "add-to-launch"), "get",
-				"addToLaunch", null),
+			_getAddToLaunchFDSActionDropdownItem(),
 			new FDSActionDropdownItem(
 				"{actions.restore.href}", "restore", "restore",
 				_language.get(_httpServletRequest, "restore-version"), "put",
@@ -165,6 +164,19 @@ public class ViewVersionHistoryDisplayContext {
 				_objectEntry.getTitleValue(_themeDisplay.getLanguageId(), true),
 				"\" ", _language.get(_themeDisplay.getLocale(), "history"))
 		).build();
+	}
+
+	private FDSActionDropdownItem _getAddToLaunchFDSActionDropdownItem() {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-72278")) {
+
+			return null;
+		}
+
+		return new FDSActionDropdownItem(
+			"{actions.addToLaunch.href}", "rocket", "addToLaunch",
+			_language.get(_httpServletRequest, "add-to-launch"), "get",
+			"addToLaunch", null);
 	}
 
 	private FDSSortItem _getFDSSortItem(

@@ -308,20 +308,7 @@ public class SectionDisplayContextUtil {
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
 			getFDSActionDropdownItems(httpServletRequest);
 
-		fdsActionDropdownItems.add(
-			FDSActionDropdownItemBuilder.setHref(
-				"{actions.addToLaunch.href}"
-			).setIcon(
-				"rocket"
-			).setLabel(
-				LanguageUtil.get(httpServletRequest, "add-to-launch")
-			).setMethod(
-				"get"
-			).setPermissionKey(
-				"addToLaunch"
-			).build(
-				"addToLaunch"
-			));
+		_addAddToLaunchAction(fdsActionDropdownItems, httpServletRequest);
 
 		return fdsActionDropdownItems;
 	}
@@ -952,6 +939,36 @@ public class SectionDisplayContextUtil {
 				"update"
 			).build(
 				"add-assets-to-project"
+			));
+	}
+
+	private static void _addAddToLaunchAction(
+		List<FDSActionDropdownItem> fdsActionDropdownItems,
+		HttpServletRequest httpServletRequest) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-72278")) {
+
+			return;
+		}
+
+		fdsActionDropdownItems.add(
+			FDSActionDropdownItemBuilder.setHref(
+				"{actions.addToLaunch.href}"
+			).setIcon(
+				"rocket"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "add-to-launch")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"addToLaunch"
+			).build(
+				"addToLaunch"
 			));
 	}
 
