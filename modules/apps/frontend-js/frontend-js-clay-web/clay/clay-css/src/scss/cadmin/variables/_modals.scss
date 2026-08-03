@@ -99,7 +99,9 @@ $cadmin-modal-header: map-deep-merge(
 		border-color: $cadmin-modal-header-border-color,
 		border-style: solid,
 		border-width: 0px 0px $cadmin-modal-header-border-width 0px,
-		border-top-radius:
+		border-top-left-radius:
+			clay-enable-rounded($cadmin-modal-content-inner-border-radius),
+		border-top-right-radius:
 			clay-enable-rounded($cadmin-modal-content-inner-border-radius),
 		color: $cadmin-modal-header-color,
 		display: flex,

@@ -110,7 +110,9 @@ $modal-header: map-deep-merge(
 		background-color: $modal-header-bg,
 		border-color: $modal-header-border-color,
 		border-style: solid,
-		border-top-radius:
+		border-top-left-radius:
+			clay-enable-rounded($modal-content-inner-border-radius),
+		border-top-right-radius:
 			clay-enable-rounded($modal-content-inner-border-radius),
 		border-width: 0px 0px $modal-header-border-width 0px,
 		color: $modal-header-color,
