@@ -88,7 +88,7 @@ type LiferayEnvironmentStatus struct {
 }
 
 type MarketplaceVolumeSpec struct {
-	// +kubebuilder:validation:Required
+	// +optional
 	ClaimName string `json:"claimName,omitempty"`
 
 	// +kubebuilder:validation:Required
@@ -99,10 +99,10 @@ type MarketplaceVolumeSpec struct {
 }
 
 type MarketplaceVolumeStatus struct {
-	// +kubebuilder:validation:Required
+	// // +optional
 	ClaimName string `json:"claimName,omitempty"`
 
-	// +kubebuilder:validation:Required
+	// // +optional
 	Phase string `json:"phase,omitempty"`
 }
 
