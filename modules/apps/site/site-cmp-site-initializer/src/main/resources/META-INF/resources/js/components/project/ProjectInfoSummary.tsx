@@ -48,7 +48,7 @@ export default function ProjectInfoSummary({
 			defaultOpen={true}
 			items={[
 				{
-					label: 'State',
+					label: Liferay.Language.get('state'),
 					value: (
 						<StateSelector
 							disabled={
@@ -81,10 +81,16 @@ export default function ProjectInfoSummary({
 						/>
 					),
 				},
-				{label: 'Manager', value: <User {...manager} />},
-				{label: 'Sponsor', value: <User {...sponsor} />},
 				{
-					label: 'Due Date',
+					label: Liferay.Language.get('manager'),
+					value: <User {...manager} />,
+				},
+				{
+					label: Liferay.Language.get('sponsor'),
+					value: <User {...sponsor} />,
+				},
+				{
+					label: Liferay.Language.get('due-date'),
 					value: DateRenderer({value: dueDate}) ?? '',
 				},
 				{

@@ -50,7 +50,7 @@ export default function TaskInfoSummary({
 			defaultOpen={true}
 			items={[
 				{
-					label: 'State',
+					label: Liferay.Language.get('state'),
 					value: (
 						<StateSelector
 							disabled={
@@ -84,7 +84,7 @@ export default function TaskInfoSummary({
 					),
 				},
 				{
-					label: 'Assignee',
+					label: Liferay.Language.get('assignee'),
 					value: (
 						<CustomAssignee
 							onChange={async (value: AssigneeValue | {}) => {
@@ -112,11 +112,11 @@ export default function TaskInfoSummary({
 					),
 				},
 				{
-					label: 'Due Date',
+					label: Liferay.Language.get('due-date'),
 					value: DateRenderer({value: dueDate}) ?? '',
 				},
 				{
-					label: 'Tags',
+					label: Liferay.Language.get('tags'),
 					value: (
 						<div>
 							{tags.map((tag) => (
