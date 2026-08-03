@@ -2313,12 +2313,9 @@ public class ObjectDefinitionResourceTest
 			actualPermissionsJSONArray = jsonObject.getJSONArray("items");
 		}
 
-		// The response includes permissions granted by the environment beyond
-		// this request, for example the company scoped CMS Administrator grant
-		// present on every object definition, so keep only the roles this
-		// request asserts. The comparison still verifies that every requested
-		// permission round trips with its exact action IDs, independent of the
-		// provisioning grants that vary across environments.
+		// The environment grants permissions this request did not ask for, such
+		// as the CMS Administrator grant that every object definition receives
+		// at the company scope. Compare only the roles the request asserts.
 
 		Set<String> expectedRoleNames = new HashSet<>();
 
