@@ -6,6 +6,8 @@
 package com.liferay.layout.content.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -14,9 +16,12 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.utility.page.kernel.constants.LayoutUtilityPageEntryConstants;
 import com.liferay.layout.utility.page.model.LayoutUtilityPageEntry;
 import com.liferay.layout.utility.page.service.LayoutUtilityPageEntryLocalService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -58,6 +63,7 @@ public class LayoutLocalServiceWrapperTest {
 	}
 
 	@Test
+	@TestInfo("LPD-99344")
 	public void testCopyLayoutContent() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
@@ -94,6 +100,19 @@ public class LayoutLocalServiceWrapperTest {
 
 		_testCopyLayoutContent(
 			0, _layoutLocalService.getLayout(layoutUtilityPageEntry.getPlid()));
+
+		Layout typeContentLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			_testCopyLayoutContent(0, typeContentLayout);
+		}
 	}
 
 	private List<LayoutContentVersion> _testCopyLayoutContent(
@@ -119,6 +138,9 @@ public class LayoutLocalServiceWrapperTest {
 
 		return layoutContentVersions2;
 	}
+
+	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
