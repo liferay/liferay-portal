@@ -61,8 +61,12 @@ public class SyncReindexManagerImpl implements SyncReindexManager {
 		booleanQuery.addFilterQueryClauses(
 			_getTimeStampFilterBooleanQuery(date));
 
-		_searchEngineAdapter.execute(
-			new DeleteByQueryDocumentRequest(booleanQuery, indexName));
+		DeleteByQueryDocumentRequest deleteByQueryDocumentRequest =
+			new DeleteByQueryDocumentRequest(booleanQuery, indexName);
+
+		deleteByQueryDocumentRequest.setProceedOnConflicts(true);
+
+		_searchEngineAdapter.execute(deleteByQueryDocumentRequest);
 	}
 
 	private TermsQuery _getEntryClassNamesFilterQuery(

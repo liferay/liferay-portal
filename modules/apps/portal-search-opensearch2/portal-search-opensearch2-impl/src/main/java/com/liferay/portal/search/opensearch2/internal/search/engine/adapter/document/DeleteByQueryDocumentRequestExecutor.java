@@ -14,6 +14,7 @@ import com.liferay.portal.search.opensearch2.internal.legacy.query.OpenSearchQue
 import java.io.IOException;
 
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.Conflicts;
 import org.opensearch.client.opensearch._types.query_dsl.Query;
 import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
 import org.opensearch.client.opensearch.core.DeleteByQueryResponse;
@@ -62,6 +63,10 @@ public class DeleteByQueryDocumentRequestExecutor {
 				new Query(
 					OpenSearchQueryVisitor.INSTANCE.translate(
 						deleteByQueryDocumentRequest.getQuery())));
+		}
+
+		if (deleteByQueryDocumentRequest.isProceedOnConflicts()) {
+			builder.conflicts(Conflicts.Proceed);
 		}
 
 		builder.refresh(deleteByQueryDocumentRequest.isRefresh());
