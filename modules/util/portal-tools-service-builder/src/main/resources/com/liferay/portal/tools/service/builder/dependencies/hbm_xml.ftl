@@ -35,7 +35,7 @@
 
 					<#if stringUtil.equals(entityColumn.type, "Date")>
 						<#if serviceBuilder.isVersionGTE_7_4_0()>
-							type="com.liferay.portal.dao.orm.hibernate.TimestampType"
+							type="timestamp"
 						<#else>
 							type="org.hibernate.type.TimestampType"
 						</#if>
@@ -131,7 +131,7 @@
 					<#elseif stringUtil.equals(entityColumn.type, "Blob")>
 						type="blob"
 					<#elseif stringUtil.equals(entityColumn.type, "Date")>
-						type="com.liferay.portal.dao.orm.hibernate.TimestampType"
+						type="timestamp"
 					</#if>
 				<#else>
 					<#if stringUtil.equals(entityColumn.type, "Date")>
@@ -200,7 +200,7 @@
 
 							<#if stringUtil.equals(entityColumn.type, "Date")>
 								<#if serviceBuilder.isVersionGTE_7_4_0()>
-									type="com.liferay.portal.dao.orm.hibernate.TimestampType"
+									type="timestamp"
 								<#else>
 									type="org.hibernate.type.TimestampType"
 								</#if>
