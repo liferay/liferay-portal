@@ -41,6 +41,8 @@ import type {FirstDayOfWeekLocale} from 'frontend-js-web';
 
 const ADD_TASK_BUTTON_CLASS_NAME = 'lfr__calendar-view-add-task-button';
 
+const MIN_DAY_COLUMN_WIDTH = 100;
+
 const calendarNavigationStates = new Map<string, {date: Date; view: string}>();
 
 interface CalendarViewProps {
@@ -86,6 +88,7 @@ export default function CalendarView({
 		useState<HTMLElement | null>(null);
 	const [moreLinkPopover, setMoreLinkPopover] =
 		useState<MoreLinkPopover | null>(null);
+	const [narrowDayColumns, setNarrowDayColumns] = useState(false);
 	const [title, setTitle] = useState('');
 	const [unscheduledTasksPanelOpen, setUnscheduledTasksPanelOpen] =
 		useState(false);
@@ -181,6 +184,15 @@ export default function CalendarView({
 		const resizeObserver = new ResizeObserver(() => {
 			requestAnimationFrame(() => {
 				calendarRef.current?.getApi().updateSize();
+
+				const dayColumn = element.querySelector('.fc-daygrid-day');
+
+				if (dayColumn) {
+					setNarrowDayColumns(
+						dayColumn.getBoundingClientRect().width <
+							MIN_DAY_COLUMN_WIDTH
+					);
+				}
 			});
 		});
 
@@ -479,7 +491,9 @@ export default function CalendarView({
 						)}
 					</>
 				)}
-				dayHeaderFormat={{weekday: 'long'}}
+				dayHeaderFormat={{
+					weekday: narrowDayColumns ? 'short' : 'long',
+				}}
 				dayMaxEvents
 				drop={async (arg) => {
 
@@ -578,6 +592,11 @@ export default function CalendarView({
 				moreLinkHint={Liferay.Language.get('view-all-tasks')}
 				plugins={[dayGridPlugin, interactionPlugin]}
 				ref={calendarRef}
+				views={{
+					dayGridWeek: {
+						dayMaxEvents: narrowDayColumns ? 0 : true,
+					},
+				}}
 				{...(hasAddTaskPermission && {
 					dateClick: (arg: DateClickArg) => {
 						const target = arg.jsEvent.target as HTMLElement;
