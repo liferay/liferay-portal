@@ -72,41 +72,33 @@ If a skill turns out to be wrong or to omit the answer, fix the skill as part of
 
 Liferay provides an MCP server for AI agent integration, gated by a feature flag and available in specific DXP versions. When present and enabled, prefer MCP over raw `curl` for content, page, and object operations. See `skills/mcp-server/SKILL.md` for setup, transport details, version requirements, and quirks.
 
-## Skill Index
+## Skill Router
 
-Skills live under `skills/` and load on demand. Each addresses one workflow.
+Every skill lives under `skills/` and owns one workflow. Match the user's intent to a skill below and load it on demand — even in an empty workspace (see the Preflight Rule above).
 
-**Foundations**
-- `workspace-init` — bootstrap a workspace and bundle
-- `feature-flags` — audit and enable required flags
-- `deploy-and-verify` — deploy a target and confirm startup
-- `mcp-server` — MCP server setup, workflow, quirks
-- `production-standards` — production readiness guardrails
-
-**Backend (data and logic)**
-- `manage-objects` — object definitions, fields, relationships, picklists, validations
-- `manage-object-logic` — object actions, workflows, notifications
-- `setup-oauth` — companion OAuth applications for client extensions
-- `integrate-external-data` — back objects with external services
-
-**Frontend (look and composition)**
-- `scaffold-fragment` — page fragments with editable regions
-- `manage-pages` — site pages, navigation, SEO, page templates
-- `theme-and-design` — themes, master pages, style books
-- `react-custom-elements` — React based Custom Element CETs
-
-**Cross cutting**
-- `scaffold-client-extension` — any client extension type
-- `guided-client-extension` — beginner walkthrough for a first Client Extension
-- `manage-roles-permissions` — roles, ACL, object and page permissions
-- `manage-environments` — `configs/{env}/`, data migration, siteInitializer capture
-- `commerce-catalogs` — Commerce catalogs, products, SKUs, B2B onboarding
-
-**Cloud**
-- `manage-cloud-project` — deploy and operate Liferay Cloud (LXC) projects via the `lcp` CLI
-
-**Orchestrator**
-- `build-site` — compose objects, pages, fragments, and roles into a complete site experience
+| User Intent | Skill |
+| --- | --- |
+| First-time user: a guided first run creating a workspace and starting the server | `initial-setup-guide` |
+| Set up, initialize, or repair a workspace and bundle | `workspace-init` |
+| Check, prompt for, or enable a required feature flag | `feature-flags` |
+| Deploy a target and confirm it started | `deploy-and-verify` |
+| Set up the MCP server or diagnose an MCP call | `mcp-server` |
+| Enforce production readiness on code bound for a nonlocal environment | `production-standards` |
+| Create or change an object definition, field, relationship, picklist, or validation | `manage-objects` |
+| Add object business logic — actions, workflows, notifications | `manage-object-logic` |
+| Create the OAuth application a client extension needs | `setup-oauth` |
+| Back an object with an external REST, database, or SaaS data source | `integrate-external-data` |
+| Build a page fragment or reusable page component | `scaffold-fragment` |
+| Create pages, navigation, SEO, or page and display templates | `manage-pages` |
+| Change the theme, colors, fonts, master page, or style book | `theme-and-design` |
+| Build a React based Custom Element widget | `react-custom-elements` |
+| Scaffold any client extension type | `scaffold-client-extension` |
+| Walk a beginner through a first client extension | `guided-client-extension` |
+| Create roles or grant permissions on objects, pages, or sites | `manage-roles-permissions` |
+| Manage environment configs, promote to UAT, or capture a site initializer | `manage-environments` |
+| Manage Commerce catalogs, products, SKUs, or B2B accounts | `commerce-catalogs` |
+| Deploy and operate a Liferay Cloud (LXC) project via `lcp` | `manage-cloud-project` |
+| Build an entire site experience from one prompt (orchestrator; calls the others) | `build-site` |
 
 Site building is **site initializer first**: the `siteInitializer` CET tree is the single source of truth. Build by triggering the initializer, then iterate by editing the source tree and applying each change live (theme, objects, fragments) or by reprovisioning (pages). See `rules/site-initializer-format.md`.
 
