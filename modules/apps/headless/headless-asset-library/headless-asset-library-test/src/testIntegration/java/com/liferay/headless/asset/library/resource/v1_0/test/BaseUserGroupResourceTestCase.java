@@ -1542,4 +1542,4 @@ public abstract class BaseUserGroupResourceTestCase {
 		_userGroupResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:784487662
+// LIFERAY-REST-BUILDER-HASH:-1632873928

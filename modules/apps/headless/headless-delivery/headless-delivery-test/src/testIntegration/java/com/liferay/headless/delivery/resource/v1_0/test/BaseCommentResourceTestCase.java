@@ -5961,4 +5961,4 @@ public abstract class BaseCommentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1490776948
+// LIFERAY-REST-BUILDER-HASH:361271706

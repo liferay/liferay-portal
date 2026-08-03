@@ -2742,4 +2742,4 @@ public abstract class BaseCategoryDisplayPageResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:15689486
+// LIFERAY-REST-BUILDER-HASH:-1735696094

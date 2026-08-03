@@ -1768,4 +1768,4 @@ public abstract class BasePriceListDiscountResourceTestCase {
 		PriceListDiscountResource _priceListDiscountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-663506546
+// LIFERAY-REST-BUILDER-HASH:-903325720

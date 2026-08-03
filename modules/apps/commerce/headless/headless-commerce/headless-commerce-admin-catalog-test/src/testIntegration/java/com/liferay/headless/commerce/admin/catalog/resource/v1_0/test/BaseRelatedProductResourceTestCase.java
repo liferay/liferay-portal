@@ -2014,4 +2014,4 @@ public abstract class BaseRelatedProductResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-441839873
+// LIFERAY-REST-BUILDER-HASH:23675335

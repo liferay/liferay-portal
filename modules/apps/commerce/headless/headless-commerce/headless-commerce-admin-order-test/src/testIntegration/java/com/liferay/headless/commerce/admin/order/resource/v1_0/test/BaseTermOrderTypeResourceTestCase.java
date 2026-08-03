@@ -1667,4 +1667,4 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 		TermOrderTypeResource _termOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1081092980
+// LIFERAY-REST-BUILDER-HASH:1091836660

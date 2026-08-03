@@ -2215,4 +2215,4 @@ public abstract class BaseResourceFileResourceTestCase {
 			_resourceFileResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:645815800
+// LIFERAY-REST-BUILDER-HASH:-1569485726

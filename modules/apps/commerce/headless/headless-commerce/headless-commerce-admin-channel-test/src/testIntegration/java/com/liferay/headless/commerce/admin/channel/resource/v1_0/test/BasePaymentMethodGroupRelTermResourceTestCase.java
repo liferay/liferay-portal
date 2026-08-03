@@ -1777,4 +1777,4 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 		PaymentMethodGroupRelTermResource _paymentMethodGroupRelTermResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:621984838
+// LIFERAY-REST-BUILDER-HASH:752645372

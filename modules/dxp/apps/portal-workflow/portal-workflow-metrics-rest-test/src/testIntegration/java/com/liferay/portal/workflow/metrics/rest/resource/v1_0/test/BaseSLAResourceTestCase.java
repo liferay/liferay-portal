@@ -2115,4 +2115,4 @@ public abstract class BaseSLAResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-603059379
+// LIFERAY-REST-BUILDER-HASH:902173299

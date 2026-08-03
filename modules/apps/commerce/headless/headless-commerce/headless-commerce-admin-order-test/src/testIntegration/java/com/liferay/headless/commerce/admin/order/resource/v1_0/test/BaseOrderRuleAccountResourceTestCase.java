@@ -1973,4 +1973,4 @@ public abstract class BaseOrderRuleAccountResourceTestCase {
 		OrderRuleAccountResource _orderRuleAccountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:264958369
+// LIFERAY-REST-BUILDER-HASH:1559992307

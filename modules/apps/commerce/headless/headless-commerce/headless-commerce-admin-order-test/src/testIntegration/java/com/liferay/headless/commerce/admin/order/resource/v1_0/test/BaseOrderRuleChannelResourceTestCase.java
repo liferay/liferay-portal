@@ -1973,4 +1973,4 @@ public abstract class BaseOrderRuleChannelResourceTestCase {
 		OrderRuleChannelResource _orderRuleChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:697182361
+// LIFERAY-REST-BUILDER-HASH:626886847

@@ -2239,4 +2239,4 @@ public abstract class BaseResourceFolderResourceTestCase {
 			_resourceFolderResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:864311268
+// LIFERAY-REST-BUILDER-HASH:-1981223714

@@ -2050,4 +2050,4 @@ public abstract class BaseWarehouseOrderTypeResourceTestCase {
 		WarehouseOrderTypeResource _warehouseOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1083445752
+// LIFERAY-REST-BUILDER-HASH:630824632

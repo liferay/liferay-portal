@@ -2085,4 +2085,4 @@ public abstract class BasePriceListAccountGroupResourceTestCase {
 		PriceListAccountGroupResource _priceListAccountGroupResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-422528407
+// LIFERAY-REST-BUILDER-HASH:452282989

@@ -1939,4 +1939,4 @@ public abstract class BaseChannelAccountResourceTestCase {
 		ChannelAccountResource _channelAccountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-726441176
+// LIFERAY-REST-BUILDER-HASH:-1887355902

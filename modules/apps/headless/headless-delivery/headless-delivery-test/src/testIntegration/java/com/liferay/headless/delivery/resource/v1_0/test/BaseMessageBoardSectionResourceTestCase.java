@@ -3881,4 +3881,4 @@ public abstract class BaseMessageBoardSectionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:217470320
+// LIFERAY-REST-BUILDER-HASH:293447686

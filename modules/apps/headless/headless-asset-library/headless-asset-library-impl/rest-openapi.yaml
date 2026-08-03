@@ -379,7 +379,7 @@ components:
                     type: array
 info:
     description:
-        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.asset.library.client', and version '1.0.18'."
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.asset.library.client', and version '1.0.19'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html

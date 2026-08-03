@@ -2455,4 +2455,4 @@ public abstract class BaseAccountChannelShippingOptionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1899434174
+// LIFERAY-REST-BUILDER-HASH:1186821344

@@ -2309,4 +2309,4 @@ public abstract class BaseSkuUnitOfMeasureResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1822659955
+// LIFERAY-REST-BUILDER-HASH:2011649015

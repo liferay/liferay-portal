@@ -2377,4 +2377,4 @@ public abstract class BaseInstanceResourceTestCase {
 			_instanceResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:258609340
+// LIFERAY-REST-BUILDER-HASH:-1909081538

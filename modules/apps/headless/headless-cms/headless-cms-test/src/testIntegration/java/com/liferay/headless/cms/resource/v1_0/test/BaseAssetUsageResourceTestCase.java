@@ -1239,4 +1239,4 @@ public abstract class BaseAssetUsageResourceTestCase {
 		_assetUsageResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:19982901
+// LIFERAY-REST-BUILDER-HASH:114342431

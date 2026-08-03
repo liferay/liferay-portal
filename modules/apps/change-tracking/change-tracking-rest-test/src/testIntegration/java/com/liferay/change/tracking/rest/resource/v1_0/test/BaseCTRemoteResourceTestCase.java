@@ -2362,4 +2362,4 @@ public abstract class BaseCTRemoteResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-94267434
+// LIFERAY-REST-BUILDER-HASH:-1277223726

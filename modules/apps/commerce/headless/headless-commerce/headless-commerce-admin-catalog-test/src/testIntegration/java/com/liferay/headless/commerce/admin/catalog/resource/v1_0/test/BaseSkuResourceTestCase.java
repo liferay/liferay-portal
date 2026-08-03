@@ -3903,4 +3903,4 @@ public abstract class BaseSkuResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1702258209
+// LIFERAY-REST-BUILDER-HASH:414265001

@@ -1031,4 +1031,4 @@ public abstract class BaseExpiredAssetResourceTestCase {
 		_expiredAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1971102570
+// LIFERAY-REST-BUILDER-HASH:-607395140

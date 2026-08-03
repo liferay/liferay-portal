@@ -2288,4 +2288,4 @@ public abstract class BaseObjectFolderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-135823271
+// LIFERAY-REST-BUILDER-HASH:1125157799

@@ -2645,4 +2645,4 @@ public abstract class BaseOptionCategoryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:315370077
+// LIFERAY-REST-BUILDER-HASH:989885697
