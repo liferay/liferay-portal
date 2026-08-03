@@ -17,6 +17,7 @@
 			"dateCreated"?: Date;
 			"dateModified"?: Date;
 			"defaultObjectView"?: boolean;
+			"externalReferenceCode"?: string;
 			"id"?: number;
 			"name"?: {[key: string]: string;};
 			"objectDefinitionExternalReferenceCode"?: string;
@@ -51,6 +52,11 @@
 			baseName: "defaultObjectView",
 			name: "defaultObjectView",
 			type: "boolean",
+		},
+		{
+			baseName: "externalReferenceCode",
+			name: "externalReferenceCode",
+			type: "string",
 		},
 		{
 			baseName: "id",
