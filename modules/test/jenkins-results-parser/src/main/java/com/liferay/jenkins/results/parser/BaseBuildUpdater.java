@@ -71,18 +71,18 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 	}
 
 	protected void runMissing() {
-		if (isBuildQueued()) {
-			_missingTickCount = 0;
-
-			_build.setStatus("queued");
-
-			return;
-		}
-
 		if (isBuildRunning()) {
 			_missingTickCount = 0;
 
 			_build.setStatus("running");
+
+			return;
+		}
+
+		if (isBuildQueued()) {
+			_missingTickCount = 0;
+
+			_build.setStatus("queued");
 
 			return;
 		}
@@ -123,13 +123,13 @@ public abstract class BaseBuildUpdater implements BuildUpdater {
 	}
 
 	protected void runQueued() {
-		if (isBuildQueued()) {
-			return;
-		}
-
 		if (isBuildRunning()) {
 			_build.setStatus("running");
 
+			return;
+		}
+
+		if (isBuildQueued()) {
 			return;
 		}
 
