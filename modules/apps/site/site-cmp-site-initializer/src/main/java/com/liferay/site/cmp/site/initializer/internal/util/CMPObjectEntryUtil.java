@@ -25,9 +25,30 @@ import java.util.List;
 /**
  * @author Guilherme Camacho
  */
-public class CMPLinkObjectEntryUtil {
+public class CMPObjectEntryUtil {
 
-	public static List<Long> getLinkObjectEntryIds(
+	public static long[] getLinkedObjectEntryIds(
+			FilterFactory<Predicate> filterFactory,
+			GroupLocalService groupLocalService,
+			String objectDefinitionExternalReferenceCode,
+			ObjectDefinitionLocalService objectDefinitionLocalService,
+			ObjectEntry objectEntry,
+			ObjectEntryLocalService objectEntryLocalService,
+			String relationshipObjectFieldName)
+		throws PortalException {
+
+		return TransformUtil.transformToLongArray(
+			getObjectEntryIds(
+				filterFactory, groupLocalService,
+				objectDefinitionExternalReferenceCode,
+				objectDefinitionLocalService, objectEntry,
+				objectEntryLocalService),
+			objectEntryId -> MapUtil.getLong(
+				objectEntryLocalService.getValues(objectEntryId),
+				relationshipObjectFieldName));
+	}
+
+	public static List<Long> getObjectEntryIds(
 			FilterFactory<Predicate> filterFactory,
 			GroupLocalService groupLocalService,
 			String objectDefinitionExternalReferenceCode,
@@ -64,27 +85,6 @@ public class CMPLinkObjectEntryUtil {
 					group.getExternalReferenceCode(), "'"),
 				objectDefinition),
 			false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	public static long[] getRelatedObjectEntryIds(
-			FilterFactory<Predicate> filterFactory,
-			GroupLocalService groupLocalService,
-			String objectDefinitionExternalReferenceCode,
-			ObjectDefinitionLocalService objectDefinitionLocalService,
-			ObjectEntry objectEntry,
-			ObjectEntryLocalService objectEntryLocalService,
-			String relationshipObjectFieldName)
-		throws PortalException {
-
-		return TransformUtil.transformToLongArray(
-			getLinkObjectEntryIds(
-				filterFactory, groupLocalService,
-				objectDefinitionExternalReferenceCode,
-				objectDefinitionLocalService, objectEntry,
-				objectEntryLocalService),
-			objectEntryId -> MapUtil.getLong(
-				objectEntryLocalService.getValues(objectEntryId),
-				relationshipObjectFieldName));
 	}
 
 }
