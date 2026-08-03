@@ -32,10 +32,8 @@ public class DepotRoleTypeContributor implements RoleTypeContributor {
 
 	@Override
 	public String getDefaultSubtype() {
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-17564") &&
-			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96750")) {
+		if (FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-96750")) {
 
 			return DepotRolesConstants.SUBTYPE_SPACE;
 		}
