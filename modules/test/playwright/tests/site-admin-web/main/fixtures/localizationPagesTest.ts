@@ -15,14 +15,34 @@ const localizationPagesTest = test.extend<{
 		await use(new LocalizationInstanceSettingsPage(page));
 	},
 	restoreInstanceDefaultLanguage: async (
-		{localizationInstanceSettingsPage},
+		{localizationInstanceSettingsPage, page},
 		use
 	) => {
 		try {
 			await use();
 		}
 		finally {
+
+			// Render the admin UI in English regardless of the current
+			// instance default language, so the settings navigation and
+			// controls resolve when the test left the instance in another
+			// language.
+
+			const response = await page.request.get(
+				'/o/headless-admin-user/v1.0/my-user-account'
+			);
+
+			const myUserAccount = await response.json();
+
+			await page.request.patch(
+				`/o/headless-admin-user/v1.0/user-accounts/${myUserAccount.id}`,
+				{data: {languageId: 'en_US'}}
+			);
+
+			await page.reload();
+
 			await localizationInstanceSettingsPage.goto('Language', false);
+
 			await localizationInstanceSettingsPage.setDefaultLanguage('en_US');
 		}
 	},
