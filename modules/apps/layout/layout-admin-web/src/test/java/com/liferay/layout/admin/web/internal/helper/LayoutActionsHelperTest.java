@@ -5,6 +5,8 @@
 
 package com.liferay.layout.admin.web.internal.helper;
 
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -13,6 +15,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -166,10 +169,11 @@ public class LayoutActionsHelperTest {
 	}
 
 	@Test
-	@TestInfo("LPD-90027")
+	@TestInfo({"LPD-90027", "LPD-99344"})
 	public void testIsShowViewHistoryAction() throws PortalException {
 		_testIsShowViewHistoryActionWithFeatureFlagDisabled();
 		_testIsShowViewHistoryActionWithLayoutTypeNotContent();
+		_testIsShowViewHistoryActionWithoutProductionMode();
 		_testIsShowViewHistoryActionWithoutUpdatePermission();
 		_testIsShowViewHistoryActionWithUpdatePermission();
 	}
@@ -283,6 +287,31 @@ public class LayoutActionsHelperTest {
 			null, _themeDisplay, null);
 
 		Assert.assertFalse(layoutActionsHelper.isShowViewHistoryAction(layout));
+	}
+
+	private void _testIsShowViewHistoryActionWithoutProductionMode()
+		throws PortalException {
+
+		_setUpFeatureFlag(true);
+
+		Layout layout = _getLayout(_getGroup());
+
+		Mockito.when(
+			layout.isTypeContent()
+		).thenReturn(
+			true
+		);
+
+		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
+			null, _themeDisplay, null);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					RandomTestUtil.randomLong())) {
+
+			Assert.assertFalse(
+				layoutActionsHelper.isShowViewHistoryAction(layout));
+		}
 	}
 
 	private void _testIsShowViewHistoryActionWithoutUpdatePermission()
