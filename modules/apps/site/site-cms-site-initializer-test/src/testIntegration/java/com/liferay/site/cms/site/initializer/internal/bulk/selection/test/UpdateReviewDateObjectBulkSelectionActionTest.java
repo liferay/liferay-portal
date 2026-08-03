@@ -43,7 +43,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Veronica Gonzalez
  */
-@FeatureFlags(featureFlags = @FeatureFlag("LPD-17564"))
+@FeatureFlags(featureFlags = @FeatureFlag("LPD-82226"))
 @RunWith(Arquillian.class)
 public class UpdateReviewDateObjectBulkSelectionActionTest {
 
