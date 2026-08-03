@@ -5,31 +5,37 @@
 
 import {addParams} from 'frontend-js-web';
 
+import {ProfileDataMask} from '../types';
 import {toODataStringLiteral} from '../utils';
 import ApiHelper, {RequestResult} from './ApiHelper';
 import {PROFILE_DATA_MASKS_URL} from './constants';
 
-export interface ProfileDataMaskAssociation {
+export interface ProfileDataMaskFilters {
 	dataMaskExternalReferenceCode?: string;
 	mcpServerProfileExternalReferenceCode?: string;
 }
 
 export function getProfileDataMasks(
-	dataMaskExternalReferenceCode?: string
-): Promise<
-	RequestResult<{items: ProfileDataMaskAssociation[]; totalCount: number}>
-> {
+	filters: ProfileDataMaskFilters = {}
+): Promise<RequestResult<{items: ProfileDataMask[]; totalCount: number}>> {
 	const params: Record<string, string> = {};
 
-	if (dataMaskExternalReferenceCode) {
+	if (filters.dataMaskExternalReferenceCode) {
 		params.filter = `dataMaskExternalReferenceCode eq ${toODataStringLiteral(
-			dataMaskExternalReferenceCode
+			filters.dataMaskExternalReferenceCode
 		)}`;
 		params.pageSize = '1';
 	}
+	else if (filters.mcpServerProfileExternalReferenceCode) {
+		params.filter = `mcpServerProfileExternalReferenceCode eq ${toODataStringLiteral(
+			filters.mcpServerProfileExternalReferenceCode
+		)}`;
+		params.pageSize = '200';
+		params.sort = 'executionOrder:asc';
+	}
 
 	return ApiHelper.get<{
-		items: ProfileDataMaskAssociation[];
+		items: ProfileDataMask[];
 		totalCount: number;
 	}>(addParams(params, PROFILE_DATA_MASKS_URL));
 }

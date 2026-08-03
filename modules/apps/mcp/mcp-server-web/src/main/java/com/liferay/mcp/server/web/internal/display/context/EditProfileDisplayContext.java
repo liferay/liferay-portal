@@ -5,6 +5,8 @@
 
 package com.liferay.mcp.server.web.internal.display.context;
 
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.NavigationItemListBuilder;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -15,7 +17,9 @@ import jakarta.portlet.RenderRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Jorge González
@@ -54,7 +58,37 @@ public class EditProfileDisplayContext {
 			"portletNamespace", _liferayPortletResponse.getNamespace()
 		).put(
 			"profileId", _getProfileId()
+		).put(
+			"tab", getTab()
 		).build();
+	}
+
+	public List<NavigationItem> getNavigationItems() {
+		String tab = getTab();
+
+		return NavigationItemListBuilder.add(
+			navigationItem -> {
+				navigationItem.setActive(Objects.equals(tab, "profile-info"));
+				navigationItem.setHref(_getTabURL("profile-info"));
+				navigationItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "profile-info"));
+			}
+		).add(
+			navigationItem -> {
+				navigationItem.setActive(Objects.equals(tab, "data-masks"));
+				navigationItem.setHref(_getTabURL("data-masks"));
+				navigationItem.setLabel(
+					LanguageUtil.get(_httpServletRequest, "data-masks"));
+			}
+		).build();
+	}
+
+	public String getTab() {
+		if (_getProfileId() == 0) {
+			return "profile-info";
+		}
+
+		return ParamUtil.getString(_renderRequest, "tab", "profile-info");
 	}
 
 	public String getTitle() {
@@ -65,8 +99,28 @@ public class EditProfileDisplayContext {
 		return LanguageUtil.get(_httpServletRequest, "new-profile");
 	}
 
+	public boolean isShowNavigationBar() {
+		if (_getProfileId() > 0) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private long _getProfileId() {
 		return ParamUtil.getLong(_renderRequest, "profileId");
+	}
+
+	private String _getTabURL(String tab) {
+		return PortletURLBuilder.createRenderURL(
+			_liferayPortletResponse
+		).setMVCRenderCommandName(
+			"/mcp_server/edit_profile"
+		).setParameter(
+			"profileId", _getProfileId()
+		).setParameter(
+			"tab", tab
+		).buildString();
 	}
 
 	private final HttpServletRequest _httpServletRequest;

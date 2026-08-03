@@ -17,9 +17,9 @@ async function getAssociatedProfilesCount(
 		return 0;
 	}
 
-	const {data, error} = await getProfileDataMasks(
-		dataMaskExternalReferenceCode
-	);
+	const {data, error} = await getProfileDataMasks({
+		dataMaskExternalReferenceCode,
+	});
 
 	if (error) {
 		openErrorToast(error);

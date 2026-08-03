@@ -17,12 +17,14 @@ import {patchProfile} from '../services/patchProfile';
 import {postProfile} from '../services/postProfile';
 import {Profile, ProfileFormValues, ProfilePayload} from '../types';
 import {openErrorToast, openSuccessToast} from '../utils';
+import ProfileDataMasks from './ProfileDataMasks';
 
 interface EditProfileProps {
 	backURL: string;
 	editProfileURL: string;
 	portletNamespace: string;
 	profileId: number;
+	tab: string;
 }
 
 export default function EditProfile({
@@ -30,6 +32,7 @@ export default function EditProfile({
 	editProfileURL,
 	portletNamespace,
 	profileId,
+	tab,
 }: EditProfileProps) {
 	const [loading, setLoading] = useState(profileId > 0);
 	const [profile, setProfile] = useState<Profile | null>(null);
@@ -72,6 +75,10 @@ export default function EditProfile({
 				<ClayLoadingIndicator />
 			</div>
 		);
+	}
+
+	if (tab === 'data-masks' && profile) {
+		return <ProfileDataMasks profile={profile} />;
 	}
 
 	return (
