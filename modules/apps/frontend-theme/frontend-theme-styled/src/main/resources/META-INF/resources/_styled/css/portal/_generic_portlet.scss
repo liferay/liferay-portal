@@ -8,9 +8,8 @@
 		> tr {
 			> td,
 			> th {
+				overflow-wrap: break-word;
 				padding: 0 5px;
-
-				@include overflow-wrap(break-all);
 
 				&:first-child,
 				&.first-child {

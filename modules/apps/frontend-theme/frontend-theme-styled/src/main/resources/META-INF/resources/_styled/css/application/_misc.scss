@@ -1,8 +1,7 @@
 .lfr-url-error {
 	display: inline-block;
+	overflow-wrap: break-word;
 	white-space: normal;
-
-	@include overflow-wrap(break-all);
 }
 
 .lfr-page-layouts {

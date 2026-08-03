@@ -43,7 +43,7 @@
 // ---------- Misc ----------
 
 .navbar .nav li > a {
-	@include overflow-wrap(break-all);
+	overflow-wrap: break-word;
 }
 
 // ---------- Status ----------
