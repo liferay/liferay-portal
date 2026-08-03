@@ -100,6 +100,8 @@ test(
 		page,
 		structureBuilderPage,
 	}) => {
+		const entryTitle = getRandomString();
+
 		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 			name: `Space ${getRandomString()}`,
 			type: 'Space',
@@ -107,12 +109,13 @@ test(
 
 		const structureLabel = `Structure${getRandomString()}`;
 
-		await structureBuilderPage.createStructureFromData({
-			label: structureLabel,
-			page: structureBuilderPage,
-			publish: false,
-			spaces: [space.name],
-		});
+		const objectDefinitionId =
+			await structureBuilderPage.createStructureFromData({
+				label: structureLabel,
+				page: structureBuilderPage,
+				publish: false,
+				spaces: [space.name],
+			});
 
 		await structureBuilderPage.addField('Numeric');
 
@@ -121,6 +124,18 @@ test(
 		await structureBuilderPage.changeFieldSettings({label: 'Quantity'});
 
 		await structureBuilderPage.publishStructure();
+
+		const objectDefinition = await apiHelpers.get(
+			`${apiHelpers.baseUrl}object-admin/v1.0/object-definitions/${objectDefinitionId}`
+		);
+
+		const quantityObjectField = objectDefinition.objectFields.find(
+			(objectField) => objectField.label?.en_US === 'Quantity'
+		);
+
+		if (!quantityObjectField) {
+			throw new Error('Quantity field not found in object definition');
+		}
 
 		const quantityField = page.getByLabel('Quantity');
 
@@ -131,7 +146,7 @@ test(
 
 			await page
 				.getByRole('textbox', {exact: true, name: 'Title'})
-				.fill(getRandomString());
+				.fill(entryTitle);
 
 			await quantityField.click();
 
@@ -140,7 +155,7 @@ test(
 			await quantityField.blur();
 		});
 
-		await test.step('The field rejects the non-numeric input, so no invalid value can be saved', async () => {
+		await test.step('The field rejects the non-numeric input', async () => {
 			await expect(quantityField).toHaveValue('');
 
 			expect(
@@ -148,6 +163,23 @@ test(
 					(element: HTMLInputElement) => element.validity.badInput
 				)
 			).toBe(false);
+		});
+
+		await test.step('Publishing saves the entry without any quantity value', async () => {
+			await contentsPage.saveContent();
+
+			const applicationName = objectDefinition.restContextPath.replace(
+				'/o/',
+				''
+			);
+
+			const response = await apiHelpers.get(
+				`${apiHelpers.baseUrl}${applicationName}/scopes/${encodeURIComponent(space.name)}`
+			);
+
+			expect(response.items).toHaveLength(1);
+			expect(response.items[0].title).toBe(entryTitle);
+			expect(response.items[0][quantityObjectField.name]).toBeFalsy();
 		});
 	}
 );

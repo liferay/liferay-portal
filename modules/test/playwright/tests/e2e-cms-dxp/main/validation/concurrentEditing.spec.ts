@@ -8,11 +8,9 @@ import {Page, expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
-import {addCMSAdministrator} from '../../../../utils/addCMSAdministrator';
 import getRandomString from '../../../../utils/getRandomString';
-import {performLoginViaApi} from '../../../../utils/performLogin';
 import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
-import {ContentsPage} from '../../../site-cms-site-initializer/main/pages/ContentsPage';
+import {openSecondCmsEditor} from './openSecondCmsEditor';
 
 const test = mergeTests(
 	cmsPagesTest,
@@ -62,21 +60,15 @@ test(
 			[{actionIds: ['VIEW'], roleName: 'Guest'}]
 		);
 
-		const userB = await addCMSAdministrator(apiHelpers);
-
-		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
-			space.externalReferenceCode,
-			userB.externalReferenceCode
-		);
-
-		const contextB = await browser.newContext();
-		const pageB = await contextB.newPage();
-		const contentsPageB = new ContentsPage(pageB);
-
-		await performLoginViaApi({
+		const {
+			contentsPage: contentsPageB,
+			context: contextB,
 			page: pageB,
-			screenName: userB.alternateName,
-		});
+		} = await openSecondCmsEditor(
+			apiHelpers,
+			browser,
+			space.externalReferenceCode
+		);
 
 		await test.step('Both users open the same entry for editing', async () => {
 			await contentsPage.goto();

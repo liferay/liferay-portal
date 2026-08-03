@@ -10,14 +10,13 @@ import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
-import {addCMSAdministrator} from '../../../../utils/addCMSAdministrator';
 import {addMappingFragment} from '../../../../utils/addMappingFragment';
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../../utils/performLogin';
 import {createRecipient} from '../../../../utils/sharingRecipient';
 import {cmsPagesTest} from '../../../site-cms-site-initializer/main/fixtures/cmsPagesTest';
-import {ContentsPage} from '../../../site-cms-site-initializer/main/pages/ContentsPage';
 import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
+import {openSecondCmsEditor} from './openSecondCmsEditor';
 
 const test = mergeTests(
 	cmsPagesTest,
@@ -162,21 +161,15 @@ test(
 			await pageEditorPage.publishPage();
 		});
 
-		const userB = await addCMSAdministrator(apiHelpers);
-
-		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
-			space.externalReferenceCode,
-			userB.externalReferenceCode
-		);
-
-		const contextB = await browser.newContext();
-		const pageB = await contextB.newPage();
-		const contentsPageB = new ContentsPage(pageB);
-
-		await performLoginViaApi({
+		const {
+			contentsPage: contentsPageB,
+			context: contextB,
 			page: pageB,
-			screenName: userB.alternateName,
-		});
+		} = await openSecondCmsEditor(
+			apiHelpers,
+			browser,
+			space.externalReferenceCode
+		);
 
 		const editField = async (
 			targetPage: Page,

@@ -24,11 +24,6 @@ test(
 	'Setting a friendly URL already used by another entry in the same Space is blocked',
 	{tag: ['@LPD-95548', '@LPD-95548/TC-23.f', '@LPD-100262']},
 	async ({apiHelpers, assetsPage, contentsPage, page}) => {
-		test.fail(
-			true,
-			'LPD-100262: the conflicting friendly URL is silently renamed instead of reported.'
-		);
-
 		const applicationName = 'cms/basic-web-contents';
 		const existingTitle = getRandomString();
 		const friendlyUrl = getRandomString();
@@ -61,6 +56,11 @@ test(
 		});
 
 		await test.step('An error indicates the URL conflict and the entry is not saved', async () => {
+			test.fail(
+				true,
+				'LPD-100262: the conflicting friendly URL is silently renamed instead of reported.'
+			);
+
 			await expect(
 				page.getByText(
 					'The friendly URL is already in use. Please enter a unique friendly URL.'
