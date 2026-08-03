@@ -223,7 +223,9 @@ public class LangSanitizer {
 					String filePath = file.toString();
 
 					if (fileName.startsWith("Language")) {
-						if (filePath.contains("portal-language-lang")) {
+						if (filePath.contains("osb-faro-web") ||
+							filePath.contains("portal-language-lang")) {
+
 							files.add(file.toFile());
 						}
 					}
