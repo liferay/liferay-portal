@@ -21,7 +21,7 @@ definition {
 
 		TaxonomyVocabularyAPI.deleteTaxonomyVocabularyByErc(
 			externalReferenceCode = "erc",
-			groupName = "Guest");
+			groupName = "Global");
 
 		if (${testLiferayVirtualInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -61,7 +61,7 @@ definition {
 		task ("And Given taxonomyVocabulary with name 'vocabulary' created") {
 			var responseFromVocabulary = TaxonomyVocabularyAPI.createTaxonomyVocabulary(
 				externalReferenceCode = "erc",
-				groupName = "Guest",
+				groupName = "Global",
 				name = "Vocabulary");
 		}
 
@@ -116,7 +116,7 @@ definition {
 		task ("And Given taxonomyVocabulary with name 'vocabulary' created") {
 			var responseFromVocabulary = TaxonomyVocabularyAPI.createTaxonomyVocabulary(
 				externalReferenceCode = "erc",
-				groupName = "Guest",
+				groupName = "Global",
 				name = "Vocabulary");
 		}
 

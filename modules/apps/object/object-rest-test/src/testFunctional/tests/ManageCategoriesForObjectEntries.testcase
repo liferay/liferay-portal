@@ -12,7 +12,7 @@ definition {
 		task ("Given taxonomyVocabulary with name 'vocabulary' created") {
 			var responseFromVocabulary = TaxonomyVocabularyAPI.createTaxonomyVocabulary(
 				externalReferenceCode = "erc",
-				groupName = "Guest",
+				groupName = "Global",
 				name = "vocabulary");
 		}
 
@@ -36,7 +36,7 @@ definition {
 
 		ObjectAdmin.deleteAllCustomObjectsViaAPI();
 
-		TaxonomyVocabularyAPI.deleteAllTaxonomyVocabulary(groupName = "Guest");
+		TaxonomyVocabularyAPI.deleteAllTaxonomyVocabulary(groupName = "Global");
 
 		if (${testLiferayVirtualInstance} == "true") {
 			PortalInstances.tearDownCP();
@@ -256,7 +256,6 @@ definition {
 				en_US_plural_label = "students",
 				fieldName = "name",
 				fieldValue = "Tom",
-				groupName = "Global",
 				scopeKey = "true");
 		}
 
@@ -302,6 +301,7 @@ definition {
 				en_US_plural_label = "students",
 				fieldName = "name",
 				fieldValue = "Tom",
+				groupName = "Global",
 				scopeKey = "true");
 		}
 
