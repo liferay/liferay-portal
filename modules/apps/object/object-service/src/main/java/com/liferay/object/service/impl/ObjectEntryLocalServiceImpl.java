@@ -7203,9 +7203,17 @@ public class ObjectEntryLocalServiceImpl
 		objectEntry.setObjectEntryFolderId(objectEntryFolderId);
 
 		if (!move) {
-			_setDisplayDate(objectEntry, values);
-			_setExpirationDate(objectEntry, values);
-			_setReviewDate(objectEntry, values);
+			if (!partialUpdate || values.containsKey("displayDate")) {
+				_setDisplayDate(objectEntry, values);
+			}
+
+			if (!partialUpdate || values.containsKey("expirationDate")) {
+				_setExpirationDate(objectEntry, values);
+			}
+
+			if (!partialUpdate || values.containsKey("reviewDate")) {
+				_setReviewDate(objectEntry, values);
+			}
 		}
 
 		if ((workflowAction == WorkflowConstants.ACTION_SAVE_DRAFT) &&
