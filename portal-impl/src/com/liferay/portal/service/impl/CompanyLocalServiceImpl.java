@@ -109,6 +109,7 @@ import com.liferay.portal.kernel.service.persistence.PortletPersistence;
 import com.liferay.portal.kernel.service.persistence.RolePersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.service.persistence.VirtualHostPersistence;
+import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -333,8 +334,18 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					companyId)) {
 
 			if (PropsValues.DATABASE_PARTITION_ENABLED) {
-				return TransactionInvokerUtil.invoke(
-					_transactionConfig, callable);
+				try {
+					return TransactionInvokerUtil.invoke(
+						_transactionConfig, callable);
+				}
+				finally {
+
+					// Commit callbacks must flush before this scope restores
+					// the previous company, or they would execute against
+					// the default partition
+
+					LastSessionRecorderHelperUtil.syncLastSessionState(false);
+				}
 			}
 
 			return callable.call();
