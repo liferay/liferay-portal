@@ -15,6 +15,7 @@ import com.liferay.osb.patcher.model.PatcherFix;
 import com.liferay.osb.patcher.service.PatcherBuildLocalServiceUtil;
 import com.liferay.osb.patcher.service.PatcherFixLocalServiceUtil;
 import com.liferay.osb.patcher.util.JenkinsUtil;
+import com.liferay.osb.patcher.util.PatcherBuildUtil;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -137,11 +138,12 @@ public class PatcherFixBuildsDisplayContext {
 				patcherBuild.getStatus() ==
 					WorkflowConstants.STATUS_BUILD_COMPLETE,
 			dropdownItem -> {
-				String fileName = patcherBuild.getFileName();
+				String downloadPath = PatcherBuildUtil.getDownloadPath(
+					patcherBuild.getFileName());
 
 				String hotfixURL =
 					_patcherConfiguration.patcherBuildDownloadURL() + "/" +
-						fileName;
+						downloadPath;
 
 				dropdownItem.setHref(hotfixURL);
 

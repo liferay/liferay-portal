@@ -117,7 +117,7 @@ PatcherAccountsDisplayContext patcherAccountsDisplayContext = new PatcherAccount
 						<td class="col-md-2">
 							<c:choose>
 								<c:when test="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) %>">
-									<span class="text-success"><liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getStatus()) %>" /></span> (<clay:link href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + patcherBuild.getFileName() %>' label="download" target="_blank" />)
+									<span class="text-success"><liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getStatus()) %>" /></span> (<clay:link href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + PatcherBuildUtil.getDownloadPath(patcherBuild.getFileName()) %>' label="download" target="_blank" />)
 								</c:when>
 								<c:when test="<%= (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_FAILED) || (patcherBuild.getStatus() == WorkflowConstants.STATUS_BUILD_FAILED_MERGING_ONLY) %>">
 									<span class="text-danger"><liferay-ui:message key="<%= WorkflowConstants.getStatusLabel(patcherBuild.getStatus()) %>" /></span>

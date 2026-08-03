@@ -247,7 +247,7 @@ PatcherBuildsDisplayContext patcherBuildsDisplayContext = new PatcherBuildsDispl
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + fileName %>'
+			href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + PatcherBuildUtil.getDownloadPath(fileName) %>'
 			name="hotfix"
 			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(fileName) : StringPool.BLANK %>"
 		/>

@@ -82,7 +82,7 @@ List<PatcherBuild> patcherBuilds = PatcherBuildLocalServiceUtil.getPatcherFixPat
 
 		<liferay-ui:search-container-column-text
 			cssClass="nobr"
-			href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + patcherBuild.getFileName() %>'
+			href='<%= patcherConfiguration.patcherBuildDownloadURL() + "/" + PatcherBuildUtil.getDownloadPath(patcherBuild.getFileName()) %>'
 			name="hotfix"
 			target="_blank"
 			value="<%= PatcherBuildUtil.isCompleteReadyOrReleased(patcherBuild) ? PatcherBuildUtil.getLiferayHotfixFileName(patcherBuild.getFileName()) : StringPool.BLANK %>"

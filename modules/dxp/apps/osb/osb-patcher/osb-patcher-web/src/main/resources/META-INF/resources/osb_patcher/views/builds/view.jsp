@@ -248,13 +248,13 @@ else if (!patcherBuild.getLatestKeyBuild()) {
 			<p class="text-secondary">
 				<c:choose>
 					<c:when test='<%= fileName.contains("/liferay-dxp-") %>'>
-						<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= fileName %>" target="_blank"><%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= fileName %></a><br />
+						<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= PatcherBuildUtil.getDownloadPath(fileName) %>" target="_blank"><%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= PatcherBuildUtil.getDownloadPath(fileName) %></a><br />
 
 						<pre>patching-tool install hotfix-<%= PatcherBuildUtil.getHotfixIdByFileName(fileName) %></pre>
 						<pre>patching-tool.sh install hotfix-<%= PatcherBuildUtil.getHotfixIdByFileName(fileName) %></pre>
 					</c:when>
 					<c:otherwise>
-						<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= fileName %>" target="_blank"><%= Validator.isNotNull(fileName) ? LanguageUtil.get(request, "download") : StringPool.BLANK %></a>
+						<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= PatcherBuildUtil.getDownloadPath(fileName) %>" target="_blank"><%= Validator.isNotNull(fileName) ? LanguageUtil.get(request, "download") : StringPool.BLANK %></a>
 					</c:otherwise>
 				</c:choose>
 			</p>
@@ -267,7 +267,7 @@ else if (!patcherBuild.getLatestKeyBuild()) {
 				</p>
 
 				<p class="text-secondary">
-					<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= patcherBuild.getSourceName() %>" target="_blank"><liferay-ui:message key="download" /></a>
+					<a href="<%= patcherConfiguration.patcherBuildDownloadURL() %>/<%= PatcherBuildUtil.getDownloadPath(patcherBuild.getSourceName()) %>" target="_blank"><liferay-ui:message key="download" /></a>
 				</p>
 			</div>
 		</c:if>
