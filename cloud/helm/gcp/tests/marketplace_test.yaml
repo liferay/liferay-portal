@@ -14,6 +14,6 @@ tests:
             -   equal:
                     path: spec.marketplaceVolume.storageClassName
                     value: premium-rwx
-        it: Honors an overridden storage class
+        it: Overrides storage class
         set:
             liferay-default.marketplace.storageClassName: premium-rwx

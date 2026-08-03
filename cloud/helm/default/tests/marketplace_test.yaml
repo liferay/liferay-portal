@@ -45,7 +45,7 @@ tests:
                     path: metadata.name
                     value: liferay-default
         template: templates/liferayenvironment.yaml
-        it: Names the LiferayEnvironment after the Liferay stateful set it selects
+        it: Names the LiferayEnvironment after the Liferay stateful set
         set:
             marketplace.enabled: true
             marketplace.storageClassName: nfs-sc
@@ -56,7 +56,7 @@ tests:
             path: spec.serviceName
             skipEmptyTemplates: true
             value: liferay-default-search
-        it: Keeps the marketplace volume off dependency stateful sets
+        it: Does not create the marketplace volume for statefulsets different from Liferay
         set:
             dependencies:
                 search:
