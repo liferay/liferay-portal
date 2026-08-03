@@ -26,8 +26,10 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	controllerruntime "sigs.k8s.io/controller-runtime"
+	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
+	predicate "sigs.k8s.io/controller-runtime/pkg/predicate"
 )
 
 const (
@@ -218,6 +220,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 		manager,
 	).For(
 		&licensingv1alpha1.LiferayEnvironment{},
+		builder.WithPredicates(
+			predicate.Or(
+				predicate.AnnotationChangedPredicate{},
+				predicate.GenerationChangedPredicate{},
+			),
+		),
 	).Named(
 		"liferayenvironment",
 	).Owns(
