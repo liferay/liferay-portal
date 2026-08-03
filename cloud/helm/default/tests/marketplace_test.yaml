@@ -26,6 +26,9 @@ tests:
             -   equal:
                     path: spec
                     value:
+                        activationCodeSecretRef:
+                            key: activationCode
+                            name: liferay-default-activation
                         marketplaceVolume:
                             enabled: true
                             size: 10Gi
