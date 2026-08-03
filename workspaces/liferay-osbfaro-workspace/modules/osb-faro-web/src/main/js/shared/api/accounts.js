@@ -77,6 +77,14 @@ export function fetchMetrics({channelId, groupId}) {
 	});
 }
 
+export function fetchOverviewMetrics({channelId, groupId}) {
+	return sendRequest({
+		data: {channelId},
+		method: 'GET',
+		path: `contacts/${groupId}/account/overview`,
+	});
+}
+
 export function search({
 	channelId = '',
 	delta = DEFAULT_DELTA,
