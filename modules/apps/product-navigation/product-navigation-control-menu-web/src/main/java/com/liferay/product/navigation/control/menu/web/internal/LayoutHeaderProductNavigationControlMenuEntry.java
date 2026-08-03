@@ -338,7 +338,10 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 
 		String mode = ParamUtil.getString(httpServletRequest, "p_l_mode");
 
-		if (Objects.equals(mode, Constants.EDIT) || !layout.isDraftLayout()) {
+		if (Objects.equals(mode, Constants.EDIT) ||
+			Objects.equals(mode, Constants.HISTORY) ||
+			!layout.isDraftLayout()) {
+
 			return false;
 		}
 
