@@ -75,7 +75,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
-import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
@@ -93,7 +92,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
-import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.TextFormatter;
@@ -195,32 +193,7 @@ public class ObjectDefinitionResourceTest
 	@Override
 	@Test
 	public void testGetObjectDefinitionsPage() throws Exception {
-		ObjectDefinitionResource.Builder builder =
-			ReflectionTestUtil.getFieldValue(
-				objectDefinitionResource, "_builder");
-
-		ReflectionTestUtil.setFieldValue(
-			this, "objectDefinitionResource",
-			ProxyUtil.newProxyInstance(
-				ObjectDefinitionResourceTest.class.getClassLoader(),
-				new Class<?>[] {ObjectDefinitionResource.class},
-				(proxy, method, args) -> {
-					if (Objects.equals(
-							method.getName(), "getObjectDefinitionsPage")) {
-
-						args[3] = Pagination.of(1, 20);
-					}
-
-					return method.invoke(builder.build(), args);
-				}));
-
-		try {
-			super.testGetObjectDefinitionsPage();
-		}
-		finally {
-			ReflectionTestUtil.setFieldValue(
-				this, "objectDefinitionResource", builder.build());
-		}
+		super.testGetObjectDefinitionsPage();
 
 		ObjectDefinition modifiableSystemObjectDefinition1 =
 			_addObjectDefinition(_randomModifiableSystemObjectDefinition());
