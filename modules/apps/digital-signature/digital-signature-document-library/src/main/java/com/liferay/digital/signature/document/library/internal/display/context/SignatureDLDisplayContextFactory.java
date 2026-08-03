@@ -10,12 +10,15 @@ import com.liferay.digital.signature.url.SignDSURLProvider;
 import com.liferay.document.library.display.context.DLDisplayContextFactory;
 import com.liferay.document.library.display.context.DLEditFileEntryDisplayContext;
 import com.liferay.document.library.display.context.DLViewFileVersionDisplayContext;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.FileVersion;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -90,7 +93,7 @@ public class SignatureDLDisplayContextFactory
 		if (providerRequestIds == null) {
 			providerRequestIds = _dsRequestManager.getProviderRequestIds(
 				themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-				Arrays.asList("delivered", "sent"));
+				Arrays.asList("sent"));
 
 			httpServletRequest.setAttribute(
 				_PROVIDER_REQUEST_IDS, providerRequestIds);
@@ -103,27 +106,29 @@ public class SignatureDLDisplayContextFactory
 
 			String providerRequestId = providerRequestIds.get(fileEntryId);
 
-			// The Sign action is offered only while the current user has a
-			// pending request. View Signature Status is offered whenever the
-			// file has any signature request, including completed ones.
+			Map<Long, String> requestStatusesByFileEntryId =
+				_dsRequestManager.getRequestStatusesByFileEntryId(
+					themeDisplay.getCompanyId(),
+					Collections.singletonList(fileEntryId));
 
-			if (Validator.isNull(providerRequestId)) {
-				Map<Long, String> requestStatusesByFileEntryId =
-					_dsRequestManager.getRequestStatusesByFileEntryId(
-						themeDisplay.getCompanyId(),
-						Collections.singletonList(fileEntryId));
+			String requestStatus = requestStatusesByFileEntryId.get(
+				fileEntryId);
 
-				if (Validator.isNull(
-						requestStatusesByFileEntryId.get(fileEntryId))) {
+			if (Validator.isNull(providerRequestId) &&
+				Validator.isNull(requestStatus)) {
 
-					return parentDLViewFileVersionDisplayContext;
-				}
+				return parentDLViewFileVersionDisplayContext;
 			}
+
+			boolean hasUpdatePermission =
+				_dlFileEntryModelResourcePermission.contains(
+					themeDisplay.getPermissionChecker(), fileEntryId,
+					ActionKeys.UPDATE);
 
 			return new SignatureDLViewFileVersionDisplayContext(
 				parentDLViewFileVersionDisplayContext, httpServletRequest,
-				httpServletResponse, fileVersion, providerRequestId,
-				_signDSURLProvider);
+				httpServletResponse, fileVersion, hasUpdatePermission,
+				providerRequestId, requestStatus, _signDSURLProvider);
 		}
 		catch (PortalException portalException) {
 			throw new SystemException(
@@ -136,6 +141,12 @@ public class SignatureDLDisplayContextFactory
 	private static final String _PROVIDER_REQUEST_IDS =
 		SignatureDLDisplayContextFactory.class.getName() +
 			"#PROVIDER_REQUEST_IDS";
+
+	@Reference(
+		target = "(model.class.name=com.liferay.document.library.kernel.model.DLFileEntry)"
+	)
+	private ModelResourcePermission<DLFileEntry>
+		_dlFileEntryModelResourcePermission;
 
 	@Reference
 	private DSRequestManager _dsRequestManager;

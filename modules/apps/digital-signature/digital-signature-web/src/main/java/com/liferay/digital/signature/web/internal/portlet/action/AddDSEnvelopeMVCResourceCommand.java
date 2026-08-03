@@ -77,6 +77,7 @@ public class AddDSEnvelopeMVCResourceCommand extends BaseMVCResourceCommand {
 
 			if (Validator.isNotNull(requestStatus) &&
 				!Objects.equals(requestStatus, "declined") &&
+				!Objects.equals(requestStatus, "expired") &&
 				!Objects.equals(requestStatus, "voided")) {
 
 				throw new PortalException(

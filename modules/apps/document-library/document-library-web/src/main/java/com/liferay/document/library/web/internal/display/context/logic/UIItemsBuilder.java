@@ -733,6 +733,7 @@ public class UIItemsBuilder {
 				_themeDisplay.getCompanyId(), _themeDisplay.getSiteGroupId());
 
 		if (!digitalSignatureConfiguration.enabled() ||
+			!digitalSignatureConfiguration.enableEmbeddedView() ||
 			!ArrayUtil.contains(
 				DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS,
 				_fileEntry.getExtension())) {
@@ -758,6 +759,7 @@ public class UIItemsBuilder {
 
 		if (Validator.isNotNull(requestStatus) &&
 			!Objects.equals(requestStatus, "declined") &&
+			!Objects.equals(requestStatus, "expired") &&
 			!Objects.equals(requestStatus, "voided")) {
 
 			return false;

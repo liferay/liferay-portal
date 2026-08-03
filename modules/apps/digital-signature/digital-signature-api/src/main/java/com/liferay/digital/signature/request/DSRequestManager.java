@@ -39,9 +39,15 @@ public interface DSRequestManager {
 	public Set<Long> getSignatureRequiredFileEntryIds(
 		long companyId, long userId, Collection<Long> fileEntryIds);
 
+	public void resendDSRequestNotifications(
+		long companyId, long groupId, String providerRequestId);
+
 	public int sendSignatureReminders(long companyId);
 
 	public void updateDSRequest(
 		long companyId, long groupId, String providerRequestId);
+
+	public void voidDSRequest(
+		long companyId, long groupId, String providerRequestId, String reason);
 
 }

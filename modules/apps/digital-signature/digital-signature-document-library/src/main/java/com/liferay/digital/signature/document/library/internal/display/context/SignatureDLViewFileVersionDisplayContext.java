@@ -29,7 +29,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -42,7 +44,8 @@ public class SignatureDLViewFileVersionDisplayContext
 		DLViewFileVersionDisplayContext parentDLDisplayContext,
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse, FileVersion fileVersion,
-		String providerRequestId, SignDSURLProvider signDSURLProvider) {
+		boolean hasUpdatePermission, String providerRequestId,
+		String requestStatus, SignDSURLProvider signDSURLProvider) {
 
 		super(
 			UUID.fromString("9b5f3f1a-2d4c-4b7e-9c8a-1e2f3a4b5c6d"),
@@ -51,7 +54,9 @@ public class SignatureDLViewFileVersionDisplayContext
 
 		_httpServletRequest = httpServletRequest;
 		_fileVersion = fileVersion;
+		_hasUpdatePermission = hasUpdatePermission;
 		_providerRequestId = providerRequestId;
+		_requestStatus = requestStatus;
 		_signDSURLProvider = signDSURLProvider;
 
 		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
@@ -66,35 +71,31 @@ public class SignatureDLViewFileVersionDisplayContext
 			dropdownItems = new ArrayList<>();
 		}
 
+		List<DropdownItem> signatureDropdownItems = new ArrayList<>();
+
 		if (Validator.isNotNull(_providerRequestId)) {
-			DropdownItem dropdownItem = DropdownItemBuilder.setHref(
-				() -> {
-					String portletNamespace = PortalUtil.getPortletNamespace(
-						DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
-
-					return HttpComponentsUtil.addParameter(
-						_signDSURLProvider.getURL(
-							_themeDisplay.getCompanyId(), _providerRequestId),
-						portletNamespace + "backURL",
-						_themeDisplay.getURLCurrent());
-				}
-			).setIcon(
-				"pencil"
-			).setKey(
-				"sign"
-			).setLabel(
-				LanguageUtil.get(_httpServletRequest, "sign")
-			).build();
-
-			dropdownItems.add(dropdownItem);
+			signatureDropdownItems.add(_getSignDropdownItem());
 		}
 
-		dropdownItems.add(_getViewSignatureStatusDropdownItem());
+		if (_hasUpdatePermission) {
+			signatureDropdownItems.add(_getViewSignatureStatusDropdownItem());
+
+			if (Objects.equals(_requestStatus, "sent")) {
+				signatureDropdownItems.add(_getResendDropdownItem());
+				signatureDropdownItems.add(_getVoidDropdownItem());
+			}
+		}
+
+		signatureDropdownItems.sort(
+			Comparator.comparing(
+				dropdownItem -> (String)dropdownItem.get("label")));
+
+		dropdownItems.addAll(signatureDropdownItems);
 
 		return dropdownItems;
 	}
 
-	private DropdownItem _getViewSignatureStatusDropdownItem() {
+	private ResourceURL _createResourceURL(String resourceID) {
 		PortletResponse portletResponse =
 			(PortletResponse)_httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_RESPONSE);
@@ -106,14 +107,57 @@ public class SignatureDLViewFileVersionDisplayContext
 
 		resourceURL.setParameter(
 			"fileEntryId", String.valueOf(_fileVersion.getFileEntryId()));
-		resourceURL.setResourceID("/document_library/get_signature_details");
+		resourceURL.setResourceID(resourceID);
 
+		return resourceURL;
+	}
+
+	private DropdownItem _getResendDropdownItem() {
+		return DropdownItemBuilder.putData(
+			"action", "resendDSRequest"
+		).putData(
+			"resendDSRequestURL",
+			_createResourceURL(
+				"/document_library/resend_ds_request"
+			).toString()
+		).setIcon(
+			"envelope-closed"
+		).setLabel(
+			LanguageUtil.get(_httpServletRequest, "resend")
+		).build();
+	}
+
+	private DropdownItem _getSignDropdownItem() {
+		return DropdownItemBuilder.setHref(
+			() -> {
+				String portletNamespace = PortalUtil.getPortletNamespace(
+					DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
+
+				return HttpComponentsUtil.addParameter(
+					_signDSURLProvider.getURL(
+						_themeDisplay.getCompanyId(), _providerRequestId),
+					portletNamespace + "backURL",
+					_themeDisplay.getURLCurrent());
+			}
+		).setIcon(
+			"pencil"
+		).setKey(
+			"sign"
+		).setLabel(
+			LanguageUtil.get(_httpServletRequest, "sign")
+		).build();
+	}
+
+	private DropdownItem _getViewSignatureStatusDropdownItem() {
 		return DropdownItemBuilder.putData(
 			"action", "viewSignatureStatus"
 		).putData(
 			"fileEntryTitle", _fileVersion.getFileName()
 		).putData(
-			"signatureDetailsURL", resourceURL.toString()
+			"signatureDetailsURL",
+			_createResourceURL(
+				"/document_library/get_signature_details"
+			).toString()
 		).setIcon(
 			"list-ul"
 		).setLabel(
@@ -121,9 +165,28 @@ public class SignatureDLViewFileVersionDisplayContext
 		).build();
 	}
 
+	private DropdownItem _getVoidDropdownItem() {
+		return DropdownItemBuilder.putData(
+			"action", "voidDSRequest"
+		).putData(
+			"fileEntryTitle", _fileVersion.getFileName()
+		).putData(
+			"voidDSRequestURL",
+			_createResourceURL(
+				"/document_library/void_ds_request"
+			).toString()
+		).setIcon(
+			"times-circle"
+		).setLabel(
+			LanguageUtil.get(_httpServletRequest, "void")
+		).build();
+	}
+
 	private final FileVersion _fileVersion;
+	private final boolean _hasUpdatePermission;
 	private final HttpServletRequest _httpServletRequest;
 	private final String _providerRequestId;
+	private final String _requestStatus;
 	private final SignDSURLProvider _signDSURLProvider;
 	private final ThemeDisplay _themeDisplay;
 

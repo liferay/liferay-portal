@@ -8,7 +8,7 @@ import {
 	openModal,
 	openSelectionModal,
 } from 'frontend-js-components-web';
-import {addParams, navigate} from 'frontend-js-web';
+import {addParams, fetch, navigate} from 'frontend-js-web';
 import React from 'react';
 
 import SignatureDetailsModal from './SignatureDetailsModal';
@@ -148,6 +148,17 @@ const ACTIONS = {
 		});
 	},
 
+	resendDSRequest({resendDSRequestURL}) {
+		fetch(resendDSRequestURL, {method: 'POST'}).then(() => {
+			Liferay.Util.openToast({
+				message: Liferay.Language.get(
+					'the-signature-request-was-resent'
+				),
+				type: 'success',
+			});
+		});
+	},
+
 	subscribeFileEntry({subscribeFileEntryURL}) {
 		location.href = subscribeFileEntryURL;
 	},
@@ -166,6 +177,21 @@ const ACTIONS = {
 			),
 		});
 	},
+
+	voidDSRequest({voidDSRequestURL}) {
+		openConfirmModal({
+			message: Liferay.Language.get(
+				'are-you-sure-you-want-to-void-this-signature-request'
+			),
+			onConfirm: (isConfirmed) => {
+				if (isConfirmed) {
+					fetch(voidDSRequestURL, {method: 'POST'}).then(() =>
+						navigate(window.location.href)
+					);
+				}
+			},
+		});
+	},
 };
 
 export default function propsTransformer({items, portletNamespace, ...props}) {
@@ -180,7 +206,7 @@ export default function propsTransformer({items, portletNamespace, ...props}) {
 							onClick(event) {
 								const action = child.data?.action;
 
-								if (action) {
+								if (action && ACTIONS[action]) {
 									event.preventDefault();
 
 									ACTIONS[action](
@@ -196,7 +222,7 @@ export default function propsTransformer({items, portletNamespace, ...props}) {
 						onClick(event) {
 							const action = item.data?.action;
 
-							if (action) {
+							if (action && ACTIONS[action]) {
 								event.preventDefault();
 
 								ACTIONS[action](item.data, portletNamespace);
