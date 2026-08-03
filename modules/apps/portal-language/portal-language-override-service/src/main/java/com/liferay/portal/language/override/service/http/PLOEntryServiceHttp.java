@@ -43,49 +43,6 @@ public class PLOEntryServiceHttp {
 
 	public static com.liferay.portal.language.override.model.PLOEntry
 			addOrUpdatePLOEntry(
-				HttpPrincipal httpPrincipal, String key, String languageId,
-				String value)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		try {
-			MethodKey methodKey = new MethodKey(
-				PLOEntryServiceUtil.class, "addOrUpdatePLOEntry",
-				_addOrUpdatePLOEntryParameterTypes0);
-
-			MethodHandler methodHandler = new MethodHandler(
-				methodKey, key, languageId, value);
-
-			Object returnObj = null;
-
-			try {
-				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
-			}
-			catch (Exception exception) {
-				if (exception instanceof
-						com.liferay.portal.kernel.exception.PortalException) {
-
-					throw (com.liferay.portal.kernel.exception.PortalException)
-						exception;
-				}
-
-				throw new com.liferay.portal.kernel.exception.SystemException(
-					exception);
-			}
-
-			return (com.liferay.portal.language.override.model.PLOEntry)
-				returnObj;
-		}
-		catch (com.liferay.portal.kernel.exception.SystemException
-					systemException) {
-
-			_log.error(systemException, systemException);
-
-			throw systemException;
-		}
-	}
-
-	public static com.liferay.portal.language.override.model.PLOEntry
-			addOrUpdatePLOEntry(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				String key, String languageId, String value)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -93,7 +50,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "addOrUpdatePLOEntry",
-				_addOrUpdatePLOEntryParameterTypes1);
+				_addOrUpdatePLOEntryParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, key, languageId, value);
@@ -133,7 +90,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "deletePLOEntries",
-				_deletePLOEntriesParameterTypes2);
+				_deletePLOEntriesParameterTypes1);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey, key);
 
@@ -169,7 +126,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "deletePLOEntry",
-				_deletePLOEntryParameterTypes3);
+				_deletePLOEntryParameterTypes2);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, key, languageId);
@@ -212,7 +169,7 @@ public class PLOEntryServiceHttp {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class,
 				"deletePLOEntryByExternalReferenceCode",
-				_deletePLOEntryByExternalReferenceCodeParameterTypes4);
+				_deletePLOEntryByExternalReferenceCodeParameterTypes3);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode);
@@ -254,7 +211,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "getPLOEntries",
-				_getPLOEntriesParameterTypes5);
+				_getPLOEntriesParameterTypes4);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey);
 
@@ -298,7 +255,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "getPLOEntries",
-				_getPLOEntriesParameterTypes6);
+				_getPLOEntriesParameterTypes5);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, start, end, orderByComparator);
@@ -344,7 +301,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "getPLOEntries",
-				_getPLOEntriesParameterTypes7);
+				_getPLOEntriesParameterTypes6);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, keywords, start, end, orderByComparator);
@@ -384,7 +341,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "getPLOEntriesCount",
-				_getPLOEntriesCountParameterTypes8);
+				_getPLOEntriesCountParameterTypes7);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey);
 
@@ -423,7 +380,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "getPLOEntriesCount",
-				_getPLOEntriesCountParameterTypes9);
+				_getPLOEntriesCountParameterTypes8);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, keywords);
@@ -464,7 +421,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "getPLOEntryByExternalReferenceCode",
-				_getPLOEntryByExternalReferenceCodeParameterTypes10);
+				_getPLOEntryByExternalReferenceCodeParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode);
@@ -507,7 +464,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "importPLOEntries",
-				_importPLOEntriesParameterTypes11);
+				_importPLOEntriesParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, languageId, properties);
@@ -548,7 +505,7 @@ public class PLOEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				PLOEntryServiceUtil.class, "setPLOEntries",
-				_setPLOEntriesParameterTypes12);
+				_setPLOEntriesParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, key, localizationMap);
@@ -580,41 +537,39 @@ public class PLOEntryServiceHttp {
 	private static Log _log = LogFactoryUtil.getLog(PLOEntryServiceHttp.class);
 
 	private static final Class<?>[] _addOrUpdatePLOEntryParameterTypes0 =
-		new Class[] {String.class, String.class, String.class};
-	private static final Class<?>[] _addOrUpdatePLOEntryParameterTypes1 =
 		new Class[] {String.class, String.class, String.class, String.class};
-	private static final Class<?>[] _deletePLOEntriesParameterTypes2 =
+	private static final Class<?>[] _deletePLOEntriesParameterTypes1 =
 		new Class[] {String.class};
-	private static final Class<?>[] _deletePLOEntryParameterTypes3 =
+	private static final Class<?>[] _deletePLOEntryParameterTypes2 =
 		new Class[] {String.class, String.class};
 	private static final Class<?>[]
-		_deletePLOEntryByExternalReferenceCodeParameterTypes4 = new Class[] {
+		_deletePLOEntryByExternalReferenceCodeParameterTypes3 = new Class[] {
 			String.class
 		};
-	private static final Class<?>[] _getPLOEntriesParameterTypes5 =
+	private static final Class<?>[] _getPLOEntriesParameterTypes4 =
 		new Class[] {};
-	private static final Class<?>[] _getPLOEntriesParameterTypes6 =
+	private static final Class<?>[] _getPLOEntriesParameterTypes5 =
 		new Class[] {
 			int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getPLOEntriesParameterTypes7 =
+	private static final Class<?>[] _getPLOEntriesParameterTypes6 =
 		new Class[] {
 			String.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
-	private static final Class<?>[] _getPLOEntriesCountParameterTypes8 =
+	private static final Class<?>[] _getPLOEntriesCountParameterTypes7 =
 		new Class[] {};
-	private static final Class<?>[] _getPLOEntriesCountParameterTypes9 =
+	private static final Class<?>[] _getPLOEntriesCountParameterTypes8 =
 		new Class[] {String.class};
 	private static final Class<?>[]
-		_getPLOEntryByExternalReferenceCodeParameterTypes10 = new Class[] {
+		_getPLOEntryByExternalReferenceCodeParameterTypes9 = new Class[] {
 			String.class
 		};
-	private static final Class<?>[] _importPLOEntriesParameterTypes11 =
+	private static final Class<?>[] _importPLOEntriesParameterTypes10 =
 		new Class[] {String.class, java.util.Properties.class};
-	private static final Class<?>[] _setPLOEntriesParameterTypes12 =
+	private static final Class<?>[] _setPLOEntriesParameterTypes11 =
 		new Class[] {String.class, java.util.Map.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-244892901
+// LIFERAY-SERVICE-BUILDER-HASH:-136216899

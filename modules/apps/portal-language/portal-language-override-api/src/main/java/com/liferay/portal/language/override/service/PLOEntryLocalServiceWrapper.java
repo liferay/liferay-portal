@@ -31,17 +31,6 @@ public class PLOEntryLocalServiceWrapper
 	@Override
 	public com.liferay.portal.language.override.model.PLOEntry
 			addOrUpdatePLOEntry(
-				long companyId, long userId, String key, String languageId,
-				String value)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ploEntryLocalService.addOrUpdatePLOEntry(
-			companyId, userId, key, languageId, value);
-	}
-
-	@Override
-	public com.liferay.portal.language.override.model.PLOEntry
-			addOrUpdatePLOEntry(
 				String externalReferenceCode, long companyId, long userId,
 				String key, String languageId, String value)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -476,4 +465,4 @@ public class PLOEntryLocalServiceWrapper
 	private PLOEntryLocalService _ploEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1023442313
+// LIFERAY-SERVICE-BUILDER-HASH:-382069104

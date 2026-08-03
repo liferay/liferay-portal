@@ -38,15 +38,6 @@ public class PLOEntryLocalServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.portal.language.override.service.impl.PLOEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static PLOEntry addOrUpdatePLOEntry(
-			long companyId, long userId, String key, String languageId,
-			String value)
-		throws PortalException {
-
-		return getService().addOrUpdatePLOEntry(
-			companyId, userId, key, languageId, value);
-	}
-
-	public static PLOEntry addOrUpdatePLOEntry(
 			String externalReferenceCode, long companyId, long userId,
 			String key, String languageId, String value)
 		throws PortalException {
@@ -398,4 +389,4 @@ public class PLOEntryLocalServiceUtil {
 			PLOEntryLocalServiceUtil.class, PLOEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1079879422
+// LIFERAY-SERVICE-BUILDER-HASH:-2017307110
