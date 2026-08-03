@@ -76,12 +76,8 @@ const MarketoCampaignEntities: React.FC<IMarketoCampaignEntitiesProps> = ({
 							displayType={configured ? 'success' : 'secondary'}
 						>
 							{configured
-								? Liferay.Language.get(
-										'configured'
-									).toUpperCase()
-								: Liferay.Language.get(
-										'unconfigured'
-									).toUpperCase()}
+								? Liferay.Language.get('configured')
+								: Liferay.Language.get('unconfigured')}
 						</Label>
 					</ClayList.ItemField>
 				</ClayList.Item>
