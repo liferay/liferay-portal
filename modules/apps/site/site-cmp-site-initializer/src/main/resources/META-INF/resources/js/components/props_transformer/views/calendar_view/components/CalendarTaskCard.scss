@@ -33,6 +33,15 @@
 
 	&-clickable {
 		cursor: pointer;
+
+		&:hover {
+			border-color: $secondary-l0;
+			box-shadow: $card-hover-box-shadow;
+		}
+	}
+
+	.fc-event-dragging & {
+		border-color: $primary-l1;
 	}
 
 	&-expanded {
