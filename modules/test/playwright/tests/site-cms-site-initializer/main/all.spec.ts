@@ -15,6 +15,7 @@ import {
 	formatDateTimeForUI,
 } from '../../../utils/applyFDSDateTimeRangeFilter';
 import {applyFDSSelectionFilter} from '../../../utils/applyFDSSelectionFilter';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -1646,6 +1647,103 @@ test(
 					String(objectEntry.id)
 				);
 			}
+		}
+	}
+);
+
+test(
+	'The View modal navigates between files and contents in the All section',
+	{tag: ['@LPD-85555', '@LPD-90032']},
+	async ({apiHelpers, assetsPage, page}) => {
+		const sharedToken = String(getRandomInt());
+
+		const contentTitle = `Content ${sharedToken}`;
+		const documentTitle = `Document ${sharedToken}`;
+
+		const contentObjectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: contentTitle,
+			},
+			'cms/basic-web-contents',
+			'Default'
+		);
+
+		const documentObjectEntry =
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {
+						fileBase64: _PNG_BASE64,
+						name: `${documentTitle}.png`,
+					},
+					objectEntryFolderExternalReferenceCode: 'L_FILES',
+					title: documentTitle,
+				},
+				'cms/basic-documents',
+				'Default'
+			);
+
+		try {
+			apiHelpers.data.push({
+				id: documentObjectEntry.file.id,
+				type: 'document',
+			});
+
+			await assetsPage.gotoAll();
+
+			// Other tests share the Default space, so narrow the section down
+			// to the two entries this test created before navigating between
+			// them.
+
+			await assetsPage.search(sharedToken);
+
+			await assetsPage.execItemAction({
+				action: 'View',
+				filter: documentTitle,
+			});
+
+			const contentPreview = assetsPage.modal.body.locator(
+				'iframe[title="Preview"]'
+			);
+
+			const downloadLink = page.getByRole('link', {name: 'Download'});
+
+			const itemCounter =
+				assetsPage.modal.container.getByText(/^\d+ of \d+$/);
+
+			await test.step('The file opens in a preview listing both entries', async () => {
+				await expect(page.getByTestId('modal-header-name')).toHaveText(
+					documentTitle
+				);
+
+				await expect(downloadLink).toBeVisible();
+
+				await expect(itemCounter).toHaveText('1 of 2');
+			});
+
+			await test.step('The modal navigates from the file to the content', async () => {
+				await assetsPage.modal.body.getByLabel('Next').click();
+
+				await expect(page.getByTestId('modal-header-name')).toHaveText(
+					contentTitle
+				);
+
+				await expect(itemCounter).toHaveText('2 of 2');
+
+				await expect(contentPreview).toBeVisible();
+
+				await expect(downloadLink).toBeHidden();
+			});
+		}
+		finally {
+			await apiHelpers.objectEntry.deleteObjectEntry(
+				'cms/basic-documents',
+				String(documentObjectEntry.id)
+			);
+			await apiHelpers.objectEntry.deleteObjectEntry(
+				'cms/basic-web-contents',
+				String(contentObjectEntry.id)
+			);
 		}
 	}
 );

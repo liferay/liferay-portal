@@ -941,3 +941,42 @@ test(
 		}
 	}
 );
+
+test(
+	'There is a View action for contents in the Contents section',
+	{tag: ['@LPD-85555', '@LPD-90032']},
+	async ({apiHelpers, assetsPage, page}) => {
+		const applicationName = 'cms/basic-web-contents';
+		const contentTitle = `Content ${getRandomString()}`;
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				title: contentTitle,
+			},
+			applicationName,
+			'Default'
+		);
+
+		try {
+			await assetsPage.gotoContents();
+
+			await assetsPage.execItemAction({
+				action: 'View',
+				filter: contentTitle,
+			});
+
+			await expect(page.getByRole('dialog')).toBeVisible();
+
+			await expect(page.getByTestId('modal-header-name')).toHaveText(
+				contentTitle
+			);
+		}
+		finally {
+			await apiHelpers.objectEntry.deleteObjectEntry(
+				applicationName,
+				String(objectEntry.id)
+			);
+		}
+	}
+);

@@ -11,6 +11,9 @@ import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch, userData} from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
+const _PNG_BASE64 =
+	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAEABToPCwAAAABJRU5ErkJggg==';
+
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 async function expectViewModalToBeReadOnly(
@@ -303,6 +306,102 @@ test(
 			await sharedWithMePage.expectAssetEntryNotToBeVisible(
 				objectEntryFolderTitle
 			);
+		});
+	}
+);
+
+test(
+	'Shared files open in a preview instead of a read-only form in the View modal',
+	{tag: ['@LPD-85555', '@LPD-90032']},
+	async ({apiHelpers, page, sharedWithMePage}) => {
+		const spaceName = `Space ${getRandomString()}`;
+		let space = null;
+
+		await test.step('Create a space', async () => {
+			space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: spaceName,
+				type: 'Space',
+			});
+		});
+
+		const objectEntryTitle = `Document ${getRandomString()}`;
+		let objectEntry = null;
+
+		await test.step('Create a file', async () => {
+			objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{
+					file: {
+						fileBase64: _PNG_BASE64,
+						name: `${objectEntryTitle}.png`,
+					},
+					objectEntryFolderExternalReferenceCode: 'L_FILES',
+					title: objectEntryTitle,
+				},
+				'cms/basic-documents',
+				spaceName
+			);
+		});
+
+		let user = null;
+
+		await test.step('Create a user and add as member of the space', async () => {
+			user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			userData[user.alternateName] = {
+				name: user.givenName,
+				password: 'test',
+				surname: user.familyName,
+			};
+
+			await apiHelpers.jsonWebServicesUser.agreeToTermsOfUse(user.id);
+			await apiHelpers.jsonWebServicesUser.answerReminderQuery(user.id);
+
+			await apiHelpers.jsonWebServicesUser.addGroupUsers(space.siteId, [
+				user.id,
+			]);
+		});
+
+		await test.step('Share the file with the user', async () => {
+			await apiHelpers.objectEntry.postObjectEntryCollaborators(
+				[
+					{
+						actionIds: ['DOWNLOAD', 'VIEW'],
+						id: user.id,
+						share: false,
+						type: 'User',
+					},
+				],
+				'cms/basic-documents',
+				objectEntry.id
+			);
+		});
+
+		await test.step('Switch to the user', async () => {
+			await performUserSwitch(page, user.alternateName);
+
+			await sharedWithMePage.goto();
+		});
+
+		await test.step('The file opens in a preview modal', async () => {
+			const assetRow = page.getByRole('row', {name: objectEntryTitle});
+
+			await expect(assetRow).toBeVisible();
+
+			await assetRow.getByRole('button', {name: 'Actions'}).click();
+
+			await page
+				.getByRole('menuitem', {exact: true, name: 'View'})
+				.click();
+
+			await expect(page.getByTestId('modal-header-name')).toHaveText(
+				objectEntryTitle
+			);
+
+			await expect(
+				page.getByRole('link', {name: 'Download'})
+			).toBeVisible();
+
+			await expect(page.locator('iframe[title="Preview"]')).toBeHidden();
 		});
 	}
 );
