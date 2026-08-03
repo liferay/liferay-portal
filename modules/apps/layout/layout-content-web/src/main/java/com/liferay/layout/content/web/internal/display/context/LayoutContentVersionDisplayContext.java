@@ -63,7 +63,7 @@ public class LayoutContentVersionDisplayContext {
 				() -> {
 					Layout layout = _themeDisplay.getLayout();
 
-					return layout.getName(_themeDisplay.getSiteDefaultLocale());
+					return layout.getName(_themeDisplay.getLocale());
 				}
 			).put(
 				"hasDraft",
