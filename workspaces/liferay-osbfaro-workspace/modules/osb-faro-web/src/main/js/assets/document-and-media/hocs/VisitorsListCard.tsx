@@ -22,7 +22,6 @@ import {
 	createOrderIOMap,
 	DOWNLOADS_METRIC,
 	NAME,
-	VIEWS_METRIC,
 } from 'shared/util/pagination';
 import {graphql} from '@apollo/client/react/hoc';
 import {RangeSelectors} from 'shared/types';
@@ -31,10 +30,10 @@ import {Sizes} from 'shared/util/constants';
 
 const withAccountsData = () =>
 	graphql(
-		knownAccountsListAssetQuery('document', VIEWS_METRIC),
+		knownAccountsListAssetQuery('document', DOWNLOADS_METRIC),
 		getMetricsMapper((result) => ({
-			items: result.document.viewsMetric.accounts.accountNames,
-			total: result.document.viewsMetric.accounts.total,
+			items: result.document.downloadsMetric.accounts.accountNames,
+			total: result.document.downloadsMetric.accounts.total,
 		}))
 	);
 
