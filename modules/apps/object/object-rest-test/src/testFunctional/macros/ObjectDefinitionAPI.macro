@@ -597,7 +597,7 @@ definition {
 
 	@summary = "Default summary"
 	macro assertObjectDefinitionInResponse(expectedValue = null) {
-		var response = ObjectDefinitionAPI.getObjectDefinitions();
+		var response = ObjectDefinitionAPI.getObjectDefinitions(name = ${expectedValue});
 
 		var actual = JSONUtil.getWithJSONPath(${response}, "$..name");
 
@@ -1104,15 +1104,24 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro getObjectDefinitions() {
+	macro getObjectDefinitions(name = null) {
 		var portalURL = JSONCompany.getPortalURL();
 		var userPassword = PropsUtil.get("default.admin.password");
 
-		var curl = '''
-			${portalURL}/o/object-admin/v1.0/object-definitions \
-				-H Content-Type: application/json \
-				-u test@liferay.com:${userPassword}
-		''';
+		if (isSet(name)) {
+			var curl = '''
+				${portalURL}/o/object-admin/v1.0/object-definitions?filter=name%20eq%20%27${name}%27 \
+					-H Content-Type: application/json \
+					-u test@liferay.com:${userPassword}
+			''';
+		}
+		else {
+			var curl = '''
+				${portalURL}/o/object-admin/v1.0/object-definitions \
+					-H Content-Type: application/json \
+					-u test@liferay.com:${userPassword}
+			''';
+		}
 
 		var response = JSONCurlUtil.get(${curl});
 
