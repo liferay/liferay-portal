@@ -1424,7 +1424,7 @@ definition {
 		}
 
 		var curl = '''
-			${portalURL}/o/object-admin/v1.0/object-definitions \
+			${portalURL}/o/object-admin/v1.0/object-definitions?filter=name%20eq%20%27${objectName}%27 \
 				-u ${userEmailAddress}:${userPassword}
 		''';
 
