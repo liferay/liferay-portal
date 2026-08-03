@@ -101,11 +101,7 @@ func (httpClient *HTTPClient) Manifest(
 		)
 	}
 
-	var entitlementsResponse struct {
-		AddOns          []AddOn `json:"add-ons"`
-		LicenseXML      string  `json:"licenseXML"`
-		MaxClusterNodes int32   `json:"maxClusterNodes"`
-	}
+	var entitlementsResponse EntitlementsResponse
 
 	if error := json.NewDecoder(response.Body).Decode(&entitlementsResponse); error != nil {
 		return nil, fmt.Errorf("entitlements: decode response: %w", error)

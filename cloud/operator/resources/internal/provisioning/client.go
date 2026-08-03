@@ -33,6 +33,12 @@ type Entitlements struct {
 	MaxClusterNodes int32
 }
 
+type EntitlementsResponse struct {
+	AddOns          []AddOn `json:"add-ons"`
+	LicenseXML      string  `json:"licenseXML"`
+	MaxClusterNodes int32   `json:"maxClusterNodes"`
+}
+
 type ManifestRequest struct {
 	DxpVersion    string
 	EnvironmentID string
