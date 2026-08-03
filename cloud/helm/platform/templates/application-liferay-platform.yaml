@@ -4,8 +4,8 @@ metadata:
     finalizers:
         -   resources-finalizer.argocd.argoproj.io
     labels:
-        liferay.com/project: liferay-cloud-native
         app.kubernetes.io/name: liferay-platform
+        liferay.com/project: liferay-cloud-native
     name: liferay-platform
     namespace: {{ .Release.Namespace }}
 spec:
