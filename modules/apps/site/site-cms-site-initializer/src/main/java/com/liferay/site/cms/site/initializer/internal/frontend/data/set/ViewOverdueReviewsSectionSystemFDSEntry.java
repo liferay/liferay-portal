@@ -13,9 +13,6 @@ import com.liferay.site.cms.site.initializer.internal.display.context.SectionDis
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -31,12 +28,7 @@ public class ViewOverdueReviewsSectionSystemFDSEntry implements SystemFDSEntry {
 	public String getAdditionalAPIURLParameters(
 		HttpServletRequest httpServletRequest) {
 
-		String nowISO = Instant.now(
-		).truncatedTo(
-			ChronoUnit.SECONDS
-		).toString();
-
-		String filterString = "dateReview lt " + nowISO;
+		String filterString = "dateReview lt now()";
 
 		long groupId = GetterUtil.getLong(
 			httpServletRequest.getParameter("groupId"));
