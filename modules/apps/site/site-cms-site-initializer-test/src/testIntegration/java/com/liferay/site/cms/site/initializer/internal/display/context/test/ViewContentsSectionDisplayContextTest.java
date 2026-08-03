@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -236,6 +237,24 @@ public class ViewContentsSectionDisplayContextTest
 
 		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
 			"trash", "delete", "Delete", null, fdsActionDropdownItems.get(15));
+	}
+
+	@FeatureFlag("LPD-72278")
+	@Test
+	@TestInfo("LPD-100130")
+	public void testGetFDSActionDropdownItemsWithAddToLaunchEnabled()
+		throws Exception {
+
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			getFDSActionDropdownItems();
+
+		Assert.assertEquals(
+			fdsActionDropdownItems.toString(), 17,
+			fdsActionDropdownItems.size());
+
+		FrontendDataSetTestUtil.assertFDSActionDropdownItem(
+			"rocket", "addToLaunch", "Add to Launch", "get",
+			fdsActionDropdownItems.get(16));
 	}
 
 	@Override
