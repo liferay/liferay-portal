@@ -46,10 +46,6 @@ public class UpdateReviewDateObjectBulkSelectionAction
 			objectEntry.getObjectEntryId(),
 			objectEntry.getObjectEntryFolderId(),
 			HashMapBuilder.<String, Serializable>put(
-				"displayDate", objectEntry.getDisplayDate()
-			).put(
-				"expirationDate", objectEntry.getExpirationDate()
-			).put(
 				"reviewDate", (Date)inputMap.get("reviewDate")
 			).build(),
 			new ServiceContext());
