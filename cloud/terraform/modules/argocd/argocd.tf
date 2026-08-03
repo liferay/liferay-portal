@@ -25,7 +25,7 @@ resource "helm_release" "argocd" {
 					}
 					configs={
 						cm={
-							"admin.enabled"=var.argocd_sso_config.enable_admin_login
+							"admin.enabled"=var.argocd_admin_login_enabled
 							"kustomize.buildOptions"="--enable-helm"
 							"resource.customizations.health.${var.infrastructure_api_group}_LiferayInfrastructure"=file("${path.module}/health-LiferayInfrastructure.lua")
 							"resource.customizations.health.argoproj.io_Application"=file("${path.module}/health-argoproj.io_Application.lua")
@@ -142,7 +142,17 @@ resource "helm_release" "argocd" {
 					}
 				}),
 		],
-		var.argocd_sso_config.enable_saml_sso ? [
+		local.argocd_external_url != null ? [
+			yamlencode(
+				{
+					configs={
+						cm={
+							url=local.argocd_external_url
+						}
+					}
+				}),
+		] : [],
+		local.argocd_sso_enabled ? [
 			yamlencode(
 				{
 					configs={

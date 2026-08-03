@@ -27,6 +27,10 @@ spec:
         -   {{- include "liferay-platform.chartSource" .Values.observability | nindent 12 }}
             helm:
                 parameters:
+                    {{- with include "liferay-platform.argocdExternalURL" . }}
+                    -   name: centralHub.argocdURL
+                        value: {{ . | quote }}
+                    {{- end }}
                     -   name: centralHub.gitURL
                         value: {{ .Values.gitops.repository.url | quote }}
                     -   name: grafana.namespaceOverride

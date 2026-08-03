@@ -1,0 +1,164 @@
+{{- if .Values.argocd.gateway.enabled -}}
+{{- $envoyProxy := .Values.argocd.gateway.envoyProxy }}
+{{- $hostname := required "argocd.gateway.hostname is required" .Values.argocd.gateway.hostname }}
+{{- $tlsEnabled := ne .Values.argocd.gateway.tls.externalSecretKey "" }}
+{{- if $tlsEnabled }}
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-85"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: argocd-server-tls
+    name: argocd-server-tls
+    namespace: {{ .Release.Namespace }}
+spec:
+    dataFrom:
+        -   extract:
+                decodingStrategy: Auto
+                key: {{ .Values.argocd.gateway.tls.externalSecretKey }}
+    refreshInterval: 1h0m0s
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: {{ include "liferay-platform.clusterSecretStoreName" . }}
+    target:
+        creationPolicy: Owner
+        name: argocd-server-tls
+        template:
+            metadata:
+                labels:
+                    app.kubernetes.io/name: argocd-server-tls
+            type: kubernetes.io/tls
+---
+{{- end }}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-80"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: argocd-gateway-proxy-config
+    name: argocd-gateway-proxy-config
+    namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
+spec:
+    provider:
+        kubernetes:
+            envoyDeployment:
+                {{- with $envoyProxy.podAnnotations }}
+                pod:
+                    annotations:
+                        {{- toYaml . | nindent 24 }}
+                {{- end }}
+                replicas: {{ $envoyProxy.replicas }}
+            {{- with $envoyProxy.serviceAnnotations }}
+            envoyService:
+                annotations:
+                    {{- toYaml . | nindent 20 }}
+            {{- end }}
+        type: Kubernetes
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-80"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: argocd-gateway
+    name: argocd-gateway
+    namespace: {{ .Release.Namespace }}
+spec:
+    gatewayClassName: argocd-gateway-class
+    listeners:
+    -   allowedRoutes:
+            namespaces:
+                from: Same
+        hostname: {{ $hostname }}
+        name: http
+        port: 80
+        protocol: HTTP
+    {{- if $tlsEnabled }}
+    -   allowedRoutes:
+            namespaces:
+                from: Same
+        hostname: {{ $hostname }}
+        name: https
+        port: 443
+        protocol: HTTPS
+        tls:
+            certificateRefs:
+                -   name: argocd-server-tls
+            mode: Terminate
+    {{- end }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-80"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: argocd-gateway-class
+    name: argocd-gateway-class
+spec:
+    controllerName: gateway.envoyproxy.io/gatewayclass-controller
+    parametersRef:
+        group: gateway.envoyproxy.io
+        kind: EnvoyProxy
+        name: argocd-gateway-proxy-config
+        namespace: {{ .Values.operatorApplications.envoyGateway.namespace }}
+---
+{{- if $tlsEnabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-80"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: argocd-redirect-route
+    name: argocd-redirect-route
+    namespace: {{ .Release.Namespace }}
+spec:
+    hostnames:
+        -   {{ $hostname }}
+    parentRefs:
+        -   name: argocd-gateway
+            sectionName: http
+    rules:
+        -   filters:
+                -   requestRedirect:
+                        scheme: https
+                        statusCode: 301
+                    type: RequestRedirect
+---
+{{- end }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-80"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: argocd-server-route
+    name: argocd-server-route
+    namespace: {{ .Release.Namespace }}
+spec:
+    hostnames:
+        -   {{ $hostname }}
+    parentRefs:
+        -   name: argocd-gateway
+            sectionName: {{ $tlsEnabled | ternary "https" "http" }}
+    rules:
+        -   backendRefs:
+                -   name: argocd-server
+                    port: 80
+{{- end -}}

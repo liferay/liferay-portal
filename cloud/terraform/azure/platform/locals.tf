@@ -48,19 +48,5 @@ locals {
 		name="external-secrets"
 		namespace="external-secrets-system"
 	}
-	operator_applications_helm_values={
-		externalSecrets={
-			values={
-				serviceAccount={
-					annotations={
-						"azure.workload.identity/client-id"=azurerm_user_assigned_identity.external_secrets.client_id
-					}
-				}
-			}
-		}
-		keda={
-			enabled=var.keda_enabled
-		}
-	}
 	resource_group_name=var.deployment_name
 }

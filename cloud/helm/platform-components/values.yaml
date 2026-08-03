@@ -1,3 +1,16 @@
+argocd:
+    gateway:
+        enabled: false
+        envoyProxy:
+            podAnnotations: {}
+            replicas: 2
+            serviceAnnotations: {}
+        hostname: ""
+        tls:
+            externalSecretKey: ""
+    sso:
+        credentialsSecretKey: ""
+        enabled: false
 clusterIdentity:
     deploymentName: ""
     region: ""
