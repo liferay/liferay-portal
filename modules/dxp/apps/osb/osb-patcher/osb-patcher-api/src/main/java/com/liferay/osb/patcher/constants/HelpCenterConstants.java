@@ -10,8 +10,7 @@ package com.liferay.osb.patcher.constants;
  */
 public class HelpCenterConstants {
 
-	public static final String HELP_CENTER_UPLOAD_COMMENT =
-		"The requested hotfix has been uploaded to this ticket. Please see " +
-			"the attached file.";
+	public static final String HELP_CENTER_DOWNLOAD_COMMENT =
+		"The requested hotfix is available for download: ";
 
 }

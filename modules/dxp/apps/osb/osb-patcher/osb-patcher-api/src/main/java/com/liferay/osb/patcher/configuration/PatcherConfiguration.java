@@ -67,6 +67,12 @@ public interface PatcherConfiguration {
 	public String jiraEmailAddress();
 
 	@Meta.AD(deflt = "", required = false)
+	public String jiraServiceManagementUserEmailAddress();
+
+	@Meta.AD(deflt = "", required = false, type = Meta.Type.Password)
+	public String jiraServiceManagementUserToken();
+
+	@Meta.AD(deflt = "", required = false)
 	public String jiraURL();
 
 	@Meta.AD(deflt = "", required = false)

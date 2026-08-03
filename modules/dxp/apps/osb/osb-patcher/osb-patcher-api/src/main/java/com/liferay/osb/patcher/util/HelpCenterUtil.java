@@ -5,11 +5,6 @@
 
 package com.liferay.osb.patcher.util;
 
-import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
-
 import com.liferay.osb.patcher.configuration.PatcherConfiguration;
 import com.liferay.osb.patcher.constants.HelpCenterConstants;
 import com.liferay.osb.patcher.model.PatcherBuild;
@@ -21,23 +16,17 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.io.InputStream;
-
 import java.net.HttpURLConnection;
-
-import java.nio.channels.Channels;
 
 import java.util.Map;
 
@@ -54,80 +43,38 @@ public class HelpCenterUtil {
 			ConfigurationProviderUtil.getCompanyConfiguration(
 				PatcherConfiguration.class, patcherBuild.getCompanyId());
 
-		Blob blob = _getGoogleCloudFileObject(
-			patcherConfiguration.googleCloudHotfixBucket(), fileName,
-			patcherBuild);
+		String downloadURL =
+			patcherConfiguration.patcherBuildDownloadURL() + StringPool.SLASH +
+				patcherBuild.getFileName();
 
-		String fileSize = String.valueOf(blob.getSize());
+		String credentials =
+			patcherConfiguration.jiraServiceManagementUserEmailAddress() +
+				StringPool.COLON +
+					patcherConfiguration.jiraServiceManagementUserToken();
 
-		String md5Checksum = StringPool.BLANK;
+		Http.Options options = new Http.Options();
 
-		try (InputStream fileInputStream = Channels.newInputStream(
-				blob.reader())) {
-
-			md5Checksum = getMD5Checksum(fileInputStream);
-		}
-		catch (Exception exception) {
-			throw new Exception(
-				"Unable to calculate MD5 checksum for GCS file", exception);
-		}
-
-		Http.Options options = _initOptions(
-			true,
-			HashMapBuilder.put(
-				"Content-Type", ContentTypes.APPLICATION_JSON
-			).put(
-				"Origin", patcherConfiguration.supportLiferayLFUURL()
-			).build(),
-			patcherConfiguration);
-
+		options.addHeader(HttpHeaders.ACCEPT, ContentTypes.APPLICATION_JSON);
+		options.addHeader(HttpHeaders.USER_AGENT, _PATCHER_USER_AGENT);
+		options.addHeader(
+			"Authorization", "Basic " + Base64.encode(credentials.getBytes()));
+		options.addHeader("Content-Type", ContentTypes.APPLICATION_JSON);
 		options.setBody(
-			JSONUtil.put(
-				"fileName", fileName
-			).put(
-				"fileSize", fileSize
-			).put(
-				"md5Checksum", md5Checksum
-			).put(
-				"ticketId", patcherBuild.getSupportTicket()
-			).put(
-				"type", "hotfix"
+			_buildCommentJSONObject(
+				downloadURL, fileName
 			).toString(),
 			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
 		options.setLocation(
 			StringBundler.concat(
-				patcherConfiguration.supportLiferayLFUURL(),
-				StringPool.FORWARD_SLASH,
-				patcherConfiguration.
-					supportLiferayTicketAttachmentAPIEndpoint()));
+				patcherConfiguration.jiraAPIURL(), "/issue/",
+				patcherBuild.getSupportTicket(), "/comment"));
 		options.setPost(true);
 
 		String responseString = _sendRequest(options);
 
 		if (Validator.isNull(responseString)) {
-			throw new PortalException(
-				"failed-to-connect-to-the-large-file-uploader");
+			throw new PortalException("failed-to-add-jira-comment");
 		}
-
-		JSONObject responseJSONObject = JSONFactoryUtil.createJSONObject(
-			responseString);
-
-		String gcsSessionURL = responseJSONObject.getString(
-			"gcsSessionURL", StringPool.BLANK);
-
-		try (InputStream fileInputStream = Channels.newInputStream(
-				blob.reader())) {
-
-			uploadAttachment(fileInputStream, fileName, gcsSessionURL);
-		}
-		catch (Exception exception) {
-			throw new Exception("Unable to process GCS file", exception);
-		}
-
-		long ticketAttachmentId = responseJSONObject.getLong(
-			"ticketAttachmentId", 0);
-
-		completeUpload(ticketAttachmentId, patcherConfiguration);
 	}
 
 	public static long fetchAccountEntryId(
@@ -172,32 +119,6 @@ public class HelpCenterUtil {
 		JSONObject itemJSONObject = itemsJSONArray.getJSONObject(0);
 
 		return itemJSONObject.getLong("id");
-	}
-
-	protected static void completeUpload(
-			long ticketAttachmentId, PatcherConfiguration patcherConfiguration)
-		throws Exception {
-
-		Http.Options options = _initOptions(
-			true,
-			HashMapBuilder.put(
-				"Content-Type", ContentTypes.APPLICATION_JSON
-			).build(),
-			patcherConfiguration);
-
-		options.setBody(
-			JSONUtil.put(
-				"commentBody", HelpCenterConstants.HELP_CENTER_UPLOAD_COMMENT
-			).toString(),
-			ContentTypes.APPLICATION_JSON, StringPool.UTF8);
-		options.setLocation(
-			String.format(
-				"%s/ticket-attachments/%d/complete-upload",
-				patcherConfiguration.supportLiferayLFUURL(),
-				ticketAttachmentId));
-		options.setPost(true);
-
-		_sendRequest(options);
 	}
 
 	protected static String getAuthenticationToken(
@@ -247,55 +168,45 @@ public class HelpCenterUtil {
 		return accessToken;
 	}
 
-	protected static String getMD5Checksum(InputStream fileInputStream) {
-		return DigesterUtil.digestHex(DigesterUtil.MD5, fileInputStream);
-	}
+	private static JSONObject _buildCommentJSONObject(
+		String downloadURL, String fileName) {
 
-	protected static void uploadAttachment(
-			InputStream fileInputStream, String fileName, String gcsSessionURL)
-		throws Exception {
-
-		Http.Options options = _initOptions(
-			false,
-			HashMapBuilder.put(
-				"Content-Type", ContentTypes.APPLICATION_OCTET_STREAM
-			).build(),
-			null);
-
-		options.addInputStreamPart(
-			"file", fileName, fileInputStream,
-			ContentTypes.APPLICATION_OCTET_STREAM);
-		options.setLocation(gcsSessionURL);
-		options.setPut(true);
-
-		String responseString = _sendRequest(options);
-
-		if (Validator.isNull(responseString)) {
-			throw new PortalException("failed-to-upload-file");
-		}
-	}
-
-	private static Blob _getGoogleCloudFileObject(
-			String bucketName, String fileName, PatcherBuild patcherBuild)
-		throws Exception {
-
-		StorageOptions storageOptions = StorageOptions.getDefaultInstance();
-
-		Storage storage = storageOptions.getService();
-
-		BlobId blobId = BlobId.of(bucketName, patcherBuild.getFileName());
-
-		Blob blob = storage.get(blobId);
-
-		if (blob == null) {
-			throw new PortalException(
-				LanguageUtil.format(
-					LocaleUtil.getMostRelevantLocale(),
-					"file-x-was-not-found-in-the-x-gcs-bucket",
-					new Object[] {fileName, bucketName}));
-		}
-
-		return blob;
+		return JSONUtil.put(
+			"body",
+			JSONUtil.put(
+				"content",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"content",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"text",
+								HelpCenterConstants.HELP_CENTER_DOWNLOAD_COMMENT
+							).put(
+								"type", "text"
+							),
+							JSONUtil.put(
+								"marks",
+								JSONUtil.putAll(
+									JSONUtil.put(
+										"attrs",
+										JSONUtil.put("href", downloadURL)
+									).put(
+										"type", "link"
+									))
+							).put(
+								"text", fileName
+							).put(
+								"type", "text"
+							))
+					).put(
+						"type", "paragraph"
+					))
+			).put(
+				"type", "doc"
+			).put(
+				"version", 1
+			));
 	}
 
 	private static Http.Options _initOptions(
@@ -327,7 +238,9 @@ public class HelpCenterUtil {
 
 		int responseCode = response.getResponseCode();
 
-		if (responseCode != HttpURLConnection.HTTP_OK) {
+		if ((responseCode != HttpURLConnection.HTTP_OK) &&
+			(responseCode != HttpURLConnection.HTTP_CREATED)) {
+
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					StringBundler.concat(
