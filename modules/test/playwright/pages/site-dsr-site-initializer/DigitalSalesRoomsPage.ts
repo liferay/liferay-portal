@@ -56,9 +56,7 @@ export class DigitalSalesRoomsPage {
 		this.deleteMenuItem = page.getByRole('menuitem', {name: 'Delete'});
 		this.digitalSalesRoomsTable = new DataTablePage(
 			page,
-			page.locator(
-				'[class*="site-dsr-site-initializer-internal-fragment-renderer-viewrooms"]'
-			)
+			page.locator('[class*="dsr-view-rooms"]')
 		);
 		this.documentRow = (documentName: string) =>
 			this.duplicateModal.locator('tr', {hasText: documentName});
