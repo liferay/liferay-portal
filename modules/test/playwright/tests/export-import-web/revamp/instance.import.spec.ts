@@ -12,6 +12,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
+import {normalizeRestPath} from '../../../utils/normalizeRestPath';
 import performLogin, {
 	performLogout,
 	userData,
@@ -148,5 +149,193 @@ test(
 			folderPath,
 			'The LAR file contains one or more entities with a different scope.'
 		);
+	}
+);
+
+test(
+	'Can import custom object entries using a date filter',
+	{tag: '@LPD-100261'},
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		globalMenuPage,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const applicationName = normalizeRestPath(
+			objectDefinition.restContextPath
+		);
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{externalReferenceCode: '', textField: getRandomString()},
+			applicationName
+		);
+
+		await globalMenuPage.goToApplications('Export');
+
+		await exportImportPage.clickNew();
+
+		await test.step('Entries outside the date range are excluded', async () => {
+			const toDateFilterDate = (date: Date) => {
+				const pad = (value: number) => String(value).padStart(2, '0');
+
+				return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+			};
+
+			const dayMilliseconds = 24 * 60 * 60 * 1000;
+
+			const date = new Date();
+
+			const oneDayAgoDate = new Date(date.getTime() - dayMilliseconds);
+			const twoDaysAgoDate = new Date(
+				date.getTime() - 2 * dayMilliseconds
+			);
+
+			await exportImportPage.filterByDateRange(
+				toDateFilterDate(twoDaysAgoDate),
+				toDateFilterDate(oneDayAgoDate)
+			);
+
+			await expect(
+				exportImportPage.page.getByText('0 Results Found for:')
+			).toBeVisible();
+		});
+
+		await test.step('Entries modified in the last hours are imported', async () => {
+			const name = `MyExport-${getRandomString()}`;
+
+			await exportImportPage.filterByModifiedLast();
+
+			await exportImportDataSelectionPage.selectOnlyObjectDefinition(
+				objectDefinition.name
+			);
+
+			await exportImportPage.nameInput.fill(name);
+
+			await exportImportPage.exportButton.click();
+
+			await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+
+			const folderPath = await exportImportPage.download(name);
+
+			await apiHelpers.objectEntry.deleteObjectEntry(
+				applicationName,
+				String(objectEntry.id)
+			);
+
+			await globalMenuPage.goToApplications('Import');
+
+			await exportImportPage.newButton.click();
+
+			await exportImportPage.import({folderPath, name});
+
+			expect(
+				await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode(
+					{
+						applicationName,
+						externalReferenceCode:
+							objectEntry.externalReferenceCode,
+					}
+				)
+			).toEqual(
+				expect.objectContaining({
+					externalReferenceCode: objectEntry.externalReferenceCode,
+					textField: objectEntry.textField,
+				})
+			);
+		});
+	}
+);
+
+test(
+	'Can import custom object entry deletions',
+	{tag: '@LPD-100261'},
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		globalMenuPage,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const applicationName = normalizeRestPath(
+			objectDefinition.restContextPath
+		);
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			{externalReferenceCode: '', textField: getRandomString()},
+			applicationName
+		);
+
+		await apiHelpers.objectEntry.deleteObjectEntry(
+			applicationName,
+			String(objectEntry.id)
+		);
+
+		const name = `MyExport-${getRandomString()}`;
+
+		await test.step('Export the deletions', async () => {
+			await globalMenuPage.goToApplications('Export');
+
+			await exportImportPage.clickNew();
+
+			await exportImportDataSelectionPage.selectOnlyObjectDefinition(
+				objectDefinition.name
+			);
+
+			await exportImportPage.nameInput.fill(name);
+
+			await exportImportPage.exportIndividualDeletionsCheckbox.check();
+
+			await exportImportPage.exportButton.click();
+
+			await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+		});
+
+		const folderPath = await exportImportPage.download(name);
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{
+				externalReferenceCode: objectEntry.externalReferenceCode,
+				textField: objectEntry.textField,
+			},
+			applicationName
+		);
+
+		await test.step('Import the deletions', async () => {
+			await globalMenuPage.goToApplications('Import');
+
+			await exportImportPage.newButton.click();
+
+			await exportImportPage.import({
+				folderPath,
+				includeDeletions: true,
+				name,
+			});
+		});
+
+		expect(
+			await apiHelpers.objectEntry.getObjectEntryByExternalReferenceCode({
+				applicationName,
+				externalReferenceCode: objectEntry.externalReferenceCode,
+			})
+		).toEqual({status: 'NOT_FOUND'});
 	}
 );

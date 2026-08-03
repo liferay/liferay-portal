@@ -20,21 +20,27 @@ export class ExportImportPage {
 	readonly continueButton: Locator;
 	readonly downloadMenuItem: Locator;
 	readonly exportButton: Locator;
+	readonly exportIndividualDeletionsCheckbox: Locator;
 	readonly exportMenuItem: Locator;
 	readonly exportReportEntriesMenuItem: Locator;
 	readonly exportReportEntriesModal: Locator;
 	readonly exportReportEntriesModalDownloadButton: Locator;
 	readonly exportReportEntriesModalProgressbar: Locator;
 	readonly fileSelector: Locator;
+	readonly filterContentBySelect: Locator;
+	readonly fromDateInput: Locator;
 	readonly importButton: Locator;
 	readonly importMenuItem: Locator;
 	readonly nameInput: Locator;
 	readonly newButton: Locator;
 	readonly page: Page;
+	readonly replicateSelectedDeletionsCheckbox: Locator;
+	readonly showResultsButton: Locator;
 	readonly taskStatusLabel: (
 		taskName: string,
 		taskStatus?: taskStatus
 	) => Locator;
+	readonly toDateInput: Locator;
 	readonly viewReportEntriesMenuItem: Locator;
 
 	constructor(page: Page) {
@@ -48,6 +54,9 @@ export class ExportImportPage {
 			name: 'Download',
 		});
 		this.exportButton = page.getByRole('button', {name: 'Export'});
+		this.exportIndividualDeletionsCheckbox = page.getByRole('checkbox', {
+			name: 'Export Individual Deletions',
+		});
 		this.exportMenuItem = page.getByRole('menuitem', {
 			name: 'Export',
 		});
@@ -64,6 +73,8 @@ export class ExportImportPage {
 		this.exportReportEntriesModalProgressbar =
 			this.exportReportEntriesModal.getByRole('progressbar');
 		this.fileSelector = page.getByText('Select Files');
+		this.filterContentBySelect = page.getByLabel('Filter Content By');
+		this.fromDateInput = page.getByLabel('From', {exact: true});
 		this.importButton = page.getByRole('button', {name: 'Import'});
 		this.importMenuItem = page.getByRole('menuitem', {
 			name: 'Import',
@@ -73,6 +84,12 @@ export class ExportImportPage {
 			.getByRole('button', {exact: true, name: 'New'})
 			.first();
 		this.page = page;
+		this.replicateSelectedDeletionsCheckbox = page.getByRole('checkbox', {
+			name: 'Replicate Selected Deletions',
+		});
+		this.showResultsButton = page.getByRole('button', {
+			name: 'Show Results',
+		});
 		this.taskStatusLabel = (taskName, taskStatus = 'success') => {
 			const taskStatusTexts: Record<taskStatus, string> = {
 				completedWithErrors: 'Completed With Errors',
@@ -84,6 +101,7 @@ export class ExportImportPage {
 				.locator('.cell-status')
 				.getByText(taskStatusTexts[taskStatus], {exact: true});
 		};
+		this.toDateInput = page.getByLabel('To', {exact: true});
 		this.viewReportEntriesMenuItem = page.getByRole('menuitem', {
 			name: 'View Report Entries',
 		});
@@ -129,6 +147,22 @@ export class ExportImportPage {
 		await this.exportButton.click();
 	}
 
+	async filterByDateRange(fromDate: string, toDate: string) {
+		await this.filterContentBySelect.selectOption('dateRange');
+
+		await this.fromDateInput.fill(fromDate);
+
+		await this.toDateInput.fill(toDate);
+
+		await this.showResultsButton.click();
+	}
+
+	async filterByModifiedLast() {
+		await this.filterContentBySelect.selectOption('last');
+
+		await this.showResultsButton.click();
+	}
+
 	async goToExport(siteFriendlyUrlPath: string) {
 		await this.page.goto(
 			`/group${siteFriendlyUrlPath}${PORTLET_URLS.export}`
@@ -152,10 +186,12 @@ export class ExportImportPage {
 
 	async import({
 		folderPath,
+		includeDeletions = false,
 		name,
 		taskStatus = 'success',
 	}: {
 		folderPath: string;
+		includeDeletions?: boolean;
 		name: string;
 		taskStatus?: taskStatus;
 	}) {
@@ -166,6 +202,10 @@ export class ExportImportPage {
 		await this.completedLabel.waitFor();
 
 		await this.continueButton.click();
+
+		if (includeDeletions) {
+			await this.replicateSelectedDeletionsCheckbox.check();
+		}
 
 		await this.continueButton.click();
 
