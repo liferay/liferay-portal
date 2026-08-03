@@ -98,7 +98,7 @@ public class DBCopyTablesProcessTest {
 	public void testBigDecimalColumn() throws Exception {
 		_testColumnTypeOf(
 			Function.identity(), GetterUtil::getDouble, "BIGDECIMAL",
-			RandomTestUtil::nextDouble);
+			() -> RandomTestUtil.nextDouble() + 0.5);
 	}
 
 	@Test
@@ -154,7 +154,7 @@ public class DBCopyTablesProcessTest {
 	public void testDoubleColumn() throws Exception {
 		_testColumnTypeOf(
 			Function.identity(), GetterUtil::getDouble, "DOUBLE",
-			RandomTestUtil::nextDouble);
+			() -> RandomTestUtil.nextDouble() + 0.5);
 	}
 
 	@Test
