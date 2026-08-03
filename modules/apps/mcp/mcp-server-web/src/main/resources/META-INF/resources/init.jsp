@@ -17,6 +17,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 page import="com.liferay.mcp.server.web.internal.display.context.EditPromptDisplayContext" %><%@
 page import="com.liferay.mcp.server.web.internal.display.context.MCPServerNavigationDisplayContext" %><%@
 page import="com.liferay.mcp.server.web.internal.display.context.ViewDataMasksDisplayContext" %><%@
+page import="com.liferay.mcp.server.web.internal.display.context.ViewProfilesDisplayContext" %><%@
 page import="com.liferay.mcp.server.web.internal.display.context.ViewPromptsDisplayContext" %>
 
 <liferay-theme:defineObjects />

@@ -9,6 +9,13 @@
 
 <liferay-util:include page="/navigation.jsp" servletContext="<%= application %>" />
 
-<div class="p-4 text-secondary">
-	The "Profiles" tab is not implemented yet.
-</div>
+<%
+ViewProfilesDisplayContext viewProfilesDisplayContext = new ViewProfilesDisplayContext(request, liferayPortletResponse);
+%>
+
+<frontend-data-set:headless-display
+	apiURL="<%= viewProfilesDisplayContext.getAPIURL() %>"
+	fdsSortItemList="<%= viewProfilesDisplayContext.getFDSSortItemList() %>"
+	id="<%= viewProfilesDisplayContext.getFDSName() %>"
+	style="fluid"
+/>
