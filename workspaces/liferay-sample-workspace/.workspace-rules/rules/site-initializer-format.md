@@ -183,7 +183,34 @@ A raw `ObjectDefinition`. Reference a picklist by **ERC**, via `listTypeDefiniti
 }
 ```
 
-Custom field names are validated against a reserved list. `name`, `email`, and `location` are fine; `status`, `id`, `creator`, `keywords`, and `userId` are rejected. A collision throws `ObjectFieldNameException$MustNotBeReserved`, which **aborts initialization and rolls back the entire site creation transaction**, leaving no site, no objects, and no picklists. See `skills/manage-objects/SKILL.md` for the full list.
+Custom field names are validated against a reserved list. `name`, `email`, `location`, and `company` are fine; `status`, `id`, `creator`, `keywords`, and `userId` are rejected. A collision throws `ObjectFieldNameException$MustNotBeReserved`, which **aborts initialization and rolls back the entire site creation transaction**, leaving no site, no objects, and no picklists. See `skills/manage-objects/SKILL.md` for the full list.
+
+A status field is the usual reason to reach for `"state": true`, and that flag makes `defaultValue` and `defaultValueType` **mandatory** on the same field. Omitting them throws `ObjectFieldSettingValueException.MissingRequiredValues` — which rolls the site back exactly like a reserved name does, and reads as "the CET never deployed":
+
+```json
+{
+	"businessType": "Picklist",
+	"label": {
+		"en_US": "Status"
+	},
+	"listTypeDefinitionExternalReferenceCode": "REGISTRATION_STATUS",
+	"name": "registrationStatus",
+	"objectFieldSettings": [
+		{
+			"name": "defaultValue",
+			"value": "pending"
+		},
+		{
+			"name": "defaultValueType",
+			"value": "inputAsValue"
+		}
+	],
+	"required": true,
+	"state": true
+}
+```
+
+`defaultValue` is the picklist **entry key**, and it must match an entry the `list-type-definitions` handler created earlier — a typo here is a rollback, not a warning. Liferay then generates a fully connected `stateFlow` allowing every transition; constrain it explicitly if a state should be terminal. See `skills/manage-objects/SKILL.md` for the live API equivalent.
 
 ### `object-relationships/<name>.json`
 
@@ -205,6 +232,8 @@ A raw `ObjectRelationship`. This handler resolves the parent by **numeric ID** (
 ```
 
 `deletionType` is `cascade`, `disassociate`, or `prevent`. Creating the relationship adds an `r_<relationshipName>_c_<parent>Id` field to the child object; set that field when creating a child entry over REST.
+
+The field sits on the child but is named for the **parent**, first letter lowercased — the relationship above puts `r_eventRegistrations_c_eventId` on `Registration`, not `..._c_registrationId`. Getting it wrong is silent: the unknown key is ignored, the child is created with the FK left at `0`, and the POST still returns `200`. There is an ERC twin, `r_eventRegistrations_c_eventERC`, which is what OData relationship filters require (see `skills/manage-objects/SKILL.md`).
 
 Do **not** copy `"system": true` from portal internal initializers (seo-studio, ai-hub) — it makes the object or picklist nonmodifiable.
 
@@ -281,6 +310,53 @@ A failed initialization rolls the site back, so "the site does not exist" and "t
 grep -E 'InitializationException|MustNotBeReserved|Unable to transform' \
 	bundles/tomcat/logs/catalina.out | head
 ```
+
+## `site-navigation-menus.json` Format
+
+A bare JSON array of menus. Each menu needs `externalReferenceCode`, `name`, `typeSite`, and a `menuItems` array; `auto` is read on update:
+
+```json
+[
+	{
+		"auto": false,
+		"externalReferenceCode": "EVENT_SITE_MAIN_MENU",
+		"menuItems": [
+			{
+				"externalReferenceCode": "EVENT_SITE_NAV_HOME",
+				"friendlyURL": "/home",
+				"privateLayout": false,
+				"type": "layout"
+			}
+		],
+		"name": "Main Menu",
+		"typeSite": 1
+	}
+]
+```
+
+`typeSite` is a `SiteNavigationConstants` integer: `1` primary, `2` secondary, `3` social.
+
+Item `type` is `layout`, `node`, `url`, or `display-page`. A `layout` item is resolved by **friendly URL**, not by name or ID, and needs `privateLayout` alongside it. Add `"useCustomName": true` plus a name to override the page's own title. A `url` item takes `url` and `useNewTab`; a `node` item takes `title`. Nest children by giving an item its own `menuItems` array.
+
+The handler runs at the **end of** `addOrUpdateLayoutsContent`, so pages already exist by then. A friendly URL that does not match any page is skipped with a warning rather than failing the build:
+
+```text
+No layout found with friendly URL /whatever
+```
+
+That is a silent gap — the menu is created with fewer items than authored, and the site still provisions. Confirm the item count after provisioning:
+
+```bash
+curl \
+	--silent \
+	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>/navigation-menus" \
+	--user "test@liferay.com:test" \
+	| jq '[.items[] | {name, items: (.navigationMenuItems | length)}]'
+```
+
+Note that the Classic theme's site navbar renders the **public page hierarchy** on its own, so non hidden pages appear in navigation whether or not this file exists. There is no key in `layout-set/*/metadata.json` that selects a named menu for the theme — the same limitation the themeCSS note above describes.
+
+Source: `_addOrUpdateSiteNavigationMenus` in `BundleSiteInitializer`.
 
 ## `page.json` Format
 

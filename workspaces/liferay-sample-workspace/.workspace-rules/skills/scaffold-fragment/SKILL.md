@@ -182,6 +182,34 @@ Valid types for `configuration.json` fields: `text`, `select`, `checkbox`, `colo
 
 Do **not** use `image`, `link`, or `rich-text` in `configuration.json` — these are not configuration types. They must be made editable via `index.html` using `data-lfr-editable-type` instead.
 
+#### `dataType` Has No `boolean` — Omit It on a Checkbox
+
+`dataType` is a closed enum and **`boolean` is not in it**:
+
+```text
+array, double, int, object, string
+```
+
+A `checkbox` field is the trap, because `"dataType": "boolean"` is the natural guess and the failure is disproportionate. Portal's own checkbox fields carry **no `dataType` at all** — just `defaultValue`, `label`, `name`, `type`:
+
+```json
+{
+	"defaultValue": true,
+	"label": "Only show upcoming events",
+	"name": "upcomingOnly",
+	"type": "checkbox"
+}
+```
+
+An invalid value fails schema validation on import:
+
+```text
+FragmentEntryConfigurationException: Fragment configuration is invalid.
+/fieldSets/0/fields/1/dataType: boolean is not a valid enum value
+```
+
+Inside a site initializer that exception is an `InitializationException` — it **rolls back the entire site creation transaction**, so the symptom is "no site was created", not "one fragment is wrong". Source: `configuration-json-schema.json` in `modules/apps/fragment/fragment-service`.
+
 ### Fragment Scoping — Prevent Cascade Conflicts
 
 Every fragment must wrap its content in a named container div. Prefix **all** CSS rules with `#wrapper .<wrapper-class>` to prevent cascade conflicts with other fragments on the same page:
@@ -264,11 +292,34 @@ When referencing configuration or editable values in `index.html`, always provid
 ${configuration.myVar!'Default'}
 ```
 
+#### A Checkbox Value Will Not Print Without `?c`
+
+FreeMarker refuses to convert a boolean to a string implicitly, so printing a `checkbox` configuration value the same way as a text one fails:
+
+```text
+FragmentEntryContentException: FreeMarker syntax is invalid.
+Can't convert boolean to string automatically, because the "boolean_format" setting
+was "true,false", which is the legacy deprecated default…
+Failed at: ${configuration.upcomingOnly!true}
+```
+
+Append `?c` (the computer-readable format, giving `true` / `false`), and keep the default **inside** the parentheses so it is applied before the conversion:
+
+```html
+<div data-upcoming-only="${(configuration.upcomingOnly!true)?c}">
+```
+
+Parenthesising the default is the form verified here; bind it to the variable rather than to the formatted result. For human-facing output the error message itself suggests `?string('Yes', 'No')` instead of `?c`.
+
+This is the same rollback trap as an invalid `dataType`: inside a site initializer it aborts the whole site creation, so a fragment that reads a checkbox is worth rendering once before shipping the tree.
+
 ### Common Errors and Fixes
 
 - **"HTML content must not be empty"**: check `fragment.json` for incorrect path keys (must be `htmlPath`/`cssPath`/`jsPath`, not `html`/`css`/`js`).
 - **"required key [fieldSets] not found"**: check `configuration.json` — fields must be nested inside a `fieldSets` array.
 - **FreeMarker Null Pointer**: always provide defaults in HTML — `${configuration.myVar!'Default'}`.
+- **"boolean is not a valid enum value"**: a `configuration.json` field declares `"dataType": "boolean"` — checkbox fields take no `dataType`.
+- **"Can't convert boolean to string automatically"**: a checkbox value is printed without `?c` — use `${(configuration.myFlag!true)?c}`.
 
 ### Headless Fragment CRUD Is Inconsistent
 

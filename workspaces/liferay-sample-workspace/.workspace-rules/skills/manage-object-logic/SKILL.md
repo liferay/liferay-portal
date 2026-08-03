@@ -42,7 +42,7 @@ Consult `rules/object-actions-catalog.md` for the full catalog. Summary:
 | `addObjectEntry` | Definition name + field map | Creates an entry in another object |
 | `updateObjectEntry` | Entry ID + field map | Updates an entry in the same or another object |
 | Webhook | URL + secret | HTTP POST to external endpoint |
-| Groovy Script | Script body | Only on self hosted or PaaS; not available on Liferay SaaS |
+| Groovy Script | Script body | Self hosted or PaaS **and** script execution enabled — off by default, see `rules/object-actions-catalog.md`. Probe before designing around it |
 | Client Extension | CET `objectAction` or `workflowAction` externalReferenceCode | Calls a deployed microservice |
 
 ### Object Action — Notification (Site Initializer, Preferred)

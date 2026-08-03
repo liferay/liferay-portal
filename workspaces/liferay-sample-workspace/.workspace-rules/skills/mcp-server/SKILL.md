@@ -76,6 +76,25 @@ The spec has known gaps: several fields required at runtime are marked optional 
 
 **Workaround**: use a targeted `grep` on the saved temp file to extract only the relevant schema sections rather than attempting to read the full output.
 
+### `object-admin` Write Responses Are Unfiltered and Very Large
+
+`call-http-endpoint` returns the response verbatim — there is no `fields` projection and no way to trim it from the call. On `object-admin`, every definition create, update, and **publish** echoes the complete `ObjectDefinition`: all six system fields (`creator`, `createDate`, `externalReferenceCode`, `id`, `modifiedDate`, `status`), every custom field with its full settings, plus `actions`, `objectRelationships`, and the embedded relationship `objectField`. A single publish on a modest object runs several hundred lines, and a build of two related objects can spend more context on echoed responses than on the actual work.
+
+The `fields` query parameter helps on **GET** (`?fields=id,name,status`) but is ignored on POST bodies.
+
+**Prefer MCP for reads and discovery; drop to `curl | jq` for object-admin writes**, projecting just the confirmation you need:
+
+```bash
+curl \
+	--request POST \
+	--silent \
+	--url "http://localhost:${PORT}/o/object-admin/v1.0/object-definitions/<id>/publish" \
+	--user "test@liferay.com:test" \
+	| jq '{id, name, active, status: .status.label, restContextPath}'
+```
+
+This is a context budget concern, not a correctness one — the MCP path works. It matters most in long multiobject builds, where the flood arrives early and crowds out later steps.
+
 ### MCP Connection Lifecycle (Server Restart Drops the Connection)
 
 The MCP client connection drops when the Liferay server stops, restarts, or crashes and does NOT autoreconnect. Recovery requires the user to manually trigger reconnect in their agent — the agent cannot trigger reconnection via Bash, MCP, or any other tool. After any Liferay restart cycle completes, prompt the user to reconnect the MCP server in their agent (each agent has its own reconnect command; e.g., a slash command, a UI button, or a settings refresh) and wait for their reply before making MCP tool calls.

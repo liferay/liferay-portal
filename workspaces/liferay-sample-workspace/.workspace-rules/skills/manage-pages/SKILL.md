@@ -165,7 +165,9 @@ Field mapping renders the raw stored value and cannot transform it. In particula
 
 The workaround is to **denormalize**: add a plain `Text` display field on the object and populate it with the presentation ready value, then map that field. For example add `timeLabel` (a preformatted time string instead of the raw `DateTime`) or `speakerName` (the related person's name copied onto the entry), and map `ObjectField_timeLabel` / `ObjectField_speakerName`.
 
-Denormalizing is also the way to publish a number derived from private records. To show remaining capacity, keep a `registeredCount` field on the public object and maintain it with an object action on the private one (`manage-object-logic`); the visitor reads a count without the underlying rows ever being granted to Guest.
+Denormalizing is also the way to publish a number derived from private records. To show remaining capacity, put the count on the public object — preferably an `Aggregation` field (`function: COUNT` over the relationship), which is computed server side and ignores entry level permissions, so the visitor reads the count without the underlying rows ever being granted to Guest. A counter maintained by an object action is the fallback where no aggregate function fits; note Groovy actions are disabled by default (`rules/object-actions-catalog.md`). See `skills/manage-objects/SKILL.md` for both.
+
+An `Aggregation` field is still a computed field, so the "cannot be mapped" limit above is the reason it may not reach a Collection fragment through mapping — reading it over REST from fragment JavaScript is the verified path.
 
 **Do not compute these in fragment JavaScript instead** — the browser call runs as the visitor and silently returns 0 rows, so the number is confidently wrong rather than absent. See `rules/guest-access.md`.
 

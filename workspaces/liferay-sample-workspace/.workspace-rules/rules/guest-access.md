@@ -25,7 +25,11 @@ The action decides which resource name to grant on. Getting this wrong applies c
 
 An object receiving public submissions holds whatever the visitor typed. Grant `ADD_OBJECT_ENTRY` and **not** `VIEW`: company scope VIEW publishes every name, email, and address to anonymous users.
 
-The consequence is that any count or aggregate over that object is unavailable to the visitor. Denormalize it onto the public object — a `registeredCount` on `Event` maintained by an object action — rather than counting in the browser.
+The consequence is that no *query* over that object is available to the visitor, so never count it in the browser. Put the number on the public object instead.
+
+Reach for an **`Aggregation` field** first: `businessType: Aggregation`, `function: COUNT`, over the relationship. It is computed server side and **ignores entry level permissions**, so a Guest who cannot read a single submission still gets the right count on the parent — verified with an unauthenticated `GET`. Nothing to maintain and no scripting to enable. It serialises as a **string**, so parse before arithmetic. See `skills/manage-objects/SKILL.md`.
+
+A hand maintained counter kept in sync by an object action is the fallback for a value no aggregate function produces. Check first that object actions of the kind you need can actually be created — Groovy is disabled by default (`rules/object-actions-catalog.md`).
 
 ## Guest Cannot Read a Picklist Over REST
 

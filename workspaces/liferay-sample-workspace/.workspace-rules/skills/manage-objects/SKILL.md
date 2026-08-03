@@ -63,6 +63,40 @@ Do **not** send `"storageType": "default"` on the create call — it returns `40
 
 Save the returned `id` as `<definition-id>`.
 
+#### Prefer Creating Fields Inline
+
+The create call accepts a full `objectFields` array — the same raw DTO shape a site initializer uses. **Prefer this over create-then-add-fields.** One call instead of N+1, the definition never exists in a half built state, and it sidesteps the standalone field call's `required` trap below:
+
+```bash
+curl \
+	--data '{
+		"externalReferenceCode": "<ERC>",
+		"label": {"en_US": "<Label>"},
+		"name": "<Name>",
+		"objectFields": [
+			{
+				"businessType": "Text",
+				"indexed": true,
+				"label": {"en_US": "<FieldLabel>"},
+				"name": "<fieldName>",
+				"required": true
+			}
+		],
+		"pluralLabel": {"en_US": "<PluralLabel>"},
+		"scope": "company",
+		"titleObjectFieldName": "<fieldName>"
+	}' \
+	--header "Content-Type: application/json" \
+	--request POST \
+	--silent \
+	--url "http://localhost:${PORT}/o/object-admin/v1.0/object-definitions" \
+	--user "test@liferay.com:test"
+```
+
+Set `titleObjectFieldName` here too — it names the field used as the entry's display title in the UI and in relationship pickers. Omitting it leaves entries labelled by ID.
+
+Use the standalone `POST .../object-fields` call below only to add a field to an object that already exists.
+
 ### Add Fields
 
 For each field in the user's list:
@@ -84,7 +118,7 @@ curl \
 
 `"required"` is **mandatory** on the standalone `POST .../object-fields` call — omitting it returns `500` with a `getRequired()` NullPointerException. Always include `"required": true` or `"required": false` explicitly.
 
-Common `businessType` values: `Text`, `LongText`, `Integer`, `Decimal`, `Boolean`, `Date`, `DateTime`, `Attachment`, `Relationship`, `Picklist`.
+Common `businessType` values: `Text`, `LongText`, `Integer`, `Decimal`, `Boolean`, `Date`, `DateTime`, `Attachment`, `Relationship`, `Picklist`, `Aggregation`.
 
 ### Add Picklists (When Needed)
 
@@ -112,6 +146,41 @@ Save the returned `id` as `<list-type-id>`. Then add a `Picklist` field referenc
 
 > **A public form cannot fetch this picklist.** Guest gets 403 from the list type REST endpoint, so a `<select>` populated by fetch renders empty and the entry saves blank looking like success. Ship the options in the fragment markup. See `rules/guest-access.md`.
 
+Writing a picklist value accepts **either** the object form `{"key": "vegan"}` or the bare string `"vegan"`. Both persist identically and both read back as `{key, name}`. An unknown key is rejected with `400 Object field name "<field>" is not mapped to a valid list type entry`.
+
+#### A `state` Picklist Requires `defaultValue` and `defaultValueType`
+
+Setting `"state": true` on a Picklist field turns it into a status field with a transition graph. It also makes two field settings **mandatory**, and omitting them fails the whole definition create:
+
+```text
+400 ObjectFieldSettingValueException.MissingRequiredValues
+The settings "defaultValue, defaultValueType" are required for object field "<fieldName>"
+```
+
+Supply both. `defaultValue` is the entry **key** of the starting state; `defaultValueType` is `inputAsValue` for a literal key (verified — an expression variant exists but is not confirmed here):
+
+```json
+{
+	"businessType": "Picklist",
+	"label": {"en_US": "Status"},
+	"listTypeDefinitionId": <list-type-id>,
+	"name": "<entity>Status",
+	"objectFieldSettings": [
+		{"name": "defaultValue", "value": "pending"},
+		{"name": "defaultValueType", "value": "inputAsValue"}
+	],
+	"required": true,
+	"state": true
+}
+```
+
+Two consequences worth planning around:
+
+- **The default actually fires.** A POST that omits the field entirely still succeeds and lands on the default state, despite `"required": true`. This is what you want for a public form — the visitor never submits a status.
+- **Liferay auto-generates a fully connected `stateFlow`.** Every state gets a transition to every other state, returned as a third `stateFlow` setting you did not send. If a state should be terminal (a cancelled registration that cannot go back to pending), you must constrain the flow explicitly — the default permits it.
+
+A plain (non `state`) Picklist needs none of this.
+
 ### Add Relationships
 
 Relationships are defined on the parent object. The `objectDefinitionId2` is the child definition's ID.
@@ -131,7 +200,58 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Relationship `type` values: `oneToMany`, `manyToMany`, `oneToOne`.
+Relationship `type` values: `oneToMany`, `manyToMany`, `oneToOne`. Add `"deletionType"` — `cascade`, `disassociate`, or `prevent` — to say what happens to children when the parent is deleted.
+
+Create relationships **before** publishing, while both definitions are still drafts; this matches the site initializer's handler order and avoids a second publish cycle.
+
+The response carries the generated foreign key field — **read it instead of deriving the name**. `objectField.name` is the FK, and `objectFieldSettings.objectRelationshipERCObjectFieldName` is its ERC twin:
+
+```json
+{
+	"objectField": {
+		"name": "r_eventRegistrations_c_eventId",
+		"objectFieldSettings": [
+			{"name": "objectDefinition1ShortName", "value": "Event"},
+			{"name": "objectRelationshipERCObjectFieldName", "value": "r_eventRegistrations_c_eventERC"}
+		]
+	}
+}
+```
+
+### Aggregation Fields — Publish a Count Without Exposing the Rows
+
+An `Aggregation` field computes a value **over a relationship** and stores it on the parent. It is the no-script answer to "how many children does this record have", and it is what makes a remaining-capacity or item-count figure publishable on a public page.
+
+Add it to the parent **after** the relationship exists, naming the relationship it walks:
+
+```bash
+curl \
+	--data '{
+		"businessType": "Aggregation",
+		"label": {"en_US": "Registrations"},
+		"name": "registrationCount",
+		"objectFieldSettings": [
+			{"name": "function", "value": "COUNT"},
+			{"name": "objectRelationshipName", "value": "eventRegistrations"}
+		],
+		"required": false
+	}' \
+	--header "Content-Type: application/json" \
+	--request POST \
+	--silent \
+	--url "http://localhost:${PORT}/o/object-admin/v1.0/object-definitions/<parent-definition-id>/object-fields" \
+	--user "test@liferay.com:test"
+```
+
+`function` accepts `COUNT`, `SUM`, `AVERAGE`, `MIN`, `MAX` (`ObjectFieldSettingConstants`); anything but `COUNT` also needs the child field to aggregate. Liferay adds a third `filters` setting itself.
+
+Three behaviours that decide whether you can use it:
+
+- **It ignores entry level permissions.** A Guest who cannot read a single child row still receives the correct count on the parent — verified with an unauthenticated `GET`. This is what lets a private, write-only submissions object feed a public number, and it is a genuinely better option than the object-action counter that `manage-pages` and `rules/guest-access.md` describe: nothing to maintain, nothing to drift, no scripting to enable.
+- **It serialises as a string.** `"registrationCount": "2"`, not `2`. Parse before arithmetic — `attendeeCapacity - registrationCount` in JavaScript silently concatenates, and in `jq` it throws `number and string cannot be subtracted`.
+- **It is computed, so it is read only.** Do not send it on a POST or PATCH.
+
+Whether an Aggregation field can be *mapped* into a Collection fragment is a separate question — `manage-pages` → "Mapping Limits" says aggregates cannot be mapped, and that was not retested here. Reading it over REST from fragment JavaScript is verified.
 
 ### Add Validations
 
@@ -206,13 +326,15 @@ curl \
 
 ### Creating a Related Child Entry (Live API)
 
-To create a child entry already linked to its parent over a `oneToMany` relationship, **POST the child directly to its own endpoint** and set the foreign key field in the body. The FK field name is `r_<relationshipName>_c_<childObject>Id` (the related parent's numeric entry ID):
+To create a child entry already linked to its parent over a `oneToMany` relationship, **POST the child directly to its own endpoint** and set the foreign key field in the body.
+
+The FK field lives on the **child** but is named after the **parent**: `r_<relationshipName>_c_<parentObject>Id`, lowercase first letter, holding the parent's numeric entry ID. A relationship named `eventRegistrations` from `Event` to `Registration` puts `r_eventRegistrations_c_eventId` on `Registration` — `event`, not `registration`. Guessing this wrong is silent: the unknown key is ignored, the child saves unlinked, and the parent's nested list comes back empty.
 
 ```bash
 curl \
 	--data '{
 		"<childField>": "<value>",
-		"r_<relationshipName>_c_<childObject>Id": <parent-entry-id>
+		"r_<relationshipName>_c_<parentObject>Id": <parent-entry-id>
 	}' \
 	--header "Content-Type: application/json" \
 	--request POST \
@@ -225,6 +347,17 @@ Two paths that do **not** work the way the nesting suggests:
 
 - **Nested create is rejected.** `POST /o/c/<parentPlural>/{parentId}/<relationshipName>` returns `400 UnsupportedOperationException` — there is no nested create endpoint. Use the direct child POST with the FK field above.
 - **`PUT` only attaches an existing entry.** `PUT /o/c/<parentPlural>/{parentId}/<relationshipName>/{relatedId}` links an already created child to the parent; it does not create one.
+
+Nested **read** does work, and is the cheapest way to confirm a link actually took:
+
+```bash
+curl \
+	--silent \
+	--url "http://localhost:${PORT}/o/c/<parentPlural>/<parentId>/<relationshipName>" \
+	--user "test@liferay.com:test"
+```
+
+Always verify with this after creating children. A mistyped FK field name is accepted silently — `200`, entry created, FK left at `0` — so a successful POST is not evidence the child is attached. Assert on `totalCount`.
 
 ## Querying Entries — OData Filters and Response Shapes
 
@@ -295,6 +428,8 @@ statusbyusername, statusdate, taxonomycategoryids, userid, username
 ```
 
 Also enforced: letters and digits only, must begin with a lowercase letter, under 41 characters, and must not equal the primary key field name.
+
+The match is **exact**, not a prefix check, so near misses are safe: `company` is accepted even though `companyid` is reserved, and `name`, `email`, and `location` are all fine. Do not rename a field defensively just because it resembles an entry on the list — check it against the list literally.
 
 **`status` is the trap** — the obvious name for any workflow like model, and always taken. Use `<entity>Status` (`registrationStatus`, `orderStatus`) with `"label": {"en_US": "Status"}` so the UI still reads "Status".
 

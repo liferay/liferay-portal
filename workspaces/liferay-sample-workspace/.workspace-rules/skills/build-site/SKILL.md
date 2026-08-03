@@ -16,6 +16,20 @@ One command orchestrator. The user describes the site; this skill calls the righ
 - "Scaffold the full job board site"
 - Any multiobject, multipage request that spans data and presentation
 
+## Standing Requirements
+
+These hold on every site build whether or not the user asks for them. Do not wait to be told.
+
+1. **One standalone artifact.** The whole site ships as a single client extension project: one directory under `client-extensions/`, one `client-extension.yaml` declaring every entry the site needs — the `siteInitializer`, its OAuth companion, the `themeCSS`, and any microservice handlers. A colleague clones the workspace, deploys that one project, and has the entire site. Do not split the site across sibling client extension projects, and do not satisfy a request for data, pages, fragments, or styling by mutating only the running instance — write it into the tree first, then apply it. A site that cannot be reproduced on a clean environment from what is checked into the workspace is not finished, however correct it looks in the browser.
+
+1. **Objects are the data layer.** Model entities as Liferay Object definitions. Do not reach for web content structures or a Service Builder module for structured application data, even when `modules/` exists in the workspace.
+
+1. **Verify by rendering, not by status code.** A page returning 200 with an empty content area is the pack's most common silent failure. Fetch each page and confirm its fragments produced markup before reporting success.
+
+1. **Verify as the audience.** When a flow is meant for unauthenticated visitors, exercise it without a session cookie. An admin-authenticated check hides missing Guest permissions.
+
+1. **Report what does not work.** Name every placeholder, skipped step, and unverified claim. An overstated success is worse than a reported failure.
+
 ## Workflow
 
 The sequence below is the canonical order. Skip phases the user has not requested; do not add phases they have not asked for.
@@ -191,15 +205,19 @@ curl \
 	--user "test@liferay.com:test" \
 	| jq '[.items[] | {name, status}]'
 
-# Probe site home page
+# Probe site home page — a 200 alone does not mean it rendered
 
 curl \
-	--head \
 	--silent \
-	--url "http://localhost:${PORT}/web/<site-friendly-url>"
+	--url "http://localhost:${PORT}/web/<site-friendly-url>" \
+	| grep --count "<fragment-marker-or-known-content>"
 ```
 
-Report the final state: objects created, pages created, roles created, site URL.
+Per Standing Requirement 3, fetch each page's body and confirm the expected fragment content is present. An empty content area returns 200.
+
+Where the site serves unauthenticated visitors, repeat the critical path with no credentials and no cookie jar — see Standing Requirement 4.
+
+Report the final state: objects created, pages created, roles created, site URL, and anything left placeholder or unverified.
 
 ## Iterating on the Site
 
