@@ -130,7 +130,7 @@ public class MonitorMetricsWriter {
 
 		String type = monitorConfig.getType();
 
-		if (type == null) {
+		if (JenkinsResultsParserUtil.isNullOrEmpty(type)) {
 			type = "unknown";
 		}
 
