@@ -172,18 +172,7 @@ public class EmailUtil {
 		if (PatcherBuildUtil.isCompleteOrReady(patcherBuild) &&
 			Validator.isNotNull(patcherBuild.getFileName())) {
 
-			StringBundler sb = new StringBundler(3);
-
-			PatcherConfiguration patcherConfiguration =
-				ConfigurationProviderUtil.getCompanyConfiguration(
-					PatcherConfiguration.class, patcherBuild.getCompanyId());
-
-			sb.append(patcherConfiguration.patcherBuildDownloadURL());
-
-			sb.append(StringPool.SLASH);
-			sb.append(patcherBuild.getFileName());
-
-			return sb.toString();
+			return PatcherBuildUtil.getDownloadURL(patcherBuild);
 		}
 
 		return StringPool.BLANK;

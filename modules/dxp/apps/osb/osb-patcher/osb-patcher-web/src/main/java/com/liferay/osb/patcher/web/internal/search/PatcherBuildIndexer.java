@@ -14,8 +14,8 @@ import com.liferay.osb.patcher.model.PatcherProjectVersion;
 import com.liferay.osb.patcher.service.PatcherAccountLocalService;
 import com.liferay.osb.patcher.service.PatcherBuildLocalService;
 import com.liferay.osb.patcher.service.PatcherProjectVersionLocalService;
+import com.liferay.osb.patcher.util.PatcherBuildUtil;
 import com.liferay.osb.patcher.util.PatcherUtil;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
@@ -169,9 +169,7 @@ public class PatcherBuildIndexer extends BaseIndexer<PatcherBuild> {
 		document.addKeyword("childBuild", patcherBuild.isChildBuild());
 		document.addText("comments", patcherBuild.getComments());
 		document.addText(
-			"downloadURL",
-			_patcherConfiguration.patcherBuildDownloadURL() + StringPool.SLASH +
-				patcherBuild.getFileName());
+			"downloadURL", PatcherBuildUtil.getDownloadURL(patcherBuild));
 
 		if (Validator.isNotNull(patcherBuild.getFileName())) {
 			document.addKeyword("hotfixId", patcherBuild.getHotfixId());

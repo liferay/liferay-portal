@@ -43,9 +43,7 @@ public class HelpCenterUtil {
 			ConfigurationProviderUtil.getCompanyConfiguration(
 				PatcherConfiguration.class, patcherBuild.getCompanyId());
 
-		String downloadURL =
-			patcherConfiguration.patcherBuildDownloadURL() + StringPool.SLASH +
-				patcherBuild.getFileName();
+		String downloadURL = PatcherBuildUtil.getDownloadURL(patcherBuild);
 
 		String credentials =
 			patcherConfiguration.jiraServiceManagementUserEmailAddress() +
