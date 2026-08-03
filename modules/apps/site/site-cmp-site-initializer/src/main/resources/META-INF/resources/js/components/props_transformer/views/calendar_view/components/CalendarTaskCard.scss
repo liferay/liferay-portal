@@ -33,10 +33,6 @@
 
 	&-clickable {
 		cursor: pointer;
-
-		&:hover {
-			border-color: $secondary-l0;
-		}
 	}
 
 	&-expanded {
@@ -52,6 +48,10 @@
 		align-items: center;
 		display: flex;
 		gap: 0.25rem;
+	}
+
+	&-header {
+		min-height: 2rem;
 	}
 
 	&-header &-title {
