@@ -37,10 +37,9 @@ public class ViewOverdueReviewsSectionSystemFDSEntry implements SystemFDSEntry {
 			filterString = StringBundler.concat(
 				filterString, " and groupIds/any(g:g eq ", groupId, ")");
 		}
-		else {
-			filterString = SectionDisplayContextUtil.appendGroupIds(
-				filterString, httpServletRequest);
-		}
+
+		filterString = SectionDisplayContextUtil.appendGroupIds(
+			filterString, httpServletRequest);
 
 		filterString = SectionDisplayContextUtil.appendStatus(filterString);
 
