@@ -10,7 +10,6 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -28,7 +27,6 @@ import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -75,7 +73,7 @@ public class PortalImplCanonicalURLTest {
 		new LiferayIntegrationTestRule();
 
 	@BeforeClass
-	public static void setUpClass() throws PortalException {
+	public static void setUpClass() throws Exception {
 		_originalVirtualHostsDefaultSiteName =
 			ReflectionTestUtil.getAndSetFieldValue(
 				PropsValues.class, "VIRTUAL_HOSTS_DEFAULT_SITE_NAME", "Guest");
@@ -96,32 +94,11 @@ public class PortalImplCanonicalURLTest {
 			TreeMapBuilder.put(
 				"localhost", StringPool.BLANK
 			).build());
-	}
 
-	@AfterClass
-	public static void tearDownClass() {
-		LocaleUtil.setDefault(
-			_defaultLocale.getLanguage(), _defaultLocale.getCountry(),
-			_defaultLocale.getVariant());
-
-		TestPropsUtil.set(
-			PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE,
-			GetterUtil.getString(_defaultPrependStyle));
-
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "VIRTUAL_HOSTS_DEFAULT_SITE_NAME",
-			_originalVirtualHostsDefaultSiteName);
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "WEB_SERVER_HTTP_PORT",
-			_originalWebServerHTTPPort);
-		ReflectionTestUtil.setFieldValue(
-			PropsValues.class, "WEB_SERVER_HTTPS_PORT",
-			_originalWebServerHTTPSPort);
-	}
-
-	@Before
-	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+
+		_originalGroupFriendlyURL = _group.getFriendlyURL();
+		_originalGroupTypeSettings = _group.getTypeSettings();
 
 		_layout1 = LayoutTestUtil.addTypePortletLayout(
 			_group.getGroupId(), false,
@@ -198,22 +175,53 @@ public class PortalImplCanonicalURLTest {
 			groupKey = GroupConstants.GUEST;
 		}
 
-		if (_defaultGroup == null) {
-			_defaultGroup = _groupLocalService.getGroup(
-				TestPropsValues.getCompanyId(), groupKey);
+		_defaultGroup = _groupLocalService.getGroup(
+			TestPropsValues.getCompanyId(), groupKey);
 
-			_defaultGrouplayout1 = _layoutLocalService.fetchFirstLayout(
-				_defaultGroup.getGroupId(), false,
-				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+		_defaultGrouplayout1 = _layoutLocalService.fetchFirstLayout(
+			_defaultGroup.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 
-			if (_defaultGrouplayout1 == null) {
-				_defaultGrouplayout1 = LayoutTestUtil.addTypePortletLayout(
-					_defaultGroup);
-			}
-
-			_defaultGrouplayout2 = LayoutTestUtil.addTypePortletLayout(
-				_defaultGroup.getGroupId());
+		if (_defaultGrouplayout1 == null) {
+			_defaultGrouplayout1 = LayoutTestUtil.addTypePortletLayout(
+				_defaultGroup);
 		}
+
+		_defaultGrouplayout2 = LayoutTestUtil.addTypePortletLayout(
+			_defaultGroup.getGroupId());
+
+		_targetGroup = GroupTestUtil.addGroup();
+	}
+
+	@AfterClass
+	public static void tearDownClass() {
+		LocaleUtil.setDefault(
+			_defaultLocale.getLanguage(), _defaultLocale.getCountry(),
+			_defaultLocale.getVariant());
+
+		TestPropsUtil.set(
+			PropsKeys.LOCALE_PREPEND_FRIENDLY_URL_STYLE,
+			GetterUtil.getString(_defaultPrependStyle));
+
+		ReflectionTestUtil.setFieldValue(
+			PropsValues.class, "VIRTUAL_HOSTS_DEFAULT_SITE_NAME",
+			_originalVirtualHostsDefaultSiteName);
+		ReflectionTestUtil.setFieldValue(
+			PropsValues.class, "WEB_SERVER_HTTP_PORT",
+			_originalWebServerHTTPPort);
+		ReflectionTestUtil.setFieldValue(
+			PropsValues.class, "WEB_SERVER_HTTPS_PORT",
+			_originalWebServerHTTPSPort);
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		_group = _groupLocalService.updateGroup(
+			_group.getGroupId(), _originalGroupTypeSettings);
+
+		_group.setFriendlyURL(_originalGroupFriendlyURL);
+
+		_group = _groupLocalService.updateGroup(_group);
 	}
 
 	@Test
@@ -306,8 +314,6 @@ public class PortalImplCanonicalURLTest {
 	@Test
 	@TestInfo("LPD-98055")
 	public void testCanonicalURLVirtualLayout() throws Exception {
-		_targetGroup = GroupTestUtil.addGroup();
-
 		Layout virtualLayout = new VirtualLayout(_layout6, _targetGroup);
 
 		_testCanonicalURL(
@@ -853,11 +859,32 @@ public class PortalImplCanonicalURLTest {
 				layout, forceLayoutFriendlyURL));
 	}
 
+	private static Group _defaultGroup;
+	private static Layout _defaultGrouplayout1;
+	private static Layout _defaultGrouplayout2;
 	private static Locale _defaultLocale;
 	private static int _defaultPrependStyle;
+	private static Group _group;
+
+	@Inject
+	private static GroupLocalService _groupLocalService;
+
+	private static Layout _layout1;
+	private static Layout _layout2;
+	private static Layout _layout3;
+	private static Layout _layout4;
+	private static Layout _layout5;
+	private static Layout _layout6;
+
+	@Inject
+	private static LayoutLocalService _layoutLocalService;
+
+	private static String _originalGroupFriendlyURL;
+	private static String _originalGroupTypeSettings;
 	private static String _originalVirtualHostsDefaultSiteName;
 	private static int _originalWebServerHTTPPort;
 	private static int _originalWebServerHTTPSPort;
+	private static Group _targetGroup;
 
 	@Inject
 	private static VirtualHostLocalService _virtualHostLocalService;
@@ -865,33 +892,10 @@ public class PortalImplCanonicalURLTest {
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	private Group _defaultGroup;
-	private Layout _defaultGrouplayout1;
-	private Layout _defaultGrouplayout2;
-
-	@DeleteAfterTestRun
-	private Group _group;
-
-	@Inject
-	private GroupLocalService _groupLocalService;
-
-	private Layout _layout1;
-	private Layout _layout2;
-	private Layout _layout3;
-	private Layout _layout4;
-	private Layout _layout5;
-	private Layout _layout6;
-
 	@Inject
 	private LayoutFriendlyURLLocalService _layoutFriendlyURLLocalService;
 
 	@Inject
-	private LayoutLocalService _layoutLocalService;
-
-	@Inject
 	private Portal _portal;
-
-	@DeleteAfterTestRun
-	private Group _targetGroup;
 
 }
