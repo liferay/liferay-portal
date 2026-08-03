@@ -123,14 +123,6 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
-	async deleteSiteDocumentsFolderByExternalReferenceCode(
-		externalReferenceCode: string
-	) {
-		return this.apiHelpers.delete(
-			`${this.apiHelpers.baseUrl}${this.basePath}/sites/Guest/documents-folder/by-external-reference-code/${externalReferenceCode}`
-		);
-	}
-
 	async getContentSetElements(assetListEntryId: number) {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/content-sets/${assetListEntryId}/content-set-elements`

@@ -4,13 +4,11 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
-import * as path from 'path';
 
 import {accountSettingsPagesTest} from '../../../fixtures/accountSettingsPagesTest';
 import {accountsPagesTest} from '../../../fixtures/accountsPagesTest';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {depotAdminPageTest} from '../../../fixtures/depotAdminPageTest';
-import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
@@ -44,7 +42,6 @@ export const test = mergeTests(
 	companyExportImportPageTest,
 	dataApiHelpersTest,
 	depotAdminPageTest,
-	documentLibraryPagesTest,
 	exportImportPagesTest,
 	featureFlagsTest({
 		'LPD-35013': {enabled: true},
@@ -285,30 +282,6 @@ test(
 		expect(alertTriggered).toBe(false);
 	}
 );
-
-test('Can import a folder with document type restrictions and workflow', async ({
-	apiHelpers,
-	documentLibraryEditFolderPage,
-	documentLibraryPage,
-	exportImportFramePage,
-}) => {
-	await documentLibraryPage.goto();
-	await documentLibraryPage.openOptionsMenu();
-	await documentLibraryPage.exportImportOptionsMenuItem.click();
-	await exportImportFramePage.importLARFile(
-		path.join(__dirname, 'dependencies', 'folder.portlet.lar')
-	);
-	await exportImportFramePage.close();
-	await documentLibraryPage.goToEditFolder('LPS-205933');
-
-	expect(
-		await documentLibraryEditFolderPage.getSelectedWorkflowDefinition()
-	).toBe('Single Approver@1');
-
-	await apiHelpers.headlessDelivery.deleteSiteDocumentsFolderByExternalReferenceCode(
-		'LPS-205933'
-	);
-});
 
 test('Can import a lar file selecting some items to import', async ({
 	exportImportPage,

@@ -37,11 +37,7 @@ test('Can import using the new navigation buttons', async ({
 	await exportImportPage.newButton.click();
 
 	await exportImportPage.import({
-		folderPath: path.join(
-			__dirname,
-			'../main/dependencies',
-			'folder.portlet.lar'
-		),
+		folderPath: path.join(__dirname, 'dependencies', 'folder.portlet.lar'),
 		name: `Test import-${getRandomString()}`,
 	});
 

@@ -14,15 +14,6 @@ export class DocumentLibraryEditFolderPage {
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.title = page.getByLabel('Name Required');
 	}
-	async getSelectedWorkflowDefinition() {
-		return await this.page
-			.getByTitle('Workflow Definition')
-			.evaluate(
-				(select: HTMLSelectElement) =>
-					select.options[select.selectedIndex].value
-			);
-	}
-
 	async fillTitle(name: string) {
 		await this.title.fill(name);
 	}
