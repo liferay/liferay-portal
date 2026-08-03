@@ -200,12 +200,6 @@ public class LayoutActionsHelperTest {
 		);
 
 		Mockito.when(
-			layout.isPrivateLayout()
-		).thenReturn(
-			false
-		);
-
-		Mockito.when(
 			layout.isRootLayout()
 		).thenReturn(
 			true
@@ -276,12 +270,6 @@ public class LayoutActionsHelperTest {
 		_setUpFeatureFlag(true);
 
 		Layout layout = _getLayout(_getGroup());
-
-		Mockito.when(
-			layout.isTypeContent()
-		).thenReturn(
-			false
-		);
 
 		LayoutActionsHelper layoutActionsHelper = new LayoutActionsHelper(
 			null, _themeDisplay, null);
