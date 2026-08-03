@@ -24,6 +24,9 @@ clusterBootstrap:
 clusterIdentity:
     deploymentName: ""
     region: ""
+clusterSecretStore:
+    enabled: false
+    provider: {}
 gitops:
     infrastructureRepository:
         revision: ""
