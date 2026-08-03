@@ -5,11 +5,78 @@
 
 import {openToast} from 'frontend-js-components-web';
 
-import {DataMask} from './types';
+import {DataMask, DataMaskTreeItem, DataMaskTypeKey} from './types';
 
 type ToastMessageOptions = {
 	dangerouslySetMessageHTML?: boolean;
 };
+
+const DATA_MASK_GROUP_ID_PREFIX = 'maskType:';
+
+const DATA_MASK_GROUP_KEYS: DataMaskTypeKey[] = ['system', 'custom'];
+
+export function buildDataMaskTree(dataMasks: DataMask[]): DataMaskTreeItem[] {
+	return DATA_MASK_GROUP_KEYS.flatMap((groupKey) => {
+		const groupDataMasks = dataMasks.filter(
+			(dataMask) =>
+				dataMask.maskType?.key === groupKey &&
+				dataMask.externalReferenceCode
+		);
+
+		if (!groupDataMasks.length) {
+			return [];
+		}
+
+		return [
+			{
+				children: groupDataMasks.map((dataMask) => ({
+					id: dataMask.externalReferenceCode as string,
+					name: dataMask.name,
+				})),
+				id: `${DATA_MASK_GROUP_ID_PREFIX}${groupKey}`,
+				name: groupDataMasks[0].maskType.name,
+			},
+		];
+	});
+}
+
+export function filterDataMaskTree(
+	tree: DataMaskTreeItem[],
+	query: string
+): {expandedKeys: string[]; items: DataMaskTreeItem[]} {
+	if (!query) {
+		return {
+			expandedKeys: tree.map((group) => group.id),
+			items: tree,
+		};
+	}
+
+	const loweredQuery = query.toLowerCase();
+
+	const items = tree.flatMap((group) => {
+		const children = (group.children ?? []).filter((child) =>
+			child.name.toLowerCase().includes(loweredQuery)
+		);
+
+		return children.length ? [{...group, children}] : [];
+	});
+
+	return {
+		expandedKeys: items.map((group) => group.id),
+		items,
+	};
+}
+
+export function getSelectedDataMaskExternalReferenceCodes(
+	tree: DataMaskTreeItem[],
+	selectedKeys: Set<string | number>
+): string[] {
+	return tree.flatMap((group) =>
+		(group.children ?? [])
+			.filter((child) => selectedKeys.has(child.id))
+			.map((child) => child.id)
+	);
+}
 
 export function isSystemMask(dataMask: DataMask | null): boolean {
 	return dataMask?.maskType?.key === 'system';

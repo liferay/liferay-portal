@@ -10,8 +10,9 @@ import OrderableTable from '../components/OrderableTable';
 import {getDataMasks} from '../services/getDataMasks';
 import {getProfileDataMasks} from '../services/getProfileDataMasks';
 import {patchProfileDataMask} from '../services/patchProfileDataMask';
-import {Profile} from '../types';
+import {DataMask, Profile} from '../types';
 import {openErrorToast} from '../utils';
+import AddDataMasksModal from './AddDataMasksModal';
 
 export interface ProfileDataMaskRow {
 	dataMaskExternalReferenceCode: string;
@@ -28,8 +29,10 @@ interface ProfileDataMasksProps {
 }
 
 export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
+	const [dataMasks, setDataMasks] = useState<DataMask[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [rows, setRows] = useState<ProfileDataMaskRow[]>([]);
+	const [showAddModal, setShowAddModal] = useState(false);
 
 	const profileExternalReferenceCode = profile.externalReferenceCode ?? '';
 
@@ -58,6 +61,7 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 			masks.map((mask) => [mask.externalReferenceCode, mask])
 		);
 
+		setDataMasks(masks);
 		setRows(
 			(associationsResult.data?.items ?? []).flatMap(
 				(association, index) => {
@@ -151,6 +155,13 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 	return (
 		<div className="cadmin fds-admin">
 			<OrderableTable
+				creationMenuItems={[
+					{
+						label: Liferay.Language.get('add-masks'),
+						onClick: () => setShowAddModal(true),
+					},
+				]}
+				creationMenuLabel={Liferay.Language.get('add-masks')}
 				fields={[
 					{label: Liferay.Language.get('name'), name: 'name'},
 					{label: Liferay.Language.get('type'), name: 'type'},
@@ -167,6 +178,29 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 				noItemsTitle={Liferay.Language.get('no-data-masks')}
 				onOrderChange={onOrderChange}
 			/>
+
+			{showAddModal && (
+				<AddDataMasksModal
+					dataMasks={dataMasks.filter(
+						(mask) =>
+							!rows.some(
+								(row) =>
+									row.dataMaskExternalReferenceCode ===
+									mask.externalReferenceCode
+							)
+					)}
+					nextExecutionOrder={
+						rows.reduce(
+							(maxExecutionOrder, row) =>
+								Math.max(maxExecutionOrder, row.executionOrder),
+							0
+						) + 1
+					}
+					onAdded={loadRows}
+					onClose={() => setShowAddModal(false)}
+					profileExternalReferenceCode={profileExternalReferenceCode}
+				/>
+			)}
 		</div>
 	);
 }
