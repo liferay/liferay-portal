@@ -55,20 +55,6 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 
 	@Override
 	public PLOEntry addOrUpdatePLOEntry(
-			long companyId, long userId, String key, String languageId,
-			String value)
-		throws PortalException {
-
-		languageId = _normalizeLanguageId(languageId);
-
-		_validate(key, languageId, value);
-
-		return _addOrUpdatePLOEntry(
-			null, companyId, userId, key, languageId, value);
-	}
-
-	@Override
-	public PLOEntry addOrUpdatePLOEntry(
 			String externalReferenceCode, long companyId, long userId,
 			String key, String languageId, String value)
 		throws PortalException {
@@ -234,7 +220,8 @@ public class PLOEntryLocalServiceImpl extends PLOEntryLocalServiceBaseImpl {
 				deletePLOEntry(companyId, key, languageId);
 			}
 			else {
-				addOrUpdatePLOEntry(companyId, userId, key, languageId, value);
+				addOrUpdatePLOEntry(
+					null, companyId, userId, key, languageId, value);
 			}
 		}
 	}

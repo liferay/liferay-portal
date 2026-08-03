@@ -38,21 +38,6 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 
 	@Override
 	public PLOEntry addOrUpdatePLOEntry(
-			String key, String languageId, String value)
-		throws PortalException {
-
-		PermissionChecker permissionChecker = getPermissionChecker();
-
-		PortalPermissionUtil.check(
-			permissionChecker, PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
-
-		return ploEntryLocalService.addOrUpdatePLOEntry(
-			permissionChecker.getCompanyId(), permissionChecker.getUserId(),
-			key, languageId, value);
-	}
-
-	@Override
-	public PLOEntry addOrUpdatePLOEntry(
 			String externalReferenceCode, String key, String languageId,
 			String value)
 		throws PortalException {
