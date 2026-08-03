@@ -16,13 +16,17 @@ import com.liferay.headless.asset.library.client.pagination.Pagination;
 import com.liferay.headless.asset.library.client.problem.Problem;
 import com.liferay.headless.asset.library.client.resource.v1_0.RoleResource;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
@@ -106,6 +110,224 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			roles -> roleResource.putAssetLibraryUserAccountRolesPage(
 				testDepotEntryGroup.getExternalReferenceCode(),
 				user.getExternalReferenceCode(), roles));
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermission()
+		throws Exception {
+
+		RoleResource assignMembersRoleResource =
+			_getAssignMembersRoleResource();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		// A fresh member (no current roles) can be granted exactly the
+		// default Asset Library Member role by a caller holding only
+		// ASSIGN_MEMBERS, mirroring the CMS "Manage Members" UI's
+		// add-member-then-assign-default-role flow.
+
+		Page<Role> page =
+			assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryMemberRole.getRoleId();
+							name = assetLibraryMemberRole.getName();
+						}
+					}
+				});
+
+		List<String> names = TransformUtil.transform(
+			page.getItems(), Role::getName);
+
+		Assert.assertEquals(names.toString(), 1, names.size());
+		Assert.assertTrue(
+			names.toString(),
+			names.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
+
+		// Reassigning that same, now-existing member to a different role
+		// still requires ASSIGN_USER_ROLES; ASSIGN_MEMBERS alone is not
+		// enough once the member already holds a role.
+
+		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		_assertForbidden(
+			() -> assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryContentReviewerRole.getRoleId();
+							name = assetLibraryContentReviewerRole.getName();
+						}
+					}
+				}));
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermissionAndAdministratorRole()
+		throws Exception {
+
+		RoleResource assignMembersRoleResource =
+			_getAssignMembersRoleResource();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryAdministratorRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
+
+		// Even for a fresh member, only the exact default role (Member)
+		// is covered by the ASSIGN_MEMBERS-only bypass - any other role,
+		// including Administrator, still requires ASSIGN_USER_ROLES.
+
+		_assertForbidden(
+			() -> assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryAdministratorRole.getRoleId();
+							name = assetLibraryAdministratorRole.getName();
+						}
+					}
+				}));
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		_userGroupRoleService.addUserGroupRoles(
+			user.getUserId(), testDepotEntry.getGroupId(),
+			new long[] {assetLibraryMemberRole.getRoleId()});
+
+		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		// Reassigning an existing member (who already holds the default
+		// Member role) to a different role is allowed for a caller holding
+		// ASSIGN_USER_ROLES, even without ASSIGN_MEMBERS - but the caller
+		// must also hold Role-scoped VIEW on that specific role; resolving
+		// the role by name still goes through the permissioned service.
+
+		RoleResource assignUserRolesRoleResource =
+			_getAssignUserRolesRoleResource(assetLibraryContentReviewerRole);
+
+		Page<Role> page =
+			assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryContentReviewerRole.getRoleId();
+							name = assetLibraryContentReviewerRole.getName();
+						}
+					}
+				});
+
+		List<String> names = TransformUtil.transform(
+			page.getItems(), Role::getName);
+
+		Assert.assertEquals(names.toString(), 1, names.size());
+		Assert.assertTrue(
+			names.toString(),
+			names.contains(DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER));
+	}
+
+	@Test
+	public void testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermissionAndWithoutRoleViewPermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		_userGroupRoleService.addUserGroupRoles(
+			user.getUserId(), testDepotEntry.getGroupId(),
+			new long[] {assetLibraryMemberRole.getRoleId()});
+
+		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		// ASSIGN_USER_ROLES alone, without Role-scoped VIEW on the target
+		// role, is not enough - resolving the role by name goes through the
+		// permissioned service.
+
+		RoleResource assignUserRolesRoleResource =
+			_getAssignUserRolesRoleResource();
+
+		_assertForbidden(
+			() ->
+				assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
+					testDepotEntryGroup.getExternalReferenceCode(),
+					user.getExternalReferenceCode(),
+					new Role[] {
+						new Role() {
+							{
+								id =
+									assetLibraryContentReviewerRole.getRoleId();
+								name =
+									assetLibraryContentReviewerRole.getName();
+							}
+						}
+					}));
 	}
 
 	@Override
@@ -222,6 +444,21 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		return _userGroup.getExternalReferenceCode();
 	}
 
+	private void _assertForbidden(UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("FORBIDDEN", problem.getStatus());
+		}
+	}
+
 	private void _assertRolesPage(
 			Role[] expectedRoles,
 			UnsafeSupplier<Page<Role>, Exception> unsafeSupplier)
@@ -237,6 +474,98 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		for (Role role : expectedRoles) {
 			Assert.assertTrue(items.contains(role));
 		}
+	}
+
+	private RoleResource _getAssignMembersRoleResource() throws Exception {
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		_roles.add(role);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		RoleTestUtil.addResourcePermission(
+			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testDepotEntry.getGroupId()),
+			ActionKeys.ASSIGN_MEMBERS);
+		RoleTestUtil.addResourcePermission(
+			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testDepotEntry.getGroupId()), ActionKeys.VIEW);
+		RoleTestUtil.addResourcePermission(
+			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+
+		return RoleResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
+	private RoleResource _getAssignUserRolesRoleResource(
+			com.liferay.portal.kernel.model.Role... viewableRoles)
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
+
+		_roles.add(role);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		RoleTestUtil.addResourcePermission(
+			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testDepotEntry.getGroupId()),
+			ActionKeys.ASSIGN_USER_ROLES);
+		RoleTestUtil.addResourcePermission(
+			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(testDepotEntry.getGroupId()), ActionKeys.VIEW);
+		RoleTestUtil.addResourcePermission(
+			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
+
+		for (com.liferay.portal.kernel.model.Role viewableRole :
+				viewableRoles) {
+
+			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+				viewableRole.getCompanyId(),
+				com.liferay.portal.kernel.model.Role.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(viewableRole.getRoleId()), role.getRoleId(),
+				new String[] {ActionKeys.VIEW});
+		}
+
+		return RoleResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private RoleResource _getRoleResource(String roleName) throws Exception {
