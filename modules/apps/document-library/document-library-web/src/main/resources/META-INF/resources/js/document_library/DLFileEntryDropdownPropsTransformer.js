@@ -9,6 +9,9 @@ import {
 	openSelectionModal,
 } from 'frontend-js-components-web';
 import {addParams, navigate} from 'frontend-js-web';
+import React from 'react';
+
+import SignatureDetailsModal from './SignatureDetailsModal';
 
 const ACTIONS = {
 	checkin({checkinURL}, portletNamespace) {
@@ -151,6 +154,17 @@ const ACTIONS = {
 
 	unsubscribeFileEntry({unsubscribeFileEntryURL}) {
 		location.href = unsubscribeFileEntryURL;
+	},
+
+	viewSignatureStatus({fileEntryTitle, signatureDetailsURL}) {
+		openModal({
+			contentComponent: () => (
+				<SignatureDetailsModal
+					fileEntryTitle={fileEntryTitle}
+					url={signatureDetailsURL}
+				/>
+			),
+		});
 	},
 };
 

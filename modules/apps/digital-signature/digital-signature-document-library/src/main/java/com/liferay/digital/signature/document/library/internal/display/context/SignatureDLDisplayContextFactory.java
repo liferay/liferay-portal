@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -95,18 +96,28 @@ public class SignatureDLDisplayContextFactory
 				_PROVIDER_REQUEST_IDS, providerRequestIds);
 		}
 
-		if (providerRequestIds.isEmpty()) {
-			return parentDLViewFileVersionDisplayContext;
-		}
-
 		try {
 			FileEntry fileEntry = fileVersion.getFileEntry();
 
-			String providerRequestId = providerRequestIds.get(
-				fileEntry.getFileEntryId());
+			long fileEntryId = fileEntry.getFileEntryId();
+
+			String providerRequestId = providerRequestIds.get(fileEntryId);
+
+			// The Sign action is offered only while the current user has a
+			// pending request. View Signature Status is offered whenever the
+			// file has any signature request, including completed ones.
 
 			if (Validator.isNull(providerRequestId)) {
-				return parentDLViewFileVersionDisplayContext;
+				Map<Long, String> requestStatusesByFileEntryId =
+					_dsRequestManager.getRequestStatusesByFileEntryId(
+						themeDisplay.getCompanyId(),
+						Collections.singletonList(fileEntryId));
+
+				if (Validator.isNull(
+						requestStatusesByFileEntryId.get(fileEntryId))) {
+
+					return parentDLViewFileVersionDisplayContext;
+				}
 			}
 
 			return new SignatureDLViewFileVersionDisplayContext(

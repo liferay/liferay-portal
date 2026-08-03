@@ -11,7 +11,9 @@ import com.liferay.digital.signature.mail.DSEnvelopeEmailNotificationSender;
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.model.DSEnvelope;
 import com.liferay.digital.signature.model.DSRecipient;
+import com.liferay.digital.signature.request.DSRequestDetail;
 import com.liferay.digital.signature.request.DSRequestManager;
+import com.liferay.digital.signature.request.DSRequestRecipientDetail;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -50,6 +52,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -359,6 +362,73 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		}
 
 		return recipientStatusesByFileEntryId;
+	}
+
+	@Override
+	public DSRequestDetail getRequestDetail(long companyId, long fileEntryId) {
+		if (!_isEnabled(companyId, 0)) {
+			return null;
+		}
+
+		ObjectDefinition documentObjectDefinition = _fetchObjectDefinition(
+			companyId, "L_DS_REQUEST_DOCUMENT");
+		ObjectDefinition recipientObjectDefinition = _fetchObjectDefinition(
+			companyId, "L_DS_REQUEST_RECIPIENT");
+		ObjectDefinition requestObjectDefinition = _fetchObjectDefinition(
+			companyId, "L_DS_REQUEST");
+
+		if ((documentObjectDefinition == null) ||
+			(recipientObjectDefinition == null) ||
+			(requestObjectDefinition == null)) {
+
+			return null;
+		}
+
+		try {
+			Map<Long, Long> requestIdsByFileEntryId =
+				_getRequestIdsByFileEntryId(
+					companyId, documentObjectDefinition,
+					requestObjectDefinition,
+					Collections.singleton(fileEntryId));
+
+			Long requestId = requestIdsByFileEntryId.get(fileEntryId);
+
+			if (requestId == null) {
+				return null;
+			}
+
+			ObjectEntry requestObjectEntry =
+				_objectEntryLocalService.fetchObjectEntry(requestId);
+
+			if (requestObjectEntry == null) {
+				return null;
+			}
+
+			Map<String, Serializable> requestValues =
+				requestObjectEntry.getValues();
+
+			return new DSRequestDetail(
+				requestObjectEntry.getCreateDate(),
+				GetterUtil.getString(requestValues.get("emailSubject")),
+				_toDate(requestValues.get("expirationDateTime")),
+				GetterUtil.getString(requestValues.get("providerRequestId")),
+				_getRecipientDetails(
+					companyId, recipientObjectDefinition,
+					requestObjectDefinition, requestId),
+				_getRequesterEmailAddress(requestObjectEntry),
+				_getRequesterName(requestObjectEntry),
+				requestObjectEntry.getUserId(),
+				GetterUtil.getString(requestValues.get("requestStatus")),
+				_toDate(requestValues.get("statusDateTime")));
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to load the signature request detail for file entry " +
+					fileEntryId,
+				exception);
+
+			return null;
+		}
 	}
 
 	@Override
@@ -692,6 +762,32 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				externalReferenceCode, companyId);
 	}
 
+	private List<DSRequestRecipientDetail> _getRecipientDetails(
+			long companyId, ObjectDefinition recipientObjectDefinition,
+			ObjectDefinition requestObjectDefinition, long requestId)
+		throws Exception {
+
+		String fieldName = _getRelationshipFieldName(
+			requestObjectDefinition, "dsRequestToDSRequestRecipients");
+
+		if (fieldName == null) {
+			return Collections.emptyList();
+		}
+
+		return TransformUtil.transform(
+			_getValuesList(
+				companyId, recipientObjectDefinition,
+				StringBundler.concat("(", fieldName, " eq '", requestId, "')"),
+				null),
+			recipientValues -> new DSRequestRecipientDetail(
+				GetterUtil.getString(recipientValues.get("emailAddress")),
+				GetterUtil.getString(recipientValues.get("name")),
+				GetterUtil.getString(
+					recipientValues.get("requestRecipientStatus")),
+				_toDate(recipientValues.get("sentDate")),
+				_toDate(recipientValues.get("statusDateTime"))));
+	}
+
 	private long _getRecipientUserId(long companyId, String emailAddress) {
 		if (Validator.isNull(emailAddress)) {
 			return 0;
@@ -724,6 +820,34 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			objectRelationship.getObjectFieldId2());
 
 		return objectField.getName();
+	}
+
+	private String _getRequesterEmailAddress(ObjectEntry requestObjectEntry) {
+		if (requestObjectEntry == null) {
+			return null;
+		}
+
+		User user = _userLocalService.fetchUser(requestObjectEntry.getUserId());
+
+		if (user == null) {
+			return null;
+		}
+
+		return user.getEmailAddress();
+	}
+
+	private String _getRequesterName(ObjectEntry requestObjectEntry) {
+		if (requestObjectEntry == null) {
+			return null;
+		}
+
+		User user = _userLocalService.fetchUser(requestObjectEntry.getUserId());
+
+		if (user == null) {
+			return requestObjectEntry.getUserName();
+		}
+
+		return user.getFullName();
 	}
 
 	private Map<Long, Long> _getRequestIdsByFileEntryId(

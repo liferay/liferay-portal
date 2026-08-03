@@ -29,6 +29,8 @@ public interface DSRequestManager {
 	public Map<Long, Map<Long, String>> getRecipientStatusesByFileEntryId(
 		long companyId, Collection<Long> fileEntryIds);
 
+	public DSRequestDetail getRequestDetail(long companyId, long fileEntryId);
+
 	public Map<Long, String> getRequestStatusesByFileEntryId(
 		long companyId, Collection<Long> fileEntryIds);
 

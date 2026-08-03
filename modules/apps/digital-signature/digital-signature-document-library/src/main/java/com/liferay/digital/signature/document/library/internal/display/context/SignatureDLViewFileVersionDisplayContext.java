@@ -13,11 +13,17 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import jakarta.portlet.PortletResponse;
+import jakarta.portlet.ResourceURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +50,7 @@ public class SignatureDLViewFileVersionDisplayContext
 			fileVersion);
 
 		_httpServletRequest = httpServletRequest;
+		_fileVersion = fileVersion;
 		_providerRequestId = providerRequestId;
 		_signDSURLProvider = signDSURLProvider;
 
@@ -59,30 +66,62 @@ public class SignatureDLViewFileVersionDisplayContext
 			dropdownItems = new ArrayList<>();
 		}
 
-		DropdownItem dropdownItem = DropdownItemBuilder.setHref(
-			() -> {
-				String portletNamespace = PortalUtil.getPortletNamespace(
-					DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
+		if (Validator.isNotNull(_providerRequestId)) {
+			DropdownItem dropdownItem = DropdownItemBuilder.setHref(
+				() -> {
+					String portletNamespace = PortalUtil.getPortletNamespace(
+						DigitalSignaturePortletKeys.SIGN_DIGITAL_SIGNATURE);
 
-				return HttpComponentsUtil.addParameter(
-					_signDSURLProvider.getURL(
-						_themeDisplay.getCompanyId(), _providerRequestId),
-					portletNamespace + "backURL",
-					_themeDisplay.getURLCurrent());
-			}
-		).setIcon(
-			"pencil"
-		).setKey(
-			"sign"
-		).setLabel(
-			LanguageUtil.get(_httpServletRequest, "sign")
-		).build();
+					return HttpComponentsUtil.addParameter(
+						_signDSURLProvider.getURL(
+							_themeDisplay.getCompanyId(), _providerRequestId),
+						portletNamespace + "backURL",
+						_themeDisplay.getURLCurrent());
+				}
+			).setIcon(
+				"pencil"
+			).setKey(
+				"sign"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "sign")
+			).build();
 
-		dropdownItems.add(dropdownItem);
+			dropdownItems.add(dropdownItem);
+		}
+
+		dropdownItems.add(_getViewSignatureStatusDropdownItem());
 
 		return dropdownItems;
 	}
 
+	private DropdownItem _getViewSignatureStatusDropdownItem() {
+		PortletResponse portletResponse =
+			(PortletResponse)_httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
+
+		LiferayPortletResponse liferayPortletResponse =
+			PortalUtil.getLiferayPortletResponse(portletResponse);
+
+		ResourceURL resourceURL = liferayPortletResponse.createResourceURL();
+
+		resourceURL.setParameter(
+			"fileEntryId", String.valueOf(_fileVersion.getFileEntryId()));
+		resourceURL.setResourceID("/document_library/get_signature_details");
+
+		return DropdownItemBuilder.putData(
+			"action", "viewSignatureStatus"
+		).putData(
+			"fileEntryTitle", _fileVersion.getFileName()
+		).putData(
+			"signatureDetailsURL", resourceURL.toString()
+		).setIcon(
+			"list-ul"
+		).setLabel(
+			LanguageUtil.get(_httpServletRequest, "view-signature-status")
+		).build();
+	}
+
+	private final FileVersion _fileVersion;
 	private final HttpServletRequest _httpServletRequest;
 	private final String _providerRequestId;
 	private final SignDSURLProvider _signDSURLProvider;
