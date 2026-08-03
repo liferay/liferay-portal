@@ -13,6 +13,7 @@ import {patchProfileDataMask} from '../services/patchProfileDataMask';
 import {DataMask, Profile} from '../types';
 import {openErrorToast} from '../utils';
 import AddDataMasksModal from './AddDataMasksModal';
+import RemoveDataMaskModal from './RemoveDataMaskModal';
 
 export interface ProfileDataMaskRow {
 	dataMaskExternalReferenceCode: string;
@@ -32,6 +33,9 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 	const [dataMasks, setDataMasks] = useState<DataMask[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [rows, setRows] = useState<ProfileDataMaskRow[]>([]);
+	const [rowToRemove, setRowToRemove] = useState<ProfileDataMaskRow | null>(
+		null
+	);
 	const [showAddModal, setShowAddModal] = useState(false);
 
 	const profileExternalReferenceCode = profile.externalReferenceCode ?? '';
@@ -155,6 +159,14 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 	return (
 		<div className="cadmin fds-admin">
 			<OrderableTable
+				actions={[
+					{
+						icon: 'trash',
+						label: Liferay.Language.get('remove'),
+						onClick: ({item}: {item: ProfileDataMaskRow}) =>
+							setRowToRemove(item),
+					},
+				]}
 				creationMenuItems={[
 					{
 						label: Liferay.Language.get('add-masks'),
@@ -178,6 +190,14 @@ export default function ProfileDataMasks({profile}: ProfileDataMasksProps) {
 				noItemsTitle={Liferay.Language.get('no-data-masks')}
 				onOrderChange={onOrderChange}
 			/>
+
+			{rowToRemove && (
+				<RemoveDataMaskModal
+					onClose={() => setRowToRemove(null)}
+					onRemoved={loadRows}
+					row={rowToRemove}
+				/>
+			)}
 
 			{showAddModal && (
 				<AddDataMasksModal
