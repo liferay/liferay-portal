@@ -1076,6 +1076,7 @@ public class KaleoDefinitionPersistenceImpl
 
 		dbColumnNames.put("uuid", "uuid_");
 		dbColumnNames.put("active", "active_");
+		dbColumnNames.put("system", "system_");
 
 		setDBColumnNames(dbColumnNames);
 
@@ -1422,6 +1423,7 @@ public class KaleoDefinitionPersistenceImpl
 		ctMergeColumnNames.add("scope");
 		ctMergeColumnNames.add("version");
 		ctMergeColumnNames.add("active_");
+		ctMergeColumnNames.add("system_");
 		ctMergeColumnNames.add("status");
 
 		_ctColumnNamesMap.put(
@@ -1826,7 +1828,7 @@ public class KaleoDefinitionPersistenceImpl
 		"SELECT COUNT(kaleoDefinition) FROM KaleoDefinition kaleoDefinition WHERE ";
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
-		new String[] {"uuid", "active"});
+		new String[] {"uuid", "active", "system"});
 
 	@Override
 	protected FinderCache getFinderCache() {
@@ -1834,4 +1836,4 @@ public class KaleoDefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2039341296
+// LIFERAY-SERVICE-BUILDER-HASH:-1017558561

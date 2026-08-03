@@ -73,7 +73,7 @@ public class KaleoDefinitionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(39);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -111,6 +111,8 @@ public class KaleoDefinitionCacheModel
 		sb.append(version);
 		sb.append(", active=");
 		sb.append(active);
+		sb.append(", system=");
+		sb.append(system);
 		sb.append(", status=");
 		sb.append(status);
 		sb.append("}");
@@ -202,6 +204,7 @@ public class KaleoDefinitionCacheModel
 
 		kaleoDefinitionImpl.setVersion(version);
 		kaleoDefinitionImpl.setActive(active);
+		kaleoDefinitionImpl.setSystem(system);
 		kaleoDefinitionImpl.setStatus(status);
 
 		kaleoDefinitionImpl.resetOriginalValues();
@@ -246,6 +249,8 @@ public class KaleoDefinitionCacheModel
 		version = objectInput.readInt();
 
 		active = objectInput.readBoolean();
+
+		system = objectInput.readBoolean();
 
 		status = objectInput.readInt();
 
@@ -329,6 +334,8 @@ public class KaleoDefinitionCacheModel
 
 		objectOutput.writeBoolean(active);
 
+		objectOutput.writeBoolean(system);
+
 		objectOutput.writeInt(status);
 
 		objectOutput.writeObject(contentAsXML);
@@ -352,6 +359,7 @@ public class KaleoDefinitionCacheModel
 	public String scope;
 	public int version;
 	public boolean active;
+	public boolean system;
 	public int status;
 	public volatile String contentAsXML;
 
@@ -370,4 +378,4 @@ public class KaleoDefinitionCacheModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1474727527
+// LIFERAY-SERVICE-BUILDER-HASH:-205092746

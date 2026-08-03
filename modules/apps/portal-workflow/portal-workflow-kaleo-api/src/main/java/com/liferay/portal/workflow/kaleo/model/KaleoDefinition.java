@@ -54,9 +54,7 @@ public interface KaleoDefinition extends KaleoDefinitionModel, PersistedModel {
 	public java.util.List<KaleoDefinitionVersion> getKaleoDefinitionVersions()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public boolean isSystem();
-
 	public void setContentAsXML(String contentAsXML);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:933157800
+// LIFERAY-SERVICE-BUILDER-HASH:1484234082

@@ -54,6 +54,7 @@ public class KaleoDefinitionWrapper
 		attributes.put("scope", getScope());
 		attributes.put("version", getVersion());
 		attributes.put("active", isActive());
+		attributes.put("system", isSystem());
 		attributes.put("status", getStatus());
 
 		return attributes;
@@ -168,6 +169,12 @@ public class KaleoDefinitionWrapper
 
 		if (active != null) {
 			setActive(active);
+		}
+
+		Boolean system = (Boolean)attributes.get("system");
+
+		if (system != null) {
+			setSystem(system);
 		}
 
 		Integer status = (Integer)attributes.get("status");
@@ -355,6 +362,16 @@ public class KaleoDefinitionWrapper
 	}
 
 	/**
+	 * Returns the system of this kaleo definition.
+	 *
+	 * @return the system of this kaleo definition
+	 */
+	@Override
+	public boolean getSystem() {
+		return model.getSystem();
+	}
+
+	/**
 	 * Returns the title of this kaleo definition.
 	 *
 	 * @return the title of this kaleo definition
@@ -490,6 +507,11 @@ public class KaleoDefinitionWrapper
 		return model.isActive();
 	}
 
+	/**
+	 * Returns <code>true</code> if this kaleo definition is system.
+	 *
+	 * @return <code>true</code> if this kaleo definition is system; <code>false</code> otherwise
+	 */
 	@Override
 	public boolean isSystem() {
 		return model.isSystem();
@@ -671,6 +693,16 @@ public class KaleoDefinitionWrapper
 	}
 
 	/**
+	 * Sets whether this kaleo definition is system.
+	 *
+	 * @param system the system of this kaleo definition
+	 */
+	@Override
+	public void setSystem(boolean system) {
+		model.setSystem(system);
+	}
+
+	/**
 	 * Sets the title of this kaleo definition.
 	 *
 	 * @param title the title of this kaleo definition
@@ -814,4 +846,4 @@ public class KaleoDefinitionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1326523217
+// LIFERAY-SERVICE-BUILDER-HASH:-2118246173

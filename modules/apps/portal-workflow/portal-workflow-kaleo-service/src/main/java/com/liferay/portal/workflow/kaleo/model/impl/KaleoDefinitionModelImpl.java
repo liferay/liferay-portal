@@ -84,7 +84,7 @@ public class KaleoDefinitionModelImpl
 		{"title", Types.VARCHAR}, {"description", Types.VARCHAR},
 		{"content", Types.CLOB}, {"scope", Types.VARCHAR},
 		{"version", Types.INTEGER}, {"active_", Types.BOOLEAN},
-		{"status", Types.INTEGER}
+		{"system_", Types.BOOLEAN}, {"status", Types.INTEGER}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -109,11 +109,12 @@ public class KaleoDefinitionModelImpl
 		TABLE_COLUMNS_MAP.put("scope", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("version", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("active_", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("system_", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table KaleoDefinition (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,kaleoDefinitionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(200) null,title STRING null,description STRING null,content TEXT null,scope VARCHAR(75) null,version INTEGER,active_ BOOLEAN,status INTEGER,primary key (kaleoDefinitionId, ctCollectionId))";
+		"create table KaleoDefinition (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,kaleoDefinitionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(200) null,title STRING null,description STRING null,content TEXT null,scope VARCHAR(75) null,version INTEGER,active_ BOOLEAN,system_ BOOLEAN,status INTEGER,primary key (kaleoDefinitionId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table KaleoDefinition";
 
@@ -320,6 +321,7 @@ public class KaleoDefinitionModelImpl
 			attributeGetterFunctions.put(
 				"version", KaleoDefinition::getVersion);
 			attributeGetterFunctions.put("active", KaleoDefinition::getActive);
+			attributeGetterFunctions.put("system", KaleoDefinition::getSystem);
 			attributeGetterFunctions.put("status", KaleoDefinition::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
@@ -404,6 +406,10 @@ public class KaleoDefinitionModelImpl
 				"active",
 				(BiConsumer<KaleoDefinition, Boolean>)
 					KaleoDefinition::setActive);
+			attributeSetterBiConsumers.put(
+				"system",
+				(BiConsumer<KaleoDefinition, Boolean>)
+					KaleoDefinition::setSystem);
 			attributeSetterBiConsumers.put(
 				"status",
 				(BiConsumer<KaleoDefinition, Integer>)
@@ -919,6 +925,27 @@ public class KaleoDefinitionModelImpl
 
 	@JSON
 	@Override
+	public boolean getSystem() {
+		return _system;
+	}
+
+	@JSON
+	@Override
+	public boolean isSystem() {
+		return _system;
+	}
+
+	@Override
+	public void setSystem(boolean system) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_system = system;
+	}
+
+	@JSON
+	@Override
 	public int getStatus() {
 		return _status;
 	}
@@ -1086,6 +1113,7 @@ public class KaleoDefinitionModelImpl
 		kaleoDefinitionImpl.setScope(getScope());
 		kaleoDefinitionImpl.setVersion(getVersion());
 		kaleoDefinitionImpl.setActive(isActive());
+		kaleoDefinitionImpl.setSystem(isSystem());
 		kaleoDefinitionImpl.setStatus(getStatus());
 
 		kaleoDefinitionImpl.resetOriginalValues();
@@ -1133,6 +1161,8 @@ public class KaleoDefinitionModelImpl
 			this.<Integer>getColumnOriginalValue("version"));
 		kaleoDefinitionImpl.setActive(
 			this.<Boolean>getColumnOriginalValue("active_"));
+		kaleoDefinitionImpl.setSystem(
+			this.<Boolean>getColumnOriginalValue("system_"));
 		kaleoDefinitionImpl.setStatus(
 			this.<Integer>getColumnOriginalValue("status"));
 
@@ -1333,6 +1363,8 @@ public class KaleoDefinitionModelImpl
 
 		kaleoDefinitionCacheModel.active = isActive();
 
+		kaleoDefinitionCacheModel.system = isSystem();
+
 		kaleoDefinitionCacheModel.status = getStatus();
 
 		try {
@@ -1427,6 +1459,7 @@ public class KaleoDefinitionModelImpl
 	private String _scope;
 	private int _version;
 	private boolean _active;
+	private boolean _system;
 	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
@@ -1478,6 +1511,7 @@ public class KaleoDefinitionModelImpl
 		_columnOriginalValues.put("scope", _scope);
 		_columnOriginalValues.put("version", _version);
 		_columnOriginalValues.put("active_", _active);
+		_columnOriginalValues.put("system_", _system);
 		_columnOriginalValues.put("status", _status);
 	}
 
@@ -1488,6 +1522,7 @@ public class KaleoDefinitionModelImpl
 
 		attributeNames.put("uuid_", "uuid");
 		attributeNames.put("active_", "active");
+		attributeNames.put("system_", "system");
 
 		_attributeNames = Collections.unmodifiableMap(attributeNames);
 	}
@@ -1539,7 +1574,9 @@ public class KaleoDefinitionModelImpl
 
 		columnBitmasks.put("active_", 131072L);
 
-		columnBitmasks.put("status", 262144L);
+		columnBitmasks.put("system_", 262144L);
+
+		columnBitmasks.put("status", 524288L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1580,4 +1617,4 @@ public class KaleoDefinitionModelImpl
 	private KaleoDefinition _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1145528557
+// LIFERAY-SERVICE-BUILDER-HASH:1613417616

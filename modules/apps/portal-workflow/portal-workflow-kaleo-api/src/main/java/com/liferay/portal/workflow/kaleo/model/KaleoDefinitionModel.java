@@ -449,6 +449,27 @@ public interface KaleoDefinitionModel
 	public void setActive(boolean active);
 
 	/**
+	 * Returns the system of this kaleo definition.
+	 *
+	 * @return the system of this kaleo definition
+	 */
+	public boolean getSystem();
+
+	/**
+	 * Returns <code>true</code> if this kaleo definition is system.
+	 *
+	 * @return <code>true</code> if this kaleo definition is system; <code>false</code> otherwise
+	 */
+	public boolean isSystem();
+
+	/**
+	 * Sets whether this kaleo definition is system.
+	 *
+	 * @param system the system of this kaleo definition
+	 */
+	public void setSystem(boolean system);
+
+	/**
 	 * Returns the status of this kaleo definition.
 	 *
 	 * @return the status of this kaleo definition
@@ -483,4 +504,4 @@ public interface KaleoDefinitionModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-808520607
+// LIFERAY-SERVICE-BUILDER-HASH:1130890453

@@ -148,6 +148,8 @@ public class KaleoDefinitionPersistenceTest {
 
 		newKaleoDefinition.setActive(RandomTestUtil.randomBoolean());
 
+		newKaleoDefinition.setSystem(RandomTestUtil.randomBoolean());
+
 		newKaleoDefinition.setStatus(RandomTestUtil.nextInt());
 
 		newKaleoDefinition = _persistence.update(newKaleoDefinition);
@@ -206,6 +208,8 @@ public class KaleoDefinitionPersistenceTest {
 			newKaleoDefinition.getVersion());
 		Assert.assertEquals(
 			existingKaleoDefinition.isActive(), newKaleoDefinition.isActive());
+		Assert.assertEquals(
+			existingKaleoDefinition.isSystem(), newKaleoDefinition.isSystem());
 		Assert.assertEquals(
 			existingKaleoDefinition.getStatus(),
 			newKaleoDefinition.getStatus());
@@ -374,7 +378,7 @@ public class KaleoDefinitionPersistenceTest {
 			true, "groupId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true, "name",
 			true, "title", true, "description", true, "scope", true, "version",
-			true, "active", true, "status", true);
+			true, "active", true, "system", true, "status", true);
 	}
 
 	@Test
@@ -747,6 +751,8 @@ public class KaleoDefinitionPersistenceTest {
 
 		kaleoDefinition.setActive(RandomTestUtil.randomBoolean());
 
+		kaleoDefinition.setSystem(RandomTestUtil.randomBoolean());
+
 		kaleoDefinition.setStatus(RandomTestUtil.nextInt());
 
 		_kaleoDefinitions.add(_persistence.update(kaleoDefinition));
@@ -760,4 +766,4 @@ public class KaleoDefinitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1727286379
+// LIFERAY-SERVICE-BUILDER-HASH:-1146105507
