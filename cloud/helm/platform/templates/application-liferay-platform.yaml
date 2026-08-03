@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+    finalizers:
+        -   resources-finalizer.argocd.argoproj.io
+    labels:
+        liferay.com/project: liferay-cloud-native
+        app.kubernetes.io/name: liferay-platform
+    name: liferay-platform
+    namespace: {{ .Release.Namespace }}
+spec:
+    destination:
+        namespace: {{ .Release.Namespace }}
+        server: https://kubernetes.default.svc
+    project: default
+    sources:
+        -   {{- with .Values.platformComponents.values }}
+            helm:
+                valuesObject:
+                    {{- toYaml . | nindent 20 }}
+            {{- end }}
+            path: .
+            repoURL: {{ .Values.platformComponents.repoURL }}
+            targetRevision: {{ .Values.platformComponents.targetRevision | quote }}
+    syncPolicy:
+        automated:
+            prune: true
+            selfHeal: true
+        retry:
+            backoff:
+                duration: 30s
+                factor: 2
+                maxDuration: 10m
+            limit: 10
+        syncOptions:
+            -   CreateNamespace=true

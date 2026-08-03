@@ -1,0 +1,4 @@
+platformComponents:
+    repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-platform-components
+    targetRevision: 0.1.0
+    values: {}
