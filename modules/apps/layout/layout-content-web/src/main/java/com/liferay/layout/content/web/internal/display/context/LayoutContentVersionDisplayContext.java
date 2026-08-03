@@ -59,9 +59,19 @@ public class LayoutContentVersionDisplayContext {
 				"defaultLanguageId",
 				LocaleUtil.toLanguageId(_themeDisplay.getSiteDefaultLocale())
 			).put(
-				"draftName", _getDraftName()
+				"draftName",
+				() -> {
+					Layout layout = _themeDisplay.getLayout();
+
+					return layout.getName(_themeDisplay.getSiteDefaultLocale());
+				}
 			).put(
-				"hasDraft", _hasDraft()
+				"hasDraft",
+				() -> {
+					Layout layout = _themeDisplay.getLayout();
+
+					return !layout.isApproved();
+				}
 			).put(
 				"pageSpecificationVersionsURL",
 				_getPageSpecificationVersionsURL()
@@ -117,12 +127,6 @@ public class LayoutContentVersionDisplayContext {
 			});
 	}
 
-	private String _getDraftName() {
-		Layout layout = _themeDisplay.getLayout();
-
-		return layout.getName(_themeDisplay.getSiteDefaultLocale());
-	}
-
 	private String _getPageSpecificationVersionsURL() throws PortalException {
 		Group group = _themeDisplay.getScopeGroup();
 
@@ -134,12 +138,6 @@ public class LayoutContentVersionDisplayContext {
 			"/o/headless-admin-site/v1.0/sites/",
 			group.getExternalReferenceCode(), "/site-pages/",
 			layout.getExternalReferenceCode(), "/page-specification-versions");
-	}
-
-	private boolean _hasDraft() {
-		Layout layout = _themeDisplay.getLayout();
-
-		return !layout.isApproved();
 	}
 
 	private final HttpServletRequest _httpServletRequest;
