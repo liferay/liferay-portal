@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser.monitor;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -175,6 +176,23 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 			testEquals(2, monitorResults.size());
 		}
+	}
+
+	@Test(timeout = 10000)
+	public void testRunCycleIgnoresMonitorsAddedAfterConstruction() {
+		List<Monitor> monitors = new ArrayList<>();
+
+		monitors.add(new TestMonitor(_newMonitorConfig("a", 0, 0)));
+
+		MonitorEngine monitorEngine = new MonitorEngine(
+			new MonitorResultStore(), monitors);
+
+		monitors.add(new TestMonitor(_newMonitorConfig("b", 0, 0)));
+
+		Map<Monitor, MonitorResult> monitorResultsMap =
+			monitorEngine.runCycle();
+
+		testEquals(1, monitorResultsMap.size());
 	}
 
 	private MonitorConfig _newMonitorConfig(String id) {

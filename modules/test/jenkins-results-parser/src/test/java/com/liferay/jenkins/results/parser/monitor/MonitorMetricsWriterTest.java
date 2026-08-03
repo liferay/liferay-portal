@@ -10,6 +10,7 @@ import com.liferay.jenkins.results.parser.RandomTestUtil;
 
 import java.io.File;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,6 +122,56 @@ public class MonitorMetricsWriterTest
 			content.contains(
 				"monitor_check_status{check=\"a\\\"b\\\\c\"," +
 					"severity=\"medium\",type=\"d\\ne\"} 2.0\n"));
+	}
+
+	@Test
+	public void testWriteIgnoresMonitorsAddedAfterConstruction()
+		throws Exception {
+
+		MonitorResultStore monitorResultStore = new MonitorResultStore();
+
+		monitorResultStore.store(
+			"disk", _newMonitorResult(MonitorResult.Status.OK, 1750000000000L));
+
+		List<Monitor> monitors = new ArrayList<>();
+
+		monitors.add(
+			new TestMonitor(
+				_newMonitorConfig(
+					"disk", MonitorConfig.Severity.HIGH,
+					"resource-threshold")));
+
+		File metricsFile = new File(
+			temporaryFolder.getRoot(), RandomTestUtil.randomString());
+
+		MonitorMetricsWriter monitorMetricsWriter = new MonitorMetricsWriter(
+			metricsFile, monitorResultStore, monitors);
+
+		monitors.add(
+			new TestMonitor(
+				_newMonitorConfig(
+					"disk", MonitorConfig.Severity.HIGH,
+					"resource-threshold")));
+
+		_write(monitorMetricsWriter);
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"# HELP monitor_check_last_run_timestamp_seconds Unix ",
+				"timestamp of the last check run, 0 if never run\n",
+				"# TYPE monitor_check_last_run_timestamp_seconds gauge\n",
+				"monitor_check_last_run_timestamp_seconds{check=\"disk\",",
+				"severity=\"high\",type=\"resource-threshold\"} 1.75E9\n",
+				"# HELP monitor_check_status Monitor status severity rank, ",
+				"0 OK, 1 UNKNOWN, 2 WARN, 3 CRITICAL\n",
+				"# TYPE monitor_check_status gauge\n",
+				"monitor_check_status{check=\"disk\",severity=\"high\",",
+				"type=\"resource-threshold\"} 0.0\n",
+				"# HELP monitor_heartbeat_timestamp_seconds Unix timestamp of ",
+				"the last metrics write\n",
+				"# TYPE monitor_heartbeat_timestamp_seconds gauge\n",
+				"monitor_heartbeat_timestamp_seconds 1.75E9\n"),
+			read(metricsFile));
 	}
 
 	@Test
@@ -237,8 +288,13 @@ public class MonitorMetricsWriterTest
 			List<Monitor> monitors)
 		throws Exception {
 
-		MonitorMetricsWriter monitorMetricsWriter = new MonitorMetricsWriter(
-			metricsFile, monitorResultStore, monitors);
+		_write(
+			new MonitorMetricsWriter(
+				metricsFile, monitorResultStore, monitors));
+	}
+
+	private void _write(MonitorMetricsWriter monitorMetricsWriter)
+		throws Exception {
 
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
