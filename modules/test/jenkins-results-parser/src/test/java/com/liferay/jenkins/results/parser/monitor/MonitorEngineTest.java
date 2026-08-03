@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.MockedStatic;
@@ -21,6 +22,29 @@ import org.mockito.Mockito;
  * @author Brittney Nguyen
  */
 public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testMonitorEngineDuplicateIds() {
+		MonitorResultStore monitorResultStore = new MonitorResultStore();
+
+		new MonitorEngine(
+			monitorResultStore,
+			Arrays.<Monitor>asList(
+				new TestMonitor(_newMonitorConfig("a")),
+				new TestMonitor(_newMonitorConfig("b"))));
+
+		try {
+			new MonitorEngine(
+				monitorResultStore,
+				Arrays.<Monitor>asList(
+					new TestMonitor(_newMonitorConfig("a")),
+					new TestMonitor(_newMonitorConfig("a"))));
+
+			Assert.fail("Expected IllegalArgumentException");
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+		}
+	}
 
 	@Test(timeout = 10000)
 	public void testRunCycle() {
@@ -151,6 +175,11 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 
 			testEquals(2, monitorResults.size());
 		}
+	}
+
+	private MonitorConfig _newMonitorConfig(String id) {
+		return _newMonitorConfig(
+			id, RandomTestUtil.randomLong(), RandomTestUtil.randomLong());
 	}
 
 	private MonitorConfig _newMonitorConfig(

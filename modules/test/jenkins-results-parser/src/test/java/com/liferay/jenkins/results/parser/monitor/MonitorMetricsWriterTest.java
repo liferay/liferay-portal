@@ -28,6 +28,29 @@ public class MonitorMetricsWriterTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
+	public void testMonitorMetricsWriterDuplicateIds() {
+		try {
+			new MonitorMetricsWriter(
+				new File(
+					temporaryFolder.getRoot(), RandomTestUtil.randomString()),
+				new MonitorResultStore(),
+				Arrays.<Monitor>asList(
+					new TestMonitor(
+						_newMonitorConfig(
+							"disk", MonitorConfig.Severity.MEDIUM,
+							RandomTestUtil.randomString())),
+					new TestMonitor(
+						_newMonitorConfig(
+							"disk", MonitorConfig.Severity.MEDIUM,
+							RandomTestUtil.randomString()))));
+
+			Assert.fail("Expected IllegalArgumentException");
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+		}
+	}
+
+	@Test
 	public void testWrite() throws Exception {
 		MonitorResultStore monitorResultStore = new MonitorResultStore();
 
