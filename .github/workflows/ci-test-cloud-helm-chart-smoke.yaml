@@ -10,3 +10,4 @@ on:
             -   .github/workflows/ci-reusable-test-cloud-helm-chart-smoke.yaml
             -   .github/workflows/ci-test-cloud-helm-chart-smoke.yaml
             -   cloud/helm/default/**
+            -   cloud/helm/dxp-operator/crds/**
