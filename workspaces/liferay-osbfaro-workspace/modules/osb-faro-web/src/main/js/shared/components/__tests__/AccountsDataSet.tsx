@@ -367,9 +367,7 @@ describe('AccountsDataSet', () => {
 
 		expect(segmentFilter?.preloadedData).toEqual({
 			exclude: false,
-			selectedItems: [
-				{label: 'VIP Customers', value: 'segment-100'},
-			],
+			selectedItems: [{label: 'VIP Customers', value: 'segment-100'}],
 		});
 	});
 

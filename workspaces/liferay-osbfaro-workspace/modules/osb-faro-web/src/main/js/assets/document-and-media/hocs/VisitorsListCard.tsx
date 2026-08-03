@@ -18,11 +18,7 @@ import {
 	withQueryPagination,
 	withQueryRangeSelectors,
 } from 'shared/hoc';
-import {
-	createOrderIOMap,
-	DOWNLOADS_METRIC,
-	NAME,
-} from 'shared/util/pagination';
+import {createOrderIOMap, DOWNLOADS_METRIC, NAME} from 'shared/util/pagination';
 import {graphql} from '@apollo/client/react/hoc';
 import {RangeSelectors} from 'shared/types';
 import {Routes} from 'shared/util/router';
