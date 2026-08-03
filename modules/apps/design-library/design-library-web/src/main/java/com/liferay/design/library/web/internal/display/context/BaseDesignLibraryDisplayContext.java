@@ -6,6 +6,7 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.design.library.web.internal.constants.DesignLibraryWebKeys;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -30,11 +31,12 @@ import java.util.Map;
 public abstract class BaseDesignLibraryDisplayContext {
 
 	public BaseDesignLibraryDisplayContext(
-		DepotEntry depotEntry, HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest) {
 
-		this.depotEntry = depotEntry;
 		this.httpServletRequest = httpServletRequest;
 
+		depotEntry = (DepotEntry)httpServletRequest.getAttribute(
+			DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY);
 		themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 	}

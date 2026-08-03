@@ -8,9 +8,7 @@
 <%@ include file="/init.jsp" %>
 
 <%
-DepotEntry depotEntry = (DepotEntry)request.getAttribute(DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY);
-
-EditDesignLibraryDisplayContext editDesignLibraryDisplayContext = new EditDesignLibraryDisplayContext(depotEntry, request, liferayPortletResponse);
+EditDesignLibraryDisplayContext editDesignLibraryDisplayContext = new EditDesignLibraryDisplayContext(request, liferayPortletResponse);
 
 editDesignLibraryDisplayContext.setPortletDisplay(portletDisplay, renderResponse);
 %>

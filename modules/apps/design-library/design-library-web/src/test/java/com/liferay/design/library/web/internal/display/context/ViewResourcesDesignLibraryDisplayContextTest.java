@@ -6,6 +6,7 @@
 package com.liferay.design.library.web.internal.display.context;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.design.library.web.internal.constants.DesignLibraryWebKeys;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
@@ -364,6 +365,13 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			HttpServletRequest httpServletRequest = Mockito.mock(
 				HttpServletRequest.class);
 
+			Mockito.when(
+				httpServletRequest.getAttribute(
+					DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY)
+			).thenReturn(
+				depotEntry
+			);
+
 			ThemeDisplay themeDisplay = new ThemeDisplay();
 
 			themeDisplay.setPermissionChecker(permissionChecker);
@@ -383,7 +391,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 			ViewResourcesDesignLibraryDisplayContext
 				viewResourcesDesignLibraryDisplayContext =
 					new ViewResourcesDesignLibraryDisplayContext(
-						depotEntry, httpServletRequest,
+						httpServletRequest,
 						Mockito.mock(LiferayPortletResponse.class));
 
 			List<String> labels = new ArrayList<>();
@@ -515,11 +523,13 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		);
 
 		_mockHttpServletRequest.setAttribute(
+			DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY, _depotEntry);
+		_mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, _themeDisplay);
 
 		_viewResourcesDesignLibraryDisplayContext =
 			new ViewResourcesDesignLibraryDisplayContext(
-				_depotEntry, _mockHttpServletRequest, _liferayPortletResponse);
+				_mockHttpServletRequest, _liferayPortletResponse);
 	}
 
 	private void _testHasContentAccess(

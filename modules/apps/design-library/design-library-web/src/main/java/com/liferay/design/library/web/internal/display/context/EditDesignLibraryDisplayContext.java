@@ -5,7 +5,6 @@
 
 package com.liferay.design.library.web.internal.display.context;
 
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -27,10 +26,10 @@ public class EditDesignLibraryDisplayContext
 	extends BaseDesignLibraryDisplayContext {
 
 	public EditDesignLibraryDisplayContext(
-		DepotEntry depotEntry, HttpServletRequest httpServletRequest,
+		HttpServletRequest httpServletRequest,
 		LiferayPortletResponse liferayPortletResponse) {
 
-		super(depotEntry, httpServletRequest);
+		super(httpServletRequest);
 
 		_liferayPortletResponse = liferayPortletResponse;
 	}

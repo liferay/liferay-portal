@@ -5,7 +5,6 @@
 
 package com.liferay.design.library.web.internal.display.context;
 
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -25,9 +24,9 @@ public class ConnectedSitesDesignLibraryDisplayContext
 	extends BaseDesignLibraryDisplayContext {
 
 	public ConnectedSitesDesignLibraryDisplayContext(
-		DepotEntry depotEntry, HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest) {
 
-		super(depotEntry, httpServletRequest);
+		super(httpServletRequest);
 	}
 
 	public String getAPIURL() throws PortalException {
@@ -62,19 +61,20 @@ public class ConnectedSitesDesignLibraryDisplayContext
 		return HashMapBuilder.<String, Object>putAll(
 			getFDSAdditionalProps()
 		).put(
-			"count",
-			() -> {
-				DepotEntryGroupRelLocalService depotEntryGroupRelLocalService =
-					_depotEntryGroupRelLocalServiceSnapshot.get();
-
-				if (depotEntryGroupRelLocalService == null) {
-					return 0;
-				}
-
-				return depotEntryGroupRelLocalService.
-					getDepotEntryGroupRelsCount(depotEntry);
-			}
+			"count", _getCount()
 		).build();
+	}
+
+	private int _getCount() {
+		DepotEntryGroupRelLocalService depotEntryGroupRelLocalService =
+			_depotEntryGroupRelLocalServiceSnapshot.get();
+
+		if (depotEntryGroupRelLocalService == null) {
+			return 0;
+		}
+
+		return depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
+			depotEntry);
 	}
 
 	private static final Snapshot<DepotEntryGroupRelLocalService>

@@ -8,13 +8,11 @@
 <%@ include file="/init.jsp" %>
 
 <%
-DepotEntry depotEntry = (DepotEntry)request.getAttribute(DesignLibraryWebKeys.DESIGN_LIBRARY_ENTRY);
+ConnectedSitesDesignLibraryDisplayContext connectedSitesDesignLibraryDisplayContext = new ConnectedSitesDesignLibraryDisplayContext(request);
 
-ConnectedSitesDesignLibraryDisplayContext connectedSitesDesignLibraryDisplayContext = new ConnectedSitesDesignLibraryDisplayContext(depotEntry, request);
+MembersDesignLibraryDisplayContext membersDesignLibraryDisplayContext = new MembersDesignLibraryDisplayContext(request);
 
-MembersDesignLibraryDisplayContext membersDesignLibraryDisplayContext = new MembersDesignLibraryDisplayContext(depotEntry, request);
-
-ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContext = new ViewResourcesDesignLibraryDisplayContext(depotEntry, request, liferayPortletResponse);
+ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContext = new ViewResourcesDesignLibraryDisplayContext(request, liferayPortletResponse);
 %>
 
 <div>
@@ -29,7 +27,7 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 		<c:when test="<%= viewResourcesDesignLibraryDisplayContext.hasContentAccess() %>">
 
 			<%
-			Map<String, Object> fdsAdditionalProps = viewResourcesDesignLibraryDisplayContext.getFDSAdditionalProps();
+			Map<String, Object> resourcesFDSAdditionalProps = viewResourcesDesignLibraryDisplayContext.getFDSAdditionalProps();
 
 			Map<String, Object> membersFDSAdditionalProps = membersDesignLibraryDisplayContext.getFDSAdditionalProps();
 			%>
@@ -42,13 +40,13 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 								<div>
 									<react:component
 										module="{DesignLibraryAssetsSectionHeader} from design-library-web"
-										props="<%= fdsAdditionalProps %>"
+										props="<%= resourcesFDSAdditionalProps %>"
 									/>
 								</div>
 
 								<div class="design-library-fds-wrapper design-library-fds-wrapper--resources">
 									<frontend-data-set:headless-display
-										additionalProps="<%= fdsAdditionalProps %>"
+										additionalProps="<%= resourcesFDSAdditionalProps %>"
 										apiURL="<%= viewResourcesDesignLibraryDisplayContext.getAPIURL() %>"
 										emptyState="<%= viewResourcesDesignLibraryDisplayContext.getEmptyState() %>"
 										fdsActionDropdownItems="<%= viewResourcesDesignLibraryDisplayContext.getFDSActionDropdownItems() %>"
