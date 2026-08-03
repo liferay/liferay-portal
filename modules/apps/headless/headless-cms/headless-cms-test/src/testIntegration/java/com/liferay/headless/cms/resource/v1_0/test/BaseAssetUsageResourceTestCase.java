@@ -223,7 +223,7 @@ public abstract class BaseAssetUsageResourceTestCase {
 			assetId, randomAssetUsage());
 
 		page = assetUsageResource.getAssetUsagesAssetPage(
-			assetId, null, Pagination.of(1, 10), null);
+			assetId, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1239,4 +1239,4 @@ public abstract class BaseAssetUsageResourceTestCase {
 		_assetUsageResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2004009554
+// LIFERAY-REST-BUILDER-HASH:19982901

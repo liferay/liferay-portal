@@ -355,7 +355,8 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 		page =
 			termOrderTypeResource.
 				getTermByExternalReferenceCodeTermOrderTypesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -555,7 +556,7 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 				id, randomTermOrderType());
 
 		page = termOrderTypeResource.getTermIdTermOrderTypesPage(
-			id, null, Pagination.of(1, 10));
+			id, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1666,4 +1667,4 @@ public abstract class BaseTermOrderTypeResourceTestCase {
 		TermOrderTypeResource _termOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1989430810
+// LIFERAY-REST-BUILDER-HASH:1081092980

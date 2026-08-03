@@ -258,7 +258,7 @@ public abstract class BaseProductSpecificationResourceTestCase {
 			productSpecificationResource.
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeProductSpecificationsPage(
 					channelExternalReferenceCode, productExternalReferenceCode,
-					Pagination.of(1, 10));
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -507,7 +507,8 @@ public abstract class BaseProductSpecificationResourceTestCase {
 		page =
 			productSpecificationResource.
 				getChannelProductProductSpecificationsPage(
-					channelId, productId, Pagination.of(1, 10));
+					channelId, productId,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1790,4 +1791,4 @@ public abstract class BaseProductSpecificationResourceTestCase {
 		ProductSpecificationResource _productSpecificationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1520420618
+// LIFERAY-REST-BUILDER-HASH:915984982

@@ -566,7 +566,8 @@ public abstract class BaseTierPriceResourceTestCase {
 		page =
 			tierPriceResource.
 				getPriceEntryByExternalReferenceCodeTierPricesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -750,7 +751,7 @@ public abstract class BaseTierPriceResourceTestCase {
 			id, randomTierPrice());
 
 		page = tierPriceResource.getPriceEntryIdTierPricesPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2355,4 +2356,4 @@ public abstract class BaseTierPriceResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1794428784
+// LIFERAY-REST-BUILDER-HASH:968196930

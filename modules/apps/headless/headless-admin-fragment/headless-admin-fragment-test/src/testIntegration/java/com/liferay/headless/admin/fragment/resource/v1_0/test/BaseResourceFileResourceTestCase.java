@@ -296,7 +296,7 @@ public abstract class BaseResourceFileResourceTestCase {
 
 		page = resourceFileResource.getSiteFragmentSetResourceFilesPage(
 			siteExternalReferenceCode, fragmentSetExternalReferenceCode,
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -529,7 +529,8 @@ public abstract class BaseResourceFileResourceTestCase {
 				siteExternalReferenceCode, randomResourceFile());
 
 		page = resourceFileResource.getSiteResourceFilesPage(
-			siteExternalReferenceCode, null, Pagination.of(1, 10));
+			siteExternalReferenceCode, null,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -831,7 +832,7 @@ public abstract class BaseResourceFileResourceTestCase {
 
 		page = resourceFileResource.getSiteResourceFolderResourceFilesPage(
 			siteExternalReferenceCode, resourceFolderExternalReferenceCode,
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2214,4 +2215,4 @@ public abstract class BaseResourceFileResourceTestCase {
 			_resourceFileResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-611288577
+// LIFERAY-REST-BUILDER-HASH:645815800

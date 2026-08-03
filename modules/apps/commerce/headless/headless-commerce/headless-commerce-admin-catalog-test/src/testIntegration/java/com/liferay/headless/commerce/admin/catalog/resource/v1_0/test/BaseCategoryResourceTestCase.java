@@ -229,7 +229,7 @@ public abstract class BaseCategoryResourceTestCase {
 				externalReferenceCode, randomCategory());
 
 		page = categoryResource.getProductByExternalReferenceCodeCategoriesPage(
-			externalReferenceCode, Pagination.of(1, 10));
+			externalReferenceCode, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -407,7 +407,7 @@ public abstract class BaseCategoryResourceTestCase {
 			id, randomCategory());
 
 		page = categoryResource.getProductIdCategoriesPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1371,4 +1371,4 @@ public abstract class BaseCategoryResourceTestCase {
 			CategoryResource _categoryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1443179161
+// LIFERAY-REST-BUILDER-HASH:1713016633

@@ -1011,7 +1011,8 @@ public abstract class BasePriceEntryResourceTestCase {
 		page =
 			priceEntryResource.
 				getPriceListByExternalReferenceCodePriceEntriesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1201,7 +1202,7 @@ public abstract class BasePriceEntryResourceTestCase {
 				id, randomPriceEntry());
 
 		page = priceEntryResource.getPriceListIdPriceEntriesPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2563,4 +2564,4 @@ public abstract class BasePriceEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1595148024
+// LIFERAY-REST-BUILDER-HASH:-1484615320

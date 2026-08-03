@@ -208,7 +208,8 @@ public abstract class BaseAuditEventResourceTestCase {
 			randomAuditEvent());
 
 		page = auditEventResource.getAuditEventsPage(
-			null, null, null, null, null, Pagination.of(1, 10), null);
+			null, null, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1602,4 +1603,4 @@ public abstract class BaseAuditEventResourceTestCase {
 			_auditEventResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:269024127
+// LIFERAY-REST-BUILDER-HASH:1309423686

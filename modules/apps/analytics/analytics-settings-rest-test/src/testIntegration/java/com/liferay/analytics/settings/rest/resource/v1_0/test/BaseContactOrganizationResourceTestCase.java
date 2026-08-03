@@ -201,7 +201,7 @@ public abstract class BaseContactOrganizationResourceTestCase {
 				randomContactOrganization());
 
 		page = contactOrganizationResource.getContactOrganizationsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1198,4 +1198,4 @@ public abstract class BaseContactOrganizationResourceTestCase {
 		ContactOrganizationResource _contactOrganizationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-851495604
+// LIFERAY-REST-BUILDER-HASH:162381267

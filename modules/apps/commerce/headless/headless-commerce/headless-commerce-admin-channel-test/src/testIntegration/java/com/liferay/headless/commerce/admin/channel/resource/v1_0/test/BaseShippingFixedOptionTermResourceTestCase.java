@@ -372,7 +372,8 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 		page =
 			shippingFixedOptionTermResource.
 				getShippingFixedOptionIdShippingFixedOptionTermsPage(
-					id, null, null, Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1751,4 +1752,4 @@ public abstract class BaseShippingFixedOptionTermResourceTestCase {
 		ShippingFixedOptionTermResource _shippingFixedOptionTermResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2004928199
+// LIFERAY-REST-BUILDER-HASH:1497237454

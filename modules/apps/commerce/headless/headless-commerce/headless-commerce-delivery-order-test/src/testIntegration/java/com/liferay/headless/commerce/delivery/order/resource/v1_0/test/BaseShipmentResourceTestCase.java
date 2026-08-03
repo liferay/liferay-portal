@@ -243,7 +243,8 @@ public abstract class BaseShipmentResourceTestCase {
 
 		page =
 			shipmentResource.getPlacedOrderByExternalReferenceCodeShipmentsPage(
-				externalReferenceCode, null, null, Pagination.of(1, 10), null);
+				externalReferenceCode, null, null,
+				Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -677,7 +678,8 @@ public abstract class BaseShipmentResourceTestCase {
 			placedOrderId, randomShipment());
 
 		page = shipmentResource.getPlacedOrderShipmentsPage(
-			placedOrderId, null, null, Pagination.of(1, 10), null);
+			placedOrderId, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2546,4 +2548,4 @@ public abstract class BaseShipmentResourceTestCase {
 			ShipmentResource _shipmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:259694407
+// LIFERAY-REST-BUILDER-HASH:-732810649

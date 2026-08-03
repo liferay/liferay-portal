@@ -1439,8 +1439,8 @@ public abstract class BaseOrganizationResourceTestCase {
 		page =
 			organizationResource.
 				getAccountByExternalReferenceCodeOrganizationsPage(
-					externalReferenceCode, null, null, Pagination.of(1, 10),
-					null);
+					externalReferenceCode, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2151,7 +2151,7 @@ public abstract class BaseOrganizationResourceTestCase {
 				accountId, randomOrganization());
 
 		page = organizationResource.getAccountOrganizationsPage(
-			accountId, null, null, Pagination.of(1, 10), null);
+			accountId, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2942,7 +2942,7 @@ public abstract class BaseOrganizationResourceTestCase {
 			organizationResource.
 				getOrganizationByExternalReferenceCodeChildOrganizationsPage(
 					externalReferenceCode, null, null, null,
-					Pagination.of(1, 10), null);
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3513,7 +3513,8 @@ public abstract class BaseOrganizationResourceTestCase {
 				organizationId, randomOrganization());
 
 		page = organizationResource.getOrganizationChildOrganizationsPage(
-			organizationId, null, null, null, Pagination.of(1, 10), null);
+			organizationId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -4066,7 +4067,8 @@ public abstract class BaseOrganizationResourceTestCase {
 				parentOrganizationId, randomOrganization());
 
 		page = organizationResource.getOrganizationOrganizationsPage(
-			parentOrganizationId, null, null, null, Pagination.of(1, 10), null);
+			parentOrganizationId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -4580,7 +4582,7 @@ public abstract class BaseOrganizationResourceTestCase {
 			randomOrganization());
 
 		page = organizationResource.getOrganizationsPage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -8107,4 +8109,4 @@ public abstract class BaseOrganizationResourceTestCase {
 		_organizationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1392319792
+// LIFERAY-REST-BUILDER-HASH:-191104780

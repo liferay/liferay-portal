@@ -253,7 +253,7 @@ public abstract class BaseSiteConfigurationResourceTestCase {
 				siteExternalReferenceCode, randomSiteConfiguration());
 
 		page = siteConfigurationResource.getSiteSiteConfigurationsPage(
-			siteExternalReferenceCode, Pagination.of(1, 10));
+			siteExternalReferenceCode, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1166,4 +1166,4 @@ public abstract class BaseSiteConfigurationResourceTestCase {
 		SiteConfigurationResource _siteConfigurationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:634462901
+// LIFERAY-REST-BUILDER-HASH:-1358724

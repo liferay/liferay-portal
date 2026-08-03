@@ -261,7 +261,8 @@ public abstract class BasePlacedOrderCommentResourceTestCase {
 		page =
 			placedOrderCommentResource.
 				getPlacedOrderByExternalReferenceCodePlacedOrderCommentsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -933,7 +934,7 @@ public abstract class BasePlacedOrderCommentResourceTestCase {
 				placedOrderId, randomPlacedOrderComment());
 
 		page = placedOrderCommentResource.getPlacedOrderPlacedOrderCommentsPage(
-			placedOrderId, Pagination.of(1, 10));
+			placedOrderId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1999,4 +2000,4 @@ public abstract class BasePlacedOrderCommentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1644749332
+// LIFERAY-REST-BUILDER-HASH:-1857894790

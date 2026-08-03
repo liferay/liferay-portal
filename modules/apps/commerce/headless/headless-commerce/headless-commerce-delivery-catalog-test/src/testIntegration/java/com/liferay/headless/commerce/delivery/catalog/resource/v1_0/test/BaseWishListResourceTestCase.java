@@ -397,7 +397,8 @@ public abstract class BaseWishListResourceTestCase {
 				externalReferenceCode, randomWishList());
 
 		page = wishListResource.getChannelByExternalReferenceCodeWishListsPage(
-			externalReferenceCode, null, null, Pagination.of(1, 10));
+			externalReferenceCode, null, null,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -576,7 +577,7 @@ public abstract class BaseWishListResourceTestCase {
 			channelId, randomWishList());
 
 		page = wishListResource.getChannelWishListsPage(
-			channelId, null, null, Pagination.of(1, 10));
+			channelId, null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1868,4 +1869,4 @@ public abstract class BaseWishListResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2136860275
+// LIFERAY-REST-BUILDER-HASH:-266745875

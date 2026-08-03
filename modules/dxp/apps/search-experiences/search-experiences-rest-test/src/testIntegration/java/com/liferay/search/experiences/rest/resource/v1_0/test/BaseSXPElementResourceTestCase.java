@@ -836,7 +836,7 @@ public abstract class BaseSXPElementResourceTestCase {
 			randomSXPElement());
 
 		page = sxpElementResource.getSXPElementsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3079,4 +3079,4 @@ public abstract class BaseSXPElementResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1716442847
+// LIFERAY-REST-BUILDER-HASH:347257082

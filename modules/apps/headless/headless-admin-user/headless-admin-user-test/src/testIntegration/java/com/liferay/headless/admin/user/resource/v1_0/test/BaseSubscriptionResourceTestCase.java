@@ -432,7 +432,7 @@ public abstract class BaseSubscriptionResourceTestCase {
 				randomSubscription());
 
 		page = subscriptionResource.getMyUserAccountSubscriptionsPage(
-			null, Pagination.of(1, 10));
+			null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1423,4 +1423,4 @@ public abstract class BaseSubscriptionResourceTestCase {
 		_subscriptionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:790745814
+// LIFERAY-REST-BUILDER-HASH:-478812689

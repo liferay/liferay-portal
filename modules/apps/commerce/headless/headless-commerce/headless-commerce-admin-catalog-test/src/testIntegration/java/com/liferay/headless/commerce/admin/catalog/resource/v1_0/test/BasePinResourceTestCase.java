@@ -327,7 +327,8 @@ public abstract class BasePinResourceTestCase {
 			externalReferenceCode, randomPin());
 
 		page = pinResource.getProductByExternalReferenceCodePinsPage(
-			externalReferenceCode, null, Pagination.of(1, 10), null);
+			externalReferenceCode, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -640,7 +641,7 @@ public abstract class BasePinResourceTestCase {
 		Pin pin2 = testGetProductIdPinsPage_addPin(id, randomPin());
 
 		page = pinResource.getProductIdPinsPage(
-			id, null, Pagination.of(1, 10), null);
+			id, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1707,4 +1708,4 @@ public abstract class BasePinResourceTestCase {
 			_pinResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:147484587
+// LIFERAY-REST-BUILDER-HASH:-972435381

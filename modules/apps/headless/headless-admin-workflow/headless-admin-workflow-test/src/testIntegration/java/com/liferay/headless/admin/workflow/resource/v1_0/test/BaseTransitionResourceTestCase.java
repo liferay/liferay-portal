@@ -227,7 +227,7 @@ public abstract class BaseTransitionResourceTestCase {
 				workflowInstanceId, randomTransition());
 
 		page = transitionResource.getWorkflowInstanceNextTransitionsPage(
-			workflowInstanceId, Pagination.of(1, 10));
+			workflowInstanceId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -404,7 +404,7 @@ public abstract class BaseTransitionResourceTestCase {
 				workflowTaskId, randomTransition());
 
 		page = transitionResource.getWorkflowTaskNextTransitionsPage(
-			workflowTaskId, Pagination.of(1, 10));
+			workflowTaskId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1375,4 +1375,4 @@ public abstract class BaseTransitionResourceTestCase {
 		_transitionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-545475219
+// LIFERAY-REST-BUILDER-HASH:-692934515

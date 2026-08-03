@@ -226,7 +226,7 @@ public abstract class BaseAccountResourceTestCase {
 			channelId, randomAccount());
 
 		page = accountResource.getChannelAccountsPage(
-			channelId, null, null, Pagination.of(1, 10), null);
+			channelId, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1818,4 +1818,4 @@ public abstract class BaseAccountResourceTestCase {
 			AccountResource _accountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1814404412
+// LIFERAY-REST-BUILDER-HASH:-1508705405

@@ -227,7 +227,7 @@ public abstract class BaseLinkedProductResourceTestCase {
 				channelId, productId, randomLinkedProduct());
 
 		page = linkedProductResource.getChannelProductLinkedProductsPage(
-			channelId, productId, null, Pagination.of(1, 10));
+			channelId, productId, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1130,4 +1130,4 @@ public abstract class BaseLinkedProductResourceTestCase {
 		LinkedProductResource _linkedProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-585149995
+// LIFERAY-REST-BUILDER-HASH:752586780

@@ -362,8 +362,8 @@ public abstract class BasePageTemplateSetResourceTestCase {
 				siteExternalReferenceCode, randomPageTemplateSet());
 
 		page = pageTemplateSetResource.getSitePageTemplateSetsPage(
-			siteExternalReferenceCode, null, null, null, Pagination.of(1, 10),
-			null);
+			siteExternalReferenceCode, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2155,4 +2155,4 @@ public abstract class BasePageTemplateSetResourceTestCase {
 			_pageTemplateSetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:613447948
+// LIFERAY-REST-BUILDER-HASH:-2113945901

@@ -438,8 +438,8 @@ public abstract class BaseObjectFieldResourceTestCase {
 		page =
 			objectFieldResource.
 				getObjectDefinitionByExternalReferenceCodeObjectFieldsPage(
-					externalReferenceCode, null, null, Pagination.of(1, 10),
-					null);
+					externalReferenceCode, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1008,7 +1008,8 @@ public abstract class BaseObjectFieldResourceTestCase {
 				objectDefinitionId, randomObjectField());
 
 		page = objectFieldResource.getObjectDefinitionObjectFieldsPage(
-			objectDefinitionId, null, null, Pagination.of(1, 10), null);
+			objectDefinitionId, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3772,4 +3773,4 @@ public abstract class BaseObjectFieldResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1132699881
+// LIFERAY-REST-BUILDER-HASH:-1459936073

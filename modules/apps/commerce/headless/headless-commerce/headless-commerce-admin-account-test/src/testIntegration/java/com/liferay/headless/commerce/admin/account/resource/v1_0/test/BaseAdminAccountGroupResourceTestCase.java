@@ -481,7 +481,8 @@ public abstract class BaseAdminAccountGroupResourceTestCase {
 		page =
 			adminAccountGroupResource.
 				getAccountByExternalReferenceCodeAccountGroupsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -908,7 +909,7 @@ public abstract class BaseAdminAccountGroupResourceTestCase {
 				randomAdminAccountGroup());
 
 		page = adminAccountGroupResource.getAccountGroupsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1307,7 +1308,7 @@ public abstract class BaseAdminAccountGroupResourceTestCase {
 				id, randomAdminAccountGroup());
 
 		page = adminAccountGroupResource.getAccountIdAccountGroupsPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2334,4 +2335,4 @@ public abstract class BaseAdminAccountGroupResourceTestCase {
 		AdminAccountGroupResource _adminAccountGroupResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1503710639
+// LIFERAY-REST-BUILDER-HASH:2133687800

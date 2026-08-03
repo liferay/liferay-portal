@@ -349,7 +349,7 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		page = styleBookResource.getDesignLibraryStyleBooksPage(
 			designLibraryExternalReferenceCode, null, null, null,
-			Pagination.of(1, 10), null);
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -784,7 +784,7 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		page = styleBookResource.getSitePageSpecificationStyleBooksPage(
 			siteExternalReferenceCode, pageSpecificationExternalReferenceCode,
-			null, Pagination.of(1, 10));
+			null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1013,8 +1013,8 @@ public abstract class BaseStyleBookResourceTestCase {
 			siteExternalReferenceCode, randomStyleBook());
 
 		page = styleBookResource.getSiteStyleBooksPage(
-			siteExternalReferenceCode, null, null, null, Pagination.of(1, 10),
-			null);
+			siteExternalReferenceCode, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2821,4 +2821,4 @@ public abstract class BaseStyleBookResourceTestCase {
 		_styleBookResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1641313001
+// LIFERAY-REST-BUILDER-HASH:1880887028

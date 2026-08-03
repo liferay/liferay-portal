@@ -1394,7 +1394,8 @@ public abstract class BaseBlogPostingResourceTestCase {
 			siteId, randomBlogPosting());
 
 		page = blogPostingResource.getSiteBlogPostingsPage(
-			siteId, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -4207,4 +4208,4 @@ public abstract class BaseBlogPostingResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-839133491
+// LIFERAY-REST-BUILDER-HASH:-680108396

@@ -582,7 +582,8 @@ public abstract class BaseSiteResourceTestCase {
 
 		Site site2 = testGetSitesPage_addSite(randomSite());
 
-		page = siteResource.getSitesPage(null, null, Pagination.of(1, 10));
+		page = siteResource.getSitesPage(
+			null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2260,4 +2261,4 @@ public abstract class BaseSiteResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-34605314
+// LIFERAY-REST-BUILDER-HASH:-1963251899

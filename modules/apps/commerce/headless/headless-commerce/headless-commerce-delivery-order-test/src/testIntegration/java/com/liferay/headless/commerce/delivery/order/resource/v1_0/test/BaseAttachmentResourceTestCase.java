@@ -442,7 +442,8 @@ public abstract class BaseAttachmentResourceTestCase {
 				placedOrderId, randomAttachment());
 
 		page = attachmentResource.getPlacedOrderAttachmentsPage(
-			placedOrderId, null, null, Pagination.of(1, 10), null);
+			placedOrderId, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -876,8 +877,8 @@ public abstract class BaseAttachmentResourceTestCase {
 		page =
 			attachmentResource.
 				getPlacedOrderByExternalReferenceCodeAttachmentsPage(
-					externalReferenceCode, null, null, Pagination.of(1, 10),
-					null);
+					externalReferenceCode, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2450,4 +2451,4 @@ public abstract class BaseAttachmentResourceTestCase {
 		AttachmentResource _attachmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1623508563
+// LIFERAY-REST-BUILDER-HASH:939938629

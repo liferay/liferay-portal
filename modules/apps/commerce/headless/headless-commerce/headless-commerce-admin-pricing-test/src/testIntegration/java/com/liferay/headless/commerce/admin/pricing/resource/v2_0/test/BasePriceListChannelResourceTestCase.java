@@ -363,7 +363,8 @@ public abstract class BasePriceListChannelResourceTestCase {
 		page =
 			priceListChannelResource.
 				getPriceListByExternalReferenceCodePriceListChannelsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -568,7 +569,7 @@ public abstract class BasePriceListChannelResourceTestCase {
 				id, randomPriceListChannel());
 
 		page = priceListChannelResource.getPriceListIdPriceListChannelsPage(
-			id, null, null, Pagination.of(1, 10), null);
+			id, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1999,4 +2000,4 @@ public abstract class BasePriceListChannelResourceTestCase {
 		PriceListChannelResource _priceListChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:394993989
+// LIFERAY-REST-BUILDER-HASH:-1742959689

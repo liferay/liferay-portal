@@ -457,8 +457,8 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 		page =
 			objectRelationshipResource.
 				getObjectDefinitionByExternalReferenceCodeObjectRelationshipsPage(
-					externalReferenceCode, null, null, Pagination.of(1, 10),
-					null);
+					externalReferenceCode, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1064,7 +1064,8 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 		page =
 			objectRelationshipResource.
 				getObjectDefinitionObjectRelationshipsPage(
-					objectDefinitionId, null, null, Pagination.of(1, 10), null);
+					objectDefinitionId, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3852,4 +3853,4 @@ public abstract class BaseObjectRelationshipResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1949302817
+// LIFERAY-REST-BUILDER-HASH:-943979537

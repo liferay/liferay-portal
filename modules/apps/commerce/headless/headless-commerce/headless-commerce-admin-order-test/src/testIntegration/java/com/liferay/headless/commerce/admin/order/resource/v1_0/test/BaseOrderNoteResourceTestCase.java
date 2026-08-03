@@ -566,7 +566,7 @@ public abstract class BaseOrderNoteResourceTestCase {
 				externalReferenceCode, randomOrderNote());
 
 		page = orderNoteResource.getOrderByExternalReferenceCodeOrderNotesPage(
-			externalReferenceCode, Pagination.of(1, 10));
+			externalReferenceCode, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -740,7 +740,7 @@ public abstract class BaseOrderNoteResourceTestCase {
 			id, randomOrderNote());
 
 		page = orderNoteResource.getOrderIdOrderNotesPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2535,4 +2535,4 @@ public abstract class BaseOrderNoteResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1555454354
+// LIFERAY-REST-BUILDER-HASH:715093646

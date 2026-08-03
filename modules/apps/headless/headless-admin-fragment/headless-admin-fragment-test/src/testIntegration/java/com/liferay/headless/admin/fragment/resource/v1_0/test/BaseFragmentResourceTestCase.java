@@ -315,7 +315,7 @@ public abstract class BaseFragmentResourceTestCase {
 
 		page = fragmentResource.getSiteFragmentSetFragmentsPage(
 			siteExternalReferenceCode, fragmentSetExternalReferenceCode,
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -508,7 +508,8 @@ public abstract class BaseFragmentResourceTestCase {
 			siteExternalReferenceCode, randomFragment());
 
 		page = fragmentResource.getSiteFragmentsPage(
-			siteExternalReferenceCode, null, Pagination.of(1, 10));
+			siteExternalReferenceCode, null,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2235,4 +2236,4 @@ public abstract class BaseFragmentResourceTestCase {
 		_fragmentResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1356236161
+// LIFERAY-REST-BUILDER-HASH:-636644851

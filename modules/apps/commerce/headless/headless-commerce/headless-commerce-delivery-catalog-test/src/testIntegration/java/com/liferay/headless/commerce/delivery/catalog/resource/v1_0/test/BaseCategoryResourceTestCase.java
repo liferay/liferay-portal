@@ -224,7 +224,7 @@ public abstract class BaseCategoryResourceTestCase {
 			channelId, productId, randomCategory());
 
 		page = categoryResource.getChannelProductCategoriesPage(
-			channelId, productId, Pagination.of(1, 10));
+			channelId, productId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1171,4 +1171,4 @@ public abstract class BaseCategoryResourceTestCase {
 		CategoryResource _categoryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2040639571
+// LIFERAY-REST-BUILDER-HASH:-1498706042

@@ -205,7 +205,8 @@ public abstract class BaseSearchResultResourceTestCase {
 			randomSearchResult());
 
 		page = searchResultResource.getSearchPage(
-			null, null, null, null, null, null, Pagination.of(1, 10), null);
+			null, null, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1586,4 +1587,4 @@ public abstract class BaseSearchResultResourceTestCase {
 		_searchResultResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2115192021
+// LIFERAY-REST-BUILDER-HASH:601561774

@@ -263,7 +263,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		page =
 			workflowTaskResource.
 				getWorkflowInstanceWorkflowTasksAssignedToMePage(
-					workflowInstanceId, null, Pagination.of(1, 10));
+					workflowInstanceId, null,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -462,7 +463,8 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		page =
 			workflowTaskResource.
 				getWorkflowInstanceWorkflowTasksAssignedToUserPage(
-					workflowInstanceId, null, null, Pagination.of(1, 10));
+					workflowInstanceId, null, null,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -654,7 +656,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 				workflowInstanceId, randomWorkflowTask());
 
 		page = workflowTaskResource.getWorkflowInstanceWorkflowTasksPage(
-			workflowInstanceId, null, Pagination.of(1, 10));
+			workflowInstanceId, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1130,7 +1132,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 				randomWorkflowTask());
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToMePage(
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1261,7 +1263,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 				randomWorkflowTask());
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToMyRolesPage(
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1394,7 +1396,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 				randomWorkflowTask());
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToRolePage(
-			null, Pagination.of(1, 10));
+			null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1529,7 +1531,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 				randomWorkflowTask());
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToUserPage(
-			null, Pagination.of(1, 10));
+			null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1664,7 +1666,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 				randomWorkflowTask());
 
 		page = workflowTaskResource.getWorkflowTasksAssignedToUserRolesPage(
-			null, Pagination.of(1, 10));
+			null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1801,7 +1803,7 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 				randomWorkflowTask());
 
 		page = workflowTaskResource.getWorkflowTasksSubmittingUserPage(
-			null, Pagination.of(1, 10));
+			null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3458,4 +3460,4 @@ public abstract class BaseWorkflowTaskResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:644017525
+// LIFERAY-REST-BUILDER-HASH:-2082589974

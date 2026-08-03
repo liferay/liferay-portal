@@ -220,7 +220,7 @@ public abstract class BaseSystemConfigurationResourceTestCase {
 				randomSystemConfiguration());
 
 		page = systemConfigurationResource.getSystemConfigurationsPage(
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1098,4 +1098,4 @@ public abstract class BaseSystemConfigurationResourceTestCase {
 		SystemConfigurationResource _systemConfigurationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1979538580
+// LIFERAY-REST-BUILDER-HASH:-468088851

@@ -538,7 +538,8 @@ public abstract class BaseProductResourceTestCase {
 			channelId, randomProduct());
 
 		page = productResource.getChannelProductsPage(
-			channelId, null, null, null, Pagination.of(1, 10), null);
+			channelId, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2669,4 +2670,4 @@ public abstract class BaseProductResourceTestCase {
 			ProductResource _productResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-126155348
+// LIFERAY-REST-BUILDER-HASH:58697011

@@ -201,7 +201,7 @@ public abstract class BaseSkuForecastResourceTestCase {
 				randomSkuForecast());
 
 		page = skuForecastResource.getSkuForecastsByMonthlyRevenuePage(
-			null, null, null, null, Pagination.of(1, 10));
+			null, null, null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1177,4 +1177,4 @@ public abstract class BaseSkuForecastResourceTestCase {
 		SkuForecastResource _skuForecastResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:447811127
+// LIFERAY-REST-BUILDER-HASH:-1259466288

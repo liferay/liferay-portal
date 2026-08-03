@@ -269,7 +269,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getAssetLibraryContentSetByKeyContentSetElementsPage(
-					assetLibraryId, key, Pagination.of(1, 10));
+					assetLibraryId, key, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -496,7 +496,8 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getAssetLibraryContentSetByUuidContentSetElementsPage(
-					assetLibraryId, uuid, Pagination.of(1, 10));
+					assetLibraryId, uuid,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -713,7 +714,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 				contentSetId, randomContentSetElement());
 
 		page = contentSetElementResource.getContentSetContentSetElementsPage(
-			contentSetId, Pagination.of(1, 10));
+			contentSetId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -913,7 +914,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getSiteContentSetByKeyContentSetElementsPage(
-					siteId, key, Pagination.of(1, 10));
+					siteId, key, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1134,7 +1135,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getSiteContentSetByUuidContentSetElementsPage(
-					siteId, uuid, Pagination.of(1, 10));
+					siteId, uuid, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1357,7 +1358,7 @@ public abstract class BaseContentSetElementResourceTestCase {
 		page =
 			contentSetElementResource.
 				getSiteContentSetProviderByKeyContentSetElementsPage(
-					siteId, key, Pagination.of(1, 10));
+					siteId, key, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2330,4 +2331,4 @@ public abstract class BaseContentSetElementResourceTestCase {
 			_contentSetElementResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-477668910
+// LIFERAY-REST-BUILDER-HASH:-2034954510

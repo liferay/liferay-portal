@@ -1122,7 +1122,7 @@ public abstract class BaseUserGroupResourceTestCase {
 			randomUserGroup());
 
 		page = userGroupResource.getUserGroupsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3080,4 +3080,4 @@ public abstract class BaseUserGroupResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1610159096
+// LIFERAY-REST-BUILDER-HASH:516983631

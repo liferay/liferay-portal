@@ -610,7 +610,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 				assetLibraryId, randomDocumentShortcut());
 
 		page = documentShortcutResource.getAssetLibraryDocumentShortcutsPage(
-			assetLibraryId, Pagination.of(1, 10));
+			assetLibraryId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1382,7 +1382,7 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 				siteId, randomDocumentShortcut());
 
 		page = documentShortcutResource.getSiteDocumentShortcutsPage(
-			siteId, Pagination.of(1, 10));
+			siteId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3212,4 +3212,4 @@ public abstract class BaseDocumentShortcutResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1242620895
+// LIFERAY-REST-BUILDER-HASH:2047972223

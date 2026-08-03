@@ -461,7 +461,8 @@ public abstract class BaseAccountChannelShippingOptionResourceTestCase {
 		page =
 			accountChannelShippingOptionResource.
 				getAccountByExternalReferenceCodeAccountChannelShippingOptionPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1011,7 +1012,7 @@ public abstract class BaseAccountChannelShippingOptionResourceTestCase {
 		page =
 			accountChannelShippingOptionResource.
 				getAccountIdAccountChannelShippingOptionPage(
-					id, Pagination.of(1, 10));
+					id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2454,4 +2455,4 @@ public abstract class BaseAccountChannelShippingOptionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1771029730
+// LIFERAY-REST-BUILDER-HASH:-1899434174

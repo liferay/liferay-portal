@@ -528,7 +528,7 @@ public abstract class BaseCurrencyResourceTestCase {
 			randomCurrency());
 
 		page = currencyResource.getCurrenciesPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2693,4 +2693,4 @@ public abstract class BaseCurrencyResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2070873009
+// LIFERAY-REST-BUILDER-HASH:932142248

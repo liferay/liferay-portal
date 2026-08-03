@@ -375,7 +375,8 @@ public abstract class BaseWarehouseAccountGroupResourceTestCase {
 		page =
 			warehouseAccountGroupResource.
 				getWarehouseByExternalReferenceCodeWarehouseAccountGroupsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -597,7 +598,8 @@ public abstract class BaseWarehouseAccountGroupResourceTestCase {
 		page =
 			warehouseAccountGroupResource.
 				getWarehouseIdWarehouseAccountGroupsPage(
-					id, null, null, Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2057,4 +2059,4 @@ public abstract class BaseWarehouseAccountGroupResourceTestCase {
 		WarehouseAccountGroupResource _warehouseAccountGroupResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:345286833
+// LIFERAY-REST-BUILDER-HASH:36144913

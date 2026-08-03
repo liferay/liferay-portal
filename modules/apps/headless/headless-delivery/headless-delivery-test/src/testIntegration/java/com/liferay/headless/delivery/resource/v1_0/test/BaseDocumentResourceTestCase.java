@@ -1100,7 +1100,8 @@ public abstract class BaseDocumentResourceTestCase {
 			assetLibraryId, randomDocument());
 
 		page = documentResource.getAssetLibraryDocumentsPage(
-			assetLibraryId, null, null, null, null, Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1613,7 +1614,7 @@ public abstract class BaseDocumentResourceTestCase {
 				assetLibraryId, randomDocument());
 
 		page = documentResource.getAssetLibraryDocumentsRatedByMePage(
-			assetLibraryId, Pagination.of(1, 10));
+			assetLibraryId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2180,8 +2181,8 @@ public abstract class BaseDocumentResourceTestCase {
 			documentFolderId, randomDocument());
 
 		page = documentResource.getDocumentFolderDocumentsPage(
-			documentFolderId, null, null, null, null, Pagination.of(1, 10),
-			null);
+			documentFolderId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2942,7 +2943,8 @@ public abstract class BaseDocumentResourceTestCase {
 			siteId, randomDocument());
 
 		page = documentResource.getSiteDocumentsPage(
-			siteId, null, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3404,7 +3406,7 @@ public abstract class BaseDocumentResourceTestCase {
 			siteId, randomDocument());
 
 		page = documentResource.getSiteDocumentsRatedByMePage(
-			siteId, Pagination.of(1, 10));
+			siteId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -6632,4 +6634,4 @@ public abstract class BaseDocumentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:993960568
+// LIFERAY-REST-BUILDER-HASH:1759191843

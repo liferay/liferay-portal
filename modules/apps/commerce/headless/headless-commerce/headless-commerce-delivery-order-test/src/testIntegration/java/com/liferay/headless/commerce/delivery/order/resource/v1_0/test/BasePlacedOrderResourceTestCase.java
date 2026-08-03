@@ -287,7 +287,8 @@ public abstract class BasePlacedOrderResourceTestCase {
 				accountId, channelId, randomPlacedOrder());
 
 		page = placedOrderResource.getChannelAccountPlacedOrdersPage(
-			accountId, channelId, null, null, Pagination.of(1, 10), null);
+			accountId, channelId, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -754,7 +755,7 @@ public abstract class BasePlacedOrderResourceTestCase {
 			placedOrderResource.
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodePlacedOrdersPage(
 					accountExternalReferenceCode, channelExternalReferenceCode,
-					null, null, Pagination.of(1, 10), null);
+					null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1260,8 +1261,8 @@ public abstract class BasePlacedOrderResourceTestCase {
 		page =
 			placedOrderResource.
 				getChannelByExternalReferenceCodePlacedOrdersPage(
-					externalReferenceCode, null, null, Pagination.of(1, 10),
-					null);
+					externalReferenceCode, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1711,7 +1712,7 @@ public abstract class BasePlacedOrderResourceTestCase {
 				channelId, randomPlacedOrder());
 
 		page = placedOrderResource.getChannelPlacedOrdersPage(
-			channelId, null, null, Pagination.of(1, 10), null);
+			channelId, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -5235,4 +5236,4 @@ public abstract class BasePlacedOrderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-24951333
+// LIFERAY-REST-BUILDER-HASH:-1061394551

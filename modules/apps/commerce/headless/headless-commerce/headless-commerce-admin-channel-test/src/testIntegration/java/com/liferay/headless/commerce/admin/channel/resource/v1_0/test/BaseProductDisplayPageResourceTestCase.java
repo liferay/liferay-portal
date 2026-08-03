@@ -432,8 +432,8 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 		page =
 			productDisplayPageResource.
 				getChannelByExternalReferenceCodeProductDisplayPagesPage(
-					externalReferenceCode, null, null, Pagination.of(1, 10),
-					null);
+					externalReferenceCode, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -918,7 +918,7 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 				id, randomProductDisplayPage());
 
 		page = productDisplayPageResource.getChannelIdProductDisplayPagesPage(
-			id, null, null, Pagination.of(1, 10), null);
+			id, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2722,4 +2722,4 @@ public abstract class BaseProductDisplayPageResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1935964564
+// LIFERAY-REST-BUILDER-HASH:242651852

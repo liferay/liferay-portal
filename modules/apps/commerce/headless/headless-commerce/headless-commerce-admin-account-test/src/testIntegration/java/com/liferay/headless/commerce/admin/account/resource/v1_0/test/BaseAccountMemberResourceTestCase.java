@@ -700,7 +700,8 @@ public abstract class BaseAccountMemberResourceTestCase {
 		page =
 			accountMemberResource.
 				getAccountByExternalReferenceCodeAccountMembersPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1037,7 +1038,7 @@ public abstract class BaseAccountMemberResourceTestCase {
 				id, randomAccountMember());
 
 		page = accountMemberResource.getAccountIdAccountMembersPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2163,4 +2164,4 @@ public abstract class BaseAccountMemberResourceTestCase {
 		AccountMemberResource _accountMemberResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-717923296
+// LIFERAY-REST-BUILDER-HASH:454891118

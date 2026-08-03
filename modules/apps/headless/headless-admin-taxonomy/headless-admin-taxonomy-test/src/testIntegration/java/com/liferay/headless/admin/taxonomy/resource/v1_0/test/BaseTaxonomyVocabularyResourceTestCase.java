@@ -812,7 +812,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 
 		page =
 			taxonomyVocabularyResource.getAssetLibraryTaxonomyVocabulariesPage(
-				assetLibraryId, null, null, null, Pagination.of(1, 10), null);
+				assetLibraryId, null, null, null,
+				Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1664,7 +1665,8 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 				siteId, randomTaxonomyVocabulary());
 
 		page = taxonomyVocabularyResource.getSiteTaxonomyVocabulariesPage(
-			siteId, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -5314,4 +5316,4 @@ public abstract class BaseTaxonomyVocabularyResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:918371193
+// LIFERAY-REST-BUILDER-HASH:-1461589717

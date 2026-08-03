@@ -701,7 +701,7 @@ public abstract class BaseWarehouseResourceTestCase {
 			randomWarehouse());
 
 		page = warehouseResource.getWarehousesPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2726,4 +2726,4 @@ public abstract class BaseWarehouseResourceTestCase {
 		WarehouseResource _warehouseResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:739381314
+// LIFERAY-REST-BUILDER-HASH:372577371

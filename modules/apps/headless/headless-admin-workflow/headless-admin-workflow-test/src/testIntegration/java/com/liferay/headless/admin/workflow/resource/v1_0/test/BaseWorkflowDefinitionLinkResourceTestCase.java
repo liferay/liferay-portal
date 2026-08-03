@@ -249,7 +249,8 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 		page =
 			workflowDefinitionLinkResource.
 				getWorkflowDefinitionByExternalReferenceCodeWorkflowDefinitionLinksPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -467,7 +468,8 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 		page =
 			workflowDefinitionLinkResource.
 				getWorkflowDefinitionWorkflowDefinitionLinksPage(
-					workflowDefinitionId, Pagination.of(1, 10));
+					workflowDefinitionId,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2007,4 +2009,4 @@ public abstract class BaseWorkflowDefinitionLinkResourceTestCase {
 		WorkflowDefinitionLinkResource _workflowDefinitionLinkResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-890742207
+// LIFERAY-REST-BUILDER-HASH:-209791199

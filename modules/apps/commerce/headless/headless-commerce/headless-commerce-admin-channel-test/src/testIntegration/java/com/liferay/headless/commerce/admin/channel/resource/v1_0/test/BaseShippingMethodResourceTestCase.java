@@ -220,7 +220,7 @@ public abstract class BaseShippingMethodResourceTestCase {
 				channelId, randomShippingMethod());
 
 		page = shippingMethodResource.getChannelShippingMethodsPage(
-			channelId, Pagination.of(1, 10));
+			channelId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1152,4 +1152,4 @@ public abstract class BaseShippingMethodResourceTestCase {
 		ShippingMethodResource _shippingMethodResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-600148026
+// LIFERAY-REST-BUILDER-HASH:1663392671

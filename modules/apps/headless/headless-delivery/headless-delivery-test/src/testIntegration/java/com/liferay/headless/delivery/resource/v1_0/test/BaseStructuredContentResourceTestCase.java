@@ -1157,7 +1157,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 				assetLibraryId, randomStructuredContent());
 
 		page = structuredContentResource.getAssetLibraryStructuredContentsPage(
-			assetLibraryId, null, null, null, null, Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1731,8 +1732,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 
 		page =
 			structuredContentResource.getContentStructureStructuredContentsPage(
-				contentStructureId, null, null, null, Pagination.of(1, 10),
-				null);
+				contentStructureId, null, null, null,
+				Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2696,7 +2697,8 @@ public abstract class BaseStructuredContentResourceTestCase {
 				siteId, randomStructuredContent());
 
 		page = structuredContentResource.getSiteStructuredContentsPage(
-			siteId, null, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3572,7 +3574,7 @@ public abstract class BaseStructuredContentResourceTestCase {
 			structuredContentResource.
 				getStructuredContentFolderStructuredContentsPage(
 					structuredContentFolderId, null, null, null, null,
-					Pagination.of(1, 10), null);
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -7297,4 +7299,4 @@ public abstract class BaseStructuredContentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1895507926
+// LIFERAY-REST-BUILDER-HASH:1255453144

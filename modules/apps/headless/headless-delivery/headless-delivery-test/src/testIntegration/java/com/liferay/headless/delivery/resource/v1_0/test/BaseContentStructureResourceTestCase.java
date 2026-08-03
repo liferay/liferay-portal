@@ -315,7 +315,8 @@ public abstract class BaseContentStructureResourceTestCase {
 				assetLibraryId, randomContentStructure());
 
 		page = contentStructureResource.getAssetLibraryContentStructuresPage(
-			assetLibraryId, null, null, null, Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1125,7 +1126,8 @@ public abstract class BaseContentStructureResourceTestCase {
 				siteId, randomContentStructure());
 
 		page = contentStructureResource.getSiteContentStructuresPage(
-			siteId, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2746,4 +2748,4 @@ public abstract class BaseContentStructureResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1206684614
+// LIFERAY-REST-BUILDER-HASH:2125284710

@@ -363,7 +363,8 @@ public abstract class BaseDiscountChannelResourceTestCase {
 		page =
 			discountChannelResource.
 				getDiscountByExternalReferenceCodeDiscountChannelsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -568,7 +569,7 @@ public abstract class BaseDiscountChannelResourceTestCase {
 				id, randomDiscountChannel());
 
 		page = discountChannelResource.getDiscountIdDiscountChannelsPage(
-			id, null, null, Pagination.of(1, 10), null);
+			id, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1964,4 +1965,4 @@ public abstract class BaseDiscountChannelResourceTestCase {
 		DiscountChannelResource _discountChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:65462946
+// LIFERAY-REST-BUILDER-HASH:165538608

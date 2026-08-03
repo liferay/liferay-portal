@@ -1227,7 +1227,7 @@ public abstract class BaseProductConfigurationResourceTestCase {
 			productConfigurationResource.
 				getProductConfigurationListByExternalReferenceCodeProductConfigurationsPage(
 					externalReferenceCode, null, null, null,
-					Pagination.of(1, 10), null);
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1722,7 +1722,8 @@ public abstract class BaseProductConfigurationResourceTestCase {
 		page =
 			productConfigurationResource.
 				getProductConfigurationListIdProductConfigurationsPage(
-					id, null, null, null, Pagination.of(1, 10), null);
+					id, null, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -4028,4 +4029,4 @@ public abstract class BaseProductConfigurationResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:160042386
+// LIFERAY-REST-BUILDER-HASH:1220919840

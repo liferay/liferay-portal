@@ -590,7 +590,8 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		page =
 			dataRecordCollectionResource.
 				getDataDefinitionDataRecordCollectionsPage(
-					dataDefinitionId, null, Pagination.of(1, 10));
+					dataDefinitionId, null,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2552,4 +2553,4 @@ public abstract class BaseDataRecordCollectionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1701851249
+// LIFERAY-REST-BUILDER-HASH:-1755523288

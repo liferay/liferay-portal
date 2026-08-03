@@ -200,7 +200,7 @@ public abstract class BaseFieldResourceTestCase {
 		Field field2 = testGetFieldsAccountsPage_addField(randomField());
 
 		page = fieldResource.getFieldsAccountsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -436,7 +436,7 @@ public abstract class BaseFieldResourceTestCase {
 		Field field2 = testGetFieldsOrdersPage_addField(randomField());
 
 		page = fieldResource.getFieldsOrdersPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -671,7 +671,7 @@ public abstract class BaseFieldResourceTestCase {
 		Field field2 = testGetFieldsPeoplePage_addField(randomField());
 
 		page = fieldResource.getFieldsPeoplePage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -906,7 +906,7 @@ public abstract class BaseFieldResourceTestCase {
 		Field field2 = testGetFieldsProductsPage_addField(randomField());
 
 		page = fieldResource.getFieldsProductsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2012,4 +2012,4 @@ public abstract class BaseFieldResourceTestCase {
 		_fieldResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1690384034
+// LIFERAY-REST-BUILDER-HASH:-1235811810

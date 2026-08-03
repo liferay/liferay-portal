@@ -351,7 +351,7 @@ public abstract class BaseAssetLibraryResourceTestCase {
 			randomAssetLibrary());
 
 		page = assetLibraryResource.getAssetLibrariesPage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -730,7 +730,7 @@ public abstract class BaseAssetLibraryResourceTestCase {
 				randomAssetLibrary());
 
 		page = assetLibraryResource.getAssetLibrariesPinnedByMePage(
-			Pagination.of(1, 10));
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2587,4 +2587,4 @@ public abstract class BaseAssetLibraryResourceTestCase {
 			_assetLibraryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1076140529
+// LIFERAY-REST-BUILDER-HASH:1500152623

@@ -413,7 +413,8 @@ public abstract class BaseObjectViewResourceTestCase {
 		page =
 			objectViewResource.
 				getObjectDefinitionByExternalReferenceCodeObjectViewsPage(
-					externalReferenceCode, null, Pagination.of(1, 10), null);
+					externalReferenceCode, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -871,7 +872,8 @@ public abstract class BaseObjectViewResourceTestCase {
 				objectDefinitionId, randomObjectView());
 
 		page = objectViewResource.getObjectDefinitionObjectViewsPage(
-			objectDefinitionId, null, Pagination.of(1, 10), null);
+			objectDefinitionId, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2886,4 +2888,4 @@ public abstract class BaseObjectViewResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-300855407
+// LIFERAY-REST-BUILDER-HASH:-362367823

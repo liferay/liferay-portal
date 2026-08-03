@@ -962,7 +962,7 @@ public abstract class BaseDocumentMetadataSetResourceTestCase {
 
 		page =
 			documentMetadataSetResource.getAssetLibraryDocumentMetadataSetsPage(
-				assetLibraryId, Pagination.of(1, 10));
+				assetLibraryId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1752,7 +1752,7 @@ public abstract class BaseDocumentMetadataSetResourceTestCase {
 				siteId, randomDocumentMetadataSet());
 
 		page = documentMetadataSetResource.getSiteDocumentMetadataSetsPage(
-			siteId, Pagination.of(1, 10));
+			siteId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3809,4 +3809,4 @@ public abstract class BaseDocumentMetadataSetResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1050077563
+// LIFERAY-REST-BUILDER-HASH:-1360521299

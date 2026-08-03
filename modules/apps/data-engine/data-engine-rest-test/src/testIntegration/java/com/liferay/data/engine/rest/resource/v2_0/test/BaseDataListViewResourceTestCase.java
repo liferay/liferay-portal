@@ -507,7 +507,8 @@ public abstract class BaseDataListViewResourceTestCase {
 				dataDefinitionId, randomDataListView());
 
 		page = dataListViewResource.getDataDefinitionDataListViewsPage(
-			dataDefinitionId, null, Pagination.of(1, 10), null);
+			dataDefinitionId, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2426,4 +2427,4 @@ public abstract class BaseDataListViewResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:429709338
+// LIFERAY-REST-BUILDER-HASH:-1663053581

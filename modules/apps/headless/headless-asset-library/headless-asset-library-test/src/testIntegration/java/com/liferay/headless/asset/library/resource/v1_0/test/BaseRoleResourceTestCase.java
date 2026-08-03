@@ -250,7 +250,8 @@ public abstract class BaseRoleResourceTestCase {
 			assetLibraryExternalReferenceCode, randomRole());
 
 		page = roleResource.getAssetLibraryRolesPage(
-			assetLibraryExternalReferenceCode, Pagination.of(1, 10));
+			assetLibraryExternalReferenceCode,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1375,4 +1376,4 @@ public abstract class BaseRoleResourceTestCase {
 		_roleResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1519026666
+// LIFERAY-REST-BUILDER-HASH:10911665

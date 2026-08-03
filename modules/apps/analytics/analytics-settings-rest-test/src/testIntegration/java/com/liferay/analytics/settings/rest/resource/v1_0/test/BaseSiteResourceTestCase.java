@@ -198,7 +198,8 @@ public abstract class BaseSiteResourceTestCase {
 
 		Site site2 = testGetSitesPage_addSite(randomSite());
 
-		page = siteResource.getSitesPage(null, Pagination.of(1, 10), null);
+		page = siteResource.getSitesPage(
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1190,4 +1191,4 @@ public abstract class BaseSiteResourceTestCase {
 		_siteResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1396131635
+// LIFERAY-REST-BUILDER-HASH:991047948

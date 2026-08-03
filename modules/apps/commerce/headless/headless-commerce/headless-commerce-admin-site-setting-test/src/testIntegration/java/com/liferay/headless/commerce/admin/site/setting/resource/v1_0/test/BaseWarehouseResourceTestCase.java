@@ -408,7 +408,7 @@ public abstract class BaseWarehouseResourceTestCase {
 				groupId, randomWarehouse());
 
 		page = warehouseResource.getCommerceAdminSiteSettingGroupWarehousePage(
-			groupId, null, Pagination.of(1, 10));
+			groupId, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2144,4 +2144,4 @@ public abstract class BaseWarehouseResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-831429681
+// LIFERAY-REST-BUILDER-HASH:1905461096

@@ -962,7 +962,8 @@ public abstract class BaseDiscountResourceTestCase {
 
 		Discount discount2 = testGetDiscountsPage_addDiscount(randomDiscount());
 
-		page = discountResource.getDiscountsPage(Pagination.of(1, 10));
+		page = discountResource.getDiscountsPage(
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2881,4 +2882,4 @@ public abstract class BaseDiscountResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1864625358
+// LIFERAY-REST-BUILDER-HASH:-1298286251

@@ -1056,7 +1056,8 @@ public abstract class BaseAccountAddressResourceTestCase {
 		page =
 			accountAddressResource.
 				getAccountByExternalReferenceCodeAccountAddressesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1256,7 +1257,7 @@ public abstract class BaseAccountAddressResourceTestCase {
 				id, randomAccountAddress());
 
 		page = accountAddressResource.getAccountIdAccountAddressesPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3110,4 +3111,4 @@ public abstract class BaseAccountAddressResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1510018643
+// LIFERAY-REST-BUILDER-HASH:-1321882803

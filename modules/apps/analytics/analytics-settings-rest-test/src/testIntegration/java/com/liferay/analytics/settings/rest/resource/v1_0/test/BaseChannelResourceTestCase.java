@@ -200,7 +200,7 @@ public abstract class BaseChannelResourceTestCase {
 		Channel channel2 = testGetChannelsPage_addChannel(randomChannel());
 
 		page = channelResource.getChannelsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1441,4 +1441,4 @@ public abstract class BaseChannelResourceTestCase {
 		_channelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1665399309
+// LIFERAY-REST-BUILDER-HASH:-948693292

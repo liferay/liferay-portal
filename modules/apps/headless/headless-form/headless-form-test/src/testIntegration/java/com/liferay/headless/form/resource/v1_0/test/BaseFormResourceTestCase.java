@@ -538,7 +538,8 @@ public abstract class BaseFormResourceTestCase {
 
 		Form form2 = testGetSiteFormsPage_addForm(siteId, randomForm());
 
-		page = formResource.getSiteFormsPage(siteId, Pagination.of(1, 10));
+		page = formResource.getSiteFormsPage(
+			siteId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2175,4 +2176,4 @@ public abstract class BaseFormResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1682862281
+// LIFERAY-REST-BUILDER-HASH:-1680290398

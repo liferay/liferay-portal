@@ -941,7 +941,7 @@ public abstract class BaseTermResourceTestCase {
 		Term term2 = testGetTermsPage_addTerm(randomTerm());
 
 		page = termResource.getTermsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2911,4 +2911,4 @@ public abstract class BaseTermResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:619673862
+// LIFERAY-REST-BUILDER-HASH:1823801997

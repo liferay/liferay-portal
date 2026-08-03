@@ -349,8 +349,8 @@ public abstract class BaseMasterPageResourceTestCase {
 			siteExternalReferenceCode, randomMasterPage());
 
 		page = masterPageResource.getSiteMasterPagesPage(
-			siteExternalReferenceCode, null, null, null, Pagination.of(1, 10),
-			null);
+			siteExternalReferenceCode, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2300,4 +2300,4 @@ public abstract class BaseMasterPageResourceTestCase {
 		_masterPageResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-974367562
+// LIFERAY-REST-BUILDER-HASH:-1391903537

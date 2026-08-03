@@ -573,7 +573,8 @@ public abstract class BaseCartItemResourceTestCase {
 				externalReferenceCode, randomCartItem());
 
 		page = cartItemResource.getCartByExternalReferenceCodeItemsPage(
-			externalReferenceCode, null, null, Pagination.of(1, 10));
+			externalReferenceCode, null, null,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1182,7 +1183,7 @@ public abstract class BaseCartItemResourceTestCase {
 			cartId, randomCartItem());
 
 		page = cartItemResource.getCartItemsPage(
-			cartId, null, null, Pagination.of(1, 10));
+			cartId, null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3568,4 +3569,4 @@ public abstract class BaseCartItemResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-863186044
+// LIFERAY-REST-BUILDER-HASH:-1717281390

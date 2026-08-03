@@ -462,7 +462,7 @@ public abstract class BaseSkuResourceTestCase {
 			skuResource.
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeSkusPage(
 					channelExternalReferenceCode, productExternalReferenceCode,
-					null, null, Pagination.of(1, 10));
+					null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -831,7 +831,8 @@ public abstract class BaseSkuResourceTestCase {
 			channelId, productId, randomSku());
 
 		page = skuResource.getChannelProductSkusPage(
-			channelId, productId, null, null, Pagination.of(1, 10));
+			channelId, productId, null, null,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2771,4 +2772,4 @@ public abstract class BaseSkuResourceTestCase {
 			_skuResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:143385911
+// LIFERAY-REST-BUILDER-HASH:1816723031

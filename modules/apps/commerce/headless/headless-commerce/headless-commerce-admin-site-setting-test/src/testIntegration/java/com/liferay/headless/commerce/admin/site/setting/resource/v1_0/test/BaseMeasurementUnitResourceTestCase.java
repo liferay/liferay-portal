@@ -1278,7 +1278,7 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 				measurementUnitType, randomMeasurementUnit());
 
 		page = measurementUnitResource.getMeasurementUnitsByType(
-			measurementUnitType, Pagination.of(1, 10), null);
+			measurementUnitType, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1699,7 +1699,7 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 				randomMeasurementUnit());
 
 		page = measurementUnitResource.getMeasurementUnitsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3443,4 +3443,4 @@ public abstract class BaseMeasurementUnitResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-878412798
+// LIFERAY-REST-BUILDER-HASH:1681284898

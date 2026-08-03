@@ -340,7 +340,8 @@ public abstract class BaseConnectedSiteResourceTestCase {
 				assetLibraryExternalReferenceCode, randomConnectedSite());
 
 		page = connectedSiteResource.getAssetLibraryConnectedSitesPage(
-			assetLibraryExternalReferenceCode, Pagination.of(1, 10));
+			assetLibraryExternalReferenceCode,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1609,4 +1610,4 @@ public abstract class BaseConnectedSiteResourceTestCase {
 			_connectedSiteResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1439985572
+// LIFERAY-REST-BUILDER-HASH:-1533301315

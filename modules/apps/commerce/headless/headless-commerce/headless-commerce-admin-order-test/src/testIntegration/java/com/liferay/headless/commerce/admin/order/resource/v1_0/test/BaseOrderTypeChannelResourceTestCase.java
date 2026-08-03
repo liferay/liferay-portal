@@ -361,7 +361,8 @@ public abstract class BaseOrderTypeChannelResourceTestCase {
 		page =
 			orderTypeChannelResource.
 				getOrderTypeByExternalReferenceCodeOrderTypeChannelsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -566,7 +567,7 @@ public abstract class BaseOrderTypeChannelResourceTestCase {
 				id, randomOrderTypeChannel());
 
 		page = orderTypeChannelResource.getOrderTypeIdOrderTypeChannelsPage(
-			id, null, Pagination.of(1, 10), null);
+			id, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1867,4 +1868,4 @@ public abstract class BaseOrderTypeChannelResourceTestCase {
 		OrderTypeChannelResource _orderTypeChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1624035962
+// LIFERAY-REST-BUILDER-HASH:1625917128

@@ -400,7 +400,8 @@ public abstract class BaseDataRecordResourceTestCase {
 				dataDefinitionId, randomDataRecord());
 
 		page = dataRecordResource.getDataDefinitionDataRecordsPage(
-			dataDefinitionId, null, null, Pagination.of(1, 10), null);
+			dataDefinitionId, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1140,7 +1141,8 @@ public abstract class BaseDataRecordResourceTestCase {
 				dataRecordCollectionId, randomDataRecord());
 
 		page = dataRecordResource.getDataRecordCollectionDataRecordsPage(
-			dataRecordCollectionId, null, null, Pagination.of(1, 10), null);
+			dataRecordCollectionId, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2646,4 +2648,4 @@ public abstract class BaseDataRecordResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:341876255
+// LIFERAY-REST-BUILDER-HASH:212116159

@@ -256,7 +256,8 @@ public abstract class BaseReportEntryResourceTestCase {
 				importProcessId, randomReportEntry());
 
 		page = reportEntryResource.getImportProcessReportEntriesPage(
-			importProcessId, null, null, Pagination.of(1, 10), null);
+			importProcessId, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2031,4 +2032,4 @@ public abstract class BaseReportEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-778725989
+// LIFERAY-REST-BUILDER-HASH:1877292916

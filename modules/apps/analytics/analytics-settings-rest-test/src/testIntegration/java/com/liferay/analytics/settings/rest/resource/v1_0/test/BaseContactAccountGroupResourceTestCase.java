@@ -201,7 +201,7 @@ public abstract class BaseContactAccountGroupResourceTestCase {
 				randomContactAccountGroup());
 
 		page = contactAccountGroupResource.getContactAccountGroupsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1198,4 +1198,4 @@ public abstract class BaseContactAccountGroupResourceTestCase {
 		ContactAccountGroupResource _contactAccountGroupResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1107756973
+// LIFERAY-REST-BUILDER-HASH:-139995302

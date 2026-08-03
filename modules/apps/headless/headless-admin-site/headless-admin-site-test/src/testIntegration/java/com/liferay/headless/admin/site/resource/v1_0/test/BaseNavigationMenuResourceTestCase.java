@@ -345,7 +345,8 @@ public abstract class BaseNavigationMenuResourceTestCase {
 				siteExternalReferenceCode, randomNavigationMenu());
 
 		page = navigationMenuResource.getSiteNavigationMenusPage(
-			siteExternalReferenceCode, null, null, Pagination.of(1, 10), null);
+			siteExternalReferenceCode, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2069,4 +2070,4 @@ public abstract class BaseNavigationMenuResourceTestCase {
 		_navigationMenuResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1882901170
+// LIFERAY-REST-BUILDER-HASH:1233219559

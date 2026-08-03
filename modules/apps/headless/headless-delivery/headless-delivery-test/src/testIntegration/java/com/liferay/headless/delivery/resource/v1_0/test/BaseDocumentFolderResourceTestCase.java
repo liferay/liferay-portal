@@ -791,7 +791,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 				assetLibraryId, randomDocumentFolder());
 
 		page = documentFolderResource.getAssetLibraryDocumentFoldersPage(
-			assetLibraryId, null, null, null, null, Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1349,7 +1350,7 @@ public abstract class BaseDocumentFolderResourceTestCase {
 
 		page =
 			documentFolderResource.getAssetLibraryDocumentFoldersRatedByMePage(
-				assetLibraryId, Pagination.of(1, 10));
+				assetLibraryId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1967,7 +1968,7 @@ public abstract class BaseDocumentFolderResourceTestCase {
 
 		page = documentFolderResource.getDocumentFolderDocumentFoldersPage(
 			parentDocumentFolderId, null, null, null, null,
-			Pagination.of(1, 10), null);
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2629,7 +2630,8 @@ public abstract class BaseDocumentFolderResourceTestCase {
 				siteId, randomDocumentFolder());
 
 		page = documentFolderResource.getSiteDocumentFoldersPage(
-			siteId, null, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3156,7 +3158,7 @@ public abstract class BaseDocumentFolderResourceTestCase {
 				siteId, randomDocumentFolder());
 
 		page = documentFolderResource.getSiteDocumentFoldersRatedByMePage(
-			siteId, Pagination.of(1, 10));
+			siteId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -5735,4 +5737,4 @@ public abstract class BaseDocumentFolderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2117197097
+// LIFERAY-REST-BUILDER-HASH:619736944

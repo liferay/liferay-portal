@@ -213,7 +213,8 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 				randomPerformanceTopAsset());
 
 		page = performanceTopAssetResource.getPerformanceTopAssetPage(
-			null, null, null, null, Pagination.of(1, 10), null);
+			null, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1623,4 +1624,4 @@ public abstract class BasePerformanceTopAssetResourceTestCase {
 			_performanceTopAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1318815575
+// LIFERAY-REST-BUILDER-HASH:875148546

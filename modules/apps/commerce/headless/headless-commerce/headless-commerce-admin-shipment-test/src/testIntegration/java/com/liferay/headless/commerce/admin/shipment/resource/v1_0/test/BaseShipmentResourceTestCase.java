@@ -969,7 +969,7 @@ public abstract class BaseShipmentResourceTestCase {
 		Shipment shipment2 = testGetShipmentsPage_addShipment(randomShipment());
 
 		page = shipmentResource.getShipmentsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3394,4 +3394,4 @@ public abstract class BaseShipmentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:444217501
+// LIFERAY-REST-BUILDER-HASH:-984927836

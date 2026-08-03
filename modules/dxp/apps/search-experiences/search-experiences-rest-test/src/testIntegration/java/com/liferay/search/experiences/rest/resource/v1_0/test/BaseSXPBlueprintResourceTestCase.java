@@ -855,7 +855,7 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 			randomSXPBlueprint());
 
 		page = sxpBlueprintResource.getSXPBlueprintsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3057,4 +3057,4 @@ public abstract class BaseSXPBlueprintResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1000985083
+// LIFERAY-REST-BUILDER-HASH:1538711052

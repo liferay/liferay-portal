@@ -363,7 +363,8 @@ public abstract class BaseOrderRuleOrderTypeResourceTestCase {
 		page =
 			orderRuleOrderTypeResource.
 				getOrderRuleByExternalReferenceCodeOrderRuleOrderTypesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -578,7 +579,7 @@ public abstract class BaseOrderRuleOrderTypeResourceTestCase {
 				id, randomOrderRuleOrderType());
 
 		page = orderRuleOrderTypeResource.getOrderRuleIdOrderRuleOrderTypesPage(
-			id, null, Pagination.of(1, 10));
+			id, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1750,4 +1751,4 @@ public abstract class BaseOrderRuleOrderTypeResourceTestCase {
 		OrderRuleOrderTypeResource _orderRuleOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-795795882
+// LIFERAY-REST-BUILDER-HASH:-789174456

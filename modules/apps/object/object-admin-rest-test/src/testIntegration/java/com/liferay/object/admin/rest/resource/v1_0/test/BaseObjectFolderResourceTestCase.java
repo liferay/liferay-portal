@@ -833,7 +833,7 @@ public abstract class BaseObjectFolderResourceTestCase {
 			randomObjectFolder());
 
 		page = objectFolderResource.getObjectFoldersPage(
-			null, Pagination.of(1, 10));
+			null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2288,4 +2288,4 @@ public abstract class BaseObjectFolderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1128321070
+// LIFERAY-REST-BUILDER-HASH:-135823271

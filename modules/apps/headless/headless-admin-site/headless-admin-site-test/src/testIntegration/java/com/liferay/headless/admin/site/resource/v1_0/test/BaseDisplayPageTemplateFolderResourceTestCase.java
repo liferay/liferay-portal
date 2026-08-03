@@ -403,7 +403,7 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 			displayPageTemplateFolderResource.
 				getSiteDisplayPageTemplateFoldersPage(
 					siteExternalReferenceCode, null, null, null,
-					Pagination.of(1, 10), null);
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2431,4 +2431,4 @@ public abstract class BaseDisplayPageTemplateFolderResourceTestCase {
 		DisplayPageTemplateFolderResource _displayPageTemplateFolderResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1664136298
+// LIFERAY-REST-BUILDER-HASH:-2134078033

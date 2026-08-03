@@ -997,7 +997,7 @@ public abstract class BaseProductGroupResourceTestCase {
 			randomProductGroup());
 
 		page = productGroupResource.getProductGroupsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2562,4 +2562,4 @@ public abstract class BaseProductGroupResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:206026064
+// LIFERAY-REST-BUILDER-HASH:1658150359

@@ -398,7 +398,8 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 		page =
 			productConfigurationListOrderTypeResource.
 				getProductConfigurationListByExternalReferenceCodeProductConfigurationListOrderTypesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -634,7 +635,8 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 		page =
 			productConfigurationListOrderTypeResource.
 				getProductConfigurationListIdProductConfigurationListOrderTypesPage(
-					id, null, null, Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2224,4 +2226,4 @@ public abstract class BaseProductConfigurationListOrderTypeResourceTestCase {
 			_productConfigurationListOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2137280219
+// LIFERAY-REST-BUILDER-HASH:80001385

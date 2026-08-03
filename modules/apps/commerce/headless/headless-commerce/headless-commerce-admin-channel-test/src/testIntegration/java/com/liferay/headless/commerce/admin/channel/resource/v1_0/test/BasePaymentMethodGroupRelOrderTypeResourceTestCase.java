@@ -387,7 +387,8 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 		page =
 			paymentMethodGroupRelOrderTypeResource.
 				getPaymentMethodGroupRelIdPaymentMethodGroupRelOrderTypesPage(
-					id, null, null, Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1847,4 +1848,4 @@ public abstract class BasePaymentMethodGroupRelOrderTypeResourceTestCase {
 			_paymentMethodGroupRelOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1044126004
+// LIFERAY-REST-BUILDER-HASH:-1351721051

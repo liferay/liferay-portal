@@ -367,7 +367,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		page = importProcessResource.getAssetLibraryImportProcessesPage(
 			assetLibraryExternalReferenceCode, null, null, null,
-			Pagination.of(1, 10), null);
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -749,7 +749,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		page = importProcessResource.getAssetLibraryPortletImportProcessesPage(
 			assetLibraryExternalReferenceCode, portletId, null, null, null,
-			Pagination.of(1, 10), null);
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1317,7 +1317,7 @@ public abstract class BaseImportProcessResourceTestCase {
 			testGetImportProcessesPage_addImportProcess(randomImportProcess());
 
 		page = importProcessResource.getImportProcessesPage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1627,8 +1627,8 @@ public abstract class BaseImportProcessResourceTestCase {
 				siteExternalReferenceCode, randomImportProcess());
 
 		page = importProcessResource.getSiteImportProcessesPage(
-			siteExternalReferenceCode, null, null, null, Pagination.of(1, 10),
-			null);
+			siteExternalReferenceCode, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1996,7 +1996,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		page = importProcessResource.getSitePortletImportProcessesPage(
 			siteExternalReferenceCode, portletId, null, null, null,
-			Pagination.of(1, 10), null);
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3537,4 +3537,4 @@ public abstract class BaseImportProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1167690064
+// LIFERAY-REST-BUILDER-HASH:1723742889

@@ -258,7 +258,7 @@ public abstract class BaseWorkflowLogResourceTestCase {
 				workflowInstanceId, randomWorkflowLog());
 
 		page = workflowLogResource.getWorkflowInstanceWorkflowLogsPage(
-			workflowInstanceId, null, Pagination.of(1, 10));
+			workflowInstanceId, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -748,7 +748,7 @@ public abstract class BaseWorkflowLogResourceTestCase {
 				workflowTaskId, randomWorkflowLog());
 
 		page = workflowLogResource.getWorkflowTaskWorkflowLogsPage(
-			workflowTaskId, null, Pagination.of(1, 10));
+			workflowTaskId, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2128,4 +2128,4 @@ public abstract class BaseWorkflowLogResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1454988200
+// LIFERAY-REST-BUILDER-HASH:-242866522

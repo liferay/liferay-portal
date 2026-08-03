@@ -981,7 +981,7 @@ public abstract class BasePaymentResourceTestCase {
 		Payment payment2 = testGetPaymentsPage_addPayment(randomPayment());
 
 		page = paymentResource.getPaymentsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3885,4 +3885,4 @@ public abstract class BasePaymentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1788511451
+// LIFERAY-REST-BUILDER-HASH:-2018724930

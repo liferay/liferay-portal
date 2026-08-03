@@ -757,7 +757,7 @@ public abstract class BaseWishListItemResourceTestCase {
 				wishListId, randomWishListItem());
 
 		page = wishListItemResource.getWishlistWishListWishListItemsPage(
-			wishListId, null, null, Pagination.of(1, 10));
+			wishListId, null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1953,4 +1953,4 @@ public abstract class BaseWishListItemResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-387709365
+// LIFERAY-REST-BUILDER-HASH:1858421394

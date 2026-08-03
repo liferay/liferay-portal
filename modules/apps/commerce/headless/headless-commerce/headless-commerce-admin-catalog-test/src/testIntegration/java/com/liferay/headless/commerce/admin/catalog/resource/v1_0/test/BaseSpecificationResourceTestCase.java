@@ -1002,7 +1002,7 @@ public abstract class BaseSpecificationResourceTestCase {
 			testGetSpecificationsPage_addSpecification(randomSpecification());
 
 		page = specificationResource.getSpecificationsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2787,4 +2787,4 @@ public abstract class BaseSpecificationResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-946427203
+// LIFERAY-REST-BUILDER-HASH:-207157802

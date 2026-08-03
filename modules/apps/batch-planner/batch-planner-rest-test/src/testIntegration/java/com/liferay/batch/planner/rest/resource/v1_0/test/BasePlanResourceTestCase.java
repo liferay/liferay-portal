@@ -457,7 +457,7 @@ public abstract class BasePlanResourceTestCase {
 
 		Plan plan2 = testGetPlansPage_addPlan(randomPlan());
 
-		page = planResource.getPlansPage(Pagination.of(1, 10));
+		page = planResource.getPlansPage(Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1781,4 +1781,4 @@ public abstract class BasePlanResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-935182417
+// LIFERAY-REST-BUILDER-HASH:-83564984

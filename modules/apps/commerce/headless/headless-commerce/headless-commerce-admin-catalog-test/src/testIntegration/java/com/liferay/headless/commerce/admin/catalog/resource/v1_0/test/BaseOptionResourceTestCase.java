@@ -943,7 +943,7 @@ public abstract class BaseOptionResourceTestCase {
 		Option option2 = testGetOptionsPage_addOption(randomOption());
 
 		page = optionResource.getOptionsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2616,4 +2616,4 @@ public abstract class BaseOptionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1633143976
+// LIFERAY-REST-BUILDER-HASH:1946188319

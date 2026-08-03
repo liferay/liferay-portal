@@ -740,7 +740,7 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		page =
 			availabilityEstimateResource.
 				getCommerceAdminSiteSettingGroupAvailabilityEstimatePage(
-					groupId, Pagination.of(1, 10));
+					groupId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1742,4 +1742,4 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1187902824
+// LIFERAY-REST-BUILDER-HASH:49429233

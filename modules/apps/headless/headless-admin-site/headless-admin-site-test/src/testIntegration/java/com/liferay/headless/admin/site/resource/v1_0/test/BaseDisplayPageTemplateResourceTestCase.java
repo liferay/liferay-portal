@@ -503,8 +503,8 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 				siteExternalReferenceCode, randomDisplayPageTemplate());
 
 		page = displayPageTemplateResource.getSiteDisplayPageTemplatesPage(
-			siteExternalReferenceCode, null, null, null, Pagination.of(1, 10),
-			null);
+			siteExternalReferenceCode, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2702,4 +2702,4 @@ public abstract class BaseDisplayPageTemplateResourceTestCase {
 			DisplayPageTemplateResource _displayPageTemplateResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1251217636
+// LIFERAY-REST-BUILDER-HASH:-9440157

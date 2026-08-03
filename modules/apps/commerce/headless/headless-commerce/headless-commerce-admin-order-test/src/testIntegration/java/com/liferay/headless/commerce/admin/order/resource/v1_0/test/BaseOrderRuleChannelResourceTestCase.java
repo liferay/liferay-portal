@@ -362,7 +362,8 @@ public abstract class BaseOrderRuleChannelResourceTestCase {
 		page =
 			orderRuleChannelResource.
 				getOrderRuleByExternalReferenceCodeOrderRuleChannelsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -567,7 +568,7 @@ public abstract class BaseOrderRuleChannelResourceTestCase {
 				id, randomOrderRuleChannel());
 
 		page = orderRuleChannelResource.getOrderRuleIdOrderRuleChannelsPage(
-			id, null, null, Pagination.of(1, 10), null);
+			id, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1972,4 +1973,4 @@ public abstract class BaseOrderRuleChannelResourceTestCase {
 		OrderRuleChannelResource _orderRuleChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1772543065
+// LIFERAY-REST-BUILDER-HASH:697182361

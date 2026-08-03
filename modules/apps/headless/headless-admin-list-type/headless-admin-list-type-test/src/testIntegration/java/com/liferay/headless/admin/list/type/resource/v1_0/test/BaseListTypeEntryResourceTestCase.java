@@ -431,7 +431,7 @@ public abstract class BaseListTypeEntryResourceTestCase {
 			listTypeEntryResource.
 				getListTypeDefinitionByExternalReferenceCodeListTypeEntriesPage(
 					externalReferenceCode, null, null, null,
-					Pagination.of(1, 10), null);
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1015,7 +1015,8 @@ public abstract class BaseListTypeEntryResourceTestCase {
 				listTypeDefinitionId, randomListTypeEntry());
 
 		page = listTypeEntryResource.getListTypeDefinitionListTypeEntriesPage(
-			listTypeDefinitionId, null, null, null, Pagination.of(1, 10), null);
+			listTypeDefinitionId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3294,4 +3295,4 @@ public abstract class BaseListTypeEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1129782780
+// LIFERAY-REST-BUILDER-HASH:-149814812

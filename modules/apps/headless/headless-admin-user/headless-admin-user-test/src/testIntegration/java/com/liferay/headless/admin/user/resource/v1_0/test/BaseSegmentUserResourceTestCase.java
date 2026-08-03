@@ -220,7 +220,7 @@ public abstract class BaseSegmentUserResourceTestCase {
 				segmentId, randomSegmentUser());
 
 		page = segmentUserResource.getSegmentUserAccountsPage(
-			segmentId, Pagination.of(1, 10));
+			segmentId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1081,4 +1081,4 @@ public abstract class BaseSegmentUserResourceTestCase {
 		_segmentUserResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1813326952
+// LIFERAY-REST-BUILDER-HASH:-1722924321

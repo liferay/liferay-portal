@@ -238,7 +238,8 @@ public abstract class BaseCTEntryResourceTestCase {
 			randomCTEntry());
 
 		page = ctEntryResource.getCTEntriesHistoryPage(
-			null, null, null, null, null, Pagination.of(1, 10), null);
+			null, null, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -890,7 +891,8 @@ public abstract class BaseCTEntryResourceTestCase {
 			ctCollectionId, randomCTEntry());
 
 		page = ctEntryResource.getCtCollectionCTEntriesPage(
-			ctCollectionId, null, null, null, Pagination.of(1, 10), null);
+			ctCollectionId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3003,4 +3005,4 @@ public abstract class BaseCTEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1452172856
+// LIFERAY-REST-BUILDER-HASH:381644136

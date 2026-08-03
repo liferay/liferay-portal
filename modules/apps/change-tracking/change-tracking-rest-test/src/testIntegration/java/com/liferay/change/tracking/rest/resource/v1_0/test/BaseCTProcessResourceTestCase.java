@@ -680,7 +680,7 @@ public abstract class BaseCTProcessResourceTestCase {
 			randomCTProcess());
 
 		page = ctProcessResource.getCTProcessesPage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2034,4 +2034,4 @@ public abstract class BaseCTProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-829245110
+// LIFERAY-REST-BUILDER-HASH:-1000582877

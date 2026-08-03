@@ -883,8 +883,8 @@ public abstract class BaseAccountRoleResourceTestCase {
 		page =
 			accountRoleResource.
 				getAccountAccountRolesByExternalReferenceCodePage(
-					externalReferenceCode, null, null, Pagination.of(1, 10),
-					null);
+					externalReferenceCode, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1445,7 +1445,7 @@ public abstract class BaseAccountRoleResourceTestCase {
 				accountId, randomAccountRole());
 
 		page = accountRoleResource.getAccountAccountRolesPage(
-			accountId, null, null, Pagination.of(1, 10), null);
+			accountId, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3564,4 +3564,4 @@ public abstract class BaseAccountRoleResourceTestCase {
 		_accountRoleResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1860062267
+// LIFERAY-REST-BUILDER-HASH:-1139352393

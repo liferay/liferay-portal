@@ -1017,7 +1017,8 @@ public abstract class BaseCartResourceTestCase {
 			accountId, channelId, randomCart());
 
 		page = cartResource.getChannelAccountCartsPage(
-			accountId, channelId, null, null, Pagination.of(1, 10), null);
+			accountId, channelId, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1454,7 +1455,7 @@ public abstract class BaseCartResourceTestCase {
 			cartResource.
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeAccountByExternalReferenceCodeAccountExternalReferenceCodeCartsPage(
 					accountExternalReferenceCode, channelExternalReferenceCode,
-					null, null, Pagination.of(1, 10), null);
+					null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1934,7 +1935,7 @@ public abstract class BaseCartResourceTestCase {
 		Cart cart2 = testGetChannelCartsPage_addCart(channelId, randomCart());
 
 		page = cartResource.getChannelCartsPage(
-			channelId, null, null, Pagination.of(1, 10), null);
+			channelId, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -5552,4 +5553,4 @@ public abstract class BaseCartResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:550385033
+// LIFERAY-REST-BUILDER-HASH:-667949804

@@ -284,7 +284,8 @@ public abstract class BaseAccountOrganizationResourceTestCase {
 		page =
 			accountOrganizationResource.
 				getAccountByExternalReferenceCodeAccountOrganizationsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -509,7 +510,7 @@ public abstract class BaseAccountOrganizationResourceTestCase {
 				id, randomAccountOrganization());
 
 		page = accountOrganizationResource.getAccountIdAccountOrganizationsPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1570,4 +1571,4 @@ public abstract class BaseAccountOrganizationResourceTestCase {
 		AccountOrganizationResource _accountOrganizationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1964196561
+// LIFERAY-REST-BUILDER-HASH:-1999581455

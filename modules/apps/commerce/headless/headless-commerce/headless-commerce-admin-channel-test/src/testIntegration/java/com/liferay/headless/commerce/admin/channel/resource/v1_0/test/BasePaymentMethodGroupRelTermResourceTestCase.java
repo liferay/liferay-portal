@@ -376,7 +376,8 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 		page =
 			paymentMethodGroupRelTermResource.
 				getPaymentMethodGroupRelIdPaymentMethodGroupRelTermsPage(
-					id, null, null, Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1776,4 +1777,4 @@ public abstract class BasePaymentMethodGroupRelTermResourceTestCase {
 		PaymentMethodGroupRelTermResource _paymentMethodGroupRelTermResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2099511681
+// LIFERAY-REST-BUILDER-HASH:621984838

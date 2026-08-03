@@ -268,7 +268,8 @@ public abstract class BaseContentTemplateResourceTestCase {
 				assetLibraryId, randomContentTemplate());
 
 		page = contentTemplateResource.getAssetLibraryContentTemplatesPage(
-			assetLibraryId, null, null, null, Pagination.of(1, 10), null);
+			assetLibraryId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -856,7 +857,8 @@ public abstract class BaseContentTemplateResourceTestCase {
 				siteId, randomContentTemplate());
 
 		page = contentTemplateResource.getSiteContentTemplatesPage(
-			siteId, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2509,4 +2511,4 @@ public abstract class BaseContentTemplateResourceTestCase {
 		_contentTemplateResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:114614749
+// LIFERAY-REST-BUILDER-HASH:-181685251

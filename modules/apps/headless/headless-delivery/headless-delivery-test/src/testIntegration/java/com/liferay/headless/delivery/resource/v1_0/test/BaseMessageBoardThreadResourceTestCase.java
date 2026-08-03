@@ -572,7 +572,7 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 			messageBoardThreadResource.
 				getMessageBoardSectionMessageBoardThreadsPage(
 					messageBoardSectionId, null, null, null,
-					Pagination.of(1, 10), null);
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1519,7 +1519,7 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 				randomMessageBoardThread());
 
 		page = messageBoardThreadResource.getMessageBoardThreadsRankedPage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2169,7 +2169,8 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 				siteId, randomMessageBoardThread());
 
 		page = messageBoardThreadResource.getSiteMessageBoardThreadsPage(
-			siteId, null, null, null, null, Pagination.of(1, 10), null);
+			siteId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -5285,4 +5286,4 @@ public abstract class BaseMessageBoardThreadResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1181139108
+// LIFERAY-REST-BUILDER-HASH:-749967531

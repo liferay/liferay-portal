@@ -375,7 +375,8 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 		page =
 			priceModifierCategoryResource.
 				getPriceModifierByExternalReferenceCodePriceModifierCategoriesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -597,7 +598,8 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 		page =
 			priceModifierCategoryResource.
 				getPriceModifierIdPriceModifierCategoriesPage(
-					id, null, null, Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2059,4 +2061,4 @@ public abstract class BasePriceModifierCategoryResourceTestCase {
 		PriceModifierCategoryResource _priceModifierCategoryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-656344433
+// LIFERAY-REST-BUILDER-HASH:552930625

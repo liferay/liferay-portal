@@ -743,7 +743,8 @@ public abstract class BaseProductAccountGroupResourceTestCase {
 		page =
 			productAccountGroupResource.
 				getProductByExternalReferenceCodeProductAccountGroupsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -957,7 +958,7 @@ public abstract class BaseProductAccountGroupResourceTestCase {
 				id, randomProductAccountGroup());
 
 		page = productAccountGroupResource.getProductIdProductAccountGroupsPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2009,4 +2010,4 @@ public abstract class BaseProductAccountGroupResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1257217201
+// LIFERAY-REST-BUILDER-HASH:234288943

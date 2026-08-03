@@ -561,7 +561,7 @@ public abstract class BaseOptionCategoryResourceTestCase {
 				randomOptionCategory());
 
 		page = optionCategoryResource.getOptionCategoriesPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2645,4 +2645,4 @@ public abstract class BaseOptionCategoryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:2145626966
+// LIFERAY-REST-BUILDER-HASH:315370077

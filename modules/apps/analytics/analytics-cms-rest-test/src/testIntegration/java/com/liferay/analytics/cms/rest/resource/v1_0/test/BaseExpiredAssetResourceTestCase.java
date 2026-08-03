@@ -196,7 +196,7 @@ public abstract class BaseExpiredAssetResourceTestCase {
 			randomExpiredAsset());
 
 		page = expiredAssetResource.getExpiredAssetsPage(
-			null, null, Pagination.of(1, 10));
+			null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1031,4 +1031,4 @@ public abstract class BaseExpiredAssetResourceTestCase {
 		_expiredAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-60983901
+// LIFERAY-REST-BUILDER-HASH:1971102570

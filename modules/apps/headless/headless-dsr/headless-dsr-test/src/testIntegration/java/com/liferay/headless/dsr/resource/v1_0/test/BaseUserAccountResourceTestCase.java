@@ -247,7 +247,7 @@ public abstract class BaseUserAccountResourceTestCase {
 			roomId, randomUserAccount());
 
 		page = userAccountResource.getRoomUserAccountsPage(
-			roomId, Pagination.of(1, 10));
+			roomId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1377,4 +1377,4 @@ public abstract class BaseUserAccountResourceTestCase {
 		_userAccountResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1092218867
+// LIFERAY-REST-BUILDER-HASH:-1595966132

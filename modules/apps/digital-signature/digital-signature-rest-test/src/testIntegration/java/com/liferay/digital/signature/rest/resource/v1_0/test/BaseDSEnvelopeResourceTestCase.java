@@ -363,7 +363,8 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 			siteId, randomDSEnvelope());
 
 		page = dsEnvelopeResource.getSiteDSEnvelopesPage(
-			siteId, null, null, null, null, Pagination.of(1, 10));
+			siteId, null, null, null, null,
+			Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1864,4 +1865,4 @@ public abstract class BaseDSEnvelopeResourceTestCase {
 		_dsEnvelopeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:179629646
+// LIFERAY-REST-BUILDER-HASH:1632664935

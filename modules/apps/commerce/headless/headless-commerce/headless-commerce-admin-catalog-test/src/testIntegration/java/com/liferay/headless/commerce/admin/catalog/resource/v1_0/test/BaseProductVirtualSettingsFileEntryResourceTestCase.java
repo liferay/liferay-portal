@@ -461,7 +461,7 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceTestCase {
 		page =
 			productVirtualSettingsFileEntryResource.
 				getProductVirtualSettingIdProductVirtualSettingsFileEntriesPage(
-					id, Pagination.of(1, 10));
+					id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2111,4 +2111,4 @@ public abstract class BaseProductVirtualSettingsFileEntryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:575737275
+// LIFERAY-REST-BUILDER-HASH:1394208898

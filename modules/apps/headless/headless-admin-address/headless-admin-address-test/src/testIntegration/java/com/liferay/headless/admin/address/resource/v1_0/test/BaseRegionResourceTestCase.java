@@ -685,7 +685,7 @@ public abstract class BaseRegionResourceTestCase {
 			countryId, randomRegion());
 
 		page = regionResource.getCountryRegionsPage(
-			countryId, null, null, Pagination.of(1, 10), null);
+			countryId, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1466,7 +1466,7 @@ public abstract class BaseRegionResourceTestCase {
 		Region region2 = testGetRegionsPage_addRegion(randomRegion());
 
 		page = regionResource.getRegionsPage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3173,4 +3173,4 @@ public abstract class BaseRegionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-497217834
+// LIFERAY-REST-BUILDER-HASH:-617368284

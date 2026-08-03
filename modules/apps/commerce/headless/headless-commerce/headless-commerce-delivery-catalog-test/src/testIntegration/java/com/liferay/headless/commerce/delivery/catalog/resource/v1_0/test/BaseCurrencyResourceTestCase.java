@@ -232,7 +232,8 @@ public abstract class BaseCurrencyResourceTestCase {
 				externalReferenceCode, randomCurrency());
 
 		page = currencyResource.getChannelByExternalReferenceCodeCurrenciesPage(
-			externalReferenceCode, null, null, Pagination.of(1, 10), null);
+			externalReferenceCode, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -665,7 +666,7 @@ public abstract class BaseCurrencyResourceTestCase {
 			channelId, randomCurrency());
 
 		page = currencyResource.getChannelCurrenciesPage(
-			channelId, null, null, Pagination.of(1, 10), null);
+			channelId, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2033,4 +2034,4 @@ public abstract class BaseCurrencyResourceTestCase {
 		CurrencyResource _currencyResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1518084914
+// LIFERAY-REST-BUILDER-HASH:-1053803420

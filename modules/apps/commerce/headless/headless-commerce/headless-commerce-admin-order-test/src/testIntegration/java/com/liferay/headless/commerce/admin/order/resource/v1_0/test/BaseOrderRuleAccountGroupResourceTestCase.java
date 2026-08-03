@@ -374,7 +374,8 @@ public abstract class BaseOrderRuleAccountGroupResourceTestCase {
 		page =
 			orderRuleAccountGroupResource.
 				getOrderRuleByExternalReferenceCodeOrderRuleAccountGroupsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -596,7 +597,8 @@ public abstract class BaseOrderRuleAccountGroupResourceTestCase {
 		page =
 			orderRuleAccountGroupResource.
 				getOrderRuleIdOrderRuleAccountGroupsPage(
-					id, null, null, Pagination.of(1, 10), null);
+					id, null, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2056,4 +2058,4 @@ public abstract class BaseOrderRuleAccountGroupResourceTestCase {
 		OrderRuleAccountGroupResource _orderRuleAccountGroupResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1982907603
+// LIFERAY-REST-BUILDER-HASH:742133427

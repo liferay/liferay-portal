@@ -524,7 +524,8 @@ public abstract class BaseMappedProductResourceTestCase {
 		page =
 			mappedProductResource.
 				getProductByExternalReferenceCodeMappedProductsPage(
-					externalReferenceCode, null, Pagination.of(1, 10), null);
+					externalReferenceCode, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1042,7 +1043,7 @@ public abstract class BaseMappedProductResourceTestCase {
 				id, randomMappedProduct());
 
 		page = mappedProductResource.getProductIdMappedProductsPage(
-			id, null, Pagination.of(1, 10), null);
+			id, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2506,4 +2507,4 @@ public abstract class BaseMappedProductResourceTestCase {
 		MappedProductResource _mappedProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2053932710
+// LIFERAY-REST-BUILDER-HASH:-1698128838

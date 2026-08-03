@@ -597,7 +597,8 @@ public abstract class BasePriceModifierResourceTestCase {
 		page =
 			priceModifierResource.
 				getPriceListByExternalReferenceCodePriceModifiersPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -797,7 +798,7 @@ public abstract class BasePriceModifierResourceTestCase {
 				id, randomPriceModifier());
 
 		page = priceModifierResource.getPriceListIdPriceModifiersPage(
-			id, null, null, Pagination.of(1, 10), null);
+			id, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3110,4 +3111,4 @@ public abstract class BasePriceModifierResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:537257266
+// LIFERAY-REST-BUILDER-HASH:-91648430

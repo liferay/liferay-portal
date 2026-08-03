@@ -1638,7 +1638,7 @@ public abstract class BaseRoleResourceTestCase {
 		Role role2 = testGetRolesPage_addRole(randomRole());
 
 		page = roleResource.getRolesPage(
-			null, null, null, Pagination.of(1, 10));
+			null, null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3676,4 +3676,4 @@ public abstract class BaseRoleResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1486184605
+// LIFERAY-REST-BUILDER-HASH:83252342

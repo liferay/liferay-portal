@@ -367,7 +367,8 @@ public abstract class BaseWarehouseOrderTypeResourceTestCase {
 		page =
 			warehouseOrderTypeResource.
 				getWarehouseByExternalReferenceCodeWarehouseOrderTypesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -582,7 +583,7 @@ public abstract class BaseWarehouseOrderTypeResourceTestCase {
 				id, randomWarehouseOrderType());
 
 		page = warehouseOrderTypeResource.getWarehouseIdWarehouseOrderTypesPage(
-			id, null, null, Pagination.of(1, 10), null);
+			id, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2049,4 +2050,4 @@ public abstract class BaseWarehouseOrderTypeResourceTestCase {
 		WarehouseOrderTypeResource _warehouseOrderTypeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:900576662
+// LIFERAY-REST-BUILDER-HASH:-1083445752

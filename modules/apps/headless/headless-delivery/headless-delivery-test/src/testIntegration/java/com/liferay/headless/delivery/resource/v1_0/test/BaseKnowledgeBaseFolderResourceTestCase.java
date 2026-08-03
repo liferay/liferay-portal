@@ -916,7 +916,8 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 		page =
 			knowledgeBaseFolderResource.
 				getKnowledgeBaseFolderKnowledgeBaseFoldersPage(
-					parentKnowledgeBaseFolderId, Pagination.of(1, 10));
+					parentKnowledgeBaseFolderId,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1508,7 +1509,7 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 				siteId, randomKnowledgeBaseFolder());
 
 		page = knowledgeBaseFolderResource.getSiteKnowledgeBaseFoldersPage(
-			siteId, Pagination.of(1, 10));
+			siteId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3563,4 +3564,4 @@ public abstract class BaseKnowledgeBaseFolderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:708956350
+// LIFERAY-REST-BUILDER-HASH:239565040

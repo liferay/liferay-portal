@@ -204,7 +204,7 @@ public abstract class BaseCommerceChannelResourceTestCase {
 				randomCommerceChannel());
 
 		page = commerceChannelResource.getCommerceChannelsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1273,4 +1273,4 @@ public abstract class BaseCommerceChannelResourceTestCase {
 			CommerceChannelResource _commerceChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1126530279
+// LIFERAY-REST-BUILDER-HASH:303976114

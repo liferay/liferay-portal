@@ -407,7 +407,7 @@ public abstract class BaseTaxCategoryResourceTestCase {
 
 		page =
 			taxCategoryResource.getCommerceAdminSiteSettingGroupTaxCategoryPage(
-				groupId, Pagination.of(1, 10));
+				groupId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1660,4 +1660,4 @@ public abstract class BaseTaxCategoryResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1606140967
+// LIFERAY-REST-BUILDER-HASH:760685678

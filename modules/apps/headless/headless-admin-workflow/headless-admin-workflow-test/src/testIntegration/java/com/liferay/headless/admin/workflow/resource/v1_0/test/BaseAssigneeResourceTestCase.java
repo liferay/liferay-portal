@@ -218,7 +218,7 @@ public abstract class BaseAssigneeResourceTestCase {
 			workflowTaskId, randomAssignee());
 
 		page = assigneeResource.getWorkflowTaskAssignableUsersPage(
-			workflowTaskId, Pagination.of(1, 10));
+			workflowTaskId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1001,4 +1001,4 @@ public abstract class BaseAssigneeResourceTestCase {
 		_assigneeResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-587152302
+// LIFERAY-REST-BUILDER-HASH:146795993

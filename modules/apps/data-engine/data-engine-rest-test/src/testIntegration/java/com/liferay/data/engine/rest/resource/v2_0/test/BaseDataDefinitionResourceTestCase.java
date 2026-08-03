@@ -918,7 +918,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		page =
 			dataDefinitionResource.
 				getDataDefinitionByContentTypeContentTypePage(
-					contentType, null, Pagination.of(1, 10), null);
+					contentType, null, Pagination.of(1, (int)totalCount + 2),
+					null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1661,7 +1662,8 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		page =
 			dataDefinitionResource.
 				getSiteDataDefinitionByContentTypeContentTypePage(
-					siteId, contentType, null, Pagination.of(1, 10), null);
+					siteId, contentType, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3593,4 +3595,4 @@ public abstract class BaseDataDefinitionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:137953126
+// LIFERAY-REST-BUILDER-HASH:-1815326412

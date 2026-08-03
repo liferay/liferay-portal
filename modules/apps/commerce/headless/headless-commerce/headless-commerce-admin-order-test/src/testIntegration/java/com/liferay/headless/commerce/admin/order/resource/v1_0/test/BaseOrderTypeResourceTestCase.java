@@ -1108,7 +1108,7 @@ public abstract class BaseOrderTypeResourceTestCase {
 			randomOrderType());
 
 		page = orderTypeResource.getOrderTypesPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3010,4 +3010,4 @@ public abstract class BaseOrderTypeResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:565472736
+// LIFERAY-REST-BUILDER-HASH:-2023184839

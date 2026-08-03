@@ -375,7 +375,8 @@ public abstract class BaseAccountAddressChannelResourceTestCase {
 		page =
 			accountAddressChannelResource.
 				getAccountAddressByExternalReferenceCodeAccountAddressChannelsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -599,7 +600,8 @@ public abstract class BaseAccountAddressChannelResourceTestCase {
 		page =
 			accountAddressChannelResource.
 				getAccountAddressIdAccountAddressChannelsPage(
-					addressId, null, null, Pagination.of(1, 10), null);
+					addressId, null, null,
+					Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2068,4 +2070,4 @@ public abstract class BaseAccountAddressChannelResourceTestCase {
 		AccountAddressChannelResource _accountAddressChannelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1002747613
+// LIFERAY-REST-BUILDER-HASH:-1174603285

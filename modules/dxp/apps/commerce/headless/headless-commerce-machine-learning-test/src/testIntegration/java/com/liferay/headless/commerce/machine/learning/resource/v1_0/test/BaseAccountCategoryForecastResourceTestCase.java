@@ -214,7 +214,8 @@ public abstract class BaseAccountCategoryForecastResourceTestCase {
 		page =
 			accountCategoryForecastResource.
 				getAccountCategoryForecastsByMonthlyRevenuePage(
-					null, null, null, null, null, Pagination.of(1, 10));
+					null, null, null, null, null,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1307,4 +1308,4 @@ public abstract class BaseAccountCategoryForecastResourceTestCase {
 		AccountCategoryForecastResource _accountCategoryForecastResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1926891144
+// LIFERAY-REST-BUILDER-HASH:570804175

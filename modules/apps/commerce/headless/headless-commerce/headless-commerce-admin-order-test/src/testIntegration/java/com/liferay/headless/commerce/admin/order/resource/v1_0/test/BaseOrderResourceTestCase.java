@@ -1017,7 +1017,7 @@ public abstract class BaseOrderResourceTestCase {
 		Order order2 = testGetOrdersPage_addOrder(randomOrder());
 
 		page = orderResource.getOrdersPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -7190,4 +7190,4 @@ public abstract class BaseOrderResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1209284355
+// LIFERAY-REST-BUILDER-HASH:-1626585508

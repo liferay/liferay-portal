@@ -1461,7 +1461,7 @@ public abstract class BaseProductResourceTestCase {
 		Product product2 = testGetProductsPage_addProduct(randomProduct());
 
 		page = productResource.getProductsPage(
-			null, null, Pagination.of(1, 10), null);
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -4483,4 +4483,4 @@ public abstract class BaseProductResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:634991064
+// LIFERAY-REST-BUILDER-HASH:2026751537

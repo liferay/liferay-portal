@@ -1219,7 +1219,8 @@ public abstract class BaseCommentResourceTestCase {
 			blogPostingId, randomComment());
 
 		page = commentResource.getBlogPostingCommentsPage(
-			blogPostingId, null, null, null, Pagination.of(1, 10), null);
+			blogPostingId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2004,7 +2005,8 @@ public abstract class BaseCommentResourceTestCase {
 			parentCommentId, randomComment());
 
 		page = commentResource.getCommentCommentsPage(
-			parentCommentId, null, null, null, Pagination.of(1, 10), null);
+			parentCommentId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2387,7 +2389,8 @@ public abstract class BaseCommentResourceTestCase {
 			documentId, randomComment());
 
 		page = commentResource.getDocumentCommentsPage(
-			documentId, null, null, null, Pagination.of(1, 10), null);
+			documentId, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -3668,7 +3671,8 @@ public abstract class BaseCommentResourceTestCase {
 			structuredContentId, randomComment());
 
 		page = commentResource.getStructuredContentCommentsPage(
-			structuredContentId, null, null, null, Pagination.of(1, 10), null);
+			structuredContentId, null, null, null,
+			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -5957,4 +5961,4 @@ public abstract class BaseCommentResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1074758882
+// LIFERAY-REST-BUILDER-HASH:1490776948

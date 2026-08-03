@@ -214,7 +214,7 @@ public abstract class BaseSharedAssetResourceTestCase {
 				randomSharedAsset());
 
 		page = sharedAssetResource.getMyUserAccountSharedAssetsSharedByMePage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -598,7 +598,7 @@ public abstract class BaseSharedAssetResourceTestCase {
 				randomSharedAsset());
 
 		page = sharedAssetResource.getMyUserAccountSharedAssetsSharedWithMePage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2309,4 +2309,4 @@ public abstract class BaseSharedAssetResourceTestCase {
 		_sharedAssetResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:395946089
+// LIFERAY-REST-BUILDER-HASH:-1548402487

@@ -775,7 +775,7 @@ public abstract class BaseCollaboratorResourceTestCase {
 				objectEntryFolderId, randomCollaborator());
 
 		page = collaboratorResource.getObjectEntryFolderCollaboratorsPage(
-			objectEntryFolderId, Pagination.of(1, 10));
+			objectEntryFolderId, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1179,7 +1179,8 @@ public abstract class BaseCollaboratorResourceTestCase {
 		page =
 			collaboratorResource.
 				getScopeScopeKeyObjectEntryFolderByExternalReferenceCodeCollaboratorsPage(
-					scopeKey, externalReferenceCode, Pagination.of(1, 10));
+					scopeKey, externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2549,4 +2550,4 @@ public abstract class BaseCollaboratorResourceTestCase {
 		_collaboratorResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:666520710
+// LIFERAY-REST-BUILDER-HASH:29327142

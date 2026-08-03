@@ -273,7 +273,7 @@ public abstract class BaseProductOptionValueResourceTestCase {
 				getChannelByExternalReferenceCodeChannelExternalReferenceCodeProductByExternalReferenceCodeProductExternalReferenceCodeProductOptionByExternalReferenceCodeProductOptionExternalReferenceCodeProductOptionValuesPage(
 					channelExternalReferenceCode, productExternalReferenceCode,
 					productOptionExternalReferenceCode, null, null, null, null,
-					Pagination.of(1, 10));
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -566,7 +566,7 @@ public abstract class BaseProductOptionValueResourceTestCase {
 			productOptionValueResource.
 				getChannelProductProductOptionProductOptionValuesPage(
 					channelId, productId, productOptionId, null, null, null,
-					null, Pagination.of(1, 10));
+					null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2163,4 +2163,4 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		ProductOptionValueResource _productOptionValueResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:885832925
+// LIFERAY-REST-BUILDER-HASH:1473206699

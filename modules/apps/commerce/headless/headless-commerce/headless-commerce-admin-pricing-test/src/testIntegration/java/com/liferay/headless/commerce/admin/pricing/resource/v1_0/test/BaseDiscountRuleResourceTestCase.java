@@ -417,7 +417,8 @@ public abstract class BaseDiscountRuleResourceTestCase {
 		page =
 			discountRuleResource.
 				getDiscountByExternalReferenceCodeDiscountRulesPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -610,7 +611,7 @@ public abstract class BaseDiscountRuleResourceTestCase {
 				id, randomDiscountRule());
 
 		page = discountRuleResource.getDiscountIdDiscountRulesPage(
-			id, Pagination.of(1, 10));
+			id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1956,4 +1957,4 @@ public abstract class BaseDiscountRuleResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-788537219
+// LIFERAY-REST-BUILDER-HASH:1471295773

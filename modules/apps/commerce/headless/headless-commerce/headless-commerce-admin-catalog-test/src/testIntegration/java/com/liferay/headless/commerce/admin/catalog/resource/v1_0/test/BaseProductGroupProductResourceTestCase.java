@@ -362,7 +362,8 @@ public abstract class BaseProductGroupProductResourceTestCase {
 		page =
 			productGroupProductResource.
 				getProductGroupByExternalReferenceCodeProductGroupProductsPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -581,7 +582,7 @@ public abstract class BaseProductGroupProductResourceTestCase {
 		page =
 			productGroupProductResource.
 				getProductGroupIdProductGroupProductsPage(
-					id, Pagination.of(1, 10));
+					id, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1829,4 +1830,4 @@ public abstract class BaseProductGroupProductResourceTestCase {
 		ProductGroupProductResource _productGroupProductResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-344742844
+// LIFERAY-REST-BUILDER-HASH:1802335250

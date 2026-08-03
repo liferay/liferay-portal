@@ -358,7 +358,8 @@ public abstract class BaseDiscountSkuResourceTestCase {
 		page =
 			discountSkuResource.
 				getDiscountByExternalReferenceCodeDiscountSkusPage(
-					externalReferenceCode, Pagination.of(1, 10));
+					externalReferenceCode,
+					Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -550,7 +551,7 @@ public abstract class BaseDiscountSkuResourceTestCase {
 				id, randomDiscountSku());
 
 		page = discountSkuResource.getDiscountIdDiscountSkusPage(
-			id, null, null, Pagination.of(1, 10), null);
+			id, null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2016,4 +2017,4 @@ public abstract class BaseDiscountSkuResourceTestCase {
 		DiscountSkuResource _discountSkuResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:969261555
+// LIFERAY-REST-BUILDER-HASH:1933574181

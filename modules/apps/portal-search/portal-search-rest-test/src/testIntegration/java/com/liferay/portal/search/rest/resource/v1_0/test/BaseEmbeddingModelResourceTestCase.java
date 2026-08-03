@@ -197,7 +197,7 @@ public abstract class BaseEmbeddingModelResourceTestCase {
 				randomEmbeddingModel());
 
 		page = embeddingModelResource.getEmbeddingEmbeddingModelsPage(
-			null, null, Pagination.of(1, 10));
+			null, null, Pagination.of(1, (int)totalCount + 2));
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -967,4 +967,4 @@ public abstract class BaseEmbeddingModelResourceTestCase {
 		_embeddingModelResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1405303903
+// LIFERAY-REST-BUILDER-HASH:-150379738

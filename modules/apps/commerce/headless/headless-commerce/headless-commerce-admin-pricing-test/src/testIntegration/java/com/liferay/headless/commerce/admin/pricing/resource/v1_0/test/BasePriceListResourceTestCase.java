@@ -975,7 +975,7 @@ public abstract class BasePriceListResourceTestCase {
 			randomPriceList());
 
 		page = priceListResource.getPriceListsPage(
-			null, Pagination.of(1, 10), null);
+			null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2772,4 +2772,4 @@ public abstract class BasePriceListResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:330525512
+// LIFERAY-REST-BUILDER-HASH:1027829071

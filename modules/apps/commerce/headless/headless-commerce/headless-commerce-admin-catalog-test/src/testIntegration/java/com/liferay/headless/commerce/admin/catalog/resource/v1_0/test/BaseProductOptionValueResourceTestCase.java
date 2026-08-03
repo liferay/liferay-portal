@@ -428,7 +428,7 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		page =
 			productOptionValueResource.
 				getProductOptionIdProductOptionValuesPage(
-					id, null, Pagination.of(1, 10), null);
+					id, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -2208,4 +2208,4 @@ public abstract class BaseProductOptionValueResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-908221978
+// LIFERAY-REST-BUILDER-HASH:1224867967
