@@ -61,6 +61,10 @@ public class MonitorResult {
 			return mostSevereStatus;
 		}
 
+		public int getSeverityRank() {
+			return _severityRank;
+		}
+
 		private Status(int severityRank) {
 			_severityRank = severityRank;
 		}
