@@ -7,6 +7,9 @@ metadata:
     name: {{ include "liferay.name" . }}
     namespace: {{ include "liferay.namespace" . }}
 spec:
+    activationCodeSecretRef:
+        key: {{ .Values.license.activationCodeSecretKey }}
+        name: {{ .Values.license.activationCodeSecretName | default (printf "%s-activation" (include "liferay.name" .)) }}
     marketplaceVolume:
         enabled: {{ .Values.marketplace.enabled }}
         size: {{ .Values.marketplace.size }}
