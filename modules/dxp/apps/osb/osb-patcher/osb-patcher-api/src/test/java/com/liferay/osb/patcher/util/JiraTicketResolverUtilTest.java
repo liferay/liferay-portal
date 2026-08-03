@@ -350,9 +350,9 @@ public class JiraTicketResolverUtilTest {
 		return JSONUtil.put("key", key);
 	}
 
-	private MockedStatic<JiraUtil> _jiraUtilMockedStatic = Mockito.mockStatic(
-		JiraUtil.class);
-	private MockedStatic<LanguageUtil> _languageUtilMockedStatic =
+	private final MockedStatic<JiraUtil> _jiraUtilMockedStatic =
+		Mockito.mockStatic(JiraUtil.class);
+	private final MockedStatic<LanguageUtil> _languageUtilMockedStatic =
 		Mockito.mockStatic(LanguageUtil.class);
 	private final PatcherConfiguration _patcherConfiguration = Mockito.mock(
 		PatcherConfiguration.class);
