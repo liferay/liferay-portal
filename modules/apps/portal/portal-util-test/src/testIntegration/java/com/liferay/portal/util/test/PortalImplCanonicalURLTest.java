@@ -178,16 +178,16 @@ public class PortalImplCanonicalURLTest {
 		_defaultGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), groupKey);
 
-		_defaultGrouplayout1 = _layoutLocalService.fetchFirstLayout(
+		_defaultGroupLayout1 = _layoutLocalService.fetchFirstLayout(
 			_defaultGroup.getGroupId(), false,
 			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 
-		if (_defaultGrouplayout1 == null) {
-			_defaultGrouplayout1 = LayoutTestUtil.addTypePortletLayout(
+		if (_defaultGroupLayout1 == null) {
+			_defaultGroupLayout1 = LayoutTestUtil.addTypePortletLayout(
 				_defaultGroup);
 		}
 
-		_defaultGrouplayout2 = LayoutTestUtil.addTypePortletLayout(
+		_defaultGroupLayout2 = LayoutTestUtil.addTypePortletLayout(
 			_defaultGroup.getGroupId());
 
 		_targetGroup = GroupTestUtil.addGroup();
@@ -475,7 +475,7 @@ public class PortalImplCanonicalURLTest {
 	@Test
 	public void testDefaultSiteFirstPage() throws Exception {
 		_testCanonicalURL(
-			"localhost", "localhost", _defaultGroup, _defaultGrouplayout1, null,
+			"localhost", "localhost", _defaultGroup, _defaultGroupLayout1, null,
 			null, "/en", StringPool.BLANK, false, false);
 	}
 
@@ -484,15 +484,15 @@ public class PortalImplCanonicalURLTest {
 		throws Exception {
 
 		_testCanonicalURL(
-			"localhost", "localhost", _defaultGroup, _defaultGrouplayout1, null,
+			"localhost", "localhost", _defaultGroup, _defaultGroupLayout1, null,
 			null, "/es", StringPool.BLANK, false, false);
 	}
 
 	@Test
 	public void testDefaultSiteSecondPage() throws Exception {
 		_testCanonicalURL(
-			"localhost", "localhost", _defaultGroup, _defaultGrouplayout2, null,
-			null, "/en", _defaultGrouplayout2.getFriendlyURL(), false, false);
+			"localhost", "localhost", _defaultGroup, _defaultGroupLayout2, null,
+			null, "/en", _defaultGroupLayout2.getFriendlyURL(), false, false);
 	}
 
 	@Test
@@ -500,8 +500,8 @@ public class PortalImplCanonicalURLTest {
 		throws Exception {
 
 		_testCanonicalURL(
-			"localhost", "localhost", _defaultGroup, _defaultGrouplayout2, null,
-			null, "/es", _defaultGrouplayout2.getFriendlyURL(), false, false);
+			"localhost", "localhost", _defaultGroup, _defaultGroupLayout2, null,
+			null, "/es", _defaultGroupLayout2.getFriendlyURL(), false, false);
 	}
 
 	@Test
@@ -516,7 +516,7 @@ public class PortalImplCanonicalURLTest {
 	@Test
 	public void testDomainDefaultSiteFirstPageFromLocalhost() throws Exception {
 		_testCanonicalURL(
-			"liferay.com", "localhost", _defaultGroup, _defaultGrouplayout1,
+			"liferay.com", "localhost", _defaultGroup, _defaultGroupLayout1,
 			null, null, "/en", StringPool.BLANK, false, false);
 	}
 
@@ -526,7 +526,7 @@ public class PortalImplCanonicalURLTest {
 
 		_testCanonicalURL(
 			"liferay.com", "localhost:" + PortalUtil.getPortalServerPort(false),
-			_defaultGroup, _defaultGrouplayout1, null, null, "/en",
+			_defaultGroup, _defaultGroupLayout1, null, null, "/en",
 			StringPool.BLANK, false, false);
 	}
 
@@ -536,7 +536,7 @@ public class PortalImplCanonicalURLTest {
 
 		_testCanonicalURL(
 			"liferay.com", "localhost:" + PortalUtil.getPortalServerPort(false),
-			_defaultGroup, _defaultGrouplayout1, null, null, "/en",
+			_defaultGroup, _defaultGroupLayout1, null, null, "/en",
 			StringPool.BLANK, false, true);
 	}
 
@@ -655,15 +655,15 @@ public class PortalImplCanonicalURLTest {
 	@Test
 	public void testNonlocalhostDefaultSiteFirstPage() throws Exception {
 		_testCanonicalURL(
-			"localhost", "liferay.com", _defaultGroup, _defaultGrouplayout1,
+			"localhost", "liferay.com", _defaultGroup, _defaultGroupLayout1,
 			null, null, "/en", StringPool.BLANK, false, false);
 	}
 
 	@Test
 	public void testNonlocalhostDefaultSiteSecondPage() throws Exception {
 		_testCanonicalURL(
-			"localhost", "liferay.com", _defaultGroup, _defaultGrouplayout2,
-			null, null, "/en", _defaultGrouplayout2.getFriendlyURL(), false,
+			"localhost", "liferay.com", _defaultGroup, _defaultGroupLayout2,
+			null, null, "/en", _defaultGroupLayout2.getFriendlyURL(), false,
 			false);
 	}
 
@@ -860,8 +860,8 @@ public class PortalImplCanonicalURLTest {
 	}
 
 	private static Group _defaultGroup;
-	private static Layout _defaultGrouplayout1;
-	private static Layout _defaultGrouplayout2;
+	private static Layout _defaultGroupLayout1;
+	private static Layout _defaultGroupLayout2;
 	private static Locale _defaultLocale;
 	private static int _defaultPrependStyle;
 	private static Group _group;
