@@ -60,7 +60,7 @@ project(":sample-service") {
 		api group: "com.liferay", name: "com.liferay.petra.string", version: "5.0.1"
 		api group: "com.liferay", name: "com.liferay.portal.spring.extender", version: "2.0.0"
 		api project(":sample-api")
-		serviceBuilder group: "com.liferay", name: "com.liferay.portal.tools.service.builder", version: "1.0.555"
+		serviceBuilder group: "com.liferay", name: "com.liferay.portal.tools.service.builder", version: "1.0.556"
 	}
 }
 
