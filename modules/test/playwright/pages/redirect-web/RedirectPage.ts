@@ -15,6 +15,7 @@ export class RedirectPage {
 	readonly destinationURL: Locator;
 	readonly destinationURLErrorMessage: Locator;
 	readonly expirationDate: Locator;
+	readonly notFoundURLsColumns: Locator;
 	readonly page: Page;
 	readonly pattern: Locator;
 	readonly patternLink: Locator;
@@ -31,6 +32,7 @@ export class RedirectPage {
 			'This URL is not supported'
 		);
 		this.expirationDate = page.getByLabel('Expiration Date');
+		this.notFoundURLsColumns = page.locator('td.lfr-not-found-urls-column');
 		this.page = page;
 		this.pattern = page.getByLabel('Pattern', {exact: true});
 		this.patternLink = page.getByRole('link', {name: 'Patterns'});
@@ -84,6 +86,19 @@ export class RedirectPage {
 		await this.createButton.click();
 
 		await expect(this.destinationURLErrorMessage).toBeVisible();
+	}
+
+	async assertNotFoundURLsOrder(expectedURLs: string[]) {
+		await expect(async () => {
+			await this.page.reload();
+
+			for (let i = 0; i < expectedURLs.length; i++) {
+				await expect(this.notFoundURLsColumns.nth(i)).toContainText(
+					expectedURLs[i],
+					{timeout: 5000}
+				);
+			}
+		}).toPass({timeout: 30000});
 	}
 
 	async configureRedirectNotFound(enabled: boolean) {
@@ -164,6 +179,24 @@ export class RedirectPage {
 		await this.page.goto(
 			`/group${siteUrl || '/guest'}${PORTLET_URLS.redirect}`
 		);
+	}
+
+	async orderBy(name: string) {
+		const menuItem = this.page.getByRole('menuitem', {exact: true, name});
+
+		await clickAndExpectToBeVisible({
+			target: menuItem,
+			timeout: 1000,
+			trigger: this.page.getByLabel('Order', {exact: true}),
+		});
+
+		if ((await menuItem.getAttribute('aria-selected')) === 'true') {
+			await this.page.keyboard.press('Escape');
+
+			return;
+		}
+
+		await menuItem.click();
 	}
 
 	async updateReferences(updateReferences: boolean = true) {

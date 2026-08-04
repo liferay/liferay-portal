@@ -182,54 +182,25 @@ test('Ensure that 404 URLs can be ordered by number of requests', async ({
 
 	await page.goto(`/web/${site.name}/non-existing-url`);
 	await page.goto(`/web/${site.name}/non-existing-url`);
+	await page.goto(`/web/${site.name}/non-existing-url`);
 
 	await redirectPage.goto(site.friendlyUrlPath);
 
 	await page.getByRole('link', {name: 'URLs'}).click();
 
-	await page.getByLabel('Order', {exact: true}).click();
+	await redirectPage.orderBy('Requests');
 
-	await page.getByRole('menuitem', {name: 'Ascending'}).click();
+	await redirectPage.orderBy('Ascending');
 
-	await page.waitForTimeout(500);
+	await redirectPage.assertNotFoundURLsOrder([
+		'non-existing-url',
+		'invalid-page',
+	]);
 
-	const tableRows = page.locator('table > tbody tr');
+	await redirectPage.orderBy('Descending');
 
-	let expectedTexts = ['non-existing-url', 'invalid-page'];
-
-	for (let i = 0; i < expectedTexts.length; i++) {
-		const row = tableRows.nth(i);
-
-		await expect(row).toBeVisible();
-
-		const secondColumn = row.locator('td').nth(1);
-
-		await expect(secondColumn).toBeVisible();
-
-		const text = await secondColumn.innerText();
-
-		expect(text).toContain(expectedTexts[i]);
-	}
-
-	await page.getByLabel('Order', {exact: true}).click();
-
-	await page.getByRole('menuitem', {name: 'Descending'}).click();
-
-	await page.waitForTimeout(500);
-
-	expectedTexts = ['invalid-page', 'non-existing-url'];
-
-	for (let i = 0; i < expectedTexts.length; i++) {
-		const row = tableRows.nth(i);
-
-		await expect(row).toBeVisible();
-
-		const secondColumn = row.locator('td').nth(1);
-
-		await expect(secondColumn).toBeVisible();
-
-		const text = await secondColumn.innerText();
-
-		expect(text).toContain(expectedTexts[i]);
-	}
+	await redirectPage.assertNotFoundURLsOrder([
+		'invalid-page',
+		'non-existing-url',
+	]);
 });
