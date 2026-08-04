@@ -150,7 +150,7 @@ public class CTProcessLocalServiceTest {
 				ctProcess.getCtProcessId());
 
 			ctCollection = _ctCollectionLocalService.fetchCTCollection(
-				ctProcess.getCtProcessId());
+				ctProcess.getCtCollectionId());
 
 			Assert.assertNull(ctCollection);
 
