@@ -1,10 +1,12 @@
 package marketplace
 
 import (
-	"fmt"
+	fmt "fmt"
+	slices "slices"
 
-	"github.com/liferay/liferay-portal/cloud/operator/internal/utils/persistentvolumeclaim"
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	storagev1 "k8s.io/api/storage/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -13,48 +15,26 @@ const (
 	conditionTypeVolumeReady   = "MarketplaceVolumeReady"
 )
 
+func GetVolumeConditions(
+	persistentVolumeClaim *corev1.PersistentVolumeClaim,
+	statefulSet *appsv1.StatefulSet,
+	storageClass *storagev1.StorageClass,
+) []metav1.Condition {
+	return []metav1.Condition{
+		getClaimReadyCondition(persistentVolumeClaim, storageClass),
+		getVolumeMountedCondition(persistentVolumeClaim.Name, statefulSet),
+	}
+}
+
 func getClaimReadyCondition(
-	claimResult persistentvolumeclaim.Result,
-	claimSpec persistentvolumeclaim.Spec,
+	persistentVolumeClaim *corev1.PersistentVolumeClaim,
+	storageClass *storagev1.StorageClass,
 ) metav1.Condition {
-	claimName := claimSpec.Name
+	claimName := persistentVolumeClaim.Name
 
-	storageClassName := claimSpec.StorageClassName
+	storageClassName := getStorageClassName(persistentVolumeClaim)
 
-	switch claimResult.State {
-	case persistentvolumeclaim.StateAccessModesUnsupported:
-		return newVolumeReadyCondition(
-			fmt.Sprintf(
-				"The persistent volume claim %q is bound but does not support ReadWriteMany. The storage class %q is not ReadWriteMany capable",
-				claimName, storageClassName),
-			"ClaimNotReadWriteMany",
-			metav1.ConditionFalse,
-		)
-	case persistentvolumeclaim.StateBound:
-		return newVolumeReadyCondition(
-			fmt.Sprintf(
-				"The persistent volume claim %q is bound and supports ReadWriteMany",
-				claimName),
-			"ClaimBound",
-			metav1.ConditionTrue,
-		)
-	case persistentvolumeclaim.StateCreated:
-		return newVolumeReadyCondition(
-			fmt.Sprintf(
-				"The persistent volume claim %q was created and is waiting to be bound",
-				claimName),
-			"ClaimCreated",
-			metav1.ConditionFalse,
-		)
-	case persistentvolumeclaim.StateNotBound:
-		return newVolumeReadyCondition(
-			fmt.Sprintf(
-				"The persistent volume claim %q is not bound. Its phase is %q",
-				claimName, claimResult.Phase),
-			"ClaimNotBound",
-			metav1.ConditionFalse,
-		)
-	case persistentvolumeclaim.StateStorageClassNotFound:
+	if storageClass == nil {
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
 				"The storage class %q was not found. A ReadWriteMany capable storage class must exist before marketplace artifacts can be provisioned",
@@ -62,15 +42,57 @@ func getClaimReadyCondition(
 			"StorageClassNotFound",
 			metav1.ConditionFalse,
 		)
-	default:
+	}
+
+	if persistentVolumeClaim.Status.Phase != corev1.ClaimBound {
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
-				"The persistent volume claim %q is in the unknown state %q",
-				claimName, claimResult.State),
-			"ClaimStateUnknown",
-			metav1.ConditionUnknown,
+				"The persistent volume claim %q is not bound. Its phase is %q",
+				claimName, persistentVolumeClaim.Status.Phase),
+			"ClaimNotBound",
+			metav1.ConditionFalse,
 		)
 	}
+
+	if !slices.Contains(persistentVolumeClaim.Status.AccessModes, corev1.ReadWriteMany) {
+		return newVolumeReadyCondition(
+			fmt.Sprintf(
+				"The persistent volume claim %q is bound but does not support ReadWriteMany. The storage class %q is not ReadWriteMany capable",
+				claimName, storageClassName),
+			"ClaimNotReadWriteMany",
+			metav1.ConditionFalse,
+		)
+	}
+
+	return newVolumeReadyCondition(
+		fmt.Sprintf(
+			"The persistent volume claim %q is bound and supports ReadWriteMany",
+			claimName),
+		"ClaimBound",
+		metav1.ConditionTrue,
+	)
+}
+
+func getStorageClassName(persistentVolumeClaim *corev1.PersistentVolumeClaim) string {
+	if persistentVolumeClaim.Spec.StorageClassName == nil {
+		return ""
+	}
+
+	return *persistentVolumeClaim.Spec.StorageClassName
+}
+
+func getVolumeByClaimName(podSpec *corev1.PodSpec, claimName string) *corev1.Volume {
+	for index, volume := range podSpec.Volumes {
+		if volume.PersistentVolumeClaim == nil {
+			continue
+		}
+
+		if volume.PersistentVolumeClaim.ClaimName == claimName {
+			return &podSpec.Volumes[index]
+		}
+	}
+
+	return nil
 }
 
 func getVolumeMountedCondition(
@@ -79,7 +101,7 @@ func getVolumeMountedCondition(
 ) metav1.Condition {
 	podSpec := &statefulSet.Spec.Template.Spec
 
-	volume := persistentvolumeclaim.GetVolumeByClaimName(podSpec, claimName)
+	volume := getVolumeByClaimName(podSpec, claimName)
 
 	if volume == nil {
 		return newVolumeMountedCondition(
@@ -91,7 +113,7 @@ func getVolumeMountedCondition(
 		)
 	}
 
-	if !persistentvolumeclaim.IsVolumeMountedReadOnly(podSpec, volume) {
+	if !isVolumeMountedReadOnly(podSpec, volume) {
 		return newVolumeMountedCondition(
 			fmt.Sprintf(
 				"The stateful set %q does not mount the volume %q read only",
@@ -108,6 +130,30 @@ func getVolumeMountedCondition(
 		"ClaimMounted",
 		metav1.ConditionTrue,
 	)
+}
+
+func isMountReadOnly(volume *corev1.Volume, volumeMount corev1.VolumeMount) bool {
+	return volumeMount.ReadOnly || volume.PersistentVolumeClaim.ReadOnly
+}
+
+func isVolumeMountedReadOnly(podSpec *corev1.PodSpec, volume *corev1.Volume) bool {
+	mounted := false
+
+	for _, container := range slices.Concat(podSpec.Containers, podSpec.InitContainers) {
+		for _, volumeMount := range container.VolumeMounts {
+			if volumeMount.Name != volume.Name {
+				continue
+			}
+
+			if !isMountReadOnly(volume, volumeMount) {
+				return false
+			}
+
+			mounted = true
+		}
+	}
+
+	return mounted
 }
 
 func newVolumeMountedCondition(
