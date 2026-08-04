@@ -42,6 +42,24 @@ export class JournalEditStructureDefaultValuesPage {
 		await this.page.locator('body').click();
 	}
 
+	getRichTextField(name: string): Locator {
+		return this.page
+			.getByText(`${name} Rich Text Editor`)
+			.getByRole('textbox');
+	}
+
+	async fillRichTextField(name: string, content: string) {
+		const richTextField = this.getRichTextField(name);
+
+		await expect(async () => {
+			await richTextField.fill(content, {timeout: 2000});
+
+			await expect(richTextField).toContainText(content, {
+				timeout: 2000,
+			});
+		}).toPass();
+	}
+
 	async fillTextField(name: string, content: string) {
 		const textField = this.page.getByRole('textbox', {
 			name,
