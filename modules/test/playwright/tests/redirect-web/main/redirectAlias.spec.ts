@@ -202,8 +202,8 @@ test('Ensure that a redirect can be added with updating references for redirect 
 	await redirectPage.updateReferences();
 
 	await expect(
-		page.locator('.lfr-destination-url-column', {hasText: 'test-page-2'})
-	).not.toBeVisible();
+		page.locator('.lfr-destination-url-column', {hasText: 'test-page-3'})
+	).toHaveCount(2);
 
 	await page.goto(`/web/${site.name}/test-page-1`);
 

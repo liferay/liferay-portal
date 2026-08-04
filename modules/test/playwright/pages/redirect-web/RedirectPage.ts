@@ -178,5 +178,7 @@ export class RedirectPage {
 		await this.redirectChainModal
 			.getByRole('button', {name: 'Create'})
 			.click();
+
+		await waitForAlert(this.page);
 	}
 }
