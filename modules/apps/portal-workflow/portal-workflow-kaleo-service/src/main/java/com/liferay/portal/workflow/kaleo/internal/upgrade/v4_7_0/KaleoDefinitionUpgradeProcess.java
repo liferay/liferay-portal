@@ -18,6 +18,7 @@ public class KaleoDefinitionUpgradeProcess extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		runSQL("update KaleoDefinition set system_ = [$FALSE$]");
+
 		runSQL(
 			StringBundler.concat(
 				"update KaleoDefinition set system_ = [$TRUE$] where name in (",
