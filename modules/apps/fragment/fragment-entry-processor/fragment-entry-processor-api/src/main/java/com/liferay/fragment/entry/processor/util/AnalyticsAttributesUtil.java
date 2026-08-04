@@ -18,6 +18,7 @@ import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.HTMLInfoFieldType;
+import com.liferay.info.field.type.ImageInfoFieldType;
 import com.liferay.info.field.type.LongTextInfoFieldType;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemFieldValues;
@@ -155,6 +156,11 @@ public class AnalyticsAttributesUtil {
 
 		if (Objects.equals(
 				infoField.getInfoFieldType(), HTMLInfoFieldType.INSTANCE) ||
+			(Objects.equals(
+				infoField.getInfoFieldType(), ImageInfoFieldType.INSTANCE) &&
+			 Objects.equals(
+				 infoItemFieldMapped.getClassName(),
+				 FileEntry.class.getName())) ||
 			Objects.equals(
 				infoField.getInfoFieldType(), LongTextInfoFieldType.INSTANCE)) {
 
