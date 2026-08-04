@@ -547,6 +547,7 @@
 
 		<!-- Other fields -->
 
+		<column name="CProductExternalReferenceCode" type="String" />
 		<column name="CProductId" type="long" />
 		<column name="CPTaxCategoryId" type="long" />
 		<column name="accountGroupFilterEnabled" type="boolean" />
