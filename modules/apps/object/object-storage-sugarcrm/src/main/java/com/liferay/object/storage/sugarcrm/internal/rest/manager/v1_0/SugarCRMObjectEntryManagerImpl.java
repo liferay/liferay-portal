@@ -190,11 +190,11 @@ public class SugarCRMObjectEntryManagerImpl
 		StringBuilder sb, ObjectDefinition objectDefinition,
 		String filterString) {
 
-		filterString = StringUtil.trim(filterString);
-
-		if (filterString.isEmpty()) {
+		if (Validator.isNull(filterString)) {
 			return;
 		}
+
+		filterString = StringUtil.trim(filterString);
 
 		sb.append("&filter");
 		sb.append(StringPool.EQUAL);
