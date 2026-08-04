@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.delivery.client.dto.v1_0.MessageBoardThread;
 import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.pagination.Pagination;
+import com.liferay.headless.delivery.client.resource.v1_0.MessageBoardThreadResource;
 import com.liferay.headless.delivery.client.serdes.v1_0.MessageBoardThreadSerDes;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
@@ -17,11 +18,15 @@ import com.liferay.message.boards.service.MBCategoryLocalServiceUtil;
 import com.liferay.message.boards.service.MBThreadLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.ratings.kernel.service.RatingsEntryLocalServiceUtil;
 
 import java.util.Arrays;
@@ -82,6 +87,24 @@ public class MessageBoardThreadResourceTest
 			messageBoardThreadResource.
 				deleteMessageBoardThreadMyRatingHttpResponse(
 					irrelevantMessageBoardThread.getId()));
+	}
+
+	@Override
+	@Test
+	public void testGetMessageBoardThread() throws Exception {
+		super.testGetMessageBoardThread();
+
+		MessageBoardThread messageBoardThread =
+			testGetMessageBoardThread_addMessageBoardThread();
+
+		assertHttpResponseStatusCode(
+			404,
+			_getUserWithoutPermissionsMessageBoardThreadResource().
+				getMessageBoardThreadHttpResponse(messageBoardThread.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			messageBoardThreadResource.getMessageBoardThreadHttpResponse(
+				messageBoardThread.getId()));
 	}
 
 	@Override
@@ -268,6 +291,25 @@ public class MessageBoardThreadResourceTest
 
 		return testPostMessageBoardSectionMessageBoardThread_addMessageBoardThread(
 			randomMessageBoardThread());
+	}
+
+	private MessageBoardThreadResource
+			_getUserWithoutPermissionsMessageBoardThreadResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(testCompany, password);
+
+		return MessageBoardThreadResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private MBCategory _mbCategory;
