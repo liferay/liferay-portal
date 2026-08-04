@@ -10,6 +10,9 @@ import com.liferay.exportimport.kernel.lar.PortletDataContextFactoryUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.background.task.model.BackgroundTask;
+import com.liferay.portal.background.task.service.BackgroundTaskLocalServiceUtil;
+import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -28,10 +31,35 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.junit.Assert;
+
 /**
  * @author Máté Thurzó
  */
 public class ExportImportTestUtil {
+
+	public static void assertBackgroundTaskSuccessful(long backgroundTaskId)
+		throws Exception {
+
+		retryAssert(
+			1, TimeUnit.SECONDS, 30, TimeUnit.SECONDS,
+			() -> {
+				BackgroundTask backgroundTask =
+					BackgroundTaskLocalServiceUtil.getBackgroundTask(
+						backgroundTaskId);
+
+				if (backgroundTask.getStatus() ==
+						BackgroundTaskConstants.STATUS_FAILED) {
+
+					throw new IllegalStateException(
+						backgroundTask.getStatusMessage());
+				}
+
+				Assert.assertEquals(
+					BackgroundTaskConstants.STATUS_SUCCESSFUL,
+					backgroundTask.getStatus());
+			});
+	}
 
 	public static String getBatchFileNameWithPath(
 		String fileName, long groupId) {
