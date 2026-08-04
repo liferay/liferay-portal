@@ -9,9 +9,9 @@ import React from 'react';
 import TotalAccounts from 'contacts/components/account/TotalAccounts';
 import URLConstants from 'shared/util/url-constants';
 import {isNil} from 'lodash/fp';
+import {RangeKeyTimeRanges, Sizes} from 'shared/util/constants';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
-import {Sizes} from 'shared/util/constants';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -124,6 +124,7 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 							apiURL={`/o/faro/contacts/${groupId}/account/search?channelId=${channelId}`}
 							channelId={channelId}
 							groupId={groupId}
+							rangeKeyFilter={RangeKeyTimeRanges.Last30Days}
 						/>
 					</>
 				) : (
