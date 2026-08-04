@@ -432,6 +432,10 @@ public class LayoutUtil {
 			ServiceContext serviceContext)
 		throws Exception {
 
+		typeSettingsUnicodeProperties.putAll(
+			LastImportSettingsUtil.getLastImportSettingsMap(
+				serviceContext.getUserId()));
+
 		if (!Objects.equals(
 				typeSettingsUnicodeProperties,
 				layout.getTypeSettingsProperties())) {
@@ -549,6 +553,10 @@ public class LayoutUtil {
 		throws Exception {
 
 		_setExpandoBridgeAttributes(pageSpecification, serviceContext);
+
+		typeSettingsUnicodeProperties.putAll(
+			LastImportSettingsUtil.getLastImportSettingsMap(
+				serviceContext.getUserId()));
 
 		if (!Objects.equals(
 				typeSettingsUnicodeProperties,
@@ -1295,6 +1303,10 @@ public class LayoutUtil {
 
 		UnicodeProperties unicodeProperties =
 			layout.getTypeSettingsProperties();
+
+		unicodeProperties.putAll(
+			LastImportSettingsUtil.getLastImportSettingsMap(
+				serviceContext.getUserId()));
 
 		if (widgetPageSpecification == null) {
 			return LayoutServiceUtil.updateTypeSettings(
