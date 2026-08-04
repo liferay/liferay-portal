@@ -12,7 +12,7 @@ jest.unmock('react-dom');
 
 const sampleStages: ILifecycleStage[] = [
 	{
-		accountCount: 13,
+		accountsCount: 13,
 		averageStageDuration: 9.8,
 		conversionRateToNextStage: 492,
 		description: 'Aware description.',
@@ -20,7 +20,7 @@ const sampleStages: ILifecycleStage[] = [
 		stageType: LifecycleStages.AWARE,
 	},
 	{
-		accountCount: 64,
+		accountsCount: 64,
 		averageStageDuration: 4.6,
 		conversionRateToNextStage: 64,
 		description: 'Engaged description.',
@@ -28,7 +28,7 @@ const sampleStages: ILifecycleStage[] = [
 		stageType: LifecycleStages.ENGAGED,
 	},
 	{
-		accountCount: 41,
+		accountsCount: 41,
 		averageStageDuration: 4.5,
 		conversionRateToNextStage: 54,
 		description: 'Pipeline description.',
@@ -36,7 +36,7 @@ const sampleStages: ILifecycleStage[] = [
 		stageType: LifecycleStages.PIPELINE,
 	},
 	{
-		accountCount: 22,
+		accountsCount: 22,
 		averageStageDuration: 12,
 		conversionRateToNextStage: 0,
 		description: 'Onboarding description.',
@@ -44,7 +44,7 @@ const sampleStages: ILifecycleStage[] = [
 		stageType: LifecycleStages.ONBOARDING,
 	},
 	{
-		accountCount: 0,
+		accountsCount: 0,
 		averageStageDuration: 0,
 		conversionRateToNextStage: null,
 		description: 'Established description.',
@@ -131,7 +131,7 @@ describe('LifecycleChart', () => {
 	it('should render account counts abbreviated from a thousand upwards', () => {
 		const stagesWithLargeCounts: ILifecycleStage[] = [
 			{
-				accountCount: 5350,
+				accountsCount: 5350,
 				averageStageDuration: 0,
 				conversionRateToNextStage: 10,
 				description: '',
@@ -139,7 +139,7 @@ describe('LifecycleChart', () => {
 				stageType: LifecycleStages.AWARE,
 			},
 			{
-				accountCount: 1656000,
+				accountsCount: 1656000,
 				averageStageDuration: 0,
 				conversionRateToNextStage: 10,
 				description: '',
@@ -147,7 +147,7 @@ describe('LifecycleChart', () => {
 				stageType: LifecycleStages.ENGAGED,
 			},
 			{
-				accountCount: 999,
+				accountsCount: 999,
 				averageStageDuration: 0,
 				conversionRateToNextStage: null,
 				description: '',
@@ -171,7 +171,7 @@ describe('LifecycleChart', () => {
 	it('should render the percentage of all accounts rounded to a single decimal', () => {
 		const stagesWithLongPercentages: ILifecycleStage[] = [
 			{
-				accountCount: 1,
+				accountsCount: 1,
 				averageStageDuration: 0,
 				conversionRateToNextStage: 10,
 				description: '',
@@ -179,7 +179,7 @@ describe('LifecycleChart', () => {
 				stageType: LifecycleStages.AWARE,
 			},
 			{
-				accountCount: 1,
+				accountsCount: 1,
 				averageStageDuration: 0,
 				conversionRateToNextStage: null,
 				description: '',
@@ -209,7 +209,7 @@ describe('LifecycleChart', () => {
 	it('should render avg. day values rounded to two decimals', () => {
 		const stagesWithLongDecimals: ILifecycleStage[] = [
 			{
-				accountCount: 1,
+				accountsCount: 1,
 				averageStageDuration: 9.8333333,
 				conversionRateToNextStage: 10,
 				description: '',
@@ -217,7 +217,7 @@ describe('LifecycleChart', () => {
 				stageType: LifecycleStages.AWARE,
 			},
 			{
-				accountCount: 1,
+				accountsCount: 1,
 				averageStageDuration: 4.6789,
 				conversionRateToNextStage: 10,
 				description: '',
@@ -225,7 +225,7 @@ describe('LifecycleChart', () => {
 				stageType: LifecycleStages.ENGAGED,
 			},
 			{
-				accountCount: 1,
+				accountsCount: 1,
 				averageStageDuration: 12,
 				conversionRateToNextStage: 10,
 				description: '',
@@ -233,7 +233,7 @@ describe('LifecycleChart', () => {
 				stageType: LifecycleStages.PIPELINE,
 			},
 			{
-				accountCount: 1,
+				accountsCount: 1,
 				averageStageDuration: 4.5,
 				conversionRateToNextStage: 10,
 				description: '',
@@ -241,7 +241,7 @@ describe('LifecycleChart', () => {
 				stageType: LifecycleStages.ONBOARDING,
 			},
 			{
-				accountCount: 0,
+				accountsCount: 0,
 				averageStageDuration: 0,
 				conversionRateToNextStage: null,
 				description: '',

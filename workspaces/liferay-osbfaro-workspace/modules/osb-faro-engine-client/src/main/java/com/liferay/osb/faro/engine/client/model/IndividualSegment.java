@@ -16,8 +16,8 @@ import java.util.Map;
  */
 public class IndividualSegment {
 
-	public long getAccountCount() {
-		return _accountCount;
+	public long getAccountsCount() {
+		return _accountsCount;
 	}
 
 	public long getActiveIndividualCount() {
@@ -138,8 +138,8 @@ public class IndividualSegment {
 		return _sequential;
 	}
 
-	public void setAccountCount(long accountCount) {
-		_accountCount = accountCount;
+	public void setAccountsCount(long accountsCount) {
+		_accountsCount = accountsCount;
 	}
 
 	public void setActiveIndividualCount(long activeIndividualCount) {
@@ -281,7 +281,7 @@ public class IndividualSegment {
 
 	}
 
-	private long _accountCount;
+	private long _accountsCount;
 	private long _activeIndividualCount;
 	private long _activitiesCount;
 	private long _anonymousIndividualCount;

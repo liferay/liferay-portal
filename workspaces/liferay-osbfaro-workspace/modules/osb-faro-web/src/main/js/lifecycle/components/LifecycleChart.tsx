@@ -21,7 +21,7 @@ const EMPTY_STAGES: ILifecycleStage[] = [
 	LifecycleStages.ONBOARDING,
 	LifecycleStages.ESTABLISHED,
 ].map((stageType) => ({
-	accountCount: 0,
+	accountsCount: 0,
 	averageStageDuration: 0,
 	conversionRateToNextStage: 0,
 	description: '',
@@ -41,7 +41,7 @@ const getBarHeight = (percentage: number, referencePercentage: number) => {
 };
 
 interface IStageMetricsProps {
-	accountCount: number;
+	accountsCount: number;
 	averageDaysInStage: number;
 	description: string;
 	onFilterClick: (stageType: LifecycleStages) => void;
@@ -52,7 +52,7 @@ interface IStageMetricsProps {
 }
 
 const StageMetrics = ({
-	accountCount,
+	accountsCount,
 	averageDaysInStage,
 	description,
 	onFilterClick,
@@ -97,7 +97,7 @@ const StageMetrics = ({
 				<div>
 					<p className="mb-0">
 						<Text size={7} weight="bold">
-							{toThousands(accountCount)}
+							{toThousands(accountsCount)}
 						</Text>
 					</p>
 					<Text color="secondary" size={4}>
@@ -247,8 +247,8 @@ const LifecycleChart = ({error, loading, stages}: ILifecycleChartProps) => {
 									return (
 										<React.Fragment key={stage.stageType}>
 											<StageMetrics
-												accountCount={
-													stage.accountCount
+												accountsCount={
+													stage.accountsCount
 												}
 												averageDaysInStage={
 													stage.averageStageDuration

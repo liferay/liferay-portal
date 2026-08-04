@@ -223,7 +223,7 @@ describe('List', () => {
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
 				data.mockSearch(data.mockSegment, 1, {
-					accountCount: 1800,
+					accountsCount: 1800,
 					individualCount: 2300,
 					segmentCategory: SegmentCategories.Account
 				})
@@ -245,7 +245,7 @@ describe('List', () => {
 		API.individualSegment.search.mockReturnValue(
 			Promise.resolve(
 				data.mockSearch(data.mockSegment, 1, {
-					accountCount: 1800,
+					accountsCount: 1800,
 					individualCount: 2300,
 					segmentCategory: SegmentCategories.Individual
 				})

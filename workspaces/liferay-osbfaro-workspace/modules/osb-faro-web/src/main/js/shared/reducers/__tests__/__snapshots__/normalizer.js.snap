@@ -95,7 +95,7 @@ Immutable.Map {
   "segments": Immutable.Map {
     "4": Immutable.Record {
       "data": Immutable.Record {
-        "accountCount": 0,
+        "accountsCount": 0,
         "activation": null,
         "activeIndividualCount": 0,
         "activitiesCount": 0,

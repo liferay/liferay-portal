@@ -10,8 +10,8 @@ package com.liferay.osb.faro.engine.client.model;
  */
 public class AccountLifecycleStageMetric {
 
-	public long getAccountCount() {
-		return _accountCount;
+	public long getAccountsCount() {
+		return _accountsCount;
 	}
 
 	public double getAverageStageDuration() {
@@ -34,8 +34,8 @@ public class AccountLifecycleStageMetric {
 		return _stageType;
 	}
 
-	public void setAccountCount(long accountCount) {
-		_accountCount = accountCount;
+	public void setAccountsCount(long accountsCount) {
+		_accountsCount = accountsCount;
 	}
 
 	public void setAverageStageDuration(double averageStageDuration) {
@@ -58,7 +58,7 @@ public class AccountLifecycleStageMetric {
 		_stageType = stageType;
 	}
 
-	private long _accountCount;
+	private long _accountsCount;
 	private double _averageStageDuration;
 	private Double _conversionRateToNextStage;
 	private String _description;

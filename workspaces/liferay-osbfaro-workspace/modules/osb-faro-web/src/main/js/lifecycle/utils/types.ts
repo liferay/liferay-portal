@@ -12,7 +12,7 @@ export interface IOverviewMetric extends Metric {
 }
 
 export interface ILifecycleStage {
-	accountCount: number;
+	accountsCount: number;
 	averageStageDuration: number;
 	conversionRateToNextStage: number | null;
 	description: string;

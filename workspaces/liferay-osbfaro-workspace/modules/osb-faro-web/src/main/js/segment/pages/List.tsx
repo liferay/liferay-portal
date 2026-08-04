@@ -685,17 +685,17 @@ export const List: React.FC<IListProps> = ({
 									cellRenderer: ToThousandsCell,
 									cellRendererProps: {
 										getCount: ({
-											accountCount,
+											accountsCount,
 											individualCount,
 											segmentCategory,
 										}: {
-											accountCount: number;
+											accountsCount: number;
 											individualCount: number;
 											segmentCategory: SegmentCategories;
 										}) =>
 											segmentCategory ===
 											SegmentCategories.Account
-												? accountCount
+												? accountsCount
 												: individualCount,
 									},
 									label: Liferay.Language.get('membership'),
