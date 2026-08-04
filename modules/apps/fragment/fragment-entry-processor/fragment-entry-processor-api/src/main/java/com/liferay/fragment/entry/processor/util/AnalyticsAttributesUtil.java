@@ -17,6 +17,7 @@ import com.liferay.fragment.entry.processor.helper.InfoItemFieldMapped;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
+import com.liferay.info.field.type.FileInfoFieldType;
 import com.liferay.info.field.type.HTMLInfoFieldType;
 import com.liferay.info.field.type.ImageInfoFieldType;
 import com.liferay.info.field.type.LongTextInfoFieldType;
@@ -160,7 +161,10 @@ public class AnalyticsAttributesUtil {
 
 		InfoField<?> infoField = infoFieldValue.getInfoField();
 
-		if (_isDownloadURL(infoField)) {
+		if (Objects.equals(
+				infoField.getInfoFieldType(), FileInfoFieldType.INSTANCE) ||
+			_isDownloadURL(infoField)) {
+
 			return ACTION_DOWNLOAD;
 		}
 
