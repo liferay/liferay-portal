@@ -1,5 +1,5 @@
 import React from 'react';
-import SelectChannelsModal from '../SelectChannelsModal';
+import SelectChannelsModal, {ISelectableChannel} from '../SelectChannelsModal';
 import {fireEvent, render} from '@testing-library/react';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -20,6 +20,8 @@ const mockChannels = [
 	{groupsCount: 1, id: 'channel-3', name: 'Another Channel With Sites'},
 ];
 
+const hasSyncedSites = (channel: ISelectableChannel) => channel.groupsCount > 0;
+
 const defaultProps = {
 	groupId: '23',
 	initialItems: [],
@@ -39,10 +41,26 @@ describe('SelectChannelsModal', () => {
 		});
 	});
 
-	it('should auto-select channels with synced sites on first data load', () => {
+	it('should not preselect any channel when no filter is given', () => {
 		const onSelect = jest.fn();
 
 		render(<SelectChannelsModal {...defaultProps} onSelect={onSelect} />);
+
+		fireEvent.click(submitButton());
+
+		expect(onSelect).not.toHaveBeenCalled();
+	});
+
+	it('should auto-select the channels matching the given filter on first data load', () => {
+		const onSelect = jest.fn();
+
+		render(
+			<SelectChannelsModal
+				{...defaultProps}
+				autoSelectFilter={hasSyncedSites}
+				onSelect={onSelect}
+			/>
+		);
 
 		fireEvent.click(submitButton());
 
@@ -51,10 +69,16 @@ describe('SelectChannelsModal', () => {
 		);
 	});
 
-	it('should not auto-select channels without synced sites', () => {
+	it('should not auto-select the channels rejected by the given filter', () => {
 		const onSelect = jest.fn();
 
-		render(<SelectChannelsModal {...defaultProps} onSelect={onSelect} />);
+		render(
+			<SelectChannelsModal
+				{...defaultProps}
+				autoSelectFilter={hasSyncedSites}
+				onSelect={onSelect}
+			/>
+		);
 
 		fireEvent.click(submitButton());
 
@@ -67,6 +91,7 @@ describe('SelectChannelsModal', () => {
 		render(
 			<SelectChannelsModal
 				{...defaultProps}
+				autoSelectFilter={hasSyncedSites}
 				initialItems={['channel-1']}
 				onSelect={onSelect}
 			/>

@@ -3,6 +3,7 @@ import * as data from 'test/data';
 import {DataSource} from 'shared/util/records';
 import {
 	dataSourceRedirectFn,
+	getChannelsAutoSelectFilter,
 	getDataSourceDisplayObject,
 	getIdsFromConfiguration,
 	getServiceAlertConfig,
@@ -12,7 +13,11 @@ import {
 	validateUniqueName,
 	validContactsConfig,
 } from '../data-sources';
-import {DataSourceStates, DataSourceStatuses} from 'shared/util/constants';
+import {
+	DataSourceStates,
+	DataSourceStatuses,
+	DataSourceTypes,
+} from 'shared/util/constants';
 import {fromJS} from 'immutable';
 import {noop, range} from 'lodash';
 import {Routes, toRoute} from 'shared/util/router';
@@ -210,6 +215,30 @@ describe('data-sources', () => {
 			expect(getIdsFromConfiguration(mockMap, testKey)).toEqual(
 				expectedArray
 			);
+		});
+	});
+
+	describe('getChannelsAutoSelectFilter', () => {
+		it('should preselect the channels syncing a site for a Demandbase data source', () => {
+			const filter = getChannelsAutoSelectFilter({
+				providerType: DataSourceTypes.Demandbase,
+			});
+
+			expect(filter({groupsCount: 2})).toBe(true);
+			expect(filter({groupsCount: 0})).toBe(false);
+		});
+
+		it('should not preselect any channel for a non Demandbase data source', () => {
+			expect(
+				getChannelsAutoSelectFilter({
+					providerType: DataSourceTypes.Salesforce,
+				})
+			).toBeUndefined();
+		});
+
+		it('should not preselect any channel when there is no data source', () => {
+			expect(getChannelsAutoSelectFilter(null)).toBeUndefined();
+			expect(getChannelsAutoSelectFilter()).toBeUndefined();
 		});
 	});
 
