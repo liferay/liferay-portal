@@ -17,6 +17,7 @@ jobs:
                     sparse-checkout: |
                         cloud/scripts
                         cloud/terraform/${{inputs.provider}}
+                        cloud/terraform/modules
             -   name: Authenticate to Google Cloud
                 uses: google-github-actions/auth@v3
                 with:
