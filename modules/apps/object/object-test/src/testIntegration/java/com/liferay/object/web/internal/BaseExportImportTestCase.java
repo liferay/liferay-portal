@@ -139,7 +139,16 @@ public abstract class BaseExportImportTestCase {
 	protected abstract MVCResourceCommand getMVCResourceCommand();
 
 	protected MockLiferayPortletActionResponse importJSON(
-			String externalReferenceCode, String json, String name)
+			boolean active, String externalReferenceCode, String json,
+			String name)
+		throws Exception {
+
+		return importJSON(active, externalReferenceCode, json, name, null);
+	}
+
+	protected MockLiferayPortletActionResponse importJSON(
+			boolean active, String externalReferenceCode, String json,
+			String name, String objectFolderExternalReferenceCode)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -156,6 +165,9 @@ public abstract class BaseExportImportTestCase {
 			MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 				new MockLiferayPortletActionRequest(
 					mockMultipartHttpServletRequest);
+
+			mockMultipartHttpServletRequest.addParameter(
+				"active", String.valueOf(active));
 
 			if (JSONUtil.isJSONArray(json)) {
 				mockMultipartHttpServletRequest.addParameter(
@@ -197,6 +209,12 @@ public abstract class BaseExportImportTestCase {
 				mockLiferayPortletActionRequest.addParameter("name", name);
 			}
 
+			if (Validator.isNotNull(objectFolderExternalReferenceCode)) {
+				mockMultipartHttpServletRequest.addParameter(
+					"objectFolderExternalReferenceCode",
+					objectFolderExternalReferenceCode);
+			}
+
 			mockLiferayPortletActionRequest.addParameter(
 				"redirect", RandomTestUtil.randomString());
 			mockLiferayPortletActionRequest.setAttribute(
@@ -234,6 +252,13 @@ public abstract class BaseExportImportTestCase {
 
 			return mockLiferayPortletActionResponse;
 		}
+	}
+
+	protected MockLiferayPortletActionResponse importJSON(
+			String externalReferenceCode, String json, String name)
+		throws Exception {
+
+		return importJSON(false, externalReferenceCode, json, name, null);
 	}
 
 	protected String read(String fileName) throws Exception {
