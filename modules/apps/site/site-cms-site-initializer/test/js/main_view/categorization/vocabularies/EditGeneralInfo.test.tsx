@@ -17,6 +17,17 @@ jest.mock(
 jest.mock(
 	'../../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper'
 );
+jest.mock(
+	'../../../../../src/main/resources/META-INF/resources/js/common/services/ProjectLinkService',
+	() => ({
+		__esModule: true,
+		default: {
+			getNonDraftProjectScopeIds: jest.fn(() =>
+				Promise.resolve({data: null, error: null})
+			),
+		},
+	})
+);
 
 const defaultProps = {
 	assetLibraries: [],

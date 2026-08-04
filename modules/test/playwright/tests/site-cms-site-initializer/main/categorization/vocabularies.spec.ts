@@ -786,15 +786,85 @@ projectVocabularyTest.describe('Project selection tests', () => {
 	});
 
 	projectVocabularyTest(
+		'Does not list a ghost project in the project selector',
+		{tag: '@LPD-97935'},
+		async ({apiHelpers, editVocabularyPage, page}) => {
+			const approvedProjectTitle = getRandomString();
+			const ghostProjectName = getRandomString();
+
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+				name: ghostProjectName,
+				settings: {},
+				type: 'Project',
+			});
+
+			const projectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{title: approvedProjectTitle},
+				'cmp/projects'
+			);
+
+			apiHelpers.data.push({
+				applicationName: 'cmp/projects',
+				id: projectEntry.id,
+				type: 'objectEntry',
+			});
+
+			await editVocabularyPage.goto();
+
+			await editVocabularyPage.openProjectSelector();
+
+			await expect(
+				page.getByRole('option', {name: approvedProjectTitle})
+			).toHaveCount(1);
+
+			await expect(
+				page.getByRole('option', {name: ghostProjectName})
+			).toHaveCount(0);
+		}
+	);
+
+	projectVocabularyTest(
+		'Validate a project must be selected to publish',
+		{tag: '@LPD-96114'},
+		async ({editVocabularyPage}) => {
+			editVocabularyPage.goto();
+
+			const name = `Vocabulary${getRandomInt()}`;
+
+			await editVocabularyPage.changeGeneralInfo({
+				description: getRandomString(),
+				name,
+			});
+
+			await expect(editVocabularyPage.saveButton).not.toBeDisabled();
+
+			// Unselecting every project blocks publishing
+
+			await editVocabularyPage.projectCheckbox.click();
+
+			await expect(editVocabularyPage.saveButton).toBeDisabled();
+
+			await editVocabularyPage.projectCheckbox.click();
+
+			await expect(editVocabularyPage.saveButton).not.toBeDisabled();
+		}
+	);
+
+	projectVocabularyTest(
 		'Validate change projects when saving',
 		{tag: '@LPD-96114'},
 		async ({apiHelpers, editVocabularyPage, page, vocabulariesPage}) => {
 			const projectName = getRandomString();
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: projectName,
-				settings: {},
-				type: 'Project',
+			const projectEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{title: projectName},
+				'cmp/projects'
+			);
+
+			apiHelpers.data.push({
+				applicationName: 'cmp/projects',
+				id: projectEntry.id,
+				type: 'objectEntry',
 			});
 
 			const name = `Vocabulary${getRandomInt()}`;
@@ -837,33 +907,6 @@ projectVocabularyTest.describe('Project selection tests', () => {
 				),
 				trigger: modalSaveButton,
 			});
-		}
-	);
-
-	projectVocabularyTest(
-		'Validate a project must be selected to publish',
-		{tag: '@LPD-96114'},
-		async ({editVocabularyPage}) => {
-			editVocabularyPage.goto();
-
-			const name = `Vocabulary${getRandomInt()}`;
-
-			await editVocabularyPage.changeGeneralInfo({
-				description: getRandomString(),
-				name,
-			});
-
-			await expect(editVocabularyPage.saveButton).not.toBeDisabled();
-
-			// Unselecting every project blocks publishing
-
-			await editVocabularyPage.projectCheckbox.click();
-
-			await expect(editVocabularyPage.saveButton).toBeDisabled();
-
-			await editVocabularyPage.projectCheckbox.click();
-
-			await expect(editVocabularyPage.saveButton).not.toBeDisabled();
 		}
 	);
 });

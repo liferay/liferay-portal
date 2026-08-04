@@ -4,8 +4,9 @@
  */
 
 import '@testing-library/jest-dom';
-import {fireEvent, render, screen} from '@testing-library/react';
-import {sessionStorage} from 'frontend-js-web';
+import {ApiHelper} from '@liferay/site-cms-site-initializer';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
+import {navigate, sessionStorage} from 'frontend-js-web';
 import React from 'react';
 
 import EditorToolbar from '../../js/components/EditorToolbar';
@@ -28,7 +29,11 @@ jest.mock('@clayui/form', () => ({
 
 jest.mock('@clayui/link', () => ({
 	__esModule: true,
-	default: ({children, href}: any) => <a href={href}>{children}</a>,
+	default: ({children, href, onClick}: any) => (
+		<a href={href} onClick={onClick}>
+			{children}
+		</a>
+	),
 }));
 
 jest.mock('@liferay/layout-js-components-web', () => ({
@@ -36,14 +41,26 @@ jest.mock('@liferay/layout-js-components-web', () => ({
 }));
 
 jest.mock('@liferay/site-cms-site-initializer', () => {
-	const Toolbar = ({children}: any) => <div>{children}</div>;
+	const Toolbar = ({children, onBackClick}: any) => (
+		<div>
+			<a href="/back" onClick={onBackClick}>
+				back
+			</a>
+
+			{children}
+		</div>
+	);
 
 	Toolbar.Item = ({children}: any) => <div>{children}</div>;
 
-	return {Toolbar};
+	return {
+		ApiHelper: {delete: jest.fn(() => Promise.resolve({error: null}))},
+		Toolbar,
+	};
 });
 
 jest.mock('frontend-js-web', () => ({
+	navigate: jest.fn(),
 	sessionStorage: {
 		TYPES: {NECESSARY: 'NECESSARY'},
 		getItem: jest.fn(),
@@ -65,9 +82,11 @@ const SUCCESS_MESSAGE_KEY =
 	'com.liferay.site.cmp.site.initializer.successMessage';
 
 const renderComponent = ({
+	discardURL,
 	hasUpdatePermission = true,
 	isNew = false,
 }: {
+	discardURL?: string;
 	hasUpdatePermission?: boolean;
 	isNew?: boolean;
 } = {}) =>
@@ -75,6 +94,7 @@ const renderComponent = ({
 		<>
 			<EditorToolbar
 				backURL="/back"
+				discardURL={discardURL}
 				groupId={0}
 				hasUpdatePermission={hasUpdatePermission}
 				isNew={isNew}
@@ -119,46 +139,78 @@ describe('EditorToolbar', () => {
 		};
 	});
 
-	it('shows updated message when saving an existing entry', () => {
-		renderComponent({isNew: false});
-
-		const form = document.querySelector(
-			'.lfr-main-form-container'
-		) as HTMLFormElement;
-
-		form.checkValidity = jest.fn(() => true);
-
-		fireEvent.click(screen.getByText('save'));
-
-		expect(sessionStorage.setItem).toHaveBeenCalledWith(
-			SUCCESS_MESSAGE_KEY,
-			'<strong>My Test Project</strong> was updated successfully',
-			'NECESSARY'
-		);
-	});
-
-	it('shows created message when saving a new entry', () => {
-		renderComponent({isNew: true});
-
-		const form = document.querySelector(
-			'.lfr-main-form-container'
-		) as HTMLFormElement;
-
-		form.checkValidity = jest.fn(() => true);
-
-		fireEvent.click(screen.getByText('save'));
-
-		expect(sessionStorage.setItem).toHaveBeenCalledWith(
-			SUCCESS_MESSAGE_KEY,
-			'<strong>My Test Project</strong> was created successfully',
-			'NECESSARY'
-		);
-	});
-
 	it('disables the save button when the user lacks update permission', () => {
 		renderComponent({hasUpdatePermission: false});
 
 		expect(screen.getByText('save')).toBeDisabled();
+	});
+
+	it('discards the draft entry and navigates back when canceling', async () => {
+		renderComponent({
+			discardURL: '/o/c/cmpprojects/123',
+			isNew: true,
+		});
+
+		fireEvent.click(screen.getByText('cancel'));
+
+		expect(ApiHelper.delete).toHaveBeenCalledWith('/o/c/cmpprojects/123');
+
+		await waitFor(() => expect(navigate).toHaveBeenCalledWith('/back'));
+	});
+
+	it('discards the draft entry and navigates back when going back', async () => {
+		renderComponent({
+			discardURL: '/o/c/cmpprojects/123',
+			isNew: true,
+		});
+
+		fireEvent.click(screen.getByText('back'));
+
+		expect(ApiHelper.delete).toHaveBeenCalledWith('/o/c/cmpprojects/123');
+
+		await waitFor(() => expect(navigate).toHaveBeenCalledWith('/back'));
+	});
+
+	it('discards the draft entry once when canceling twice', async () => {
+		renderComponent({
+			discardURL: '/o/c/cmpprojects/123',
+			isNew: true,
+		});
+
+		fireEvent.click(screen.getByText('cancel'));
+		fireEvent.click(screen.getByText('cancel'));
+
+		expect(ApiHelper.delete).toHaveBeenCalledTimes(1);
+
+		await waitFor(() => expect(navigate).toHaveBeenCalledWith('/back'));
+	});
+
+	it('does not discard anything when canceling an existing entry', () => {
+		renderComponent({isNew: false});
+
+		fireEvent.click(screen.getByText('cancel'));
+
+		expect(ApiHelper.delete).not.toHaveBeenCalled();
+	});
+
+	it('does not publish through the keyboard shortcut when the user lacks update permission', () => {
+		renderComponent({hasUpdatePermission: false});
+
+		const form = document.querySelector(
+			'.lfr-main-form-container'
+		) as HTMLFormElement;
+
+		form.submit = jest.fn();
+
+		window.dispatchEvent(
+			new KeyboardEvent('keydown', {
+				altKey: true,
+				ctrlKey: true,
+				key: 'Enter',
+			})
+		);
+
+		expect(form.submit).not.toHaveBeenCalled();
 	});
 
 	it('publishes through the keyboard shortcut when the user has update permission', () => {
@@ -181,23 +233,39 @@ describe('EditorToolbar', () => {
 		expect(form.submit).toHaveBeenCalled();
 	});
 
-	it('does not publish through the keyboard shortcut when the user lacks update permission', () => {
-		renderComponent({hasUpdatePermission: false});
+	it('shows created message when saving a new entry', () => {
+		renderComponent({isNew: true});
 
 		const form = document.querySelector(
 			'.lfr-main-form-container'
 		) as HTMLFormElement;
 
-		form.submit = jest.fn();
+		form.checkValidity = jest.fn(() => true);
 
-		window.dispatchEvent(
-			new KeyboardEvent('keydown', {
-				altKey: true,
-				ctrlKey: true,
-				key: 'Enter',
-			})
+		fireEvent.click(screen.getByText('save'));
+
+		expect(sessionStorage.setItem).toHaveBeenCalledWith(
+			SUCCESS_MESSAGE_KEY,
+			'<strong>My Test Project</strong> was created successfully',
+			'NECESSARY'
 		);
+	});
 
-		expect(form.submit).not.toHaveBeenCalled();
+	it('shows updated message when saving an existing entry', () => {
+		renderComponent({isNew: false});
+
+		const form = document.querySelector(
+			'.lfr-main-form-container'
+		) as HTMLFormElement;
+
+		form.checkValidity = jest.fn(() => true);
+
+		fireEvent.click(screen.getByText('save'));
+
+		expect(sessionStorage.setItem).toHaveBeenCalledWith(
+			SUCCESS_MESSAGE_KEY,
+			'<strong>My Test Project</strong> was updated successfully',
+			'NECESSARY'
+		);
 	});
 });
