@@ -26,7 +26,7 @@
 	"subject": {
 		"en_US": "Order #[%COMMERCEORDER_ID%]"
 	},
-	"system": false,
+	"system": true,
 	"type": "email",
 	"typeLabel": "Email"
 }

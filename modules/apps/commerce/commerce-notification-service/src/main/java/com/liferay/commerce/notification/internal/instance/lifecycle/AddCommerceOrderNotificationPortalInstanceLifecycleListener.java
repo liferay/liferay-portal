@@ -11,11 +11,13 @@ import com.liferay.notification.rest.dto.v1_0.util.NotificationUtil;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.type.NotificationType;
 import com.liferay.notification.type.NotificationTypeServiceTracker;
+import com.liferay.object.definition.util.ObjectDefinitionThreadLocal;
 import com.liferay.object.model.ObjectAction;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
@@ -128,8 +130,13 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListener
 			NotificationUtil.toNotificationTemplate(
 				0L, notificationTemplate, _objectDefinitionLocalService, user));
 
-		_notificationTemplateLocalService.addNotificationTemplate(
-			notificationContext);
+		try (SafeCloseable safeCloseable =
+				ObjectDefinitionThreadLocal.
+					setSkipBundleAllowedCheckWithSafeCloseable(true)) {
+
+			_notificationTemplateLocalService.addNotificationTemplate(
+				notificationContext);
+		}
 	}
 
 	private void _verifyCommerceOrderObjectAction(long companyId)
