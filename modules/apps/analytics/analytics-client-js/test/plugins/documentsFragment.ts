@@ -58,6 +58,22 @@ const createHeadingFragmentWithLink = () => {
 	return node;
 };
 
+const createCardFragmentWithLink = () => {
+	const node = createElement(`
+		<div data-analytics-asset-id="myDocumentId" data-analytics-asset-title="my document with link" data-analytics-asset-type="${AnalyticsTypes.ElementType.FileEntry}" data-analytics-asset-action="download">
+			<h5>
+				<a href="#">
+					this is a link
+				</a>
+			</h5>
+		</div>
+	`) as AnalyticsTypes.HTMLElement;
+
+	document.body.appendChild(node);
+
+	return node;
+};
+
 function createDynamicDocumentsElement(attrs: any) {
 	const documentElement = document.createElement('div');
 
@@ -250,6 +266,28 @@ describe('Documents Plugin', () => {
 			const documentsElement = createFragmentWithLink();
 
 			await userEvent.click(documentsElement);
+
+			expect(Analytics.getEvents()).toEqual([
+				expect.objectContaining({
+					applicationId: 'Document',
+					eventId: 'documentDownloaded',
+					properties: expect.objectContaining({
+						fileEntryId: 'myDocumentId',
+						title: 'my document with link',
+						type: AnalyticsTypes.ElementType.FileEntry,
+					}),
+				}),
+			]);
+
+			document.body.removeChild(documentsElement);
+		});
+
+		it('is fired when clicking in a card fragment with a nested link', async () => {
+			const documentsElement = createCardFragmentWithLink();
+
+			await userEvent.click(
+				documentsElement.querySelector('a') as HTMLElement
+			);
 
 			expect(Analytics.getEvents()).toEqual([
 				expect.objectContaining({
