@@ -14,13 +14,13 @@ if not context.startswith("k3d-"):
 
 allow_k8s_contexts(context)
 
-environments = [
-    ("non-production", "Non-Production"),
-    ("production", "Production"),
-    ("uat", "UAT"),
+environment_names = [
+    "non-production",
+    "production",
+    "uat",
 ]
 
-def environment_yaml(name, display_name):
+def environment_yaml(name):
 	namespace = "liferay-" + name
 
 	return "\n".join(
@@ -40,7 +40,7 @@ def environment_yaml(name, display_name):
 	        "        name: " + name + "-activation",
 	        "        key: activationCode",
 	        "    dxpVersion: 2026.q3.0",
-	        "    environmentName: \"" + display_name + "\"",
+	        "    environmentName: \"" + name + "\"",
 	        "    workloadRef:",
 	        "        name: liferay-default",
 	    ]
@@ -58,10 +58,10 @@ docker_build_with_restart(
     target="dev",
 )
 
-for name, display_name in environments:
+for name in environment_names:
 	namespace = "liferay-" + name
 
-	k8s_yaml(blob(environment_yaml(name, display_name)))
+	k8s_yaml(blob(environment_yaml(name)))
 
 	k8s_resource(
 	    labels=["environments"],
@@ -119,11 +119,11 @@ k8s_resource(
     labels=["operator"],
     new_name="operator-infra",
     objects=[
-        "liferayenvironments.licensing.liferay.com:customresourcedefinition",
-        "liferay-dxp-operator:serviceaccount",
         "liferay-dxp-operator:clusterrole",
         "liferay-dxp-operator:clusterrolebinding",
+        "liferay-dxp-operator:serviceaccount",
         "liferay-system:namespace",
+        "liferayenvironments.licensing.liferay.com:customresourcedefinition",
     ],
 )
 
