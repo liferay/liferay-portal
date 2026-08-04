@@ -56,7 +56,16 @@ public class LayoutContentVersionDisplayContext {
 				"availableSegmentsExperiences",
 				_getAvailableSegmentsExperiences()
 			).put(
-				"currentVersion", _getCurrentVersion()
+				"currentVersion",
+				() -> {
+					Layout layout = _themeDisplay.getLayout();
+
+					return HashMapBuilder.<String, Object>put(
+						"name", layout.getName(_themeDisplay.getLocale())
+					).put(
+						"status", layout.isApproved() ? "approved" : "draft"
+					).build();
+				}
 			).put(
 				"defaultLanguageId",
 				LocaleUtil.toLanguageId(_themeDisplay.getSiteDefaultLocale())
@@ -116,16 +125,6 @@ public class LayoutContentVersionDisplayContext {
 						_httpServletRequest, active ? "active" : "inactive")
 				).build();
 			});
-	}
-
-	private Map<String, Object> _getCurrentVersion() {
-		Layout layout = _themeDisplay.getLayout();
-
-		return HashMapBuilder.<String, Object>put(
-			"name", layout.getName(_themeDisplay.getLocale())
-		).put(
-			"status", layout.isApproved() ? "approved" : "draft"
-		).build();
 	}
 
 	private String _getPageSpecificationVersionsURL() throws PortalException {
