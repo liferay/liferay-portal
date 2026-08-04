@@ -88,6 +88,7 @@ import com.liferay.dynamic.data.mapping.exception.NoSuchStructureException;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.friendly.url.constants.FriendlyURLEntryConstants;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
@@ -137,6 +138,7 @@ import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -163,6 +165,7 @@ import java.math.BigDecimal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -236,21 +239,23 @@ public class CPDefinitionLocalServiceImpl
 				CPDefinitionExpirationDateException.class);
 		}
 
-		_validate(
-			groupId, ddmStructureKey, metaTitleMap, metaDescriptionMap,
-			metaKeywordsMap, displayDate, expirationDate, productTypeName);
-		_validateSubscriptionLength(subscriptionLength, "length");
-		_validateSubscriptionCycles(
-			maxSubscriptionCycles, "subscriptionCycles");
-		_validateSubscriptionTypeSettingsUnicodeProperties(
-			subscriptionType, subscriptionTypeSettingsUnicodeProperties);
-		_validateSubscriptionLength(
-			deliverySubscriptionLength, "deliverySubscriptionLength");
-		_validateSubscriptionCycles(
-			deliveryMaxSubscriptionCycles, "deliverySubscriptionCycles");
-		_validateDeliverySubscriptionTypeSettingsUnicodeProperties(
-			deliverySubscriptionType,
-			deliverySubscriptionTypeSettingsUnicodeProperties);
+		if (!_emptyModelManager.isEmptyModel()) {
+			_validate(
+				groupId, ddmStructureKey, metaTitleMap, metaDescriptionMap,
+				metaKeywordsMap, displayDate, expirationDate, productTypeName);
+			_validateSubscriptionLength(subscriptionLength, "length");
+			_validateSubscriptionCycles(
+				maxSubscriptionCycles, "subscriptionCycles");
+			_validateSubscriptionTypeSettingsUnicodeProperties(
+				subscriptionType, subscriptionTypeSettingsUnicodeProperties);
+			_validateSubscriptionLength(
+				deliverySubscriptionLength, "deliverySubscriptionLength");
+			_validateSubscriptionCycles(
+				deliveryMaxSubscriptionCycles, "deliverySubscriptionCycles");
+			_validateDeliverySubscriptionTypeSettingsUnicodeProperties(
+				deliverySubscriptionType,
+				deliverySubscriptionTypeSettingsUnicodeProperties);
+		}
 
 		long cpDefinitionId = counterLocalService.increment();
 
@@ -264,6 +269,8 @@ public class CPDefinitionLocalServiceImpl
 		cpDefinition.setCompanyId(user.getCompanyId());
 		cpDefinition.setUserId(user.getUserId());
 		cpDefinition.setUserName(user.getFullName());
+		cpDefinition.setCProductExternalReferenceCode(
+			cProduct.getExternalReferenceCode());
 		cpDefinition.setCProductId(cProduct.getCProductId());
 		cpDefinition.setCPTaxCategoryId(cpTaxCategoryId);
 		cpDefinition.setAccountGroupFilterEnabled(accountGroupFilterEnabled);
@@ -321,6 +328,13 @@ public class CPDefinitionLocalServiceImpl
 		cpDefinition.setExpandoBridgeAttributes(serviceContext);
 
 		cpDefinition = cpDefinitionPersistence.update(cpDefinition);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			_cProductLocalService.updatePublishedCPDefinitionId(
+				cProduct.getCProductId(), cpDefinition.getCPDefinitionId());
+
+			return cpDefinition;
+		}
 
 		// Commerce product definition localization
 
@@ -1610,6 +1624,25 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
+	public CPDefinition getCPDefinitionByCProductExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CProduct cProduct = _cProductPersistence.findByERC_C(
+			externalReferenceCode, companyId);
+
+		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
+			cProduct.getPublishedCPDefinitionId());
+
+		if (cpDefinition != null) {
+			return cpDefinition;
+		}
+
+		return cpDefinitionPersistence.findByC_V(
+			cProduct.getCProductId(), cProduct.getLatestVersion());
+	}
+
+	@Override
 	public CPDefinition getCPDefinitionByCProductId(long cProductId)
 		throws PortalException {
 
@@ -1998,6 +2031,42 @@ public class CPDefinitionLocalServiceImpl
 		return cpDisplayLayout.getLayoutUuid();
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CPDefinition getOrAddEmptyCPDefinition(
+			String externalReferenceCode, String productTypeName,
+			long companyId, long userId, long groupId)
+		throws PortalException {
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar();
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPDefinition.class, companyId,
+			() -> cpDefinitionLocalService.addCPDefinition(
+				externalReferenceCode, userId, groupId, 0, false, false,
+				StringPool.BLANK, null, 0, false, 0, null, null, 0, null,
+				calendar.get(Calendar.DATE), calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.YEAR), 0, 0, 0, 0, 0, false, 0, false, 0,
+				null, null, null,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				true, productTypeName, false, false, false, 0, null, false, 0,
+				null, null, false, false, null, 0, 0,
+				WorkflowConstants.STATUS_EMPTY, serviceContext),
+			externalReferenceCode,
+			(curExternalReferenceCode, curCompanyId) ->
+				fetchCPDefinitionByCProductExternalReferenceCode(
+					curExternalReferenceCode, curCompanyId, false),
+			this::getCPDefinitionByCProductExternalReferenceCode,
+			CPDefinition.class.getName());
+	}
+
 	@Override
 	public Map<Locale, String> getUrlTitleMap(long cpDefinitionId) {
 		CPDefinition cpDefinition = cpDefinitionPersistence.fetchByPrimaryKey(
@@ -2348,7 +2417,15 @@ public class CPDefinitionLocalServiceImpl
 		cpDefinition.setWeight(weight);
 		cpDefinition.setWidth(width);
 
-		if ((expirationDate == null) || expirationDate.after(date)) {
+		if (cpDefinition.getStatus() == WorkflowConstants.STATUS_EMPTY) {
+			cpDefinition.setStatus(
+				_emptyModelManager.solveEmptyModel(
+					cpDefinition.getCProductExternalReferenceCode(),
+					cpDefinition.getModelClassName(),
+					cpDefinition.getCompanyId(), 0, cpDefinition.getStatus(),
+					() -> WorkflowConstants.STATUS_DRAFT));
+		}
+		else if ((expirationDate == null) || expirationDate.after(date)) {
 			cpDefinition.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 		else {
@@ -3695,6 +3772,9 @@ public class CPDefinitionLocalServiceImpl
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
