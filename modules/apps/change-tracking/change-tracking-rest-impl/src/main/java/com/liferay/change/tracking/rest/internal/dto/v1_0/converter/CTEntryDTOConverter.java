@@ -77,6 +77,10 @@ public class CTEntryDTOConverter
 		String ctCollectionStatusUserName,
 		HttpServletRequest httpServletRequest) {
 
+		if (ctCollectionStatusDate == null) {
+			return StringPool.BLANK;
+		}
+
 		if (ctCollectionStatus == WorkflowConstants.STATUS_APPROVED) {
 			return _language.format(
 				httpServletRequest, "published-x-ago-by-x",

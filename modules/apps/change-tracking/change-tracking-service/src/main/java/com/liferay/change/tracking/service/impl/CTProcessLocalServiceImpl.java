@@ -69,6 +69,7 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 				"Change tracking collection is empty " + ctCollection);
 		}
 
+		ctCollection.setScheduledDate(null);
 		ctCollection.setStatus(WorkflowConstants.STATUS_PENDING);
 
 		ctCollection = _ctCollectionLocalService.updateCTCollection(
