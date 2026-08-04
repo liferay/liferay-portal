@@ -13,6 +13,7 @@ import com.liferay.layout.security.permission.resource.LayoutContentModelResourc
 import com.liferay.layout.type.controller.BaseLayoutTypeControllerImpl;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -158,6 +159,10 @@ public class ContentLayoutTypeController extends BaseLayoutTypeControllerImpl {
 		else if (layoutMode.equals(Constants.HISTORY)) {
 			FeatureFlagManagerUtil.checkEnabled(
 				themeDisplay.getCompanyId(), "LPD-10622");
+
+			if (!CTCollectionThreadLocal.isProductionMode()) {
+				throw new NoSuchLayoutException();
+			}
 
 			if (hasUpdatePermissions == null) {
 				hasUpdatePermissions = _hasUpdatePermissions(
