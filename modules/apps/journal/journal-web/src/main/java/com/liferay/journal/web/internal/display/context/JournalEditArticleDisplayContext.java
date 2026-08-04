@@ -656,8 +656,10 @@ public class JournalEditArticleDisplayContext {
 		if (Validator.isNotNull(getArticleId())) {
 			DDMFormValues ddmFormValues = _article.getDDMFormValues();
 
-			defaultArticleLanguageId = LocaleUtil.toLanguageId(
-				ddmFormValues.getDefaultLocale());
+			if (ddmFormValues != null) {
+				defaultArticleLanguageId = LocaleUtil.toLanguageId(
+					ddmFormValues.getDefaultLocale());
+			}
 		}
 		else if (Validator.isNull(defaultArticleLanguageId) &&
 				 (getClassNameId() ==

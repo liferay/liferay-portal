@@ -5,6 +5,8 @@
 
 package com.liferay.portal.upgrade.data.cleanup;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.upgrade.data.cleanup.DataCleanupPreupgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.TableOrphanReferencesDataCleanupPreupgradeProcess;
 
@@ -20,14 +22,30 @@ public class DDMStorageLinkDataCleanupPreupgradeProcess
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
 				null, null, "contentId", "DDMContent", "classPK",
 				"DDMStorageLink"));
+
+		DBInspector dbInspector = new DBInspector(connection);
+
+		String journalArticleTableName = dbInspector.normalizeName(
+			"JournalArticle");
+
+		String sourceAdditionalWhereClause = null;
+
+		if (dbInspector.hasTable(journalArticleTableName)) {
+			sourceAdditionalWhereClause = StringBundler.concat(
+				"not exists (select 1 from ", journalArticleTableName,
+				" where ", journalArticleTableName, ".",
+				dbInspector.normalizeName("id_"),
+				" = [$SOURCE_TABLE_ALIAS$].storageId)");
+		}
+
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				null, null, "storageId", "DDMField", "classPK",
-				"DDMStorageLink"));
+				null, sourceAdditionalWhereClause, "storageId", "DDMField",
+				"classPK", "DDMStorageLink"));
 		upgrade(
 			new TableOrphanReferencesDataCleanupPreupgradeProcess(
-				null, null, "storageId", "DDMFieldAttribute", "classPK",
-				"DDMStorageLink"));
+				null, sourceAdditionalWhereClause, "storageId",
+				"DDMFieldAttribute", "classPK", "DDMStorageLink"));
 	}
 
 }
