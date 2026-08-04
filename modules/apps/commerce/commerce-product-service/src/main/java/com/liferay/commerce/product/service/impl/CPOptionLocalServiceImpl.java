@@ -16,6 +16,8 @@ import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.service.base.CPOptionLocalServiceBaseImpl;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -46,6 +48,7 @@ import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -53,6 +56,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -79,7 +83,10 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 			boolean skuContributor, String key, ServiceContext serviceContext)
 		throws PortalException {
 
-		_validateCommerceOptionTypeKey(commerceOptionTypeKey, skuContributor);
+		if (!_emptyModelManager.isEmptyModel()) {
+			_validateCommerceOptionTypeKey(
+				commerceOptionTypeKey, skuContributor);
+		}
 
 		User user = _userLocalService.getUser(userId);
 
@@ -102,7 +109,14 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 		cpOption.setRequired(required);
 		cpOption.setSkuContributor(skuContributor);
 		cpOption.setKey(key);
-		cpOption.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpOption.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpOption.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
+
 		cpOption.setExpandoBridgeAttributes(serviceContext);
 
 		cpOption = cpOptionPersistence.update(cpOption);
@@ -224,6 +238,28 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 	}
 
 	@Override
+	public CPOption getOrAddEmptyCPOption(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPOption.class, companyId,
+			() -> cpOptionLocalService.addCPOption(
+				externalReferenceCode, userId,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				null, StringPool.BLANK, false, false, false,
+				externalReferenceCode, serviceContext),
+			externalReferenceCode, this::fetchCPOptionByExternalReferenceCode,
+			this::getCPOptionByExternalReferenceCode, CPOption.class.getName());
+	}
+
+	@Override
 	public BaseModelSearchResult<CPOption> searchCPOptions(
 			long companyId, String keywords, int start, int end, Sort sort)
 		throws PortalException {
@@ -259,6 +295,11 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 		cpOption.setRequired(required);
 		cpOption.setSkuContributor(skuContributor);
 		cpOption.setKey(key);
+		cpOption.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				cpOption.getExternalReferenceCode(),
+				cpOption.getModelClassName(), cpOption.getCompanyId(), 0,
+				cpOption.getStatus(), () -> WorkflowConstants.STATUS_APPROVED));
 		cpOption.setExpandoBridgeAttributes(serviceContext);
 
 		return cpOptionPersistence.update(cpOption);
@@ -432,6 +473,9 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 
 	@Reference
 	private CPOptionValueLocalService _cpOptionValueLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
