@@ -630,12 +630,12 @@ public abstract class BaseMockContactsEngineClientImpl
 
 	@Override
 	public Results<CatalogField> getCatalogFields(
-			FaroProject faroProject, String query, String tableName, int cur,
-			int delta, String sortString)
+			FaroProject faroProject, String capability, String query,
+			String tableName, int cur, int delta, String sortString)
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getCatalogFields(
-			faroProject, query, tableName, cur, delta, sortString);
+			faroProject, capability, query, tableName, cur, delta, sortString);
 	}
 
 	@Override

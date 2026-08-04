@@ -1609,12 +1609,16 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public Results<CatalogField> getCatalogFields(
-			FaroProject faroProject, String query, String tableName, int cur,
-			int delta, String sortString)
+			FaroProject faroProject, String capability, String query,
+			String tableName, int cur, int delta, String sortString)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(
 			faroProject, cur, delta, null);
+
+		if (Validator.isNotNull(capability)) {
+			uriVariables.put("capability", capability);
+		}
 
 		if (Validator.isNotNull(query)) {
 			uriVariables.put("query", query);

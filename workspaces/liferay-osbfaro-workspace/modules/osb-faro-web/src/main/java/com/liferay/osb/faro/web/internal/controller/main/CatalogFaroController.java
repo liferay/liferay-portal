@@ -38,6 +38,7 @@ public class CatalogFaroController extends BaseFaroController {
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public FaroFDSResultsDisplay getCatalogFieldsFaroFDSResultsDisplay(
 			@PathParam("groupId") long groupId,
+			@QueryParam("capability") String capability,
 			@QueryParam("query") String query,
 			@QueryParam("tableName") String tableName,
 			@QueryParam("page") int page, @QueryParam("pageSize") int pageSize,
@@ -46,8 +47,8 @@ public class CatalogFaroController extends BaseFaroController {
 		throws Exception {
 
 		Results<CatalogField> results = contactsEngineClient.getCatalogFields(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId), query,
-			tableName, page, pageSize, sortString);
+			faroProjectLocalService.getFaroProjectByGroupId(groupId),
+			capability, query, tableName, page, pageSize, sortString);
 
 		return new FaroFDSResultsDisplay(results, page, pageSize);
 	}
