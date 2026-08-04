@@ -22,20 +22,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LRQA-47649. Verify that Admin user can relaunch a custom export process."
-	@priority = 4
-	test RelaunchCustomExportProcess {
-		task ("Export the LAR file of a site") {
-			LAR.exportSiteCP(
-				larFileName = "CustomExport",
-				siteScopeName = "Guest");
-		}
-
-		task ("Relaunch the custom export process") {
-			LAR.relaunchCurrentAndPreviousProcess(larFileName = "CustomExport");
-		}
-	}
-
 	@description = "This is a use case for LRQA-28935. Verify that the Admin user can filter and modify the Export list display."
 	@priority = 3
 	test ViewExportProcess {

@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Time;
@@ -336,6 +337,70 @@ public class ExportProcessResourceTest
 			exportProcessRequest ->
 				exportProcessResource.postExportProcessHttpResponse(
 					0L, portletId, exportProcessRequest));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
+	@TestInfo("LRQA-47649")
+	public void testPostExportProcessRelaunchCreatesNewExportProcess()
+		throws Exception {
+
+		ObjectDefinition objectDefinition = _publishObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_SITE);
+
+		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
+
+		exportProcessRequest.setName(RandomTestUtil.randomString());
+		exportProcessRequest.setRequestPortletDataHandlers(
+			new RequestPortletDataHandler[] {
+				new RequestPortletDataHandler() {
+					{
+						name =
+							"PORTLET_DATA_" + objectDefinition.getPortletId();
+					}
+				}
+			});
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineExportTaskExecutorImpl",
+				LoggerTestUtil.WARN)) {
+
+			ExportProcess exportProcess =
+				exportProcessResource.postSiteExportProcess(
+					testGroup.getExternalReferenceCode(), 0L, null,
+					exportProcessRequest);
+
+			ExportImportTestUtil.assertBackgroundTaskSuccessful(
+				exportProcess.getId());
+
+			ExportProcess relaunchedExportProcess =
+				exportProcessResource.postExportProcessRelaunch(
+					exportProcess.getId());
+
+			Assert.assertNotEquals(
+				exportProcess.getId(), relaunchedExportProcess.getId());
+
+			ExportImportTestUtil.assertBackgroundTaskSuccessful(
+				relaunchedExportProcess.getId());
+
+			BackgroundTask relaunchedBackgroundTask =
+				_backgroundTaskLocalService.getBackgroundTask(
+					relaunchedExportProcess.getId());
+
+			Assert.assertFalse(
+				ListUtil.isEmpty(
+					relaunchedBackgroundTask.getAttachmentsFileEntries()));
+
+			BackgroundTask backgroundTask =
+				_backgroundTaskLocalService.getBackgroundTask(
+					exportProcess.getId());
+
+			Assert.assertEquals(
+				BackgroundTaskConstants.STATUS_SUCCESSFUL,
+				backgroundTask.getStatus());
+		}
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
