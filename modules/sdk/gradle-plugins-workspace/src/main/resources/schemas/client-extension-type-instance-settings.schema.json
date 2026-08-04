@@ -3685,6 +3685,28 @@
 		},
 		{
 			"properties": {
+				"auditMessageMaxQueueSize": {
+					"default": 200,
+					"title": "Audit Message Maximum Queue Size",
+					"type": "number"
+				},
+				"enabled": {
+					"default": true,
+					"title": "Enabled",
+					"type": "boolean"
+				},
+				"pid": {
+					"const": "com.liferay.portal.security.audit.configuration.AuditConfiguration",
+					"title": "Audit"
+				}
+			},
+			"required": [
+				"pid"
+			],
+			"title": "Audit"
+		},
+		{
+			"properties": {
 				"enabled": {
 					"default": false,
 					"title": "Enabled",
@@ -5272,6 +5294,7 @@
 				"com.liferay.portal.search.internal.configuration.UserActivityAsahConfiguration",
 				"com.liferay.portal.search.opensearch2.configuration.DeepPaginationConfiguration",
 				"com.liferay.portal.search.rest.configuration.SearchSuggestionsCompanyConfiguration",
+				"com.liferay.portal.security.audit.configuration.AuditConfiguration",
 				"com.liferay.portal.security.auto.login.internal.basic.auth.header.configuration.BasicAuthHeaderAutoLoginConfiguration",
 				"com.liferay.portal.security.configuration.BasicAuthHeaderSupportConfiguration",
 				"com.liferay.portal.security.iframe.sanitizer.configuration.IFrameConfiguration",
