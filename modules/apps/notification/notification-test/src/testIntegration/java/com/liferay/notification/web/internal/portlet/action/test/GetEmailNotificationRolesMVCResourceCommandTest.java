@@ -175,6 +175,7 @@ public class GetEmailNotificationRolesMVCResourceCommandTest {
 					JSONUtil.put("name", DSRRoleConstants.NAME_DSR_SELLER),
 					JSONUtil.put("name", RoleConstants.ADMINISTRATOR),
 					JSONUtil.put("name", RoleConstants.ANALYTICS_ADMINISTRATOR),
+					JSONUtil.put("name", RoleConstants.CMS_ADMINISTRATOR),
 					JSONUtil.put("name", RoleConstants.OWNER),
 					JSONUtil.put("name", RoleConstants.PORTAL_CONTENT_REVIEWER),
 					JSONUtil.put("name", RoleConstants.POWER_USER),
