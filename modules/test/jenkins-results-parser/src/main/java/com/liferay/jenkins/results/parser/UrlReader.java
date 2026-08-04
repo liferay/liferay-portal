@@ -429,9 +429,7 @@ public class UrlReader {
 					return doRead(
 						checkCache, httpAuthorization, httpRequestMethod,
 						maxRetries, postContent, retryPeriod, timeout,
-						url.replaceAll(
-							"http://(test-\\d+-\\d+)(/.*)",
-							"https://$1.liferay.com$2"));
+						JenkinsResultsParserUtil.getRemoteURL(url));
 				}
 
 				String exceptionMessage = ioException1.getMessage();
