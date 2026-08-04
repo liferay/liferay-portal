@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Vendel Toreki
@@ -63,7 +64,7 @@ public class AssetDisplayPageEntryUpgradeProcess extends UpgradeProcess {
 		long liveGroupId = _liveGroupIdsMap.getOrDefault(groupId, groupId);
 
 		Map<String, String> uuids = _uuidsMaps.computeIfAbsent(
-			liveGroupId, key -> new HashMap<>());
+			liveGroupId, key -> new ConcurrentHashMap<>());
 
 		return uuids.computeIfAbsent(
 			journalArticleUuid, key -> PortalUUIDUtil.generate());
@@ -173,6 +174,7 @@ public class AssetDisplayPageEntryUpgradeProcess extends UpgradeProcess {
 	private final CompanyLocalService _companyLocalService;
 	private final Map<Long, Long> _liveGroupIdsMap = new HashMap<>();
 	private final Set<Long> _stagedGroupIds = new HashSet<>();
-	private final Map<Long, Map<String, String>> _uuidsMaps = new HashMap<>();
+	private final Map<Long, Map<String, String>> _uuidsMaps =
+		new ConcurrentHashMap<>();
 
 }
