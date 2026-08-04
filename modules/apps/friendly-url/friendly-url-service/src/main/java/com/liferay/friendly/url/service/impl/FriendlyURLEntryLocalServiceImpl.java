@@ -886,6 +886,10 @@ public class FriendlyURLEntryLocalServiceImpl
 
 		String className = _portal.fetchClassName(classNameId);
 
+		if (Validator.isNull(className)) {
+			return false;
+		}
+
 		String[] classNames = StringUtil.split(
 			className, ResourceActionsUtil.getCompositeModelNameSeparator());
 
