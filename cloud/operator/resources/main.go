@@ -6,15 +6,13 @@ import (
 
 	env "github.com/caarlos0/env/v11"
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
-	"github.com/liferay/liferay-portal/cloud/operator/internal/controller"
-	"github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
-	"github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay"
+	controller "github.com/liferay/liferay-portal/cloud/operator/internal/controller"
+	licensing "github.com/liferay/liferay-portal/cloud/operator/internal/controller/licensing"
+	liferay "github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
-
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	healthz "sigs.k8s.io/controller-runtime/pkg/healthz"
 	zap "sigs.k8s.io/controller-runtime/pkg/log/zap"

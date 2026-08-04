@@ -4,12 +4,12 @@
 package liferay
 
 import (
-	"context"
-	"time"
+	context "context"
+	time "time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	marketplace "github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay/marketplace"
-	"github.com/liferay/liferay-portal/cloud/operator/internal/utils/persistentvolumeclaim"
+	persistentvolumeclaim "github.com/liferay/liferay-portal/cloud/operator/internal/utils/persistentvolumeclaim"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	equality "k8s.io/apimachinery/pkg/api/equality"
@@ -54,8 +54,8 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 		ClaimManager: &persistentvolumeclaim.PersistentVolumeClaimManager{
 			Client:  liferayStatefulSetReconciler.Client,
 			Context: context,
-			Spec:    marketplace.GetVolumeClaimSpec(liferayEnvironment),
 			Owner:   statefulSet,
+			Spec:    marketplace.GetVolumeClaimSpec(liferayEnvironment),
 		},
 	}
 

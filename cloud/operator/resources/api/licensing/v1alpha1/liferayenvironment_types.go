@@ -99,10 +99,10 @@ type MarketplaceVolumeSpec struct {
 }
 
 type MarketplaceVolumeStatus struct {
-	// // +optional
+	// +optional
 	ClaimName string `json:"claimName,omitempty"`
 
-	// // +optional
+	// +optional
 	Phase string `json:"phase,omitempty"`
 }
 

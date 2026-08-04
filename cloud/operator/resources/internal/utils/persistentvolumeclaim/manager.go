@@ -15,11 +15,11 @@ import (
 )
 
 const (
-	StateAccessModesUnsupported State = "AccessModesUnsupported"
-	StateBound                  State = "Bound"
-	StateCreated                State = "Created"
-	StateNotBound               State = "NotBound"
-	StateStorageClassNotFound   State = "StorageClassNotFound"
+	StateAccessModesUnsupported string = "AccessModesUnsupported"
+	StateBound                  string = "Bound"
+	StateCreated                string = "Created"
+	StateNotBound               string = "NotBound"
+	StateStorageClassNotFound   string = "StorageClassNotFound"
 )
 
 func (claimManager *PersistentVolumeClaimManager) CreateClaimIfMissing() (Result, error) {
@@ -105,7 +105,7 @@ func (claimManager *PersistentVolumeClaimManager) findClaim() (*corev1.Persisten
 func getClaimState(
 	persistentVolumeClaim *corev1.PersistentVolumeClaim,
 	spec Spec,
-) State {
+) string {
 	if persistentVolumeClaim.Status.Phase != corev1.ClaimBound {
 		return StateNotBound
 	}
@@ -167,7 +167,7 @@ type PersistentVolumeClaimManager struct {
 
 type Result struct {
 	Phase corev1.PersistentVolumeClaimPhase
-	State State
+	State string
 }
 
 type Spec struct {
@@ -177,5 +177,3 @@ type Spec struct {
 	Size             resource.Quantity
 	StorageClassName string
 }
-
-type State string
