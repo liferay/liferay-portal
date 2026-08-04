@@ -8,8 +8,10 @@ import {type Page, expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../helpers/ApiHelpers';
+import {addCMSAdministrator} from '../../../utils/addCMSAdministrator';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitchViaApi, userData} from '../../../utils/performLogin';
+import {performUserSwitchViaApi} from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const test = mergeTests(
@@ -27,10 +29,43 @@ const REVIEW_DATE_DISPLAYED = '12/31/2099, 10:00 AM';
 const REVIEW_DATE_INPUT = '12/31/2099 10:00 AM';
 const TIME_ZONE = 'America/Los_Angeles';
 
+test.use({timezoneId: TIME_ZONE});
+
 async function fillReviewDateModal(page: Page, reviewDate: string) {
 	await page.locator('.modal input.form-control').first().fill(reviewDate);
 
 	await page.locator('.modal').getByRole('button', {name: 'Save'}).click();
+}
+
+async function pollReviewDate(
+	apiHelpers: DataApiHelpers,
+	objectEntryId: number
+) {
+	await expect
+		.poll(
+			async () => {
+				const objectEntry =
+					await apiHelpers.objectEntry.getObjectEntryById(
+						APPLICATION_NAME,
+						String(objectEntryId)
+					);
+
+				return new Date(objectEntry.reviewDate).toLocaleString(
+					'en-US',
+					{
+						day: '2-digit',
+						hour: '2-digit',
+						hour12: true,
+						minute: '2-digit',
+						month: '2-digit',
+						timeZone: TIME_ZONE,
+						year: 'numeric',
+					}
+				);
+			},
+			{timeout: 3000}
+		)
+		.toBe(REVIEW_DATE_DISPLAYED);
 }
 
 async function updateReviewDate(page: Page, title: string, reviewDate: string) {
@@ -42,84 +77,43 @@ async function updateReviewDate(page: Page, title: string, reviewDate: string) {
 }
 
 test.beforeEach(async ({apiHelpers, page}) => {
-	const user = await apiHelpers.headlessAdminUser.postUserAccount();
-
-	userData[user.alternateName] = {
-		name: user.givenName,
-		password: 'test',
-		surname: user.familyName,
-	};
-
-	const cmsAdminRole =
-		await apiHelpers.headlessAdminUser.getRoleByName('CMS Administrator');
-
-	await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
-		cmsAdminRole.id,
-		Number(user.id)
-	);
+	const user = await addCMSAdministrator(apiHelpers);
 
 	await performUserSwitchViaApi(page, user.alternateName);
 });
 
-test.describe('Review date time zone', () => {
-	test.use({timezoneId: TIME_ZONE});
+test(
+	'Stores the review date the user picked in their own time zone',
+	{tag: '@LPD-98462'},
+	async ({apiHelpers, page}) => {
+		const spaceName = `space ${getRandomString()}`;
+		const title = `overdue ${getRandomString()}`;
 
-	test(
-		'Stores the review date the user picked in their own time zone',
-		{tag: '@LPD-98462'},
-		async ({apiHelpers, page}) => {
-			const spaceName = `space ${getRandomString()}`;
-			const title = `overdue ${getRandomString()}`;
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary({
+			name: spaceName,
+			type: 'Space',
+		});
 
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-				name: spaceName,
-				type: 'Space',
-			});
+		const overdueContent = await apiHelpers.objectEntry.postObjectEntry(
+			{
+				displayDate: PAST_DATE,
+				objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+				reviewDate: PAST_DATE,
+				title,
+			},
+			APPLICATION_NAME,
+			spaceName
+		);
 
-			const overdueContent = await apiHelpers.objectEntry.postObjectEntry(
-				{
-					displayDate: PAST_DATE,
-					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					reviewDate: PAST_DATE,
-					title,
-				},
-				APPLICATION_NAME,
-				spaceName
-			);
+		apiHelpers.data.push({id: overdueContent.id, type: 'document'});
 
-			apiHelpers.data.push({id: overdueContent.id, type: 'document'});
+		await page.goto('/web/cms/overdue-reviews');
 
-			await page.goto('/web/cms/overdue-reviews');
+		await updateReviewDate(page, title, REVIEW_DATE_INPUT);
 
-			await updateReviewDate(page, title, REVIEW_DATE_INPUT);
-
-			await expect
-				.poll(
-					async () => {
-						const updatedObjectEntry =
-							await apiHelpers.objectEntry.getObjectEntryById(
-								APPLICATION_NAME,
-								String(overdueContent.id)
-							);
-
-						return new Date(
-							updatedObjectEntry.reviewDate
-						).toLocaleString('en-US', {
-							day: '2-digit',
-							hour: '2-digit',
-							hour12: true,
-							minute: '2-digit',
-							month: '2-digit',
-							timeZone: TIME_ZONE,
-							year: 'numeric',
-						});
-					},
-					{timeout: 3000}
-				)
-				.toBe(REVIEW_DATE_DISPLAYED);
-		}
-	);
-});
+		await pollReviewDate(apiHelpers, overdueContent.id);
+	}
+);
 
 test(
 	'Updates the review date of overdue contents from the dashboard',
@@ -156,22 +150,6 @@ test(
 		const overdueReviewsCount = overdueReviewsCard
 			.locator('.cms-dashboard__interactive-card__metric > div')
 			.first();
-
-		const pollReviewDate = (objectEntryId: number) =>
-			expect
-				.poll(
-					async () => {
-						const updatedObjectEntry =
-							await apiHelpers.objectEntry.getObjectEntryById(
-								APPLICATION_NAME,
-								String(objectEntryId)
-							);
-
-						return updatedObjectEntry.reviewDate;
-					},
-					{timeout: 3000}
-				)
-				.toContain('2099-12-31');
 
 		let overdueContents: Awaited<
 			ReturnType<typeof apiHelpers.objectEntry.postObjectEntry>
@@ -242,7 +220,7 @@ test(
 		await test.step('Update a review date from its row action', async () => {
 			await updateReviewDate(page, secondSpaceTitle, REVIEW_DATE_INPUT);
 
-			await pollReviewDate(overdueContents[1].id);
+			await pollReviewDate(apiHelpers, overdueContents[1].id);
 
 			await page.reload();
 
@@ -268,7 +246,7 @@ test(
 			await fillReviewDateModal(page, REVIEW_DATE_INPUT);
 
 			for (const overdueContent of overdueContents.slice(2)) {
-				await pollReviewDate(overdueContent.id);
+				await pollReviewDate(apiHelpers, overdueContent.id);
 			}
 
 			await page.reload();
