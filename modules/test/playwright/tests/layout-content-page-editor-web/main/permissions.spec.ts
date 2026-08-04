@@ -90,10 +90,14 @@ test(
 
 		await pageEditorPage.goToConfigurationTab('Styles');
 
-		await expect(page.getByText('Background')).not.toBeAttached();
-		await expect(page.getByText('Borders')).not.toBeAttached();
-		await expect(page.getByText('Effects')).not.toBeAttached();
-		await expect(page.getByText('Text')).not.toBeAttached();
+		const stylesPanel = page.getByRole('tabpanel', {name: 'Styles'});
+
+		await expect(stylesPanel).toBeAttached();
+
+		await expect(stylesPanel.getByText('Background')).not.toBeAttached();
+		await expect(stylesPanel.getByText('Borders')).not.toBeAttached();
+		await expect(stylesPanel.getByText('Effects')).not.toBeAttached();
+		await expect(stylesPanel.getByText('Text')).not.toBeAttached();
 
 		// Assert in advanced tab
 
