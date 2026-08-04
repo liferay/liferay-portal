@@ -11,7 +11,6 @@ import com.liferay.change.tracking.model.CTProcess;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.service.base.CTProcessLocalServiceBaseImpl;
-import com.liferay.change.tracking.service.persistence.CTCollectionPersistence;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.background.task.model.BackgroundTask;
@@ -55,7 +54,7 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 	public CTProcess addCTProcess(long userId, long ctCollectionId)
 		throws PortalException {
 
-		CTCollection ctCollection = _ctCollectionPersistence.findByPrimaryKey(
+		CTCollection ctCollection = _ctCollectionLocalService.getCTCollection(
 			ctCollectionId);
 
 		if (ctCollection.getStatus() == WorkflowConstants.STATUS_APPROVED) {
@@ -69,6 +68,7 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 				"Change tracking collection is empty " + ctCollection);
 		}
 
+		ctCollection.setScheduledDate(null);
 		ctCollection.setStatus(WorkflowConstants.STATUS_PENDING);
 
 		ctCollection = _ctCollectionLocalService.updateCTCollection(
@@ -144,7 +144,7 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 					BackgroundTaskConstants.STATUS_SUCCESSFUL) {
 
 				CTCollection ctCollection =
-					_ctCollectionPersistence.fetchByPrimaryKey(
+					_ctCollectionLocalService.fetchCTCollection(
 						ctProcess.getCtCollectionId());
 
 				if (ctCollection != null) {
@@ -185,9 +185,6 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 
 	@Reference
 	private CTCollectionLocalService _ctCollectionLocalService;
-
-	@Reference
-	private CTCollectionPersistence _ctCollectionPersistence;
 
 	@Reference
 	private CTPreferencesLocalService _ctPreferencesLocalService;

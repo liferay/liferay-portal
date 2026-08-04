@@ -154,6 +154,7 @@ public class PublishSchedulerImpl implements PublishScheduler {
 			ctCollection.setStatus(WorkflowConstants.STATUS_DRAFT);
 		}
 
+		ctCollection.setScheduledDate(null);
 		ctCollection.setStatusByUserId(UserConstants.USER_ID_DEFAULT);
 
 		_ctCollectionLocalService.updateCTCollection(ctCollection);
@@ -190,6 +191,7 @@ public class PublishSchedulerImpl implements PublishScheduler {
 			PermissionThreadLocal.getPermissionChecker(), ctCollection,
 			CTActionKeys.PUBLISH);
 
+		ctCollection.setScheduledDate(startDate);
 		ctCollection.setStatus(WorkflowConstants.STATUS_SCHEDULED);
 		ctCollection.setStatusByUserId(userId);
 

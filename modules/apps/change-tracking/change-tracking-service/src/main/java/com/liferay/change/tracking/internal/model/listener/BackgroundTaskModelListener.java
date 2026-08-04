@@ -83,6 +83,7 @@ public class BackgroundTaskModelListener
 						status = WorkflowConstants.STATUS_INCOMPLETE;
 					}
 
+					ctCollection.setScheduledDate(null);
 					ctCollection.setStatus(status);
 
 					_ctCollectionLocalService.updateCTCollection(ctCollection);
