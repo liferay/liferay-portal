@@ -47,6 +47,10 @@ public class DeleteByQueryDocumentRequestExecutor {
 		DeleteByQueryRequest.Builder builder =
 			new DeleteByQueryRequest.Builder();
 
+		if (deleteByQueryDocumentRequest.isProceedOnConflicts()) {
+			builder.conflicts(Conflicts.Proceed);
+		}
+
 		builder.index(
 			ListUtil.fromArray(deleteByQueryDocumentRequest.getIndexNames()));
 
@@ -63,10 +67,6 @@ public class DeleteByQueryDocumentRequestExecutor {
 				new Query(
 					OpenSearchQueryVisitor.INSTANCE.translate(
 						deleteByQueryDocumentRequest.getQuery())));
-		}
-
-		if (deleteByQueryDocumentRequest.isProceedOnConflicts()) {
-			builder.conflicts(Conflicts.Proceed);
 		}
 
 		builder.refresh(deleteByQueryDocumentRequest.isRefresh());
