@@ -9,6 +9,7 @@ import {
 	isDownloadAction,
 	isImpressionAction,
 	isTrackable,
+	isViewAction,
 	transformAssetTypeToSelector,
 } from '../utils/assets';
 import {composeDisposers} from '../utils/disposers';
@@ -144,12 +145,24 @@ function trackDocumentImpression(analytics: Analytics) {
 }
 
 /**
+ * Sends the view event the first time a Document is visible inside the
+ * viewport.
+ */
+function trackDocumentViewed(analytics: Analytics) {
+	return trackDocument(analytics, {
+		eventId: AnalyticsType.EventId.DocumentPreviewed,
+		isTrackable: (element) => isTrackable(element) && isViewAction(element),
+	});
+}
+
+/**
  * Plugin function that registers listeners for Document events.
  */
 function documents(analytics: Analytics) {
 	return composeDisposers([
 		trackDocumentDownloaded(analytics),
 		trackDocumentImpression(analytics),
+		trackDocumentViewed(analytics),
 	]);
 }
 
