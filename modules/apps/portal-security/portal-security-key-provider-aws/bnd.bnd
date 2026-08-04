@@ -1,0 +1,8 @@
+Bundle-Name: Liferay Portal Security Key Provider AWS
+Bundle-SymbolicName: com.liferay.portal.security.key.provider.aws
+Bundle-Version: 1.0.0
+Import-Package:\
+	!javax.xml.bind,\
+	\
+	*
+Liferay-Releng-Module-Group-Title: Portal Security Key
