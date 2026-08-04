@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.ProxyUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -41,7 +40,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Fábio Alves
  */
-@FeatureFlag("LPD-58677")
 @RunWith(Arquillian.class)
 public class CMPLicenseUtilTest {
 

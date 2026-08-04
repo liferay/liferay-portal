@@ -9,7 +9,6 @@ import com.liferay.headless.cmp.dto.v1_0.UserGroup;
 import com.liferay.headless.cmp.resource.v1_0.UserGroupResource;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
@@ -36,12 +35,6 @@ public class UserGroupResourceImpl extends BaseUserGroupResourceImpl {
 	public Page<UserGroup> getProjectUserGroupsPage(
 			Long projectId, String search, Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-58677")) {
-
-			throw new UnsupportedOperationException();
-		}
 
 		ObjectEntry objectEntry = _objectEntryService.getObjectEntry(projectId);
 
