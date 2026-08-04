@@ -98,13 +98,17 @@ export class EditObjectViewPage {
 
 		await columnsCombobox.click();
 
-		await this.sidePanel.getByRole('option', {name: columnName}).click();
+		await this.sidePanel
+			.getByRole('option', {name: columnName})
+			.dispatchEvent('click');
 
 		const sortingCombobox = this.sidePanel.getByRole('combobox').last();
 
 		await sortingCombobox.click();
 
-		await this.sidePanel.getByRole('option', {name: sortOrder}).click();
+		await this.sidePanel
+			.getByRole('option', {name: sortOrder})
+			.dispatchEvent('click');
 
 		await defaultSortModal.getByRole('button', {name: 'Save'}).click();
 	}

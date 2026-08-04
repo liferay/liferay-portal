@@ -148,6 +148,8 @@ export class EditObjectDetailsPage {
 	async selectScope(optionName: string) {
 		await this.scopeCombobox.click();
 
-		await this.page.getByRole('option', {name: optionName}).click();
+		await this.page
+			.getByRole('option', {name: optionName})
+			.dispatchEvent('click');
 	}
 }

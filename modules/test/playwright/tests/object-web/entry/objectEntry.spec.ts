@@ -6322,7 +6322,9 @@ test.describe('Manage object entries through View Object Entries', () => {
 			await test.step('Select the "United States" prefix, fill the phone number field, and save the entry', async () => {
 				await fieldContainer.getByLabel('Country Code').click();
 
-				await page.getByRole('option', {name: /United States/}).click();
+				await page
+					.getByRole('option', {name: /United States/})
+					.dispatchEvent('click');
 
 				await expect(fieldContainer.getByText(prefix)).toBeVisible();
 

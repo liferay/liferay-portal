@@ -29,7 +29,7 @@ export class ModalAddObjectValidationPage {
 		await this.objectValidationTypeSelect.click();
 		await this.page
 			.getByRole('option', {name: objectValidationType})
-			.click();
+			.dispatchEvent('click');
 
 		await this.saveButton.click();
 	}

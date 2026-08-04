@@ -296,7 +296,9 @@ export class ViewObjectEntriesPage {
 
 	async selectDropdownItem(fieldName: string, optionName: string) {
 		await this.page.getByLabel(fieldName).click();
-		await this.page.getByRole('option', {name: optionName}).click();
+		await this.page
+			.getByRole('option', {name: optionName})
+			.dispatchEvent('click');
 	}
 
 	async selectDropdownItemWithSearch(optionName: string) {

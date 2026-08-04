@@ -879,7 +879,7 @@ test.describe('Manage object definitions through Model Builder', () => {
 
 			await page
 				.getByRole('option', {name: 'en_US language: Default'})
-				.click();
+				.dispatchEvent('click');
 
 			await expect(
 				modelBuilderRightSidebarPage.objectDefinitionPluralLabel
