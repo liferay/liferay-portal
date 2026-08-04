@@ -22,6 +22,12 @@ spec:
         -   jsonPath: .status.conditions[?(@.type=="Activated")].status
             name: Activated
             type: string
+        -   jsonPath: .status.conditions[?(@.type=="LicenseValid")].status
+            name: License
+            type: string
+        -   jsonPath: .status.license.validUntil
+            name: Valid-Until
+            type: string
         -   jsonPath: .metadata.creationTimestamp
             name: Age
             type: date

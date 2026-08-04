@@ -26,6 +26,8 @@ type LicenseStatus struct {
 // +kubebuilder:object:root=true
 // +kubebuilder:printcolumn:JSONPath=`.status.phase`,name="Phase",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="Activated")].status`,name="Activated",type=string
+// +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="LicenseValid")].status`,name="License",type=string
+// +kubebuilder:printcolumn:JSONPath=`.status.license.validUntil`,name="Valid-Until",type=string
 // +kubebuilder:printcolumn:JSONPath=`.metadata.creationTimestamp`,name="Age",type=date
 // +kubebuilder:printcolumn:JSONPath=`.status.environmentId`,name="Environment-ID",priority=1,type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.activatedAt`,name="Activated-At",priority=1,type=date
