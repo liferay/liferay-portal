@@ -36,7 +36,8 @@ const TREND_RENDERER = 'TopAssetsTrendRenderer';
 const API_URL = '/o/analytics-cms-rest/v1.0/performance-top-asset';
 
 const NESTED_FIELDS =
-	'nestedFields=embedded,systemProperties.objectDefinitionBrief';
+	'nestedFields=embedded,file.metadata,file.previewURL,file.thumbnailURL,' +
+	'systemProperties.objectDefinitionBrief';
 
 function TitleCell({itemData, value}: {itemData: any; value: string}) {
 	const {additionalProps} = useContext(PerformanceContext);
