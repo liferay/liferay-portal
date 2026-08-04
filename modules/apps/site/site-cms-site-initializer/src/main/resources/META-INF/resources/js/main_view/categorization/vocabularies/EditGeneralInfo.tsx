@@ -380,14 +380,16 @@ export default function EditGeneralInfo({
 						setSpaceInputError={setSpaceInputError}
 					/>
 
-					<CategorizationProjects
-						checkboxText="vocabulary"
-						disabled={vocabulary.system}
-						projects={projects}
-						setProjectChange={setProjectChange}
-						setProjectInputError={setProjectInputError}
-						setSelectedProjects={onChangeSelectedProjects}
-					/>
+					{Liferay.FeatureFlags['LPD-58677'] && (
+						<CategorizationProjects
+							checkboxText="vocabulary"
+							disabled={vocabulary.system}
+							projects={projects}
+							setProjectChange={setProjectChange}
+							setProjectInputError={setProjectInputError}
+							setSelectedProjects={onChangeSelectedProjects}
+						/>
+					)}
 				</ClayForm.Group>
 			</ClayPanel>
 
