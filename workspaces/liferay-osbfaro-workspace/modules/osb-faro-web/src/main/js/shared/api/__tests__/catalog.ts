@@ -50,6 +50,28 @@ describe('Catalog API', () => {
 			);
 		});
 
+		it('passes the capability as a param', () => {
+			fetchCatalogFields({capability: 'FILTER', groupId: '23'});
+
+			expect(sendRequest).toHaveBeenCalledWith(
+				expect.objectContaining({
+					data: expect.objectContaining({capability: 'FILTER'}),
+				})
+			);
+		});
+
+		it('omits the capability param when none is given', () => {
+			fetchCatalogFields({groupId: '23'});
+
+			expect(sendRequest).toHaveBeenCalledWith(
+				expect.objectContaining({
+					data: expect.not.objectContaining({
+						capability: expect.anything(),
+					}),
+				})
+			);
+		});
+
 		it('passes the free text search as the query param', () => {
 			fetchCatalogFields({groupId: '23', query: 'revenue'});
 
