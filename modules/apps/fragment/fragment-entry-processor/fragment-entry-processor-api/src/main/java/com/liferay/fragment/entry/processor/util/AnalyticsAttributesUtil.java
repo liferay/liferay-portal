@@ -121,8 +121,10 @@ public class AnalyticsAttributesUtil {
 			return Collections.emptyMap();
 		}
 
-		InfoItemFieldValues infoItemFieldValues = infoDisplaysFieldValues.get(
-			infoItemFieldMapped.getInfoItemReference());
+		InfoItemFieldValues infoItemFieldValues = _getInfoItemFieldValues(
+			fragmentEntryProcessorContext, fragmentEntryProcessorHelper,
+			infoDisplaysFieldValues, infoItemFieldMapped,
+			editableValueJSONObject);
 
 		return HashMapBuilder.<String, Object>put(
 			"analytics-asset-action",
@@ -581,6 +583,34 @@ public class AnalyticsAttributesUtil {
 		}
 
 		return String.valueOf(infoFieldValue.getValue(locale));
+	}
+
+	private static InfoItemFieldValues _getInfoItemFieldValues(
+		FragmentEntryProcessorContext fragmentEntryProcessorContext,
+		FragmentEntryProcessorHelper fragmentEntryProcessorHelper,
+		Map<InfoItemReference, InfoItemFieldValues> infoDisplaysFieldValues,
+		InfoItemFieldMapped infoItemFieldMapped, JSONObject mappedJSONObject) {
+
+		InfoItemFieldValues infoItemFieldValues = infoDisplaysFieldValues.get(
+			infoItemFieldMapped.getInfoItemReference());
+
+		if (infoItemFieldValues != null) {
+			return infoItemFieldValues;
+		}
+
+		try {
+			fragmentEntryProcessorHelper.getFieldValue(
+				mappedJSONObject, infoDisplaysFieldValues,
+				fragmentEntryProcessorContext);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return infoDisplaysFieldValues.get(
+			infoItemFieldMapped.getInfoItemReference());
 	}
 
 	private static boolean _isDownloadURL(InfoField<?> infoField) {
