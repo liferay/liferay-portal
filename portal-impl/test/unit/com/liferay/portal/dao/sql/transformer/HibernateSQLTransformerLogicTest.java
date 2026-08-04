@@ -48,13 +48,11 @@ public class HibernateSQLTransformerLogicTest {
 
 	@Test
 	public void testReplaceCastClobText() {
-		Assert.assertEquals(
-			"select SUBSTRING(foo || (SUBSTRING(foo, 1, 4000) || (bar || " +
-				"foo)), 1, 4000), SUBSTRING(foo || (bar || foo), 1, 4000) " +
-					"from Foo",
-			SQLTransformer.transformForHibernate(
-				"select CAST_CLOB_TEXT(foo || (CAST_CLOB_TEXT(foo) || (bar " +
-					"|| foo))), CAST_CLOB_TEXT(foo || (bar || foo)) from Foo"));
+		String sql =
+			"select CAST_CLOB_TEXT(foo || (CAST_CLOB_TEXT(foo) || (bar || " +
+				"foo))), CAST_CLOB_TEXT(foo || (bar || foo)) from Foo";
+
+		Assert.assertEquals(sql, SQLTransformer.transformForHibernate(sql));
 	}
 
 	@Test
