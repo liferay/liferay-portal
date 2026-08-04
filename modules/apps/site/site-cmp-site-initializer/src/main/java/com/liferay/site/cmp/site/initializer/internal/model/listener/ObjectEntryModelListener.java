@@ -6,6 +6,8 @@
 package com.liferay.site.cmp.site.initializer.internal.model.listener;
 
 import com.liferay.depot.constants.DepotRolesConstants;
+import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.object.constants.ObjectActionKeys;
@@ -107,6 +109,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		throws ModelListenerException {
 
 		try {
+			_deleteProjectDepotEntry(objectEntry);
 			_reindexLinkedObjectEntry(objectEntry);
 			_route("CMP_REMOVE_ASSET", objectEntry);
 			_updateProjectCompletionRate(objectEntry);
@@ -162,6 +165,30 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 				_objectEntryLocalService.deleteObjectEntry(objectEntryId);
 			}
+		}
+	}
+
+	private void _deleteProjectDepotEntry(ObjectEntry objectEntry)
+		throws Exception {
+
+		if (!objectEntry.isDraft()) {
+			return;
+		}
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		if ((objectDefinition == null) ||
+			!StringUtil.equals(
+				objectDefinition.getExternalReferenceCode(), "L_CMP_PROJECT")) {
+
+			return;
+		}
+
+		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
+			objectEntry.getGroupId());
+
+		if (depotEntry != null) {
+			_depotEntryLocalService.deleteDepotEntry(depotEntry);
 		}
 	}
 
@@ -622,6 +649,9 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 	@Reference
 	private AuditRouter _auditRouter;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference(
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
