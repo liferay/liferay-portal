@@ -41,6 +41,11 @@ public class DeleteByQueryDocumentRequestExecutorTest
 
 	@Test
 	public void testDocumentRequestTranslationWithProceedOnConflicts() {
+		DeleteByQueryDocumentRequestExecutor
+			deleteByQueryDocumentRequestExecutor =
+				new DeleteByQueryDocumentRequestExecutor(
+					openSearchConnectionManager);
+
 		BooleanQuery booleanQuery = new BooleanQuery();
 
 		booleanQuery.addExactTerm(_FIELD_NAME, true);
@@ -50,11 +55,6 @@ public class DeleteByQueryDocumentRequestExecutorTest
 				booleanQuery, new String[] {TEST_INDEX_NAME});
 
 		deleteByQueryDocumentRequest.setProceedOnConflicts(true);
-
-		DeleteByQueryDocumentRequestExecutor
-			deleteByQueryDocumentRequestExecutor =
-				new DeleteByQueryDocumentRequestExecutor(
-					openSearchConnectionManager);
 
 		DeleteByQueryRequest deleteByQueryRequest =
 			deleteByQueryDocumentRequestExecutor.createDeleteByQueryRequest(
