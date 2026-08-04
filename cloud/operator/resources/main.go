@@ -66,8 +66,7 @@ func main() {
 			Provisioning:      provisioning.NewHTTPClient(config.ProvisioningBaseURL),
 		},
 		&liferay.LiferayStatefulSetReconciler{
-			Client:            manager.GetClient(),
-			HeartbeatInterval: config.HeartbeatInterval,
+			Client: manager.GetClient(),
 		},
 	); error != nil {
 		setupLog.Error(error, "Unable to set up controllers")

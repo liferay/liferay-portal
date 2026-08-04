@@ -1,20 +1,15 @@
 // +kubebuilder:rbac:groups="",resources=persistentvolumeclaims,verbs=create;get;list;watch
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch
-// +kubebuilder:rbac:groups=storage.k8s.io,resources=storageclasses,verbs=get;list;watch
 package liferay
 
 import (
 	context "context"
-	time "time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	marketplace "github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay/marketplace"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	storagev1 "k8s.io/api/storage/v1"
-	equality "k8s.io/apimachinery/pkg/api/equality"
 	errors "k8s.io/apimachinery/pkg/api/errors"
-	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	controllerruntime "sigs.k8s.io/controller-runtime"
@@ -50,56 +45,15 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 		return controllerruntime.Result{}, nil
 	}
 
-	storageClass, error := liferayStatefulSetReconciler.getStorageClass(
+	if error := liferayStatefulSetReconciler.createVolumeClaimIfMissing(
 		context,
-		liferayEnvironment.Spec.MarketplaceVolume.StorageClassName,
-	)
-
-	if error != nil {
-		return controllerruntime.Result{}, error
-	}
-
-	persistentVolumeClaim := marketplace.GetVolumeClaim(liferayEnvironment)
-
-	if storageClass != nil {
-		persistentVolumeClaim, error = liferayStatefulSetReconciler.createVolumeClaimIfMissing(
-			context,
-			persistentVolumeClaim,
-			statefulSet,
-		)
-
-		if error != nil {
-			return controllerruntime.Result{}, error
-		}
-	}
-
-	marketplace.SetVolumeStatus(liferayEnvironment, persistentVolumeClaim)
-
-	marketplaceConditions := marketplace.GetVolumeConditions(
-		persistentVolumeClaim,
+		marketplace.GetVolumeClaim(liferayEnvironment),
 		statefulSet,
-		storageClass,
-	)
-
-	for _, marketplaceCondition := range marketplaceConditions {
-		meta.SetStatusCondition(&liferayEnvironment.Status.Conditions, marketplaceCondition)
-	}
-
-	originalLiferayEnvironment := liferayEnvironment.DeepCopy()
-
-	if error := liferayStatefulSetReconciler.updateLiferayEnvironmentStatus(
-		context,
-		liferayEnvironment,
-		originalLiferayEnvironment,
 	); error != nil {
-		if errors.IsConflict(error) {
-			return controllerruntime.Result{RequeueAfter: time.Second}, nil
-		}
-
 		return controllerruntime.Result{}, error
 	}
 
-	return controllerruntime.Result{RequeueAfter: liferayStatefulSetReconciler.HeartbeatInterval}, nil
+	return controllerruntime.Result{}, nil
 }
 
 func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) SetupWithManager(
@@ -132,21 +86,19 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) createVolumeCl
 	context context.Context,
 	persistentVolumeClaim *corev1.PersistentVolumeClaim,
 	statefulSet *appsv1.StatefulSet,
-) (*corev1.PersistentVolumeClaim, error) {
-	existingPersistentVolumeClaim := &corev1.PersistentVolumeClaim{}
-
+) error {
 	error := liferayStatefulSetReconciler.Get(
 		context,
 		client.ObjectKeyFromObject(persistentVolumeClaim),
-		existingPersistentVolumeClaim,
+		&corev1.PersistentVolumeClaim{},
 	)
 
 	if error == nil {
-		return existingPersistentVolumeClaim, nil
+		return nil
 	}
 
 	if !errors.IsNotFound(error) {
-		return nil, error
+		return error
 	}
 
 	if error := controllerruntime.SetControllerReference(
@@ -154,19 +106,17 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) createVolumeCl
 		persistentVolumeClaim,
 		liferayStatefulSetReconciler.Scheme(),
 	); error != nil {
-		return nil, error
+		return error
 	}
 
 	if error := liferayStatefulSetReconciler.Create(
 		context,
 		persistentVolumeClaim,
 	); error != nil && !errors.IsAlreadyExists(error) {
-		return nil, error
+		return error
 	}
 
-	persistentVolumeClaim.Status.Phase = corev1.ClaimPending
-
-	return persistentVolumeClaim, nil
+	return nil
 }
 
 func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) getLiferayEnvironmentByStatefulSet(
@@ -202,27 +152,6 @@ func getLiferayStatefulSetPredicate() (predicate.Predicate, error) {
 	)
 }
 
-func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) getStorageClass(
-	context context.Context,
-	storageClassName string,
-) (*storagev1.StorageClass, error) {
-	storageClass := &storagev1.StorageClass{}
-
-	if error := liferayStatefulSetReconciler.Get(
-		context,
-		types.NamespacedName{Name: storageClassName},
-		storageClass,
-	); error != nil {
-		if errors.IsNotFound(error) {
-			return nil, nil
-		}
-
-		return nil, error
-	}
-
-	return storageClass, nil
-}
-
 func mapLiferayEnvironmentToStatefulSet(
 	context context.Context,
 	object client.Object,
@@ -245,27 +174,6 @@ func mapLiferayEnvironmentToStatefulSet(
 	}
 }
 
-func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) updateLiferayEnvironmentStatus(
-	context context.Context,
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-	originalLiferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-) error {
-	if equality.Semantic.DeepEqual(originalLiferayEnvironment.Status, liferayEnvironment.Status) {
-		return nil
-	}
-
-	patch := client.MergeFromWithOptions(
-		originalLiferayEnvironment,
-		client.MergeFromWithOptimisticLock{},
-	)
-
-	status := liferayStatefulSetReconciler.Status()
-
-	return status.Patch(context, liferayEnvironment, patch)
-}
-
 type LiferayStatefulSetReconciler struct {
 	client.Client
-
-	HeartbeatInterval time.Duration
 }

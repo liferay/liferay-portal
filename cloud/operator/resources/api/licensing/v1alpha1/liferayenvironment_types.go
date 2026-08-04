@@ -79,9 +79,6 @@ type LiferayEnvironmentStatus struct {
 	// +optional
 	License LicenseStatus `json:"license,omitempty"`
 
-	// +kubebuilder:validation:Required
-	MarketplaceVolume MarketplaceVolumeStatus `json:"marketplaceVolume,omitempty"`
-
 	// +kubebuilder:validation:Enum=Degraded;Pending;Ready
 	// +optional
 	Phase string `json:"phase,omitempty"`
@@ -96,14 +93,6 @@ type MarketplaceVolumeSpec struct {
 
 	// +kubebuilder:validation:Required
 	StorageClassName string `json:"storageClassName"`
-}
-
-type MarketplaceVolumeStatus struct {
-	// +optional
-	ClaimName string `json:"claimName,omitempty"`
-
-	// +optional
-	Phase string `json:"phase,omitempty"`
 }
 
 type SecretKeyRef struct {

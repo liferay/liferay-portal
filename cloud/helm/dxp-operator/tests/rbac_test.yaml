@@ -108,7 +108,7 @@ tests:
         it: Omits the service account annotations by default
     -   asserts:
             -   lengthEqual:
-                    count: 8
+                    count: 7
                     path: rules
             -   contains:
                     content:
