@@ -11,6 +11,7 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.info.exception.NoSuchInfoItemException;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
+import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.message.boards.model.MBMessage;
@@ -141,7 +142,8 @@ public class MBDiscussionPermissionImpl extends BaseDiscussionPermission {
 
 		try {
 			Object infoItem = infoItemObjectProvider.getInfoItem(
-				new ClassPKInfoItemIdentifier(message.getClassPK()));
+				new ClassPKInfoItemIdentifier(
+					message.getClassPK(), InfoItemIdentifier.VERSION_LATEST));
 
 			if (!(infoItem instanceof GroupedModel)) {
 				return DepotConstants.TYPE_ANY;
