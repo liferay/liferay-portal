@@ -18,10 +18,9 @@ public class HibernateSQLTransformerLogic extends BaseSQLTransformerLogic {
 
 	public HibernateSQLTransformerLogic() {
 		setFunctions(
-			getBooleanFunction(), getCastClobTextFunction(),
-			getCastDecimalFunction(), getCastLongFunction(),
-			getCastTextFunction(), getInstrFunction(), getNullDateFunction(),
-			getSubstrFunction(), _getCountFunction(),
+			getBooleanFunction(), getCastDecimalFunction(),
+			getCastLongFunction(), getCastTextFunction(), getInstrFunction(),
+			getNullDateFunction(), getSubstrFunction(), _getCountFunction(),
 			_getPositionalParameterFunction(),
 			_getUnsupportedMacroFunction(
 				"AGGREGATION", getAggregationPattern()),
@@ -33,11 +32,6 @@ public class HibernateSQLTransformerLogic extends BaseSQLTransformerLogic {
 				"INTEGER_DIV", getIntegerDivisionPattern()),
 			_getUnsupportedMacroFunction(
 				"TRUNCATE TABLE", getTruncateTablePattern()));
-	}
-
-	@Override
-	protected String replaceCastClobText(Matcher matcher) {
-		return matcher.replaceAll("SUBSTRING($1, 1, 4000)");
 	}
 
 	@Override
