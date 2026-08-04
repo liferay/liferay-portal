@@ -1,0 +1,14 @@
+apiDir: ../portal-security-fips-rest-api/src/main/java
+apiPackagePath: com.liferay.portal.security.fips.rest
+application:
+    baseURI: /fips
+    className: FIPSRESTApplication
+    name: Liferay.FIPS.REST
+author: Lucas Miranda
+clientDir: ../portal-security-fips-rest-client/src/main/java
+compatibilityVersion: 16
+forcePredictableOperationId: true
+generateBatch: false
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../portal-security-fips-rest-test/src/testIntegration/java
