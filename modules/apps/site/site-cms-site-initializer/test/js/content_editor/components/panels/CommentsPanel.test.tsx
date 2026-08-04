@@ -92,11 +92,15 @@ const initialComments: Comment[] = [
 	},
 ];
 
-const renderComponent = (addCommentURL = 'addCommentURL', readOnly = false) => {
+const renderComponent = (
+	addCommentURL = 'addCommentURL',
+	readOnly = false,
+	comments = initialComments
+) => {
 	return render(
 		<CommentsPanel
 			addCommentURL={addCommentURL}
-			comments={initialComments}
+			comments={comments}
 			deleteCommentURL="deleteCommentURL"
 			editCommentURL="editCommentURL"
 			editorConfig={{}}
@@ -135,6 +139,17 @@ describe('CommentsPanel', () => {
 			screen.queryByTitle('rate-this-as-good')
 		).not.toBeInTheDocument();
 		expect(screen.queryByTitle('rate-this-as-bad')).not.toBeInTheDocument();
+	});
+
+	it('hides the edit action when the comment cannot be updated', async () => {
+		renderComponent('addCommentURL', false, [
+			{...initialComments[0], children: [], hasUpdatePermission: false},
+		]);
+
+		await userEvent.click(screen.getByTitle('actions'));
+
+		expect(screen.getByText('delete')).toBeInTheDocument();
+		expect(screen.queryByText('edit')).not.toBeInTheDocument();
 	});
 
 	it('deletes the child comment', async () => {
