@@ -4,7 +4,26 @@ import (
 	"testing"
 )
 
-const licenseXML1 = `<?xml version="1.0"?>
+const missingExpirationDateLicenseXML = `<?xml version="1.0"?>
+<licenses>
+    <license>
+		<license-type>enterprise</license-type>
+    </license>
+</licenses>`
+
+const skipsValidationLicenseXML = `<?xml version="1.0"?>
+<licenses>
+    <license>
+		<expiration-date>not a real date</expiration-date>
+		<license-type>enterprise</license-type>
+    </license>
+    <license>
+		<expiration-date>Sunday, January 5, 2031 12:00:00 AM GMT</expiration-date>
+		<license-type>virtual-cluster</license-type>
+    </license>
+</licenses>`
+
+const validLicenseXML = `<?xml version="1.0"?>
 <licenses>
     <license>
         <description>Digital Sales Room Cloud Native Environment</description>
@@ -33,27 +52,8 @@ const licenseXML1 = `<?xml version="1.0"?>
     </license>
 </licenses>`
 
-const licenseXML2 = `<?xml version="1.0"?>
-<licenses>
-    <license>
-		<expiration-date>not a real date</expiration-date>
-		<license-type>enterprise</license-type>
-    </license>
-    <license>
-		<expiration-date>Sunday, January 5, 2031 12:00:00 AM GMT</expiration-date>
-		<license-type>virtual-cluster</license-type>
-    </license>
-</licenses>`
-
-const licenseXML3 = `<?xml version="1.0"?>
-<licenses>
-    <license>
-		<license-type>enterprise</license-type>
-    </license>
-</licenses>`
-
 func TestExpirationDateReturnsVirtualClusterDate(t *testing.T) {
-	expirationDate, error := ExpirationDate([]byte(licenseXML1))
+	expirationDate, error := ExpirationDate([]byte(validLicenseXML))
 
 	if error != nil {
 		t.Fatalf("unexpected error: %v", error)
@@ -65,7 +65,7 @@ func TestExpirationDateReturnsVirtualClusterDate(t *testing.T) {
 }
 
 func TestExpirationDateSkipsNonVirtualClusterLicenses(t *testing.T) {
-	expirationDate, error := ExpirationDate([]byte(licenseXML2))
+	expirationDate, error := ExpirationDate([]byte(skipsValidationLicenseXML))
 
 	if error != nil {
 		t.Fatalf("unexpected error: %v", error)
@@ -77,7 +77,7 @@ func TestExpirationDateSkipsNonVirtualClusterLicenses(t *testing.T) {
 }
 
 func TestExpirationDateWhenNoVirtualClusterLicenseReturnsError(t *testing.T) {
-	if _, error := ExpirationDate([]byte(licenseXML3)); error == nil {
+	if _, error := ExpirationDate([]byte(missingExpirationDateLicenseXML)); error == nil {
 		t.Fatal("expected an error, got nil")
 	}
 }
