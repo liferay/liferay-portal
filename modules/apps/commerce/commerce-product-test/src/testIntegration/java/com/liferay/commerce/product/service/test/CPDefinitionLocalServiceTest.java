@@ -18,6 +18,7 @@ import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
+import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionLocalization;
@@ -41,6 +42,7 @@ import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValue
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
+import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
@@ -50,11 +52,13 @@ import com.liferay.commerce.product.util.comparator.CPDefinitionModifiedDateComp
 import com.liferay.commerce.service.CPDefinitionInventoryLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
@@ -764,6 +768,122 @@ public class CPDefinitionLocalServiceTest {
 		_testGetCPDefinitionsWithMultipleCommerceChannels();
 		_testGetCPDefinitionsWithPublishedFalse();
 		_testGetCPDefinitionsWithStatusAny();
+	}
+
+	@Test
+	public void testGetOrAddEmptyCPDefinition() throws Exception {
+		frutillaRule.scenario(
+			"Get or add an empty product definition"
+		).given(
+			"A catalog and an external reference code"
+		).when(
+			"An empty product definition is requested"
+		).then(
+			"A NoSuchCProductException is thrown while lazy referencing is " +
+				"disabled"
+		).and(
+			"An empty stub paired with a product carrying the given external " +
+				"reference code is returned while lazy referencing is enabled"
+		).and(
+			"The same product definition is resolved on subsequent requests"
+		).and(
+			"The stub is hidden from the store front"
+		).and(
+			"The empty status is cleared once the stub is updated"
+		);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_cpDefinitionLocalService.getOrAddEmptyCPDefinition(
+				externalReferenceCode, SimpleCPTypeConstants.NAME,
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+				_commerceCatalog.getGroupId());
+
+			Assert.fail();
+		}
+		catch (NoSuchCProductException noSuchCProductException) {
+			Assert.assertNotNull(noSuchCProductException);
+		}
+
+		CPDefinition cpDefinition = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			cpDefinition = _cpDefinitionLocalService.getOrAddEmptyCPDefinition(
+				externalReferenceCode, SimpleCPTypeConstants.NAME,
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+				_commerceCatalog.getGroupId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, cpDefinition.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				cpDefinition.getCProductExternalReferenceCode());
+			Assert.assertEquals(
+				SimpleCPTypeConstants.NAME, cpDefinition.getProductTypeName());
+			Assert.assertEquals(1, cpDefinition.getVersion());
+			Assert.assertFalse(cpDefinition.isPublished());
+
+			CProduct cProduct = _cProductLocalService.getCProduct(
+				cpDefinition.getCProductId());
+
+			Assert.assertEquals(
+				externalReferenceCode, cProduct.getExternalReferenceCode());
+			Assert.assertEquals(
+				cpDefinition.getCPDefinitionId(),
+				cProduct.getPublishedCPDefinitionId());
+
+			CPDefinition resolvedCPDefinition =
+				_cpDefinitionLocalService.getOrAddEmptyCPDefinition(
+					externalReferenceCode, SimpleCPTypeConstants.NAME,
+					TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+					_commerceCatalog.getGroupId());
+
+			Assert.assertEquals(
+				cpDefinition.getCPDefinitionId(),
+				resolvedCPDefinition.getCPDefinitionId());
+		}
+
+		CPDefinition existingCPDefinition =
+			_cpDefinitionLocalService.
+				fetchCPDefinitionByCProductExternalReferenceCode(
+					externalReferenceCode, TestPropsValues.getCompanyId(),
+					false);
+
+		Assert.assertEquals(
+			cpDefinition.getCPDefinitionId(),
+			existingCPDefinition.getCPDefinitionId());
+
+		Assert.assertNull(
+			_cpDefinitionLocalService.
+				fetchCPDefinitionByCProductExternalReferenceCode(
+					externalReferenceCode, TestPropsValues.getCompanyId(),
+					true));
+
+		long cpDefinitionId = cpDefinition.getCPDefinitionId();
+		long cpTaxCategoryId = cpDefinition.getCPTaxCategoryId();
+
+		Date displayDate = cpDefinition.getDisplayDate();
+
+		cpDefinition = _cpDefinitionLocalService.updateCPDefinition(
+			cpDefinitionId, cpTaxCategoryId, false, false, null, 0,
+			Collections.emptyMap(), displayDate.getDate(),
+			displayDate.getHours(), displayDate.getMinutes(),
+			displayDate.getMonth(), displayDate.getYear(), 0, 0, 0, 0, 0, true,
+			0, false, Collections.emptyMap(), Collections.emptyMap(),
+			Collections.emptyMap(),
+			RandomTestUtil.randomLocaleStringMap(LocaleUtil.US), true, true,
+			false, false, 0, Collections.emptyMap(), false, false,
+			Collections.emptyMap(), 0, 0,
+			ServiceContextTestUtil.getServiceContext(
+				_commerceCatalog.getGroupId()));
+
+		Assert.assertEquals(cpDefinitionId, cpDefinition.getCPDefinitionId());
+		Assert.assertNotEquals(
+			WorkflowConstants.STATUS_EMPTY, cpDefinition.getStatus());
+		Assert.assertEquals(1, cpDefinition.getVersion());
 	}
 
 	@Test
@@ -2113,6 +2233,9 @@ public class CPDefinitionLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private final List<CPOption> _cpOptions = new ArrayList<>();
+
+	@Inject
+	private CProductLocalService _cProductLocalService;
 
 	@Inject
 	private FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
