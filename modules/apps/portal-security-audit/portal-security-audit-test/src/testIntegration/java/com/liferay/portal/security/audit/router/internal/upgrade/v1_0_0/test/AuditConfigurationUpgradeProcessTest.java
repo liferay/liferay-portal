@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -56,6 +57,8 @@ public class AuditConfigurationUpgradeProcessTest {
 	public void tearDown() throws Exception {
 		ConfigurationTestUtil.deleteConfiguration(
 			AuditConfiguration.class.getName());
+		ConfigurationTestUtil.deleteConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class.getName());
 
 		_deleteCompanyConfigurations();
 	}
@@ -70,7 +73,11 @@ public class AuditConfigurationUpgradeProcessTest {
 	public void testUpgradeWhenCompanyAuditIsAlreadyConfigured()
 		throws Exception {
 
-		_saveSystemConfiguration(false);
+		_saveSystemConfiguration(
+			AuditConfiguration.class,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", false
+			).build());
 
 		_configurationProvider.saveCompanyConfiguration(
 			AuditConfiguration.class, TestPropsValues.getCompanyId(),
@@ -80,27 +87,79 @@ public class AuditConfigurationUpgradeProcessTest {
 
 		_upgradeProcess.upgrade();
 
-		AuditConfiguration auditConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				AuditConfiguration.class, TestPropsValues.getCompanyId());
+		Configuration configuration = _fetchCompanyConfiguration(
+			AuditConfiguration.class, TestPropsValues.getCompanyId());
 
-		Assert.assertTrue(auditConfiguration.enabled());
+		Dictionary<String, Object> properties = configuration.getProperties();
+
+		Assert.assertTrue(GetterUtil.getBoolean(properties.get("enabled")));
+	}
+
+	@Test
+	public void testUpgradeWhenPersistentAuditMessageProcessorBufferSizeIsCustomized()
+		throws Exception {
+
+		_saveSystemConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"bufferSize", _BUFFER_SIZE
+			).build());
+
+		_upgradeProcess.upgrade();
+
+		Configuration configuration = _fetchCompanyConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			TestPropsValues.getCompanyId());
+
+		Dictionary<String, Object> properties = configuration.getProperties();
+
+		Assert.assertEquals(
+			_BUFFER_SIZE, GetterUtil.getInteger(properties.get("bufferSize")));
+		Assert.assertNull(properties.get("enabled"));
+		Assert.assertNull(properties.get("flushInterval"));
+	}
+
+	@Test
+	public void testUpgradeWhenPersistentAuditMessageProcessorValuesAreDefault()
+		throws Exception {
+
+		_saveSystemConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"bufferSize", 2000
+			).put(
+				"enabled", true
+			).put(
+				"flushInterval", 60000
+			).build());
+
+		_upgradeProcess.upgrade();
+
+		Assert.assertNull(
+			_fetchCompanyConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId()));
 	}
 
 	private void _deleteCompanyConfigurations() throws Exception {
 		_companyLocalService.forEachCompanyId(
-			companyId -> _configurationProvider.deleteCompanyConfiguration(
-				AuditConfiguration.class, companyId));
+			companyId -> {
+				_configurationProvider.deleteCompanyConfiguration(
+					AuditConfiguration.class, companyId);
+				_configurationProvider.deleteCompanyConfiguration(
+					PersistentAuditMessageProcessorConfiguration.class,
+					companyId);
+			});
 	}
 
-	private Configuration _fetchCompanyConfiguration(long companyId)
+	private Configuration _fetchCompanyConfiguration(
+			Class<?> clazz, long companyId)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			String.format(
 				"(&(%s=%s.scoped)(%s=%d))",
-				ConfigurationAdmin.SERVICE_FACTORYPID,
-				AuditConfiguration.class.getName(),
+				ConfigurationAdmin.SERVICE_FACTORYPID, clazz.getName(),
 				ExtendedObjectClassDefinition.Scope.COMPANY.getPropertyKey(),
 				companyId));
 
@@ -111,21 +170,24 @@ public class AuditConfigurationUpgradeProcessTest {
 		return configurations[0];
 	}
 
-	private void _saveSystemConfiguration(boolean enabled) throws Exception {
-		ConfigurationTestUtil.saveConfiguration(
-			AuditConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"enabled", enabled
-			).build());
+	private void _saveSystemConfiguration(
+			Class<?> clazz, Dictionary<String, Object> properties)
+		throws Exception {
+
+		ConfigurationTestUtil.saveConfiguration(clazz.getName(), properties);
 	}
 
 	private void _testUpgrade(boolean enabled) throws Exception {
-		_saveSystemConfiguration(enabled);
+		_saveSystemConfiguration(
+			AuditConfiguration.class,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", enabled
+			).build());
 
 		_upgradeProcess.upgrade();
 
 		Configuration configuration = _fetchCompanyConfiguration(
-			TestPropsValues.getCompanyId());
+			AuditConfiguration.class, TestPropsValues.getCompanyId());
 
 		if (enabled) {
 			Assert.assertNull(configuration);
@@ -140,6 +202,8 @@ public class AuditConfigurationUpgradeProcessTest {
 
 		_deleteCompanyConfigurations();
 	}
+
+	private static final int _BUFFER_SIZE = 500;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
