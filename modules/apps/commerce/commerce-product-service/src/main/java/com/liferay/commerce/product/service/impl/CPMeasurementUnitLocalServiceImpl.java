@@ -11,6 +11,7 @@ import com.liferay.commerce.product.exception.DuplicateCPMeasurementUnitKeyExcep
 import com.liferay.commerce.product.model.CPMeasurementUnit;
 import com.liferay.commerce.product.service.base.CPMeasurementUnitLocalServiceBaseImpl;
 import com.liferay.commerce.product.util.comparator.CPMeasurementUnitPriorityComparator;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -21,10 +22,12 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -76,7 +79,13 @@ public class CPMeasurementUnitLocalServiceImpl
 		cpMeasurementUnit.setPrimary(primary);
 		cpMeasurementUnit.setPriority(priority);
 		cpMeasurementUnit.setType(type);
-		cpMeasurementUnit.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpMeasurementUnit.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpMeasurementUnit.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
 
 		_resourceLocalService.addModelResources(
 			cpMeasurementUnit, serviceContext);
@@ -165,6 +174,30 @@ public class CPMeasurementUnitLocalServiceImpl
 	}
 
 	@Override
+	public CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPMeasurementUnit.class, companyId,
+			() -> cpMeasurementUnitLocalService.addCPMeasurementUnit(
+				externalReferenceCode,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				externalReferenceCode, 1, false, 0,
+				CPMeasurementUnitConstants.TYPE_UNIT, serviceContext),
+			externalReferenceCode,
+			this::fetchCPMeasurementUnitByExternalReferenceCode,
+			this::getCPMeasurementUnitByExternalReferenceCode,
+			CPMeasurementUnit.class.getName());
+	}
+
+	@Override
 	public void importDefaultValues(ServiceContext serviceContext)
 		throws PortalException {
 
@@ -246,6 +279,13 @@ public class CPMeasurementUnitLocalServiceImpl
 		cpMeasurementUnit.setPrimary(primary);
 		cpMeasurementUnit.setPriority(priority);
 		cpMeasurementUnit.setType(type);
+		cpMeasurementUnit.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				cpMeasurementUnit.getExternalReferenceCode(),
+				cpMeasurementUnit.getModelClassName(),
+				cpMeasurementUnit.getCompanyId(),
+				cpMeasurementUnit.getGroupId(), cpMeasurementUnit.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 
 		return cpMeasurementUnitPersistence.update(cpMeasurementUnit);
 	}
@@ -320,6 +360,9 @@ public class CPMeasurementUnitLocalServiceImpl
 			}
 		}
 	}
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;
