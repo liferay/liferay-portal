@@ -3,6 +3,10 @@
 		"className": "com.liferay.blogs.model.BlogsEntry",
 		"configurationFileURL": "/META-INF/resources/blogs-sanitizer-configuration.xml"
 	},
+	"com.liferay.portal.security.antisamy.configuration.AntiSamyClassNameConfiguration~fragment": {
+		"className": "com.liferay.fragment.model.FragmentEntryLink",
+		"configurationFileURL": "/META-INF/resources/fragment-sanitizer-configuration.xml"
+	},
 	"com.liferay.portal.security.antisamy.configuration.AntiSamyClassNameConfiguration~knowledgebase": {
 		"className": "com.liferay.knowledge.base.model.KBArticle",
 		"configurationFileURL": "/META-INF/resources/knowledge-base-sanitizer-configuration.xml"

@@ -2,6 +2,7 @@ import com.liferay.gradle.util.FileUtil
 
 task processBlogsSanitizerConfiguration(type: Copy)
 task processDefaultSanitizerConfiguration(type: Copy)
+task processFragmentSanitizerConfiguration(type: Copy)
 task processKnowledgeBaseSanitizerConfiguration(type: Copy)
 
 File sanitizerConfigurationFile = new File("src/main/resources/META-INF/resources/sanitizer-configuration.xml")
@@ -10,6 +11,7 @@ String sanitizerConfigurationUrl = "https://storage.googleapis.com/google-code-a
 copyCSS {
 	mustRunAfter processBlogsSanitizerConfiguration
 	mustRunAfter processDefaultSanitizerConfiguration
+	mustRunAfter processFragmentSanitizerConfiguration
 	mustRunAfter processKnowledgeBaseSanitizerConfiguration
 }
 
@@ -43,6 +45,7 @@ dependencies {
 jarSources {
 	mustRunAfter processBlogsSanitizerConfiguration
 	mustRunAfter processDefaultSanitizerConfiguration
+	mustRunAfter processFragmentSanitizerConfiguration
 	mustRunAfter processKnowledgeBaseSanitizerConfiguration
 }
 
@@ -113,9 +116,39 @@ processBlogsSanitizerConfiguration {
 	}
 }
 
+processFragmentSanitizerConfiguration {
+	dependsOn processDefaultSanitizerConfiguration
+	mustRunAfter processBlogsSanitizerConfiguration
+
+	File fragmentSanitizerConfigurationFile = new File("src/main/resources/META-INF/resources/fragment-sanitizer-configuration.xml")
+
+	ext {
+		autoClean = false
+	}
+
+	filter {
+		return _filterFragmentSanitizer(it)
+	}
+
+	from {
+		sanitizerConfigurationFile
+	}
+
+	into fragmentSanitizerConfigurationFile.parentFile
+
+	onlyIf {
+		!fragmentSanitizerConfigurationFile.exists()
+	}
+
+	rename {
+		fragmentSanitizerConfigurationFile.name
+	}
+}
+
 processKnowledgeBaseSanitizerConfiguration {
 	dependsOn processDefaultSanitizerConfiguration
 	mustRunAfter processBlogsSanitizerConfiguration
+	mustRunAfter processFragmentSanitizerConfiguration
 
 	File knowledgeBaseSanitizerConfigurationFile = new File("src/main/resources/META-INF/resources/knowledge-base-sanitizer-configuration.xml")
 
@@ -145,6 +178,7 @@ processKnowledgeBaseSanitizerConfiguration {
 processResources {
 	dependsOn processBlogsSanitizerConfiguration
 	dependsOn processDefaultSanitizerConfiguration
+	dependsOn processFragmentSanitizerConfiguration
 	dependsOn processKnowledgeBaseSanitizerConfiguration
 }
 
@@ -419,6 +453,1396 @@ private String _filterDefaultSanitizer(String line) {
 			|				<literal value="source"/>
 			|			</literal-list>
 			|	</allowed-empty-tags>""".stripMargin()
+	}
+
+	return line
+}
+
+private String _filterFragmentSanitizer(String line) {
+	if (line.trim().equals("<tag>g</tag>")) {
+		return null
+	}
+
+	if (line.contains("</common-regexps>")) {
+		line = """\
+			|
+			|		<regexp name="svgLength" value="(-|\\+)?([0-9]+(\\.[0-9]+)?|\\.[0-9]+)(px|pt|pc|mm|cm|in|em|ex|%)?"/>
+			|		<regexp name="svgNumberList" value="(\\s|,)*(-|\\+)?([0-9]+(\\.[0-9]+)?|\\.[0-9]+)([eE](-|\\+)?[0-9]+)?((\\s|,)+(-|\\+)?([0-9]+(\\.[0-9]+)?|\\.[0-9]+)([eE](-|\\+)?[0-9]+)?)*(\\s|,)*"/>
+			|		<regexp name="svgViewBox" value="(-|\\+)?([0-9]+(\\.[0-9]+)?)((\\s|,)+(-|\\+)?([0-9]+(\\.[0-9]+)?)){3}"/>
+			|		<regexp name="svgPathData" value="[MmLlHhVvCcSsQqTtAaZz0-9eE,.\\s\\-+]+"/>
+			|		<regexp name="svgTransformList" value="((matrix|translate|scale|rotate|skewX|skewY)\\s*\\([-+0-9eE,.\\s]*\\)\\s*)+"/>
+			|		<regexp name="svgPaint" value="(none|currentColor|transparent|inherit|context-fill|context-stroke|#[0-9a-fA-F]{3,8}|rgba?\\([0-9,.\\s%]*\\)|hsla?\\([0-9,.\\s%]*\\)|url\\(\\s*#[a-zA-Z0-9\\-_:.]+\\s*\\)(\\s+(none|currentColor|#[0-9a-fA-F]{3,8}))?|[a-zA-Z]+)"/>
+			|		<regexp name="svgLocalRef" value="(none|url\\(\\s*#[a-zA-Z0-9\\-_:.]+\\s*\\))"/>
+			|		<regexp name="svgHrefLocal" value="#[a-zA-Z0-9\\-_:.]+"/>
+			|		<regexp name="svgKeyword" value="[a-zA-Z][a-zA-Z\\-]*"/>
+			|		<regexp name="svgPreserveAspectRatio" value="(none|x(Min|Mid|Max)Y(Min|Mid|Max))(\\s+(meet|slice))?"/>
+			|${line}""".stripMargin()
+	}
+	else if (line.contains("</common-attributes>")) {
+		line = """\
+			|
+			|		<attribute name="viewBox" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgViewBox"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="viewbox" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgViewBox"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="x" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="y" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="preserveAspectRatio" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgPreserveAspectRatio"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="preserveaspectratio" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgPreserveAspectRatio"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="fill" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgPaint"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="fill-opacity" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="number"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="fill-rule" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="nonzero"/>
+			|				<literal value="evenodd"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgPaint"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke-width" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke-opacity" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="number"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke-linecap" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="butt"/>
+			|				<literal value="round"/>
+			|				<literal value="square"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke-linejoin" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="arcs"/>
+			|				<literal value="bevel"/>
+			|				<literal value="miter"/>
+			|				<literal value="miter-clip"/>
+			|				<literal value="round"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke-dasharray" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgNumberList"/>
+			|			</regexp-list>
+			|			<literal-list>
+			|				<literal value="none"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke-dashoffset" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="stroke-miterlimit" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="number"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="opacity" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="number"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="color" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgPaint"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="display" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="visibility" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="visible"/>
+			|				<literal value="hidden"/>
+			|				<literal value="collapse"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="overflow" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="visible"/>
+			|				<literal value="hidden"/>
+			|				<literal value="scroll"/>
+			|				<literal value="auto"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="transform" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgTransformList"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="clip-path" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLocalRef"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="clip-rule" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="nonzero"/>
+			|				<literal value="evenodd"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="mask" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLocalRef"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="marker-start" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLocalRef"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="marker-mid" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLocalRef"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="marker-end" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLocalRef"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="vector-effect" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="shape-rendering" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="image-rendering" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="color-interpolation" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="pointer-events" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="paint-order" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp value="[a-zA-Z\\s]+"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="cursor" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="mask-type" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="xlink:href" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgHrefLocal"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="cx" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="cy" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="r" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="rx" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="ry" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="x1" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="y1" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="x2" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="y2" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="points" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgNumberList"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="gradientUnits" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="userSpaceOnUse"/>
+			|				<literal value="objectBoundingBox"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="gradientunits" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="userSpaceOnUse"/>
+			|				<literal value="objectBoundingBox"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="gradientTransform" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgTransformList"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="gradienttransform" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgTransformList"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="spreadMethod" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="pad"/>
+			|				<literal value="reflect"/>
+			|				<literal value="repeat"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="spreadmethod" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="pad"/>
+			|				<literal value="reflect"/>
+			|				<literal value="repeat"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="dx" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgNumberList"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="dy" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgNumberList"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="rotate" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgNumberList"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="textLength" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="textlength" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="lengthAdjust" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="spacing"/>
+			|				<literal value="spacingAndGlyphs"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="lengthadjust" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="spacing"/>
+			|				<literal value="spacingAndGlyphs"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="font-family" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp value="[a-zA-Z0-9\\s,._\\-]+"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="font-size" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="font-weight" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp value="[a-zA-Z0-9]+"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="font-style" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="font-variant" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="font-stretch" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="text-anchor" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="start"/>
+			|				<literal value="middle"/>
+			|				<literal value="end"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="dominant-baseline" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="alignment-baseline" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="baseline-shift" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp value="[a-zA-Z0-9%.\\-]+"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="direction" onInvalid="removeAttribute">
+			|			<literal-list>
+			|				<literal value="ltr"/>
+			|				<literal value="rtl"/>
+			|				<literal value="inherit"/>
+			|			</literal-list>
+			|		</attribute>
+			|
+			|		<attribute name="letter-spacing" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="word-spacing" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgLength"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="text-decoration" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp value="[a-zA-Z\\s\\-]+"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="text-rendering" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="writing-mode" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="unicode-bidi" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="white-space" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="text-overflow" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="glyph-orientation-horizontal" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|		<attribute name="glyph-orientation-vertical" onInvalid="removeAttribute">
+			|			<regexp-list>
+			|				<regexp name="svgKeyword"/>
+			|			</regexp-list>
+			|		</attribute>
+			|
+			|${line}""".stripMargin()
+	}
+	else if (line.contains("</tag-rules>")) {
+		line = """\
+			|		<tag name="svg" action="validate">
+			|			<attribute name="viewBox"/>
+			|			<attribute name="viewbox"/>
+			|			<attribute name="width" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="height" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="x"/>
+			|			<attribute name="y"/>
+			|			<attribute name="preserveAspectRatio"/>
+			|			<attribute name="preserveaspectratio"/>
+			|			<attribute name="version" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp value="[0-9.]+"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="baseProfile" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgKeyword"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="baseprofile" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgKeyword"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="xmlns" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="http://www.w3.org/2000/svg"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="xmlns:xlink" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="http://www.w3.org/1999/xlink"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="g" action="validate">
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="defs" action="validate">
+			|		</tag>
+			|
+			|		<tag name="clippath" action="validate">
+			|			<attribute name="clipPathUnits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="clippathunits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|		</tag>
+			|
+			|		<tag name="symbol" action="validate">
+			|			<attribute name="viewBox"/>
+			|			<attribute name="viewbox"/>
+			|			<attribute name="preserveAspectRatio"/>
+			|			<attribute name="preserveaspectratio"/>
+			|			<attribute name="width" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="height" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="refX" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="refx" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="refY" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="refy" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="mask" action="validate">
+			|			<attribute name="maskUnits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="maskunits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="maskContentUnits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="maskcontentunits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="x"/>
+			|			<attribute name="y"/>
+			|			<attribute name="width" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="height" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|		</tag>
+			|
+			|		<tag name="pattern" action="validate">
+			|			<attribute name="x"/>
+			|			<attribute name="y"/>
+			|			<attribute name="width" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="height" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="patternUnits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="patternunits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="patternContentUnits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="patterncontentunits" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="userSpaceOnUse"/>
+			|					<literal value="objectBoundingBox"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="patternTransform" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgTransformList"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="patterntransform" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgTransformList"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="viewBox"/>
+			|			<attribute name="viewbox"/>
+			|			<attribute name="preserveAspectRatio"/>
+			|			<attribute name="preserveaspectratio"/>
+			|			<attribute name="href" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgHrefLocal"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="xlink:href"/>
+			|		</tag>
+			|
+			|		<tag name="use" action="validate">
+			|			<attribute name="x"/>
+			|			<attribute name="y"/>
+			|			<attribute name="width" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="height" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="href" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgHrefLocal"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="xlink:href"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="path" action="validate">
+			|			<attribute name="d" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgPathData"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="pathLength" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="number"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="pathlength" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="number"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="circle" action="validate">
+			|			<attribute name="cx"/>
+			|			<attribute name="cy"/>
+			|			<attribute name="r"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="rect" action="validate">
+			|			<attribute name="x"/>
+			|			<attribute name="y"/>
+			|			<attribute name="width" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="height" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="rx"/>
+			|			<attribute name="ry"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="line" action="validate">
+			|			<attribute name="x1"/>
+			|			<attribute name="y1"/>
+			|			<attribute name="x2"/>
+			|			<attribute name="y2"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="polyline" action="validate">
+			|			<attribute name="points"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="polygon" action="validate">
+			|			<attribute name="points"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="ellipse" action="validate">
+			|			<attribute name="cx"/>
+			|			<attribute name="cy"/>
+			|			<attribute name="rx"/>
+			|			<attribute name="ry"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|		</tag>
+			|
+			|		<tag name="lineargradient" action="validate">
+			|			<attribute name="x1"/>
+			|			<attribute name="y1"/>
+			|			<attribute name="x2"/>
+			|			<attribute name="y2"/>
+			|			<attribute name="gradientUnits"/>
+			|			<attribute name="gradientunits"/>
+			|			<attribute name="gradientTransform"/>
+			|			<attribute name="gradienttransform"/>
+			|			<attribute name="spreadMethod"/>
+			|			<attribute name="spreadmethod"/>
+			|			<attribute name="href" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgHrefLocal"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="xlink:href"/>
+			|		</tag>
+			|
+			|		<tag name="radialgradient" action="validate">
+			|			<attribute name="cx"/>
+			|			<attribute name="cy"/>
+			|			<attribute name="r"/>
+			|			<attribute name="fx" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="fy" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="fr" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="gradientUnits"/>
+			|			<attribute name="gradientunits"/>
+			|			<attribute name="gradientTransform"/>
+			|			<attribute name="gradienttransform"/>
+			|			<attribute name="spreadMethod"/>
+			|			<attribute name="spreadmethod"/>
+			|			<attribute name="href" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgHrefLocal"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="xlink:href"/>
+			|		</tag>
+			|
+			|		<tag name="stop" action="validate">
+			|			<attribute name="offset" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgLength"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="stop-color" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgPaint"/>
+			|				</regexp-list>
+			|			</attribute>
+			|			<attribute name="stop-opacity" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="number"/>
+			|				</regexp-list>
+			|			</attribute>
+			|		</tag>
+			|
+			|		<tag name="text" action="validate">
+			|			<attribute name="x"/>
+			|			<attribute name="y"/>
+			|			<attribute name="dx"/>
+			|			<attribute name="dy"/>
+			|			<attribute name="rotate"/>
+			|			<attribute name="textLength"/>
+			|			<attribute name="textlength"/>
+			|			<attribute name="lengthAdjust"/>
+			|			<attribute name="lengthadjust"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|			<attribute name="font-family"/>
+			|			<attribute name="font-size"/>
+			|			<attribute name="font-weight"/>
+			|			<attribute name="font-style"/>
+			|			<attribute name="font-variant"/>
+			|			<attribute name="font-stretch"/>
+			|			<attribute name="text-anchor"/>
+			|			<attribute name="dominant-baseline"/>
+			|			<attribute name="alignment-baseline"/>
+			|			<attribute name="baseline-shift"/>
+			|			<attribute name="direction"/>
+			|			<attribute name="letter-spacing"/>
+			|			<attribute name="word-spacing"/>
+			|			<attribute name="text-decoration"/>
+			|			<attribute name="text-rendering"/>
+			|			<attribute name="writing-mode"/>
+			|			<attribute name="unicode-bidi"/>
+			|			<attribute name="white-space"/>
+			|			<attribute name="text-overflow"/>
+			|			<attribute name="glyph-orientation-horizontal"/>
+			|			<attribute name="glyph-orientation-vertical"/>
+			|		</tag>
+			|
+			|		<tag name="tspan" action="validate">
+			|			<attribute name="x"/>
+			|			<attribute name="y"/>
+			|			<attribute name="dx"/>
+			|			<attribute name="dy"/>
+			|			<attribute name="rotate"/>
+			|			<attribute name="textLength"/>
+			|			<attribute name="textlength"/>
+			|			<attribute name="lengthAdjust"/>
+			|			<attribute name="lengthadjust"/>
+			|			<attribute name="fill"/>
+			|			<attribute name="fill-opacity"/>
+			|			<attribute name="fill-rule"/>
+			|			<attribute name="stroke"/>
+			|			<attribute name="stroke-width"/>
+			|			<attribute name="stroke-opacity"/>
+			|			<attribute name="stroke-linecap"/>
+			|			<attribute name="stroke-linejoin"/>
+			|			<attribute name="stroke-dasharray"/>
+			|			<attribute name="stroke-dashoffset"/>
+			|			<attribute name="stroke-miterlimit"/>
+			|			<attribute name="opacity"/>
+			|			<attribute name="color"/>
+			|			<attribute name="display"/>
+			|			<attribute name="visibility"/>
+			|			<attribute name="overflow"/>
+			|			<attribute name="transform"/>
+			|			<attribute name="clip-path"/>
+			|			<attribute name="clip-rule"/>
+			|			<attribute name="mask"/>
+			|			<attribute name="marker-start"/>
+			|			<attribute name="marker-mid"/>
+			|			<attribute name="marker-end"/>
+			|			<attribute name="vector-effect"/>
+			|			<attribute name="shape-rendering"/>
+			|			<attribute name="image-rendering"/>
+			|			<attribute name="color-interpolation"/>
+			|			<attribute name="pointer-events"/>
+			|			<attribute name="paint-order"/>
+			|			<attribute name="cursor"/>
+			|			<attribute name="mask-type"/>
+			|			<attribute name="font-family"/>
+			|			<attribute name="font-size"/>
+			|			<attribute name="font-weight"/>
+			|			<attribute name="font-style"/>
+			|			<attribute name="font-variant"/>
+			|			<attribute name="font-stretch"/>
+			|			<attribute name="text-anchor"/>
+			|			<attribute name="dominant-baseline"/>
+			|			<attribute name="alignment-baseline"/>
+			|			<attribute name="baseline-shift"/>
+			|			<attribute name="direction"/>
+			|			<attribute name="letter-spacing"/>
+			|			<attribute name="word-spacing"/>
+			|			<attribute name="text-decoration"/>
+			|			<attribute name="text-rendering"/>
+			|			<attribute name="writing-mode"/>
+			|			<attribute name="unicode-bidi"/>
+			|			<attribute name="white-space"/>
+			|			<attribute name="text-overflow"/>
+			|			<attribute name="glyph-orientation-horizontal"/>
+			|			<attribute name="glyph-orientation-vertical"/>
+			|		</tag>
+			|
+			|		<tag name="title" action="validate">
+			|		</tag>
+			|
+			|		<tag name="desc" action="validate">
+			|		</tag>
+			|
+			|${line}""".stripMargin()
 	}
 
 	return line
