@@ -78,40 +78,8 @@ public class PortletRegistryImpl implements PortletRegistry {
 
 		String html = fragmentEntryLink.getHtml();
 
-		if (!html.contains("@liferay_portlet") &&
-			!html.contains("lfr-widget-")) {
-
-			return portletIds;
-		}
-
-		if (document == null) {
-			document = _getDocument(html);
-		}
-
-		for (Element element : document.select("*")) {
-			String tagName = element.tagName();
-
-			if (!StringUtil.startsWith(tagName, "lfr-widget-")) {
-				continue;
-			}
-
-			String alias = StringUtil.removeSubstring(tagName, "lfr-widget-");
-
-			String portletName = getPortletName(alias);
-
-			if (Validator.isNull(portletName)) {
-				continue;
-			}
-
-			String portletId = PortletIdCodec.encode(
-				PortletIdCodec.decodePortletName(portletName),
-				PortletIdCodec.decodeUserId(portletName),
-				fragmentEntryLink.getNamespace() + element.attr("id"));
-
-			portletIds.add(_portal.getJsSafePortletId(portletId));
-		}
-
 		_addRuntimeTagPortletIds(fragmentEntryLink, html, portletIds);
+		_addWidgetTagPortletIds(document, fragmentEntryLink, html, portletIds);
 
 		return portletIds;
 	}
@@ -238,6 +206,42 @@ public class PortletRegistryImpl implements PortletRegistry {
 				StringUtil.replace(
 					instanceId, "fragmentEntryLinkNamespace",
 					fragmentEntryLink.getNamespace()));
+
+			portletIds.add(_portal.getJsSafePortletId(portletId));
+		}
+	}
+
+	private void _addWidgetTagPortletIds(
+		Document document, FragmentEntryLink fragmentEntryLink, String html,
+		List<String> portletIds) {
+
+		if (!html.contains("lfr-widget-")) {
+			return;
+		}
+
+		if (document == null) {
+			document = _getDocument(html);
+		}
+
+		for (Element element : document.select("*")) {
+			String tagName = element.tagName();
+
+			if (!StringUtil.startsWith(tagName, "lfr-widget-")) {
+				continue;
+			}
+
+			String alias = StringUtil.removeSubstring(tagName, "lfr-widget-");
+
+			String portletName = getPortletName(alias);
+
+			if (Validator.isNull(portletName)) {
+				continue;
+			}
+
+			String portletId = PortletIdCodec.encode(
+				PortletIdCodec.decodePortletName(portletName),
+				PortletIdCodec.decodeUserId(portletName),
+				fragmentEntryLink.getNamespace() + element.attr("id"));
 
 			portletIds.add(_portal.getJsSafePortletId(portletId));
 		}
