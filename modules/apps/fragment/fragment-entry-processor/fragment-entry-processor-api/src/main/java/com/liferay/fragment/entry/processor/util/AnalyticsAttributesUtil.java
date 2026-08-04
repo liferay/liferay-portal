@@ -20,6 +20,7 @@ import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.HTMLInfoFieldType;
 import com.liferay.info.field.type.ImageInfoFieldType;
 import com.liferay.info.field.type.LongTextInfoFieldType;
+import com.liferay.info.field.type.URLInfoFieldType;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemIdentifier;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -157,6 +159,10 @@ public class AnalyticsAttributesUtil {
 		}
 
 		InfoField<?> infoField = infoFieldValue.getInfoField();
+
+		if (_isDownloadURL(infoField)) {
+			return ACTION_DOWNLOAD;
+		}
 
 		if (Objects.equals(
 				infoField.getInfoFieldType(), HTMLInfoFieldType.INSTANCE) ||
@@ -571,6 +577,20 @@ public class AnalyticsAttributesUtil {
 		}
 
 		return String.valueOf(infoFieldValue.getValue(locale));
+	}
+
+	private static boolean _isDownloadURL(InfoField<?> infoField) {
+		if (!Objects.equals(
+				infoField.getInfoFieldType(), URLInfoFieldType.INSTANCE)) {
+
+			return false;
+		}
+
+		InfoField<URLInfoFieldType> urlInfoField =
+			(InfoField<URLInfoFieldType>)infoField;
+
+		return GetterUtil.getBoolean(
+			urlInfoField.getAttribute(URLInfoFieldType.DOWNLOAD));
 	}
 
 	private static final String _ANALYTICS_ATTRIBUTES_MAP =
