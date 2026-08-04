@@ -80,7 +80,8 @@ const getDefaultEditorConfig = ({
 		LinkImage,
 		List,
 		Paragraph,
-		showPasteFromOfficeEnhanced ? PasteFromOfficeEnhanced : PasteFromOffice,
+		PasteFromOffice,
+		...(showPasteFromOfficeEnhanced ? [PasteFromOfficeEnhanced] : []),
 		Underline,
 	];
 
