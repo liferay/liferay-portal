@@ -751,8 +751,6 @@ function useAIFlow() {
 	};
 }
 
-// Default: click a button to open.
-
 function AIDefault() {
 	const {flowProps} = useAIFlow();
 
@@ -765,8 +763,6 @@ function AIDefault() {
 		/>
 	);
 }
-
-// Input trigger: the field itself opens the flow when clicked.
 
 function AIInput() {
 	const {flowProps} = useAIFlow();
@@ -787,9 +783,6 @@ function AIInput() {
 		/>
 	);
 }
-
-// Input trigger with right-click: the consumer owns the field and wires the
-// right-click opener; left-click dismisses while in menu/prompt.
 
 function AIInputSelection() {
 	const {active, aiState, flowProps, setActive, setAiState} = useAIFlow();
@@ -833,11 +826,6 @@ function AIInputSelection() {
 		/>
 	);
 }
-
-// Real usage: an editable field that reflects the AI state — the selected text
-// is highlighted while the menu/result is open, a pulsing gradient block covers
-// it while working, and everything returns to normal once the suggestion is
-// accepted or rejected.
 
 const AI_FIELD_TEXT = 'I like milk';
 
@@ -979,6 +967,15 @@ export function AI() {
 
 			<div>
 				<Heading level={3}>Input trigger with right-click</Heading>
+
+				<p className="text-secondary">
+					The consumer wires the right-click opener on the field and
+					turns <code>openOnClick</code>
+
+					off, so a left-click dismisses the flow while in the{' '}
+
+					<code>menu</code> or <code>prompt</code> state.
+				</p>
 
 				<AIInputSelection />
 			</div>

@@ -75,9 +75,6 @@ interface IPromptProps {
 	submitAriaLabel?: string;
 }
 
-// The inline prompt composer (input + AI submit + close) shown in the `prompt`
-// state. It is intentionally private to this flow.
-
 function Prompt({
 	closeAriaLabel = 'Close',
 	onClose,
@@ -94,8 +91,10 @@ function Prompt({
 				onSubmit={(event) => {
 					event.preventDefault();
 
-					if (value.trim()) {
-						onSubmit?.(value);
+					const trimmedValue = value.trim();
+
+					if (trimmedValue) {
+						onSubmit?.(trimmedValue);
 					}
 				}}
 			>
@@ -148,8 +147,7 @@ interface IMenuStateProps {
 	spritemap?: string;
 }
 
-// The `menu` state: the AI options list. Focus moves into it on open so the
-// options are reachable by keyboard.
+// Focus moves into the menu on open so the options are reachable by keyboard.
 
 function AIMenuState({
 	active,
@@ -195,8 +193,6 @@ interface IWorkingStateProps {
 	workingLabel: string;
 }
 
-// The `working` state: a busy indicator with a stop control.
-
 function AIWorkingState({
 	onStop,
 	spritemap,
@@ -238,8 +234,6 @@ interface IResultStateProps {
 	resetAriaLabel: string;
 	spritemap?: string;
 }
-
-// The `result` state: accept or reset the suggestion.
 
 function AIResultState({
 	acceptLabel,
@@ -557,6 +551,33 @@ export function ClayDropDownWithAI({
 				hasRightSymbols
 				id={menuId}
 				onActiveChange={setInternalActive}
+				onKeyDown={(event) => {
+					if (
+						aiState !== 'menu' ||
+						(event.key !== 'ArrowDown' && event.key !== 'ArrowUp')
+					) {
+						return;
+					}
+
+					event.preventDefault();
+
+					const list = getFocusableList(menuElementRef);
+
+					if (!list.length) {
+						return;
+					}
+
+					const currentIndex = list.indexOf(
+						document.activeElement as HTMLElement
+					);
+
+					const nextIndex =
+						event.key === 'ArrowDown'
+							? (currentIndex + 1) % list.length
+							: (currentIndex - 1 + list.length) % list.length;
+
+					list[nextIndex]!.focus();
+				}}
 				ref={menuElementRef}
 				triggerRef={triggerElementRef}
 			>

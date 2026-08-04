@@ -1002,6 +1002,28 @@ $dropdown-menu: map-deep-merge(
 $dropdown-menu-palette: () !default;
 $dropdown-menu-palette: map-deep-merge(
 	(
+		'.dropdown-menu-ai': (
+			box-shadow: unquote('0 0 10px hsl(from #{$purple} h s l / 0.12)'),
+			max-width: none,
+
+			dropdown-item: (
+				hover: (
+					background-color: $purple-l5,
+					color: $purple,
+				),
+
+				focus: (
+					background-color: $purple-l5,
+					color: $purple,
+				),
+
+				active: (
+					background-color: $purple-l5,
+					color: $purple,
+				),
+			),
+		),
+
 		'.dropdown-menu-select.dropdown-menu': (
 			dropdown-header: (
 				padding-bottom: 0.375rem,
@@ -1109,28 +1131,6 @@ $dropdown-menu-palette: map-deep-merge(
 		'.dropdown-menu-select.dropdown-menu-height-lg': (
 			inline-scroller: (
 				max-height: 432px,
-			),
-		),
-
-		'.dropdown-menu-ai': (
-			box-shadow: unquote('0 0 10px hsl(from #{$purple} h s l / 0.12)'),
-			max-width: none,
-
-			dropdown-item: (
-				hover: (
-					background-color: $purple-l5,
-					color: $purple,
-				),
-
-				focus: (
-					background-color: $purple-l5,
-					color: $purple,
-				),
-
-				active: (
-					background-color: $purple-l5,
-					color: $purple,
-				),
 			),
 		),
 	),
