@@ -156,7 +156,8 @@ public class ImportObjectDefinitionMVCActionCommand
 			ObjectDefinition objectDefinition = ObjectDefinition.toDTO(
 				jsonObject.toString());
 
-			objectDefinition.setActive(() -> false);
+			objectDefinition.setActive(
+				() -> ParamUtil.getBoolean(uploadPortletRequest, "active"));
 
 			String externalReferenceCode = ParamUtil.getString(
 				actionRequest, "externalReferenceCode");
