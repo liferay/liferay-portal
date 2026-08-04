@@ -5,11 +5,9 @@
 
 package com.liferay.portal.workflow.web.internal.util.filter;
 
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.workflow.WorkflowDefinition;
 import com.liferay.portal.kernel.workflow.WorkflowNode;
 import com.liferay.portal.kernel.workflow.WorkflowTransition;
-import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 
 import java.io.InputStream;
 
@@ -118,9 +116,7 @@ public class WorkflowDefinitionImpl implements WorkflowDefinition {
 
 	@Override
 	public boolean isSystem() {
-		return ArrayUtil.contains(
-			WorkflowDefinitionConstants.SYSTEM_WORKFLOW_DEFINITION_NAMES,
-			getName());
+		return false;
 	}
 
 	private final boolean _active;

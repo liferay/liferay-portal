@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.DefaultWorkflowDefinition;
@@ -193,11 +192,7 @@ public class KaleoWorkflowModelConverterImpl
 
 			defaultWorkflowDefinition.setActive(kaleoDefinition.isActive());
 			defaultWorkflowDefinition.setScope(kaleoDefinition.getScope());
-			defaultWorkflowDefinition.setSystem(
-				ArrayUtil.contains(
-					WorkflowDefinitionConstants.
-						SYSTEM_WORKFLOW_DEFINITION_NAMES,
-					kaleoDefinition.getName()));
+			defaultWorkflowDefinition.setSystem(kaleoDefinition.isSystem());
 			defaultWorkflowDefinition.setWorkflowDefinitionId(
 				kaleoDefinition.getKaleoDefinitionId());
 		}
