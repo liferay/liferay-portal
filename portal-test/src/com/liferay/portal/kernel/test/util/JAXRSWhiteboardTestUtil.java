@@ -10,13 +10,11 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 
 /**
- * Eagerly starts the JAX-RS whiteboard so a test that calls an "/o/" endpoint
- * does not race Liferay's request triggered lazy start. The whiteboard is only
- * started when the first request reaches "/o/*", and during that start the
- * endpoint transiently returns a 404 whose HTML body then breaks a JSON read.
- * Triggering the start before the request removes that window. This is called
- * from the HTTP test funnels so only a test that actually calls the whiteboard
- * pays for it.
+ * Eagerly starts the JAX-RS whiteboard so a test that calls an /o endpoint does
+ * not race the lazy start Liferay triggers on the first such request. During
+ * that start the endpoint returns a transient 404 whose HTML body breaks a JSON
+ * read. The HTTP test funnels call this, so only a test that reaches the
+ * whiteboard pays for it.
  *
  * @author Shuyang Zhou
  */
