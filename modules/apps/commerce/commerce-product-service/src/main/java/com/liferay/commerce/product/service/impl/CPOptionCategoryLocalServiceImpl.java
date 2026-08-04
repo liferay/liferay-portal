@@ -17,6 +17,7 @@ import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
 import com.liferay.commerce.product.service.base.CPOptionCategoryLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionSpecificationOptionValuePersistence;
 import com.liferay.commerce.product.service.persistence.CPSpecificationOptionPersistence;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -43,12 +44,14 @@ import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.Serializable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -94,7 +97,13 @@ public class CPOptionCategoryLocalServiceImpl
 		cpOptionCategory.setDescriptionMap(descriptionMap);
 		cpOptionCategory.setPriority(priority);
 		cpOptionCategory.setKey(key);
-		cpOptionCategory.setStatus(WorkflowConstants.STATUS_APPROVED);
+
+		if (_emptyModelManager.isEmptyModel()) {
+			cpOptionCategory.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			cpOptionCategory.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
 
 		cpOptionCategory = cpOptionCategoryPersistence.update(cpOptionCategory);
 
@@ -234,6 +243,29 @@ public class CPOptionCategoryLocalServiceImpl
 	}
 
 	@Override
+	public CPOptionCategory getOrAddEmptyCPOptionCategory(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CPOptionCategory.class, companyId,
+			() -> cpOptionCategoryLocalService.addCPOptionCategory(
+				externalReferenceCode, userId,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				null, 0, externalReferenceCode, serviceContext),
+			externalReferenceCode,
+			this::fetchCPOptionCategoryByExternalReferenceCode,
+			this::getCPOptionCategoryByExternalReferenceCode,
+			CPOptionCategory.class.getName());
+	}
+
+	@Override
 	public BaseModelSearchResult<CPOptionCategory> searchCPOptionCategories(
 			long companyId, String keywords, int start, int end, Sort sort)
 		throws PortalException {
@@ -266,6 +298,13 @@ public class CPOptionCategoryLocalServiceImpl
 		cpOptionCategory.setDescriptionMap(descriptionMap);
 		cpOptionCategory.setPriority(priority);
 		cpOptionCategory.setKey(key);
+		cpOptionCategory.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				cpOptionCategory.getExternalReferenceCode(),
+				cpOptionCategory.getModelClassName(),
+				cpOptionCategory.getCompanyId(), 0,
+				cpOptionCategory.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 
 		return cpOptionCategoryPersistence.update(cpOptionCategory);
 	}
@@ -400,6 +439,9 @@ public class CPOptionCategoryLocalServiceImpl
 
 	@Reference
 	private CPSpecificationOptionPersistence _cpSpecificationOptionPersistence;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private FriendlyURLNormalizer _friendlyURLNormalizer;
