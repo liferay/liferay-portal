@@ -19,6 +19,7 @@ import (
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	license "github.com/liferay/liferay-portal/cloud/operator/internal/license"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	corev1 "k8s.io/api/core/v1"
 	errors "k8s.io/apimachinery/pkg/api/errors"
@@ -203,10 +204,64 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	liferayEnvironment.Status.License.LastVerified = &now
 	liferayEnvironment.Status.License.MaxClusterNodes = entitlements.MaxClusterNodes
 
+	expirationDate, error := license.ExpirationDate(entitlements.LicenseXML)
+
+	if error != nil {
+		logger.Error(error, "License validation failed", "environmentID", environmentID)
+
+		liferayEnvironment.Status.License.ValidUntil = nil
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: error.Error(),
+				Reason:  "Invalid",
+				Status:  metav1.ConditionFalse,
+				Type:    conditionLicenseValid,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		)
+	}
+
+	validUntil := metav1.NewTime(expirationDate)
+
+	liferayEnvironment.Status.License.ValidUntil = &validUntil
+
+	if now.After(expirationDate) {
+		logger.Info(
+			"License expired",
+			"environmentID", environmentID,
+			"expirationDate", expirationDate,
+		)
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"License expired on %s.", expirationDate.Format(time.RFC3339),
+				),
+				Reason: "Expired",
+				Status: metav1.ConditionFalse,
+				Type:   conditionLicenseValid,
+			},
+		)
+
+		liferayEnvironment.Status.Phase = "Degraded"
+
+		return liferayEnvironmentReconciler.finishAfter(
+			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		)
+	}
+
 	meta.SetStatusCondition(
 		&liferayEnvironment.Status.Conditions,
 		metav1.Condition{
-			Reason: "LicensePresent",
+			Reason: "Valid",
 			Status: metav1.ConditionTrue,
 			Type:   conditionLicenseValid,
 		},
