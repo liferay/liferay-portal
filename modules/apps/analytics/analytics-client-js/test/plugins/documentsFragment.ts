@@ -396,6 +396,10 @@ describe('Documents Plugin', () => {
 				action: AnalyticsTypes.ElementAction.Download,
 				eventId: AnalyticsTypes.EventId.DocumentImpressionMade,
 			},
+			{
+				action: AnalyticsTypes.ElementAction.View,
+				eventId: AnalyticsTypes.EventId.DocumentPreviewed,
+			},
 		].forEach(async (props) => {
 			it(`is fired ${props.eventId} when view a document with action ${props.action} and type: ${AnalyticsTypes.ElementType.FileEntry}`, async () => {
 				const element = createDocumentsElementWithAction(props.action);
