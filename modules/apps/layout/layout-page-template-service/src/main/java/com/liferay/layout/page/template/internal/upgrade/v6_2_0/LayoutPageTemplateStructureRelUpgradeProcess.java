@@ -67,7 +67,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 							setCTCollectionIdWithSafeCloseable(
 								ctCollectionId)) {
 
-					_repairLayoutPageTemplateStructureRel(
+					_fixLayoutPageTemplateStructureRel(
 						resultSet.getLong("companyId"), ctCollectionId,
 						resultSet.getLong("layoutPageTemplateStructureId"),
 						resultSet.getLong("lPageTemplateStructureRelId"),
@@ -146,7 +146,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 		}
 	}
 
-	private void _repairLayoutPageTemplateStructureRel(
+	private void _fixLayoutPageTemplateStructureRel(
 			long companyId, long ctCollectionId,
 			long layoutPageTemplateStructureId,
 			long layoutPageTemplateStructureRelId, long plid, long userId)
