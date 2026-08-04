@@ -94,14 +94,10 @@ public class CommerceOrderLayoutDisplayPageProvider
 			return null;
 		}
 
-		CommerceOrder commerceOrder = null;
-
-		long companyId = CompanyThreadLocal.getCompanyId();
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		if (serviceContext != null) {
-			companyId = serviceContext.getCompanyId();
 			groupId = serviceContext.getScopeGroupId();
 		}
 
@@ -110,22 +106,27 @@ public class CommerceOrderLayoutDisplayPageProvider
 				(ClassPKInfoItemIdentifier)
 					infoItemReference.getInfoItemIdentifier();
 
-			commerceOrder = _commerceOrderLocalService.fetchCommerceOrder(
-				classPKInfoItemIdentifier.getClassPK());
+			return new CommerceOrderLayoutDisplayPageObjectProvider(
+				_commerceOrderLocalService.fetchCommerceOrder(
+					classPKInfoItemIdentifier.getClassPK()),
+				groupId);
 		}
-		else {
-			ERCInfoItemIdentifier ercInfoItemIdentifier =
-				(ERCInfoItemIdentifier)infoItemIdentifier;
 
-			commerceOrder =
-				_commerceOrderLocalService.
-					fetchCommerceOrderByExternalReferenceCode(
-						ercInfoItemIdentifier.getExternalReferenceCode(),
-						companyId);
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		if (serviceContext != null) {
+			companyId = serviceContext.getCompanyId();
 		}
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			(ERCInfoItemIdentifier)infoItemIdentifier;
 
 		return new CommerceOrderLayoutDisplayPageObjectProvider(
-			commerceOrder, groupId);
+			_commerceOrderLocalService.
+				fetchCommerceOrderByExternalReferenceCode(
+					ercInfoItemIdentifier.getExternalReferenceCode(),
+					companyId),
+			groupId);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

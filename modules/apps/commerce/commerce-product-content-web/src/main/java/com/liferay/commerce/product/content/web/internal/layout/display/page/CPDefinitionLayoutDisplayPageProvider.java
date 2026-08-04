@@ -123,14 +123,10 @@ public class CPDefinitionLayoutDisplayPageProvider
 			return null;
 		}
 
-		CPDefinition cpDefinition = null;
-
-		long companyId = CompanyThreadLocal.getCompanyId();
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
 		if (serviceContext != null) {
-			companyId = serviceContext.getCompanyId();
 			groupId = serviceContext.getScopeGroupId();
 		}
 
@@ -139,19 +135,32 @@ public class CPDefinitionLayoutDisplayPageProvider
 				(ClassPKInfoItemIdentifier)
 					infoItemReference.getInfoItemIdentifier();
 
-			cpDefinition = _cpDefinitionLocalService.fetchCPDefinition(
-				classPKInfoItemIdentifier.getClassPK());
+			return _getCPDefinitionLayoutDisplayPageObjectProvider(
+				_cpDefinitionLocalService.fetchCPDefinition(
+					classPKInfoItemIdentifier.getClassPK()),
+				groupId);
 		}
-		else {
-			ERCInfoItemIdentifier ercInfoItemIdentifier =
-				(ERCInfoItemIdentifier)infoItemIdentifier;
 
-			cpDefinition =
-				_cpDefinitionLocalService.
-					fetchCPDefinitionByCProductExternalReferenceCode(
-						ercInfoItemIdentifier.getExternalReferenceCode(),
-						companyId, true);
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		if (serviceContext != null) {
+			companyId = serviceContext.getCompanyId();
 		}
+
+		ERCInfoItemIdentifier ercInfoItemIdentifier =
+			(ERCInfoItemIdentifier)infoItemIdentifier;
+
+		return _getCPDefinitionLayoutDisplayPageObjectProvider(
+			_cpDefinitionLocalService.
+				fetchCPDefinitionByCProductExternalReferenceCode(
+					ercInfoItemIdentifier.getExternalReferenceCode(), companyId,
+					true),
+			groupId);
+	}
+
+	private CPDefinitionLayoutDisplayPageObjectProvider
+		_getCPDefinitionLayoutDisplayPageObjectProvider(
+			CPDefinition cpDefinition, long groupId) {
 
 		if ((cpDefinition == null) ||
 			(cpDefinition.getStatus() == WorkflowConstants.STATUS_IN_TRASH)) {
