@@ -12,6 +12,10 @@ import java.io.Flushable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -27,6 +31,17 @@ import java.util.function.Supplier;
  * Event specific fields are nested under a single {@code fields} object rather
  * than merged into the envelope, so an event can never overwrite an envelope
  * key and misattribute the record.
+ * </p>
+ *
+ * <p>
+ * Every record carries the §5.1 timestamp in one canonical representation: UTC,
+ * ISO 8601 extended form with millisecond precision and a literal
+ * <code>Z</code> suffix (for example <code>2026-05-06T14:19:23.471Z</code>),
+ * read from the host clock and emitted in UTC regardless of the host default
+ * time zone. Sub millisecond precision is truncated rather than rounded. The
+ * timestamp alone does not order two events emitted within the same
+ * millisecond, so the §5.4 audit log integrity chain, not the timestamp, is the
+ * authority on order.
  * </p>
  *
  * <p>
@@ -69,11 +84,9 @@ public class FIPSAuditEventEmitter {
 		).put(
 			"provider-version", _providerVersionSupplier.get()
 		).put(
-			"severity",
-			fipsAuditEvent.getFIPSAuditSeverity(
-			).getValue()
+			"severity", _getFIPSAuditSeverityValue(fipsAuditEvent)
 		).put(
-			"timestamp", FIPSAuditTimestamp.now()
+			"timestamp", _getTimestamp()
 		).build();
 
 		try {
@@ -123,6 +136,19 @@ public class FIPSAuditEventEmitter {
 		return sb.toString();
 	}
 
+	private String _getFIPSAuditSeverityValue(FIPSAuditEvent fipsAuditEvent) {
+		FIPSAuditSeverity fipsAuditSeverity =
+			fipsAuditEvent.getFIPSAuditSeverity();
+
+		return fipsAuditSeverity.getValue();
+	}
+
+	private String _getTimestamp() {
+		Instant instant = Instant.now();
+
+		return _dateTimeFormatter.format(instant.atZone(ZoneOffset.UTC));
+	}
+
 	private String _toJSONObject(Map<?, ?> map) {
 		StringBundler sb = new StringBundler();
 
@@ -167,6 +193,9 @@ public class FIPSAuditEventEmitter {
 	private String _toNDJSON(Map<String, Object> record) {
 		return _toJSONObject(record) + "\n";
 	}
+
+	private static final DateTimeFormatter _dateTimeFormatter =
+		DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
 	private final Appendable _appendable;
 	private final Supplier<String> _cmvpCertificateIdSupplier;

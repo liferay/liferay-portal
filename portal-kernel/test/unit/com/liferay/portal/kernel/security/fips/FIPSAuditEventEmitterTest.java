@@ -6,8 +6,13 @@
 package com.liferay.portal.kernel.security.fips;
 
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.Time;
 
 import java.io.Flushable;
+
+import java.time.Instant;
+
+import java.util.TimeZone;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -99,6 +104,46 @@ public class FIPSAuditEventEmitterTest {
 
 		Assert.assertTrue(
 			ndjson, ndjson.contains("\"reason\":\"a\\\\b\\\"c\\nd\\re\\tfg\""));
+	}
+
+	@Test
+	public void testEmitFormatsTimestampInUTC() {
+		TimeZone timeZone = TimeZone.getDefault();
+
+		try {
+			TimeZone.setDefault(TimeZone.getTimeZone("America/Los_Angeles"));
+
+			RecordingAppendable recordingAppendable = new RecordingAppendable();
+
+			FIPSAuditEventEmitter fipsAuditEventEmitter =
+				new FIPSAuditEventEmitter(
+					recordingAppendable, () -> "", () -> "", () -> "",
+					() -> "");
+
+			fipsAuditEventEmitter.emit(
+				new FIPSAuditEvent(
+					RandomTestUtil.randomString(), FIPSAuditSeverity.INFO));
+
+			String ndjson = recordingAppendable.toString();
+
+			String prefix = "\"timestamp\":\"";
+
+			int start = ndjson.indexOf(prefix) + prefix.length();
+
+			int end = ndjson.indexOf("\"", start);
+
+			String timestamp = ndjson.substring(start, end);
+
+			Instant instant = Instant.parse(timestamp);
+
+			Assert.assertTrue(
+				timestamp,
+				Math.abs(System.currentTimeMillis() - instant.toEpochMilli()) <
+					Time.MINUTE);
+		}
+		finally {
+			TimeZone.setDefault(timeZone);
+		}
 	}
 
 	@Test
