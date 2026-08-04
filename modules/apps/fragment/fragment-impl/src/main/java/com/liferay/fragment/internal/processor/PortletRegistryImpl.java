@@ -215,7 +215,7 @@ public class PortletRegistryImpl implements PortletRegistry {
 		Document document, FragmentEntryLink fragmentEntryLink, String html,
 		List<String> portletIds) {
 
-		if (!html.contains("lfr-widget-")) {
+		if (!html.contains(_LFR_WIDGET_TAG_PREFIX)) {
 			return;
 		}
 
@@ -226,11 +226,12 @@ public class PortletRegistryImpl implements PortletRegistry {
 		for (Element element : document.select("*")) {
 			String tagName = element.tagName();
 
-			if (!StringUtil.startsWith(tagName, "lfr-widget-")) {
+			if (!StringUtil.startsWith(tagName, _LFR_WIDGET_TAG_PREFIX)) {
 				continue;
 			}
 
-			String alias = StringUtil.removeSubstring(tagName, "lfr-widget-");
+			String alias = StringUtil.removeSubstring(
+				tagName, _LFR_WIDGET_TAG_PREFIX);
 
 			String portletName = getPortletName(alias);
 
@@ -371,6 +372,8 @@ public class PortletRegistryImpl implements PortletRegistry {
 
 		return string.length();
 	}
+
+	private static final String _LFR_WIDGET_TAG_PREFIX = "lfr-widget-";
 
 	private static final String _LIFERAY_PORTLET_MACRO = "[@liferay_portlet";
 
