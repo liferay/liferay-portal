@@ -15,6 +15,7 @@ import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
+import {formatDateForUI} from '../../../utils/applyFDSDateTimeRangeFilter';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -1782,25 +1783,21 @@ test(
 
 		yesterday.setDate(yesterday.getDate() - 1);
 
-		const formatDate = (d: Date) =>
-			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
 		await page
 			.getByRole('textbox', {name: 'From'})
-			.fill(formatDate(yesterday));
+			.fill(formatDateForUI(yesterday));
 
-		await page.getByRole('textbox', {name: 'To'}).fill(formatDate(today));
+		await page
+			.getByRole('textbox', {name: 'To'})
+			.fill(formatDateForUI(today));
 
 		await page.getByRole('button', {name: 'Add Filter'}).click();
-
-		const formatDisplayDate = (d: Date) =>
-			`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
 
 		await expect(page.getByText('1 Result Found for:')).toBeVisible();
 
 		await expect(
 			page.getByRole('button', {
-				name: `Create Date: ${formatDisplayDate(yesterday)} - ${formatDisplayDate(today)}`,
+				name: `Create Date: ${formatDateForUI(yesterday)} - ${formatDateForUI(today)}`,
 			})
 		).toBeVisible();
 
@@ -1890,25 +1887,21 @@ test(
 
 		yesterday.setDate(yesterday.getDate() - 1);
 
-		const formatDate = (d: Date) =>
-			`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
 		await page
 			.getByRole('textbox', {name: 'From'})
-			.fill(formatDate(yesterday));
+			.fill(formatDateForUI(yesterday));
 
-		await page.getByRole('textbox', {name: 'To'}).fill(formatDate(today));
+		await page
+			.getByRole('textbox', {name: 'To'})
+			.fill(formatDateForUI(today));
 
 		await page.getByRole('button', {name: 'Add Filter'}).click();
-
-		const formatDisplayDate = (d: Date) =>
-			`${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
 
 		await expect(page.getByText('1 Result Found for:')).toBeVisible();
 
 		await expect(
 			page.getByRole('button', {
-				name: `Modified Date: ${formatDisplayDate(yesterday)} - ${formatDisplayDate(today)}`,
+				name: `Modified Date: ${formatDateForUI(yesterday)} - ${formatDateForUI(today)}`,
 			})
 		).toBeVisible();
 
