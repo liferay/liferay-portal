@@ -96,7 +96,6 @@ boolean showMissingAttributeMessage = false;
 		String firstName = LDAPUtil.getAttributeString(attributes, userMappings.get("firstName"));
 		String lastName = LDAPUtil.getAttributeString(attributes, userMappings.get("lastName"));
 		String jobTitle = LDAPUtil.getAttributeString(attributes, userMappings.get("jobTitle"));
-
 		String password = StringUtil.toLowerCase(LDAPUtil.getAttributeString(attributes, userMappings.get("password")));
 		String screenName = StringUtil.toLowerCase(LDAPUtil.getAttributeString(attributes, userMappings.get("screenName")));
 
