@@ -56,9 +56,11 @@ jobs:
                     -   aws/gitops/platform
                     -   aws/gitops/resources
                     -   azure/aks
+                    -   azure/platform
                     -   gcp/gitops/platform
                     -   gcp/gitops/resources
                     -   gcp/gke
+                    -   modules/argocd
 on:
     workflow_call:
 permissions:

@@ -19,6 +19,8 @@ jobs:
             -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
             -   push-rc-observability
+            -   push-rc-platform
+            -   push-rc-platform-components
             -   set-up-variables
             -   update-staging-charts
         runs-on: ubuntu-latest
@@ -114,6 +116,24 @@ jobs:
         with:
             chart_name: observability
             working_directory: ./cloud/helm/observability
+    check-platform:
+        needs:
+            -   test-cloud-helm-chart
+            -   test-cloud-helm-chart-smoke
+            -   test-cloud-terraform
+        uses: ./.github/workflows/ci-reusable-check-helm-chart-version.yaml
+        with:
+            chart_name: liferay-platform
+            working_directory: ./cloud/helm/platform
+    check-platform-components:
+        needs:
+            -   test-cloud-helm-chart
+            -   test-cloud-helm-chart-smoke
+            -   test-cloud-terraform
+        uses: ./.github/workflows/ci-reusable-check-helm-chart-version.yaml
+        with:
+            chart_name: liferay-platform-components
+            working_directory: ./cloud/helm/platform-components
     promote-rc-aws:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-aws.result == 'success'}}
         needs:
@@ -212,6 +232,26 @@ jobs:
             chart_name: observability
             chart_version: ${{needs.push-rc-observability.outputs.chart_version}}
             source_image_ref: ${{needs.push-rc-observability.outputs.image_ref}}
+    promote-rc-platform:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-platform.result == 'success'}}
+        needs:
+            -   approve-release
+            -   push-rc-platform
+        uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
+        with:
+            chart_name: liferay-platform
+            chart_version: ${{needs.push-rc-platform.outputs.chart_version}}
+            source_image_ref: ${{needs.push-rc-platform.outputs.image_ref}}
+    promote-rc-platform-components:
+        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-platform-components.result == 'success'}}
+        needs:
+            -   approve-release
+            -   push-rc-platform-components
+        uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
+        with:
+            chart_name: liferay-platform-components
+            chart_version: ${{needs.push-rc-platform-components.outputs.chart_version}}
+            source_image_ref: ${{needs.push-rc-platform-components.outputs.image_ref}}
     publish-aws-marketplace:
         env:
             ECR_REGISTRY: 709825985650.dkr.ecr.us-east-1.amazonaws.com
@@ -396,6 +436,26 @@ jobs:
             chart_name: observability
             image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
             working_directory: ./cloud/helm/observability
+    push-rc-platform:
+        if: ${{needs.check-platform.outputs.should_release == 'true'}}
+        needs:
+            -   check-platform
+            -   set-up-variables
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-platform
+            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            working_directory: ./cloud/helm/platform
+    push-rc-platform-components:
+        if: ${{needs.check-platform-components.outputs.should_release == 'true'}}
+        needs:
+            -   check-platform-components
+            -   set-up-variables
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-platform-components
+            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            working_directory: ./cloud/helm/platform-components
     record-release:
         if: ${{!cancelled() && !failure() && needs.approve-release.result == 'success'}}
         needs:
@@ -410,6 +470,8 @@ jobs:
             -   promote-rc-gcp-infrastructure
             -   promote-rc-gcp-infrastructure-provider
             -   promote-rc-observability
+            -   promote-rc-platform
+            -   promote-rc-platform-components
             -   publish-aws-marketplace
             -   push-rc-aws
             -   push-rc-aws-infrastructure
@@ -421,6 +483,8 @@ jobs:
             -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
             -   push-rc-observability
+            -   push-rc-platform
+            -   push-rc-platform-components
         permissions:
             contents: write
         runs-on: ubuntu-latest
@@ -444,6 +508,8 @@ jobs:
                     DIGEST_liferay_gcp: ${{needs.promote-rc-gcp.outputs.image_digest}}
                     DIGEST_liferay_gcp_infrastructure: ${{needs.promote-rc-gcp-infrastructure.outputs.image_digest}}
                     DIGEST_liferay_gcp_infrastructure_provider: ${{needs.promote-rc-gcp-infrastructure-provider.outputs.image_digest}}
+                    DIGEST_liferay_platform: ${{needs.promote-rc-platform.outputs.image_digest}}
+                    DIGEST_liferay_platform_components: ${{needs.promote-rc-platform-components.outputs.image_digest}}
                     DIGEST_observability: ${{needs.promote-rc-observability.outputs.image_digest}}
                     VERSION_liferay_aws: ${{needs.push-rc-aws.outputs.chart_version}}
                     VERSION_liferay_aws_infrastructure: ${{needs.push-rc-aws-infrastructure.outputs.chart_version}}
@@ -452,6 +518,8 @@ jobs:
                     VERSION_liferay_gcp: ${{needs.push-rc-gcp.outputs.chart_version}}
                     VERSION_liferay_gcp_infrastructure: ${{needs.push-rc-gcp-infrastructure.outputs.chart_version}}
                     VERSION_liferay_gcp_infrastructure_provider: ${{needs.push-rc-gcp-infrastructure-provider.outputs.chart_version}}
+                    VERSION_liferay_platform: ${{needs.push-rc-platform.outputs.chart_version}}
+                    VERSION_liferay_platform_components: ${{needs.push-rc-platform-components.outputs.chart_version}}
                     VERSION_observability: ${{needs.push-rc-observability.outputs.chart_version}}
                 name: Record the release
                 run: |
@@ -547,6 +615,8 @@ jobs:
                             liferay-gcp \
                             liferay-gcp-infrastructure \
                             liferay-gcp-infrastructure-provider \
+                            liferay-platform \
+                            liferay-platform-components \
                             observability
                         do
                             local digest_key="DIGEST_${chart//-/_}"

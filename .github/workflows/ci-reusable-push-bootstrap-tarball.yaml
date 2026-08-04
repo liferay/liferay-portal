@@ -80,6 +80,8 @@ jobs:
                                 cloud/scripts/setup_azure.sh
                                 cloud/scripts/versions_azure.tfvars
                                 cloud/terraform/azure/aks/*
+                                cloud/terraform/azure/platform/*
+                                cloud/terraform/modules/argocd/*
                             )
                         elif [[ "${provider}" == "gcp" ]]
                         then

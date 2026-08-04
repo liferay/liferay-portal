@@ -68,6 +68,20 @@ jobs:
             chart_name: observability
             image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
             working_directory: ./cloud/helm/observability
+    push-platform:
+        needs: set-up-variables
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-platform
+            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            working_directory: ./cloud/helm/platform
+    push-platform-components:
+        needs: set-up-variables
+        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
+        with:
+            chart_name: liferay-platform-components
+            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            working_directory: ./cloud/helm/platform-components
     set-up-variables:
         if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         outputs:
