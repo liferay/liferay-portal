@@ -1008,6 +1008,7 @@ public class PageTemplateResourceTest extends BasePageTemplateResourceTestCase {
 							{
 								setExternalReferenceCode(
 									user::getExternalReferenceCode);
+								setName(user::getFullName);
 							}
 						};
 					});
