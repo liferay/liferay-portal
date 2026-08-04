@@ -1,0 +1,13 @@
+{
+	"com.liferay.fragment.entry.processor.editable.EditableFragmentEntryProcessor": {
+		"link": {
+			"config": {
+				"classNameId": "CLASS_NAME_ID",
+				"classPK": "CLASS_PK",
+				"fieldId": "FIELD_ID",
+				"mapperType": "link"
+			},
+			"defaultValue": "Download"
+		}
+	}
+}

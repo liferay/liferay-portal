@@ -1027,6 +1027,73 @@ public class EditableFragmentEntryProcessorTest {
 	}
 
 	@Test
+	@TestInfo("LPD-100992")
+	public void testFragmentEntryProcessorEditableAssertAnalyticsAttributesWithMappedDownloadURLInViewMode()
+		throws Exception {
+
+		FileEntry fileEntry = _addImageFileEntry(RandomTestUtil.randomString());
+
+		Element element = _getElement(
+			"data-lfr-editable-id", "link",
+			_getEditableFieldValues(
+				_portal.getClassNameId(FileEntry.class),
+				fileEntry.getFileEntryId(), "FileEntry_downloadURL",
+				"link/fragment_entry_link_mapped_asset_field.json"),
+			"link/fragment_entry_link_button.html", LocaleUtil.US,
+			FragmentEntryLinkConstants.VIEW);
+
+		Assert.assertEquals(
+			AnalyticsAttributesUtil.ACTION_DOWNLOAD,
+			element.attr("data-analytics-asset-action"));
+		Assert.assertEquals(
+			"FileEntry_downloadURL",
+			element.attr("data-analytics-asset-field"));
+		Assert.assertEquals(
+			String.valueOf(fileEntry.getFileEntryId()),
+			element.attr("data-analytics-asset-id"));
+		Assert.assertEquals(
+			fileEntry.getTitle(), element.attr("data-analytics-asset-title"));
+		Assert.assertEquals(
+			FileEntry.class.getName(),
+			element.attr("data-analytics-asset-type"));
+
+		String href = element.attr("href");
+
+		Assert.assertTrue(href.contains("download=true"));
+	}
+
+	@Test
+	@TestInfo("LPD-100992")
+	public void testFragmentEntryProcessorEditableAssertAnalyticsAttributesWithMappedFileEntryFieldInViewMode()
+		throws Exception {
+
+		FileEntry fileEntry = _addImageFileEntry(RandomTestUtil.randomString());
+
+		Element element = _getElement(
+			"data-lfr-editable-id", "link",
+			_getEditableFieldValues(
+				_portal.getClassNameId(FileEntry.class),
+				fileEntry.getFileEntryId(), "FileEntry_previewURL",
+				"link/fragment_entry_link_mapped_asset_field.json"),
+			"link/fragment_entry_link_button.html", LocaleUtil.US,
+			FragmentEntryLinkConstants.VIEW);
+
+		Assert.assertEquals(
+			AnalyticsAttributesUtil.ACTION_IMPRESSION,
+			element.attr("data-analytics-asset-action"));
+		Assert.assertEquals(
+			"FileEntry_previewURL", element.attr("data-analytics-asset-field"));
+		Assert.assertEquals(
+			String.valueOf(fileEntry.getFileEntryId()),
+			element.attr("data-analytics-asset-id"));
+		Assert.assertEquals(
+			fileEntry.getTitle(), element.attr("data-analytics-asset-title"));
+		Assert.assertEquals(
+			FileEntry.class.getName(),
+			element.attr("data-analytics-asset-type"));
+	}
+
+	@Test
 	@TestInfo("LPD-100990")
 	public void testFragmentEntryProcessorEditableAssertAnalyticsAttributesWithMappedFileEntryImageInViewMode()
 		throws Exception {
