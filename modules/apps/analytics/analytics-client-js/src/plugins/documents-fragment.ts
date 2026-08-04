@@ -6,6 +6,7 @@
 import Analytics from '../analytics';
 import {Analytics as AnalyticsType} from '../types';
 import {
+	closest,
 	isDownloadAction,
 	isImpressionAction,
 	isTrackable,
@@ -78,12 +79,12 @@ function getDocumentPayload({dataset}: AnalyticsType.HTMLElement) {
  */
 function trackDocumentDownloaded(analytics: Analytics) {
 	const onClick = (event: MouseEvent) => {
-		const element = event.target as AnalyticsType.HTMLElement;
-		const parentElement =
-			element.parentElement as AnalyticsType.HTMLElement | null;
-
-		const target = [element, parentElement].find(
-			(element) => element?.dataset.analyticsAssetAction === 'download'
+		const target = closest(
+			event.target as AnalyticsType.HTMLElement,
+			transformAssetTypeToSelector(
+				AnalyticsType.ElementType.FileEntry,
+				'[data-analytics-asset-action="download"]'
+			)
 		);
 
 		if (target && isTrackable(target)) {
