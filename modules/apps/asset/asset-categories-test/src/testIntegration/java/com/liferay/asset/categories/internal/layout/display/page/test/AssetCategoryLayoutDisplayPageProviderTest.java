@@ -68,6 +68,10 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 
 	@Test
 	public void testGetURLTitle() throws Exception {
+		_testGetURLTitleWithEncodedAssetVocabularyName(
+			"vocabulary name", "vocabulary%20name");
+		_testGetURLTitleWithEncodedAssetVocabularyName(
+			"vocabulario ñ", "vocabulario%20%C3%B1");
 		_testGetURLTitleWithMaximumLengthExceeded();
 		_testGetURLTitleWithMaximumLengthNotExceeded();
 	}
@@ -205,6 +209,40 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 		Assert.assertEquals(
 			assetCategory4,
 			layoutDisplayPageObjectProvider2.getDisplayObject());
+	}
+
+	private void _testGetURLTitleWithEncodedAssetVocabularyName(
+			String assetVocabularyName, String encodedAssetVocabularyName)
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			_group.getGroupId(), assetVocabularyName);
+
+		String categoryURLTitle = StringUtil.toLowerCase(
+			StringUtil.randomString());
+
+		AssetCategory assetCategory = _addAssetCategory(
+			assetVocabulary.getVocabularyId(),
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			categoryURLTitle);
+
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider1 =
+			_getLayoutDisplayPageObjectProvider(assetCategory);
+
+		String urlTitle = layoutDisplayPageObjectProvider1.getURLTitle(
+			LocaleUtil.getDefault());
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				encodedAssetVocabularyName, StringPool.SLASH, categoryURLTitle),
+			urlTitle);
+
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider2 =
+			_layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
+				_group.getGroupId(), urlTitle);
+
+		Assert.assertEquals(
+			assetCategory, layoutDisplayPageObjectProvider2.getDisplayObject());
 	}
 
 	private void _testGetURLTitleWithMaximumLengthExceeded() throws Exception {
