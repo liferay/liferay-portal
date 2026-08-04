@@ -16,6 +16,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.test.util.DLTestUtil;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.fragment.constants.FragmentConstants;
@@ -107,6 +108,7 @@ import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -129,6 +131,7 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -178,6 +181,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -434,7 +438,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		{
 			"LPD-72013", "LPD-74331", "LPD-75450", "LPD-77124", "LPD-77505",
 			"LPD-77576", "LPD-77852", "LPD-78667", "LPD-79415", "LPD-80061",
-			"LPD-81793", "LPD-83094", "LPD-97454"
+			"LPD-81793", "LPD-83094", "LPD-97454", "LPD-101044"
 		}
 	)
 	public void testPutSiteSitePage() throws Exception {
@@ -471,6 +475,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithPageSpecifications();
 		_testPutSiteSitePageWithParentLayout();
 		_testPutSiteSitePageWithPriority();
+		_testPutSiteSitePageWithStagingImport(serviceContext);
 		_testPutSiteSitePageWithWidgetPageSettings();
 		_testPutSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 
@@ -1755,6 +1760,16 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private SitePage _getRandomSitePage(
+			ServiceContext serviceContext, SitePage sitePage)
+		throws Exception {
+
+		return _getRandomSitePage(
+			sitePage.getExternalReferenceCode(),
+			sitePage.getParentSitePageExternalReferenceCode(), serviceContext,
+			sitePage.getType(), sitePage.getUuid());
+	}
+
+	private SitePage _getRandomSitePage(
 			ServiceContext serviceContext, SitePage.Type type)
 		throws Exception {
 
@@ -2109,6 +2124,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 
 		return draftFragmentOrWidgetInstanceExternalReferenceCodes;
+	}
+
+	private SafeCloseable _setExportImportThreadLocalWithSafeCloseable(
+		String fieldName, boolean value) {
+
+		CentralizedThreadLocal<Boolean> originalCentralizedThreadLocal =
+			ReflectionTestUtil.getFieldValue(
+				ExportImportThreadLocal.class, fieldName);
+
+		Boolean originalValue = originalCentralizedThreadLocal.get();
+
+		originalCentralizedThreadLocal.set(value);
+
+		Supplier<Boolean> originalSupplier =
+			ReflectionTestUtil.getAndSetFieldValue(
+				originalCentralizedThreadLocal, "_supplier", () -> value);
+
+		return () -> {
+			originalCentralizedThreadLocal.set(originalValue);
+
+			ReflectionTestUtil.setFieldValue(
+				originalCentralizedThreadLocal, "_supplier", originalSupplier);
+		};
 	}
 
 	private void _testDeleteSiteSitePage(Layout... layouts) throws Exception {
@@ -4530,6 +4568,87 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 						testGroup.getGroupId()),
 					putSitePage);
 			});
+	}
+
+	private void _testPutSiteSitePageWithStagingImport(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		_testPutSiteSitePageWithStagingImport(
+			serviceContext, SitePage.Type.CONTENT_PAGE);
+		_testPutSiteSitePageWithStagingImport(
+			serviceContext, SitePage.Type.EMBEDDED_PAGE);
+		_testPutSiteSitePageWithStagingImport(
+			serviceContext, SitePage.Type.LINK_TO_PAGE_PAGE);
+		_testPutSiteSitePageWithStagingImport(
+			serviceContext, SitePage.Type.LINK_TO_URL_PAGE);
+		_testPutSiteSitePageWithStagingImport(
+			serviceContext, SitePage.Type.PAGE_SET_PAGE);
+		_testPutSiteSitePageWithStagingImport(
+			serviceContext, SitePage.Type.WIDGET_PAGE);
+	}
+
+	private void _testPutSiteSitePageWithStagingImport(
+			ServiceContext serviceContext, SitePage.Type type)
+		throws Exception {
+
+		SitePage sitePage = sitePageResource.postSiteSitePage(
+			irrelevantGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(
+				ServiceContextTestUtil.getServiceContext(
+					irrelevantGroup, TestPropsValues.getUserId()),
+				type));
+
+		_testPutSiteSitePageWithStagingImport(
+			null, false, false, _getRandomSitePage(serviceContext, sitePage));
+		_testPutSiteSitePageWithStagingImport(
+			null, false, true, _getRandomSitePage(serviceContext, sitePage));
+		_testPutSiteSitePageWithStagingImport(
+			null, true, false, _getRandomSitePage(serviceContext, sitePage));
+		_testPutSiteSitePageWithStagingImport(
+			TestPropsValues.getUser(), true, true,
+			_getRandomSitePage(serviceContext, sitePage));
+	}
+
+	private void _testPutSiteSitePageWithStagingImport(
+			User lastImportUser, boolean layoutImportInProcess,
+			boolean layoutStagingInProcess, SitePage sitePage)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable1 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutImportInProcess", layoutImportInProcess);
+			SafeCloseable safeCloseable2 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutStagingInProcess", layoutStagingInProcess)) {
+
+			_testPutSiteSitePage(sitePage, testGroup, sitePage);
+
+			Layout layout =
+				_layoutLocalService.getLayoutByExternalReferenceCode(
+					sitePage.getExternalReferenceCode(),
+					testGroup.getGroupId());
+
+			if (lastImportUser == null) {
+				Assert.assertNull(
+					layout.getTypeSettingsProperty("last-import-date"));
+				Assert.assertNull(
+					layout.getTypeSettingsProperty("last-import-user-name"));
+				Assert.assertNull(
+					layout.getTypeSettingsProperty("last-import-user-uuid"));
+
+				return;
+			}
+
+			Assert.assertNotNull(
+				layout.getTypeSettingsProperty("last-import-date"));
+			Assert.assertEquals(
+				lastImportUser.getFullName(),
+				layout.getTypeSettingsProperty("last-import-user-name"));
+			Assert.assertEquals(
+				lastImportUser.getUuid(),
+				layout.getTypeSettingsProperty("last-import-user-uuid"));
+		}
 	}
 
 	private void _testPutSiteSitePageWithWidgetPageSettings() throws Exception {
