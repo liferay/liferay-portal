@@ -144,6 +144,10 @@ public class AnalyticsAttributesUtil {
 		InfoItemFieldMapped infoItemFieldMapped,
 		InfoItemFieldValues infoItemFieldValues) {
 
+		if (infoItemFieldValues == null) {
+			return ACTION_IMPRESSION;
+		}
+
 		InfoFieldValue<?> infoFieldValue =
 			infoItemFieldValues.getInfoFieldValue(
 				infoItemFieldMapped.getFieldName());
@@ -215,6 +219,10 @@ public class AnalyticsAttributesUtil {
 		FragmentEntryProcessorHelper fragmentEntryProcessorHelper,
 		InfoItemFieldMapped infoItemFieldMapped,
 		InfoItemFieldValues infoItemFieldValues, Locale locale) {
+
+		if (infoItemFieldValues == null) {
+			return null;
+		}
 
 		InfoFieldValue<?> infoFieldValue =
 			infoItemFieldValues.getInfoFieldValue(
