@@ -16,6 +16,14 @@ export function fetch({accountId, channelId, groupId}) {
 	});
 }
 
+export function fetchAccountIndividualMetrics({accountId, channelId, groupId}) {
+	return sendRequest({
+		data: {channelId},
+		method: 'GET',
+		path: `contacts/${groupId}/account/${accountId}/overview`,
+	});
+}
+
 export function fetchDetails({accountId, channelId, groupId}) {
 	return sendRequest({
 		data: {channelId},
@@ -74,14 +82,6 @@ export function fetchMetrics({channelId, groupId}) {
 		data: {channelId},
 		method: 'GET',
 		path: `contacts/${groupId}/account/metrics`,
-	});
-}
-
-export function fetchOverviewMetrics({channelId, groupId}) {
-	return sendRequest({
-		data: {channelId},
-		method: 'GET',
-		path: `contacts/${groupId}/account/overview`,
 	});
 }
 

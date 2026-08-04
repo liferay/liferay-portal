@@ -7,7 +7,10 @@ import React from 'react';
 import TopAssets from './components/TopAssets';
 import TopCategoriesAndTags from './components/TopCategoriesAndTags';
 import TopPagesCard from './components/TopPagesCard';
-import {AccountOverviewMetricType, IAccountOverviewMetric} from './utils/types';
+import {
+	AccountIndividualMetricType,
+	IAccountIndividualMetric,
+} from './utils/types';
 import {IAccount} from './components/AccountInfo';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useParams} from 'react-router-dom';
@@ -28,14 +31,17 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 	const query = useQueryParams();
 
 	const {data, loading} = useRequest({
-		dataSourceFn: API.accounts.fetchOverviewMetrics,
-		variables: {channelId, groupId},
+		dataSourceFn: API.accounts.fetchAccountIndividualMetrics,
+		skipRequest: !id,
+		variables: {accountId: id, channelId, groupId},
 	});
 
-	const metrics = data as IAccountOverviewMetric[] | undefined;
+	const accountMetrics = data as IAccountIndividualMetric[] | undefined;
 
-	const getCount = (metricType: AccountOverviewMetricType) =>
-		metrics?.find((metric) => metric.metricType === metricType)?.value;
+	const getCount = (metricType: AccountIndividualMetricType) =>
+		accountMetrics?.find(
+			(accountMetric) => accountMetric.metricType === metricType
+		)?.value;
 
 	return (
 		<BasePage.Context.Provider
@@ -71,7 +77,7 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 							{
 								label: Liferay.Language.get('x-individuals'),
 								value: getCount(
-									AccountOverviewMetricType.TotalIndividuals
+									AccountIndividualMetricType.TotalIndividuals
 								),
 							},
 						]}
@@ -86,13 +92,13 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 							{
 								label: Liferay.Language.get('x-known'),
 								value: getCount(
-									AccountOverviewMetricType.KnownIndividuals
+									AccountIndividualMetricType.KnownIndividuals
 								),
 							},
 							{
 								label: Liferay.Language.get('x-anonymous'),
 								value: getCount(
-									AccountOverviewMetricType.AnonymousIndividuals
+									AccountIndividualMetricType.AnonymousIndividuals
 								),
 							},
 						]}
@@ -107,13 +113,13 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 							{
 								label: Liferay.Language.get('x-returning'),
 								value: getCount(
-									AccountOverviewMetricType.ReturningIndividuals
+									AccountIndividualMetricType.ReturningIndividuals
 								),
 							},
 							{
 								label: Liferay.Language.get('x-first-time'),
 								value: getCount(
-									AccountOverviewMetricType.FirstTimeIndividuals
+									AccountIndividualMetricType.FirstTimeIndividuals
 								),
 							},
 						]}
@@ -128,7 +134,7 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 							{
 								label: Liferay.Language.get('x-no-activity'),
 								value: getCount(
-									AccountOverviewMetricType.InactiveIndividuals
+									AccountIndividualMetricType.InactiveIndividuals
 								),
 							},
 						]}

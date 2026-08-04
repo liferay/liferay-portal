@@ -1,11 +1,6 @@
 import {TrendClassification} from 'segment/types';
 
-export enum AccountMetricType {
-	Active = 'activeCount',
-	New = 'newCount',
-	Total = 'totalCount',
-}
-export enum AccountOverviewMetricType {
+export enum AccountIndividualMetricType {
 	AnonymousIndividuals = 'anonymousIndividualsCount',
 	FirstTimeIndividuals = 'firstTimeIndividualsCount',
 	InactiveIndividuals = 'inactiveIndividualsCount',
@@ -13,13 +8,18 @@ export enum AccountOverviewMetricType {
 	ReturningIndividuals = 'returningIndividualsCount',
 	TotalIndividuals = 'totalIndividualsCount',
 }
+export enum AccountMetricType {
+	Active = 'activeCount',
+	New = 'newCount',
+	Total = 'totalCount',
+}
 
+export interface IAccountIndividualMetric {
+	metricType: AccountIndividualMetricType;
+	value: number;
+}
 export interface IAccountMetric extends Metric {
 	metricType: AccountMetricType;
-}
-export interface IAccountOverviewMetric {
-	metricType: AccountOverviewMetricType;
-	value: number;
 }
 
 export type Metric = {
