@@ -13,14 +13,32 @@ import {StaticRouter} from 'react-router';
 
 jest.unmock('react-dom');
 
+type FakeFilter = {
+	id: string;
+	preloadedData?: {
+		exclude: boolean;
+		selectedItems: Array<{label?: string; value: string}>;
+	};
+};
+
 let lastApiURL: string | undefined;
 let lastDataSetId: string | undefined;
+let lastFilters: FakeFilter[] | undefined;
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	...jest.requireActual('@liferay/frontend-data-set-web'),
-	FrontendDataSet: ({apiURL, id}: {apiURL: string; id: string}) => {
+	FrontendDataSet: ({
+		apiURL,
+		filters,
+		id,
+	}: {
+		apiURL: string;
+		filters: FakeFilter[];
+		id: string;
+	}) => {
 		lastApiURL = apiURL;
 		lastDataSetId = id;
+		lastFilters = filters;
 
 		return <div data-testid="fds-component" id={id} />;
 	},
@@ -62,6 +80,7 @@ describe('AccountProfile', () => {
 	beforeEach(() => {
 		lastApiURL = undefined;
 		lastDataSetId = undefined;
+		lastFilters = undefined;
 	});
 
 	afterEach(cleanup);
@@ -90,6 +109,16 @@ describe('AccountProfile', () => {
 			'/o/faro/contacts/23/account/search?channelId=123&segmentId=0'
 		);
 		expect(lastDataSetId).toBe('segment-accounts-dataset');
+	});
+
+	it('should list the accounts matching the segment without any filter applied', () => {
+		renderAccountProfile();
+
+		const preloadedFilters = lastFilters?.filter(
+			({preloadedData}) => preloadedData
+		);
+
+		expect(preloadedFilters).toHaveLength(0);
 	});
 
 	it('should offer the segment membership as a CSV download', () => {

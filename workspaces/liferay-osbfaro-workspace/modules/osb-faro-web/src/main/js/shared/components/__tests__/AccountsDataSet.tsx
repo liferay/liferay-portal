@@ -112,9 +112,24 @@ describe('AccountsDataSet', () => {
 		expect(lastApiURL).toBe('fake-url');
 	});
 
-	it('should preload the rangeKey filter with Last 30 Days by default', () => {
+	it('should leave the rangeKey filter without preloadedData when rangeKeyFilter is not provided', () => {
 		render(
 			<AccountsDataSet apiURL="fake-url" channelId="123" groupId="23" />
+		);
+
+		const rangeKeyFilter = lastFilters?.find((f) => f.id === 'rangeKey');
+
+		expect(rangeKeyFilter?.preloadedData).toBeUndefined();
+	});
+
+	it('should preload the rangeKey filter when rangeKeyFilter prop is provided', () => {
+		render(
+			<AccountsDataSet
+				apiURL="fake-url"
+				channelId="123"
+				groupId="23"
+				rangeKeyFilter={RangeKeyTimeRanges.Last30Days}
+			/>
 		);
 
 		const rangeKeyFilter = lastFilters?.find((f) => f.id === 'rangeKey');
