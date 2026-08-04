@@ -30,7 +30,7 @@ public class MonitorIdValidatorTest
 			MonitorIdValidator.validate(
 				Arrays.<Monitor>asList(_newMonitor("a"), _newMonitor("a")));
 
-			Assert.fail("Expected IllegalArgumentException");
+			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 		}
@@ -39,7 +39,7 @@ public class MonitorIdValidatorTest
 			MonitorIdValidator.validate(
 				Arrays.<Monitor>asList(_newMonitor("a"), _newMonitor(null)));
 
-			Assert.fail("Expected IllegalArgumentException");
+			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 		}
@@ -48,7 +48,7 @@ public class MonitorIdValidatorTest
 			MonitorIdValidator.validate(
 				Arrays.<Monitor>asList(_newMonitor("a"), _newMonitor("")));
 
-			Assert.fail("Expected IllegalArgumentException");
+			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 		}

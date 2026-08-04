@@ -45,7 +45,7 @@ public class MonitorMetricsWriterTest
 							"disk", MonitorConfig.Severity.MEDIUM,
 							RandomTestUtil.randomString()))));
 
-			Assert.fail("Expected IllegalArgumentException");
+			Assert.fail();
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 		}
