@@ -73,8 +73,64 @@ public class ServiceBag<V> {
 		_serviceWrapper = (ServiceWrapper<?>)nextTarget;
 	}
 
+	public void replace() {
+		synchronized (_aopInvocationHandler) {
+			_replace();
+		}
+
+		if (_serviceReference != null) {
+			_bundleContext.ungetService(_serviceReference);
+		}
+	}
+
+	private ClassLoader _getClassLoader(
+		ClassLoader classLoader, Class<?> clazz) {
+
+		try {
+			if ((classLoader == clazz.getClassLoader()) ||
+				(clazz == classLoader.loadClass(clazz.getName()))) {
+
+				return classLoader;
+			}
+		}
+		catch (ClassNotFoundException classNotFoundException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Unable to load class " + clazz, classNotFoundException);
+			}
+		}
+
+		return AggregateClassLoader.getAggregateClassLoader(
+			classLoader, clazz.getClassLoader());
+	}
+
+	private boolean _isLiferayOwned(Object object) {
+		Class<?> clazz = object.getClass();
+
+		String className = clazz.getName();
+
+		if (className.startsWith("com.liferay.")) {
+			return true;
+		}
+
+		InvocationHandler invocationHandler = ProxyUtil.fetchInvocationHandler(
+			object, InvocationHandler.class);
+
+		if (invocationHandler != null) {
+			clazz = invocationHandler.getClass();
+
+			className = clazz.getName();
+
+			if (className.startsWith("com.liferay.")) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	@SuppressWarnings("unchecked")
-	public <T> void replace() {
+	private <T> void _replace() {
 		Object currentService = _aopInvocationHandler.getTarget();
 
 		ServiceWrapper<T> previousService = null;
@@ -137,56 +193,6 @@ public class ServiceBag<V> {
 
 			currentService = previousService.getWrappedService();
 		}
-
-		if (_serviceReference != null) {
-			_bundleContext.ungetService(_serviceReference);
-		}
-	}
-
-	private ClassLoader _getClassLoader(
-		ClassLoader classLoader, Class<?> clazz) {
-
-		try {
-			if ((classLoader == clazz.getClassLoader()) ||
-				(clazz == classLoader.loadClass(clazz.getName()))) {
-
-				return classLoader;
-			}
-		}
-		catch (ClassNotFoundException classNotFoundException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Unable to load class " + clazz, classNotFoundException);
-			}
-		}
-
-		return AggregateClassLoader.getAggregateClassLoader(
-			classLoader, clazz.getClassLoader());
-	}
-
-	private boolean _isLiferayOwned(Object object) {
-		Class<?> clazz = object.getClass();
-
-		String className = clazz.getName();
-
-		if (className.startsWith("com.liferay.")) {
-			return true;
-		}
-
-		InvocationHandler invocationHandler = ProxyUtil.fetchInvocationHandler(
-			object, InvocationHandler.class);
-
-		if (invocationHandler != null) {
-			clazz = invocationHandler.getClass();
-
-			className = clazz.getName();
-
-			if (className.startsWith("com.liferay.")) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(ServiceBag.class);

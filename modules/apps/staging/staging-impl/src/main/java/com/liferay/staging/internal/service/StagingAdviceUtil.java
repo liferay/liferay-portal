@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationHandler;
 import java.util.function.Function;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Dante Wang
@@ -36,20 +37,25 @@ public class StagingAdviceUtil {
 			ProxyUtil.fetchInvocationHandler(
 				service, AopInvocationHandler.class);
 
-		ServiceBag<?> serviceBag = new ServiceBag(
-			aopInvocationHandler, serviceClass,
-			(ServiceWrapper<?>)ProxyUtil.newProxyInstance(
-				AggregateClassLoader.getAggregateClassLoader(
-					PortalClassLoaderUtil.getClassLoader(),
-					StagingAdviceUtil.class.getClassLoader()),
-				new Class<?>[] {
-					IdentifiableOSGiService.class, serviceClass,
-					BaseLocalService.class, ServiceWrapper.class
-				},
-				function.apply(aopInvocationHandler.getTarget())),
-			bundleContext, bundleContext.getServiceReference(serviceClass));
+		ServiceReference<T> serviceReference =
+			bundleContext.getServiceReference(serviceClass);
 
-		return serviceBag::replace;
+		synchronized (aopInvocationHandler) {
+			ServiceBag<?> serviceBag = new ServiceBag(
+				aopInvocationHandler, serviceClass,
+				(ServiceWrapper<?>)ProxyUtil.newProxyInstance(
+					AggregateClassLoader.getAggregateClassLoader(
+						PortalClassLoaderUtil.getClassLoader(),
+						StagingAdviceUtil.class.getClassLoader()),
+					new Class<?>[] {
+						IdentifiableOSGiService.class, serviceClass,
+						BaseLocalService.class, ServiceWrapper.class
+					},
+					function.apply(aopInvocationHandler.getTarget())),
+				bundleContext, serviceReference);
+
+			return serviceBag::replace;
+		}
 	}
 
 }
