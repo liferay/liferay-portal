@@ -6,11 +6,49 @@ import {
 	FrontendDataSet,
 	pagination,
 } from 'shared/components/FrontendDataSet';
+import {formatTime} from 'shared/util/time';
 import {Routes} from 'shared/util/router';
 import {Text} from '@clayui/core';
+import {toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
 
 const FDS_ID = 'account-individuals-dataset';
+
+const SORTS = [
+	{
+		active: true,
+		default: true,
+		direction: 'desc' as const,
+		key: 'activitiesCount',
+		label: Liferay.Language.get('total-events'),
+	},
+];
+
+interface IIndividualItemData {
+	id: string | number;
+	properties?: {jobTitle?: string};
+}
+
+export const getVisitorType = (sessionsCount: number) => {
+	if (!sessionsCount) {
+		return {
+			displayType: 'secondary' as const,
+			label: Liferay.Language.get('no-activities'),
+		};
+	}
+
+	if (sessionsCount === 1) {
+		return {
+			displayType: 'success' as const,
+			label: Liferay.Language.get('first-time'),
+		};
+	}
+
+	return {
+		displayType: 'info' as const,
+		label: Liferay.Language.get('returning'),
+	};
+};
 
 interface IAccountIndividualsProps {
 	className?: string;
@@ -46,16 +84,16 @@ const AccountIndividuals: React.FC<IAccountIndividualsProps> = ({
 					<FrontendDataSet
 						apiURL={`/o/faro/contacts/${groupId}/account/${id}/individuals?channelId=${channelId}`}
 						customDataRenderers={{
-							department: ({
-								itemData,
+							avgSessionDurationRenderer: ({
+								value,
 							}: {
-								itemData: {properties?: {department?: string}};
-							}) => itemData.properties?.department ?? '',
+								value?: number;
+							}) => (value ? formatTime(value) : ''),
 							individualNameRenderer: ({
 								itemData,
 								value,
 							}: {
-								itemData: {id: string | number};
+								itemData: IIndividualItemData;
 								value: string;
 							}) =>
 								columns.nameAndLinkRenderer({
@@ -65,17 +103,28 @@ const AccountIndividuals: React.FC<IAccountIndividualsProps> = ({
 									route: Routes.CONTACTS_INDIVIDUAL,
 									value,
 								}),
-							jobTitle: ({
+							jobTitleRenderer: ({
 								itemData,
 							}: {
-								itemData: {properties?: {jobTitle?: string}};
+								itemData: IIndividualItemData;
 							}) => itemData.properties?.jobTitle ?? '',
 							lastActiveRenderer: ({value}: {value: string}) =>
 								columns.dateRenderer({itemData: {}, value}),
+							totalEventsRenderer: ({value}: {value?: number}) =>
+								typeof value === 'number'
+									? toThousands(value)
+									: '',
+							visitorTypeRenderer: ({value}: {value?: number}) =>
+								typeof value === 'number'
+									? columns.cmsLabelRenderer(
+											getVisitorType(value)
+										)
+									: '',
 						}}
 						id={FDS_ID}
 						pagination={pagination}
 						showPagination
+						sorts={SORTS}
 						views={[
 							{
 								contentRenderer: 'table',
@@ -94,18 +143,37 @@ const AccountIndividuals: React.FC<IAccountIndividualsProps> = ({
 											sortable: true,
 										},
 										{
-											contentRenderer: 'department',
-											fieldName: 'department',
+											contentRenderer: 'jobTitleRenderer',
+											fieldName: 'jobTitle',
 											label: Liferay.Language.get(
-												'department'
+												'job-title'
 											),
 											sortable: true,
 										},
 										{
-											contentRenderer: 'jobTitle',
-											fieldName: 'jobTitle',
+											contentRenderer:
+												'visitorTypeRenderer',
+											fieldName: 'sessionsCount',
 											label: Liferay.Language.get(
-												'job-title'
+												'visitor-type'
+											),
+											sortable: true,
+										},
+										{
+											contentRenderer:
+												'totalEventsRenderer',
+											fieldName: 'activitiesCount',
+											label: Liferay.Language.get(
+												'total-events'
+											),
+											sortable: true,
+										},
+										{
+											contentRenderer:
+												'avgSessionDurationRenderer',
+											fieldName: 'averageSessionDuration',
+											label: Liferay.Language.get(
+												'avg-session-duration'
 											),
 											sortable: true,
 										},

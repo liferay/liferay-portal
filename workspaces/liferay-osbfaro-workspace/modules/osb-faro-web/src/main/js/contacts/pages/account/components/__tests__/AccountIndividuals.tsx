@@ -1,4 +1,4 @@
-import AccountIndividuals from '../AccountIndividuals';
+import AccountIndividuals, {getVisitorType} from '../AccountIndividuals';
 import React from 'react';
 import {cleanup, render, screen} from '@testing-library/react';
 
@@ -68,16 +68,17 @@ describe('AccountIndividuals', () => {
 		expect(lastFDSProps.pagination).toBeDefined();
 	});
 
-	it('should declare the four expected sortable columns', () => {
+	it('should declare the six expected sortable columns', () => {
 		render(<AccountIndividuals />);
 
 		const fields = lastFDSProps.views[0].schema.fields;
 
-		expect(fields).toHaveLength(4);
 		expect(fields.map((field: any) => field.fieldName)).toEqual([
 			'name',
-			'department',
 			'jobTitle',
+			'sessionsCount',
+			'activitiesCount',
+			'averageSessionDuration',
 			'lastActivityDate',
 		]);
 		expect(fields.every((field: any) => field.sortable === true)).toBe(
@@ -85,15 +86,73 @@ describe('AccountIndividuals', () => {
 		);
 	});
 
+	it('should no longer declare the department column', () => {
+		render(<AccountIndividuals />);
+
+		const fields = lastFDSProps.views[0].schema.fields;
+
+		expect(
+			fields.some((field: any) => field.fieldName === 'department')
+		).toBe(false);
+	});
+
 	it('should label the columns from the language bundle', () => {
 		render(<AccountIndividuals />);
 
 		const fields = lastFDSProps.views[0].schema.fields;
 
-		expect(fields[0].label).toBe('Individual Name');
-		expect(fields[1].label).toBe('Department');
-		expect(fields[2].label).toBe('Job Title');
-		expect(fields[3].label).toBe('Last Active');
+		expect(fields.map((field: any) => field.label)).toEqual([
+			'Individual Name',
+			'Job Title',
+			'Visitor Type',
+			'Total Events',
+			'Avg. Session Duration',
+			'Last Active',
+		]);
+	});
+
+	it('should sort the individuals by total events descending', () => {
+		render(<AccountIndividuals />);
+
+		expect(lastFDSProps.sorts).toEqual([
+			{
+				active: true,
+				default: true,
+				direction: 'desc',
+				key: 'activitiesCount',
+				label: 'Total Events',
+			},
+		]);
+	});
+
+	it('should abbreviate the total events', () => {
+		render(<AccountIndividuals />);
+
+		const renderer = lastFDSProps.customDataRenderers.totalEventsRenderer;
+
+		expect(renderer({value: 6700})).toBe('6.7K');
+		expect(renderer({})).toBe('');
+	});
+
+	it('should format the average session duration', () => {
+		render(<AccountIndividuals />);
+
+		const renderer =
+			lastFDSProps.customDataRenderers.avgSessionDurationRenderer;
+
+		expect(renderer({value: 675000})).toBe('00:11:15');
+		expect(renderer({})).toBe('');
+	});
+
+	it('should read the job title from the individual properties', () => {
+		render(<AccountIndividuals />);
+
+		const renderer = lastFDSProps.customDataRenderers.jobTitleRenderer;
+
+		expect(
+			renderer({itemData: {properties: {jobTitle: 'Estimator'}}})
+		).toBe('Estimator');
+		expect(renderer({itemData: {}})).toBe('');
 	});
 
 	it('should wire the individual name renderer to the contacts individual route', () => {
@@ -121,5 +180,19 @@ describe('AccountIndividuals', () => {
 		const cell = renderer({value: '2026-05-01T10:23:00Z'});
 
 		expect(cell.props.children).toBeTruthy();
+	});
+});
+
+describe('getVisitorType', () => {
+	it('should read no sessions as no activities', () => {
+		expect(getVisitorType(0).label).toBe('No Activities');
+	});
+
+	it('should read a single session as a first time visitor', () => {
+		expect(getVisitorType(1).label).toBe('First-Time');
+	});
+
+	it('should read more than one session as a returning visitor', () => {
+		expect(getVisitorType(2).label).toBe('Returning');
 	});
 });
