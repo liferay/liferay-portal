@@ -62,7 +62,9 @@ public class FIPSApplicationStateMachineUtil {
 				FIPSApplicationState.ERROR, FIPSApplicationState.POWER_OFF,
 				FIPSApplicationState.SELF_TEST),
 			FIPSApplicationState.OPERATIONAL,
-			Set.of(FIPSApplicationState.ERROR, FIPSApplicationState.POWER_OFF),
+			Set.of(
+				FIPSApplicationState.ERROR, FIPSApplicationState.POWER_OFF,
+				FIPSApplicationState.SELF_TEST),
 			FIPSApplicationState.POWER_OFF, Set.of(),
 			FIPSApplicationState.SELF_TEST,
 			Set.of(
