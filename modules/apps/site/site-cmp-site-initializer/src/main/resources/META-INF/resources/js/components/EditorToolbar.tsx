@@ -8,12 +8,13 @@ import {ClayInput} from '@clayui/form';
 import ClayLink from '@clayui/link';
 import {AIAssistantTriggerButton} from '@liferay/ai-hub-cell-js-components-web';
 import {isCtrlOrMeta} from '@liferay/layout-js-components-web';
-import {Toolbar} from '@liferay/site-cms-site-initializer';
-import {sessionStorage, sub} from 'frontend-js-web';
-import React, {useEffect, useId, useState} from 'react';
+import {ApiHelper, Toolbar} from '@liferay/site-cms-site-initializer';
+import {navigate, sessionStorage, sub} from 'frontend-js-web';
+import React, {useEffect, useId, useRef, useState} from 'react';
 
 export default function EditorToolbar({
 	backURL,
+	discardURL,
 	formSubmitURL,
 	groupId,
 	hasUpdatePermission,
@@ -21,6 +22,7 @@ export default function EditorToolbar({
 	title,
 }: {
 	backURL: string;
+	discardURL?: string;
 	formSubmitURL?: string;
 	groupId: number;
 	hasUpdatePermission: boolean;
@@ -29,10 +31,27 @@ export default function EditorToolbar({
 }) {
 	const [formId, setFormId] = useState<string | undefined>();
 
+	const discardingRef = useRef(false);
 	const submitLabelId = useId();
 	const submitTitle = getSubmitTitle(
 		sub(Liferay.Language.get('save-x'), title)
 	);
+
+	function discardDraft(event: React.MouseEvent) {
+		if (!discardURL) {
+			return;
+		}
+
+		event.preventDefault();
+
+		if (discardingRef.current) {
+			return;
+		}
+
+		discardingRef.current = true;
+
+		ApiHelper.delete(discardURL).finally(() => navigate(backURL));
+	}
 
 	function getForm(): HTMLFormElement {
 		let form = document.querySelector('.lfr-main-form-container');
@@ -80,6 +99,7 @@ export default function EditorToolbar({
 		<Toolbar
 			backURL={backURL}
 			className="content-editor__toolbar position-fixed"
+			onBackClick={discardDraft}
 			title={title}
 		>
 			{Liferay.FeatureFlags['LPD-62272'] && (
@@ -101,6 +121,7 @@ export default function EditorToolbar({
 					button
 					displayType="secondary"
 					href={backURL}
+					onClick={discardDraft}
 					small
 				>
 					{Liferay.Language.get('cancel')}

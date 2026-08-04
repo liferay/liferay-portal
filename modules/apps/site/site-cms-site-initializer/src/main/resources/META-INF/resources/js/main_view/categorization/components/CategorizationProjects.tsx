@@ -6,6 +6,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 
 import ApiHelper from '../../../common/services/ApiHelper';
+import ProjectLinkService from '../../../common/services/ProjectLinkService';
 import {Space as Project} from '../../../common/types/Space';
 import ScopeMultiSelect, {ScopeItem as ProjectItem} from './ScopeMultiSelect';
 
@@ -28,13 +29,23 @@ export default function CategorizationProjects({
 
 	useEffect(() => {
 		const loadProjects = async () => {
-			const response = await ApiHelper.getAll<Project>({
-				filter: "type eq 'Project'",
-				url: '/o/headless-asset-library/v1.0/asset-libraries',
-			});
+			const [assetLibraries, {data: nonDraftProjectScopeIds}] =
+				await Promise.all([
+					ApiHelper.getAll<Project>({
+						filter: "type eq 'Project'",
+						url: '/o/headless-asset-library/v1.0/asset-libraries',
+					}),
+					ProjectLinkService.getNonDraftProjectScopeIds(),
+				]);
+
+			const projects = nonDraftProjectScopeIds
+				? assetLibraries.filter((item) =>
+						nonDraftProjectScopeIds.has(item.siteId)
+					)
+				: assetLibraries;
 
 			setSourceItems(
-				response.map(
+				projects.map(
 					(item): ProjectItem => ({
 						displayType: item.settings?.logoColor,
 						label: item.name,

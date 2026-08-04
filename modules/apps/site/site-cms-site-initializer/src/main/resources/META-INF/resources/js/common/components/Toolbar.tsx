@@ -13,7 +13,7 @@ type Props = {
 	backURL?: string;
 	children?: React.ReactNode;
 	className?: string;
-	onBackClick?: () => void;
+	onBackClick?: (event: React.MouseEvent) => void;
 	title: string;
 };
 

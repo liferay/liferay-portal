@@ -47,6 +47,12 @@ type ProjectLinkSearchItem = {
 	};
 };
 
+type ProjectScopeSearchItem = {
+	embedded?: {
+		scopeId?: number;
+	};
+};
+
 type ProjectSearchItem = {
 	embedded: {
 		dueDate?: string;
@@ -59,19 +65,27 @@ type ProjectSearchItem = {
 
 const PROJECT_LINKS_URL = '/o/cmp/project-links';
 
-function buildSearchURL(
-	objectDefinitionId: number,
-	page: number,
-	filter?: string
-): string {
-	let filterString = `objectDefinitionId eq ${objectDefinitionId}`;
+function buildSearchURL({
+	filter,
+	objectDefinitionId,
+	page,
+}: {
+	filter?: string;
+	objectDefinitionId?: number;
+	page: number;
+}): string {
+	const filterStrings: string[] = [];
+
+	if (objectDefinitionId !== undefined) {
+		filterStrings.push(`objectDefinitionId eq ${objectDefinitionId}`);
+	}
 
 	if (filter) {
-		filterString = `${filterString} and ${filter}`;
+		filterStrings.push(filter);
 	}
 
 	return `/o/search/v1.0/search?emptySearch=true&nestedFields=embedded&page=${page}&pageSize=500&filter=${encodeURIComponent(
-		filterString
+		filterStrings.join(' and ')
 	)}`;
 }
 
@@ -85,7 +99,7 @@ async function fetchAllSearchItems<T>({
 	signal,
 }: {
 	filter?: string;
-	objectDefinitionId: number;
+	objectDefinitionId?: number;
 	signal?: AbortSignal;
 }): Promise<RequestResult<T[]>> {
 	const items: T[] = [];
@@ -97,7 +111,7 @@ async function fetchAllSearchItems<T>({
 		const {data, error, status, type} = await ApiHelper.get<{
 			items: T[];
 			lastPage: number;
-		}>(buildSearchURL(objectDefinitionId, page, filter), signal);
+		}>(buildSearchURL({filter, objectDefinitionId, page}), signal);
 
 		if (error !== null) {
 			return {data: null, error, status, type};
@@ -110,6 +124,33 @@ async function fetchAllSearchItems<T>({
 	}
 
 	return {data: items, error: null};
+}
+
+async function getNonDraftProjectScopeIds({
+	signal,
+}: {
+	signal?: AbortSignal;
+} = {}): Promise<RequestResult<Set<number>>> {
+	const {data, error, status, type} =
+		await fetchAllSearchItems<ProjectScopeSearchItem>({
+			filter:
+				"objectDefinitionExternalReferenceCode eq 'l_cmp_project' and " +
+				'status in (0, 1)',
+			signal,
+		});
+
+	if (error !== null) {
+		return {data: null, error, status, type};
+	}
+
+	return {
+		data: new Set(
+			data
+				.map(({embedded}) => embedded?.scopeId)
+				.filter((scopeId): scopeId is number => scopeId !== undefined)
+		),
+		error: null,
+	};
 }
 
 /**
@@ -239,6 +280,7 @@ async function unlinkProject({
 }
 
 const ProjectLinkService = {
+	getNonDraftProjectScopeIds,
 	getProjectLinks,
 	getProjects,
 	linkProject,
