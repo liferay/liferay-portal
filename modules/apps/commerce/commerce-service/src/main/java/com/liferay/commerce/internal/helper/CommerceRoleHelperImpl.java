@@ -65,6 +65,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -234,12 +235,17 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 		else if (GetterUtil.getBoolean(
 					serviceContext.getAttribute("forceReloadPermissions"))) {
 
-			List<ResourcePermission> resourcePermissions =
-				_resourcePermissionLocalService.getRoleResourcePermissions(
-					role.getRoleId());
-
-			if (ListUtil.isEmpty(resourcePermissions)) {
+			if (Objects.equals(name, RoleConstants.USER)) {
 				_setRolePermissions(role, serviceContext);
+			}
+			else {
+				List<ResourcePermission> resourcePermissions =
+					_resourcePermissionLocalService.getRoleResourcePermissions(
+						role.getRoleId());
+
+				if (ListUtil.isEmpty(resourcePermissions)) {
+					_setRolePermissions(role, serviceContext);
+				}
 			}
 		}
 	}
