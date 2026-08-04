@@ -61,19 +61,21 @@ const AIAssistantHost: React.FC = () => {
 
 	const sidebarId = useId();
 	const anchorRef = useRef<HTMLElement | null>(null);
+	const triggerElementRef = useRef<HTMLElement | null>(null);
 
 	useEffect(() => releaseHost, []);
 
 	useEffect(() => {
 		if (command) {
 			setLastCommand(command);
-			setOpenedByEvent(false);
 			setExpanded(false);
 		}
+		setOpenedByEvent(false);
 	}, [command]);
 
 	const activeCommand = command ?? lastCommand;
 	const anchorId = activeCommand?.anchorId;
+	const triggerId = activeCommand?.triggerId;
 
 	const isOpen = command !== null || openedByEvent;
 
@@ -88,6 +90,12 @@ const AIAssistantHost: React.FC = () => {
 
 		setAnchorElement(element);
 	}, [anchorId]);
+
+	useEffect(() => {
+		triggerElementRef.current = triggerId
+			? document.getElementById(triggerId)
+			: null;
+	}, [triggerId]);
 
 	useEffect(() => {
 		if (showSidebar) {
@@ -168,6 +176,7 @@ const AIAssistantHost: React.FC = () => {
 							handleClose();
 						}
 					}}
+					triggerRef={triggerElementRef}
 				>
 					<div className="ai-assistant ai-assistant-chat__dropdown-container">
 						<AIAssistantPanelHeader

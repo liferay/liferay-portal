@@ -230,6 +230,49 @@ describe('AIAssistantHost', () => {
 		).toHaveLength(2);
 	});
 
+	it('closes the dropdown when a trigger anchored elsewhere is clicked again', async () => {
+		const anchor = document.createElement('button');
+
+		anchor.id = 'toolbar-anchor';
+
+		document.body.appendChild(anchor);
+
+		await renderAndOpen({
+			anchorId: 'toolbar-anchor',
+			presentation: 'dropdown',
+			triggerId: 'tags-trigger',
+		});
+
+		await act(async () => {
+			fireCategorizeEvent({
+				agent: ECategorizationAgent.GENERATE_TAGS,
+				content: 'Body',
+			});
+		});
+
+		// While the dropdown is open, Clay's Overlay hides everything outside
+		// the menu with aria-hidden, so the trigger is only reachable by id.
+
+		const trigger = document.getElementById('tags-trigger') as HTMLElement;
+
+		expect(trigger).toHaveAttribute('aria-expanded', 'true');
+
+		await act(async () => {
+			fireEvent.pointerDown(trigger);
+			fireEvent.mouseDown(trigger);
+			fireEvent.pointerUp(trigger);
+			fireEvent.mouseUp(trigger);
+			fireEvent.click(trigger);
+		});
+
+		expect(trigger).toHaveAttribute('aria-expanded', 'false');
+		expect(
+			screen.queryByRole('button', {name: 'maximize'})
+		).not.toBeInTheDocument();
+
+		anchor.remove();
+	});
+
 	it('closes the sidebar on Escape', async () => {
 		await renderAndOpen({presentation: 'sidebar'});
 
