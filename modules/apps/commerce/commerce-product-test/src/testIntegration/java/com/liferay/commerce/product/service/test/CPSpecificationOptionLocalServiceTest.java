@@ -13,6 +13,8 @@ import com.liferay.commerce.product.service.CPSpecificationOptionListTypeDefinit
 import com.liferay.commerce.product.service.CPSpecificationOptionLocalService;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -186,6 +189,84 @@ public class CPSpecificationOptionLocalServiceTest {
 		Assert.assertEquals(
 			listTypeDefinition.toString(), 0,
 			cpSpecificationOptionListTypeDefinitionRels.size());
+	}
+
+	@Test
+	public void testGetOrAddEmptyCPSpecificationOption() throws Exception {
+		frutillaRule.scenario(
+			"Get or add an empty product specification option"
+		).given(
+			"A company and an external reference code"
+		).when(
+			"An empty product specification option is requested"
+		).then(
+			"A NoSuchCPSpecificationOptionException is thrown while lazy " +
+				"referencing is disabled"
+		).and(
+			"An empty stub with the given external reference code is " +
+				"returned while lazy referencing is enabled"
+		).and(
+			"The same product specification option is resolved on subsequent " +
+				"requests"
+		).and(
+			"The empty status is cleared once the stub is updated"
+		);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_cpSpecificationOptionLocalService.
+				getOrAddEmptyCPSpecificationOption(
+					externalReferenceCode, _serviceContext.getCompanyId(),
+					_serviceContext.getUserId());
+
+			Assert.fail();
+		}
+		catch (NoSuchCPSpecificationOptionException
+					noSuchCPSpecificationOptionException) {
+
+			Assert.assertNotNull(noSuchCPSpecificationOptionException);
+		}
+
+		CPSpecificationOption cpSpecificationOption = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			cpSpecificationOption =
+				_cpSpecificationOptionLocalService.
+					getOrAddEmptyCPSpecificationOption(
+						externalReferenceCode, _serviceContext.getCompanyId(),
+						_serviceContext.getUserId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY,
+				cpSpecificationOption.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				cpSpecificationOption.getExternalReferenceCode());
+
+			CPSpecificationOption resolvedCPSpecificationOption =
+				_cpSpecificationOptionLocalService.
+					getOrAddEmptyCPSpecificationOption(
+						externalReferenceCode, _serviceContext.getCompanyId(),
+						_serviceContext.getUserId());
+
+			Assert.assertEquals(
+				cpSpecificationOption.getCPSpecificationOptionId(),
+				resolvedCPSpecificationOption.getCPSpecificationOptionId());
+		}
+
+		cpSpecificationOption =
+			_cpSpecificationOptionLocalService.updateCPSpecificationOption(
+				externalReferenceCode,
+				cpSpecificationOption.getCPSpecificationOptionId(), 0L, null,
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), false,
+				RandomTestUtil.randomString(), 0, true, _serviceContext);
+
+		Assert.assertNotEquals(
+			WorkflowConstants.STATUS_EMPTY, cpSpecificationOption.getStatus());
 	}
 
 	@Test(expected = NoSuchCPSpecificationOptionException.class)

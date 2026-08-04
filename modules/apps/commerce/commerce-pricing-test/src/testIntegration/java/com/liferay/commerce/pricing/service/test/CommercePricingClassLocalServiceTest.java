@@ -7,6 +7,7 @@ package com.liferay.commerce.pricing.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.pricing.exception.CommercePricingClassTitleException;
+import com.liferay.commerce.pricing.exception.NoSuchPricingClassException;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
@@ -16,6 +17,8 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -26,6 +29,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -219,6 +223,77 @@ public class CommercePricingClassLocalServiceTest {
 					commercePricingClass.getCommercePricingClassId());
 
 		Assert.assertEquals(0, commercePricingClassRelsCount);
+	}
+
+	@Test
+	public void testGetOrAddEmptyCommercePricingClass() throws Exception {
+		frutillaRule.scenario(
+			"Get or add an empty product group"
+		).given(
+			"A company and an external reference code"
+		).when(
+			"An empty product group is requested"
+		).then(
+			"A NoSuchPricingClassException is thrown while lazy referencing " +
+				"is disabled"
+		).and(
+			"An empty stub with the given external reference code is " +
+				"returned while lazy referencing is enabled"
+		).and(
+			"The same product group is resolved on subsequent requests"
+		).and(
+			"The empty status is cleared once the stub is updated"
+		);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try {
+			_commercePricingClassLocalService.getOrAddEmptyCommercePricingClass(
+				externalReferenceCode, _user.getCompanyId(), _user.getUserId());
+
+			Assert.fail();
+		}
+		catch (NoSuchPricingClassException noSuchPricingClassException) {
+			Assert.assertNotNull(noSuchPricingClassException);
+		}
+
+		CommercePricingClass commercePricingClass = null;
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			commercePricingClass =
+				_commercePricingClassLocalService.
+					getOrAddEmptyCommercePricingClass(
+						externalReferenceCode, _user.getCompanyId(),
+						_user.getUserId());
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY,
+				commercePricingClass.getStatus());
+			Assert.assertEquals(
+				externalReferenceCode,
+				commercePricingClass.getExternalReferenceCode());
+
+			CommercePricingClass resolvedCommercePricingClass =
+				_commercePricingClassLocalService.
+					getOrAddEmptyCommercePricingClass(
+						externalReferenceCode, _user.getCompanyId(),
+						_user.getUserId());
+
+			Assert.assertEquals(
+				commercePricingClass.getCommercePricingClassId(),
+				resolvedCommercePricingClass.getCommercePricingClassId());
+		}
+
+		commercePricingClass =
+			_commercePricingClassLocalService.updateCommercePricingClass(
+				commercePricingClass.getCommercePricingClassId(),
+				_user.getUserId(), RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), _serviceContext);
+
+		Assert.assertNotEquals(
+			WorkflowConstants.STATUS_EMPTY, commercePricingClass.getStatus());
 	}
 
 	@Rule
