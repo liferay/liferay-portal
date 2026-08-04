@@ -232,11 +232,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		Map<String, Serializable> originalLocalizedValues = _getLocalizedValues(
 			objectField, originalValues);
-		Map<String, Serializable> localizedValues = _getLocalizedValues(
-			objectField, values);
 
 		Set<String> languageIds = new TreeSet<>(
 			originalLocalizedValues.keySet());
+
+		Map<String, Serializable> localizedValues = _getLocalizedValues(
+			objectField, values);
 
 		languageIds.addAll(localizedValues.keySet());
 
