@@ -11,7 +11,7 @@ import ClaySticker from '@clayui/sticker';
 import {dateUtils, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
-import {CurrentVersion, config} from '../config';
+import {Layout, config} from '../config';
 import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 import {PageVersion, Status} from '../types/PageVersion';
 
@@ -37,18 +37,18 @@ type Row = {
 };
 
 export default function VersionList({
-	currentVersion,
+	layout,
 	searching,
 	versions,
 }: {
-	currentVersion?: CurrentVersion;
+	layout?: Layout;
 	searching: boolean;
 	versions: PageVersion[];
 }) {
 	const [selectedKey, setSelectedKey] = useState<string>();
 
 	const rows: Row[] = [
-		...(currentVersion ? [{key: 'current', ...currentVersion}] : []),
+		...(layout ? [{key: 'current', ...layout}] : []),
 		...versions.map((version) => ({
 			key: version.externalReferenceCode,
 			name: version.name,
@@ -160,7 +160,7 @@ export default function VersionList({
 									? sub(Liferay.Language.get('version-x'), [
 											version.version,
 										])
-									: Liferay.Language.get('current-version')}
+									: Liferay.Language.get('current-page')}
 							</ClayList.ItemText>
 
 							<ClayList.ItemText>

@@ -12,7 +12,7 @@ export type AvailableLanguage = {
 	w3cLanguageId: string;
 };
 
-export type CurrentVersion = {
+export type Layout = {
 	name: string;
 	status: Status;
 };
@@ -22,9 +22,9 @@ export type Config = {
 		Record<Liferay.Language.Locale, AvailableLanguage>
 	>;
 	availableSegmentsExperiences: SegmentExperience[];
-	currentVersion: CurrentVersion;
 	defaultLanguageId: Liferay.Language.Locale;
 	defaultUserImageSrc: string;
+	layout: Layout;
 	pageSpecificationVersionsURL: string;
 };
 

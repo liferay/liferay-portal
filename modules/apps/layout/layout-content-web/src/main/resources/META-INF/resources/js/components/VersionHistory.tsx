@@ -81,9 +81,9 @@ export default function VersionHistory({config}: Props) {
 			>
 				{versions ? (
 					<VersionList
-						currentVersion={
-							matches(config.currentVersion.name)
-								? config.currentVersion
+						layout={
+							matches(config.layout.name)
+								? config.layout
 								: undefined
 						}
 						searching={Boolean(keywords)}
