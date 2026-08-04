@@ -276,6 +276,8 @@ public class FIPSApplicationStateMachineUtilTest {
 		_testTransition(
 			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.QUIESCENT);
 		_testTransition(
+			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.SELF_TEST);
+		_testTransition(
 			FIPSApplicationState.QUIESCENT, FIPSApplicationState.ERROR);
 		_testTransition(
 			FIPSApplicationState.QUIESCENT, FIPSApplicationState.KEY_CSP_ENTRY);
@@ -329,8 +331,6 @@ public class FIPSApplicationStateMachineUtilTest {
 			FIPSApplicationState.INITIALIZING);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.OPERATIONAL);
-		_testTransitionWithIllegalState(
-			FIPSApplicationState.OPERATIONAL, FIPSApplicationState.SELF_TEST);
 		_testTransitionWithIllegalState(
 			FIPSApplicationState.POWER_OFF, FIPSApplicationState.ERROR);
 		_testTransitionWithIllegalState(
