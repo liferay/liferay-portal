@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -90,8 +91,13 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	public void tearDown() throws Exception {
 		_configurationProvider.deleteCompanyConfiguration(
 			AuditConfiguration.class, TestPropsValues.getCompanyId());
+		_configurationProvider.deleteCompanyConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			TestPropsValues.getCompanyId());
 		_configurationProvider.deleteSystemConfiguration(
 			AuditConfiguration.class);
+		_configurationProvider.deleteSystemConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class);
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -104,6 +110,36 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				AuditConfiguration.class, TestPropsValues.getCompanyId());
 
 		Assert.assertFalse(auditConfiguration.enabled());
+
+		_assertPersistentAuditMessageProcessorConfiguration(
+			_configurationProvider.getCompanyConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId()));
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testProcessActionWithCompanyScopePreservesPersistentAuditMessageProcessorConfigurationWhenParametersAreAbsent()
+		throws Exception {
+
+		_configurationProvider.saveCompanyConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			TestPropsValues.getCompanyId(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"bufferSize", _BUFFER_SIZE
+			).put(
+				"enabled", false
+			).put(
+				"flushInterval", _FLUSH_INTERVAL
+			).build());
+
+		_processAction(
+			null, false, ExtendedObjectClassDefinition.Scope.COMPANY);
+
+		_assertPersistentAuditMessageProcessorConfiguration(
+			_configurationProvider.getCompanyConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId()));
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -127,6 +163,15 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 	@FeatureFlag("LPD-6417")
 	@Test
+	public void testProcessActionWithCompanyScopeWhenPersistentAuditMessageProcessorConfigurationIsOverridden()
+		throws Exception {
+
+		_testProcessActionWhenPersistentAuditMessageProcessorConfigurationIsOverridden(
+			ExtendedObjectClassDefinition.Scope.COMPANY);
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
 	public void testProcessActionWithCompanyScopeWhenUserIsNotCompanyAdmin()
 		throws Exception {
 
@@ -144,6 +189,10 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				AuditConfiguration.class);
 
 		Assert.assertFalse(auditConfiguration.enabled());
+
+		_assertPersistentAuditMessageProcessorConfiguration(
+			_configurationProvider.getSystemConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class));
 	}
 
 	@Test
@@ -197,12 +246,34 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	}
 
 	@Test
+	public void testProcessActionWithSystemScopeWhenPersistentAuditMessageProcessorConfigurationIsOverridden()
+		throws Exception {
+
+		_testProcessActionWhenPersistentAuditMessageProcessorConfigurationIsOverridden(
+			ExtendedObjectClassDefinition.Scope.SYSTEM);
+	}
+
+	@Test
 	public void testProcessActionWithSystemScopeWhenUserIsNotOmniadmin()
 		throws Exception {
 
 		_assertProcessActionFailsForUser(
 			ExtendedObjectClassDefinition.Scope.SYSTEM,
 			PrincipalException.MustBeOmniadmin.class);
+	}
+
+	private void _assertPersistentAuditMessageProcessorConfiguration(
+		PersistentAuditMessageProcessorConfiguration
+			persistentAuditMessageProcessorConfiguration) {
+
+		Assert.assertEquals(
+			_BUFFER_SIZE,
+			persistentAuditMessageProcessorConfiguration.bufferSize());
+		Assert.assertFalse(
+			persistentAuditMessageProcessorConfiguration.enabled());
+		Assert.assertEquals(
+			_FLUSH_INTERVAL,
+			persistentAuditMessageProcessorConfiguration.flushInterval());
 	}
 
 	private void _assertProcessActionFails(
@@ -241,19 +312,20 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		}
 	}
 
-	private String _getFilterString(ExtendedObjectClassDefinition.Scope scope)
+	private String _getFilterString(
+			Class<?> clazz, ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
 		if (ExtendedObjectClassDefinition.Scope.SYSTEM.equals(scope)) {
 			return ConfigurationFilterStringUtil.getSystemScopedFilterString(
-				AuditConfiguration.class.getName());
+				clazz.getName());
 		}
 
 		Company company = _companyLocalService.getCompany(
 			TestPropsValues.getCompanyId());
 
 		return ConfigurationFilterStringUtil.getCompanyScopedFilterString(
-			TestPropsValues.getCompanyId(), AuditConfiguration.class.getName(),
+			TestPropsValues.getCompanyId(), clazz.getName(),
 			company.getWebId());
 	}
 
@@ -266,13 +338,20 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	}
 
 	private Dictionary<String, Object> _getProperties(
-			ExtendedObjectClassDefinition.Scope scope)
+			Class<?> clazz, ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			_getFilterString(scope));
+			_getFilterString(clazz, scope));
 
 		return configurations[0].getProperties();
+	}
+
+	private Dictionary<String, Object> _getProperties(
+			ExtendedObjectClassDefinition.Scope scope)
+		throws Exception {
+
+		return _getProperties(AuditConfiguration.class, scope);
 	}
 
 	private ThemeDisplay _getThemeDisplay() throws Exception {
@@ -297,11 +376,12 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	private void _processAction(ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
-		_processAction(null, scope);
+		_processAction(null, true, scope);
 	}
 
 	private void _processAction(
 			Integer auditMessageMaxQueueSize,
+			boolean setPersistentAuditMessageProcessorParameters,
 			ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
@@ -332,6 +412,17 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				String.valueOf(auditMessageMaxQueueSize));
 		}
 
+		if (setPersistentAuditMessageProcessorParameters) {
+			mockLiferayPortletActionRequest.setParameter(
+				"persistentAuditMessageProcessorBufferSize",
+				String.valueOf(_BUFFER_SIZE));
+			mockLiferayPortletActionRequest.setParameter(
+				"persistentAuditMessageProcessorEnabled", "false");
+			mockLiferayPortletActionRequest.setParameter(
+				"persistentAuditMessageProcessorFlushInterval",
+				String.valueOf(_FLUSH_INTERVAL));
+		}
+
 		mockLiferayPortletActionRequest.setPortletSession(
 			new MockPortletSession());
 
@@ -340,7 +431,16 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			new MockLiferayPortletActionResponse());
 	}
 
-	private void _processActionWithEnabledOverridden(
+	private void _processAction(
+			Integer auditMessageMaxQueueSize,
+			ExtendedObjectClassDefinition.Scope scope)
+		throws Exception {
+
+		_processAction(auditMessageMaxQueueSize, true, scope);
+	}
+
+	private void _processActionWithOverriddenConfiguration(
+			Class<?> clazz, Map<String, Object> overrideProperties,
 			ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
@@ -349,17 +449,13 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				ConfigurationOverridePropertiesUtil.getOverridePropertiesMap(),
 				"m");
 
-		overridePropertiesMap.put(
-			AuditConfiguration.class.getName(),
-			HashMapBuilder.<String, Object>put(
-				"enabled", true
-			).build());
+		overridePropertiesMap.put(clazz.getName(), overrideProperties);
 
 		try {
 			_processAction(scope);
 		}
 		finally {
-			overridePropertiesMap.remove(AuditConfiguration.class.getName());
+			overridePropertiesMap.remove(clazz.getName());
 		}
 	}
 
@@ -390,12 +486,65 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 		_saveConfiguration(enabled, scope);
 
-		_processActionWithEnabledOverridden(scope);
+		_processActionWithOverriddenConfiguration(
+			AuditConfiguration.class,
+			HashMapBuilder.<String, Object>put(
+				"enabled", true
+			).build(),
+			scope);
 
 		Dictionary<String, Object> properties = _getProperties(scope);
 
 		Assert.assertEquals(enabled, properties.get("enabled"));
 	}
+
+	private void
+			_testProcessActionWhenPersistentAuditMessageProcessorConfigurationIsOverridden(
+				ExtendedObjectClassDefinition.Scope scope)
+		throws Exception {
+
+		Dictionary<String, Object> properties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"bufferSize", _BUFFER_SIZE
+			).put(
+				"enabled", true
+			).put(
+				"flushInterval", _FLUSH_INTERVAL
+			).build();
+
+		if (ExtendedObjectClassDefinition.Scope.SYSTEM.equals(scope)) {
+			_configurationProvider.saveSystemConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class, properties);
+		}
+		else {
+			_configurationProvider.saveCompanyConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId(), properties);
+		}
+
+		_processActionWithOverriddenConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			HashMapBuilder.<String, Object>put(
+				"bufferSize", 0
+			).put(
+				"enabled", false
+			).put(
+				"flushInterval", 0L
+			).build(),
+			scope);
+
+		Dictionary<String, Object> currentProperties = _getProperties(
+			PersistentAuditMessageProcessorConfiguration.class, scope);
+
+		Assert.assertEquals(_BUFFER_SIZE, currentProperties.get("bufferSize"));
+		Assert.assertEquals(Boolean.TRUE, currentProperties.get("enabled"));
+		Assert.assertEquals(
+			_FLUSH_INTERVAL, currentProperties.get("flushInterval"));
+	}
+
+	private static final int _BUFFER_SIZE = 1000;
+
+	private static final long _FLUSH_INTERVAL = 30000;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

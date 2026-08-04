@@ -5,8 +5,8 @@
 
 package com.liferay.portal.security.audit.configuration.web.internal.util;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
-import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 
 import java.util.Map;
 
@@ -15,16 +15,25 @@ import java.util.Map;
  */
 public class AuditConfigurationOverrideUtil {
 
-	public static boolean isOverridden(String name) {
+	public static String getHelpMessage(Class<?> clazz, String key) {
+		if (isOverridden(clazz, key)) {
+			return "this-field-has-been-set-by-a-portal-property-and-cannot-" +
+				"be-changed-here";
+		}
+
+		return StringPool.BLANK;
+	}
+
+	public static boolean isOverridden(Class<?> clazz, String key) {
 		Map<String, Object> overrideProperties =
 			ConfigurationOverridePropertiesUtil.getOverrideProperties(
-				AuditConfiguration.class.getName());
+				clazz.getName());
 
 		if (overrideProperties == null) {
 			return false;
 		}
 
-		return overrideProperties.containsKey(name);
+		return overrideProperties.containsKey(key);
 	}
 
 }

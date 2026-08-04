@@ -15,12 +15,14 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
+import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -52,25 +54,47 @@ public class SaveAuditConfigurationMVCActionCommand
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 		String portletId = PortalUtil.getPortletId(actionRequest);
-		Dictionary<String, Object> properties =
-			HashMapDictionaryBuilder.<String, Object>put(
-				"enabled", ParamUtil.getBoolean(actionRequest, "enabled")
-			).build();
 
 		if (portletId.equals(ConfigurationAdminPortletKeys.SYSTEM_SETTINGS)) {
 			if (!permissionChecker.isOmniadmin()) {
 				throw new PrincipalException.MustBeOmniadmin(permissionChecker);
 			}
 
-			properties.put(
-				"auditMessageMaxQueueSize",
-				ParamUtil.getInteger(
-					actionRequest, "auditMessageMaxQueueSize",
-					_getAuditMessageMaxQueueSize()));
+			if (!AuditConfigurationOverrideUtil.isOverridden(
+					AuditConfiguration.class, "enabled")) {
 
-			if (!AuditConfigurationOverrideUtil.isOverridden("enabled")) {
+				AuditConfiguration auditConfiguration =
+					_configurationProvider.getSystemConfiguration(
+						AuditConfiguration.class);
+
+				Dictionary<String, Object> properties =
+					_getAuditConfigurationProperties(
+						actionRequest, auditConfiguration);
+
+				properties.put(
+					"auditMessageMaxQueueSize",
+					ParamUtil.getInteger(
+						actionRequest, "auditMessageMaxQueueSize",
+						_getAuditMessageMaxQueueSize(auditConfiguration)));
+
 				_configurationProvider.saveSystemConfiguration(
 					AuditConfiguration.class, properties);
+			}
+
+			Dictionary<String, Object>
+				persistentAuditMessageProcessorConfigurationProperties =
+					_getPersistentAuditMessageProcessorConfigurationProperties(
+						actionRequest,
+						_configurationProvider.getSystemConfiguration(
+							PersistentAuditMessageProcessorConfiguration.
+								class));
+
+			if (!persistentAuditMessageProcessorConfigurationProperties.
+					isEmpty()) {
+
+				_configurationProvider.saveSystemConfiguration(
+					PersistentAuditMessageProcessorConfiguration.class,
+					persistentAuditMessageProcessorConfigurationProperties);
 			}
 		}
 		else {
@@ -86,9 +110,32 @@ public class SaveAuditConfigurationMVCActionCommand
 					permissionChecker);
 			}
 
-			if (!AuditConfigurationOverrideUtil.isOverridden("enabled")) {
+			if (!AuditConfigurationOverrideUtil.isOverridden(
+					AuditConfiguration.class, "enabled")) {
+
 				_configurationProvider.saveCompanyConfiguration(
-					AuditConfiguration.class, companyId, properties);
+					AuditConfiguration.class, companyId,
+					_getAuditConfigurationProperties(
+						actionRequest,
+						_configurationProvider.getCompanyConfiguration(
+							AuditConfiguration.class, companyId)));
+			}
+
+			Dictionary<String, Object>
+				persistentAuditMessageProcessorConfigurationProperties =
+					_getPersistentAuditMessageProcessorConfigurationProperties(
+						actionRequest,
+						_configurationProvider.getCompanyConfiguration(
+							PersistentAuditMessageProcessorConfiguration.class,
+							companyId));
+
+			if (!persistentAuditMessageProcessorConfigurationProperties.
+					isEmpty()) {
+
+				_configurationProvider.saveCompanyConfiguration(
+					PersistentAuditMessageProcessorConfiguration.class,
+					companyId,
+					persistentAuditMessageProcessorConfigurationProperties);
 			}
 		}
 
@@ -97,13 +144,67 @@ public class SaveAuditConfigurationMVCActionCommand
 		sendRedirect(actionRequest, actionResponse);
 	}
 
+	private Dictionary<String, Object> _getAuditConfigurationProperties(
+		ActionRequest actionRequest, AuditConfiguration auditConfiguration) {
+
+		return HashMapDictionaryBuilder.<String, Object>put(
+			"enabled",
+			ParamUtil.getBoolean(
+				actionRequest, "enabled", auditConfiguration.enabled())
+		).build();
+	}
+
 	@SuppressWarnings("deprecation")
-	private int _getAuditMessageMaxQueueSize() throws Exception {
-		AuditConfiguration auditConfiguration =
-			_configurationProvider.getSystemConfiguration(
-				AuditConfiguration.class);
+	private int _getAuditMessageMaxQueueSize(
+		AuditConfiguration auditConfiguration) {
 
 		return auditConfiguration.auditMessageMaxQueueSize();
+	}
+
+	private Dictionary<String, Object>
+		_getPersistentAuditMessageProcessorConfigurationProperties(
+			ActionRequest actionRequest,
+			PersistentAuditMessageProcessorConfiguration
+				persistentAuditMessageProcessorConfiguration) {
+
+		Dictionary<String, Object> properties = new HashMapDictionary<>();
+
+		if (!AuditConfigurationOverrideUtil.isOverridden(
+				PersistentAuditMessageProcessorConfiguration.class,
+				"bufferSize")) {
+
+			properties.put(
+				"bufferSize",
+				ParamUtil.getInteger(
+					actionRequest, "persistentAuditMessageProcessorBufferSize",
+					persistentAuditMessageProcessorConfiguration.bufferSize()));
+		}
+
+		if (!AuditConfigurationOverrideUtil.isOverridden(
+				PersistentAuditMessageProcessorConfiguration.class,
+				"enabled")) {
+
+			properties.put(
+				"enabled",
+				ParamUtil.getBoolean(
+					actionRequest, "persistentAuditMessageProcessorEnabled",
+					persistentAuditMessageProcessorConfiguration.enabled()));
+		}
+
+		if (!AuditConfigurationOverrideUtil.isOverridden(
+				PersistentAuditMessageProcessorConfiguration.class,
+				"flushInterval")) {
+
+			properties.put(
+				"flushInterval",
+				ParamUtil.getLong(
+					actionRequest,
+					"persistentAuditMessageProcessorFlushInterval",
+					persistentAuditMessageProcessorConfiguration.
+						flushInterval()));
+		}
+
+		return properties;
 	}
 
 	@Reference

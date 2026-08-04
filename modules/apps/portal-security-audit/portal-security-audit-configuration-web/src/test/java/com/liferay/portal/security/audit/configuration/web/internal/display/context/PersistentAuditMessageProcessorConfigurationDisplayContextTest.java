@@ -9,7 +9,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.function.Function;
@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 /**
  * @author Christian Moura
  */
-public class AuditConfigurationDisplayContextTest {
+public class PersistentAuditMessageProcessorConfigurationDisplayContextTest {
 
 	@ClassRule
 	@Rule
@@ -36,26 +36,40 @@ public class AuditConfigurationDisplayContextTest {
 	@Test
 	public void testGetHelpMessage() {
 		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::
-				getAuditMessageMaxQueueSizeHelpMessage,
-			"auditMessageMaxQueueSize");
+			PersistentAuditMessageProcessorConfigurationDisplayContext::
+				getBufferSizeHelpMessage,
+			"bufferSize");
 		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::getEnabledHelpMessage, "enabled");
+			PersistentAuditMessageProcessorConfigurationDisplayContext::
+				getEnabledHelpMessage,
+			"enabled");
+		_testGetHelpMessage(
+			PersistentAuditMessageProcessorConfigurationDisplayContext::
+				getFlushIntervalHelpMessage,
+			"flushInterval");
 	}
 
 	@Test
 	public void testIsOverridden() {
 		_testIsOverridden(
-			"auditMessageMaxQueueSize",
-			AuditConfigurationDisplayContext::
-				isAuditMessageMaxQueueSizeOverridden);
+			"bufferSize",
+			PersistentAuditMessageProcessorConfigurationDisplayContext::
+				isBufferSizeOverridden);
 		_testIsOverridden(
-			"enabled", AuditConfigurationDisplayContext::isEnabledOverridden);
+			"enabled",
+			PersistentAuditMessageProcessorConfigurationDisplayContext::
+				isEnabledOverridden);
+		_testIsOverridden(
+			"flushInterval",
+			PersistentAuditMessageProcessorConfigurationDisplayContext::
+				isFlushIntervalOverridden);
 	}
 
-	private AuditConfigurationDisplayContext _createDisplayContext() {
-		return new AuditConfigurationDisplayContext(
-			Mockito.mock(AuditConfiguration.class), true);
+	private PersistentAuditMessageProcessorConfigurationDisplayContext
+		_createDisplayContext() {
+
+		return new PersistentAuditMessageProcessorConfigurationDisplayContext(
+			Mockito.mock(PersistentAuditMessageProcessorConfiguration.class));
 	}
 
 	private void _mockOverrideProperties(
@@ -65,7 +79,7 @@ public class AuditConfigurationDisplayContextTest {
 
 		configurationOverridePropertiesUtilMockedStatic.when(
 			() -> ConfigurationOverridePropertiesUtil.getOverrideProperties(
-				AuditConfiguration.class.getName())
+				PersistentAuditMessageProcessorConfiguration.class.getName())
 		).thenReturn(
 			HashMapBuilder.<String, Object>put(
 				key, RandomTestUtil.randomString()
@@ -74,7 +88,9 @@ public class AuditConfigurationDisplayContextTest {
 	}
 
 	private void _testGetHelpMessage(
-		Function<AuditConfigurationDisplayContext, String> function,
+		Function
+			<PersistentAuditMessageProcessorConfigurationDisplayContext, String>
+				function,
 		String key) {
 
 		try (MockedStatic<ConfigurationOverridePropertiesUtil>
@@ -82,12 +98,14 @@ public class AuditConfigurationDisplayContextTest {
 					Mockito.mockStatic(
 						ConfigurationOverridePropertiesUtil.class)) {
 
-			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createDisplayContext();
+			PersistentAuditMessageProcessorConfigurationDisplayContext
+				persistentAuditMessageProcessorConfigurationDisplayContext =
+					_createDisplayContext();
 
 			Assert.assertEquals(
 				StringPool.BLANK,
-				function.apply(auditConfigurationDisplayContext));
+				function.apply(
+					persistentAuditMessageProcessorConfigurationDisplayContext));
 
 			_mockOverrideProperties(
 				configurationOverridePropertiesUtilMockedStatic, key);
@@ -95,28 +113,35 @@ public class AuditConfigurationDisplayContextTest {
 			Assert.assertEquals(
 				"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
 					"changed-here",
-				function.apply(auditConfigurationDisplayContext));
+				function.apply(
+					persistentAuditMessageProcessorConfigurationDisplayContext));
 		}
 	}
 
 	private void _testIsOverridden(
-		String key, Predicate<AuditConfigurationDisplayContext> predicate) {
+		String key,
+		Predicate<PersistentAuditMessageProcessorConfigurationDisplayContext>
+			predicate) {
 
 		try (MockedStatic<ConfigurationOverridePropertiesUtil>
 				configurationOverridePropertiesUtilMockedStatic =
 					Mockito.mockStatic(
 						ConfigurationOverridePropertiesUtil.class)) {
 
-			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createDisplayContext();
+			PersistentAuditMessageProcessorConfigurationDisplayContext
+				persistentAuditMessageProcessorConfigurationDisplayContext =
+					_createDisplayContext();
 
 			Assert.assertFalse(
-				predicate.test(auditConfigurationDisplayContext));
+				predicate.test(
+					persistentAuditMessageProcessorConfigurationDisplayContext));
 
 			_mockOverrideProperties(
 				configurationOverridePropertiesUtilMockedStatic, key);
 
-			Assert.assertTrue(predicate.test(auditConfigurationDisplayContext));
+			Assert.assertTrue(
+				predicate.test(
+					persistentAuditMessageProcessorConfigurationDisplayContext));
 		}
 	}
 

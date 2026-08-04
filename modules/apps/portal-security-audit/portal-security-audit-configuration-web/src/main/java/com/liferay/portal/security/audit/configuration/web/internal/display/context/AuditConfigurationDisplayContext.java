@@ -5,7 +5,6 @@
 
 package com.liferay.portal.security.audit.configuration.web.internal.display.context;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
 
@@ -28,17 +27,15 @@ public class AuditConfigurationDisplayContext {
 	}
 
 	public String getAuditMessageMaxQueueSizeHelpMessage() {
-		return _getOverriddenHelpMessage(
-			isAuditMessageMaxQueueSizeOverridden());
+		return _getHelpMessage("auditMessageMaxQueueSize");
 	}
 
 	public String getEnabledHelpMessage() {
-		return _getOverriddenHelpMessage(isEnabledOverridden());
+		return _getHelpMessage("enabled");
 	}
 
 	public boolean isAuditMessageMaxQueueSizeOverridden() {
-		return AuditConfigurationOverrideUtil.isOverridden(
-			"auditMessageMaxQueueSize");
+		return _isOverridden("auditMessageMaxQueueSize");
 	}
 
 	public boolean isAuditMessageMaxQueueSizeVisible() {
@@ -50,16 +47,17 @@ public class AuditConfigurationDisplayContext {
 	}
 
 	public boolean isEnabledOverridden() {
-		return AuditConfigurationOverrideUtil.isOverridden("enabled");
+		return _isOverridden("enabled");
 	}
 
-	private String _getOverriddenHelpMessage(boolean overridden) {
-		if (overridden) {
-			return "this-field-has-been-set-by-a-portal-property-and-cannot-" +
-				"be-changed-here";
-		}
+	private String _getHelpMessage(String key) {
+		return AuditConfigurationOverrideUtil.getHelpMessage(
+			AuditConfiguration.class, key);
+	}
 
-		return StringPool.BLANK;
+	private boolean _isOverridden(String key) {
+		return AuditConfigurationOverrideUtil.isOverridden(
+			AuditConfiguration.class, key);
 	}
 
 	private final AuditConfiguration _auditConfiguration;
