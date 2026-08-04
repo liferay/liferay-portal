@@ -56,7 +56,13 @@ public class LayoutContentVersionDisplayContext {
 				"availableSegmentsExperiences",
 				_getAvailableSegmentsExperiences()
 			).put(
-				"currentVersion",
+				"defaultLanguageId",
+				LocaleUtil.toLanguageId(_themeDisplay.getSiteDefaultLocale())
+			).put(
+				"defaultUserImageSrc",
+				_themeDisplay.getPathImage() + "/user_portrait?img_id=0"
+			).put(
+				"layout",
 				() -> {
 					Layout layout = _themeDisplay.getLayout();
 
@@ -66,12 +72,6 @@ public class LayoutContentVersionDisplayContext {
 						"status", layout.isApproved() ? "approved" : "draft"
 					).build();
 				}
-			).put(
-				"defaultLanguageId",
-				LocaleUtil.toLanguageId(_themeDisplay.getSiteDefaultLocale())
-			).put(
-				"defaultUserImageSrc",
-				_themeDisplay.getPathImage() + "/user_portrait?img_id=0"
 			).put(
 				"pageSpecificationVersionsURL",
 				_getPageSpecificationVersionsURL()
