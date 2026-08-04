@@ -6,7 +6,6 @@
 import {Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {createCategories} from '../../../../helpers/CreateCategories';
@@ -45,7 +44,6 @@ const projectVocabularyTest = mergeTests(
 	categorizationPagesTest,
 	cmsPagesTest,
 	dataApiHelpersTest,
-	featureFlagsTest({'LPD-58677': {enabled: true}}),
 	loginTest()
 );
 
