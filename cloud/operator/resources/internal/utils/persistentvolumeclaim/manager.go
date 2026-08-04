@@ -102,26 +102,6 @@ func (claimManager *PersistentVolumeClaimManager) findClaim() (*corev1.Persisten
 	return persistentVolumeClaim, nil
 }
 
-func (claimManager *PersistentVolumeClaimManager) storageClassExists(
-	storageClassName string,
-) (bool, error) {
-	storageClass := &storagev1.StorageClass{}
-
-	if error := claimManager.Get(
-		claimManager.Context,
-		types.NamespacedName{Name: storageClassName},
-		storageClass,
-	); error != nil {
-		if errors.IsNotFound(error) {
-			return false, nil
-		}
-
-		return false, error
-	}
-
-	return true, nil
-}
-
 func getClaimState(
 	persistentVolumeClaim *corev1.PersistentVolumeClaim,
 	spec Spec,
@@ -155,6 +135,26 @@ func newClaim(spec Spec) *corev1.PersistentVolumeClaim {
 			StorageClassName: &spec.StorageClassName,
 		},
 	}
+}
+
+func (claimManager *PersistentVolumeClaimManager) storageClassExists(
+	storageClassName string,
+) (bool, error) {
+	storageClass := &storagev1.StorageClass{}
+
+	if error := claimManager.Get(
+		claimManager.Context,
+		types.NamespacedName{Name: storageClassName},
+		storageClass,
+	); error != nil {
+		if errors.IsNotFound(error) {
+			return false, nil
+		}
+
+		return false, error
+	}
+
+	return true, nil
 }
 
 type PersistentVolumeClaimManager struct {

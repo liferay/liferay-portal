@@ -142,25 +142,6 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) getLiferayEnvi
 	return nil, nil
 }
 
-func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) updateLiferayEnvironmentStatus(
-	context context.Context,
-	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-	originalLiferayEnvironment *licensingv1alpha1.LiferayEnvironment,
-) error {
-	if equality.Semantic.DeepEqual(originalLiferayEnvironment.Status, liferayEnvironment.Status) {
-		return nil
-	}
-
-	patch := client.MergeFromWithOptions(
-		originalLiferayEnvironment,
-		client.MergeFromWithOptimisticLock{},
-	)
-
-	status := liferayStatefulSetReconciler.Status()
-
-	return status.Patch(context, liferayEnvironment, patch)
-}
-
 func getLiferayStatefulSetPredicate() (predicate.Predicate, error) {
 	return predicate.LabelSelectorPredicate(
 		metav1.LabelSelector{
@@ -191,6 +172,25 @@ func mapLiferayEnvironmentToStatefulSet(
 			},
 		},
 	}
+}
+
+func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) updateLiferayEnvironmentStatus(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	originalLiferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) error {
+	if equality.Semantic.DeepEqual(originalLiferayEnvironment.Status, liferayEnvironment.Status) {
+		return nil
+	}
+
+	patch := client.MergeFromWithOptions(
+		originalLiferayEnvironment,
+		client.MergeFromWithOptimisticLock{},
+	)
+
+	status := liferayStatefulSetReconciler.Status()
+
+	return status.Patch(context, liferayEnvironment, patch)
 }
 
 type LiferayStatefulSetReconciler struct {
