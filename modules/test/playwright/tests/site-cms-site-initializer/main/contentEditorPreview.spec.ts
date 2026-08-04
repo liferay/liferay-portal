@@ -939,7 +939,7 @@ test(
 					trigger: page.getByLabel('Select Display Page'),
 				});
 
-				const iframe = page.frameLocator('iframe');
+				const iframe = page.frameLocator('iframe[title="Preview"]');
 
 				await expect(iframe.getByText(englishTitle)).toBeVisible();
 			});
@@ -947,7 +947,7 @@ test(
 			await test.step('Switch to Spanish and verify the preview updates', async () => {
 				await localizationSelectPage.switchLanguage('es-ES');
 
-				const iframe = page.frameLocator('iframe');
+				const iframe = page.frameLocator('iframe[title="Preview"]');
 
 				await expect(iframe.getByText(spanishTitle)).toBeVisible();
 				await expect(iframe.getByText(englishTitle)).not.toBeVisible();
@@ -980,7 +980,7 @@ test(
 					trigger: page.getByLabel('Select Display Page'),
 				});
 
-				const iframe = page.frameLocator('iframe');
+				const iframe = page.frameLocator('iframe[title="Preview"]');
 
 				await expect(iframe.getByText(catalanTitle)).toBeVisible();
 				await expect(iframe.getByText(spanishTitle)).not.toBeVisible();
