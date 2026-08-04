@@ -433,10 +433,10 @@
 								}
 							],
 							"fragmentStyle": {
-								"paddingBottom": "3",
-								"paddingLeft": "3",
-								"paddingRight": "3",
-								"paddingTop": "3"
+								"paddingBottom": "4",
+								"paddingLeft": "4",
+								"paddingRight": "4",
+								"paddingTop": "4"
 							},
 							"indexed": true
 						},
