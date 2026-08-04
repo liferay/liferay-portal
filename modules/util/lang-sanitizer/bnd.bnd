@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Lang Sanitizer
 Bundle-SymbolicName: com.liferay.lang.sanitizer
-Bundle-Version: 1.0.2
+Bundle-Version: 1.0.3
 Main-Class: com.liferay.lang.sanitizer.LangSanitizer
 -includeresource:\
 	@antisamy-*.jar!/org/owasp/validator/html/Policy.class,\
