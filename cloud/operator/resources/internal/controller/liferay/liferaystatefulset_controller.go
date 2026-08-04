@@ -9,9 +9,9 @@ import (
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	marketplace "github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay/marketplace"
-	persistentvolumeclaim "github.com/liferay/liferay-portal/cloud/operator/internal/utils/persistentvolumeclaim"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	storagev1 "k8s.io/api/storage/v1"
 	equality "k8s.io/apimachinery/pkg/api/equality"
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
@@ -50,26 +50,35 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 		return controllerruntime.Result{}, nil
 	}
 
-	marketplaceVolumeManager := &marketplace.MarketplaceVolumeManager{
-		ClaimManager: &persistentvolumeclaim.PersistentVolumeClaimManager{
-			Client:  liferayStatefulSetReconciler.Client,
-			Context: context,
-			Owner:   statefulSet,
-			Spec:    marketplace.GetVolumeClaimSpec(liferayEnvironment),
-		},
-	}
-
-	claimResult, error := marketplaceVolumeManager.ClaimManager.CreateClaimIfMissing()
+	storageClass, error := liferayStatefulSetReconciler.getStorageClass(
+		context,
+		liferayEnvironment.Spec.MarketplaceVolume.StorageClassName,
+	)
 
 	if error != nil {
 		return controllerruntime.Result{}, error
 	}
 
-	marketplaceVolumeManager.SetVolumeStatus(liferayEnvironment, claimResult)
+	persistentVolumeClaim := marketplace.GetVolumeClaim(liferayEnvironment)
 
-	marketplaceConditions := marketplaceVolumeManager.GetVolumeConditions(
-		claimResult,
+	if storageClass != nil {
+		persistentVolumeClaim, error = liferayStatefulSetReconciler.createVolumeClaimIfMissing(
+			context,
+			persistentVolumeClaim,
+			statefulSet,
+		)
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+	}
+
+	marketplace.SetVolumeStatus(liferayEnvironment, persistentVolumeClaim)
+
+	marketplaceConditions := marketplace.GetVolumeConditions(
+		persistentVolumeClaim,
 		statefulSet,
+		storageClass,
 	)
 
 	for _, marketplaceCondition := range marketplaceConditions {
@@ -119,6 +128,47 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) SetupWithManag
 	)
 }
 
+func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) createVolumeClaimIfMissing(
+	context context.Context,
+	persistentVolumeClaim *corev1.PersistentVolumeClaim,
+	statefulSet *appsv1.StatefulSet,
+) (*corev1.PersistentVolumeClaim, error) {
+	existingPersistentVolumeClaim := &corev1.PersistentVolumeClaim{}
+
+	error := liferayStatefulSetReconciler.Get(
+		context,
+		client.ObjectKeyFromObject(persistentVolumeClaim),
+		existingPersistentVolumeClaim,
+	)
+
+	if error == nil {
+		return existingPersistentVolumeClaim, nil
+	}
+
+	if !errors.IsNotFound(error) {
+		return nil, error
+	}
+
+	if error := controllerruntime.SetControllerReference(
+		statefulSet,
+		persistentVolumeClaim,
+		liferayStatefulSetReconciler.Scheme(),
+	); error != nil {
+		return nil, error
+	}
+
+	if error := liferayStatefulSetReconciler.Create(
+		context,
+		persistentVolumeClaim,
+	); error != nil && !errors.IsAlreadyExists(error) {
+		return nil, error
+	}
+
+	persistentVolumeClaim.Status.Phase = corev1.ClaimPending
+
+	return persistentVolumeClaim, nil
+}
+
 func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) getLiferayEnvironmentByStatefulSet(
 	context context.Context,
 	statefulSet *appsv1.StatefulSet,
@@ -150,6 +200,27 @@ func getLiferayStatefulSetPredicate() (predicate.Predicate, error) {
 			},
 		},
 	)
+}
+
+func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) getStorageClass(
+	context context.Context,
+	storageClassName string,
+) (*storagev1.StorageClass, error) {
+	storageClass := &storagev1.StorageClass{}
+
+	if error := liferayStatefulSetReconciler.Get(
+		context,
+		types.NamespacedName{Name: storageClassName},
+		storageClass,
+	); error != nil {
+		if errors.IsNotFound(error) {
+			return nil, nil
+		}
+
+		return nil, error
+	}
+
+	return storageClass, nil
 }
 
 func mapLiferayEnvironmentToStatefulSet(
