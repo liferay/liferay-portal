@@ -76,7 +76,7 @@ if (Validator.isNotNull(replyTo) && !replyTo.startsWith(PortalUtil.getPortalURL(
 										}
 
 										messageArguments[1] = getApplicationScopeDescription;
-										messageArguments[0] = LanguageUtil.format(request, "x-y", messageArguments);
+										messageArguments[0] = LanguageUtil.format(request, "x,-y", messageArguments);
 									}
 
 									messageArguments[1] = messageArguments[0];
