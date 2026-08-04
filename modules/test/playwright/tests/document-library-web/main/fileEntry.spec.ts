@@ -1235,3 +1235,191 @@ test(
 		}
 	}
 );
+
+test(
+	'Can filter documents by categories from the site and the global scope',
+	{
+		tag: '@LPS-154979',
+	},
+	async ({apiHelpers, documentLibraryPage, page, site}) => {
+		const companyId = await page.evaluate(() =>
+			Liferay.ThemeDisplay.getCompanyId()
+		);
+
+		const globalGroup = await apiHelpers.jsonWebServicesGroup.getGroupByKey(
+			companyId,
+			companyId
+		);
+
+		const globalVocabularyName = 'Vocabulary' + getRandomString();
+		const siteVocabularyName = 'Vocabulary' + getRandomString();
+
+		const [siteCategory1, siteCategory2] = await createCategories({
+			apiHelpers,
+			categoryNames: [
+				{name: 'Category' + getRandomString()},
+				{name: 'Category' + getRandomString()},
+			],
+			siteId: site.id,
+			vocabularyName: siteVocabularyName,
+		});
+
+		const [globalCategory] = await createCategories({
+			apiHelpers,
+			categoryNames: [{name: 'Category' + getRandomString()}],
+			siteId: globalGroup.groupId,
+			vocabularyName: globalVocabularyName,
+		});
+
+		const [documentTitle1, documentTitle2, documentTitle3] = [
+			getRandomString(),
+			getRandomString(),
+			getRandomString(),
+		];
+
+		const taxonomyCategoryIdsByTitle = {
+			[documentTitle1]: [siteCategory1.id, siteCategory2.id],
+			[documentTitle2]: [siteCategory1.id, globalCategory.id],
+			[documentTitle3]: [siteCategory2.id, globalCategory.id],
+		};
+
+		for (const [title, taxonomyCategoryIds] of Object.entries(
+			taxonomyCategoryIdsByTitle
+		)) {
+			await apiHelpers.headlessDelivery.postDocument(
+				site.id,
+				createReadStream(
+					path.join(__dirname, '/dependencies/image1.jpeg')
+				),
+				{
+					fileName: getRandomString(),
+					taxonomyCategoryIds,
+					title,
+				}
+			);
+		}
+
+		const globalVocabularyLabel = `${globalVocabularyName} (Global)`;
+		const siteVocabularyLabel = `${siteVocabularyName} (${site.name})`;
+
+		const categoriesModal = page.frameLocator(
+			'iframe[title="Filter by Categories"]'
+		);
+
+		const treeNode = (name: string) =>
+			categoriesModal.getByText(name, {exact: true});
+
+		const openCategoriesFilter = async () => {
+			await page.getByLabel('Filter', {exact: true}).click();
+
+			await page.getByRole('menuitem', {name: 'Categories'}).click();
+
+			await expect(treeNode(siteVocabularyLabel)).toBeVisible();
+		};
+
+		const expandVocabulary = async (
+			vocabularyLabel: string,
+			categoryName: string
+		) =>
+			clickAndExpectToBeVisible({
+				target: treeNode(categoryName),
+				trigger: treeNode(vocabularyLabel),
+			});
+
+		const applyCategoriesFilter = () =>
+			page
+				.getByRole('dialog')
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+
+		await test.step('Filter by a single category', async () => {
+			await openCategoriesFilter();
+
+			await expect(treeNode(globalVocabularyLabel)).toBeVisible();
+
+			await expandVocabulary(siteVocabularyLabel, siteCategory1.name);
+
+			await expect(treeNode(siteCategory2.name)).toBeVisible();
+
+			await expandVocabulary(globalVocabularyLabel, globalCategory.name);
+
+			await treeNode(siteCategory1.name).click();
+
+			await expect(
+				categoriesModal.getByText('1 Item Selected')
+			).toBeVisible();
+
+			await applyCategoriesFilter();
+
+			await expect(
+				page.getByText('2 Results Found With Filters')
+			).toBeVisible();
+
+			await expect(
+				page.getByText(`Category: ${siteCategory1.name}`)
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('link', {name: documentTitle1})
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('link', {name: documentTitle2})
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('link', {name: documentTitle3})
+			).toBeHidden();
+		});
+
+		await test.step('Filter by categories from both scopes', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+
+			await expect(
+				page.getByText('2 Results Found With Filters')
+			).toBeHidden();
+
+			await openCategoriesFilter();
+
+			await expandVocabulary(siteVocabularyLabel, siteCategory1.name);
+
+			await treeNode(siteCategory1.name).click();
+
+			await expandVocabulary(globalVocabularyLabel, globalCategory.name);
+
+			await treeNode(globalCategory.name).click();
+
+			await expect(
+				categoriesModal.getByText('2 Items Selected')
+			).toBeVisible();
+
+			await applyCategoriesFilter();
+
+			await expect(
+				page.getByText('1 Result Found With Filters')
+			).toBeVisible();
+
+			await expect(
+				page.getByText(`Category: ${siteCategory1.name}`)
+			).toBeVisible();
+
+			await expect(
+				page.getByText(`Category: ${globalCategory.name}`)
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('link', {name: documentTitle2})
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('link', {name: documentTitle1})
+			).toBeHidden();
+
+			await expect(
+				page.getByRole('link', {name: documentTitle3})
+			).toBeHidden();
+		});
+	}
+);
