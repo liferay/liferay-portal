@@ -33,6 +33,7 @@ export const PORTLET_URLS = {
 	cmsPicklistBuilder: 'web/cms/picklist-builder',
 	cmsRecycleBin: 'web/cms/recycle-bin',
 	cmsSharedWithMe: 'web/cms/shared-with-me',
+	cmsSpaceSettings: 'web/cms/e/space-settings',
 	cmsStructureBuilder: 'web/cms/structure-builder',
 	cmsStructures: 'web/cms/structures',
 	cmsTags: 'web/cms/categorization/view-tags',

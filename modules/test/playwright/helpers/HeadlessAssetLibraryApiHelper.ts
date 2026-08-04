@@ -50,9 +50,19 @@ export class HeadlessAssetLibraryApiHelper {
 		return assetLibrary;
 	}
 
-	async getAssetLibrariesPage(filter?: string) {
+	async getAssetLibrariesPage(filter?: string, pageSize?: number) {
+		const urlSearchParams = new URLSearchParams();
+
+		if (filter) {
+			urlSearchParams.append('filter', filter);
+		}
+
+		if (pageSize) {
+			urlSearchParams.append('pageSize', String(pageSize));
+		}
+
 		const response = await this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries${filter ? `?filter=${encodeURIComponent(filter)}` : ''}`
+			`${this.apiHelpers.baseUrl}${this.basePath}/asset-libraries?${urlSearchParams.toString()}`
 		);
 
 		return response?.items;
