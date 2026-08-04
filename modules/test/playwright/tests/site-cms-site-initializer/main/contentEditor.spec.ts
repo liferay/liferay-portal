@@ -1575,8 +1575,15 @@ test.describe('Schedule Publication', () => {
 
 			await page.getByRole('button', {name: 'Schedule'}).click();
 
-			// After the failed submit the side panel is closed. Reopen it
-			// and check that the expiration and review dates are preserved.
+			// The failed submit moves the side panel to Categorization. Wait
+			// for that switch before going back to Schedule, otherwise the
+			// assertions below race it and the date fields are removed from
+			// the DOM while they are still polling.
+
+			await contentsPage.waitForSidePanel('Categorization');
+
+			// Go back to the Schedule panel and check that the expiration and
+			// review dates are preserved.
 
 			await contentsPage.openSidePanel('Schedule');
 

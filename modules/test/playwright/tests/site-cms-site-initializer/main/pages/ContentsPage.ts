@@ -356,6 +356,13 @@ export class ContentsPage {
 		).toBeVisible();
 	}
 
+	async waitForSidePanel(panelName: SidePanelName) {
+		await expect(this.page.getByLabel(panelName)).toHaveAttribute(
+			'aria-selected',
+			'true'
+		);
+	}
+
 	async viewShowDetails(title: string) {
 		const card = this.page
 			.locator('tr', {hasText: title})
