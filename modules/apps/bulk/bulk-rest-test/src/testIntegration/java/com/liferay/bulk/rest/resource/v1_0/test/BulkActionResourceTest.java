@@ -195,6 +195,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 	public void testPostBulkActionItemPreviewPage() throws Exception {
 		_testPostBulkActionItemPreviewPage(_depotEntry1, "RECYCLE_BIN");
 		_testPostBulkActionItemPreviewPage(_depotEntry2, "PERMANENT_DELETION");
+		_testPostBulkActionItemPreviewPageWithNonexistentClassPK();
 	}
 
 	private DepotEntry _addDepotEntry(boolean trashEnabled) throws Exception {
@@ -669,6 +670,41 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 			items2.get(1), objectEntryFolder2.getObjectEntryFolderId(),
 			expectedDeletionType, 0L, null, objectEntryFolder2.getName(),
 			"FOLDER", null);
+	}
+
+	private void _testPostBulkActionItemPreviewPageWithNonexistentClassPK()
+		throws Exception {
+
+		BulkAction bulkAction = new DeleteObjectBulkSelectionAction();
+
+		bulkAction.setBulkActionItems(
+			new BulkActionItem[] {
+				new BulkActionItem() {
+					{
+						setClassName(
+							_cmsBasicWebContentObjectDefinition.getClassName());
+						setClassPK(RandomTestUtil.randomLong());
+					}
+				}
+			});
+		bulkAction.setType(BulkAction.Type.DELETE_OBJECT_BULK_SELECTION_ACTION);
+
+		SelectionScope selectionScope = new SelectionScope();
+
+		selectionScope.setSelectAll(false);
+
+		bulkAction.setSelectionScope(selectionScope);
+
+		Page<BulkActionItem> page =
+			bulkActionResource.postBulkActionItemPreviewPage(
+				false, null, null, Pagination.of(1, 10), "name:desc",
+				bulkAction);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		List<BulkActionItem> items = ListUtil.fromCollection(page.getItems());
+
+		Assert.assertEquals(items.toString(), 0, items.size());
 	}
 
 	private void _testPostBulkActionItemPreviewPageWithSelectAllAndFilter(
