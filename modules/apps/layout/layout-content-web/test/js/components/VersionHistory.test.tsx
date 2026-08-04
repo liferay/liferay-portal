@@ -102,12 +102,12 @@ function renderComponent({hasDraft = false} = {}) {
 			config={{
 				availableLanguages: {},
 				availableSegmentsExperiences: [],
-				currentVersion: {
+				defaultLanguageId: 'en_US',
+				defaultUserImageSrc: '/image/user_portrait?img_id=0',
+				layout: {
 					name: 'Home',
 					status: hasDraft ? 'draft' : 'approved',
 				},
-				defaultLanguageId: 'en_US',
-				defaultUserImageSrc: '/image/user_portrait?img_id=0',
 				pageSpecificationVersionsURL: 'url',
 			}}
 		/>
@@ -178,7 +178,7 @@ describe('VersionHistory', () => {
 		).toBeInTheDocument();
 	});
 
-	it('only shows the current version item when there are no versions', async () => {
+	it('only shows the current page item when there are no versions', async () => {
 		mockLargeScreen();
 
 		renderComponent();
@@ -229,7 +229,7 @@ describe('VersionHistory', () => {
 		expect(screen.getAllByText('Home')).toHaveLength(2);
 	});
 
-	it('renders the current version item as published when there is no draft', async () => {
+	it('renders the current page item as published when there is no draft', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 
@@ -243,11 +243,11 @@ describe('VersionHistory', () => {
 
 		expect(first).toBe(queryCurrentItem());
 		expect(first).toHaveTextContent('Home');
-		expect(first).toHaveTextContent('current-version');
+		expect(first).toHaveTextContent('current-page');
 		expect(first).toHaveTextContent('published');
 	});
 
-	it('renders the current version item as draft when there is a draft', async () => {
+	it('renders the current page item as draft when there is a draft', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 
@@ -261,11 +261,11 @@ describe('VersionHistory', () => {
 
 		expect(first).toBe(queryCurrentItem());
 		expect(first).toHaveTextContent('Home');
-		expect(first).toHaveTextContent('current-version');
+		expect(first).toHaveTextContent('current-page');
 		expect(first).toHaveTextContent('draft');
 	});
 
-	it('filters out the current version item when it does not match the search', async () => {
+	it('filters out the current page item when it does not match the search', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 
@@ -281,7 +281,7 @@ describe('VersionHistory', () => {
 		expect(queryCurrentItem()).toBeUndefined();
 	});
 
-	it('selects the current version item by default', async () => {
+	it('selects the current page item by default', async () => {
 		mockLargeScreen();
 		mockVersions(VERSIONS);
 

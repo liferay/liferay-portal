@@ -113,21 +113,20 @@ public class LayoutContentVersionDisplayContextTest {
 			availableSegmentsExperiences.toString(), 3,
 			availableSegmentsExperiences.size());
 
-		Map<String, Object> currentVersion = (Map<String, Object>)config.get(
-			"currentVersion");
-
-		Assert.assertEquals(
-			_draftLayout.getName(_locale), currentVersion.get("name"));
-		Assert.assertEquals(
-			_draftLayout.isApproved() ? "approved" : "draft",
-			currentVersion.get("status"));
-
 		Assert.assertEquals(
 			LocaleUtil.toLanguageId(_siteDefaultLocale),
 			config.get("defaultLanguageId"));
 		Assert.assertEquals(
 			_themeDisplay.getPathImage() + "/user_portrait?img_id=0",
 			config.get("defaultUserImageSrc"));
+
+		Map<String, Object> layout = (Map<String, Object>)config.get("layout");
+
+		Assert.assertEquals(_draftLayout.getName(_locale), layout.get("name"));
+		Assert.assertEquals(
+			_draftLayout.isApproved() ? "approved" : "draft",
+			layout.get("status"));
+
 		Assert.assertEquals(
 			StringBundler.concat(
 				"/o/headless-admin-site/v1.0/sites/",
