@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -175,9 +176,8 @@ public class AssetCategoryLayoutDisplayPageProvider
 			return null;
 		}
 
-		AssetVocabulary assetVocabulary =
-			_assetVocabularyLocalService.fetchGroupVocabulary(
-				groupId, parts[0]);
+		AssetVocabulary assetVocabulary = _fetchAssetVocabulary(
+			groupId, parts[0]);
 
 		if (assetVocabulary == null) {
 			return null;
@@ -188,10 +188,8 @@ public class AssetCategoryLayoutDisplayPageProvider
 		long parentClassPK = assetVocabulary.getVocabularyId();
 
 		for (int i = 1; i < parts.length; i++) {
-			friendlyURLEntryLocalization =
-				_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
-					groupId, _portal.getClassNameId(AssetCategory.class),
-					parentClassPK, _language.getLanguageId(locale), parts[i]);
+			friendlyURLEntryLocalization = _fetchFriendlyURLEntryLocalization(
+				groupId, parentClassPK, locale, parts[i]);
 
 			if (friendlyURLEntryLocalization == null) {
 				break;
@@ -235,6 +233,47 @@ public class AssetCategoryLayoutDisplayPageProvider
 		}
 
 		return assetCategory;
+	}
+
+	private AssetVocabulary _fetchAssetVocabulary(long groupId, String name) {
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.fetchGroupVocabulary(groupId, name);
+
+		if (assetVocabulary != null) {
+			return assetVocabulary;
+		}
+
+		String decodedName = HttpComponentsUtil.decodePath(name);
+
+		if (name.equals(decodedName)) {
+			return null;
+		}
+
+		return _assetVocabularyLocalService.fetchGroupVocabulary(
+			groupId, decodedName);
+	}
+
+	private FriendlyURLEntryLocalization _fetchFriendlyURLEntryLocalization(
+		long groupId, long parentClassPK, Locale locale, String urlTitle) {
+
+		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
+				groupId, _portal.getClassNameId(AssetCategory.class),
+				parentClassPK, _language.getLanguageId(locale), urlTitle);
+
+		if (friendlyURLEntryLocalization != null) {
+			return friendlyURLEntryLocalization;
+		}
+
+		String decodedURLTitle = HttpComponentsUtil.decodePath(urlTitle);
+
+		if (urlTitle.equals(decodedURLTitle)) {
+			return null;
+		}
+
+		return _friendlyURLEntryLocalService.fetchFriendlyURLEntryLocalization(
+			groupId, _portal.getClassNameId(AssetCategory.class), parentClassPK,
+			_language.getLanguageId(locale), decodedURLTitle);
 	}
 
 	private Locale _getLocale() {
