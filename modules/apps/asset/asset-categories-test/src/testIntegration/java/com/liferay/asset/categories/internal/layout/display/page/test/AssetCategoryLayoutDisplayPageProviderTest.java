@@ -218,13 +218,13 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
 			_group.getGroupId(), assetVocabularyName);
 
-		String categoryURLTitle = StringUtil.toLowerCase(
+		String assetCategoryURLTitle = StringUtil.toLowerCase(
 			StringUtil.randomString());
 
 		AssetCategory assetCategory = _addAssetCategory(
 			assetVocabulary.getVocabularyId(),
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-			categoryURLTitle);
+			assetCategoryURLTitle);
 
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider1 =
 			_getLayoutDisplayPageObjectProvider(assetCategory);
@@ -234,7 +234,8 @@ public class AssetCategoryLayoutDisplayPageProviderTest {
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				encodedAssetVocabularyName, StringPool.SLASH, categoryURLTitle),
+				encodedAssetVocabularyName, StringPool.SLASH,
+				assetCategoryURLTitle),
 			urlTitle);
 
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider2 =
