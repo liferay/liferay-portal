@@ -30,7 +30,7 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 
 	const query = useQueryParams();
 
-	const {data, loading} = useRequest({
+	const {data, error, loading, refetch} = useRequest({
 		dataSourceFn: API.accounts.fetchAccountIndividualMetrics,
 		skipRequest: !id,
 		variables: {accountId: id, channelId, groupId},
@@ -70,23 +70,28 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 			/>
 
 			<ClayLayout.Row>
-				<ClayLayout.Col lg={3} md={6}>
+				<ClayLayout.Col className="d-flex" lg={3} md={6}>
 					<AccountMetricsCard
+						error={error}
 						loading={loading}
 						metrics={[
 							{
 								label: Liferay.Language.get('x-individuals'),
+								singularLabel:
+									Liferay.Language.get('x-individual'),
 								value: getCount(
 									AccountIndividualMetricType.TotalIndividuals
 								),
 							},
 						]}
+						refetch={refetch}
 						title={Liferay.Language.get('total-individuals')}
 					/>
 				</ClayLayout.Col>
 
-				<ClayLayout.Col lg={3} md={6}>
+				<ClayLayout.Col className="d-flex" lg={3} md={6}>
 					<AccountMetricsCard
+						error={error}
 						loading={loading}
 						metrics={[
 							{
@@ -102,12 +107,14 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 								),
 							},
 						]}
+						refetch={refetch}
 						title={Liferay.Language.get('identity-breakdown')}
 					/>
 				</ClayLayout.Col>
 
-				<ClayLayout.Col lg={3} md={6}>
+				<ClayLayout.Col className="d-flex" lg={3} md={6}>
 					<AccountMetricsCard
+						error={error}
 						loading={loading}
 						metrics={[
 							{
@@ -123,12 +130,14 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 								),
 							},
 						]}
+						refetch={refetch}
 						title={Liferay.Language.get('engagement-status')}
 					/>
 				</ClayLayout.Col>
 
-				<ClayLayout.Col lg={3} md={6}>
+				<ClayLayout.Col className="d-flex" lg={3} md={6}>
 					<AccountMetricsCard
+						error={error}
 						loading={loading}
 						metrics={[
 							{
@@ -138,6 +147,7 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 								),
 							},
 						]}
+						refetch={refetch}
 						title={Liferay.Language.get('inactive-users')}
 					/>
 				</ClayLayout.Col>
