@@ -5,13 +5,20 @@
 
 package com.liferay.osb.faro.web.internal.model.display.contacts;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import com.liferay.osb.faro.engine.client.model.Account;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Shinn Lok
@@ -22,6 +29,8 @@ public class AccountDisplay {
 	}
 
 	public AccountDisplay(Account account) {
+		_account = account;
+
 		_accountName = account.getAccountName();
 		_accountType = account.getAccountType();
 		_activitiesCount = account.getActivitiesCount();
@@ -45,6 +54,59 @@ public class AccountDisplay {
 		_numberOfEmployees = account.getNumberOfEmployees();
 		_website = account.getWebsite();
 	}
+
+	@JsonAnyGetter
+	public Map<String, Object> getFieldValues() {
+		Map<String, Object> fieldValues = new HashMap<>();
+
+		if (_account == null) {
+			return fieldValues;
+		}
+
+		List<Account.CalculatedField> calculatedFields =
+			_account.getCalculatedFields();
+
+		if (ListUtil.isNotEmpty(calculatedFields)) {
+			for (Account.CalculatedField calculatedField : calculatedFields) {
+				String name = calculatedField.getName();
+				String namespace = calculatedField.getNamespace();
+
+				if (Validator.isNull(name) || Validator.isNull(namespace)) {
+					continue;
+				}
+
+				fieldValues.put(
+					namespace + StringPool.SLASH + name,
+					calculatedField.getValue());
+			}
+		}
+
+		List<Account.Field> fields = _account.getFields();
+
+		if (ListUtil.isEmpty(fields)) {
+			return fieldValues;
+		}
+
+		for (Account.Field field : fields) {
+			String name = field.getName();
+
+			if (Validator.isNull(name) || _defaultFieldNames.contains(name)) {
+				continue;
+			}
+
+			fieldValues.put(name, field.getValue());
+		}
+
+		return fieldValues;
+	}
+
+	private static final List<String> _defaultFieldNames = Arrays.asList(
+		"accountName", "accountType", "activitiesCount", "annualRevenue",
+		"country", "id", "industry", "lifecycleStage", "numberOfEmployees",
+		"website");
+
+	@JsonIgnore
+	private Account _account;
 
 	private String _accountName;
 	private String _accountType;

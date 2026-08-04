@@ -29,8 +29,16 @@ public class Account {
 		return _annualRevenue;
 	}
 
+	public List<CalculatedField> getCalculatedFields() {
+		return _calculatedFields;
+	}
+
 	public String getCountry() {
 		return _country;
+	}
+
+	public List<Field> getFields() {
+		return _fields;
 	}
 
 	public Date getFirstActivityDate() {
@@ -93,8 +101,16 @@ public class Account {
 		_annualRevenue = annualRevenue;
 	}
 
+	public void setCalculatedFields(List<CalculatedField> calculatedFields) {
+		_calculatedFields = calculatedFields;
+	}
+
 	public void setCountry(String country) {
 		_country = country;
+	}
+
+	public void setFields(List<Field> fields) {
+		_fields = fields;
 	}
 
 	public void setFirstActivityDate(Date firstActivityDate) {
@@ -135,6 +151,118 @@ public class Account {
 		_website = website;
 	}
 
+	public static class CalculatedField {
+
+		public Date getModifiedDate() {
+			if (_modifiedDate == null) {
+				return null;
+			}
+
+			return new Date(_modifiedDate.getTime());
+		}
+
+		public String getName() {
+			return _name;
+		}
+
+		public String getNamespace() {
+			return _namespace;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		public void setModifiedDate(Date modifiedDate) {
+			if (modifiedDate != null) {
+				_modifiedDate = new Date(modifiedDate.getTime());
+			}
+		}
+
+		public void setName(String name) {
+			_name = name;
+		}
+
+		public void setNamespace(String namespace) {
+			_namespace = namespace;
+		}
+
+		public void setValue(String value) {
+			_value = value;
+		}
+
+		private Date _modifiedDate;
+		private String _name;
+		private String _namespace;
+		private String _value;
+
+	}
+
+	public static class Field {
+
+		public String getDataSourceId() {
+			return _dataSourceId;
+		}
+
+		public String getDataSourceName() {
+			return _dataSourceName;
+		}
+
+		public Date getModifiedDate() {
+			if (_modifiedDate == null) {
+				return null;
+			}
+
+			return new Date(_modifiedDate.getTime());
+		}
+
+		public String getName() {
+			return _name;
+		}
+
+		public String getSourceName() {
+			return _sourceName;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		public void setDataSourceId(String dataSourceId) {
+			_dataSourceId = dataSourceId;
+		}
+
+		public void setDataSourceName(String dataSourceName) {
+			_dataSourceName = dataSourceName;
+		}
+
+		public void setModifiedDate(Date modifiedDate) {
+			if (modifiedDate != null) {
+				_modifiedDate = new Date(modifiedDate.getTime());
+			}
+		}
+
+		public void setName(String name) {
+			_name = name;
+		}
+
+		public void setSourceName(String sourceName) {
+			_sourceName = sourceName;
+		}
+
+		public void setValue(String value) {
+			_value = value;
+		}
+
+		private String _dataSourceId;
+		private String _dataSourceName;
+		private Date _modifiedDate;
+		private String _name;
+		private String _sourceName;
+		private String _value;
+
+	}
+
 	public static class LifecycleStage {
 
 		public String getLifecycleName() {
@@ -162,7 +290,9 @@ public class Account {
 	private String _accountType;
 	private Long _activitiesCount;
 	private Double _annualRevenue;
+	private List<CalculatedField> _calculatedFields;
 	private String _country;
+	private List<Field> _fields;
 	private Date _firstActivityDate;
 	private String _id;
 	private String _industry;
