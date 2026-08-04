@@ -313,6 +313,51 @@ Parenthesising the default is the form verified here; bind it to the variable ra
 
 This is the same rollback trap as an invalid `dataType`: inside a site initializer it aborts the whole site creation, so a fragment that reads a checkbox is worth rendering once before shipping the tree.
 
+#### Only `${...}` Interpolation Runs — Block Directives Do Not
+
+`index.html` resolves `${...}` interpolation, and **nothing else**. A FreeMarker block directive is not evaluated: it is HTML escaped and emitted into the page as visible text. Verified on a self hosted 2026.Q2 bundle, where
+
+```html
+<#if (configuration.showCta!true)>
+	<div class="hero__actions">…</div>
+</#if>
+```
+
+rendered the literal string `<#if (configuration.showCta!true)>` on the live page, directly above a fully rendered `hero__actions`.
+
+Two things fail at once, and only the first is visible:
+
+- The opening tag appears as page text. The closing `</#if>` is swallowed, so there is no matching junk further down to grep for.
+- **The wrapped content renders unconditionally**, so the toggle silently does nothing — `showCta: false` still shows the button. This half survives any amount of visual checking, because a fragment authored with the toggle *on* looks correct either way.
+
+Write no conditional markup at all. Emit every element, publish the flag as a data attribute on the wrapper (this is what `?c` above is for), and branch in CSS:
+
+```html
+<div class="my-fragment-wrapper" data-show-cta="${(configuration.showCta!true)?c}">
+```
+
+```css
+#wrapper .my-fragment-wrapper[data-show-cta='false'] .my-fragment__actions {
+	display: none;
+}
+```
+
+CSS alone is wrong for a **form field** — `display: none` still submits the input. Remove those from the DOM in `index.js` so a switched off field cannot post a value:
+
+```javascript
+if (root.getAttribute('data-show-company') === 'false') {
+	var field = root.querySelector('[data-optional-field="company"]');
+
+	if (field) {
+		field.remove();
+	}
+}
+```
+
+Prefer the data attribute plus CSS form regardless of the directive limitation: it re-evaluates live in the page editor as the author flips the checkbox, whereas server side branching would only apply on re-render.
+
+`index.js` is **not** passed through FreeMarker — only `index.html` is. Verified by shipping `/* ${configuration.layout!'grid'} */` in an `index.js` and reading it back from the served page still literal, on a fragment whose `layout` was set to `rows`. So read configuration in JS from the data attributes; a `${...}` written there is inert rather than interpolated (which also means template literals in `index.js` are safe).
+
 ### Common Errors and Fixes
 
 - **"HTML content must not be empty"**: check `fragment.json` for incorrect path keys (must be `htmlPath`/`cssPath`/`jsPath`, not `html`/`css`/`js`).
@@ -320,6 +365,7 @@ This is the same rollback trap as an invalid `dataType`: inside a site initializ
 - **FreeMarker Null Pointer**: always provide defaults in HTML — `${configuration.myVar!'Default'}`.
 - **"boolean is not a valid enum value"**: a `configuration.json` field declares `"dataType": "boolean"` — checkbox fields take no `dataType`.
 - **"Can't convert boolean to string automatically"**: a checkbox value is printed without `?c` — use `${(configuration.myFlag!true)?c}`.
+- **A literal `<#if …>` appears as text on the page**: block directives are not evaluated in fragment HTML. Emit the markup unconditionally and hide it via a data attribute plus CSS. Assume the toggle is also doing nothing.
 
 ### Headless Fragment CRUD Is Inconsistent
 

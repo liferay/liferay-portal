@@ -318,9 +318,20 @@ The practical upshot is that a **mixed layout is workable**: objects managed liv
 The handler log lines are the fastest diagnosis — a step reporting `took 0 ms` (or `1 ms`) found no files, which is how a wrong directory name presents. Grep the handler for whatever you just added, not only the object ones:
 
 ```bash
-grep -E 'Initializing|Invoking (addOrUpdateListTypeDefinitions|addObjectDefinitions|addOrUpdateObjectRelationships|addOrUpdateLayouts|addOrUpdateLayoutsContent|addLayoutPageTemplates|addStyleBookEntries|addOrUpdateFragmentEntries|addOrUpdateResourcePermissions|addOrUpdateSiteNavigationMenus)' \
+grep -E 'Initializing|Invoking (addOrUpdateListTypeDefinitions|addObjectDefinitions|addOrUpdateObjectRelationships|addOrUpdateLayouts|addOrUpdateLayoutsContent|addLayoutPageTemplates|addStyleBookEntries|addFragmentEntries|addOrUpdateResourcePermissions)' \
 	bundles/tomcat/logs/catalina.out | tail -20
 ```
+
+**Fragments are `addFragmentEntries`, with no `addOrUpdate` prefix** — verified on 2026.Q2, where the run logged `Invoking addFragmentEntries took 117 ms`. Grepping for `addOrUpdateFragmentEntries` matches nothing, which reads exactly like the fragments directory was never found. There is likewise **no `addOrUpdateSiteNavigationMenus` line at all**, because that handler runs inside `addOrUpdateLayoutsContent` (see the navigation section above) — its absence is normal and proves nothing either way. Verify menus by counting items over REST instead.
+
+When a handler you expected is simply missing from the output, dump every line for the run before concluding it did not fire:
+
+```bash
+awk '/Initializing <Site Name>/{n++} n>=1' bundles/tomcat/logs/catalina.out \
+	| grep -E 'Invoking|Initializing'
+```
+
+`n>=1` prints from the first run onward, so raise the threshold to skip earlier runs — `n>=2` means "the second run and everything after it", not the second run alone. Set it to the total number of `Initializing` lines to see only the latest.
 
 The signal is the **jump between runs**, not the absolute number. Observed on a run that added a style book and a master page to an existing tree:
 

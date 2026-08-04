@@ -154,6 +154,42 @@ The same `fragmentFields` array also sets a fixed value, using `value_i18n` wher
 ]
 ```
 
+### Per Instance Configuration — `fragmentConfig`
+
+`fragmentFields` sets *editable regions*. A sibling key, `fragmentConfig`, sets the fragment's **`configuration.json` values** for that one placement, and it is what lets a single fragment serve several pages with different behavior instead of forking it:
+
+```json
+{
+	"definition": {
+		"fragment": {
+			"key": "event-list",
+			"siteKey": "[$GROUP_KEY$]"
+		},
+		"fragmentConfig": {
+			"layout": "grid",
+			"maxItems": "3",
+			"showCapacity": false,
+			"upcomingOnly": true
+		}
+	},
+	"type": "Fragment"
+}
+```
+
+`fragmentConfig` and `fragmentFields` are independent — use either, both, or neither on a placement.
+
+Keys are the `name` values from `configuration.json`, and each value must match how that field is declared there — a `checkbox` takes a real JSON boolean, and a `select` whose `validValues` are strings takes the string (so `"3"`, not `3`). Verified in a site initializer `page-definition.json` on 2026.Q2: the same `event-list` fragment rendered `maxItems="3" showCapacity=false layout="grid"` on one page and `200 / true / rows` on another. Whether a numeric `select` also accepts a bare number was not tested — declaring `validValues` as strings and passing strings is the form known to work.
+
+**This is cheap to verify without a browser.** Have the fragment publish each flag as a data attribute (`scaffold-fragment` requires this anyway, since block directives do not run) and the values land in the server rendered HTML, where `curl` can assert them:
+
+```bash
+grep -oE '<div[^>]*event-list-wrapper[^>]*' /tmp/page.html | tr ' ' '\n' | grep '^data-'
+```
+
+Match the class **inside** the tag as above rather than anchoring on `class="…"`. A wrapper that also carries style classes (`class="conference-hero-wrapper conference-hero--dark …"`) does not match `class="conference-hero-wrapper"`, and the grep then returns nothing — indistinguishable from a config that never applied.
+
+Assert on the page whose values **differ** from the `configuration.json` defaults. Those defaults are what a placement renders with no override, so a page configured to match them proves nothing about whether `fragmentConfig` was read at all — and defaults are usually chosen to suit the most common placement, which is exactly the page you would reach for first.
+
 ### Mapping Limits — Denormalize Into Display Fields
 
 Field mapping renders the raw stored value and cannot transform it. In particular:
@@ -169,7 +205,30 @@ Denormalizing is also the way to publish a number derived from private records. 
 
 An `Aggregation` field is still a computed field, so the "cannot be mapped" limit above is the reason it may not reach a Collection fragment through mapping — reading it over REST from fragment JavaScript is the verified path.
 
-**Do not compute these in fragment JavaScript instead** — the browser call runs as the visitor and silently returns 0 rows, so the number is confidently wrong rather than absent. See `rules/guest-access.md`.
+**Never derive a number from records the visitor cannot read.** That browser call runs as the visitor and returns 0 rows with a `200`, so the arithmetic yields a confidently wrong figure rather than an error. See `rules/guest-access.md`.
+
+The rule is about *what the fetch reads*, not about fetching. Read the line above as: never count the **private** object in the browser. A fetch of an object the visitor legitimately holds `VIEW` on is fine, and is sometimes the only option.
+
+#### When a Collection Element Cannot Do the Job
+
+Prefer the server side Collection. But it renders stored values only, so a listing needs fragment JavaScript once it requires any of these — and a realistic "upcoming events with remaining capacity" listing requires all three at once:
+
+| Requirement | Why Collection mapping cannot serve it |
+| --- | --- |
+| Filter by date (`upcoming only`) | OData `Date`/`DateTime` filters return `BAD_REQUEST`, so the filtering has to happen client side anyway (`skills/manage-objects/SKILL.md`) |
+| Format a date (`Oct 14–16, 2026`) | Mapping has no date format option — it prints the raw value |
+| Show an aggregate (`498 of 500 seats`) | Aggregates cannot be mapped, per the limits above |
+
+Denormalizing into `Text` display fields solves the first two, but each one then needs to be kept in sync, and it cannot solve a count that changes on every submission.
+
+So the workable shape for a public listing is: grant Guest company scope `VIEW` on the **public** object, keep the private object write only, put the count on the public object as an `Aggregation` field, and let fragment JavaScript fetch the public object and do the filtering, formatting, and subtraction. Verified end to end on 2026.Q2 — an unauthenticated request returned every event with a correct `registrationCount` while `GET /o/c/registrations` returned `totalCount: 0` for the same visitor.
+
+Two details that bite:
+
+- **Use `Liferay.Util.fetch`, not native `fetch`** (`skills/scaffold-client-extension/SKILL.md`).
+- **`Aggregation` serialises as a string** — an event with two registrations returns `"registrationCount": "2"`. `capacity - count` concatenates in JavaScript. Parse first.
+
+Verifying this is browser work, not `curl` work: `curl` executes no JavaScript, so an empty listing and a working one produce identical HTML. See the Verify section below.
 
 ## Verify
 

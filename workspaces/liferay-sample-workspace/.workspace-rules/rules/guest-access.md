@@ -31,6 +31,24 @@ Reach for an **`Aggregation` field** first: `businessType: Aggregation`, `functi
 
 A hand maintained counter kept in sync by an object action is the fallback for a value no aggregate function produces. Check first that object actions of the kind you need can actually be created — Groovy is disabled by default (`rules/object-actions-catalog.md`).
 
+### The Submission `POST` Still Returns the Created Entry
+
+Write only does **not** mean write blind. A Guest holding `ADD_OBJECT_ENTRY` and no `VIEW` gets `200` with the **complete** entry body — `id`, every submitted field, the resolved picklist objects, the relationship FK and its ERC twin, and the workflow `status`. Verified with a fully unauthenticated `POST` on 2026.Q2, from the same visitor for whom `GET /o/c/<plural>` returned `totalCount: 0`.
+
+So a form can safely `response.json()` and confirm back what was recorded. Do not code defensively around a body that is not there, and do not treat a parse failure as expected:
+
+```javascript
+const body = await response.json();
+
+if (!response.ok) {
+	throw new Error(body.title || body.detail || `HTTP ${response.status}`);
+}
+```
+
+The read restriction applies to *querying the collection*, not to the response of the visitor's own write.
+
+Guard the parse itself, though: this holds for the object endpoint's own `200` and `400` responses, both of which are JSON. A `500`, or anything returned by a proxy in front of Liferay, may be HTML — and parsing first means the visitor sees a JSON syntax error instead of the real failure. Read the body as text and parse inside a `try` when the form must report accurately.
+
 ## Guest Cannot Read a Picklist Over REST
 
 `GET /o/headless-admin-list-type/v1.0/list-type-definitions/by-external-reference-code/<ERC>/list-type-entries` returns **403** for Guest, and company scope `VIEW` on `com.liferay.list.type.model.ListTypeDefinition` does not lift it — the endpoint enforces more than that resource.
