@@ -19,7 +19,6 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.portal.upgrade.test.util.UpgradeTestUtil;
-import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
