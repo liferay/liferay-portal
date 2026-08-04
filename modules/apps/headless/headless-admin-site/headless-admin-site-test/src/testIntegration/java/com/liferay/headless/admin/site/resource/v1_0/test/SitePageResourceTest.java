@@ -452,6 +452,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePage(true, serviceContext, SitePage.Type.CONTENT_PAGE);
 		_testPutSiteSitePage(true, serviceContext, SitePage.Type.WIDGET_PAGE);
 
+		_testPutSiteSitePageWithContentPageSpecification();
 		_testPutSiteSitePageWithDefaultAssetPublisher();
 		_testPutSiteSitePageWithEmptyLayout(serviceContext);
 		_testPutSiteSitePageWithExportedPageSetSitePageAsFirstPage(
@@ -470,7 +471,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		_testPutSiteSitePageWithPageSpecifications();
 		_testPutSiteSitePageWithParentLayout();
 		_testPutSiteSitePageWithPriority();
-		_testPutSiteSitePageWithContentPageSpecification();
 		_testPutSiteSitePageWithWidgetPageSettings();
 		_testPutSiteSitePageWithWidgetPageSettingsWithWidgetPageTemplate();
 
