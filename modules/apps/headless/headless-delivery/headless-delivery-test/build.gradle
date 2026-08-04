@@ -35,6 +35,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:message-boards:message-boards-api")
 	testIntegrationImplementation project(":apps:message-boards:message-boards-test-util")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")

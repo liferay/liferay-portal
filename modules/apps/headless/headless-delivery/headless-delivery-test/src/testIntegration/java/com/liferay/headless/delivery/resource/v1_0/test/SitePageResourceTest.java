@@ -66,6 +66,7 @@ import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -73,6 +74,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -92,6 +94,7 @@ import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.service.permission.LayoutPermission;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
@@ -104,6 +107,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -113,6 +117,7 @@ import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
@@ -161,6 +166,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -291,10 +297,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-56213", "LPD-94135"})
+	@TestInfo({"LPD-56213", "LPD-94135", "LPD-99363"})
 	public void testGetSiteSitePageRenderedPage() throws Exception {
 		_testGetSiteSitePageRenderedPage();
 		_testGetSiteSitePageRenderedPageInRequestedLocale();
+		_testGetSiteSitePageRenderedPageUsesRequestHost();
 	}
 
 	@Test
@@ -639,6 +646,29 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 	}
 
+	private void _assertRequestHost(String host, String friendlyURL)
+		throws Exception {
+
+		int port = PortalUtil.getPortalServerPort(false);
+
+		SitePageResource requestHostSitePageResource = SitePageResource.builder(
+		).authentication(
+			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			host, port, "http"
+		).build();
+
+		String pageHTML =
+			requestHostSitePageResource.getSiteSitePageRenderedPage(
+				testGroup.getGroupId(), friendlyURL);
+
+		Assert.assertTrue(
+			pageHTML,
+			pageHTML.contains(
+				StringBundler.concat(
+					"getPortalURL: () => 'http://", host, ":", port, "'")));
+	}
+
 	private String _getRandomFriendlyURL() {
 		String urlTitle = StringUtil.toLowerCase(
 			RandomTestUtil.randomString(
@@ -888,6 +918,68 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			pageHTML.contains(
 				" lang=\"" + LocaleUtil.toW3cLanguageId(locale) + "\""));
 		Assert.assertTrue(pageHTML, pageHTML.contains(expectedTitle));
+	}
+
+	private void _testGetSiteSitePageRenderedPageUsesRequestHost()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			"{}", draftLayout,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()));
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		LayoutSet layoutSet = layout.getLayoutSet();
+
+		_virtualHostLocalService.updateVirtualHosts(
+			layout.getCompanyId(), layoutSet.getLayoutSetId(),
+			TreeMapBuilder.put(
+				_LOOPBACK_VIRTUAL_HOSTNAME, StringPool.BLANK
+			).build());
+
+		String friendlyURL = layout.getFriendlyURL();
+
+		friendlyURL = friendlyURL.substring(1);
+
+		_assertRequestHost(testCompany.getVirtualHostname(), friendlyURL);
+		_assertRequestHost(_LOOPBACK_VIRTUAL_HOSTNAME, friendlyURL);
+
+		_virtualHostLocalService.updateVirtualHosts(
+			layout.getCompanyId(), layoutSet.getLayoutSetId(), new TreeMap<>());
+
+		Group otherGroup = GroupTestUtil.addGroup();
+
+		try {
+			_virtualHostLocalService.updateVirtualHosts(
+				otherGroup.getCompanyId(),
+				otherGroup.getPublicLayoutSet(
+				).getLayoutSetId(),
+				TreeMapBuilder.put(
+					_LOOPBACK_VIRTUAL_HOSTNAME, StringPool.BLANK
+				).build());
+
+			try (AutoCloseable autoCloseable =
+					new CompanyConfigurationTemporarySwapper(
+						layout.getCompanyId(),
+						"com.liferay.site.internal.configuration." +
+							"SiteVirtualHostConfiguration",
+						HashMapDictionaryBuilder.<String, Object>put(
+							"allowDefaultInstanceURLBypass", false
+						).put(
+							"strictModeEnabled", true
+						).build())) {
+
+				_assertRequestHost(_LOOPBACK_VIRTUAL_HOSTNAME, friendlyURL);
+			}
+		}
+		finally {
+			GroupTestUtil.deleteGroup(otherGroup);
+		}
 	}
 
 	private void _testGetSiteSitePagesPagePageSet() throws Exception {
@@ -2441,6 +2533,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		"com.liferay.headless.delivery.internal.resource.v1_0." +
 			"SitePageResourceImpl";
 
+	private static final String _LOOPBACK_VIRTUAL_HOSTNAME = "127.0.0.1";
+
 	private static final PagePermission _PAGE_PERMISSIONS =
 		new PagePermission() {
 			{
@@ -2534,6 +2628,9 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
+
+	@Inject
+	private VirtualHostLocalService _virtualHostLocalService;
 
 	@Inject
 	private VulcanCRUDItemDelegateBuilderRegistry
