@@ -12,6 +12,7 @@ import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
 import com.liferay.commerce.pricing.service.base.CommercePricingClassLocalServiceBaseImpl;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
+import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -48,6 +50,7 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -108,7 +111,12 @@ public class CommercePricingClassLocalServiceImpl
 
 		commercePricingClass.setLastPublishDate(calendar.getTime());
 
-		commercePricingClass.setStatus(WorkflowConstants.STATUS_APPROVED);
+		if (_emptyModelManager.isEmptyModel()) {
+			commercePricingClass.setStatus(WorkflowConstants.STATUS_EMPTY);
+		}
+		else {
+			commercePricingClass.setStatus(WorkflowConstants.STATUS_APPROVED);
+		}
 
 		commercePricingClass.setExpandoBridgeAttributes(serviceContext);
 
@@ -259,6 +267,29 @@ public class CommercePricingClassLocalServiceImpl
 	}
 
 	@Override
+	public CommercePricingClass getOrAddEmptyCommercePricingClass(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setUserId(userId);
+
+		return _emptyModelManager.getOrAddEmptyModel(
+			CommercePricingClass.class, companyId,
+			() -> commercePricingClassLocalService.addCommercePricingClass(
+				externalReferenceCode, userId,
+				Collections.singletonMap(
+					LocaleUtil.getSiteDefault(), externalReferenceCode),
+				null, serviceContext),
+			externalReferenceCode,
+			this::fetchCommercePricingClassByExternalReferenceCode,
+			this::getCommercePricingClassByExternalReferenceCode,
+			CommercePricingClass.class.getName());
+	}
+
+	@Override
 	public List<CommercePricingClass> searchByCPDefinitionId(
 		long cpDefinitionId, String title, int start, int end) {
 
@@ -307,6 +338,13 @@ public class CommercePricingClassLocalServiceImpl
 
 		commercePricingClass.setLastPublishDate(calendar.getTime());
 
+		commercePricingClass.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				commercePricingClass.getExternalReferenceCode(),
+				commercePricingClass.getModelClassName(),
+				commercePricingClass.getCompanyId(), 0,
+				commercePricingClass.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 		commercePricingClass.setExpandoBridgeAttributes(serviceContext);
 
 		return commercePricingClassPersistence.update(commercePricingClass);
@@ -443,6 +481,9 @@ public class CommercePricingClassLocalServiceImpl
 	@Reference
 	private CommercePricingClassCPDefinitionRelLocalService
 		_commercePricingClassCPDefinitionRelLocalService;
+
+	@Reference
+	private EmptyModelManager _emptyModelManager;
 
 	@Reference
 	private ExpandoRowLocalService _expandoRowLocalService;
