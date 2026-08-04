@@ -12,6 +12,7 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -42,7 +43,7 @@ import org.junit.runner.RunWith;
 	featureFlags = {@FeatureFlag("LPD-34594"), @FeatureFlag("LPS-164563")}
 )
 @RunWith(Arquillian.class)
-public class DataSetSnapshotStartupViewTest {
+public class DataSetStartupSnapshotTest {
 
 	@ClassRule
 	@Rule
@@ -53,8 +54,7 @@ public class DataSetSnapshotStartupViewTest {
 
 	@Before
 	public void setUp() throws Exception {
-		FrontendDataSetTestUtil.initialize(
-			DataSetSnapshotStartupViewTest.class);
+		FrontendDataSetTestUtil.initialize(DataSetStartupSnapshotTest.class);
 
 		_dataSetSnapshotObjectDefinition =
 			_objectDefinitionLocalService.
@@ -63,37 +63,62 @@ public class DataSetSnapshotStartupViewTest {
 
 		Assert.assertNotNull(_dataSetSnapshotObjectDefinition);
 
-		_dataSetSnapshotStartupViewObjectDefinition =
+		_dataSetStartupSnapshotObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_SNAPSHOT_STARTUP_VIEW",
+					"L_DATA_SET_STARTUP_SNAPSHOT",
 					TestPropsValues.getCompanyId());
 
-		Assert.assertNotNull(_dataSetSnapshotStartupViewObjectDefinition);
+		Assert.assertNotNull(_dataSetStartupSnapshotObjectDefinition);
 	}
 
 	@Test
-	public void testDeleteDataSetSnapshotCascadesToStartupView()
+	public void testDeleteDataSetSnapshotCascadesToStartupSnapshot()
 		throws Exception {
 
 		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
 			RandomTestUtil.randomString());
 
-		ObjectEntry dataSetSnapshotStartupViewObjectEntry =
-			_addDataSetSnapshotStartupViewObjectEntry(
-				RandomTestUtil.randomString(),
-				dataSetSnapshotObjectEntry.getObjectEntryId());
+		ObjectEntry dataSetStartupSnapshotObjectEntry = _saveStartupSnapshot(
+			RandomTestUtil.randomString(),
+			dataSetSnapshotObjectEntry.getObjectEntryId());
 
 		_objectEntryLocalService.deleteObjectEntry(
 			dataSetSnapshotObjectEntry.getObjectEntryId());
 
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
-				dataSetSnapshotStartupViewObjectEntry.getObjectEntryId()));
+				dataSetStartupSnapshotObjectEntry.getObjectEntryId()));
 	}
 
 	@Test
-	public void testStartupViewExternalReferenceCodeResolvesSnapshot()
+	public void testSetDataSetStartupSnapshotReplacesExisting()
+		throws Exception {
+
+		String fdsName = RandomTestUtil.randomString();
+
+		ObjectEntry dataSetSnapshotObjectEntry1 =
+			_addDataSetSnapshotObjectEntry(fdsName);
+		ObjectEntry dataSetSnapshotObjectEntry2 =
+			_addDataSetSnapshotObjectEntry(fdsName);
+
+		_saveStartupSnapshot(
+			fdsName, dataSetSnapshotObjectEntry1.getObjectEntryId());
+
+		ObjectEntry dataSetStartupSnapshotObjectEntry = _saveStartupSnapshot(
+			fdsName, dataSetSnapshotObjectEntry2.getObjectEntryId());
+
+		Map<String, Serializable> values =
+			dataSetStartupSnapshotObjectEntry.getValues();
+
+		Assert.assertEquals(
+			dataSetSnapshotObjectEntry2.getObjectEntryId(),
+			GetterUtil.getLong(
+				values.get(_DATA_SET_SNAPSHOT_ID_OBJECT_FIELD_NAME)));
+	}
+
+	@Test
+	public void testStartupSnapshotExternalReferenceCodeResolvesSnapshot()
 		throws Exception {
 
 		String fdsName = RandomTestUtil.randomString();
@@ -101,66 +126,20 @@ public class DataSetSnapshotStartupViewTest {
 		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
 			fdsName);
 
-		_addDataSetSnapshotStartupViewObjectEntry(
+		ObjectEntry dataSetStartupSnapshotObjectEntry = _saveStartupSnapshot(
 			fdsName, dataSetSnapshotObjectEntry.getObjectEntryId());
 
-		try {
+		Map<String, Serializable> values =
+			dataSetStartupSnapshotObjectEntry.getValues();
 
-			// The serializer reads the startup view by its deterministic
-			// external reference code and resolves the linked snapshot
-
-			ObjectEntry startupViewObjectEntry =
-				_objectEntryLocalService.fetchObjectEntry(
-					TestPropsValues.getUserId() + StringPool.UNDERLINE +
-						fdsName,
-					0,
-					_dataSetSnapshotStartupViewObjectDefinition.
-						getObjectDefinitionId());
-
-			Assert.assertNotNull(startupViewObjectEntry);
-
-			Map<String, Serializable> values =
-				startupViewObjectEntry.getValues();
-
-			ObjectEntry resolvedDataSetSnapshotObjectEntry =
-				_objectEntryLocalService.fetchObjectEntry(
-					GetterUtil.getLong(
-						values.get(_DATA_SET_SNAPSHOT_ID_OBJECT_FIELD_NAME)));
-
-			Assert.assertEquals(
-				dataSetSnapshotObjectEntry.getExternalReferenceCode(),
-				resolvedDataSetSnapshotObjectEntry.getExternalReferenceCode());
-		}
-		finally {
-			_objectEntryLocalService.deleteObjectEntry(
-				dataSetSnapshotObjectEntry.getObjectEntryId());
-		}
-	}
-
-	@Test
-	public void testStoreStartupViewRelationship() throws Exception {
-		String fdsName = RandomTestUtil.randomString();
-
-		ObjectEntry dataSetSnapshotObjectEntry = _addDataSetSnapshotObjectEntry(
-			fdsName);
-
-		ObjectEntry dataSetSnapshotStartupViewObjectEntry =
-			_addDataSetSnapshotStartupViewObjectEntry(
-				fdsName, dataSetSnapshotObjectEntry.getObjectEntryId());
-
-		try {
-			Map<String, Serializable> values =
-				dataSetSnapshotStartupViewObjectEntry.getValues();
-
-			Assert.assertEquals(
-				dataSetSnapshotObjectEntry.getObjectEntryId(),
+		ObjectEntry resolvedDataSetSnapshotObjectEntry =
+			_objectEntryLocalService.fetchObjectEntry(
 				GetterUtil.getLong(
 					values.get(_DATA_SET_SNAPSHOT_ID_OBJECT_FIELD_NAME)));
-		}
-		finally {
-			_objectEntryLocalService.deleteObjectEntry(
-				dataSetSnapshotObjectEntry.getObjectEntryId());
-		}
+
+		Assert.assertEquals(
+			dataSetSnapshotObjectEntry.getExternalReferenceCode(),
+			resolvedDataSetSnapshotObjectEntry.getExternalReferenceCode());
 	}
 
 	private ObjectEntry _addDataSetSnapshotObjectEntry(String fdsName)
@@ -178,30 +157,48 @@ public class DataSetSnapshotStartupViewTest {
 				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 	}
 
-	private ObjectEntry _addDataSetSnapshotStartupViewObjectEntry(
+	private String _getStartupSnapshotExternalReferenceCode(String fdsName)
+		throws Exception {
+
+		User user = TestPropsValues.getUser();
+
+		return user.getExternalReferenceCode() + StringPool.UNDERLINE + fdsName;
+	}
+
+	private ObjectEntry _saveStartupSnapshot(
 			String fdsName, long dataSetSnapshotObjectEntryId)
 		throws Exception {
 
-		return _objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			_dataSetSnapshotStartupViewObjectDefinition.getObjectDefinitionId(),
-			0, null,
+		String externalReferenceCode = _getStartupSnapshotExternalReferenceCode(
+			fdsName);
+
+		ObjectEntry dataSetStartupSnapshotObjectEntry =
+			_objectEntryLocalService.fetchObjectEntry(
+				externalReferenceCode, 0,
+				_dataSetStartupSnapshotObjectDefinition.
+					getObjectDefinitionId());
+
+		if (dataSetStartupSnapshotObjectEntry != null) {
+			_objectEntryLocalService.deleteObjectEntry(
+				dataSetStartupSnapshotObjectEntry.getObjectEntryId());
+		}
+
+		return _objectEntryLocalService.addOrUpdateObjectEntry(
+			externalReferenceCode, 0, TestPropsValues.getUserId(),
+			_dataSetStartupSnapshotObjectDefinition.getObjectDefinitionId(), 0,
 			HashMapBuilder.<String, Serializable>put(
 				_DATA_SET_SNAPSHOT_ID_OBJECT_FIELD_NAME,
 				dataSetSnapshotObjectEntryId
-			).put(
-				"externalReferenceCode",
-				TestPropsValues.getUserId() + StringPool.UNDERLINE + fdsName
 			).build(),
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 	}
 
 	private static final String _DATA_SET_SNAPSHOT_ID_OBJECT_FIELD_NAME =
-		"r_dataSetSnapshotToStartupViews_l_dataSetSnapshotId";
+		"r_dataSetSnapshotToStartupSnapshots_l_dataSetSnapshotId";
 
 	private ObjectDefinition _dataSetSnapshotObjectDefinition;
-	private ObjectDefinition _dataSetSnapshotStartupViewObjectDefinition;
+	private ObjectDefinition _dataSetStartupSnapshotObjectDefinition;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

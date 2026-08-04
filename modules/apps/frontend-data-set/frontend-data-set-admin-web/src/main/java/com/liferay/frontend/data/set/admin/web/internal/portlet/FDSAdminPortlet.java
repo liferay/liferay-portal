@@ -40,6 +40,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 @Component(
 	property = {
+		"com.liferay.portlet.add-default-resource=true",
 		"com.liferay.portlet.display-category=category.hidden",
 		"com.liferay.portlet.layout-cacheable=true",
 		"jakarta.portlet.expiration-cache=0",

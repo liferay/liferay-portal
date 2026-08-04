@@ -6,7 +6,7 @@
 import {deepClone} from 'frontend-js-web';
 
 import {IView} from '../utils/types';
-import {ISnapshot, ISnapshots} from './ViewsContext';
+import {ISnapshot, ISnapshots, IStartupSnapshot} from './ViewsContext';
 import getViewComponent from './getViewComponent';
 
 const mapSnapshots = (
@@ -23,12 +23,12 @@ const mapSnapshots = (
 
 export enum EViewsActionTypes {
 	ADD_OR_UPDATE_SNAPSHOT = 'ADD_OR_UPDATE_SNAPSHOT',
+	ADD_OR_UPDATE_STARTUP_SNAPSHOT = 'ADD_OR_UPDATE_STARTUP_SNAPSHOT',
 	BATCH_UPDATE = 'BATCH_UPDATE',
 	DELETE_SNAPSHOT = 'DELETE_SNAPSHOT',
 	NOOP = 'NOOP',
 	RENAME_ACTIVE_SNAPSHOT = 'RENAME_ACTIVE_SNAPSHOT',
 	RESET_TO_DEFAULT_SNAPSHOT = 'RESET_TO_DEFAULT_SNAPSHOT',
-	SET_STARTUP_VIEW_DATA_SET_SNAPSHOT = 'SET_STARTUP_VIEW_DATA_SET_SNAPSHOT',
 	UPDATE_ACTIVE_SNAPSHOT = 'UPDATE_ACTIVE_SNAPSHOT',
 	UPDATE_ACTIVE_VIEW = 'UPDATE_ACTIVE_VIEW',
 	UPDATE_FIELD = 'UPDATE_FIELD',
@@ -90,6 +90,10 @@ const viewsActions: TViewsActions = {
 			snapshots: updatedSnapshots,
 		};
 	},
+	[EViewsActionTypes.ADD_OR_UPDATE_STARTUP_SNAPSHOT]: (state, value) => ({
+		...state,
+		startupSnapshot: value.startupSnapshot,
+	}),
 	[EViewsActionTypes.BATCH_UPDATE]: (state, stateUpdates) => {
 		if (!Array.isArray(stateUpdates) || !stateUpdates.length) {
 			return state;
@@ -109,11 +113,11 @@ const viewsActions: TViewsActions = {
 		const {
 			defaultSnapshot,
 			snapshots,
-			startupViewDataSetSnapshotERC,
+			startupSnapshot,
 		}: {
 			defaultSnapshot: any;
 			snapshots: Array<ISnapshots>;
-			startupViewDataSetSnapshotERC: null | string;
+			startupSnapshot: IStartupSnapshot | null;
 		} = state;
 
 		const updatedSnapshots = snapshots.map((group) => ({
@@ -129,10 +133,10 @@ const viewsActions: TViewsActions = {
 			activeSnapshotERC: null,
 			snapshotUpdated: false,
 			snapshots: updatedSnapshots,
-			startupViewDataSetSnapshotERC:
-				startupViewDataSetSnapshotERC === value.snapshotERC
+			startupSnapshot:
+				startupSnapshot?.erc === value.snapshotERC
 					? null
-					: startupViewDataSetSnapshotERC,
+					: startupSnapshot,
 		};
 	},
 	[EViewsActionTypes.NOOP]: (state) => state,
@@ -166,10 +170,6 @@ const viewsActions: TViewsActions = {
 			snapshotUpdated: false,
 		};
 	},
-	[EViewsActionTypes.SET_STARTUP_VIEW_DATA_SET_SNAPSHOT]: (state, value) => ({
-		...state,
-		startupViewDataSetSnapshotERC: value.startupViewDataSetSnapshotERC,
-	}),
 	[EViewsActionTypes.UPDATE_ACTIVE_SNAPSHOT]: (state, value) => {
 		const {defaultSnapshot} = state;
 

@@ -107,8 +107,6 @@ test.afterEach(async ({dataSetManagerApiHelpers}) => {
 		'/o/data-set-admin/snapshots?page=1&pageSize=100'
 	)) as {items?: Array<{id?: number}>};
 
-	// Deleting a snapshot cascades to its startup view child
-
 	for (const snapshot of response?.items || []) {
 		if (snapshot.id) {
 			await dataSetManagerApiHelpers.delete(

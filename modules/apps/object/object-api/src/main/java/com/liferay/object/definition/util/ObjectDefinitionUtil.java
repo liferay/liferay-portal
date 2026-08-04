@@ -247,10 +247,9 @@ public class ObjectDefinitionUtil {
 		).put(
 			"DataSetSnapshot", "/data-set-admin/snapshots"
 		).put(
-			"DataSetSnapshotStartupView",
-			"/data-set-admin/snapshot-startup-views"
-		).put(
 			"DataSetSort", "/data-set-admin/sorts"
+		).put(
+			"DataSetStartupSnapshot", "/data-set-admin/startup-snapshots"
 		).put(
 			"DataSetTableSection", "/data-set-admin/table-sections"
 		).put(

@@ -19,10 +19,12 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
@@ -38,8 +40,6 @@ import com.liferay.sharing.model.SharingEntry;
 import com.liferay.sharing.service.SharingEntryLocalService;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,7 +149,7 @@ public abstract class BaseFDSSerializer {
 		}
 	}
 
-	protected String serializeStartupViewDataSetSnapshotERC(
+	protected JSONObject serializeStartupSnapshot(
 			String fdsName, HttpServletRequest httpServletRequest,
 			ObjectDefinitionLocalService objectDefinitionLocalService)
 		throws Exception {
@@ -157,40 +157,44 @@ public abstract class BaseFDSSerializer {
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_DATA_SET_SNAPSHOT_STARTUP_VIEW",
+					"L_DATA_SET_STARTUP_SNAPSHOT",
 					portal.getCompanyId(httpServletRequest));
 
 		if (objectDefinition == null) {
 			return null;
 		}
 
-		// The startup view is an edge relationship child, so it is only
-		// reachable through its parent snapshot. Read it directly by its
-		// deterministic external reference code to bypass the standalone
-		// object entry query, which filters out root descendant entries.
+		User user = portal.getUser(httpServletRequest);
 
-		com.liferay.object.model.ObjectEntry startupViewObjectEntry =
-			objectEntryLocalService.fetchObjectEntry(
-				portal.getUserId(httpServletRequest) + StringPool.UNDERLINE +
-					fdsName,
-				0, objectDefinition.getObjectDefinitionId());
-
-		if (startupViewObjectEntry == null) {
+		if (user == null) {
 			return null;
 		}
 
-		Map<String, Serializable> values = startupViewObjectEntry.getValues();
+		com.liferay.object.model.ObjectEntry dataSetStartupSnapshotObjectEntry =
+			objectEntryLocalService.fetchObjectEntry(
+				user.getExternalReferenceCode() + StringPool.UNDERLINE +
+					fdsName,
+				0, objectDefinition.getObjectDefinitionId());
+
+		if (dataSetStartupSnapshotObjectEntry == null) {
+			return null;
+		}
+
+		long dataSetSnapshotObjectEntryId = GetterUtil.getLong(
+			dataSetStartupSnapshotObjectEntry.getValues(
+			).get(
+				"r_dataSetSnapshotToStartupSnapshots_l_dataSetSnapshotId"
+			));
 
 		com.liferay.object.model.ObjectEntry dataSetSnapshotObjectEntry =
 			objectEntryLocalService.fetchObjectEntry(
-				GetterUtil.getLong(
-					values.get(_OBJECT_FIELD_NAME_DATA_SET_SNAPSHOT_ID)));
+				dataSetSnapshotObjectEntryId);
 
 		if (dataSetSnapshotObjectEntry == null) {
 			return null;
 		}
 
-		return dataSetSnapshotObjectEntry.getExternalReferenceCode();
+		return _toJSONObject(dataSetSnapshotObjectEntry);
 	}
 
 	@Reference
@@ -289,8 +293,11 @@ public abstract class BaseFDSSerializer {
 			});
 	}
 
-	private static final String _OBJECT_FIELD_NAME_DATA_SET_SNAPSHOT_ID =
-		"r_dataSetSnapshotToStartupViews_l_dataSetSnapshotId";
+	private JSONObject _toJSONObject(
+		com.liferay.object.model.ObjectEntry objectEntry) {
+
+		return JSONUtil.put("erc", objectEntry.getExternalReferenceCode());
+	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseFDSSerializer.class);

@@ -7,28 +7,28 @@ import viewsReducer, {
 	EViewsActionTypes,
 } from '../../src/main/resources/META-INF/resources/views/viewsReducer';
 
-describe('viewsReducer startup view', () => {
-	describe('SET_STARTUP_VIEW_DATA_SET_SNAPSHOT', () => {
-		it('sets the startup snapshot ERC', () => {
-			const state = {startupViewDataSetSnapshotERC: null};
+describe('viewsReducer startup snapshot', () => {
+	describe('ADD_OR_UPDATE_STARTUP_SNAPSHOT', () => {
+		it('sets the startup snapshot', () => {
+			const state = {startupSnapshot: null};
 
 			const nextState = viewsReducer(state, {
-				type: EViewsActionTypes.SET_STARTUP_VIEW_DATA_SET_SNAPSHOT,
-				value: {startupViewDataSetSnapshotERC: 'erc-1'},
+				type: EViewsActionTypes.ADD_OR_UPDATE_STARTUP_SNAPSHOT,
+				value: {startupSnapshot: {erc: 'erc-1'}},
 			});
 
-			expect(nextState.startupViewDataSetSnapshotERC).toBe('erc-1');
+			expect(nextState.startupSnapshot).toEqual({erc: 'erc-1'});
 		});
 
-		it('replaces a previously set startup snapshot ERC', () => {
-			const state = {startupViewDataSetSnapshotERC: 'erc-1'};
+		it('replaces a previously set startup snapshot', () => {
+			const state = {startupSnapshot: {erc: 'erc-1'}};
 
 			const nextState = viewsReducer(state, {
-				type: EViewsActionTypes.SET_STARTUP_VIEW_DATA_SET_SNAPSHOT,
-				value: {startupViewDataSetSnapshotERC: 'erc-2'},
+				type: EViewsActionTypes.ADD_OR_UPDATE_STARTUP_SNAPSHOT,
+				value: {startupSnapshot: {erc: 'erc-2'}},
 			});
 
-			expect(nextState.startupViewDataSetSnapshotERC).toBe('erc-2');
+			expect(nextState.startupSnapshot).toEqual({erc: 'erc-2'});
 		});
 	});
 
@@ -41,25 +41,25 @@ describe('viewsReducer startup view', () => {
 					items: [{erc: 'erc-1'}, {erc: 'erc-2'}],
 				},
 			],
-			startupViewDataSetSnapshotERC: 'erc-1',
+			startupSnapshot: {erc: 'erc-1'},
 		};
 
-		it('clears the startup snapshot ERC when the startup view is deleted', () => {
+		it('clears the startup snapshot when it is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-1'},
 			});
 
-			expect(nextState.startupViewDataSetSnapshotERC).toBeNull();
+			expect(nextState.startupSnapshot).toBeNull();
 		});
 
-		it('keeps the startup snapshot ERC when a different view is deleted', () => {
+		it('keeps the startup snapshot when a different view is deleted', () => {
 			const nextState = viewsReducer(baseState, {
 				type: EViewsActionTypes.DELETE_SNAPSHOT,
 				value: {snapshotERC: 'erc-2'},
 			});
 
-			expect(nextState.startupViewDataSetSnapshotERC).toBe('erc-1');
+			expect(nextState.startupSnapshot).toEqual({erc: 'erc-1'});
 		});
 	});
 });

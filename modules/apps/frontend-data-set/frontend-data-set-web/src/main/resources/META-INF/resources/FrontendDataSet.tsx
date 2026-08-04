@@ -25,6 +25,7 @@ import React, {
 	useCallback,
 	useContext,
 	useEffect,
+	useLayoutEffect,
 	useMemo,
 	useReducer,
 	useRef,
@@ -104,6 +105,14 @@ import viewsReducer, {EViewsActionTypes} from './views/viewsReducer';
 const DEFAULT_PAGINATION_DELTA = 20;
 const DEFAULT_PAGINATION_PAGE_NUMBER = 1;
 
+const getSnapshotByERC = (
+	snapshots: Array<ISnapshots> | undefined,
+	erc: string
+): ISnapshot | undefined =>
+	(snapshots ?? [])
+		.flatMap((group: ISnapshots) => group.items)
+		.find((snapshot: ISnapshot) => snapshot.erc === erc);
+
 const FrontendDataSetContent = ({
 	actionParameterName,
 	additionalAPIURLParameters: initialAdditionalAPIURLParameters,
@@ -149,6 +158,7 @@ const FrontendDataSetContent = ({
 	selectedItems: externalSelectedItems,
 	selectedItemsKey = 'id',
 	selectionType,
+	saveStartupSnapshotURL,
 	showBulkActionsManagementBar = true,
 	showBulkActionsManagementBarActions = true,
 	showManagementBar = true,
@@ -160,7 +170,7 @@ const FrontendDataSetContent = ({
 	snapshots = [],
 	snapshotsEnabled,
 	sorts: sortsProp = [],
-	startupViewDataSetSnapshotERC = null,
+	startupSnapshot = null,
 	style = 'default',
 	uniformActionsDisplay,
 	views,
@@ -667,23 +677,17 @@ const FrontendDataSetContent = ({
 			snapshots: parsedSnapshots,
 			snapshotsEnabled,
 			sorts,
-			startupViewDataSetSnapshotERC:
-				startupViewDataSetSnapshotERC ?? null,
+			startupSnapshot: startupSnapshot ?? null,
 			views,
 			visibleFieldNames: initialVisibleFieldNames,
 		};
 
-		const startupViewDataSetSnapshot =
-			startupViewDataSetSnapshotERC &&
-			(parsedSnapshots ?? [])
-				.flatMap((group: ISnapshots) => group.items)
-				.find(
-					(snapshot: ISnapshot) =>
-						snapshot.erc === startupViewDataSetSnapshotERC
-				);
+		const matchedStartupSnapshot =
+			startupSnapshot?.erc &&
+			getSnapshotByERC(parsedSnapshots, startupSnapshot.erc);
 
-		if (startupViewDataSetSnapshot && hasURLState()) {
-			initialViewsState.activeSnapshotERC = startupViewDataSetSnapshotERC;
+		if (matchedStartupSnapshot && hasURLState()) {
+			initialViewsState.activeSnapshotERC = startupSnapshot.erc;
 			initialViewsState.snapshotUpdated = true;
 		}
 
@@ -2023,11 +2027,7 @@ const FrontendDataSetContent = ({
 			});
 		}
 		else {
-			const snapshot = deepClone(
-				snapshots
-					.flatMap((group: ISnapshots) => group.items)
-					.find((snapshot: ISnapshot) => snapshot.erc === value)
-			);
+			const snapshot = deepClone(getSnapshotByERC(snapshots, value));
 
 			const {customConfigs} = snapshot.configuration;
 
@@ -2070,39 +2070,39 @@ const FrontendDataSetContent = ({
 
 	const handleSnapshotChangeRef = useRef(handleSnapshotChange);
 	const hasURLStateRef = useRef(hasURLState);
-	const startupViewDataSetSnapshotAppliedRef = useRef(false);
+	const startupSnapshotAppliedRef = useRef(false);
 
-	handleSnapshotChangeRef.current = handleSnapshotChange;
-	hasURLStateRef.current = hasURLState;
+	useLayoutEffect(() => {
+		handleSnapshotChangeRef.current = handleSnapshotChange;
+		hasURLStateRef.current = hasURLState;
+	});
 
 	useEffect(() => {
 		if (
-			startupViewDataSetSnapshotAppliedRef.current ||
+			startupSnapshotAppliedRef.current ||
 			!globalFDSStateInitialized ||
-			!startupViewDataSetSnapshotERC
+			!startupSnapshot?.erc
 		) {
 			return;
 		}
 
-		startupViewDataSetSnapshotAppliedRef.current = true;
+		startupSnapshotAppliedRef.current = true;
 
-		const startupViewDataSetSnapshot = (viewsState.snapshots ?? [])
-			.flatMap((group: ISnapshots) => group.items)
-			.find(
-				(snapshot: ISnapshot) =>
-					snapshot.erc === startupViewDataSetSnapshotERC
-			);
+		const matchedStartupSnapshot = getSnapshotByERC(
+			viewsState.snapshots,
+			startupSnapshot.erc
+		);
 
-		if (!startupViewDataSetSnapshot || hasURLStateRef.current()) {
+		if (!matchedStartupSnapshot || hasURLStateRef.current()) {
 			return;
 		}
 
 		handleSnapshotChangeRef.current({
 			defaultSnapshot: viewsState.defaultSnapshot,
 			snapshots: viewsState.snapshots,
-			value: startupViewDataSetSnapshotERC,
+			value: startupSnapshot.erc,
 		});
-	}, [globalFDSStateInitialized, startupViewDataSetSnapshotERC, viewsState]);
+	}, [globalFDSStateInitialized, startupSnapshot, viewsState]);
 
 	function toggleItemInlineEdit(itemKey: any) {
 		setItemsChanges(({[itemKey]: foundItem, ...itemsChanges}) => {
@@ -2371,6 +2371,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
+				saveStartupSnapshotURL
 				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searchSuggestionsEnabled,

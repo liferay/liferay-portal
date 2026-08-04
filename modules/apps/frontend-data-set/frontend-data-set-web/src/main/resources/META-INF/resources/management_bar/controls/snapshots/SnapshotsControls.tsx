@@ -196,6 +196,7 @@ const SnapshotsControls = () => {
 		namespace,
 		onSnapshotChange,
 		portletId,
+		saveStartupSnapshotURL,
 	} = useContext(FrontendDataSetContext);
 
 	const {appliedCustomConfigs} = globalFDSState as IConnectedFDSState;
@@ -209,7 +210,7 @@ const SnapshotsControls = () => {
 			snapshotUpdated,
 			snapshots,
 			sorts,
-			startupViewDataSetSnapshotERC,
+			startupSnapshot,
 			visibleFieldNames,
 		},
 		viewsDispatch,
@@ -514,44 +515,18 @@ const SnapshotsControls = () => {
 			});
 	};
 
-	const setStartupViewDataSetSnapshot = () => {
-		if (!activeSnapshot) {
+	const setStartupSnapshot = () => {
+		if (!activeSnapshot || !saveStartupSnapshotURL) {
 			return;
 		}
 
-		const startupViewERC = `${Liferay.ThemeDisplay.getUserId()}_${fdsName}`;
-
-		const relationshipURL = (dataSetSnapshotERC: string) =>
-			`/o/data-set-admin/snapshots/by-external-reference-code/${encodeURIComponent(
-				dataSetSnapshotERC
-			)}/dataSetSnapshotToStartupViews`;
-
-		const createStartupView = () =>
-			fetch(relationshipURL(activeSnapshot.erc), {
-				body: JSON.stringify({
-					externalReferenceCode: startupViewERC,
-				}),
-				headers: DEFAULT_FETCH_HEADERS,
-				method: 'POST',
-			});
-
-		// The startup view links to its snapshot through an immutable edge
-		// relationship, so pointing it at a different snapshot means deleting
-		// the existing entry and recreating it under the selected snapshot.
-
-		const request = startupViewDataSetSnapshotERC
-			? fetch(
-					`${relationshipURL(
-						startupViewDataSetSnapshotERC
-					)}/${encodeURIComponent(startupViewERC)}`,
-					{
-						headers: DEFAULT_FETCH_HEADERS,
-						method: 'DELETE',
-					}
-				).then(createStartupView)
-			: createStartupView();
-
-		request
+		fetch(saveStartupSnapshotURL, {
+			body: new URLSearchParams({
+				dataSetSnapshotExternalReferenceCode: activeSnapshot.erc,
+				fdsName,
+			}),
+			method: 'POST',
+		})
 			.then((response) => {
 				if (!response.ok) {
 					return Promise.reject(new Error());
@@ -565,9 +540,9 @@ const SnapshotsControls = () => {
 				});
 
 				viewsDispatch({
-					type: EViewsActionTypes.SET_STARTUP_VIEW_DATA_SET_SNAPSHOT,
+					type: EViewsActionTypes.ADD_OR_UPDATE_STARTUP_SNAPSHOT,
 					value: {
-						startupViewDataSetSnapshotERC: activeSnapshot.erc,
+						startupSnapshot: {erc: activeSnapshot.erc},
 					},
 				});
 			})
@@ -721,7 +696,7 @@ const SnapshotsControls = () => {
 												{snapshot.label}
 
 												{snapshot.erc ===
-													startupViewDataSetSnapshotERC && (
+													startupSnapshot?.erc && (
 													<ClayLabel
 														aria-hidden="true"
 														className="ml-2"
@@ -788,11 +763,10 @@ const SnapshotsControls = () => {
 						</ClayDropDown.Item>
 
 						{activeSnapshotERC &&
-							activeSnapshotERC !==
-								startupViewDataSetSnapshotERC && (
+							activeSnapshotERC !== startupSnapshot?.erc && (
 								<ClayDropDown.Item
 									onClick={() => {
-										setStartupViewDataSetSnapshot();
+										setStartupSnapshot();
 
 										setActionsDropdownActive(false);
 									}}
