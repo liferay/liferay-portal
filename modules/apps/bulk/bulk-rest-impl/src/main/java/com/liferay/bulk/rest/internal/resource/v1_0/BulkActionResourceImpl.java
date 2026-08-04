@@ -100,6 +100,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -372,8 +373,10 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			null, true, null, null, search, filter, pagination,
 			new Sort[] {sort});
 
+		Collection<SearchResult> searchResults = searchPage.getItems();
+
 		List<BulkActionItem> bulkActionItems = transform(
-			searchPage.getItems(),
+			searchResults,
 			searchResult -> {
 				JSONObject jsonObject = _jsonFactory.createJSONObject(
 					String.valueOf(searchResult.getEmbedded()));
@@ -385,7 +388,11 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			bulkActionItems = _sortBulkActionItems(bulkActionItems, sort);
 		}
 
-		return Page.of(bulkActionItems, pagination, searchPage.getTotalCount());
+		int unresolvedCount = searchResults.size() - bulkActionItems.size();
+
+		return Page.of(
+			bulkActionItems, pagination,
+			searchPage.getTotalCount() - unresolvedCount);
 	}
 
 	private Page<BulkActionItem> _getBulkActionItemPreviewPage(
@@ -397,20 +404,16 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			bulkActionItem -> _toBulkActionItem(
 				GetterUtil.getLong(bulkActionItem.getClassPK())));
 
-		long totalCount = bulkActionItems1.size();
-
 		if (Validator.isNotNull(search)) {
 			bulkActionItems2 = ListUtil.filter(
 				bulkActionItems2,
 				bulkActionItem -> StringUtil.containsIgnoreCase(
 					bulkActionItem.getName(), search, StringPool.BLANK));
-
-			totalCount = bulkActionItems2.size();
 		}
 
 		return Page.of(
 			_sortBulkActionItems(bulkActionItems2, sort), pagination,
-			totalCount);
+			bulkActionItems2.size());
 	}
 
 	private BulkSelectionAction<Object> _getBulkSelectionAction(
@@ -1040,8 +1043,14 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			return _toBulkActionItem(objectEntry);
 		}
 
-		return _toBulkActionItem(
-			_objectEntryFolderLocalService.fetchObjectEntryFolder(classPK));
+		ObjectEntryFolder objectEntryFolder =
+			_objectEntryFolderLocalService.fetchObjectEntryFolder(classPK);
+
+		if (objectEntryFolder == null) {
+			return null;
+		}
+
+		return _toBulkActionItem(objectEntryFolder);
 	}
 
 	private BulkActionItem _toBulkActionItem(ObjectEntry objectEntry) {
