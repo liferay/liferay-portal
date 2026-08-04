@@ -52,6 +52,55 @@ describe('IndividualsDataSet', () => {
 		expect(lastFDSProps.pagination).toBeDefined();
 	});
 
+	describe('preview', () => {
+		it('should use its own dataset id', () => {
+			render(<IndividualsDataSet preview />);
+
+			expect(screen.getByTestId('fds-component')).toHaveAttribute(
+				'id',
+				'most-engaged-individuals-dataset'
+			);
+		});
+
+		it('should request only three individuals', () => {
+			render(<IndividualsDataSet preview />);
+
+			expect(lastFDSProps.views[0].initialPaginationDelta).toBe(3);
+		});
+
+		it('should hide the management bar, the search and the pagination', () => {
+			render(<IndividualsDataSet preview />);
+
+			expect(lastFDSProps.showManagementBar).toBe(false);
+			expect(lastFDSProps.showSearch).toBe(false);
+			expect(lastFDSProps.showPagination).toBe(false);
+			expect(lastFDSProps.pagination).toBeUndefined();
+		});
+
+		it('should declare the same columns as the full table, none sortable', () => {
+			render(<IndividualsDataSet preview />);
+
+			const fields = lastFDSProps.views[0].schema.fields;
+
+			expect(fields.map((field: any) => field.fieldName)).toEqual([
+				'name',
+				'jobTitle',
+				'sessionsCount',
+				'activitiesCount',
+				'averageSessionDuration',
+				'lastActivityDate',
+			]);
+			expect(fields.some((field: any) => field.sortable)).toBe(false);
+		});
+
+		it('should keep the total events sort of the full table', () => {
+			render(<IndividualsDataSet preview />);
+
+			expect(lastFDSProps.sorts[0].key).toBe('activitiesCount');
+			expect(lastFDSProps.sorts[0].direction).toBe('desc');
+		});
+	});
+
 	it('should declare the six expected sortable columns', () => {
 		render(<IndividualsDataSet />);
 

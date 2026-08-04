@@ -174,6 +174,19 @@ describe('Overview', () => {
 		).toHaveLength(2);
 	});
 
+	it('should render the Most Engaged Individuals card under the engagement cards', () => {
+		const {container} = renderOverview({account: mockAccount});
+
+		expect(
+			screen.getByText('MOST ENGAGED INDIVIDUALS')
+		).toBeInTheDocument();
+		expect(
+			container.querySelector(
+				'.col-12 [data-testid="most-engaged-individuals"]'
+			)
+		).toBeInTheDocument();
+	});
+
 	it('should stretch both engagement cards so they stay aligned', () => {
 		const {container} = renderOverview({account: mockAccount});
 

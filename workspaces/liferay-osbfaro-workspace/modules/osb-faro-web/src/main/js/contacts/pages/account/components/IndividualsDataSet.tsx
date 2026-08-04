@@ -11,6 +11,10 @@ import {useParams} from 'react-router-dom';
 
 const FDS_ID = 'account-individuals-dataset';
 
+const PREVIEW_FDS_ID = 'most-engaged-individuals-dataset';
+
+const PREVIEW_DELTA = 3;
+
 const SORTS = [
 	{
 		active: true,
@@ -47,7 +51,19 @@ export const getVisitorType = (sessionsCount: number) => {
 	};
 };
 
-const IndividualsDataSet: React.FC = () => {
+interface IIndividualsDataSetProps {
+
+	/**
+	 * Renders the read only preview shown on the overview tab: the first few
+	 * individuals with no search, sorting or pagination. The full table on the
+	 * profile tab is the default.
+	 */
+	preview?: boolean;
+}
+
+const IndividualsDataSet: React.FC<IIndividualsDataSetProps> = ({
+	preview = false,
+}) => {
 	const {channelId, groupId, id} = useParams<{
 		channelId: string;
 		groupId: string;
@@ -88,14 +104,17 @@ const IndividualsDataSet: React.FC = () => {
 						? columns.cmsLabelRenderer(getVisitorType(value))
 						: '',
 			}}
-			id={FDS_ID}
-			pagination={pagination}
-			showPagination
+			id={preview ? PREVIEW_FDS_ID : FDS_ID}
+			pagination={preview ? undefined : pagination}
+			showManagementBar={!preview}
+			showPagination={!preview}
+			showSearch={!preview}
 			sorts={SORTS}
 			views={[
 				{
 					contentRenderer: 'table',
 					default: true,
+					...(preview && {initialPaginationDelta: PREVIEW_DELTA}),
 					label: Liferay.Language.get('default-view'),
 					name: 'table',
 					schema: {
@@ -104,25 +123,25 @@ const IndividualsDataSet: React.FC = () => {
 								contentRenderer: 'individualNameRenderer',
 								fieldName: 'name',
 								label: Liferay.Language.get('individual-name'),
-								sortable: true,
+								sortable: !preview,
 							},
 							{
 								contentRenderer: 'jobTitleRenderer',
 								fieldName: 'jobTitle',
 								label: Liferay.Language.get('job-title'),
-								sortable: true,
+								sortable: !preview,
 							},
 							{
 								contentRenderer: 'visitorTypeRenderer',
 								fieldName: 'sessionsCount',
 								label: Liferay.Language.get('visitor-type'),
-								sortable: true,
+								sortable: !preview,
 							},
 							{
 								contentRenderer: 'totalEventsRenderer',
 								fieldName: 'activitiesCount',
 								label: Liferay.Language.get('total-events'),
-								sortable: true,
+								sortable: !preview,
 							},
 							{
 								contentRenderer: 'avgSessionDurationRenderer',
@@ -130,13 +149,13 @@ const IndividualsDataSet: React.FC = () => {
 								label: Liferay.Language.get(
 									'avg-session-duration'
 								),
-								sortable: true,
+								sortable: !preview,
 							},
 							{
 								contentRenderer: 'lastActiveRenderer',
 								fieldName: 'lastActivityDate',
 								label: Liferay.Language.get('last-active'),
-								sortable: true,
+								sortable: !preview,
 							},
 						],
 					},
