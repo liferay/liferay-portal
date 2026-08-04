@@ -25,7 +25,7 @@ func getClaimReadyCondition(
 	case persistentvolumeclaim.StateAccessModesUnsupported:
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
-				"The persistent volume claim %q is bound but does not support ReadWriteMany. The storage class %q is not ReadWriteMany capable.",
+				"The persistent volume claim %q is bound but does not support ReadWriteMany. The storage class %q is not ReadWriteMany capable",
 				claimName, storageClassName),
 			"ClaimNotReadWriteMany",
 			metav1.ConditionFalse,
@@ -33,7 +33,7 @@ func getClaimReadyCondition(
 	case persistentvolumeclaim.StateBound:
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
-				"The persistent volume claim %q is bound and supports ReadWriteMany.",
+				"The persistent volume claim %q is bound and supports ReadWriteMany",
 				claimName),
 			"ClaimBound",
 			metav1.ConditionTrue,
@@ -41,7 +41,7 @@ func getClaimReadyCondition(
 	case persistentvolumeclaim.StateCreated:
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
-				"The persistent volume claim %q was created and is waiting to be bound.",
+				"The persistent volume claim %q was created and is waiting to be bound",
 				claimName),
 			"ClaimCreated",
 			metav1.ConditionFalse,
@@ -49,7 +49,7 @@ func getClaimReadyCondition(
 	case persistentvolumeclaim.StateNotBound:
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
-				"The persistent volume claim %q is not bound. Its phase is %q.",
+				"The persistent volume claim %q is not bound. Its phase is %q",
 				claimName, claimResult.Phase),
 			"ClaimNotBound",
 			metav1.ConditionFalse,
@@ -57,7 +57,7 @@ func getClaimReadyCondition(
 	case persistentvolumeclaim.StateStorageClassNotFound:
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
-				"The storage class %q was not found. A ReadWriteMany capable storage class must exist before marketplace artifacts can be provisioned.",
+				"The storage class %q was not found. A ReadWriteMany capable storage class must exist before marketplace artifacts can be provisioned",
 				storageClassName),
 			"StorageClassNotFound",
 			metav1.ConditionFalse,
@@ -65,7 +65,7 @@ func getClaimReadyCondition(
 	default:
 		return newVolumeReadyCondition(
 			fmt.Sprintf(
-				"The persistent volume claim %q is in the unknown state %q.",
+				"The persistent volume claim %q is in the unknown state %q",
 				claimName, claimResult.State),
 			"ClaimStateUnknown",
 			metav1.ConditionUnknown,
@@ -84,7 +84,7 @@ func getVolumeMountedCondition(
 	if volume == nil {
 		return newVolumeMountedCondition(
 			fmt.Sprintf(
-				"The stateful set %q does not reference the persistent volume claim %q.",
+				"The stateful set %q does not reference the persistent volume claim %q",
 				statefulSet.Name, claimName),
 			"ClaimNotReferenced",
 			metav1.ConditionFalse,
@@ -94,7 +94,7 @@ func getVolumeMountedCondition(
 	if !persistentvolumeclaim.IsVolumeMountedReadOnly(podSpec, volume) {
 		return newVolumeMountedCondition(
 			fmt.Sprintf(
-				"The stateful set %q does not mount the volume %q read only.",
+				"The stateful set %q does not mount the volume %q read only",
 				statefulSet.Name, volume.Name),
 			"ClaimNotReadOnly",
 			metav1.ConditionFalse,
@@ -103,7 +103,7 @@ func getVolumeMountedCondition(
 
 	return newVolumeMountedCondition(
 		fmt.Sprintf(
-			"The stateful set %q mounts the volume %q read only.",
+			"The stateful set %q mounts the volume %q read only",
 			statefulSet.Name, volume.Name),
 		"ClaimMounted",
 		metav1.ConditionTrue,
