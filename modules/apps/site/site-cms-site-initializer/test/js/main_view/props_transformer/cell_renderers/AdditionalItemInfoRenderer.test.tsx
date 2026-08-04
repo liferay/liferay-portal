@@ -26,6 +26,7 @@ jest.mock('frontend-js-web', () => ({
 
 const mockLiferayLanguageGet = jest.fn((key) => {
 	const languageMap: {[key: string]: string} = {
+		'modified-x': 'Modified {0}',
 		'modified-x-by-x': 'Modified {0} by {1}',
 		'x-article': '{0} Article',
 		'x-articles': '{0} Articles',
@@ -100,5 +101,27 @@ describe('AdditionalItemInfoRenderer', () => {
 		expect(
 			screen.getByText('Modified 5 minutes ago by Test User')
 		).toBeInTheDocument();
+	});
+
+	it('renders the modification info for a non-folder item without embedded data', () => {
+		const itemData = {
+			dateModified: '2023-10-27T10:00:00Z',
+			entryClassName:
+				'com.liferay.document.library.kernel.model.DLFileEntry',
+		};
+
+		render(<AdditionalItemInfoRenderer itemData={itemData} />);
+
+		expect(screen.getByText('Modified 5 minutes ago')).toBeInTheDocument();
+	});
+
+	it('renders zero articles and folders for a folder without embedded data', () => {
+		const itemData = {
+			entryClassName: OBJECT_ENTRY_FOLDER_CLASS_NAME,
+		};
+
+		render(<AdditionalItemInfoRenderer itemData={itemData} />);
+
+		expect(screen.getByText('0 Articles · 0 Folders')).toBeInTheDocument();
 	});
 });
