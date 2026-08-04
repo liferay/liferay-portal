@@ -43,6 +43,8 @@ export default function UpdateReviewDateModalContent({
 	});
 	const [saving, setSaving] = useState(false);
 
+	const canSave = field.neverReview || (Boolean(field.value) && !field.error);
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
@@ -81,6 +83,14 @@ export default function UpdateReviewDateModalContent({
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
 				{Liferay.Language.get('update-review-date')}
+
+				{!canSave && (
+					<span className="sr-only">
+						{Liferay.Language.get(
+							'enter-a-review-date-or-select-never-review-to-enable-the-save-button'
+						)}
+					</span>
+				)}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
@@ -122,10 +132,7 @@ export default function UpdateReviewDateModalContent({
 						</ClayButton>
 
 						<ClayButton
-							disabled={
-								saving ||
-								(!field.neverReview && Boolean(field.error))
-							}
+							disabled={saving || !canSave}
 							displayType="primary"
 							type="submit"
 						>

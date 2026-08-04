@@ -32,7 +32,11 @@ const TIME_ZONE = 'America/Los_Angeles';
 test.use({timezoneId: TIME_ZONE});
 
 async function fillReviewDateModal(page: Page, reviewDate: string) {
-	await page.locator('.modal input.form-control').first().fill(reviewDate);
+	const reviewDateInput = page.locator('.modal input.form-control').first();
+
+	await reviewDateInput.fill(reviewDate);
+
+	await reviewDateInput.blur();
 
 	await page.locator('.modal').getByRole('button', {name: 'Save'}).click();
 }

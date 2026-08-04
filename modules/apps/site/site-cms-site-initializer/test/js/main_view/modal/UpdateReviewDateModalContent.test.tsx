@@ -12,6 +12,8 @@ import UpdateReviewDateModalContent from '../../../../src/main/resources/META-IN
 
 const FUTURE_REVIEW_DATE = '2099-12-31T10:00:00Z';
 const PAST_REVIEW_DATE = '2020-01-01T10:00:00Z';
+const SAVE_HINT =
+	'enter-a-review-date-or-select-never-review-to-enable-the-save-button';
 
 describe('UpdateReviewDateModalContent', () => {
 	it('renders the review date field, the never review checkbox, and the actions', () => {
@@ -27,6 +29,7 @@ describe('UpdateReviewDateModalContent', () => {
 		expect(screen.getByLabelText('never-review')).toBeInTheDocument();
 		expect(screen.getByText('save')).toBeInTheDocument();
 		expect(screen.getByText('cancel')).toBeInTheDocument();
+		expect(screen.queryByText(SAVE_HINT)).not.toBeInTheDocument();
 	});
 
 	it('does not preselect never review when no review date is given', () => {
@@ -94,6 +97,43 @@ describe('UpdateReviewDateModalContent', () => {
 		expect(
 			screen.getByText('the-date-entered-is-in-the-past')
 		).toBeInTheDocument();
+	});
+
+	it('disables save and explains why while the review date is empty', async () => {
+		render(
+			<UpdateReviewDateModalContent
+				closeModal={jest.fn()}
+				onSave={jest.fn().mockResolvedValue(true)}
+			/>
+		);
+
+		const saveButton = screen.getByText('save');
+
+		expect(saveButton).toBeDisabled();
+		expect(screen.getByText(SAVE_HINT)).toBeInTheDocument();
+
+		await userEvent.type(
+			screen.getAllByRole('textbox')[0],
+			'12/31/2099 10:00 AM'
+		);
+		await userEvent.tab();
+
+		expect(saveButton).toBeEnabled();
+		expect(screen.queryByText(SAVE_HINT)).not.toBeInTheDocument();
+	});
+
+	it('enables save with an empty review date when never review is checked', async () => {
+		render(
+			<UpdateReviewDateModalContent
+				closeModal={jest.fn()}
+				onSave={jest.fn().mockResolvedValue(true)}
+			/>
+		);
+
+		await userEvent.click(screen.getByLabelText('never-review'));
+
+		expect(screen.getByText('save')).toBeEnabled();
+		expect(screen.queryByText(SAVE_HINT)).not.toBeInTheDocument();
 	});
 
 	it('disables save when the review date is in the past', async () => {
