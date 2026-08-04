@@ -32,6 +32,35 @@ public class AuditConfigurationUtilTest {
 
 	@FeatureFlag("LPD-6417")
 	@Test
+	public void testGetConfiguration() {
+		long companyId = RandomTestUtil.randomLong();
+
+		_testGetConfiguration(CompanyConstants.SYSTEM);
+		_testGetConfiguration(companyId);
+
+		Assert.assertEquals(
+			CompanyConstants.SYSTEM,
+			AuditConfigurationUtil.getConfigurationCompanyId(-1));
+		Assert.assertEquals(
+			CompanyConstants.SYSTEM,
+			AuditConfigurationUtil.getConfigurationCompanyId(
+				CompanyConstants.SYSTEM));
+		Assert.assertEquals(
+			companyId,
+			AuditConfigurationUtil.getConfigurationCompanyId(companyId));
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-6417")
+	@Test
+	public void testGetConfigurationCompanyIdWhenFeatureFlagIsDisabled() {
+		Assert.assertEquals(
+			CompanyConstants.SYSTEM,
+			AuditConfigurationUtil.getConfigurationCompanyId(
+				RandomTestUtil.randomLong()));
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
 	public void testIsEnabled() {
 		_testIsEnabled(CompanyConstants.SYSTEM, false);
 		_testIsEnabled(CompanyConstants.SYSTEM, true);
@@ -65,6 +94,38 @@ public class AuditConfigurationUtilTest {
 		);
 
 		return auditConfiguration;
+	}
+
+	private void _testGetConfiguration(long companyId) {
+		try (MockedStatic<ConfigurationProviderUtil>
+				configurationProviderUtilMockedStatic = Mockito.mockStatic(
+					ConfigurationProviderUtil.class)) {
+
+			AuditConfiguration auditConfiguration = _createAuditConfiguration(
+				RandomTestUtil.randomBoolean());
+
+			if (companyId == CompanyConstants.SYSTEM) {
+				configurationProviderUtilMockedStatic.when(
+					() -> ConfigurationProviderUtil.getSystemConfiguration(
+						AuditConfiguration.class)
+				).thenReturn(
+					auditConfiguration
+				);
+			}
+			else {
+				configurationProviderUtilMockedStatic.when(
+					() -> ConfigurationProviderUtil.getCompanyConfiguration(
+						AuditConfiguration.class, companyId)
+				).thenReturn(
+					auditConfiguration
+				);
+			}
+
+			Assert.assertSame(
+				auditConfiguration,
+				AuditConfigurationUtil.getConfiguration(
+					AuditConfiguration.class, companyId));
+		}
 	}
 
 	private void _testIsEnabled(long companyId, boolean enabled) {

@@ -40,7 +40,7 @@ public class LoggingAuditMessageProcessor implements AuditMessageProcessor {
 	@Override
 	public void process(AuditMessage auditMessage) {
 		try {
-			doProcess(auditMessage);
+			_process(auditMessage);
 		}
 		catch (Exception exception) {
 			_log.fatal(
@@ -74,7 +74,7 @@ public class LoggingAuditMessageProcessor implements AuditMessageProcessor {
 		_serviceTrackerMap.close();
 	}
 
-	protected void doProcess(AuditMessage auditMessage) throws Exception {
+	private void _process(AuditMessage auditMessage) throws Exception {
 		if (_loggingAuditMessageProcessorConfiguration.enabled() &&
 			(_log.isInfoEnabled() ||
 			 _loggingAuditMessageProcessorConfiguration.outputToConsole())) {

@@ -8,4 +8,6 @@ dependencies {
 	compileOnly project(":apps:portal-security-audit:portal-security-audit-storage-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
+	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 }

@@ -5,44 +5,60 @@
 
 package com.liferay.portal.security.audit.configuration;
 
+import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 
 /**
  * @author Christian Moura
  */
 public class AuditConfigurationUtil {
 
-	public static boolean isEnabled(long companyId) {
+	public static <T> T getConfiguration(Class<T> clazz, long companyId) {
+		long configurationCompanyId = getConfigurationCompanyId(companyId);
+
 		try {
-			AuditConfiguration auditConfiguration = null;
-
-			if ((companyId == CompanyConstants.SYSTEM) ||
-				!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
-
-				auditConfiguration =
-					ConfigurationProviderUtil.getSystemConfiguration(
-						AuditConfiguration.class);
-			}
-			else {
-				auditConfiguration =
-					ConfigurationProviderUtil.getCompanyConfiguration(
-						AuditConfiguration.class, companyId);
+			if (configurationCompanyId == CompanyConstants.SYSTEM) {
+				return ConfigurationProviderUtil.getSystemConfiguration(clazz);
 			}
 
-			return auditConfiguration.enabled();
+			return ConfigurationProviderUtil.getCompanyConfiguration(
+				clazz, configurationCompanyId);
 		}
 		catch (Exception exception) {
-			_log.error(
-				"Unable to get the audit configuration for company " +
-					companyId,
-				exception);
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Unable to get the configuration ", clazz.getName(),
+						" for company ", companyId),
+					exception);
+			}
 		}
 
-		return true;
+		return ConfigurableUtil.createConfigurable(
+			clazz, new HashMapDictionary<>());
+	}
+
+	public static long getConfigurationCompanyId(long companyId) {
+		if ((companyId > CompanyConstants.SYSTEM) &&
+			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
+
+			return companyId;
+		}
+
+		return CompanyConstants.SYSTEM;
+	}
+
+	public static boolean isEnabled(long companyId) {
+		AuditConfiguration auditConfiguration = getConfiguration(
+			AuditConfiguration.class, companyId);
+
+		return auditConfiguration.enabled();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
