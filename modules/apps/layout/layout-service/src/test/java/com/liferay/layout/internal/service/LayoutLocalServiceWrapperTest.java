@@ -38,7 +38,6 @@ public class LayoutLocalServiceWrapperTest {
 				LayoutLocalServiceWrapper.class,
 				"_layoutContentVersionCreatorSnapshot",
 				_layoutContentVersionCreatorSnapshot);
-
 		_originalLog = ReflectionTestUtil.getAndSetFieldValue(
 			LayoutLocalServiceWrapper.class, "_log", _log);
 	}
@@ -49,7 +48,6 @@ public class LayoutLocalServiceWrapperTest {
 			LayoutLocalServiceWrapper.class,
 			"_layoutContentVersionCreatorSnapshot",
 			_originalLayoutContentVersionCreatorSnapshot);
-
 		ReflectionTestUtil.setFieldValue(
 			LayoutLocalServiceWrapper.class, "_log", _originalLog);
 	}
