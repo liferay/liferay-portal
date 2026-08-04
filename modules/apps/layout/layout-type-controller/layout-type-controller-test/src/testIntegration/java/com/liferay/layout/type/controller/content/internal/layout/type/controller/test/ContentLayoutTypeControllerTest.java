@@ -24,8 +24,6 @@ import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -136,17 +134,10 @@ public class ContentLayoutTypeControllerTest {
 	public void testContentLayoutTypeControllerDraftPreviewPermission()
 		throws Exception {
 
-		try {
-			_includeLayoutContent(
-				ActionKeys.PREVIEW_DRAFT, _layout, Constants.EDIT);
-
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
-			}
-		}
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _includeLayoutContent(
+				ActionKeys.PREVIEW_DRAFT, _layout, Constants.EDIT));
 
 		Assert.assertFalse(
 			_includeLayoutContent(
@@ -155,16 +146,10 @@ public class ContentLayoutTypeControllerTest {
 			_includeLayoutContent(
 				ActionKeys.UPDATE, _layout, Constants.PREVIEW));
 
-		try {
-			_includeLayoutContent(ActionKeys.VIEW, _layout, Constants.PREVIEW);
-
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
-			}
-		}
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _includeLayoutContent(
+				ActionKeys.VIEW, _layout, Constants.PREVIEW));
 	}
 
 	@Test
@@ -176,19 +161,12 @@ public class ContentLayoutTypeControllerTest {
 
 		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
 
-		try {
-			_layoutTypeController.includeLayoutContent(
+		Assert.assertThrows(
+			NoSuchLayoutException.class,
+			() -> _layoutTypeController.includeLayoutContent(
 				_getMockHttpServletRequest(null, guestUser),
 				new MockHttpServletResponse(),
-				LayoutTestUtil.addTypeContentLayout(_group));
-
-			Assert.fail();
-		}
-		catch (NoSuchLayoutException noSuchLayoutException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(noSuchLayoutException);
-			}
-		}
+				LayoutTestUtil.addTypeContentLayout(_group)));
 
 		Layout draftLayout = _layout.fetchDraftLayout();
 
@@ -376,44 +354,24 @@ public class ContentLayoutTypeControllerTest {
 
 		Layout layout = _addTypePageTemplateEntryLayout();
 
-		try {
-			_includeLayoutContent(
-				ActionKeys.PREVIEW_DRAFT, layout, Constants.EDIT);
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _includeLayoutContent(
+				ActionKeys.PREVIEW_DRAFT, layout, Constants.EDIT));
 
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
-			}
-		}
-
-		try {
-			_includeLayoutContent(
-				ActionKeys.PREVIEW_DRAFT, layout, Constants.PREVIEW);
-
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
-			}
-		}
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _includeLayoutContent(
+				ActionKeys.PREVIEW_DRAFT, layout, Constants.PREVIEW));
 
 		Assert.assertFalse(
 			_includeLayoutContent(
 				ActionKeys.UPDATE, layout, Constants.PREVIEW));
 
-		try {
-			_includeLayoutContent(ActionKeys.VIEW, layout, Constants.PREVIEW);
-
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
-			}
-		}
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _includeLayoutContent(
+				ActionKeys.VIEW, layout, Constants.PREVIEW));
 	}
 
 	@FeatureFlag("LPD-10622")
@@ -450,16 +408,10 @@ public class ContentLayoutTypeControllerTest {
 
 		Assert.assertFalse(content.contains("layout-content-version"));
 
-		try {
-			_includeLayoutContent(ActionKeys.VIEW, _layout, Constants.HISTORY);
-
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(principalException);
-			}
-		}
+		Assert.assertThrows(
+			PrincipalException.class,
+			() -> _includeLayoutContent(
+				ActionKeys.VIEW, _layout, Constants.HISTORY));
 
 		MockHttpServletRequest ctMockHttpServletRequest =
 			_getMockHttpServletRequest(
@@ -709,9 +661,6 @@ public class ContentLayoutTypeControllerTest {
 			expectedRedirectURL, _layout.fetchDraftLayout(),
 			mockHttpServletRequest);
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ContentLayoutTypeControllerTest.class);
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
