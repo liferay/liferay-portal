@@ -21,6 +21,8 @@ import com.liferay.layout.provider.LayoutStructureProvider;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.layout.util.LayoutServiceContextHelper;
+import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -416,7 +418,7 @@ public class ContentLayoutTypeControllerTest {
 
 	@FeatureFlag("LPD-10622")
 	@Test
-	@TestInfo("LPD-90027")
+	@TestInfo({"LPD-90027", "LPD-100960"})
 	public void testContentLayoutTypeControllerWithHistoryMode()
 		throws Exception {
 
@@ -457,6 +459,23 @@ public class ContentLayoutTypeControllerTest {
 			if (_log.isDebugEnabled()) {
 				_log.debug(principalException);
 			}
+		}
+
+		MockHttpServletRequest ctMockHttpServletRequest =
+			_getMockHttpServletRequest(
+				Constants.HISTORY, TestPropsValues.getUser());
+
+		ctMockHttpServletRequest.setMethod(HttpMethods.GET);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					RandomTestUtil.randomLong())) {
+
+			Assert.assertThrows(
+				NoSuchLayoutException.class,
+				() -> _layoutTypeController.includeLayoutContent(
+					ctMockHttpServletRequest, new MockHttpServletResponse(),
+					_layout.fetchDraftLayout()));
 		}
 	}
 
