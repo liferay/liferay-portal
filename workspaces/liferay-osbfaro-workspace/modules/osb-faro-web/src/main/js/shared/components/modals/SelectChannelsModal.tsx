@@ -17,7 +17,21 @@ import {
 } from 'shared/context/selection';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
+export interface ISelectableChannel {
+	commerceChannelsCount: number;
+	groupsCount: number;
+	id: string;
+	name: string;
+}
+
 interface ISelectChannelsModalProps {
+
+	/**
+	 * Opt in preselection. When given, the channels matching it are selected
+	 * on the first page of results. The modal itself has no opinion on which
+	 * channels matter, so each caller decides whether to preselect anything.
+	 */
+	autoSelectFilter?: (channel: ISelectableChannel) => boolean;
 	groupId: string;
 	onClose: () => {};
 	onSelect: (channels: string[]) => {};
@@ -25,6 +39,7 @@ interface ISelectChannelsModalProps {
 }
 
 const SelectChannelsModal: React.FC<ISelectChannelsModalProps> = ({
+	autoSelectFilter,
 
 	/**
 	 * const {groupId} = useParams() doesn't work on Modals
@@ -79,20 +94,22 @@ const SelectChannelsModal: React.FC<ISelectChannelsModalProps> = ({
 	}, [initialItems]);
 
 	useEffect(() => {
-		if (data?.items && !hasAutoSelectedRef.current) {
-			hasAutoSelectedRef.current = true;
+		if (!autoSelectFilter || !data?.items || hasAutoSelectedRef.current) {
+			return;
+		}
 
-			const channelsWithSites = data.items.filter(
-				(item: {groupsCount: number; id: string}) =>
-					item.groupsCount > 0 && !initialItems.includes(item.id)
-			);
+		hasAutoSelectedRef.current = true;
 
-			if (channelsWithSites.length) {
-				selectionDispatch?.({
-					payload: {items: channelsWithSites},
-					type: 'add',
-				});
-			}
+		const autoSelectedChannels = data.items.filter(
+			(channel: ISelectableChannel) =>
+				autoSelectFilter(channel) && !initialItems.includes(channel.id)
+		);
+
+		if (autoSelectedChannels.length) {
+			selectionDispatch?.({
+				payload: {items: autoSelectedChannels},
+				type: 'add',
+			});
 		}
 	}, [data]);
 

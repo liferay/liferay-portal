@@ -8,6 +8,7 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Modal} from 'shared/types';
 import {ClayCheckbox} from '@clayui/form';
 import {DataSource} from 'shared/util/records';
+import {getChannelsAutoSelectFilter} from 'shared/util/data-sources';
 import {modalTypes} from 'shared/actions/modals';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
@@ -151,6 +152,10 @@ const AssignIndividualsDataToPropertiesStep = ({
 								displayType="secondary"
 								onClick={() => {
 									open(modalTypes.SELECT_CHANNELS_MODAL, {
+										autoSelectFilter:
+											getChannelsAutoSelectFilter(
+												dataSource
+											),
 										groupId,
 										initialItems: selectedItems,
 										onClose: close,

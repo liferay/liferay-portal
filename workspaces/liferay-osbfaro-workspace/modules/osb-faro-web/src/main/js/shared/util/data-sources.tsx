@@ -198,6 +198,24 @@ export function validateUniqueName({
 }
 
 /**
+ * Get the preselection rule the select properties modal must apply for a
+ * DataSource. Demandbase only enriches individuals that browse a synced site,
+ * so the properties already syncing a site start out selected. Every other
+ * provider type starts with an empty selection, so no filter is returned.
+ * @param {DataSource} dataSource - The DataSource the properties are assigned to.
+ * @returns {function|undefined} - The filter to pass to the modal, when any.
+ */
+export function getChannelsAutoSelectFilter(
+	dataSource?: DataSource | null
+): ((channel: {groupsCount: number}) => boolean) | undefined {
+	if (dataSource?.providerType !== DataSourceTypes.Demandbase) {
+		return undefined;
+	}
+
+	return (channel) => channel.groupsCount > 0;
+}
+
+/**
  * Utility for getting the display object for a dataSource state in order
  * to display its status.
  */
