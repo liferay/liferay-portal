@@ -39,6 +39,7 @@ export default function CategorizationMessageBalloon({
 }: CategorizationMessageBalloonProps) {
 	const [committed, setCommitted] = useState(false);
 	const [dismissed, setDismissed] = useState<string[]>([]);
+	const [regenerated, setRegenerated] = useState(false);
 
 	const {regenerate, resolveTargets, run, status, suggestions} =
 		useCategorizationAgent(agent);
@@ -141,13 +142,20 @@ export default function CategorizationMessageBalloon({
 		`${committedCount}`
 	);
 
-	const isLoading = status === 'idle' || status === 'loading';
+	const isInitialLoading =
+		!regenerated && (status === 'idle' || status === 'loading');
 
 	useEffect(() => {
-		setIsGenerating(isLoading);
-	}, [isLoading, setIsGenerating]);
+		if (!isInitialLoading) {
+			return;
+		}
 
-	if (isLoading) {
+		setIsGenerating(true);
+
+		return () => setIsGenerating(false);
+	}, [isInitialLoading, setIsGenerating]);
+
+	if (isInitialLoading) {
 		return null;
 	}
 
@@ -179,6 +187,7 @@ export default function CategorizationMessageBalloon({
 							onRegenerate={() => {
 								setCommitted(false);
 								setDismissed([]);
+								setRegenerated(true);
 
 								regenerate();
 							}}

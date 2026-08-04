@@ -124,6 +124,39 @@ describe('CategorizationMessageBalloon', () => {
 		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
 	});
 
+	it('clears the shared state when it unmounts while loading', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetExistingTags.mockResolvedValue([]);
+
+		let unmount!: () => void;
+
+		await act(async () => {
+			unmount = render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					setIsGenerating={setIsGenerating}
+				/>
+			).unmount;
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-9');
+		});
+
+		expect(setIsGenerating).toHaveBeenLastCalledWith(true);
+
+		act(() => {
+			unmount();
+		});
+
+		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
+	});
+
 	it('counts only the tags not already on the content in the confirmation', async () => {
 		(Liferay.Language.get as jest.Mock).mockImplementation((key: string) =>
 			key === 'great-i-have-added-x-tags-to-your-content'
@@ -372,6 +405,91 @@ describe('CategorizationMessageBalloon', () => {
 		expect(
 			screen.getByText(/Great! I have added 1 tags/)
 		).toBeInTheDocument();
+	});
+
+	it('keeps the balloon with its own indicator while regenerating', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetExistingTags.mockResolvedValue([]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					setIsGenerating={setIsGenerating}
+				/>
+			);
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-8');
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"Culture","isNew":true}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		setIsGenerating.mockClear();
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'try-again'}));
+		});
+
+		expect(screen.getByText('generating-tags')).toBeInTheDocument();
+		expect(setIsGenerating).not.toHaveBeenCalledWith(true);
+	});
+
+	it('leaves the shared state alone when it unmounts after loading', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+		mockGetExistingTags.mockResolvedValue([]);
+
+		let unmount!: () => void;
+
+		await act(async () => {
+			unmount = render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					setIsGenerating={setIsGenerating}
+				/>
+			).unmount;
+		});
+
+		await act(async () => {
+			fakeEventSource.emit('Subscribe', 'sink-10');
+		});
+
+		await act(async () => {
+			fakeEventSource.emit(
+				'L_GENERATE_TAGS',
+				JSON.stringify({
+					data: '{"suggestions":[{"name":"Culture","isNew":true}]}',
+					nodeName: 'llm',
+				})
+			);
+		});
+
+		setIsGenerating.mockClear();
+
+		act(() => {
+			unmount();
+		});
+
+		expect(setIsGenerating).not.toHaveBeenCalled();
 	});
 
 	it('marks unknown tag targets as new and known ones as existing', async () => {
