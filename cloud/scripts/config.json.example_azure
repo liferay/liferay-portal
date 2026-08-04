@@ -5,6 +5,13 @@
 		"provider": "azure",
 		"version": "0.0.1"
 	},
+	"values": {
+		"gitops": {
+			"repository": {
+				"url": "https://github.com/example/liferay-gitops.git"
+			}
+		}
+	},
 	"variables": {
 		"deployment_name": "liferay-azure-test",
 		"region": "eastus",

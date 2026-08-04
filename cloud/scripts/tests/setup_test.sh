@@ -12,13 +12,12 @@ function main {
 
 	scripts_dir=$(cd "$(dirname "${0}")/.." && pwd)
 
-	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_gcp.sh"
+	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_azure.sh" "${scripts_dir}/setup_gcp.sh"
 	do
 		_run_test "${script}" _test_aborts_with_config_missing_variables_object
 		_run_test "${script}" _test_aborts_with_malformed_config_json
 		_run_test "${script}" _test_aborts_with_missing_config_file
 		_run_test "${script}" _test_aborts_with_missing_required_utility
-		_run_test "${script}" _test_aborts_with_missing_tfvars_file
 		_run_test "${script}" _test_aborts_with_no_arguments
 		_run_test "${script}" _test_aborts_with_old_terraform_version
 	done
@@ -39,7 +38,7 @@ function _make_stub_path {
 
 	stub_dir=$(mktemp -d)
 
-	for util in aws gcloud jq kubectl
+	for util in aws az gcloud helm jq kubectl
 	do
 		local real_path
 
@@ -97,7 +96,6 @@ function _run_setup_test {
 	local script="${1}"
 	local terraform_version="${3:-1.10.0}"
 	local utility_to_remove="${4:-}"
-	local write_tfvars="${5:-yes}"
 
 	local stub_dir
 
@@ -116,15 +114,10 @@ function _run_setup_test {
 
 	printf '%s' "${config_content}" > "${tmpdir}/config.json"
 
-	if [ "${write_tfvars}" = "yes" ]
-	then
-		touch "${tmpdir}/versions.tfvars"
-	fi
-
 	local exit_code=0
 	local output
 
-	output=$(PATH="${stub_dir}" bash "${script}" "${tmpdir}/config.json" "${tmpdir}/versions.tfvars" 2>&1) || exit_code="${?}"
+	output=$(PATH="${stub_dir}" bash "${script}" "${tmpdir}/config.json" 2>&1) || exit_code="${?}"
 
 	rm -rf "${stub_dir}" "${tmpdir}"
 
@@ -205,7 +198,7 @@ function _test_aborts_with_missing_config_file {
 
 	_make_terraform_stub "${stub_dir}" "1.10.0"
 
-	output=$(PATH="${stub_dir}" bash "${1}" /does/not/exist.json /does/not/exist.tfvars 2>&1) || exit_code="${?}"
+	output=$(PATH="${stub_dir}" bash "${1}" /does/not/exist.json 2>&1) || exit_code="${?}"
 
 	rm -rf "${stub_dir}"
 
@@ -229,25 +222,6 @@ function _test_aborts_with_missing_required_utility {
 	output=$(echo "${result}" | tail -n +2)
 
 	if [ "${exit_code}" -ne 0 ] && [[ "${output}" == *"utility jq is not installed"* ]]
-	then
-		return 0
-	fi
-
-	return 1
-}
-
-function _test_aborts_with_missing_tfvars_file {
-	local config_json
-	local exit_code
-	local output
-	local result
-
-	config_json=$(jq --null-input '{variables: {}}')
-	result=$(_run_setup_test "${1}" "${config_json}" "1.10.0" "" no)
-	exit_code=$(echo "${result}" | head -n 1)
-	output=$(echo "${result}" | tail -n +2)
-
-	if [ "${exit_code}" -ne 0 ] && [[ "${output}" == *"Versions tfvars file"*"does not exist"* ]]
 	then
 		return 0
 	fi

@@ -7,8 +7,6 @@ set -o pipefail
 _SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 _ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
-_VERSIONS_AWS_TFVARS_FILE="${_SCRIPTS_DIR}/versions_aws.tfvars"
-_VERSIONS_GCP_TFVARS_FILE="${_SCRIPTS_DIR}/versions_gcp.tfvars"
 _VERSIONS_JSON_FILE="${_SCRIPTS_DIR}/versions.json"
 
 function main {
@@ -17,13 +15,8 @@ function main {
 		_update_default_chart_version "${chart_yaml_file}"
 	done
 
-	_update_versions_tfvars "${_ROOT_CLOUD_DIR}/terraform/aws" "${_VERSIONS_AWS_TFVARS_FILE}"
-
-	_update_versions_tfvars "${_ROOT_CLOUD_DIR}/terraform/gcp" "${_VERSIONS_GCP_TFVARS_FILE}"
-
 	local aws_bootstrap_sources=(
 		"${_ROOT_CLOUD_DIR}/scripts/setup_aws.sh"
-		"${_ROOT_CLOUD_DIR}/scripts/versions_aws.tfvars"
 		"${_ROOT_CLOUD_DIR}/terraform/aws/eks"
 		"${_ROOT_CLOUD_DIR}/terraform/aws/gitops/platform"
 		"${_ROOT_CLOUD_DIR}/terraform/aws/gitops/resources"
@@ -31,9 +24,18 @@ function main {
 
 	_check_bootstrap "aws" "${aws_bootstrap_sources[@]}"
 
+	local azure_bootstrap_sources=(
+		"${_ROOT_CLOUD_DIR}/scripts/chart_versions.json"
+		"${_ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
+		"${_ROOT_CLOUD_DIR}/terraform/azure/aks"
+		"${_ROOT_CLOUD_DIR}/terraform/azure/platform"
+		"${_ROOT_CLOUD_DIR}/terraform/modules/argocd"
+	)
+
+	_check_bootstrap "azure" "${azure_bootstrap_sources[@]}"
+
 	local gcp_bootstrap_sources=(
 		"${_ROOT_CLOUD_DIR}/scripts/setup_gcp.sh"
-		"${_ROOT_CLOUD_DIR}/scripts/versions_gcp.tfvars"
 		"${_ROOT_CLOUD_DIR}/terraform/gcp/gke"
 		"${_ROOT_CLOUD_DIR}/terraform/gcp/gitops/platform"
 		"${_ROOT_CLOUD_DIR}/terraform/gcp/gitops/resources"
@@ -181,6 +183,19 @@ function _git_blame_sha {
 	echo "${target_sha}"
 }
 
+function _update_chart_versions_json {
+	local chart_name="liferay-${1}"
+	local new_version="${2}"
+
+	local chart_versions_json_file="${_SCRIPTS_DIR}/chart_versions.json"
+
+	local updated_chart_versions_json
+
+	updated_chart_versions_json=$(jq --arg chart_name "${chart_name}" --arg version "${new_version}" --tab '.[$chart_name] = $version' "${chart_versions_json_file}")
+
+	printf '%s' "${updated_chart_versions_json}" > "${chart_versions_json_file}"
+}
+
 function _update_default_chart_version {
 	local helm_chart_yaml="${1}"
 
@@ -188,60 +203,35 @@ function _update_default_chart_version {
 
 	helm_chart_name=$(basename "$(dirname "${helm_chart_yaml}")")
 
-	local file_to_update=""
+	local new_version
 
-	case "${helm_chart_name}" in
-		"aws" | "aws-infrastructure" | "aws-infrastructure-provider")
-			file_to_update="${_ROOT_CLOUD_DIR}/terraform/aws/gitops/resources/terraform.tfvars"
-			;;
-		"gcp" | "gcp-infrastructure" | "gcp-infrastructure-provider")
-			file_to_update="${_ROOT_CLOUD_DIR}/terraform/gcp/gitops/resources/terraform.tfvars"
-			;;
-	esac
-
-	local var_to_update=""
+	new_version=$(yq '.version' "${helm_chart_yaml}")
 
 	case "${helm_chart_name}" in
 		"aws" | "gcp")
-			var_to_update="liferay_helm_chart_version"
+			_update_resources_tfvars "${helm_chart_name}" "liferay_helm_chart_version" "${new_version}"
 			;;
 		"aws-infrastructure" | "gcp-infrastructure")
-			var_to_update="infrastructure_helm_chart_version"
+			_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_helm_chart_version" "${new_version}"
 			;;
 		"aws-infrastructure-provider" | "gcp-infrastructure-provider")
-			var_to_update="infrastructure_provider_helm_chart_version"
+			_update_resources_tfvars "${helm_chart_name%%-*}" "infrastructure_provider_helm_chart_version" "${new_version}"
+			;;
+		"platform")
+			_update_chart_versions_json "${helm_chart_name}" "${new_version}"
+			;;
+		"platform-components")
+			sed --in-place "s/^\(    targetRevision: \).*/\1${new_version}/" "${_ROOT_CLOUD_DIR}/helm/platform/values.yaml"
 			;;
 	esac
-
-	if [ -n "${var_to_update}" ]
-	then
-		local new_version
-
-		new_version=$(yq '.version' "${helm_chart_yaml}")
-
-		sed --in-place "s/\(${var_to_update} *= *\)\".*\"/\1\"${new_version}\"/" "${file_to_update}"
-	fi
 }
 
-function _update_versions_tfvars {
-	local terraform_dir="${1}"
+function _update_resources_tfvars {
+	local cloud="${1}"
+	local new_version="${3}"
+	local variable_name="${2}"
 
-	local versions_tfvars_file="${2}"
-
-	rm -f "${versions_tfvars_file}"
-
-	local terraform_tfvars_files
-
-	terraform_tfvars_files=$(find "${terraform_dir}" -name "terraform.tfvars")
-
-	echo "${terraform_tfvars_files}" | while read -r tfvars_file
-	do
-		cat "${tfvars_file}" >> "${versions_tfvars_file}"
-
-		echo "" >> "${versions_tfvars_file}"
-	done
-
-	grep . "${versions_tfvars_file}" | sort -o "${versions_tfvars_file}"
+	sed --in-place "s/\(${variable_name} *= *\)\".*\"/\1\"${new_version}\"/" "${_ROOT_CLOUD_DIR}/terraform/${cloud}/gitops/resources/terraform.tfvars"
 }
 
 main "$@"

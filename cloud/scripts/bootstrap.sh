@@ -34,7 +34,16 @@ function main {
 
 	extracted_dir=$(_download_and_extract_files "${branch}" "${provider}" "${version}")
 
-	"${extracted_dir}/cloud/scripts/setup_${provider}.sh" "${config_file}" "${extracted_dir}/cloud/scripts/versions_${provider}.tfvars"
+	local setup_args=("${config_file}")
+
+	local versions_tfvars_file="${extracted_dir}/cloud/scripts/versions_${provider}.tfvars"
+
+	if [ -f "${versions_tfvars_file}" ]
+	then
+		setup_args+=("${versions_tfvars_file}")
+	fi
+
+	"${extracted_dir}/cloud/scripts/setup_${provider}.sh" "${setup_args[@]}"
 }
 
 function _check_terraform_version {

@@ -70,7 +70,6 @@ jobs:
                         then
                             files=(
                                 cloud/scripts/setup_aws.sh
-                                cloud/scripts/versions_aws.tfvars
                                 cloud/terraform/aws/eks/*
                                 cloud/terraform/aws/gitops/platform/*
                                 cloud/terraform/aws/gitops/resources/*
@@ -78,8 +77,8 @@ jobs:
                         elif [[ "${provider}" == "azure" ]]
                         then
                             files=(
+                                cloud/scripts/chart_versions.json
                                 cloud/scripts/setup_azure.sh
-                                cloud/scripts/versions_azure.tfvars
                                 cloud/terraform/azure/aks/*
                                 cloud/terraform/azure/platform/*
                                 cloud/terraform/modules/argocd/*
@@ -88,7 +87,6 @@ jobs:
                         then
                             files=(
                                 cloud/scripts/setup_gcp.sh
-                                cloud/scripts/versions_gcp.tfvars
                                 cloud/terraform/gcp/gitops/platform/*
                                 cloud/terraform/gcp/gitops/resources/*
                                 cloud/terraform/gcp/gke/*

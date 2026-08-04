@@ -8,33 +8,37 @@ _SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 _ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
 
+readonly _ROOT_CLOUD_DIR _SCRIPTS_DIR
+
 function main {
-	if [ "${#}" -ne 2 ]
+	if [ "${#}" -eq 0 ]
 	then
-		echo "Usage: ${0} <configuration-json-file> <versions-tfvars-file>" >&2
+		echo "Usage: ${0} <configuration-json-file>" >&2
 		echo "" >&2
 		echo "See cloud/scripts/config.json.example_azure for a sample." >&2
 
 		exit 1
 	fi
 
-	_check_utils az jq terraform
+	_check_utils az helm jq terraform
 
 	_check_terraform_version "1.10.0"
 
 	_validate_config_json "${1}"
 
-	_validate_versions_tfvars "${2}"
-
 	_generate_tfvars "${1}" "${_SCRIPTS_DIR}/global_terraform.tfvars"
 
 	local subscription_id
 
-	subscription_id="$(jq --raw-output '.variables.subscription_id // empty' "${1}")"
+	subscription_id="$(jq --raw-output '.variables.subscription_id' "${1}")"
+
+	export ARM_SUBSCRIPTION_ID="${subscription_id}"
 
 	local tenant_id
 
-	tenant_id="$(jq --raw-output '.variables.tenant_id // empty' "${1}")"
+	tenant_id="$(jq --raw-output '.variables.tenant_id' "${1}")"
+
+	export ARM_TENANT_ID="${tenant_id}"
 
 	echo "Attempting to login to your Azure account."
 
@@ -42,59 +46,61 @@ function main {
 
 	az account set --subscription "${subscription_id}"
 
-	local container_name=""
-	local deployment_name=""
-	local region=""
-	local resource_group_name=""
-	local storage_account_name=""
+	local deployment_name
+
+	deployment_name="$(jq --raw-output '.variables.deployment_name' "${1}")"
+
+	_check_key_vault "${1}" "${deployment_name}"
 
 	local terraform_args=()
 
 	while IFS= read -r terraform_arg
 	do
 		terraform_args+=("${terraform_arg}")
-	done < <(_get_terraform_apply_args "${1}" "${2}")
+	done < <(_get_terraform_apply_args "${1}")
 
 	if jq --exit-status '.variables.tfstate_storage_account_name' "${1}" &> /dev/null
 	then
-		if ! jq --exit-status '.variables.deployment_name' "${1}" &> /dev/null
-		then
-			echo "The configuration JSON file must contain a key named \"variables.deployment_name\"." >&2
-
-			exit 1
-		fi
-
-		if ! jq --exit-status '.variables.region' "${1}" &> /dev/null
-		then
-			echo "The configuration JSON file must contain a key named \"variables.region\"." >&2
-
-			exit 1
-		fi
-
-		if ! jq --exit-status '.variables.tfstate_container_name' "${1}" &> /dev/null
-		then
-			echo "The configuration JSON file must contain a key named \"variables.tfstate_container_name\"." >&2
-
-			exit 1
-		fi
-
-		if ! jq --exit-status '.variables.tfstate_resource_group_name' "${1}" &> /dev/null
-		then
-			echo "The configuration JSON file must contain a key named \"variables.tfstate_resource_group_name\"." >&2
-
-			exit 1
-		fi
+		local container_name
+		local region
+		local resource_group_name
+		local storage_account_name
 
 		container_name="$(jq --raw-output '.variables.tfstate_container_name' "${1}")"
-		deployment_name="$(jq --raw-output '.variables.deployment_name' "${1}")"
 		region="$(jq --raw-output '.variables.region' "${1}")"
 		resource_group_name="$(jq --raw-output '.variables.tfstate_resource_group_name' "${1}")"
 		storage_account_name="$(jq --raw-output '.variables.tfstate_storage_account_name' "${1}")"
 
 		_create_tfstate_storage "${container_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
+
+		_generate_remote_backend_overrides "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
+	else
+		_generate_local_backend_overrides
 	fi
 
-	_set_up_azure_aks "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}" "${terraform_args[@]}"
+	_set_up_azure_aks "${terraform_args[@]}"
+
+	_set_up_azure_platform "${terraform_args[@]}"
+
+	_install_liferay_platform_chart "${1}"
+}
+
+function _check_key_vault {
+	local configuration_json_file="${1}"
+	local deployment_name="${2}"
+
+	if jq --exit-status '.variables.cluster_secret_store_provider_hcl' "${configuration_json_file}" &> /dev/null
+	then
+		return 0
+	fi
+
+	if ! az keyvault show --name "${deployment_name}-vault" --resource-group "${deployment_name}" &> /dev/null
+	then
+		echo "The default cluster secret store requires an Azure key vault named ${deployment_name}-vault in the resource group ${deployment_name}, holding a secret named liferay-credentials-gitops." >&2
+		echo "Create the key vault or set \"variables.cluster_secret_store_provider_hcl\" in the configuration JSON file to bring your own secret store." >&2
+
+		exit 1
+	fi
 }
 
 function _check_terraform_version {
@@ -220,6 +226,44 @@ function _create_storage_account {
 		--output none
 }
 
+function _generate_local_backend_overrides {
+	local directory
+
+	for directory in aks platform
+	do
+		cat > "${_ROOT_CLOUD_DIR}/terraform/azure/${directory}/backend_override.tf" <<EOF
+terraform {
+	backend "local" {}
+}
+EOF
+	done
+}
+
+function _generate_remote_backend_overrides {
+	local container_name="${1}"
+	local deployment_name="${2}"
+	local region="${3}"
+	local resource_group_name="${4}"
+	local storage_account_name="${5}"
+
+	local directory
+
+	for directory in aks platform
+	do
+		cat > "${_ROOT_CLOUD_DIR}/terraform/azure/${directory}/backend_override.tf" <<EOF
+terraform {
+	backend "azurerm" {
+		container_name="${container_name}"
+		key="${deployment_name}/${region}/${directory}/terraform.tfstate"
+		resource_group_name="${resource_group_name}"
+		storage_account_name="${storage_account_name}"
+		use_azuread_auth=true
+	}
+}
+EOF
+	done
+}
+
 function _generate_tfvars {
 	local configuration_json_file="${1}"
 	local tfvars_file="${2}"
@@ -254,23 +298,13 @@ function _generate_tfvars {
 }
 
 function _get_terraform_apply_args {
-	local auto_approve="false"
-
 	local configuration_json_file="${1}"
 
-	if jq --exit-status '.options.auto_approve' "${configuration_json_file}" > /dev/null
-	then
-		auto_approve=$(jq --raw-output '.options.auto_approve' "${configuration_json_file}")
-	fi
+	local auto_approve
 
-	local versions_tfvars_file="${2}"
-
-	local versions_tfvars_file_path
-
-	versions_tfvars_file_path=$(_resolve_path "${versions_tfvars_file}")
+	auto_approve=$(jq --raw-output '.options.auto_approve // false' "${configuration_json_file}")
 
 	local apply_args=(
-		"-var-file=${versions_tfvars_file_path}"
 		"-var-file=${_SCRIPTS_DIR}/global_terraform.tfvars")
 
 	if [[ "${auto_approve}" == "true" ]]
@@ -278,16 +312,86 @@ function _get_terraform_apply_args {
 		apply_args+=("-auto-approve")
 	fi
 
-	if jq --exit-status '.options.parallelism | numbers' "${configuration_json_file}" > /dev/null
+	local parallelism
+
+	parallelism=$(jq --raw-output '.options.parallelism | numbers' "${configuration_json_file}")
+
+	if [ -n "${parallelism}" ]
 	then
-		local parallelism
-
-		parallelism=$(jq --raw-output '.options.parallelism' "${configuration_json_file}")
-
 		apply_args+=("-parallelism=${parallelism}")
 	fi
 
 	printf '%s\n' "${apply_args[@]}"
+}
+
+function _install_liferay_platform_chart {
+	local configuration_json_file="${1}"
+
+	local platform_helm_chart_version
+
+	platform_helm_chart_version=$(jq --raw-output '."liferay-platform"' "${_SCRIPTS_DIR}/chart_versions.json")
+
+	echo "Applying the Liferay platform root application."
+
+	local terraform_outputs
+
+	_pushd "${_ROOT_CLOUD_DIR}/terraform/azure/platform"
+
+	terraform_outputs=$(terraform output -json)
+
+	_popd
+
+	jq \
+		--argjson terraform_outputs "${terraform_outputs}" \
+		--null-input \
+		--slurpfile chart_versions "${_SCRIPTS_DIR}/chart_versions.json" \
+		--slurpfile configuration "${configuration_json_file}" \
+		'{
+			platformComponents: {
+				values: ({
+					infrastructure: {
+						chart: "liferay-azure-infrastructure",
+						repoURL: "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+						targetRevision: $chart_versions[0]."liferay-azure-infrastructure"
+					},
+					infrastructureProvider: {
+						chart: "liferay-azure-infrastructure-provider",
+						repoURL: "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+						targetRevision: $chart_versions[0]."liferay-azure-infrastructure-provider"
+					},
+					liferay: {
+						chart: "liferay-azure",
+						repoURL: "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+						targetRevision: $chart_versions[0]."liferay-azure"
+					}
+				} * ($configuration[0].values // {}) * {
+					clusterIdentity: $terraform_outputs.cluster_identity.value,
+					clusterSecretStore: {
+						enabled: true,
+						provider: $terraform_outputs.cluster_secret_store_provider.value
+					},
+					operatorApplications: {
+						externalSecrets: {
+							values: {
+								serviceAccount: {
+									annotations: {
+										"azure.workload.identity/client-id": $terraform_outputs.external_secrets_client_id.value
+									}
+								}
+							}
+						}
+					}
+				})
+			}
+		}' \
+	| helm \
+		upgrade \
+		liferay-platform \
+		oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-platform \
+		--install \
+		--namespace argocd-system \
+		--values - \
+		--version "${platform_helm_chart_version}"
 }
 
 function _log {
@@ -302,40 +406,14 @@ function _pushd {
 	pushd "${1}" > /dev/null
 }
 
-function _resolve_path {
-	local file_path="${1}"
-
-	if [ ! -e "${file_path}" ]
-	then
-		echo "Path ${file_path} does not exist." >&2
-
-		exit 1
-	fi
-
-	local dir_path
-
-	if ! dir_path=$(cd "$(dirname "${file_path}")" && pwd)
-	then
-		echo "Failed to resolve directory for ${file_path}." >&2
-
-		exit 1
-	fi
-
-	printf '%s/%s\n' "${dir_path}" "$(basename "${file_path}")"
-}
-
 function _set_up_azure_aks {
-	local container_name="${1}"
-	local deployment_name="${2}"
-	local region="${3}"
-	local resource_group_name="${4}"
-	local storage_account_name="${5}"
-
 	_pushd "${_ROOT_CLOUD_DIR}/terraform/azure/aks"
 
 	echo "Setting up the Azure AKS cluster."
 
-	_terraform_init_and_apply "." "aks" "${container_name}" "${deployment_name}" "${region}" "${resource_group_name}" "${storage_account_name}" "${@:6}"
+	terraform init
+
+	terraform apply "${@}"
 
 	export KUBE_CONFIG_PATH="${HOME}/.kube/config"
 
@@ -349,34 +427,16 @@ function _set_up_azure_aks {
 	_popd
 }
 
-function _terraform_init_and_apply {
-	local container_name="${3}"
-	local deployment_name="${4}"
-	local folder_separator="${2}"
-	local region="${5}"
-	local resource_group_name="${6}"
-	local storage_account_name="${7}"
+function _set_up_azure_platform {
+	_pushd "${_ROOT_CLOUD_DIR}/terraform/azure/platform"
 
-	_pushd "${1}"
+	echo "Setting up the Liferay platform."
 
-	if [ -n "${storage_account_name}" ]
-	then
-		terraform init \
-			-backend-config="container_name=${container_name}" \
-			-backend-config="key=${deployment_name}/${region}/${folder_separator}/terraform.tfstate" \
-			-backend-config="resource_group_name=${resource_group_name}" \
-			-backend-config="storage_account_name=${storage_account_name}" \
-			-backend-config="use_azuread_auth=true"
-	else
-		cat > backend_override.tf <<EOF
-terraform {
-	backend "local" {}
-}
-EOF
-		terraform init
-	fi
+	terraform init
 
-	terraform apply "${@:8}"
+	terraform apply "${@}"
+
+	echo "Liferay platform setup complete."
 
 	_popd
 }
@@ -404,17 +464,25 @@ function _validate_config_json {
 
 		exit 1
 	fi
-}
 
-function _validate_versions_tfvars {
-	local versions_tfvars_file="${1}"
+	local required_variables=(deployment_name region subscription_id tenant_id)
 
-	if [ ! -f "${versions_tfvars_file}" ]
+	if jq --exit-status '.variables.tfstate_storage_account_name' "${configuration_json_file}" &> /dev/null
 	then
-		echo "Versions tfvars file ${versions_tfvars_file} does not exist." >&2
-
-		exit 1
+		required_variables+=(tfstate_container_name tfstate_resource_group_name)
 	fi
+
+	local required_variable
+
+	for required_variable in "${required_variables[@]}"
+	do
+		if ! jq --exit-status ".variables.${required_variable}" "${configuration_json_file}" &> /dev/null
+		then
+			echo "The configuration JSON file must contain a key named \"variables.${required_variable}\"." >&2
+
+			exit 1
+		fi
+	done
 }
 
 main "${@}"

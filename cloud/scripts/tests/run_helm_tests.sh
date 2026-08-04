@@ -30,6 +30,8 @@ function main {
 		gcp-infrastructure
 		gcp-infrastructure-provider
 		observability
+		platform
+		platform-components
 	)
 
 	if [[ -n "${requested_chart}" ]]
