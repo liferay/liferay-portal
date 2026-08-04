@@ -223,9 +223,12 @@ public class MessageBoardThreadResourceImpl
 		MBThread mbThread = _mbThreadLocalService.getMBThread(
 			messageBoardThreadId);
 
+		MBMessage mbMessage = _mbMessageService.getMessage(
+			mbThread.getRootMessageId());
+
 		_checkPermission(
-			mbThread.getCompanyId(), mbThread.getGroupId(),
-			mbThread.getStatus(), mbThread.getUserId());
+			mbMessage.getCompanyId(), mbMessage.getGroupId(),
+			mbMessage.getStatus(), mbMessage.getUserId());
 
 		_viewCountManager.incrementViewCount(
 			contextCompany.getCompanyId(),
