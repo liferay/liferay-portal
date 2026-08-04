@@ -8,7 +8,6 @@ package com.liferay.layout.page.template.internal.upgrade.v6_2_0;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -94,6 +93,34 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 		}
 	}
 
+	private void _fixLayoutPageTemplateStructureRel(
+			long companyId, long ctCollectionId,
+			long layoutPageTemplateStructureId,
+			long layoutPageTemplateStructureRelId, long plid, long userId)
+		throws Exception {
+
+		if (_layoutLocalService.fetchLayout(plid) == null) {
+			return;
+		}
+
+		long defaultSegmentsExperienceId = _getDefaultSegmentsExperienceId(
+			companyId, plid, userId);
+
+		if (_hasDefaultSegmentsExperienceLayoutPageTemplateStructureRel(
+				ctCollectionId, defaultSegmentsExperienceId,
+				layoutPageTemplateStructureId,
+				layoutPageTemplateStructureRelId)) {
+
+			_deleteLayoutPageTemplateStructureRel(
+				ctCollectionId, layoutPageTemplateStructureRelId);
+		}
+		else {
+			_updateLayoutPageTemplateStructureRel(
+				ctCollectionId, defaultSegmentsExperienceId,
+				layoutPageTemplateStructureRelId);
+		}
+	}
+
 	private long _getDefaultSegmentsExperienceId(
 			long companyId, long plid, long userId)
 		throws Exception {
@@ -143,39 +170,6 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				return resultSet.next();
 			}
-		}
-	}
-
-	private void _fixLayoutPageTemplateStructureRel(
-			long companyId, long ctCollectionId,
-			long layoutPageTemplateStructureId,
-			long layoutPageTemplateStructureRelId, long plid, long userId)
-		throws Exception {
-
-		Layout layout = _layoutLocalService.fetchLayout(plid);
-
-		if (layout == null) {
-			_deleteLayoutPageTemplateStructureRel(
-				ctCollectionId, layoutPageTemplateStructureRelId);
-
-			return;
-		}
-
-		long defaultSegmentsExperienceId = _getDefaultSegmentsExperienceId(
-			companyId, plid, userId);
-
-		if (_hasDefaultSegmentsExperienceLayoutPageTemplateStructureRel(
-				ctCollectionId, defaultSegmentsExperienceId,
-				layoutPageTemplateStructureId,
-				layoutPageTemplateStructureRelId)) {
-
-			_deleteLayoutPageTemplateStructureRel(
-				ctCollectionId, layoutPageTemplateStructureRelId);
-		}
-		else {
-			_updateLayoutPageTemplateStructureRel(
-				ctCollectionId, defaultSegmentsExperienceId,
-				layoutPageTemplateStructureRelId);
 		}
 	}
 
