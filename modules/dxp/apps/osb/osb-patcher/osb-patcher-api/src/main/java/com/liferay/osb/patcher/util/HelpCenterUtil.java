@@ -236,8 +236,8 @@ public class HelpCenterUtil {
 
 		int responseCode = response.getResponseCode();
 
-		if ((responseCode != HttpURLConnection.HTTP_OK) &&
-			(responseCode != HttpURLConnection.HTTP_CREATED)) {
+		if ((responseCode != HttpURLConnection.HTTP_CREATED) &&
+			(responseCode != HttpURLConnection.HTTP_OK)) {
 
 			if (_log.isDebugEnabled()) {
 				_log.debug(
