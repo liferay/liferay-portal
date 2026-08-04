@@ -39,6 +39,7 @@ export class ExportImportPage {
 	readonly nameInput: Locator;
 	readonly newButton: Locator;
 	readonly page: Page;
+	readonly relaunchMenuItem: Locator;
 	readonly removeFilterButton: Locator;
 	readonly replicateSelectedDeletionsCheckbox: Locator;
 	readonly searchButton: Locator;
@@ -102,6 +103,7 @@ export class ExportImportPage {
 			.getByRole('button', {exact: true, name: 'New'})
 			.first();
 		this.page = page;
+		this.relaunchMenuItem = page.getByRole('menuitem', {name: 'Relaunch'});
 		this.removeFilterButton = page.getByLabel('Remove Filter');
 		this.replicateSelectedDeletionsCheckbox = page.getByRole('checkbox', {
 			name: 'Replicate Selected Deletions',

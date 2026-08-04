@@ -551,25 +551,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro deleteCurrentAndPreviousProcess(larFileName = null) {
-		if (isSet(deleteFromPortlet)) {
-			LAR._gotoExportImport();
-
-			SelectFrame(locator1 = "IFrame#CONFIGURATION");
-
-			Click(locator1 = "ExportImport#CURRENT_AND_PREVIOUS_TAB");
-		}
-
-		LexiconEntry.gotoEntryMenuItemNoError(
-			menuItem = "Clear",
-			rowEntry = ${larFileName});
-
-		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro downloadLar() {
 		Click(locator1 = "Icon#EXPORT");
 

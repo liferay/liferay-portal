@@ -42,6 +42,40 @@ test(
 );
 
 test(
+	'Can manage an export process from the processes list',
+	{tag: '@LPD-100541'},
+	async ({exportImportPage, page, site}) => {
+		await exportImportPage.goToExport(site.friendlyUrlPath);
+
+		const name = `MyExport-${getRandomString()}`;
+
+		await exportImportPage.export(name);
+
+		await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+
+		await exportImportPage.actionsButton(name).click();
+
+		await expect(exportImportPage.relaunchMenuItem).toBeVisible();
+		await expect(exportImportPage.downloadMenuItem).toBeVisible();
+		await expect(exportImportPage.clearMenuItem).toBeVisible();
+
+		let confirmationMessage = '';
+
+		page.once('dialog', async (dialog) => {
+			confirmationMessage = dialog.message();
+
+			await dialog.accept();
+		});
+
+		await exportImportPage.clearMenuItem.click();
+
+		await expect(page.getByRole('row', {name})).toBeHidden();
+
+		expect(confirmationMessage).toContain('Are you sure');
+	}
+);
+
+test(
 	'Can select comments and ratings at site level',
 	{tag: '@LPD-57655'},
 	async ({
