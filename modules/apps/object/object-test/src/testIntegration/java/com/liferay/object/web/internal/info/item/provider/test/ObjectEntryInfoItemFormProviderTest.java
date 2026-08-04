@@ -449,9 +449,9 @@ public class ObjectEntryInfoItemFormProviderTest {
 		Group cmsGroup = _groupLocalService.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
-		_cmsObjectDefinition = _addCMSObjectDefinition();
-
 		_assetVocabulary = AssetTestUtil.addVocabulary(cmsGroup.getGroupId());
+
+		_cmsObjectDefinition = _addCMSObjectDefinition();
 
 		_group = GroupTestUtil.addGroup();
 
