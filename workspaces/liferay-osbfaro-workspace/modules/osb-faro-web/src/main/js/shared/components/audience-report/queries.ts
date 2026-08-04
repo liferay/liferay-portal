@@ -36,6 +36,7 @@ export const PageAudienceReportQuery = ({
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$title: String
 		$touchpoint: String
 	) {
@@ -49,6 +50,7 @@ export const PageAudienceReportQuery = ({
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			title: $title
 		) {
 			${metricName} {
@@ -76,6 +78,7 @@ export const AssetAudienceReportQuery = ({
 		$rangeEnd: String
 		$rangeKey: Int
 		$rangeStart: String
+		$segmentId: String
 		$title: String
 		$touchpoint: String
 	) {
@@ -89,6 +92,7 @@ export const AssetAudienceReportQuery = ({
 			rangeEnd: $rangeEnd
 			rangeKey: $rangeKey
 			rangeStart: $rangeStart
+			segmentId: $segmentId
 			title: $title
 		) {
 			assetId

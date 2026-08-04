@@ -103,6 +103,7 @@ interface IAudienceReportProps<TRawData>
 	experienceId?: string | null;
 	filters: RawFilters;
 	rangeSelectors: RangeSelectors;
+	segmentId?: string | null;
 	Query: DocumentNode;
 	mapper: (data: TRawData) => TData;
 	name: Name;
@@ -114,6 +115,7 @@ function AudienceReport<TRawData>({
 	experienceId,
 	filters,
 	rangeSelectors,
+	segmentId,
 	...otherProps
 }: IAudienceReportProps<TRawData>) {
 	const {assetId, channelId, title, touchpoint} = useParams();
@@ -124,6 +126,7 @@ function AudienceReport<TRawData>({
 			touchpoint: getSafeTouchpoint(touchpoint as string),
 			...(accountId && {accountId}),
 			...(experienceId && {experienceId}),
+			...(segmentId && {segmentId}),
 			...(otherProps.name !== Name.ObjectEntry && {
 				channelId,
 				title: getSafeDecodedURIComponent(title as string),

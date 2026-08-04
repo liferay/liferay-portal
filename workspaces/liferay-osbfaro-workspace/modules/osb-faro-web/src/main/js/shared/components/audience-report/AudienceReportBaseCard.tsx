@@ -21,7 +21,13 @@ function AudienceReportBaseCard({
 			minHeight={536}
 			reportContainer={ReportContainer.AudienceCard}
 		>
-			{({accountId, experienceId, filters, rangeSelectors}) => (
+			{({
+				accountId,
+				experienceId,
+				filters,
+				rangeSelectors,
+				segmentId,
+			}) => (
 				<Card.Body>
 					<AudienceReport
 						{...props}
@@ -35,6 +41,7 @@ function AudienceReportBaseCard({
 							name,
 						})}
 						rangeSelectors={rangeSelectors}
+						segmentId={segmentId}
 					/>
 				</Card.Body>
 			)}
