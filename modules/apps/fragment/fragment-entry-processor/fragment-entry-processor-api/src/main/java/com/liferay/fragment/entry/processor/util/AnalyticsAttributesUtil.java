@@ -44,7 +44,6 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -76,37 +75,16 @@ public class AnalyticsAttributesUtil {
 		Map<InfoItemReference, InfoItemFieldValues> infoDisplaysFieldValues,
 		InfoItemServiceRegistry infoItemServiceRegistry) {
 
-		JSONObject configJSONObject = editableValueJSONObject.getJSONObject(
-			"config");
+		JSONObject mappedJSONObject = _getMappedJSONObject(
+			editableValueJSONObject, fragmentEntryProcessorHelper);
 
-		if ((configJSONObject != null) &&
-			StringUtil.equals(
-				configJSONObject.getString("fieldId"),
-				"FileEntry_downloadURL")) {
-
-			return HashMapBuilder.<String, Object>put(
-				"analytics-asset-action", ACTION_DOWNLOAD
-			).put(
-				"analytics-asset-field",
-				() -> configJSONObject.getString("fieldId")
-			).put(
-				"analytics-asset-id",
-				() -> configJSONObject.getString("classPK")
-			).put(
-				"analytics-asset-subtype",
-				() -> configJSONObject.getString("itemSubtype")
-			).put(
-				"analytics-asset-title",
-				() -> configJSONObject.getString("title")
-			).put(
-				"analytics-asset-type",
-				_getAnalyticsAssetType(FileEntry.class.getName())
-			).build();
+		if (mappedJSONObject == null) {
+			return Collections.emptyMap();
 		}
 
 		InfoItemFieldMapped infoItemFieldMapped =
 			fragmentEntryProcessorHelper.getInfoItemFieldMapped(
-				editableValueJSONObject, fragmentEntryProcessorContext);
+				mappedJSONObject, fragmentEntryProcessorContext);
 
 		if (infoItemFieldMapped == null) {
 			return Collections.emptyMap();
@@ -123,8 +101,7 @@ public class AnalyticsAttributesUtil {
 
 		InfoItemFieldValues infoItemFieldValues = _getInfoItemFieldValues(
 			fragmentEntryProcessorContext, fragmentEntryProcessorHelper,
-			infoDisplaysFieldValues, infoItemFieldMapped,
-			editableValueJSONObject);
+			infoDisplaysFieldValues, infoItemFieldMapped, mappedJSONObject);
 
 		return HashMapBuilder.<String, Object>put(
 			"analytics-asset-action",
@@ -613,6 +590,26 @@ public class AnalyticsAttributesUtil {
 			infoItemFieldMapped.getInfoItemReference());
 	}
 
+	private static JSONObject _getMappedJSONObject(
+		JSONObject editableValueJSONObject,
+		FragmentEntryProcessorHelper fragmentEntryProcessorHelper) {
+
+		if (_isMapped(editableValueJSONObject, fragmentEntryProcessorHelper)) {
+			return editableValueJSONObject;
+		}
+
+		JSONObject configJSONObject = editableValueJSONObject.getJSONObject(
+			"config");
+
+		if ((configJSONObject != null) &&
+			_isMapped(configJSONObject, fragmentEntryProcessorHelper)) {
+
+			return configJSONObject;
+		}
+
+		return null;
+	}
+
 	private static boolean _isDownloadURL(InfoField<?> infoField) {
 		if (!Objects.equals(
 				infoField.getInfoFieldType(), URLInfoFieldType.INSTANCE)) {
@@ -625,6 +622,20 @@ public class AnalyticsAttributesUtil {
 
 		return GetterUtil.getBoolean(
 			urlInfoField.getAttribute(URLInfoFieldType.DOWNLOAD));
+	}
+
+	private static boolean _isMapped(
+		JSONObject jsonObject,
+		FragmentEntryProcessorHelper fragmentEntryProcessorHelper) {
+
+		if (fragmentEntryProcessorHelper.isMapped(jsonObject) ||
+			fragmentEntryProcessorHelper.isMappedCollection(jsonObject) ||
+			fragmentEntryProcessorHelper.isMappedDisplayPage(jsonObject)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final String _ANALYTICS_ATTRIBUTES_MAP =
