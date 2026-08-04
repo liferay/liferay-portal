@@ -1,0 +1,39 @@
+components:
+    schemas:
+        FIPSHealthVerification:
+            properties:
+                dateVerified:
+                    format: date-time
+                    readOnly: true
+                    type: string
+                errorMessage:
+                    readOnly: true
+                    type: string
+                status:
+                    enum: ["ERROR", "INITIALIZING", "OPERATIONAL", "POWER_OFF", "SELF_TEST"]
+                    readOnly: true
+                    type: string
+            type: object
+info:
+    description:
+        "A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.portal.security.fips.rest.client', and version '1.0.0'."
+    license:
+        name: Apache 2.0
+        url: http://www.apache.org/licenses/LICENSE-2.0.html
+    title: FIPS
+    version: v1.0
+openapi: 3.0.1
+paths:
+    "/fips-health-verifications":
+        post:
+            operationId: postFIPSHealthVerification
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/FIPSHealthVerification"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/FIPSHealthVerification"
+            tags: ["FIPSHealthVerification"]
