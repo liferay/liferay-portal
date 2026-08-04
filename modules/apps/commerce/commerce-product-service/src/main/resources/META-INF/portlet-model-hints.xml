@@ -216,6 +216,7 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
+		<field name="CProductExternalReferenceCode" type="String" />
 		<field name="CProductId" type="long" />
 		<field name="CPTaxCategoryId" type="long" />
 		<field name="accountGroupFilterEnabled" type="boolean" />

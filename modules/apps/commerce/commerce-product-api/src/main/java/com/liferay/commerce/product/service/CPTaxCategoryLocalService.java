@@ -309,7 +309,6 @@ public interface CPTaxCategoryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPTaxCategory getOrAddEmptyCPTaxCategory(
 			String externalReferenceCode, long companyId, long userId)
@@ -370,4 +369,4 @@ public interface CPTaxCategoryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1485343564
+// LIFERAY-SERVICE-BUILDER-HASH:1575278100

@@ -182,6 +182,7 @@ create table CPDefinition (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
+	CProductExternalReferenceCode VARCHAR(75) null,
 	CProductId LONG,
 	CPTaxCategoryId LONG,
 	accountGroupFilterEnabled BOOLEAN,

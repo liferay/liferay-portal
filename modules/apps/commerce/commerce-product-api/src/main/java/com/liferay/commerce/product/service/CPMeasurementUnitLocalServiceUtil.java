@@ -412,6 +412,14 @@ public class CPMeasurementUnitLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPMeasurementUnit(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -482,4 +490,4 @@ public class CPMeasurementUnitLocalServiceUtil {
 			CPMeasurementUnitLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:843255453
+// LIFERAY-SERVICE-BUILDER-HASH:-512594067

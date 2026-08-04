@@ -47,6 +47,9 @@ public class CPDefinitionWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
+		attributes.put(
+			"CProductExternalReferenceCode",
+			getCProductExternalReferenceCode());
 		attributes.put("CProductId", getCProductId());
 		attributes.put("CPTaxCategoryId", getCPTaxCategoryId());
 		attributes.put(
@@ -163,6 +166,13 @@ public class CPDefinitionWrapper
 
 		if (modifiedDate != null) {
 			setModifiedDate(modifiedDate);
+		}
+
+		String CProductExternalReferenceCode = (String)attributes.get(
+			"CProductExternalReferenceCode");
+
+		if (CProductExternalReferenceCode != null) {
+			setCProductExternalReferenceCode(CProductExternalReferenceCode);
 		}
 
 		Long CProductId = (Long)attributes.get("CProductId");
@@ -523,6 +533,16 @@ public class CPDefinitionWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return model.getCProduct();
+	}
+
+	/**
+	 * Returns the c product external reference code of this cp definition.
+	 *
+	 * @return the c product external reference code of this cp definition
+	 */
+	@Override
+	public String getCProductExternalReferenceCode() {
+		return model.getCProductExternalReferenceCode();
 	}
 
 	/**
@@ -1478,6 +1498,18 @@ public class CPDefinitionWrapper
 	}
 
 	/**
+	 * Sets the c product external reference code of this cp definition.
+	 *
+	 * @param CProductExternalReferenceCode the c product external reference code of this cp definition
+	 */
+	@Override
+	public void setCProductExternalReferenceCode(
+		String CProductExternalReferenceCode) {
+
+		model.setCProductExternalReferenceCode(CProductExternalReferenceCode);
+	}
+
+	/**
 	 * Sets the c product ID of this cp definition.
 	 *
 	 * @param CProductId the c product ID of this cp definition
@@ -2016,4 +2048,4 @@ public class CPDefinitionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:603394477
+// LIFERAY-SERVICE-BUILDER-HASH:-1207467381

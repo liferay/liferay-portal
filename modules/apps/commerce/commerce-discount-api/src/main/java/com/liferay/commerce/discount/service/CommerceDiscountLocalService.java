@@ -581,7 +581,6 @@ public interface CommerceDiscountLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceDiscount getOrAddEmptyCommerceDiscount(
 			String externalReferenceCode, long companyId, long userId)
@@ -810,4 +809,4 @@ public interface CommerceDiscountLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2093152851
+// LIFERAY-SERVICE-BUILDER-HASH:2107546501

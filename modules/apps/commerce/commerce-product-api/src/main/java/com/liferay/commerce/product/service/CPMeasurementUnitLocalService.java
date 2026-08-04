@@ -348,6 +348,11 @@ public interface CPMeasurementUnitLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -407,4 +412,4 @@ public interface CPMeasurementUnitLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-625466957
+// LIFERAY-SERVICE-BUILDER-HASH:167663032

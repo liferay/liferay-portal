@@ -48,6 +48,10 @@ public class CPDefinitionTable extends BaseTable<CPDefinitionTable> {
 		"createDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionTable, Date> modifiedDate = createColumn(
 		"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionTable, String>
+		CProductExternalReferenceCode = createColumn(
+			"CProductExternalReferenceCode", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionTable, Long> CProductId = createColumn(
 		"CProductId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionTable, Long> CPTaxCategoryId = createColumn(
@@ -168,4 +172,4 @@ public class CPDefinitionTable extends BaseTable<CPDefinitionTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:509728319
+// LIFERAY-SERVICE-BUILDER-HASH:-1285525045

@@ -405,6 +405,16 @@ public class CPSpecificationOptionLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CPSpecificationOption getOrAddEmptyCPSpecificationOption(
+			String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpSpecificationOptionLocalService.
+			getOrAddEmptyCPSpecificationOption(
+				externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -523,4 +533,4 @@ public class CPSpecificationOptionLocalServiceWrapper
 		_cpSpecificationOptionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1029373219
+// LIFERAY-SERVICE-BUILDER-HASH:-681969512

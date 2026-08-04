@@ -350,7 +350,6 @@ public interface CommerceChannelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceChannel getOrAddEmptyCommerceChannel(
 			String externalReferenceCode, long companyId, long userId)
@@ -427,4 +426,4 @@ public interface CommerceChannelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-167675251
+// LIFERAY-SERVICE-BUILDER-HASH:100986067

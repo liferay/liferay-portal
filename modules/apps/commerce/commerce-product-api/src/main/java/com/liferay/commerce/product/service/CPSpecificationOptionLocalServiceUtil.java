@@ -359,6 +359,14 @@ public class CPSpecificationOptionLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static CPSpecificationOption getOrAddEmptyCPSpecificationOption(
+			String externalReferenceCode, long companyId, long userId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPSpecificationOption(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -437,4 +445,4 @@ public class CPSpecificationOptionLocalServiceUtil {
 			CPSpecificationOptionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:322835932
+// LIFERAY-SERVICE-BUILDER-HASH:2117345300

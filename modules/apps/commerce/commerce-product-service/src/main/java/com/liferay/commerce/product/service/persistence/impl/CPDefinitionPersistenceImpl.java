@@ -1539,6 +1539,7 @@ public class CPDefinitionPersistenceImpl
 		ctStrictColumnNames.add("userName");
 		ctStrictColumnNames.add("createDate");
 		ctIgnoreColumnNames.add("modifiedDate");
+		ctMergeColumnNames.add("CProductExternalReferenceCode");
 		ctMergeColumnNames.add("CProductId");
 		ctMergeColumnNames.add("CPTaxCategoryId");
 		ctMergeColumnNames.add("accountGroupFilterEnabled");
@@ -1978,4 +1979,4 @@ public class CPDefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2025598289
+// LIFERAY-SERVICE-BUILDER-HASH:-1838756731

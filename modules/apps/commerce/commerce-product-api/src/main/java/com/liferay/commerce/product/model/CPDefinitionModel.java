@@ -248,6 +248,22 @@ public interface CPDefinitionModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the c product external reference code of this cp definition.
+	 *
+	 * @return the c product external reference code of this cp definition
+	 */
+	@AutoEscape
+	public String getCProductExternalReferenceCode();
+
+	/**
+	 * Sets the c product external reference code of this cp definition.
+	 *
+	 * @param CProductExternalReferenceCode the c product external reference code of this cp definition
+	 */
+	public void setCProductExternalReferenceCode(
+		String CProductExternalReferenceCode);
+
+	/**
 	 * Returns the c product ID of this cp definition.
 	 *
 	 * @return the c product ID of this cp definition
@@ -1019,4 +1035,4 @@ public interface CPDefinitionModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1678002998
+// LIFERAY-SERVICE-BUILDER-HASH:-409355784

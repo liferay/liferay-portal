@@ -432,7 +432,6 @@ public interface CPInstanceLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPInstance getOrAddEmptyCPInstance(
 			String externalReferenceCode, long cpDefinitionId, long groupId,
@@ -596,4 +595,4 @@ public interface CPInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1543531437
+// LIFERAY-SERVICE-BUILDER-HASH:-444394145

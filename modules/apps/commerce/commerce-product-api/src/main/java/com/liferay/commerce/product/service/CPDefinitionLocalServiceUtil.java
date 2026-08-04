@@ -440,6 +440,14 @@ public class CPDefinitionLocalServiceUtil {
 		return getService().getCPDefinition(CPDefinitionId);
 	}
 
+	public static CPDefinition getCPDefinitionByCProductExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().getCPDefinitionByCProductExternalReferenceCode(
+			externalReferenceCode, companyId);
+	}
+
 	public static CPDefinition getCPDefinitionByCProductId(long cProductId)
 		throws PortalException {
 
@@ -682,6 +690,15 @@ public class CPDefinitionLocalServiceUtil {
 
 	public static String getLayoutUuid(long groupId, long cpDefinitionId) {
 		return getService().getLayoutUuid(groupId, cpDefinitionId);
+	}
+
+	public static CPDefinition getOrAddEmptyCPDefinition(
+			String externalReferenceCode, String productTypeName,
+			long companyId, long userId, long groupId)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCPDefinition(
+			externalReferenceCode, productTypeName, companyId, userId, groupId);
 	}
 
 	/**
@@ -982,4 +999,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1263191931
+// LIFERAY-SERVICE-BUILDER-HASH:-949275408

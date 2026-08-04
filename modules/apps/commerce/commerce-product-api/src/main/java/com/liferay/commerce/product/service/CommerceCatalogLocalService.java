@@ -326,7 +326,6 @@ public interface CommerceCatalogLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommerceCatalog getOrAddEmptyCommerceCatalog(
 			String externalReferenceCode, long companyId, long userId)
@@ -400,4 +399,4 @@ public interface CommerceCatalogLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1382314699
+// LIFERAY-SERVICE-BUILDER-HASH:1094960087

@@ -353,6 +353,11 @@ public interface CPDefinitionLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinition getCPDefinitionByCProductExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinition getCPDefinitionByCProductId(long cProductId)
 		throws PortalException;
 
@@ -515,6 +520,13 @@ public interface CPDefinitionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public String getLayoutUuid(long groupId, long cpDefinitionId);
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinition getOrAddEmptyCPDefinition(
+			String externalReferenceCode, String productTypeName,
+			long companyId, long userId, long groupId)
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -709,4 +721,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1451478769
+// LIFERAY-SERVICE-BUILDER-HASH:-1375766560

@@ -68,7 +68,7 @@ public class CPDefinitionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(97);
+		StringBundler sb = new StringBundler(99);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -92,6 +92,8 @@ public class CPDefinitionCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
+		sb.append(", CProductExternalReferenceCode=");
+		sb.append(CProductExternalReferenceCode);
 		sb.append(", CProductId=");
 		sb.append(CProductId);
 		sb.append(", CPTaxCategoryId=");
@@ -216,6 +218,14 @@ public class CPDefinitionCacheModel
 		}
 		else {
 			cpDefinitionImpl.setModifiedDate(new Date(modifiedDate));
+		}
+
+		if (CProductExternalReferenceCode == null) {
+			cpDefinitionImpl.setCProductExternalReferenceCode("");
+		}
+		else {
+			cpDefinitionImpl.setCProductExternalReferenceCode(
+				CProductExternalReferenceCode);
 		}
 
 		cpDefinitionImpl.setCProductId(CProductId);
@@ -360,6 +370,7 @@ public class CPDefinitionCacheModel
 		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
+		CProductExternalReferenceCode = objectInput.readUTF();
 
 		CProductId = objectInput.readLong();
 
@@ -462,6 +473,13 @@ public class CPDefinitionCacheModel
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
+
+		if (CProductExternalReferenceCode == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(CProductExternalReferenceCode);
+		}
 
 		objectOutput.writeLong(CProductId);
 
@@ -581,6 +599,7 @@ public class CPDefinitionCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
+	public String CProductExternalReferenceCode;
 	public long CProductId;
 	public long CPTaxCategoryId;
 	public boolean accountGroupFilterEnabled;
@@ -620,4 +639,4 @@ public class CPDefinitionCacheModel
 	public long statusDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:116785197
+// LIFERAY-SERVICE-BUILDER-HASH:-1147853357

@@ -519,7 +519,6 @@ public interface CommercePriceListLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CommercePriceList getOrAddEmptyCommercePriceList(
 			String externalReferenceCode, long groupId, long companyId,
@@ -627,4 +626,4 @@ public interface CommercePriceListLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1641348309
+// LIFERAY-SERVICE-BUILDER-HASH:1250356537

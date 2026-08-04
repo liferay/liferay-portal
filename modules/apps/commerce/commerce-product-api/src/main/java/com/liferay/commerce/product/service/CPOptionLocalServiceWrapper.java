@@ -400,6 +400,15 @@ public class CPOptionLocalServiceWrapper
 		return _cpOptionLocalService.getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CPOption getOrAddEmptyCPOption(
+			String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpOptionLocalService.getOrAddEmptyCPOption(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -507,4 +516,4 @@ public class CPOptionLocalServiceWrapper
 	private CPOptionLocalService _cpOptionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:195750290
+// LIFERAY-SERVICE-BUILDER-HASH:-1975075779

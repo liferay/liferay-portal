@@ -465,6 +465,15 @@ public class CPMeasurementUnitLocalServiceWrapper
 			getIndexableActionableDynamicQuery();
 	}
 
+	@Override
+	public CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
+			String externalReferenceCode, long companyId, long userId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpMeasurementUnitLocalService.getOrAddEmptyCPMeasurementUnit(
+			externalReferenceCode, companyId, userId);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -574,4 +583,4 @@ public class CPMeasurementUnitLocalServiceWrapper
 	private CPMeasurementUnitLocalService _cpMeasurementUnitLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-926071469
+// LIFERAY-SERVICE-BUILDER-HASH:1363514882
