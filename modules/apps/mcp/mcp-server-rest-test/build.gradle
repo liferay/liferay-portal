@@ -11,6 +11,7 @@ dependencies {
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.5.0"
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-test-util")
+	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:mcp:mcp-server-rest-api")
 	testIntegrationImplementation project(":apps:mcp:mcp-server-rest-client")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")
@@ -22,5 +23,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-storage-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
+	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

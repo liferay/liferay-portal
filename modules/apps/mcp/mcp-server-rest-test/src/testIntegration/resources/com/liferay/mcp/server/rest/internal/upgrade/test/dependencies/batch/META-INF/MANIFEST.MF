@@ -1,0 +1,5 @@
+Manifest-Version: 2
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: batch
+Bundle-Version: 1.0.0
+Liferay-Client-Extension-Batch: batch
