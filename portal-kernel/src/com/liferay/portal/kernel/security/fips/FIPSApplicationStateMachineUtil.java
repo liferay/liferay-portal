@@ -215,7 +215,8 @@ public class FIPSApplicationStateMachineUtil {
 			FIPSApplicationState.OPERATIONAL,
 			Set.of(
 				FIPSApplicationState.ERROR, FIPSApplicationState.KEY_CSP_ENTRY,
-				FIPSApplicationState.POWER_OFF, FIPSApplicationState.QUIESCENT),
+				FIPSApplicationState.POWER_OFF, FIPSApplicationState.QUIESCENT,
+				FIPSApplicationState.SELF_TEST),
 			FIPSApplicationState.POWER_OFF, Set.of(),
 			FIPSApplicationState.QUIESCENT,
 			Set.of(
