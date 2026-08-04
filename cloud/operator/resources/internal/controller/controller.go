@@ -14,6 +14,8 @@ func SetupWithManager(
 		if error := reconciler.SetupWithManager(manager); error != nil {
 			return fmt.Errorf("unable to create %T controller: %w", reconciler, error)
 		}
+
+		SetupLog.Info("Created controller", "reconciler", fmt.Sprintf("%T", reconciler))
 	}
 
 	return nil
@@ -22,3 +24,5 @@ func SetupWithManager(
 type reconciler interface {
 	SetupWithManager(manager controllerruntime.Manager) error
 }
+
+var SetupLog = controllerruntime.Log.WithName("setup")

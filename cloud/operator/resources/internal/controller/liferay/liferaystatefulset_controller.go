@@ -3,7 +3,8 @@
 package liferay
 
 import (
-	context "context"
+	"context"
+	"fmt"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	marketplace "github.com/liferay/liferay-portal/cloud/operator/internal/controller/liferay/marketplace"
@@ -16,6 +17,7 @@ import (
 	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 	handler "sigs.k8s.io/controller-runtime/pkg/handler"
+	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	predicate "sigs.k8s.io/controller-runtime/pkg/predicate"
 	reconcile "sigs.k8s.io/controller-runtime/pkg/reconcile"
 )
@@ -29,11 +31,23 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 	context context.Context,
 	request controllerruntime.Request,
 ) (controllerruntime.Result, error) {
+	logger := logf.FromContext(context)
+
 	statefulSet := &appsv1.StatefulSet{}
 
 	if error := liferayStatefulSetReconciler.Get(context, request.NamespacedName, statefulSet); error != nil {
-		return controllerruntime.Result{}, client.IgnoreNotFound(error)
+		if !errors.IsNotFound(error) {
+			logger.Error(error, "Unable to get StatefulSet")
+
+			return controllerruntime.Result{}, error
+		}
+
+		logger.Info("Skipping StatefulSet that no longer exists")
+
+		return controllerruntime.Result{}, nil
 	}
+
+	logger.Info("Reconciling Liferay StatefulSet")
 
 	liferayEnvironment, error := liferayStatefulSetReconciler.getLiferayEnvironmentByStatefulSet(context, statefulSet)
 
@@ -41,7 +55,18 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 		return controllerruntime.Result{}, error
 	}
 
-	if liferayEnvironment == nil || liferayEnvironment.Spec.MarketplaceVolume == nil {
+	if liferayEnvironment == nil {
+		logger.Info("Skipping StatefulSet with no LiferayEnvironment")
+
+		return controllerruntime.Result{}, nil
+	}
+
+	if liferayEnvironment.Spec.MarketplaceVolume == nil {
+		logger.Info(
+			"Skipping StatefulSet with no marketplace volume",
+			"liferayEnvironment", liferayEnvironment.Name,
+		)
+
 		return controllerruntime.Result{}, nil
 	}
 
@@ -87,6 +112,8 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) createVolumeCl
 	persistentVolumeClaim *corev1.PersistentVolumeClaim,
 	statefulSet *appsv1.StatefulSet,
 ) error {
+	logger := logf.FromContext(context)
+
 	error := liferayStatefulSetReconciler.Get(
 		context,
 		client.ObjectKeyFromObject(persistentVolumeClaim),
@@ -94,10 +121,21 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) createVolumeCl
 	)
 
 	if error == nil {
+		logger.Info(
+			"Marketplace volume claim already exists",
+			"persistentVolumeClaim", persistentVolumeClaim.Name,
+		)
+
 		return nil
 	}
 
 	if !errors.IsNotFound(error) {
+		logger.Error(
+			error,
+			"Unable to get marketplace volume claim",
+			"persistentVolumeClaim", persistentVolumeClaim.Name,
+		)
+
 		return error
 	}
 
@@ -106,15 +144,50 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) createVolumeCl
 		persistentVolumeClaim,
 		liferayStatefulSetReconciler.Scheme(),
 	); error != nil {
+		logger.Error(
+			error,
+			"Unable to set the StatefulSet as the owner of the marketplace volume claim",
+			"persistentVolumeClaim", persistentVolumeClaim.Name,
+			"statefulSet", statefulSet.Name,
+		)
+
 		return error
 	}
 
 	if error := liferayStatefulSetReconciler.Create(
 		context,
 		persistentVolumeClaim,
-	); error != nil && !errors.IsAlreadyExists(error) {
-		return error
+	); error != nil {
+		if !errors.IsAlreadyExists(error) {
+			logger.Error(
+				error,
+				"Unable to create marketplace volume claim",
+				"persistentVolumeClaim", persistentVolumeClaim.Name,
+			)
+
+			return error
+		}
+
+		logger.Info(
+			"Marketplace volume claim was created concurrently",
+			"persistentVolumeClaim", persistentVolumeClaim.Name,
+		)
+
+		return nil
 	}
+
+	storageClassName := ""
+
+	if persistentVolumeClaim.Spec.StorageClassName != nil {
+		storageClassName = *persistentVolumeClaim.Spec.StorageClassName
+	}
+
+	logger.Info(
+		"Created marketplace volume claim",
+		"persistentVolumeClaim", persistentVolumeClaim.Name,
+		"size", persistentVolumeClaim.Spec.Resources.Requests.Storage().String(),
+		"storageClassName", storageClassName,
+	)
 
 	return nil
 }
@@ -130,6 +203,12 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) getLiferayEnvi
 		liferayEnvironmentList,
 		client.InNamespace(statefulSet.Namespace),
 	); error != nil {
+		logf.FromContext(context).Error(
+			error,
+			"Unable to list LiferayEnvironments",
+			"namespace", statefulSet.Namespace,
+		)
+
 		return nil, error
 	}
 
@@ -156,13 +235,28 @@ func mapLiferayEnvironmentToStatefulSet(
 	context context.Context,
 	object client.Object,
 ) []reconcile.Request {
+	logger := logf.FromContext(context)
+
 	liferayEnvironment, ok := object.(*licensingv1alpha1.LiferayEnvironment)
 
 	if !ok {
+		logger.Error(
+			fmt.Errorf("unexpected object type %T", object),
+			"Unable to map watched object to a StatefulSet",
+			"object", client.ObjectKeyFromObject(object),
+		)
+
 		return nil
 	}
 
 	workloadName := liferayEnvironment.Spec.WorkloadRef.Name
+
+	logger.Info(
+		"Enqueuing StatefulSet referenced by LiferayEnvironment",
+		"liferayEnvironment", liferayEnvironment.Name,
+		"namespace", liferayEnvironment.Namespace,
+		"statefulSet", workloadName,
+	)
 
 	return []reconcile.Request{
 		{
