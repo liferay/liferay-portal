@@ -7,6 +7,6 @@ Import-Package:\
 	!org.apache.commons.httpclient.*,\
 	\
 	*
-Liferay-Require-SchemaVersion: 4.6.0
+Liferay-Require-SchemaVersion: 4.7.0
 Liferay-Service: true
 -dsannotations-options: inherit
