@@ -74,6 +74,7 @@ import com.liferay.portal.kernel.theme.ThemeUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -764,11 +765,22 @@ public class SitePageResourceImpl
 
 			ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
 
+			String portalURL = _portal.getPortalURL(httpServletRequest);
+
 			themeDisplay.setLanguageId(
 				LocaleUtil.toLanguageId(
 					contextAcceptLanguage.getPreferredLocale()));
 			themeDisplay.setLocale(contextAcceptLanguage.getPreferredLocale());
+			themeDisplay.setPortalDomain(
+				HttpComponentsUtil.getDomain(portalURL));
+			themeDisplay.setPortalURL(portalURL);
 			themeDisplay.setRequest(httpServletRequest);
+			themeDisplay.setSecure(
+				_portal.isForwardedSecure(httpServletRequest));
+			themeDisplay.setServerName(
+				_portal.getForwardedHost(httpServletRequest));
+			themeDisplay.setServerPort(
+				_portal.getForwardedPort(httpServletRequest));
 
 			httpServletRequest.setAttribute(
 				WebKeys.LOCALE, contextAcceptLanguage.getPreferredLocale());
