@@ -218,6 +218,7 @@ import com.liferay.portal.spring.hibernate.PortletTransactionManager;
 import com.liferay.portal.spring.transaction.TransactionExecutor;
 import com.liferay.portal.spring.transaction.TransactionInterceptor;
 import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -19121,25 +19122,43 @@ public class ObjectEntryResourceTest {
 
 		// Documents and media source, file from URL not found
 
+		String notFoundPath = "/" + RandomTestUtil.randomString();
+
 		String httpCode404URL = StringBundler.concat(
 			"http://", company.getVirtualHostname(), ":",
-			PortalUtil.getPortalServerPort(false), "/",
-			RandomTestUtil.randomString());
+			PortalUtil.getPortalServerPort(false), notFoundPath);
 
-		_testPatchPutCustomObjectEntryWithAttachmentField(
-			fileEntry -> JSONUtil.put(
-				"status", "BAD_REQUEST"
-			).put(
-				"title",
-				"Unable to download file from " + httpCode404URL +
-					", unexpected HTTP code: 404"
-			),
-			_toFileEntry(
-				RandomTestUtil.randomString() + ".txt", httpCode404URL, null,
-				null, customFileEntry1.getMimeType()),
-			httpMethod, null, objectDefinition,
-			_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
-			useExternalReferenceCode);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
+
+			_testPatchPutCustomObjectEntryWithAttachmentField(
+				fileEntry -> JSONUtil.put(
+					"status", "BAD_REQUEST"
+				).put(
+					"title",
+					"Unable to download file from " + httpCode404URL +
+						", unexpected HTTP code: 404"
+				),
+				_toFileEntry(
+					RandomTestUtil.randomString() + ".txt", httpCode404URL,
+					null, null, customFileEntry1.getMimeType()),
+				httpMethod, null, objectDefinition,
+				_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE,
+				useExternalReferenceCode);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.WARN, logEntry.getPriority());
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(message, message.contains("code=\"404\""));
+			Assert.assertTrue(message, message.contains("uri=" + notFoundPath));
+		}
 
 		// Documents and media source, file from URL with unsupported protocol
 
@@ -20095,24 +20114,43 @@ public class ObjectEntryResourceTest {
 
 		// Documents and media source, file from URL not found
 
+		String notFoundPath = "/" + RandomTestUtil.randomString();
+
 		String resourceNotFoundFileURL = StringBundler.concat(
 			"http://", company.getVirtualHostname(), ":",
-			PortalUtil.getPortalServerPort(false), "/",
-			RandomTestUtil.randomString());
+			PortalUtil.getPortalServerPort(false), notFoundPath);
 
-		_testPostCustomObjectEntryWithAttachmentObjectField(
-			fileEntry -> JSONUtil.put(
-				"status", "BAD_REQUEST"
-			).put(
-				"title",
-				"Unable to download file from " + resourceNotFoundFileURL +
-					", unexpected HTTP code: 404"
-			),
-			_toFileEntry(
-				RandomTestUtil.randomString() + ".txt", resourceNotFoundFileURL,
-				null, _group.getGroupId(), customFileEntry1.getMimeType()),
-			null, objectDefinition,
-			_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
+
+			_testPostCustomObjectEntryWithAttachmentObjectField(
+				fileEntry -> JSONUtil.put(
+					"status", "BAD_REQUEST"
+				).put(
+					"title",
+					"Unable to download file from " + resourceNotFoundFileURL +
+						", unexpected HTTP code: 404"
+				),
+				_toFileEntry(
+					RandomTestUtil.randomString() + ".txt",
+					resourceNotFoundFileURL, null, _group.getGroupId(),
+					customFileEntry1.getMimeType()),
+				null, objectDefinition,
+				_OBJECT_FIELD_NAME_ATTACHMENT_DOCS_AND_MEDIA_SOURCE);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(LoggerTestUtil.WARN, logEntry.getPriority());
+
+			String message = logEntry.getMessage();
+
+			Assert.assertTrue(message, message.contains("code=\"404\""));
+			Assert.assertTrue(message, message.contains("uri=" + notFoundPath));
+		}
 
 		// Documents and media source, file from URL with unsupported protocol
 
