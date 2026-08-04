@@ -117,7 +117,37 @@ curl --silent --user "test@liferay.com:test" \
 
 > **Do not add `sort=` to that URL.** `notification-queue-entries` does not support the common `sort` parameter and **fails silently** — `?sort=id:desc` returns `{"totalCount": null, "items": []}` with a `200`, which reads exactly like "the action never fired". Fetch unsorted and sort in `jq`, as above.
 
-`status: 1` with `unresolved: false` and the right `recipientsSummary` means Liferay built and queued a correctly addressed message. **It does not mean the mail was delivered** — `sent` stays `null` on a bundle with no SMTP configured. Say so plainly rather than reporting the email as sent; queueing is the furthest verification goes locally.
+`unresolved: false` with the right `recipientsSummary` means Liferay **built** a correctly addressed message. That is the part this endpoint can actually tell you.
+
+#### `status: 1` Is `STATUS_SENT` And It Lies
+
+The status codes are not a queue depth. From `NotificationQueueEntryConstants`:
+
+| Value | Constant |
+| --- | --- |
+| `0` | `STATUS_FAILED` |
+| `1` | `STATUS_SENT` |
+| `2` | `STATUS_UNSENT` |
+
+So `status: 1` is Liferay asserting the mail **was sent** — and it asserts that even when nothing was transmitted. Verified on 2026.Q2 with a local SMTP sink on `127.0.0.1:2525` and the mail session pointed at it: two entries came back `status: 1` with `sent: null`, and the sink received **nothing**. Not a delayed send, not a failure code — a claim of success with no traffic behind it.
+
+Treat this field as worthless for delivery. `sent: null` alongside `status: 1` is the tell that the two are not wired to the same truth, but the only real check is at the receiving end.
+
+#### Localize a Mail Failure Before Blaming the Notification
+
+When the message builds but nothing arrives, the fault is either the notification framework or the mail transport, and the queue entry cannot distinguish them. **Trigger an unrelated portal email and see whether that arrives**, which needs no admin session:
+
+```bash
+curl --data-urlencode "emailAddress=test@liferay.com" --data-urlencode "step=2" \
+	--request POST --silent \
+	--url "http://localhost:${PORT}/c/portal/forgot_password"
+```
+
+If the password-reset mail is missing too, the notification wiring is fine and the mail session is the problem — stop debugging object actions. That one call saved a long detour here.
+
+Then check **Control Panel → Server Administration → Mail** before trusting `portal-ext.properties`. Adding `mail.session.mail.smtp.*` to that file and restarting was not sufficient on a bundle in this run; the cause was not isolated (that page needs an admin session), so verify the effective host and port there rather than assuming the properties won.
+
+Report queueing and delivery as separate facts. "Composed and addressed correctly, delivery unverified" is honest; "the confirmation email was sent" is not, no matter what `status` says.
 
 ### Object Action — Notification (Live API)
 
@@ -175,7 +205,9 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-`recipients[].to` takes a token, which is what addresses the mail to whatever the visitor typed. **`from` is accepted and then dropped** — it reads back `null` on the created template while `fromName` persists, so set the sender at the mail server rather than expecting this field to carry it.
+`recipients[].to` takes a token, which is what addresses the mail to whatever the visitor typed.
+
+**`from` persists on the template; it is the queue entry that reports `null`.** Verified on 2026.Q2 — a fresh `GET /notification-templates/<id>` read back `"from": "noreply@devcon.example"` exactly as posted, alongside `fromName`. The `null` turns up one layer down, on the `notification-queue-entries` record, so a check there is what makes `from` look dropped. Set it on the template as documented, and confirm the actual sender on the received message rather than on the queue entry.
 
 The `NotificationTemplate` schema exposes no enums for `type` or `recipientType` and publishes no `Recipient` sub-schema, so the OpenAPI spec will not confirm this shape — it is verified by creating one and reading the queue entry.
 
