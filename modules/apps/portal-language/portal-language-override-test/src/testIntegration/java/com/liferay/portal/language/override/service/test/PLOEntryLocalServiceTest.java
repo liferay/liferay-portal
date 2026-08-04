@@ -65,10 +65,10 @@ public class PLOEntryLocalServiceTest {
 	@Test
 	public void testAddOrUpdatePLOEntry() throws Exception {
 		_testAddOrUpdatePLOEntry();
-		_testAddOrUpdatePLOEntryGetsDefaultERC();
-		_testAddOrUpdatePLOEntryOnERCConflict();
-		_testAddOrUpdatePLOEntryOnMatchingERC();
-		_testAddOrUpdatePLOEntryOnNewERC();
+		_testAddOrUpdatePLOEntryGetsDefaultExternalReferenceCode();
+		_testAddOrUpdatePLOEntryOnExternalReferenceCodeConflict();
+		_testAddOrUpdatePLOEntryOnMatchingExternalReferenceCode();
+		_testAddOrUpdatePLOEntryOnNewExternalReferenceCode();
 	}
 
 	@Test
@@ -421,7 +421,9 @@ public class PLOEntryLocalServiceTest {
 		Assert.assertEquals("en_US", ploEntry.getLanguageId());
 	}
 
-	private void _testAddOrUpdatePLOEntryGetsDefaultERC() throws Exception {
+	private void _testAddOrUpdatePLOEntryGetsDefaultExternalReferenceCode()
+		throws Exception {
+
 		PLOEntry ploEntry = _addOrUpdatePLOEntry(
 			StringPool.BLANK, "test-key-" + RandomTestUtil.randomString(),
 			"en_US", "value");
@@ -440,7 +442,9 @@ public class PLOEntryLocalServiceTest {
 			externalReferenceCode, ploEntry.getExternalReferenceCode());
 	}
 
-	private void _testAddOrUpdatePLOEntryOnERCConflict() throws Exception {
+	private void _testAddOrUpdatePLOEntryOnExternalReferenceCodeConflict()
+		throws Exception {
+
 		String externalReferenceCode1 = RandomTestUtil.randomString();
 		String externalReferenceCode2 = RandomTestUtil.randomString();
 		String key1 = RandomTestUtil.randomString();
@@ -469,7 +473,9 @@ public class PLOEntryLocalServiceTest {
 		Assert.assertEquals("value2", ploEntry2.getValue());
 	}
 
-	private void _testAddOrUpdatePLOEntryOnMatchingERC() throws Exception {
+	private void _testAddOrUpdatePLOEntryOnMatchingExternalReferenceCode()
+		throws Exception {
+
 		String externalReferenceCode = RandomTestUtil.randomString();
 
 		PLOEntry ploEntry = _addOrUpdatePLOEntry(
@@ -499,7 +505,9 @@ public class PLOEntryLocalServiceTest {
 		Assert.assertEquals(modifiedDate, unchangedPLOEntry.getModifiedDate());
 	}
 
-	private void _testAddOrUpdatePLOEntryOnNewERC() throws Exception {
+	private void _testAddOrUpdatePLOEntryOnNewExternalReferenceCode()
+		throws Exception {
+
 		long companyId = TestPropsValues.getCompanyId();
 
 		String key = RandomTestUtil.randomString();
