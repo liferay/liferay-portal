@@ -7,10 +7,10 @@ resource "aws_efs_file_system" "this" {
 	}
 }
 resource "aws_efs_mount_target" "this" {
+	count=length(module.vpc.private_subnets)
 	file_system_id=aws_efs_file_system.this.id
-	for_each=toset(module.vpc.private_subnets)
 	security_groups=[aws_security_group.efs.id]
-	subnet_id=each.value
+	subnet_id=module.vpc.private_subnets[count.index]
 }
 resource "aws_kms_key" "efs" {
 	deletion_window_in_days=7
