@@ -517,13 +517,15 @@ public class BatchEnginePortletDataHandlerTest {
 
 		ObjectDefinition objectDefinition = _addTextObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_COMPANY);
-		ObjectDefinition systemObjectDefinition =
-			_objectDefinitionLocalService.fetchSystemObjectDefinition(
-				TestPropsValues.getCompanyId(), "FunctionalCookieEntry");
 
 		ObjectEntry objectEntry = _addTextObjectEntry(
 			GroupConstants.DEFAULT_PARENT_GROUP_ID, TestPropsValues.getUserId(),
 			objectDefinition);
+
+		ObjectDefinition systemObjectDefinition =
+			_objectDefinitionLocalService.fetchSystemObjectDefinition(
+				TestPropsValues.getCompanyId(), "FunctionalCookieEntry");
+
 		ObjectEntry systemObjectEntry = _addSystemObjectEntry(
 			systemObjectDefinition);
 
