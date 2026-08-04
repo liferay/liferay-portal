@@ -25,8 +25,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.script.management.configuration.helper.ScriptManagementConfigurationHelper;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.portal.workflow.constants.WorkflowDefinitionConstants;
 import com.liferay.portal.workflow.kaleo.designer.web.internal.constants.KaleoDesignerWebKeys;
+import com.liferay.portal.workflow.kaleo.model.KaleoDefinition;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.runtime.action.ActionExecutorManager;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionLocalService;
@@ -139,16 +139,9 @@ public class KaleoDesignerDisplayContextTest {
 	}
 
 	@Test
-	public void testIsReadOnly() {
-		_isReadOnly(WorkflowDefinitionConstants.NAME_CHANGE_TONE, true);
-		_isReadOnly(WorkflowDefinitionConstants.NAME_LIFERAY_SEARCH, true);
-		_isReadOnly(
-			WorkflowDefinitionConstants.NAME_FIX_SPELLING_AND_GRAMMAR, true);
-		_isReadOnly(WorkflowDefinitionConstants.NAME_IMPROVE_WRITING, true);
-		_isReadOnly(WorkflowDefinitionConstants.NAME_MAKE_LONGER, true);
-		_isReadOnly(WorkflowDefinitionConstants.NAME_MAKE_SHORTER, true);
-		_isReadOnly(WorkflowDefinitionConstants.NAME_PAGE_BUILDER, true);
-		_isReadOnly(WorkflowDefinitionConstants.NAME_SINGLE_APPROVER, false);
+	public void testIsReadOnly() throws Exception {
+		_isReadOnly(false);
+		_isReadOnly(true);
 	}
 
 	private JSONArray _getJSONArray(String expectedCreatorName) {
@@ -170,11 +163,19 @@ public class KaleoDesignerDisplayContextTest {
 		);
 	}
 
-	private void _isReadOnly(String name, boolean readOnly) {
+	private void _isReadOnly(boolean system) throws Exception {
+		KaleoDefinition kaleoDefinition = Mockito.mock(KaleoDefinition.class);
+
 		Mockito.when(
-			_kaleoDefinitionVersion.getName()
+			kaleoDefinition.isSystem()
 		).thenReturn(
-			name
+			system
+		);
+
+		Mockito.when(
+			_kaleoDefinitionVersion.getKaleoDefinition()
+		).thenReturn(
+			kaleoDefinition
 		);
 
 		Mockito.when(
@@ -202,7 +203,7 @@ public class KaleoDesignerDisplayContextTest {
 			);
 
 			Assert.assertEquals(
-				readOnly, _kaleoDesignerDisplayContext.isReadOnly());
+				system, _kaleoDesignerDisplayContext.isReadOnly());
 		}
 	}
 
