@@ -110,6 +110,13 @@ export const Column = forwardRef(
 
 Column.displayName = 'DefaultVariant.Column';
 
+function hasPageDescription({description, portletId}) {
+	return (
+		Boolean(description) &&
+		!portletId.includes(JOURNAL_WEB_PORTLET_NAMESPACE)
+	);
+}
+
 export function Page({
 	children,
 	forceAriaUpdate,
@@ -117,13 +124,22 @@ export function Page({
 	invalidFormMessage,
 	pageIndex,
 }) {
+	const {portletId} = useFormState();
+
 	const descriptionId = `pageDescription${pageIndex}`;
 	const titleId = `pageTitle${pageIndex}`;
 
+	const hasDefaultPageHeader = Header?.type === PageHeader;
+
+	const showDescription =
+		hasDefaultPageHeader &&
+		hasPageDescription({description: Header.props.description, portletId});
+	const showTitle = hasDefaultPageHeader && Boolean(Header.props.title);
+
 	return (
 		<div
-			aria-describedby={descriptionId}
-			aria-labelledby={titleId}
+			aria-describedby={showDescription ? descriptionId : undefined}
+			aria-labelledby={showTitle ? titleId : undefined}
 			className="active ddm-form-page lfr-ddm-form-page"
 			data-ddm-page={pageIndex}
 			role="group"
@@ -151,9 +167,6 @@ Page.displayName = 'DefaultVariant.Page';
 
 export function PageHeader({description, descriptionId, title, titleId}) {
 	const {portletId} = useFormState();
-	const isWebContentPortlet = portletId.includes(
-		JOURNAL_WEB_PORTLET_NAMESPACE
-	);
 
 	return (
 		<>
@@ -162,7 +175,7 @@ export function PageHeader({description, descriptionId, title, titleId}) {
 					{title}
 				</div>
 			)}
-			{!isWebContentPortlet && description && (
+			{hasPageDescription({description, portletId}) && (
 				<div
 					className="lfr-ddm-form-page-description"
 					id={descriptionId}
