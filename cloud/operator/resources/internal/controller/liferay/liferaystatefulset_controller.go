@@ -15,10 +15,19 @@ import (
 	equality "k8s.io/apimachinery/pkg/api/equality"
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	types "k8s.io/apimachinery/pkg/types"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 	handler "sigs.k8s.io/controller-runtime/pkg/handler"
+	predicate "sigs.k8s.io/controller-runtime/pkg/predicate"
+	reconcile "sigs.k8s.io/controller-runtime/pkg/reconcile"
+)
+
+const (
+	liferayComponentLabel = "component"
+	liferayComponentValue = "liferay"
 )
 
 func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
@@ -31,7 +40,7 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 		return controllerruntime.Result{}, client.IgnoreNotFound(error)
 	}
 
-	liferayEnvironment, error := liferayStatefulSetReconciler.resolveLiferayEnvironment(context, statefulSet)
+	liferayEnvironment, error := liferayStatefulSetReconciler.getLiferayEnvironmentByStatefulSet(context, statefulSet)
 
 	if error != nil {
 		return controllerruntime.Result{}, error
@@ -41,35 +50,35 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 		return controllerruntime.Result{}, nil
 	}
 
-	originalLiferayEnvironment := liferayEnvironment.DeepCopy()
-
-	persistentVolumeClaimSpec := persistentvolumeclaim.GetPersistentVolumeClaimSpec(liferayEnvironment, "-marketplace")
-
 	marketplaceVolumeManager := &marketplace.MarketplaceVolumeManager{
-		Client: liferayStatefulSetReconciler.Client,
-		PersistentVolumeClaimManager: &persistentvolumeclaim.PersistentVolumeClaimManager{
+		ClaimManager: &persistentvolumeclaim.PersistentVolumeClaimManager{
 			Client:  liferayStatefulSetReconciler.Client,
 			Context: context,
-			Spec:    persistentVolumeClaimSpec,
+			Spec:    marketplace.GetVolumeClaimSpec(liferayEnvironment),
 			Owner:   statefulSet,
 		},
 	}
 
-	marketplaceConditions, error := marketplaceVolumeManager.Reconcile(
-		context,
-		liferayEnvironment,
-		statefulSet,
-	)
+	claimResult, error := marketplaceVolumeManager.ClaimManager.CreateClaimIfMissing()
 
 	if error != nil {
 		return controllerruntime.Result{}, error
 	}
 
+	marketplaceVolumeManager.SetVolumeStatus(liferayEnvironment, claimResult)
+
+	marketplaceConditions := marketplaceVolumeManager.GetVolumeConditions(
+		claimResult,
+		statefulSet,
+	)
+
 	for _, marketplaceCondition := range marketplaceConditions {
 		meta.SetStatusCondition(&liferayEnvironment.Status.Conditions, marketplaceCondition)
 	}
 
-	if error := liferayStatefulSetReconciler.updateStatus(
+	originalLiferayEnvironment := liferayEnvironment.DeepCopy()
+
+	if error := liferayStatefulSetReconciler.updateLiferayEnvironmentStatus(
 		context,
 		liferayEnvironment,
 		originalLiferayEnvironment,
@@ -110,7 +119,7 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) SetupWithManag
 	)
 }
 
-func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) resolveLiferayEnvironment(
+func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) getLiferayEnvironmentByStatefulSet(
 	context context.Context,
 	statefulSet *appsv1.StatefulSet,
 ) (*licensingv1alpha1.LiferayEnvironment, error) {
@@ -133,7 +142,7 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) resolveLiferay
 	return nil, nil
 }
 
-func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) updateStatus(
+func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) updateLiferayEnvironmentStatus(
 	context context.Context,
 	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
 	originalLiferayEnvironment *licensingv1alpha1.LiferayEnvironment,
@@ -150,6 +159,38 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) updateStatus(
 	status := liferayStatefulSetReconciler.Status()
 
 	return status.Patch(context, liferayEnvironment, patch)
+}
+
+func getLiferayStatefulSetPredicate() (predicate.Predicate, error) {
+	return predicate.LabelSelectorPredicate(
+		metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				liferayComponentLabel: liferayComponentValue,
+			},
+		},
+	)
+}
+
+func mapLiferayEnvironmentToStatefulSet(
+	context context.Context,
+	object client.Object,
+) []reconcile.Request {
+	liferayEnvironment, ok := object.(*licensingv1alpha1.LiferayEnvironment)
+
+	if !ok {
+		return nil
+	}
+
+	workloadName := liferayEnvironment.Spec.WorkloadRef.Name
+
+	return []reconcile.Request{
+		{
+			NamespacedName: types.NamespacedName{
+				Name:      workloadName,
+				Namespace: liferayEnvironment.Namespace,
+			},
+		},
+	}
 }
 
 type LiferayStatefulSetReconciler struct {
