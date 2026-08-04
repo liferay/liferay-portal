@@ -13,4 +13,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	testImplementation group: "org.mockito", name: "mockito-core", version: "5.4.0"
+	testImplementation project(":core:petra:petra-lang")
 }
