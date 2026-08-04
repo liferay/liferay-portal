@@ -67,6 +67,17 @@ public class ObjectEntryAuditModelListenerTest {
 
 	@Before
 	public void setUp() throws Exception {
+		_auditRouter = (AuditRouter)ReflectionTestUtil.getAndSetFieldValue(
+			_objectEntryModelListener, "_auditRouter",
+			ProxyUtil.newProxyInstance(
+				AuditRouter.class.getClassLoader(),
+				new Class<?>[] {AuditRouter.class},
+				(proxy, method, arguments) -> {
+					_auditMessages.add((AuditMessage)arguments[0]);
+
+					return null;
+				}));
+
 		_objectDefinition = ObjectDefinitionTestUtil.publishObjectDefinition();
 
 		_objectDefinition.setEnableObjectEntryHistory(true);
@@ -88,17 +99,6 @@ public class ObjectEntryAuditModelListenerTest {
 			).userId(
 				TestPropsValues.getUserId()
 			).build());
-
-		_auditRouter = (AuditRouter)ReflectionTestUtil.getAndSetFieldValue(
-			_objectEntryModelListener, "_auditRouter",
-			ProxyUtil.newProxyInstance(
-				AuditRouter.class.getClassLoader(),
-				new Class<?>[] {AuditRouter.class},
-				(proxy, method, arguments) -> {
-					_auditMessages.add((AuditMessage)arguments[0]);
-
-					return null;
-				}));
 	}
 
 	@After
