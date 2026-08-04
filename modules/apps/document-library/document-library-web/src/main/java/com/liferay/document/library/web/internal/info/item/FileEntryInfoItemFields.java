@@ -60,6 +60,8 @@ public class FileEntryInfoItemFields {
 			URLInfoFieldType.INSTANCE
 		).name(
 			"downloadURL"
+		).attribute(
+			URLInfoFieldType.DOWNLOAD, Boolean.TRUE
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				FileEntryInfoItemFields.class, "download-url")

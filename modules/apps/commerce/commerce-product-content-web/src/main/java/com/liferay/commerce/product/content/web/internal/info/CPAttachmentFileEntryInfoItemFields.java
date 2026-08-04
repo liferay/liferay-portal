@@ -11,6 +11,7 @@ import com.liferay.info.field.type.BooleanInfoFieldType;
 import com.liferay.info.field.type.DateInfoFieldType;
 import com.liferay.info.field.type.NumberInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
+import com.liferay.info.field.type.URLInfoFieldType;
 import com.liferay.info.localized.InfoLocalizedValue;
 
 /**
@@ -91,11 +92,13 @@ public class CPAttachmentFileEntryInfoItemFields {
 			InfoLocalizedValue.localize(
 				CPAttachmentFileEntryInfoItemFields.class, "display-date")
 		).build();
-	public static final InfoField<TextInfoFieldType> downloadURLInfoField =
+	public static final InfoField<URLInfoFieldType> downloadURLInfoField =
 		BuilderHolder._builder.infoFieldType(
-			TextInfoFieldType.INSTANCE
+			URLInfoFieldType.INSTANCE
 		).name(
 			"downloadURL"
+		).attribute(
+			URLInfoFieldType.DOWNLOAD, Boolean.TRUE
 		).labelInfoLocalizedValue(
 			InfoLocalizedValue.localize(
 				CPAttachmentFileEntryInfoItemFields.class, "download-url")
