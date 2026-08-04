@@ -8,6 +8,7 @@ package com.liferay.segments.service.impl;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -632,6 +633,10 @@ public class SegmentsExperienceLocalServiceImpl
 
 	private void _checkUnlockedLayout(long plid, long userId)
 		throws PortalException {
+
+		if (StartupHelperUtil.isUpgrading()) {
+			return;
+		}
 
 		Layout layout = _layoutLocalService.fetchLayout(plid);
 

@@ -8,7 +8,6 @@ package com.liferay.layout.page.template.internal.upgrade.v6_2_0;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.lock.LockManager;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -29,20 +28,17 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 	extends UpgradeProcess {
 
 	public LayoutPageTemplateStructureRelUpgradeProcess(
-		LayoutLocalService layoutLocalService, LockManager lockManager,
+		LayoutLocalService layoutLocalService,
 		SegmentsExperienceLocalService segmentsExperienceLocalService,
 		UserLocalService userLocalService) {
 
 		_layoutLocalService = layoutLocalService;
-		_lockManager = lockManager;
 		_segmentsExperienceLocalService = segmentsExperienceLocalService;
 		_userLocalService = userLocalService;
 	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		_unlockLayouts();
-
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select distinct LayoutPageTemplateStructureRel.",
@@ -183,21 +179,6 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 		}
 	}
 
-	private void _unlockLayouts() throws Exception {
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select key_ from Lock_ where className = ?")) {
-
-			preparedStatement.setString(1, Layout.class.getName());
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while (resultSet.next()) {
-					_lockManager.unlock(
-						Layout.class.getName(), resultSet.getString("key_"));
-				}
-			}
-		}
-	}
-
 	private void _updateLayoutPageTemplateStructureRel(
 			long ctCollectionId, long defaultSegmentsExperienceId,
 			long layoutPageTemplateStructureRelId)
@@ -219,7 +200,6 @@ public class LayoutPageTemplateStructureRelUpgradeProcess
 	}
 
 	private final LayoutLocalService _layoutLocalService;
-	private final LockManager _lockManager;
 	private final SegmentsExperienceLocalService
 		_segmentsExperienceLocalService;
 	private final UserLocalService _userLocalService;

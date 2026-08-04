@@ -15,6 +15,7 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLo
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
@@ -314,19 +315,19 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 
 	@Test
 	@TestInfo("LPD-97443")
-	public void testUpgradeUnlocksLayoutsAndRepairsOrphanedLayoutPageTemplateStructureRel()
+	public void testUpgradeRepairsOrphanedLayoutPageTemplateStructureRelForLockedLayout()
 		throws Exception {
 
-		Layout layout1 = LayoutTestUtil.addTypeContentLayout(_group);
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
-		Layout draftLayout1 = layout1.fetchDraftLayout();
+		Layout draftLayout = layout.fetchDraftLayout();
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_fetchLayoutPageTemplateStructure(draftLayout1);
+			_fetchLayoutPageTemplateStructure(draftLayout);
 
 		long defaultSegmentsExperienceId =
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				draftLayout1.getPlid());
+				draftLayout.getPlid());
 
 		LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
 			_fetchLayoutPageTemplateStructureRel(
@@ -341,28 +342,22 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 			_segmentsExperienceLocalService.getSegmentsExperience(
 				defaultSegmentsExperienceId));
 
-		Layout layout2 = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout2 = layout2.fetchDraftLayout();
-
 		_user = UserTestUtil.addUser();
 
 		_lockManager.lock(
-			_user.getUserId(), Layout.class.getName(), draftLayout1.getPlid(),
-			null, false, Time.HOUR);
-		_lockManager.lock(
-			_user.getUserId(), Layout.class.getName(), draftLayout2.getPlid(),
+			_user.getUserId(), Layout.class.getName(), draftLayout.getPlid(),
 			null, false, Time.HOUR);
 
 		try {
 			_runUpgrade();
 
-			Assert.assertNull(
+			// The layout remains locked
+
+			Assert.assertNotNull(
 				_lockManager.fetchLock(
-					Layout.class.getName(), draftLayout1.getPlid()));
-			Assert.assertNull(
-				_lockManager.fetchLock(
-					Layout.class.getName(), draftLayout2.getPlid()));
+					Layout.class.getName(), draftLayout.getPlid()));
+
+			// The orphaned relation is repaired
 
 			Assert.assertNull(
 				_fetchLayoutPageTemplateStructureRel(
@@ -371,7 +366,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 
 			defaultSegmentsExperienceId =
 				_segmentsExperienceLocalService.
-					fetchDefaultSegmentsExperienceId(draftLayout1.getPlid());
+					fetchDefaultSegmentsExperienceId(draftLayout.getPlid());
 
 			Assert.assertNotEquals(
 				SegmentsExperienceConstants.ID_DEFAULT,
@@ -384,8 +379,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 			Assert.assertEquals(data, layoutPageTemplateStructureRel.getData());
 		}
 		finally {
-			_lockManager.unlock(Layout.class.getName(), draftLayout1.getPlid());
-			_lockManager.unlock(Layout.class.getName(), draftLayout2.getPlid());
+			_lockManager.unlock(Layout.class.getName(), draftLayout.getPlid());
 		}
 	}
 
@@ -433,7 +427,14 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest {
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator, _CLASS_NAME);
 
-		upgradeProcess.upgrade();
+		StartupHelperUtil.setUpgrading(true);
+
+		try {
+			upgradeProcess.upgrade();
+		}
+		finally {
+			StartupHelperUtil.setUpgrading(false);
+		}
 
 		_entityCache.clearCache();
 
