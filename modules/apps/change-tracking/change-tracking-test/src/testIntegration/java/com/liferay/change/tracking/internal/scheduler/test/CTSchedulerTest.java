@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -46,6 +47,44 @@ public class CTSchedulerTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Test
+	public void testSchedulePublishPopulatesScheduledDate() throws Exception {
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
+
+		try (SafeCloseable safeCloseable =
+				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
+					ctCollection.getCtCollectionId())) {
+
+			JournalTestUtil.addArticle(
+				TestPropsValues.getGroupId(), RandomTestUtil.randomString(),
+				StringPool.BLANK);
+		}
+
+		Date date = new Date(System.currentTimeMillis() + 30000);
+
+		_publishScheduler.schedulePublish(
+			ctCollection.getCtCollectionId(), TestPropsValues.getUserId(),
+			date);
+
+		ctCollection = _ctCollectionLocalService.getCTCollection(
+			ctCollection.getCtCollectionId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_SCHEDULED, ctCollection.getStatus());
+		Assert.assertEquals(
+			Time.getShortTimestamp(date),
+			Time.getShortTimestamp(ctCollection.getScheduledDate()));
+
+		_publishScheduler.unschedulePublish(ctCollection.getCtCollectionId());
+
+		ctCollection = _ctCollectionLocalService.getCTCollection(
+			ctCollection.getCtCollectionId());
+
+		Assert.assertNull(ctCollection.getScheduledDate());
+	}
 
 	@Test
 	public void testSchedulePublishTwice() throws Exception {
@@ -113,6 +152,9 @@ public class CTSchedulerTest {
 
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_SCHEDULED, ctCollection.getStatus());
+			Assert.assertEquals(
+				Time.getShortTimestamp(date),
+				Time.getShortTimestamp(ctCollection.getScheduledDate()));
 
 			_publishScheduler.unschedulePublish(
 				ctCollection.getCtCollectionId());
@@ -122,6 +164,7 @@ public class CTSchedulerTest {
 
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_INCOMPLETE, ctCollection.getStatus());
+			Assert.assertNull(ctCollection.getScheduledDate());
 		}
 	}
 
