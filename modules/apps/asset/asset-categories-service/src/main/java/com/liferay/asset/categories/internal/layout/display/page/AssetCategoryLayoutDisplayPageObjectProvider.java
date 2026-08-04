@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 
@@ -117,7 +118,7 @@ public class AssetCategoryLayoutDisplayPageObjectProvider
 			_assetVocabularyLocalService.fetchAssetVocabulary(
 				_assetCategory.getVocabularyId());
 
-		sb.append(assetVocabulary.getName());
+		sb.append(HttpComponentsUtil.encodePath(assetVocabulary.getName()));
 
 		Collections.reverse(ancestorAssetCategories);
 
