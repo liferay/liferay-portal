@@ -358,6 +358,11 @@ html#{$cadmin-selector} .cadmin {
 				display: flex;
 				gap: 0.5rem;
 				padding: 0.5rem;
+
+				.ai-assistant-chat__message-balloon-icon {
+					margin-left: 0;
+					margin-top: 0.125rem;
+				}
 			}
 
 			&-form {
