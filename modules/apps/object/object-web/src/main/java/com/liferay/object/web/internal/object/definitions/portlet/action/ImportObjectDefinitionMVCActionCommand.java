@@ -173,9 +173,13 @@ public class ImportObjectDefinitionMVCActionCommand
 				objectDefinition.setName(() -> name);
 			}
 
-			objectDefinition.setObjectFolderExternalReferenceCode(
-				() -> ParamUtil.getString(
-					uploadPortletRequest, "objectFolderExternalReferenceCode"));
+			String objectFolderExternalReferenceCode = ParamUtil.getString(
+				uploadPortletRequest, "objectFolderExternalReferenceCode");
+
+			if (Validator.isNotNull(objectFolderExternalReferenceCode)) {
+				objectDefinition.setObjectFolderExternalReferenceCode(
+					() -> objectFolderExternalReferenceCode);
+			}
 
 			try {
 				ObjectDefinition putObjectDefinition =
