@@ -10,7 +10,7 @@
  */
 
 module.exports = {
-	hash: '88474fa0a0ccfde8360345e128a3830689f15d65027be7d3ec22391e26046507',
+	hash: '02af141ac4c76a96102d8ea45680fb91bcfb31519feede94f6d0b17167594c64',
 	imports: {
 		'@liferay/accessibility-menu-web': [],
 		'@liferay/accessibility-settings-state-web': [],
@@ -577,6 +577,14 @@ module.exports = {
 			'__UNSTABLE_DataClient',
 			'useProvider',
 		],
+		'@codemirror/autocomplete': ['*'],
+		'@codemirror/commands': ['*'],
+		'@codemirror/lang-html': ['*'],
+		'@codemirror/lang-markdown': ['*'],
+		'@codemirror/language': ['*'],
+		'@codemirror/state': ['*'],
+		'@codemirror/theme-one-dark': ['*'],
+		'@codemirror/view': ['*'],
 		'frontend-editor-ckeditor-web/plugins/DocumentLinkSelector': [
 			'default',
 		],
