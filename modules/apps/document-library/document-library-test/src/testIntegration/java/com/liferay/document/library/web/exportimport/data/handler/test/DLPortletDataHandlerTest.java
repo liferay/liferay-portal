@@ -449,7 +449,7 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 		String exportData = portletDataHandler.exportData(
 			portletDataContext, portletId, new PortletPreferencesImpl());
 
-		ZipWriter zipWriter = portletDataContext.getZipWriter();
+		ZipWriter exportZipWriter = portletDataContext.getZipWriter();
 
 		initContext();
 
@@ -462,7 +462,7 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 		portletDataContext.setUserIdStrategy(new TestUserIdStrategy());
 
 		try (ZipReader zipReader = _zipReaderFactory.getZipReader(
-				zipWriter.getFile())) {
+				exportZipWriter.getFile())) {
 
 			portletDataContext.setZipReader(zipReader);
 
