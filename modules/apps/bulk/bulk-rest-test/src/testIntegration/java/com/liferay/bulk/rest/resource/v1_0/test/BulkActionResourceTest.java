@@ -687,7 +687,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 					}
 				}
 			});
-		bulkAction.setType(BulkAction.Type.DELETE_OBJECT_BULK_SELECTION_ACTION);
 
 		SelectionScope selectionScope = new SelectionScope();
 
@@ -695,16 +694,18 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		bulkAction.setSelectionScope(selectionScope);
 
+		bulkAction.setType(BulkAction.Type.DELETE_OBJECT_BULK_SELECTION_ACTION);
+
 		Page<BulkActionItem> page =
 			bulkActionResource.postBulkActionItemPreviewPage(
 				false, null, null, Pagination.of(1, 10), "name:desc",
 				bulkAction);
 
-		Assert.assertEquals(0, page.getTotalCount());
-
 		List<BulkActionItem> items = ListUtil.fromCollection(page.getItems());
 
 		Assert.assertEquals(items.toString(), 0, items.size());
+
+		Assert.assertEquals(0, page.getTotalCount());
 	}
 
 	private void _testPostBulkActionItemPreviewPageWithSelectAllAndFilter(
