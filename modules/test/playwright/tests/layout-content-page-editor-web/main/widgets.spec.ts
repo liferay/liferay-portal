@@ -518,26 +518,27 @@ test(
 			trigger: productMenuPage.contentAndDataButton,
 		});
 
+		// The Product Menu slides in with a CSS transition and the dropdown
+		// closes itself once the transition ends, so open it only after the
+		// Product Menu has settled
+
+		await expect(productMenuPage.productMenuWrapper).not.toHaveClass(
+			/sidenav-transition/
+		);
+
+		await dropdownButton.click({timeout: 5000});
+
 		const dropdownOption = page
 			.locator('.dropdown-menu')
 			.getByRole('menuitem', {name: layoutTitle});
 
-		await clickAndExpectToBeVisible({
-			target: dropdownOption,
-			timeout: 5000,
-			trigger: dropdownButton,
-		});
+		await expect(dropdownOption).toBeVisible({timeout: 5000});
 
 		await expect(dropdownOption).toContainText(/deprecated/i);
 
 		// Check that the page is set as scope
 
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: dropdownOption,
-			timeout: 5000,
-			trigger: dropdownButton,
-		});
+		await dropdownOption.click({timeout: 5000});
 
 		const scopeName = page.locator('.scope-name', {
 			hasText: `${layoutTitle} (Scope)`,
