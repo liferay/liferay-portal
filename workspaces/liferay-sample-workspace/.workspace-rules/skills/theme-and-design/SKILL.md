@@ -180,6 +180,33 @@ A fragment's `index.css` is a stylesheet on the page, so its rules can target an
 
 This is a deliberate exception to "Fragment Scoping" in `scaffold-fragment` — that rule exists to stop *accidental* cascade leakage between sibling fragments on one page. Keep the exception narrow (headings and brand chrome), keep it in the master's fragment rather than a content fragment, and comment why, or the next reader will "fix" it back into scope.
 
+#### Every Content Fragment Outranks This Rule — Strip Their Heading Weights
+
+The selector above is one id plus a **type**, so any fragment styling its own heading through a class beats it. `scaffold-fragment` requires exactly that form (`#wrapper .<wrapper-class>`), so the collision is the default outcome, not an edge case:
+
+```css
+#wrapper h1                        /* master rule   — 1 id, 0 classes, 1 type */
+#wrapper .conference-hero__title   /* fragment rule — 1 id, 1 class          */
+```
+
+The fragment wins. The failure is quiet because it is partial: family and tracking still apply (the fragment did not set those), so headings look *almost* right while `font-weight` silently stays at whatever the fragment declared. Verified on 2026.Q2 — a site wide rule asking for `800` computed to `700` on every heading whose fragment set `font-weight: 700`, and reads as "the heavy font did not take".
+
+Fix it at the fragments, not by escalating the master selector. **Delete `font-weight` from every heading rule in every content fragment** so the master rule is the single source of truth:
+
+```bash
+grep -n -B3 'font-weight' */index.css | grep -E '__title|__heading'
+```
+
+Then confirm the computed value in the browser rather than trusting the stylesheet, because the cascade is the whole question:
+
+```javascript
+getComputedStyle(document.querySelector('.my-fragment__title')).fontWeight;
+```
+
+Leave explicit weights on non headings (`<p>` date stamps, buttons, uppercase micro labels) — those are not governed by the rule and often want a different weight on purpose.
+
+**Set family, weight, and tracking here — never `color`.** Headings must inherit colour from their section, or the same rule that styles dark text on the light content areas also paints the hero `h1` and footer `h2` in that colour, on their own dark background. The snippet above omits `color` for this reason; adding it is invisible on a light only site and renders headings unreadable the moment a navy hero or footer exists.
+
 Weigh it against the alternatives before reaching for it:
 
 | Need | Put it in |

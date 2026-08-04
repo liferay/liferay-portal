@@ -342,7 +342,17 @@ Invoking addLayoutPageTemplates took 0 ms   <- before: no master page
 Invoking addLayoutPageTemplates took 134 ms <- after: master page imported
 ```
 
-So keep the previous run's numbers to compare against. A handler that stays at `0`/`1 ms` after you added its directory means the path is wrong — the build still succeeds and the site still provisions.
+So keep the previous run's numbers to compare against. A handler that stays at `0`/`1 ms` after you added its directory is a **hint** that the path is wrong — the build still succeeds and the site still provisions.
+
+**Treat a flat timing as a prompt to check the effect, not as proof of failure.** The signal scales with how much work the handler does, so a handler reading one small file can apply it correctly and still round to `1 ms`. Verified on 2026.Q2: adding `layout-set/public/metadata.json` left `updateLayoutSets` at `1 ms` across the runs before and after, yet the settings had plainly taken — Classic's header and "Powered by Liferay" footer were both absent from the rendered page. Reading that `1 ms` as "the path is wrong" would have sent you chasing a bug that did not exist.
+
+The timings are a triage tool for the file-heavy handlers (fragments, layouts, objects, style books, page templates), where real work shows up as tens or hundreds of milliseconds. For a single-file handler, assert the outcome instead:
+
+| Handler | What to assert rather than the timing |
+| --- | --- |
+| `updateLayoutSets` | Fetch a page; confirm the chrome you switched off is gone from the HTML |
+| `addOrUpdateResourcePermissions` | Make the request as the target role (unauthenticated `curl` for Guest) |
+| `addOrUpdateSiteNavigationMenus` | Count `navigationMenuItems` over REST — this one logs no line at all |
 
 `catalina.out` timestamps are UTC while a local shell is typically not, so a line that looks hours ahead may be the current run. When several runs are in the file, the earlier failures stay there — match on timestamp before concluding the newest run failed.
 
