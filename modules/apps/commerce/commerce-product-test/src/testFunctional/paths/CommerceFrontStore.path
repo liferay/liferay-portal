@@ -227,7 +227,7 @@
 </tr>
 <tr>
 	<td>PRODUCT_DETAILS_MIN_QUANTITY_PER_ORDER</td>
-	<td>//span[(@class='min-quantity-per-order') and contains(.,'Minimum Quantity Per Order: ${key_minQuantity}')]</td>
+	<td>//span[(@class='min-quantity-per-order') and contains(.,'Minimum Quantity per Order: ${key_minQuantity}')]</td>
 	<td></td>
 </tr>
 <tr>
