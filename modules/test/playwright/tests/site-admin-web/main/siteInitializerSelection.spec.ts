@@ -11,6 +11,7 @@ import {sitesPageTest} from '../../../fixtures/sitesPageTest';
 import {LayoutSetPrototype} from '../../../helpers/json-web-services/JSONWebServicesLayoutSetPrototypeApiHelper';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import getRandomString from '../../../utils/getRandomString';
+import {getResultsTotal, nextPage} from '../../../utils/pagination';
 import {selectSiteInitializerPagesTest} from './fixtures/selectSiteInitializerPagesTest';
 import {sitesAdminPagesTest} from './fixtures/sitesAdminPagesTest';
 
@@ -70,8 +71,20 @@ test(
 
 		await sitesPage.customSiteTemplatesItem.click();
 
+		const total = await getResultsTotal(page);
+
+		expect(total).toBeGreaterThan(20);
+
 		await expect(
-			page.getByText('Showing 1 to 20 of 21 entries.')
+			page.getByText(`Showing 1 to 20 of ${total} entries.`)
+		).toBeVisible();
+
+		await nextPage(page);
+
+		await expect(
+			page.getByText(
+				`Showing 21 to ${Math.min(40, total)} of ${total} entries.`
+			)
 		).toBeVisible();
 
 		await expect(
@@ -96,7 +109,12 @@ test('Ensure that the site administrator can select custom site template via key
 	selectSiteInitializerPage,
 	sitesPage,
 }) => {
-	let layoutSetPrototype: LayoutSetPrototype;
+	const layoutSetPrototype: LayoutSetPrototype =
+		await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
+			{
+				name: getRandomString(),
+			}
+		);
 
 	try {
 		await selectSiteInitializerPage.goto();
@@ -104,15 +122,10 @@ test('Ensure that the site administrator can select custom site template via key
 		await sitesPage.customSiteTemplatesItem.click();
 
 		await expect(
-			page.getByText('There are no site templates.')
+			page.getByRole('button', {
+				name: layoutSetPrototype.nameCurrentValue,
+			})
 		).toBeVisible();
-
-		layoutSetPrototype =
-			await apiHelpers.jsonWebServicesLayoutSetPrototype.addLayoutSetPrototypes(
-				{
-					name: getRandomString(),
-				}
-			);
 
 		await selectSiteInitializerPage.goto();
 
@@ -129,9 +142,7 @@ test('Ensure that the site administrator can select custom site template via key
 		await sitesPage.customSiteTemplatesItem.press('Tab');
 
 		await expect(
-			page.getByRole('button', {
-				name: layoutSetPrototype.nameCurrentValue,
-			})
+			page.locator('.add-site-action-card').first()
 		).toBeFocused();
 
 		await page.keyboard.press('Enter');
