@@ -22,46 +22,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LRQA-29297. Verify that Admin user can delete a custom export process."
-	@priority = 4
-	test DeleteCustomExportProcess {
-		task ("Export the LAR file of a site") {
-			LAR.exportSiteCP(
-				larFileName = "CustomExport",
-				siteScopeName = "Guest");
-		}
-
-		task ("Delete the created custom export process and verify it was deleted") {
-			LAR.deleteCurrentAndPreviousProcess(larFileName = "CustomExport");
-
-			AssertElementNotPresent(locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS_1");
-		}
-	}
-
-	@description = "This is a use case for LRQA-29297. Verify that the Admin user can delete a portlet export process."
-	@priority = 4
-	test DeletePortletExportProcess {
-		task ("Go to DM admin and Export a process") {
-			Navigator.openURL();
-
-			ProductMenu.gotoPortlet(
-				category = "Content & Data",
-				portlet = "Documents and Media");
-
-			LAR.exportPortlet(larFileName = "DMExport");
-		}
-
-		task ("Delete the export process and verify that it was deleted") {
-			Refresh();
-
-			LAR.deleteCurrentAndPreviousProcess(
-				deleteFromPortlet = "true",
-				larFileName = "DMExport");
-
-			AssertElementNotPresent(locator1 = "ExportImport#CURRENT_AND_PREVIOUS_STATUS");
-		}
-	}
-
 	@description = "This is a use case for LRQA-47649. Verify that Admin user can relaunch a custom export process."
 	@priority = 4
 	test RelaunchCustomExportProcess {

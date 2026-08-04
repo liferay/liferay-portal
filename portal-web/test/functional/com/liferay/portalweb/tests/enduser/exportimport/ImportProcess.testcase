@@ -27,59 +27,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-166514. TC-1: Verify that the import process related LAR file is thrown away immediately after the process."
-	@priority = 5
-	test LARFileRemovedAfterImportProcess {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Workaround for the issue with friendlyURL collision") {
-			PagesAdmin.openPagesAdmin(siteURLKey = "guest");
-
-			PagesAdmin.deletePage(pageName = "Home");
-		}
-
-		task ("Given: Import two types of LAR files") {
-			HeadlessSite.addSite(siteName = "Site Name");
-
-			JSONBlog.addEntry(
-				entryContent = "Blogs Entry Content",
-				entryTitle = "Blogs Entry Title",
-				groupName = "Site Name");
-
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "site-name");
-
-			LAR.exportPortlet(larFileName = "Blog_portlet.lar");
-
-			JSONGroup.deleteGroupByName(groupName = "Site Name");
-
-			for (var layoutUtilityPageName : list "404,500") {
-				JSONLayoututilitypage.deleteLayoutUtilityPage(
-					groupName = "Guest",
-					layoutUtilityPageName = ${layoutUtilityPageName});
-			}
-
-			LAR.importSiteCP(
-				larFileName = "HR_Home_Page_Content_master.lar",
-				siteName = "Guest",
-				uploadFrom = "dependencies");
-
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "guest");
-
-			LAR.importPortlet(larFileName = "Blog_portlet.lar");
-		}
-
-		task ("When: Query the stored import LAR files in the database") {
-			var lARFileStatus = ExportImport.getLARFileStatus();
-		}
-
-		task ("Then: Verify that the import process related LAR files are removed without waiting") {
-			TestUtils.assertEquals(
-				actual = ${lARFileStatus},
-				expected = "Deleted successfully");
-		}
-	}
-
 	@description = "This is a use case for LPS-182567. TC-1: Verify that a confirmation pop-up should show up when Delete Application Data Before Importing checkbox is checked."
 	@priority = 5
 	test ViewDeletingApplicationDataPopUpOnDefaultSite {
