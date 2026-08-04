@@ -137,7 +137,7 @@ describe('PerformanceDashboard', () => {
 		renderPerformanceDashboard();
 
 		expect(
-			await screen.findByText('PERFORMANCE-OVERVIEW')
+			await screen.findByText('performance-overview')
 		).toBeInTheDocument();
 		expect(
 			screen.queryByText('connect-sites-to-show-data')
@@ -149,7 +149,7 @@ describe('PerformanceDashboard', () => {
 		renderPerformanceDashboard();
 
 		expect(
-			await screen.findByText('PERFORMANCE-OVERVIEW')
+			await screen.findByText('performance-overview')
 		).toBeInTheDocument();
 	});
 });
