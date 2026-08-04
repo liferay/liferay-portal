@@ -4126,12 +4126,7 @@
     strip-ansi "6.0.0"
     xml "^1.0.1"
 
-"@liferay/js-api@0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@liferay/js-api/-/js-api-0.6.2.tgz#afcd284b0193bceff8a706e0eca104cc6cf04fac"
-  integrity sha512-fhbaLwmjgbji/50TXWm6FRq4WO9zzCDYpTyttA+4tJLWh0d95YD4p1i9pjt1XU70/J7opEujGErpx4A6tQfqhg==
-
-"@liferay/js-api@^0.7.1":
+"@liferay/js-api@0.7.1":
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/@liferay/js-api/-/js-api-0.7.1.tgz#a70c25b19aef94916506a1be5a8ce4061ccaac5b"
   integrity sha512-m7g2BORO8o0GOhW89T5lfnY++SFb4+Yt3dBBOTrE03HwifZsnSTJ9B40/zL5VbLN/US2SFXW9U3cSi7YKOGv4g==

@@ -26,7 +26,7 @@
 		"@jsonurl/jsonurl": "1.1.8",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/frontend-js-state-web": "*",
-		"@liferay/js-api": "^0.7.1",
+		"@liferay/js-api": "0.7.1",
 		"classnames": "2.3.1",
 		"date-fns": "2.29.3",
 		"frontend-js-components-web": "*",
