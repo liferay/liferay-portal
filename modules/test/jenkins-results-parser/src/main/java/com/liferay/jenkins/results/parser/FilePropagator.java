@@ -251,29 +251,7 @@ public class FilePropagator {
 			if (sourceFileName.startsWith("http")) {
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("curl ");
-
-				try {
-					if (sourceFileName.startsWith(
-							"https://release.liferay.com")) {
-
-						sb.append(" -u ");
-						sb.append(
-							JenkinsResultsParserUtil.getBuildProperty(
-								"jenkins.admin.user.name"));
-						sb.append(":");
-						sb.append(
-							JenkinsResultsParserUtil.getBuildProperty(
-								"jenkins.admin.user.password"));
-					}
-				}
-				catch (IOException ioException) {
-					throw new FilePropagatorRuntimeException(
-						this, "Unable to get jenkins-admin user credentials",
-						ioException);
-				}
-
-				sb.append("-o ");
+				sb.append("curl -o ");
 				sb.append(targetFileName);
 				sb.append(" ");
 				sb.append(sourceFileName);
