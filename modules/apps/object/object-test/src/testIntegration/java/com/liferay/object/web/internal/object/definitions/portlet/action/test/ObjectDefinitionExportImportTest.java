@@ -412,11 +412,10 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 					"TestImportObjectDefinition", null)));
 
 		importJSON(
-			true, "TESTIMPORTOBJECTDEFINITION", json,
-			"TestImportObjectDefinition");
-
-		importJSON(
 			false, "TESTIMPORTOBJECTDEFINITION", json,
+			"TestImportObjectDefinition");
+		importJSON(
+			true, "TESTIMPORTOBJECTDEFINITION", json,
 			"TestImportObjectDefinition");
 
 		ObjectDefinition objectDefinition =
