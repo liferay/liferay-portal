@@ -12,10 +12,14 @@ import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
 import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.LockedLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lock.LockManager;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -27,6 +31,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
@@ -82,6 +87,52 @@ public class SegmentsExperienceLocalServiceTest {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
 		_plid = layout.getPlid();
+	}
+
+	@Test
+	@TestInfo("LPD-97443")
+	public void testAddDefaultSegmentsExperienceLockedLayout()
+		throws Exception {
+
+		_segmentsExperienceLocalService.deleteSegmentsExperience(
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_plid));
+
+		_user = UserTestUtil.addUser();
+
+		_lockManager.lock(
+			_user.getUserId(), Layout.class.getName(), _plid, null, false,
+			Time.HOUR);
+
+		try {
+			try {
+				_segmentsExperienceLocalService.addDefaultSegmentsExperience(
+					null, TestPropsValues.getUserId(), _plid,
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId()));
+
+				Assert.fail();
+			}
+			catch (LockedLayoutException lockedLayoutException) {
+			}
+
+			StartupHelperUtil.setUpgrading(true);
+
+			try {
+				Assert.assertNotNull(
+					_segmentsExperienceLocalService.
+						addDefaultSegmentsExperience(
+							null, TestPropsValues.getUserId(), _plid,
+							ServiceContextTestUtil.getServiceContext(
+								_group.getGroupId())));
+			}
+			finally {
+				StartupHelperUtil.setUpgrading(false);
+			}
+		}
+		finally {
+			_lockManager.unlock(Layout.class.getName(), _plid);
+		}
 	}
 
 	@Test
@@ -1107,6 +1158,9 @@ public class SegmentsExperienceLocalServiceTest {
 	@Inject
 	private LayoutLocalService _layoutLocalService;
 
+	@Inject
+	private LockManager _lockManager;
+
 	private long _plid;
 
 	@Inject
@@ -1117,5 +1171,8 @@ public class SegmentsExperienceLocalServiceTest {
 
 	@Inject
 	private SegmentsExperimentLocalService _segmentsExperimentLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
