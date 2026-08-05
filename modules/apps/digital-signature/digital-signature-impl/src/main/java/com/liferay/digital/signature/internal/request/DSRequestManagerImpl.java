@@ -241,6 +241,14 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				Map<String, Serializable> requestValues =
 					_objectEntryLocalService.getValues(requestId);
 
+				if (ArrayUtil.contains(
+						_TERMINAL_REQUEST_STATUSES,
+						GetterUtil.getString(
+							requestValues.get("requestStatus")))) {
+
+					continue;
+				}
+
 				providerRequestIdsByRequestId.put(
 					requestId,
 					GetterUtil.getString(
@@ -536,11 +544,30 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				return 0;
 			}
 
+			Set<Long> activeRequestIds = new HashSet<>();
+
+			for (long requestId : requestIds) {
+				Map<String, Serializable> requestValues =
+					_objectEntryLocalService.getValues(requestId);
+
+				if (!ArrayUtil.contains(
+						_TERMINAL_REQUEST_STATUSES,
+						GetterUtil.getString(
+							requestValues.get("requestStatus")))) {
+
+					activeRequestIds.add(requestId);
+				}
+			}
+
+			if (activeRequestIds.isEmpty()) {
+				return 0;
+			}
+
 			List<Map<String, Serializable>> documentValuesList = _getValuesList(
 				companyId, documentObjectDefinition,
 				StringBundler.concat(
 					"(", documentFieldName, " in ('",
-					StringUtil.merge(requestIds, "', '"), "'))"),
+					StringUtil.merge(activeRequestIds, "', '"), "'))"),
 				null);
 
 			return documentValuesList.size();
@@ -561,11 +588,20 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 		Map<Long, Map<Long, String>> recipientStatusesByFileEntryId =
 			getRecipientStatusesByFileEntryId(companyId, fileEntryIds);
+		Map<Long, String> requestStatusesByFileEntryId =
+			getRequestStatusesByFileEntryId(companyId, fileEntryIds);
 
 		return new HashSet<>(
 			TransformUtil.transform(
 				recipientStatusesByFileEntryId.entrySet(),
 				entry -> {
+					if (ArrayUtil.contains(
+							_TERMINAL_REQUEST_STATUSES,
+							requestStatusesByFileEntryId.get(entry.getKey()))) {
+
+						return null;
+					}
+
 					Map<Long, String> statusesByUserId = entry.getValue();
 
 					if (Objects.equals(statusesByUserId.get(userId), "sent")) {
@@ -1292,7 +1328,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 	private static final String _PROVIDER_KEY = "docusign";
 
 	private static final String[] _TERMINAL_REQUEST_STATUSES = {
-		"completed", "declined", "voided"
+		"completed", "declined", "expired", "voided"
 	};
 
 	private static final Log _log = LogFactoryUtil.getLog(

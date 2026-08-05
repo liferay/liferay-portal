@@ -14,6 +14,7 @@ import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContri
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,6 +42,12 @@ public class DLFileEntryModelDocumentContributor
 
 		if (requestStatus != null) {
 			document.addKeyword("signatureStatus", requestStatus);
+		}
+
+		if (!Objects.equals(requestStatus, "created") &&
+			!Objects.equals(requestStatus, "sent")) {
+
+			return;
 		}
 
 		Map<Long, Map<Long, String>> recipientStatusesByFileEntryId =
