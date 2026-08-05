@@ -401,11 +401,12 @@ public abstract class BaseMockContactsEngineClientImpl
 
 	@Override
 	public List<AccountLifecycleStageMetric> getAccountLifecycleStageMetrics(
-			FaroProject faroProject, String country, String id, String industry)
+			FaroProject faroProject, String country, String id, String industry,
+			Long segmentId)
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getAccountLifecycleStageMetrics(
-			faroProject, country, id, industry);
+			faroProject, country, id, industry, segmentId);
 	}
 
 	@Override

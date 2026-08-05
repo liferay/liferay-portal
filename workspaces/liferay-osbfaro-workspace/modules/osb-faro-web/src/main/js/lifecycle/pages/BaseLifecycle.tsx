@@ -153,6 +153,8 @@ const LifecycleStagesSection = () => {
 
 	const {groupId} = useParams();
 
+	const {segmentId} = useSegmentFilter();
+
 	const {
 		data: stagesData,
 		error: stagesError,
@@ -164,6 +166,7 @@ const LifecycleStagesSection = () => {
 			groupId,
 			industry: filters.industryFilter,
 			lifecycleId,
+			segmentId,
 		},
 	});
 

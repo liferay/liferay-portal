@@ -843,7 +843,8 @@ public class ContactsEngineClientImpl
 
 	@Override
 	public List<AccountLifecycleStageMetric> getAccountLifecycleStageMetrics(
-			FaroProject faroProject, String country, String id, String industry)
+			FaroProject faroProject, String country, String id, String industry,
+			Long segmentId)
 		throws FaroEngineClientException {
 
 		Map<String, Object> uriVariables = getUriVariables(faroProject, id);
@@ -854,6 +855,10 @@ public class ContactsEngineClientImpl
 
 		if (Validator.isNotNull(industry)) {
 			uriVariables.put("industry", industry);
+		}
+
+		if (Validator.isNotNull(segmentId)) {
+			uriVariables.put("segmentId", segmentId);
 		}
 
 		return get(

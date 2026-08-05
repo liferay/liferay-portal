@@ -153,6 +153,7 @@ interface IFetchLifecycleStages {
 	groupId?: string;
 	industry?: string;
 	lifecycleId: string;
+	segmentId?: string | null;
 }
 
 export async function fetchLifecycleStages({
@@ -160,11 +161,13 @@ export async function fetchLifecycleStages({
 	groupId,
 	industry,
 	lifecycleId,
+	segmentId,
 }: IFetchLifecycleStages) {
 	return sendRequest({
 		data: {
 			...(country && {country}),
 			...(industry && {industry}),
+			...(segmentId && {segmentId}),
 		},
 		method: 'GET',
 		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}/stages`,

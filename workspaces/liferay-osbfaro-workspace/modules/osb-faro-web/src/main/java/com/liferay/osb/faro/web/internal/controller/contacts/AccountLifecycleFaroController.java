@@ -104,12 +104,13 @@ public class AccountLifecycleFaroController extends BaseFaroController {
 	public List<AccountLifecycleStageMetric> getAccountLifecycleStageMetrics(
 			@PathParam("groupId") long groupId, @PathParam("id") String id,
 			@QueryParam("country") String country,
-			@QueryParam("industry") String industry)
+			@QueryParam("industry") String industry,
+			@QueryParam("segmentId") Long segmentId)
 		throws Exception {
 
 		return contactsEngineClient.getAccountLifecycleStageMetrics(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId), country,
-			id, industry);
+			id, industry, segmentId);
 	}
 
 	@GET
