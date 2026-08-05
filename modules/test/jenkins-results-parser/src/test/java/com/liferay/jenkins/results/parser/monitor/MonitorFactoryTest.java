@@ -5,6 +5,12 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsMasterTestUtil;
+
+import java.util.List;
+import java.util.Properties;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,11 +20,51 @@ import org.junit.Test;
 public class MonitorFactoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
+	@After
+	@Override
+	public void tearDown() {
+		super.tearDown();
+
+		JenkinsMasterTestUtil.resetCaches();
+	}
+
+	@Test
+	public void testNewMonitorJobHealth() {
+		JenkinsMasterTestUtil.getJenkinsMaster("test-9-1", "http://test-9-1/");
+
+		Properties monitorProperties = new Properties();
+
+		monitorProperties.setProperty(
+			"monitor[a].parameter[job.name]", "generate-reports-controller");
+		monitorProperties.setProperty(
+			"monitor[a].parameter[master.name]", "test-9-1");
+		monitorProperties.setProperty("monitor[a].type", "job-health");
+
+		List<MonitorConfig> monitorConfigs =
+			MonitorConfigLoader.getMonitorConfigs(monitorProperties);
+
+		Monitor monitor = MonitorFactory.newMonitor(monitorConfigs.get(0));
+
+		Assert.assertTrue(monitor instanceof JobHealthMonitor);
+	}
+
+	@Test
+	public void testNewMonitorNullType() {
+		_testNewMonitorExpectedIllegalArgumentException(
+			new MonitorConfig(
+				"a", 0, null, MonitorConfig.Severity.MEDIUM, null, 60, null));
+	}
+
 	@Test
 	public void testNewMonitorUnknownType() {
-		MonitorConfig monitorConfig = new MonitorConfig(
-			"a", 0, null, MonitorConfig.Severity.MEDIUM, null, 60,
-			"unknown-type");
+		_testNewMonitorExpectedIllegalArgumentException(
+			new MonitorConfig(
+				"a", 0, null, MonitorConfig.Severity.MEDIUM, null, 60,
+				"unknown-type"));
+	}
+
+	private void _testNewMonitorExpectedIllegalArgumentException(
+		MonitorConfig monitorConfig) {
 
 		try {
 			MonitorFactory.newMonitor(monitorConfig);
