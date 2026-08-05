@@ -224,7 +224,6 @@ public class AssetListAssetEntryProviderFiltersTest {
 			HashMapBuilder.<String, Serializable>put(
 				_OBJECT_FIELD_NAME_INTEGER, RandomTestUtil.randomInt(1, 100)
 			).build());
-
 		int priority1 = RandomTestUtil.randomInt(101, 200);
 
 		_assertFilteredClassPKs(
