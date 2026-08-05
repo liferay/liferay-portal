@@ -8,9 +8,11 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import getRandomString from '../../../../utils/getRandomString';
-import {performLoginViaApi, userData} from '../../../../utils/performLogin';
+import {performLoginViaApi} from '../../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
+import {registerUserCredentials} from '../spaces/helpers/roleMembership';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -20,7 +22,10 @@ const test = mergeTests(
 	loginTest()
 );
 
-async function createSpaceUserWithRole(apiHelpers: any, roleName: string) {
+async function createSpaceUserWithRole(
+	apiHelpers: DataApiHelpers,
+	roleName: string
+) {
 	const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 		name: `Space ${getRandomString()}`,
 		type: 'Space',
@@ -28,11 +33,7 @@ async function createSpaceUserWithRole(apiHelpers: any, roleName: string) {
 
 	const user = await apiHelpers.headlessAdminUser.postUserAccount();
 
-	userData[user.alternateName] = {
-		name: user.givenName,
-		password: 'test',
-		surname: user.familyName,
-	};
+	registerUserCredentials(user);
 
 	await apiHelpers.jsonWebServicesUser.agreeToTermsOfUse(user.id);
 	await apiHelpers.jsonWebServicesUser.answerReminderQuery(user.id);
@@ -113,7 +114,11 @@ test(
 
 		await page.goto(PORTLET_URLS.cms);
 
-		await expect(page.getByText('ADMIN', {exact: true})).toBeHidden();
+		await expect(
+			page
+				.locator('.vertical-navigation-fragment')
+				.getByRole('menuitem', {name: 'Admin'})
+		).toBeHidden();
 		await expect(
 			page.getByRole('link', {exact: true, name: 'Categorization'})
 		).toBeHidden();
