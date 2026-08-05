@@ -11,6 +11,7 @@ import {PORTLET_URLS} from '../../../../utils/portletUrls';
 export class BlogsPage {
 	readonly blogName: (title: string) => Locator;
 	readonly deleteAllBlogEntriesButton: Locator;
+	readonly moreActionsButton: (title: string) => Locator;
 	readonly page: Page;
 	readonly permissionsFrameLocator: FrameLocator;
 	readonly searchInput: Locator;
@@ -22,6 +23,11 @@ export class BlogsPage {
 		this.deleteAllBlogEntriesButton = page.getByRole('button', {
 			name: 'Delete',
 		});
+		this.moreActionsButton = (title: string) =>
+			page
+				.locator('.card')
+				.filter({hasText: title})
+				.getByLabel('More actions');
 		this.page = page;
 		this.permissionsFrameLocator = page.frameLocator(
 			'iframe[title="Permissions"]'
@@ -44,11 +50,7 @@ export class BlogsPage {
 	}
 
 	async goToBlogEntryAction(action: string, title: string) {
-		await this.page
-			.locator('.card')
-			.filter({hasText: title})
-			.getByLabel('More actions')
-			.waitFor();
+		await this.moreActionsButton(title).waitFor();
 
 		await clickAndExpectToBeVisible({
 			autoClick: true,
@@ -56,10 +58,7 @@ export class BlogsPage {
 				exact: true,
 				name: action,
 			}),
-			trigger: this.page
-				.locator('.card')
-				.filter({hasText: title})
-				.getByLabel('More actions'),
+			trigger: this.moreActionsButton(title),
 		});
 	}
 
@@ -70,15 +69,38 @@ export class BlogsPage {
 				exact: true,
 				name: 'Delete',
 			}),
-			trigger: this.page
-				.locator('.card')
-				.filter({hasText: title})
-				.getByLabel('More actions'),
+			trigger: this.moreActionsButton(title),
 		});
 
 		await expect(
 			this.page.getByRole('menuitem', {exact: true, name: action})
 		).toBeHidden();
+	}
+
+	async assertBlogEntryActionIcons(
+		actionIcons: {action: string; icon: string}[],
+		title: string
+	) {
+		await this.moreActionsButton(title).waitFor();
+
+		await clickAndExpectToBeVisible({
+			target: this.page.getByRole('menuitem', {
+				exact: true,
+				name: actionIcons[0].action,
+			}),
+			trigger: this.moreActionsButton(title),
+		});
+
+		for (const actionIcon of actionIcons) {
+			await expect(
+				this.page
+					.getByRole('menuitem', {
+						exact: true,
+						name: actionIcon.action,
+					})
+					.locator(`svg.lexicon-icon-${actionIcon.icon}`)
+			).toBeVisible();
+		}
 	}
 
 	async assertBlogEntryPermissions(
