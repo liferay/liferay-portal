@@ -9,13 +9,9 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.SelectOption;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.GroupItemSelectorReturnType;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
-import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
 import com.liferay.object.item.selector.ObjectDefinitionItemSelectorCriterion;
 import com.liferay.object.item.selector.ObjectDefinitionItemSelectorReturnType;
 import com.liferay.object.model.ObjectDefinition;
-import com.liferay.object.model.ObjectDefinitionSetting;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
@@ -53,7 +49,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Lourdes Fernández Besada
@@ -64,8 +59,6 @@ public class SitemapCompanyConfigurationDisplayContext {
 		GroupLocalService groupLocalService, ItemSelector itemSelector,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
-		ObjectDefinitionLocalService objectDefinitionLocalService,
-		ObjectDefinitionSettingLocalService objectDefinitionSettingLocalService,
 		SitemapConfigurationManager sitemapConfigurationManager,
 		SitemapManager sitemapManager,
 		SitemapStorageHelper sitemapStorageHelper, ThemeDisplay themeDisplay) {
@@ -74,9 +67,6 @@ public class SitemapCompanyConfigurationDisplayContext {
 		_itemSelector = itemSelector;
 		_liferayPortletRequest = liferayPortletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
-		_objectDefinitionLocalService = objectDefinitionLocalService;
-		_objectDefinitionSettingLocalService =
-			objectDefinitionSettingLocalService;
 		_sitemapConfigurationManager = sitemapConfigurationManager;
 		_sitemapManager = sitemapManager;
 		_sitemapStorageHelper = sitemapStorageHelper;
@@ -178,24 +168,9 @@ public class SitemapCompanyConfigurationDisplayContext {
 				_liferayPortletResponse.createRenderURL(), headerNames,
 				"no-objects-or-cms-structures-were-found");
 
-		Map<Long, ObjectDefinitionSetting> objectDefinitionSettingsMap =
-			_objectDefinitionSettingLocalService.getObjectDefinitionSettingsMap(
-				_themeDisplay.getCompanyId(),
-				ObjectDefinitionSettingConstants.NAME_SITEMAPABLE);
-
-		List<ObjectDefinition> objectDefinitions = ListUtil.filter(
-			TransformUtil.transformToList(
-				_sitemapConfigurationManager.
-					getCompanySitemapObjectDefinitionIds(
-						_themeDisplay.getCompanyId()),
-				objectDefinitionId ->
-					_objectDefinitionLocalService.fetchObjectDefinition(
-						objectDefinitionId)),
-			objectDefinition ->
-				objectDefinition.isActive() &&
-				ObjectDefinitionSettingUtil.isEnabled(
-					ObjectDefinitionSettingConstants.NAME_SITEMAPABLE,
-					objectDefinition, objectDefinitionSettingsMap));
+		List<ObjectDefinition> objectDefinitions =
+			_sitemapConfigurationManager.getCompanySitemapObjectDefinitions(
+				_themeDisplay.getCompanyId());
 
 		searchContainer.setResultsAndTotal(
 			() -> objectDefinitions, objectDefinitions.size());
@@ -512,11 +487,8 @@ public class SitemapCompanyConfigurationDisplayContext {
 	private final ItemSelector _itemSelector;
 	private final LiferayPortletRequest _liferayPortletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
-	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private SearchContainer<ObjectDefinition> _objectDefinitionSearchContainer;
 	private String _objectDefinitionSelectorURL;
-	private final ObjectDefinitionSettingLocalService
-		_objectDefinitionSettingLocalService;
 	private String _selectGroupEventName;
 	private String _selectObjectDefinitionEventName;
 	private final SitemapConfigurationManager _sitemapConfigurationManager;

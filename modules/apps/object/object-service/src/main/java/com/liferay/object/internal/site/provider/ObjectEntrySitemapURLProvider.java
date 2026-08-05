@@ -18,7 +18,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -77,7 +76,8 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		List<Long> siteObjectDefinitionIds = new ArrayList<>();
 
 		for (ObjectDefinition objectDefinition :
-				_getCompanySitemapObjectDefinitions(companyId)) {
+				_sitemapConfigurationManager.getCompanySitemapObjectDefinitions(
+					companyId)) {
 
 			if (Objects.equals(
 					objectDefinition.getScope(),
@@ -117,7 +117,8 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		throws PortalException {
 
 		return ListUtil.isNotEmpty(
-			_getCompanySitemapObjectDefinitions(companyId));
+			_sitemapConfigurationManager.getCompanySitemapObjectDefinitions(
+				companyId));
 	}
 
 	@Override
@@ -160,7 +161,7 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		throws PortalException {
 
 		for (ObjectDefinition objectDefinition :
-				_getCompanySitemapObjectDefinitions(
+				_sitemapConfigurationManager.getCompanySitemapObjectDefinitions(
 					themeDisplay.getCompanyId())) {
 
 			LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -232,34 +233,6 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		}
 
 		return availableLocales;
-	}
-
-	private List<ObjectDefinition> _getCompanySitemapObjectDefinitions(
-			long companyId)
-		throws PortalException {
-
-		Map<Long, ObjectDefinitionSetting> objectDefinitionSettingsMap =
-			_getObjectDefinitionSettingsMap(companyId);
-
-		return TransformUtil.transformToList(
-			_sitemapConfigurationManager.getCompanySitemapObjectDefinitionIds(
-				companyId),
-			objectDefinitionId -> {
-				ObjectDefinition objectDefinition =
-					_objectDefinitionLocalService.fetchObjectDefinition(
-						objectDefinitionId);
-
-				if ((objectDefinition == null) ||
-					!objectDefinition.isActive() ||
-					!ObjectDefinitionSettingUtil.isEnabled(
-						ObjectDefinitionSettingConstants.NAME_SITEMAPABLE,
-						objectDefinition, objectDefinitionSettingsMap)) {
-
-					return null;
-				}
-
-				return objectDefinition;
-			});
 	}
 
 	private String _getFriendlyURL(

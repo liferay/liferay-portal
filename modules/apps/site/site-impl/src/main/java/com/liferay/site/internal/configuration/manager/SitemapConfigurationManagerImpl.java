@@ -5,6 +5,12 @@
 
 package com.liferay.site.internal.configuration.manager;
 
+import com.liferay.object.constants.ObjectDefinitionSettingConstants;
+import com.liferay.object.definition.setting.util.ObjectDefinitionSettingUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -25,6 +31,8 @@ import com.liferay.site.internal.configuration.SitemapCompanyConfiguration;
 import com.liferay.site.internal.configuration.SitemapGroupConfiguration;
 
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import org.osgi.service.component.annotations.Component;
@@ -59,6 +67,34 @@ public class SitemapConfigurationManagerImpl
 		return TransformUtil.transform(
 			sitemapCompanyConfiguration.companySitemapObjectDefinitionIds(),
 			GetterUtil::getLong, Long.class);
+	}
+
+	@Override
+	public List<ObjectDefinition> getCompanySitemapObjectDefinitions(
+			long companyId)
+		throws ConfigurationException {
+
+		Map<Long, ObjectDefinitionSetting> objectDefinitionSettingsMap =
+			_objectDefinitionSettingLocalService.getObjectDefinitionSettingsMap(
+				companyId, ObjectDefinitionSettingConstants.NAME_SITEMAPABLE);
+
+		return TransformUtil.transformToList(
+			getCompanySitemapObjectDefinitionIds(companyId),
+			objectDefinitionId -> {
+				ObjectDefinition objectDefinition =
+					_objectDefinitionLocalService.fetchObjectDefinition(
+						objectDefinitionId);
+
+				if ((objectDefinition == null) ||
+					!objectDefinition.isActive() ||
+					!ObjectDefinitionSettingUtil.isSitemapable(
+						objectDefinition, objectDefinitionSettingsMap)) {
+
+					return null;
+				}
+
+				return objectDefinition;
+			});
 	}
 
 	@Override
@@ -403,5 +439,12 @@ public class SitemapConfigurationManagerImpl
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectDefinitionSettingLocalService
+		_objectDefinitionSettingLocalService;
 
 }

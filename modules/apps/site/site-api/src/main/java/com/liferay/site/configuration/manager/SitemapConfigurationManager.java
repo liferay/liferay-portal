@@ -5,7 +5,10 @@
 
 package com.liferay.site.configuration.manager;
 
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+
+import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -18,6 +21,10 @@ public interface SitemapConfigurationManager {
 	public Long[] getCompanySitemapGroupIds(long companyId) throws Exception;
 
 	public Long[] getCompanySitemapObjectDefinitionIds(long companyId)
+		throws ConfigurationException;
+
+	public List<ObjectDefinition> getCompanySitemapObjectDefinitions(
+			long companyId)
 		throws ConfigurationException;
 
 	public String getXMLSitemapIndexMode(long companyId)

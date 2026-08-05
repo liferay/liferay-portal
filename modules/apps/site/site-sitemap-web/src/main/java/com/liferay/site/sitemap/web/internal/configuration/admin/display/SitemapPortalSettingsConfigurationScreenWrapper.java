@@ -8,8 +8,6 @@ package com.liferay.site.sitemap.web.internal.configuration.admin.display;
 import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
 import com.liferay.item.selector.ItemSelector;
-import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -56,13 +54,6 @@ public class SitemapPortalSettingsConfigurationScreenWrapper
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
-
-	@Reference
-	private ObjectDefinitionSettingLocalService
-		_objectDefinitionSettingLocalService;
 
 	@Reference
 	private Portal _portal;
@@ -139,8 +130,6 @@ public class SitemapPortalSettingsConfigurationScreenWrapper
 					_portal.getLiferayPortletResponse(
 						(PortletResponse)httpServletRequest.getAttribute(
 							JavaConstants.JAKARTA_PORTLET_RESPONSE)),
-					_objectDefinitionLocalService,
-					_objectDefinitionSettingLocalService,
 					_sitemapConfigurationManager, _sitemapManager,
 					_sitemapStorageHelper,
 					(ThemeDisplay)httpServletRequest.getAttribute(
