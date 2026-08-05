@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -116,11 +118,18 @@ public class DSRInitialRequestPortalInstanceLifecycleListenerTest {
 			_layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false, "/home"));
 
+		CompanyTestUtil.resetCompanyLocales(
+			_company.getCompanyId(),
+			ListUtil.fromArray(LocaleUtil.ITALY, LocaleUtil.US),
+			LocaleUtil.ITALY);
+
 		_portalInstanceLifecycleListener.portalInstanceRegistered(_company);
 
-		Assert.assertNotNull(
-			_layoutLocalService.fetchLayoutByFriendlyURL(
-				group.getGroupId(), false, "/home"));
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			group.getGroupId(), false, "/home");
+
+		Assert.assertEquals("Home", layout.getName(LocaleUtil.ITALY));
+
 		Assert.assertNotNull(
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
