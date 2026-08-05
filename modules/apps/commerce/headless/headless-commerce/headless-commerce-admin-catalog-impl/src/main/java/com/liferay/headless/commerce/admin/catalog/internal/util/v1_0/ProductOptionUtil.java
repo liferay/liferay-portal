@@ -53,9 +53,9 @@ public class ProductOptionUtil {
 			}
 		}
 
-		CPDefinitionOptionRel cpDefinitionOptionRel = null;
-
 		String externalReferenceCode = productOption.getExternalReferenceCode();
+
+		CPDefinitionOptionRel cpDefinitionOptionRel = null;
 
 		if (Validator.isNotNull(externalReferenceCode)) {
 			cpDefinitionOptionRel =

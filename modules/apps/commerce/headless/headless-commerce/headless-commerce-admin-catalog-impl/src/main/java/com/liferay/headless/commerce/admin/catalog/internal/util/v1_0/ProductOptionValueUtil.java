@@ -36,10 +36,10 @@ public class ProductOptionValueUtil {
 				long cpDefinitionOptionRelId, ServiceContext serviceContext)
 		throws PortalException {
 
-		CPDefinitionOptionValueRel cpDefinitionOptionValueRel = null;
-
 		String externalReferenceCode =
 			productOptionValue.getExternalReferenceCode();
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel = null;
 
 		if (Validator.isNotNull(externalReferenceCode)) {
 			cpDefinitionOptionValueRel =
