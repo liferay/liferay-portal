@@ -396,6 +396,19 @@ public class JenkinsResultsParserUtil {
 		return URLDecoder.decode(url, "UTF-8");
 	}
 
+	public static String decodeURLParameterPart(String parameterPart) {
+		try {
+			return decode(parameterPart);
+		}
+		catch (Exception exception) {
+			System.out.println(
+				"WARNING: Unable to decode the query string parameter part " +
+					parameterPart);
+
+			return parameterPart;
+		}
+	}
+
 	public static boolean delete(File file) {
 		if (!file.exists()) {
 			System.out.println(
@@ -508,6 +521,18 @@ public class JenkinsResultsParserUtil {
 		String uriASCIIString = uri.toASCIIString();
 
 		return new URL(uriASCIIString.replace("#", "%23"));
+	}
+
+	public static String encodeURLParameterPart(String parameterPart) {
+		try {
+			parameterPart = URLEncoder.encode(
+				parameterPart, StandardCharsets.UTF_8.name());
+
+			return parameterPart.replace("+", "%20");
+		}
+		catch (UnsupportedEncodingException unsupportedEncodingException) {
+			throw new RuntimeException(unsupportedEncodingException);
+		}
 	}
 
 	public static String escapeForBash(String string) {

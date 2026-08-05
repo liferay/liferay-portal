@@ -331,10 +331,11 @@ public abstract class TopLevelBuildRunner<T extends TopLevelBuildData>
 				invocationParameters.entrySet()) {
 
 			sb.append(
-				JenkinsResultsParserUtil.fixURL(invocationParameter.getKey()));
+				JenkinsResultsParserUtil.encodeURLParameterPart(
+					invocationParameter.getKey()));
 			sb.append("=");
 			sb.append(
-				JenkinsResultsParserUtil.fixURL(
+				JenkinsResultsParserUtil.encodeURLParameterPart(
 					invocationParameter.getValue()));
 			sb.append("&");
 		}

@@ -317,9 +317,13 @@ public class PoshiReleasePortalTopLevelBuildRunner
 					continue;
 				}
 
-				sb.append(invocationParameter.getKey());
+				sb.append(
+					JenkinsResultsParserUtil.encodeURLParameterPart(
+						invocationParameter.getKey()));
 				sb.append("=");
-				sb.append(invocationParameterValue);
+				sb.append(
+					JenkinsResultsParserUtil.encodeURLParameterPart(
+						invocationParameterValue));
 				sb.append("&");
 			}
 		}

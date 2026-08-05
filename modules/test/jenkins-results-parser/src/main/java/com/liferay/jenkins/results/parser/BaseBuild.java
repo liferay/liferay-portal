@@ -807,15 +807,19 @@ public abstract class BaseBuild implements Build {
 		Map<String, String> parameters = new HashMap<>(getParameters());
 
 		for (Map.Entry<String, String> parameter : parameters.entrySet()) {
-			sb.append(parameter.getKey());
+			sb.append(
+				JenkinsResultsParserUtil.encodeURLParameterPart(
+					parameter.getKey()));
 			sb.append("=");
-			sb.append(parameter.getValue());
+			sb.append(
+				JenkinsResultsParserUtil.encodeURLParameterPart(
+					parameter.getValue()));
 			sb.append("&");
 		}
 
 		sb.deleteCharAt(sb.length() - 1);
 
-		return JenkinsResultsParserUtil.fixURL(sb.toString());
+		return sb.toString();
 	}
 
 	@Override
@@ -3099,14 +3103,13 @@ public abstract class BaseBuild implements Build {
 				continue;
 			}
 
-			String[] nameValueArray = parameter.split("=");
+			String[] parameterParts = parameter.split("=", 2);
 
-			if (nameValueArray.length == 2) {
-				_parameters.put(nameValueArray[0], nameValueArray[1]);
-			}
-			else if (nameValueArray.length == 1) {
-				_parameters.put(nameValueArray[0], "");
-			}
+			_parameters.put(
+				JenkinsResultsParserUtil.decodeURLParameterPart(
+					parameterParts[0]),
+				JenkinsResultsParserUtil.decodeURLParameterPart(
+					parameterParts[1]));
 		}
 	}
 
@@ -3643,15 +3646,6 @@ public abstract class BaseBuild implements Build {
 			return;
 		}
 
-		try {
-			invocationURL = JenkinsResultsParserUtil.decode(invocationURL);
-		}
-		catch (UnsupportedEncodingException unsupportedEncodingException) {
-			throw new IllegalArgumentException(
-				"Unable to decode " + invocationURL,
-				unsupportedEncodingException);
-		}
-
 		Matcher invocationURLMatcher = _invocationURLPattern.matcher(
 			invocationURL);
 
@@ -3659,10 +3653,9 @@ public abstract class BaseBuild implements Build {
 			throw new RuntimeException("Invalid invocation URL");
 		}
 
-		setJobName(invocationURLMatcher.group("jobName"));
-
-		JenkinsCohort jenkinsCohort = JenkinsCohort.getInstance(
-			invocationURLMatcher.group("cohortName"));
+		setJobName(
+			JenkinsResultsParserUtil.decodeURLParameterPart(
+				invocationURLMatcher.group("jobName")));
 
 		loadParametersFromQueryString(
 			invocationURLMatcher.group("queryString"));
@@ -3670,6 +3663,9 @@ public abstract class BaseBuild implements Build {
 		String masterId = invocationURLMatcher.group("masterId");
 
 		if (JenkinsResultsParserUtil.isInteger(masterId)) {
+			JenkinsCohort jenkinsCohort = JenkinsCohort.getInstance(
+				invocationURLMatcher.group("cohortName"));
+
 			setJenkinsMaster(
 				JenkinsMaster.getInstance(
 					jenkinsCohort.getName() + "-" + masterId));
