@@ -251,7 +251,7 @@ public class FilePropagator {
 			if (sourceFileName.startsWith("http")) {
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("curl -o ");
+				sb.append("curl -f -L --max-redirs 0 -o ");
 				sb.append(targetFileName);
 				sb.append(" ");
 				sb.append(sourceFileName);
