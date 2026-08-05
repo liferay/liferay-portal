@@ -5,6 +5,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:analytics:analytics-settings-api")
 	testIntegrationImplementation project(":apps:application-list:application-list-api")
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
+	testIntegrationImplementation project(":apps:audiences:audiences-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
 	testIntegrationImplementation project(":apps:configuration-admin:configuration-admin-api")
 	testIntegrationImplementation project(":apps:expando:expando-test-util")
