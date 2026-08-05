@@ -5272,9 +5272,13 @@ test.describe('Manage object entries through View Object Entries', () => {
 				'[data-field-name="r_objectRelationshipName_CProductId"]'
 			);
 
-			const productVersion1Value = await fieldContainer
-				.locator('input[type="hidden"][name]:not([name$="_edited"])')
-				.inputValue();
+			const relationshipInput = fieldContainer.locator(
+				'input[type="hidden"][name]:not([name$="_edited"])'
+			);
+
+			await expect(relationshipInput).not.toHaveValue('');
+
+			const productVersion1Value = await relationshipInput.inputValue();
 
 			await viewObjectEntriesPage.selectDropdownItemWithSearch(
 				productVersion2.name['en_US']
@@ -5284,9 +5288,9 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 			await expect(viewObjectEntriesPage.successMessage).toBeVisible();
 
-			const productVersion2Value = await fieldContainer
-				.locator('input[type="hidden"][name]:not([name$="_edited"])')
-				.inputValue();
+			await expect(relationshipInput).not.toHaveValue('');
+
+			const productVersion2Value = await relationshipInput.inputValue();
 
 			await expect(productVersion2Value).toEqual(productVersion1Value);
 
