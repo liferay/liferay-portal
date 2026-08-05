@@ -192,7 +192,7 @@ export default function TasksOverview({
 
 					<ClayLayout.ContainerFluid className="c-px-0" size={false}>
 						<ClayLayout.Row>
-							<ClayLayout.Col className="c-px-2" size={3}>
+							<ClayLayout.Col className="c-px-2" lg={3} size={6}>
 								<StatisticButton
 									count={totalCount}
 									displayType="unstyled"
@@ -206,7 +206,7 @@ export default function TasksOverview({
 								/>
 							</ClayLayout.Col>
 
-							<ClayLayout.Col className="c-px-2" size={3}>
+							<ClayLayout.Col className="c-px-2" lg={3} size={6}>
 								<StatisticButton
 									count={inProgressCount}
 									displayType="info"
@@ -220,7 +220,7 @@ export default function TasksOverview({
 								/>
 							</ClayLayout.Col>
 
-							<ClayLayout.Col className="c-px-2" size={3}>
+							<ClayLayout.Col className="c-px-2" lg={3} size={6}>
 								<StatisticButton
 									count={blockedCount}
 									displayType="danger"
@@ -234,7 +234,7 @@ export default function TasksOverview({
 								/>
 							</ClayLayout.Col>
 
-							<ClayLayout.Col className="c-px-2" size={3}>
+							<ClayLayout.Col className="c-px-2" lg={3} size={6}>
 								<StatisticButton
 									count={overdueCount}
 									displayType="warning"

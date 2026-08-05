@@ -12,6 +12,10 @@
 		width: 100%;
 	}
 
+	.row {
+		row-gap: 1rem;
+	}
+
 	.statistic-button {
 		border-color: $secondary-l3;
 		height: 100%;
