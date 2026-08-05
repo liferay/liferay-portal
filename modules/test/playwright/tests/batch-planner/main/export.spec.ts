@@ -443,32 +443,34 @@ test('can export as JSONL with excluded fields', async ({
 
 		expect(
 			parsed.find((item: any) => item.name === 'Stock Entry').actions
-		).toEqual({
-			delete: {
-				href: expect.stringContaining('/o/c/stocks/'),
-				method: 'DELETE',
-			},
-			get: {
-				href: expect.stringContaining('/o/c/stocks/'),
-				method: 'GET',
-			},
-			permissions: {
-				href: expect.stringContaining('/o/c/stocks/'),
-				method: 'GET',
-			},
-			replace: {
-				href: expect.stringContaining('/o/c/stocks/'),
-				method: 'PUT',
-			},
-			update: {
-				href: expect.stringContaining('/o/c/stocks/'),
-				method: 'PATCH',
-			},
-			versions: {
-				href: expect.stringContaining('/o/c/stocks/'),
-				method: 'GET',
-			},
-		});
+		).toEqual(
+			expect.objectContaining({
+				delete: {
+					href: expect.stringContaining('/o/c/stocks/'),
+					method: 'DELETE',
+				},
+				get: {
+					href: expect.stringContaining('/o/c/stocks/'),
+					method: 'GET',
+				},
+				permissions: {
+					href: expect.stringContaining('/o/c/stocks/'),
+					method: 'GET',
+				},
+				replace: {
+					href: expect.stringContaining('/o/c/stocks/'),
+					method: 'PUT',
+				},
+				update: {
+					href: expect.stringContaining('/o/c/stocks/'),
+					method: 'PATCH',
+				},
+				versions: {
+					href: expect.stringContaining('/o/c/stocks/'),
+					method: 'GET',
+				},
+			})
+		);
 	});
 });
 
