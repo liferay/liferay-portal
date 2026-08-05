@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -126,7 +125,7 @@ public class ObjectEntryFolderUtil {
 		attachmentManager.getDLFolder(
 			objectDefinition.getCompanyId(), group.getGroupId(),
 			objectDefinition.getPortletId(), serviceContext,
-			PrincipalThreadLocal.getUserId());
+			group.getCreatorUserId());
 
 		try (SafeCloseable safeCloseable =
 				DLAppHelperThreadLocal.setEnabledWithSafeCloseable(false)) {
@@ -140,7 +139,7 @@ public class ObjectEntryFolderUtil {
 			}
 
 			RepositoryLocalServiceUtil.addRepository(
-				null, PrincipalThreadLocal.getUserId(), group.getGroupId(),
+				null, group.getCreatorUserId(), group.getGroupId(),
 				PortalUtil.getClassNameId(
 					TemporaryFileEntryRepository.class.getName()),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
