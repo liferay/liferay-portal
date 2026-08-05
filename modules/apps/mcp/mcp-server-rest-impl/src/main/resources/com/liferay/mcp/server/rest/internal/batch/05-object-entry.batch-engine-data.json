@@ -15,8 +15,7 @@
 		{
 			"description": "Default MCP profile: the four mcp-server tools an AI orchestrates to use any Liferay tool (list tool-sets, list tools, fetch a tool's input schema, invoke).",
 			"externalReferenceCode": "L_MCP_SERVER_DEFAULT_PROFILE",
-			"name": "default",
-			"tools": "mcp-server-v1.0 getToolSetsPage\nmcp-server-v1.0 getToolSetToolSetNameToolSummariesPage\nmcp-server-v1.0 getToolSetToolSetNameTool\nmcp-server-v1.0 postToolSetToolSetNameToolInvoke"
+			"name": "default"
 		}
 	]
 }

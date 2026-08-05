@@ -59,22 +59,31 @@
 					"state": false,
 					"system": true,
 					"type": "String"
-				},
+				}
+			],
+			"objectRelationships": [
 				{
-					"DBType": "Clob",
-					"businessType": "LongText",
-					"defaultValue": "null",
-					"indexed": true,
-					"indexedAsKeyword": false,
-					"indexedLanguageId": "en_US",
+					"deletionType": "cascade",
+					"externalReferenceCode": "L_MCP_SERVER_PROFILE_TO_L_MCP_SERVER_PROFILE_TOOL",
 					"label": {
-						"en_US": "Tools"
+						"en_US": "MCP Server Profile to MCP Server Profile Tools"
 					},
-					"name": "tools",
-					"required": true,
-					"state": false,
+					"name": "mcpServerProfileToTools",
+					"objectDefinitionExternalReferenceCode1": "L_MCP_SERVER_PROFILE",
+					"objectDefinitionExternalReferenceCode2": "L_MCP_SERVER_PROFILE_TOOL",
+					"objectDefinitionName2": "MCPServerProfileTool",
+					"objectDefinitionSystem2": true,
+					"objectField": {
+						"label": {
+							"en_US": "MCP Server Profile to MCP Server Profile Tools"
+						},
+						"required": true
+					},
+					"parameterObjectFieldId": 0,
+					"parameterObjectFieldName": "",
+					"reverse": false,
 					"system": true,
-					"type": "String"
+					"type": "oneToMany"
 				}
 			],
 			"panelCategoryKey": "control_panel.object",

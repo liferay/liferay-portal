@@ -1,0 +1,72 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-63311",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "DEFAULT"
+	},
+	"items": [
+		{
+			"active": true,
+			"className": "com.liferay.object.model.ObjectDefinition#MCPServerProfileTool",
+			"externalReferenceCode": "L_MCP_SERVER_PROFILE_TOOL",
+			"label": {
+				"en_US": "MCP Server Profile Tool"
+			},
+			"modifiable": true,
+			"name": "MCPServerProfileTool",
+			"objectFields": [
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Tool Name"
+					},
+					"name": "toolName",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Text",
+					"defaultValue": "null",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"indexedLanguageId": "en_US",
+					"label": {
+						"en_US": "Tool Set Name"
+					},
+					"name": "toolSetName",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
+				}
+			],
+			"panelCategoryKey": "control_panel.object",
+			"pluralLabel": {
+				"en_US": "MCP Server Profile Tools"
+			},
+			"scope": "company",
+			"status": {
+				"code": 0,
+				"label": "approved",
+				"label_i18n": "Approved"
+			},
+			"system": true,
+			"titleObjectFieldName": "toolName"
+		}
+	]
+}

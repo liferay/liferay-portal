@@ -1,0 +1,40 @@
+{
+	"configuration": {
+		"className": "com.liferay.object.rest.dto.v1_0.ObjectEntry",
+		"multiCompany": true,
+		"parameters": {
+			"containsHeaders": "true",
+			"createStrategy": "UPSERT",
+			"featureFlag": "LPD-63311",
+			"importStrategy": "ON_ERROR_FAIL",
+			"updateStrategy": "UPDATE"
+		},
+		"taskItemDelegateName": "MCPServerProfileTool"
+	},
+	"items": [
+		{
+			"externalReferenceCode": "L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL_SETS_PAGE",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_DEFAULT_PROFILE",
+			"toolName": "getToolSetsPage",
+			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL_SUMMARIES_PAGE",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_DEFAULT_PROFILE",
+			"toolName": "getToolSetToolSetNameToolSummariesPage",
+			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_DEFAULT_PROFILE_TOOL_GET_TOOL",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_DEFAULT_PROFILE",
+			"toolName": "getToolSetToolSetNameTool",
+			"toolSetName": "mcp-server-v1.0"
+		},
+		{
+			"externalReferenceCode": "L_MCP_SERVER_DEFAULT_PROFILE_TOOL_INVOKE",
+			"r_mcpServerProfileToTools_l_mcpServerProfileERC": "L_MCP_SERVER_DEFAULT_PROFILE",
+			"toolName": "postToolSetToolSetNameToolInvoke",
+			"toolSetName": "mcp-server-v1.0"
+		}
+	]
+}
