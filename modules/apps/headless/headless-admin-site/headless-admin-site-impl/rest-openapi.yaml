@@ -9967,6 +9967,12 @@ paths:
                             type: string
                         type: array
                 -   in: query
+                    name: externalReferenceCodes
+                    schema:
+                        items:
+                            type: string
+                        type: array
+                -   in: query
                     name: page
                     schema:
                         type: integer
