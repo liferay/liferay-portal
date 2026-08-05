@@ -11,6 +11,7 @@ import com.liferay.commerce.service.base.CommerceAvailabilityEstimateServiceBase
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -38,15 +39,16 @@ public class CommerceAvailabilityEstimateServiceImpl
 
 	@Override
 	public CommerceAvailabilityEstimate addCommerceAvailabilityEstimate(
-			Map<Locale, String> titleMap, double priority,
-			ServiceContext serviceContext)
+			String externalReferenceCode, Map<Locale, String> titleMap,
+			double priority, ServiceContext serviceContext)
 		throws PortalException {
 
 		_checkPortletResourcePermission(
 			CommerceActionKeys.ADD_COMMERCE_AVAILABILITY_ESTIMATE);
 
 		return commerceAvailabilityEstimateLocalService.
-			addCommerceAvailabilityEstimate(titleMap, priority, serviceContext);
+			addCommerceAvailabilityEstimate(
+				externalReferenceCode, titleMap, priority, serviceContext);
 	}
 
 	@Override
@@ -60,6 +62,26 @@ public class CommerceAvailabilityEstimateServiceImpl
 
 		commerceAvailabilityEstimateLocalService.
 			deleteCommerceAvailabilityEstimate(commerceAvailabilityEstimateId);
+	}
+
+	@Override
+	public CommerceAvailabilityEstimate
+			fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			commerceAvailabilityEstimateLocalService.
+				fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if (commerceAvailabilityEstimate != null) {
+			_commerceAvailabilityEstimateModelResourcePermission.check(
+				getPermissionChecker(), commerceAvailabilityEstimate,
+				ActionKeys.VIEW);
+		}
+
+		return commerceAvailabilityEstimate;
 	}
 
 	@Override
@@ -101,9 +123,36 @@ public class CommerceAvailabilityEstimateServiceImpl
 	}
 
 	@Override
+	public CommerceAvailabilityEstimate
+			getOrAddEmptyCommerceAvailabilityEstimate(
+				String externalReferenceCode)
+		throws PortalException {
+
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			commerceAvailabilityEstimateService.
+				fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+					externalReferenceCode, permissionChecker.getCompanyId());
+
+		if (commerceAvailabilityEstimate != null) {
+			return commerceAvailabilityEstimate;
+		}
+
+		_checkPortletResourcePermission(
+			CommerceActionKeys.ADD_COMMERCE_AVAILABILITY_ESTIMATE);
+
+		return commerceAvailabilityEstimateLocalService.
+			getOrAddEmptyCommerceAvailabilityEstimate(
+				externalReferenceCode, permissionChecker.getCompanyId(),
+				permissionChecker.getUserId());
+	}
+
+	@Override
 	public CommerceAvailabilityEstimate updateCommerceAvailabilityEstimate(
-			long commerceAvailabilityEstimateId, Map<Locale, String> titleMap,
-			double priority, ServiceContext serviceContext)
+			String externalReferenceCode, long commerceAvailabilityEstimateId,
+			Map<Locale, String> titleMap, double priority,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		_commerceAvailabilityEstimateModelResourcePermission.check(
@@ -112,8 +161,8 @@ public class CommerceAvailabilityEstimateServiceImpl
 
 		return commerceAvailabilityEstimateLocalService.
 			updateCommerceAvailabilityEstimate(
-				commerceAvailabilityEstimateId, titleMap, priority,
-				serviceContext);
+				externalReferenceCode, commerceAvailabilityEstimateId, titleMap,
+				priority, serviceContext);
 	}
 
 	private void _checkPortletResourcePermission(String actionId)
