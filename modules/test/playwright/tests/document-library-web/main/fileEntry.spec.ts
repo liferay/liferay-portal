@@ -380,7 +380,7 @@ test(
 	{
 		tag: '@LPD-50971',
 	},
-	async ({apiHelpers, documentLibraryPage, page, site}) => {
+	async ({apiHelpers, documentLibraryPage, site}) => {
 		const vocabularyName = getRandomString();
 
 		const categories = await createCategories({
@@ -410,14 +410,12 @@ test(
 
 		await documentLibraryPage.goto(site.friendlyUrlPath);
 
-		await page.getByLabel('Filter', {exact: true}).click();
-
-		await page.getByRole('menuitem', {name: 'Categories'}).click();
+		await documentLibraryPage.openFilter('Categories');
 
 		await expect(
-			page
-				.frameLocator('iframe[title="Filter by Categories"]')
-				.getByText(vocabularyName)
+			documentLibraryPage.filterByCategoriesFrameLocator.getByText(
+				vocabularyName
+			)
 		).toBeVisible();
 	}
 );
@@ -1302,17 +1300,14 @@ test(
 		const globalVocabularyLabel = `${globalVocabularyName} (Global)`;
 		const siteVocabularyLabel = `${siteVocabularyName} (${site.name})`;
 
-		const categoriesModal = page.frameLocator(
-			'iframe[title="Filter by Categories"]'
-		);
+		const categoriesModal =
+			documentLibraryPage.filterByCategoriesFrameLocator;
 
 		const treeNode = (name: string) =>
 			categoriesModal.getByText(name, {exact: true});
 
 		const openCategoriesFilter = async () => {
-			await page.getByLabel('Filter', {exact: true}).click();
-
-			await page.getByRole('menuitem', {name: 'Categories'}).click();
+			await documentLibraryPage.openFilter('Categories');
 
 			await expect(treeNode(siteVocabularyLabel)).toBeVisible();
 		};

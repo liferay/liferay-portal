@@ -16,6 +16,8 @@ export type TVocabularyCategory = {
 
 export class DocumentLibraryPage {
 	readonly exportImportOptionsMenuItem: Locator;
+	readonly filterButton: Locator;
+	readonly filterByCategoriesFrameLocator: FrameLocator;
 	readonly infoPanel: Locator;
 	readonly infoPanelButton: Locator;
 	readonly infoPanelTab: Locator;
@@ -30,6 +32,10 @@ export class DocumentLibraryPage {
 		this.exportImportOptionsMenuItem = page.getByRole('menuitem', {
 			name: 'Export / Import',
 		});
+		this.filterButton = page.getByLabel('Filter', {exact: true});
+		this.filterByCategoriesFrameLocator = page.frameLocator(
+			'iframe[title="Filter by Categories"]'
+		);
 		this.infoPanel = page.getByLabel('Info Panel');
 		this.infoPanelButton = page.locator(
 			'[id="_com_liferay_document_library_web_portlet_DLAdminPortlet_infoPanelId_trigger"]'
@@ -341,6 +347,14 @@ export class DocumentLibraryPage {
 				name: 'Create AI Image',
 			})
 			.click();
+	}
+
+	async openFilter(filterName: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: filterName}),
+			trigger: this.filterButton,
+		});
 	}
 
 	async openNewButton() {
