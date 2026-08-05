@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -257,6 +258,42 @@ public class ServicePreActionTest {
 		Assert.assertNotNull(serviceContext);
 		Assert.assertEquals(
 			_group.getGroupId(), serviceContext.getScopeGroupId());
+	}
+
+	@Test
+	@TestInfo("LPD-100303")
+	public void testInitThemeDisplayDefaultLayoutIsPublished()
+		throws Exception {
+
+		List<Layout> layouts = _layoutLocalService.getLayouts(
+			_group.getGroupId(), false);
+
+		Layout publishedLayout = layouts.get(0);
+
+		long plid = _getThemeDisplayPlid(true, false);
+
+		Assert.assertEquals(publishedLayout.getPlid(), plid);
+
+		Layout contentPageLayout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Assert.assertFalse(contentPageLayout.isPublished());
+
+		contentPageLayout = _layoutLocalService.updatePriority(
+			contentPageLayout, publishedLayout.getPriority());
+
+		plid = _getThemeDisplayPlid(true, false);
+
+		Assert.assertEquals(publishedLayout.getPlid(), plid);
+
+		int count = layouts.size();
+
+		layouts = _layoutLocalService.getLayouts(_group.getGroupId(), false);
+
+		Layout firstLayout = layouts.get(0);
+
+		Assert.assertEquals(firstLayout.getPlid(), contentPageLayout.getPlid());
+
+		Assert.assertEquals(layouts.toString(), count + 1, layouts.size());
 	}
 
 	@Test
