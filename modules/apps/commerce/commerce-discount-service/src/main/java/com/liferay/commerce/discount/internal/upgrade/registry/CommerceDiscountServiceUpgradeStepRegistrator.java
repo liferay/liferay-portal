@@ -6,6 +6,7 @@
 package com.liferay.commerce.discount.internal.upgrade.registry;
 
 import com.liferay.commerce.discount.internal.upgrade.v2_0_0.util.CommerceDiscountCommerceAccountGroupRelTable;
+import com.liferay.commerce.discount.internal.upgrade.v2_10_0.CommerceDiscountRuleTypeSettingsUpgradeProcess;
 import com.liferay.commerce.discount.internal.upgrade.v2_2_0.CommerceDiscountRuleNameUpgradeProcess;
 import com.liferay.commerce.discount.internal.upgrade.v2_2_0.util.CommerceDiscountAccountRelTable;
 import com.liferay.commerce.discount.internal.upgrade.v2_6_0.util.CommerceDiscountOrderTypeRelTable;
@@ -125,6 +126,10 @@ public class CommerceDiscountServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.addColumns(
 				CommerceDiscountRelModelImpl.TABLE_NAME,
 				"typeSettings TEXT null"));
+
+		registry.register(
+			"2.9.0", "2.10.0",
+			new CommerceDiscountRuleTypeSettingsUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce discount upgrade step registrator finished");

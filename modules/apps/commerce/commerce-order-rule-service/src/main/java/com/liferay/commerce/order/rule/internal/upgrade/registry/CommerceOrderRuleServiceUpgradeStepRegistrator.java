@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.rule.internal.upgrade.registry;
 
+import com.liferay.commerce.order.rule.internal.upgrade.v1_3_0.COREntryTypeSettingsUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseUuidUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.MVCCVersionUpgradeProcess;
@@ -53,6 +54,9 @@ public class CommerceOrderRuleServiceUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"1.2.1", "1.3.0", new COREntryTypeSettingsUpgradeProcess());
 	}
 
 }
