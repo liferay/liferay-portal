@@ -19,6 +19,7 @@ dependencies {
 	compileOnly project(":apps:change-tracking:change-tracking-store-api")
 	compileOnly project(":apps:dispatch:dispatch-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
+	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:json-storage:json-storage-api")
 	compileOnly project(":apps:portal-background-task:portal-background-task-api")
