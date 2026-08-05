@@ -1884,3 +1884,25 @@ User.getRemotePreference(String) and User.getRemotePreferences() were just a con
 ### Why was this change made?
 
 RemotePreference API has never been used. But the api supporting logic has to collect and hold cookies in User object, causing unnecessary CPU and memory overhead.
+
+---------------------------------------
+
+## Exposed Multiselect Picklist Custom Fields on System Objects as Arrays in the Headless APIs
+- **Date:** 2026-Aug-05
+- **JIRA Ticket:** [LPD-99833](https://liferay.atlassian.net/browse/LPD-99833), [LPD-102347](https://liferay.atlassian.net/browse/LPD-102347)
+
+### What changed?
+
+A Multiselect Picklist custom field defined on a system object (such as `User`) is now exposed through the headless APIs as an array of list type entry objects instead of a comma-separated string. Each array element is a `ListEntry` with a `key` and a localized `name`, matching how the same field is already represented on the object entry (`/o/c`) APIs. The OpenAPI schema for the property changes from `type: string` to `type: array` whose `items` reference the `ListEntry` schema, and an unset field returns an empty array instead of an empty string.
+
+### Who is affected?
+
+This affects clients of the headless APIs (for example, Headless Admin User) and Batch Engine imports that read or write a Multiselect Picklist custom field defined on a system object, as well as any object action, notification template, or webhook that reads the field from an extended-properties payload, such as the one `CommerceOrderEngineImpl` builds for a Commerce Order.
+
+### How should I update my code?
+
+When reading the field, treat the value as an array of `ListEntry` objects and read the selected keys from each element's `key` property rather than parsing a comma-separated string. When writing the field, send an array of the selected keys, either as `ListEntry` objects (for example, `[{"key": "key1"}, {"key": "key2"}]`) or as plain key strings (for example, `["key1", "key2"]`, the form flat-format Batch Engine imports produce); a single comma-separated string, as previously accepted, is now rejected with a `400`. An array element of any other type, such as a number or a boolean, is likewise rejected with a `400` rather than being coerced and silently dropped. This applies to the field itself; the localized `_i18n` companion field validates only that the value is a map, not the type of the elements inside it.
+
+### Why was this change made?
+
+The field holds multiple values, so a single comma-separated string could not be parsed unambiguously and did not match the representation used for the same field on the object entry APIs. Exposing it as an array of `ListEntry` objects makes the value self-describing and consistent across the headless APIs.
