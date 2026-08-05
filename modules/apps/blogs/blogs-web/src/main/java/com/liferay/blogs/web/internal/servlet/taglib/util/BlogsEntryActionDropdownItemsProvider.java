@@ -199,6 +199,7 @@ public class BlogsEntryActionDropdownItemsProvider {
 				).setParameter(
 					"entryId", blogsEntry.getEntryId()
 				).buildString());
+			dropdownItem.setIcon("trash");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "delete"));
 		};
@@ -231,7 +232,7 @@ public class BlogsEntryActionDropdownItemsProvider {
 				"mvcRenderCommandName", "/blogs/edit_entry", "redirect",
 				_getRedirectURL(), "portletResource", portletResource,
 				"entryId", blogsEntry.getEntryId());
-			dropdownItem.setIcon("edit");
+			dropdownItem.setIcon("pencil");
 			dropdownItem.setLabel(LanguageUtil.get(_resourceBundle, "edit"));
 		};
 	}
@@ -254,6 +255,7 @@ public class BlogsEntryActionDropdownItemsProvider {
 				).setParameter(
 					"entryId", blogsEntry.getEntryId()
 				).buildString());
+			dropdownItem.setIcon("trash");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "delete"));
 		};
@@ -266,6 +268,7 @@ public class BlogsEntryActionDropdownItemsProvider {
 			dropdownItem.putData("action", "permissions");
 			dropdownItem.putData(
 				"permissionsURL", _getPermissionsURL(blogsEntry));
+			dropdownItem.setIcon("password-policies");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "permissions"));
 		};
@@ -301,6 +304,7 @@ public class BlogsEntryActionDropdownItemsProvider {
 				).setParameter(
 					"entryId", blogsEntry.getEntryId()
 				).buildString());
+			dropdownItem.setIcon("live");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "publish-to-live"));
 		};
