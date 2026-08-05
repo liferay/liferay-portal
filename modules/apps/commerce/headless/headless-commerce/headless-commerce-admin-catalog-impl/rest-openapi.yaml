@@ -1648,7 +1648,7 @@ components:
                     type: integer
                 categories:
                     description:
-                        Asset-framework categories associated with the product for classification; on write, replaces the existing assignments; each item is resolved by id, or by external reference code within the company scope when id is omitted.
+                        Asset-framework categories associated with the product for classification; on write, replaces the existing assignments; each item is resolved by ID, or by external reference code within the company scope when ID is omitted.
                     items:
                         $ref: "#/components/schemas/Category"
                     type: array
@@ -2611,6 +2611,11 @@ components:
                         hr_HR: Description HR
                         hu_HU: Description HU
                     type: object
+                externalReferenceCode:
+                    description:
+                        Idempotency key of the product option link itself, unique per company; assigned from the entity UUID when omitted on create. Addresses the link across environments, so the nested product option values stay reachable after an export and import.
+                    example: AB-34098-789-N
+                    type: string
                 facetable:
                     description:
                         Per-product override of whether this option is exposed as a search facet for the parent product; defaults to the global option flag on first attach.
@@ -2710,6 +2715,11 @@ components:
                     format: bigdecimal
                     minimum: 0
                     type: number
+                externalReferenceCode:
+                    description:
+                        Idempotency key of the product option value itself, unique per company; assigned from the entity UUID when omitted on create. Keeps the value addressable across environments after an export and import.
+                    example: AB-34098-789-N
+                    type: string
                 id:
                     description:
                         Primary key; read-only and assigned by the service on create.
@@ -4206,7 +4216,7 @@ paths:
     /attachment/{id}:
         delete:
             description:
-                Deletes the attachment identified by its internal attachment id. Returns 404 when the id is not found. Side effects -- Removes the underlying DL file entry association; cascades through attachment delete listeners.
+                Deletes the attachment identified by its internal attachment ID. Returns 404 when the ID is not found. Side effects -- Removes the underlying DL file entry association; cascades through attachment delete listeners.
             operationId: deleteAttachment
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4504,7 +4514,7 @@ paths:
     /catalog/{id}:
         delete:
             description:
-                Deletes the commerce catalog identified by id. Returns 404 when the id is missing (service-level). Side effects -- Cascades through catalog delete listeners (group, virtual instance teardown).
+                Deletes the commerce catalog identified by ID. Returns 404 when the ID is missing (service-level). Side effects -- Cascades through catalog delete listeners (group, virtual instance teardown).
             operationId: deleteCatalog
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4537,7 +4547,7 @@ paths:
                 -   Catalog
         get:
             description:
-                Fetches the commerce catalog identified by id. Returns 404 when the id is not found.
+                Fetches the commerce catalog identified by ID. Returns 404 when the ID is not found.
             operationId: getCatalog
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -4600,7 +4610,7 @@ paths:
                 -   Catalog
         patch:
             description:
-                Partially updates the commerce catalog identified by id. Returns 404 when the id is not found, and tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group.
+                Partially updates the commerce catalog identified by ID. Returns 404 when the ID is not found, and tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group.
             operationId: patchCatalog
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5139,7 +5149,7 @@ paths:
     /currencies/{id}:
         delete:
             description:
-                Deletes the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Cascades through commerce currency delete listeners.
+                Deletes the commerce currency identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades through commerce currency delete listeners.
             operationId: deleteCurrency
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5173,7 +5183,7 @@ paths:
                 -   Currency
         get:
             description:
-                Fetches the commerce currency identified by id. Returns 404 when the id is not found.
+                Fetches the commerce currency identified by ID. Returns 404 when the ID is not found.
             operationId: getCurrency
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5236,7 +5246,7 @@ paths:
                 -   Currency
         patch:
             description:
-                Partially updates the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the currency.
+                Partially updates the commerce currency identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the currency.
             operationId: patchCurrency
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -5433,7 +5443,7 @@ paths:
                 -   GroupedProduct
         patch:
             description:
-                Partially updates priority and quantity of the grouped product entry identified by groupedProductId. Returns 404 when the id is not found. Side effects -- None (updates priority and quantity).
+                Partially updates priority and quantity of the grouped product entry identified by groupedProductId. Returns 404 when the ID is not found. Side effects -- None (updates priority and quantity).
             operationId: patchGroupedProduct
             parameters:
                 -   $ref: "#/components/parameters/groupedProductIdPathParam"
@@ -5566,7 +5576,7 @@ paths:
     /mapped-products/{mappedProductId}:
         delete:
             description:
-                Deletes the mapped (diagram) product identified by mappedProductId. Returns 404 when the id is not found. Side effects -- Removes the diagram entry; orphaned pins may remain unless cleaned separately.
+                Deletes the mapped (diagram) product identified by mappedProductId. Returns 404 when the ID is not found. Side effects -- Removes the diagram entry; orphaned pins may remain unless cleaned separately.
             operationId: deleteMappedProduct
             parameters:
                 -   $ref: "#/components/parameters/mappedProductIdPathParam"
@@ -5590,7 +5600,7 @@ paths:
                 -   MappedProduct
         patch:
             description:
-                Partially updates the mapped (diagram) product identified by mappedProductId. Returns 404 when the id is not found. Side effects -- May relink the diagram entry to a different SKU/product.
+                Partially updates the mapped (diagram) product identified by mappedProductId. Returns 404 when the ID is not found. Side effects -- May relink the diagram entry to a different SKU/product.
             operationId: patchMappedProduct
             parameters:
                 -   $ref: "#/components/parameters/mappedProductIdPathParam"
@@ -6085,7 +6095,7 @@ paths:
     /optionCategories/{id}:
         delete:
             description:
-                Deletes the option category identified by id. Returns 404 when the record is not found. Side effects -- Cascades through option category delete listeners; reindexes affected specifications.
+                Deletes the option category identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through option category delete listeners; reindexes affected specifications.
             operationId: deleteOptionCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6118,7 +6128,7 @@ paths:
                 -   OptionCategory
         get:
             description:
-                Fetches the option category identified by id. Returns 404 when the id is not found.
+                Fetches the option category identified by ID. Returns 404 when the ID is not found.
             operationId: getOptionCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6181,7 +6191,7 @@ paths:
                 -   OptionCategory
         patch:
             description:
-                Partially updates the option category identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option category.
+                Partially updates the option category identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option category.
             operationId: patchOptionCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6432,7 +6442,7 @@ paths:
     /optionValues/{id}:
         delete:
             description:
-                Deletes the option value identified by id. Returns 404 when the record is not found. Side effects -- Cascades through product option value listeners.
+                Deletes the option value identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through product option value listeners.
             operationId: deleteOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6465,7 +6475,7 @@ paths:
                 -   OptionValue
         get:
             description:
-                Fetches the option value identified by id. Returns 404 when the id is not found.
+                Fetches the option value identified by ID. Returns 404 when the ID is not found.
             operationId: getOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -6525,7 +6535,7 @@ paths:
                 -   OptionValue
         patch:
             description:
-                Partially updates the option value identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option value.
+                Partially updates the option value identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option value.
             operationId: patchOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7171,7 +7181,7 @@ paths:
     /options/{id}:
         delete:
             description:
-                Deletes the option identified by id. Returns 404 when the id is not found. Side effects -- Cascades through product option listeners; reindexes affected products.
+                Deletes the option identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades through product option listeners; reindexes affected products.
             operationId: deleteOption
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7204,7 +7214,7 @@ paths:
                 -   Option
         get:
             description:
-                Fetches the option identified by id. Returns 404 when the id is not found.
+                Fetches the option identified by ID. Returns 404 when the ID is not found.
             operationId: getOption
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7268,7 +7278,7 @@ paths:
                 -   Option
         patch:
             description:
-                Partially updates the option identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option.
+                Partially updates the option identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the option.
             operationId: patchOption
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7347,7 +7357,7 @@ paths:
     /options/{id}/optionValues:
         get:
             description:
-                Lists option values for the option identified by option id. Returns 404 when the parent option id is not found.
+                Lists option values for the option identified by option ID. Returns 404 when the parent option ID is not found.
             operationId: getOptionIdOptionValuesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7405,7 +7415,7 @@ paths:
                 -   OptionValue
         post:
             description:
-                Creates or updates an option value under the parent option identified by option id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option id is not found. Side effects -- Reindexes the option value.
+                Creates or updates an option value under the parent option identified by option ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option ID is not found. Side effects -- Reindexes the option value.
             operationId: postOptionIdOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7504,7 +7514,7 @@ paths:
     /pins/{pinId}:
         delete:
             description:
-                Deletes the pin identified by pinId and removes its orphan diagram entry when no other pin references it. Returns 404 when the id is not found. Side effects -- Cascades the matching diagram entry delete when no other pin shares the sequence.
+                Deletes the pin identified by pinId and removes its orphan diagram entry when no other pin references it. Returns 404 when the ID is not found. Side effects -- Cascades the matching diagram entry delete when no other pin shares the sequence.
             operationId: deletePin
             parameters:
                 -   $ref: "#/components/parameters/pinIdPathParam"
@@ -7528,7 +7538,7 @@ paths:
                 -   Pin
         patch:
             description:
-                Partially updates the pin identified by pinId, optionally creating or updating its mapped product. Returns 404 when the id is not found. Side effects -- When mappedProduct is included, may add or update the linked diagram entry (SKU/product mapping).
+                Partially updates the pin identified by pinId, optionally creating or updating its mapped product. Returns 404 when the ID is not found. Side effects -- When mappedProduct is included, may add or update the linked diagram entry (SKU/product mapping).
             operationId: patchPin
             parameters:
                 -   $ref: "#/components/parameters/pinIdPathParam"
@@ -7611,7 +7621,7 @@ paths:
     /product-account-groups/{id}:
         delete:
             description:
-                Removes the account group assignment identified by id from its product. Returns 404 when the record is not found. Side effects -- Removes the account group <-> product association.
+                Removes the account group assignment identified by ID from its product. Returns 404 when the record is not found. Side effects -- Removes the account group <-> product association.
             operationId: deleteProductAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7645,7 +7655,7 @@ paths:
                 -   ProductAccountGroup
         get:
             description:
-                Fetches the product/account group association identified by id. Returns 404 when the id is not found.
+                Fetches the product/account group association identified by ID. Returns 404 when the ID is not found.
             operationId: getProductAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7709,7 +7719,7 @@ paths:
     /product-channels/{id}:
         delete:
             description:
-                Removes the channel assignment identified by id from its product. Returns 404 when the record is not found. Side effects -- Removes the channel <-> product association.
+                Removes the channel assignment identified by ID from its product. Returns 404 when the record is not found. Side effects -- Removes the channel <-> product association.
             operationId: deleteProductChannel
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7743,7 +7753,7 @@ paths:
                 -   ProductChannel
         get:
             description:
-                Fetches the product/channel association identified by id. Returns 404 when the id is not found.
+                Fetches the product/channel association identified by ID. Returns 404 when the ID is not found.
             operationId: getProductChannel
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -7807,7 +7817,7 @@ paths:
     /product-configuration-list-account-groups/{productConfigurationListAccountGroupId}:
         delete:
             description:
-                Removes the account group binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account group <-> configuration list association.
+                Removes the account group binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account group <-> configuration list association.
             operationId: deleteProductConfigurationListAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/productConfigurationListAccountGroupIdPathParam"
@@ -7842,7 +7852,7 @@ paths:
     /product-configuration-list-accounts/{productConfigurationListAccountId}:
         delete:
             description:
-                Removes the account binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account <-> configuration list association.
+                Removes the account binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the account <-> configuration list association.
             operationId: deleteProductConfigurationListAccount
             parameters:
                 -   $ref: "#/components/parameters/productConfigurationListAccountIdPathParam"
@@ -7877,7 +7887,7 @@ paths:
     /product-configuration-list-channels/{productConfigurationListChannelId}:
         delete:
             description:
-                Removes the channel binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the channel <-> configuration list association.
+                Removes the channel binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the channel <-> configuration list association.
             operationId: deleteProductConfigurationListChannel
             parameters:
                 -   $ref: "#/components/parameters/productConfigurationListChannelIdPathParam"
@@ -7912,7 +7922,7 @@ paths:
     /product-configuration-list-order-types/{productConfigurationListOrderTypeId}:
         delete:
             description:
-                Removes the order type binding identified by id from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the order type <-> configuration list association.
+                Removes the order type binding identified by ID from its product configuration list. Returns 404 when the record is not found. Side effects -- Removes the order type <-> configuration list association.
             operationId: deleteProductConfigurationListOrderType
             parameters:
                 -   $ref: "#/components/parameters/productConfigurationListOrderTypeIdPathParam"
@@ -8263,7 +8273,7 @@ paths:
     /product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-account-groups:
         get:
             description:
-                Lists the account group bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found.
+                Lists the account group bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found.
             operationId: getProductConfigurationListByExternalReferenceCodeProductConfigurationListAccountGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8319,7 +8329,7 @@ paths:
                 -   ProductConfigurationListAccountGroup
         post:
             description:
-                Binds an account group to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list.
+                Binds an account group to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list.
             operationId: postProductConfigurationListByExternalReferenceCodeProductConfigurationListAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8408,7 +8418,7 @@ paths:
     /product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-accounts:
         get:
             description:
-                Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found.
+                Lists the account bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found.
             operationId: getProductConfigurationListByExternalReferenceCodeProductConfigurationListAccountsPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8464,7 +8474,7 @@ paths:
                 -   ProductConfigurationListAccount
         post:
             description:
-                Binds an account to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list.
+                Binds an account to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list.
             operationId: postProductConfigurationListByExternalReferenceCodeProductConfigurationListAccount
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8553,7 +8563,7 @@ paths:
     /product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-channels:
         get:
             description:
-                Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found.
+                Lists the channel bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found.
             operationId: getProductConfigurationListByExternalReferenceCodeProductConfigurationListChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8609,7 +8619,7 @@ paths:
                 -   ProductConfigurationListChannel
         post:
             description:
-                Binds a commerce channel to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list.
+                Binds a commerce channel to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list.
             operationId: postProductConfigurationListByExternalReferenceCodeProductConfigurationListChannel
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8698,7 +8708,7 @@ paths:
     /product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configuration-list-order-types:
         get:
             description:
-                Lists the order type bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found.
+                Lists the order type bindings of the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found.
             operationId: getProductConfigurationListByExternalReferenceCodeProductConfigurationListOrderTypesPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8754,7 +8764,7 @@ paths:
                 -   ProductConfigurationListOrderType
         post:
             description:
-                Binds a commerce order type to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list.
+                Binds a commerce order type to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list.
             operationId: postProductConfigurationListByExternalReferenceCodeProductConfigurationListOrderType
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8843,7 +8853,7 @@ paths:
     /product-configuration-lists/by-externalReferenceCode/{externalReferenceCode}/product-configurations:
         get:
             description:
-                Lists product configuration entries attached to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found. List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType.
+                Lists product configuration entries attached to the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found. List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType.
             operationId: getProductConfigurationListByExternalReferenceCodeProductConfigurationsPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8906,7 +8916,7 @@ paths:
                 -   ProductConfiguration
         post:
             description:
-                Creates a product configuration entry under the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the external reference code is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list, scoped to a product or to the list as a template.
+                Creates a product configuration entry under the product configuration list identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the external reference code is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list, scoped to a product or to the list as a template.
             operationId: postProductConfigurationListByExternalReferenceCodeProductConfiguration
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -8989,7 +8999,7 @@ paths:
     /product-configuration-lists/{id}:
         delete:
             description:
-                Deletes the product configuration list identified by id. Returns 404 when the id is not found. Side effects -- Cascades deletion of configuration list assignment rows and configuration entry rows attached to the list.
+                Deletes the product configuration list identified by ID. Returns 404 when the ID is not found. Side effects -- Cascades deletion of configuration list assignment rows and configuration entry rows attached to the list.
             operationId: deleteProductConfigurationList
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9023,7 +9033,7 @@ paths:
                 -   ProductConfigurationList
         get:
             description:
-                Fetches the product configuration list identified by id. Returns 404 when the id is not found.
+                Fetches the product configuration list identified by ID. Returns 404 when the ID is not found.
             operationId: getProductConfigurationList
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9086,7 +9096,7 @@ paths:
                 -   ProductConfigurationList
         patch:
             description:
-                Partially updates the product configuration list identified by id, applying any nested product configurations. Returns 404 when the id is not found. Side effects -- Reindexes; updates display/expiration date and custom field storage; cascades into nested product configurations.
+                Partially updates the product configuration list identified by ID, applying any nested product configurations. Returns 404 when the ID is not found. Side effects -- Reindexes; updates display/expiration date and custom field storage; cascades into nested product configurations.
             operationId: patchProductConfigurationList
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9169,7 +9179,7 @@ paths:
     /product-configuration-lists/{id}/product-configuration-list-account-groups:
         get:
             description:
-                Lists the account group bindings of the product configuration list identified by id. Validation -- None at this layer (returns empty page on no match).
+                Lists the account group bindings of the product configuration list identified by ID. Validation -- None at this layer (returns empty page on no match).
             operationId: getProductConfigurationListIdProductConfigurationListAccountGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9228,7 +9238,7 @@ paths:
                 -   ProductConfigurationListAccountGroup
         post:
             description:
-                Binds an account group to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list.
+                Binds an account group to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the account group lookup fails. Side effects -- Creates a configuration list assignment binding the account group to the configuration list.
             operationId: postProductConfigurationListIdProductConfigurationListAccountGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9317,7 +9327,7 @@ paths:
     /product-configuration-lists/{id}/product-configuration-list-accounts:
         get:
             description:
-                Lists the account bindings of the product configuration list identified by id. Validation -- None at this layer.
+                Lists the account bindings of the product configuration list identified by ID. Validation -- None at this layer.
             operationId: getProductConfigurationListIdProductConfigurationListAccountsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9376,7 +9386,7 @@ paths:
                 -   ProductConfigurationListAccount
         post:
             description:
-                Binds an account to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list.
+                Binds an account to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the account lookup fails. Side effects -- Creates a configuration list assignment binding the account to the configuration list.
             operationId: postProductConfigurationListIdProductConfigurationListAccount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9465,7 +9475,7 @@ paths:
     /product-configuration-lists/{id}/product-configuration-list-channels:
         get:
             description:
-                Lists the channel bindings of the product configuration list identified by id. Validation -- None at this layer.
+                Lists the channel bindings of the product configuration list identified by ID. Validation -- None at this layer.
             operationId: getProductConfigurationListIdProductConfigurationListChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9524,7 +9534,7 @@ paths:
                 -   ProductConfigurationListChannel
         post:
             description:
-                Binds a commerce channel to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list.
+                Binds a commerce channel to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the channel lookup fails. Side effects -- Creates a channel assignment binding the channel to the configuration list.
             operationId: postProductConfigurationListIdProductConfigurationListChannel
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9613,7 +9623,7 @@ paths:
     /product-configuration-lists/{id}/product-configuration-list-order-types:
         get:
             description:
-                Lists the order type bindings of the product configuration list identified by id. Validation -- None at this layer.
+                Lists the order type bindings of the product configuration list identified by ID. Validation -- None at this layer.
             operationId: getProductConfigurationListIdProductConfigurationListOrderTypesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9672,7 +9682,7 @@ paths:
                 -   ProductConfigurationListOrderType
         post:
             description:
-                Binds a commerce order type to the product configuration list identified by id. Returns 404 when the id is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list.
+                Binds a commerce order type to the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when the order type lookup fails. Side effects -- Creates a configuration list assignment binding the order type to the configuration list.
             operationId: postProductConfigurationListIdProductConfigurationListOrderType
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9761,7 +9771,7 @@ paths:
     /product-configuration-lists/{id}/product-configurations:
         get:
             description:
-                Lists product configuration entries attached to the product configuration list identified by id. Returns 404 when the id is not found. Side effects -- None (showDifferences toggles delta computation against the master entry). List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType.
+                Lists product configuration entries attached to the product configuration list identified by ID. Returns 404 when the ID is not found. Side effects -- None (showDifferences toggles delta computation against the master entry). List query support — filterable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType; sortable fields -- purchasable, shippable, categoryIds, categoryNames, createDate, modifiedDate, maxOrderQuantity, minOrderQuantity, multipleOrderQuantity, entityName, productType.
             operationId: getProductConfigurationListIdProductConfigurationsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -9824,7 +9834,7 @@ paths:
                 -   ProductConfiguration
         post:
             description:
-                Creates a product configuration entry under the product configuration list identified by id. Returns 404 when the id is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list.
+                Creates a product configuration entry under the product configuration list identified by ID. Returns 404 when the ID is not found, and 404 when entityType=product and the referenced product is missing. Side effects -- Creates a configuration entry under the configuration list.
             operationId: postProductConfigurationListIdProductConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10087,7 +10097,7 @@ paths:
     /product-configurations/{id}:
         delete:
             description:
-                Deletes the product configuration entry identified by id. Returns 404 when the record is not found. Side effects -- Removes the configuration override (master entries are protected by model permission check).
+                Deletes the product configuration entry identified by ID. Returns 404 when the record is not found. Side effects -- Removes the configuration override (master entries are protected by model permission check).
             operationId: deleteProductConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10121,7 +10131,7 @@ paths:
                 -   ProductConfiguration
         get:
             description:
-                Fetches the product configuration entry identified by id. Returns 404 when the id is not found.
+                Fetches the product configuration entry identified by ID. Returns 404 when the ID is not found.
             operationId: getProductConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10184,7 +10194,7 @@ paths:
                 -   ProductConfiguration
         patch:
             description:
-                Partially updates the product configuration entry identified by id. Returns 404 when the id is not found. Side effects -- Updates inventory, shipping, and tax fields on the entry.
+                Partially updates the product configuration entry identified by ID. Returns 404 when the ID is not found. Side effects -- Updates inventory, shipping, and tax fields on the entry.
             operationId: patchProductConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10267,7 +10277,7 @@ paths:
     /product-group-products/{id}:
         delete:
             description:
-                Removes the product binding identified by id from its product group. Returns 404 when the record is not found. Side effects -- Removes the product <-> product group association.
+                Removes the product binding identified by ID from its product group. Returns 404 when the record is not found. Side effects -- Removes the product <-> product group association.
             operationId: deleteProductGroupProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10856,7 +10866,7 @@ paths:
     /product-groups/{id}:
         delete:
             description:
-                Deletes the product group identified by id. Returns 404 when the record is not found. Side effects -- Cascades deletion of product group assignment rows and associated pricing rules.
+                Deletes the product group identified by ID. Returns 404 when the record is not found. Side effects -- Cascades deletion of product group assignment rows and associated pricing rules.
             operationId: deleteProductGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10890,7 +10900,7 @@ paths:
                 -   ProductGroup
         get:
             description:
-                Fetches the product group identified by id. Returns 404 when the id is not found.
+                Fetches the product group identified by ID. Returns 404 when the ID is not found.
             operationId: getProductGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -10953,7 +10963,7 @@ paths:
                 -   ProductGroup
         patch:
             description:
-                Partially updates the product group identified by id, optionally appending new product bindings. Returns 404 when the id is not found, and 404 when nested products fail to resolve. Side effects -- Reindexes; updates custom field storage; appends new product bindings without removing existing ones.
+                Partially updates the product group identified by ID, optionally appending new product bindings. Returns 404 when the ID is not found, and 404 when nested products fail to resolve. Side effects -- Reindexes; updates custom field storage; appends new product bindings without removing existing ones.
             operationId: patchProductGroup
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11032,7 +11042,7 @@ paths:
     /product-groups/{id}/product-group-products:
         get:
             description:
-                Lists the product bindings of the product group identified by id. Validation -- None at this layer (returns empty page on no match).
+                Lists the product bindings of the product group identified by ID. Validation -- None at this layer (returns empty page on no match).
             operationId: getProductGroupIdProductGroupProductsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11088,7 +11098,7 @@ paths:
                 -   ProductGroupProduct
         post:
             description:
-                Binds a product to the product group identified by id. Returns 404 when the product group id is not found, and 404 when the product lookup fails. Side effects -- Creates a product group assignment binding the product to the group.
+                Binds a product to the product group identified by ID. Returns 404 when the product group ID is not found, and 404 when the product lookup fails. Side effects -- Creates a product group assignment binding the product to the group.
             operationId: postProductGroupIdProductGroupProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11187,7 +11197,7 @@ paths:
     /product-option-values/{id}:
         delete:
             description:
-                Removes the product option value relation identified by id. Returns 404 when the record is not found. Side effects -- Cascades through SKU option value listeners; reindexes affected SKUs.
+                Removes the product option value relation identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through SKU option value listeners; reindexes affected SKUs.
             operationId: deleteProductOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11221,7 +11231,7 @@ paths:
                 -   ProductOptionValue
         get:
             description:
-                Fetches the product option value relation identified by id. Returns 404 when the id is not found.
+                Fetches the product option value relation identified by ID. Returns 404 when the ID is not found.
             operationId: getProductOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11281,7 +11291,7 @@ paths:
                 -   ProductOptionValue
         patch:
             description:
-                Partially updates the product option value relation identified by id. Returns 404 when the id is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs.
+                Partially updates the product option value relation identified by ID. Returns 404 when the ID is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs.
             operationId: patchProductOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11364,7 +11374,7 @@ paths:
     /product-virtual-settings-file-entries/{id}:
         delete:
             description:
-                Deletes the product virtual settings file entry identified by id. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted).
+                Deletes the product virtual settings file entry identified by ID. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted).
             operationId: deleteProductVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11398,7 +11408,7 @@ paths:
                 -   ProductVirtualSettingsFileEntry
         get:
             description:
-                Fetches the product virtual settings file entry identified by id. Returns 404 when the id is not found.
+                Fetches the product virtual settings file entry identified by ID. Returns 404 when the ID is not found.
             operationId: getProductVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11461,7 +11471,7 @@ paths:
                 -   ProductVirtualSettingsFileEntry
         patch:
             description:
-                Partially updates the product virtual settings file entry identified by id, optionally replacing the underlying file. Returns 404 when the id is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied.
+                Partially updates the product virtual settings file entry identified by ID, optionally replacing the underlying file. Returns 404 when the ID is not found. Side effects -- May create a new DL file entry under the product group when a binary file or attachment is supplied.
             operationId: patchProductVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11546,7 +11556,7 @@ paths:
     /product-virtual-settings/{id}/product-virtual-settings-file-entries:
         get:
             description:
-                Lists the file entries attached to the product virtual setting identified by id. Returns 404 when the parent id is not found.
+                Lists the file entries attached to the product virtual setting identified by ID. Returns 404 when the parent ID is not found.
             operationId: getProductVirtualSettingIdProductVirtualSettingsFileEntriesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11602,7 +11612,7 @@ paths:
                 -   ProductVirtualSettingsFileEntry
         post:
             description:
-                Adds a file entry under the product virtual setting identified by id, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent id is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry.
+                Adds a file entry under the product virtual setting identified by ID, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent ID is not found. Side effects -- Creates a DL file entry under the product group and records a new virtual settings file entry.
             operationId: postProductVirtualSettingIdProductVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11648,10 +11658,167 @@ paths:
                         A domain validation error prevented the product virtual settings file entry from being created or updated (for example, a referenced entity is missing, a required cross-reference is unresolved, or a value is out of range).
             tags:
                 -   ProductVirtualSettingsFileEntry
+    /productOptions/by-externalReferenceCode/{externalReferenceCode}/productOptionValues:
+        get:
+            description:
+                Lists the product option value relations of the product option identified by external reference code. Returns 404 when the product option external reference code is not found.
+            operationId: getProductOptionByExternalReferenceCodeProductOptionValuesPage
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+                -   $ref: "#/components/parameters/searchQueryParam"
+                -   $ref: "#/components/parameters/sortQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductOptionValue"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductOptionValue"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of values related to a product option.
+            tags:
+                -   ProductOptionValue
+        post:
+            description:
+                Creates or updates a product option value relation under the product option identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Falls back to the value key within the parent product option when the external reference code is omitted. Returns 404 when the product option external reference code is not found. Side effects -- Links the value to a SKU when one is supplied; reindexes the affected SKUs.
+            operationId: postProductOptionByExternalReferenceCodeProductOptionValue
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/ProductOptionValue"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/ProductOptionValue"
+                required: true
+            responses:
+                201:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ProductOptionValue"
+                    description:
+                        Created
+                202:
+                    description:
+                        Accepted - Async
+                204:
+                    description:
+                        No content
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product option value.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                409:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The supplied product option value key is already in use within this product option.
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        A domain validation error prevented the product option value from being created or updated (for example, a referenced entity is missing, a required cross-reference is unresolved, or a value is out of range).
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Creates or updates a value related to a product option.
+            tags:
+                -   ProductOptionValue
     /productOptions/{id}:
         delete:
             description:
-                Removes the product option relation identified by id from its product. Returns 404 when the id is not found. Side effects -- Cascades deletion of associated product option value rows.
+                Removes the product option relation identified by ID from its product. Returns 404 when the ID is not found. Side effects -- Cascades deletion of associated product option value rows.
             operationId: deleteProductOption
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11684,7 +11851,7 @@ paths:
                 -   ProductOption
         get:
             description:
-                Fetches the product option relation identified by id. Returns 404 when the id is not found.
+                Fetches the product option relation identified by ID. Returns 404 when the ID is not found.
             operationId: getProductOption
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11747,7 +11914,7 @@ paths:
                 -   ProductOption
         patch:
             description:
-                Partially updates the product option relation identified by id, including any nested product option values. Returns 404 when the id is not found. Side effects -- Reindexes the parent product; cascades into nested product option values.
+                Partially updates the product option relation identified by ID, including any nested product option values. Returns 404 when the ID is not found. Side effects -- Reindexes the parent product; cascades into nested product option values.
             operationId: patchProductOption
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11826,7 +11993,7 @@ paths:
     /productOptions/{id}/productOptionValues:
         get:
             description:
-                Lists the product option value relations of the product option identified by id. Returns 404 when the parent option relation id is not found.
+                Lists the product option value relations of the product option identified by ID. Returns 404 when the parent option relation ID is not found.
             operationId: getProductOptionIdProductOptionValuesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -11884,7 +12051,7 @@ paths:
                 -   ProductOptionValue
         post:
             description:
-                Creates or updates a product option value relation under the product option identified by id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option relation id is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs.
+                Creates or updates a product option value relation under the product option identified by ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option relation ID is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs.
             operationId: postProductOptionIdProductOptionValue
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -12169,7 +12336,7 @@ paths:
     /productSpecifications/{id}:
         delete:
             description:
-                Removes the product specification value identified by id from its product. Returns 404 when the id is not found. Side effects -- Reindexes the parent product.
+                Removes the product specification value identified by ID from its product. Returns 404 when the ID is not found. Side effects -- Reindexes the parent product.
             operationId: deleteProductSpecification
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -12203,7 +12370,7 @@ paths:
                 -   ProductSpecification
         get:
             description:
-                Fetches the product specification value identified by id. Returns 404 when the id is not found.
+                Fetches the product specification value identified by ID. Returns 404 when the ID is not found.
             operationId: getProductSpecification
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -12266,7 +12433,7 @@ paths:
                 -   ProductSpecification
         patch:
             description:
-                Partially updates the product specification value identified by id. Returns 404 when the id is not found, and 404 when nested specification cannot be resolved. Side effects -- Reindexes the parent product.
+                Partially updates the product specification value identified by ID. Returns 404 when the ID is not found, and 404 when nested specification cannot be resolved. Side effects -- Reindexes the parent product.
             operationId: patchProductSpecification
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -13339,7 +13506,7 @@ paths:
                 -   Category
         patch:
             description:
-                Replaces the asset category assignments of the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when any supplied category id is missing. Side effects -- Replaces the product's asset category assignment set (overwrites prior categorization).
+                Replaces the asset category assignments of the product identified by external reference code. Returns 404 when the product external reference code is not found, and 404 when any supplied category ID is missing. Side effects -- Replaces the product's asset category assignment set (overwrites prior categorization).
             operationId: patchProductByExternalReferenceCodeCategory
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -13507,7 +13674,7 @@ paths:
     /products/by-externalReferenceCode/{externalReferenceCode}/configuration:
         get:
             description:
-                Returns the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found.
+                Returns the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found.
             operationId: getProductByExternalReferenceCodeConfiguration
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -13570,7 +13737,7 @@ paths:
                 -   ProductConfiguration
         patch:
             description:
-                Partially updates the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate.
+                Partially updates the consolidated product configuration of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate.
             operationId: patchProductByExternalReferenceCodeConfiguration
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -14297,6 +14464,66 @@ paths:
             summary: Creates or updates an image related to a product.
             tags:
                 -   Attachment
+    /products/by-externalReferenceCode/{externalReferenceCode}/linked-products:
+        get:
+            description:
+                Lists the diagram and grouped product entries that link other products back to the product identified by external reference code. Returns 404 when the product external reference code is not found.
+            operationId: getProductByExternalReferenceCodeLinkedProductsPage
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/LinkedProduct"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/LinkedProduct"
+                                type: array
+                    description:
+                        Successful operation
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of grouped product.
+            tags:
+                -   LinkedProduct
     /products/by-externalReferenceCode/{externalReferenceCode}/mapped-products:
         get:
             description:
@@ -14767,7 +14994,7 @@ paths:
     /products/by-externalReferenceCode/{externalReferenceCode}/product-specifications:
         get:
             description:
-                Lists the specification values of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. Returns 404 when the product external reference code is not found.
+                Lists the specification values of the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. Returns 404 when the product external reference code is not found.
             operationId: getProductByExternalReferenceCodeProductSpecificationsPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -14823,7 +15050,7 @@ paths:
                 -   ProductSpecification
         post:
             description:
-                Creates or updates a specification value on the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-id variant. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product.
+                Creates or updates a specification value on the product identified by external reference code. Resolves the addressed record by external reference code, then applies the same behavior as the by-ID variant. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product.
             operationId: postProductByExternalReferenceCodeProductSpecification
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -15852,7 +16079,7 @@ paths:
     /products/{id}:
         delete:
             description:
-                Deletes the product identified by product id. Returns 404 when the product id is not found. Side effects -- Cascades product definition delete (skus, options, attachments, categorization).
+                Deletes the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Cascades product definition delete (skus, options, attachments, categorization).
             operationId: deleteProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -15886,7 +16113,7 @@ paths:
                 -   Product
         get:
             description:
-                Fetches the latest published version of the product identified by product id. Returns 404 when the product id is not found.
+                Fetches the latest published version of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -15950,7 +16177,7 @@ paths:
                 -   Product
         patch:
             description:
-                Partially updates the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates custom field storage, asset categorization, asset tags, and may trigger workflow draft transition.
+                Partially updates the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates custom field storage, asset categorization, asset tags, and may trigger workflow draft transition.
             operationId: patchProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16039,7 +16266,7 @@ paths:
     /products/{id}/attachments:
         get:
             description:
-                Lists attachments (TYPE_OTHER) for the product identified by its product id. Returns 404 when the product id is not found.
+                Lists attachments (TYPE_OTHER) for the product identified by its product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdAttachmentsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16095,7 +16322,7 @@ paths:
                 -   Attachment
         post:
             description:
-                Creates or updates an attachment (TYPE_OTHER) under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Creates or updates a DL file entry under the product group.
+                Creates or updates an attachment (TYPE_OTHER) under the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Creates or updates a DL file entry under the product group.
             operationId: postProductIdAttachment
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16194,7 +16421,7 @@ paths:
     /products/{id}/attachments/by-base64:
         post:
             description:
-                Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group.
+                Creates or updates an attachment (TYPE_OTHER) under the product identified by product ID, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group.
             operationId: postProductIdAttachmentByBase64
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16293,7 +16520,7 @@ paths:
     /products/{id}/attachments/by-url:
         post:
             description:
-                Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Stores the URL reference.
+                Creates or updates an attachment (TYPE_OTHER) under the product identified by product ID, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Stores the URL reference.
             operationId: postProductIdAttachmentByUrl
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16392,7 +16619,7 @@ paths:
     /products/{id}/by-version/{version}:
         delete:
             description:
-                Deletes a specific historical version of the product identified by product id. Returns 404 when the product id or version is not found. Side effects -- Cascades product definition delete for the targeted version only.
+                Deletes a specific historical version of the product identified by product ID. Returns 404 when the product ID or version is not found. Side effects -- Cascades product definition delete for the targeted version only.
             operationId: deleteProductByVersion
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16427,7 +16654,7 @@ paths:
                 -   Product
         get:
             description:
-                Fetches a specific historical version of the product identified by product id. Returns 404 when the product id or version is not found.
+                Fetches a specific historical version of the product identified by product ID. Returns 404 when the product ID or version is not found.
             operationId: getProductByVersion
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16493,7 +16720,7 @@ paths:
     /products/{id}/catalog:
         get:
             description:
-                Returns the commerce catalog associated with the product identified by product id. Returns 404 when the product id is not found.
+                Returns the commerce catalog associated with the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdCatalog
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16556,7 +16783,7 @@ paths:
     /products/{id}/categories:
         get:
             description:
-                Lists asset categories assigned to the product identified by product id. Returns 404 when the product id is not found.
+                Lists asset categories assigned to the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdCategoriesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16612,7 +16839,7 @@ paths:
                 -   Category
         patch:
             description:
-                Replaces the asset category assignments of the product identified by product id. Returns 404 when the product id is not found, and 404 when any supplied category id is missing. Side effects -- Replaces the product's asset category assignment set.
+                Replaces the asset category assignments of the product identified by product ID. Returns 404 when the product ID is not found, and 404 when any supplied category ID is missing. Side effects -- Replaces the product's asset category assignment set.
             operationId: patchProductIdCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16695,7 +16922,7 @@ paths:
     /products/{id}/clone:
         post:
             description:
-                Clones the product identified by product id, optionally into a different catalog. Returns 404 when the source product id is not found. Side effects -- Creates a brand new product definition with cloned SKUs, options, attachments, etc..
+                Clones the product identified by product ID, optionally into a different catalog. Returns 404 when the source product ID is not found. Side effects -- Creates a brand new product definition with cloned SKUs, options, attachments, etc..
             operationId: postProductClone
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16780,7 +17007,7 @@ paths:
     /products/{id}/configuration:
         get:
             description:
-                Returns the consolidated product configuration of the product identified by product id. Returns 404 when the product id is not found.
+                Returns the consolidated product configuration of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16843,7 +17070,7 @@ paths:
                 -   ProductConfiguration
         patch:
             description:
-                Partially updates the consolidated product configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate.
+                Partially updates the consolidated product configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the master configuration entry plus product inventory configuration and per-product availability estimate.
             operationId: patchProductIdConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16922,7 +17149,7 @@ paths:
     /products/{id}/diagrams:
         get:
             description:
-                Returns the diagram setting attached to the product identified by product id. Returns 404 when the product id is not found, and 404 when no diagram setting exists.
+                Returns the diagram setting attached to the product identified by product ID. Returns 404 when the product ID is not found, and 404 when no diagram setting exists.
             operationId: getProductIdDiagram
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -16985,7 +17212,7 @@ paths:
                 -   Diagram
         post:
             description:
-                Creates a diagram setting under the product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image.
+                Creates a diagram setting under the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates the diagram setting and links an attachment as the diagram image.
             operationId: postProductIdDiagram
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17068,7 +17295,7 @@ paths:
     /products/{id}/grouped-products:
         get:
             description:
-                Lists the grouped product entries of the product identified by product id. Returns 404 when the product id is not found.
+                Lists the grouped product entries of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdGroupedProductsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17127,7 +17354,7 @@ paths:
                 -   GroupedProduct
         post:
             description:
-                Adds a grouped product entry to the parent product identified by product id. Returns 404 when the parent product id or entry product is missing. Side effects -- Links the entry product to the parent grouped product.
+                Adds a grouped product entry to the parent product identified by product ID. Returns 404 when the parent product ID or entry product is missing. Side effects -- Links the entry product to the parent grouped product.
             operationId: postProductIdGroupedProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17220,7 +17447,7 @@ paths:
     /products/{id}/images:
         get:
             description:
-                Lists image attachments (TYPE_IMAGE) for the product identified by its product id. Returns 404 when the product id is not found.
+                Lists image attachments (TYPE_IMAGE) for the product identified by its product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdImagesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17276,7 +17503,7 @@ paths:
                 -   Attachment
         post:
             description:
-                Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Creates or updates a DL file entry under the product group.
+                Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Creates or updates a DL file entry under the product group.
             operationId: postProductIdImage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17375,7 +17602,7 @@ paths:
     /products/{id}/images/by-base64:
         post:
             description:
-                Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Decodes the base64 file and creates a DL file entry.
+                Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product ID, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Decodes the base64 file and creates a DL file entry.
             operationId: postProductIdImageByBase64
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17474,7 +17701,7 @@ paths:
     /products/{id}/images/by-url:
         post:
             description:
-                Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Stores the URL reference.
+                Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product ID, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Stores the URL reference.
             operationId: postProductIdImageByUrl
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17573,7 +17800,7 @@ paths:
     /products/{id}/linked-products:
         get:
             description:
-                Lists the diagram and grouped product entries that link other products back to the product identified by product id. Validation -- None at this layer (callees may return empty pages).
+                Lists the diagram and grouped product entries that link other products back to the product identified by product ID. Validation -- None at this layer (callees may return empty pages).
             operationId: getProductIdLinkedProductsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17633,7 +17860,7 @@ paths:
     /products/{id}/mapped-products:
         get:
             description:
-                Lists mapped (diagram) products of the product identified by product id. Returns 404 when the product id is not found.
+                Lists mapped (diagram) products of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdMappedProductsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17694,7 +17921,7 @@ paths:
                 -   MappedProduct
         post:
             description:
-                Creates a mapped (diagram) product under the parent product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates a diagram entry referencing the supplied SKU/product.
+                Creates a mapped (diagram) product under the parent product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates a diagram entry referencing the supplied SKU/product.
             operationId: postProductIdMappedProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17777,7 +18004,7 @@ paths:
     /products/{id}/mapped-products/by-sequence/{sequence}:
         get:
             description:
-                Returns the mapped (diagram) product entry of the product identified by product id at the given sequence. Returns 404 when the product id is not found, and NPE when sequence not found (no explicit handling).
+                Returns the mapped (diagram) product entry of the product identified by product ID at the given sequence. Returns 404 when the product ID is not found, and NPE when sequence not found (no explicit handling).
             operationId: getProductIdMappedProductBySequence
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17842,7 +18069,7 @@ paths:
     /products/{id}/pins:
         get:
             description:
-                Lists the diagram pins of the product identified by product id. Returns 404 when the product id is not found.
+                Lists the diagram pins of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdPinsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17903,7 +18130,7 @@ paths:
                 -   Pin
         post:
             description:
-                Creates a diagram pin on the product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates the pin and optionally creates/updates a mapped diagram entry.
+                Creates a diagram pin on the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Creates the pin and optionally creates/updates a mapped diagram entry.
             operationId: postProductIdPin
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -17986,7 +18213,7 @@ paths:
     /products/{id}/product-account-groups:
         get:
             description:
-                Lists the account group assignments of the product identified by product id. Validation -- Returns empty page when product id not found (no exception).
+                Lists the account group assignments of the product identified by product ID. Validation -- Returns empty page when product ID not found (no exception).
             operationId: getProductIdProductAccountGroupsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18043,7 +18270,7 @@ paths:
     /products/{id}/product-channels:
         get:
             description:
-                Lists the channel assignments of the product identified by product id. Validation -- Returns empty page when product id not found (no exception).
+                Lists the channel assignments of the product identified by product ID. Validation -- Returns empty page when product ID not found (no exception).
             operationId: getProductIdProductChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18100,7 +18327,7 @@ paths:
     /products/{id}/product-virtual-settings:
         get:
             description:
-                Returns the virtual settings of the product identified by product id. Returns 404 when the product id is not found.
+                Returns the virtual settings of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdProductVirtualSettings
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18164,7 +18391,7 @@ paths:
     /products/{id}/productOptions:
         get:
             description:
-                Lists the product option relations of the product identified by product id. Returns 404 when the product id is not found.
+                Lists the product option relations of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdProductOptionsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18225,7 +18452,7 @@ paths:
                 -   ProductOption
         post:
             description:
-                Creates or updates a batch of product option relations on the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Adds or updates each product option and cascades into nested product option values.
+                Creates or updates a batch of product option relations on the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found. Side effects -- Adds or updates each product option and cascades into nested product option values.
             operationId: postProductIdProductOptionsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18312,7 +18539,7 @@ paths:
     /products/{id}/productSpecifications:
         get:
             description:
-                Lists the specification values of the product identified by product id. Returns 404 when the product id is not found.
+                Lists the specification values of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdProductSpecificationsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18368,7 +18595,7 @@ paths:
                 -   ProductSpecification
         post:
             description:
-                Creates or updates a specification value on the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product.
+                Creates or updates a specification value on the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found, and 404 when the specification cannot be resolved. Side effects -- Adds or updates the specification value; reindexes the parent product.
             operationId: postProductIdProductSpecification
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18467,7 +18694,7 @@ paths:
     /products/{id}/relatedProducts:
         get:
             description:
-                Lists the related product links of the product identified by product id, optionally narrowed by link type. Returns 404 when the product id is not found.
+                Lists the related product links of the product identified by product ID, optionally narrowed by link type. Returns 404 when the product ID is not found.
             operationId: getProductIdRelatedProductsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18524,7 +18751,7 @@ paths:
                 -   RelatedProduct
         post:
             description:
-                Creates or updates a related product link on the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent product id not found or related product cannot be resolved. Side effects -- Creates or updates the related product link.
+                Creates or updates a related product link on the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent product ID not found or related product cannot be resolved. Side effects -- Creates or updates the related product link.
             operationId: postProductIdRelatedProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18613,7 +18840,7 @@ paths:
     /products/{id}/shippingConfiguration:
         get:
             description:
-                Returns the shipping configuration of the product identified by product id. Returns 404 when the product id is not found.
+                Returns the shipping configuration of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdShippingConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18676,7 +18903,7 @@ paths:
                 -   ProductShippingConfiguration
         patch:
             description:
-                Partially updates the shipping configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition shipping fields.
+                Partially updates the shipping configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition shipping fields.
             operationId: patchProductIdShippingConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18755,7 +18982,7 @@ paths:
     /products/{id}/skus:
         get:
             description:
-                Lists the SKUs of the product identified by product id. Calls Internal _getSkusPage (index-backed SKU listing scoped to the product). Validation -- Returns empty page when product id not found.
+                Lists the SKUs of the product identified by product ID. Calls Internal _getSkusPage (index-backed SKU listing scoped to the product). Validation -- Returns empty page when product ID not found.
             operationId: getProductIdSkusPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18812,7 +19039,7 @@ paths:
                 -   Sku
         post:
             description:
-                Creates or updates a SKU under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings.
+                Creates or updates a SKU under the product identified by product ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product ID is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings.
             operationId: postProductIdSku
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18901,7 +19128,7 @@ paths:
     /products/{id}/subscriptionConfiguration:
         get:
             description:
-                Returns the subscription configuration of the product identified by product id. Returns 404 when the product id is not found.
+                Returns the subscription configuration of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdSubscriptionConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -18964,7 +19191,7 @@ paths:
                 -   ProductSubscriptionConfiguration
         patch:
             description:
-                Partially updates the subscription configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition subscription fields.
+                Partially updates the subscription configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition subscription fields.
             operationId: patchProductIdSubscriptionConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19043,7 +19270,7 @@ paths:
     /products/{id}/taxConfiguration:
         get:
             description:
-                Returns the tax configuration of the product identified by product id. Returns 404 when the product id is not found.
+                Returns the tax configuration of the product identified by product ID. Returns 404 when the product ID is not found.
             operationId: getProductIdTaxConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19106,7 +19333,7 @@ paths:
                 -   ProductTaxConfiguration
         patch:
             description:
-                Partially updates the tax configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition tax category and taxExempt flag.
+                Partially updates the tax configuration of the product identified by product ID. Returns 404 when the product ID is not found. Side effects -- Updates the product definition tax category and taxExempt flag.
             operationId: patchProductIdTaxConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19185,7 +19412,7 @@ paths:
     /relatedProducts/{id}:
         delete:
             description:
-                Removes the related product link identified by id. Returns 404 when the record is not found. Side effects -- Removes the related product link.
+                Removes the related product link identified by ID. Returns 404 when the record is not found. Side effects -- Removes the related product link.
             operationId: deleteRelatedProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19218,7 +19445,7 @@ paths:
                 -   RelatedProduct
         get:
             description:
-                Fetches the related product link identified by id. Returns 404 when the id is not found.
+                Fetches the related product link identified by ID. Returns 404 when the ID is not found.
             operationId: getRelatedProduct
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19282,7 +19509,7 @@ paths:
     /sku-unit-of-measures/{id}:
         delete:
             description:
-                Deletes the SKU unit of measure identified by id. Returns 404 when the record is not found. Side effects -- Removes the unit of measure and its associated price entries.
+                Deletes the SKU unit of measure identified by ID. Returns 404 when the record is not found. Side effects -- Removes the unit of measure and its associated price entries.
             operationId: deleteSkuUnitOfMeasure
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19316,7 +19543,7 @@ paths:
                 -   SkuUnitOfMeasure
         get:
             description:
-                Fetches the SKU unit of measure identified by id. Returns 404 when the id is not found.
+                Fetches the SKU unit of measure identified by ID. Returns 404 when the ID is not found.
             operationId: getSkuUnitOfMeasure
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19379,7 +19606,7 @@ paths:
                 -   SkuUnitOfMeasure
         patch:
             description:
-                Partially updates the SKU unit of measure identified by id, including base and promo prices when supplied. Returns 404 when the id is not found. Side effects -- Updates the unit of measure record and may update base/promo price entries on the parent SKU.
+                Partially updates the SKU unit of measure identified by ID, including base and promo prices when supplied. Returns 404 when the ID is not found. Side effects -- Updates the unit of measure record and may update base/promo price entries on the parent SKU.
             operationId: patchSkuUnitOfMeasure
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19465,7 +19692,7 @@ paths:
     /sku-virtual-settings-file-entries/{id}:
         delete:
             description:
-                Deletes the SKU virtual settings file entry identified by id. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted).
+                Deletes the SKU virtual settings file entry identified by ID. Returns 404 when the record is not found. Side effects -- Removes the linked DL file entry reference (file is not deleted).
             operationId: deleteSkuVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19499,7 +19726,7 @@ paths:
                 -   SkuVirtualSettingsFileEntry
         get:
             description:
-                Fetches the SKU virtual settings file entry identified by id. Returns 404 when the id is not found.
+                Fetches the SKU virtual settings file entry identified by ID. Returns 404 when the ID is not found.
             operationId: getSkuVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19562,7 +19789,7 @@ paths:
                 -   SkuVirtualSettingsFileEntry
         patch:
             description:
-                Partially updates the SKU virtual settings file entry identified by id, optionally replacing the underlying file. Returns 404 when the id is not found. Side effects -- May create a new DL file entry under the SKU group when a binary file or attachment is supplied.
+                Partially updates the SKU virtual settings file entry identified by ID, optionally replacing the underlying file. Returns 404 when the ID is not found. Side effects -- May create a new DL file entry under the SKU group when a binary file or attachment is supplied.
             operationId: patchSkuVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19647,7 +19874,7 @@ paths:
     /sku-virtual-settings/{id}/sku-virtual-settings-file-entries:
         get:
             description:
-                Lists the file entries attached to the SKU virtual setting identified by id. Returns 404 when the parent id is not found.
+                Lists the file entries attached to the SKU virtual setting identified by ID. Returns 404 when the parent ID is not found.
             operationId: getSkuVirtualSettingIdSkuVirtualSettingsFileEntriesPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -19703,7 +19930,7 @@ paths:
                 -   SkuVirtualSettingsFileEntry
         post:
             description:
-                Adds a file entry under the SKU virtual setting identified by id, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent id is not found. Side effects -- Creates a DL file entry under the SKU group and records a new virtual settings file entry.
+                Adds a file entry under the SKU virtual setting identified by ID, accepting a binary upload or an existing attachment reference. Returns 400 when neither binary file nor attachment is provided, and 404 when the parent ID is not found. Side effects -- Creates a DL file entry under the SKU group and records a new virtual settings file entry.
             operationId: postSkuVirtualSettingIdSkuVirtualSettingsFileEntry
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20369,7 +20596,7 @@ paths:
     /skus/{id}:
         delete:
             description:
-                Deletes the SKU identified by id. Returns 404 when the record is not found. Side effects -- Cascades through SKU delete listeners (inventory, price entries, units of measure).
+                Deletes the SKU identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through SKU delete listeners (inventory, price entries, units of measure).
             operationId: deleteSku
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20402,7 +20629,7 @@ paths:
                 -   Sku
         get:
             description:
-                Fetches the SKU identified by id. Returns 404 when the id is not found.
+                Fetches the SKU identified by ID. Returns 404 when the ID is not found.
             operationId: getSku
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20466,7 +20693,7 @@ paths:
                 -   Sku
         patch:
             description:
-                Partially updates the SKU identified by id. Returns 404 when the id is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement.
+                Partially updates the SKU identified by ID. Returns 404 when the ID is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement.
             operationId: patchSku
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20552,7 +20779,7 @@ paths:
     /skus/{id}/sku-unit-of-measures:
         get:
             description:
-                Lists the unit of measure entries of the SKU identified by id. Validation -- None at this layer (returns empty page when id is absent).
+                Lists the unit of measure entries of the SKU identified by ID. Validation -- None at this layer (returns empty page when ID is absent).
             operationId: getSkuIdSkuUnitOfMeasuresPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20611,7 +20838,7 @@ paths:
                 -   SkuUnitOfMeasure
         post:
             description:
-                Creates or updates a unit of measure under the SKU identified by id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the SKU id is not found. Side effects -- Creates or updates the unit of measure, plus any supplied price entries.
+                Creates or updates a unit of measure under the SKU identified by ID. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the SKU ID is not found. Side effects -- Creates or updates the unit of measure, plus any supplied price entries.
             operationId: postSkuIdSkuUnitOfMeasure
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20710,7 +20937,7 @@ paths:
     /skus/{id}/sku-virtual-settings:
         get:
             description:
-                Returns the virtual settings of the SKU identified by id. Returns 404 when the SKU id is not found.
+                Returns the virtual settings of the SKU identified by ID. Returns 404 when the SKU ID is not found.
             operationId: getSkuIdSkuVirtualSettings
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20774,7 +21001,7 @@ paths:
     /skus/{id}/skuSubscriptionConfiguration:
         get:
             description:
-                Returns the subscription configuration of the SKU identified by id. Returns 404 when the SKU id is not found.
+                Returns the subscription configuration of the SKU identified by ID. Returns 404 when the SKU ID is not found.
             operationId: getSkuIdSkuSubscriptionConfiguration
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -20896,7 +21123,7 @@ paths:
                 -   Specification
         post:
             description:
-                Creates or updates a specification by trying id, external reference code, then key for resolution. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 400 when the key is invalid. Side effects -- Reindexes the specification; lookups by id/ERC/key fall through with debug logging.
+                Creates or updates a specification by trying ID, external reference code, then key for resolution. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 400 when the key is invalid. Side effects -- Reindexes the specification; lookups by ID/ERC/key fall through with debug logging.
             operationId: postSpecification
             requestBody:
                 content:
@@ -21249,7 +21476,7 @@ paths:
     /specifications/{id}:
         delete:
             description:
-                Deletes the specification identified by id. Returns 404 when the record is not found. Side effects -- Cascades through product specification value listeners; reindexes affected products.
+                Deletes the specification identified by ID. Returns 404 when the record is not found. Side effects -- Cascades through product specification value listeners; reindexes affected products.
             operationId: deleteSpecification
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -21283,7 +21510,7 @@ paths:
                 -   Specification
         get:
             description:
-                Fetches the specification identified by id. Returns 404 when the id is not found.
+                Fetches the specification identified by ID. Returns 404 when the ID is not found.
             operationId: getSpecification
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -21346,7 +21573,7 @@ paths:
                 -   Specification
         patch:
             description:
-                Partially updates the specification identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the specification and any products that reference it.
+                Partially updates the specification identified by ID. Returns 404 when the ID is not found. Side effects -- Reindexes the specification and any products that reference it.
             operationId: patchSpecification
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -21436,7 +21663,7 @@ paths:
     /specifications/{id}/list-type-definitions:
         get:
             description:
-                Lists the list type definitions associated with the specification option identified by id. Returns 404 when the id is not found.
+                Lists the list type definitions associated with the specification option identified by ID. Returns 404 when the ID is not found.
             operationId: getSpecificationIdListTypeDefinitionsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -21493,7 +21720,7 @@ paths:
                 -   ListTypeDefinition
         post:
             description:
-                Creates a list type definition and attaches it to the specification option identified by id. Returns 404 when the specification id is not found. Side effects -- Creates a new list type definition and attaches it to the specification option.
+                Creates a list type definition and attaches it to the specification option identified by ID. Returns 404 when the specification ID is not found. Side effects -- Creates a new list type definition and attaches it to the specification option.
             operationId: postSpecificationIdListTypeDefinition
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
