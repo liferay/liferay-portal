@@ -113,6 +113,19 @@ tests:
             -   contains:
                     content:
                         apiGroups:
+                            -   ""
+                        resources:
+                            -   namespaces
+                        verbs:
+                            -   get
+                            -   list
+                            -   patch
+                            -   update
+                            -   watch
+                    path: rules
+            -   contains:
+                    content:
+                        apiGroups:
                             -   licensing.liferay.com
                         resources:
                             -   liferayenvironments

@@ -79,7 +79,7 @@ tests:
                     path: webhooks[0].failurePolicy
                     value: Fail
             -   equal:
-                    path: webhooks[0].namespaceSelector.matchLabels["licensing.liferay.com/enforce-node-limit"]
+                    path: webhooks[0].namespaceSelector.matchLabels["licensing.liferay.com/environment"]
                     value: "true"
             -   isNotEmpty:
                     path: webhooks[0].clientConfig.caBundle

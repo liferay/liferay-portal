@@ -67,7 +67,7 @@ webhooks:
         name: vstatefulsetscale.licensing.liferay.com
         namespaceSelector:
             matchLabels:
-                licensing.liferay.com/enforce-node-limit: "true"
+                licensing.liferay.com/environment: "true"
         rules:
             -   apiGroups:
                     -   apps

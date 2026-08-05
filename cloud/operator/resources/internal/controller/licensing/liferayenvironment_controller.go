@@ -38,10 +38,11 @@ const (
 	conditionLicenseValid          = "LicenseValid"
 	conditionProvisioningReachable = "ProvisioningReachable"
 	entitlementsSecretSuffix       = "-entitlements"
+	environmentLabel               = "licensing.liferay.com/environment"
 	identitySecretSuffix           = "-identity"
 )
 
-// +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;watch
+// +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;patch;update;watch
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;patch;update;watch
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
@@ -58,6 +59,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	environmentID, error := liferayEnvironmentReconciler.resolveEnvironmentID(context, liferayEnvironment.Namespace)
 
 	if error != nil {
+		return controllerruntime.Result{}, error
+	}
+
+	if error := liferayEnvironmentReconciler.ensureNamespaceEnvironmentLabel(
+		context, liferayEnvironment.Namespace,
+	); error != nil {
 		return controllerruntime.Result{}, error
 	}
 
@@ -364,6 +371,35 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity
 	logf.FromContext(context).Info("Generated identity keypair", "secret", identityName)
 
 	return privateKey, nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureNamespaceEnvironmentLabel(
+	context context.Context,
+	namespaceName string,
+) error {
+	namespace := &corev1.Namespace{}
+
+	if error := liferayEnvironmentReconciler.Get(
+		context, types.NamespacedName{Name: namespaceName}, namespace,
+	); error != nil {
+		return error
+	}
+
+	if namespace.Labels[environmentLabel] == "true" {
+		return nil
+	}
+
+	if namespace.Labels == nil {
+		namespace.Labels = map[string]string{}
+	}
+
+	namespace.Labels[environmentLabel] = "true"
+
+	logf.FromContext(context).Info(
+		"Labeled namespace as a licensed environment", "namespace", namespaceName,
+	)
+
+	return liferayEnvironmentReconciler.Update(context, namespace)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
