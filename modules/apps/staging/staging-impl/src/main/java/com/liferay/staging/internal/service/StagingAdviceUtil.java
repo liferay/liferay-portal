@@ -36,7 +36,6 @@ public class StagingAdviceUtil {
 		AopInvocationHandler aopInvocationHandler =
 			ProxyUtil.fetchInvocationHandler(
 				service, AopInvocationHandler.class);
-
 		ServiceReference<T> serviceReference =
 			bundleContext.getServiceReference(serviceClass);
 
