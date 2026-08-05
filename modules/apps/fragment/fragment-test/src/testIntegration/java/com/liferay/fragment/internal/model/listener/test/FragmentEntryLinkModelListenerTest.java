@@ -171,6 +171,17 @@ public class FragmentEntryLinkModelListenerTest {
 			FragmentEntryLink fragmentEntryLink, Layout layout)
 		throws Exception {
 
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setCompanyId(fragmentEntryLink.getCompanyId());
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
+			new MockLiferayPortletActionResponse());
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
@@ -187,20 +198,12 @@ public class FragmentEntryLinkModelListenerTest {
 		themeDisplay.setRealUser(TestPropsValues.getUser());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
-
-		mockLiferayPortletActionRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_RESPONSE,
-			new MockLiferayPortletActionResponse());
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(fragmentEntryLink.getCompanyId());
 		serviceContext.setRequest(
 			PortalUtil.getHttpServletRequest(mockLiferayPortletActionRequest));
+
 		serviceContext.setScopeGroupId(TestPropsValues.getGroupId());
 		serviceContext.setUserId(TestPropsValues.getUserId());
 
