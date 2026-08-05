@@ -4,6 +4,8 @@
 	&-container {
 		border: 1px solid $secondary-l3;
 		border-radius: 10px;
+		// stylelint-disable-next-line property-no-unknown
+		container-type: inline-size;
 		margin-bottom: 1.5rem;
 		width: 100%;
 	}
@@ -42,9 +44,9 @@
 			font-size: 0.875rem;
 
 			.form-group {
-				height: 32px;
 				margin-bottom: 0;
 				max-width: 12.5rem;
+				min-height: 32px;
 				width: 100%;
 			}
 		}
@@ -83,6 +85,20 @@
 			min-height: unset !important;
 			transition: opacity 0.2s;
 			width: 100%;
+		}
+	}
+
+	// stylelint-disable-next-line at-rule-no-unknown
+	@container (max-width: 300px) {
+		&-content {
+			&-container {
+				grid-template-columns: 1fr;
+				row-gap: 0.25rem;
+			}
+
+			&-item:not(:first-child) &-label {
+				margin-top: 0.75rem;
+			}
 		}
 	}
 }
