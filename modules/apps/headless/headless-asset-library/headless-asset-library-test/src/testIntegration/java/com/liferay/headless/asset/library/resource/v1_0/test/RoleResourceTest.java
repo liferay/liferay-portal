@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserGroupGroupRoleLocalService;
@@ -338,7 +338,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		for (com.liferay.portal.kernel.model.Role viewableRole :
 				viewableRoles) {
 
-			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+			_resourcePermissionLocalService.setResourcePermissions(
 				viewableRole.getCompanyId(),
 				com.liferay.portal.kernel.model.Role.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
@@ -703,6 +703,9 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@Inject
 	private RoleLocalService _roleLocalService;

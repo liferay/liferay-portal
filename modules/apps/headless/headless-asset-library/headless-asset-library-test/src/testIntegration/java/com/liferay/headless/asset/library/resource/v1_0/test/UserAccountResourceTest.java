@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
+import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -361,7 +361,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
 
-		List<String> actionIds = ResourceActionsUtil.getModelResourceActions(
+		List<String> actionIds = _resourceActions.getModelResourceActions(
 			DepotEntry.class.getName());
 
 		actionIds.remove(ActionKeys.ASSIGN_MEMBERS);
@@ -498,6 +498,9 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		assertValid(putUserAccount);
 	}
+
+	@Inject
+	private ResourceActions _resourceActions;
 
 	@Inject
 	private RoleLocalService _roleLocalService;
