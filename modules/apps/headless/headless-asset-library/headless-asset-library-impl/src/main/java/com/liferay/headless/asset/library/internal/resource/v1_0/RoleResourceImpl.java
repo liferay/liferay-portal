@@ -149,11 +149,11 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 					group.getGroupId()));
 		}
 
+		List<com.liferay.portal.kernel.model.Role> updatedRoles = null;
+
 		List<com.liferay.portal.kernel.model.Role> currentRoles =
 			_roleLocalService.getUserGroupRoles(
 				user.getUserId(), group.getGroupId());
-
-		List<com.liferay.portal.kernel.model.Role> updatedRoles;
 
 		if (_isDefaultAssetLibraryMemberRoleAssignment(currentRoles, roles)) {
 			_checkAssetLibraryAdminOrAssignMembers(group.getGroupId());
