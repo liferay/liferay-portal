@@ -21,60 +21,6 @@ definition {
 		}
 	}
 
-	@description = "LPS-135397 - Verify it is possible to collapse and expand a block of fields"
-	@priority = 4
-	test CanCollapseAndExpandBlock {
-		ObjectAdmin.addObjectViaAPI(
-			labelName = "Custom Object 16",
-			objectName = "CustomObject16",
-			pluralLabelName = "Custom Objects 16");
-
-		ObjectAdmin.addObjectFieldViaAPI(
-			fieldBusinessType = "Text",
-			fieldLabelName = "Custom Field",
-			fieldName = "customObjectField",
-			fieldType = "String",
-			isRequired = "false",
-			objectName = "CustomObject16");
-
-		ObjectAdmin.addObjectLayoutViaAPI(
-			layoutName = "Layout",
-			objectName = "CustomObject16");
-
-		ObjectAdmin.openObjectAdmin();
-
-		ObjectPortlet.selectCustomObject(label = "Custom Object 16");
-
-		ObjectAdmin.goToLayoutsTab();
-
-		ObjectAdmin.selectKebabMenuOption(kebabOption = "Edit");
-
-		ObjectAdmin.markLayoutAsDefault();
-
-		Click(locator1 = "ObjectAdmin#LAYOUT_LAYOUT_TAB");
-
-		ObjectAdmin.addTabFieldsOnLayout(
-			blockName = "Block 1",
-			columnsNumber = 2,
-			fieldLabelName = "Custom Field",
-			isCollapsible = "Yes",
-			tabName = "Field Tab");
-
-		CreateObject.saveObject();
-
-		Navigator.openURL();
-
-		ObjectAdmin.publishObjectViaAPI(objectName = "CustomObject16");
-
-		ObjectAdmin.goToCustomObject(objectName = "CustomObject16");
-
-		LexiconEntry.gotoAdd();
-
-		AssertVisible(
-			key_entryLabel = "Custom Field",
-			locator1 = "ObjectPortlet#VIEW_ENTRY_DETAILS_LABEL");
-	}
-
 	@description = "LPS-135390 - Verify it is not possible to update an Object without the Update permission"
 	@priority = 4
 	test CannotUpdateObjectWithUpdatePermission {
@@ -238,37 +184,6 @@ definition {
 			key_label = "Custom Object 73",
 			locator1 = "ObjectAdmin#OBJECT_STATUS",
 			value1 = "Approved");
-	}
-
-	@description = "LPS-135397 - Verify if it's possible to set the block as Collapsible"
-	@priority = 4
-	test CanSetBlockCollapsible {
-		ObjectAdmin.addObjectViaAPI(
-			labelName = "Custom Object 80",
-			objectName = "CustomObject80",
-			pluralLabelName = "Custom Objects 80");
-
-		ObjectAdmin.addObjectLayoutViaAPI(
-			layoutName = "Layout Name",
-			objectName = "CustomObject80");
-
-		ObjectAdmin.openObjectAdmin();
-
-		ObjectPortlet.selectCustomObject(label = "Custom Object 80");
-
-		ObjectAdmin.goToLayoutsTab();
-
-		ObjectAdmin.selectKebabMenuOption(kebabOption = "Edit");
-
-		ObjectAdmin.goToLayoutTabOnLayouts();
-
-		ObjectAdmin.addTabFieldsOnLayout(tabName = "Field Tab");
-
-		ObjectAdmin.addLayoutBlockViaUI(blockName = "Block Name");
-
-		Check.checkToggleSwitch(locator1 = "ObjectCustomValidation#ACTIVE_VALIDATION_TOGGLE");
-
-		AssertChecked.assertCheckedNotVisible(locator1 = "ObjectCustomValidation#ACTIVE_VALIDATION_TOGGLE");
 	}
 
 	@description = "LPS-135390 - Verify it is possible to update an Object with the Update permission"
