@@ -859,7 +859,7 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 
 		Layout layout = themeDisplay.getLayout();
 
-		if (layout.isTypeContent() && layout.isDraftLayout()) {
+		if (layout.isDraftLayout() && layout.isTypeContent()) {
 			return true;
 		}
 
