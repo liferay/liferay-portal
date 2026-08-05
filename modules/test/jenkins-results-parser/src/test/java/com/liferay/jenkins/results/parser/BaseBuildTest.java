@@ -5,10 +5,14 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.lang.reflect.Method;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -67,6 +71,36 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testLoadParametersFromQueryString() {
+		Map<String, String> parameters = _loadParametersFromQueryString(
+			JenkinsResultsParserUtil.combine(
+				"token=abc123&PORTAL_BATCH_TEST_SELECTOR=PortalSmoke%23Smoke",
+				"&TESTRAY_PROJECT_NAME=AWS%20%26%20CI",
+				"&PORTAL_BUILD_NOTES=100%25%20pass&PORTAL_UPSTREAM=master",
+				"&AXIS_VARIABLE=&PORTAL_QUERY=a%3Db",
+				"&PORTAL%20BUILD%20NOTES=encoded%20name"));
+
+		Assert.assertEquals("", parameters.get("AXIS_VARIABLE"));
+		Assert.assertEquals(
+			"PortalSmoke#Smoke", parameters.get("PORTAL_BATCH_TEST_SELECTOR"));
+		Assert.assertEquals("100% pass", parameters.get("PORTAL_BUILD_NOTES"));
+		Assert.assertEquals("a=b", parameters.get("PORTAL_QUERY"));
+		Assert.assertEquals("master", parameters.get("PORTAL_UPSTREAM"));
+		Assert.assertEquals(
+			"encoded name", parameters.get("PORTAL BUILD NOTES"));
+		Assert.assertEquals("AWS & CI", parameters.get("TESTRAY_PROJECT_NAME"));
+	}
+
+	@Test
+	public void testLoadParametersFromQueryStringWithIllegalEscape() {
+		Map<String, String> parameters = _loadParametersFromQueryString(
+			"PORTAL_BUILD_NOTES=100% pass&PORTAL_UPSTREAM=master");
+
+		Assert.assertEquals("100% pass", parameters.get("PORTAL_BUILD_NOTES"));
+		Assert.assertEquals("master", parameters.get("PORTAL_UPSTREAM"));
+	}
+
+	@Test
 	public void testSaveBuildURLInBuildDatabase() {
 		_testSaveBuildURLInBuildDatabase(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true);
@@ -74,6 +108,75 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 			RandomTestUtil.randomString(), null, false);
 		_testSaveBuildURLInBuildDatabase(
 			null, RandomTestUtil.randomString(), false);
+	}
+
+	@Test
+	public void testSetInvocationURL() throws Exception {
+		BaseBuild baseBuild = Mockito.mock(BaseBuild.class);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBuild, "_parameters", new HashMap<String, String>());
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).loadParametersFromQueryString(
+			Mockito.anyString()
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).setJobName(
+			Mockito.anyString()
+		);
+
+		Method method = BaseBuild.class.getDeclaredMethod(
+			"_setInvocationURL", String.class);
+
+		method.setAccessible(true);
+
+		method.invoke(
+			baseBuild,
+			JenkinsResultsParserUtil.combine(
+				"https://test-1.liferay.com/job/",
+				"test-portal-acceptance-pullrequest%28master%29",
+				"/buildWithParameters?",
+				"PORTAL_BATCH_TEST_SELECTOR=PortalSmoke%23Smoke",
+				"&TESTRAY_PROJECT_NAME=AWS%20%26%20CI",
+				"&PORTAL_BUILD_NOTES=100%25%20pass"));
+
+		Map<String, String> parameters = ReflectionTestUtil.getFieldValue(
+			baseBuild, "_parameters");
+
+		Assert.assertEquals(
+			"PortalSmoke#Smoke", parameters.get("PORTAL_BATCH_TEST_SELECTOR"));
+		Assert.assertEquals("100% pass", parameters.get("PORTAL_BUILD_NOTES"));
+		Assert.assertEquals("AWS & CI", parameters.get("TESTRAY_PROJECT_NAME"));
+
+		Assert.assertEquals(
+			"test-portal-acceptance-pullrequest(master)",
+			ReflectionTestUtil.getFieldValue(baseBuild, "_jobName"));
+	}
+
+	private Map<String, String> _loadParametersFromQueryString(
+		String queryString) {
+
+		BaseBuild baseBuild = Mockito.mock(BaseBuild.class);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBuild, "_parameters", new HashMap<String, String>());
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).loadParametersFromQueryString(
+			Mockito.anyString()
+		);
+
+		baseBuild.loadParametersFromQueryString(queryString);
+
+		return ReflectionTestUtil.getFieldValue(baseBuild, "_parameters");
 	}
 
 	private BaseDownstreamBuild _mockDownstreamBuild(String jobName) {

@@ -28,6 +28,49 @@ import org.mockito.Mockito;
 public class JenkinsResultsParserUtilTest
 	extends com.liferay.jenkins.results.parser.Test {
 
+	@Test
+	public void testDecodeURLParameterPart() {
+		testEquals(
+			"100% pass",
+			JenkinsResultsParserUtil.decodeURLParameterPart("100%25%20pass"));
+		testEquals(
+			"100%%20pass",
+			JenkinsResultsParserUtil.decodeURLParameterPart("100%%20pass"));
+		testEquals(
+			"AWS & CI",
+			JenkinsResultsParserUtil.decodeURLParameterPart("AWS%20%26%20CI"));
+		testEquals(
+			"PortalSmoke#Smoke",
+			JenkinsResultsParserUtil.decodeURLParameterPart(
+				"PortalSmoke%23Smoke"));
+		testEquals(
+			"a+b", JenkinsResultsParserUtil.decodeURLParameterPart("a%2Bb"));
+		testEquals(
+			"master",
+			JenkinsResultsParserUtil.decodeURLParameterPart("master"));
+	}
+
+	@Test
+	public void testEncodeURLParameterPart() {
+		testEquals(
+			"100%25%20pass",
+			JenkinsResultsParserUtil.encodeURLParameterPart("100% pass"));
+		testEquals(
+			"AWS%20CI",
+			JenkinsResultsParserUtil.encodeURLParameterPart("AWS CI"));
+		testEquals(
+			"PortalSmoke%23Smoke",
+			JenkinsResultsParserUtil.encodeURLParameterPart(
+				"PortalSmoke#Smoke"));
+		testEquals(
+			"a%26b", JenkinsResultsParserUtil.encodeURLParameterPart("a&b"));
+		testEquals(
+			"a%2Bb", JenkinsResultsParserUtil.encodeURLParameterPart("a+b"));
+		testEquals(
+			"master",
+			JenkinsResultsParserUtil.encodeURLParameterPart("master"));
+	}
+
 	@Test(timeout = 30000)
 	public void testExecuteJenkinsScriptReadTimeout() throws Exception {
 		try (ServerSocket serverSocket = _createServerSocket()) {
