@@ -7,8 +7,12 @@ import {Locator, Page} from '@playwright/test';
 
 import {FDSTablePage} from './FDSTablePage';
 
-const DATA_MASKS_URL =
-	'/group/guest/~/control_panel/manage?p_p_id=com_liferay_mcp_server_web_internal_portlet_MCPServerPortlet';
+const MCP_SERVER_PORTLET_ID =
+	'com_liferay_mcp_server_web_internal_portlet_MCPServerPortlet';
+
+const DATA_MASKS_URL = `/group/guest/~/control_panel/manage?p_p_id=${MCP_SERVER_PORTLET_ID}&_${MCP_SERVER_PORTLET_ID}_mvcRenderCommandName=${encodeURIComponent(
+	'/mcp_server/view_data_masks'
+)}`;
 
 export class DataMasksPage extends FDSTablePage {
 	readonly newDataMaskButton: Locator;

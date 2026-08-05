@@ -31,7 +31,7 @@ import org.osgi.service.component.annotations.Component;
 		"jakarta.portlet.display-name=MCP Server",
 		"jakarta.portlet.expiration-cache=0",
 		"jakarta.portlet.init-param.template-path=/META-INF/resources/",
-		"jakarta.portlet.init-param.view-template=/view_data_masks.jsp",
+		"jakarta.portlet.init-param.view-template=/view_profiles.jsp",
 		"jakarta.portlet.name=" + MCPServerPortletKeys.MCP_SERVER,
 		"jakarta.portlet.resource-bundle=content.Language",
 		"jakarta.portlet.security-role-ref=administrator",

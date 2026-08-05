@@ -37,6 +37,7 @@ public class MCPServerNavigationDisplayContext {
 		return NavigationItemListBuilder.add(
 			navigationItem -> {
 				navigationItem.setActive(
+					Validator.isNull(mvcRenderCommandName) ||
 					mvcRenderCommandName.equals("/mcp_server/view_profiles"));
 				navigationItem.setHref(
 					PortletURLBuilder.createRenderURL(
@@ -63,11 +64,14 @@ public class MCPServerNavigationDisplayContext {
 		).add(
 			navigationItem -> {
 				navigationItem.setActive(
-					Validator.isNull(mvcRenderCommandName) ||
+					mvcRenderCommandName.equals(
+						"/mcp_server/view_data_masks") ||
 					mvcRenderCommandName.equals("/mcp_server/edit_data_mask"));
 				navigationItem.setHref(
 					PortletURLBuilder.createRenderURL(
 						_liferayPortletResponse
+					).setMVCRenderCommandName(
+						"/mcp_server/view_data_masks"
 					).buildString());
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "data-masks"));
