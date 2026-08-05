@@ -12,11 +12,23 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil.HttpRequestMe
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.charset.StandardCharsets;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
@@ -31,7 +43,83 @@ import org.json.JSONObject;
  */
 public abstract class SecretsUtil {
 
-	public static void createItem(
+	public static void generateJenkinsAPITokenSecret(String key) {
+		Matcher matcher = _itemReferencePattern.matcher(key);
+
+		if (!matcher.matches()) {
+			throw new RuntimeException("Invalid item reference " + key);
+		}
+
+		String vaultName = matcher.group("vaultName");
+
+		Vault vault = Vault.getInstance(vaultName);
+
+		if (vault == null) {
+			throw new RuntimeException("Unable to find vault " + vaultName);
+		}
+
+		String itemTitle = matcher.group("itemTitle");
+
+		if (vault.getItem(itemTitle) != null) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Item ", itemTitle, " already exists in vault ",
+					vaultName));
+		}
+
+		_createItem(vault, itemTitle, _generateJenkinsAPITokenMap());
+	}
+
+	public static String getSecret(String key) {
+		Matcher matcher = _secretReferencePattern.matcher(key);
+
+		if (matcher.matches()) {
+			String secret = getSecret(
+				matcher.group("vaultName"), matcher.group("itemTitle"),
+				matcher.group("fieldLabel"));
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(secret)) {
+				return secret;
+			}
+		}
+
+		return key;
+	}
+
+	public static String getSecret(
+		String vaultName, String itemTitle, String fieldLabel) {
+
+		String secretReference = _getSecretReference(
+			vaultName, itemTitle, fieldLabel);
+
+		String secret = _connectSecrets.get(secretReference);
+
+		if (secret != null) {
+			return secret;
+		}
+
+		_loadConnectSecrets();
+
+		secret = _connectSecrets.get(secretReference);
+
+		if (secret == null) {
+			System.out.println("Unable to find secret " + secretReference);
+		}
+
+		return secret;
+	}
+
+	public static boolean isSecretProperty(String value) {
+		if (value == null) {
+			return false;
+		}
+
+		Matcher matcher = _secretReferencePattern.matcher(value);
+
+		return matcher.matches();
+	}
+
+	private static void _createItem(
 		Vault vault, String itemTitle, Map<String, String> itemFieldsMap) {
 
 		JSONArray fieldsJSONArray = new JSONArray();
@@ -85,53 +173,45 @@ public abstract class SecretsUtil {
 		}
 	}
 
-	public static String getSecret(String key) {
-		Matcher matcher = _secretReferencePattern.matcher(key);
+	private static Map<String, String> _generateJenkinsAPITokenMap() {
+		byte[] randomBytes = new byte[16];
 
-		if (matcher.matches()) {
-			String secret = getSecret(
-				matcher.group("vaultName"), matcher.group("itemTitle"),
-				matcher.group("fieldLabel"));
+		SecureRandom secureRandom = new SecureRandom();
 
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(secret)) {
-				return secret;
-			}
+		secureRandom.nextBytes(randomBytes);
+
+		MessageDigest messageDigest = null;
+
+		try {
+			messageDigest = MessageDigest.getInstance(_API_TOKEN_ALGORITHM);
+		}
+		catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+			throw new RuntimeException(
+				"Unable to generate API token hash", noSuchAlgorithmException);
 		}
 
-		return key;
-	}
+		String secretValue = _toHexString(randomBytes);
 
-	public static String getSecret(
-		String vaultName, String itemTitle, String fieldLabel) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss.SSS z");
 
-		String secretReference = _getSecretReference(
-			vaultName, itemTitle, fieldLabel);
+		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-		String secret = _connectSecrets.get(secretReference);
+		UUID uuid = UUID.randomUUID();
 
-		if (secret != null) {
-			return secret;
-		}
+		Map<String, String> apiTokenMap = new LinkedHashMap<>();
 
-		_loadConnectSecrets();
+		apiTokenMap.put("creationDate", simpleDateFormat.format(new Date()));
+		apiTokenMap.put(
+			"hash",
+			_toHexString(
+				messageDigest.digest(
+					secretValue.getBytes(StandardCharsets.US_ASCII))));
+		apiTokenMap.put("plainValue", _API_TOKEN_VERSION + secretValue);
+		apiTokenMap.put("uuid", uuid.toString());
+		apiTokenMap.put("version", _API_TOKEN_VERSION);
 
-		secret = _connectSecrets.get(secretReference);
-
-		if (secret == null) {
-			System.out.println("Unable to find secret " + secretReference);
-		}
-
-		return secret;
-	}
-
-	public static boolean isSecretProperty(String value) {
-		if (value == null) {
-			return false;
-		}
-
-		Matcher matcher = _secretReferencePattern.matcher(value);
-
-		return matcher.matches();
+		return apiTokenMap;
 	}
 
 	private static synchronized String _getAccessToken() {
@@ -372,6 +452,16 @@ public abstract class SecretsUtil {
 			itemFieldValue);
 	}
 
+	private static String _toHexString(byte[] bytes) {
+		StringBuilder sb = new StringBuilder();
+
+		for (byte b : bytes) {
+			sb.append(String.format("%02x", b & 0xff));
+		}
+
+		return sb.toString();
+	}
+
 	private static JSONArray _toJSONArray(String path) {
 		if (!_isSecretsConfigured()) {
 			return new JSONArray();
@@ -445,12 +535,18 @@ public abstract class SecretsUtil {
 		}
 	}
 
+	private static final String _API_TOKEN_ALGORITHM = "SHA-256";
+
+	private static final String _API_TOKEN_VERSION = "11";
+
 	private static String _accessToken;
 	private static final Map<String, String> _connectSecrets =
 		new ConcurrentHashMap<>();
 	private static boolean _connectSecretsLoaded;
 	private static String _connectURL;
 	private static BearerHTTPAuthorization _httpAuthorization;
+	private static final Pattern _itemReferencePattern = Pattern.compile(
+		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)");
 	private static final Pattern _secretReferencePattern = Pattern.compile(
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
 
