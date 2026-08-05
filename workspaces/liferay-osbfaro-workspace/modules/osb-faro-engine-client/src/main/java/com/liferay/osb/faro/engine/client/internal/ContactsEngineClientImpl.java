@@ -67,7 +67,7 @@ import com.liferay.osb.faro.engine.client.model.Interest;
 import com.liferay.osb.faro.engine.client.model.PageExperience;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
 import com.liferay.osb.faro.engine.client.model.PagedModel;
-import com.liferay.osb.faro.engine.client.model.ProjectDataSourceCount;
+import com.liferay.osb.faro.engine.client.model.ProjectMetric;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Provider;
 import com.liferay.osb.faro.engine.client.model.RealTimeMembershipMetric;
@@ -3291,13 +3291,11 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<ProjectDataSourceCount> getProjectDataSourceCounts(
-		FaroProject faroProject) {
-
-		PagedModel<?, ProjectDataSourceCount> pagedModel = get(
-			faroProject, Rels.PROJECTS_DATA_SOURCE_COUNTS,
+	public Results<ProjectMetric> getProjectMetrics(FaroProject faroProject) {
+		PagedModel<?, ProjectMetric> pagedModel = get(
+			faroProject, Rels.PROJECTS_METRICS,
 			new ParameterizedTypeReference
-				<EntityModelPagedModel<ProjectDataSourceCount>>() {
+				<EntityModelPagedModel<ProjectMetric>>() {
 			},
 			getUriVariables(faroProject));
 

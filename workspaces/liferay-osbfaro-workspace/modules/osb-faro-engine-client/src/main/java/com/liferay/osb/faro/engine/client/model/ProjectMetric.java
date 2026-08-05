@@ -13,7 +13,12 @@ import java.util.Map;
 /**
  * @author Caio Pinheiro
  */
-public class ProjectDataSourceCount {
+public class ProjectMetric {
+
+	@JsonProperty("batchSegmentsCount")
+	public long getBatchSegmentsCount() {
+		return _batchSegmentsCount;
+	}
 
 	@JsonProperty("connectorsConnected")
 	public long getConnectorsConnected() {
@@ -34,6 +39,15 @@ public class ProjectDataSourceCount {
 		return _projectId;
 	}
 
+	@JsonProperty("realTimeSegmentsCount")
+	public long getRealTimeSegmentsCount() {
+		return _realTimeSegmentsCount;
+	}
+
+	public void setBatchSegmentsCount(long batchSegmentsCount) {
+		_batchSegmentsCount = batchSegmentsCount;
+	}
+
 	public void setConnectorsConnected(long connectorsConnected) {
 		_connectorsConnected = connectorsConnected;
 	}
@@ -50,9 +64,15 @@ public class ProjectDataSourceCount {
 		_projectId = projectId;
 	}
 
+	public void setRealTimeSegmentsCount(long realTimeSegmentsCount) {
+		_realTimeSegmentsCount = realTimeSegmentsCount;
+	}
+
+	private long _batchSegmentsCount;
 	private long _connectorsConnected;
 	private long _dataSourcesConnected;
 	private Map<String, Object> _embeddedResources = new HashMap<>();
 	private String _projectId;
+	private long _realTimeSegmentsCount;
 
 }

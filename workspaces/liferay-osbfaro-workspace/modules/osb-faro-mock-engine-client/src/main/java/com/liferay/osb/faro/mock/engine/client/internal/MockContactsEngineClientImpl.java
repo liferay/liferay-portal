@@ -12,7 +12,7 @@ import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.DataSourceUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.engine.client.model.Individual;
-import com.liferay.osb.faro.engine.client.model.ProjectDataSourceCount;
+import com.liferay.osb.faro.engine.client.model.ProjectMetric;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.util.FilterBuilder;
@@ -167,10 +167,8 @@ public class MockContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<ProjectDataSourceCount> getProjectDataSourceCounts(
-		FaroProject faroProject) {
-
-		return contactsEngineClient.getProjectDataSourceCounts(faroProject);
+	public Results<ProjectMetric> getProjectMetrics(FaroProject faroProject) {
+		return contactsEngineClient.getProjectMetrics(faroProject);
 	}
 
 	@Override
