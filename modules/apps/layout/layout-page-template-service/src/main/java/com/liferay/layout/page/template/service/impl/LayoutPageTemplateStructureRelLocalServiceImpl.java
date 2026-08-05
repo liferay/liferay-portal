@@ -5,10 +5,8 @@
 
 package com.liferay.layout.page.template.service.impl;
 
-import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.service.base.LayoutPageTemplateStructureRelLocalServiceBaseImpl;
-import com.liferay.layout.page.template.service.persistence.LayoutPageTemplateStructurePersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -17,8 +15,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
-import com.liferay.segments.constants.SegmentsExperienceConstants;
-import com.liferay.segments.service.SegmentsExperienceLocalService;
 
 import java.util.Date;
 import java.util.List;
@@ -44,9 +40,6 @@ public class LayoutPageTemplateStructureRelLocalServiceImpl
 		throws PortalException {
 
 		User user = _userLocalService.getUser(userId);
-
-		segmentsExperienceId = _getSegmentsExperienceId(
-			layoutPageTemplateStructureId, segmentsExperienceId);
 
 		long layoutPageTemplateStructureRelId = counterLocalService.increment();
 
@@ -177,29 +170,6 @@ public class LayoutPageTemplateStructureRelLocalServiceImpl
 		return layoutPageTemplateStructureRelPersistence.update(
 			layoutPageTemplateStructureRel);
 	}
-
-	private long _getSegmentsExperienceId(
-			long layoutPageTemplateStructureId, long segmentsExperienceId)
-		throws PortalException {
-
-		if (segmentsExperienceId != SegmentsExperienceConstants.ID_DEFAULT) {
-			return segmentsExperienceId;
-		}
-
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			_layoutPageTemplateStructurePersistence.findByPrimaryKey(
-				layoutPageTemplateStructureId);
-
-		return _segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-			layoutPageTemplateStructure.getPlid());
-	}
-
-	@Reference
-	private LayoutPageTemplateStructurePersistence
-		_layoutPageTemplateStructurePersistence;
-
-	@Reference
-	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
