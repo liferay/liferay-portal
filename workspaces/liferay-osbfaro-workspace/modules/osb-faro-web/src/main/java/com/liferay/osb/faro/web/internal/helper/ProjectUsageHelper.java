@@ -11,8 +11,7 @@ import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.ApiUsage;
 import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
-import com.liferay.osb.faro.engine.client.model.IndividualSegment;
-import com.liferay.osb.faro.engine.client.model.ProjectDataSourceCount;
+import com.liferay.osb.faro.engine.client.model.ProjectMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.model.FaroDataSourceUsage;
 import com.liferay.osb.faro.model.FaroProject;
@@ -24,6 +23,8 @@ import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsage;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetric;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceUsageMetricDisplay;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -67,17 +68,24 @@ public class ProjectUsageHelper {
 
 		Date endDate = _parseUTCDate(endDateString);
 
-		Map<String, Map<String, ProjectDataSourceCount>>
-			projectDataSourceCountsMap = _getProjectDataSourceCountsMap(
-				faroProjects);
+		Map<String, Map<String, ProjectMetric>> projectMetricsMap =
+			_getProjectMetricsMap(faroProjects);
 
 		Date startDate = _parseUTCDate(startDateString);
 
 		for (FaroProject faroProject : faroProjects) {
-			dataSourceUsageMetricDisplays.add(
-				_getDataSourceUsageMetricDisplay(
-					apiUsageMetricsMap, endDate, faroProject,
-					projectDataSourceCountsMap, startDate));
+			try {
+				dataSourceUsageMetricDisplays.add(
+					_getDataSourceUsageMetricDisplay(
+						apiUsageMetricsMap, endDate, faroProject,
+						projectMetricsMap, startDate));
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to build data source usage metric display for " +
+						"Faro project " + faroProject.getFaroProjectId(),
+					exception);
+			}
 		}
 
 		return Page.of(
@@ -112,13 +120,21 @@ public class ProjectUsageHelper {
 
 			Map<String, ApiUsageMetric> apiUsageMetricMap = new HashMap<>();
 
-			Results<ApiUsageMetric> results =
-				_contactsEngineClient.getApiUsageMetrics(
-					faroProject, endDateString, startDateString);
+			try {
+				Results<ApiUsageMetric> results =
+					_contactsEngineClient.getApiUsageMetrics(
+						faroProject, endDateString, startDateString);
 
-			for (ApiUsageMetric apiUsageMetric : results.getItems()) {
-				apiUsageMetricMap.put(
-					apiUsageMetric.getProjectId(), apiUsageMetric);
+				for (ApiUsageMetric apiUsageMetric : results.getItems()) {
+					apiUsageMetricMap.put(
+						apiUsageMetric.getProjectId(), apiUsageMetric);
+				}
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to fetch API usage metrics for project " +
+						faroProject.getProjectId(),
+					exception);
 			}
 
 			apiUsageMetricsMap.put(serverLocation, apiUsageMetricMap);
@@ -130,8 +146,7 @@ public class ProjectUsageHelper {
 	private DataSourceUsageMetricDisplay _getDataSourceUsageMetricDisplay(
 			Map<String, Map<String, ApiUsageMetric>> apiUsageMetricsMap,
 			Date endDate, FaroProject faroProject,
-			Map<String, Map<String, ProjectDataSourceCount>>
-				projectDataSourceCountsMap,
+			Map<String, Map<String, ProjectMetric>> projectMetricsMap,
 			Date startDate)
 		throws Exception {
 
@@ -151,20 +166,22 @@ public class ProjectUsageHelper {
 			}
 		}
 
-		Map<String, Long> map = _getIndividualSegmentsMap(faroProject);
-
-		long dataSourcesCount = 0;
+		long batchSegmentsCount = 0;
 		long connectorsCount = 0;
+		long dataSourcesCount = 0;
+		long realTimeSegmentsCount = 0;
 
-		Map<String, ProjectDataSourceCount> projectDataSourceCountMap =
-			projectDataSourceCountsMap.get(faroProject.getServerLocation());
+		Map<String, ProjectMetric> projectMetricMap = projectMetricsMap.get(
+			faroProject.getServerLocation());
 
-		ProjectDataSourceCount projectDataSourceCount =
-			projectDataSourceCountMap.get(faroProject.getProjectId());
+		ProjectMetric projectMetric = projectMetricMap.get(
+			faroProject.getProjectId());
 
-		if (projectDataSourceCount != null) {
-			dataSourcesCount = projectDataSourceCount.getDataSourcesConnected();
-			connectorsCount = projectDataSourceCount.getConnectorsConnected();
+		if (projectMetric != null) {
+			batchSegmentsCount = projectMetric.getBatchSegmentsCount();
+			connectorsCount = projectMetric.getConnectorsConnected();
+			dataSourcesCount = projectMetric.getDataSourcesConnected();
+			realTimeSegmentsCount = projectMetric.getRealTimeSegmentsCount();
 		}
 
 		List<DataSourceUsage> dataSourceUsages = new ArrayList<>();
@@ -208,9 +225,8 @@ public class ProjectUsageHelper {
 		}
 
 		return new DataSourceUsageMetricDisplay(
-			apiUsageMetricDisplays,
-			map.getOrDefault(IndividualSegment.Type.BATCH.name(), 0L),
-			dataSourcesCount, connectorsCount, faroProject.getCorpProjectName(),
+			apiUsageMetricDisplays, batchSegmentsCount, dataSourcesCount,
+			connectorsCount, faroProject.getCorpProjectName(),
 			faroProject.getCorpProjectUuid(), dataSourceUsages,
 			DateUtil.formatDate(
 				new Date(faroProject.getLastAccessTime()),
@@ -219,59 +235,44 @@ public class ProjectUsageHelper {
 				faroProject.getLastAnniversaryDate(), DateUtil.PATTERN_DATE),
 			!StringUtil.equals(
 				faroProject.getState(), FaroProjectConstants.STATE_READY),
-			map.getOrDefault(IndividualSegment.Type.REAL_TIME.name(), 0L),
-			faroProject.getWeDeployKey());
+			realTimeSegmentsCount, faroProject.getWeDeployKey());
 	}
 
-	private Map<String, Long> _getIndividualSegmentsMap(
-		FaroProject faroProject) {
+	private Map<String, Map<String, ProjectMetric>> _getProjectMetricsMap(
+		List<FaroProject> faroProjects) {
 
-		Map<String, Long> map = new HashMap<>();
-
-		Results<IndividualSegment> results =
-			_contactsEngineClient.getIndividualSegments(
-				faroProject, null, null, null, null, null, null, null, null,
-				IndividualSegment.Status.ACTIVE.name(), 1, 10000, null);
-
-		for (IndividualSegment individualSegment : results.getItems()) {
-			map.merge(individualSegment.getSegmentType(), 1L, Long::sum);
-		}
-
-		return map;
-	}
-
-	private Map<String, Map<String, ProjectDataSourceCount>>
-		_getProjectDataSourceCountsMap(List<FaroProject> faroProjects) {
-
-		Map<String, Map<String, ProjectDataSourceCount>>
-			projectDataSourceCountsMap = new HashMap<>();
+		Map<String, Map<String, ProjectMetric>> projectMetricsMap =
+			new HashMap<>();
 
 		for (FaroProject faroProject : faroProjects) {
 			String serverLocation = faroProject.getServerLocation();
 
-			if (projectDataSourceCountsMap.containsKey(serverLocation)) {
+			if (projectMetricsMap.containsKey(serverLocation)) {
 				continue;
 			}
 
-			Map<String, ProjectDataSourceCount> projectDataSourceCountMap =
-				new HashMap<>();
+			Map<String, ProjectMetric> projectMetricMap = new HashMap<>();
 
-			Results<ProjectDataSourceCount> results =
-				_contactsEngineClient.getProjectDataSourceCounts(faroProject);
+			try {
+				Results<ProjectMetric> results =
+					_contactsEngineClient.getProjectMetrics(faroProject);
 
-			for (ProjectDataSourceCount projectDataSourceCount :
-					results.getItems()) {
-
-				projectDataSourceCountMap.put(
-					projectDataSourceCount.getProjectId(),
-					projectDataSourceCount);
+				for (ProjectMetric projectMetric : results.getItems()) {
+					projectMetricMap.put(
+						projectMetric.getProjectId(), projectMetric);
+				}
+			}
+			catch (Exception exception) {
+				_log.error(
+					"Unable to fetch project metrics for project " +
+						faroProject.getProjectId(),
+					exception);
 			}
 
-			projectDataSourceCountsMap.put(
-				serverLocation, projectDataSourceCountMap);
+			projectMetricsMap.put(serverLocation, projectMetricMap);
 		}
 
-		return projectDataSourceCountsMap;
+		return projectMetricsMap;
 	}
 
 	private Date _parseUTCDate(String dateString) {
@@ -287,6 +288,9 @@ public class ProjectUsageHelper {
 
 		return Date.from(zonedDateTime.toInstant());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ProjectUsageHelper.class);
 
 	private static final DateTimeFormatter _dateTimeFormatter =
 		DateTimeFormatter.ofPattern(DateUtil.PATTERN_DATE);
