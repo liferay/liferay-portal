@@ -1,6 +1,7 @@
 {
 	"friendlyURL": "/analytics",
 	"hidden": true,
+	"name": "Analytics",
 	"name_i18n": {
 		"en_US": "Analytics"
 	},

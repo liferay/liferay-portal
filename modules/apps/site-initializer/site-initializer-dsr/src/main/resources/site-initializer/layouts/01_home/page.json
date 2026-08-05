@@ -1,6 +1,7 @@
 {
 	"friendlyURL": "/home",
 	"hidden": false,
+	"name": "Home",
 	"name_i18n": {
 		"en_US": "Home"
 	},
