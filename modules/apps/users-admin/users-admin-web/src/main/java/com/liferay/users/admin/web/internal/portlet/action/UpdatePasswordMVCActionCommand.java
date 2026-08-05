@@ -79,7 +79,8 @@ public class UpdatePasswordMVCActionCommand extends BaseMVCActionCommand {
 			boolean ldapPasswordPolicyEnabled =
 				LDAPSettingsUtil.isPasswordPolicyEnabled(user.getCompanyId());
 
-			if ((user.getLastLoginDate() == null) &&
+			if (((user.getLastLoginDate() == null) ||
+				 (themeDisplay.getUserId() != user.getUserId())) &&
 				(((passwordPolicy == null) && !ldapPasswordPolicyEnabled) ||
 				 ((passwordPolicy != null) && passwordPolicy.isChangeable() &&
 				  passwordPolicy.isChangeRequired()))) {
