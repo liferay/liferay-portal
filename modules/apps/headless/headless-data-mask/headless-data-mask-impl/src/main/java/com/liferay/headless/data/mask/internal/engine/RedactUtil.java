@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +23,7 @@ public class RedactUtil {
 	}
 
 	public static long newDeadline() {
-		return System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(_TIMEOUT);
+		return System.currentTimeMillis() + _TIMEOUT;
 	}
 
 	public static String redact(
@@ -137,7 +136,7 @@ public class RedactUtil {
 
 		@Override
 		public char charAt(int index) {
-			if (System.nanoTime() > _deadline) {
+			if (System.currentTimeMillis() > _deadline) {
 				throw new RedactTimeoutException(_TIMEOUT);
 			}
 
