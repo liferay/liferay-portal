@@ -78,6 +78,8 @@ jest.mock('frontend-js-web', () => ({
 	}),
 }));
 
+const DISCARD_URL = '/o/cmp/projects/39871';
+
 const SUCCESS_MESSAGE_KEY =
 	'com.liferay.site.cmp.site.initializer.successMessage';
 
@@ -145,42 +147,24 @@ describe('EditorToolbar', () => {
 		expect(screen.getByText('save')).toBeDisabled();
 	});
 
-	it('discards the draft entry and navigates back when canceling', async () => {
-		renderComponent({
-			discardURL: '/o/c/cmpprojects/123',
-			isNew: true,
-		});
-
-		fireEvent.click(screen.getByText('cancel'));
-
-		expect(ApiHelper.delete).toHaveBeenCalledWith('/o/c/cmpprojects/123');
-
-		await waitFor(() => expect(navigate).toHaveBeenCalledWith('/back'));
-	});
-
 	it('discards the draft entry and navigates back when going back', async () => {
-		renderComponent({
-			discardURL: '/o/c/cmpprojects/123',
-			isNew: true,
-		});
+		renderComponent({discardURL: DISCARD_URL, isNew: true});
 
 		fireEvent.click(screen.getByText('back'));
 
-		expect(ApiHelper.delete).toHaveBeenCalledWith('/o/c/cmpprojects/123');
+		expect(ApiHelper.delete).toHaveBeenCalledWith(DISCARD_URL);
 
 		await waitFor(() => expect(navigate).toHaveBeenCalledWith('/back'));
 	});
 
-	it('discards the draft entry once when canceling twice', async () => {
-		renderComponent({
-			discardURL: '/o/c/cmpprojects/123',
-			isNew: true,
-		});
+	it('discards the draft entry once and navigates back when canceling twice', async () => {
+		renderComponent({discardURL: DISCARD_URL, isNew: true});
 
 		fireEvent.click(screen.getByText('cancel'));
 		fireEvent.click(screen.getByText('cancel'));
 
 		expect(ApiHelper.delete).toHaveBeenCalledTimes(1);
+		expect(ApiHelper.delete).toHaveBeenCalledWith(DISCARD_URL);
 
 		await waitFor(() => expect(navigate).toHaveBeenCalledWith('/back'));
 	});

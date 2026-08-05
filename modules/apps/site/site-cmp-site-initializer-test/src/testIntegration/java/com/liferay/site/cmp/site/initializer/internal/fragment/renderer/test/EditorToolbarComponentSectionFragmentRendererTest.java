@@ -49,6 +49,14 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 	public void testGetProps() throws Exception {
 		Assert.assertEquals(
 			"/redirect-url", MapUtil.getString(getProps(), "backURL"));
+
+		String discardURL = StringBundler.concat(
+			"/o", cmpProjectObjectDefinition.getRESTContextPath(),
+			StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId());
+
+		Assert.assertEquals(
+			discardURL, MapUtil.getString(getProps(), "discardURL"));
+
 		Assert.assertEquals(
 			StringBundler.concat(
 				themeDisplay.getPathFriendlyURLPublic(),
@@ -83,6 +91,7 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 			cmpProjectObjectDefinition,
 			_partialUpdateObjectEntry(cmpProjectObjectEntry));
 
+		Assert.assertEquals("", MapUtil.getString(getProps(), "discardURL"));
 		Assert.assertEquals(
 			"Edit Project", MapUtil.getString(getProps(), "title"));
 
@@ -98,6 +107,7 @@ public class EditorToolbarComponentSectionFragmentRendererTest
 
 		Assert.assertEquals(
 			"/redirect-url", MapUtil.getString(getProps(), "backURL"));
+		Assert.assertEquals("", MapUtil.getString(getProps(), "discardURL"));
 		Assert.assertEquals(
 			"/redirect-url", MapUtil.getString(getProps(), "formSubmitURL"));
 		Assert.assertEquals("New Task", MapUtil.getString(getProps(), "title"));

@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
@@ -180,6 +181,27 @@ public class ObjectEntryModelListenerTest {
 		_assertResourceActions(
 			cmpTaskLinkObjectEntry, DepotRolesConstants.PROJECT_MEMBER,
 			ActionKeys.VIEW);
+	}
+
+	@Test
+	public void testOnAfterRemove() throws Exception {
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, cmpProjectObjectEntry.getStatus());
+
+		long groupId = cmpProjectObjectEntry.getGroupId();
+
+		Assert.assertNotNull(
+			_depotEntryLocalService.fetchGroupDepotEntry(groupId));
+
+		_objectEntryLocalService.deleteObjectEntry(
+			cmpProjectObjectEntry.getObjectEntryId());
+
+		Assert.assertNull(
+			_depotEntryLocalService.fetchGroupDepotEntry(groupId));
+		Assert.assertNull(_groupLocalService.fetchGroup(groupId));
 	}
 
 	@Test
