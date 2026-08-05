@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.NoSuchUserGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
@@ -66,7 +65,9 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 		_checkAssetLibraryAdminOrAssetLibraryMember(group.getGroupId());
 
 		List<com.liferay.portal.kernel.model.Role> roles =
-			_getAssetLibraryRoles(group.getGroupId());
+			_roleLocalService.getTypeRoles(RoleConstants.TYPE_DEPOT);
+
+		roles = DepotRoleUtil.filter(group.getGroupId(), roles);
 
 		if (pagination == null) {
 			return Page.of(transform(roles, this::_toRole));
@@ -291,23 +292,6 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 
 		throw new PrincipalException.MustHavePermission(
 			contextUser.getUserId(), ActionKeys.ASSIGN_MEMBERS);
-	}
-
-	private List<com.liferay.portal.kernel.model.Role> _getAssetLibraryRoles(
-		long groupId) {
-
-		List<com.liferay.portal.kernel.model.Role> roles =
-			_roleLocalService.getTypeRoles(RoleConstants.TYPE_DEPOT);
-
-		if (FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-17564") ||
-			FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-58677")) {
-
-			roles = DepotRoleUtil.filter(groupId, roles);
-		}
-
-		return roles;
 	}
 
 	private Group _getGroup(String externalReferenceCode) throws Exception {
