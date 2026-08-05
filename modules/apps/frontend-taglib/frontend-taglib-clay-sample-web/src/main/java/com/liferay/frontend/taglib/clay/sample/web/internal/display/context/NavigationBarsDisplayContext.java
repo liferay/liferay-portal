@@ -36,6 +36,10 @@ public class NavigationBarsDisplayContext {
 								navigationItem.setActive(true);
 							}
 
+							if (integerWrapper.getValue() == 5) {
+								navigationItem.setDisabled(true);
+							}
+
 							navigationItem.setHref(
 								"#" + integerWrapper.getValue());
 							navigationItem.setLabel(

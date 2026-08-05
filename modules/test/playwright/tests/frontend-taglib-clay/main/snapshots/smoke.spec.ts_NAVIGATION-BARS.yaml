@@ -17,8 +17,7 @@
                 -   link "Page 4":
                     -   /url: "#4"
             -   listitem:
-                -   link "Page 5":
-                    -   /url: "#5"
+                -   button "Page 5" [disabled]
             -   listitem:
                 -   link "Page 6":
                     -   /url: "#6"
@@ -40,8 +39,7 @@
                 -   link "Page 4":
                     -   /url: "#4"
             -   listitem:
-                -   link "Page 5":
-                    -   /url: "#5"
+                -   button "Page 5" [disabled]
             -   listitem:
                 -   link "Page 6":
                     -   /url: "#6"
