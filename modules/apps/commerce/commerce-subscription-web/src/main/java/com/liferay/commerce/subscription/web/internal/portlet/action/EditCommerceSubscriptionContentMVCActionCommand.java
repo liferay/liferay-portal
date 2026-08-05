@@ -5,9 +5,13 @@
 
 package com.liferay.commerce.subscription.web.internal.portlet.action;
 
+import com.liferay.commerce.constants.CommerceActionKeys;
+import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.exception.CommerceSubscriptionEntrySubscriptionStatusException;
 import com.liferay.commerce.exception.CommerceSubscriptionTypeException;
 import com.liferay.commerce.exception.NoSuchSubscriptionEntryException;
+import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceSubscriptionEntry;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.service.CommerceSubscriptionEntryLocalService;
@@ -16,6 +20,9 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
@@ -112,14 +119,46 @@ public class EditCommerceSubscriptionContentMVCActionCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		if (commerceSubscriptionEntry.getCompanyId() !=
-				themeDisplay.getCompanyId()) {
+		if (!themeDisplay.isSignedIn() ||
+			(commerceSubscriptionEntry.getCompanyId() !=
+				themeDisplay.getCompanyId()) ||
+			((commerceSubscriptionEntry.getUserId() !=
+				themeDisplay.getUserId()) &&
+			 !_portletResourcePermission.contains(
+				 themeDisplay.getPermissionChecker(),
+				 commerceSubscriptionEntry.getGroupId(),
+				 CommerceActionKeys.MANAGE_COMMERCE_SUBSCRIPTIONS) &&
+			 !_hasUpdateCommerceOrderPermission(
+				 commerceSubscriptionEntry, themeDisplay))) {
 
 			throw new PrincipalException();
 		}
 
 		return commerceSubscriptionEntry;
 	}
+
+	private boolean _hasUpdateCommerceOrderPermission(
+			CommerceSubscriptionEntry commerceSubscriptionEntry,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		CommerceOrderItem commerceOrderItem =
+			commerceSubscriptionEntry.fetchCommerceOrderItem();
+
+		if (commerceOrderItem == null) {
+			return false;
+		}
+
+		return _commerceOrderModelResourcePermission.contains(
+			themeDisplay.getPermissionChecker(),
+			commerceOrderItem.getCommerceOrderId(), ActionKeys.UPDATE);
+	}
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
+	)
+	private ModelResourcePermission<CommerceOrder>
+		_commerceOrderModelResourcePermission;
 
 	@Reference
 	private CommerceSubscriptionEntryActionHelper
@@ -128,5 +167,10 @@ public class EditCommerceSubscriptionContentMVCActionCommand
 	@Reference
 	private CommerceSubscriptionEntryLocalService
 		_commerceSubscriptionEntryLocalService;
+
+	@Reference(
+		target = "(resource.name=" + CommerceConstants.RESOURCE_NAME_COMMERCE_SUBSCRIPTION + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 }
