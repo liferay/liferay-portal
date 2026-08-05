@@ -296,13 +296,8 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		).build();
 	}
 
-	private String _getGroupExternalReferenceCode() throws Exception {
-		Group group = testDepotEntry.getGroup();
-
-		return group.getExternalReferenceCode();
-	}
-
-	private UserAccountResource _getUserAccountResource(List<String> actionIds)
+	private UserAccountResource _getDepotEntryUserAccountResource(
+			List<String> actionIds)
 		throws Exception {
 
 		String password = RandomTestUtil.randomString();
@@ -339,10 +334,16 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		).build();
 	}
 
+	private String _getGroupExternalReferenceCode() throws Exception {
+		Group group = testDepotEntry.getGroup();
+
+		return group.getExternalReferenceCode();
+	}
+
 	private UserAccountResource _getViewAndAssignMembersUserAccountResource()
 		throws Exception {
 
-		return _getUserAccountResource(
+		return _getDepotEntryUserAccountResource(
 			List.of(ActionKeys.ASSIGN_MEMBERS, ActionKeys.VIEW));
 	}
 
@@ -355,7 +356,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		actionIds.remove(ActionKeys.ASSIGN_MEMBERS);
 
-		return _getUserAccountResource(actionIds);
+		return _getDepotEntryUserAccountResource(actionIds);
 	}
 
 	private void _testDeleteAssetLibraryUserAccountWithViewAndAssignMembersPermission()
