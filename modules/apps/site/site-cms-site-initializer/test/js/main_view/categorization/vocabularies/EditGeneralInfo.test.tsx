@@ -68,7 +68,7 @@ describe('EditGeneralInfo', () => {
 	});
 
 	afterEach(() => {
-		(global as any).Liferay.FeatureFlags = {};
+		Liferay.FeatureFlags['LPD-58677'] = false;
 
 		jest.clearAllMocks();
 	});
@@ -90,7 +90,7 @@ describe('EditGeneralInfo', () => {
 	});
 
 	it('renders the project scope selector when the CMP feature flag is enabled', async () => {
-		(global as any).Liferay.FeatureFlags = {'LPD-58677': true};
+		Liferay.FeatureFlags['LPD-58677'] = true;
 
 		render(<EditGeneralInfo {...defaultProps} />);
 
