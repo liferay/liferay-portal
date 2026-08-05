@@ -16,6 +16,13 @@ import GovernanceDashboard from '../../../../src/main/resources/META-INF/resourc
 import GovernanceService from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService';
 
 jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/NeedsReview',
+	() => ({
+		NeedsReview: () => null,
+	})
+);
+
+jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceService'
 );
 jest.mock(
@@ -40,6 +47,14 @@ const STATISTICS = {
 	upcomingReviewCount: 0,
 };
 
+const ADDITIONAL_PROPS = {
+	editContentItemURL: '/edit-content-item?objectEntryId={embedded.id}',
+	fileMimeTypeCssClasses: {},
+	fileMimeTypeIcons: {},
+	objectDefinitionCssClasses: {},
+	objectDefinitionIcons: {},
+} as any;
+
 describe('[CMS Dashboard] GovernanceDashboard', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -56,7 +71,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it("shows each card's count from the statistics", async () => {
-		render(<GovernanceDashboard />);
+		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
 
 		expect(
 			await within(
@@ -84,7 +99,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('requests all spaces on the initial render', async () => {
-		render(<GovernanceDashboard />);
+		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
 
 		await waitFor(() =>
 			expect(
@@ -94,7 +109,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('re-fetches the counts scoped by the selected space', async () => {
-		render(<GovernanceDashboard />);
+		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
 
 		await waitFor(() =>
 			expect(
@@ -186,7 +201,9 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('has no accessibility violations', async () => {
-		const {container} = render(<GovernanceDashboard />);
+		const {container} = render(
+			<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />
+		);
 
 		await checkAccessibility({bestPractices: true, context: container});
 	});

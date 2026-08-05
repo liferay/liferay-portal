@@ -19,6 +19,12 @@ export type AssetStatistics = {
 	upcomingReviewCount: number;
 };
 
+const SEARCH_URL = '/o/search/v1.0/search';
+
+const NESTED_FIELDS = 'embedded,systemProperties.objectDefinitionBrief';
+
+const NEEDS_REVIEW_PAGE_SIZE = 8;
+
 async function getAssetStatistics(
 	assetLibraryId?: string,
 	signal?: AbortSignal
@@ -49,4 +55,26 @@ async function getAssetStatistics(
 	};
 }
 
-export default {getAssetStatistics};
+function getScopedFilter(filter: string, spaceId?: string) {
+	const groupId = Number(spaceId);
+
+	if (!groupId) {
+		return filter;
+	}
+
+	return `${filter} and groupIds/any(g:g eq ${groupId})`;
+}
+
+function getSearchURL(filter: string, sort: string, spaceId?: string) {
+	const searchParams = new URLSearchParams({
+		emptySearch: 'true',
+		filter: getScopedFilter(filter, spaceId),
+		nestedFields: NESTED_FIELDS,
+		pageSize: String(NEEDS_REVIEW_PAGE_SIZE),
+		sort,
+	});
+
+	return `${SEARCH_URL}?${searchParams}`;
+}
+
+export default {getAssetStatistics, getSearchURL};

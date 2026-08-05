@@ -11,6 +11,7 @@ import React, {useState} from 'react';
 
 import Breadcrumb from '../../common/components/Breadcrumb';
 import GovernanceDashboard from './governance/GovernanceDashboard';
+import {GovernanceAdditionalProps} from './governance/types';
 import InventoryDashboard from './inventory/InventoryDashboard';
 import PerformanceDashboard from './performance/PerformanceDashboard';
 import {DashboardAdditionalProps} from './performance/types';
@@ -52,7 +53,7 @@ function Wrapper({
 	freeTier,
 	learnResources,
 }: {
-	additionalProps: DashboardAdditionalProps;
+	additionalProps: DashboardAdditionalProps & GovernanceAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
 	cmsAdmin: boolean;
@@ -92,7 +93,7 @@ function Dashboards({
 	freeTier,
 	learnResources,
 }: {
-	additionalProps: DashboardAdditionalProps;
+	additionalProps: DashboardAdditionalProps & GovernanceAdditionalProps;
 	admin: boolean;
 	analyticsEnabled: boolean;
 	cmsAdmin: boolean;
@@ -131,7 +132,9 @@ function Dashboards({
 			/>
 
 			<ClayLayout.Container className="px-4" fluid>
-				{tabId === 'governance' ? <GovernanceDashboard /> : null}
+				{tabId === 'governance' ? (
+					<GovernanceDashboard additionalProps={additionalProps} />
+				) : null}
 
 				{tabId === 'inventory' ? (
 					<InventoryDashboard constants={constants} />

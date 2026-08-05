@@ -9,6 +9,7 @@ import {ILearnResourceContext} from 'frontend-js-components-web';
 import React from 'react';
 
 import Dashboards from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/Dashboards';
+import {GovernanceAdditionalProps} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/types';
 import {DashboardAdditionalProps} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/performance/types';
 
 jest.mock(
@@ -46,7 +47,9 @@ jest.mock(
 function renderDashboards({cmsAdmin = true}: {cmsAdmin?: boolean} = {}) {
 	return render(
 		<Dashboards
-			additionalProps={{} as DashboardAdditionalProps}
+			additionalProps={
+				{} as DashboardAdditionalProps & GovernanceAdditionalProps
+			}
 			admin={false}
 			analyticsEnabled={true}
 			cmsAdmin={cmsAdmin}
