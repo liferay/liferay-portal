@@ -157,6 +157,16 @@ public class ProductOptionValueResourceTest
 
 	@Override
 	@Test
+	public void testPostProductOptionByExternalReferenceCodeProductOptionValue()
+		throws Exception {
+
+		super.testPostProductOptionByExternalReferenceCodeProductOptionValue();
+
+		_testPostProductOptionByExternalReferenceCodeProductOptionValueWithExternalReferenceCode();
+	}
+
+	@Override
+	@Test
 	public void testPostProductOptionIdProductOptionValue() throws Exception {
 		super.testPostProductOptionIdProductOptionValue();
 
@@ -220,12 +230,44 @@ public class ProductOptionValueResourceTest
 
 	@Override
 	protected ProductOptionValue
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_addProductOptionValue(
+				String externalReferenceCode,
+				ProductOptionValue productOptionValue)
+		throws Exception {
+
+		return productOptionValueResource.
+			postProductOptionByExternalReferenceCodeProductOptionValue(
+				externalReferenceCode, productOptionValue);
+	}
+
+	@Override
+	protected String
+			testGetProductOptionByExternalReferenceCodeProductOptionValuesPage_getExternalReferenceCode()
+		throws Exception {
+
+		return _cpDefinitionOptionRel.getExternalReferenceCode();
+	}
+
+	@Override
+	protected ProductOptionValue
 			testPatchProductOptionValue_addProductOptionValue()
 		throws Exception {
 
 		return productOptionValueResource.postProductOptionIdProductOptionValue(
 			_cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 			randomProductOptionValue());
+	}
+
+	@Override
+	protected ProductOptionValue
+			testPostProductOptionByExternalReferenceCodeProductOptionValue_addProductOptionValue(
+				ProductOptionValue productOptionValue)
+		throws Exception {
+
+		return productOptionValueResource.
+			postProductOptionByExternalReferenceCodeProductOptionValue(
+				_cpDefinitionOptionRel.getExternalReferenceCode(),
+				productOptionValue);
 	}
 
 	@Override
@@ -281,6 +323,34 @@ public class ProductOptionValueResourceTest
 			randomPatchProductOptionValue.getSkuExternalReferenceCode());
 		Assert.assertEquals(
 			cpInstanceId, GetterUtil.getLong(getProductOptionValue.getSkuId()));
+	}
+
+	private void _testPostProductOptionByExternalReferenceCodeProductOptionValueWithExternalReferenceCode()
+		throws Exception {
+
+		ProductOptionValue randomProductOptionValue =
+			randomProductOptionValue();
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		randomProductOptionValue.setExternalReferenceCode(
+			externalReferenceCode);
+
+		ProductOptionValue postProductOptionValue =
+			testPostProductOptionByExternalReferenceCodeProductOptionValue_addProductOptionValue(
+				randomProductOptionValue);
+
+		Assert.assertEquals(
+			externalReferenceCode,
+			postProductOptionValue.getExternalReferenceCode());
+
+		ProductOptionValue getProductOptionValue =
+			productOptionValueResource.getProductOptionValue(
+				postProductOptionValue.getId());
+
+		Assert.assertEquals(
+			externalReferenceCode,
+			getProductOptionValue.getExternalReferenceCode());
 	}
 
 	private void _testPostProductOptionIdProductOptionValueWithSkuExternalReferenceCode()
