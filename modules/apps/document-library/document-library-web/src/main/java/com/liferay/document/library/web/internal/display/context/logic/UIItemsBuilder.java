@@ -757,15 +757,7 @@ public class UIItemsBuilder {
 		String requestStatus = requestStatusesByFileEntryId.get(
 			_fileEntry.getFileEntryId());
 
-		if (Validator.isNotNull(requestStatus) &&
-			!Objects.equals(requestStatus, "declined") &&
-			!Objects.equals(requestStatus, "expired") &&
-			!Objects.equals(requestStatus, "voided")) {
-
-			return false;
-		}
-
-		return true;
+		return Validator.isNull(requestStatus);
 	}
 
 	public boolean isCompareToActionAvailable() {
