@@ -24,9 +24,13 @@ export default function NavigationBar({
 			triggerLabel={navigationItems.find(({active}) => active)?.label}
 		>
 			{navigationItems.map(
-				({active, deprecated = false, href, label}, index) => {
-					const LinkOrButton = href ? ClayLink : ClayButton;
-					const LinkOrButtonProps = href ? {href} : {};
+				(
+					{active, deprecated = false, disabled = false, href, label},
+					index
+				) => {
+					const LinkOrButton =
+						href && !disabled ? ClayLink : ClayButton;
+					const LinkOrButtonProps = href && !disabled ? {href} : {};
 
 					return (
 						<ClayNavigationBar.Item
@@ -34,7 +38,10 @@ export default function NavigationBar({
 							data-nav-item-index={index}
 							key={label}
 						>
-							<LinkOrButton {...LinkOrButtonProps}>
+							<LinkOrButton
+								{...LinkOrButtonProps}
+								disabled={disabled}
+							>
 								{label}
 
 								{deprecated ? (

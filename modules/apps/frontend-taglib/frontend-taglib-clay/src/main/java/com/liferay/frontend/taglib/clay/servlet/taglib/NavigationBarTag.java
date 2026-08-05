@@ -121,9 +121,18 @@ public class NavigationBarTag extends BaseContainerTag {
 					jspWriter.write(" active");
 				}
 
+				if (GetterUtil.getBoolean(navigationItem.get("disabled"))) {
+					jspWriter.write(" disabled");
+				}
+
 				jspWriter.write("\"");
 
-				if (Validator.isNotNull((String)navigationItem.get("href"))) {
+				if (GetterUtil.getBoolean(navigationItem.get("disabled"))) {
+					jspWriter.write(" aria-disabled=\"true\"");
+				}
+				else if (Validator.isNotNull(
+							(String)navigationItem.get("href"))) {
+
 					jspWriter.write(" href=\"");
 					jspWriter.write((String)navigationItem.get("href"));
 					jspWriter.write("\"");
