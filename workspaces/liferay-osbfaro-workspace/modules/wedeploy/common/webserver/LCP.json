@@ -33,7 +33,8 @@
 				"certs": [
 					{
 						"customDomains": [
-							"analytics.liferay.com"
+							"analytics.liferay.com",
+							"ldp.liferay.com"
 						]
 					}
 				],
