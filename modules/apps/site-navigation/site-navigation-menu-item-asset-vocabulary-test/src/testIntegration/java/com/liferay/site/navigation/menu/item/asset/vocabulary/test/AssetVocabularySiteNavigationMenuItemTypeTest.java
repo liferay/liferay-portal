@@ -217,7 +217,7 @@ public class AssetVocabularySiteNavigationMenuItemTypeTest {
 		_siteNavigationMenuLocalService.deleteSiteNavigationMenu(
 			siteNavigationMenu);
 
-		_assetVocabularyLocalService.deleteAssetVocabulary(_assetVocabulary);
+		_assetVocabularyLocalService.deleteVocabulary(_assetVocabulary);
 
 		ExportImportConfiguration exportImportConfiguration =
 			_exportImportConfigurationLocalService.
