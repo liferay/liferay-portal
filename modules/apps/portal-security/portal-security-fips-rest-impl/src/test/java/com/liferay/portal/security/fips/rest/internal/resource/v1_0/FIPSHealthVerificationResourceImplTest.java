@@ -12,10 +12,14 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 <<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 import com.liferay.portal.security.fips.rest.dto.v1_0.HealthVerification;
+<<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
 =======
 import com.liferay.portal.security.fips.rest.dto.v1_0.FIPSHealthVerification;
 import com.liferay.portal.security.fips.rest.internal.audit.FIPSHealthCheckAuditor;
 >>>>>>> 1894fb9 (renaming unit test):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
+=======
+import com.liferay.portal.security.fips.rest.internal.audit.FIPSHealthCheckAuditor;
+>>>>>>> 435af00 (LPD-93272 Test the periodic-health-failure audit event):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.ws.rs.WebApplicationException;
@@ -99,16 +103,25 @@ public class FIPSHealthVerificationResourceImplTest {
 		FIPSHealthVerificationResourceImpl fipsHealthVerificationResourceImpl =
 			new FIPSHealthVerificationResourceImpl();
 
+<<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
 <<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 =======
+=======
+>>>>>>> 435af00 (LPD-93272 Test the periodic-health-failure audit event):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 		FIPSHealthCheckAuditor fipsHealthCheckAuditor = Mockito.mock(
 			FIPSHealthCheckAuditor.class);
 
 		ReflectionTestUtil.setFieldValue(
+<<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
 			fipsHealthVerificationResourceImpl, "_fipsHealthCheckAuditor",
 			fipsHealthCheckAuditor);
 
 >>>>>>> 1894fb9 (renaming unit test):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
+=======
+			healthVerificationResourceImpl, "_fipsHealthCheckAuditor",
+			fipsHealthCheckAuditor);
+
+>>>>>>> 435af00 (LPD-93272 Test the periodic-health-failure audit event):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 		try (MockedStatic<PermissionThreadLocal>
 				permissionThreadLocalMockedStatic = Mockito.mockStatic(
 					PermissionThreadLocal.class);
@@ -175,9 +188,12 @@ public class FIPSHealthVerificationResourceImplTest {
 <<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 				HealthVerification.Status.FAILED,
 				healthVerification.getStatus());
+<<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
 =======
 				FIPSHealthVerification.Status.ERROR,
 				fipsHealthVerification.getStatus());
+=======
+>>>>>>> 435af00 (LPD-93272 Test the periodic-health-failure audit event):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 
 			Mockito.verify(
 				fipsHealthCheckAuditor
@@ -210,10 +226,16 @@ public class FIPSHealthVerificationResourceImplTest {
 
 			Assert.assertThrows(
 				WebApplicationException.class,
+<<<<<<< HEAD:modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
 				fipsHealthVerificationResourceImpl::postFIPSHealthVerification);
 
 			Mockito.verifyNoInteractions(fipsHealthCheckAuditor);
 >>>>>>> 1894fb9 (renaming unit test):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/FIPSHealthVerificationResourceImplTest.java
+=======
+				healthVerificationResourceImpl::postHealthVerification);
+
+			Mockito.verifyNoInteractions(fipsHealthCheckAuditor);
+>>>>>>> 435af00 (LPD-93272 Test the periodic-health-failure audit event):modules/apps/portal-security/portal-security-fips-rest-impl/src/test/java/com/liferay/portal/security/fips/rest/internal/resource/v1_0/HealthVerificationResourceImplTest.java
 		}
 	}
 
