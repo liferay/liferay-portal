@@ -341,7 +341,7 @@ const AssetCategories = ({
 					hasUpdatePermission ? (
 						<AIAssistantTriggerButton
 							anchorId={AI_ASSISTANT_TOOLBAR_TRIGGER_ID}
-							className="ml-2"
+							className="ai-assistant-chat__trigger--categorization ml-2"
 							hideLabel
 							instructionDefinitionScope="cms"
 							label={Liferay.Language.get(
