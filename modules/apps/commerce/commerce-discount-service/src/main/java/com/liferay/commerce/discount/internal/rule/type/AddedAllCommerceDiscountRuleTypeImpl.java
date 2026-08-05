@@ -10,8 +10,8 @@ import com.liferay.commerce.discount.constants.CommerceDiscountRuleConstants;
 import com.liferay.commerce.discount.model.CommerceDiscountRule;
 import com.liferay.commerce.discount.rule.type.CommerceDiscountRuleType;
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.model.CommerceOrderItem;
-import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -49,16 +49,15 @@ public class AddedAllCommerceDiscountRuleTypeImpl
 			return false;
 		}
 
-		long[] cpDefinitionIds = StringUtil.split(
+		String[] cProductExternalReferenceCodes = StringUtil.split(
 			commerceDiscountRule.getSettingsProperty(
-				commerceDiscountRule.getType()),
-			0L);
+				commerceDiscountRule.getType()));
 
 		return ArrayUtil.containsAll(
-			TransformUtil.transformToLongArray(
-				commerceOrder.getCommerceOrderItems(),
-				CommerceOrderItem::getCPDefinitionId),
-			cpDefinitionIds);
+			CommerceDiscountRuleTypeUtil.getCProductExternalReferenceCodes(
+				commerceOrder, _cpDefinitionLocalService,
+				_cProductLocalService),
+			cProductExternalReferenceCodes);
 	}
 
 	@Override
@@ -78,6 +77,12 @@ public class AddedAllCommerceDiscountRuleTypeImpl
 	public boolean validate(String typeSettings) {
 		return true;
 	}
+
+	@Reference
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
+	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private Language _language;

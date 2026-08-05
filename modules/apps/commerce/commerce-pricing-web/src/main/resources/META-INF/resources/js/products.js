@@ -28,19 +28,19 @@ export default function ({
 	).value;
 	let typeSettings = form.querySelector(`#${namespace}typeSettings`).value;
 
-	function addProductDefinition(productId) {
+	function addProductDefinition(externalReferenceCode) {
 		if (typeSettings === '') {
-			return typeSettings.concat(productId);
+			return typeSettings.concat(externalReferenceCode);
 		}
 
-		return typeSettings.concat(',').concat(productId);
+		return typeSettings.concat(',').concat(externalReferenceCode);
 	}
 
 	function selectItem(product) {
 		const ruleData = {
 			name,
 			type: commerceDiscountRuleType,
-			typeSettings: addProductDefinition(product.id),
+			typeSettings: addProductDefinition(product.externalReferenceCode),
 		};
 
 		return CommerceDiscountRuleResource.updateDiscountRule(
@@ -83,6 +83,9 @@ export default function ({
 		schema: [
 			{
 				fieldName: ['name', 'LANG'],
+			},
+			{
+				fieldName: 'externalReferenceCode',
 			},
 			{
 				fieldName: 'skuFormatted',

@@ -13,10 +13,13 @@ import com.liferay.commerce.pricing.web.internal.constants.CommercePricingFDSNam
 import com.liferay.commerce.pricing.web.internal.model.DiscountRuleCPDefinition;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
+import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
@@ -29,7 +32,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -93,18 +95,6 @@ public class CommerceDiscountRuleCPDefinitionFDSDataProvider
 			_commerceDiscountRuleService.getCommerceDiscountRule(
 				commerceDiscountRuleId);
 
-		long[] cpDefinitionIds = StringUtil.split(
-			commerceDiscountRule.getSettingsProperty(
-				commerceDiscountRule.getType()),
-			0L);
-
-		if (cpDefinitionIds == null) {
-			return Collections.emptyList();
-		}
-
-		List<DiscountRuleCPDefinition> discountRuleCPDefinitions =
-			new ArrayList<>();
-
 		Locale locale = _portal.getLocale(httpServletRequest);
 
 		String languageId = _language.getLanguageId(locale);
@@ -112,31 +102,46 @@ public class CommerceDiscountRuleCPDefinitionFDSDataProvider
 		String keywordsLowerCase = StringUtil.toLowerCase(
 			fdsKeywords.getKeywords());
 
-		for (long cpDefinitionId : cpDefinitionIds) {
-			CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
-				cpDefinitionId);
+		return TransformUtil.transformToList(
+			StringUtil.split(
+				commerceDiscountRule.getSettingsProperty(
+					commerceDiscountRule.getType())),
+			cProductExternalReferenceCode -> {
+				CProduct cProduct =
+					_cProductLocalService.fetchCProductByExternalReferenceCode(
+						cProductExternalReferenceCode,
+						commerceDiscountRule.getCompanyId());
 
-			String cpDefinitionName = cpDefinition.getName(languageId);
+				if (cProduct == null) {
+					return null;
+				}
 
-			String cpDefinitionNameLowerCase = StringUtil.toLowerCase(
-				cpDefinitionName);
+				CPDefinition cpDefinition =
+					_cpDefinitionService.fetchCPDefinitionByCProductId(
+						cProduct.getCProductId(), false);
 
-			if (!cpDefinitionNameLowerCase.contains(keywordsLowerCase)) {
-				continue;
-			}
+				if (cpDefinition == null) {
+					return null;
+				}
 
-			discountRuleCPDefinitions.add(
-				new DiscountRuleCPDefinition(
+				String cpDefinitionName = cpDefinition.getName(languageId);
+
+				String cpDefinitionNameLowerCase = StringUtil.toLowerCase(
+					cpDefinitionName);
+
+				if (!cpDefinitionNameLowerCase.contains(keywordsLowerCase)) {
+					return null;
+				}
+
+				return new DiscountRuleCPDefinition(
+					cProductExternalReferenceCode,
 					commerceDiscountRule.getCommerceDiscountRuleId(),
-					cpDefinition.getCPDefinitionId(), cpDefinitionName,
-					_getSku(cpDefinition, locale),
 					new ImageField(
 						cpDefinitionName, "rounded", "lg",
 						cpDefinition.getDefaultImageThumbnailSrc(
-							AccountConstants.ACCOUNT_ENTRY_ID_ADMIN))));
-		}
-
-		return discountRuleCPDefinitions;
+							AccountConstants.ACCOUNT_ENTRY_ID_ADMIN)),
+					cpDefinitionName, _getSku(cpDefinition, locale));
+			});
 	}
 
 	private String _getSku(CPDefinition cpDefinition, Locale locale) {
@@ -163,6 +168,9 @@ public class CommerceDiscountRuleCPDefinitionFDSDataProvider
 
 	@Reference
 	private CPDefinitionService _cpDefinitionService;
+
+	@Reference
+	private CProductLocalService _cProductLocalService;
 
 	@Reference
 	private Language _language;

@@ -13,18 +13,18 @@ import com.liferay.commerce.frontend.model.ImageField;
 public class DiscountRuleCPDefinition {
 
 	public DiscountRuleCPDefinition(
-		long discountRuleId, long cpDefinitionId, String name, String sku,
-		ImageField image) {
+		String cProductExternalReferenceCode, long discountRuleId,
+		ImageField image, String name, String sku) {
 
+		_cProductExternalReferenceCode = cProductExternalReferenceCode;
 		_discountRuleId = discountRuleId;
-		_cpDefinitionId = cpDefinitionId;
+		_image = image;
 		_name = name;
 		_sku = sku;
-		_image = image;
 	}
 
-	public long getCPDefinitionId() {
-		return _cpDefinitionId;
+	public String getCProductExternalReferenceCode() {
+		return _cProductExternalReferenceCode;
 	}
 
 	public long getDiscountRuleId() {
@@ -43,7 +43,7 @@ public class DiscountRuleCPDefinition {
 		return _sku;
 	}
 
-	private final long _cpDefinitionId;
+	private final String _cProductExternalReferenceCode;
 	private final long _discountRuleId;
 	private final ImageField _image;
 	private final String _name;

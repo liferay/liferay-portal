@@ -91,11 +91,11 @@ public class EditCommerceDiscountRuleMVCActionCommand
 
 		String[] typeSettingsArray = StringUtil.split(typeSettings);
 
-		long cpDefinitionId = ParamUtil.getLong(
-			actionRequest, "cpDefinitionId");
+		String cProductExternalReferenceCode = ParamUtil.getString(
+			actionRequest, "cProductExternalReferenceCode");
 
 		typeSettingsArray = ArrayUtil.remove(
-			typeSettingsArray, String.valueOf(cpDefinitionId));
+			typeSettingsArray, cProductExternalReferenceCode);
 
 		_commerceDiscountRuleService.updateCommerceDiscountRule(
 			commerceDiscountRuleId, type, StringUtil.merge(typeSettingsArray));
