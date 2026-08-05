@@ -12,6 +12,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -99,17 +100,64 @@ public class MCPServerTestUtil {
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_MCP_SERVER_PROFILE", TestPropsValues.getCompanyId());
 
+		ObjectEntry mcpServerProfileObjectEntry =
+			ObjectEntryLocalServiceUtil.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"description", description
+				).put(
+					"name", name
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+		for (String tool : tools) {
+			String[] parts = tool.split(StringPool.SPACE);
+
+			addMCPServerProfileToolObjectEntry(
+				mcpServerProfileObjectEntry.getExternalReferenceCode(),
+				parts[1], parts[0]);
+		}
+
+		return mcpServerProfileObjectEntry;
+	}
+
+	public static ObjectEntry addMCPServerProfileToolObjectEntry(
+			String mcpServerProfileExternalReferenceCode, String toolName,
+			String toolSetName)
+		throws Exception {
+
+		ObjectDefinition mcpServerProfileObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_MCP_SERVER_PROFILE", TestPropsValues.getCompanyId());
+
+		ObjectEntry mcpServerProfileObjectEntry =
+			ObjectEntryLocalServiceUtil.getObjectEntry(
+				mcpServerProfileExternalReferenceCode, 0,
+				mcpServerProfileObjectDefinition.getObjectDefinitionId());
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_MCP_SERVER_PROFILE_TOOL",
+					TestPropsValues.getCompanyId());
+
 		return ObjectEntryLocalServiceUtil.addObjectEntry(
 			0, TestPropsValues.getUserId(),
 			objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
-				"description", description
+				"r_mcpServerProfileToTools_l_mcpServerProfileId",
+				mcpServerProfileObjectEntry.getObjectEntryId()
 			).put(
-				"name", name
+				"toolName", toolName
 			).put(
-				"tools", String.join("\n", tools)
+				"toolSetName", toolSetName
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 	}
@@ -313,7 +361,9 @@ public class MCPServerTestUtil {
 				prefix + "00.list.type.definition",
 				prefix + "01.object.definition",
 				prefix + "02.object.definition",
-				prefix + "03.object.definition", prefix + "04.object.entry"
+				prefix + "03.object.definition",
+				prefix + "04.object.definition", prefix + "05.object.entry",
+				prefix + "06.object.entry"
 			});
 
 		prefix = ".com.liferay.headless.data.mask.internal.batch.";
