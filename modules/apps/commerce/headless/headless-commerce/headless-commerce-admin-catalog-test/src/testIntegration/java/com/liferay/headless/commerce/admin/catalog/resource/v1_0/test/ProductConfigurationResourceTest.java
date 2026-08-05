@@ -6,6 +6,8 @@
 package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.model.CPDAvailabilityEstimate;
+import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -16,7 +18,10 @@ import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.service.CPDAvailabilityEstimateLocalService;
+import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalService;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfiguration;
+import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -78,6 +83,24 @@ public class ProductConfigurationResourceTest
 				_masterCPConfigurationList.getCPConfigurationListId(), false,
 				RandomTestUtil.randomString(), 2, 1, 1, 2024, 0, 0, 0, 0, 0, 0,
 				0, true, new ServiceContext());
+
+		_commerceAvailabilityEstimate1 =
+			_commerceAvailabilityEstimateLocalService.
+				addCommerceAvailabilityEstimate(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomDouble(),
+					ServiceContextTestUtil.getServiceContext(
+						testGroup.getGroupId(), _user.getUserId()));
+
+		_commerceAvailabilityEstimate2 =
+			_commerceAvailabilityEstimateLocalService.
+				addCommerceAvailabilityEstimate(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomDouble(),
+					ServiceContextTestUtil.getServiceContext(
+						testGroup.getGroupId(), _user.getUserId()));
 	}
 
 	@Override
@@ -249,6 +272,12 @@ public class ProductConfigurationResourceTest
 	@Test
 	public void testPatchProductConfiguration() throws Exception {
 		super.testPatchProductConfiguration();
+
+		_testPatchProductConfigurationWithAvailabilityEstimate();
+		_testPatchProductConfigurationWithAvailabilityEstimateERCPrecedence();
+		_testPatchProductConfigurationWithAvailabilityEstimateIdFallback();
+		_testPatchProductConfigurationWithoutAvailabilityEstimate();
+		_testPatchProductConfigurationWithUnresolvableAvailabilityEstimateERC();
 	}
 
 	@Override
@@ -275,6 +304,8 @@ public class ProductConfigurationResourceTest
 
 		Assert.assertTrue(
 			equals(productConfiguration, randomProductConfiguration));
+
+		_testPatchProductIdConfigurationWithAvailabilityEstimate();
 	}
 
 	@Override
@@ -292,6 +323,8 @@ public class ProductConfigurationResourceTest
 		throws Exception {
 
 		super.testPostProductConfigurationListIdProductConfiguration();
+
+		_testPostProductConfigurationListIdProductConfigurationWithAvailabilityEstimate();
 	}
 
 	@Ignore
@@ -540,11 +573,229 @@ public class ProductConfigurationResourceTest
 				productConfiguration);
 	}
 
+	private void _assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			CommerceAvailabilityEstimate commerceAvailabilityEstimate,
+			Long cpConfigurationEntryId)
+		throws Exception {
+
+		CPConfigurationEntry cpConfigurationEntry =
+			_cpConfigurationEntryLocalService.getCPConfigurationEntry(
+				cpConfigurationEntryId);
+
+		Assert.assertEquals(
+			commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId(),
+			cpConfigurationEntry.getCommerceAvailabilityEstimateId());
+	}
+
+	private void _assertPatchProductConfigurationNotFound(
+			Long productConfigurationId,
+			ProductConfiguration productConfiguration)
+		throws Exception {
+
+		try {
+			productConfigurationResource.patchProductConfiguration(
+				productConfigurationId, productConfiguration);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private ProductConfiguration
+			_postProductConfigurationWithAvailabilityEstimate(
+				CommerceAvailabilityEstimate commerceAvailabilityEstimate)
+		throws Exception {
+
+		ProductConfiguration productConfiguration =
+			randomProductConfiguration();
+
+		productConfiguration.setAvailabilityEstimateExternalReferenceCode(
+			commerceAvailabilityEstimate.getExternalReferenceCode());
+
+		return productConfigurationResource.
+			postProductConfigurationListIdProductConfiguration(
+				_cpConfigurationList.getCPConfigurationListId(),
+				productConfiguration);
+	}
+
+	private void _testPatchProductConfigurationWithAvailabilityEstimate()
+		throws Exception {
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		ProductConfiguration productConfiguration = new ProductConfiguration();
+
+		productConfiguration.setAvailabilityEstimateExternalReferenceCode(
+			_commerceAvailabilityEstimate2.getExternalReferenceCode());
+
+		productConfigurationResource.patchProductConfiguration(
+			postProductConfiguration.getId(), productConfiguration);
+
+		ProductConfiguration getProductConfiguration =
+			productConfigurationResource.getProductConfiguration(
+				postProductConfiguration.getId());
+
+		Assert.assertEquals(
+			_commerceAvailabilityEstimate2.getExternalReferenceCode(),
+			getProductConfiguration.
+				getAvailabilityEstimateExternalReferenceCode());
+
+		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			_commerceAvailabilityEstimate2, postProductConfiguration.getId());
+	}
+
+	private void _testPatchProductConfigurationWithAvailabilityEstimateERCPrecedence()
+		throws Exception {
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		ProductConfiguration productConfiguration = new ProductConfiguration();
+
+		productConfiguration.setAvailabilityEstimateExternalReferenceCode(
+			_commerceAvailabilityEstimate2.getExternalReferenceCode());
+		productConfiguration.setAvailabilityEstimateId(
+			_commerceAvailabilityEstimate1.getCommerceAvailabilityEstimateId());
+
+		productConfigurationResource.patchProductConfiguration(
+			postProductConfiguration.getId(), productConfiguration);
+
+		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			_commerceAvailabilityEstimate2, postProductConfiguration.getId());
+	}
+
+	private void _testPatchProductConfigurationWithAvailabilityEstimateIdFallback()
+		throws Exception {
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		ProductConfiguration productConfiguration = new ProductConfiguration();
+
+		productConfiguration.setAvailabilityEstimateId(
+			_commerceAvailabilityEstimate2.getCommerceAvailabilityEstimateId());
+
+		productConfigurationResource.patchProductConfiguration(
+			postProductConfiguration.getId(), productConfiguration);
+
+		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			_commerceAvailabilityEstimate2, postProductConfiguration.getId());
+	}
+
+	private void _testPatchProductConfigurationWithoutAvailabilityEstimate()
+		throws Exception {
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		ProductConfiguration productConfiguration = new ProductConfiguration();
+
+		productConfiguration.setPurchasable(RandomTestUtil.randomBoolean());
+
+		productConfigurationResource.patchProductConfiguration(
+			postProductConfiguration.getId(), productConfiguration);
+
+		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			_commerceAvailabilityEstimate1, postProductConfiguration.getId());
+	}
+
+	private void _testPatchProductConfigurationWithUnresolvableAvailabilityEstimateERC()
+		throws Exception {
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		ProductConfiguration productConfiguration = new ProductConfiguration();
+
+		productConfiguration.setAvailabilityEstimateExternalReferenceCode(
+			RandomTestUtil.randomString());
+
+		_assertPatchProductConfigurationNotFound(
+			postProductConfiguration.getId(), productConfiguration);
+
+		productConfiguration.setAvailabilityEstimateId(
+			_commerceAvailabilityEstimate2.getCommerceAvailabilityEstimateId());
+
+		_assertPatchProductConfigurationNotFound(
+			postProductConfiguration.getId(), productConfiguration);
+
+		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			_commerceAvailabilityEstimate1, postProductConfiguration.getId());
+	}
+
+	private void _testPatchProductIdConfigurationWithAvailabilityEstimate()
+		throws Exception {
+
+		ProductConfiguration randomProductConfiguration =
+			randomProductConfiguration();
+
+		randomProductConfiguration.setAvailabilityEstimateExternalReferenceCode(
+			_commerceAvailabilityEstimate1.getExternalReferenceCode());
+
+		productConfigurationResource.patchProductIdConfiguration(
+			randomProductConfiguration.getEntityId(),
+			randomProductConfiguration);
+
+		ProductConfiguration productConfiguration =
+			productConfigurationResource.getProductIdConfiguration(
+				randomProductConfiguration.getEntityId());
+
+		Assert.assertEquals(
+			_commerceAvailabilityEstimate1.getExternalReferenceCode(),
+			productConfiguration.
+				getAvailabilityEstimateExternalReferenceCode());
+
+		CPDAvailabilityEstimate cpdAvailabilityEstimate =
+			_cpdAvailabilityEstimateLocalService.
+				fetchCPDAvailabilityEstimateByCProductId(
+					randomProductConfiguration.getEntityId());
+
+		Assert.assertEquals(
+			_commerceAvailabilityEstimate1.getCommerceAvailabilityEstimateId(),
+			cpdAvailabilityEstimate.getCommerceAvailabilityEstimateId());
+	}
+
+	private void _testPostProductConfigurationListIdProductConfigurationWithAvailabilityEstimate()
+		throws Exception {
+
+		ProductConfiguration postProductConfiguration =
+			_postProductConfigurationWithAvailabilityEstimate(
+				_commerceAvailabilityEstimate1);
+
+		Assert.assertEquals(
+			_commerceAvailabilityEstimate1.getExternalReferenceCode(),
+			postProductConfiguration.
+				getAvailabilityEstimateExternalReferenceCode());
+
+		_assertCPConfigurationEntryCommerceAvailabilityEstimateId(
+			_commerceAvailabilityEstimate1, postProductConfiguration.getId());
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProductConfigurationResourceTest.class);
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@DeleteAfterTestRun
+	private CommerceAvailabilityEstimate _commerceAvailabilityEstimate1;
+
+	@DeleteAfterTestRun
+	private CommerceAvailabilityEstimate _commerceAvailabilityEstimate2;
+
+	@Inject
+	private CommerceAvailabilityEstimateLocalService
+		_commerceAvailabilityEstimateLocalService;
 
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
@@ -559,6 +810,10 @@ public class ProductConfigurationResourceTest
 
 	@Inject
 	private CPConfigurationListLocalService _cpConfigurationListLocalService;
+
+	@Inject
+	private CPDAvailabilityEstimateLocalService
+		_cpdAvailabilityEstimateLocalService;
 
 	@Inject
 	private CProductLocalService _cProductLocalService;
