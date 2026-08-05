@@ -56,6 +56,11 @@
 		<td></td>
 	</tr>
 	<tr>
+		<td>ENTRY_RICH_TEXT_EDITABLE</td>
+		<td>//label[contains(.,'${key_fieldLabel}')]//following-sibling::div//div[contains(@class,'ck-editor__editable_inline') and @contenteditable = 'true' and contains(.,'${key_value}')]</td>
+		<td></td>
+	</tr>
+	<tr>
 		<td>ENTRY_STATUS</td>
 		<td>//*[text()='${key_entry}']/../following-sibling::td//*[text()='${key_status}']</td>
 		<td></td>

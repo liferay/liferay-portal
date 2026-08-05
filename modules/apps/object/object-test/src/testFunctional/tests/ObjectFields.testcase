@@ -317,10 +317,10 @@ definition {
 		}
 
 		task ("Then it's possible to edit the field's value") {
-			AssertEditable(
+			AssertElementPresent(
 				key_fieldLabel = "Custom Field",
-				locator1 = "FormFields#RICH_TEXT_CONTENT",
-				value = "Entry Test");
+				key_value = "Entry Test",
+				locator1 = "ObjectPortlet#ENTRY_RICH_TEXT_EDITABLE");
 		}
 	}
 

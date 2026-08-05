@@ -95,7 +95,8 @@ definition {
 		}
 
 		Type(
-			locator1 = "CKEditor#BODY_FIELD_IFRAME",
+			key_fieldLabel = "Template",
+			locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 			value1 = ${emailBody});
 	}
 
@@ -224,7 +225,8 @@ definition {
 
 		if (isSet(emailBody)) {
 			Type(
-				locator1 = "CKEditor#BODY_FIELD_IFRAME",
+				key_fieldLabel = "Template",
+				locator1 = "CKEditor#BODY_FIELD_CONTENTEDITABLE_WEB_CONTENT_ARTICLE",
 				value1 = ${emailBody});
 		}
 
