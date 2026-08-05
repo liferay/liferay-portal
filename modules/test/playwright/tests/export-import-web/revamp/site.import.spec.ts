@@ -179,3 +179,55 @@ testWithWiki(
 		);
 	}
 );
+
+test(
+	'Can import a lar file selecting some of its content',
+	{tag: '@LPD-101195'},
+	async ({
+		apiHelpers,
+		exportImportDataSelectionPage,
+		exportImportPage,
+		site,
+	}) => {
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				scope: 'site',
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		await apiHelpers.objectEntry.postObjectEntry(
+			{},
+			`${normalizeRestPath(objectDefinition.restContextPath)}/scopes/${site.friendlyUrlPath.slice(1)}`
+		);
+
+		await exportImportPage.goToExport(site.friendlyUrlPath);
+
+		const name = `MyExport-${getRandomString()}`;
+
+		await exportImportPage.export(name);
+
+		await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+
+		const folderPath = await exportImportPage.download(name);
+
+		await exportImportPage.goToImport(site.friendlyUrlPath);
+
+		await exportImportPage.newButton.click();
+
+		await exportImportPage.import({
+			folderPath,
+			name,
+			selectData: () =>
+				exportImportDataSelectionPage.selectOnlyObjectDefinition(
+					objectDefinition.name
+				),
+		});
+
+		await expect(exportImportPage.taskStatusLabel(name)).toBeVisible();
+	}
+);

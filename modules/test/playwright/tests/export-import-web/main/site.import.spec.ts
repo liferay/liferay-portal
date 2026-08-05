@@ -217,18 +217,6 @@ test(
 	}
 );
 
-test('Can import a lar file selecting some items to import', async ({
-	exportImportPage,
-}) => {
-	await exportImportPage.goToExport();
-
-	const exportFilePath = await exportImportPage.export();
-
-	await exportImportPage.goToImport();
-
-	await exportImportPage.import({filePath: exportFilePath});
-});
-
 test('Can see corresponding elements at site level', async ({
 	apiHelpers,
 	exportImportPage,

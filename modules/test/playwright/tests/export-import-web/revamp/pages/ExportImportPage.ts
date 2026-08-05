@@ -283,14 +283,20 @@ export class ExportImportPage {
 		folderPath,
 		includeDeletions = false,
 		name,
+		selectData,
 		taskStatus = 'success',
 	}: {
 		folderPath: string;
 		includeDeletions?: boolean;
 		name: string;
+		selectData?: () => Promise<void>;
 		taskStatus?: taskStatus;
 	}) {
 		await this.goToImportDataSelection({folderPath, name});
+
+		if (selectData) {
+			await selectData();
+		}
 
 		if (includeDeletions) {
 			await this.replicateSelectedDeletionsCheckbox.check();
