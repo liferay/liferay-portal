@@ -111,6 +111,9 @@ public class PortletDataHandlerKeys {
 
 	public static final String SELECTED_LAYOUTS = "SELECTED_LAYOUTS";
 
+	public static final String SITE_EXTERNAL_REFERENCE_CODES =
+		"SITE_EXTERNAL_REFERENCE_CODES";
+
 	public static final String THEME_REFERENCE = "THEME_REFERENCE";
 
 	public static final String UPDATE_LAST_PUBLISH_DATE =
