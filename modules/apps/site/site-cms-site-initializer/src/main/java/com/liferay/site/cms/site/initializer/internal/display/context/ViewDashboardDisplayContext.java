@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
 import com.liferay.site.cms.site.initializer.internal.util.PermissionUtil;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
@@ -113,6 +114,8 @@ public class ViewDashboardDisplayContext {
 
 	private Map<String, Object> _getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"allSectionFDSName", CMSSiteInitializerFDSNames.ALL_SECTION
+		).put(
 			"assetLibraries",
 			SectionDisplayContextUtil.getDepotEntriesJSONArray(
 				_httpServletRequest)

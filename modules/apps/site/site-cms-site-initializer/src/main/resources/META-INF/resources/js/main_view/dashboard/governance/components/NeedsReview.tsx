@@ -4,11 +4,21 @@
  */
 
 import ClayLayout from '@clayui/layout';
-import React, {useContext} from 'react';
+import {
+	getConfigParamName,
+	serializeFDSConfig,
+} from '@liferay/frontend-data-set-web';
+import React, {useContext, useMemo} from 'react';
 
 import StatusLabel from '../../../../common/components/StatusLabel';
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
+import {
+	EXPIRING_SOON_THRESHOLD_DAYS,
+	FDS_FILTER_ID,
+	WORKFLOW_STATUS,
+} from '../../../../common/utils/constants';
 import dateFormat from '../../../../common/utils/dateFormat';
+import toDatePart from '../../../../common/utils/toDatePart';
 import {SectionHeader} from '../../common/SectionHeader';
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService from '../GovernanceService';
@@ -54,6 +64,35 @@ function renderExpiringStatus(item: ISearchAssetObjectEntry) {
 	);
 }
 
+function getUpcomingReviewsSelectedData() {
+	const to = new Date();
+
+	to.setMonth(to.getMonth() + 1);
+
+	return {exclude: false, from: toDatePart(new Date()), to: toDatePart(to)};
+}
+
+function getAllSectionHref(
+	fdsName: string,
+	config: {filters?: Array<Object>; sorts?: Array<Object>}
+) {
+	const searchParams = new URLSearchParams({
+		[getConfigParamName(fdsName)]: serializeFDSConfig(config),
+	});
+
+	return `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/all?${searchParams}`;
+}
+
+function getDateWindowSelectedData() {
+	const from = new Date();
+
+	const to = new Date();
+
+	to.setDate(from.getDate() + EXPIRING_SOON_THRESHOLD_DAYS);
+
+	return {exclude: false, from: toDatePart(from), to: toDatePart(to)};
+}
+
 export function NeedsReview({
 	additionalProps,
 }: {
@@ -62,6 +101,44 @@ export function NeedsReview({
 	const {space} = useContext(GovernanceContext);
 
 	const spaceId = space.value === 'all' ? undefined : space.value;
+
+	const {expiringSoonHref, upcomingReviewsHref} = useMemo(
+		() => ({
+			expiringSoonHref: getAllSectionHref(
+				additionalProps.allSectionFDSName,
+				{
+					filters: [
+						{
+							id: FDS_FILTER_ID.STATUS,
+							selectedData: {
+								exclude: false,
+								selectedItems: [
+									{value: WORKFLOW_STATUS.APPROVED},
+								],
+							},
+						},
+						{
+							id: FDS_FILTER_ID.DATE_EXPIRATION,
+							selectedData: getDateWindowSelectedData(),
+						},
+					],
+				}
+			),
+			upcomingReviewsHref: getAllSectionHref(
+				additionalProps.allSectionFDSName,
+				{
+					filters: [
+						{
+							id: FDS_FILTER_ID.DATE_REVIEW,
+							selectedData: getUpcomingReviewsSelectedData(),
+						},
+					],
+					sorts: [{direction: 'asc', key: FDS_FILTER_ID.DATE_REVIEW}],
+				}
+			),
+		}),
+		[additionalProps.allSectionFDSName]
+	);
 
 	const title = Liferay.Language.get('needs-review');
 
@@ -85,6 +162,7 @@ export function NeedsReview({
 						id="cmsGovernanceUpcomingReviews"
 						renderSubtitle={renderReviewDate}
 						title={Liferay.Language.get('upcoming-reviews')}
+						viewAllHref={upcomingReviewsHref}
 					/>
 				</ClayLayout.Col>
 
@@ -105,6 +183,7 @@ export function NeedsReview({
 						id="cmsGovernanceExpiringSoon"
 						renderSubtitle={renderExpiringStatus}
 						title={Liferay.Language.get('expiring-soon')}
+						viewAllHref={expiringSoonHref}
 					/>
 				</ClayLayout.Col>
 			</ClayLayout.Row>

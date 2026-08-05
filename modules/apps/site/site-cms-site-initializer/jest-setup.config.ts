@@ -80,6 +80,7 @@ class MockBroadcastChannel {
 		getBCP47LanguageId: () => 'en-US',
 		getDefaultLanguageId: () => 'en_US',
 		getLanguageId: () => 'en_US',
+		getPathFriendlyURLPublic: () => '/web',
 		getTimeZone: () => 'UTC',
 		getUserId: () => '1',
 		isImpersonated: () => false,

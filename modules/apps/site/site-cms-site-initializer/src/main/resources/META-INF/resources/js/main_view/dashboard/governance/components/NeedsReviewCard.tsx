@@ -41,6 +41,7 @@ interface INeedsReviewCardProps {
 	id: string;
 	renderSubtitle: (item: ISearchAssetObjectEntry) => React.ReactNode;
 	title: string;
+	viewAllHref: string;
 }
 
 const NeedsReviewCard: React.FC<INeedsReviewCardProps> = ({
@@ -51,6 +52,7 @@ const NeedsReviewCard: React.FC<INeedsReviewCardProps> = ({
 	id,
 	renderSubtitle,
 	title,
+	viewAllHref,
 }) => {
 	const fdsProps = useMemo(
 		() =>
@@ -74,7 +76,7 @@ const NeedsReviewCard: React.FC<INeedsReviewCardProps> = ({
 					<ClayLink
 						borderless
 						className="font-weight-semi-bold text-3"
-						href="#"
+						href={viewAllHref}
 						small
 					>
 						{Liferay.Language.get('view-all')}

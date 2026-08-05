@@ -8,6 +8,7 @@ import type {IItemsActions} from '@liferay/frontend-data-set-web';
 import type {AssetListAdditionalProps} from '../../props_transformer/getAssetListFDSProps';
 
 export type GovernanceAdditionalProps = AssetListAdditionalProps & {
+	allSectionFDSName: string;
 	expiringSoonFilterString: string;
 	fdsActionDropdownItems: IItemsActions[];
 	upcomingReviewsFilterString: string;
