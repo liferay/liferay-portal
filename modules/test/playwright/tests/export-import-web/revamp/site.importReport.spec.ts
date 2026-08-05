@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectFieldAPI} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
@@ -17,6 +16,7 @@ import {getTempFile} from '../../../utils/temp';
 import {readFileFromZip} from '../../../utils/zip';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 import {importReportPagesTest} from './fixtures/importReportPagesTest';
+import {forceRequiredFieldImportError} from './utils/forceRequiredFieldImportError';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -59,19 +59,7 @@ test(
 
 		const folderPath = await exportImportPage.download(name);
 
-		const objectFieldAPIClient =
-			await apiHelpers.buildRestClient(ObjectFieldAPI);
-
-		await objectFieldAPIClient.postObjectDefinitionObjectField(
-			objectDefinition.id,
-			{
-				DBType: 'String',
-				businessType: 'Text',
-				label: {en_US: 'mandatoryField'},
-				name: 'mandatoryField',
-				required: true,
-			}
-		);
+		await forceRequiredFieldImportError(apiHelpers, objectDefinition.id);
 
 		await exportImportPage.goToImport(site.friendlyUrlPath);
 
@@ -134,18 +122,9 @@ test(
 
 			const folderPath = await exportImportPage.download(name);
 
-			const objectFieldAPIClient =
-				await apiHelpers.buildRestClient(ObjectFieldAPI);
-
-			await objectFieldAPIClient.postObjectDefinitionObjectField(
-				objectDefinition.id,
-				{
-					DBType: 'String',
-					businessType: 'Text',
-					label: {en_US: 'mandatoryField'},
-					name: 'mandatoryField',
-					required: true,
-				}
+			await forceRequiredFieldImportError(
+				apiHelpers,
+				objectDefinition.id
 			);
 
 			await exportImportPage.goToImport(site.friendlyUrlPath);

@@ -3,18 +3,21 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {ObjectFieldAPI} from '@liferay/object-admin-rest-client-js';
+import {ObjectRelationshipAPI} from '@liferay/object-admin-rest-client-js';
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {normalizeRestPath} from '../../../utils/normalizeRestPath';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
 import {importReportPagesTest} from './fixtures/importReportPagesTest';
+import {forceRequiredFieldImportError} from './utils/forceRequiredFieldImportError';
 
 export const test = mergeTests(
 	dataApiHelpersTest,
@@ -24,8 +27,89 @@ export const test = mergeTests(
 	}),
 	globalMenuPagesTest,
 	importReportPagesTest,
+	isolatedSiteTest,
 	loginTest()
 );
+
+async function setupImportReportScenario(
+	apiHelpers: DataApiHelpers,
+	siteName: string
+) {
+	const [objectDefinition1, objectDefinition2] = await Promise.all([
+		apiHelpers.objectAdmin.postRandomObjectDefinition({
+			scope: 'site',
+			status: {code: 0},
+		}),
+		apiHelpers.objectAdmin.postRandomObjectDefinition({
+			scope: 'site',
+			status: {code: 0},
+		}),
+	]);
+
+	const objectDefinition3 =
+		await apiHelpers.objectAdmin.postRandomObjectDefinition({
+			status: {code: 0},
+		});
+
+	for (const objectDefinition of [
+		objectDefinition1,
+		objectDefinition2,
+		objectDefinition3,
+	]) {
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+	}
+
+	const objectRelationshipAPIClient = await apiHelpers.buildRestClient(
+		ObjectRelationshipAPI
+	);
+
+	const relationshipName = 'relationship';
+
+	await objectRelationshipAPIClient.postObjectDefinitionByExternalReferenceCodeObjectRelationship(
+		objectDefinition3.externalReferenceCode,
+		{
+			deletionType: 'disassociate',
+			label: {en_US: 'Relationship'},
+			name: relationshipName,
+			objectDefinitionExternalReferenceCode1:
+				objectDefinition3.externalReferenceCode,
+			objectDefinitionExternalReferenceCode2:
+				objectDefinition2.externalReferenceCode,
+			objectDefinitionId1: objectDefinition3.id,
+			objectDefinitionId2: objectDefinition2.id,
+			objectDefinitionName2: objectDefinition2.name,
+			type: 'oneToMany',
+		}
+	);
+
+	await apiHelpers.objectEntry.postObjectEntry(
+		{},
+		`${normalizeRestPath(objectDefinition1.restContextPath)}/scopes/${siteName}`
+	);
+
+	const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+		{},
+		normalizeRestPath(objectDefinition3.restContextPath)
+	);
+
+	await apiHelpers.objectEntry.postObjectEntry(
+		{
+			[`r_${relationshipName}_c_${objectDefinition3.name[0].toLowerCase() + objectDefinition3.name.substring(1)}Id`]:
+				objectEntry.id,
+		},
+		`${normalizeRestPath(objectDefinition2.restContextPath)}/scopes/${siteName}`
+	);
+
+	return {
+		objectDefinition1,
+		objectDefinition2,
+		objectDefinition3,
+		objectEntry,
+	};
+}
 
 test(
 	'Can see error report and details',
@@ -73,19 +157,7 @@ test(
 
 		const folderPath = await exportImportPage.download(name);
 
-		const objectFieldAPIClient =
-			await apiHelpers.buildRestClient(ObjectFieldAPI);
-
-		await objectFieldAPIClient.postObjectDefinitionObjectField(
-			objectDefinition.id,
-			{
-				DBType: 'String',
-				businessType: 'Text',
-				label: {en_US: 'mandatoryField'},
-				name: 'mandatoryField',
-				required: true,
-			}
-		);
+		await forceRequiredFieldImportError(apiHelpers, objectDefinition.id);
 
 		await globalMenuPage.goToApplications('Import');
 
@@ -186,5 +258,124 @@ test(
 		await expect(
 			exportImportPage.viewReportEntriesMenuItem
 		).not.toBeVisible();
+	}
+);
+
+test(
+	'Can filter, search and sort errors report entries',
+	{tag: '@LPD-100543'},
+	async ({apiHelpers, exportImportPage, site}) => {
+		test.setTimeout(120000);
+
+		const {objectDefinition1, objectDefinition3, objectEntry} =
+			await setupImportReportScenario(apiHelpers, site.name);
+
+		await exportImportPage.goToExport(site.friendlyUrlPath);
+
+		const name = `MyExport-${getRandomString()}`;
+
+		await exportImportPage.export(name);
+
+		const folderPath = await exportImportPage.download(name);
+
+		await forceRequiredFieldImportError(apiHelpers, objectDefinition1.id);
+
+		await apiHelpers.objectEntry.deleteObjectEntry(
+			normalizeRestPath(objectDefinition3.restContextPath),
+			String(objectEntry.id)
+		);
+
+		await exportImportPage.goToImport(site.friendlyUrlPath);
+
+		await exportImportPage.newButton.click();
+
+		await exportImportPage.import({
+			folderPath,
+			name,
+			taskStatus: 'completedWithErrors',
+		});
+
+		await exportImportPage.goToImportDetails(name);
+
+		// Sort by Entity Type
+
+		await exportImportPage.sortReportBy('Entity Type');
+		let values =
+			await exportImportPage.getReportColumnValues('Entity Type');
+		expect(values).toEqual([...values].sort((a, b) => a.localeCompare(b)));
+
+		await exportImportPage.sortReportBy('Entity Type');
+		values = await exportImportPage.getReportColumnValues('Entity Type');
+		expect(values).toEqual([...values].sort((a, b) => b.localeCompare(a)));
+
+		// Sort by External Reference Code
+
+		await exportImportPage.sortReportBy('External Reference Code');
+		values = await exportImportPage.getReportColumnValues(
+			'External Reference Code'
+		);
+		expect(values).toEqual([...values].sort((a, b) => a.localeCompare(b)));
+
+		await exportImportPage.sortReportBy('External Reference Code');
+		values = await exportImportPage.getReportColumnValues(
+			'External Reference Code'
+		);
+		expect(values).toEqual([...values].sort((a, b) => b.localeCompare(a)));
+
+		// Search by Entity Type name
+
+		await exportImportPage.searchReportEntries(objectDefinition1.name);
+		values = await exportImportPage.getReportColumnValues('Entity Type');
+		expect(values).toEqual([objectDefinition1.name]);
+
+		await exportImportPage.clearReportSearch();
+
+		// Search by External Reference Code
+
+		await exportImportPage.searchReportEntries(
+			objectEntry.externalReferenceCode
+		);
+		values = await exportImportPage.getReportColumnValues(
+			'External Reference Code'
+		);
+		expect(values).toEqual([objectEntry.externalReferenceCode]);
+
+		await exportImportPage.clearReportSearch();
+
+		// Filter by Entity Type
+
+		await exportImportPage.filterReportBy(
+			'Entity Type',
+			objectDefinition1.name
+		);
+		values = await exportImportPage.getReportColumnValues('Entity Type');
+		expect(values).toEqual([objectDefinition1.name]);
+
+		await exportImportPage.removeReportFilter();
+
+		// Filter by External Reference Code
+
+		await exportImportPage.filterReportBy(
+			'External Reference Code',
+			objectEntry.externalReferenceCode
+		);
+		values = await exportImportPage.getReportColumnValues(
+			'External Reference Code'
+		);
+		expect(values).toEqual([objectEntry.externalReferenceCode]);
+
+		await exportImportPage.removeReportFilter();
+
+		// Filter by Type
+
+		await exportImportPage.filterReportBy('Type', 'Empty');
+		values = await exportImportPage.getReportColumnValues('Type');
+		expect(values).toEqual(['Empty']);
+
+		await exportImportPage.excludeReportFilter();
+		values = await exportImportPage.getReportColumnValues('Type');
+		expect(values).toEqual(['Error']);
+
+		await exportImportPage.removeReportFilter();
 	}
 );
