@@ -1,0 +1,102 @@
+defaults:
+    run:
+        shell: bash
+        working-directory: cloud/operator/resources
+jobs:
+    test-cloud-operator:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v4
+            -   name: Set up Go
+                uses: actions/setup-go@v5
+                with:
+                    go-version-file: cloud/operator/resources/go.mod
+            -   name: Set up Java
+                uses: actions/setup-java@v4
+                with:
+                    distribution: temurin
+                    java-version: 21
+            -   name: Check formatting
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local unformatted
+
+                        unformatted=$(gofmt -l .)
+
+                        if [[ -n "${unformatted}" ]]
+                        then
+                            echo "These files are not gofmt formatted:"
+
+                            echo "${unformatted}"
+
+                            exit 1
+                        fi
+                    }
+
+                    main "${@}"
+            -   name: Check generated files are up to date
+                run: |
+                    set -o errexit
+                    set -o nounset
+                    set -o pipefail
+
+                    function main {
+                        local version
+
+                        version=$(curl \
+                            --fail \
+                            --silent \
+                            "https://repository-cdn.liferay.com/nexus/content/groups/public/com/liferay/com.liferay.source.formatter/maven-metadata.xml" | \
+                            grep --extended-regexp --only-matching '<release>[^<]+' | \
+                            sed --regexp-extended 's,<release>,,')
+
+                        curl \
+                            --fail \
+                            --location \
+                            --output "${RUNNER_TEMP}/source-formatter.zip" \
+                            --silent \
+                            "https://repository-cdn.liferay.com/nexus/content/groups/public/com/liferay/com.liferay.source.formatter/${version}/com.liferay.source.formatter-${version}.zip"
+
+                        unzip \
+                            -o \
+                            -q \
+                            "${RUNNER_TEMP}/source-formatter.zip" \
+                            -d "${RUNNER_TEMP}"
+
+                        go generate ./...
+
+                        "${RUNNER_TEMP}/source-formatter-${version}/bin/source-formatter" \
+                            source.auto.fix=true \
+                            source.files="${GITHUB_WORKSPACE}/cloud/helm/dxp-operator/crds/licensing.liferay.com_liferayenvironments.yaml"
+
+                        local changed
+
+                        changed=$(git -C "${GITHUB_WORKSPACE}" status --porcelain)
+
+                        if [[ -n "${changed}" ]]
+                        then
+                            echo "Generated files are stale. Run 'go generate ./...', format the CRD with the Liferay source formatter, and commit them:"
+
+                            echo "${changed}"
+
+                            git -C "${GITHUB_WORKSPACE}" diff
+
+                            exit 1
+                        fi
+                    }
+
+                    main "${@}"
+            -   name: Test
+                run: go test ./...
+            -   name: Vet
+                run: go vet ./...
+on:
+    workflow_call:
+permissions:
+    checks: write
+    contents: read
