@@ -77,6 +77,23 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 	}
 
 	@Override
+	public CPTaxCategory fetchCPTaxCategoryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CPTaxCategory cpTaxCategory =
+			cpTaxCategoryLocalService.fetchCPTaxCategoryByExternalReferenceCode(
+				externalReferenceCode, companyId);
+
+		if (cpTaxCategory != null) {
+			_modelResourcePermission.check(
+				getPermissionChecker(), cpTaxCategory, ActionKeys.VIEW);
+		}
+
+		return cpTaxCategory;
+	}
+
+	@Override
 	public List<CPTaxCategory> findCPTaxCategoriesByCompanyId(
 			long companyId, String keyword, int start, int end)
 		throws PortalException {
@@ -131,6 +148,21 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 			getPermissionChecker(), cpTaxCategoryId, ActionKeys.VIEW);
 
 		return cpTaxCategoryPersistence.findByPrimaryKey(cpTaxCategoryId);
+	}
+
+	@Override
+	public CPTaxCategory getCPTaxCategoryByExternalReferenceCode(
+			String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CPTaxCategory cpTaxCategory =
+			cpTaxCategoryLocalService.getCPTaxCategoryByExternalReferenceCode(
+				externalReferenceCode, companyId);
+
+		_modelResourcePermission.check(
+			getPermissionChecker(), cpTaxCategory, ActionKeys.VIEW);
+
+		return cpTaxCategory;
 	}
 
 	@Override
