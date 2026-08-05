@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -309,11 +311,21 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			String filterString, Sort[] sorts)
 		throws Exception {
 
-		return _objectEntryLocalService.getValuesList(
-			0, companyId, objectDefinition.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
-			_filterFactory.create(filterString, objectDefinition), null,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, sorts);
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			PermissionThreadLocal.setPermissionChecker(null);
+
+			return _objectEntryLocalService.getValuesList(
+				0, companyId, objectDefinition.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				_filterFactory.create(filterString, objectDefinition), null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, sorts);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
 	}
 
 	private boolean _isEnabled(long companyId, long groupId) {
