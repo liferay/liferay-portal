@@ -90,22 +90,12 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testBatchEngineDeleteImportTask() {
 	}
 
+	@Override
 	@Test
-	public void testDeleteAssetLibraryUserAccountWithViewAndAssignMembersPermission()
-		throws Exception {
+	public void testDeleteAssetLibraryUserAccount() throws Exception {
+		super.testDeleteAssetLibraryUserAccount();
 
-		UserAccountResource viewAndAssignMembersUserAccountResource =
-			_getViewAndAssignMembersUserAccountResource();
-
-		UserAccount userAccount = randomUserAccount();
-
-		userAccountResource.putAssetLibraryUserAccount(
-			testDepotEntryGroup.getExternalReferenceCode(),
-			userAccount.getExternalReferenceCode());
-
-		viewAndAssignMembersUserAccountResource.deleteAssetLibraryUserAccount(
-			testDepotEntryGroup.getExternalReferenceCode(),
-			userAccount.getExternalReferenceCode());
+		_testDeleteAssetLibraryUserAccountWithViewAndAssignMembersPermission();
 	}
 
 	@Override
@@ -151,39 +141,13 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_testGetAssetLibraryUserAccountsPageWithSortId();
 	}
 
+	@Override
 	@Test
-	public void testPutAssetLibraryUserAccountWithoutAssignMembersPermission()
-		throws Exception {
+	public void testPutAssetLibraryUserAccount() throws Exception {
+		super.testPutAssetLibraryUserAccount();
 
-		UserAccountResource withoutAssignMembersPermissionUserAccountResource =
-			_getWithoutAssignMembersPermissionUserAccountResource();
-
-		UserAccount userAccount = randomUserAccount();
-
-		_assertFailure(
-			"Forbidden",
-			() ->
-				withoutAssignMembersPermissionUserAccountResource.
-					putAssetLibraryUserAccount(
-						testDepotEntryGroup.getExternalReferenceCode(),
-						userAccount.getExternalReferenceCode()));
-	}
-
-	@Test
-	public void testPutAssetLibraryUserAccountWithViewAndAssignMembersPermission()
-		throws Exception {
-
-		UserAccountResource viewAndAssignMembersUserAccountResource =
-			_getViewAndAssignMembersUserAccountResource();
-
-		UserAccount userAccount = randomUserAccount();
-
-		UserAccount putUserAccount =
-			viewAndAssignMembersUserAccountResource.putAssetLibraryUserAccount(
-				testDepotEntryGroup.getExternalReferenceCode(),
-				userAccount.getExternalReferenceCode());
-
-		assertValid(putUserAccount);
+		_testPutAssetLibraryUserAccountWithoutAssignMembersPermission();
+		_testPutAssetLibraryUserAccountWithViewAndAssignMembersPermission();
 	}
 
 	@Override
@@ -419,6 +383,23 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		).build();
 	}
 
+	private void _testDeleteAssetLibraryUserAccountWithViewAndAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource viewAndAssignMembersUserAccountResource =
+			_getViewAndAssignMembersUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		userAccountResource.putAssetLibraryUserAccount(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			userAccount.getExternalReferenceCode());
+
+		viewAndAssignMembersUserAccountResource.deleteAssetLibraryUserAccount(
+			testDepotEntryGroup.getExternalReferenceCode(),
+			userAccount.getExternalReferenceCode());
+	}
+
 	private void _testGetAssetLibraryUserAccount(
 			Group group, UserAccountResource getUserAccountResource)
 		throws Exception {
@@ -483,6 +464,39 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			EntityField.Type.ID,
 			(entityField, userAccount1, userAccount2) -> {
 			});
+	}
+
+	private void _testPutAssetLibraryUserAccountWithoutAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource withoutAssignMembersPermissionUserAccountResource =
+			_getWithoutAssignMembersPermissionUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		_assertFailure(
+			"Forbidden",
+			() ->
+				withoutAssignMembersPermissionUserAccountResource.
+					putAssetLibraryUserAccount(
+						testDepotEntryGroup.getExternalReferenceCode(),
+						userAccount.getExternalReferenceCode()));
+	}
+
+	private void _testPutAssetLibraryUserAccountWithViewAndAssignMembersPermission()
+		throws Exception {
+
+		UserAccountResource viewAndAssignMembersUserAccountResource =
+			_getViewAndAssignMembersUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		UserAccount putUserAccount =
+			viewAndAssignMembersUserAccountResource.putAssetLibraryUserAccount(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				userAccount.getExternalReferenceCode());
+
+		assertValid(putUserAccount);
 	}
 
 	@Inject

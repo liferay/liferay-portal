@@ -112,201 +112,11 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			roles -> roleResource.putAssetLibraryUserAccountRolesPage(
 				testDepotEntryGroup.getExternalReferenceCode(),
 				user.getExternalReferenceCode(), roles));
-	}
 
-	@Test
-	public void testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermission()
-		throws Exception {
-
-		RoleResource assignMembersRoleResource =
-			_getAssignMembersRoleResource();
-
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			new long[] {testDepotEntry.getGroupId()},
-			ServiceContextTestUtil.getServiceContext());
-
-		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(),
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
-
-		Page<Role> page =
-			assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
-				testDepotEntryGroup.getExternalReferenceCode(),
-				user.getExternalReferenceCode(),
-				new Role[] {
-					new Role() {
-						{
-							id = assetLibraryMemberRole.getRoleId();
-							name = assetLibraryMemberRole.getName();
-						}
-					}
-				});
-
-		List<String> names = TransformUtil.transform(
-			page.getItems(), Role::getName);
-
-		Assert.assertEquals(names.toString(), 1, names.size());
-		Assert.assertTrue(
-			names.toString(),
-			names.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
-
-		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(),
-				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
-
-		_assertForbidden(
-			() -> assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
-				testDepotEntryGroup.getExternalReferenceCode(),
-				user.getExternalReferenceCode(),
-				new Role[] {
-					new Role() {
-						{
-							id = assetLibraryContentReviewerRole.getRoleId();
-							name = assetLibraryContentReviewerRole.getName();
-						}
-					}
-				}));
-	}
-
-	@Test
-	public void testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermissionAndAdministratorRole()
-		throws Exception {
-
-		RoleResource assignMembersRoleResource =
-			_getAssignMembersRoleResource();
-
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			new long[] {testDepotEntry.getGroupId()},
-			ServiceContextTestUtil.getServiceContext());
-
-		com.liferay.portal.kernel.model.Role assetLibraryAdministratorRole =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(),
-				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
-
-		_assertForbidden(
-			() -> assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
-				testDepotEntryGroup.getExternalReferenceCode(),
-				user.getExternalReferenceCode(),
-				new Role[] {
-					new Role() {
-						{
-							id = assetLibraryAdministratorRole.getRoleId();
-							name = assetLibraryAdministratorRole.getName();
-						}
-					}
-				}));
-	}
-
-	@Test
-	public void testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermission()
-		throws Exception {
-
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			new long[] {testDepotEntry.getGroupId()},
-			ServiceContextTestUtil.getServiceContext());
-
-		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(),
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
-
-		_userGroupRoleService.addUserGroupRoles(
-			user.getUserId(), testDepotEntry.getGroupId(),
-			new long[] {assetLibraryMemberRole.getRoleId()});
-
-		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(),
-				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
-
-		RoleResource assignUserRolesRoleResource =
-			_getAssignUserRolesRoleResource(assetLibraryContentReviewerRole);
-
-		Page<Role> page =
-			assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
-				testDepotEntryGroup.getExternalReferenceCode(),
-				user.getExternalReferenceCode(),
-				new Role[] {
-					new Role() {
-						{
-							id = assetLibraryContentReviewerRole.getRoleId();
-							name = assetLibraryContentReviewerRole.getName();
-						}
-					}
-				});
-
-		List<String> names = TransformUtil.transform(
-			page.getItems(), Role::getName);
-
-		Assert.assertEquals(names.toString(), 1, names.size());
-		Assert.assertTrue(
-			names.toString(),
-			names.contains(DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER));
-	}
-
-	@Test
-	public void testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermissionAndWithoutRoleViewPermission()
-		throws Exception {
-
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(),
-			RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			new long[] {testDepotEntry.getGroupId()},
-			ServiceContextTestUtil.getServiceContext());
-
-		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(),
-				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
-
-		_userGroupRoleService.addUserGroupRoles(
-			user.getUserId(), testDepotEntry.getGroupId(),
-			new long[] {assetLibraryMemberRole.getRoleId()});
-
-		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
-			_roleLocalService.getRole(
-				testCompany.getCompanyId(),
-				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
-
-		RoleResource assignUserRolesRoleResource =
-			_getAssignUserRolesRoleResource();
-
-		_assertForbidden(
-			() ->
-				assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
-					testDepotEntryGroup.getExternalReferenceCode(),
-					user.getExternalReferenceCode(),
-					new Role[] {
-						new Role() {
-							{
-								id =
-									assetLibraryContentReviewerRole.getRoleId();
-								name =
-									assetLibraryContentReviewerRole.getName();
-							}
-						}
-					}));
+		_testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermission();
+		_testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermissionAndAdministratorRole();
+		_testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermission();
+		_testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermissionAndWithoutRoleViewPermission();
 	}
 
 	@Override
@@ -655,6 +465,197 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				roles,
 				role -> Objects.equals(
 					serviceBuilderRole2.getName(), role.getName())));
+	}
+
+	private void _testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermission()
+		throws Exception {
+
+		RoleResource assignMembersRoleResource =
+			_getAssignMembersRoleResource();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		Page<Role> page =
+			assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryMemberRole.getRoleId();
+							name = assetLibraryMemberRole.getName();
+						}
+					}
+				});
+
+		List<String> names = TransformUtil.transform(
+			page.getItems(), Role::getName);
+
+		Assert.assertEquals(names.toString(), 1, names.size());
+		Assert.assertTrue(
+			names.toString(),
+			names.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
+
+		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		_assertForbidden(
+			() -> assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryContentReviewerRole.getRoleId();
+							name = assetLibraryContentReviewerRole.getName();
+						}
+					}
+				}));
+	}
+
+	private void _testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermissionAndAdministratorRole()
+		throws Exception {
+
+		RoleResource assignMembersRoleResource =
+			_getAssignMembersRoleResource();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryAdministratorRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
+
+		_assertForbidden(
+			() -> assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryAdministratorRole.getRoleId();
+							name = assetLibraryAdministratorRole.getName();
+						}
+					}
+				}));
+	}
+
+	private void _testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		_userGroupRoleService.addUserGroupRoles(
+			user.getUserId(), testDepotEntry.getGroupId(),
+			new long[] {assetLibraryMemberRole.getRoleId()});
+
+		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		RoleResource assignUserRolesRoleResource =
+			_getAssignUserRolesRoleResource(assetLibraryContentReviewerRole);
+
+		Page<Role> page =
+			assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				user.getExternalReferenceCode(),
+				new Role[] {
+					new Role() {
+						{
+							id = assetLibraryContentReviewerRole.getRoleId();
+							name = assetLibraryContentReviewerRole.getName();
+						}
+					}
+				});
+
+		List<String> names = TransformUtil.transform(
+			page.getItems(), Role::getName);
+
+		Assert.assertEquals(names.toString(), 1, names.size());
+		Assert.assertTrue(
+			names.toString(),
+			names.contains(DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER));
+	}
+
+	private void _testPutAssetLibraryUserAccountRolesPageWithAssignUserRolesPermissionAndWithoutRoleViewPermission()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			RandomTestUtil.randomString(),
+			RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+
+		_userGroupRoleService.addUserGroupRoles(
+			user.getUserId(), testDepotEntry.getGroupId(),
+			new long[] {assetLibraryMemberRole.getRoleId()});
+
+		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
+			_roleLocalService.getRole(
+				testCompany.getCompanyId(),
+				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
+
+		RoleResource assignUserRolesRoleResource =
+			_getAssignUserRolesRoleResource();
+
+		_assertForbidden(
+			() ->
+				assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
+					testDepotEntryGroup.getExternalReferenceCode(),
+					user.getExternalReferenceCode(),
+					new Role[] {
+						new Role() {
+							{
+								id =
+									assetLibraryContentReviewerRole.getRoleId();
+								name =
+									assetLibraryContentReviewerRole.getName();
+							}
+						}
+					}));
 	}
 
 	private void _testPutRolesPage(
