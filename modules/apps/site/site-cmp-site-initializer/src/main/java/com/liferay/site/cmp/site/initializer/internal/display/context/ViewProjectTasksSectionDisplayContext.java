@@ -55,7 +55,7 @@ public class ViewProjectTasksSectionDisplayContext
 
 	@Override
 	public String getAPIURL() {
-		StringBundler sb = new StringBundler(6);
+		StringBundler sb = new StringBundler(7);
 
 		sb.append("/o/search/v1.0/search?emptySearch=true");
 		sb.append("&filter=(objectDefinitionId eq ");
@@ -66,7 +66,8 @@ public class ViewProjectTasksSectionDisplayContext
 			sb.append(assetEntry.getGroupId());
 		}
 
-		sb.append(")&nestedFields=cmpProjectToCMPTasks,embedded");
+		sb.append(")");
+		sb.append(getNestedFieldsAPIURLParameters("cmpProjectToCMPTasks"));
 
 		return sb.toString();
 	}

@@ -69,8 +69,8 @@ public class ViewAllTasksSectionDisplayContext
 		sb.append(KaleoTaskInstanceToken.class.getName());
 		sb.append("&filter=(objectDefinitionId eq ");
 		sb.append(objectDefinition.getObjectDefinitionId());
-		sb.append(" or cmpTaskObjectEntryIds/any(x:x gt 0))&nestedFields=");
-		sb.append("cmpProjectToCMPTasks,embedded");
+		sb.append(" or cmpTaskObjectEntryIds/any(x:x gt 0))");
+		sb.append(getNestedFieldsAPIURLParameters("cmpProjectToCMPTasks"));
 
 		return sb.toString();
 	}

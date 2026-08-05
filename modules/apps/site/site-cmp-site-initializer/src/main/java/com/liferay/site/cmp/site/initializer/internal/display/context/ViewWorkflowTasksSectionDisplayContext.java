@@ -66,7 +66,7 @@ public class ViewWorkflowTasksSectionDisplayContext
 	@Override
 	public String getAPIURL() {
 		return WorkflowTaskSearchURLUtil.getSearchURL() +
-			"&nestedFields=embedded";
+			getNestedFieldsAPIURLParameters();
 	}
 
 	@Override
