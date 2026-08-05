@@ -49,7 +49,7 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/subscriptionConfiguration'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the subscription configuration of the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + ProductSubscriptionConfigurationDTOConverter. Validation -- Returns NPE when product ERC not found (no explicit guard) - effectively 500."
+		description = "Returns the subscription configuration of the product identified by external reference code. Validation -- Returns NPE when product ERC not found (no explicit guard) - effectively 500."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -90,7 +90,7 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/subscriptionConfiguration'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the subscription configuration of the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + ProductSubscriptionConfigurationDTOConverter. Validation -- NoSuchCPDefinitionException -> 404 when product id not found."
+		description = "Returns the subscription configuration of the product identified by product id. Returns 404 when the product id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -129,7 +129,7 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/subscriptionConfiguration' -d $'{"deliverySubscriptionEnable": ___, "deliverySubscriptionLength": ___, "deliverySubscriptionNumberOfLength": ___, "deliverySubscriptionType": ___, "deliverySubscriptionTypeSettings": ___, "enable": ___, "length": ___, "numberOfLength": ___, "subscriptionType": ___, "subscriptionTypeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the subscription configuration of the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + ProductSubscriptionConfigurationUtil.updateCPDefinitionSubscriptionInfo. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Updates the CPDefinition subscription fields (length, cycles, type settings)."
+		description = "Partially updates the subscription configuration of the product identified by external reference code. Returns 404 when the product external reference code is not found. Side effects -- Updates the product definition subscription fields (length, cycles, type settings)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -175,7 +175,7 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/subscriptionConfiguration' -d $'{"deliverySubscriptionEnable": ___, "deliverySubscriptionLength": ___, "deliverySubscriptionNumberOfLength": ___, "deliverySubscriptionType": ___, "deliverySubscriptionTypeSettings": ___, "enable": ___, "length": ___, "numberOfLength": ___, "subscriptionType": ___, "subscriptionTypeSettings": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the subscription configuration of the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + ProductSubscriptionConfigurationUtil.updateCPDefinitionSubscriptionInfo. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Updates the CPDefinition subscription fields."
+		description = "Partially updates the subscription configuration of the product identified by product id. Returns 404 when the product id is not found. Side effects -- Updates the product definition subscription fields."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -657,4 +657,4 @@ public abstract class BaseProductSubscriptionConfigurationResourceImpl
 			BaseProductSubscriptionConfigurationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1145387945
+// LIFERAY-REST-BUILDER-HASH:1981317755

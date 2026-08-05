@@ -56,7 +56,7 @@ public class Warehouse implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Map of HATEOAS actions available to the current user, keyed by action name; each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@Valid
 	public Map<String, Map<String, String>> getActions() {
@@ -94,7 +94,7 @@ public class Warehouse implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Map of HATEOAS actions available to the current user, keyed by action name; each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
+		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Map<String, Map<String, String>> actions;
@@ -1213,4 +1213,4 @@ public class Warehouse implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1017966200
+// LIFERAY-REST-BUILDER-HASH:-1434008146

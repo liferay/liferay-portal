@@ -216,11 +216,16 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		AvailabilityEstimate availabilityEstimate =
 			randomAvailabilityEstimate();
 
+		availabilityEstimate.setExternalReferenceCode(regex);
+
 		String json = AvailabilityEstimateSerDes.toJSON(availabilityEstimate);
 
 		Assert.assertFalse(json.contains(regex));
 
 		availabilityEstimate = AvailabilityEstimateSerDes.toDTO(json);
+
+		Assert.assertEquals(
+			regex, availabilityEstimate.getExternalReferenceCode());
 	}
 
 	@Test
@@ -339,12 +344,50 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 			testDeleteAvailabilityEstimateBatch_addAvailabilityEstimate();
 
 		testDeleteAvailabilityEstimateBatch_deleteAvailabilityEstimate(
+			202, availabilityEstimate1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate1.getId()));
+
+		availabilityEstimate1 =
+			testDeleteAvailabilityEstimateBatch_addAvailabilityEstimate();
+
+		testDeleteAvailabilityEstimateBatch_deleteAvailabilityEstimate(
 			202, null, availabilityEstimate1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
 				availabilityEstimate1.getId()));
+
+		availabilityEstimate1 =
+			testDeleteAvailabilityEstimateBatch_addAvailabilityEstimate();
+		AvailabilityEstimate availabilityEstimate2 =
+			testDeleteAvailabilityEstimateBatch_addAvailabilityEstimate();
+
+		testDeleteAvailabilityEstimateBatch_deleteAvailabilityEstimate(
+			202, availabilityEstimate2.getExternalReferenceCode(),
+			availabilityEstimate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate2.getId()));
+
+		testDeleteAvailabilityEstimateBatch_deleteAvailabilityEstimate(
+			202, availabilityEstimate2.getExternalReferenceCode(),
+			availabilityEstimate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate2.getId()));
 	}
 
 	protected AvailabilityEstimate
@@ -375,6 +418,140 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		waitForFinish(
 			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
+	public void testDeleteAvailabilityEstimateByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		AvailabilityEstimate availabilityEstimate =
+			testDeleteAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate();
+
+		assertHttpResponseStatusCode(
+			204,
+			availabilityEstimateResource.
+				deleteAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					availabilityEstimate.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.
+				getAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					availabilityEstimate.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.
+				getAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					"-"));
+	}
+
+	protected AvailabilityEstimate
+			testDeleteAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteAvailabilityEstimateByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		AvailabilityEstimate availabilityEstimate1 =
+			testGraphQLDeleteAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteAvailabilityEstimateByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										availabilityEstimate1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteAvailabilityEstimateByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"availabilityEstimateByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									availabilityEstimate1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessCommerceAdminSiteSetting_v1_0
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		AvailabilityEstimate availabilityEstimate2 =
+			testGraphQLDeleteAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessCommerceAdminSiteSetting_v1_0",
+						new GraphQLField(
+							"deleteAvailabilityEstimateByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											availabilityEstimate2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data",
+				"JSONObject/headlessCommerceAdminSiteSetting_v1_0",
+				"Object/deleteAvailabilityEstimateByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessCommerceAdminSiteSetting_v1_0",
+					new GraphQLField(
+						"availabilityEstimateByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										availabilityEstimate2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected AvailabilityEstimate
+			testGraphQLDeleteAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate()
+		throws Exception {
+
+		return testGraphQLAvailabilityEstimate_addAvailabilityEstimate();
 	}
 
 	@Test
@@ -695,6 +872,144 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 	}
 
 	@Test
+	public void testGetAvailabilityEstimateByExternalReferenceCode()
+		throws Exception {
+
+		AvailabilityEstimate postAvailabilityEstimate =
+			testGetAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate();
+
+		AvailabilityEstimate getAvailabilityEstimate =
+			availabilityEstimateResource.
+				getAvailabilityEstimateByExternalReferenceCode(
+					postAvailabilityEstimate.getExternalReferenceCode());
+
+		assertEquals(postAvailabilityEstimate, getAvailabilityEstimate);
+		assertValid(getAvailabilityEstimate);
+	}
+
+	protected AvailabilityEstimate
+			testGetAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLGetAvailabilityEstimateByExternalReferenceCode()
+		throws Exception {
+
+		AvailabilityEstimate availabilityEstimate =
+			testGraphQLGetAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate();
+
+		// No namespace
+
+		Assert.assertTrue(
+			equals(
+				availabilityEstimate,
+				AvailabilityEstimateSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"availabilityEstimateByExternalReferenceCode",
+								new HashMap<String, Object>() {
+									{
+										put(
+											"externalReferenceCode",
+											"\"" +
+												availabilityEstimate.
+													getExternalReferenceCode() +
+														"\"");
+									}
+								},
+								getGraphQLFields())),
+						"JSONObject/data",
+						"Object/availabilityEstimateByExternalReferenceCode"))));
+
+		// Using the namespace headlessCommerceAdminSiteSetting_v1_0
+
+		Assert.assertTrue(
+			equals(
+				availabilityEstimate,
+				AvailabilityEstimateSerDes.toDTO(
+					JSONUtil.getValueAsString(
+						invokeGraphQLQuery(
+							new GraphQLField(
+								"headlessCommerceAdminSiteSetting_v1_0",
+								new GraphQLField(
+									"availabilityEstimateByExternalReferenceCode",
+									new HashMap<String, Object>() {
+										{
+											put(
+												"externalReferenceCode",
+												"\"" +
+													availabilityEstimate.
+														getExternalReferenceCode() +
+															"\"");
+										}
+									},
+									getGraphQLFields()))),
+						"JSONObject/data",
+						"JSONObject/headlessCommerceAdminSiteSetting_v1_0",
+						"Object/availabilityEstimateByExternalReferenceCode"))));
+	}
+
+	@Test
+	public void testGraphQLGetAvailabilityEstimateByExternalReferenceCodeNotFound()
+		throws Exception {
+
+		String irrelevantExternalReferenceCode =
+			"\"" + RandomTestUtil.randomString() + "\"";
+
+		// No namespace
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"availabilityEstimateByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									irrelevantExternalReferenceCode);
+							}
+						},
+						getGraphQLFields())),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+
+		// Using the namespace headlessCommerceAdminSiteSetting_v1_0
+
+		Assert.assertEquals(
+			"Not Found",
+			JSONUtil.getValueAsString(
+				invokeGraphQLQuery(
+					new GraphQLField(
+						"headlessCommerceAdminSiteSetting_v1_0",
+						new GraphQLField(
+							"availabilityEstimateByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										irrelevantExternalReferenceCode);
+								}
+							},
+							getGraphQLFields()))),
+				"JSONArray/errors", "Object/0", "JSONObject/extensions",
+				"Object/code"));
+	}
+
+	protected AvailabilityEstimate
+			testGraphQLGetAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate()
+		throws Exception {
+
+		return testGraphQLAvailabilityEstimate_addAvailabilityEstimate();
+	}
+
+	@Test
 	public void testGetCommerceAdminSiteSettingGroupAvailabilityEstimatePage()
 		throws Exception {
 
@@ -912,6 +1227,47 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 	}
 
 	@Test
+	public void testPatchAvailabilityEstimateByExternalReferenceCode()
+		throws Exception {
+
+		AvailabilityEstimate postAvailabilityEstimate =
+			testPatchAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate();
+
+		AvailabilityEstimate randomPatchAvailabilityEstimate =
+			randomPatchAvailabilityEstimate();
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		AvailabilityEstimate patchAvailabilityEstimate =
+			availabilityEstimateResource.
+				patchAvailabilityEstimateByExternalReferenceCode(
+					postAvailabilityEstimate.getExternalReferenceCode(),
+					randomPatchAvailabilityEstimate);
+
+		AvailabilityEstimate expectedPatchAvailabilityEstimate =
+			postAvailabilityEstimate.clone();
+
+		BeanTestUtil.copyProperties(
+			randomPatchAvailabilityEstimate, expectedPatchAvailabilityEstimate);
+
+		AvailabilityEstimate getAvailabilityEstimate =
+			availabilityEstimateResource.
+				getAvailabilityEstimateByExternalReferenceCode(
+					patchAvailabilityEstimate.getExternalReferenceCode());
+
+		assertEquals(
+			expectedPatchAvailabilityEstimate, getAvailabilityEstimate);
+		assertValid(getAvailabilityEstimate);
+	}
+
+	protected AvailabilityEstimate
+			testPatchAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostCommerceAdminSiteSettingGroupAvailabilityEstimate()
 		throws Exception {
 
@@ -937,12 +1293,115 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 	@Test
 	public void testPutAvailabilityEstimate() throws Exception {
-		Assert.assertTrue(false);
+		AvailabilityEstimate postAvailabilityEstimate =
+			testPutAvailabilityEstimate_addAvailabilityEstimate();
+
+		AvailabilityEstimate randomAvailabilityEstimate =
+			randomAvailabilityEstimate();
+
+		AvailabilityEstimate putAvailabilityEstimate =
+			availabilityEstimateResource.putAvailabilityEstimate(
+				postAvailabilityEstimate.getId(), randomAvailabilityEstimate);
+
+		assertEquals(randomAvailabilityEstimate, putAvailabilityEstimate);
+		assertValid(putAvailabilityEstimate);
+
+		AvailabilityEstimate getAvailabilityEstimate =
+			availabilityEstimateResource.getAvailabilityEstimate(
+				putAvailabilityEstimate.getId());
+
+		assertEquals(randomAvailabilityEstimate, getAvailabilityEstimate);
+		assertValid(getAvailabilityEstimate);
+	}
+
+	protected AvailabilityEstimate
+			testPutAvailabilityEstimate_addAvailabilityEstimate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPutAvailabilityEstimateByExternalReferenceCode()
+		throws Exception {
+
+		AvailabilityEstimate postAvailabilityEstimate =
+			testPutAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate();
+
+		AvailabilityEstimate randomAvailabilityEstimate =
+			randomAvailabilityEstimate();
+
+		AvailabilityEstimate putAvailabilityEstimate =
+			availabilityEstimateResource.
+				putAvailabilityEstimateByExternalReferenceCode(
+					postAvailabilityEstimate.getExternalReferenceCode(),
+					randomAvailabilityEstimate);
+
+		assertEquals(randomAvailabilityEstimate, putAvailabilityEstimate);
+		assertValid(putAvailabilityEstimate);
+
+		AvailabilityEstimate getAvailabilityEstimate =
+			availabilityEstimateResource.
+				getAvailabilityEstimateByExternalReferenceCode(
+					putAvailabilityEstimate.getExternalReferenceCode());
+
+		assertEquals(randomAvailabilityEstimate, getAvailabilityEstimate);
+		assertValid(getAvailabilityEstimate);
+
+		AvailabilityEstimate newAvailabilityEstimate =
+			testPutAvailabilityEstimateByExternalReferenceCode_createAvailabilityEstimate();
+
+		putAvailabilityEstimate =
+			availabilityEstimateResource.
+				putAvailabilityEstimateByExternalReferenceCode(
+					newAvailabilityEstimate.getExternalReferenceCode(),
+					newAvailabilityEstimate);
+
+		assertEquals(newAvailabilityEstimate, putAvailabilityEstimate);
+		assertValid(putAvailabilityEstimate);
+
+		getAvailabilityEstimate =
+			availabilityEstimateResource.
+				getAvailabilityEstimateByExternalReferenceCode(
+					putAvailabilityEstimate.getExternalReferenceCode());
+
+		assertEquals(newAvailabilityEstimate, getAvailabilityEstimate);
+
+		Assert.assertEquals(
+			newAvailabilityEstimate.getExternalReferenceCode(),
+			putAvailabilityEstimate.getExternalReferenceCode());
+	}
+
+	protected AvailabilityEstimate
+			testPutAvailabilityEstimateByExternalReferenceCode_addAvailabilityEstimate()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected AvailabilityEstimate
+			testPutAvailabilityEstimateByExternalReferenceCode_createAvailabilityEstimate()
+		throws Exception {
+
+		return randomAvailabilityEstimate();
 	}
 
 	@Test
 	public void testBatchEngineDeleteImportTask() throws Exception {
 		AvailabilityEstimate availabilityEstimate1 =
+			testBatchEngineDeleteImportTask_addAvailabilityEstimate();
+
+		testBatchEngineDeleteImportTask_deleteAvailabilityEstimate(
+			200, availabilityEstimate1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate1.getId()));
+
+		availabilityEstimate1 =
 			testBatchEngineDeleteImportTask_addAvailabilityEstimate();
 
 		testBatchEngineDeleteImportTask_deleteAvailabilityEstimate(
@@ -952,6 +1411,33 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 			404,
 			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
 				availabilityEstimate1.getId()));
+
+		availabilityEstimate1 =
+			testBatchEngineDeleteImportTask_addAvailabilityEstimate();
+		AvailabilityEstimate availabilityEstimate2 =
+			testBatchEngineDeleteImportTask_addAvailabilityEstimate();
+
+		testBatchEngineDeleteImportTask_deleteAvailabilityEstimate(
+			200, availabilityEstimate2.getExternalReferenceCode(),
+			availabilityEstimate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteAvailabilityEstimate(
+			200, availabilityEstimate2.getExternalReferenceCode(),
+			availabilityEstimate1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			availabilityEstimateResource.getAvailabilityEstimateHttpResponse(
+				availabilityEstimate2.getId()));
 	}
 
 	protected AvailabilityEstimate
@@ -1099,6 +1585,16 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (availabilityEstimate.getExternalReferenceCode() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("groupId", additionalAssertFieldName)) {
 				if (availabilityEstimate.getGroupId() == null) {
 					valid = false;
@@ -1182,6 +1678,8 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 	protected List<GraphQLField> getGraphQLFields() throws Exception {
 		List<GraphQLField> graphQLFields = new ArrayList<>();
 
+		graphQLFields.add(new GraphQLField("externalReferenceCode"));
+
 		graphQLFields.add(new GraphQLField("id"));
 
 		for (java.lang.reflect.Field field :
@@ -1245,6 +1743,19 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals(
+					"externalReferenceCode", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						availabilityEstimate1.getExternalReferenceCode(),
+						availabilityEstimate2.getExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("groupId", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -1398,6 +1909,52 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		sb.append(operator);
 		sb.append(" ");
 
+		if (entityFieldName.equals("externalReferenceCode")) {
+			Object object = availabilityEstimate.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("groupId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1468,6 +2025,8 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 
 		return new AvailabilityEstimate() {
 			{
+				externalReferenceCode = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				groupId = RandomTestUtil.randomLong();
 				id = RandomTestUtil.randomLong();
 				priority = RandomTestUtil.randomDouble();
@@ -1745,4 +2304,4 @@ public abstract class BaseAvailabilityEstimateResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1620960792
+// LIFERAY-REST-BUILDER-HASH:1011027500

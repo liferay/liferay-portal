@@ -77,7 +77,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the commerce currency identified by id. Calls CommerceCurrencyService.deleteCommerceCurrency. Validation -- Service-level NoSuchCurrencyException -> 404 when id not found. Side effects -- Cascades through commerce currency delete listeners."
+		description = "Deletes the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Cascades through commerce currency delete listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -153,7 +153,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the commerce currency identified by external reference code. Calls CommerceCurrencyService.fetchCommerceCurrencyByExternalReferenceCode + deleteCommerceCurrency. Validation -- NoSuchCurrencyException -> 404 when ERC not found. Side effects -- Cascades through currency delete listeners."
+		description = "Deletes the commerce currency identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Cascades through currency delete listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -187,7 +187,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of commerce currencies scoped to the current company. Calls SearchUtil.search over CommerceCurrency -> CommerceCurrencyService.getCommerceCurrency. List query support — filterable fields -- active, primary, priority, code, name; sortable fields -- active, primary, priority, code, name."
+		description = "Returns a page of commerce currencies scoped to the current company. List query support — filterable fields -- active, primary, priority, code, name; sortable fields -- active, primary, priority, code, name."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -245,7 +245,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the commerce currency identified by id. Calls CommerceCurrencyService.getCommerceCurrency. Validation -- NoSuchCurrencyException -> 404 when id not found."
+		description = "Fetches the commerce currency identified by id. Returns 404 when the id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -279,7 +279,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the commerce currency identified by external reference code. Calls CommerceCurrencyService.fetchCommerceCurrencyByExternalReferenceCode. Validation -- NoSuchCurrencyException -> 404 when ERC not found."
+		description = "Fetches the commerce currency identified by external reference code. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -315,7 +315,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/{id}' -d $'{"active": ___, "code": ___, "externalReferenceCode": ___, "formatPattern": ___, "id": ___, "maxFractionDigits": ___, "minFractionDigits": ___, "name": ___, "primary": ___, "priority": ___, "rate": ___, "roundingMode": ___, "symbol": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the commerce currency identified by id. Calls CommerceCurrencyService.getCommerceCurrency + updateCommerceCurrency. Validation -- NoSuchCurrencyException -> 404 when id not found. Side effects -- Reindexes the currency."
+		description = "Partially updates the commerce currency identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the currency."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -351,7 +351,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "code": ___, "externalReferenceCode": ___, "formatPattern": ___, "id": ___, "maxFractionDigits": ___, "minFractionDigits": ___, "name": ___, "primary": ___, "priority": ___, "rate": ___, "roundingMode": ___, "symbol": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the commerce currency identified by external reference code. Calls CommerceCurrencyService.fetchCommerceCurrencyByExternalReferenceCode + updateCommerceCurrency. Validation -- NoSuchCurrencyException -> 404 when ERC not found. Side effects -- Reindexes the currency."
+		description = "Partially updates the commerce currency identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Reindexes the currency."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -471,7 +471,7 @@ public abstract class BaseCurrencyResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/currencies' -d $'{"active": ___, "code": ___, "externalReferenceCode": ___, "formatPattern": ___, "id": ___, "maxFractionDigits": ___, "minFractionDigits": ___, "name": ___, "primary": ___, "priority": ___, "rate": ___, "roundingMode": ___, "symbol": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a new commerce currency. Calls CommerceCurrencyService.addCommerceCurrency. Validation -- Service throws DuplicateCommerceCurrencyException on duplicate code -> 409. Side effects -- Indexes the new currency; localized format pattern populated from default if missing."
+		description = "Creates a new commerce currency. Returns 409 when the record is not found. Side effects -- Indexes the new currency; localized format pattern populated from default if missing."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Currency")}
@@ -1285,4 +1285,4 @@ public abstract class BaseCurrencyResourceImpl
 		LogFactoryUtil.getLog(BaseCurrencyResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1193255156
+// LIFERAY-REST-BUILDER-HASH:401155365

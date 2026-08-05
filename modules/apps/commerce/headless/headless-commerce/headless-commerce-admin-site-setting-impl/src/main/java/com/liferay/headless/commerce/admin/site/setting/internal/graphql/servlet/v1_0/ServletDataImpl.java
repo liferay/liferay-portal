@@ -104,6 +104,16 @@ public class ServletDataImpl implements ServletData {
 							AvailabilityEstimateResourceImpl.class,
 							"deleteAvailabilityEstimateBatch"));
 					put(
+						"mutation#deleteAvailabilityEstimateByExternalReferenceCode",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"deleteAvailabilityEstimateByExternalReferenceCode"));
+					put(
+						"mutation#patchAvailabilityEstimateByExternalReferenceCode",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"patchAvailabilityEstimateByExternalReferenceCode"));
+					put(
 						"mutation#createCommerceAdminSiteSettingGroupAvailabilityEstimate",
 						new ObjectValuePair<>(
 							AvailabilityEstimateResourceImpl.class,
@@ -118,6 +128,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							AvailabilityEstimateResourceImpl.class,
 							"putAvailabilityEstimateBatch"));
+					put(
+						"mutation#updateAvailabilityEstimateByExternalReferenceCode",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"putAvailabilityEstimateByExternalReferenceCode"));
 					put(
 						"mutation#deleteMeasurementUnit",
 						new ObjectValuePair<>(
@@ -226,6 +241,11 @@ public class ServletDataImpl implements ServletData {
 							AvailabilityEstimateResourceImpl.class,
 							"getAvailabilityEstimate"));
 					put(
+						"query#availabilityEstimateByExternalReferenceCode",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"getAvailabilityEstimateByExternalReferenceCode"));
+					put(
 						"query#commerceAdminSettingGroupAvailabilityEstimate",
 						new ObjectValuePair<>(
 							AvailabilityEstimateResourceImpl.class,
@@ -273,6 +293,17 @@ public class ServletDataImpl implements ServletData {
 						"query#warehouse",
 						new ObjectValuePair<>(
 							WarehouseResourceImpl.class, "getWarehouse"));
+
+					put(
+						"query#MeasurementUnit.availabilityEstimateByExternalReferenceCode",
+						new ObjectValuePair<>(
+							AvailabilityEstimateResourceImpl.class,
+							"getAvailabilityEstimateByExternalReferenceCode"));
+					put(
+						"query#AvailabilityEstimate.measurementUnitByExternalReferenceCode",
+						new ObjectValuePair<>(
+							MeasurementUnitResourceImpl.class,
+							"getMeasurementUnitByExternalReferenceCode"));
 				}
 			};
 
@@ -293,4 +324,4 @@ public class ServletDataImpl implements ServletData {
 		_warehouseResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1426626223
+// LIFERAY-REST-BUILDER-HASH:107165368

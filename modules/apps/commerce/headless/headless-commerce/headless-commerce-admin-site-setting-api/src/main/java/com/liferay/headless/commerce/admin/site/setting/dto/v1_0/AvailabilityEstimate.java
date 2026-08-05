@@ -58,6 +58,52 @@ public class AvailabilityEstimate implements Serializable {
 			AvailabilityEstimate.class, json);
 	}
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Idempotency key for create and update; must be unique per availability estimate within the company. Accepted in place of the numeric identifier on the matching by-external-reference-code endpoints. Defaults to the record's UUID when omitted on create.",
+		example = "AB-34098-789-N"
+	)
+	public String getExternalReferenceCode() {
+		if (_externalReferenceCodeSupplier != null) {
+			externalReferenceCode = _externalReferenceCodeSupplier.get();
+
+			_externalReferenceCodeSupplier = null;
+		}
+
+		return externalReferenceCode;
+	}
+
+	public void setExternalReferenceCode(String externalReferenceCode) {
+		this.externalReferenceCode = externalReferenceCode;
+
+		_externalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setExternalReferenceCode(
+		UnsafeSupplier<String, Exception> externalReferenceCodeUnsafeSupplier) {
+
+		_externalReferenceCodeSupplier = () -> {
+			try {
+				return externalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Idempotency key for create and update; must be unique per availability estimate within the company. Accepted in place of the numeric identifier on the matching by-external-reference-code endpoints. Defaults to the record's UUID when omitted on create."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String externalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _externalReferenceCodeSupplier;
+
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Wire-only site identifier accepted on input but ignored by the server and omitted from responses; availability estimates are company-scoped, not site-scoped.",
@@ -273,6 +319,22 @@ public class AvailabilityEstimate implements Serializable {
 
 		sb.append("{");
 
+		String externalReferenceCode = getExternalReferenceCode();
+
+		if (externalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(externalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		Long groupId = getGroupId();
 
 		if (groupId != null) {
@@ -422,4 +484,4 @@ public class AvailabilityEstimate implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-955861727
+// LIFERAY-REST-BUILDER-HASH:298848743

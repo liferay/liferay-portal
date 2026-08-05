@@ -75,7 +75,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the AvailabilityEstimate identified by id. Calls CommerceAvailabilityEstimateService.deleteCommerceAvailabilityEstimate. Validation -- 404 when no estimate matches the id."
+		description = "Deletes the availability estimate identified by id. Returns 404 when no estimate matches the id."
 	)
 	public Response deleteAvailabilityEstimate(@GraphQLName("id") Long id)
 		throws Exception {
@@ -102,7 +102,45 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for creating an AvailabilityEstimate under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and no record is persisted."
+		description = "Deletes the availability estimate identified by external reference code. Returns 404 when no estimate carries that code. Side effects -- cascades to the per-product availability estimates that reference it."
+	)
+	public boolean deleteAvailabilityEstimateByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_availabilityEstimateResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			availabilityEstimateResource ->
+				availabilityEstimateResource.
+					deleteAvailabilityEstimateByExternalReferenceCode(
+						externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField(
+		description = "Partially updates the availability estimate identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 404 when no estimate carries that code, and 400 when the supplied external reference code is already taken by another estimate in the company."
+	)
+	public AvailabilityEstimate
+			patchAvailabilityEstimateByExternalReferenceCode(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("availabilityEstimate") AvailabilityEstimate
+					availabilityEstimate)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_availabilityEstimateResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			availabilityEstimateResource ->
+				availabilityEstimateResource.
+					patchAvailabilityEstimateByExternalReferenceCode(
+						externalReferenceCode, availabilityEstimate));
+	}
+
+	@GraphQLField(
+		description = "Creates an availability estimate for the caller's company from the supplied external reference code, localized `title`, and `priority`. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the record. Returns 400 when the supplied external reference code is already taken by another estimate in the company."
 	)
 	public AvailabilityEstimate
 			createCommerceAdminSiteSettingGroupAvailabilityEstimate(
@@ -121,9 +159,9 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for replacing an AvailabilityEstimate identified by id. Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and the addressed record is not changed."
+		description = "Replaces the availability estimate identified by id with the request body. Returns 404 when no estimate matches the id, and 400 when the supplied external reference code is already taken by another estimate in the company."
 	)
-	public Response updateAvailabilityEstimate(
+	public AvailabilityEstimate updateAvailabilityEstimate(
 			@GraphQLName("id") Long id,
 			@GraphQLName("availabilityEstimate") AvailabilityEstimate
 				availabilityEstimate)
@@ -152,7 +190,27 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the MeasurementUnit identified by id. Calls CPMeasurementUnitService.deleteCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when id not found."
+		description = "Upserts the availability estimate identified by external reference code -- replaces it with the request body when the code exists, otherwise creates a new estimate. Returns 400 when the supplied external reference code is already taken by another estimate in the company."
+	)
+	public AvailabilityEstimate
+			updateAvailabilityEstimateByExternalReferenceCode(
+				@GraphQLName("externalReferenceCode") String
+					externalReferenceCode,
+				@GraphQLName("availabilityEstimate") AvailabilityEstimate
+					availabilityEstimate)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_availabilityEstimateResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			availabilityEstimateResource ->
+				availabilityEstimateResource.
+					putAvailabilityEstimateByExternalReferenceCode(
+						externalReferenceCode, availabilityEstimate));
+	}
+
+	@GraphQLField(
+		description = "Deletes the measurement unit identified by id. Returns 404 when no unit matches the id."
 	)
 	public boolean deleteMeasurementUnit(@GraphQLName("id") Long id)
 		throws Exception {
@@ -181,7 +239,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the MeasurementUnit identified by external reference code. Calls CPMeasurementUnitService.fetchCPMeasurementUnitByExternalReferenceCode + deleteCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when ERC not found."
+		description = "Deletes the measurement unit identified by external reference code. Returns 404 when no unit carries that code."
 	)
 	public boolean deleteMeasurementUnitByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -199,7 +257,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the MeasurementUnit identified by its stable string key. Calls CPMeasurementUnitService.fetchCPMeasurementUnit (companyId, key) + deleteCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when key not found."
+		description = "Deletes the measurement unit identified by its stable string `key`. Returns 404 when no unit carries that key."
 	)
 	public boolean deleteMeasurementUnitByKey(@GraphQLName("key") String key)
 		throws Exception {
@@ -214,7 +272,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the MeasurementUnit identified by id, applying JSON Merge Patch semantics (only fields present in the body are modified). Calls CPMeasurementUnitService.updateCPMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422."
+		description = "Partially updates the measurement unit identified by id, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
 	)
 	public Response patchMeasurementUnit(
 			@GraphQLName("id") Long id,
@@ -230,7 +288,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the MeasurementUnit identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Calls CPMeasurementUnitService.updateCPMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422."
+		description = "Partially updates the measurement unit identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
 	)
 	public Response patchMeasurementUnitByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -247,7 +305,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Partially updates the MeasurementUnit identified by its stable string key, applying JSON Merge Patch semantics (only fields present in the body are modified). Calls CPMeasurementUnitService.updateCPMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422."
+		description = "Partially updates the measurement unit identified by its stable string `key`, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
 	)
 	public Response patchMeasurementUnitByKey(
 			@GraphQLName("key") String key,
@@ -263,7 +321,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Creates a MeasurementUnit for the caller's company. Calls CPMeasurementUnitService.addCPMeasurementUnit with the supplied name, key, rate, priority, and type. Validation -- unknown type (CPMeasurementUnitTypeException) -> 422; duplicate externalReferenceCode or key (DuplicateCPMeasurementUnitExternalReferenceCodeException, DuplicateCPMeasurementUnitKeyException) -> 409."
+		description = "Creates a measurement unit for the caller's company from the supplied `name`, `key`, `rate`, `priority`, and type. Returns 422 when the type is not one of the known types, and 409 when the supplied external reference code or `key` is already taken in the company."
 	)
 	public MeasurementUnit createMeasurementUnit(
 			@GraphQLName("measurementUnit") MeasurementUnit measurementUnit)
@@ -312,7 +370,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Upserts the MeasurementUnit identified by external reference code -- replaces it with the request body when the ERC exists, otherwise creates a new entity by delegating to postMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422."
+		description = "Upserts the measurement unit identified by external reference code -- replaces it with the request body when the code exists, otherwise creates a new unit. Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types."
 	)
 	public MeasurementUnit updateMeasurementUnitByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode,
@@ -329,7 +387,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the TaxCategory identified by id. Calls CPTaxCategoryService.deleteCPTaxCategory. Validation -- 404 when no entity matches the id."
+		description = "Deletes the tax category identified by id. Returns 404 when no tax category matches the id."
 	)
 	public Response deleteTaxCategory(@GraphQLName("id") Long id)
 		throws Exception {
@@ -354,7 +412,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for creating a TaxCategory under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and no record is persisted."
+		description = "Unimplemented endpoint for creating a tax category under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no record is persisted."
 	)
 	public TaxCategory createCommerceAdminSiteSettingGroupTaxCategory(
 			@GraphQLName("groupId") Long groupId,
@@ -371,7 +429,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for replacing a TaxCategory identified by id. Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and the addressed record is not changed."
+		description = "Unimplemented endpoint for replacing the tax category identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged."
 	)
 	public Response updateTaxCategory(
 			@GraphQLName("id") Long id,
@@ -399,7 +457,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Deletes the Warehouse definition identified by id. Calls CommerceInventoryWarehouseService.deleteCommerceInventoryWarehouse. Validation -- 404 when no entity matches the id. Side effects -- does not remove stock levels held in the admin-inventory API."
+		description = "Deletes the warehouse definition identified by id. Returns 404 when no warehouse matches the id. Side effects -- stock levels held in the inventory administration API are not removed."
 	)
 	public Response deleteWarehouse(@GraphQLName("id") Long id)
 		throws Exception {
@@ -424,7 +482,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for creating a Warehouse under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceInventoryWarehouseService, so every request is rejected with a 400 Bad Request and no record is persisted. For Warehouse writes that persist, including stock levels and per-account/group/channel scoping, use the inventory administration API."
+		description = "Unimplemented endpoint for creating a warehouse definition under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no record is persisted. For warehouse writes that persist, including stock levels and per-account, per-group, and per-channel scoping, use the inventory administration API."
 	)
 	public Warehouse createCommerceAdminSiteSettingGroupWarehouse(
 			@GraphQLName("groupId") Long groupId,
@@ -440,7 +498,7 @@ public class Mutation {
 	}
 
 	@GraphQLField(
-		description = "Unimplemented endpoint for replacing a Warehouse identified by id. Calls -- none; throws UnsupportedOperationException without invoking CommerceInventoryWarehouseService, so every request is rejected with a 400 Bad Request and the addressed record is not changed. For Warehouse writes that persist, use the inventory administration API."
+		description = "Unimplemented endpoint for replacing the warehouse definition identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged. For warehouse writes that persist, use the inventory administration API."
 	)
 	public Response updateWarehouse(
 			@GraphQLName("id") Long id,
@@ -615,4 +673,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-486471891
+// LIFERAY-REST-BUILDER-HASH:1913922442

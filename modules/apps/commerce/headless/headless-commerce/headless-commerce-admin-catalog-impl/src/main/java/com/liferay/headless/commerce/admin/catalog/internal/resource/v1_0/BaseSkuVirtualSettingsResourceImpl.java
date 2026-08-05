@@ -48,7 +48,7 @@ public abstract class BaseSkuVirtualSettingsResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/by-externalReferenceCode/{externalReferenceCode}/sku-virtual-settings'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the virtual settings of the SKU identified by external reference code. Calls CPInstanceService.fetchCPInstanceByExternalReferenceCode + SkuVirtualSettingsDTOConverter. Validation -- NoSuchCPInstanceException -> 404 when SKU ERC not found."
+		description = "Returns the virtual settings of the SKU identified by external reference code. Returns 404 when the SKU external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -86,7 +86,7 @@ public abstract class BaseSkuVirtualSettingsResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}/sku-virtual-settings'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the virtual settings of the SKU identified by id. Calls CPInstanceService.getCPInstance + SkuVirtualSettingsDTOConverter. Validation -- NoSuchCPInstanceException -> 404 when SKU id not found."
+		description = "Returns the virtual settings of the SKU identified by id. Returns 404 when the SKU id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -561,4 +561,4 @@ public abstract class BaseSkuVirtualSettingsResourceImpl
 		LogFactoryUtil.getLog(BaseSkuVirtualSettingsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:771001306
+// LIFERAY-REST-BUILDER-HASH:-1477456035

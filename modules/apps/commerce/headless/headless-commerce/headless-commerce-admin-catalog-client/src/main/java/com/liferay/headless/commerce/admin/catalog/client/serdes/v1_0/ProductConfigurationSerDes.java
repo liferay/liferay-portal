@@ -94,6 +94,25 @@ public class ProductConfigurationSerDes {
 			sb.append("]");
 		}
 
+		if (productConfiguration.
+				getAvailabilityEstimateExternalReferenceCode() != null) {
+
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"availabilityEstimateExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(
+					productConfiguration.
+						getAvailabilityEstimateExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (productConfiguration.getAvailabilityEstimateId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -382,6 +401,19 @@ public class ProductConfigurationSerDes {
 					productConfiguration.getAllowedOrderQuantities()));
 		}
 
+		if (productConfiguration.
+				getAvailabilityEstimateExternalReferenceCode() == null) {
+
+			map.put("availabilityEstimateExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"availabilityEstimateExternalReferenceCode",
+				String.valueOf(
+					productConfiguration.
+						getAvailabilityEstimateExternalReferenceCode()));
+		}
+
 		if (productConfiguration.getAvailabilityEstimateId() == null) {
 			map.put("availabilityEstimateId", null);
 		}
@@ -596,6 +628,12 @@ public class ProductConfigurationSerDes {
 				return false;
 			}
 			else if (Objects.equals(
+						jsonParserFieldName,
+						"availabilityEstimateExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(
 						jsonParserFieldName, "availabilityEstimateId")) {
 
 				return false;
@@ -700,6 +738,16 @@ public class ProductConfigurationSerDes {
 				if (jsonParserFieldValue != null) {
 					productConfiguration.setAllowedOrderQuantities(
 						toBigDecimals((Object[])jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"availabilityEstimateExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					productConfiguration.
+						setAvailabilityEstimateExternalReferenceCode(
+							(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -924,4 +972,4 @@ public class ProductConfigurationSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2006620890
+// LIFERAY-REST-BUILDER-HASH:-86021069

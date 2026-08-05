@@ -77,7 +77,7 @@ public abstract class BaseProductOptionValueResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-option-values/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Removes the product option value relation identified by id. Calls CPDefinitionOptionValueRelService.deleteCPDefinitionOptionValueRel. Validation -- Service-level NoSuchCPDefinitionOptionValueRelException -> 404. Side effects -- Cascades through CPInstance option value listeners; reindexes affected SKUs."
+		description = "Removes the product option value relation identified by id. Returns 404 when the record is not found. Side effects -- Cascades through SKU option value listeners; reindexes affected SKUs."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -157,7 +157,7 @@ public abstract class BaseProductOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}/productOptionValues'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the product option value relations of the product option identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + CPDefinitionOptionValueRelService.searchCPDefinitionOptionValueRels. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when parent option relation id not found."
+		description = "Lists the product option value relations of the product option identified by id. Returns 404 when the parent option relation id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -219,7 +219,7 @@ public abstract class BaseProductOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-option-values/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the product option value relation identified by id. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRel (via DTO converter). Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when id not found."
+		description = "Fetches the product option value relation identified by id. Returns 404 when the id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -255,7 +255,7 @@ public abstract class BaseProductOptionValueResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/product-option-values/{id}' -d $'{"deltaPrice": ___, "key": ___, "name": ___, "preselected": ___, "priority": ___, "quantity": ___, "skuExternalReferenceCode": ___, "skuId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the product option value relation identified by id. Calls CPDefinitionOptionValueRelService.getCPDefinitionOptionValueRel + updateCPDefinitionOptionValueRel. Validation -- NoSuchCPDefinitionOptionValueRelException -> 404 when id not found. Side effects -- May link the value to a specific CPInstance (SKU); reindexes affected SKUs."
+		description = "Partially updates the product option value relation identified by id. Returns 404 when the id is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -293,7 +293,7 @@ public abstract class BaseProductOptionValueResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/productOptions/{id}/productOptionValues' -d $'{"deltaPrice": ___, "key": ___, "name": ___, "preselected": ___, "priority": ___, "quantity": ___, "skuExternalReferenceCode": ___, "skuId": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates a product option value relation under the product option identified by id. Calls CPDefinitionOptionRelService.getCPDefinitionOptionRel + ProductOptionValueUtil.addOrUpdateCPDefinitionOptionValueRel. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionOptionRelException -> 404 when parent option relation id not found. Side effects -- May link the value to a specific CPInstance (SKU); reindexes affected SKUs."
+		description = "Creates or updates a product option value relation under the product option identified by id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option relation id is not found. Side effects -- May link the value to a specific SKU (SKU); reindexes affected SKUs."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1084,4 +1084,4 @@ public abstract class BaseProductOptionValueResourceImpl
 		LogFactoryUtil.getLog(BaseProductOptionValueResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:389413696
+// LIFERAY-REST-BUILDER-HASH:1641376054

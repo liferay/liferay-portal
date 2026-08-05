@@ -77,7 +77,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the option value identified by id. Calls CPOptionValueService.deleteCPOptionValue. Validation -- Service-level NoSuchCPOptionValueException -> 404. Side effects -- Cascades through CPDefinitionOptionValueRel listeners."
+		description = "Deletes the option value identified by id. Returns 404 when the record is not found. Side effects -- Cascades through product option value listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -157,7 +157,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the option value identified by external reference code. Calls CPOptionValueService.fetchCPOptionValueByExternalReferenceCode + deleteCPOptionValue. Validation -- NoSuchCPOptionValueException -> 404 when ERC not found. Side effects -- Cascades through CPDefinitionOptionValueRel listeners."
+		description = "Deletes the option value identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Cascades through product option value listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -195,7 +195,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/by-externalReferenceCode/{externalReferenceCode}/optionValues'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists option values for the option identified by external reference code. Calls CPOptionService.fetchCPOptionByExternalReferenceCode + CPOptionValueService.searchCPOptionValues. Validation -- NoSuchCPOptionException -> 404 when parent option ERC not found."
+		description = "Lists option values for the option identified by external reference code. Returns 404 when the parent option external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -257,7 +257,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/{id}/optionValues'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists option values for the option identified by option id. Calls CPOptionService.getCPOption + CPOptionValueService.searchCPOptionValues. Validation -- NoSuchCPOptionException -> 404 when parent option id not found."
+		description = "Lists option values for the option identified by option id. Returns 404 when the parent option id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -317,7 +317,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the option value identified by id. Calls CPOptionValueService.getCPOptionValue (via DTO converter). Validation -- NoSuchCPOptionValueException -> 404 when id not found."
+		description = "Fetches the option value identified by id. Returns 404 when the id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -351,7 +351,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the option value identified by external reference code. Calls CPOptionValueService.fetchCPOptionValueByExternalReferenceCode. Validation -- NoSuchCPOptionValueException -> 404 when ERC not found."
+		description = "Fetches the option value identified by external reference code. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -387,7 +387,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/{id}' -d $'{"customFields": ___, "externalReferenceCode": ___, "key": ___, "name": ___, "priority": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the option value identified by id. Calls CPOptionValueService.getCPOptionValue + updateCPOptionValue. Validation -- NoSuchCPOptionValueException -> 404 when id not found. Side effects -- Reindexes the option value."
+		description = "Partially updates the option value identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option value."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -425,7 +425,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionValues/by-externalReferenceCode/{externalReferenceCode}' -d $'{"customFields": ___, "externalReferenceCode": ___, "key": ___, "name": ___, "priority": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the option value identified by external reference code. Calls CPOptionValueService.fetchCPOptionValueByExternalReferenceCode + updateCPOptionValue. Validation -- NoSuchCPOptionValueException -> 404 when ERC not found. Side effects -- Reindexes the option value."
+		description = "Partially updates the option value identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Reindexes the option value."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -465,7 +465,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/by-externalReferenceCode/{externalReferenceCode}/optionValues' -d $'{"customFields": ___, "externalReferenceCode": ___, "key": ___, "name": ___, "priority": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an option value under the parent option identified by external reference code. Calls CPOptionService.fetchCPOptionByExternalReferenceCode + CPOptionValueService.addOrUpdateCPOptionValue. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPOptionException -> 404 when parent option ERC not found. Side effects -- Reindexes the option value."
+		description = "Creates or updates an option value under the parent option identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option external reference code is not found. Side effects -- Reindexes the option value."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -503,7 +503,7 @@ public abstract class BaseOptionValueResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/options/{id}/optionValues' -d $'{"customFields": ___, "externalReferenceCode": ___, "key": ___, "name": ___, "priority": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an option value under the parent option identified by option id. Calls CPOptionService.getCPOption + CPOptionValueService.addOrUpdateCPOptionValue. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPOptionException -> 404 when parent option id not found. Side effects -- Reindexes the option value."
+		description = "Creates or updates an option value under the parent option identified by option id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the parent option id is not found. Side effects -- Reindexes the option value."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1347,4 +1347,4 @@ public abstract class BaseOptionValueResourceImpl
 		LogFactoryUtil.getLog(BaseOptionValueResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-736182962
+// LIFERAY-REST-BUILDER-HASH:-742595007

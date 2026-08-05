@@ -77,7 +77,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/attachment/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the attachment identified by its internal CPAttachmentFileEntry id. Calls CPAttachmentFileEntryService.fetchCPAttachmentFileEntry + deleteCPAttachmentFileEntry. Validation -- NoSuchCPAttachmentFileEntryException -> 404 when id not found. Side effects -- Removes the underlying DL file entry association; cascades through CPAttachmentFileEntry delete listeners."
+		description = "Deletes the attachment identified by its internal attachment id. Returns 404 when the id is not found. Side effects -- Removes the underlying DL file entry association; cascades through attachment delete listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -153,7 +153,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/attachment/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the attachment identified by its external reference code. Calls CPAttachmentFileEntryService.fetchCPAttachmentFileEntryByExternalReferenceCode + deleteCPAttachmentFileEntry. Validation -- NoSuchCPAttachmentFileEntryException -> 404 when ERC not found. Side effects -- Removes the underlying DL file entry association via the attachment delete cascade."
+		description = "Deletes the attachment identified by its external reference code. Returns 404 when the external reference code is not found. Side effects -- Removes the underlying DL file entry association via the attachment delete cascade."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -187,7 +187,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/attachment/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the attachment identified by its external reference code. Calls CPAttachmentFileEntryService.fetchCPAttachmentFileEntryByExternalReferenceCode. Validation -- NoSuchCPAttachmentFileEntryException -> 404 when ERC not found."
+		description = "Fetches the attachment identified by its external reference code. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -223,7 +223,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/attachments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists attachments (TYPE_OTHER) for the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPAttachmentFileEntryService.getCPAttachmentFileEntries (TYPE_OTHER). Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found."
+		description = "Lists attachments (TYPE_OTHER) for the product identified by external reference code. Returns 404 when the product external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -270,7 +270,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/images'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists image attachments (TYPE_IMAGE) for the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPAttachmentFileEntryService.getCPAttachmentFileEntries (TYPE_IMAGE). Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found."
+		description = "Lists image attachments (TYPE_IMAGE) for the product identified by external reference code. Returns 404 when the product external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -317,7 +317,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/attachments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists attachments (TYPE_OTHER) for the product identified by its product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + CPAttachmentFileEntryService.getCPAttachmentFileEntries (TYPE_OTHER). Validation -- NoSuchCPDefinitionException -> 404 when product id not found."
+		description = "Lists attachments (TYPE_OTHER) for the product identified by its product id. Returns 404 when the product id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -362,7 +362,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/images'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists image attachments (TYPE_IMAGE) for the product identified by its product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + CPAttachmentFileEntryService.getCPAttachmentFileEntries (TYPE_IMAGE). Validation -- NoSuchCPDefinitionException -> 404 when product id not found."
+		description = "Lists image attachments (TYPE_IMAGE) for the product identified by its product id. Returns 404 when the product id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -407,7 +407,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/attachment/by-externalReferenceCode/{externalReferenceCode}' -d $'{"attachment": ___, "cdnEnabled": ___, "cdnURL": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "fileEntryExternalReferenceCode": ___, "fileEntryGroupExternalReferenceCode": ___, "fileEntryId": ___, "galleryEnabled": ___, "id": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the attachment identified by its external reference code. Calls CPAttachmentFileEntryService.fetchCPAttachmentFileEntryByExternalReferenceCode + AttachmentUtil.updateCPAttachmentFileEntry (TYPE_OTHER). Validation -- NoSuchCPAttachmentFileEntryException -> 404 when ERC not found. Side effects -- Updates DL file entry metadata and asset tags as side effects of CPAttachmentFileEntry update."
+		description = "Partially updates the attachment identified by its external reference code. Returns 404 when the external reference code is not found. Side effects -- Updates DL file entry metadata and asset tags as side effects of attachment update."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -528,7 +528,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/attachments' -d $'{"attachment": ___, "cdnEnabled": ___, "cdnURL": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "fileEntryExternalReferenceCode": ___, "fileEntryGroupExternalReferenceCode": ___, "fileEntryId": ___, "galleryEnabled": ___, "id": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by external reference code, using an inline file payload. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (TYPE_OTHER). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Creates or updates a DL file entry under the product group; ExpandoBridge attributes and asset tags applied."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by external reference code, using an inline file payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found. Side effects -- Creates or updates a DL file entry under the product group; custom field storage attributes and asset tags applied."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -566,7 +566,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/attachments/by-base64' -d $'{"attachment": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by external reference code, supplied as a base64-encoded payload. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (base64, TYPE_OTHER). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group; asset tags and ExpandoBridge attributes applied."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by external reference code, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group; asset tags and custom field storage attributes applied."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -604,7 +604,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/attachments/by-url' -d $'{"contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by external reference code, referenced by URL. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (url, TYPE_OTHER). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Stores the URL reference; DL file entry is not necessarily downloaded."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by external reference code, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found. Side effects -- Stores the URL reference; DL file entry is not necessarily downloaded."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -642,7 +642,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/images' -d $'{"attachment": ___, "cdnEnabled": ___, "cdnURL": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "fileEntryExternalReferenceCode": ___, "fileEntryGroupExternalReferenceCode": ___, "fileEntryId": ___, "galleryEnabled": ___, "id": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (TYPE_IMAGE). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Creates or updates a DL file entry under the product group; asset tags and ExpandoBridge attributes applied."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found. Side effects -- Creates or updates a DL file entry under the product group; asset tags and custom field storage attributes applied."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -680,7 +680,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/images/by-base64' -d $'{"attachment": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by external reference code, supplied as a base64-encoded payload. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (base64, TYPE_IMAGE). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by external reference code, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -718,7 +718,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/images/by-url' -d $'{"contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by external reference code, referenced by URL. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (url, TYPE_IMAGE). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Stores the URL reference."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by external reference code, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found. Side effects -- Stores the URL reference."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -756,7 +756,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/attachments' -d $'{"attachment": ___, "cdnEnabled": ___, "cdnURL": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "fileEntryExternalReferenceCode": ___, "fileEntryGroupExternalReferenceCode": ___, "fileEntryId": ___, "galleryEnabled": ___, "id": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (TYPE_OTHER). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Creates or updates a DL file entry under the product group."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Creates or updates a DL file entry under the product group."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -836,7 +836,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/attachments/by-base64' -d $'{"attachment": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, supplied as a base64-encoded payload. Calls CPDefinitionService.fetchCPDefinitionByCProductId + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (base64, TYPE_OTHER). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Decodes the base64 file and creates a DL file entry under the product group."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -872,7 +872,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/attachments/by-url' -d $'{"contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, referenced by URL. Calls CPDefinitionService.fetchCPDefinitionByCProductId + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (url, TYPE_OTHER). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Stores the URL reference."
+		description = "Creates or updates an attachment (TYPE_OTHER) under the product identified by product id, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Stores the URL reference."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -908,7 +908,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/images' -d $'{"attachment": ___, "cdnEnabled": ___, "cdnURL": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "fileEntryExternalReferenceCode": ___, "fileEntryGroupExternalReferenceCode": ___, "fileEntryId": ___, "galleryEnabled": ___, "id": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (TYPE_IMAGE). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Creates or updates a DL file entry under the product group."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Creates or updates a DL file entry under the product group."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -944,7 +944,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/images/by-base64' -d $'{"attachment": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, supplied as a base64-encoded payload. Calls CPDefinitionService.fetchCPDefinitionByCProductId + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (base64, TYPE_IMAGE). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Decodes the base64 file and creates a DL file entry."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, supplied as a base64-encoded payload. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Decodes the base64 file and creates a DL file entry."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -980,7 +980,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/images/by-url' -d $'{"contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "galleryEnabled": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, referenced by URL. Calls CPDefinitionService.fetchCPDefinitionByCProductId + AttachmentUtil.addOrUpdateCPAttachmentFileEntry (url, TYPE_IMAGE). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Stores the URL reference."
+		description = "Creates or updates an image attachment (TYPE_IMAGE) under the product identified by product id, referenced by URL. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found. Side effects -- Stores the URL reference."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1016,7 +1016,7 @@ public abstract class BaseAttachmentResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/attachment/by-externalReferenceCode/{externalReferenceCode}' -d $'{"attachment": ___, "cdnEnabled": ___, "cdnURL": ___, "contentType": ___, "customFields": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "fileEntryExternalReferenceCode": ___, "fileEntryGroupExternalReferenceCode": ___, "fileEntryId": ___, "galleryEnabled": ___, "id": ___, "neverExpire": ___, "options": ___, "priority": ___, "src": ___, "tags": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Replaces the attachment identified by external reference code with the supplied representation. Calls CPAttachmentFileEntryService.fetchCPAttachmentFileEntryByExternalReferenceCode + AttachmentUtil.updateCPAttachmentFileEntry (TYPE_OTHER). Validation -- NoSuchCPAttachmentFileEntryException -> 404 when ERC not found. Side effects -- Updates DL file entry metadata, asset tags, and ExpandoBridge attributes."
+		description = "Replaces the attachment identified by external reference code with the supplied representation. Returns 404 when the external reference code is not found. Side effects -- Updates DL file entry metadata, asset tags, and custom field storage attributes."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1802,4 +1802,4 @@ public abstract class BaseAttachmentResourceImpl
 		LogFactoryUtil.getLog(BaseAttachmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:129513684
+// LIFERAY-REST-BUILDER-HASH:-741037560

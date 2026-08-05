@@ -77,7 +77,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/taxCategory/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the TaxCategory identified by id. Calls CPTaxCategoryService.deleteCPTaxCategory. Validation -- 404 when no entity matches the id."
+		description = "Deletes the tax category identified by id. Returns 404 when no tax category matches the id."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -157,7 +157,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/taxCategory'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unimplemented endpoint for listing TaxCategory records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and no records are returned."
+		description = "Unimplemented endpoint for listing tax categories under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no records are returned."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -202,7 +202,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/taxCategory/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the TaxCategory identified by id. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- 404 when no entity matches the id."
+		description = "Fetches the tax category identified by id. Returns 404 when no tax category matches the id."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -236,7 +236,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/taxCategory' -d $'{"description": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unimplemented endpoint for creating a TaxCategory under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and no record is persisted."
+		description = "Unimplemented endpoint for creating a tax category under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no record is persisted."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -272,7 +272,7 @@ public abstract class BaseTaxCategoryResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/taxCategory/{id}' -d $'{"description": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unimplemented endpoint for replacing a TaxCategory identified by id. Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and the addressed record is not changed."
+		description = "Unimplemented endpoint for replacing the tax category identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1061,4 +1061,4 @@ public abstract class BaseTaxCategoryResourceImpl
 		LogFactoryUtil.getLog(BaseTaxCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:274561721
+// LIFERAY-REST-BUILDER-HASH:-1842843987

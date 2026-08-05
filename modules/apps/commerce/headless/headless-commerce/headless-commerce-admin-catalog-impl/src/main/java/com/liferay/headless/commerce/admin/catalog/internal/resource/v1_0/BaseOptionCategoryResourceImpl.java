@@ -78,7 +78,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the option category identified by id. Calls CPOptionCategoryService.deleteCPOptionCategory. Validation -- Service-level NoSuchCPOptionCategoryException -> 404. Side effects -- Cascades through option category delete listeners; reindexes affected specifications."
+		description = "Deletes the option category identified by id. Returns 404 when the record is not found. Side effects -- Cascades through option category delete listeners; reindexes affected specifications."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -162,7 +162,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the option category identified by external reference code. Calls CPOptionCategoryService.getCPOptionCategoryByExternalReferenceCode + deleteCPOptionCategory. Validation -- NoSuchCPOptionCategoryException -> 404 when ERC not found. Side effects -- Cascades through option category delete listeners."
+		description = "Deletes the option category identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Cascades through option category delete listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -198,7 +198,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of option categories scoped to the current company. Calls SearchUtil.search over CPOptionCategory. List query support — filterable fields -- key, title; sortable fields -- key, title."
+		description = "Returns a page of option categories scoped to the current company. List query support — filterable fields -- key, title; sortable fields -- key, title."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -250,7 +250,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the option category identified by id. Calls CPOptionCategoryService.getCPOptionCategory (via DTO converter). Validation -- NoSuchCPOptionCategoryException -> 404 when id not found."
+		description = "Fetches the option category identified by id. Returns 404 when the id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -286,7 +286,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the option category identified by external reference code. Calls CPOptionCategoryService.getCPOptionCategoryByExternalReferenceCode. Validation -- NoSuchCPOptionCategoryException -> 404 when ERC not found."
+		description = "Fetches the option category identified by external reference code. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -324,7 +324,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories/{id}' -d $'{"description": ___, "externalReferenceCode": ___, "id": ___, "key": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the option category identified by id. Calls CPOptionCategoryService.getCPOptionCategory + updateCPOptionCategory. Validation -- NoSuchCPOptionCategoryException -> 404 when id not found. Side effects -- Reindexes the option category."
+		description = "Partially updates the option category identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the option category."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -364,7 +364,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories/by-externalReferenceCode/{externalReferenceCode}' -d $'{"description": ___, "externalReferenceCode": ___, "id": ___, "key": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the option category identified by external reference code. Calls CPOptionCategoryService.getCPOptionCategoryByExternalReferenceCode + updateCPOptionCategory. Validation -- NoSuchCPOptionCategoryException -> 404 when ERC not found. Side effects -- Reindexes the option category."
+		description = "Partially updates the option category identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Reindexes the option category."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -509,7 +509,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories' -d $'{"description": ___, "externalReferenceCode": ___, "id": ___, "key": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates an option category using the supplied external reference code. Calls CPOptionCategoryService.addOrUpdateCPOptionCategory. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- DuplicateCPOptionCategoryException -> 409 when key collides. Side effects -- Reindexes the option category."
+		description = "Creates or updates an option category using the supplied external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 409 when the key is already taken. Side effects -- Reindexes the option category."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -579,7 +579,7 @@ public abstract class BaseOptionCategoryResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/optionCategories/by-externalReferenceCode/{externalReferenceCode}' -d $'{"description": ___, "externalReferenceCode": ___, "id": ___, "key": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or replaces the option category identified by external reference code. Calls CPOptionCategoryService.addOrUpdateCPOptionCategory. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- DuplicateCPOptionCategoryException -> 409 when key collides. Side effects -- Reindexes the option category."
+		description = "Creates or replaces the option category identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 409 when the key is already taken. Side effects -- Reindexes the option category."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1419,4 +1419,4 @@ public abstract class BaseOptionCategoryResourceImpl
 		LogFactoryUtil.getLog(BaseOptionCategoryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-470153616
+// LIFERAY-REST-BUILDER-HASH:420063729

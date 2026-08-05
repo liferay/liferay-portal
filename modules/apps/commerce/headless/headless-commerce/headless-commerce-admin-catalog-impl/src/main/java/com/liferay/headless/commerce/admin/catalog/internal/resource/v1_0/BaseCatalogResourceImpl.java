@@ -78,7 +78,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the commerce catalog identified by id. Calls CommerceCatalogService.deleteCommerceCatalog. Validation -- Throws NoSuchCatalogException -> 404 when id is missing (service-level). Side effects -- Cascades through CommerceCatalog delete listeners (group, virtual instance teardown)."
+		description = "Deletes the commerce catalog identified by id. Returns 404 when the id is missing (service-level). Side effects -- Cascades through catalog delete listeners (group, virtual instance teardown)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -158,7 +158,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the commerce catalog identified by its external reference code. Calls CommerceCatalogService.fetchCommerceCatalogByExternalReferenceCode + deleteCommerceCatalog. Validation -- NoSuchCatalogException -> 404 when ERC not found. Side effects -- Cascades through CommerceCatalog delete listeners."
+		description = "Deletes the commerce catalog identified by its external reference code. Returns 404 when the external reference code is not found. Side effects -- Cascades through catalog delete listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -196,7 +196,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the commerce catalog identified by id. Calls CommerceCatalogService.getCommerceCatalog. Validation -- NoSuchCatalogException -> 404 when id not found."
+		description = "Fetches the commerce catalog identified by id. Returns 404 when the id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -230,7 +230,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the commerce catalog identified by external reference code. Calls CommerceCatalogService.fetchCommerceCatalogByExternalReferenceCode. Validation -- NoSuchCatalogException -> 404 when ERC not found."
+		description = "Fetches the commerce catalog identified by external reference code. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -266,7 +266,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalogs'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of commerce catalogs scoped to the current company using free-text search, filter, and sort. Calls SearchUtil.search over CommerceCatalog -> CommerceCatalogService.getCommerceCatalog. Validation -- None (returns empty page when no matches). List query support — filterable fields -- name; sortable fields -- name."
+		description = "Returns a page of commerce catalogs scoped to the current company using free-text search, filter, and sort. Validation -- None (returns empty page when no matches). List query support — filterable fields -- name; sortable fields -- name."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -324,7 +324,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/catalog'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the commerce catalog associated with the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDefinition.getCommerceCatalog. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found."
+		description = "Returns the commerce catalog associated with the product identified by external reference code. Returns 404 when the product external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -371,7 +371,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/catalog'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the commerce catalog associated with the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + CPDefinition.getCommerceCatalog. Validation -- NoSuchCPDefinitionException -> 404 when product id not found."
+		description = "Returns the commerce catalog associated with the product identified by product id. Returns 404 when the product id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -416,7 +416,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/{id}' -d $'{"accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "defaultLanguageId": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the commerce catalog identified by id. Calls CommerceCatalogService.getCommerceCatalog + updateCommerceCatalog. Validation -- NoSuchCatalogException -> 404 when id not found; NoSuchCurrencyException tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group."
+		description = "Partially updates the commerce catalog identified by id. Returns 404 when the id is not found, and tolerated (debug log). Side effects -- Reindexes the catalog; touches the underlying group."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -454,7 +454,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "defaultLanguageId": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the commerce catalog identified by external reference code. Calls CommerceCatalogService.fetchCommerceCatalogByExternalReferenceCode + updateCommerceCatalog. Validation -- NoSuchCatalogException -> 404 when ERC not found. Side effects -- Reindexes the catalog."
+		description = "Partially updates the commerce catalog identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Reindexes the catalog."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -494,7 +494,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalogs' -d $'{"accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "defaultLanguageId": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a new commerce catalog, or updates the existing catalog when the external reference code already matches one. Calls CommerceCatalogService.addCommerceCatalog (or updateCommerceCatalog when ERC collides). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCurrencyException tolerated during update path (debug log); add path throws NoSuchCurrencyException -> 404 when currency lookup fails. Side effects -- Provisions a new group, default catalog roles, and indexes the catalog."
+		description = "Creates a new commerce catalog, or updates the existing catalog when the external reference code already matches one. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns tolerated during update path (debug log), and 404 when the currency lookup fails. Side effects -- Provisions a new group, default catalog roles, and indexes the catalog."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Catalog")}
@@ -640,7 +640,7 @@ public abstract class BaseCatalogResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/catalog/by-externalReferenceCode/{externalReferenceCode}' -d $'{"accountId": ___, "currencyCode": ___, "currencyExternalReferenceCode": ___, "currencyId": ___, "defaultLanguageId": ___, "externalReferenceCode": ___, "name": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or replaces the commerce catalog identified by external reference code. Calls CommerceCatalogService.addCommerceCatalog or updateCommerceCatalog. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCurrencyException -> 404 when currency lookup fails. Side effects -- Provisions a new group on add; reindex on update."
+		description = "Creates or replaces the commerce catalog identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the currency lookup fails. Side effects -- Provisions a new group on add; reindex on update."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1471,4 +1471,4 @@ public abstract class BaseCatalogResourceImpl
 		LogFactoryUtil.getLog(BaseCatalogResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1165668947
+// LIFERAY-REST-BUILDER-HASH:-1531059233

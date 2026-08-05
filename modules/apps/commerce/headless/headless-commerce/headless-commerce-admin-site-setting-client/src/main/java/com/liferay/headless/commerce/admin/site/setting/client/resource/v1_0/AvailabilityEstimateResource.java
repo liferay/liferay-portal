@@ -48,10 +48,28 @@ public interface AvailabilityEstimateResource {
 			String callbackURL, Object object)
 		throws Exception;
 
+	public void deleteAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			deleteAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+				String externalReferenceCode)
+		throws Exception;
+
 	public AvailabilityEstimate getAvailabilityEstimate(Long id)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getAvailabilityEstimateHttpResponse(Long id)
+		throws Exception;
+
+	public AvailabilityEstimate getAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			getAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+				String externalReferenceCode)
 		throws Exception;
 
 	public Page<AvailabilityEstimate>
@@ -65,6 +83,18 @@ public interface AvailabilityEstimateResource {
 		throws Exception;
 
 	public AvailabilityEstimate
+			patchAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			patchAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
+	public AvailabilityEstimate
 			postCommerceAdminSiteSettingGroupAvailabilityEstimate(
 				Long groupId, AvailabilityEstimate availabilityEstimate)
 		throws Exception;
@@ -74,7 +104,7 @@ public interface AvailabilityEstimateResource {
 				Long groupId, AvailabilityEstimate availabilityEstimate)
 		throws Exception;
 
-	public void putAvailabilityEstimate(
+	public AvailabilityEstimate putAvailabilityEstimate(
 			Long id, AvailabilityEstimate availabilityEstimate)
 		throws Exception;
 
@@ -87,6 +117,17 @@ public interface AvailabilityEstimateResource {
 
 	public HttpInvoker.HttpResponse putAvailabilityEstimateBatchHttpResponse(
 			String callbackURL, Object object)
+		throws Exception;
+
+	public AvailabilityEstimate putAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode,
+			AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			putAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
 		throws Exception;
 
 	public static class Builder {
@@ -392,6 +433,114 @@ public interface AvailabilityEstimateResource {
 			return httpInvoker.invoke();
 		}
 
+		public void deleteAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				deleteAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					externalReferenceCode);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return;
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				deleteAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					String externalReferenceCode)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.DELETE);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}");
+
+			httpInvoker.path("externalReferenceCode", externalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
 		public AvailabilityEstimate getAvailabilityEstimate(Long id)
 			throws Exception {
 
@@ -488,6 +637,115 @@ public interface AvailabilityEstimateResource {
 						"/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}");
 
 			httpInvoker.path("id", id);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public AvailabilityEstimate
+				getAvailabilityEstimateByExternalReferenceCode(
+					String externalReferenceCode)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				getAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					externalReferenceCode);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return AvailabilityEstimateSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				getAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					String externalReferenceCode)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}");
+
+			httpInvoker.path("externalReferenceCode", externalReferenceCode);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -614,6 +872,120 @@ public interface AvailabilityEstimateResource {
 		}
 
 		public AvailabilityEstimate
+				patchAvailabilityEstimateByExternalReferenceCode(
+					String externalReferenceCode,
+					AvailabilityEstimate availabilityEstimate)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				patchAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					externalReferenceCode, availabilityEstimate);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return AvailabilityEstimateSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				patchAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					String externalReferenceCode,
+					AvailabilityEstimate availabilityEstimate)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(
+				availabilityEstimate.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.PATCH);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}");
+
+			httpInvoker.path("externalReferenceCode", externalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public AvailabilityEstimate
 				postCommerceAdminSiteSettingGroupAvailabilityEstimate(
 					Long groupId, AvailabilityEstimate availabilityEstimate)
 			throws Exception {
@@ -725,7 +1097,7 @@ public interface AvailabilityEstimateResource {
 			return httpInvoker.invoke();
 		}
 
-		public void putAvailabilityEstimate(
+		public AvailabilityEstimate putAvailabilityEstimate(
 				Long id, AvailabilityEstimate availabilityEstimate)
 			throws Exception {
 
@@ -777,6 +1149,17 @@ public interface AvailabilityEstimateResource {
 				_logger.fine(
 					"HTTP response status code: " +
 						httpResponse.getStatusCode());
+			}
+
+			try {
+				return AvailabilityEstimateSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
 			}
 		}
 
@@ -924,6 +1307,120 @@ public interface AvailabilityEstimateResource {
 			return httpInvoker.invoke();
 		}
 
+		public AvailabilityEstimate
+				putAvailabilityEstimateByExternalReferenceCode(
+					String externalReferenceCode,
+					AvailabilityEstimate availabilityEstimate)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				putAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					externalReferenceCode, availabilityEstimate);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return AvailabilityEstimateSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				putAvailabilityEstimateByExternalReferenceCodeHttpResponse(
+					String externalReferenceCode,
+					AvailabilityEstimate availabilityEstimate)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(
+				availabilityEstimate.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.PUT);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}");
+
+			httpInvoker.path("externalReferenceCode", externalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
 		private AvailabilityEstimateResourceImpl(Builder builder) {
 			_builder = builder;
 		}
@@ -936,4 +1433,4 @@ public interface AvailabilityEstimateResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:828862553
+// LIFERAY-REST-BUILDER-HASH:685013762

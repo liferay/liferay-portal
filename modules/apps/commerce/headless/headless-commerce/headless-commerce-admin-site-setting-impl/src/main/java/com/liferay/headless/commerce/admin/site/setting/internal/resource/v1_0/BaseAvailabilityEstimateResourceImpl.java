@@ -77,7 +77,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the AvailabilityEstimate identified by id. Calls CommerceAvailabilityEstimateService.deleteCommerceAvailabilityEstimate. Validation -- 404 when no estimate matches the id."
+		description = "Deletes the availability estimate identified by id. Returns 404 when no estimate matches the id."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -162,10 +162,48 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Deletes the availability estimate identified by external reference code. Returns 404 when no estimate carries that code. Side effects -- cascades to the per-product availability estimates that reference it."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code (ERC) used as the addressing key in place of the internal long ID. ERCs are client-defined and stable across migrations.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
+		"/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void deleteAvailabilityEstimateByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the AvailabilityEstimate identified by id. Calls CommerceAvailabilityEstimateService.getCommerceAvailabilityEstimate. Validation -- 404 when no estimate matches the id."
+		description = "Fetches the availability estimate identified by id. Returns 404 when no estimate matches the id."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -200,10 +238,50 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Fetches the availability estimate identified by external reference code. Returns 404 when no estimate carries that code."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code (ERC) used as the addressing key in place of the internal long ID. ERCs are client-defined and stable across migrations.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path(
+		"/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public AvailabilityEstimate getAvailabilityEstimateByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+
+		return new AvailabilityEstimate();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unimplemented endpoint for listing AvailabilityEstimate records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and no records are returned."
+		description = "Lists the availability estimates of the caller's company. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the result; availability estimates are company-scoped."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -252,10 +330,75 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate' -d $'{"priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unimplemented endpoint for creating an AvailabilityEstimate under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and no record is persisted."
+		description = "Partially updates the availability estimate identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 404 when no estimate carries that code, and 400 when the supplied external reference code is already taken by another estimate in the company."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code (ERC) used as the addressing key in place of the internal long ID. ERCs are client-defined and stable across migrations.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.PATCH
+	@jakarta.ws.rs.Path(
+		"/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public AvailabilityEstimate
+			patchAvailabilityEstimateByExternalReferenceCode(
+				@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+				@jakarta.validation.constraints.NotNull
+				@jakarta.ws.rs.PathParam("externalReferenceCode")
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception {
+
+		AvailabilityEstimate existingAvailabilityEstimate =
+			getAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode);
+
+		if (availabilityEstimate.getExternalReferenceCode() != null) {
+			existingAvailabilityEstimate.setExternalReferenceCode(
+				availabilityEstimate.getExternalReferenceCode());
+		}
+
+		if (availabilityEstimate.getPriority() != null) {
+			existingAvailabilityEstimate.setPriority(
+				availabilityEstimate.getPriority());
+		}
+
+		if (availabilityEstimate.getTitle() != null) {
+			existingAvailabilityEstimate.setTitle(
+				availabilityEstimate.getTitle());
+		}
+
+		preparePatch(availabilityEstimate, existingAvailabilityEstimate);
+
+		return putAvailabilityEstimateByExternalReferenceCode(
+			externalReferenceCode, existingAvailabilityEstimate);
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/commerceAdminSiteSetting/{groupId}/availabilityEstimate' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates an availability estimate for the caller's company from the supplied external reference code, localized `title`, and `priority`. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the record. Returns 400 when the supplied external reference code is already taken by another estimate in the company."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -295,10 +438,10 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}' -d $'{"priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/{id}' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Unimplemented endpoint for replacing an AvailabilityEstimate identified by id. Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and the addressed record is not changed."
+		description = "Replaces the availability estimate identified by id with the request body. Returns 404 when no estimate matches the id, and 400 when the supplied external reference code is already taken by another estimate in the company."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -321,7 +464,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@jakarta.ws.rs.PUT
 	@Override
-	public Response putAvailabilityEstimate(
+	public AvailabilityEstimate putAvailabilityEstimate(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.validation.constraints.NotNull
 			@jakarta.ws.rs.PathParam("id")
@@ -329,9 +472,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 			AvailabilityEstimate availabilityEstimate)
 		throws Exception {
 
-		Response.ResponseBuilder responseBuilder = Response.ok();
-
-		return responseBuilder.build();
+		return new AvailabilityEstimate();
 	}
 
 	/**
@@ -382,6 +523,48 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		).build();
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-site-setting/v1.0/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}' -d $'{"externalReferenceCode": ___, "priority": ___, "title": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Upserts the availability estimate identified by external reference code -- replaces it with the request body when the code exists, otherwise creates a new estimate. Returns 400 when the supplied external reference code is already taken by another estimate in the company."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code (ERC) used as the addressing key in place of the internal long ID. ERCs are client-defined and stable across migrations.",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(
+				name = "AvailabilityEstimate"
+			)
+		}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
+		"/availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
+	@Override
+	public AvailabilityEstimate putAvailabilityEstimateByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode,
+			AvailabilityEstimate availabilityEstimate)
+		throws Exception {
+
+		return new AvailabilityEstimate();
+	}
+
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
@@ -389,8 +572,52 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 			Map<String, Serializable> parameters)
 		throws Exception {
 
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
+		UnsafeFunction<AvailabilityEstimate, AvailabilityEstimate, Exception>
+			availabilityEstimateUnsafeFunction = null;
+
+		String createStrategy = (String)parameters.getOrDefault(
+			"createStrategy", "INSERT");
+
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				availabilityEstimateUnsafeFunction = availabilityEstimate -> {
+					AvailabilityEstimate persistedAvailabilityEstimate = null;
+
+					persistedAvailabilityEstimate =
+						putAvailabilityEstimateByExternalReferenceCode(
+							availabilityEstimate.getExternalReferenceCode(),
+							availabilityEstimate);
+
+					return persistedAvailabilityEstimate;
+				};
+			}
+		}
+
+		if (availabilityEstimateUnsafeFunction == null) {
+			throw new NotSupportedException(
+				"Create strategy \"" + createStrategy +
+					"\" is not supported for AvailabilityEstimate");
+		}
+
+		if (contextBatchUnsafeBiConsumer != null) {
+			contextBatchUnsafeBiConsumer.accept(
+				availabilityEstimates, availabilityEstimateUnsafeFunction);
+		}
+		else if (contextBatchUnsafeConsumer != null) {
+			contextBatchUnsafeConsumer.accept(
+				availabilityEstimates,
+				availabilityEstimateUnsafeFunction::apply);
+		}
+		else {
+			for (AvailabilityEstimate availabilityEstimate :
+					availabilityEstimates) {
+
+				availabilityEstimateUnsafeFunction.apply(availabilityEstimate);
+			}
+		}
 	}
 
 	@Override
@@ -401,9 +628,36 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 
 		UnsafeFunction<AvailabilityEstimate, AvailabilityEstimate, Exception>
 			availabilityEstimateUnsafeFunction = availabilityEstimate -> {
-				deleteAvailabilityEstimate(availabilityEstimate.getId());
+				if (availabilityEstimate.getId() != null) {
+					try {
+						deleteAvailabilityEstimate(
+							availabilityEstimate.getId());
 
-				return availabilityEstimate;
+						return availabilityEstimate;
+					}
+					catch (Exception exception) {
+						if (availabilityEstimate.getExternalReferenceCode() !=
+								null) {
+
+							deleteAvailabilityEstimateByExternalReferenceCode(
+								availabilityEstimate.
+									getExternalReferenceCode());
+
+							return availabilityEstimate;
+						}
+					}
+				}
+				else if (availabilityEstimate.getExternalReferenceCode() !=
+							null) {
+
+					deleteAvailabilityEstimateByExternalReferenceCode(
+						availabilityEstimate.getExternalReferenceCode());
+
+					return availabilityEstimate;
+				}
+
+				throw new UnsupportedOperationException(
+					"Unable to delete by external reference code or ID");
 			};
 
 		if (contextBatchUnsafeBiConsumer != null) {
@@ -425,7 +679,7 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray();
+		return SetUtil.fromArray("UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -504,12 +758,9 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 			"updateStrategy", "UPDATE");
 
 		if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
-			availabilityEstimateUnsafeFunction = availabilityEstimate -> {
-				putAvailabilityEstimate(
+			availabilityEstimateUnsafeFunction =
+				availabilityEstimate -> putAvailabilityEstimate(
 					availabilityEstimate.getId(), availabilityEstimate);
-
-				return null;
-			};
 		}
 
 		if (availabilityEstimateUnsafeFunction == null) {
@@ -756,6 +1007,11 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 
 		return addAction(
 			actionName, siteId, methodName, null, permissionName, siteId);
+	}
+
+	protected void preparePatch(
+		AvailabilityEstimate availabilityEstimate,
+		AvailabilityEstimate existingAvailabilityEstimate) {
 	}
 
 	protected <T, R, E extends Throwable> List<R> transform(
@@ -1105,4 +1361,4 @@ public abstract class BaseAvailabilityEstimateResourceImpl
 		LogFactoryUtil.getLog(BaseAvailabilityEstimateResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1778705750
+// LIFERAY-REST-BUILDER-HASH:618578233

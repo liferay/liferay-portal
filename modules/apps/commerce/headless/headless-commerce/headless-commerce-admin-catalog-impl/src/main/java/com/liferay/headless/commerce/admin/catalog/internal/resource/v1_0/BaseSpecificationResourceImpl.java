@@ -78,7 +78,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the specification identified by id. Calls CPSpecificationOptionService.deleteCPSpecificationOption. Validation -- Service-level NoSuchCPSpecificationOptionException -> 404. Side effects -- Cascades through CPDefinitionSpecificationOptionValue listeners; reindexes affected products."
+		description = "Deletes the specification identified by id. Returns 404 when the record is not found. Side effects -- Cascades through product specification value listeners; reindexes affected products."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -158,7 +158,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the specification identified by external reference code. Calls CPSpecificationOptionService.fetchCPSpecificationOptionByExternalReferenceCode + deleteSpecification. Validation -- NoSuchCPSpecificationOptionException -> 404 when ERC not found. Side effects -- Cascades through specification value listeners."
+		description = "Deletes the specification identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Cascades through specification value listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -194,7 +194,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the specification identified by id. Calls CPSpecificationOptionService.getCPSpecificationOption (via DTO converter). Validation -- NoSuchCPSpecificationOptionException -> 404 when id not found."
+		description = "Fetches the specification identified by id. Returns 404 when the id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -230,7 +230,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the specification identified by external reference code. Calls CPSpecificationOptionService.fetchCPSpecificationOptionByExternalReferenceCode. Validation -- NoSuchCPSpecificationOptionException -> 404 when ERC not found."
+		description = "Fetches the specification identified by external reference code. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -268,7 +268,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of specifications scoped to the current company. Calls SearchUtil.search over CPSpecificationOption. List query support — filterable fields -- visible, key, title; sortable fields -- visible, key, title."
+		description = "Returns a page of specifications scoped to the current company. List query support — filterable fields -- visible, key, title; sortable fields -- visible, key, title."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -328,7 +328,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/{id}' -d $'{"description": ___, "externalReferenceCode": ___, "facetable": ___, "key": ___, "listTypeDefinitionId": ___, "listTypeDefinitionIds": ___, "optionCategory": ___, "priority": ___, "title": ___, "visible": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the specification identified by id. Calls CPSpecificationOptionService.getCPSpecificationOption + updateCPSpecificationOption. Validation -- NoSuchCPSpecificationOptionException -> 404 when id not found. Side effects -- Reindexes the specification and any products that reference it."
+		description = "Partially updates the specification identified by id. Returns 404 when the id is not found. Side effects -- Reindexes the specification and any products that reference it."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -366,7 +366,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/by-external-reference-code/{externalReferenceCode}' -d $'{"description": ___, "externalReferenceCode": ___, "facetable": ___, "key": ___, "listTypeDefinitionId": ___, "listTypeDefinitionIds": ___, "optionCategory": ___, "priority": ___, "title": ___, "visible": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the specification identified by external reference code. Calls CPSpecificationOptionService.fetchCPSpecificationOptionByExternalReferenceCode + patchSpecification. Validation -- NoSuchCPSpecificationOptionException -> 404 when ERC not found. Side effects -- Reindexes the specification and dependent products."
+		description = "Partially updates the specification identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Reindexes the specification and dependent products."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -452,7 +452,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications' -d $'{"description": ___, "externalReferenceCode": ___, "facetable": ___, "key": ___, "listTypeDefinitionId": ___, "listTypeDefinitionIds": ___, "optionCategory": ___, "priority": ___, "title": ___, "visible": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates a specification by trying id, external reference code, then key for resolution. Calls Internal _addOrUpdateSpecification (CPSpecificationOptionService.addCPSpecificationOption or updateCPSpecificationOption, resolved by id/ERC/key). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- CPSpecificationOptionKeyException -> 400 when key is invalid. Side effects -- Reindexes the specification; lookups by id/ERC/key fall through with debug logging."
+		description = "Creates or updates a specification by trying id, external reference code, then key for resolution. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 400 when the key is invalid. Side effects -- Reindexes the specification; lookups by id/ERC/key fall through with debug logging."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -607,7 +607,7 @@ public abstract class BaseSpecificationResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/specifications/by-external-reference-code/{externalReferenceCode}' -d $'{"description": ___, "externalReferenceCode": ___, "facetable": ___, "key": ___, "listTypeDefinitionId": ___, "listTypeDefinitionIds": ___, "optionCategory": ___, "priority": ___, "title": ___, "visible": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or replaces the specification identified by external reference code. Calls CPSpecificationOptionService.fetchCPSpecificationOptionByExternalReferenceCode + addCPSpecificationOption or updateCPSpecificationOption. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- CPSpecificationOptionKeyException -> 400 when key is invalid. Side effects -- Reindexes the specification."
+		description = "Creates or replaces the specification identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 400 when the key is invalid. Side effects -- Reindexes the specification."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1444,4 +1444,4 @@ public abstract class BaseSpecificationResourceImpl
 		LogFactoryUtil.getLog(BaseSpecificationResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1341520809
+// LIFERAY-REST-BUILDER-HASH:1319584215

@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
+import com.liferay.portal.vulcan.graphql.annotation.GraphQLTypeExtension;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
@@ -79,10 +80,10 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {availabilityEstimate(id: ___){groupId, id, priority, title}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {availabilityEstimate(id: ___){externalReferenceCode, groupId, id, priority, title}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the AvailabilityEstimate identified by id. Calls CommerceAvailabilityEstimateService.getCommerceAvailabilityEstimate. Validation -- 404 when no estimate matches the id."
+		description = "Fetches the availability estimate identified by id. Returns 404 when no estimate matches the id."
 	)
 	public AvailabilityEstimate availabilityEstimate(@GraphQLName("id") Long id)
 		throws Exception {
@@ -97,10 +98,31 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {availabilityEstimateByExternalReferenceCode(externalReferenceCode: ___){externalReferenceCode, groupId, id, priority, title}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Fetches the availability estimate identified by external reference code. Returns 404 when no estimate carries that code."
+	)
+	public AvailabilityEstimate availabilityEstimateByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_availabilityEstimateResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			availabilityEstimateResource ->
+				availabilityEstimateResource.
+					getAvailabilityEstimateByExternalReferenceCode(
+						externalReferenceCode));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {commerceAdminSettingGroupAvailabilityEstimate(groupId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Unimplemented endpoint for listing AvailabilityEstimate records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and no records are returned."
+		description = "Lists the availability estimates of the caller's company. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the result; availability estimates are company-scoped."
 	)
 	public AvailabilityEstimatePage
 			commerceAdminSettingGroupAvailabilityEstimate(
@@ -124,7 +146,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {measurementUnit(id: ___){companyId, externalReferenceCode, id, key, name, primary, priority, rate, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the MeasurementUnit identified by id. Calls CPMeasurementUnitService.fetchCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when id not found."
+		description = "Fetches the measurement unit identified by id. Returns 404 when no unit matches the id."
 	)
 	public MeasurementUnit measurementUnit(@GraphQLName("id") Long id)
 		throws Exception {
@@ -142,7 +164,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {measurementUnitByExternalReferenceCode(externalReferenceCode: ___){companyId, externalReferenceCode, id, key, name, primary, priority, rate, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the MeasurementUnit identified by external reference code. Calls CPMeasurementUnitService.fetchCPMeasurementUnitByExternalReferenceCode. Validation -- NoSuchCPMeasurementUnitException -> 404 when ERC not found."
+		description = "Fetches the measurement unit identified by external reference code. Returns 404 when no unit carries that code."
 	)
 	public MeasurementUnit measurementUnitByExternalReferenceCode(
 			@GraphQLName("externalReferenceCode") String externalReferenceCode)
@@ -163,7 +185,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {measurementUnitByKey(key: ___){companyId, externalReferenceCode, id, key, name, primary, priority, rate, type}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the MeasurementUnit identified by its stable string key. Calls CPMeasurementUnitService.fetchCPMeasurementUnit (companyId, key). Validation -- NoSuchCPMeasurementUnitException -> 404 when key not found."
+		description = "Fetches the measurement unit identified by its stable string `key`. Returns 404 when no unit carries that key."
 	)
 	public MeasurementUnit measurementUnitByKey(@GraphQLName("key") String key)
 		throws Exception {
@@ -181,7 +203,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {measurementUnitsByType(measurementUnitType: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns a page of MeasurementUnit records of the supplied type for the caller's company; type accepts either the integer code (0, 1, 2) or the human label (Dimensions, Weight, Unit). Calls CPMeasurementUnitService.getCPMeasurementUnits (companyId, type), applying the page and pageSize query parameters to bound the response. List query support -- the sort parameter is accepted on the wire but ignored, because the service is called with a null OrderByComparator. When the type cannot be resolved, returns an empty list (CPMeasurementUnitTypeException is swallowed at debug level)."
+		description = "Returns a page of measurement units of the supplied type for the caller's company, bounded by the `page` and `pageSize` query parameters. The type accepts either the integer code (0, 1, 2) or the human label (Dimensions, Weight, Unit). List query support -- the `sort` parameter is accepted on the wire but ignored, because no ordering is applied. An unrecognized type yields an empty list rather than an error."
 	)
 	public MeasurementUnitPage measurementUnitsByType(
 			@GraphQLName("measurementUnitType") String measurementUnitType,
@@ -206,7 +228,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {measurementUnits(filter: ___, page: ___, pageSize: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Returns a page of MeasurementUnit records scoped to the caller's company. Calls CPMeasurementUnitService.getCPMeasurementUnits, applying the page and pageSize query parameters to bound the response. List query support -- the filter (OData v4) and sort parameters are accepted on the wire but ignored, because the service is called with a null OrderByComparator and no entity model is registered for OData filtering."
+		description = "Returns a page of measurement units scoped to the caller's company, bounded by the `page` and `pageSize` query parameters. List query support -- the `filter` (OData v4) and `sort` parameters are accepted on the wire but ignored, because no ordering is applied and no filterable entity model is registered."
 	)
 	public MeasurementUnitPage measurementUnits(
 			@GraphQLName("filter") String filterString,
@@ -233,7 +255,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {commerceAdminSettingGroupTaxCategory(groupId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Unimplemented endpoint for listing TaxCategory records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and no records are returned."
+		description = "Unimplemented endpoint for listing tax categories under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no records are returned."
 	)
 	public TaxCategoryPage commerceAdminSettingGroupTaxCategory(
 			@GraphQLName("groupId") Long groupId,
@@ -256,7 +278,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {taxCategory(id: ___){description, groupId, id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the TaxCategory identified by id. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- 404 when no entity matches the id."
+		description = "Fetches the tax category identified by id. Returns 404 when no tax category matches the id."
 	)
 	public TaxCategory taxCategory(@GraphQLName("id") Long id)
 		throws Exception {
@@ -273,7 +295,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {commerceAdminSettingGroupWarehouse(active: ___, groupId: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Unimplemented endpoint for listing Warehouse records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceInventoryWarehouseService, so every request is rejected with a 400 Bad Request and no records are returned. For Warehouse list semantics that persist, use the inventory administration API."
+		description = "Unimplemented endpoint for listing warehouse definitions under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no records are returned. For warehouse list semantics that persist, use the inventory administration API."
 	)
 	public WarehousePage commerceAdminSettingGroupWarehouse(
 			@GraphQLName("groupId") Long groupId,
@@ -296,13 +318,70 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {warehouse(id: ___){active, city, commerceCountryId, commerceRegionId, description, groupId, id, latitude, longitude, mvccVersion, name, primary, street1, street2, street3, zip}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetches the Warehouse definition identified by id. Calls CommerceInventoryWarehouseService.getCommerceInventoryWarehouse. Validation -- 404 when no entity matches the id."
+		description = "Fetches the warehouse definition identified by id. Returns 404 when no warehouse matches the id."
 	)
 	public Warehouse warehouse(@GraphQLName("id") Long id) throws Exception {
 		return _applyComponentServiceObjects(
 			_warehouseResourceComponentServiceObjects,
 			this::_populateResourceContext,
 			warehouseResource -> warehouseResource.getWarehouse(id));
+	}
+
+	@GraphQLTypeExtension(MeasurementUnit.class)
+	public class GetAvailabilityEstimateByExternalReferenceCodeTypeExtension {
+
+		public GetAvailabilityEstimateByExternalReferenceCodeTypeExtension(
+			MeasurementUnit measurementUnit) {
+
+			_measurementUnit = measurementUnit;
+		}
+
+		@GraphQLField(
+			description = "Fetches the availability estimate identified by external reference code. Returns 404 when no estimate carries that code."
+		)
+		public AvailabilityEstimate
+				availabilityEstimateByExternalReferenceCode()
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_availabilityEstimateResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				availabilityEstimateResource ->
+					availabilityEstimateResource.
+						getAvailabilityEstimateByExternalReferenceCode(
+							_measurementUnit.getExternalReferenceCode()));
+		}
+
+		private MeasurementUnit _measurementUnit;
+
+	}
+
+	@GraphQLTypeExtension(AvailabilityEstimate.class)
+	public class GetMeasurementUnitByExternalReferenceCodeTypeExtension {
+
+		public GetMeasurementUnitByExternalReferenceCodeTypeExtension(
+			AvailabilityEstimate availabilityEstimate) {
+
+			_availabilityEstimate = availabilityEstimate;
+		}
+
+		@GraphQLField(
+			description = "Fetches the measurement unit identified by external reference code. Returns 404 when no unit carries that code."
+		)
+		public MeasurementUnit measurementUnitByExternalReferenceCode()
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_measurementUnitResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				measurementUnitResource ->
+					measurementUnitResource.
+						getMeasurementUnitByExternalReferenceCode(
+							_availabilityEstimate.getExternalReferenceCode()));
+		}
+
+		private AvailabilityEstimate _availabilityEstimate;
+
 	}
 
 	@GraphQLName("AvailabilityEstimatePage")
@@ -557,4 +636,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-104213659
+// LIFERAY-REST-BUILDER-HASH:-1259025465

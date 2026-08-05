@@ -46,6 +46,20 @@ public class AvailabilityEstimateSerDes {
 
 		sb.append("{");
 
+		if (availabilityEstimate.getExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"externalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(availabilityEstimate.getExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (availabilityEstimate.getGroupId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -107,6 +121,16 @@ public class AvailabilityEstimateSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (availabilityEstimate.getExternalReferenceCode() == null) {
+			map.put("externalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"externalReferenceCode",
+				String.valueOf(
+					availabilityEstimate.getExternalReferenceCode()));
+		}
+
 		if (availabilityEstimate.getGroupId() == null) {
 			map.put("groupId", null);
 		}
@@ -155,7 +179,10 @@ public class AvailabilityEstimateSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "groupId")) {
+			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "groupId")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -176,7 +203,13 @@ public class AvailabilityEstimateSerDes {
 			AvailabilityEstimate availabilityEstimate,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "groupId")) {
+			if (Objects.equals(jsonParserFieldName, "externalReferenceCode")) {
+				if (jsonParserFieldValue != null) {
+					availabilityEstimate.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "groupId")) {
 				if (jsonParserFieldValue != null) {
 					availabilityEstimate.setGroupId(
 						Long.valueOf((String)jsonParserFieldValue));
@@ -281,4 +314,4 @@ public class AvailabilityEstimateSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:175900321
+// LIFERAY-REST-BUILDER-HASH:-1257034202

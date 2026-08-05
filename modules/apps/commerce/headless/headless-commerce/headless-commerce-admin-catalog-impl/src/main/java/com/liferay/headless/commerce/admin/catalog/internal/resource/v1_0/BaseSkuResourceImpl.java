@@ -78,7 +78,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the SKU identified by id. Calls CPInstanceService.deleteCPInstance. Validation -- Service-level NoSuchCPInstanceException -> 404. Side effects -- Cascades through CPInstance delete listeners (inventory, price entries, units of measure)."
+		description = "Deletes the SKU identified by id. Returns 404 when the record is not found. Side effects -- Cascades through SKU delete listeners (inventory, price entries, units of measure)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -158,7 +158,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the SKU identified by external reference code. Calls CPInstanceService.fetchCPInstanceByExternalReferenceCode + deleteCPInstance. Validation -- NoSuchCPInstanceException -> 404 when ERC not found. Side effects -- Cascades through CPInstance delete listeners."
+		description = "Deletes the SKU identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Cascades through SKU delete listeners."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -196,7 +196,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/skus'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the SKUs of the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + index-backed SKU listing scoped to the product. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found."
+		description = "Lists the SKUs of the product identified by external reference code. Returns 404 when the product external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -298,7 +298,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the SKU identified by id. Calls CPInstanceService.getCPInstance (via DTO converter). Validation -- NoSuchCPInstanceException -> 404 when id not found."
+		description = "Fetches the SKU identified by id. Returns 404 when the id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -337,7 +337,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/by-externalReferenceCode/{externalReferenceCode}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetches the SKU identified by external reference code. Calls CPInstanceService.fetchCPInstanceByExternalReferenceCode. Validation -- NoSuchCPInstanceException -> 404 when ERC not found."
+		description = "Fetches the SKU identified by external reference code. Returns 404 when the external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -378,7 +378,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of SKUs scoped to the current company. Calls SearchUtil.search over CPInstance (company scoped) using SkuEntityModel. List query support — filterable fields -- hasChildCPDefinitions, catalogId; sortable fields -- hasChildCPDefinitions, catalogId."
+		description = "Returns a page of SKUs scoped to the current company. List query support — filterable fields -- hasChildproduct definitions, catalogId; sortable fields -- hasChildproduct definitions, catalogId."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -441,7 +441,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/unit-of-measure-skus'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns a page of SKUs with their unit of measure data, including draft and inactive statuses for admin selection. Calls SearchUtil.search over CPInstance (company scoped, includes non-approved statuses). List query support — filterable fields -- hasChildCPDefinitions, catalogId; sortable fields -- hasChildCPDefinitions, catalogId."
+		description = "Returns a page of SKUs with their unit of measure data, including draft and inactive statuses for admin selection. List query support — filterable fields -- hasChildproduct definitions, catalogId; sortable fields -- hasChildproduct definitions, catalogId."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -504,7 +504,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/{id}' -d $'{"cost": ___, "customFields": ___, "depth": ___, "discontinued": ___, "discontinuedDate": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "gtin": ___, "height": ___, "manufacturerPartNumber": ___, "neverExpire": ___, "price": ___, "promoPrice": ___, "published": ___, "purchasable": ___, "replacementSkuExternalReferenceCode": ___, "replacementSkuId": ___, "sku": ___, "skuOptions": ___, "skuSubscriptionConfiguration": ___, "skuUnitOfMeasures": ___, "skuVirtualSettings": ___, "unspsc": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the SKU identified by id. Calls CPInstanceService.getCPInstance + updateExternalReferenceCode + internal _updateSKU (CPInstanceService.updateCPInstance and friends). Validation -- NoSuchCPInstanceException -> 404 when id not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
+		description = "Partially updates the SKU identified by id. Returns 404 when the id is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -540,7 +540,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/by-externalReferenceCode/{externalReferenceCode}' -d $'{"cost": ___, "customFields": ___, "depth": ___, "discontinued": ___, "discontinuedDate": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "gtin": ___, "height": ___, "manufacturerPartNumber": ___, "neverExpire": ___, "price": ___, "promoPrice": ___, "published": ___, "purchasable": ___, "replacementSkuExternalReferenceCode": ___, "replacementSkuId": ___, "sku": ___, "skuOptions": ___, "skuSubscriptionConfiguration": ___, "skuUnitOfMeasures": ___, "skuVirtualSettings": ___, "unspsc": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the SKU identified by external reference code. Calls CPInstanceService.fetchCPInstanceByExternalReferenceCode + _updateSKU. Validation -- NoSuchCPInstanceException -> 404 when ERC not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
+		description = "Partially updates the SKU identified by external reference code. Returns 404 when the external reference code is not found. Side effects -- Updates subscription, virtual settings, prices, units of measure, discontinued replacement."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -674,7 +674,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/skus' -d $'{"cost": ___, "customFields": ___, "depth": ___, "discontinued": ___, "discontinuedDate": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "gtin": ___, "height": ___, "manufacturerPartNumber": ___, "neverExpire": ___, "price": ___, "promoPrice": ___, "published": ___, "purchasable": ___, "replacementSkuExternalReferenceCode": ___, "replacementSkuId": ___, "sku": ___, "skuOptions": ___, "skuSubscriptionConfiguration": ___, "skuUnitOfMeasures": ___, "skuVirtualSettings": ___, "unspsc": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates a SKU under the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + internal _addOrUpdateSKU (CPInstanceService.addOrUpdateCPInstance). POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found; CPDefinitionProductTypeNameException -> 400 when product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
+		description = "Creates or updates a SKU under the product identified by external reference code. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product external reference code is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -712,7 +712,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/skus' -d $'{"cost": ___, "customFields": ___, "depth": ___, "discontinued": ___, "discontinuedDate": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "gtin": ___, "height": ___, "manufacturerPartNumber": ___, "neverExpire": ___, "price": ___, "promoPrice": ___, "published": ___, "purchasable": ___, "replacementSkuExternalReferenceCode": ___, "replacementSkuId": ___, "sku": ___, "skuOptions": ___, "skuSubscriptionConfiguration": ___, "skuUnitOfMeasures": ___, "skuVirtualSettings": ___, "unspsc": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates or updates a SKU under the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + _addOrUpdateSKU. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Validation -- NoSuchCPDefinitionException -> 404 when product id not found; CPDefinitionProductTypeNameException -> 400 when product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
+		description = "Creates or updates a SKU under the product identified by product id. POST is upsert by external reference code -- creates a new entity when the ERC is unknown, otherwise updates the existing one. Returns 404 when the product id is not found, and 400 when the product type forbids SKUs. Side effects -- Creates the SKU, default price entries, units of measure, and virtual settings."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -874,7 +874,7 @@ public abstract class BaseSkuResourceImpl
 	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/skus/by-externalReferenceCode/{externalReferenceCode}' -d $'{"cost": ___, "customFields": ___, "depth": ___, "discontinued": ___, "discontinuedDate": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "gtin": ___, "height": ___, "manufacturerPartNumber": ___, "neverExpire": ___, "price": ___, "promoPrice": ___, "published": ___, "purchasable": ___, "replacementSkuExternalReferenceCode": ___, "replacementSkuId": ___, "sku": ___, "skuOptions": ___, "skuSubscriptionConfiguration": ___, "skuUnitOfMeasures": ___, "skuVirtualSettings": ___, "unspsc": ___, "weight": ___, "width": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Replaces the SKU identified by external reference code with the supplied representation. Calls CPInstanceService.fetchCPInstanceByExternalReferenceCode + CPInstanceService.updateCPInstance (with discontinued replacement resolution). Validation -- NoSuchCPInstanceException -> 404 when ERC not found. Side effects -- Updates display/expiration/discontinued dates, subscription fields, ExpandoBridge; resolves replacement SKU when discontinued."
+		description = "Replaces the SKU identified by external reference code with the supplied representation. Returns 404 when the external reference code is not found. Side effects -- Updates display/expiration/discontinued dates, subscription fields, custom field storage; resolves replacement SKU when discontinued."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1704,4 +1704,4 @@ public abstract class BaseSkuResourceImpl
 		LogFactoryUtil.getLog(BaseSkuResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-885560453
+// LIFERAY-REST-BUILDER-HASH:1744945787

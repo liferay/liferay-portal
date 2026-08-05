@@ -52,7 +52,15 @@ public interface AvailabilityEstimateResource {
 			String callbackURL, Object object)
 		throws Exception;
 
+	public void deleteAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public AvailabilityEstimate getAvailabilityEstimate(Long id)
+		throws Exception;
+
+	public AvailabilityEstimate getAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode)
 		throws Exception;
 
 	public Page<AvailabilityEstimate>
@@ -61,16 +69,27 @@ public interface AvailabilityEstimateResource {
 		throws Exception;
 
 	public AvailabilityEstimate
+			patchAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode,
+				AvailabilityEstimate availabilityEstimate)
+		throws Exception;
+
+	public AvailabilityEstimate
 			postCommerceAdminSiteSettingGroupAvailabilityEstimate(
 				Long groupId, AvailabilityEstimate availabilityEstimate)
 		throws Exception;
 
-	public Response putAvailabilityEstimate(
+	public AvailabilityEstimate putAvailabilityEstimate(
 			Long id, AvailabilityEstimate availabilityEstimate)
 		throws Exception;
 
 	public Response putAvailabilityEstimateBatch(
 			String callbackURL, Object object)
+		throws Exception;
+
+	public AvailabilityEstimate putAvailabilityEstimateByExternalReferenceCode(
+			String externalReferenceCode,
+			AvailabilityEstimate availabilityEstimate)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -169,4 +188,4 @@ public interface AvailabilityEstimateResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1957278508
+// LIFERAY-REST-BUILDER-HASH:223567013

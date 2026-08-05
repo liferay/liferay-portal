@@ -48,7 +48,7 @@ public abstract class BaseProductVirtualSettingsResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/product-virtual-settings'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the virtual settings of the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + ProductVirtualSettingsDTOConverter. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found."
+		description = "Returns the virtual settings of the product identified by external reference code. Returns 404 when the product external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -89,7 +89,7 @@ public abstract class BaseProductVirtualSettingsResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/product-virtual-settings'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the virtual settings of the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + ProductVirtualSettingsDTOConverter. Validation -- NoSuchCPDefinitionException -> 404 when product id not found."
+		description = "Returns the virtual settings of the product identified by product id. Returns 404 when the product id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -566,4 +566,4 @@ public abstract class BaseProductVirtualSettingsResourceImpl
 		LogFactoryUtil.getLog(BaseProductVirtualSettingsResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1676489813
+// LIFERAY-REST-BUILDER-HASH:-1163393170

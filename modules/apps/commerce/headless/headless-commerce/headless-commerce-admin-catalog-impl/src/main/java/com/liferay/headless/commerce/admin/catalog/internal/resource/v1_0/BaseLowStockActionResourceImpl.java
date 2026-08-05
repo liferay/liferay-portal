@@ -73,7 +73,7 @@ public abstract class BaseLowStockActionResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/low-stock-actions'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists the registered low stock activity handlers. Calls CommerceLowStockActivityRegistry.getCommerceLowStockActivities."
+		description = "Lists the registered low stock activity handlers. Calls low-stock activity registry.getCommerceLowStockActivities."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -810,4 +810,4 @@ public abstract class BaseLowStockActionResourceImpl
 		LogFactoryUtil.getLog(BaseLowStockActionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-871612401
+// LIFERAY-REST-BUILDER-HASH:-1295460955

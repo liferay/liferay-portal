@@ -75,7 +75,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/mapped-products/{mappedProductId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Deletes the mapped (diagram) product identified by mappedProductId. Calls CSDiagramEntryService.getCSDiagramEntry + deleteCSDiagramEntry. Validation -- NoSuchCSDiagramEntryException -> 404 when id not found. Side effects -- Removes the diagram entry; orphaned pins may remain unless cleaned separately."
+		description = "Deletes the mapped (diagram) product identified by mappedProductId. Returns 404 when the id is not found. Side effects -- Removes the diagram entry; orphaned pins may remain unless cleaned separately."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -155,7 +155,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/mapped-products/by-sequence/{sequence}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the mapped (diagram) product entry of the product identified by external reference code at the given sequence. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CSDiagramEntryService.fetchCSDiagramEntry. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found; NPE when sequence not found (no explicit handling)."
+		description = "Returns the mapped (diagram) product entry of the product identified by external reference code at the given sequence. Returns 404 when the product external reference code is not found, and NPE when sequence not found (no explicit handling)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -203,7 +203,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/mapped-products'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists mapped (diagram) products of the product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + SearchUtil.search over CSDiagramEntry. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found."
+		description = "Lists mapped (diagram) products of the product identified by external reference code. Returns 404 when the product external reference code is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -268,7 +268,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/mapped-products/by-sequence/{sequence}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Returns the mapped (diagram) product entry of the product identified by product id at the given sequence. Calls CPDefinitionService.fetchCPDefinitionByCProductId + CSDiagramEntryService.fetchCSDiagramEntry. Validation -- NoSuchCPDefinitionException -> 404 when product id not found; NPE when sequence not found (no explicit handling)."
+		description = "Returns the mapped (diagram) product entry of the product identified by product id at the given sequence. Returns 404 when the product id is not found, and NPE when sequence not found (no explicit handling)."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -313,7 +313,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/mapped-products'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Lists mapped (diagram) products of the product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + SearchUtil.search over CSDiagramEntry. Validation -- NoSuchCPDefinitionException -> 404 when product id not found."
+		description = "Lists mapped (diagram) products of the product identified by product id. Returns 404 when the product id is not found."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -375,7 +375,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'PATCH' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/mapped-products/{mappedProductId}' -d $'{"customFields": ___, "id": ___, "productExternalReferenceCode": ___, "productId": ___, "quantity": ___, "sequence": ___, "sku": ___, "skuExternalReferenceCode": ___, "skuId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Partially updates the mapped (diagram) product identified by mappedProductId. Calls CSDiagramEntryService.getCSDiagramEntry + MappedProductUtil.updateCSDiagramEntry. Validation -- NoSuchCSDiagramEntryException -> 404 when id not found. Side effects -- May relink the diagram entry to a different SKU/CProduct."
+		description = "Partially updates the mapped (diagram) product identified by mappedProductId. Returns 404 when the id is not found. Side effects -- May relink the diagram entry to a different SKU/product."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -413,7 +413,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/{externalReferenceCode}/mapped-products' -d $'{"customFields": ___, "id": ___, "productExternalReferenceCode": ___, "productId": ___, "quantity": ___, "sequence": ___, "sku": ___, "skuExternalReferenceCode": ___, "skuId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a mapped (diagram) product under the parent product identified by external reference code. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + MappedProductUtil.addCSDiagramEntry. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found. Side effects -- Creates a diagram entry referencing the supplied SKU/CProduct."
+		description = "Creates a mapped (diagram) product under the parent product identified by external reference code. Returns 404 when the product external reference code is not found. Side effects -- Creates a diagram entry referencing the supplied SKU/product."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -453,7 +453,7 @@ public abstract class BaseMappedProductResourceImpl
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-commerce-admin-catalog/v1.0/products/{id}/mapped-products' -d $'{"customFields": ___, "id": ___, "productExternalReferenceCode": ___, "productId": ___, "quantity": ___, "sequence": ___, "sku": ___, "skuExternalReferenceCode": ___, "skuId": ___, "type": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Creates a mapped (diagram) product under the parent product identified by product id. Calls CPDefinitionService.fetchCPDefinitionByCProductId + MappedProductUtil.addCSDiagramEntry. Validation -- NoSuchCPDefinitionException -> 404 when product id not found. Side effects -- Creates a diagram entry referencing the supplied SKU/CProduct."
+		description = "Creates a mapped (diagram) product under the parent product identified by product id. Returns 404 when the product id is not found. Side effects -- Creates a diagram entry referencing the supplied SKU/product."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1273,4 +1273,4 @@ public abstract class BaseMappedProductResourceImpl
 		LogFactoryUtil.getLog(BaseMappedProductResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-5514433
+// LIFERAY-REST-BUILDER-HASH:148097187

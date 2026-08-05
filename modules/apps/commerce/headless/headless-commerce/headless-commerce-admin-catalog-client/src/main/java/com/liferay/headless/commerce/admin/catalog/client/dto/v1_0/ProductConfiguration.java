@@ -93,6 +93,32 @@ public class ProductConfiguration implements Cloneable, Serializable {
 
 	protected BigDecimal[] allowedOrderQuantities;
 
+	public String getAvailabilityEstimateExternalReferenceCode() {
+		return availabilityEstimateExternalReferenceCode;
+	}
+
+	public void setAvailabilityEstimateExternalReferenceCode(
+		String availabilityEstimateExternalReferenceCode) {
+
+		this.availabilityEstimateExternalReferenceCode =
+			availabilityEstimateExternalReferenceCode;
+	}
+
+	public void setAvailabilityEstimateExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			availabilityEstimateExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			availabilityEstimateExternalReferenceCode =
+				availabilityEstimateExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String availabilityEstimateExternalReferenceCode;
+
 	public Long getAvailabilityEstimateId() {
 		return availabilityEstimateId;
 	}
@@ -602,4 +628,4 @@ public class ProductConfiguration implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1385255731
+// LIFERAY-REST-BUILDER-HASH:-248408686
