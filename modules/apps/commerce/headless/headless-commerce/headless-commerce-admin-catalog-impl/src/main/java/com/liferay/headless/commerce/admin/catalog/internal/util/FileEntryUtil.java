@@ -25,6 +25,7 @@ import com.liferay.upload.UniqueFileNameProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 
 import java.util.HashMap;
 
@@ -32,6 +33,18 @@ import java.util.HashMap;
  * @author Stefano Motta
  */
 public class FileEntryUtil {
+
+	public static String getBase64EncodedContent(FileEntry fileEntry)
+		throws Exception {
+
+		if (fileEntry == null) {
+			return null;
+		}
+
+		try (InputStream inputStream = fileEntry.getContentStream()) {
+			return Base64.encode(FileUtil.getBytes(inputStream));
+		}
+	}
 
 	public static long getFileEntryId(
 			BinaryFile binaryFile, long commerceCatalogGroupId,

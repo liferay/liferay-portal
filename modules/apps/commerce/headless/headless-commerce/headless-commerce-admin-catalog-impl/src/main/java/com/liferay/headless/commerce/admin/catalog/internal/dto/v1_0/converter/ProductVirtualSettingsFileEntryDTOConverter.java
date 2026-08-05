@@ -12,7 +12,9 @@ import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntr
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEntryLocalService;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingLocalService;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductVirtualSettingsFileEntry;
+import com.liferay.headless.commerce.admin.catalog.internal.util.FileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -49,6 +51,10 @@ public class ProductVirtualSettingsFileEntryDTOConverter
 		return new ProductVirtualSettingsFileEntry() {
 			{
 				setActions(dtoConverterContext::getActions);
+				setAttachment(
+					() -> FileEntryUtil.getBase64EncodedContent(
+						_dlAppLocalService.fetchFileEntry(
+							cpdVirtualSettingFileEntry.getFileEntryId())));
 				setId(
 					cpdVirtualSettingFileEntry::
 						getCPDefinitionVirtualSettingFileEntryId);
@@ -108,5 +114,8 @@ public class ProductVirtualSettingsFileEntryDTOConverter
 	@Reference
 	private CPDVirtualSettingFileEntryLocalService
 		_cpdVirtualSettingFileEntryLocalService;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 }
