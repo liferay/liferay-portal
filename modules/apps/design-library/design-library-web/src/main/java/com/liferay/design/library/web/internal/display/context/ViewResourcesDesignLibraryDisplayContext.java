@@ -89,7 +89,6 @@ public class ViewResourcesDesignLibraryDisplayContext
 		throws PortalException {
 
 		Group depotGroup = getGroup();
-
 		String viewResourcesURL = getViewResourcesURL(_liferayPortletResponse);
 
 		String viewFragmentCollectionURL = PortletURLBuilder.create(
