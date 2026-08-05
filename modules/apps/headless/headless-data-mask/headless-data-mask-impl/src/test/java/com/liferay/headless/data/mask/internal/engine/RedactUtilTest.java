@@ -153,8 +153,7 @@ public class RedactUtilTest {
 				RedactUtil.newDeadline()));
 		Assert.assertThrows(
 			RedactTimeoutException.class,
-			() -> RedactUtil.redact(
-				"a", null, "R", _LONG_TEXT, System.nanoTime() - 1));
+			() -> RedactUtil.redact("a", null, "R", _LONG_TEXT, 0));
 	}
 
 	@Test
