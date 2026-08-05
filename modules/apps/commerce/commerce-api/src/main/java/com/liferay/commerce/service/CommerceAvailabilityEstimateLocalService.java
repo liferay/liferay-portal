@@ -75,8 +75,8 @@ public interface CommerceAvailabilityEstimateLocalService
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate);
 
 	public CommerceAvailabilityEstimate addCommerceAvailabilityEstimate(
-			Map<Locale, String> titleMap, double priority,
-			ServiceContext serviceContext)
+			String externalReferenceCode, Map<Locale, String> titleMap,
+			double priority, ServiceContext serviceContext)
 		throws PortalException;
 
 	/**
@@ -304,6 +304,12 @@ public interface CommerceAvailabilityEstimateLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceAvailabilityEstimate
+			getOrAddEmptyCommerceAvailabilityEstimate(
+				String externalReferenceCode, long companyId, long userId)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -334,9 +340,10 @@ public interface CommerceAvailabilityEstimateLocalService
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate);
 
 	public CommerceAvailabilityEstimate updateCommerceAvailabilityEstimate(
-			long commerceAvailabilityId, Map<Locale, String> titleMap,
-			double priority, ServiceContext serviceContext)
+			String externalReferenceCode, long commerceAvailabilityEstimateId,
+			Map<Locale, String> titleMap, double priority,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-478493301
+// LIFERAY-SERVICE-BUILDER-HASH:752216987

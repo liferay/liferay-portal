@@ -33,12 +33,13 @@ public class CommerceAvailabilityEstimateServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceAvailabilityEstimateServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static CommerceAvailabilityEstimate addCommerceAvailabilityEstimate(
+			String externalReferenceCode,
 			Map<java.util.Locale, String> titleMap, double priority,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().addCommerceAvailabilityEstimate(
-			titleMap, priority, serviceContext);
+			externalReferenceCode, titleMap, priority, serviceContext);
 	}
 
 	public static void deleteCommerceAvailabilityEstimate(
@@ -47,6 +48,16 @@ public class CommerceAvailabilityEstimateServiceUtil {
 
 		getService().deleteCommerceAvailabilityEstimate(
 			commerceAvailabilityEstimateId);
+	}
+
+	public static CommerceAvailabilityEstimate
+			fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		return getService().
+			fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+				externalReferenceCode, companyId);
 	}
 
 	public static CommerceAvailabilityEstimate getCommerceAvailabilityEstimate(
@@ -74,6 +85,15 @@ public class CommerceAvailabilityEstimateServiceUtil {
 		return getService().getCommerceAvailabilityEstimatesCount(companyId);
 	}
 
+	public static CommerceAvailabilityEstimate
+			getOrAddEmptyCommerceAvailabilityEstimate(
+				String externalReferenceCode)
+		throws PortalException {
+
+		return getService().getOrAddEmptyCommerceAvailabilityEstimate(
+			externalReferenceCode);
+	}
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -85,13 +105,15 @@ public class CommerceAvailabilityEstimateServiceUtil {
 
 	public static CommerceAvailabilityEstimate
 			updateCommerceAvailabilityEstimate(
+				String externalReferenceCode,
 				long commerceAvailabilityEstimateId,
 				Map<java.util.Locale, String> titleMap, double priority,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws PortalException {
 
 		return getService().updateCommerceAvailabilityEstimate(
-			commerceAvailabilityEstimateId, titleMap, priority, serviceContext);
+			externalReferenceCode, commerceAvailabilityEstimateId, titleMap,
+			priority, serviceContext);
 	}
 
 	public static CommerceAvailabilityEstimateService getService() {
@@ -104,4 +126,4 @@ public class CommerceAvailabilityEstimateServiceUtil {
 			CommerceAvailabilityEstimateService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-632827482
+// LIFERAY-SERVICE-BUILDER-HASH:-915011880

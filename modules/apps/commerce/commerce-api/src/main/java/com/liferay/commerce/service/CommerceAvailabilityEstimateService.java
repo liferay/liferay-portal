@@ -47,12 +47,18 @@ public interface CommerceAvailabilityEstimateService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.service.impl.CommerceAvailabilityEstimateServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the commerce availability estimate remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CommerceAvailabilityEstimateServiceUtil} if injection and service tracking are not available.
 	 */
 	public CommerceAvailabilityEstimate addCommerceAvailabilityEstimate(
-			Map<Locale, String> titleMap, double priority,
-			ServiceContext serviceContext)
+			String externalReferenceCode, Map<Locale, String> titleMap,
+			double priority, ServiceContext serviceContext)
 		throws PortalException;
 
 	public void deleteCommerceAvailabilityEstimate(
 			long commerceAvailabilityEstimateId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceAvailabilityEstimate
+			fetchCommerceAvailabilityEstimateByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -70,6 +76,12 @@ public interface CommerceAvailabilityEstimateService extends BaseService {
 	public int getCommerceAvailabilityEstimatesCount(long companyId)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CommerceAvailabilityEstimate
+			getOrAddEmptyCommerceAvailabilityEstimate(
+				String externalReferenceCode)
+		throws PortalException;
+
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -78,9 +90,10 @@ public interface CommerceAvailabilityEstimateService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 	public CommerceAvailabilityEstimate updateCommerceAvailabilityEstimate(
-			long commerceAvailabilityEstimateId, Map<Locale, String> titleMap,
-			double priority, ServiceContext serviceContext)
+			String externalReferenceCode, long commerceAvailabilityEstimateId,
+			Map<Locale, String> titleMap, double priority,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-682152529
+// LIFERAY-SERVICE-BUILDER-HASH:-2052027770
