@@ -218,8 +218,18 @@ export default function ObjectRelationship({
 				};
 
 				if (value) {
-					let selected: Item | void = items.find(
-						({id}) => Number(id) === Number(value)
+
+					/**
+					 * Compares an item against the current value using the same
+					 * key the value was produced from, since system objects such
+					 * as Commerce Products expose an identifier that differs from
+					 * the DTO id.
+					 */
+					const matchesValue = (item?: Item) =>
+						Number(item?.[valueKey] ?? item?.id) === Number(value);
+
+					let selected: Item | void = items.find((item) =>
+						matchesValue(item)
 					);
 
 					if (!selected && !parameterObjectFieldName) {
@@ -230,10 +240,7 @@ export default function ObjectRelationship({
 							`${baseAPIURL}/${value}${apiURLQueryString ? `?${apiURLQueryString}` : ''}`
 						);
 
-						selected =
-							Number(item?.id) === Number(value)
-								? item
-								: undefined;
+						selected = matchesValue(item) ? item : undefined;
 					}
 
 					if (selected) {
@@ -269,6 +276,7 @@ export default function ObjectRelationship({
 		searchTerm,
 		value,
 		url,
+		valueKey,
 	]);
 
 	/**
