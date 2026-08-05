@@ -59,14 +59,16 @@ public class ViewProjectTasksSectionDisplayContextTest
 				"(objectDefinitionId eq ",
 				objectDefinition.getObjectDefinitionId(),
 				" and scopeGroupId eq ", assetEntry.getGroupId(),
-				")&nestedFields=cmpProjectToCMPTasks,embedded"),
+				")&nestedFields=embedded,embedded.cmpProjectToCMPTasks",
+				"&nestedFieldsDepth=2"),
 			getAPIURL(assetEntry));
 		Assert.assertEquals(
 			StringBundler.concat(
 				"/o/search/v1.0/search?emptySearch=true&filter=",
 				"(objectDefinitionId eq ",
 				objectDefinition.getObjectDefinitionId(),
-				")&nestedFields=cmpProjectToCMPTasks,embedded"),
+				")&nestedFields=embedded,embedded.cmpProjectToCMPTasks",
+				"&nestedFieldsDepth=2"),
 			getAPIURL(null));
 	}
 
