@@ -156,48 +156,12 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 		List<com.liferay.portal.kernel.model.Role> updatedRoles;
 
 		if (_isDefaultAssetLibraryMemberRoleAssignment(currentRoles, roles)) {
-
-			// The CMS "Manage Members" UI (ManageMembersList) adds a brand
-			// new member and then, in a separate follow-up call, assigns
-			// them the space's fixed default role
-			// (SPACE_MEMBERS_CONFIG.defaultRoleExternalReferenceCode,
-			// hardcoded to Asset Library Member - never configurable, never
-			// any other role). That follow-up call goes through
-			// UserGroupRoleService, which requires ASSIGN_USER_ROLES; if a
-			// caller holding only ASSIGN_MEMBERS lacks it, the UI does not
-			// roll back the membership it just added - the user stays a
-			// member with no role, and the only feedback is an error toast.
-			// To avoid that half-succeeded state, a caller with just
-			// ASSIGN_MEMBERS is allowed to grant this one specific,
-			// hardcoded role, but only to a user who currently holds no
-			// roles here (i.e. was just added, mirroring the UI's own
-			// !isAlreadyMember condition for making this call at all).
-			// Reassigning an existing member's role, removing a role, or
-			// granting any other role - including Administrator or Content
-			// Reviewer - still requires ASSIGN_USER_ROLES or Role-scoped
-			// ASSIGN_MEMBERS, unchanged. The role ID is resolved through
-			// the local service (not _getRoleIds/_roleService.getRole,
-			// which requires Role-scoped VIEW) for the same reason the
-			// read of the updated roles below does: the caller may hold
-			// ASSIGN_MEMBERS on the group without holding VIEW on the
-			// individual Role, which would otherwise reject the lookup
-			// entirely before the assignment is ever attempted.
-
 			_checkAssetLibraryAdminOrAssignMembers(group.getGroupId());
 
 			com.liferay.portal.kernel.model.Role assetLibraryMemberRole =
 				_roleLocalService.getRole(
 					contextCompany.getCompanyId(),
 					DepotRolesConstants.ASSET_LIBRARY_MEMBER);
-
-			// The read below goes through the local service, not
-			// _roleService, for the same reason the role lookup above does:
-			// this caller may hold ASSIGN_MEMBERS without Role-scoped VIEW
-			// on Asset Library Member, and the permissioned read would
-			// filter the assignment just made down to nothing. The else
-			// branch below keeps _roleService, since every role reaching it
-			// was already resolved through _getRoleIds, which itself
-			// requires Role-scoped VIEW.
 
 			_userGroupRoleLocalService.addUserGroupRoles(
 				user.getUserId(), group.getGroupId(),

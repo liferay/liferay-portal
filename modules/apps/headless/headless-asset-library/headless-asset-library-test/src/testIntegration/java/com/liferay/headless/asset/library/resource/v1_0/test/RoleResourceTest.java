@@ -135,11 +135,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				testCompany.getCompanyId(),
 				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
 
-		// A fresh member (no current roles) can be granted exactly the
-		// default Asset Library Member role by a caller holding only
-		// ASSIGN_MEMBERS, mirroring the CMS "Manage Members" UI's
-		// add-member-then-assign-default-role flow.
-
 		Page<Role> page =
 			assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
 				testDepotEntryGroup.getExternalReferenceCode(),
@@ -160,10 +155,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		Assert.assertTrue(
 			names.toString(),
 			names.contains(DepotRolesConstants.ASSET_LIBRARY_MEMBER));
-
-		// Reassigning that same, now-existing member to a different role
-		// still requires ASSIGN_USER_ROLES; ASSIGN_MEMBERS alone is not
-		// enough once the member already holds a role.
 
 		com.liferay.portal.kernel.model.Role assetLibraryContentReviewerRole =
 			_roleLocalService.getRole(
@@ -205,10 +196,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				testCompany.getCompanyId(),
 				DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
 
-		// Even for a fresh member, only the exact default role (Member)
-		// is covered by the ASSIGN_MEMBERS-only bypass - any other role,
-		// including Administrator, still requires ASSIGN_USER_ROLES.
-
 		_assertForbidden(
 			() -> assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
 				testDepotEntryGroup.getExternalReferenceCode(),
@@ -249,12 +236,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			_roleLocalService.getRole(
 				testCompany.getCompanyId(),
 				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
-
-		// Reassigning an existing member (who already holds the default
-		// Member role) to a different role is allowed for a caller holding
-		// ASSIGN_USER_ROLES, even without ASSIGN_MEMBERS - but the caller
-		// must also hold Role-scoped VIEW on that specific role; resolving
-		// the role by name still goes through the permissioned service.
 
 		RoleResource assignUserRolesRoleResource =
 			_getAssignUserRolesRoleResource(assetLibraryContentReviewerRole);
@@ -307,10 +288,6 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			_roleLocalService.getRole(
 				testCompany.getCompanyId(),
 				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
-
-		// ASSIGN_USER_ROLES alone, without Role-scoped VIEW on the target
-		// role, is not enough - resolving the role by name goes through the
-		// permissioned service.
 
 		RoleResource assignUserRolesRoleResource =
 			_getAssignUserRolesRoleResource();
