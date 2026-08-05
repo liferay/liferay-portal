@@ -94,20 +94,24 @@ public class SegmentsExperienceLocalServiceTest {
 	public void testAddDefaultSegmentsExperienceLockedLayout()
 		throws Exception {
 
+		Layout layout = _layoutLocalService.getLayout(_plid);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
 		_segmentsExperienceLocalService.deleteSegmentsExperience(
 			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				_plid));
+				draftLayout.getPlid()));
 
 		_user = UserTestUtil.addUser();
 
 		_lockManager.lock(
-			_user.getUserId(), Layout.class.getName(), _plid, null, false,
-			Time.HOUR);
+			_user.getUserId(), Layout.class.getName(), draftLayout.getPlid(),
+			null, false, Time.HOUR);
 
 		try {
 			try {
 				_segmentsExperienceLocalService.addDefaultSegmentsExperience(
-					null, TestPropsValues.getUserId(), _plid,
+					null, TestPropsValues.getUserId(), draftLayout.getPlid(),
 					ServiceContextTestUtil.getServiceContext(
 						_group.getGroupId()));
 
@@ -122,7 +126,8 @@ public class SegmentsExperienceLocalServiceTest {
 				Assert.assertNotNull(
 					_segmentsExperienceLocalService.
 						addDefaultSegmentsExperience(
-							null, TestPropsValues.getUserId(), _plid,
+							null, TestPropsValues.getUserId(),
+							draftLayout.getPlid(),
 							ServiceContextTestUtil.getServiceContext(
 								_group.getGroupId())));
 			}
@@ -131,7 +136,7 @@ public class SegmentsExperienceLocalServiceTest {
 			}
 		}
 		finally {
-			_lockManager.unlock(Layout.class.getName(), _plid);
+			_lockManager.unlock(Layout.class.getName(), draftLayout.getPlid());
 		}
 	}
 
