@@ -52,6 +52,7 @@ import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEn
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingService;
 import com.liferay.commerce.service.CPDAvailabilityEstimateService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
+import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
 import com.liferay.commerce.shop.by.diagram.constants.CSDiagramCPTypeConstants;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramEntryService;
 import com.liferay.commerce.shop.by.diagram.service.CSDiagramPinService;
@@ -1063,8 +1064,9 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 					GetterUtil.getBoolean(
 						productConfiguration.getAllowBackOrder(),
 						masterCPConfigurationEntry.isBackOrders()),
-					GetterUtil.getLong(
-						productConfiguration.getAvailabilityEstimateId(),
+					ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
+						_commerceAvailabilityEstimateService,
+						productConfiguration,
 						masterCPConfigurationEntry.
 							getCommerceAvailabilityEstimateId()),
 					GetterUtil.getString(
@@ -1129,6 +1131,7 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 				cpDefinition.getCPDefinitionId());
 
 			ProductConfigurationUtil.updateCPDAvailabilityEstimate(
+				_commerceAvailabilityEstimateService,
 				_cpdAvailabilityEstimateService, productConfiguration,
 				cpDefinition.getCPDefinitionId());
 		}
@@ -1720,6 +1723,10 @@ public class ProductResourceImpl extends BaseProductResourceImpl {
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private CommerceAvailabilityEstimateService
+		_commerceAvailabilityEstimateService;
 
 	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;

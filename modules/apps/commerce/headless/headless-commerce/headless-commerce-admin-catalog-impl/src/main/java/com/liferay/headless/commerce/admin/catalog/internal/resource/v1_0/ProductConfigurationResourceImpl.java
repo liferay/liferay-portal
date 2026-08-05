@@ -16,6 +16,7 @@ import com.liferay.commerce.product.service.CPConfigurationListService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.service.CPDAvailabilityEstimateService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
+import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfigurationList;
@@ -258,8 +259,8 @@ public class ProductConfigurationResourceImpl
 				GetterUtil.getBoolean(
 					productConfiguration.getAllowBackOrder(),
 					cpConfigurationEntry.isBackOrders()),
-				GetterUtil.getLong(
-					productConfiguration.getAvailabilityEstimateId(),
+				ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
+					_commerceAvailabilityEstimateService, productConfiguration,
 					cpConfigurationEntry.getCommerceAvailabilityEstimateId()),
 				GetterUtil.getString(
 					productConfiguration.getInventoryEngine(),
@@ -372,8 +373,8 @@ public class ProductConfigurationResourceImpl
 				GetterUtil.getBoolean(
 					productConfiguration.getAllowBackOrder(),
 					masterCPConfigurationEntry.isBackOrders()),
-				GetterUtil.getLong(
-					productConfiguration.getAvailabilityEstimateId(),
+				ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
+					_commerceAvailabilityEstimateService, productConfiguration,
 					masterCPConfigurationEntry.
 						getCommerceAvailabilityEstimateId()),
 				GetterUtil.getString(
@@ -438,6 +439,7 @@ public class ProductConfigurationResourceImpl
 			cpDefinition.getCPDefinitionId());
 
 		ProductConfigurationUtil.updateCPDAvailabilityEstimate(
+			_commerceAvailabilityEstimateService,
 			_cpdAvailabilityEstimateService, productConfiguration,
 			cpDefinition.getCPDefinitionId());
 
@@ -514,8 +516,9 @@ public class ProductConfigurationResourceImpl
 				ProductConfigurationUtil.getAllowedOrderQuantities(
 					productConfiguration.getAllowedOrderQuantities(), null),
 				GetterUtil.getBoolean(productConfiguration.getAllowBackOrder()),
-				GetterUtil.getLong(
-					productConfiguration.getAvailabilityEstimateId()),
+				ProductConfigurationUtil.getCommerceAvailabilityEstimateId(
+					_commerceAvailabilityEstimateService, productConfiguration,
+					0),
 				GetterUtil.getString(productConfiguration.getInventoryEngine()),
 				GetterUtil.getDouble(productShippingConfiguration.getDepth()),
 				GetterUtil.getBoolean(
@@ -642,6 +645,10 @@ public class ProductConfigurationResourceImpl
 
 	private static final EntityModel _entityModel =
 		new ProductConfigurationEntityModel();
+
+	@Reference
+	private CommerceAvailabilityEstimateService
+		_commerceAvailabilityEstimateService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.product.model.CPConfigurationEntry)"

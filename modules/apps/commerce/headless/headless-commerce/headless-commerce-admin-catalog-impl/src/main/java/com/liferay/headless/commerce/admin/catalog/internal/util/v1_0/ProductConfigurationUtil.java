@@ -7,8 +7,10 @@ package com.liferay.headless.commerce.admin.catalog.internal.util.v1_0;
 
 import com.liferay.commerce.model.CPDAvailabilityEstimate;
 import com.liferay.commerce.model.CPDefinitionInventory;
+import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.service.CPDAvailabilityEstimateService;
 import com.liferay.commerce.service.CPDefinitionInventoryService;
+import com.liferay.commerce.service.CommerceAvailabilityEstimateService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -40,7 +42,33 @@ public class ProductConfigurationUtil {
 		return defaultAllowedOrderQuantities;
 	}
 
+	public static long getCommerceAvailabilityEstimateId(
+			CommerceAvailabilityEstimateService
+				commerceAvailabilityEstimateService,
+			ProductConfiguration productConfiguration,
+			long defaultCommerceAvailabilityEstimateId)
+		throws PortalException {
+
+		String externalReferenceCode =
+			productConfiguration.getAvailabilityEstimateExternalReferenceCode();
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return GetterUtil.getLong(
+				productConfiguration.getAvailabilityEstimateId(),
+				defaultCommerceAvailabilityEstimateId);
+		}
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			commerceAvailabilityEstimateService.
+				getOrAddEmptyCommerceAvailabilityEstimate(
+					externalReferenceCode);
+
+		return commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId();
+	}
+
 	public static void updateCPDAvailabilityEstimate(
+			CommerceAvailabilityEstimateService
+				commerceAvailabilityEstimateService,
 			CPDAvailabilityEstimateService cpdAvailabilityEstimateService,
 			ProductConfiguration productConfiguration, long cpDefinitionId)
 		throws PortalException {
@@ -58,8 +86,8 @@ public class ProductConfigurationUtil {
 
 		cpdAvailabilityEstimateService.updateCPDAvailabilityEstimate(
 			0, cpDefinitionId,
-			GetterUtil.get(
-				productConfiguration.getAvailabilityEstimateId(),
+			getCommerceAvailabilityEstimateId(
+				commerceAvailabilityEstimateService, productConfiguration,
 				commerceAvailabilityEstimateId));
 	}
 

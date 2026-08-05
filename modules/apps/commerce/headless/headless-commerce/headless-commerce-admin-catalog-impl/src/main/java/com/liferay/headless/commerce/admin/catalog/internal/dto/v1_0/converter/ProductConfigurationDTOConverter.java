@@ -7,6 +7,7 @@ package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
 import com.liferay.commerce.constants.CPDefinitionInventoryConstants;
 import com.liferay.commerce.model.CPDefinitionInventory;
+import com.liferay.commerce.model.CommerceAvailabilityEstimate;
 import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
@@ -16,6 +17,7 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.service.CPConfigurationEntryService;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.CPDefinitionService;
+import com.liferay.commerce.service.CommerceAvailabilityEstimateLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductTaxConfiguration;
@@ -93,6 +95,9 @@ public class ProductConfigurationDTOConverter
 			cpConfigurationEntry::isBackOrders);
 		productConfiguration.setAllowedOrderQuantities(
 			cpConfigurationEntry::getAllowedOrderQuantitiesArray);
+		productConfiguration.setAvailabilityEstimateExternalReferenceCode(
+			() -> _getAvailabilityEstimateExternalReferenceCode(
+				cpConfigurationEntry));
 		productConfiguration.setDifferences(
 			() -> _getDifferences(cpConfigurationEntry, dtoConverterContext));
 		productConfiguration.setEntityExternalReferenceCode(
@@ -166,6 +171,21 @@ public class ProductConfigurationDTOConverter
 			cpConfigurationEntry::getPurchasable);
 
 		return productConfiguration;
+	}
+
+	private String _getAvailabilityEstimateExternalReferenceCode(
+		CPConfigurationEntry cpConfigurationEntry) {
+
+		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
+			_commerceAvailabilityEstimateLocalService.
+				fetchCommerceAvailabilityEstimate(
+					cpConfigurationEntry.getCommerceAvailabilityEstimateId());
+
+		if (commerceAvailabilityEstimate == null) {
+			return null;
+		}
+
+		return commerceAvailabilityEstimate.getExternalReferenceCode();
 	}
 
 	private String[] _getDifferences(
@@ -411,6 +431,10 @@ public class ProductConfigurationDTOConverter
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		ProductConfigurationDTOConverter.class);
+
+	@Reference
+	private CommerceAvailabilityEstimateLocalService
+		_commerceAvailabilityEstimateLocalService;
 
 	@Reference
 	private CPConfigurationEntryService _cpConfigurationEntryService;
