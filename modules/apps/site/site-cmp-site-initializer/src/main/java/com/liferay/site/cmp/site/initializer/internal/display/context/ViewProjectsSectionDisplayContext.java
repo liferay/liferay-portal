@@ -57,6 +57,7 @@ public class ViewProjectsSectionDisplayContext
 		).build();
 	}
 
+	@Override
 	public String getAPIURL() {
 		StringBundler sb = new StringBundler(4);
 
@@ -71,6 +72,7 @@ public class ViewProjectsSectionDisplayContext
 		return sb.toString();
 	}
 
+	@Override
 	public CreationMenu getCreationMenu() throws Exception {
 		if (!hasAddObjectEntryPortletResourcePermission()) {
 			return null;
@@ -97,6 +99,7 @@ public class ViewProjectsSectionDisplayContext
 		).build();
 	}
 
+	@Override
 	public Map<String, Object> getEmptyState() {
 		return HashMapBuilder.<String, Object>put(
 			"description",
@@ -109,6 +112,7 @@ public class ViewProjectsSectionDisplayContext
 		).build();
 	}
 
+	@Override
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
 		String baseViewProjectURL = ActionUtil.getBaseViewProjectURL(
 			objectDefinition, themeDisplay);
