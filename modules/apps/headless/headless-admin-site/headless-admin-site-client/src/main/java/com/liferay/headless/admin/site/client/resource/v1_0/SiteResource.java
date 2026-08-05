@@ -75,12 +75,14 @@ public interface SiteResource {
 
 	public Page<Site> getSitesPage(
 			Boolean active, String[] excludedExternalReferenceCodes,
-			String search, Pagination pagination)
+			String[] externalReferenceCodes, String search,
+			Pagination pagination)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSitesPageHttpResponse(
 			Boolean active, String[] excludedExternalReferenceCodes,
-			String search, Pagination pagination)
+			String[] externalReferenceCodes, String search,
+			Pagination pagination)
 		throws Exception;
 
 	public Site postSite(Site site) throws Exception;
@@ -105,14 +107,14 @@ public interface SiteResource {
 
 	public void postSitesPageExportBatch(
 			Boolean active, String[] excludedExternalReferenceCodes,
-			String search, String callbackURL, String contentType,
-			String fieldNames)
+			String[] externalReferenceCodes, String search, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSitesPageExportBatchHttpResponse(
 			Boolean active, String[] excludedExternalReferenceCodes,
-			String search, String callbackURL, String contentType,
-			String fieldNames)
+			String[] externalReferenceCodes, String search, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public Site putSite(String siteExternalReferenceCode, Site site)
@@ -787,11 +789,13 @@ public interface SiteResource {
 
 		public Page<Site> getSitesPage(
 				Boolean active, String[] excludedExternalReferenceCodes,
-				String search, Pagination pagination)
+				String[] externalReferenceCodes, String search,
+				Pagination pagination)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse = getSitesPageHttpResponse(
-				active, excludedExternalReferenceCodes, search, pagination);
+				active, excludedExternalReferenceCodes, externalReferenceCodes,
+				search, pagination);
 
 			String content = httpResponse.getContent();
 
@@ -854,7 +858,8 @@ public interface SiteResource {
 
 		public HttpInvoker.HttpResponse getSitesPageHttpResponse(
 				Boolean active, String[] excludedExternalReferenceCodes,
-				String search, Pagination pagination)
+				String[] externalReferenceCodes, String search,
+				Pagination pagination)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -889,6 +894,14 @@ public interface SiteResource {
 					httpInvoker.parameter(
 						"excludedExternalReferenceCodes",
 						String.valueOf(excludedExternalReferenceCodes[i]));
+				}
+			}
+
+			if (externalReferenceCodes != null) {
+				for (int i = 0; i < externalReferenceCodes.length; i++) {
+					httpInvoker.parameter(
+						"externalReferenceCodes",
+						String.valueOf(externalReferenceCodes[i]));
 				}
 			}
 
@@ -1230,14 +1243,15 @@ public interface SiteResource {
 
 		public void postSitesPageExportBatch(
 				Boolean active, String[] excludedExternalReferenceCodes,
-				String search, String callbackURL, String contentType,
-				String fieldNames)
+				String[] externalReferenceCodes, String search,
+				String callbackURL, String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSitesPageExportBatchHttpResponse(
-					active, excludedExternalReferenceCodes, search, callbackURL,
-					contentType, fieldNames);
+					active, excludedExternalReferenceCodes,
+					externalReferenceCodes, search, callbackURL, contentType,
+					fieldNames);
 
 			String content = httpResponse.getContent();
 
@@ -1289,8 +1303,8 @@ public interface SiteResource {
 
 		public HttpInvoker.HttpResponse postSitesPageExportBatchHttpResponse(
 				Boolean active, String[] excludedExternalReferenceCodes,
-				String search, String callbackURL, String contentType,
-				String fieldNames)
+				String[] externalReferenceCodes, String search,
+				String callbackURL, String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1327,6 +1341,14 @@ public interface SiteResource {
 					httpInvoker.parameter(
 						"excludedExternalReferenceCodes",
 						String.valueOf(excludedExternalReferenceCodes[i]));
+				}
+			}
+
+			if (externalReferenceCodes != null) {
+				for (int i = 0; i < externalReferenceCodes.length; i++) {
+					httpInvoker.parameter(
+						"externalReferenceCodes",
+						String.valueOf(externalReferenceCodes[i]));
 				}
 			}
 
@@ -2030,4 +2052,4 @@ public interface SiteResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:388246280
+// LIFERAY-REST-BUILDER-HASH:170547828
