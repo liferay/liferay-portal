@@ -78,6 +78,8 @@ spec:
                                 type: string
                             marketplaceVolume:
                                 properties:
+                                    claimName:
+                                        type: string
                                     size:
                                         anyOf:
                                         -   type: integer
@@ -85,7 +87,6 @@ spec:
                                         pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
                                         x-kubernetes-int-or-string: true
                                     storageClassName:
-                                        minLength: 1
                                         type: string
                                 required:
                                 -   size
@@ -100,6 +101,7 @@ spec:
                                 type: object
                         required:
                         -   activationCodeSecretRef
+                        -   marketplaceVolume
                         -   workloadRef
                         type: object
                     status:
@@ -183,13 +185,6 @@ spec:
                                         type: integer
                                     validUntil:
                                         format: date-time
-                                        type: string
-                                type: object
-                            marketplaceVolume:
-                                properties:
-                                    claimName:
-                                        type: string
-                                    phase:
                                         type: string
                                 type: object
                             phase:
