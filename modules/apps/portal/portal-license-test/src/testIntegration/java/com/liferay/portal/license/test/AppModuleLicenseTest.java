@@ -9,25 +9,17 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.license.util.App;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 
 import java.io.File;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 
 /**
  * @author Kevin Lee
@@ -48,140 +40,40 @@ public class AppModuleLicenseTest extends BaseLicenseTestCase {
 	}
 
 	@Test
-	public void testEnterpriseLicense() throws Exception {
+	public void testAppLicenses() throws Exception {
 		for (App app : App.values()) {
-			_testEnterpriseLicense(app);
-		}
-	}
+			try (SafeCloseable safeCloseable =
+					resetLicenseDataWithSafeCloseble()) {
 
-	@Test
-	public void testFreeTierLicense() throws Exception {
-		for (App app : App.values()) {
-			_testFreeTierLicense(app);
-		}
-	}
+				assertLicensePropertiesNotExisted(getProductId(app));
 
-	private String[] _getAppSymbolicNames(App app) {
-		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+				Assert.assertFalse(LicenseManagerUtil.isAppEnabled(app));
 
-		List<String> symbolicNames = new ArrayList<>();
+				Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
 
-		for (Bundle bundle : bundleContext.getBundles()) {
-			String symbolicName = bundle.getSymbolicName();
+				long startTime = System.currentTimeMillis();
 
-			if (symbolicName.contains(
-					"." + StringUtil.toLowerCase(app.toString()) + ".")) {
+				File binaryFile = deployAppLicense(app, startTime, Time.HOUR);
 
-				symbolicNames.add(symbolicName);
+				assertLicensePropertiesExisted(getProductId(app));
+
+				Assert.assertTrue(LicenseManagerUtil.isAppEnabled(app));
+
+				Assert.assertEquals(
+					getDateString(new Date(startTime + Time.HOUR)),
+					getDateString(
+						LicenseManagerUtil.getAppExpirationDate(app)));
+
+				binaryFile.delete();
+
+				checkLicense(getProductId(app));
+
+				assertLicensePropertiesNotExisted(getProductId(app));
+
+				Assert.assertFalse(LicenseManagerUtil.isAppEnabled(app));
+
+				Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
 			}
-		}
-
-		return ArrayUtil.toStringArray(symbolicNames);
-	}
-
-	private void _testEnterpriseLicense(App app) throws Exception {
-		try (SafeCloseable safeCloseable = resetLicenseDataWithSafeCloseble()) {
-			String[] appSymbolicNames = _getAppSymbolicNames(app);
-
-			Assert.assertFalse(
-				appSymbolicNames.toString(),
-				ArrayUtil.isEmpty(appSymbolicNames));
-
-			assertLicensePropertiesNotExisted(getProductId(app));
-
-			assertBundlesExisted(appSymbolicNames);
-
-			assertPortalLicenseNotRegistered();
-
-			assertBundlesExisted(appSymbolicNames);
-
-			Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
-
-			deployEnterprisePortalLicense(Time.HOUR);
-
-			assertLicensePropertiesNotExisted(getProductId(app));
-
-			assertPortalLicenseRegistered();
-
-			assertBundlesNotExisted(appSymbolicNames);
-
-			Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
-
-			long startTime = System.currentTimeMillis();
-
-			File binaryFile = deployAppLicense(app, startTime, Time.HOUR);
-
-			assertLicensePropertiesExisted(getProductId(app));
-
-			assertPortalLicenseRegistered();
-
-			assertBundlesExisted(appSymbolicNames);
-
-			Date expirationDate = LicenseManagerUtil.getAppExpirationDate(app);
-
-			Assert.assertEquals(
-				getDateString(new Date(startTime + Time.HOUR)),
-				getDateString(expirationDate));
-
-			binaryFile.delete();
-
-			checkLicense(getProductId(app));
-
-			assertLicensePropertiesNotExisted(getProductId(app));
-
-			resetLifecycleAction();
-
-			assertPortalLicenseRegistered();
-
-			assertBundlesNotExisted(appSymbolicNames);
-
-			Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
-		}
-	}
-
-	private void _testFreeTierLicense(App app) throws Exception {
-		try (SafeCloseable safeCloseable = resetLicenseDataWithSafeCloseble()) {
-			String[] appSymbolicNames = _getAppSymbolicNames(app);
-
-			Assert.assertFalse(
-				appSymbolicNames.toString(),
-				ArrayUtil.isEmpty(appSymbolicNames));
-
-			assertLicensePropertiesNotExisted(getProductId(app));
-
-			assertBundlesExisted(appSymbolicNames);
-
-			assertPortalLicenseNotRegistered();
-
-			assertBundlesExisted(appSymbolicNames);
-
-			deployFreeTierPortalLicense(Time.HOUR);
-
-			assertLicensePropertiesNotExisted(getProductId(app));
-
-			assertPortalLicenseRegistered();
-
-			assertBundlesNotExisted(appSymbolicNames);
-
-			File binaryFile = deployAppLicense(app, Time.HOUR);
-
-			assertLicensePropertiesExisted(getProductId(app));
-
-			assertPortalLicenseRegistered();
-
-			assertBundlesNotExisted(appSymbolicNames);
-
-			binaryFile.delete();
-
-			checkLicense(getProductId(app));
-
-			assertLicensePropertiesNotExisted(getProductId(app));
-
-			resetLifecycleAction();
-
-			assertPortalLicenseRegistered();
-
-			assertBundlesNotExisted(appSymbolicNames);
 		}
 	}
 
