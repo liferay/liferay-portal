@@ -17,6 +17,8 @@ import {ReactFieldBase as FieldBase} from 'dynamic-data-mapping-form-field-type/
 import {fetch} from 'frontend-js-web';
 import React, {useEffect, useRef, useState} from 'react';
 
+import {getItemValue} from './getItemValue';
+
 import type {
 	Locale,
 	LocalizedValue,
@@ -218,15 +220,8 @@ export default function ObjectRelationship({
 				};
 
 				if (value) {
-
-					/**
-					 * Compares an item against the current value using the same
-					 * key the value was produced from, since system objects such
-					 * as Commerce Products expose an identifier that differs from
-					 * the DTO id.
-					 */
 					const matchesValue = (item?: Item) =>
-						Number(item?.[valueKey] ?? item?.id) === Number(value);
+						Number(getItemValue(item, valueKey)) === Number(value);
 
 					let selected: Item | void = items.find((item) =>
 						matchesValue(item)
@@ -313,14 +308,6 @@ export default function ObjectRelationship({
 			)) ??
 		searchTerm;
 
-	const isSelected = (value: unknown): value is SelectedItem => {
-		if (!value || typeof value !== 'object') {
-			return false;
-		}
-
-		return 'id' in value;
-	};
-
 	return (
 		<FieldBase
 			name={name}
@@ -371,7 +358,7 @@ export default function ObjectRelationship({
 							}
 
 							if (selected) {
-								return String(selected[valueKey]);
+								return String(getItemValue(selected, valueKey));
 							}
 
 							return null;
@@ -417,7 +404,9 @@ export default function ObjectRelationship({
 								onSelect={(selected) => {
 									onChangeRef.current({
 										target: {
-											value: String(selected[valueKey]),
+											value: String(
+												getItemValue(selected, valueKey)
+											),
 										},
 									});
 									setState((prevState) => ({
@@ -438,11 +427,7 @@ export default function ObjectRelationship({
 			<input
 				name={name}
 				type="hidden"
-				value={
-					isSelected(selected)
-						? selected?.[valueKey] ?? selected.id
-						: undefined
-				}
+				value={getItemValue(selected, valueKey)}
 			/>
 		</FieldBase>
 	);
@@ -488,8 +473,3 @@ interface State {
 	selected?: Item;
 	url: string | null;
 }
-
-type SelectedItem = {
-	id: string | number;
-	[key: string]: string | number | undefined;
-};
