@@ -249,14 +249,10 @@ public class FilePropagator {
 			commands.add(_getMkdirCommand(targetFileName));
 
 			if (sourceFileName.startsWith("http")) {
-				StringBuilder sb = new StringBuilder();
-
-				sb.append("curl -f -L --max-redirs 0 -o ");
-				sb.append(targetFileName);
-				sb.append(" ");
-				sb.append(sourceFileName);
-
-				commands.add(sb.toString());
+				commands.add(
+					JenkinsResultsParserUtil.combine(
+						"curl --fail --location --max-redirs 0 --output ",
+						targetFileName, " ", sourceFileName));
 			}
 			else {
 				commands.add(
