@@ -265,46 +265,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 		}
 	}
 
-	private RoleResource _getAssignMembersRoleResource() throws Exception {
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			password, RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
-			ServiceContextTestUtil.getServiceContext());
-
-		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
-			RoleConstants.TYPE_REGULAR);
-
-		_roles.add(role);
-
-		_userLocalService.addRoleUser(role.getRoleId(), user);
-
-		RoleTestUtil.addResourcePermission(
-			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testDepotEntry.getGroupId()),
-			ActionKeys.ASSIGN_MEMBERS);
-		RoleTestUtil.addResourcePermission(
-			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testDepotEntry.getGroupId()), ActionKeys.VIEW);
-		RoleTestUtil.addResourcePermission(
-			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
-
-		return RoleResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
-	}
-
-	private RoleResource _getAssignUserRolesRoleResource(
+	private RoleResource _getDepotEntryRoleResource(
+			String actionId,
 			com.liferay.portal.kernel.model.Role... viewableRoles)
 		throws Exception {
 
@@ -326,8 +288,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 		RoleTestUtil.addResourcePermission(
 			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testDepotEntry.getGroupId()),
-			ActionKeys.ASSIGN_USER_ROLES);
+			String.valueOf(testDepotEntry.getGroupId()), actionId);
 		RoleTestUtil.addResourcePermission(
 			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
 			String.valueOf(testDepotEntry.getGroupId()), ActionKeys.VIEW);
@@ -470,8 +431,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	private void _testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermission()
 		throws Exception {
 
-		RoleResource assignMembersRoleResource =
-			_getAssignMembersRoleResource();
+		RoleResource assignMembersRoleResource = _getDepotEntryRoleResource(
+			ActionKeys.ASSIGN_MEMBERS);
 
 		User user = UserTestUtil.addUser(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
@@ -530,8 +491,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 	private void _testPutAssetLibraryUserAccountRolesPageWithAssignMembersPermissionAndAdministratorRole()
 		throws Exception {
 
-		RoleResource assignMembersRoleResource =
-			_getAssignMembersRoleResource();
+		RoleResource assignMembersRoleResource = _getDepotEntryRoleResource(
+			ActionKeys.ASSIGN_MEMBERS);
 
 		User user = UserTestUtil.addUser(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
@@ -587,8 +548,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				testCompany.getCompanyId(),
 				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
 
-		RoleResource assignUserRolesRoleResource =
-			_getAssignUserRolesRoleResource(assetLibraryContentReviewerRole);
+		RoleResource assignUserRolesRoleResource = _getDepotEntryRoleResource(
+			ActionKeys.ASSIGN_USER_ROLES, assetLibraryContentReviewerRole);
 
 		Page<Role> page =
 			assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
@@ -638,8 +599,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				testCompany.getCompanyId(),
 				DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER);
 
-		RoleResource assignUserRolesRoleResource =
-			_getAssignUserRolesRoleResource();
+		RoleResource assignUserRolesRoleResource = _getDepotEntryRoleResource(
+			ActionKeys.ASSIGN_USER_ROLES);
 
 		_assertForbidden(
 			() ->

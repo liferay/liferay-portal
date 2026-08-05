@@ -302,7 +302,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		return group.getExternalReferenceCode();
 	}
 
-	private UserAccountResource _getViewAndAssignMembersUserAccountResource()
+	private UserAccountResource _getUserAccountResource(List<String> actionIds)
 		throws Exception {
 
 		String password = RandomTestUtil.randomString();
@@ -318,13 +318,12 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 		_userLocalService.addRoleUser(role.getRoleId(), user);
 
-		RoleTestUtil.addResourcePermission(
-			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testDepotEntry.getGroupId()),
-			ActionKeys.ASSIGN_MEMBERS);
-		RoleTestUtil.addResourcePermission(
-			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
-			String.valueOf(testDepotEntry.getGroupId()), ActionKeys.VIEW);
+		for (String actionId : actionIds) {
+			RoleTestUtil.addResourcePermission(
+				role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+				String.valueOf(testDepotEntry.getGroupId()), actionId);
+		}
+
 		RoleTestUtil.addResourcePermission(
 			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
@@ -340,47 +339,23 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		).build();
 	}
 
+	private UserAccountResource _getViewAndAssignMembersUserAccountResource()
+		throws Exception {
+
+		return _getUserAccountResource(
+			List.of(ActionKeys.ASSIGN_MEMBERS, ActionKeys.VIEW));
+	}
+
 	private UserAccountResource
 			_getWithoutAssignMembersPermissionUserAccountResource()
 		throws Exception {
-
-		String password = RandomTestUtil.randomString();
-
-		User user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			password, RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
-			ServiceContextTestUtil.getServiceContext());
-
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		_userLocalService.addRoleUser(role.getRoleId(), user);
-
-		RoleTestUtil.addResourcePermission(
-			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
 
 		List<String> actionIds = _resourceActions.getModelResourceActions(
 			DepotEntry.class.getName());
 
 		actionIds.remove(ActionKeys.ASSIGN_MEMBERS);
 
-		for (String actionId : actionIds) {
-			RoleTestUtil.addResourcePermission(
-				role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
-				String.valueOf(testDepotEntry.getGroupId()), actionId);
-		}
-
-		return UserAccountResource.builder(
-		).authentication(
-			user.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
+		return _getUserAccountResource(actionIds);
 	}
 
 	private void _testDeleteAssetLibraryUserAccountWithViewAndAssignMembersPermission()
