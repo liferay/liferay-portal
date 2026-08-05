@@ -174,7 +174,6 @@ testWithObjectExportImportFF(
 	}
 );
 
-
 test(
 	'Can XSS with `searchContainerId` in Asset Libraries import',
 	{tag: '@LPS-195766'},

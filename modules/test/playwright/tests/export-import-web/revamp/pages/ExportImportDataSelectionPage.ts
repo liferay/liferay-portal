@@ -30,6 +30,31 @@ export class ExportImportDataSelectionPage {
 		});
 	}
 
+	async getExportableItems() {
+		const exportableItems = new Map<string, number>();
+
+		const labels = await this.section.locator('label').all();
+
+		for (const label of labels) {
+			const countLabel = label
+				.locator('xpath=..')
+				.getByText(/^\d+ Items?$/);
+
+			if ((await countLabel.count()) === 0) {
+				continue;
+			}
+
+			const name = await label.textContent();
+			const count = await countLabel.textContent();
+
+			if (name && count) {
+				exportableItems.set(name.trim(), parseInt(count, 10));
+			}
+		}
+
+		return exportableItems;
+	}
+
 	async uncheckItem(sectionName: string, label: string) {
 		await this.expandSection(sectionName);
 
