@@ -204,6 +204,28 @@ describe('CategorizationMessageBalloon', () => {
 		expect(screen.queryByText(/added 3 tags/)).not.toBeInTheDocument();
 	});
 
+	it('does not lock the chat when the channel is unavailable', async () => {
+		mockCreateEventSource.mockResolvedValue(null);
+		mockGetExistingTags.mockResolvedValue([]);
+
+		await act(async () => {
+			render(
+				<CategorizationMessageBalloon
+					agent={ECategorizationAgent.GENERATE_TAGS}
+					cmsGroupId={20124}
+					content="Japan"
+					scopeId={555}
+					setIsGenerating={setIsGenerating}
+				/>
+			);
+		});
+
+		expect(
+			screen.getByText('an-unexpected-error-occurred')
+		).toBeInTheDocument();
+		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
+	});
+
 	it('does not show a confirmation when no new categories are added', async () => {
 		(Liferay.Language.get as jest.Mock).mockImplementation((key: string) =>
 			key === 'great-i-have-added-x-categories-to-your-content'

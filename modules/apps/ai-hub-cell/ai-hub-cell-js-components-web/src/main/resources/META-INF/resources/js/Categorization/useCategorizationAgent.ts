@@ -161,7 +161,10 @@ export default function useCategorizationAgent(agent: ECategorizationAgent) {
 				if (!eventSource) {
 					pendingRef.current = false;
 
-					setStatus('idle');
+					setError(
+						Liferay.Language.get('an-unexpected-error-occurred')
+					);
+					setStatus('error');
 
 					return;
 				}

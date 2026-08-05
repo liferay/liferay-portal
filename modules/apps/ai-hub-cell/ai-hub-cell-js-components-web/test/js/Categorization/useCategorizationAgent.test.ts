@@ -224,6 +224,29 @@ describe('useCategorizationAgent', () => {
 		expect(mockCreateEventSource).toHaveBeenCalledTimes(2);
 	});
 
+	it('surfaces the error when the channel is unavailable', async () => {
+		const {result} = await renderAgent(
+			ECategorizationAgent.AUTO_CATEGORIZE
+		);
+
+		mockCreateEventSource.mockReset();
+		mockCreateEventSource.mockResolvedValue(null);
+
+		await act(async () => {
+			(result as {current: {run: Function}}).current.run({
+				candidateCategories: CANDIDATES,
+				content: 'Japan article',
+			});
+		});
+
+		expect(
+			(result as {current: {error: string; status: string}}).current
+		).toMatchObject({
+			error: 'an-unexpected-error-occurred',
+			status: 'error',
+		});
+	});
+
 	it('regenerates by re-posting the last context', async () => {
 		const {fakeEventSource, result} = await renderAgent(
 			ECategorizationAgent.AUTO_CATEGORIZE
