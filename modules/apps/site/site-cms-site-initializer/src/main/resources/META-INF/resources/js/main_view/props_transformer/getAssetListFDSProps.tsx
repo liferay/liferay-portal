@@ -8,6 +8,7 @@ import {sub} from 'frontend-js-web';
 import React from 'react';
 
 import {openAssetUsageListModal} from '../../common/components/asset_usage/utils';
+import {ISearchAssetObjectEntry} from '../../common/types/AssetType';
 import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../common/utils/constants';
 import {getFormattedLabel} from '../../common/utils/getFormattedText';
 import {openCMSModal} from '../../common/utils/openCMSModal';
@@ -49,11 +50,13 @@ export type AssetListAdditionalProps = Pick<
 export default function getAssetListFDSProps({
 	additionalProps,
 	itemsActions = [],
+	renderSubtitle,
 	...otherProps
 }: {
 	additionalProps: AssetListAdditionalProps;
 	apiURL?: string;
 	itemsActions?: any[];
+	renderSubtitle?: (itemData: ISearchAssetObjectEntry) => React.ReactNode;
 	[key: string]: any;
 }) {
 	const {additionalAPIURLParameters, ...remainingAdditionalProps} =
@@ -85,6 +88,7 @@ export default function getAssetListFDSProps({
 								});
 							}}
 							options={options}
+							renderSubtitle={renderSubtitle}
 							value={value}
 						/>
 					),
