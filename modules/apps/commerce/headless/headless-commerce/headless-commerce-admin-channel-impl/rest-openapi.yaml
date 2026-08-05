@@ -1023,7 +1023,7 @@ components:
             type: object
         TaxCategory:
             description:
-                Tax classification assigned to products to drive tax calculation at checkout. Read-only on this projection; full tax-category management lives in the Site Setting admin API.
+                Tax classification assigned to products to drive tax calculation at checkout. Readable and writable by external reference code so a vocabulary export can be imported into another environment; the Site Setting admin API remains the full featured management surface.
             properties:
                 description:
                     additionalProperties:
@@ -1035,6 +1035,11 @@ components:
                         hr_HR: Hrvatska
                         hu_HU: Horvatorszag
                     type: object
+                externalReferenceCode:
+                    description:
+                        Idempotency key for create and update; must be unique per tax category within the company. Used to resolve the upsert target, and assigned from the entity UUID when omitted on create.
+                    example: AB-34098-789-N
+                    type: string
                 groupId:
                     description:
                         Reference to the Liferay site that owns this tax category (FK identifier); read-only.
@@ -1096,7 +1101,7 @@ paths:
     "/account-address-channels/{accountAddressChannelId}":
         delete:
             description:
-                Deletes the account-address-channel binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelRelService.deleteCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel id not found.
+                Deletes the account-address-channel binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelRelService.deleteCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel ID not found.
             operationId: deleteAccountAddressChannel
             parameters:
                 -   $ref: "#/components/parameters/accountAddressChannelIdPathParam"
@@ -1141,7 +1146,7 @@ paths:
     "/account-address-channels/{accountAddressChannelId}/channel":
         get:
             description:
-                Retrieves the commerce channel associated with the parent AccountAddressChannel, addressed by internal ID. Calls CommerceChannelRelService.getCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel id not found.
+                Retrieves the commerce channel associated with the parent AccountAddressChannel, addressed by internal ID. Calls CommerceChannelRelService.getCommerceChannelRel. Validation -- NoSuchChannelRelException -> 404 when channel rel ID not found.
             operationId: getAccountAddressChannelChannel
             parameters:
                 -   $ref: "#/components/parameters/accountAddressChannelIdPathParam"
@@ -1205,7 +1210,7 @@ paths:
     "/account-addresses/by-externalReferenceCode/{externalReferenceCode}/account-address-channels":
         get:
             description:
-                Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- NoSuchAddressException -> 404 when address erc not found. List query support — page and pageSize paginate the related entries.
+                Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- NoSuchAddressException -> 404 when address ERC not found. List query support — page and pageSize paginate the related entries.
             operationId: getAccountAddressByExternalReferenceCodeAccountAddressChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1272,7 +1277,7 @@ paths:
                 -   AccountAddressChannel
         post:
             description:
-                Creates a new account-address-channel binding under the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchAddressException -> 404 when address erc not found; NoSuchChannelException -> 404 when referenced channel id/erc not found. Side effects -- creates address-to-channel relation binding.
+                Creates a new account-address-channel binding under the parent AccountAddress, addressed by external reference code (ERC). Calls AddressLocalService.fetchAddressByExternalReferenceCode + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchAddressException -> 404 when address ERC not found; NoSuchChannelException -> 404 when referenced channel ID/ERC not found. Side effects -- creates address-to-channel relation binding.
             operationId: postAccountAddressByExternalReferenceCodeAccountAddressChannel
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1371,7 +1376,7 @@ paths:
     "/account-addresses/{addressId}/account-address-channels":
         get:
             description:
-                Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by internal ID. Calls AddressLocalService.fetchAddress + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- None (returns empty page when address id not found or no matches). List query support — page and pageSize paginate the related entries.
+                Lists the AccountAddressChannel entries belonging to the parent AccountAddress, addressed by internal ID. Calls AddressLocalService.fetchAddress + CommerceChannelRelService.getCommerceChannelRels + CommerceChannelRelService.getCommerceChannelRelsCount. Validation -- None (returns empty page when address ID not found or no matches). List query support — page and pageSize paginate the related entries.
             operationId: getAccountAddressIdAccountAddressChannelsPage
             parameters:
                 -   $ref: "#/components/parameters/addressIdPathParam"
@@ -1441,7 +1446,7 @@ paths:
                 -   AccountAddressChannel
         post:
             description:
-                Creates a new account-address-channel binding under the parent AccountAddress, addressed by internal ID. Calls CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchChannelException -> 404 when referenced channel id/erc not found. Side effects -- creates address-to-channel relation binding.
+                Creates a new account-address-channel binding under the parent AccountAddress, addressed by internal ID. Calls CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelRelService.addCommerceChannelRel. Validation -- NoSuchChannelException -> 404 when referenced channel ID/ERC not found. Side effects -- creates address-to-channel relation binding.
             operationId: postAccountAddressIdAccountAddressChannel
             parameters:
                 -   $ref: "#/components/parameters/addressIdPathParam"
@@ -1540,7 +1545,7 @@ paths:
     "/channel-accounts/{channelAccountId}":
         delete:
             description:
-                Deletes the channel-account binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelAccountEntryRelService.deleteCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account rel id not found.
+                Deletes the channel-account binding by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelAccountEntryRelService.deleteCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account rel ID not found.
             operationId: deleteChannelAccount
             parameters:
                 -   $ref: "#/components/parameters/channelAccountIdPathParam"
@@ -1585,7 +1590,7 @@ paths:
     "/channel-accounts/{channelAccountId}/account":
         get:
             description:
-                Retrieves the account associated with the parent ChannelAccount, addressed by internal ID. Calls CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account binding id not found.
+                Retrieves the account associated with the parent ChannelAccount, addressed by internal ID. Calls CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRel. Validation -- NoSuchChannelAccountEntryRelException -> 404 when channel-account binding ID not found.
             operationId: getChannelAccountAccount
             parameters:
                 -   $ref: "#/components/parameters/channelAccountIdPathParam"
@@ -1649,7 +1654,7 @@ paths:
     "/channels/by-externalReferenceCode/{externalReferenceCode}/channel-accounts":
         get:
             description:
-                Lists the ChannelAccount entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries.
+                Lists the ChannelAccount entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries.
             operationId: getChannelByExternalReferenceCodeChannelAccountsPage
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1716,7 +1721,7 @@ paths:
                 -   ChannelAccount
         post:
             description:
-                Creates a new channel-account binding under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + AccountEntryLocalService.getAccountEntry + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchChannelException -> 404 when channel erc or body channel ref not found; NoSuchAccountEntryException -> 404 when account id not found; AccountEntryTypeException -> 400 when account is a guest account; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account id. Side effects -- creates an account-to-channel eligibility binding.
+                Creates a new channel-account binding under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.fetchCommerceChannelByExternalReferenceCode + AccountEntryLocalService.getAccountEntry + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchChannelException -> 404 when channel ERC or body channel ref not found; NoSuchAccountEntryException -> 404 when account ID not found; AccountEntryTypeException -> 400 when account is a guest account; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account ID. Side effects -- creates an account-to-channel eligibility binding.
             operationId: postChannelByExternalReferenceCodeChannelAccount
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1815,7 +1820,7 @@ paths:
     "/channels/{id}/channel-accounts":
         get:
             description:
-                Lists the ChannelAccount entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.fetchCommerceChannel + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- None (returns empty page when channel id not found or no matches). Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries.
+                Lists the ChannelAccount entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.fetchCommerceChannel + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRels + CommerceChannelAccountEntryRelService.getCommerceChannelAccountEntryRelsCount. Validation -- None (returns empty page when channel ID not found or no matches). Side effects -- restricted to eligibility-type relations. List query support — page and pageSize paginate the related entries.
             operationId: getChannelIdChannelAccountsPage
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1885,7 +1890,7 @@ paths:
                 -   ChannelAccount
         post:
             description:
-                Creates a new channel-account binding under the parent Channel, addressed by internal ID. Calls AccountEntryLocalService.getAccountEntry + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchAccountEntryException -> 404 when account id not found; AccountEntryTypeException -> 400 when account is a guest account; NoSuchChannelException -> 404 when body channel ref not found; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account id. Side effects -- creates an account-to-channel eligibility binding.
+                Creates a new channel-account binding under the parent Channel, addressed by internal ID. Calls AccountEntryLocalService.getAccountEntry + CommerceChannelService.fetchCommerceChannel | CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceChannelAccountEntryRelService.addCommerceChannelAccountEntryRel. Validation -- NoSuchAccountEntryException -> 404 when account ID not found; AccountEntryTypeException -> 400 when account is a guest account; NoSuchChannelException -> 404 when body channel ref not found; DuplicateCommerceChannelAccountEntryRelException -> 409 when channel-account rel already exists; DuplicateCommerceChannelAccountEntryIdException -> 409 when duplicate channel-account ID. Side effects -- creates an account-to-channel eligibility binding.
             operationId: postChannelIdChannelAccount
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1984,7 +1989,7 @@ paths:
     /category-display-pages/{id}:
         delete:
             description:
-                Deletes the category display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries.
+                Deletes the category display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -2027,7 +2032,7 @@ paths:
                 -   CategoryDisplayPage
         get:
             description:
-                Retrieves the category display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries.
+                Retrieves the category display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -2089,7 +2094,7 @@ paths:
                 -   CategoryDisplayPage
         patch:
             description:
-                Partially updates the category display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found; NoSuchGroupException -> 404 when group erc not found when category erc supplied; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates category-to-display-page layout mapping. List query support — page and pageSize paginate the related entries.
+                Partially updates the category display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found; NoSuchGroupException -> 404 when group ERC not found when category ERC supplied; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates category-to-display-page layout mapping. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -2235,7 +2240,7 @@ paths:
                 -   Channel
         post:
             description:
-                Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; DuplicateCommerceChannelException -> 409 when channel already exists; CommerceChannelNameException -> 400 when invalid name; DuplicateExternalReferenceCodeException -> 400 when duplicate erc. Side effects -- provisions the channel site group and reindexes the channel.
+                Creates a new commerce channel and allocates a fresh internal ID via the portal counter. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; DuplicateCommerceChannelException -> 409 when channel already exists; CommerceChannelNameException -> 400 when invalid name; DuplicateExternalReferenceCodeException -> 400 when duplicate ERC. Side effects -- provisions the channel site group and reindexes the channel.
             requestBody:
                 content:
                     application/json:
@@ -2322,7 +2327,7 @@ paths:
     /channels/by-externalReferenceCode/{externalReferenceCode}:
         delete:
             description:
-                Deletes the commerce channel by its external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- cascade delete of the channel and its dependent commerce data.
+                Deletes the commerce channel by its external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- cascade delete of the channel and its dependent commerce data.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -2365,7 +2370,7 @@ paths:
                 -   Channel
         get:
             description:
-                Retrieves the commerce channel by its external reference code (ERC). Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found.
+                Retrieves the commerce channel by its external reference code (ERC). Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -2422,7 +2427,7 @@ paths:
                 -   Channel
         patch:
             description:
-                Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel erc not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update.
+                Partially updates the commerce channel by its external reference code (ERC) — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.fetchCommerceChannelByExternalReferenceCode + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ERC not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2510,7 +2515,7 @@ paths:
                 -   Channel
         put:
             description:
-                Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addOrUpdateCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the erc is unknown; reindexes on write.
+                Fully replaces the commerce channel by its external reference code (ERC) — every mutable field is set from the body, and omitted optional fields are reset to their default. Upserts when the ERC does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceCurrencyUtil.getCommerceCurrency + AccountEntryService.fetchAccountEntryByExternalReferenceCode + CommerceChannelService.addOrUpdateCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the ERC is unknown; reindexes on write.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2609,7 +2614,7 @@ paths:
     /channels/by-externalReferenceCode/{externalReferenceCode}/category-display-pages:
         get:
             description:
-                Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel erc not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
+                Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ERC not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -2677,7 +2682,7 @@ paths:
                 -   CategoryDisplayPage
         post:
             description:
-                Creates a new category display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchGroupException -> 404 when group erc not found; NoSuchCategoryException -> 404 when category erc not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
+                Creates a new category display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchGroupException -> 404 when group ERC not found; NoSuchCategoryException -> 404 when category ERC not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2775,7 +2780,7 @@ paths:
     /channels/by-externalReferenceCode/{externalReferenceCode}/default-category-display-pages:
         delete:
             description:
-                Deletes the channel-level default category display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
+                Deletes the channel-level default category display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -2818,7 +2823,7 @@ paths:
                 -   DefaultCategoryDisplayPage
         get:
             description:
-                Retrieves the channel-level default category display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries.
+                Retrieves the channel-level default category display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -2877,7 +2882,7 @@ paths:
                 -   DefaultCategoryDisplayPage
         post:
             description:
-                Creates a new channel-level default category display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
+                Creates a new channel-level default category display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -2975,7 +2980,7 @@ paths:
     /channels/by-externalReferenceCode/{externalReferenceCode}/default-product-display-page:
         delete:
             description:
-                Deletes the channel-level default product display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
+                Deletes the channel-level default product display page bound to the parent Channel, addressed by external reference code (ERC). Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -3018,7 +3023,7 @@ paths:
                 -   DefaultProductDisplayPage
         get:
             description:
-                Retrieves the channel-level default product display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries.
+                Retrieves the channel-level default product display page associated with the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             responses:
@@ -3077,7 +3082,7 @@ paths:
                 -   DefaultProductDisplayPage
         post:
             description:
-                Creates a new channel-level default product display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
+                Creates a new channel-level default product display page under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -3175,7 +3180,7 @@ paths:
     /channels/by-externalReferenceCode/{externalReferenceCode}/product-display-pages:
         get:
             description:
-                Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel erc not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
+                Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ERC not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -3243,7 +3248,7 @@ paths:
                 -   ProductDisplayPage
         post:
             description:
-                Creates a new product display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel erc not found; NoSuchCPDefinitionException -> 404 when product erc not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
+                Creates a new product display page mapping under the parent Channel, addressed by external reference code (ERC). Calls CommerceChannelLocalService.getCommerceChannelByExternalReferenceCode + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchChannelException -> 404 when channel ERC not found; NoSuchCPDefinitionException -> 404 when product ERC not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
             requestBody:
@@ -3341,7 +3346,7 @@ paths:
     /channels/{channelId}:
         delete:
             description:
-                Deletes the commerce channel by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- cascade delete of the channel and its dependent commerce data.
+                Deletes the commerce channel by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelService.deleteCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- cascade delete of the channel and its dependent commerce data.
             parameters:
                 -   $ref: "#/components/parameters/channelIdPathParam"
             responses:
@@ -3384,7 +3389,7 @@ paths:
                 -   Channel
         get:
             description:
-                Retrieves the commerce channel by its internal ID. Calls CommerceChannelService.fetchCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found.
+                Retrieves the commerce channel by its internal ID. Calls CommerceChannelService.fetchCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found.
             parameters:
                 -   $ref: "#/components/parameters/channelIdPathParam"
             responses:
@@ -3441,7 +3446,7 @@ paths:
                 -   Channel
         patch:
             description:
-                Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.getCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update.
+                Partially updates the commerce channel by its internal ID — only the fields supplied in the body are replaced; omitted fields are left unchanged. A resolvable currencyCode (or matching currencyId / currencyExternalReferenceCode) is applied; an unresolved code is silently ignored and the channel's current currency is preserved. Calls CommerceChannelService.getCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- an unresolvable currency code is swallowed and the existing currency kept; the channel is reindexed on update.
             parameters:
                 -   $ref: "#/components/parameters/channelIdPathParam"
             requestBody:
@@ -3529,7 +3534,7 @@ paths:
                 -   Channel
         put:
             description:
-                Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceChannelService.fetchCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel | addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the id is unknown; reindexes on write.
+                Fully replaces the commerce channel by its internal ID — every mutable field is set from the body, and omitted optional fields are reset to their default. Falls back to a new-channel create when the supplied ID does not match an existing channel. The supplied currencyCode (or matching currencyId / currencyExternalReferenceCode) must resolve to an existing CommerceCurrency; an unresolved code returns 404. Calls CommerceChannelService.fetchCommerceChannel + CommerceCurrencyUtil.getCommerceCurrency + CommerceChannelService.updateCommerceChannel | addCommerceChannel. Validation -- NoSuchCurrencyException -> 404 when currency not resolvable; CommerceChannelNameException -> 400 when invalid name; CommerceChannelTypeException -> 400 when invalid type. Side effects -- creates the channel and provisions its site group when the ID is unknown; reindexes on write.
             parameters:
                 -   $ref: "#/components/parameters/channelIdPathParam"
             requestBody:
@@ -3628,7 +3633,7 @@ paths:
     /channels/{channelId}/shipping-methods:
         get:
             description:
-                Lists the ShippingMethod entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelService.getCommerceChannel + CommerceShippingMethodService.getCommerceShippingMethods + CommerceShippingMethodService.getCommerceShippingMethodsCount. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- falls back to the engine name and description and embeds the channel's shipping options. List query support — page and pageSize paginate the related entries.
+                Lists the ShippingMethod entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelService.getCommerceChannel + CommerceShippingMethodService.getCommerceShippingMethods + CommerceShippingMethodService.getCommerceShippingMethodsCount. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- falls back to the engine name and description and embeds the channel's shipping options. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/channelIdPathParam"
                 -   $ref: "#/components/parameters/pageQueryParam"
@@ -3694,7 +3699,7 @@ paths:
     /channels/{id}/category-display-pages:
         get:
             description:
-                Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel id not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
+                Lists the CategoryDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ID not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -3762,7 +3767,7 @@ paths:
                 -   CategoryDisplayPage
         post:
             description:
-                Creates a new category display page mapping under the parent Channel, addressed by internal ID. Calls GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchGroupException -> 404 when group erc not found when categoryId absent; NoSuchCategoryException -> 404 when category erc not found; NoSuchChannelException -> 404 when channel id not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
+                Creates a new category display page mapping under the parent Channel, addressed by internal ID. Calls GroupService.fetchGroupByExternalReferenceCode + AssetCategoryService.fetchCategoryByExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchGroupException -> 404 when group ERC not found when categoryId absent; NoSuchCategoryException -> 404 when category ERC not found; NoSuchChannelException -> 404 when channel ID not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates category-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -3860,7 +3865,7 @@ paths:
     /channels/{id}/default-category-display-pages:
         delete:
             description:
-                Deletes the channel-level default category display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
+                Deletes the channel-level default category display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- resets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -3903,7 +3908,7 @@ paths:
                 -   DefaultCategoryDisplayPage
         get:
             description:
-                Retrieves the channel-level default category display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries.
+                Retrieves the channel-level default category display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchCPDisplayLayoutException -> 404 when no default category layout set. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -3962,7 +3967,7 @@ paths:
                 -   DefaultCategoryDisplayPage
         post:
             description:
-                Creates a new channel-level default category display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
+                Creates a new channel-level default category display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default category display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -4060,7 +4065,7 @@ paths:
     /channels/{id}/default-product-display-pages:
         delete:
             description:
-                Deletes the channel-level default product display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
+                Deletes the channel-level default product display page bound to the parent Channel, addressed by internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found. Side effects -- resets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -4103,7 +4108,7 @@ paths:
                 -   DefaultProductDisplayPage
         get:
             description:
-                Retrieves the channel-level default product display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries.
+                Retrieves the channel-level default product display page associated with the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchCPDisplayLayoutException -> 404 when no default product layout set. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -4162,7 +4167,7 @@ paths:
                 -   DefaultProductDisplayPage
         post:
             description:
-                Creates a new channel-level default product display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel id not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
+                Creates a new channel-level default product display page under the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + LayoutLocalService.fetchLayoutByUuidAndGroupId. Validation -- NoSuchChannelException -> 404 when channel ID not found; NoSuchLayoutException -> 404 when page uuid not found in the channel site group. Side effects -- sets the channel group's default product display-page setting. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -4260,7 +4265,7 @@ paths:
     /channels/{id}/product-display-pages:
         get:
             description:
-                Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel id not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
+                Lists the ProductDisplayPage entries belonging to the parent Channel, addressed by internal ID. Calls CommerceChannelLocalService.getCommerceChannel + SearchUtil.search (index CPDisplayLayout). Validation -- NoSuchChannelException -> 404 when channel ID not found. List query support — full-text search over the indexed display-page entries via search; page and pageSize paginate.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -4328,7 +4333,7 @@ paths:
                 -   ProductDisplayPage
         post:
             description:
-                Creates a new product display page mapping under the parent Channel, addressed by internal ID. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchCPDefinitionException -> 404 when product erc not found when productId absent; NoSuchChannelException -> 404 when channel id not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
+                Creates a new product display page mapping under the parent Channel, addressed by internal ID. Calls CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CommerceChannelLocalService.getCommerceChannel + CPDisplayLayoutService.addCPDisplayLayout. Validation -- NoSuchCPDefinitionException -> 404 when product ERC not found when productId absent; NoSuchChannelException -> 404 when channel ID not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- creates a product-to-display-page layout mapping on the channel site group. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -4426,7 +4431,7 @@ paths:
     /payment-method-group-rel-order-types/{paymentMethodGroupRelOrderTypeId}:
         delete:
             description:
-                Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found.
+                Deletes the payment-method-group-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/paymentMethodGroupRelOrderTypeIdPathParam"
             responses:
@@ -4470,7 +4475,7 @@ paths:
     /payment-method-group-rel-order-types/{paymentMethodGroupRelOrderTypeId}/order-type:
         get:
             description:
-                Retrieves the order type associated with the parent PaymentMethodGroupRelOrderType, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found.
+                Retrieves the order type associated with the parent PaymentMethodGroupRelOrderType, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/paymentMethodGroupRelOrderTypeIdPathParam"
             responses:
@@ -4533,7 +4538,7 @@ paths:
     /payment-method-group-rel-terms/{paymentMethodGroupRelTermId}:
         delete:
             description:
-                Deletes the payment-method-group-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found.
+                Deletes the payment-method-group-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommercePaymentMethodGroupRelQualifierService.deleteCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/paymentMethodGroupRelTermIdPathParam"
             responses:
@@ -4577,7 +4582,7 @@ paths:
     /payment-method-group-rel-terms/{paymentMethodGroupRelTermId}/term:
         get:
             description:
-                Retrieves the commerce term associated with the parent PaymentMethodGroupRelTerm, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier id not found.
+                Retrieves the commerce term associated with the parent PaymentMethodGroupRelTerm, addressed by internal ID. Calls CommercePaymentMethodGroupRelQualifierService.getCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchPaymentMethodGroupRelQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/paymentMethodGroupRelTermIdPathParam"
             responses:
@@ -4640,7 +4645,7 @@ paths:
     /payment-method-group-rels/{id}/payment-method-group-rel-order-types:
         get:
             description:
-                Lists the PaymentMethodGroupRelOrderType entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel id not found. List query support — page and pageSize paginate the related entries.
+                Lists the PaymentMethodGroupRelOrderType entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -4708,7 +4713,7 @@ paths:
                 -   PaymentMethodGroupRelOrderType
         post:
             description:
-                Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type id/erc not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a payment-method-group-rel qualifier.
+                Creates a new payment-method-group-to-order-type relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type ID/ERC not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a payment-method-group-rel qualifier.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -4806,7 +4811,7 @@ paths:
     /payment-method-group-rels/{id}/payment-method-group-rel-terms:
         get:
             description:
-                Lists the PaymentMethodGroupRelTerm entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel id not found. List query support — page and pageSize paginate the related entries.
+                Lists the PaymentMethodGroupRelTerm entries belonging to the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommercePaymentMethodGroupRelService.getCommercePaymentMethodGroupRel + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiers + CommercePaymentMethodGroupRelQualifierService.getCommerceTermEntryCommercePaymentMethodGroupRelQualifiersCount. Validation -- NoSuchPaymentMethodGroupRelException -> 404 when payment method group rel ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -4875,7 +4880,7 @@ paths:
                 -   PaymentMethodGroupRelTerm
         post:
             description:
-                Creates a new payment-method-group-to-term relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchTermEntryException -> 404 when term id/erc not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a payment-method-group-rel qualifier.
+                Creates a new payment-method-group-to-term relation under the parent PaymentMethodGroupRel, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommercePaymentMethodGroupRelQualifierService.addCommercePaymentMethodGroupRelQualifier. Validation -- NoSuchTermEntryException -> 404 when term ID/ERC not found; DuplicateCommercePaymentMethodGroupRelQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a payment-method-group-rel qualifier.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -4973,7 +4978,7 @@ paths:
     /product-display-pages/{id}:
         delete:
             description:
-                Deletes the product display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries.
+                Deletes the product display page mapping by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CPDisplayLayoutService.deleteCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -5016,7 +5021,7 @@ paths:
                 -   ProductDisplayPage
         get:
             description:
-                Retrieves the product display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found. List query support — page and pageSize paginate the related entries.
+                Retrieves the product display page mapping by its internal ID. Calls CPDisplayLayoutService.getCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -5078,7 +5083,7 @@ paths:
                 -   ProductDisplayPage
         patch:
             description:
-                Partially updates the product display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.fetchCPDisplayLayout + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout id not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates the product-to-display-page layout mapping. List query support — page and pageSize paginate the related entries.
+                Partially updates the product display page mapping addressed by its internal ID. Calls CPDisplayLayoutService.fetchCPDisplayLayout + CPDefinitionService.fetchCPDefinitionByCProductExternalReferenceCode + CPDisplayLayoutService.updateCPDisplayLayout. Validation -- NoSuchCPDisplayLayoutException -> 404 when display layout ID not found; CPDisplayLayoutEntryException -> 400 when invalid layout entry. Side effects -- updates the product-to-display-page layout mapping. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -5167,7 +5172,7 @@ paths:
     /shipping-fixed-option-order-types/{shippingFixedOptionOrderTypeId}:
         delete:
             description:
-                Deletes the fixed-shipping-option-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found.
+                Deletes the fixed-shipping-option-to-order-type relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/shippingFixedOptionOrderTypeIdPathParam"
             responses:
@@ -5211,7 +5216,7 @@ paths:
     /shipping-fixed-option-order-types/{shippingFixedOptionOrderTypeId}/order-type:
         get:
             description:
-                Retrieves the order type associated with the parent ShippingFixedOptionOrderType, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found.
+                Retrieves the order type associated with the parent ShippingFixedOptionOrderType, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/shippingFixedOptionOrderTypeIdPathParam"
             responses:
@@ -5274,7 +5279,7 @@ paths:
     /shipping-fixed-option-terms/{shippingFixedOptionTermId}:
         delete:
             description:
-                Deletes the fixed-shipping-option-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found.
+                Deletes the fixed-shipping-option-to-term relation by its internal ID. Idempotent. A follow-up call on an entity that has already been deleted returns 404. Calls CommerceShippingFixedOptionQualifierService.deleteCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/shippingFixedOptionTermIdPathParam"
             responses:
@@ -5318,7 +5323,7 @@ paths:
     /shipping-fixed-option-terms/{shippingFixedOptionTermId}/term:
         get:
             description:
-                Retrieves the commerce term associated with the parent ShippingFixedOptionTerm, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier id not found.
+                Retrieves the commerce term associated with the parent ShippingFixedOptionTerm, addressed by internal ID. Calls CommerceShippingFixedOptionQualifierService.getCommerceShippingFixedOptionQualifier. Validation -- NoSuchShippingFixedOptionQualifierException -> 404 when qualifier ID not found.
             parameters:
                 -   $ref: "#/components/parameters/shippingFixedOptionTermIdPathParam"
             responses:
@@ -5381,7 +5386,7 @@ paths:
     /shipping-fixed-options/{id}/shipping-fixed-option-order-types:
         get:
             description:
-                Lists the ShippingFixedOptionOrderType entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option id not found. List query support — page and pageSize paginate the related entries.
+                Lists the ShippingFixedOptionOrderType entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceOrderTypeCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -5449,7 +5454,7 @@ paths:
                 -   ShippingFixedOptionOrderType
         post:
             description:
-                Creates a new fixed-shipping-option-to-order-type relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type id/erc not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a shipping-fixed-option qualifier.
+                Creates a new fixed-shipping-option-to-order-type relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceOrderTypeService.getCommerceOrderType | CommerceOrderTypeService.fetchCommerceOrderTypeByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchOrderTypeException -> 404 when order type ID/ERC not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds an order type as a shipping-fixed-option qualifier.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -5547,7 +5552,7 @@ paths:
     /shipping-fixed-options/{id}/shipping-fixed-option-terms:
         get:
             description:
-                Lists the ShippingFixedOptionTerm entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option id not found. List query support — page and pageSize paginate the related entries.
+                Lists the ShippingFixedOptionTerm entries belonging to the parent ShippingFixedOption, addressed by internal ID. Calls CommerceShippingFixedOptionService.fetchCommerceShippingFixedOption + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiers + CommerceShippingFixedOptionQualifierService.getCommerceTermEntryCommerceShippingFixedOptionQualifiersCount. Validation -- NoSuchShippingFixedOptionException -> 404 when shipping fixed option ID not found. List query support — page and pageSize paginate the related entries.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -5616,7 +5621,7 @@ paths:
                 -   ShippingFixedOptionTerm
         post:
             description:
-                Creates a new fixed-shipping-option-to-term relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchTermEntryException -> 404 when term id/erc not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a shipping-fixed-option qualifier.
+                Creates a new fixed-shipping-option-to-term relation under the parent ShippingFixedOption, addressed by internal ID. Calls CommerceTermEntryService.getCommerceTermEntry | CommerceTermEntryService.fetchCommerceTermEntryByExternalReferenceCode + CommerceShippingFixedOptionQualifierService.addCommerceShippingFixedOptionQualifier. Validation -- NoSuchTermEntryException -> 404 when term ID/ERC not found; DuplicateCommerceShippingFixedOptionQualifierException -> 409 when qualifier already exists. Side effects -- binds a term entry as a shipping-fixed-option qualifier.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             requestBody:
@@ -5767,10 +5772,234 @@ paths:
             summary: Gets a list of Tax Categories.
             tags:
                 -   TaxCategory
+        post:
+            description:
+                Creates or updates a tax category. Calls CPTaxCategoryService.fetchCPTaxCategoryByExternalReferenceCode + CPTaxCategoryService.addCPTaxCategory or CPTaxCategoryService.updateCPTaxCategory. POST is upsert by external reference code -- creates a new entity when the code is unknown, otherwise updates the existing one. Validation -- CPTaxCategoryNameException -> 400 when the name is missing for the default locale.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/TaxCategory"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/TaxCategory"
+                required: true
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                    description:
+                        Successful operation
+                400:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this resource.
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The request body failed domain validation.
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Creates or updates a Tax Category.
+            tags:
+                -   TaxCategory
+    /tax-categories/by-externalReferenceCode/{externalReferenceCode}:
+        get:
+            description:
+                Retrieves the tax category by its external reference code (ERC). Calls CPTaxCategoryService.getCPTaxCategoryByExternalReferenceCode. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ERC not found.
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this resource.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a Tax Category by its external reference code.
+            tags:
+                -   TaxCategory
+        patch:
+            description:
+                Partially updates the tax category addressed by its external reference code (ERC) -- only the fields supplied in the body are replaced; omitted fields are left unchanged. Calls CPTaxCategoryService.getCPTaxCategoryByExternalReferenceCode + CPTaxCategoryService.updateCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ERC not found; CPTaxCategoryNameException -> 400 when the name is missing for the default locale.
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/TaxCategory"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/TaxCategory"
+                required: true
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                    description:
+                        Successful operation
+                400:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this resource.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The request body failed domain validation.
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Updates a Tax Category by its external reference code.
+            tags:
+                -   TaxCategory
     /tax-categories/{id}:
         get:
             description:
-                Retrieves the tax category by its internal ID. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category id not found.
+                Retrieves the tax category by its internal ID. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ID not found.
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
             responses:
@@ -5828,6 +6057,94 @@ paths:
                     description:
                         Unexpected error
             summary: Gets a Tax Category by ID.
+            tags:
+                -   TaxCategory
+        patch:
+            description:
+                Partially updates the tax category addressed by its internal ID -- only the fields supplied in the body are replaced; omitted fields are left unchanged. Calls CPTaxCategoryService.getCPTaxCategory + CPTaxCategoryService.updateCPTaxCategory. Validation -- NoSuchCPTaxCategoryException -> 404 when tax category ID not found; CPTaxCategoryNameException -> 400 when the name is missing for the default locale.
+            parameters:
+                -   $ref: "#/components/parameters/idPathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/TaxCategory"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/TaxCategory"
+                required: true
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/TaxCategory"
+                    description:
+                        Successful operation
+                400:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this resource.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The request body failed domain validation.
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Updates a Tax Category by ID.
             tags:
                 -   TaxCategory
 tags:
