@@ -19,8 +19,8 @@ import java.util.Map;
 public class LastImportSettingsUtil {
 
 	public static Map<String, String> getLastImportSettingsMap(long userId) {
-		if (!ExportImportThreadLocal.isStagingInProcess() ||
-			!ExportImportThreadLocal.isLayoutImportInProcess()) {
+		if (!ExportImportThreadLocal.isLayoutImportInProcess() ||
+			!ExportImportThreadLocal.isStagingInProcess()) {
 
 			return Collections.emptyMap();
 		}
