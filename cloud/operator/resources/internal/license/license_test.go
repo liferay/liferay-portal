@@ -56,11 +56,11 @@ func TestExpirationDateReturnsVirtualClusterDate(t *testing.T) {
 	expirationDate, error := ExpirationDate([]byte(validLicenseXML))
 
 	if error != nil {
-		t.Fatalf("unexpected error: %v", error)
+		t.Fatalf("Unexpected error: %v", error)
 	}
 
 	if formatted := expirationDate.Format("2006-01-02"); formatted != "2029-03-02" {
-		t.Errorf("expected 2029-03-02, got %s", formatted)
+		t.Errorf("Expected 2029-03-02, got %s", formatted)
 	}
 }
 
@@ -68,16 +68,16 @@ func TestExpirationDateSkipsNonVirtualClusterLicenses(t *testing.T) {
 	expirationDate, error := ExpirationDate([]byte(skipsValidationLicenseXML))
 
 	if error != nil {
-		t.Fatalf("unexpected error: %v", error)
+		t.Fatalf("Unexpected error: %v", error)
 	}
 
 	if formatted := expirationDate.Format("2006-01-02"); formatted != "2031-01-05" {
-		t.Errorf("expected 2031-01-05, got %s", formatted)
+		t.Errorf("Expected 2031-01-05, got %s", formatted)
 	}
 }
 
 func TestExpirationDateWhenNoVirtualClusterLicenseReturnsError(t *testing.T) {
 	if _, error := ExpirationDate([]byte(missingExpirationDateLicenseXML)); error == nil {
-		t.Fatal("expected an error, got nil")
+		t.Fatal("Expected an error, got nil")
 	}
 }
