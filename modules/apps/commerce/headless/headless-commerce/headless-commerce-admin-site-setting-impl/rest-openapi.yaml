@@ -151,6 +151,11 @@ components:
             description:
                 Named restock-time window shown on out-of-stock storefront items to communicate when the merchant expects the product to become available again. Records are company-scoped; the localized `title` is the user-facing label and the `priority` orders estimates when more than one matches an item.
             properties:
+                externalReferenceCode:
+                    description:
+                        Idempotency key for create and update; must be unique per availability estimate within the company. Accepted in place of the numeric identifier on the matching by-external-reference-code endpoints. Defaults to the record's UUID when omitted on create.
+                    example: AB-34098-789-N
+                    type: string
                 groupId:
                     description:
                         Wire-only site identifier accepted on input but ignored by the server and omitted from responses; availability estimates are company-scoped, not site-scoped.
@@ -447,7 +452,7 @@ components:
             type: object
 info:
     description:
-        "Back-office administration of Liferay Commerce site-setting entities: warehouse definitions, tax categories, measurement units, and availability estimates. All four entities are company-scoped on the server, although warehouse, tax category, and availability estimate paths still accept a Liferay site identifier (`groupId`) as a compatibility wire field. Used by store-launch wizards and admin dashboards. Primary entities: AvailabilityEstimate (restock-time windows shown on out-of-stock items), TaxCategory (groupings for tax treatment), Warehouse (warehouse definition; stock levels and per-account/group/channel scoping live in the admin-inventory API), and MeasurementUnit (units of measure used by SKUs and shipping rules). Unimplemented endpoints: the list (GET) and create (POST) operations under /commerceAdminSiteSetting/<groupId>/* and the replace (PUT) operations on the AvailabilityEstimate, TaxCategory, and Warehouse by-id paths are not implemented and reject every request with a 400 Bad Request without invoking the underlying service; to persist availability estimates, tax categories, or warehouse records, drive the back-end services directly or use the sibling admin APIs. Common workflows: Set up measurement units -- (1) POST /measurement-units (or PUT /measurement-units/by-key/<key>) to create each unit, setting primary=true for the base unit of each type (Dimensions, Weight, Unit); (2) GET /measurement-units/by-type/<measurementUnitType> to confirm the units of a given type before enabling a channel. -- Manage warehouse definitions -- this API only fetches single records (GET /warehouse/<id>) and deletes (DELETE /warehouse/<id>) warehouse definitions; the list (GET), create (POST), and replace (PUT) operations here are not implemented and reject every request with a 400 Bad Request, so per-SKU stock, replenishment, and account/group/channel scoping are administered through the admin-inventory API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.admin.site.setting.client', and version '4.0.43'."
+        "Back-office administration of Liferay Commerce site-setting entities: warehouse definitions, tax categories, measurement units, and availability estimates. All four entities are company-scoped on the server, although warehouse, tax category, and availability estimate paths still accept a Liferay site identifier (`groupId`) as a compatibility wire field. Used by store-launch wizards and admin dashboards. Primary entities: AvailabilityEstimate (restock-time windows shown on out-of-stock items), TaxCategory (groupings for tax treatment), Warehouse (warehouse definition; stock levels and per-account/group/channel scoping live in the admin-inventory API), and MeasurementUnit (units of measure used by SKUs and shipping rules). Unimplemented endpoints: the list (GET) and create (POST) operations under /commerceAdminSiteSetting/<groupId>/taxCategory and /commerceAdminSiteSetting/<groupId>/warehouse, and the replace (PUT) operations on the TaxCategory and Warehouse by-id paths, are not implemented and reject every request with a 400 Bad Request without invoking the underlying service; to persist tax categories or warehouse records, drive the back-end services directly or use the sibling admin APIs. AvailabilityEstimate is fully implemented, including addressing by external reference code (`/availabilityEstimate/by-externalReferenceCode/<externalReferenceCode>`, where PUT is upsert). Common workflows: Set up measurement units -- (1) POST /measurement-units (or PUT /measurement-units/by-key/<key>) to create each unit, setting primary=true for the base unit of each type (Dimensions, Weight, Unit); (2) GET /measurement-units/by-type/<measurementUnitType> to confirm the units of a given type before enabling a channel. -- Manage warehouse definitions -- this API only fetches single records (GET /warehouse/<id>) and deletes (DELETE /warehouse/<id>) warehouse definitions; the list (GET), create (POST), and replace (PUT) operations here are not implemented and reject every request with a 400 Bad Request, so per-SKU stock, replenishment, and account/group/channel scoping are administered through the admin-inventory API. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.headless.commerce.admin.site.setting.client', and version '4.0.43'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -455,10 +460,252 @@ info:
     version: v1.0
 openapi: 3.0.0
 paths:
+    /availabilityEstimate/by-externalReferenceCode/{externalReferenceCode}:
+        delete:
+            description:
+                Deletes the availability estimate identified by external reference code. Returns 404 when no estimate carries that code. Side effects -- cascades to the per-product availability estimates that reference it.
+            operationId: deleteAvailabilityEstimateByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this AvailabilityEstimate.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+            summary: Deletes an Availability Estimate by external reference code.
+            tags:
+                -   AvailabilityEstimate
+        get:
+            description:
+                Fetches the availability estimate identified by external reference code. Returns 404 when no estimate carries that code.
+            operationId: getAvailabilityEstimateByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                    description:
+                        Successful operation
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this AvailabilityEstimate.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets an Availability Estimate by external reference code.
+            tags:
+                -   AvailabilityEstimate
+        patch:
+            description:
+                Partially updates the availability estimate identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 404 when no estimate carries that code, and 400 when the supplied external reference code is already taken by another estimate in the company.
+            operationId: patchAvailabilityEstimateByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AvailabilityEstimate"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/AvailabilityEstimate"
+                required: true
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                    description:
+                        Successful operation
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this AvailabilityEstimate.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Updates an Availability Estimate by external reference code.
+            tags:
+                -   AvailabilityEstimate
+        put:
+            description:
+                Upserts the availability estimate identified by external reference code -- replaces it with the request body when the code exists, otherwise creates a new estimate. Returns 400 when the supplied external reference code is already taken by another estimate in the company.
+            operationId: putAvailabilityEstimateByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/AvailabilityEstimate"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/AvailabilityEstimate"
+                required: true
+            responses:
+                201:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                    description:
+                        Created
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this AvailabilityEstimate.
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Creates or updates an Availability Estimate.
+            tags:
+                -   AvailabilityEstimate
     /availabilityEstimate/{id}:
         delete:
             description:
-                Deletes the AvailabilityEstimate identified by id. Calls CommerceAvailabilityEstimateService.deleteCommerceAvailabilityEstimate. Validation -- 404 when no estimate matches the id.
+                Deletes the availability estimate identified by id. Returns 404 when no estimate matches the id.
             operationId: deleteAvailabilityEstimate
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -491,7 +738,7 @@ paths:
                 -   AvailabilityEstimate
         get:
             description:
-                Fetches the AvailabilityEstimate identified by id. Calls CommerceAvailabilityEstimateService.getCommerceAvailabilityEstimate. Validation -- 404 when no estimate matches the id.
+                Fetches the availability estimate identified by id. Returns 404 when no estimate matches the id.
             operationId: getAvailabilityEstimate
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -554,7 +801,7 @@ paths:
                 -   AvailabilityEstimate
         put:
             description:
-                Unimplemented endpoint for replacing an AvailabilityEstimate identified by id. Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and the addressed record is not changed.
+                Replaces the availability estimate identified by id with the request body. Returns 404 when no estimate matches the id, and 400 when the supplied external reference code is already taken by another estimate in the company.
             operationId: putAvailabilityEstimate
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -568,6 +815,16 @@ paths:
                             $ref: "#/components/schemas/AvailabilityEstimate"
                 required: true
             responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/AvailabilityEstimate"
+                    description:
+                        Successful operation
                 400:
                     description:
                         Invalid input
@@ -607,7 +864,7 @@ paths:
     /commerceAdminSiteSetting/{groupId}/availabilityEstimate:
         get:
             description:
-                Unimplemented endpoint for listing AvailabilityEstimate records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and no records are returned.
+                Lists the availability estimates of the caller's company. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the result; availability estimates are company-scoped.
             operationId: getCommerceAdminSiteSettingGroupAvailabilityEstimatePage
             parameters:
                 -   $ref: "#/components/parameters/groupIdPathParam"
@@ -666,7 +923,7 @@ paths:
                 -   AvailabilityEstimate
         post:
             description:
-                Unimplemented endpoint for creating an AvailabilityEstimate under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceAvailabilityEstimateService, so every request is rejected with a 400 Bad Request and no record is persisted.
+                Creates an availability estimate for the caller's company from the supplied external reference code, localized `title`, and `priority`. The supplied site (`groupId`) is a wire-only compatibility field and does not scope the record. Returns 400 when the supplied external reference code is already taken by another estimate in the company.
             operationId: postCommerceAdminSiteSettingGroupAvailabilityEstimate
             parameters:
                 -   $ref: "#/components/parameters/groupIdPathParam"
@@ -729,7 +986,7 @@ paths:
     /commerceAdminSiteSetting/{groupId}/taxCategory:
         get:
             description:
-                Unimplemented endpoint for listing TaxCategory records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and no records are returned.
+                Unimplemented endpoint for listing tax categories under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no records are returned.
             operationId: getCommerceAdminSiteSettingGroupTaxCategoryPage
             parameters:
                 -   $ref: "#/components/parameters/groupIdPathParam"
@@ -788,7 +1045,7 @@ paths:
                 -   TaxCategory
         post:
             description:
-                Unimplemented endpoint for creating a TaxCategory under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and no record is persisted.
+                Unimplemented endpoint for creating a tax category under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no record is persisted.
             operationId: postCommerceAdminSiteSettingGroupTaxCategory
             parameters:
                 -   $ref: "#/components/parameters/groupIdPathParam"
@@ -851,7 +1108,7 @@ paths:
     /commerceAdminSiteSetting/{groupId}/warehouse:
         get:
             description:
-                Unimplemented endpoint for listing Warehouse records under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceInventoryWarehouseService, so every request is rejected with a 400 Bad Request and no records are returned. For Warehouse list semantics that persist, use the inventory administration API.
+                Unimplemented endpoint for listing warehouse definitions under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no records are returned. For warehouse list semantics that persist, use the inventory administration API.
             operationId: getCommerceAdminSiteSettingGroupWarehousePage
             parameters:
                 -   $ref: "#/components/parameters/groupIdPathParam"
@@ -911,7 +1168,7 @@ paths:
                 -   Warehouse
         post:
             description:
-                Unimplemented endpoint for creating a Warehouse under the supplied site (groupId). Calls -- none; throws UnsupportedOperationException without invoking CommerceInventoryWarehouseService, so every request is rejected with a 400 Bad Request and no record is persisted. For Warehouse writes that persist, including stock levels and per-account/group/channel scoping, use the inventory administration API.
+                Unimplemented endpoint for creating a warehouse definition under the supplied site (`groupId`). Every request is rejected with a 400 Bad Request without reaching the underlying service, and no record is persisted. For warehouse writes that persist, including stock levels and per-account, per-group, and per-channel scoping, use the inventory administration API.
             operationId: postCommerceAdminSiteSettingGroupWarehouse
             parameters:
                 -   $ref: "#/components/parameters/groupIdPathParam"
@@ -974,7 +1231,7 @@ paths:
     /measurement-units:
         get:
             description:
-                Returns a page of MeasurementUnit records scoped to the caller's company. Calls CPMeasurementUnitService.getCPMeasurementUnits, applying the page and pageSize query parameters to bound the response. List query support -- the filter (OData v4) and sort parameters are accepted on the wire but ignored, because the service is called with a null OrderByComparator and no entity model is registered for OData filtering.
+                Returns a page of measurement units scoped to the caller's company, bounded by the `page` and `pageSize` query parameters. List query support -- the `filter` (OData v4) and `sort` parameters are accepted on the wire but ignored, because no ordering is applied and no filterable entity model is registered.
             operationId: getMeasurementUnitsPage
             parameters:
                 -   $ref: "#/components/parameters/filterQueryParam"
@@ -1034,7 +1291,7 @@ paths:
                 -   MeasurementUnit
         post:
             description:
-                Creates a MeasurementUnit for the caller's company. Calls CPMeasurementUnitService.addCPMeasurementUnit with the supplied name, key, rate, priority, and type. Validation -- unknown type (CPMeasurementUnitTypeException) -> 422; duplicate externalReferenceCode or key (DuplicateCPMeasurementUnitExternalReferenceCodeException, DuplicateCPMeasurementUnitKeyException) -> 409.
+                Creates a measurement unit for the caller's company from the supplied `name`, `key`, `rate`, `priority`, and type. Returns 422 when the type is not one of the known types, and 409 when the supplied external reference code or `key` is already taken in the company.
             operationId: postMeasurementUnit
             requestBody:
                 content:
@@ -1098,7 +1355,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        The supplied externalReferenceCode or key conflicts with an existing MeasurementUnit (raised as DuplicateCPMeasurementUnitExternalReferenceCodeException or DuplicateCPMeasurementUnitKeyException).
+                        The supplied external reference code or `key` is already taken by another measurement unit in the company.
                 422:
                     content:
                         application/json:
@@ -1108,7 +1365,7 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/Error"
                     description:
-                        Domain validation failed (for example, unknown type, raised as CPMeasurementUnitTypeException).
+                        Domain validation failed, for example because the type is not one of the known types.
                 500:
                     content:
                         application/json:
@@ -1125,7 +1382,7 @@ paths:
     /measurement-units/by-externalReferenceCode/{externalReferenceCode}:
         delete:
             description:
-                Deletes the MeasurementUnit identified by external reference code. Calls CPMeasurementUnitService.fetchCPMeasurementUnitByExternalReferenceCode + deleteCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when ERC not found.
+                Deletes the measurement unit identified by external reference code. Returns 404 when no unit carries that code.
             operationId: deleteMeasurementUnitByExternalReferenceCode
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1159,7 +1416,7 @@ paths:
                 -   MeasurementUnit
         get:
             description:
-                Fetches the MeasurementUnit identified by external reference code. Calls CPMeasurementUnitService.fetchCPMeasurementUnitByExternalReferenceCode. Validation -- NoSuchCPMeasurementUnitException -> 404 when ERC not found.
+                Fetches the measurement unit identified by external reference code. Returns 404 when no unit carries that code.
             operationId: getMeasurementUnitByExternalReferenceCode
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1222,7 +1479,7 @@ paths:
                 -   MeasurementUnit
         patch:
             description:
-                Partially updates the MeasurementUnit identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Calls CPMeasurementUnitService.updateCPMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422.
+                Partially updates the measurement unit identified by external reference code, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types.
             operationId: patchMeasurementUnitByExternalReferenceCode
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1304,7 +1561,7 @@ paths:
                 -   MeasurementUnit
         put:
             description:
-                Upserts the MeasurementUnit identified by external reference code -- replaces it with the request body when the ERC exists, otherwise creates a new entity by delegating to postMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422.
+                Upserts the measurement unit identified by external reference code -- replaces it with the request body when the code exists, otherwise creates a new unit. Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types.
             operationId: putMeasurementUnitByExternalReferenceCode
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -1397,7 +1654,7 @@ paths:
     /measurement-units/by-key/{key}:
         delete:
             description:
-                Deletes the MeasurementUnit identified by its stable string key. Calls CPMeasurementUnitService.fetchCPMeasurementUnit (companyId, key) + deleteCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when key not found.
+                Deletes the measurement unit identified by its stable string `key`. Returns 404 when no unit carries that key.
             operationId: deleteMeasurementUnitByKey
             parameters:
                 -   $ref: "#/components/parameters/keyPathParam"
@@ -1431,7 +1688,7 @@ paths:
                 -   MeasurementUnit
         get:
             description:
-                Fetches the MeasurementUnit identified by its stable string key. Calls CPMeasurementUnitService.fetchCPMeasurementUnit (companyId, key). Validation -- NoSuchCPMeasurementUnitException -> 404 when key not found.
+                Fetches the measurement unit identified by its stable string `key`. Returns 404 when no unit carries that key.
             operationId: getMeasurementUnitByKey
             parameters:
                 -   $ref: "#/components/parameters/keyPathParam"
@@ -1494,7 +1751,7 @@ paths:
                 -   MeasurementUnit
         patch:
             description:
-                Partially updates the MeasurementUnit identified by its stable string key, applying JSON Merge Patch semantics (only fields present in the body are modified). Calls CPMeasurementUnitService.updateCPMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422.
+                Partially updates the measurement unit identified by its stable string `key`, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types.
             operationId: patchMeasurementUnitByKey
             parameters:
                 -   $ref: "#/components/parameters/keyPathParam"
@@ -1577,7 +1834,7 @@ paths:
     /measurement-units/by-type/{measurementUnitType}:
         get:
             description:
-                Returns a page of MeasurementUnit records of the supplied type for the caller's company; type accepts either the integer code (0, 1, 2) or the human label (Dimensions, Weight, Unit). Calls CPMeasurementUnitService.getCPMeasurementUnits (companyId, type), applying the page and pageSize query parameters to bound the response. List query support -- the sort parameter is accepted on the wire but ignored, because the service is called with a null OrderByComparator. When the type cannot be resolved, returns an empty list (CPMeasurementUnitTypeException is swallowed at debug level).
+                Returns a page of measurement units of the supplied type for the caller's company, bounded by the `page` and `pageSize` query parameters. The type accepts either the integer code (0, 1, 2) or the human label (Dimensions, Weight, Unit). List query support -- the `sort` parameter is accepted on the wire but ignored, because no ordering is applied. An unrecognized type yields an empty list rather than an error.
             operationId: getMeasurementUnitsByType
             parameters:
                 -   $ref: "#/components/parameters/measurementUnitTypePathParam"
@@ -1638,7 +1895,7 @@ paths:
     /measurement-units/{id}:
         delete:
             description:
-                Deletes the MeasurementUnit identified by id. Calls CPMeasurementUnitService.deleteCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when id not found.
+                Deletes the measurement unit identified by id. Returns 404 when no unit matches the id.
             operationId: deleteMeasurementUnit
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1672,7 +1929,7 @@ paths:
                 -   MeasurementUnit
         get:
             description:
-                Fetches the MeasurementUnit identified by id. Calls CPMeasurementUnitService.fetchCPMeasurementUnit. Validation -- NoSuchCPMeasurementUnitException -> 404 when id not found.
+                Fetches the measurement unit identified by id. Returns 404 when no unit matches the id.
             operationId: getMeasurementUnit
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1735,7 +1992,7 @@ paths:
                 -   MeasurementUnit
         patch:
             description:
-                Partially updates the MeasurementUnit identified by id, applying JSON Merge Patch semantics (only fields present in the body are modified). Calls CPMeasurementUnitService.updateCPMeasurementUnit. Validation -- duplicate externalReferenceCode or key -> 409; domain validation failure such as unknown type -> 422.
+                Partially updates the measurement unit identified by id, applying JSON Merge Patch semantics (only fields present in the body are modified). Returns 409 when the supplied external reference code or `key` is already taken in the company, and 422 when the type is not one of the known types.
             operationId: patchMeasurementUnit
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1818,7 +2075,7 @@ paths:
     /taxCategory/{id}:
         delete:
             description:
-                Deletes the TaxCategory identified by id. Calls CPTaxCategoryService.deleteCPTaxCategory. Validation -- 404 when no entity matches the id.
+                Deletes the tax category identified by id. Returns 404 when no tax category matches the id.
             operationId: deleteTaxCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1851,7 +2108,7 @@ paths:
                 -   TaxCategory
         get:
             description:
-                Fetches the TaxCategory identified by id. Calls CPTaxCategoryService.getCPTaxCategory. Validation -- 404 when no entity matches the id.
+                Fetches the tax category identified by id. Returns 404 when no tax category matches the id.
             operationId: getTaxCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1914,7 +2171,7 @@ paths:
                 -   TaxCategory
         put:
             description:
-                Unimplemented endpoint for replacing a TaxCategory identified by id. Calls -- none; throws UnsupportedOperationException without invoking CPTaxCategoryService, so every request is rejected with a 400 Bad Request and the addressed record is not changed.
+                Unimplemented endpoint for replacing the tax category identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged.
             operationId: putTaxCategory
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -1967,7 +2224,7 @@ paths:
     /warehouse/{id}:
         delete:
             description:
-                Deletes the Warehouse definition identified by id. Calls CommerceInventoryWarehouseService.deleteCommerceInventoryWarehouse. Validation -- 404 when no entity matches the id. Side effects -- does not remove stock levels held in the admin-inventory API.
+                Deletes the warehouse definition identified by id. Returns 404 when no warehouse matches the id. Side effects -- stock levels held in the inventory administration API are not removed.
             operationId: deleteWarehouse
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2000,7 +2257,7 @@ paths:
                 -   Warehouse
         get:
             description:
-                Fetches the Warehouse definition identified by id. Calls CommerceInventoryWarehouseService.getCommerceInventoryWarehouse. Validation -- 404 when no entity matches the id.
+                Fetches the warehouse definition identified by id. Returns 404 when no warehouse matches the id.
             operationId: getWarehouse
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
@@ -2063,7 +2320,7 @@ paths:
                 -   Warehouse
         put:
             description:
-                Unimplemented endpoint for replacing a Warehouse identified by id. Calls -- none; throws UnsupportedOperationException without invoking CommerceInventoryWarehouseService, so every request is rejected with a 400 Bad Request and the addressed record is not changed. For Warehouse writes that persist, use the inventory administration API.
+                Unimplemented endpoint for replacing the warehouse definition identified by id. Every request is rejected with a 400 Bad Request without reaching the underlying service, and the addressed record is left unchanged. For warehouse writes that persist, use the inventory administration API.
             operationId: putWarehouse
             parameters:
                 -   $ref: "#/components/parameters/idPathParam"
