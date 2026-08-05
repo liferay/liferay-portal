@@ -12,20 +12,26 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.headless.admin.user.dto.v1_0.UserAccount;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
+import com.liferay.list.type.entry.util.ListTypeEntryUtil;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.builder.BooleanObjectFieldBuilder;
 import com.liferay.object.field.builder.DateObjectFieldBuilder;
 import com.liferay.object.field.builder.DecimalObjectFieldBuilder;
+import com.liferay.object.field.builder.MultiselectPicklistObjectFieldBuilder;
 import com.liferay.object.field.builder.PrecisionDecimalObjectFieldBuilder;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -52,6 +58,8 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -125,6 +133,37 @@ public class ObjectEntryExtensionProviderTest {
 			).name(
 				"decimal"
 			).build());
+
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.addListTypeDefinition(
+				null, TestPropsValues.getUserId(),
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				false,
+				Arrays.asList(
+					ListTypeEntryUtil.createListTypeEntry(
+						_LIST_TYPE_ENTRY_KEY_1),
+					ListTypeEntryUtil.createListTypeEntry(
+						_LIST_TYPE_ENTRY_KEY_2)),
+				new ServiceContext());
+
+		ObjectFieldUtil.addCustomObjectField(
+			new MultiselectPicklistObjectFieldBuilder(
+			).userId(
+				TestPropsValues.getUserId()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).indexed(
+				RandomTestUtil.randomBoolean()
+			).indexedAsKeyword(
+				RandomTestUtil.randomBoolean()
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).listTypeDefinitionId(
+				listTypeDefinition.getListTypeDefinitionId()
+			).name(
+				"multiselectPicklist"
+			).build());
+
 		ObjectFieldUtil.addCustomObjectField(
 			new PrecisionDecimalObjectFieldBuilder(
 			).userId(
@@ -153,17 +192,22 @@ public class ObjectEntryExtensionProviderTest {
 				TestPropsValues.getCompanyId(), UserAccount.class.getName());
 
 		_assertPropertyDefinition(
-			"boolean", PropertyDefinition.PropertyType.BOOLEAN, false,
+			null, "boolean", PropertyDefinition.PropertyType.BOOLEAN, false,
 			extendedPropertyDefinitions.get("boolean"));
 		_assertPropertyDefinition(
-			"date", PropertyDefinition.PropertyType.DATE_TIME, true,
+			null, "date", PropertyDefinition.PropertyType.DATE_TIME, true,
 			extendedPropertyDefinitions.get("date"));
 		_assertPropertyDefinition(
-			"decimal", PropertyDefinition.PropertyType.DOUBLE, false,
+			null, "decimal", PropertyDefinition.PropertyType.DOUBLE, false,
 			extendedPropertyDefinitions.get("decimal"));
 		_assertPropertyDefinition(
-			"precisionDecimal", PropertyDefinition.PropertyType.BIG_DECIMAL,
-			true, extendedPropertyDefinitions.get("precisionDecimal"));
+			ListEntry.class.getSimpleName(), "multiselectPicklist",
+			PropertyDefinition.PropertyType.MULTIPLE_ELEMENT, false,
+			extendedPropertyDefinitions.get("multiselectPicklist"));
+		_assertPropertyDefinition(
+			null, "precisionDecimal",
+			PropertyDefinition.PropertyType.BIG_DECIMAL, true,
+			extendedPropertyDefinitions.get("precisionDecimal"));
 	}
 
 	@Test
@@ -215,10 +259,13 @@ public class ObjectEntryExtensionProviderTest {
 	}
 
 	private void _assertPropertyDefinition(
-		String expectedPropertyName,
+		String expectedPropertyClassName, String expectedPropertyName,
 		PropertyDefinition.PropertyType expectedPropertyType,
 		boolean expectedRequired, PropertyDefinition propertyDefinition) {
 
+		Assert.assertEquals(
+			expectedPropertyClassName,
+			propertyDefinition.getPropertyClassName());
 		Assert.assertEquals(
 			expectedPropertyName, propertyDefinition.getPropertyName());
 		Assert.assertEquals(
@@ -323,6 +370,9 @@ public class ObjectEntryExtensionProviderTest {
 			).put(
 				"decimal", 1.2
 			).put(
+				"multiselectPicklist",
+				new String[] {_LIST_TYPE_ENTRY_KEY_1, _LIST_TYPE_ENTRY_KEY_2}
+			).put(
 				"precisionDecimal", 100.5
 			).build());
 		_testSetExtendedProperties(
@@ -334,6 +384,8 @@ public class ObjectEntryExtensionProviderTest {
 			).put(
 				"decimal", 10.8
 			).put(
+				"multiselectPicklist", new String[] {_LIST_TYPE_ENTRY_KEY_1}
+			).put(
 				"precisionDecimal", 20.55
 			).build());
 	}
@@ -344,7 +396,7 @@ public class ObjectEntryExtensionProviderTest {
 
 		_extensionProvider.setExtendedProperties(
 			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			UserAccount.class.getName(), userAccount, values);
+			UserAccount.class.getName(), userAccount, new HashMap<>(values));
 
 		Map<String, Serializable> extendedProperties =
 			_extensionProvider.getExtendedProperties(
@@ -365,9 +417,25 @@ public class ObjectEntryExtensionProviderTest {
 			values.get("decimal"), extendedProperties.get("decimal"));
 
 		Assert.assertEquals(
+			Arrays.asList((String[])values.get("multiselectPicklist")),
+			TransformUtil.transform(
+				(List<ListEntry>)extendedProperties.get("multiselectPicklist"),
+				ListEntry::getKey));
+
+		Assert.assertEquals(
 			new BigDecimal(String.valueOf(values.get("precisionDecimal"))),
 			extendedProperties.get("precisionDecimal"));
 	}
+
+	private static final String _LIST_TYPE_ENTRY_KEY_1 =
+		RandomTestUtil.randomString();
+
+	private static final String _LIST_TYPE_ENTRY_KEY_2 =
+		RandomTestUtil.randomString();
+
+	@Inject
+	private static ListTypeDefinitionLocalService
+		_listTypeDefinitionLocalService;
 
 	@Inject
 	private static ObjectDefinitionLocalService _objectDefinitionLocalService;
