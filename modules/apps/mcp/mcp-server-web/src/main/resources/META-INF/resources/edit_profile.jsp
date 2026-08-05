@@ -16,12 +16,10 @@ portletDisplay.setURLBack(editProfileDisplayContext.getBackURL());
 renderResponse.setTitle(editProfileDisplayContext.getTitle());
 %>
 
-<c:if test="<%= editProfileDisplayContext.isShowNavigationBar() %>">
-	<clay:navigation-bar
-		inverted="<%= false %>"
-		navigationItems="<%= editProfileDisplayContext.getNavigationItems() %>"
-	/>
-</c:if>
+<clay:navigation-bar
+	inverted="<%= false %>"
+	navigationItems="<%= editProfileDisplayContext.getNavigationItems() %>"
+/>
 
 <clay:container-fluid
 	cssClass="container-fluid-max-xl container-view"

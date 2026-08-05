@@ -76,6 +76,7 @@ public class EditProfileDisplayContext {
 		).add(
 			navigationItem -> {
 				navigationItem.setActive(Objects.equals(tab, "data-masks"));
+				navigationItem.setDisabled(_getProfileId() == 0);
 				navigationItem.setHref(_getTabURL("data-masks"));
 				navigationItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "data-masks"));
@@ -97,14 +98,6 @@ public class EditProfileDisplayContext {
 		}
 
 		return LanguageUtil.get(_httpServletRequest, "new-profile");
-	}
-
-	public boolean isShowNavigationBar() {
-		if (_getProfileId() > 0) {
-			return true;
-		}
-
-		return false;
 	}
 
 	private long _getProfileId() {
