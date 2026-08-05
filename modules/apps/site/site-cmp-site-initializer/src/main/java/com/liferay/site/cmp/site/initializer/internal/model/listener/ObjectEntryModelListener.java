@@ -5,6 +5,7 @@
 
 package com.liferay.site.cmp.site.initializer.internal.model.listener;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -171,10 +172,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	private void _deleteProjectDepotEntry(ObjectEntry objectEntry)
 		throws Exception {
 
-		if (!objectEntry.isDraft()) {
-			return;
-		}
-
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		if ((objectDefinition == null) ||
@@ -187,9 +184,13 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
 			objectEntry.getGroupId());
 
-		if (depotEntry != null) {
-			_depotEntryLocalService.deleteDepotEntry(depotEntry);
+		if ((depotEntry == null) ||
+			(depotEntry.getType() != DepotConstants.TYPE_PROJECT)) {
+
+			return;
 		}
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry);
 	}
 
 	private ObjectEntry _fetchLinkedObjectEntry(
