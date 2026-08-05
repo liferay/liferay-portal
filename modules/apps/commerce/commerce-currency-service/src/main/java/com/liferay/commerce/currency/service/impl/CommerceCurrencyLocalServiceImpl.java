@@ -252,7 +252,6 @@ public class CommerceCurrencyLocalServiceImpl
 		return commerceCurrencyPersistence.findByC_C(companyId, code);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceCurrency getOrAddEmptyCommerceCurrency(
 			String externalReferenceCode, long companyId, long userId)
@@ -482,16 +481,13 @@ public class CommerceCurrencyLocalServiceImpl
 		commerceCurrency.setPrimary(primary);
 		commerceCurrency.setPriority(priority);
 		commerceCurrency.setActive(active);
-
-		if (commerceCurrency.getStatus() == WorkflowConstants.STATUS_EMPTY) {
-			commerceCurrency.setStatus(
-				_emptyModelManager.solveEmptyModel(
-					commerceCurrency.getExternalReferenceCode(),
-					commerceCurrency.getModelClassName(),
-					commerceCurrency.getCompanyId(), 0,
-					commerceCurrency.getStatus(),
-					() -> WorkflowConstants.STATUS_APPROVED));
-		}
+		commerceCurrency.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				commerceCurrency.getExternalReferenceCode(),
+				commerceCurrency.getModelClassName(),
+				commerceCurrency.getCompanyId(), 0,
+				commerceCurrency.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 
 		return commerceCurrencyPersistence.update(commerceCurrency);
 	}

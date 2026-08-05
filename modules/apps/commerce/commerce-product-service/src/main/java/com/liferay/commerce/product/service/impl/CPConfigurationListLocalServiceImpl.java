@@ -432,7 +432,6 @@ public class CPConfigurationListLocalServiceImpl
 			groupId, true, null);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPConfigurationList getOrAddEmptyCPConfigurationList(
 			String externalReferenceCode, long companyId, long userId,
@@ -502,18 +501,14 @@ public class CPConfigurationListLocalServiceImpl
 		cpConfigurationList.setPriority(priority);
 		cpConfigurationList.setDisplayDate(displayDate);
 		cpConfigurationList.setExpirationDate(expirationDate);
-
-		if (cpConfigurationList.getStatus() == WorkflowConstants.STATUS_EMPTY) {
-			cpConfigurationList.setStatus(
-				_emptyModelManager.solveEmptyModel(
-					cpConfigurationList.getExternalReferenceCode(),
-					cpConfigurationList.getModelClassName(),
-					cpConfigurationList.getCompanyId(),
-					cpConfigurationList.getGroupId(),
-					cpConfigurationList.getStatus(),
-					() -> WorkflowConstants.STATUS_APPROVED));
-		}
-
+		cpConfigurationList.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				cpConfigurationList.getExternalReferenceCode(),
+				cpConfigurationList.getModelClassName(),
+				cpConfigurationList.getCompanyId(),
+				cpConfigurationList.getGroupId(),
+				cpConfigurationList.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 		cpConfigurationList.setExpandoBridgeAttributes(serviceContext);
 
 		return cpConfigurationListPersistence.update(cpConfigurationList);

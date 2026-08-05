@@ -192,7 +192,6 @@ public class CPTaxCategoryLocalServiceImpl
 		return cpTaxCategoryPersistence.countByCompanyId(companyId);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPTaxCategory getOrAddEmptyCPTaxCategory(
 			String externalReferenceCode, long companyId, long userId)
@@ -269,15 +268,12 @@ public class CPTaxCategoryLocalServiceImpl
 		cpTaxCategory.setExternalReferenceCode(externalReferenceCode);
 		cpTaxCategory.setNameMap(nameMap);
 		cpTaxCategory.setDescriptionMap(descriptionMap);
-
-		if (cpTaxCategory.getStatus() == WorkflowConstants.STATUS_EMPTY) {
-			cpTaxCategory.setStatus(
-				_emptyModelManager.solveEmptyModel(
-					cpTaxCategory.getExternalReferenceCode(),
-					cpTaxCategory.getModelClassName(),
-					cpTaxCategory.getCompanyId(), 0, cpTaxCategory.getStatus(),
-					() -> WorkflowConstants.STATUS_APPROVED));
-		}
+		cpTaxCategory.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				cpTaxCategory.getExternalReferenceCode(),
+				cpTaxCategory.getModelClassName(), cpTaxCategory.getCompanyId(),
+				0, cpTaxCategory.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 
 		return cpTaxCategoryPersistence.update(cpTaxCategory);
 	}

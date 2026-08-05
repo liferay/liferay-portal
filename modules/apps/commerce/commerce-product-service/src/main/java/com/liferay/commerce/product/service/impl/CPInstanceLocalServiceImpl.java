@@ -841,7 +841,6 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			cProduct.getPublishedCPDefinitionId(), cpInstanceUuid);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CPInstance getOrAddEmptyCPInstance(
 			String externalReferenceCode, long cpDefinitionId, long groupId,
@@ -1167,6 +1166,15 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 		cpInstance.setDeliveryMaxSubscriptionCycles(
 			deliveryMaxSubscriptionCycles);
 
+		cpInstance.setUnspsc(unspsc);
+		cpInstance.setDiscontinued(discontinued);
+		cpInstance.setDiscontinuedDate(
+			_portal.getDate(
+				discontinuedDateMonth, discontinuedDateDay,
+				discontinuedDateYear));
+		cpInstance.setReplacementCPInstanceUuid(replacementCPInstanceUuid);
+		cpInstance.setReplacementCProductId(replacementCProductId);
+
 		if (cpInstance.getStatus() == WorkflowConstants.STATUS_EMPTY) {
 			cpInstance.setStatus(
 				_emptyModelManager.solveEmptyModel(
@@ -1187,14 +1195,6 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			cpInstance.setStatus(WorkflowConstants.STATUS_EXPIRED);
 		}
 
-		cpInstance.setUnspsc(unspsc);
-		cpInstance.setDiscontinued(discontinued);
-		cpInstance.setDiscontinuedDate(
-			_portal.getDate(
-				discontinuedDateMonth, discontinuedDateDay,
-				discontinuedDateYear));
-		cpInstance.setReplacementCPInstanceUuid(replacementCPInstanceUuid);
-		cpInstance.setReplacementCProductId(replacementCProductId);
 		cpInstance.setStatusByUserId(user.getUserId());
 		cpInstance.setStatusDate(serviceContext.getModifiedDate(date));
 		cpInstance.setExpandoBridgeAttributes(serviceContext);

@@ -435,7 +435,6 @@ public class CommerceChannelLocalServiceImpl
 			));
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceChannel getOrAddEmptyCommerceChannel(
 			String externalReferenceCode, long companyId, long userId)
@@ -529,16 +528,12 @@ public class CommerceChannelLocalServiceImpl
 		commerceChannel.setCommerceCurrencyCode(commerceCurrencyCode);
 		commerceChannel.setPriceDisplayType(priceDisplayType);
 		commerceChannel.setDiscountsTargetNetPrice(discountsTargetNetPrice);
-
-		if (commerceChannel.getStatus() == WorkflowConstants.STATUS_EMPTY) {
-			commerceChannel.setStatus(
-				_emptyModelManager.solveEmptyModel(
-					commerceChannel.getExternalReferenceCode(),
-					commerceChannel.getModelClassName(),
-					commerceChannel.getCompanyId(), 0,
-					commerceChannel.getStatus(),
-					() -> WorkflowConstants.STATUS_APPROVED));
-		}
+		commerceChannel.setStatus(
+			_emptyModelManager.solveEmptyModel(
+				commerceChannel.getExternalReferenceCode(),
+				commerceChannel.getModelClassName(),
+				commerceChannel.getCompanyId(), 0, commerceChannel.getStatus(),
+				() -> WorkflowConstants.STATUS_APPROVED));
 
 		commerceChannel = commerceChannelPersistence.update(commerceChannel);
 
