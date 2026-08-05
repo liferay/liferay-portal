@@ -286,17 +286,6 @@ public abstract class BaseLicenseTestCase implements Serializable {
 
 				field.set(_lifecycleAction, 0L);
 			}
-			else if (Objects.equals(field.getType(), Map.class)) {
-				Map<?, ?> map = (Map<?, ?>)field.get(_lifecycleAction);
-
-				for (Object object : map.values()) {
-					if (Long.class.isAssignableFrom(object.getClass())) {
-						map.clear();
-
-						break;
-					}
-				}
-			}
 		}
 	}
 
