@@ -71,6 +71,12 @@ public class CMPTestUtil {
 	public static ObjectEntry addCMPProjectObjectEntry()
 		throws PortalException {
 
+		return addCMPProjectObjectEntry(WorkflowConstants.ACTION_SAVE_DRAFT);
+	}
+
+	public static ObjectEntry addCMPProjectObjectEntry(int workflowAction)
+		throws PortalException {
+
 		DepotEntry depotEntry = DepotEntryLocalServiceUtil.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
@@ -87,7 +93,7 @@ public class CMPTestUtil {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext();
 
-		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+		serviceContext.setWorkflowAction(workflowAction);
 
 		return ObjectEntryLocalServiceUtil.addObjectEntry(
 			depotEntry.getGroupId(), depotEntry.getUserId(),
