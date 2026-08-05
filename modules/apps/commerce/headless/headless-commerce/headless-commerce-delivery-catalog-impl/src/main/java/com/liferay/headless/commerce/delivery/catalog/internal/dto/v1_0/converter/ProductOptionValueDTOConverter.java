@@ -167,7 +167,8 @@ public class ProductOptionValueDTOConverter
 						String corEntryInfoMessage = _getCOREntryInfoMessage(
 							commerceOptionValues, cpDefinitionOptionRel,
 							cpDefinitionOptionValueRel, cpInstance,
-							cpDefinition.getCProductId(), dtoConverterContext);
+							_getCProductExternalReferenceCode(cpDefinition),
+							dtoConverterContext);
 
 						if (Validator.isNotNull(corEntryInfoMessage)) {
 							return corEntryInfoMessage;
@@ -402,7 +403,8 @@ public class ProductOptionValueDTOConverter
 								_getCOREntryInfoMessage(
 									commerceOptionValues, cpDefinitionOptionRel,
 									cpDefinitionOptionValueRel, cpInstance,
-									cpDefinition.getCProductId(),
+									_getCProductExternalReferenceCode(
+										cpDefinition),
 									dtoConverterContext)) ||
 							Validator.isNotNull(
 								_getCPDefinitionLinkInfoMessage(
@@ -499,7 +501,7 @@ public class ProductOptionValueDTOConverter
 			List<CommerceOptionValue> commerceOptionValues,
 			CPDefinitionOptionRel cpDefinitionOptionRel,
 			CPDefinitionOptionValueRel cpDefinitionOptionValueRel,
-			CPInstance cpInstance, long cProductId,
+			CPInstance cpInstance, String cProductExternalReferenceCode,
 			DTOConverterContext dtoConverterContext)
 		throws Exception {
 
@@ -535,7 +537,7 @@ public class ProductOptionValueDTOConverter
 
 		COREntryType corEntryType = _corEntryTypeRegistry.getCOREntryType(
 			COREntryConstants.TYPE_PRODUCTS_LIMIT);
-		List<Long> cProductIds = new ArrayList<>();
+		List<String> cProductExternalReferenceCodes = new ArrayList<>();
 
 		List<COREntry> corEntries = _corEntryLocalService.getCOREntries(
 			cpDefinitionOptionRel.getCompanyId(), true,
@@ -554,17 +556,17 @@ public class ProductOptionValueDTOConverter
 						corEntry.getTypeSettings()
 					).build();
 
-				cProductIds.addAll(
-					TransformUtil.transform(
-						StringUtil.split(
-							typeSettingsUnicodeProperties.getProperty(
-								COREntryConstants.
-									TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS)),
-						Long::valueOf));
+				cProductExternalReferenceCodes.addAll(
+					StringUtil.split(
+						typeSettingsUnicodeProperties.getProperty(
+							COREntryConstants.
+								TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES)));
 			}
 		}
 
-		if (cProductIds.contains(cProductId)) {
+		if (cProductExternalReferenceCodes.contains(
+				cProductExternalReferenceCode)) {
+
 			return infoMessage;
 		}
 
@@ -660,6 +662,14 @@ public class ProductOptionValueDTOConverter
 		}
 
 		return null;
+	}
+
+	private String _getCProductExternalReferenceCode(CPDefinition cpDefinition)
+		throws Exception {
+
+		CProduct cProduct = cpDefinition.getCProduct();
+
+		return cProduct.getExternalReferenceCode();
 	}
 
 	private BigDecimal _getMinOrderQuantity(

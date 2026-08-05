@@ -181,7 +181,7 @@ public class COREntryDisplayContext {
 		return _corEntryTypeRegistry.getCOREntryTypes();
 	}
 
-	public String getCProductIds() throws Exception {
+	public String getCProductExternalReferenceCodes() throws Exception {
 		COREntry corEntry = getCOREntry();
 
 		if (corEntry == null) {
@@ -194,7 +194,8 @@ public class COREntryDisplayContext {
 			).build();
 
 		return typeSettingsUnicodeProperties.getProperty(
-			COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS);
+			COREntryConstants.
+				TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES);
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {

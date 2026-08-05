@@ -21,7 +21,7 @@ COREntryDisplayContext corEntryDisplayContext = (COREntryDisplayContext)request.
 				<aui:validator name="number" />
 			</aui:input>
 
-			<aui:input id='<%= "type--settings--" + COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS + "--" %>' name='<%= "type--settings--" + COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS + "--" %>' type="hidden" value="<%= corEntryDisplayContext.getCProductIds() %>" />
+			<aui:input id='<%= "type--settings--" + COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES + "--" %>' name='<%= "type--settings--" + COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES + "--" %>' type="hidden" value="<%= corEntryDisplayContext.getCProductExternalReferenceCodes() %>" />
 
 			<div class="row">
 				<div class="col-12 pt-4">
@@ -34,7 +34,7 @@ COREntryDisplayContext corEntryDisplayContext = (COREntryDisplayContext)request.
 							).put(
 								"rootPortletId", portletDisplay.getRootPortletId()
 							).put(
-								"typeSettingsInputId", "type--settings--" + COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS + "--"
+								"typeSettingsInputId", "type--settings--" + COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES + "--"
 							).put(
 								"workflowAction", WorkflowConstants.ACTION_PUBLISH
 							).build()

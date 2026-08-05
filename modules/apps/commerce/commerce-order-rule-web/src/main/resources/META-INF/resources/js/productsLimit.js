@@ -20,14 +20,14 @@ export default function ({
 		if (typeSettingsInput.value) {
 			const filteredValue = typeSettingsInput.value
 				.split(',')
-				.filter((value) => value !== '' + product.productId);
+				.filter((value) => value !== product.externalReferenceCode);
 
-			filteredValue.push(product.productId);
+			filteredValue.push(product.externalReferenceCode);
 
 			typeSettingsInput.value = filteredValue.toString();
 		}
 		else {
-			typeSettingsInput.value = product.productId;
+			typeSettingsInput.value = product.externalReferenceCode;
 		}
 
 		document.getElementById(`${namespace}workflowAction`).value =
@@ -53,7 +53,7 @@ export default function ({
 				fieldName: ['name', 'LANG'],
 			},
 			{
-				fieldName: 'productId',
+				fieldName: 'externalReferenceCode',
 			},
 			{
 				fieldName: ['catalog', 'name'],

@@ -10,20 +10,20 @@ package com.liferay.commerce.order.rule.web.internal.frontend.model;
  */
 public class Product {
 
-	public Product(long cProductId, String name) {
-		_cProductId = cProductId;
+	public Product(String externalReferenceCode, String name) {
+		_externalReferenceCode = externalReferenceCode;
 		_name = name;
 	}
 
-	public long getCProductId() {
-		return _cProductId;
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
 	}
 
 	public String getName() {
 		return _name;
 	}
 
-	private final long _cProductId;
+	private final String _externalReferenceCode;
 	private final String _name;
 
 }

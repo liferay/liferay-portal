@@ -35,8 +35,9 @@ public class COREntryConstants {
 
 	public static final String TYPE_PRODUCTS_LIMIT = "products-limit";
 
-	public static final String TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS =
-		"products-limit-field-product-ids";
+	public static final String
+		TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES =
+			"products-limit-field-product-external-reference-codes";
 
 	public static final String TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_QUANTITY =
 		"products-limit-field-product-quantity";

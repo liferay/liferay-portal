@@ -186,24 +186,27 @@ public class EditCOREntryMVCActionCommand extends BaseMVCActionCommand {
 	private String _getTypeSettings(
 		ActionRequest actionRequest, COREntry corEntry) {
 
-		String cProductId = ParamUtil.getString(actionRequest, "cProductId");
+		String cProductExternalReferenceCode = ParamUtil.getString(
+			actionRequest, "cProductExternalReferenceCode");
 
 		UnicodeProperties typeSettingsUnicodeProperties =
 			UnicodePropertiesBuilder.fastLoad(
 				corEntry.getTypeSettings()
 			).build();
 
-		List<String> cProductIds = StringUtil.split(
+		List<String> cProductExternalReferenceCodes = StringUtil.split(
 			typeSettingsUnicodeProperties.getProperty(
-				COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS));
+				COREntryConstants.
+					TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES));
 
-		cProductIds.remove(cProductId);
+		cProductExternalReferenceCodes.remove(cProductExternalReferenceCode);
 
 		return UnicodePropertiesBuilder.create(
 			true
 		).setProperty(
-			COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_IDS,
-			StringUtil.merge(cProductIds, StringPool.COMMA)
+			COREntryConstants.
+				TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_EXTERNAL_REFERENCE_CODES,
+			StringUtil.merge(cProductExternalReferenceCodes, StringPool.COMMA)
 		).setProperty(
 			COREntryConstants.TYPE_PRODUCTS_LIMIT_FIELD_PRODUCT_QUANTITY,
 			typeSettingsUnicodeProperties.getProperty(

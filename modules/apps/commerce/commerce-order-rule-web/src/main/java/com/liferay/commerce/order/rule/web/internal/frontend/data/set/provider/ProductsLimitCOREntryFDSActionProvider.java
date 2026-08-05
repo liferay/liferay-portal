@@ -56,7 +56,7 @@ public class ProductsLimitCOREntryFDSActionProvider
 			dropdownItem -> {
 				dropdownItem.setHref(
 					_getConfigurableProductDeleteURL(
-						corEntryId, product.getCProductId(),
+						corEntryId, product.getExternalReferenceCode(),
 						httpServletRequest));
 				dropdownItem.setLabel(
 					_language.get(httpServletRequest, "delete"));
@@ -65,7 +65,7 @@ public class ProductsLimitCOREntryFDSActionProvider
 	}
 
 	private String _getConfigurableProductDeleteURL(
-		long corEntryId, long cProductId,
+		long corEntryId, String cProductExternalReferenceCode,
 		HttpServletRequest httpServletRequest) {
 
 		return PortletURLBuilder.create(
@@ -83,7 +83,7 @@ public class ProductsLimitCOREntryFDSActionProvider
 		).setParameter(
 			"corEntryId", corEntryId
 		).setParameter(
-			"cProductId", cProductId
+			"cProductExternalReferenceCode", cProductExternalReferenceCode
 		).buildString();
 	}
 
