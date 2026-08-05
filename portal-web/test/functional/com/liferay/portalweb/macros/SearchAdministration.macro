@@ -116,9 +116,7 @@ definition {
 
 	@summary = "Default summary"
 	macro startReindex(action = null) {
-		while ((IsElementNotPresent(locator1 = "SearchAdmin#EXECUTE_REINDEX_BUTTON")) && (maxIterations = "50")) {
-			TestUtils.hardRefresh();
-		}
+		TestUtils.hardRefresh();
 
 		Click(
 			key_action = ${action},

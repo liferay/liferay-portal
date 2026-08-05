@@ -234,20 +234,17 @@ return element.textContent;
 
 	@summary = "Default summary"
 	macro hardRefresh() {
-		var mac = OSDetector.isApple();
+		var cdpParameters = MapUtil.newObjectHashMap();
 
-		if (${mac} == "true") {
-			Type.sendKeys(
-				locator1 = "//body",
-				value1 = "Shift + Command + r");
-		}
-		else {
-			Type.sendKeys(
-				locator1 = "//body",
-				value1 = "Ctrl + Shift + r");
-		}
+		ExecuteCDPCommand(
+			value1 = "Network.enable",
+			value2 = ${cdpParameters});
 
-		WaitForPageLoad();
+		ExecuteCDPCommand(
+			value1 = "Network.clearBrowserCache",
+			value2 = ${cdpParameters});
+
+		Refresh();
 	}
 
 	@summary = "Default summary"
