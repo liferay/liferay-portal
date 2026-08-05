@@ -237,7 +237,7 @@ describe('List', () => {
 		const row = screen.getByText('Seattle0').closest('tr');
 
 		expect(within(row).getByText('Account')).toBeInTheDocument();
-		expect(within(row).getByText('1.8K')).toBeInTheDocument();
+		expect(within(row).getByText('1.8K accounts')).toBeInTheDocument();
 	});
 
 	it('shows the individual count for individual segments', async () => {
@@ -259,6 +259,6 @@ describe('List', () => {
 		const row = screen.getByText('Seattle0').closest('tr');
 
 		expect(within(row).getByText('Individual')).toBeInTheDocument();
-		expect(within(row).getByText('2.3K')).toBeInTheDocument();
+		expect(within(row).getByText('2.3K individuals')).toBeInTheDocument();
 	});
 });
