@@ -726,7 +726,7 @@
 			<finder-column name="status" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CPDefinitionOptionRel" remote-service="true" uuid="true">
+	<entity external-reference-code="company" local-service="true" name="CPDefinitionOptionRel" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
 
@@ -798,7 +798,7 @@
 			<finder-column name="key" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="CPDefinitionOptionValueRel" remote-service="true" uuid="true">
+	<entity external-reference-code="company" local-service="true" name="CPDefinitionOptionValueRel" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
 
