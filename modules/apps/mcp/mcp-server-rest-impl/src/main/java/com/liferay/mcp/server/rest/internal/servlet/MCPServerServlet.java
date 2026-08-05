@@ -13,12 +13,13 @@ import com.liferay.mcp.server.rest.internal.util.ToolSetUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -30,7 +31,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -161,19 +161,17 @@ public class MCPServerServlet extends HttpServlet {
 				).build();
 
 		List<McpStatelessServerFeatures.SyncToolSpecification>
-			syncToolSpecifications = TransformUtil.transformToList(
-				StringUtil.splitLines((String)values.get("tools")),
-				tool -> {
-					String[] tokens = StringUtil.split(tool, CharPool.SPACE);
+			syncToolSpecifications = TransformUtil.transform(
+				_getMCPServerProfileToolObjectEntries(
+					mcpServerProfileObjectEntry),
+				mcpServerProfileToolObjectEntry -> {
+					Map<String, Serializable> mcpServerProfileToolValues =
+						mcpServerProfileToolObjectEntry.getValues();
 
-					if (tokens.length != 2) {
-						throw new IllegalArgumentException(
-							"Profile tool must be in \"<toolSetName> " +
-								"<toolName>\" format: " + tool);
-					}
-
-					String toolName = tokens[1];
-					String toolSetName = tokens[0];
+					String toolName = MapUtil.getString(
+						mcpServerProfileToolValues, "toolName");
+					String toolSetName = MapUtil.getString(
+						mcpServerProfileToolValues, "toolSetName");
 
 					try {
 						return new McpStatelessServerFeatures.
@@ -393,6 +391,25 @@ public class MCPServerServlet extends HttpServlet {
 		return null;
 	}
 
+	private List<ObjectEntry> _getMCPServerProfileToolObjectEntries(
+		ObjectEntry mcpServerProfileObjectEntry) {
+
+		try {
+			ObjectRelationship objectRelationship =
+				_objectRelationshipLocalService.getObjectRelationship(
+					mcpServerProfileObjectEntry.getObjectDefinitionId(),
+					"mcpServerProfileToTools");
+
+			return _objectEntryLocalService.getOneToManyObjectEntries(
+				0, objectRelationship.getObjectRelationshipId(), null, false,
+				mcpServerProfileObjectEntry.getObjectEntryId(), true, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		}
+		catch (PortalException portalException) {
+			throw new RuntimeException(portalException);
+		}
+	}
+
 	private Servlet _getServlet(
 		HttpServletRequest httpServletRequest, long companyId,
 		ObjectEntry mcpServerProfileObjectEntry) {
@@ -493,6 +510,9 @@ public class MCPServerServlet extends HttpServlet {
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private Portal _portal;
