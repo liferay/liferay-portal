@@ -1026,7 +1026,8 @@ public class CPDefinitionsImporter {
 
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
 			_commerceAvailabilityEstimateLocalService.
-				addCommerceAvailabilityEstimate(titleMap, 0, serviceContext);
+				addCommerceAvailabilityEstimate(
+					null, titleMap, 0, serviceContext);
 
 		return _cpdAvailabilityEstimateLocalService.
 			updateCPDAvailabilityEstimateByCProductId(

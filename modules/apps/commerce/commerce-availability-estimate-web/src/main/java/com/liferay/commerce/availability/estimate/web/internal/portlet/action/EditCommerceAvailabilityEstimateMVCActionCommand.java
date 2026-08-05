@@ -105,6 +105,8 @@ public class EditCommerceAvailabilityEstimateMVCActionCommand
 			ActionRequest actionRequest)
 		throws PortalException {
 
+		String externalReferenceCode = ParamUtil.getString(
+			actionRequest, "externalReferenceCode");
 		long commerceAvailabilityEstimateId = ParamUtil.getLong(
 			actionRequest, "commerceAvailabilityEstimateId");
 
@@ -118,13 +120,13 @@ public class EditCommerceAvailabilityEstimateMVCActionCommand
 		if (commerceAvailabilityEstimateId <= 0) {
 			_commerceAvailabilityEstimateService.
 				addCommerceAvailabilityEstimate(
-					titleMap, priority, serviceContext);
+					externalReferenceCode, titleMap, priority, serviceContext);
 		}
 		else {
 			_commerceAvailabilityEstimateService.
 				updateCommerceAvailabilityEstimate(
-					commerceAvailabilityEstimateId, titleMap, priority,
-					serviceContext);
+					externalReferenceCode, commerceAvailabilityEstimateId,
+					titleMap, priority, serviceContext);
 		}
 	}
 

@@ -17,6 +17,7 @@ CommerceAvailabilityEstimate commerceAvailabilityEstimate = commerceAvailability
 
 <aui:form action="<%= editCommerceAvailabilityEstimateActionURL %>" cssClass="container-fluid container-fluid-max-xl" method="post" name="fm">
 	<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= (commerceAvailabilityEstimate == null) ? Constants.ADD : Constants.UPDATE %>" />
+	<aui:input name="externalReferenceCode" type="hidden" value="<%= (commerceAvailabilityEstimate == null) ? StringPool.BLANK : commerceAvailabilityEstimate.getExternalReferenceCode() %>" />
 	<aui:input name="commerceAvailabilityEstimateId" type="hidden" value="<%= (commerceAvailabilityEstimate == null) ? 0 : commerceAvailabilityEstimate.getCommerceAvailabilityEstimateId() %>" />
 
 	<div class="lfr-form-content">
