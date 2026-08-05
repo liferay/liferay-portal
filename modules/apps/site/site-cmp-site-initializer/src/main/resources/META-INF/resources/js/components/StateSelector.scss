@@ -3,9 +3,9 @@
 .lfr-cmp__state-selector {
 	&--small {
 		.label:not(.label-item) {
-			height: 16px;
+			height: auto;
 			margin: 0;
-			min-height: unset;
+			min-height: 16px;
 			padding: 4px;
 		}
 	}
@@ -17,7 +17,10 @@
 	}
 
 	.label:not(.label-item) {
+		height: auto;
 		margin: 0;
+		max-width: 100%;
+		white-space: normal;
 	}
 
 	&:hover {
