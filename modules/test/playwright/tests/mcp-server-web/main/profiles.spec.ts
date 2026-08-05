@@ -348,15 +348,15 @@ test.describe('Profiles - Detail (Create / Edit)', () => {
 
 test.describe('Profiles - Data Masks tab', () => {
 	test(
-		'Hides the tabs until the profile is saved',
+		'Disables the Data Masks tab until the profile is saved',
 		{tag: '@LPD-99230'},
 		async ({profilesPage}) => {
 			await profilesPage.goto();
 			await profilesPage.newProfileButton.click();
 
 			await expect(profilesPage.nameInput).toBeVisible();
-			await expect(profilesPage.profileInfoTab).toBeHidden();
-			await expect(profilesPage.dataMasksTab).toBeHidden();
+			await expect(profilesPage.profileInfoTab).toBeVisible();
+			await expect(profilesPage.dataMasksTabButton).toBeDisabled();
 
 			await profilesPage.nameInput.fill(profileName());
 			await profilesPage.descriptionInput.fill('Created from the UI');
@@ -365,7 +365,6 @@ test.describe('Profiles - Data Masks tab', () => {
 			);
 			await profilesPage.saveButton.click();
 
-			await expect(profilesPage.profileInfoTab).toBeVisible();
 			await expect(profilesPage.dataMasksTabLink).toBeVisible();
 		}
 	);

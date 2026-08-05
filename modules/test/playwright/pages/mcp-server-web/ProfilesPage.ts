@@ -57,6 +57,10 @@ export class ProfilesPage extends FDSTablePage {
 			.filter({hasText: 'Data Masks'});
 	}
 
+	get dataMasksTabButton(): Locator {
+		return this.page.getByRole('button', {exact: true, name: 'Data Masks'});
+	}
+
 	get dataMasksTabLink(): Locator {
 		return this.page.getByRole('link', {exact: true, name: 'Data Masks'});
 	}
