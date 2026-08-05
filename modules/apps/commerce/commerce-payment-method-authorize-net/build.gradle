@@ -1,8 +1,8 @@
 dependencies {
 	compileInclude group: "net.authorize", name: "anet-java-sdk", version: "3.0.0"
 	compileInclude group: "org.apache.httpcomponents.client5", name: "httpclient5", version: "5.4.4"
-	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5", version: "5.3.2"
-	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5-h2", version: "5.3.4"
+	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5", version: "5.4.3"
+	compileInclude group: "org.apache.httpcomponents.core5", name: "httpcore5-h2", version: "5.4.3"
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
