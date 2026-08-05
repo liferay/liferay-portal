@@ -38,3 +38,37 @@ test('Can export using the new navigation buttons', async ({
 
 	await exportImportPage.export(exportName);
 });
+
+test(
+	'sanitizes a javascript: redirect parameter on the portlet export Cancel link',
+	{tag: '@LPD-92456'},
+	async ({page}) => {
+		const NAMESPACE =
+			'_com_liferay_exportimport_web_portlet_ExportImportPortlet_';
+
+		const searchParams = new URLSearchParams({
+			p_p_id: 'com_liferay_exportimport_web_portlet_ExportImportPortlet',
+			p_p_lifecycle: '0',
+			[NAMESPACE + 'mvcPath']: '/export_portlet.jsp',
+			[NAMESPACE + 'portletConfiguration']: 'true',
+			[NAMESPACE + 'portletResource']:
+				'com_liferay_journal_web_portlet_JournalPortlet',
+			[NAMESPACE + 'redirect']: 'javascript:alert(document.domain)',
+			[NAMESPACE + 'resourcePrimKey']:
+				'1_LAYOUT_com_liferay_journal_web_portlet_JournalPortlet',
+		});
+
+		await page.goto(
+			`/group/guest/~/control_panel/manage?${searchParams.toString()}`
+		);
+
+		const cancelLink = page.getByRole('button', {name: 'Cancel'});
+
+		await expect(cancelLink).toBeVisible();
+
+		await expect(cancelLink).toHaveAttribute(
+			'href',
+			/^(?!\s*javascript:)/i
+		);
+	}
+);
