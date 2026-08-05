@@ -17,6 +17,9 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Attachment;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.AttachmentBase64;
+import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
+import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -30,6 +33,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -42,6 +46,7 @@ import java.io.ByteArrayInputStream;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,6 +75,16 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			testCompany.getCompanyId(), testGroup.getGroupId(),
 			_user.getUserId());
+	}
+
+	@Override
+	@Test
+	public void testGetProductByExternalReferenceCodeAttachmentsPage()
+		throws Exception {
+
+		super.testGetProductByExternalReferenceCodeAttachmentsPage();
+
+		_testGetProductByExternalReferenceCodeAttachmentsPageWithBinaries();
 	}
 
 	@Ignore
@@ -437,6 +452,59 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 				type = CPAttachmentFileEntryConstants.TYPE_IMAGE;
 			}
 		};
+	}
+
+	private void _testGetProductByExternalReferenceCodeAttachmentsPageWithBinaries()
+		throws Exception {
+
+		String productExternalReferenceCode =
+			_cProduct.getExternalReferenceCode();
+
+		String base64EncodedContent = Base64.encode(
+			RandomTestUtil.randomBytes());
+
+		Attachment postAttachment =
+			attachmentResource.
+				postProductByExternalReferenceCodeAttachmentByBase64(
+					productExternalReferenceCode,
+					new AttachmentBase64() {
+						{
+							attachment = base64EncodedContent;
+							contentType = ContentTypes.TEXT_PLAIN;
+							externalReferenceCode =
+								RandomTestUtil.randomString();
+							galleryEnabled = true;
+							neverExpire = true;
+							title = HashMapBuilder.put(
+								"en_US", RandomTestUtil.randomString(5)
+							).build();
+							type = CPAttachmentFileEntryConstants.TYPE_OTHER;
+						}
+					});
+
+		Attachment getAttachment =
+			attachmentResource.getAttachmentByExternalReferenceCode(
+				postAttachment.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			base64EncodedContent, getAttachment.getAttachment());
+
+		Page<Attachment> attachmentsPage =
+			attachmentResource.getProductByExternalReferenceCodeAttachmentsPage(
+				productExternalReferenceCode, Pagination.of(1, 10));
+
+		String getBase64EncodedContent = null;
+
+		for (Attachment attachment : attachmentsPage.getItems()) {
+			if (Objects.equals(
+					postAttachment.getExternalReferenceCode(),
+					attachment.getExternalReferenceCode())) {
+
+				getBase64EncodedContent = attachment.getAttachment();
+			}
+		}
+
+		Assert.assertEquals(base64EncodedContent, getBase64EncodedContent);
 	}
 
 	private void _testPatchAttachmentByExternalReferenceCodeWithFileEntryExternalReferenceCode()
