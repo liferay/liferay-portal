@@ -70,6 +70,7 @@ spec:
                     selfHeal: true
                 managedNamespaceMetadata:
                     labels:
+                        licensing.liferay.com/environment: "true"
                         liferay.com/observable: "true"
                         pod-security.kubernetes.io/enforce: restricted
                 retry:
