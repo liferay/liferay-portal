@@ -101,6 +101,9 @@ type MarketplaceVolumeSpec struct {
 	// +optional
 	ClaimName string `json:"claimName,omitempty"`
 
+	// +optional
+	Enabled bool `json:"enabled,omitempty"`
+
 	// +kubebuilder:validation:Required
 	Size resource.Quantity `json:"size"`
 

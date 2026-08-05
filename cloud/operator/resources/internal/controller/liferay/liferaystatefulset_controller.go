@@ -61,9 +61,11 @@ func (liferayStatefulSetReconciler *LiferayStatefulSetReconciler) Reconcile(
 		return controllerruntime.Result{}, nil
 	}
 
-	if liferayEnvironment.Spec.MarketplaceVolume == nil {
+	marketplaceVolume := liferayEnvironment.Spec.MarketplaceVolume
+
+	if marketplaceVolume == nil || !marketplaceVolume.Enabled {
 		logger.Info(
-			"Skipping StatefulSet with no marketplace volume",
+			"Skipping StatefulSet with no marketplace volume enabled",
 			"liferayEnvironment", liferayEnvironment.Name,
 		)
 

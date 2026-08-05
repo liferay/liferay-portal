@@ -35,9 +35,5 @@ func GetVolumeClaim(
 }
 
 func getVolumeClaimName(liferayEnvironment *licensingv1alpha1.LiferayEnvironment) string {
-	if liferayEnvironment.Spec.MarketplaceVolume.ClaimName != "" {
-		return liferayEnvironment.Spec.MarketplaceVolume.ClaimName
-	}
-
 	return liferayEnvironment.Spec.WorkloadRef.Name + claimNameSuffix
 }
