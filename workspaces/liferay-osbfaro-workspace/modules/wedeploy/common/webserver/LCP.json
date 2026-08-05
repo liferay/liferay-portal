@@ -45,7 +45,8 @@
 				"certs": [
 					{
 						"customDomains": [
-							"analytics-stg.liferay.com"
+							"analytics-stg.liferay.com",
+							"ldp-stg.liferay.com"
 						]
 					}
 				],
