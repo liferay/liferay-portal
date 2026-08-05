@@ -5,14 +5,23 @@
 
 package com.liferay.jenkins.results.parser.monitor;
 
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+
 /**
  * @author Brittney Nguyen
  */
 public class MonitorFactory {
 
 	public static Monitor newMonitor(MonitorConfig monitorConfig) {
-		throw new IllegalArgumentException(
-			"Unknown monitor type: " + monitorConfig.getType());
+		String type = monitorConfig.getType();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(type) &&
+			type.equals("job-health")) {
+
+			return new JobHealthMonitor(monitorConfig);
+		}
+
+		throw new IllegalArgumentException("Unknown monitor type: " + type);
 	}
 
 }
