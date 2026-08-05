@@ -45,7 +45,7 @@ public class
 		CommerceAvailabilityEstimate commerceAvailabilityEstimate =
 			_commerceAvailabilityEstimateLocalService.
 				addCommerceAvailabilityEstimate(
-					RandomTestUtil.randomLocaleStringMap(),
+					null, RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.randomDouble(),
 					ServiceContextTestUtil.getServiceContext());
 

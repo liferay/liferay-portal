@@ -59,6 +59,7 @@ public class CommerceAvailabilityEstimateServiceTest {
 		_commerceAvailabilityEstimate =
 			_commerceAvailabilityEstimateService.
 				addCommerceAvailabilityEstimate(
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.nextDouble(), _serviceContext);
 		_role = _roleLocalService.addRole(
@@ -78,6 +79,7 @@ public class CommerceAvailabilityEstimateServiceTest {
 
 			_commerceAvailabilityEstimateService.
 				addCommerceAvailabilityEstimate(
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.nextDouble(), _serviceContext);
 
@@ -100,6 +102,7 @@ public class CommerceAvailabilityEstimateServiceTest {
 
 			_commerceAvailabilityEstimateService.
 				addCommerceAvailabilityEstimate(
+					RandomTestUtil.randomString(),
 					RandomTestUtil.randomLocaleStringMap(),
 					RandomTestUtil.nextDouble(), _serviceContext);
 		}
@@ -248,6 +251,7 @@ public class CommerceAvailabilityEstimateServiceTest {
 
 			_commerceAvailabilityEstimateService.
 				updateCommerceAvailabilityEstimate(
+					_commerceAvailabilityEstimate.getExternalReferenceCode(),
 					_commerceAvailabilityEstimate.
 						getCommerceAvailabilityEstimateId(),
 					RandomTestUtil.randomLocaleStringMap(),
@@ -274,6 +278,7 @@ public class CommerceAvailabilityEstimateServiceTest {
 
 			_commerceAvailabilityEstimateService.
 				updateCommerceAvailabilityEstimate(
+					_commerceAvailabilityEstimate.getExternalReferenceCode(),
 					_commerceAvailabilityEstimate.
 						getCommerceAvailabilityEstimateId(),
 					RandomTestUtil.randomLocaleStringMap(),
