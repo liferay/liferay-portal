@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
@@ -49,6 +50,23 @@ public class ProductOptionValueResourceImpl
 	@Override
 	public void deleteProductOptionValue(Long id) throws Exception {
 		_cpDefinitionOptionValueRelService.deleteCPDefinitionOptionValueRel(id);
+	}
+
+	@Override
+	public Page<ProductOptionValue>
+			getProductOptionByExternalReferenceCodeProductOptionValuesPage(
+				String externalReferenceCode, String search,
+				Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelService.
+				getCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		return getProductOptionIdProductOptionValuesPage(
+			cpDefinitionOptionRel.getCPDefinitionOptionRelId(), search,
+			pagination, sorts);
 	}
 
 	@NestedField(
@@ -131,6 +149,14 @@ public class ProductOptionValueResourceImpl
 				cpDefinitionOptionValueRel.getNameMap());
 		}
 
+		String externalReferenceCode =
+			productOptionValue.getExternalReferenceCode();
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			_cpDefinitionOptionValueRelService.updateExternalReferenceCode(
+				id, externalReferenceCode);
+		}
+
 		return _toProductOptionValue(
 			_cpDefinitionOptionValueRelService.updateCPDefinitionOptionValueRel(
 				id, cpInstanceId,
@@ -155,6 +181,23 @@ public class ProductOptionValueResourceImpl
 					cpDefinitionOptionValueRel.getUnitOfMeasureKey()),
 				_serviceContextHelper.getServiceContext(
 					cpDefinitionOptionValueRel.getGroupId())));
+	}
+
+	@Override
+	public ProductOptionValue
+			postProductOptionByExternalReferenceCodeProductOptionValue(
+				String externalReferenceCode,
+				ProductOptionValue productOptionValue)
+		throws Exception {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelService.
+				getCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		return _addOrUpdateProductOptionValue(
+			cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+			productOptionValue);
 	}
 
 	@Override

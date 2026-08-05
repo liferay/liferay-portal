@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.math.BigDecimal;
 
@@ -35,9 +36,24 @@ public class ProductOptionValueUtil {
 				long cpDefinitionOptionRelId, ServiceContext serviceContext)
 		throws PortalException {
 
-		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelService.fetchCPDefinitionOptionValueRel(
-				cpDefinitionOptionRelId, productOptionValue.getKey());
+		String externalReferenceCode =
+			productOptionValue.getExternalReferenceCode();
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel = null;
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			cpDefinitionOptionValueRel =
+				cpDefinitionOptionValueRelService.
+					fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+						externalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		if (cpDefinitionOptionValueRel == null) {
+			cpDefinitionOptionValueRel =
+				cpDefinitionOptionValueRelService.
+					fetchCPDefinitionOptionValueRel(
+						cpDefinitionOptionRelId, productOptionValue.getKey());
+		}
 
 		long cpInstanceId = 0;
 
@@ -110,6 +126,14 @@ public class ProductOptionValueUtil {
 							productOptionValue.getUnitOfMeasureKey(),
 							cpDefinitionOptionValueRel.getUnitOfMeasureKey()),
 						serviceContext);
+		}
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			cpDefinitionOptionValueRel =
+				cpDefinitionOptionValueRelService.updateExternalReferenceCode(
+					cpDefinitionOptionValueRel.
+						getCPDefinitionOptionValueRelId(),
+					externalReferenceCode);
 		}
 
 		return cpDefinitionOptionValueRel;

@@ -5,6 +5,9 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
+import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.type.grouped.constants.GroupedCPTypeConstants;
 import com.liferay.commerce.product.type.grouped.model.CPDefinitionGroupedEntry;
 import com.liferay.commerce.product.type.grouped.service.CPDefinitionGroupedEntryService;
@@ -13,6 +16,7 @@ import com.liferay.commerce.shop.by.diagram.service.CSDiagramEntryService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.LinkedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.LinkedProductDTOConverterContext;
+import com.liferay.headless.commerce.admin.catalog.internal.util.v1_0.ProductUtil;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.LinkedProductResource;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -35,6 +39,27 @@ import org.osgi.service.component.annotations.ServiceScope;
 	service = LinkedProductResource.class
 )
 public class LinkedProductResourceImpl extends BaseLinkedProductResourceImpl {
+
+	@Override
+	public Page<LinkedProduct>
+			getProductByExternalReferenceCodeLinkedProductsPage(
+				String externalReferenceCode, Pagination pagination)
+		throws Exception {
+
+		CPDefinition cpDefinition =
+			ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId(),
+				_cpDefinitionService);
+
+		if (cpDefinition == null) {
+			throw new NoSuchCPDefinitionException(
+				"Unable to find product with external reference code " +
+					externalReferenceCode);
+		}
+
+		return getProductIdLinkedProductsPage(
+			cpDefinition.getCProductId(), pagination);
+	}
 
 	@NestedField(parentClass = Product.class, value = "linkedProducts")
 	@Override
@@ -85,6 +110,9 @@ public class LinkedProductResourceImpl extends BaseLinkedProductResourceImpl {
 
 	@Reference
 	private CPDefinitionGroupedEntryService _cpDefinitionGroupedEntryService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
 
 	@Reference
 	private CSDiagramEntryService _csDiagramEntryService;

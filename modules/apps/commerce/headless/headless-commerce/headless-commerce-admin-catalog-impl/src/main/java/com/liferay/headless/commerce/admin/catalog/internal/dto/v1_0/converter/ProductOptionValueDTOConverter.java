@@ -40,6 +40,8 @@ public class ProductOptionValueDTOConverter
 		return new ProductOptionValue() {
 			{
 				setDeltaPrice(cpDefinitionOptionValueRel::getPrice);
+				setExternalReferenceCode(
+					cpDefinitionOptionValueRel::getExternalReferenceCode);
 				setId(
 					cpDefinitionOptionValueRel::
 						getCPDefinitionOptionValueRelId);

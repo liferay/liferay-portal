@@ -64,6 +64,8 @@ public class ProductOptionDTOConverter
 				setDescription(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpDefinitionOptionRel.getDescriptionMap()));
+				setExternalReferenceCode(
+					cpDefinitionOptionRel::getExternalReferenceCode);
 				setFacetable(cpDefinitionOptionRel::isFacetable);
 				setFieldType(cpDefinitionOptionRel::getCommerceOptionTypeKey);
 				setId(cpDefinitionOptionRel::getCPDefinitionOptionRelId);

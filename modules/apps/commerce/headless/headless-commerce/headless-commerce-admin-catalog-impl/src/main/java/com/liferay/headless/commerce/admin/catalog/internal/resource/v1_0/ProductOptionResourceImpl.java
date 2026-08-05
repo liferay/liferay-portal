@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -211,6 +212,14 @@ public class ProductOptionResourceImpl extends BaseProductOptionResourceImpl {
 				productOption.getTypeSettings(),
 				cpDefinitionOptionRel.getTypeSettings()),
 			serviceContext);
+
+		String externalReferenceCode = productOption.getExternalReferenceCode();
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			_cpDefinitionOptionRelService.updateExternalReferenceCode(
+				cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+				externalReferenceCode);
+		}
 
 		ProductOptionValue[] productOptionValues =
 			productOption.getProductOptionValues();

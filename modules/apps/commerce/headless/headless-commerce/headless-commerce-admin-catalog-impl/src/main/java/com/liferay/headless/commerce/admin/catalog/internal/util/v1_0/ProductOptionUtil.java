@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
 
 import java.io.Serializable;
@@ -52,9 +53,22 @@ public class ProductOptionUtil {
 			}
 		}
 
-		CPDefinitionOptionRel cpDefinitionOptionRel =
-			cpDefinitionOptionRelService.fetchCPDefinitionOptionRel(
-				cpDefinitionId, cpOption.getCPOptionId());
+		String externalReferenceCode = productOption.getExternalReferenceCode();
+
+		CPDefinitionOptionRel cpDefinitionOptionRel = null;
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			cpDefinitionOptionRel =
+				cpDefinitionOptionRelService.
+					fetchCPDefinitionOptionRelByExternalReferenceCode(
+						externalReferenceCode, serviceContext.getCompanyId());
+		}
+
+		if (cpDefinitionOptionRel == null) {
+			cpDefinitionOptionRel =
+				cpDefinitionOptionRelService.fetchCPDefinitionOptionRel(
+					cpDefinitionId, cpOption.getCPOptionId());
+		}
 
 		Map<String, String> nameMap = productOption.getName();
 
@@ -145,6 +159,13 @@ public class ProductOptionUtil {
 						productOption.getTypeSettings(),
 						cpDefinitionOptionRel.getTypeSettings()),
 					serviceContext);
+		}
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			cpDefinitionOptionRel =
+				cpDefinitionOptionRelService.updateExternalReferenceCode(
+					cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
+					externalReferenceCode);
 		}
 
 		return cpDefinitionOptionRel;

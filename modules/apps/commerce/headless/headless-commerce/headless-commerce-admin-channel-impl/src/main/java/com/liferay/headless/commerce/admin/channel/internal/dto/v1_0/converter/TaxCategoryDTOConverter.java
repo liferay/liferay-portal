@@ -43,6 +43,8 @@ public class TaxCategoryDTOConverter
 				setDescription(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpTaxCategory.getDescriptionMap()));
+				setExternalReferenceCode(
+					cpTaxCategory::getExternalReferenceCode);
 				setId(cpTaxCategory::getCPTaxCategoryId);
 				setName(
 					() -> LanguageUtils.getLanguageIdMap(
