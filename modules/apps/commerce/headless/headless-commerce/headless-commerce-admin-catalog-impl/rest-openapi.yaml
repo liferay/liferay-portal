@@ -384,7 +384,7 @@ components:
             properties:
                 attachment:
                     description:
-                        Base64-encoded payload used only when supplying the file body inline; decoded server-side and stored as a new document-library file entry. Mutually exclusive with `src`; ignored when `src` is supplied. Not populated on read responses.
+                        Base64-encoded payload of the file. On write it supplies the file body inline; it is decoded server-side and stored as a new document-library file entry, is mutually exclusive with `src`, and is ignored when `src` is supplied. On read it is always populated, so an exported payload carries its content instead of a `src` URL pointing back at the source environment.
                     example: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==
                     type: string
                 cdnEnabled:
@@ -3154,7 +3154,7 @@ components:
                     type: object
                 attachment:
                     description:
-                        Base64-encoded payload of the file accepted on write; the service decodes it and stores it as a Document Library file; write-only.
+                        Base64-encoded payload of the file. On write the service decodes it and stores it as a Document Library file. On read it is always populated, so an exported payload carries its content instead of a `src` URL pointing back at the source environment.
                     example: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==
                     type: string
                 id:
@@ -3778,7 +3778,7 @@ components:
                     type: object
                 attachment:
                     description:
-                        Base64-encoded file uploaded as the asset for this entry on create or update; write-only and not returned on read. The resolved download URL is exposed through `src`.
+                        Base64-encoded file uploaded as the asset for this entry on create or update. On read it is always populated, so an exported payload carries its content instead of the `src` download URL pointing back at the source environment.
                     example: iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==
                     type: string
                 id:
