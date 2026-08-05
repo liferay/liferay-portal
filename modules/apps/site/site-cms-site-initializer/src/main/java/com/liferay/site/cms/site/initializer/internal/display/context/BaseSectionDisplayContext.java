@@ -13,7 +13,6 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.constants.InfoDisplayWebKeys;
-import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -25,7 +24,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -38,24 +36,19 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
 import com.liferay.site.cms.site.initializer.internal.util.PermissionUtil;
-import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -125,10 +118,12 @@ public abstract class BaseSectionDisplayContext {
 			() -> TransformUtil.transform(
 				_translationInfoItemFieldValuesExporterRegistry.
 					getTranslationInfoItemFieldValuesExporters(),
-				this::_getExportFileFormatJSONObject)
+				translationInfoItemFieldValuesExporter ->
+					SectionDisplayContextUtil.getExportFileFormatJSONObject(
+						themeDisplay, translationInfoItemFieldValuesExporter))
 		).put(
 			"availableLocales",
-			_getLocalesJSONArray(
+			SectionDisplayContextUtil.getLocalesJSONArray(
 				themeDisplay.getLocale(),
 				LanguageUtil.getAvailableLocales(themeDisplay.getSiteGroupId()))
 		).put(
@@ -352,55 +347,6 @@ public abstract class BaseSectionDisplayContext {
 	protected final ObjectEntryFolder objectEntryFolder;
 	protected final Portal portal;
 	protected final ThemeDisplay themeDisplay;
-
-	private JSONObject _getExportFileFormatJSONObject(
-		TranslationInfoItemFieldValuesExporter
-			translationInfoItemFieldValuesExporter) {
-
-		return JSONUtil.put(
-			"displayName",
-			() -> {
-				InfoLocalizedValue<String> labelInfoLocalizedValue =
-					translationInfoItemFieldValuesExporter.
-						getLabelInfoLocalizedValue();
-
-				return labelInfoLocalizedValue.getValue(
-					themeDisplay.getLocale());
-			}
-		).put(
-			"mimeType", translationInfoItemFieldValuesExporter.getMimeType()
-		);
-	}
-
-	private JSONArray _getLocalesJSONArray(
-		Locale locale, Collection<Locale> locales) {
-
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-		locales.forEach(
-			currentLocale -> {
-				String w3cLanguageId = LocaleUtil.toW3cLanguageId(
-					currentLocale);
-
-				jsonArray.put(
-					JSONUtil.put(
-						"displayName",
-						LocaleUtil.getLocaleDisplayName(currentLocale, locale)
-					).put(
-						"id", LocaleUtil.toLanguageId(currentLocale)
-					).put(
-						"label", w3cLanguageId
-					).put(
-						"languageId", LocaleUtil.toLanguageId(currentLocale)
-					).put(
-						"name", currentLocale.getDisplayName()
-					).put(
-						"symbol", StringUtil.toLowerCase(w3cLanguageId)
-					));
-			});
-
-		return jsonArray;
-	}
 
 	private ObjectEntryFolder _getObjectEntryFolder(
 		long companyId, Object object) {

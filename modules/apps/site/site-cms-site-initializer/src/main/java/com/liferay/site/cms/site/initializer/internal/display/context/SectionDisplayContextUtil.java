@@ -5,6 +5,10 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
+import java.util.Collection;
+import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
@@ -474,6 +478,26 @@ public class SectionDisplayContextUtil {
 		return depotEntryGroupIds;
 	}
 
+	public static JSONObject getExportFileFormatJSONObject(
+		ThemeDisplay themeDisplay,
+		TranslationInfoItemFieldValuesExporter
+			translationInfoItemFieldValuesExporter) {
+
+		return JSONUtil.put(
+			"displayName",
+			() -> {
+				InfoLocalizedValue<String> labelInfoLocalizedValue =
+					translationInfoItemFieldValuesExporter.
+						getLabelInfoLocalizedValue();
+
+				return labelInfoLocalizedValue.getValue(
+					themeDisplay.getLocale());
+			}
+		).put(
+			"mimeType", translationInfoItemFieldValuesExporter.getMimeType()
+		);
+	}
+
 	public static List<FDSActionDropdownItem> getFDSActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
 
@@ -852,6 +876,38 @@ public class SectionDisplayContextUtil {
 		}
 
 		return layout.getName(themeDisplay.getLocale(), true);
+	}
+
+	public static JSONArray getLocalesJSONArray(
+		Locale locale, Collection<Locale> locales) {
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		locales.forEach(
+			currentLocale -> {
+				String w3cLanguageId = LocaleUtil.toW3cLanguageId(
+					currentLocale);
+
+				jsonArray.put(
+					JSONUtil.put(
+						"displayName",
+						LocaleUtil.getLocaleDisplayName(currentLocale, locale)
+					).put(
+						"id", LocaleUtil.toLanguageId(currentLocale)
+					).put(
+						"label", w3cLanguageId
+					).put(
+						"languageId", LocaleUtil.toLanguageId(currentLocale)
+					).put(
+						"name", currentLocale.getDisplayName()
+					).put(
+						"symbol",
+						com.liferay.portal.kernel.util.StringUtil.toLowerCase(
+							w3cLanguageId)
+					));
+			});
+
+		return jsonArray;
 	}
 
 	public static Map<String, String> getObjectDefinitionCssClasses() {
