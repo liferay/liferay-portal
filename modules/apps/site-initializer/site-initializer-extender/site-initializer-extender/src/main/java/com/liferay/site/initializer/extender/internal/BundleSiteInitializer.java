@@ -132,6 +132,8 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.system.SystemObjectDefinitionManager;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.CentralizedThreadLocal;
@@ -353,6 +355,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 		StructuredContentFolderResource.Factory
 			structuredContentFolderResourceFactory,
 		StyleBookEntryZipProcessor styleBookEntryZipProcessor,
+		SystemObjectDefinitionManagerRegistry
+			systemObjectDefinitionManagerRegistry,
 		TaxonomyCategoryResource.Factory taxonomyCategoryResourceFactory,
 		TaxonomyVocabularyResource.Factory taxonomyVocabularyResourceFactory,
 		TemplateEntryLocalService templateEntryLocalService,
@@ -453,6 +457,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 		_structuredContentFolderResourceFactory =
 			structuredContentFolderResourceFactory;
 		_styleBookEntryZipProcessor = styleBookEntryZipProcessor;
+		_systemObjectDefinitionManagerRegistry =
+			systemObjectDefinitionManagerRegistry;
 		_taxonomyCategoryResourceFactory = taxonomyCategoryResourceFactory;
 		_taxonomyVocabularyResourceFactory = taxonomyVocabularyResourceFactory;
 		_templateEntryLocalService = templateEntryLocalService;
@@ -1253,21 +1259,22 @@ public class BundleSiteInitializer implements SiteInitializer {
 			Map<String, String> stringUtilReplaceValues)
 		throws Exception {
 
-		List<com.liferay.object.model.ObjectDefinition>
-			serviceBuilderObjectDefinitions =
-				_objectDefinitionLocalService.getObjectDefinitions(
-					serviceContext.getCompanyId(), true,
-					WorkflowConstants.STATUS_APPROVED);
+		List<String> serviceBuilderObjectDefinitionNames = new ArrayList<>();
 
 		for (com.liferay.object.model.ObjectDefinition
 				serviceBuilderObjectDefinition :
-					serviceBuilderObjectDefinitions) {
+					_objectDefinitionLocalService.getObjectDefinitions(
+						serviceContext.getCompanyId(), true,
+						WorkflowConstants.STATUS_APPROVED)) {
 
 			_replaceObjectDefinitionValues(
 				serviceBuilderObjectDefinition.getClassName(),
 				serviceBuilderObjectDefinition.getShortName(),
 				serviceBuilderObjectDefinition.getObjectDefinitionId(),
 				stringUtilReplaceValues);
+
+			serviceBuilderObjectDefinitionNames.add(
+				serviceBuilderObjectDefinition.getName());
 		}
 
 		Set<String> resourcePaths = _servletContext.getResourcePaths(
@@ -1275,6 +1282,30 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 		if (SetUtil.isEmpty(resourcePaths)) {
 			return;
+		}
+
+		for (SystemObjectDefinitionManager systemObjectDefinitionManager :
+				_systemObjectDefinitionManagerRegistry.
+					getSystemObjectDefinitionManagers()) {
+
+			if (serviceBuilderObjectDefinitionNames.contains(
+					systemObjectDefinitionManager.getName())) {
+
+				continue;
+			}
+
+			com.liferay.object.model.ObjectDefinition
+				serviceBuilderObjectDefinition =
+					_objectDefinitionLocalService.
+						addOrUpdateSystemObjectDefinition(
+							serviceContext.getCompanyId(), 0,
+							systemObjectDefinitionManager);
+
+			_replaceObjectDefinitionValues(
+				serviceBuilderObjectDefinition.getClassName(),
+				serviceBuilderObjectDefinition.getShortName(),
+				serviceBuilderObjectDefinition.getObjectDefinitionId(),
+				stringUtilReplaceValues);
 		}
 
 		ObjectDefinitionResource.Builder objectDefinitionResourceBuilder =
@@ -6401,6 +6432,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 	private final StructuredContentFolderResource.Factory
 		_structuredContentFolderResourceFactory;
 	private final StyleBookEntryZipProcessor _styleBookEntryZipProcessor;
+	private final SystemObjectDefinitionManagerRegistry
+		_systemObjectDefinitionManagerRegistry;
 	private final TaxonomyCategoryResource.Factory
 		_taxonomyCategoryResourceFactory;
 	private final TaxonomyVocabularyResource.Factory

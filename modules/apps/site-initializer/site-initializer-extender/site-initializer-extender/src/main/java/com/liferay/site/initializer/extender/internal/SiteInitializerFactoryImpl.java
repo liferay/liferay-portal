@@ -62,6 +62,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -169,7 +170,8 @@ public class SiteInitializerFactoryImpl implements SiteInitializerFactory {
 			_siteNavigationMenuItemTypeRegistry,
 			_siteNavigationMenuLocalService,
 			_structuredContentFolderResourceFactory,
-			_styleBookEntryZipProcessor, _taxonomyCategoryResourceFactory,
+			_styleBookEntryZipProcessor, _systemObjectDefinitionManagerRegistry,
+			_taxonomyCategoryResourceFactory,
 			_taxonomyVocabularyResourceFactory, _templateEntryLocalService,
 			_themeLocalService, _userAccountResourceFactory,
 			_userGroupLocalService, _userLocalService,
@@ -433,6 +435,10 @@ public class SiteInitializerFactoryImpl implements SiteInitializerFactory {
 
 	@Reference
 	private StyleBookEntryZipProcessor _styleBookEntryZipProcessor;
+
+	@Reference
+	private SystemObjectDefinitionManagerRegistry
+		_systemObjectDefinitionManagerRegistry;
 
 	@Reference
 	private TaxonomyCategoryResource.Factory _taxonomyCategoryResourceFactory;

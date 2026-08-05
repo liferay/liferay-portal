@@ -62,6 +62,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -189,6 +190,8 @@ public class SiteInitializerExtension {
 		StructuredContentFolderResource.Factory
 			structuredContentFolderResourceFactory,
 		StyleBookEntryZipProcessor styleBookEntryZipProcessor,
+		SystemObjectDefinitionManagerRegistry
+			systemObjectDefinitionManagerRegistry,
 		TaxonomyCategoryResource.Factory taxonomyCategoryResourceFactory,
 		TaxonomyVocabularyResource.Factory taxonomyVocabularyResourceFactory,
 		TemplateEntryLocalService templateEntryLocalService,
@@ -243,6 +246,7 @@ public class SiteInitializerExtension {
 			siteInitializerExtenderBundle, siteNavigationMenuItemLocalService,
 			siteNavigationMenuItemTypeRegistry, siteNavigationMenuLocalService,
 			structuredContentFolderResourceFactory, styleBookEntryZipProcessor,
+			systemObjectDefinitionManagerRegistry,
 			taxonomyCategoryResourceFactory, taxonomyVocabularyResourceFactory,
 			templateEntryLocalService, themeLocalService,
 			userAccountResourceFactory, userGroupLocalService, userLocalService,
