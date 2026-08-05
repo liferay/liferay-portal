@@ -58,9 +58,7 @@ public class DefaultPropertyValidator implements PropertyValidator {
 		else if (propertyType ==
 					PropertyDefinition.PropertyType.MULTIPLE_ELEMENT) {
 
-			Class<?> propertyValueClass = propertyValue.getClass();
-
-			if ((classes != null) && propertyValueClass.isArray()) {
+			if ((classes != null) && (propertyValue instanceof Object[])) {
 				valid = true;
 
 				for (Object object : (Object[])propertyValue) {

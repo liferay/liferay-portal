@@ -196,7 +196,7 @@ public class MultiselectPicklistObjectFieldBusinessType
 
 	@Override
 	public PropertyDefinition.PropertyType getPropertyType() {
-		return PropertyDefinition.PropertyType.TEXT;
+		return PropertyDefinition.PropertyType.MULTIPLE_ELEMENT;
 	}
 
 	@Override
