@@ -35,16 +35,24 @@ const mapRoutes = {
 };
 
 const getAssetURL = ({
+	accountId,
+	accountName,
 	channelId,
 	groupId,
 	itemData,
 	rangeSelectorParams,
+	segmentId,
+	segmentName,
 	value = '',
 }: {
+	accountId?: string | null;
+	accountName?: string | null;
 	channelId: string;
 	groupId: string;
 	itemData: any;
 	rangeSelectorParams: string;
+	segmentId?: string | null;
+	segmentName?: string | null;
 	value?: string;
 }) => {
 	const assetTitle = value || itemData.assetTitle || itemData.id;
@@ -53,6 +61,24 @@ const getAssetURL = ({
 		mapRoutes[itemData.assetType as keyof typeof mapRoutes];
 
 	const route = oldAssetRoute ?? Routes.ASSETS_OBJECT_ENTRY_OVERVIEW;
+
+	const queryParams = new URLSearchParams(rangeSelectorParams);
+
+	if (accountId) {
+		queryParams.set('accountId', accountId);
+	}
+
+	if (accountName) {
+		queryParams.set('accountName', accountName);
+	}
+
+	if (segmentId) {
+		queryParams.set('segmentId', segmentId);
+	}
+
+	if (segmentName) {
+		queryParams.set('segmentName', segmentName);
+	}
 
 	return `${toRoute(route, {
 		assetId: itemData.id,
@@ -65,7 +91,7 @@ const getAssetURL = ({
 		...(assetTitle && {
 			title: encodeURIComponent(assetTitle),
 		}),
-	})}?${rangeSelectorParams}`;
+	})}?${queryParams.toString()}`;
 };
 
 const columns = {
@@ -74,20 +100,32 @@ const columns = {
 	),
 	assetTitleRenderer:
 		({
+			accountId,
+			accountName,
 			channelId,
 			groupId,
 			rangeSelectorParams,
+			segmentId,
+			segmentName,
 		}: {
+			accountId?: string | null;
+			accountName?: string | null;
 			channelId: string;
 			groupId: string;
 			rangeSelectorParams: string;
+			segmentId?: string | null;
+			segmentName?: string | null;
 		}) =>
 		({itemData, value}: {itemData: any; value?: string}) => {
 			const URL = getAssetURL({
+				accountId,
+				accountName,
 				channelId,
 				groupId,
 				itemData,
 				rangeSelectorParams,
+				segmentId,
+				segmentName,
 				value,
 			});
 
@@ -180,6 +218,8 @@ const List = () => {
 	const accountId = searchParams.get('accountId');
 	const accountName = searchParams.get('accountName');
 	const orderBy = searchParams.get('orderBy');
+	const segmentId = searchParams.get('segmentId');
+	const segmentName = searchParams.get('segmentName');
 
 	const sortableFields = TABLE_FIELDS.filter((field) => field.sortable);
 
@@ -240,6 +280,16 @@ const List = () => {
 							itemLabel: 'name',
 							label: Liferay.Language.get('segments'),
 							multiple: true,
+							...(segmentId && {
+								preloadedData: {
+									selectedItems: [
+										{
+											label: segmentName || segmentId,
+											value: segmentId,
+										},
+									],
+								},
+							}),
 							type: 'selection',
 						},
 					]
@@ -296,6 +346,8 @@ const List = () => {
 			groupId,
 			LDPEnabled,
 			rangeSelectorParams,
+			segmentId,
+			segmentName,
 		]
 	);
 
@@ -350,9 +402,13 @@ const List = () => {
 						customDataRenderers={{
 							assetMetricRenderer: columns.assetMetricRenderer,
 							assetTitleRenderer: columns.assetTitleRenderer({
+								accountId,
+								accountName,
 								channelId: channelId!,
 								groupId: groupId!,
 								rangeSelectorParams,
+								segmentId,
+								segmentName,
 							}),
 						}}
 						emptyState={{
@@ -405,10 +461,14 @@ const List = () => {
 								onClick: ({itemData}: {itemData: any}) => {
 									history.push(
 										getAssetURL({
+											accountId,
+											accountName,
 											channelId: channelId!,
 											groupId: groupId!,
 											itemData,
 											rangeSelectorParams,
+											segmentId,
+											segmentName,
 										})
 									);
 								},
