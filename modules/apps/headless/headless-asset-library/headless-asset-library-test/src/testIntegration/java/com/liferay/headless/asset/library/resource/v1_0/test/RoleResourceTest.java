@@ -279,21 +279,24 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			ServiceContextTestUtil.getServiceContext());
 
-		com.liferay.portal.kernel.model.Role role = RoleTestUtil.addRole(
-			RoleConstants.TYPE_REGULAR);
+		com.liferay.portal.kernel.model.Role serviceBuilderRole =
+			RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
-		_roles.add(role);
+		_roles.add(serviceBuilderRole);
 
-		_userLocalService.addRoleUser(role.getRoleId(), user);
+		_userLocalService.addRoleUser(serviceBuilderRole.getRoleId(), user);
 
 		RoleTestUtil.addResourcePermission(
-			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			serviceBuilderRole, DepotEntry.class.getName(),
+			ResourceConstants.SCOPE_GROUP,
 			String.valueOf(testDepotEntry.getGroupId()), actionId);
 		RoleTestUtil.addResourcePermission(
-			role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+			serviceBuilderRole, DepotEntry.class.getName(),
+			ResourceConstants.SCOPE_GROUP,
 			String.valueOf(testDepotEntry.getGroupId()), ActionKeys.VIEW);
 		RoleTestUtil.addResourcePermission(
-			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			serviceBuilderRole, User.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
 
 		for (com.liferay.portal.kernel.model.Role viewableRole :
@@ -303,8 +306,8 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 				viewableRole.getCompanyId(),
 				com.liferay.portal.kernel.model.Role.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(viewableRole.getRoleId()), role.getRoleId(),
-				new String[] {ActionKeys.VIEW});
+				String.valueOf(viewableRole.getRoleId()),
+				serviceBuilderRole.getRoleId(), new String[] {ActionKeys.VIEW});
 		}
 
 		return RoleResource.builder(
