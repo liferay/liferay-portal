@@ -222,7 +222,7 @@
 	</tr>
 	<tr>
 		<td>LAYOUT_LAYOUT_TAB</td>
-		<td>//button[contains(text(), 'Layout')]</td>
+		<td>//ul[contains(@class,'side-panel-iframe__tabs')]//button[contains(text(),'Layout')]</td>
 		<td></td>
 	</tr>
 	<tr>
