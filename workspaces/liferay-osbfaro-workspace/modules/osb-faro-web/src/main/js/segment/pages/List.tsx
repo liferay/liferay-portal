@@ -14,7 +14,6 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import SearchableEntityTable from 'shared/components/SearchableEntityTable';
 import SequentialEventOrderPopover from 'shared/components/SequentialEventOrderPopover';
-import ToThousandsCell from 'shared/components/table/cell-components/ToThousandsCell';
 import URLConstants from 'shared/util/url-constants';
 import UserCell from 'shared/components/table/cell-components/UserCell';
 import {
@@ -65,6 +64,7 @@ import {
 } from 'shared/util/constants';
 import {setUriQueryValues} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
+import {toThousands} from 'shared/util/numbers';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
@@ -682,21 +682,43 @@ export const List: React.FC<IListProps> = ({
 								},
 								{
 									accessor: 'individualCount',
-									cellRenderer: ToThousandsCell,
-									cellRendererProps: {
-										getCount: ({
-											accountsCount,
-											individualCount,
-											segmentCategory,
-										}: {
+									cellRenderer: (item: {
+										data: {
 											accountsCount: number;
 											individualCount: number;
 											segmentCategory: SegmentCategories;
-										}) =>
+										};
+									}) => {
+										const {
+											accountsCount,
+											individualCount,
+											segmentCategory,
+										} = item.data;
+
+										const accountSegment =
 											segmentCategory ===
-											SegmentCategories.Account
-												? accountsCount
-												: individualCount,
+											SegmentCategories.Account;
+
+										const count = accountSegment
+											? accountsCount
+											: individualCount;
+
+										const membershipLabel = accountSegment
+											? Liferay.Language.get('x-accounts')
+											: Liferay.Language.get(
+													'x-individuals'
+												);
+
+										return (
+											<td className="table-cell-expand">
+												<div className="text-truncate text-right">
+													{sub(
+														membershipLabel.toLowerCase(),
+														[toThousands(count)]
+													)}
+												</div>
+											</td>
+										);
 									},
 									label: Liferay.Language.get('membership'),
 								},
