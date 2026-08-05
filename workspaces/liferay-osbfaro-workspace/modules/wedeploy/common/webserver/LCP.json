@@ -19,7 +19,8 @@
 				"certs": [
 					{
 						"customDomains": [
-							"analytics-internal.liferay.com"
+							"analytics-internal.liferay.com",
+							"ldp-internal.liferay.com"
 						]
 					}
 				],
