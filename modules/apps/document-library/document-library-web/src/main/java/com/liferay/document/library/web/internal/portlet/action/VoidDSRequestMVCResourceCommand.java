@@ -12,6 +12,9 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -44,9 +47,14 @@ public class VoidDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		long fileEntryId = ParamUtil.getLong(resourceRequest, "fileEntryId");
+
+		_fileEntryModelResourcePermission.check(
+			themeDisplay.getPermissionChecker(), fileEntryId,
+			ActionKeys.UPDATE);
+
 		DSRequestDetail dsRequestDetail = _dsRequestManager.getRequestDetail(
-			themeDisplay.getCompanyId(),
-			ParamUtil.getLong(resourceRequest, "fileEntryId"));
+			themeDisplay.getCompanyId(), fileEntryId);
 
 		if (dsRequestDetail != null) {
 			String reason = ParamUtil.getString(resourceRequest, "reason");
@@ -68,6 +76,12 @@ public class VoidDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 
 	@Reference
 	private DSRequestManager _dsRequestManager;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.repository.model.FileEntry)"
+	)
+	private ModelResourcePermission<FileEntry>
+		_fileEntryModelResourcePermission;
 
 	@Reference
 	private JSONFactory _jsonFactory;
