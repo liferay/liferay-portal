@@ -71,7 +71,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 	@TestInfo("LPD-97443")
 	public void testUpgrade() throws Exception {
 
-		// An orphaned LayoutPageTemplateStructureRel is deleted
+		// An orphaned layout page template structure rel is deleted
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure1 =
 			_addLayoutPageTemplateStructure();
@@ -105,7 +105,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 			layoutPageTemplateStructure1,
 			segmentsExperience.getSegmentsExperienceId());
 
-		// An orphaned LayoutPageTemplateStructureRel is reassigned to the
+		// An orphaned layout page template structure rel is reassigned to the
 		// existing default experience
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure2 =
@@ -127,8 +127,8 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 		_createOrphanLayoutPageTemplateStructureRel(
 			layoutPageTemplateStructure2, defaultSegmentsExperienceId2);
 
-		// An orphaned LayoutPageTemplateStructureRel is reassigned to a newly
-		// created default experience
+		// An orphaned layout page template structure rel is reassigned to a
+		// newly created default experience
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure3 =
 			_addLayoutPageTemplateStructure();
@@ -153,7 +153,7 @@ public class LayoutPageTemplateStructureRelUpgradeProcessTest
 			_segmentsExperienceLocalService.getSegmentsExperience(
 				defaultSegmentsExperienceId3));
 
-		// An orphaned LayoutPageTemplateStructureRel is reassigned to the
+		// An orphaned layout page template structure rel is reassigned to the
 		// default experience while production keeps its own data
 
 		LayoutPageTemplateStructure layoutPageTemplateStructure4 =
