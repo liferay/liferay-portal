@@ -51,6 +51,9 @@ spec:
                         -   containerPort: {{ .Values.probes.port }}
                             name: health
                             protocol: TCP
+                        -   containerPort: {{ .Values.webhook.port }}
+                            name: webhook
+                            protocol: TCP
                     readinessProbe:
                         httpGet:
                             path: /readyz
@@ -63,6 +66,10 @@ spec:
                     securityContext:
                         {{- toYaml . | nindent 24 }}
                     {{- end }}
+                    volumeMounts:
+                        -   mountPath: /tmp/k8s-webhook-server/serving-certs
+                            name: webhook-certs
+                            readOnly: true
             {{- with .Values.image.pullSecrets }}
             imagePullSecrets:
                 {{- toYaml . | nindent 16 }}
@@ -80,3 +87,7 @@ spec:
             tolerations:
                 {{- toYaml . | nindent 16 }}
             {{- end }}
+            volumes:
+                -   name: webhook-certs
+                    secret:
+                        secretName: {{ include "dxp-operator.webhookServiceName" . }}

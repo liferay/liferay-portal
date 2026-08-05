@@ -1,0 +1,47 @@
+{{- $caCert := "" -}}
+{{- $namespace := include "dxp-operator.namespace" . -}}
+{{- $webhookServiceName := include "dxp-operator.webhookServiceName" . -}}
+{{- $altNames := list (printf "%s.%s.svc" $webhookServiceName $namespace) (printf "%s.%s.svc.cluster.local" $webhookServiceName $namespace) -}}
+{{- $existingSecret := lookup "v1" "Secret" $namespace $webhookServiceName -}}
+{{- $tlsCert := "" -}}
+{{- $tlsKey := "" -}}
+{{- $certificateValidityDays := int .Values.webhook.certificateValidityDays -}}
+{{- if and $existingSecret $existingSecret.data (index $existingSecret.data "tls.crt") -}}
+{{- $caCert = index $existingSecret.data "ca.crt" -}}
+{{- $tlsCert = index $existingSecret.data "tls.crt" -}}
+{{- $tlsKey = index $existingSecret.data "tls.key" -}}
+{{- else -}}
+{{- $certificateAuthority := genCA (printf "%s-webhook-ca" (include "dxp-operator.fullname" .)) $certificateValidityDays -}}
+{{- $certificate := genSignedCert (index $altNames 0) nil $altNames $certificateValidityDays $certificateAuthority -}}
+{{- $caCert = $certificateAuthority.Cert | b64enc -}}
+{{- $tlsCert = $certificate.Cert | b64enc -}}
+{{- $tlsKey = $certificate.Key | b64enc -}}
+{{- end -}}
+apiVersion: v1
+data:
+    ca.crt: {{ $caCert }}
+    tls.crt: {{ $tlsCert }}
+    tls.key: {{ $tlsKey }}
+kind: Secret
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: {{ $webhookServiceName }}
+    namespace: {{ $namespace }}
+type: kubernetes.io/tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: {{ $webhookServiceName }}
+    namespace: {{ $namespace }}
+spec:
+    ports:
+        -   name: https
+            port: 443
+            protocol: TCP
+            targetPort: webhook
+    selector:
+        {{- include "dxp-operator.selectorLabels" . | nindent 8 }}

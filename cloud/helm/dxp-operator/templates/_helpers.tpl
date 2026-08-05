@@ -52,3 +52,7 @@ app.kubernetes.io/name: {{ include "dxp-operator.name" . }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{- define "dxp-operator.webhookServiceName" -}}
+{{- printf "%s-webhook" (include "dxp-operator.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
