@@ -637,6 +637,15 @@ describe('Field DocumentLibrary', () => {
 			expectDeleted(88, 99);
 		});
 
+		it('deletes the original on Save after Clear when the value is an object (LPD-100999)', () => {
+			renderField({value: valueParsed(42)});
+
+			clickClear();
+			fireGlobal('paginationControlsSubmitButtonClicked');
+
+			expectDeleted(42);
+		});
+
 		it('deletes both the previous and current upload on new-entry abandon after replace', () => {
 			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
 
