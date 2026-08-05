@@ -34,7 +34,10 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 
+import java.text.Format;
+
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -79,6 +82,71 @@ public class AssetListFiltersUtilTest {
 		_portalUtilMockedStatic.reset();
 
 		_setUpLocalizationUtil();
+	}
+
+	@Test
+	public void testFilterQueriesWithDateAndDateTimeOperators() {
+		String dateFieldName = RandomTestUtil.randomString();
+
+		_setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_DATE,
+			ObjectFieldConstants.DB_TYPE_DATE, dateFieldName);
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", true, true, "20260115000000",
+			"20260120235959",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"between", dateFieldName,
+					JSONUtil.putAll("2026-01-15", "2026-01-20")),
+				dateFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", true, true, "20260115000000",
+			"20260115235959",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject("eq", dateFieldName, "2026-01-15"),
+				dateFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", true, false, "20260115000000", null,
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject("ge", dateFieldName, "2026-01-15"),
+				dateFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", false, false, "20260115235959", null,
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject("gt", dateFieldName, "2026-01-15"),
+				dateFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", false, true, null, "20260115235959",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject("le", dateFieldName, "2026-01-15"),
+				dateFieldName));
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", false, false, null, "20260115000000",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject("lt", dateFieldName, "2026-01-15"),
+				dateFieldName));
+
+		String dateTimeFieldName = RandomTestUtil.randomString();
+
+		_setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+			ObjectFieldConstants.DB_TYPE_DATE_TIME, dateTimeFieldName);
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", true, true, "20260115103000",
+			"20260115103059",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"eq", dateTimeFieldName, "2026-01-15 10:30"),
+				dateTimeFieldName));
 	}
 
 	@Test
@@ -367,6 +435,64 @@ public class AssetListFiltersUtilTest {
 	}
 
 	@Test
+	public void testFilterQueriesWithRelativeDateOperators() {
+		String dateFieldName = RandomTestUtil.randomString();
+
+		_setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_DATE,
+			ObjectFieldConstants.DB_TYPE_DATE, dateFieldName);
+
+		String lastYearLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "last-year");
+		String nextMonthLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "next-month");
+		String nowLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "now");
+		String past24HoursLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "past-24-hours");
+		String pastDayLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "past-day");
+		String pastMonthLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "past-month");
+		String pastWeekLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "past-week");
+		String pastYearLowerTerm = _resolveRelativeDateLowerTerm(
+			dateFieldName, "past-year");
+
+		for (String lowerTerm :
+				new String[] {
+					lastYearLowerTerm, nextMonthLowerTerm, nowLowerTerm,
+					past24HoursLowerTerm, pastDayLowerTerm, pastMonthLowerTerm,
+					pastWeekLowerTerm, pastYearLowerTerm
+				}) {
+
+			Assert.assertEquals(lowerTerm, 14, lowerTerm.length());
+			Assert.assertTrue(lowerTerm, lowerTerm.endsWith("000000"));
+		}
+
+		Format format = FastDateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyyMMdd");
+
+		Assert.assertEquals(format.format(new Date()) + "000000", nowLowerTerm);
+
+		Assert.assertEquals(lastYearLowerTerm, pastYearLowerTerm);
+		Assert.assertEquals(past24HoursLowerTerm, pastDayLowerTerm);
+		Assert.assertTrue(nowLowerTerm.compareTo(nextMonthLowerTerm) < 0);
+		Assert.assertTrue(pastDayLowerTerm.compareTo(nowLowerTerm) < 0);
+		Assert.assertTrue(pastMonthLowerTerm.compareTo(pastWeekLowerTerm) < 0);
+		Assert.assertTrue(pastWeekLowerTerm.compareTo(pastDayLowerTerm) < 0);
+		Assert.assertTrue(pastYearLowerTerm.compareTo(pastMonthLowerTerm) < 0);
+
+		_assertTermRangeQuery(
+			"nestedFieldArray.value_date", false, true, null,
+			format.format(new Date()) + "235959",
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject("le", dateFieldName, "now"),
+				dateFieldName));
+	}
+
+	@Test
 	public void testFilterQueriesWithTextContainsOperators() {
 		String textFieldName = RandomTestUtil.randomString();
 
@@ -555,6 +681,20 @@ public class AssetListFiltersUtilTest {
 		).put(
 			"value", value
 		);
+	}
+
+	private String _resolveRelativeDateLowerTerm(
+		String propertyName, String value) {
+
+		Query query = _assertNestedQuery(
+			BooleanClauseOccur.MUST,
+			_buildFilterJSONObject("ge", propertyName, value), propertyName);
+
+		Assert.assertTrue(query.toString(), query instanceof TermRangeQuery);
+
+		TermRangeQuery termRangeQuery = (TermRangeQuery)query;
+
+		return termRangeQuery.getLowerTerm();
 	}
 
 	private void _setUpLocalizationUtil() {

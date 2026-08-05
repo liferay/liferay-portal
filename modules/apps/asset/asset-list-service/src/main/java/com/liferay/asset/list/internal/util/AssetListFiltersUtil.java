@@ -25,12 +25,18 @@ import com.liferay.portal.kernel.search.Query;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.text.Format;
+
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * @author Joshua Cords
@@ -136,6 +142,11 @@ public class AssetListFiltersUtil {
 		return "nestedFieldArray.value_text";
 	}
 
+	private static boolean _isDateTimeField(ObjectField objectField) {
+		return ObjectFieldConstants.DB_TYPE_DATE_TIME.equals(
+			objectField.getDBType());
+	}
+
 	private static boolean _isNegatedOperator(String operatorName) {
 		if (operatorName.equals("not-contains") ||
 			operatorName.equals("not-eq")) {
@@ -144,6 +155,65 @@ public class AssetListFiltersUtil {
 		}
 
 		return false;
+	}
+
+	private static String _resolveRelativeDateValue(String value) {
+		if (!_relativeDateValues.contains(value)) {
+			return null;
+		}
+
+		Format format = FastDateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyyMMddHHmmss");
+
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.set(Calendar.MILLISECOND, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+
+		if (value.equals("last-year") || value.equals("past-year")) {
+			calendar.add(Calendar.YEAR, -1);
+		}
+		else if (value.equals("next-month")) {
+			calendar.add(Calendar.MONTH, 1);
+		}
+		else if (value.equals("past-24-hours") || value.equals("past-day")) {
+			calendar.add(Calendar.DAY_OF_MONTH, -1);
+		}
+		else if (value.equals("past-month")) {
+			calendar.add(Calendar.MONTH, -1);
+		}
+		else if (value.equals("past-week")) {
+			calendar.add(Calendar.DAY_OF_MONTH, -7);
+		}
+
+		return format.format(calendar.getTime());
+	}
+
+	private static String _toDateTerm(
+		boolean dateTimeField, boolean upperBound, String value) {
+
+		if (Validator.isNull(value)) {
+			return null;
+		}
+
+		String relativeDateValue = _resolveRelativeDateValue(value);
+
+		if (relativeDateValue != null) {
+			value = relativeDateValue;
+		}
+
+		String digits = value.replaceAll("[^0-9]", "");
+
+		if (dateTimeField) {
+			String padded = digits + "000000000000";
+
+			return padded.substring(0, 12) + (upperBound ? "59" : "00");
+		}
+
+		String padded = digits + "00000000";
+
+		return padded.substring(0, 8) + (upperBound ? "235959" : "000000");
 	}
 
 	private static NestedQuery _toNestedQuery(
@@ -171,7 +241,8 @@ public class AssetListFiltersUtil {
 
 		String subfield = _getSubfield(locale, objectField);
 
-		Query query = _toValueQuery(jsonObject, operatorName, subfield, value);
+		Query query = _toValueQuery(
+			jsonObject, objectField, operatorName, subfield, value);
 
 		if (query == null) {
 			return null;
@@ -196,7 +267,16 @@ public class AssetListFiltersUtil {
 	}
 
 	private static Query _toRangeQuery(
-		JSONObject filterJSONObject, String operatorName, String subfield) {
+		JSONObject filterJSONObject, ObjectField objectField,
+		String operatorName, String subfield) {
+
+		boolean dateField = subfield.endsWith(".value_date");
+
+		boolean dateTimeField = false;
+
+		if (dateField && _isDateTimeField(objectField)) {
+			dateTimeField = true;
+		}
 
 		if (operatorName.equals("between")) {
 			JSONArray valueJSONArray = filterJSONObject.getJSONArray("value");
@@ -210,6 +290,11 @@ public class AssetListFiltersUtil {
 			String upperTerm = GetterUtil.getString(
 				valueJSONArray.getString(1), null);
 
+			if (dateField) {
+				lowerTerm = _toDateTerm(dateTimeField, false, lowerTerm);
+				upperTerm = _toDateTerm(dateTimeField, true, upperTerm);
+			}
+
 			return new TermRangeQuery(
 				subfield, lowerTerm, upperTerm, true, true);
 		}
@@ -221,27 +306,39 @@ public class AssetListFiltersUtil {
 		}
 
 		if (operatorName.equals("ge")) {
-			return new TermRangeQuery(subfield, value, null, true, false);
+			String lowerTerm =
+				dateField ? _toDateTerm(dateTimeField, false, value) : value;
+
+			return new TermRangeQuery(subfield, lowerTerm, null, true, false);
 		}
 
 		if (operatorName.equals("gt")) {
-			return new TermRangeQuery(subfield, value, null, false, false);
+			String lowerTerm =
+				dateField ? _toDateTerm(dateTimeField, true, value) : value;
+
+			return new TermRangeQuery(subfield, lowerTerm, null, false, false);
 		}
 
 		if (operatorName.equals("le")) {
-			return new TermRangeQuery(subfield, null, value, false, true);
+			String upperTerm =
+				dateField ? _toDateTerm(dateTimeField, true, value) : value;
+
+			return new TermRangeQuery(subfield, null, upperTerm, false, true);
 		}
 
 		if (operatorName.equals("lt")) {
-			return new TermRangeQuery(subfield, null, value, false, false);
+			String upperTerm =
+				dateField ? _toDateTerm(dateTimeField, false, value) : value;
+
+			return new TermRangeQuery(subfield, null, upperTerm, false, false);
 		}
 
 		return null;
 	}
 
 	private static Query _toValueQuery(
-		JSONObject filterJSONObject, String operatorName, String subfield,
-		String value) {
+		JSONObject filterJSONObject, ObjectField objectField,
+		String operatorName, String subfield, String value) {
 
 		if ((operatorName.equals("contains") ||
 			 operatorName.equals("not-contains")) &&
@@ -257,7 +354,18 @@ public class AssetListFiltersUtil {
 			operatorName.equals("gt") || operatorName.equals("le") ||
 			operatorName.equals("lt")) {
 
-			return _toRangeQuery(filterJSONObject, operatorName, subfield);
+			return _toRangeQuery(
+				filterJSONObject, objectField, operatorName, subfield);
+		}
+
+		if ((operatorName.equals("eq") || operatorName.equals("not-eq")) &&
+			subfield.endsWith(".value_date")) {
+
+			boolean dateTimeField = _isDateTimeField(objectField);
+
+			return new TermRangeQuery(
+				subfield, _toDateTerm(dateTimeField, false, value),
+				_toDateTerm(dateTimeField, true, value), true, true);
 		}
 
 		if (subfield.endsWith(".value_keyword")) {
@@ -275,5 +383,9 @@ public class AssetListFiltersUtil {
 
 		return new MatchQuery(subfield, value);
 	}
+
+	private static final Set<String> _relativeDateValues = SetUtil.fromArray(
+		"last-year", "next-month", "now", "past-24-hours", "past-day",
+		"past-month", "past-week", "past-year");
 
 }
