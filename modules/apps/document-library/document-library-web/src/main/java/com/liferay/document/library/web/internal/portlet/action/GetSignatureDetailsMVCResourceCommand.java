@@ -15,6 +15,9 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -49,9 +52,13 @@ public class GetSignatureDetailsMVCResourceCommand
 		ThemeDisplay themeDisplay = (ThemeDisplay)resourceRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
+		long fileEntryId = ParamUtil.getLong(resourceRequest, "fileEntryId");
+
+		_fileEntryModelResourcePermission.check(
+			themeDisplay.getPermissionChecker(), fileEntryId, ActionKeys.VIEW);
+
 		DSRequestDetail dsRequestDetail = _dsRequestManager.getRequestDetail(
-			themeDisplay.getCompanyId(),
-			ParamUtil.getLong(resourceRequest, "fileEntryId"));
+			themeDisplay.getCompanyId(), fileEntryId);
 
 		if (dsRequestDetail == null) {
 			JSONPortletResponseUtil.writeJSON(
@@ -115,6 +122,12 @@ public class GetSignatureDetailsMVCResourceCommand
 
 	@Reference
 	private DSRequestManager _dsRequestManager;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.repository.model.FileEntry)"
+	)
+	private ModelResourcePermission<FileEntry>
+		_fileEntryModelResourcePermission;
 
 	@Reference
 	private JSONFactory _jsonFactory;
