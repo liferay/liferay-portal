@@ -5,10 +5,6 @@
 
 package com.liferay.site.cms.site.initializer.internal.display.context;
 
-import java.util.Collection;
-import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
@@ -20,6 +16,7 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.constants.InfoDisplayWebKeys;
+import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
@@ -55,18 +52,26 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
 import com.liferay.site.cms.site.initializer.internal.util.ActionUtil;
 import com.liferay.translation.constants.TranslationPortletKeys;
+import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
 
 import jakarta.portlet.ActionRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -476,6 +481,18 @@ public class SectionDisplayContextUtil {
 		}
 
 		return depotEntryGroupIds;
+	}
+
+	public static String getExpiringSoonFilterString(
+		HttpServletRequest httpServletRequest) {
+
+		return appendGroupIds(
+			StringBundler.concat(
+				"dateExpiration gt now() and dateExpiration le ",
+				_getThresholdDateString(), " and status eq ",
+				WorkflowConstants.STATUS_APPROVED, " and ",
+				_CMS_CONTENT_FILTER_STRING),
+			httpServletRequest);
 	}
 
 	public static JSONObject getExportFileFormatJSONObject(
@@ -968,6 +985,18 @@ public class SectionDisplayContextUtil {
 		return objectEntryFolderIdsMap;
 	}
 
+	public static String getUpcomingReviewsFilterString(
+		HttpServletRequest httpServletRequest) {
+
+		return appendGroupIds(
+			appendStatus(
+				StringBundler.concat(
+					"dateReview gt now() and dateReview le ",
+					_getReviewThresholdDateString(), " and ",
+					_CMS_CONTENT_FILTER_STRING)),
+			httpServletRequest);
+	}
+
 	private static void _addAddAssetsToProjectBulkAction(
 		List<DropdownItem> bulkActionDropdownItems,
 		HttpServletRequest httpServletRequest) {
@@ -1437,6 +1466,18 @@ public class SectionDisplayContextUtil {
 		);
 	}
 
+	private static String _getReviewThresholdDateString() {
+		Instant instant = ZonedDateTime.now(
+			ZoneOffset.UTC
+		).plusMonths(
+			_REVIEW_THRESHOLD_MONTHS
+		).toInstant();
+
+		return instant.truncatedTo(
+			ChronoUnit.SECONDS
+		).toString();
+	}
+
 	private static String[] _getRootObjectEntryFolderExternalReferenceCodes(
 		String rootObjectEntryFolderExternalReferenceCode) {
 
@@ -1450,8 +1491,30 @@ public class SectionDisplayContextUtil {
 		return new String[] {rootObjectEntryFolderExternalReferenceCode};
 	}
 
+	private static String _getThresholdDateString() {
+		Instant instant = Instant.now();
+
+		return instant.plus(
+			_THRESHOLD_DAYS, ChronoUnit.DAYS
+		).truncatedTo(
+			ChronoUnit.SECONDS
+		).toString();
+	}
+
+	private static final String _CMS_CONTENT_FILTER_STRING =
+		StringBundler.concat(
+			"(cmsSection eq 'contents' or cmsSection eq 'files') and ",
+			"objectDefinitionExternalReferenceCode ne '",
+			ObjectEntryFolderConstants.
+				EXTERNAL_REFERENCE_CODE_OBJECT_ENTRY_FOLDER,
+			"' and rootDescendantNode eq false");
+
 	private static final String _CMS_WORKFLOW_STATUSES_STRING =
 		StringUtil.merge(CMSWorkflowConstants.STATUSES, ", ");
+
+	private static final int _REVIEW_THRESHOLD_MONTHS = 1;
+
+	private static final int _THRESHOLD_DAYS = 7;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SectionDisplayContextUtil.class);

@@ -8,10 +8,13 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.document.library.configuration.DLConfiguration;
 import com.liferay.learn.LearnMessageUtil;
+import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.service.ObjectDefinitionService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -22,9 +25,14 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.site.cms.site.initializer.internal.util.CommentUtil;
+import com.liferay.site.cms.site.initializer.internal.util.PermissionUtil;
+import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -40,7 +48,9 @@ public class ViewDashboardDisplayContext {
 		DLConfiguration dlConfiguration, GroupLocalService groupLocalService,
 		HttpServletRequest httpServletRequest,
 		ObjectDefinitionService objectDefinitionService,
-		RoleLocalService roleLocalService, ThemeDisplay themeDisplay) {
+		RoleLocalService roleLocalService, ThemeDisplay themeDisplay,
+		TranslationInfoItemFieldValuesExporterRegistry
+			translationInfoItemFieldValuesExporterRegistry) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_dlConfiguration = dlConfiguration;
@@ -49,6 +59,8 @@ public class ViewDashboardDisplayContext {
 		_objectDefinitionService = objectDefinitionService;
 		_roleLocalService = roleLocalService;
 		_themeDisplay = themeDisplay;
+		_translationInfoItemFieldValuesExporterRegistry =
+			translationInfoItemFieldValuesExporterRegistry;
 	}
 
 	public Map<String, Object> getConstants() {
@@ -101,7 +113,25 @@ public class ViewDashboardDisplayContext {
 
 	private Map<String, Object> _getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"assetLibraries",
+			SectionDisplayContextUtil.getDepotEntriesJSONArray(
+				_httpServletRequest)
+		).put(
 			"autocompleteURL", SectionDisplayContextUtil.getAutocompleteURL()
+		).put(
+			"availableExportFileFormats",
+			() -> TransformUtil.transform(
+				_translationInfoItemFieldValuesExporterRegistry.
+					getTranslationInfoItemFieldValuesExporters(),
+				translationInfoItemFieldValuesExporter ->
+					SectionDisplayContextUtil.getExportFileFormatJSONObject(
+						_themeDisplay, translationInfoItemFieldValuesExporter))
+		).put(
+			"availableLocales",
+			SectionDisplayContextUtil.getLocalesJSONArray(
+				_themeDisplay.getLocale(),
+				LanguageUtil.getAvailableLocales(
+					_themeDisplay.getSiteGroupId()))
 		).put(
 			"breadcrumbProps",
 			HashMapBuilder.<String, Object>put(
@@ -116,6 +146,10 @@ public class ViewDashboardDisplayContext {
 			).put(
 				"hideSpace", true
 			).build()
+		).put(
+			"brokenLinksCheckerEnabled",
+			GetterUtil.getBoolean(
+				PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED))
 		).put(
 			"candidateAssetLibraries",
 			SectionDisplayContextUtil.getDepotEntriesJSONArray(
@@ -136,6 +170,18 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"contentViewURL",
 			SectionDisplayContextUtil.getContentViewURL(_themeDisplay)
+		).put(
+			"defaultPermissionAdditionalProps",
+			PermissionUtil.getDefaultPermissionAdditionalProps(
+				_httpServletRequest, _themeDisplay)
+		).put(
+			"expiringSoonFilterString",
+			SectionDisplayContextUtil.getExpiringSoonFilterString(
+				_httpServletRequest)
+		).put(
+			"fdsActionDropdownItems",
+			SectionDisplayContextUtil.getFDSActionDropdownItems(
+				_httpServletRequest)
 		).put(
 			"fileMimeTypeCssClasses",
 			() -> {
@@ -163,7 +209,14 @@ public class ViewDashboardDisplayContext {
 			"objectDefinitionIcons",
 			SectionDisplayContextUtil.getObjectDefinitionIcons()
 		).put(
+			"parentObjectEntryFolderExternalReferenceCode",
+			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS
+		).put(
 			"redirect", _themeDisplay.getURLCurrent()
+		).put(
+			"upcomingReviewsFilterString",
+			SectionDisplayContextUtil.getUpcomingReviewsFilterString(
+				_httpServletRequest)
 		).build();
 	}
 
@@ -207,5 +260,7 @@ public class ViewDashboardDisplayContext {
 	private final ObjectDefinitionService _objectDefinitionService;
 	private final RoleLocalService _roleLocalService;
 	private final ThemeDisplay _themeDisplay;
+	private final TranslationInfoItemFieldValuesExporterRegistry
+		_translationInfoItemFieldValuesExporterRegistry;
 
 }

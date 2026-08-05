@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.display.context.ViewDashboardDisplayContext;
+import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRegistry;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -54,7 +55,8 @@ public class ViewDashboardJSPSectionFragmentRenderer
 			_analyticsSettingsManager, _dlConfiguration, groupLocalService,
 			httpServletRequest, _objectDefinitionService, _roleLocalService,
 			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY));
+				WebKeys.THEME_DISPLAY),
+			_translationInfoItemFieldValuesExporterRegistry);
 	}
 
 	@Override
@@ -72,5 +74,9 @@ public class ViewDashboardJSPSectionFragmentRenderer
 
 	@Reference
 	private RoleLocalService _roleLocalService;
+
+	@Reference
+	private TranslationInfoItemFieldValuesExporterRegistry
+		_translationInfoItemFieldValuesExporterRegistry;
 
 }
