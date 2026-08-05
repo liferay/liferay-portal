@@ -56,6 +56,35 @@ tests:
         template: templates/deployment.yaml
     -   asserts:
             -   hasDocuments:
-                    count: 2
-        it: Renders only the serving certificate secret and service
+                    count: 3
+        it: Renders the certificate secret, service, and webhook configuration
+        template: templates/webhook.yaml
+    -   asserts:
+            -   contains:
+                    content: CREATE
+                    path: webhooks[0].rules[0].operations
+            -   contains:
+                    content: UPDATE
+                    path: webhooks[0].rules[0].operations
+            -   contains:
+                    content: statefulsets
+                    path: webhooks[0].rules[0].resources
+            -   contains:
+                    content: statefulsets/scale
+                    path: webhooks[0].rules[0].resources
+            -   equal:
+                    path: webhooks[0].clientConfig.service.path
+                    value: /validate-apps-v1-statefulset
+            -   equal:
+                    path: webhooks[0].failurePolicy
+                    value: Fail
+            -   equal:
+                    path: webhooks[0].namespaceSelector.matchLabels["licensing.liferay.com/enforce-node-limit"]
+                    value: "true"
+            -   isNotEmpty:
+                    path: webhooks[0].clientConfig.caBundle
+        documentSelector:
+            path: kind
+            value: ValidatingWebhookConfiguration
+        it: Denies over-limit scaling fail-closed on labeled namespaces
         template: templates/webhook.yaml

@@ -45,3 +45,39 @@ spec:
             targetPort: webhook
     selector:
         {{- include "dxp-operator.selectorLabels" . | nindent 8 }}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+    labels:
+        {{- include "dxp-operator.labels" . | nindent 8 }}
+    name: {{ $webhookServiceName }}
+webhooks:
+    -   admissionReviewVersions:
+            -   v1
+        clientConfig:
+            caBundle: {{ $caCert }}
+            service:
+                name: {{ $webhookServiceName }}
+                namespace: {{ $namespace }}
+                path: /validate-apps-v1-statefulset
+                port: 443
+        failurePolicy: Fail
+        matchPolicy: Equivalent
+        name: vstatefulsetscale.licensing.liferay.com
+        namespaceSelector:
+            matchLabels:
+                licensing.liferay.com/enforce-node-limit: "true"
+        rules:
+            -   apiGroups:
+                    -   apps
+                apiVersions:
+                    -   v1
+                operations:
+                    -   CREATE
+                    -   UPDATE
+                resources:
+                    -   statefulsets
+                    -   statefulsets/scale
+        sideEffects: None
+        timeoutSeconds: 10
