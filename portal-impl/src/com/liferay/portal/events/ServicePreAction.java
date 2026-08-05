@@ -691,7 +691,9 @@ public class ServicePreAction extends Action {
 
 		boolean hasViewLayoutPermission = false;
 
-		if (_hasAccessPermission(permissionChecker, layout, false)) {
+		if (layout.isPublished() &&
+			_hasAccessPermission(permissionChecker, layout, false)) {
+
 			hasViewLayoutPermission = true;
 		}
 
@@ -699,6 +701,7 @@ public class ServicePreAction extends Action {
 
 		for (Layout curLayout : layouts) {
 			if ((ignoreHiddenLayouts || !curLayout.isHidden()) &&
+				curLayout.isPublished() &&
 				_hasAccessPermission(permissionChecker, curLayout, false)) {
 
 				if (accessibleLayouts.isEmpty() && !hasViewLayoutPermission) {
