@@ -39,7 +39,6 @@ const DEFAULT_VIEW_FIELD_NAMES = [
 	'lastActive',
 	'activitiesCount',
 	'lastEnriched',
-	'accountEngagement',
 ];
 
 const DEFAULT_VIEW_FIELD_CATALOG: ICatalogField[] = [
@@ -51,7 +50,6 @@ const DEFAULT_VIEW_FIELD_CATALOG: ICatalogField[] = [
 	buildCatalogField('lastActive', 'Date'),
 	buildCatalogField('lastEnriched', 'Date'),
 	buildCatalogField('firstActive', 'Date'),
-	buildCatalogField('accountEngagement', 'Text'),
 ];
 
 const CALCULATED_CATALOG_FIELD: ICatalogField = {
@@ -552,7 +550,6 @@ describe('AccountsDataSet', () => {
 				'lastActive',
 				'activitiesCount',
 				'lastEnriched',
-				'accountEngagement',
 			]);
 		});
 	});
@@ -629,7 +626,7 @@ describe('AccountsDataSet', () => {
 			expect(field?.contentRenderer).toBeUndefined();
 		});
 
-		it('should build the Default View with the 10 fixed fields in order, with the correct renderers', () => {
+		it('should build the Default View with the 9 fixed fields in order, with the correct renderers', () => {
 			render(
 				<AccountsDataSet
 					apiURL="fake-url"
@@ -653,7 +650,6 @@ describe('AccountsDataSet', () => {
 				'lastActive',
 				'activitiesCount',
 				'lastEnriched',
-				'accountEngagement',
 			]);
 
 			expect(
@@ -668,7 +664,6 @@ describe('AccountsDataSet', () => {
 				'dateRenderer',
 				'activitiesCountRenderer',
 				'dateRenderer',
-				undefined,
 			]);
 
 			const activitiesCountField = defaultView!.schema.fields.find(
@@ -677,14 +672,9 @@ describe('AccountsDataSet', () => {
 			const firstActiveField = defaultView!.schema.fields.find(
 				(f) => f.fieldName === 'firstActive'
 			);
-			const accountEngagementField = defaultView!.schema.fields.find(
-				(f) => f.fieldName === 'accountEngagement'
-			);
 
 			expect(activitiesCountField?.label).toBe('Recent Activities');
 			expect(firstActiveField?.label).toBe('First Active');
-			expect(accountEngagementField?.label).toBe('Account Engagement');
-			expect(accountEngagementField?.contentRenderer).toBeUndefined();
 		});
 
 		it('should build the All Attributes View from the full catalog, resolving renderers by type and letting known overrides win', () => {

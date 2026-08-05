@@ -62,11 +62,6 @@ const DEFAULT_VIEW_FIELDS: IViewField[] = [
 		label: Liferay.Language.get('last-enriched'),
 		sortable: true,
 	},
-	{
-		fieldName: 'accountEngagement',
-		label: Liferay.Language.get('account-engagement'),
-		sortable: true,
-	},
 ];
 
 const DEFAULT_VIEW_FIELD_NAMES = new Set(
