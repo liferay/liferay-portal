@@ -53,6 +53,20 @@ public class ViewProjectsSectionDisplayContextTest
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
+	public void testGetAPIURL() throws Exception {
+		Assert.assertEquals(
+			StringBundler.concat(
+				"/o/search/v1.0/search?emptySearch=true&filter=",
+				"objectDefinitionId eq ",
+				objectDefinition.getObjectDefinitionId(),
+				"&nestedFields=embedded,",
+				"embedded.r_userToCMPProjectManager_user,",
+				"embedded.r_userToCMPProjectSponsor_user",
+				"&nestedFieldsDepth=2"),
+			getAPIURL(null));
+	}
+
+	@Test
 	public void testGetCreationMenu() throws Exception {
 		CreationMenu creationMenu = getCreationMenu(null);
 

@@ -61,7 +61,8 @@ public class ViewAllTasksSectionDisplayContextTest
 				"&filter=(objectDefinitionId eq ",
 				objectDefinition.getObjectDefinitionId(),
 				" or cmpTaskObjectEntryIds/any(x:x gt 0))",
-				"&nestedFields=cmpProjectToCMPTasks,embedded"),
+				"&nestedFields=embedded,embedded.cmpProjectToCMPTasks",
+				"&nestedFieldsDepth=2"),
 			getAPIURL(null));
 	}
 
