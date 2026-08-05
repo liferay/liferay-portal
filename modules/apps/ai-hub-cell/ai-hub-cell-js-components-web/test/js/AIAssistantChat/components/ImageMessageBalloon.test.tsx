@@ -81,6 +81,15 @@ describe('ImageMessageBalloon', () => {
 		return fileInput;
 	}
 
+	function mockSpaces(spaces: Record<string, unknown>[]) {
+		mockFetch.mockImplementation(((url: string) =>
+			Promise.resolve(
+				url.includes('asset-libraries')
+					? {json: () => Promise.resolve({items: spaces}), ok: true}
+					: response()
+			)) as never);
+	}
+
 	beforeEach(() => {
 		mockFetch.mockReset();
 		mockFetch.mockResolvedValue(response() as never);
@@ -212,6 +221,75 @@ describe('ImageMessageBalloon', () => {
 
 		expect(Liferay.Util.openToast).toHaveBeenCalledWith(
 			expect.objectContaining({type: 'info'})
+		);
+	});
+
+	it('does not claim the remaining images were saved when the save fails', async () => {
+		appendFileUploadField();
+
+		mockFetch.mockResolvedValue({ok: false} as never);
+
+		render(
+			<ImageMessageBalloon
+				images={[IMAGE_ONE, IMAGE_TWO]}
+				saveProps={{
+					fileUploadSelector: '[data-ai-assistant-field-id]',
+					groupId: 123,
+				}}
+			/>
+		);
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'save-images'}));
+		});
+
+		await waitFor(() =>
+			expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+				expect.objectContaining({type: 'danger'})
+			)
+		);
+
+		expect(Liferay.Util.openToast).not.toHaveBeenCalledWith(
+			expect.objectContaining({type: 'info'})
+		);
+	});
+
+	it('claims the remaining images were saved only after the space is chosen', async () => {
+		appendFileUploadField();
+
+		mockSpaces([
+			{id: 1, name: 'Marketing', siteId: 11},
+			{id: 2, name: 'Sales', siteId: 22},
+		]);
+
+		render(
+			<ImageMessageBalloon
+				images={[IMAGE_ONE, IMAGE_TWO]}
+				saveProps={{
+					fileUploadSelector: '[data-ai-assistant-field-id]',
+				}}
+			/>
+		);
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'save-images'}));
+		});
+
+		expect(screen.getByLabelText('space')).toBeInTheDocument();
+		expect(Liferay.Util.openToast).not.toHaveBeenCalledWith(
+			expect.objectContaining({type: 'info'})
+		);
+
+		await act(async () => {
+			fireEvent.change(screen.getByLabelText('space'), {
+				target: {value: '22'},
+			});
+		});
+
+		await waitFor(() =>
+			expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+				expect.objectContaining({type: 'info'})
+			)
 		);
 	});
 
@@ -382,6 +460,152 @@ describe('ImageMessageBalloon', () => {
 		});
 
 		await waitFor(() => expect(saveButton).toBeEnabled());
+	});
+
+	it('asks for the space inside the balloon when there is no group and several spaces', async () => {
+		mockSpaces([
+			{id: 1, name: 'Marketing', siteId: 11},
+			{id: 2, name: 'Sales', siteId: 22},
+		]);
+
+		render(<ImageMessageBalloon images={[IMAGE_ONE]} />);
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'save-image'}));
+		});
+
+		expect(
+			screen.getByText('in-which-space-do-you-want-to-save-the-image')
+		).toBeInTheDocument();
+
+		await act(async () => {
+			fireEvent.change(screen.getByLabelText('space'), {
+				target: {value: '22'},
+			});
+		});
+
+		await waitFor(() =>
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/o/cms/basic-documents/scopes/22',
+				expect.objectContaining({method: 'POST'})
+			)
+		);
+
+		expect(lastPostBody().file.fileBase64).toBe('one');
+	});
+
+	it('scrolls the conversation down when the space question appears', async () => {
+		mockSpaces([
+			{id: 1, name: 'Marketing', siteId: 11},
+			{id: 2, name: 'Sales', siteId: 22},
+		]);
+
+		const scrollToBottom = jest.fn();
+
+		render(
+			<ImageMessageBalloon
+				images={[IMAGE_ONE]}
+				scrollToBottom={scrollToBottom}
+			/>
+		);
+
+		expect(scrollToBottom).not.toHaveBeenCalled();
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'save-image'}));
+		});
+
+		expect(screen.getByLabelText('space')).toBeInTheDocument();
+		expect(scrollToBottom).toHaveBeenCalled();
+	});
+
+	it('does not scroll the conversation when a single space saves without asking', async () => {
+		mockSpaces([{id: 1, name: 'Marketing', siteId: 11}]);
+
+		const scrollToBottom = jest.fn();
+
+		render(
+			<ImageMessageBalloon
+				images={[IMAGE_ONE]}
+				scrollToBottom={scrollToBottom}
+			/>
+		);
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'save-image'}));
+		});
+
+		expect(scrollToBottom).not.toHaveBeenCalled();
+	});
+
+	it('disables the save button while the space question is pending', async () => {
+		mockSpaces([
+			{id: 1, name: 'Marketing', siteId: 11},
+			{id: 2, name: 'Sales', siteId: 22},
+		]);
+
+		render(<ImageMessageBalloon images={[IMAGE_ONE, IMAGE_TWO]} />);
+
+		const saveButton = screen.getByRole('button', {name: 'save-images'});
+
+		await act(async () => {
+			fireEvent.click(saveButton);
+		});
+
+		expect(screen.getByLabelText('space')).toBeInTheDocument();
+		expect(saveButton).toBeDisabled();
+
+		screen
+			.getAllByRole('checkbox', {name: 'generated-image'})
+			.forEach((checkbox) => expect(checkbox).toBeDisabled());
+
+		expect(
+			mockFetch.mock.calls.filter(([url]) =>
+				(url as string).includes('asset-libraries')
+			)
+		).toHaveLength(1);
+	});
+
+	it('saves without asking when there is no group and a single space', async () => {
+		mockSpaces([{id: 1, name: 'Marketing', siteId: 11}]);
+
+		render(<ImageMessageBalloon images={[IMAGE_ONE]} />);
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'save-image'}));
+		});
+
+		expect(screen.queryByLabelText('space')).toBeNull();
+
+		await waitFor(() =>
+			expect(mockFetch).toHaveBeenCalledWith(
+				'/o/cms/basic-documents/scopes/11',
+				expect.objectContaining({method: 'POST'})
+			)
+		);
+	});
+
+	it('warns and asks nothing when there are no spaces to save into', async () => {
+		mockSpaces([]);
+
+		render(<ImageMessageBalloon images={[IMAGE_ONE]} />);
+
+		await act(async () => {
+			fireEvent.click(screen.getByRole('button', {name: 'save-image'}));
+		});
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+			expect.objectContaining({
+				message: 'there-are-no-spaces-available-to-save-the-image',
+				type: 'info',
+			})
+		);
+		expect(screen.queryByLabelText('space')).toBeNull();
+		expect(
+			mockFetch.mock.calls.filter(
+				([, init]) => (init as RequestInit)?.method === 'POST'
+			)
+		).toHaveLength(0);
 	});
 
 	it('has no accessibility violations', async () => {

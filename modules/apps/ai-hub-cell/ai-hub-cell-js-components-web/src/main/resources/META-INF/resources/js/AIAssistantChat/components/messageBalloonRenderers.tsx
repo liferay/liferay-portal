@@ -107,6 +107,7 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 					objectEntryFolderExternalReferenceCode:
 						chatContext.objectEntryFolderExternalReferenceCode,
 				}}
+				scrollToBottom={chat.scrollToBottom}
 			/>
 		);
 	},

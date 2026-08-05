@@ -7,14 +7,15 @@ import ClayButton from '@clayui/button';
 import ClayCard from '@clayui/card';
 import {ClayCheckbox} from '@clayui/form';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {fireContentChanged} from '../serverEvents';
+import {Space, getSpaces} from '../services/getSpaces';
 import {saveGeneratedImages} from '../services/saveGeneratedImages';
 
 import '../chat.scss';
 import injectImageIntoFileUploadField from '../utils/injectImageIntoFileUploadField';
-import SpaceSelectionModalContent from './SpaceSelectionModalContent';
+import SpaceSelect from './SpaceSelect';
 
 export interface SaveProps {
 	fileUploadSelector?: string;
@@ -25,11 +26,19 @@ export interface SaveProps {
 interface ImageMessageBalloonProps {
 	images: string[];
 	saveProps?: SaveProps;
+	scrollToBottom?: () => void;
+}
+
+interface PendingImageSave {
+	images: string[];
+	spaces: Space[];
+	successMessage?: string;
 }
 
 const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 	images,
 	saveProps = {},
+	scrollToBottom,
 }) => {
 	const {
 		fileUploadSelector,
@@ -44,8 +53,14 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 	);
 	const [saving, setSaving] = useState<boolean>(false);
 	const [selectingSpace, setSelectingSpace] = useState<boolean>(false);
+	const [pendingImageSave, setPendingImageSave] =
+		useState<PendingImageSave | null>(null);
 
-	const pendingImagesRef = useRef<string[]>([]);
+	useEffect(() => {
+		if (pendingImageSave) {
+			scrollToBottom?.();
+		}
+	}, [pendingImageSave, scrollToBottom]);
 
 	function toggleSelected(index: number) {
 		setSelectedIndexes((previousSelectedIndexes) => {
@@ -68,7 +83,8 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 
 	async function saveImagesToGroup(
 		imagesToSave: string[],
-		targetGroupId: number | string
+		targetGroupId: number | string,
+		successMessage?: string
 	) {
 		setSaving(true);
 
@@ -79,6 +95,13 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 			});
 
 			fireContentChanged();
+
+			if (successMessage) {
+				Liferay.Util.openToast({
+					message: successMessage,
+					type: 'info',
+				});
+			}
 		}
 		catch {
 			Liferay.Util.openToast({
@@ -93,16 +116,57 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 		}
 	}
 
-	function saveImagesToFiles(imagesToSave: string[]) {
+	async function saveImagesToFiles(
+		imagesToSave: string[],
+		successMessage?: string
+	) {
 		if (Number(groupId) > 0) {
-			saveImagesToGroup(imagesToSave, groupId as number | string);
+			saveImagesToGroup(
+				imagesToSave,
+				groupId as number | string,
+				successMessage
+			);
 
 			return;
 		}
 
-		pendingImagesRef.current = imagesToSave;
-
 		setSelectingSpace(true);
+
+		try {
+			const spaces = await getSpaces();
+
+			if (!spaces.length) {
+				Liferay.Util.openToast({
+					message: Liferay.Language.get(
+						'there-are-no-spaces-available-to-save-the-image'
+					),
+					type: 'info',
+				});
+
+				return;
+			}
+
+			if (spaces.length === 1) {
+				await saveImagesToGroup(
+					imagesToSave,
+					spaces[0].siteId,
+					successMessage
+				);
+
+				return;
+			}
+
+			setPendingImageSave({images: imagesToSave, spaces, successMessage});
+		}
+		catch {
+			Liferay.Util.openToast({
+				message: Liferay.Language.get('the-spaces-could-not-be-loaded'),
+				type: 'danger',
+			});
+		}
+		finally {
+			setSelectingSpace(false);
+		}
 	}
 
 	function handleSave() {
@@ -120,14 +184,12 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 			const remainingImages = selectedImages.slice(1);
 
 			if (remainingImages.length) {
-				Liferay.Util.openToast({
-					message: Liferay.Language.get(
+				saveImagesToFiles(
+					remainingImages,
+					Liferay.Language.get(
 						'the-generated-images-were-added-to-the-upload-fields-the-remaining-images-were-saved-successfully'
-					),
-					type: 'info',
-				});
-
-				saveImagesToFiles(remainingImages);
+					)
+				);
 			}
 
 			return;
@@ -148,7 +210,7 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 							{multiple ? (
 								<ClayCheckbox
 									checked={selectedIndexes.has(index)}
-									disabled={saving}
+									disabled={saving || !!pendingImageSave}
 									onChange={() => toggleSelected(index)}
 								>
 									<ClayCard.AspectRatio className="card-item-first card-item-last">
@@ -180,7 +242,10 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 			<div className="ai-assistant-chat__image-message-balloon-actions">
 				<ClayButton
 					disabled={
-						saving || selectingSpace || !selectedImages.length
+						saving ||
+						selectingSpace ||
+						!!pendingImageSave ||
+						!selectedImages.length
 					}
 					displayType="primary"
 					onClick={handleSave}
@@ -199,19 +264,31 @@ const ImageMessageBalloon: React.FC<ImageMessageBalloonProps> = ({
 				</ClayButton>
 			</div>
 
-			{selectingSpace && (
-				<SpaceSelectionModalContent
-					onSelectSpace={(chosenGroupId) => {
-						setSelectingSpace(false);
+			{pendingImageSave && (
+				<div className="ai-assistant-chat__content-generation-balloon-form">
+					<span>
+						{pendingImageSave.images.length > 1
+							? Liferay.Language.get(
+									'in-which-space-do-you-want-to-save-the-images'
+								)
+							: Liferay.Language.get(
+									'in-which-space-do-you-want-to-save-the-image'
+								)}
+					</span>
 
-						if (chosenGroupId) {
+					<SpaceSelect
+						onSelectSpace={(space) => {
+							setPendingImageSave(null);
+
 							saveImagesToGroup(
-								pendingImagesRef.current,
-								chosenGroupId
+								pendingImageSave.images,
+								space.siteId,
+								pendingImageSave.successMessage
 							);
-						}
-					}}
-				/>
+						}}
+						spaces={pendingImageSave.spaces}
+					/>
+				</div>
 			)}
 		</div>
 	);

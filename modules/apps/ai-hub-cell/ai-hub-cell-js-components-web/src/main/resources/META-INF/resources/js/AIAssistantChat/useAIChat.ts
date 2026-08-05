@@ -44,6 +44,7 @@ export interface AIChat {
 	messagesEndRef: React.RefObject<HTMLDivElement>;
 	reportContext: AIChatReportContext | null;
 	runtimeContextRef: React.MutableRefObject<ChatContext>;
+	scrollToBottom: () => void;
 	sendMessage: (text: string) => void;
 	setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
 	setMessage: (message: string) => void;
@@ -136,9 +137,13 @@ export default function useAIChat({
 			: '[data-ai-assistant-field-id]';
 	}, [triggerRef]);
 
-	useEffect(() => {
+	const scrollToBottom = useCallback(() => {
 		messagesEndRef.current?.scrollIntoView({behavior: 'smooth'});
-	}, [messages]);
+	}, []);
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages, scrollToBottom]);
 
 	useEffect(() => {
 		const onLocaleChanged = ({languageId}: {languageId: string}) => {
@@ -499,6 +504,7 @@ export default function useAIChat({
 		messagesEndRef,
 		reportContext,
 		runtimeContextRef,
+		scrollToBottom,
 		sendMessage,
 		setIsGenerating,
 		setMessage,
