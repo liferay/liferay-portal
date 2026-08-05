@@ -11,7 +11,10 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.object.constants.ObjectActionKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectEntryService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,6 +50,19 @@ public abstract class BaseSectionDisplayContext {
 	public abstract Map<String, Object> getEmptyState();
 
 	public abstract List<FDSActionDropdownItem> getFDSActionDropdownItems();
+
+	protected String getNestedFieldsAPIURLParameters(
+		String... nestedFieldNames) {
+
+		if (ArrayUtil.isEmpty(nestedFieldNames)) {
+			return "&nestedFields=embedded";
+		}
+
+		return StringBundler.concat(
+			"&nestedFields=embedded,embedded.",
+			StringUtil.merge(nestedFieldNames, ",embedded."),
+			"&nestedFieldsDepth=2");
+	}
 
 	protected boolean hasAddObjectEntryPortletResourcePermission()
 		throws Exception {
