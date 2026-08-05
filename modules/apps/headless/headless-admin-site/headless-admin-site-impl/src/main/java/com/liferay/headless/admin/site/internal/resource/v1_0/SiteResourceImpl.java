@@ -5,6 +5,9 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.google.places.constants.GooglePlacesWebKeys;
 import com.liferay.headless.admin.site.dto.v1_0.AnalyticsConfiguration;
 import com.liferay.headless.admin.site.dto.v1_0.GoogleAnalyticsConfiguration;
@@ -23,6 +26,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.RequiredGroupException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -49,6 +53,7 @@ import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -88,10 +93,13 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/site.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = SiteResource.class
 )
 @CTAware
-public class SiteResourceImpl extends BaseSiteResourceImpl {
+public class SiteResourceImpl
+	extends BaseSiteResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<Site> {
 
 	@Override
 	public void deleteSite(String externalReferenceCode) throws Exception {
@@ -105,6 +113,71 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		}
 
 		_groupService.deleteGroup(group.getGroupId());
+	}
+
+	@Override
+	public ExportImportDescriptor<? extends BaseModel<?>>
+		getExportImportDescriptor() {
+
+		return new ExportImportDescriptor<Group>() {
+
+			@Override
+			public String getKey() {
+				return SiteResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "sites";
+			}
+
+			@Override
+			public Class<Group> getModelClass() {
+				return Group.class;
+			}
+
+			@Override
+			public Map<String, Serializable> getParameters(
+				PortletDataContext portletDataContext) {
+
+				// The Sites API does not support OData filtering, so the
+				// selection is narrowed with the query parameter the batch
+				// engine forwards to the resource instead of with a filter
+
+				return HashMapBuilder.<String, Serializable>put(
+					"externalReferenceCodes",
+					_getSiteExternalReferenceCodes(portletDataContext)
+				).build();
+			}
+
+			@Override
+			public String getPortletId() {
+				return PortletKeys.SITE_ADMIN;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public boolean isActive(PortletDataContext portletDataContext) {
+				if (!FeatureFlagManagerUtil.isEnabled(
+						portletDataContext.getCompanyId(), "LPD-85946")) {
+
+					return false;
+				}
+
+				return ArrayUtil.isNotEmpty(
+					_getSiteExternalReferenceCodes(portletDataContext));
+			}
+
+			@Override
+			public boolean isHidden() {
+				return true;
+			}
+
+		};
 	}
 
 	@Override
@@ -309,7 +382,8 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	@Override
 	protected Page<Site> doGetSitesPage(
 			Boolean active, String[] excludedExternalReferenceCodes,
-			String search, Pagination pagination)
+			String[] externalReferenceCodes, String search,
+			Pagination pagination)
 		throws Exception {
 
 		long[] classNameIds = {
@@ -333,6 +407,13 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			).build(),
 			true, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			new GroupNameComparator());
+
+		if (ArrayUtil.isNotEmpty(externalReferenceCodes)) {
+			groups = ListUtil.filter(
+				groups,
+				group -> ArrayUtil.contains(
+					externalReferenceCodes, group.getExternalReferenceCode()));
+		}
 
 		if (ArrayUtil.isNotEmpty(excludedExternalReferenceCodes)) {
 			groups = ListUtil.filter(
@@ -724,6 +805,20 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		_initThemeDisplay();
 
 		return serviceContext;
+	}
+
+	private String[] _getSiteExternalReferenceCodes(
+		PortletDataContext portletDataContext) {
+
+		Map<String, String[]> parameterMap =
+			portletDataContext.getParameterMap();
+
+		if (parameterMap == null) {
+			return new String[0];
+		}
+
+		return parameterMap.get(
+			PortletDataHandlerKeys.SITE_EXTERNAL_REFERENCE_CODES);
 	}
 
 	private int _getType(Site.MembershipType membershipType) {
