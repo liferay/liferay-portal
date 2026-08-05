@@ -14,13 +14,10 @@ import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {objectPagesTest} from '../../../fixtures/objectPagesTest';
-import {pageTemplatesPagesTest} from '../../../fixtures/pageTemplatesPagesTest';
-import {pageViewModePagesTest} from '../../../fixtures/pageViewModePagesTest';
 import {productMenuPageTest} from '../../../fixtures/productMenuPageTest';
 import {styleBookPageTest} from '../../../fixtures/styleBookPageTest';
 import {uiElementsPageTest} from '../../../fixtures/uiElementsTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
-import {wikiPagesTest} from '../../../fixtures/wikiPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {createCategories} from '../../../helpers/CreateCategories';
 import {liferayConfig} from '../../../liferay.config';
@@ -56,14 +53,11 @@ export const test = mergeTests(
 	isolatedSiteTest,
 	loginTest(),
 	objectPagesTest,
-	pageTemplatesPagesTest,
-	pageViewModePagesTest,
 	productMenuPageTest,
 	stagingPageTest,
 	styleBookPageTest,
 	usersAndOrganizationsPagesTest,
-	uiElementsPageTest,
-	wikiPagesTest
+	uiElementsPageTest
 );
 
 const testWithDeprecationFFDisabled = mergeTests(
@@ -180,65 +174,6 @@ testWithObjectExportImportFF(
 	}
 );
 
-test(
-	'Make sure we do not export-import wikiNodes if they are not selected in the export configuration screen',
-	{tag: '@LPD-40988'},
-	async ({
-		exportImportPage,
-		page,
-		pageTemplatesPage,
-		site,
-		widgetPagePage,
-		wikiPage,
-	}) => {
-		await wikiPage.goto(site.friendlyUrlPath);
-
-		await wikiPage.createNewWikiNode('Wiki Node Title');
-
-		await pageTemplatesPage.goto(site.friendlyUrlPath);
-
-		// Create page template collection
-
-		const pageTemplateCollectionName = getRandomString();
-
-		await pageTemplatesPage.addPageTemplateCollection(
-			pageTemplateCollectionName
-		);
-
-		await expect(
-			page.getByRole('menuitem', {
-				exact: true,
-				name: pageTemplateCollectionName,
-			})
-		).toBeVisible();
-
-		// Create widget page template
-
-		const pageTemplateName = getRandomString();
-
-		await pageTemplatesPage.addWidgetPageTemplate(pageTemplateName);
-
-		await pageTemplatesPage.page.getByLabel('Add', {exact: true}).click();
-
-		await widgetPagePage.addPortlet(
-			'Web Content Display',
-			'Content Management'
-		);
-
-		await wikiPage.goto(site.friendlyUrlPath);
-
-		await exportImportPage.goToExport();
-
-		const exportFilePath = await exportImportPage.export();
-
-		await exportImportPage.goToImport();
-
-		await exportImportPage.checkItemInNewlyCreatedImportProcess(
-			exportFilePath,
-			'Wiki'
-		);
-	}
-);
 
 test(
 	'Can XSS with `searchContainerId` in Asset Libraries import',

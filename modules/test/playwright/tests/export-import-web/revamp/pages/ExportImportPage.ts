@@ -253,6 +253,22 @@ export class ExportImportPage {
 		);
 	}
 
+	async goToImportDataSelection({
+		folderPath,
+		name,
+	}: {
+		folderPath: string;
+		name: string;
+	}) {
+		await this.nameInput.fill(name);
+
+		await this.selectFile(folderPath);
+
+		await this.completedLabel.waitFor();
+
+		await this.continueButton.click();
+	}
+
 	async goToImportDetails(name: string) {
 		await clickAndExpectToBeVisible({
 			target: this.viewReportEntriesMenuItem,
@@ -273,13 +289,7 @@ export class ExportImportPage {
 		name: string;
 		taskStatus?: taskStatus;
 	}) {
-		await this.nameInput.fill(name);
-
-		await this.selectFile(folderPath);
-
-		await this.completedLabel.waitFor();
-
-		await this.continueButton.click();
+		await this.goToImportDataSelection({folderPath, name});
 
 		if (includeDeletions) {
 			await this.replicateSelectedDeletionsCheckbox.check();

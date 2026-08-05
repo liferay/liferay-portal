@@ -65,12 +65,14 @@ export class JSONWebServicesLayoutPageTemplateEntryApiHelper {
 	async addLayoutPageTemplateEntry({
 		externalReferenceCode = '',
 		groupId,
+		layoutPageTemplateCollectionId = '0',
 		layoutPageTemplateEntryKey = '',
 		name,
 		type = 'basic',
 	}: {
 		externalReferenceCode?: string;
 		groupId: string;
+		layoutPageTemplateCollectionId?: string;
 		layoutPageTemplateEntryKey?: string;
 		name: string;
 		type?: LayoutPageTemplateEntryType;
@@ -79,7 +81,10 @@ export class JSONWebServicesLayoutPageTemplateEntryApiHelper {
 
 		urlSearchParams.append('externalReferenceCode', externalReferenceCode);
 		urlSearchParams.append('groupId', groupId);
-		urlSearchParams.append('layoutPageTemplateCollectionId', '0');
+		urlSearchParams.append(
+			'layoutPageTemplateCollectionId',
+			layoutPageTemplateCollectionId
+		);
 		urlSearchParams.append(
 			'layoutPageTemplateEntryKey',
 			layoutPageTemplateEntryKey

@@ -30,6 +30,14 @@ export class ExportImportDataSelectionPage {
 		});
 	}
 
+	async uncheckItem(sectionName: string, label: string) {
+		await this.expandSection(sectionName);
+
+		await this.section
+			.getByRole('checkbox', {exact: true, name: label})
+			.uncheck();
+	}
+
 	async selectOnlyObjectDefinition(label: string) {
 		const checkboxes = await this.section.getByRole('checkbox').all();
 
