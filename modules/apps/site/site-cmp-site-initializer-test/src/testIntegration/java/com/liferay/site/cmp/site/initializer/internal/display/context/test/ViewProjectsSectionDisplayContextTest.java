@@ -13,7 +13,6 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.test.util.FrontendDataSetTestUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -163,8 +162,5 @@ public class ViewProjectsSectionDisplayContextTest
 		filter = "component.name=com.liferay.site.cmp.site.initializer.internal.fragment.renderer.ViewProjectsJSPSectionFragmentRenderer"
 	)
 	private FragmentRenderer _fragmentRenderer;
-
-	@Inject
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 }
