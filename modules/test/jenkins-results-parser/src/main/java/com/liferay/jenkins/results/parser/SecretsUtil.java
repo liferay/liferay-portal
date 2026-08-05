@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil.BearerHTTPAuthorization;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil.HTTPAuthorization;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil.HttpRequestMethod;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,60 @@ import org.json.JSONObject;
  * @author Peter Yoo
  */
 public abstract class SecretsUtil {
+
+	public static void createItem(
+		Vault vault, String itemTitle, Map<String, String> itemFieldsMap) {
+
+		JSONArray fieldsJSONArray = new JSONArray();
+
+		for (Map.Entry<String, String> itemFieldEntry :
+				itemFieldsMap.entrySet()) {
+
+			fieldsJSONArray.put(
+				_getItemFieldJSONObject(
+					itemFieldEntry.getKey(), itemFieldEntry.getValue()));
+		}
+
+		JSONObject itemJSONObject = _toJSONObject(
+			JenkinsResultsParserUtil.combine(
+				"/v1/vaults/", vault.getId(), "/items"),
+			HttpRequestMethod.POST,
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"category", Item.Category.SECURE_NOTE
+				).put(
+					"fields", fieldsJSONArray
+				).put(
+					"title", itemTitle
+				).put(
+					"vault",
+					new JSONObject(
+					).put(
+						"id", vault.getId()
+					)
+				)));
+
+		if ((itemJSONObject == null) || !itemJSONObject.has("id")) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to create item ", itemTitle, " in vault ",
+					vault.getSecretReference()));
+		}
+
+		Item item = new Item(itemJSONObject.getString("id"), itemTitle, vault);
+
+		vault.addItem(item);
+
+		for (Map.Entry<String, String> entry : itemFieldsMap.entrySet()) {
+			ItemField itemField = new ItemField(
+				"", entry.getKey(), entry.getValue());
+
+			item.addItemField(itemField);
+
+			_loadItemField(vault, item, itemField);
+		}
+	}
 
 	public static String getSecret(String key) {
 		Matcher matcher = _secretReferencePattern.matcher(key);
@@ -171,6 +226,19 @@ public abstract class SecretsUtil {
 		return _httpAuthorization;
 	}
 
+	private static JSONObject _getItemFieldJSONObject(
+		String fieldLabel, String fieldValue) {
+
+		return new JSONObject(
+		).put(
+			"label", fieldLabel
+		).put(
+			"type", ItemField.Type.CONCEALED
+		).put(
+			"value", fieldValue
+		);
+	}
+
 	private static String _getSecretReference(
 		String vaultName, String itemTitle, String fieldLabel) {
 
@@ -218,60 +286,13 @@ public abstract class SecretsUtil {
 
 		try {
 			for (Vault vault : Vault.getInstances()) {
-				String vaultName = vault.getName();
-
 				for (Item item : vault.getItems()) {
-					String itemId = item.getId();
-					String itemTitle = item.getTitle();
-
 					for (ItemField itemField : item.getItemFields()) {
-						String itemFieldValue = itemField.getValue();
-
-						if (JenkinsResultsParserUtil.isNullOrEmpty(
-								itemFieldValue)) {
-
-							continue;
-						}
-
-						String itemFieldId = itemField.getId();
-						String itemFieldLabel = itemField.getLabel();
-
-						_connectSecrets.put(
-							_getSecretReference(vaultName, itemId, itemFieldId),
-							itemFieldValue);
-						_connectSecrets.put(
-							_getSecretReference(
-								vaultName, itemId, itemFieldLabel),
-							itemFieldValue);
-						_connectSecrets.put(
-							_getSecretReference(
-								vaultName, itemTitle, itemFieldId),
-							itemFieldValue);
-						_connectSecrets.put(
-							_getSecretReference(
-								vaultName, itemTitle, itemFieldLabel),
-							itemFieldValue);
+						_loadItemField(vault, item, itemField);
 					}
 
 					for (ItemFile itemFile : item.getItemFiles()) {
-						String itemFileValue = itemFile.getValue();
-
-						if (JenkinsResultsParserUtil.isNullOrEmpty(
-								itemFileValue)) {
-
-							continue;
-						}
-
-						String itemFileName = itemFile.getName();
-
-						_connectSecrets.put(
-							_getSecretReference(
-								vaultName, itemId, itemFileName),
-							itemFileValue);
-						_connectSecrets.put(
-							_getSecretReference(
-								vaultName, itemTitle, itemFileName),
-							itemFileValue);
+						_loadItemFile(vault, item, itemFile);
 					}
 				}
 			}
@@ -288,6 +309,67 @@ public abstract class SecretsUtil {
 
 			_connectSecrets.clear();
 		}
+	}
+
+	private static void _loadItemField(
+		Vault vault, Item item, ItemField itemField) {
+
+		String itemFieldValue = itemField.getValue();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(itemFieldValue)) {
+			return;
+		}
+
+		String vaultName = vault.getName();
+
+		String itemId = item.getId();
+		String itemTitle = item.getTitle();
+
+		String itemFieldId = itemField.getId();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(itemFieldId)) {
+			_connectSecrets.put(
+				_getSecretReference(vaultName, itemId, itemFieldId),
+				itemFieldValue);
+			_connectSecrets.put(
+				_getSecretReference(vaultName, itemTitle, itemFieldId),
+				itemFieldValue);
+		}
+
+		String itemFieldLabel = itemField.getLabel();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(itemFieldLabel)) {
+			_connectSecrets.put(
+				_getSecretReference(vaultName, itemId, itemFieldLabel),
+				itemFieldValue);
+			_connectSecrets.put(
+				_getSecretReference(vaultName, itemTitle, itemFieldLabel),
+				itemFieldValue);
+		}
+	}
+
+	private static void _loadItemFile(
+		Vault vault, Item item, ItemFile itemFile) {
+
+		String itemFieldValue = itemFile.getValue();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(itemFieldValue)) {
+			return;
+		}
+
+		String vaultName = vault.getName();
+
+		String itemId = item.getId();
+		String itemTitle = item.getTitle();
+
+		String itemFileName = itemFile.getName();
+
+		_connectSecrets.put(
+			_getSecretReference(vaultName, itemId, itemFileName),
+			itemFieldValue);
+		_connectSecrets.put(
+			_getSecretReference(vaultName, itemTitle, itemFileName),
+			itemFieldValue);
 	}
 
 	private static JSONArray _toJSONArray(String path) {
@@ -326,6 +408,25 @@ public abstract class SecretsUtil {
 		}
 	}
 
+	private static JSONObject _toJSONObject(
+		String path, HttpRequestMethod httpRequestMethod, String postContent) {
+
+		if (!_isSecretsConfigured()) {
+			throw new RuntimeException("Secrets are not configured");
+		}
+
+		try {
+			return JenkinsResultsParserUtil.toJSONObject(
+				_getConnectURL() + path, false, 0, httpRequestMethod,
+				postContent, 0, 0, _getHTTPAuthorization());
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to send " + httpRequestMethod + " to " + path,
+				ioException);
+		}
+	}
+
 	private static String _toString(String path) {
 		if (!_isSecretsConfigured()) {
 			return "";
@@ -354,6 +455,16 @@ public abstract class SecretsUtil {
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
 
 	private static class Item {
+
+		public void addItemField(ItemField itemField) {
+			synchronized (_vault) {
+				if (_itemFields == null) {
+					return;
+				}
+
+				_itemFields.add(itemField);
+			}
+		}
 
 		public String getId() {
 			return _id;
@@ -550,6 +661,16 @@ public abstract class SecretsUtil {
 		private final String _title;
 		private final Vault _vault;
 
+		private static enum Category {
+
+			API_CREDENTIAL, BANK_ACCOUNT, CREDIT_CARD, CUSTOM, DATABASE,
+			DOCUMENT, DRIVER_LICENSE, EMAIL_ACCOUNT, IDENTITY, LOGIN,
+			MEDICAL_RECORD, MEMBERSHIP, OUTDOOR_LICENSE, PASSPORT, PASSWORD,
+			REWARD_PROGRAM, SECURE_NOTE, SERVER, SOCIAL_SECURITY_NUMBER,
+			SOFTWARE_LICENSE, SSH_KEY, WIRELESS_ROUTER
+
+		}
+
 	}
 
 	private static class ItemField {
@@ -579,6 +700,13 @@ public abstract class SecretsUtil {
 		private final String _id;
 		private final String _label;
 		private final String _value;
+
+		private static enum Type {
+
+			ADDRESS, CONCEALED, CREDIT_CARD_NUMBER, CREDIT_CARD_TYPE, DATE,
+			EMAIL, GENDER, MENU, MONTH_YEAR, OTP, PHONE, REFERENCE, STRING, URL
+
+		}
 
 	}
 
@@ -639,6 +767,16 @@ public abstract class SecretsUtil {
 			return vaults;
 		}
 
+		public void addItem(Item item) {
+			synchronized (_vaultsMap) {
+				if (_items == null) {
+					return;
+				}
+
+				_items.add(item);
+			}
+		}
+
 		public String getId() {
 			return _id;
 		}
@@ -673,6 +811,10 @@ public abstract class SecretsUtil {
 
 		public String getName() {
 			return _name;
+		}
+
+		public String getSecretReference() {
+			return "op://" + getName();
 		}
 
 		public void loadAllItems() {
