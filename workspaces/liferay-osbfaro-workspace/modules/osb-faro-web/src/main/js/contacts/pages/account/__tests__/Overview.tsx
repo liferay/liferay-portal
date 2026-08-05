@@ -278,7 +278,7 @@ describe('Overview', () => {
 			const card = getMetricsCard('ENGAGEMENT STATUS');
 
 			expect(card).toHaveTextContent('512 Returning');
-			expect(card).toHaveTextContent('288 First-Time');
+			expect(card).toHaveTextContent('288 First Time');
 		});
 
 		it('should render the inactive individuals count', () => {
