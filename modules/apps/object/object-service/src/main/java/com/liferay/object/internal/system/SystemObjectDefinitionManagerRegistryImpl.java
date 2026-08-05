@@ -11,6 +11,8 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFa
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
+import java.util.Collection;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -28,6 +30,13 @@ public class SystemObjectDefinitionManagerRegistryImpl
 		String name) {
 
 		return _serviceTrackerMap.getService(name);
+	}
+
+	@Override
+	public Collection<SystemObjectDefinitionManager>
+		getSystemObjectDefinitionManagers() {
+
+		return _serviceTrackerMap.values();
 	}
 
 	@Activate

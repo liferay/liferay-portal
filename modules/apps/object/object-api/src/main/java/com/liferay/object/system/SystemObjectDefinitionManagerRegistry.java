@@ -5,6 +5,8 @@
 
 package com.liferay.object.system;
 
+import java.util.Collection;
+
 /**
  * @author Rodrigo Paulino
  */
@@ -12,5 +14,8 @@ public interface SystemObjectDefinitionManagerRegistry {
 
 	public SystemObjectDefinitionManager getSystemObjectDefinitionManager(
 		String name);
+
+	public Collection<SystemObjectDefinitionManager>
+		getSystemObjectDefinitionManagers();
 
 }
