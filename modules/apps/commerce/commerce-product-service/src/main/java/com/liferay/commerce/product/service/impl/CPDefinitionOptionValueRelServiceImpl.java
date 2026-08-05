@@ -152,6 +152,29 @@ public class CPDefinitionOptionValueRelServiceImpl
 	}
 
 	@Override
+	public CPDefinitionOptionValueRel
+			fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRelLocalService.
+				fetchCPDefinitionOptionValueRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if (cpDefinitionOptionValueRel != null) {
+			CPDefinitionOptionRel cpDefinitionOptionRel =
+				_cpDefinitionOptionRelPersistence.findByPrimaryKey(
+					cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
+
+			_checkCommerceCatalog(
+				cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
+		}
+
+		return cpDefinitionOptionValueRel;
+	}
+
+	@Override
 	public CPDefinitionOptionValueRel getCPDefinitionOptionValueRel(
 			long cpDefinitionOptionValueRelId)
 		throws PortalException {
@@ -340,6 +363,27 @@ public class CPDefinitionOptionValueRelServiceImpl
 		return cpDefinitionOptionValueRelLocalService.
 			updateCPDefinitionOptionValueRelPreselected(
 				cpDefinitionOptionValueRelId, preselected);
+	}
+
+	@Override
+	public CPDefinitionOptionValueRel updateExternalReferenceCode(
+			long cpDefinitionOptionValueRelId, String externalReferenceCode)
+		throws PortalException {
+
+		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
+			cpDefinitionOptionValueRelLocalService.
+				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRel.getCPDefinitionOptionRelId());
+
+		_checkCommerceCatalog(
+			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.UPDATE);
+
+		return cpDefinitionOptionValueRelLocalService.
+			updateExternalReferenceCode(
+				cpDefinitionOptionValueRelId, externalReferenceCode);
 	}
 
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)

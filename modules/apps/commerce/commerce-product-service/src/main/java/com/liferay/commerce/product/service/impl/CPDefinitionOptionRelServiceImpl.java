@@ -136,6 +136,25 @@ public class CPDefinitionOptionRelServiceImpl
 	}
 
 	@Override
+	public CPDefinitionOptionRel
+			fetchCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionRelLocalService.
+				fetchCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
+
+		if (cpDefinitionOptionRel != null) {
+			_checkCommerceCatalog(
+				cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
+		}
+
+		return cpDefinitionOptionRel;
+	}
+
+	@Override
 	public CPDefinitionOptionRel getCPDefinitionOptionRel(
 			long cpDefinitionOptionRelId)
 		throws PortalException {
@@ -143,6 +162,23 @@ public class CPDefinitionOptionRelServiceImpl
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			cpDefinitionOptionRelPersistence.findByPrimaryKey(
 				cpDefinitionOptionRelId);
+
+		_checkCommerceCatalog(
+			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
+
+		return cpDefinitionOptionRel;
+	}
+
+	@Override
+	public CPDefinitionOptionRel
+			getCPDefinitionOptionRelByExternalReferenceCode(
+				String externalReferenceCode, long companyId)
+		throws PortalException {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionRelLocalService.
+				getCPDefinitionOptionRelByExternalReferenceCode(
+					externalReferenceCode, companyId);
 
 		_checkCommerceCatalog(
 			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
@@ -303,6 +339,22 @@ public class CPDefinitionOptionRelServiceImpl
 			nameMap, descriptionMap, commerceOptionTypeKey, infoItemServiceKey,
 			priority, definedExternally, facetable, required, skuContributor,
 			priceType, typeSettings, serviceContext);
+	}
+
+	@Override
+	public CPDefinitionOptionRel updateExternalReferenceCode(
+			long cpDefinitionOptionRelId, String externalReferenceCode)
+		throws PortalException {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			cpDefinitionOptionRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionRelId);
+
+		_checkCommerceCatalog(
+			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.UPDATE);
+
+		return cpDefinitionOptionRelLocalService.updateExternalReferenceCode(
+			cpDefinitionOptionRelId, externalReferenceCode);
 	}
 
 	private void _checkCommerceCatalog(long cpDefinitionId, String actionId)
