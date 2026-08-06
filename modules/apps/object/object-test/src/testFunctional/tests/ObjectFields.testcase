@@ -94,7 +94,7 @@ definition {
 				relationshipsLabelName = "Relationship",
 				tabName = "Relationship Tab");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 
 			ObjectAdmin.openObjectAdmin();
 
@@ -112,7 +112,7 @@ definition {
 
 			ObjectCustomViews.addColumnsViaUI(addColumns = "Custom Long Integer Field");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 
 			ObjectCustomViews.goToViewsDetails(label = "Custom Views");
 
@@ -120,7 +120,7 @@ definition {
 
 			ObjectCustomViews.addNewFilterViaUI(filterBy = "Create Date");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("When an entry is added and the filter is set in the view entry page") {
@@ -363,7 +363,7 @@ definition {
 
 			ObjectField.typeStorageFolder(content = "/folderDM");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("Add an entry on Custom Object") {
@@ -696,7 +696,7 @@ definition {
 
 			ObjectCustomViews.addColumnsViaUI(addColumns = "Custom Decimal Field 1,Custom Decimal Field 2,Custom Formula Field");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("When the value of the fields is added") {
@@ -1066,7 +1066,7 @@ definition {
 
 			ObjectCustomViews.addColumnsViaUI(addColumns = "Custom Field,External Reference Code");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("Create an entry via API") {
@@ -1248,7 +1248,7 @@ definition {
 
 			ObjectCustomViews.addColumnsViaUI(addColumns = "Custom Field,External Reference Code");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("Assert the entry is created only when the ERC value is greater than the integer value") {
@@ -1595,7 +1595,7 @@ definition {
 				filterBy = "Field Picklist",
 				filterValue = "Picklist Item Test");
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("Assert that the filter option is on Custom Object") {
@@ -1820,7 +1820,7 @@ definition {
 		task ("When the long text field value is updated to receive 65000 characters") {
 			ObjectField.typeValueOnLimitCharacters(newValue = 65000);
 
-			PortletEntry.save();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("and When adding an object entry") {

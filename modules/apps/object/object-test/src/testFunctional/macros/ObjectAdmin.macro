@@ -1587,6 +1587,19 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro saveSidePanel() {
+		Click(
+			key_text = "Save",
+			locator1 = "Button#ANY");
+
+		SelectFrame(value1 = "relative=top");
+
+		WaitForPageLoad();
+
+		WaitForLiferayEvent.initializeLiferayEventLog();
+	}
+
+	@summary = "Default summary"
 	macro searchInDefinePermissions(search = null) {
 		Type(
 			locator1 = "RolesPermissionsNavigation#SEARCH_FIELD",

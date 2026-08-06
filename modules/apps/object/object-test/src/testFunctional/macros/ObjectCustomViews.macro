@@ -17,7 +17,7 @@ definition {
 				locator1 = "ObjectCustomViews#CHECKBOX_COLUMN_OPTION");
 		}
 
-		PortletEntry.save();
+		ObjectCustomViews.clickSave();
 
 		SelectFrame(locator1 = "IFrame#IFRAME");
 	}
@@ -127,7 +127,7 @@ definition {
 			locator1 = "ObjectCustomViews#ADD_VIEW_NAME",
 			value1 = ${viewName});
 
-		PortletEntry.save();
+		ObjectCustomViews.clickSave();
 	}
 
 	@summary = "Default summary"
@@ -191,6 +191,15 @@ definition {
 			locator1 = "ObjectCustomViews#DROPDOWN_BUTTON_ON_OBJECT_VIEW");
 
 		SelectFrame(locator1 = "ObjectCustomViews#VIEW_DROPDOWN_MENU_ON_MODAL_DEFAULT_SORT");
+	}
+
+	@summary = "Default summary"
+	macro clickSave() {
+		Click(
+			key_text = "Save",
+			locator1 = "Button#ANY");
+
+		WaitForLiferayEvent.initializeLiferayEventLog();
 	}
 
 	@summary = "Default summary"
