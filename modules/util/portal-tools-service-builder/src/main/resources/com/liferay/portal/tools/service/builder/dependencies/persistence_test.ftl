@@ -370,19 +370,41 @@ public class ${entity.name}PersistenceTest {
 
 				${entity.name} draft${entity.name} = _persistence.create(pk);
 
+				<#assign hasBlobEntityColumn = false />
+
 				<#list entity.regularEntityColumns as entityColumn>
 					<#if !entityColumn.primary && (validator.isNull(parentPKColumn) || (parentPKColumn.name != entityColumn.name)) && !(serviceBuilder.isVersionGTE_7_4_0() && stringUtil.equals(entityColumn.name, "mvccVersion"))>
-						draft${entity.name}.set${entityColumn.methodName}(
+						<#if stringUtil.equals(entityColumn.type, "Blob")>
+							<#assign hasBlobEntityColumn = true />
 
-						<#if stringUtil.equals(entityColumn.name, "headId")>
-							-
+							String draft${entityColumn.methodName}String = RandomTestUtil.randomString();
+
+							byte[] draft${entityColumn.methodName}Bytes = draft${entityColumn.methodName}String.getBytes("UTF-8");
+
+							draft${entity.name}.set${entityColumn.methodName}(new OutputBlob(new ByteArrayInputStream(draft${entityColumn.methodName}Bytes), draft${entityColumn.methodName}Bytes.length));
+						<#else>
+							draft${entity.name}.set${entityColumn.methodName}(
+
+							<#if stringUtil.equals(entityColumn.name, "headId")>
+								-
+							</#if>
+
+							${entity.variableName}.get${entityColumn.methodName}());
 						</#if>
-
-						${entity.variableName}.get${entityColumn.methodName}());
 					</#if>
 				</#list>
 
 				_${entity.pluralVariableName}.add(_persistence.update(draft${entity.name}));
+
+				<#if hasBlobEntityColumn>
+					Session session = _persistence.openSession();
+
+					session.flush();
+
+					session.clear();
+
+					${entity.name} persistedDraft${entity.name} = _persistence.findByPrimaryKey(pk);
+				</#if>
 
 				<#list entity.regularEntityColumns as entityColumn>
 					<#if !entityColumn.primary && (validator.isNull(parentPKColumn) || (parentPKColumn.name != entityColumn.name))>
@@ -391,10 +413,9 @@ public class ${entity.name}PersistenceTest {
 						<#elseif stringUtil.equals(entityColumn.name, "status")>
 							Assert.assertEquals(2, draft${entity.name}.get${entityColumn.methodName}());
 						<#elseif stringUtil.equals(entityColumn.type, "Blob")>
-							Blob ${entityColumn.methodName} = ${entity.variableName}.get${entityColumn.methodName}();
-							Blob draft${entityColumn.methodName} = draft${entity.name}.get${entityColumn.methodName}();
+							Blob persistedDraft${entityColumn.methodName} = persistedDraft${entity.name}.get${entityColumn.methodName}();
 
-							Assert.assertArrayEquals(${entityColumn.methodName}.getBytes(1, (int)${entityColumn.methodName}.length()), draft${entityColumn.methodName}.getBytes(1, (int)draft${entityColumn.methodName}.length()));
+							Assert.assertArrayEquals(persistedDraft${entityColumn.methodName}.getBytes(1, (int)persistedDraft${entityColumn.methodName}.length()), draft${entityColumn.methodName}Bytes);
 						<#elseif stringUtil.equals(entityColumn.type, "boolean")>
 							Assert.assertEquals(${entity.variableName}.is${entityColumn.methodName}(), draft${entity.name}.is${entityColumn.methodName}());
 						<#elseif stringUtil.equals(entityColumn.type, "Date")>
@@ -495,6 +516,16 @@ public class ${entity.name}PersistenceTest {
 
 			new${entity.name}.set${entity.externalReferenceCode?cap_first}Id(${entity.variableName}.get${entity.externalReferenceCode?cap_first}Id());
 
+			<#list entity.regularEntityColumns as entityColumn>
+				<#if stringUtil.equals(entityColumn.type, "Blob")>
+					String ${entityColumn.name}String = RandomTestUtil.randomString();
+
+					byte[] ${entityColumn.name}Bytes = ${entityColumn.name}String.getBytes("UTF-8");
+
+					new${entity.name}.set${entityColumn.methodName}(new OutputBlob(new ByteArrayInputStream(${entityColumn.name}Bytes), ${entityColumn.name}Bytes.length));
+				</#if>
+			</#list>
+
 			new${entity.name} = _persistence.update(new${entity.name});
 
 			Session session = _persistence.getCurrentSession();
@@ -502,6 +533,12 @@ public class ${entity.name}PersistenceTest {
 			session.evict(new${entity.name});
 
 			new${entity.name}.setExternalReferenceCode(${entity.variableName}.getExternalReferenceCode());
+
+			<#list entity.regularEntityColumns as entityColumn>
+				<#if stringUtil.equals(entityColumn.type, "Blob")>
+					new${entity.name}.set${entityColumn.methodName}(new OutputBlob(new ByteArrayInputStream(${entityColumn.name}Bytes), ${entityColumn.name}Bytes.length));
+				</#if>
+			</#list>
 
 			_persistence.update(new${entity.name});
 		}
