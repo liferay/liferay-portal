@@ -55,6 +55,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.net.HttpURLConnection;
+import java.net.URL;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -132,12 +133,24 @@ public class AnalyticsCloudClient {
 				"Unable to connect with Analytics Cloud");
 		}
 
+		JSONObject jsonObject = _decodeToken(connectionToken);
+
+		String url = jsonObject.getString("url");
+
+		_validateConnectionTokenURL(url);
+
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.
 				fetchOAuth2ApplicationByExternalReferenceCode(
 					"ANALYTICS-CLOUD", company.getCompanyId());
 
 		if (oAuth2Application == null) {
+			URL connectionTokenURL = new URL(url);
+
+			String homePageURL = StringBundler.concat(
+				connectionTokenURL.getProtocol(), "://",
+				connectionTokenURL.getAuthority());
+
 			oAuth2Application =
 				_oAuth2ApplicationLocalService.addOrUpdateOAuth2Application(
 					"ANALYTICS-CLOUD", user.getUserId(), user.getScreenName(),
@@ -151,16 +164,10 @@ public class AnalyticsCloudClient {
 					OAuth2SecureRandomGenerator.generateClientId(),
 					ClientProfile.HEADLESS_SERVER.id(),
 					OAuth2SecureRandomGenerator.generateClientSecret(), null,
-					null, "https://analytics.liferay.com", 0, null,
-					"Analytics Cloud", null,
-					Collections.singletonList(
-						"https://analytics.liferay.com/oauth/receive"),
+					null, homePageURL, 0, null, "Analytics Cloud", null,
+					Collections.singletonList(homePageURL + "/oauth/receive"),
 					false, false, this::_buildScopes, new ServiceContext());
 		}
-
-		JSONObject connectionTokenJSONObject = _decodeToken(connectionToken);
-
-		_validateConnectionTokenURL(connectionTokenJSONObject.getString("url"));
 
 		Http.Options options = new Http.Options();
 
@@ -169,8 +176,8 @@ public class AnalyticsCloudClient {
 		options.addPart(
 			"oAuthClientSecret", oAuth2Application.getClientSecret());
 		options.addPart("portalURL", company.getPortalURL(0));
-		options.addPart("token", connectionTokenJSONObject.getString("token"));
-		options.setLocation(connectionTokenJSONObject.getString("url"));
+		options.addPart("token", jsonObject.getString("token"));
+		options.setLocation(url);
 		options.setPost(true);
 
 		String content = _http.URLtoString(options);
