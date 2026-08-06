@@ -45,7 +45,7 @@ Export-Package:\
 
 ```
 dependencies {
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "io.swagger.core.v3", name: "swagger-annotations-jakarta", version: "2.2.28"
@@ -153,7 +153,7 @@ Bundle-Version: 1.0.0
 
 ```
 dependencies {
-	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation project(":apps:<area>:<name>-rest-api")
