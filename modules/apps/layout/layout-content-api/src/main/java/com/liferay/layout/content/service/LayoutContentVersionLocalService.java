@@ -219,6 +219,9 @@ public interface LayoutContentVersionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public long getLatestApprovedLayoutContentVersionId(long plid);
+
 	/**
 	 * Returns the layout content version with the primary key.
 	 *
@@ -297,4 +300,4 @@ public interface LayoutContentVersionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1668532652
+// LIFERAY-SERVICE-BUILDER-HASH:1672056227

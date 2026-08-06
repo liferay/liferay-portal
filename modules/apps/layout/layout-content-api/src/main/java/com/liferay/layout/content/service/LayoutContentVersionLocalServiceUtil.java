@@ -250,6 +250,10 @@ public class LayoutContentVersionLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
+	public static long getLatestApprovedLayoutContentVersionId(long plid) {
+		return getService().getLatestApprovedLayoutContentVersionId(plid);
+	}
+
 	/**
 	 * Returns the layout content version with the primary key.
 	 *
@@ -357,4 +361,4 @@ public class LayoutContentVersionLocalServiceUtil {
 			LayoutContentVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1311579954
+// LIFERAY-SERVICE-BUILDER-HASH:59137004
