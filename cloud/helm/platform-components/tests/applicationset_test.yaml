@@ -161,7 +161,7 @@ tests:
                     content: https://kedacore.github.io/charts
                     path: spec.sourceRepos
                 template: templates/appproject-operator.yaml
-        it: Reflects a repository URL override in the operator AppProject source repos
+        it: Reflects a repository URL override in the operator AppProject source repositories
         set:
             operatorApplications.keda.repoURL: https://charts.example.com
     -   asserts:
