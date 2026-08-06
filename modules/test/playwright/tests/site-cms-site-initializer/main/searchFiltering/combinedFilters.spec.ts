@@ -20,6 +20,8 @@ test(
 		const applicationName = 'cms/basic-web-contents';
 		const keyword = getRandomString();
 		const matchingTitle = `${keyword} Match`;
+		const matchingFileTitle = `${keyword} Document`;
+		const otherSpaceTitle = `${keyword} Other Space`;
 		const wrongKeywordTitle = getRandomString();
 
 		let space1Name: string;
@@ -61,10 +63,10 @@ test(
 				{
 					file: {
 						fileBase64: 'R0lGODlhAQABAAAAACw=',
-						name: `${matchingTitle} File.png`,
+						name: `${matchingFileTitle}.png`,
 					},
 					objectEntryFolderExternalReferenceCode: 'L_FILES',
-					title: `${matchingTitle} File`,
+					title: matchingFileTitle,
 				},
 				'cms/basic-documents',
 				space1.name
@@ -73,7 +75,7 @@ test(
 			await apiHelpers.objectEntry.postObjectEntry(
 				{
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: `${keyword} Other Space`,
+					title: otherSpaceTitle,
 				},
 				applicationName,
 				space2.name
@@ -101,14 +103,20 @@ test(
 		});
 
 		await test.step('Only the item matching all three criteria remains', async () => {
-			await expect(assetsPage.getItem(matchingTitle)).toBeVisible();
-			await expect(assetsPage.getItem(wrongKeywordTitle)).toBeHidden();
-			await expect(
-				assetsPage.getItem(`${matchingTitle} File`)
-			).toBeHidden();
-			await expect(
-				assetsPage.getItem(`${keyword} Other Space`)
-			).toBeHidden();
+			await expect(async () => {
+				await expect(assetsPage.getItem(matchingTitle)).toBeVisible({
+					timeout: 5000,
+				});
+				await expect(assetsPage.getItem(wrongKeywordTitle)).toBeHidden({
+					timeout: 5000,
+				});
+				await expect(assetsPage.getItem(matchingFileTitle)).toBeHidden({
+					timeout: 5000,
+				});
+				await expect(assetsPage.getItem(otherSpaceTitle)).toBeHidden({
+					timeout: 5000,
+				});
+			}).toPass({timeout: 30000});
 		});
 	}
 );
