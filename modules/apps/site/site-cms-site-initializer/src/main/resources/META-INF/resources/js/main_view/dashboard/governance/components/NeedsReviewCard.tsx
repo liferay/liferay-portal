@@ -59,10 +59,11 @@ const NeedsReviewCard: React.FC<INeedsReviewCardProps> = ({
 			getAssetListFDSProps({
 				additionalProps,
 				apiURL,
+				id,
 				itemsActions: additionalProps.fdsActionDropdownItems,
 				renderSubtitle,
 			}),
-		[additionalProps, apiURL, renderSubtitle]
+		[additionalProps, apiURL, id, renderSubtitle]
 	);
 
 	return (

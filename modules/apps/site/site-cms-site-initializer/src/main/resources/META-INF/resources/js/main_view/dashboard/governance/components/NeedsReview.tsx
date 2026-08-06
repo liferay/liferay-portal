@@ -159,7 +159,7 @@ export function NeedsReview({
 							'assets-approaching-their-review-date'
 						)}
 						emptyLabel={Liferay.Language.get('no-upcoming-reviews')}
-						id="cmsGovernanceUpcomingReviews"
+						id={additionalProps.upcomingReviewsFDSName}
 						renderSubtitle={renderReviewDate}
 						title={Liferay.Language.get('upcoming-reviews')}
 						viewAllHref={upcomingReviewsHref}
@@ -180,7 +180,7 @@ export function NeedsReview({
 						emptyLabel={Liferay.Language.get(
 							'no-assets-are-expiring-soon'
 						)}
-						id="cmsGovernanceExpiringSoon"
+						id={additionalProps.expiringSoonFDSName}
 						renderSubtitle={renderExpiringStatus}
 						title={Liferay.Language.get('expiring-soon')}
 						viewAllHref={expiringSoonHref}

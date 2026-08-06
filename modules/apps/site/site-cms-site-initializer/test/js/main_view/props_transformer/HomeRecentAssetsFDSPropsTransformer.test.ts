@@ -41,6 +41,11 @@ jest.mock(
 );
 
 jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/modal/ScheduleDateModalContent',
+	() => ({__esModule: true, default: jest.fn()})
+);
+
+jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/modal/asset_navigation_view/AssetNavigationModalContent',
 	() => ({__esModule: true, default: jest.fn()})
 );

@@ -7,6 +7,7 @@ package com.liferay.site.cms.site.initializer.internal.display.context;
 
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.document.library.configuration.DLConfiguration;
+import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.learn.LearnMessageUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFolderConstants;
@@ -51,7 +52,8 @@ public class ViewDashboardDisplayContext {
 		ObjectDefinitionService objectDefinitionService,
 		RoleLocalService roleLocalService, ThemeDisplay themeDisplay,
 		TranslationInfoItemFieldValuesExporterRegistry
-			translationInfoItemFieldValuesExporterRegistry) {
+			translationInfoItemFieldValuesExporterRegistry,
+		FDSItemsActions viewNeedsReviewSectionFDSItemsActions) {
 
 		_analyticsSettingsManager = analyticsSettingsManager;
 		_dlConfiguration = dlConfiguration;
@@ -62,6 +64,8 @@ public class ViewDashboardDisplayContext {
 		_themeDisplay = themeDisplay;
 		_translationInfoItemFieldValuesExporterRegistry =
 			translationInfoItemFieldValuesExporterRegistry;
+		_viewNeedsReviewSectionFDSItemsActions =
+			viewNeedsReviewSectionFDSItemsActions;
 	}
 
 	public Map<String, Object> getConstants() {
@@ -178,13 +182,17 @@ public class ViewDashboardDisplayContext {
 			PermissionUtil.getDefaultPermissionAdditionalProps(
 				_httpServletRequest, _themeDisplay)
 		).put(
+			"expiringSoonFDSName",
+			CMSSiteInitializerFDSNames.EXPIRING_SOON_SECTION
+		).put(
 			"expiringSoonFilterString",
 			SectionDisplayContextUtil.getExpiringSoonFilterString(
 				_httpServletRequest)
 		).put(
 			"fdsActionDropdownItems",
-			SectionDisplayContextUtil.getFDSActionDropdownItems(
-				_httpServletRequest)
+			() ->
+				_viewNeedsReviewSectionFDSItemsActions.
+					getFDSActionDropdownItems(_httpServletRequest)
 		).put(
 			"fileMimeTypeCssClasses",
 			() -> {
@@ -216,6 +224,9 @@ public class ViewDashboardDisplayContext {
 			ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS
 		).put(
 			"redirect", _themeDisplay.getURLCurrent()
+		).put(
+			"upcomingReviewsFDSName",
+			CMSSiteInitializerFDSNames.UPCOMING_REVIEWS_SECTION
 		).put(
 			"upcomingReviewsFilterString",
 			SectionDisplayContextUtil.getUpcomingReviewsFilterString(
@@ -265,5 +276,6 @@ public class ViewDashboardDisplayContext {
 	private final ThemeDisplay _themeDisplay;
 	private final TranslationInfoItemFieldValuesExporterRegistry
 		_translationInfoItemFieldValuesExporterRegistry;
+	private final FDSItemsActions _viewNeedsReviewSectionFDSItemsActions;
 
 }

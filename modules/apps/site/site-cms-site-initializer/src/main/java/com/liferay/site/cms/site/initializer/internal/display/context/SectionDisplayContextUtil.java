@@ -216,6 +216,26 @@ public class SectionDisplayContextUtil {
 			).build(
 				"find-and-replace"
 			));
+		bulkActionDropdownItems.add(
+			FDSActionDropdownItemBuilder.setHref(
+				StringPool.POUND
+			).setIcon(
+				"date"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "update-expiration-date")
+			).build(
+				"update-expiration-date"
+			));
+		bulkActionDropdownItems.add(
+			FDSActionDropdownItemBuilder.setHref(
+				StringPool.POUND
+			).setIcon(
+				"date"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "update-review-date")
+			).build(
+				"update-review-date"
+			));
 
 		_addPermissionsBulkActions(bulkActionDropdownItems, httpServletRequest);
 
@@ -244,6 +264,12 @@ public class SectionDisplayContextUtil {
 			).build(
 				"download"
 			));
+		fdsActionDropdownItems.add(
+			getScheduleDateFDSActionDropdownItem(
+				httpServletRequest, "update-expiration-date"));
+		fdsActionDropdownItems.add(
+			getScheduleDateFDSActionDropdownItem(
+				httpServletRequest, "update-review-date"));
 
 		return fdsActionDropdownItems;
 	}
@@ -983,6 +1009,22 @@ public class SectionDisplayContextUtil {
 		}
 
 		return objectEntryFolderIdsMap;
+	}
+
+	public static FDSActionDropdownItem getScheduleDateFDSActionDropdownItem(
+		HttpServletRequest httpServletRequest, String actionId) {
+
+		return FDSActionDropdownItemBuilder.setHref(
+			StringPool.POUND
+		).setIcon(
+			"date"
+		).setLabel(
+			LanguageUtil.get(httpServletRequest, actionId)
+		).setPermissionKey(
+			"update"
+		).build(
+			actionId
+		);
 	}
 
 	public static String getUpcomingReviewsFilterString(

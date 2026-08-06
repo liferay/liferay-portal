@@ -28,6 +28,7 @@ interface ItemData {
 			name: string;
 		};
 		defaultLanguageId: string;
+		expirationDate?: string;
 		externalReferenceCode: string;
 		file?: any;
 		id: number;
@@ -35,6 +36,7 @@ interface ItemData {
 		objectEntryFolderExternalReferenceCode?: string;
 		objectEntryFolderId: number;
 		parentObjectEntryFolderExternalReferenceCode?: string;
+		reviewDate?: string;
 		scopeId: number;
 		systemProperties?: any;
 		title: string;

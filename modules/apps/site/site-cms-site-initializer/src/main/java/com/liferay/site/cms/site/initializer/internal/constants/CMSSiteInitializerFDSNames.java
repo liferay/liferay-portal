@@ -45,6 +45,10 @@ public class CMSSiteInitializerFDSNames {
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
 			"-expiredAssetsSection";
 
+	public static final String EXPIRING_SOON_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-expiringSoonSection";
+
 	public static final String FILES_SECTION =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-filesSection";
 
@@ -106,6 +110,10 @@ public class CMSSiteInitializerFDSNames {
 
 	public static final String TAG_USAGES =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-tagUsages";
+
+	public static final String UPCOMING_REVIEWS_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-upcomingReviewsSection";
 
 	public static final String VIEW_CONTENTS_FOLDER =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +

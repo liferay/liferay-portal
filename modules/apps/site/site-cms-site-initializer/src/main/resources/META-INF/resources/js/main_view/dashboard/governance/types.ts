@@ -9,7 +9,9 @@ import type {AssetListAdditionalProps} from '../../props_transformer/getAssetLis
 
 export type GovernanceAdditionalProps = AssetListAdditionalProps & {
 	allSectionFDSName: string;
+	expiringSoonFDSName: string;
 	expiringSoonFilterString: string;
 	fdsActionDropdownItems: IItemsActions[];
+	upcomingReviewsFDSName: string;
 	upcomingReviewsFilterString: string;
 };

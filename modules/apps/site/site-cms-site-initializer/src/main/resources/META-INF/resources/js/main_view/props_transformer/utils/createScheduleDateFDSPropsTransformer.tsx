@@ -10,13 +10,11 @@ import {
 	IBulkActionFDSData,
 	IBulkActionType,
 } from '../../../common/types/BulkActionTask';
-import {openCMSModal} from '../../../common/utils/openCMSModal';
-import ScheduleDateModalContent from '../../modal/ScheduleDateModalContent';
-import {triggerAssetBulkAction} from '../actions/triggerAssetBulkAction';
 import {
 	AssetListFDSProps,
 	createAssetListFDSPropsBuilder,
 } from './createAssetListFDSPropsBuilder';
+import createScheduleDateModalOpener from './createScheduleDateModalOpener';
 
 interface ScheduleDateFDSConfig {
 	actionId: string;
@@ -56,38 +54,17 @@ export function createScheduleDateFDSPropsTransformer(
 					}${additionalAPIURLParameters}`
 				: otherProps.apiURL;
 
-		const openScheduleDateModal = (
-			selectedData: IBulkActionFDSData,
-			date?: string
-		) => {
-			openCMSModal({
-				contentComponent: ({closeModal}: {closeModal: () => void}) => (
-					<ScheduleDateModalContent
-						closeModal={closeModal}
-						date={date}
-						fieldLabel={config.modalFieldLabel}
-						fieldName={config.modalFieldName}
-						neverLabel={config.modalNeverLabel}
-						onSave={async (newDate: string) => {
-							triggerAssetBulkAction({
-								apiURL: bulkActionAPIURL,
-								dataSetId: otherProps.id,
-								keyValues: newDate
-									? {[config.keyValuesKey]: newDate}
-									: {},
-								selectedData,
-								type: config.bulkActionType,
-							});
-
-							return true;
-						}}
-						saveRequirementLabel={config.modalSaveRequirementLabel}
-						title={config.modalTitle}
-					/>
-				),
-				size: 'md',
-			});
-		};
+		const openScheduleDateModal = createScheduleDateModalOpener({
+			apiURL: bulkActionAPIURL,
+			bulkActionType: config.bulkActionType,
+			dataSetId: otherProps.id,
+			keyValuesKey: config.keyValuesKey,
+			modalFieldLabel: config.modalFieldLabel,
+			modalFieldName: config.modalFieldName,
+			modalNeverLabel: config.modalNeverLabel,
+			modalSaveRequirementLabel: config.modalSaveRequirementLabel,
+			modalTitle: config.modalTitle,
+		});
 
 		return {
 			...getAssetListFDSProps({
