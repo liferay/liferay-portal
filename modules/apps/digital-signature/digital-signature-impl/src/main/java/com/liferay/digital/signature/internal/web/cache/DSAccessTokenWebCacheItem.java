@@ -62,11 +62,13 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 			_environmentBaseURI = "account-d.docusign.com";
 		}
 
-		if (rsaPrivateKey != null) {
-			_rsaPrivateKeyBytes = rsaPrivateKey.getBytes();
+		if (rsaPrivateKey == null) {
+			_rsaPrivateKeyBytes = new byte[0];
 		}
 		else {
-			_rsaPrivateKeyBytes = new byte[0];
+			String pem = _getPEM(rsaPrivateKey);
+
+			_rsaPrivateKeyBytes = pem.getBytes();
 		}
 	}
 
@@ -150,6 +152,35 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 			token + "." + _encode(signature.sign()), "=");
 	}
 
+	private String _getPEM(String rsaPrivateKey) {
+
+		// PEMReader reads the key line by line: it looks for the line holding
+		// the begin marker, derives the end marker from that line, and decodes
+		// the lines in between. Neither base64 nor a marker contains a
+		// backslash, so a backslash followed by "n" is unambiguously an encoded
+		// line break. Decode those, then put each marker back on a line of its
+		// own. A key that already has this shape comes back unchanged.
+
+		String pem = StringUtil.replace(
+			rsaPrivateKey.trim(), "\\\\n", StringPool.NEW_LINE);
+
+		pem = StringUtil.replace(pem, "\\n", StringPool.NEW_LINE);
+
+		int beginIndex = pem.indexOf(_BEGIN_MARKER);
+		int endIndex = pem.lastIndexOf(_END_MARKER);
+
+		if ((beginIndex == -1) || (endIndex == -1)) {
+			return pem;
+		}
+
+		String body = pem.substring(
+			beginIndex + _BEGIN_MARKER.length(), endIndex);
+
+		return StringBundler.concat(
+			_BEGIN_MARKER, StringPool.NEW_LINE, body.trim(),
+			StringPool.NEW_LINE, _END_MARKER);
+	}
+
 	private Object _getUnixTime(long offset) {
 		Long unixTime = (System.currentTimeMillis() / Time.SECOND) + offset;
 
@@ -170,6 +201,11 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 
 		return keyFactory.generatePrivate(pkcs1EncodedKeySpec.getKeySpec());
 	}
+
+	private static final String _BEGIN_MARKER =
+		"-----BEGIN RSA PRIVATE KEY-----";
+
+	private static final String _END_MARKER = "-----END RSA PRIVATE KEY-----";
 
 	private static final long _REFRESH_TIME = Time.MINUTE * 45;
 
