@@ -5,9 +5,10 @@
 
 package com.liferay.source.formatter.check;
 
-import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.source.formatter.parser.JavaTerm;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+import com.liferay.source.formatter.check.util.JavaSourceUtil;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,302 +18,237 @@ import java.util.regex.Pattern;
 /**
  * @author Shuyang Zhou
  */
-public class JavaRedundantContainsCheck extends BaseJavaTermCheck {
-
-	@Override
-	public boolean isLiferaySourceCheck() {
-		return true;
-	}
+public class JavaRedundantContainsCheck extends BaseFileCheck {
 
 	@Override
 	protected String doProcess(
-		String fileName, String absolutePath, JavaTerm javaTerm,
-		String fileContent) {
+		String fileName, String absolutePath, String content) {
 
-		String content = javaTerm.getContent();
+		Matcher matcher1 = _ifStatementPattern.matcher(content);
 
-		if (_isAllowedFileName(
-				absolutePath,
-				getAttributeValues(_ALLOWED_FILE_NAMES_KEY, absolutePath))) {
+		while (matcher1.find()) {
+			IfStatement ifStatement = _getIfStatement(
+				content, matcher1.start());
 
-			return content;
-		}
-
-		String blankedContent = _blankComments(content);
-
-		Matcher matcher = _containsPattern.matcher(blankedContent);
-
-		while (matcher.find()) {
-			boolean negated = false;
-
-			if (matcher.group(1) != null) {
-				negated = true;
-			}
-
-			String receiver = matcher.group(2);
-
-			boolean map = false;
-
-			if (matcher.group(3) != null) {
-				map = true;
-			}
-
-			int[] keyPositions = _getBalancedPositions(
-				blankedContent, matcher.end());
-
-			if (keyPositions == null) {
+			if (ifStatement == null) {
 				continue;
 			}
 
-			String key = blankedContent.substring(
-				keyPositions[0], keyPositions[1]);
+			String body = ifStatement.getBody();
 
-			if (_hasTopLevelComma(key)) {
+			if (Validator.isBlank(body)) {
 				continue;
 			}
 
-			int i = keyPositions[1] + 1;
+			String clause = ifStatement.getClause();
 
-			if ((i >= blankedContent.length()) ||
-				(blankedContent.charAt(i) != ')')) {
+			Matcher matcher2 = _containsCallPattern.matcher(clause);
 
-				continue;
-			}
+			while (matcher2.find()) {
+				String variableName = matcher2.group(2);
 
-			i++;
-
-			while ((i < blankedContent.length()) &&
-				   Character.isWhitespace(blankedContent.charAt(i))) {
-
-				i++;
-			}
-
-			if ((i >= blankedContent.length()) ||
-				(blankedContent.charAt(i) != '{')) {
-
-				continue;
-			}
-
-			String firstStatement = _getFirstStatement(blankedContent, i + 1);
-
-			if (firstStatement == null) {
-				continue;
-			}
-
-			String operation = null;
-			String suggestion = null;
-
-			if (map && negated) {
-				operation = "put";
-				suggestion = "a single \"putIfAbsent\" or \"computeIfAbsent\"";
-			}
-			else if (map) {
-				if (_hasOperation(
-						firstStatement, receiver, "get", key, false)) {
-
-					operation = "get";
-					suggestion = "a single \"get\" with a null check";
-				}
-				else if (_hasOperation(
-							firstStatement, receiver, "remove", key, false)) {
-
-					operation = "remove";
-					suggestion = "a single \"remove\" with a null check";
-				}
-			}
-			else if (negated) {
-				if (!_isSetTypedReceiver(fileContent, receiver)) {
+				if (!variableName.matches("_?[a-z]\\w+")) {
 					continue;
 				}
 
-				operation = "add";
-				suggestion = "the boolean result of a single \"add\"";
-			}
-			else {
-				operation = "remove";
-				suggestion = "the boolean result of a single \"remove\"";
-			}
+				List<String> parameterList = JavaSourceUtil.getParameterList(
+					JavaSourceUtil.getMethodCall(clause, matcher2.start(2)));
 
-			if (operation == null) {
-				continue;
-			}
+				if (parameterList.isEmpty()) {
+					continue;
+				}
 
-			if ((map && !negated) ||
-				_hasOperation(
-					firstStatement, receiver, operation, key,
-					operation.equals("put"))) {
+				String parameter = parameterList.get(0);
 
-				addMessage(
-					fileName,
-					StringBundler.concat(
-						"Combine the \"contains", map ? "Key" : "",
-						"\" check on \"", receiver, "\" and the following \"",
-						operation, "\" into ", suggestion),
-					javaTerm.getLineNumber(matcher.start()));
+				if (_hasTopLevelComma(parameter)) {
+					continue;
+				}
+
+				_checkMethodCallInIfBody(
+					fileName, content, body, matcher2, parameter,
+					getLineNumber(content, matcher1.start()));
 			}
 		}
 
 		return content;
 	}
 
-	@Override
-	protected String[] getCheckableJavaTermNames() {
-		return new String[] {JAVA_METHOD};
-	}
+	private void _checkMethodCallInIfBody(
+		String fileName, String content, String s, Matcher matcher,
+		String parameter, int lineNumber) {
 
-	private String _blankComments(String content) {
-		char[] chars = content.toCharArray();
+		String firstStatement = _getFirstStatement(s);
 
-		int i = 0;
+		if (firstStatement == null) {
+			return;
+		}
 
-		while (i < chars.length) {
-			char c = chars[i];
+		boolean negated = false;
 
-			if ((c == CharPool.QUOTE) || (c == CharPool.APOSTROPHE)) {
-				i++;
+		if (matcher.group(1) != null) {
+			negated = true;
+		}
 
-				while ((i < chars.length) && (chars[i] != c)) {
-					if (chars[i] == CharPool.BACK_SLASH) {
-						i++;
-					}
+		String variableName = matcher.group(2);
 
-					i++;
-				}
+		String variableTypeName = getVariableTypeName(
+			content, null, content, fileName, variableName, true, false);
 
-				i++;
+		if (variableTypeName == null) {
+			return;
+		}
+
+		String operation = null;
+		String suggestion = null;
+
+		if (StringUtil.equals(matcher.group(3), "containsKey") &&
+			variableTypeName.matches("\\w*Map<.+")) {
+
+			if (negated &&
+				_hasOperation(firstStatement, variableName, "put", parameter)) {
+
+				operation = "put";
+				suggestion = "a single \"putIfAbsent\" or \"computeIfAbsent\"";
 			}
-			else if ((c == CharPool.SLASH) && ((i + 1) < chars.length) &&
-					 (chars[i + 1] == CharPool.SLASH)) {
+			else if (_hasOperation(
+						firstStatement, variableName, "get", parameter)) {
 
-				while ((i < chars.length) && (chars[i] != CharPool.NEW_LINE)) {
-					chars[i] = CharPool.SPACE;
-
-					i++;
-				}
+				operation = "get";
+				suggestion = "a single \"get\" with a null check";
 			}
-			else if ((c == CharPool.SLASH) && ((i + 1) < chars.length) &&
-					 (chars[i + 1] == CharPool.STAR)) {
+			else if (_hasOperation(
+						firstStatement, variableName, "remove", parameter)) {
 
-				while (i < chars.length) {
-					if ((chars[i] == CharPool.STAR) &&
-						((i + 1) < chars.length) &&
-						(chars[i + 1] == CharPool.SLASH)) {
-
-						chars[i] = CharPool.SPACE;
-						chars[i + 1] = CharPool.SPACE;
-
-						i += 2;
-
-						break;
-					}
-
-					if (chars[i] != CharPool.NEW_LINE) {
-						chars[i] = CharPool.SPACE;
-					}
-
-					i++;
-				}
+				operation = "remove";
+				suggestion = "a single \"remove\" with a null check";
 			}
-			else {
-				i++;
+		}
+		else if (StringUtil.equals(matcher.group(3), "contains") &&
+				 variableTypeName.matches("\\w*Set<.*")) {
+
+			if (negated &&
+				_hasOperation(firstStatement, variableName, "add", parameter)) {
+
+				operation = "add";
+				suggestion = "the boolean result of a single \"add\"";
+			}
+			else if (_hasOperation(
+						firstStatement, variableName, "remove", parameter)) {
+
+				operation = "remove";
+				suggestion = "the boolean result of a single \"remove\"";
 			}
 		}
 
-		return new String(chars);
-	}
-
-	private int[] _getBalancedPositions(String content, int openParenPos) {
-		int level = 1;
-
-		for (int i = openParenPos; i < content.length(); i++) {
-			char c = content.charAt(i);
-
-			if (c == '(') {
-				level++;
-			}
-			else if (c == ')') {
-				level--;
-
-				if (level == 0) {
-					return new int[] {openParenPos, i};
-				}
-			}
+		if ((operation == null) || (suggestion == null)) {
+			return;
 		}
 
-		return null;
+		addMessage(
+			fileName,
+			StringBundler.concat(
+				"Combine the \"", matcher.group(3), "\" check on \"",
+				variableName, "\" and the following \"", operation, "\" into ",
+				suggestion),
+			lineNumber);
 	}
 
-	private String _getFirstStatement(String content, int blockStartPos) {
+	private int _getClosePos(
+		String content, String openChar, String closeChar, int start) {
+
+		int closePos = start;
+
+		while (true) {
+			closePos = content.indexOf(closeChar, closePos + 1);
+
+			if (closePos == -1) {
+				return -1;
+			}
+
+			String s = content.substring(start, closePos + 1);
+
+			int level = getLevel(s, openChar, closeChar);
+
+			if (level == 0) {
+				return closePos;
+			}
+
+			if (level == -1) {
+				return -1;
+			}
+		}
+	}
+
+	private String _getFirstStatement(String s) {
 		int level = 0;
 
-		for (int i = blockStartPos; i < content.length(); i++) {
-			char c = content.charAt(i);
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
 
 			if ((c == '(') || (c == '{')) {
 				level++;
 			}
 			else if ((c == ')') || (c == '}')) {
 				if ((c == '}') && (level == 0)) {
-					return content.substring(blockStartPos, i);
+					return s.substring(0, i);
 				}
 
 				level--;
 			}
 			else if ((c == ';') && (level == 0)) {
-				return content.substring(blockStartPos, i + 1);
+				return s.substring(0, i + 1);
 			}
 		}
 
 		return null;
 	}
 
-	private boolean _hasOperation(
-		String statement, String receiver, String operation, String key,
-		boolean keyIsFirstArgument) {
+	private IfStatement _getIfStatement(String content, int pos) {
+		int x = _getClosePos(content, "(", ")", pos);
 
-		Pattern pattern = Pattern.compile(
-			StringBundler.concat(
-				Pattern.quote(receiver), "\\s*\\.\\s*", operation, "\\s*\\("));
-
-		Matcher matcher = pattern.matcher(statement);
-
-		while (matcher.find()) {
-			int[] argsPositions = _getBalancedPositions(
-				statement, matcher.end());
-
-			if (argsPositions == null) {
-				return false;
-			}
-
-			String args = statement.substring(
-				argsPositions[0], argsPositions[1]);
-
-			if (keyIsFirstArgument) {
-				int level = 0;
-
-				for (int i = 0; i < args.length(); i++) {
-					char c = args.charAt(i);
-
-					if ((c == '(') || (c == '<') || (c == '[')) {
-						level++;
-					}
-					else if ((c == ')') || (c == '>') || (c == ']')) {
-						level--;
-					}
-					else if ((c == ',') && (level == 0)) {
-						args = args.substring(0, i);
-
-						break;
-					}
-				}
-			}
-
-			if (Objects.equals(_normalize(args), _normalize(key))) {
-				return true;
-			}
+		if ((x == -1) || !Objects.equals(content.substring(x, x + 3), ") {")) {
+			return null;
 		}
 
-		return false;
+		int y = _getClosePos(content, "{", "}", x + 1);
+
+		if (y == -1) {
+			return null;
+		}
+
+		return new IfStatement(
+			StringUtil.trim(content.substring(x + 3, y)),
+			content.substring(content.indexOf("(", pos), x + 1));
+	}
+
+	private boolean _hasOperation(
+		String content, String variableName, String methodName,
+		String parameter) {
+
+		Pattern pattern = Pattern.compile(
+			StringBundler.concat(variableName, "\\.\\s*", methodName, "\\("));
+
+		Matcher matcher = pattern.matcher(content);
+
+		if (!matcher.find()) {
+			return false;
+		}
+
+		String s = content.substring(0, matcher.start());
+
+		if (s.matches("(?s).*\\b" + variableName + "\\b.*")) {
+			return false;
+		}
+
+		List<String> parameterList = JavaSourceUtil.getParameterList(
+			JavaSourceUtil.getMethodCall(content, matcher.start()));
+
+		if (parameterList.isEmpty()) {
+			return false;
+		}
+
+		return Objects.equals(
+			_normalize(parameterList.get(0)), _normalize(parameter));
 	}
 
 	private boolean _hasTopLevelComma(String s) {
@@ -335,45 +271,33 @@ public class JavaRedundantContainsCheck extends BaseJavaTermCheck {
 		return false;
 	}
 
-	private boolean _isAllowedFileName(
-		String absolutePath, List<String> allowedFileNames) {
-
-		for (String allowedFileName : allowedFileNames) {
-			if (absolutePath.endsWith(allowedFileName)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean _isSetTypedReceiver(String fileContent, String receiver) {
-		Pattern pattern = Pattern.compile(
-			StringBundler.concat(
-				"\\b\\w*Set\\s*(<[^<>]*(<[^<>]*>)?[^<>]*>)?\\s+",
-				Pattern.quote(receiver), "\\b"));
-
-		Matcher matcher = pattern.matcher(fileContent);
-
-		if (matcher.find()) {
-			return true;
-		}
-
-		pattern = Pattern.compile(
-			Pattern.quote(receiver) + "\\s*=\\s*new\\s+\\w*Set\\s*[<(]");
-
-		matcher = pattern.matcher(fileContent);
-
-		return matcher.find();
-	}
-
 	private String _normalize(String s) {
 		return s.replaceAll("\\s+", "");
 	}
 
-	private static final String _ALLOWED_FILE_NAMES_KEY = "allowedFileNames";
+	private static final Pattern _containsCallPattern = Pattern.compile(
+		"\\((!)?(\\w+)\\.(contains(Key)?)\\(");
+	private static final Pattern _ifStatementPattern = Pattern.compile(
+		"[\n\t]if \\(");
 
-	private static final Pattern _containsPattern = Pattern.compile(
-		"if \\((!)?(\\w+)\\.contains(Key)?\\(");
+	private static class IfStatement {
+
+		public IfStatement(String body, String clause) {
+			_body = body;
+			_clause = clause;
+		}
+
+		public String getBody() {
+			return _body;
+		}
+
+		public String getClause() {
+			return _clause;
+		}
+
+		private final String _body;
+		private final String _clause;
+
+	}
 
 }
