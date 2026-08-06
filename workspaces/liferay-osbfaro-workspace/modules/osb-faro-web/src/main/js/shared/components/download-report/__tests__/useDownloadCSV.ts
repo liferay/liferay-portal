@@ -18,7 +18,7 @@ describe('useDownloadCSV', () => {
 		delete (window as {location?: Location}).location;
 
 		(window as {location: unknown}).location = new URL(
-			'https://analytics.liferay.com/workspace/liferay.com/420253908131944590'
+			'https://ldp.liferay.com/workspace/liferay.com/420253908131944590'
 		);
 	});
 
@@ -77,7 +77,7 @@ describe('useDownloadCSV', () => {
 
 	it('should include order by fields if field and sortOrder are present', () => {
 		(window as {location: unknown}).location = new URL(
-			'https://analytics.liferay.com/workspace/liferay.com/420253908131944590/?field=name&page=1&sortOrder=DESC'
+			'https://ldp.liferay.com/workspace/liferay.com/420253908131944590/?field=name&page=1&sortOrder=DESC'
 		);
 
 		const {result} = renderHook(() =>

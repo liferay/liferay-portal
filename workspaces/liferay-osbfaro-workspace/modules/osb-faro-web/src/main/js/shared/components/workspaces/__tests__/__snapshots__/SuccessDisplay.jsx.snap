@@ -115,9 +115,9 @@ exports[`WorkspacesSuccessDisplay should render 1`] = `
                 We will send you an email once it is ready to access at this URL: 
                 <a
                   class=""
-                  href="https://analytics.liferay.com/workspace/fooFriendlyUrl"
+                  href="http://localhost:3000/workspace/fooFriendlyUrl"
                 >
-                  analytics.liferay.com/workspace/fooFriendlyUrl
+                  http://localhost:3000/workspace/fooFriendlyUrl
                 </a>
               </p>
               <p>
