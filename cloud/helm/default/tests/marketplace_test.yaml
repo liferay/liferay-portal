@@ -57,6 +57,21 @@ tests:
             autoscaling.enabled: true
         template: templates/liferayenvironment.yaml
     -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: liferay-lpkg
+                        persistentVolumeClaim:
+                            claimName: liferay-default-marketplace
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Links the LPKG volume with the marketplace claim
+        set:
+            marketplace.enabled: true
+    -   asserts:
             -   equal:
                     path: metadata.labels.component
                     value: liferay
