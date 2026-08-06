@@ -1,0 +1,74 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Crossplane provider-kubernetes RBAC
+templates:
+    -   templates/crossplane-provider-kubernetes-rbac.yaml
+tests:
+    -   asserts:
+            -   documentIndex: 1
+                equal:
+                    path: subjects[0].name
+                    value: provider-kubernetes
+            -   documentIndex: 1
+                equal:
+                    path: subjects[0].namespace
+                    value: crossplane-system
+        it: Binds the provider-kubernetes service account in the Crossplane namespace
+    -   asserts:
+            -   documentIndex: 1
+                equal:
+                    path: subjects[0].namespace
+                    value: custom-system
+        it: Follows the Crossplane namespace override
+        set:
+            operatorApplications.crossplane.namespace: custom-system
+    -   asserts:
+            -   documentIndex: 0
+                equal:
+                    path: rules
+                    value:
+                        -   apiGroups: [""]
+                            resources: ["secrets", "serviceaccounts"]
+                            verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+                        -   apiGroups: [""]
+                            resources: ["namespaces"]
+                            verbs: ["get", "list"]
+                        -   apiGroups: ["elasticsearch.k8s.elastic.co"]
+                            resources: ["elasticsearches"]
+                            verbs: ["get", "list", "watch"]
+                        -   apiGroups: ["rbac.authorization.k8s.io"]
+                            resources: ["clusterroles"]
+                            verbs: ["bind", "get", "list", "watch"]
+                        -   apiGroups: ["rbac.authorization.k8s.io"]
+                            resources: ["rolebindings"]
+                            verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+        it: Grants exactly the rules every cloud needs and nothing more
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the RBAC when Crossplane is disabled
+        set:
+            operatorApplications.crossplane.enabled: false
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+            -   documentIndex: 0
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-100"
+            -   documentIndex: 0
+                equal:
+                    path: metadata.labels["rbac.crossplane.io/aggregate-to-crossplane"]
+                    value: "true"
+            -   documentIndex: 0
+                isKind:
+                    of: ClusterRole
+            -   documentIndex: 1
+                equal:
+                    path: roleRef.name
+                    value: crossplane-provider-kubernetes
+            -   documentIndex: 1
+                isKind:
+                    of: ClusterRoleBinding
+        it: Renders the aggregated role and its binding by default

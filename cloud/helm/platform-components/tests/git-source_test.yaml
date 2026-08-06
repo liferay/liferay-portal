@@ -1,0 +1,109 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Git Chart Sources
+templates:
+    -   templates/application-infrastructure-provider.yaml
+    -   templates/application-observability.yaml
+    -   templates/applicationset-infrastructure.yaml
+    -   templates/applicationset-liferay.yaml
+    -   templates/applicationset-resources.yaml
+    -   templates/appproject-application.yaml
+    -   templates/appproject-infrastructure.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.sources[0].path
+                    value: cloud/helm/azure
+                template: templates/applicationset-liferay.yaml
+            -   notExists:
+                    path: spec.template.spec.sources[0].chart
+                template: templates/applicationset-liferay.yaml
+            -   contains:
+                    content: https://github.com/myfork/liferay-portal
+                    path: spec.sourceRepos
+                template: templates/appproject-application.yaml
+        it: Sources the Liferay chart from a Git repository
+        set:
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            liferay:
+                path: cloud/helm/azure
+                repoURL: https://github.com/myfork/liferay-portal
+                targetRevision: LCD-12345
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.sources[0].path
+                    value: cloud/helm/azure-infrastructure
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.sources[0].repoURL
+                    value: https://github.com/myfork/liferay-portal
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.sources[0].targetRevision
+                    value: LCD-12345
+                template: templates/applicationset-infrastructure.yaml
+            -   notExists:
+                    path: spec.template.spec.sources[0].chart
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.sources[0].path
+                    value: cloud/helm/azure-infrastructure
+                template: templates/applicationset-resources.yaml
+            -   notExists:
+                    path: spec.template.spec.sources[0].chart
+                template: templates/applicationset-resources.yaml
+        it: Sources the infrastructure charts from a Git repository
+        set:
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                path: cloud/helm/azure-infrastructure
+                repoURL: https://github.com/myfork/liferay-portal
+                targetRevision: LCD-12345
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   equal:
+                    path: spec.sources[0].path
+                    value: cloud/helm/azure-infrastructure-provider
+                template: templates/application-infrastructure-provider.yaml
+            -   notExists:
+                    path: spec.sources[0].chart
+                template: templates/application-infrastructure-provider.yaml
+            -   contains:
+                    content: https://github.com/myfork/liferay-portal
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+        it: Sources the infrastructure provider chart from a Git repository
+        set:
+            infrastructureProvider:
+                path: cloud/helm/azure-infrastructure-provider
+                repoURL: https://github.com/myfork/liferay-portal
+                targetRevision: LCD-12345
+    -   asserts:
+            -   equal:
+                    path: spec.sources[0].path
+                    value: cloud/helm/observability
+                template: templates/application-observability.yaml
+            -   equal:
+                    path: spec.sources[0].targetRevision
+                    value: LCD-12345
+                template: templates/application-observability.yaml
+            -   notExists:
+                    path: spec.sources[0].chart
+                template: templates/application-observability.yaml
+        it: Sources the observability chart from a Git repository
+        set:
+            observability:
+                enabled: true
+                path: cloud/helm/observability
+                repoURL: https://github.com/myfork/liferay-portal
+                targetRevision: LCD-12345

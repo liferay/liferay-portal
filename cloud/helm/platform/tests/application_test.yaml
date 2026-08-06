@@ -1,0 +1,126 @@
+release:
+    name: liferay-platform
+    namespace: argocd-system
+suite: Root Application
+templates:
+    -   templates/application-liferay-platform.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.sources[0].helm.valuesObject.clusterIdentity.deploymentName
+                    value: liferay-test
+            -   equal:
+                    path: spec.sources[0].helm.valuesObject.clusterSecretStore.enabled
+                    value: true
+            -   equal:
+                    path: spec.sources[0].helm.valuesObject.clusterSecretStore.provider.azurekv.vaultUrl
+                    value: https://liferay-test-vault.vault.azure.net
+            -   equal:
+                    path: spec.sources[0].helm.valuesObject.gitops.repository.url
+                    value: https://github.com/example/liferay-gitops.git
+            -   equal:
+                    path: spec.sources[0].helm.valuesObject.operatorApplications.externalSecrets.values.serviceAccount.annotations["azure.workload.identity/client-id"]
+                    value: external-secrets-client-id
+        it: Forwards the platform components values verbatim
+        set:
+            platformComponents:
+                values:
+                    clusterIdentity:
+                        deploymentName: liferay-test
+                    clusterSecretStore:
+                        enabled: true
+                        provider:
+                            azurekv:
+                                vaultUrl: https://liferay-test-vault.vault.azure.net
+                    gitops:
+                        repository:
+                            url: https://github.com/example/liferay-gitops.git
+                    operatorApplications:
+                        externalSecrets:
+                            values:
+                                serviceAccount:
+                                    annotations:
+                                        azure.workload.identity/client-id: external-secrets-client-id
+    -   asserts:
+            -   notExists:
+                    path: spec.sources[0].helm
+        it: Omits the Helm values when none are provided
+    -   asserts:
+            -   equal:
+                    path: spec.sources[0].targetRevision
+                    value: 0.2.0
+        it: Pins the platform components chart to the requested version
+        set:
+            platformComponents.targetRevision: 0.2.0
+    -   asserts:
+            -   equal:
+                    path: metadata.namespace
+                    value: other-system
+            -   equal:
+                    path: spec.destination.namespace
+                    value: other-system
+        it: Places the application in the release namespace
+        release:
+            namespace: other-system
+    -   asserts:
+            -   equal:
+                    path: metadata.finalizers
+                    value:
+                        -   resources-finalizer.argocd.argoproj.io
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: liferay-platform
+            -   equal:
+                    path: metadata.labels["liferay.com/project"]
+                    value: liferay-cloud-native
+            -   equal:
+                    path: metadata.name
+                    value: liferay-platform
+            -   equal:
+                    path: metadata.namespace
+                    value: argocd-system
+            -   equal:
+                    path: spec.destination.namespace
+                    value: argocd-system
+            -   equal:
+                    path: spec.destination.server
+                    value: https://kubernetes.default.svc
+            -   equal:
+                    path: spec.project
+                    value: default
+            -   equal:
+                    path: spec.sources[0].path
+                    value: .
+            -   equal:
+                    path: spec.sources[0].repoURL
+                    value: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-platform-components
+            -   equal:
+                    path: spec.sources[0].targetRevision
+                    value: 0.1.0
+            -   equal:
+                    path: spec.syncPolicy.automated.prune
+                    value: true
+            -   equal:
+                    path: spec.syncPolicy.automated.selfHeal
+                    value: true
+            -   equal:
+                    path: spec.syncPolicy.retry.backoff.duration
+                    value: 30s
+            -   equal:
+                    path: spec.syncPolicy.retry.backoff.factor
+                    value: 2
+            -   equal:
+                    path: spec.syncPolicy.retry.backoff.maxDuration
+                    value: 10m
+            -   equal:
+                    path: spec.syncPolicy.retry.limit
+                    value: 10
+            -   equal:
+                    path: spec.syncPolicy.syncOptions
+                    value:
+                        -   CreateNamespace=true
+            -   hasDocuments:
+                    count: 1
+            -   isKind:
+                    of: Application
+        it: Renders the root application by default

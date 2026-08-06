@@ -1,0 +1,222 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: ApplicationSets and AppProjects
+templates:
+    -   templates/application-infrastructure-provider.yaml
+    -   templates/application-observability.yaml
+    -   templates/applicationset-infrastructure.yaml
+    -   templates/applicationset-liferay.yaml
+    -   templates/applicationset-resources.yaml
+    -   templates/appproject-application.yaml
+    -   templates/appproject-infrastructure.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/application-infrastructure-provider.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/appproject-infrastructure.yaml
+        it: Always renders the infrastructure AppProject and provider application
+    -   asserts:
+            -   equal:
+                    path: spec.template.metadata.name
+                    value: "{{path[1]}}-{{path[3]}}-infra"
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.destination.namespace
+                    value: liferay-{{path[1]}}-{{path[3]}}
+                template: templates/applicationset-infrastructure.yaml
+            -   contains:
+                    content:
+                        name: environmentId
+                        value: "{{path[3]}}"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.metadata.name
+                    value: "{{path[1]}}-{{path[3]}}-app"
+                template: templates/applicationset-liferay.yaml
+            -   contains:
+                    content:
+                        name: liferay-default.network.gatewayName
+                        value: "{{path[1]}}-{{path[3]}}-gateway"
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-liferay.yaml
+            -   equal:
+                    path: spec.template.metadata.name
+                    value: "{{path[1]}}-resources"
+                template: templates/applicationset-resources.yaml
+            -   equal:
+                    path: spec.template.spec.destination.namespace
+                    value: liferay-{{path[1]}}-resources
+                template: templates/applicationset-resources.yaml
+        it: Derives the application names and namespaces from the layout expressions
+        set:
+            gitops:
+                layout:
+                    environmentId: "{{path[3]}}"
+                    projectId: "{{path[1]}}"
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   equal:
+                    path: spec.template.spec.sources[0].helm.valueFiles
+                    value:
+                        -   $values/liferay/projects/{{path[2]}}/base/infrastructure.yaml
+                        -   $values/{{path}}/infrastructure.yaml
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.sources[0].helm.valueFiles
+                    value:
+                        -   $values/liferay/projects/{{path[2]}}/base/liferay.yaml
+                        -   $values/{{path}}/liferay.yaml
+                template: templates/applicationset-liferay.yaml
+            -   equal:
+                    path: spec.template.spec.sources[0].helm.valueFiles
+                    value:
+                        -   $values/{{path}}/project.yaml
+                template: templates/applicationset-resources.yaml
+            -   equal:
+                    path: spec.sources[0].helm.valueFiles
+                    value:
+                        -   $values/liferay/system/infrastructure-provider.yaml
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: spec.sources[0].helm.valueFiles
+                    value:
+                        -   $values/liferay/system/observability.yaml
+                template: templates/application-observability.yaml
+        it: Layers the values files from the base directory to the environment directory
+        set:
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+            observability:
+                enabled: true
+    -   asserts:
+            -   contains:
+                    content:
+                        name: clusterIdentity.deploymentName
+                        value: liferay-test
+                    path: spec.sources[0].helm.parameters
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: spec.destination.namespace
+                    value: crossplane-system
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: spec.sources[1].ref
+                    value: values
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferay-infrastructure
+                template: templates/appproject-infrastructure.yaml
+        it: Passes the cluster identity to the infrastructure provider application
+        set:
+            clusterIdentity:
+                deploymentName: liferay-test
+            infrastructureProvider:
+                chart: liferay-azure-infrastructure-provider
+                repoURL: oci://example-registry/liferay-azure-infrastructure-provider
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/applicationset-infrastructure.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/applicationset-liferay.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/applicationset-resources.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/appproject-application.yaml
+        it: Renders every ApplicationSet and the application AppProject by default
+    -   asserts:
+            -   contains:
+                    content: https://github.com/example/liferay-gitops.git
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferay-application
+                template: templates/appproject-application.yaml
+        it: Renders the AppProjects with the GitOps repository whitelisted
+        set:
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   contains:
+                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+            -   contains:
+                    content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability/*
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+            -   contains:
+                    content:
+                        namespace: observability
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-infrastructure.yaml
+        it: Whitelists the observability repository and namespace on the infrastructure AppProject
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/liferay-gitops.git
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.project
+                    value: liferay-infrastructure
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.project
+                    value: liferay-application
+                template: templates/applicationset-liferay.yaml
+            -   equal:
+                    path: spec.template.spec.sources[1].ref
+                    value: values
+                template: templates/applicationset-liferay.yaml
+            -   contains:
+                    content:
+                        name: gateway.className
+                        value: liferay-gateway-class
+                    path: spec.template.spec.sources[0].helm.parameters
+                template: templates/applicationset-infrastructure.yaml
+        it: Wires the ApplicationSets to the GitOps values repository
+        set:
+            clusterIdentity:
+                deploymentName: liferay-test
+                region: eastus
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure

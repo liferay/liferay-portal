@@ -1,0 +1,166 @@
+release:
+    name: my-release
+    namespace: argocd-system
+suite: Infrastructure Git Repository
+templates:
+    -   templates/application-infrastructure-provider.yaml
+    -   templates/application-observability.yaml
+    -   templates/applicationset-infrastructure.yaml
+    -   templates/applicationset-liferay.yaml
+    -   templates/applicationset-resources.yaml
+    -   templates/appproject-application.yaml
+    -   templates/appproject-infrastructure.yaml
+    -   templates/externalsecret-git-repository.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/liferay-gitops.git
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.revision
+                    value: HEAD
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/liferay-gitops.git
+                template: templates/applicationset-resources.yaml
+            -   equal:
+                    path: spec.sources[1].repoURL
+                    value: https://github.com/example/liferay-gitops.git
+                template: templates/application-infrastructure-provider.yaml
+        it: Falls back to the main Git repository by default
+        set:
+            gitops:
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            infrastructureProvider:
+                chart: liferay-azure-infrastructure-provider
+                repoURL: oci://example-registry/liferay-azure-infrastructure-provider
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/infrastructure-gitops.git
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.revision
+                    value: v1.2.3
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.revision
+                    value: v1.2.3
+                template: templates/applicationset-liferay.yaml
+        it: Falls back to the main revision when only the URL is overridden
+        set:
+            gitops:
+                infrastructureRepository:
+                    url: https://github.com/example/infrastructure-gitops.git
+                repository:
+                    revision: v1.2.3
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/liferay-gitops.git
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.revision
+                    value: v1.2.3
+                template: templates/applicationset-infrastructure.yaml
+        it: Follows the pinned main revision when only one repository is configured
+        set:
+            gitops:
+                repository:
+                    revision: v1.2.3
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/infrastructure-gitops.git
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.revision
+                    value: infra-release
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.template.spec.sources[1].repoURL
+                    value: https://github.com/example/infrastructure-gitops.git
+                template: templates/applicationset-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/infrastructure-gitops.git
+                template: templates/applicationset-resources.yaml
+            -   equal:
+                    path: spec.template.spec.sources[1].targetRevision
+                    value: infra-release
+                template: templates/applicationset-resources.yaml
+            -   equal:
+                    path: spec.sources[1].repoURL
+                    value: https://github.com/example/infrastructure-gitops.git
+                template: templates/application-infrastructure-provider.yaml
+            -   equal:
+                    path: spec.sources[1].repoURL
+                    value: https://github.com/example/infrastructure-gitops.git
+                template: templates/application-observability.yaml
+            -   contains:
+                    content: https://github.com/example/infrastructure-gitops.git
+                    path: spec.sourceRepos
+                template: templates/appproject-infrastructure.yaml
+            -   equal:
+                    path: spec.generators[0].git.repoURL
+                    value: https://github.com/example/liferay-gitops.git
+                template: templates/applicationset-liferay.yaml
+            -   contains:
+                    content: https://github.com/example/liferay-gitops.git
+                    path: spec.sourceRepos
+                template: templates/appproject-application.yaml
+            -   contains:
+                    content:
+                        name: centralHub.gitURL
+                        value: https://github.com/example/liferay-gitops.git
+                    path: spec.sources[0].helm.parameters
+                template: templates/application-observability.yaml
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: git-repo-infrastructure-credentials
+                template: templates/externalsecret-git-repository.yaml
+        it: Splits the infrastructure sources from the application repository
+        set:
+            clusterIdentity:
+                deploymentName: liferay-test
+            gitops:
+                infrastructureRepository:
+                    revision: infra-release
+                    url: https://github.com/example/infrastructure-gitops.git
+                repository:
+                    url: https://github.com/example/liferay-gitops.git
+            infrastructure:
+                chart: liferay-azure-infrastructure
+                repoURL: oci://example-registry/liferay-azure-infrastructure
+            infrastructureProvider:
+                chart: liferay-azure-infrastructure-provider
+                repoURL: oci://example-registry/liferay-azure-infrastructure-provider
+            liferay:
+                chart: liferay-azure
+                repoURL: oci://example-registry/liferay-azure
+            observability:
+                enabled: true
