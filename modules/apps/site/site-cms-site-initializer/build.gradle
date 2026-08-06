@@ -40,6 +40,7 @@ dependencies {
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-search:portal-search-rest-api")
+	compileOnly project(":apps:portal-search:portal-search-spi")
 	compileOnly project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-api")
