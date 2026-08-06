@@ -10,6 +10,7 @@ import {INDIVIDUALS_FRAGMENT} from 'shared/queries/fragments';
  */
 export default (queryName, metricName) => gql`
 		query KnownIndividualsListTouchpointQuery(
+			$accountId: String
 			$channelId: String
 			$devices: String
 			$keywords: String
@@ -17,12 +18,14 @@ export default (queryName, metricName) => gql`
 			$rangeEnd: String
 			$rangeKey: Int
 			$rangeStart: String
+			$segmentId: String
 			$size: Int!
 			$start: Int!
 			$title: String
 			$touchpoint: String
 		) {
 			${queryName}(
+				accountId: $accountId
 				channelId: $channelId
 				canonicalUrl: $touchpoint
 				deviceType: $devices
@@ -30,6 +33,7 @@ export default (queryName, metricName) => gql`
 				rangeEnd: $rangeEnd
 				rangeKey: $rangeKey
 				rangeStart: $rangeStart
+				segmentId: $segmentId
 				title: $title
 			) {
 				${metricName} {
