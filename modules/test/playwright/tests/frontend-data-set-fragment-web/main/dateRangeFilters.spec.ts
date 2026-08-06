@@ -10,6 +10,7 @@ import {dataSetManagerApiHelpersTest} from '../../../fixtures/dataSetManagerApiH
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {formatDateTimeForUI} from '../../../utils/applyFDSDateTimeRangeFilter';
 import getRandomString from '../../../utils/getRandomString';
 import {dataSetFragmentPageTest} from './fixtures/dataSetFragmentPageTest';
 
@@ -98,22 +99,45 @@ test('Date-time filter is displayed in fragment, and applied to data @LPD-10754'
 
 	await assertDataIsFetched();
 
-	await test.step('Assert that a filter cannot be applied when setting an impossible date range', async () => {
-		await activeFilterButton.click();
+	const editButton = dataSetFragmentPage.page.getByRole('button', {
+		name: 'Show Results',
+	});
 
-		const toInput = dataSetFragmentPage.page.getByLabel('To', {
-			exact: true,
-		});
+	const fromInput = dataSetFragmentPage.page.getByLabel('From', {
+		exact: true,
+	});
+
+	const toInput = dataSetFragmentPage.page.getByLabel('To', {exact: true});
+
+	await test.step('Assert that a filter cannot be applied when a date is not in the viewer locale format', async () => {
+		await activeFilterButton.click();
 
 		await expect(toInput).toBeVisible();
 
-		await toInput.click();
-
 		await toInput.fill('2020-01-02');
 
-		const editButton = dataSetFragmentPage.page.getByRole('button', {
-			name: 'Show Results',
-		});
+		await expect(
+			dataSetFragmentPage.page.getByText('Date is invalid.', {
+				exact: true,
+			})
+		).toBeVisible();
+
+		await expect(editButton).toBeDisabled();
+	});
+
+	await test.step('Assert that a filter cannot be applied when setting an impossible date range', async () => {
+		await fromInput.fill(
+			formatDateTimeForUI(new Date(2020, 5, 15, 14, 30))
+		);
+
+		await toInput.fill(formatDateTimeForUI(new Date(2020, 0, 2, 9, 15)));
+
+		await expect(
+			dataSetFragmentPage.page.getByText(
+				'Date range is invalid. "From" must be before "to".',
+				{exact: true}
+			)
+		).toBeVisible();
 
 		await expect(editButton).toBeDisabled();
 	});

@@ -3,6 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {render, screen} from '@testing-library/react';
+import React from 'react';
+
+import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
+
 import {
 	dateTimeRangeFilterImplementation,
 	formatDatePartsForClay,
@@ -10,9 +16,13 @@ import {
 	isWithinBounds,
 	parseClayValue,
 } from '../../../../../src/main/resources/META-INF/resources/management_bar/controls/filters/implementation/DateTimeRangeFilter';
+import {EEntityFieldType} from '../../../../../src/main/resources/META-INF/resources/management_bar/controls/filters/utils/types';
 
-const {getOdataString, getSelectedItemsLabel} =
-	dateTimeRangeFilterImplementation;
+const {
+	Component: DateTimeRangeFilter,
+	getOdataString,
+	getSelectedItemsLabel,
+} = dateTimeRangeFilterImplementation;
 
 const fromDateTime = {day: 11, hour: 15, minute: 30, month: 5, year: 2026};
 const toDateTime = {day: 11, hour: 17, minute: 45, month: 5, year: 2026};
@@ -506,5 +516,92 @@ describe('DateTimeRangeFilter.getSelectedItemsLabel', () => {
 		} as any);
 
 		expect(result).toBe('05/11/2026 08:00 AM - 05/11/2026 10:25 AM');
+	});
+});
+
+describe('DateTimeRangeFilter submit validation', () => {
+	const FROM = '06/15/2020 02:30 PM';
+	const TO = '11/22/2020 09:15 AM';
+
+	function renderFilter(props: Record<string, unknown> = {}) {
+		render(
+			<DateTimeRangeFilter
+				{...({
+					active: true,
+					entityFieldType: EEntityFieldType.DATE_TIME,
+					id: 'testField',
+					selectedData: null,
+					setFilter: jest.fn(),
+					...props,
+				} as any)}
+			/>
+		);
+
+		return {
+			fromInput: screen.getByLabelText('from'),
+			submitButton: screen.getByRole('button', {name: 'add-filter'}),
+			toInput: screen.getByLabelText('to[date-time]'),
+		};
+	}
+
+	beforeEach(() => {
+		setTimeZone('UTC');
+	});
+
+	it('reports an invalid date when a value does not match the locale format', async () => {
+		const {submitButton, toInput} = renderFilter();
+
+		await userEvent.type(toInput, '2020-11-22');
+
+		expect(screen.getByText('date-is-invalid')).toBeInTheDocument();
+
+		expect(submitButton).toBeDisabled();
+	});
+
+	it('reports an invalid range, not an invalid date, when "to" is before "from"', async () => {
+		const {fromInput, submitButton, toInput} = renderFilter();
+
+		await userEvent.type(fromInput, TO);
+		await userEvent.type(toInput, FROM);
+
+		expect(
+			screen.getByText('date-range-is-invalid.-from-must-be-before-to')
+		).toBeInTheDocument();
+
+		expect(screen.queryByText('date-is-invalid')).not.toBeInTheDocument();
+
+		expect(submitButton).toBeDisabled();
+	});
+
+	it('enables the submit button when "from" is before "to"', async () => {
+		const {fromInput, submitButton, toInput} = renderFilter();
+
+		await userEvent.type(fromInput, FROM);
+		await userEvent.type(toInput, TO);
+
+		expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+
+		expect(submitButton).toBeEnabled();
+	});
+
+	it('enables the submit button when both ends are the same instant', async () => {
+		const {fromInput, submitButton, toInput} = renderFilter();
+
+		await userEvent.type(fromInput, FROM);
+		await userEvent.type(toInput, FROM);
+
+		expect(submitButton).toBeEnabled();
+	});
+
+	it('reports an out-of-range date when a value falls outside the bounds', async () => {
+		const {submitButton, toInput} = renderFilter({
+			max: {day: 31, hour: 23, minute: 59, month: 12, year: 2020},
+		});
+
+		await userEvent.type(toInput, '01/02/2021 09:15 AM');
+
+		expect(screen.getByText('date-is-out-of-range')).toBeInTheDocument();
+
+		expect(submitButton).toBeDisabled();
 	});
 });

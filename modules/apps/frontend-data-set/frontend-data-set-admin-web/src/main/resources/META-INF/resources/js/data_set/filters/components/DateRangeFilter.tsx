@@ -14,6 +14,14 @@ import {IDateFilter, IField, IFilter} from '../../../utils/types';
 import Configuration from './Configuration';
 import Footer from './Footer';
 
+// This is the admin form that defines a date range filter, and it deliberately
+// keeps the locale independent "yyyy-MM-dd" layout of the stored value. The
+// widget that renders the filter for the end user is a different component,
+// frontend-data-set-web's management_bar/controls/filters/implementation/
+// DateTimeRangeFilter.tsx, which accepts and displays dates in the viewer
+// locale format instead. Do not take the format used here as evidence of what
+// the end user sees.
+
 function Header() {
 	return <>{Liferay.Language.get('new-date-range-filter')}</>;
 }
