@@ -5,7 +5,7 @@
 		"search"
 	],
 	"env": {
-		"FARO_URL": "https://analytics.liferay.com",
+		"FARO_URL": "https://ldp.liferay.com",
 		"ISSUES_EMAIL_ADDRESS": "ac-issues-trial@liferay.com",
 		"LCP_PROJECT_LIFERAY_CLUSTER_ENABLED": "true",
 		"OSB_API_PORT": 443,
