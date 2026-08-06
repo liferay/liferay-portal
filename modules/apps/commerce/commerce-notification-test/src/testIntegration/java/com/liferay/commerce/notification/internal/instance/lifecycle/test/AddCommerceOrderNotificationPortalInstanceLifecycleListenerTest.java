@@ -68,8 +68,7 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListenerTest {
 		NotificationTemplate notificationTemplate =
 			_notificationTemplateLocalService.
 				fetchNotificationTemplateByExternalReferenceCode(
-					"L_COMMERCE_ORDER_TEMPLATE",
-					TestPropsValues.getCompanyId());
+					"COMMERCE_ORDER_TEMPLATE", TestPropsValues.getCompanyId());
 
 		Assert.assertNotNull(notificationTemplate);
 	}

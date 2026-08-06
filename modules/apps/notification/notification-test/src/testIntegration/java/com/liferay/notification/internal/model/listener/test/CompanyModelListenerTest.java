@@ -135,8 +135,7 @@ public class CompanyModelListenerTest {
 		Assert.assertNotNull(
 			_notificationTemplateLocalService.
 				fetchNotificationTemplateByExternalReferenceCode(
-					"L_COMMERCE_ORDER_TEMPLATE",
-					TestPropsValues.getCompanyId()));
+					"COMMERCE_ORDER_TEMPLATE", TestPropsValues.getCompanyId()));
 
 		_companyLocalService.deleteCompany(_companyId);
 
@@ -148,8 +147,7 @@ public class CompanyModelListenerTest {
 		Assert.assertNotNull(
 			_notificationTemplateLocalService.
 				fetchNotificationTemplateByExternalReferenceCode(
-					"L_COMMERCE_ORDER_TEMPLATE",
-					TestPropsValues.getCompanyId()));
+					"COMMERCE_ORDER_TEMPLATE", TestPropsValues.getCompanyId()));
 
 		Assert.assertNull(
 			_notificationQueueEntryLocalService.fetchNotificationQueueEntry(
