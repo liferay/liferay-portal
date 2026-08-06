@@ -155,7 +155,8 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 				user.getUserId(), group.getGroupId());
 
 		if (_isDefaultAssetLibraryMemberRoleAssignment(currentRoles, roles)) {
-			_checkAssetLibraryAdminOrAssignMembers(group.getGroupId());
+			_checkAssetLibraryAdminOrAssignMembersOrAssignUserRoles(
+				group.getGroupId());
 
 			com.liferay.portal.kernel.model.Role
 				assetLibraryMemberServiceBuilderRole =
@@ -239,7 +240,8 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 		}
 	}
 
-	private void _checkAssetLibraryAdminOrAssignMembers(long groupId)
+	private void _checkAssetLibraryAdminOrAssignMembersOrAssignUserRoles(
+			long groupId)
 		throws Exception {
 
 		PermissionChecker permissionChecker =
