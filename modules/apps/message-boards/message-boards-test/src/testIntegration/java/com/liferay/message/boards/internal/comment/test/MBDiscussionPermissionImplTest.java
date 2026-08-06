@@ -203,9 +203,9 @@ public class MBDiscussionPermissionImplTest {
 		String originalName = PrincipalThreadLocal.getName();
 
 		try {
-			PrincipalThreadLocal.setName(_user.getUserId());
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(_user));
+			PrincipalThreadLocal.setName(_user.getUserId());
 
 			long commentId = _addProjectComment(_siteUser1);
 
@@ -252,9 +252,9 @@ public class MBDiscussionPermissionImplTest {
 		String originalName = PrincipalThreadLocal.getName();
 
 		try {
-			PrincipalThreadLocal.setName(_user.getUserId());
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(_user));
+			PrincipalThreadLocal.setName(_user.getUserId());
 
 			long commentId = _addProjectComment(_siteUser1);
 
@@ -283,9 +283,9 @@ public class MBDiscussionPermissionImplTest {
 		String originalName = PrincipalThreadLocal.getName();
 
 		try {
-			PrincipalThreadLocal.setName(_user.getUserId());
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(_user));
+			PrincipalThreadLocal.setName(_user.getUserId());
 
 			Group cmsGroup = _groupLocalService.getGroup(
 				TestPropsValues.getCompanyId(), GroupConstants.CMS);
