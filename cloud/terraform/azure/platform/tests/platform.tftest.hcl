@@ -1,7 +1,7 @@
 mock_provider "azurerm" {
 	mock_data "azurerm_key_vault" {
 		defaults={
-			id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test/providers/Microsoft.KeyVault/vaults/liferay-test-vault"
+			id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test-vault/providers/Microsoft.KeyVault/vaults/liferay-test-vault"
 		}
 	}
 	mock_data "azurerm_resource_group" {
@@ -62,8 +62,8 @@ run "should_derive_azure_resource_names_from_the_deployment_name" {
 		error_message="The Key Vault lookup must derive its name from the deployment name with the -vault suffix"
 	}
 	assert {
-		condition=data.azurerm_key_vault.liferay[0].resource_group_name == "liferay-test"
-		error_message="The resource group lookup must derive its name from the deployment name"
+		condition=data.azurerm_key_vault.liferay[0].resource_group_name == "liferay-test-vault"
+		error_message="The Key Vault lookup must target the dedicated vault resource group named after the vault"
 	}
 	assert {
 		condition=azurerm_user_assigned_identity.crossplane_data.name == "liferay-test-crossplane-data"

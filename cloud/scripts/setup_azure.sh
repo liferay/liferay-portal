@@ -94,10 +94,27 @@ function _check_key_vault {
 		return 0
 	fi
 
-	if ! az keyvault show --name "${deployment_name}-vault" --resource-group "${deployment_name}" &> /dev/null
+	if ! az keyvault show --name "${deployment_name}-vault" --resource-group "${deployment_name}-vault" &> /dev/null
 	then
-		echo "The default cluster secret store requires an Azure key vault named ${deployment_name}-vault in the resource group ${deployment_name}, holding a secret named liferay-credentials-gitops." >&2
+		echo "The default cluster secret store requires an Azure key vault named ${deployment_name}-vault in a dedicated resource group named ${deployment_name}-vault, holding the GitOps repository credentials secret (liferay-credentials-gitops by default)." >&2
 		echo "Create the key vault or set \"variables.cluster_secret_store_provider_hcl\" in the configuration JSON file to bring your own secret store." >&2
+
+		exit 1
+	fi
+
+	local rbac_authorization_enabled
+
+	rbac_authorization_enabled=$( \
+		az keyvault show \
+			--name "${deployment_name}-vault" \
+			--output tsv \
+			--query properties.enableRbacAuthorization \
+			--resource-group "${deployment_name}-vault")
+
+	if [ "${rbac_authorization_enabled}" != "true" ]
+	then
+		echo "The key vault ${deployment_name}-vault uses the access policy permission model, but the Liferay platform grants vault access through Azure RBAC roles, so the External Secrets operator would be denied access." >&2
+		echo "Run \"az keyvault update --enable-rbac-authorization true --name ${deployment_name}-vault\" to switch the permission model, and run this script again." >&2
 
 		exit 1
 	fi
