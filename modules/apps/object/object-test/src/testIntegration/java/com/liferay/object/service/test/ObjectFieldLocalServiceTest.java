@@ -1328,6 +1328,8 @@ public class ObjectFieldLocalServiceTest {
 		AssertUtils.assertFailure(
 			ObjectFieldRequiredException.class, null,
 			() -> _addOrUpdateCustomObjectField(finalObjectField2));
+
+		_testAddOrUpdateCustomObjectFieldWithUnmodifiableSystemObjectDefinition();
 	}
 
 	@Test
@@ -3893,6 +3895,73 @@ public class ObjectFieldLocalServiceTest {
 			expectedObjectField.isRequired(), objectField.isRequired());
 		Assert.assertEquals(
 			expectedObjectField.isState(), objectField.isState());
+	}
+
+	private void _testAddOrUpdateCustomObjectFieldWithUnmodifiableSystemObjectDefinition()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_addUnmodifiableSystemObjectDefinition(
+				ObjectFieldUtil.createObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					ObjectFieldConstants.DB_TYPE_STRING, "able",
+					Collections.emptyList()));
+
+		List<ObjectFieldSetting> objectFieldSettings = Arrays.asList(
+			new ObjectFieldSettingBuilder(
+			).name(
+				ObjectFieldSettingConstants.NAME_ACCEPTED_FILE_EXTENSIONS
+			).value(
+				"txt"
+			).build(),
+			new ObjectFieldSettingBuilder(
+			).name(
+				ObjectFieldSettingConstants.NAME_FILE_SOURCE
+			).value(
+				ObjectFieldSettingConstants.VALUE_DOCS_AND_MEDIA
+			).build(),
+			new ObjectFieldSettingBuilder(
+			).name(
+				ObjectFieldSettingConstants.NAME_MAX_FILE_SIZE
+			).value(
+				"100"
+			).build());
+
+		ObjectField objectField = _addCustomObjectField(
+			new AttachmentObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"upload"
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).objectFieldSettings(
+				objectFieldSettings
+			).build());
+
+		Map<Locale, String> labelMap = LocalizedMapUtil.getLocalizedMap(
+			RandomTestUtil.randomString());
+
+		objectField.setLabelMap(labelMap, LocaleUtil.getSiteDefault());
+
+		objectField = _addOrUpdateCustomObjectField(
+			objectField, objectFieldSettings);
+
+		Assert.assertEquals(labelMap, objectField.getLabelMap());
+
+		String attachmentDownloadActionKey =
+			objectField.getAttachmentDownloadActionKey();
+
+		Assert.assertNull(
+			_resourceActionLocalService.fetchResourceAction(
+				objectDefinition.getClassName(), attachmentDownloadActionKey));
+		Assert.assertNull(
+			_ploEntryLocalService.fetchPLOEntry(
+				objectDefinition.getCompanyId(),
+				"action." + attachmentDownloadActionKey,
+				objectField.getDefaultLanguageId()));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	private ObjectField _updateReadOnlyObjectField(
