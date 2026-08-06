@@ -136,10 +136,10 @@ public class DataMaskWriterInterceptorTest {
 				Http.Method.GET));
 
 		_testAroundWriteToFails(
-			"Redaction exceeded the timeout of", "(.*a){40}",
+			"(.*a){40}", "Redaction exceeded the timeout of",
 			"catastrophic-text");
 		_testAroundWriteToFails(
-			"Redaction overflowed the stack", "(a|aa)+$",
+			"(a|aa)+$", "Redaction overflowed the stack",
 			"stack-overflow-text");
 	}
 
@@ -197,7 +197,7 @@ public class DataMaskWriterInterceptorTest {
 	}
 
 	private void _testAroundWriteToFails(
-			String expectedMessage, String detectionRegex, String path)
+			String detectionRegex, String expectedMessage, String path)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
