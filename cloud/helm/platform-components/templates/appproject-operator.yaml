@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
     annotations:
-        argocd.argoproj.io/sync-wave: "-105"
+        argocd.argoproj.io/sync-wave: "-110"
     labels:
         {{- include "liferay-platform.labels" . | nindent 8 }}
         app.kubernetes.io/name: operator-appproject

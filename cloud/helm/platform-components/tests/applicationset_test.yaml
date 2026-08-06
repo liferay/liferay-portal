@@ -201,7 +201,7 @@ tests:
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-105"
+                    value: "-110"
                 template: templates/appproject-operator.yaml
         it: Syncs the operator AppProject before the operator applications
     -   asserts:

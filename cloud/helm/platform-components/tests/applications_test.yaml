@@ -203,7 +203,7 @@ tests:
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-                    value: "-95"
+                    value: "-100"
                 template: templates/application-ack-prometheusservice.yaml
             -   equal:
                     path: spec.destination.namespace
