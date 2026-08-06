@@ -190,6 +190,8 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		Staging.enablePublishTemplatesFeatureFlag();
+
 		HeadlessSite.addSite(
 			portalURL = "http://localhost:9080",
 			siteName = "Remote Site 2");

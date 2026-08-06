@@ -618,6 +618,8 @@ definition {
 
 	@priority = 3
 	test DeletePublishTemplate {
+		Staging.enablePublishTemplatesFeatureFlag();
+
 		Site.openSiteSettingsAdmin(siteURLKey = "site-name");
 
 		Site.disableRecycleBinCP();
@@ -1645,6 +1647,10 @@ definition {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
+		task ("Given: Publish Templates feature flag is enabled") {
+			Staging.enablePublishTemplatesFeatureFlag();
+		}
+
 		task ("Enable private pages") {
 			PagesAdmin.enablePrivatePages();
 		}
@@ -1857,6 +1863,8 @@ definition {
 	test PublishWebContentWithUnchangedReferencedContent {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+
+		Staging.enablePublishTemplatesFeatureFlag();
 
 		JSONLayout.addWidgetToPublicLayout(
 			groupName = "Site Name",
@@ -2289,6 +2297,8 @@ definition {
 	test StagingWithPublishTemplate {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+
+		Staging.enablePublishTemplatesFeatureFlag();
 
 		JSONLayout.addPublicLayout(
 			groupName = "Site Name",

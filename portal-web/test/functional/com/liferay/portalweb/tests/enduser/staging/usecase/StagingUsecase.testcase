@@ -437,6 +437,10 @@ definition {
 	@description = "This is a use case for LPS-123156."
 	@priority = 3
 	test AssertPublishTemplateInfo {
+		task ("Given: Publish Templates feature flag is enabled") {
+			Staging.enablePublishTemplatesFeatureFlag();
+		}
+
 		task ("Given: User add a new publish template") {
 			Staging.openStagingAdmin(siteURLKey = "site-name-staging");
 
@@ -664,6 +668,10 @@ definition {
 	test EditPublishTemplate {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+
+		task ("Given: Publish Templates feature flag is enabled") {
+			Staging.enablePublishTemplatesFeatureFlag();
+		}
 
 		task ("Given: User add a new page to the staging site and a widget to it") {
 			JSONLayout.addPublicLayout(
@@ -1025,6 +1033,10 @@ definition {
 
 	@priority = 3
 	test MoveToTheRecycleBinAndRestorePublishTemplate {
+		task ("Given: Publish Templates feature flag is enabled") {
+			Staging.enablePublishTemplatesFeatureFlag();
+		}
+
 		task ("Given: User add a new publish template") {
 			Staging.openStagingAdmin(siteURLKey = "site-name-staging");
 
@@ -1464,6 +1476,10 @@ definition {
 
 	@priority = 3
 	test SearchPublishTemplate {
+		task ("Given: Publish Templates feature flag is enabled") {
+			Staging.enablePublishTemplatesFeatureFlag();
+		}
+
 		task ("When: User add two publish templates on the staging site") {
 			Staging.openStagingAdmin(siteURLKey = "site-name-staging");
 
@@ -2634,6 +2650,10 @@ definition {
 	test ViewPublishTemplateDateRange {
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
+
+		task ("Given: Publish Templates feature flag is enabled") {
+			Staging.enablePublishTemplatesFeatureFlag();
+		}
 
 		task ("When: User add a new publish template with a content date range") {
 			Staging.openStagingAdmin(siteURLKey = "site-name-staging");

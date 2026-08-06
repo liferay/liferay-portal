@@ -857,6 +857,18 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro enablePublishTemplatesFeatureFlag() {
+		PortalSettings.gotoConfiguration(
+			configurationCategory = "Feature Flags",
+			configurationName = "Deprecation",
+			configurationScope = "Virtual Instance Scope");
+
+		FeatureFlag.enableFeatureFlag(featureFlag = "LPD-101272");
+
+		Navigator.openURL();
+	}
+
+	@summary = "Default summary"
 	macro gotoHistory() {
 		if (IsElementNotPresent(locator1 = "Staging#HISTORY_BUTTON")) {
 			Click(locator1 = "Icon#STAGING_BAR_VERTICAL_ELLIPSIS");
