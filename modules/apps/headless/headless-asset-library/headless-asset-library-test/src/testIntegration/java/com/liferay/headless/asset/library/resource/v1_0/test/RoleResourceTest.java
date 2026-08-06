@@ -366,12 +366,12 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 		RoleResource roleResource = _getRoleResource(roleName);
 
-		Page<Role> page = roleResource.getAssetLibraryRolesPage(
+		Page<Role> rolesPage = roleResource.getAssetLibraryRolesPage(
 			testDepotEntryGroup.getExternalReferenceCode(),
 			Pagination.of(1, 10));
 
 		List<String> names = TransformUtil.transform(
-			page.getItems(), Role::getName);
+			rolesPage.getItems(), Role::getName);
 
 		Assert.assertTrue(
 			names.toString(),
@@ -416,10 +416,10 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 		Group group = _depotEntry.getGroup();
 
-		Page<Role> page = roleResource.getAssetLibraryRolesPage(
+		Page<Role> rolesPage = roleResource.getAssetLibraryRolesPage(
 			group.getExternalReferenceCode(), Pagination.of(1, 100));
 
-		List<Role> roles = ListUtil.fromCollection(page.getItems());
+		List<Role> roles = ListUtil.fromCollection(rolesPage.getItems());
 
 		Assert.assertTrue(
 			roles.toString(),
@@ -454,14 +454,14 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			assetLibraryMemberServiceBuilderRole = _getServiceBuilderRole(
 				DepotRolesConstants.ASSET_LIBRARY_MEMBER);
 
-		Page<Role> page =
+		Page<Role> rolesPage =
 			assignMembersRoleResource.putAssetLibraryUserAccountRolesPage(
 				testDepotEntryGroup.getExternalReferenceCode(),
 				user.getExternalReferenceCode(),
 				_toRoles(assetLibraryMemberServiceBuilderRole));
 
 		List<String> names = TransformUtil.transform(
-			page.getItems(), Role::getName);
+			rolesPage.getItems(), Role::getName);
 
 		Assert.assertEquals(names.toString(), 1, names.size());
 		Assert.assertTrue(
@@ -521,14 +521,14 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 			ActionKeys.ASSIGN_USER_ROLES,
 			assetLibraryContentReviewerServiceBuilderRole);
 
-		Page<Role> page =
+		Page<Role> rolesPage =
 			assignUserRolesRoleResource.putAssetLibraryUserAccountRolesPage(
 				testDepotEntryGroup.getExternalReferenceCode(),
 				user.getExternalReferenceCode(),
 				_toRoles(assetLibraryContentReviewerServiceBuilderRole));
 
 		List<String> names = TransformUtil.transform(
-			page.getItems(), Role::getName);
+			rolesPage.getItems(), Role::getName);
 
 		Assert.assertEquals(names.toString(), 1, names.size());
 		Assert.assertTrue(
