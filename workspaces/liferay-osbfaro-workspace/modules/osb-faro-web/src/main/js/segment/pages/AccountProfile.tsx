@@ -2,12 +2,14 @@ import * as breadcrumbs from 'shared/util/breadcrumbs';
 import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
 import CriteriaCard from 'segment/components/criteria-card';
+import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
 import React from 'react';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
+import {getSegmentAlerts} from 'segment/utils/alerts';
 import {Segment} from 'shared/util/records';
 import {SegmentStates, SegmentTypes} from 'shared/util/constants';
 import {useChannelContext} from 'shared/context/channel';
@@ -28,6 +30,8 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 	const {timeZoneId} = useTimeZone();
 
 	const {name} = segment;
+
+	const disabled = segment.state === SegmentStates.Disabled;
 
 	return (
 		<BasePage
@@ -81,7 +85,7 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 			<BasePage.SubHeader>
 				<div className="d-flex justify-content-end w-100">
 					<DownloadStaticCSVReport
-						disabled={segment.state === SegmentStates.Disabled}
+						disabled={disabled}
 						segmentId={segment.id}
 						type={CSVType.Membership}
 						typeLang={Liferay.Language.get('segment-membership')}
@@ -89,7 +93,9 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 				</div>
 			</BasePage.SubHeader>
 
-			<BasePage.Body>
+			<EmbeddedAlertList alerts={getSegmentAlerts(segment)} />
+
+			<BasePage.Body disabled={disabled}>
 				<SectionHeader
 					icon="analytics"
 					title={Liferay.Language.get('details')}
