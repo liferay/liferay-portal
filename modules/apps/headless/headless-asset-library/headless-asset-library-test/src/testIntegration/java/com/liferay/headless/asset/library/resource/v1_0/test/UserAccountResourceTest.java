@@ -365,18 +365,24 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	private void _testDeleteAssetLibraryUserAccountWithViewAndAssignMembersPermission()
 		throws Exception {
 
-		UserAccountResource viewAndAssignMembersUserAccountResource =
-			_getViewAndAssignMembersUserAccountResource();
-
 		UserAccount userAccount = randomUserAccount();
 
 		userAccountResource.putAssetLibraryUserAccount(
 			testDepotEntryGroup.getExternalReferenceCode(),
 			userAccount.getExternalReferenceCode());
 
+		UserAccountResource viewAndAssignMembersUserAccountResource =
+			_getViewAndAssignMembersUserAccountResource();
+
 		viewAndAssignMembersUserAccountResource.deleteAssetLibraryUserAccount(
 			testDepotEntryGroup.getExternalReferenceCode(),
 			userAccount.getExternalReferenceCode());
+
+		assertHttpResponseStatusCode(
+			404,
+			userAccountResource.getAssetLibraryUserAccountHttpResponse(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				userAccount.getExternalReferenceCode()));
 	}
 
 	private void _testGetAssetLibraryUserAccount(
