@@ -22,6 +22,37 @@ import java.sql.ResultSet;
  */
 public class UpgradeDB2 extends UpgradeProcess {
 
+	protected void alterBlobColumns() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer();
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select tabname, colname from syscat.columns where ",
+					"generated != 'N' and hidden != 'N' and length = 1048576 ",
+					"and typename = 'BLOB' and tabschema = ?"))) {
+
+			preparedStatement.setString(1, connection.getSchema());
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					String tableName = resultSet.getString("tabname");
+					String columnName = resultSet.getString("colname");
+
+					if (_log.isInfoEnabled()) {
+						_log.info(
+							StringBundler.concat(
+								"Alter column ", tableName, StringPool.PERIOD,
+								columnName, " type to blob(2G)"));
+					}
+
+					runSQL(
+						StringBundler.concat(
+							"alter table ", tableName, " alter column ",
+							columnName, " set data type blob(2G)"));
+				}
+			}
+		}
+	}
+
 	protected void alterClobColumns() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer();
 			PreparedStatement preparedStatement = connection.prepareStatement(
@@ -59,6 +90,7 @@ public class UpgradeDB2 extends UpgradeProcess {
 			return;
 		}
 
+		alterBlobColumns();
 		alterClobColumns();
 	}
 

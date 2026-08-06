@@ -820,6 +820,8 @@ public class PortalUpgradeProcessRegistryImpl
 			UpgradeModulesFactory.create(
 				new String[] {"com.liferay.portal.security.audit.router"},
 				null));
+
+		upgradeVersionTreeMap.put(new Version(38, 8, 0), new UpgradeDB2());
 	}
 
 }
