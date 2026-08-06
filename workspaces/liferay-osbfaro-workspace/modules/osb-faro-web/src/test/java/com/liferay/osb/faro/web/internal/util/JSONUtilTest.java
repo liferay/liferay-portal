@@ -33,9 +33,9 @@ public class JSONUtilTest {
 	public void testWriteValueAsStringExcludesNullMetricFields()
 		throws Exception {
 
-		String metricType = RandomTestUtil.randomString();
-
 		Metric metric = new Metric();
+
+		String metricType = RandomTestUtil.randomString();
 
 		metric.setMetricType(metricType);
 
@@ -52,30 +52,38 @@ public class JSONUtilTest {
 	public void testWriteValueAsStringIncludesNonnullMetricFields()
 		throws Exception {
 
-		String metricType = RandomTestUtil.randomString();
-		double previousValue = RandomTestUtil.randomDouble();
-		String previousValueKey = RandomTestUtil.randomString();
-
 		Metric metric = new Metric();
 
-		metric.setMetricType(metricType);
-		metric.setPreviousValue(previousValue);
-		metric.setPreviousValueKey(previousValueKey);
+		String metricType = RandomTestUtil.randomString();
 
-		double percentage = RandomTestUtil.randomDouble();
-		String trendClassification = RandomTestUtil.randomString();
+		metric.setMetricType(metricType);
+
+		double previousValue = RandomTestUtil.randomDouble();
+
+		metric.setPreviousValue(previousValue);
+
+		String previousValueKey = RandomTestUtil.randomString();
+
+		metric.setPreviousValueKey(previousValueKey);
 
 		Trend trend = new Trend();
 
+		double percentage = RandomTestUtil.randomDouble();
+
 		trend.setPercentage(BigDecimal.valueOf(percentage));
+
+		String trendClassification = RandomTestUtil.randomString();
+
 		trend.setTrendClassification(trendClassification);
 
 		metric.setTrend(trend);
 
 		double value = RandomTestUtil.randomDouble();
-		String valueKey = RandomTestUtil.randomString();
 
 		metric.setValue(value);
+
+		String valueKey = RandomTestUtil.randomString();
+
 		metric.setValueKey(valueKey);
 
 		JSONAssert.assertEquals(
