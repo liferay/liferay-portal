@@ -63,22 +63,23 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 
 		_checkAssetLibraryAdminOrAssetLibraryMember(group.getGroupId());
 
-		List<com.liferay.portal.kernel.model.Role> roles =
+		List<com.liferay.portal.kernel.model.Role> serviceBuilderRoles =
 			_roleLocalService.getTypeRoles(RoleConstants.TYPE_DEPOT);
 
-		roles = DepotRoleUtil.filter(group.getGroupId(), roles);
+		serviceBuilderRoles = DepotRoleUtil.filter(
+			group.getGroupId(), serviceBuilderRoles);
 
 		if (pagination == null) {
-			return Page.of(transform(roles, this::_toRole));
+			return Page.of(transform(serviceBuilderRoles, this::_toRole));
 		}
 
 		return Page.of(
 			transform(
 				ListUtil.subList(
-					roles, pagination.getStartPosition(),
+					serviceBuilderRoles, pagination.getStartPosition(),
 					pagination.getEndPosition()),
 				this::_toRole),
-			pagination, roles.size());
+			pagination, serviceBuilderRoles.size());
 	}
 
 	@Override
@@ -148,13 +149,16 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 					group.getGroupId()));
 		}
 
-		List<com.liferay.portal.kernel.model.Role> updatedRoles = null;
+		List<com.liferay.portal.kernel.model.Role> updatedServiceBuilderRoles =
+			null;
 
-		List<com.liferay.portal.kernel.model.Role> currentRoles =
+		List<com.liferay.portal.kernel.model.Role> currentServiceBuilderRoles =
 			_roleLocalService.getUserGroupRoles(
 				user.getUserId(), group.getGroupId());
 
-		if (_isDefaultAssetLibraryMemberRoleAssignment(currentRoles, roles)) {
+		if (_isDefaultAssetLibraryMemberRoleAssignment(
+				currentServiceBuilderRoles, roles)) {
+
 			_checkAssetLibraryAdminOrAssignMembersOrAssignUserRoles(
 				group.getGroupId());
 
@@ -168,24 +172,24 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 				user.getUserId(), group.getGroupId(),
 				new long[] {assetLibraryMemberServiceBuilderRole.getRoleId()});
 
-			updatedRoles = _roleLocalService.getUserGroupRoles(
+			updatedServiceBuilderRoles = _roleLocalService.getUserGroupRoles(
 				user.getUserId(), group.getGroupId());
 		}
 		else {
 			_userGroupRoleService.deleteUserGroupRoles(
 				user.getUserId(), group.getGroupId(),
 				ListUtil.toLongArray(
-					currentRoles,
+					currentServiceBuilderRoles,
 					com.liferay.portal.kernel.model.Role.ROLE_ID_ACCESSOR));
 
 			_userGroupRoleService.addUserGroupRoles(
 				user.getUserId(), group.getGroupId(), _getRoleIds(roles));
 
-			updatedRoles = _roleService.getUserGroupRoles(
+			updatedServiceBuilderRoles = _roleService.getUserGroupRoles(
 				user.getUserId(), group.getGroupId());
 		}
 
-		return Page.of(transform(updatedRoles, this::_toRole));
+		return Page.of(transform(updatedServiceBuilderRoles, this::_toRole));
 	}
 
 	@Override
@@ -287,9 +291,12 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 	}
 
 	private boolean _isDefaultAssetLibraryMemberRoleAssignment(
-		List<com.liferay.portal.kernel.model.Role> currentRoles, Role[] roles) {
+		List<com.liferay.portal.kernel.model.Role> currentServiceBuilderRoles,
+		Role[] roles) {
 
-		if (ListUtil.isNotEmpty(currentRoles) || (roles.length != 1)) {
+		if (ListUtil.isNotEmpty(currentServiceBuilderRoles) ||
+			(roles.length != 1)) {
+
 			return false;
 		}
 
@@ -297,17 +304,20 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 			roles[0].getName());
 	}
 
-	private Role _toRole(com.liferay.portal.kernel.model.Role role)
+	private Role _toRole(
+			com.liferay.portal.kernel.model.Role serviceBuilderRole)
 		throws PortalException {
 
 		return new Role() {
 			{
-				setExternalReferenceCode(role::getExternalReferenceCode);
-				setId(role::getRoleId);
-				setName(role::getName);
+				setExternalReferenceCode(
+					serviceBuilderRole::getExternalReferenceCode);
+				setId(serviceBuilderRole::getRoleId);
+				setName(serviceBuilderRole::getName);
 				setName_i18n(
-					() -> LocalizedMapUtil.getI18nMap(role.getTitleMap()));
-				setRoleType(role::getType);
+					() -> LocalizedMapUtil.getI18nMap(
+						serviceBuilderRole.getTitleMap()));
+				setRoleType(serviceBuilderRole::getType);
 			}
 		};
 	}
