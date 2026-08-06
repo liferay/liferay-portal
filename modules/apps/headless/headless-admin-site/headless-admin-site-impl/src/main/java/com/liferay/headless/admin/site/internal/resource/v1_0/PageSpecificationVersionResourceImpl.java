@@ -37,6 +37,33 @@ public class PageSpecificationVersionResourceImpl
 	extends BasePageSpecificationVersionResourceImpl {
 
 	@Override
+	public void deleteSiteSitePagePageSpecificationVersion(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String pageSpecificationVersionExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
+
+		Layout layout = _getLayout(
+			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
+
+		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
+			pageSpecificationVersionExternalReferenceCode,
+			siteExternalReferenceCode);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		if (layoutContentVersion.getPlid() != draftLayout.getPlid()) {
+			throw new IllegalArgumentException(
+				"The page specification version must belong to the site page");
+		}
+
+		_layoutContentVersionService.deleteLayoutContentVersion(
+			layoutContentVersion.getLayoutContentVersionId());
+	}
+
+	@Override
 	public PageSpecificationVersion getSiteSitePagePageSpecificationVersion(
 			String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode,
@@ -49,8 +76,8 @@ public class PageSpecificationVersionResourceImpl
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
 
 		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
-			siteExternalReferenceCode,
-			pageSpecificationVersionExternalReferenceCode);
+			pageSpecificationVersionExternalReferenceCode,
+			siteExternalReferenceCode);
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
@@ -107,7 +134,7 @@ public class PageSpecificationVersionResourceImpl
 	}
 
 	private LayoutContentVersion _getLayoutContentVersion(
-			String siteExternalReferenceCode, String externalReferenceCode)
+			String externalReferenceCode, String siteExternalReferenceCode)
 		throws Exception {
 
 		return _layoutContentVersionService.
