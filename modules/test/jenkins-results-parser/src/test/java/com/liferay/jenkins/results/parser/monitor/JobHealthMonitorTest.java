@@ -32,7 +32,8 @@ public class JobHealthMonitorTest
 	public void setUp() throws Exception {
 		super.setUp();
 
-		JenkinsMasterTestUtil.getJenkinsMaster(_MASTER_NAME, _MASTER_URL);
+		JenkinsMasterTestUtil.getJenkinsMaster(
+			_MASTER_NAME, "http://" + _MASTER_NAME);
 	}
 
 	@After
@@ -587,7 +588,5 @@ public class JobHealthMonitorTest
 	private static final String _JOB_NAME = "generate-reports-controller";
 
 	private static final String _MASTER_NAME = "test-9-1";
-
-	private static final String _MASTER_URL = "http://test-9-1";
 
 }
