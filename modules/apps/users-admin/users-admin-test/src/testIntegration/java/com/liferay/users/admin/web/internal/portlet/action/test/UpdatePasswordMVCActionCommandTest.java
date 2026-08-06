@@ -82,7 +82,6 @@ public class UpdatePasswordMVCActionCommandTest {
 			ActionRequest.ACTION_NAME, "/users_admin/update_password");
 		mockLiferayPortletActionRequest.addParameter(
 			"p_u_i_d", String.valueOf(selectedUser.getUserId()));
-
 		mockLiferayPortletActionRequest.setAttribute(
 			PortletServlet.PORTLET_SERVLET_REQUEST,
 			mockLiferayPortletActionRequest.getHttpServletRequest());
