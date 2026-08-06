@@ -170,8 +170,8 @@ public class DataSourceFaroController extends BaseFaroController {
 				faroProject,
 				OAuthUtil.getOAuth20Credentials(
 					"CLIENT_CREDENTIALS", portalURL, "",
-					"https://analytics.liferay.com/oauth/receive",
-					oAuthClientId, oAuthClientSecret, "LIFERAY"),
+					FaroPropsValues.FARO_URL + "/oauth/receive", oAuthClientId,
+					oAuthClientSecret, "LIFERAY"),
 				getUserId(), dataSourceName, portalURL, new LiferayProvider(),
 				null, DataSource.Status.ACTIVE.toString());
 
@@ -182,8 +182,8 @@ public class DataSourceFaroController extends BaseFaroController {
 				faroProject, dataSourceId,
 				OAuthUtil.getOAuth20Credentials(
 					"CLIENT_CREDENTIALS", portalURL, "",
-					"https://analytics.liferay.com/oauth/receive",
-					oAuthClientId, oAuthClientSecret, "LIFERAY"),
+					FaroPropsValues.FARO_URL + "/oauth/receive", oAuthClientId,
+					oAuthClientSecret, "LIFERAY"),
 				null, null, new LiferayProvider(),
 				DataSource.Status.ACTIVE.toString(), portalURL, getUserId());
 

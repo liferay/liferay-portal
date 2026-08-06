@@ -69,7 +69,7 @@
 			<div class="secondary-info">
 				to continue to
 
-				<span>analytics.liferay.com</span>
+				<span><%= HtmlUtil.escape(themeDisplay.getServerName()) %></span>
 			</div>
 
 			<aui:form action="<%= loginURL %>" autocomplete='<%= PropsValues.COMPANY_SECURITY_LOGIN_FORM_AUTOCOMPLETE ? "on" : "off" %>' cssClass="sign-in-form" method="post" name="<%= formName %>" onSubmit="event.preventDefault();" validateOnBlur="<%= false %>">

@@ -1,17 +1,17 @@
 import ClayLink from '@clayui/link';
+import Constants from 'shared/util/constants';
 import React from 'react';
 import Sheet from 'shared/components/Sheet';
 import URLConstants from 'shared/util/url-constants';
 import WorkspacesBasePage from 'shared/components/workspaces/BasePage';
 import {sub} from 'shared/util/lang';
 
+const {faroURL} = Constants;
+
 const SuccessDisplay = ({friendlyURL}: {friendlyURL: string}) => {
 	const link = (
-		<ClayLink
-			href={`https://analytics.liferay.com/workspace${friendlyURL}`}
-			key="link"
-		>
-			{`analytics.liferay.com/workspace${friendlyURL}`}
+		<ClayLink href={`${faroURL}/workspace${friendlyURL}`} key="link">
+			{`${faroURL}/workspace${friendlyURL}`}
 		</ClayLink>
 	);
 
