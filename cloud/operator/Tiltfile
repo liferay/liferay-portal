@@ -39,8 +39,8 @@ def environment_yaml(name):
 	        "    namespace: " + namespace,
 	        "spec:",
 	        "    activationCodeSecretRef:",
-	        "        name: " + name + "-activation",
 	        "        key: activationCode",
+	        "        name: " + name + "-activation",
 	        "    dxpVersion: 2026.q3.0",
 	        "    environmentName: \"" + name + "\"",
 	        "    marketplaceVolume:",
@@ -124,6 +124,8 @@ k8s_resource(
     labels=["operator"],
     new_name="operator-infra",
     objects=[
+        "liferay-dxp-operator-webhook:secret",
+        "liferay-dxp-operator-webhook:validatingwebhookconfiguration",
         "liferay-dxp-operator:clusterrole",
         "liferay-dxp-operator:clusterrolebinding",
         "liferay-dxp-operator:serviceaccount",
