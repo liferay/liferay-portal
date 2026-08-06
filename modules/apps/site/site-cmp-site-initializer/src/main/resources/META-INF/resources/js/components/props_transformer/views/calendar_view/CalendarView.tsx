@@ -468,7 +468,7 @@ export default function CalendarView({
 			<FullCalendar
 				datesSet={({view}) => {
 					calendarNavigationStates.set(id ?? '', {
-						date: view.currentStart,
+						date: view.calendar.getDate(),
 						view: view.type,
 					});
 
