@@ -51,6 +51,8 @@ definition {
 		task ("Ensure that portal main functionalities work correctly") {
 			SignIn.signInTestSetup();
 
+			PagesAdmin.enableWidgetPages();
+
 			Smoke.runSmoke();
 
 			SignOut.signOut();
