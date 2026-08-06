@@ -6400,15 +6400,15 @@ public class JenkinsResultsParserUtil {
 		Set<String> forbiddenRedactTokens = new HashSet<>();
 
 		try {
-			forbiddenRedactTokens.addAll(
-				getBuildPropertyAsList(
-					true, "liferay.jenkins.plugin.op.connect.ignored.values"));
+			for (String forbiddenRedactToken :
+					getBuildPropertyAsList(
+						true,
+						"liferay.jenkins.plugin.op.connect.ignored.values")) {
 
-			for (String fobiddenRedactToken : forbiddenRedactTokens) {
-				fobiddenRedactToken = fobiddenRedactToken.trim();
+				forbiddenRedactToken = forbiddenRedactToken.trim();
 
-				if (!isNullOrEmpty(fobiddenRedactToken)) {
-					forbiddenRedactTokens.add(fobiddenRedactToken);
+				if (!isNullOrEmpty(forbiddenRedactToken)) {
+					forbiddenRedactTokens.add(forbiddenRedactToken);
 				}
 			}
 		}
