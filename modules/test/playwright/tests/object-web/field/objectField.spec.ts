@@ -3459,7 +3459,6 @@ test.describe('Manage object fields default value properties', () => {
 		async ({
 			apiHelpers,
 			modelBuilderDiagramPage,
-			modelBuilderLeftSidebarPage,
 			modelBuilderObjectDefinitionNodePage,
 			modelBuilderRightSidebarPage,
 			page,
@@ -3468,9 +3467,24 @@ test.describe('Manage object fields default value properties', () => {
 				objectFieldBusinessTypes: ['Text'],
 			});
 
+			// An isolated folder keeps the diagram to this one definition, so
+			// the node is fitted into view; the Default folder holds every
+			// system definition and pushes the node's controls out of the
+			// canvas viewport, which Playwright cannot scroll.
+
+			const objectFolder =
+				await apiHelpers.objectAdmin.postRandomObjectFolder();
+
+			apiHelpers.data.push({
+				id: objectFolder.id,
+				type: 'objectFolder',
+			});
+
 			const objectDefinition =
 				await apiHelpers.objectAdmin.postRandomObjectDefinition({
 					objectFields,
+					objectFolderExternalReferenceCode:
+						objectFolder.externalReferenceCode,
 					status: {code: 0},
 				});
 
@@ -3480,12 +3494,8 @@ test.describe('Manage object fields default value properties', () => {
 			});
 
 			await modelBuilderDiagramPage.goto({
-				objectFolderName: 'Default',
+				objectFolderName: objectFolder.name,
 			});
-
-			await modelBuilderLeftSidebarPage.sidebarItems
-				.filter({hasText: objectDefinition.name})
-				.click();
 
 			await modelBuilderObjectDefinitionNodePage.clickShowAllFieldsButton(
 				objectDefinition.name,
@@ -3495,7 +3505,7 @@ test.describe('Manage object fields default value properties', () => {
 			await modelBuilderDiagramPage.objectDefinitionNodes
 				.filter({hasText: objectDefinition.name})
 				.getByText(objectFields[0].label.en_US, {exact: true})
-				.click();
+				.dispatchEvent('click');
 
 			await modelBuilderRightSidebarPage.setDefaultValue(
 				'Text',
@@ -3568,7 +3578,6 @@ test.describe('Manage object fields default value properties', () => {
 		async ({
 			apiHelpers,
 			modelBuilderDiagramPage,
-			modelBuilderLeftSidebarPage,
 			modelBuilderObjectDefinitionNodePage,
 			modelBuilderRightSidebarPage,
 			page,
@@ -3577,9 +3586,24 @@ test.describe('Manage object fields default value properties', () => {
 				objectFieldBusinessTypes: ['Text'],
 			});
 
+			// An isolated folder keeps the diagram to this one definition, so
+			// the node is fitted into view; the Default folder holds every
+			// system definition and pushes the node's controls out of the
+			// canvas viewport, which Playwright cannot scroll.
+
+			const objectFolder =
+				await apiHelpers.objectAdmin.postRandomObjectFolder();
+
+			apiHelpers.data.push({
+				id: objectFolder.id,
+				type: 'objectFolder',
+			});
+
 			const objectDefinition =
 				await apiHelpers.objectAdmin.postRandomObjectDefinition({
 					objectFields,
+					objectFolderExternalReferenceCode:
+						objectFolder.externalReferenceCode,
 					status: {code: 0},
 				});
 
@@ -3589,12 +3613,8 @@ test.describe('Manage object fields default value properties', () => {
 			});
 
 			await modelBuilderDiagramPage.goto({
-				objectFolderName: 'Default',
+				objectFolderName: objectFolder.name,
 			});
-
-			await modelBuilderLeftSidebarPage.sidebarItems
-				.filter({hasText: objectDefinition.name})
-				.click();
 
 			await modelBuilderObjectDefinitionNodePage.clickShowAllFieldsButton(
 				objectDefinition.name,
@@ -3604,7 +3624,7 @@ test.describe('Manage object fields default value properties', () => {
 			await modelBuilderDiagramPage.objectDefinitionNodes
 				.filter({hasText: objectDefinition.name})
 				.getByText(objectFields[0].label.en_US, {exact: true})
-				.click();
+				.dispatchEvent('click');
 
 			const rightSidebar = page.locator(
 				'.lfr__objects-custom-vertical-bar-content > .sidebar[id*="ModelBuilderRightSidebar"]'
