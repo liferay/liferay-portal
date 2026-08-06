@@ -283,8 +283,7 @@ public class PageSpecificationResourceImpl
 					pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
 
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-10622");
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		long groupId = GroupUtil.getStagingAwareGroupId(
 			contextCompany.getCompanyId(), siteExternalReferenceCode);

@@ -50,4 +50,9 @@ public class EnabledUtil {
 		}
 	}
 
+	public static void checkPageSpecificationVersionEnabled(Company company) {
+		FeatureFlagManagerUtil.checkEnabled(
+			company.getCompanyId(), "LPD-10622");
+	}
+
 }

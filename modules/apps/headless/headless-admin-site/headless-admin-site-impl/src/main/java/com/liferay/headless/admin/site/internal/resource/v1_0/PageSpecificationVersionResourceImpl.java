@@ -8,12 +8,12 @@ package com.liferay.headless.admin.site.internal.resource.v1_0;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
+import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionService;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -43,8 +43,7 @@ public class PageSpecificationVersionResourceImpl
 			String pageSpecificationVersionExternalReferenceCode)
 		throws Exception {
 
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-10622");
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
 			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
@@ -74,8 +73,7 @@ public class PageSpecificationVersionResourceImpl
 					sitePageExternalReferenceCode)
 		throws Exception {
 
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-10622");
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
 
 		Layout layout = _getLayout(
 			true, siteExternalReferenceCode, sitePageExternalReferenceCode);
