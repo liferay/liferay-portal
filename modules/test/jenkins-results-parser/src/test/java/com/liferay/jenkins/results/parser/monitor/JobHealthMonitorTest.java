@@ -147,7 +147,7 @@ public class JobHealthMonitorTest
 				).put(
 					"building", false
 				).put(
-					"number", 42
+					"number", RandomTestUtil.randomInt()
 				)
 			));
 
@@ -418,7 +418,7 @@ public class JobHealthMonitorTest
 				).put(
 					"building", true
 				).put(
-					"number", 43
+					"number", RandomTestUtil.randomInt()
 				).put(
 					"timestamp",
 					JenkinsResultsParserUtil.getCurrentTimeMillis() -

@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser.monitor;
 
 import com.liferay.jenkins.results.parser.JenkinsMasterTestUtil;
+import com.liferay.jenkins.results.parser.RandomTestUtil;
 
 import java.util.List;
 import java.util.Properties;
@@ -30,14 +31,17 @@ public class MonitorFactoryTest
 
 	@Test
 	public void testNewMonitorJobHealth() {
-		JenkinsMasterTestUtil.getJenkinsMaster("test-9-1", "http://test-9-1/");
+		String masterName = RandomTestUtil.randomString();
+
+		JenkinsMasterTestUtil.getJenkinsMaster(
+			masterName, "http://" + masterName);
 
 		Properties monitorProperties = new Properties();
 
 		monitorProperties.setProperty(
-			"monitor[a].parameter[job.name]", "generate-reports-controller");
+			"monitor[a].parameter[job.name]", RandomTestUtil.randomString());
 		monitorProperties.setProperty(
-			"monitor[a].parameter[master.name]", "test-9-1");
+			"monitor[a].parameter[master.name]", masterName);
 		monitorProperties.setProperty("monitor[a].type", "job-health");
 
 		List<MonitorConfig> monitorConfigs =

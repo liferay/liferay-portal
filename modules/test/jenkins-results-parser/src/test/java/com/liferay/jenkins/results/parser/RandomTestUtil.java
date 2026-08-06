@@ -17,6 +17,10 @@ public class RandomTestUtil {
 		return _random.nextDouble();
 	}
 
+	public static int randomInt() {
+		return _random.nextInt();
+	}
+
 	public static long randomLong() {
 		return _random.nextLong();
 	}
