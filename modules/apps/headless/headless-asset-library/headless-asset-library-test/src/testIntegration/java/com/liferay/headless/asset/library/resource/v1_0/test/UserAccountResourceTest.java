@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
-import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
@@ -468,9 +467,6 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 
 	@Inject
 	private ResourceActions _resourceActions;
-
-	@Inject
-	private RoleLocalService _roleLocalService;
 
 	private DepotEntry _spaceDepotEntry;
 	private User _testUser;
