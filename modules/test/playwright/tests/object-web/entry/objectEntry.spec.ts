@@ -6073,9 +6073,16 @@ test.describe('Manage object entries through View Object Entries', () => {
 			.getByRole('button', {name: 'astronaut.png'})
 			.waitFor({state: 'visible'});
 
-		expect(
-			await apiHelpers.headlessDelivery.getDocument(fileEntryId1)
-		).toEqual({status: 'NOT_FOUND'});
+		// The replaced temporary file is deleted asynchronously, so poll
+		// instead of asserting the very first read
+
+		await expect
+			.poll(
+				async () =>
+					await apiHelpers.headlessDelivery.getDocument(fileEntryId1),
+				{timeout: 30 * 1000}
+			)
+			.toEqual({status: 'NOT_FOUND'});
 
 		const fileEntryId2 = await page.getAttribute(
 			'input[data-field-name^="testAttachment"]',
@@ -6094,9 +6101,13 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await viewObjectEntriesPage.deleteFileButton.click();
 
-		expect(
-			await apiHelpers.headlessDelivery.getDocument(fileEntryId2)
-		).toEqual({status: 'NOT_FOUND'});
+		await expect
+			.poll(
+				async () =>
+					await apiHelpers.headlessDelivery.getDocument(fileEntryId2),
+				{timeout: 30 * 1000}
+			)
+			.toEqual({status: 'NOT_FOUND'});
 
 		// Verify that the file is removed after page reload
 
@@ -6116,9 +6127,13 @@ test.describe('Manage object entries through View Object Entries', () => {
 
 		await page.reload();
 
-		expect(
-			await apiHelpers.headlessDelivery.getDocument(fileEntryId3)
-		).toEqual({status: 'NOT_FOUND'});
+		await expect
+			.poll(
+				async () =>
+					await apiHelpers.headlessDelivery.getDocument(fileEntryId3),
+				{timeout: 30 * 1000}
+			)
+			.toEqual({status: 'NOT_FOUND'});
 
 		// Verify that the file is saved successfully when clicking submit
 
