@@ -41,6 +41,12 @@ public class DB2DBTest extends BaseDBTestCase {
 	}
 
 	@Test
+	public void testBlobColumnTypeSize() {
+		Assert.assertEquals(
+			Integer.valueOf(DB.SQL_SIZE_NONE), db.getSQLTypeSize("BLOB"));
+	}
+
+	@Test
 	public void testGetLongDefaultValue() {
 		Assert.assertEquals("10", db.getDefaultValue("10"));
 	}

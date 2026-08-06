@@ -1103,7 +1103,7 @@ public abstract class BaseDB implements DB {
 				matcher.matches() ? GetterUtil.getInteger(matcher.group(1)) :
 					DB.SQL_SIZE_NONE);
 
-			if (templateType.equals("DATE")) {
+			if (templateType.equals("BLOB") || templateType.equals("DATE")) {
 				_sqlTypeSizes.put(templateType, DB.SQL_SIZE_NONE);
 
 				continue;
