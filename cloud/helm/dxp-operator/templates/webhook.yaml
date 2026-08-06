@@ -1,11 +1,11 @@
 {{- $caCert := "" -}}
+{{- $certificateValidityDays := int .Values.webhook.certificateValidityDays -}}
 {{- $namespace := include "dxp-operator.namespace" . -}}
+{{- $tlsCert := "" -}}
+{{- $tlsKey := "" -}}
 {{- $webhookServiceName := include "dxp-operator.webhookServiceName" . -}}
 {{- $altNames := list (printf "%s.%s.svc" $webhookServiceName $namespace) (printf "%s.%s.svc.cluster.local" $webhookServiceName $namespace) -}}
 {{- $existingSecret := lookup "v1" "Secret" $namespace $webhookServiceName -}}
-{{- $tlsCert := "" -}}
-{{- $tlsKey := "" -}}
-{{- $certificateValidityDays := int .Values.webhook.certificateValidityDays -}}
 {{- if and $existingSecret $existingSecret.data (index $existingSecret.data "tls.crt") -}}
 {{- $caCert = index $existingSecret.data "ca.crt" -}}
 {{- $tlsCert = index $existingSecret.data "tls.crt" -}}
