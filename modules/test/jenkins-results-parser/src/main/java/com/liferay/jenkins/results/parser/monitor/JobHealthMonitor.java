@@ -20,23 +20,23 @@ import org.json.JSONObject;
 /**
  * @author Brittney Nguyen
  */
-public class JobHealthMonitor implements Monitor {
+public class JobHealthMonitor extends BaseMonitor {
 
 	public JobHealthMonitor(MonitorConfig monitorConfig) {
-		_monitorConfig = monitorConfig;
+		super(monitorConfig);
 
 		Map<String, String> parameters = monitorConfig.getParameters();
 
-		_cadenceSeconds = _getLongValue("parameter", 0, "cadence", parameters);
+		_cadenceSeconds = getLongValue("parameter", 0, "cadence", parameters);
 		_expectedGreen = _isExpectedGreen(parameters);
-		_jobName = _getRequiredParameter("job.name", parameters);
-		_jobURL = _getJobURL(_getRequiredParameter("master.name", parameters));
+		_jobName = getRequiredParameter("job.name", parameters);
+		_jobURL = _getJobURL(getRequiredParameter("master.name", parameters));
 
 		Map<String, String> thresholds = monitorConfig.getThresholds();
 
-		_buildDurationMaximumSeconds = _getLongValue(
+		_buildDurationMaximumSeconds = getLongValue(
 			"threshold", 0, "build.duration.maximum", thresholds);
-		_overdueGraceSeconds = _getLongValue(
+		_overdueGraceSeconds = getLongValue(
 			"threshold",
 			Math.max(_SECONDS_OVERDUE_GRACE_MINIMUM, _cadenceSeconds / 4),
 			"overdue.grace", thresholds);
@@ -157,28 +157,6 @@ public class JobHealthMonitor implements Monitor {
 			currentTimeMillis, messages, metrics, statuses);
 	}
 
-	@Override
-	public String getId() {
-		return _monitorConfig.getId();
-	}
-
-	@Override
-	public MonitorConfig getMonitorConfig() {
-		return _monitorConfig;
-	}
-
-	private int _getAttemptTimeoutMillis() {
-		long timeoutSeconds = _monitorConfig.getTimeoutSeconds();
-
-		if (timeoutSeconds <= 0) {
-			timeoutSeconds = _SECONDS_TIMEOUT_DEFAULT;
-		}
-
-		timeoutSeconds = Math.min(timeoutSeconds, Integer.MAX_VALUE / 1000);
-
-		return (int)((timeoutSeconds * 1000) / 3);
-	}
-
 	private String _getCadenceMessage() {
 		return JenkinsResultsParserUtil.combine(
 			"exceeding its cadence of ",
@@ -188,13 +166,6 @@ public class JobHealthMonitor implements Monitor {
 				_overdueGraceSeconds * 1000));
 	}
 
-	private String _getInvalidValueMessage(
-		String category, String name, String value) {
-
-		return JenkinsResultsParserUtil.combine(
-			"Invalid ", name, " for ", _getKey(category, name), ": ", value);
-	}
-
 	private JSONObject _getJobJSONObject() throws IOException {
 		return JenkinsResultsParserUtil.toJSONObject(
 			JenkinsResultsParserUtil.combine(
@@ -202,7 +173,7 @@ public class JobHealthMonitor implements Monitor {
 				"lastBuild[building,number,timestamp],",
 				"lastCompletedBuild[number,result,timestamp]"),
 			false, 1, null, null, _SECONDS_RETRY_PERIOD,
-			_getAttemptTimeoutMillis(), null);
+			getAttemptTimeoutMillis(), null);
 	}
 
 	private String _getJobURL(String masterName) {
@@ -210,11 +181,6 @@ public class JobHealthMonitor implements Monitor {
 
 		return JenkinsResultsParserUtil.combine(
 			jenkinsMaster.getURL(), "/job/", _jobName);
-	}
-
-	private String _getKey(String category, String name) {
-		return JenkinsResultsParserUtil.combine(
-			"monitor[", _monitorConfig.getId(), "].", category, "[", name, "]");
 	}
 
 	private long _getLastBuildTimestamp(
@@ -226,35 +192,6 @@ public class JobHealthMonitor implements Monitor {
 		}
 
 		return lastCompletedBuildJSONObject.optLong("timestamp");
-	}
-
-	private long _getLongValue(
-		String category, long defaultValue, String name,
-		Map<String, String> values) {
-
-		String value = values.get(name);
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
-			return defaultValue;
-		}
-
-		long longValue = 0;
-
-		try {
-			longValue = Long.parseLong(value);
-		}
-		catch (NumberFormatException numberFormatException) {
-			throw new IllegalArgumentException(
-				_getInvalidValueMessage(category, name, value),
-				numberFormatException);
-		}
-
-		if (longValue < 0) {
-			throw new IllegalArgumentException(
-				_getInvalidValueMessage(category, name, value));
-		}
-
-		return longValue;
 	}
 
 	private String _getOverdueMessage(
@@ -275,19 +212,6 @@ public class JobHealthMonitor implements Monitor {
 			" ago, ", _getCadenceMessage());
 	}
 
-	private String _getRequiredParameter(
-		String name, Map<String, String> parameters) {
-
-		String value = parameters.get(name);
-
-		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
-			throw new IllegalArgumentException(
-				"Missing required property " + _getKey("parameter", name));
-		}
-
-		return value;
-	}
-
 	private boolean _isBuildRunning(JSONObject lastBuildJSONObject) {
 		if (lastBuildJSONObject == null) {
 			return false;
@@ -305,7 +229,7 @@ public class JobHealthMonitor implements Monitor {
 
 		if (!expectedGreen.equals("false") && !expectedGreen.equals("true")) {
 			throw new IllegalArgumentException(
-				_getInvalidValueMessage(
+				getInvalidValueMessage(
 					"parameter", "expected.green", expectedGreen));
 		}
 
@@ -343,14 +267,11 @@ public class JobHealthMonitor implements Monitor {
 
 	private static final int _SECONDS_RETRY_PERIOD = 1;
 
-	private static final long _SECONDS_TIMEOUT_DEFAULT = 60;
-
 	private final long _buildDurationMaximumSeconds;
 	private final long _cadenceSeconds;
 	private final boolean _expectedGreen;
 	private final String _jobName;
 	private final String _jobURL;
-	private final MonitorConfig _monitorConfig;
 	private final long _overdueGraceSeconds;
 
 }
