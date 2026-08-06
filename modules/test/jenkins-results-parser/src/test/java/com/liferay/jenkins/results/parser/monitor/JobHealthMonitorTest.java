@@ -448,55 +448,17 @@ public class JobHealthMonitorTest
 	}
 
 	@Test
-	public void testJobHealthMonitorInvalidCadence() {
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.setProperty(
+	public void testJobHealthMonitor() {
+		_testJobHealthMonitorInvalidProperty(
+			"monitor[a].parameter[cadence]", "-1");
+		_testJobHealthMonitorInvalidProperty(
 			"monitor[a].parameter[cadence]", "not-a-number");
-
-		_testJobHealthMonitorExpectedIllegalArgumentException(
-			monitorProperties);
-	}
-
-	@Test
-	public void testJobHealthMonitorInvalidExpectedGreen() {
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.setProperty(
+		_testJobHealthMonitorInvalidProperty(
 			"monitor[a].parameter[expected.green]", "yes");
 
-		_testJobHealthMonitorExpectedIllegalArgumentException(
-			monitorProperties);
-	}
-
-	@Test
-	public void testJobHealthMonitorMissingJobName() {
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.remove("monitor[a].parameter[job.name]");
-
-		_testJobHealthMonitorExpectedIllegalArgumentException(
-			monitorProperties);
-	}
-
-	@Test
-	public void testJobHealthMonitorMissingMasterName() {
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.remove("monitor[a].parameter[master.name]");
-
-		_testJobHealthMonitorExpectedIllegalArgumentException(
-			monitorProperties);
-	}
-
-	@Test
-	public void testJobHealthMonitorNegativeCadence() {
-		Properties monitorProperties = _newMonitorProperties();
-
-		monitorProperties.setProperty("monitor[a].parameter[cadence]", "-1");
-
-		_testJobHealthMonitorExpectedIllegalArgumentException(
-			monitorProperties);
+		_testJobHealthMonitorMissingProperty("monitor[a].parameter[job.name]");
+		_testJobHealthMonitorMissingProperty(
+			"monitor[a].parameter[master.name]");
 	}
 
 	private MonitorResult _execute(Properties monitorProperties) {
@@ -597,6 +559,26 @@ public class JobHealthMonitorTest
 		}
 		catch (IllegalArgumentException illegalArgumentException) {
 		}
+	}
+
+	private void _testJobHealthMonitorInvalidProperty(
+		String name, String value) {
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty(name, value);
+
+		_testJobHealthMonitorExpectedIllegalArgumentException(
+			monitorProperties);
+	}
+
+	private void _testJobHealthMonitorMissingProperty(String name) {
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.remove(name);
+
+		_testJobHealthMonitorExpectedIllegalArgumentException(
+			monitorProperties);
 	}
 
 	private static final String _JOB_API_URL =
