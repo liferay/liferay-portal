@@ -86,6 +86,25 @@ definition {
 	@description = "LPS-131206. Verify if is possible navigate between pages"
 	@priority = 3
 	test CanNavigateBetweenPages {
+		task ("Given more envelopes exist than one page holds") {
+			DigitalSignature.addDMDocument(dmDocumentFile = "Alice's Adventures in Wonderland.pdf");
+
+			for (var envelopeNumber : list "1,2,3,4,5") {
+				DigitalSignature.createEnvelopeForDMDocument(
+					addEmail = "test@liferay.com",
+					addFullName = "Recipient Full Name",
+					addMessage = "Email Message",
+					addName = "Poshi Test CanNavigateBetweenPages ${envelopeNumber}",
+					addSubject = "Email Subject");
+
+				Button.click(button = "Send");
+
+				Alert.viewSuccessMessageText(successMessage = "Your envelope was created successfully.");
+
+				DigitalSignature.waitForListViewLoad();
+			}
+		}
+
 		task ("When a User Test Goes to Digital Signature") {
 			Navigator.openURL();
 
@@ -95,7 +114,19 @@ definition {
 		}
 
 		task ("Then it is possible to navigate between pages") {
+			DigitalSignature.selectItemsPerPage(itemsPerPage = 4);
+
 			DigitalSignature.canPageNavigator();
+		}
+
+		task ("Clean up the envelopes and the document") {
+			DigitalSignature.selectItemsPerPage(itemsPerPage = 20);
+
+			for (var envelopeNumber : list "1,2,3,4,5") {
+				DigitalSignature.deleteEnvelope(envelopeName = "Poshi Test CanNavigateBetweenPages ${envelopeNumber}");
+			}
+
+			DigitalSignature.deleteCreatedDM();
 		}
 	}
 

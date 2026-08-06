@@ -1,6 +1,16 @@
 definition {
 
 	@summary = "Default summary"
+	macro addDMDocument(dmDocumentFile = null) {
+		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+
+		DMDocument.addCP(
+			dmDocumentDescription = "DM Document Description",
+			dmDocumentFile = ${dmDocumentFile},
+			dmDocumentTitle = "DM Document Title");
+	}
+
+	@summary = "Default summary"
 	macro addMoreRecipient(fullName = null, recipientEmail = null) {
 		Click(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ADD_RECIPIENT");
 
@@ -109,18 +119,25 @@ definition {
 
 	@summary = "Default summary"
 	macro createEnvelope(dmDocumentFile = null, addName = null, addFullName = null, addSubject = null, addEmail = null, addMessage = null) {
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
+		DigitalSignature.addDMDocument(dmDocumentFile = ${dmDocumentFile});
 
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = ${dmDocumentFile},
-			dmDocumentTitle = "DM Document Title");
+		DigitalSignature.createEnvelopeForDMDocument(
+			addEmail = ${addEmail},
+			addFullName = ${addFullName},
+			addMessage = ${addMessage},
+			addName = ${addName},
+			addSubject = ${addSubject});
+	}
 
+	@summary = "Default summary"
+	macro createEnvelopeForDMDocument(addName = null, addFullName = null, addSubject = null, addEmail = null, addMessage = null) {
 		Navigator.openURL();
 
 		ProductMenu.gotoPortlet(
 			category = "Content & Data",
 			portlet = "Digital Signature");
+
+		DigitalSignature.waitForListViewLoad();
 
 		LexiconEntry.gotoAdd();
 
@@ -175,6 +192,8 @@ definition {
 		ProductMenu.gotoPortlet(
 			category = "Content & Data",
 			portlet = "Digital Signature");
+
+		DigitalSignature.waitForListViewLoad();
 
 		LexiconEntry.gotoAdd();
 
@@ -251,6 +270,8 @@ definition {
 
 	@summary = "Default summary"
 	macro deleteEnvelope(envelopeName = null) {
+		DigitalSignature.waitForListViewLoad();
+
 		Refresh();
 
 		Click(
@@ -258,6 +279,8 @@ definition {
 			locator1 = "Link#ANY");
 
 		AssertElementPresent(locator1 = "TextInput#HIDDEN");
+
+		DigitalSignature.waitForListViewLoad();
 
 		var value = selenium.getElementValue("TextInput#HIDDEN");
 
@@ -380,6 +403,15 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro selectItemsPerPage(itemsPerPage = null) {
+		Click(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ITEMS_PER_PAGE");
+
+		Click(
+			key_itemsPerPage = ${itemsPerPage},
+			locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_ITEMS_PER_PAGE_OPTION");
+	}
+
+	@summary = "Default summary"
 	macro selectSiteStrategy(siteStrategy = null) {
 		Select(
 			locator1 = "DigitalSignatureConfiguration#SITE_SETTINGS_STRATEGY",
@@ -452,6 +484,11 @@ definition {
 		AssertElementPresent(
 			fileTitle = ${documentTitle},
 			locator1 = "DigitalSignatureEnvelopeSettings#DIGITAL_SIGNATURE_MODAL_UNSUPPORTED_FILE");
+	}
+
+	@summary = "Default summary"
+	macro waitForListViewLoad() {
+		AssertElementNotPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_LOADING_INDICATOR");
 	}
 
 }

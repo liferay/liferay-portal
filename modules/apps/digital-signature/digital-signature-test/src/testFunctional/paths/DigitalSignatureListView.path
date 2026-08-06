@@ -21,6 +21,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>DIGITAL_SIGNATURE_ITEMS_PER_PAGE</td>
+	<td>//button[@aria-label = 'Items Per Page']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIGITAL_SIGNATURE_ITEMS_PER_PAGE_OPTION</td>
+	<td>//div[contains(@class, 'dropdown-menu-select')]//button[@role = 'option' and normalize-space(.) = '${key_itemsPerPage} items']</td>
+	<td></td>
+</tr>
+<tr>
 	<td>DIGITAL_SIGNATURE_NAVIGATE_NEXT</td>
 	<td>//*[contains(@aria-label, 'Go to the next page')]</td>
 	<td></td>
@@ -68,6 +78,11 @@
 <tr>
 	<td>DIGITAL_SIGNATURE_RECENT_CREATE_DATE</td>
 	<td>//td[contains(., 'a few seconds ago')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DIGITAL_SIGNATURE_LOADING_INDICATOR</td>
+	<td>//div[contains(@class, 'envelope-list')]//span[contains(@class, 'loading-animation')]</td>
 	<td></td>
 </tr>
 </tbody>
