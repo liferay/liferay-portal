@@ -28,6 +28,12 @@ spec:
         -   jsonPath: .status.license.validUntil
             name: Valid-Until
             type: string
+        -   jsonPath: .spec.desiredReplicas
+            name: Desired
+            type: integer
+        -   jsonPath: .status.effectiveReplicas
+            name: Effective
+            type: integer
         -   jsonPath: .status.phase
             name: Phase
             priority: 1
@@ -73,6 +79,9 @@ spec:
                                 -   key
                                 -   name
                                 type: object
+                            desiredReplicas:
+                                format: int32
+                                type: integer
                             dxpVersion:
                                 type: string
                             environmentName:
@@ -172,6 +181,9 @@ spec:
                                 x-kubernetes-list-map-keys:
                                 -   type
                                 x-kubernetes-list-type: map
+                            effectiveReplicas:
+                                format: int32
+                                type: integer
                             environmentId:
                                 type: string
                             license:

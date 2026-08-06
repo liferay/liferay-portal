@@ -28,6 +28,8 @@ type LicenseStatus struct {
 // +kubebuilder:printcolumn:JSONPath=`.status.conditions[?(@.type=="Activated")].status`,name="Activated",type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.license.maxClusterNodes`,name="Max",type=integer
 // +kubebuilder:printcolumn:JSONPath=`.status.license.validUntil`,name="Valid-Until",type=string
+// +kubebuilder:printcolumn:JSONPath=`.spec.desiredReplicas`,name="Desired",type=integer
+// +kubebuilder:printcolumn:JSONPath=`.status.effectiveReplicas`,name="Effective",type=integer
 // +kubebuilder:printcolumn:JSONPath=`.status.phase`,name="Phase",priority=1,type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.environmentId`,name="Environment-ID",priority=1,type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.activatedAt`,name="Activated-At",priority=1,type=date
@@ -54,6 +56,9 @@ type LiferayEnvironmentSpec struct {
 	ActivationCodeSecretRef SecretKeyRef `json:"activationCodeSecretRef"`
 
 	// +optional
+	DesiredReplicas *int32 `json:"desiredReplicas,omitempty"`
+
+	// +optional
 	DxpVersion string `json:"dxpVersion,omitempty"`
 
 	// +optional
@@ -74,6 +79,9 @@ type LiferayEnvironmentStatus struct {
 	// +listType=map
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
+
+	// +optional
+	EffectiveReplicas *int32 `json:"effectiveReplicas,omitempty"`
 
 	// +optional
 	EnvironmentID string `json:"environmentId,omitempty"`

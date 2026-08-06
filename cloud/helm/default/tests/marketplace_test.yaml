@@ -29,6 +29,7 @@ tests:
                         activationCodeSecretRef:
                             key: activationCode
                             name: liferay-default-activation
+                        desiredReplicas: 1
                         marketplaceVolume:
                             enabled: true
                             size: 10Gi
@@ -39,6 +40,21 @@ tests:
         set:
             marketplace.enabled: true
             marketplace.storageClassName: nfs-sc
+        template: templates/liferayenvironment.yaml
+    -   asserts:
+            -   equal:
+                    path: spec.desiredReplicas
+                    value: 3
+        it: Sets desiredReplicas from the configured replica count
+        set:
+            replicaCount: 3
+        template: templates/liferayenvironment.yaml
+    -   asserts:
+            -   notExists:
+                    path: spec.desiredReplicas
+        it: Omits desiredReplicas when autoscaling manages the replica count
+        set:
+            autoscaling.enabled: true
         template: templates/liferayenvironment.yaml
     -   asserts:
             -   equal:

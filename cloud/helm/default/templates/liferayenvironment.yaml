@@ -10,6 +10,9 @@ spec:
     activationCodeSecretRef:
         key: {{ .Values.license.activationCodeSecretKey }}
         name: {{ .Values.license.activationCodeSecretName | default (printf "%s-activation" (include "liferay.name" .)) }}
+    {{- if not .Values.autoscaling.enabled }}
+    desiredReplicas: {{ .Values.replicaCount }}
+    {{- end }}
     marketplaceVolume:
         enabled: {{ .Values.marketplace.enabled }}
         size: {{ .Values.marketplace.size }}
