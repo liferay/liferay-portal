@@ -47,6 +47,9 @@ jest.mock('@fullcalendar/react', () => {
 						onClick={() =>
 							props.datesSet?.({
 								view: {
+									calendar: {
+										getDate: () => new Date(2026, 6, 15),
+									},
 									currentStart: new Date(2026, 6, 13),
 									title: 'Jul 13 – 19, 2026',
 									type: 'dayGridWeek',
@@ -56,6 +59,24 @@ jest.mock('@fullcalendar/react', () => {
 						type="button"
 					>
 						Switch to week
+					</button>
+
+					<button
+						onClick={() =>
+							props.datesSet?.({
+								view: {
+									calendar: {
+										getDate: () => new Date(2026, 6, 15),
+									},
+									currentStart: new Date(2026, 6, 1),
+									title: 'July 2026',
+									type: 'dayGridMonth',
+								},
+							})
+						}
+						type="button"
+					>
+						Switch to month
 					</button>
 
 					{props.dayCellContent?.({
@@ -252,11 +273,32 @@ describe('CalendarView', () => {
 
 		expect(fullCalendar).toHaveAttribute(
 			'data-initial-date',
-			new Date(2026, 6, 13).toISOString()
+			new Date(2026, 6, 15).toISOString()
 		);
 		expect(fullCalendar).toHaveAttribute(
 			'data-initial-view',
 			'dayGridWeek'
+		);
+	});
+
+	it('restores today instead of the first of the month after a month view remount', () => {
+		const {unmount} = renderCalendarView(false, {id: 'month-fds'});
+
+		fireEvent.click(screen.getByText('Switch to month'));
+
+		unmount();
+
+		renderCalendarView(false, {id: 'month-fds'});
+
+		const fullCalendar = screen.getByTestId('fullCalendar');
+
+		expect(fullCalendar).toHaveAttribute(
+			'data-initial-date',
+			new Date(2026, 6, 15).toISOString()
+		);
+		expect(fullCalendar).toHaveAttribute(
+			'data-initial-view',
+			'dayGridMonth'
 		);
 	});
 
