@@ -22,6 +22,7 @@ environment_names = [
 
 def environment_yaml(name):
 	namespace = "liferay-" + name
+	workload = name + "-liferay"
 
 	return "\n".join(
 	    [
@@ -41,13 +42,34 @@ def environment_yaml(name):
 	        "    activationCodeSecretRef:",
 	        "        key: activationCode",
 	        "        name: " + name + "-activation",
+	        "    desiredReplicas: 3",
 	        "    dxpVersion: 2026.q3.0",
 	        "    environmentName: \"" + name + "\"",
 	        "    marketplaceVolume:",
 	        "        size: 10Gi",
 	        "        storageClassName: local-path",
 	        "    workloadRef:",
-	        "        name: liferay-default",
+	        "        name: " + workload,
+	        "---",
+	        "apiVersion: apps/v1",
+	        "kind: StatefulSet",
+	        "metadata:",
+	        "    name: " + workload,
+	        "    namespace: " + namespace,
+	        "spec:",
+	        "    replicas: 3",
+	        "    selector:",
+	        "        matchLabels:",
+	        "            app: " + workload,
+	        "    serviceName: " + workload,
+	        "    template:",
+	        "        metadata:",
+	        "            labels:",
+	        "                app: " + workload,
+	        "        spec:",
+	        "            containers:",
+	        "                -   image: registry.k8s.io/pause:3.9",
+	        "                    name: liferay",
 	    ]
 	)
 
@@ -65,6 +87,7 @@ docker_build_with_restart(
 
 for name in environment_names:
 	namespace = "liferay-" + name
+	workload = name + "-liferay"
 
 	k8s_yaml(blob(environment_yaml(name)))
 
@@ -79,6 +102,12 @@ for name in environment_names:
 	        "liferay-dxp-operator",
 	        "operator-infra",
 	    ],
+	)
+
+	k8s_resource(
+	    labels=["environments"],
+	    resource_deps=[namespace],
+	    workload=workload,
 	)
 
 	cmd_button(

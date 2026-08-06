@@ -21,6 +21,7 @@ import (
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
 	license "github.com/liferay/liferay-portal/cloud/operator/internal/license"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	errors "k8s.io/apimachinery/pkg/api/errors"
 	meta "k8s.io/apimachinery/pkg/api/meta"
@@ -37,6 +38,7 @@ const (
 	conditionActivated             = "Activated"
 	conditionLicenseValid          = "LicenseValid"
 	conditionProvisioningReachable = "ProvisioningReachable"
+	conditionReplicasCountValid    = "ReplicasCountValid"
 	entitlementsSecretSuffix       = "-entitlements"
 	environmentLabel               = "licensing.liferay.com/environment"
 	identitySecretSuffix           = "-identity"
@@ -44,6 +46,7 @@ const (
 
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;patch;update;watch
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;patch;update;watch
+// +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;patch;update;watch
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	context context.Context,
 	request controllerruntime.Request,
@@ -274,6 +277,12 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		},
 	)
 
+	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		context, liferayEnvironment, entitlements.MaxClusterNodes,
+	); error != nil {
+		return controllerruntime.Result{}, error
+	}
+
 	liferayEnvironment.Status.Phase = "Ready"
 
 	return liferayEnvironmentReconciler.finishAfter(
@@ -301,6 +310,116 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 	).Complete(
 		liferayEnvironmentReconciler,
 	)
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplicaCeiling(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	maxClusterNodes int32,
+) error {
+	logger := logf.FromContext(context)
+
+	if maxClusterNodes <= 0 {
+		liferayEnvironment.Status.EffectiveReplicas = nil
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: "The licensed maximum cluster node count is not yet known.",
+				Reason:  "MaxClusterNodesUnknown",
+				Status:  metav1.ConditionUnknown,
+				Type:    conditionReplicasCountValid,
+			},
+		)
+
+		return nil
+	}
+
+	statefulSet := &appsv1.StatefulSet{}
+
+	getError := liferayEnvironmentReconciler.Get(
+		context, types.NamespacedName{
+			Name:      liferayEnvironment.Spec.WorkloadRef.Name,
+			Namespace: liferayEnvironment.Namespace,
+		}, statefulSet)
+
+	if errors.IsNotFound(getError) {
+		logger.V(1).Info(
+			"Workload not found; skipping replica enforcement",
+			"workload", liferayEnvironment.Spec.WorkloadRef.Name,
+		)
+
+		liferayEnvironment.Status.EffectiveReplicas = nil
+
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"Workload StatefulSet %q was not found.",
+					liferayEnvironment.Spec.WorkloadRef.Name,
+				),
+				Reason: "WorkloadNotFound",
+				Status: metav1.ConditionUnknown,
+				Type:   conditionReplicasCountValid,
+			},
+		)
+
+		return nil
+	}
+
+	if getError != nil {
+		return getError
+	}
+
+	desiredReplicas := resolveDesiredReplicas(liferayEnvironment, statefulSet)
+
+	effectiveReplicas := min(desiredReplicas, maxClusterNodes)
+
+	if statefulSet.Spec.Replicas == nil || *statefulSet.Spec.Replicas != effectiveReplicas {
+		statefulSet.Spec.Replicas = &effectiveReplicas
+
+		if error := liferayEnvironmentReconciler.Update(context, statefulSet); error != nil {
+			return error
+		}
+
+		logger.Info(
+			"Enforced licensed replica ceiling",
+			"desiredReplicas", desiredReplicas,
+			"effectiveReplicas", effectiveReplicas,
+			"maxClusterNodes", maxClusterNodes,
+			"workload", statefulSet.Name,
+		)
+	}
+
+	liferayEnvironment.Status.EffectiveReplicas = &effectiveReplicas
+
+	if desiredReplicas > maxClusterNodes {
+		meta.SetStatusCondition(
+			&liferayEnvironment.Status.Conditions,
+			metav1.Condition{
+				Message: fmt.Sprintf(
+					"Requested %d replicas exceeds the licensed maximum of %d; capping to %d.",
+					desiredReplicas, maxClusterNodes, effectiveReplicas,
+				),
+				Reason: "ExceedsLicensedMaximum",
+				Status: metav1.ConditionFalse,
+				Type:   conditionReplicasCountValid,
+			},
+		)
+
+		return nil
+	}
+
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Reason: "WithinLicensedLimit",
+			Status: metav1.ConditionTrue,
+			Type:   conditionReplicasCountValid,
+		},
+	)
+
+	return nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) ensureIdentity(
@@ -557,6 +676,21 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) readActivation
 	}
 
 	return string(code), nil
+}
+
+func resolveDesiredReplicas(
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	statefulSet *appsv1.StatefulSet,
+) int32 {
+	if liferayEnvironment.Spec.DesiredReplicas != nil {
+		return *liferayEnvironment.Spec.DesiredReplicas
+	}
+
+	if statefulSet.Spec.Replicas != nil {
+		return *statefulSet.Spec.Replicas
+	}
+
+	return 1
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveDxpVersion(

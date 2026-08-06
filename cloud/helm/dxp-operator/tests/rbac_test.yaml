@@ -136,6 +136,19 @@ tests:
                             -   update
                             -   watch
                     path: rules
+            -   contains:
+                    content:
+                        apiGroups:
+                            -   apps
+                        resources:
+                            -   statefulsets
+                        verbs:
+                            -   get
+                            -   list
+                            -   patch
+                            -   update
+                            -   watch
+                    path: rules
         documentSelector:
             path: kind
             value: ClusterRole
