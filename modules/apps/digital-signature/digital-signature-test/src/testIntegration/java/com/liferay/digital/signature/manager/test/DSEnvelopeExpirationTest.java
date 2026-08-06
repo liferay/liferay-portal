@@ -43,7 +43,6 @@ public class DSEnvelopeExpirationTest {
 		JSONObject notificationJSONObject = jsonObject.getJSONObject(
 			"notification");
 
-		Assert.assertNotNull(notificationJSONObject);
 		Assert.assertEquals(
 			"false", notificationJSONObject.getString("useAccountDefaults"));
 
