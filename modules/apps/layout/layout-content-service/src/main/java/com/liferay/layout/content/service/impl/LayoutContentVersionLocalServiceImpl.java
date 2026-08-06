@@ -160,24 +160,30 @@ public class LayoutContentVersionLocalServiceImpl
 		_validateLayout(
 			_layoutLocalService.getLayout(layoutContentVersion.getPlid()));
 
-		if (layoutContentVersion.getStatus() ==
-				WorkflowConstants.STATUS_APPROVED) {
+		if ((layoutContentVersion.getStatus() ==
+				WorkflowConstants.STATUS_APPROVED) &&
+			(layoutContentVersion.getLayoutContentVersionId() ==
+				getLatestApprovedLayoutContentVersionId(
+					layoutContentVersion.getPlid()))) {
 
-			LayoutContentVersion latestApprovedLayoutContentVersion =
-				layoutContentVersionPersistence.fetchByP_S_First(
-					layoutContentVersion.getPlid(),
-					WorkflowConstants.STATUS_APPROVED,
-					LayoutContentVersionVersionComparator.getInstance(false));
-
-			if (layoutContentVersion.getLayoutContentVersionId() ==
-					latestApprovedLayoutContentVersion.
-						getLayoutContentVersionId()) {
-
-				throw new RequiredLayoutContentVersionException();
-			}
+			throw new RequiredLayoutContentVersionException();
 		}
 
 		return layoutContentVersionPersistence.remove(layoutContentVersionId);
+	}
+
+	@Override
+	public long getLatestApprovedLayoutContentVersionId(long plid) {
+		LayoutContentVersion latestApprovedLayoutContentVersion =
+			layoutContentVersionPersistence.fetchByP_S_First(
+				plid, WorkflowConstants.STATUS_APPROVED,
+				LayoutContentVersionVersionComparator.getInstance(false));
+
+		if (latestApprovedLayoutContentVersion == null) {
+			return 0;
+		}
+
+		return latestApprovedLayoutContentVersion.getLayoutContentVersionId();
 	}
 
 	@Override
