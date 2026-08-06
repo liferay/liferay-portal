@@ -56,6 +56,16 @@
 		<td></td>
 	</tr>
 	<tr>
+		<td>RELATIONSHIP_AUTOCOMPLETE</td>
+		<td>//input[@id = 'relationshipAutocomplete']</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>RELATIONSHIP_AUTOCOMPLETE_ITEM</td>
+		<td>//div[contains(@class,'dropdown-menu-select')]//button[contains(@class,'dropdown-item') and contains(.,'${key_optionName}')]</td>
+		<td></td>
+	</tr>
+	<tr>
 		<td>SAVE_CUSTOM_OBJECT</td>
 		<td>//button[contains(text(),'Save')]</td>
 		<td></td>

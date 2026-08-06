@@ -618,14 +618,12 @@ definition {
 			locator1 = "ObjectAdmin#TAB_LABEL_NAME",
 			value1 = ${tabName});
 
-		Click(
-			key_labelName = "Relationship",
-			locator1 = "ObjectAdmin#CLAY_GENERIC_BUTTON");
+		Click(locator1 = "ObjectAdmin#RELATIONSHIP_AUTOCOMPLETE");
 
 		if (isSet(relationshipsLabelName)) {
 			Click(
 				key_optionName = ${relationshipsLabelName},
-				locator1 = "ObjectAdmin#CLAY_GENERIC_DROPDOWN_ITEM");
+				locator1 = "ObjectAdmin#RELATIONSHIP_AUTOCOMPLETE_ITEM");
 		}
 
 		Click(
