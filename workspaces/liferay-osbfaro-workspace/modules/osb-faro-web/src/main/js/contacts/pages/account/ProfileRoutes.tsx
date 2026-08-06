@@ -8,7 +8,6 @@ import React, {lazy, Suspense, useContext} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
 import {ACCOUNTS, Routes, toRoute} from 'shared/util/router';
 import {ChannelContext} from 'shared/context/channel';
-import {ENABLE_ACCOUNT_OVERVIEW} from 'shared/util/feature-flags';
 import {Redirect, Switch, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -22,16 +21,12 @@ const Overview = lazy(
 	() => import(/* webpackChunkName: "Overview" */ './Overview')
 );
 
-const getNavItems = () => [
-	...(ENABLE_ACCOUNT_OVERVIEW
-		? [
-				{
-					exact: true,
-					label: Liferay.Language.get('overview'),
-					route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
-				},
-			]
-		: []),
+const NAV_ITEMS = [
+	{
+		exact: true,
+		label: Liferay.Language.get('overview'),
+		route: Routes.CONTACTS_ACCOUNT_OVERVIEW,
+	},
 	{
 		exact: true,
 		label: Liferay.Language.get('activities'),
@@ -105,7 +100,7 @@ const AccountProfileRoutes = () => {
 				</BasePage.Row>
 
 				<BasePage.Header.NavBar
-					items={getNavItems()}
+					items={NAV_ITEMS}
 					routeParams={{channelId, groupId, id}}
 				/>
 			</BasePage.Header>
@@ -116,16 +111,11 @@ const AccountProfileRoutes = () => {
 						<Redirect
 							exact
 							from={Routes.CONTACTS_ACCOUNT}
-							to={toRoute(
-								ENABLE_ACCOUNT_OVERVIEW
-									? Routes.CONTACTS_ACCOUNT_OVERVIEW
-									: Routes.CONTACTS_ACCOUNT_ACTIVITIES,
-								{
-									channelId: channelId!,
-									groupId: groupId!,
-									id: id!,
-								}
-							)}
+							to={toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, {
+								channelId: channelId!,
+								groupId: groupId!,
+								id: id!,
+							})}
 						/>
 
 						<BundleRouter
@@ -142,14 +132,12 @@ const AccountProfileRoutes = () => {
 							path={Routes.CONTACTS_ACCOUNT_ACTIVITIES}
 						/>
 
-						{ENABLE_ACCOUNT_OVERVIEW && (
-							<BundleRouter
-								componentProps={{account: data}}
-								data={Overview}
-								exact
-								path={Routes.CONTACTS_ACCOUNT_OVERVIEW}
-							/>
-						)}
+						<BundleRouter
+							componentProps={{account: data}}
+							data={Overview}
+							exact
+							path={Routes.CONTACTS_ACCOUNT_OVERVIEW}
+						/>
 
 						<RouteNotFound />
 					</Switch>
