@@ -6,6 +6,7 @@
 package com.liferay.mcp.server.rest.test.util;
 
 import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
+import com.liferay.batch.engine.unit.BatchEngineUnitThreadLocal;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -139,6 +140,46 @@ public class MCPServerTestUtil {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
+	public static ObjectEntry addSystemDataMaskObjectEntry(
+			String detectionRegex, String externalReferenceCode, String name,
+			String replacementValue)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					"L_DATA_MASK", TestPropsValues.getCompanyId());
+
+		String fileName = BatchEngineUnitThreadLocal.getFileName();
+
+		BatchEngineUnitThreadLocal.setFileName(
+			"com.liferay.headless.data.mask.impl_test");
+
+		try {
+			return ObjectEntryLocalServiceUtil.addObjectEntry(
+				0, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				null,
+				HashMapBuilder.<String, Serializable>put(
+					"detectionRegex", detectionRegex
+				).put(
+					"externalReferenceCode", externalReferenceCode
+				).put(
+					"maskType", "system"
+				).put(
+					"name", name
+				).put(
+					"replacementValue", replacementValue
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+		}
+		finally {
+			BatchEngineUnitThreadLocal.setFileName(fileName);
+		}
+	}
+
 	public static void deleteMCPServerProfileDataMaskObjectEntry(
 			String deleteReason, ObjectEntry objectEntry)
 		throws Exception {
@@ -154,6 +195,23 @@ public class MCPServerTestUtil {
 
 		ObjectEntryLocalServiceUtil.deleteObjectEntry(
 			objectEntry.getObjectEntryId());
+	}
+
+	public static void deleteSystemDataMaskObjectEntry(ObjectEntry objectEntry)
+		throws Exception {
+
+		String fileName = BatchEngineUnitThreadLocal.getFileName();
+
+		BatchEngineUnitThreadLocal.setFileName(
+			"com.liferay.headless.data.mask.impl_test");
+
+		try {
+			ObjectEntryLocalServiceUtil.deleteObjectEntry(
+				objectEntry.getObjectEntryId());
+		}
+		finally {
+			BatchEngineUnitThreadLocal.setFileName(fileName);
+		}
 	}
 
 	public static ObjectEntry fetchDataMaskObjectEntry(String name)
