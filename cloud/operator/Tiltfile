@@ -14,6 +14,17 @@ if not context.startswith("k3d-"):
 
 allow_k8s_contexts(context)
 
+docker_build_with_restart(
+    "liferay/liferay-dxp-operator",
+    context="resources/build",
+    dockerfile="Dockerfile",
+    entrypoint="/home/nonroot/manager",
+    live_update=[
+        sync("resources/build/manager", "/home/nonroot/manager"),
+    ],
+    target="dev",
+)
+
 environment_names = [
     "non-production",
     "production",
@@ -73,42 +84,9 @@ def environment_yaml(name):
 	    ]
 	)
 
-
-docker_build_with_restart(
-    "liferay/liferay-dxp-operator",
-    context="resources/build",
-    dockerfile="Dockerfile",
-    entrypoint="/home/nonroot/manager",
-    live_update=[
-        sync("resources/build/manager", "/home/nonroot/manager"),
-    ],
-    target="dev",
-)
-
 for name in environment_names:
 	namespace = "liferay-" + name
 	workload = name + "-liferay"
-
-	k8s_yaml(blob(environment_yaml(name)))
-
-	k8s_resource(
-	    labels=["environments"],
-	    new_name=namespace,
-	    objects=[
-	        name + ":liferayenvironment",
-	        namespace + ":namespace",
-	    ],
-	    resource_deps=[
-	        "liferay-dxp-operator",
-	        "operator-infra",
-	    ],
-	)
-
-	k8s_resource(
-	    labels=["environments"],
-	    resource_deps=[namespace],
-	    workload=workload,
-	)
 
 	cmd_button(
 	    namespace + ":activate",
@@ -131,16 +109,26 @@ for name in environment_names:
 	    text="Activate with a new code",
 	)
 
-local_resource(
-    "operator-build",
-    cmd="./go_build.sh fast",
-    deps=["resources"],
-    ignore=[
-        "resources/api/licensing/v1alpha1/zz_generated.deepcopy.go",
-        "resources/build",
-    ],
-    labels=["operator"],
-)
+	k8s_resource(
+	    labels=["environments"],
+	    new_name=namespace,
+	    objects=[
+	        name + ":liferayenvironment",
+	        namespace + ":namespace",
+	    ],
+	    resource_deps=[
+	        "liferay-dxp-operator",
+	        "operator-infra",
+	    ],
+	)
+
+	k8s_resource(
+	    labels=["environments"],
+	    resource_deps=[namespace],
+	    workload=workload,
+	)
+
+	k8s_yaml(blob(environment_yaml(name)))
 
 k8s_resource(
     labels=["operator"],
@@ -189,4 +177,15 @@ k8s_yaml(
             "securityContext.readOnlyRootFilesystem=false",
         ],
     )
+)
+
+local_resource(
+    "operator-build",
+    cmd="./go_build.sh fast",
+    deps=["resources"],
+    ignore=[
+        "resources/api/licensing/v1alpha1/zz_generated.deepcopy.go",
+        "resources/build",
+    ],
+    labels=["operator"],
 )
