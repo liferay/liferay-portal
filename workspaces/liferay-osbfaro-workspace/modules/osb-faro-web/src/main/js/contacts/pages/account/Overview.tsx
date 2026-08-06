@@ -154,8 +154,14 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 
+			<ClayLayout.Row>
+				<ClayLayout.Col size={12}>
+					<MostEngagedIndividuals />
+				</ClayLayout.Col>
+			</ClayLayout.Row>
+
 			<SectionHeader
-				className="mb-3 mt-4"
+				className="mb-3 mt-2"
 				icon="display-content"
 				title={Liferay.Language.get('engagement-summary')}
 			/>
@@ -176,12 +182,6 @@ const Overview: React.FC<IOverviewProps> = ({account}) => {
 						account={account}
 						className="flex-grow-1"
 					/>
-				</ClayLayout.Col>
-			</ClayLayout.Row>
-
-			<ClayLayout.Row>
-				<ClayLayout.Col size={12}>
-					<MostEngagedIndividuals />
 				</ClayLayout.Col>
 			</ClayLayout.Row>
 		</BasePage.Context.Provider>

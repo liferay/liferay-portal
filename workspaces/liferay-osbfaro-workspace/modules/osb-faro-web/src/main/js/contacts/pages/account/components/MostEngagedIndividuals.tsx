@@ -32,7 +32,7 @@ const MostEngagedIndividuals: React.FC = () => {
 					<ClayLink
 						borderless
 						button
-						className="button-root"
+						className="button-root rounded-lg"
 						displayType="primary"
 						href={toRoute(Routes.CONTACTS_ACCOUNT_PROFILE, {
 							channelId,

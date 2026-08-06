@@ -44,7 +44,7 @@ const AccountInfoBar: React.FC<IAccountInfoBarProps> = ({
 		getAccountInfoDisplayValues({annualRevenue, lifecycleStage});
 
 	return (
-		<Card className="mb-3">
+		<Card className="mb-4">
 			<Card.Body className="align-items-center d-flex flex-row flex-wrap justify-content-between p-3">
 				<Text size={5} weight="semi-bold">
 					{accountName}
