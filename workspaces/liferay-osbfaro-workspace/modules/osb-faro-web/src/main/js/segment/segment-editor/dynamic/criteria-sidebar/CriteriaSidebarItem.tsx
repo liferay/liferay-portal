@@ -12,6 +12,7 @@ const TYPE_ICON_MAP = {
 	[PropertyTypes.Behavior]: 'click',
 	[PropertyTypes.Boolean]: 'check',
 	[PropertyTypes.AccountDate]: 'date',
+	[PropertyTypes.AccountSelectText]: 'text',
 	[PropertyTypes.AccountNumber]: 'integer',
 	[PropertyTypes.AccountText]: 'text',
 	[PropertyTypes.Date]: 'date',
@@ -81,6 +82,7 @@ export const beginDrag = ({
 	}
 	else if (
 		[
+			PropertyTypes.AccountSelectText,
 			PropertyTypes.AccountNumber,
 			PropertyTypes.AccountText,
 			PropertyTypes.Duration,

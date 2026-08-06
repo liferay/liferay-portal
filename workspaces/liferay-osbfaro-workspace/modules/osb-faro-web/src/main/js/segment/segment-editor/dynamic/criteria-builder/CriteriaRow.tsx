@@ -1,4 +1,5 @@
 import AccountInput from '../inputs/AccountInput';
+import AccountSelectInput from '../inputs/AccountSelectInput';
 import BehaviorInput from '../inputs/BehaviorInput';
 import BooleanInput from '../inputs/BooleanInput';
 import ClayIcon from '@clayui/icon';
@@ -459,6 +460,7 @@ class CriteriaRow extends React.Component<
 			[PropertyTypes.Boolean]: BooleanInput,
 			[PropertyTypes.Vocabulary]: VocabularyInput,
 			[PropertyTypes.AccountDate]: AccountInput,
+			[PropertyTypes.AccountSelectText]: AccountSelectInput,
 			[PropertyTypes.AccountNumber]: AccountInput,
 			[PropertyTypes.AccountText]: AccountInput,
 			[PropertyTypes.Date]: DateInput,

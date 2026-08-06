@@ -92,6 +92,7 @@ export const getDefaultValue = (property: Property): any => {
 					],
 				},
 			]);
+		case PropertyTypes.AccountSelectText:
 		case PropertyTypes.AccountNumber:
 		case PropertyTypes.AccountText:
 		case PropertyTypes.OrganizationSelectText:

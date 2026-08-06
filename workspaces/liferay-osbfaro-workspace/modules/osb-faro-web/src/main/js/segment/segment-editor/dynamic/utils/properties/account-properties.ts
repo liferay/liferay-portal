@@ -68,6 +68,11 @@ const ACCOUNT_PROPERTIES = List(
 			type: PropertyTypes.AccountDate,
 		},
 		{
+			label: Liferay.Language.get('lifecycle-stage'),
+			name: 'lifecycleStatus',
+			type: PropertyTypes.AccountSelectText,
+		},
+		{
 			label: Liferay.Language.get('number-of-employees'),
 			name: 'numberOfEmployees',
 			type: PropertyTypes.AccountNumber,
