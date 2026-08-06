@@ -17,7 +17,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Christian Moura
  */
 @Component(
-	property = "configuration.pid=com.liferay.portal.security.audit.configuration.AuditConfiguration",
+	property = {
+		"configuration.pid=com.liferay.portal.security.audit.configuration.AuditConfiguration",
+		"configuration.pid=com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration"
+	},
 	service = ConfigurationVisibilityController.class
 )
 public class AuditConfigurationVisibilityController
