@@ -191,8 +191,7 @@ public class AssetListFiltersUtilTest {
 			"nestedFieldArray.value_integer", integerFieldValue,
 			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
-				_getFilterJSONObject(
-					"eq", integerFieldName, integerFieldValue),
+				_getFilterJSONObject("eq", integerFieldName, integerFieldValue),
 				integerFieldName));
 		_assertTermQuery(
 			"nestedFieldArray.value_integer", integerFieldValue,
@@ -300,8 +299,7 @@ public class AssetListFiltersUtilTest {
 			"nestedFieldArray.value_keyword", "*alpha*",
 			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
-				_getFilterJSONObject(
-					"contains", keywordTextFieldName, "Alpha"),
+				_getFilterJSONObject("contains", keywordTextFieldName, "Alpha"),
 				keywordTextFieldName));
 		_assertWildcardQuery(
 			"nestedFieldArray.value_keyword", "*alpha*",
@@ -371,32 +369,28 @@ public class AssetListFiltersUtilTest {
 			null,
 			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
-				_getFilterJSONObject(
-					"ge", integerFieldName, integerFieldValue),
+				_getFilterJSONObject("ge", integerFieldName, integerFieldValue),
 				integerFieldName));
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", false, false, integerFieldValue,
 			null,
 			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
-				_getFilterJSONObject(
-					"gt", integerFieldName, integerFieldValue),
+				_getFilterJSONObject("gt", integerFieldName, integerFieldValue),
 				integerFieldName));
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", false, true, null,
 			integerFieldValue,
 			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
-				_getFilterJSONObject(
-					"le", integerFieldName, integerFieldValue),
+				_getFilterJSONObject("le", integerFieldName, integerFieldValue),
 				integerFieldName));
 		_assertTermRangeQuery(
 			"nestedFieldArray.value_integer", false, false, null,
 			integerFieldValue,
 			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
-				_getFilterJSONObject(
-					"lt", integerFieldName, integerFieldValue),
+				_getFilterJSONObject("lt", integerFieldName, integerFieldValue),
 				integerFieldName));
 
 		String longIntegerFieldName = RandomTestUtil.randomString();
@@ -596,8 +590,7 @@ public class AssetListFiltersUtilTest {
 
 		Query notContainsQuery = _assertNestedQuery(
 			BooleanClauseOccur.MUST_NOT,
-			_getFilterJSONObject(
-				"not-contains", textFieldName, textFieldValue),
+			_getFilterJSONObject("not-contains", textFieldName, textFieldValue),
 			textFieldName);
 
 		Assert.assertTrue(
