@@ -255,7 +255,7 @@ definition {
 
 				if (isSet(enableShowFiles)) {
 					Check.checkNotVisible(
-						key_toggleSwitchLabel = "Show Files in Documents and Media",
+						key_toggleSwitchLabel = "Show Uploaded Files in Library",
 						locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
 				}
 			}
