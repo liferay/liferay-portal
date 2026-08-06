@@ -13,7 +13,16 @@ definition {
 			specificURL = "http://localhost:8080",
 			userEmailAddress = "test@liferay.com");
 
-		SearchAdministration.openIndexActions();
+		TestUtils.hardRefresh();
+
+		ApplicationsMenu.gotoPortlet(
+			category = "Configuration",
+			panel = "Control Panel",
+			portlet = "Search");
+
+		Click(
+			key_navItem = "Index Actions",
+			locator1 = "NavBar#NAV_ITEM_LINK");
 
 		SearchAdministration.startReindex(action = "All Search Indexes");
 
