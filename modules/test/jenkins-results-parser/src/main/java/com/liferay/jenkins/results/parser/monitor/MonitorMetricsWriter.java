@@ -62,8 +62,8 @@ public class MonitorMetricsWriter {
 		prometheusTextFormatWriter.write(
 			byteArrayOutputStream,
 			MetricSnapshots.of(
-				_newCheckLastRunTimestampSnapshot(), _newCheckStatusSnapshot(),
-				_newHeartbeatTimestampSnapshot()),
+				_newHeartbeatTimestampSnapshot(),
+				_newLastRunTimestampSnapshot(), _newStatusSnapshot()),
 			EscapingScheme.DEFAULT);
 
 		return byteArrayOutputStream.toString("UTF-8");
@@ -87,7 +87,7 @@ public class MonitorMetricsWriter {
 		}
 
 		return Labels.of(
-			"check", monitor.getId(), "severity",
+			"monitor", monitor.getId(), "severity",
 			severityName.toLowerCase(Locale.ENGLISH), "type", type);
 	}
 
@@ -119,38 +119,6 @@ public class MonitorMetricsWriter {
 		return status.getSeverityRank();
 	}
 
-	private GaugeSnapshot _newCheckLastRunTimestampSnapshot() {
-		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
-
-		gaugeSnapshotBuilder.help(
-			"Unix timestamp of the last check run, 0 if never run");
-		gaugeSnapshotBuilder.name("monitor_check_last_run_timestamp_seconds");
-
-		for (Monitor monitor : _monitors) {
-			gaugeSnapshotBuilder.dataPoint(
-				_newGaugeDataPointSnapshot(
-					monitor, _getLastRunTimestampSeconds(monitor)));
-		}
-
-		return gaugeSnapshotBuilder.build();
-	}
-
-	private GaugeSnapshot _newCheckStatusSnapshot() {
-		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
-
-		gaugeSnapshotBuilder.help(
-			"Monitor status severity rank, 0 OK, 1 UNKNOWN, 2 WARN, 3 " +
-				"CRITICAL");
-		gaugeSnapshotBuilder.name("monitor_check_status");
-
-		for (Monitor monitor : _monitors) {
-			gaugeSnapshotBuilder.dataPoint(
-				_newGaugeDataPointSnapshot(monitor, _getSeverityRank(monitor)));
-		}
-
-		return gaugeSnapshotBuilder.build();
-	}
-
 	private GaugeSnapshot.GaugeDataPointSnapshot _newGaugeDataPointSnapshot(
 		Monitor monitor, double value) {
 
@@ -178,6 +146,38 @@ public class MonitorMetricsWriter {
 			JenkinsResultsParserUtil.getCurrentTimeMillis() / 1000);
 
 		gaugeSnapshotBuilder.dataPoint(gaugeDataPointSnapshotBuilder.build());
+
+		return gaugeSnapshotBuilder.build();
+	}
+
+	private GaugeSnapshot _newLastRunTimestampSnapshot() {
+		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
+
+		gaugeSnapshotBuilder.help(
+			"Unix timestamp of the last monitor run, 0 if never run");
+		gaugeSnapshotBuilder.name("monitor_last_run_timestamp_seconds");
+
+		for (Monitor monitor : _monitors) {
+			gaugeSnapshotBuilder.dataPoint(
+				_newGaugeDataPointSnapshot(
+					monitor, _getLastRunTimestampSeconds(monitor)));
+		}
+
+		return gaugeSnapshotBuilder.build();
+	}
+
+	private GaugeSnapshot _newStatusSnapshot() {
+		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
+
+		gaugeSnapshotBuilder.help(
+			"Monitor status severity rank, 0 OK, 1 UNKNOWN, 2 WARN, 3 " +
+				"CRITICAL");
+		gaugeSnapshotBuilder.name("monitor_status");
+
+		for (Monitor monitor : _monitors) {
+			gaugeSnapshotBuilder.dataPoint(
+				_newGaugeDataPointSnapshot(monitor, _getSeverityRank(monitor)));
+		}
 
 		return gaugeSnapshotBuilder.build();
 	}

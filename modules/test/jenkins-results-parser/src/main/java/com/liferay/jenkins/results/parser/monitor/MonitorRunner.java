@@ -122,7 +122,7 @@ public class MonitorRunner {
 	private MonitorResult _newUnknownMonitorResult(String message) {
 		return new MonitorResult(
 			message, null, MonitorResult.Status.UNKNOWN,
-			System.currentTimeMillis());
+			JenkinsResultsParserUtil.getCurrentTimeMillis());
 	}
 
 	private MonitorResult _resolveMonitorResult(
