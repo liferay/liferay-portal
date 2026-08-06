@@ -369,13 +369,13 @@ public class AssetCategoriesNavigationDisplayContext {
 		Map<String, Queue<String>> assetVocabularyExternalReferenceCodesMap,
 		String[] groupExternalReferenceCodes) {
 
-		Map<String, Integer> countsMap = new HashMap<>();
+		Map<String, Integer> counts = new HashMap<>();
 
 		for (String groupExternalReferenceCode : groupExternalReferenceCodes) {
 			int count = GetterUtil.getInteger(
-				countsMap.get(groupExternalReferenceCode));
+				counts.get(groupExternalReferenceCode));
 
-			countsMap.put(groupExternalReferenceCode, count + 1);
+			counts.put(groupExternalReferenceCode, count + 1);
 		}
 
 		for (Map.Entry<String, Queue<String>> entry :
@@ -385,7 +385,7 @@ public class AssetCategoriesNavigationDisplayContext {
 				entry.getValue();
 
 			if (assetVocabularyExternalReferenceCodes.size() !=
-					GetterUtil.getInteger(countsMap.get(entry.getKey()))) {
+					GetterUtil.getInteger(counts.get(entry.getKey()))) {
 
 				return false;
 			}
