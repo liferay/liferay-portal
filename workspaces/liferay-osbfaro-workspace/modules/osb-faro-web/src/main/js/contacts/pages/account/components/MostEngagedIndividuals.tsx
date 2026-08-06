@@ -27,22 +27,24 @@ const MostEngagedIndividuals: React.FC = () => {
 				<IndividualsDataSet preview />
 			</Card.Body>
 
-			<Card.Footer className="d-flex justify-content-end">
-				<ClayLink
-					borderless
-					button
-					className="button-root"
-					displayType="primary"
-					href={toRoute(Routes.CONTACTS_ACCOUNT_PROFILE, {
-						channelId,
-						groupId,
-						id,
-					})}
-					small
-				>
-					{Liferay.Language.get('view-all')}
-				</ClayLink>
-			</Card.Footer>
+			{id && (
+				<Card.Footer className="d-flex justify-content-end">
+					<ClayLink
+						borderless
+						button
+						className="button-root"
+						displayType="primary"
+						href={toRoute(Routes.CONTACTS_ACCOUNT_PROFILE, {
+							channelId,
+							groupId,
+							id,
+						})}
+						small
+					>
+						{Liferay.Language.get('view-all')}
+					</ClayLink>
+				</Card.Footer>
+			)}
 		</Card>
 	);
 };

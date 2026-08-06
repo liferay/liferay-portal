@@ -222,7 +222,7 @@ describe('getVisitorType', () => {
 	});
 
 	it('should read a single session as a first time visitor', () => {
-		expect(getVisitorType(1).label).toBe('First-Time');
+		expect(getVisitorType(1).label).toBe('First Time');
 	});
 
 	it('should read more than one session as a returning visitor', () => {
