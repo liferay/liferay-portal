@@ -12,7 +12,6 @@ import com.liferay.batch.planner.rest.resource.v1_0.AssetLibraryScopeResource;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -41,43 +40,34 @@ public class AssetLibraryScopeResourceImpl
 				String internalClassNameKey, Boolean export)
 		throws Exception {
 
-		return Page.of(
-			_getAssetLibraryScopes(
-				EntityScopesUtil.getEntityScopes(
-					contextCompany.getCompanyId(),
-					GetterUtil.getBoolean(export), internalClassNameKey,
-					_objectDefinitionLocalService, _openAPIYAMLProvider)));
-	}
-
-	private List<AssetLibraryScope> _getAssetLibraryScopes(
-			List<String> entityScopes)
-		throws Exception {
+		List<String> entityScopes = EntityScopesUtil.getEntityScopes(
+			contextCompany.getCompanyId(), GetterUtil.getBoolean(export),
+			internalClassNameKey, _objectDefinitionLocalService,
+			_openAPIYAMLProvider);
 
 		if (!entityScopes.contains("depot")) {
-			return Collections.emptyList();
+			return Page.of(Collections.emptyList());
 		}
 
-		return _toAssetLibraryScopes(
+		return Page.of(
 			transform(
-				ListUtil.concat(
-					_depotEntryService.getDepotEntryGroupIds(
-						contextCompany.getCompanyId(), contextUser.getUserId(),
-						DepotConstants.TYPE_ASSET_LIBRARY),
-					_depotEntryService.getDepotEntryGroupIds(
-						contextCompany.getCompanyId(), contextUser.getUserId(),
-						DepotConstants.TYPE_SPACE)),
-				_groupService::getGroup));
-	}
-
-	private List<AssetLibraryScope> _toAssetLibraryScopes(List<Group> groups) {
-		return transform(
-			groups,
-			group -> new AssetLibraryScope() {
-				{
-					setLabel(group::getDescriptiveName);
-					setValue(group::getGroupId);
-				}
-			});
+				transform(
+					ListUtil.concat(
+						_depotEntryService.getDepotEntryGroupIds(
+							contextCompany.getCompanyId(),
+							contextUser.getUserId(),
+							DepotConstants.TYPE_ASSET_LIBRARY),
+						_depotEntryService.getDepotEntryGroupIds(
+							contextCompany.getCompanyId(),
+							contextUser.getUserId(),
+							DepotConstants.TYPE_SPACE)),
+					_groupService::getGroup),
+				group -> new AssetLibraryScope() {
+					{
+						setLabel(group::getDescriptiveName);
+						setValue(group::getGroupId);
+					}
+				}));
 	}
 
 	@Reference
