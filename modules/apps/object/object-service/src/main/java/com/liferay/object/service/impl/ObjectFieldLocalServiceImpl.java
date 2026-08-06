@@ -1687,7 +1687,8 @@ public class ObjectFieldLocalServiceImpl
 				newObjectField, objectDefinition, objectFieldBusinessType,
 				objectFieldSettings, oldObjectField);
 
-			if (businessType.equals(
+			if (!objectDefinition.isUnmodifiableSystemObject() &&
+				businessType.equals(
 					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
 				addOrUpdateObjectFieldPLOEntries(newObjectField);
