@@ -55,8 +55,7 @@ public class JobHealthMonitor implements Monitor {
 		catch (Exception exception) {
 			return new MonitorResult(
 				JenkinsResultsParserUtil.combine(
-					"Unable to read ", _jobURL, ": ",
-					String.valueOf(exception.getMessage())),
+					"Unable to read ", _jobURL, ": ", exception.getMessage()),
 				null, MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
