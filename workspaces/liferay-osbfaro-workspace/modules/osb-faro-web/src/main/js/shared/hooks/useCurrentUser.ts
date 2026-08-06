@@ -1,4 +1,5 @@
 import {fetchCurrentUser} from 'shared/actions/users';
+import {resolveLocale, setLocale} from 'shared/util/locale';
 import {useDispatch, useSelector} from 'react-redux';
 import {useEffect} from 'react';
 import {User} from 'shared/util/records';
@@ -27,6 +28,10 @@ export const useFetchCurrentUser = (initialGroupId: string = '0') => {
 
 		dispatch(fetchCurrentUser(groupId));
 	}, [initialGroupId]);
+
+	useEffect(() => {
+		setLocale(resolveLocale(data.languageId));
+	}, [data.languageId]);
 
 	return {
 		data,
