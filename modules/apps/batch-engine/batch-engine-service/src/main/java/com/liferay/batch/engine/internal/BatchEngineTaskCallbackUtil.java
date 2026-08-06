@@ -51,7 +51,6 @@ public class BatchEngineTaskCallbackUtil {
 
 			options.addHeader(
 				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-
 			options.setBody(
 				_objectMapper.writeValueAsString(
 					Collections.singletonMap(id, executeStatus)),
