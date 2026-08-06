@@ -257,6 +257,8 @@ definition {
 
 	@summary = "Default summary"
 	macro deleteCreatedDM() {
+		DigitalSignature.waitForListViewLoad();
+
 		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
 		PortletEntry.selectAll();

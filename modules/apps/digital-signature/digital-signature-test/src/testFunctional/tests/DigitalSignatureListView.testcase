@@ -218,6 +218,8 @@ definition {
 		}
 
 		task ("Then the user can see that an envelope have more than one recipient on list") {
+			DigitalSignature.waitForListViewLoad();
+
 			Refresh();
 
 			DigitalSignature.viewMoreRecipient();
@@ -225,6 +227,8 @@ definition {
 			DigitalSignature.deleteEnvelope(envelopeName = "Poshi Test HaveMoreRecipientsThanOne");
 
 			AssertElementNotPresent(locator1 = "DigitalSignatureListView#DIGITAL_SIGNATURE_RECIPIENTS_BADGE");
+
+			DigitalSignature.waitForListViewLoad();
 
 			DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
 
