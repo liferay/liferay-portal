@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleService;
@@ -33,7 +34,6 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleService;
 import com.liferay.portal.kernel.service.UserGroupService;
 import com.liferay.portal.kernel.service.UserService;
-import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -245,17 +245,18 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if (permissionChecker.isGroupAdmin(groupId) ||
-			GroupPermissionUtil.contains(
-				permissionChecker, groupId, ActionKeys.ASSIGN_MEMBERS) ||
-			GroupPermissionUtil.contains(
-				permissionChecker, groupId, ActionKeys.ASSIGN_USER_ROLES)) {
-
+		if (permissionChecker.isGroupAdmin(groupId)) {
 			return;
 		}
 
-		throw new PrincipalException.MustHavePermission(
-			contextUser.getUserId(), ActionKeys.ASSIGN_MEMBERS);
+		if (!_groupModelResourcePermission.contains(
+				permissionChecker, groupId, ActionKeys.ASSIGN_MEMBERS) &&
+			!_groupModelResourcePermission.contains(
+				permissionChecker, groupId, ActionKeys.ASSIGN_USER_ROLES)) {
+
+			throw new PrincipalException.MustHavePermission(
+				contextUser.getUserId(), ActionKeys.ASSIGN_MEMBERS);
+		}
 	}
 
 	private Group _getGroup(String externalReferenceCode) throws Exception {
@@ -308,6 +309,11 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 			}
 		};
 	}
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.model.Group)"
+	)
+	private ModelResourcePermission<Group> _groupModelResourcePermission;
 
 	@Reference
 	private GroupService _groupService;
