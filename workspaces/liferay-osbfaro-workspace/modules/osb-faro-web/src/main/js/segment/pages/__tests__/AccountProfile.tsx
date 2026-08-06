@@ -8,7 +8,7 @@ import {mockChannelContext} from 'test/mock-channel-context';
 import {mockSegment} from 'test/data';
 import {Provider} from 'react-redux';
 import {Segment} from 'shared/util/records';
-import {SegmentCategories} from 'shared/util/constants';
+import {SegmentCategories, SegmentStates} from 'shared/util/constants';
 import {StaticRouter} from 'react-router';
 
 jest.unmock('react-dom');
@@ -91,6 +91,32 @@ describe('AccountProfile', () => {
 		expect(screen.getByRole('heading', {name: 'Seattle0'})).toBeTruthy();
 		expect(screen.getByText('Account Batch Segment')).toBeTruthy();
 		expect(screen.getByText('ERC: my-erc')).toBeTruthy();
+	});
+
+	it('should warn that the membership is still being processed', () => {
+		renderAccountProfile({state: SegmentStates.InProgress});
+
+		expect(
+			screen.getByText(
+				'Segment data is processing, please check back later.'
+			)
+		).toBeTruthy();
+	});
+
+	it('should warn that the segment is disabled', () => {
+		renderAccountProfile({state: SegmentStates.Disabled});
+
+		expect(
+			screen.getByText(
+				'This segment is disabled because some criteria has been affected by removal of a data source. To continue using this segment please update the criteria.'
+			)
+		).toBeTruthy();
+	});
+
+	it('should not show any alert when the segment is ready', () => {
+		const {container} = renderAccountProfile({state: SegmentStates.Ready});
+
+		expect(container.querySelector('.alert')).toBeNull();
 	});
 
 	it('should link to the segment editor', () => {

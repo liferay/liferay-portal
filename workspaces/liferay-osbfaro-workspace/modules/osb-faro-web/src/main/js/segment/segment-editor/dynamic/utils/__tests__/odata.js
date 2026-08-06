@@ -712,6 +712,20 @@ describe('odata', () => {
 			testConversionToAndFrom(testQuery);
 		});
 
+		it('should be able to translate a query string with a lifecycle stage to map and back to string', () => {
+			const testQuery =
+				"(accounts.filter(filter='(lifecycleStatus eq ''1002'')'))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
+		it('should be able to translate a query string without a lifecycle stage to map and back to string', () => {
+			const testQuery =
+				"((not accounts.filter(filter='(lifecycleStatus eq ''1002'')')))";
+
+			testConversionToAndFrom(testQuery);
+		});
+
 		it('should be able to translate a query string with "not accounts.filter" to map and back to string', () => {
 			const testQuery =
 				"((not accounts.filter(filter='(activityKey eq ''Page#pageViewed#348853654381438580'')')))";
