@@ -6,20 +6,12 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {applyFDSSelectionFilter} from '../../../../utils/applyFDSSelectionFilter';
 import getRandomString from '../../../../utils/getRandomString';
 import {cmsPagesTest} from '../fixtures/cmsPagesTest';
 
-const test = mergeTests(
-	cmsPagesTest,
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
 
 test(
 	'Filtering the Files section by an image extension excludes non-image files',

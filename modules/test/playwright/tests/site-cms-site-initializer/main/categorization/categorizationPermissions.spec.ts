@@ -6,7 +6,6 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../../helpers/ApiHelpers';
 import getRandomString from '../../../../utils/getRandomString';
@@ -14,13 +13,7 @@ import {performLoginViaApi} from '../../../../utils/performLogin';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
 import {registerUserCredentials} from '../spaces/helpers/roleMembership';
 
-const test = mergeTests(
-	dataApiHelpersTest,
-	featureFlagsTest({
-		'LPD-17564': {enabled: true},
-	}),
-	loginTest()
-);
+const test = mergeTests(dataApiHelpersTest, loginTest());
 
 async function createSpaceUserWithRole(
 	apiHelpers: DataApiHelpers,
