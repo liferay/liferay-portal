@@ -1,5 +1,6 @@
 import Item from './Item';
 import React from 'react';
+import {formatPercent, toLocale} from 'shared/util/numbers';
 
 export type CohortHeatMapType = {
 	colorHex: string | null;
@@ -28,12 +29,12 @@ export default class CohortChart extends React.Component<ICohortChartProps> {
 				<th />
 
 				<th className="visitors table-column-text-end">
-					{aggregatedVisitorsCount.toLocaleString()}
+					{toLocale(aggregatedVisitorsCount)}
 				</th>
 
 				{aggregatedCounts.map(({retention}, i) => (
 					<th className="table-column-text-center" key={i}>
-						{`${retention.toFixed(2)}%`}
+						{formatPercent(retention)}
 					</th>
 				))}
 			</tr>
@@ -70,7 +71,7 @@ export default class CohortChart extends React.Component<ICohortChartProps> {
 				<td className="interval">{dateLabels[rowIndex]}</td>
 
 				<td className="visitors table-column-text-end">
-					{rowVisitorsCount.toLocaleString()}
+					{toLocale(rowVisitorsCount)}
 				</td>
 
 				{row.map(

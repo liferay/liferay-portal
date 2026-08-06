@@ -6,7 +6,7 @@ import React, {ReactNode} from 'react';
 import {getIcon, getStatsColor} from 'shared/util/metrics';
 import {isNil} from 'lodash';
 import {Text} from '@clayui/core';
-import {toRounded} from 'shared/util/numbers';
+import {formatPercent} from 'shared/util/numbers';
 import {TrendClassification} from 'segment/types';
 
 interface IMetricCardTrend {
@@ -95,10 +95,10 @@ const MetricCard: React.FC<IMetricCardProps> = ({
 								key="percentage"
 								style={{color: percentageColor}}
 							>
-								{`${toRounded(
+								{formatPercent(
 									Math.abs(trend?.percentage ?? 0),
 									1
-								)}%`}
+								)}
 							</span>
 						)}
 					</div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import {BreakdownDataItem} from 'event-analysis/utils/types';
-import {get, round} from 'lodash';
+import {formatPercent} from 'shared/util/numbers';
+import {get} from 'lodash';
 import {getPercentage} from 'shared/util/util';
 
 interface IPercentOfCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -25,10 +26,9 @@ const PercentOfCell: React.FC<IPercentOfCellProps> = ({
 		<>
 			<ul className="percentage-column">
 				{data.map(({value}, i) => (
-					<li key={i}>{`${round(
-						getPercentage(value, totalValue),
-						2
-					)}%`}</li>
+					<li key={i}>
+						{formatPercent(getPercentage(value, totalValue))}
+					</li>
 				))}
 			</ul>
 
@@ -38,10 +38,9 @@ const PercentOfCell: React.FC<IPercentOfCellProps> = ({
 						events[1].breakdownItems ?? [],
 						compareToPrevious
 					).map(({value}, i) => (
-						<li key={i}>{`${round(
-							getPercentage(value, totalValue),
-							2
-						)}%`}</li>
+						<li key={i}>
+							{formatPercent(getPercentage(value, totalValue))}
+						</li>
 					))}
 				</ul>
 			)}

@@ -12,19 +12,8 @@ import {formatUTCDate} from 'shared/util/date';
 import {Map} from 'immutable';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
-
-function formatCurrency(
-	currencyCode: string | null | undefined,
-	value: string
-): string {
-	if (!currencyCode) {
-		return new Intl.NumberFormat().format(parseFloat(value));
-	}
-
-	return new Intl.NumberFormat(undefined, {
-		currency: currencyCode,
-	}).format(parseFloat(value));
-}
+import {toCurrency} from 'shared/util/numbers';
+import {useLocale} from 'shared/hooks/useLocale';
 
 const accountMembershipConfig: DataDrivenConfig = [
 	{
@@ -97,6 +86,8 @@ const AccountMembership: React.FC<IAccountMembershipProps> = ({
 	loading = false,
 	showEmptyState = false,
 }) => {
+	const locale = useLocale();
+
 	const getValue = (key: string): string | undefined => {
 		const data = accountData?.get(key);
 
@@ -109,7 +100,11 @@ const AccountMembership: React.FC<IAccountMembershipProps> = ({
 		}
 
 		if (key === 'annualRevenue') {
-			return formatCurrency(accountData?.get('currencyCode'), data);
+			return toCurrency(
+				parseFloat(data),
+				accountData?.get('currencyCode'),
+				locale
+			);
 		}
 
 		return data;

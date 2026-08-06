@@ -11,7 +11,7 @@ import {
 } from 'contacts/pages/account/utils/constants';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {sub} from 'shared/util/lang';
-import {toRounded, toThousands} from 'shared/util/numbers';
+import {formatPercent, toRounded, toThousands} from 'shared/util/numbers';
 import {useLifecycle} from 'lifecycle/context/LifecycleContext';
 
 const EMPTY_STAGES: ILifecycleStage[] = [
@@ -114,9 +114,9 @@ const StageMetrics = ({
 				<div className="mt-3 text-secondary">
 					{averageDaysInStage != 0 ? (
 						<>
-							<span className="mr-4">{`${averageDaysInStage.toFixed(
-								2
-							)}`}</span>
+							<span className="mr-4">
+								{toRounded(averageDaysInStage, 2)}
+							</span>
 							<span>
 								{Liferay.Language.get('avg.-day').toLowerCase()}
 							</span>
@@ -168,7 +168,7 @@ const StageProgression = ({
 		<div className="align-items-center align-items-lg-stretch border-light col-12 col-lg-auto d-flex flex-lg-column flex-row justify-content-center justify-content-lg-start px-2 py-3 stage-progression">
 			<Label className="mt-lg-auto p-0" displayType="info">
 				<span className="inline-item ml-1">
-					{`${percentage.toFixed(0)}%`}
+					{formatPercent(percentage, 0)}
 					<span className="d-lg-none ml-1">
 						{Liferay.Language.get(
 							'conversion-to-next-stage'

@@ -22,6 +22,7 @@ import {Modal} from 'shared/types';
 import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 import {validateSegmentInputs} from './utils/utils';
 
 interface IToolbarProps {
@@ -213,7 +214,7 @@ export class Toolbar extends React.Component<IToolbarProps, IToolbarState> {
 		const totalMembersCount = countLoading ? (
 			<Loading key="LOADING" />
 		) : (
-			membersCount.toLocaleString()
+			toLocale(membersCount)
 		);
 
 		const isAccountSegment = segmentCategory === SegmentCategories.Account;

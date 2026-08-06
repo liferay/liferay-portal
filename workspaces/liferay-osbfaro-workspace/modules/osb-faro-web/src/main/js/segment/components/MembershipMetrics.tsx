@@ -22,7 +22,7 @@ import {
 } from 'segment/types';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {sub} from 'shared/util/lang';
-import {toRounded, toThousands} from 'shared/util/numbers';
+import {formatPercent, toRounded, toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -261,12 +261,12 @@ export const CardSection: React.FC<ICardSectionProps> = ({
 																TrendClassification.Neutral,
 														}}
 													>
-														{`${toRounded(
+														{formatPercent(
 															data?.trend
 																?.percentage ??
 																0,
 															2
-														)}%`}
+														)}
 													</span>,
 													30,
 												],

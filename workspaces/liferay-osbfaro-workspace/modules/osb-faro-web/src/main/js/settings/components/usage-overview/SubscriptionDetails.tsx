@@ -9,6 +9,7 @@ import {
 	PLANS,
 } from 'shared/util/subscriptions';
 import {Text} from '@clayui/core';
+import {toLocale} from 'shared/util/numbers';
 
 interface IItemRendererProps {
 	name: React.ReactNode;
@@ -65,16 +66,20 @@ export const SubscriptionDetails = ({
 
 				<ItemRenderer
 					name={Liferay.Language.get('individuals')}
-					value={(PLANS as {[key: string]: any})[planType].limits[
-						INDIVIDUALS
-					].toLocaleString()}
+					value={toLocale(
+						(PLANS as {[key: string]: any})[planType].limits[
+							INDIVIDUALS
+						]
+					)}
 				/>
 
 				<ItemRenderer
 					name={Liferay.Language.get('page-views')}
-					value={(PLANS as {[key: string]: any})[planType].limits[
-						PAGEVIEWS
-					].toLocaleString()}
+					value={toLocale(
+						(PLANS as {[key: string]: any})[planType].limits[
+							PAGEVIEWS
+						]
+					)}
 				/>
 
 				<ItemRenderer

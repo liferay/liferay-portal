@@ -31,6 +31,7 @@ import {getSafeDecodedURIComponent} from './util';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {SegmentTypes} from './constants';
 import {sub} from 'shared/util/lang';
+import {formatPercentFromRatio, toLocale, toRounded} from 'shared/util/numbers';
 
 type ChannelGroupParams = {
 	channelId: string | undefined;
@@ -51,7 +52,7 @@ export const accountsListColumns = {
 	activitiesCount: {
 		accessor: 'activitiesCount',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('total-activities'),
 	},
 	emailAddress: {
@@ -83,7 +84,7 @@ export const accountsListColumns = {
 	individualCount: {
 		accessor: 'individualCount',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('individuals'),
 	},
 	name: {
@@ -105,7 +106,7 @@ export const activityAssetsListColumns = {
 	commentCount: {
 		accessor: 'count',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('comments'),
 	},
 	downloadCount: {
@@ -134,13 +135,13 @@ export const activityAssetsListColumns = {
 	submissionCount: {
 		accessor: 'count',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('submissions'),
 	},
 	viewCount: {
 		accessor: 'count',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('views'),
 	},
 };
@@ -470,7 +471,7 @@ export const compositionListColumns = {
 		accessor: 'count',
 		className: 'table-column-text-end',
 		dataFormatter: (data: number) =>
-			`${((data / totalCount) * 100).toFixed(2)}%`,
+			formatPercentFromRatio(data / totalCount),
 		label: sub(Liferay.Language.get('percent-of-x'), [metricName]),
 		sortable: false,
 		title: true,
@@ -706,7 +707,7 @@ export const individualsListColumns = {
 	activitiesCount: {
 		accessor: 'activitiesCount',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('total-activities'),
 	},
 	email: {
@@ -841,8 +842,7 @@ export const interestListColumns = {
 	}) => ({
 		accessor: 'count',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number) =>
-			`${((data / total) * 100).toFixed(2)}%`,
+		dataFormatter: (data: number) => formatPercentFromRatio(data / total),
 		label: sub(Liferay.Language.get('percent-of-x'), [metricName]),
 		sortable: false,
 		title: true,
@@ -869,7 +869,7 @@ export const metricsListColumns = {
 	abandonmentsMetric: {
 		accessor: 'abandonmentsMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number) => `${(data * 100).toFixed(2)}%`,
+		dataFormatter: (data: number) => formatPercentFromRatio(data),
 		label: Liferay.Language.get('abandonment'),
 	},
 	avgTimeOnPageMetric: {
@@ -881,13 +881,13 @@ export const metricsListColumns = {
 	bounceRateMetric: {
 		accessor: 'bounceRateMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number) => `${(data * 100).toFixed(1)}%`,
+		dataFormatter: (data: number) => formatPercentFromRatio(data),
 		label: Liferay.Language.get('bounce-rate'),
 	},
 	commentsMetric: {
 		accessor: 'commentsMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('comments'),
 	},
 	completionTimeMetric: {
@@ -899,19 +899,19 @@ export const metricsListColumns = {
 	downloadsMetric: {
 		accessor: 'downloadsMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('downloads'),
 	},
 	entrancesMetric: {
 		accessor: 'entrancesMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('entrances'),
 	},
 	exitRateMetric: {
 		accessor: 'exitRateMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number) => `${(data * 100).toFixed(2)}%`,
+		dataFormatter: (data: number) => formatPercentFromRatio(data),
 		label: Liferay.Language.get('exit-percentage'),
 	},
 	getCreateDate: (timeZoneId: string) => ({
@@ -996,7 +996,7 @@ export const metricsListColumns = {
 	impressionMadeMetric: {
 		accessor: 'impressionMadeMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('impressions'),
 	},
 	modifiedDate: {
@@ -1028,7 +1028,7 @@ export const metricsListColumns = {
 	ratingsMetric: {
 		accessor: 'ratingsMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number) => `${(data * 10).toFixed(2)}/10`,
+		dataFormatter: (data: number) => `${toRounded(data * 10, 2)}/10`,
 		label: Liferay.Language.get('rating'),
 	},
 	readingTimeMetric: {
@@ -1040,19 +1040,19 @@ export const metricsListColumns = {
 	submissionsMetric: {
 		accessor: 'submissionsMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('submissions'),
 	},
 	viewsMetric: {
 		accessor: 'viewsMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('views'),
 	},
 	visitorsMetric: {
 		accessor: 'visitorsMetric',
 		className: 'table-column-text-end',
-		dataFormatter: (data: number | string) => data.toLocaleString(),
+		dataFormatter: (data: number | string) => toLocale(Number(data)),
 		label: Liferay.Language.get('unique-visitors'),
 	},
 };

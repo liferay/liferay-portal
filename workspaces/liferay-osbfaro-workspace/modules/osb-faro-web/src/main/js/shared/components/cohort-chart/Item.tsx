@@ -3,6 +3,7 @@ import React, {useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 import {CohortHeatMapType} from './index';
 import {sub} from 'shared/util/lang';
+import {formatPercent, toLocale} from 'shared/util/numbers';
 
 const Item: React.FC<CohortHeatMapType> = ({
 	colorHex,
@@ -26,9 +27,7 @@ const Item: React.FC<CohortHeatMapType> = ({
 			<span className="period">{periodLabel}</span>
 
 			<span className="visitors">
-				{sub(Liferay.Language.get('x-visitors'), [
-					value.toLocaleString(),
-				])}
+				{sub(Liferay.Language.get('x-visitors'), [toLocale(value)])}
 			</span>
 		</span>
 	);
@@ -43,7 +42,7 @@ const Item: React.FC<CohortHeatMapType> = ({
 			ref={_ref}
 			style={{background: colorHex || undefined}}
 		>
-			<span className="retention">{`${retention.toFixed(2)}%`}</span>
+			<span className="retention">{formatPercent(retention)}</span>
 
 			{ReactDOM.createPortal(
 				<Popover

@@ -16,8 +16,12 @@ import {
 	Variant,
 	VariantMetric,
 } from './types';
-import {round} from 'lodash';
-import {toRounded, toThousands, toThousandsBase} from 'shared/util/numbers';
+import {
+	formatPercent,
+	toRounded,
+	toThousands,
+	toThousandsBase,
+} from 'shared/util/numbers';
 
 const METRICS_NAMES = new Map([
 	['BOUNCE_RATE', Liferay.Language.get('bounce-rate')],
@@ -78,7 +82,7 @@ export const formatYAxis: FormatYAxisFn = (metricUnit) => (value) => {
 		return `${value}${metricUnit}`;
 	}
 
-	return `${value.toFixed(1)}${metricUnit}`;
+	return `${toRounded(value)}${metricUnit}`;
 };
 
 export const getFormattedMedian: GetFormattedMedianFn = (median, metric) => {
@@ -92,17 +96,15 @@ export const getFormattedMedianLabel = (metric: MetricName) =>
 		? `${Liferay.Language.get('median')} ${getMetricName(metric)}`
 		: `${getMetricName(metric)} ${Liferay.Language.get('median')}`;
 
-export const getFormattedProbabilityToWin = (
-	value: number
-): string | number => {
+export const getFormattedProbabilityToWin = (value: number): string => {
 	if (value < 0.1) {
-		return '< 0.1';
+		return '< 0.1%';
 	}
 	else if (value > 99.9) {
-		return '> 99.9';
+		return '> 99.9%';
 	}
 
-	return toRounded(value);
+	return formatPercent(value);
 };
 
 export const getMetricName: GetMetricNameFn = (metric) =>
@@ -330,9 +332,7 @@ export const getShortIntervals: GetShortIntervals = (intervals) =>
 
 export const toThousandsABTesting = (number: number) => {
 	if (number > 1e4) {
-		return toThousandsBase(number, (factor: number) =>
-			Math.trunc(round(number * factor, 2))
-		);
+		return toThousandsBase(number, (factor: number) => number * factor);
 	}
 
 	return toThousands(number);

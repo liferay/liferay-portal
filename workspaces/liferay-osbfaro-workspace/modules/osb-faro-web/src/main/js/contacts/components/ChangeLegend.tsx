@@ -2,6 +2,7 @@ import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
 import React from 'react';
 import {CHART_COLORS} from 'shared/util/charts';
+import {formatPercentFromRatio} from 'shared/util/numbers';
 
 type TItems = {
 	change: number;
@@ -27,7 +28,7 @@ export default class ChangeLegend extends React.Component<IChangeLegendProps> {
 					const decrease = change < 0;
 
 					const percentChange = isFinite(change)
-						? `${Math.abs(change * 100).toFixed(1)}%`
+						? formatPercentFromRatio(Math.abs(change), 1)
 						: '--';
 
 					return (

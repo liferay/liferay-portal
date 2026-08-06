@@ -4,10 +4,11 @@ import {BAR_COLORS} from 'shared/util/recharts';
 import {getIntervalHandle} from './intervals';
 import {Interval, RangeSelectors} from 'shared/types';
 import {INTERVAL_KEY_MAP, isMonthlyRangeKey} from 'shared/util/time';
-import {isNumber} from 'lodash';
+import {isNumber, round} from 'lodash';
 import {Map} from 'immutable';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {
+	formatPercentFromRatio,
 	toDuration as toDurationRaw,
 	toRounded,
 	toThousands,
@@ -202,7 +203,7 @@ export const formatXAxisDate = (
  */
 export const getAxisFormatter = (type: string): ((value: number) => string) => {
 	if (type === 'percentage') {
-		return (value: number) => `${toRounded(value * 100)}%`;
+		return (value: number) => formatPercentFromRatio(value);
 	}
 	else if (type === 'time') {
 		return (value: number) => {
@@ -215,7 +216,7 @@ export const getAxisFormatter = (type: string): ((value: number) => string) => {
 		};
 	}
 	else if (type == 'ratings') {
-		return (value: number) => `${(value * 10).toFixed(2)}`;
+		return (value: number) => `${toRounded(value * 10, 2)}`;
 	}
 
 	return getMetricFormatter(type);
@@ -400,7 +401,7 @@ type LocationDataItem = {
 	id: string;
 	name: string;
 	total: number;
-	value: string;
+	value: number;
 };
 
 export const getLocationsData = (
@@ -419,7 +420,7 @@ export const getLocationsData = (
 			id: valueKey,
 			name: valueKey,
 			total: value,
-			value: `${toRounded((value / total) * 100)}`,
+			value: round((value / total) * 100, 1),
 		})
 	);
 
@@ -448,7 +449,7 @@ export const getLocationsData = (
 			id: 'others',
 			name: othersLabel,
 			total: totalOthers,
-			value: `${toRounded((totalOthers / total) * 100)}`,
+			value: round((totalOthers / total) * 100, 1),
 		});
 	}
 
@@ -466,13 +467,13 @@ export const getMetricFormatter = (
 		return (value: number) => `${toThousands(value)}`;
 	}
 	else if (type === 'percentage') {
-		return (value: number) => `${toRounded(value * 100)}%`;
+		return (value: number) => formatPercentFromRatio(value);
 	}
 	else if (type === 'time') {
 		return (value: number) => toDuration(value);
 	}
 	else if (type == 'ratings') {
-		return (value: number) => `${(value * 10).toFixed(2)}/10`;
+		return (value: number) => `${toRounded(value * 10, 2)}/10`;
 	}
 	else {
 		return (value: number) => String(value);

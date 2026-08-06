@@ -35,6 +35,7 @@ import {
 } from 'shared/util/charts';
 import {get} from 'lodash';
 import {Interval, RangeSelectors} from 'shared/types';
+import {toLocale} from 'shared/util/numbers';
 
 const {stark: CHART_BLUE} = CHART_COLOR_NAMES;
 
@@ -112,11 +113,11 @@ const ActivitiesChart: React.FC<
 				: [
 						{
 							label: Liferay.Language.get('events'),
-							value: totalEvents.toLocaleString(),
+							value: toLocale(totalEvents),
 						},
 						{
 							label: Liferay.Language.get('sessions'),
-							value: totalSessions.toLocaleString(),
+							value: toLocale(totalSessions),
 						},
 					];
 

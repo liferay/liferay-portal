@@ -6,7 +6,7 @@ import {CUSTOM_DATE_FORMAT, formatDateToTimeZone} from 'shared/util/date';
 import {STATUS_DISPLAY_MAP} from 'shared/util/subscriptions';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
-import {toThousands} from 'shared/util/numbers';
+import {toLocale, toRounded, toThousands} from 'shared/util/numbers';
 import {UsageMetric} from './UsageMetric';
 import {UsageMetricBarChart} from './UsageMetricBarChart';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
@@ -64,15 +64,15 @@ export const KnownIndividualsSession = ({
 							: Liferay.Language.get(
 									'x-known-individuals-are-available'
 								),
-						[(available > 0 ? available : 0).toLocaleString()]
+						[toLocale(available > 0 ? available : 0)]
 					)}
 					limit={limit}
-					percentageText={(percentage: number | string) =>
+					percentageText={(percentage: number) =>
 						sub(
 							Liferay.Language.get(
 								'x-known-individuals-were-used'
 							),
-							[Number(percentage)]
+							[toRounded(percentage)]
 						) as string
 					}
 				/>

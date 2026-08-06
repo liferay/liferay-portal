@@ -20,6 +20,7 @@ import {
 import {noop} from 'lodash/fp';
 import {PropTypes} from 'prop-types';
 import {Routes, toRoute} from 'shared/util/router';
+import {toLocale} from 'shared/util/numbers';
 
 /**
  * Get the API for the specific entityType.
@@ -236,9 +237,7 @@ export class DeleteDataSource extends React.Component {
 					'segments-with-criteria-related-to-this-data-source-will-be-disabled-until-the-criteria-is-updated'
 				),
 				title: sub(Liferay.Language.get('x-segments'), [
-					entitiesCount[
-						EntityTypes.IndividualsSegment
-					].toLocaleString()
+					toLocale(entitiesCount[EntityTypes.IndividualsSegment])
 				])
 			},
 			{
@@ -250,7 +249,7 @@ export class DeleteDataSource extends React.Component {
 					[Liferay.Language.get('individual')]
 				),
 				title: sub(Liferay.Language.get('x-individuals'), [
-					entitiesCount[EntityTypes.Individual].toLocaleString()
+					toLocale(entitiesCount[EntityTypes.Individual])
 				])
 			}
 		];

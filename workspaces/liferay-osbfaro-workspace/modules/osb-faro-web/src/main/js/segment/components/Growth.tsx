@@ -48,6 +48,7 @@ import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
 import {IndividualTypes} from 'segment/segment-editor/dynamic/utils/constants';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
 const {
@@ -208,7 +209,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 											),
 											[
 												<b className="mr-1" key="VALUE">
-													{value.toLocaleString()}
+													{toLocale(value)}
 												</b>,
 											],
 											false
@@ -231,7 +232,9 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 																className="mr-1"
 																key="VALUE"
 															>
-																{anonymousCount.toLocaleString()}
+																{toLocale(
+																	anonymousCount
+																)}
 															</b>,
 														],
 														false
@@ -250,7 +253,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 											),
 											[
 												<b className="mr-1" key="VALUE">
-													{knownCount.toLocaleString()}
+													{toLocale(knownCount)}
 												</b>,
 											],
 											false
@@ -436,7 +439,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 							<span className="legend-text-color">
 								{`${value}:`}
 
-								<b className="ml-1">{count}</b>
+								<b className="ml-1">{toLocale(count)}</b>
 							</span>
 						)}
 						iconSize={8}

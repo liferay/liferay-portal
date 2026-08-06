@@ -1,6 +1,7 @@
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
 import React from 'react';
+import {formatPercent} from 'shared/util/numbers';
 import {PropTypes} from 'prop-types';
 
 class ProgressBar extends React.Component {
@@ -34,7 +35,7 @@ class ProgressBar extends React.Component {
 		} else {
 			return (
 				((complete && error) || (!complete && !error)) &&
-				`${Math.ceil(value)}%`
+				formatPercent(Math.ceil(value), 0)
 			);
 		}
 	}

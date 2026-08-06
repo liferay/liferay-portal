@@ -12,6 +12,7 @@ import {
 } from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 import {UserSession, UserSessionEvent} from 'shared/queries/UserSessionQuery';
 
 export const CHART_ACTIVITY_ID = 'activities';
@@ -157,7 +158,7 @@ export const buildLegendItems = ({
 			DEFAULT_ACTIVITY_MAX,
 		]) as string,
 		title: sub(Liferay.Language.get('total-activity-count-x'), [
-			activityCount.toLocaleString(),
+			toLocale(activityCount),
 		]) as string,
 	},
 ];

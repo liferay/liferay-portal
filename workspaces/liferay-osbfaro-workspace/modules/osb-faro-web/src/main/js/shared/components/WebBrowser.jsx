@@ -15,12 +15,12 @@ import {Colors} from 'shared/util/charts';
 import {get} from 'lodash';
 import {getPercentage} from 'shared/util/util';
 import {PropTypes} from 'prop-types';
-import {toRounded, toThousands} from 'shared/util/numbers';
+import {formatPercent, toThousands} from 'shared/util/numbers';
 
 const CLASSNAME = 'analytics-web-browser-chart';
 
 const getChartPercentage = (value, total) =>
-	`${toRounded(getPercentage(value, total))}%`;
+	formatPercent(getPercentage(value, total));
 
 /**
  * Web Browser

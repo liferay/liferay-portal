@@ -10,9 +10,9 @@ import {getIcon, getStatsColor} from 'shared/util/metrics';
 import {getSafeRangeSelectors} from 'shared/util/util';
 import {RangeSelectors, SafeRangeSelectors} from 'shared/types';
 import {sub} from 'shared/util/lang';
-import {toRounded} from 'shared/util/numbers';
+import {formatPercent, toCurrency} from 'shared/util/numbers';
 import {Trend} from 'commerce/utils/types';
-import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useLocale} from 'shared/hooks/useLocale';
 import {useParams} from 'react-router-dom';
 
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
@@ -85,7 +85,7 @@ function CommerceMetricCard<TGraphQlData>({
 			},
 		}
 	);
-	const currentUser = useCurrentUser();
+	const locale = useLocale();
 
 	const result = data ? mapper(data) : [];
 
@@ -110,10 +110,10 @@ function CommerceMetricCard<TGraphQlData>({
 							loading={loading}
 						>
 							<h1 className="commerce-card-currency font-size-lg-3x font-weight-semibold mb-2">
-								{formatCurrency(
+								{toCurrency(
+									parseFloat(value),
 									currencyCode,
-									currentUser.languageId,
-									value
+									locale
 								)}
 							</h1>
 
@@ -129,9 +129,9 @@ function CommerceMetricCard<TGraphQlData>({
 												)}
 												icon={getIcon(trend.percentage)}
 												key="TREND"
-												label={`${toRounded(
+												label={formatPercent(
 													Math.abs(trend.percentage)
-												)}%`}
+												)}
 											/>,
 										],
 										false
@@ -169,17 +169,6 @@ function getCurrency(currencies: Currency[]): Currency {
 			({currencyCode}) => currencyCode === defaultCurrencyCode
 		) ?? currencies[0]
 	);
-}
-
-function formatCurrency(
-	currencyCode: string,
-	locale: string,
-	value: string
-): string {
-	return new Intl.NumberFormat(locale.replace('_', '-'), {
-		currency: currencyCode,
-		style: 'currency',
-	}).format(parseFloat(value));
 }
 
 export default CommerceMetricCard;

@@ -3,7 +3,7 @@ import {DataPoint, Empty} from './types';
 import {getPercentage} from 'shared/util/util';
 import {IHTMLBarChartProps} from '../HTMLBarChart';
 import {sub} from 'shared/util/lang';
-import {toRounded, toThousands} from 'shared/util/numbers';
+import {formatPercent, toThousands} from 'shared/util/numbers';
 
 const {martellD4, martellL4, mormont, stark} = CHART_COLOR_NAMES;
 
@@ -62,7 +62,7 @@ const getSegmentsData = (
 		},
 		{
 			align: 'right',
-			label: `${toRounded(getPercentage(value, total))}%`,
+			label: formatPercent(getPercentage(value, total)),
 			weight: 'semibold',
 			width: 50,
 		},
@@ -72,8 +72,7 @@ const getSegmentsData = (
 	 * Convert value to percentage based on total
 	 * @param {number} value
 	 */
-	const getValue = (value: number) =>
-		parseInt(toRounded(getPercentage(value, total)));
+	const getValue = (value: number) => Math.round(getPercentage(value, total));
 
 	/**
 	 * Sum all the keys value of the array

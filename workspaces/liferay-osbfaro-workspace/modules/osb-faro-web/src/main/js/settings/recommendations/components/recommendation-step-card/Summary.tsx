@@ -23,6 +23,7 @@ import {
 	JobRunStatuses,
 	JobTypes,
 } from 'shared/util/constants';
+import {toLocale} from 'shared/util/numbers';
 import {useQuery} from '@apollo/client';
 
 const {
@@ -219,9 +220,7 @@ const Summary: React.FC<ISummaryProps> = ({
 						</td>
 
 						<td className="summary-value">
-							{render2StepsBackButton(
-								activitiesTotal.toLocaleString()
-							)}
+							{render2StepsBackButton(toLocale(activitiesTotal))}
 						</td>
 					</tr>
 
@@ -251,7 +250,7 @@ const Summary: React.FC<ISummaryProps> = ({
 
 							<td className="summary-value">
 								{render2StepsBackButton(
-									activitiesWithPreviousTotal.toLocaleString()
+									toLocale(activitiesWithPreviousTotal)
 								)}
 							</td>
 						</tr>
@@ -265,11 +264,9 @@ const Summary: React.FC<ISummaryProps> = ({
 						</td>
 
 						<td className="summary-value">
-							{get(
-								pageAssetsData,
-								['pageAssets', 'total'],
-								0
-							).toLocaleString()}
+							{toLocale(
+								get(pageAssetsData, ['pageAssets', 'total'], 0)
+							)}
 						</td>
 					</tr>
 				</tbody>

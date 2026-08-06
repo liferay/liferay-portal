@@ -1,6 +1,6 @@
 import ClayIcon from '@clayui/icon';
 import React from 'react';
-import {toRounded} from 'shared/util/numbers';
+import {formatPercent} from 'shared/util/numbers';
 
 interface ImprovementCellIProps
 	extends React.TdHTMLAttributes<HTMLTableCellElement> {
@@ -29,8 +29,7 @@ const ImprovementCell: React.FC<ImprovementCellIProps> = ({
 			<span className={classname}>
 				{improvement !== 0 ? (
 					<>
-						{prefix} {`${toRounded(Math.abs(improvement), 2)}%`}{' '}
-						{sufix}
+						{prefix} {formatPercent(Math.abs(improvement))} {sufix}
 					</>
 				) : (
 					'-'

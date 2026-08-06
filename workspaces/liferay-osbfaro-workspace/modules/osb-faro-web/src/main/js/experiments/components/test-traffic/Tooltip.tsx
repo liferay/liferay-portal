@@ -4,6 +4,7 @@ import ChartTooltip, {
 } from 'shared/components/chart-tooltip';
 import React from 'react';
 import {Alignments, Weights} from 'shared/components/chart-tooltip';
+import {formatPercent} from 'shared/util/numbers';
 import {getDate as getDateUtil} from 'shared/util/date';
 import {toThousandsABTesting} from 'experiments/util/experiments';
 
@@ -55,7 +56,9 @@ const formatTooltip = (dataPoint: any[]): IChartTooltipProps => {
 				},
 				{
 					align: Alignments.Right,
-					label: `${control.payload['data_control_traffic_split']}%`,
+					label: formatPercent(
+						control.payload['data_control_traffic_split']
+					),
 				},
 			],
 		},
@@ -74,7 +77,9 @@ const formatTooltip = (dataPoint: any[]): IChartTooltipProps => {
 				},
 				{
 					align: Alignments.Right,
-					label: `${variant.payload['data_variant_traffic_split']}%`,
+					label: formatPercent(
+						variant.payload['data_variant_traffic_split']
+					),
 				},
 			],
 		},
@@ -93,10 +98,10 @@ const formatTooltip = (dataPoint: any[]): IChartTooltipProps => {
 				},
 				{
 					align: Alignments.Right,
-					label: `${
+					label: formatPercent(
 						variant.payload['data_control_traffic_split'] +
-						variant.payload['data_variant_traffic_split']
-					}%`,
+							variant.payload['data_variant_traffic_split']
+					),
 				},
 			],
 		},

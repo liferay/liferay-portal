@@ -10,6 +10,7 @@ import React from 'react';
 import {getPluralMessage} from '../util/lang';
 import {PropTypes} from 'prop-types';
 import {setUriQueryValues} from 'shared/util/router';
+import {toLocale} from 'shared/util/numbers';
 
 const {cur: DEFAULT_CUR, deltaValues} = faroConstants.pagination;
 
@@ -77,7 +78,7 @@ class PaginationBar extends React.Component {
 			);
 		}
 
-		return currentStart.toLocaleString();
+		return toLocale(currentStart);
 	}
 
 	startItem(start, selectedDelta) {
@@ -169,8 +170,8 @@ class PaginationBar extends React.Component {
 									selectedDelta,
 									totalItems
 								),
-								Math.min(start, totalItems).toLocaleString(),
-								totalItems.toLocaleString()
+								toLocale(Math.min(start, totalItems)),
+								toLocale(totalItems)
 							]
 						)}
 					</div>

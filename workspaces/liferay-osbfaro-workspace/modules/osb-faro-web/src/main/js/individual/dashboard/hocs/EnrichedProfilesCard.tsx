@@ -7,6 +7,7 @@ import {DataSource} from 'shared/util/records';
 import {isFinite} from 'lodash';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
 import {validContactsConfig} from 'shared/util/data-sources';
 import {withRequest} from 'shared/hoc';
@@ -15,7 +16,7 @@ const EnrichedProfilesBody = ({count}: {count: number}) => (
 	<Card.Body className="d-flex flex-column">
 		<div className="total d-flex flex-grow-1 text-center justify-content-center align-items-center">
 			{sub(Liferay.Language.get('x-profiles'), [
-				isFinite(count) ? count.toLocaleString() : 0,
+				isFinite(count) ? toLocale(count) : 0,
 			])}
 		</div>
 

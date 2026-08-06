@@ -12,6 +12,7 @@ import {FieldArray} from 'formik';
 import {Filter, getPropertiesFromItems} from '../../utils/utils';
 import {get} from 'lodash';
 import {Modal} from 'shared/types';
+import {toLocale} from 'shared/util/numbers';
 import {useLazyQuery, useQuery} from '@apollo/client';
 
 const {
@@ -67,7 +68,7 @@ const CountCell = (params: {[key: string]: any}) => {
 					});
 				}}
 			>
-				{get(data, ['pageAssets', 'total'], 0).toLocaleString()}
+				{toLocale(get(data, ['pageAssets', 'total'], 0))}
 			</ClayButton>
 		</td>
 	);
@@ -133,7 +134,7 @@ const Items: React.FC<IItemsProps> = ({close, groupId, itemFilters, open}) => {
 						});
 					}}
 				>
-					{get(data, ['pageAssets', 'total'], 0).toLocaleString()}
+					{toLocale(get(data, ['pageAssets', 'total'], 0))}
 				</ClayButton>
 			</div>
 		);

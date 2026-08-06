@@ -7,6 +7,7 @@ import {getPluralMessage} from 'shared/util/lang';
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
 import {segmentsListColumns} from 'shared/util/table-columns';
+import {toLocale} from 'shared/util/numbers';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 
 interface IAssociatedSegmentsListProps {
@@ -63,11 +64,7 @@ const AssociatedSegmentsList: React.FC<IAssociatedSegmentsListProps> = ({
 							Liferay.Language.get('x-segments'),
 							total,
 							false,
-							[
-								<b key="SEGMENT_TOTAL">
-									{total.toLocaleString()}
-								</b>,
-							]
+							[<b key="SEGMENT_TOTAL">{toLocale(total)}</b>]
 						)}
 					</div>
 				</div>

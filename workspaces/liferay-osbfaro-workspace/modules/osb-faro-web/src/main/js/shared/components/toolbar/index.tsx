@@ -19,6 +19,7 @@ import {Map, OrderedMap, Set} from 'immutable';
 import {noop} from 'lodash';
 import {OrderParams} from 'shared/util/records';
 import {setUriFilterValues, setUriQueryValues} from 'shared/util/router';
+import {toLocale} from 'shared/util/numbers';
 import {useHistory} from 'react-router-dom';
 
 const {cur: defaultPage} = Constants.pagination;
@@ -344,7 +345,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
 										total,
 										false,
 										[
-											total.toLocaleString(),
+											toLocale(total),
 											<b key="QUERY_TERM">{query}</b>,
 										]
 									)

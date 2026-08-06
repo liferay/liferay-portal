@@ -17,7 +17,7 @@ import {
 import {Text as ClayText} from '@clayui/core';
 import {Dataset} from './types';
 import {get} from 'lodash';
-import {toFixedPoint, toRounded} from 'shared/util/numbers';
+import {formatPercentFromRatio, toFixedPoint} from 'shared/util/numbers';
 
 const EMPTY_CHART_COLOR = '#E7E7ED';
 
@@ -91,7 +91,7 @@ const BarLabel: React.FC<IBarLabelProps> = ({
 				x={x}
 				y={y}
 			>
-				{`${toRounded(percent * 100, 2)}%`}
+				{formatPercentFromRatio(percent)}
 			</Text>
 		);
 	}

@@ -12,6 +12,7 @@ import {EXCLUDE, Filter} from '../utils/utils';
 import {get} from 'lodash';
 import {Modal} from 'shared/types';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 import {useQuery} from '@apollo/client';
 
 const {
@@ -82,7 +83,7 @@ const TrainingItemsCard: React.FC<ITrainingItemsCardProps> = ({
 			return <Loading key="LOADING" />;
 		}
 
-		return get(data, ['pageAssets', 'total'], 0).toLocaleString();
+		return toLocale(get(data, ['pageAssets', 'total'], 0));
 	};
 
 	return (

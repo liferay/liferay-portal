@@ -1,7 +1,7 @@
 import React from 'react';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
-import {toRounded} from 'shared/util/numbers';
+import {toLocale, toRounded} from 'shared/util/numbers';
 import {UsageMetricBarChart} from './UsageMetricBarChart';
 
 interface ICurrentUsageProps {
@@ -11,7 +11,7 @@ interface ICurrentUsageProps {
 	};
 	legendText: React.ReactNode;
 	limit: number;
-	percentageText: (percentage: number | string) => string;
+	percentageText: (percentage: number) => string;
 }
 
 export const CurrentUsage = ({
@@ -21,9 +21,8 @@ export const CurrentUsage = ({
 	limit,
 	percentageText,
 }: ICurrentUsageProps) => {
-	const percentage = toRounded(
-		limit > 0 ? (count / limit >= 1 ? 100 : (count / limit) * 100) : 0
-	);
+	const percentage =
+		limit > 0 ? (count / limit >= 1 ? 100 : (count / limit) * 100) : 0;
 
 	return (
 		<>
@@ -34,9 +33,11 @@ export const CurrentUsage = ({
 
 				<Text color="secondary" size={3}>
 					{`${sub(Liferay.Language.get('x-of-x'), [
-						count.toLocaleString(),
-						limit.toLocaleString(),
-					])} - ${sub(percentageText(percentage), [percentage])}`}
+						toLocale(count),
+						toLocale(limit),
+					])} - ${sub(percentageText(percentage), [
+						toRounded(percentage),
+					])}`}
 				</Text>
 			</div>
 

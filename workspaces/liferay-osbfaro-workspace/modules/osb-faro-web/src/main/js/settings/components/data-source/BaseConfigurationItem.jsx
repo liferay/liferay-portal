@@ -3,7 +3,7 @@ import getCN from 'classnames';
 import MetricBar from 'shared/components/MetricBar';
 import React from 'react';
 import {formatUTCDateFromUnix} from 'shared/util/date';
-import {getFinitePercent} from 'shared/util/numbers';
+import {getFinitePercent, toRounded} from 'shared/util/numbers';
 import {PropTypes} from 'prop-types';
 import {sub} from 'shared/util/lang';
 
@@ -11,7 +11,7 @@ export function getStatusMessage({configured, current, dateRecorded, total}) {
 	if (configured) {
 		if (current < total) {
 			return sub(Liferay.Language.get('syncing-x-percent-completed'), [
-				getFinitePercent(current, total, 2)
+				toRounded(getFinitePercent(current, total), 2)
 			]);
 		} else if (dateRecorded) {
 			return `${sub(Liferay.Language.get('last-sync-x'), [

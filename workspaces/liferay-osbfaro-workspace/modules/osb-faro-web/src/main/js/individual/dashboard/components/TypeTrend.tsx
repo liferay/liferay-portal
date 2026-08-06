@@ -2,9 +2,9 @@ import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
 import InfoPopover from 'shared/components/InfoPopover';
 import React from 'react';
-import {formatChange} from 'shared/util/change';
 import {isFinite} from 'lodash';
 import {sub} from 'shared/util/lang';
+import {formatPercent, toLocale} from 'shared/util/numbers';
 
 interface ITrendItemProps {
 	change: number;
@@ -32,7 +32,7 @@ export const TrendItem: React.FC<ITrendItemProps> = ({
 			</div>
 
 			<div className="d-flex align-items-center flex-grow-1 justify-content-center">
-				<div className="total">{total.toLocaleString()}</div>
+				<div className="total">{toLocale(total)}</div>
 			</div>
 
 			{!!total && (
@@ -60,7 +60,9 @@ export const TrendItem: React.FC<ITrendItemProps> = ({
 
 								<b>
 									{finiteChange
-										? `${formatChange(change)}%`
+										? `${change > 0 ? '+' : ''}${formatPercent(
+												change
+											)}`
 										: '--'}
 								</b>
 							</span>,

@@ -14,7 +14,7 @@ import {SummaryBaseCard} from './SummaryBaseCard';
 import {SummaryParagraph} from './SummaryParagraph';
 import {SummarySection} from './SummarySection';
 import {SummaryTitle} from './SummaryTitle';
-import {toRounded} from 'shared/util/numbers';
+import {formatPercent, toRounded} from 'shared/util/numbers';
 
 export const SummaryTerminatedCard: React.FC<{
 	experiment: IExperiment & {
@@ -111,10 +111,13 @@ export const SummaryTerminatedCard: React.FC<{
 									[
 										winnerVariant?.dxpVariantName,
 										secondPlaceVariant?.dxpVariantName,
-										Math.abs(
-											winnerVariantMetrics?.improvement ??
-												0
-										).toFixed(2),
+										toRounded(
+											Math.abs(
+												winnerVariantMetrics?.improvement ??
+													0
+											),
+											2
+										),
 									]
 								) as string
 							}
@@ -138,10 +141,13 @@ export const SummaryTerminatedCard: React.FC<{
 									[
 										winnerVariant?.dxpVariantName,
 										secondPlaceVariant?.dxpVariantName,
-										Math.abs(
-											secondPlaceVariantMetrics?.improvement ??
-												0
-										).toFixed(2),
+										toRounded(
+											Math.abs(
+												secondPlaceVariantMetrics?.improvement ??
+													0
+											),
+											2
+										),
 									]
 								) as string
 							}
@@ -181,11 +187,11 @@ export const SummaryTerminatedCard: React.FC<{
 							title={Liferay.Language.get('test-completion')}
 						>
 							<SummarySection.Heading
-								value={`${toRounded(completion)}%`}
+								value={formatPercent(completion)}
 							/>
 
 							<SummarySection.ProgressBar
-								value={parseInt(toRounded(completion))}
+								value={Math.floor(completion)}
 							/>
 						</SummarySection>
 
@@ -230,10 +236,9 @@ export const SummaryTerminatedCard: React.FC<{
 								{bestVariant?.improvement !== undefined &&
 									bestVariant.improvement > 0 && (
 										<SummarySection.Variant
-											lift={`${toRounded(
-												bestVariant.improvement,
-												2
-											)}%`}
+											lift={formatPercent(
+												bestVariant.improvement
+											)}
 											status="up"
 										/>
 									)}

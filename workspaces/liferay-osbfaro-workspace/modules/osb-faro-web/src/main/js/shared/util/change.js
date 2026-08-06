@@ -1,4 +1,5 @@
 import {isFinite, isNaN} from 'lodash';
+import {toLocale} from 'shared/util/numbers';
 
 export function formatChange(change) {
 	if (change === 0) {
@@ -6,8 +7,8 @@ export function formatChange(change) {
 	}
 
 	return change > 0
-		? `+${change.toLocaleString()}`
-		: `-${Math.abs(change).toLocaleString()}`;
+		? `+${toLocale(change)}`
+		: `-${toLocale(Math.abs(change))}`;
 }
 
 /**
@@ -45,9 +46,7 @@ export function getNetChange(prev, current) {
 	const percentage = Math.abs(Math.floor((change / prev) * 100));
 
 	return [
-		change > 0
-			? `+${change.toLocaleString()}`
-			: `-${Math.abs(change).toLocaleString()}`,
+		change > 0 ? `+${toLocale(change)}` : `-${toLocale(Math.abs(change))}`,
 		isFinite(percentage) ? percentage : isNaN(percentage) ? 0 : 100,
 	];
 }

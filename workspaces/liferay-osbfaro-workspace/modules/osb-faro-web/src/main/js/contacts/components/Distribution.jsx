@@ -41,7 +41,7 @@ import {createNumberMask} from 'text-mask-addons';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
 import {FieldContexts, FieldTypes} from 'shared/util/constants';
 import {getBarColor} from 'shared/util/charts';
-import {getFinitePercent} from 'shared/util/numbers';
+import {formatPercent, getFinitePercent} from 'shared/util/numbers';
 import {hasChanges} from 'shared/util/react';
 import {List, Map} from 'immutable';
 import {noop, omit, pickBy, truncate} from 'lodash';
@@ -93,7 +93,10 @@ function formatTickVal(name, percent, showPercentage) {
 	let suffix = '';
 
 	if (showPercentage) {
-		suffix = percent < 0.1 ? '- < 0.1%' : `- ${percent.toFixed(1)}%`;
+		suffix =
+			percent < 0.1
+				? `- < ${formatPercent(0.1, 1)}`
+				: `- ${formatPercent(percent, 1)}`;
 	}
 
 	return `${truncate(name, {
@@ -696,9 +699,7 @@ export class Distribution extends React.Component {
 																		CHART_DATA_ID
 																	]
 																),
-																knownIndividualCount,
-																1,
-																false
+																knownIndividualCount
 															),
 															!histogram &&
 																selectedContext ===

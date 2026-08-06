@@ -85,7 +85,7 @@ export default ({
 				accessor: 'probabilityToWin',
 				cellRenderer: ({data: {probabilityToWin}}) => (
 					<Cell className="text-right" title={false}>
-						{`${getFormattedProbabilityToWin(probabilityToWin)}%`}
+						{getFormattedProbabilityToWin(probabilityToWin)}
 					</Cell>
 				),
 				className: 'text-right',

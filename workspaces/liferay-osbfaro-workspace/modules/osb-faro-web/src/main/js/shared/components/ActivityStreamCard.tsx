@@ -15,7 +15,7 @@ import {isNil} from 'lodash';
 import {mapListResultsToProps} from 'shared/util/mappers';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
-import {toRounded, toThousands} from 'shared/util/numbers';
+import {formatPercent, toThousands} from 'shared/util/numbers';
 import {TrendClassification} from 'segment/types';
 import {withEmpty} from 'cerebro-shared/hocs/utils';
 import {withError, withLoading, WrapSafeResults} from 'shared/hoc/util';
@@ -191,12 +191,12 @@ const ActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 														),
 													}}
 												>
-													{`${toRounded(
+													{formatPercent(
 														Math.abs(
 															trendSummary.percentage
 														),
 														1
-													)}%`}
+													)}
 												</span>,
 											],
 											false

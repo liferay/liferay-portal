@@ -3,6 +3,7 @@ import MetricBar, {Displays, Sizes} from 'shared/components/MetricBar';
 import React from 'react';
 import TextTruncate from 'shared/components/TextTruncate';
 import {Event} from 'event-analysis/utils/types';
+import {toLocale} from 'shared/util/numbers';
 
 export type BarComparisonTableItems = {
 	isPreviousValue: boolean;
@@ -62,12 +63,7 @@ const BarComparisonTable: React.FC<IBarComparisonTableProps> = ({
 							percent={percent}
 							size={Sizes.Default}
 						>
-							<span>
-								{Number(value).toLocaleString(undefined, {
-									maximumFractionDigits: 2,
-									minimumFractionDigits: 0,
-								})}
-							</span>
+							<span>{toLocale(Number(value), undefined, 2)}</span>
 						</MetricBar>
 					</td>
 				</tr>

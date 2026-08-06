@@ -4,11 +4,10 @@ import getCN from 'classnames';
 import React from 'react';
 import TextTruncate from './TextTruncate';
 import {CHART_COLORS} from 'shared/util/charts';
+import {formatPercent, getFinitePercent, toThousands} from 'shared/util/numbers';
 import {get, isNull} from 'lodash';
-import {getFinitePercent} from 'shared/util/numbers';
 import {getSafeDisplayValue} from 'shared/util/util';
 import {PropTypes} from 'prop-types';
-import {toThousands} from 'shared/util/numbers';
 
 /**
  * Combine d3 utilities into one namespace
@@ -30,6 +29,23 @@ const DATA_SHAPE = PropTypes.shape({
 	value: PropTypes.number
 }).isRequired;
 
+/**
+ * Get Display Value
+ * @param {number} value
+ * @param {number} total
+ */
+function getDisplayValue(value, total) {
+	const floatPercent = parseFloat(value / total);
+
+	if (floatPercent < 0.01 && floatPercent !== 0) {
+		return `< ${formatPercent(1, 0)}`;
+	}
+
+	const finitePercent = getFinitePercent(value, total);
+
+	return isNull(finitePercent) ? null : formatPercent(finitePercent, 0);
+}
+
 export class CompositionLegend extends React.Component {
 	render() {
 		const {items, total} = this.props;
@@ -37,12 +53,7 @@ export class CompositionLegend extends React.Component {
 		return (
 			<ul className='legend-template composition-legend-root'>
 				{items.map(({color, label, value}) => {
-					const floatPercent = parseFloat(value / total);
-
-					const displayValue =
-						floatPercent < 0.01 && floatPercent !== 0
-							? '<	1'
-							: getFinitePercent(value, total, 0);
+					const displayValue = getDisplayValue(value, total);
 
 					return (
 						<li
@@ -67,9 +78,7 @@ export class CompositionLegend extends React.Component {
 
 							<div className='legend-template-column justify-content-end'>
 								<b data-testid='active-porcentage'>
-									{isNull(displayValue)
-										? '-'
-										: `${displayValue}%`}
+									{isNull(displayValue) ? '-' : displayValue}
 								</b>
 							</div>
 						</li>

@@ -13,7 +13,7 @@ import {SummaryBaseCard} from './SummaryBaseCard';
 import {SummaryParagraph} from './SummaryParagraph';
 import {SummarySection} from './SummarySection';
 import {SummaryTitle} from './SummaryTitle';
-import {toRounded} from 'shared/util/numbers';
+import {formatPercent} from 'shared/util/numbers';
 
 export const SummaryCompletedCard: React.FC<{
 	experiment: IExperiment & {
@@ -107,10 +107,10 @@ export const SummaryCompletedCard: React.FC<{
 							title={Liferay.Language.get('test-completion')}
 						>
 							<SummarySection.Heading
-								value={`${toRounded(completion)}%`}
+								value={formatPercent(completion)}
 							/>
 							<SummarySection.ProgressBar
-								value={parseInt(toRounded(completion))}
+								value={Math.floor(completion)}
 							/>
 						</SummarySection>
 
@@ -145,10 +145,9 @@ export const SummaryCompletedCard: React.FC<{
 							{publishedVariant?.improvement !== undefined &&
 								publishedVariant.improvement > 0 && (
 									<SummarySection.Variant
-										lift={`${toRounded(
-											publishedVariant.improvement,
-											2
-										)}%`}
+										lift={formatPercent(
+											publishedVariant.improvement
+										)}
 										status="up"
 									/>
 								)}

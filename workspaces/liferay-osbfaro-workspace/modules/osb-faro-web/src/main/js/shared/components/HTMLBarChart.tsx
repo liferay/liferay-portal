@@ -7,7 +7,8 @@ import ReactDOM from 'react-dom';
 import {getAxisMeasuresFromData} from 'shared/util/charts';
 import {getPercentage} from 'shared/util/util';
 import {Column as TooltipColumn} from './chart-tooltip/types';
-import {toRounded, toThousands} from 'shared/util/numbers';
+import {round} from 'lodash';
+import {formatPercent, toThousands} from 'shared/util/numbers';
 
 const CLASSNAME = 'analytics-bar-chart-html';
 
@@ -129,20 +130,15 @@ const HTMLBarChart: React.FC<IHTMLBarChartProps> = ({
 		let width: number | string = end - start;
 
 		if (typeof start === 'number' && show) {
-			const startPosition = Number(
-				toRounded(
-					getPercentage(
-						start,
-						gridIntervals[gridIntervals.length - 1]
-					)
-				)
+			const startPosition = round(
+				getPercentage(start, gridIntervals[gridIntervals.length - 1]),
+				1
 			);
 
-			const endPosition = Number(
-				toRounded(
-					getPercentage(end, gridIntervals[gridIntervals.length - 1])
-				)
-			) as number;
+			const endPosition = round(
+				getPercentage(end, gridIntervals[gridIntervals.length - 1]),
+				1
+			);
 
 			width = `${endPosition - startPosition}%`;
 		}
@@ -156,8 +152,9 @@ const HTMLBarChart: React.FC<IHTMLBarChartProps> = ({
 		let width = value;
 
 		if (typeof value === 'number' && show) {
-			width = `${toRounded(
-				getPercentage(value, gridIntervals[gridIntervals.length - 1])
+			width = `${round(
+				getPercentage(value, gridIntervals[gridIntervals.length - 1]),
+				1
 			)}%`;
 		}
 
@@ -229,8 +226,9 @@ const HTMLBarChart: React.FC<IHTMLBarChartProps> = ({
 		let startPosition: number | string = start;
 
 		if (typeof start === 'number' && show) {
-			startPosition = `${toRounded(
-				getPercentage(start, gridIntervals[gridIntervals.length - 1])
+			startPosition = `${round(
+				getPercentage(start, gridIntervals[gridIntervals.length - 1]),
+				1
 			)}%`;
 		}
 
@@ -257,7 +255,7 @@ const HTMLBarChart: React.FC<IHTMLBarChartProps> = ({
 		const {formatter, precision, type} = grid;
 
 		if (type === 'percentage') {
-			return <span>{`${toRounded(value, precision)}%`}</span>;
+			return <span>{formatPercent(value, precision)}</span>;
 		}
 
 		return (

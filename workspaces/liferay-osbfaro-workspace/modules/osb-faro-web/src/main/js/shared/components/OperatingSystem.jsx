@@ -16,7 +16,7 @@ import {
 import {Colors} from 'shared/util/charts';
 import {range} from 'lodash';
 import {sub} from 'shared/util/lang';
-import {toRounded, toThousands} from 'shared/util/numbers';
+import {formatPercent, toThousands} from 'shared/util/numbers';
 
 const CLASSNAME = 'analytics-operating-system-chart';
 const MIN_VALUE = '< 0.1%';
@@ -43,7 +43,7 @@ class OperatingSystem extends React.Component {
 			return `${MIN_VALUE}`;
 		}
 
-		return `${toRounded(percentage)}%`;
+		return formatPercent(percentage);
 	}
 
 	@autobind
@@ -67,7 +67,7 @@ class OperatingSystem extends React.Component {
 						},
 						{
 							align: 'right',
-							label: `${toRounded(toRounded(percentageOfTotal))}%`
+							label: formatPercent(percentageOfTotal)
 						}
 					]
 				}

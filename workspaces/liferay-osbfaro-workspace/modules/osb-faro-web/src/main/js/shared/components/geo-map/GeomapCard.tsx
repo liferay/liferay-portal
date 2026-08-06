@@ -5,7 +5,7 @@ import getCN from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
 import {Colors} from 'shared/util/charts';
 import {createRoot} from 'react-dom/client';
-import {toThousands} from 'shared/util/numbers';
+import {formatPercent, toThousands} from 'shared/util/numbers';
 
 const OTHERS = 'others';
 const TOTAL_COUNTRIES_LIST = 5;
@@ -106,7 +106,9 @@ const List = ({countries, features, onSelectCountry}: IListProps) => {
 								<td className={classNames('text-right')}>
 									{toThousands(value.total)}
 
-									<span className="percentage font-weight-semibold">{`${value.value}%`}</span>
+									<span className="percentage font-weight-semibold">
+										{formatPercent(value.value)}
+									</span>
 								</td>
 							</tr>
 						);
@@ -157,7 +159,7 @@ const Tooltip = ({metricLabel, payload}: ITooltipProps) => (
 				{payload.properties.total} <span>{metricLabel}</span>
 			</div>
 
-			<div>{`${payload.properties.value}%`}</div>
+			<div>{formatPercent(payload.properties.value)}</div>
 		</div>
 	</>
 );

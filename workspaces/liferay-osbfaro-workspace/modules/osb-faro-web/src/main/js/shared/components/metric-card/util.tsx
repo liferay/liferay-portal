@@ -13,7 +13,7 @@ import {getIcon, getStatsColor} from 'shared/util/metrics';
 import {Interval, RangeSelectors} from 'shared/types';
 import {INTERVAL_KEY_MAP} from 'shared/util/time';
 import {Metric, MetricType} from './metrics';
-import {toRounded} from 'shared/util/numbers';
+import {formatPercent} from 'shared/util/numbers';
 import {toUnix} from 'shared/util/date';
 
 export const CHART_DATA_ID_1 = 'data_1';
@@ -211,7 +211,7 @@ export const getPreviousValueFromCompositeData = (
 };
 
 export const getRegexType = (type: MetricType): RegExp =>
-	type === MetricType.Ratings ? /([/][0-9]+)/g : /([a-zA-Z%])+/g;
+	type === MetricType.Ratings ? /([/][0-9]+)/g : /([a-zA-Z%万億])+/g;
 
 export const formatValue = (
 	value: string,
@@ -242,7 +242,7 @@ export const getMetricCardTabsData = (
 				details: {
 					color: getStatsColor(trendClassification),
 					icon: getIcon(percentage),
-					label: `${toRounded(Math.abs(percentage))}%`,
+					label: formatPercent(Math.abs(percentage)),
 				},
 				name,
 				title,
@@ -322,7 +322,7 @@ const buildCompositeData = (
 				details: {
 					color: getStatsColor(trendClassification),
 					icon: getIcon(percentage),
-					label: `${toRounded(Math.abs(percentage))}%`,
+					label: formatPercent(Math.abs(percentage)),
 				},
 				name,
 				title,
@@ -391,7 +391,7 @@ export const getMetricData = ({
 			details: {
 				color: getStatsColor(trendClassification),
 				icon: getIcon(percentage),
-				label: `${toRounded(Math.abs(percentage))}%`,
+				label: formatPercent(Math.abs(percentage)),
 			},
 			name,
 			title,

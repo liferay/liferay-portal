@@ -9,7 +9,7 @@ import Table from 'shared/components/table';
 import URLConstants from 'shared/util/url-constants';
 import {ApolloError} from '@apollo/client';
 import {ENTRANCES_METRIC, EXIT_RATE_METRIC} from 'shared/util/pagination';
-import {toRounded} from 'shared/util/numbers';
+import {formatPercentFromRatio} from 'shared/util/numbers';
 import {metricsListColumns} from 'shared/util/table-columns';
 import {NameCell} from 'shared/components/table/cell-components';
 import {OrderByDirections} from 'shared/util/constants';
@@ -82,11 +82,8 @@ export const TOP_PAGES_TABS = [
 	{
 		metricColumn: {
 			...metricsListColumns.exitRateMetric,
-			dataFormatter: (data: number) => {
-				const percent = data * 100;
-
-				return isFinite(percent) ? `${toRounded(percent)}%` : '-';
-			},
+			dataFormatter: (data: number) =>
+				isFinite(data) ? formatPercentFromRatio(data) : '-',
 		},
 		rowIdentifier: ROW_IDENTIFIER,
 		tabId: EXIT_RATE_METRIC,
