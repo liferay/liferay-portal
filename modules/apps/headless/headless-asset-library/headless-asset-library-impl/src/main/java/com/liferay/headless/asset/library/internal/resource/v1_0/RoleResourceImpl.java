@@ -40,7 +40,6 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -287,12 +286,12 @@ public class RoleResourceImpl extends BaseRoleResourceImpl {
 	private boolean _isDefaultAssetLibraryMemberRoleAssignment(
 		List<com.liferay.portal.kernel.model.Role> currentRoles, Role[] roles) {
 
-		if (!currentRoles.isEmpty() || (roles.length != 1)) {
+		if (ListUtil.isNotEmpty(currentRoles) || (roles.length != 1)) {
 			return false;
 		}
 
-		return Objects.equals(
-			roles[0].getName(), DepotRolesConstants.ASSET_LIBRARY_MEMBER);
+		return DepotRolesConstants.ASSET_LIBRARY_MEMBER.equals(
+			roles[0].getName());
 	}
 
 	private Role _toRole(com.liferay.portal.kernel.model.Role role)
