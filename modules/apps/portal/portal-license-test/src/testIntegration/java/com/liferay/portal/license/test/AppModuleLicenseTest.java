@@ -48,7 +48,6 @@ public class AppModuleLicenseTest extends BaseLicenseTestCase {
 				assertLicensePropertiesNotExisted(getProductId(app));
 
 				Assert.assertFalse(LicenseManagerUtil.isAppEnabled(app));
-
 				Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
 
 				long startTime = System.currentTimeMillis();
@@ -58,7 +57,6 @@ public class AppModuleLicenseTest extends BaseLicenseTestCase {
 				assertLicensePropertiesExisted(getProductId(app));
 
 				Assert.assertTrue(LicenseManagerUtil.isAppEnabled(app));
-
 				Assert.assertEquals(
 					getDateString(new Date(startTime + Time.HOUR)),
 					getDateString(
@@ -71,7 +69,6 @@ public class AppModuleLicenseTest extends BaseLicenseTestCase {
 				assertLicensePropertiesNotExisted(getProductId(app));
 
 				Assert.assertFalse(LicenseManagerUtil.isAppEnabled(app));
-
 				Assert.assertNull(LicenseManagerUtil.getAppExpirationDate(app));
 			}
 		}
