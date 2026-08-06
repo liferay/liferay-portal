@@ -56,7 +56,7 @@ func (statefulSetScaleValidator *StatefulSetScaleValidator) Handle(
 		return admission.Denied(
 			fmt.Sprintf(
 				"licensed maxClusterNodes for StatefulSet %q is not yet available; "+
-					"retry once the LiferayEnvironment reports maxClusterNodes",
+					"retry once the LiferayEnvironment is Activated and licensed",
 				workloadName,
 			),
 		)
