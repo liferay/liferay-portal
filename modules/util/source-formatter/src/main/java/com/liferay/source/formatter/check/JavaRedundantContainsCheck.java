@@ -24,56 +24,38 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 	protected String doProcess(
 		String fileName, String absolutePath, String content) {
 
-		Matcher matcher1 = _ifStatementPattern.matcher(content);
+		Matcher matcher = _ifStatementPattern.matcher(content);
 
-		while (matcher1.find()) {
-			IfStatement ifStatement = _getIfStatement(
-				content, matcher1.start());
+		while (matcher.find()) {
+			List<String> parameterList = JavaSourceUtil.getParameterList(
+				JavaSourceUtil.getMethodCall(content, matcher.start(2)));
 
-			if (ifStatement == null) {
+			if (parameterList.isEmpty()) {
 				continue;
 			}
 
-			String body = ifStatement.getBody();
+			String parameter = parameterList.get(0);
 
-			if (Validator.isBlank(body)) {
+			if (_hasTopLevelComma(parameter)) {
 				continue;
 			}
 
-			String clause = ifStatement.getClause();
+			String ifStatementBody = _getIfStatementBody(
+				content, matcher.start());
 
-			Matcher matcher2 = _containsCallPattern.matcher(clause);
-
-			while (matcher2.find()) {
-				String variableName = matcher2.group(2);
-
-				if (!variableName.matches("_?[a-z]\\w+")) {
-					continue;
-				}
-
-				List<String> parameterList = JavaSourceUtil.getParameterList(
-					JavaSourceUtil.getMethodCall(clause, matcher2.start(2)));
-
-				if (parameterList.isEmpty()) {
-					continue;
-				}
-
-				String parameter = parameterList.get(0);
-
-				if (_hasTopLevelComma(parameter)) {
-					continue;
-				}
-
-				_checkMethodCallInIfBody(
-					fileName, content, body, matcher2, parameter,
-					getLineNumber(content, matcher1.start()));
+			if (Validator.isBlank(ifStatementBody)) {
+				continue;
 			}
+
+			_checkMethodCallInIfStatementBody(
+				fileName, content, ifStatementBody, matcher, parameter,
+				getLineNumber(content, matcher.start()));
 		}
 
 		return content;
 	}
 
-	private void _checkMethodCallInIfBody(
+	private void _checkMethodCallInIfStatementBody(
 		String fileName, String content, String s, Matcher matcher,
 		String parameter, int lineNumber) {
 
@@ -203,7 +185,7 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 		return null;
 	}
 
-	private IfStatement _getIfStatement(String content, int pos) {
+	private String _getIfStatementBody(String content, int pos) {
 		int x = _getClosePos(content, "(", ")", pos);
 
 		if ((x == -1) || !Objects.equals(content.substring(x, x + 3), ") {")) {
@@ -216,9 +198,7 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 			return null;
 		}
 
-		return new IfStatement(
-			StringUtil.trim(content.substring(x + 3, y)),
-			content.substring(content.indexOf("(", pos), x + 1));
+		return StringUtil.trim(content.substring(x + 3, y));
 	}
 
 	private boolean _hasOperation(
@@ -226,7 +206,8 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 		String parameter) {
 
 		Pattern pattern = Pattern.compile(
-			StringBundler.concat(variableName, "\\.\\s*", methodName, "\\("));
+			StringBundler.concat(
+				"\\b", variableName, "\\.\\s*", methodName, "\\("));
 
 		Matcher matcher = pattern.matcher(content);
 
@@ -275,29 +256,7 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 		return s.replaceAll("\\s+", "");
 	}
 
-	private static final Pattern _containsCallPattern = Pattern.compile(
-		"\\((!)?(\\w+)\\.(contains(Key)?)\\(");
 	private static final Pattern _ifStatementPattern = Pattern.compile(
-		"[\n\t]if \\(");
-
-	private static class IfStatement {
-
-		public IfStatement(String body, String clause) {
-			_body = body;
-			_clause = clause;
-		}
-
-		public String getBody() {
-			return _body;
-		}
-
-		public String getClause() {
-			return _clause;
-		}
-
-		private final String _body;
-		private final String _clause;
-
-	}
+		"^\t+if \\((!)?(_?[a-z]\\w+)\\.(contains(Key)?)\\(", Pattern.MULTILINE);
 
 }
