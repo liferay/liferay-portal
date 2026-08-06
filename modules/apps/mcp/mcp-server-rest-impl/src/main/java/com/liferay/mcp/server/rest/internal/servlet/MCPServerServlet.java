@@ -383,7 +383,9 @@ public class MCPServerServlet extends HttpServlet {
 
 			Map<String, Serializable> values = objectEntry.getValues();
 
-			if (mcpServerProfileName.equals(values.get("name"))) {
+			if (mcpServerProfileName.equals(values.get("name")) &&
+				Objects.equals(values.get("profileStatus"), "active")) {
+
 				return objectEntry;
 			}
 		}

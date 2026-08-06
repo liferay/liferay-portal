@@ -59,6 +59,22 @@
 					"state": false,
 					"system": true,
 					"type": "String"
+				},
+				{
+					"DBType": "String",
+					"businessType": "Picklist",
+					"defaultValue": "inactive",
+					"indexed": true,
+					"indexedAsKeyword": false,
+					"label": {
+						"en_US": "Status"
+					},
+					"listTypeDefinitionExternalReferenceCode": "L_MCP_STATUS",
+					"name": "profileStatus",
+					"required": true,
+					"state": false,
+					"system": true,
+					"type": "String"
 				}
 			],
 			"objectRelationships": [
