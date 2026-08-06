@@ -273,6 +273,16 @@ definition {
 
 			ObjectPortlet.viewEntry(entry = "Action shot on add");
 		}
+
+		task ("Delete the action from the system object so it does not outlive the test") {
+			ObjectAdmin.openObjectAdmin();
+
+			ObjectPortlet.selectCustomObject(label = "Account");
+
+			ObjectAdmin.goToActionsTab();
+
+			ObjectAdmin.deleteActionViaUI(actionLabel = "Custom Action");
+		}
 	}
 
 	@description = "LPS-170122 - Verify the field value cannot be changed when the ready-only property condition is false"
