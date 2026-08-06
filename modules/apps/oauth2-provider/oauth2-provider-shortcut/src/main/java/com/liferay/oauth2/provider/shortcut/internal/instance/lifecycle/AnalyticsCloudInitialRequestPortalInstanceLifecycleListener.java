@@ -52,7 +52,7 @@ import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalSe
 import java.io.InputStream;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -165,10 +165,10 @@ public class AnalyticsCloudInitialRequestPortalInstanceLifecycleListener
 				OAuth2SecureRandomGenerator.generateClientId(),
 				ClientProfile.HEADLESS_SERVER.id(),
 				OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
-				"https://analytics.liferay.com", 0, null, _APPLICATION_NAME,
-				null,
-				Collections.singletonList(
-					"https://analytics.liferay.com/oauth/receive"),
+				"https://ldp.liferay.com", 0, null, _APPLICATION_NAME, null,
+				Arrays.asList(
+					"https://analytics.liferay.com/oauth/receive",
+					"https://ldp.liferay.com/oauth/receive"),
 				false, false, this::_buildScopes, new ServiceContext());
 
 		Class<?> clazz = getClass();
