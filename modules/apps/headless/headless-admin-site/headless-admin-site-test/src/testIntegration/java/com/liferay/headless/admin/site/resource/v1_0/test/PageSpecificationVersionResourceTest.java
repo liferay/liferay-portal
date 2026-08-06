@@ -14,6 +14,7 @@ import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.provider.LayoutContentVersionDataProvider;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.User;
@@ -35,6 +36,8 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -90,6 +93,7 @@ public class PageSpecificationVersionResourceTest
 	public void testGetSiteSitePagePageSpecificationVersion() throws Exception {
 		super.testGetSiteSitePagePageSpecificationVersion();
 
+		_testGetSiteSitePagePageSpecificationVersionActions();
 		_testGetSiteSitePagePageSpecificationVersionMismatchedSitePage();
 		_testGetSiteSitePagePageSpecificationVersionPageSpecificationNestedField();
 	}
@@ -241,6 +245,27 @@ public class PageSpecificationVersionResourceTest
 			pageSpecificationVersion);
 	}
 
+	private void _assertActionHref(
+		PageSpecificationVersion pageSpecificationVersion, String... keys) {
+
+		Map<String, Map<String, String>> actions =
+			pageSpecificationVersion.getActions();
+
+		String content = StringBundler.concat(
+			"/sites/", testGroup.getExternalReferenceCode(), "/site-pages/",
+			_testGroupLayout.getExternalReferenceCode(),
+			"/page-specification-versions/",
+			pageSpecificationVersion.getExternalReferenceCode());
+
+		for (String key : keys) {
+			Map<String, String> action = actions.get(key);
+
+			String href = action.get("href");
+
+			Assert.assertTrue(key, href.contains(content));
+		}
+	}
+
 	private PageSpecificationVersionResource
 			_getPageSpecificationVersionResource()
 		throws Exception {
@@ -258,6 +283,53 @@ public class PageSpecificationVersionResourceTest
 		).parameters(
 			"nestedFields", "pageSpecification"
 		).build();
+	}
+
+	private void _testGetSiteSitePagePageSpecificationVersionActions()
+		throws Exception {
+
+		PageSpecificationVersion firstPageSpecificationVersion =
+			_addPageSpecificationVersion();
+
+		firstPageSpecificationVersion =
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersion(
+					testGroup.getExternalReferenceCode(),
+					_testGroupLayout.getExternalReferenceCode(),
+					firstPageSpecificationVersion.getExternalReferenceCode());
+
+		Map<String, Map<String, String>> firstActions =
+			firstPageSpecificationVersion.getActions();
+
+		Assert.assertNull(firstActions.get("delete"));
+
+		_assertActionHref(firstPageSpecificationVersion, "get");
+
+		PageSpecificationVersion secondPageSpecificationVersion =
+			_addPageSpecificationVersion();
+
+		firstPageSpecificationVersion =
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersion(
+					testGroup.getExternalReferenceCode(),
+					_testGroupLayout.getExternalReferenceCode(),
+					firstPageSpecificationVersion.getExternalReferenceCode());
+
+		_assertActionHref(firstPageSpecificationVersion, "delete", "get");
+
+		secondPageSpecificationVersion =
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersion(
+					testGroup.getExternalReferenceCode(),
+					_testGroupLayout.getExternalReferenceCode(),
+					secondPageSpecificationVersion.getExternalReferenceCode());
+
+		Map<String, Map<String, String>> secondActions =
+			secondPageSpecificationVersion.getActions();
+
+		Assert.assertNull(secondActions.get("delete"));
+
+		_assertActionHref(secondPageSpecificationVersion, "get");
 	}
 
 	private void _testGetSiteSitePagePageSpecificationVersionMismatchedSitePage()
