@@ -5,7 +5,7 @@ WORKDIR /workspace
 COPY go_build.sh .
 COPY resources resources
 
-RUN ./go_build.sh
+RUN SKIP_SOURCE_FORMATTER=true ./go_build.sh
 
 FROM gcr.io/distroless/static:debug-nonroot AS dev
 

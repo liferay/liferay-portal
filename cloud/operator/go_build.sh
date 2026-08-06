@@ -85,6 +85,11 @@ function _format_generated {
 function _generate {
 	go generate ./...
 
+	if [[ "${SKIP_SOURCE_FORMATTER:-false}" == "true" ]]
+	then
+		return
+	fi
+
 	_format_generated
 }
 
