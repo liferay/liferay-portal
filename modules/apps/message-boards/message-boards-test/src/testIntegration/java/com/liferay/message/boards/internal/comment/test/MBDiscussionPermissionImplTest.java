@@ -195,7 +195,7 @@ public class MBDiscussionPermissionImplTest {
 
 	@Test
 	@TestInfo("LPD-100338")
-	public void testUserCannotUpdateSomeoneElseCommentInProject()
+	public void testUserCannotUpdateSomeoneElseCommentInCMPProject()
 		throws Exception {
 
 		PermissionChecker originalPermissionChecker =
@@ -207,7 +207,7 @@ public class MBDiscussionPermissionImplTest {
 				PermissionCheckerFactoryUtil.create(_user));
 			PrincipalThreadLocal.setName(_user.getUserId());
 
-			long commentId = _addProjectComment(_siteUser1);
+			long commentId = _addCMPProjectComment(_siteUser1);
 
 			Comment comment = _commentManager.fetchComment(commentId);
 
@@ -244,7 +244,7 @@ public class MBDiscussionPermissionImplTest {
 
 	@Test
 	@TestInfo("LPD-100338")
-	public void testUserCanUpdateAndDeleteHisCommentInProject()
+	public void testUserCanUpdateAndDeleteHisCommentInCMPProject()
 		throws Exception {
 
 		PermissionChecker originalPermissionChecker =
@@ -256,7 +256,7 @@ public class MBDiscussionPermissionImplTest {
 				PermissionCheckerFactoryUtil.create(_user));
 			PrincipalThreadLocal.setName(_user.getUserId());
 
-			long commentId = _addProjectComment(_siteUser1);
+			long commentId = _addCMPProjectComment(_siteUser1);
 
 			PermissionChecker permissionChecker =
 				PermissionCheckerFactoryUtil.create(_siteUser1);
@@ -374,7 +374,7 @@ public class MBDiscussionPermissionImplTest {
 			StringUtil.randomString(), serviceContextFunction);
 	}
 
-	private long _addProjectComment(User user) throws Exception {
+	private long _addCMPProjectComment(User user) throws Exception {
 		CMPTestUtil.getOrAddGroup(MBDiscussionPermissionImplTest.class);
 
 		ObjectEntry objectEntry = CMPTestUtil.addCMPProjectObjectEntry();
