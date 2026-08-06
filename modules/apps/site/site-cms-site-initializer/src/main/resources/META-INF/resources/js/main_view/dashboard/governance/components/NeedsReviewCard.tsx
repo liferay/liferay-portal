@@ -5,6 +5,7 @@
 
 import ClayLink from '@clayui/link';
 import {FrontendDataSet} from '@liferay/frontend-data-set-web';
+import {sub} from 'frontend-js-web';
 import React, {useMemo} from 'react';
 
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
@@ -66,15 +67,18 @@ const NeedsReviewCard: React.FC<INeedsReviewCardProps> = ({
 		[additionalProps, apiURL, id, renderSubtitle]
 	);
 
+	const titleId = `${id}-title`;
+
 	return (
-		<div className="border h-100 rounded-lg">
+		<section aria-labelledby={titleId} className="border h-100 rounded-lg">
 			<div className="bg-transparent border-bottom-0 pt-3 px-3">
 				<div className="align-items-center d-flex justify-content-between">
-					<span className="font-weight-semi-bold text-4">
+					<span className="font-weight-semi-bold text-4" id={titleId}>
 						{title}
 					</span>
 
 					<ClayLink
+						aria-label={sub(Liferay.Language.get('view-x'), title)}
 						borderless
 						className="font-weight-semi-bold text-3"
 						href={viewAllHref}
@@ -103,7 +107,7 @@ const NeedsReviewCard: React.FC<INeedsReviewCardProps> = ({
 					views={VIEWS}
 				/>
 			</div>
-		</div>
+		</section>
 	);
 };
 
