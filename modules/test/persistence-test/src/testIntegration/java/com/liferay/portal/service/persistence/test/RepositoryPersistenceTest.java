@@ -660,4 +660,4 @@ public class RepositoryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1589679459
+// LIFERAY-SERVICE-BUILDER-HASH:-294853201

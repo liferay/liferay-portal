@@ -665,4 +665,4 @@ public class NotificationTemplatePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1686283784
+// LIFERAY-SERVICE-BUILDER-HASH:-1738195854

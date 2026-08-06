@@ -877,4 +877,4 @@ public class DLFolderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:822366275
+// LIFERAY-SERVICE-BUILDER-HASH:-390643385

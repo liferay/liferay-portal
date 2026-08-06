@@ -776,4 +776,4 @@ public class CPConfigurationListPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-804965261
+// LIFERAY-SERVICE-BUILDER-HASH:534873473

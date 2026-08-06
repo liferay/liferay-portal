@@ -665,4 +665,4 @@ public class CommerceAvailabilityEstimatePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1706558911
+// LIFERAY-SERVICE-BUILDER-HASH:1407751317

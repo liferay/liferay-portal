@@ -588,4 +588,4 @@ public class CProductPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1586055079
+// LIFERAY-SERVICE-BUILDER-HASH:1610242887

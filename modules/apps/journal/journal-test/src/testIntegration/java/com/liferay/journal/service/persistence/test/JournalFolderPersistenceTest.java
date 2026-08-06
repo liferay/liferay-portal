@@ -779,4 +779,4 @@ public class JournalFolderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:63747973
+// LIFERAY-SERVICE-BUILDER-HASH:1676016443

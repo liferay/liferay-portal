@@ -623,4 +623,4 @@ public class AccountGroupPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1463035009
+// LIFERAY-SERVICE-BUILDER-HASH:433306853

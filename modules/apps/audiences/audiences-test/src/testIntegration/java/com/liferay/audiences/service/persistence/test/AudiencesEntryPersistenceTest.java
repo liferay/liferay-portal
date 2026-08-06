@@ -554,4 +554,4 @@ public class AudiencesEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1727085347
+// LIFERAY-SERVICE-BUILDER-HASH:1331802761

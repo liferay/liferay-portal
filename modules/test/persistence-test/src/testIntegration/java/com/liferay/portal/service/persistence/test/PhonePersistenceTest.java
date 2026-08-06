@@ -600,4 +600,4 @@ public class PhonePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:635602280
+// LIFERAY-SERVICE-BUILDER-HASH:-1915490844

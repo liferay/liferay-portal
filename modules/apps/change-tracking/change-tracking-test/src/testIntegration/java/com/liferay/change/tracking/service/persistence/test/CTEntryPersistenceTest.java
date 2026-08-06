@@ -618,4 +618,4 @@ public class CTEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-133881066
+// LIFERAY-SERVICE-BUILDER-HASH:-1127359020

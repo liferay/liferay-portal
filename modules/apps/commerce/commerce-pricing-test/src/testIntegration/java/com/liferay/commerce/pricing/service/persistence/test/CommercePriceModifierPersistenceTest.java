@@ -821,4 +821,4 @@ public class CommercePriceModifierPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-597161225
+// LIFERAY-SERVICE-BUILDER-HASH:-1247180051

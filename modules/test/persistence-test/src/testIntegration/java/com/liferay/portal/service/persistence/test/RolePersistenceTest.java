@@ -712,4 +712,4 @@ public class RolePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1191728336
+// LIFERAY-SERVICE-BUILDER-HASH:1682720524

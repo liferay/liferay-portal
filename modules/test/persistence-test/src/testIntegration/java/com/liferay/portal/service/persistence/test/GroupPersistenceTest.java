@@ -944,4 +944,4 @@ public class GroupPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1996394709
+// LIFERAY-SERVICE-BUILDER-HASH:-452767721

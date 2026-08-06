@@ -693,4 +693,4 @@ public class WikiNodePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1339829431
+// LIFERAY-SERVICE-BUILDER-HASH:938660837

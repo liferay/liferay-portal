@@ -874,4 +874,4 @@ public class DDMTemplatePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1465699254
+// LIFERAY-SERVICE-BUILDER-HASH:-1782269124

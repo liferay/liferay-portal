@@ -834,4 +834,4 @@ public class CalendarBookingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:380495095
+// LIFERAY-SERVICE-BUILDER-HASH:934884845

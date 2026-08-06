@@ -632,4 +632,4 @@ public class AssetTagPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1595800145
+// LIFERAY-SERVICE-BUILDER-HASH:1663578181
