@@ -594,12 +594,17 @@ public class DLAdminManagementToolbarDisplayContext
 								signatureRecipientStatuses,
 								signatureRecipientStatus)));
 					labelItem.setCloseable(true);
+
+					String label = signatureRecipientStatus;
+
+					if (signatureRecipientStatus.equals("signature-required")) {
+						label = "required";
+					}
+
 					labelItem.setLabel(
 						_getLabel(
 							"signature",
-							LanguageUtil.get(
-								_httpServletRequest,
-								signatureRecipientStatus)));
+							LanguageUtil.get(_httpServletRequest, label)));
 				});
 		}
 	}
@@ -1276,7 +1281,7 @@ public class DLAdminManagementToolbarDisplayContext
 	};
 
 	private static final String[] _SIGNATURE_STATUSES = {
-		"sent", "completed", "declined", "voided", "expired"
+		"completed", "declined", "expired", "sent", "voided"
 	};
 
 	private static final Log _log = LogFactoryUtil.getLog(
