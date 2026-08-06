@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-105"
+    labels:
+        {{- include "liferay-platform.labels" . | nindent 8 }}
+        app.kubernetes.io/name: operator-appproject
+    name: liferay-operator
+    namespace: {{ .Release.Namespace }}
+spec:
+    clusterResourceWhitelist:
+        -   group: "*"
+            kind: "*"
+    description:
+        ArgoCD project for Liferay cloud native operators.
+    destinations:
+        {{- range $operatorApplication := .Values.operatorApplications }}
+        -   namespace: {{ $operatorApplication.namespace }}
+            server: https://kubernetes.default.svc
+        {{- end }}
+    sourceRepos:
+        {{- range $operatorApplication := .Values.operatorApplications }}
+        -   {{ $operatorApplication.repoURL }}
+        -   {{ $operatorApplication.repoURL }}/*
+        {{- end }}

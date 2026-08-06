@@ -10,6 +10,7 @@ templates:
     -   templates/applicationset-resources.yaml
     -   templates/appproject-application.yaml
     -   templates/appproject-infrastructure.yaml
+    -   templates/appproject-operator.yaml
 tests:
     -   asserts:
             -   hasDocuments:
@@ -108,6 +109,20 @@ tests:
             observability:
                 enabled: true
     -   asserts:
+            -   equal:
+                    path: metadata.labels["app.kubernetes.io/name"]
+                    value: operator-appproject
+                template: templates/appproject-operator.yaml
+            -   equal:
+                    path: metadata.name
+                    value: liferay-operator
+                template: templates/appproject-operator.yaml
+            -   equal:
+                    path: metadata.namespace
+                    value: argocd-system
+                template: templates/appproject-operator.yaml
+        it: Names the operator AppProject liferay-operator in the release namespace
+    -   asserts:
             -   contains:
                     content:
                         name: clusterIdentity.deploymentName
@@ -133,6 +148,22 @@ tests:
             infrastructureProvider:
                 chart: liferay-azure-infrastructure-provider
                 repoURL: oci://example-registry/liferay-azure-infrastructure-provider
+    -   asserts:
+            -   contains:
+                    content: https://charts.example.com
+                    path: spec.sourceRepos
+                template: templates/appproject-operator.yaml
+            -   contains:
+                    content: https://charts.example.com/*
+                    path: spec.sourceRepos
+                template: templates/appproject-operator.yaml
+            -   notContains:
+                    content: https://kedacore.github.io/charts
+                    path: spec.sourceRepos
+                template: templates/appproject-operator.yaml
+        it: Reflects a repository URL override in the operator AppProject source repos
+        set:
+            operatorApplications.keda.repoURL: https://charts.example.com
     -   asserts:
             -   hasDocuments:
                     count: 1
@@ -167,6 +198,48 @@ tests:
             liferay:
                 chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-105"
+                template: templates/appproject-operator.yaml
+        it: Syncs the operator AppProject before the operator applications
+    -   asserts:
+            -   equal:
+                    path: spec.sourceRepos
+                    value:
+                        -   oci://public.ecr.aws/aws-controllers-k8s
+                        -   oci://public.ecr.aws/aws-controllers-k8s/*
+                        -   https://argoproj.github.io/argo-helm
+                        -   https://argoproj.github.io/argo-helm/*
+                        -   https://charts.crossplane.io/stable
+                        -   https://charts.crossplane.io/stable/*
+                        -   https://helm.elastic.co
+                        -   https://helm.elastic.co/*
+                        -   oci://docker.io/envoyproxy
+                        -   oci://docker.io/envoyproxy/*
+                        -   https://charts.external-secrets.io
+                        -   https://charts.external-secrets.io/*
+                        -   https://kedacore.github.io/charts
+                        -   https://kedacore.github.io/charts/*
+                template: templates/appproject-operator.yaml
+            -   contains:
+                    content:
+                        namespace: ack-system
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+            -   contains:
+                    content:
+                        namespace: keda-system
+                        server: https://kubernetes.default.svc
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+            -   lengthEqual:
+                    count: 7
+                    path: spec.destinations
+                template: templates/appproject-operator.yaml
+        it: Whitelists every operator chart repository and namespace on the operator AppProject
     -   asserts:
             -   contains:
                     content: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability

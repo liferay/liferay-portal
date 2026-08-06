@@ -59,7 +59,7 @@ spec:
     destination:
         namespace: {{ $app.namespace }}
         server: https://kubernetes.default.svc
-    project: default
+    project: liferay-operator
     source:
         {{- include "liferay-platform.chartSource" $app | nindent 8 }}
         {{- with $app.values }}

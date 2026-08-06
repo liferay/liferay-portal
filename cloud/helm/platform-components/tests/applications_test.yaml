@@ -75,6 +75,40 @@ tests:
         it: Applies the minimal common label set to the applications
     -   asserts:
             -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-ack-prometheusservice.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-argo-workflows.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-crossplane.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-eck-operator.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-envoy-gateway.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-external-secrets.yaml
+            -   equal:
+                    path: spec.project
+                    value: liferay-operator
+                template: templates/application-keda.yaml
+        it: Assigns every operator application to the liferay-operator project
+        set:
+            observability.enabled: true
+            operatorApplications.ackPrometheusService.enabled: true
+            operatorApplications.keda.enabled: true
+    -   asserts:
+            -   equal:
                     path: metadata.namespace
                     value: envoy-gateway-system
                 template: templates/pdb-envoy-proxy.yaml
