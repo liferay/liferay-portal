@@ -11,6 +11,7 @@ import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.exception.ObjectDefinitionNameException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectDefinitionStatusException;
+import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.exception.ObjectViewColumnFieldNameException;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -96,6 +97,9 @@ public class ImportObjectDefinitionMVCActionCommand
 			return JSONUtil.put("title", exception.getMessage());
 		}
 		else if (exception instanceof ObjectDefinitionStatusException) {
+			return JSONUtil.put("title", exception.getMessage());
+		}
+		else if (exception instanceof ObjectRelationshipEdgeException) {
 			return JSONUtil.put("title", exception.getMessage());
 		}
 		else if (exception instanceof ObjectViewColumnFieldNameException) {
