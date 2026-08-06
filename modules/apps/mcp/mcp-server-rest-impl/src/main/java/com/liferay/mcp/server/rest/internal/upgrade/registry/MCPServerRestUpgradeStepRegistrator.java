@@ -7,6 +7,7 @@ package com.liferay.mcp.server.rest.internal.upgrade.registry;
 
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileDataMaskUpgradeProcess;
+import com.liferay.mcp.server.rest.internal.upgrade.MCPProfileUpgradeProcess;
 import com.liferay.mcp.server.rest.internal.upgrade.MCPPromptUpgradeProcess;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.rest.filter.factory.FilterFactory;
@@ -14,6 +15,8 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFieldSettingLocalService;
+import com.liferay.object.service.ObjectFolderLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -46,6 +49,14 @@ public class MCPServerRestUpgradeStepRegistrator
 			new MCPProfileDataMaskUpgradeProcess(
 				_companyLocalService, _filterFactory,
 				_objectDefinitionLocalService, _objectEntryLocalService));
+
+		registry.register(
+			"1.1.0", "1.2.0",
+			new MCPProfileUpgradeProcess(
+				_companyLocalService, _listTypeDefinitionLocalService,
+				_objectDefinitionLocalService, _objectEntryLocalService,
+				_objectFieldLocalService, _objectFieldSettingLocalService,
+				_objectFolderLocalService, _objectRelationshipLocalService));
 	}
 
 	@Reference
@@ -70,6 +81,12 @@ public class MCPServerRestUpgradeStepRegistrator
 
 	@Reference
 	private ObjectFieldSettingLocalService _objectFieldSettingLocalService;
+
+	@Reference
+	private ObjectFolderLocalService _objectFolderLocalService;
+
+	@Reference
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Reference
 	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
