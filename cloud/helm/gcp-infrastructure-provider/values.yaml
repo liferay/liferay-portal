@@ -20,6 +20,10 @@ gateway:
     namespace: envoy-gateway-system
 global:
     gcp: {}
+liferay-dxp-operator:
+    enabled: true
+    fullnameOverride: dxp-operator
+    namespaceOverride: dxp-operator-system
 liferay-subchart-backup-controller:
     enabled: true
     serviceAccountName: backup-controller

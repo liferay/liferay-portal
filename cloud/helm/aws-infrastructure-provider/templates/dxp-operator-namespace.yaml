@@ -1,0 +1,12 @@
+{{- $dxpOperator := index .Values "liferay-dxp-operator" -}}
+{{- if and $dxpOperator.enabled $dxpOperator.namespaceOverride (ne $dxpOperator.namespaceOverride .Release.Namespace) -}}
+apiVersion: v1
+kind: Namespace
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-wave: "-120"
+    labels:
+        name: {{ $dxpOperator.namespaceOverride }}
+        pod-security.kubernetes.io/enforce: restricted
+    name: {{ $dxpOperator.namespaceOverride }}
+{{- end -}}

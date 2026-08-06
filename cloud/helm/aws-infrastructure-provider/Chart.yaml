@@ -1,6 +1,10 @@
 apiVersion: v2
 appVersion: latest
 dependencies:
+    -   condition: liferay-dxp-operator.enabled
+        name: liferay-dxp-operator
+        repository: file://../dxp-operator
+        version: 0.0.1
     -   condition: liferay-subchart-backup-restore.enabled
         name: liferay-subchart-backup-restore
         version: 0.1.5

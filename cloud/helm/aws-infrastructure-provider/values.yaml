@@ -14,5 +14,9 @@ crossplaneNamespace: crossplane-system
 gateway:
     internetFacing: true
     namespace: envoy-gateway-system
+liferay-dxp-operator:
+    enabled: true
+    fullnameOverride: dxp-operator
+    namespaceOverride: dxp-operator-system
 liferay-subchart-backup-restore:
     enabled: true
