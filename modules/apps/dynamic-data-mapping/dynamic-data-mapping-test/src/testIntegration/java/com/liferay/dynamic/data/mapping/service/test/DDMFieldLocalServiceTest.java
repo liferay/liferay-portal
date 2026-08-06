@@ -6,7 +6,8 @@
 package com.liferay.dynamic.data.mapping.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.dynamic.data.mapping.model.DDMFieldAttribute;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMFormFieldOptions;
@@ -16,13 +17,15 @@ import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
-import com.liferay.dynamic.data.mapping.service.persistence.DDMFieldAttributePersistence;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.StorageType;
 import com.liferay.dynamic.data.mapping.test.util.DDMFormTestUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestHelper;
 import com.liferay.dynamic.data.mapping.util.DDMFormFieldUtil;
+import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
@@ -35,10 +38,13 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -65,7 +71,9 @@ public class DDMFieldLocalServiceTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	public void setUp() throws Exception {
@@ -83,75 +91,42 @@ public class DDMFieldLocalServiceTest {
 
 	@Test
 	public void testGetDDMFormValues() throws Exception {
-		DDMForm ddmForm = new DDMForm();
+		JournalArticle journalArticle = JournalTestUtil.addArticleWithWorkflow(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			false);
 
-		Locale locale = LocaleUtil.getSiteDefault();
+		Assert.assertTrue(journalArticle.isDraft());
 
-		ddmForm.setAvailableLocales(Collections.singleton(locale));
-		ddmForm.setDefaultLocale(locale);
-
-		List<DDMFormField> ddmFormFields = ddmForm.getDDMFormFields();
-
-		ddmFormFields.add(
-			_createDDMFormField(
-				locale, ddmForm, "field1", "text", "string", null, null));
-
-		DDMStructure ddmStructure = _ddmStructureTestHelper.addStructure(
-			ddmForm, StorageType.DEFAULT.toString());
-
-		DDMFormValues ddmFormValues = new DDMFormValues(ddmForm);
-
-		ddmFormValues.setAvailableLocales(Collections.singleton(locale));
-		ddmFormValues.setDDMFormFieldValues(
-			Collections.singletonList(
-				_createDDMFormFieldValue(
-					locale, "field1", RandomTestUtil.randomString())));
-		ddmFormValues.setDefaultLocale(locale);
-
-		_ddmFieldLocalService.updateDDMFormValues(
-			ddmStructure.getStructureId(), _STORAGE_ID, ddmFormValues);
-
-		long ctCollectionId = RandomTestUtil.randomLong();
+		_ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			0, RandomTestUtil.randomString(), null);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
-					ctCollectionId)) {
+					_ctCollection.getCtCollectionId())) {
 
-			for (DDMFieldAttribute ddmFieldAttribute :
-					_ddmFieldAttributePersistence.findByStorageId(
-						_STORAGE_ID)) {
-
-				DDMFieldAttribute publicationDDMFieldAttribute =
-					_ddmFieldAttributePersistence.create(
-						RandomTestUtil.randomLong());
-
-				publicationDDMFieldAttribute.setCtCollectionId(ctCollectionId);
-				publicationDDMFieldAttribute.setCompanyId(
-					ddmFieldAttribute.getCompanyId());
-				publicationDDMFieldAttribute.setFieldId(
-					ddmFieldAttribute.getFieldId());
-				publicationDDMFieldAttribute.setStorageId(
-					ddmFieldAttribute.getStorageId());
-				publicationDDMFieldAttribute.setAttributeName(
-					ddmFieldAttribute.getAttributeName());
-				publicationDDMFieldAttribute.setLanguageId(
-					ddmFieldAttribute.getLanguageId());
-				publicationDDMFieldAttribute.setLargeAttributeValue(
-					ddmFieldAttribute.getLargeAttributeValue());
-				publicationDDMFieldAttribute.setSmallAttributeValue(
-					ddmFieldAttribute.getSmallAttributeValue());
-
-				_ddmFieldAttributePersistence.update(
-					publicationDDMFieldAttribute);
-			}
+			JournalTestUtil.updateArticle(
+				journalArticle, RandomTestUtil.randomString(),
+				journalArticle.getContent(), true, true,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 		}
+
+		DDMStructure ddmStructure = journalArticle.getDDMStructure();
+
+		DDMForm ddmForm = ddmStructure.getDDMForm();
+
+		DDMFormValues ddmFormValues = _ddmFieldLocalService.getDDMFormValues(
+			ddmForm, journalArticle.getId());
 
 		try (SafeCloseable safeCloseable =
 				ReindexCacheThreadLocal.openReindexMode()) {
 
 			Assert.assertEquals(
 				ddmFormValues,
-				_ddmFieldLocalService.getDDMFormValues(ddmForm, _STORAGE_ID));
+				_ddmFieldLocalService.getDDMFormValues(
+					ddmForm, journalArticle.getId()));
 		}
 	}
 
@@ -741,8 +716,11 @@ public class DDMFieldLocalServiceTest {
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
+	@DeleteAfterTestRun
+	private CTCollection _ctCollection;
+
 	@Inject
-	private DDMFieldAttributePersistence _ddmFieldAttributePersistence;
+	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@Inject
 	private DDMFieldLocalService _ddmFieldLocalService;
