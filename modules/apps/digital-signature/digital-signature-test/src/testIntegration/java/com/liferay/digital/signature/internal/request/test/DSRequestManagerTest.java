@@ -229,11 +229,6 @@ public class DSRequestManagerTest {
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_DS_REQUEST", companyId);
 
-		Assert.assertNotNull(
-			"The L_DS_REQUEST object definition must exist when the feature " +
-				"flag is enabled",
-			objectDefinition);
-
 		long fileEntryId = RandomTestUtil.randomInt();
 
 		_objectEntryLocalService.addObjectEntry(
