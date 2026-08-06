@@ -33,3 +33,28 @@ it('allows deleting only one character instead of clearing all input', async () 
 
 	expect(dateInput).toHaveValue('07/01/2025 06:56 P_');
 });
+
+it('keeps character positions when deleting inside a prefilled value', async () => {
+	const {container} = render(
+		<DatePicker
+			disabled={false}
+			id="datePicker"
+			onChange={jest.fn()}
+			type="Date"
+			value="2026-12-25"
+		/>
+	);
+
+	const dateInput = container.querySelector(
+		`input[id$="datePicker"]`
+	) as HTMLInputElement;
+
+	expect(dateInput).toHaveValue('12/25/2026');
+
+	dateInput.focus();
+	dateInput.setSelectionRange(5, 5);
+
+	await userEvent.keyboard('{Backspace}');
+
+	expect(dateInput).toHaveValue('12/2_/2026');
+});
