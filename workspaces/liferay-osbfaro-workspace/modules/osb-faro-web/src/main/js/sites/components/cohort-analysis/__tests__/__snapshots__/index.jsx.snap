@@ -39,17 +39,17 @@ exports[`CohortAnalysis should render 1`] = `
         <th
           class="table-column-text-center"
         >
-          0.00%
+          0%
         </th>
         <th
           class="table-column-text-center"
         >
-          0.00%
+          0%
         </th>
         <th
           class="table-column-text-center"
         >
-          0.00%
+          0%
         </th>
       </tr>
     </thead>
@@ -71,7 +71,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
         <td
@@ -81,7 +81,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
         <td
@@ -91,7 +91,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
       </tr>
@@ -112,7 +112,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
         <td
@@ -122,7 +122,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
         <td
@@ -132,7 +132,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
       </tr>
@@ -153,7 +153,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
         <td
@@ -163,7 +163,7 @@ exports[`CohortAnalysis should render 1`] = `
           <span
             class="retention"
           >
-            0.00%
+            0%
           </span>
         </td>
       </tr>

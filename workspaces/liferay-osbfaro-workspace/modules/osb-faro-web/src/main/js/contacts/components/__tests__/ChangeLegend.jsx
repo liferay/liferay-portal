@@ -4,6 +4,7 @@ import {CHART_ACTIVITY_ID} from 'shared/util/activities';
 import {DEFAULT_ACTIVITY_MAX} from 'shared/api/activities';
 import {render} from '@testing-library/react';
 import {sub} from 'shared/util/lang';
+import {toLocale} from 'shared/util/numbers';
 
 jest.unmock('react-dom');
 
@@ -23,7 +24,7 @@ describe('ChangeLegend', () => {
 						),
 						title: sub(
 							Liferay.Language.get('total-activity-count-x'),
-							[mockActivityCount.toLocaleString()]
+							[toLocale(mockActivityCount)]
 						)
 					}
 				]}
@@ -48,7 +49,7 @@ describe('ChangeLegend', () => {
 						),
 						title: sub(
 							Liferay.Language.get('total-activity-count-x'),
-							[mockActivityCount.toLocaleString()]
+							[toLocale(mockActivityCount)]
 						)
 					}
 				]}
@@ -73,7 +74,7 @@ describe('ChangeLegend', () => {
 						),
 						title: sub(
 							Liferay.Language.get('total-activity-count-x'),
-							[mockActivityCount.toLocaleString()]
+							[toLocale(mockActivityCount)]
 						)
 					}
 				]}
@@ -98,7 +99,7 @@ describe('ChangeLegend', () => {
 						),
 						title: sub(
 							Liferay.Language.get('total-activity-count-x'),
-							[mockActivityCount.toLocaleString()]
+							[toLocale(mockActivityCount)]
 						)
 					}
 				]}

@@ -131,7 +131,7 @@ exports[`AudienceReport should render 1`] = `
                             dy="0em"
                             x="402.8393874272831"
                           >
-                            99.24%
+                            99.2%
                           </tspan>
                         </text>
                       </g>
@@ -150,7 +150,7 @@ exports[`AudienceReport should render 1`] = `
                             dy="0em"
                             x="397.16061257271696"
                           >
-                            0.76%
+                            0.8%
                           </tspan>
                         </text>
                       </g>
@@ -387,7 +387,7 @@ exports[`AudienceReport should render 1`] = `
                             dy="0em"
                             x="407.62435617770484"
                           >
-                            2.04%
+                            2%
                           </tspan>
                         </text>
                       </g>
@@ -406,7 +406,7 @@ exports[`AudienceReport should render 1`] = `
                             dy="0em"
                             x="392.37564382229516"
                           >
-                            97.96%
+                            98%
                           </tspan>
                         </text>
                       </g>

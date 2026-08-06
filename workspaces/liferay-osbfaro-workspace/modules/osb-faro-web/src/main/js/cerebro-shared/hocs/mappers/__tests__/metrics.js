@@ -133,7 +133,7 @@ describe('Shared HOCs Mappers - Metrics', () => {
 						name: 'views',
 						title: 'Views',
 						type: 'number',
-						value: '1.08K',
+						value: '1K',
 					},
 					data: [
 						{

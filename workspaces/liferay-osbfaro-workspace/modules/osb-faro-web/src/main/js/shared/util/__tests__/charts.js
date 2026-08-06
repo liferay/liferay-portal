@@ -460,7 +460,7 @@ describe('getLocationsData', () => {
 				id: undefined,
 				name: undefined,
 				total: 200,
-				value: '8',
+				value: 8,
 			},
 		]);
 	});
@@ -472,7 +472,7 @@ describe('getLocationsData', () => {
 			id: 'others',
 			name: 'Other Countries',
 			total: 500,
-			value: '20',
+			value: 20,
 		});
 	});
 
@@ -496,7 +496,7 @@ describe('getLocationsData', () => {
 			id: 'others',
 			name: 'Other Regions',
 			total: 500,
-			value: '20',
+			value: 20,
 		});
 	});
 });
@@ -588,7 +588,7 @@ describe('getAxisFormatter', () => {
 	});
 
 	it('should be return the value to ratings', () => {
-		expect(getAxisFormatter('ratings')(1)).toEqual('10.00');
+		expect(getAxisFormatter('ratings')(1)).toEqual('10');
 	});
 
 	it('should be return the value to any', () => {

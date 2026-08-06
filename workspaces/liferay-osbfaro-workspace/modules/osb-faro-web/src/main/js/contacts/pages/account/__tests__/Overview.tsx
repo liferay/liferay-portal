@@ -118,7 +118,7 @@ describe('Overview', () => {
 
 		expect(screen.getByText('IQVIA')).toBeInTheDocument();
 		expect(screen.getByText('United States')).toBeInTheDocument();
-		expect(screen.getByText('11.36B Revenue')).toBeInTheDocument();
+		expect(screen.getByText('11.3B Revenue')).toBeInTheDocument();
 		expect(screen.getByText('Business Services')).toBeInTheDocument();
 		expect(screen.getByText('Lifecycle: Engaged')).toBeInTheDocument();
 		expect(screen.getByText('Type: Prospect')).toBeInTheDocument();
@@ -253,7 +253,7 @@ describe('Overview', () => {
 			renderOverview({account: mockAccount});
 
 			expect(getMetricsCard('TOTAL INDIVIDUALS')).toHaveTextContent(
-				'1.23K Individuals'
+				'1.2K Individuals'
 			);
 		});
 
@@ -316,7 +316,7 @@ describe('Overview', () => {
 			renderOverview({account: mockAccount});
 
 			expect(getMetricsCard('TOTAL INDIVIDUALS')).toHaveTextContent(
-				'1.23K Individuals'
+				'1.2K Individuals'
 			);
 			expect(getMetricsCard('IDENTITY BREAKDOWN')).toHaveTextContent(
 				'0 Known'
@@ -341,7 +341,7 @@ describe('Overview', () => {
 			expect(
 				screen.getAllByText('An unexpected error occurred.')
 			).toHaveLength(4);
-			expect(screen.queryByText('1.23K')).not.toBeInTheDocument();
+			expect(screen.queryByText('1.2K')).not.toBeInTheDocument();
 		});
 
 		it('should render every card as loading while the metrics load', () => {
@@ -360,7 +360,7 @@ describe('Overview', () => {
 				).toBeInTheDocument();
 			});
 
-			expect(screen.queryByText('1.23K')).not.toBeInTheDocument();
+			expect(screen.queryByText('1.2K')).not.toBeInTheDocument();
 		});
 
 		it('should render the cards in a quarter-width column each', () => {

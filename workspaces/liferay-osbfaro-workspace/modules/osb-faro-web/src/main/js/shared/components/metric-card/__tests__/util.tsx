@@ -5,8 +5,10 @@ import {CHART_COLOR_NAMES} from 'shared/util/charts';
 import {CompositeMetric, MetricType} from '../metrics';
 import {
 	convertHistogramKeysToDate,
+	formatValue,
 	getMetricsChartData,
 	getMetricsData,
+	getRegexType,
 	getSiteMetricsChartData,
 } from '../util';
 import {getIntervals} from 'shared/util/charts';
@@ -14,6 +16,33 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {toUnix} from 'shared/util/date';
 
 const {stark: CHART_BLUE, starkL2: CHART_BLUE_L2} = CHART_COLOR_NAMES;
+
+describe('formatValue', () => {
+	it('captures an ASCII compact suffix as the unit', () => {
+		const [result] = formatValue('4M', getRegexType(MetricType.Number));
+
+		expect(result.props.children[0]).toBe('4');
+		expect(result.props.children[1].props.children).toBe('M');
+	});
+
+	it('captures a Japanese compact suffix (万/億) as the unit', () => {
+		const [tenThousands] = formatValue(
+			'404.2万',
+			getRegexType(MetricType.Number)
+		);
+
+		expect(tenThousands.props.children[0]).toBe('404.2');
+		expect(tenThousands.props.children[1].props.children).toBe('万');
+
+		const [hundredMillions] = formatValue(
+			'1億',
+			getRegexType(MetricType.Number)
+		);
+
+		expect(hundredMillions.props.children[0]).toBe('1');
+		expect(hundredMillions.props.children[1].props.children).toBe('億');
+	});
+});
 
 describe('convertHistogramKeysToDate', () => {
 	it('should convert the histogram date key strings to Date types', () => {

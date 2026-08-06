@@ -36,7 +36,7 @@ exports[`ChangeLegend should render 1`] = `
               href="#caret-top"
             />
           </svg>
-          200.0%
+          200%
         </span>
       </div>
     </div>

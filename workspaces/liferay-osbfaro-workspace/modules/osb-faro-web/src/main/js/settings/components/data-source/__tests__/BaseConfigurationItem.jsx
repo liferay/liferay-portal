@@ -1,8 +1,24 @@
-import BaseConfigurationItem from '../BaseConfigurationItem';
+import BaseConfigurationItem, {
+	getStatusMessage
+} from '../BaseConfigurationItem';
 import React from 'react';
 import {render} from '@testing-library/react';
 
 jest.unmock('react-dom');
+
+describe('getStatusMessage', () => {
+	it('formats a whole percentage with no trailing decimal', () => {
+		expect(
+			getStatusMessage({configured: true, current: 30, total: 40})
+		).toBe('Syncing - 75% Completed');
+	});
+
+	it('formats a fractional percentage with the current locale decimal separator', () => {
+		expect(
+			getStatusMessage({configured: true, current: 1, total: 3})
+		).toBe('Syncing - 33.33% Completed');
+	});
+});
 
 describe('BaseConfigurationItem', () => {
 	it('should render', () => {

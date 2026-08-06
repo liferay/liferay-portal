@@ -207,7 +207,7 @@ exports[`AcquisitionsCard renders 1`] = `
                       <span
                         class="count"
                       >
-                        2686
+                        2,686
                       </span>
                     </div>
                   </div>
@@ -218,7 +218,7 @@ exports[`AcquisitionsCard renders 1`] = `
                   <div
                     class="h4 table-title text-truncate"
                   >
-                    100.00%
+                    100%
                   </div>
                 </td>
               </tr>

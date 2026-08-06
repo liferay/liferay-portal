@@ -9,7 +9,7 @@ exports[`CohortChartItem should render 1`] = `
     <span
       class="retention"
     >
-      36.21%
+      36.2%
     </span>
   </td>
 </div>

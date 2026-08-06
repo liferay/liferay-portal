@@ -34,12 +34,12 @@ exports[`CohortChart should render 1`] = `
         <th
           class="table-column-text-center"
         >
-          12.12%
+          12.1%
         </th>
         <th
           class="table-column-text-center"
         >
-          42.12%
+          42.1%
         </th>
       </tr>
     </thead>
@@ -62,7 +62,7 @@ exports[`CohortChart should render 1`] = `
           <span
             class="retention"
           >
-            12.12%
+            12.1%
           </span>
         </td>
         <td
@@ -72,7 +72,7 @@ exports[`CohortChart should render 1`] = `
           <span
             class="retention"
           >
-            42.12%
+            42.1%
           </span>
         </td>
       </tr>
@@ -94,7 +94,7 @@ exports[`CohortChart should render 1`] = `
           <span
             class="retention"
           >
-            22.11%
+            22.1%
           </span>
         </td>
       </tr>

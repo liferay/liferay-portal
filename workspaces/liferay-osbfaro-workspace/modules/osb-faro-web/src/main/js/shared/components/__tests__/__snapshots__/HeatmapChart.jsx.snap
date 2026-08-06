@@ -74,21 +74,21 @@ exports[`HeatMapChart should render 1`] = `
               x="61"
               y="30"
             >
-              NANK
+              NaN
             </text>
             <text
               class="legend-label"
               x="122"
               y="30"
             >
-              NANK
+              NaN
             </text>
             <text
               class="legend-label"
               x="183"
               y="30"
             >
-              NANK
+              NaN
             </text>
             <text
               class="legend-label"

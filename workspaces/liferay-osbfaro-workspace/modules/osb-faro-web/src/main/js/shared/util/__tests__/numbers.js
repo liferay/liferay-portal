@@ -1,11 +1,15 @@
 import {
+	formatPercent,
+	formatPercentFromRatio,
 	getFinitePercent,
+	toCurrency,
 	toDuration,
 	toFixedPoint,
 	toInt,
 	toLocale,
 	toRounded,
 	toThousands,
+	toThousandsBase,
 	undoThousands,
 } from '../numbers';
 
@@ -18,25 +22,25 @@ describe('toLocale', () => {
 });
 
 describe('toThousands', () => {
-	it('should return the number truncate', () => {
+	it('should truncate rather than round', () => {
 		expect(toThousands(0.1)).toEqual('0.1');
 		expect(toThousands(1.4)).toEqual('1.4');
 		expect(toThousands(1.5)).toEqual('1.5');
-		expect(toThousands(2.45)).toEqual('2.45');
-		expect(toThousands(2.453)).toEqual('2.45');
-		expect(toThousands(2.456)).toEqual('2.46');
-		expect(toThousands(10.456)).toEqual('10.46');
+		expect(toThousands(2.45)).toEqual('2.4');
+		expect(toThousands(2.453)).toEqual('2.4');
+		expect(toThousands(2.456)).toEqual('2.4');
+		expect(toThousands(10.456)).toEqual('10.4');
 		expect(toThousands(150.5)).toEqual('150.5');
-		expect(toThousands(150.566)).toEqual('150.57');
+		expect(toThousands(150.566)).toEqual('150.5');
 		expect(toThousands(1100)).toEqual('1.1K');
-		expect(toThousands(1520)).toEqual('1.52K');
-		expect(toThousands(2432)).toEqual('2.43K');
-		expect(toThousands(51444)).toEqual('51.44K');
+		expect(toThousands(1520)).toEqual('1.5K');
+		expect(toThousands(2432)).toEqual('2.4K');
+		expect(toThousands(51444)).toEqual('51.4K');
 		expect(toThousands(255000.0)).toEqual('255K');
 		expect(toThousands(4500000)).toEqual('4.5M');
 		expect(toThousands(4500000000)).toEqual('4.5B');
-		expect(toThousands(4560000000)).toEqual('4.56B');
-		expect(toThousands(4567000000)).toEqual('4.57B');
+		expect(toThousands(4560000000)).toEqual('4.5B');
+		expect(toThousands(4567000000)).toEqual('4.5B');
 		expect(toThousands(1500000000000)).toEqual('1.5T');
 	});
 
@@ -61,6 +65,20 @@ describe('toThousands', () => {
 		expect(toThousands('test')).toEqual('');
 		expect(toThousands([])).toEqual('');
 		expect(toThousands({})).toEqual('');
+	});
+});
+
+describe('toThousandsBase', () => {
+	it('should truncate the mantissa rather than round it', () => {
+		const setFactor = (factor) => 2453 * factor;
+
+		expect(toThousandsBase(2453, setFactor, 'en-US')).toEqual('2.4K');
+	});
+
+	it('should let the caller customize the mantissa, e.g. for toThousandsABTesting', () => {
+		const setFactor = (factor) => Math.trunc(2453 * factor);
+
+		expect(toThousandsBase(2453, setFactor, 'en-US')).toEqual('2K');
 	});
 });
 
@@ -141,15 +159,41 @@ describe('getFinitePercent', () => {
 		${0}   | ${0}     | ${null}
 		${0}   | ${null}  | ${null}
 		${0}   | ${NaN}   | ${null}
-		${10}  | ${100}   | ${'10.0'}
-		${50}  | ${100}   | ${'50.0'}
-		${100} | ${100}   | ${'100.0'}
+		${10}  | ${100}   | ${10}
+		${50}  | ${100}   | ${50}
+		${100} | ${100}   | ${100}
 	`(
 		'should calculate the percent of $curVal to $totalVal return $expected',
 		({curVal, expected, totalVal}) => {
 			expect(getFinitePercent(curVal, totalVal)).toBe(expected);
 		}
 	);
+});
+
+describe('formatPercentFromRatio', () => {
+	it('should format a 0-1 ratio as a percentage, stripping trailing zeros', () => {
+		expect(formatPercentFromRatio(0.1)).toEqual('10%');
+		expect(formatPercentFromRatio(0.073)).toEqual('7.3%');
+		expect(formatPercentFromRatio(1)).toEqual('100%');
+	});
+});
+
+describe('formatPercent', () => {
+	it('should format a 0-100 value as a percentage, stripping trailing zeros', () => {
+		expect(formatPercent(10)).toEqual('10%');
+		expect(formatPercent(7.3)).toEqual('7.3%');
+		expect(formatPercent(100)).toEqual('100%');
+	});
+});
+
+describe('toCurrency', () => {
+	it('should format a value with the given currency code', () => {
+		expect(toCurrency(1234.5, 'USD', 'en-US')).toEqual('$1,234.50');
+	});
+
+	it('should format a plain locale-aware number when no currency code is given', () => {
+		expect(toCurrency(1234.5, undefined, 'en-US')).toEqual('1,234.5');
+	});
 });
 
 describe('undoThousands', () => {
@@ -170,7 +214,7 @@ describe('undoThousands', () => {
 		const numberC = undoThousands(formattedC);
 
 		expect(toThousands(numberA + numberB)).toEqual('4K');
-		expect(toThousands(numberA + numberC)).toEqual('1.64K');
+		expect(toThousands(numberA + numberC)).toEqual('1.6K');
 	});
 
 	it('should return zero when no formatted value is specified', () => {

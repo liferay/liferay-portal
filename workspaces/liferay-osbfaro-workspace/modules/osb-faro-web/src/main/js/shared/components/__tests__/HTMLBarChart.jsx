@@ -1,8 +1,31 @@
+jest.mock('shared/store', () => ({
+	__esModule: true,
+	default: {
+		getState: jest.fn(),
+	},
+}));
+
 import HTMLBarChart from '../HTMLBarChart';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';
+import {fromJS} from 'immutable';
+import {LanguageIds} from 'shared/util/constants';
+import store from 'shared/store';
 
 jest.unmock('react-dom');
+
+function mockLocale(languageId) {
+	store.getState.mockReturnValue(
+		fromJS({
+			currentUser: {data: '23'},
+			users: {23: {data: {languageId}}},
+		})
+	);
+}
+
+beforeEach(() => {
+	mockLocale(LanguageIds.English);
+});
 
 const CLASSNAME = '.analytics-bar-chart-html';
 
@@ -274,6 +297,94 @@ describe('HTMLBarChart', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	describe('width calculation is locale independent', () => {
+		afterEach(() => {
+			store.getState.mockReset();
+		});
+
+		it('computes the same progress bar width regardless of the account locale', () => {
+			mockLocale(LanguageIds.English);
+
+			const {container: enUSContainer} = render(
+				<HTMLBarChart
+					grid={{
+						maxValue: 1000,
+						minValue: 0,
+						show: true,
+						type: 'number'
+					}}
+					items={[{columns: COLUMNS, progress: PROGRESS_WITH_NUMBER}]}
+				/>
+			);
+
+			mockLocale(LanguageIds.Portuguese);
+
+			const {container: ptBRContainer} = render(
+				<HTMLBarChart
+					grid={{
+						maxValue: 1000,
+						minValue: 0,
+						show: true,
+						type: 'number'
+					}}
+					items={[{columns: COLUMNS, progress: PROGRESS_WITH_NUMBER}]}
+				/>
+			);
+
+			const getWidth = container =>
+				container.querySelector(`${CLASSNAME}-progress div`).style
+					.width;
+
+			const width = getWidth(enUSContainer);
+
+			expect(width).toMatch(/^\d+(\.\d+)?%$/);
+			expect(getWidth(ptBRContainer)).toBe(width);
+		});
+
+		it('computes the same interval width and position regardless of the account locale', () => {
+			const props = {
+				grid: {
+					maxValue: 1000,
+					minValue: 0,
+					show: true,
+					type: 'number'
+				},
+				items: [
+					{
+						columns: COLUMNS,
+						intervals: [{end: 600, start: 400}],
+						progress: PROGRESS_WITH_NUMBER
+					}
+				]
+			};
+
+			mockLocale(LanguageIds.English);
+
+			const {container: enUSContainer} = render(
+				<HTMLBarChart {...props} />
+			);
+
+			mockLocale(LanguageIds.Portuguese);
+
+			const {container: ptBRContainer} = render(
+				<HTMLBarChart {...props} />
+			);
+
+			const getIntervalStyle = container =>
+				container.querySelector(`${CLASSNAME}-interval div`).style;
+
+			const enUSStyle = getIntervalStyle(enUSContainer);
+
+			expect(enUSStyle.width).toMatch(/^\d+(\.\d+)?%$/);
+			expect(enUSStyle.marginLeft).toMatch(/^\d+(\.\d+)?%$/);
+
+			const ptBRStyle = getIntervalStyle(ptBRContainer);
+
+			expect(ptBRStyle.width).toBe(enUSStyle.width);
+			expect(ptBRStyle.marginLeft).toBe(enUSStyle.marginLeft);
+		});
 	});
 
 	it('should return an array with intervals', () => {

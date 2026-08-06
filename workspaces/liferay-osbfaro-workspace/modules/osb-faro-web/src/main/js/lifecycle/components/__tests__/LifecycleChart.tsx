@@ -160,8 +160,8 @@ describe('LifecycleChart', () => {
 			stages: stagesWithLargeCounts,
 		});
 
-		expect(getByText('5.35K')).toBeInTheDocument();
-		expect(getByText('1.66M')).toBeInTheDocument();
+		expect(getByText('5.3K')).toBeInTheDocument();
+		expect(getByText('1.6M')).toBeInTheDocument();
 		expect(getByText('999')).toBeInTheDocument();
 
 		expect(queryByText('5350')).toBeNull();
@@ -256,7 +256,7 @@ describe('LifecycleChart', () => {
 
 		expect(getByText('9.83')).toBeInTheDocument();
 		expect(getByText('4.68')).toBeInTheDocument();
-		expect(getByText('12.00')).toBeInTheDocument();
+		expect(getByText('12')).toBeInTheDocument();
 		expect(getByText('4.50')).toBeInTheDocument();
 
 		expect(queryByText('9.8333333')).toBeNull();

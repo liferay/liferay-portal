@@ -26,7 +26,7 @@ describe('AccountMetricsCard', () => {
 		it('should render the metric label with the value subbed in', () => {
 			const {container} = renderAccountMetricsCard();
 
-			expect(container).toHaveTextContent('1.23K Individuals');
+			expect(container).toHaveTextContent('1.2K Individuals');
 		});
 
 		it('should abbreviate the value to thousands', () => {
@@ -152,7 +152,7 @@ describe('AccountMetricsCard', () => {
 			expect(
 				screen.getByText('An unexpected error occurred.')
 			).toBeInTheDocument();
-			expect(screen.queryByText('1.23K')).not.toBeInTheDocument();
+			expect(screen.queryByText('1.2K')).not.toBeInTheDocument();
 		});
 
 		it('should not render zeroed metrics when the request failed', () => {
@@ -176,7 +176,7 @@ describe('AccountMetricsCard', () => {
 			expect(
 				screen.queryByText('An unexpected error occurred.')
 			).not.toBeInTheDocument();
-			expect(screen.getByText('1.23K')).toBeInTheDocument();
+			expect(screen.getByText('1.2K')).toBeInTheDocument();
 		});
 
 		// `useRequest` keeps `error` set while a refetch is in flight, so both
@@ -223,7 +223,7 @@ describe('AccountMetricsCard', () => {
 			expect(
 				container.querySelector('.loading-root')
 			).toBeInTheDocument();
-			expect(screen.queryByText('1.23K')).not.toBeInTheDocument();
+			expect(screen.queryByText('1.2K')).not.toBeInTheDocument();
 		});
 
 		it('should keep the title visible while loading', () => {
@@ -236,7 +236,7 @@ describe('AccountMetricsCard', () => {
 			const {container} = renderAccountMetricsCard({loading: false});
 
 			expect(container.querySelector('.loading-root')).toBeNull();
-			expect(screen.getByText('1.23K')).toBeInTheDocument();
+			expect(screen.getByText('1.2K')).toBeInTheDocument();
 		});
 	});
 

@@ -11,6 +11,7 @@ import {
 	getVariantLabels,
 	toThousandsABTesting,
 } from '../experiments';
+import {DEFAULT_LOCALE, setLocale} from 'shared/util/locale';
 
 const mockBestVariant = {
 	changes: 1,
@@ -131,15 +132,15 @@ describe('getFormattedMedianLabel', () => {
 
 describe('getFormattedProbabilityToWin', () => {
 	it('should return formatted probability to win', () => {
-		expect(getFormattedProbabilityToWin(50.4321)).toEqual('50.4');
+		expect(getFormattedProbabilityToWin(50.4321)).toEqual('50.4%');
 	});
 
 	it('should return formatted probability to win when value is less than 0.1', () => {
-		expect(getFormattedProbabilityToWin(0.05)).toEqual('< 0.1');
+		expect(getFormattedProbabilityToWin(0.05)).toEqual('< 0.1%');
 	});
 
 	it('should return formatted probability to win when value is greater than 99.9', () => {
-		expect(getFormattedProbabilityToWin(100)).toEqual('> 99.9');
+		expect(getFormattedProbabilityToWin(100)).toEqual('> 99.9%');
 	});
 });
 
@@ -257,21 +258,30 @@ describe('toThousandsABTesting', () => {
 		expect(toThousandsABTesting(0.1)).toEqual('0.1');
 		expect(toThousandsABTesting(1.4)).toEqual('1.4');
 		expect(toThousandsABTesting(1.5)).toEqual('1.5');
-		expect(toThousandsABTesting(2.45)).toEqual('2.45');
-		expect(toThousandsABTesting(2.453)).toEqual('2.45');
-		expect(toThousandsABTesting(2.456)).toEqual('2.46');
-		expect(toThousandsABTesting(10.456)).toEqual('10.46');
+		expect(toThousandsABTesting(2.45)).toEqual('2.4');
+		expect(toThousandsABTesting(2.453)).toEqual('2.4');
+		expect(toThousandsABTesting(2.456)).toEqual('2.4');
+		expect(toThousandsABTesting(10.456)).toEqual('10.4');
 		expect(toThousandsABTesting(150.5)).toEqual('150.5');
-		expect(toThousandsABTesting(150.566)).toEqual('150.57');
+		expect(toThousandsABTesting(150.566)).toEqual('150.5');
 		expect(toThousandsABTesting(1100)).toEqual('1.1K');
-		expect(toThousandsABTesting(1520)).toEqual('1.52K');
-		expect(toThousandsABTesting(2432)).toEqual('2.43K');
-		expect(toThousandsABTesting(51444)).toEqual('51K');
+		expect(toThousandsABTesting(1520)).toEqual('1.5K');
+		expect(toThousandsABTesting(2432)).toEqual('2.4K');
+		expect(toThousandsABTesting(51444)).toEqual('51.4K');
 		expect(toThousandsABTesting(255000.0)).toEqual('255K');
-		expect(toThousandsABTesting(4500000)).toEqual('4M');
-		expect(toThousandsABTesting(4500000000)).toEqual('4B');
-		expect(toThousandsABTesting(4560000000)).toEqual('4B');
-		expect(toThousandsABTesting(4567000000)).toEqual('4B');
-		expect(toThousandsABTesting(1500000000000)).toEqual('1T');
+		expect(toThousandsABTesting(4500000)).toEqual('4.5M');
+		expect(toThousandsABTesting(4500000000)).toEqual('4.5B');
+		expect(toThousandsABTesting(4560000000)).toEqual('4.5B');
+		expect(toThousandsABTesting(4567000000)).toEqual('4.5B');
+		expect(toThousandsABTesting(1500000000000)).toEqual('1.5T');
+	});
+
+	it('does not understate the Japanese 万/億 tiers, whose mantissa can be a single digit', () => {
+		setLocale('ja-JP');
+
+		expect(toThousandsABTesting(15000)).toEqual('1.5万');
+		expect(toThousandsABTesting(199999999)).toEqual('1.9億');
+
+		setLocale(DEFAULT_LOCALE);
 	});
 });

@@ -12,7 +12,7 @@ describe('getAccountInfoDisplayValues', () => {
 			expect(
 				getAccountInfoDisplayValues({annualRevenue: 11359000000})
 					.revenue
-			).toBe('11.36B');
+			).toBe('11.3B');
 		});
 
 		it('should render a missing revenue blank', () => {
