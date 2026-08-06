@@ -164,15 +164,16 @@ public class MCPServerPromptTest {
 		String name = RandomTestUtil.randomString();
 		String prompt = RandomTestUtil.randomString();
 
-		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
-			null, identifier, name, prompt);
-		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
-			description, null, name, prompt);
-		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
-			description, identifier, null, prompt);
 
 		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
 			description, identifier, name, null);
+
+		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
+			description, identifier, null, prompt);
+		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
+			description, null, name, prompt);
+		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
+			null, identifier, name, prompt);
 	}
 
 	@Test
