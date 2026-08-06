@@ -44,12 +44,7 @@ public abstract class BaseMonitor implements Monitor {
 		String category, String name, String value) {
 
 		return JenkinsResultsParserUtil.combine(
-			"Invalid ", name, " for ", getKey(category, name), ": ", value);
-	}
-
-	protected String getKey(String category, String name) {
-		return JenkinsResultsParserUtil.combine(
-			"monitor[", _monitorConfig.getId(), "].", category, "[", name, "]");
+			"Invalid ", name, " for ", _getKey(category, name), ": ", value);
 	}
 
 	protected long getLongValue(
@@ -88,10 +83,15 @@ public abstract class BaseMonitor implements Monitor {
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
 			throw new IllegalArgumentException(
-				"Missing required property " + getKey("parameter", name));
+				"Missing required property " + _getKey("parameter", name));
 		}
 
 		return value;
+	}
+
+	private String _getKey(String category, String name) {
+		return JenkinsResultsParserUtil.combine(
+			"monitor[", _monitorConfig.getId(), "].", category, "[", name, "]");
 	}
 
 	private static final long _SECONDS_TIMEOUT_DEFAULT = 60;
