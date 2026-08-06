@@ -112,14 +112,12 @@ public class RedactUtilTest {
 		Assert.assertEquals(
 			"[X]" + _TEXT_LONG,
 			RedactUtil.redact(
-				"www\\d+www", null, "[X]", "www123www" + _TEXT_LONG,
-				RedactUtil.newDeadline()));
+				RedactUtil.newDeadline(), "www\\d+www", null, "[X]",
+				"www123www" + _TEXT_LONG));
 
 		RedactException redactException = Assert.assertThrows(
 			RedactException.class,
-			() -> RedactUtil.redact(
-				_REGEX_CATASTROPHIC, null, "R", _TEXT_CATASTROPHIC,
-				RedactUtil.newDeadline()));
+			() -> RedactUtil.redact(0, _REGEX_SIMPLE, null, "R", _TEXT_LONG));
 
 		Assert.assertEquals(
 			"Redaction exceeded the timeout of 1000 milliseconds",
@@ -128,16 +126,8 @@ public class RedactUtilTest {
 		redactException = Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redact(
-				_REGEX_SIMPLE, _REGEX_CATASTROPHIC, "R", _TEXT_CATASTROPHIC,
-				RedactUtil.newDeadline()));
-
-		Assert.assertEquals(
-			"Redaction exceeded the timeout of 1000 milliseconds",
-			redactException.getMessage());
-
-		redactException = Assert.assertThrows(
-			RedactException.class,
-			() -> RedactUtil.redact(_REGEX_SIMPLE, null, "R", _TEXT_LONG, 0));
+				RedactUtil.newDeadline(), _REGEX_CATASTROPHIC, null, "R",
+				_TEXT_CATASTROPHIC));
 
 		Assert.assertEquals(
 			"Redaction exceeded the timeout of 1000 milliseconds",
@@ -146,8 +136,18 @@ public class RedactUtilTest {
 		redactException = Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redact(
-				"(a|aa)+$", null, "R", "a".repeat(100000) + "b",
-				RedactUtil.newDeadline()));
+				RedactUtil.newDeadline(), _REGEX_SIMPLE, _REGEX_CATASTROPHIC,
+				"R", _TEXT_CATASTROPHIC));
+
+		Assert.assertEquals(
+			"Redaction exceeded the timeout of 1000 milliseconds",
+			redactException.getMessage());
+
+		redactException = Assert.assertThrows(
+			RedactException.class,
+			() -> RedactUtil.redact(
+				RedactUtil.newDeadline(), "(a|aa)+$", null, "R",
+				"a".repeat(100000) + "b"));
 
 		Assert.assertEquals(
 			"Redaction overflowed the stack", redactException.getMessage());

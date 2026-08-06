@@ -27,21 +27,21 @@ public class RedactUtil {
 	}
 
 	public static String redact(
-		String detectionRegex, String replacementRegex, String replacementValue,
-		String text) {
+		long deadline, String detectionRegex, String replacementRegex,
+		String replacementValue, String text) {
 
-		return redact(
-			detectionRegex, replacementRegex, replacementValue, text,
-			newDeadline());
+		return _redact(
+			true, deadline, detectionRegex, replacementRegex, replacementValue,
+			text);
 	}
 
 	public static String redact(
 		String detectionRegex, String replacementRegex, String replacementValue,
-		String text, long deadline) {
+		String text) {
 
-		return _redact(
-			detectionRegex, replacementRegex, replacementValue, text, deadline,
-			true);
+		return redact(
+			newDeadline(), detectionRegex, replacementRegex, replacementValue,
+			text);
 	}
 
 	public static String redactWithoutCaching(
@@ -49,11 +49,11 @@ public class RedactUtil {
 		String text) {
 
 		return _redact(
-			detectionRegex, replacementRegex, replacementValue, text,
-			newDeadline(), false);
+			false, newDeadline(), detectionRegex, replacementRegex,
+			replacementValue, text);
 	}
 
-	private static Pattern _getPattern(String regex, boolean cache) {
+	private static Pattern _getPattern(boolean cache, String regex) {
 		if (Validator.isNull(regex)) {
 			return null;
 		}
@@ -66,8 +66,8 @@ public class RedactUtil {
 	}
 
 	private static String _getReplacement(
-		Matcher matcher, Pattern replacementPattern, String replacementValue,
-		long deadline) {
+		long deadline, Matcher matcher, Pattern replacementPattern,
+		String replacementValue) {
 
 		if (replacementPattern == null) {
 			return replacementValue;
@@ -80,8 +80,33 @@ public class RedactUtil {
 	}
 
 	private static String _redact(
-		Pattern detectionPattern, Pattern replacementPattern,
-		String replacementValue, String text, long deadline) {
+		boolean cache, long deadline, String detectionRegex,
+		String replacementRegex, String replacementValue, String text) {
+
+		if (text == null) {
+			return text;
+		}
+
+		Pattern detectionPattern = _getPattern(cache, detectionRegex);
+
+		if (detectionPattern == null) {
+			return text;
+		}
+
+		try {
+			return _redact(
+				deadline, detectionPattern,
+				_getPattern(cache, replacementRegex), replacementValue, text);
+		}
+		catch (StackOverflowError stackOverflowError) {
+			throw new RedactException(
+				"Redaction overflowed the stack", stackOverflowError);
+		}
+	}
+
+	private static String _redact(
+		long deadline, Pattern detectionPattern, Pattern replacementPattern,
+		String replacementValue, String text) {
 
 		StringBuffer sb = new StringBuffer();
 
@@ -97,8 +122,8 @@ public class RedactUtil {
 				sb,
 				Matcher.quoteReplacement(
 					_getReplacement(
-						matcher, replacementPattern, replacementValue,
-						deadline)));
+						deadline, matcher, replacementPattern,
+						replacementValue)));
 		}
 
 		if (!found) {
@@ -108,31 +133,6 @@ public class RedactUtil {
 		matcher.appendTail(sb);
 
 		return sb.toString();
-	}
-
-	private static String _redact(
-		String detectionRegex, String replacementRegex, String replacementValue,
-		String text, long deadline, boolean cache) {
-
-		if (text == null) {
-			return text;
-		}
-
-		Pattern detectionPattern = _getPattern(detectionRegex, cache);
-
-		if (detectionPattern == null) {
-			return text;
-		}
-
-		try {
-			return _redact(
-				detectionPattern, _getPattern(replacementRegex, cache),
-				replacementValue, text, deadline);
-		}
-		catch (StackOverflowError stackOverflowError) {
-			throw new RedactException(
-				"Redaction overflowed the stack", stackOverflowError);
-		}
 	}
 
 	private static final int _DEADLINE_CHECK_INTERVAL = 1024;

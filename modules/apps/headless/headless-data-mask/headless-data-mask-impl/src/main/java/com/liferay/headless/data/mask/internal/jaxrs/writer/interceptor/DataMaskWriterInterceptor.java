@@ -193,9 +193,9 @@ public class DataMaskWriterInterceptor implements WriterInterceptor {
 
 			try {
 				text = RedactUtil.redact(
-					detectionRegex,
+					deadline, detectionRegex,
 					MapUtil.getString(values, "replacementRegex"),
-					replacementValue, text, deadline);
+					replacementValue, text);
 			}
 			catch (RedactException redactException) {
 				throw new RedactException(
