@@ -674,6 +674,7 @@
 		<check name="JavaRedundantContainsCheck">
 			<category name="Performance" />
 			<description name="Finds a `contains` or `containsKey` check that is immediately followed by a `get`, `remove`, `put`, or `add` on the same key or element, which should be combined into the single operation that already reports presence through its return value." />
+			<property name="enabled" value="false" />
 		</check>
 		<check name="JavaReturnStatementCheck">
 			<category name="Styling" />
