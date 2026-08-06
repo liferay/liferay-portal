@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -101,22 +102,7 @@ public class PageSpecificationVersionResourceTest
 			testGetSiteSitePagePageSpecificationVersion_addPageSpecificationVersion()
 		throws Exception {
 
-		Layout draftLayout = _testGroupLayout.fetchDraftLayout();
-
-		LayoutContentVersion layoutContentVersion =
-			_layoutContentVersionLocalService.addLayoutContentVersion(
-				null, TestPropsValues.getUserId(),
-				_layoutContentVersionDataProvider.getLayoutContentVersionData(
-					draftLayout,
-					ServiceContextTestUtil.getServiceContext(
-						testGroup.getGroupId())),
-				null, draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
-
-		return pageSpecificationVersionResource.
-			getSiteSitePagePageSpecificationVersion(
-				testGroup.getExternalReferenceCode(),
-				_testGroupLayout.getExternalReferenceCode(),
-				layoutContentVersion.getExternalReferenceCode());
+		return _addPageSpecificationVersion();
 	}
 
 	@Override
@@ -156,32 +142,46 @@ public class PageSpecificationVersionResourceTest
 		return _testGroupLayout.getExternalReferenceCode();
 	}
 
+	private PageSpecificationVersion _addPageSpecificationVersion()
+		throws Exception {
+
+		return _addPageSpecificationVersion(
+			RandomTestUtil.randomString(), testGroup, _testGroupLayout,
+			RandomTestUtil.randomString());
+	}
+
 	private PageSpecificationVersion _addPageSpecificationVersion(
 			Group group, Layout layout,
 			PageSpecificationVersion pageSpecificationVersion)
+		throws Exception {
+
+		return _addPageSpecificationVersion(
+			pageSpecificationVersion.getExternalReferenceCode(), group, layout,
+			pageSpecificationVersion.getName());
+	}
+
+	private PageSpecificationVersion _addPageSpecificationVersion(
+			String externalReferenceCode, Group group, Layout layout,
+			String name)
 		throws Exception {
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
 		LayoutContentVersion layoutContentVersion =
 			_layoutContentVersionLocalService.addLayoutContentVersion(
-				pageSpecificationVersion.getExternalReferenceCode(),
-				TestPropsValues.getUserId(),
+				externalReferenceCode, TestPropsValues.getUserId(),
 				_layoutContentVersionDataProvider.getLayoutContentVersionData(
 					draftLayout,
 					ServiceContextTestUtil.getServiceContext(
 						group.getGroupId())),
 				HashMapBuilder.put(
-					LocaleUtil.getSiteDefault(),
-					pageSpecificationVersion.getName()
+					LocaleUtil.getSiteDefault(), name
 				).build(),
 				draftLayout.getPlid(), WorkflowConstants.STATUS_APPROVED);
 
-		if (Validator.isNotNull(
-				pageSpecificationVersion.getExternalReferenceCode())) {
-
+		if (Validator.isNotNull(externalReferenceCode)) {
 			Assert.assertEquals(
-				pageSpecificationVersion.getExternalReferenceCode(),
+				externalReferenceCode,
 				layoutContentVersion.getExternalReferenceCode());
 		}
 
