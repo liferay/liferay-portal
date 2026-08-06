@@ -2110,14 +2110,16 @@ test(
 
 		const copyRole = async (roleName: string, roleType: string) => {
 			await expect(async () => {
-				await rolesPage.rolesLink(roleType).click();
+				await rolesPage.rolesLink(roleType).click({timeout: 1000});
 
 				await expect(rolesPage.rolesTable.searchInput).toBeEnabled({
 					timeout: 1000,
 				});
 
-				await (await rolesPage.rolesTable.rowActions(roleName)).click();
-			}).toPass();
+				await (
+					await rolesPage.rolesTable.rowActions(roleName)
+				).click({timeout: 1000});
+			}).toPass({timeout: 30000});
 
 			await rolesPage.duplicateMenuItem.click();
 
@@ -2157,10 +2159,10 @@ test(
 		await rolesPage.rolesTable.changeView('Table');
 
 		await copyRole('Account Administrator', 'Account');
-		await copyRole('Asset Library Member', 'Asset Library');
 		await copyRole('Guest', 'Regular');
 		await copyRole('Organization User', 'Organization');
 		await copyRole('Site Member', 'Site');
+		await copyRole('Space Member', 'Space');
 	}
 );
 
