@@ -36,6 +36,19 @@ public class DTOConverterContextUtil {
 	}
 
 	public static DTOConverterContext getDTOConverterContext(
+		AcceptLanguage acceptLanguage, Map<String, Map<String, String>> actions,
+		Map<String, Object> attributesMap,
+		DTOConverterRegistry dtoConverterRegistry,
+		HttpServletRequest httpServletRequest, Object id, UriInfo uriInfo,
+		User user) {
+
+		return new DefaultDTOConverterContext(
+			acceptLanguage.isAcceptAllLanguages(), actions, attributesMap,
+			dtoConverterRegistry, httpServletRequest, id,
+			acceptLanguage.getPreferredLocale(), uriInfo, user);
+	}
+
+	public static DTOConverterContext getDTOConverterContext(
 		AcceptLanguage acceptLanguage, Map<String, Object> attributesMap,
 		DTOConverterRegistry dtoConverterRegistry,
 		HttpServletRequest httpServletRequest, Object id, UriInfo uriInfo,

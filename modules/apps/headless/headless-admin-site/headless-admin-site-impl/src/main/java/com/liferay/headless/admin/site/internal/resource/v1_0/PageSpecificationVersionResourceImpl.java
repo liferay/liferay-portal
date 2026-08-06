@@ -7,7 +7,7 @@ package com.liferay.headless.admin.site.internal.resource.v1_0;
 
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
-import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutContentVersionActionUtil;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
@@ -16,14 +16,19 @@ import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.content.service.LayoutContentVersionService;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
-import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.util.ActionUtil;
+
+import java.util.Collections;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -114,6 +119,56 @@ public class PageSpecificationVersionResourceImpl
 					siteExternalReferenceCode, sitePageExternalReferenceCode)));
 	}
 
+	private Map<String, String> _addAction(
+		LayoutContentVersion layoutContentVersion, String methodName,
+		Map<String, String> templateParameterMap) {
+
+		return ActionUtil.addAction(
+			ActionKeys.UPDATE, PageSpecificationVersionResourceImpl.class,
+			layoutContentVersion.getPlid(), methodName, contextScopeChecker,
+			_layoutModelResourcePermission, templateParameterMap,
+			contextUriInfo);
+	}
+
+	private Map<String, Map<String, String>> _getActions(
+		long latestApprovedLayoutContentVersionId,
+		LayoutContentVersion layoutContentVersion,
+		String siteExternalReferenceCode,
+		String sitePageExternalReferenceCode) {
+
+		Map<String, String> templateParameterMap = HashMapBuilder.put(
+			"pageSpecificationVersionExternalReferenceCode",
+			layoutContentVersion.getExternalReferenceCode()
+		).put(
+			"siteExternalReferenceCode", siteExternalReferenceCode
+		).put(
+			"sitePageExternalReferenceCode", sitePageExternalReferenceCode
+		).build();
+
+		return HashMapBuilder.<String, Map<String, String>>put(
+			"delete",
+			() -> {
+				if ((layoutContentVersion.getStatus() ==
+						WorkflowConstants.STATUS_APPROVED) &&
+					(layoutContentVersion.getLayoutContentVersionId() ==
+						latestApprovedLayoutContentVersionId)) {
+
+					return null;
+				}
+
+				return _addAction(
+					layoutContentVersion,
+					"deleteSiteSitePagePageSpecificationVersion",
+					templateParameterMap);
+			}
+		).put(
+			"get",
+			_addAction(
+				layoutContentVersion, "getSiteSitePagePageSpecificationVersion",
+				templateParameterMap)
+		).build();
+	}
+
 	private Layout _getLayout(
 			boolean allowLiveGroup, String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode)
@@ -161,27 +216,16 @@ public class PageSpecificationVersionResourceImpl
 			String sitePageExternalReferenceCode)
 		throws Exception {
 
-		boolean deletable = false;
-
-		if ((layoutContentVersion.getStatus() !=
-				WorkflowConstants.STATUS_APPROVED) ||
-			(layoutContentVersion.getLayoutContentVersionId() !=
-				latestApprovedLayoutContentVersionId)) {
-
-			deletable = true;
-		}
-
 		return _pageSpecificationVersionDTOConverter.toDTO(
-			new DefaultDTOConverterContext(
-				contextAcceptLanguage.isAcceptAllLanguages(),
-				LayoutContentVersionActionUtil.getActions(
-					contextScopeChecker, deletable, layoutContentVersion,
-					_layoutModelResourcePermission, siteExternalReferenceCode,
-					sitePageExternalReferenceCode, contextUriInfo),
-				_dtoConverterRegistry, contextHttpServletRequest,
+			DTOConverterContextUtil.getDTOConverterContext(
+				contextAcceptLanguage,
+				_getActions(
+					latestApprovedLayoutContentVersionId, layoutContentVersion,
+					siteExternalReferenceCode, sitePageExternalReferenceCode),
+				Collections.emptyMap(), _dtoConverterRegistry,
+				contextHttpServletRequest,
 				layoutContentVersion.getLayoutContentVersionId(),
-				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
-				contextUser),
+				contextUriInfo, contextUser),
 			layoutContentVersion);
 	}
 
