@@ -111,6 +111,8 @@ public class MCPServerTestUtil {
 					"description", description
 				).put(
 					"name", name
+				).put(
+					"profileStatus", "active"
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
