@@ -7,122 +7,130 @@
 
 <%@ include file="/init.jsp" %>
 
-<%
-long layoutSetBranchId = ParamUtil.getLong(request, "layoutSetBranchId");
-String layoutSetBranchName = ParamUtil.getString(request, "layoutSetBranchName");
+<c:choose>
+	<c:when test='<%= !FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-101272") %>'>
+		<liferay-util:include page="/view.jsp" servletContext="<%= application %>" />
+	</c:when>
+	<c:otherwise>
 
-portletDisplay.setShowBackIcon(true);
+		<%
+		long layoutSetBranchId = ParamUtil.getLong(request, "layoutSetBranchId");
+		String layoutSetBranchName = ParamUtil.getString(request, "layoutSetBranchName");
 
-portletDisplay.setURLBack(
-	PortletURLBuilder.create(
-		PortalUtil.getControlPanelPortletURL(request, StagingProcessesPortletKeys.STAGING_PROCESSES, PortletRequest.RENDER_PHASE)
-	).setMVCPath(
-		"/view.jsp"
-	).buildString());
+		portletDisplay.setShowBackIcon(true);
 
-renderResponse.setTitle(LanguageUtil.get(request, "publish-templates"));
-%>
+		portletDisplay.setURLBack(
+			PortletURLBuilder.create(
+				PortalUtil.getControlPanelPortletURL(request, StagingProcessesPortletKeys.STAGING_PROCESSES, PortletRequest.RENDER_PHASE)
+			).setMVCPath(
+				"/view.jsp"
+			).buildString());
 
-<portlet:actionURL name="/staging_processes/edit_publish_configuration" var="restoreTrashEntriesURL">
-	<portlet:param name="mvcRenderCommandName" value="/staging_processes/view_publish_configurations" />
-	<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RESTORE %>" />
-</portlet:actionURL>
+		renderResponse.setTitle(LanguageUtil.get(request, "publish-templates"));
+		%>
 
-<liferay-trash:undo
-	portletURL="<%= restoreTrashEntriesURL %>"
-/>
+		<portlet:actionURL name="/staging_processes/edit_publish_configuration" var="restoreTrashEntriesURL">
+			<portlet:param name="mvcRenderCommandName" value="/staging_processes/view_publish_configurations" />
+			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.RESTORE %>" />
+		</portlet:actionURL>
 
-<liferay-portlet:renderURL varImpl="portletURL">
-	<portlet:param name="mvcRenderCommandName" value="/staging_processes/view_publish_configurations" />
-	<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
-	<portlet:param name="layoutSetBranchId" value="<%= String.valueOf(layoutSetBranchId) %>" />
-	<portlet:param name="layoutSetBranchName" value="<%= layoutSetBranchName %>" />
-	<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
-</liferay-portlet:renderURL>
+		<liferay-trash:undo
+			portletURL="<%= restoreTrashEntriesURL %>"
+		/>
 
-<%
-StagingProcessesWebPublishTemplatesToolbarDisplayContext stagingProcessesWebPublishTemplatesToolbarDisplayContext = new StagingProcessesWebPublishTemplatesToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, pageContext, portletURL);
-%>
+		<liferay-portlet:renderURL varImpl="portletURL">
+			<portlet:param name="mvcRenderCommandName" value="/staging_processes/view_publish_configurations" />
+			<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+			<portlet:param name="layoutSetBranchId" value="<%= String.valueOf(layoutSetBranchId) %>" />
+			<portlet:param name="layoutSetBranchName" value="<%= layoutSetBranchName %>" />
+			<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
+		</liferay-portlet:renderURL>
 
-<clay:navigation-bar
-	navigationItems="<%= publishTemplatesDisplayContext.getNavigationItems() %>"
-/>
+		<%
+		StagingProcessesWebPublishTemplatesToolbarDisplayContext stagingProcessesWebPublishTemplatesToolbarDisplayContext = new StagingProcessesWebPublishTemplatesToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, pageContext, portletURL);
+		%>
 
-<clay:management-toolbar
-	managementToolbarDisplayContext="<%= stagingProcessesWebPublishTemplatesToolbarDisplayContext %>"
-	searchFormName="searchFm"
-	selectable="<%= false %>"
-	showCreationMenu="<%= true %>"
-	showSearch="<%= true %>"
-/>
+		<clay:navigation-bar
+			navigationItems="<%= publishTemplatesDisplayContext.getNavigationItems() %>"
+		/>
 
-<clay:container-fluid
-	cssClass="closed sidenav-container sidenav-right"
-	id='<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>'
->
-	<liferay-site-navigation:breadcrumb
-		breadcrumbEntries="<%= BreadcrumbEntriesUtil.getBreadcrumbEntries(request, true, false, false, true, true) %>"
-	/>
+		<clay:management-toolbar
+			managementToolbarDisplayContext="<%= stagingProcessesWebPublishTemplatesToolbarDisplayContext %>"
+			searchFormName="searchFm"
+			selectable="<%= false %>"
+			showCreationMenu="<%= true %>"
+			showSearch="<%= true %>"
+		/>
 
-	<aui:form action="<%= portletURL %>">
-		<liferay-ui:search-container
-			searchContainer="<%= stagingProcessesWebPublishTemplatesToolbarDisplayContext.getSearchContainer() %>"
+		<clay:container-fluid
+			cssClass="closed sidenav-container sidenav-right"
+			id='<%= liferayPortletResponse.getNamespace() + "infoPanelId" %>'
 		>
-			<liferay-ui:search-container-row
-				className="com.liferay.exportimport.kernel.model.ExportImportConfiguration"
-				keyProperty="exportImportConfigurationId"
-				modelVar="exportImportConfiguration"
-			>
-				<liferay-ui:search-container-column-text
-					cssClass="background-task-user-column"
-					name="user"
-				>
-					<liferay-user:user-portrait
-						userId="<%= exportImportConfiguration.getUserId() %>"
-					/>
-				</liferay-ui:search-container-column-text>
-
-				<liferay-portlet:renderURL varImpl="rowURL">
-					<portlet:param name="mvcRenderCommandName" value="/staging_processes/edit_publish_configuration" />
-					<portlet:param name="redirect" value="<%= searchContainer.getIteratorURL().toString() %>" />
-					<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
-					<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
-					<portlet:param name="layoutSetBranchId" value="<%= String.valueOf(layoutSetBranchId) %>" />
-					<portlet:param name="layoutSetBranchName" value="<%= layoutSetBranchName %>" />
-					<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
-				</liferay-portlet:renderURL>
-
-				<liferay-ui:search-container-column-text
-					href="<%= rowURL %>"
-					name="title"
-					value="<%= HtmlUtil.escape(exportImportConfiguration.getName()) %>"
-				/>
-
-				<liferay-ui:search-container-column-text
-					name="description"
-					value="<%= HtmlUtil.escape(exportImportConfiguration.getDescription()) %>"
-				/>
-
-				<liferay-ui:search-container-column-date
-					name="create-date"
-					value="<%= exportImportConfiguration.getCreateDate() %>"
-				/>
-
-				<%
-				request.setAttribute("view.jsp-layoutSetBranchId", layoutSetBranchId);
-				request.setAttribute("view.jsp-layoutSetBranchName", layoutSetBranchName);
-				%>
-
-				<liferay-ui:search-container-column-jsp
-					align="right"
-					cssClass="entry-action"
-					path="/publish_templates/actions.jsp"
-				/>
-			</liferay-ui:search-container-row>
-
-			<liferay-ui:search-iterator
-				markupView="lexicon"
+			<liferay-site-navigation:breadcrumb
+				breadcrumbEntries="<%= BreadcrumbEntriesUtil.getBreadcrumbEntries(request, true, false, false, true, true) %>"
 			/>
-		</liferay-ui:search-container>
-	</aui:form>
-</clay:container-fluid>
+
+			<aui:form action="<%= portletURL %>">
+				<liferay-ui:search-container
+					searchContainer="<%= stagingProcessesWebPublishTemplatesToolbarDisplayContext.getSearchContainer() %>"
+				>
+					<liferay-ui:search-container-row
+						className="com.liferay.exportimport.kernel.model.ExportImportConfiguration"
+						keyProperty="exportImportConfigurationId"
+						modelVar="exportImportConfiguration"
+					>
+						<liferay-ui:search-container-column-text
+							cssClass="background-task-user-column"
+							name="user"
+						>
+							<liferay-user:user-portrait
+								userId="<%= exportImportConfiguration.getUserId() %>"
+							/>
+						</liferay-ui:search-container-column-text>
+
+						<liferay-portlet:renderURL varImpl="rowURL">
+							<portlet:param name="mvcRenderCommandName" value="/staging_processes/edit_publish_configuration" />
+							<portlet:param name="redirect" value="<%= searchContainer.getIteratorURL().toString() %>" />
+							<portlet:param name="exportImportConfigurationId" value="<%= String.valueOf(exportImportConfiguration.getExportImportConfigurationId()) %>" />
+							<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
+							<portlet:param name="layoutSetBranchId" value="<%= String.valueOf(layoutSetBranchId) %>" />
+							<portlet:param name="layoutSetBranchName" value="<%= layoutSetBranchName %>" />
+							<portlet:param name="privateLayout" value="<%= String.valueOf(privateLayout) %>" />
+						</liferay-portlet:renderURL>
+
+						<liferay-ui:search-container-column-text
+							href="<%= rowURL %>"
+							name="title"
+							value="<%= HtmlUtil.escape(exportImportConfiguration.getName()) %>"
+						/>
+
+						<liferay-ui:search-container-column-text
+							name="description"
+							value="<%= HtmlUtil.escape(exportImportConfiguration.getDescription()) %>"
+						/>
+
+						<liferay-ui:search-container-column-date
+							name="create-date"
+							value="<%= exportImportConfiguration.getCreateDate() %>"
+						/>
+
+						<%
+						request.setAttribute("view.jsp-layoutSetBranchId", layoutSetBranchId);
+						request.setAttribute("view.jsp-layoutSetBranchName", layoutSetBranchName);
+						%>
+
+						<liferay-ui:search-container-column-jsp
+							align="right"
+							cssClass="entry-action"
+							path="/publish_templates/actions.jsp"
+						/>
+					</liferay-ui:search-container-row>
+
+					<liferay-ui:search-iterator
+						markupView="lexicon"
+					/>
+				</liferay-ui:search-container>
+			</aui:form>
+		</clay:container-fluid>
+	</c:otherwise>
+</c:choose>
