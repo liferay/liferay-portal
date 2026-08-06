@@ -14,7 +14,7 @@ Run the SDK setup, then run the source formatter in `current-branch` mode:
 
 ```bash
 (cd "${REPO_ROOT}" && ant setup-sdk)
-(cd "${REPO_ROOT}/portal-impl" && ANT_OPTS="-Xmx2560m" ant format-source-current-branch)
+(cd "${REPO_ROOT}/portal-impl" && ANT_OPTS="-Xmx2560m" ant format-source-current-branch -Dvalidate.commit.messages=true)
 ```
 
 ## Autocommit
