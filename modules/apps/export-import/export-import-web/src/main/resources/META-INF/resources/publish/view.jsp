@@ -137,12 +137,15 @@ PortletURL simplePublishRedirectURL = PortletURLBuilder.createRenderURL(
 										navigationItem.setHref(customPublishURL.toString());
 										navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "custom"));
 									});
-								add(
-									navigationItem -> {
-										navigationItem.setActive(publishConfigurationButtons.equals("saved"));
-										navigationItem.setHref(publishTemplatesURL.toString());
-										navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "publish-templates"));
-									});
+
+								if (FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-101272")) {
+									add(
+										navigationItem -> {
+											navigationItem.setActive(publishConfigurationButtons.equals("saved"));
+											navigationItem.setHref(publishTemplatesURL.toString());
+											navigationItem.setLabel(LanguageUtil.get(httpServletRequest, "publish-templates"));
+										});
+								}
 							}
 						}
 					%>'
@@ -201,7 +204,7 @@ PortletURL simplePublishRedirectURL = PortletURLBuilder.createRenderURL(
 </c:if>
 
 <c:choose>
-	<c:when test='<%= publishConfigurationButtons.equals("saved") %>'>
+	<c:when test='<%= publishConfigurationButtons.equals("saved") && FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-101272") %>'>
 		<liferay-util:include page="/publish/publish_templates/view.jsp" servletContext="<%= application %>">
 			<liferay-util:param name="groupId" value="<%= String.valueOf(stagingGroupId) %>" />
 			<liferay-util:param name="layoutSetBranchId" value="<%= String.valueOf(layoutSetBranchId) %>" />
