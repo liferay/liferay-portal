@@ -23,7 +23,8 @@ import java.util.Map;
 public class LayoutContentVersionActionUtil {
 
 	public static Map<String, Map<String, String>> getActions(
-		Object contextScopeChecker, LayoutContentVersion layoutContentVersion,
+		Object contextScopeChecker, boolean deletable,
+		LayoutContentVersion layoutContentVersion,
 		ModelResourcePermission<Layout> layoutModelResourcePermission,
 		String siteExternalReferenceCode, String sitePageExternalReferenceCode,
 		UriInfo uriInfo) {
@@ -39,11 +40,17 @@ public class LayoutContentVersionActionUtil {
 
 		return HashMapBuilder.<String, Map<String, String>>put(
 			"delete",
-			_addAction(
-				contextScopeChecker, layoutContentVersion,
-				layoutModelResourcePermission,
-				"deleteSiteSitePagePageSpecificationVersion",
-				templateParameterMap, uriInfo)
+			() -> {
+				if (!deletable) {
+					return null;
+				}
+
+				return _addAction(
+					contextScopeChecker, layoutContentVersion,
+					layoutModelResourcePermission,
+					"deleteSiteSitePagePageSpecificationVersion",
+					templateParameterMap, uriInfo);
+			}
 		).put(
 			"get",
 			_addAction(
