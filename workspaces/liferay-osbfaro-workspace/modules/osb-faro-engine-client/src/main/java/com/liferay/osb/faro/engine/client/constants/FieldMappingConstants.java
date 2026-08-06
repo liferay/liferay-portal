@@ -52,6 +52,8 @@ public class FieldMappingConstants {
 
 	public static final String TYPE_NUMBER = "Number";
 
+	public static final String TYPE_SELECT_TEXT = "Select-Text";
+
 	public static final String TYPE_TEXT = "Text";
 
 	public static String getAccountFieldMappingLanguageKey(String fieldName) {
@@ -132,6 +134,8 @@ public class FieldMappingConstants {
 		).put(
 			"lastActivityDate", "last-activity-date"
 		).put(
+			"lifecycleStatus", "lifecycle-stage"
+		).put(
 			"numberOfEmployees", "number-of-employees"
 		).put(
 			"state", "state"
@@ -150,6 +154,8 @@ public class FieldMappingConstants {
 			new FieldMappingMap("industry", "industry", TYPE_TEXT),
 			new FieldMappingMap(
 				"lastActivityDate", "lastActivityDate", TYPE_DATE),
+			new FieldMappingMap(
+				"lifecycleStatus", "lifecycleStatus", TYPE_SELECT_TEXT),
 			new FieldMappingMap(
 				"numberOfEmployees", "numberOfEmployees", TYPE_NUMBER),
 			new FieldMappingMap("state", "state", TYPE_TEXT),

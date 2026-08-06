@@ -45,6 +45,11 @@ public class SchemaOrgUtil {
 			return FieldMappingConstants.TYPE_NUMBER;
 		}
 		else if (StringUtil.equalsIgnoreCase(
+					type, FieldMappingConstants.TYPE_SELECT_TEXT)) {
+
+			return FieldMappingConstants.TYPE_SELECT_TEXT;
+		}
+		else if (StringUtil.equalsIgnoreCase(
 					type, FieldMappingConstants.TYPE_TEXT)) {
 
 			return FieldMappingConstants.TYPE_TEXT;
