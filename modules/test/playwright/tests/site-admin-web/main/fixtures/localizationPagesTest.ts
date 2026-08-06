@@ -5,6 +5,7 @@
 
 import {test} from '@playwright/test';
 
+import {getHeader} from '../../../../helpers/ApiHelpers';
 import {LocalizationInstanceSettingsPage} from '../pages/LocalizationInstanceSettingsPage';
 
 const localizationPagesTest = test.extend<{
@@ -22,28 +23,46 @@ const localizationPagesTest = test.extend<{
 			await use();
 		}
 		finally {
+			try {
 
-			// Render the admin UI in English regardless of the current
-			// instance default language, so the settings navigation and
-			// controls resolve when the test left the instance in another
-			// language.
+				// Render the admin UI in English regardless of the current
+				// instance default language, so the settings navigation and
+				// controls resolve when the test left the instance in another
+				// language. Both calls carry the authenticity token: without
+				// it the portal answers Forbidden, and the body it returns for
+				// that is not always JSON.
 
-			const response = await page.request.get(
-				'/o/headless-admin-user/v1.0/my-user-account'
-			);
+				const response = await page.request.get(
+					'/o/headless-admin-user/v1.0/my-user-account',
+					{headers: await getHeader(page)}
+				);
 
-			const myUserAccount = await response.json();
+				const myUserAccount = await response.json();
 
-			await page.request.patch(
-				`/o/headless-admin-user/v1.0/user-accounts/${myUserAccount.id}`,
-				{data: {languageId: 'en_US'}}
-			);
+				await page.request.patch(
+					`/o/headless-admin-user/v1.0/user-accounts/${myUserAccount.id}`,
+					{
+						data: {languageId: 'en_US'},
+						headers: await getHeader(page),
+					}
+				);
 
-			await page.reload();
+				await page.reload();
+			}
+			finally {
 
-			await localizationInstanceSettingsPage.goto('Language', false);
+				// The instance default language is instance wide state that
+				// every later test inherits, so restore it even when the steps
+				// above fail. Leaving it set fails sign-in verification,
+				// object definition labels, and site page creation across
+				// every file and worker that follows.
 
-			await localizationInstanceSettingsPage.setDefaultLanguage('en_US');
+				await localizationInstanceSettingsPage.goto('Language', false);
+
+				await localizationInstanceSettingsPage.setDefaultLanguage(
+					'en_US'
+				);
+			}
 		}
 	},
 });
