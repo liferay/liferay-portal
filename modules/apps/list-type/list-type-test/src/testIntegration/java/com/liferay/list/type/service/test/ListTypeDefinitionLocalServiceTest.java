@@ -25,6 +25,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -208,6 +209,12 @@ public class ListTypeDefinitionLocalServiceTest {
 				_listTypeDefinitionLocalService.getOrAddEmptyListTypeDefinition(
 					externalReferenceCode, companyId, userId,
 					RandomTestUtil.randomBoolean());
+
+			EntityCacheUtil.clearCache();
+
+			Assert.assertNotNull(
+				_listTypeDefinitionLocalService.fetchListTypeDefinition(
+					listTypeDefinition.getListTypeDefinitionId()));
 
 			Assert.assertEquals(
 				externalReferenceCode,
