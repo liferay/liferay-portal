@@ -34,6 +34,13 @@ public class DB2DBTest extends BaseDBTestCase {
 	}
 
 	@Test
+	public void testBlobColumnType() throws Exception {
+		Assert.assertEquals(
+			"create table TestTable (largeColumnValue blob(2G))\n",
+			buildSQL("create table TestTable (largeColumnValue BLOB)"));
+	}
+
+	@Test
 	public void testGetLongDefaultValue() {
 		Assert.assertEquals("10", db.getDefaultValue("10"));
 	}
