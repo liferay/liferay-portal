@@ -222,7 +222,7 @@ definition {
 			locator1 = "FormViewBuilder#OBJECT_FIELD_BUTTON_DROPDOWN");
 
 		Type(
-			key_fieldName = "yyyy-mm-dd",
+			key_fieldName = "mm/dd/yyyy",
 			locator1 = "ObjectCustomViews#FROM_DATE_INPUT",
 			value1 = ${displayDate});
 
