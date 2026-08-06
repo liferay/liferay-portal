@@ -28,11 +28,6 @@ jest.mock('shared/util/breadcrumbs', () => ({
 	})),
 }));
 
-jest.mock('shared/util/feature-flags', () => ({
-	...jest.requireActual('shared/util/feature-flags'),
-	ENABLE_ACCOUNT_OVERVIEW: true,
-}));
-
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({
@@ -59,8 +54,6 @@ jest.mock('../Profile', () => ({
 	default: () => <div data-testid="account-profile" />,
 }));
 
-const featureFlags = jest.requireMock('shared/util/feature-flags');
-
 const mockedUseRequest = useRequest as jest.Mock;
 
 const ROUTE_PARAMS = {channelId: '123', groupId: '23', id: 'acc-1'};
@@ -85,8 +78,6 @@ const renderProfileRoutes = (
 describe('AccountProfileRoutes', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
-
-		featureFlags.ENABLE_ACCOUNT_OVERVIEW = true;
 	});
 
 	afterEach(cleanup);
@@ -266,68 +257,5 @@ describe('AccountProfileRoutes', () => {
 		expect(
 			await screen.findByTestId('account-overview')
 		).toBeInTheDocument();
-	});
-
-	describe('when the account overview flag is disabled', () => {
-		beforeEach(() => {
-			featureFlags.ENABLE_ACCOUNT_OVERVIEW = false;
-
-			mockedUseRequest.mockReturnValue({
-				data: {accountName: 'Acme Corp'},
-				error: false,
-				loading: false,
-			});
-		});
-
-		it('omits overview from the account nav bar', () => {
-			renderProfileRoutes();
-
-			const navTabs = within(screen.getByRole('navigation')).getAllByRole(
-				'link'
-			);
-
-			expect(navTabs.map((navTab) => navTab.textContent)).toEqual([
-				'Activities',
-				'Profile',
-			]);
-		});
-
-		it('does not route to the overview page', async () => {
-			const history = createMemoryHistory({
-				initialEntries: [
-					toRoute(Routes.CONTACTS_ACCOUNT_OVERVIEW, ROUTE_PARAMS),
-				],
-			});
-
-			renderProfileRoutes(history);
-
-			await waitFor(() =>
-				expect(history.location.state).toEqual({notFoundError: true})
-			);
-
-			expect(
-				screen.queryByTestId('account-overview')
-			).not.toBeInTheDocument();
-		});
-
-		it('lands on activities when opening an account', async () => {
-			const history = createMemoryHistory({
-				initialEntries: [
-					toRoute(Routes.CONTACTS_ACCOUNT, ROUTE_PARAMS),
-				],
-			});
-
-			renderProfileRoutes(history);
-
-			await waitFor(() =>
-				expect(history.location.pathname).toBe(
-					toRoute(Routes.CONTACTS_ACCOUNT_ACTIVITIES, ROUTE_PARAMS)
-				)
-			);
-
-			expect(
-				await screen.findByTestId('account-activities')
-			).toBeInTheDocument();
-		});
 	});
 });
