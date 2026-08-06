@@ -291,6 +291,8 @@ public class AssetListFiltersUtil {
 			return null;
 		}
 
+		BooleanQuery booleanQuery = new BooleanQuery();
+
 		BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.SHOULD;
 
 		String quantifier = filterJSONObject.getString("quantifier");
@@ -298,8 +300,6 @@ public class AssetListFiltersUtil {
 		if (Objects.equals(quantifier, "all")) {
 			booleanClauseOccur = BooleanClauseOccur.MUST;
 		}
-
-		BooleanQuery booleanQuery = new BooleanQuery();
 
 		for (int i = 0; i < valueJSONArray.length(); i++) {
 			JSONObject itemJSONObject = valueJSONArray.getJSONObject(i);
