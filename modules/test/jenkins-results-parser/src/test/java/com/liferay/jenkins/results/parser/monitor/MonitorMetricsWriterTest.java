@@ -71,28 +71,28 @@ public class MonitorMetricsWriterTest
 
 		testEquals(
 			JenkinsResultsParserUtil.combine(
-				"# HELP monitor_check_last_run_timestamp_seconds Unix ",
-				"timestamp of the last check run, 0 if never run\n",
-				"# TYPE monitor_check_last_run_timestamp_seconds gauge\n",
-				"monitor_check_last_run_timestamp_seconds{check=\"disk\",",
-				"severity=\"high\",type=\"resource-threshold\"} 1.75E9\n",
-				"monitor_check_last_run_timestamp_seconds{check=\"queue\",",
-				"severity=\"medium\",type=\"job-health\"} 1.749999E9\n",
-				"monitor_check_last_run_timestamp_seconds{check=\"testray\",",
-				"severity=\"low\",type=\"external-status\"} 0.0\n",
-				"# HELP monitor_check_status Monitor status severity rank, ",
-				"0 OK, 1 UNKNOWN, 2 WARN, 3 CRITICAL\n",
-				"# TYPE monitor_check_status gauge\n",
-				"monitor_check_status{check=\"disk\",severity=\"high\",",
-				"type=\"resource-threshold\"} 3.0\n",
-				"monitor_check_status{check=\"queue\",severity=\"medium\",",
-				"type=\"job-health\"} 0.0\n",
-				"monitor_check_status{check=\"testray\",severity=\"low\",",
-				"type=\"external-status\"} 1.0\n",
 				"# HELP monitor_heartbeat_timestamp_seconds Unix timestamp of ",
 				"the last metrics write\n",
 				"# TYPE monitor_heartbeat_timestamp_seconds gauge\n",
-				"monitor_heartbeat_timestamp_seconds 1.75E9\n"),
+				"monitor_heartbeat_timestamp_seconds 1.75E9\n",
+				"# HELP monitor_last_run_timestamp_seconds Unix ",
+				"timestamp of the last monitor run, 0 if never run\n",
+				"# TYPE monitor_last_run_timestamp_seconds gauge\n",
+				"monitor_last_run_timestamp_seconds{monitor=\"disk\",",
+				"severity=\"high\",type=\"resource-threshold\"} 1.75E9\n",
+				"monitor_last_run_timestamp_seconds{monitor=\"queue\",",
+				"severity=\"medium\",type=\"job-health\"} 1.749999E9\n",
+				"monitor_last_run_timestamp_seconds{monitor=\"testray\",",
+				"severity=\"low\",type=\"external-status\"} 0.0\n",
+				"# HELP monitor_status Monitor status severity rank, ",
+				"0 OK, 1 UNKNOWN, 2 WARN, 3 CRITICAL\n",
+				"# TYPE monitor_status gauge\n",
+				"monitor_status{monitor=\"disk\",severity=\"high\",",
+				"type=\"resource-threshold\"} 3.0\n",
+				"monitor_status{monitor=\"queue\",severity=\"medium\",",
+				"type=\"job-health\"} 0.0\n",
+				"monitor_status{monitor=\"testray\",severity=\"low\",",
+				"type=\"external-status\"} 1.0\n"),
 			read(metricsFile));
 	}
 
@@ -120,7 +120,7 @@ public class MonitorMetricsWriterTest
 		Assert.assertTrue(
 			content,
 			content.contains(
-				"monitor_check_status{check=\"disk\",severity=\"high\"," +
+				"monitor_status{monitor=\"disk\",severity=\"high\"," +
 					"type=\"unknown\"} 0.0\n"));
 	}
 
@@ -148,7 +148,7 @@ public class MonitorMetricsWriterTest
 		Assert.assertTrue(
 			content,
 			content.contains(
-				"monitor_check_status{check=\"a\\\"b\\\\c\"," +
+				"monitor_status{monitor=\"a\\\"b\\\\c\"," +
 					"severity=\"medium\",type=\"d\\ne\"} 2.0\n"));
 	}
 
@@ -180,8 +180,8 @@ public class MonitorMetricsWriterTest
 
 		String content = read(metricsFile);
 
-		Assert.assertTrue(content, content.contains("check=\"disk\""));
-		Assert.assertFalse(content, content.contains("check=\"queue\""));
+		Assert.assertTrue(content, content.contains("monitor=\"disk\""));
+		Assert.assertFalse(content, content.contains("monitor=\"queue\""));
 	}
 
 	@Test
@@ -209,7 +209,7 @@ public class MonitorMetricsWriterTest
 		Assert.assertTrue(
 			content,
 			content.contains(
-				"monitor_check_status{check=\"disk\"," +
+				"monitor_status{monitor=\"disk\"," +
 					"severity=\"medium\",type=\"unknown\"} 0.0\n"));
 	}
 
@@ -236,7 +236,7 @@ public class MonitorMetricsWriterTest
 		Assert.assertTrue(
 			content,
 			content.contains(
-				"monitor_check_status{check=\"disk\",severity=\"high\"," +
+				"monitor_status{monitor=\"disk\",severity=\"high\"," +
 					"type=\"resource-threshold\"} 1.0\n"));
 	}
 
