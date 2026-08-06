@@ -6,19 +6,19 @@ through its return value, so the guard costs a second hash lookup.
 
 Combine the two calls into one:
 
-```
+```java
 if (map.containsKey(key)) {
-	return map.get(key);
+    return map.get(key);
 }
 ```
 
 becomes
 
-```
+```java
 Value value = map.get(key);
 
 if (value != null) {
-	return value;
+    return value;
 }
 ```
 
@@ -44,3 +44,129 @@ The `add` form is only flagged when the receiver's declaration resolves to a
 those types the `contains` guard is the deduplication itself and cannot be
 folded into the `add`. The `remove` forms apply to lists as well, since
 `List.remove(Object)` does report presence.
+
+#### Example 1
+
+Instead of:
+
+```java
+protected String method1(Map<String, String> map, String name, String value) {
+
+    if (!map.containsKey(name)) {
+        map.put(name, value);
+
+        return value;
+    }
+
+    return null;
+}
+```
+
+We should do:
+
+```java
+protected String method1(Map<String, String> map, String name, String value) {
+
+    if (map.putIfAbsent(name, value) == null) {
+        return value;
+    }
+
+    return null;
+}
+```
+
+#### Example 2
+
+Instead of:
+
+```java
+protected String method2(Map<String, String> map, String name) {
+    if (map.containsKey(name)) {
+        return map.get(name);
+    }
+
+    return "";
+}
+```
+
+We should do:
+
+```java
+protected String method2(Map<String, String> map, String name) {
+    String value = map.get(name);
+
+    if (value != null) {
+        return value;
+    }
+
+    return "";
+}
+```
+
+#### Example 3
+
+Instead of:
+
+```java
+protected String method3(Map<String, String> map, String name) {
+    if (map.containsKey(name)) {
+        return map.remove(name);
+    }
+
+    return "";
+}
+```
+
+We should do:
+
+```java
+protected String method3(Map<String, String> map, String name) {
+    String value = map.remove(name);
+
+    if (value != null) {
+        return value;
+    }
+
+    return "";
+}
+```
+
+#### Example 4
+
+Instead of:
+
+```java
+protected void method4(Set<String> set, String name) {
+    if (!set.contains(name)) {
+        set.add(name);
+    }
+}
+```
+
+We should do:
+
+```java
+protected void method4(Set<String> set, String name) {
+    set.add(name);
+}
+```
+
+#### Example 5
+
+Instead of:
+
+```java
+protected void method5(Set<String> set, String name) {
+    if (set.contains(name)) {
+        set.remove(name);
+    }
+}
+```
+
+We should do:
+
+```java
+protected void method5(Set<String> set, String name) {
+    set.remove(name);
+}
+```
