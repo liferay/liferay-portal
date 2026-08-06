@@ -155,7 +155,7 @@ export function DatePicker({
 	useEffect(() => {
 		const {mask, pipeFormat} = generateInputMask(momentFormat);
 
-		maskRef.current = createTextMaskInputElement({
+		const textMaskInputElement: MaskRef = createTextMaskInputElement({
 			guide: true,
 			inputElement: inputRef.current,
 			keepCharPositions: true,
@@ -163,6 +163,14 @@ export function DatePicker({
 			pipe: createAutoCorrectedDatePipe(pipeFormat),
 			showMask: true,
 		});
+
+		const inputElement = inputRef.current as HTMLInputElement | null;
+
+		if (inputElement?.value) {
+			textMaskInputElement.update(inputElement.value);
+		}
+
+		maskRef.current = textMaskInputElement;
 	}, [momentFormat]);
 
 	const handleValueChange = (value: string) => {
