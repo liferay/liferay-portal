@@ -6,6 +6,7 @@
 package com.liferay.headless.data.mask.internal.engine;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Map;
@@ -117,44 +118,41 @@ public class RedactUtilTest {
 
 		RedactException redactException = Assert.assertThrows(
 			RedactException.class,
-			() -> RedactUtil.redact(0, _REGEX_SIMPLE, null, "R", _TEXT_LONG));
+			() -> RedactUtil.redact(
+				0, _REGEX_SIMPLE, null, RandomTestUtil.randomString(),
+				_TEXT_LONG));
 
-		Assert.assertEquals(
-			"Redaction exceeded the timeout of 1000 milliseconds",
-			redactException.getMessage());
+		Assert.assertEquals(_MESSAGE_TIMEOUT, redactException.getMessage());
 
 		redactException = Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redact(
-				RedactUtil.newDeadline(), _REGEX_CATASTROPHIC, null, "R",
-				_TEXT_CATASTROPHIC));
+				RedactUtil.newDeadline(), _REGEX_CATASTROPHIC, null,
+				RandomTestUtil.randomString(), _TEXT_CATASTROPHIC));
 
-		Assert.assertEquals(
-			"Redaction exceeded the timeout of 1000 milliseconds",
-			redactException.getMessage());
+		Assert.assertEquals(_MESSAGE_TIMEOUT, redactException.getMessage());
 
 		redactException = Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redact(
 				RedactUtil.newDeadline(), _REGEX_SIMPLE, _REGEX_CATASTROPHIC,
-				"R", _TEXT_CATASTROPHIC));
+				RandomTestUtil.randomString(), _TEXT_CATASTROPHIC));
 
-		Assert.assertEquals(
-			"Redaction exceeded the timeout of 1000 milliseconds",
-			redactException.getMessage());
+		Assert.assertEquals(_MESSAGE_TIMEOUT, redactException.getMessage());
 
 		redactException = Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redact(
-				RedactUtil.newDeadline(), "(a|aa)+$", null, "R",
-				"a".repeat(100000) + "b"));
+				RedactUtil.newDeadline(), "(a|aa)+$", null,
+				RandomTestUtil.randomString(), "a".repeat(100000) + "b"));
 
 		Assert.assertEquals(
 			"Redaction overflowed the stack", redactException.getMessage());
 
 		Assert.assertThrows(
 			PatternSyntaxException.class,
-			() -> RedactUtil.redact("[", null, "R", "anything"));
+			() -> RedactUtil.redact(
+				"[", null, RandomTestUtil.randomString(), "anything"));
 	}
 
 	@Test
@@ -190,8 +188,12 @@ public class RedactUtilTest {
 		Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redactWithoutCaching(
-				_REGEX_CATASTROPHIC, null, "R", _TEXT_CATASTROPHIC));
+				_REGEX_CATASTROPHIC, null, RandomTestUtil.randomString(),
+				_TEXT_CATASTROPHIC));
 	}
+
+	private static final String _MESSAGE_TIMEOUT =
+		"Redaction exceeded the timeout of 1000 milliseconds";
 
 	private static final String _REGEX_BANK_ACCOUNT_NUMBER =
 		"\\b[A-Z]{2}\\d{2}(?:\\s?[A-Z0-9]){11,30}\\b";

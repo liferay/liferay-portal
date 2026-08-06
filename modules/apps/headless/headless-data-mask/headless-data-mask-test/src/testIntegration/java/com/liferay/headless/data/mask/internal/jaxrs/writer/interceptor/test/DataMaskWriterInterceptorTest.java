@@ -215,7 +215,8 @@ public class DataMaskWriterInterceptorTest {
 							ObjectEntry objectEntry =
 								DataMaskTestUtil.addDataMaskObjectEntry(
 									RandomTestUtil.randomString(),
-									detectionRegex, "[REDACTED]");
+									detectionRegex,
+									RandomTestUtil.randomString());
 
 							return objectEntry.getExternalReferenceCode();
 						}

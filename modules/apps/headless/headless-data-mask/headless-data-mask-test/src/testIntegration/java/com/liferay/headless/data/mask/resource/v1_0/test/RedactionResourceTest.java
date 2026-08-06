@@ -48,7 +48,7 @@ public class RedactionResourceTest extends BaseRedactionResourceTestCase {
 		String catastrophicText = "a".repeat(40);
 
 		redaction = redactionResource.getRedaction(
-			"(.*a){40}", null, "R", catastrophicText);
+			"(.*a){40}", null, RandomTestUtil.randomString(), catastrophicText);
 
 		Assert.assertNotNull(redaction.getError());
 		Assert.assertEquals(catastrophicText, redaction.getOutput());
