@@ -109,12 +109,12 @@ public class JobHealthMonitor implements Monitor {
 			}
 		}
 
-		long lastBuildTimestamp = _getLastBuildTimestamp(
-			lastBuildJSONObject, lastCompletedBuildJSONObject);
-
 		boolean buildRunning = _isBuildRunning(lastBuildJSONObject);
 
 		metrics.put("last.build.running", String.valueOf(buildRunning));
+
+		long lastBuildTimestamp = _getLastBuildTimestamp(
+			lastBuildJSONObject, lastCompletedBuildJSONObject);
 
 		if (lastBuildTimestamp <= 0) {
 			messages.add(
