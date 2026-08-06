@@ -163,13 +163,18 @@ public abstract class SecretsUtil {
 
 		vault.addItem(item);
 
-		for (Map.Entry<String, String> entry : itemFieldsMap.entrySet()) {
-			ItemField itemField = new ItemField(
-				"", entry.getKey(), entry.getValue());
+		JSONArray itemFieldsJSONArray = itemJSONObject.optJSONArray(
+			"fields", new JSONArray());
 
-			item.addItemField(itemField);
+		for (int i = 0; i < itemFieldsJSONArray.length(); i++) {
+			JSONObject itemFieldJSONObject = itemFieldsJSONArray.getJSONObject(
+				i);
 
-			_loadItemField(vault, item, itemField);
+			item.addItemField(
+				new ItemField(
+					itemFieldJSONObject.getString("id"),
+					itemFieldJSONObject.getString("label"),
+					itemFieldJSONObject.getString("value")));
 		}
 	}
 
@@ -555,7 +560,7 @@ public abstract class SecretsUtil {
 		public void addItemField(ItemField itemField) {
 			synchronized (_vault) {
 				if (_itemFields == null) {
-					return;
+					_itemFields = new ArrayList<>();
 				}
 
 				_itemFields.add(itemField);
