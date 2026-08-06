@@ -131,6 +131,7 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -4586,6 +4587,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			serviceContext, SitePage.Type.PAGE_SET_PAGE);
 		_testPutSiteSitePageWithStagingImport(
 			serviceContext, SitePage.Type.WIDGET_PAGE);
+
+		_testPutSiteSitePageWithStagingImportByAnotherUser(serviceContext);
 	}
 
 	private void _testPutSiteSitePageWithStagingImport(
@@ -4649,6 +4652,58 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				lastImportUser.getUuid(),
 				layout.getTypeSettingsProperty("last-import-user-uuid"));
 		}
+	}
+
+	private void _testPutSiteSitePageWithStagingImportByAnotherUser(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		User user = UserTestUtil.addCompanyAdminUser(testCompany);
+
+		String password = RandomTestUtil.randomString();
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		SitePageResource userSitePageResource = SitePageResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		SitePage sitePage = sitePageResource.postSiteSitePage(
+			testGroup.getExternalReferenceCode(), false,
+			_getRandomSitePage(serviceContext, SitePage.Type.CONTENT_PAGE));
+
+		SitePage randomSitePage = _getRandomSitePage(serviceContext, sitePage);
+
+		try (SafeCloseable safeCloseable1 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutImportInProcess", true);
+			SafeCloseable safeCloseable2 =
+				_setExportImportThreadLocalWithSafeCloseable(
+					"_layoutStagingInProcess", true)) {
+
+			userSitePageResource.putSiteSitePage(
+				testGroup.getExternalReferenceCode(),
+				randomSitePage.getExternalReferenceCode(), false,
+				randomSitePage);
+		}
+
+		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+			randomSitePage.getExternalReferenceCode(), testGroup.getGroupId());
+
+		Assert.assertEquals(TestPropsValues.getUserId(), layout.getUserId());
+		Assert.assertEquals(
+			user.getFullName(),
+			layout.getTypeSettingsProperty("last-import-user-name"));
+		Assert.assertEquals(
+			user.getUuid(),
+			layout.getTypeSettingsProperty("last-import-user-uuid"));
 	}
 
 	private void _testPutSiteSitePageWithWidgetPageSettings() throws Exception {
@@ -4913,5 +4968,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
