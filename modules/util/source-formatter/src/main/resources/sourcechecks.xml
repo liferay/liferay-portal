@@ -671,6 +671,10 @@
 			<category name="Bug Prevention" />
 			<description name="Finds unnecessary empty constructor." />
 		</check>
+		<check name="JavaRedundantContainsCheck">
+			<category name="Performance" />
+			<description name="Finds a `contains` or `containsKey` check that is immediately followed by a `get`, `remove`, `put`, or `add` on the same key or element, which should be combined into the single operation that already reports presence through its return value." />
+		</check>
 		<check name="JavaReturnStatementCheck">
 			<category name="Styling" />
 			<description name="Finds unnecessary `else` statement (when `if` and `else` statement both end with `return` statement)." />
@@ -908,10 +912,6 @@
 		<check name="JavaProviderTypeAnnotationCheck">
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on classes with `@ProviderType` annotation." />
-		</check>
-		<check name="JavaRedundantContainsCheck">
-			<category name="Performance" />
-			<description name="Finds a `contains` or `containsKey` check that is immediately followed by a `get`, `remove`, `put`, or `add` on the same key or element, which should be combined into the single operation that already reports presence through its return value." />
 		</check>
 		<check name="JavaReferenceAnnotationsCheck">
 			<category name="Bug Prevention" />
