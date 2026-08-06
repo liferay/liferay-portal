@@ -88,11 +88,12 @@ public class DataMaskWriterInterceptorTest {
 		Assert.assertEquals(
 			"The value is secret.",
 			HTTPTestUtil.invokeToString(
-				null, "test-data-mask/test", Http.Method.GET));
+				null, "test-data-mask/secret-text", Http.Method.GET));
+
 		Assert.assertEquals(
 			"The value is [REDACTED].",
 			HTTPTestUtil.invokeToString(
-				null, "test-data-mask/test",
+				null, "test-data-mask/secret-text",
 				HashMapBuilder.put(
 					"X-Liferay-Data-Masks",
 					() -> {
@@ -108,7 +109,7 @@ public class DataMaskWriterInterceptorTest {
 		Assert.assertEquals(
 			"The value is secret.",
 			HTTPTestUtil.invokeToString(
-				null, "test-data-mask/test",
+				null, "test-data-mask/secret-text",
 				HashMapBuilder.put(
 					"X-Liferay-Data-Masks", RandomTestUtil.randomString()
 				).build(),
@@ -120,7 +121,7 @@ public class DataMaskWriterInterceptorTest {
 		Assert.assertEquals(
 			"The value is [REDACTED].",
 			HTTPTestUtil.invokeToString(
-				null, "test-data-mask/test",
+				null, "test-data-mask/secret-text",
 				HashMapBuilder.put(
 					"X-Liferay-Data-Masks",
 					() -> {
@@ -134,10 +135,12 @@ public class DataMaskWriterInterceptorTest {
 				).build(),
 				Http.Method.GET));
 
-		_assertRedactionFails(
-			"(.*a){40}", "repeated-text", "Redaction exceeded the timeout of");
-		_assertRedactionFails(
-			"(a|aa)+$", "long-repeated-text", "Redaction overflowed the stack");
+		_testAroundWriteToFails(
+			"Redaction exceeded the timeout of", "(.*a){40}",
+			"catastrophic-text");
+		_testAroundWriteToFails(
+			"Redaction overflowed the stack", "(a|aa)+$",
+			"stack-overflow-text");
 	}
 
 	@FeatureFlags(
@@ -148,7 +151,7 @@ public class DataMaskWriterInterceptorTest {
 		Assert.assertEquals(
 			"The value is secret.",
 			HTTPTestUtil.invokeToString(
-				null, "test-data-mask/test",
+				null, "test-data-mask/secret-text",
 				HashMapBuilder.put(
 					"X-Liferay-Data-Masks",
 					() -> {
@@ -165,36 +168,36 @@ public class DataMaskWriterInterceptorTest {
 
 	public static class TestApplication extends Application {
 
+		@GET
+		@Path("/catastrophic-text")
+		@Produces(MediaType.TEXT_PLAIN)
+		public String catastrophicText() {
+			return "a".repeat(60);
+		}
+
 		@Override
 		public Set<Object> getSingletons() {
 			return Collections.singleton(this);
 		}
 
 		@GET
-		@Path("/long-repeated-text")
+		@Path("/secret-text")
 		@Produces(MediaType.TEXT_PLAIN)
-		public String longRepeatedText() {
-			return _LONG_REPEATED_TEXT;
-		}
-
-		@GET
-		@Path("/repeated-text")
-		@Produces(MediaType.TEXT_PLAIN)
-		public String repeatedText() {
-			return _REPEATED_TEXT;
-		}
-
-		@GET
-		@Path("/test")
-		@Produces(MediaType.TEXT_PLAIN)
-		public String test() {
+		public String secretText() {
 			return "The value is secret.";
+		}
+
+		@GET
+		@Path("/stack-overflow-text")
+		@Produces(MediaType.TEXT_PLAIN)
+		public String stackOverflowText() {
+			return "a".repeat(100000) + "b";
 		}
 
 	}
 
-	private void _assertRedactionFails(
-			String detectionRegex, String path, String expectedMessage)
+	private void _testAroundWriteToFails(
+			String expectedMessage, String detectionRegex, String path)
 		throws Exception {
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -202,16 +205,20 @@ public class DataMaskWriterInterceptorTest {
 					"interceptor.DataMaskWriterInterceptor",
 				LoggerTestUtil.ERROR)) {
 
-			ObjectEntry objectEntry = DataMaskTestUtil.addDataMaskObjectEntry(
-				RandomTestUtil.randomString(), detectionRegex, "[REDACTED]");
-
 			Assert.assertEquals(
 				"",
 				HTTPTestUtil.invokeToString(
 					null, "test-data-mask/" + path,
 					HashMapBuilder.put(
 						"X-Liferay-Data-Masks",
-						objectEntry.getExternalReferenceCode()
+						() -> {
+							ObjectEntry objectEntry =
+								DataMaskTestUtil.addDataMaskObjectEntry(
+									RandomTestUtil.randomString(),
+									detectionRegex, "[REDACTED]");
+
+							return objectEntry.getExternalReferenceCode();
+						}
 					).build(),
 					Http.Method.GET));
 
@@ -226,10 +233,6 @@ public class DataMaskWriterInterceptorTest {
 			Assert.assertTrue(message, message.contains(expectedMessage));
 		}
 	}
-
-	private static final String _LONG_REPEATED_TEXT = "a".repeat(100000) + "b";
-
-	private static final String _REPEATED_TEXT = "a".repeat(60);
 
 	private ServiceRegistration<Application> _serviceRegistration;
 
