@@ -1283,7 +1283,7 @@ definition {
 					checkboxName = ${fieldName},
 					locator1 = "Checkbox#ANY_CHECKBOX");
 
-				PortletEntry.save();
+				ObjectCustomViews.clickSave();
 
 				SelectFrame(locator1 = "ObjectAction#IFRAME_SIDE_PANEL");
 
