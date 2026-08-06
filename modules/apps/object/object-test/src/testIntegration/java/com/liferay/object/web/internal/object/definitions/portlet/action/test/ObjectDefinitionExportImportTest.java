@@ -412,13 +412,20 @@ public class ObjectDefinitionExportImportTest extends BaseExportImportTestCase {
 					"TestImportObjectDefinition", null)));
 
 		importJSON(
-			false, "TESTIMPORTOBJECTDEFINITION", json,
-			"TestImportObjectDefinition");
-		importJSON(
 			true, "TESTIMPORTOBJECTDEFINITION", json,
 			"TestImportObjectDefinition");
 
 		ObjectDefinition objectDefinition =
+			objectDefinitionResource.getObjectDefinitionByExternalReferenceCode(
+				"TESTIMPORTOBJECTDEFINITION");
+
+		Assert.assertTrue(objectDefinition.getActive());
+
+		importJSON(
+			false, "TESTIMPORTOBJECTDEFINITION", json,
+			"TestImportObjectDefinition");
+
+		objectDefinition =
 			objectDefinitionResource.getObjectDefinitionByExternalReferenceCode(
 				"TESTIMPORTOBJECTDEFINITION");
 
