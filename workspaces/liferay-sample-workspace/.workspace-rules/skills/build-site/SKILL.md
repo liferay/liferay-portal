@@ -52,7 +52,43 @@ Before calling any subskill, confirm the scope with the user:
 
 1. **Theme** — any color, font, or visual requirement (optional)
 
+1. **Audience** — who the site is actually *for*: anonymous visitors, or a signed in user. This decides every verification step later, and getting it wrong wastes a full cycle in either direction. An admin only demo needs no Guest grants and must be checked **signed in**; a public site needs `resource-permissions.json` and must be checked **signed out**. Ask; do not infer it from the fact that a page is public.
+
 Proceed only after the user confirms or corrects the scope list.
+
+#### Settle the Reprovision Surface Before Provisioning Once
+
+**This is the single largest time sink in a site build.** The initializer runs only at site creation, so a whole class of change costs a delete-and-redeploy cycle each time it is discovered. Those cycles are almost never individually avoidable — but the *number* of them is, and it is decided here, before Phase 4, not later.
+
+| Change | Cost after the first provision |
+| --- | --- |
+| Object definition, field, relationship, entry data | **Live** — `object-admin` API, no reprovision |
+| Theme CSS client extension | **Live** — `blade gw deploy` |
+| Fragment HTML / CSS / JS, or a new fragment | **Reprovision** |
+| New page, or recomposing an existing one | **Reprovision** |
+| Adding or changing a master page | **Reprovision, and it rewrites every page definition** |
+| Style book, navigation menu, layout set settings | **Reprovision** |
+
+So before writing the first fragment, answer these — each wrong guess is one cycle:
+
+- **Is there a master page?** Retrofitting one later touches every `page-definition.json` (each needs `settings.masterPage.key` and `version: 1.1`). If the site has a branded header or footer — and almost every real site does — build it in Phase 5, not after the theme prompt.
+- **What is the complete page list**, including the ones that are not navigation items: thank-you, confirmation, error, "no results" pages. A form almost always implies a landing page.
+- **Which fragments carry JavaScript**, and have they been reasoned through once for timezone, permissions, and number parsing? See the trap table below.
+- **Does the theme need anything the tree cannot express?** Decide now, because `themeCSS` is a sibling project and cannot be selected from the tree at all (`skills/theme-and-design/SKILL.md`).
+
+Batch everything reprovision-costing into as few passes as possible. A planned build provisions once or twice; a reactive one provisions five times.
+
+#### Trap Preflight
+
+Five silent failures account for most of the rework in this pack. Each one builds, deploys, and renders — the defect only shows on close reading. Check them while authoring, not after.
+
+| Trap | Rule | Where |
+| --- | --- | --- |
+| `fragment.json` `"type"` | Always `"component"`. `"section"` breaks the whole `headless-admin-fragment` listing with `400 Invalid enum value` | `scaffold-fragment` |
+| Literal text override | Replaces the editable's inner `<h1>`/`<h2>`, so tag-only CSS selectors miss it | `manage-pages` |
+| `DateTime` in fragment JS | Use the **UTC** getters, or times shift into the visitor's timezone | `manage-pages` |
+| Site wide heading font | Content fragments must not declare `font-weight` on headings the master rule owns | `theme-and-design` |
+| Reserved object field names | `status` is taken — use `<entity>Status`. Inside an initializer this rolls back the entire site | `manage-objects` |
 
 The canonical model is **site initializer first**: the `siteInitializer` CET tree is the single source of truth, and the site is created by triggering the initializer rather than by calling the live page API. After the initial build, iterate by editing the source tree and applying each change by the cheapest reliable path — see "Iterating on the Site" below and the spine in `rules/site-initializer-format.md`.
 

@@ -141,18 +141,24 @@ A token only takes effect if its name is declared in the active theme's `fronten
 
 Each entry needs **two** things — the token `name` (the JSON key) and its `cssVariableMapping`. The mapping is not derivable from the name (`primaryD1Color` → `primary-d1`, `btnPrimaryBackgroundColor` → `btn-primary-background-color`, `fontFamilyBase` → `font-family-base`), so dump both at once rather than guessing the kebab-case form:
 
+Read it from the **deployed theme in the bundle**, not from portal source. A Liferay Workspace is not a portal checkout — `modules/apps/frontend-theme/...` does not exist there, and reaching for it sends you looking for a repository you may not have. The definition ships inside the theme WAR:
+
 ```bash
+unzip -p bundles/osgi/portal-war/classic-theme.war WEB-INF/frontend-token-definition.json > /tmp/tokens.json
+
 python3 -c "
 import json
-d = json.load(open('modules/apps/frontend-theme/frontend-theme-classic/src/WEB-INF/frontend-token-definition.json'))
+d = json.load(open('/tmp/tokens.json'))
 for c in d['frontendTokenCategories']:
     for s in c.get('frontendTokenSets', []):
         for ft in s.get('frontendTokens', []):
             for m in ft.get('mappings', []):
-                print(f\"{ft['name']:36s} -> {m.get('value')}\")" | sort
+                print(f\"{ft['name']:36s} -> {m.get('value')}\")" | sort -u
 ```
 
-Filter that list to what you need (`grep -E '^(primary|btnPrimary|body|font|h[1-6])'`) rather than reading all 252.
+This has the added benefit of describing the theme **actually running**, so the list matches the release under test rather than whatever branch is checked out. Verified on a 2026.Q2 bundle: 252 tokens, and no `headings*` among them.
+
+Filter that list to what you need (`grep -E '^(primary|btnPrimary|body|font|h[1-6])'`) rather than reading all 252. For a non Classic theme, substitute its WAR under `bundles/osgi/portal-war/` (or `bundles/osgi/war/` for a deployed custom theme).
 
 Classic declares 252 tokens. Useful ones: `bodyBgColor`, `bodyColor`, `primaryColor`, `primaryD1Color`, `primaryD2Color`, `primaryL1Color`…`primaryL3Color`, `secondaryColor`, `warningColor`, `warningD1Color`, `fontFamilyBase`, `fontSizeBase`, `fontWeightBold`, `fontWeightBolder`, `h1FontSize`…`h6FontSize`, and the full `btnPrimary*` / `btnSecondary*` sets (`BackgroundColor`, `BorderColor`, `Color`, and their `Hover` variants).
 
@@ -179,6 +185,24 @@ A fragment's `index.css` is a stylesheet on the page, so its rules can target an
 ```
 
 This is a deliberate exception to "Fragment Scoping" in `scaffold-fragment` — that rule exists to stop *accidental* cascade leakage between sibling fragments on one page. Keep the exception narrow (headings and brand chrome), keep it in the master's fragment rather than a content fragment, and comment why, or the next reader will "fix" it back into scope.
+
+#### Tag Selectors Alone Miss Every Overridden Heading
+
+A `fragmentFields` literal in `page-definition.json` replaces the editable region's **inner markup**, so a title authored as `<div class="…__title"><h2>…</h2></div>` renders as that `div` with bare text — no `<h2>` survives (see `skills/manage-pages/SKILL.md` → "A Literal Override Replaces the Editable's Inner Markup").
+
+The rule above therefore matches the fragment's *default* heading and skips every placement that sets its own text — which, on a real site, is most of them. Name the title wrapper classes alongside the tags:
+
+```css
+#wrapper h1,
+#wrapper h2,
+#wrapper h3,
+#wrapper .conference-hero__title,
+#wrapper .section-heading__title {
+	/* family, weight, tracking */
+}
+```
+
+Verified on 2026.Q2: with tags only, `getComputedStyle` on an overridden hero title returned the body font at weight `700`, while the untouched default beside it rendered correctly — so the page looked *mostly* branded and the failure read as a font-loading problem rather than a selector one.
 
 #### Every Content Fragment Outranks This Rule — Strip Their Heading Weights
 

@@ -154,6 +154,25 @@ The same `fragmentFields` array also sets a fixed value, using `value_i18n` wher
 ]
 ```
 
+#### A Literal Override Replaces the Editable's Inner Markup
+
+The value is written as the editable region's **content**, so any tag inside that region is gone. A `rich-text` region authored as
+
+```html
+<div class="section-heading__title" data-lfr-editable-id="title" data-lfr-editable-type="rich-text">
+	<h2>Section title</h2>
+</div>
+```
+
+renders on an overridden placement as `<div class="section-heading__title" …>Coming up next</div>` — verified on 2026.Q2. The `<h2>` is not preserved.
+
+Two consequences, both quiet:
+
+- **CSS targeting the inner tag stops matching.** A rule written `.section-heading__title h2` styles the fragment's default and nothing else, so the placements you actually ship lose their sizing. Style the wrapper class itself, or list both.
+- **Site wide `h1`…`h4` rules skip these headings entirely** — there is no heading element left to match. This is the trap for the master page heading rule in `skills/theme-and-design/SKILL.md`: the selector must name the title wrapper classes alongside the tags, or the overridden headings — the ones on every real page — silently keep the body font.
+
+It also means the page has no `<h2>` where the author intended one. Where document outline matters, put the heading tag *outside* the editable region and let the override fill a `<span>` within it.
+
 ### Per Instance Configuration — `fragmentConfig`
 
 `fragmentFields` sets *editable regions*. A sibling key, `fragmentConfig`, sets the fragment's **`configuration.json` values** for that one placement, and it is what lets a single fragment serve several pages with different behavior instead of forking it:
@@ -217,6 +236,7 @@ Prefer the server side Collection. But it renders stored values only, so a listi
 | --- | --- |
 | Filter by date (`upcoming only`) | OData `Date`/`DateTime` filters return `BAD_REQUEST`, so the filtering has to happen client side anyway (`skills/manage-objects/SKILL.md`) |
 | Format a date (`Oct 14–16, 2026`) | Mapping has no date format option — it prints the raw value |
+| Show the *venue's* time | See "Read DateTime With the UTC Getters" below — the local getters shift it to the visitor's timezone |
 | Show an aggregate (`498 of 500 seats`) | Aggregates cannot be mapped, per the limits above |
 
 Denormalizing into `Text` display fields solves the first two, but each one then needs to be kept in sync, and it cannot solve a count that changes on every submission.
@@ -227,6 +247,20 @@ Two details that bite:
 
 - **Use `Liferay.Util.fetch`, not native `fetch`** (`skills/scaffold-client-extension/SKILL.md`).
 - **`Aggregation` serialises as a string** — an event with two registrations returns `"registrationCount": "2"`. `capacity - count` concatenates in JavaScript. Parse first.
+
+#### Read DateTime With the UTC Getters
+
+A `DateTime` field stored `convertToUTC` comes back as `2026-10-14T09:00:00.000Z`. `new Date(...)` parses that correctly, but `getHours()` / `getDate()` / `getDay()` then render it **in the browser's timezone** — so a 09:00 keynote displays as `02:00` to a visitor on US Pacific, and as a different time again to everyone else. Verified on 2026.Q2: the same listing read `09:00–10:30` server side and `02:00–03:30` in the browser.
+
+This is worse than an ordinary bug because it is *plausible*. The listing renders, the layout is fine, the date is right, and only the hour is wrong — so it survives every check short of reading the number against the source data.
+
+For an event at a fixed venue the stored value **is** the venue's wall clock time, so read it back the way it was written:
+
+```javascript
+pad(date.getUTCHours()) + ':' + pad(date.getUTCMinutes())
+```
+
+Use `getUTCDay()`, `getUTCDate()`, and `getUTCMonth()` for the date parts too, and compare `toUTCString().slice(0, 16)` rather than `toDateString()` when testing whether a start and end fall on the same day — the local variant flips near midnight. Only reach for the local getters when the time genuinely should follow the reader (a webinar), and say so in a comment, because the next person will assume it is this bug.
 
 Verifying this is browser work, not `curl` work: `curl` executes no JavaScript, so an empty listing and a working one produce identical HTML. See the Verify section below.
 
@@ -391,9 +425,9 @@ Discriminators for fragment placement:
 - Custom fragments: `"fragmentReferenceType": "FragmentItemExternalReference"` with `"externalReferenceCode": "<fragmentEntryKey>"` — the fragment entry key IS the ERC
 - Out of the box fragments: `"fragmentReferenceType": "DefaultFragmentReference"` with `defaultFragmentKey` — inlining not required
 
-### Fragment Management API Gap
+### Fragment Management API
 
-Headless fragment CRUD endpoints are not consistently available across DXP versions — verify before assuming an endpoint exists (the `get-openapi` MCP tool, or fetch `GET /o/headless-admin-site/v1.0/openapi.json` with curl). If no fragment import endpoint appears in the live API surface, import via the portal UI instead. For programmatic placement on pages, use the discriminators above.
+Fragment CRUD lives in its own module, `headless-admin-fragment` — not in `headless-admin-site`, which is why it looks absent when you check the page API's spec. It is verified working on 2026.Q2, but it does **not** propagate edits to fragments already placed on a page. See `skills/scaffold-fragment/SKILL.md` → "The Live Fragment API". For programmatic placement on pages, use the discriminators above.
 
 ## Placing a Client Extension Widget on a Page
 

@@ -73,6 +73,27 @@ Object entries (after publish): `/o/c/<pluralLabel>` — GET, POST, PUT, PATCH, 
 
 **OAuth scope:** `Liferay.Object.Admin.REST.everything` for the admin endpoints above (definitions, fields, etc.). `Liferay.Headless.Object.everything` for the dynamic `/o/c/<plural>` entry endpoints.
 
+## headless-admin-fragment
+
+**Base URI:** `/o/headless-admin-fragment/v1.0`
+
+Its own module — **not** part of `headless-admin-site`, which is why fragment endpoints look absent when you search the page API's spec.
+
+| Resource | Method | Path |
+| --- | --- | --- |
+| List / create fragment sets | GET, POST | `/sites/{siteExternalReferenceCode}/fragment-sets` |
+| Get / update / delete a set | GET, PUT, DELETE | `/sites/{siteExternalReferenceCode}/fragment-sets/{setExternalReferenceCode}` |
+| List / create fragments in a set | GET, POST | `/sites/{siteExternalReferenceCode}/fragment-sets/{setExternalReferenceCode}/fragments` |
+| Get / replace / delete a fragment | GET, PUT, DELETE | `/sites/{siteExternalReferenceCode}/fragments/{fragmentExternalReferenceCode}` |
+
+Fragment code is in `fragmentVersions[]` (`html`, `css`, `js`, `configuration`, `status`). Fragments are keyed by **ERC** — a generated UUID for initializer-imported fragments, not the fragment key — so list the set to resolve it.
+
+**Required flag:** `LPD-39244`.
+
+**OAuth scope:** `Liferay.Headless.Admin.Fragment.everything` — verify against the running instance before relying on it in a CET.
+
+> **Editing a fragment here does not change any page that already places it** — Liferay copies fragment code into each page's fragment instance. Reprovision to apply fragment changes. See `skills/scaffold-fragment/SKILL.md` → "The Live Fragment API", and note that one fragment declaring `"type": "section"` makes the whole set's listing return `400`.
+
 ## headless-admin-list-type
 
 **Base URI:** `/o/headless-admin-list-type/v1.0`

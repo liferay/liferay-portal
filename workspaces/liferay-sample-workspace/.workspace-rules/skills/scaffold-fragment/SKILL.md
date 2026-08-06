@@ -148,7 +148,11 @@ Access the value in `index.html` with `[configuration.buttonStyle]` or in `index
 The fragment lives in the `siteInitializer` tree and is created when the site is provisioned. Trigger the initializer (see `build-site` Phase 9 and `rules/site-initializer-format.md`); no separate fragment deploy is needed.
 
 **Iterating on a fragment — reprovision from the tree:**
-There is **no stable headless endpoint for importing a fragment collection** into a running site — do not assume a live collection import call exists; verify the live API surface before relying on any such endpoint (the `get-openapi` MCP tool, or fetch the relevant module's `GET /o/<module>/v1.0/openapi.json` with curl). The portable way to apply a fragment change is to edit the source files in the site-initializer tree and reprovision the site — delete the site, then redeploy the initializer CET so it recreates the site from the current tree. See `rules/site-initializer-format.md` for the reprovision recipe. Object data is company scoped and survives the reprovision.
+Edit the source files in the site-initializer tree and reprovision the site — delete the site, then redeploy the initializer CET so it recreates the site from the current tree. See `rules/site-initializer-format.md` for the reprovision recipe. Object data is company scoped and survives the reprovision.
+
+**A live fragment API does exist — it just will not save you the reprovision.** `headless-admin-fragment` is real and fully functional (see "The Live Fragment API" below). The reason you still reprovision is **propagation**, not a missing endpoint: Liferay copies a fragment's HTML, CSS and JS into each page's fragment *instance* when it is placed, so updating the library fragment leaves every page already using it untouched.
+
+Verified on 2026.Q2 — a `PUT` that changed a fragment's CSS read back changed on the fragment entry and produced **zero** difference in the rendered page that placed it. Knowing this is worth a few minutes: the endpoint returns `200`, the read-back confirms the edit, and it is entirely reasonable to conclude the change is live and then spend a while hunting a caching problem that does not exist.
 
 **Alternative — standalone fragment collection CET:**
 
@@ -367,9 +371,34 @@ Prefer the data attribute plus CSS form regardless of the directive limitation: 
 - **"Can't convert boolean to string automatically"**: a checkbox value is printed without `?c` — use `${(configuration.myFlag!true)?c}`.
 - **A literal `<#if …>` appears as text on the page**: block directives are not evaluated in fragment HTML. Emit the markup unconditionally and hide it via a data attribute plus CSS. Assume the toggle is also doing nothing.
 
-### Headless Fragment CRUD Is Inconsistent
+### The Live Fragment API
 
-Headless fragment endpoints are not consistent across DXP versions: there is no portable fragment collection import endpoint, and per fragment CRUD (create, update, delete an individual fragment outside a collection) is not consistently available. Verify the live API surface before scripting any fragment workflow (the `get-openapi` MCP tool, or fetch the relevant module's `GET /o/<module>/v1.0/openapi.json` with curl); otherwise use the site initializer tree (reprovision to apply changes) or the portal UI.
+`headless-admin-fragment` exists and works. Base URI `/o/headless-admin-fragment/v1.0`, gated by `LPD-39244`. Verified end to end on a self hosted 2026.Q2 bundle — create, update and delete all returned `200`/`204` and round tripped correctly.
+
+| Resource | Method | Path |
+| --- | --- | --- |
+| List fragment sets | GET | `/sites/{siteERC}/fragment-sets` |
+| List fragments in a set | GET | `/sites/{siteERC}/fragment-sets/{setERC}/fragments` |
+| Create a fragment | POST | `/sites/{siteERC}/fragment-sets/{setERC}/fragments` |
+| Get / replace / delete a fragment | GET, PUT, DELETE | `/sites/{siteERC}/fragments/{fragmentERC}` |
+
+The code lives in `fragmentVersions[]`, which carries `html`, `css`, `js`, `configuration` and `status`. Fragments are addressed by **external reference code** — a generated UUID for anything the initializer imported, *not* the fragment key. `GET /sites/{siteERC}/fragments/<key>` returns `404`; list the set first to resolve the ERC.
+
+**Do not reach for this to iterate on a placed fragment** — see "Iterating on a fragment" above. Page instances hold their own copy, so a `PUT` changes the library entry and nothing the visitor sees. What it is genuinely good for:
+
+- **Inspecting what actually imported.** Reading back the `html`/`css` the initializer produced is the fastest way to confirm a tree change landed, and it beats grepping rendered page source.
+- **Authoring a fragment that no page places yet**, so an author can drop it in the page editor.
+- **Auditing** — enumerating what exists in a site's sets.
+
+#### One Bad `type` Makes the Whole Set Unlistable
+
+`Fragment.type` is an enum whose **only** accepted value is `Component`. A fragment whose `fragment.json` declares `"type": "section"` (or `input`, or `react`) imports fine and renders fine, but poisons the listing endpoint for **every fragment in its set**:
+
+```text
+400 BAD_REQUEST — Invalid enum value: Section
+```
+
+The failure is at serialization, so it is not per item and a `filter` does not route around it — one bad fragment and no ERC in that set can be discovered at all. Always write `"type": "component"` in `fragment.json`, whatever role the fragment plays on the page; the "Fragment Types" table at the top of this skill describes *intent*, not this field's value.
 
 ### Programmatic Placement on Pages
 

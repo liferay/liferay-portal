@@ -14,7 +14,7 @@ The site-initializer CET tree is the **single source of truth** for the site. Bu
 | --- | --- | --- |
 | Theme / design | Deploy the `themeCSS` CET (`blade gw deploy`) | No |
 | Object definition or data | `object-admin` API, or edit `object-definitions/` and reprovision | No |
-| Fragment content or new fragment | Edit the source tree, then reprovision — there is no portable live fragment import endpoint | Yes |
+| Fragment content or new fragment | Edit the source tree, then reprovision. A live fragment API exists but does **not** propagate to pages already placing the fragment | Yes |
 | New page, page composition change, or fragment placement on a page | Reprovision: delete the site, recreate from the initializer | Yes |
 
 A page composition change — adding or rearranging fragments **on an existing page**, not just adding new pages — also requires a reprovision. Retriggering the initializer upserts pages but does not retrofit composition changes onto pages that already exist, so edited `page-definition.json` content only takes effect after the site is recreated.
@@ -51,6 +51,48 @@ Confirm the initializer actually ran — the count must increase, and `BUILD SUC
 grep -c "Initializing <Site Name>" bundles/tomcat/logs/catalina.out
 ```
 
+### Do the Whole Cycle in One Command
+
+Run the steps by hand and you will eventually wait on a counter that already advanced, or read the previous run's log as if it were this one. Both cost minutes and neither announces itself. Capture the count **before** deleting, then block until it exceeds that:
+
+```bash
+#!/usr/bin/env bash
+# reprovision.sh — delete the site, redeploy the initializer, wait, report.
+set -euo pipefail
+
+SITE_ERC="${SITE_ERC:?set SITE_ERC}"
+SITE_NAME="${SITE_NAME:?set SITE_NAME}"     # the "Initializing <SITE_NAME>" log string
+CET="${CET:?set CET}"                       # client-extensions/<CET>
+PORT="${PORT:-8080}"
+LOG=bundles/tomcat/logs/catalina.out
+
+before=$(grep -c "Initializing ${SITE_NAME}" "${LOG}" || echo 0)
+
+curl --request DELETE --silent --output /dev/null \
+	--url "http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/${SITE_ERC}" \
+	--user "test@liferay.com:test"
+
+rm -f "bundles/osgi/client-extensions/${CET}.zip"
+(cd "client-extensions/${CET}" && blade gw clean deploy >/dev/null)
+
+for _ in $(seq 1 100); do
+	[ "$(grep -c "Initializing ${SITE_NAME}" "${LOG}" || echo 0)" -gt "${before}" ] && break
+	sleep 3
+done
+
+sleep 6   # let the handlers finish after the "Initializing" line appears
+
+awk -v n=$((before + 1)) '/Initializing '"${SITE_NAME}"'/{c++} c>=n' "${LOG}" \
+	| grep -E 'Invoking|Initialized|InitializationException|MustNotBeReserved'
+```
+
+Two details that are easy to get wrong by hand:
+
+- **`before` must be read before the delete**, not after the deploy. Reading it late means comparing the new run against itself, and the loop spins until it times out on a build that actually succeeded.
+- **The `Initializing` line is not the end of the run.** Handlers keep logging after it, so sampling immediately shows a partial list and a missing handler reads as a failure. The `sleep 6` covers this; for a large tree, assert on the `Initialized <Site> ... in N ms` line instead.
+
+The final `awk` prints only the newest run, which is the comparison that matters — see "Verifying What the Initializer Actually Did" below for reading the timings.
+
 **Sites are addressed by external reference code in the REST path** (`/sites/<erc>`) for these admin operations — passing the numeric site ID returns 404.
 
 > Prefer delete then redeploy over recreating with `POST /sites` + `templateExternalReferenceCode` (or `templateKey`): resolving a site-initializer template through that POST is unreliable. The portable path relies on the CET's `siteExternalReferenceCode` to autoprovision on deploy.
@@ -59,7 +101,9 @@ Reprovisioning is always safe because the source tree is current. **Object defin
 
 ### Applying a Fragment Change
 
-Fragments live in the initializer tree under `fragments/group/<collection-key>/fragments/<fragment-name>/`. To change a fragment, edit those source files and reprovision the site (delete then redeploy, above). Do **not** assume a live fragment collection import endpoint exists — there is no portable headless endpoint for importing a fragment collection into a running site; verify the live API surface before relying on any such call (the `get-openapi` MCP tool, or fetch the relevant module's `GET /o/<module>/v1.0/openapi.json` with curl).
+Fragments live in the initializer tree under `fragments/group/<collection-key>/fragments/<fragment-name>/`. To change a fragment, edit those source files and reprovision the site (delete then redeploy, above).
+
+The `headless-admin-fragment` API **does** expose per fragment create/update/delete, and it is easy to mistake for a shortcut. It is not one: Liferay copies fragment code into each page's fragment instance at placement time, so a `PUT` updates the library entry and leaves every page already using it unchanged — verified on 2026.Q2. See `skills/scaffold-fragment/SKILL.md` → "The Live Fragment API" for what it is actually useful for.
 
 ## Directory Tree
 
