@@ -538,6 +538,11 @@ export class DataApiHelpers extends ApiHelpers {
 			else if (item.type === 'document') {
 				await this.headlessDelivery.deleteDocument(item.id);
 			}
+			else if (item.type === 'documentDataDefinitionType') {
+				await this.headlessDelivery.deleteDocumentDataDefinitionType(
+					item.id
+				);
+			}
 			else if (item.type === 'keyword') {
 				await this.headlessAdminTaxonomy.deleteKeyword({
 					id: item.id,

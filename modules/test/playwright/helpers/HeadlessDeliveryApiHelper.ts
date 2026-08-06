@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 
 import getRandomString from '../utils/getRandomString';
-import {ApiHelpers} from './ApiHelpers';
+import {ApiHelpers, DataApiHelpers} from './ApiHelpers';
 
 interface createSitePageProps {
 	pageDefinition?: PageDefinition;
@@ -117,6 +117,12 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async deleteDocumentDataDefinitionType(id: string) {
+		return this.apiHelpers.delete(
+			`${this.apiHelpers.baseUrl}${this.basePath}/document-data-definition-types/${id}`
+		);
+	}
+
 	async deleteMessageBoardSection(messageBoardSectionId: string) {
 		return this.apiHelpers.delete(
 			`${this.apiHelpers.baseUrl}${this.basePath}/message-board-sections/${messageBoardSectionId}`
@@ -190,6 +196,29 @@ export class HeadlessDeliveryApiHelper {
 				failOnStatusCode: true,
 			}
 		);
+	}
+
+	async postSiteDocumentDataDefinitionType(siteId: string, name: string) {
+		const documentDataDefinitionType = await this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/document-data-definition-types`,
+			{
+				data: {
+					availableLanguages: ['en-US'],
+					dataDefinitionFields: [],
+					dataLayout: {},
+					name,
+				},
+			}
+		);
+
+		if (this.apiHelpers instanceof DataApiHelpers) {
+			this.apiHelpers.data.push({
+				id: documentDataDefinitionType.id,
+				type: 'documentDataDefinitionType',
+			});
+		}
+
+		return documentDataDefinitionType;
 	}
 
 	async postSiteKnowledgeBaseArticle({
