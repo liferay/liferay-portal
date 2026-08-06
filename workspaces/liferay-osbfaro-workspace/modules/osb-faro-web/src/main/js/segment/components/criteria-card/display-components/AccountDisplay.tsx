@@ -1,3 +1,4 @@
+import LifecycleStageDisplay from './LifecycleStageDisplay';
 import React from 'react';
 import {CustomValue} from 'shared/util/records';
 import {
@@ -11,6 +12,7 @@ import {
 } from '../utils';
 import {IDisplayComponentProps} from '../types';
 import {isOfKnownType} from 'segment/segment-editor/dynamic/utils/utils';
+import {PropertyTypes} from 'segment/segment-editor/dynamic/utils/constants';
 
 const AccountDisplay: React.FC<IDisplayComponentProps> = ({
 	criterion,
@@ -21,7 +23,11 @@ const AccountDisplay: React.FC<IDisplayComponentProps> = ({
 
 	const {entityName, label, type} = property;
 
-	const operatorName = getOperator(valueIMap, 0);
+	const selectText = type === PropertyTypes.AccountSelectText;
+
+	const operatorName = selectText
+		? criterion.operatorName ?? ''
+		: getOperator(valueIMap, 0);
 	const value = getPropertyValue(valueIMap, 'value', 0);
 
 	const operatorKey = maybeFormatToKnownType(operatorName, value);
@@ -36,9 +42,12 @@ const AccountDisplay: React.FC<IDisplayComponentProps> = ({
 
 			<span>{operatorLabel}</span>
 
-			{!isOfKnownType(operatorKey) && (
-				<b>{maybeFormatValue(value, type, timeZoneId)}</b>
-			)}
+			{!isOfKnownType(operatorKey) &&
+				(selectText ? (
+					<LifecycleStageDisplay label={label} value={value} />
+				) : (
+					<b>{maybeFormatValue(value, type, timeZoneId)}</b>
+				))}
 		</>
 	);
 };

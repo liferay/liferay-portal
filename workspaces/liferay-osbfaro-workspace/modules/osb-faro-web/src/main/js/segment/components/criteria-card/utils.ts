@@ -51,6 +51,7 @@ export function getOperatorLabel(
 		case PropertyTypes.SessionGeolocation:
 			supportedOperators = GEOLOCATION_OPTIONS;
 			break;
+		case PropertyTypes.AccountSelectText:
 		case PropertyTypes.Behavior:
 		case PropertyTypes.Boolean:
 		case PropertyTypes.Date:
