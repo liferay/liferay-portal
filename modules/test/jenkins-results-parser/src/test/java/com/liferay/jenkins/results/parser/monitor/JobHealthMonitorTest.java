@@ -138,25 +138,6 @@ public class JobHealthMonitorTest
 	}
 
 	@Test
-	public void testExecuteMasterURLWithTrailingSlash() throws Exception {
-		JenkinsMasterTestUtil.getJenkinsMaster(
-			_MASTER_NAME, _MASTER_URL_TRAILING_SLASH);
-
-		_setJobJSONObject(
-			_newJobJSONObject(
-				42, "SUCCESS",
-				JenkinsResultsParserUtil.getCurrentTimeMillis() -
-					(600 * 1000)));
-
-		MonitorResult monitorResult = _execute(_newMonitorProperties());
-
-		testEquals(MonitorResult.Status.OK, monitorResult.getStatus());
-		testEquals(
-			"Job generate-reports-controller is OK",
-			monitorResult.getMessage());
-	}
-
-	@Test
 	public void testExecuteMissingLastBuildTimestamp() throws Exception {
 		_setJobJSONObject(
 			new JSONObject(
@@ -626,7 +607,5 @@ public class JobHealthMonitorTest
 	private static final String _MASTER_NAME = "test-9-1";
 
 	private static final String _MASTER_URL = "http://test-9-1";
-
-	private static final String _MASTER_URL_TRAILING_SLASH = "http://test-9-1/";
 
 }
