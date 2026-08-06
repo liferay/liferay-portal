@@ -481,6 +481,60 @@ public class DLAdminDisplayContext {
 		return _signatureRecipientStatuses;
 	}
 
+	public int getSignatureRequiredCount() {
+		if (_signatureRequiredCount != null) {
+			return _signatureRequiredCount;
+		}
+
+		_signatureRequiredCount = 0;
+
+		try {
+			SearchContext searchContext = _getSearchContext(
+				new SearchContainer<>(
+					_liferayPortletRequest, getViewRenderURL(), null, null),
+				"none");
+
+			long searchRepositoryId = _getSearchRepositoryId();
+
+			searchContext.setAttribute(
+				"searchRepositoryId", searchRepositoryId);
+
+			searchContext.setAttribute(
+				"status", WorkflowConstants.STATUS_APPROVED);
+			searchContext.setBooleanClauses(
+				_getBooleanClauses(
+					null, null, null, -1, new String[] {"signature-required"},
+					null, 0));
+			searchContext.setFolderIds(new long[] {getRootFolderId()});
+
+			Group group = GroupLocalServiceUtil.fetchGroup(searchRepositoryId);
+
+			if ((group != null) &&
+				GroupPermissionUtil.contains(
+					_themeDisplay.getPermissionChecker(), group,
+					ActionKeys.VIEW)) {
+
+				searchContext.setGroupIds(new long[] {searchRepositoryId});
+			}
+
+			QueryConfig queryConfig = searchContext.getQueryConfig();
+
+			queryConfig.setSearchSubfolders(true);
+
+			Hits hits = DLAppServiceUtil.search(
+				searchRepositoryId, searchContext);
+
+			_signatureRequiredCount = hits.getLength();
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(portalException);
+			}
+		}
+
+		return _signatureRequiredCount;
+	}
+
 	public String[] getSignatureStatuses() {
 		if (_signatureStatuses == null) {
 			_signatureStatuses = ParamUtil.getStringValues(
@@ -1376,6 +1430,7 @@ public class DLAdminDisplayContext {
 	private Long _searchRepositoryId;
 	private long _selectedRepositoryId;
 	private String[] _signatureRecipientStatuses;
+	private Integer _signatureRequiredCount;
 	private String[] _signatureStatuses;
 	private final ThemeDisplay _themeDisplay;
 	private final TrashHelper _trashHelper;
