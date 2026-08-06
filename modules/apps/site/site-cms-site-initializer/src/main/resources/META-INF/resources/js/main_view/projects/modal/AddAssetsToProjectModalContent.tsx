@@ -4,11 +4,11 @@
  */
 
 import ClayButton from '@clayui/button';
-import {Option, Picker} from '@clayui/core';
 import ClayModal from '@clayui/modal';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
 import React, {useEffect, useMemo, useState} from 'react';
 
+import ProjectAutocomplete from '../../../common/components/ProjectAutocomplete';
 import ProjectCard from '../../../common/components/ProjectCard';
 import ProjectLinkService, {
 	CMPProject,
@@ -155,35 +155,16 @@ export default function AddAssetsToProjectModalContent({
 					<>
 						<label>{Liferay.Language.get('select-project')}</label>
 
-						<Picker<CMPProject>
-							aria-label={Liferay.Language.get('select-project')}
-							items={selectableProjects}
-							onSelectionChange={(key) => {
-								const project = selectableProjects.find(
-									({id}) => id === Number(key)
-								);
-
-								if (project) {
-									setSelectedProjects((previous) => [
-										...previous,
-										project,
-									]);
-								}
-							}}
-							placeholder={Liferay.Language.get(
-								'search-or-select-a-project'
-							)}
-							selectedKey=""
-						>
-							{(project) => (
-								<Option
-									key={project.id}
-									textValue={project.title}
-								>
-									{project.title}
-								</Option>
-							)}
-						</Picker>
+						<ProjectAutocomplete
+							ariaLabel={Liferay.Language.get('select-project')}
+							onSelect={(project) =>
+								setSelectedProjects((previous) => [
+									...previous,
+									project,
+								])
+							}
+							projects={selectableProjects}
+						/>
 
 						{selectedProjects.length ? (
 							<div className="cms-linked-projects-list">

@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Option, Picker} from '@clayui/core';
 import {useIsMounted} from '@liferay/frontend-js-react-web';
 import {openToast} from 'frontend-js-components-web';
 import React, {useEffect, useMemo, useState} from 'react';
@@ -12,6 +11,7 @@ import ProjectLinkService, {
 	CMPProject,
 	ProjectLink,
 } from '../services/ProjectLinkService';
+import ProjectAutocomplete from './ProjectAutocomplete';
 import ProjectCard from './ProjectCard';
 
 import '../../../css/components/LinkedProjects.scss';
@@ -215,27 +215,11 @@ export default function LinkedProjects({
 
 	return (
 		<div className="cms-linked-projects">
-			<Picker<CMPProject>
-				aria-label={Liferay.Language.get('projects')}
-				items={selectableProjects}
-				onSelectionChange={(key) => {
-					const project = selectableProjects.find(
-						({id}) => id === Number(key)
-					);
-
-					if (project) {
-						linkProject(project);
-					}
-				}}
-				placeholder={Liferay.Language.get('search-or-select-a-project')}
-				selectedKey=""
-			>
-				{(project) => (
-					<Option key={project.id} textValue={project.title}>
-						{project.title}
-					</Option>
-				)}
-			</Picker>
+			<ProjectAutocomplete
+				ariaLabel={Liferay.Language.get('projects')}
+				onSelect={linkProject}
+				projects={selectableProjects}
+			/>
 
 			{linkedProjects.length ? (
 				<div className="cms-linked-projects-list">
