@@ -85,7 +85,7 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListener
 			serviceBuilderNotificationTemplate =
 				_notificationTemplateLocalService.
 					fetchNotificationTemplateByExternalReferenceCode(
-						"L_COMMERCE_ORDER_TEMPLATE", companyId);
+						"COMMERCE_ORDER_TEMPLATE", companyId);
 
 		if ((_notificationType == null) ||
 			(serviceBuilderNotificationTemplate != null)) {
@@ -166,7 +166,7 @@ public class AddCommerceOrderNotificationPortalInstanceLifecycleListener
 				true
 			).put(
 				"notificationTemplateExternalReferenceCode",
-				"L_COMMERCE_ORDER_TEMPLATE"
+				"COMMERCE_ORDER_TEMPLATE"
 			).put(
 				"type", "email"
 			).build(),
