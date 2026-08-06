@@ -207,7 +207,7 @@ exports[`AcquisitionsCard renders 1`] = `
                       <span
                         class="count"
                       >
-                        2,686
+                        2.6K
                       </span>
                     </div>
                   </div>
