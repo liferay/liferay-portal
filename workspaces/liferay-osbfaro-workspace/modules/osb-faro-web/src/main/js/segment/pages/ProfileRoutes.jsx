@@ -16,11 +16,11 @@ import React, {
 	useState
 } from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
-import {AlertTypes} from 'shared/components/Alert';
 import {ChannelContext} from 'shared/context/channel';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {getMatchedRoute, Routes, SEGMENTS, toRoute} from 'shared/util/router';
+import {getSegmentAlerts} from 'segment/utils/alerts';
 import {Segment} from 'shared/util/records';
 import {
 	SegmentCategories,
@@ -149,30 +149,6 @@ export const SegmentProfileRoutes = () => {
 
 	const checkDisabled = () => segment.state === SegmentStates.Disabled;
 
-	const getAlerts = () => {
-		if (segment.state === SegmentStates.InProgress) {
-			return [
-				{
-					alertType: AlertTypes.Info,
-					message: Liferay.Language.get(
-						'segment-data-is-processing-please-check-back-later'
-					),
-					stripe: true
-				}
-			];
-		} else if (checkDisabled()) {
-			return [
-				{
-					alertType: AlertTypes.Danger,
-					message: Liferay.Language.get(
-						'this-segment-is-disabled-because-some-criteria-has-been-affected-by-removal-of-a-data-source.-to-continue-using-this-segment-please-update-the-criteria'
-					),
-					stripe: true
-				}
-			];
-		}
-	};
-
 	const isBatch = segmentDetails.segmentType === SegmentTypes.Batch;
 
 	return (
@@ -268,7 +244,7 @@ export const SegmentProfileRoutes = () => {
 					</BasePage.SubHeader>
 				)}
 
-			<EmbeddedAlertList alerts={getAlerts()} />
+			<EmbeddedAlertList alerts={getSegmentAlerts(segment)} />
 
 			<BasePage.Body disabled={checkDisabled()}>
 				{segment.id ? (
