@@ -44,6 +44,12 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PageSpecificationVersionResource {
 
+	public void deleteSiteSitePagePageSpecificationVersion(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String pageSpecificationVersionExternalReferenceCode)
+		throws Exception;
+
 	public PageSpecificationVersion getSiteSitePagePageSpecificationVersion(
 			String siteExternalReferenceCode,
 			String sitePageExternalReferenceCode,
@@ -152,4 +158,4 @@ public interface PageSpecificationVersionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1909812915
+// LIFERAY-REST-BUILDER-HASH:-1497794721

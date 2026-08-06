@@ -196,6 +196,61 @@ public abstract class BasePageSpecificationVersionResourceTestCase {
 	}
 
 	@Test
+	public void testDeleteSiteSitePagePageSpecificationVersion()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		PageSpecificationVersion pageSpecificationVersion =
+			testDeleteSiteSitePagePageSpecificationVersion_addPageSpecificationVersion();
+
+		assertHttpResponseStatusCode(
+			204,
+			pageSpecificationVersionResource.
+				deleteSiteSitePagePageSpecificationVersionHttpResponse(
+					testDeleteSiteSitePagePageSpecificationVersion_getSiteExternalReferenceCode(),
+					testDeleteSiteSitePagePageSpecificationVersion_getSitePageExternalReferenceCode(),
+					pageSpecificationVersion.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersionHttpResponse(
+					testDeleteSiteSitePagePageSpecificationVersion_getSiteExternalReferenceCode(),
+					testDeleteSiteSitePagePageSpecificationVersion_getSitePageExternalReferenceCode(),
+					pageSpecificationVersion.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			pageSpecificationVersionResource.
+				getSiteSitePagePageSpecificationVersionHttpResponse(
+					testDeleteSiteSitePagePageSpecificationVersion_getSiteExternalReferenceCode(),
+					testDeleteSiteSitePagePageSpecificationVersion_getSitePageExternalReferenceCode(),
+					"-"));
+	}
+
+	protected PageSpecificationVersion
+			testDeleteSiteSitePagePageSpecificationVersion_addPageSpecificationVersion()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String
+			testDeleteSiteSitePagePageSpecificationVersion_getSiteExternalReferenceCode()
+		throws Exception {
+
+		return testGroup.getExternalReferenceCode();
+	}
+
+	protected String
+			testDeleteSiteSitePagePageSpecificationVersion_getSitePageExternalReferenceCode()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testGetSiteSitePagePageSpecificationVersion() throws Exception {
 		PageSpecificationVersion postPageSpecificationVersion =
 			testGetSiteSitePagePageSpecificationVersion_addPageSpecificationVersion();
@@ -471,6 +526,14 @@ public abstract class BasePageSpecificationVersionResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (pageSpecificationVersion.getActions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (pageSpecificationVersion.getCreator() == null) {
 					valid = false;
@@ -655,6 +718,17 @@ public abstract class BasePageSpecificationVersionResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals("actions", additionalAssertFieldName)) {
+				if (!equals(
+						(Map)pageSpecificationVersion1.getActions(),
+						(Map)pageSpecificationVersion2.getActions())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("creator", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -868,6 +942,11 @@ public abstract class BasePageSpecificationVersionResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("actions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
 
 		if (entityFieldName.equals("creator")) {
 			throw new IllegalArgumentException(
@@ -1359,4 +1438,4 @@ public abstract class BasePageSpecificationVersionResourceTestCase {
 		PageSpecificationVersionResource _pageSpecificationVersionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1979383916
+// LIFERAY-REST-BUILDER-HASH:1799742455

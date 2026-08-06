@@ -54,6 +54,16 @@ public class PageSpecificationVersionSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (pageSpecificationVersion.getActions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"actions\": ");
+
+			sb.append(_toJSON(pageSpecificationVersion.getActions()));
+		}
+
 		if (pageSpecificationVersion.getCreator() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -199,6 +209,15 @@ public class PageSpecificationVersionSerDes {
 		DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ssXX");
 
+		if (pageSpecificationVersion.getActions() == null) {
+			map.put("actions", null);
+		}
+		else {
+			map.put(
+				"actions",
+				String.valueOf(pageSpecificationVersion.getActions()));
+		}
+
 		if (pageSpecificationVersion.getCreator() == null) {
 			map.put("creator", null);
 		}
@@ -300,7 +319,10 @@ public class PageSpecificationVersionSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				return true;
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateCreated")) {
@@ -338,7 +360,13 @@ public class PageSpecificationVersionSerDes {
 			PageSpecificationVersion pageSpecificationVersion,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "creator")) {
+			if (Objects.equals(jsonParserFieldName, "actions")) {
+				if (jsonParserFieldValue != null) {
+					pageSpecificationVersion.setActions(
+						(Map<String, Map<String, String>>)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
 				if (jsonParserFieldValue != null) {
 					pageSpecificationVersion.setCreator(
 						CreatorSerDes.toDTO((String)jsonParserFieldValue));
@@ -477,4 +505,4 @@ public class PageSpecificationVersionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:759938507
+// LIFERAY-REST-BUILDER-HASH:460878729
