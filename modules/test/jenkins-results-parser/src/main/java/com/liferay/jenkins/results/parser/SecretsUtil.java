@@ -508,7 +508,7 @@ public abstract class SecretsUtil {
 		try {
 			return JenkinsResultsParserUtil.toJSONObject(
 				_getConnectURL() + path, false, 0, httpRequestMethod,
-				postContent, 0, 0, _getHTTPAuthorization());
+				postContent, 0, 1000 * 60 * 5, _getHTTPAuthorization());
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(
