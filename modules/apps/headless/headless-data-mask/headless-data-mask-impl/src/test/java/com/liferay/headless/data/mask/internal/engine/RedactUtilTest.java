@@ -46,11 +46,6 @@ public class RedactUtilTest {
 
 	@Test
 	public void testRedact() {
-		Assert.assertNull(RedactUtil.redact("\\d+", null, "[X]", null));
-		Assert.assertThrows(
-			PatternSyntaxException.class,
-			() -> RedactUtil.redact("[", null, "[X]", "anything"));
-
 		Assert.assertEquals(
 			"BSN: [BSN].",
 			RedactUtil.redact(
@@ -69,8 +64,7 @@ public class RedactUtilTest {
 		Assert.assertEquals(
 			"Emails: [EMAIL_ADDRESS] and [EMAIL_ADDRESS].",
 			RedactUtil.redact(
-				"\\b[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}\\b",
-				null, "[EMAIL_ADDRESS]",
+				_REGEX_EMAIL_ADDRESS, null, "[EMAIL_ADDRESS]",
 				"Emails: a.b+tag@sub.example.co.uk and USER@EXAMPLE.COM."));
 		Assert.assertEquals(
 			"Hosts: 10.0.0.0/24 and 192.168.1.0/24.",
@@ -90,15 +84,13 @@ public class RedactUtilTest {
 			"IBANs: [BANK_ACCOUNT_NUMBER], [BANK_ACCOUNT_NUMBER], " +
 				"[BANK_ACCOUNT_NUMBER].",
 			RedactUtil.redact(
-				"\\b[A-Z]{2}\\d{2}(?:\\s?[A-Z0-9]){11,30}\\b", null,
-				"[BANK_ACCOUNT_NUMBER]",
+				_REGEX_BANK_ACCOUNT_NUMBER, null, "[BANK_ACCOUNT_NUMBER]",
 				"IBANs: DE89 3704 0044 0532 0130 00, NL91ABNA0417164300, " +
 					"GB29NWBK60161331926819."));
 		Assert.assertEquals(
 			"No sensitive data here.",
 			RedactUtil.redact(
-				"\\b\\d{3}-\\d{2}-\\d{4}\\b", null, "[NATIONAL_ID]",
-				"No sensitive data here."));
+				_REGEX_SSN, null, "[NATIONAL_ID]", "No sensitive data here."));
 		Assert.assertEquals(
 			"Phones: [PHONE_NUMBER], [PHONE_NUMBER]and [PHONE_NUMBER]",
 			RedactUtil.redact(
@@ -111,48 +103,75 @@ public class RedactUtilTest {
 			RedactUtil.redact(null, null, "[X]", "SSN: 123-45-6789."));
 		Assert.assertEquals(
 			"SSN: [SSN].",
-			RedactUtil.redact(
-				"\\b\\d{3}-\\d{2}-\\d{4}\\b", null, "[SSN]",
-				"SSN: 123-45-6789."));
-		Assert.assertEquals(
-			"[X]" + _LONG_TEXT,
-			RedactUtil.redact(
-				"www\\d+www", null, "[X]", "www123www" + _LONG_TEXT,
-				RedactUtil.newDeadline()));
+			RedactUtil.redact(_REGEX_SSN, null, "[SSN]", "SSN: 123-45-6789."));
 		Assert.assertEquals(
 			"value: [$1\\X]",
 			RedactUtil.redact("secret", null, "[$1\\X]", "value: secret"));
+		Assert.assertNull(RedactUtil.redact("\\d+", null, "[X]", null));
 
+		Assert.assertEquals(
+			"[X]" + _TEXT_LONG,
+			RedactUtil.redact(
+				"www\\d+www", null, "[X]", "www123www" + _TEXT_LONG,
+				RedactUtil.newDeadline()));
+
+		RedactException redactException = Assert.assertThrows(
+			RedactException.class,
+			() -> RedactUtil.redact(
+				_REGEX_CATASTROPHIC, null, "R", _TEXT_CATASTROPHIC,
+				RedactUtil.newDeadline()));
+
+		Assert.assertEquals(
+			"Redaction exceeded the timeout of 1000 milliseconds",
+			redactException.getMessage());
+
+		redactException = Assert.assertThrows(
+			RedactException.class,
+			() -> RedactUtil.redact(
+				_REGEX_SIMPLE, _REGEX_CATASTROPHIC, "R", _TEXT_CATASTROPHIC,
+				RedactUtil.newDeadline()));
+
+		Assert.assertEquals(
+			"Redaction exceeded the timeout of 1000 milliseconds",
+			redactException.getMessage());
+
+		redactException = Assert.assertThrows(
+			RedactException.class,
+			() -> RedactUtil.redact(_REGEX_SIMPLE, null, "R", _TEXT_LONG, 0));
+
+		Assert.assertEquals(
+			"Redaction exceeded the timeout of 1000 milliseconds",
+			redactException.getMessage());
+
+		redactException = Assert.assertThrows(
+			RedactException.class,
+			() -> RedactUtil.redact(
+				"(a|aa)+$", null, "R", "a".repeat(100000) + "b",
+				RedactUtil.newDeadline()));
+
+		Assert.assertEquals(
+			"Redaction overflowed the stack", redactException.getMessage());
+
+		Assert.assertThrows(
+			PatternSyntaxException.class,
+			() -> RedactUtil.redact("[", null, "R", "anything"));
+	}
+
+	@Test
+	public void testRedactSequentially() {
 		String text =
 			"Email alice@example.com, IBAN DE89370400440532013000, SSN " +
 				"123-45-6789.";
 
 		text = RedactUtil.redact(
-			"\\b[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}\\b", null,
-			"[EMAIL_ADDRESS]", text);
+			_REGEX_BANK_ACCOUNT_NUMBER, null, "[BANK_ACCOUNT_NUMBER]", text);
 		text = RedactUtil.redact(
-			"\\b[A-Z]{2}\\d{2}(?:\\s?[A-Z0-9]){11,30}\\b", null,
-			"[BANK_ACCOUNT_NUMBER]", text);
-		text = RedactUtil.redact(
-			"\\b\\d{3}-\\d{2}-\\d{4}\\b", null, "[SSN]", text);
+			_REGEX_EMAIL_ADDRESS, null, "[EMAIL_ADDRESS]", text);
+		text = RedactUtil.redact(_REGEX_SSN, null, "[SSN]", text);
 
 		Assert.assertEquals(
 			"Email [EMAIL_ADDRESS], IBAN [BANK_ACCOUNT_NUMBER], SSN [SSN].",
 			text);
-
-		_testRedactFails(
-			"(a|aa)+$", null, "a".repeat(100000) + "b",
-			"Redaction overflowed the stack");
-		_testRedactFails(
-			"a+", _CATASTROPHIC_REGEX, _CATASTROPHIC_TEXT,
-			"Redaction exceeded the timeout of 1000 milliseconds");
-		_testRedactFails(
-			_CATASTROPHIC_REGEX, null, _CATASTROPHIC_TEXT,
-			"Redaction exceeded the timeout of 1000 milliseconds");
-
-		_testRedactFails(
-			"a", null, _LONG_TEXT, 0,
-			"Redaction exceeded the timeout of 1000 milliseconds");
 	}
 
 	@Test
@@ -171,37 +190,23 @@ public class RedactUtilTest {
 		Assert.assertThrows(
 			RedactException.class,
 			() -> RedactUtil.redactWithoutCaching(
-				_CATASTROPHIC_REGEX, null, "R", _CATASTROPHIC_TEXT));
+				_REGEX_CATASTROPHIC, null, "R", _TEXT_CATASTROPHIC));
 	}
 
-	private void _testRedactFails(
-		String detectionRegex, String replacementRegex, String text,
-		long deadline, String expectedMessage) {
+	private static final String _REGEX_BANK_ACCOUNT_NUMBER =
+		"\\b[A-Z]{2}\\d{2}(?:\\s?[A-Z0-9]){11,30}\\b";
 
-		RedactException redactException = Assert.assertThrows(
-			RedactException.class,
-			() -> RedactUtil.redact(
-				detectionRegex, replacementRegex, "R", text, deadline));
+	private static final String _REGEX_CATASTROPHIC = "(.*a){40}";
 
-		Assert.assertEquals(expectedMessage, redactException.getMessage());
-	}
+	private static final String _REGEX_EMAIL_ADDRESS =
+		"\\b[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}\\b";
 
-	private void _testRedactFails(
-		String detectionRegex, String replacementRegex, String text,
-		String expectedMessage) {
+	private static final String _REGEX_SIMPLE = "a+";
 
-		RedactException redactException = Assert.assertThrows(
-			RedactException.class,
-			() -> RedactUtil.redact(
-				detectionRegex, replacementRegex, "R", text));
+	private static final String _REGEX_SSN = "\\b\\d{3}-\\d{2}-\\d{4}\\b";
 
-		Assert.assertEquals(expectedMessage, redactException.getMessage());
-	}
+	private static final String _TEXT_CATASTROPHIC = "a".repeat(40);
 
-	private static final String _CATASTROPHIC_REGEX = "(.*a){40}";
-
-	private static final String _CATASTROPHIC_TEXT = "a".repeat(40);
-
-	private static final String _LONG_TEXT = "b".repeat(2000);
+	private static final String _TEXT_LONG = "b".repeat(2000);
 
 }
