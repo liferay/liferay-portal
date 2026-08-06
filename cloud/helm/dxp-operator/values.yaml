@@ -32,6 +32,9 @@ resources:
     requests:
         cpu: 100m
         memory: 128Mi
+retry:
+    initialDelay: 30s
+    maxDelay: 30m
 securityContext:
     allowPrivilegeEscalation: false
     capabilities:

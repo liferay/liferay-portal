@@ -181,6 +181,9 @@ spec:
                                 x-kubernetes-list-map-keys:
                                 -   type
                                 x-kubernetes-list-type: map
+                            consecutiveFailures:
+                                format: int32
+                                type: integer
                             effectiveReplicas:
                                 format: int32
                                 type: integer
