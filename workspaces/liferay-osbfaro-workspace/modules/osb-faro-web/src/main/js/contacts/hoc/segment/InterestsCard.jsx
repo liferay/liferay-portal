@@ -60,6 +60,7 @@ const TableWithData = withTableData(withData, {
 			sortable: false
 		}),
 		compositionListColumns.getRelativeMetricBar({
+			abbreviateCount: true,
 			label: Liferay.Language.get('segment-members'),
 			maxCount,
 			totalCount

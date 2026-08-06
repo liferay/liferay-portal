@@ -64,6 +64,7 @@ const InterestsCard: React.FC<React.HTMLAttributes<HTMLElement>> = () => {
 			sortable: false,
 		}),
 		compositionListColumns.getRelativeMetricBar({
+			abbreviateCount: true,
 			label: Liferay.Language.get('total-individuals'),
 			maxCount,
 			totalCount,

@@ -9,7 +9,7 @@ import Table from 'shared/components/table';
 import URLConstants from 'shared/util/url-constants';
 import {ApolloError} from '@apollo/client';
 import {ENTRANCES_METRIC, EXIT_RATE_METRIC} from 'shared/util/pagination';
-import {formatPercentFromRatio} from 'shared/util/numbers';
+import {formatPercentFromRatio, toThousands} from 'shared/util/numbers';
 import {metricsListColumns} from 'shared/util/table-columns';
 import {NameCell} from 'shared/components/table/cell-components';
 import {OrderByDirections} from 'shared/util/constants';
@@ -68,13 +68,19 @@ const DEFAULT_METRIC_COLUMN = {
 
 export const TOP_PAGES_TABS = [
 	{
-		metricColumn: metricsListColumns.visitorsMetric,
+		metricColumn: {
+			...metricsListColumns.visitorsMetric,
+			dataFormatter: (data: number | string) => toThousands(Number(data)),
+		},
 		rowIdentifier: ROW_IDENTIFIER,
 		tabId: 'visitorsMetric',
 		title: Liferay.Language.get('visited-pages'),
 	},
 	{
-		metricColumn: metricsListColumns.entrancesMetric,
+		metricColumn: {
+			...metricsListColumns.entrancesMetric,
+			dataFormatter: (data: number | string) => toThousands(Number(data)),
+		},
 		rowIdentifier: ROW_IDENTIFIER,
 		tabId: ENTRANCES_METRIC,
 		title: Liferay.Language.get('entrance-pages'),

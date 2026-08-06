@@ -28,7 +28,7 @@ import {
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
 import {sub} from 'shared/util/lang';
-import {toLocale} from 'shared/util/numbers';
+import {toThousands} from 'shared/util/numbers';
 import {withEmpty} from 'cerebro-shared/hocs/utils';
 import {
 	withError,
@@ -43,7 +43,7 @@ const getContextItemCount =
 		const contextItem = context.find(({key}) => key === contextItemKey);
 
 		if (contextItem) {
-			return toLocale(Number(contextItem.value));
+			return toThousands(Number(contextItem.value));
 		}
 
 		return '0';

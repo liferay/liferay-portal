@@ -21,7 +21,7 @@ import {
 } from './mappers/visitors-by-time-query';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {sub} from 'shared/util/lang';
-import {toLocale} from 'shared/util/numbers';
+import {toThousands} from 'shared/util/numbers';
 import {withEmpty, withError, withLoading} from 'shared/hoc';
 
 export const formatHour = (hour: string) => {
@@ -66,7 +66,7 @@ export const renderTooltip = ({
 						{
 							align: Alignments.Center,
 							label: sub(Liferay.Language.get('x-visitors'), [
-								toLocale(value),
+								toThousands(value),
 							]) as string,
 						},
 					],

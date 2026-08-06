@@ -26,7 +26,7 @@ import {mapEventMetricToActivityHistory} from 'shared/util/activities';
 import {mapListResultsToProps} from 'shared/util/mappers';
 import {SessionEntityTypes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
-import {toLocale} from 'shared/util/numbers';
+import {toThousands} from 'shared/util/numbers';
 import {useParams} from 'react-router-dom';
 import {useQuery} from '@apollo/client';
 import {useSelectedPoint} from 'shared/hooks/useSelectedPoint';
@@ -203,11 +203,11 @@ const AccountActivityStreamCard: React.FC<IActivityStreamCardProps> = ({
 			chartTooltipRenderRows={({totalEvents, totalSessions}) => [
 				{
 					label: Liferay.Language.get('events'),
-					value: toLocale(totalEvents),
+					value: toThousands(totalEvents),
 				},
 				{
 					label: Liferay.Language.get('sessions'),
-					value: toLocale(totalSessions ?? 0),
+					value: toThousands(totalSessions ?? 0),
 				},
 			]}
 			chartView={chartView}

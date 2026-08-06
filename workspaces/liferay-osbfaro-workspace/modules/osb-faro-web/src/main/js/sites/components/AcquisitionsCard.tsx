@@ -40,6 +40,7 @@ const getColumnsFn = (acquisitionType: AcquisitionTypes) => {
 			tooltip: true,
 		}),
 		compositionListColumns.getRelativeMetricBar({
+			abbreviateCount: true,
 			label: Liferay.Language.get('sessions'),
 			maxCount,
 			totalCount,

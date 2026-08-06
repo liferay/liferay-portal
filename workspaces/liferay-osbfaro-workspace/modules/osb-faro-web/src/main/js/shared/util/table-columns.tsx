@@ -477,6 +477,7 @@ export const compositionListColumns = {
 		title: true,
 	}),
 	getRelativeMetricBar: ({
+		abbreviateCount = false,
 		empty = false,
 		label,
 		maxCount,
@@ -484,6 +485,7 @@ export const compositionListColumns = {
 		sortable = false,
 		totalCount,
 	}: {
+		abbreviateCount?: boolean;
 		empty?: boolean;
 		label: React.ReactNode;
 		maxCount: number;
@@ -494,6 +496,7 @@ export const compositionListColumns = {
 		accessor: 'count',
 		cellRenderer: RelativeMetricBarCell,
 		cellRendererProps: {
+			abbreviateCount,
 			empty,
 			maxCount,
 			showName,
