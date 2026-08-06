@@ -8866,6 +8866,37 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/PageSpecification"
             tags: ["PageSpecification"]
+    "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specification-versions/{pageSpecificationVersionExternalReferenceCode}/restore":
+        post:
+            description:
+                Restores a page specification version as the current draft of a site page.
+            operationId: postSiteSitePagePageSpecificationVersionRestore
+            parameters:
+                -   in: path
+                    name: siteExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: sitePageExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+                -   in: path
+                    name: pageSpecificationVersionExternalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PageSpecification"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PageSpecification"
+            tags: ["PageSpecificationVersion"]
     "/sites/{siteExternalReferenceCode}/site-pages/{sitePageExternalReferenceCode}/page-specifications":
         get:
             # @review
