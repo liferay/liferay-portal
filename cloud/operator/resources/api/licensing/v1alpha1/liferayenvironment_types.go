@@ -81,6 +81,9 @@ type LiferayEnvironmentStatus struct {
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
 
 	// +optional
+	ConsecutiveFailures int32 `json:"consecutiveFailures,omitempty"`
+
+	// +optional
 	EffectiveReplicas *int32 `json:"effectiveReplicas,omitempty"`
 
 	// +optional

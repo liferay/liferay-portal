@@ -70,6 +70,8 @@ func main() {
 			Client:            manager.GetClient(),
 			HeartbeatInterval: config.HeartbeatInterval,
 			Provisioning:      provisioning.NewHTTPClient(config.ProvisioningBaseURL),
+			RetryInitialDelay: config.RetryInitialDelay,
+			RetryMaxDelay:     config.RetryMaxDelay,
 		},
 		&liferay.LiferayStatefulSetReconciler{
 			Client: manager.GetClient(),
@@ -115,6 +117,8 @@ type config struct {
 	MetricsAddress      string        `env:"METRICS_ADDRESS" envDefault:":8080"`
 	ProbeAddress        string        `env:"PROBE_ADDRESS" envDefault:":8081"`
 	ProvisioningBaseURL string        `env:"PROVISIONING_BASE_URL" envDefault:"https://webserver-lrprovisioning.lfr.cloud"`
+	RetryInitialDelay   time.Duration `env:"RETRY_INITIAL_DELAY" envDefault:"30s"`
+	RetryMaxDelay       time.Duration `env:"RETRY_MAX_DELAY" envDefault:"30m"`
 }
 
 var scheme = runtime.NewScheme()

@@ -16,6 +16,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"maps"
+	"math"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
@@ -137,10 +138,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 				},
 			)
 
+			liferayEnvironment.Status.ConsecutiveFailures++
 			liferayEnvironment.Status.Phase = "Degraded"
 
-			return liferayEnvironmentReconciler.finishAfter(
-				context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+			return liferayEnvironmentReconciler.finishWithBackoff(
+				context, liferayEnvironment,
 			)
 		}
 
@@ -182,10 +184,11 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 			},
 		)
 
+		liferayEnvironment.Status.ConsecutiveFailures++
 		liferayEnvironment.Status.Phase = "Degraded"
 
-		return liferayEnvironmentReconciler.finishAfter(
-			context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		return liferayEnvironmentReconciler.finishWithBackoff(
+			context, liferayEnvironment,
 		)
 	}
 
@@ -203,6 +206,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 			Type:   conditionProvisioningReachable,
 		},
 	)
+
+	liferayEnvironment.Status.ConsecutiveFailures = 0
 
 	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(context, entitlements, liferayEnvironment); error != nil {
 		return controllerruntime.Result{}, error
@@ -310,6 +315,20 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) SetupWithManag
 	).Complete(
 		liferayEnvironmentReconciler,
 	)
+}
+
+func backoffDuration(
+	consecutiveFailures int32,
+	retryInitialDelay time.Duration,
+	retryMaxDelay time.Duration,
+) time.Duration {
+	backoff := float64(retryInitialDelay) * math.Pow(2, float64(max(consecutiveFailures-1, 0)))
+
+	if backoff >= float64(retryMaxDelay) {
+		return retryMaxDelay
+	}
+
+	return time.Duration(backoff)
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplicaCeiling(
@@ -537,6 +556,19 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishAfter(
 	return controllerruntime.Result{RequeueAfter: requeueAfter}, nil
 }
 
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) finishWithBackoff(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) (controllerruntime.Result, error) {
+	return liferayEnvironmentReconciler.finishAfter(
+		context, liferayEnvironment, backoffDuration(
+			liferayEnvironment.Status.ConsecutiveFailures,
+			liferayEnvironmentReconciler.RetryInitialDelay,
+			liferayEnvironmentReconciler.RetryMaxDelay,
+		),
+	)
+}
+
 func licenseChecksum(licenseXML []byte) string {
 	sum := sha256.Sum256(licenseXML)
 
@@ -723,4 +755,6 @@ type LiferayEnvironmentReconciler struct {
 
 	HeartbeatInterval time.Duration
 	Provisioning      provisioning.Client
+	RetryInitialDelay time.Duration
+	RetryMaxDelay     time.Duration
 }
