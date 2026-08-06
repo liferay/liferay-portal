@@ -280,10 +280,10 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			ServiceContextTestUtil.getServiceContext());
 
-		Role role = RoleTestUtil.addRole(
+		Role serviceBuilderRole = RoleTestUtil.addRole(
 			RoleConstants.CMS_ADMINISTRATOR, RoleConstants.TYPE_REGULAR);
 
-		_userLocalService.addRoleUser(role.getRoleId(), user);
+		_userLocalService.addRoleUser(serviceBuilderRole.getRoleId(), user);
 
 		return UserAccountResource.builder(
 		).authentication(
@@ -309,18 +309,21 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
 			ServiceContextTestUtil.getServiceContext());
 
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		Role serviceBuilderRole = RoleTestUtil.addRole(
+			RoleConstants.TYPE_REGULAR);
 
-		_userLocalService.addRoleUser(role.getRoleId(), user);
+		_userLocalService.addRoleUser(serviceBuilderRole.getRoleId(), user);
 
 		for (String actionId : actionIds) {
 			RoleTestUtil.addResourcePermission(
-				role, DepotEntry.class.getName(), ResourceConstants.SCOPE_GROUP,
+				serviceBuilderRole, DepotEntry.class.getName(),
+				ResourceConstants.SCOPE_GROUP,
 				String.valueOf(testDepotEntry.getGroupId()), actionId);
 		}
 
 		RoleTestUtil.addResourcePermission(
-			role, User.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			serviceBuilderRole, User.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
 
 		return UserAccountResource.builder(
