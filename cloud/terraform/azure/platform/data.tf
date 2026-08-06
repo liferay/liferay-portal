@@ -1,8 +1,8 @@
 data "azurerm_client_config" "current" {}
 data "azurerm_key_vault" "liferay" {
 	count=local.default_azure_key_vault_enabled ? 1 : 0
-	name="${var.deployment_name}-vault"
-	resource_group_name="${var.deployment_name}-vault"
+	name=local.key_vault_name
+	resource_group_name=local.key_vault_resource_group_name
 }
 data "azurerm_kubernetes_cluster" "aks" {
 	name="${var.deployment_name}-aks"

@@ -48,5 +48,7 @@ locals {
 		name="external-secrets"
 		namespace="external-secrets-system"
 	}
+	key_vault_name=coalesce(var.key_vault_name, "${var.deployment_name}-vault")
+	key_vault_resource_group_name=coalesce(var.key_vault_resource_group_name, "${var.deployment_name}-vault")
 	resource_group_name=var.deployment_name
 }

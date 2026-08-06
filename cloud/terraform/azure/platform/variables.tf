@@ -24,6 +24,14 @@ variable "deployment_name" {
 		error_message="The variable \"deployment_name\" must be 3-18 characters, start with a lowercase letter, and contain only lowercase letters, numbers, and hyphens, so the derived \"<deployment_name>-vault\" Key Vault name fits Azure's 24-character limit."
 	}
 }
+variable "key_vault_name" {
+	default=null
+	type=string
+}
+variable "key_vault_resource_group_name" {
+	default=null
+	type=string
+}
 variable "region" {
 	type=string
 }

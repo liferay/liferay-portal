@@ -105,6 +105,21 @@ run "should_inject_an_external_secret_store_provider" {
 		}
 	}
 }
+run "should_look_up_the_key_vault_from_the_configured_names" {
+	assert {
+		condition=data.azurerm_key_vault.liferay[0].name == "custom-vault"
+		error_message="The Key Vault lookup must use the configured key vault name"
+	}
+	assert {
+		condition=data.azurerm_key_vault.liferay[0].resource_group_name == "custom-group"
+		error_message="The Key Vault lookup must use the configured key vault resource group name"
+	}
+	command=plan
+	variables {
+		key_vault_name="custom-vault"
+		key_vault_resource_group_name="custom-group"
+	}
+}
 run "should_reject_a_deployment_name_the_vault_name_cannot_absorb" {
 	command=plan
 	expect_failures=[
