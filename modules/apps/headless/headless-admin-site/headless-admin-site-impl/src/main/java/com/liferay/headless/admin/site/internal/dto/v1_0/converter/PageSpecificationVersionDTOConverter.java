@@ -34,6 +34,14 @@ public class PageSpecificationVersionDTOConverter
 
 		return new PageSpecificationVersion() {
 			{
+				setActions(
+					() -> {
+						if (dtoConverterContext == null) {
+							return null;
+						}
+
+						return dtoConverterContext.getActions();
+					});
 				setCreator(
 					() -> CreatorUtil.toCreator(
 						layoutContentVersion.getUserId(),

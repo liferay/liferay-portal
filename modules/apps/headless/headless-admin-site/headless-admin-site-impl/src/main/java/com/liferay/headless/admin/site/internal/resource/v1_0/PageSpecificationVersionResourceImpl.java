@@ -7,19 +7,24 @@ package com.liferay.headless.admin.site.internal.resource.v1_0;
 
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
-import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutContentVersionActionUtil;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionService;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
 import com.liferay.portal.vulcan.pagination.Page;
+
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -81,12 +86,15 @@ public class PageSpecificationVersionResourceImpl
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		if (layoutContentVersion.getPlid() == draftLayout.getPlid()) {
-			return _toPageSpecificationVersion(layoutContentVersion);
+		if (layoutContentVersion.getPlid() != draftLayout.getPlid()) {
+			throw new IllegalArgumentException(
+				"The page specification version must belong to the site page");
 		}
 
-		throw new IllegalArgumentException(
-			"The page specification version must belong to the site page");
+		return _toPageSpecificationVersion(
+			layoutContentVersion,
+			_getActionsUnsafeFunction(
+				siteExternalReferenceCode, sitePageExternalReferenceCode));
 	}
 
 	@NestedField(
@@ -107,11 +115,30 @@ public class PageSpecificationVersionResourceImpl
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
+		UnsafeFunction
+			<LayoutContentVersion, Map<String, Map<String, String>>, Exception>
+				unsafeFunction = _getActionsUnsafeFunction(
+					siteExternalReferenceCode, sitePageExternalReferenceCode);
+
 		return Page.of(
 			transform(
 				_layoutContentVersionService.getLayoutContentVersions(
 					draftLayout.getPlid()),
-				this::_toPageSpecificationVersion));
+				layoutContentVersion -> _toPageSpecificationVersion(
+					layoutContentVersion, unsafeFunction)));
+	}
+
+	private UnsafeFunction
+		<LayoutContentVersion, Map<String, Map<String, String>>, Exception>
+			_getActionsUnsafeFunction(
+				String siteExternalReferenceCode,
+				String sitePageExternalReferenceCode) {
+
+		return layoutContentVersion ->
+			LayoutContentVersionActionUtil.getActions(
+				contextScopeChecker, layoutContentVersion,
+				_layoutModelResourcePermission, siteExternalReferenceCode,
+				sitePageExternalReferenceCode, contextUriInfo);
 	}
 
 	private Layout _getLayout(
@@ -145,15 +172,20 @@ public class PageSpecificationVersionResourceImpl
 	}
 
 	private PageSpecificationVersion _toPageSpecificationVersion(
-			LayoutContentVersion layoutContentVersion)
+			LayoutContentVersion layoutContentVersion,
+			UnsafeFunction
+				<LayoutContentVersion, Map<String, Map<String, String>>,
+				 Exception> unsafeFunction)
 		throws Exception {
 
 		return _pageSpecificationVersionDTOConverter.toDTO(
-			DTOConverterContextUtil.getDTOConverterContext(
-				contextAcceptLanguage, _dtoConverterRegistry,
-				contextHttpServletRequest,
+			new DefaultDTOConverterContext(
+				contextAcceptLanguage.isAcceptAllLanguages(),
+				unsafeFunction.apply(layoutContentVersion),
+				_dtoConverterRegistry, contextHttpServletRequest,
 				layoutContentVersion.getLayoutContentVersionId(),
-				contextUriInfo, contextUser),
+				contextAcceptLanguage.getPreferredLocale(), contextUriInfo,
+				contextUser),
 			layoutContentVersion);
 	}
 
@@ -162,6 +194,11 @@ public class PageSpecificationVersionResourceImpl
 
 	@Reference
 	private LayoutContentVersionService _layoutContentVersionService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.model.Layout)"
+	)
+	private ModelResourcePermission<Layout> _layoutModelResourcePermission;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.PageSpecificationVersionDTOConverter)"
