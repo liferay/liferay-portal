@@ -5583,7 +5583,7 @@ public class DataFactory {
 
 		notificationTemplateModel.setUuid(SequentialUUID.generate());
 		notificationTemplateModel.setExternalReferenceCode(
-			"L_COMMERCE_ORDER_TEMPLATE");
+			"COMMERCE_ORDER_TEMPLATE");
 
 		return notificationTemplateModel;
 	}
