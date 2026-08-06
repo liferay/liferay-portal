@@ -204,15 +204,7 @@ public class AssetListFiltersUtilTest {
 
 		String keywordTextFieldName = RandomTestUtil.randomString();
 
-		ObjectField keywordObjectField = _setUpObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, keywordTextFieldName);
-
-		Mockito.when(
-			keywordObjectField.isIndexedAsKeyword()
-		).thenReturn(
-			true
-		);
+		_setUpKeywordTextObjectField(keywordTextFieldName);
 
 		_assertTermQuery(
 			"nestedFieldArray.value_keyword", "alpha",
@@ -249,14 +241,15 @@ public class AssetListFiltersUtilTest {
 			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
 			ObjectFieldConstants.DB_TYPE_LONG, longIntegerFieldName);
 
-		String longFieldValue = String.valueOf(RandomTestUtil.randomLong());
+		String longIntegerFieldValue = String.valueOf(
+			RandomTestUtil.randomLong());
 
 		_assertTermQuery(
-			"nestedFieldArray.value_long", longFieldValue,
+			"nestedFieldArray.value_long", longIntegerFieldValue,
 			_assertNestedQuery(
 				BooleanClauseOccur.MUST,
 				_buildFilterJSONObject(
-					"eq", longIntegerFieldName, longFieldValue),
+					"eq", longIntegerFieldName, longIntegerFieldValue),
 				longIntegerFieldName));
 
 		String textFieldName = RandomTestUtil.randomString();
@@ -301,15 +294,7 @@ public class AssetListFiltersUtilTest {
 	public void testFilterQueriesWithKeywordTextContainsOperators() {
 		String keywordTextFieldName = RandomTestUtil.randomString();
 
-		ObjectField keywordObjectField = _setUpObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, keywordTextFieldName);
-
-		Mockito.when(
-			keywordObjectField.isIndexedAsKeyword()
-		).thenReturn(
-			true
-		);
+		_setUpKeywordTextObjectField(keywordTextFieldName);
 
 		_assertWildcardQuery(
 			"nestedFieldArray.value_keyword", "*alpha*",
@@ -432,6 +417,92 @@ public class AssetListFiltersUtilTest {
 					"between", longIntegerFieldName,
 					JSONUtil.putAll(longLowerFieldValue, longUpperFieldValue)),
 				longIntegerFieldName));
+	}
+
+	@Test
+	public void testFilterQueriesWithPicklistMultiValueOperators() {
+		String picklistFieldName = RandomTestUtil.randomString();
+
+		_setUpPicklistObjectField(picklistFieldName);
+
+		_assertPicklistBooleanQuery(
+			BooleanClauseOccur.MUST,
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"contains", picklistFieldName,
+					JSONUtil.putAll(
+						_buildPicklistValueJSONObject("approved"),
+						_buildPicklistValueJSONObject("draft"))
+				).put(
+					"quantifier", "all"
+				),
+				picklistFieldName),
+			"approved", "draft");
+		_assertPicklistBooleanQuery(
+			BooleanClauseOccur.SHOULD,
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"contains", picklistFieldName,
+					JSONUtil.putAll(_buildPicklistValueJSONObject("Approved"))
+				).put(
+					"quantifier", "any"
+				),
+				picklistFieldName),
+			"approved");
+		_assertPicklistBooleanQuery(
+			BooleanClauseOccur.SHOULD,
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"contains", picklistFieldName,
+					JSONUtil.putAll(_buildPicklistValueJSONObject("approved"))),
+				picklistFieldName),
+			"approved");
+		_assertPicklistBooleanQuery(
+			BooleanClauseOccur.SHOULD,
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST,
+				_buildFilterJSONObject(
+					"contains", picklistFieldName,
+					JSONUtil.putAll(
+						_buildPicklistValueJSONObject("approved"),
+						_buildPicklistValueJSONObject("draft"))
+				).put(
+					"quantifier", "any"
+				),
+				picklistFieldName),
+			"approved", "draft");
+		_assertPicklistBooleanQuery(
+			BooleanClauseOccur.SHOULD,
+			_assertNestedQuery(
+				BooleanClauseOccur.MUST_NOT,
+				_buildFilterJSONObject(
+					"not-contains", picklistFieldName,
+					JSONUtil.putAll(
+						_buildPicklistValueJSONObject("approved"),
+						_buildPicklistValueJSONObject("draft"))
+				).put(
+					"quantifier", "any"
+				),
+				picklistFieldName),
+			"approved", "draft");
+
+		BooleanClause[] booleanClauses =
+			AssetListFiltersUtil.getFiltersBooleanClauses(
+				_COMPANY_ID,
+				JSONUtil.putAll(
+					_buildFilterJSONObject(
+						"contains", picklistFieldName,
+						JSONFactoryUtil.createJSONArray()
+					).put(
+						"quantifier", "any"
+					)),
+				LocaleUtil.US);
+
+		Assert.assertEquals(
+			Arrays.toString(booleanClauses), 0, booleanClauses.length);
 	}
 
 	@Test
@@ -574,6 +645,10 @@ public class AssetListFiltersUtilTest {
 
 		BooleanClause<Query> filterBooleanClause = filterBooleanClauses.get(0);
 
+		Assert.assertEquals(
+			expectedBooleanClauseOccur,
+			filterBooleanClause.getBooleanClauseOccur());
+
 		NestedQuery nestedQuery = (NestedQuery)filterBooleanClause.getClause();
 
 		Assert.assertEquals("nestedFieldArray", nestedQuery.getPath());
@@ -601,10 +676,39 @@ public class AssetListFiltersUtilTest {
 			nestedFieldBooleanClauses.get(2);
 
 		Assert.assertEquals(
-			expectedBooleanClauseOccur,
+			BooleanClauseOccur.MUST,
 			nestedFieldBooleanClause.getBooleanClauseOccur());
 
 		return nestedFieldBooleanClause.getClause();
+	}
+
+	private void _assertPicklistBooleanQuery(
+		BooleanClauseOccur expectedBooleanClauseOccur, Query query,
+		String... expectedValues) {
+
+		Assert.assertTrue(query.toString(), query instanceof BooleanQuery);
+
+		BooleanQuery booleanQuery = (BooleanQuery)query;
+
+		List<BooleanClause<Query>> nestedFieldBooleanClauses =
+			booleanQuery.clauses();
+
+		Assert.assertEquals(
+			nestedFieldBooleanClauses.toString(), expectedValues.length,
+			nestedFieldBooleanClauses.size());
+
+		for (int i = 0; i < expectedValues.length; i++) {
+			BooleanClause<Query> booleanClause = nestedFieldBooleanClauses.get(
+				i);
+
+			Assert.assertEquals(
+				expectedBooleanClauseOccur,
+				booleanClause.getBooleanClauseOccur());
+
+			_assertTermQuery(
+				"nestedFieldArray.value_keyword", expectedValues[i],
+				booleanClause.getClause());
+		}
 	}
 
 	private void _assertTermQuery(
@@ -630,12 +734,12 @@ public class AssetListFiltersUtilTest {
 		TermRangeQuery termRangeQuery = (TermRangeQuery)query;
 
 		Assert.assertEquals(expectedField, termRangeQuery.getField());
-		Assert.assertEquals(expectedLowerTerm, termRangeQuery.getLowerTerm());
-		Assert.assertEquals(expectedUpperTerm, termRangeQuery.getUpperTerm());
 		Assert.assertEquals(
 			expectedIncludesLower, termRangeQuery.includesLower());
 		Assert.assertEquals(
 			expectedIncludesUpper, termRangeQuery.includesUpper());
+		Assert.assertEquals(expectedLowerTerm, termRangeQuery.getLowerTerm());
+		Assert.assertEquals(expectedUpperTerm, termRangeQuery.getUpperTerm());
 	}
 
 	private void _assertWildcardQuery(
@@ -683,6 +787,14 @@ public class AssetListFiltersUtilTest {
 		);
 	}
 
+	private JSONObject _buildPicklistValueJSONObject(String value) {
+		return JSONUtil.put(
+			"label", value
+		).put(
+			"value", value
+		);
+	}
+
 	private String _resolveRelativeDateLowerTerm(
 		String propertyName, String value) {
 
@@ -695,6 +807,18 @@ public class AssetListFiltersUtilTest {
 		TermRangeQuery termRangeQuery = (TermRangeQuery)query;
 
 		return termRangeQuery.getLowerTerm();
+	}
+
+	private void _setUpKeywordTextObjectField(String name) {
+		ObjectField objectField = _setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, name);
+
+		Mockito.when(
+			objectField.isIndexedAsKeyword()
+		).thenReturn(
+			true
+		);
 	}
 
 	private void _setUpLocalizationUtil() {
@@ -725,15 +849,6 @@ public class AssetListFiltersUtilTest {
 			_CLASS_TYPE_ID
 		);
 
-		_objectDefinitionLocalServiceUtilMockedStatic.when(
-			() ->
-				ObjectDefinitionLocalServiceUtil.
-					fetchObjectDefinitionByClassName(
-						_COMPANY_ID, "com.liferay.test.Class" + _CLASS_NAME_ID)
-		).thenReturn(
-			objectDefinition
-		);
-
 		ObjectField objectField = Mockito.mock(ObjectField.class);
 
 		Mockito.when(
@@ -754,6 +869,15 @@ public class AssetListFiltersUtilTest {
 			fieldName
 		);
 
+		_objectDefinitionLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByClassName(
+						_COMPANY_ID, "com.liferay.test.Class" + _CLASS_NAME_ID)
+		).thenReturn(
+			objectDefinition
+		);
+
 		_objectFieldLocalServiceUtilMockedStatic.when(
 			() -> ObjectFieldLocalServiceUtil.fetchObjectField(
 				_CLASS_TYPE_ID, fieldName)
@@ -768,6 +892,24 @@ public class AssetListFiltersUtilTest {
 		);
 
 		return objectField;
+	}
+
+	private void _setUpPicklistObjectField(String fieldName) {
+		ObjectField objectField = _setUpObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_PICKLIST,
+			ObjectFieldConstants.DB_TYPE_STRING, fieldName);
+
+		Mockito.when(
+			objectField.getListTypeDefinitionId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			objectField.isIndexedAsKeyword()
+		).thenReturn(
+			true
+		);
 	}
 
 	private static final long _CLASS_NAME_ID = RandomTestUtil.randomLong();

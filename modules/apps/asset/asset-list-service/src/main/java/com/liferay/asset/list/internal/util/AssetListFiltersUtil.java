@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.search.BooleanClause;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.search.MatchAllQuery;
 import com.liferay.portal.kernel.search.MatchQuery;
 import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.Query;
@@ -36,6 +37,7 @@ import java.text.Format;
 
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -52,19 +54,36 @@ public class AssetListFiltersUtil {
 
 		BooleanQuery booleanQuery = new BooleanQuery();
 
+		boolean hasMustClause = false;
+
 		for (int i = 0; i < filtersJSONArray.length(); i++) {
+			JSONObject jsonObject = filtersJSONArray.getJSONObject(i);
+
 			NestedQuery nestedQuery = _toNestedQuery(
-				companyId, filtersJSONArray.getJSONObject(i), locale);
+				companyId, jsonObject, locale);
 
 			if (nestedQuery == null) {
 				continue;
 			}
 
-			booleanQuery.add(nestedQuery, BooleanClauseOccur.MUST);
+			if (_isNegatedOperator(
+					jsonObject.getString("operatorName", "contains"))) {
+
+				booleanQuery.add(nestedQuery, BooleanClauseOccur.MUST_NOT);
+			}
+			else {
+				booleanQuery.add(nestedQuery, BooleanClauseOccur.MUST);
+
+				hasMustClause = true;
+			}
 		}
 
 		if (!booleanQuery.hasClauses()) {
 			return new BooleanClause[0];
+		}
+
+		if (!hasMustClause) {
+			booleanQuery.add(new MatchAllQuery(), BooleanClauseOccur.MUST);
 		}
 
 		return new BooleanClause[] {
@@ -258,12 +277,41 @@ public class AssetListFiltersUtil {
 				"nestedFieldArray.valueFieldName",
 				subfield.substring(subfield.indexOf(CharPool.PERIOD) + 1)),
 			BooleanClauseOccur.MUST);
-		booleanQuery.add(
-			query,
-			_isNegatedOperator(operatorName) ? BooleanClauseOccur.MUST_NOT :
-				BooleanClauseOccur.MUST);
+		booleanQuery.add(query, BooleanClauseOccur.MUST);
 
 		return new NestedQuery("nestedFieldArray", booleanQuery);
+	}
+
+	private static Query _toPicklistQuery(
+		JSONObject filterJSONObject, String subfield) {
+
+		JSONArray valueJSONArray = filterJSONObject.getJSONArray("value");
+
+		if (JSONUtil.isEmpty(valueJSONArray)) {
+			return null;
+		}
+
+		BooleanClauseOccur booleanClauseOccur = BooleanClauseOccur.SHOULD;
+
+		String quantifier = filterJSONObject.getString("quantifier");
+
+		if (Objects.equals(quantifier, "all")) {
+			booleanClauseOccur = BooleanClauseOccur.MUST;
+		}
+
+		BooleanQuery booleanQuery = new BooleanQuery();
+
+		for (int i = 0; i < valueJSONArray.length(); i++) {
+			JSONObject itemJSONObject = valueJSONArray.getJSONObject(i);
+
+			String value = StringUtil.toLowerCase(
+				itemJSONObject.getString("value"));
+
+			booleanQuery.add(
+				new TermQuery(subfield, value), booleanClauseOccur);
+		}
+
+		return booleanQuery;
 	}
 
 	private static Query _toRangeQuery(
@@ -340,14 +388,19 @@ public class AssetListFiltersUtil {
 		JSONObject filterJSONObject, ObjectField objectField,
 		String operatorName, String subfield, String value) {
 
-		if ((operatorName.equals("contains") ||
-			 operatorName.equals("not-contains")) &&
-			subfield.endsWith(".value_keyword")) {
+		if (operatorName.equals("contains") ||
+			operatorName.equals("not-contains")) {
 
-			return new WildcardQuery(
-				subfield,
-				StringPool.STAR + StringUtil.toLowerCase(value) +
-					StringPool.STAR);
+			if (objectField.getListTypeDefinitionId() != 0) {
+				return _toPicklistQuery(filterJSONObject, subfield);
+			}
+
+			if (subfield.endsWith(".value_keyword")) {
+				return new WildcardQuery(
+					subfield,
+					StringPool.STAR + StringUtil.toLowerCase(value) +
+						StringPool.STAR);
+			}
 		}
 
 		if (operatorName.equals("between") || operatorName.equals("ge") ||
