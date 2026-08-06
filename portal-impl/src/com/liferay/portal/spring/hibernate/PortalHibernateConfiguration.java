@@ -109,6 +109,8 @@ public class PortalHibernateConfiguration
 		properties.setProperty(
 			"hibernate.current_session_context_class",
 			PortalCurrentSessionContext.class.getName());
+		properties.setProperty(
+			"hibernate.id.sequence.increment_size_mismatch_strategy", "FIX");
 
 		if (Validator.isNull(PropsValues.HIBERNATE_DIALECT)) {
 			Class<?> clazz = dialect.getClass();
