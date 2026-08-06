@@ -33,7 +33,6 @@ import com.liferay.portal.security.ldap.validator.LDAPFilterValidator;
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletRequest;
-import jakarta.portlet.PortletURL;
 
 import java.util.Dictionary;
 import java.util.List;
@@ -92,21 +91,20 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 				SessionErrors.add(
 					actionRequest, throwable.getClass(), throwable);
 
-				PortletURL portletURL = PortletURLBuilder.create(
-					PortletURLFactoryUtil.create(
-						actionRequest,
-						ConfigurationAdminPortletKeys.INSTANCE_SETTINGS,
-						PortletRequest.RENDER_PHASE)
-				).setMVCRenderCommandName(
-					"/portal_settings_authentication_ldap/edit_ldap_server"
-				).buildPortletURL();
-
-				String redirect = ParamUtil.getString(
-					actionRequest, "redirect");
-
-				portletURL.setParameter("redirect", redirect);
-
-				actionResponse.sendRedirect(portletURL.toString());
+				actionResponse.sendRedirect(
+					PortletURLBuilder.create(
+						PortletURLFactoryUtil.create(
+							actionRequest, _portal.getPortletId(actionRequest),
+							PortletRequest.RENDER_PHASE)
+					).setMVCRenderCommandName(
+						"/portal_settings_authentication_ldap/edit_ldap_server"
+					).setRedirect(
+						ParamUtil.getString(actionRequest, "redirect")
+					).setParameter(
+						LDAPConstants.LDAP_SERVER_ID,
+						ParamUtil.getLong(
+							actionRequest, LDAPConstants.LDAP_SERVER_ID)
+					).buildString());
 
 				return;
 			}
@@ -249,5 +247,8 @@ public class EditLDAPServerMVCActionCommand extends BaseMVCActionCommand {
 	)
 	private ConfigurationProvider<LDAPServerConfiguration>
 		_ldapServerConfigurationProvider;
+
+	@Reference
+	private Portal _portal;
 
 }
