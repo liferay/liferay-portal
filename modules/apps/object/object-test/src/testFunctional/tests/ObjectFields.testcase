@@ -894,7 +894,7 @@ definition {
 
 			ObjectAdmin.clickFieldsSearchableSectionRadioOption(radioOption = "True");
 
-			CreateObject.saveObject();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("When viewing the added entry") {
