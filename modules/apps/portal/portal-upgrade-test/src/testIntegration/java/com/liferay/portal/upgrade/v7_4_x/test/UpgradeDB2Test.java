@@ -64,29 +64,24 @@ public class UpgradeDB2Test {
 
 		upgradeProcess.upgrade();
 
-		try (Connection connection = DataAccess.getConnection();
-
-			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select length from syscat.columns where tabname = " +
-					"'TESTTABLE' and colname = 'COLUMN1'")) {
-
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				Assert.assertTrue(
-					"column1 not found in TestTable", resultSet.next());
-
-				Assert.assertEquals(2147483647, resultSet.getInt("length"));
-			}
+		try (Connection connection = DataAccess.getConnection()) {
+			_assertColumnLength(connection, "COLUMN1");
+			_assertColumnLength(connection, "COLUMN2");
 		}
+	}
 
-		try (Connection connection = DataAccess.getConnection();
+	private void _assertColumnLength(Connection connection, String columnName)
+		throws Exception {
 
-			PreparedStatement preparedStatement = connection.prepareStatement(
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				"select length from syscat.columns where tabname = " +
-					"'TESTTABLE' and colname = 'COLUMN2'")) {
+					"'TESTTABLE' and colname = ?")) {
+
+			preparedStatement.setString(1, columnName);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				Assert.assertTrue(
-					"column2 not found in TestTable", resultSet.next());
+					columnName + " not found in TestTable", resultSet.next());
 
 				Assert.assertEquals(2147483647, resultSet.getInt("length"));
 			}
