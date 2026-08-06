@@ -57,7 +57,22 @@ tests:
             value: StatefulSet
         it: Mounts the LPKG volume, sync script, and deploy folder
         set:
-            lpkg.enabled: true
+            marketplace.enabled: true
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        name: liferay-lpkg
+                        persistentVolumeClaim:
+                            claimName: liferay-default-marketplace
+                    path: spec.template.spec.volumes
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Links the LPKG volume with the marketplace claim
+        set:
+            marketplace.enabled: true
     -   asserts:
             -   contains:
                     any: true
