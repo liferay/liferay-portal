@@ -29,7 +29,8 @@ public class MCPServerRestUpgradeStepRegistrator
 	public void register(Registry registry) {
 		registry.registerInitialization();
 
-		registry.registerReleaseCreationUpgradeSteps(
+		registry.register(
+			"0.0.1", "1.0.0",
 			new MCPPromptUpgradeProcess(
 				_companyLocalService, _listTypeDefinitionLocalService,
 				_objectDefinitionLocalService, _objectEntryLocalService,

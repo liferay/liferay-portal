@@ -49,6 +49,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -115,7 +116,7 @@ public class MCPPromptUpgradeProcessTest {
 		_objectEntry1 = _addObjectEntry(objectDefinition, "My Prompt");
 		_objectEntry2 = _addObjectEntry(objectDefinition, "My- Prompt!");
 
-		UpgradeStep upgradeStep = _getReleaseCreationUpgradeStep();
+		UpgradeStep upgradeStep = _getUpgradeStep();
 
 		upgradeStep.upgrade();
 
@@ -212,8 +213,8 @@ public class MCPPromptUpgradeProcessTest {
 		Assert.assertEquals("active", values.get("promptStatus"));
 	}
 
-	private UpgradeStep _getReleaseCreationUpgradeStep() {
-		List<UpgradeStep> releaseCreationUpgradeSteps = new ArrayList<>();
+	private UpgradeStep _getUpgradeStep() {
+		List<UpgradeStep> versionedUpgradeSteps = new ArrayList<>();
 
 		_upgradeStepRegistrator.register(
 			new UpgradeStepRegistrator.Registry() {
@@ -222,19 +223,22 @@ public class MCPPromptUpgradeProcessTest {
 				public void register(
 					String fromSchemaVersionString,
 					String toSchemaVersionString, UpgradeStep... upgradeSteps) {
+
+					if (Objects.equals(fromSchemaVersionString, "0.0.1") &&
+						Objects.equals(toSchemaVersionString, "1.0.0")) {
+
+						Collections.addAll(versionedUpgradeSteps, upgradeSteps);
+					}
 				}
 
 				@Override
 				public void registerReleaseCreationUpgradeSteps(
 					UpgradeStep... upgradeSteps) {
-
-					Collections.addAll(
-						releaseCreationUpgradeSteps, upgradeSteps);
 				}
 
 			});
 
-		return releaseCreationUpgradeSteps.get(0);
+		return versionedUpgradeSteps.get(0);
 	}
 
 	private Bundle _installBundle() throws Exception {
