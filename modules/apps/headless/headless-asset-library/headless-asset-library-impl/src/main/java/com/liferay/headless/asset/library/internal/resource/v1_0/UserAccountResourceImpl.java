@@ -116,8 +116,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		_userService.addGroupUsers(
 			group.getGroupId(), new long[] {user.getUserId()}, serviceContext);
 
-		return _toUserAccount(
-			group.getGroupId(), _userService.getUserById(user.getUserId()));
+		return _toUserAccount(group.getGroupId(), user);
 	}
 
 	private void _checkAssetLibraryAdminOrAssetLibraryMember(long groupId)
