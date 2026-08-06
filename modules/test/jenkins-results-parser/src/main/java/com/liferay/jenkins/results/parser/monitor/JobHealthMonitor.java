@@ -209,13 +209,8 @@ public class JobHealthMonitor implements Monitor {
 	private String _getJobURL(String masterName) {
 		JenkinsMaster jenkinsMaster = JenkinsMaster.getInstance(masterName);
 
-		String masterURL = jenkinsMaster.getURL();
-
-		if (!masterURL.endsWith("/")) {
-			masterURL += "/";
-		}
-
-		return JenkinsResultsParserUtil.combine(masterURL, "job/", _jobName);
+		return JenkinsResultsParserUtil.combine(
+			jenkinsMaster.getURL(), "/job/", _jobName);
 	}
 
 	private String _getKey(String category, String name) {
