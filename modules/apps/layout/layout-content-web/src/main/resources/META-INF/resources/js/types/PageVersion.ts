@@ -5,7 +5,13 @@
 
 export type Status = 'approved' | 'draft';
 
+type Action = {
+	href: string;
+	method: string;
+};
+
 export type PageVersion = {
+	actions?: Partial<Record<'delete', Action>>;
 	creator?: {
 		externalReferenceCode?: string;
 		image?: string;

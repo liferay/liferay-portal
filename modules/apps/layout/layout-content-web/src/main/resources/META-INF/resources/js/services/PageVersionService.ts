@@ -11,6 +11,10 @@ type PageVersionResponse = Omit<PageVersion, 'status'> & {
 	status: Capitalize<Status>;
 };
 
+async function deletePageVersion(url: string) {
+	return ApiHelper.del(url);
+}
+
 async function getPageVersions(signal?: AbortSignal) {
 	const {data, error} = await ApiHelper.get<{items: PageVersionResponse[]}>(
 		config.pageSpecificationVersionsURL,
@@ -28,4 +32,4 @@ async function getPageVersions(signal?: AbortSignal) {
 	};
 }
 
-export default {getPageVersions};
+export default {deletePageVersion, getPageVersions};
