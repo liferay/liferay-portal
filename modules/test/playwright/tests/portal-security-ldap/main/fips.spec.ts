@@ -7,9 +7,9 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {ldapConfigurationPagesTest} from '../../../fixtures/ldapConfigurationPagesTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {LdapServerPage} from '../../../pages/portal-security-ldap/LdapServerPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
-import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(loginTest(), ldapConfigurationPagesTest);
 
@@ -29,6 +29,16 @@ const PRESETS = [
 	['Novell eDirectory', 'ldaps://localhost:636'],
 	['OpenLDAP', 'ldaps://localhost:636'],
 ] as const;
+
+const expectSchemeErrorOnLdapServerForm = async (
+	ldapServerPage: LdapServerPage,
+	baseProviderURL: string
+) =>
+	expect(
+		ldapServerPage.form.getByText(
+			`The base provider URL "${baseProviderURL}" must use the "ldaps://" scheme in FIPS mode.`
+		)
+	).toBeVisible();
 
 test(
 	'New LDAP server form defaults the base provider URL to the ldaps:// scheme',
@@ -74,30 +84,58 @@ test(
 );
 
 test(
-	'Saving an LDAP server with an insecure ldap:// base provider URL shows the FIPS validation error',
+	'Saving an LDAP server with an insecure ldap:// base provider URL shows the FIPS validation error on the form',
 	{tag: '@LPD-86301'},
 	async ({ldapConfigurationPage, ldapServerPage}) => {
 		const baseProviderURL = `ldap://${getRandomString()}`;
+		const serverName = `fips-${getRandomString()}`;
 
-		await test.step('Open the Add LDAP Server form', async () => {
+		await test.step('Open the Add LDAP Server form and fill an insecure ldap:// URL', async () => {
 			await ldapConfigurationPage.addLdapServer();
-		});
 
-		await test.step('Fill the form with an insecure ldap:// URL', async () => {
 			await ldapServerPage.serverName.waitFor();
 
-			await ldapServerPage.serverName.fill(`fips-${getRandomString()}`);
+			await ldapServerPage.serverName.fill(serverName);
 			await ldapServerPage.baseProviderUrl.fill(baseProviderURL);
 		});
 
-		await test.step('Submit the form and assert the FIPS validation error names the URL and the required scheme', async () => {
-			await clickAndExpectToBeVisible({
-				target: ldapServerPage.page.getByText(
-					`The base provider URL "${baseProviderURL}" must use the "ldaps://" scheme in FIPS mode.`
-				),
-				trigger: ldapServerPage.saveButton,
+		await test.step('Assert the Add LDAP Server form redisplays carrying the error', async () => {
+			await ldapServerPage.saveButton.click();
+
+			await expectSchemeErrorOnLdapServerForm(
+				ldapServerPage,
+				baseProviderURL
+			);
+
+			await expect(ldapServerPage.ldapServerIdInput).toHaveValue('0');
+		});
+
+		await test.step('Save the server with a compliant URL', async () => {
+			await ldapServerPage.addLdapServer({
+				baseProviderUrl: 'ldaps://localhost:636',
+				serverName,
 			});
 		});
+
+		await test.step('Reopen it and enter an insecure ldap:// URL', async () => {
+			await ldapServerPage.viewLdapServer(serverName);
+
+			await ldapServerPage.baseProviderUrl.fill(baseProviderURL);
+		});
+
+		await test.step('Assert the Edit LDAP Server form redisplays carrying the error', async () => {
+			await ldapServerPage.saveButton.click();
+
+			await expectSchemeErrorOnLdapServerForm(
+				ldapServerPage,
+				baseProviderURL
+			);
+
+			await expect(ldapServerPage.ldapServerIdInput).not.toHaveValue('0');
+			await expect(ldapServerPage.serverName).toHaveValue(serverName);
+		});
+
+		await ldapServerPage.deleteLdapServer(serverName);
 	}
 );
 
@@ -138,24 +176,15 @@ test(
 test(
 	'The LDAP test pages refuse an insecure ldap:// base provider URL',
 	{tag: '@LPD-86301'},
-	async ({ldapConfigurationPage, ldapServerPage}) => {
+	async ({ldapServerPage}) => {
 		const baseProviderURL = `ldap://${getRandomString()}:389`;
 		const serverName = `fips-${getRandomString()}`;
 
 		await test.step('Add an LDAP server with a compliant URL', async () => {
-			await ldapConfigurationPage.addLdapServer();
-
-			await ldapServerPage.serverName.waitFor();
-
-			await ldapServerPage.serverName.fill(serverName);
-			await ldapServerPage.baseProviderUrl.fill('ldaps://localhost:636');
-
-			await ldapServerPage.saveButton.click();
-
-			await waitForAlert(
-				ldapServerPage.page,
-				'Success:Your request completed successfully.'
-			);
+			await ldapServerPage.addLdapServer({
+				baseProviderUrl: 'ldaps://localhost:636',
+				serverName,
+			});
 		});
 
 		await test.step('Reopen it and enter an insecure URL', async () => {

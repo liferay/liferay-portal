@@ -22,6 +22,7 @@ export class LdapServerPage {
 	readonly description: Locator;
 	readonly emailAddress: Locator;
 	readonly firstName: Locator;
+	readonly form: Locator;
 	readonly fullName: Locator;
 	readonly group: Locator;
 	readonly groupDefaultObjectClasses: Locator;
@@ -33,6 +34,7 @@ export class LdapServerPage {
 	readonly jobTitle: Locator;
 	readonly lastName: Locator;
 	readonly ldapConfigurationPage: LdapConfigurationPage;
+	readonly ldapServerIdInput: Locator;
 	readonly middleName: Locator;
 	readonly page: Page;
 	readonly password: Locator;
@@ -66,6 +68,7 @@ export class LdapServerPage {
 		this.description = page.getByLabel('Description');
 		this.emailAddress = page.getByLabel('Email Address');
 		this.firstName = page.getByLabel('First Name', {exact: true});
+		this.form = page.locator('form[name$="_fm"]');
 		this.fullName = page.getByLabel('Full Name');
 		this.group = page.getByLabel('Group', {exact: true});
 		this.groupDefaultObjectClasses = page.getByLabel(
@@ -85,6 +88,7 @@ export class LdapServerPage {
 		this.jobTitle = page.getByLabel('Job Title');
 		this.lastName = page.getByLabel('Last Name', {exact: true});
 		this.ldapConfigurationPage = new LdapConfigurationPage(page);
+		this.ldapServerIdInput = page.locator('input[name$="_ldapServerId"]');
 		this.middleName = page.getByLabel('Middle Name');
 		this.page = page;
 		this.password = page.getByLabel('Password');
