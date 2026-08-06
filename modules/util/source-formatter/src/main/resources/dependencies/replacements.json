@@ -5567,6 +5567,11 @@
 		]
 	},
 	{
+		"from": "regex:Optional<String\\[\\]>\\s+(?<variableName>\\w+)\\s*=\\s*portletSharedSearchSettings\\s*\\.\\s*getParameterValues71\\s*\\(\\s*(?<param>\\w+)\\s*\\)",
+		"issueKey": "LPD-60899",
+		"to": "String[] ${variableName} = portletSharedSearchSettings.getParameterValues(${param})"
+	},
+	{
 		"classNames": [
 			"CPCompareHelperUtil"
 		],
