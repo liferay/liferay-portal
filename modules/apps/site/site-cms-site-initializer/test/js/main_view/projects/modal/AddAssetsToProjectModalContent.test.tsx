@@ -76,6 +76,20 @@ async function selectProject(title: string) {
 }
 
 describe('AddAssetsToProjectModalContent', () => {
+	const {ResizeObserver: ResizeObserverOriginal} = window;
+
+	beforeAll(() => {
+		window.ResizeObserver = jest.fn().mockImplementation(() => ({
+			disconnect: jest.fn(),
+			observe: jest.fn(),
+			unobserve: jest.fn(),
+		}));
+	});
+
+	afterAll(() => {
+		window.ResizeObserver = ResizeObserverOriginal;
+	});
+
 	afterEach(() => {
 		jest.clearAllMocks();
 		jest.restoreAllMocks();
@@ -131,6 +145,26 @@ describe('AddAssetsToProjectModalContent', () => {
 				}),
 			})
 		);
+	});
+
+	it('filters the project list to the typed text', async () => {
+		mockProjects([GOV_DIGITAL, TECH_LEADERS]);
+
+		renderModal();
+
+		await userEvent.type(
+			await screen.findByRole('combobox', {name: 'select-project'}),
+			'tech',
+			{delay: null}
+		);
+
+		expect(
+			await screen.findByRole('option', {name: 'TechLeaders Summit'})
+		).toBeInTheDocument();
+
+		expect(
+			screen.queryByRole('option', {name: 'GOV Digital'})
+		).not.toBeInTheDocument();
 	});
 
 	it('removes a selected project card', async () => {

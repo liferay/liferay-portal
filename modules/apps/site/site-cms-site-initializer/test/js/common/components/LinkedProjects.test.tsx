@@ -73,6 +73,20 @@ function mockService({
 }
 
 describe('LinkedProjects', () => {
+	const {ResizeObserver: ResizeObserverOriginal} = window;
+
+	beforeAll(() => {
+		window.ResizeObserver = jest.fn().mockImplementation(() => ({
+			disconnect: jest.fn(),
+			observe: jest.fn(),
+			unobserve: jest.fn(),
+		}));
+	});
+
+	afterAll(() => {
+		window.ResizeObserver = ResizeObserverOriginal;
+	});
+
 	afterEach(() => {
 		jest.clearAllMocks();
 		jest.restoreAllMocks();
@@ -92,6 +106,26 @@ describe('LinkedProjects', () => {
 		).toBeInTheDocument();
 		expect(
 			screen.queryByRole('option', {name: 'TechLeaders Summit'})
+		).not.toBeInTheDocument();
+	});
+
+	it('filters the picker to the projects matching the typed text', async () => {
+		mockService({linked: [], projects: [GOV_DIGITAL, TECH_LEADERS]});
+
+		render(<LinkedProjects {...IDENTITY} />);
+
+		await userEvent.type(
+			await screen.findByRole('combobox', {name: 'projects'}),
+			'tech',
+			{delay: null}
+		);
+
+		expect(
+			await screen.findByRole('option', {name: 'TechLeaders Summit'})
+		).toBeInTheDocument();
+
+		expect(
+			screen.queryByRole('option', {name: 'GOV Digital'})
 		).not.toBeInTheDocument();
 	});
 
