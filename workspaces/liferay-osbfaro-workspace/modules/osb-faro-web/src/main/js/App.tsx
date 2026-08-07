@@ -8,6 +8,7 @@ import ModalRenderer from 'shared/components/ModalRenderer';
 import React, {lazy, Suspense, useEffect, useState} from 'react';
 import RouteNotFound from 'shared/components/RouteNotFound';
 import store from 'shared/store';
+import TrackingConsentBanner from 'shared/components/TrackingConsentBanner';
 import UnassignedSegmentsProvider from 'shared/context/unassignedSegments';
 import {
 	ApolloProvider,
@@ -19,6 +20,11 @@ import {ClayLinkContext} from '@clayui/link';
 import {ClayTooltipProvider} from '@clayui/tooltip';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {ENABLE_ADD_TRIAL_WORKSPACE} from 'shared/util/constants';
+import {
+	getTrackingConsent,
+	setTrackingConsent,
+	TrackingConsentValues,
+} from 'shared/util/tracking-consent';
 import {
 	Link,
 	matchPath,
@@ -92,13 +98,27 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 
 	const {data: currentUser, loading} = useFetchCurrentUser(groupId);
 
+	const [trackingConsent, setTrackingConsentState] = useState(
+		getTrackingConsent()
+	);
+
 	useEffect(() => {
-		if (currentUser?.id && project?.corpProjectName) {
+		if (
+			currentUser?.id &&
+			project?.corpProjectName &&
+			trackingConsent === TrackingConsentValues.Accepted
+		) {
 			const pendo = new Pendo();
 
 			pendo.initialize({currentUser, project});
 		}
-	}, [currentUser?.id, project?.corpProjectName]);
+	}, [currentUser?.id, project?.corpProjectName, trackingConsent]);
+
+	const handleTrackingConsent = (accepted: boolean) => () => {
+		setTrackingConsent(accepted);
+
+		setTrackingConsentState(getTrackingConsent());
+	};
 
 	if (loading) {
 		return <Loading />;
@@ -108,7 +128,18 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 		return <ErrorPage />;
 	}
 
-	return children as React.ReactElement;
+	return (
+		<>
+			{children}
+
+			{!!currentUser?.id && trackingConsent === null && (
+				<TrackingConsentBanner
+					onAcceptAll={handleTrackingConsent(true)}
+					onDeclineAll={handleTrackingConsent(false)}
+				/>
+			)}
+		</>
+	);
 };
 
 const App = () => {

@@ -1,0 +1,56 @@
+.tracking-consent-banner-root {
+	align-items: center;
+	background-color: #1c2d4c;
+	bottom: 0;
+	color: #fff;
+	display: flex;
+	gap: 24px;
+	justify-content: space-between;
+	left: 0;
+	padding: 16px 24px;
+	position: fixed;
+	right: 0;
+	z-index: 1050;
+
+	a {
+		color: inherit;
+		text-decoration: underline;
+	}
+
+	.banner-buttons {
+		display: flex;
+		flex-shrink: 0;
+		gap: 8px;
+	}
+
+	.banner-content {
+		max-width: 960px;
+	}
+
+	.banner-description {
+		font-size: 12px;
+		margin-bottom: 4px;
+	}
+
+	.banner-show-more {
+		color: inherit;
+		padding-left: 0;
+		text-decoration: underline;
+	}
+
+	.banner-title {
+		font-size: 14px;
+		font-weight: 600;
+		margin-bottom: 8px;
+	}
+}
+
+@media (max-width: 767px) {
+	.tracking-consent-banner-root {
+		flex-direction: column;
+
+		.banner-buttons {
+			align-self: flex-end;
+		}
+	}
+}
