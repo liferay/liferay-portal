@@ -90,6 +90,8 @@ spec:
                                 properties:
                                     claimName:
                                         type: string
+                                    enabled:
+                                        type: boolean
                                     size:
                                         anyOf:
                                         -   type: integer
