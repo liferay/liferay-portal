@@ -13,6 +13,7 @@ import com.liferay.batch.engine.unit.BatchEngineUnitReader;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.util.ServiceLatch;
 import com.liferay.portal.kernel.servlet.InitialRequestSyncUtil;
 import com.liferay.portal.kernel.upgrade.util.UpgradeProcessUtil;
 
@@ -28,7 +29,6 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Reference;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
 
@@ -48,7 +48,24 @@ public class BatchEngineBundleTracker {
 
 		InitialRequestSyncUtil.registerSyncCallable(
 			() -> {
-				_bundleTracker.open();
+				ServiceLatch serviceLatch = new ServiceLatch(bundleContext);
+
+				serviceLatch.waitFor(
+					BatchEngineUnitProcessor.class,
+					batchEngineUnitProcessor ->
+						_batchEngineUnitProcessor = batchEngineUnitProcessor
+				).waitFor(
+					BatchEngineUnitReader.class,
+					batchEngineUnitReader ->
+						_batchEngineUnitReader = batchEngineUnitReader
+				).waitFor(
+					MultiCompanyBatchEngineUnitProcessor.class,
+					multiCompanyBatchEngineUnitProcessor ->
+						_multiCompanyBatchEngineUnitProcessor =
+							multiCompanyBatchEngineUnitProcessor
+				).openOn(
+					_bundleTracker::open
+				);
 
 				return null;
 			});
@@ -62,15 +79,9 @@ public class BatchEngineBundleTracker {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BatchEngineBundleTracker.class);
 
-	@Reference
 	private BatchEngineUnitProcessor _batchEngineUnitProcessor;
-
-	@Reference
 	private BatchEngineUnitReader _batchEngineUnitReader;
-
 	private BundleTracker<Bundle> _bundleTracker;
-
-	@Reference
 	private MultiCompanyBatchEngineUnitProcessor
 		_multiCompanyBatchEngineUnitProcessor;
 
