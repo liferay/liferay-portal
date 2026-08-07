@@ -15,11 +15,11 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import {disableCache} from '../../../utils/disableCache';
 import getRandomString from '../../../utils/getRandomString';
 import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
-import {editJSClientExtensionsPageTest} from './fixtures/editJSClientExtensionsPageTest';
 import {ClientExtensionsPage} from '../pages/ClientExtensionsPage';
 import {WaitAction} from '../pages/EditClientExtensionsPage';
-import {EditJSClientExtensionsPage} from './pages/EditJSClientExtensionsPage';
 import {ViewClientExtensionPage} from '../pages/ViewClientExtensionPage';
+import {editJSClientExtensionsPageTest} from './fixtures/editJSClientExtensionsPageTest';
+import {EditJSClientExtensionsPage} from './pages/EditJSClientExtensionsPage';
 
 const test = mergeTests(
 	clientExtensionsPageTest,
