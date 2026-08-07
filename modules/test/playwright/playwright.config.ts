@@ -34,6 +34,7 @@ import {config as changeTrackingWebLocalePrependConfig} from './tests/change-tra
 import {config as changeTrackingWebConfig} from './tests/change-tracking-web/main/config';
 import {config as clientExtensionWebClusterConfig} from './tests/client-extension-web/cluster/config';
 import {config as clientExtensionWebConfig} from './tests/client-extension-web/main/config';
+import {config as clientExtensionWebThemeCSSConfig} from './tests/client-extension-web/theme-css/config';
 import {config as commerceAccountWebConfig} from './tests/commerce/commerce-account-web/main/config';
 import {config as commerceCartContentWebConfig} from './tests/commerce/commerce-cart-content-web/main/config';
 import {config as commerceCatalogWebConfig} from './tests/commerce/commerce-catalog-web/main/config';
@@ -283,6 +284,7 @@ export default defineConfig({
 		changeTrackingWebLocalePrependConfig,
 		clientExtensionWebConfig,
 		clientExtensionWebClusterConfig,
+		clientExtensionWebThemeCSSConfig,
 		commerceAccountWebConfig,
 		commerceCartContentWebConfig,
 		commerceCatalogWebConfig,
