@@ -170,3 +170,23 @@ protected void method5(Set<String> set, String name) {
     set.remove(name);
 }
 ```
+
+#### Example 6
+
+Instead of:
+
+```java
+protected void method6(List<String> list, String name) {
+    if (list.contains(name)) {
+        list.remove(name);
+    }
+}
+```
+
+We should do:
+
+```java
+protected void method6(List<String> list, String name) {
+    list.remove(name);
+}
+```
