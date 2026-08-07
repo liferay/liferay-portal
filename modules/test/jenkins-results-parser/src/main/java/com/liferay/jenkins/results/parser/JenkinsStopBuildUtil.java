@@ -22,6 +22,49 @@ import org.json.JSONObject;
  */
 public class JenkinsStopBuildUtil {
 
+	public static void abortBuild(String buildURL) throws Exception {
+		String normalizedBuildURL = JenkinsResultsParserUtil.fixURL(
+			JenkinsResultsParserUtil.getLocalURL(buildURL));
+
+		if (!_isBuilding(normalizedBuildURL)) {
+			return;
+		}
+
+		int responseCode = _post(normalizedBuildURL + "/stop");
+
+		if (responseCode >= 400) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to stop ", normalizedBuildURL,
+					", received response ", String.valueOf(responseCode)));
+		}
+
+		// Jenkins answers /stop as soon as it has interrupted the executor
+		// thread, whether or not that thread ever reacts. A build wedged in a
+		// native call or an unresponsive socket read takes the interrupt and
+		// keeps its executor, so the response alone does not mean the build
+		// stopped.
+
+		for (int i = 0; i < _ABORT_VERIFICATION_RETRIES; i++) {
+			JenkinsResultsParserUtil.sleep(_ABORT_VERIFICATION_PERIOD);
+
+			if (!_isBuilding(normalizedBuildURL)) {
+				return;
+			}
+		}
+
+		long abortVerificationDuration =
+			_ABORT_VERIFICATION_PERIOD * _ABORT_VERIFICATION_RETRIES;
+
+		throw new RuntimeException(
+			JenkinsResultsParserUtil.combine(
+				"Unable to stop ", normalizedBuildURL, ", it was still ",
+				"running ",
+				JenkinsResultsParserUtil.toDurationString(
+					abortVerificationDuration),
+				" after being interrupted"));
+	}
+
 	public static void cancelQueueItem(
 			JenkinsMaster jenkinsMaster, long queueId)
 		throws Exception {
@@ -29,20 +72,7 @@ public class JenkinsStopBuildUtil {
 		String normalizedURL = JenkinsResultsParserUtil.fixURL(
 			JenkinsResultsParserUtil.getLocalURL(jenkinsMaster.getURL()));
 
-		URL urlObject = new URL(
-			normalizedURL + "/queue/cancelItem?id=" + queueId);
-
-		HttpURLConnection httpConnection =
-			(HttpURLConnection)urlObject.openConnection();
-
-		httpConnection.setRequestMethod("POST");
-
-		_setAuthorization(httpConnection);
-
-		System.out.println(
-			"Response from " + urlObject.toString() + ": " +
-				httpConnection.getResponseCode() + " " +
-					httpConnection.getResponseMessage());
+		_post(normalizedURL + "/queue/cancelItem?id=" + queueId);
 	}
 
 	public static void stopBuild(String buildURL) throws Exception {
@@ -102,6 +132,39 @@ public class JenkinsStopBuildUtil {
 		return downstreamURLs;
 	}
 
+	private static boolean _isBuilding(String normalizedBuildURL)
+		throws Exception {
+
+		JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
+			normalizedBuildURL + "/api/json?tree=result", false);
+
+		if (jsonObject.has("result") && jsonObject.isNull("result")) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private static int _post(String urlString) throws Exception {
+		URL urlObject = new URL(urlString);
+
+		HttpURLConnection httpConnection =
+			(HttpURLConnection)urlObject.openConnection();
+
+		httpConnection.setRequestMethod("POST");
+
+		_setAuthorization(httpConnection);
+
+		int responseCode = httpConnection.getResponseCode();
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Response from ", urlString, ": ", String.valueOf(responseCode),
+				" ", httpConnection.getResponseMessage()));
+
+		return responseCode;
+	}
+
 	private static void _setAuthorization(HttpURLConnection httpConnection)
 		throws Exception {
 
@@ -123,24 +186,11 @@ public class JenkinsStopBuildUtil {
 		String normalizedBuildURL = JenkinsResultsParserUtil.fixURL(
 			JenkinsResultsParserUtil.getLocalURL(buildURL));
 
-		JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
-			normalizedBuildURL + "/api/json?tree=result", false);
-
-		if (jsonObject.has("result") && jsonObject.isNull("result")) {
-			URL urlObject = new URL(normalizedBuildURL + "/stop");
-
-			HttpURLConnection httpConnection =
-				(HttpURLConnection)urlObject.openConnection();
-
-			httpConnection.setRequestMethod("POST");
-
-			_setAuthorization(httpConnection);
-
-			System.out.println(
-				"Response from " + urlObject.toString() + ": " +
-					httpConnection.getResponseCode() + " " +
-						httpConnection.getResponseMessage());
+		if (!_isBuilding(normalizedBuildURL)) {
+			return;
 		}
+
+		_post(normalizedBuildURL + "/stop");
 	}
 
 	private static void _stopDownstreamBuilds(String buildURL)
@@ -152,6 +202,10 @@ public class JenkinsStopBuildUtil {
 			_stopBuild(downstreamURL);
 		}
 	}
+
+	private static final long _ABORT_VERIFICATION_PERIOD = 5 * 1000L;
+
+	private static final int _ABORT_VERIFICATION_RETRIES = 6;
 
 	private static final Pattern _buildURLPattern = Pattern.compile(
 		".+://(?<hostName>[^.]+)(.liferay.com)?/job/(?<jobName>[^/]+).*/" +

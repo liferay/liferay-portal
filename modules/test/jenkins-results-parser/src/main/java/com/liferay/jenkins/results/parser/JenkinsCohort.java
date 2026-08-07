@@ -822,8 +822,13 @@ public class JenkinsCohort {
 				JenkinsResultsParserUtil.getBuildProperty(
 					"jenkins.load.balancer.blacklist");
 
-			Collections.addAll(
-				_jenkinsMastersBlacklist, jenkinsMastersBlacklist.split(","));
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(
+					jenkinsMastersBlacklist)) {
+
+				Collections.addAll(
+					_jenkinsMastersBlacklist,
+					jenkinsMastersBlacklist.split(","));
+			}
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
