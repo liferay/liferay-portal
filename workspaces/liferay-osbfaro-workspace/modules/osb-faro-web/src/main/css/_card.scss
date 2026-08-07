@@ -3,6 +3,7 @@
 	box-shadow: none;
 	display: flex;
 	flex-direction: column;
+	overflow: hidden;
 
 	&:hover {
 		box-shadow: none;
