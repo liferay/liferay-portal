@@ -33,6 +33,7 @@ type LicenseStatus struct {
 // +kubebuilder:printcolumn:JSONPath=`.status.phase`,name="Phase",priority=1,type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.environmentId`,name="Environment-ID",priority=1,type=string
 // +kubebuilder:printcolumn:JSONPath=`.status.activatedAt`,name="Activated-At",priority=1,type=date
+// +kubebuilder:printcolumn:JSONPath=`.status.unreachableSince`,name="Unreachable-Since",priority=1,type=date
 // +kubebuilder:resource:shortName=lenv
 // +kubebuilder:subresource:status
 type LiferayEnvironment struct {
@@ -95,6 +96,9 @@ type LiferayEnvironmentStatus struct {
 	// +kubebuilder:validation:Enum=Degraded;Pending;Ready
 	// +optional
 	Phase string `json:"phase,omitempty"`
+
+	// +optional
+	UnreachableSince *metav1.Time `json:"unreachableSince,omitempty"`
 }
 
 type MarketplaceVolumeSpec struct {

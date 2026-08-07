@@ -46,6 +46,10 @@ spec:
             name: Activated-At
             priority: 1
             type: date
+        -   jsonPath: .status.unreachableSince
+            name: Unreachable-Since
+            priority: 1
+            type: date
         name: v1alpha1
         schema:
             openAPIV3Schema:
@@ -209,6 +213,9 @@ spec:
                                 -   Degraded
                                 -   Pending
                                 -   Ready
+                                type: string
+                            unreachableSince:
+                                format: date-time
                                 type: string
                         type: object
                 type: object
