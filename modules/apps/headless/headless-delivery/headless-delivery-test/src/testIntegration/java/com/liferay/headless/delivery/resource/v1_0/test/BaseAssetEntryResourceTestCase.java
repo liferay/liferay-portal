@@ -686,6 +686,14 @@ public abstract class BaseAssetEntryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (assetEntry.getPermissions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("status", additionalAssertFieldName)) {
 				if (assetEntry.getStatus() == null) {
 					valid = false;
@@ -912,6 +920,17 @@ public abstract class BaseAssetEntryResourceTestCase {
 				if (!Objects.deepEquals(
 						assetEntry1.getGroupDescriptiveName(),
 						assetEntry2.getGroupDescriptiveName())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						assetEntry1.getPermissions(),
+						assetEntry2.getPermissions())) {
 
 					return false;
 				}
@@ -1279,6 +1298,11 @@ public abstract class BaseAssetEntryResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("status")) {
 			sb.append(String.valueOf(assetEntry.getStatus()));
 
@@ -1616,4 +1640,4 @@ public abstract class BaseAssetEntryResourceTestCase {
 		_assetEntryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:77419703
+// LIFERAY-REST-BUILDER-HASH:-1244491827
