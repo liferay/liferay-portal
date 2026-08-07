@@ -9,6 +9,8 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Matija Petanjek
  */
@@ -21,6 +23,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	localization = "content/Language",
 	name = "batch-engine-task-company-configuration-name"
 )
+@ProviderType
 public interface BatchEngineTaskCompanyConfiguration {
 
 	@Meta.AD(
