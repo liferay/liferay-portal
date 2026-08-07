@@ -12,14 +12,13 @@ const wrapper = ({children}: {children: React.ReactNode}) => (
 );
 
 describe('LifecycleContext', () => {
-	it('should default lifecycleStageFilter to AT_RISK and leave other filters empty', () => {
+	it('should leave every filter empty by default', () => {
 		const {result} = renderHook(() => useLifecycle(), {wrapper});
 
 		expect(result.current.filters).toEqual({
 			countryFilter: '',
 			filterString: '',
 			industryFilter: '',
-			lifecycleStageFilter: LifecycleStages.AT_RISK,
 		});
 	});
 
@@ -32,7 +31,6 @@ describe('LifecycleContext', () => {
 			countryFilter: '',
 			filterString: "industry eq 'Tech'",
 			industryFilter: 'Tech',
-			lifecycleStageFilter: LifecycleStages.AT_RISK,
 		});
 	});
 
@@ -77,7 +75,6 @@ describe('LifecycleContext', () => {
 			countryFilter: '',
 			filterString: '',
 			industryFilter: '',
-			lifecycleStageFilter: LifecycleStages.AT_RISK,
 		});
 	});
 

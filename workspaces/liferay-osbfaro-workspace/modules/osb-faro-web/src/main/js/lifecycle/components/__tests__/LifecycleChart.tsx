@@ -276,12 +276,10 @@ describe('LifecycleChart', () => {
 		expect(labels[3]).toContain('0%');
 	});
 
-	it('should default the context lifecycleStageFilter to AT_RISK on mount', () => {
+	it('should leave the context lifecycleStageFilter unset on mount', () => {
 		const {getByTestId} = renderChart({stages: sampleStages});
 
-		expect(getByTestId('lifecycle-filter').textContent).toBe(
-			LifecycleStages.AT_RISK
-		);
+		expect(getByTestId('lifecycle-filter').textContent).toBe('none');
 	});
 
 	it('should update the context lifecycleStageFilter when a stage filter button is clicked', () => {
