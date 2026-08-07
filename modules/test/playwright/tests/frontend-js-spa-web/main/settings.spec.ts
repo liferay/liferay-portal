@@ -12,7 +12,7 @@ import isSPAEnabled from '../../../utils/isSPAEnabled';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
 export const test = mergeTests(
-	isolatedLayoutTest({publish: false}),
+	isolatedLayoutTest(),
 	loginTest(),
 	systemSettingsPageTest
 );
@@ -24,7 +24,7 @@ test(
 	},
 	async ({layout, page, systemSettingsPage}) => {
 		await test.step('Navigate to an isolated page', async () => {
-			await page.goto(`/web/guest/${layout.friendlyURL}`);
+			await page.goto(`/web/guest${layout.friendlyURL}`);
 		});
 
 		await test.step('Check if SPA is enabled', async () => {
