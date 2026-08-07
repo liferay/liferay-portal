@@ -6,9 +6,12 @@
 package com.liferay.exportimport.internal.staging.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
+import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -20,7 +23,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -75,7 +77,7 @@ public class StagedSiteLARImportTest {
 
 	@Test
 	@TestInfo("LPD-100541")
-	public void testImportLARIntoStagingGroup() throws Exception {
+	public void testImportLARIntoStagingGroupAndPublish() throws Exception {
 		Group stagingGroup = _stagedGroup.getStagingGroup();
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
@@ -84,17 +86,40 @@ public class StagedSiteLARImportTest {
 				ExportImportTestUtil.exportLayoutsAsFile(
 					_sourceGroup, _sourceLayout)));
 
-		List<Layout> layouts = _layoutLocalService.getLayouts(
-			stagingGroup.getGroupId(), false);
-
 		String sourceLayoutName = _sourceLayout.getName(LocaleUtil.US);
 
+		List<String> stagingGroupLayoutNames = _getLayoutNames(
+			stagingGroup.getGroupId());
+
 		Assert.assertTrue(
-			layouts.toString(),
-			ListUtil.exists(
-				layouts,
-				layout -> sourceLayoutName.equals(
-					layout.getName(LocaleUtil.US))));
+			stagingGroupLayoutNames.toString(),
+			stagingGroupLayoutNames.contains(sourceLayoutName));
+
+		List<String> liveGroupLayoutNames = _getLayoutNames(
+			_stagedGroup.getGroupId());
+
+		Assert.assertFalse(
+			liveGroupLayoutNames.toString(),
+			liveGroupLayoutNames.contains(sourceLayoutName));
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			StagingUtil.publishLayouts(
+				TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				_stagedGroup.getGroupId(), false,
+				ExportImportConfigurationParameterMapFactoryUtil.
+					buildFullPublishParameterMap()));
+
+		liveGroupLayoutNames = _getLayoutNames(_stagedGroup.getGroupId());
+
+		Assert.assertTrue(
+			liveGroupLayoutNames.toString(),
+			liveGroupLayoutNames.contains(sourceLayoutName));
+	}
+
+	private List<String> _getLayoutNames(long groupId) {
+		return TransformUtil.transform(
+			_layoutLocalService.getLayouts(groupId, false),
+			layout -> layout.getName(LocaleUtil.US));
 	}
 
 	@Inject
