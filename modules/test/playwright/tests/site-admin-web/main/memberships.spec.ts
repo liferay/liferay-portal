@@ -634,7 +634,7 @@ test(
 			true
 		);
 
-		await page.getByLabel('Publish', {exact: true}).click();
+		await pageEditorPage.publishPage();
 
 		await performLogout(page);
 
@@ -644,14 +644,15 @@ test(
 
 		await page.getByRole('link', {name: 'Available Sites'}).click();
 
-		await page
-			.locator(
-				`[id="_com_liferay_site_my_sites_web_portlet_MySitesPortlet_ocerSearchContainer_-${site2.name}"]`
-			)
-			.getByLabel('Show Actions')
-			.click();
-
-		await page.getByRole('menuitem', {name: 'Request Membership'}).click();
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Request Membership'}),
+			trigger: page
+				.locator(
+					`[id="_com_liferay_site_my_sites_web_portlet_MySitesPortlet_ocerSearchContainer_-${site2.name}"]`
+				)
+				.getByLabel('Show Actions'),
+		});
 
 		await page
 			.getByLabel('Characters Maximum')
@@ -675,9 +676,11 @@ test(
 			trigger: page.getByLabel('Options', {exact: true}),
 		});
 
-		await page.getByLabel('More actions').click();
-
-		await page.getByRole('menuitem', {name: 'Reply'}).click();
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Reply'}),
+			trigger: page.getByLabel('More actions'),
+		});
 
 		await page
 			.getByLabel('Characters Maximum')
