@@ -1,0 +1,130 @@
+{
+	"className": "com.liferay.object.model.ObjectDefinition#L1K2",
+	"enableCategorization": false,
+	"enableComments": false,
+	"enableFriendlyURLCustomization": false,
+	"enableIndexSearch": true,
+	"enableLocalization": false,
+	"enableObjectEntryDraft": false,
+	"enableObjectEntryHistory": false,
+	"enableObjectEntrySchedule": false,
+	"enableObjectEntrySubscription": false,
+	"externalReferenceCode": "L_PIM_LINK",
+	"label": {
+		"en_US": "PIM Link"
+	},
+	"modifiable": true,
+	"name": "PIMLink",
+	"objectActions": [
+	],
+	"objectDefinitionSettings": [
+		{
+			"name": "acceptAllGroups",
+			"value": "true"
+		},
+		{
+			"name": "domain",
+			"value": "space"
+		},
+		{
+			"name": "visible",
+			"value": "false"
+		}
+	],
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "CLUSTER_KEY",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Cluster Key"
+			},
+			"name": "clusterKey",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "SOURCE_CLASS_EXTERNAL_REFERENCE_CODE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Source Class External Reference Code"
+			},
+			"name": "sourceClassExternalReferenceCode",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "SOURCE_CLASS_NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Source Class Name"
+			},
+			"name": "sourceClassName",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TARGET_CLASS_EXTERNAL_REFERENCE_CODE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Target Class External Reference Code"
+			},
+			"name": "targetClassExternalReferenceCode",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TARGET_CLASS_NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Target Class Name"
+			},
+			"name": "targetClassName",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TYPE",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Type"
+			},
+			"name": "type",
+			"required": true,
+			"system": true
+		}
+	],
+	"objectFolderExternalReferenceCode": "L_PIM_DEFINITIONS",
+	"objectRelationships": [
+	],
+	"panelCategoryKey": "",
+	"pluralLabel": {
+		"en_US": "PIM Links"
+	},
+	"scope": "depot",
+	"system": true,
+	"titleObjectFieldName": "sourceClassExternalReferenceCode"
+}

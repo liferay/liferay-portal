@@ -294,6 +294,8 @@ public class ObjectDefinitionUtil {
 		).put(
 			"PIMConnector", "/pim/connectors"
 		).put(
+			"PIMLink", "/pim/links"
+		).put(
 			"SEOStudioDomain", "/seo-studio/domains"
 		).put(
 			"SEOStudioGSCCredentials", "/seo-studio/gsc-credentials"
