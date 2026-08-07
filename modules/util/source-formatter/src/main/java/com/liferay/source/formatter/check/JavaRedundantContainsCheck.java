@@ -94,7 +94,17 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 		String suggestion = null;
 
 		if (StringUtil.equals(matcher.group(3), "contains") &&
-			variableTypeName.matches("\\w*Set<.*")) {
+			variableTypeName.matches("\\w*List<.*")) {
+
+			if (_hasOperation(
+					firstStatement, variableName, "remove", parameter)) {
+
+				operation = "remove";
+				suggestion = "the boolean result of a single \"remove\"";
+			}
+		}
+		else if (StringUtil.equals(matcher.group(3), "contains") &&
+				 variableTypeName.matches("\\w*Set<.*")) {
 
 			if (negated &&
 				_hasOperation(firstStatement, variableName, "add", parameter)) {
