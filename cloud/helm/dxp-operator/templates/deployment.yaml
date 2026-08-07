@@ -27,6 +27,8 @@ spec:
                 -   env:
                         -   name: DEBUG
                             value: {{ .Values.debug | quote }}
+                        -   name: GRACE_PERIOD
+                            value: {{ .Values.gracePeriod | quote }}
                         -   name: HEARTBEAT_INTERVAL
                             value: {{ .Values.heartbeatInterval | quote }}
                         -   name: METRICS_ADDRESS

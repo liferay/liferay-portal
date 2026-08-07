@@ -147,6 +147,13 @@ tests:
             heartbeatInterval: 30m
     -   asserts:
             -   equal:
+                    path: spec.template.spec.containers[0].env[?(@.name=="GRACE_PERIOD")].value
+                    value: 72h
+        it: Propagates the grace period as a quoted environment variable
+        set:
+            gracePeriod: 72h
+    -   asserts:
+            -   equal:
                     path: spec.replicas
                     value: 3
             -   isKind:

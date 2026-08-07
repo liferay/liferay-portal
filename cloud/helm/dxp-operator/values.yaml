@@ -2,6 +2,7 @@ affinity: {}
 customLabels: {}
 debug: false
 fullnameOverride: ""
+gracePeriod: 168h
 heartbeatInterval: 10m
 image:
     pullPolicy: IfNotPresent

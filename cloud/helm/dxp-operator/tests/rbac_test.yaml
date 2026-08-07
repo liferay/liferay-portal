@@ -108,7 +108,17 @@ tests:
         it: Omits the service account annotations by default
     -   asserts:
             -   lengthEqual:
-                    count: 7
+                    count: 8
+                    path: rules
+            -   contains:
+                    content:
+                        apiGroups:
+                            -   ""
+                        resources:
+                            -   events
+                        verbs:
+                            -   create
+                            -   patch
                     path: rules
             -   contains:
                     content:
