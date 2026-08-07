@@ -20,7 +20,6 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.portal.vulcan.resource.EntityModelResource;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -39,7 +38,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 	scope = ServiceScope.PROTOTYPE, service = LanguageOverrideResource.class
 )
 public class LanguageOverrideResourceImpl
-	extends BaseLanguageOverrideResourceImpl implements EntityModelResource {
+	extends BaseLanguageOverrideResourceImpl {
 
 	@Override
 	public void deleteLanguageOverrideByExternalReferenceCode(
