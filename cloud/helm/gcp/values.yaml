@@ -143,6 +143,8 @@ liferay-default:
         copy: []
         enabled: false
         type: gcs
+    persistence:
+        storageClassName: standard-rwo
     podSecurityContext:
         fsGroup: 1000
         runAsNonRoot: true
@@ -186,4 +188,3 @@ liferay-default:
                 resources:
                     requests:
                         storage: 10Gi
-                storageClassName: standard-rwo

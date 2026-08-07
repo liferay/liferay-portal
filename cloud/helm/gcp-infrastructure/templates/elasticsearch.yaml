@@ -75,7 +75,7 @@ spec:
                         resources:
                             requests:
                                 storage: {{ $search.volumeSize }}
-                        storageClassName: standard-rwo
+                        storageClassName: {{ .Values.persistence.storageClassName | default "standard-rwo" }}
     version: {{ $search.version }}
 ---
 apiVersion: v1

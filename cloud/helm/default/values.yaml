@@ -413,6 +413,8 @@ overlay:
         tag: "1.66"
     initScriptsVolumeName: liferay-init-scripts-default
     type: ""
+persistence:
+    storageClassName: ""
 podLabels: {}
 podSecurityContext: {}
 portalBundleDenyList: []

@@ -47,6 +47,38 @@ tests:
                     value: bar
     -   asserts:
             -   equal:
+                    path: spec.volumeClaimTemplates[0].spec.storageClassName
+                    value: hyperdisk-balanced-rwo
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Fills the chart storage class into volume claim templates that omit it
+        set:
+            persistence.storageClassName: hyperdisk-balanced-rwo
+    -   asserts:
+            -   equal:
+                    path: spec.volumeClaimTemplates[0].spec.storageClassName
+                    value: premium-rwo
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Keeps an explicit volume claim storage class over the chart value
+        set:
+            persistence.storageClassName: hyperdisk-balanced-rwo
+            volumeClaimTemplates:
+                -   metadata:
+                        name: liferay-persistent-volume
+                    spec:
+                        accessModes:
+                            -   ReadWriteOnce
+                        resources:
+                            requests:
+                                storage: 1Gi
+                        storageClassName: premium-rwo
+    -   asserts:
+            -   equal:
                     path: metadata.name
                     value: my-portal
             -   equal:
@@ -72,6 +104,14 @@ tests:
         it: Omits the replica count so the autoscaler owns it when autoscaling is enabled
         set:
             autoscaling.enabled: true
+    -   asserts:
+            -   notExists:
+                    path: spec.volumeClaimTemplates[0].spec.storageClassName
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: StatefulSet
+        it: Omits the storage class from volume claim templates by default
     -   asserts:
             -   equal:
                     path: spec.replicas

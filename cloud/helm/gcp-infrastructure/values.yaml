@@ -43,6 +43,8 @@ overlayBucket:
     enabled: false
     forceDestroy: false
     orphanOnDelete: false
+persistence:
+    storageClassName: ""
 podMonitoring:
     instances:
         envoy:

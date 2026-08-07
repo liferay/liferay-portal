@@ -187,9 +187,14 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- if or .statefulset.volumeClaimTemplates .statefulset.customVolumeClaimTemplates }}
+    {{- $storageClassName := .statefulset.persistence.storageClassName }}
     volumeClaimTemplates:
-        {{- with .statefulset.volumeClaimTemplates }}
-        {{- toYaml . | nindent 8 }}
+        {{- range .statefulset.volumeClaimTemplates }}
+        {{- $volumeClaimTemplate := . }}
+        {{- if and $storageClassName (not (hasKey .spec "storageClassName")) }}
+        {{- $volumeClaimTemplate = merge (deepCopy .) (dict "spec" (dict "storageClassName" $storageClassName)) }}
+        {{- end }}
+        {{- list $volumeClaimTemplate | toYaml | nindent 8 }}
         {{- end }}
         {{- range $k, $v := .statefulset.customVolumeClaimTemplates }}
         {{- toYaml $v | nindent 8 }}
