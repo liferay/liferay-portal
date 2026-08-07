@@ -7,6 +7,7 @@ import {Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
+import {getTempDir} from '../../../../utils/temp';
 import {DataSetPage} from './DataSetPage';
 
 export class StructuresPage {
@@ -52,7 +53,61 @@ export class StructuresPage {
 		});
 	}
 
-	async openMenuItem(action: 'Export' | 'Import') {
+	async exportStructureAsJSON(structureLabel: string) {
+		await this.goto();
+
+		const downloadPromise = this.page.waitForEvent('download');
+
+		await this.execItemAction({
+			action: 'Export as JSON',
+			filter: structureLabel,
+		});
+
+		const download = await downloadPromise;
+
+		const filePath = `${getTempDir()}/${download.suggestedFilename()}`;
+
+		await download.saveAs(filePath);
+
+		return filePath;
+	}
+
+	async importStructureFromJSON(
+		filePath: string,
+		{override = true}: {override?: boolean} = {}
+	) {
+		await this.openMenuItem('Import from JSON');
+
+		const dialog = this.page.getByRole('dialog', {
+			name: 'Import Content Structures',
+		});
+
+		const fileChooserPromise = this.page.waitForEvent('filechooser');
+
+		await dialog.getByRole('button', {name: 'Select File'}).click();
+
+		const fileChooser = await fileChooserPromise;
+
+		await fileChooser.setFiles(filePath);
+
+		await dialog.getByRole('button', {exact: true, name: 'Import'}).click();
+
+		// When a structure with the same external reference code already exists
+		// the file-select modal closes and an override warning modal opens;
+		// confirm it to proceed.
+
+		if (override) {
+			await this.page
+				.getByRole('button', {name: 'Select File'})
+				.waitFor({state: 'hidden'});
+
+			await this.page
+				.getByRole('button', {exact: true, name: 'Import'})
+				.click();
+		}
+	}
+
+	async openMenuItem(action: 'Export' | 'Import' | 'Import from JSON') {
 		await this.goto();
 
 		await clickAndExpectToBeVisible({
