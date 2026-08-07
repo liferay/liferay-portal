@@ -231,7 +231,6 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		throws SQLException {
 
 		Version currentSchemaVersion = getCurrentSchemaVersion(connection);
-
 		Version latestSchemaVersion = getLatestSchemaVersion();
 
 		int result = latestSchemaVersion.compareTo(currentSchemaVersion);
