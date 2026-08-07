@@ -474,6 +474,7 @@ private String _filterFragmentSanitizer(String line) {
 			|		<regexp name="svgPaint" value="(none|currentColor|transparent|inherit|context-fill|context-stroke|#[0-9a-fA-F]{3,8}|rgba?\\([0-9,.\\s%]*\\)|hsla?\\([0-9,.\\s%]*\\)|url\\(\\s*#[a-zA-Z0-9\\-_:.]+\\s*\\)(\\s+(none|currentColor|#[0-9a-fA-F]{3,8}))?|[a-zA-Z]+)"/>
 			|		<regexp name="svgLocalRef" value="(none|url\\(\\s*#[a-zA-Z0-9\\-_:.]+\\s*\\))"/>
 			|		<regexp name="svgHrefLocal" value="#[a-zA-Z0-9\\-_:.]+"/>
+			|		<regexp name="svgHrefSameOrigin" value="(#[a-zA-Z0-9\\-_:.]+|/?[a-zA-Z0-9\\-_.][a-zA-Z0-9\\-_./]*\\.svg#[a-zA-Z0-9\\-_:.]+)"/>
 			|		<regexp name="svgKeyword" value="[a-zA-Z][a-zA-Z\\-]*"/>
 			|		<regexp name="svgPreserveAspectRatio" value="(none|x(Min|Mid|Max)Y(Min|Mid|Max))(\\s+(meet|slice))?"/>
 			|${line}""".stripMargin()
@@ -1321,10 +1322,14 @@ private String _filterFragmentSanitizer(String line) {
 			|			</attribute>
 			|			<attribute name="href" onInvalid="removeAttribute">
 			|				<regexp-list>
-			|					<regexp name="svgHrefLocal"/>
+			|					<regexp name="svgHrefSameOrigin"/>
 			|				</regexp-list>
 			|			</attribute>
-			|			<attribute name="xlink:href"/>
+			|			<attribute name="xlink:href" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgHrefSameOrigin"/>
+			|				</regexp-list>
+			|			</attribute>
 			|			<attribute name="fill"/>
 			|			<attribute name="fill-opacity"/>
 			|			<attribute name="fill-rule"/>
