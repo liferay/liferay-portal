@@ -34,6 +34,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:sharing:sharing-api")
 	testIntegrationImplementation project(":apps:site:site-api")
+	testIntegrationImplementation project(":apps:site:site-cmp-site-initializer-test-util")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")

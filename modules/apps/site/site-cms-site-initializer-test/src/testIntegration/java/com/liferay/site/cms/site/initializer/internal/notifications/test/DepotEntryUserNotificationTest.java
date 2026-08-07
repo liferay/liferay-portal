@@ -10,6 +10,9 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -41,8 +44,10 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.site.cmp.site.initializer.test.util.CMPTestUtil;
 
 import jakarta.portlet.PortletRequest;
 
@@ -63,7 +68,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
  * @author Balázs Sáfrány-Kovalik
  */
 @DataGuard(scope = DataGuard.Scope.METHOD)
-@FeatureFlag("LPD-57283")
+@FeatureFlags(
+	featureFlags = {@FeatureFlag("LPD-57283"), @FeatureFlag("LPD-58677")}
+)
 @RunWith(Arquillian.class)
 public class DepotEntryUserNotificationTest {
 
@@ -171,11 +178,35 @@ public class DepotEntryUserNotificationTest {
 			).buildString(),
 			userNotificationFeedEntry.getLink());
 
+		CMPTestUtil.getOrAddGroup(DepotEntryUserNotificationTest.class);
+
 		userNotificationFeedEntry = _getUserNotificationFeedEntry(_depotEntry3);
 
 		Assert.assertEquals(
 			"http://localhost:" + PortalUtil.getPortalServerPort(false) +
 				"/path-friendly-url-public/cms/projects",
+			userNotificationFeedEntry.getLink());
+
+		ObjectDefinition cmpProjectObjectDefinition =
+			_objectDefinitionLocalService.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_CMP_PROJECT", TestPropsValues.getCompanyId());
+
+		ObjectEntry cmpProjectObjectEntry =
+			CMPTestUtil.addCMPProjectObjectEntry();
+
+		_depotEntry4 = _depotEntryLocalService.getGroupDepotEntry(
+			cmpProjectObjectEntry.getGroupId());
+
+		userNotificationFeedEntry = _getUserNotificationFeedEntry(_depotEntry4);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"http://localhost:", PortalUtil.getPortalServerPort(false),
+				"/path-friendly-url-public/cms/e/project/",
+				PortalUtil.getClassNameId(
+					cmpProjectObjectDefinition.getClassName()),
+				StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId()),
 			userNotificationFeedEntry.getLink());
 	}
 
@@ -363,8 +394,14 @@ public class DepotEntryUserNotificationTest {
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry3;
 
+	@DeleteAfterTestRun
+	private DepotEntry _depotEntry4;
+
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Inject
 	private Portal _portal;
