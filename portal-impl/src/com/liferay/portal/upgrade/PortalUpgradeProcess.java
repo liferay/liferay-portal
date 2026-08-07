@@ -227,12 +227,24 @@ public class PortalUpgradeProcess extends UpgradeProcess {
 		return true;
 	}
 
-	public static boolean isInLatestSchemaVersion(Connection connection)
+	public static boolean isInCompatibleSchemaVersion(Connection connection)
 		throws SQLException {
+
+		Version currentSchemaVersion = getCurrentSchemaVersion(connection);
 
 		Version latestSchemaVersion = getLatestSchemaVersion();
 
-		return latestSchemaVersion.equals(getCurrentSchemaVersion(connection));
+		int result = latestSchemaVersion.compareTo(currentSchemaVersion);
+
+		if ((result == 0) ||
+			((result < 0) &&
+			 (latestSchemaVersion.getMajor() ==
+				 currentSchemaVersion.getMajor()))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public static boolean isInRequiredSchemaVersion(Connection connection)

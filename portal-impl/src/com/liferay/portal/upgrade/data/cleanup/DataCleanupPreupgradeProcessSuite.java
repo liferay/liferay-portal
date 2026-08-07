@@ -33,7 +33,7 @@ public class DataCleanupPreupgradeProcessSuite {
 	public void cleanUp() throws Exception {
 		try (Connection connection = DataAccess.getConnection()) {
 			if (StartupHelperUtil.isDBNew() ||
-				PortalUpgradeProcess.isInLatestSchemaVersion(connection) ||
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection) ||
 				(PortalUpgradeProcess.getCurrentState(connection) !=
 					ReleaseConstants.STATE_GOOD)) {
 

@@ -69,7 +69,7 @@ public class ReleaseManagerImpl implements ReleaseManager {
 		String where = StringPool.BLANK;
 
 		try (Connection connection = DataAccess.getConnection()) {
-			if (!PortalUpgradeProcess.isInLatestSchemaVersion(connection)) {
+			if (!PortalUpgradeProcess.isInCompatibleSchemaVersion(connection)) {
 				where = "portal";
 			}
 		}
@@ -100,7 +100,7 @@ public class ReleaseManagerImpl implements ReleaseManager {
 	@Override
 	public String getStatus() throws Exception {
 		try (Connection connection = DataAccess.getConnection()) {
-			if (!PortalUpgradeProcess.isInLatestSchemaVersion(connection) ||
+			if (!PortalUpgradeProcess.isInCompatibleSchemaVersion(connection) ||
 				_isPendingModuleUpgrades()) {
 
 				return "failure";

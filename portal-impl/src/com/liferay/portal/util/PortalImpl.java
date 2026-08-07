@@ -1788,7 +1788,7 @@ public class PortalImpl implements Portal {
 		}
 
 		try (Connection connection = DataAccess.getConnection()) {
-			if (PortalUpgradeProcess.isInLatestSchemaVersion(connection)) {
+			if (PortalUpgradeProcess.isInCompatibleSchemaVersion(connection)) {
 				return ClassNameLocalServiceUtil.getClassNameId(value);
 			}
 
