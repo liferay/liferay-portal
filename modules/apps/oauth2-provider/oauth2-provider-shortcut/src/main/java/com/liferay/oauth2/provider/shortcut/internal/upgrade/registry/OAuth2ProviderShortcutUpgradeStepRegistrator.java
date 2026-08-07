@@ -34,6 +34,12 @@ public class OAuth2ProviderShortcutUpgradeStepRegistrator
 				_companyLocalService, _oAuth2ApplicationLocalService,
 				_resourcePermissionLocalService, _roleLocalService,
 				_userLocalService));
+
+		registry.register(
+			"1.0.0", "2.0.0",
+			new com.liferay.oauth2.provider.shortcut.internal.upgrade.v2_0_0.
+				OAuth2ApplicationAnalyticsCloudUpgradeProcess(
+					_companyLocalService, _oAuth2ApplicationLocalService));
 	}
 
 	@Reference
