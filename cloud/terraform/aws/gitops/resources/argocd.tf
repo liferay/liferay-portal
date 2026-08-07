@@ -156,6 +156,10 @@ resource "kubernetes_manifest" "infrastructure_appproject" {
 					server="https://kubernetes.default.svc"
 				},
 				{
+					namespace="dxp-operator-system"
+					server="https://kubernetes.default.svc"
+				},
+				{
 					namespace="elastic-system"
 					server="https://kubernetes.default.svc"
 				},
