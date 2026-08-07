@@ -181,6 +181,26 @@ public class CompanyLocalServiceDBPartitionTest
 	}
 
 	@Test
+	public void testAddCompanyDoesNotWriteToDefaultPartition()
+		throws Exception {
+
+		Company company = CompanyTestUtil.addCompany();
+
+		try {
+			Assert.assertEquals(
+				0,
+				_getResourcePermissionsCount(
+					defaultPartitionName, company.getCompanyId()));
+		}
+		finally {
+			companyLocalService.deleteCompany(company);
+
+			_deleteResourcePermissions(
+				defaultPartitionName, company.getCompanyId());
+		}
+	}
+
+	@Test
 	public void testAddCompanyUsesVirtualHostCounter() throws Exception {
 		long counter = _counterLocalService.increment();
 
@@ -1168,6 +1188,21 @@ public class CompanyLocalServiceDBPartitionTest
 		}
 	}
 
+	private void _deleteResourcePermissions(
+			String partitionName, long companyId)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"delete from ", partitionName,
+					".ResourcePermission where companyId = ?"))) {
+
+			preparedStatement.setLong(1, companyId);
+
+			preparedStatement.executeUpdate();
+		}
+	}
+
 	private int _getDBPartitionsCount() throws Exception {
 		DatabaseMetaData databaseMetaData = connection.getMetaData();
 
@@ -1184,6 +1219,25 @@ public class CompanyLocalServiceDBPartitionTest
 		}
 
 		throw new SQLException("At least one database partition is required");
+	}
+
+	private int _getResourcePermissionsCount(
+			String partitionName, long companyId)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select count(*) COUNT_VALUE from ", partitionName,
+					".ResourcePermission where companyId = ?"))) {
+
+			preparedStatement.setLong(1, companyId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				resultSet.next();
+
+				return resultSet.getInt("COUNT_VALUE");
+			}
+		}
 	}
 
 	private long _getRulesCount(String partitionName) throws Exception {
