@@ -212,6 +212,12 @@ public class PageSpecificationVersionResourceImpl
 			_addAction(
 				layoutContentVersion, "getSiteSitePagePageSpecificationVersion",
 				templateParameterMap)
+		).put(
+			"restore",
+			_addAction(
+				layoutContentVersion,
+				"postSiteSitePagePageSpecificationVersionRestore",
+				templateParameterMap)
 		).build();
 	}
 
