@@ -329,7 +329,7 @@ public class ${entity.name}PersistenceTest {
 			<#if stringUtil.equals(entityColumn.type, "Blob")>
 				Blob existing${entityColumn.methodName} = existing${entity.name}.get${entityColumn.methodName}();
 
-				Assert.assertArrayEquals(existing${entityColumn.methodName}.getBytes(1, (int)existing${entityColumn.methodName}.length()), new${entityColumn.methodName}Bytes);
+				Assert.assertArrayEquals(new${entityColumn.methodName}Bytes, existing${entityColumn.methodName}.getBytes(1, (int)existing${entityColumn.methodName}.length()));
 			<#elseif stringUtil.equals(entityColumn.type, "boolean")>
 				Assert.assertEquals(existing${entity.name}.is${entityColumn.methodName}(), new${entity.name}.is${entityColumn.methodName}());
 			<#elseif stringUtil.equals(entityColumn.type, "Date")>
@@ -415,7 +415,7 @@ public class ${entity.name}PersistenceTest {
 						<#elseif stringUtil.equals(entityColumn.type, "Blob")>
 							Blob persistedDraft${entityColumn.methodName} = persistedDraft${entity.name}.get${entityColumn.methodName}();
 
-							Assert.assertArrayEquals(persistedDraft${entityColumn.methodName}.getBytes(1, (int)persistedDraft${entityColumn.methodName}.length()), draft${entityColumn.methodName}Bytes);
+							Assert.assertArrayEquals(draft${entityColumn.methodName}Bytes, persistedDraft${entityColumn.methodName}.getBytes(1, (int)persistedDraft${entityColumn.methodName}.length()));
 						<#elseif stringUtil.equals(entityColumn.type, "boolean")>
 							Assert.assertEquals(${entity.variableName}.is${entityColumn.methodName}(), draft${entity.name}.is${entityColumn.methodName}());
 						<#elseif stringUtil.equals(entityColumn.type, "Date")>
