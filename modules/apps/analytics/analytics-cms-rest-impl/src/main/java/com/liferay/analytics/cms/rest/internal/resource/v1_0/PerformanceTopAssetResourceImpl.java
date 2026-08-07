@@ -138,13 +138,14 @@ public class PerformanceTopAssetResourceImpl
 	private ObjectDefinition _getObjectDefinition(
 		String name, Map<String, ObjectDefinition> objectDefinitions) {
 
-		if (objectDefinitions.containsKey(name)) {
-			return objectDefinitions.get(name);
+		ObjectDefinition objectDefinition = objectDefinitions.get(name);
+
+		if (objectDefinition != null) {
+			return objectDefinition;
 		}
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				contextCompany.getCompanyId(), name);
+		objectDefinition = _objectDefinitionLocalService.fetchObjectDefinition(
+			contextCompany.getCompanyId(), name);
 
 		objectDefinitions.put(name, objectDefinition);
 
