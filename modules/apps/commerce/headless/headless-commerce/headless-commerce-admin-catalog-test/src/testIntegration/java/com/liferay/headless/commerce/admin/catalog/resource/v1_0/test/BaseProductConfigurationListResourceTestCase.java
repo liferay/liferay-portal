@@ -230,6 +230,8 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 		productConfigurationList.setCatalogExternalReferenceCode(regex);
 		productConfigurationList.setExternalReferenceCode(regex);
 		productConfigurationList.setName(regex);
+		productConfigurationList.
+			setParentProductConfigurationListExternalReferenceCode(regex);
 
 		String json = ProductConfigurationListSerDes.toJSON(
 			productConfigurationList);
@@ -243,6 +245,10 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 		Assert.assertEquals(
 			regex, productConfigurationList.getExternalReferenceCode());
 		Assert.assertEquals(regex, productConfigurationList.getName());
+		Assert.assertEquals(
+			regex,
+			productConfigurationList.
+				getParentProductConfigurationListExternalReferenceCode());
 	}
 
 	@Test
@@ -2110,6 +2116,20 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"parentProductConfigurationListExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productConfigurationList.
+						getParentProductConfigurationListExternalReferenceCode() ==
+							null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"parentProductConfigurationListId",
 					additionalAssertFieldName)) {
 
@@ -2399,6 +2419,22 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 				if (!Objects.deepEquals(
 						productConfigurationList1.getNeverExpire(),
 						productConfigurationList2.getNeverExpire())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"parentProductConfigurationListExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productConfigurationList1.
+							getParentProductConfigurationListExternalReferenceCode(),
+						productConfigurationList2.
+							getParentProductConfigurationListExternalReferenceCode())) {
 
 					return false;
 				}
@@ -2816,6 +2852,56 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals(
+				"parentProductConfigurationListExternalReferenceCode")) {
+
+			Object object =
+				productConfigurationList.
+					getParentProductConfigurationListExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("parentProductConfigurationListId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -2893,6 +2979,8 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 				master = RandomTestUtil.randomBoolean();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				neverExpire = RandomTestUtil.randomBoolean();
+				parentProductConfigurationListExternalReferenceCode =
+					StringUtil.toLowerCase(RandomTestUtil.randomString());
 				parentProductConfigurationListId = RandomTestUtil.randomLong();
 				priority = RandomTestUtil.randomDouble();
 			}
@@ -3171,4 +3259,4 @@ public abstract class BaseProductConfigurationListResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-46737500
+// LIFERAY-REST-BUILDER-HASH:1116529354

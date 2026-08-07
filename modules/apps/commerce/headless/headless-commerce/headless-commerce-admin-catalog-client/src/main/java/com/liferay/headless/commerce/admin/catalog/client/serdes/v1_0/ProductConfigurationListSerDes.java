@@ -225,6 +225,27 @@ public class ProductConfigurationListSerDes {
 			sb.append(productConfigurationList.getNeverExpire());
 		}
 
+		if (productConfigurationList.
+				getParentProductConfigurationListExternalReferenceCode() !=
+					null) {
+
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append(
+				"\"parentProductConfigurationListExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(
+					productConfigurationList.
+						getParentProductConfigurationListExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (productConfigurationList.getParentProductConfigurationListId() !=
 				null) {
 
@@ -411,6 +432,21 @@ public class ProductConfigurationListSerDes {
 				String.valueOf(productConfigurationList.getNeverExpire()));
 		}
 
+		if (productConfigurationList.
+				getParentProductConfigurationListExternalReferenceCode() ==
+					null) {
+
+			map.put(
+				"parentProductConfigurationListExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"parentProductConfigurationListExternalReferenceCode",
+				String.valueOf(
+					productConfigurationList.
+						getParentProductConfigurationListExternalReferenceCode()));
+		}
+
 		if (productConfigurationList.getParentProductConfigurationListId() ==
 				null) {
 
@@ -499,6 +535,12 @@ public class ProductConfigurationListSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "neverExpire")) {
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"parentProductConfigurationListExternalReferenceCode")) {
+
 				return false;
 			}
 			else if (Objects.equals(
@@ -613,6 +655,16 @@ public class ProductConfigurationListSerDes {
 				if (jsonParserFieldValue != null) {
 					productConfigurationList.setNeverExpire(
 						(Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName,
+						"parentProductConfigurationListExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					productConfigurationList.
+						setParentProductConfigurationListExternalReferenceCode(
+							(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(
@@ -734,4 +786,4 @@ public class ProductConfigurationListSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-353536014
+// LIFERAY-REST-BUILDER-HASH:642071483

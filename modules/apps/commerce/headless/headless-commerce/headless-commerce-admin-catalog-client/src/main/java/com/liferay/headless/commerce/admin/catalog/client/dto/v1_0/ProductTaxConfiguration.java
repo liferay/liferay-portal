@@ -65,6 +65,32 @@ public class ProductTaxConfiguration implements Cloneable, Serializable {
 
 	protected String taxCategory;
 
+	public String getTaxCategoryExternalReferenceCode() {
+		return taxCategoryExternalReferenceCode;
+	}
+
+	public void setTaxCategoryExternalReferenceCode(
+		String taxCategoryExternalReferenceCode) {
+
+		this.taxCategoryExternalReferenceCode =
+			taxCategoryExternalReferenceCode;
+	}
+
+	public void setTaxCategoryExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			taxCategoryExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			taxCategoryExternalReferenceCode =
+				taxCategoryExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String taxCategoryExternalReferenceCode;
+
 	public Boolean getTaxable() {
 		return taxable;
 	}
@@ -119,4 +145,4 @@ public class ProductTaxConfiguration implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1662840386
+// LIFERAY-REST-BUILDER-HASH:1335774173

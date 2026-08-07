@@ -26,6 +26,31 @@ public class Catalog implements Cloneable, Serializable {
 		return CatalogSerDes.toDTO(json);
 	}
 
+	public String getAccountExternalReferenceCode() {
+		return accountExternalReferenceCode;
+	}
+
+	public void setAccountExternalReferenceCode(
+		String accountExternalReferenceCode) {
+
+		this.accountExternalReferenceCode = accountExternalReferenceCode;
+	}
+
+	public void setAccountExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			accountExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			accountExternalReferenceCode =
+				accountExternalReferenceCodeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String accountExternalReferenceCode;
+
 	public Long getAccountId() {
 		return accountId;
 	}
@@ -46,6 +71,35 @@ public class Catalog implements Cloneable, Serializable {
 	}
 
 	protected Long accountId;
+
+	public AccountType getAccountType() {
+		return accountType;
+	}
+
+	public String getAccountTypeAsString() {
+		if (accountType == null) {
+			return null;
+		}
+
+		return accountType.toString();
+	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
+	}
+
+	public void setAccountType(
+		UnsafeSupplier<AccountType, Exception> accountTypeUnsafeSupplier) {
+
+		try {
+			accountType = accountTypeUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected AccountType accountType;
 
 	public Map<String, Map<String, String>> getActions() {
 		return actions;
@@ -268,5 +322,39 @@ public class Catalog implements Cloneable, Serializable {
 		return CatalogSerDes.toJSON(this);
 	}
 
+	public static enum AccountType {
+
+		BUSINESS("business"), GUEST("guest"), PERSON("person"),
+		SUPPLIER("supplier");
+
+		public static AccountType create(String value) {
+			for (AccountType accountType : values()) {
+				if (Objects.equals(accountType.getValue(), value) ||
+					Objects.equals(accountType.name(), value)) {
+
+					return accountType;
+				}
+			}
+
+			return null;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private AccountType(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
 }
-// LIFERAY-REST-BUILDER-HASH:305959490
+// LIFERAY-REST-BUILDER-HASH:499766455

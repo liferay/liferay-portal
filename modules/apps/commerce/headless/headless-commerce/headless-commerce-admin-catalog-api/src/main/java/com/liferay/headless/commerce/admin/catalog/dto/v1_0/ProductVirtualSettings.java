@@ -616,6 +616,115 @@ public class ProductVirtualSettings implements Serializable {
 	private Supplier<Map<String, String>> _termsOfUseContentSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the web content article whose body serves as the terms of use; it takes precedence over `termsOfUseJournalArticleId`. The code is looked up in the site or asset library given by `termsOfUseJournalArticleGroupExternalReferenceCode`, or in the catalog that owns the product when that code is omitted, and resolves to the most recent version of the article. An unresolved code leaves the product without a terms of use article, which fails the request when `termsOfUseRequired` is true and no `termsOfUseContent` is supplied.",
+		example = "AB-34098-789-N"
+	)
+	public String getTermsOfUseJournalArticleExternalReferenceCode() {
+		if (_termsOfUseJournalArticleExternalReferenceCodeSupplier != null) {
+			termsOfUseJournalArticleExternalReferenceCode =
+				_termsOfUseJournalArticleExternalReferenceCodeSupplier.get();
+
+			_termsOfUseJournalArticleExternalReferenceCodeSupplier = null;
+		}
+
+		return termsOfUseJournalArticleExternalReferenceCode;
+	}
+
+	public void setTermsOfUseJournalArticleExternalReferenceCode(
+		String termsOfUseJournalArticleExternalReferenceCode) {
+
+		this.termsOfUseJournalArticleExternalReferenceCode =
+			termsOfUseJournalArticleExternalReferenceCode;
+
+		_termsOfUseJournalArticleExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTermsOfUseJournalArticleExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			termsOfUseJournalArticleExternalReferenceCodeUnsafeSupplier) {
+
+		_termsOfUseJournalArticleExternalReferenceCodeSupplier = () -> {
+			try {
+				return termsOfUseJournalArticleExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the web content article whose body serves as the terms of use; it takes precedence over `termsOfUseJournalArticleId`. The code is looked up in the site or asset library given by `termsOfUseJournalArticleGroupExternalReferenceCode`, or in the catalog that owns the product when that code is omitted, and resolves to the most recent version of the article. An unresolved code leaves the product without a terms of use article, which fails the request when `termsOfUseRequired` is true and no `termsOfUseContent` is supplied."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String termsOfUseJournalArticleExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String>
+		_termsOfUseJournalArticleExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the site or asset library that owns the web content article named by `termsOfUseJournalArticleExternalReferenceCode`; supply it when the article lives outside the catalog that owns the product, since a web content external reference code is unique only within the site or asset library that holds it. It defaults to the catalog that owns the product. An unresolved code fails the request.",
+		example = "AB-34098-789-N"
+	)
+	public String getTermsOfUseJournalArticleGroupExternalReferenceCode() {
+		if (_termsOfUseJournalArticleGroupExternalReferenceCodeSupplier !=
+				null) {
+
+			termsOfUseJournalArticleGroupExternalReferenceCode =
+				_termsOfUseJournalArticleGroupExternalReferenceCodeSupplier.
+					get();
+
+			_termsOfUseJournalArticleGroupExternalReferenceCodeSupplier = null;
+		}
+
+		return termsOfUseJournalArticleGroupExternalReferenceCode;
+	}
+
+	public void setTermsOfUseJournalArticleGroupExternalReferenceCode(
+		String termsOfUseJournalArticleGroupExternalReferenceCode) {
+
+		this.termsOfUseJournalArticleGroupExternalReferenceCode =
+			termsOfUseJournalArticleGroupExternalReferenceCode;
+
+		_termsOfUseJournalArticleGroupExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setTermsOfUseJournalArticleGroupExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			termsOfUseJournalArticleGroupExternalReferenceCodeUnsafeSupplier) {
+
+		_termsOfUseJournalArticleGroupExternalReferenceCodeSupplier = () -> {
+			try {
+				return termsOfUseJournalArticleGroupExternalReferenceCodeUnsafeSupplier.
+					get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the site or asset library that owns the web content article named by `termsOfUseJournalArticleExternalReferenceCode`; supply it when the article lives outside the catalog that owns the product, since a web content external reference code is unique only within the site or asset library that holds it. It defaults to the catalog that owns the product. An unresolved code fails the request."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String termsOfUseJournalArticleGroupExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String>
+		_termsOfUseJournalArticleGroupExternalReferenceCodeSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Identifier of the web content article whose body serves as the terms of use; mutually exclusive with `termsOfUseContent`.",
 		example = "30130"
 	)
@@ -1002,6 +1111,42 @@ public class ProductVirtualSettings implements Serializable {
 			sb.append(_toJSON(termsOfUseContent));
 		}
 
+		String termsOfUseJournalArticleExternalReferenceCode =
+			getTermsOfUseJournalArticleExternalReferenceCode();
+
+		if (termsOfUseJournalArticleExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"termsOfUseJournalArticleExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(termsOfUseJournalArticleExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
+		String termsOfUseJournalArticleGroupExternalReferenceCode =
+			getTermsOfUseJournalArticleGroupExternalReferenceCode();
+
+		if (termsOfUseJournalArticleGroupExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append(
+				"\"termsOfUseJournalArticleGroupExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(
+				_escape(termsOfUseJournalArticleGroupExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		Long termsOfUseJournalArticleId = getTermsOfUseJournalArticleId();
 
 		if (termsOfUseJournalArticleId != null) {
@@ -1155,4 +1300,4 @@ public class ProductVirtualSettings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-879409237
+// LIFERAY-REST-BUILDER-HASH:1155910055

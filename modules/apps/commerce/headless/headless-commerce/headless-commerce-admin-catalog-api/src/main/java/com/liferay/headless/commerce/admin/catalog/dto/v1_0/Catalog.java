@@ -5,9 +5,12 @@
 
 package com.liferay.headless.commerce.admin.catalog.dto.v1_0;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -57,6 +60,56 @@ public class Catalog implements Serializable {
 		return ObjectMapperUtil.unsafeReadValue(Catalog.class, json);
 	}
 
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "External reference code of the account that owns this catalog; it takes precedence over `accountId`. An unresolved code fails the request, except during an import, where it creates an empty account to be completed later.",
+		example = "AB-34098-789-N"
+	)
+	public String getAccountExternalReferenceCode() {
+		if (_accountExternalReferenceCodeSupplier != null) {
+			accountExternalReferenceCode =
+				_accountExternalReferenceCodeSupplier.get();
+
+			_accountExternalReferenceCodeSupplier = null;
+		}
+
+		return accountExternalReferenceCode;
+	}
+
+	public void setAccountExternalReferenceCode(
+		String accountExternalReferenceCode) {
+
+		this.accountExternalReferenceCode = accountExternalReferenceCode;
+
+		_accountExternalReferenceCodeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAccountExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			accountExternalReferenceCodeUnsafeSupplier) {
+
+		_accountExternalReferenceCodeSupplier = () -> {
+			try {
+				return accountExternalReferenceCodeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "External reference code of the account that owns this catalog; it takes precedence over `accountId`. An unresolved code fails the request, except during an import, where it creates an empty account to be completed later."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String accountExternalReferenceCode;
+
+	@JsonIgnore
+	private Supplier<String> _accountExternalReferenceCodeSupplier;
+
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Reference to the account that owns this catalog (FK identifier); defaults to no account when omitted on create. The linked account must be a supplier account with approved status; other account types or statuses are rejected.",
@@ -103,6 +156,64 @@ public class Catalog implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Long> _accountIdSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Type of the account named by `accountExternalReferenceCode`; both fields are needed to resolve an account by code, and when this one is omitted the code is ignored and `accountId` is used instead. The type cannot be defaulted because it cannot be changed after an account is created, and a catalog accepts only a supplier account."
+	)
+	@JsonGetter("accountType")
+	@Valid
+	public AccountType getAccountType() {
+		if (_accountTypeSupplier != null) {
+			accountType = _accountTypeSupplier.get();
+
+			_accountTypeSupplier = null;
+		}
+
+		return accountType;
+	}
+
+	@JsonIgnore
+	public String getAccountTypeAsString() {
+		AccountType accountType = getAccountType();
+
+		if (accountType == null) {
+			return null;
+		}
+
+		return accountType.toString();
+	}
+
+	public void setAccountType(AccountType accountType) {
+		this.accountType = accountType;
+
+		_accountTypeSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAccountType(
+		UnsafeSupplier<AccountType, Exception> accountTypeUnsafeSupplier) {
+
+		_accountTypeSupplier = () -> {
+			try {
+				return accountTypeUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Type of the account named by `accountExternalReferenceCode`; both fields are needed to resolve an account by code, and when this one is omitted the code is ignored and `accountId` is used instead. The type cannot be defaulted because it cannot be changed after an account is created, and a catalog accepts only a supplier account."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected AccountType accountType;
+
+	@JsonIgnore
+	private Supplier<AccountType> _accountTypeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Map of HATEOAS actions available to the current user, keyed by action name. Each value carries the href template and HTTP method, computed dynamically from user permissions. Read-only."
@@ -547,6 +658,22 @@ public class Catalog implements Serializable {
 
 		sb.append("{");
 
+		String accountExternalReferenceCode = getAccountExternalReferenceCode();
+
+		if (accountExternalReferenceCode != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(accountExternalReferenceCode));
+
+			sb.append("\"");
+		}
+
 		Long accountId = getAccountId();
 
 		if (accountId != null) {
@@ -557,6 +684,20 @@ public class Catalog implements Serializable {
 			sb.append("\"accountId\": ");
 
 			sb.append(accountId);
+		}
+
+		AccountType accountType = getAccountType();
+
+		if (accountType != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountType\": ");
+
+			sb.append("\"");
+			sb.append(accountType);
+			sb.append("\"");
 		}
 
 		Map<String, Map<String, String>> actions = getActions();
@@ -700,6 +841,45 @@ public class Catalog implements Serializable {
 	)
 	public String xClassName;
 
+	@GraphQLName("AccountType")
+	public static enum AccountType {
+
+		BUSINESS("business"), GUEST("guest"), PERSON("person"),
+		SUPPLIER("supplier");
+
+		@JsonCreator
+		public static AccountType create(String value) {
+			if ((value == null) || value.equals("")) {
+				return null;
+			}
+
+			for (AccountType accountType : values()) {
+				if (Objects.equals(accountType.getValue(), value)) {
+					return accountType;
+				}
+			}
+
+			throw new IllegalArgumentException("Invalid enum value: " + value);
+		}
+
+		@JsonValue
+		public String getValue() {
+			return _value;
+		}
+
+		@Override
+		public String toString() {
+			return _value;
+		}
+
+		private AccountType(String value) {
+			_value = value;
+		}
+
+		private final String _value;
+
+	}
+
 	private static String _escape(Object object) {
 		return StringUtil.replace(
 			String.valueOf(object), _JSON_ESCAPE_STRINGS[0],
@@ -789,4 +969,4 @@ public class Catalog implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1985441420
+// LIFERAY-REST-BUILDER-HASH:345677316

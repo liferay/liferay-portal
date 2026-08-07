@@ -289,6 +289,33 @@ public class ProductConfigurationList implements Cloneable, Serializable {
 
 	protected Boolean neverExpire;
 
+	public String getParentProductConfigurationListExternalReferenceCode() {
+		return parentProductConfigurationListExternalReferenceCode;
+	}
+
+	public void setParentProductConfigurationListExternalReferenceCode(
+		String parentProductConfigurationListExternalReferenceCode) {
+
+		this.parentProductConfigurationListExternalReferenceCode =
+			parentProductConfigurationListExternalReferenceCode;
+	}
+
+	public void setParentProductConfigurationListExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			parentProductConfigurationListExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			parentProductConfigurationListExternalReferenceCode =
+				parentProductConfigurationListExternalReferenceCodeUnsafeSupplier.
+					get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String parentProductConfigurationListExternalReferenceCode;
+
 	public Long getParentProductConfigurationListId() {
 		return parentProductConfigurationListId;
 	}
@@ -393,4 +420,4 @@ public class ProductConfigurationList implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-643984905
+// LIFERAY-REST-BUILDER-HASH:81996708

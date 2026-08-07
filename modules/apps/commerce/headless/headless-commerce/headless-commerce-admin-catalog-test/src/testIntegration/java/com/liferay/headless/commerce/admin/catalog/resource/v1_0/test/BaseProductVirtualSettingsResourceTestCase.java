@@ -181,6 +181,10 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 		productVirtualSettings.setSampleSrc(regex);
 		productVirtualSettings.setSampleURL(regex);
 		productVirtualSettings.setSrc(regex);
+		productVirtualSettings.setTermsOfUseJournalArticleExternalReferenceCode(
+			regex);
+		productVirtualSettings.
+			setTermsOfUseJournalArticleGroupExternalReferenceCode(regex);
 		productVirtualSettings.setUrl(regex);
 
 		String json = ProductVirtualSettingsSerDes.toJSON(
@@ -196,6 +200,14 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 		Assert.assertEquals(regex, productVirtualSettings.getSampleSrc());
 		Assert.assertEquals(regex, productVirtualSettings.getSampleURL());
 		Assert.assertEquals(regex, productVirtualSettings.getSrc());
+		Assert.assertEquals(
+			regex,
+			productVirtualSettings.
+				getTermsOfUseJournalArticleExternalReferenceCode());
+		Assert.assertEquals(
+			regex,
+			productVirtualSettings.
+				getTermsOfUseJournalArticleGroupExternalReferenceCode());
 		Assert.assertEquals(regex, productVirtualSettings.getUrl());
 	}
 
@@ -696,6 +708,34 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"termsOfUseJournalArticleExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productVirtualSettings.
+						getTermsOfUseJournalArticleExternalReferenceCode() ==
+							null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"termsOfUseJournalArticleGroupExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productVirtualSettings.
+						getTermsOfUseJournalArticleGroupExternalReferenceCode() ==
+							null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"termsOfUseJournalArticleId", additionalAssertFieldName)) {
 
 				if (productVirtualSettings.getTermsOfUseJournalArticleId() ==
@@ -990,6 +1030,38 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 				if (!equals(
 						(Map)productVirtualSettings1.getTermsOfUseContent(),
 						(Map)productVirtualSettings2.getTermsOfUseContent())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"termsOfUseJournalArticleExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productVirtualSettings1.
+							getTermsOfUseJournalArticleExternalReferenceCode(),
+						productVirtualSettings2.
+							getTermsOfUseJournalArticleExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"termsOfUseJournalArticleGroupExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productVirtualSettings1.
+							getTermsOfUseJournalArticleGroupExternalReferenceCode(),
+						productVirtualSettings2.
+							getTermsOfUseJournalArticleGroupExternalReferenceCode())) {
 
 					return false;
 				}
@@ -1422,6 +1494,106 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals(
+				"termsOfUseJournalArticleExternalReferenceCode")) {
+
+			Object object =
+				productVirtualSettings.
+					getTermsOfUseJournalArticleExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals(
+				"termsOfUseJournalArticleGroupExternalReferenceCode")) {
+
+			Object object =
+				productVirtualSettings.
+					getTermsOfUseJournalArticleGroupExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("termsOfUseJournalArticleId")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -1545,6 +1717,10 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 				sampleURL = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				src = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				termsOfUseJournalArticleExternalReferenceCode =
+					StringUtil.toLowerCase(RandomTestUtil.randomString());
+				termsOfUseJournalArticleGroupExternalReferenceCode =
+					StringUtil.toLowerCase(RandomTestUtil.randomString());
 				termsOfUseJournalArticleId = RandomTestUtil.randomLong();
 				termsOfUseRequired = RandomTestUtil.randomBoolean();
 				url = StringUtil.toLowerCase(RandomTestUtil.randomString());
@@ -1778,4 +1954,4 @@ public abstract class BaseProductVirtualSettingsResourceTestCase {
 		ProductVirtualSettingsResource _productVirtualSettingsResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1478596224
+// LIFERAY-REST-BUILDER-HASH:-1849493210

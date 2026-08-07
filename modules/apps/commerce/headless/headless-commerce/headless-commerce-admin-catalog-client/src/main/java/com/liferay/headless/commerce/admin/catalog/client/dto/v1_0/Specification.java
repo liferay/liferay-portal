@@ -128,6 +128,32 @@ public class Specification implements Cloneable, Serializable {
 
 	protected String key;
 
+	public String[] getListTypeDefinitionExternalReferenceCodes() {
+		return listTypeDefinitionExternalReferenceCodes;
+	}
+
+	public void setListTypeDefinitionExternalReferenceCodes(
+		String[] listTypeDefinitionExternalReferenceCodes) {
+
+		this.listTypeDefinitionExternalReferenceCodes =
+			listTypeDefinitionExternalReferenceCodes;
+	}
+
+	public void setListTypeDefinitionExternalReferenceCodes(
+		UnsafeSupplier<String[], Exception>
+			listTypeDefinitionExternalReferenceCodesUnsafeSupplier) {
+
+		try {
+			listTypeDefinitionExternalReferenceCodes =
+				listTypeDefinitionExternalReferenceCodesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String[] listTypeDefinitionExternalReferenceCodes;
+
 	public Long getListTypeDefinitionId() {
 		return listTypeDefinitionId;
 	}
@@ -287,4 +313,4 @@ public class Specification implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-920634949
+// LIFERAY-REST-BUILDER-HASH:1616595475

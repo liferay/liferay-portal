@@ -178,6 +178,7 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 			randomProductTaxConfiguration();
 
 		productTaxConfiguration.setTaxCategory(regex);
+		productTaxConfiguration.setTaxCategoryExternalReferenceCode(regex);
 
 		String json = ProductTaxConfigurationSerDes.toJSON(
 			productTaxConfiguration);
@@ -187,6 +188,9 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 		productTaxConfiguration = ProductTaxConfigurationSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, productTaxConfiguration.getTaxCategory());
+		Assert.assertEquals(
+			regex,
+			productTaxConfiguration.getTaxCategoryExternalReferenceCode());
 	}
 
 	@Test
@@ -608,6 +612,19 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals(
+					"taxCategoryExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (productTaxConfiguration.
+						getTaxCategoryExternalReferenceCode() == null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("taxable", additionalAssertFieldName)) {
 				if (productTaxConfiguration.getTaxable() == null) {
 					valid = false;
@@ -754,6 +771,22 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 				if (!Objects.deepEquals(
 						productTaxConfiguration1.getTaxCategory(),
 						productTaxConfiguration2.getTaxCategory())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"taxCategoryExternalReferenceCode",
+					additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						productTaxConfiguration1.
+							getTaxCategoryExternalReferenceCode(),
+						productTaxConfiguration2.
+							getTaxCategoryExternalReferenceCode())) {
 
 					return false;
 				}
@@ -933,6 +966,53 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("taxCategoryExternalReferenceCode")) {
+			Object object =
+				productTaxConfiguration.getTaxCategoryExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
 		if (entityFieldName.equals("taxable")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -989,6 +1069,8 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 			{
 				id = RandomTestUtil.randomLong();
 				taxCategory = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
+				taxCategoryExternalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				taxable = RandomTestUtil.randomBoolean();
 			}
@@ -1221,4 +1303,4 @@ public abstract class BaseProductTaxConfigurationResourceTestCase {
 		ProductTaxConfigurationResource _productTaxConfigurationResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:40230483
+// LIFERAY-REST-BUILDER-HASH:-1507837641

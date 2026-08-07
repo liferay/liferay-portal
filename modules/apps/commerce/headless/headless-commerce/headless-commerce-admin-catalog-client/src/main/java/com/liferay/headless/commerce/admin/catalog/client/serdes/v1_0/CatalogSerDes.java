@@ -44,6 +44,20 @@ public class CatalogSerDes {
 
 		sb.append("{");
 
+		if (catalog.getAccountExternalReferenceCode() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountExternalReferenceCode\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(catalog.getAccountExternalReferenceCode()));
+
+			sb.append("\"");
+		}
+
 		if (catalog.getAccountId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -52,6 +66,18 @@ public class CatalogSerDes {
 			sb.append("\"accountId\": ");
 
 			sb.append(catalog.getAccountId());
+		}
+
+		if (catalog.getAccountType() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"accountType\": ");
+
+			sb.append("\"");
+			sb.append(catalog.getAccountType());
+			sb.append("\"");
 		}
 
 		if (catalog.getActions() != null) {
@@ -182,11 +208,27 @@ public class CatalogSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (catalog.getAccountExternalReferenceCode() == null) {
+			map.put("accountExternalReferenceCode", null);
+		}
+		else {
+			map.put(
+				"accountExternalReferenceCode",
+				String.valueOf(catalog.getAccountExternalReferenceCode()));
+		}
+
 		if (catalog.getAccountId() == null) {
 			map.put("accountId", null);
 		}
 		else {
 			map.put("accountId", String.valueOf(catalog.getAccountId()));
+		}
+
+		if (catalog.getAccountType() == null) {
+			map.put("accountType", null);
+		}
+		else {
+			map.put("accountType", String.valueOf(catalog.getAccountType()));
 		}
 
 		if (catalog.getActions() == null) {
@@ -275,7 +317,15 @@ public class CatalogSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "accountId")) {
+			if (Objects.equals(
+					jsonParserFieldName, "accountExternalReferenceCode")) {
+
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountId")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "actions")) {
@@ -318,10 +368,25 @@ public class CatalogSerDes {
 			Catalog catalog, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "accountId")) {
+			if (Objects.equals(
+					jsonParserFieldName, "accountExternalReferenceCode")) {
+
+				if (jsonParserFieldValue != null) {
+					catalog.setAccountExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountId")) {
 				if (jsonParserFieldValue != null) {
 					catalog.setAccountId(
 						Long.valueOf((String)jsonParserFieldValue));
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "accountType")) {
+				if (jsonParserFieldValue != null) {
+					catalog.setAccountType(
+						Catalog.AccountType.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "actions")) {
@@ -458,4 +523,4 @@ public class CatalogSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1326183552
+// LIFERAY-REST-BUILDER-HASH:-1766524235

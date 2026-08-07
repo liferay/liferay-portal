@@ -283,6 +283,60 @@ public class ProductVirtualSettings implements Cloneable, Serializable {
 
 	protected Map<String, String> termsOfUseContent;
 
+	public String getTermsOfUseJournalArticleExternalReferenceCode() {
+		return termsOfUseJournalArticleExternalReferenceCode;
+	}
+
+	public void setTermsOfUseJournalArticleExternalReferenceCode(
+		String termsOfUseJournalArticleExternalReferenceCode) {
+
+		this.termsOfUseJournalArticleExternalReferenceCode =
+			termsOfUseJournalArticleExternalReferenceCode;
+	}
+
+	public void setTermsOfUseJournalArticleExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			termsOfUseJournalArticleExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			termsOfUseJournalArticleExternalReferenceCode =
+				termsOfUseJournalArticleExternalReferenceCodeUnsafeSupplier.
+					get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String termsOfUseJournalArticleExternalReferenceCode;
+
+	public String getTermsOfUseJournalArticleGroupExternalReferenceCode() {
+		return termsOfUseJournalArticleGroupExternalReferenceCode;
+	}
+
+	public void setTermsOfUseJournalArticleGroupExternalReferenceCode(
+		String termsOfUseJournalArticleGroupExternalReferenceCode) {
+
+		this.termsOfUseJournalArticleGroupExternalReferenceCode =
+			termsOfUseJournalArticleGroupExternalReferenceCode;
+	}
+
+	public void setTermsOfUseJournalArticleGroupExternalReferenceCode(
+		UnsafeSupplier<String, Exception>
+			termsOfUseJournalArticleGroupExternalReferenceCodeUnsafeSupplier) {
+
+		try {
+			termsOfUseJournalArticleGroupExternalReferenceCode =
+				termsOfUseJournalArticleGroupExternalReferenceCodeUnsafeSupplier.
+					get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String termsOfUseJournalArticleGroupExternalReferenceCode;
+
 	public Long getTermsOfUseJournalArticleId() {
 		return termsOfUseJournalArticleId;
 	}
@@ -400,4 +454,4 @@ public class ProductVirtualSettings implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1842940876
+// LIFERAY-REST-BUILDER-HASH:-1353639945
