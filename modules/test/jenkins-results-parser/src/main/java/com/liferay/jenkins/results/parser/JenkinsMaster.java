@@ -1397,11 +1397,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		public long getEstimatedDuration() {
-			return _jsonObject.optLong("estimatedDuration", -1);
+			return _currentExecutableJSONObject.optLong("estimatedDuration", -1);
 		}
 
 		public String getFullDisplayName() {
-			return _jsonObject.optString("fullDisplayName");
+			return _currentExecutableJSONObject.optString("fullDisplayName");
 		}
 
 		public JenkinsMaster getJenkinsMaster() {
@@ -1427,11 +1427,11 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		public String getURL() {
-			return _jsonObject.optString("url");
+			return _currentExecutableJSONObject.optString("url");
 		}
 
 		public boolean isBuilding() {
-			return _jsonObject.optBoolean("building", false);
+			return _currentExecutableJSONObject.optBoolean("building", false);
 		}
 
 		public boolean isJenkinsSlaveBeingRemoved() {
@@ -1473,11 +1473,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			String jenkinsSlaveName, boolean likelyStuck) {
 
 			_computerJSONObject = computerJSONObject;
+			_currentExecutableJSONObject = currentExecutableJSONObject;
 			_jenkinsMaster = jenkinsMaster;
 			_jenkinsSlaveName = jenkinsSlaveName;
 			_likelyStuck = likelyStuck;
-
-			_jsonObject = currentExecutableJSONObject;
 		}
 
 		private long _getJenkinsSlaveOfflineTime() {
@@ -1492,7 +1491,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		private long _getStartTime() {
-			return _jsonObject.optLong("timestamp", -1);
+			return _currentExecutableJSONObject.optLong("timestamp", -1);
 		}
 
 		private boolean _isJenkinsSlaveOffline() {
@@ -1508,9 +1507,9 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		private final JSONObject _computerJSONObject;
+		private final JSONObject _currentExecutableJSONObject;
 		private final JenkinsMaster _jenkinsMaster;
 		private final String _jenkinsSlaveName;
-		private final JSONObject _jsonObject;
 		private final boolean _likelyStuck;
 
 	}
