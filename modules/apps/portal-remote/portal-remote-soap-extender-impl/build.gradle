@@ -8,7 +8,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.xml.ws", name: "jakarta.xml.ws-api", version: "3.0.1"
 	compileOnly group: "org.apache.felix", name: "org.apache.felix.dependencymanager", version: "4.6.0"
-	compileOnly group: "org.apache.neethi", name: "neethi", version: "3.2.2"
+	compileOnly group: "org.apache.neethi", name: "neethi", version: "3.2.3"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:portal-remote:portal-remote-soap-extender-api")

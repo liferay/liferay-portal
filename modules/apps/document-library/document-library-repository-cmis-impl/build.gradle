@@ -14,7 +14,7 @@ dependencies {
 	compileInclude group: "com.liferay", name: "org.apache.cxf.rt.wsdl", version: "3.6.11.JAKARTA-LIFERAY-PATCHED-1"
 	compileInclude group: "org.apache.chemistry.opencmis", name: "chemistry-opencmis-client-api", version: "0.14.0"
 	compileInclude group: "org.apache.chemistry.opencmis", name: "chemistry-opencmis-client-impl", version: "0.14.0"
-	compileInclude group: "org.apache.neethi", name: "neethi", version: "3.2.2"
+	compileInclude group: "org.apache.neethi", name: "neethi", version: "3.2.3"
 	compileOnly group: "com.fasterxml.woodstox", name: "woodstox-core", version: "6.4.0"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"

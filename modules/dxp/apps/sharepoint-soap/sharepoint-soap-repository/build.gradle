@@ -25,7 +25,7 @@ dependencies {
 	compileInclude group: "org.apache.axis2", name: "axis2-xmlbeans", version: "1.8.0"
 	compileInclude group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	compileInclude group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
-	compileInclude group: "org.apache.neethi", name: "neethi", version: "3.2.2"
+	compileInclude group: "org.apache.neethi", name: "neethi", version: "3.2.3"
 	compileInclude group: "org.apache.woden", name: "woden-api", version: "1.0M9"
 	compileInclude group: "org.apache.ws.xmlschema", name: "xmlschema-core", version: "2.2.1"
 	compileInclude group: "org.apache.xmlbeans", name: "xmlbeans", version: "3.1.0"
