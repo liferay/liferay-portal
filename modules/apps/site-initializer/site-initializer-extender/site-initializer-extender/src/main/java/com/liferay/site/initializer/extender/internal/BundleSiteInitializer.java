@@ -1259,23 +1259,20 @@ public class BundleSiteInitializer implements SiteInitializer {
 			Map<String, String> stringUtilReplaceValues)
 		throws Exception {
 
-		List<String> serviceBuilderObjectDefinitionNames = new ArrayList<>();
+		List<String> serviceBuilderObjectDefinitionNames =
+			TransformUtil.transform(
+				_objectDefinitionLocalService.getObjectDefinitions(
+					serviceContext.getCompanyId(), true,
+					WorkflowConstants.STATUS_APPROVED),
+				serviceBuilderObjectDefinition -> {
+					_replaceObjectDefinitionValues(
+						serviceBuilderObjectDefinition.getClassName(),
+						serviceBuilderObjectDefinition.getShortName(),
+						serviceBuilderObjectDefinition.getObjectDefinitionId(),
+						stringUtilReplaceValues);
 
-		for (com.liferay.object.model.ObjectDefinition
-				serviceBuilderObjectDefinition :
-					_objectDefinitionLocalService.getObjectDefinitions(
-						serviceContext.getCompanyId(), true,
-						WorkflowConstants.STATUS_APPROVED)) {
-
-			_replaceObjectDefinitionValues(
-				serviceBuilderObjectDefinition.getClassName(),
-				serviceBuilderObjectDefinition.getShortName(),
-				serviceBuilderObjectDefinition.getObjectDefinitionId(),
-				stringUtilReplaceValues);
-
-			serviceBuilderObjectDefinitionNames.add(
-				serviceBuilderObjectDefinition.getName());
-		}
+					return serviceBuilderObjectDefinition.getName();
+				});
 
 		Set<String> resourcePaths = _servletContext.getResourcePaths(
 			"/site-initializer/object-definitions");
