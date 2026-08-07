@@ -129,8 +129,6 @@ liferay-default:
                 name: liferay-init-scripts-gcp
     license:
         enabled: true
-    lpkg:
-        enabled: true
     marketplace:
         enabled: true
         size: 10Gi

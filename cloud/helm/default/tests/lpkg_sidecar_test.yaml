@@ -15,9 +15,9 @@ tests:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Adds the LPKG sync sidecar when LPKG is enabled
+        it: Adds the LPKG sync sidecar when marketplace is enabled
         set:
-            lpkg.enabled: true
+            marketplace.enabled: true
     -   asserts:
             -   equal:
                     path: spec.template.spec.initContainers[?(@.name=="liferay-lpkg-sync")].restartPolicy
@@ -28,7 +28,7 @@ tests:
             value: StatefulSet
         it: Runs the LPKG sync sidecar as a native sidecar
         set:
-            lpkg.enabled: true
+            marketplace.enabled: true
     -   asserts:
             -   contains:
                     any: true
@@ -104,8 +104,8 @@ tests:
             value: StatefulSet
         it: Passes the LPKG sync configuration to the sidecar
         set:
-            lpkg.enabled: true
-            lpkg.syncInterval: 120
+            marketplace.enabled: true
+            marketplace.syncInterval: 120
     -   asserts:
             -   notContains:
                     any: true
@@ -116,9 +116,9 @@ tests:
             path: kind
             skipEmptyTemplates: true
             value: StatefulSet
-        it: Omits the LPKG sync sidecar when LPKG is disabled
+        it: Omits the LPKG sync sidecar when marketplace is disabled
         set:
-            lpkg.enabled: false
+            marketplace.enabled: false
     -   asserts:
             -   isNotEmpty:
                     path: data['deploy-sync.sh']

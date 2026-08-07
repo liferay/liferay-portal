@@ -206,8 +206,6 @@ liferay-default:
                 name: liferay-search-config-aws
     license:
         enabled: true
-    lpkg:
-        enabled: true
     marketplace:
         enabled: true
         size: 10Gi
