@@ -45,6 +45,23 @@ describe('DateInput', () => {
 		expect(getSubmittedInput(container)).toHaveValue('');
 	});
 
+	it('renders HTML-escaped label and help text as plain text', () => {
+		render(
+			<DateInput
+				helpText={'Saisissez la date d&#039;échéance'}
+				label={'Date d&#039;échéance'}
+				name="ObjectField_dueDate"
+			/>
+		);
+
+		expect(
+			screen.getByLabelText("Date d'échéance", {exact: false})
+		).toBeInTheDocument();
+		expect(
+			screen.getByText("Saisissez la date d'échéance")
+		).toBeInTheDocument();
+	});
+
 	it('shows a required error when the field is emptied', async () => {
 		render(
 			<DateInput label="Due Date" name="ObjectField_dueDate" required />

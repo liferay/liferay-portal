@@ -4,6 +4,7 @@
  */
 
 import {DatePicker} from '@liferay/object-js-components-web';
+import {unescapeHTML} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 interface IDateInput {
@@ -39,9 +40,11 @@ export default function DateInput({
 			<DatePicker
 				disabled={editMode || readOnly}
 				error={error}
-				feedbackMessage={showHelpText ? helpText : undefined}
+				feedbackMessage={
+					showHelpText ? unescapeHTML(helpText) : undefined
+				}
 				id={`${name}DateInput`}
-				label={showLabel ? label : undefined}
+				label={showLabel ? unescapeHTML(label) : undefined}
 				onBlur={() => {
 					if (required && !serverValue) {
 						setError(
