@@ -10,11 +10,23 @@ import {
 	copyFileSync,
 	existsSync,
 	readFileSync,
-	realpathSync,
+	readdirSync,
 	unlinkSync,
 	writeFileSync,
 } from 'fs';
-import {join} from 'path';
+import {dirname, join, sep} from 'path';
+
+const _IGNORED_DIR_NAMES = new Set([
+	'.git',
+	'.gradle',
+	'.npmscripts',
+	'.releng',
+	'build',
+	'dist',
+	'node_modules',
+]);
+
+const _MAX_SEARCH_DEPTH = 4;
 
 function copyFile(
 	setup: boolean,
@@ -52,38 +64,22 @@ function deployClientExtension(
 	bundlesDir: string,
 	projectPath: string
 ) {
-	const projectParts = projectPath.split('/');
-	const workspacePath = projectParts.slice(0, 2).join('/');
-	const projectName = projectParts[projectParts.length - 1];
+	const projectName = projectPath.split('/').pop();
 
 	if (setup) {
 		process.stdout.write(
 			`      Deploying client extension: ${projectName}`
 		);
 
-		runCommand(
-			join(portalSourceDir, projectPath),
-			join(portalSourceDir, workspacePath, 'gradlew'),
-			['deploy', '-a']
+		const projectDir = resolveProjectDir(
+			[join(portalSourceDir, 'workspaces')],
+			projectPath
 		);
 
-		const portalDeployPath = join(bundlesDir, 'deploy');
-		const workspaceDeployPath = join(
-			portalSourceDir,
-			workspacePath,
-			'bundles',
-			'osgi',
-			'client-extensions'
-		);
-
-		if (
-			realpathSync(portalDeployPath) !== realpathSync(workspaceDeployPath)
-		) {
-			copyFileSync(
-				join(workspaceDeployPath, `${projectName}.zip`),
-				join(portalDeployPath, `${projectName}.zip`)
-			);
-		}
+		runCommand(projectDir, findGradlew(projectDir), [
+			'deploy',
+			`-Pliferay.workspace.home.dir=${bundlesDir}`,
+		]);
 	}
 	else {
 		process.stdout.write(
@@ -101,28 +97,94 @@ function deployClientExtension(
 function deployOSGiModule(
 	setup: boolean,
 	portalSourceDir: string,
-	projectDir: string
+	projectPath: string
 ) {
-	if (setup) {
-		process.stdout.write(`      Deploying module: ${projectDir}`);
+	process.stdout.write(
+		`      ${setup ? 'Deploying' : 'Undeploying'} module: ${projectPath}`
+	);
 
-		runCommand(
-			join(portalSourceDir, projectDir),
-			join(portalSourceDir, 'gradlew'),
-			['deploy']
-		);
-	}
-	else {
-		process.stdout.write(`      Undeploying module: ${projectDir}`);
+	const projectDir = resolveProjectDir(
+		[
+			join(portalSourceDir, 'modules', 'apps'),
+			join(portalSourceDir, 'modules', 'dxp', 'apps'),
+		],
+		projectPath
+	);
 
-		runCommand(
-			join(portalSourceDir, projectDir),
-			join(portalSourceDir, 'gradlew'),
-			['clean']
-		);
-	}
+	runCommand(projectDir, findGradlew(projectDir), [
+		setup ? 'deploy' : 'clean',
+	]);
 
 	console.log(' ✅');
+}
+
+function findGradlew(projectDir: string) {
+	let dir = projectDir;
+
+	while (dir !== dirname(dir)) {
+		const gradlew = join(dir, 'gradlew');
+
+		if (existsSync(gradlew)) {
+			return gradlew;
+		}
+
+		dir = dirname(dir);
+	}
+
+	throw new Error(`Unable to find gradlew above ${projectDir}`);
+}
+
+function findProjectDirs(rootDir: string, projectPath: string) {
+	if (!existsSync(rootDir)) {
+		return [];
+	}
+
+	const projectDirs: string[] = [];
+	const suffix = sep + projectPath.split('/').join(sep);
+
+	const walk = (dir: string, depth: number) => {
+		readdirSync(dir, {withFileTypes: true}).forEach((dirent) => {
+			if (!dirent.isDirectory() || _IGNORED_DIR_NAMES.has(dirent.name)) {
+				return;
+			}
+
+			const childDir = join(dir, dirent.name);
+
+			if (childDir.endsWith(suffix)) {
+				projectDirs.push(childDir);
+			}
+			else if (depth < _MAX_SEARCH_DEPTH) {
+				walk(childDir, depth + 1);
+			}
+		});
+	};
+
+	walk(rootDir, 1);
+
+	return projectDirs;
+}
+
+function resolveProjectDir(rootDirs: string[], projectPath: string) {
+	const projectDirs = rootDirs
+		.flatMap((rootDir) => findProjectDirs(rootDir, projectPath))
+		.sort();
+
+	if (!projectDirs.length) {
+		throw new Error(
+			`Unable to find project "${projectPath}" in ${rootDirs.join(', ')}`
+		);
+	}
+
+	if (projectDirs.length > 1) {
+		console.log(
+			`\n      ⚠️ Duplicate projects were found for "${projectPath}". ` +
+				`Using the first one:\n${projectDirs
+					.map((projectDir) => `         ${projectDir}`)
+					.join('\n')}`
+		);
+	}
+
+	return projectDirs[0];
 }
 
 function tweakPortalExtProperties(
@@ -133,7 +195,15 @@ function tweakPortalExtProperties(
 	console.log(`⚙️ Tweaking portal-ext.properties:`);
 
 	const portalExtPropertiesFile = join(bundlesDir, 'portal-ext.properties');
-	const lines = readFileSync(portalExtPropertiesFile, 'utf-8').split('\n');
+	const portalExtPropertiesFileExists = existsSync(portalExtPropertiesFile);
+
+	if (!setup && !portalExtPropertiesFileExists) {
+		return;
+	}
+
+	const lines = portalExtPropertiesFileExists
+		? readFileSync(portalExtPropertiesFile, 'utf-8').split('\n')
+		: [];
 
 	if (setup) {
 		fileQualifiers.forEach((fileQualifier) => {

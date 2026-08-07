@@ -15,7 +15,7 @@ function setupTeardown(setup: boolean, projectName: string) {
 		console.error(
 			`❌ Please provide the name of a project to ${
 				setup ? 'setup' : 'teardown'
-			}.`
+			}. For example: 'portal-language-override-web/client-extension'.`
 		);
 
 		process.exit(1);
