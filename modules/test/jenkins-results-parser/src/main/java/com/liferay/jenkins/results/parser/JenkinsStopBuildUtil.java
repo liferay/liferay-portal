@@ -149,11 +149,18 @@ public class JenkinsStopBuildUtil {
 		JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
 			normalizedBuildURL + "/api/json?tree=result", false);
 
-		if (jsonObject.has("result") && jsonObject.isNull("result")) {
-			return true;
+		// A response without the key at all means the state could not be
+		// read. Treating that as finished would silently drop a build that
+		// is still holding its executor.
+
+		if (!jsonObject.has("result")) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to determine whether ", normalizedBuildURL,
+					" is running, no result was reported"));
 		}
 
-		return false;
+		return jsonObject.isNull("result");
 	}
 
 	private static int _post(String urlString) throws Exception {
