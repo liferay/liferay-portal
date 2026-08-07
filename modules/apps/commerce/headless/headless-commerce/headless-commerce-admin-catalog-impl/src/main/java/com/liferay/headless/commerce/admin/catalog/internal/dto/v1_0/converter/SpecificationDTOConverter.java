@@ -54,6 +54,11 @@ public class SpecificationDTOConverter
 				setFacetable(cpSpecificationOption::isFacetable);
 				setId(cpSpecificationOption::getCPSpecificationOptionId);
 				setKey(cpSpecificationOption::getKey);
+				setListTypeDefinitionExternalReferenceCodes(
+					() -> TransformUtil.transformToArray(
+						cpSpecificationOption.getListTypeDefinitions(),
+						ListTypeDefinition::getExternalReferenceCode,
+						String.class));
 				setListTypeDefinitionId(
 					() -> {
 						for (ListTypeDefinition listTypeDefinition :

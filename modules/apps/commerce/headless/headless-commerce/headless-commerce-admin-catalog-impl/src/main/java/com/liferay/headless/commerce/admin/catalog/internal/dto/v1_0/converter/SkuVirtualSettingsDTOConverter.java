@@ -22,7 +22,9 @@ import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -152,6 +154,40 @@ public class SkuVirtualSettingsDTOConverter
 				setTermsOfUseContent(
 					() -> LanguageUtils.getLanguageIdMap(
 						cpDefinitionVirtualSetting.getTermsOfUseContentMap()));
+				setTermsOfUseJournalArticleExternalReferenceCode(
+					() -> {
+						JournalArticle journalArticle =
+							cpDefinitionVirtualSetting.
+								getTermsOfUseJournalArticle();
+
+						if (journalArticle == null) {
+							return null;
+						}
+
+						return journalArticle.getExternalReferenceCode();
+					});
+				setTermsOfUseJournalArticleGroupExternalReferenceCode(
+					() -> {
+						JournalArticle journalArticle =
+							cpDefinitionVirtualSetting.
+								getTermsOfUseJournalArticle();
+
+						if (journalArticle == null) {
+							return null;
+						}
+
+						Group group = _groupLocalService.getGroup(
+							journalArticle.getGroupId());
+
+						String groupExternalReferenceCode =
+							group.getExternalReferenceCode();
+
+						if (Validator.isNull(groupExternalReferenceCode)) {
+							return null;
+						}
+
+						return groupExternalReferenceCode;
+					});
 				setTermsOfUseJournalArticleId(
 					() -> {
 						JournalArticle journalArticle =
@@ -246,6 +282,9 @@ public class SkuVirtualSettingsDTOConverter
 
 	@Reference
 	private CPInstanceService _cpInstanceService;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Language _language;

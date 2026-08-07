@@ -48,6 +48,17 @@ public class ProductTaxConfigurationDTOConverter
 					() -> _getTaxCategory(
 						cpDefinition.getCPTaxCategory(),
 						dtoConverterContext.getLocale()));
+				setTaxCategoryExternalReferenceCode(
+					() -> {
+						CPTaxCategory cpTaxCategory =
+							cpDefinition.getCPTaxCategory();
+
+						if (cpTaxCategory == null) {
+							return null;
+						}
+
+						return cpTaxCategory.getExternalReferenceCode();
+					});
 			}
 		};
 	}

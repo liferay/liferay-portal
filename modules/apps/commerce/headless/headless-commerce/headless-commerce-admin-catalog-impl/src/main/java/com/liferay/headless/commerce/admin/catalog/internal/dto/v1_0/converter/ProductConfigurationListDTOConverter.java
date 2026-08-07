@@ -6,6 +6,7 @@
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
 import com.liferay.commerce.product.model.CPConfigurationList;
+import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfigurationList;
@@ -58,12 +59,30 @@ public class ProductConfigurationListDTOConverter
 				setId(cpConfigurationList::getCPConfigurationListId);
 				setMaster(cpConfigurationList::getMaster);
 				setName(cpConfigurationList::getName);
+				setParentProductConfigurationListExternalReferenceCode(
+					() -> {
+						CPConfigurationList parentCPConfigurationList =
+							_cpConfigurationListLocalService.
+								fetchCPConfigurationList(
+									cpConfigurationList.
+										getParentCPConfigurationListId());
+
+						if (parentCPConfigurationList == null) {
+							return null;
+						}
+
+						return parentCPConfigurationList.
+							getExternalReferenceCode();
+					});
 				setParentProductConfigurationListId(
 					cpConfigurationList::getParentCPConfigurationListId);
 				setPriority(cpConfigurationList::getPriority);
 			}
 		};
 	}
+
+	@Reference
+	private CPConfigurationListLocalService _cpConfigurationListLocalService;
 
 	@Reference
 	private CPConfigurationListService _cpConfigurationListService;
