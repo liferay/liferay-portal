@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.site.initializer.SiteInitializer;
 import com.liferay.site.initializer.SiteInitializerRegistry;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 
 /**
  * @author Stefano Motta
@@ -28,12 +29,21 @@ public class PIMTestUtil {
 		Group group = GroupLocalServiceUtil.getGroup(
 			TestPropsValues.getCompanyId(), GroupConstants.CMS);
 
-		ObjectDefinition objectDefinition =
+		ObjectDefinition pimBaseSkuObjectDefinition =
 			ObjectDefinitionLocalServiceUtil.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_PIM_BASE_SKU", TestPropsValues.getCompanyId());
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+					TestPropsValues.getCompanyId());
+		ObjectDefinition pimLinkObjectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
+					TestPropsValues.getCompanyId());
 
-		if (objectDefinition != null) {
+		if ((pimBaseSkuObjectDefinition != null) &&
+			(pimLinkObjectDefinition != null)) {
+
 			return group;
 		}
 

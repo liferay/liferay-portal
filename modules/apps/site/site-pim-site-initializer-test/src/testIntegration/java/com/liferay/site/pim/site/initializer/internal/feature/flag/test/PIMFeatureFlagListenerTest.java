@@ -19,6 +19,8 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import org.junit.Assert;
@@ -53,25 +55,49 @@ public class PIMFeatureFlagListenerTest {
 
 		Assert.assertNotNull(
 			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
-				"L_PIM_DEFINITIONS", companyId));
+				PIMObjectFolderConstants.EXTERNAL_REFERENCE_CODE_DEFINITIONS,
+				companyId));
 		Assert.assertNotNull(
 			_objectFolderLocalService.fetchObjectFolderByExternalReferenceCode(
-				"L_PIM_PRODUCT_TYPES", companyId));
+				PIMObjectFolderConstants.EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES,
+				companyId));
 
 		ObjectDefinition pimBaseSKUObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_PIM_BASE_SKU", companyId);
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+					companyId);
 
 		Assert.assertEquals(
 			ObjectDefinitionConstants.SCOPE_DEPOT,
 			pimBaseSKUObjectDefinition.getScope());
 
+		_assertObjectDefinitionSetting(
+			"domain", pimBaseSKUObjectDefinition, "space");
+
+		ObjectDefinition pimLinkObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_LINK,
+					companyId);
+
+		Assert.assertEquals(
+			ObjectDefinitionConstants.SCOPE_DEPOT,
+			pimLinkObjectDefinition.getScope());
+
+		_assertObjectDefinitionSetting(
+			"domain", pimLinkObjectDefinition, "space");
+	}
+
+	private void _assertObjectDefinitionSetting(
+		String name, ObjectDefinition objectDefinition, String value) {
+
 		ObjectDefinitionSetting objectDefinitionSetting =
 			_objectDefinitionSettingLocalService.fetchObjectDefinitionSetting(
-				pimBaseSKUObjectDefinition.getObjectDefinitionId(), "domain");
+				objectDefinition.getObjectDefinitionId(), name);
 
-		Assert.assertEquals("space", objectDefinitionSetting.getValue());
+		Assert.assertEquals(value, objectDefinitionSetting.getValue());
 	}
 
 	@Inject
