@@ -112,6 +112,7 @@ public class FragmentEntryLinkModelListenerTest {
 		_testAddFragmentEntryLinkEscapeTextField();
 		_testAddFragmentEntryLinkPreservesInlineSVGInLinkField();
 		_testAddFragmentEntryLinkPreservesSpriteReferenceInLinkField();
+		_testAddFragmentEntryLinkPreservesSVGAccessibilityAttributes();
 		_testAddFragmentEntryLinkSanitizesLinkFieldScriptContent();
 		_testAddFragmentEntryLinkSanitizesScriptInInlineSVGLinkField();
 		_testAddFragmentEntryLinkWithEmbeddedPortlet();
@@ -273,15 +274,16 @@ public class FragmentEntryLinkModelListenerTest {
 		String xlinkHrefURL =
 			"/o/classic-theme/images/clay/icons.svg#social-linkedin";
 
-		String editableFieldValue = StringBundler.concat(
-			"<svg viewBox=\"0 0 512 512\"><use href=\"", hrefURL,
-			"\"></use><use xlink:href=\"", xlinkHrefURL,
-			"\"></use></svg> Read More");
-
 		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
 			_fragmentCollectionContributorRegistry.getFragmentEntry(
 				"BASIC_COMPONENT-button"),
-			_createEditableValues("link", editableFieldValue), _serviceContext);
+			_createEditableValues(
+				"link",
+				StringBundler.concat(
+					"<svg viewBox=\"0 0 512 512\"><use href=\"", hrefURL,
+					"\"></use><use xlink:href=\"", xlinkHrefURL,
+					"\"></use></svg> Read More")),
+			_serviceContext);
 
 		String editableValues = fragmentEntryLink.getEditableValues();
 
@@ -289,6 +291,28 @@ public class FragmentEntryLinkModelListenerTest {
 		Assert.assertTrue(
 			editableValues, editableValues.contains(xlinkHrefURL));
 		Assert.assertTrue(editableValues, editableValues.contains("Read More"));
+	}
+
+	private void _testAddFragmentEntryLinkPreservesSVGAccessibilityAttributes()
+		throws Exception {
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-button"),
+			_createEditableValues(
+				"link",
+				StringBundler.concat(
+					"<svg aria-hidden=\"true\" focusable=\"false\" ",
+					"role=\"presentation\" viewBox=\"0 0 24 24\">",
+					"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg>")),
+			_serviceContext);
+
+		String editableValues = fragmentEntryLink.getEditableValues();
+
+		Assert.assertTrue(
+			editableValues, editableValues.contains("aria-hidden"));
+		Assert.assertTrue(editableValues, editableValues.contains("focusable"));
+		Assert.assertTrue(editableValues, editableValues.contains("role="));
 	}
 
 	private void _testAddFragmentEntryLinkSanitizesLinkFieldScriptContent()
