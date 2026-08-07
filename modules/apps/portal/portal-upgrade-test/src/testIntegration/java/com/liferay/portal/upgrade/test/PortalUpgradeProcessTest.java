@@ -230,12 +230,12 @@ public class PortalUpgradeProcessTest {
 	}
 
 	@Test
-	public void testIsInLatestSchemaVersion() throws Exception {
+	public void testIsInCompatibleSchemaVersion() throws Exception {
 		_updateSchemaVersion(PortalUpgradeProcess.getLatestSchemaVersion());
 
 		try (Connection connection = DataAccess.getConnection()) {
 			Assert.assertTrue(
-				PortalUpgradeProcess.isInLatestSchemaVersion(connection));
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection));
 		}
 	}
 
@@ -250,12 +250,12 @@ public class PortalUpgradeProcessTest {
 	}
 
 	@Test
-	public void testIsNotInLatestSchemaVersion() throws Exception {
+	public void testIsNotInCompatibleSchemaVersion() throws Exception {
 		_updateSchemaVersion(_ORIGINAL_SCHEMA_VERSION);
 
 		try (Connection connection = DataAccess.getConnection()) {
 			Assert.assertFalse(
-				PortalUpgradeProcess.isInLatestSchemaVersion(connection));
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection));
 		}
 	}
 
@@ -267,6 +267,9 @@ public class PortalUpgradeProcessTest {
 		_updateSchemaVersion(nextMajorSchemaVersion);
 
 		try (Connection connection = DataAccess.getConnection()) {
+			Assert.assertFalse(
+				"Newer major schema versions must not be compatible",
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection));
 			Assert.assertFalse(
 				"Major schema version changes must be nonrevertible",
 				PortalUpgradeProcess.isInRequiredSchemaVersion(connection));
@@ -283,6 +286,9 @@ public class PortalUpgradeProcessTest {
 
 		try (Connection connection = DataAccess.getConnection()) {
 			Assert.assertTrue(
+				"Newer micro schema versions must be compatible",
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection));
+			Assert.assertTrue(
 				"Micro schema version changes must be revertible",
 				PortalUpgradeProcess.isInRequiredSchemaVersion(connection));
 		}
@@ -297,6 +303,9 @@ public class PortalUpgradeProcessTest {
 		_updateSchemaVersion(nextMinorSchemaVersion);
 
 		try (Connection connection = DataAccess.getConnection()) {
+			Assert.assertTrue(
+				"Newer minor schema versions must be compatible",
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection));
 			Assert.assertTrue(
 				"Minor schema version changes must be revertible",
 				PortalUpgradeProcess.isInRequiredSchemaVersion(connection));
@@ -356,7 +365,7 @@ public class PortalUpgradeProcessTest {
 
 		try (Connection connection = DataAccess.getConnection()) {
 			Assert.assertTrue(
-				PortalUpgradeProcess.isInLatestSchemaVersion(connection));
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection));
 		}
 	}
 
@@ -381,7 +390,7 @@ public class PortalUpgradeProcessTest {
 
 		try (Connection connection = DataAccess.getConnection()) {
 			Assert.assertTrue(
-				PortalUpgradeProcess.isInLatestSchemaVersion(connection));
+				PortalUpgradeProcess.isInCompatibleSchemaVersion(connection));
 		}
 	}
 

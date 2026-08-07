@@ -116,6 +116,34 @@ public class ReleaseManagerTest {
 	}
 
 	@Test
+	public void testSuccessfulUpgradeWithNewerCompatibleSchemaVersion()
+		throws Exception {
+
+		try (Connection connection = DataAccess.getConnection()) {
+			Version version = PortalUpgradeProcess.getCurrentSchemaVersion(
+				connection);
+
+			try {
+				PortalUpgradeProcess.updateSchemaVersion(
+					connection,
+					new Version(
+						version.getMajor(), version.getMinor(),
+						version.getMicro() + 1));
+
+				Assert.assertTrue(
+					Validator.isBlank(
+						_releaseManager.getShortStatusMessage(false)));
+				Assert.assertEquals("success", _releaseManager.getStatus());
+				Assert.assertTrue(
+					Validator.isBlank(_releaseManager.getStatusMessage(false)));
+			}
+			finally {
+				PortalUpgradeProcess.updateSchemaVersion(connection, version);
+			}
+		}
+	}
+
+	@Test
 	public void testUnsuccessfulUpgradeByMissingModuleUpgradeWithAutorun()
 		throws Exception {
 
