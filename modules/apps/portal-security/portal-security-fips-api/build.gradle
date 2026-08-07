@@ -3,4 +3,5 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
+	compileOnly project(":core:petra:petra-string")
 }

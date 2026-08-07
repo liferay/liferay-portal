@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ContactNameException;
 import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.RequiredRoleException;
+import com.liferay.portal.kernel.exception.RoleAssignmentException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.exception.UserScreenNameException;
 import com.liferay.portal.kernel.model.Contact;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.security.fips.util.FIPSUtil;
 import com.liferay.portlet.usersadmin.util.UsersAdminUtil;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
@@ -147,6 +149,7 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 				exception instanceof PrincipalException ||
 				exception instanceof
 					RequiredRoleException.MustNotRemoveLastAdministator ||
+				exception instanceof RoleAssignmentException ||
 				exception instanceof UserEmailAddressException ||
 				exception instanceof UserScreenNameException) {
 
@@ -249,6 +252,9 @@ public class UpdateUserRolesMVCActionCommand extends BaseMVCActionCommand {
 
 			throw new RequiredRoleException.MustNotRemoveLastAdministator();
 		}
+
+		FIPSUtil.checkCryptoOfficerRole(
+			administratorRole.getRoleId(), user.getCompanyId(), roleIds);
 	}
 
 	@Reference
