@@ -83,8 +83,24 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 		String operation = null;
 		String suggestion = null;
 
-		if (StringUtil.equals(matcher.group(3), "containsKey") &&
-			variableTypeName.matches("\\w*Map<.+")) {
+		if (StringUtil.equals(matcher.group(3), "contains") &&
+			variableTypeName.matches("\\w*Set<.*")) {
+
+			if (negated &&
+				_hasOperation(firstStatement, variableName, "add", parameter)) {
+
+				operation = "add";
+				suggestion = "the boolean result of a single \"add\"";
+			}
+			else if (_hasOperation(
+						firstStatement, variableName, "remove", parameter)) {
+
+				operation = "remove";
+				suggestion = "the boolean result of a single \"remove\"";
+			}
+		}
+		else if (StringUtil.equals(matcher.group(3), "containsKey") &&
+				 variableTypeName.matches("\\w*Map<.+")) {
 
 			if (negated &&
 				_hasOperation(firstStatement, variableName, "put", parameter)) {
@@ -103,22 +119,6 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 
 				operation = "remove";
 				suggestion = "a single \"remove\" with a null check";
-			}
-		}
-		else if (StringUtil.equals(matcher.group(3), "contains") &&
-				 variableTypeName.matches("\\w*Set<.*")) {
-
-			if (negated &&
-				_hasOperation(firstStatement, variableName, "add", parameter)) {
-
-				operation = "add";
-				suggestion = "the boolean result of a single \"add\"";
-			}
-			else if (_hasOperation(
-						firstStatement, variableName, "remove", parameter)) {
-
-				operation = "remove";
-				suggestion = "the boolean result of a single \"remove\"";
 			}
 		}
 
