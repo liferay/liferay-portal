@@ -5,6 +5,7 @@
 
 import {
 	hideProductMenuIfPresent,
+	openConfirmModal,
 	useMediaQuery,
 } from '@liferay/layout-js-components-web';
 import {render, screen, waitFor, within} from '@testing-library/react';
@@ -27,6 +28,7 @@ jest.mock('@liferay/layout-js-components-web', () => {
 					onChange(event.target.value),
 			}),
 		hideProductMenuIfPresent: jest.fn(),
+		openConfirmModal: jest.fn(),
 		useMediaQuery: jest.fn(),
 	};
 });
@@ -71,8 +73,17 @@ const VERSIONS = [
 	},
 ];
 
+const DELETABLE_VERSIONS = [
+	{
+		...VERSIONS[0],
+		actions: {delete: {href: '/delete/HOME_V_2', method: 'DELETE'}},
+	},
+	VERSIONS[1],
+];
+
 const mockFetch = fetch as jest.Mock;
 const mockHideProductMenu = hideProductMenuIfPresent as jest.Mock;
+const mockOpenConfirmModal = openConfirmModal as jest.Mock;
 const mockUseMediaQuery = useMediaQuery as jest.Mock;
 
 function mockLargeScreen() {
@@ -117,6 +128,8 @@ function renderComponent({hasDraft = false} = {}) {
 describe('VersionHistory', () => {
 	beforeEach(() => {
 		mockVersions([]);
+
+		mockOpenConfirmModal.mockResolvedValue(true);
 
 		mockHideProductMenu.mockImplementation(
 			({onHide}: {onHide: () => void}) => onHide()
@@ -470,5 +483,68 @@ describe('VersionHistory', () => {
 
 		expect(screen.queryAllByRole('option')).toHaveLength(0);
 		expect(screen.getByText('no-results-found')).toBeInTheDocument();
+	});
+
+	it('only renders the actions menu for versions with a delete action', async () => {
+		mockLargeScreen();
+		mockVersions(DELETABLE_VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [current, deletable, notDeletable] =
+			screen.getAllByRole('option');
+
+		expect(
+			within(deletable).getByRole('button', {name: 'show-options'})
+		).toBeInTheDocument();
+
+		expect(
+			within(current).queryByRole('button', {name: 'show-options'})
+		).not.toBeInTheDocument();
+
+		expect(
+			within(notDeletable).queryByRole('button', {name: 'show-options'})
+		).not.toBeInTheDocument();
+	});
+
+	it('selects the first item after deleting the selected version', async () => {
+		mockLargeScreen();
+		mockVersions(DELETABLE_VERSIONS);
+
+		renderComponent();
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(3)
+		);
+
+		const [current, deletable] = screen.getAllByRole('option');
+
+		await userEvent.click(deletable);
+
+		expect(deletable).toHaveClass('active');
+		expect(current).not.toHaveClass('active');
+
+		await userEvent.click(
+			within(deletable).getByRole('button', {name: 'show-options'})
+		);
+
+		await userEvent.click(
+			screen.getByRole('menuitem', {name: 'delete-version'})
+		);
+
+		await waitFor(() =>
+			expect(screen.getAllByRole('option')).toHaveLength(2)
+		);
+
+		expect(screen.queryByText('Home Halloween')).not.toBeInTheDocument();
+
+		const [first] = screen.getAllByRole('option');
+
+		expect(first).toBe(queryCurrentItem());
+		expect(first).toHaveClass('active');
 	});
 });
