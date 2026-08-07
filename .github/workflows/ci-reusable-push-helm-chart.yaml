@@ -36,7 +36,12 @@ jobs:
 
                         local registry_path="${HELM_CHART_REGISTRY_NONPRODUCTION}/$(echo "${GITHUB_REF_NAME}" | tr 'A-Z/' 'a-z-')"
 
-                        local image_ref="${registry_path}/${{inputs.chart_name}}:${chart_version}${{inputs.image_tag_suffix}}"
+                        if [[ -n "${{inputs.registry_path_segment}}" ]]
+                        then
+                            registry_path="${registry_path}/${{inputs.registry_path_segment}}"
+                        fi
+
+                        local image_ref="${registry_path}/${{inputs.chart_name}}:${chart_version}"
 
                         echo "IMAGE_REF=${image_ref}" >> ${GITHUB_ENV}
                         echo "image_ref=${image_ref}" >> ${GITHUB_OUTPUT}
@@ -113,7 +118,7 @@ on:
             chart_name:
                 required: true
                 type: string
-            image_tag_suffix:
+            registry_path_segment:
                 default: ""
                 required: false
                 type: string

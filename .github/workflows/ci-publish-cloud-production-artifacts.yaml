@@ -352,7 +352,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws
     push-rc-aws-infrastructure:
         if: ${{needs.check-aws-infrastructure.outputs.should_release == 'true'}}
@@ -362,7 +362,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws-infrastructure
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws-infrastructure
     push-rc-aws-infrastructure-provider:
         if: ${{needs.check-aws-infrastructure-provider.outputs.should_release == 'true'}}
@@ -372,7 +372,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-aws-infrastructure-provider
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/aws-infrastructure-provider
     push-rc-bootstrap-aws:
         if: ${{needs.check-bootstrap-aws.outputs.should_release == 'true'}}
@@ -394,7 +394,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-default
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/default
     push-rc-gcp:
         if: ${{needs.check-gcp.outputs.should_release == 'true'}}
@@ -404,7 +404,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp
     push-rc-gcp-infrastructure:
         if: ${{needs.check-gcp-infrastructure.outputs.should_release == 'true'}}
@@ -414,7 +414,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp-infrastructure
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp-infrastructure
     push-rc-gcp-infrastructure-provider:
         if: ${{needs.check-gcp-infrastructure-provider.outputs.should_release == 'true'}}
@@ -424,7 +424,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-gcp-infrastructure-provider
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/gcp-infrastructure-provider
     push-rc-observability:
         if: ${{needs.check-observability.outputs.should_release == 'true'}}
@@ -434,7 +434,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: observability
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/observability
     push-rc-platform:
         if: ${{needs.check-platform.outputs.should_release == 'true'}}
@@ -444,7 +444,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-platform
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/platform
     push-rc-platform-components:
         if: ${{needs.check-platform-components.outputs.should_release == 'true'}}
@@ -454,7 +454,7 @@ jobs:
         uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
         with:
             chart_name: liferay-platform-components
-            image_tag_suffix: ${{needs.set-up-variables.outputs.image_tag_suffix}}
+            registry_path_segment: ${{needs.set-up-variables.outputs.registry_path_segment}}
             working_directory: ./cloud/helm/platform-components
     record-release:
         if: ${{!cancelled() && !failure() && needs.approve-release.result == 'success'}}
@@ -734,7 +734,7 @@ jobs:
     set-up-variables:
         if: ${{github.repository == 'cloudnative-team/liferay-portal'}}
         outputs:
-            image_tag_suffix: ${{steps.vars.outputs.image_tag_suffix}}
+            registry_path_segment: ${{steps.vars.outputs.registry_path_segment}}
         runs-on: ubuntu-latest
         steps:
             -   id: vars
@@ -745,7 +745,7 @@ jobs:
                     set -o pipefail
 
                     function main {
-                        echo "image_tag_suffix=-g${GITHUB_SHA::7}" >> ${GITHUB_OUTPUT}
+                        echo "registry_path_segment=g${GITHUB_SHA::7}" >> ${GITHUB_OUTPUT}
                     }
 
                     main "${@}"
