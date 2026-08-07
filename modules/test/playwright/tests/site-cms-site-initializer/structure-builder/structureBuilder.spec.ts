@@ -136,6 +136,11 @@ test(
 					picklist: picklist.name,
 				});
 			}
+			else if (type === 'Select Related Content') {
+				await structureBuilderPage.changeFieldSettings({
+					relatedContent: 'Basic Document',
+				});
+			}
 		}
 
 		// Publish the structure
