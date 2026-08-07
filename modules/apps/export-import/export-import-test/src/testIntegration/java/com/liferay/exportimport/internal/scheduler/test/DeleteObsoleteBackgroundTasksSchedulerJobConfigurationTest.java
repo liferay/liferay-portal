@@ -132,6 +132,11 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 		_updateBackgroundTaskModifiedDateToPast(layoutImportBackgroundTaskId);
 		_updateBackgroundTaskModifiedDateToPast(portletImportBackgroundTaskId);
 
+		long freshLayoutImportBackgroundTaskId = _importLayoutsInBackground();
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			freshLayoutImportBackgroundTaskId);
+
 		UnsafeRunnable<Exception> unsafeRunnable =
 			_schedulerJobConfiguration.getJobExecutorUnsafeRunnable();
 
@@ -142,7 +147,12 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 				layoutImportBackgroundTaskId));
 		Assert.assertNull(
 			_backgroundTaskLocalService.fetchBackgroundTask(
-				portletImportBackgroundTaskId));	}
+				portletImportBackgroundTaskId));
+
+		Assert.assertNotNull(
+			_backgroundTaskLocalService.fetchBackgroundTask(
+				freshLayoutImportBackgroundTaskId));
+	}
 
 	private long _getAttachmentsFolderId(long backgroundTaskId)
 		throws Exception {
