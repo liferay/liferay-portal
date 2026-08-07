@@ -105,6 +105,10 @@ public class FragmentEntryLinkDisplayContext {
 		Layout layout = LayoutLocalServiceUtil.fetchLayout(
 			fragmentEntryLink.getPlid());
 
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
+
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_fetchLayoutPageTemplateEntry(layout);
 
@@ -133,6 +137,10 @@ public class FragmentEntryLinkDisplayContext {
 
 		Layout layout = LayoutLocalServiceUtil.fetchLayout(
 			fragmentEntryLink.getPlid());
+
+		if (layout == null) {
+			return StringPool.BLANK;
+		}
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_fetchLayoutPageTemplateEntry(layout);
