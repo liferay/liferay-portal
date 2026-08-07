@@ -36,6 +36,16 @@ public class RoleConstantsTest {
 		role = Mockito.mock(Role.class);
 
 		Mockito.when(
+			role.getName()
+		).thenReturn(
+			RoleConstants.CRYPTO_OFFICER
+		);
+
+		Assert.assertTrue(RoleConstants.isUnmodifiable(role));
+
+		role = Mockito.mock(Role.class);
+
+		Mockito.when(
 			role.isSystem()
 		).thenReturn(
 			true

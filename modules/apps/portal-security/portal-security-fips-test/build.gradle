@@ -1,0 +1,6 @@
+dependencies {
+	testIntegrationImplementation project(":apps:portal-security:portal-security-fips-api")
+	testIntegrationImplementation project(":apps:portal-security:portal-security-fips-impl")
+	testIntegrationImplementation project(":apps:portal:portal-instance-lifecycle-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
