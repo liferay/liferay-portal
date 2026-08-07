@@ -390,6 +390,7 @@ export interface IFrontendDataSetProps {
 	selectionType?: 'single' | 'multiple';
 	showBulkActionsManagementBar?: boolean;
 	showBulkActionsManagementBarActions?: boolean;
+	showFilters?: boolean;
 	showManagementBar?: boolean;
 	showNavBarWhenSelected?: boolean;
 	showPagination?: boolean;
@@ -427,6 +428,7 @@ export interface IManagementBarProps {
 	selectedItemsKey: string;
 	selectedItemsValue: Array<any>;
 	selectionType?: 'multiple' | 'single';
+	showFilters?: boolean;
 	showNavBarWhenSelected?: boolean;
 	showSearch?: boolean;
 	showSelectAll?: boolean;

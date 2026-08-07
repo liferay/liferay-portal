@@ -22,6 +22,9 @@ public class FDSSampleFDSNames {
 	public static final String CUSTOM_INTERNAL_VIEW =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-customInternalView";
 
+	public static final String DELEGATED_FILTERS =
+		FDSSamplePortletKeys.FDS_SAMPLE + "-delegatedFilters";
+
 	public static final String DYNAMIC_ACTIONS =
 		FDSSamplePortletKeys.FDS_SAMPLE + "-dynamicActions";
 

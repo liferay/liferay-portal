@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	property = {
 		"frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
+		"frontend.data.set.name=" + FDSSampleFDSNames.DELEGATED_FILTERS,
 		"frontend.data.set.name=" + FDSSampleFDSNames.HIDDEN_EXCLUDE_TOGGLE
 	},
 	service = FDSFilter.class

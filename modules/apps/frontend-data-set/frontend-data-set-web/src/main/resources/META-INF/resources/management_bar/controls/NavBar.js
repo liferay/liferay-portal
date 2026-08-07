@@ -19,7 +19,7 @@ import SortDropdown from './SortDropdown';
 import FiltersDropdown from './filters/FiltersDropdown';
 import SnapshotsControls from './snapshots/SnapshotsControls';
 
-function NavBar({creationMenu, showSearch}) {
+function NavBar({creationMenu, showFilters, showSearch}) {
 	const {globalFDSState, showInfoPanel} = useContext(FrontendDataSetContext);
 
 	const [{snapshotsEnabled, sorts, views}] = useContext(ViewsContext);
@@ -32,7 +32,7 @@ function NavBar({creationMenu, showSearch}) {
 			data-qa-id="managementToolbar"
 		>
 			<ManagementToolbar.ItemList>
-				{!!globalFDSState.filters.length && (
+				{showFilters && !!globalFDSState.filters.length && (
 					<ManagementToolbar.Item>
 						<FiltersDropdown />
 					</ManagementToolbar.Item>
@@ -107,6 +107,7 @@ NavBar.propTypes = {
 		primaryItems: PropTypes.array,
 		secondaryItems: PropTypes.array,
 	}),
+	showFilters: PropTypes.bool,
 	showSearch: PropTypes.bool,
 };
 
@@ -114,6 +115,7 @@ NavBar.defaultProps = {
 	creationMenu: {
 		primaryItems: [],
 	},
+	showFilters: true,
 	showSearch: true,
 };
 

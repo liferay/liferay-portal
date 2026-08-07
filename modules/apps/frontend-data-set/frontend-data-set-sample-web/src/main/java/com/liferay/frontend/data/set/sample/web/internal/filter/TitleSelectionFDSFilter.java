@@ -15,7 +15,10 @@ import org.osgi.service.component.annotations.Component;
  * @author Daniel Sanz
  */
 @Component(
-	property = "frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
+	property = {
+		"frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
+		"frontend.data.set.name=" + FDSSampleFDSNames.DELEGATED_FILTERS
+	},
 	service = FDSFilter.class
 )
 public class TitleSelectionFDSFilter extends BaseSelectionFDSFilter {
