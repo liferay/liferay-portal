@@ -10,7 +10,12 @@ import com.liferay.depot.constants.DepotPortletKeys;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.design.library.constants.DesignLibraryAdminPortletKeys;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
@@ -103,10 +108,34 @@ public class DepotEntryUserNotificationHandler
 		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
 
 		if (depotEntry.getType() == DepotConstants.TYPE_PROJECT) {
+			ObjectDefinition cmpProjectObjectDefinition =
+				_objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						"L_CMP_PROJECT", depotEntry.getCompanyId());
+
+			ObjectEntry cmpProjectObjectEntry = null;
+
+			if (cmpProjectObjectDefinition != null) {
+				cmpProjectObjectEntry =
+					_objectEntryLocalService.fetchObjectEntry(
+						depotEntry.getGroupId(),
+						cmpProjectObjectDefinition.getObjectDefinitionId());
+			}
+
+			if (cmpProjectObjectEntry == null) {
+				return StringBundler.concat(
+					serviceContext.getPortalURL(),
+					themeDisplay.getPathFriendlyURLPublic(),
+					GroupConstants.CMS_FRIENDLY_URL, "/projects");
+			}
+
 			return StringBundler.concat(
 				serviceContext.getPortalURL(),
 				themeDisplay.getPathFriendlyURLPublic(),
-				GroupConstants.CMS_FRIENDLY_URL, "/projects");
+				GroupConstants.CMS_FRIENDLY_URL, "/e/project/",
+				_portal.getClassNameId(
+					cmpProjectObjectDefinition.getClassName()),
+				StringPool.SLASH, cmpProjectObjectEntry.getObjectEntryId());
 		}
 
 		String spaceURL = ActionUtil.getSpaceURL(
@@ -167,6 +196,12 @@ public class DepotEntryUserNotificationHandler
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Reference
 	private Portal _portal;
