@@ -5,13 +5,20 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
+import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
+import com.liferay.headless.admin.site.dto.v1_0.PageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.PageSpecificationVersion;
 import com.liferay.headless.admin.site.dto.v1_0.SitePage;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.DTOConverterContextUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.LayoutUtil;
+import com.liferay.headless.admin.site.internal.resource.v1_0.util.ServiceContextUtil;
 import com.liferay.headless.admin.site.internal.util.EnabledUtil;
 import com.liferay.headless.admin.site.internal.util.SitePageUtil;
 import com.liferay.headless.admin.site.resource.v1_0.PageSpecificationVersionResource;
 import com.liferay.headless.common.spi.util.GroupUtil;
+import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.layout.content.model.LayoutContentVersion;
 import com.liferay.layout.content.service.LayoutContentVersionLocalService;
 import com.liferay.layout.content.service.LayoutContentVersionService;
@@ -117,6 +124,45 @@ public class PageSpecificationVersionResourceImpl
 				layoutContentVersion -> _toPageSpecificationVersion(
 					latestApprovedLayoutContentVersionId, layoutContentVersion,
 					siteExternalReferenceCode, sitePageExternalReferenceCode)));
+	}
+
+	@Override
+	public PageSpecification postSiteSitePagePageSpecificationVersionRestore(
+			String siteExternalReferenceCode,
+			String sitePageExternalReferenceCode,
+			String pageSpecificationVersionExternalReferenceCode)
+		throws Exception {
+
+		EnabledUtil.checkPageSpecificationVersionEnabled(contextCompany);
+
+		Layout layout = _getLayout(
+			false, siteExternalReferenceCode, sitePageExternalReferenceCode);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		LayoutContentVersion layoutContentVersion = _getLayoutContentVersion(
+			pageSpecificationVersionExternalReferenceCode, draftLayout,
+			siteExternalReferenceCode);
+
+		draftLayout = LayoutUtil.updateLayout(
+			_cetManager, _fragmentEntryProcessorRegistry,
+			_infoItemServiceRegistry, draftLayout, layout.getNameMap(),
+			layout.getTitleMap(), layout.getDescriptionMap(),
+			draftLayout.getKeywordsMap(), draftLayout.getRobotsMap(),
+			draftLayout.getFriendlyURLMap(),
+			ContentPageSpecification.unsafeToDTO(
+				layoutContentVersion.getData()),
+			WorkflowConstants.STATUS_DRAFT,
+			ServiceContextUtil.createServiceContext(
+				layout.getGroupId(), contextHttpServletRequest,
+				contextUser.getUserId()));
+
+		return _pageSpecificationDTOConverter.toDTO(
+			DTOConverterContextUtil.getDTOConverterContext(
+				contextAcceptLanguage, _dtoConverterRegistry,
+				contextHttpServletRequest, draftLayout.getPlid(),
+				contextUriInfo, contextUser),
+			draftLayout);
 	}
 
 	private Map<String, String> _addAction(
@@ -230,7 +276,16 @@ public class PageSpecificationVersionResourceImpl
 	}
 
 	@Reference
+	private CETManager _cetManager;
+
+	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
+
+	@Reference
+	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
+
+	@Reference
+	private InfoItemServiceRegistry _infoItemServiceRegistry;
 
 	@Reference
 	private LayoutContentVersionLocalService _layoutContentVersionLocalService;
@@ -242,6 +297,12 @@ public class PageSpecificationVersionResourceImpl
 		target = "(model.class.name=com.liferay.portal.kernel.model.Layout)"
 	)
 	private ModelResourcePermission<Layout> _layoutModelResourcePermission;
+
+	@Reference(
+		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.PageSpecificationDTOConverter)"
+	)
+	private DTOConverter<Layout, PageSpecification>
+		_pageSpecificationDTOConverter;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.admin.site.internal.dto.v1_0.converter.PageSpecificationVersionDTOConverter)"
