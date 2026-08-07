@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.site.pim.site.initializer.internal.constants;
+package com.liferay.site.pim.site.initializer.constants;
 
 /**
  * @author Stefano Motta
@@ -15,5 +15,7 @@ public class PIMObjectDefinitionConstants {
 
 	public static final String EXTERNAL_REFERENCE_CODE_CONNECTOR =
 		"L_PIM_CONNECTOR";
+
+	public static final String EXTERNAL_REFERENCE_CODE_LINK = "L_PIM_LINK";
 
 }
