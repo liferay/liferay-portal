@@ -39,7 +39,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	enabled = true,
-	property = "frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
+	property = {
+		"frontend.data.set.name=" + FDSSampleFDSNames.ADVANCED,
+		"frontend.data.set.name=" + FDSSampleFDSNames.DELEGATED_FILTERS
+	},
 	service = FDSView.class
 )
 public class AdvancedTableFDSView extends BaseTableFDSView {

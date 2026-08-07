@@ -33,6 +33,7 @@ function ManagementBar({
 	selectedItems = [],
 	selectedItemsKey,
 	selectedItemsValue,
+	showFilters = true,
 	showNavBarWhenSelected = false,
 	showSearch = true,
 	showSelectAll,
@@ -106,6 +107,7 @@ function ManagementBar({
 				) : (
 					<NavBar
 						creationMenu={creationMenu}
+						showFilters={showFilters}
 						showSearch={showSearch}
 					/>
 				)}
@@ -114,6 +116,7 @@ function ManagementBar({
 			<ResultsBar
 				dataLoading={dataLoading}
 				disabled={!!selectedItemsValue.length}
+				showFilters={showFilters}
 				total={total}
 			/>
 		</>

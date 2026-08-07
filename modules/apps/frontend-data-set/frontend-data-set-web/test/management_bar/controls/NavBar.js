@@ -30,15 +30,19 @@ describe('NavBar', () => {
 
 	const mockViewsContext = [{snapshotsEnabled: true, sorts: [], views: []}];
 
-	const renderNavBar = () => {
+	const renderNavBar = (props = {}, filters = []) => {
 		return render(
-			<FrontendDataSetContext.Provider value={mockFDSContext}>
+			<FrontendDataSetContext.Provider
+				value={{...mockFDSContext, globalFDSState: {filters}}}
+			>
 				<ViewsContext.Provider value={mockViewsContext}>
-					<NavBar />
+					<NavBar {...props} />
 				</ViewsContext.Provider>
 			</FrontendDataSetContext.Provider>
 		);
 	};
+
+	const FILTERS = [{id: 'status', label: 'Status', type: 'selection'}];
 
 	it('renders SnapshotsControls component when data set manager feature flag LPS-164563 is enabled', () => {
 		global.Liferay.FeatureFlags['LPS-164563'] = true;
@@ -58,5 +62,17 @@ describe('NavBar', () => {
 		expect(
 			screen.queryByTestId('snapshots-controls-mock')
 		).not.toBeInTheDocument();
+	});
+
+	it('renders the filters dropdown when the data set has filters', () => {
+		renderNavBar({}, FILTERS);
+
+		expect(screen.queryByText('filter')).toBeInTheDocument();
+	});
+
+	it('does not render the filters dropdown when showFilters is false', () => {
+		renderNavBar({showFilters: false}, FILTERS);
+
+		expect(screen.queryByText('filter')).not.toBeInTheDocument();
 	});
 });

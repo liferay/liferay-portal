@@ -14,19 +14,24 @@ import SearchResume from './filters/SearchResume';
 function ResultsBar({
 	dataLoading,
 	disabled,
+	showFilters = true,
 	total,
 }: {
 	dataLoading: boolean;
 	disabled: boolean;
+	showFilters?: boolean;
 	total: number;
 }) {
 	const {globalFDSState, onClearResultsBar, searchParam, searching} =
 		useContext(FrontendDataSetContext);
 	const searchActive = Boolean(searchParam?.trim());
 
-	const activeFilters = globalFDSState.filters.filter(
-		(filter) => filter.active
-	);
+	// Filters the data set does not show cannot be resumed either, but the
+	// search resume and its clear action stay available.
+
+	const activeFilters = showFilters
+		? globalFDSState.filters.filter((filter) => filter.active)
+		: [];
 
 	return activeFilters.length || searchActive ? (
 		<div

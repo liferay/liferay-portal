@@ -148,6 +148,7 @@ const FrontendDataSetContent = ({
 	selectionType,
 	showBulkActionsManagementBar = true,
 	showBulkActionsManagementBarActions = true,
+	showFilters = true,
 	showManagementBar = true,
 	showNavBarWhenSelected = false,
 	showPagination = true,
@@ -727,16 +728,21 @@ const FrontendDataSetContent = ({
 	const onClearFilters = useCallback(() => {
 		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-		const filters = unfrozenGlobalFDSState.filters.map((filter) =>
-			deactivateFilter(filter)
-		);
+		// Hidden filters must survive a clear: the user cannot see them, so
+		// removing them would silently change the results.
+
+		const filters = showFilters
+			? unfrozenGlobalFDSState.filters.map((filter) =>
+					deactivateFilter(filter)
+				)
+			: unfrozenGlobalFDSState.filters;
 
 		setGlobalFDSState({
 			...unfrozenGlobalFDSState,
 			filters,
 			search: {query: ''},
 		});
-	}, [globalFDSState, setGlobalFDSState]);
+	}, [globalFDSState, setGlobalFDSState, showFilters]);
 
 	const skipSnapshotsUpdatedChangeRef = useRef(true);
 
@@ -1615,6 +1621,7 @@ const FrontendDataSetContent = ({
 				selectedItemsKey={selectedItemsKey}
 				selectedItemsValue={selectedItemsValue}
 				selectionType={selectionType}
+				showFilters={showFilters}
 				showNavBarWhenSelected={showNavBarWhenSelected}
 				showSearch={showSearch}
 				showSelectAll={showSelectAll}
@@ -2114,9 +2121,11 @@ const FrontendDataSetContent = ({
 				onActionDropdownItemClick,
 				onBulkActionItemClick,
 				onClearResultsBar: () => {
-					const filters = unfrozenGlobalFDSState.filters.map(
-						(filter) => deactivateFilter(filter)
-					);
+					const filters = showFilters
+						? unfrozenGlobalFDSState.filters.map((filter) =>
+								deactivateFilter(filter)
+							)
+						: unfrozenGlobalFDSState.filters;
 
 					setGlobalFDSState({
 						...unfrozenGlobalFDSState,
