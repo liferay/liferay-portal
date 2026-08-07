@@ -6,6 +6,8 @@
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -226,9 +229,8 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 
 			commerceCatalog = _commerceCatalogService.addCommerceCatalog(
 				catalog.getExternalReferenceCode(),
-				GetterUtil.get(
-					catalog.getAccountId(),
-					AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
+				_getAccountEntryId(
+					catalog, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				catalog.getName(), commerceCurrency.getCode(),
 				catalog.getDefaultLanguageId(),
 				_serviceContextHelper.getServiceContext());
@@ -253,9 +255,8 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 
 			commerceCatalog = _commerceCatalogService.updateCommerceCatalog(
 				commerceCatalog.getCommerceCatalogId(),
-				GetterUtil.get(
-					catalog.getAccountId(),
-					commerceCatalog.getAccountEntryId()),
+				_getAccountEntryId(
+					catalog, commerceCatalog.getAccountEntryId()),
 				GetterUtil.get(catalog.getName(), commerceCatalog.getName()),
 				commerceCurrency.getCode(),
 				GetterUtil.get(
@@ -284,9 +285,8 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 		if (commerceCatalog == null) {
 			commerceCatalog = _commerceCatalogService.addCommerceCatalog(
 				catalog.getExternalReferenceCode(),
-				GetterUtil.get(
-					catalog.getAccountId(),
-					AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
+				_getAccountEntryId(
+					catalog, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				catalog.getName(), commerceCurrency.getCode(),
 				catalog.getDefaultLanguageId(),
 				_serviceContextHelper.getServiceContext());
@@ -294,13 +294,40 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 		else {
 			commerceCatalog = _commerceCatalogService.updateCommerceCatalog(
 				commerceCatalog.getCommerceCatalogId(),
-				GetterUtil.getLong(catalog.getAccountId()),
+				_getAccountEntryId(
+					catalog, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				GetterUtil.getString(catalog.getName()),
 				commerceCurrency.getCode(),
 				GetterUtil.getString(catalog.getDefaultLanguageId()));
 		}
 
 		return _toCatalog(commerceCatalog);
+	}
+
+	private long _getAccountEntryId(Catalog catalog, long defaultAccountEntryId)
+		throws Exception {
+
+		String externalReferenceCode =
+			catalog.getAccountExternalReferenceCode();
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return GetterUtil.get(
+				catalog.getAccountId(), defaultAccountEntryId);
+		}
+
+		Catalog.AccountType accountType = catalog.getAccountType();
+
+		if (accountType == null) {
+			return GetterUtil.get(
+				catalog.getAccountId(), defaultAccountEntryId);
+		}
+
+		AccountEntry accountEntry =
+			_accountEntryService.getOrAddEmptyAccountEntry(
+				externalReferenceCode, externalReferenceCode,
+				accountType.getValue());
+
+		return accountEntry.getAccountEntryId();
 	}
 
 	private Map<String, Map<String, String>> _getActions(
@@ -365,8 +392,7 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 
 		_commerceCatalogService.updateCommerceCatalog(
 			commerceCatalog.getCommerceCatalogId(),
-			GetterUtil.get(
-				catalog.getAccountId(), commerceCatalog.getAccountEntryId()),
+			_getAccountEntryId(catalog, commerceCatalog.getAccountEntryId()),
 			GetterUtil.get(catalog.getName(), commerceCatalog.getName()),
 			commerceCurrency.getCode(),
 			GetterUtil.get(
@@ -378,6 +404,9 @@ public class CatalogResourceImpl extends BaseCatalogResourceImpl {
 		CatalogResourceImpl.class);
 
 	private static final EntityModel _entityModel = new CatalogEntityModel();
+
+	@Reference
+	private AccountEntryService _accountEntryService;
 
 	@Reference(
 		target = "(component.name=com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.CatalogDTOConverter)"

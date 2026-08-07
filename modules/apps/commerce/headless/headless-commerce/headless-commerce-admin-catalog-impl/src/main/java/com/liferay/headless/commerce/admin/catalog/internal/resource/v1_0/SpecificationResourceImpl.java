@@ -17,6 +17,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.SpecificationRe
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -172,11 +174,15 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 				fetchCPSpecificationOptionByExternalReferenceCode(
 					externalReferenceCode, contextCompany.getCompanyId());
 
-		long[] listTypeDefinitionIds = GetterUtil.getLongValues(
-			specification.getListTypeDefinitionIds(),
-			new long[] {
-				GetterUtil.getLong(specification.getListTypeDefinitionId())
-			});
+		long[] listTypeDefinitionIds = _getListTypeDefinitionIds(specification);
+
+		if (listTypeDefinitionIds == null) {
+			listTypeDefinitionIds = GetterUtil.getLongValues(
+				specification.getListTypeDefinitionIds(),
+				new long[] {
+					GetterUtil.getLong(specification.getListTypeDefinitionId())
+				});
+		}
 
 		if (cpSpecificationOption == null) {
 			cpSpecificationOption =
@@ -303,16 +309,20 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 			}
 		}
 
+		long[] listTypeDefinitionIds = _getListTypeDefinitionIds(specification);
+
+		if (listTypeDefinitionIds == null) {
+			listTypeDefinitionIds = GetterUtil.getLongValues(
+				specification.getListTypeDefinitionIds(),
+				new long[] {
+					GetterUtil.getLong(specification.getListTypeDefinitionId())
+				});
+		}
+
 		CPSpecificationOption cpSpecificationOption =
 			_cpSpecificationOptionService.addCPSpecificationOption(
 				specification.getExternalReferenceCode(),
-				_getCPOptionCategoryId(specification),
-				GetterUtil.getLongValues(
-					specification.getListTypeDefinitionIds(),
-					new long[] {
-						GetterUtil.getLong(
-							specification.getListTypeDefinitionId())
-					}),
+				_getCPOptionCategoryId(specification), listTypeDefinitionIds,
 				LanguageUtils.getLocalizedMap(specification.getTitle()),
 				LanguageUtils.getLocalizedMap(specification.getDescription()),
 				GetterUtil.getBoolean(specification.getFacetable()),
@@ -362,6 +372,30 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 		return cpOptionCategory.getCPOptionCategoryId();
 	}
 
+	private long[] _getListTypeDefinitionIds(Specification specification)
+		throws PortalException {
+
+		String[] externalReferenceCodes =
+			specification.getListTypeDefinitionExternalReferenceCodes();
+
+		if (ArrayUtil.isEmpty(externalReferenceCodes)) {
+			return null;
+		}
+
+		return transformToLongArray(
+			externalReferenceCodes,
+			externalReferenceCode -> {
+				ListTypeDefinition listTypeDefinition =
+					_listTypeDefinitionLocalService.
+						getOrAddEmptyListTypeDefinition(
+							externalReferenceCode,
+							contextCompany.getCompanyId(),
+							contextUser.getUserId(), false);
+
+				return listTypeDefinition.getListTypeDefinitionId();
+			});
+	}
+
 	private Specification _toSpecification(Long cpSpecificationOptionId)
 		throws Exception {
 
@@ -383,29 +417,33 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 				cpSpecificationOption.getDescriptionMap());
 		}
 
-		long[] listTypeDefinitionIds = GetterUtil.getLongValues(
-			specification.getListTypeDefinitionIds(),
-			transformToLongArray(
-				cpSpecificationOption.getListTypeDefinitions(),
-				ListTypeDefinition::getListTypeDefinitionId));
+		long[] listTypeDefinitionIds = _getListTypeDefinitionIds(specification);
 
-		if (specification.getListTypeDefinitionIds() == null) {
-			long listTypeDefinitionId = GetterUtil.getLong(
-				specification.getListTypeDefinitionId());
+		if (listTypeDefinitionIds == null) {
+			listTypeDefinitionIds = GetterUtil.getLongValues(
+				specification.getListTypeDefinitionIds(),
+				transformToLongArray(
+					cpSpecificationOption.getListTypeDefinitions(),
+					ListTypeDefinition::getListTypeDefinitionId));
 
-			List<ListTypeDefinition> listTypeDefinitions =
-				cpSpecificationOption.getListTypeDefinitions();
+			if (specification.getListTypeDefinitionIds() == null) {
+				long listTypeDefinitionId = GetterUtil.getLong(
+					specification.getListTypeDefinitionId());
 
-			if (!listTypeDefinitions.isEmpty()) {
-				ListTypeDefinition listTypeDefinition = listTypeDefinitions.get(
-					0);
+				List<ListTypeDefinition> listTypeDefinitions =
+					cpSpecificationOption.getListTypeDefinitions();
 
-				listTypeDefinitionId = GetterUtil.getLong(
-					specification.getListTypeDefinitionId(),
-					listTypeDefinition.getListTypeDefinitionId());
+				if (!listTypeDefinitions.isEmpty()) {
+					ListTypeDefinition listTypeDefinition =
+						listTypeDefinitions.get(0);
+
+					listTypeDefinitionId = GetterUtil.getLong(
+						specification.getListTypeDefinitionId(),
+						listTypeDefinition.getListTypeDefinitionId());
+				}
+
+				listTypeDefinitionIds = new long[] {listTypeDefinitionId};
 			}
-
-			listTypeDefinitionIds = new long[] {listTypeDefinitionId};
 		}
 
 		Map<String, String> titleMap = specification.getTitle();
@@ -449,6 +487,9 @@ public class SpecificationResourceImpl extends BaseSpecificationResourceImpl {
 
 	@Reference
 	private CPSpecificationOptionService _cpSpecificationOptionService;
+
+	@Reference
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
 
 	@Reference
 	private ServiceContextHelper _serviceContextHelper;

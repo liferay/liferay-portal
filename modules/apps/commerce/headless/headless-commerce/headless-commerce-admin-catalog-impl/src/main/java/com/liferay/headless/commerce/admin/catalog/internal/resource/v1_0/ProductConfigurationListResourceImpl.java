@@ -7,6 +7,7 @@ package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
@@ -25,6 +26,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.custom.field.CustomField;
 import com.liferay.portal.vulcan.custom.field.CustomFieldsUtil;
@@ -275,9 +277,8 @@ public class ProductConfigurationListResourceImpl
 				GetterUtil.getString(
 					productConfigurationList.getExternalReferenceCode()),
 				contextCompany.getCompanyId(), commerceCatalog.getGroupId(),
-				GetterUtil.getLong(
-					productConfigurationList.
-						getParentProductConfigurationListId()),
+				_getParentCPConfigurationListId(
+					productConfigurationList, commerceCatalog.getGroupId()),
 				GetterUtil.getBoolean(productConfigurationList.getMaster()),
 				GetterUtil.getString(productConfigurationList.getName()),
 				GetterUtil.getDouble(productConfigurationList.getPriority()),
@@ -360,6 +361,27 @@ public class ProductConfigurationListResourceImpl
 		return expandoBridgeAttributes;
 	}
 
+	private long _getParentCPConfigurationListId(
+			ProductConfigurationList productConfigurationList, long groupId)
+		throws Exception {
+
+		String externalReferenceCode =
+			productConfigurationList.
+				getParentProductConfigurationListExternalReferenceCode();
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return GetterUtil.getLong(
+				productConfigurationList.getParentProductConfigurationListId());
+		}
+
+		CPConfigurationList cpConfigurationList =
+			_cpConfigurationListLocalService.getOrAddEmptyCPConfigurationList(
+				externalReferenceCode, contextCompany.getCompanyId(),
+				contextUser.getUserId(), groupId);
+
+		return cpConfigurationList.getCPConfigurationListId();
+	}
+
 	private ProductConfigurationList _toProductConfigurationList(
 			CPConfigurationList cpConfigurationList)
 		throws Exception {
@@ -388,6 +410,9 @@ public class ProductConfigurationListResourceImpl
 
 	@Reference
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Reference
+	private CPConfigurationListLocalService _cpConfigurationListLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.product.model.CPConfigurationList)"

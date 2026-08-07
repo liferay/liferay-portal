@@ -18,6 +18,9 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.SkuVirtualSettingsFi
 import com.liferay.headless.commerce.admin.catalog.internal.util.FileEntryUtil;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.service.JournalArticleService;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -41,7 +44,8 @@ public class SkuVirtualSettingsUtil {
 			CPInstance cpInstance, SkuVirtualSettings skuVirtualSettings,
 			CPDefinitionVirtualSettingService cpDefinitionVirtualSettingService,
 			CPDVirtualSettingFileEntryService cpdVirtualSettingFileEntryService,
-			DLAppService dlAppService,
+			DLAppService dlAppService, GroupService groupService,
+			JournalArticleService journalArticleService,
 			RepositoryLocalService repositoryLocalService,
 			UniqueFileNameProvider uniqueFileNameProvider,
 			ServiceContext serviceContext)
@@ -55,22 +59,25 @@ public class SkuVirtualSettingsUtil {
 			return _addSkuVirtualSettings(
 				cpInstance, skuVirtualSettings,
 				cpDefinitionVirtualSettingService,
-				cpdVirtualSettingFileEntryService, dlAppService,
-				repositoryLocalService, uniqueFileNameProvider, serviceContext);
+				cpdVirtualSettingFileEntryService, dlAppService, groupService,
+				journalArticleService, repositoryLocalService,
+				uniqueFileNameProvider, serviceContext);
 		}
 
 		return _updateSkuVirtualSettings(
 			cpInstance, cpDefinitionVirtualSetting,
 			cpdVirtualSettingFileEntryService, skuVirtualSettings,
-			cpDefinitionVirtualSettingService, dlAppService,
-			repositoryLocalService, uniqueFileNameProvider, serviceContext);
+			cpDefinitionVirtualSettingService, dlAppService, groupService,
+			journalArticleService, repositoryLocalService,
+			uniqueFileNameProvider, serviceContext);
 	}
 
 	private static CPDefinitionVirtualSetting _addSkuVirtualSettings(
 			CPInstance cpInstance, SkuVirtualSettings skuVirtualSettings,
 			CPDefinitionVirtualSettingService cpDefinitionVirtualSettingService,
 			CPDVirtualSettingFileEntryService cpdVirtualSettingFileEntryService,
-			DLAppService dlAppService,
+			DLAppService dlAppService, GroupService groupService,
+			JournalArticleService journalArticleService,
 			RepositoryLocalService repositoryLocalService,
 			UniqueFileNameProvider uniqueFileNameProvider,
 			ServiceContext serviceContext)
@@ -114,8 +121,9 @@ public class SkuVirtualSettingsUtil {
 		if (termsOfUseRequired) {
 			termsOfUseContentMap = LanguageUtils.getLocalizedMap(
 				skuVirtualSettings.getTermsOfUseContent());
-			termsOfUseJournalArticleId = GetterUtil.getLong(
-				skuVirtualSettings.getTermsOfUseJournalArticleId());
+			termsOfUseJournalArticleId = _getTermsOfUseJournalArticleId(
+				cpInstance.getCompanyId(), cpInstance.getGroupId(),
+				groupService, journalArticleService, skuVirtualSettings);
 		}
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
@@ -167,13 +175,53 @@ public class SkuVirtualSettingsUtil {
 		return CommerceOrderConstants.ORDER_STATUS_COMPLETED;
 	}
 
+	private static long _getTermsOfUseJournalArticleId(
+			long companyId, long groupId, GroupService groupService,
+			JournalArticleService journalArticleService,
+			SkuVirtualSettings skuVirtualSettings)
+		throws Exception {
+
+		String externalReferenceCode =
+			skuVirtualSettings.
+				getTermsOfUseJournalArticleExternalReferenceCode();
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return GetterUtil.getLong(
+				skuVirtualSettings.getTermsOfUseJournalArticleId());
+		}
+
+		String groupExternalReferenceCode =
+			skuVirtualSettings.
+				getTermsOfUseJournalArticleGroupExternalReferenceCode();
+
+		long journalArticleGroupId = groupId;
+
+		if (Validator.isNotNull(groupExternalReferenceCode)) {
+			Group group = groupService.getGroupByExternalReferenceCode(
+				groupExternalReferenceCode, companyId);
+
+			journalArticleGroupId = group.getGroupId();
+		}
+
+		JournalArticle journalArticle =
+			journalArticleService.fetchLatestArticleByExternalReferenceCode(
+				journalArticleGroupId, externalReferenceCode);
+
+		if (journalArticle == null) {
+			return 0;
+		}
+
+		return journalArticle.getResourcePrimKey();
+	}
+
 	private static CPDefinitionVirtualSetting _updateSkuVirtualSettings(
 			CPInstance cpInstance,
 			CPDefinitionVirtualSetting cpDefinitionVirtualSetting,
 			CPDVirtualSettingFileEntryService cpdVirtualSettingFileEntryService,
 			SkuVirtualSettings skuVirtualSettings,
 			CPDefinitionVirtualSettingService cpDefinitionVirtualSettingService,
-			DLAppService dlAppService,
+			DLAppService dlAppService, GroupService groupService,
+			JournalArticleService journalArticleService,
 			RepositoryLocalService repositoryLocalService,
 			UniqueFileNameProvider uniqueFileNameProvider,
 			ServiceContext serviceContext)
@@ -265,8 +313,10 @@ public class SkuVirtualSettingsUtil {
 		if (termsOfUseRequired) {
 			termsOfUseContentMap = LanguageUtils.getLocalizedMap(
 				skuVirtualSettings.getTermsOfUseContent());
-			termsOfUseJournalArticleId = GetterUtil.getLong(
-				skuVirtualSettings.getTermsOfUseJournalArticleId());
+			termsOfUseJournalArticleId = _getTermsOfUseJournalArticleId(
+				cpDefinitionVirtualSetting.getCompanyId(),
+				cpDefinitionVirtualSetting.getGroupId(), groupService,
+				journalArticleService, skuVirtualSettings);
 
 			if ((termsOfUseContentMap == null) &&
 				(termsOfUseJournalArticleId == 0)) {

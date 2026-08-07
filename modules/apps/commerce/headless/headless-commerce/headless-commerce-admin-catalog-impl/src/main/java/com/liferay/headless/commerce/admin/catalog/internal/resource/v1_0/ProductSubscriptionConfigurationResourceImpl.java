@@ -50,6 +50,12 @@ public class ProductSubscriptionConfigurationResourceImpl
 					externalReferenceCode, contextCompany.getCompanyId(),
 					false);
 
+		if (cpDefinition == null) {
+			throw new NoSuchCPDefinitionException(
+				"Unable to find product with external reference code " +
+					externalReferenceCode);
+		}
+
 		return _toProductSubscriptionConfiguration(
 			cpDefinition.getCPDefinitionId());
 	}
