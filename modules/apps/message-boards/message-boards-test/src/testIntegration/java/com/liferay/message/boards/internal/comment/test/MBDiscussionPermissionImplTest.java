@@ -362,18 +362,6 @@ public class MBDiscussionPermissionImplTest {
 			});
 	}
 
-	private long _addComment(User user) throws Exception {
-		IdentityServiceContextFunction serviceContextFunction =
-			new IdentityServiceContextFunction(
-				ServiceContextTestUtil.getServiceContext(
-					_group, user.getUserId()));
-
-		return _commentManager.addComment(
-			user.getUserId(), _group.getGroupId(),
-			DLFileEntryConstants.getClassName(), _fileEntry.getFileEntryId(),
-			StringUtil.randomString(), serviceContextFunction);
-	}
-
 	private long _addCMPProjectComment(User user) throws Exception {
 		CMPTestUtil.getOrAddGroup(MBDiscussionPermissionImplTest.class);
 
@@ -393,6 +381,18 @@ public class MBDiscussionPermissionImplTest {
 			new IdentityServiceContextFunction(
 				ServiceContextTestUtil.getServiceContext(
 					objectEntry.getGroupId(), user.getUserId())));
+	}
+
+	private long _addComment(User user) throws Exception {
+		IdentityServiceContextFunction serviceContextFunction =
+			new IdentityServiceContextFunction(
+				ServiceContextTestUtil.getServiceContext(
+					_group, user.getUserId()));
+
+		return _commentManager.addComment(
+			user.getUserId(), _group.getGroupId(),
+			DLFileEntryConstants.getClassName(), _fileEntry.getFileEntryId(),
+			StringUtil.randomString(), serviceContextFunction);
 	}
 
 	private void _withAlwaysEditableByOwnerEnabled(
