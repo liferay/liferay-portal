@@ -55,6 +55,14 @@ public class ListTypeDefinitionLocalServiceUtil {
 	}
 
 	public static ListTypeDefinition addListTypeDefinition(
+			String externalReferenceCode, long userId, boolean system)
+		throws PortalException {
+
+		return getService().addListTypeDefinition(
+			externalReferenceCode, userId, system);
+	}
+
+	public static ListTypeDefinition addListTypeDefinition(
 			String externalReferenceCode, long userId,
 			Map<java.util.Locale, String> nameMap, boolean system,
 			List<com.liferay.list.type.model.ListTypeEntry> listTypeEntries,
@@ -405,4 +413,4 @@ public class ListTypeDefinitionLocalServiceUtil {
 			ListTypeDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:494142190
+// LIFERAY-SERVICE-BUILDER-HASH:-1971662102

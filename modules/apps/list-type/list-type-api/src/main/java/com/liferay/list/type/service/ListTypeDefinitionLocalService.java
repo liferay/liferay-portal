@@ -77,6 +77,11 @@ public interface ListTypeDefinitionLocalService
 
 	@Indexable(type = IndexableType.REINDEX)
 	public ListTypeDefinition addListTypeDefinition(
+			String externalReferenceCode, long userId, boolean system)
+		throws PortalException;
+
+	@Indexable(type = IndexableType.REINDEX)
+	public ListTypeDefinition addListTypeDefinition(
 			String externalReferenceCode, long userId,
 			Map<Locale, String> nameMap, boolean system,
 			List<ListTypeEntry> listTypeEntries, ServiceContext serviceContext)
@@ -337,4 +342,4 @@ public interface ListTypeDefinitionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:959657707
+// LIFERAY-SERVICE-BUILDER-HASH:1190439811
