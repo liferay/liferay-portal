@@ -294,7 +294,7 @@ public class JenkinsCohort {
 
 					@Override
 					public Void call() {
-						jenkinsMaster.update(false);
+						jenkinsMaster.update(true);
 
 						buildURLs.addAll(jenkinsMaster.getBuildURLs());
 						queuedBuildURLs.putAll(
