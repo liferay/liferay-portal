@@ -53,16 +53,21 @@ public class JenkinsStopBuildUtil {
 			}
 		}
 
+		// A build that never reacts to the interrupt is expected rather than
+		// exceptional. The caller reports it and the next scheduled pass
+		// flags it again, so it must not surface as a stack trace every run.
+
 		long abortVerificationDuration =
 			_ABORT_VERIFICATION_PERIOD * _ABORT_VERIFICATION_RETRIES;
 
-		throw new RuntimeException(
+		System.out.println(
 			JenkinsResultsParserUtil.combine(
-				"Unable to stop ", normalizedBuildURL, ", it was still ",
-				"running ",
+				normalizedBuildURL, " was still running ",
 				JenkinsResultsParserUtil.toDurationString(
 					abortVerificationDuration),
 				" after being interrupted"));
+
+		return AbortResult.STILL_RUNNING;
 	}
 
 	public static void cancelQueueItem(
@@ -100,7 +105,7 @@ public class JenkinsStopBuildUtil {
 
 	public static enum AbortResult {
 
-		ALREADY_FINISHED, STOPPED
+		ALREADY_FINISHED, STILL_RUNNING, STOPPED
 
 	}
 

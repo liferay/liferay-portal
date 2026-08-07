@@ -320,6 +320,12 @@ public class StaleBuildReaper {
 				return "Already finished.";
 			}
 
+			if (_abortResult ==
+					JenkinsStopBuildUtil.AbortResult.STILL_RUNNING) {
+
+				return "Ignored the abort, still holding its executor.";
+			}
+
 			if (_abortResult == JenkinsStopBuildUtil.AbortResult.STOPPED) {
 				return "Aborted.";
 			}
