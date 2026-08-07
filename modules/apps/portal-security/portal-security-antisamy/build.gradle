@@ -1056,6 +1056,24 @@ private String _filterFragmentSanitizer(String line) {
 			|					<literal value="http://www.w3.org/1999/xlink"/>
 			|				</literal-list>
 			|			</attribute>
+			|			<attribute name="aria-hidden" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="false"/>
+			|					<literal value="true"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="focusable" onInvalid="removeAttribute">
+			|				<literal-list>
+			|					<literal value="auto"/>
+			|					<literal value="false"/>
+			|					<literal value="true"/>
+			|				</literal-list>
+			|			</attribute>
+			|			<attribute name="role" onInvalid="removeAttribute">
+			|				<regexp-list>
+			|					<regexp name="svgKeyword"/>
+			|				</regexp-list>
+			|			</attribute>
 			|			<attribute name="fill"/>
 			|			<attribute name="fill-opacity"/>
 			|			<attribute name="fill-rule"/>
