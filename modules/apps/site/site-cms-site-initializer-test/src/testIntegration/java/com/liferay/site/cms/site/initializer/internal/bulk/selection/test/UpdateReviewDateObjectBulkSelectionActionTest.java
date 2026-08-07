@@ -70,8 +70,8 @@ public class UpdateReviewDateObjectBulkSelectionActionTest {
 			_objectEntryLocalService.getObjectEntry(
 				objectEntry.getObjectEntryId());
 
-		Assert.assertEquals(reviewDate, updatedObjectEntry.getReviewDate());
 		Assert.assertEquals(displayDate, updatedObjectEntry.getDisplayDate());
+		Assert.assertEquals(reviewDate, updatedObjectEntry.getReviewDate());
 	}
 
 	@Test
@@ -87,8 +87,8 @@ public class UpdateReviewDateObjectBulkSelectionActionTest {
 			_objectEntryLocalService.getObjectEntry(
 				objectEntry.getObjectEntryId());
 
-		Assert.assertNull(updatedObjectEntry.getReviewDate());
 		Assert.assertEquals(displayDate, updatedObjectEntry.getDisplayDate());
+		Assert.assertNull(updatedObjectEntry.getReviewDate());
 	}
 
 	@Test
@@ -112,9 +112,9 @@ public class UpdateReviewDateObjectBulkSelectionActionTest {
 			_objectEntryLocalService.getObjectEntry(
 				objectEntry.getObjectEntryId());
 
-		Assert.assertEquals(reviewDate, updatedObjectEntry.getReviewDate());
 		Assert.assertEquals(
 			expirationDate, updatedObjectEntry.getExpirationDate());
+		Assert.assertEquals(reviewDate, updatedObjectEntry.getReviewDate());
 	}
 
 	private ObjectEntry _addObjectEntry(Date displayDate, Date reviewDate)
