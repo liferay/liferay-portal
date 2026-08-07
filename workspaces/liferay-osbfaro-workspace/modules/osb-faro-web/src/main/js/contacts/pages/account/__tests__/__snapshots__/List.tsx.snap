@@ -113,14 +113,9 @@ exports[`List rendering should match the snapshot 1`] = `
                   </div>
                   <div
                     class="text-secondary"
+                    data-testid="metric-card-trend"
                   >
-                    <span
-                      class="mr-1"
-                      style="color: rgb(107, 108, 126);"
-                    >
-                      0%
-                    </span>
-                     vs. Previous 90 Days
+                     
                   </div>
                 </div>
               </div>
@@ -170,6 +165,7 @@ exports[`List rendering should match the snapshot 1`] = `
                   </div>
                   <div
                     class="text-secondary"
+                    data-testid="metric-card-trend"
                   >
                     <span
                       class="mr-1"
@@ -227,6 +223,7 @@ exports[`List rendering should match the snapshot 1`] = `
                   </div>
                   <div
                     class="text-secondary"
+                    data-testid="metric-card-trend"
                   >
                     <span
                       class="mr-1"

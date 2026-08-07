@@ -105,6 +105,37 @@ describe('MetricCard', () => {
 		).toBeNull();
 	});
 
+	it('should not render the trend when renderTrendLabel is omitted', () => {
+		const {container, getByText, queryByText} = render(
+			<MetricCard
+				description={defaultProps.description}
+				title={defaultProps.title}
+				trend={{
+					percentage: 10,
+					trendClassification: TrendClassification.Positive,
+				}}
+				value={defaultProps.value}
+			/>
+		);
+
+		expect(getByText('42')).toBeTruthy();
+		expect(queryByText('10%')).toBeNull();
+		expect(queryByText('vs last period')).toBeNull();
+		expect(container.querySelector('.lexicon-icon-caret-top-l')).toBeNull();
+	});
+
+	it('should keep the trend row height when renderTrendLabel is omitted so the value stays aligned', () => {
+		const {getByTestId} = render(
+			<MetricCard
+				description={defaultProps.description}
+				title={defaultProps.title}
+				value={defaultProps.value}
+			/>
+		);
+
+		expect(getByTestId('metric-card-trend').textContent).toBe('\u00A0');
+	});
+
 	it('should apply className and trendClassName', () => {
 		const {container} = render(
 			<MetricCard

@@ -42,6 +42,7 @@ exports[`MetricCard should render 1`] = `
         </div>
         <div
           class="text-secondary"
+          data-testid="metric-card-trend"
         >
           <span
             class="mr-1"

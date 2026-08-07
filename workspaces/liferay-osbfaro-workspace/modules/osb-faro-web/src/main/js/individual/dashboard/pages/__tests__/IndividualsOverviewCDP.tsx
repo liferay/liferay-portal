@@ -113,6 +113,20 @@ describe('IndividualsOverviewCDP', () => {
 		expect(getByText('Anonymous Individuals')).toBeInTheDocument();
 	});
 
+	it('should render the period-over-period trend only for the known and anonymous individuals cards', () => {
+		(useQuery as jest.Mock).mockReturnValue({
+			data: mockedIndividualMetrics.data,
+			loading: false,
+		});
+
+		const {getAllByText, queryByText} = renderIndividualsOverviewCDP();
+
+		expect(getAllByText(/vs\. Last 30 Days/)).toHaveLength(2);
+		expect(queryByText('30.2%')).toBeNull();
+		expect(getAllByText('28.1%')).toHaveLength(1);
+		expect(getAllByText('11.1%')).toHaveLength(1);
+	});
+
 	it('should render a centered loader inside each metric card while metrics are loading', () => {
 		(useQuery as jest.Mock).mockReturnValue({
 			data: undefined,

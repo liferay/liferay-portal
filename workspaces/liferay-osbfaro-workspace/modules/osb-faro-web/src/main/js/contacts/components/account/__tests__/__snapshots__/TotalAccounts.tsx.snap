@@ -49,14 +49,9 @@ exports[`TotalAccounts should load with empty values when there's no data 1`] = 
             </div>
             <div
               class="text-secondary"
+              data-testid="metric-card-trend"
             >
-              <span
-                class="mr-1"
-                style="color: rgb(107, 108, 126);"
-              >
-                0%
-              </span>
-               vs. Previous 90 Days
+               
             </div>
           </div>
         </div>
@@ -106,6 +101,7 @@ exports[`TotalAccounts should load with empty values when there's no data 1`] = 
             </div>
             <div
               class="text-secondary"
+              data-testid="metric-card-trend"
             >
               <span
                 class="mr-1"
@@ -163,6 +159,7 @@ exports[`TotalAccounts should load with empty values when there's no data 1`] = 
             </div>
             <div
               class="text-secondary"
+              data-testid="metric-card-trend"
             >
               <span
                 class="mr-1"
@@ -229,23 +226,9 @@ exports[`TotalAccounts should render 1`] = `
             </div>
             <div
               class="text-secondary"
+              data-testid="metric-card-trend"
             >
-              <svg
-                class="lexicon-icon lexicon-icon-caret-top-l"
-                role="presentation"
-                style="color: rgb(40, 125, 60);"
-              >
-                <use
-                  href="#caret-top-l"
-                />
-              </svg>
-              <span
-                class="mr-1"
-                style="color: rgb(40, 125, 60);"
-              >
-                50%
-              </span>
-               vs. Previous 90 Days
+               
             </div>
           </div>
         </div>
@@ -295,6 +278,7 @@ exports[`TotalAccounts should render 1`] = `
             </div>
             <div
               class="text-secondary"
+              data-testid="metric-card-trend"
             >
               <svg
                 class="lexicon-icon lexicon-icon-caret-bottom-l"
@@ -361,6 +345,7 @@ exports[`TotalAccounts should render 1`] = `
             </div>
             <div
               class="text-secondary"
+              data-testid="metric-card-trend"
             >
               <span
                 class="mr-1"
