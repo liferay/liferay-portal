@@ -198,9 +198,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 			_BUILD_URL_OFFLINE_NODE, runningBuilds);
 
 		Assert.assertTrue(offlineRunningBuild.isJenkinsSlaveOffline());
-		Assert.assertEquals(
-			"Node is being removed",
-			offlineRunningBuild.getOfflineCauseReason());
+		Assert.assertTrue(offlineRunningBuild.isJenkinsSlaveBeingRemoved());
 	}
 
 	@Test

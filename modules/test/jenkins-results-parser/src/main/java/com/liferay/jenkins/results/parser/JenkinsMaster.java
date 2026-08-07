@@ -1422,10 +1422,6 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			return currentTimeMillis - jenkinsSlaveOfflineTime;
 		}
 
-		public String getOfflineCauseReason() {
-			return _computerJSONObject.optString("offlineCauseReason");
-		}
-
 		public String getURL() {
 			return _currentExecutableJSONObject.optString("url");
 		}
@@ -1435,7 +1431,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 
 		public boolean isJenkinsSlaveBeingRemoved() {
-			String offlineCauseReason = getOfflineCauseReason();
+			String offlineCauseReason = _getOfflineCauseReason();
 
 			if (!_isJenkinsSlaveOffline() ||
 				JenkinsResultsParserUtil.isNullOrEmpty(offlineCauseReason)) {
@@ -1488,6 +1484,10 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			}
 
 			return offlineCauseJSONObject.optLong("timestamp", -1);
+		}
+
+		private String _getOfflineCauseReason() {
+			return _computerJSONObject.optString("offlineCauseReason");
 		}
 
 		private long _getStartTime() {
