@@ -207,6 +207,36 @@ describe('CalendarView', () => {
 		expect(screen.queryByLabelText('add-task')).not.toBeInTheDocument();
 	});
 
+	it('marks the current calendar view button as pressed', () => {
+		renderCalendarView(false);
+
+		const monthButton = screen.getByRole('button', {name: 'month'});
+		const weekButton = screen.getByRole('button', {name: 'week'});
+
+		expect(monthButton).toHaveAttribute('aria-pressed', 'true');
+		expect(monthButton).toHaveClass('active');
+		expect(weekButton).toHaveAttribute('aria-pressed', 'false');
+		expect(weekButton).not.toHaveClass('active');
+
+		fireEvent.click(screen.getByText('Switch to week'));
+
+		expect(weekButton).toHaveAttribute('aria-pressed', 'true');
+		expect(weekButton).toHaveClass('active');
+		expect(monthButton).toHaveAttribute('aria-pressed', 'false');
+		expect(monthButton).not.toHaveClass('active');
+	});
+
+	it('renders the calendar view buttons with a single Clay variant', () => {
+		renderCalendarView(false);
+
+		['day', 'week', 'month'].forEach((label) => {
+			const button = screen.getByRole('button', {name: label});
+
+			expect(button).toHaveClass('btn-secondary');
+			expect(button).not.toHaveClass('btn-outline-secondary');
+		});
+	});
+
 	it('replaces a changed task in the data set instead of reloading', () => {
 		const item = createItem();
 
