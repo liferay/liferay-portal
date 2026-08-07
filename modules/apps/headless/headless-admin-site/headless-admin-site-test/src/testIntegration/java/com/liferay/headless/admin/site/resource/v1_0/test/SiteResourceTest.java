@@ -495,7 +495,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			site.getName(), group.getName(LocaleUtil.getDefault()));
 	}
 
-	private File _exportSites(String... siteExternalReferenceCodes)
+	private File _exportLayoutsAsFile(String... siteExternalReferenceCodes)
 		throws Exception {
 
 		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
@@ -1439,7 +1439,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		String externalReferenceCode1 = site1.getExternalReferenceCode();
 		String externalReferenceCode2 = site2.getExternalReferenceCode();
 
-		File larFile = _exportSites(externalReferenceCode1);
+		File larFile = _exportLayoutsAsFile(externalReferenceCode1);
 
 		siteResource.deleteSite(externalReferenceCode1);
 		siteResource.deleteSite(externalReferenceCode2);
@@ -1461,7 +1461,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		String externalReferenceCode1 = site1.getExternalReferenceCode();
 		String externalReferenceCode2 = site2.getExternalReferenceCode();
 
-		File larFile = _exportSites(
+		File larFile = _exportLayoutsAsFile(
 			externalReferenceCode1, externalReferenceCode2);
 
 		siteResource.deleteSite(externalReferenceCode1);
