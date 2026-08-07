@@ -181,6 +181,9 @@ public class SitemapManagerTest {
 
 	@After
 	public void tearDown() throws Exception {
+		_sitemapManager.deleteRegenerateSitemapScheduledJobs(
+			TestPropsValues.getCompanyId());
+
 		if (_group != null) {
 			_sitemapStorageHelper.deleteSitemaps(
 				TestPropsValues.getCompanyId(), _group.getGroupId());
