@@ -206,11 +206,6 @@ $cadmin-card: map-deep-merge(
 			margin-right: 0px,
 		),
 
-		active: (
-			border-color: $cadmin-primary,
-			outline-color: $cadmin-primary,
-		),
-
 		disabled: (
 			cursor: $cadmin-disabled-cursor,
 			opacity: $cadmin-component-disabled-opacity,
@@ -549,6 +544,8 @@ $cadmin-card-interactive: map-deep-merge(
 
 		active: (
 			background-color: $cadmin-gray-200,
+			border-color: $cadmin-primary,
+			outline-color: $cadmin-primary,
 		),
 
 		after-highlight: $cadmin-card-interactive-after-highlight,

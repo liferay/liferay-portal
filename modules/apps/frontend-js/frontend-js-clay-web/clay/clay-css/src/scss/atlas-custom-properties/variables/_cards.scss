@@ -221,11 +221,6 @@ $card: map-deep-merge(
 			margin-right: 0,
 		),
 
-		active: (
-			border-color: $primary,
-			outline-color: $primary,
-		),
-
 		disabled: (
 			cursor: $disabled-cursor,
 			opacity: $component-disabled-opacity,
@@ -799,6 +794,8 @@ $card-interactive: map-deep-merge(
 
 		active: (
 			background-color: $gray-200,
+			border-color: $primary,
+			outline-color: $primary,
 		),
 
 		after-highlight: c-unset,

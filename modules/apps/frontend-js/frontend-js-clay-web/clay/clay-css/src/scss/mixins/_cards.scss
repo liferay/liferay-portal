@@ -1912,9 +1912,9 @@
 /// 		),
 /// 	),
 /// 	active: (
-/// 		// .form-check-card.active
+/// 		// .form-check-card:active, .form-check-card.active
 /// 		card: (
-/// 			// .form-check-card.active .card
+/// 			// .form-check-card:active .card, .form-check-card.active .card
 /// 			//     @include clay-card-variant();
 /// 		),
 /// 	),
@@ -1988,6 +1988,7 @@
 			$_active: map-get($map, active);
 
 			@if ($_active) {
+				&:active,
 				&.active {
 					$_card: map-get($_active, card);
 
