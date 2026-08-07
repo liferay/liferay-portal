@@ -10,9 +10,9 @@ import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {styleBookPageTest} from '../../../fixtures/styleBookPageTest';
 import getRandomString from '../../../utils/getRandomString';
 import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
-import {editThemeCSSClientExtensionsPageTest} from './fixtures/editThemeCSSClientExtensionsPageTest';
 import {WaitAction} from '../pages/EditClientExtensionsPage';
 import {ViewClientExtensionPage} from '../pages/ViewClientExtensionPage';
+import {editThemeCSSClientExtensionsPageTest} from './fixtures/editThemeCSSClientExtensionsPageTest';
 import uploadAndValidateFile from './utils/uploadAndValidateFile';
 
 const test = mergeTests(
