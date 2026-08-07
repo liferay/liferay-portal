@@ -1,0 +1,9 @@
+<!--
+* SPDX-FileCopyrightText: © 2026 Liferay, Inc. <https://liferay.com>
+* SPDX-FileCopyrightText: © 2026 Contributors to the project Clay <https://github.com/liferay/clay/graphs/contributors>
+*
+* SPDX-License-Identifier: BSD-3-Clause
+-->
+<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+	<path class="lexicon-icon-outline" d="M6.032 6.782c-.168-.488.35-.936.844-.73l8.752 3.652a.585.585 0 0 1-.075 1.113l-3.428.974a.616.616 0 0 0-.4.347l-1.495 3.49c-.219.513-.989.489-1.17-.036l-3.028-8.81ZM3.5 0a.427.427 0 0 1 .419.343l.364 1.824a.702.702 0 0 0 .55.55l1.824.364a.428.428 0 0 1 0 .838l-1.824.364a.702.702 0 0 0-.55.55L3.92 6.657a.428.428 0 0 1-.838 0l-.364-1.824a.702.702 0 0 0-.55-.55L.343 3.92a.428.428 0 0 1 0-.838l1.824-.364a.702.702 0 0 0 .55-.55L3.08.343A.428.428 0 0 1 3.5 0Z" />
+</svg>
