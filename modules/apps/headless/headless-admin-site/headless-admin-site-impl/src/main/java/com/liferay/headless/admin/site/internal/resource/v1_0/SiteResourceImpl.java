@@ -78,6 +78,7 @@ import jakarta.ws.rs.core.Response;
 import java.io.File;
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -100,6 +101,22 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class SiteResourceImpl
 	extends BaseSiteResourceImpl
 	implements ExportImportVulcanBatchEngineTaskItemDelegate<Site> {
+
+	@Override
+	public void create(
+			Collection<Site> sites, Map<String, Serializable> parameters)
+		throws Exception {
+
+		super.create(_getSelectedSites(sites, parameters), parameters);
+	}
+
+	@Override
+	public void delete(
+			Collection<Site> sites, Map<String, Serializable> parameters)
+		throws Exception {
+
+		super.delete(_getSelectedSites(sites, parameters), parameters);
+	}
 
 	@Override
 	public void deleteSite(String externalReferenceCode) throws Exception {
@@ -140,13 +157,21 @@ public class SiteResourceImpl
 			public Map<String, Serializable> getParameters(
 				PortletDataContext portletDataContext) {
 
-				// The Sites API does not support OData filtering, so the
+				// The sites admin API does not support OData filtering, so the
 				// selection is narrowed with the query parameter the batch
-				// engine forwards to the resource instead of with a filter
+				// engine forwards to the resource instead of with a filter. An
+				// import reads a key of its own, because a batch import outside
+				// an export import is not narrowed by a query parameter its
+				// caller happened to pass.
+
+				String[] siteExternalReferenceCodes =
+					_getSiteExternalReferenceCodes(portletDataContext);
 
 				return HashMapBuilder.<String, Serializable>put(
-					"externalReferenceCodes",
-					_getSiteExternalReferenceCodes(portletDataContext)
+					_SELECTED_EXTERNAL_REFERENCE_CODES,
+					siteExternalReferenceCodes
+				).put(
+					"externalReferenceCodes", siteExternalReferenceCodes
 				).build();
 			}
 
@@ -774,6 +799,34 @@ public class SiteResourceImpl
 		};
 	}
 
+	private Collection<Site> _getSelectedSites(
+		Collection<Site> sites, Map<String, Serializable> parameters) {
+
+		if (parameters == null) {
+			return sites;
+		}
+
+		String[] selectedExternalReferenceCodes = (String[])parameters.get(
+			_SELECTED_EXTERNAL_REFERENCE_CODES);
+
+		if (selectedExternalReferenceCodes == null) {
+			return sites;
+		}
+
+		List<Site> selectedSites = new ArrayList<>();
+
+		for (Site site : sites) {
+			if (ArrayUtil.contains(
+					selectedExternalReferenceCodes,
+					site.getExternalReferenceCode())) {
+
+				selectedSites.add(site);
+			}
+		}
+
+		return selectedSites;
+	}
+
 	private ServiceContext _getServiceContext() throws PortalException {
 		ServiceContext serviceContext = null;
 
@@ -1202,6 +1255,9 @@ public class SiteResourceImpl
 		GooglePlacesWebKeys.GOOGLE_PLACES_API_KEY, "defaultSiteRoleIds",
 		"defaultTeamIds", "googleMapsAPIKey"
 	};
+
+	private static final String _SELECTED_EXTERNAL_REFERENCE_CODES =
+		"selectedExternalReferenceCodes";
 
 	@Reference
 	private GroupLocalService _groupLocalService;
