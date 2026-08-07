@@ -9,6 +9,7 @@ dependencies {
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-search:portal-search-spi")
+	compileOnly project(":apps:portal-security:portal-security-fips-api")
 	compileOnly project(":apps:portal-security:portal-security-permission-api")
 	compileOnly project(":apps:roles:roles-admin-api")
 	compileOnly project(":apps:site:site-api")
