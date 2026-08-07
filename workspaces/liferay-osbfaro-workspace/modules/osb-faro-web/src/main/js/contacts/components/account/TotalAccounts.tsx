@@ -53,9 +53,7 @@ const TotalAccounts = ({groupId}: {groupId: string}) => {
 					)}
 					loading={loading}
 					minHeight={160}
-					renderTrendLabel={renderTrendLabel}
 					title={Liferay.Language.get('total-accounts')}
-					trend={getMetric(AccountMetricType.Total)?.trend}
 					value={renderAccountValue(
 						getMetric(AccountMetricType.Total)
 					)}

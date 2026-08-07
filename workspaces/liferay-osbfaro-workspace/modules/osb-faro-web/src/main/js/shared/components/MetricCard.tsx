@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import ClayIcon from '@clayui/icon';
 import Loading from 'shared/components/Loading';
 import React, {ReactNode} from 'react';
+import {formatPercent} from 'shared/util/numbers';
 import {getIcon, getStatsColor} from 'shared/util/metrics';
 import {isNil} from 'lodash';
 import {Text} from '@clayui/core';
-import {formatPercent} from 'shared/util/numbers';
 import {TrendClassification} from 'segment/types';
 
 interface IMetricCardTrend {
@@ -14,12 +14,18 @@ interface IMetricCardTrend {
 	trendClassification: TrendClassification;
 }
 
+/**
+ * Fills the trend row on cards without a trend so that it keeps its height,
+ * leaving the value aligned with the sibling cards that do render a trend.
+ */
+const TREND_PLACEHOLDER = '\u00A0';
+
 interface IMetricCardProps {
 	className?: string;
 	description: string;
 	loading?: boolean;
 	minHeight?: number;
-	renderTrendLabel: (percentageNode: ReactNode) => ReactNode;
+	renderTrendLabel?: (percentageNode: ReactNode) => ReactNode;
 	title: string;
 	trend?: IMetricCardTrend;
 	trendClassName?: string;
@@ -77,29 +83,38 @@ const MetricCard: React.FC<IMetricCardProps> = ({
 
 					<div
 						className={classNames('text-secondary', trendClassName)}
+						data-testid="metric-card-trend"
 					>
-						{!isNil(trend?.trendClassification) &&
-							trend?.trendClassification !==
-								TrendClassification.Neutral && (
-								<ClayIcon
-									style={{color: percentageColor}}
-									symbol={
-										getIcon(trend?.percentage ?? 0) ?? ''
-									}
-								/>
-							)}
+						{renderTrendLabel ? (
+							<>
+								{!isNil(trend?.trendClassification) &&
+									trend?.trendClassification !==
+										TrendClassification.Neutral && (
+										<ClayIcon
+											style={{color: percentageColor}}
+											symbol={
+												getIcon(
+													trend?.percentage ?? 0
+												) ?? ''
+											}
+										/>
+									)}
 
-						{renderTrendLabel(
-							<span
-								className="mr-1"
-								key="percentage"
-								style={{color: percentageColor}}
-							>
-								{formatPercent(
-									Math.abs(trend?.percentage ?? 0),
-									1
+								{renderTrendLabel(
+									<span
+										className="mr-1"
+										key="percentage"
+										style={{color: percentageColor}}
+									>
+										{formatPercent(
+											Math.abs(trend?.percentage ?? 0),
+											1
+										)}
+									</span>
 								)}
-							</span>
+							</>
+						) : (
+							TREND_PLACEHOLDER
 						)}
 					</div>
 				</div>

@@ -178,14 +178,9 @@ const IndividualsOverviewCDP = () => {
 									)}
 									loading={loading}
 									minHeight={198}
-									renderTrendLabel={renderTrendLabel}
 									title={Liferay.Language.get(
 										'total-individuals'
 									)}
-									trend={
-										data?.individualMetric
-											?.totalIndividualsMetric?.trend
-									}
 									value={renderIndividualsValue(
 										data?.individualMetric
 											?.totalIndividualsMetric?.value
