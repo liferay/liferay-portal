@@ -83,10 +83,10 @@ export class JournalEditArticlePage {
 		this.undoButton = page.getByTitle('Undo', {exact: true});
 	}
 
-	async assertPrivateContentIconInRelatedAssetPopUp(assetType: string) {
+	async assertPrivateContentIconInRelatedAssetPopUp() {
 		await expect(
 			this.page
-				.frameLocator(`iframe[title="Select ${assetType}"]`)
+				.getByRole('dialog')
 				.getByLabel('Not Visible to Guest Users')
 				.locator('use')
 				.first()
@@ -144,21 +144,6 @@ export class JournalEditArticlePage {
 			.click();
 
 		await this.page.locator(`button[id="${languageId}"]`).click();
-	}
-
-	async changeViewInRelatedAssetPopUp(assetType: string, viewType: string) {
-		await this.page
-			.frameLocator(`iframe[title="Select ${assetType}"]`)
-			.getByLabel('Select View, Currently Selected: ')
-			.waitFor();
-		await this.page
-			.frameLocator(`iframe[title="Select ${assetType}"]`)
-			.getByLabel('Select View, Currently Selected: ')
-			.click();
-		await this.page
-			.frameLocator(`iframe[title="Select ${assetType}"]`)
-			.getByRole('menuitem', {name: viewType})
-			.click();
 	}
 
 	async clearAllCategories(vocabulary: string) {

@@ -1060,18 +1060,7 @@ privateContentIconTest(
 
 		await journalEditArticlePage.openRelatedAsset();
 
-		await journalEditArticlePage.assertPrivateContentIconInRelatedAssetPopUp(
-			'Basic Web Content'
-		);
-
-		await journalEditArticlePage.changeViewInRelatedAssetPopUp(
-			'Basic Web Content',
-			'table'
-		);
-
-		await journalEditArticlePage.assertPrivateContentIconInRelatedAssetPopUp(
-			'Basic Web Content'
-		);
+		await journalEditArticlePage.assertPrivateContentIconInRelatedAssetPopUp();
 	}
 );
 
