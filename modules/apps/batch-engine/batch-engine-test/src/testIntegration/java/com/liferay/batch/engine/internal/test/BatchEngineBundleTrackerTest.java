@@ -240,6 +240,24 @@ public class BatchEngineBundleTrackerTest {
 		return batchEngineImportTask.getParameterValue("dataFileName");
 	}
 
+	private void _refreshBatchEngineBundleTracker() throws Exception {
+		ComponentDescriptionDTO componentDescriptionDTO =
+			_serviceComponentRuntime.getComponentDescriptionDTO(
+				FrameworkUtil.getBundle(_batchEngineUnitReader.getClass()),
+				"com.liferay.batch.engine.internal.bundle." +
+					"BatchEngineBundleTracker");
+
+		Promise<Void> promise = _serviceComponentRuntime.disableComponent(
+			componentDescriptionDTO);
+
+		promise.getValue();
+
+		promise = _serviceComponentRuntime.enableComponent(
+			componentDescriptionDTO);
+
+		promise.getValue();
+	}
+
 	private void _testProcessBatchEngineBundle(
 			Consumer<BatchEngineImportTask> consumer, String dirName,
 			String... expectedDataFileNames)
@@ -331,6 +349,8 @@ public class BatchEngineBundleTrackerTest {
 					}),
 				null);
 
+		_refreshBatchEngineBundleTracker();
+
 		Bundle bundle = _bundleContext.installBundle(
 			RandomTestUtil.randomString(), _toInputStream(dirName));
 
@@ -367,6 +387,8 @@ public class BatchEngineBundleTrackerTest {
 				componentDescriptionDTO2);
 
 			promise.getValue();
+
+			_refreshBatchEngineBundleTracker();
 		}
 	}
 
