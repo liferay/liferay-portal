@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -404,6 +405,32 @@ public class AssetListAssetEntryProviderFiltersTest {
 				_getFilterJSONObject(
 					"not-contains", _OBJECT_FIELD_NAME_KEYWORD, keyword)),
 			objectEntry2);
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
+	@Test
+	public void testGetAssetEntriesInfoPageWithMixedCaseUserNameFilters()
+		throws Exception {
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			HashMapBuilder.<String, Serializable>put(
+				_OBJECT_FIELD_NAME_TEXT, RandomTestUtil.randomString()
+			).build());
+
+		User user = TestPropsValues.getUser();
+
+		String upperCaseUserName = StringUtil.toUpperCase(user.getFullName());
+
+		_assertFilteredClassPKs(
+			_getFiltersJSONArray(
+				_getCommonFieldFilterJSONObject(
+					"contains", Field.USER_NAME, upperCaseUserName)),
+			objectEntry);
+		_assertFilteredClassPKs(
+			_getFiltersJSONArray(
+				_getCommonFieldFilterJSONObject(
+					"eq", Field.USER_NAME, upperCaseUserName)),
+			objectEntry);
 	}
 
 	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-74731"))
