@@ -93,7 +93,20 @@ const RoutesContainer = ({children}: {children: React.ReactNode}) => {
 	const {data: currentUser, loading} = useFetchCurrentUser(groupId);
 
 	useEffect(() => {
-		if (currentUser?.id && project?.corpProjectName) {
+
+		// LPD-101615: Pendo initialization is temporarily disabled because
+		// Analytics Cloud has no user consent flow yet. Tracking users
+		// without consent is not compliant with our own consent model (the
+		// DXP tracking script asks first) nor with consent regulations.
+		// Remove PENDO_TRACKING_ENABLED once the consent banner ships.
+
+		const PENDO_TRACKING_ENABLED = false;
+
+		if (
+			PENDO_TRACKING_ENABLED &&
+			currentUser?.id &&
+			project?.corpProjectName
+		) {
 			const pendo = new Pendo();
 
 			pendo.initialize({currentUser, project});
