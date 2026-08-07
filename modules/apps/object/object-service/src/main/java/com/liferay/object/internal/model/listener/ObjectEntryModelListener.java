@@ -241,6 +241,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		languageIds.addAll(localizedValues.keySet());
 
+		boolean modified = false;
+
 		for (String languageId : languageIds) {
 			Object originalValue = originalLocalizedValues.get(languageId);
 			Object value = localizedValues.get(languageId);
@@ -255,9 +257,11 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 						defaultLanguageId, languageId, objectField),
 					_getAuditValue(objectField, value),
 					_getAuditValue(objectField, originalValue)));
+
+			modified = true;
 		}
 
-		return !languageIds.isEmpty();
+		return modified;
 	}
 
 	private void _executeObjectActions(
