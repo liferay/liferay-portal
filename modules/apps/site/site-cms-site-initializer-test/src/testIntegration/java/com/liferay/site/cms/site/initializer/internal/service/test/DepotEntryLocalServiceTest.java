@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
@@ -82,6 +83,7 @@ public class DepotEntryLocalServiceTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
+	@TestInfo("LPD-101211")
 	public void testAddDepotEntry() throws Exception {
 		_assertCMSDefaultPermissions(
 			_addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY));
@@ -90,6 +92,8 @@ public class DepotEntryLocalServiceTest {
 			_addStagedDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY));
 		_assertCMSDefaultPermissions(
 			_addStagedDepotEntry(DepotConstants.TYPE_SPACE));
+
+		_assertGroupCreatorUserId();
 
 		_assertObjectEntryFolders(
 			_addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY), 0);
@@ -357,6 +361,26 @@ public class DepotEntryLocalServiceTest {
 			new String[] {ActionKeys.VIEW, ActionKeys.SUBSCRIBE},
 			JSONUtil.toStringArray(
 				jsonObject2.getJSONArray(RoleConstants.USER)));
+	}
+
+	private void _assertGroupCreatorUserId() throws Exception {
+		String name = PrincipalThreadLocal.getName();
+
+		PrincipalThreadLocal.setName(null);
+
+		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		_assertObjectEntryFolders(depotEntry, 2);
+
+		Group group = depotEntry.getGroup();
+
+		Repository repository = _repositoryLocalService.fetchRepository(
+			group.getGroupId(), TempFileEntryUtil.class.getName(),
+			TempFileEntryUtil.class.getName());
+
+		Assert.assertEquals(group.getCreatorUserId(), repository.getUserId());
+
+		PrincipalThreadLocal.setName(name);
 	}
 
 	private void _assertObjectEntryFolders(
