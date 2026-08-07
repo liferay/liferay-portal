@@ -108,6 +108,13 @@ components:
                         The localized descriptive name of the group where the asset entry lives.
                     readOnly: true
                     type: string
+                permissions:
+                    description:
+                        The asset entry's permissions.
+                    items:
+                        type: permission
+                    readOnly: true
+                    type: array
                 status:
                     description:
                         The asset entry's workflow status.
