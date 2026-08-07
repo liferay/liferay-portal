@@ -183,13 +183,15 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertEquals(
 			"Built-In Node", flyweightRunningBuild.getJenkinsSlaveName());
 		Assert.assertFalse(flyweightRunningBuild.isLikelyStuck());
-		Assert.assertFalse(flyweightRunningBuild.isJenkinsSlaveOffline());
+		Assert.assertFalse(
+			flyweightRunningBuild.isJenkinsSlaveOfflineUnexpectedly());
 
 		JenkinsMaster.RunningBuild likelyStuckRunningBuild = _getRunningBuild(
 			_BUILD_URL_LIKELY_STUCK, runningBuilds);
 
 		Assert.assertTrue(likelyStuckRunningBuild.isLikelyStuck());
-		Assert.assertFalse(likelyStuckRunningBuild.isJenkinsSlaveOffline());
+		Assert.assertFalse(
+			likelyStuckRunningBuild.isJenkinsSlaveOfflineUnexpectedly());
 		Assert.assertEquals(
 			_likelyStuckEstimatedDuration,
 			likelyStuckRunningBuild.getEstimatedDuration());
@@ -197,7 +199,8 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		JenkinsMaster.RunningBuild offlineRunningBuild = _getRunningBuild(
 			_BUILD_URL_OFFLINE_NODE, runningBuilds);
 
-		Assert.assertTrue(offlineRunningBuild.isJenkinsSlaveOffline());
+		Assert.assertTrue(
+			offlineRunningBuild.isJenkinsSlaveOfflineUnexpectedly());
 		Assert.assertTrue(offlineRunningBuild.isJenkinsSlaveBeingRemoved());
 	}
 

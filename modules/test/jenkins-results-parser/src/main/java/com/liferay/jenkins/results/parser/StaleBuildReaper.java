@@ -160,7 +160,7 @@ public class StaleBuildReaper {
 			return reasons;
 		}
 
-		if (!runningBuild.isJenkinsSlaveOffline()) {
+		if (!runningBuild.isJenkinsSlaveOfflineUnexpectedly()) {
 			return reasons;
 		}
 
