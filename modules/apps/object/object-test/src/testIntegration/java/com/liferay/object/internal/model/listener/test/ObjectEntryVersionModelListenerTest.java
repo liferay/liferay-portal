@@ -308,8 +308,6 @@ public class ObjectEntryVersionModelListenerTest {
 			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
 				objectEntryId);
 
-		Assert.assertNotNull(objectEntry);
-
 		Map<String, Serializable> values = objectEntry.getValues();
 
 		Assert.assertEquals(

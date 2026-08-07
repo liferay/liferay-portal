@@ -321,111 +321,103 @@ public class ObjectEntryIndexerReindexTest {
 
 		_user = TestPropsValues.getUser();
 
-		try {
-			ServiceContext serviceContext =
-				ServiceContextTestUtil.getServiceContext();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
 
-			serviceContext.setWorkflowAction(
-				WorkflowConstants.ACTION_SAVE_DRAFT);
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-			ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
-				0, TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId(),
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				null,
-				HashMapBuilder.<String, Serializable>put(
-					"textObjectFieldName", RandomTestUtil.randomString()
-				).build(),
-				serviceContext);
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"textObjectFieldName", RandomTestUtil.randomString()
+			).build(),
+			serviceContext);
 
-			serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
-			objectEntry = _objectEntryLocalService.updateObjectEntry(
-				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-				objectEntry.getObjectEntryFolderId(),
-				HashMapBuilder.<String, Serializable>put(
-					"textObjectFieldName", "approvedValue"
-				).build(),
-				serviceContext);
+		objectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"textObjectFieldName", "approvedValue"
+			).build(),
+			serviceContext);
 
-			serviceContext.setWorkflowAction(
-				WorkflowConstants.ACTION_SAVE_DRAFT);
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-			objectEntry = _objectEntryLocalService.updateObjectEntry(
-				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-				objectEntry.getObjectEntryFolderId(),
-				HashMapBuilder.<String, Serializable>put(
-					"textObjectFieldName", "draftValue"
-				).build(),
-				serviceContext);
+		objectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"textObjectFieldName", "draftValue"
+			).build(),
+			serviceContext);
 
-			ObjectEntry latestApprovedObjectEntry =
-				_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
-					objectEntry.getObjectEntryId());
+		ObjectEntry latestApprovedObjectEntry =
+			_objectEntryLocalService.fetchObjectEntryByHeadObjectEntryId(
+				objectEntry.getObjectEntryId());
 
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_APPROVED,
-				latestApprovedObjectEntry.getStatus());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED,
+			latestApprovedObjectEntry.getStatus());
 
-			PrincipalThreadLocal.setName(null);
+		PrincipalThreadLocal.setName(null);
 
-			Indexer<ObjectEntry> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(
-					objectEntry.getModelClassName());
+		Indexer<ObjectEntry> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			objectEntry.getModelClassName());
 
-			try (SafeCloseable safeCloseable =
-					ReindexCacheThreadLocal.openReindexMode()) {
+		try (SafeCloseable safeCloseable =
+				ReindexCacheThreadLocal.openReindexMode()) {
 
-				indexer.reindexCompany(_user.getCompanyId());
-			}
-
-			SearchResponse searchResponse = search(
-				objectDefinition.getClassName(), "draftValue",
-				WorkflowConstants.STATUS_ANY);
-
-			Assert.assertEquals(
-				searchResponse.getRequestString() + "->" +
-					searchResponse.getDocuments(),
-				1, searchResponse.getCount());
-
-			searchResponse = search(
-				objectDefinition.getClassName(), "approvedValue",
-				WorkflowConstants.STATUS_ANY);
-
-			Assert.assertEquals(
-				searchResponse.getRequestString() + "->" +
-					searchResponse.getDocuments(),
-				0, searchResponse.getCount());
-
-			_objectEntryLocalService.moveObjectEntryToTrash(
-				TestPropsValues.getUserId(), objectEntry,
-				ServiceContextTestUtil.getServiceContext());
-
-			searchResponse = search(
-				objectDefinition.getClassName(), "draftValue",
-				WorkflowConstants.STATUS_IN_TRASH);
-
-			Assert.assertEquals(
-				searchResponse.getRequestString() + "->" +
-					searchResponse.getDocuments(),
-				1, searchResponse.getCount());
-
-			searchResponse = search(
-				objectDefinition.getClassName(), "approvedValue",
-				WorkflowConstants.STATUS_IN_TRASH);
-
-			Assert.assertEquals(
-				searchResponse.getRequestString() + "->" +
-					searchResponse.getDocuments(),
-				0, searchResponse.getCount());
+			indexer.reindexCompany(_user.getCompanyId());
 		}
-		finally {
-			PrincipalThreadLocal.setName(originalName);
 
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		SearchResponse searchResponse = search(
+			objectDefinition.getClassName(), "draftValue",
+			WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(
+			searchResponse.getRequestString() + "->" +
+				searchResponse.getDocuments(),
+			1, searchResponse.getCount());
+
+		searchResponse = search(
+			objectDefinition.getClassName(), "approvedValue",
+			WorkflowConstants.STATUS_ANY);
+
+		Assert.assertEquals(
+			searchResponse.getRequestString() + "->" +
+				searchResponse.getDocuments(),
+			0, searchResponse.getCount());
+
+		_objectEntryLocalService.moveObjectEntryToTrash(
+			TestPropsValues.getUserId(), objectEntry,
+			ServiceContextTestUtil.getServiceContext());
+
+		searchResponse = search(
+			objectDefinition.getClassName(), "draftValue",
+			WorkflowConstants.STATUS_IN_TRASH);
+
+		Assert.assertEquals(
+			searchResponse.getRequestString() + "->" +
+				searchResponse.getDocuments(),
+			1, searchResponse.getCount());
+
+		searchResponse = search(
+			objectDefinition.getClassName(), "approvedValue",
+			WorkflowConstants.STATUS_IN_TRASH);
+
+		Assert.assertEquals(
+			searchResponse.getRequestString() + "->" +
+				searchResponse.getDocuments(),
+			0, searchResponse.getCount());
+
+		PrincipalThreadLocal.setName(originalName);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
@@ -500,41 +492,37 @@ public class ObjectEntryIndexerReindexTest {
 
 			_user = TestPropsValues.getUser();
 
-			try {
-				PrincipalThreadLocal.setName(null);
+			PrincipalThreadLocal.setName(null);
 
-				Indexer<ObjectEntry> indexer =
-					IndexerRegistryUtil.nullSafeGetIndexer(
-						objectEntry.getModelClassName());
+			Indexer<ObjectEntry> indexer =
+				IndexerRegistryUtil.nullSafeGetIndexer(
+					objectEntry.getModelClassName());
 
-				try (SafeCloseable safeCloseable =
-						ReindexCacheThreadLocal.openReindexMode()) {
+			try (SafeCloseable safeCloseable =
+					ReindexCacheThreadLocal.openReindexMode()) {
 
-					indexer.reindex(
-						objectDefinition.getClassName(),
-						objectEntry.getObjectEntryId());
-				}
-
-				FieldValuesAssert.assertFieldValue(
-					Field.ENTRY_CLASS_NAME, objectEntry.getModelClassName(),
-					search(
-						objectDefinition.getClassName(),
-						String.valueOf(objectEntry.getObjectEntryId())));
-				FieldValuesAssert.assertFieldValue(
-					Field.ENTRY_CLASS_NAME, objectEntry.getModelClassName(),
-					search(objectDefinition.getClassName(), fileName));
-
-				List<LogEntry> logEntries = logCapture.getLogEntries();
-
-				Assert.assertEquals(
-					logEntries.toString(), 0, logEntries.size());
+				indexer.reindex(
+					objectDefinition.getClassName(),
+					objectEntry.getObjectEntryId());
 			}
-			finally {
-				PrincipalThreadLocal.setName(originalName);
 
-				_objectDefinitionLocalService.deleteObjectDefinition(
-					objectDefinition);
-			}
+			FieldValuesAssert.assertFieldValue(
+				Field.ENTRY_CLASS_NAME, objectEntry.getModelClassName(),
+				search(
+					objectDefinition.getClassName(),
+					String.valueOf(objectEntry.getObjectEntryId())));
+			FieldValuesAssert.assertFieldValue(
+				Field.ENTRY_CLASS_NAME, objectEntry.getModelClassName(),
+				search(objectDefinition.getClassName(), fileName));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
+
+			PrincipalThreadLocal.setName(originalName);
+
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
 		}
 	}
 
