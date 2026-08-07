@@ -242,9 +242,7 @@ public class StaleBuildReaper {
 			String buildURL = _runningBuild.getURL();
 
 			try {
-				JenkinsStopBuildUtil.abortBuild(buildURL);
-
-				_executed = true;
+				_abortResult = JenkinsStopBuildUtil.abortBuild(buildURL);
 			}
 			catch (Exception exception) {
 				System.out.println("Unable to reap " + buildURL);
@@ -295,7 +293,11 @@ public class StaleBuildReaper {
 		}
 
 		public boolean isExecuted() {
-			return _executed;
+			if (_abortResult == JenkinsStopBuildUtil.AbortResult.STOPPED) {
+				return true;
+			}
+
+			return false;
 		}
 
 		private ReapAction(
@@ -312,15 +314,21 @@ public class StaleBuildReaper {
 				return "Not aborted (DRY_RUN).";
 			}
 
-			if (_executed) {
+			if (_abortResult ==
+					JenkinsStopBuildUtil.AbortResult.ALREADY_FINISHED) {
+
+				return "Already finished.";
+			}
+
+			if (_abortResult == JenkinsStopBuildUtil.AbortResult.STOPPED) {
 				return "Aborted.";
 			}
 
 			return "Abort failed.";
 		}
 
+		private JenkinsStopBuildUtil.AbortResult _abortResult;
 		private final long _duration;
-		private boolean _executed;
 		private final List<Reason> _reasons;
 		private final JenkinsMaster.RunningBuild _runningBuild;
 

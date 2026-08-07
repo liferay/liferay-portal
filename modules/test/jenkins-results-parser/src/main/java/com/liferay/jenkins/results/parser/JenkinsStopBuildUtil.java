@@ -22,12 +22,12 @@ import org.json.JSONObject;
  */
 public class JenkinsStopBuildUtil {
 
-	public static void abortBuild(String buildURL) throws Exception {
+	public static AbortResult abortBuild(String buildURL) throws Exception {
 		String normalizedBuildURL = JenkinsResultsParserUtil.fixURL(
 			JenkinsResultsParserUtil.getLocalURL(buildURL));
 
 		if (!_isBuilding(normalizedBuildURL)) {
-			return;
+			return AbortResult.ALREADY_FINISHED;
 		}
 
 		int responseCode = _post(normalizedBuildURL + "/stop");
@@ -49,7 +49,7 @@ public class JenkinsStopBuildUtil {
 			JenkinsResultsParserUtil.sleep(_ABORT_VERIFICATION_PERIOD);
 
 			if (!_isBuilding(normalizedBuildURL)) {
-				return;
+				return AbortResult.STOPPED;
 			}
 		}
 
@@ -96,6 +96,12 @@ public class JenkinsStopBuildUtil {
 		for (Build downstreamBuild : downstreamBuilds) {
 			_stopBuild(downstreamBuild);
 		}
+	}
+
+	public static enum AbortResult {
+
+		ALREADY_FINISHED, STOPPED
+
 	}
 
 	protected static String encodeAuthorizationFields(

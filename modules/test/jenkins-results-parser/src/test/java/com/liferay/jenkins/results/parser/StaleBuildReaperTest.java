@@ -257,7 +257,7 @@ public class StaleBuildReaperTest
 
 					stoppedBuildURLs.add(buildURL);
 
-					return null;
+					return JenkinsStopBuildUtil.AbortResult.STOPPED;
 				}
 			);
 
