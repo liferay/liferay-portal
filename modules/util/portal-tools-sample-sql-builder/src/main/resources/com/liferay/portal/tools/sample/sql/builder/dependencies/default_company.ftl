@@ -6,6 +6,8 @@ ${dataFactory.setWebId(defaultCompanyModel.webId)}
 
 ${dataFactory.toInsertSQL(defaultCompanyModel)}
 
+${dataFactory.toInsertSQL(dataFactory.newCompanyInfoModel(defaultCompanyModel.companyId))}
+
 <#assign defaultVirtualHostModel = dataFactory.newVirtualHostModel() />
 
 ${dataFactory.toInsertSQL(defaultVirtualHostModel)}

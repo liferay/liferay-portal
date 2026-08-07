@@ -260,6 +260,7 @@ import com.liferay.portal.kernel.model.AddressModel;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ClassNameModel;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.CompanyInfoModel;
 import com.liferay.portal.kernel.model.CompanyModel;
 import com.liferay.portal.kernel.model.ContactConstants;
 import com.liferay.portal.kernel.model.ContactModel;
@@ -326,6 +327,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.impl.AddressModelImpl;
 import com.liferay.portal.model.impl.ClassNameModelImpl;
+import com.liferay.portal.model.impl.CompanyInfoModelImpl;
 import com.liferay.portal.model.impl.CompanyModelImpl;
 import com.liferay.portal.model.impl.ContactModelImpl;
 import com.liferay.portal.model.impl.CountryModelImpl;
@@ -2633,6 +2635,17 @@ public class DataFactory {
 				StringUtil.read(
 					getResourceInputStream(
 						"commerce/commerce_theme_portlet_settings.json"))));
+	}
+
+	public CompanyInfoModel newCompanyInfoModel(long companyId) {
+		CompanyInfoModel companyInfoModel = new CompanyInfoModelImpl();
+
+		companyInfoModel.setCompanyInfoId(_counter.get());
+		companyInfoModel.setCompanyId(companyId);
+		companyInfoModel.setName(_webId);
+		companyInfoModel.setLegalName("Liferay, Inc.");
+
+		return companyInfoModel;
 	}
 
 	public List<CompanyModel> newCompanyModels() {
@@ -9555,8 +9568,6 @@ public class DataFactory {
 		companyModel.setWebId(webId);
 		companyModel.setMx("liferay.com");
 		companyModel.setActive(true);
-		companyModel.setName(webId);
-		companyModel.setLegalName("Liferay, Inc.");
 
 		return companyModel;
 	}

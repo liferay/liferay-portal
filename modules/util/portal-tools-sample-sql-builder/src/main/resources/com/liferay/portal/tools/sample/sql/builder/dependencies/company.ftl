@@ -7,6 +7,8 @@
 
 	${dataFactory.toInsertSQL(companyModel)}
 
+	${dataFactory.toInsertSQL(dataFactory.newCompanyInfoModel(companyModel.companyId))}
+
 	${dataFactory.toInsertSQL(virtualHostModel)}
 
 	${dataFactory.toInsertSQL(dataFactory.newPortalPreferencesModel(companyModel.companyId))}
