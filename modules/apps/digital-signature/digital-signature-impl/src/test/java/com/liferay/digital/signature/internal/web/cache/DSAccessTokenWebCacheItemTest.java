@@ -51,13 +51,13 @@ public class DSAccessTokenWebCacheItemTest {
 	}
 
 	@Test
-	public void testGetPEMNullKey() {
-		Assert.assertEquals("", _getPEM(null));
+	public void testGetPEMIsUnchanged() {
+		Assert.assertEquals(_PEM, _getPEM(_PEM));
 	}
 
 	@Test
-	public void testGetPEMIsUnchanged() {
-		Assert.assertEquals(_PEM, _getPEM(_PEM));
+	public void testGetPEMNullKey() {
+		Assert.assertEquals("", _getPEM(null));
 	}
 
 	private String _getPEM(String rsaPrivateKey) {

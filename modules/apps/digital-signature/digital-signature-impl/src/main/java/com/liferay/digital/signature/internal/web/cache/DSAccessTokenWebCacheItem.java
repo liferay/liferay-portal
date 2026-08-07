@@ -202,7 +202,8 @@ public class DSAccessTokenWebCacheItem implements WebCacheItem {
 	private static final String _PEM_MARKER_BEGIN =
 		"-----BEGIN RSA PRIVATE KEY-----";
 
-	private static final String _PEM_MARKER_END = "-----END RSA PRIVATE KEY-----";
+	private static final String _PEM_MARKER_END =
+		"-----END RSA PRIVATE KEY-----";
 
 	private static final long _REFRESH_TIME = Time.MINUTE * 45;
 
