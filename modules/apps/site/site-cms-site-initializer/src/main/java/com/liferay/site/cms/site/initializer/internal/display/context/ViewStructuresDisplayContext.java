@@ -134,7 +134,38 @@ public class ViewStructuresDisplayContext {
 					"export-content-structures", _themeDisplay),
 				ExportImportUtil.getImportActionItemJSONObject(
 					_httpServletRequest, ObjectPortletKeys.OBJECT_DEFINITIONS,
-					"import-content-structures", _themeDisplay))
+					"import-content-structures", _themeDisplay)
+			).put(
+				() -> {
+					if (!FeatureFlagManagerUtil.isEnabled(
+							_themeDisplay.getCompanyId(), "LPD-99758")) {
+
+						return null;
+					}
+
+					return JSONUtil.put(
+						"href",
+						PortletURLBuilder.create(
+							PortletURLFactoryUtil.create(
+								_httpServletRequest,
+								ObjectPortletKeys.OBJECT_DEFINITIONS,
+								PortletRequest.ACTION_PHASE)
+						).setActionName(
+							"/object_definitions/import_object_definition"
+						).buildString()
+					).put(
+						"label",
+						LanguageUtil.format(
+							_httpServletRequest, "import-from-x", "JSON")
+					).put(
+						"redirect", _themeDisplay.getURLCurrent()
+					).put(
+						"symbolLeft", "import"
+					).put(
+						"target", "importStructureModal"
+					);
+				}
+			)
 		).put(
 			"breadcrumbItems", jsonArray
 		).put(
