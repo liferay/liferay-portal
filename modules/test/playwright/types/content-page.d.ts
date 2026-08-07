@@ -57,6 +57,7 @@ type FormConfig = {
 
 type Layout = {
 	companyId: string;
+	draftLayout?: Layout;
 	externalReferenceCode: string;
 	friendlyURL: string;
 	friendlyUrlPath: string;

@@ -300,7 +300,11 @@ export class DataSetFragmentPage {
 	}
 
 	async editPage({layout}: {layout: Layout}) {
-		await this.page.goto(`/web/guest${layout.friendlyURL}?p_l_mode=edit`);
+		await this.page.goto(
+			`/web/guest${layout.draftLayout?.friendlyURL || layout.friendlyURL}?p_l_mode=edit`
+		);
+
+		await expect(this.fragmentWidgetSearchInput).toBeVisible();
 	}
 
 	async goToPage({layout}: {layout: Layout}) {
