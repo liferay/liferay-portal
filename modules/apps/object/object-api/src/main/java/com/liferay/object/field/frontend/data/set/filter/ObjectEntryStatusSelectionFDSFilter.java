@@ -29,7 +29,7 @@ public class ObjectEntryStatusSelectionFDSFilter
 
 	@Override
 	public String getEntityFieldType() {
-		return FDSEntityFieldTypes.COLLECTION;
+		return FDSEntityFieldTypes.COLLECTION_INTEGER;
 	}
 
 	@Override
