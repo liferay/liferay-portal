@@ -184,21 +184,21 @@ public class StaleBuildReaperTest
 		return JenkinsMasterTestUtil.getComputerAPIJSONObject(
 			2,
 			JenkinsMasterTestUtil.getOfflineComputerJSONObject(
-				"test-9-2-1", _getStartTime(30 * _MINUTE),
-				"Connection was broken", false,
+				"test-9-2-1", "Connection was broken",
+				_getStartTime(30 * _MINUTE), false,
 				JenkinsMasterTestUtil.getExecutorJSONObject(
 					_BUILD_URL_OFFLINE, RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString(), false,
 					_getStartTime(46 * _HOUR))),
 			JenkinsMasterTestUtil.getOfflineComputerJSONObject(
-				"test-9-2-2", _getStartTime(2 * _MINUTE),
-				"Connection was broken", false,
+				"test-9-2-2", "Connection was broken",
+				_getStartTime(2 * _MINUTE), false,
 				JenkinsMasterTestUtil.getExecutorJSONObject(
 					_BUILD_URL_RECONNECTING, RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString(), false,
 					_getStartTime(46 * _HOUR))),
 			JenkinsMasterTestUtil.getOfflineComputerJSONObject(
-				"test-9-2-3", _getStartTime(30 * _HOUR), "Disk is full", true,
+				"test-9-2-3", "Disk is full", _getStartTime(30 * _HOUR), true,
 				JenkinsMasterTestUtil.getExecutorJSONObject(
 					_BUILD_URL_TEMPORARILY_OFFLINE, RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString(), false,
@@ -224,8 +224,8 @@ public class StaleBuildReaperTest
 					RandomTestUtil.randomString(), true,
 					_getStartTime(20 * _HOUR))),
 			JenkinsMasterTestUtil.getOfflineComputerJSONObject(
-				"test-9-1-2", _getStartTime(12 * 24 * _HOUR),
-				"Node is being removed", false,
+				"test-9-1-2", "Node is being removed",
+				_getStartTime(12 * 24 * _HOUR), false,
 				JenkinsMasterTestUtil.getExecutorJSONObject(
 					_BUILD_URL_NODE_REMOVED, RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString(), false,

@@ -295,8 +295,8 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 					RandomTestUtil.randomString(), true,
 					RandomTestUtil.randomLong())),
 			JenkinsMasterTestUtil.getOfflineComputerJSONObject(
-				"test-9-2-2", RandomTestUtil.randomLong(),
-				"Node is being removed", false,
+				"test-9-2-2", "Node is being removed",
+				RandomTestUtil.randomLong(), false,
 				JenkinsMasterTestUtil.getExecutorJSONObject(
 					_BUILD_URL_OFFLINE_NODE, RandomTestUtil.randomLong(),
 					RandomTestUtil.randomString(), false,

@@ -133,8 +133,8 @@ public class JenkinsMasterTestUtil {
 	}
 
 	public static JSONObject getOfflineComputerJSONObject(
-		String displayName, long offlineCauseTimestamp,
-		String offlineCauseReason, boolean temporarilyOffline,
+		String displayName, String offlineCauseReason,
+		long offlineCauseTimestamp, boolean temporarilyOffline,
 		JSONObject... executorJSONObjects) {
 
 		JSONObject computerJSONObject = _getComputerJSONObject(
