@@ -10,6 +10,11 @@ import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
+import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
+import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
+import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.test.rule.LazyReferencing;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
@@ -63,11 +68,14 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LanguageIds;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.initializer.SiteInitializer;
+import com.liferay.staging.StagingGroupHelper;
 
 import java.io.File;
 
@@ -199,6 +207,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			_addUserWithRegularRole(RoleConstants.CMS_ADMINISTRATOR));
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-85946"))
 	@LazyReferencing
 	@Override
 	@Test
@@ -228,6 +237,8 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPostSiteWithLocalizedName();
 		_testPostSiteWithNondefaultLocales();
 		_testPostSiteWithParentSiteExternalReferenceCode();
+		_testPostSiteWithSelectedSitesOnExport();
+		_testPostSiteWithSelectedSitesOnImport();
 		_testPostSiteWithTypeSettingsFields();
 		_testPostSiteWithoutAuthentication();
 	}
@@ -484,6 +495,31 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			site.getName(), group.getName(LocaleUtil.getDefault()));
 	}
 
+	private File _exportSites(String... siteExternalReferenceCodes)
+		throws Exception {
+
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		return _exportImportLocalService.exportLayoutsAsFile(
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildExportLayoutSettingsMap(
+							TestPropsValues.getUser(),
+							companyGroup.getGroupId(), false, new long[0],
+							HashMapBuilder.put(
+								PortletDataHandlerKeys.PORTLET_DATA,
+								new String[] {Boolean.TRUE.toString()}
+							).put(
+								PortletDataHandlerKeys.
+									SITE_EXTERNAL_REFERENCE_CODES,
+								siteExternalReferenceCodes
+							).build())));
+	}
+
 	private SiteResource _getSiteResource(User user) {
 		return SiteResource.builder(
 		).authentication(
@@ -494,6 +530,36 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	private void _importSites(
+			File larFile, String... siteExternalReferenceCodes)
+		throws Exception {
+
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		_exportImportLocalService.importLayouts(
+			_exportImportConfigurationLocalService.
+				addDraftExportImportConfiguration(
+					TestPropsValues.getUserId(),
+					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT,
+					ExportImportConfigurationSettingsMapFactoryUtil.
+						buildImportLayoutSettingsMap(
+							TestPropsValues.getUser(),
+							companyGroup.getGroupId(), false, new long[0],
+							HashMapBuilder.put(
+								PortletDataHandlerKeys.PORTLET_DATA,
+								new String[] {Boolean.TRUE.toString()}
+							).put(
+								PortletDataHandlerKeys.PORTLET_DATA_ALL,
+								new String[] {Boolean.TRUE.toString()}
+							).put(
+								PortletDataHandlerKeys.
+									SITE_EXTERNAL_REFERENCE_CODES,
+								siteExternalReferenceCodes
+							).build())),
+			larFile);
 	}
 
 	private void _testGetSitesPageWithActiveAndInactiveSites()
@@ -625,13 +691,14 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	private void _testGetSitesPageWithExternalReferenceCodes()
 		throws Exception {
 
-		Site wantedSite = _testPostSite_addSite(randomSite());
+		Site postIncludedSite = _testPostSite_addSite(randomSite());
 
 		_testPostSite_addSite(randomSite());
 
 		Page<Site> sitesPage = siteResource.getSitesPage(
-			null, null, new String[] {wantedSite.getExternalReferenceCode()},
-			null, Pagination.of(1, 100));
+			null, null,
+			new String[] {postIncludedSite.getExternalReferenceCode()}, null,
+			Pagination.of(1, 100));
 
 		List<Site> sites = (List<Site>)sitesPage.getItems();
 
@@ -640,7 +707,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		Site site = sites.get(0);
 
 		Assert.assertEquals(
-			wantedSite.getExternalReferenceCode(),
+			postIncludedSite.getExternalReferenceCode(),
 			site.getExternalReferenceCode());
 	}
 
@@ -1365,6 +1432,57 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		assertValid(postSite);
 	}
 
+	private void _testPostSiteWithSelectedSitesOnExport() throws Exception {
+		Site site1 = _testPostSite_addSite(randomSite());
+		Site site2 = _testPostSite_addSite(randomSite());
+
+		String externalReferenceCode1 = site1.getExternalReferenceCode();
+		String externalReferenceCode2 = site2.getExternalReferenceCode();
+
+		File larFile = _exportSites(externalReferenceCode1);
+
+		siteResource.deleteSite(externalReferenceCode1);
+		siteResource.deleteSite(externalReferenceCode2);
+
+		_importSites(larFile, externalReferenceCode1, externalReferenceCode2);
+
+		Assert.assertNotNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode1, TestPropsValues.getCompanyId()));
+		Assert.assertNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode2, TestPropsValues.getCompanyId()));
+	}
+
+	private void _testPostSiteWithSelectedSitesOnImport() throws Exception {
+		Site site1 = _testPostSite_addSite(randomSite());
+		Site site2 = _testPostSite_addSite(randomSite());
+
+		String externalReferenceCode1 = site1.getExternalReferenceCode();
+		String externalReferenceCode2 = site2.getExternalReferenceCode();
+
+		File larFile = _exportSites(
+			externalReferenceCode1, externalReferenceCode2);
+
+		siteResource.deleteSite(externalReferenceCode1);
+		siteResource.deleteSite(externalReferenceCode2);
+
+		_importSites(larFile, externalReferenceCode1);
+
+		Assert.assertNotNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode1, TestPropsValues.getCompanyId()));
+		Assert.assertNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode2, TestPropsValues.getCompanyId()));
+
+		_importSites(larFile, externalReferenceCode1, externalReferenceCode2);
+
+		Assert.assertNotNull(
+			_groupLocalService.fetchGroupByExternalReferenceCode(
+				externalReferenceCode2, TestPropsValues.getCompanyId()));
+	}
+
 	private void _testPostSiteWithTypeSettingsFields() throws Exception {
 		Site randomSite = randomSite();
 
@@ -1851,6 +1969,13 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Inject
+	private ExportImportConfigurationLocalService
+		_exportImportConfigurationLocalService;
+
+	@Inject
+	private ExportImportLocalService _exportImportLocalService;
+
+	@Inject
 	private GroupLocalService _groupLocalService;
 
 	@Inject
@@ -1863,6 +1988,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	private RoleLocalService _roleLocalService;
 
 	private final List<Site> _sites = new ArrayList<>();
+
+	@Inject
+	private StagingGroupHelper _stagingGroupHelper;
 
 	@Inject
 	private UserGroupRoleLocalService _userGroupRoleLocalService;
