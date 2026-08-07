@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -107,6 +108,7 @@ public class FragmentEntryLinkModelListenerTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-97145", "LPD-101550"})
 	public void testAddFragmentEntryLink() throws Exception {
 		_testAddFragmentEntryLinkDoesNotEscapeLinkFieldHTMLContent();
 		_testAddFragmentEntryLinkEscapeTextField();
@@ -123,6 +125,7 @@ public class FragmentEntryLinkModelListenerTest {
 	}
 
 	@Test
+	@TestInfo("LPD-97145")
 	public void testUpdateFragmentEntryLink() throws Exception {
 		_testUpdateFragmentEntryLinkEscapeTextField();
 		_testUpdateFragmentEntryLinkWithHTMLField();
