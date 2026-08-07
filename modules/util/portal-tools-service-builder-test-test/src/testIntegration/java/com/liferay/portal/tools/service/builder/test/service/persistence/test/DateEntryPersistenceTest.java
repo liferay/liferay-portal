@@ -12,6 +12,8 @@ import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
@@ -112,7 +114,9 @@ public class DateEntryPersistenceTest {
 	public void testUpdateExisting() throws Exception {
 		DateEntry newDateEntry = addDateEntry();
 
-		newDateEntry.setValue(RandomTestUtil.nextDate());
+		newDateEntry.setCompanyId(RandomTestUtil.nextLong());
+
+		newDateEntry.setSnapshotDate(RandomTestUtil.nextDate());
 
 		newDateEntry = _persistence.update(newDateEntry);
 
@@ -124,8 +128,25 @@ public class DateEntryPersistenceTest {
 		Assert.assertEquals(
 			existingDateEntry.getDateEntryId(), newDateEntry.getDateEntryId());
 		Assert.assertEquals(
-			Time.getShortTimestamp(existingDateEntry.getValue()),
-			Time.getShortTimestamp(newDateEntry.getValue()));
+			existingDateEntry.getCompanyId(), newDateEntry.getCompanyId());
+		Assert.assertEquals(
+			Time.getShortTimestamp(existingDateEntry.getSnapshotDate()),
+			Time.getShortTimestamp(newDateEntry.getSnapshotDate()));
+	}
+
+	@Test
+	public void testCountBySnapshotDate() throws Exception {
+		_persistence.countBySnapshotDate(RandomTestUtil.nextDate());
+
+		_persistence.countBySnapshotDate(RandomTestUtil.nextDate());
+	}
+
+	@Test
+	public void testCountByC_S() throws Exception {
+		_persistence.countByC_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.nextDate());
+
+		_persistence.countByC_S(0L, RandomTestUtil.nextDate());
 	}
 
 	@Test
@@ -153,7 +174,8 @@ public class DateEntryPersistenceTest {
 
 	protected OrderByComparator<DateEntry> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
-			"DateEntry", "dateEntryId", true, "value", true);
+			"DateEntry", "dateEntryId", true, "companyId", true, "snapshotDate",
+			true);
 	}
 
 	@Test
@@ -365,12 +387,77 @@ public class DateEntryPersistenceTest {
 		Assert.assertEquals(0, result.size());
 	}
 
+	@Test
+	public void testResetOriginalValues() throws Exception {
+		DateEntry newDateEntry = addDateEntry();
+
+		_persistence.clearCache();
+
+		_assertOriginalValues(
+			_persistence.findByPrimaryKey(newDateEntry.getPrimaryKey()));
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromDatabase()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(true);
+	}
+
+	@Test
+	public void testResetOriginalValuesWithDynamicQueryLoadFromSession()
+		throws Exception {
+
+		_testResetOriginalValuesWithDynamicQuery(false);
+	}
+
+	private void _testResetOriginalValuesWithDynamicQuery(boolean clearSession)
+		throws Exception {
+
+		DateEntry newDateEntry = addDateEntry();
+
+		if (clearSession) {
+			Session session = _persistence.openSession();
+
+			session.flush();
+
+			session.clear();
+		}
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			DateEntry.class, _dynamicQueryClassLoader);
+
+		dynamicQuery.add(
+			RestrictionsFactoryUtil.eq(
+				"dateEntryId", newDateEntry.getDateEntryId()));
+
+		List<DateEntry> result = _persistence.findWithDynamicQuery(
+			dynamicQuery);
+
+		_assertOriginalValues(result.get(0));
+	}
+
+	private void _assertOriginalValues(DateEntry dateEntry) {
+		Assert.assertEquals(
+			Long.valueOf(dateEntry.getCompanyId()),
+			ReflectionTestUtil.<Long>invoke(
+				dateEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "companyId"));
+		Assert.assertEquals(
+			dateEntry.getSnapshotDate(),
+			ReflectionTestUtil.invoke(
+				dateEntry, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "snapshotDate"));
+	}
+
 	protected DateEntry addDateEntry() throws Exception {
 		long pk = RandomTestUtil.nextLong();
 
 		DateEntry dateEntry = _persistence.create(pk);
 
-		dateEntry.setValue(RandomTestUtil.nextDate());
+		dateEntry.setCompanyId(RandomTestUtil.nextLong());
+
+		dateEntry.setSnapshotDate(RandomTestUtil.nextDate());
 
 		_dateEntries.add(_persistence.update(dateEntry));
 
@@ -382,4 +469,4 @@ public class DateEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1600528083
+// LIFERAY-SERVICE-BUILDER-HASH:507561005

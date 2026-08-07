@@ -34,7 +34,8 @@ public class DateEntryWrapper
 		Map<String, Object> attributes = new HashMap<String, Object>();
 
 		attributes.put("dateEntryId", getDateEntryId());
-		attributes.put("value", getValue());
+		attributes.put("companyId", getCompanyId());
+		attributes.put("snapshotDate", getSnapshotDate());
 
 		return attributes;
 	}
@@ -47,16 +48,32 @@ public class DateEntryWrapper
 			setDateEntryId(dateEntryId);
 		}
 
-		Date value = (Date)attributes.get("value");
+		Long companyId = (Long)attributes.get("companyId");
 
-		if (value != null) {
-			setValue(value);
+		if (companyId != null) {
+			setCompanyId(companyId);
+		}
+
+		Date snapshotDate = (Date)attributes.get("snapshotDate");
+
+		if (snapshotDate != null) {
+			setSnapshotDate(snapshotDate);
 		}
 	}
 
 	@Override
 	public DateEntry cloneWithOriginalValues() {
 		return wrap(model.cloneWithOriginalValues());
+	}
+
+	/**
+	 * Returns the company ID of this date entry.
+	 *
+	 * @return the company ID of this date entry
+	 */
+	@Override
+	public long getCompanyId() {
+		return model.getCompanyId();
 	}
 
 	/**
@@ -80,18 +97,28 @@ public class DateEntryWrapper
 	}
 
 	/**
-	 * Returns the value of this date entry.
+	 * Returns the snapshot date of this date entry.
 	 *
-	 * @return the value of this date entry
+	 * @return the snapshot date of this date entry
 	 */
 	@Override
-	public Date getValue() {
-		return model.getValue();
+	public Date getSnapshotDate() {
+		return model.getSnapshotDate();
 	}
 
 	@Override
 	public void persist() {
 		model.persist();
+	}
+
+	/**
+	 * Sets the company ID of this date entry.
+	 *
+	 * @param companyId the company ID of this date entry
+	 */
+	@Override
+	public void setCompanyId(long companyId) {
+		model.setCompanyId(companyId);
 	}
 
 	/**
@@ -115,13 +142,13 @@ public class DateEntryWrapper
 	}
 
 	/**
-	 * Sets the value of this date entry.
+	 * Sets the snapshot date of this date entry.
 	 *
-	 * @param value the value of this date entry
+	 * @param snapshotDate the snapshot date of this date entry
 	 */
 	@Override
-	public void setValue(Date value) {
-		model.setValue(value);
+	public void setSnapshotDate(Date snapshotDate) {
+		model.setSnapshotDate(snapshotDate);
 	}
 
 	@Override
@@ -135,4 +162,4 @@ public class DateEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1311406074
+// LIFERAY-SERVICE-BUILDER-HASH:642209834

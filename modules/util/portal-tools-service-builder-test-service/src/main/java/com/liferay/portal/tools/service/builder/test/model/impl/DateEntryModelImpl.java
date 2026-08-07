@@ -57,7 +57,8 @@ public class DateEntryModelImpl
 	public static final String TABLE_NAME = "DateEntry";
 
 	public static final Object[][] TABLE_COLUMNS = {
-		{"dateEntryId", Types.BIGINT}, {"value", Types.TIMESTAMP}
+		{"dateEntryId", Types.BIGINT}, {"companyId", Types.BIGINT},
+		{"snapshotDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -65,11 +66,12 @@ public class DateEntryModelImpl
 
 	static {
 		TABLE_COLUMNS_MAP.put("dateEntryId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("value", Types.TIMESTAMP);
+		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("snapshotDate", Types.TIMESTAMP);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table DateEntry (dateEntryId LONG not null primary key,value DATE null)";
+		"create table DateEntry (dateEntryId LONG not null primary key,companyId LONG,snapshotDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table DateEntry";
 
@@ -106,11 +108,23 @@ public class DateEntryModelImpl
 	public static final boolean COLUMN_BITMASK_ENABLED = true;
 
 	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long SNAPSHOTDATE_COLUMN_BITMASK = 2L;
+
+	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long DATEENTRYID_COLUMN_BITMASK = 1L;
+	public static final long DATEENTRYID_COLUMN_BITMASK = 4L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.tools.service.builder.test.service.util.ServiceProps.
@@ -212,7 +226,9 @@ public class DateEntryModelImpl
 
 			attributeGetterFunctions.put(
 				"dateEntryId", DateEntry::getDateEntryId);
-			attributeGetterFunctions.put("value", DateEntry::getValue);
+			attributeGetterFunctions.put("companyId", DateEntry::getCompanyId);
+			attributeGetterFunctions.put(
+				"snapshotDate", DateEntry::getSnapshotDate);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -233,7 +249,11 @@ public class DateEntryModelImpl
 				"dateEntryId",
 				(BiConsumer<DateEntry, Long>)DateEntry::setDateEntryId);
 			attributeSetterBiConsumers.put(
-				"value", (BiConsumer<DateEntry, Date>)DateEntry::setValue);
+				"companyId",
+				(BiConsumer<DateEntry, Long>)DateEntry::setCompanyId);
+			attributeSetterBiConsumers.put(
+				"snapshotDate",
+				(BiConsumer<DateEntry, Date>)DateEntry::setSnapshotDate);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -256,17 +276,50 @@ public class DateEntryModelImpl
 	}
 
 	@Override
-	public Date getValue() {
-		return _value;
+	public long getCompanyId() {
+		return _companyId;
 	}
 
 	@Override
-	public void setValue(Date value) {
+	public void setCompanyId(long companyId) {
 		if (_columnOriginalValues == Collections.EMPTY_MAP) {
 			_setColumnOriginalValues();
 		}
 
-		_value = value;
+		_companyId = companyId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalCompanyId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("companyId"));
+	}
+
+	@Override
+	public Date getSnapshotDate() {
+		return _snapshotDate;
+	}
+
+	@Override
+	public void setSnapshotDate(Date snapshotDate) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_snapshotDate = snapshotDate;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public Date getOriginalSnapshotDate() {
+		return getColumnOriginalValue("snapshotDate");
 	}
 
 	public long getColumnBitmask() {
@@ -296,7 +349,7 @@ public class DateEntryModelImpl
 	@Override
 	public ExpandoBridge getExpandoBridge() {
 		return ExpandoBridgeFactoryUtil.getExpandoBridge(
-			0, DateEntry.class.getName(), getPrimaryKey());
+			getCompanyId(), DateEntry.class.getName(), getPrimaryKey());
 	}
 
 	@Override
@@ -326,7 +379,8 @@ public class DateEntryModelImpl
 		DateEntryImpl dateEntryImpl = new DateEntryImpl();
 
 		dateEntryImpl.setDateEntryId(getDateEntryId());
-		dateEntryImpl.setValue(getValue());
+		dateEntryImpl.setCompanyId(getCompanyId());
+		dateEntryImpl.setSnapshotDate(getSnapshotDate());
 
 		dateEntryImpl.resetOriginalValues();
 
@@ -339,7 +393,10 @@ public class DateEntryModelImpl
 
 		dateEntryImpl.setDateEntryId(
 			this.<Long>getColumnOriginalValue("dateEntryId"));
-		dateEntryImpl.setValue(this.<Date>getColumnOriginalValue("value"));
+		dateEntryImpl.setCompanyId(
+			this.<Long>getColumnOriginalValue("companyId"));
+		dateEntryImpl.setSnapshotDate(
+			this.<Date>getColumnOriginalValue("snapshotDate"));
 
 		return dateEntryImpl;
 	}
@@ -417,13 +474,15 @@ public class DateEntryModelImpl
 
 		dateEntryCacheModel.dateEntryId = getDateEntryId();
 
-		Date value = getValue();
+		dateEntryCacheModel.companyId = getCompanyId();
 
-		if (value != null) {
-			dateEntryCacheModel.value = value.getTime();
+		Date snapshotDate = getSnapshotDate();
+
+		if (snapshotDate != null) {
+			dateEntryCacheModel.snapshotDate = snapshotDate.getTime();
 		}
 		else {
-			dateEntryCacheModel.value = Long.MIN_VALUE;
+			dateEntryCacheModel.snapshotDate = Long.MIN_VALUE;
 		}
 
 		return dateEntryCacheModel;
@@ -488,7 +547,8 @@ public class DateEntryModelImpl
 	}
 
 	private long _dateEntryId;
-	private Date _value;
+	private long _companyId;
+	private Date _snapshotDate;
 
 	public <T> T getColumnValue(String columnName) {
 		Function<DateEntry, Object> function =
@@ -519,7 +579,8 @@ public class DateEntryModelImpl
 		_columnOriginalValues = new HashMap<String, Object>();
 
 		_columnOriginalValues.put("dateEntryId", _dateEntryId);
-		_columnOriginalValues.put("value", _value);
+		_columnOriginalValues.put("companyId", _companyId);
+		_columnOriginalValues.put("snapshotDate", _snapshotDate);
 	}
 
 	private transient Map<String, Object> _columnOriginalValues;
@@ -535,7 +596,9 @@ public class DateEntryModelImpl
 
 		columnBitmasks.put("dateEntryId", 1L);
 
-		columnBitmasks.put("value", 2L);
+		columnBitmasks.put("companyId", 2L);
+
+		columnBitmasks.put("snapshotDate", 4L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -544,4 +607,4 @@ public class DateEntryModelImpl
 	private DateEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1212572357
+// LIFERAY-SERVICE-BUILDER-HASH:763732999

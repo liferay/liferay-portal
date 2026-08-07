@@ -200,10 +200,20 @@ public class DateEntryLocalServiceUtil {
 		return getService().fetchDateEntry(dateEntryId);
 	}
 
+	public static DateEntry fetchDateEntry(
+		long companyId, java.util.Date snapshotDate) {
+
+		return getService().fetchDateEntry(companyId, snapshotDate);
+	}
+
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
+	}
+
+	public static List<DateEntry> getDateEntries(java.util.Date snapshotDate) {
+		return getService().getDateEntries(snapshotDate);
 	}
 
 	/**
@@ -293,4 +303,4 @@ public class DateEntryLocalServiceUtil {
 	private static volatile DateEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-787431571
+// LIFERAY-SERVICE-BUILDER-HASH:312012647

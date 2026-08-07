@@ -12,6 +12,7 @@ import com.liferay.portal.tools.service.builder.test.model.DateEntry;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -125,6 +126,134 @@ public class DateEntryUtil {
 	}
 
 	/**
+	 * Returns an ordered range of all the date entries where snapshotDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.tools.service.builder.test.model.impl.DateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param snapshotDate the snapshot date
+	 * @param start the lower bound of the range of date entries
+	 * @param end the upper bound of the range of date entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching date entries
+	 */
+	public static List<DateEntry> findBySnapshotDate(
+		Date snapshotDate, int start, int end,
+		OrderByComparator<DateEntry> orderByComparator,
+		boolean useFinderCache) {
+
+		return getPersistence().findBySnapshotDate(
+			snapshotDate, start, end, orderByComparator, useFinderCache);
+	}
+
+	/**
+	 * Returns the first date entry in the ordered set where snapshotDate = &#63;.
+	 *
+	 * @param snapshotDate the snapshot date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching date entry
+	 * @throws NoSuchDateEntryException if a matching date entry could not be found
+	 */
+	public static DateEntry findBySnapshotDate_First(
+			Date snapshotDate, OrderByComparator<DateEntry> orderByComparator)
+		throws com.liferay.portal.tools.service.builder.test.exception.
+			NoSuchDateEntryException {
+
+		return getPersistence().findBySnapshotDate_First(
+			snapshotDate, orderByComparator);
+	}
+
+	/**
+	 * Returns the first date entry in the ordered set where snapshotDate = &#63;.
+	 *
+	 * @param snapshotDate the snapshot date
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching date entry, or <code>null</code> if a matching date entry could not be found
+	 */
+	public static DateEntry fetchBySnapshotDate_First(
+		Date snapshotDate, OrderByComparator<DateEntry> orderByComparator) {
+
+		return getPersistence().fetchBySnapshotDate_First(
+			snapshotDate, orderByComparator);
+	}
+
+	/**
+	 * Removes all the date entries where snapshotDate = &#63; from the database.
+	 *
+	 * @param snapshotDate the snapshot date
+	 */
+	public static void removeBySnapshotDate(Date snapshotDate) {
+		getPersistence().removeBySnapshotDate(snapshotDate);
+	}
+
+	/**
+	 * Returns the number of date entries where snapshotDate = &#63;.
+	 *
+	 * @param snapshotDate the snapshot date
+	 * @return the number of matching date entries
+	 */
+	public static int countBySnapshotDate(Date snapshotDate) {
+		return getPersistence().countBySnapshotDate(snapshotDate);
+	}
+
+	/**
+	 * Returns the date entry where companyId = &#63; and snapshotDate = &#63; or throws a <code>NoSuchDateEntryException</code> if it could not be found.
+	 *
+	 * @param companyId the company ID
+	 * @param snapshotDate the snapshot date
+	 * @return the matching date entry
+	 * @throws NoSuchDateEntryException if a matching date entry could not be found
+	 */
+	public static DateEntry findByC_S(long companyId, Date snapshotDate)
+		throws com.liferay.portal.tools.service.builder.test.exception.
+			NoSuchDateEntryException {
+
+		return getPersistence().findByC_S(companyId, snapshotDate);
+	}
+
+	/**
+	 * Returns the date entry where companyId = &#63; and snapshotDate = &#63; or returns <code>null</code> if it could not be found, optionally using the finder cache.
+	 *
+	 * @param companyId the company ID
+	 * @param snapshotDate the snapshot date
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the matching date entry, or <code>null</code> if a matching date entry could not be found
+	 */
+	public static DateEntry fetchByC_S(
+		long companyId, Date snapshotDate, boolean useFinderCache) {
+
+		return getPersistence().fetchByC_S(
+			companyId, snapshotDate, useFinderCache);
+	}
+
+	/**
+	 * Removes the date entry where companyId = &#63; and snapshotDate = &#63; from the database.
+	 *
+	 * @param companyId the company ID
+	 * @param snapshotDate the snapshot date
+	 * @return the date entry that was removed
+	 */
+	public static DateEntry removeByC_S(long companyId, Date snapshotDate)
+		throws com.liferay.portal.tools.service.builder.test.exception.
+			NoSuchDateEntryException {
+
+		return getPersistence().removeByC_S(companyId, snapshotDate);
+	}
+
+	/**
+	 * Returns the number of date entries where companyId = &#63; and snapshotDate = &#63;.
+	 *
+	 * @param companyId the company ID
+	 * @param snapshotDate the snapshot date
+	 * @return the number of matching date entries
+	 */
+	public static int countByC_S(long companyId, Date snapshotDate) {
+		return getPersistence().countByC_S(companyId, snapshotDate);
+	}
+
+	/**
 	 * Creates a new date entry with the primary key. Does not add the date entry to the database.
 	 *
 	 * @param dateEntryId the primary key for the new date entry
@@ -176,6 +305,66 @@ public class DateEntryUtil {
 		return getPersistence().fetchByPrimaryKey(dateEntryId);
 	}
 
+	/**
+	 * Returns the date entry where companyId = &#63; and snapshotDate = &#63; or returns <code>null</code> if it could not be found. Uses the finder cache.
+	 *
+	 * @param companyId the company ID
+	 * @param snapshotDate the snapshot date
+	 * @return the matching date entry, or <code>null</code> if a matching date entry could not be found
+	 */
+	public static DateEntry fetchByC_S(long companyId, Date snapshotDate) {
+		return getPersistence().fetchByC_S(companyId, snapshotDate);
+	}
+
+	/**
+	 * Returns all the date entries where snapshotDate = &#63;.
+	 *
+	 * @param snapshotDate the snapshot date
+	 * @return the matching date entries
+	 */
+	public static List<DateEntry> findBySnapshotDate(Date snapshotDate) {
+		return getPersistence().findBySnapshotDate(snapshotDate);
+	}
+
+	/**
+	 * Returns a range of all the date entries where snapshotDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.tools.service.builder.test.model.impl.DateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param snapshotDate the snapshot date
+	 * @param start the lower bound of the range of date entries
+	 * @param end the upper bound of the range of date entries (not inclusive)
+	 * @return the range of matching date entries
+	 */
+	public static List<DateEntry> findBySnapshotDate(
+		Date snapshotDate, int start, int end) {
+
+		return getPersistence().findBySnapshotDate(snapshotDate, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the date entries where snapshotDate = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.tools.service.builder.test.model.impl.DateEntryModelImpl</code>.
+	 * </p>
+	 *
+	 * @param snapshotDate the snapshot date
+	 * @param start the lower bound of the range of date entries
+	 * @param end the upper bound of the range of date entries (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching date entries
+	 */
+	public static List<DateEntry> findBySnapshotDate(
+		Date snapshotDate, int start, int end,
+		OrderByComparator<DateEntry> orderByComparator) {
+
+		return getPersistence().findBySnapshotDate(
+			snapshotDate, start, end, orderByComparator);
+	}
+
 	public static DateEntryPersistence getPersistence() {
 		return _persistence;
 	}
@@ -187,4 +376,4 @@ public class DateEntryUtil {
 	private static volatile DateEntryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-487829685
+// LIFERAY-SERVICE-BUILDER-HASH:-496945811

@@ -26,6 +26,7 @@ import com.liferay.portal.tools.service.builder.test.model.DateEntry;
 
 import java.io.Serializable;
 
+import java.util.Date;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -197,7 +198,13 @@ public interface DateEntryLocalService
 	public DateEntry fetchDateEntry(long dateEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public DateEntry fetchDateEntry(long companyId, Date snapshotDate);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<DateEntry> getDateEntries(Date snapshotDate);
 
 	/**
 	 * Returns a range of all the date entries.
@@ -263,4 +270,4 @@ public interface DateEntryLocalService
 	public DateEntry updateDateEntry(DateEntry dateEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:661459682
+// LIFERAY-SERVICE-BUILDER-HASH:-162280387

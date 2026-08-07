@@ -25,12 +25,14 @@ public class DateEntryTable extends BaseTable<DateEntryTable> {
 
 	public final Column<DateEntryTable, Long> dateEntryId = createColumn(
 		"dateEntryId", Long.class, Types.BIGINT, Column.FLAG_PRIMARY);
-	public final Column<DateEntryTable, Date> value = createColumn(
-		"value", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
+	public final Column<DateEntryTable, Long> companyId = createColumn(
+		"companyId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<DateEntryTable, Date> snapshotDate = createColumn(
+		"snapshotDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 
 	private DateEntryTable() {
 		super("DateEntry", DateEntryTable::new);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:374999288
+// LIFERAY-SERVICE-BUILDER-HASH:1975297974

@@ -52,12 +52,14 @@ public class DateEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(5);
+		StringBundler sb = new StringBundler(7);
 
 		sb.append("{dateEntryId=");
 		sb.append(dateEntryId);
-		sb.append(", value=");
-		sb.append(value);
+		sb.append(", companyId=");
+		sb.append(companyId);
+		sb.append(", snapshotDate=");
+		sb.append(snapshotDate);
 		sb.append("}");
 
 		return sb.toString();
@@ -68,12 +70,13 @@ public class DateEntryCacheModel
 		DateEntryImpl dateEntryImpl = new DateEntryImpl();
 
 		dateEntryImpl.setDateEntryId(dateEntryId);
+		dateEntryImpl.setCompanyId(companyId);
 
-		if (value == Long.MIN_VALUE) {
-			dateEntryImpl.setValue(null);
+		if (snapshotDate == Long.MIN_VALUE) {
+			dateEntryImpl.setSnapshotDate(null);
 		}
 		else {
-			dateEntryImpl.setValue(new Date(value));
+			dateEntryImpl.setSnapshotDate(new Date(snapshotDate));
 		}
 
 		dateEntryImpl.resetOriginalValues();
@@ -84,17 +87,22 @@ public class DateEntryCacheModel
 	@Override
 	public void readExternal(ObjectInput objectInput) throws IOException {
 		dateEntryId = objectInput.readLong();
-		value = objectInput.readLong();
+
+		companyId = objectInput.readLong();
+		snapshotDate = objectInput.readLong();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		objectOutput.writeLong(dateEntryId);
-		objectOutput.writeLong(value);
+
+		objectOutput.writeLong(companyId);
+		objectOutput.writeLong(snapshotDate);
 	}
 
 	public long dateEntryId;
-	public long value;
+	public long companyId;
+	public long snapshotDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2050526301
+// LIFERAY-SERVICE-BUILDER-HASH:710374562

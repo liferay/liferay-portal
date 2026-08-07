@@ -77,7 +77,8 @@ create table DataLimitEntry (
 
 create table DateEntry (
 	dateEntryId LONG not null primary key,
-	value DATE null
+	companyId LONG,
+	snapshotDate DATE null
 );
 
 create table DefinedDefaultOrderEntry (

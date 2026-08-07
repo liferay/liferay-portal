@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.service.builder.test.model;
 
 import com.liferay.portal.kernel.model.BaseModel;
+import com.liferay.portal.kernel.model.ShardedModel;
 
 import java.util.Date;
 
@@ -23,7 +24,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @generated
  */
 @ProviderType
-public interface DateEntryModel extends BaseModel<DateEntry> {
+public interface DateEntryModel extends BaseModel<DateEntry>, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -60,18 +61,34 @@ public interface DateEntryModel extends BaseModel<DateEntry> {
 	public void setDateEntryId(long dateEntryId);
 
 	/**
-	 * Returns the value of this date entry.
+	 * Returns the company ID of this date entry.
 	 *
-	 * @return the value of this date entry
+	 * @return the company ID of this date entry
 	 */
-	public Date getValue();
+	@Override
+	public long getCompanyId();
 
 	/**
-	 * Sets the value of this date entry.
+	 * Sets the company ID of this date entry.
 	 *
-	 * @param value the value of this date entry
+	 * @param companyId the company ID of this date entry
 	 */
-	public void setValue(Date value);
+	@Override
+	public void setCompanyId(long companyId);
+
+	/**
+	 * Returns the snapshot date of this date entry.
+	 *
+	 * @return the snapshot date of this date entry
+	 */
+	public Date getSnapshotDate();
+
+	/**
+	 * Sets the snapshot date of this date entry.
+	 *
+	 * @param snapshotDate the snapshot date of this date entry
+	 */
+	public void setSnapshotDate(Date snapshotDate);
 
 	@Override
 	public DateEntry cloneWithOriginalValues();
@@ -81,4 +98,4 @@ public interface DateEntryModel extends BaseModel<DateEntry> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-253591884
+// LIFERAY-SERVICE-BUILDER-HASH:-235496303
