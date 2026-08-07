@@ -535,6 +535,15 @@ test(
 					page.getByText(secondSpaceTitle, {exact: true})
 				).toBeVisible({timeout: 5000});
 			}).toPass();
+
+			await expect(
+				page.getByRole('link', {exact: true, name: secondSpaceTitle})
+			).toHaveAttribute(
+				'href',
+				new RegExp(
+					`edit_content_item\\?objectEntryId=${pendingContents[1].id}&redirect=%2F`
+				)
+			);
 		});
 
 		await test.step('Update the due date from its row action', async () => {

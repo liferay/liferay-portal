@@ -7,6 +7,9 @@ import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
 import {ISearchAssetObjectEntry} from '../../../common/types/AssetType';
+import SimpleActionLinkRenderer, {
+	ActionItem,
+} from '../cell_renderers/SimpleActionLinkRenderer';
 import {getFileMimeTypeObjectDefinitionStickerValue} from './transformViewsItemProps';
 
 export interface AdditionalProps {
@@ -34,15 +37,22 @@ export function createAssetListFDSPropsBuilder({
 	titleRendererName,
 }: AssetListFDSConfig) {
 	function TitleRenderer({
+		actions,
 		itemData,
 		value,
 	}: {
+		actions: ActionItem[];
 		itemData: ISearchAssetObjectEntry;
 		value?: string;
 	}) {
 		return (
 			<div className="d-flex flex-column">
-				<span>{value}</span>
+				<SimpleActionLinkRenderer
+					actions={actions}
+					itemData={itemData}
+					options={{actionId: 'edit'}}
+					value={value ?? ''}
+				/>
 
 				<span className="font-weight-normal text-3">
 					{renderSubtitle(itemData)}

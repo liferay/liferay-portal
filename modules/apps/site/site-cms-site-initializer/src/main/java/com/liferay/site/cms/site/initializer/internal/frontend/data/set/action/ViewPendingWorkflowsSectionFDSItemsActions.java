@@ -8,7 +8,12 @@ package com.liferay.site.cms.site.initializer.internal.frontend.data.set.action;
 import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.URLCodec;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +36,10 @@ public class ViewPendingWorkflowsSectionFDSItemsActions
 	@Override
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
 		return Arrays.asList(
 			FDSActionDropdownItemBuilder.setHref(
@@ -65,6 +74,23 @@ public class ViewPendingWorkflowsSectionFDSItemsActions
 				"update"
 			).build(
 				"update-due-date"
+			),
+			FDSActionDropdownItemBuilder.setHref(
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?objectEntryId={embedded.id}&redirect=",
+					URLCodec.encodeURL(themeDisplay.getURLCurrent()))
+			).setIcon(
+				"pencil"
+			).setLabel(
+				LanguageUtil.get(httpServletRequest, "edit")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"update"
+			).build(
+				"edit"
 			));
 	}
 
