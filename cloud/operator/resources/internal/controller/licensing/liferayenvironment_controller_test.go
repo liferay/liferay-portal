@@ -249,6 +249,55 @@ func TestEnforceReplicaCeiling(t *testing.T) {
 	}
 }
 
+func TestReconcileBacksOffWhenActivationRejected(t *testing.T) {
+	objects := []client.Object{
+		&corev1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "liferay-dev",
+				UID:  "dev-namespace-uid",
+			},
+		},
+		&corev1.Secret{
+			Data: map[string][]byte{
+				"activationCode": []byte("one-time-code"),
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      "dev-activation",
+				Namespace: "liferay-dev",
+			},
+		},
+		pendingEnvironment(),
+	}
+
+	reconciler, result := reconcileEnvironment(
+		t, &stubProvisioning{
+			activateError: fmt.Errorf("provisioning: activation code rejected"),
+		}, objects...,
+	)
+
+	if result.RequeueAfter != 30*time.Second {
+		t.Errorf("RequeueAfter = %s, want the initial backoff 30s", result.RequeueAfter)
+	}
+
+	liferayEnvironment := getEnvironment(t, reconciler)
+
+	if liferayEnvironment.Status.ConsecutiveFailures != 1 {
+		t.Errorf("ConsecutiveFailures = %d, want 1", liferayEnvironment.Status.ConsecutiveFailures)
+	}
+
+	condition := meta.FindStatusCondition(
+		liferayEnvironment.Status.Conditions, conditionActivated,
+	)
+
+	if condition == nil || condition.Status != metav1.ConditionFalse || condition.Reason != "ActivationRejected" {
+		t.Errorf("Activated condition = %v, want False/ActivationRejected", condition)
+	}
+
+	if liferayEnvironment.Status.Phase != "Degraded" {
+		t.Errorf("Phase = %q, want Degraded", liferayEnvironment.Status.Phase)
+	}
+}
+
 func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 	entitlements := &provisioning.Entitlements{
 		AddOns: []provisioning.AddOn{
@@ -532,6 +581,24 @@ func newFakeClient(t *testing.T, objects ...client.Object) client.Client {
 	).WithStatusSubresource(
 		&licensingv1alpha1.LiferayEnvironment{},
 	).Build()
+}
+
+func pendingEnvironment() *licensingv1alpha1.LiferayEnvironment {
+	return &licensingv1alpha1.LiferayEnvironment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      "dev",
+			Namespace: "liferay-dev",
+		},
+		Spec: licensingv1alpha1.LiferayEnvironmentSpec{
+			ActivationCodeSecretRef: licensingv1alpha1.SecretKeyRef{
+				Key:  "activationCode",
+				Name: "dev-activation",
+			},
+			WorkloadRef: licensingv1alpha1.WorkloadRef{
+				Name: "dev-liferay",
+			},
+		},
+	}
 }
 
 func pointerInt32(value int32) *int32 {
