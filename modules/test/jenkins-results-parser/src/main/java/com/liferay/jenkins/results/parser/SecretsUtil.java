@@ -195,25 +195,28 @@ public abstract class SecretsUtil {
 				"Unable to generate API token hash", noSuchAlgorithmException);
 		}
 
-		String secretValue = _toHexString(randomBytes);
+		Map<String, String> apiTokenMap = new LinkedHashMap<>();
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.SSS z");
 
 		simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-		UUID uuid = UUID.randomUUID();
-
-		Map<String, String> apiTokenMap = new LinkedHashMap<>();
-
 		apiTokenMap.put("creationDate", simpleDateFormat.format(new Date()));
+
+		String secretValue = _toHexString(randomBytes);
+
 		apiTokenMap.put(
 			"hash",
 			_toHexString(
 				messageDigest.digest(
 					secretValue.getBytes(StandardCharsets.US_ASCII))));
 		apiTokenMap.put("plainValue", _API_TOKEN_VERSION + secretValue);
+
+		UUID uuid = UUID.randomUUID();
+
 		apiTokenMap.put("uuid", uuid.toString());
+
 		apiTokenMap.put("version", _API_TOKEN_VERSION);
 
 		return apiTokenMap;
@@ -405,12 +408,10 @@ public abstract class SecretsUtil {
 			return;
 		}
 
-		String vaultName = vault.getName();
-
+		String itemFieldId = itemField.getId();
 		String itemId = item.getId();
 		String itemTitle = item.getTitle();
-
-		String itemFieldId = itemField.getId();
+		String vaultName = vault.getName();
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(itemFieldId)) {
 			_connectSecrets.put(
@@ -442,12 +443,10 @@ public abstract class SecretsUtil {
 			return;
 		}
 
-		String vaultName = vault.getName();
-
+		String itemFileName = itemFile.getName();
 		String itemId = item.getId();
 		String itemTitle = item.getTitle();
-
-		String itemFileName = itemFile.getName();
+		String vaultName = vault.getName();
 
 		_connectSecrets.put(
 			_getSecretReference(itemFileName, itemId, vaultName),
