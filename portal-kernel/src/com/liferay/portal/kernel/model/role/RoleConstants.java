@@ -31,6 +31,8 @@ public class RoleConstants {
 
 	public static final String CMS_ADMINISTRATOR = "CMS Administrator";
 
+	public static final String CRYPTO_OFFICER = "Crypto Officer";
+
 	public static final String EXTERNAL_REFERENCE_CODE_PREFIX_SYSTEM_ROLE =
 		"L_";
 
@@ -208,7 +210,7 @@ public class RoleConstants {
 	}
 
 	private static final String[] _UNMODIFIABLE_ROLE_NAMES = {
-		CMS_ADMINISTRATOR
+		CMS_ADMINISTRATOR, CRYPTO_OFFICER
 	};
 
 }
