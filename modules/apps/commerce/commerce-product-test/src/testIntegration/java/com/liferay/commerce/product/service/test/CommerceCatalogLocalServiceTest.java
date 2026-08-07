@@ -6,6 +6,8 @@
 package com.liferay.commerce.product.service.test;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPConfigurationList;
@@ -43,6 +45,35 @@ public class CommerceCatalogLocalServiceTest {
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Test
+	public void testAddCommerceCatalogWithEmptyAccountEntry() throws Exception {
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			AccountEntry accountEntry =
+				_accountEntryLocalService.getOrAddEmptyAccountEntry(
+					externalReferenceCode, TestPropsValues.getCompanyId(),
+					TestPropsValues.getUserId(), externalReferenceCode,
+					AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER);
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_EMPTY, accountEntry.getStatus());
+
+			CommerceCatalog commerceCatalog =
+				_commerceCatalogLocalService.addCommerceCatalog(
+					RandomTestUtil.randomString(),
+					accountEntry.getAccountEntryId(),
+					RandomTestUtil.randomString(), "USD", "en_US", false,
+					ServiceContextTestUtil.getServiceContext());
+
+			Assert.assertEquals(
+				accountEntry.getAccountEntryId(),
+				commerceCatalog.getAccountEntryId());
+		}
+	}
 
 	@Test
 	public void testForceDeleteCommerceCatalog() throws Exception {
@@ -120,6 +151,9 @@ public class CommerceCatalogLocalServiceTest {
 		Assert.assertNotEquals(
 			WorkflowConstants.STATUS_EMPTY, commerceCatalog.getStatus());
 	}
+
+	@Inject
+	private AccountEntryLocalService _accountEntryLocalService;
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
