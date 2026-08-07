@@ -15,6 +15,7 @@ import {
 	type SupportedBusinessType,
 	isFillableBusinessType,
 } from '../../../tests/object-web/utils/generateObjectEntry';
+import {gotoWithRetry} from '../../../utils/gotoWithRetry';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
 
 export class ViewObjectEntriesPage {
@@ -264,7 +265,8 @@ export class ViewObjectEntriesPage {
 		const [_, objectDefinitionClassNameSuffix] =
 			objectDefinitionClassName.split('#');
 
-		await this.page.goto(
+		await gotoWithRetry(
+			this.page,
 			`/${regionalCode}/group${siteUrl ?? '/guest'}${
 				PORTLET_URLS.objects
 			}_${objectDefinitionClassNameSuffix}`,

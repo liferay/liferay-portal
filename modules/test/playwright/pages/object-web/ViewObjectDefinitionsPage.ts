@@ -8,6 +8,7 @@ import {Locator, Page, Response, expect} from '@playwright/test';
 import {readFile} from 'fs/promises';
 import path from 'path';
 
+import {gotoWithRetry} from '../../utils/gotoWithRetry';
 import {PORTLET_URLS} from '../../utils/portletUrls';
 import {getTempDir} from '../../utils/temp';
 import {waitForAlert} from '../../utils/waitForAlert';
@@ -198,7 +199,8 @@ export class ViewObjectDefinitionsPage {
 	};
 
 	async goto(siteUrl?: Site['friendlyUrlPath']) {
-		await this.page.goto(
+		await gotoWithRetry(
+			this.page,
 			`/group${siteUrl || '/guest'}${PORTLET_URLS.objects}`,
 			{waitUntil: 'load'}
 		);
