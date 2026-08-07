@@ -232,8 +232,10 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 	private JavaClass _getJavaClass(
 		String absolutePath, String fullyQualifiedTypeName) {
 
-		if (_javaClasses.containsKey(fullyQualifiedTypeName)) {
-			return _javaClasses.get(fullyQualifiedTypeName);
+		JavaClass javaClass = _javaClasses.get(fullyQualifiedTypeName);
+
+		if (javaClass != null) {
+			return javaClass;
 		}
 
 		File javaFile = JavaSourceUtil.getJavaFile(
@@ -243,8 +245,6 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		if (javaFile == null) {
 			return null;
 		}
-
-		JavaClass javaClass = null;
 
 		try {
 			javaClass = JavaClassParser.parseJavaClass(
