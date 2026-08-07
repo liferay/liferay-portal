@@ -517,10 +517,10 @@ export async function initializerSetUp(
 				''
 			);
 
-		for (let i = 0; i < products.totalCount; i++) {
-			if (products.items[i].catalogId === catalogs.items[0].id) {
+		for (const product of products.items) {
+			if (product.catalogId === catalogs.items[0].id) {
 				apiHelpers.data.push({
-					id: products.items[i].productId,
+					id: product.productId,
 					type: 'product',
 				});
 			}
