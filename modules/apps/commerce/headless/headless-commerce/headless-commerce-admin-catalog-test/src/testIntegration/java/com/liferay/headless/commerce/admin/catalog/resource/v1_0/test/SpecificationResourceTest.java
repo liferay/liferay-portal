@@ -11,9 +11,17 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.OptionCategory;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Specification;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.list.type.model.ListTypeDefinition;
+import com.liferay.list.type.service.ListTypeDefinitionLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.vulcan.util.LocalizedMapUtil;
+
+import java.util.Collections;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -74,6 +82,7 @@ public class SpecificationResourceTest
 	public void testPostSpecification() throws Exception {
 		super.testPostSpecification();
 
+		_testPostSpecificationWithListTypeDefinitionExternalReferenceCodes();
 		_testPostSpecificationWithOptionCategory();
 	}
 
@@ -172,6 +181,31 @@ public class SpecificationResourceTest
 		return specificationResource.postSpecification(randomSpecification());
 	}
 
+	private void _testPostSpecificationWithListTypeDefinitionExternalReferenceCodes()
+		throws Exception {
+
+		ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionLocalService.addListTypeDefinition(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				false, Collections.emptyList(), new ServiceContext());
+
+		Specification specification = randomSpecification();
+
+		specification.setListTypeDefinitionExternalReferenceCodes(
+			new String[] {listTypeDefinition.getExternalReferenceCode()});
+
+		Specification postSpecification =
+			specificationResource.postSpecification(specification);
+
+		Assert.assertArrayEquals(
+			new Long[] {listTypeDefinition.getListTypeDefinitionId()},
+			postSpecification.getListTypeDefinitionIds());
+		Assert.assertArrayEquals(
+			new String[] {listTypeDefinition.getExternalReferenceCode()},
+			postSpecification.getListTypeDefinitionExternalReferenceCodes());
+	}
+
 	private void _testPostSpecificationWithOptionCategory() throws Exception {
 		Specification randomSpecification = randomSpecification();
 
@@ -199,5 +233,8 @@ public class SpecificationResourceTest
 
 	@DeleteAfterTestRun
 	private CPOptionCategory _cpOptionCategory;
+
+	@Inject
+	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
 
 }

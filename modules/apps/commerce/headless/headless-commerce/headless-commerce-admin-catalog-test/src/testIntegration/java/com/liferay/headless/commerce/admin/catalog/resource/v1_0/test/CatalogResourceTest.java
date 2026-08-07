@@ -191,6 +191,8 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 		Assert.assertNotEquals(randomCatalog.getName(), patchCatalog.getName());
 
 		assertValid(postCatalog);
+
+		_testPatchCatalogWithAccountExternalReferenceCode();
 	}
 
 	@Override
@@ -212,6 +214,14 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 		Assert.assertNotEquals(randomCatalog.getName(), patchCatalog.getName());
 
 		assertValid(postCatalog);
+	}
+
+	@Override
+	@Test
+	public void testPostCatalog() throws Exception {
+		super.testPostCatalog();
+
+		_testPostCatalogWithAccountExternalReferenceCode();
 	}
 
 	@Override
@@ -293,6 +303,68 @@ public class CatalogResourceTest extends BaseCatalogResourceTestCase {
 		throws Exception {
 
 		return catalogResource.postCatalog(randomCatalog());
+	}
+
+	private void _testPatchCatalogWithAccountExternalReferenceCode()
+		throws Exception {
+
+		AccountEntry accountEntry1 = _accountEntryLocalService.addAccountEntry(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()),
+			_user.getUserId(), 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString() + "@liferay.com", null, null,
+			AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER, 0, _serviceContext);
+
+		AccountEntry accountEntry2 = _accountEntryLocalService.addAccountEntry(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()),
+			_user.getUserId(), 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString() + "@liferay.com", null, null,
+			AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER, 0, _serviceContext);
+
+		Catalog postCatalog = catalogResource.postCatalog(randomCatalog());
+
+		catalogResource.patchCatalog(
+			postCatalog.getId(),
+			new Catalog() {
+				{
+					accountExternalReferenceCode =
+						accountEntry2.getExternalReferenceCode();
+					accountId = accountEntry1.getAccountEntryId();
+					accountType = Catalog.AccountType.SUPPLIER;
+				}
+			});
+
+		Catalog getCatalog = catalogResource.getCatalog(postCatalog.getId());
+
+		Assert.assertEquals(
+			(Long)accountEntry2.getAccountEntryId(), getCatalog.getAccountId());
+	}
+
+	private void _testPostCatalogWithAccountExternalReferenceCode()
+		throws Exception {
+
+		AccountEntry accountEntry = _accountEntryLocalService.addAccountEntry(
+			StringUtil.toLowerCase(RandomTestUtil.randomString()),
+			_user.getUserId(), 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString() + "@liferay.com", null, null,
+			AccountConstants.ACCOUNT_ENTRY_TYPE_SUPPLIER, 0, _serviceContext);
+
+		Catalog catalog = randomCatalog();
+
+		catalog.setAccountExternalReferenceCode(
+			accountEntry.getExternalReferenceCode());
+		catalog.setAccountId((Long)null);
+		catalog.setAccountType(Catalog.AccountType.SUPPLIER);
+
+		Catalog postCatalog = catalogResource.postCatalog(catalog);
+
+		Assert.assertEquals(
+			(Long)accountEntry.getAccountEntryId(), postCatalog.getAccountId());
+		Assert.assertEquals(
+			accountEntry.getExternalReferenceCode(),
+			postCatalog.getAccountExternalReferenceCode());
 	}
 
 	private AccountEntry _accountEntry;

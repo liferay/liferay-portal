@@ -22,7 +22,9 @@ import com.liferay.portal.test.rule.Inject;
 
 import java.util.Date;
 
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -55,6 +57,14 @@ public class ProductConfigurationListResourceTest
 		_masterCPConfigurationList =
 			_cpConfigurationListLocalService.updateCPConfigurationList(
 				_masterCPConfigurationList);
+	}
+
+	@Override
+	@Test
+	public void testPostProductConfigurationList() throws Exception {
+		super.testPostProductConfigurationList();
+
+		_testPostProductConfigurationListWithParentExternalReferenceCode();
 	}
 
 	@Override
@@ -181,6 +191,35 @@ public class ProductConfigurationListResourceTest
 
 		return productConfigurationListResource.postProductConfigurationList(
 			productConfigurationList);
+	}
+
+	private void _testPostProductConfigurationListWithParentExternalReferenceCode()
+		throws Exception {
+
+		ProductConfigurationList parentProductConfigurationList =
+			productConfigurationListResource.postProductConfigurationList(
+				randomProductConfigurationList());
+
+		ProductConfigurationList productConfigurationList =
+			randomProductConfigurationList();
+
+		productConfigurationList.
+			setParentProductConfigurationListExternalReferenceCode(
+				parentProductConfigurationList.getExternalReferenceCode());
+		productConfigurationList.setParentProductConfigurationListId(
+			(Long)null);
+
+		ProductConfigurationList postProductConfigurationList =
+			productConfigurationListResource.postProductConfigurationList(
+				productConfigurationList);
+
+		Assert.assertEquals(
+			parentProductConfigurationList.getId(),
+			postProductConfigurationList.getParentProductConfigurationListId());
+		Assert.assertEquals(
+			parentProductConfigurationList.getExternalReferenceCode(),
+			postProductConfigurationList.
+				getParentProductConfigurationListExternalReferenceCode());
 	}
 
 	@DeleteAfterTestRun

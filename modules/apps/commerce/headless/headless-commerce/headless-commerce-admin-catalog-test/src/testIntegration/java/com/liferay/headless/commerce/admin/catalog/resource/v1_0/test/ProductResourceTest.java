@@ -39,6 +39,10 @@ import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.ProductResource;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.service.JournalArticleLocalService;
+import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -49,13 +53,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -67,6 +74,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -381,6 +389,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductVirtual();
 		_testPostProductWithProductAccountGroupExternalReferenceCode();
 		_testPostProductWithProductChannelExternalReferenceCode();
+		_testPostProductWithTermsOfUseJournalArticleExternalReferenceCode();
+		_testPostProductWithTermsOfUseJournalArticleGroupExternalReferenceCode();
 		_testPostProductWithWorkflowSingleApprover();
 	}
 
@@ -484,6 +494,49 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		throws Exception {
 
 		return productResource.postProduct(product);
+	}
+
+	private ProductVirtualSettings _postProductWithTermsOfUse(
+			String groupExternalReferenceCode, JournalArticle journalArticle)
+		throws Exception {
+
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ProductResource productResource = ProductResource.builder(
+		).authentication(
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).locale(
+			LocaleUtil.getDefault()
+		).parameters(
+			"nestedFields", "productVirtualSettings"
+		).build();
+
+		Product product = productResource.postProduct(
+			new Product() {
+				{
+					active = true;
+					catalogId = _commerceCatalog.getCommerceCatalogId();
+					externalReferenceCode = StringUtil.toLowerCase(
+						RandomTestUtil.randomString());
+					name = LanguageUtils.getLanguageIdMap(
+						RandomTestUtil.randomLocaleStringMap());
+					productType = VirtualCPTypeConstants.NAME;
+					productVirtualSettings = new ProductVirtualSettings() {
+						{
+							duration = RandomTestUtil.randomLong();
+							maxUsages = RandomTestUtil.randomInt();
+							termsOfUseJournalArticleExternalReferenceCode =
+								journalArticle.getExternalReferenceCode();
+							termsOfUseJournalArticleGroupExternalReferenceCode =
+								groupExternalReferenceCode;
+							termsOfUseRequired = true;
+							url = "http://www.example.com/download";
+						}
+					};
+				}
+			});
+
+		return product.getProductVirtualSettings();
 	}
 
 	private Product _randomProductWithChannel(CommerceChannel commerceChannel)
@@ -987,16 +1040,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	}
 
 	private void _testPostProductVirtual() throws Exception {
-		User omniadminUser = UserTestUtil.addOmniadminUser();
-
-		String password = RandomTestUtil.randomString();
-
-		_userLocalService.updatePassword(
-			omniadminUser.getUserId(), password, password, false, true);
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
 		ProductResource productResource = ProductResource.builder(
 		).authentication(
-			omniadminUser.getEmailAddress(), password
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
@@ -1047,16 +1095,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	private void _testPostProductWithProductAccountGroupExternalReferenceCode()
 		throws Exception {
 
-		User omniadminUser = UserTestUtil.addOmniadminUser();
-
-		String password = RandomTestUtil.randomString();
-
-		_userLocalService.updatePassword(
-			omniadminUser.getUserId(), password, password, false, true);
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
 		ProductResource productResource = ProductResource.builder(
 		).authentication(
-			omniadminUser.getEmailAddress(), password
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
@@ -1092,16 +1135,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	private void _testPostProductWithProductChannelExternalReferenceCode()
 		throws Exception {
 
-		User omniadminUser = UserTestUtil.addOmniadminUser();
-
-		String password = RandomTestUtil.randomString();
-
-		_userLocalService.updatePassword(
-			omniadminUser.getUserId(), password, password, false, true);
+		User adminUser = UserTestUtil.getAdminUser(testCompany.getCompanyId());
 
 		ProductResource productResource = ProductResource.builder(
 		).authentication(
-			omniadminUser.getEmailAddress(), password
+			adminUser.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
 		).locale(
 			LocaleUtil.getDefault()
 		).parameters(
@@ -1130,6 +1168,65 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			_commerceChannel.getExternalReferenceCode(),
 			productChannel.getExternalReferenceCode());
+	}
+
+	private void _testPostProductWithTermsOfUseJournalArticleExternalReferenceCode()
+		throws Exception {
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_commerceCatalog.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		ProductVirtualSettings productVirtualSettings =
+			_postProductWithTermsOfUse(null, journalArticle);
+
+		Assert.assertEquals(
+			(Long)journalArticle.getResourcePrimKey(),
+			productVirtualSettings.getTermsOfUseJournalArticleId());
+		Assert.assertEquals(
+			journalArticle.getExternalReferenceCode(),
+			productVirtualSettings.
+				getTermsOfUseJournalArticleExternalReferenceCode());
+	}
+
+	private void _testPostProductWithTermsOfUseJournalArticleGroupExternalReferenceCode()
+		throws Exception {
+
+		_group = GroupTestUtil.addGroup();
+
+		_group.setExternalReferenceCode(RandomTestUtil.randomString());
+
+		_group = _groupLocalService.updateGroup(_group);
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		JournalArticle catalogJournalArticle = JournalTestUtil.addArticle(
+			_commerceCatalog.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		catalogJournalArticle.setExternalReferenceCode(
+			journalArticle.getExternalReferenceCode());
+
+		catalogJournalArticle =
+			_journalArticleLocalService.updateJournalArticle(
+				catalogJournalArticle);
+
+		ProductVirtualSettings productVirtualSettings =
+			_postProductWithTermsOfUse(
+				_group.getExternalReferenceCode(), journalArticle);
+
+		Assert.assertEquals(
+			(Long)journalArticle.getResourcePrimKey(),
+			productVirtualSettings.getTermsOfUseJournalArticleId());
+		Assert.assertEquals(
+			_group.getExternalReferenceCode(),
+			productVirtualSettings.
+				getTermsOfUseJournalArticleGroupExternalReferenceCode());
+		Assert.assertNotEquals(
+			(Long)catalogJournalArticle.getResourcePrimKey(),
+			productVirtualSettings.getTermsOfUseJournalArticleId());
 	}
 
 	private void _testPostProductWithWorkflowSingleApprover() throws Exception {
@@ -1213,6 +1310,15 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@DeleteAfterTestRun
 	private CPSpecificationOption _cpSpecificationOption;
+
+	@DeleteAfterTestRun
+	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
