@@ -11,6 +11,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageSelectorPagesTest} from '../../../fixtures/pageSelectorPagesTest';
 import {createCategories} from '../../../helpers/CreateCategories';
+import {changeManagementToolbarView} from '../../../utils/changeManagementToolbarView';
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {navigationMenusPagesTest} from './fixtures/navigationMenusPagesTest';
@@ -460,13 +461,7 @@ test('The navigation menu creator could add sibling item via keyboard', async ({
 		.getByRole('menuitem', {exact: true, name: 'Blogs Entry'})
 		.press('Enter');
 
-	await navigationMenusPage.blogsModal
-		.getByLabel('Select View, Currently')
-		.click();
-
-	await navigationMenusPage.blogsModal
-		.getByRole('menuitem', {name: 'Cards'})
-		.click();
+	await changeManagementToolbarView(navigationMenusPage.blogsModal, 'Cards');
 
 	await navigationMenusPage.blogsModal
 		.getByRole('button', {name: `Select ${blog.headline}`})
