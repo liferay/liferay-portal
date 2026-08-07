@@ -341,10 +341,11 @@ public class ExportProcessResourceTest
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
+	@Override
 	@Test
 	@TestInfo("LRQA-47649")
-	public void testPostExportProcessRelaunchCreatesNewExportProcess()
-		throws Exception {
+	public void testPostExportProcessRelaunch() throws Exception {
+		super.testPostExportProcessRelaunch();
 
 		ObjectDefinition objectDefinition = _publishObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_SITE);
