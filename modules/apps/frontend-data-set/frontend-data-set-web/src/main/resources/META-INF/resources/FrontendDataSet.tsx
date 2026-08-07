@@ -46,7 +46,6 @@ import {
 	InlineNotification,
 } from './inline_notification/InlineNotification';
 import ManagementBar from './management_bar/ManagementBar';
-import {FILTER_IMPLEMENTATIONS} from './management_bar/controls/filters/Filter';
 
 // @ts-ignore
 
@@ -60,6 +59,7 @@ import {readConfigFromURL} from './utils/configInURL';
 import EVENTS from './utils/eventsDefinitions';
 import {activateFilter} from './utils/filters/activateFilter';
 import {deactivateFilter} from './utils/filters/deactivateFilter';
+import {getOdataFiltersStrings} from './utils/filters/getOdataFiltersStrings';
 import {getOrCreateFDSAtom} from './utils/getOrCreateFDSAtom';
 import getRandomId from './utils/getRandomId';
 
@@ -665,15 +665,9 @@ const FrontendDataSetContent = ({
 
 		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-		const activeFilters: Array<IBaseFilterState> =
-			unfrozenGlobalFDSState.filters.filter((filter) => filter.active) ||
-			[];
-
-		const activeFiltersOdataStrings = activeFilters.map((filter) => {
-			const filterImplementation = FILTER_IMPLEMENTATIONS[filter.type];
-
-			return filterImplementation.getOdataString(filter);
-		});
+		const activeFiltersOdataStrings = getOdataFiltersStrings(
+			unfrozenGlobalFDSState
+		);
 
 		const activeSorts =
 			sorts.length > 1

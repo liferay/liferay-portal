@@ -8,6 +8,12 @@
 // types provided by "@liferay/js-api", so the value and its types come from a
 // single import.
 
+// Pair this element with a data set whose "showFilters" prop is false, set
+// through a props transformer: filtering belongs either to the data set or to
+// this element, never to both. From the first setFilters() call on, the
+// filters the data set declares no longer reach the request, so its dropdown
+// would no longer tell the truth.
+
 import {
 	FDSConnection,
 	FDSConnectionInfo,
@@ -28,6 +34,7 @@ const PLACEHOLDERS: Record<FDSConnectionStatus, string> = {
 
 function App({fdsName}: AppProps) {
 	const [disabled, setDisabled] = useState<boolean>(true);
+	const [expression, setExpression] = useState('');
 	const [placeholder, setPlaceholder] = useState<string>(
 		PLACEHOLDERS.connecting
 	);
@@ -60,31 +67,75 @@ function App({fdsName}: AppProps) {
 		fdsConnectionRef.current?.setSearch(query);
 	};
 
-	return (
-		<div style={{display: 'flex', gap: '0.5rem', padding: '1rem'}}>
-			<input
-				className="form-control"
-				disabled={disabled}
-				onChange={(event) => setQuery(event.target.value)}
-				onKeyDown={(event) => {
-					if (event.key === 'Enter') {
-						handleSearch();
-					}
-				}}
-				placeholder={placeholder}
-				style={{flex: 1}}
-				type="text"
-				value={query}
-			/>
+	const handleApplyFilter = () => {
+		fdsConnectionRef.current?.setFilters([
+			{id: 'custom', odataFilterString: expression.trim()},
+		]);
+	};
 
-			<button
-				className="btn btn-primary"
-				disabled={disabled}
-				onClick={handleSearch}
-				type="button"
-			>
-				Search
-			</button>
+	const handleClearFilters = () => {
+		setExpression('');
+
+		fdsConnectionRef.current?.clearFilters();
+	};
+
+	return (
+		<div style={{display: 'grid', gap: '1rem', padding: '1rem'}}>
+			<div style={{display: 'flex', gap: '0.5rem'}}>
+				<input
+					className="form-control"
+					disabled={disabled}
+					onChange={(event) => setQuery(event.target.value)}
+					onKeyDown={(event) => {
+						if (event.key === 'Enter') {
+							handleSearch();
+						}
+					}}
+					placeholder={placeholder}
+					style={{flex: 1}}
+					type="text"
+					value={query}
+				/>
+
+				<button
+					className="btn btn-primary"
+					disabled={disabled}
+					onClick={handleSearch}
+					type="button"
+				>
+					Search
+				</button>
+			</div>
+
+			<div style={{display: 'flex', gap: '0.5rem'}}>
+				<input
+					className="form-control"
+					disabled={disabled}
+					onChange={(event) => setExpression(event.target.value)}
+					placeholder="Filter with OData, such as name eq 'Liferay'"
+					style={{flex: 1}}
+					type="text"
+					value={expression}
+				/>
+
+				<button
+					className="btn btn-primary"
+					disabled={disabled || !expression.trim()}
+					onClick={handleApplyFilter}
+					type="button"
+				>
+					Apply filter
+				</button>
+
+				<button
+					className="btn btn-secondary"
+					disabled={disabled}
+					onClick={handleClearFilters}
+					type="button"
+				>
+					Clear filters
+				</button>
+			</div>
 		</div>
 	);
 }
