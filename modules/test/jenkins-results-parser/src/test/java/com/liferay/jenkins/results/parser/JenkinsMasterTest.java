@@ -277,7 +277,9 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		}
 
 		throw new AssertionError(
-			"Unable to find " + buildURL + " in " + runningBuilds);
+			JenkinsResultsParserUtil.combine(
+				"Unable to find ", buildURL, " in ",
+				String.valueOf(runningBuilds)));
 	}
 
 	private JSONObject _getRunningBuildsComputerAPIJSONObject() {
