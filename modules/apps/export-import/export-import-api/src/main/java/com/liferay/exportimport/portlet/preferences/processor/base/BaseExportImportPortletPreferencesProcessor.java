@@ -8,12 +8,12 @@ package com.liferay.exportimport.portlet.preferences.processor.base;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
-import com.liferay.osgi.util.ServiceTrackerFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -24,9 +24,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.annotation.versioning.ProviderType;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Máté Thurzó
@@ -52,7 +49,7 @@ public abstract class BaseExportImportPortletPreferencesProcessor
 
 		ExportImportPortletPreferencesProcessorHelper
 			exportImportPortletPreferencesProcessorHelper =
-				_serviceTracker.getService();
+				_exportImportPortletPreferencesProcessorHelperSnapshot.get();
 
 		return exportImportPortletPreferencesProcessorHelper.
 			getGroupExportPortletPreferencesExternalReferenceCode(
@@ -289,16 +286,9 @@ public abstract class BaseExportImportPortletPreferencesProcessor
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseExportImportPortletPreferencesProcessor.class);
 
-	private static final ServiceTracker
-		<ExportImportPortletPreferencesProcessorHelper,
-		 ExportImportPortletPreferencesProcessorHelper> _serviceTracker;
-
-	static {
-		Bundle bundle = FrameworkUtil.getBundle(
-			BaseExportImportPortletPreferencesProcessor.class);
-
-		_serviceTracker = ServiceTrackerFactory.open(
-			bundle, ExportImportPortletPreferencesProcessorHelper.class);
-	}
+	private static final Snapshot<ExportImportPortletPreferencesProcessorHelper>
+		_exportImportPortletPreferencesProcessorHelperSnapshot = new Snapshot<>(
+			BaseExportImportPortletPreferencesProcessor.class,
+			ExportImportPortletPreferencesProcessorHelper.class);
 
 }
