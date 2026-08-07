@@ -10,10 +10,66 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  * @author Calum Ragan
  */
 public class JenkinsMasterTestUtil {
+
+	public static JSONObject getBuiltInComputerJSONObject(
+		JSONObject... oneOffExecutorJSONObjects) {
+
+		return _getComputerJSONObject(
+			"hudson.model.Hudson$MasterComputer", "Built-In Node",
+			new JSONArray(), false, "",
+			new JSONArray(oneOffExecutorJSONObjects));
+	}
+
+	public static JSONObject getComputerAPIJSONObject(
+		int busyExecutorCount, JSONObject... computerJSONObjects) {
+
+		return new JSONObject(
+		).put(
+			"busyExecutors", busyExecutorCount
+		).put(
+			"computer", new JSONArray(computerJSONObjects)
+		);
+	}
+
+	public static JSONObject getComputerJSONObject(
+		String displayName, JSONObject... executorJSONObjects) {
+
+		return _getComputerJSONObject(
+			"hudson.slaves.SlaveComputer", displayName,
+			new JSONArray(executorJSONObjects), false, "", new JSONArray());
+	}
+
+	public static JSONObject getExecutorJSONObject(
+		String buildURL, long estimatedDuration, String fullDisplayName,
+		boolean likelyStuck, long timestamp) {
+
+		JSONObject currentExecutableJSONObject = new JSONObject(
+		).put(
+			"building", true
+		).put(
+			"estimatedDuration", estimatedDuration
+		).put(
+			"fullDisplayName", fullDisplayName
+		).put(
+			"timestamp", timestamp
+		).put(
+			"url", buildURL
+		);
+
+		return new JSONObject(
+		).put(
+			"currentExecutable", currentExecutableJSONObject
+		).put(
+			"likelyStuck", likelyStuck
+		);
+	}
 
 	public static Properties getJenkinsCohortProperties(
 		String cohortName, int masterCount) {
@@ -76,7 +132,33 @@ public class JenkinsMasterTestUtil {
 			jenkinsMaster, "_labelBatchSizes");
 	}
 
+	public static JSONObject getOfflineComputerJSONObject(
+		String displayName, long offlineCauseTimestamp,
+		String offlineCauseReason, boolean temporarilyOffline,
+		JSONObject... executorJSONObjects) {
+
+		JSONObject computerJSONObject = _getComputerJSONObject(
+			"hudson.slaves.EC2FleetNodeComputer", displayName,
+			new JSONArray(executorJSONObjects), true, offlineCauseReason,
+			new JSONArray());
+
+		return computerJSONObject.put(
+			"offlineCause",
+			new JSONObject(
+			).put(
+				"timestamp", offlineCauseTimestamp
+			)
+		).put(
+			"temporarilyOffline", temporarilyOffline
+		);
+	}
+
 	public static void resetCaches() {
+		Map<String, ?> jenkinsCohorts = ReflectionTestUtil.getFieldValue(
+			JenkinsCohort.class, "_jenkinsCohorts");
+
+		jenkinsCohorts.clear();
+
 		Map<String, ?> jenkinsMasters = ReflectionTestUtil.getFieldValue(
 			JenkinsMaster.class, "_jenkinsMasters");
 
@@ -96,6 +178,39 @@ public class JenkinsMasterTestUtil {
 			LoadBalancerUtil.class, "_roundRobinCounters");
 
 		roundRobinCounters.clear();
+	}
+
+	private static JSONObject _getComputerJSONObject(
+		String className, String displayName, JSONArray executorsJSONArray,
+		boolean offline, String offlineCauseReason,
+		JSONArray oneOffExecutorsJSONArray) {
+
+		JSONArray assignedLabelsJSONArray = new JSONArray();
+
+		assignedLabelsJSONArray.put(
+			new JSONObject(
+			).put(
+				"name", displayName
+			));
+
+		return new JSONObject(
+		).put(
+			"_class", className
+		).put(
+			"assignedLabels", assignedLabelsJSONArray
+		).put(
+			"displayName", displayName
+		).put(
+			"executors", executorsJSONArray
+		).put(
+			"idle", executorsJSONArray.isEmpty()
+		).put(
+			"offline", offline
+		).put(
+			"offlineCauseReason", offlineCauseReason
+		).put(
+			"oneOffExecutors", oneOffExecutorsJSONArray
+		);
 	}
 
 }

@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
+import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -36,6 +37,8 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		UrlReader urlReader = mockUrlReader();
 
+		_likelyStuckEstimatedDuration = RandomTestUtil.randomLong();
+
 		setUrlReaderOutput(
 			new JSONObject(
 			).put(
@@ -51,6 +54,22 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		setUrlReaderOutput(
 			read(new File(dependenciesDirs.get(0), "computer-api.json")),
 			"http://test-9-1/computer/api/json", urlReader);
+
+		setUrlReaderOutput(
+			new JSONObject(
+			).put(
+				"items", new JSONArray()
+			).toString(),
+			"http://test-9-2/queue/api/json", urlReader);
+		setUrlReaderOutput(
+			new JSONObject(
+			).put(
+				"mode", "NORMAL"
+			).toString(),
+			"http://test-9-2/api/json?tree=mode", urlReader);
+		setUrlReaderOutput(
+			_getRunningBuildsComputerAPIJSONObject().toString(),
+			"http://test-9-2/computer/api/json", urlReader);
 
 		_jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
 			"test-9-1", "http://test-9-1");
@@ -134,6 +153,57 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetRunningBuilds() {
+		JenkinsMaster jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
+			"test-9-2", "http://test-9-2");
+
+		jenkinsMaster.update(false);
+
+		List<JenkinsMaster.RunningBuild> runningBuilds =
+			jenkinsMaster.getRunningBuilds();
+
+		Assert.assertEquals(runningBuilds.toString(), 3, runningBuilds.size());
+
+		// The busyExecutors metric is 7 while only 3 builds could be
+		// enumerated, so the count must come from what Jenkins reported
+		// rather than from the list.
+
+		Assert.assertEquals(7, jenkinsMaster.getMaxRunningBuildCount());
+
+		List<String> buildURLs = jenkinsMaster.getBuildURLs();
+
+		Assert.assertEquals(buildURLs.toString(), 2, buildURLs.size());
+
+		Assert.assertFalse(
+			buildURLs.toString(), buildURLs.contains(_BUILD_URL_FLYWEIGHT));
+
+		JenkinsMaster.RunningBuild flyweightRunningBuild = _getRunningBuild(
+			_BUILD_URL_FLYWEIGHT, runningBuilds);
+
+		Assert.assertEquals(
+			"Built-In Node", flyweightRunningBuild.getJenkinsSlaveName());
+		Assert.assertFalse(flyweightRunningBuild.isLikelyStuck());
+		Assert.assertFalse(flyweightRunningBuild.isJenkinsSlaveOffline());
+
+		JenkinsMaster.RunningBuild likelyStuckRunningBuild = _getRunningBuild(
+			_BUILD_URL_LIKELY_STUCK, runningBuilds);
+
+		Assert.assertTrue(likelyStuckRunningBuild.isLikelyStuck());
+		Assert.assertFalse(likelyStuckRunningBuild.isJenkinsSlaveOffline());
+		Assert.assertEquals(
+			_likelyStuckEstimatedDuration,
+			likelyStuckRunningBuild.getEstimatedDuration());
+
+		JenkinsMaster.RunningBuild offlineRunningBuild = _getRunningBuild(
+			_BUILD_URL_OFFLINE_NODE, runningBuilds);
+
+		Assert.assertTrue(offlineRunningBuild.isJenkinsSlaveOffline());
+		Assert.assertEquals(
+			"Node is being removed",
+			offlineRunningBuild.getOfflineCauseReason());
+	}
+
+	@Test
 	public void testUpdate() {
 		_jenkinsMaster.update();
 
@@ -160,6 +230,88 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertFalse(labelBatchSizes.isEmpty());
 	}
 
+	@Test
+	public void testUpdateFullAfterMinimal() {
+		JenkinsMaster jenkinsMaster = JenkinsMasterTestUtil.getJenkinsMaster(
+			"test-9-2", "http://test-9-2");
+
+		jenkinsMaster.update(true);
+
+		List<JenkinsMaster.RunningBuild> runningBuilds =
+			jenkinsMaster.getRunningBuilds();
+
+		Assert.assertTrue(runningBuilds.toString(), runningBuilds.isEmpty());
+
+		// The full update lands well inside the fifteen second window, but a
+		// minimal snapshot leaves out the executor detail it needs, so the
+		// cached entry must not satisfy it.
+
+		jenkinsMaster.update(false);
+
+		runningBuilds = jenkinsMaster.getRunningBuilds();
+
+		Assert.assertEquals(runningBuilds.toString(), 3, runningBuilds.size());
+
+		Assert.assertEquals(7, jenkinsMaster.getMaxRunningBuildCount());
+
+		// The reverse does not hold. A full snapshot is a superset, so a
+		// later minimal request keeps it.
+
+		jenkinsMaster.update(true);
+
+		runningBuilds = jenkinsMaster.getRunningBuilds();
+
+		Assert.assertEquals(runningBuilds.toString(), 3, runningBuilds.size());
+	}
+
+	private JenkinsMaster.RunningBuild _getRunningBuild(
+		String buildURL, List<JenkinsMaster.RunningBuild> runningBuilds) {
+
+		for (JenkinsMaster.RunningBuild runningBuild : runningBuilds) {
+			String runningBuildURL = runningBuild.getURL();
+
+			if (runningBuildURL.equals(buildURL)) {
+				return runningBuild;
+			}
+		}
+
+		throw new AssertionError(
+			"Unable to find " + buildURL + " in " + runningBuilds);
+	}
+
+	private JSONObject _getRunningBuildsComputerAPIJSONObject() {
+		return JenkinsMasterTestUtil.getComputerAPIJSONObject(
+			7,
+			JenkinsMasterTestUtil.getBuiltInComputerJSONObject(
+				JenkinsMasterTestUtil.getExecutorJSONObject(
+					_BUILD_URL_FLYWEIGHT, RandomTestUtil.randomLong(),
+					RandomTestUtil.randomString(), false,
+					RandomTestUtil.randomLong())),
+			JenkinsMasterTestUtil.getComputerJSONObject(
+				"test-9-2-1",
+				JenkinsMasterTestUtil.getExecutorJSONObject(
+					_BUILD_URL_LIKELY_STUCK, _likelyStuckEstimatedDuration,
+					RandomTestUtil.randomString(), true,
+					RandomTestUtil.randomLong())),
+			JenkinsMasterTestUtil.getOfflineComputerJSONObject(
+				"test-9-2-2", RandomTestUtil.randomLong(),
+				"Node is being removed", false,
+				JenkinsMasterTestUtil.getExecutorJSONObject(
+					_BUILD_URL_OFFLINE_NODE, RandomTestUtil.randomLong(),
+					RandomTestUtil.randomString(), false,
+					RandomTestUtil.randomLong())));
+	}
+
+	private static final String _BUILD_URL_FLYWEIGHT =
+		"http://test-9-2/job/publish-testray-report/7/";
+
+	private static final String _BUILD_URL_LIKELY_STUCK =
+		"http://test-9-2/job/test-portal-acceptance-pullrequest(master)/1580/";
+
+	private static final String _BUILD_URL_OFFLINE_NODE =
+		"http://test-9-2/job/test-portal-release-downstream/22649/";
+
 	private JenkinsMaster _jenkinsMaster;
+	private long _likelyStuckEstimatedDuration;
 
 }
