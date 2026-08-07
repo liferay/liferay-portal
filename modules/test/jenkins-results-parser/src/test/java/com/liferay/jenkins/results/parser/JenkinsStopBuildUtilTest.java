@@ -90,9 +90,6 @@ public class JenkinsStopBuildUtilTest
 		Assert.assertEquals(
 			JenkinsStopBuildUtil.AbortResult.ALREADY_FINISHED, _abortBuild());
 
-		// A build that finished on its own must not be reported as one this
-		// call stopped, and it must not be interrupted.
-
 		Assert.assertEquals(_postedPaths.toString(), 0, _postedPaths.size());
 	}
 
@@ -123,9 +120,6 @@ public class JenkinsStopBuildUtilTest
 
 		JenkinsStopBuildUtil.abortBuild(
 			"https://test-1-41.liferay.com/job/test-job/1/");
-
-		// The call has to work from inside CI, where only the local hostname
-		// resolves.
 
 		Assert.assertEquals(_readURLs.toString(), 1, _readURLs.size());
 
@@ -204,9 +198,6 @@ public class JenkinsStopBuildUtilTest
 			postedPath, postedPath.startsWith("/job/test-job/1/"));
 		Assert.assertTrue(postedPath, postedPath.endsWith("/stop"));
 
-		// Jenkins only interrupts on a POST, and only for a caller it can
-		// authenticate as an administrator.
-
 		Assert.assertEquals("POST", _requestMethods.get(0));
 
 		String encodedString = JenkinsStopBuildUtil.encodeAuthorizationFields(
@@ -217,9 +208,6 @@ public class JenkinsStopBuildUtilTest
 
 	@Test
 	public void testAbortBuildStoppedOnFinalVerification() throws Exception {
-
-		// Stopping on the last pass is a stop, not a failure.
-
 		_setUpResultOutputs(_MAXIMUM_RESULT_READS - 1);
 
 		Assert.assertEquals(
@@ -243,16 +231,11 @@ public class JenkinsStopBuildUtilTest
 			Assert.assertTrue(message, message.contains("500"));
 		}
 
-		// The build was never re-read, so no verification pass ran.
-
 		Assert.assertEquals(_readURLs.toString(), 1, _readURLs.size());
 	}
 
 	@Test
 	public void testAbortBuildUnacceptedResponseAtBoundary() throws Exception {
-
-		// 400 is rejected, not accepted.
-
 		_responseCode = 400;
 
 		_setUpResultOutputs(_MAXIMUM_RESULT_READS);
@@ -271,10 +254,6 @@ public class JenkinsStopBuildUtilTest
 
 	@Test
 	public void testAbortBuildVerifiesAfterRedirect() throws Exception {
-
-		// Jenkins answers /stop with a redirect as soon as it has interrupted
-		// the executor thread, so anything short of an error is accepted.
-
 		_responseCode = 302;
 
 		_setUpResultOutputs(1);

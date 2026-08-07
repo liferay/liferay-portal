@@ -164,13 +164,6 @@ public class StaleBuildReaper {
 			return reasons;
 		}
 
-		// The grace period runs from the moment the node went offline, not
-		// from the moment the build started, so a node that is reconnecting
-		// gets the whole window however long its build has been running.
-		// Jenkins does not always report when the node went offline, and
-		// without that there is no way to tell a momentary drop from a dead
-		// channel, so the build is left for a later pass.
-
 		long jenkinsSlaveOfflineDuration =
 			runningBuild.getJenkinsSlaveOfflineDuration(currentTimeMillis);
 
@@ -189,15 +182,6 @@ public class StaleBuildReaper {
 		if (!runningBuild.isBuilding()) {
 			return reasons;
 		}
-
-		// Jenkins derives likelyStuck as ten times the estimate when an
-		// estimate exists, and a flat twenty four hours when it does not, so
-		// it already is the "far past its estimate" signal. Recomputing that
-		// here would only count one signal twice. It is scaled to the job
-		// though, and the flyweight builds occupying a one off executor
-		// finish in under a minute, which puts their likelyStuck window
-		// minutes rather than hours away. The floor keeps a slow report from
-		// being reaped as a hung batch.
 
 		long duration = runningBuild.getDuration(currentTimeMillis);
 

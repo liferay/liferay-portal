@@ -164,10 +164,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		Assert.assertEquals(runningBuilds.toString(), 3, runningBuilds.size());
 
-		// The busyExecutors metric is 7 while only 3 builds could be
-		// enumerated, so the count must come from what Jenkins reported
-		// rather than from the list.
-
 		Assert.assertEquals(7, jenkinsMaster.getMaxRunningBuildCount());
 
 		List<String> buildURLs = jenkinsMaster.getBuildURLs();
@@ -243,10 +239,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 
 		Assert.assertTrue(runningBuilds.toString(), runningBuilds.isEmpty());
 
-		// The full update lands well inside the fifteen second window, but a
-		// minimal snapshot leaves out the executor detail it needs, so the
-		// cached entry must not satisfy it.
-
 		jenkinsMaster.update(false);
 
 		runningBuilds = jenkinsMaster.getRunningBuilds();
@@ -254,9 +246,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertEquals(runningBuilds.toString(), 3, runningBuilds.size());
 
 		Assert.assertEquals(7, jenkinsMaster.getMaxRunningBuildCount());
-
-		// The reverse does not hold. A full snapshot is a superset, so a
-		// later minimal request keeps it.
 
 		jenkinsMaster.update(true);
 

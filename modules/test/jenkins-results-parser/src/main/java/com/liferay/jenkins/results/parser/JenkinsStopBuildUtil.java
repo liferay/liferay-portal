@@ -39,12 +39,6 @@ public class JenkinsStopBuildUtil {
 					", received response ", String.valueOf(responseCode)));
 		}
 
-		// Jenkins answers /stop as soon as it has interrupted the executor
-		// thread, whether or not that thread ever reacts. A build wedged in a
-		// native call or an unresponsive socket read takes the interrupt and
-		// keeps its executor, so the response alone does not mean the build
-		// stopped.
-
 		for (int i = 0; i < _ABORT_VERIFICATION_RETRIES; i++) {
 			JenkinsResultsParserUtil.sleep(_ABORT_VERIFICATION_PERIOD);
 
@@ -52,10 +46,6 @@ public class JenkinsStopBuildUtil {
 				return AbortResult.STOPPED;
 			}
 		}
-
-		// A build that never reacts to the interrupt is expected rather than
-		// exceptional. The caller reports it and the next scheduled pass
-		// flags it again, so it must not surface as a stack trace every run.
 
 		long abortVerificationDuration =
 			_ABORT_VERIFICATION_PERIOD * _ABORT_VERIFICATION_RETRIES;
@@ -148,10 +138,6 @@ public class JenkinsStopBuildUtil {
 
 		JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
 			normalizedBuildURL + "/api/json?tree=result", false);
-
-		// A response without the key at all means the state could not be
-		// read. Treating that as finished would silently drop a build that
-		// is still holding its executor.
 
 		if (!jsonObject.has("result")) {
 			throw new RuntimeException(

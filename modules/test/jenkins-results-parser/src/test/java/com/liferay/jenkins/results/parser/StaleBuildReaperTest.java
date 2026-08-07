@@ -74,9 +74,6 @@ public class StaleBuildReaperTest
 		Assert.assertFalse(
 			summary, summary.contains(_BUILD_URL_TEMPORARILY_OFFLINE));
 
-		// A flyweight build reports likelyStuck only minutes in, because
-		// Jenkins scales the flag to the job's own average.
-
 		Assert.assertFalse(
 			summary, summary.contains(_BUILD_URL_FLYWEIGHT_STUCK));
 
@@ -118,9 +115,6 @@ public class StaleBuildReaperTest
 
 		StaleBuildReaper staleBuildReaper = _reap(
 			false, _BUILD_URL_LIKELY_STUCK, stoppedBuildURLs);
-
-		// A build that takes the interrupt and keeps running must not be
-		// counted or reported as reaped.
 
 		Assert.assertEquals(2, staleBuildReaper.getReapedBuildCount());
 
