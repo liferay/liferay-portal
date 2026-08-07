@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import {sub} from 'frontend-js-web';
 import React from 'react';
@@ -57,12 +58,43 @@ function StatusCell({value}) {
 	);
 }
 
+function isGuestViewable(permissions) {
+	return Boolean(
+		permissions?.some(
+			(permission) =>
+				permission.roleName === 'Guest' &&
+				permission.actionIds.includes('VIEW')
+		)
+	);
+}
+
+function TitleCell({itemData, value}) {
+	if (!isGuestViewable(itemData?.permissions)) {
+		return (
+			<span className="align-items-center d-flex">
+				{value}
+
+				<ClayIcon
+					aria-label={Liferay.Language.get(
+						'not-visible-to-guest-users'
+					)}
+					className="inline-item inline-item-after"
+					symbol="password-policies"
+				/>
+			</span>
+		);
+	}
+
+	return value;
+}
+
 function buildAPIURL(groupIds, classNameIds, excludedAssetEntry) {
 	const url = new URL(ASSET_ENTRIES_API_URL, window.location.origin);
 
 	String(groupIds)
 		.split(',')
 		.forEach((groupId) => url.searchParams.append('groupIds', groupId));
+	url.searchParams.set('nestedFields', 'permissions');
 	url.searchParams.set('showNonindexable', 'true');
 
 	const filters = [];
@@ -115,6 +147,11 @@ export default function getAssetEntriesItemSelectorProps({
 						name: 'assetEntryStatus',
 						type: 'internal',
 					},
+					{
+						component: TitleCell,
+						name: 'assetEntryTitle',
+						type: 'internal',
+					},
 				],
 			},
 			filters: singleAssetEntryType
@@ -145,6 +182,7 @@ export default function getAssetEntriesItemSelectorProps({
 					schema: {
 						fields: [
 							{
+								contentRenderer: 'assetEntryTitle',
 								fieldName: 'title',
 								label: Liferay.Language.get('title'),
 							},
