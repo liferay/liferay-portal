@@ -164,7 +164,6 @@ public class MCPServerPromptTest {
 		String name = RandomTestUtil.randomString();
 		String prompt = RandomTestUtil.randomString();
 
-
 		_testAddMCPServerPromptObjectEntryWithoutRequiredField(
 			description, identifier, name, null);
 
