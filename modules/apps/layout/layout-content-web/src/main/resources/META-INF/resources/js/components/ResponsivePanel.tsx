@@ -7,8 +7,6 @@ import {SidePanel} from '@clayui/core';
 import {SearchForm} from '@liferay/layout-js-components-web';
 import React, {useRef} from 'react';
 
-import '../../css/VersionHistory.scss';
-
 export default function ResponsivePanel({
 	children,
 	onOpenChange,

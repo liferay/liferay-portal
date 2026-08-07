@@ -18,6 +18,8 @@ import ResponsivePanel from './ResponsivePanel';
 import Toolbar from './Toolbar';
 import VersionList from './VersionList';
 
+import '../../css/VersionHistory.scss';
+
 const LARGE_MEDIA_QUERY = '(min-width: 992px)';
 
 interface Props {
