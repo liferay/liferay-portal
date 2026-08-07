@@ -4449,6 +4449,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 				serviceContext.fetchUser()
 			).build();
 
+		Locale siteDefaultLocale = _portal.getSiteDefaultLocale(groupId);
+
 		for (String resourcePath : resourcePaths) {
 			if (resourcePath.endsWith("/")) {
 				continue;
@@ -4496,8 +4498,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			_addTaxonomyCategories(
 				StringUtil.replaceLast(resourcePath, ".json", "/"), null,
-				serviceContext, siteNavigationMenuItemSettingsBuilder,
-				stringUtilReplaceValues, taxonomyVocabulary.getId());
+				serviceContext, siteDefaultLocale,
+				siteNavigationMenuItemSettingsBuilder, stringUtilReplaceValues,
+				taxonomyVocabulary.getId());
 		}
 	}
 
@@ -4919,7 +4922,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 	private void _addTaxonomyCategories(
 			String parentResourcePath, String parentTaxonomyCategoryId,
-			ServiceContext serviceContext,
+			ServiceContext serviceContext, Locale siteDefaultLocale,
 			SiteNavigationMenuItemSettingsBuilder
 				siteNavigationMenuItemSettingsBuilder,
 			Map<String, String> stringUtilReplaceValues,
@@ -4954,6 +4957,20 @@ public class BundleSiteInitializer implements SiteInitializer {
 				continue;
 			}
 
+			if (!GetterUtil.getBoolean(taxonomyCategory.getSystem())) {
+				Map<String, String> nameI18nMap = new HashMap<>();
+
+				if (taxonomyCategory.getName_i18n() != null) {
+					nameI18nMap.putAll(taxonomyCategory.getName_i18n());
+				}
+
+				nameI18nMap.putIfAbsent(
+					LocaleUtil.toLanguageId(siteDefaultLocale),
+					taxonomyCategory.getName());
+
+				taxonomyCategory.setName_i18n(() -> nameI18nMap);
+			}
+
 			if (parentTaxonomyCategoryId == null) {
 				taxonomyCategory =
 					_addOrUpdateTaxonomyVocabularyTaxonomyCategory(
@@ -4985,7 +5002,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			_addTaxonomyCategories(
 				StringUtil.replaceLast(resourcePath, ".json", "/"),
-				taxonomyCategory.getId(), serviceContext,
+				taxonomyCategory.getId(), serviceContext, siteDefaultLocale,
 				siteNavigationMenuItemSettingsBuilder, stringUtilReplaceValues,
 				taxonomyVocabularyId);
 		}
