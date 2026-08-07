@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.security.fips.util.FIPSUtil;
 import com.liferay.portal.service.permission.PasswordPolicyPermissionUtil;
 
 import jakarta.portlet.PortletRequest;
@@ -79,7 +80,8 @@ public class DeletePasswordPolicyPortletConfigurationIcon
 		if ((passwordPolicy != null) && !passwordPolicy.isDefaultPolicy() &&
 			PasswordPolicyPermissionUtil.contains(
 				themeDisplay.getPermissionChecker(), passwordPolicyId,
-				ActionKeys.DELETE)) {
+				ActionKeys.DELETE) &&
+			!FIPSUtil.isCryptoOfficerPasswordPolicy(passwordPolicy.getName())) {
 
 			return true;
 		}

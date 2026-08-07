@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.model.PasswordPolicy;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.security.fips.util.FIPSUtil;
 import com.liferay.portal.service.permission.PasswordPolicyPermissionUtil;
 
 import jakarta.portlet.RenderResponse;
@@ -29,7 +30,8 @@ public class PasswordPolicyChecker extends EmptyOnClickRowChecker {
 		if (passwordPolicy.isDefaultPolicy() ||
 			!PasswordPolicyPermissionUtil.contains(
 				PermissionThreadLocal.getPermissionChecker(),
-				passwordPolicy.getPasswordPolicyId(), ActionKeys.DELETE)) {
+				passwordPolicy.getPasswordPolicyId(), ActionKeys.DELETE) ||
+			FIPSUtil.isCryptoOfficerPasswordPolicy(passwordPolicy.getName())) {
 
 			return true;
 		}

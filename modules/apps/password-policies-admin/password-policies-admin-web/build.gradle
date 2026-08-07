@@ -12,6 +12,7 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:organizations:organizations-api")
 	compileOnly project(":apps:password-policies-admin:password-policies-admin-api")
+	compileOnly project(":apps:portal-security:portal-security-fips-api")
 	compileOnly project(":apps:site-navigation:site-navigation-taglib")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")

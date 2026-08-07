@@ -26,6 +26,7 @@ dependencies {
 	compileOnly project(":apps:organizations:organizations-api")
 	compileOnly project(":apps:organizations:organizations-item-selector-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-upgrade-api")
+	compileOnly project(":apps:portal-security:portal-security-fips-api")
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:product-navigation:product-navigation-personal-menu-api")
 	compileOnly project(":apps:roles:roles-admin-api")

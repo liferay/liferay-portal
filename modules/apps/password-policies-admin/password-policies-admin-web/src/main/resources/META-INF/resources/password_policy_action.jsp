@@ -64,7 +64,7 @@ PasswordPolicy passwordPolicy = (PasswordPolicy)row.getObject();
 		/>
 	</c:if>
 
-	<c:if test="<%= !passwordPolicy.getDefaultPolicy() && PasswordPolicyPermissionUtil.contains(permissionChecker, passwordPolicy.getPasswordPolicyId(), ActionKeys.DELETE) %>">
+	<c:if test="<%= !FIPSUtil.isCryptoOfficerPasswordPolicy(passwordPolicy.getName()) && !passwordPolicy.getDefaultPolicy() && PasswordPolicyPermissionUtil.contains(permissionChecker, passwordPolicy.getPasswordPolicyId(), ActionKeys.DELETE) %>">
 		<portlet:actionURL name="deletePasswordPolicy" var="deletePasswordPolicyURL">
 			<portlet:param name="redirect" value="<%= currentURL %>" />
 			<portlet:param name="passwordPolicyId" value="<%= String.valueOf(passwordPolicy.getPasswordPolicyId()) %>" />

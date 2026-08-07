@@ -18,6 +18,8 @@ if (passwordPolicy == null) {
 	passwordPolicy.setNew(true);
 }
 
+boolean cryptoOfficerPasswordPolicy = FIPSUtil.isCryptoOfficerPasswordPolicy(passwordPolicy.getName());
+
 boolean defaultPolicy = BeanParamUtil.getBoolean(passwordPolicy, request, "defaultPolicy");
 
 PasswordPoliciesConfiguration passwordPoliciesConfiguration = (PasswordPoliciesConfiguration)request.getAttribute(PasswordPoliciesConfiguration.class.getName());
@@ -45,7 +47,7 @@ renderResponse.setTitle(passwordPolicy.isNew() ? LanguageUtil.get(request, "new-
 		size="full"
 	>
 		<clay:sheet-section>
-			<aui:input disabled="<%= defaultPolicy %>" name="name" required="<%= true %>" />
+			<aui:input disabled="<%= cryptoOfficerPasswordPolicy || defaultPolicy %>" name="name" required="<%= true %>" />
 
 			<aui:input name="description" />
 		</clay:sheet-section>
@@ -55,10 +57,10 @@ renderResponse.setTitle(passwordPolicy.isNew() ? LanguageUtil.get(request, "new-
 				displayTitle='<%= LanguageUtil.get(request, "password-changes") %>'
 			>
 				<div class="panel-body">
-					<aui:input helpMessage="changeable-help" inlineLabel="right" labelCssClass="simple-toggle-switch" name="changeable" type="toggle-switch" value="<%= passwordPolicy.isChangeable() %>" />
+					<aui:input disabled="<%= cryptoOfficerPasswordPolicy %>" helpMessage="changeable-help" inlineLabel="right" labelCssClass="simple-toggle-switch" name="changeable" type="toggle-switch" value="<%= passwordPolicy.isChangeable() %>" />
 
 					<div class="password-policy-options" id="<portlet:namespace />changeableSettings">
-						<aui:input helpMessage="change-required-help" inlineLabel="right" labelCssClass="simple-toggle-switch" name="changeRequired" type="toggle-switch" value="<%= passwordPolicy.isChangeRequired() %>" />
+						<aui:input disabled="<%= cryptoOfficerPasswordPolicy %>" helpMessage="change-required-help" inlineLabel="right" labelCssClass="simple-toggle-switch" name="changeRequired" type="toggle-switch" value="<%= passwordPolicy.isChangeRequired() %>" />
 
 						<aui:select helpMessage="minimum-age-help" label="minimum-age" name="minAge">
 							<aui:option label="none" value="0" />
@@ -202,10 +204,10 @@ renderResponse.setTitle(passwordPolicy.isNew() ? LanguageUtil.get(request, "new-
 				displayTitle='<%= LanguageUtil.get(request, "lockout") %>'
 			>
 				<div class="panel-body">
-					<aui:input helpMessage="enable-lockout-help" inlineLabel="right" label="enable-lockout" labelCssClass="simple-toggle-switch" name="lockout" type="toggle-switch" value="<%= passwordPolicy.isLockout() %>" />
+					<aui:input disabled="<%= cryptoOfficerPasswordPolicy %>" helpMessage="enable-lockout-help" inlineLabel="right" label="enable-lockout" labelCssClass="simple-toggle-switch" name="lockout" type="toggle-switch" value="<%= passwordPolicy.isLockout() %>" />
 
 					<div class="password-policy-options" id="<portlet:namespace />lockoutSettings">
-						<aui:input helpMessage="maximum-failure-help" label="maximum-failure" name="maxFailure" />
+						<aui:input disabled="<%= cryptoOfficerPasswordPolicy %>" helpMessage="maximum-failure-help" label="maximum-failure" name="maxFailure" />
 
 						<aui:select helpMessage="reset-failure-count-help" name="resetFailureCount">
 
