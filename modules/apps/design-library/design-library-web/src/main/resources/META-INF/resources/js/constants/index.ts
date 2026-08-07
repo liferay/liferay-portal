@@ -5,9 +5,6 @@
 
 export const FDS_EVENT_UPDATE_DISPLAY = 'fds-update-display';
 
-export const FRAGMENT_COLLECTION_ENTRY_CLASS_NAME =
-	'com.liferay.fragment.model.FragmentCollection';
-
 export enum TableCellContentType {
 	AUTHOR = 'author',
 	DESIGN_LIBRARY_LINK = 'designLibraryLink',

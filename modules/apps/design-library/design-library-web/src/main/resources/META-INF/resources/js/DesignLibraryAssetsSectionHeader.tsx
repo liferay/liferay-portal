@@ -6,16 +6,59 @@
 import ClayButton from '@clayui/button';
 import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
-import React from 'react';
+import {loadModule} from 'frontend-js-web';
+import React, {useEffect, useState} from 'react';
 
-import getDesignAssetCreationItems, {
-	DesignAssetCreationProps,
-} from './props_transformer/getDesignAssetCreationItems';
+import {
+	DesignLibraryCreationItem,
+	DesignLibraryCreationItemsFactory,
+	DesignLibraryResourceType,
+} from './types';
 
-export default function DesignLibraryAssetsSectionHeader(
-	props: DesignAssetCreationProps
-) {
-	const creationItems = getDesignAssetCreationItems(props);
+export default function DesignLibraryAssetsSectionHeader({
+	resourceTypes = [],
+}: {
+	resourceTypes?: DesignLibraryResourceType[];
+}) {
+	const [creationItems, setCreationItems] = useState<
+		DesignLibraryCreationItem[]
+	>([]);
+
+	useEffect(() => {
+		let cancelled = false;
+
+		Promise.all(
+			resourceTypes
+				.filter((resourceType) => resourceType.creationItemsModule)
+				.map((resourceType) =>
+					loadModule(resourceType.creationItemsModule as string)
+						.then(
+							(
+								getCreationItems: DesignLibraryCreationItemsFactory
+							) =>
+								getCreationItems(
+									resourceType.creationItemsProps || {}
+								)
+						)
+						.catch((error: Error) => {
+							console.error(
+								`Unable to load creation items for ${resourceType.entryClassName}`,
+								error
+							);
+
+							return [] as DesignLibraryCreationItem[];
+						})
+				)
+		).then((items) => {
+			if (!cancelled) {
+				setCreationItems(items.flat());
+			}
+		});
+
+		return () => {
+			cancelled = true;
+		};
+	}, [resourceTypes]);
 
 	return (
 		<div className="align-items-center d-flex justify-content-between mb-3">

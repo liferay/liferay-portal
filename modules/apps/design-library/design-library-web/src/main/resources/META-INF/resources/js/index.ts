@@ -12,3 +12,8 @@ export {default as DesignLibraryAdminFDSPropsTransformer} from './props_transfor
 export {default as DesignLibraryAssetsFDSPropsTransformer} from './props_transformer/DesignLibraryAssetsFDSPropsTransformer';
 export {default as DesignLibraryConnectedSitesFDSPropsTransformer} from './props_transformer/DesignLibraryConnectedSitesFDSPropsTransformer';
 export {default as DesignLibraryMembersFDSPropsTransformer} from './props_transformer/DesignLibraryMembersFDSPropsTransformer';
+export type {
+	DesignLibraryCreationItem,
+	DesignLibraryCreationItemsFactory,
+	DesignLibraryResourceType,
+} from './types';

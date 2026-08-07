@@ -5,17 +5,13 @@
 
 package com.liferay.design.library.web.internal.display.context;
 
+import com.liferay.design.library.resource.type.DesignLibraryResourceType;
+import com.liferay.design.library.resource.type.DesignLibraryResourceTypeRegistry;
 import com.liferay.design.library.web.internal.constants.DesignLibraryAdminFDSNames;
 import com.liferay.exportimport.constants.ExportImportPortletKeys;
-import com.liferay.fragment.constants.FragmentActionKeys;
-import com.liferay.fragment.constants.FragmentConstants;
-import com.liferay.fragment.constants.FragmentPortletKeys;
-import com.liferay.fragment.model.FragmentCollection;
-import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -24,23 +20,20 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.style.book.constants.StyleBookActionKeys;
-import com.liferay.style.book.constants.StyleBookConstants;
-import com.liferay.style.book.constants.StyleBookPortletKeys;
-import com.liferay.style.book.model.StyleBookEntry;
-import com.liferay.style.book.util.StyleBookUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.portlet.PortletRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -60,11 +53,18 @@ public class ViewResourcesDesignLibraryDisplayContext
 		_liferayPortletResponse = liferayPortletResponse;
 	}
 
-	public String getAPIURL() {
+	public String getAPIURL() throws PortalException {
+		List<String> entryClassNames = new ArrayList<>();
+
+		for (DesignLibraryResourceType designLibraryResourceType :
+				_getViewableDesignLibraryResourceTypes()) {
+
+			entryClassNames.add(designLibraryResourceType.getEntryClassName());
+		}
+
 		return StringBundler.concat(
-			"/o/search/v1.0/search?emptySearch=true",
-			"&entryClassNames=com.liferay.fragment.model.FragmentCollection",
-			",com.liferay.style.book.model.StyleBookEntry",
+			"/o/search/v1.0/search?emptySearch=true&entryClassNames=",
+			StringUtil.merge(entryClassNames, StringPool.COMMA),
 			"&filter=groupIds/any(g:g eq ", depotEntry.getGroupId(), ")",
 			"&nestedFields=embedded");
 	}
@@ -88,174 +88,82 @@ public class ViewResourcesDesignLibraryDisplayContext
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems()
 		throws PortalException {
 
+		List<FDSActionDropdownItem> fdsActionDropdownItems = new ArrayList<>();
+
 		Group depotGroup = getGroup();
 		String viewResourcesURL = getViewResourcesURL(_liferayPortletResponse);
 
-		String viewFragmentCollectionURL = PortletURLBuilder.create(
-			PortalUtil.getControlPanelPortletURL(
-				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
-				0, PortletRequest.RENDER_PHASE)
-		).setBackURL(
-			viewResourcesURL
-		).setParameter(
-			"fragmentCollectionExternalReferenceCode",
-			"{embedded.externalReferenceCode}"
-		).buildString();
-		String editFragmentCollectionURL = PortletURLBuilder.create(
-			PortalUtil.getControlPanelPortletURL(
-				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
-				0, PortletRequest.RENDER_PHASE)
-		).setMVCRenderCommandName(
-			"/fragment/edit_fragment_collection"
-		).setRedirect(
-			viewResourcesURL
-		).setParameter(
-			"fragmentCollectionExternalReferenceCode",
-			"{embedded.externalReferenceCode}"
-		).buildString();
-		String editStyleBookEntryURL = PortletURLBuilder.create(
-			PortalUtil.getControlPanelPortletURL(
-				httpServletRequest, depotGroup, StyleBookPortletKeys.STYLE_BOOK,
-				0, 0, PortletRequest.RENDER_PHASE)
-		).setMVCRenderCommandName(
-			"/style_book/edit_style_book_entry"
-		).setRedirect(
-			viewResourcesURL
-		).setParameter(
-			"backURLTitle", depotGroup.getName(themeDisplay.getLocale())
-		).setParameter(
-			"styleBookEntryId", "{embedded.id}"
-		).buildString();
+		for (DesignLibraryResourceType designLibraryResourceType :
+				_getViewableDesignLibraryResourceTypes()) {
 
-		return ListUtil.fromArray(
-			new FDSActionDropdownItem(
-				viewFragmentCollectionURL, "view", "view",
-				LanguageUtil.get(httpServletRequest, "view"), null, null,
-				"link",
-				HashMapBuilder.<String, Object>put(
-					"entryClassName", FragmentCollection.class.getName()
-				).build()),
-			new FDSActionDropdownItem(
-				editFragmentCollectionURL, "pencil", "edit",
-				LanguageUtil.get(httpServletRequest, "edit"), null, null,
-				"link",
-				HashMapBuilder.<String, Object>put(
-					"entryClassName", FragmentCollection.class.getName()
-				).build()),
-			new FDSActionDropdownItem(
-				editStyleBookEntryURL, "pencil", "edit",
-				LanguageUtil.get(
-					httpServletRequest, "edit-in-style-book-editor"),
-				null, "get", "link",
-				HashMapBuilder.<String, Object>put(
-					"entryClassName", StyleBookEntry.class.getName()
-				).build()),
-			new FDSActionDropdownItem(
-				"{actions.delete.href}", "trash", "delete",
-				LanguageUtil.get(httpServletRequest, "delete"), "delete",
-				"delete", "async",
-				HashMapBuilder.<String, Object>put(
-					"entryClassName", FragmentCollection.class.getName()
-				).build()),
-			new FDSActionDropdownItem(
-				"{actions.delete.href}", "trash", "delete",
-				LanguageUtil.get(httpServletRequest, "delete"), "delete",
-				"delete", "async",
-				HashMapBuilder.<String, Object>put(
-					"entryClassName", StyleBookEntry.class.getName()
-				).build()));
+			for (FDSActionDropdownItem fdsActionDropdownItem :
+					designLibraryResourceType.getFDSActionDropdownItems(
+						httpServletRequest, depotGroup, viewResourcesURL)) {
+
+				fdsActionDropdownItem.setVisibilityFilters(
+					HashMapBuilder.<String, Object>put(
+						"entryClassName",
+						designLibraryResourceType.getEntryClassName()
+					).build());
+
+				fdsActionDropdownItems.add(fdsActionDropdownItem);
+			}
+		}
+
+		return fdsActionDropdownItems;
 	}
 
 	public Map<String, Object> getFDSAdditionalProps() throws PortalException {
 		Group depotGroup = getGroup();
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+		String viewResourcesURL = getViewResourcesURL(_liferayPortletResponse);
 
-		boolean manageFragmentEntriesPermission =
-			_hasManageFragmentEntriesPermission(depotGroup.getGroupId());
-		boolean manageStyleBookEntriesPermission =
-			_hasManageStyleBookEntriesPermission(depotGroup.getGroupId());
+		List<Map<String, Object>> resourceTypes = new ArrayList<>();
+
+		for (DesignLibraryResourceType designLibraryResourceType :
+				_getViewableDesignLibraryResourceTypes()) {
+
+			Map<String, Object> resourceType =
+				HashMapBuilder.<String, Object>put(
+					"color", designLibraryResourceType.getColor()
+				).put(
+					"defaultActionId",
+					designLibraryResourceType.getDefaultActionId()
+				).put(
+					"entryClassName",
+					designLibraryResourceType.getEntryClassName()
+				).put(
+					"label",
+					designLibraryResourceType.getLabel(themeDisplay.getLocale())
+				).put(
+					"symbol", designLibraryResourceType.getSymbol()
+				).build();
+
+			String creationItemsModule =
+				designLibraryResourceType.getCreationItemsModule();
+
+			if ((creationItemsModule != null) &&
+				designLibraryResourceType.hasAddPermission(
+					permissionChecker, depotGroup)) {
+
+				resourceType.put("creationItemsModule", creationItemsModule);
+				resourceType.put(
+					"creationItemsProps",
+					designLibraryResourceType.getCreationItemsProps(
+						httpServletRequest, depotGroup, viewResourcesURL));
+			}
+
+			resourceTypes.add(resourceType);
+		}
 
 		return HashMapBuilder.<String, Object>put(
-			"addFragmentCollectionURL",
-			() -> {
-				if (!manageFragmentEntriesPermission) {
-					return null;
-				}
-
-				return _getAddFragmentCollectionURL(depotGroup);
-			}
-		).put(
-			"addFragmentEntryURL",
-			() -> {
-				if (!manageFragmentEntriesPermission) {
-					return null;
-				}
-
-				return _getAddFragmentEntryURL(depotGroup);
-			}
-		).put(
-			"addStyleBookEntryURL",
-			() -> {
-				if (!manageStyleBookEntriesPermission) {
-					return null;
-				}
-
-				return _getAddStyleBookEntryURL(depotGroup);
-			}
-		).put(
-			"canAddStyleBook", manageStyleBookEntriesPermission
-		).put(
-			"canManageFragments", manageFragmentEntriesPermission
-		).put(
-			"fragmentCollections",
-			() -> {
-				if (!manageFragmentEntriesPermission) {
-					return null;
-				}
-
-				return _getFragmentCollectionsJSONArray(
-					depotGroup.getGroupId());
-			}
-		).put(
-			"fragmentNamespace",
-			() -> {
-				if (!manageFragmentEntriesPermission) {
-					return null;
-				}
-
-				return PortalUtil.getPortletNamespace(
-					FragmentPortletKeys.FRAGMENT);
-			}
-		).put(
-			"frontendTokenDefinitionProviders",
-			() -> {
-				if (!manageStyleBookEntriesPermission) {
-					return null;
-				}
-
-				return StyleBookUtil.getFrontendTokenDefinitionProviders(
-					themeDisplay.getCompanyId(), themeDisplay.getLocale());
-			}
-		).put(
-			"styleBookNamespace",
-			() -> {
-				if (!manageStyleBookEntriesPermission) {
-					return null;
-				}
-
-				return PortalUtil.getPortletNamespace(
-					StyleBookPortletKeys.STYLE_BOOK);
-			}
+			"resourceTypes", resourceTypes
 		).build();
 	}
 
-	public boolean hasContentAccess() {
-		if (_hasManageFragmentEntriesPermission(depotEntry.getGroupId()) ||
-			_hasManageStyleBookEntriesPermission(depotEntry.getGroupId())) {
-
-			return true;
-		}
-
-		return false;
+	public boolean hasContentAccess() throws PortalException {
+		return ListUtil.isNotEmpty(_getViewableDesignLibraryResourceTypes());
 	}
 
 	private JSONArray _getActionItemsJSONArray(Group group)
@@ -377,45 +285,6 @@ public class ViewResourcesDesignLibraryDisplayContext
 		return jsonArray;
 	}
 
-	private String _getAddFragmentCollectionURL(Group depotGroup) {
-		LiferayPortletURL portletURL =
-			(LiferayPortletURL)PortalUtil.getControlPanelPortletURL(
-				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
-				0, PortletRequest.RESOURCE_PHASE);
-
-		portletURL.setResourceID("/fragment/add_fragment_collection");
-
-		return portletURL.toString();
-	}
-
-	private String _getAddFragmentEntryURL(Group depotGroup) {
-		return PortletURLBuilder.create(
-			PortalUtil.getControlPanelPortletURL(
-				httpServletRequest, depotGroup, FragmentPortletKeys.FRAGMENT, 0,
-				0, PortletRequest.ACTION_PHASE)
-		).setActionName(
-			"/fragment/add_fragment_entry"
-		).setRedirect(
-			getViewResourcesURL(_liferayPortletResponse)
-		).setParameter(
-			"type", FragmentConstants.TYPE_COMPONENT
-		).buildString();
-	}
-
-	private String _getAddStyleBookEntryURL(Group depotGroup) {
-		return PortletURLBuilder.create(
-			PortalUtil.getControlPanelPortletURL(
-				httpServletRequest, depotGroup, StyleBookPortletKeys.STYLE_BOOK,
-				0, 0, PortletRequest.ACTION_PHASE)
-		).setActionName(
-			"/style_book/add_style_book_entry"
-		).setRedirect(
-			getViewResourcesURL(_liferayPortletResponse)
-		).setParameter(
-			"backURLTitle", depotGroup.getName(themeDisplay.getLocale())
-		).buildString();
-	}
-
 	private JSONArray _getBreadcrumbItemsJSONArray(Group group) {
 		return JSONUtil.putAll(
 			JSONUtil.put(
@@ -448,67 +317,42 @@ public class ViewResourcesDesignLibraryDisplayContext
 		).buildString();
 	}
 
-	private JSONArray _getFragmentCollectionsJSONArray(long groupId)
-		throws Exception {
+	private List<DesignLibraryResourceType>
+			_getViewableDesignLibraryResourceTypes()
+		throws PortalException {
 
-		FragmentCollectionLocalService fragmentCollectionLocalService =
-			_fragmentCollectionLocalServiceSnapshot.get();
+		DesignLibraryResourceTypeRegistry designLibraryResourceTypeRegistry =
+			_designLibraryResourceTypeRegistrySnapshot.get();
 
-		if (fragmentCollectionLocalService == null) {
-			return JSONFactoryUtil.createJSONArray();
+		if (designLibraryResourceTypeRegistry == null) {
+			return Collections.emptyList();
 		}
 
-		return JSONUtil.toJSONArray(
-			fragmentCollectionLocalService.getFragmentCollections(
-				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			fragmentCollection -> JSONUtil.put(
-				"fragmentCollectionId",
-				fragmentCollection.getFragmentCollectionId()
-			).put(
-				"name", fragmentCollection.getName()
-			));
-	}
+		Group depotGroup = getGroup();
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
 
-	private boolean _hasManageFragmentEntriesPermission(long groupId) {
-		PortletResourcePermission portletResourcePermission =
-			_fragmentPortletResourcePermissionSnapshot.get();
+		List<DesignLibraryResourceType> designLibraryResourceTypes =
+			new ArrayList<>();
 
-		if (portletResourcePermission == null) {
-			return false;
+		for (DesignLibraryResourceType designLibraryResourceType :
+				designLibraryResourceTypeRegistry.
+					getDesignLibraryResourceTypes()) {
+
+			if (designLibraryResourceType.hasViewPermission(
+					permissionChecker, depotGroup)) {
+
+				designLibraryResourceTypes.add(designLibraryResourceType);
+			}
 		}
 
-		return portletResourcePermission.contains(
-			themeDisplay.getPermissionChecker(), groupId,
-			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
+		return designLibraryResourceTypes;
 	}
 
-	private boolean _hasManageStyleBookEntriesPermission(long groupId) {
-		PortletResourcePermission portletResourcePermission =
-			_styleBookPortletResourcePermissionSnapshot.get();
-
-		if (portletResourcePermission == null) {
-			return false;
-		}
-
-		return portletResourcePermission.contains(
-			themeDisplay.getPermissionChecker(), groupId,
-			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
-	}
-
-	private static final Snapshot<FragmentCollectionLocalService>
-		_fragmentCollectionLocalServiceSnapshot = new Snapshot<>(
+	private static final Snapshot<DesignLibraryResourceTypeRegistry>
+		_designLibraryResourceTypeRegistrySnapshot = new Snapshot<>(
 			ViewResourcesDesignLibraryDisplayContext.class,
-			FragmentCollectionLocalService.class);
-	private static final Snapshot<PortletResourcePermission>
-		_fragmentPortletResourcePermissionSnapshot = new Snapshot<>(
-			ViewResourcesDesignLibraryDisplayContext.class,
-			PortletResourcePermission.class,
-			"(resource.name=" + FragmentConstants.RESOURCE_NAME + ")");
-	private static final Snapshot<PortletResourcePermission>
-		_styleBookPortletResourcePermissionSnapshot = new Snapshot<>(
-			ViewResourcesDesignLibraryDisplayContext.class,
-			PortletResourcePermission.class,
-			"(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")");
+			DesignLibraryResourceTypeRegistry.class);
 
 	private final LiferayPortletResponse _liferayPortletResponse;
 
