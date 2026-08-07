@@ -143,9 +143,9 @@ func TestHandle(t *testing.T) {
 
 				objects = append(objects, testCase.otherEnvironments...)
 
-				validator := newValidator(objects...)
+				statefulSetScaleValidator := newValidator(objects...)
 
-				response := validator.Handle(context.Background(), testCase.request)
+				response := statefulSetScaleValidator.Handle(context.Background(), testCase.request)
 
 				if response.Allowed != testCase.expectedAllowed {
 					t.Fatalf(
