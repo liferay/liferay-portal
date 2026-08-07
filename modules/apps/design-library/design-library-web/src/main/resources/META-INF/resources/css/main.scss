@@ -32,8 +32,7 @@
 }
 
 .design-library-fds-wrapper--resources {
-	.card-item-first .card-type-asset-icon,
-	.design-library-fds-sticker-stylebook {
+	.card-item-first .card-type-asset-icon {
 		color: $purple;
 	}
 
@@ -41,8 +40,8 @@
 		padding-inline: 0;
 	}
 
-	.design-library-fds-sticker-fragment-set {
-		color: $pink;
+	.design-library-fds-sticker {
+		color: var(--design-library-sticker-color);
 	}
 
 	.navbar {
