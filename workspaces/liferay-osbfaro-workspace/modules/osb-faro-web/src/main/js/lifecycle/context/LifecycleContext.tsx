@@ -30,7 +30,6 @@ const LifecycleContext = createContext<ILifecycleContext>({
 		countryFilter: '',
 		filterString: '',
 		industryFilter: '',
-		lifecycleStageFilter: LifecycleStages.AT_RISK,
 	},
 	lifecycleId: '',
 	resetFilters: () => {},
@@ -45,7 +44,6 @@ export const useLifecycle = (): ILifecycleContext =>
 const initialValues: ILifecycleFilterValues = {
 	countryFilter: '',
 	industryFilter: '',
-	lifecycleStageFilter: LifecycleStages.AT_RISK,
 };
 
 interface ILifecycleContextProviderProps {
