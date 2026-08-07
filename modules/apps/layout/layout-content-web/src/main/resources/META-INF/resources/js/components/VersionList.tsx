@@ -3,15 +3,17 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayButtonWithIcon} from '@clayui/button';
+import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayEmptyState from '@clayui/empty-state';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
 import {dateUtils, sub} from 'frontend-js-web';
-import React, {useState} from 'react';
+import React, {ComponentProps} from 'react';
 
-import {Layout, config} from '../config';
+import {config} from '../config';
 import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
 import {PageVersion, Status} from '../types/PageVersion';
 
@@ -29,7 +31,9 @@ const STATUSES: Record<
 	},
 };
 
-type Row = {
+type ActionItems = ComponentProps<typeof ClayDropDownWithItems>['items'];
+
+export type ListItem = {
 	key: string;
 	name: string;
 	status: Status;
@@ -37,29 +41,21 @@ type Row = {
 };
 
 export default function VersionList({
-	layout,
+	items,
+	onDelete,
+	onSelect,
 	searching,
-	versions,
+	selectedKey,
 }: {
-	layout?: Layout;
+	items: ListItem[];
+	onDelete?: (version: PageVersion) => void;
+	onSelect: (key: string) => void;
 	searching: boolean;
-	versions: PageVersion[];
+	selectedKey?: string;
 }) {
-	const [selectedKey, setSelectedKey] = useState<string>();
+	const {getItemProps} = useKeyboardNavigation({itemCount: items.length});
 
-	const rows: Row[] = [
-		...(layout ? [{key: 'current', ...layout}] : []),
-		...versions.map((version) => ({
-			key: version.externalReferenceCode,
-			name: version.name,
-			status: version.status,
-			version,
-		})),
-	];
-
-	const {getItemProps} = useKeyboardNavigation({itemCount: rows.length});
-
-	if (!rows.length) {
+	if (!items.length) {
 		if (searching) {
 			return (
 				<ClayEmptyState
@@ -82,7 +78,7 @@ export default function VersionList({
 		);
 	}
 
-	const activeKey = selectedKey ?? rows[0].key;
+	const activeKey = selectedKey ?? items[0].key;
 
 	return (
 		<ClayList
@@ -90,12 +86,14 @@ export default function VersionList({
 			className="mb-0 version-history__list"
 			role="listbox"
 		>
-			{rows.map(({key, name, status, version}, index) => {
+			{items.map(({key, name, status, version}, index) => {
 				const navigationProps = getItemProps(index);
 
 				const selected = activeKey === key;
 
 				const {displayType, label} = STATUSES[status];
+
+				const actionItems = buildActionItems({onDelete, version});
 
 				return (
 					<ClayList.Item
@@ -103,13 +101,13 @@ export default function VersionList({
 						aria-selected={selected}
 						flex
 						key={key}
-						onClick={() => setSelectedKey(key)}
+						onClick={() => onSelect(key)}
 						onFocus={navigationProps.onFocus}
 						onKeyDown={(event) => {
 							if (event.key === 'Enter' || event.key === ' ') {
 								event.preventDefault();
 
-								setSelectedKey(key);
+								onSelect(key);
 
 								return;
 							}
@@ -169,9 +167,55 @@ export default function VersionList({
 								</ClayLabel>
 							</ClayList.ItemText>
 						</ClayList.ItemField>
+
+						{actionItems.length ? (
+							<ClayList.ItemField className="px-2">
+								<ClayDropDownWithItems
+									items={actionItems}
+									trigger={
+										<ClayButtonWithIcon
+											aria-label={Liferay.Language.get(
+												'show-options'
+											)}
+											borderless
+											displayType="secondary"
+											onClick={(event) =>
+												event.stopPropagation()
+											}
+											small
+											symbol="ellipsis-v"
+										/>
+									}
+								/>
+							</ClayList.ItemField>
+						) : null}
 					</ClayList.Item>
 				);
 			})}
 		</ClayList>
 	);
+}
+
+function buildActionItems({
+	onDelete,
+	version,
+}: {
+	onDelete?: (version: PageVersion) => void;
+	version?: PageVersion;
+}) {
+	const items: ActionItems = [];
+
+	if (version?.actions?.delete) {
+		items.push({
+			label: Liferay.Language.get('delete-version'),
+			onClick: (event) => {
+				event.stopPropagation();
+
+				onDelete?.(version);
+			},
+			symbolLeft: 'trash',
+		});
+	}
+
+	return items;
 }

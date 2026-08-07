@@ -2,6 +2,7 @@
 	"dependencies": {
 		"@clayui/button": "^3.165.0",
 		"@clayui/core": "^3.165.0",
+		"@clayui/drop-down": "^3.165.0",
 		"@clayui/empty-state": "^3.165.0",
 		"@clayui/icon": "^3.165.0",
 		"@clayui/label": "^3.165.0",

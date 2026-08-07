@@ -6,9 +6,11 @@
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {
 	hideProductMenuIfPresent,
+	openConfirmModal,
 	useMediaQuery,
 } from '@liferay/layout-js-components-web';
 import {openToast} from 'frontend-js-components-web';
+import {sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import {Config, initializeConfig} from '../config';
@@ -19,6 +21,8 @@ import Toolbar from './Toolbar';
 import VersionList from './VersionList';
 
 import '../../css/VersionHistory.scss';
+
+const CURRENT_KEY = 'current';
 
 const LARGE_MEDIA_QUERY = '(min-width: 992px)';
 
@@ -31,6 +35,7 @@ export default function VersionHistory({config}: Props) {
 
 	const [isPanelOpen, setIsPanelOpen] = useState(false);
 	const [search, setSearch] = useState('');
+	const [selectedKey, setSelectedKey] = useState<string>();
 
 	const [versions, setVersions] = useState<PageVersion[] | null>(null);
 
@@ -64,10 +69,70 @@ export default function VersionHistory({config}: Props) {
 		return () => controller.abort();
 	}, []);
 
+	const handleDelete = async (version: PageVersion) => {
+		if (!version.actions?.delete) {
+			return;
+		}
+
+		const confirmed = await openConfirmModal({
+			buttonLabel: Liferay.Language.get('delete'),
+			center: true,
+			status: 'danger',
+			text: Liferay.Language.get('delete-page-version-confirmation'),
+			title: Liferay.Language.get('delete-version'),
+		});
+
+		if (!confirmed) {
+			return;
+		}
+
+		const {error} = await PageVersionService.deletePageVersion(
+			version.actions.delete.href
+		);
+
+		if (error) {
+			openToast({message: error, type: 'danger'});
+
+			return;
+		}
+
+		openToast({
+			message: sub(Liferay.Language.get('x-was-deleted-successfully'), [
+				version.name,
+			]),
+			type: 'success',
+		});
+
+		const nextVersions = versions?.filter(
+			({externalReferenceCode}) =>
+				externalReferenceCode !== version.externalReferenceCode
+		);
+
+		setVersions(nextVersions ?? null);
+
+		if (selectedKey === version.externalReferenceCode) {
+			setSelectedKey(CURRENT_KEY);
+		}
+	};
+
 	const keywords = search.trim().toLowerCase();
 
 	const matches = (...names: Array<string | undefined>) =>
 		names.some((name) => name?.toLowerCase().includes(keywords));
+
+	const items = versions && [
+		...(matches(config.layout.name)
+			? [{key: CURRENT_KEY, ...config.layout}]
+			: []),
+		...versions
+			.filter(({creator, name}) => matches(name, creator?.name))
+			.map((version) => ({
+				key: version.externalReferenceCode,
+				name: version.name,
+				status: version.status,
+				version,
+			})),
+	];
 
 	return (
 		<>
@@ -81,17 +146,13 @@ export default function VersionHistory({config}: Props) {
 				onSearch={setSearch}
 				open={isPanelOpen || isScreenLarge}
 			>
-				{versions ? (
+				{items ? (
 					<VersionList
-						layout={
-							matches(config.layout.name)
-								? config.layout
-								: undefined
-						}
+						items={items}
+						onDelete={handleDelete}
+						onSelect={setSelectedKey}
 						searching={Boolean(keywords)}
-						versions={versions.filter(({creator, name}) =>
-							matches(name, creator?.name)
-						)}
+						selectedKey={selectedKey}
 					/>
 				) : (
 					<ClayLoadingIndicator
