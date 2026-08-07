@@ -52,6 +52,11 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 		},
 	});
 
+	const {data: lifecycles, loading: lifecyclesLoading} = useRequest({
+		dataSourceFn: API.lifecycle.fetchLifecycles,
+		variables: {groupId},
+	});
+
 	useEffect(() => {
 		if (fieldCatalogError) {
 			dispatch(
@@ -152,10 +157,11 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 							title={Liferay.Language.get('accounts')}
 						/>
 
-						{fieldCatalogLoading ? (
+						{fieldCatalogLoading || lifecyclesLoading ? (
 							<Loading spacer />
 						) : (
 							<AccountsDataSet
+								accountLifecycleId={lifecycles?.[0]?.id}
 								apiURL={`/o/faro/contacts/${groupId}/account/search?channelId=${channelId}`}
 								channelId={channelId}
 								fieldCatalog={fieldCatalogData?.items}
