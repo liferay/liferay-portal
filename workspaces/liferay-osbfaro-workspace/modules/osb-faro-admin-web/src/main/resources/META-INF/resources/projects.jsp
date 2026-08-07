@@ -15,7 +15,7 @@ FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(re
 	displayContext="<%= new FaroAdminManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, renderResponse, faroAdminDisplayContext.getSearchContainer()) %>"
 />
 
-<div class="closed container-fluid-1280 sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
+<div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
 	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/faro_admin/info_panel" var="sidebarPanelURL" />
 
 	<liferay-frontend:sidebar-panel
@@ -25,7 +25,7 @@ FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(re
 		<liferay-util:include page="" servletContext="<%= application %>" />
 	</liferay-frontend:sidebar-panel>
 
-	<div class="container-fluid container-fluid-max-xl sidenav-content">
+	<div class="container-fluid sidenav-content">
 		<aui:form name="fm">
 			<liferay-ui:search-container
 				id="faro_admin"
