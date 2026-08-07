@@ -188,8 +188,19 @@ public class JenkinsStopBuildUtil {
 
 		String username = JenkinsResultsParserUtil.getBuildProperty(
 			"jenkins.admin.user.name");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(username)) {
+			throw new RuntimeException(
+				"Unable to find property jenkins.admin.user.name");
+		}
+
 		String password = JenkinsResultsParserUtil.getBuildProperty(
 			"jenkins.admin.user.token");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(password)) {
+			throw new RuntimeException(
+				"Unable to find property jenkins.admin.user.token");
+		}
 
 		httpConnection.setRequestProperty(
 			"Authorization",
