@@ -64,85 +64,60 @@ public class ExportImportBackgroundTaskTest {
 
 	@Test
 	@TestInfo("LRQA-29297")
-	public void testDeleteLayoutExportProcessDeletesLARAttachments()
+	public void testDeleteExportProcessDeletesLARAttachments()
 		throws Exception {
 
-		long backgroundTaskId = ExportImportTestUtil.exportLayoutsInBackground(
-			_group, _layout);
+		_testDeleteExportProcessDeletesLARAttachments(
+			ExportImportTestUtil.exportLayoutsInBackground(_group, _layout));
 
-		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
-
-		BackgroundTask backgroundTask =
-			_backgroundTaskLocalService.getBackgroundTask(backgroundTaskId);
-
-		Assert.assertFalse(
-			ListUtil.isEmpty(backgroundTask.getAttachmentsFileEntries()));
-
-		long attachmentsFolderId = backgroundTask.getAttachmentsFolderId();
-
-		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTaskId);
-
-		Assert.assertNull(
-			_backgroundTaskLocalService.fetchBackgroundTask(backgroundTaskId));
-		Assert.assertNull(
-			_dlFolderLocalService.fetchDLFolder(attachmentsFolderId));
-	}
-
-	@Test
-	@TestInfo("LRQA-29297")
-	public void testDeletePortletExportProcessDeletesLARAttachments()
-		throws Exception {
-
-		long backgroundTaskId =
+		_testDeleteExportProcessDeletesLARAttachments(
 			ExportImportTestUtil.exportPortletInfoInBackground(
-				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
-
-		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
-
-		BackgroundTask backgroundTask =
-			_backgroundTaskLocalService.getBackgroundTask(backgroundTaskId);
-
-		Assert.assertFalse(
-			ListUtil.isEmpty(backgroundTask.getAttachmentsFileEntries()));
-
-		long attachmentsFolderId = backgroundTask.getAttachmentsFolderId();
-
-		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTaskId);
-
-		Assert.assertNull(
-			_backgroundTaskLocalService.fetchBackgroundTask(backgroundTaskId));
-		Assert.assertNull(
-			_dlFolderLocalService.fetchDLFolder(attachmentsFolderId));
+				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY));
 	}
 
 	@Test
 	@TestInfo("LPS-166514")
-	public void testLARAttachmentIsDeletedAfterLayoutImport() throws Exception {
-		_importGroup = GroupTestUtil.addGroup();
+	public void testLARAttachmentIsDeletedAfterImport() throws Exception {
+		Group importGroup = GroupTestUtil.addGroup();
 
-		long backgroundTaskId = ExportImportTestUtil.importLayoutsInBackground(
-			_importGroup,
-			ExportImportTestUtil.exportLayoutsAsFile(_group, _layout));
+		_testLARAttachmentIsDeletedAfterImport(
+			ExportImportTestUtil.importLayoutsInBackground(
+				importGroup,
+				ExportImportTestUtil.exportLayoutsAsFile(_group, _layout)));
 
-		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
-
-		BackgroundTask backgroundTask =
-			_backgroundTaskLocalService.getBackgroundTask(backgroundTaskId);
-
-		Assert.assertTrue(
-			ListUtil.isEmpty(backgroundTask.getAttachmentsFileEntries()));
-	}
-
-	@Test
-	@TestInfo("LPS-166514")
-	public void testLARAttachmentIsDeletedAfterPortletImport()
-		throws Exception {
-
-		long backgroundTaskId =
+		_testLARAttachmentIsDeletedAfterImport(
 			ExportImportTestUtil.importPortletInfoInBackground(
 				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY,
 				ExportImportTestUtil.exportPortletInfoAsFile(
-					_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY));
+					_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY)));
+
+		GroupTestUtil.deleteGroup(importGroup);
+	}
+
+	private void _testDeleteExportProcessDeletesLARAttachments(
+			long backgroundTaskId)
+		throws Exception {
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
+
+		BackgroundTask backgroundTask =
+			_backgroundTaskLocalService.getBackgroundTask(backgroundTaskId);
+
+		Assert.assertFalse(
+			ListUtil.isEmpty(backgroundTask.getAttachmentsFileEntries()));
+
+		long attachmentsFolderId = backgroundTask.getAttachmentsFolderId();
+
+		_backgroundTaskLocalService.deleteBackgroundTask(backgroundTaskId);
+
+		Assert.assertNull(
+			_backgroundTaskLocalService.fetchBackgroundTask(backgroundTaskId));
+		Assert.assertNull(
+			_dlFolderLocalService.fetchDLFolder(attachmentsFolderId));
+	}
+
+	private void _testLARAttachmentIsDeletedAfterImport(long backgroundTaskId)
+		throws Exception {
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
 
@@ -161,9 +136,6 @@ public class ExportImportBackgroundTaskTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@DeleteAfterTestRun
-	private Group _importGroup;
 
 	private Layout _layout;
 
