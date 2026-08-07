@@ -879,24 +879,29 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"Combine the \"containsKey\" check on \"map\" and the " +
 					"following \"put\" into a single \"putIfAbsent\" or \"" +
 						"computeIfAbsent\"",
-				19
+				20
 			).addExpectedMessage(
 				"Combine the \"containsKey\" check on \"map\" and the " +
 					"following \"get\" into a single \"get\" with a null check",
-				29
+				30
 			).addExpectedMessage(
 				"Combine the \"containsKey\" check on \"map\" and the " +
 					"following \"remove\" into a single \"remove\" with a " +
 						"null check",
-				37
+				38
 			).addExpectedMessage(
 				"Combine the \"contains\" check on \"set\" and the following " +
 					"\"add\" into the boolean result of a single \"add\"",
-				45
+				46
 			).addExpectedMessage(
 				"Combine the \"contains\" check on \"set\" and the following " +
 					"\"remove\" into the boolean result of a single \"remove\"",
-				51
+				52
+			).addExpectedMessage(
+				"Combine the \"contains\" check on \"list\" and the " +
+					"following \"remove\" into the boolean result of a " +
+						"single \"remove\"",
+				58
 			));
 	}
 

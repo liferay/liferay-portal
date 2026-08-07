@@ -5,6 +5,7 @@
 
 package com.liferay.source.formatter.dependencies;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,6 +51,12 @@ public class RedundantContainsCalls {
 	protected void method5(Set<String> set, String name) {
 		if (set.contains(name)) {
 			set.remove(name);
+		}
+	}
+
+	protected void method6(List<String> list, String name) {
+		if (list.contains(name)) {
+			list.remove(name);
 		}
 	}
 
