@@ -68,8 +68,10 @@ func main() {
 		manager,
 		&licensing.LiferayEnvironmentReconciler{
 			Client:            manager.GetClient(),
+			GracePeriod:       config.GracePeriod,
 			HeartbeatInterval: config.HeartbeatInterval,
 			Provisioning:      provisioning.NewHTTPClient(config.ProvisioningBaseURL),
+			Recorder:          manager.GetEventRecorderFor("liferayenvironment-controller"),
 			RetryInitialDelay: config.RetryInitialDelay,
 			RetryMaxDelay:     config.RetryMaxDelay,
 		},
@@ -113,6 +115,7 @@ func main() {
 
 type config struct {
 	Debug               bool          `env:"DEBUG" envDefault:"false"`
+	GracePeriod         time.Duration `env:"GRACE_PERIOD" envDefault:"168h"`
 	HeartbeatInterval   time.Duration `env:"HEARTBEAT_INTERVAL" envDefault:"10m"`
 	MetricsAddress      string        `env:"METRICS_ADDRESS" envDefault:":8080"`
 	ProbeAddress        string        `env:"PROBE_ADDRESS" envDefault:":8081"`

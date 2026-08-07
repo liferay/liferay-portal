@@ -28,6 +28,7 @@ import (
 	meta "k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
+	record "k8s.io/client-go/tools/record"
 	controllerruntime "sigs.k8s.io/controller-runtime"
 	builder "sigs.k8s.io/controller-runtime/pkg/builder"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
@@ -37,14 +38,17 @@ import (
 
 const (
 	conditionActivated             = "Activated"
+	conditionGracePeriodExpired    = "GracePeriodExpired"
 	conditionLicenseValid          = "LicenseValid"
 	conditionProvisioningReachable = "ProvisioningReachable"
 	conditionReplicasCountValid    = "ReplicasCountValid"
 	entitlementsSecretSuffix       = "-entitlements"
 	environmentLabel               = "licensing.liferay.com/environment"
+	gracePeriodReplicaCeiling      = 1
 	identitySecretSuffix           = "-identity"
 )
 
+// +kubebuilder:rbac:groups="",resources=events,verbs=create;patch
 // +kubebuilder:rbac:groups="",resources=namespaces,verbs=get;list;patch;update;watch
 // +kubebuilder:rbac:groups="",resources=secrets,verbs=create;get;list;patch;update;watch
 // +kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;patch;update;watch
@@ -185,7 +189,20 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		)
 
 		liferayEnvironment.Status.ConsecutiveFailures++
+
+		if liferayEnvironment.Status.UnreachableSince == nil {
+			unreachableSince := metav1.NewTime(time.Now())
+
+			liferayEnvironment.Status.UnreachableSince = &unreachableSince
+		}
+
 		liferayEnvironment.Status.Phase = "Degraded"
+
+		if error := liferayEnvironmentReconciler.enforceGracePeriod(
+			context, liferayEnvironment,
+		); error != nil {
+			return controllerruntime.Result{}, error
+		}
 
 		return liferayEnvironmentReconciler.finishWithBackoff(
 			context, liferayEnvironment,
@@ -208,6 +225,8 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	)
 
 	liferayEnvironment.Status.ConsecutiveFailures = 0
+
+	liferayEnvironmentReconciler.clearUnreachable(context, liferayEnvironment)
 
 	if error := liferayEnvironmentReconciler.persistEntitlementsSecret(context, entitlements, liferayEnvironment); error != nil {
 		return controllerruntime.Result{}, error
@@ -329,6 +348,92 @@ func backoffDuration(
 	}
 
 	return time.Duration(backoff)
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) clearUnreachable(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) {
+	if liferayEnvironment.Status.UnreachableSince == nil {
+		return
+	}
+
+	if meta.IsStatusConditionTrue(
+		liferayEnvironment.Status.Conditions, conditionGracePeriodExpired,
+	) {
+		logf.FromContext(context).Info(
+			"Provisioning recovered; restoring the licensed replica ceiling",
+			"environmentID", liferayEnvironment.Status.EnvironmentID,
+		)
+
+		liferayEnvironmentReconciler.Recorder.Event(
+			liferayEnvironment,
+			corev1.EventTypeNormal,
+			"ProvisioningRecovered",
+			"Provisioning is reachable again; the licensed replica ceiling was restored.",
+		)
+	}
+
+	meta.RemoveStatusCondition(
+		&liferayEnvironment.Status.Conditions, conditionGracePeriodExpired,
+	)
+
+	liferayEnvironment.Status.UnreachableSince = nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceGracePeriod(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+) error {
+	if liferayEnvironment.Status.UnreachableSince == nil {
+		return nil
+	}
+
+	elapsed := time.Since(liferayEnvironment.Status.UnreachableSince.Time)
+
+	if elapsed < liferayEnvironmentReconciler.GracePeriod {
+		return nil
+	}
+
+	if error := liferayEnvironmentReconciler.enforceReplicaCeiling(
+		context, liferayEnvironment, gracePeriodReplicaCeiling,
+	); error != nil {
+		return error
+	}
+
+	message := fmt.Sprintf(
+		"Provisioning has been unreachable since %s; scaled %q down to %d replica.",
+		liferayEnvironment.Status.UnreachableSince.Format(time.RFC3339),
+		liferayEnvironment.Spec.WorkloadRef.Name,
+		gracePeriodReplicaCeiling,
+	)
+
+	if !meta.IsStatusConditionTrue(
+		liferayEnvironment.Status.Conditions, conditionGracePeriodExpired,
+	) {
+		logf.FromContext(context).Error(
+			nil, message, "environmentID", liferayEnvironment.Status.EnvironmentID,
+		)
+
+		liferayEnvironmentReconciler.Recorder.Event(
+			liferayEnvironment,
+			corev1.EventTypeWarning,
+			"GracePeriodExpired",
+			message,
+		)
+	}
+
+	meta.SetStatusCondition(
+		&liferayEnvironment.Status.Conditions,
+		metav1.Condition{
+			Message: message,
+			Reason:  "ProvisioningUnreachable",
+			Status:  metav1.ConditionTrue,
+			Type:    conditionGracePeriodExpired,
+		},
+	)
+
+	return nil
 }
 
 func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) enforceReplicaCeiling(
@@ -753,8 +858,10 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) resolveEnviron
 type LiferayEnvironmentReconciler struct {
 	client.Client
 
+	GracePeriod       time.Duration
 	HeartbeatInterval time.Duration
 	Provisioning      provisioning.Client
+	Recorder          record.EventRecorder
 	RetryInitialDelay time.Duration
 	RetryMaxDelay     time.Duration
 }
