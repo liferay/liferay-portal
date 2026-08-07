@@ -5,10 +5,23 @@
 
 package com.liferay.portal.tools.service.builder.test.service.impl;
 
+import com.liferay.portal.tools.service.builder.test.model.DateEntry;
 import com.liferay.portal.tools.service.builder.test.service.base.DateEntryLocalServiceBaseImpl;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class DateEntryLocalServiceImpl extends DateEntryLocalServiceBaseImpl {
+
+	public DateEntry fetchDateEntry(long companyId, Date snapshotDate) {
+		return dateEntryPersistence.fetchByC_S(companyId, snapshotDate);
+	}
+
+	public List<DateEntry> getDateEntries(Date snapshotDate) {
+		return dateEntryPersistence.findBySnapshotDate(snapshotDate);
+	}
+
 }

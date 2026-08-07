@@ -160,9 +160,23 @@
 
 		<column name="dateEntryId" primary="true" type="long" />
 
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
 		<!-- Other fields -->
 
-		<column name="value" type="Date" />
+		<column name="snapshotDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="SnapshotDate" return-type="Collection">
+			<finder-column name="snapshotDate" />
+		</finder>
+		<finder name="C_S" return-type="DateEntry" unique="true">
+			<finder-column name="companyId" />
+			<finder-column name="snapshotDate" />
+		</finder>
 	</entity>
 	<entity local-service="true" name="DefinedDefaultOrderEntry" remote-service="false">
 
