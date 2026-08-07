@@ -24,7 +24,7 @@ public class DSAccessTokenWebCacheItemTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testDoubleEscapedLineBreaks() {
+	public void testGetPEMDoubleEscapedLineBreaks() {
 		Assert.assertEquals(
 			_PEM,
 			_getPEM(
@@ -33,7 +33,7 @@ public class DSAccessTokenWebCacheItemTest {
 	}
 
 	@Test
-	public void testEscapedLineBreaks() {
+	public void testGetPEMEscapedLineBreaks() {
 		Assert.assertEquals(
 			_PEM,
 			_getPEM(
@@ -42,7 +42,7 @@ public class DSAccessTokenWebCacheItemTest {
 	}
 
 	@Test
-	public void testGluedBeginMarker() {
+	public void testGetPEMGluedBeginMarker() {
 		Assert.assertEquals(
 			_PEM,
 			_getPEM(
@@ -51,12 +51,12 @@ public class DSAccessTokenWebCacheItemTest {
 	}
 
 	@Test
-	public void testNullKey() {
+	public void testGetPEMNullKey() {
 		Assert.assertEquals("", _getPEM(null));
 	}
 
 	@Test
-	public void testPEMIsUnchanged() {
+	public void testGetPEMIsUnchanged() {
 		Assert.assertEquals(_PEM, _getPEM(_PEM));
 	}
 
