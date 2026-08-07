@@ -231,13 +231,23 @@ public class ObjectEntryAuditModelListenerTest {
 	}
 
 	private void _testOnAfterUpdateWithDefaultLocaleValue() throws Exception {
-		_updateObjectEntry("Description 2", "Descrição");
+		ObjectEntry objectEntry = _addObjectEntry(
+			"en_US", "Description", "Descrição");
+
+		_auditMessages.clear();
+
+		_updateObjectEntry("Description 2", objectEntry, "Descrição");
 
 		_assertModifiedAttributes("description=Description>Description 2");
 	}
 
 	private void _testOnAfterUpdateWithMultipleLocaleValues() throws Exception {
-		_updateObjectEntry("Description 2", "Descrição 2");
+		ObjectEntry objectEntry = _addObjectEntry(
+			"en_US", "Description", "Descrição");
+
+		_auditMessages.clear();
+
+		_updateObjectEntry("Description 2", objectEntry, "Descrição 2");
 
 		_assertModifiedAttributes(
 			"description=Description>Description 2",
@@ -247,18 +257,19 @@ public class ObjectEntryAuditModelListenerTest {
 	private void _testOnAfterUpdateWithNondefaultLocaleValue()
 		throws Exception {
 
-		_updateObjectEntry("Description", "Descrição 2");
-
-		_assertModifiedAttributes("description[pt_BR]=Descrição>Descrição 2");
-	}
-
-	private void _updateObjectEntry(String enUSValue, String ptBRValue)
-		throws Exception {
-
 		ObjectEntry objectEntry = _addObjectEntry(
 			"en_US", "Description", "Descrição");
 
 		_auditMessages.clear();
+
+		_updateObjectEntry("Description", objectEntry, "Descrição 2");
+
+		_assertModifiedAttributes("description[pt_BR]=Descrição>Descrição 2");
+	}
+
+	private void _updateObjectEntry(
+			String enUSValue, ObjectEntry objectEntry, String ptBRValue)
+		throws Exception {
 
 		_objectEntryLocalService.updateObjectEntry(
 			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
