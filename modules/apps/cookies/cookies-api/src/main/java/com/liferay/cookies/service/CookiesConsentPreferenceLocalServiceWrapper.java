@@ -275,6 +275,14 @@ public class CookiesConsentPreferenceLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.cookies.model.CookiesConsentPreference
+		fetchCookiesConsentPreference(long userId, String domain, String name) {
+
+		return _cookiesConsentPreferenceLocalService.
+			fetchCookiesConsentPreference(userId, domain, name);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -418,4 +426,4 @@ public class CookiesConsentPreferenceLocalServiceWrapper
 		_cookiesConsentPreferenceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2076735159
+// LIFERAY-SERVICE-BUILDER-HASH:-1983608772
