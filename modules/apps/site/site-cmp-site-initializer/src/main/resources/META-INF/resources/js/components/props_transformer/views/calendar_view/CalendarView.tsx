@@ -445,8 +445,10 @@ export default function CalendarView({
 					<ClayButton.Group>
 						{calendarViews.map(({label, view}) => (
 							<ClayButton
-								aria-label={label}
 								aria-pressed={currentView === view}
+								className={classNames({
+									active: currentView === view,
+								})}
 								displayType="secondary"
 								key={view}
 								onClick={() =>
@@ -454,9 +456,7 @@ export default function CalendarView({
 										?.getApi()
 										.changeView(view)
 								}
-								outline={currentView !== view}
 								size="sm"
-								title={label}
 							>
 								{label}
 							</ClayButton>
