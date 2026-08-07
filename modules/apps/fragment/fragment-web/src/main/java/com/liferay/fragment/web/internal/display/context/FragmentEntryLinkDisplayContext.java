@@ -102,18 +102,11 @@ public class FragmentEntryLinkDisplayContext {
 	public String getFragmentEntryLinkName(
 		FragmentEntryLink fragmentEntryLink) {
 
-		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
-
 		Layout layout = LayoutLocalServiceUtil.fetchLayout(
 			fragmentEntryLink.getPlid());
 
-		if (layout.isDraftLayout()) {
-			layoutPageTemplateEntryPlid = layout.getClassPK();
-		}
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateEntryLocalServiceUtil.
-				fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
+			_fetchLayoutPageTemplateEntry(layout);
 
 		ThemeDisplay themeDisplay = _getThemeDisplay();
 
@@ -138,18 +131,11 @@ public class FragmentEntryLinkDisplayContext {
 	public String getFragmentEntryLinkTypeLabel(
 		FragmentEntryLink fragmentEntryLink) {
 
-		long layoutPageTemplateEntryPlid = fragmentEntryLink.getPlid();
-
 		Layout layout = LayoutLocalServiceUtil.fetchLayout(
 			fragmentEntryLink.getPlid());
 
-		if (layout.isDraftLayout()) {
-			layoutPageTemplateEntryPlid = layout.getClassPK();
-		}
-
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			LayoutPageTemplateEntryLocalServiceUtil.
-				fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
+			_fetchLayoutPageTemplateEntry(layout);
 
 		if (layoutPageTemplateEntry != null) {
 			if (layoutPageTemplateEntry.getType() ==
@@ -460,6 +446,19 @@ public class FragmentEntryLinkDisplayContext {
 				verticalNavItem.setLabel(name);
 			}
 		).build();
+	}
+
+	private LayoutPageTemplateEntry _fetchLayoutPageTemplateEntry(
+		Layout layout) {
+
+		long layoutPageTemplateEntryPlid = layout.getPlid();
+
+		if (layout.isDraftLayout()) {
+			layoutPageTemplateEntryPlid = layout.getClassPK();
+		}
+
+		return LayoutPageTemplateEntryLocalServiceUtil.
+			fetchLayoutPageTemplateEntryByPlid(layoutPageTemplateEntryPlid);
 	}
 
 	private long _getScopeGroupId() {
