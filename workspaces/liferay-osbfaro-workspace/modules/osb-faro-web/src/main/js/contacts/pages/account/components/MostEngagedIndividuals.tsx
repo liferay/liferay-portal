@@ -16,7 +16,7 @@ const MostEngagedIndividuals: React.FC = () => {
 	return (
 		<Card minHeight={260} testId="most-engaged-individuals">
 			<Card.Title className="p-3">
-				<Text weight="semi-bold">
+				<Text size={5} weight="semi-bold">
 					{Liferay.Language.get(
 						'most-engaged-individuals'
 					).toUpperCase()}
