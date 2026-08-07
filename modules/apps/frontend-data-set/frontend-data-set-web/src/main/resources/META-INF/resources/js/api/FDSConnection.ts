@@ -6,6 +6,7 @@
 import {getFDSAtom, getOrCreateSelector} from './getFDSAtom';
 
 import type {
+	FDSConnectionFilter,
 	FDSConnectionInfo,
 	FDSConnectionOptions,
 	FDSConnectionStatus,
@@ -28,6 +29,7 @@ export class FDSConnection {
 	private static instanceCount = 0;
 
 	private atom!: Atom<FDSState>;
+	private clearFiltersWhenDisconnect = false;
 	private disconnected = false;
 	private fdsName: string;
 	private instanceId: number = ++FDSConnection.instanceCount;
@@ -125,10 +127,54 @@ export class FDSConnection {
 		});
 	};
 
+	/**
+	 * Takes the filtering over with the given expressions, replacing whatever
+	 * a previous call passed. From the first call on, the filters the data set
+	 * declares no longer reach the request: the consumer owns the whole filter
+	 * expression.
+	 */
+	setFilters = (filters: Array<FDSConnectionFilter>): void => {
+		if (!this.isReady) {
+			return;
+		}
+
+		const current = Liferay.State.read(this.atom);
+
+		this.clearFiltersWhenDisconnect = true;
+
+		Liferay.State.write(this.atom, {
+			...current,
+			connectionFilters: filters.map(({id, odataFilterString}) => ({
+				id,
+				odataFilterString,
+			})),
+		});
+	};
+
+	/**
+	 * Drops the filters this connection applies, so that the data set filters
+	 * nothing: a shortcut for `setFilters([])`, and what `disconnect()` does
+	 * on the way out. The filtering stays taken over, so the filters the data
+	 * set declares do not come back.
+	 */
+	clearFilters = (): void => {
+		this.setFilters([]);
+	};
+
 	disconnect = (): void => {
 		if (this.disconnected) {
 			return;
 		}
+
+		// Leave nothing of this connection applied: a consumer that never
+		// filtered must not suppress the filters the data set declares on its
+		// way out, so only a connection that did take the filtering over
+		// clears it.
+
+		if (this.clearFiltersWhenDisconnect) {
+			this.clearFilters();
+		}
+
 		this.subscriptions?.search?.dispose();
 		this.disconnected = true;
 		this.isReady = false;
