@@ -111,6 +111,7 @@ public class FragmentEntryLinkModelListenerTest {
 		_testAddFragmentEntryLinkDoesNotEscapeLinkFieldHTMLContent();
 		_testAddFragmentEntryLinkEscapeTextField();
 		_testAddFragmentEntryLinkPreservesInlineSVGInLinkField();
+		_testAddFragmentEntryLinkPreservesSpriteReferenceInLinkField();
 		_testAddFragmentEntryLinkSanitizesLinkFieldScriptContent();
 		_testAddFragmentEntryLinkSanitizesScriptInInlineSVGLinkField();
 		_testAddFragmentEntryLinkWithEmbeddedPortlet();
@@ -265,6 +266,31 @@ public class FragmentEntryLinkModelListenerTest {
 		Assert.assertTrue(editableValues, editableValues.contains("Read More"));
 	}
 
+	private void _testAddFragmentEntryLinkPreservesSpriteReferenceInLinkField()
+		throws Exception {
+
+		String hrefURL = "/o/classic-theme/images/clay/icons.svg#home";
+		String xlinkHrefURL =
+			"/o/classic-theme/images/clay/icons.svg#social-linkedin";
+
+		String editableFieldValue = StringBundler.concat(
+			"<svg viewBox=\"0 0 512 512\"><use href=\"", hrefURL,
+			"\"></use><use xlink:href=\"", xlinkHrefURL,
+			"\"></use></svg> Read More");
+
+		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
+			_fragmentCollectionContributorRegistry.getFragmentEntry(
+				"BASIC_COMPONENT-button"),
+			_createEditableValues("link", editableFieldValue), _serviceContext);
+
+		String editableValues = fragmentEntryLink.getEditableValues();
+
+		Assert.assertTrue(editableValues, editableValues.contains(hrefURL));
+		Assert.assertTrue(
+			editableValues, editableValues.contains(xlinkHrefURL));
+		Assert.assertTrue(editableValues, editableValues.contains("Read More"));
+	}
+
 	private void _testAddFragmentEntryLinkSanitizesLinkFieldScriptContent()
 		throws Exception {
 
@@ -290,13 +316,15 @@ public class FragmentEntryLinkModelListenerTest {
 	private void _testAddFragmentEntryLinkSanitizesScriptInInlineSVGLinkField()
 		throws Exception {
 
-		String expectedURL = "https://example.com/sprite#x";
+		String crossOriginURL = "https://example.com/sprite.svg#x";
+		String protocolRelativeURL = "//example.com/sprite.svg#x";
 
 		String editableFieldValue = StringBundler.concat(
 			"<svg onload=\"alert('xss');\" viewBox=\"0 0 24 24\">",
 			"<script>alert('xss');</script>",
 			"<foreignObject><script>alert('xss');</script></foreignObject>",
-			"<use href=\"", expectedURL, "\"></use>",
+			"<use href=\"", crossOriginURL, "\"></use><use xlink:href=\"",
+			protocolRelativeURL, "\"></use>",
 			"<path d=\"M12 2L2 7l10 5 10-5-10-5z\"></path></svg>");
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -312,16 +340,18 @@ public class FragmentEntryLinkModelListenerTest {
 
 			String editableValues = fragmentEntryLink.getEditableValues();
 
+			Assert.assertFalse(
+				editableValues, editableValues.contains("<script"));
 			Assert.assertTrue(editableValues, editableValues.contains("<svg"));
 			Assert.assertTrue(editableValues, editableValues.contains("<path"));
 			Assert.assertFalse(
 				editableValues, editableValues.contains("alert"));
 			Assert.assertFalse(
-				editableValues, editableValues.contains(expectedURL));
-			Assert.assertFalse(
 				editableValues, editableValues.contains("onload"));
 			Assert.assertFalse(
-				editableValues, editableValues.contains("<script"));
+				editableValues, editableValues.contains(crossOriginURL));
+			Assert.assertFalse(
+				editableValues, editableValues.contains(protocolRelativeURL));
 		}
 	}
 
