@@ -153,15 +153,15 @@ public class MonitorMetricsWriter {
 	private GaugeSnapshot _newLastRunTimestampSnapshot() {
 		GaugeSnapshot.Builder gaugeSnapshotBuilder = GaugeSnapshot.builder();
 
-		gaugeSnapshotBuilder.help(
-			"Unix timestamp of the last monitor run, 0 if never run");
-		gaugeSnapshotBuilder.name("monitor_last_run_timestamp_seconds");
-
 		for (Monitor monitor : _monitors) {
 			gaugeSnapshotBuilder.dataPoint(
 				_newGaugeDataPointSnapshot(
 					monitor, _getLastRunTimestampSeconds(monitor)));
 		}
+
+		gaugeSnapshotBuilder.help(
+			"Unix timestamp of the last monitor run, 0 if never run");
+		gaugeSnapshotBuilder.name("monitor_last_run_timestamp_seconds");
 
 		return gaugeSnapshotBuilder.build();
 	}
