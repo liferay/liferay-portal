@@ -157,13 +157,13 @@ public class LazyBlobEntryPersistenceTest {
 		Blob existingBlob1 = existingLazyBlobEntry.getBlob1();
 
 		Assert.assertArrayEquals(
-			existingBlob1.getBytes(1, (int)existingBlob1.length()),
-			newBlob1Bytes);
+			newBlob1Bytes,
+			existingBlob1.getBytes(1, (int)existingBlob1.length()));
 		Blob existingBlob2 = existingLazyBlobEntry.getBlob2();
 
 		Assert.assertArrayEquals(
-			existingBlob2.getBytes(1, (int)existingBlob2.length()),
-			newBlob2Bytes);
+			newBlob2Bytes,
+			existingBlob2.getBytes(1, (int)existingBlob2.length()));
 	}
 
 	@Test
@@ -525,4 +525,4 @@ public class LazyBlobEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1422261870
+// LIFERAY-SERVICE-BUILDER-HASH:-1473817262

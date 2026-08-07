@@ -177,7 +177,7 @@ public class ERCVersionedEntryPersistenceTest {
 		Blob existingBlob = existingERCVersionedEntry.getBlob();
 
 		Assert.assertArrayEquals(
-			existingBlob.getBytes(1, (int)existingBlob.length()), newBlobBytes);
+			newBlobBytes, existingBlob.getBytes(1, (int)existingBlob.length()));
 	}
 
 	@Test
@@ -234,8 +234,8 @@ public class ERCVersionedEntryPersistenceTest {
 		Blob persistedDraftBlob = persistedDraftERCVersionedEntry.getBlob();
 
 		Assert.assertArrayEquals(
-			persistedDraftBlob.getBytes(1, (int)persistedDraftBlob.length()),
-			draftBlobBytes);
+			draftBlobBytes,
+			persistedDraftBlob.getBytes(1, (int)persistedDraftBlob.length()));
 	}
 
 	@Test(
@@ -762,4 +762,4 @@ public class ERCVersionedEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-499275962
+// LIFERAY-SERVICE-BUILDER-HASH:2132282118

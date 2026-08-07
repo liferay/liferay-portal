@@ -167,7 +167,7 @@ public class CTSContentPersistenceTest {
 		Blob existingData = existingCTSContent.getData();
 
 		Assert.assertArrayEquals(
-			existingData.getBytes(1, (int)existingData.length()), newDataBytes);
+			newDataBytes, existingData.getBytes(1, (int)existingData.length()));
 		Assert.assertEquals(
 			existingCTSContent.getSize(), newCTSContent.getSize());
 		Assert.assertEquals(
@@ -578,4 +578,4 @@ public class CTSContentPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1473486047
+// LIFERAY-SERVICE-BUILDER-HASH:826348001

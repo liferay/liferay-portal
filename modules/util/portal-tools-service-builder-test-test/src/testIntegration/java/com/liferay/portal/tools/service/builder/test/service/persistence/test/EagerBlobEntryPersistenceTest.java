@@ -153,7 +153,7 @@ public class EagerBlobEntryPersistenceTest {
 		Blob existingBlob = existingEagerBlobEntry.getBlob();
 
 		Assert.assertArrayEquals(
-			existingBlob.getBytes(1, (int)existingBlob.length()), newBlobBytes);
+			newBlobBytes, existingBlob.getBytes(1, (int)existingBlob.length()));
 	}
 
 	@Test
@@ -508,4 +508,4 @@ public class EagerBlobEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:363374027
+// LIFERAY-SERVICE-BUILDER-HASH:-673466933

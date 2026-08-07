@@ -167,7 +167,7 @@ public class DLContentPersistenceTest {
 		Blob existingData = existingDLContent.getData();
 
 		Assert.assertArrayEquals(
-			existingData.getBytes(1, (int)existingData.length()), newDataBytes);
+			newDataBytes, existingData.getBytes(1, (int)existingData.length()));
 		Assert.assertEquals(
 			existingDLContent.getSize(), newDLContent.getSize());
 	}
@@ -556,4 +556,4 @@ public class DLContentPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1728301549
+// LIFERAY-SERVICE-BUILDER-HASH:289783635
