@@ -17,6 +17,7 @@ import performLogin, {
 	performLogout,
 	userData,
 } from '../../../utils/performLogin';
+import {closeProductMenu} from '../../../utils/productMenu';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {membershipsPagesTest} from './fixtures/membershipsPagesTest';
 
@@ -452,7 +453,7 @@ test(
 				.getByTitle('Go to Memberships')
 		).toBeVisible();
 
-		await page.getByLabel('Close Product Menu').click();
+		await closeProductMenu(page);
 
 		await page.waitForTimeout(300);
 
@@ -481,6 +482,8 @@ test(
 				.locator('.control-menu-nav-item')
 				.getByTitle('Go to Membership Requests')
 		).toBeVisible();
+
+		await closeProductMenu(page);
 
 		await page.waitForTimeout(300);
 
@@ -511,6 +514,8 @@ test(
 		).toBeVisible();
 
 		await page.reload();
+
+		await closeProductMenu(page);
 
 		await page.waitForTimeout(300);
 
