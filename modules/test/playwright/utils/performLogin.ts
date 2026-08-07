@@ -5,7 +5,7 @@
 
 import {Cookie, Page, expect} from '@playwright/test';
 
-import {getHeader} from '../helpers/ApiHelpers';
+import {clearAuthToken, getHeader, readAuthToken} from '../helpers/ApiHelpers';
 import {liferayConfig} from '../liferay.config';
 import {faroConfig} from '../tests/osb-faro-web/main/faro.config';
 
@@ -82,6 +82,8 @@ async function performLogin(
 		timeout: 30 * 1000,
 	});
 
+	await readAuthToken(page);
+
 	return await page.context().cookies();
 }
 
@@ -103,6 +105,11 @@ export async function performLoginViaApi({
 	try {
 		await page.goto(loginUrl);
 
+		// Signing in replaces the session, so drop the token held for the one
+		// being left behind before the request that replaces it.
+
+		clearAuthToken(page);
+
 		const url = `${loginUrl}/c/portal/login`;
 
 		await expect
@@ -120,6 +127,11 @@ export async function performLoginViaApi({
 			.toBe(200);
 
 		await page.goto(loginUrl);
+
+		// The page has settled on the signed in session, so this is the moment
+		// to read the token every later request will carry.
+
+		await readAuthToken(page);
 	}
 	catch (error) {
 		error.message = `Login via API failed\n\n${error.message}`;
@@ -144,6 +156,11 @@ export async function performAnalyticsCloudLoginViaApi(
 	try {
 		await page.goto(loginUrl);
 
+		// Signing in replaces the session, so drop the token held for the one
+		// being left behind before the request that replaces it.
+
+		clearAuthToken(page);
+
 		const url = `${loginUrl}/c/portal/login`;
 
 		await expect
@@ -161,6 +178,11 @@ export async function performAnalyticsCloudLoginViaApi(
 			.toBe(200);
 
 		await page.goto(loginUrl);
+
+		// The page has settled on the signed in session, so this is the moment
+		// to read the token every later request will carry.
+
+		await readAuthToken(page);
 	}
 	catch (error) {
 		error.message = `Analytics Cloud login via API failed\n\n${error.message}`;
@@ -175,6 +197,8 @@ export async function performLogout(page: Page) {
 	await page.goto('/c/portal/logout');
 
 	await page.waitForURL((url) => !url.pathname.endsWith('/c/portal/logout'));
+
+	clearAuthToken(page);
 }
 
 export async function performUserSwitch(

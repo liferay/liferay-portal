@@ -9,7 +9,7 @@ import {
 	ObjectFolderAPI,
 	ObjectRelationshipAPI,
 } from '@liferay/object-admin-rest-client-js';
-import {Page} from '@playwright/test';
+import {BrowserContext, Page} from '@playwright/test';
 
 import {liferayConfig} from '../liferay.config';
 import {AnalyticsSettingsRestApiHelper} from './AnalyticsSettingsRestApiHelper';
@@ -105,8 +105,32 @@ interface RequestOptions<T> {
 	multipart?: {[key: string]: any};
 }
 
-async function getCSRFTokenHeader(page: Page) {
+const authTokens = new WeakMap<BrowserContext, string>();
+
+export function clearAuthToken(page: Page) {
+	authTokens.delete(page.context());
+}
+
+export async function readAuthToken(page: Page) {
+
+	// Read the token when the caller knows the page is settled, which is right
+	// after signing in, and keep it for the session it belongs to. Reading it
+	// while a request is being built instead is what fails: a navigation racing
+	// the evaluation destroys the execution context and kills it.
+
 	const authToken = await page.evaluate(() => Liferay.authToken);
+
+	authTokens.set(page.context(), authToken);
+
+	return authToken;
+}
+
+async function getCSRFTokenHeader(page: Page) {
+	let authToken = authTokens.get(page.context());
+
+	if (authToken === undefined) {
+		authToken = await readAuthToken(page);
+	}
 
 	return {
 		'x-csrf-token': authToken,
@@ -338,16 +362,51 @@ export class ApiHelpers {
 		return apiInstance;
 	}
 
+	private async _sendRequest(
+		method: 'delete' | 'get' | 'patch' | 'post' | 'put',
+		url: string,
+		options: {[key: string]: unknown} = {},
+		headers?: {[key: string]: string},
+		extraHeaders?: {[key: string]: string}
+	) {
+		const buildHeaders = async () =>
+			headers || {
+				...(await getHeader(this.page)),
+				...(extraHeaders || {}),
+			};
+
+		const response = await this.page.request[method](url, {
+			...options,
+			headers: await buildHeaders(),
+		});
+
+		if (headers || response.status() !== 403) {
+			return response;
+		}
+
+		// The token belongs to the session that was live when it was read, so
+		// a test that has signed in again since leaves it stale and the portal
+		// answers Forbidden. Read it again and retry once, rather than failing
+		// the caller with a Forbidden body it cannot interpret.
+
+		clearAuthToken(this.page);
+
+		return await this.page.request[method](url, {
+			...options,
+			headers: await buildHeaders(),
+		});
+	}
+
 	async postResponse<T>(
 		url: string,
 		{data, failOnStatusCode, headers, multipart}: RequestOptions<T> = {}
 	) {
-		return await this.page.request.post(url, {
-			data,
-			failOnStatusCode: failOnStatusCode || false,
-			headers: headers || (await getHeader(this.page)),
-			multipart,
-		});
+		return await this._sendRequest(
+			'post',
+			url,
+			{data, failOnStatusCode: failOnStatusCode || false, multipart},
+			headers
+		);
 	}
 
 	async post<T>(url: string, options: RequestOptions<T> = {}) {
@@ -374,10 +433,12 @@ export class ApiHelpers {
 		failOnStatusCode?: boolean,
 		headers?: {[key: string]: string}
 	) {
-		return await this.page.request.get(url, {
-			failOnStatusCode: failOnStatusCode || false,
-			headers: headers || (await getHeader(this.page)),
-		});
+		return await this._sendRequest(
+			'get',
+			url,
+			{failOnStatusCode: failOnStatusCode || false},
+			headers
+		);
 	}
 
 	async put<T>(url: string, options: RequestOptions<T> = {}) {
@@ -394,26 +455,25 @@ export class ApiHelpers {
 		url: string,
 		{data, failOnStatusCode, headers, multipart}: RequestOptions<T> = {}
 	) {
-		return await this.page.request.put(url, {
-			data,
-			failOnStatusCode: failOnStatusCode || false,
-			headers: headers || (await getHeader(this.page)),
-			multipart,
-		});
+		return await this._sendRequest(
+			'put',
+			url,
+			{data, failOnStatusCode: failOnStatusCode || false, multipart},
+			headers
+		);
 	}
 
 	async delete<T>(
 		url: string,
 		{data, failOnStatusCode, headers}: RequestOptions<T> = {}
 	) {
-		return this.page.request.delete(url, {
-			data,
-			failOnStatusCode: failOnStatusCode || false,
-			headers: {
-				...(await getHeader(this.page)),
-				...(headers || {}),
-			},
-		});
+		return this._sendRequest(
+			'delete',
+			url,
+			{data, failOnStatusCode: failOnStatusCode || false},
+			undefined,
+			headers
+		);
 	}
 
 	async get(
@@ -427,10 +487,7 @@ export class ApiHelpers {
 	}
 
 	async patch(url: string, data: DataObject) {
-		const response = await this.page.request.patch(url, {
-			data,
-			headers: await getHeader(this.page),
-		});
+		const response = await this._sendRequest('patch', url, {data});
 
 		const text = await response.text();
 
@@ -442,12 +499,16 @@ export class ApiHelpers {
 	}
 
 	async patchRequestOptions<T>(url: string, options: RequestOptions<T> = {}) {
-		const response = await this.page.request.patch(url, {
-			data: options.data,
-			failOnStatusCode: options.failOnStatusCode || false,
-			headers: options.headers || (await getHeader(this.page)),
-			multipart: options.multipart,
-		});
+		const response = await this._sendRequest(
+			'patch',
+			url,
+			{
+				data: options.data,
+				failOnStatusCode: options.failOnStatusCode || false,
+				multipart: options.multipart,
+			},
+			options.headers
+		);
 
 		const text = await response.text();
 
