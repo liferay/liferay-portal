@@ -222,6 +222,10 @@ public class AssetListFiltersUtil {
 			return new MatchQuery(field, value);
 		}
 
+		if (Objects.equals(field, Field.USER_NAME)) {
+			value = StringUtil.toLowerCase(value);
+		}
+
 		if (operatorName.equals("contains") ||
 			operatorName.equals("not-contains")) {
 

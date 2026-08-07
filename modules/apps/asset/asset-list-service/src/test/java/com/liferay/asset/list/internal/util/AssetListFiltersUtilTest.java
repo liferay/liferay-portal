@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.FastDateFormatFactoryImpl;
 
@@ -123,13 +124,14 @@ public class AssetListFiltersUtilTest {
 		String userName = RandomTestUtil.randomString();
 
 		_assertTermQuery(
-			Field.USER_NAME, userName,
+			Field.USER_NAME, StringUtil.toLowerCase(userName),
 			_assertCommonFieldQuery(
 				BooleanClauseOccur.MUST,
 				_getCommonFieldFilterJSONObject(
 					"eq", Field.USER_NAME, userName)));
 		_assertWildcardQuery(
-			Field.USER_NAME, StringBundler.concat("*", userName, "*"),
+			Field.USER_NAME,
+			StringBundler.concat("*", StringUtil.toLowerCase(userName), "*"),
 			_assertCommonFieldQuery(
 				BooleanClauseOccur.MUST_NOT,
 				_getCommonFieldFilterJSONObject(
