@@ -1047,7 +1047,6 @@ public class CommercePriceListLocalServiceImpl
 			groupIds, companyId, status);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommercePriceList getOrAddEmptyCommercePriceList(
 			String externalReferenceCode, long groupId, long companyId,

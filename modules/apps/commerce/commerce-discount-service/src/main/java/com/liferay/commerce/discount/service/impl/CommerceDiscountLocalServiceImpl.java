@@ -988,7 +988,6 @@ public class CommerceDiscountLocalServiceImpl
 			commercePricingClassId, title);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceDiscount getOrAddEmptyCommerceDiscount(
 			String externalReferenceCode, long companyId, long userId)

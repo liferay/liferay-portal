@@ -232,7 +232,6 @@ public class CommerceOrderTypeLocalServiceImpl
 				companyId, className, classPK, active));
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceOrderType getOrAddEmptyCommerceOrderType(
 			String externalReferenceCode, long companyId, long userId)
