@@ -15,6 +15,7 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	readonly optionLink: (optionName: string) => Locator;
 	readonly optionSidePanelCancelButton: Locator;
 	readonly optionSidePanelFrame: FrameLocator;
+	readonly optionValueDeltaPriceInput: Locator;
 	readonly optionValueLink: (optionValueName: string) => Locator;
 	readonly optionValueQuantityInput: Locator;
 	readonly optionValueRow: (optionValueName: string) => Locator;
@@ -22,6 +23,7 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	readonly optionValueSidePanelCloseButton: Locator;
 	readonly optionValueSidePanelFrame: FrameLocator;
 	readonly optionValueSkuDropdownItem: (label: string) => Locator;
+	readonly optionValueSkuDropdownItems: Locator;
 	readonly optionValueSkuInput: Locator;
 	readonly visibleSidePanels: Locator;
 
@@ -59,6 +61,8 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 				name: 'Cancel',
 			}
 		);
+		this.optionValueDeltaPriceInput =
+			this.optionValueSidePanelFrame.getByLabel('Delta Price');
 		this.optionValueLink = (optionValueName: string) =>
 			this.optionSidePanelFrame.getByRole('link', {
 				exact: true,
@@ -84,6 +88,10 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 			this.optionValueSidePanelFrame
 				.locator('.autocomplete-dropdown-menu')
 				.getByText(label, {exact: true});
+		this.optionValueSkuDropdownItems =
+			this.optionValueSidePanelFrame.locator(
+				'.autocomplete-dropdown-menu li'
+			);
 		this.optionValueSkuInput = this.optionValueSidePanelFrame.locator(
 			'#autocomplete-root input[type="text"]'
 		);
@@ -96,19 +104,33 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		await expect(this.visibleSidePanels).toHaveCount(0);
 	}
 
+	async closeOptionValue() {
+		await this.optionValueSidePanelCloseButton.click();
+
+		await expect(this.optionValueSkuInput).toBeHidden();
+	}
+
 	async editOptionValue(
 		optionValueName: string,
 		{
+			deltaPrice,
 			quantity,
 			sku,
 			unitOfMeasureKey,
-		}: {quantity: string; sku: string; unitOfMeasureKey?: string}
+		}: {
+			deltaPrice?: number | string;
+			quantity: number | string;
+			sku: string;
+			unitOfMeasureKey?: string;
+		}
 	) {
-		await this.optionValueLink(optionValueName).click();
+		await this.openOptionValue(optionValueName);
 
-		await expect(this.optionValueSkuInput).toBeVisible();
+		if (deltaPrice) {
+			await this.optionValueDeltaPriceInput.fill(String(deltaPrice));
+		}
 
-		await this.optionValueSkuInput.fill(sku);
+		await this.searchSku(sku);
 
 		const dropdownItemLabel = unitOfMeasureKey
 			? `${sku} - ${unitOfMeasureKey}`
@@ -118,21 +140,37 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 
 		await expect(this.optionValueQuantityInput).toBeEnabled();
 
-		await this.optionValueQuantityInput.fill(quantity);
+		await this.optionValueQuantityInput.fill(String(quantity));
 		await this.optionValueSaveButton.click();
 
 		await expect(this.optionValueRow(optionValueName)).toContainText(
 			dropdownItemLabel
 		);
 
-		await this.optionValueSidePanelCloseButton.click();
+		await this.closeOptionValue();
+	}
 
-		await expect(this.optionValueSkuInput).toBeHidden();
+	async getSkuSuggestions(sku: string) {
+		await this.searchSku(sku);
+
+		return await this.optionValueSkuDropdownItems.allInnerTexts();
 	}
 
 	async openOption(optionName: string) {
 		await this.optionLink(optionName).click();
 
 		await expect(this.optionSidePanelCancelButton).toBeVisible();
+	}
+
+	async openOptionValue(optionValueName: string) {
+		await this.optionValueLink(optionValueName).click();
+
+		await expect(this.optionValueSkuInput).toBeVisible();
+	}
+
+	async searchSku(sku: string) {
+		await this.optionValueSkuInput.fill(sku);
+
+		await expect(this.optionValueSkuDropdownItems.first()).toBeVisible();
 	}
 }
