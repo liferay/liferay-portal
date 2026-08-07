@@ -253,7 +253,7 @@ public class PageSpecificationVersionResourceTest
 		Map<String, Map<String, String>> actions =
 			pageSpecificationVersion.getActions();
 
-		String content = StringBundler.concat(
+		String prefix = StringBundler.concat(
 			"/sites/", testGroup.getExternalReferenceCode(), "/site-pages/",
 			_testGroupLayout.getExternalReferenceCode(),
 			"/page-specification-versions/",
@@ -263,6 +263,12 @@ public class PageSpecificationVersionResourceTest
 			Map<String, String> action = actions.get(key);
 
 			String href = action.get("href");
+
+			String content = prefix;
+
+			if (key.equals("restore")) {
+				content = prefix + "/restore";
+			}
 
 			Assert.assertTrue(key, href.contains(content));
 		}
@@ -328,7 +334,7 @@ public class PageSpecificationVersionResourceTest
 
 		Assert.assertNull(firstActions.get("delete"));
 
-		_assertActionHref(firstPageSpecificationVersion, "get");
+		_assertActionHref(firstPageSpecificationVersion, "get", "restore");
 
 		PageSpecificationVersion secondPageSpecificationVersion =
 			_addPageSpecificationVersion();
@@ -340,7 +346,8 @@ public class PageSpecificationVersionResourceTest
 					_testGroupLayout.getExternalReferenceCode(),
 					firstPageSpecificationVersion.getExternalReferenceCode());
 
-		_assertActionHref(firstPageSpecificationVersion, "delete", "get");
+		_assertActionHref(
+			firstPageSpecificationVersion, "delete", "get", "restore");
 
 		secondPageSpecificationVersion =
 			pageSpecificationVersionResource.
@@ -354,7 +361,7 @@ public class PageSpecificationVersionResourceTest
 
 		Assert.assertNull(secondActions.get("delete"));
 
-		_assertActionHref(secondPageSpecificationVersion, "get");
+		_assertActionHref(secondPageSpecificationVersion, "get", "restore");
 	}
 
 	private void _testGetSiteSitePagePageSpecificationVersionMismatchedSitePage()
