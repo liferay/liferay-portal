@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

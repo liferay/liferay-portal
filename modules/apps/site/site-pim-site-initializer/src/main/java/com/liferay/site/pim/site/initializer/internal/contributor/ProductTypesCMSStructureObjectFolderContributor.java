@@ -15,8 +15,8 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.site.cms.site.initializer.contributor.CMSStructureObjectFolderContributor;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectFolderConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
 import java.util.Collections;
 import java.util.List;

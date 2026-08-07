@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.search.spi.model.index.contributor.ModelDocumentContributor;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectFolderConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.search.spi.model.index.contributor.PIMProductObjectEntryModelDocumentContributor;
 
 import java.util.Collections;

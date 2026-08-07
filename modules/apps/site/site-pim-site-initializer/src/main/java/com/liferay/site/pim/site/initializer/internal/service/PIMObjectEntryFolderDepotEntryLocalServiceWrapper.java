@@ -16,7 +16,7 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectEntryFolderConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 
 import java.util.Locale;

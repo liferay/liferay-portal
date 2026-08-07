@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectDefinitionConstants;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectFolderConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
 import java.util.Arrays;
 import java.util.Collections;

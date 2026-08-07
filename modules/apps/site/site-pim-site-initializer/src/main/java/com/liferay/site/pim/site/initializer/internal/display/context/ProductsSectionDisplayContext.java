@@ -43,8 +43,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectEntryFolderConstants;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectFolderConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 

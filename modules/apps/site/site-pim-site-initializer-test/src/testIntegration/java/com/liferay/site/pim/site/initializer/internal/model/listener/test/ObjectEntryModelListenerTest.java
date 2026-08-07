@@ -28,6 +28,8 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.Serializable;
@@ -73,7 +75,9 @@ public class ObjectEntryModelListenerTest {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_PIM_BASE_SKU", TestPropsValues.getCompanyId());
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+					TestPropsValues.getCompanyId());
 
 		return _objectEntryLocalService.addObjectEntry(
 			groupId, TestPropsValues.getUserId(),
@@ -126,7 +130,9 @@ public class ObjectEntryModelListenerTest {
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					groupId, TestPropsValues.getCompanyId());
 
 		Assert.assertEquals(
 			objectEntryFolder.getObjectEntryFolderId(),
@@ -149,13 +155,17 @@ public class ObjectEntryModelListenerTest {
 
 			_objectEntryFolderLocalService.
 				deleteObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					groupId, TestPropsValues.getCompanyId());
 		}
 
 		Assert.assertNull(
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId()));
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					groupId, TestPropsValues.getCompanyId()));
 
 		ObjectEntry objectEntry = _addPIMBaseSkuObjectEntry(
 			groupId, objectEntryFolderId);
@@ -163,7 +173,9 @@ public class ObjectEntryModelListenerTest {
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", groupId, TestPropsValues.getCompanyId());
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					groupId, TestPropsValues.getCompanyId());
 
 		Assert.assertEquals(
 			objectEntryFolder.getObjectEntryFolderId(),

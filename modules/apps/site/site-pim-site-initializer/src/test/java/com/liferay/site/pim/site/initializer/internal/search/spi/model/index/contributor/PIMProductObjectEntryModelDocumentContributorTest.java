@@ -12,7 +12,7 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectEntryFolderConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 
 import org.junit.ClassRule;
 import org.junit.Rule;

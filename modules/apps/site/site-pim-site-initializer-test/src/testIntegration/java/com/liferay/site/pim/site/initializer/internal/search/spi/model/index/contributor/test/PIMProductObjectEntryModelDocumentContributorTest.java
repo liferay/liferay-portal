@@ -29,6 +29,8 @@ import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectEntryFolderConstants;
 import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.Serializable;
@@ -74,13 +76,16 @@ public class PIMProductObjectEntryModelDocumentContributorTest {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
-					"L_PIM_BASE_SKU", TestPropsValues.getCompanyId());
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_BASE_SKU,
+					TestPropsValues.getCompanyId());
 
 		ObjectEntryFolder objectEntryFolder =
 			_objectEntryFolderLocalService.
 				fetchObjectEntryFolderByExternalReferenceCode(
-					"L_PRODUCTS", depotEntry.getGroupId(),
-					TestPropsValues.getCompanyId());
+					PIMObjectEntryFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCTS,
+					depotEntry.getGroupId(), TestPropsValues.getCompanyId());
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 			depotEntry.getGroupId(), TestPropsValues.getUserId(),

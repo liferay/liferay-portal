@@ -11,7 +11,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.internal.display.context.EditPIMConnectorDisplayContext;
 
 import jakarta.servlet.http.HttpServletRequest;

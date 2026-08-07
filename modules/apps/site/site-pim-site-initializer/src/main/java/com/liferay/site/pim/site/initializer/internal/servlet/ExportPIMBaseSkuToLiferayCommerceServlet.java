@@ -26,7 +26,7 @@ import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 
 import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletException;

@@ -12,8 +12,8 @@ import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.constants.PIMFDSNames;
-import com.liferay.site.pim.site.initializer.internal.constants.PIMObjectFolderConstants;
 
 import java.util.List;
 import java.util.Locale;
