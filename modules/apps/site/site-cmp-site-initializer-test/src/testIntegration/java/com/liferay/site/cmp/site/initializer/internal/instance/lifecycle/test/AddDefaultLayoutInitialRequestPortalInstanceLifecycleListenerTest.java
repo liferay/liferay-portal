@@ -6,6 +6,9 @@
 package com.liferay.site.cmp.site.initializer.internal.instance.lifecycle.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -15,11 +18,13 @@ import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
-import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -62,21 +67,57 @@ public class AddDefaultLayoutInitialRequestPortalInstanceLifecycleListenerTest {
 			_layoutLocalService.fetchLayoutByFriendlyURL(
 				group.getGroupId(), false, "/dashboard"));
 
-		ObjectDefinition objectDefinition =
+		ObjectDefinition cmpObjectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					"L_CMP_PROJECT", company.getCompanyId());
 
-		Assert.assertNotNull(
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.
 				fetchDefaultLayoutPageTemplateEntry(
 					group.getGroupId(),
-					_portal.getClassNameId(objectDefinition.getClassName()),
-					0));
+					_portal.getClassNameId(cmpObjectDefinition.getClassName()),
+					0);
+
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			layoutPageTemplateEntry);
+
+		CompanyTestUtil.resetCompanyLocales(
+			company.getCompanyId(),
+			ListUtil.fromArray(LocaleUtil.ITALY, LocaleUtil.US),
+			LocaleUtil.ITALY);
+
+		_portalInstanceLifecycleListener.portalInstanceRegistered(company);
+
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			group.getGroupId(), false, "/planning");
+
+		Assert.assertEquals(
+			"Planning", layout.getName(LocaleUtil.ITALY, false));
+
+		layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			group.getGroupId(), false, "/projects");
+
+		Assert.assertEquals(
+			"Progetti", layout.getName(LocaleUtil.ITALY, false));
+
+		layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			group.getGroupId(), false, "/tasks");
+
+		Assert.assertEquals(
+			"Attività", layout.getName(LocaleUtil.ITALY, false));
+
+		AssetCategory assetCategory =
+			_assetCategoryLocalService.
+				fetchAssetCategoryByExternalReferenceCode(
+					"L_CMP_FUNNEL_STAGE_AWARENESS", group.getGroupId());
+
+		Assert.assertEquals(
+			"Awareness", assetCategory.getTitle(LocaleUtil.ITALY, false));
 	}
 
 	@Inject
-	private CompanyLocalService _companyLocalService;
+	private AssetCategoryLocalService _assetCategoryLocalService;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
