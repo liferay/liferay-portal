@@ -715,6 +715,11 @@ components:
             description:
                 Versioned product catalog scoped to a company and tied to a Liferay site group. Create, read, update, and delete operations from the catalog admin perspective; the master catalog and any catalog whose `system` flag is true are managed by the platform and cannot be deleted through the standard delete path.
             properties:
+                accountExternalReferenceCode:
+                    description:
+                        External reference code of the account that owns this catalog; it takes precedence over `accountId`. An unresolved code fails the request, except during an import, where it creates an empty account to be completed later.
+                    example: AB-34098-789-N
+                    type: string
                 accountId:
                     description:
                         Reference to the account that owns this catalog (FK identifier); defaults to no account when omitted on create. The linked account must be a supplier account with approved status; other account types or statuses are rejected.
@@ -722,6 +727,15 @@ components:
                     format: int64
                     minimum: 0
                     type: integer
+                accountType:
+                    description:
+                        Type of the account named by `accountExternalReferenceCode`; both fields are needed to resolve an account by code, and when this one is omitted the code is ignored and `accountId` is used instead. The type cannot be defaulted because it cannot be changed after an account is created, and a catalog accepts only a supplier account.
+                    enum:
+                        -   business
+                        -   guest
+                        -   person
+                        -   supplier
+                    type: string
                 actions:
                     additionalProperties:
                         additionalProperties:
@@ -2208,6 +2222,11 @@ components:
                         When true, the expiration date is ignored and the configuration list never expires; defaults to true on create or update when the field is omitted.
                     example: true
                     type: boolean
+                parentProductConfigurationListExternalReferenceCode:
+                    description:
+                        External reference code of the parent configuration list; it takes precedence over `parentProductConfigurationListId`. An unresolved code fails the request, except during an import, where it creates an empty configuration list to be completed later. The parent must belong to the same site as the child.
+                    example: AB-34098-789-N
+                    type: string
                 parentProductConfigurationListId:
                     description:
                         Identifier of the parent configuration list; enables inheritance, with child lists copying parent entry snapshots on creation; the parent must belong to the same site as the child.
@@ -3000,6 +3019,11 @@ components:
                         Localized name of the tax category for the request locale; read-only.
                     example: taxCategoryName
                     type: string
+                taxCategoryExternalReferenceCode:
+                    description:
+                        External reference code of the tax category assigned to the product; it takes precedence over `id`. An unresolved code fails the request, except during an import, where it creates an empty tax category to be completed later.
+                    example: AB-34098-789-N
+                    type: string
                 taxable:
                     description:
                         Whether the product is subject to tax; defaults to true on create when omitted.
@@ -3083,6 +3107,16 @@ components:
                         hr_HR: Preuzimanjem prihvacate uvjete licence.
                         hu_HU: A letoltessel elfogadja a licencfelteteleket.
                     type: object
+                termsOfUseJournalArticleExternalReferenceCode:
+                    description:
+                        External reference code of the web content article whose body serves as the terms of use; it takes precedence over `termsOfUseJournalArticleId`. The code is looked up in the site or asset library given by `termsOfUseJournalArticleGroupExternalReferenceCode`, or in the catalog that owns the product when that code is omitted, and resolves to the most recent version of the article. An unresolved code leaves the product without a terms of use article, which fails the request when `termsOfUseRequired` is true and no `termsOfUseContent` is supplied.
+                    example: AB-34098-789-N
+                    type: string
+                termsOfUseJournalArticleGroupExternalReferenceCode:
+                    description:
+                        External reference code of the site or asset library that owns the web content article named by `termsOfUseJournalArticleExternalReferenceCode`; supply it when the article lives outside the catalog that owns the product, since a web content external reference code is unique only within the site or asset library that holds it. It defaults to the catalog that owns the product. An unresolved code fails the request.
+                    example: AB-34098-789-N
+                    type: string
                 termsOfUseJournalArticleId:
                     description:
                         Identifier of the web content article whose body serves as the terms of use; mutually exclusive with `termsOfUseContent`.
@@ -3697,6 +3731,16 @@ components:
                         hr_HR: Preuzimanjem prihvacate uvjete licence.
                         hu_HU: A letoltessel elfogadja a licencfelteteleket.
                     type: object
+                termsOfUseJournalArticleExternalReferenceCode:
+                    description:
+                        External reference code of the web content article that supplies the terms of use; it takes precedence over `termsOfUseJournalArticleId`. The code is looked up in the site or asset library given by `termsOfUseJournalArticleGroupExternalReferenceCode`, or in the catalog that owns the SKU when that code is omitted, and resolves to the most recent version of the article. An unresolved code leaves the SKU without a terms of use article, which fails the request when `termsOfUseRequired` is true and no `termsOfUseContent` is supplied.
+                    example: AB-34098-789-N
+                    type: string
+                termsOfUseJournalArticleGroupExternalReferenceCode:
+                    description:
+                        External reference code of the site or asset library that owns the web content article named by `termsOfUseJournalArticleExternalReferenceCode`; supply it when the article lives outside the catalog that owns the SKU, since a web content external reference code is unique only within the site or asset library that holds it. It defaults to the catalog that owns the SKU. An unresolved code fails the request.
+                    example: AB-34098-789-N
+                    type: string
                 termsOfUseJournalArticleId:
                     description:
                         Internal identifier of a web content article that supplies the terms of use a customer must accept before download; when set and `termsOfUseRequired` is true the inline `termsOfUseContent` is cleared. The article must exist.
@@ -3799,6 +3843,15 @@ components:
                         Machine identifier used for lookups and integrations; normalized to a friendly URL form (underscores converted to dashes) and must be unique per company; required.
                     example: specification-key
                     type: string
+                listTypeDefinitionExternalReferenceCodes:
+                    description:
+                        External reference codes of the list type definitions that constrain the allowed values of this specification; they take precedence over `listTypeDefinitionIds`. A code that does not resolve fails the request, except during an import, where it creates an empty list type definition to be completed later.
+                    example:
+                        -   AB-34098-789-N
+                        -   AB-34098-789-O
+                    items:
+                        type: string
+                    type: array
                 listTypeDefinitionId:
                     deprecated: true
                     description:
@@ -15515,7 +15568,7 @@ paths:
     /products/by-externalReferenceCode/{externalReferenceCode}/subscriptionConfiguration:
         get:
             description:
-                Returns the subscription configuration of the product identified by external reference code. Validation -- Returns NPE when product ERC not found (no explicit guard) - effectively 500.
+                Returns the subscription configuration of the product identified by external reference code. Returns 404 when the product external reference code is not found.
             operationId: getProductByExternalReferenceCodeSubscriptionConfiguration
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
@@ -15657,7 +15710,7 @@ paths:
     /products/by-externalReferenceCode/{externalReferenceCode}/taxConfiguration:
         get:
             description:
-                Returns the tax configuration of the product identified by external reference code. Validation -- Returns NPE when product ERC not found (no explicit guard) - effectively 500.
+                Returns the tax configuration of the product identified by external reference code. Returns 404 when the product external reference code is not found.
             operationId: getProductByExternalReferenceCodeTaxConfiguration
             parameters:
                 -   $ref: "#/components/parameters/externalReferenceCodePathParam"
