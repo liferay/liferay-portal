@@ -3,6 +3,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:frontend-data-set:frontend-data-set-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-spi")
+	testIntegrationImplementation project(":apps:site:site-pim-site-initializer-api")
 	testIntegrationImplementation project(":apps:site:site-pim-site-initializer-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
