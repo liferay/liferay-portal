@@ -74,7 +74,7 @@ function openStandardConfirmModal({
 		});
 
 		openModal({
-			bodyHTML: text,
+			bodyHTML: text && `<div class="text-secondary">${text}</div>`,
 			buttons,
 			center,
 			onClose: () => {
@@ -178,7 +178,7 @@ function ModalContent({
 			<ClayModal.Header>{title}</ClayModal.Header>
 
 			<ClayModal.Body>
-				{body ? <p className="mb-0">{body}</p> : null}
+				{body ? <p className="mb-0 text-secondary">{body}</p> : null}
 			</ClayModal.Body>
 
 			<ClayModal.Footer
