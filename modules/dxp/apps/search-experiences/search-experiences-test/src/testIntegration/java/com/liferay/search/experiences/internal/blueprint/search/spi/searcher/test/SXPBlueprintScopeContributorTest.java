@@ -160,7 +160,7 @@ public class SXPBlueprintScopeContributorTest {
 	public void testSpaceScope() throws Exception {
 		_configureSXPBlueprint(_spaceGroup.getExternalReferenceCode());
 
-		_assertSearch(ListUtil.toList(_SPACE_TITLE));
+		_assertSearch(Arrays.asList("contents", "files", _SPACE_TITLE));
 	}
 
 	private static DepotEntry _addDepotEntry(int type) throws Exception {
