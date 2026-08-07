@@ -67,7 +67,7 @@ public abstract class SecretsUtil {
 					vaultName));
 		}
 
-		_createItem(vault, itemTitle, _generateJenkinsAPITokenMap());
+		_createItem(_generateJenkinsAPITokenMap(), itemTitle, vault);
 	}
 
 	public static String getSecret(String key) {
@@ -90,7 +90,7 @@ public abstract class SecretsUtil {
 		String vaultName, String itemTitle, String fieldLabel) {
 
 		String secretReference = _getSecretReference(
-			vaultName, itemTitle, fieldLabel);
+			fieldLabel, itemTitle, vaultName);
 
 		String secret = _connectSecrets.get(secretReference);
 
@@ -120,7 +120,7 @@ public abstract class SecretsUtil {
 	}
 
 	private static void _createItem(
-		Vault vault, String itemTitle, Map<String, String> itemFieldsMap) {
+		Map<String, String> itemFieldsMap, String itemTitle, Vault vault) {
 
 		JSONArray fieldsJSONArray = new JSONArray();
 
@@ -325,7 +325,7 @@ public abstract class SecretsUtil {
 	}
 
 	private static String _getSecretReference(
-		String vaultName, String itemTitle, String fieldLabel) {
+		String fieldLabel, String itemTitle, String vaultName) {
 
 		return JenkinsResultsParserUtil.combine(
 			"op://", vaultName, "/", itemTitle, "/", fieldLabel);
@@ -373,11 +373,11 @@ public abstract class SecretsUtil {
 			for (Vault vault : Vault.getInstances()) {
 				for (Item item : vault.getItems()) {
 					for (ItemField itemField : item.getItemFields()) {
-						_loadItemField(vault, item, itemField);
+						_loadItemField(item, itemField, vault);
 					}
 
 					for (ItemFile itemFile : item.getItemFiles()) {
-						_loadItemFile(vault, item, itemFile);
+						_loadItemFile(item, itemFile, vault);
 					}
 				}
 			}
@@ -397,7 +397,7 @@ public abstract class SecretsUtil {
 	}
 
 	private static void _loadItemField(
-		Vault vault, Item item, ItemField itemField) {
+		Item item, ItemField itemField, Vault vault) {
 
 		String itemFieldValue = itemField.getValue();
 
@@ -414,10 +414,10 @@ public abstract class SecretsUtil {
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(itemFieldId)) {
 			_connectSecrets.put(
-				_getSecretReference(vaultName, itemId, itemFieldId),
+				_getSecretReference(itemFieldId, itemId, vaultName),
 				itemFieldValue);
 			_connectSecrets.put(
-				_getSecretReference(vaultName, itemTitle, itemFieldId),
+				_getSecretReference(itemFieldId, itemTitle, vaultName),
 				itemFieldValue);
 		}
 
@@ -425,16 +425,16 @@ public abstract class SecretsUtil {
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(itemFieldLabel)) {
 			_connectSecrets.put(
-				_getSecretReference(vaultName, itemId, itemFieldLabel),
+				_getSecretReference(itemFieldLabel, itemId, vaultName),
 				itemFieldValue);
 			_connectSecrets.put(
-				_getSecretReference(vaultName, itemTitle, itemFieldLabel),
+				_getSecretReference(itemFieldLabel, itemTitle, vaultName),
 				itemFieldValue);
 		}
 	}
 
 	private static void _loadItemFile(
-		Vault vault, Item item, ItemFile itemFile) {
+		Item item, ItemFile itemFile, Vault vault) {
 
 		String itemFieldValue = itemFile.getValue();
 
@@ -450,10 +450,10 @@ public abstract class SecretsUtil {
 		String itemFileName = itemFile.getName();
 
 		_connectSecrets.put(
-			_getSecretReference(vaultName, itemId, itemFileName),
+			_getSecretReference(itemFileName, itemId, vaultName),
 			itemFieldValue);
 		_connectSecrets.put(
-			_getSecretReference(vaultName, itemTitle, itemFileName),
+			_getSecretReference(itemFileName, itemTitle, vaultName),
 			itemFieldValue);
 	}
 
