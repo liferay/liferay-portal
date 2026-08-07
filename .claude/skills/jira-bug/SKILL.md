@@ -30,7 +30,7 @@ The LPD project requires the following fields. Apply these defaults unless the u
 
 - **Affects Version**: `Master` (ID: `16660`).
 - **Component**: Infer from the code area. Fetch the LPD project components and select the one whose name matches the relevant area or keyword.
-- **Cross Cutting Properties** (`customfield_10979`): `None` (ID: `14468`).
+- **Cross Cutting Properties** (`customfield_10979`): `None` (ID: `14468`). Send the value as an array: `[{"id": "14468"}]`. Jira rejects a bare object and responds with `Specify the value for Cross Cutting Properties in an array`.
 
 ## Create the Ticket
 
