@@ -299,25 +299,24 @@ test(
 
 		// Sort by Entity Type
 
-		await exportImportPage.sortReportBy('Entity Type');
-		let values =
-			await exportImportPage.getReportColumnValues('Entity Type');
+		await exportImportPage.sortBy('Entity Type');
+		let values = await exportImportPage.getColumnValues('Entity Type');
 		expect(values).toEqual([...values].sort((a, b) => a.localeCompare(b)));
 
-		await exportImportPage.sortReportBy('Entity Type');
-		values = await exportImportPage.getReportColumnValues('Entity Type');
+		await exportImportPage.sortBy('Entity Type');
+		values = await exportImportPage.getColumnValues('Entity Type');
 		expect(values).toEqual([...values].sort((a, b) => b.localeCompare(a)));
 
 		// Sort by External Reference Code
 
-		await exportImportPage.sortReportBy('External Reference Code');
-		values = await exportImportPage.getReportColumnValues(
+		await exportImportPage.sortBy('External Reference Code');
+		values = await exportImportPage.getColumnValues(
 			'External Reference Code'
 		);
 		expect(values).toEqual([...values].sort((a, b) => a.localeCompare(b)));
 
-		await exportImportPage.sortReportBy('External Reference Code');
-		values = await exportImportPage.getReportColumnValues(
+		await exportImportPage.sortBy('External Reference Code');
+		values = await exportImportPage.getColumnValues(
 			'External Reference Code'
 		);
 		expect(values).toEqual([...values].sort((a, b) => b.localeCompare(a)));
@@ -325,7 +324,7 @@ test(
 		// Search by Entity Type name
 
 		await exportImportPage.searchReportEntries(objectDefinition1.name);
-		values = await exportImportPage.getReportColumnValues('Entity Type');
+		values = await exportImportPage.getColumnValues('Entity Type');
 		expect(values).toEqual([objectDefinition1.name]);
 
 		await exportImportPage.clearReportSearch();
@@ -335,7 +334,7 @@ test(
 		await exportImportPage.searchReportEntries(
 			objectEntry.externalReferenceCode
 		);
-		values = await exportImportPage.getReportColumnValues(
+		values = await exportImportPage.getColumnValues(
 			'External Reference Code'
 		);
 		expect(values).toEqual([objectEntry.externalReferenceCode]);
@@ -348,7 +347,7 @@ test(
 			'Entity Type',
 			objectDefinition1.name
 		);
-		values = await exportImportPage.getReportColumnValues('Entity Type');
+		values = await exportImportPage.getColumnValues('Entity Type');
 		expect(values).toEqual([objectDefinition1.name]);
 
 		await exportImportPage.removeReportFilter();
@@ -359,7 +358,7 @@ test(
 			'External Reference Code',
 			objectEntry.externalReferenceCode
 		);
-		values = await exportImportPage.getReportColumnValues(
+		values = await exportImportPage.getColumnValues(
 			'External Reference Code'
 		);
 		expect(values).toEqual([objectEntry.externalReferenceCode]);
@@ -369,11 +368,11 @@ test(
 		// Filter by Type
 
 		await exportImportPage.filterReportBy('Type', 'Empty');
-		values = await exportImportPage.getReportColumnValues('Type');
+		values = await exportImportPage.getColumnValues('Type');
 		expect(values).toEqual(['Empty']);
 
 		await exportImportPage.excludeReportFilter();
-		values = await exportImportPage.getReportColumnValues('Type');
+		values = await exportImportPage.getColumnValues('Type');
 		expect(values).toEqual(['Error']);
 
 		await exportImportPage.removeReportFilter();

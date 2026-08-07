@@ -222,7 +222,7 @@ export class ExportImportPage {
 		await this.page.waitForLoadState('networkidle');
 	}
 
-	async getReportColumnValues(headerName: string): Promise<string[]> {
+	async getColumnValues(headerName: string): Promise<string[]> {
 		const header = this.page.getByRole('columnheader', {
 			exact: true,
 			name: headerName,
@@ -335,7 +335,7 @@ export class ExportImportPage {
 		);
 	}
 
-	async sortReportBy(headerName: string) {
+	async sortBy(headerName: string) {
 		await this.page
 			.getByRole('columnheader', {exact: true, name: headerName})
 			.getByRole('button')
