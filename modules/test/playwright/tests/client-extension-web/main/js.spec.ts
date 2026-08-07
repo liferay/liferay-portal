@@ -14,12 +14,12 @@ import {PagesAdminPage} from '../../../pages/layout-admin-web/PagesAdminPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {disableCache} from '../../../utils/disableCache';
 import getRandomString from '../../../utils/getRandomString';
-import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
+import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
 import {editJSClientExtensionsPageTest} from './fixtures/editJSClientExtensionsPageTest';
-import {ClientExtensionsPage} from './pages/ClientExtensionsPage';
-import {WaitAction} from './pages/EditClientExtensionsPage';
+import {ClientExtensionsPage} from '../pages/ClientExtensionsPage';
+import {WaitAction} from '../pages/EditClientExtensionsPage';
 import {EditJSClientExtensionsPage} from './pages/EditJSClientExtensionsPage';
-import {ViewClientExtensionPage} from './pages/ViewClientExtensionPage';
+import {ViewClientExtensionPage} from '../pages/ViewClientExtensionPage';
 
 const test = mergeTests(
 	clientExtensionsPageTest,

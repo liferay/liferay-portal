@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {EditClientExtensionsPage} from './EditClientExtensionsPage';
+import {EditClientExtensionsPage} from '../../pages/EditClientExtensionsPage';
 
 export class EditCustomElementPage extends EditClientExtensionsPage {
 	readonly addCSSURLButton: Locator;

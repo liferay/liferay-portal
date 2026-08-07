@@ -10,8 +10,8 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import getRandomString from '../../../utils/getRandomString';
-import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
-import {ViewClientExtensionPage} from './pages/ViewClientExtensionPage';
+import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
+import {ViewClientExtensionPage} from '../pages/ViewClientExtensionPage';
 
 const test = mergeTests(
 	apiHelpersTest,

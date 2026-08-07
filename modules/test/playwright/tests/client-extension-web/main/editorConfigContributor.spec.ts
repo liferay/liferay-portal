@@ -12,9 +12,9 @@ import {liferayConfig} from '../../../liferay.config';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin from '../../../utils/performLogin';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
-import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
+import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
+import {WaitAction} from '../pages/EditClientExtensionsPage';
 import {editEditorConfigContributorPageTest} from './fixtures/editEditorConfigContributorPageTest';
-import {WaitAction} from './pages/EditClientExtensionsPage';
 import {EditEditorConfigContributorPage} from './pages/EditEditorConfigContributorPage';
 
 const test = mergeTests(

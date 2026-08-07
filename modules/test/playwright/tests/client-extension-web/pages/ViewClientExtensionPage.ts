@@ -5,8 +5,8 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {liferayConfig} from '../../../../liferay.config';
-import POM from '../../../../utils/POM';
+import {liferayConfig} from '../../../liferay.config';
+import POM from '../../../utils/POM';
 
 const PORTLET_NAME =
 	'com_liferay_client_extension_web_internal_portlet_ClientExtensionAdminPortlet';

@@ -12,10 +12,10 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {liferayConfig} from '../../../liferay.config';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
-import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
+import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
+import {Column} from '../pages/ClientExtensionsPage';
+import {WaitAction} from '../pages/EditClientExtensionsPage';
 import {editCustomElementPageTest} from './fixtures/editCustomElementPageTest';
-import {Column} from './pages/ClientExtensionsPage';
-import {WaitAction} from './pages/EditClientExtensionsPage';
 import {EditCustomElementPage} from './pages/EditCustomElementPage';
 
 const test = mergeTests(

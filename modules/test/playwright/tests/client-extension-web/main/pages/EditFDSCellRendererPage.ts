@@ -5,7 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {EditClientExtensionsPage} from './EditClientExtensionsPage';
+import {EditClientExtensionsPage} from '../../pages/EditClientExtensionsPage';
 
 export class EditFDSCellRendererPage extends EditClientExtensionsPage {
 	readonly javaScriptURLInput: Locator;

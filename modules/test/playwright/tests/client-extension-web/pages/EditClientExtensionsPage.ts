@@ -5,9 +5,9 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
-import POM from '../../../../utils/POM';
-import {waitForInputLocalized} from '../../../../utils/waitFor';
-import {waitForAlert} from '../../../../utils/waitForAlert';
+import POM from '../../../utils/POM';
+import {waitForInputLocalized} from '../../../utils/waitFor';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {ClientExtensionsPage} from './ClientExtensionsPage';
 
 const PORTLET_NAME =

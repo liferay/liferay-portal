@@ -9,7 +9,7 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {waitForAlert} from '../../../utils/waitForAlert';
-import {clientExtensionsPageTest} from '../../client-extension-web/main/fixtures/clientExtensionsPageTest';
+import {clientExtensionsPageTest} from '../../client-extension-web/fixtures/clientExtensionsPageTest';
 import {getWorkflowDefinition} from './utils/getWorkflowDefinition';
 import postSingleApproverCopy from './utils/postSingleApproverCopy';
 

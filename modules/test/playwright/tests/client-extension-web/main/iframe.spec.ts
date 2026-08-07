@@ -10,11 +10,11 @@ import {isolatedLayoutTest} from '../../../fixtures/isolatedLayoutTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import getRandomString from '../../../utils/getRandomString';
-import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
+import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
+import {WaitAction} from '../pages/EditClientExtensionsPage';
+import {ViewClientExtensionPage} from '../pages/ViewClientExtensionPage';
 import {editIFramePageTest} from './fixtures/editIFramePageTest';
-import {WaitAction} from './pages/EditClientExtensionsPage';
 import {EditIFramePage} from './pages/EditIFramePage';
-import {ViewClientExtensionPage} from './pages/ViewClientExtensionPage';
 
 const test = mergeTests(
 	clientExtensionsPageTest,

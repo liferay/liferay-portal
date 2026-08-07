@@ -6,7 +6,7 @@
 import {Locator, Page} from '@playwright/test';
 import * as path from 'path';
 
-import {EditClientExtensionsPage} from './EditClientExtensionsPage';
+import {EditClientExtensionsPage} from '../../pages/EditClientExtensionsPage';
 
 export class EditThemeCSSClientExtensionsPage extends EditClientExtensionsPage {
 	readonly themeCSSFrontendTokenDefinitionSelectFileButton: Locator;

@@ -7,9 +7,9 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
 import getRandomString from '../../../utils/getRandomString';
-import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
+import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
+import {WaitAction} from '../pages/EditClientExtensionsPage';
 import {editFDSCellRendererPageTest} from './fixtures/editFDSCellRendererPageTest';
-import {WaitAction} from './pages/EditClientExtensionsPage';
 
 const test = mergeTests(
 	clientExtensionsPageTest,

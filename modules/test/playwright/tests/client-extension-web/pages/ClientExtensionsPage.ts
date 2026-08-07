@@ -5,8 +5,8 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import {liferayConfig} from '../../../../liferay.config';
-import POM from '../../../../utils/POM';
+import {liferayConfig} from '../../../liferay.config';
+import POM from '../../../utils/POM';
 import {EditClientExtensionsPage} from './EditClientExtensionsPage';
 import {ViewClientExtensionPage} from './ViewClientExtensionPage';
 

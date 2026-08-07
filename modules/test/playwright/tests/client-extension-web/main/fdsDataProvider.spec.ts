@@ -11,7 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {usersAndOrganizationsPagesTest} from '../../../fixtures/usersAndOrganizationsPagesTest';
-import {clientExtensionsPageTest} from './fixtures/clientExtensionsPageTest';
+import {clientExtensionsPageTest} from '../fixtures/clientExtensionsPageTest';
 
 const test = mergeTests(
 	clientExtensionsPageTest,
