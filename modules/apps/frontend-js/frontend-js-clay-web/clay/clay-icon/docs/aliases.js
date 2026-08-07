@@ -1368,6 +1368,10 @@ export const iconsData = [
 		name: 'marketplace',
 	},
 	{
+		aliases: ['ai', 'connector', 'plugin', 'server'],
+		name: 'mcp',
+	},
+	{
 		aliases: ['approval', 'ranking', 'reward'],
 		name: 'medal',
 	},
