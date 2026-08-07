@@ -76,6 +76,34 @@ test(
 );
 
 test(
+	'Can sort the export processes list by title',
+	{tag: ['@LPD-100541', '@LRQA-28935']},
+	async ({exportImportPage, site}) => {
+		await exportImportPage.goToExport(site.friendlyUrlPath);
+
+		const name1 = `MyExport-${getRandomString()}`;
+
+		await exportImportPage.export(name1);
+
+		await expect(exportImportPage.taskStatusLabel(name1)).toBeVisible();
+
+		const name2 = `MyExport-${getRandomString()}`;
+
+		await exportImportPage.export(name2);
+
+		await expect(exportImportPage.taskStatusLabel(name2)).toBeVisible();
+
+		await exportImportPage.sortBy('Title');
+		let values = await exportImportPage.getColumnValues('Title');
+		expect(values).toEqual([...values].sort((a, b) => a.localeCompare(b)));
+
+		await exportImportPage.sortBy('Title');
+		values = await exportImportPage.getColumnValues('Title');
+		expect(values).toEqual([...values].sort((a, b) => b.localeCompare(a)));
+	}
+);
+
+test(
 	'Can select comments and ratings at site level',
 	{tag: '@LPD-57655'},
 	async ({
