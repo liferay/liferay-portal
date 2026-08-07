@@ -1,5 +1,5 @@
 dependencies {
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.2"
 	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
 	compileInclude group: "commons-lang", name: "commons-lang", version: "2.6"
@@ -12,7 +12,7 @@ dependencies {
 	compileInclude group: "org.eclipse.parsson", name: "parsson", version: "1.1.7"
 	compileInclude group: "org.opensearch.client", name: "opensearch-java", version: "2.19.0"
 	compileInclude group: "org.yaml", name: "snakeyaml", version: "2.3"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -38,7 +38,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testImplementation group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	testImplementation project(":apps:portal-search:portal-search")

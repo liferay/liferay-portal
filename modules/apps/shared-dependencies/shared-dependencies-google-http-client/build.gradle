@@ -5,7 +5,7 @@ dependencies {
 	compileInclude group: "com.google.http-client", name: "google-http-client-gson", version: "1.45.3"
 	compileInclude group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.45.3"
 	compileInclude group: "com.google.http-client", name: "google-http-client-protobuf", version: "1.45.3"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.google.guava", name: "guava", version: "32.0.1-jre"
 	compileOnly group: "com.google.protobuf", name: "protobuf-java", version: "3.25.5"

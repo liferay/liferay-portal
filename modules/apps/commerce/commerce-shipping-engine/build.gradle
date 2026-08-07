@@ -26,7 +26,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	testImplementation project(":apps:account:account-api")
 	testImplementation project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-order-api")
 }

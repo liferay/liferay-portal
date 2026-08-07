@@ -1,8 +1,8 @@
 dependencies {
 	compileInclude group: "com.damnhandy", name: "handy-uri-templates", version: "2.1.8"
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
+	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
+	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	compileInclude group: "io.micrometer", name: "micrometer-commons", version: "1.14.3"
 	compileInclude group: "io.micrometer", name: "micrometer-observation", version: "1.14.3"
 	compileInclude group: "joda-time", name: "joda-time", version: "2.12.1"

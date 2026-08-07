@@ -1,5 +1,5 @@
 dependencies {
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
 	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.11"
 	compileOnly project(":modules:osb-faro-api")

@@ -12,7 +12,7 @@ configurations {
 }
 
 dependencies {
-	implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	implementation group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	implementation group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	implementation group: "org.slf4j", name: "slf4j-api", version: "1.7.26"

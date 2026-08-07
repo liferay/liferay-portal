@@ -29,7 +29,7 @@ cleanSidecar {
 
 dependencies {
 	compileInclude group: "co.elastic.clients", name: "elasticsearch-java", version: elasticsearchClientVersion
-	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	compileInclude group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-smile", version: "2.18.2"
 	compileInclude group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-yaml", version: "2.18.2"
 	compileInclude group: "com.liferay", name: "org.apache.commons.logging", version: "1.2.LIFERAY-PATCHED-2"
@@ -55,7 +55,7 @@ dependencies {
 	compileInclude group: "org.locationtech.spatial4j", name: "spatial4j", version: "0.8"
 	compileInclude group: "org.yaml", name: "snakeyaml", version: "2.3"
 	compileInclude project(":apps:portal-search-elasticsearch8:portal-search-elasticsearch8-sidecar-agent")
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
 	compileOnly group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-cbor", version: "2.18.2"
 	compileOnly group: "com.fasterxml.woodstox", name: "woodstox-core", version: "6.4.0"
 	compileOnly group: "com.ibm.icu", name: "icu4j", version: "69.1"
@@ -100,7 +100,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-process")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testImplementation project(":apps:portal-search:portal-search")
 	testImplementation project(":apps:portal-search:portal-search-test-util")

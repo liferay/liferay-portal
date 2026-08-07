@@ -24,9 +24,9 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	testImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testImplementation project(":apps:portal-odata:portal-odata-api")
 	testImplementation project(":apps:portal-vulcan:portal-vulcan-api")

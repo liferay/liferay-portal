@@ -27,8 +27,8 @@ deleteSrcDirectory {
 }
 
 dependencies {
-	api group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
-	api group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	api group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
+	api group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	api group: "com.google.code.findbugs", name: "jsr305", transitive: false, version: "3.0.2"
 	api group: "com.liferay", name: "org.opensearch.rest.client", version: "2.7.0.LIFERAY-PATCHED-1"
 	api group: "jakarta.json", name: "jakarta.json-api", transitive: false, version: "2.0.0"

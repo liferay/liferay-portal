@@ -14,7 +14,7 @@ dependencies {
 	compileInclude group: "io.opentelemetry.contrib", name: "opentelemetry-gcp-resources", version: "1.43.0-alpha"
 	compileInclude group: "io.opentelemetry.semconv", name: "opentelemetry-semconv", version: "1.30.0-rc.1"
 	compileInclude group: "org.codehaus.jackson", name: "jackson-core-asl", version: "1.9.11"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
 	compileOnly group: "com.google.api", name: "api-common", version: "2.43.0"
 	compileOnly group: "com.google.api", name: "gax", version: "2.60.0"
 	compileOnly group: "com.google.api", name: "gax-grpc", version: "2.60.0"

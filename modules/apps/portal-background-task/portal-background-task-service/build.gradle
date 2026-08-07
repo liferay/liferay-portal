@@ -4,9 +4,9 @@ buildService {
 }
 
 dependencies {
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"

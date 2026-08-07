@@ -1,4 +1,4 @@
 dependencies {
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
 	compileOnly group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q1.5"
 }

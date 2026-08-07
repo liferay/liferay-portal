@@ -36,8 +36,8 @@ dependencies {
 	testImplementation project(":core:petra:petra-reflect")
 	testImplementation project(":core:petra:petra-sql-dsl-api")
 	testImplementation project(":core:petra:petra-string")
-	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
-	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
+	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"

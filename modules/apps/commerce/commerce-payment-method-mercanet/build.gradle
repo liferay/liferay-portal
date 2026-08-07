@@ -1,9 +1,9 @@
 dependencies {
 	compileInclude group: "com.fasterxml.jackson.datatype", name: "jackson-datatype-jsr310", version: "2.18.2"
 	compileInclude group: "com.worldline.sips", name: "payment-sdk-common", version: "1.4.1"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.6"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.6"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.6"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.9"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.9"
+	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.9"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
