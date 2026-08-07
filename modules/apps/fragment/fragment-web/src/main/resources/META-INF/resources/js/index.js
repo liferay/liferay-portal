@@ -16,3 +16,4 @@ export {default as ImportFragments} from './ImportFragments';
 export {default as ViewContributedFragmentEntriesManagementToolbarPropsTransformer} from './ViewContributedFragmentEntriesManagementToolbarPropsTransformer';
 export {default as ViewFragmentEntriesManagementToolbarPropsTransformer} from './ViewFragmentEntriesManagementToolbarPropsTransformer';
 export {default as FragmentEditor} from './fragment-editor/FragmentEditor';
+export {default as getFragmentCreationItems} from './getFragmentCreationItems';
