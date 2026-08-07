@@ -64,6 +64,19 @@ public class ListTypeDefinitionLocalServiceImpl
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public ListTypeDefinition addListTypeDefinition(
+			String externalReferenceCode, long userId, boolean system)
+		throws PortalException {
+
+		return _addListTypeDefinition(
+			externalReferenceCode, userId,
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), externalReferenceCode),
+			system, WorkflowConstants.STATUS_EMPTY);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public ListTypeDefinition addListTypeDefinition(
 			String externalReferenceCode, long userId,
 			Map<Locale, String> nameMap, boolean system,
 			List<ListTypeEntry> listTypeEntries, ServiceContext serviceContext)
@@ -140,11 +153,8 @@ public class ListTypeDefinitionLocalServiceImpl
 
 		return _emptyModelManager.getOrAddEmptyModel(
 			ListTypeDefinition.class, companyId,
-			() -> _addListTypeDefinition(
-				externalReferenceCode, userId,
-				Collections.singletonMap(
-					LocaleUtil.getDefault(), externalReferenceCode),
-				system, WorkflowConstants.STATUS_EMPTY),
+			() -> listTypeDefinitionLocalService.addListTypeDefinition(
+				externalReferenceCode, userId, system),
 			externalReferenceCode,
 			this::fetchListTypeDefinitionByExternalReferenceCode,
 			this::getListTypeDefinitionByExternalReferenceCode,
