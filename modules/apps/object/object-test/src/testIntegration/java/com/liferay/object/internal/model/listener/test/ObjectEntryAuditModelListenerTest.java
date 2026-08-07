@@ -189,7 +189,9 @@ public class ObjectEntryAuditModelListenerTest {
 		Assert.assertEquals(expectedLocalizedValues, localizedValues);
 	}
 
-	private void _assertModifiedAttributes(String... expectedAttributes) {
+	private void _assertModifiedAttributes(
+		String... expectedModifiedAttributes) {
+
 		List<String> modifiedAttributes = new ArrayList<>();
 
 		JSONObject additionalInfoJSONObject = _pollAdditionalInfoJSONObject();
@@ -208,7 +210,7 @@ public class ObjectEntryAuditModelListenerTest {
 		}
 
 		Assert.assertEquals(
-			Arrays.asList(expectedAttributes), modifiedAttributes);
+			Arrays.asList(expectedModifiedAttributes), modifiedAttributes);
 	}
 
 	private Map<String, Serializable> _getValues(
