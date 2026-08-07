@@ -6,12 +6,6 @@
 package com.liferay.exportimport.internal.staging.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
-import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
-import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
-import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -23,23 +17,16 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.TimeZoneUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import java.io.File;
-import java.io.Serializable;
-
 import java.util.List;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -91,7 +78,11 @@ public class StagedSiteLARImportTest {
 	public void testImportLARIntoStagingGroup() throws Exception {
 		Group stagingGroup = _stagedGroup.getStagingGroup();
 
-		_importLARIntoStagingGroup();
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			ExportImportTestUtil.importLayoutsInBackground(
+				stagingGroup,
+				ExportImportTestUtil.exportLayoutsAsFile(
+					_sourceGroup, _sourceLayout)));
 
 		List<Layout> layouts = _layoutLocalService.getLayouts(
 			stagingGroup.getGroupId(), false);
@@ -105,58 +96,6 @@ public class StagedSiteLARImportTest {
 				layout -> sourceLayoutName.equals(
 					layout.getName(LocaleUtil.US))));
 	}
-
-	private ExportImportConfiguration _addExportImportConfiguration(
-			long groupId, Map<String, Serializable> settingsMap, int type)
-		throws Exception {
-
-		return _exportImportConfigurationLocalService.
-			addExportImportConfiguration(
-				TestPropsValues.getUserId(), groupId,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				type, settingsMap, WorkflowConstants.STATUS_DRAFT,
-				ServiceContextTestUtil.getServiceContext());
-	}
-
-	private void _importLARIntoStagingGroup() throws Exception {
-		Group stagingGroup = _stagedGroup.getStagingGroup();
-
-		File larFile = _exportImportLocalService.exportLayoutsAsFile(
-			_addExportImportConfiguration(
-				_sourceGroup.getGroupId(),
-				ExportImportConfigurationSettingsMapFactoryUtil.
-					buildExportLayoutSettingsMap(
-						TestPropsValues.getUserId(), _sourceGroup.getGroupId(),
-						false, new long[] {_sourceLayout.getLayoutId()},
-						ExportImportConfigurationParameterMapFactoryUtil.
-							buildParameterMap(),
-						LocaleUtil.US, TimeZoneUtil.GMT),
-				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT));
-
-		long backgroundTaskId =
-			_exportImportLocalService.importLayoutsInBackground(
-				TestPropsValues.getUserId(),
-				_addExportImportConfiguration(
-					stagingGroup.getGroupId(),
-					ExportImportConfigurationSettingsMapFactoryUtil.
-						buildImportLayoutSettingsMap(
-							TestPropsValues.getUserId(),
-							stagingGroup.getGroupId(), false, null,
-							ExportImportConfigurationParameterMapFactoryUtil.
-								buildParameterMap(),
-							LocaleUtil.US, TimeZoneUtil.GMT),
-					ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT),
-				larFile);
-
-		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
-	}
-
-	@Inject
-	private ExportImportConfigurationLocalService
-		_exportImportConfigurationLocalService;
-
-	@Inject
-	private ExportImportLocalService _exportImportLocalService;
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;

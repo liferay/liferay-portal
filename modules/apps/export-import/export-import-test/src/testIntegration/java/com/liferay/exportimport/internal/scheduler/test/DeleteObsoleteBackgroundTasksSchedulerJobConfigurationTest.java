@@ -8,12 +8,6 @@ package com.liferay.exportimport.internal.scheduler.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
-import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
-import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
-import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
@@ -27,21 +21,13 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.TimeZoneUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
-import java.io.File;
-import java.io.Serializable;
-
 import java.util.Date;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -83,8 +69,11 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 	@Test
 	@TestInfo("LPS-166513")
 	public void testDeleteObsoleteExportBackgroundTasks() throws Exception {
-		long layoutExportBackgroundTaskId = _exportLayoutsInBackground();
-		long portletExportBackgroundTaskId = _exportPortletInfoInBackground();
+		long layoutExportBackgroundTaskId =
+			ExportImportTestUtil.exportLayoutsInBackground(_group, _layout);
+		long portletExportBackgroundTaskId =
+			ExportImportTestUtil.exportPortletInfoInBackground(
+				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
 			layoutExportBackgroundTaskId);
@@ -99,7 +88,8 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 		_updateBackgroundTaskModifiedDateToPast(layoutExportBackgroundTaskId);
 		_updateBackgroundTaskModifiedDateToPast(portletExportBackgroundTaskId);
 
-		long freshLayoutExportBackgroundTaskId = _exportLayoutsInBackground();
+		long freshLayoutExportBackgroundTaskId =
+			ExportImportTestUtil.exportLayoutsInBackground(_group, _layout);
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(
 			freshLayoutExportBackgroundTaskId);
@@ -152,61 +142,7 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 				layoutImportBackgroundTaskId));
 		Assert.assertNull(
 			_backgroundTaskLocalService.fetchBackgroundTask(
-				portletImportBackgroundTaskId));
-	}
-
-	private ExportImportConfiguration _addExportImportConfiguration(
-			Map<String, Serializable> settingsMap, int type)
-		throws Exception {
-
-		return _exportImportConfigurationLocalService.
-			addExportImportConfiguration(
-				TestPropsValues.getUserId(), _group.getGroupId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				type, settingsMap, WorkflowConstants.STATUS_DRAFT,
-				ServiceContextTestUtil.getServiceContext());
-	}
-
-	private ExportImportConfiguration _addPortletExportImportConfiguration()
-		throws Exception {
-
-		return _addExportImportConfiguration(
-			ExportImportConfigurationSettingsMapFactoryUtil.
-				buildExportPortletSettingsMap(
-					TestPropsValues.getUserId(), _layout.getPlid(),
-					_group.getGroupId(), DLPortletKeys.DOCUMENT_LIBRARY,
-					ExportImportConfigurationParameterMapFactoryUtil.
-						buildParameterMap(),
-					LocaleUtil.US, TimeZoneUtil.GMT,
-					RandomTestUtil.randomString() + ".lar"),
-			ExportImportConfigurationConstants.TYPE_EXPORT_PORTLET);
-	}
-
-	private Map<String, Serializable> _buildExportLayoutSettingsMap()
-		throws Exception {
-
-		return ExportImportConfigurationSettingsMapFactoryUtil.
-			buildExportLayoutSettingsMap(
-				TestPropsValues.getUserId(), _group.getGroupId(), false,
-				new long[] {_layout.getLayoutId()},
-				ExportImportConfigurationParameterMapFactoryUtil.
-					buildParameterMap(),
-				LocaleUtil.US, TimeZoneUtil.GMT);
-	}
-
-	private long _exportLayoutsInBackground() throws Exception {
-		return _exportImportLocalService.exportLayoutsAsFileInBackground(
-			TestPropsValues.getUserId(),
-			_addExportImportConfiguration(
-				_buildExportLayoutSettingsMap(),
-				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT));
-	}
-
-	private long _exportPortletInfoInBackground() throws Exception {
-		return _exportImportLocalService.exportPortletInfoAsFileInBackground(
-			TestPropsValues.getUserId(),
-			_addPortletExportImportConfiguration());
-	}
+				portletImportBackgroundTaskId));	}
 
 	private long _getAttachmentsFolderId(long backgroundTaskId)
 		throws Exception {
@@ -218,41 +154,15 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 	}
 
 	private long _importLayoutsInBackground() throws Exception {
-		File larFile = _exportImportLocalService.exportLayoutsAsFile(
-			_addExportImportConfiguration(
-				_buildExportLayoutSettingsMap(),
-				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT));
-
-		return _exportImportLocalService.importLayoutsInBackground(
-			TestPropsValues.getUserId(),
-			_addExportImportConfiguration(
-				ExportImportConfigurationSettingsMapFactoryUtil.
-					buildImportLayoutSettingsMap(
-						TestPropsValues.getUserId(), _group.getGroupId(), false,
-						null,
-						ExportImportConfigurationParameterMapFactoryUtil.
-							buildParameterMap(),
-						LocaleUtil.US, TimeZoneUtil.GMT),
-				ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT),
-			larFile);
+		return ExportImportTestUtil.importLayoutsInBackground(
+			_group, ExportImportTestUtil.exportLayoutsAsFile(_group, _layout));
 	}
 
 	private long _importPortletInfoInBackground() throws Exception {
-		File larFile = _exportImportLocalService.exportPortletInfoAsFile(
-			_addPortletExportImportConfiguration());
-
-		return _exportImportLocalService.importPortletInfoInBackground(
-			TestPropsValues.getUserId(),
-			_addExportImportConfiguration(
-				ExportImportConfigurationSettingsMapFactoryUtil.
-					buildImportPortletSettingsMap(
-						TestPropsValues.getUserId(), _layout.getPlid(),
-						_group.getGroupId(), DLPortletKeys.DOCUMENT_LIBRARY,
-						ExportImportConfigurationParameterMapFactoryUtil.
-							buildParameterMap(),
-						LocaleUtil.US, TimeZoneUtil.GMT),
-				ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET),
-			larFile);
+		return ExportImportTestUtil.importPortletInfoInBackground(
+			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY,
+			ExportImportTestUtil.exportPortletInfoAsFile(
+				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY));
 	}
 
 	private void _updateBackgroundTaskModifiedDateToPast(long backgroundTaskId)
@@ -272,13 +182,6 @@ public class DeleteObsoleteBackgroundTasksSchedulerJobConfigurationTest {
 
 	@Inject
 	private DLFolderLocalService _dlFolderLocalService;
-
-	@Inject
-	private ExportImportConfigurationLocalService
-		_exportImportConfigurationLocalService;
-
-	@Inject
-	private ExportImportLocalService _exportImportLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

@@ -8,12 +8,6 @@ package com.liferay.exportimport.internal.background.task.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationParameterMapFactoryUtil;
-import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
-import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
-import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
-import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
-import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.background.task.model.BackgroundTask;
@@ -25,21 +19,12 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.TimeZoneUtil;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-
-import java.io.File;
-import java.io.Serializable;
-
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -82,7 +67,8 @@ public class ExportImportBackgroundTaskTest {
 	public void testDeleteLayoutExportProcessDeletesLARAttachments()
 		throws Exception {
 
-		long backgroundTaskId = _exportLayoutsInBackground();
+		long backgroundTaskId = ExportImportTestUtil.exportLayoutsInBackground(
+			_group, _layout);
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
 
@@ -107,7 +93,9 @@ public class ExportImportBackgroundTaskTest {
 	public void testDeletePortletExportProcessDeletesLARAttachments()
 		throws Exception {
 
-		long backgroundTaskId = _exportPortletInfoInBackground();
+		long backgroundTaskId =
+			ExportImportTestUtil.exportPortletInfoInBackground(
+				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
 
@@ -130,12 +118,11 @@ public class ExportImportBackgroundTaskTest {
 	@Test
 	@TestInfo("LPS-166514")
 	public void testLARAttachmentIsDeletedAfterLayoutImport() throws Exception {
-		File larFile = _exportLayoutsAsFile();
-
 		_importGroup = GroupTestUtil.addGroup();
 
-		long backgroundTaskId = _importLayoutsInBackground(
-			_importGroup, larFile);
+		long backgroundTaskId = ExportImportTestUtil.importLayoutsInBackground(
+			_importGroup,
+			ExportImportTestUtil.exportLayoutsAsFile(_group, _layout));
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
 
@@ -151,23 +138,11 @@ public class ExportImportBackgroundTaskTest {
 	public void testLARAttachmentIsDeletedAfterPortletImport()
 		throws Exception {
 
-		File larFile = _exportImportLocalService.exportPortletInfoAsFile(
-			_addPortletExportImportConfiguration());
-
 		long backgroundTaskId =
-			_exportImportLocalService.importPortletInfoInBackground(
-				TestPropsValues.getUserId(),
-				_addExportImportConfiguration(
-					_group.getGroupId(),
-					ExportImportConfigurationSettingsMapFactoryUtil.
-						buildImportPortletSettingsMap(
-							TestPropsValues.getUserId(), _layout.getPlid(),
-							_group.getGroupId(), DLPortletKeys.DOCUMENT_LIBRARY,
-							ExportImportConfigurationParameterMapFactoryUtil.
-								buildParameterMap(),
-							LocaleUtil.US, TimeZoneUtil.GMT),
-					ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET),
-				larFile);
+			ExportImportTestUtil.importPortletInfoInBackground(
+				_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY,
+				ExportImportTestUtil.exportPortletInfoAsFile(
+					_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY));
 
 		ExportImportTestUtil.assertBackgroundTaskSuccessful(backgroundTaskId);
 
@@ -178,97 +153,11 @@ public class ExportImportBackgroundTaskTest {
 			ListUtil.isEmpty(backgroundTask.getAttachmentsFileEntries()));
 	}
 
-	private ExportImportConfiguration _addExportImportConfiguration(
-			long groupId, Map<String, Serializable> settingsMap, int type)
-		throws Exception {
-
-		return _exportImportConfigurationLocalService.
-			addExportImportConfiguration(
-				TestPropsValues.getUserId(), groupId,
-				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				type, settingsMap, WorkflowConstants.STATUS_DRAFT,
-				ServiceContextTestUtil.getServiceContext());
-	}
-
-	private ExportImportConfiguration _addPortletExportImportConfiguration()
-		throws Exception {
-
-		return _addExportImportConfiguration(
-			_group.getGroupId(),
-			ExportImportConfigurationSettingsMapFactoryUtil.
-				buildExportPortletSettingsMap(
-					TestPropsValues.getUserId(), _layout.getPlid(),
-					_group.getGroupId(), DLPortletKeys.DOCUMENT_LIBRARY,
-					ExportImportConfigurationParameterMapFactoryUtil.
-						buildParameterMap(),
-					LocaleUtil.US, TimeZoneUtil.GMT,
-					RandomTestUtil.randomString() + ".lar"),
-			ExportImportConfigurationConstants.TYPE_EXPORT_PORTLET);
-	}
-
-	private Map<String, Serializable> _buildExportLayoutSettingsMap()
-		throws Exception {
-
-		return ExportImportConfigurationSettingsMapFactoryUtil.
-			buildExportLayoutSettingsMap(
-				TestPropsValues.getUserId(), _group.getGroupId(), false,
-				new long[] {_layout.getLayoutId()},
-				ExportImportConfigurationParameterMapFactoryUtil.
-					buildParameterMap(),
-				LocaleUtil.US, TimeZoneUtil.GMT);
-	}
-
-	private File _exportLayoutsAsFile() throws Exception {
-		return _exportImportLocalService.exportLayoutsAsFile(
-			_addExportImportConfiguration(
-				_group.getGroupId(), _buildExportLayoutSettingsMap(),
-				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT));
-	}
-
-	private long _exportLayoutsInBackground() throws Exception {
-		return _exportImportLocalService.exportLayoutsAsFileInBackground(
-			TestPropsValues.getUserId(),
-			_addExportImportConfiguration(
-				_group.getGroupId(), _buildExportLayoutSettingsMap(),
-				ExportImportConfigurationConstants.TYPE_EXPORT_LAYOUT));
-	}
-
-	private long _exportPortletInfoInBackground() throws Exception {
-		return _exportImportLocalService.exportPortletInfoAsFileInBackground(
-			TestPropsValues.getUserId(),
-			_addPortletExportImportConfiguration());
-	}
-
-	private long _importLayoutsInBackground(Group group, File larFile)
-		throws Exception {
-
-		return _exportImportLocalService.importLayoutsInBackground(
-			TestPropsValues.getUserId(),
-			_addExportImportConfiguration(
-				group.getGroupId(),
-				ExportImportConfigurationSettingsMapFactoryUtil.
-					buildImportLayoutSettingsMap(
-						TestPropsValues.getUserId(), group.getGroupId(), false,
-						null,
-						ExportImportConfigurationParameterMapFactoryUtil.
-							buildParameterMap(),
-						LocaleUtil.US, TimeZoneUtil.GMT),
-				ExportImportConfigurationConstants.TYPE_IMPORT_LAYOUT),
-			larFile);
-	}
-
 	@Inject
 	private BackgroundTaskLocalService _backgroundTaskLocalService;
 
 	@Inject
 	private DLFolderLocalService _dlFolderLocalService;
-
-	@Inject
-	private ExportImportConfigurationLocalService
-		_exportImportConfigurationLocalService;
-
-	@Inject
-	private ExportImportLocalService _exportImportLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
