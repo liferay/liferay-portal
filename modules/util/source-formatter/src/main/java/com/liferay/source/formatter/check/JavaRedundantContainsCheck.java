@@ -27,8 +27,18 @@ public class JavaRedundantContainsCheck extends BaseFileCheck {
 		Matcher matcher = _ifStatementPattern.matcher(content);
 
 		while (matcher.find()) {
+			String methodCall = JavaSourceUtil.getMethodCall(
+				content, matcher.start(2));
+
+			String s = content.substring(
+				matcher.start(2) + methodCall.length());
+
+			if (!s.startsWith(") {")) {
+				continue;
+			}
+
 			List<String> parameterList = JavaSourceUtil.getParameterList(
-				JavaSourceUtil.getMethodCall(content, matcher.start(2)));
+				methodCall);
 
 			if (parameterList.isEmpty()) {
 				continue;
