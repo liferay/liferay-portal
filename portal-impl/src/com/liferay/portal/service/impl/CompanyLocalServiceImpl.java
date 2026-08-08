@@ -329,6 +329,14 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			return updatedCompany;
 		};
 
+		if (PropsValues.DATABASE_PARTITION_ENABLED) {
+
+			// Pending writes must flush before this scope applies the new
+			// company, or they would execute against its partition
+
+			LastSessionRecorderHelperUtil.syncLastSessionState(false);
+		}
+
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(
 					companyId)) {
