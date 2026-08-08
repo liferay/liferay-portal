@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.dependency.manager.DependencyManagerSyncUtil;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -95,6 +96,10 @@ public class ServiceLatch {
 
 		@Override
 		public S addingService(ServiceReference<S> serviceReference) {
+			if (!_satisfied.compareAndSet(false, true)) {
+				return null;
+			}
+
 			S service = _bundleContext.getService(serviceReference);
 
 			_serviceConsumer.accept(service);
@@ -133,6 +138,7 @@ public class ServiceLatch {
 			_serviceConsumer = serviceConsumer;
 		}
 
+		private final AtomicBoolean _satisfied = new AtomicBoolean();
 		private final Consumer<S> _serviceConsumer;
 
 	}
