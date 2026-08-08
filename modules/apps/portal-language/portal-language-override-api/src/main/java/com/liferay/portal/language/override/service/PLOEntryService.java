@@ -49,8 +49,8 @@ public interface PLOEntryService extends BaseService {
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.portal.language.override.service.impl.PLOEntryServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the plo entry remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link PLOEntryServiceUtil} if injection and service tracking are not available.
 	 */
 	public PLOEntry addOrUpdatePLOEntry(
-			String externalReferenceCode, String key, String languageId,
-			String value)
+			String externalReferenceCode, long userId, String key,
+			String languageId, String value)
 		throws PortalException;
 
 	public void deletePLOEntries(String key) throws PortalException;
@@ -101,4 +101,4 @@ public interface PLOEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-585008555
+// LIFERAY-SERVICE-BUILDER-HASH:-1474791432

@@ -33,12 +33,12 @@ public class PLOEntryServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.portal.language.override.service.impl.PLOEntryServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static PLOEntry addOrUpdatePLOEntry(
-			String externalReferenceCode, String key, String languageId,
-			String value)
+			String externalReferenceCode, long userId, String key,
+			String languageId, String value)
 		throws PortalException {
 
 		return getService().addOrUpdatePLOEntry(
-			externalReferenceCode, key, languageId, value);
+			externalReferenceCode, userId, key, languageId, value);
 	}
 
 	public static void deletePLOEntries(String key) throws PortalException {
@@ -128,4 +128,4 @@ public class PLOEntryServiceUtil {
 		new Snapshot<>(PLOEntryServiceUtil.class, PLOEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:641191932
+// LIFERAY-SERVICE-BUILDER-HASH:1999178910
