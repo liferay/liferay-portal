@@ -94,6 +94,7 @@ import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -236,10 +237,20 @@ public class LayoutLocalServiceWrapper
 			TransactionInvokerUtil.invoke(
 				_transactionConfig,
 				() -> {
+					LayoutPageTemplateStructure layoutPageTemplateStructure =
+						_layoutPageTemplateStructureLocalService.
+							fetchLayoutPageTemplateStructure(
+								layout.getGroupId(), layout.getPlid());
+
+					String oldData = layoutPageTemplateStructure.getData(
+						segmentsExperienceId);
+
 					_layoutPageTemplateStructureLocalService.
 						updateLayoutPageTemplateStructureData(
 							user.getUserId(), layout.getGroupId(),
 							layout.getPlid(), segmentsExperienceId, data);
+
+					_deleteOrphanFragmentEntryLinks(oldData, data);
 
 					return null;
 				});
@@ -846,6 +857,28 @@ public class LayoutLocalServiceWrapper
 		}
 	}
 
+	private void _deleteOrphanFragmentEntryLinks(
+		String oldData, String newData) {
+
+		Set<Long> oldFragmentEntryLinkIds = _getFragmentEntryLinkIds(oldData);
+		Set<Long> newFragmentEntryLinkIds = _getFragmentEntryLinkIds(newData);
+
+		for (Long fragmentEntryLinkId : oldFragmentEntryLinkIds) {
+			if (newFragmentEntryLinkIds.contains(fragmentEntryLinkId)) {
+				continue;
+			}
+
+			FragmentEntryLink fragmentEntryLink =
+				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+					fragmentEntryLinkId);
+
+			if (fragmentEntryLink != null) {
+				_fragmentEntryLinkLocalService.deleteFragmentEntryLink(
+					fragmentEntryLink);
+			}
+		}
+	}
+
 	private List<String> _deletePortletPermissions(
 			Layout layout, long[] segmentsExperiencesIds)
 		throws Exception {
@@ -887,6 +920,19 @@ public class LayoutLocalServiceWrapper
 		}
 
 		return null;
+	}
+
+	private Set<Long> _getFragmentEntryLinkIds(String data) {
+		if (Validator.isNull(data)) {
+			return Collections.emptySet();
+		}
+
+		LayoutStructure layoutStructure = LayoutStructure.of(data);
+
+		Map<Long, LayoutStructureItem> fragmentLayoutStructureItems =
+			layoutStructure.getFragmentLayoutStructureItems();
+
+		return fragmentLayoutStructureItems.keySet();
 	}
 
 	private Map<Long, FragmentEntryLink> _getFragmentEntryLinksMap(
