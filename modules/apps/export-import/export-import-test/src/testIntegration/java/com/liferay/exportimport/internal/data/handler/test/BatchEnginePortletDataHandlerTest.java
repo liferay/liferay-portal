@@ -150,6 +150,9 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
+import com.liferay.portal.language.override.model.PLOEntry;
+import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
@@ -157,6 +160,7 @@ import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -1437,6 +1441,36 @@ public class BatchEnginePortletDataHandlerTest {
 			DeleteFileEntry.BEFORE_IMPORT, null, true, true,
 			_addImageFileEntry(sourceDepotEntry.getGroupId()), true,
 			objectDefinition, sourceDepotEntry.getGroup());
+	}
+
+	@FeatureFlags(featureFlags = @FeatureFlag(value = "LPD-49852"))
+	@Test
+	public void testExportImportLanguageOverrides() throws Exception {
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			TestPropsValues.getCompanyId());
+
+		PLOEntry ploEntry1 = _addPLOEntry("en_US");
+		PLOEntry ploEntry2 = _addPLOEntry("en_CA");
+
+		File larFile = new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withIncludeLanguageOverrides(
+		).executeExport();
+
+		_ploEntryLocalService.deletePLOEntry(ploEntry1);
+		_ploEntryLocalService.deletePLOEntry(ploEntry2);
+
+		new ExportImportExecutor(
+		).withGroupId(
+			group.getGroupId()
+		).withIncludeLanguageOverrides(
+		).withLARFile(
+			larFile
+		).executeImport();
+
+		_assertPLOEntry(ploEntry1);
+		_assertPLOEntry(ploEntry2);
 	}
 
 	@Test
@@ -3022,6 +3056,13 @@ public class BatchEnginePortletDataHandlerTest {
 		return objectFields;
 	}
 
+	private PLOEntry _addPLOEntry(String languageId) throws Exception {
+		return _ploEntryLocalService.addOrUpdatePLOEntry(
+			RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			languageId, RandomTestUtil.randomString());
+	}
+
 	private ObjectEntry _addSystemObjectEntry(ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -3273,6 +3314,19 @@ public class BatchEnginePortletDataHandlerTest {
 		}
 	}
 
+	private void _assertPLOEntry(PLOEntry ploEntry) throws Exception {
+		PLOEntry importedPLOEntry =
+			_ploEntryLocalService.getPLOEntryByExternalReferenceCode(
+				ploEntry.getExternalReferenceCode(),
+				TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(ploEntry.getKey(), importedPLOEntry.getKey());
+		Assert.assertEquals(
+			ploEntry.getLanguageId(), importedPLOEntry.getLanguageId());
+		Assert.assertEquals(ploEntry.getValue(), importedPLOEntry.getValue());
+		Assert.assertEquals(ploEntry.getUserId(), importedPLOEntry.getUserId());
+	}
+
 	private void _deleteObjectEntries(ObjectEntry... objectEntries)
 		throws Exception {
 
@@ -3338,6 +3392,7 @@ public class BatchEnginePortletDataHandlerTest {
 
 	private Map<String, String[]> _getExportImportParameterMap(
 		boolean deletions, boolean includeDocumentLibrary,
+		boolean includeLanguageOverrides,
 		boolean includeLayoutSetLayoutsPortlet,
 		boolean includeListTypeDefinitions, boolean includeObjectDefinitions,
 		List<ObjectDefinition> objectDefinitions) {
@@ -3385,6 +3440,16 @@ public class BatchEnginePortletDataHandlerTest {
 				ObjectPortletKeys.OBJECT_DEFINITIONS,
 			() -> {
 				if (includeObjectDefinitions) {
+					return new String[] {Boolean.TRUE.toString()};
+				}
+
+				return null;
+			}
+		).put(
+			PortletDataHandlerKeys.PORTLET_DATA + "_" +
+				PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE,
+			() -> {
+				if (includeLanguageOverrides) {
 					return new String[] {Boolean.TRUE.toString()};
 				}
 
@@ -4433,6 +4498,9 @@ public class BatchEnginePortletDataHandlerTest {
 	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Inject
+	private PLOEntryLocalService _ploEntryLocalService;
+
+	@Inject
 	private Portal _portal;
 
 	@Inject
@@ -4771,6 +4839,12 @@ public class BatchEnginePortletDataHandlerTest {
 			return this;
 		}
 
+		public ExportImportExecutor withIncludeLanguageOverrides() {
+			_includeLanguageOverrides = true;
+
+			return this;
+		}
+
 		public ExportImportExecutor withIncludeLayoutSetLayouts() {
 			_includeLayoutSetLayouts = true;
 
@@ -4835,9 +4909,9 @@ public class BatchEnginePortletDataHandlerTest {
 
 		private Map<String, String[]> _getParameterMap() throws Exception {
 			Map<String, String[]> parameterMap = _getExportImportParameterMap(
-				_deletions, _includeDocumentLibrary, _includeLayoutSetLayouts,
-				_includeListTypeDefinitions, _includeObjectDefinitions,
-				_objectDefinitions);
+				_deletions, _includeDocumentLibrary, _includeLanguageOverrides,
+				_includeLayoutSetLayouts, _includeListTypeDefinitions,
+				_includeObjectDefinitions, _objectDefinitions);
 
 			if (_permissions) {
 				parameterMap.put(
@@ -4912,6 +4986,7 @@ public class BatchEnginePortletDataHandlerTest {
 		private boolean _expectError;
 		private long _groupId;
 		private boolean _includeDocumentLibrary;
+		private boolean _includeLanguageOverrides;
 		private boolean _includeLayoutSetLayouts;
 		private boolean _includeListTypeDefinitions;
 		private boolean _includeObjectDefinitions;
