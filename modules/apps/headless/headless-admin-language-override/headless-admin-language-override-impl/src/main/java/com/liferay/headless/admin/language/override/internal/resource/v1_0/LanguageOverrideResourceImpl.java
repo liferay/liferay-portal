@@ -5,6 +5,9 @@
 
 package com.liferay.headless.admin.language.override.internal.resource.v1_0;
 
+import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.language.override.dto.v1_0.LanguageOverride;
 import com.liferay.headless.admin.language.override.internal.odata.entity.v1_0.LanguageOverrideEntityModel;
 import com.liferay.headless.admin.language.override.resource.v1_0.LanguageOverrideResource;
@@ -13,6 +16,7 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.model.PLOEntryTable;
 import com.liferay.portal.language.override.service.PLOEntryService;
@@ -24,6 +28,7 @@ import com.liferay.portal.vulcan.pagination.Pagination;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -35,10 +40,12 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(
 	properties = "OSGI-INF/liferay/rest/v1_0/language-override.properties",
+	property = "export.import.vulcan.batch.engine.task.item.delegate=true",
 	scope = ServiceScope.PROTOTYPE, service = LanguageOverrideResource.class
 )
 public class LanguageOverrideResourceImpl
-	extends BaseLanguageOverrideResourceImpl {
+	extends BaseLanguageOverrideResourceImpl
+	implements ExportImportVulcanBatchEngineTaskItemDelegate<LanguageOverride> {
 
 	@Override
 	public void deleteLanguageOverrideByExternalReferenceCode(
@@ -54,6 +61,54 @@ public class LanguageOverrideResourceImpl
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
+	}
+
+	@Override
+	public ExportImportDescriptor<PLOEntry> getExportImportDescriptor() {
+		return new ExportImportDescriptor<PLOEntry>() {
+
+			@Override
+			public String getKey() {
+				return LanguageOverrideResourceImpl.class.getName();
+			}
+
+			@Override
+			public String getLabelLanguageKey() {
+				return "language-overrides";
+			}
+
+			@Override
+			public Class<PLOEntry> getModelClass() {
+				return PLOEntry.class;
+			}
+
+			@Override
+			public List<String> getNestedFields() {
+				return Collections.singletonList("creator");
+			}
+
+			@Override
+			public String getPortletId() {
+				return PLOPortletKeys.PORTAL_LANGUAGE_OVERRIDE;
+			}
+
+			@Override
+			public Scope getScope() {
+				return Scope.COMPANY;
+			}
+
+			@Override
+			public String getSectionKey() {
+				return ExportImportConstants.SECTION_KEY_CONFIGURATION;
+			}
+
+			@Override
+			public boolean isActive(PortletDataContext portletDataContext) {
+				return FeatureFlagManagerUtil.isEnabled(
+					portletDataContext.getCompanyId(), "LPD-49852");
+			}
+
+		};
 	}
 
 	@Override
