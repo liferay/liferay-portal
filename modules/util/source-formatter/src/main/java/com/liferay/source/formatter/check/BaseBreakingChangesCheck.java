@@ -112,50 +112,6 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 		}
 	}
 
-	protected void checkCommitMessages(String fileName, String absolutePath)
-		throws Exception {
-
-		List<String> commitMessages = getCurrentBranchCommitMessages();
-
-		Iterator<String> iterator = commitMessages.iterator();
-
-		while (iterator.hasNext()) {
-			String commitMessage = iterator.next();
-
-			String[] parts = commitMessage.split(":", 2);
-
-			if (!parts[1].contains("# breaking")) {
-				iterator.remove();
-			}
-		}
-
-		if (commitMessages.isEmpty()) {
-			addMessage(
-				fileName,
-				"Incorrect commit message: Missing breaking change in commit " +
-					"messages when the major version bumps up");
-
-			return;
-		}
-
-		for (String commitMessage : commitMessages) {
-			String[] parts = commitMessage.split(":", 2);
-
-			if (!parts[1].contains("# breaking")) {
-				continue;
-			}
-
-			String message =
-				"Incorrect commit message in SHA " + parts[0] + ": ";
-
-			checkMissingEmptyLinesAroundHeaders(fileName, parts[1], message);
-
-			checkBreakingChanges(
-				fileName, absolutePath, parts[1].split("\n----"), message,
-				true);
-		}
-	}
-
 	protected void checkMajorVersionBump(
 			String fileName, String absolutePath, String content)
 		throws Exception {
@@ -174,7 +130,7 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 		}
 
 		if (Integer.valueOf(version) > Integer.valueOf(oldVersion)) {
-			checkCommitMessages(fileName, absolutePath);
+			_checkCommitMessages(fileName, absolutePath);
 		}
 	}
 
@@ -249,6 +205,50 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 
 	protected Pattern getVersionPattern() {
 		return null;
+	}
+
+	private void _checkCommitMessages(String fileName, String absolutePath)
+		throws Exception {
+
+		List<String> commitMessages = getCurrentBranchCommitMessages();
+
+		Iterator<String> iterator = commitMessages.iterator();
+
+		while (iterator.hasNext()) {
+			String commitMessage = iterator.next();
+
+			String[] parts = commitMessage.split(":", 2);
+
+			if (!parts[1].contains("# breaking")) {
+				iterator.remove();
+			}
+		}
+
+		if (commitMessages.isEmpty()) {
+			addMessage(
+				fileName,
+				"Incorrect commit message: Missing breaking change in commit " +
+					"messages when the major version bumps up");
+
+			return;
+		}
+
+		for (String commitMessage : commitMessages) {
+			String[] parts = commitMessage.split(":", 2);
+
+			if (!parts[1].contains("# breaking")) {
+				continue;
+			}
+
+			String message =
+				"Incorrect commit message in SHA " + parts[0] + ": ";
+
+			checkMissingEmptyLinesAroundHeaders(fileName, parts[1], message);
+
+			checkBreakingChanges(
+				fileName, absolutePath, parts[1].split("\n----"), message,
+				true);
+		}
 	}
 
 	private void _checkMissingExplanation(
