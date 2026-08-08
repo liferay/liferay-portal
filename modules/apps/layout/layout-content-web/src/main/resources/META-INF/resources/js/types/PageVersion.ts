@@ -11,7 +11,7 @@ type Action = {
 };
 
 export type PageVersion = {
-	actions?: Partial<Record<'delete', Action>>;
+	actions?: Partial<Record<'delete' | 'restore', Action>>;
 	creator?: {
 		externalReferenceCode?: string;
 		image?: string;

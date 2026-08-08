@@ -32,4 +32,8 @@ async function getPageVersions(signal?: AbortSignal) {
 	};
 }
 
-export default {deletePageVersion, getPageVersions};
+async function restorePageVersion(url: string) {
+	return ApiHelper.post<void>(url);
+}
+
+export default {deletePageVersion, getPageVersions, restorePageVersion};

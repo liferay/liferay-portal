@@ -82,4 +82,18 @@ async function get<T>(url: string, signal?: AbortSignal) {
 	);
 }
 
-export default {del, get};
+async function post<T>(url: string, signal?: AbortSignal) {
+	return handleRequest<T>(() =>
+		fetch(url, {
+			headers: new Headers({
+				'Accept': 'application/json',
+				'Accept-Language': Liferay.ThemeDisplay.getBCP47LanguageId(),
+				'Content-Type': 'application/json',
+			}),
+			method: 'POST',
+			signal,
+		})
+	);
+}
+
+export default {del, get, post};
