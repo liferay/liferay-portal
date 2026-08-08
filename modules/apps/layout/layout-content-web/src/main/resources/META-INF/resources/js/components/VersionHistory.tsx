@@ -115,6 +115,38 @@ export default function VersionHistory({config}: Props) {
 		}
 	};
 
+	const handleRestore = async (version: PageVersion) => {
+		if (!version.actions?.restore) {
+			return;
+		}
+
+		const confirmed = await openConfirmModal({
+			buttonLabel: Liferay.Language.get('restore'),
+			center: true,
+			status: 'warning',
+			text: Liferay.Language.get(
+				'you-are-about-to-restore-an-older-version-of-the-page.-all-your-unsaved-changes-will-be-lost'
+			),
+			title: Liferay.Language.get('restore-version'),
+		});
+
+		if (!confirmed) {
+			return;
+		}
+
+		const {error} = await PageVersionService.restorePageVersion(
+			version.actions.restore.href
+		);
+
+		if (error) {
+			openToast({message: error, type: 'danger'});
+
+			return;
+		}
+
+		window.location.reload();
+	};
+
 	const keywords = search.trim().toLowerCase();
 
 	const matches = (...names: Array<string | undefined>) =>
@@ -150,6 +182,7 @@ export default function VersionHistory({config}: Props) {
 					<VersionList
 						items={items}
 						onDelete={handleDelete}
+						onRestore={handleRestore}
 						onSelect={setSelectedKey}
 						searching={Boolean(keywords)}
 						selectedKey={selectedKey}
