@@ -18,6 +18,10 @@ public class PackageinfoBreakingChangeCommitMessageCheck
 			String fileName, String absolutePath, String content)
 		throws Exception {
 
+		if (absolutePath.contains("-test/")) {
+			return content;
+		}
+
 		checkMajorVersionBump(fileName, absolutePath, content);
 
 		return content;
