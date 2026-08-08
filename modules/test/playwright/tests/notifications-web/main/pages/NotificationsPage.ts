@@ -57,6 +57,14 @@ export class NotificationsPage {
 
 	async goto(userName: string = 'Test Test') {
 		await this.page.getByLabel(`${userName} User Profile`).click();
-		await this.page.getByRole('menuitem', {name: 'Notifications'}).click();
+
+		// The control panel sidebar can hold a menu item also named
+		// Notifications, the push notifications portlet's entry, so stay
+		// inside the dropdown this click just opened.
+
+		await this.page
+			.locator('.dropdown-menu.show')
+			.getByRole('menuitem', {name: 'Notifications'})
+			.click();
 	}
 }
