@@ -334,18 +334,16 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					companyId)) {
 
 			if (PropsValues.DATABASE_PARTITION_ENABLED) {
-				try {
-					return TransactionInvokerUtil.invoke(
-						_transactionConfig, callable);
-				}
-				finally {
+				Company addedCompany = TransactionInvokerUtil.invoke(
+					_transactionConfig, callable);
 
-					// Commit callbacks must flush before this scope restores
-					// the previous company, or they would execute against
-					// the default partition
+				// Commit callbacks must flush before this scope restores the
+				// previous company, or they would execute against the
+				// caller's partition
 
-					LastSessionRecorderHelperUtil.syncLastSessionState(false);
-				}
+				LastSessionRecorderHelperUtil.syncLastSessionState(false);
+
+				return addedCompany;
 			}
 
 			return callable.call();
