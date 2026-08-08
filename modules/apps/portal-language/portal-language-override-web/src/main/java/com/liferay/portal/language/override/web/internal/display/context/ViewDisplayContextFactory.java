@@ -30,9 +30,9 @@ import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.language.override.constants.PLOActionKeys;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
-import com.liferay.portal.language.override.web.internal.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.web.internal.display.LanguageItemDisplay;
 
 import jakarta.portlet.RenderRequest;

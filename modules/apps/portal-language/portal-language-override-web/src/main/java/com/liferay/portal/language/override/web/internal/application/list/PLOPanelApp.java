@@ -9,7 +9,7 @@ import com.liferay.application.list.BasePanelApp;
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.constants.PanelCategoryKeys;
 import com.liferay.portal.kernel.model.Portlet;
-import com.liferay.portal.language.override.web.internal.constants.PLOPortletKeys;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;

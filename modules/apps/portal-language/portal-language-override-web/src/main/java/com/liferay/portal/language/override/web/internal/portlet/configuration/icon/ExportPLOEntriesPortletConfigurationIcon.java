@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.configuration.icon.BasePortletConfigurationIcon;
 import com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.service.PLOEntryService;
-import com.liferay.portal.language.override.web.internal.constants.PLOPortletKeys;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;

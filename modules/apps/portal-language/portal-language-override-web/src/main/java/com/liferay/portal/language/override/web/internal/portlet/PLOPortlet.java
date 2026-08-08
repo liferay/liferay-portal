@@ -19,11 +19,11 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.model.PLOEntry;
 import com.liferay.portal.language.override.provider.PLOOriginalTranslationProvider;
 import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.language.override.service.PLOEntryService;
-import com.liferay.portal.language.override.web.internal.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.web.internal.display.context.EditDisplayContextFactory;
 import com.liferay.portal.language.override.web.internal.display.context.ViewDisplayContextFactory;
 

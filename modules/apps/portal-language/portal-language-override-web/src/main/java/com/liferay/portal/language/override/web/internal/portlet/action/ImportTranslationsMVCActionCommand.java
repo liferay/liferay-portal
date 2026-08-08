@@ -12,9 +12,9 @@ import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
 import com.liferay.portal.language.override.exception.PLOEntryImportException;
 import com.liferay.portal.language.override.service.PLOEntryService;
-import com.liferay.portal.language.override.web.internal.constants.PLOPortletKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;

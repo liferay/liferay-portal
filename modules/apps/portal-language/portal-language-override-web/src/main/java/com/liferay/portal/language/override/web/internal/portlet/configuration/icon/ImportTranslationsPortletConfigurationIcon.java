@@ -14,7 +14,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.language.override.constants.PLOActionKeys;
-import com.liferay.portal.language.override.web.internal.constants.PLOPortletKeys;
+import com.liferay.portal.language.override.constants.PLOPortletKeys;
 
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
