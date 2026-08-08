@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.URI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +52,9 @@ public class JenkinsStopBuildUtilTest
 		_httpServer.createContext(
 			"/",
 			httpExchange -> {
-				_postedPaths.add(
-					httpExchange.getRequestURI(
-					).getPath());
+				URI requestURI = httpExchange.getRequestURI();
+
+				_postedPaths.add(requestURI.getPath());
 
 				_requestMethods.add(httpExchange.getRequestMethod());
 
