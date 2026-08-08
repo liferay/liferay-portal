@@ -48,6 +48,8 @@ import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
+import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelper;
+import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
@@ -198,6 +200,61 @@ public class CompanyLocalServiceDBPartitionTest
 			_deleteResourcePermissions(
 				defaultPartitionName, company.getCompanyId());
 		}
+	}
+
+	@Test
+	public void testAddCompanyFlushesPendingWritesBeforeApplyingNewCompany()
+		throws Exception {
+
+		List<Long> companyIds = new ArrayList<>();
+
+		Thread currentThread = Thread.currentThread();
+
+		LastSessionRecorderHelper lastSessionRecorderHelper =
+			ReflectionTestUtil.getFieldValue(
+				LastSessionRecorderHelperUtil.class,
+				"_lastSessionRecorderHelper");
+
+		ReflectionTestUtil.setFieldValue(
+			LastSessionRecorderHelperUtil.class, "_lastSessionRecorderHelper",
+			new LastSessionRecorderHelper() {
+
+				@Override
+				public void syncLastSessionState() {
+					lastSessionRecorderHelper.syncLastSessionState();
+				}
+
+				@Override
+				public void syncLastSessionState(boolean portalSessionOnly) {
+
+					// Only a full sync flushes every session, so it is the
+					// one a company scope switch depends on
+
+					if (!portalSessionOnly &&
+						(currentThread == Thread.currentThread())) {
+
+						companyIds.add(CompanyThreadLocal.getCompanyId());
+					}
+
+					lastSessionRecorderHelper.syncLastSessionState(
+						portalSessionOnly);
+				}
+
+			});
+
+		try {
+			_company1 = CompanyTestUtil.addCompany();
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				LastSessionRecorderHelperUtil.class,
+				"_lastSessionRecorderHelper", lastSessionRecorderHelper);
+		}
+
+		Assert.assertFalse(companyIds.toString(), companyIds.isEmpty());
+
+		Assert.assertEquals(
+			companyIds.toString(), _defaultCompanyId, (long)companyIds.get(0));
 	}
 
 	@Test
