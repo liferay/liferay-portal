@@ -5,11 +5,7 @@
 
 package com.liferay.source.formatter.check;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.tools.GitUtil;
-import com.liferay.source.formatter.SourceFormatterArgs;
-import com.liferay.source.formatter.processor.SourceProcessor;
+import java.util.regex.Pattern;
 
 /**
  * @author Alan Huang
@@ -26,66 +22,17 @@ public class YMLRESTConfigFileBreakingChangeCommitMessageCheck
 			return content;
 		}
 
-		SourceProcessor sourceProcessor = getSourceProcessor();
-
-		SourceFormatterArgs sourceFormatterArgs =
-			sourceProcessor.getSourceFormatterArgs();
-
-		if (_hasCompatibilityVersionBump(absolutePath, sourceFormatterArgs)) {
-			checkCommitMessages(
-				fileName, absolutePath, sourceFormatterArgs,
-				"compatibilityVersion bumps up");
-		}
+		checkMajorVersionBump(fileName, absolutePath, content);
 
 		return content;
 	}
 
-	private boolean _hasCompatibilityVersionBump(
-			String absolutePath, SourceFormatterArgs sourceFormatterArgs)
-		throws Exception {
-
-		for (String currentBranchFileName :
-				getCurrentBranchFileNames(sourceFormatterArgs)) {
-
-			if (!absolutePath.endsWith(currentBranchFileName)) {
-				continue;
-			}
-
-			String newCompatibilityVersion = null;
-			String oldCompatibilityVersion = null;
-
-			String[] lines = StringUtil.splitLines(
-				GitUtil.getCurrentBranchFileDiff(
-					sourceFormatterArgs.getBaseDirName(),
-					sourceFormatterArgs.getGitWorkingBranchName(),
-					absolutePath));
-
-			for (String line : lines) {
-				if (!line.contains("compatibilityVersion:")) {
-					continue;
-				}
-
-				int pos = line.indexOf(":");
-
-				String version = StringUtil.trim(line.substring(pos + 1));
-
-				if (line.startsWith(StringPool.PLUS)) {
-					newCompatibilityVersion = version;
-				}
-				else if (line.startsWith(StringPool.DASH)) {
-					oldCompatibilityVersion = version;
-				}
-			}
-
-			if (oldCompatibilityVersion == null) {
-				continue;
-			}
-
-			return !StringUtil.equals(
-				newCompatibilityVersion, oldCompatibilityVersion);
-		}
-
-		return false;
+	@Override
+	protected Pattern getVersionPattern() {
+		return _versionPattern;
 	}
+
+	private static final Pattern _versionPattern = Pattern.compile(
+		"^compatibilityVersion: *(.*)$", Pattern.MULTILINE);
 
 }
