@@ -211,10 +211,6 @@ public interface CookiesConsentPreferenceLocalService
 		long cookiesConsentPreferenceId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CookiesConsentPreference fetchCookiesConsentPreference(
-		long userId, String domain, String name);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	/**
@@ -294,4 +290,4 @@ public interface CookiesConsentPreferenceLocalService
 		CookiesConsentPreference cookiesConsentPreference);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1819426011
+// LIFERAY-SERVICE-BUILDER-HASH:-1885118937
