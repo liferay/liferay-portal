@@ -10,7 +10,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.persistence.GroupUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -21,6 +23,7 @@ import com.liferay.portal.vulcan.jaxrs.exception.mapper.BaseExceptionMapper;
 import com.liferay.portal.vulcan.jaxrs.exception.mapper.Problem;
 
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
@@ -107,10 +110,71 @@ public class TransactionContainerRequestFilterTest {
 		Assert.assertEquals(
 			204,
 			_getResponseCode(
+				"DELETE",
 				StringBundler.concat(
 					"http://localhost:", PortalUtil.getPortalServerPort(false),
-					"/o/test-vulcan/commit/", group.getGroupId())));
+					"/o/test-vulcan/commit/", group.getGroupId()),
+				false));
 		Assert.assertNull(GroupLocalServiceUtil.getGroup(group.getGroupId()));
+	}
+
+	@Test
+	public void testDeleteWithTransactionDisabledHeader() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				_CLASS_NAME_EXCEPTION_MAPPER, LoggerTestUtil.ERROR)) {
+
+			Assert.assertEquals(
+				500,
+				_getResponseCode(
+					"DELETE",
+					StringBundler.concat(
+						"http://localhost:",
+						PortalUtil.getPortalServerPort(false),
+						"/o/test-vulcan/rollback/", group.getGroupId(),
+						"?failInExceptionMapper=false"),
+					true));
+
+			Assert.assertNull(
+				GroupLocalServiceUtil.fetchGroup(group.getGroupId()));
+		}
+	}
+
+	@Test
+	public void testGet() throws Exception {
+		Assert.assertEquals(
+			200,
+			_getResponseCode(
+				"GET",
+				StringBundler.concat(
+					"http://localhost:", PortalUtil.getPortalServerPort(false),
+					"/o/test-vulcan/read/", RandomTestUtil.randomLong()),
+				false));
+	}
+
+	@Test
+	public void testGetWithTransactionDisabledHeader() throws Exception {
+		Assert.assertEquals(
+			200,
+			_getResponseCode(
+				"GET",
+				StringBundler.concat(
+					"http://localhost:", PortalUtil.getPortalServerPort(false),
+					"/o/test-vulcan/read/", RandomTestUtil.randomLong()),
+				true));
+	}
+
+	@Test
+	public void testHead() throws Exception {
+		Assert.assertEquals(
+			200,
+			_getResponseCode(
+				"HEAD",
+				StringBundler.concat(
+					"http://localhost:", PortalUtil.getPortalServerPort(false),
+					"/o/test-vulcan/read/", RandomTestUtil.randomLong()),
+				false));
 	}
 
 	@Test
@@ -123,11 +187,13 @@ public class TransactionContainerRequestFilterTest {
 			Assert.assertEquals(
 				500,
 				_getResponseCode(
+					"DELETE",
 					StringBundler.concat(
 						"http://localhost:",
 						PortalUtil.getPortalServerPort(false),
 						"/o/test-vulcan/rollback/", group.getGroupId(),
-						"?failInExceptionMapper=false")));
+						"?failInExceptionMapper=false"),
+					false));
 
 			Assert.assertNotNull(
 				GroupLocalServiceUtil.getGroup(group.getGroupId()));
@@ -135,11 +201,13 @@ public class TransactionContainerRequestFilterTest {
 			Assert.assertEquals(
 				500,
 				_getResponseCode(
+					"DELETE",
 					StringBundler.concat(
 						"http://localhost:",
 						PortalUtil.getPortalServerPort(false),
 						"/o/test-vulcan/rollback/", group.getGroupId(),
-						"?failInExceptionMapper=true")));
+						"?failInExceptionMapper=true"),
+					false));
 
 			Assert.assertNotNull(
 				GroupLocalServiceUtil.getGroup(group.getGroupId()));
@@ -159,6 +227,17 @@ public class TransactionContainerRequestFilterTest {
 			throws Exception {
 
 			GroupLocalServiceUtil.deleteGroup(siteId);
+		}
+
+		@GET
+		@Path("/read/{siteId}")
+		public String testRead(@PathParam("siteId") long siteId) {
+
+			// Calling the persistence layer directly, without the local
+			// service in between, is what makes this endpoint dependent on
+			// the transaction executor the filter publishes
+
+			return String.valueOf(GroupUtil.fetchByPrimaryKey(siteId));
 		}
 
 		@DELETE
@@ -208,11 +287,19 @@ public class TransactionContainerRequestFilterTest {
 
 	}
 
-	private int _getResponseCode(String urlString) throws IOException {
+	private int _getResponseCode(
+			String method, String urlString, boolean transactionDisabled)
+		throws IOException {
+
 		HttpURLConnection httpURLConnection =
 			(HttpURLConnection)URLConnectionUtil.createURLConnection(urlString);
 
-		httpURLConnection.setRequestMethod("DELETE");
+		httpURLConnection.setRequestMethod(method);
+
+		if (transactionDisabled) {
+			httpURLConnection.setRequestProperty(
+				"X-Liferay-Transaction-Disabled", "true");
+		}
 
 		return httpURLConnection.getResponseCode();
 	}

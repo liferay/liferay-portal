@@ -3,5 +3,6 @@
 <suppressions>
 	<checkstyle>
 		<suppress checks="ParameterNameCheck" files="portal-vulcan-api/src/main/java/com/liferay/portal/vulcan/list/type/ListEntry\.java" />
+		<suppress checks="PersistenceCallCheck" files="portal-vulcan-test/src/testIntegration/java/com/liferay/portal/vulcan/internal/jaxrs/container/request/filter/test/TransactionContainerRequestFilterTest\.java" />
 	</checkstyle>
 </suppressions>
