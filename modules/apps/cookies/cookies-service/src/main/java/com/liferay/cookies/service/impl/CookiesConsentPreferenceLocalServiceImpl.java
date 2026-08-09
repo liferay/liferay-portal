@@ -29,7 +29,6 @@ import org.osgi.service.component.annotations.Reference;
 public class CookiesConsentPreferenceLocalServiceImpl
 	extends CookiesConsentPreferenceLocalServiceBaseImpl {
 
-	@Override
 	public CookiesConsentPreference addCookiesConsentPreference(
 			long userId, String domain, Date expirationDate, String name,
 			String value)
@@ -54,7 +53,6 @@ public class CookiesConsentPreferenceLocalServiceImpl
 			cookiesConsentPreference);
 	}
 
-	@Override
 	public void deleteCookiesConsentPreference(
 			long userId, String domain, String name)
 		throws PortalException {
@@ -62,25 +60,14 @@ public class CookiesConsentPreferenceLocalServiceImpl
 		cookiesConsentPreferencePersistence.removeByU_D_N(userId, domain, name);
 	}
 
-	@Override
 	public void deleteCookiesConsentPreferences(long userId) {
 		cookiesConsentPreferencePersistence.removeByUserId(userId);
 	}
 
-	@Override
 	public void deleteCookiesConsentPreferences(long userId, String domain) {
 		cookiesConsentPreferencePersistence.removeByU_D(userId, domain);
 	}
 
-	@Override
-	public CookiesConsentPreference fetchCookiesConsentPreference(
-		long userId, String domain, String name) {
-
-		return cookiesConsentPreferencePersistence.fetchByU_D_N(
-			userId, domain, name);
-	}
-
-	@Override
 	public CookiesConsentPreference getCookiesConsentPreference(
 			long userId, String domain, String name)
 		throws PortalException {
@@ -89,14 +76,12 @@ public class CookiesConsentPreferenceLocalServiceImpl
 			userId, domain, name);
 	}
 
-	@Override
 	public List<CookiesConsentPreference> getCookiesConsentPreferences(
 		long userId, String domain) {
 
 		return cookiesConsentPreferencePersistence.findByU_D(userId, domain);
 	}
 
-	@Override
 	public CookiesConsentPreference updateCookiesConsentPreference(
 		CookiesConsentPreference cookiesConsentPreference) {
 
