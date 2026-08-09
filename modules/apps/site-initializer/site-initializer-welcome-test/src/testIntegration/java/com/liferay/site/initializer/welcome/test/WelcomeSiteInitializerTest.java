@@ -151,8 +151,6 @@ public class WelcomeSiteInitializerTest {
 					group.getGroupId(),
 					LayoutUtilityPageEntryConstants.TYPE_COOKIE_POLICY);
 
-		Assert.assertNotNull(layout);
-
 		List<FragmentEntryLink> fragmentEntryLinks =
 			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
 				group.getGroupId(), layout.getPlid());
