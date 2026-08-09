@@ -4413,6 +4413,8 @@ public class BundleSiteInitializer implements SiteInitializer {
 			return;
 		}
 
+		Locale siteDefaultLocale = _portal.getSiteDefaultLocale(groupId);
+
 		TaxonomyVocabularyResource.Builder taxonomyVocabularyResourceBuilder =
 			_taxonomyVocabularyResourceFactory.create();
 
@@ -4420,8 +4422,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 			taxonomyVocabularyResourceBuilder.user(
 				serviceContext.fetchUser()
 			).build();
-
-		Locale siteDefaultLocale = _portal.getSiteDefaultLocale(groupId);
 
 		for (String resourcePath : resourcePaths) {
 			if (resourcePath.endsWith("/")) {
