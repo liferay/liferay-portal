@@ -282,7 +282,6 @@ export enum RangeKeyTimeRanges {
 
 export enum SegmentActivationScheduleTypes {
 	Batch = 'BATCH',
-	RealTime = 'REAL_TIME',
 }
 
 export enum SegmentActivationFrequencyTypes {

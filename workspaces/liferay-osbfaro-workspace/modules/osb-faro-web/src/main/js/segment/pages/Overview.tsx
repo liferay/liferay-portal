@@ -57,10 +57,7 @@ const Overview: React.FC<IOverviewProps> = ({channelId, groupId, segment}) => {
 		<div className="overview-layout">
 			<div className="overview-column-main">
 				{activation && (
-					<SegmentActivationCard
-						segmentActivation={activation}
-						segmentType={SegmentTypes.Batch}
-					/>
+					<SegmentActivationCard segmentActivation={activation} />
 				)}
 
 				<SegmentProfileCard
