@@ -32,7 +32,7 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 			Map<String, Object> membersFDSAdditionalProps = membersDesignLibraryDisplayContext.getFDSAdditionalProps();
 			%>
 
-			<div class="p-4">
+			<div class="pb-4 px-4">
 				<div class="row">
 					<div class="col-12 col-lg-8">
 						<div class="card">
