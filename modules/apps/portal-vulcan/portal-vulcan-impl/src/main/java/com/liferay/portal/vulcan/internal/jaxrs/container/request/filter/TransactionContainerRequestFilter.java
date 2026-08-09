@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionDefinition;
 import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.spring.transaction.TransactionAttributeAdapter;
 import com.liferay.portal.spring.transaction.TransactionAttributeBuilder;
 import com.liferay.portal.spring.transaction.TransactionExecutor;
@@ -60,22 +59,7 @@ public class TransactionContainerRequestFilter
 
 		TransactionAttributeAdapter transactionAttributeAdapter = null;
 
-		if (GetterUtil.getBoolean(
-				containerRequestContext.getHeaderString(
-					"X-Liferay-Transaction-Disabled"))) {
-
-			if (_log.isDebugEnabled()) {
-				_log.debug("Request level transaction wrapping is disabled");
-			}
-
-			// Not read only, because a request that disables wrapping may
-			// still write, and those writes reach the database only when the
-			// session flushes at commit
-
-			transactionAttributeAdapter =
-				_transactionDisabledTransactionAttributeAdapter;
-		}
-		else if (_writeMethodNames.contains(method)) {
+		if (_writeMethodNames.contains(method)) {
 			transactionAttributeAdapter = _writeTransactionAttributeAdapter;
 		}
 		else if (_readMethodNames.contains(method)) {
@@ -149,14 +133,6 @@ public class TransactionContainerRequestFilter
 				TransactionDefinition.TIMEOUT_DEFAULT,
 				new Class<?>[] {Exception.class}, new String[0],
 				new Class<?>[0], new String[0]));
-	private static final TransactionAttributeAdapter
-		_transactionDisabledTransactionAttributeAdapter =
-			new TransactionAttributeAdapter(
-				TransactionAttributeBuilder.build(
-					true, Isolation.DEFAULT, Propagation.SUPPORTS, false,
-					TransactionDefinition.TIMEOUT_DEFAULT,
-					new Class<?>[] {Exception.class}, new String[0],
-					new Class<?>[0], new String[0]));
 	private static final TransactionExecutor _transactionExecutor =
 		(TransactionExecutor)PortalBeanLocatorUtil.locate(
 			"transactionExecutor");

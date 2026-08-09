@@ -168,7 +168,6 @@ public class AIHubAgentNodeExecutor extends BaseNodeExecutor {
 		options.addHeader(
 			"Liferay-AI-Hub-Cell-On-Behalf-Of",
 			authorizationTokenJSONObject.getString("userToken"));
-		options.addHeader("X-Liferay-Transaction-Disabled", "true");
 
 		Map<String, String> kaleoNodeSettingValues = new HashMap<>();
 
