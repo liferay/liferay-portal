@@ -166,8 +166,6 @@ public class ObjectEntrySitemapURLProviderTest {
 				_objectEntrySitemapURLProvider.isInclude(
 					TestPropsValues.getCompanyId(), _group.getGroupId()));
 
-			// Sitemapable system object definition
-
 			_objectDefinitionLocalService.updateSystemObjectDefinition(
 				_systemObjectDefinition.getExternalReferenceCode(),
 				_systemObjectDefinition.getObjectDefinitionId(),
@@ -202,8 +200,6 @@ public class ObjectEntrySitemapURLProviderTest {
 
 		_assertRootElement(layout, _objectDefinition, objectEntry, rootElement);
 
-		// Inactive object definition
-
 		_updateObjectDefinition(false);
 
 		try {
@@ -217,8 +213,6 @@ public class ObjectEntrySitemapURLProviderTest {
 		finally {
 			_updateObjectDefinition(true);
 		}
-
-		// Layout excluded from the sitemap
 
 		_updateLayoutSEOEntry(true, layout);
 
@@ -288,8 +282,6 @@ public class ObjectEntrySitemapURLProviderTest {
 				rootElement, _layoutSet, _themeDisplay);
 
 			Assert.assertTrue(rootElement.hasContent());
-
-			// Inactive object definition
 
 			_updateObjectDefinition(false);
 
