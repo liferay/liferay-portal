@@ -1,10 +1,6 @@
 import Constants, {TimeIntervals} from 'shared/util/constants';
 import sendRequest from 'shared/util/request';
-import {
-	buildOrderByFields,
-	createOrderByField,
-	NAME,
-} from 'shared/util/pagination';
+import {buildOrderByFields, NAME} from 'shared/util/pagination';
 import {INDIVIDUALS, SEGMENTS} from 'shared/util/router';
 
 const {
@@ -46,13 +42,6 @@ export function fetch({groupId, includeReferencedObjects = false, segmentId}) {
 		criteriaString: filter,
 		...otherParams,
 	}));
-}
-
-export function fetchMembershipMetrics({groupId, individualSegmentId}) {
-	return sendRequest({
-		method: 'GET',
-		path: `contacts/${groupId}/individual_segment/${individualSegmentId}/real-time-membership-metric`,
-	});
 }
 
 export function create({
@@ -166,44 +155,6 @@ export function fetchMembershipChanges({
 		},
 		method: 'GET',
 		path: `contacts/${groupId}/individual_segment/${id}/memberships/changes`,
-	});
-}
-
-export function fetchRealTimeMembershipChanges({
-	date,
-	delta,
-	filters,
-	groupId,
-	orderIOMap,
-	query,
-	segmentId,
-}) {
-	const orderParams = orderIOMap.first();
-	const orderByFields = [
-		createOrderByField(orderParams.field, orderParams.sortOrder),
-	];
-
-	const {profileTypes, types} = filters;
-
-	const data = {
-		day: date,
-		delta,
-		orderByFields,
-		query,
-	};
-
-	if (profileTypes.length) {
-		data.profileTypes = profileTypes;
-	}
-
-	if (types.length) {
-		data.types = types;
-	}
-
-	return sendRequest({
-		data,
-		method: 'GET',
-		path: `contacts/${groupId}/individual_segment/${segmentId}/real-time-memberships`,
 	});
 }
 
