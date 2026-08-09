@@ -113,7 +113,8 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 	}
 
 	protected void checkMajorVersionBump(
-			String fileName, String absolutePath, String content)
+			String fileName, String absolutePath, String content,
+			String additionalMessage)
 		throws Exception {
 
 		String oldVersion = _getMajorVersion(
@@ -130,7 +131,7 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 		}
 
 		if (Integer.valueOf(version) > Integer.valueOf(oldVersion)) {
-			_checkCommitMessages(fileName, absolutePath);
+			_checkCommitMessages(fileName, absolutePath, additionalMessage);
 		}
 	}
 
@@ -207,7 +208,8 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 		return null;
 	}
 
-	private void _checkCommitMessages(String fileName, String absolutePath)
+	private void _checkCommitMessages(
+			String fileName, String absolutePath, String additionalMessage)
 		throws Exception {
 
 		List<String> commitMessages = getCurrentBranchCommitMessages();
@@ -228,7 +230,7 @@ public abstract class BaseBreakingChangesCheck extends BaseFileCheck {
 			addMessage(
 				fileName,
 				"Incorrect commit message: Missing breaking change in commit " +
-					"messages when the major version bumps up");
+					"messages when " + additionalMessage);
 
 			return;
 		}

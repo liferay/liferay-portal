@@ -22,7 +22,9 @@ public class YMLRESTConfigFileBreakingChangeCommitMessageCheck
 			return content;
 		}
 
-		checkMajorVersionBump(fileName, absolutePath, content);
+		checkMajorVersionBump(
+			fileName, absolutePath, content,
+			"the compatibilityVersion bumps up");
 
 		return content;
 	}
