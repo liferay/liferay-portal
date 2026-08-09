@@ -17,13 +17,6 @@ import {waitForLoadingToBeRemoved} from 'test/helpers';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/util/feature-flags', () => ({
-	...jest.requireActual('shared/util/feature-flags'),
-	ENABLE_REAL_TIME_SEGMENTS: false
-}));
-
-const featureFlags = jest.requireMock('shared/util/feature-flags');
-
 const MOCK_UNASSIGNED_SEGMENTS_CONTEXT = {
 	showUnassignedAlert: false,
 	unassignedSegments: [],
@@ -65,8 +58,6 @@ describe('List', () => {
 		jest.clearAllMocks();
 
 		jest.useFakeTimers();
-
-		featureFlags.ENABLE_REAL_TIME_SEGMENTS = true;
 	});
 
 	afterEach(() => {
@@ -164,32 +155,7 @@ describe('List', () => {
 		).not.toBeInTheDocument();
 	});
 
-	describe('when real time segments are disabled', () => {
-		beforeEach(() => {
-			featureFlags.ENABLE_REAL_TIME_SEGMENTS = false;
-		});
-
-		it('hides the real time segment option', async () => {
-			render(<DefaultComponent />);
-
-			await act(async () => {
-				jest.runAllTimers();
-			});
-
-			expect(
-				screen.getByTestId('account-batch-segment-dropdown-item')
-			).toBeInTheDocument();
-			expect(
-				screen.getByTestId('batch-segment-dropdown-item')
-			).toBeInTheDocument();
-
-			expect(
-				screen.queryByTestId('real-time-segment-dropdown-item')
-			).not.toBeInTheDocument();
-		});
-	});
-
-	it('shows the segment type dropdown when real time segments are enabled', async () => {
+	it('shows the segment type dropdown', async () => {
 		render(<DefaultComponent />);
 
 		await act(async () => {
