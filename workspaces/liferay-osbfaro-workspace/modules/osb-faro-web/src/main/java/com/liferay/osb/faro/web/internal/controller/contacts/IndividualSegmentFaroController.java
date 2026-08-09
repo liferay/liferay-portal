@@ -10,8 +10,6 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegment;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembership;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChange;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChangeAggregation;
-import com.liferay.osb.faro.engine.client.model.IndividualSegmentRealTimeMembership;
-import com.liferay.osb.faro.engine.client.model.RealTimeMembershipMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.osb.faro.model.FaroProject;
@@ -238,45 +236,6 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 				cur, delta, orderByFieldsFaroParam.getValue());
 
 		return new FaroResultsDisplay(results);
-	}
-
-	@GET
-	@Path("/{id}/real-time-memberships")
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	@SuppressWarnings("unchecked")
-	public FaroResultsDisplay
-			getIndividualSegmentRealTimeMembershipsFaroResultsDisplay(
-				@PathParam("groupId") long groupId, @PathParam("id") String id,
-				@QueryParam("day") String day,
-				@DefaultValue(StringPool.BLANK) @QueryParam("profileTypes")
-					FaroParam<List<String>> profileTypesFaroParam,
-				@QueryParam("query") String query,
-				@DefaultValue(StringPool.BLANK) @QueryParam("types") FaroParam
-					<List<String>> typesFaroParam,
-				@QueryParam("cur") int cur, @QueryParam("delta") int delta,
-				@DefaultValue(StringPool.BLANK) @QueryParam("orderByFields")
-					FaroParam<List<OrderByField>> orderByFieldsFaroParam)
-		throws Exception {
-
-		Results<IndividualSegmentRealTimeMembership> results =
-			contactsEngineClient.getIndividualSegmentRealTimeMemberships(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId), day,
-				id, profileTypesFaroParam.getValue(), query,
-				typesFaroParam.getValue(), cur, delta,
-				orderByFieldsFaroParam.getValue());
-
-		return new FaroResultsDisplay(results);
-	}
-
-	@GET
-	@Path("/{id}/real-time-membership-metric")
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public RealTimeMembershipMetric getRealTimeMembershipMetric(
-			@PathParam("groupId") long groupId, @PathParam("id") String id)
-		throws Exception {
-
-		return contactsEngineClient.getRealTimeMembershipMetric(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId), id);
 	}
 
 	@GET
