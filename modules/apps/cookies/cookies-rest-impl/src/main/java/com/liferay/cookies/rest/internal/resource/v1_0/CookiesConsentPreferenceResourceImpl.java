@@ -9,6 +9,7 @@ import com.liferay.cookies.rest.dto.v1_0.CookiesConsentPreference;
 import com.liferay.cookies.rest.internal.dto.v1_0.util.CookiesConsentPreferenceUtil;
 import com.liferay.cookies.rest.resource.v1_0.CookiesConsentPreferenceResource;
 import com.liferay.cookies.service.CookiesConsentPreferenceLocalService;
+import com.liferay.cookies.service.persistence.CookiesConsentPreferencePersistence;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import java.net.URI;
@@ -48,9 +49,8 @@ public class CookiesConsentPreferenceResourceImpl
 
 		com.liferay.cookies.model.CookiesConsentPreference
 			serviceBuilderCookiesConsentPreference =
-				_cookiesConsentPreferenceLocalService.
-					fetchCookiesConsentPreference(
-						contextUser.getUserId(), _getDomain(), name);
+				_cookiesConsentPreferencePersistence.fetchByU_D_N(
+					contextUser.getUserId(), _getDomain(), name);
 
 		if (serviceBuilderCookiesConsentPreference == null) {
 			return null;
@@ -67,11 +67,10 @@ public class CookiesConsentPreferenceResourceImpl
 
 		com.liferay.cookies.model.CookiesConsentPreference
 			serviceBuilderCookiesConsentPreference =
-				_cookiesConsentPreferenceLocalService.
-					fetchCookiesConsentPreference(
-						contextUser.getUserId(),
-						cookiesConsentPreference.getDomain(),
-						cookiesConsentPreference.getName());
+				_cookiesConsentPreferencePersistence.fetchByU_D_N(
+					contextUser.getUserId(),
+					cookiesConsentPreference.getDomain(),
+					cookiesConsentPreference.getName());
 
 		if (serviceBuilderCookiesConsentPreference != null) {
 			serviceBuilderCookiesConsentPreference.setExpirationDate(
@@ -80,9 +79,8 @@ public class CookiesConsentPreferenceResourceImpl
 				cookiesConsentPreference.getValue());
 
 			serviceBuilderCookiesConsentPreference =
-				_cookiesConsentPreferenceLocalService.
-					updateCookiesConsentPreference(
-						serviceBuilderCookiesConsentPreference);
+				_cookiesConsentPreferencePersistence.update(
+					serviceBuilderCookiesConsentPreference);
 		}
 		else {
 			serviceBuilderCookiesConsentPreference =
@@ -117,5 +115,9 @@ public class CookiesConsentPreferenceResourceImpl
 	@Reference
 	private CookiesConsentPreferenceLocalService
 		_cookiesConsentPreferenceLocalService;
+
+	@Reference
+	private CookiesConsentPreferencePersistence
+		_cookiesConsentPreferencePersistence;
 
 }
