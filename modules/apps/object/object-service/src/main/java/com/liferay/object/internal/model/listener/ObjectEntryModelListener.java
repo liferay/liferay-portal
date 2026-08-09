@@ -230,6 +230,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		ObjectField objectField, Map<String, Serializable> originalValues,
 		Map<String, Serializable> values) {
 
+		boolean modified = false;
+
 		Map<String, Serializable> originalLocalizedValues = _getLocalizedValues(
 			objectField, originalValues);
 
@@ -240,8 +242,6 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			objectField, values);
 
 		languageIds.addAll(localizedValues.keySet());
-
-		boolean modified = false;
 
 		for (String languageId : languageIds) {
 			Object originalValue = originalLocalizedValues.get(languageId);
