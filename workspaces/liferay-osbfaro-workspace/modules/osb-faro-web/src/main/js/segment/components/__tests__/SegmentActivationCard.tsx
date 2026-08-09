@@ -8,7 +8,6 @@ import {Provider} from 'react-redux';
 import {
 	SegmentActivationFrequencyTypes,
 	SegmentActivationScheduleTypes,
-	SegmentTypes,
 } from 'shared/util/constants';
 
 jest.unmock('react-dom');
@@ -43,23 +42,6 @@ describe('SegmentActivationCard', () => {
 							SegmentActivationFrequencyTypes.Indefinitely,
 						scheduleType: SegmentActivationScheduleTypes.Batch,
 					})}
-					segmentType={SegmentTypes.Batch}
-				/>
-			</WrapperComponent>
-		);
-		expect(container).toMatchSnapshot();
-	});
-
-	it('should render when frequency type is real time', () => {
-		const {container} = render(
-			<WrapperComponent>
-				<SegmentActivationCard
-					segmentActivation={fromJS({
-						frequencyType:
-							SegmentActivationFrequencyTypes.Indefinitely,
-						scheduleType: SegmentActivationScheduleTypes.RealTime,
-					})}
-					segmentType={SegmentTypes.Batch}
 				/>
 			</WrapperComponent>
 		);
@@ -76,7 +58,6 @@ describe('SegmentActivationCard', () => {
 						scheduleStartDate: '1756004400000',
 						scheduleType: SegmentActivationScheduleTypes.Batch,
 					})}
-					segmentType={SegmentTypes.Batch}
 				/>
 			</WrapperComponent>
 		);
@@ -92,7 +73,6 @@ describe('SegmentActivationCard', () => {
 							SegmentActivationFrequencyTypes.Indefinitely,
 						scheduleType: SegmentActivationScheduleTypes.Batch,
 					})}
-					segmentType={SegmentTypes.Batch}
 				/>
 			</WrapperComponent>
 		);
@@ -114,9 +94,8 @@ describe('SegmentActivationCard', () => {
 					segmentActivation={fromJS({
 						frequencyType:
 							SegmentActivationFrequencyTypes.Indefinitely,
-						scheduleType: SegmentActivationScheduleTypes.RealTime,
+						scheduleType: SegmentActivationScheduleTypes.Batch,
 					})}
-					segmentType={SegmentTypes.RealTime}
 				/>
 			</WrapperComponent>
 		);
@@ -130,8 +109,6 @@ describe('SegmentActivationCard', () => {
 		expect(await findByText('Configure Activation')).toBeInTheDocument();
 
 		expect(await findByText('indefinitely')).toBeInTheDocument();
-
-		expect(await findByText('Real-Time')).toBeInTheDocument();
 	});
 
 	it('should render the modal with the expected configurations - between', async () => {
@@ -142,9 +119,8 @@ describe('SegmentActivationCard', () => {
 						frequencyType: SegmentActivationFrequencyTypes.Between,
 						scheduleEndDate: '1757818800000',
 						scheduleStartDate: '1756004400000',
-						scheduleType: SegmentActivationScheduleTypes.RealTime,
+						scheduleType: SegmentActivationScheduleTypes.Batch,
 					})}
-					segmentType={SegmentTypes.RealTime}
 				/>
 			</WrapperComponent>
 		);
@@ -160,7 +136,5 @@ describe('SegmentActivationCard', () => {
 		expect(await findByText('between')).toBeInTheDocument();
 
 		expect(getByTestId('mock-date-input')).toBeInTheDocument();
-
-		expect(await findByText('Real-Time')).toBeInTheDocument();
 	});
 });
