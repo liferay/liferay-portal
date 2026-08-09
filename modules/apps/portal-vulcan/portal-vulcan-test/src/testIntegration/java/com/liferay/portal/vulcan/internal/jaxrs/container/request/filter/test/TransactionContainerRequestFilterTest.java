@@ -233,8 +233,7 @@ public class TransactionContainerRequestFilterTest {
 		@Path("/read/{siteId}")
 		public String testRead(@PathParam("siteId") long siteId) {
 
-			// Calling the persistence layer directly, without the local
-			// service in between, is what makes this endpoint dependent on
+			// Bypassing the local service leaves this endpoint dependent on
 			// the transaction executor the filter publishes
 
 			return String.valueOf(GroupUtil.fetchByPrimaryKey(siteId));

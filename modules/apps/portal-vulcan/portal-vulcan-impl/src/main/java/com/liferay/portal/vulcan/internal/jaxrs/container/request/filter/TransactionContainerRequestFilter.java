@@ -52,14 +52,11 @@ public class TransactionContainerRequestFilter
 	public void filter(ContainerRequestContext containerRequestContext)
 		throws IOException {
 
-		String method = containerRequestContext.getMethod();
+		// Without a published transaction executor the persistence layer
+		// cannot open a session, so publish one for every method that can
+		// reach the database
 
-		// Publishing a transaction executor is what lets the persistence layer
-		// open a session at all, so it happens for every request that reaches
-		// a resource method. Only the transaction attribute varies: a write
-		// wraps its work in one transaction, while a read, and a request that
-		// asks for transaction wrapping to be disabled, leave each service
-		// call to manage a transaction of its own
+		String method = containerRequestContext.getMethod();
 
 		TransactionAttributeAdapter transactionAttributeAdapter = null;
 
@@ -71,9 +68,8 @@ public class TransactionContainerRequestFilter
 				_log.debug("Request level transaction wrapping is disabled");
 			}
 
-			// Not read only, because a request that disables transaction
-			// wrapping may still write, and a write that goes through the
-			// persistence layer alone only reaches the database when the
+			// Not read only, because a request that disables wrapping may
+			// still write, and those writes reach the database only when the
 			// session flushes at commit
 
 			transactionAttributeAdapter =
@@ -84,9 +80,9 @@ public class TransactionContainerRequestFilter
 		}
 		else if (_readMethodNames.contains(method)) {
 
-			// Read only keeps the request scoped session in manual flush
-			// mode, so entities dirtied during a read are never flushed, and
-			// lets a read routed data source serve the request
+			// Read only keeps the session in manual flush mode, so a read
+			// never flushes a dirtied entity, and it lets the read data
+			// source serve the request
 
 			transactionAttributeAdapter = _readTransactionAttributeAdapter;
 		}
