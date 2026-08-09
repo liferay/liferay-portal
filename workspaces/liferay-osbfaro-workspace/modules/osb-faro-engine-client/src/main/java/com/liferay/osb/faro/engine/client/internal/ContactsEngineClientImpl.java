@@ -61,7 +61,6 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegment;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembership;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChange;
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChangeAggregation;
-import com.liferay.osb.faro.engine.client.model.IndividualSegmentRealTimeMembership;
 import com.liferay.osb.faro.engine.client.model.IndividualTransformation;
 import com.liferay.osb.faro.engine.client.model.Interest;
 import com.liferay.osb.faro.engine.client.model.Metric;
@@ -71,7 +70,6 @@ import com.liferay.osb.faro.engine.client.model.PagedModel;
 import com.liferay.osb.faro.engine.client.model.ProjectMetric;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Provider;
-import com.liferay.osb.faro.engine.client.model.RealTimeMembershipMetric;
 import com.liferay.osb.faro.engine.client.model.Rels;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.model.SegmentActivation;
@@ -3039,43 +3037,6 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<IndividualSegmentRealTimeMembership>
-		getIndividualSegmentRealTimeMemberships(
-			FaroProject faroProject, String day, String individualSegmentId,
-			List<String> profileTypes, String query, List<String> types,
-			int cur, int delta, List<OrderByField> orderByFields) {
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, cur, delta, orderByFields);
-
-		if (Validator.isNotNull(day)) {
-			uriVariables.put("day", day);
-		}
-
-		uriVariables.put("id", individualSegmentId);
-
-		if (profileTypes != null) {
-			uriVariables.put(
-				"profileTypes", String.join(StringPool.COMMA, profileTypes));
-		}
-
-		uriVariables.put("query", query);
-
-		if (types != null) {
-			uriVariables.put("types", String.join(StringPool.COMMA, types));
-		}
-
-		PagedModel<?, IndividualSegmentRealTimeMembership> pagedModel = get(
-			faroProject, Rels.INDIVIDUAL_SEGMENT_REAL_TIME_MEMBERSHIPS,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<IndividualSegmentRealTimeMembership>>() {
-			},
-			uriVariables);
-
-		return pagedModel.getResults();
-	}
-
-	@Override
 	public Results<IndividualSegment> getIndividualSegments(
 		FaroProject faroProject, String channelId, String dataSourceId,
 		String query, List<String> fields, String name,
@@ -3340,15 +3301,6 @@ public class ContactsEngineClientImpl
 			).build());
 
 		return pagedModel.getResults();
-	}
-
-	@Override
-	public RealTimeMembershipMetric getRealTimeMembershipMetric(
-		FaroProject faroProject, String individualSegmentId) {
-
-		return get(
-			faroProject, Rels.INDIVIDUAL_SEGMENT_REAL_TIME_MEMBERSHIP_METRIC,
-			individualSegmentId, RealTimeMembershipMetric.class);
 	}
 
 	@Override

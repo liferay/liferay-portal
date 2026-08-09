@@ -102,7 +102,7 @@ public class SegmentActivation {
 
 	public enum ScheduleType {
 
-		BATCH, REAL_TIME
+		BATCH
 
 	}
 
