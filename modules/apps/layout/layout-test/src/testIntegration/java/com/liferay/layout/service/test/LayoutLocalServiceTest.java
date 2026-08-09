@@ -10,13 +10,17 @@ import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalServiceUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.UnsafeBiFunction;
@@ -58,6 +62,7 @@ import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ScopeUtil;
@@ -892,6 +897,78 @@ public class LayoutLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-101671")
+	public void testUpdateLayoutContent() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		long segmentsExperienceId =
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid());
+
+		FragmentEntryLink fragmentEntryLink1 =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				"{}", draftLayout, segmentsExperienceId);
+		FragmentEntryLink fragmentEntryLink2 =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				"{}", draftLayout, segmentsExperienceId);
+
+		_assertFragmentEntryLinks(
+			ListUtil.fromArray(fragmentEntryLink1, fragmentEntryLink2),
+			draftLayout, segmentsExperienceId);
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(
+					draftLayout.getGroupId(), draftLayout.getPlid());
+
+		String data = layoutPageTemplateStructure.getData(segmentsExperienceId);
+
+		_layoutLocalService.updateLayoutContent(
+			data, draftLayout, segmentsExperienceId);
+
+		_assertFragmentEntryLinks(
+			ListUtil.fromArray(fragmentEntryLink1, fragmentEntryLink2),
+			draftLayout, segmentsExperienceId);
+
+		FragmentEntryLink orphanFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				"{}", draftLayout, segmentsExperienceId);
+
+		_assertFragmentEntryLinks(
+			ListUtil.fromArray(
+				fragmentEntryLink1, fragmentEntryLink2,
+				orphanFragmentEntryLink),
+			draftLayout, segmentsExperienceId);
+
+		_layoutLocalService.updateLayoutContent(
+			data, draftLayout, segmentsExperienceId);
+
+		_assertFragmentEntryLinks(
+			ListUtil.fromArray(fragmentEntryLink1, fragmentEntryLink2),
+			draftLayout, segmentsExperienceId);
+
+		Assert.assertNull(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				orphanFragmentEntryLink.getFragmentEntryLinkId()));
+
+		FragmentEntryLink deletedFragmentEntryLink =
+			ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+				"{}", draftLayout, segmentsExperienceId);
+
+		_fragmentEntryLinkLocalService.deleteFragmentEntryLink(
+			deletedFragmentEntryLink);
+
+		_layoutLocalService.updateLayoutContent(
+			data, draftLayout, segmentsExperienceId);
+
+		_assertFragmentEntryLinks(
+			ListUtil.fromArray(fragmentEntryLink1, fragmentEntryLink2),
+			draftLayout, segmentsExperienceId);
+	}
+
+	@Test
 	public void testUpdateLayoutWithEmptyDefaultFriendlyURLAndAnotherLocaleAdded()
 		throws Exception {
 
@@ -1210,6 +1287,24 @@ public class LayoutLocalServiceTest {
 					LayoutConstants.EXTERNAL_REFERENCE_CODE_SUFFIX_DEFAULT));
 	}
 
+	private void _assertFragmentEntryLinks(
+		List<FragmentEntryLink> fragmentEntryLinks, Layout layout,
+		long segmentsExperienceId) {
+
+		for (FragmentEntryLink actualFragmentEntryLink :
+				_fragmentEntryLinkLocalService.
+					getFragmentEntryLinksBySegmentsExperienceId(
+						layout.getGroupId(), segmentsExperienceId,
+						layout.getPlid(), false)) {
+
+			Assert.assertTrue(
+				fragmentEntryLinks.remove(actualFragmentEntryLink));
+		}
+
+		Assert.assertTrue(
+			fragmentEntryLinks.toString(), fragmentEntryLinks.isEmpty());
+	}
+
 	private void _assertSearch(
 			String keyword, String name, boolean searchOnlyByName, int count)
 		throws Exception {
@@ -1270,6 +1365,9 @@ public class LayoutLocalServiceTest {
 	private FragmentCollectionLocalService _fragmentCollectionLocalService;
 
 	@Inject
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;
 
 	@Inject
@@ -1284,6 +1382,10 @@ public class LayoutLocalServiceTest {
 	@Inject
 	private LayoutPageTemplateEntryLocalService
 		_layoutPageTemplateEntryLocalService;
+
+	@Inject
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
 
 	@Inject
 	private Portal _portal;
