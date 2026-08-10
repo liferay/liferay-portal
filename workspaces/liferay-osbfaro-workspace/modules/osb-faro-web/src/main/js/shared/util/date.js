@@ -4,10 +4,9 @@ import 'moment/locale/pt-br';
 import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import {flow, get, head, last, rangeRight} from 'lodash/fp';
+import {getLocale, localeToLanguageId} from 'shared/util/locale';
 import {INTERVAL_KEY_MAP} from 'shared/util/time';
 import {LanguageIds} from 'shared/util/constants';
-
-export const CUSTOM_DATE_FORMAT = 'MMM DD, YYYY';
 
 export const DATE_MASK = [
 	/\d/,
@@ -57,6 +56,119 @@ const FORMATTED_LANGUAGE_IDS = {
 };
 
 export const ISO_8601_DATE_FORMAT = 'YYYY-MM-DDTHH:mm:ss.SSS[Z]';
+
+// Looks up a format string for the active locale, falling back to
+// English. Every `getXFormat` below is one of these lookup tables plus
+// this same fallback rule, so they all delegate to it instead of
+// repeating `TABLE[moment.locale()] || TABLE.en`.
+
+function getLocaleFormat(formatsByLocale) {
+	return formatsByLocale[moment.locale()] || formatsByLocale.en;
+}
+
+// Chart axes/tooltips need a "day + month, no year" and a "month +
+// year, no day" format, which moment doesn't expose as a named token
+// (its named tokens ('ll'/'LL') always include the year). Order and
+// connector words are looked up per locale, same pattern as
+// FORMATTED_LANGUAGE_IDS above.
+
+const DAY_MONTH_FORMATS = {
+	en: 'MMM D',
+	es: 'D MMM',
+	ja: 'M月D日',
+	'pt-br': 'D MMM',
+};
+
+const FULL_DAY_MONTH_FORMATS = {
+	en: 'MMMM D',
+	es: 'D [de] MMMM',
+	ja: 'M月D日',
+	'pt-br': 'D [de] MMMM',
+};
+
+const MONTH_YEAR_FORMATS = {
+	en: 'MMM YYYY',
+	es: 'MMM [de] YYYY',
+	ja: 'YYYY年M月',
+	'pt-br': 'MMM [de] YYYY',
+};
+
+// The app's general-purpose "readable date" fallback (day + short month
+// + year, no time). Deliberately not moment's own 'll' token: 'll'
+// spells out the grammatically complete es/pt-br form ("21 de may. de
+// 2026"), but the product's compact-date convention (matching the
+// acceptance criteria's own "10 Jun 2026" example) drops the "de"
+// connectors ("21 may. 2026") — Japanese is unaffected, since its
+// correct form has no connector words either way.
+
+const CUSTOM_DATE_FORMATS = {
+	en: 'MMM D, YYYY',
+	es: 'D MMM YYYY',
+	ja: 'YYYY年M月D日',
+	'pt-br': 'D MMM YYYY',
+};
+
+export function getCustomDateFormat() {
+	return getLocaleFormat(CUSTOM_DATE_FORMATS);
+}
+
+// Same compact convention as getCustomDateFormat, with the locale-aware
+// time appended. Not a plain `${getCustomDateFormat()}, LT` concat: the
+// date/time connector itself varies by locale (a Western comma reads
+// oddly stitched into Japanese, which conventionally uses a bare space).
+
+const CUSTOM_DATE_TIME_FORMATS = {
+	en: 'MMM D, YYYY, LT',
+	es: 'D MMM YYYY, LT',
+	ja: 'YYYY年M月D日 LT',
+	'pt-br': 'D MMM YYYY, LT',
+};
+
+export function getCustomDateTimeFormat() {
+	return getLocaleFormat(CUSTOM_DATE_TIME_FORMATS);
+}
+
+export function getDayMonthFormat() {
+	return getLocaleFormat(DAY_MONTH_FORMATS);
+}
+
+export function getFullDayMonthFormat() {
+	return getLocaleFormat(FULL_DAY_MONTH_FORMATS);
+}
+
+export function getMonthYearFormat() {
+	return getLocaleFormat(MONTH_YEAR_FORMATS);
+}
+
+/**
+ * Whether the active locale displays time in 12-hour AM/PM form (en-US)
+ * rather than 24-hour form (pt-BR/es-ES/ja-JP), detected from moment's
+ * own locale data rather than hardcoded per language.
+ */
+export function usesTwelveHourClock() {
+	return /a/i.test(moment.localeData().longDateFormat('LT'));
+}
+
+/**
+ * A compact hour label for an hour-bucket (e.g. a chart axis tick or an
+ * hourly range description). For 12-hour locales this drops the
+ * minutes ("6 AM") since the AM/PM marker alone reads unambiguously as
+ * a time; 24-hour locales have no such marker, so a bare hour number
+ * ("6") would not read as a time at all — those use moment's full
+ * `'LT'` token instead ("06:00"), matching the AC's own 24h example
+ * ("14:30").
+ */
+export function getHourOnlyFormat() {
+	return usesTwelveHourClock() ? 'h A' : 'LT';
+}
+
+/**
+ * A day+month label followed by the hour (e.g. an "hourly bucket"
+ * tooltip or range description: "Aug 9, 2 PM" / "9 ago, 14:30").
+ */
+export function getDayMonthHourFormat() {
+	return `${getDayMonthFormat()}, ${getHourOnlyFormat()}`;
+}
 
 export const WEEKDAYS = [
 	Liferay.Language.get('sunday'),
@@ -108,12 +220,24 @@ export function formatDateToTimeZone(
 export function applyTimeZone(
 	date,
 	timeZoneId = DEFAULT_TIMEZONE_ID,
-	languageId = LanguageIds.English
+	languageId = localeToLanguageId(getLocale())
 ) {
 	return momentTimezone
 		.utc(date)
 		.tz(timeZoneId)
 		.locale(FORMATTED_LANGUAGE_IDS[languageId]);
+}
+
+/**
+ * Updates moment's global locale, so every bare `moment(...)` call
+ * (`.calendar()`, `.fromNow()`, `.format('ll')`, etc.) across the app
+ * picks up the current user's language instead of the English default
+ * set at module load. Called whenever the current user's languageId
+ * loads/changes, alongside `setLocale` in `shared/util/locale`.
+ * @param {string} languageId
+ */
+export function setMomentLocale(languageId) {
+	moment.locale(FORMATTED_LANGUAGE_IDS[languageId]);
 }
 
 export function generateDateRange(period = 30, interval = 'days') {

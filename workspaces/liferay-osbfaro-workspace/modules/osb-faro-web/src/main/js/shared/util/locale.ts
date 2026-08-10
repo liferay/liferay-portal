@@ -28,6 +28,24 @@ export function resolveLocale(languageId?: string | null): string {
 	return SUPPORTED_LOCALES[resolveLanguageId(languageId)];
 }
 
+const LANGUAGE_IDS_BY_LOCALE: Record<string, LanguageIds> = Object.fromEntries(
+	Object.entries(SUPPORTED_LOCALES).map(
+		([languageId, locale]): [string, LanguageIds] => [
+			locale,
+			languageId as LanguageIds,
+		]
+	)
+);
+
+/**
+ * Reverses `resolveLocale`: given a BCP-47 locale, returns the portal
+ * languageId it came from (e.g. moment's locale packs, which are keyed
+ * by languageId rather than by the Intl-style locale string).
+ */
+export function localeToLanguageId(locale: string): LanguageIds {
+	return LANGUAGE_IDS_BY_LOCALE[locale] || DEFAULT_LANGUAGE_ID;
+}
+
 let currentLocale: string = DEFAULT_LOCALE;
 
 /**
