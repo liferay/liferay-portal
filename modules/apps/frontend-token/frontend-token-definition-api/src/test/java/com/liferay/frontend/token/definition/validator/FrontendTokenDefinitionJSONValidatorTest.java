@@ -1,11 +1,10 @@
 /**
- * SPDX-FileCopyrightText: (c) 2024 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.frontend.token.definition.internal.validator;
+package com.liferay.frontend.token.definition.validator;
 
-import com.liferay.frontend.token.definition.internal.FrontendTokenDefinitionRegistryImplTest;
 import com.liferay.portal.json.validator.JSONValidatorException;
 import com.liferay.portal.kernel.util.URLUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -34,18 +33,18 @@ public class FrontendTokenDefinitionJSONValidatorTest {
 		_frontendTokenDefinitionJSONValidator.validate("{}");
 		_frontendTokenDefinitionJSONValidator.validate(
 			URLUtil.toString(
-				FrontendTokenDefinitionRegistryImplTest.class.getResource(
+				FrontendTokenDefinitionJSONValidatorTest.class.getResource(
 					"dependencies/frontend-token-definition.json")));
 		_frontendTokenDefinitionJSONValidator.validate(
 			URLUtil.toString(
-				FrontendTokenDefinitionRegistryImplTest.class.getResource(
+				FrontendTokenDefinitionJSONValidatorTest.class.getResource(
 					"dependencies/frontend-token-definition-empty-frontend-" +
 						"token-categories.json")));
 
 		try {
 			_frontendTokenDefinitionJSONValidator.validate(
 				URLUtil.toString(
-					FrontendTokenDefinitionRegistryImplTest.class.getResource(
+					FrontendTokenDefinitionJSONValidatorTest.class.getResource(
 						"dependencies/frontend-token-definition-no-frontend-" +
 							"token-sets.json")));
 

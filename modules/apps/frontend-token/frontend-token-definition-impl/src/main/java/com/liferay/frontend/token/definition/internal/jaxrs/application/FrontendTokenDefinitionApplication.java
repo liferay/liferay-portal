@@ -10,7 +10,7 @@ import com.liferay.frontend.token.definition.FrontendTokenCategory;
 import com.liferay.frontend.token.definition.FrontendTokenDefinition;
 import com.liferay.frontend.token.definition.FrontendTokenSet;
 import com.liferay.frontend.token.definition.internal.FrontendTokenDefinitionImpl;
-import com.liferay.frontend.token.definition.internal.validator.FrontendTokenDefinitionJSONValidator;
+import com.liferay.frontend.token.definition.validator.FrontendTokenDefinitionJSONValidator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.validator.JSONValidatorException;
 import com.liferay.portal.kernel.json.JSONException;
