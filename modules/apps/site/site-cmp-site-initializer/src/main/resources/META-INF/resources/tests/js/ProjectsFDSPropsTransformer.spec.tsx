@@ -22,7 +22,7 @@ const liferayLanguageGet = Liferay.Language.get;
 
 Liferay.Language.get = (key: string) =>
 	key === 'delete-project-confirmation-body'
-		? 'You are about to delete the project "{0}."'
+		? 'You are about to delete the project "{0}" and its tasks.'
 		: liferayLanguageGet(key);
 
 const PROJECT_TITLE = 'Summer Campaign';
