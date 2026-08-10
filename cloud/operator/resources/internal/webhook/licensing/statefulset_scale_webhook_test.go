@@ -111,8 +111,8 @@ func TestHandle(t *testing.T) {
 			maxClusterNodes:         2,
 			request:                 malformedRequest("liferay-default", "liferay-test", "scale"),
 		},
-		"scale with unknown limit is denied": {
-			expectedAllowed:         false,
+		"scale with unknown limit is allowed": {
+			expectedAllowed:         true,
 			expectedMessageContains: "not yet available",
 			licensed:                true,
 			maxClusterNodes:         0,
