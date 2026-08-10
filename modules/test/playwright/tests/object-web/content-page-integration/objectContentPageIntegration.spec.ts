@@ -1310,6 +1310,7 @@ test.describe('Display Page', () => {
 		}
 	);
 
+});
 	test.describe('Information Template', () => {
 		let contentPageName: string;
 		let informationTemplateName: string;
@@ -1472,6 +1473,7 @@ test.describe('Display Page', () => {
 			});
 		});
 	});
+test.describe('Display Page', () => {
 
 	test('verify if the object entries are displayed when selecting to preview an object entry on a page template', async ({
 		apiHelpers,

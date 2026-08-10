@@ -2361,6 +2361,7 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 		).toBeVisible();
 	});
 
+});
 	test.describe('Create Object Fields', () => {
 		let createdObjectDefinition: ObjectDefinition;
 		let createdObjectField: ObjectField;
@@ -2794,7 +2795,6 @@ test.describe('Manage objectFields through Objects Admin UI', () => {
 			});
 		});
 	});
-});
 
 test.describe('Manage object fields default value properties', () => {
 	test(

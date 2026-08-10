@@ -628,7 +628,6 @@ test.describe('Manage root model elements through View Object Entries', () => {
 	});
 });
 
-test.describe('Manage root models elements through Objects Admin', () => {
 	test.describe('Disable inheritance modal flows', () => {
 
 		// Inheritance edges with linked entries cannot be PUT edge=false until
@@ -811,6 +810,7 @@ test.describe('Manage root models elements through Objects Admin', () => {
 			}
 		);
 	});
+test.describe('Manage root models elements through Objects Admin', () => {
 
 	test('cannot delete an object definition with inheritance enabled on its relationship', async ({
 		apiHelpers,
