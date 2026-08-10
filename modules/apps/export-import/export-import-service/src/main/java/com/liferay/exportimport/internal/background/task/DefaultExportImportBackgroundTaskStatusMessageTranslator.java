@@ -175,6 +175,11 @@ public class DefaultExportImportBackgroundTaskStatusMessageTranslator
 
 		long allModelAdditionCountersTotal = GetterUtil.getLong(
 			backgroundTaskStatus.getAttribute("allModelAdditionCountersTotal"));
+
+		if (allModelAdditionCountersTotal <= 0) {
+			return;
+		}
+
 		int batchEngineProcessedItemsCount = GetterUtil.getInteger(
 			message.get("batchEngineProcessedItemsCount"));
 		long currentModelAdditionCountersTotal = GetterUtil.getLong(
