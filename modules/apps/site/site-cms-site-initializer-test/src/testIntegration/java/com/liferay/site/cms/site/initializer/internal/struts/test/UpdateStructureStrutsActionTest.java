@@ -34,8 +34,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -140,6 +138,92 @@ public class UpdateStructureStrutsActionTest {
 	}
 
 	@Test
+	@TestInfo("LPD-99742")
+	public void testExecuteDeletesObjectRelationships() throws Exception {
+		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+		_objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		com.liferay.object.model.ObjectRelationship objectRelationship1 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _objectDefinition1,
+				_objectDefinition3,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
+		com.liferay.object.model.ObjectRelationship objectRelationship2 =
+			_addEdgeObjectRelationship(_objectDefinition1, _objectDefinition3);
+
+		com.liferay.object.model.ObjectRelationship objectRelationship3 =
+			_addEdgeObjectRelationship(_objectDefinition3, _objectDefinition2);
+
+		com.liferay.object.model.ObjectRelationship objectRelationship4 =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, _objectDefinition1,
+				_objectDefinition3,
+				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+				StringUtil.randomId(),
+				ObjectRelationshipConstants.TYPE_MANY_TO_MANY);
+
+		String name = StringUtil.randomId();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(_objectDefinition3);
+
+		mockHttpServletRequest.setParameter(
+			"objectRelationships",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"deletionType",
+					ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE
+				).put(
+					"name", name
+				).put(
+					"objectDefinitionExternalReferenceCode1",
+					_objectDefinition2.getExternalReferenceCode()
+				).put(
+					"objectDefinitionExternalReferenceCode2",
+					_objectDefinition3.getExternalReferenceCode()
+				).put(
+					"type", ObjectRelationshipConstants.TYPE_ONE_TO_MANY
+				)
+			).toString());
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		_updateStructureStrutsAction.execute(
+			mockHttpServletRequest, mockHttpServletResponse);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
+
+		Assert.assertNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship1.getObjectRelationshipId()));
+
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.
+				fetchObjectRelationshipByObjectDefinitionId(
+					_objectDefinition3.getObjectDefinitionId(), name));
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship2.getObjectRelationshipId()));
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship4.getObjectRelationshipId()));
+		Assert.assertNotNull(
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				objectRelationship3.getObjectRelationshipId()));
+
+		_deleteEdgeObjectRelationship(objectRelationship2);
+		_deleteEdgeObjectRelationship(objectRelationship3);
+	}
+
+	@Test
 	@TestInfo("LPD-92696")
 	public void testExecuteDoesNotDeleteObjectRelationships() throws Exception {
 		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
@@ -170,28 +254,17 @@ public class UpdateStructureStrutsActionTest {
 				objectRelationship.getObjectRelationshipId()));
 	}
 
-	@Test
-	@TestInfo("LPD-99742")
-	public void testExecuteDoesNotDeleteRelationshipWhenSavingReferencedStructure()
+	private com.liferay.object.model.ObjectRelationship
+			_addEdgeObjectRelationship(
+				com.liferay.object.model.ObjectDefinition objectDefinition1,
+				com.liferay.object.model.ObjectDefinition objectDefinition2)
 		throws Exception {
-
-		// Mirrors buildObjectDefinition.ts's buildRelationships(), which is
-		// what a "Referenced Content Structure" field actually builds:
-		// objectDefinitionId1 is the structure that owns the field
-		// (_objectDefinition1), objectDefinitionId2 is the referenced/target
-		// structure (_objectDefinition2), and deletionType is cascade. This
-		// is the opposite side assignment from a plain, non-multiselect
-		// related-content field, which buildObjectRelationships.ts builds
-		// with objectDefinitionId1 as the referenced/target structure.
-
-		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
 
 		com.liferay.object.model.ObjectRelationship objectRelationship =
 			_objectRelationshipLocalService.addObjectRelationship(
 				null, TestPropsValues.getUserId(),
-				_objectDefinition1.getObjectDefinitionId(),
-				_objectDefinition2.getObjectDefinitionId(), 0,
+				objectDefinition1.getObjectDefinitionId(),
+				objectDefinition2.getObjectDefinitionId(), 0,
 				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, true,
 				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 				StringUtil.randomId(), false,
@@ -199,101 +272,26 @@ public class UpdateStructureStrutsActionTest {
 
 		Assert.assertTrue(objectRelationship.isEdge());
 
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		// Simulate editing and republishing the referenced/target structure
-		// (_objectDefinition2), not the owner - exactly the LPD-99742 repro
-		// steps ("go to Edit mode in Referenced Structure and simply publish
-		// it again").
-
-		_updateStructureStrutsAction.execute(
-			_getMockHttpServletRequest(_objectDefinition2),
-			mockHttpServletResponse);
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			mockHttpServletResponse.getContentAsString());
-
-		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
-
-		Assert.assertNotNull(
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship.getObjectRelationshipId()));
+		return objectRelationship;
 	}
 
-	@Test
-	@TestInfo("LPD-99742")
-	public void testExecuteRecreatesOwnedEdgeRelationshipWhenSavingOwner()
+	private void _deleteEdgeObjectRelationship(
+			com.liferay.object.model.ObjectRelationship objectRelationship)
 		throws Exception {
 
-		// Mirrors buildObjectRelationships.ts's convention for a
-		// non-multiselect related-content field: objectDefinitionId1 is the
-		// referenced/target structure, objectDefinitionId2 is the owner.
-		// Saving the owner (_objectDefinition2) while resending this same
-		// relationship's name must still replace it with a fresh row, not
-		// leave the stale one in place.
+		com.liferay.object.model.ObjectRelationship nonEdgeObjectRelationship =
+			_objectRelationshipLocalService.updateObjectRelationship(
+				objectRelationship.getExternalReferenceCode(),
+				objectRelationship.getObjectRelationshipId(),
+				objectRelationship.getParameterObjectFieldId(),
+				objectRelationship.getDeletionType(), false,
+				objectRelationship.getLabelMap(), null);
 
-		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
-
-		String name = StringUtil.randomId();
-
-		com.liferay.object.model.ObjectRelationship objectRelationship =
-			_objectRelationshipLocalService.addObjectRelationship(
-				null, TestPropsValues.getUserId(),
-				_objectDefinition1.getObjectDefinitionId(),
-				_objectDefinition2.getObjectDefinitionId(), 0,
-				ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE, true,
-				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
-				name, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-				null);
-
-		MockHttpServletRequest mockHttpServletRequest =
-			(MockHttpServletRequest)_getMockHttpServletRequest(
-				_objectDefinition2);
-
-		mockHttpServletRequest.setParameter(
-			"objectRelationships",
-			JSONUtil.putAll(
-				JSONUtil.put(
-					"deletionType", "disassociate"
-				).put(
-					"edge", true
-				).put(
-					"name", name
-				).put(
-					"objectDefinitionExternalReferenceCode1",
-					_objectDefinition1.getExternalReferenceCode()
-				).put(
-					"objectDefinitionExternalReferenceCode2",
-					_objectDefinition2.getExternalReferenceCode()
-				).put(
-					"type", "oneToMany"
-				)
-			).toString());
-
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
-		_updateStructureStrutsAction.execute(
-			mockHttpServletRequest, mockHttpServletResponse);
-
-		JSONObject jsonObject = _jsonFactory.createJSONObject(
-			mockHttpServletResponse.getContentAsString());
-
-		Assert.assertEquals(jsonObject.toString(), 0, jsonObject.length());
-
-		Assert.assertNull(
-			_objectRelationshipLocalService.fetchObjectRelationship(
-				objectRelationship.getObjectRelationshipId()));
-
-		Assert.assertNotNull(
-			_objectRelationshipLocalService.
-				fetchObjectRelationshipByObjectDefinitionId(
-					_objectDefinition2.getObjectDefinitionId(), name));
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			nonEdgeObjectRelationship);
 	}
 
-	private HttpServletRequest _getMockHttpServletRequest(
+	private MockHttpServletRequest _getMockHttpServletRequest(
 			com.liferay.object.model.ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -365,6 +363,9 @@ public class UpdateStructureStrutsActionTest {
 
 	@DeleteAfterTestRun
 	private com.liferay.object.model.ObjectDefinition _objectDefinition2;
+
+	@DeleteAfterTestRun
+	private com.liferay.object.model.ObjectDefinition _objectDefinition3;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;

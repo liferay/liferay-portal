@@ -9,6 +9,7 @@ import com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition;
 import com.liferay.object.admin.rest.dto.v1_0.ObjectRelationship;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectDefinitionResource;
 import com.liferay.object.admin.rest.resource.v1_0.ObjectRelationshipResource;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -38,11 +39,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.osgi.service.component.annotations.Component;
@@ -122,53 +121,20 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		return null;
 	}
 
-	private void _deleteRelationships(
-			long objectDefinitionId,
-			List<ObjectRelationship> objectRelationships)
+	private void _deleteRelationships(long objectDefinitionId)
 		throws Exception {
-
-		// Only relationships whose name is about to be recreated from
-		// objectRelationships are deleted here. A blanket delete of every
-		// edge where this structure is objectDefinitionId2 also catches
-		// relationships this structure never owns in the first place - a
-		// "Referenced Content Structure" field's edge has the *referenced*
-		// structure as objectDefinitionId2 (see buildObjectDefinition.ts's
-		// buildRelationships), so simply republishing the referenced
-		// structure with no changes of its own would otherwise delete the
-		// referencing structure's field, with nothing to recreate it, since
-		// that edge is never part of this structure's own
-		// objectRelationships.
-
-		Set<String> names = new HashSet<>();
-
-		for (ObjectRelationship objectRelationship : objectRelationships) {
-			names.add(objectRelationship.getName());
-		}
 
 		for (com.liferay.object.model.ObjectRelationship
 				serviceBuilderObjectRelationship :
 					_objectRelationshipLocalService.
 						getObjectRelationshipsByObjectDefinitionId2(
-							objectDefinitionId, true)) {
+							objectDefinitionId, false)) {
 
 			if (serviceBuilderObjectRelationship.isReverse() ||
-				!names.contains(serviceBuilderObjectRelationship.getName())) {
+				!serviceBuilderObjectRelationship.compareType(
+					ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
 
 				continue;
-			}
-
-			if (serviceBuilderObjectRelationship.isEdge()) {
-				serviceBuilderObjectRelationship =
-					_objectRelationshipLocalService.updateObjectRelationship(
-						serviceBuilderObjectRelationship.
-							getExternalReferenceCode(),
-						serviceBuilderObjectRelationship.
-							getObjectRelationshipId(),
-						serviceBuilderObjectRelationship.
-							getParameterObjectFieldId(),
-						serviceBuilderObjectRelationship.getDeletionType(),
-						false, serviceBuilderObjectRelationship.getLabelMap(),
-						null);
 			}
 
 			_objectRelationshipLocalService.deleteObjectRelationship(
@@ -432,8 +398,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 
 			if (serviceBuilderObjectDefinition != null) {
 				_deleteRelationships(
-					serviceBuilderObjectDefinition.getObjectDefinitionId(),
-					_objectRelationships);
+					serviceBuilderObjectDefinition.getObjectDefinitionId());
 			}
 
 			if (ListUtil.isNotEmpty(_objectRelationships)) {
