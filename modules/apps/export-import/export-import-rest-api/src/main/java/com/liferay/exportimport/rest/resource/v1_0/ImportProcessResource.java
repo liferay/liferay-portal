@@ -55,13 +55,7 @@ public interface ImportProcessResource {
 
 	public Page<ImportProcess> getAssetLibraryImportProcessesPage(
 			String assetLibraryExternalReferenceCode, Long creatorId,
-			String search, Integer status, Pagination pagination,
-			com.liferay.portal.kernel.search.Sort[] sorts)
-		throws Exception;
-
-	public Page<ImportProcess> getAssetLibraryPortletImportProcessesPage(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long creatorId, String search, Integer status,
+			String portletId, String search, Integer status,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
@@ -73,92 +67,68 @@ public interface ImportProcessResource {
 		throws Exception;
 
 	public Page<ImportProcess> getImportProcessesPage(
-			Long creatorId, String search, Integer status,
-			Pagination pagination,
-			com.liferay.portal.kernel.search.Sort[] sorts)
-		throws Exception;
-
-	public Page<ImportProcess> getPortletImportProcessesPage(
-			String portletId, Long creatorId, String search, Integer status,
+			Long creatorId, String portletId, String search, Integer status,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public Page<ImportProcess> getSiteImportProcessesPage(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, Pagination pagination,
-			com.liferay.portal.kernel.search.Sort[] sorts)
-		throws Exception;
-
-	public Page<ImportProcess> getSitePortletImportProcessesPage(
-			String siteExternalReferenceCode, String portletId, Long creatorId,
+			String siteExternalReferenceCode, Long creatorId, String portletId,
 			String search, Integer status, Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public ImportProcess postAssetLibraryImportProcess(
-			String assetLibraryExternalReferenceCode,
-			ImportProcessRequest importProcessRequest)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, ImportProcessRequest importProcessRequest)
 		throws Exception;
 
 	public Response postAssetLibraryImportProcessBatch(
-			String assetLibraryExternalReferenceCode,
-			ImportProcessRequest importProcessRequest, String callbackURL,
-			Object object)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, ImportProcessRequest importProcessRequest,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public Response postAssetLibraryImportProcessesPageExportBatch(
 			String assetLibraryExternalReferenceCode, Long creatorId,
-			String search, Integer status,
+			String portletId, String search, Integer status,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
 		throws Exception;
 
-	public ImportProcess postAssetLibraryPortletImportProcess(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long plid, ImportProcessRequest importProcessRequest)
-		throws Exception;
-
 	public ImportProcess postImportProcess(
+			Long plid, String portletId,
 			ImportProcessRequest importProcessRequest)
 		throws Exception;
 
 	public Response postImportProcessBatch(
+			Long plid, String portletId,
 			ImportProcessRequest importProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public Response postImportProcessesPageExportBatch(
-			Long creatorId, String search, Integer status,
+			Long creatorId, String portletId, String search, Integer status,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
 		throws Exception;
 
-	public ImportProcess postPortletImportProcess(
-			String portletId, Long plid,
-			ImportProcessRequest importProcessRequest)
-		throws Exception;
-
 	public ImportProcess postSiteImportProcess(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			ImportProcessRequest importProcessRequest)
 		throws Exception;
 
 	public Response postSiteImportProcessBatch(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			ImportProcessRequest importProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public Response postSiteImportProcessesPageExportBatch(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, com.liferay.portal.kernel.search.Sort[] sorts,
-			String callbackURL, String contentType, String fieldNames)
-		throws Exception;
-
-	public ImportProcess postSitePortletImportProcess(
-			String siteExternalReferenceCode, String portletId, Long plid,
-			ImportProcessRequest importProcessRequest)
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, Integer status,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -257,4 +227,4 @@ public interface ImportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:419484224
+// LIFERAY-REST-BUILDER-HASH:1354619723

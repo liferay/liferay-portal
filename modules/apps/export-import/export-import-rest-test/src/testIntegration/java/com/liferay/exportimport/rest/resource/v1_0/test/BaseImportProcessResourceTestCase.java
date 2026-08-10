@@ -335,8 +335,9 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		Page<ImportProcess> page =
 			importProcessResource.getAssetLibraryImportProcessesPage(
-				assetLibraryExternalReferenceCode, null, null, null,
-				Pagination.of(1, 10), null);
+				assetLibraryExternalReferenceCode, null,
+				RandomTestUtil.randomString(), null, null, Pagination.of(1, 10),
+				null);
 
 		long totalCount = page.getTotalCount();
 
@@ -348,7 +349,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			page = importProcessResource.getAssetLibraryImportProcessesPage(
 				irrelevantAssetLibraryExternalReferenceCode, null, null, null,
-				Pagination.of(1, (int)totalCount + 1), null);
+				null, Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -369,7 +370,7 @@ public abstract class BaseImportProcessResourceTestCase {
 				assetLibraryExternalReferenceCode, randomImportProcess());
 
 		page = importProcessResource.getAssetLibraryImportProcessesPage(
-			assetLibraryExternalReferenceCode, null, null, null,
+			assetLibraryExternalReferenceCode, null, null, null, null,
 			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -417,7 +418,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		Page<ImportProcess> importProcessesPage =
 			importProcessResource.getAssetLibraryImportProcessesPage(
-				assetLibraryExternalReferenceCode, null, null, null, null,
+				assetLibraryExternalReferenceCode, null, null, null, null, null,
 				null);
 
 		int totalCount = GetterUtil.getInteger(
@@ -442,7 +443,7 @@ public abstract class BaseImportProcessResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<ImportProcess> page1 =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -455,7 +456,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page2 =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -466,7 +467,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page3 =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -478,7 +479,7 @@ public abstract class BaseImportProcessResourceTestCase {
 		else {
 			Page<ImportProcess> page1 =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, totalCount + 2), null);
 
 			List<ImportProcess> importProcesses1 =
@@ -490,7 +491,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page2 =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
@@ -503,7 +504,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page3 =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
@@ -643,13 +644,13 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		Page<ImportProcess> page =
 			importProcessResource.getAssetLibraryImportProcessesPage(
-				assetLibraryExternalReferenceCode, null, null, null, null,
+				assetLibraryExternalReferenceCode, null, null, null, null, null,
 				null);
 
 		for (EntityField entityField : entityFields) {
 			Page<ImportProcess> ascPage =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -660,7 +661,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> descPage =
 				importProcessResource.getAssetLibraryImportProcessesPage(
-					assetLibraryExternalReferenceCode, null, null, null,
+					assetLibraryExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -693,401 +694,6 @@ public abstract class BaseImportProcessResourceTestCase {
 		throws Exception {
 
 		return irrelevantDepotEntryGroup.getExternalReferenceCode();
-	}
-
-	@Test
-	public void testGetAssetLibraryPortletImportProcessesPage()
-		throws Exception {
-
-		String assetLibraryExternalReferenceCode =
-			testGetAssetLibraryPortletImportProcessesPage_getAssetLibraryExternalReferenceCode();
-		String irrelevantAssetLibraryExternalReferenceCode =
-			testGetAssetLibraryPortletImportProcessesPage_getIrrelevantAssetLibraryExternalReferenceCode();
-		String portletId =
-			testGetAssetLibraryPortletImportProcessesPage_getPortletId();
-		String irrelevantPortletId =
-			testGetAssetLibraryPortletImportProcessesPage_getIrrelevantPortletId();
-
-		Page<ImportProcess> page =
-			importProcessResource.getAssetLibraryPortletImportProcessesPage(
-				assetLibraryExternalReferenceCode, portletId, null, null, null,
-				Pagination.of(1, 10), null);
-
-		long totalCount = page.getTotalCount();
-
-		if ((irrelevantAssetLibraryExternalReferenceCode != null) &&
-			(irrelevantPortletId != null)) {
-
-			ImportProcess irrelevantImportProcess =
-				testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-					irrelevantAssetLibraryExternalReferenceCode,
-					irrelevantPortletId, randomIrrelevantImportProcess());
-
-			page =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					irrelevantAssetLibraryExternalReferenceCode,
-					irrelevantPortletId, null, null, null,
-					Pagination.of(1, (int)totalCount + 1), null);
-
-			Assert.assertEquals(totalCount + 1, page.getTotalCount());
-
-			assertContains(
-				irrelevantImportProcess, (List<ImportProcess>)page.getItems());
-			assertValid(
-				page,
-				testGetAssetLibraryPortletImportProcessesPage_getExpectedActions(
-					irrelevantAssetLibraryExternalReferenceCode,
-					irrelevantPortletId));
-		}
-
-		ImportProcess importProcess1 =
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				assetLibraryExternalReferenceCode, portletId,
-				randomImportProcess());
-
-		ImportProcess importProcess2 =
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				assetLibraryExternalReferenceCode, portletId,
-				randomImportProcess());
-
-		page = importProcessResource.getAssetLibraryPortletImportProcessesPage(
-			assetLibraryExternalReferenceCode, portletId, null, null, null,
-			Pagination.of(1, (int)totalCount + 2), null);
-
-		Assert.assertEquals(totalCount + 2, page.getTotalCount());
-
-		assertContains(importProcess1, (List<ImportProcess>)page.getItems());
-		assertContains(importProcess2, (List<ImportProcess>)page.getItems());
-		assertValid(
-			page,
-			testGetAssetLibraryPortletImportProcessesPage_getExpectedActions(
-				assetLibraryExternalReferenceCode, portletId));
-
-		importProcessResource.deleteImportProcess(importProcess1.getId());
-
-		importProcessResource.deleteImportProcess(importProcess2.getId());
-	}
-
-	protected Map<String, Map<String, String>>
-			testGetAssetLibraryPortletImportProcessesPage_getExpectedActions(
-				String assetLibraryExternalReferenceCode, String portletId)
-		throws Exception {
-
-		Map<String, Map<String, String>> expectedActions = new HashMap<>();
-
-		return expectedActions;
-	}
-
-	@Test
-	public void testGetAssetLibraryPortletImportProcessesPageWithPagination()
-		throws Exception {
-
-		String assetLibraryExternalReferenceCode =
-			testGetAssetLibraryPortletImportProcessesPage_getAssetLibraryExternalReferenceCode();
-		String portletId =
-			testGetAssetLibraryPortletImportProcessesPage_getPortletId();
-
-		Page<ImportProcess> importProcessesPage =
-			importProcessResource.getAssetLibraryPortletImportProcessesPage(
-				assetLibraryExternalReferenceCode, portletId, null, null, null,
-				null, null);
-
-		int totalCount = GetterUtil.getInteger(
-			importProcessesPage.getTotalCount());
-
-		ImportProcess importProcess1 =
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				assetLibraryExternalReferenceCode, portletId,
-				randomImportProcess());
-
-		ImportProcess importProcess2 =
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				assetLibraryExternalReferenceCode, portletId,
-				randomImportProcess());
-
-		ImportProcess importProcess3 =
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				assetLibraryExternalReferenceCode, portletId,
-				randomImportProcess());
-
-		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
-
-		int pageSizeLimit = 500;
-
-		if (totalCount >= (pageSizeLimit - 2)) {
-			Page<ImportProcess> page1 =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)page1.getItems());
-
-			Page<ImportProcess> page2 =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			assertContains(
-				importProcess2, (List<ImportProcess>)page2.getItems());
-
-			Page<ImportProcess> page3 =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			assertContains(
-				importProcess3, (List<ImportProcess>)page3.getItems());
-		}
-		else {
-			Page<ImportProcess> page1 =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null, Pagination.of(1, totalCount + 2), null);
-
-			List<ImportProcess> importProcesses1 =
-				(List<ImportProcess>)page1.getItems();
-
-			Assert.assertEquals(
-				importProcesses1.toString(), totalCount + 2,
-				importProcesses1.size());
-
-			Page<ImportProcess> page2 =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null, Pagination.of(2, totalCount + 2), null);
-
-			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
-
-			List<ImportProcess> importProcesses2 =
-				(List<ImportProcess>)page2.getItems();
-
-			Assert.assertEquals(
-				importProcesses2.toString(), 1, importProcesses2.size());
-
-			Page<ImportProcess> page3 =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null, Pagination.of(1, (int)totalCount + 3), null);
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)page3.getItems());
-			assertContains(
-				importProcess2, (List<ImportProcess>)page3.getItems());
-			assertContains(
-				importProcess3, (List<ImportProcess>)page3.getItems());
-		}
-	}
-
-	@Test
-	public void testGetAssetLibraryPortletImportProcessesPageWithSortDateTime()
-		throws Exception {
-
-		testGetAssetLibraryPortletImportProcessesPageWithSort(
-			EntityField.Type.DATE_TIME,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(),
-					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
-			});
-	}
-
-	@Test
-	public void testGetAssetLibraryPortletImportProcessesPageWithSortDouble()
-		throws Exception {
-
-		testGetAssetLibraryPortletImportProcessesPageWithSort(
-			EntityField.Type.DOUBLE,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(), 0.1);
-				BeanTestUtil.setProperty(
-					importProcess2, entityField.getName(), 0.5);
-			});
-	}
-
-	@Test
-	public void testGetAssetLibraryPortletImportProcessesPageWithSortInteger()
-		throws Exception {
-
-		testGetAssetLibraryPortletImportProcessesPageWithSort(
-			EntityField.Type.INTEGER,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(), 0);
-				BeanTestUtil.setProperty(
-					importProcess2, entityField.getName(), 1);
-			});
-	}
-
-	@Test
-	public void testGetAssetLibraryPortletImportProcessesPageWithSortString()
-		throws Exception {
-
-		testGetAssetLibraryPortletImportProcessesPageWithSort(
-			EntityField.Type.STRING,
-			(entityField, importProcess1, importProcess2) -> {
-				Class<?> clazz = importProcess1.getClass();
-
-				String entityFieldName = entityField.getName();
-
-				Method method = clazz.getMethod(
-					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
-
-				Class<?> returnType = method.getReturnType();
-
-				if (returnType.isAssignableFrom(Map.class)) {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						Collections.singletonMap("Aaa", "Aaa"));
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						Collections.singletonMap("Bbb", "Bbb"));
-				}
-				else if (entityFieldName.contains("email")) {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						"aaa" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()) +
-									"@liferay.com");
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						"bbb" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()) +
-									"@liferay.com");
-				}
-				else {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						"aaa" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()));
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						"bbb" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()));
-				}
-			});
-	}
-
-	protected void testGetAssetLibraryPortletImportProcessesPageWithSort(
-			EntityField.Type type,
-			UnsafeTriConsumer
-				<EntityField, ImportProcess, ImportProcess, Exception>
-					unsafeTriConsumer)
-		throws Exception {
-
-		List<EntityField> entityFields = getEntityFields(type);
-
-		if (entityFields.isEmpty()) {
-			return;
-		}
-
-		String assetLibraryExternalReferenceCode =
-			testGetAssetLibraryPortletImportProcessesPage_getAssetLibraryExternalReferenceCode();
-		String portletId =
-			testGetAssetLibraryPortletImportProcessesPage_getPortletId();
-
-		ImportProcess importProcess1 = randomImportProcess();
-		ImportProcess importProcess2 = randomImportProcess();
-
-		for (EntityField entityField : entityFields) {
-			unsafeTriConsumer.accept(
-				entityField, importProcess1, importProcess2);
-		}
-
-		importProcess1 =
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				assetLibraryExternalReferenceCode, portletId, importProcess1);
-
-		importProcess2 =
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				assetLibraryExternalReferenceCode, portletId, importProcess2);
-
-		Page<ImportProcess> page =
-			importProcessResource.getAssetLibraryPortletImportProcessesPage(
-				assetLibraryExternalReferenceCode, portletId, null, null, null,
-				null, null);
-
-		for (EntityField entityField : entityFields) {
-			Page<ImportProcess> ascPage =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null, Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":asc");
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)ascPage.getItems());
-			assertContains(
-				importProcess2, (List<ImportProcess>)ascPage.getItems());
-
-			Page<ImportProcess> descPage =
-				importProcessResource.getAssetLibraryPortletImportProcessesPage(
-					assetLibraryExternalReferenceCode, portletId, null, null,
-					null, Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":desc");
-
-			assertContains(
-				importProcess2, (List<ImportProcess>)descPage.getItems());
-			assertContains(
-				importProcess1, (List<ImportProcess>)descPage.getItems());
-		}
-	}
-
-	protected ImportProcess
-			testGetAssetLibraryPortletImportProcessesPage_addImportProcess(
-				String assetLibraryExternalReferenceCode, String portletId,
-				ImportProcess importProcess)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected String
-			testGetAssetLibraryPortletImportProcessesPage_getAssetLibraryExternalReferenceCode()
-		throws Exception {
-
-		return testDepotEntryGroup.getExternalReferenceCode();
-	}
-
-	protected String
-			testGetAssetLibraryPortletImportProcessesPage_getIrrelevantAssetLibraryExternalReferenceCode()
-		throws Exception {
-
-		return irrelevantDepotEntryGroup.getExternalReferenceCode();
-	}
-
-	protected String
-			testGetAssetLibraryPortletImportProcessesPage_getPortletId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected String
-			testGetAssetLibraryPortletImportProcessesPage_getIrrelevantPortletId()
-		throws Exception {
-
-		return null;
 	}
 
 	@Test
@@ -1309,7 +915,8 @@ public abstract class BaseImportProcessResourceTestCase {
 	@Test
 	public void testGetImportProcessesPage() throws Exception {
 		Page<ImportProcess> page = importProcessResource.getImportProcessesPage(
-			null, null, null, Pagination.of(1, 10), null);
+			null, RandomTestUtil.randomString(), null, null,
+			Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -1320,7 +927,8 @@ public abstract class BaseImportProcessResourceTestCase {
 			testGetImportProcessesPage_addImportProcess(randomImportProcess());
 
 		page = importProcessResource.getImportProcessesPage(
-			null, null, null, Pagination.of(1, (int)totalCount + 2), null);
+			null, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
@@ -1346,7 +954,7 @@ public abstract class BaseImportProcessResourceTestCase {
 	public void testGetImportProcessesPageWithPagination() throws Exception {
 		Page<ImportProcess> importProcessesPage =
 			importProcessResource.getImportProcessesPage(
-				null, null, null, null, null);
+				null, null, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			importProcessesPage.getTotalCount());
@@ -1367,7 +975,7 @@ public abstract class BaseImportProcessResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<ImportProcess> page1 =
 				importProcessResource.getImportProcessesPage(
-					null, null, null,
+					null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -1380,7 +988,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page2 =
 				importProcessResource.getImportProcessesPage(
-					null, null, null,
+					null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -1391,7 +999,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page3 =
 				importProcessResource.getImportProcessesPage(
-					null, null, null,
+					null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -1403,7 +1011,8 @@ public abstract class BaseImportProcessResourceTestCase {
 		else {
 			Page<ImportProcess> page1 =
 				importProcessResource.getImportProcessesPage(
-					null, null, null, Pagination.of(1, totalCount + 2), null);
+					null, null, null, null, Pagination.of(1, totalCount + 2),
+					null);
 
 			List<ImportProcess> importProcesses1 =
 				(List<ImportProcess>)page1.getItems();
@@ -1414,7 +1023,8 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page2 =
 				importProcessResource.getImportProcessesPage(
-					null, null, null, Pagination.of(2, totalCount + 2), null);
+					null, null, null, null, Pagination.of(2, totalCount + 2),
+					null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
@@ -1426,8 +1036,8 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page3 =
 				importProcessResource.getImportProcessesPage(
-					null, null, null, Pagination.of(1, (int)totalCount + 3),
-					null);
+					null, null, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
 				importProcess1, (List<ImportProcess>)page3.getItems());
@@ -1552,12 +1162,12 @@ public abstract class BaseImportProcessResourceTestCase {
 			importProcess2);
 
 		Page<ImportProcess> page = importProcessResource.getImportProcessesPage(
-			null, null, null, null, null);
+			null, null, null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<ImportProcess> ascPage =
 				importProcessResource.getImportProcessesPage(
-					null, null, null,
+					null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -1568,7 +1178,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> descPage =
 				importProcessResource.getImportProcessesPage(
-					null, null, null,
+					null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -1588,350 +1198,6 @@ public abstract class BaseImportProcessResourceTestCase {
 	}
 
 	@Test
-	public void testGetPortletImportProcessesPage() throws Exception {
-		String portletId = testGetPortletImportProcessesPage_getPortletId();
-		String irrelevantPortletId =
-			testGetPortletImportProcessesPage_getIrrelevantPortletId();
-
-		Page<ImportProcess> page =
-			importProcessResource.getPortletImportProcessesPage(
-				portletId, null, null, null, Pagination.of(1, 10), null);
-
-		long totalCount = page.getTotalCount();
-
-		if (irrelevantPortletId != null) {
-			ImportProcess irrelevantImportProcess =
-				testGetPortletImportProcessesPage_addImportProcess(
-					irrelevantPortletId, randomIrrelevantImportProcess());
-
-			page = importProcessResource.getPortletImportProcessesPage(
-				irrelevantPortletId, null, null, null,
-				Pagination.of(1, (int)totalCount + 1), null);
-
-			Assert.assertEquals(totalCount + 1, page.getTotalCount());
-
-			assertContains(
-				irrelevantImportProcess, (List<ImportProcess>)page.getItems());
-			assertValid(
-				page,
-				testGetPortletImportProcessesPage_getExpectedActions(
-					irrelevantPortletId));
-		}
-
-		ImportProcess importProcess1 =
-			testGetPortletImportProcessesPage_addImportProcess(
-				portletId, randomImportProcess());
-
-		ImportProcess importProcess2 =
-			testGetPortletImportProcessesPage_addImportProcess(
-				portletId, randomImportProcess());
-
-		page = importProcessResource.getPortletImportProcessesPage(
-			portletId, null, null, null, Pagination.of(1, (int)totalCount + 2),
-			null);
-
-		Assert.assertEquals(totalCount + 2, page.getTotalCount());
-
-		assertContains(importProcess1, (List<ImportProcess>)page.getItems());
-		assertContains(importProcess2, (List<ImportProcess>)page.getItems());
-		assertValid(
-			page,
-			testGetPortletImportProcessesPage_getExpectedActions(portletId));
-
-		importProcessResource.deleteImportProcess(importProcess1.getId());
-
-		importProcessResource.deleteImportProcess(importProcess2.getId());
-	}
-
-	protected Map<String, Map<String, String>>
-			testGetPortletImportProcessesPage_getExpectedActions(
-				String portletId)
-		throws Exception {
-
-		Map<String, Map<String, String>> expectedActions = new HashMap<>();
-
-		return expectedActions;
-	}
-
-	@Test
-	public void testGetPortletImportProcessesPageWithPagination()
-		throws Exception {
-
-		String portletId = testGetPortletImportProcessesPage_getPortletId();
-
-		Page<ImportProcess> importProcessesPage =
-			importProcessResource.getPortletImportProcessesPage(
-				portletId, null, null, null, null, null);
-
-		int totalCount = GetterUtil.getInteger(
-			importProcessesPage.getTotalCount());
-
-		ImportProcess importProcess1 =
-			testGetPortletImportProcessesPage_addImportProcess(
-				portletId, randomImportProcess());
-
-		ImportProcess importProcess2 =
-			testGetPortletImportProcessesPage_addImportProcess(
-				portletId, randomImportProcess());
-
-		ImportProcess importProcess3 =
-			testGetPortletImportProcessesPage_addImportProcess(
-				portletId, randomImportProcess());
-
-		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
-
-		int pageSizeLimit = 500;
-
-		if (totalCount >= (pageSizeLimit - 2)) {
-			Page<ImportProcess> page1 =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)page1.getItems());
-
-			Page<ImportProcess> page2 =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			assertContains(
-				importProcess2, (List<ImportProcess>)page2.getItems());
-
-			Page<ImportProcess> page3 =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			assertContains(
-				importProcess3, (List<ImportProcess>)page3.getItems());
-		}
-		else {
-			Page<ImportProcess> page1 =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(1, totalCount + 2), null);
-
-			List<ImportProcess> importProcesses1 =
-				(List<ImportProcess>)page1.getItems();
-
-			Assert.assertEquals(
-				importProcesses1.toString(), totalCount + 2,
-				importProcesses1.size());
-
-			Page<ImportProcess> page2 =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(2, totalCount + 2), null);
-
-			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
-
-			List<ImportProcess> importProcesses2 =
-				(List<ImportProcess>)page2.getItems();
-
-			Assert.assertEquals(
-				importProcesses2.toString(), 1, importProcesses2.size());
-
-			Page<ImportProcess> page3 =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(1, (int)totalCount + 3), null);
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)page3.getItems());
-			assertContains(
-				importProcess2, (List<ImportProcess>)page3.getItems());
-			assertContains(
-				importProcess3, (List<ImportProcess>)page3.getItems());
-		}
-	}
-
-	@Test
-	public void testGetPortletImportProcessesPageWithSortDateTime()
-		throws Exception {
-
-		testGetPortletImportProcessesPageWithSort(
-			EntityField.Type.DATE_TIME,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(),
-					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
-			});
-	}
-
-	@Test
-	public void testGetPortletImportProcessesPageWithSortDouble()
-		throws Exception {
-
-		testGetPortletImportProcessesPageWithSort(
-			EntityField.Type.DOUBLE,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(), 0.1);
-				BeanTestUtil.setProperty(
-					importProcess2, entityField.getName(), 0.5);
-			});
-	}
-
-	@Test
-	public void testGetPortletImportProcessesPageWithSortInteger()
-		throws Exception {
-
-		testGetPortletImportProcessesPageWithSort(
-			EntityField.Type.INTEGER,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(), 0);
-				BeanTestUtil.setProperty(
-					importProcess2, entityField.getName(), 1);
-			});
-	}
-
-	@Test
-	public void testGetPortletImportProcessesPageWithSortString()
-		throws Exception {
-
-		testGetPortletImportProcessesPageWithSort(
-			EntityField.Type.STRING,
-			(entityField, importProcess1, importProcess2) -> {
-				Class<?> clazz = importProcess1.getClass();
-
-				String entityFieldName = entityField.getName();
-
-				Method method = clazz.getMethod(
-					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
-
-				Class<?> returnType = method.getReturnType();
-
-				if (returnType.isAssignableFrom(Map.class)) {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						Collections.singletonMap("Aaa", "Aaa"));
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						Collections.singletonMap("Bbb", "Bbb"));
-				}
-				else if (entityFieldName.contains("email")) {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						"aaa" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()) +
-									"@liferay.com");
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						"bbb" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()) +
-									"@liferay.com");
-				}
-				else {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						"aaa" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()));
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						"bbb" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()));
-				}
-			});
-	}
-
-	protected void testGetPortletImportProcessesPageWithSort(
-			EntityField.Type type,
-			UnsafeTriConsumer
-				<EntityField, ImportProcess, ImportProcess, Exception>
-					unsafeTriConsumer)
-		throws Exception {
-
-		List<EntityField> entityFields = getEntityFields(type);
-
-		if (entityFields.isEmpty()) {
-			return;
-		}
-
-		String portletId = testGetPortletImportProcessesPage_getPortletId();
-
-		ImportProcess importProcess1 = randomImportProcess();
-		ImportProcess importProcess2 = randomImportProcess();
-
-		for (EntityField entityField : entityFields) {
-			unsafeTriConsumer.accept(
-				entityField, importProcess1, importProcess2);
-		}
-
-		importProcess1 = testGetPortletImportProcessesPage_addImportProcess(
-			portletId, importProcess1);
-
-		importProcess2 = testGetPortletImportProcessesPage_addImportProcess(
-			portletId, importProcess2);
-
-		Page<ImportProcess> page =
-			importProcessResource.getPortletImportProcessesPage(
-				portletId, null, null, null, null, null);
-
-		for (EntityField entityField : entityFields) {
-			Page<ImportProcess> ascPage =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":asc");
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)ascPage.getItems());
-			assertContains(
-				importProcess2, (List<ImportProcess>)ascPage.getItems());
-
-			Page<ImportProcess> descPage =
-				importProcessResource.getPortletImportProcessesPage(
-					portletId, null, null, null,
-					Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":desc");
-
-			assertContains(
-				importProcess2, (List<ImportProcess>)descPage.getItems());
-			assertContains(
-				importProcess1, (List<ImportProcess>)descPage.getItems());
-		}
-	}
-
-	protected ImportProcess testGetPortletImportProcessesPage_addImportProcess(
-			String portletId, ImportProcess importProcess)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected String testGetPortletImportProcessesPage_getPortletId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected String testGetPortletImportProcessesPage_getIrrelevantPortletId()
-		throws Exception {
-
-		return null;
-	}
-
-	@Test
 	public void testGetSiteImportProcessesPage() throws Exception {
 		String siteExternalReferenceCode =
 			testGetSiteImportProcessesPage_getSiteExternalReferenceCode();
@@ -1940,8 +1206,8 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		Page<ImportProcess> page =
 			importProcessResource.getSiteImportProcessesPage(
-				siteExternalReferenceCode, null, null, null,
-				Pagination.of(1, 10), null);
+				siteExternalReferenceCode, null, RandomTestUtil.randomString(),
+				null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
@@ -1952,7 +1218,7 @@ public abstract class BaseImportProcessResourceTestCase {
 					randomIrrelevantImportProcess());
 
 			page = importProcessResource.getSiteImportProcessesPage(
-				irrelevantSiteExternalReferenceCode, null, null, null,
+				irrelevantSiteExternalReferenceCode, null, null, null, null,
 				Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
@@ -1974,7 +1240,7 @@ public abstract class BaseImportProcessResourceTestCase {
 				siteExternalReferenceCode, randomImportProcess());
 
 		page = importProcessResource.getSiteImportProcessesPage(
-			siteExternalReferenceCode, null, null, null,
+			siteExternalReferenceCode, null, null, null, null,
 			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -2022,7 +1288,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		Page<ImportProcess> importProcessesPage =
 			importProcessResource.getSiteImportProcessesPage(
-				siteExternalReferenceCode, null, null, null, null, null);
+				siteExternalReferenceCode, null, null, null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
 			importProcessesPage.getTotalCount());
@@ -2046,7 +1312,7 @@ public abstract class BaseImportProcessResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<ImportProcess> page1 =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -2059,7 +1325,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page2 =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -2070,7 +1336,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page3 =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -2082,7 +1348,7 @@ public abstract class BaseImportProcessResourceTestCase {
 		else {
 			Page<ImportProcess> page1 =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, totalCount + 2), null);
 
 			List<ImportProcess> importProcesses1 =
@@ -2094,7 +1360,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page2 =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
@@ -2107,7 +1373,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> page3 =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
@@ -2245,12 +1511,12 @@ public abstract class BaseImportProcessResourceTestCase {
 
 		Page<ImportProcess> page =
 			importProcessResource.getSiteImportProcessesPage(
-				siteExternalReferenceCode, null, null, null, null, null);
+				siteExternalReferenceCode, null, null, null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
 			Page<ImportProcess> ascPage =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -2261,7 +1527,7 @@ public abstract class BaseImportProcessResourceTestCase {
 
 			Page<ImportProcess> descPage =
 				importProcessResource.getSiteImportProcessesPage(
-					siteExternalReferenceCode, null, null, null,
+					siteExternalReferenceCode, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -2295,382 +1561,6 @@ public abstract class BaseImportProcessResourceTestCase {
 	}
 
 	@Test
-	public void testGetSitePortletImportProcessesPage() throws Exception {
-		String siteExternalReferenceCode =
-			testGetSitePortletImportProcessesPage_getSiteExternalReferenceCode();
-		String irrelevantSiteExternalReferenceCode =
-			testGetSitePortletImportProcessesPage_getIrrelevantSiteExternalReferenceCode();
-		String portletId = testGetSitePortletImportProcessesPage_getPortletId();
-		String irrelevantPortletId =
-			testGetSitePortletImportProcessesPage_getIrrelevantPortletId();
-
-		Page<ImportProcess> page =
-			importProcessResource.getSitePortletImportProcessesPage(
-				siteExternalReferenceCode, portletId, null, null, null,
-				Pagination.of(1, 10), null);
-
-		long totalCount = page.getTotalCount();
-
-		if ((irrelevantSiteExternalReferenceCode != null) &&
-			(irrelevantPortletId != null)) {
-
-			ImportProcess irrelevantImportProcess =
-				testGetSitePortletImportProcessesPage_addImportProcess(
-					irrelevantSiteExternalReferenceCode, irrelevantPortletId,
-					randomIrrelevantImportProcess());
-
-			page = importProcessResource.getSitePortletImportProcessesPage(
-				irrelevantSiteExternalReferenceCode, irrelevantPortletId, null,
-				null, null, Pagination.of(1, (int)totalCount + 1), null);
-
-			Assert.assertEquals(totalCount + 1, page.getTotalCount());
-
-			assertContains(
-				irrelevantImportProcess, (List<ImportProcess>)page.getItems());
-			assertValid(
-				page,
-				testGetSitePortletImportProcessesPage_getExpectedActions(
-					irrelevantSiteExternalReferenceCode, irrelevantPortletId));
-		}
-
-		ImportProcess importProcess1 =
-			testGetSitePortletImportProcessesPage_addImportProcess(
-				siteExternalReferenceCode, portletId, randomImportProcess());
-
-		ImportProcess importProcess2 =
-			testGetSitePortletImportProcessesPage_addImportProcess(
-				siteExternalReferenceCode, portletId, randomImportProcess());
-
-		page = importProcessResource.getSitePortletImportProcessesPage(
-			siteExternalReferenceCode, portletId, null, null, null,
-			Pagination.of(1, (int)totalCount + 2), null);
-
-		Assert.assertEquals(totalCount + 2, page.getTotalCount());
-
-		assertContains(importProcess1, (List<ImportProcess>)page.getItems());
-		assertContains(importProcess2, (List<ImportProcess>)page.getItems());
-		assertValid(
-			page,
-			testGetSitePortletImportProcessesPage_getExpectedActions(
-				siteExternalReferenceCode, portletId));
-
-		importProcessResource.deleteImportProcess(importProcess1.getId());
-
-		importProcessResource.deleteImportProcess(importProcess2.getId());
-	}
-
-	protected Map<String, Map<String, String>>
-			testGetSitePortletImportProcessesPage_getExpectedActions(
-				String siteExternalReferenceCode, String portletId)
-		throws Exception {
-
-		Map<String, Map<String, String>> expectedActions = new HashMap<>();
-
-		return expectedActions;
-	}
-
-	@Test
-	public void testGetSitePortletImportProcessesPageWithPagination()
-		throws Exception {
-
-		String siteExternalReferenceCode =
-			testGetSitePortletImportProcessesPage_getSiteExternalReferenceCode();
-		String portletId = testGetSitePortletImportProcessesPage_getPortletId();
-
-		Page<ImportProcess> importProcessesPage =
-			importProcessResource.getSitePortletImportProcessesPage(
-				siteExternalReferenceCode, portletId, null, null, null, null,
-				null);
-
-		int totalCount = GetterUtil.getInteger(
-			importProcessesPage.getTotalCount());
-
-		ImportProcess importProcess1 =
-			testGetSitePortletImportProcessesPage_addImportProcess(
-				siteExternalReferenceCode, portletId, randomImportProcess());
-
-		ImportProcess importProcess2 =
-			testGetSitePortletImportProcessesPage_addImportProcess(
-				siteExternalReferenceCode, portletId, randomImportProcess());
-
-		ImportProcess importProcess3 =
-			testGetSitePortletImportProcessesPage_addImportProcess(
-				siteExternalReferenceCode, portletId, randomImportProcess());
-
-		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
-
-		int pageSizeLimit = 500;
-
-		if (totalCount >= (pageSizeLimit - 2)) {
-			Page<ImportProcess> page1 =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)page1.getItems());
-
-			Page<ImportProcess> page2 =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			assertContains(
-				importProcess2, (List<ImportProcess>)page2.getItems());
-
-			Page<ImportProcess> page3 =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(
-						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
-						pageSizeLimit),
-					null);
-
-			assertContains(
-				importProcess3, (List<ImportProcess>)page3.getItems());
-		}
-		else {
-			Page<ImportProcess> page1 =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(1, totalCount + 2), null);
-
-			List<ImportProcess> importProcesses1 =
-				(List<ImportProcess>)page1.getItems();
-
-			Assert.assertEquals(
-				importProcesses1.toString(), totalCount + 2,
-				importProcesses1.size());
-
-			Page<ImportProcess> page2 =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(2, totalCount + 2), null);
-
-			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
-
-			List<ImportProcess> importProcesses2 =
-				(List<ImportProcess>)page2.getItems();
-
-			Assert.assertEquals(
-				importProcesses2.toString(), 1, importProcesses2.size());
-
-			Page<ImportProcess> page3 =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(1, (int)totalCount + 3), null);
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)page3.getItems());
-			assertContains(
-				importProcess2, (List<ImportProcess>)page3.getItems());
-			assertContains(
-				importProcess3, (List<ImportProcess>)page3.getItems());
-		}
-	}
-
-	@Test
-	public void testGetSitePortletImportProcessesPageWithSortDateTime()
-		throws Exception {
-
-		testGetSitePortletImportProcessesPageWithSort(
-			EntityField.Type.DATE_TIME,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(),
-					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
-			});
-	}
-
-	@Test
-	public void testGetSitePortletImportProcessesPageWithSortDouble()
-		throws Exception {
-
-		testGetSitePortletImportProcessesPageWithSort(
-			EntityField.Type.DOUBLE,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(), 0.1);
-				BeanTestUtil.setProperty(
-					importProcess2, entityField.getName(), 0.5);
-			});
-	}
-
-	@Test
-	public void testGetSitePortletImportProcessesPageWithSortInteger()
-		throws Exception {
-
-		testGetSitePortletImportProcessesPageWithSort(
-			EntityField.Type.INTEGER,
-			(entityField, importProcess1, importProcess2) -> {
-				BeanTestUtil.setProperty(
-					importProcess1, entityField.getName(), 0);
-				BeanTestUtil.setProperty(
-					importProcess2, entityField.getName(), 1);
-			});
-	}
-
-	@Test
-	public void testGetSitePortletImportProcessesPageWithSortString()
-		throws Exception {
-
-		testGetSitePortletImportProcessesPageWithSort(
-			EntityField.Type.STRING,
-			(entityField, importProcess1, importProcess2) -> {
-				Class<?> clazz = importProcess1.getClass();
-
-				String entityFieldName = entityField.getName();
-
-				Method method = clazz.getMethod(
-					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
-
-				Class<?> returnType = method.getReturnType();
-
-				if (returnType.isAssignableFrom(Map.class)) {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						Collections.singletonMap("Aaa", "Aaa"));
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						Collections.singletonMap("Bbb", "Bbb"));
-				}
-				else if (entityFieldName.contains("email")) {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						"aaa" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()) +
-									"@liferay.com");
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						"bbb" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()) +
-									"@liferay.com");
-				}
-				else {
-					BeanTestUtil.setProperty(
-						importProcess1, entityFieldName,
-						"aaa" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()));
-					BeanTestUtil.setProperty(
-						importProcess2, entityFieldName,
-						"bbb" +
-							StringUtil.toLowerCase(
-								RandomTestUtil.randomString()));
-				}
-			});
-	}
-
-	protected void testGetSitePortletImportProcessesPageWithSort(
-			EntityField.Type type,
-			UnsafeTriConsumer
-				<EntityField, ImportProcess, ImportProcess, Exception>
-					unsafeTriConsumer)
-		throws Exception {
-
-		List<EntityField> entityFields = getEntityFields(type);
-
-		if (entityFields.isEmpty()) {
-			return;
-		}
-
-		String siteExternalReferenceCode =
-			testGetSitePortletImportProcessesPage_getSiteExternalReferenceCode();
-		String portletId = testGetSitePortletImportProcessesPage_getPortletId();
-
-		ImportProcess importProcess1 = randomImportProcess();
-		ImportProcess importProcess2 = randomImportProcess();
-
-		for (EntityField entityField : entityFields) {
-			unsafeTriConsumer.accept(
-				entityField, importProcess1, importProcess2);
-		}
-
-		importProcess1 = testGetSitePortletImportProcessesPage_addImportProcess(
-			siteExternalReferenceCode, portletId, importProcess1);
-
-		importProcess2 = testGetSitePortletImportProcessesPage_addImportProcess(
-			siteExternalReferenceCode, portletId, importProcess2);
-
-		Page<ImportProcess> page =
-			importProcessResource.getSitePortletImportProcessesPage(
-				siteExternalReferenceCode, portletId, null, null, null, null,
-				null);
-
-		for (EntityField entityField : entityFields) {
-			Page<ImportProcess> ascPage =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":asc");
-
-			assertContains(
-				importProcess1, (List<ImportProcess>)ascPage.getItems());
-			assertContains(
-				importProcess2, (List<ImportProcess>)ascPage.getItems());
-
-			Page<ImportProcess> descPage =
-				importProcessResource.getSitePortletImportProcessesPage(
-					siteExternalReferenceCode, portletId, null, null, null,
-					Pagination.of(1, (int)page.getTotalCount() + 1),
-					entityField.getName() + ":desc");
-
-			assertContains(
-				importProcess2, (List<ImportProcess>)descPage.getItems());
-			assertContains(
-				importProcess1, (List<ImportProcess>)descPage.getItems());
-		}
-	}
-
-	protected ImportProcess
-			testGetSitePortletImportProcessesPage_addImportProcess(
-				String siteExternalReferenceCode, String portletId,
-				ImportProcess importProcess)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected String
-			testGetSitePortletImportProcessesPage_getSiteExternalReferenceCode()
-		throws Exception {
-
-		return testGroup.getExternalReferenceCode();
-	}
-
-	protected String
-			testGetSitePortletImportProcessesPage_getIrrelevantSiteExternalReferenceCode()
-		throws Exception {
-
-		return irrelevantGroup.getExternalReferenceCode();
-	}
-
-	protected String testGetSitePortletImportProcessesPage_getPortletId()
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	protected String
-			testGetSitePortletImportProcessesPage_getIrrelevantPortletId()
-		throws Exception {
-
-		return null;
-	}
-
-	@Test
 	public void testPostAssetLibraryImportProcess() throws Exception {
 		ImportProcess randomImportProcess = randomImportProcess();
 
@@ -2684,27 +1574,6 @@ public abstract class BaseImportProcessResourceTestCase {
 
 	protected ImportProcess testPostAssetLibraryImportProcess_addImportProcess(
 			ImportProcess importProcess)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testPostAssetLibraryPortletImportProcess() throws Exception {
-		ImportProcess randomImportProcess = randomImportProcess();
-
-		ImportProcess postImportProcess =
-			testPostAssetLibraryPortletImportProcess_addImportProcess(
-				randomImportProcess);
-
-		assertEquals(randomImportProcess, postImportProcess);
-		assertValid(postImportProcess);
-	}
-
-	protected ImportProcess
-			testPostAssetLibraryPortletImportProcess_addImportProcess(
-				ImportProcess importProcess)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -2731,25 +1600,6 @@ public abstract class BaseImportProcessResourceTestCase {
 	}
 
 	@Test
-	public void testPostPortletImportProcess() throws Exception {
-		ImportProcess randomImportProcess = randomImportProcess();
-
-		ImportProcess postImportProcess =
-			testPostPortletImportProcess_addImportProcess(randomImportProcess);
-
-		assertEquals(randomImportProcess, postImportProcess);
-		assertValid(postImportProcess);
-	}
-
-	protected ImportProcess testPostPortletImportProcess_addImportProcess(
-			ImportProcess importProcess)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
 	public void testPostSiteImportProcess() throws Exception {
 		ImportProcess randomImportProcess = randomImportProcess();
 
@@ -2761,26 +1611,6 @@ public abstract class BaseImportProcessResourceTestCase {
 	}
 
 	protected ImportProcess testPostSiteImportProcess_addImportProcess(
-			ImportProcess importProcess)
-		throws Exception {
-
-		throw new UnsupportedOperationException(
-			"This method needs to be implemented");
-	}
-
-	@Test
-	public void testPostSitePortletImportProcess() throws Exception {
-		ImportProcess randomImportProcess = randomImportProcess();
-
-		ImportProcess postImportProcess =
-			testPostSitePortletImportProcess_addImportProcess(
-				randomImportProcess);
-
-		assertEquals(randomImportProcess, postImportProcess);
-		assertValid(postImportProcess);
-	}
-
-	protected ImportProcess testPostSitePortletImportProcess_addImportProcess(
 			ImportProcess importProcess)
 		throws Exception {
 
@@ -3903,4 +2733,4 @@ public abstract class BaseImportProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1655208362
+// LIFERAY-REST-BUILDER-HASH:-140984819

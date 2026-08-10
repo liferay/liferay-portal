@@ -46,43 +46,33 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ImportPreviewResource {
 
 	public ImportPreview postAssetLibraryImportPreview(
-			String assetLibraryExternalReferenceCode,
-			MultipartBody multipartBody)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, MultipartBody multipartBody)
 		throws Exception;
 
 	public Response postAssetLibraryImportPreviewBatch(
-			String assetLibraryExternalReferenceCode,
-			MultipartBody multipartBody, String callbackURL, Object object)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, MultipartBody multipartBody, String callbackURL,
+			Object object)
 		throws Exception;
 
-	public ImportPreview postAssetLibraryPortletImportPreview(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long plid, MultipartBody multipartBody)
-		throws Exception;
-
-	public ImportPreview postImportPreview(MultipartBody multipartBody)
+	public ImportPreview postImportPreview(
+			Long plid, String portletId, MultipartBody multipartBody)
 		throws Exception;
 
 	public Response postImportPreviewBatch(
-			MultipartBody multipartBody, String callbackURL, Object object)
-		throws Exception;
-
-	public ImportPreview postPortletImportPreview(
-			String portletId, Long plid, MultipartBody multipartBody)
-		throws Exception;
-
-	public ImportPreview postSiteImportPreview(
-			String siteExternalReferenceCode, MultipartBody multipartBody)
-		throws Exception;
-
-	public Response postSiteImportPreviewBatch(
-			String siteExternalReferenceCode, MultipartBody multipartBody,
+			Long plid, String portletId, MultipartBody multipartBody,
 			String callbackURL, Object object)
 		throws Exception;
 
-	public ImportPreview postSitePortletImportPreview(
-			String siteExternalReferenceCode, String portletId, Long plid,
+	public ImportPreview postSiteImportPreview(
+			String siteExternalReferenceCode, Long plid, String portletId,
 			MultipartBody multipartBody)
+		throws Exception;
+
+	public Response postSiteImportPreviewBatch(
+			String siteExternalReferenceCode, Long plid, String portletId,
+			MultipartBody multipartBody, String callbackURL, Object object)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -181,4 +171,4 @@ public interface ImportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2043114669
+// LIFERAY-REST-BUILDER-HASH:2105655360

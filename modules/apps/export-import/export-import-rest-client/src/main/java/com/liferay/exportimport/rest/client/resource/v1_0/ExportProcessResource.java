@@ -52,27 +52,14 @@ public interface ExportProcessResource {
 
 	public Page<ExportProcess> getAssetLibraryExportProcessesPage(
 			String assetLibraryExternalReferenceCode, Long creatorId,
-			String search, Integer status, Pagination pagination,
-			String sortString)
+			String portletId, String search, Integer status,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			getAssetLibraryExportProcessesPageHttpResponse(
 				String assetLibraryExternalReferenceCode, Long creatorId,
-				String search, Integer status, Pagination pagination,
-				String sortString)
-		throws Exception;
-
-	public Page<ExportProcess> getAssetLibraryPortletExportProcessesPage(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long creatorId, String search, Integer status,
-			Pagination pagination, String sortString)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			getAssetLibraryPortletExportProcessesPageHttpResponse(
-				String assetLibraryExternalReferenceCode, String portletId,
-				Long creatorId, String search, Integer status,
+				String portletId, String search, Integer status,
 				Pagination pagination, String sortString)
 		throws Exception;
 
@@ -97,109 +84,82 @@ public interface ExportProcessResource {
 		throws Exception;
 
 	public Page<ExportProcess> getExportProcessesPage(
-			Long creatorId, String search, Integer status,
+			Long creatorId, String portletId, String search, Integer status,
 			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getExportProcessesPageHttpResponse(
-			Long creatorId, String search, Integer status,
-			Pagination pagination, String sortString)
-		throws Exception;
-
-	public Page<ExportProcess> getPortletExportProcessesPage(
-			String portletId, Long creatorId, String search, Integer status,
-			Pagination pagination, String sortString)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse getPortletExportProcessesPageHttpResponse(
-			String portletId, Long creatorId, String search, Integer status,
+			Long creatorId, String portletId, String search, Integer status,
 			Pagination pagination, String sortString)
 		throws Exception;
 
 	public Page<ExportProcess> getSiteExportProcessesPage(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, Pagination pagination, String sortString)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse getSiteExportProcessesPageHttpResponse(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, Pagination pagination, String sortString)
-		throws Exception;
-
-	public Page<ExportProcess> getSitePortletExportProcessesPage(
-			String siteExternalReferenceCode, String portletId, Long creatorId,
+			String siteExternalReferenceCode, Long creatorId, String portletId,
 			String search, Integer status, Pagination pagination,
 			String sortString)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse
-			getSitePortletExportProcessesPageHttpResponse(
-				String siteExternalReferenceCode, String portletId,
-				Long creatorId, String search, Integer status,
-				Pagination pagination, String sortString)
+	public HttpInvoker.HttpResponse getSiteExportProcessesPageHttpResponse(
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, Integer status, Pagination pagination,
+			String sortString)
 		throws Exception;
 
 	public ExportProcess postAssetLibraryExportProcess(
-			String assetLibraryExternalReferenceCode,
-			ExportProcessRequest exportProcessRequest)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postAssetLibraryExportProcessHttpResponse(
-			String assetLibraryExternalReferenceCode,
-			ExportProcessRequest exportProcessRequest)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public void postAssetLibraryExportProcessBatch(
-			String assetLibraryExternalReferenceCode,
-			ExportProcessRequest exportProcessRequest, String callbackURL,
-			Object object)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, ExportProcessRequest exportProcessRequest,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postAssetLibraryExportProcessBatchHttpResponse(
-				String assetLibraryExternalReferenceCode,
-				ExportProcessRequest exportProcessRequest, String callbackURL,
-				Object object)
+				String assetLibraryExternalReferenceCode, Long plid,
+				String portletId, ExportProcessRequest exportProcessRequest,
+				String callbackURL, Object object)
 		throws Exception;
 
 	public void postAssetLibraryExportProcessesPageExportBatch(
 			String assetLibraryExternalReferenceCode, Long creatorId,
-			String search, Integer status, String sortString,
+			String portletId, String search, Integer status, String sortString,
 			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postAssetLibraryExportProcessesPageExportBatchHttpResponse(
 				String assetLibraryExternalReferenceCode, Long creatorId,
-				String search, Integer status, String sortString,
-				String callbackURL, String contentType, String fieldNames)
-		throws Exception;
-
-	public ExportProcess postAssetLibraryPortletExportProcess(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long plid, ExportProcessRequest exportProcessRequest)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse
-			postAssetLibraryPortletExportProcessHttpResponse(
-				String assetLibraryExternalReferenceCode, String portletId,
-				Long plid, ExportProcessRequest exportProcessRequest)
+				String portletId, String search, Integer status,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
 		throws Exception;
 
 	public ExportProcess postExportProcess(
+			Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postExportProcessHttpResponse(
+			Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public void postExportProcessBatch(
+			Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postExportProcessBatchHttpResponse(
+			Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
@@ -212,70 +172,52 @@ public interface ExportProcessResource {
 		throws Exception;
 
 	public void postExportProcessesPageExportBatch(
-			Long creatorId, String search, Integer status, String sortString,
-			String callbackURL, String contentType, String fieldNames)
+			Long creatorId, String portletId, String search, Integer status,
+			String sortString, String callbackURL, String contentType,
+			String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postExportProcessesPageExportBatchHttpResponse(
-				Long creatorId, String search, Integer status,
+				Long creatorId, String portletId, String search, Integer status,
 				String sortString, String callbackURL, String contentType,
 				String fieldNames)
 		throws Exception;
 
-	public ExportProcess postPortletExportProcess(
-			String portletId, Long plid,
-			ExportProcessRequest exportProcessRequest)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse postPortletExportProcessHttpResponse(
-			String portletId, Long plid,
-			ExportProcessRequest exportProcessRequest)
-		throws Exception;
-
 	public ExportProcess postSiteExportProcess(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSiteExportProcessHttpResponse(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public void postSiteExportProcessBatch(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSiteExportProcessBatchHttpResponse(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public void postSiteExportProcessesPageExportBatch(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, String sortString, String callbackURL,
-			String contentType, String fieldNames)
+			String siteExternalReferenceCode, Long creatorId, String portletId,
+			String search, Integer status, String sortString,
+			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postSiteExportProcessesPageExportBatchHttpResponse(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, String sortString, String callbackURL,
-				String contentType, String fieldNames)
-		throws Exception;
-
-	public ExportProcess postSitePortletExportProcess(
-			String siteExternalReferenceCode, String portletId, Long plid,
-			ExportProcessRequest exportProcessRequest)
-		throws Exception;
-
-	public HttpInvoker.HttpResponse postSitePortletExportProcessHttpResponse(
-			String siteExternalReferenceCode, String portletId, Long plid,
-			ExportProcessRequest exportProcessRequest)
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search, Integer status,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
 		throws Exception;
 
 	public static class Builder {
@@ -591,14 +533,14 @@ public interface ExportProcessResource {
 
 		public Page<ExportProcess> getAssetLibraryExportProcessesPage(
 				String assetLibraryExternalReferenceCode, Long creatorId,
-				String search, Integer status, Pagination pagination,
-				String sortString)
+				String portletId, String search, Integer status,
+				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getAssetLibraryExportProcessesPageHttpResponse(
-					assetLibraryExternalReferenceCode, creatorId, search,
-					status, pagination, sortString);
+					assetLibraryExternalReferenceCode, creatorId, portletId,
+					search, status, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -662,8 +604,8 @@ public interface ExportProcessResource {
 		public HttpInvoker.HttpResponse
 				getAssetLibraryExportProcessesPageHttpResponse(
 					String assetLibraryExternalReferenceCode, Long creatorId,
-					String search, Integer status, Pagination pagination,
-					String sortString)
+					String portletId, String search, Integer status,
+					Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -689,6 +631,10 @@ public interface ExportProcessResource {
 
 			if (creatorId != null) {
 				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
 
 			if (search != null) {
@@ -718,145 +664,6 @@ public interface ExportProcessResource {
 			httpInvoker.path(
 				"assetLibraryExternalReferenceCode",
 				assetLibraryExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public Page<ExportProcess> getAssetLibraryPortletExportProcessesPage(
-				String assetLibraryExternalReferenceCode, String portletId,
-				Long creatorId, String search, Integer status,
-				Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				getAssetLibraryPortletExportProcessesPageHttpResponse(
-					assetLibraryExternalReferenceCode, portletId, creatorId,
-					search, status, pagination, sortString);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return Page.of(content, ExportProcessSerDes::toDTO);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse
-				getAssetLibraryPortletExportProcessesPageHttpResponse(
-					String assetLibraryExternalReferenceCode, String portletId,
-					Long creatorId, String search, Integer status,
-					Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			if (creatorId != null) {
-				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
-			}
-
-			if (search != null) {
-				httpInvoker.parameter("search", String.valueOf(search));
-			}
-
-			if (status != null) {
-				httpInvoker.parameter("status", String.valueOf(status));
-			}
-
-			if (pagination != null) {
-				httpInvoker.parameter(
-					"page", String.valueOf(pagination.getPage()));
-				httpInvoker.parameter(
-					"pageSize", String.valueOf(pagination.getPageSize()));
-			}
-
-			if (sortString != null) {
-				httpInvoker.parameter("sort", sortString);
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/portlets/{portletId}/export-processes");
-
-			httpInvoker.path(
-				"assetLibraryExternalReferenceCode",
-				assetLibraryExternalReferenceCode);
-			httpInvoker.path("portletId", portletId);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -1171,143 +978,13 @@ public interface ExportProcessResource {
 		}
 
 		public Page<ExportProcess> getExportProcessesPage(
-				Long creatorId, String search, Integer status,
+				Long creatorId, String portletId, String search, Integer status,
 				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getExportProcessesPageHttpResponse(
-					creatorId, search, status, pagination, sortString);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return Page.of(content, ExportProcessSerDes::toDTO);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse getExportProcessesPageHttpResponse(
-				Long creatorId, String search, Integer status,
-				Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			if (creatorId != null) {
-				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
-			}
-
-			if (search != null) {
-				httpInvoker.parameter("search", String.valueOf(search));
-			}
-
-			if (status != null) {
-				httpInvoker.parameter("status", String.valueOf(status));
-			}
-
-			if (pagination != null) {
-				httpInvoker.parameter(
-					"page", String.valueOf(pagination.getPage()));
-				httpInvoker.parameter(
-					"pageSize", String.valueOf(pagination.getPageSize()));
-			}
-
-			if (sortString != null) {
-				httpInvoker.parameter("sort", sortString);
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/export-processes");
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public Page<ExportProcess> getPortletExportProcessesPage(
-				String portletId, Long creatorId, String search, Integer status,
-				Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				getPortletExportProcessesPageHttpResponse(
-					portletId, creatorId, search, status, pagination,
+					creatorId, portletId, search, status, pagination,
 					sortString);
 
 			String content = httpResponse.getContent();
@@ -1369,10 +1046,9 @@ public interface ExportProcessResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				getPortletExportProcessesPageHttpResponse(
-					String portletId, Long creatorId, String search,
-					Integer status, Pagination pagination, String sortString)
+		public HttpInvoker.HttpResponse getExportProcessesPageHttpResponse(
+				Long creatorId, String portletId, String search, Integer status,
+				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1400,6 +1076,10 @@ public interface ExportProcessResource {
 				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
 			}
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
 			}
@@ -1422,9 +1102,7 @@ public interface ExportProcessResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/portlets/{portletId}/export-processes");
-
-			httpInvoker.path("portletId", portletId);
+						"/o/export-import/v1.0/export-processes");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -1435,148 +1113,14 @@ public interface ExportProcessResource {
 		}
 
 		public Page<ExportProcess> getSiteExportProcessesPage(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				getSiteExportProcessesPageHttpResponse(
-					siteExternalReferenceCode, creatorId, search, status,
-					pagination, sortString);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return Page.of(content, ExportProcessSerDes::toDTO);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse getSiteExportProcessesPageHttpResponse(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, Pagination pagination, String sortString)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			if (creatorId != null) {
-				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
-			}
-
-			if (search != null) {
-				httpInvoker.parameter("search", String.valueOf(search));
-			}
-
-			if (status != null) {
-				httpInvoker.parameter("status", String.valueOf(status));
-			}
-
-			if (pagination != null) {
-				httpInvoker.parameter(
-					"page", String.valueOf(pagination.getPage()));
-				httpInvoker.parameter(
-					"pageSize", String.valueOf(pagination.getPageSize()));
-			}
-
-			if (sortString != null) {
-				httpInvoker.parameter("sort", sortString);
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes");
-
-			httpInvoker.path(
-				"siteExternalReferenceCode", siteExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public Page<ExportProcess> getSitePortletExportProcessesPage(
-				String siteExternalReferenceCode, String portletId,
-				Long creatorId, String search, Integer status,
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search, Integer status,
 				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSitePortletExportProcessesPageHttpResponse(
-					siteExternalReferenceCode, portletId, creatorId, search,
+				getSiteExportProcessesPageHttpResponse(
+					siteExternalReferenceCode, creatorId, portletId, search,
 					status, pagination, sortString);
 
 			String content = httpResponse.getContent();
@@ -1638,11 +1182,10 @@ public interface ExportProcessResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				getSitePortletExportProcessesPageHttpResponse(
-					String siteExternalReferenceCode, String portletId,
-					Long creatorId, String search, Integer status,
-					Pagination pagination, String sortString)
+		public HttpInvoker.HttpResponse getSiteExportProcessesPageHttpResponse(
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search, Integer status,
+				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1670,6 +1213,10 @@ public interface ExportProcessResource {
 				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
 			}
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
 			}
@@ -1692,11 +1239,10 @@ public interface ExportProcessResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/portlets/{portletId}/export-processes");
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes");
 
 			httpInvoker.path(
 				"siteExternalReferenceCode", siteExternalReferenceCode);
-			httpInvoker.path("portletId", portletId);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -1707,375 +1253,13 @@ public interface ExportProcessResource {
 		}
 
 		public ExportProcess postAssetLibraryExportProcess(
-				String assetLibraryExternalReferenceCode,
-				ExportProcessRequest exportProcessRequest)
+				String assetLibraryExternalReferenceCode, Long plid,
+				String portletId, ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postAssetLibraryExportProcessHttpResponse(
-					assetLibraryExternalReferenceCode, exportProcessRequest);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return ExportProcessSerDes.toDTO(content);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse
-				postAssetLibraryExportProcessHttpResponse(
-					String assetLibraryExternalReferenceCode,
-					ExportProcessRequest exportProcessRequest)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(
-				exportProcessRequest.toString(), "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes");
-
-			httpInvoker.path(
-				"assetLibraryExternalReferenceCode",
-				assetLibraryExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public void postAssetLibraryExportProcessBatch(
-				String assetLibraryExternalReferenceCode,
-				ExportProcessRequest exportProcessRequest, String callbackURL,
-				Object object)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postAssetLibraryExportProcessBatchHttpResponse(
-					assetLibraryExternalReferenceCode, exportProcessRequest,
-					callbackURL, object);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-		}
-
-		public HttpInvoker.HttpResponse
-				postAssetLibraryExportProcessBatchHttpResponse(
-					String assetLibraryExternalReferenceCode,
-					ExportProcessRequest exportProcessRequest,
-					String callbackURL, Object object)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(object.toString(), "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (callbackURL != null) {
-				httpInvoker.parameter(
-					"callbackURL", String.valueOf(callbackURL));
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes/batch");
-
-			httpInvoker.path(
-				"assetLibraryExternalReferenceCode",
-				assetLibraryExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public void postAssetLibraryExportProcessesPageExportBatch(
-				String assetLibraryExternalReferenceCode, Long creatorId,
-				String search, Integer status, String sortString,
-				String callbackURL, String contentType, String fieldNames)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postAssetLibraryExportProcessesPageExportBatchHttpResponse(
-					assetLibraryExternalReferenceCode, creatorId, search,
-					status, sortString, callbackURL, contentType, fieldNames);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-		}
-
-		public HttpInvoker.HttpResponse
-				postAssetLibraryExportProcessesPageExportBatchHttpResponse(
-					String assetLibraryExternalReferenceCode, Long creatorId,
-					String search, Integer status, String sortString,
-					String callbackURL, String contentType, String fieldNames)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body("[]", "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (creatorId != null) {
-				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
-			}
-
-			if (search != null) {
-				httpInvoker.parameter("search", String.valueOf(search));
-			}
-
-			if (status != null) {
-				httpInvoker.parameter("status", String.valueOf(status));
-			}
-
-			if (sortString != null) {
-				httpInvoker.parameter("sort", sortString);
-			}
-
-			if (callbackURL != null) {
-				httpInvoker.parameter(
-					"callbackURL", String.valueOf(callbackURL));
-			}
-
-			if (contentType != null) {
-				httpInvoker.parameter(
-					"contentType", String.valueOf(contentType));
-			}
-
-			if (fieldNames != null) {
-				httpInvoker.parameter("fieldNames", String.valueOf(fieldNames));
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes/export-batch");
-
-			httpInvoker.path(
-				"assetLibraryExternalReferenceCode",
-				assetLibraryExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public ExportProcess postAssetLibraryPortletExportProcess(
-				String assetLibraryExternalReferenceCode, String portletId,
-				Long plid, ExportProcessRequest exportProcessRequest)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postAssetLibraryPortletExportProcessHttpResponse(
-					assetLibraryExternalReferenceCode, portletId, plid,
+					assetLibraryExternalReferenceCode, plid, portletId,
 					exportProcessRequest);
 
 			String content = httpResponse.getContent();
@@ -2138,9 +1322,9 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				postAssetLibraryPortletExportProcessHttpResponse(
-					String assetLibraryExternalReferenceCode, String portletId,
-					Long plid, ExportProcessRequest exportProcessRequest)
+				postAssetLibraryExportProcessHttpResponse(
+					String assetLibraryExternalReferenceCode, Long plid,
+					String portletId, ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -2171,15 +1355,280 @@ public interface ExportProcessResource {
 				httpInvoker.parameter("plid", String.valueOf(plid));
 			}
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/portlets/{portletId}/export-processes");
+						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes");
 
 			httpInvoker.path(
 				"assetLibraryExternalReferenceCode",
 				assetLibraryExternalReferenceCode);
-			httpInvoker.path("portletId", portletId);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public void postAssetLibraryExportProcessBatch(
+				String assetLibraryExternalReferenceCode, Long plid,
+				String portletId, ExportProcessRequest exportProcessRequest,
+				String callbackURL, Object object)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postAssetLibraryExportProcessBatchHttpResponse(
+					assetLibraryExternalReferenceCode, plid, portletId,
+					exportProcessRequest, callbackURL, object);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postAssetLibraryExportProcessBatchHttpResponse(
+					String assetLibraryExternalReferenceCode, Long plid,
+					String portletId, ExportProcessRequest exportProcessRequest,
+					String callbackURL, Object object)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(object.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (plid != null) {
+				httpInvoker.parameter("plid", String.valueOf(plid));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (callbackURL != null) {
+				httpInvoker.parameter(
+					"callbackURL", String.valueOf(callbackURL));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes/batch");
+
+			httpInvoker.path(
+				"assetLibraryExternalReferenceCode",
+				assetLibraryExternalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public void postAssetLibraryExportProcessesPageExportBatch(
+				String assetLibraryExternalReferenceCode, Long creatorId,
+				String portletId, String search, Integer status,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postAssetLibraryExportProcessesPageExportBatchHttpResponse(
+					assetLibraryExternalReferenceCode, creatorId, portletId,
+					search, status, sortString, callbackURL, contentType,
+					fieldNames);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postAssetLibraryExportProcessesPageExportBatchHttpResponse(
+					String assetLibraryExternalReferenceCode, Long creatorId,
+					String portletId, String search, Integer status,
+					String sortString, String callbackURL, String contentType,
+					String fieldNames)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body("[]", "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (creatorId != null) {
+				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (status != null) {
+				httpInvoker.parameter("status", String.valueOf(status));
+			}
+
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
+			}
+
+			if (callbackURL != null) {
+				httpInvoker.parameter(
+					"callbackURL", String.valueOf(callbackURL));
+			}
+
+			if (contentType != null) {
+				httpInvoker.parameter(
+					"contentType", String.valueOf(contentType));
+			}
+
+			if (fieldNames != null) {
+				httpInvoker.parameter("fieldNames", String.valueOf(fieldNames));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes/export-batch");
+
+			httpInvoker.path(
+				"assetLibraryExternalReferenceCode",
+				assetLibraryExternalReferenceCode);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -2190,11 +1639,13 @@ public interface ExportProcessResource {
 		}
 
 		public ExportProcess postExportProcess(
+				Long plid, String portletId,
 				ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postExportProcessHttpResponse(exportProcessRequest);
+				postExportProcessHttpResponse(
+					plid, portletId, exportProcessRequest);
 
 			String content = httpResponse.getContent();
 
@@ -2256,6 +1707,7 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postExportProcessHttpResponse(
+				Long plid, String portletId,
 				ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
@@ -2283,6 +1735,14 @@ public interface ExportProcessResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
+			if (plid != null) {
+				httpInvoker.parameter("plid", String.valueOf(plid));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
@@ -2297,13 +1757,14 @@ public interface ExportProcessResource {
 		}
 
 		public void postExportProcessBatch(
+				Long plid, String portletId,
 				ExportProcessRequest exportProcessRequest, String callbackURL,
 				Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postExportProcessBatchHttpResponse(
-					exportProcessRequest, callbackURL, object);
+					plid, portletId, exportProcessRequest, callbackURL, object);
 
 			String content = httpResponse.getContent();
 
@@ -2354,6 +1815,7 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postExportProcessBatchHttpResponse(
+				Long plid, String portletId,
 				ExportProcessRequest exportProcessRequest, String callbackURL,
 				Object object)
 			throws Exception {
@@ -2380,6 +1842,14 @@ public interface ExportProcessResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (plid != null) {
+				httpInvoker.parameter("plid", String.valueOf(plid));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
 
 			if (callbackURL != null) {
 				httpInvoker.parameter(
@@ -2507,15 +1977,15 @@ public interface ExportProcessResource {
 		}
 
 		public void postExportProcessesPageExportBatch(
-				Long creatorId, String search, Integer status,
+				Long creatorId, String portletId, String search, Integer status,
 				String sortString, String callbackURL, String contentType,
 				String fieldNames)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postExportProcessesPageExportBatchHttpResponse(
-					creatorId, search, status, sortString, callbackURL,
-					contentType, fieldNames);
+					creatorId, portletId, search, status, sortString,
+					callbackURL, contentType, fieldNames);
 
 			String content = httpResponse.getContent();
 
@@ -2567,9 +2037,9 @@ public interface ExportProcessResource {
 
 		public HttpInvoker.HttpResponse
 				postExportProcessesPageExportBatchHttpResponse(
-					Long creatorId, String search, Integer status,
-					String sortString, String callbackURL, String contentType,
-					String fieldNames)
+					Long creatorId, String portletId, String search,
+					Integer status, String sortString, String callbackURL,
+					String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -2597,6 +2067,10 @@ public interface ExportProcessResource {
 
 			if (creatorId != null) {
 				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
 
 			if (search != null) {
@@ -2638,487 +2112,14 @@ public interface ExportProcessResource {
 			return httpInvoker.invoke();
 		}
 
-		public ExportProcess postPortletExportProcess(
-				String portletId, Long plid,
-				ExportProcessRequest exportProcessRequest)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postPortletExportProcessHttpResponse(
-					portletId, plid, exportProcessRequest);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return ExportProcessSerDes.toDTO(content);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse postPortletExportProcessHttpResponse(
-				String portletId, Long plid,
-				ExportProcessRequest exportProcessRequest)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(
-				exportProcessRequest.toString(), "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/portlets/{portletId}/export-processes");
-
-			httpInvoker.path("portletId", portletId);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
 		public ExportProcess postSiteExportProcess(
-				String siteExternalReferenceCode,
+				String siteExternalReferenceCode, Long plid, String portletId,
 				ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSiteExportProcessHttpResponse(
-					siteExternalReferenceCode, exportProcessRequest);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-
-			try {
-				return ExportProcessSerDes.toDTO(content);
-			}
-			catch (Exception e) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response: " + content, e);
-
-				throw new Problem.ProblemException(Problem.toDTO(content));
-			}
-		}
-
-		public HttpInvoker.HttpResponse postSiteExportProcessHttpResponse(
-				String siteExternalReferenceCode,
-				ExportProcessRequest exportProcessRequest)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(
-				exportProcessRequest.toString(), "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes");
-
-			httpInvoker.path(
-				"siteExternalReferenceCode", siteExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public void postSiteExportProcessBatch(
-				String siteExternalReferenceCode,
-				ExportProcessRequest exportProcessRequest, String callbackURL,
-				Object object)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postSiteExportProcessBatchHttpResponse(
-					siteExternalReferenceCode, exportProcessRequest,
-					callbackURL, object);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-		}
-
-		public HttpInvoker.HttpResponse postSiteExportProcessBatchHttpResponse(
-				String siteExternalReferenceCode,
-				ExportProcessRequest exportProcessRequest, String callbackURL,
-				Object object)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body(object.toString(), "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (callbackURL != null) {
-				httpInvoker.parameter(
-					"callbackURL", String.valueOf(callbackURL));
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes/batch");
-
-			httpInvoker.path(
-				"siteExternalReferenceCode", siteExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public void postSiteExportProcessesPageExportBatch(
-				String siteExternalReferenceCode, Long creatorId, String search,
-				Integer status, String sortString, String callbackURL,
-				String contentType, String fieldNames)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postSiteExportProcessesPageExportBatchHttpResponse(
-					siteExternalReferenceCode, creatorId, search, status,
-					sortString, callbackURL, contentType, fieldNames);
-
-			String content = httpResponse.getContent();
-
-			if ((httpResponse.getStatusCode() / 100) != 2) {
-				_logger.log(
-					Level.WARNING,
-					"Unable to process HTTP response content: " + content);
-				_logger.log(
-					Level.WARNING,
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.log(
-					Level.WARNING,
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-
-				Problem.ProblemException problemException = null;
-
-				if (Objects.equals(
-						httpResponse.getContentType(), "application/json")) {
-
-					problemException = new Problem.ProblemException(
-						Problem.toDTO(content));
-				}
-				else {
-					_logger.log(
-						Level.WARNING,
-						"Unable to process content type: " +
-							httpResponse.getContentType());
-
-					Problem problem = new Problem();
-
-					problem.setStatus(
-						String.valueOf(httpResponse.getStatusCode()));
-
-					problemException = new Problem.ProblemException(problem);
-				}
-
-				throw problemException;
-			}
-			else {
-				_logger.fine("HTTP response content: " + content);
-				_logger.fine(
-					"HTTP response message: " + httpResponse.getMessage());
-				_logger.fine(
-					"HTTP response status code: " +
-						httpResponse.getStatusCode());
-			}
-		}
-
-		public HttpInvoker.HttpResponse
-				postSiteExportProcessesPageExportBatchHttpResponse(
-					String siteExternalReferenceCode, Long creatorId,
-					String search, Integer status, String sortString,
-					String callbackURL, String contentType, String fieldNames)
-			throws Exception {
-
-			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
-
-			httpInvoker.body("[]", "application/json");
-
-			if (_builder._locale != null) {
-				httpInvoker.header(
-					"Accept-Language", _builder._locale.toLanguageTag());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._headers.entrySet()) {
-
-				httpInvoker.header(entry.getKey(), entry.getValue());
-			}
-
-			for (Map.Entry<String, String> entry :
-					_builder._parameters.entrySet()) {
-
-				httpInvoker.parameter(entry.getKey(), entry.getValue());
-			}
-
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (creatorId != null) {
-				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
-			}
-
-			if (search != null) {
-				httpInvoker.parameter("search", String.valueOf(search));
-			}
-
-			if (status != null) {
-				httpInvoker.parameter("status", String.valueOf(status));
-			}
-
-			if (sortString != null) {
-				httpInvoker.parameter("sort", sortString);
-			}
-
-			if (callbackURL != null) {
-				httpInvoker.parameter(
-					"callbackURL", String.valueOf(callbackURL));
-			}
-
-			if (contentType != null) {
-				httpInvoker.parameter(
-					"contentType", String.valueOf(contentType));
-			}
-
-			if (fieldNames != null) {
-				httpInvoker.parameter("fieldNames", String.valueOf(fieldNames));
-			}
-
-			httpInvoker.path(
-				_builder._scheme + "://" + _builder._host + ":" +
-					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes/export-batch");
-
-			httpInvoker.path(
-				"siteExternalReferenceCode", siteExternalReferenceCode);
-
-			if ((_builder._login != null) && (_builder._password != null)) {
-				httpInvoker.userNameAndPassword(
-					_builder._login + ":" + _builder._password);
-			}
-
-			return httpInvoker.invoke();
-		}
-
-		public ExportProcess postSitePortletExportProcess(
-				String siteExternalReferenceCode, String portletId, Long plid,
-				ExportProcessRequest exportProcessRequest)
-			throws Exception {
-
-			HttpInvoker.HttpResponse httpResponse =
-				postSitePortletExportProcessHttpResponse(
-					siteExternalReferenceCode, portletId, plid,
+					siteExternalReferenceCode, plid, portletId,
 					exportProcessRequest);
 
 			String content = httpResponse.getContent();
@@ -3180,10 +2181,9 @@ public interface ExportProcessResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse
-				postSitePortletExportProcessHttpResponse(
-					String siteExternalReferenceCode, String portletId,
-					Long plid, ExportProcessRequest exportProcessRequest)
+		public HttpInvoker.HttpResponse postSiteExportProcessHttpResponse(
+				String siteExternalReferenceCode, Long plid, String portletId,
+				ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -3214,14 +2214,275 @@ public interface ExportProcessResource {
 				httpInvoker.parameter("plid", String.valueOf(plid));
 			}
 
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/portlets/{portletId}/export-processes");
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes");
 
 			httpInvoker.path(
 				"siteExternalReferenceCode", siteExternalReferenceCode);
-			httpInvoker.path("portletId", portletId);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public void postSiteExportProcessBatch(
+				String siteExternalReferenceCode, Long plid, String portletId,
+				ExportProcessRequest exportProcessRequest, String callbackURL,
+				Object object)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postSiteExportProcessBatchHttpResponse(
+					siteExternalReferenceCode, plid, portletId,
+					exportProcessRequest, callbackURL, object);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+		}
+
+		public HttpInvoker.HttpResponse postSiteExportProcessBatchHttpResponse(
+				String siteExternalReferenceCode, Long plid, String portletId,
+				ExportProcessRequest exportProcessRequest, String callbackURL,
+				Object object)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(object.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (plid != null) {
+				httpInvoker.parameter("plid", String.valueOf(plid));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (callbackURL != null) {
+				httpInvoker.parameter(
+					"callbackURL", String.valueOf(callbackURL));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes/batch");
+
+			httpInvoker.path(
+				"siteExternalReferenceCode", siteExternalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		public void postSiteExportProcessesPageExportBatch(
+				String siteExternalReferenceCode, Long creatorId,
+				String portletId, String search, Integer status,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postSiteExportProcessesPageExportBatchHttpResponse(
+					siteExternalReferenceCode, creatorId, portletId, search,
+					status, sortString, callbackURL, contentType, fieldNames);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postSiteExportProcessesPageExportBatchHttpResponse(
+					String siteExternalReferenceCode, Long creatorId,
+					String portletId, String search, Integer status,
+					String sortString, String callbackURL, String contentType,
+					String fieldNames)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body("[]", "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (creatorId != null) {
+				httpInvoker.parameter("creatorId", String.valueOf(creatorId));
+			}
+
+			if (portletId != null) {
+				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (status != null) {
+				httpInvoker.parameter("status", String.valueOf(status));
+			}
+
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
+			}
+
+			if (callbackURL != null) {
+				httpInvoker.parameter(
+					"callbackURL", String.valueOf(callbackURL));
+			}
+
+			if (contentType != null) {
+				httpInvoker.parameter(
+					"contentType", String.valueOf(contentType));
+			}
+
+			if (fieldNames != null) {
+				httpInvoker.parameter("fieldNames", String.valueOf(fieldNames));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-processes/export-batch");
+
+			httpInvoker.path(
+				"siteExternalReferenceCode", siteExternalReferenceCode);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -3243,4 +2504,4 @@ public interface ExportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1650066463
+// LIFERAY-REST-BUILDER-HASH:-519095865
