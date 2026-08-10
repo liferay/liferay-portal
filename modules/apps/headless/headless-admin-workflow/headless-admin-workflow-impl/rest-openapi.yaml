@@ -242,6 +242,8 @@ components:
                     type: array
                 scope:
                     type: string
+                system:
+                    type: boolean
                 title:
                     type: string
                 title_i18n:
