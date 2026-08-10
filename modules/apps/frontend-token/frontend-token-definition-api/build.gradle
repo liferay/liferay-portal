@@ -3,4 +3,5 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly project(":apps:portal:portal-json-validator")
 	testImplementation group: "com.github.everit-org.json-schema", name: "org.everit.json.schema", version: "1.11.1"
+	testImplementation project(":core:petra:petra-function")
 }

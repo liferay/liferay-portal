@@ -74,9 +74,11 @@
 		</finder>
 	</entity>
 	<exceptions>
+		<exception>DuplicateStyleBookEntryFrontendToken</exception>
 		<exception>DuplicateStyleBookEntryKey</exception>
 		<exception>DuplicateStyleBookEntryName</exception>
 		<exception>StyleBookEntryFile</exception>
+		<exception>StyleBookEntryFrontendTokenDefinition</exception>
 		<exception>StyleBookEntryName</exception>
 		<exception>StyleBookEntryThemeId</exception>
 	</exceptions>

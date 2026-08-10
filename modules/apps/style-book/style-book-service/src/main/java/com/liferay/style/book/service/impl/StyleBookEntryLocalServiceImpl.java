@@ -7,10 +7,14 @@ package com.liferay.style.book.service.impl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.frontend.token.definition.FrontendTokenDefinitionUtil;
+import com.liferay.frontend.token.definition.validator.FrontendTokenDefinitionJSONValidator;
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
+import com.liferay.portal.json.validator.JSONValidatorException;
 import com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -30,8 +34,10 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UniqueUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
+import com.liferay.style.book.exception.DuplicateStyleBookEntryFrontendTokenException;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryNameException;
+import com.liferay.style.book.exception.StyleBookEntryFrontendTokenDefinitionException;
 import com.liferay.style.book.exception.StyleBookEntryNameException;
 import com.liferay.style.book.exception.StyleBookEntryThemeIdException;
 import com.liferay.style.book.model.StyleBookEntry;
@@ -39,7 +45,9 @@ import com.liferay.style.book.service.base.StyleBookEntryLocalServiceBaseImpl;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -481,6 +489,31 @@ public class StyleBookEntryLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public StyleBookEntry updateFrontendTokenDefinition(
+			long styleBookEntryId, String frontendTokenDefinition)
+		throws PortalException {
+
+		StyleBookEntry styleBookEntry =
+			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
+
+		_validateFrontendTokenDefinition(frontendTokenDefinition);
+
+		styleBookEntry.setFrontendTokenDefinition(frontendTokenDefinition);
+
+		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
+
+		if (draftStyleBookEntry != null) {
+			draftStyleBookEntry.setFrontendTokenDefinition(
+				frontendTokenDefinition);
+
+			updateDraft(draftStyleBookEntry);
+		}
+
+		return styleBookEntryPersistence.update(styleBookEntry);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public StyleBookEntry updateFrontendTokensValues(
 			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException {
@@ -728,6 +761,41 @@ public class StyleBookEntryLocalServiceImpl
 		}
 	}
 
+	private void _validateFrontendTokenDefinition(
+			String frontendTokenDefinition)
+		throws PortalException {
+
+		if (Validator.isNull(frontendTokenDefinition)) {
+			return;
+		}
+
+		try {
+			_frontendTokenDefinitionJSONValidator.validate(
+				frontendTokenDefinition);
+		}
+		catch (JSONValidatorException jsonValidatorException) {
+			throw new StyleBookEntryFrontendTokenDefinitionException(
+				"Unable to parse frontend token definition",
+				jsonValidatorException);
+		}
+
+		Set<String> frontendTokenNames = new HashSet<>();
+
+		for (String name :
+				FrontendTokenDefinitionUtil.getFrontendTokenNames(
+					frontendTokenDefinition)) {
+
+			if (frontendTokenNames.contains(name)) {
+				throw new DuplicateStyleBookEntryFrontendTokenException(
+					StringBundler.concat(
+						"Frontend token \"", name,
+						"\" is defined more than once"));
+			}
+
+			frontendTokenNames.add(name);
+		}
+	}
+
 	private void _validateStyleBookEntryKey(
 			long groupId, String styleBookEntryKey)
 		throws PortalException {
@@ -748,6 +816,10 @@ public class StyleBookEntryLocalServiceImpl
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	private final FrontendTokenDefinitionJSONValidator
+		_frontendTokenDefinitionJSONValidator =
+			new FrontendTokenDefinitionJSONValidator();
 
 	@Reference
 	private PortletFileRepository _portletFileRepository;

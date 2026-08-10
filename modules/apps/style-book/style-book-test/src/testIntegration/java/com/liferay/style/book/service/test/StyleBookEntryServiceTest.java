@@ -9,8 +9,11 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -26,6 +29,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.style.book.constants.StyleBookActionKeys;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.service.StyleBookEntryService;
@@ -238,6 +242,88 @@ public class StyleBookEntryServiceTest {
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
 		}
+	}
+
+	@Test
+	public void testUpdateFrontendTokenDefinition() throws Exception {
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryService.addStyleBookEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), _serviceContext);
+
+		String frontendTokenDefinition = JSONUtil.put(
+			"frontendTokenCategories",
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"frontendTokenSets",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"frontendTokens",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"defaultValue",
+									RandomTestUtil.randomString()
+								).put(
+									"editorType", "ColorPicker"
+								).put(
+									"label", RandomTestUtil.randomString()
+								).put(
+									"mappings",
+									JSONUtil.putAll(
+										JSONUtil.put(
+											"type", "cssVariable"
+										).put(
+											"value",
+											RandomTestUtil.randomString()
+										))
+								).put(
+									"name", RandomTestUtil.randomString()
+								).put(
+									"type", "String"
+								))
+						).put(
+							"label", RandomTestUtil.randomString()
+						).put(
+							"name", RandomTestUtil.randomString()
+						))
+				).put(
+					"name", RandomTestUtil.randomString()
+				))
+		).toString();
+
+		User user = UserTestUtil.addGroupUser(
+			_group, RoleConstants.SITE_MEMBER);
+
+		try {
+			UserTestUtil.setUser(user);
+
+			_styleBookEntryService.updateFrontendTokenDefinition(
+				styleBookEntry.getStyleBookEntryId(), frontendTokenDefinition);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			String message = principalException.getMessage();
+
+			Assert.assertTrue(
+				message,
+				message.contains(
+					StringBundler.concat(
+						"User ", user.getUserId(), " must have ",
+						StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES,
+						" permission for")));
+		}
+		finally {
+			UserTestUtil.setUser(TestPropsValues.getUser());
+		}
+
+		styleBookEntry = _styleBookEntryService.updateFrontendTokenDefinition(
+			styleBookEntry.getStyleBookEntryId(), frontendTokenDefinition);
+
+		Assert.assertEquals(
+			frontendTokenDefinition,
+			styleBookEntry.getFrontendTokenDefinition());
 	}
 
 	@Inject
