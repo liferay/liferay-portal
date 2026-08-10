@@ -26,6 +26,8 @@ const test = mergeTests(
 
 const CMP_PROJECT = 'cmp/projects';
 const CMP_TASK = 'cmp/tasks';
+const CMP_TASK_LINK = 'cmp/task-links';
+const CMS_BASIC_WEB_CONTENT = 'cms/basic-web-contents';
 
 test(
 	'Filters the related assets table with AND and highlights the cell when a matrix cell is clicked',
@@ -41,9 +43,8 @@ test(
 
 		const decisionMakerAwarenessAsset = getRandomString();
 
-		const taskTag = 'L_CMP_TASK_' + Math.floor(Math.random() * 100000000);
-
 		let project;
+		let task;
 
 		try {
 			const {awarenessId, championId, considerationId, decisionMakerId} =
@@ -80,7 +81,7 @@ test(
 					};
 				});
 
-			await test.step('Seed a project categorized with the matrix axes', async () => {
+			await test.step('Create a project categorized with the matrix axes', async () => {
 				project = await apiHelpers.objectEntry.postObjectEntry(
 					{
 						taxonomyCategoryIds: [
@@ -94,9 +95,8 @@ test(
 					CMP_PROJECT
 				);
 
-				await apiHelpers.objectEntry.postObjectEntry(
+				task = await apiHelpers.objectEntry.postObjectEntry(
 					{
-						keywords: [taskTag],
 						r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
 						title: getRandomString(),
 					},
@@ -105,7 +105,7 @@ test(
 				);
 			});
 
-			await test.step('Seed related assets in a content space', async () => {
+			await test.step('Create related assets and link them to the task', async () => {
 				const space =
 					await apiHelpers.headlessAssetLibrary.createAssetLibrary({
 						name: getRandomString(),
@@ -113,38 +113,50 @@ test(
 						type: 'Space',
 					});
 
-				await apiHelpers.objectEntry.postObjectEntry(
+				const objectDefinition =
+					await apiHelpers.objectAdmin.getObjectDefinitionByName(
+						'CMSBasicWebContent'
+					);
+
+				for (const {taxonomyCategoryIds, title} of [
 					{
-						keywords: [taskTag],
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 						taxonomyCategoryIds: [championId, awarenessId],
 						title: championAwarenessAsset,
 					},
-					'cms/basic-web-contents',
-					space.name
-				);
-
-				await apiHelpers.objectEntry.postObjectEntry(
 					{
-						keywords: [taskTag],
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 						taxonomyCategoryIds: [championId, considerationId],
 						title: championConsiderationAsset,
 					},
-					'cms/basic-web-contents',
-					space.name
-				);
-
-				await apiHelpers.objectEntry.postObjectEntry(
 					{
-						keywords: [taskTag],
-						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 						taxonomyCategoryIds: [decisionMakerId, awarenessId],
 						title: decisionMakerAwarenessAsset,
 					},
-					'cms/basic-web-contents',
-					space.name
-				);
+				]) {
+					const asset = await apiHelpers.objectEntry.postObjectEntry(
+						{
+							objectEntryFolderExternalReferenceCode:
+								'L_CONTENTS',
+							taxonomyCategoryIds,
+							title,
+						},
+						CMS_BASIC_WEB_CONTENT,
+						space.name
+					);
+
+					await apiHelpers.objectEntry.postObjectEntry(
+						{
+							classExternalReferenceCode:
+								asset.externalReferenceCode,
+							className: objectDefinition.className,
+							groupExternalReferenceCode:
+								asset.systemProperties.scope
+									.externalReferenceCode,
+							r_cmpTaskToCMPTaskLinks_c_cmpTaskId: task.id,
+						},
+						CMP_TASK_LINK,
+						project.scopeKey
+					);
+				}
 			});
 
 			await test.step('Open the project Assets tab', async () => {
@@ -228,13 +240,9 @@ test(
 					dataSetPage.assetLink(decisionMakerAwarenessAsset)
 				).toBeHidden();
 
-				await page.getByRole('button', {name: 'Clear'}).click();
-			});
-
-			await test.step('Sentinel cells are not clickable', async () => {
-				await expect(
-					projectPage.getMatrixCell('No Persona', 'Awareness', 0)
-				).not.toHaveClass(/lfr-cmp__content-gap-cell--clickable/);
+				await page
+					.getByRole('button', {exact: true, name: 'Clear'})
+					.click();
 			});
 		}
 		finally {

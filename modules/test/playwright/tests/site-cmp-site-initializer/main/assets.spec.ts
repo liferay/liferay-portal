@@ -24,6 +24,8 @@ const test = mergeTests(
 
 const CMP_PROJECT = 'cmp/projects';
 const CMP_TASK = 'cmp/tasks';
+const CMP_TASK_LINK = 'cmp/task-links';
+const CMS_BASIC_WEB_CONTENT = 'cms/basic-web-contents';
 
 test(
 	'Info panel opens without crashing when showing details for a related asset',
@@ -31,9 +33,9 @@ test(
 	async ({apiHelpers, page, projectPage, projectsPage}) => {
 		const assetTitle = `Asset ${getRandomString()}`;
 		const projectTitle = `Project ${getRandomString()}`;
-		const taskTag = 'L_CMP_TASK_' + Math.floor(Math.random() * 100000000);
 
 		let project;
+		let task;
 
 		await test.step('Create a project and a task', async () => {
 			project = await apiHelpers.objectEntry.postObjectEntry(
@@ -43,9 +45,8 @@ test(
 				CMP_PROJECT
 			);
 
-			await apiHelpers.objectEntry.postObjectEntry(
+			task = await apiHelpers.objectEntry.postObjectEntry(
 				{
-					keywords: [taskTag],
 					r_cmpProjectToCMPTasks_c_cmpProjectId: project.id,
 					title: getRandomString(),
 				},
@@ -62,14 +63,30 @@ test(
 					type: 'Space',
 				});
 
-			await apiHelpers.objectEntry.postObjectEntry(
+			const asset = await apiHelpers.objectEntry.postObjectEntry(
 				{
-					keywords: [taskTag],
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
 					title: assetTitle,
 				},
-				'cms/basic-web-contents',
+				CMS_BASIC_WEB_CONTENT,
 				space.name
+			);
+
+			const objectDefinition =
+				await apiHelpers.objectAdmin.getObjectDefinitionByName(
+					'CMSBasicWebContent'
+				);
+
+			await apiHelpers.objectEntry.postObjectEntry(
+				{
+					classExternalReferenceCode: asset.externalReferenceCode,
+					className: objectDefinition.className,
+					groupExternalReferenceCode:
+						asset.systemProperties.scope.externalReferenceCode,
+					r_cmpTaskToCMPTaskLinks_c_cmpTaskId: task.id,
+				},
+				CMP_TASK_LINK,
+				project.scopeKey
 			);
 		});
 
