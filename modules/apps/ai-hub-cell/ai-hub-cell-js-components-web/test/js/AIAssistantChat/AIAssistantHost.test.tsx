@@ -47,6 +47,11 @@ jest.mock(
 );
 
 jest.mock(
+	'../../../src/main/resources/META-INF/resources/js/AIAssistantChat/services/getObjectFields',
+	() => ({getObjectFields: jest.fn(() => Promise.resolve({items: []}))})
+);
+
+jest.mock(
 	'../../../src/main/resources/META-INF/resources/js/AIAssistantChat/services/getSpaces',
 	() => ({getSpaces: jest.fn(() => Promise.resolve([]))})
 );
@@ -942,6 +947,40 @@ describe('AIAssistantHost', () => {
 				top: SCROLL_HEIGHT,
 			});
 		});
+	});
+
+	it('keeps the composer usable when a content type is selected before the connection subscribes', async () => {
+		const fakeEventSource = createFakeEventSource();
+
+		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+		await renderAndOpen();
+
+		await act(async () => {
+			getLiferayHandler('openAIAssistantChat')?.({
+				contentTypes: [
+					{
+						externalReferenceCode: 'L_CMS_BLOG',
+						label: 'Blog',
+						name: 'C_Blog',
+					},
+				],
+			});
+		});
+
+		await act(async () => {
+			fireEvent.change(screen.getByLabelText('content-type'), {
+				target: {value: 'L_CMS_BLOG'},
+			});
+		});
+
+		await waitFor(() =>
+			expect(
+				screen.getByPlaceholderText('ask-me-anything')
+			).not.toHaveAttribute('readonly')
+		);
+
+		expect(screen.queryByText('generating')).toBeNull();
 	});
 
 	it('sends the command initial message when the connection is already subscribed', async () => {

@@ -175,6 +175,8 @@ export default function useAIChat({
 		setMessage('');
 
 		if (!eventSourceReference.current) {
+			setIsGenerating(false);
+
 			return;
 		}
 
