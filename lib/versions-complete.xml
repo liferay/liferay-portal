@@ -6189,7 +6189,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.shared.dependencies.jsoup.jar!jsoup.jar</file-name>
-				<version>1.15.3</version>
+				<version>1.23.1</version>
 				<project-name>jsoup Java HTML Parser</project-name>
 				<project-url>https://jsoup.org/</project-url>
 				<licenses>
