@@ -168,7 +168,7 @@ public class InfoItemUtil {
 					return null;
 				}
 
-				return classPKInfoItemIdentifier.getClassPK();
+				return String.valueOf(classPKInfoItemIdentifier.getClassPK());
 			}
 		).put(
 			"externalReferenceCode", externalReferenceCode
