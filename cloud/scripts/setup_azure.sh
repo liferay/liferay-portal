@@ -295,26 +295,11 @@ function _generate_tfvars {
 	local configuration_json_file="${1}"
 	local module="${2}"
 
-	local tfvars_file="${_SCRIPTS_DIR}/${module}_terraform.tfvars"
+	local tfvars_file="${_ROOT_CLOUD_DIR}/terraform/azure/${module}/config.auto.tfvars.json"
 
 	echo "Generating ${tfvars_file} from ${configuration_json_file}."
 
-	local tfvars_content
-
-	tfvars_content=$( \
-		jq --arg module "${module}" --raw-output '.terraform[$module]
-		| to_entries[]
-		| if (.value | type) == "string"
-		  then
-		  	"\(.key) = \"\(.value)\""
-		  elif (.value | type) == "array" or (.value | type) == "object"
-		  then
-		  	"\(.key) = \(.value | @json)"
-		  else
-		  	"\(.key) = \(.value)"
-		  end' "${configuration_json_file}")
-
-	echo "${tfvars_content}" > "${tfvars_file}"
+	jq --arg module "${module}" '.terraform[$module]' "${configuration_json_file}" > "${tfvars_file}"
 
 	echo "${tfvars_file} was generated successfully."
 }
@@ -422,7 +407,7 @@ function _set_up_azure_aks {
 
 	terraform init
 
-	terraform apply -var-file="${_SCRIPTS_DIR}/aks_terraform.tfvars" "${@}"
+	terraform apply "${@}"
 
 	export KUBE_CONFIG_PATH="${HOME}/.kube/config"
 
@@ -443,7 +428,7 @@ function _set_up_azure_platform {
 
 	terraform init
 
-	terraform apply -var-file="${_SCRIPTS_DIR}/platform_terraform.tfvars" "${@}"
+	terraform apply "${@}"
 
 	echo "Liferay platform setup complete."
 
