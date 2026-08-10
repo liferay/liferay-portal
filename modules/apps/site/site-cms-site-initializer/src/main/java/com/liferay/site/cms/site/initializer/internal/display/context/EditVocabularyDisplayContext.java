@@ -12,6 +12,8 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.license.util.App;
+import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
@@ -74,6 +76,8 @@ public class EditVocabularyDisplayContext {
 				).build())
 		).put(
 			"backURL", getBackURL()
+		).put(
+			"cmpEnabled", LicenseManagerUtil.isAppEnabled(App.CMP)
 		).put(
 			"cmsGroupId", _themeDisplay.getScopeGroupId()
 		).put(

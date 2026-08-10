@@ -36,6 +36,7 @@ const VISIBILITY_OPTIONS = [
 
 export default function EditGeneralInfo({
 	assetLibraries,
+	cmpEnabled,
 	defaultLanguageId,
 	externalReferenceCodeInputError,
 	externalReferenceCodeMaxLength,
@@ -56,6 +57,7 @@ export default function EditGeneralInfo({
 	vocabulary,
 }: {
 	assetLibraries: AssetLibraryType[];
+	cmpEnabled?: boolean;
 	defaultLanguageId: string;
 	externalReferenceCodeInputError: string;
 	externalReferenceCodeMaxLength: number;
@@ -370,7 +372,7 @@ export default function EditGeneralInfo({
 						setSpaceInputError={setSpaceInputError}
 					/>
 
-					{Liferay.FeatureFlags['LPD-58677'] && (
+					{cmpEnabled && (
 						<CategorizationProjects
 							checkboxText="vocabulary"
 							disabled={vocabulary.system}
