@@ -1,8 +1,7 @@
 apiVersion: v2
 appVersion: latest
 description:
-    Liferay is an all-in-one DXP, LCAP, and Commerce platform. This chart delivers the ArgoCD root application that
-    manages the Liferay platform components.
+    Liferay is an all-in-one DXP, LCAP, and Commerce platform. This chart delivers the ArgoCD root application that manages the Liferay platform components.
 icon: https://www-cdn.liferay.com/documents/d/guest/liferay-logo
 name: liferay-platform
 type: application
