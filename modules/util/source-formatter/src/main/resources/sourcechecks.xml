@@ -1800,6 +1800,10 @@
 
 		<!-- Liferay Source Checks -->
 
+		<check name="JDKDynamicAgentLoadingCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that dynamic loading of agents is not used." />
+		</check>
 		<check name="PropertiesBuildIncludeDirsCheck">
 			<category name="Bug Prevention" />
 			<description name="Verifies property value of `build.include.dirs` in `build.properties`." />
@@ -2309,6 +2313,10 @@
 
 		<!-- Liferay Source Checks -->
 
+		<check name="JDKDynamicAgentLoadingCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that dynamic loading of agents is not used." />
+		</check>
 		<check name="XMLCheckstyleFileCheck">
 			<category name="Bug Prevention" />
 			<description name="Performs several checks on `checkstyle.xml` file." />
@@ -2395,6 +2403,13 @@
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary whitespace in `.yml` files." />
 			<property name="allowLeadingSpaces" value="true" />
+		</check>
+
+		<!-- Liferay Source Checks -->
+
+		<check name="JDKDynamicAgentLoadingCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that dynamic loading of agents is not used." />
 		</check>
 	</source-processor>
 </source-formatter>
