@@ -6,7 +6,16 @@
 package com.liferay.portal.tools.service.builder.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.ProjectionList;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -17,13 +26,16 @@ import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.tools.service.builder.test.model.DateEntry;
+import com.liferay.portal.tools.service.builder.test.model.DateEntryTable;
 import com.liferay.portal.tools.service.builder.test.service.DateEntryLocalService;
 import com.liferay.portal.tools.service.builder.test.service.persistence.DateEntryPersistence;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,6 +69,8 @@ public class DateEntryTest {
 
 		_microsNanos = _toNanos(_millisTime, _microseconds);
 		_millisNanos = _toNanos(_millisTime, 0);
+
+		_midnightNanos = _toNanos(_midnightTime, 0);
 
 		_midnightDateEntryId = _addDateEntry(_companyId, _midnightTime, 0);
 
@@ -107,6 +121,66 @@ public class DateEntryTest {
 			_dateEntryLocalService.deleteDateEntry(dateEntryId1);
 			_dateEntryLocalService.deleteDateEntry(dateEntryId2);
 		}
+	}
+
+	@Test
+	public void testDSLQuery() {
+		List<Object> results = _dateEntryLocalService.dslQuery(
+			DSLQueryFactoryUtil.select(
+				DSLFunctionFactoryUtil.max(
+					DateEntryTable.INSTANCE.snapshotDate
+				).as(
+					"maxSnapshotDate"
+				)
+			).from(
+				DateEntryTable.INSTANCE
+			).where(
+				DateEntryTable.INSTANCE.companyId.eq(_companyId)
+			));
+
+		Assert.assertEquals(results.toString(), 1, results.size());
+
+		_assertSQLDate(_midnightTime, results.get(0));
+
+		_assertSQLDateRows(
+			_dateEntryLocalService.dslQuery(
+				DSLQueryFactoryUtil.select(
+					DateEntryTable.INSTANCE.dateEntryId,
+					DateEntryTable.INSTANCE.snapshotDate
+				).from(
+					DateEntryTable.INSTANCE
+				).where(
+					DateEntryTable.INSTANCE.companyId.eq(_companyId)
+				).orderBy(
+					DateEntryTable.INSTANCE.snapshotDate.ascending()
+				)));
+	}
+
+	@Test
+	public void testDynamicQuery() {
+		DynamicQuery dynamicQuery = _createDynamicQuery();
+
+		dynamicQuery.setProjection(ProjectionFactoryUtil.max("snapshotDate"));
+
+		List<Object> results = _dateEntryLocalService.dynamicQuery(
+			dynamicQuery);
+
+		Assert.assertEquals(results.toString(), 1, results.size());
+
+		_assertTimestamp(_microsNanos, results.get(0));
+
+		dynamicQuery = _createDynamicQuery();
+
+		dynamicQuery.addOrder(OrderFactoryUtil.asc("snapshotDate"));
+
+		ProjectionList projectionList = ProjectionFactoryUtil.projectionList();
+
+		projectionList.add(ProjectionFactoryUtil.property("dateEntryId"));
+		projectionList.add(ProjectionFactoryUtil.property("snapshotDate"));
+
+		dynamicQuery.setProjection(projectionList);
+
+		_assertTimestampRows(_dateEntryLocalService.dynamicQuery(dynamicQuery));
 	}
 
 	@Test
@@ -231,6 +305,48 @@ public class DateEntryTest {
 	}
 
 	@Test
+	public void testJDBCQuery() throws Exception {
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select max(snapshotDate) as maxSnapshotDate from DateEntry " +
+					"where companyId = ?")) {
+
+			preparedStatement.setLong(1, _companyId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+
+				_assertTimestamp(
+					_microsNanos, resultSet.getTimestamp("maxSnapshotDate"));
+			}
+		}
+
+		try (Connection connection = DataAccess.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select dateEntryId, snapshotDate from DateEntry where " +
+					"companyId = ? order by snapshotDate")) {
+
+			preparedStatement.setLong(1, _companyId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				List<Object[]> rows = new ArrayList<>();
+
+				while (resultSet.next()) {
+					rows.add(
+						new Object[] {
+							resultSet.getLong("dateEntryId"),
+							resultSet.getTimestamp("snapshotDate")
+						});
+				}
+
+				_assertTimestampRows(rows);
+			}
+		}
+	}
+
+	@Test
 	public void testNullDate() throws Exception {
 		long companyId = RandomTestUtil.nextLong();
 		long dateEntryId = RandomTestUtil.nextLong();
@@ -267,6 +383,23 @@ public class DateEntryTest {
 		finally {
 			_dateEntryLocalService.deleteDateEntry(dateEntryId);
 		}
+	}
+
+	@Test
+	public void testSQLQuery() {
+		_assertTimestamp(_microsNanos, _getMaxSnapshotDateBySQLQuery(null));
+		_assertSQLDate(_midnightTime, _getMaxSnapshotDateBySQLQuery(Type.DATE));
+		_assertTimestamp(
+			_microsNanos, _getMaxSnapshotDateBySQLQuery(Type.TIMESTAMP));
+
+		_assertTimestampRows(
+			_dateEntryLocalService.getDateEntriesBySQLQuery(_companyId, null));
+		_assertSQLDateRows(
+			_dateEntryLocalService.getDateEntriesBySQLQuery(
+				_companyId, Type.DATE));
+		_assertTimestampRows(
+			_dateEntryLocalService.getDateEntriesBySQLQuery(
+				_companyId, Type.TIMESTAMP));
 	}
 
 	@Test
@@ -347,17 +480,83 @@ public class DateEntryTest {
 		return timestamp;
 	}
 
-	private void _assertDate(long expectedTime, Date date) {
-		Assert.assertEquals(Date.class, date.getClass());
+	private void _assertDate(long expectedTime, Object object) {
+		Assert.assertEquals(Date.class, object.getClass());
+
+		Date date = (Date)object;
+
 		Assert.assertEquals(expectedTime, date.getTime());
 	}
 
-	private void _assertTimestamp(long expectedNanos, Date date) {
-		Assert.assertEquals(Timestamp.class, date.getClass());
+	private void _assertSQLDate(long expectedTime, Object object) {
+		Assert.assertEquals(java.sql.Date.class, object.getClass());
 
-		Timestamp timestamp = (Timestamp)date;
+		Date date = (Date)object;
+
+		Assert.assertEquals(expectedTime, date.getTime());
+	}
+
+	private void _assertSQLDateRow(long expectedDateEntryId, Object[] row) {
+		Number number = (Number)row[0];
+
+		Assert.assertEquals(expectedDateEntryId, number.longValue());
+
+		_assertSQLDate(_midnightTime, row[1]);
+	}
+
+	private void _assertSQLDateRows(List<Object[]> rows) {
+		Assert.assertEquals(rows.toString(), 3, rows.size());
+
+		_assertSQLDateRow(_midnightDateEntryId, rows.get(0));
+		_assertSQLDateRow(_millisDateEntryId, rows.get(1));
+		_assertSQLDateRow(_microsDateEntryId, rows.get(2));
+	}
+
+	private void _assertTimestamp(long expectedNanos, Object object) {
+		Assert.assertEquals(Timestamp.class, object.getClass());
+
+		Timestamp timestamp = (Timestamp)object;
 
 		Assert.assertEquals(expectedNanos, timestamp.getNanos());
+	}
+
+	private void _assertTimestampRow(
+		long expectedDateEntryId, long expectedNanos, Object[] row) {
+
+		Number number = (Number)row[0];
+
+		Assert.assertEquals(expectedDateEntryId, number.longValue());
+
+		_assertTimestamp(expectedNanos, row[1]);
+	}
+
+	private void _assertTimestampRows(List<Object[]> rows) {
+		Assert.assertEquals(rows.toString(), 3, rows.size());
+
+		_assertTimestampRow(_midnightDateEntryId, _midnightNanos, rows.get(0));
+		_assertTimestampRow(_millisDateEntryId, _millisNanos, rows.get(1));
+		_assertTimestampRow(_microsDateEntryId, _microsNanos, rows.get(2));
+	}
+
+	private DynamicQuery _createDynamicQuery() {
+		Class<?> clazz = _dateEntryLocalService.getClass();
+
+		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
+			DateEntry.class, clazz.getClassLoader());
+
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("companyId", _companyId));
+
+		return dynamicQuery;
+	}
+
+	private Object _getMaxSnapshotDateBySQLQuery(Type type) {
+		List<Object> results =
+			_dateEntryLocalService.getMaxSnapshotDatesBySQLQuery(
+				_companyId, type);
+
+		Assert.assertEquals(results.toString(), 1, results.size());
+
+		return results.get(0);
 	}
 
 	private static long _companyId;
@@ -372,6 +571,7 @@ public class DateEntryTest {
 	private static int _microseconds;
 	private static int _microsNanos;
 	private static long _midnightDateEntryId;
+	private static int _midnightNanos;
 	private static long _midnightTime;
 	private static long _millisDateEntryId;
 	private static int _millisNanos;
