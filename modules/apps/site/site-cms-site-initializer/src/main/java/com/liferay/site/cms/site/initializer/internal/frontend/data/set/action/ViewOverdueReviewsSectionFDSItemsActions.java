@@ -12,6 +12,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.cms.site.initializer.internal.constants.CMSSiteInitializerFDSNames;
 
@@ -57,7 +58,7 @@ public class ViewOverdueReviewsSectionFDSItemsActions
 					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
 					GroupConstants.CMS_FRIENDLY_URL,
 					"/edit_content_item?objectEntryId={embedded.id}&redirect=",
-					themeDisplay.getURLCurrent())
+					URLCodec.encodeURL(themeDisplay.getURLCurrent()))
 			).setIcon(
 				"pencil"
 			).setLabel(
