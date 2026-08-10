@@ -4,4 +4,6 @@ Bundle-Version: 1.1.0
 Export-Package:\
 	com.liferay.site.pim.site.initializer.connector,\
 	com.liferay.site.pim.site.initializer.constants,\
-	com.liferay.site.pim.site.initializer.link.type
+	com.liferay.site.pim.site.initializer.engine,\
+	com.liferay.site.pim.site.initializer.exception,\
+	com.liferay.site.pim.site.initializer.link
