@@ -119,6 +119,225 @@ public abstract class SecretsUtil {
 		return matcher.matches();
 	}
 
+	protected static class Item {
+
+		public void addItemField(ItemField itemField) {
+			synchronized (_vault) {
+				if (_itemFields == null) {
+					_itemFields = new ArrayList<>();
+				}
+
+				_itemFields.add(itemField);
+			}
+		}
+
+		public String getId() {
+			return _id;
+		}
+
+		public ItemField getItemField(String label) {
+			List<ItemField> itemFields;
+
+			synchronized (_vault) {
+				if (_itemFields == null) {
+					_init();
+				}
+
+				itemFields = _itemFields;
+			}
+
+			for (ItemField itemField : itemFields) {
+				if (Objects.equals(itemField.getId(), label) ||
+					Objects.equals(itemField.getLabel(), label)) {
+
+					return itemField;
+				}
+			}
+
+			if (_linkedItem != null) {
+				return _linkedItem.getItemField(label);
+			}
+
+			return null;
+		}
+
+		public List<ItemField> getItemFields() {
+			synchronized (_vault) {
+				if (_itemFields == null) {
+					_init();
+				}
+
+				return _itemFields;
+			}
+		}
+
+		public ItemFile getItemFile(String fileName) {
+			List<ItemFile> itemFiles;
+
+			synchronized (_vault) {
+				if (_itemFiles == null) {
+					_init();
+				}
+
+				itemFiles = _itemFiles;
+			}
+
+			for (ItemFile itemFile : itemFiles) {
+				if (Objects.equals(itemFile.getName(), fileName)) {
+					return itemFile;
+				}
+			}
+
+			if (_linkedItem != null) {
+				return _linkedItem.getItemFile(fileName);
+			}
+
+			return null;
+		}
+
+		public List<ItemFile> getItemFiles() {
+			synchronized (_vault) {
+				if (_itemFiles == null) {
+					_init();
+				}
+
+				return _itemFiles;
+			}
+		}
+
+		public String getTitle() {
+			return _title;
+		}
+
+		public void load() {
+			synchronized (_vault) {
+				if (_itemFields == null) {
+					_init();
+				}
+			}
+		}
+
+		public void refresh() {
+			synchronized (_vault) {
+				_itemFields = null;
+				_itemFiles = null;
+				_linkedItem = null;
+			}
+		}
+
+		private Item(String id, String title, Vault vault) {
+			_id = id;
+			_title = title;
+			_vault = vault;
+		}
+
+		private void _init() {
+			JSONObject itemJSONObject = _toJSONObject(
+				JenkinsResultsParserUtil.combine(
+					"/v1/vaults/", _vault.getId(), "/items/", getId()));
+
+			JSONArray fieldsJSONArray = itemJSONObject.getJSONArray("fields");
+
+			_itemFields = new ArrayList<>(fieldsJSONArray.length());
+
+			for (int i = 0; i < fieldsJSONArray.length(); i++) {
+				JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(i);
+
+				try {
+					JSONObject sectionJSONObject =
+						fieldJSONObject.optJSONObject("section");
+
+					if (sectionJSONObject != null) {
+						if (Objects.equals(
+								sectionJSONObject.optString("label"),
+								"Related Items")) {
+
+							_linkedItem = _vault.getItem(
+								fieldJSONObject.getString("label"));
+						}
+
+						if (_linkedItem != null) {
+							continue;
+						}
+					}
+
+					if (!fieldJSONObject.has("value")) {
+						continue;
+					}
+
+					_itemFields.add(
+						new ItemField(
+							fieldJSONObject.getString("id"),
+							fieldJSONObject.getString("label"),
+							fieldJSONObject.getString("value")));
+				}
+				catch (JSONException jsonException) {
+					System.err.println(jsonException.toString());
+					System.out.println(fieldJSONObject.toString(2));
+				}
+			}
+
+			JSONArray filesJSONArray = itemJSONObject.optJSONArray(
+				"files", new JSONArray());
+
+			_itemFiles = new ArrayList<>(filesJSONArray.length());
+
+			for (int i = 0; i < filesJSONArray.length(); i++) {
+				JSONObject fileJSONObject = filesJSONArray.getJSONObject(i);
+
+				try {
+					JSONObject sectionJSONObject = fileJSONObject.optJSONObject(
+						"section");
+
+					if (sectionJSONObject != null) {
+						if (Objects.equals(
+								sectionJSONObject.optString("label"),
+								"Related Items")) {
+
+							_linkedItem = _vault.getItem(
+								fileJSONObject.getString("label"));
+						}
+
+						if (_linkedItem != null) {
+							continue;
+						}
+					}
+
+					if (!fileJSONObject.has("content_path")) {
+						continue;
+					}
+
+					_itemFiles.add(
+						new ItemFile(
+							fileJSONObject.getString("content_path"),
+							fileJSONObject.getString("name")));
+				}
+				catch (JSONException jsonException) {
+					System.err.println(jsonException.toString());
+					System.out.println(fileJSONObject.toString(2));
+				}
+			}
+		}
+
+		private final String _id;
+		private List<ItemField> _itemFields;
+		private List<ItemFile> _itemFiles;
+		private Item _linkedItem;
+		private final String _title;
+		private final Vault _vault;
+
+		private static enum Category {
+
+			API_CREDENTIAL, BANK_ACCOUNT, CREDIT_CARD, CUSTOM, DATABASE,
+			DOCUMENT, DRIVER_LICENSE, EMAIL_ACCOUNT, IDENTITY, LOGIN,
+			MEDICAL_RECORD, MEMBERSHIP, OUTDOOR_LICENSE, PASSPORT, PASSWORD,
+			REWARD_PROGRAM, SECURE_NOTE, SERVER, SOCIAL_SECURITY_NUMBER,
+			SOFTWARE_LICENSE, SSH_KEY, WIRELESS_ROUTER
+
+		}
+
+	}
+
 	private static void _createItem(
 		Map<String, String> itemFieldsMap, String itemTitle, Vault vault) {
 
@@ -553,225 +772,6 @@ public abstract class SecretsUtil {
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)");
 	private static final Pattern _secretReferencePattern = Pattern.compile(
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
-
-	private static class Item {
-
-		public void addItemField(ItemField itemField) {
-			synchronized (_vault) {
-				if (_itemFields == null) {
-					_itemFields = new ArrayList<>();
-				}
-
-				_itemFields.add(itemField);
-			}
-		}
-
-		public String getId() {
-			return _id;
-		}
-
-		public ItemField getItemField(String label) {
-			List<ItemField> itemFields;
-
-			synchronized (_vault) {
-				if (_itemFields == null) {
-					_init();
-				}
-
-				itemFields = _itemFields;
-			}
-
-			for (ItemField itemField : itemFields) {
-				if (Objects.equals(itemField.getId(), label) ||
-					Objects.equals(itemField.getLabel(), label)) {
-
-					return itemField;
-				}
-			}
-
-			if (_linkedItem != null) {
-				return _linkedItem.getItemField(label);
-			}
-
-			return null;
-		}
-
-		public List<ItemField> getItemFields() {
-			synchronized (_vault) {
-				if (_itemFields == null) {
-					_init();
-				}
-
-				return _itemFields;
-			}
-		}
-
-		public ItemFile getItemFile(String fileName) {
-			List<ItemFile> itemFiles;
-
-			synchronized (_vault) {
-				if (_itemFiles == null) {
-					_init();
-				}
-
-				itemFiles = _itemFiles;
-			}
-
-			for (ItemFile itemFile : itemFiles) {
-				if (Objects.equals(itemFile.getName(), fileName)) {
-					return itemFile;
-				}
-			}
-
-			if (_linkedItem != null) {
-				return _linkedItem.getItemFile(fileName);
-			}
-
-			return null;
-		}
-
-		public List<ItemFile> getItemFiles() {
-			synchronized (_vault) {
-				if (_itemFiles == null) {
-					_init();
-				}
-
-				return _itemFiles;
-			}
-		}
-
-		public String getTitle() {
-			return _title;
-		}
-
-		public void load() {
-			synchronized (_vault) {
-				if (_itemFields == null) {
-					_init();
-				}
-			}
-		}
-
-		public void refresh() {
-			synchronized (_vault) {
-				_itemFields = null;
-				_itemFiles = null;
-				_linkedItem = null;
-			}
-		}
-
-		private Item(String id, String title, Vault vault) {
-			_id = id;
-			_title = title;
-			_vault = vault;
-		}
-
-		private void _init() {
-			JSONObject itemJSONObject = _toJSONObject(
-				JenkinsResultsParserUtil.combine(
-					"/v1/vaults/", _vault.getId(), "/items/", getId()));
-
-			JSONArray fieldsJSONArray = itemJSONObject.getJSONArray("fields");
-
-			_itemFields = new ArrayList<>(fieldsJSONArray.length());
-
-			for (int i = 0; i < fieldsJSONArray.length(); i++) {
-				JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(i);
-
-				try {
-					JSONObject sectionJSONObject =
-						fieldJSONObject.optJSONObject("section");
-
-					if (sectionJSONObject != null) {
-						if (Objects.equals(
-								sectionJSONObject.optString("label"),
-								"Related Items")) {
-
-							_linkedItem = _vault.getItem(
-								fieldJSONObject.getString("label"));
-						}
-
-						if (_linkedItem != null) {
-							continue;
-						}
-					}
-
-					if (!fieldJSONObject.has("value")) {
-						continue;
-					}
-
-					_itemFields.add(
-						new ItemField(
-							fieldJSONObject.getString("id"),
-							fieldJSONObject.getString("label"),
-							fieldJSONObject.getString("value")));
-				}
-				catch (JSONException jsonException) {
-					System.err.println(jsonException.toString());
-					System.out.println(fieldJSONObject.toString(2));
-				}
-			}
-
-			JSONArray filesJSONArray = itemJSONObject.optJSONArray(
-				"files", new JSONArray());
-
-			_itemFiles = new ArrayList<>(filesJSONArray.length());
-
-			for (int i = 0; i < filesJSONArray.length(); i++) {
-				JSONObject fileJSONObject = filesJSONArray.getJSONObject(i);
-
-				try {
-					JSONObject sectionJSONObject = fileJSONObject.optJSONObject(
-						"section");
-
-					if (sectionJSONObject != null) {
-						if (Objects.equals(
-								sectionJSONObject.optString("label"),
-								"Related Items")) {
-
-							_linkedItem = _vault.getItem(
-								fileJSONObject.getString("label"));
-						}
-
-						if (_linkedItem != null) {
-							continue;
-						}
-					}
-
-					if (!fileJSONObject.has("content_path")) {
-						continue;
-					}
-
-					_itemFiles.add(
-						new ItemFile(
-							fileJSONObject.getString("content_path"),
-							fileJSONObject.getString("name")));
-				}
-				catch (JSONException jsonException) {
-					System.err.println(jsonException.toString());
-					System.out.println(fileJSONObject.toString(2));
-				}
-			}
-		}
-
-		private final String _id;
-		private List<ItemField> _itemFields;
-		private List<ItemFile> _itemFiles;
-		private Item _linkedItem;
-		private final String _title;
-		private final Vault _vault;
-
-		private static enum Category {
-
-			API_CREDENTIAL, BANK_ACCOUNT, CREDIT_CARD, CUSTOM, DATABASE,
-			DOCUMENT, DRIVER_LICENSE, EMAIL_ACCOUNT, IDENTITY, LOGIN,
-			MEDICAL_RECORD, MEMBERSHIP, OUTDOOR_LICENSE, PASSPORT, PASSWORD,
-			REWARD_PROGRAM, SECURE_NOTE, SERVER, SOCIAL_SECURITY_NUMBER,
-			SOFTWARE_LICENSE, SSH_KEY, WIRELESS_ROUTER
-
-		}
-
-	}
 
 	private static class ItemField {
 
