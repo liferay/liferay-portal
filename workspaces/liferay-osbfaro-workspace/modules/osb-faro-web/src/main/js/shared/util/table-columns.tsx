@@ -23,7 +23,12 @@ import {
 	SourceCell,
 	WillBeRemovedCell,
 } from 'shared/components/table/cell-components';
-import {applyTimeZone, formatDateToTimeZone, formatUTCDate} from './date';
+import {
+	applyTimeZone,
+	formatDateToTimeZone,
+	formatUTCDate,
+	getCustomDateFormat,
+} from './date';
 import {Colors} from './colors-size';
 import {formatTime} from './time';
 import {get, isNil, noop, pickBy} from 'lodash';
@@ -389,7 +394,8 @@ export const changesListColumns = {
 	getDateFirst: (timeZoneId: string) => ({
 		accessor: 'dateFirst',
 		dataFormatter: (value: string | number | null | undefined) =>
-			!isNil(value) && formatDateToTimeZone(value, 'll', timeZoneId),
+			!isNil(value) &&
+			formatDateToTimeZone(value, getCustomDateFormat(), timeZoneId),
 		label: Liferay.Language.get('first-seen'),
 	}),
 	getIndividualName: ({channelId, groupId}: ChannelGroupParams) => ({
@@ -411,7 +417,7 @@ export const changesListColumns = {
 			operation && [
 				<span key="MEMBERSHIP_CHANGE">
 					{applyTimeZone(dateChanged, timeZoneId).calendar(null, {
-						sameElse: 'll',
+						sameElse: getCustomDateFormat(),
 					})}
 
 					<Label
@@ -622,7 +628,11 @@ export const eventListColumns = {
 				})}
 				data={data}
 				dateFormatter={(date: string | number) =>
-					formatDateToTimeZone(date, 'll', timeZoneId)
+					formatDateToTimeZone(
+						date,
+						getCustomDateFormat(),
+						timeZoneId
+					)
 				}
 				datePath="lastSeenDate"
 			/>
@@ -724,7 +734,11 @@ export const individualsListColumns = {
 			<DateCell
 				data={data}
 				dateFormatter={(date: string | number) =>
-					formatDateToTimeZone(date, 'll', timeZoneId)
+					formatDateToTimeZone(
+						date,
+						getCustomDateFormat(),
+						timeZoneId
+					)
 				}
 				datePath="dateCreated"
 			/>
@@ -734,7 +748,8 @@ export const individualsListColumns = {
 	getLastActivityDate: (timeZoneId: string) => ({
 		accessor: 'lastActivityDate',
 		dataFormatter: (data: string | number | null | undefined) =>
-			!isNil(data) && formatDateToTimeZone(data, 'll', timeZoneId),
+			!isNil(data) &&
+			formatDateToTimeZone(data, getCustomDateFormat(), timeZoneId),
 		label: Liferay.Language.get('last-activity'),
 	}),
 	getName: ({channelId, groupId}: ChannelGroupParams) => ({
@@ -923,7 +938,11 @@ export const metricsListColumns = {
 			<DateCell
 				data={data}
 				dateFormatter={(date: string | number) =>
-					formatDateToTimeZone(date, 'll', timeZoneId)
+					formatDateToTimeZone(
+						date,
+						getCustomDateFormat(),
+						timeZoneId
+					)
 				}
 				datePath="createDate"
 			/>
@@ -1013,7 +1032,8 @@ export const metricsListColumns = {
 			};
 		}) => {
 			const date =
-				!isNil(modifiedDate) && moment(modifiedDate).format('ll');
+				!isNil(modifiedDate) &&
+				moment(modifiedDate).format(getCustomDateFormat());
 
 			return (
 				<td>
@@ -1221,7 +1241,11 @@ export const segmentsListColumns = {
 			<DateCell
 				data={data}
 				dateFormatter={(date: string | number) =>
-					formatDateToTimeZone(date, 'll', timeZoneId)
+					formatDateToTimeZone(
+						date,
+						getCustomDateFormat(),
+						timeZoneId
+					)
 				}
 				datePath="dateCreated"
 			/>
@@ -1277,7 +1301,7 @@ export const segmentsListColumns = {
 		cellRendererProps: {
 			dateFormatter: (date: string | number) =>
 				moment(date).calendar(null, {
-					sameElse: 'll',
+					sameElse: getCustomDateFormat(),
 				}),
 			datePath: 'individualAddedDate',
 		},
@@ -1309,7 +1333,7 @@ export const usersListColumns = {
 		cellRendererProps: {
 			dateFormatter: (date: string | number) =>
 				applyTimeZone(date, timeZoneId).calendar(null, {
-					sameElse: 'll',
+					sameElse: getCustomDateFormat(),
 				}),
 			datePath: 'lastLoginDate',
 		},

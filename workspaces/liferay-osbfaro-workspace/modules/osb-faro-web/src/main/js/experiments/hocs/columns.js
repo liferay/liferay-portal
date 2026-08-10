@@ -3,7 +3,11 @@ import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import React from 'react';
 import TextTruncate from 'shared/components/TextTruncate';
-import {applyTimeZone, formatDateToTimeZone} from 'shared/util/date';
+import {
+	applyTimeZone,
+	formatDateToTimeZone,
+	getCustomDateFormat,
+} from 'shared/util/date';
 import {DateCell} from 'shared/components/table/cell-components';
 import {getSafeDecodedURIComponent} from 'shared/util/util';
 import {getStatusColor, getStatusName} from 'experiments/util/experiments';
@@ -77,7 +81,7 @@ export default (timeZoneId) => [
 		cellRenderer: DateCell,
 		cellRendererProps: {
 			dateFormatter: (date) =>
-				formatDateToTimeZone(date, 'll', timeZoneId),
+				formatDateToTimeZone(date, getCustomDateFormat(), timeZoneId),
 			datePath: 'createDate',
 		},
 		className: 'table-column-text-end',
@@ -97,7 +101,11 @@ export default (timeZoneId) => [
 					return momentTimezone()
 						.tz(timeZoneId)
 						.diff(timeZonedDate, 'day') > 0
-						? formatDateToTimeZone(modifiedDate, 'll', timeZoneId)
+						? formatDateToTimeZone(
+								modifiedDate,
+								getCustomDateFormat(),
+								timeZoneId
+							)
 						: moment.utc(modifiedDate).fromNow();
 				}
 			},

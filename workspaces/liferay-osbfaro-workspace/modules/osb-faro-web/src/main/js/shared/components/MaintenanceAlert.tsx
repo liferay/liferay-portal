@@ -4,6 +4,7 @@ import moment from 'moment';
 import React from 'react';
 import {compose} from 'redux';
 import {connect} from 'react-redux';
+import {getCustomDateFormat} from 'shared/util/date';
 import {Project} from 'shared/util/records';
 import {ProjectStates} from 'shared/util/constants';
 import {setMaintenanceSeen} from 'shared/actions/maintenance-seen';
@@ -74,7 +75,9 @@ export class MaintenanceAlert extends React.Component<IMaintenanceAlertProps> {
 								'a-system-wide-maintenance-has-been-scheduled-to-take-place-on-x-at-x'
 							),
 							[
-								moment(stateStartDate).format('ll'),
+								moment(stateStartDate).format(
+									getCustomDateFormat()
+								),
 								moment(stateStartDate).format('LT'),
 							]
 						)}

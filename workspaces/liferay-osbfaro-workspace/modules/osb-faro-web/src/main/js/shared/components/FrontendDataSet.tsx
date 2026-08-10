@@ -8,7 +8,7 @@ import {
 	FrontendDataSet as BaseFrontendDataSet,
 	EConfigInURLBehavior,
 } from '@liferay/frontend-data-set-web';
-import {CUSTOM_DATE_FORMAT, formatUTCDate} from 'shared/util/date';
+import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {Text} from '@clayui/core';
 import {toRoute} from 'shared/util/router';
 
@@ -92,7 +92,7 @@ export const columns = {
 		</Label>
 	),
 	dateRenderer: ({value}: FDSCellProps<string | number>) => (
-		<div>{value && formatUTCDate(value, CUSTOM_DATE_FORMAT)}</div>
+		<div>{value && formatUTCDate(value, getCustomDateFormat())}</div>
 	),
 	nameAndLinkRenderer: ({
 		channelId,

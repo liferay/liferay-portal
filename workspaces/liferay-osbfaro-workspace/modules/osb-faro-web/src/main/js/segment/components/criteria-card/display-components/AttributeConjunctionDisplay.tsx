@@ -7,7 +7,7 @@ import {
 	ReferencedObjectsContext,
 } from 'segment/segment-editor/dynamic/context/referencedObjects';
 import {formatTime} from 'shared/util/time';
-import {formatUTCDate} from 'shared/util/date';
+import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {FunctionalOperators} from 'segment/segment-editor/dynamic/utils/constants';
 import {
 	decodeAttributeId,
@@ -54,13 +54,13 @@ const AttributeConjunctionDisplay: React.FC<
 				if (FunctionalOperators.Between === operatorName) {
 					const {end, start} = value;
 
-					return `${formatUTCDate(start, 'll')} - ${formatUTCDate(
-						end,
-						'll'
-					)}`;
+					return `${formatUTCDate(
+						start,
+						getCustomDateFormat()
+					)} - ${formatUTCDate(end, getCustomDateFormat())}`;
 				}
 
-				return formatUTCDate(value, 'll');
+				return formatUTCDate(value, getCustomDateFormat());
 			case DataTypes.Duration:
 				return formatTime(value);
 			case DataTypes.Number:

@@ -4,6 +4,7 @@ import {DEFAULT_ACTIVITY_MAX} from 'shared/api/activities';
 import getEventDashboardUrl, {
 	EventDashboardContext,
 } from './getEventDashboardUrl';
+import {getCustomDateFormat} from 'shared/util/date';
 import {getSafeDecodedURIComponent} from './util';
 import {
 	AssetTypes,
@@ -361,7 +362,7 @@ export const formatGroupingTime = (
 
 	return time.isSame(moment(), 'day')
 		? Liferay.Language.get('today')
-		: time.utc().format('ll');
+		: time.utc().format(getCustomDateFormat());
 };
 
 /**

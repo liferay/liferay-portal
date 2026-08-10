@@ -17,8 +17,7 @@ import {
 } from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {CREATE_DATE, createOrderIOMap} from 'shared/util/pagination';
-import {CUSTOM_DATE_FORMAT} from 'shared/util/date';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {
 	GDPRRequestStatuses,
 	GDPRRequestTypes,
@@ -139,13 +138,13 @@ const SuppressedListWithData = withBaseResults(withData, {
 		{
 			accessor: 'dataControlTaskCreateDate',
 			dataFormatter: (val: string) =>
-				formatDateToTimeZone(val, CUSTOM_DATE_FORMAT, timeZoneId),
+				formatDateToTimeZone(val, getCustomDateFormat(), timeZoneId),
 			label: Liferay.Language.get('requested-date'),
 		},
 		{
 			accessor: 'createDate',
 			dataFormatter: (val: string) =>
-				formatDateToTimeZone(val, CUSTOM_DATE_FORMAT, timeZoneId),
+				formatDateToTimeZone(val, getCustomDateFormat(), timeZoneId),
 			label: Liferay.Language.get('suppression-date'),
 		},
 	],

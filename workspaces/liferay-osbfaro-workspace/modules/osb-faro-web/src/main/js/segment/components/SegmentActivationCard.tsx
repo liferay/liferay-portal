@@ -10,7 +10,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {connect, ConnectedProps} from 'react-redux';
-import {formatUTCDateFromUnix} from 'shared/util/date';
+import {formatUTCDateFromUnix, getCustomDateFormat} from 'shared/util/date';
 import {Option, Picker, Text} from '@clayui/core';
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {
@@ -265,6 +265,7 @@ const ActivationConfigurationModal: React.FC<
 							SegmentActivationFrequencyTypes.Between && (
 							<DateInput
 								className="flex-fill"
+								displayFormat={getCustomDateFormat()}
 								limitEndDate={false}
 								maxRange={365}
 								onChange={(value) => {
@@ -364,8 +365,14 @@ const SegmentActivationCard: React.FC<
 				])
 			: sub(Liferay.Language.get('x-sync-will-run-from-x-to-x'), [
 					getScheduleLabel(scheduleType),
-					formatUTCDateFromUnix(scheduleStartDate, 'MMM DD, yyyy'),
-					formatUTCDateFromUnix(scheduleEndDate, 'MMM DD, yyyy'),
+					formatUTCDateFromUnix(
+						scheduleStartDate,
+						getCustomDateFormat()
+					),
+					formatUTCDateFromUnix(
+						scheduleEndDate,
+						getCustomDateFormat()
+					),
 				]);
 
 	return (

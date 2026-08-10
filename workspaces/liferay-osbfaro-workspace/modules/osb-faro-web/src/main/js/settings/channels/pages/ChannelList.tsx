@@ -23,7 +23,7 @@ import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {CREATE_TIME, createOrderIOMap} from 'shared/util/pagination';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {FormikHelpers} from 'formik';
 import {getPluralMessage, sub} from 'shared/util/lang';
 import {IPagination} from 'shared/types';
@@ -495,7 +495,11 @@ const ChannelList: React.FC<IChannelListProps> = ({
 						{
 							accessor: 'createTime',
 							dataFormatter: (date: string | number) =>
-								formatDateToTimeZone(date, 'll', timeZoneId),
+								formatDateToTimeZone(
+									date,
+									getCustomDateFormat(),
+									timeZoneId
+								),
 							label: Liferay.Language.get('date-added'),
 						},
 					]}

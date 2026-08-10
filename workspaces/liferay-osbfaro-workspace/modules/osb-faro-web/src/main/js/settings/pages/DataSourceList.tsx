@@ -22,7 +22,7 @@ import {
 } from 'shared/util/pagination';
 import {DataSource} from 'shared/util/records';
 import {DataSourceStates, DataSourceTypes, Sizes} from 'shared/util/constants';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {fromJS} from 'immutable';
 import {get} from 'lodash';
 import {
@@ -109,7 +109,7 @@ export const StatusRenderer: React.FC<ICellProps> = ({data}) => {
 };
 
 const dateFormatter = (date: string, timeZoneId: string): string =>
-	formatDateToTimeZone(date, 'll', timeZoneId);
+	formatDateToTimeZone(date, getCustomDateFormat(), timeZoneId);
 
 export const disableRow = ({state}: {state: DataSourceStates}): boolean =>
 	state === DataSourceStates.InProgressDeleting;

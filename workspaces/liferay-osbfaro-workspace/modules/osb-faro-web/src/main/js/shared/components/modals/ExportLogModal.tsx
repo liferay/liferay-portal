@@ -4,6 +4,7 @@ import Loading, {Align} from 'shared/components/Loading';
 import Modal from 'shared/components/modal';
 import moment from 'moment';
 import React, {useState} from 'react';
+import {getCustomDateFormat} from 'shared/util/date';
 import {downloadDataAsFile} from 'shared/util/util';
 
 interface IExportLogModalProps {
@@ -55,6 +56,7 @@ const ExportLogModal: React.FC<IExportLogModalProps> = ({
 				<div className="d-flex">
 					<DateRangeInput
 						className="w-100"
+						displayFormat={getCustomDateFormat()}
 						groupId={groupId}
 						onChange={setDateRange}
 						value={dateRange}

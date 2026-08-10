@@ -10,7 +10,7 @@ import {
 	PropertyCell,
 	SourceCell,
 } from 'shared/components/table/cell-components';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useQueryParams} from 'shared/hooks/useQueryParams';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -33,7 +33,7 @@ export const detailsListCDPColumns = {
 		cellRenderer: DateCell,
 		cellRendererProps: {
 			dateFormatter: (date: string | number) =>
-				formatDateToTimeZone(date, 'll'),
+				formatDateToTimeZone(date, getCustomDateFormat()),
 			datePath: 'dateModified',
 		},
 		label: Liferay.Language.get('last-modified'),

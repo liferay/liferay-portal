@@ -14,7 +14,11 @@ import {
 	ParsedBreakdownItem,
 } from './types';
 import {formatTime} from 'shared/util/time';
-import {formatUTCDate} from 'shared/util/date';
+import {
+	formatUTCDate,
+	getCustomDateFormat,
+	getMonthYearFormat,
+} from 'shared/util/date';
 import {OrderByDirections} from 'shared/util/constants';
 
 const DEFAULT_DATE_GROUPING = DateGroupings.Month;
@@ -141,7 +145,10 @@ const getDateDisplay = (
 ): [string, string] => {
 	const operatorLabel = DATE_OPERATOR_LABELS_MAP[operator];
 
-	const formattedStartDate = formatUTCDate(startDate as string, 'll');
+	const formattedStartDate = formatUTCDate(
+		startDate as string,
+		getCustomDateFormat()
+	);
 
 	const breakdownValue =
 		operator === Operators.Between
@@ -149,7 +156,7 @@ const getDateDisplay = (
 					'between'
 				)} ${formattedStartDate} ${operatorLabel} ${formatUTCDate(
 					endDate as string,
-					'll'
+					getCustomDateFormat()
 				)}`
 			: `${operatorLabel} ${formattedStartDate}`;
 
@@ -345,9 +352,9 @@ export const formatDateName = (
 ): string => {
 	switch (dateGrouping) {
 		case DateGroupings.Day:
-			return moment(name, 'YYYY-MM-DD').format('ll');
+			return moment(name, 'YYYY-MM-DD').format(getCustomDateFormat());
 		case DateGroupings.Month:
-			return moment(name, 'YYYY-MM').format('MMM YYYY');
+			return moment(name, 'YYYY-MM').format(getMonthYearFormat());
 		case DateGroupings.Year:
 		default:
 			return name;

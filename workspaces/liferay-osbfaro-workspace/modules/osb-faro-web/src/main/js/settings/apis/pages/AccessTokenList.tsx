@@ -19,7 +19,7 @@ import {ApisPath} from 'shared/util/url-constants';
 import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
-import {CUSTOM_DATE_FORMAT} from 'shared/util/date';
+import {getCustomDateFormat} from 'shared/util/date';
 import {ExpirationPeriod} from 'shared/util/constants';
 import {formatDateToTimeZone, getDateNow} from 'shared/util/date';
 import {RootState} from 'shared/store';
@@ -153,7 +153,7 @@ const TokenList: React.FC<
 									dataFormatter: (val: string) =>
 										formatDateToTimeZone(
 											val,
-											CUSTOM_DATE_FORMAT,
+											getCustomDateFormat(),
 											timeZoneId
 										),
 									label: Liferay.Language.get('date-created'),
@@ -180,7 +180,7 @@ const TokenList: React.FC<
 											<td>
 												{formatDateToTimeZone(
 													data.expirationDate,
-													CUSTOM_DATE_FORMAT,
+													getCustomDateFormat(),
 													timeZoneId
 												)}
 											</td>

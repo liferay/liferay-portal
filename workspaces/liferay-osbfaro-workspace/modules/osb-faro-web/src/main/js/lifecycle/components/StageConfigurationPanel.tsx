@@ -3,6 +3,7 @@ import ClayDatePicker from '@clayui/date-picker';
 import ClayPopover from '@clayui/popover';
 import getCN from 'classnames';
 import Label from '@clayui/label';
+import moment from 'moment';
 import Panel from '@clayui/panel';
 import React, {useState} from 'react';
 import ClayForm, {ClayInput, ClayToggle} from '@clayui/form';
@@ -189,12 +190,14 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 					expanded={dateExpanded}
 					max={maxDate.format(DEFAULT_DATE_FORMAT)}
 					min={minDate.format(DEFAULT_DATE_FORMAT)}
+					months={moment.months()}
 					onChange={(conditionValue) =>
 						onChange({...value, conditionValue})
 					}
 					onExpandedChange={setDateExpanded}
 					placeholder={Liferay.Language.get('yyyy-mm-dd')}
 					value={value.conditionValue ?? ''}
+					weekdaysShort={moment.weekdaysShort()}
 					years={{
 						end: maxDate.year(),
 						start: minDate.year(),

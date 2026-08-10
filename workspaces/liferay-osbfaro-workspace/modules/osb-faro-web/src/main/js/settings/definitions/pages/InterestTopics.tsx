@@ -22,7 +22,7 @@ import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {CREATE_DATE, createOrderIOMap, KEYWORD} from 'shared/util/pagination';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {getDefinitions} from 'shared/util/breadcrumbs';
 import {partition} from 'lodash';
 import {Routes, toRoute} from 'shared/util/router';
@@ -347,7 +347,11 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 						{
 							accessor: CREATE_DATE,
 							dataFormatter: (date: string) =>
-								formatDateToTimeZone(date, 'll', timeZoneId),
+								formatDateToTimeZone(
+									date,
+									getCustomDateFormat(),
+									timeZoneId
+								),
 							label: Liferay.Language.get('added'),
 						},
 					]}

@@ -8,7 +8,7 @@ import {
 	DataDrivenConfig,
 	GeneralInfoSection,
 } from 'shared/components/GeneralInfoSection';
-import {formatUTCDate} from 'shared/util/date';
+import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {Map} from 'immutable';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
@@ -96,7 +96,7 @@ const AccountMembership: React.FC<IAccountMembershipProps> = ({
 		}
 
 		if (dateKeys.includes(key)) {
-			return formatUTCDate(data, 'YYYY-MM-DD');
+			return formatUTCDate(data, getCustomDateFormat());
 		}
 
 		if (key === 'annualRevenue') {

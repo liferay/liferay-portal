@@ -3,7 +3,7 @@ import {
 	DataDrivenConfig,
 	GeneralInfoSection,
 } from 'shared/components/GeneralInfoSection';
-import {formatUTCDate} from 'shared/util/date';
+import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
 import {SectionHeader} from 'shared/components/SectionHeader';
 
 interface IIndividualAttributesProps {
@@ -70,7 +70,7 @@ const IndividualAttributesCDP: React.FC<IIndividualAttributesProps> = ({
 			const birthDate = propertiesData?.get('birthDate');
 
 			return birthDate
-				? formatUTCDate(birthDate, 'YYYY-MM-DD')
+				? formatUTCDate(birthDate, getCustomDateFormat())
 				: undefined;
 		}
 

@@ -1,12 +1,8 @@
 import DateInput from 'shared/components/DateInput';
 import Form from 'shared/components/form';
 import React from 'react';
-import {formatDateToTimeZone} from 'shared/util/date';
-import {
-	INPUT_DATE_TIME_FORMAT,
-	INPUT_DISPLAY_DATE_TIME_FORMAT,
-	PropertyTypes,
-} from '../utils/constants';
+import {formatDateToTimeZone, getCustomDateTimeFormat} from 'shared/util/date';
+import {INPUT_DATE_TIME_FORMAT, PropertyTypes} from '../utils/constants';
 import {ISegmentEditorInputBase} from '../utils/types';
 
 interface IDateTimeInputProps extends ISegmentEditorInputBase {
@@ -58,7 +54,7 @@ export default class DateTimeInput extends React.Component<IDateTimeInputProps> 
 					<Form.GroupItem>
 						<DateInput
 							className={className}
-							displayFormat={INPUT_DISPLAY_DATE_TIME_FORMAT}
+							displayFormat={getCustomDateTimeFormat()}
 							format={INPUT_DATE_TIME_FORMAT}
 							onDateInputChange={this.handleDateChange}
 							showTimeSelector

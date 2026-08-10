@@ -1,6 +1,12 @@
-import * as d3 from 'd3';
 import moment from 'moment';
 import {BAR_COLORS} from 'shared/util/recharts';
+import {
+	getCustomDateFormat,
+	getDayMonthFormat,
+	getDayMonthHourFormat,
+	getHourOnlyFormat,
+	getMonthYearFormat,
+} from 'shared/util/date';
 import {getIntervalHandle} from './intervals';
 import {Interval, RangeSelectors} from 'shared/types';
 import {INTERVAL_KEY_MAP, isMonthlyRangeKey} from 'shared/util/time';
@@ -101,18 +107,23 @@ export const dateRangeFormatter = (
 
 	// TODO: Add timezone param
 
-	const dayFormat = d3.utcFormat('%-d');
-	const dayMonthFormat = d3.utcFormat('%b %-d');
-	const dayMonthYearFormat = d3.utcFormat('%Y %b %-d');
+	const dayFormat = 'D';
+	const dayMonthFormat = getDayMonthFormat();
+	const dayMonthYearFormat = getCustomDateFormat();
+
+	const format = (date: Date, momentFormat: string) =>
+		moment.utc(date).format(momentFormat);
 
 	return `${
-		withYear ? dayMonthYearFormat(dateStart) : dayMonthFormat(dateStart)
+		withYear
+			? format(dateStart, dayMonthYearFormat)
+			: format(dateStart, dayMonthFormat)
 	} - ${
 		moment(dateStart).get('month') !== moment(dateEnd).get('month')
 			? withYear
-				? dayMonthYearFormat(dateEnd)
-				: dayMonthFormat(dateEnd)
-			: dayFormat(dateEnd)
+				? format(dateEnd, dayMonthYearFormat)
+				: format(dateEnd, dayMonthFormat)
+			: format(dateEnd, dayFormat)
 	}`;
 };
 
@@ -132,10 +143,10 @@ export const formatTooltipDate = (
 
 		// display hours for Last 24 hours and yesterday
 
-		return moment.utc(date).format('MMM D, h A');
+		return moment.utc(date).format(getDayMonthHourFormat());
 	}
 
-	return moment.utc(date).format('YYYY MMM D');
+	return moment.utc(date).format(getCustomDateFormat());
 };
 
 export const formatXAxisDate = (
@@ -147,8 +158,9 @@ export const formatXAxisDate = (
 
 	// display date and month
 
-	let formatter = d3.utcFormat('%b %-d');
-	const monthFormat = d3.utcFormat('%b');
+	let formatter = (date: Date) =>
+		moment.utc(date).format(getDayMonthFormat());
+	const monthFormat = (date: Date) => moment.utc(date).format('MMM');
 
 	const dates = dateKeysIMap.get(Number(dateKey));
 	const dateStart = dates ? dates[0] : 0;
@@ -186,7 +198,8 @@ export const formatXAxisDate = (
 
 			// display hours
 
-			formatter = d3.utcFormat('%-I %p');
+			formatter = (date: Date) =>
+				moment.utc(date).format(getHourOnlyFormat());
 			break;
 		default:
 			break;
@@ -343,7 +356,7 @@ export const getDateTitle = (
 		);
 	}
 	else if (interval === INTERVAL_KEY_MAP.month) {
-		return moment.utc(startDate).format('YYYY MMM');
+		return moment.utc(startDate).format(getMonthYearFormat());
 	}
 
 	return formatTooltipDate(startDate, rangeKey);

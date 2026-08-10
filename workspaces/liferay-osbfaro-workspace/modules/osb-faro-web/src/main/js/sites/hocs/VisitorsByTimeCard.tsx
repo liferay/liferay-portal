@@ -7,6 +7,7 @@ import ChartTooltip, {
 } from 'shared/components/chart-tooltip';
 import ClayLink from '@clayui/link';
 import HeatmapChart from 'shared/components/HeatmapChart';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, {useContext} from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -22,22 +23,15 @@ import {
 import {ReportContainer} from 'shared/components/download-report/DownloadPDFReport';
 import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
+import {getHourOnlyFormat} from 'shared/util/date';
 import {withEmpty, withError, withLoading} from 'shared/hoc';
 
-export const formatHour = (hour: string) => {
-	const hourAsNumber = parseInt(hour);
-	const suffix = hourAsNumber >= 12 ? 'PM' : 'AM';
-	let hourDisplay = hourAsNumber;
-
-	if (hourAsNumber === 0) {
-		hourDisplay = 12;
-	}
-	else if (hourAsNumber > 12) {
-		hourDisplay = hourAsNumber - 12;
-	}
-
-	return `${hourDisplay} ${suffix}`;
-};
+export const formatHour = (hour: string) =>
+	moment
+		.utc()
+		.startOf('day')
+		.add(Number(hour), 'hours')
+		.format(getHourOnlyFormat());
 
 export const renderTooltip = ({
 	column,

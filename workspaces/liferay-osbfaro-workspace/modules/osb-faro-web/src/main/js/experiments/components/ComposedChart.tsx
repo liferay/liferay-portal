@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import moment from 'moment';
 import React, {useState} from 'react';
 import {ANIMATION_DURATION, AXIS, getAxisTickText} from 'shared/util/recharts';
 import {
@@ -15,7 +15,7 @@ import {
 import {CHART_COLOR_NAMES} from 'shared/util/charts';
 import {CONTROL_COLOR} from '../util/constants';
 import {getAxisMeasuresFromData} from 'shared/util/charts';
-import {getDate} from 'shared/util/date';
+import {getDate, getDayMonthFormat} from 'shared/util/date';
 import {getShortIntervals} from 'experiments/util/experiments';
 
 const {stark: CHART_BLUE} = CHART_COLOR_NAMES;
@@ -76,7 +76,7 @@ export const ComposedChart = ({
 					dataKey="key"
 					interval="preserveStart"
 					tickFormatter={(date) =>
-						d3.utcFormat('%b %-d')(getDate(date))
+						moment.utc(getDate(date)).format(getDayMonthFormat())
 					}
 					tickLine={false}
 					ticks={customIntervals}

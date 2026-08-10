@@ -2,17 +2,14 @@ import DateInput from './DateInput';
 import Form from 'shared/components/form';
 import React from 'react';
 import {Criterion, ISegmentEditorCustomInputBase} from '../utils/types';
+import {getCustomDateFormat} from 'shared/util/date';
 import {
 	getCompleteDate,
 	getOperator,
 	setCompleteDate,
 	setOperator,
 } from '../utils/custom-inputs';
-import {
-	INPUT_DATE_FORMAT,
-	PropertyTypes,
-	SUPPORTED_OPERATORS_MAP,
-} from '../utils/constants';
+import {PropertyTypes, SUPPORTED_OPERATORS_MAP} from '../utils/constants';
 import {Option, Picker} from '@clayui/core';
 
 const DATE_OPERATORS = SUPPORTED_OPERATORS_MAP[PropertyTypes.Date];
@@ -69,7 +66,7 @@ export default class CustomDateInput extends React.Component<ISegmentEditorCusto
 		return (
 			<DateInput
 				{...otherProps}
-				displayFormat={INPUT_DATE_FORMAT}
+				displayFormat={getCustomDateFormat()}
 				onChange={this.handleDateChange}
 				operatorRenderer={this.renderOperatorDropdown}
 				value={getCompleteDate(value)}

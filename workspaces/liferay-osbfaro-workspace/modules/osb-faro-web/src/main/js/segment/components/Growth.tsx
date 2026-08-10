@@ -38,7 +38,7 @@ import {
 import {CHART_COLOR_NAMES} from 'shared/util/charts';
 import {createDateKeysIMap} from 'shared/util/intervals';
 import {DATE_CHANGED, NAME} from 'shared/util/pagination';
-import {formatUTCDateFromUnix} from 'shared/util/date';
+import {formatUTCDateFromUnix, getCustomDateFormat} from 'shared/util/date';
 import {formatXAxisDate, getIntervals} from 'shared/util/charts';
 import {get, isNil} from 'lodash';
 import {getNetChange} from 'shared/util/change';
@@ -194,7 +194,12 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 							{
 								label: sub(
 									Liferay.Language.get('as-of-x'),
-									[formatUTCDateFromUnix(modifiedDate, 'll')],
+									[
+										formatUTCDateFromUnix(
+											modifiedDate,
+											getCustomDateFormat()
+										),
+									],
 									false
 								) as string,
 								weight: Weights.Semibold,

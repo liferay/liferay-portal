@@ -22,7 +22,10 @@ import {LIFERAY_DXP_APPLICATION_IDS} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 
-const TIME_FORMAT = 'h:mm a';
+// 'LT' is moment's locale-aware time token: 12-hour with AM/PM for
+// en-US, 24-hour for pt-BR/es-ES/ja-JP.
+
+const TIME_FORMAT = 'LT';
 
 const DEVICE_ICONS_MAP = {
 	any: {

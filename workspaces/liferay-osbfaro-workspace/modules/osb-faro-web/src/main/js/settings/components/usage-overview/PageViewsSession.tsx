@@ -2,7 +2,7 @@ import moment from 'moment';
 import React from 'react';
 import {Colors} from 'shared/util/charts';
 import {CurrentUsage} from './CurrentUsage';
-import {CUSTOM_DATE_FORMAT, formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {STATUS_DISPLAY_MAP} from 'shared/util/subscriptions';
 import {sub} from 'shared/util/lang';
 import {toLocale} from 'shared/util/numbers';
@@ -28,7 +28,7 @@ export const PageViewsSession = ({currentPlan}: IPageViewsSessionProps) => {
 					[
 						formatDateToTimeZone(
 							moment(currentPlan.startDate),
-							CUSTOM_DATE_FORMAT,
+							getCustomDateFormat(),
 							timeZoneId
 						),
 					]

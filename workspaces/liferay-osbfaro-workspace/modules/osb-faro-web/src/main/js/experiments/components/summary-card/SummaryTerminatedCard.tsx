@@ -1,5 +1,5 @@
 import React from 'react';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {
 	getBestVariant,
 	getMetricName,
@@ -76,7 +76,7 @@ export const SummaryTerminatedCard: React.FC<{
 							{sub(Liferay.Language.get('started-x'), [
 								formatDateToTimeZone(
 									startedDate,
-									'll',
+									getCustomDateFormat(),
 									timeZoneId
 								),
 							])}
@@ -87,7 +87,7 @@ export const SummaryTerminatedCard: React.FC<{
 								{sub(Liferay.Language.get('stopped-x'), [
 									formatDateToTimeZone(
 										finishedDate,
-										'll',
+										getCustomDateFormat(),
 										timeZoneId
 									),
 								])}

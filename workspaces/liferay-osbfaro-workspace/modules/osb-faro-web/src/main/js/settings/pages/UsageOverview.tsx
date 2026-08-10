@@ -6,7 +6,7 @@ import moment from 'moment';
 import React, {useState} from 'react';
 import {AlertTypes} from 'shared/components/Alert';
 import {compose, withProject} from 'shared/hoc';
-import {CUSTOM_DATE_FORMAT, formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {
 	formatPlanData,
 	isBasicPlan,
@@ -180,7 +180,7 @@ export const UsageOverview = ({
 															moment(
 																currentPlan.startDate
 															).add(1, 'year'),
-															CUSTOM_DATE_FORMAT,
+															getCustomDateFormat(),
 															timeZoneId
 														)}
 													</b>,

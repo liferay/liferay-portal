@@ -1,5 +1,5 @@
 import React from 'react';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {
 	getBestVariant,
 	getMetricName,
@@ -49,7 +49,11 @@ export const SummaryRunningCard: React.FC<{
 			<SummaryBaseCard.Header
 				Description={() =>
 					sub(Liferay.Language.get('started-x'), [
-						formatDateToTimeZone(startedDate, 'll', timeZoneId),
+						formatDateToTimeZone(
+							startedDate,
+							getCustomDateFormat(),
+							timeZoneId
+						),
 					]) as any
 				}
 				title={Liferay.Language.get('test-is-running')}

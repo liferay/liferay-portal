@@ -1,5 +1,5 @@
 import React from 'react';
-import {formatDateToTimeZone} from 'shared/util/date';
+import {formatDateToTimeZone, getCustomDateFormat} from 'shared/util/date';
 import {
 	getMetricName,
 	mergedVariants,
@@ -56,7 +56,11 @@ export const SummaryWinnerCard: React.FC<{
 			<SummaryBaseCard.Header
 				Description={() =>
 					sub(Liferay.Language.get('started-x'), [
-						formatDateToTimeZone(startedDate, 'll', timeZoneId),
+						formatDateToTimeZone(
+							startedDate,
+							getCustomDateFormat(),
+							timeZoneId
+						),
 					]) as any
 				}
 				title={Liferay.Language.get('winner-declared')}

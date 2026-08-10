@@ -1,4 +1,3 @@
-import * as d3 from 'd3';
 import Card from 'shared/components/Card';
 import ChartTooltip, {
 	Alignments,
@@ -7,11 +6,12 @@ import ChartTooltip, {
 import ClayButton from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import getCN from 'classnames';
+import moment from 'moment';
 import React, {useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import {ComposedChart} from './ComposedChart';
 import {getAxisFormatter} from 'shared/util/charts';
-import {getDate} from 'shared/util/date';
+import {getDate, getDayMonthFormat} from 'shared/util/date';
 import {Sizes} from 'shared/util/constants';
 import {toThousandsABTesting} from 'experiments/util/experiments';
 
@@ -25,9 +25,9 @@ const TotalSessionsTooltip = ({dataPoint}: {dataPoint: any[]}) => {
 		{
 			columns: [
 				{
-					label: d3.utcFormat('%b %-d')(
-						getDate(dataPoint[0].payload.key)
-					),
+					label: moment
+						.utc(getDate(dataPoint[0].payload.key))
+						.format(getDayMonthFormat()),
 					weight: Weights.Semibold,
 					width: 100,
 				},
@@ -69,7 +69,9 @@ const PerVariantTooltip = ({dataPoint}: {dataPoint: any[]}) => {
 		{
 			columns: [
 				{
-					label: d3.utcFormat('%b %-d')(getDate(control.payload.key)),
+					label: moment
+						.utc(getDate(control.payload.key))
+						.format(getDayMonthFormat()),
 					weight: Weights.Semibold,
 					width: 80,
 				},

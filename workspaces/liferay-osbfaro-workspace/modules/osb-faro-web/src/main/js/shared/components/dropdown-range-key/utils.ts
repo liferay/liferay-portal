@@ -1,9 +1,13 @@
 import moment, {Moment} from 'moment';
 import momentTimezone from 'moment-timezone';
-import {getDate} from 'shared/util/date';
+import {
+	getCustomDateFormat,
+	getDate,
+	getDayMonthFormat,
+	getDayMonthHourFormat,
+} from 'shared/util/date';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {TIME_RANGE_LABELS} from 'shared/util/constants';
-import {utcFormat} from 'd3';
 
 type TimeRange = {
 	description: string;
@@ -27,10 +31,10 @@ export function formatDateRange(date: any, rangeKey: string | number) {
 		`${rangeKey}` === RangeKeyTimeRanges.Last24Hours ||
 		`${rangeKey}` === RangeKeyTimeRanges.Yesterday
 	) {
-		return utcFormat('%d %b, %I %p')(date);
+		return moment.utc(date).format(getDayMonthHourFormat());
 	}
 
-	return utcFormat('%d %b')(date);
+	return moment.utc(date).format(getDayMonthFormat());
 }
 
 type RawTimeRange = {
@@ -160,9 +164,9 @@ export function getSelectedItem({
 }: IGetSelectedItemProps) {
 	if (rangeKey === 'CUSTOM') {
 		return {
-			label: `${moment(rangeStart).format('ll')} - ${moment(
+			label: `${moment(rangeStart).format(getCustomDateFormat())} - ${moment(
 				rangeEnd
-			).format('ll')}`,
+			).format(getCustomDateFormat())}`,
 			value: 'CUSTOM',
 		};
 	}
