@@ -53,6 +53,9 @@ const Settings = ({
 	const [hideManagementBarInEmptyState, setHideManagementBarInEmptyState] =
 		useState(dataSet.hideManagementBarInEmptyState ?? true);
 	const [loading, setLoading] = useState(true);
+	const [searchAsYouType, setSearchAsYouType] = useState(
+		dataSet.searchAsYouType ?? false
+	);
 	const [showSearch, setShowSearch] = useState(dataSet.showSearch ?? true);
 	const [visualizationModes, setVisualizationModes] = useState<
 		Array<TVisualizationMode>
@@ -97,6 +100,7 @@ const Settings = ({
 		const body = {
 			defaultVisualizationMode,
 			hideManagementBarInEmptyState,
+			searchAsYouType,
 			showSearch,
 			snapshotsEnabled,
 		};
@@ -441,6 +445,31 @@ const Settings = ({
 								id="show-search-toggle"
 								onToggle={setShowSearch}
 								toggled={showSearch}
+							/>
+						</ClayLayout.Col>
+					</ClayLayout.Row>
+
+					<ClayLayout.Row className="align-items-center justify-content-between mb-4">
+						<ClayLayout.Col size={9}>
+							<div>
+								<label htmlFor="search-as-you-type-toggle">
+									{Liferay.Language.get('search-as-you-type')}
+								</label>
+							</div>
+
+							<div>
+								{Liferay.Language.get(
+									'search-as-you-type-help'
+								)}
+							</div>
+						</ClayLayout.Col>
+
+						<ClayLayout.Col className="align-self-start" size={1}>
+							<ClayToggle
+								disabled={!showSearch}
+								id="search-as-you-type-toggle"
+								onToggle={setSearchAsYouType}
+								toggled={searchAsYouType}
 							/>
 						</ClayLayout.Col>
 					</ClayLayout.Row>
