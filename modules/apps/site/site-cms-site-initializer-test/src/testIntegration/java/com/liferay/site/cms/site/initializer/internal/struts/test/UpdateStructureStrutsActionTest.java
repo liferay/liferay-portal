@@ -142,6 +142,7 @@ public class UpdateStructureStrutsActionTest {
 	public void testExecuteDeletesObjectRelationships() throws Exception {
 		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
 		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
 		_objectDefinition3 = ObjectDefinitionTestUtil.publishObjectDefinition();
 
 		com.liferay.object.model.ObjectRelationship objectRelationship1 =
@@ -279,7 +280,7 @@ public class UpdateStructureStrutsActionTest {
 			com.liferay.object.model.ObjectRelationship objectRelationship)
 		throws Exception {
 
-		com.liferay.object.model.ObjectRelationship nonEdgeObjectRelationship =
+		com.liferay.object.model.ObjectRelationship updatedObjectRelationship =
 			_objectRelationshipLocalService.updateObjectRelationship(
 				objectRelationship.getExternalReferenceCode(),
 				objectRelationship.getObjectRelationshipId(),
@@ -288,7 +289,7 @@ public class UpdateStructureStrutsActionTest {
 				objectRelationship.getLabelMap(), null);
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
-			nonEdgeObjectRelationship);
+			updatedObjectRelationship);
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
