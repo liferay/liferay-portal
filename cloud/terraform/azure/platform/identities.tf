@@ -33,6 +33,7 @@ resource "azurerm_role_assignment" "crossplane_iam_rbac_administrator" {
 	condition=local.crossplane_iam_role_assignment_condition
 	condition_version="2.0"
 	principal_id=azurerm_user_assigned_identity.crossplane_iam.principal_id
+	principal_type="ServicePrincipal"
 	role_definition_name="Role Based Access Control Administrator"
 	scope=data.azurerm_resource_group.liferay.id
 }
