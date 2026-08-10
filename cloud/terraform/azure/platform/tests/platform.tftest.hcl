@@ -47,6 +47,10 @@ run "should_default_to_the_azure_key_vault_secret_store" {
 		error_message="The default Azure Key Vault provider must reference the External Secrets service account"
 	}
 	assert {
+		condition=local.cluster_secret_store_provider.azurekv.tenantId == data.azurerm_client_config.current.tenant_id
+		error_message="The default Azure Key Vault provider must carry the tenant ID required by workload identity"
+	}
+	assert {
 		condition=local.cluster_secret_store_provider.azurekv.vaultUrl == data.azurerm_key_vault.liferay[0].vault_uri
 		error_message="The default Azure Key Vault provider must point at the deployment vault"
 	}

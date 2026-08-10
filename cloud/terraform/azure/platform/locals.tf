@@ -13,6 +13,7 @@ locals {
 		azurekv={
 			authType="WorkloadIdentity"
 			serviceAccountRef=local.external_secrets_service_account
+			tenantId=data.azurerm_client_config.current.tenant_id
 			vaultUrl=data.azurerm_key_vault.liferay[0].vault_uri
 		}
 	} : var.cluster_secret_store_provider_hcl
