@@ -11,7 +11,8 @@ import KanbanView from '../../js/components/props_transformer/views/kanban_view/
 
 jest.mock('react-dnd', () => ({
 	DndProvider: ({children}: any) => <>{children}</>,
-	useDrag: () => [{}, jest.fn()],
+	useDrag: () => [{}, jest.fn(), jest.fn()],
+	useDragLayer: () => ({isDragging: false}),
 	useDrop: () => {
 		return [{}, jest.fn()];
 	},

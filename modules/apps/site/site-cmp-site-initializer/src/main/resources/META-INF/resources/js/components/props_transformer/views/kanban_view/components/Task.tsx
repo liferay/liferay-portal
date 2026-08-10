@@ -10,8 +10,15 @@ import ClayIcon from '@clayui/icon';
 import {DateRenderer} from '@liferay/frontend-data-set-web';
 import {AssigneeAvatar} from '@liferay/object-dynamic-data-mapping-form-field-type';
 import classNames from 'classnames';
-import React, {forwardRef, useContext} from 'react';
+import React, {
+	forwardRef,
+	useCallback,
+	useContext,
+	useEffect,
+	useRef,
+} from 'react';
 import {useDrag} from 'react-dnd';
+import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import getTaskItemsActions from '../../../../../utils/getTaskItemsActions';
 import {ITask} from '../../../../../utils/types';
@@ -21,7 +28,13 @@ import {ItemTypes} from './Column';
 
 import './Task.scss';
 
-const TaskCard = React.memo(
+export interface ITaskDragItem {
+	cardWidth?: number;
+	task: ITask;
+	type: ItemTypes;
+}
+
+export const TaskCard = React.memo(
 	forwardRef<HTMLDivElement, {isDragging?: boolean; task: ITask}>(
 		({isDragging, task}, ref) => {
 			const {cmpProjectObjectEntryId, itemsActions, loadData} =
@@ -109,28 +122,36 @@ const TaskCard = React.memo(
 TaskCard.displayName = 'TaskCard';
 
 export default function Task(task: ITask) {
-	const [isHovering, setIsHovering] = React.useState(false);
+	const cardRef = useRef<HTMLDivElement | null>(null);
 
-	const [{isDragging}, drag, preview] = useDrag({
+	const [{isDragging}, drag, preview] = useDrag<
+		ITaskDragItem,
+		unknown,
+		{isDragging: boolean}
+	>({
+		begin: () => ({
+			cardWidth: cardRef.current?.offsetWidth,
+			task,
+			type: ItemTypes.TASK,
+		}),
 		collect: (monitor) => ({
 			isDragging: !!monitor.isDragging(),
 		}),
 		item: {task, type: ItemTypes.TASK},
 	});
 
-	return (
-		<div
-			className="lfr__kaban-task-card-container"
-			onMouseEnter={() => setIsHovering(true)}
-			onMouseLeave={() => setIsHovering(false)}
-		>
-			<TaskCard isDragging={isDragging} ref={drag} task={task} />
+	useEffect(() => {
+		preview(getEmptyImage(), {captureDraggingState: true});
+	}, [preview]);
 
-			{isHovering && (
-				<div className="lfr__kaban-task-card-preview" ref={preview}>
-					<TaskCard task={task} />
-				</div>
-			)}
-		</div>
+	const setCardRef = useCallback(
+		(node: HTMLDivElement | null) => {
+			cardRef.current = node;
+
+			drag(node);
+		},
+		[drag]
 	);
+
+	return <TaskCard isDragging={isDragging} ref={setCardRef} task={task} />;
 }

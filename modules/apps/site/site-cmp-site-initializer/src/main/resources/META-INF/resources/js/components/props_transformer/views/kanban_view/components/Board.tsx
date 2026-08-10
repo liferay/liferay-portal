@@ -8,12 +8,15 @@ import React, {useContext} from 'react';
 import {KANBAN_COLUMN_ORDER} from '../../../../../utils/constants';
 import {KanbanViewContext} from '../context';
 import Column from './Column';
+import TaskDragLayer from './TaskDragLayer';
 
 export default function Board() {
 	const {boardData} = useContext(KanbanViewContext);
 
 	return (
 		<div className="d-flex">
+			<TaskDragLayer />
+
 			{KANBAN_COLUMN_ORDER.map((state) => {
 				const column = boardData[state];
 

@@ -15,20 +15,8 @@
 			font-size: 0.75rem;
 		}
 	}
-	&-container {
-		position: relative;
-	}
 	&-dragging {
 		opacity: 0.4;
-	}
-	&-preview {
-		height: 100%;
-		left: 0;
-		position: absolute;
-		top: 0;
-		transform: scale(0.7);
-		width: 100%;
-		z-index: -1;
 	}
 	&-row {
 		align-items: center;
