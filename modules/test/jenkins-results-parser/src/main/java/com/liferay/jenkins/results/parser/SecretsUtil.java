@@ -338,6 +338,43 @@ public abstract class SecretsUtil {
 
 	}
 
+	protected static class ItemField {
+
+		public String getId() {
+			return _id;
+		}
+
+		public String getLabel() {
+			return _label;
+		}
+
+		public String getValue() {
+			return _value;
+		}
+
+		private ItemField(String id, String label, String value) {
+			_id = id;
+			_label = label;
+			_value = value;
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+				JenkinsResultsParserUtil.addRedactToken(value);
+			}
+		}
+
+		private final String _id;
+		private final String _label;
+		private final String _value;
+
+		private static enum Type {
+
+			ADDRESS, CONCEALED, CREDIT_CARD_NUMBER, CREDIT_CARD_TYPE, DATE,
+			EMAIL, GENDER, MENU, MONTH_YEAR, OTP, PHONE, REFERENCE, STRING, URL
+
+		}
+
+	}
+
 	private static void _createItem(
 		Map<String, String> itemFieldsMap, String itemTitle, Vault vault) {
 
@@ -772,43 +809,6 @@ public abstract class SecretsUtil {
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)");
 	private static final Pattern _secretReferencePattern = Pattern.compile(
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
-
-	private static class ItemField {
-
-		public String getId() {
-			return _id;
-		}
-
-		public String getLabel() {
-			return _label;
-		}
-
-		public String getValue() {
-			return _value;
-		}
-
-		private ItemField(String id, String label, String value) {
-			_id = id;
-			_label = label;
-			_value = value;
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(value)) {
-				JenkinsResultsParserUtil.addRedactToken(value);
-			}
-		}
-
-		private final String _id;
-		private final String _label;
-		private final String _value;
-
-		private static enum Type {
-
-			ADDRESS, CONCEALED, CREDIT_CARD_NUMBER, CREDIT_CARD_TYPE, DATE,
-			EMAIL, GENDER, MENU, MONTH_YEAR, OTP, PHONE, REFERENCE, STRING, URL
-
-		}
-
-	}
 
 	private static class ItemFile {
 
