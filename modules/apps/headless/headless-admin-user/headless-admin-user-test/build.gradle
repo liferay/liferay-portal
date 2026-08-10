@@ -35,5 +35,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:segments:segments-test-util")
 	testIntegrationImplementation project(":apps:sharing:sharing-api")
+	testIntegrationImplementation project(":apps:subscription:subscription-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
