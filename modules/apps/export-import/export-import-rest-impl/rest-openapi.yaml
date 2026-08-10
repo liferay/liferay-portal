@@ -512,6 +512,15 @@ paths:
                         format: date-time
                         type: string
                 -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
+                -   in: query
                     name: startDate
                     schema:
                         format: date-time
@@ -529,7 +538,7 @@ paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/export-processes":
         get:
             description:
-                Retrieves the layout export process entries for the specified asset library.
+                Retrieves the layout export process entries of the specified asset library, or the export process entries of one of its portlets when a portlet ID is given.
             operationId: getAssetLibraryExportProcessesPage
             parameters:
                 -   in: path
@@ -558,6 +567,10 @@ paths:
                     name: pageSize
                     schema:
                         type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
                 -   in: query
                     name: restrictFields
                     schema:
@@ -596,6 +609,15 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:
@@ -623,6 +645,15 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
             requestBody:
                 content:
                     multipart/form-data:
@@ -645,7 +676,7 @@ paths:
     "/asset-libraries/{assetLibraryExternalReferenceCode}/import-processes":
         get:
             description:
-                Retrieves the layout import process entries for the specified asset library.
+                Retrieves the layout import process entries of the specified asset library, or the import process entries of one of its portlets when a portlet ID is given.
             operationId: getAssetLibraryImportProcessesPage
             parameters:
                 -   in: path
@@ -674,6 +705,10 @@ paths:
                     name: pageSize
                     schema:
                         type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
                 -   in: query
                     name: restrictFields
                     schema:
@@ -712,285 +747,15 @@ paths:
                     required: true
                     schema:
                         type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ImportProcess"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ImportProcess"
-            tags: ["ImportProcess"]
-    "/asset-libraries/{assetLibraryExternalReferenceCode}/portlets/{portletId}/export-preview":
-        get:
-            operationId: getAssetLibraryPortletExportPreview
-            parameters:
-                -   in: path
-                    name: assetLibraryExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: endDate
-                    schema:
-                        format: date-time
-                        type: string
                 -   in: query
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
-                    name: startDate
-                    schema:
-                        format: date-time
-                        type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ExportPreview"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ExportPreview"
-            tags: ["ExportPreview"]
-    "/asset-libraries/{assetLibraryExternalReferenceCode}/portlets/{portletId}/export-processes":
-        get:
-            operationId: getAssetLibraryPortletExportProcessesPage
-            parameters:
-                -   in: path
-                    name: assetLibraryExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
                     name: portletId
-                    required: true
                     schema:
                         type: string
-                -   in: query
-                    name: creatorId
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: nestedFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-                -   in: query
-                    name: status
-                    schema:
-                        type: integer
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ExportProcess"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ExportProcess"
-                                type: array
-            tags: ["ExportProcess"]
-        post:
-            operationId: postAssetLibraryPortletExportProcess
-            parameters:
-                -   in: path
-                    name: assetLibraryExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ExportProcess"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ExportProcess"
-            tags: ["ExportProcess"]
-    "/asset-libraries/{assetLibraryExternalReferenceCode}/portlets/{portletId}/import-preview":
-        post:
-            operationId: postAssetLibraryPortletImportPreview
-            parameters:
-                -   in: path
-                    name: assetLibraryExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                file:
-                                    format: binary
-                                    type: string
-                            type: object
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ImportPreview"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ImportPreview"
-            tags: ["ImportPreview"]
-    "/asset-libraries/{assetLibraryExternalReferenceCode}/portlets/{portletId}/import-processes":
-        get:
-            operationId: getAssetLibraryPortletImportProcessesPage
-            parameters:
-                -   in: path
-                    name: assetLibraryExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: creatorId
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: nestedFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-                -   in: query
-                    name: status
-                    schema:
-                        type: integer
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ImportProcess"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ImportProcess"
-                                type: array
-            tags: ["ImportProcess"]
-        post:
-            operationId: postAssetLibraryPortletImportProcess
-            parameters:
-                -   in: path
-                    name: assetLibraryExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
             requestBody:
                 content:
                     application/json:
@@ -1019,6 +784,15 @@ paths:
                         format: date-time
                         type: string
                 -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
+                -   in: query
                     name: startDate
                     schema:
                         format: date-time
@@ -1036,7 +810,7 @@ paths:
     "/export-processes":
         get:
             description:
-                Retrieves all the layout export process entries.
+                Retrieves the layout export process entries of the instance, or the export process entries of one of its portlets when a portlet ID is given.
             operationId: getExportProcessesPage
             parameters:
                 -   in: query
@@ -1060,6 +834,10 @@ paths:
                     name: pageSize
                     schema:
                         type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
                 -   in: query
                     name: restrictFields
                     schema:
@@ -1092,6 +870,16 @@ paths:
             tags: ["ExportProcess"]
         post:
             operationId: postExportProcess
+            parameters:
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:
@@ -1228,6 +1016,16 @@ paths:
     "/import-preview":
         post:
             operationId: postImportPreview
+            parameters:
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
             requestBody:
                 content:
                     multipart/form-data:
@@ -1250,7 +1048,7 @@ paths:
     "/import-processes":
         get:
             description:
-                Retrieves all the layout import process entries.
+                Retrieves the layout import process entries of the instance, or the import process entries of one of its portlets when a portlet ID is given.
             operationId: getImportProcessesPage
             parameters:
                 -   in: query
@@ -1274,6 +1072,10 @@ paths:
                     name: pageSize
                     schema:
                         type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
                 -   in: query
                     name: restrictFields
                     schema:
@@ -1306,6 +1108,16 @@ paths:
             tags: ["ImportProcess"]
         post:
             operationId: postImportProcess
+            parameters:
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:
@@ -1455,255 +1267,6 @@ paths:
                                     $ref: "#/components/schemas/ReportEntry"
                                 type: array
             tags: ["ReportEntry"]
-    "/portlets/{portletId}/export-preview":
-        get:
-            operationId: getPortletExportPreview
-            parameters:
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: endDate
-                    schema:
-                        format: date-time
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: startDate
-                    schema:
-                        format: date-time
-                        type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ExportPreview"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ExportPreview"
-            tags: ["ExportPreview"]
-    "/portlets/{portletId}/export-processes":
-        get:
-            operationId: getPortletExportProcessesPage
-            parameters:
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: creatorId
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: nestedFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-                -   in: query
-                    name: status
-                    schema:
-                        type: integer
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ExportProcess"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ExportProcess"
-                                type: array
-            tags: ["ExportProcess"]
-        post:
-            operationId: postPortletExportProcess
-            parameters:
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ExportProcess"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ExportProcess"
-            tags: ["ExportProcess"]
-    "/portlets/{portletId}/import-preview":
-        post:
-            operationId: postPortletImportPreview
-            parameters:
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                file:
-                                    format: binary
-                                    type: string
-                            type: object
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ImportPreview"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ImportPreview"
-            tags: ["ImportPreview"]
-    "/portlets/{portletId}/import-processes":
-        get:
-            operationId: getPortletImportProcessesPage
-            parameters:
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: creatorId
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: nestedFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-                -   in: query
-                    name: status
-                    schema:
-                        type: integer
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ImportProcess"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ImportProcess"
-                                type: array
-            tags: ["ImportProcess"]
-        post:
-            operationId: postPortletImportProcess
-            parameters:
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ImportProcess"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ImportProcess"
-            tags: ["ImportProcess"]
     "/report-entry/{reportEntryId}":
         get:
             description:
@@ -1753,6 +1316,15 @@ paths:
                         format: date-time
                         type: string
                 -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
+                -   in: query
                     name: startDate
                     schema:
                         format: date-time
@@ -1770,7 +1342,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/export-processes":
         get:
             description:
-                Retrieves the layout export process entries for the specified site.
+                Retrieves the layout export process entries of the specified site, or the export process entries of one of its portlets when a portlet ID is given.
             operationId: getSiteExportProcessesPage
             parameters:
                 -   in: path
@@ -1799,6 +1371,10 @@ paths:
                     name: pageSize
                     schema:
                         type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
                 -   in: query
                     name: restrictFields
                     schema:
@@ -1837,6 +1413,15 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
             requestBody:
                 content:
                     application/json:
@@ -1864,6 +1449,15 @@ paths:
                     required: true
                     schema:
                         type: string
+                -   in: query
+                    name: plid
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
             requestBody:
                 content:
                     multipart/form-data:
@@ -1886,7 +1480,7 @@ paths:
     "/sites/{siteExternalReferenceCode}/import-processes":
         get:
             description:
-                Retrieves the layout import process entries for the specified site.
+                Retrieves the layout import process entries of the specified site, or the import process entries of one of its portlets when a portlet ID is given.
             operationId: getSiteImportProcessesPage
             parameters:
                 -   in: path
@@ -1915,6 +1509,10 @@ paths:
                     name: pageSize
                     schema:
                         type: integer
+                -   in: query
+                    name: portletId
+                    schema:
+                        type: string
                 -   in: query
                     name: restrictFields
                     schema:
@@ -1953,285 +1551,15 @@ paths:
                     required: true
                     schema:
                         type: string
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/ImportProcessRequest"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ImportProcess"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ImportProcess"
-            tags: ["ImportProcess"]
-    "/sites/{siteExternalReferenceCode}/portlets/{portletId}/export-preview":
-        get:
-            operationId: getSitePortletExportPreview
-            parameters:
-                -   in: path
-                    name: siteExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: endDate
-                    schema:
-                        format: date-time
-                        type: string
                 -   in: query
                     name: plid
                     schema:
                         format: int64
                         type: integer
                 -   in: query
-                    name: startDate
-                    schema:
-                        format: date-time
-                        type: string
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ExportPreview"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ExportPreview"
-            tags: ["ExportPreview"]
-    "/sites/{siteExternalReferenceCode}/portlets/{portletId}/export-processes":
-        get:
-            operationId: getSitePortletExportProcessesPage
-            parameters:
-                -   in: path
-                    name: siteExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
                     name: portletId
-                    required: true
                     schema:
                         type: string
-                -   in: query
-                    name: creatorId
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: nestedFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-                -   in: query
-                    name: status
-                    schema:
-                        type: integer
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ExportProcess"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ExportProcess"
-                                type: array
-            tags: ["ExportProcess"]
-        post:
-            operationId: postSitePortletExportProcess
-            parameters:
-                -   in: path
-                    name: siteExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
-                    application/xml:
-                        schema:
-                            $ref: "#/components/schemas/ExportProcessRequest"
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ExportProcess"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ExportProcess"
-            tags: ["ExportProcess"]
-    "/sites/{siteExternalReferenceCode}/portlets/{portletId}/import-preview":
-        post:
-            operationId: postSitePortletImportPreview
-            parameters:
-                -   in: path
-                    name: siteExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                file:
-                                    format: binary
-                                    type: string
-                            type: object
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                $ref: "#/components/schemas/ImportPreview"
-                        application/xml:
-                            schema:
-                                $ref: "#/components/schemas/ImportPreview"
-            tags: ["ImportPreview"]
-    "/sites/{siteExternalReferenceCode}/portlets/{portletId}/import-processes":
-        get:
-            operationId: getSitePortletImportProcessesPage
-            parameters:
-                -   in: path
-                    name: siteExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: creatorId
-                    schema:
-                        format: int64
-                        type: integer
-                -   in: query
-                    name: fields
-                    schema:
-                        type: string
-                -   in: query
-                    name: nestedFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: page
-                    schema:
-                        type: integer
-                -   in: query
-                    name: pageSize
-                    schema:
-                        type: integer
-                -   in: query
-                    name: restrictFields
-                    schema:
-                        type: string
-                -   in: query
-                    name: search
-                    schema:
-                        type: string
-                -   in: query
-                    name: sort
-                    schema:
-                        type: string
-                -   in: query
-                    name: status
-                    schema:
-                        type: integer
-            responses:
-                200:
-                    content:
-                        application/json:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ImportProcess"
-                                type: array
-                        application/xml:
-                            schema:
-                                items:
-                                    $ref: "#/components/schemas/ImportProcess"
-                                type: array
-            tags: ["ImportProcess"]
-        post:
-            operationId: postSitePortletImportProcess
-            parameters:
-                -   in: path
-                    name: siteExternalReferenceCode
-                    required: true
-                    schema:
-                        type: string
-                -   in: path
-                    name: portletId
-                    required: true
-                    schema:
-                        type: string
-                -   in: query
-                    name: plid
-                    schema:
-                        format: int64
-                        type: integer
             requestBody:
                 content:
                     application/json:
