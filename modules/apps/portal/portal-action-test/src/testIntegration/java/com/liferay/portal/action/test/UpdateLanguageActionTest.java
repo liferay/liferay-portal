@@ -726,7 +726,8 @@ public class UpdateLanguageActionTest {
 		throws Exception {
 
 		_testGetRedirectWithLayoutFriendlyURL(
-			"/tags/tagname", sourceLocale, _targetLocale, false);
+			"/tags/" + RandomTestUtil.randomString(), sourceLocale,
+			_targetLocale, false);
 	}
 
 	private void _updateLayoutFriendlyURL(String suffix) throws Exception {
