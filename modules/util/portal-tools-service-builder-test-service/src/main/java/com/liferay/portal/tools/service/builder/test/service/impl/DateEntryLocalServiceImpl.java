@@ -5,6 +5,10 @@
 
 package com.liferay.portal.tools.service.builder.test.service.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryPos;
+import com.liferay.portal.kernel.dao.orm.SQLQuery;
+import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.tools.service.builder.test.model.DateEntry;
 import com.liferay.portal.tools.service.builder.test.service.base.DateEntryLocalServiceBaseImpl;
 
@@ -22,6 +26,55 @@ public class DateEntryLocalServiceImpl extends DateEntryLocalServiceBaseImpl {
 
 	public List<DateEntry> getDateEntries(Date snapshotDate) {
 		return dateEntryPersistence.findBySnapshotDate(snapshotDate);
+	}
+
+	public List<Object[]> getDateEntriesBySQLQuery(long companyId, Type type) {
+		Session session = dateEntryPersistence.openSession();
+
+		try {
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
+				"select dateEntryId, snapshotDate from DateEntry where " +
+					"companyId = ? order by snapshotDate");
+
+			if (type != null) {
+				sqlQuery.addScalar("dateEntryId", Type.LONG);
+				sqlQuery.addScalar("snapshotDate", type);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			return (List<Object[]>)sqlQuery.list();
+		}
+		finally {
+			dateEntryPersistence.closeSession(session);
+		}
+	}
+
+	public List<Object> getMaxSnapshotDatesBySQLQuery(
+		long companyId, Type type) {
+
+		Session session = dateEntryPersistence.openSession();
+
+		try {
+			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
+				"select max(snapshotDate) as maxSnapshotDate from DateEntry " +
+					"where companyId = ?");
+
+			if (type != null) {
+				sqlQuery.addScalar("maxSnapshotDate", type);
+			}
+
+			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
+
+			queryPos.add(companyId);
+
+			return sqlQuery.list();
+		}
+		finally {
+			dateEntryPersistence.closeSession(session);
+		}
 	}
 
 }
