@@ -96,6 +96,12 @@ public interface ObjectDefinitionLocalService
 	public ObjectDefinition addObjectDefinition(
 		ObjectDefinition objectDefinition);
 
+	@Indexable(type = IndexableType.REINDEX)
+	public ObjectDefinition addObjectDefinition(
+			String externalReferenceCode, long userId, long objectFolderId,
+			boolean modifiable, String scope, boolean system)
+		throws PortalException;
+
 	public void addOrUpdateObjectDefinitionPLOEntries(
 			ObjectDefinition objectDefinition)
 		throws PortalException;
@@ -526,4 +532,4 @@ public interface ObjectDefinitionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1169455353
+// LIFERAY-SERVICE-BUILDER-HASH:-393345724
