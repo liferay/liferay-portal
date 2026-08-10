@@ -12,9 +12,13 @@ function main {
 
 	scripts_dir=$(cd "$(dirname "${0}")/.." && pwd)
 
-	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_azure.sh" "${scripts_dir}/setup_gcp.sh"
+	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_gcp.sh"
 	do
 		_run_test "${script}" _test_aborts_with_config_missing_variables_object
+	done
+
+	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_azure.sh" "${scripts_dir}/setup_gcp.sh"
+	do
 		_run_test "${script}" _test_aborts_with_malformed_config_json
 		_run_test "${script}" _test_aborts_with_missing_config_file
 		_run_test "${script}" _test_aborts_with_missing_required_utility

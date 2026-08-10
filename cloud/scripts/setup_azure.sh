@@ -26,17 +26,19 @@ function main {
 
 	_validate_config_json "${1}"
 
-	_generate_tfvars "${1}" "${_SCRIPTS_DIR}/global_terraform.tfvars"
+	_generate_tfvars "${1}" "aks"
+
+	_generate_tfvars "${1}" "platform"
 
 	local subscription_id
 
-	subscription_id="$(jq --raw-output '.variables.subscription_id' "${1}")"
+	subscription_id="$(jq --raw-output '.subscription_id' "${1}")"
 
 	export ARM_SUBSCRIPTION_ID="${subscription_id}"
 
 	local tenant_id
 
-	tenant_id="$(jq --raw-output '.variables.tenant_id' "${1}")"
+	tenant_id="$(jq --raw-output '.tenant_id' "${1}")"
 
 	export ARM_TENANT_ID="${tenant_id}"
 
@@ -48,7 +50,7 @@ function main {
 
 	local deployment_name
 
-	deployment_name="$(jq --raw-output '.variables.deployment_name' "${1}")"
+	deployment_name="$(jq --raw-output '.terraform.platform.deployment_name' "${1}")"
 
 	_check_key_vault "${1}" "${deployment_name}"
 
@@ -59,17 +61,17 @@ function main {
 		terraform_args+=("${terraform_arg}")
 	done < <(_get_terraform_apply_args "${1}")
 
-	if jq --exit-status '.variables.tfstate_storage_account_name' "${1}" &> /dev/null
+	if jq --exit-status '.tfstate | objects' "${1}" &> /dev/null
 	then
 		local container_name
 		local region
 		local resource_group_name
 		local storage_account_name
 
-		container_name="$(jq --raw-output '.variables.tfstate_container_name' "${1}")"
-		region="$(jq --raw-output '.variables.region' "${1}")"
-		resource_group_name="$(jq --raw-output '.variables.tfstate_resource_group_name' "${1}")"
-		storage_account_name="$(jq --raw-output '.variables.tfstate_storage_account_name' "${1}")"
+		container_name="$(jq --raw-output '.tfstate.container_name' "${1}")"
+		region="$(jq --raw-output '.terraform.platform.region' "${1}")"
+		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${1}")"
+		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${1}")"
 
 		_create_tfstate_storage "${container_name}" "${region}" "${resource_group_name}" "${storage_account_name}"
 
@@ -89,23 +91,23 @@ function _check_key_vault {
 	local configuration_json_file="${1}"
 	local deployment_name="${2}"
 
-	if jq --exit-status '.variables.cluster_secret_store_provider_hcl' "${configuration_json_file}" &> /dev/null
+	if jq --exit-status '.terraform.platform.cluster_secret_store_provider_hcl' "${configuration_json_file}" &> /dev/null
 	then
 		return 0
 	fi
 
 	local key_vault_name
 
-	key_vault_name="$(jq --arg default_name "${deployment_name}-vault" --raw-output '.variables.key_vault_name // $default_name' "${configuration_json_file}")"
+	key_vault_name="$(jq --arg default_name "${deployment_name}-vault" --raw-output '.terraform.platform.key_vault_name // $default_name' "${configuration_json_file}")"
 
 	local key_vault_resource_group_name
 
-	key_vault_resource_group_name="$(jq --arg default_name "${deployment_name}-vault" --raw-output '.variables.key_vault_resource_group_name // $default_name' "${configuration_json_file}")"
+	key_vault_resource_group_name="$(jq --arg default_name "${deployment_name}-vault" --raw-output '.terraform.platform.key_vault_resource_group_name // $default_name' "${configuration_json_file}")"
 
 	if ! az keyvault show --name "${key_vault_name}" --resource-group "${key_vault_resource_group_name}" &> /dev/null
 	then
 		echo "The default cluster secret store requires an Azure key vault named ${key_vault_name} in the resource group ${key_vault_resource_group_name}, holding the GitOps repository credentials secret (liferay-credentials-gitops by default)." >&2
-		echo "Create the key vault, point at an existing one with \"variables.key_vault_name\" and \"variables.key_vault_resource_group_name\" in the configuration JSON file, or set \"variables.cluster_secret_store_provider_hcl\" to bring your own secret store." >&2
+		echo "Create the key vault, point at an existing one with \"terraform.platform.key_vault_name\" and \"terraform.platform.key_vault_resource_group_name\" in the configuration JSON file, or set \"terraform.platform.cluster_secret_store_provider_hcl\" to bring your own secret store." >&2
 
 		exit 1
 	fi
@@ -291,14 +293,16 @@ EOF
 
 function _generate_tfvars {
 	local configuration_json_file="${1}"
-	local tfvars_file="${2}"
+	local module="${2}"
+
+	local tfvars_file="${_SCRIPTS_DIR}/${module}_terraform.tfvars"
 
 	echo "Generating ${tfvars_file} from ${configuration_json_file}."
 
 	local tfvars_content
 
 	tfvars_content=$( \
-		jq --raw-output '.variables
+		jq --arg module "${module}" --raw-output '.terraform[$module]
 		| to_entries[]
 		| if (.value | type) == "string"
 		  then
@@ -310,14 +314,7 @@ function _generate_tfvars {
 		  	"\(.key) = \(.value)"
 		  end' "${configuration_json_file}")
 
-	if [ -z "${tfvars_content}" ]
-	then
-		echo "The \"variables\" object in the configuration JSON file is empty. You will be prompted for all required variables."
-
-		> "${tfvars_file}"
-	else
-		echo "${tfvars_content}" > "${tfvars_file}"
-	fi
+	echo "${tfvars_content}" > "${tfvars_file}"
 
 	echo "${tfvars_file} was generated successfully."
 }
@@ -329,8 +326,7 @@ function _get_terraform_apply_args {
 
 	auto_approve=$(jq --raw-output '.options.auto_approve // false' "${configuration_json_file}")
 
-	local apply_args=(
-		"-var-file=${_SCRIPTS_DIR}/global_terraform.tfvars")
+	local apply_args=()
 
 	if [[ "${auto_approve}" == "true" ]]
 	then
@@ -346,15 +342,20 @@ function _get_terraform_apply_args {
 		apply_args+=("-parallelism=${parallelism}")
 	fi
 
-	printf '%s\n' "${apply_args[@]}"
+	if [ "${#apply_args[@]}" -gt 0 ]
+	then
+		printf '%s\n' "${apply_args[@]}"
+	fi
 }
 
 function _install_liferay_platform_chart {
 	local configuration_json_file="${1}"
 
-	local platform_helm_chart_version
+	local platform_repo_url
+	local platform_target_revision
 
-	platform_helm_chart_version=$(jq --raw-output '."liferay-platform"' "${_SCRIPTS_DIR}/chart_versions.json")
+	platform_repo_url=$(jq --raw-output '.platform.repoURL // "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-platform"' "${configuration_json_file}")
+	platform_target_revision=$(jq --raw-output --slurpfile chart_versions "${_SCRIPTS_DIR}/chart_versions.json" '.platform.targetRevision // $chart_versions[0]."liferay-platform"' "${configuration_json_file}")
 
 	echo "Applying the Liferay platform root application."
 
@@ -369,27 +370,10 @@ function _install_liferay_platform_chart {
 	jq \
 		--argjson terraform_outputs "${terraform_outputs}" \
 		--null-input \
-		--slurpfile chart_versions "${_SCRIPTS_DIR}/chart_versions.json" \
 		--slurpfile configuration "${configuration_json_file}" \
-		'{
+		'($configuration[0].platform.values // {}) * {
 			platformComponents: {
-				values: ({
-					infrastructure: {
-						chart: "liferay-azure-infrastructure",
-						repoURL: "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-						targetRevision: $chart_versions[0]."liferay-azure-infrastructure"
-					},
-					infrastructureProvider: {
-						chart: "liferay-azure-infrastructure-provider",
-						repoURL: "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-						targetRevision: $chart_versions[0]."liferay-azure-infrastructure-provider"
-					},
-					liferay: {
-						chart: "liferay-azure",
-						repoURL: "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
-						targetRevision: $chart_versions[0]."liferay-azure"
-					}
-				} * ($configuration[0].values // {}) * {
+				values: (($configuration[0].platformComponents.values // {}) * {
 					clusterIdentity: $terraform_outputs.cluster_identity.value,
 					clusterSecretStore: {
 						enabled: true,
@@ -412,11 +396,11 @@ function _install_liferay_platform_chart {
 	| helm \
 		upgrade \
 		liferay-platform \
-		oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-platform \
+		"${platform_repo_url}" \
 		--install \
 		--namespace argocd-system \
 		--values - \
-		--version "${platform_helm_chart_version}"
+		--version "${platform_target_revision}"
 }
 
 function _log {
@@ -438,7 +422,7 @@ function _set_up_azure_aks {
 
 	terraform init
 
-	terraform apply "${@}"
+	terraform apply -var-file="${_SCRIPTS_DIR}/aks_terraform.tfvars" "${@}"
 
 	export KUBE_CONFIG_PATH="${HOME}/.kube/config"
 
@@ -459,7 +443,7 @@ function _set_up_azure_platform {
 
 	terraform init
 
-	terraform apply "${@}"
+	terraform apply -var-file="${_SCRIPTS_DIR}/platform_terraform.tfvars" "${@}"
 
 	echo "Liferay platform setup complete."
 
@@ -483,27 +467,31 @@ function _validate_config_json {
 		exit 1
 	fi
 
-	if ! jq --exit-status '.variables | objects' "${configuration_json_file}" > /dev/null
-	then
-		echo "The configuration JSON file must contain a root object named \"variables\"." >&2
+	local required_keys=(
+		".subscription_id"
+		".tenant_id"
+		".terraform.aks.deployment_name"
+		".terraform.aks.region"
+		".terraform.platform.deployment_name"
+		".terraform.platform.region"
+	)
 
-		exit 1
+	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
+	then
+		required_keys+=(
+			".tfstate.container_name"
+			".tfstate.resource_group_name"
+			".tfstate.storage_account_name"
+		)
 	fi
 
-	local required_variables=(deployment_name region subscription_id tenant_id)
+	local required_key
 
-	if jq --exit-status '.variables.tfstate_storage_account_name' "${configuration_json_file}" &> /dev/null
-	then
-		required_variables+=(tfstate_container_name tfstate_resource_group_name)
-	fi
-
-	local required_variable
-
-	for required_variable in "${required_variables[@]}"
+	for required_key in "${required_keys[@]}"
 	do
-		if ! jq --exit-status ".variables.${required_variable}" "${configuration_json_file}" &> /dev/null
+		if ! jq --exit-status "${required_key}" "${configuration_json_file}" &> /dev/null
 		then
-			echo "The configuration JSON file must contain a key named \"variables.${required_variable}\"." >&2
+			echo "The configuration JSON file must contain a key named \"${required_key#.}\"." >&2
 
 			exit 1
 		fi

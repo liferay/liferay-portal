@@ -5,17 +5,25 @@
 		"provider": "azure",
 		"version": "0.0.1"
 	},
-	"values": {
-		"gitops": {
-			"repository": {
-				"url": "https://github.com/example/liferay-gitops.git"
+	"platformComponents": {
+		"values": {
+			"gitops": {
+				"repository": {
+					"url": "https://github.com/example/liferay-gitops.git"
+				}
 			}
 		}
 	},
-	"variables": {
-		"deployment_name": "liferay-azure-test",
-		"region": "eastus",
-		"subscription_id": "your-azure-subscription-id",
-		"tenant_id": "your-azure-tenant-id"
+	"subscription_id": "your-azure-subscription-id",
+	"tenant_id": "your-azure-tenant-id",
+	"terraform": {
+		"aks": {
+			"deployment_name": "liferay-azure-test",
+			"region": "eastus"
+		},
+		"platform": {
+			"deployment_name": "liferay-azure-test",
+			"region": "eastus"
+		}
 	}
 }
