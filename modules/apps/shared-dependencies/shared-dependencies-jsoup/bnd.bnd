@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Shared Dependencies Jsoup
 Bundle-SymbolicName: com.liferay.shared.dependencies.jsoup
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Import-Package:\
 	!javax.annotation.*,\
 	\
@@ -13,3 +13,4 @@ Import-Package:\
 	org.jsoup.parser,\
 	org.jsoup.safety,\
 	org.jsoup.select
+-fixupmessages: "^Classes found in the wrong directory: \\\\{META-INF/versions/11/";is:=warning
