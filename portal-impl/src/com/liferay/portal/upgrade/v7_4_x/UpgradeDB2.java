@@ -38,9 +38,12 @@ public class UpgradeDB2 extends UpgradeProcess {
 		try (LoggingTimer loggingTimer = new LoggingTimer();
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
-					"select tabname, colname from syscat.columns where ",
-					"generated != 'N' and hidden != 'N' and length = 1048576 ",
-					"and typename = ? and tabschema = ?"))) {
+					"select columns.tabname, columns.colname from ",
+					"syscat.columns columns inner join syscat.tables tables ",
+					"on tables.tabschema = columns.tabschema and ",
+					"tables.tabname = columns.tabname where tables.type = 'T' ",
+					"and columns.length = 1048576 and columns.typename = ? ",
+					"and columns.tabschema = ?"))) {
 
 			preparedStatement.setString(1, typeName);
 			preparedStatement.setString(2, connection.getSchema());
