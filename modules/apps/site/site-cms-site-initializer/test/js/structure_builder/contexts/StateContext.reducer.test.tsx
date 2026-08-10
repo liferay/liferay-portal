@@ -15,6 +15,7 @@ import {
 	useStateDispatch,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
 import {
+	RelatedContent,
 	RepeatableGroup,
 	Structure,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/types/Structure';
@@ -22,6 +23,19 @@ import getUuid from '../../../../src/main/resources/META-INF/resources/js/struct
 
 const STRUCTURE_UUID = getUuid();
 const CHILD_UUID = getUuid();
+
+const RELATED_CONTENT_UUID = getUuid();
+
+const RELATED_CONTENT: RelatedContent = {
+	erc: 'related-content-erc',
+	label: {},
+	multiselection: false,
+	name: 'relatedContent',
+	parent: STRUCTURE_UUID,
+	relatedStructureERC: 'target-structure-erc',
+	type: 'related-content',
+	uuid: RELATED_CONTENT_UUID,
+};
 
 function buildInitialState({
 	childLabel,
@@ -317,5 +331,61 @@ describe('StateContext reducer — update-structure friendly URL', () => {
 		});
 
 		expect(refs.state!.structure.slug).toBe('product-categories');
+	});
+});
+
+describe('StateContext reducer — move-children', () => {
+	function buildStateWithRelatedContent(
+		savedChildren: State['savedChildren']
+	): State {
+		const state = buildInitialState({
+			childLabel: {},
+			structureLabel: {},
+		});
+
+		const children = new Map(state.structure.children);
+
+		children.set(RELATED_CONTENT_UUID, RELATED_CONTENT);
+
+		return {
+			...state,
+			savedChildren,
+			structure: {...state.structure, children},
+		};
+	}
+
+	it('Records the relationship of a saved but unpublished child moved into a group', () => {
+		const refs = renderWithState(
+			buildStateWithRelatedContent(new Set([RELATED_CONTENT_UUID]))
+		);
+
+		act(() => {
+			refs.dispatch!({
+				items: [RELATED_CONTENT],
+				targetUuid: CHILD_UUID,
+				type: 'move-children',
+			});
+		});
+
+		expect(refs.state!.history.deletedRelationships).toEqual([
+			{
+				relationshipERC: 'related-content-erc',
+				structureERC: 'target-structure-erc',
+			},
+		]);
+	});
+
+	it('Records nothing for a child that was never saved', () => {
+		const refs = renderWithState(buildStateWithRelatedContent(new Set()));
+
+		act(() => {
+			refs.dispatch!({
+				items: [RELATED_CONTENT],
+				targetUuid: CHILD_UUID,
+				type: 'move-children',
+			});
+		});
+
+		expect(refs.state!.history.deletedRelationships).toEqual([]);
 	});
 });

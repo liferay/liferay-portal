@@ -638,6 +638,25 @@ export class StructureBuilderPage {
 	async publishStructure() {
 		await this.publishButton.click();
 
+		// Publishing a change that may impact stored data, such as removing a
+		// field, raises a confirmation first
+
+		const confirmDialog = this.page.getByRole('dialog', {
+			name: 'Publish Content Structure Changes',
+		});
+
+		const successAlert = this.page
+			.locator('.alert-success')
+			.filter({hasText: 'published successfully'});
+
+		await expect(confirmDialog.or(successAlert)).toBeVisible({
+			timeout: 10000,
+		});
+
+		if (await confirmDialog.isVisible()) {
+			await confirmDialog.getByRole('button', {name: 'Publish'}).click();
+		}
+
 		await waitForAlert(this.page, 'published successfully', {
 			timeout: 10000,
 		});

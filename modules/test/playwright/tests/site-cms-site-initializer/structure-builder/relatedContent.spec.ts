@@ -70,3 +70,63 @@ test(
 		});
 	}
 );
+
+test(
+	'Removing a related content added before publishing deletes its relationship',
+	{
+		tag: '@LPD-99742',
+	},
+	async ({structureBuilderPage}) => {
+		const relatedLabel = getRandomString();
+		const relatedContentLabel = getRandomString();
+		const structureLabel = getRandomString();
+
+		// Publish the structure the related content will point at
+
+		await structureBuilderPage.createStructureFromData({
+			label: relatedLabel,
+			name: `StructureName${getRandomInt()}`,
+			page: structureBuilderPage,
+		});
+
+		// Add a related content and save without publishing
+
+		await structureBuilderPage.goToCreateStructure();
+
+		await structureBuilderPage.changeStructureSettings({
+			label: structureLabel,
+			name: `StructureName${getRandomInt()}`,
+		});
+
+		await structureBuilderPage.addRelatedContent(
+			relatedContentLabel,
+			relatedLabel
+		);
+
+		const id = await structureBuilderPage.saveStructure();
+
+		await structureBuilderPage.editStructure(id);
+
+		await expect(
+			structureBuilderPage.getTreeItem({
+				field: {label: relatedContentLabel},
+			})
+		).toBeVisible();
+
+		// Remove it and publish
+
+		await structureBuilderPage.deleteFields([{label: relatedContentLabel}]);
+
+		await structureBuilderPage.publishStructure();
+
+		// It must not come back from the relationship left behind
+
+		await structureBuilderPage.editStructure(id);
+
+		await expect(
+			structureBuilderPage.getTreeItem({
+				field: {label: relatedContentLabel},
+			})
+		).not.toBeVisible();
+	}
+);
