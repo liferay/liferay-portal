@@ -6,4 +6,4 @@
 export const COMMON_STYLES_ROLES = {
 	general: 'general',
 	styles: 'styles',
-};
+} as const;

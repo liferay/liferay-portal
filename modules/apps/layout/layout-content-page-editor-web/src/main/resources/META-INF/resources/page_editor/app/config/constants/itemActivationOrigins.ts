@@ -10,4 +10,4 @@ export const ITEM_ACTIVATION_ORIGINS = {
 	keyboard: 'keyboard',
 	layout: 'layout',
 	sidebar: 'sidebar',
-};
+} as const;

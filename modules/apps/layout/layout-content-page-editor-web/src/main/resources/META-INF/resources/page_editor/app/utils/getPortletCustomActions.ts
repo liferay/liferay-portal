@@ -13,7 +13,7 @@ export default function getPortletCustomActions(
 		return [];
 	}
 
-	const defaultActions = Object.values(PORTLET_DEFAULT_ACTIONS);
+	const defaultActions: string[] = Object.values(PORTLET_DEFAULT_ACTIONS);
 
 	const actions = Object.entries(fragmentEntryLink.actions);
 

@@ -6,4 +6,4 @@
 export const LIST_ITEM_TYPES = {
 	header: 'header',
 	listItem: 'listItem',
-};
+} as const;

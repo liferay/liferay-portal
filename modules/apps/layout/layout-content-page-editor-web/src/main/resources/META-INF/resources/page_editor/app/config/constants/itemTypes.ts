@@ -8,4 +8,4 @@ export const ITEM_TYPES = {
 	inlineContent: 'inlineContent',
 	layoutDataItem: 'layoutDataItem',
 	mappedContent: 'mappedContent',
-};
+} as const;

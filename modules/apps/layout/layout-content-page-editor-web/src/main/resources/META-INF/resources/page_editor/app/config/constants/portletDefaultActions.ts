@@ -9,4 +9,4 @@ export const PORTLET_DEFAULT_ACTIONS = {
 		'ConfigurationTemplatesEditModePortletConfigurationIcon',
 	exportImport: 'ExportImportEditModePortletConfigurationIcon',
 	permissions: 'PortletPermissionsEditModePortletConfigurationIcon',
-};
+} as const;
