@@ -632,7 +632,7 @@ public class FragmentLinkUtilTest {
 			).put(
 				"classNameId", _CLASS_NAME_ID
 			).put(
-				"classPK", classPK
+				"classPK", String.valueOf(classPK)
 			).put(
 				"externalReferenceCode", journalArticleExternalReferenceCode
 			).put(
@@ -699,7 +699,7 @@ public class FragmentLinkUtilTest {
 			).put(
 				"classNameId", _CLASS_NAME_ID
 			).put(
-				"classPK", classPK
+				"classPK", String.valueOf(classPK)
 			).put(
 				"externalReferenceCode", journalArticleExternalReferenceCode
 			).put(
