@@ -119,6 +119,26 @@ public abstract class SecretsUtil {
 		return matcher.matches();
 	}
 
+	protected static Item getItem(String itemReference) {
+		Matcher matcher = _itemReferencePattern.matcher(
+			itemReference.replaceAll("/+$", ""));
+
+		if (!matcher.matches()) {
+			throw new RuntimeException(
+				"Invalid item reference " + itemReference);
+		}
+
+		String vaultName = matcher.group("vaultName");
+
+		Vault vault = Vault.getInstance(vaultName);
+
+		if (vault == null) {
+			throw new RuntimeException("Unable to find vault " + vaultName);
+		}
+
+		return vault.getItem(matcher.group("itemTitle"));
+	}
+
 	protected static class Item {
 
 		public void addItemField(ItemField itemField) {
