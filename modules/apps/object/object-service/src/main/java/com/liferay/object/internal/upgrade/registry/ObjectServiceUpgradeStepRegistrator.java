@@ -726,6 +726,12 @@ public class ObjectServiceUpgradeStepRegistrator
 			new com.liferay.object.internal.upgrade.v13_1_0.
 				ObjectDefinitionExternalReferenceCodeUpgradeProcess(
 					_systemObjectDefinitionManagerRegistry));
+
+		registry.register(
+			"13.1.0", "13.2.0",
+			new com.liferay.object.internal.upgrade.v13_2_0.
+				ObjectDefinitionExternalReferenceCodeUpgradeProcess(
+					_systemObjectDefinitionManagerRegistry));
 	}
 
 	@Reference
