@@ -43,6 +43,18 @@ async function fillScheduleDateModal(page: Page, date: string) {
 	await page.locator('.modal').getByRole('button', {name: 'Save'}).click();
 }
 
+function formatInTimeZone(date: string) {
+	return new Date(date).toLocaleString('en-US', {
+		day: '2-digit',
+		hour: '2-digit',
+		hour12: true,
+		minute: '2-digit',
+		month: '2-digit',
+		timeZone: TIME_ZONE,
+		year: 'numeric',
+	});
+}
+
 async function pollDate(
 	apiHelpers: DataApiHelpers,
 	objectEntryId: number,
@@ -57,18 +69,7 @@ async function pollDate(
 						String(objectEntryId)
 					);
 
-				return new Date(objectEntry[fieldName]).toLocaleString(
-					'en-US',
-					{
-						day: '2-digit',
-						hour: '2-digit',
-						hour12: true,
-						minute: '2-digit',
-						month: '2-digit',
-						timeZone: TIME_ZONE,
-						year: 'numeric',
-					}
-				);
+				return formatInTimeZone(objectEntry[fieldName]);
 			},
 			{timeout: 3000}
 		)
@@ -571,10 +572,10 @@ test(
 						);
 
 					return workflowTask?.dateDue
-						? new Date(workflowTask.dateDue).toISOString()
+						? formatInTimeZone(workflowTask.dateDue)
 						: null;
 				})
-				.toBe(`${DUE_DATE_INPUT}T${DUE_TIME_INPUT}:00.000Z`);
+				.toBe(DATE_DISPLAYED);
 		});
 	}
 );

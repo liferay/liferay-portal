@@ -7,6 +7,7 @@ import ClayButton from '@clayui/button';
 import {ClayInput} from '@clayui/form';
 import ClayModal from '@clayui/modal';
 import {useFormik} from 'formik';
+import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 
 import {updateDueDate} from '../../../common/services/WorkflowService';
@@ -28,13 +29,11 @@ export default function UpdateDueDateModalContent({
 	const [time, setTime] = useState('');
 
 	const updateDueDateCall = async (values: any) => {
-		const dateObj = new Date(date);
-
-		const dateString = dateObj.toISOString().split('T')[0];
-
 		const res = await updateDueDate({
 			comment: values.comment,
-			dueDate: `${dateString}T${time}:00.000Z`,
+			dueDate: `${moment(`${date} ${time}`, 'YYYY-MM-DD HH:mm')
+				.utc()
+				.format('YYYY-MM-DDTHH:mm:ss')}Z`,
 			workflowTaskId,
 		});
 
@@ -61,14 +60,10 @@ export default function UpdateDueDateModalContent({
 	};
 
 	useEffect(() => {
-		const date = dueDate ? new Date(dueDate) : new Date();
+		const momentDate = dueDate ? moment(dueDate) : moment();
 
-		setDate(date.toISOString().split('T')[0]);
-		setTime(
-			String(date.getUTCHours()).padStart(2, '0') +
-				':' +
-				String(date.getUTCMinutes()).padStart(2, '0')
-		);
+		setDate(momentDate.format('YYYY-MM-DD'));
+		setTime(momentDate.format('HH:mm'));
 
 		return () => {
 			setDate('');
