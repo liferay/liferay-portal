@@ -102,9 +102,9 @@ public class EditCommerceSubscriptionContentMVCActionCommandTest {
 		MockActionRequest mockActionRequest = _getMockActionRequest(
 			"suspend", themeDisplay);
 
-		MockActionResponse mockActionResponse = new MockActionResponse();
-
 		SessionErrors.clear(mockActionRequest);
+
+		MockActionResponse mockActionResponse = new MockActionResponse();
 
 		_editCommerceSubscriptionContentMVCActionCommand.doProcessAction(
 			mockActionRequest, mockActionResponse);
@@ -131,9 +131,9 @@ public class EditCommerceSubscriptionContentMVCActionCommandTest {
 			"suspend",
 			_getThemeDisplay(companyId + 1, RandomTestUtil.randomLong()));
 
-		mockActionResponse = new MockActionResponse();
-
 		SessionErrors.clear(mockActionRequest);
+
+		mockActionResponse = new MockActionResponse();
 
 		_editCommerceSubscriptionContentMVCActionCommand.doProcessAction(
 			mockActionRequest, mockActionResponse);
@@ -159,9 +159,9 @@ public class EditCommerceSubscriptionContentMVCActionCommandTest {
 		mockActionRequest = _getMockActionRequest(
 			"suspend", _getThemeDisplay(companyId, userId + 1));
 
-		mockActionResponse = new MockActionResponse();
-
 		SessionErrors.clear(mockActionRequest);
+
+		mockActionResponse = new MockActionResponse();
 
 		_editCommerceSubscriptionContentMVCActionCommand.doProcessAction(
 			mockActionRequest, mockActionResponse);
@@ -291,7 +291,6 @@ public class EditCommerceSubscriptionContentMVCActionCommandTest {
 		MockActionRequest mockActionRequest = new MockActionRequest();
 
 		mockActionRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
-
 		mockActionRequest.setParameter(Constants.CMD, cmd);
 		mockActionRequest.setParameter(
 			"commerceSubscriptionEntryId",
