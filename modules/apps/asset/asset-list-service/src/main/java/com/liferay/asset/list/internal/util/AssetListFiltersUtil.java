@@ -20,9 +20,14 @@ import com.liferay.portal.kernel.search.MatchAllQuery;
 import com.liferay.portal.kernel.search.MatchQuery;
 import com.liferay.portal.kernel.search.NestedQuery;
 import com.liferay.portal.kernel.search.Query;
+import com.liferay.portal.kernel.search.StringQuery;
 import com.liferay.portal.kernel.search.TermQuery;
 import com.liferay.portal.kernel.search.TermRangeQuery;
 import com.liferay.portal.kernel.search.WildcardQuery;
+import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.search.filter.TermFilter;
+import com.liferay.portal.kernel.search.filter.TermsFilter;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -32,7 +37,9 @@ import com.liferay.portal.kernel.util.Validator;
 
 import java.text.Format;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -50,6 +57,7 @@ public class AssetListFiltersUtil {
 			return new BooleanClause[0];
 		}
 
+		BooleanFilter booleanFilter = new BooleanFilter();
 		BooleanQuery booleanQuery = new BooleanQuery();
 
 		boolean hasMustClause = false;
@@ -57,15 +65,31 @@ public class AssetListFiltersUtil {
 		for (int i = 0; i < filtersJSONArray.length(); i++) {
 			JSONObject jsonObject = filtersJSONArray.getJSONObject(i);
 
+			Filter filter = _toFilter(jsonObject);
+
+			boolean negatedOperator = _isNegatedOperator(
+				jsonObject.getString("operatorName", "contains"));
+
+			if (filter != null) {
+				if (negatedOperator) {
+					booleanFilter.add(filter, BooleanClauseOccur.MUST_NOT);
+				}
+				else {
+					booleanFilter.add(filter, BooleanClauseOccur.MUST);
+
+					hasMustClause = true;
+				}
+
+				continue;
+			}
+
 			Query query = _toQuery(companyId, jsonObject, locale);
 
 			if (query == null) {
 				continue;
 			}
 
-			if (_isNegatedOperator(
-					jsonObject.getString("operatorName", "contains"))) {
-
+			if (negatedOperator) {
 				booleanQuery.add(query, BooleanClauseOccur.MUST_NOT);
 			}
 			else {
@@ -75,12 +99,16 @@ public class AssetListFiltersUtil {
 			}
 		}
 
-		if (!booleanQuery.hasClauses()) {
+		if (!booleanFilter.hasClauses() && !booleanQuery.hasClauses()) {
 			return new BooleanClause[0];
 		}
 
 		if (!hasMustClause) {
 			booleanQuery.add(new MatchAllQuery(), BooleanClauseOccur.MUST);
+		}
+
+		if (booleanFilter.hasClauses()) {
+			booleanQuery.setPreBooleanFilter(booleanFilter);
 		}
 
 		return new BooleanClause[] {
@@ -262,6 +290,58 @@ public class AssetListFiltersUtil {
 		return padded.substring(0, 8) + (upperBound ? "235959" : "000000");
 	}
 
+	private static Filter _toFilter(JSONObject jsonObject) {
+		if (!_isCommonFieldRow(jsonObject)) {
+			return null;
+		}
+
+		String fieldName = _assetFilterFieldNamesMap.get(
+			jsonObject.getString("propertyName"));
+
+		if (fieldName == null) {
+			return null;
+		}
+
+		JSONArray valueJSONArray = jsonObject.getJSONArray("value");
+
+		if (JSONUtil.isEmpty(valueJSONArray)) {
+			return null;
+		}
+
+		List<String> values = new ArrayList<>();
+
+		for (int i = 0; i < valueJSONArray.length(); i++) {
+			JSONObject itemJSONObject = valueJSONArray.getJSONObject(i);
+
+			String value = itemJSONObject.getString("value");
+
+			if (Validator.isNotNull(value)) {
+				values.add(value);
+			}
+		}
+
+		if (values.isEmpty()) {
+			return null;
+		}
+
+		if (Objects.equals(jsonObject.getString("quantifier"), "all")) {
+			BooleanFilter booleanFilter = new BooleanFilter();
+
+			for (String value : values) {
+				booleanFilter.add(
+					new TermFilter(fieldName, value), BooleanClauseOccur.MUST);
+			}
+
+			return booleanFilter;
+		}
+
+		TermsFilter termsFilter = new TermsFilter(fieldName);
+
+		termsFilter.addValues(values.toArray(new String[0]));
+
+		return termsFilter;
+	}
+
 	private static NestedQuery _toNestedQuery(
 		long companyId, JSONObject jsonObject, Locale locale) {
 
@@ -346,8 +426,23 @@ public class AssetListFiltersUtil {
 		}
 
 		if (_isCommonFieldRow(jsonObject)) {
-			return _toCommonFieldQuery(
-				jsonObject, locale, jsonObject.getString("propertyName"));
+			String propertyName = jsonObject.getString("propertyName");
+
+			if (Objects.equals(propertyName, "keywords")) {
+				String value = jsonObject.getString("value");
+
+				if (Validator.isNull(value)) {
+					return null;
+				}
+
+				if (value.contains(StringPool.SPACE)) {
+					value = StringUtil.quote(value, CharPool.QUOTE);
+				}
+
+				return new StringQuery(value);
+			}
+
+			return _toCommonFieldQuery(jsonObject, locale, propertyName);
 		}
 
 		return _toNestedQuery(companyId, jsonObject, locale);
@@ -486,6 +581,12 @@ public class AssetListFiltersUtil {
 
 	private static final String _TYPE_TEXT = "text";
 
+	private static final Map<String, String> _assetFilterFieldNamesMap =
+		HashMapBuilder.put(
+			"assetCategories", Field.ASSET_CATEGORY_IDS
+		).put(
+			"assetTags", Field.ASSET_TAG_NAMES + ".raw"
+		).build();
 	private static final Map<String, String> _commonFieldTypesMap =
 		HashMapBuilder.put(
 			Field.CREATE_DATE, _TYPE_DATE
