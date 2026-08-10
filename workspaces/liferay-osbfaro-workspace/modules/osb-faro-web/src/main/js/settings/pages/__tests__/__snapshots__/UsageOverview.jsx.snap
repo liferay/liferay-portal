@@ -708,7 +708,7 @@ exports[`UsageOverview should render 1`] = `
                       >
                         Plan usage resets on 
                         <b>
-                          Jul 08, 2019
+                          Jul 8, 2019
                         </b>
                         .
                       </span>
@@ -727,7 +727,7 @@ exports[`UsageOverview should render 1`] = `
                       <span
                         class="text-3 text-secondary"
                       >
-                        Active users logged on your DXP instance have been tracked by Analytics Cloud since Jul 08, 2018.
+                        Active users logged on your DXP instance have been tracked by Analytics Cloud since Jul 8, 2018.
                       </span>
                       <div
                         class="mt-3"
@@ -785,7 +785,7 @@ exports[`UsageOverview should render 1`] = `
                     <span
                       class="text-3 text-secondary"
                     >
-                      Total page views have been tracked by Analytics Cloud since Jul 08, 2018.
+                      Total page views have been tracked by Analytics Cloud since Jul 8, 2018.
                     </span>
                     <div
                       class="mt-3"

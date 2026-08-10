@@ -48,7 +48,7 @@ describe('IndividualAttributesCDP', () => {
 			<IndividualAttributesCDP propertiesData={fromJS(mockProperties)} />
 		);
 
-		expect(getByText('2020-01-01')).toBeTruthy();
+		expect(getByText('Jan 1, 2020')).toBeTruthy();
 	});
 
 	it('should display the fallback dash for missing values', () => {

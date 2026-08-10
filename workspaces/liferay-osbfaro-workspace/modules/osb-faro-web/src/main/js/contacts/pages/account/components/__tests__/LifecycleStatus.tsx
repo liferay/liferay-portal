@@ -191,7 +191,7 @@ describe('LifecycleStatus', () => {
 			) as HTMLElement;
 
 			expect(
-				within(multistep).getByText('Jan 04, 2026')
+				within(multistep).getByText('Jan 4, 2026')
 			).toBeInTheDocument();
 			expect(
 				within(multistep).getByText('Jan 16, 2026')
@@ -379,10 +379,10 @@ describe('LifecycleStatus', () => {
 			) as HTMLElement;
 
 			expect(
-				within(multistep).getByText('Feb 01, 2026')
+				within(multistep).getByText('Feb 1, 2026')
 			).toBeInTheDocument();
 			expect(
-				within(multistep).getByText('Mar 01, 2026')
+				within(multistep).getByText('Mar 1, 2026')
 			).toBeInTheDocument();
 		});
 

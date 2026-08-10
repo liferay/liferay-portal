@@ -25,7 +25,7 @@ exports[`OrganizationDisplay renders as a Date Time criteria 1`] = `
     is
   </span>
   <b>
-    2020-02-11 22:16
+    Feb 11, 2020, 10:16 PM
   </b>
 </div>
 `;

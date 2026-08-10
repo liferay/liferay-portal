@@ -231,7 +231,7 @@ exports[`Suppressed User List should render 1`] = `
                   00001
                 </td>
                 <td>
-                  Sep 09, 2019
+                  Sep 9, 2019
                 </td>
                 <td>
                   Sep 10, 2019
@@ -258,7 +258,7 @@ exports[`Suppressed User List should render 1`] = `
                   00002
                 </td>
                 <td>
-                  Sep 09, 2019
+                  Sep 9, 2019
                 </td>
                 <td>
                   Sep 11, 2019

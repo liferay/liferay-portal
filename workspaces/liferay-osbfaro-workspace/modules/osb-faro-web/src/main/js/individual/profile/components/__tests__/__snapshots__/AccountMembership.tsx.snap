@@ -327,7 +327,7 @@ exports[`Account Membership should render the snapshot 1`] = `
                     class="font-weight-semi-bold text-break text-dark"
                     style="word-break: break-all;"
                   >
-                    2021-12-01
+                    Dec 1, 2021
                   </span>
                 </div>
               </div>
@@ -353,7 +353,7 @@ exports[`Account Membership should render the snapshot 1`] = `
                     class="font-weight-semi-bold text-break text-dark"
                     style="word-break: break-all;"
                   >
-                    2020-01-01
+                    Jan 1, 2020
                   </span>
                 </div>
               </div>

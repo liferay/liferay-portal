@@ -60,8 +60,8 @@ describe('utils', () => {
 			${'Test'}              | ${PropertyTypes.Text}               | ${'"Test"'}
 			${'true'}              | ${PropertyTypes.Boolean}            | ${'TRUE'}
 			${data.getTimestamp()} | ${PropertyTypes.Date}               | ${'2018-07-10'}
-			${data.getTimestamp()} | ${PropertyTypes.DateTime}           | ${'2018-07-10 23:01'}
-			${data.getTimestamp()} | ${PropertyTypes.SessionDateTime}    | ${'2018-07-10 23:01'}
+			${data.getTimestamp()} | ${PropertyTypes.DateTime}           | ${'Jul 10, 2018, 11:01 PM'}
+			${data.getTimestamp()} | ${PropertyTypes.SessionDateTime}    | ${'Jul 10, 2018, 11:01 PM'}
 			${123}                 | ${PropertyTypes.AccountNumber}      | ${123}
 			${1000}                | ${PropertyTypes.Duration}           | ${'00:00:01'}
 			${123}                 | ${PropertyTypes.Number}             | ${123}

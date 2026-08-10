@@ -345,7 +345,7 @@ exports[`IndividualAttributesCDP should render 1`] = `
                     class="font-weight-semi-bold text-break text-dark"
                     style="word-break: break-all;"
                   >
-                    2020-01-01
+                    Jan 1, 2020
                   </span>
                 </div>
               </div>

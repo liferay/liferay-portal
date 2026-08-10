@@ -50,8 +50,8 @@ describe('Account Membership', () => {
 		);
 
 		expect(getByText('2015')).toBeTruthy();
-		expect(getByText('2021-12-01')).toBeTruthy();
-		expect(getByText('2020-01-01')).toBeTruthy();
+		expect(getByText('Dec 1, 2021')).toBeTruthy();
+		expect(getByText('Jan 1, 2020')).toBeTruthy();
 	});
 
 	it('should display the fallback dash for missing account values', () => {

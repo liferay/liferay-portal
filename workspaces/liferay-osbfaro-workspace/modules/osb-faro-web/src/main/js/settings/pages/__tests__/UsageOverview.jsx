@@ -118,7 +118,7 @@ describe('UsageOverview', () => {
 
 		expect(
 			getByText(
-				'Active users logged on your DXP instance have been tracked by Analytics Cloud since Jul 08, 2018.'
+				'Active users logged on your DXP instance have been tracked by Analytics Cloud since Jul 8, 2018.'
 			)
 		).toBeInTheDocument();
 
@@ -219,7 +219,7 @@ describe('UsageOverview', () => {
 
 		expect(
 			getByText(
-				'Active users logged on your DXP instance have been tracked by Analytics Cloud since Jul 08, 2018.'
+				'Active users logged on your DXP instance have been tracked by Analytics Cloud since Jul 8, 2018.'
 			)
 		).toBeInTheDocument();
 
@@ -317,7 +317,7 @@ describe('UsageOverview', () => {
 		);
 
 		expect(queryByTestId('next-anniversary-date').textContent).toEqual(
-			'Plan usage resets on Jul 08, 2019.'
+			'Plan usage resets on Jul 8, 2019.'
 		);
 	});
 
@@ -339,7 +339,7 @@ describe('UsageOverview', () => {
 		);
 
 		expect(queryByTestId('next-anniversary-date').textContent).toEqual(
-			'Plan usage resets on Jul 08, 2019.'
+			'Plan usage resets on Jul 8, 2019.'
 		);
 	});
 

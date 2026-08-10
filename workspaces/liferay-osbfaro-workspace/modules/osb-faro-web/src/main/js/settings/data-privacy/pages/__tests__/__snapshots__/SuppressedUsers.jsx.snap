@@ -541,10 +541,10 @@ exports[`SuppressedUsers should render 1`] = `
                             123
                           </td>
                           <td>
-                            Jan 01, 2024
+                            Jan 1, 2024
                           </td>
                           <td>
-                            Jan 01, 2024
+                            Jan 1, 2024
                           </td>
                           <td
                             class="row-inline-actions"

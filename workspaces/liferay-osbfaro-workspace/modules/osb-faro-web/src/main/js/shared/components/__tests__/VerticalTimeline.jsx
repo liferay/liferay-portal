@@ -105,7 +105,7 @@ describe('VerticalTimeline', () => {
 			renderTimeline({items: [SESSION_ITEM]});
 
 			expect(
-				screen.getByText('Session: 10:00 am - 11:00 am')
+				screen.getByText('Session: 10:00 AM - 11:00 AM')
 			).toBeInTheDocument();
 		});
 
@@ -113,7 +113,7 @@ describe('VerticalTimeline', () => {
 			renderTimeline({items: [{...SESSION_ITEM, endTime: undefined}]});
 
 			expect(
-				screen.getByText('Session: 10:00 am - in progress')
+				screen.getByText('Session: 10:00 AM - in progress')
 			).toBeInTheDocument();
 		});
 
@@ -121,7 +121,7 @@ describe('VerticalTimeline', () => {
 			renderTimeline({items: [{...SESSION_ITEM, noTimestamps: true}]});
 
 			expect(
-				screen.getByText('Session: 10:00 am - no timestamps')
+				screen.getByText('Session: 10:00 AM - no timestamps')
 			).toBeInTheDocument();
 		});
 
@@ -277,7 +277,7 @@ describe('VerticalTimeline', () => {
 			renderTimeline({items: [EVENT_ITEM]});
 
 			expect(screen.getByText('emailViewed')).toBeInTheDocument();
-			expect(screen.getByText('10:00 am')).toBeInTheDocument();
+			expect(screen.getByText('10:00 AM')).toBeInTheDocument();
 		});
 
 		it('renders the description as a link when a descriptionUrl is provided', () => {

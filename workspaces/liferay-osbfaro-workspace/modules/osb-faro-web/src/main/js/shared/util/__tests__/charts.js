@@ -76,11 +76,11 @@ describe('formatTooltipDate', () => {
 			RangeKeyTimeRanges.Last90Days
 		);
 
-		expect(formatedDate).toEqual('2018 May 9');
+		expect(formatedDate).toEqual('May 9, 2018');
 	});
 
 	it('should return the formated date and month', () => {
-		expect(formatTooltipDate(getDate('2018-08-07'))).toEqual('2018 Aug 7');
+		expect(formatTooltipDate(getDate('2018-08-07'))).toEqual('Aug 7, 2018');
 	});
 });
 
@@ -121,7 +121,7 @@ describe('formatXAxisDate', () => {
 
 describe('getDateTitle', () => {
 	it('should return a date display string', () => {
-		expect(getDateTitle([getDate('2019-01-01')])).toEqual('2019 Jan 1');
+		expect(getDateTitle([getDate('2019-01-01')])).toEqual('Jan 1, 2019');
 	});
 
 	it('should return a date display string as a date range if rangeKey is monthly and interval is weekly', () => {
@@ -131,7 +131,7 @@ describe('getDateTitle', () => {
 				RangeKeyTimeRanges.Last30Days,
 				INTERVAL_KEY_MAP.week
 			)
-		).toEqual('2019 Jan 1 - 14');
+		).toEqual('Jan 1, 2019 - 14');
 	});
 
 	it('should return year and month when interval its set to month', () => {
@@ -141,7 +141,7 @@ describe('getDateTitle', () => {
 				RangeKeyTimeRanges.Last30Days,
 				INTERVAL_KEY_MAP.month
 			)
-		).toEqual('2019 Jan');
+		).toEqual('Jan 2019');
 	});
 });
 

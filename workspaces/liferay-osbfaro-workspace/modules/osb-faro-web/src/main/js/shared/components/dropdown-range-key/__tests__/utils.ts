@@ -80,37 +80,37 @@ describe('formatDateRange', () => {
 	it('returns formatted dates for timeRange', () => {
 		expect(formatTimeRange(timeRange)).toEqual([
 			{
-				description: '15 Jan, 07 PM - 16 Jan, 06 PM',
+				description: 'Jan 15, 7 PM - Jan 16, 6 PM',
 				label: 'Last 24 hours',
 				value: '0',
 			},
 			{
-				description: '15 Jan, 12 AM - 15 Jan, 11 PM',
+				description: 'Jan 15, 12 AM - Jan 15, 11 PM',
 				label: 'Yesterday',
 				value: '1',
 			},
-			{description: '09 Jan - 15 Jan', label: 'Last 7 days', value: '7'},
+			{description: 'Jan 9 - Jan 15', label: 'Last 7 days', value: '7'},
 			{
-				description: '19 Dec - 15 Jan',
+				description: 'Dec 19 - Jan 15',
 				label: 'Last 28 days',
 				value: '28',
 			},
 			{
-				description: '17 Dec - 15 Jan',
+				description: 'Dec 17 - Jan 15',
 				label: 'Last 30 days',
 				value: '30',
 			},
 			{
-				description: '18 Oct - 15 Jan',
+				description: 'Oct 18 - Jan 15',
 				label: 'Last 90 days',
 				value: '90',
 			},
 			{
-				description: '20 Jul - 15 Jan',
+				description: 'Jul 20 - Jan 15',
 				label: 'Last 180 days',
 				value: '180',
 			},
-			{description: '15 Jan - 15 Jan', label: 'Last Year', value: '365'},
+			{description: 'Jan 15 - Jan 15', label: 'Last Year', value: '365'},
 		]);
 	});
 
@@ -124,22 +124,22 @@ describe('formatDateRange', () => {
 				},
 			])
 		).toEqual([
-			{description: '15 Jan - 15 Jan', label: undefined, value: 'CUSTOM'},
+			{description: 'Jan 15 - Jan 15', label: undefined, value: 'CUSTOM'},
 		]);
 	});
 });
 
 describe('formatDateRange', () => {
 	it('returns formatted date range for last 24 hours', () => {
-		expect(formatDateRange(moment(0), 0)).toEqual('01 Jan, 12 AM');
+		expect(formatDateRange(moment(0), 0)).toEqual('Jan 1, 12 AM');
 	});
 
 	it('returns formatted date range for yesterday', () => {
-		expect(formatDateRange(moment(0), 1)).toEqual('01 Jan, 12 AM');
+		expect(formatDateRange(moment(0), 1)).toEqual('Jan 1, 12 AM');
 	});
 
 	it('returns formatted date range for last 30 days', () => {
-		expect(formatDateRange(moment(0), 30)).toEqual('01 Jan');
+		expect(formatDateRange(moment(0), 30)).toEqual('Jan 1');
 	});
 });
 
@@ -155,20 +155,20 @@ describe('getFilteredItems', () => {
 			})
 		).toEqual([
 			{
-				description: '15 Jan, 07 PM - 16 Jan, 06 PM',
+				description: 'Jan 15, 7 PM - Jan 16, 6 PM',
 				label: 'Last 24 hours',
 				value: '0',
 			},
 
-			{description: '09 Jan - 15 Jan', label: 'Last 7 days', value: '7'},
+			{description: 'Jan 9 - Jan 15', label: 'Last 7 days', value: '7'},
 
 			{
-				description: '17 Dec - 15 Jan',
+				description: 'Dec 17 - Jan 15',
 				label: 'Last 30 days',
 				value: '30',
 			},
 			{
-				description: '18 Oct - 15 Jan',
+				description: 'Oct 18 - Jan 15',
 				label: 'Last 90 days',
 				value: '90',
 			},
@@ -186,28 +186,28 @@ describe('getFilteredItems', () => {
 			})
 		).toEqual([
 			{
-				description: '15 Jan, 07 PM - 16 Jan, 06 PM',
+				description: 'Jan 15, 7 PM - Jan 16, 6 PM',
 				label: 'Last 24 hours',
 				value: '0',
 			},
 			{
-				description: '15 Jan, 12 AM - 15 Jan, 11 PM',
+				description: 'Jan 15, 12 AM - Jan 15, 11 PM',
 				label: 'Yesterday',
 				value: '1',
 			},
-			{description: '09 Jan - 15 Jan', label: 'Last 7 days', value: '7'},
+			{description: 'Jan 9 - Jan 15', label: 'Last 7 days', value: '7'},
 			{
-				description: '19 Dec - 15 Jan',
+				description: 'Dec 19 - Jan 15',
 				label: 'Last 28 days',
 				value: '28',
 			},
 			{
-				description: '17 Dec - 15 Jan',
+				description: 'Dec 17 - Jan 15',
 				label: 'Last 30 days',
 				value: '30',
 			},
 			{
-				description: '18 Oct - 15 Jan',
+				description: 'Oct 18 - Jan 15',
 				label: 'Last 90 days',
 				value: '90',
 			},
@@ -225,33 +225,33 @@ describe('getFilteredItems', () => {
 			})
 		).toEqual([
 			{
-				description: '15 Jan, 07 PM - 16 Jan, 06 PM',
+				description: 'Jan 15, 7 PM - Jan 16, 6 PM',
 				label: 'Last 24 hours',
 				value: '0',
 			},
 			{
-				description: '15 Jan, 12 AM - 15 Jan, 11 PM',
+				description: 'Jan 15, 12 AM - Jan 15, 11 PM',
 				label: 'Yesterday',
 				value: '1',
 			},
-			{description: '09 Jan - 15 Jan', label: 'Last 7 days', value: '7'},
+			{description: 'Jan 9 - Jan 15', label: 'Last 7 days', value: '7'},
 			{
-				description: '19 Dec - 15 Jan',
+				description: 'Dec 19 - Jan 15',
 				label: 'Last 28 days',
 				value: '28',
 			},
 			{
-				description: '17 Dec - 15 Jan',
+				description: 'Dec 17 - Jan 15',
 				label: 'Last 30 days',
 				value: '30',
 			},
 			{
-				description: '18 Oct - 15 Jan',
+				description: 'Oct 18 - Jan 15',
 				label: 'Last 90 days',
 				value: '90',
 			},
 			{
-				description: '20 Jul - 15 Jan',
+				description: 'Jul 20 - Jan 15',
 				label: 'Last 180 days',
 				value: '180',
 			},
@@ -276,37 +276,37 @@ describe('getFilteredItems', () => {
 			})
 		).toEqual([
 			{
-				description: '15 Jan, 07 PM - 16 Jan, 06 PM',
+				description: 'Jan 15, 7 PM - Jan 16, 6 PM',
 				label: 'Last 24 hours',
 				value: '0',
 			},
 			{
-				description: '15 Jan, 12 AM - 15 Jan, 11 PM',
+				description: 'Jan 15, 12 AM - Jan 15, 11 PM',
 				label: 'Yesterday',
 				value: '1',
 			},
-			{description: '09 Jan - 15 Jan', label: 'Last 7 days', value: '7'},
+			{description: 'Jan 9 - Jan 15', label: 'Last 7 days', value: '7'},
 			{
-				description: '19 Dec - 15 Jan',
+				description: 'Dec 19 - Jan 15',
 				label: 'Last 28 days',
 				value: '28',
 			},
 			{
-				description: '17 Dec - 15 Jan',
+				description: 'Dec 17 - Jan 15',
 				label: 'Last 30 days',
 				value: '30',
 			},
 			{
-				description: '18 Oct - 15 Jan',
+				description: 'Oct 18 - Jan 15',
 				label: 'Last 90 days',
 				value: '90',
 			},
 			{
-				description: '20 Jul - 15 Jan',
+				description: 'Jul 20 - Jan 15',
 				label: 'Last 180 days',
 				value: '180',
 			},
-			{description: '15 Jan - 15 Jan', label: 'Last Year', value: '365'},
+			{description: 'Jan 15 - Jan 15', label: 'Last Year', value: '365'},
 		]);
 	});
 
@@ -321,37 +321,37 @@ describe('getFilteredItems', () => {
 			})
 		).toEqual([
 			{
-				description: '15 Jan, 07 PM - 16 Jan, 06 PM',
+				description: 'Jan 15, 7 PM - Jan 16, 6 PM',
 				label: 'Last 24 hours',
 				value: '0',
 			},
 			{
-				description: '15 Jan, 12 AM - 15 Jan, 11 PM',
+				description: 'Jan 15, 12 AM - Jan 15, 11 PM',
 				label: 'Yesterday',
 				value: '1',
 			},
-			{description: '09 Jan - 15 Jan', label: 'Last 7 days', value: '7'},
+			{description: 'Jan 9 - Jan 15', label: 'Last 7 days', value: '7'},
 			{
-				description: '19 Dec - 15 Jan',
+				description: 'Dec 19 - Jan 15',
 				label: 'Last 28 days',
 				value: '28',
 			},
 			{
-				description: '17 Dec - 15 Jan',
+				description: 'Dec 17 - Jan 15',
 				label: 'Last 30 days',
 				value: '30',
 			},
 			{
-				description: '18 Oct - 15 Jan',
+				description: 'Oct 18 - Jan 15',
 				label: 'Last 90 days',
 				value: '90',
 			},
 			{
-				description: '20 Jul - 15 Jan',
+				description: 'Jul 20 - Jan 15',
 				label: 'Last 180 days',
 				value: '180',
 			},
-			{description: '15 Jan - 15 Jan', label: 'Last Year', value: '365'},
+			{description: 'Jan 15 - Jan 15', label: 'Last Year', value: '365'},
 		]);
 	});
 });
