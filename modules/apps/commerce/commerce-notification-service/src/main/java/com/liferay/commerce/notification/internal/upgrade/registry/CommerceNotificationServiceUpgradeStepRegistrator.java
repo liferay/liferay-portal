@@ -81,12 +81,7 @@ public class CommerceNotificationServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.alterColumnType(
 				"CommerceNotificationTemplate", "bcc", "TEXT null"));
 
-		registry.register(
-			"3.0.0", "3.1.0",
-			UpgradeProcessFactory.runSQL(
-				"update NotificationTemplate set externalReferenceCode = " +
-					"'COMMERCE_ORDER_TEMPLATE' where externalReferenceCode = " +
-						"'L_COMMERCE_ORDER_TEMPLATE'"));
+		registry.register("3.0.0", "3.1.0", new DummyUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
 			_log.info(
