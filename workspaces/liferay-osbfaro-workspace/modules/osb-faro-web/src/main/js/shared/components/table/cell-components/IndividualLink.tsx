@@ -1,17 +1,13 @@
 import NameCell from './Name';
 import React from 'react';
-import {get} from 'lodash';
-import {isBlank} from 'shared/util/util';
 import {Routes, toRoute} from 'shared/util/router';
 
 interface IIndividualLinksProps {
 	channelId?: string;
 	className?: string;
 	data: {
-		emailAddress?: string;
 		id: string;
 		individualDeleted: boolean;
-		individualEmail: string;
 		individualId: string;
 		individualName: string;
 		name: string;
@@ -32,18 +28,11 @@ const IndividualLinkCell: React.FC<IIndividualLinksProps> = ({
 
 	const name = data.name || data.individualName || '-';
 
-	const email =
-		get(data, ['properties', 'email']) ||
-		data.individualEmail ||
-		data.emailAddress;
-
-	const anonymous = isBlank(email);
-
 	return (
 		<NameCell
 			className={className}
 			data={{...data, id, name}}
-			disabled={data.individualDeleted || anonymous || disabled}
+			disabled={data.individualDeleted || disabled}
 			routeFn={({data: {id}}: {data: {id: string}}) =>
 				toRoute(Routes.CONTACTS_INDIVIDUAL, {
 					channelId,

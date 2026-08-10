@@ -60,18 +60,22 @@ describe('IndividualLinkCell', () => {
 		expect(container.querySelectorAll('a').length).toEqual(0);
 	});
 
-	it('should NOT render as a link if the individual is anonymous', () => {
+	it('should render as a link if the individual is anonymous', () => {
+		const individualId = 'individual456';
+
 		const {container} = render(
 			<DefaultComponent
 				data={{
-					individualDeleted: true,
-					individualId: 'individual456',
+					individualDeleted: false,
+					individualId,
 					individualName: 'individual Test'
 				}}
 			/>
 		);
 
-		expect(container.querySelectorAll('a').length).toEqual(0);
+		expect(container.querySelector('a').getAttribute('href')).toContain(
+			individualId
+		);
 	});
 
 	it('should render with individualId in the link', () => {
