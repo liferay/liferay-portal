@@ -5,20 +5,43 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ClayInput} from '@clayui/form';
-import React, {useContext, useEffect, useState} from 'react';
+import {cancelDebounce, debounce} from 'frontend-js-web';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 
 import FrontendDataSetContext from '../../FrontendDataSetContext';
+import {SEARCH_AS_YOU_TYPE_DEBOUNCE_DELAY} from '../../constants';
 
 function MainSearch({onClear}: {onClear: () => void}) {
-	const {apiURL, appURL, onSearch, searchParam} = useContext(
+	const {apiURL, appURL, onSearch, searchAsYouType, searchParam} = useContext(
 		FrontendDataSetContext
 	);
 
 	const [inputValue, setInputValue] = useState(searchParam || '');
 
+	const debouncedSearch = useMemo(
+		() =>
+			debounce(
+				(query: string) => onSearch({query}),
+				SEARCH_AS_YOU_TYPE_DEBOUNCE_DELAY
+			),
+		[onSearch]
+	);
+
 	useEffect(() => {
 		setInputValue(searchParam || '');
 	}, [searchParam]);
+
+	useEffect(() => () => cancelDebounce(debouncedSearch), [debouncedSearch]);
+
+	const uncontrolledItems = Boolean(apiURL || appURL);
+
+	const doSearch = (query: string) => {
+		if (searchAsYouType) {
+			return;
+		}
+
+		onSearch({query});
+	};
 
 	return (
 		<ClayInput.Group>
@@ -27,22 +50,38 @@ function MainSearch({onClear}: {onClear: () => void}) {
 					aria-label={Liferay.Language.get('search')}
 					className="input-group-inset input-group-inset-after"
 					onChange={(event) => {
-						setInputValue(event.target.value);
+						const query = event.target.value;
 
-						if (!event.target.value) {
+						setInputValue(query);
+
+						if (!query) {
 							onClear();
 						}
 
-						if (!apiURL && !appURL) {
-							onSearch({query: event.target.value});
+						if (!searchAsYouType) {
+							return;
+						}
+
+						if (uncontrolledItems) {
+							if (query) {
+								debouncedSearch(query);
+							}
+							else {
+								cancelDebounce(debouncedSearch);
+							}
+						}
+						else {
+							onSearch({query});
 						}
 					}}
 					onKeyDown={(event) => {
-						if (event.key === 'Enter' && (apiURL || appURL)) {
-							event.preventDefault();
-
-							onSearch({query: inputValue});
+						if (event.key !== 'Enter') {
+							return;
 						}
+
+						event.preventDefault();
+
+						doSearch(inputValue);
 					}}
 					placeholder={Liferay.Language.get('search')}
 					type="search"
@@ -57,7 +96,7 @@ function MainSearch({onClear}: {onClear: () => void}) {
 						onClick={(event) => {
 							event.preventDefault();
 
-							onSearch({query: inputValue});
+							doSearch(inputValue);
 						}}
 						symbol="search"
 						type="submit"

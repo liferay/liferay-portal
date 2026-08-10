@@ -6,11 +6,12 @@
 import {act, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
-import React from 'react';
+import React, {useContext} from 'react';
 
 import '@testing-library/jest-dom';
 
 import FrontendDataSet from '../src/main/resources/META-INF/resources/FrontendDataSet';
+import FrontendDataSetContext from '../src/main/resources/META-INF/resources/FrontendDataSetContext';
 import EVENTS from '../src/main/resources/META-INF/resources/utils/eventsDefinitions';
 
 const ID = 'test-fds';
@@ -137,5 +138,48 @@ describe('FrontendDataSet', () => {
 
 		expect(screen.queryByText('stale-refresh')).not.toBeInTheDocument();
 		expect(screen.getByText('newer')).toBeInTheDocument();
+	});
+
+	it('keeps a stable onSearch identity across renders', async () => {
+		const requests = mockPendingRequests();
+
+		const identities: Array<Function> = [];
+
+		// A cell renderer is the closest consumer to MainSearch, which
+		// debounces "onSearch" and goes stale when its identity changes
+
+		function OnSearchProbe() {
+			const {onSearch} = useContext(FrontendDataSetContext);
+
+			identities.push(onSearch);
+
+			return null;
+		}
+
+		render(
+			<FrontendDataSet
+				apiURL="/o/products"
+				customDataRenderers={{default: OnSearchProbe}}
+				id={ID}
+				views={VIEWS}
+			/>
+		);
+
+		await waitFor(() => expect(requests).toHaveLength(1));
+
+		act(() => requests[0].resolve(itemsResponse(['unfiltered'])));
+
+		await settle();
+
+		await userEvent.type(screen.getByRole('searchbox'), 'a{Enter}');
+
+		await waitFor(() => expect(requests).toHaveLength(2));
+
+		act(() => requests[1].resolve(itemsResponse(['filtered'])));
+
+		await settle();
+
+		expect(identities.length).toBeGreaterThan(1);
+		expect(new Set(identities).size).toBe(1);
 	});
 });

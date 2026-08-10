@@ -17,6 +17,8 @@ export enum ETimeZoneBehaviors {
 
 export const PAGINATION_DELTA_ALL = 2147483647;
 
+export const SEARCH_AS_YOU_TYPE_DEBOUNCE_DELAY = 300;
+
 export const CUSTOM_FIELD_NAME_DELIMITER = '.';
 export const CUSTOM_FIELD_NAME_ODATA_DELIMITER = '/';
 export const CUSTOM_FIELD_NAME_PREFIX = 'customField';

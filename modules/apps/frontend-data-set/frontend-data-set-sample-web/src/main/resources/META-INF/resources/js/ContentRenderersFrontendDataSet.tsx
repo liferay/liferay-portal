@@ -49,6 +49,7 @@ const ContentRenderersFrontendDataSet = () => {
 				deltas: [{label: 2}, {label: 4}],
 				initialDelta: 2,
 			}}
+			searchAsYouType={true}
 			showPagination
 			views={[
 				{

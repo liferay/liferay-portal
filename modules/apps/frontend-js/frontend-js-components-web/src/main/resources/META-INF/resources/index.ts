@@ -28,6 +28,7 @@ export {translationsNormalizer} from './forms/input/InputLocalized';
 
 export {default as useId} from './hooks/useId';
 export {default as useSessionState} from './hooks/useSessionState';
+export {default as useStableCallback} from './hooks/useStableCallback';
 export {
 	default as LearnMessage,
 	ILearnResourceContext,

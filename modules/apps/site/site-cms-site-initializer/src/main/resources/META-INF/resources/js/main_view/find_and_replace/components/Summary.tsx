@@ -107,6 +107,7 @@ export function Summary() {
 						deltas: [{label: 10}, {label: 20}],
 						initialDelta: 10,
 					}}
+					searchAsYouType={true}
 					showPagination
 					style="fluid"
 					views={[

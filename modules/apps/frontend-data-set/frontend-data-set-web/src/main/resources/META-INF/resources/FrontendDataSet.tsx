@@ -9,7 +9,7 @@ import {useControlledState} from '@clayui/shared';
 import {useIsMounted, useThunk} from '@liferay/frontend-js-react-web';
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
 import classNames from 'classnames';
-import {openToast} from 'frontend-js-components-web';
+import {openToast, useStableCallback} from 'frontend-js-components-web';
 import {
 	ClientExtensionDefinition,
 	ClientExtensionResolution,
@@ -140,6 +140,7 @@ const FrontendDataSetContent = ({
 	overrideEmptyResultView,
 	pagination,
 	portletId,
+	searchAsYouType = false,
 	selectedItems: externalSelectedItems,
 	selectedItemsKey = 'id',
 	selectionType,
@@ -1826,6 +1827,24 @@ const FrontendDataSetContent = ({
 
 	const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
+	// Consumers debounce this callback, so it keeps a stable identity and
+	// always reaches the current state
+
+	const handleSearch = useStableCallback(({query}: {query: string}) => {
+		skipSnapshotsUpdatedChangeRef.current = true;
+
+		setGlobalFDSState({
+			...unfrozenGlobalFDSState,
+			search: {
+				query,
+			},
+		});
+
+		if (query !== unfrozenGlobalFDSState.search.query) {
+			viewsDispatch(updatePageNumber(1));
+		}
+	});
+
 	const handleSnapshotChange = ({defaultSnapshot, snapshots, value}: any) => {
 		if (value === 'DEFAULT_VIEW') {
 			updateConfigInURL({
@@ -2100,16 +2119,7 @@ const FrontendDataSetContent = ({
 					setInfoPanelOpen((value) => !value);
 				},
 				onItemsChange,
-				onSearch: ({query}) => {
-					skipSnapshotsUpdatedChangeRef.current = true;
-
-					setGlobalFDSState({
-						...unfrozenGlobalFDSState,
-						search: {
-							query,
-						},
-					});
-				},
+				onSearch: handleSearch,
 				onSnapshotChange: handleSnapshotChange,
 				onViewChange: (viewName: string) => {
 					const view = views.find(({name}) => name === viewName);
@@ -2161,6 +2171,7 @@ const FrontendDataSetContent = ({
 				openModal,
 				openSidePanel,
 				portletId,
+				searchAsYouType,
 				searchParam: unfrozenGlobalFDSState.search.query,
 				searching,
 				selectable,
