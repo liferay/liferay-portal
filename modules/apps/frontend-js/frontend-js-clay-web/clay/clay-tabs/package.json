@@ -3,7 +3,7 @@
 		"extends browserslist-config-clay"
 	],
 	"dependencies": {
-		"@clayui/shared": "^3.165.0",
+		"@clayui/shared": "^3.166.0",
 		"classnames": "2.3.1"
 	},
 	"description": "ClayTabs component",
@@ -18,7 +18,7 @@
 	"main": "src/index.tsx",
 	"name": "@clayui/tabs",
 	"peerDependencies": {
-		"@clayui/css": "^3.165.0",
+		"@clayui/css": "^3.166.0",
 		"react": "^16.0.0 || ^17.0.0 || ^18.0.0",
 		"react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
 	},
@@ -31,5 +31,5 @@
 		"format": "prettier --write \"**/*.{js,ts,tsx,md,mdx,json,scss}\"",
 		"test": "jest --config ../../jest.config.js"
 	},
-	"version": "3.165.0"
+	"version": "3.166.0"
 }

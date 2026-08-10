@@ -2,6 +2,159 @@
 
 All notable changes to Clay packages are documented in this file.
 
+# [3.166.0] (2026-08-10)
+
+## @clayui/autocomplete
+
+### Commits
+
+- LPD-93196 Regenerate snapshots ([e6ccd5b](https://github.com/liferay/liferay-portal/commit/e6ccd5b2f95fb806399996099bc2955843735e17))
+
+## @clayui/button
+
+### Commits
+
+- LPD-97474 Add an AI button variant to Clay's stylesheet ([bf6d9a1](https://github.com/liferay/liferay-portal/commit/bf6d9a15c2f5861a80f9ce400a77854c6937244b))
+- LPD-97474 Add the ClayAiButton component and ai displayType ([f2ce392](https://github.com/liferay/liferay-portal/commit/f2ce3929b6e535e25aa918589f36ad0bb085f56d))
+- LPD-97474 Cover the AI button children and label case in the story ([f18808e](https://github.com/liferay/liferay-portal/commit/f18808e71d8ffc4aaf2f8ed0c051839bf6dc55a0))
+- LPD-97474 Rename ClayAiButton to ClayAIButton ([4f77058](https://github.com/liferay/liferay-portal/commit/4f7705886ff33fceb8bf07ea60b3576fb1fd94b3))
+
+## @clayui/card
+
+### Commits
+
+- LPD-88758 Add size prop to the ClayCard component ([c393b73](https://github.com/liferay/liferay-portal/commit/c393b73e9e532a8e8f8f3de87974ad39506ce7f4))
+- LPD-88758 LPD-88753 Add nested M hover with backdrop blur ([53c81e8](https://github.com/liferay/liferay-portal/commit/53c81e8e4ce5ce3755bc034a7e05498067b38ddc))
+- LPD-88758 Rename card size prop values to xs/sm/md ([67afb69](https://github.com/liferay/liferay-portal/commit/67afb696f567c08d216786e5dfdfdd9a1c7e41b7))
+- LPD-88758 Replace card size prop with card-page layout views ([537075f](https://github.com/liferay/liferay-portal/commit/537075f2f8774b4b21d1fd628053b22c671b6951))
+- LPD-88758 Show card-page views with proper card types in story ([dc8b87d](https://github.com/liferay/liferay-portal/commit/dc8b87d1a475a56682f1007ad37cb59c3612356c))
+- LPD-88758 Lay out card-page with CSS Grid supporting list markup ([5d3c6dc](https://github.com/liferay/liferay-portal/commit/5d3c6dce3acae930e77732a93c347c5d4a98a75d))
+- LPD-88758 Storybook update card-page-dense and horizontal examples to require card-page class ([f25786c](https://github.com/liferay/liferay-portal/commit/f25786c73cb365cd94fe156cac8f3ad947bcd4e5))
+- LPD-97442 Add aria-disable attribute if the card is disabled. This meets the accessibility requirements ([2ab5b44](https://github.com/liferay/liferay-portal/commit/2ab5b44588e6c6c26b12ea793b362e5351d90642))
+- LPD-97442 Update snapshots ([b8c9b7f](https://github.com/liferay/liferay-portal/commit/b8c9b7fd6a4e418176e78347e3a710917d54effe))
+
+## @clayui/color-picker
+
+### Commits
+
+- LPD-93196 Regenerate snapshots ([e6ccd5b](https://github.com/liferay/liferay-portal/commit/e6ccd5b2f95fb806399996099bc2955843735e17))
+
+## @clayui/core
+
+### Commits
+
+- LPD-93194 Add aria-label to toggle switches ([1691fec](https://github.com/liferay/liferay-portal/commit/1691fec35dbdacf4edac5267ac345eaffadd1e5d))
+- LPD-95233 @clayui/core side-panel allow passing props to close button ([f141cb6](https://github.com/liferay/liferay-portal/commit/f141cb6e3ec0fd8ea659c55530aa5c4ea5c252f5))
+- LPD-95233 @clayui/core SidePanelHeader don't run onOpenChange if preventDefault ([2d29b1b](https://github.com/liferay/liferay-portal/commit/2d29b1b6d1c298d1463b301fc8b1b791da7dab87))
+- LPD-93195 Fix invalid role in table column menu ([cc32fd2](https://github.com/liferay/liferay-portal/commit/cc32fd2e0e6a3f07510f303290529e62bacd17cb))
+- LPD-98845 Honor a tabIndex prop on Clay's Picker ([1a2c434](https://github.com/liferay/liferay-portal/commit/1a2c43452b6fc260ace8712479339a3094c4c1ed))
+- LPD-98845 Test the Picker tabIndex prop ([2d20515](https://github.com/liferay/liferay-portal/commit/2d20515f66b7ff350492d663c209a730e232d982))
+- LPD-98879 Prevent page scroll when focusing the picker search ([2f95366](https://github.com/liferay/liferay-portal/commit/2f9536670c770d9bdc160d1f0ac623733b629b52))
+
+## @clayui/css
+
+### Commits
+
+- LPD-93992 - Increase Secondary L0 contrast ([41ffb55](https://github.com/liferay/liferay-portal/commit/41ffb55b3689e08b4c853b5fb72b72e1c88a81b9))
+- LPD-93241 Increase contrast of Clay date picker date cells ([8e58e10](https://github.com/liferay/liferay-portal/commit/8e58e106c1a5427eaf91e794f54354ff296b0d52))
+- LPD-94630 Fix unitless 0 fallback for --multi-step-divider-spacer-x in atlas CSS ([a4676ee](https://github.com/liferay/liferay-portal/commit/a4676ee7a49ff62bc36cda34224174e2f77abae3))
+- LPD-94804 Match side navigation header background to the menu body ([e63eb3f](https://github.com/liferay/liferay-portal/commit/e63eb3f7beea7cf61c38f68a2445bc8da0622c63))
+- LPD-94305 Fix checkbox and radio alignment without an inline label ([bf36acb](https://github.com/liferay/liferay-portal/commit/bf36acbe4f24991ddedeffe7f81494d20a8ba285))
+- LPD-94260 Fix translucent badge backgrounds for CSS-variable colors ([3289521](https://github.com/liferay/liferay-portal/commit/32895215261183e64d2b7a5861b49ce6ba6defe5))
+- LPD-94260 SF ([c885bdf](https://github.com/liferay/liferay-portal/commit/c885bdfdff38f6bce6c3f64cd8b65d602cb7dd1f))
+- LPD-92715 Fix Clay card hover flicker on the bottom border ([3f46c12](https://github.com/liferay/liferay-portal/commit/3f46c120c84b09b1568bf2b1b86001dcc9796587))
+- LPD-95233 @clayui/css Add close sr-focusable-only utility ([94b2c8b](https://github.com/liferay/liferay-portal/commit/94b2c8bc87c21d14136a9c55d591e3c21032fe94))
+- LPD-94747 Give each label size variant a unique placeholder ([c750aa6](https://github.com/liferay/liferay-portal/commit/c750aa607577f35a7896d817f20e9b460179a318))
+- LPD-94747 Add a small size variant to ClayLabel ([dc24891](https://github.com/liferay/liferay-portal/commit/dc24891042686d78bc7bb1bef5b0133f5262f2d0))
+- LPD-94747 SF ([e699f88](https://github.com/liferay/liferay-portal/commit/e699f885d9ba8e20e44e4584e04a9174b5f8935d))
+- LPD-95743 Update Dark mode colors to dark-mode-reviewed-v2 ([ab4a07d](https://github.com/liferay/liferay-portal/commit/ab4a07d325ac696e3ca659f89d6f2f5331c337ad))
+- LPD-95951 Change ClaySticker outline-1 variant to use indigo instead of purple ([0af2522](https://github.com/liferay/liferay-portal/commit/0af25227eff9bb1897183886160661425941d589))
+- LPD-88758 Add card size and interaction state styling ([fe5f06e](https://github.com/liferay/liferay-portal/commit/fe5f06ed1217acee3762b9965ea198d516518096))
+- LPD-88758 LPD-88753 Add nested M hover with backdrop blur ([53c81e8](https://github.com/liferay/liferay-portal/commit/53c81e8e4ce5ce3755bc034a7e05498067b38ddc))
+- LPD-88758 Replace card size prop with card-page layout views ([537075f](https://github.com/liferay/liferay-portal/commit/537075f2f8774b4b21d1fd628053b22c671b6951))
+- LPD-88758 Drop ticket reference from card-page comment ([63bb8bc](https://github.com/liferay/liferay-portal/commit/63bb8bce51069a2fc8743bdea55eff7b7fa6e730))
+- LPD-88758 Extend card revamp to cadmin and atlas-custom-properties ([0cc4613](https://github.com/liferay/liferay-portal/commit/0cc4613d0e1cb99f68b6c3a5a59368267fde554c))
+- LPD-88758 Lay out card-page with CSS Grid supporting list markup ([5d3c6dc](https://github.com/liferay/liferay-portal/commit/5d3c6dce3acae930e77732a93c347c5d4a98a75d))
+- LPD-96101 Make cadmin form and component variables themeable ([b995bfe](https://github.com/liferay/liferay-portal/commit/b995bfe3547f5477c42e08805bed1e2d1d514133))
+- LPD-95989 Define chart color and trend tokens in Clay ([07c6f6b](https://github.com/liferay/liferay-portal/commit/07c6f6b810a901f0b17833ad7579079759fe986b))
+- LPD-95989 Darken the active blue bar within the blue ramp ([df91bbf](https://github.com/liferay/liferay-portal/commit/df91bbf5a482f889c4bf73d51740c9c4faae5966))
+- LPD-98130 Fix typo in date picker nav btn active CSS variable name ([d2afddf](https://github.com/liferay/liferay-portal/commit/d2afddfe4448f52676ded1a44ac58484600e748e))
+- LPD-97474 Add an AI button variant to Clay's stylesheet ([bf6d9a1](https://github.com/liferay/liferay-portal/commit/bf6d9a15c2f5861a80f9ce400a77854c6937244b))
+- LPD-80363 Auto SF ([1607c7f](https://github.com/liferay/liferay-portal/commit/1607c7fd869bbd4677877d3f5d4dcce73a488ab6))
+- LPD-80363 Sort ([f701926](https://github.com/liferay/liferay-portal/commit/f70192605e56021607aafc6ef2d85fd6be7b46df))
+- LPD-80363 Sort ([3424ae8](https://github.com/liferay/liferay-portal/commit/3424ae8761264f6071356777068c5a394e0fbb65))
+- LPD-80363 Sort ([576b0ca](https://github.com/liferay/liferay-portal/commit/576b0cae4e91a624e49918dae5a415ae3710c08e))
+- LPD-80363 Sort ([fba7f5c](https://github.com/liferay/liferay-portal/commit/fba7f5cc12cb3d4ea8fd9e85450200d88e7e9aec))
+- LPD-80363 Sort ([c9b9588](https://github.com/liferay/liferay-portal/commit/c9b9588452659b2918985d0e7d1aea4462d7349a))
+- LPD-80363 Sort ([25e4dbb](https://github.com/liferay/liferay-portal/commit/25e4dbbb9ea03f695c8190a0fff3977bf173b1aa))
+- LPD-80363 Auto SF ([5bf2bf3](https://github.com/liferay/liferay-portal/commit/5bf2bf3067e49cd817fdca7037f35433df0fbb89))
+- LPD-80363 Sort and separate nested components with new line ([a9f31f2](https://github.com/liferay/liferay-portal/commit/a9f31f27cbda04859437c9127de217700eb154c8))
+- LPD-80363 SF ([d953c94](https://github.com/liferay/liferay-portal/commit/d953c94e9dc3f05b46ee0f0179c2e430d89862d7))
+- LPD-98590 atlas-custom-properties: --sidebar-light-sidebar-footer should be --sidebar-light-sidebar-footer-{background-color|border} ([df745cf](https://github.com/liferay/liferay-portal/commit/df745cf37f86deb9f57d297f133a6bedb5ce332d))
+- LPD-95947 Reserve card hover animation for interactive cards ([c7df2b0](https://github.com/liferay/liferay-portal/commit/c7df2b0726bfc60fbc7f036fd037ab244d932804))
+- LPD-98586 atlas-custom-properties: --nav-tabs-font-size is already declared in $nav-tabs-font-size ([082ac48](https://github.com/liferay/liferay-portal/commit/082ac480eb5c960bff23921323e186941f7383fd))
+- LPD-97009 @clayui/css add input-group-ai ([f261aaf](https://github.com/liferay/liferay-portal/commit/f261aaf3e96a56d631eee2e3da309a66b6f36f42))
+- LPD-97009 @clayui/form adds InputGroupAi ([ac630a9](https://github.com/liferay/liferay-portal/commit/ac630a9e328fb0113250cb75a0786c2709194025))
+- LPD-97009 @clayui/css input-grooup-ai icons and buttons should be aligned at the top ([37e8c73](https://github.com/liferay/liferay-portal/commit/37e8c73e0604a22d3e8e26648243f42bb021e474))
+- LPD-99666 @clayui/css breakpoint-down shouldn't print ([c0697cd](https://github.com/liferay/liferay-portal/commit/c0697cd759f138793699fbbedc966dad3c7f2ddb))
+- LPD-99666 @clayui/css convert variables using old breakpoint-down keys to use media-breakpoint-down ([3c4b248](https://github.com/liferay/liferay-portal/commit/3c4b2484b72bcfc30361bbd450137fd1810ceecb))
+- LPD-99666 @clayui/css fix invalid CSS property border-top-radius ([20657a7](https://github.com/liferay/liferay-portal/commit/20657a7b4665a5fe740fcbc9da9f29eed753a9c6))
+- LPD-99666 @clayui/css Table caption prints invalid CSS padding-bottom: 0.5rem 1rem; ([0eac711](https://github.com/liferay/liferay-portal/commit/0eac7113c0a5988f64de6866bc48ad909f0732fe))
+- LPD-96102 Add an AI variant to Clay's dropdown menu ([21d2e6d](https://github.com/liferay/liferay-portal/commit/21d2e6dc62fb6f67dfe9b80075df6596388f6baa))
+- LPD-96102 Add arrow-key navigation and address AI dropdown review ([adb07b9](https://github.com/liferay/liferay-portal/commit/adb07b96c655999a4b723cb49b58112106b76aa8))
+- LPD-99928 LPD-101285 buildIcons ([0bb940b](https://github.com/liferay/liferay-portal/commit/0bb940b9782c115043bf0d662b74572f83258d51))
+- LPD-99928 @clayui/css add agent.svg and chat-spark.svg ([3326a35](https://github.com/liferay/liferay-portal/commit/3326a35410bc26600906f053654ba5626ea6240a))
+- LPD-101285 @clayui/css add mcp.svg ([7e5bbca](https://github.com/liferay/liferay-portal/commit/7e5bbca2befe882b59e429fdc0d379b8cc5183a9))
+- LPD-100366 Reserve the card pressed state for interactive cards ([011b398](https://github.com/liferay/liferay-portal/commit/011b398e5a0012297d21bcce5bb9d8efb017b71d))
+
+## @clayui/date-picker
+
+### Commits
+
+- LPD-93196 Regenerate snapshots ([e6ccd5b](https://github.com/liferay/liferay-portal/commit/e6ccd5b2f95fb806399996099bc2955843735e17))
+
+## @clayui/drop-down
+
+### Commits
+
+- LPD-93196 Give dropdown menu tabindex 0 when active ([b248ebe](https://github.com/liferay/liferay-portal/commit/b248ebea6774ce74565c2d49e8a9f6b53a4836cd))
+- LPD-93196 Update clay-drop-down snapshots ([3be760e](https://github.com/liferay/liferay-portal/commit/3be760ec8f300092831b2794bbd1fc980a7e2dd4))
+- LPD-93196 Regenerate snapshots ([e6ccd5b](https://github.com/liferay/liferay-portal/commit/e6ccd5b2f95fb806399996099bc2955843735e17))
+- LPD-96102 Add an AI variant to Clay's dropdown menu ([21d2e6d](https://github.com/liferay/liferay-portal/commit/21d2e6dc62fb6f67dfe9b80075df6596388f6baa))
+- LPD-96102 Add the ClayDropDownWithAI flow component ([451ec5c](https://github.com/liferay/liferay-portal/commit/451ec5c78b6ae26f34759517b3ca0bdec405aa02))
+- LPD-96102 Improve ClayDropDownWithAI accessibility ([812c5ec](https://github.com/liferay/liferay-portal/commit/812c5ec9ec85ea7308061f2f6f379571da5043c8))
+- LPD-96102 Render ClayDropDownWithAI states from a state map ([e39da7b](https://github.com/liferay/liferay-portal/commit/e39da7b75ce9446d51bbf81083807c346ff55b99))
+- LPD-96102 Expand the ClayDropDownWithAI story example ([b8d9849](https://github.com/liferay/liferay-portal/commit/b8d98494c874a7130ce376d30c546c22beb13b76))
+- LPD-96102 Streamline ClayDropDownWithAI internals ([e610cb5](https://github.com/liferay/liferay-portal/commit/e610cb5bb45ca8a79e3cf4215471e10e88e435cd))
+- LPD-96102 Add an onStop callback to ClayDropDownWithAI ([9d26433](https://github.com/liferay/liferay-portal/commit/9d26433aded2820121c67aa6c1ec96ae021ce358))
+- LPD-96102 Add arrow-key navigation and address AI dropdown review ([adb07b9](https://github.com/liferay/liferay-portal/commit/adb07b96c655999a4b723cb49b58112106b76aa8))
+- LPD-100332 Use ClayInputGroupAI for the ClayDropDownWithAI prompt input ([0f7c919](https://github.com/liferay/liferay-portal/commit/0f7c9194ea577a72af03a6f961eadc0ad9e903bb))
+
+## @clayui/form
+
+### Commits
+
+- LPD-97009 @clayui/form adds InputGroupAi ([ac630a9](https://github.com/liferay/liferay-portal/commit/ac630a9e328fb0113250cb75a0786c2709194025))
+- LPD-97009 @clayui/form Storybook add InputGroupAi example ([25166ec](https://github.com/liferay/liferay-portal/commit/25166ecb5dd8b5454e13b625b46dc2e5b06e7866))
+- LPD-97009 @clayui/form InputGroupAI tests ([9de0a2b](https://github.com/liferay/liferay-portal/commit/9de0a2bc88ebc82243010f78e4ea36f1377e88c6))
+- LPD-97009 @clayui/form InputGroupAI should resize when submitting or deleting text ([8184678](https://github.com/liferay/liferay-portal/commit/81846782c30cdf1c8ee1dd247e260c5806e47b80))
+- LPD-97009 @clayui/form Update InputGroupAI test ([c3ee9dc](https://github.com/liferay/liferay-portal/commit/c3ee9dc9333ea31a422fd501fcb55ad593902a2d))
+- LPD-100332 Let ClayInputGroupAI override its default buttons with children ([f43bad3](https://github.com/liferay/liferay-portal/commit/f43bad3ef48073c8ac39fb655cf52ead8c1ab1ab))
+
+## @clayui/icon
+
+### Commits
+
+- LPD-99928 clayui.com add aliases for agent and chat-spark icons ([89d5ccd](https://github.com/liferay/liferay-portal/commit/89d5ccd91f5fea447e94eca020b44360667314db))
+- LPD-101285 clayui.com add aliases for mcp icon ([02de93c](https://github.com/liferay/liferay-portal/commit/02de93ce7c120bde8b6536e7ebbd1e70218819c3))
+
+## @clayui/label
+
+### Commits
+
+- LPD-94747 Add a small size variant to ClayLabel ([dc24891](https://github.com/liferay/liferay-portal/commit/dc24891042686d78bc7bb1bef5b0133f5262f2d0))
+- LPD-90973 Expose Clay Label named exports to the DXP export bridge ([e671da4](https://github.com/liferay/liferay-portal/commit/e671da4e51d2b138b8db0781ce816d49f71779fe))
+
 # [3.165.0] (2026-06-05)
 
 ## @clayui/badge

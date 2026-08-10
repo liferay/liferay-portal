@@ -3,9 +3,9 @@
 		"extends browserslist-config-clay"
 	],
 	"dependencies": {
-		"@clayui/button": "^3.165.0",
-		"@clayui/link": "^3.165.0",
-		"@clayui/provider": "^3.165.0",
+		"@clayui/button": "^3.166.0",
+		"@clayui/link": "^3.166.0",
+		"@clayui/provider": "^3.166.0",
 		"aria-hidden": "^1.2.2",
 		"classnames": "2.3.1",
 		"dom-align": "^1.12.2",
@@ -23,7 +23,7 @@
 	"main": "src/index.tsx",
 	"name": "@clayui/shared",
 	"peerDependencies": {
-		"@clayui/css": "^3.165.0",
+		"@clayui/css": "^3.166.0",
 		"react": "^16.0.0 || ^17.0.0 || ^18.0.0",
 		"react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
 	},
@@ -35,5 +35,5 @@
 		"buildTypes": "cross-env NODE_ENV=production tsc --project ./tsconfig.declarations.json",
 		"test": "jest --config ../../jest.config.js"
 	},
-	"version": "3.165.0"
+	"version": "3.166.0"
 }

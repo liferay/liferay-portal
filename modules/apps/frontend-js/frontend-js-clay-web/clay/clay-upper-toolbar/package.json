@@ -3,8 +3,8 @@
 		"extends browserslist-config-clay"
 	],
 	"dependencies": {
-		"@clayui/form": "^3.165.0",
-		"@clayui/layout": "^3.165.0",
+		"@clayui/form": "^3.166.0",
+		"@clayui/layout": "^3.166.0",
 		"classnames": "2.3.1"
 	},
 	"description": "ClayUpperToolbar component",
@@ -19,7 +19,7 @@
 	"main": "src/index.tsx",
 	"name": "@clayui/upper-toolbar",
 	"peerDependencies": {
-		"@clayui/css": "^3.165.0",
+		"@clayui/css": "^3.166.0",
 		"react": "^16.0.0 || ^17.0.0 || ^18.0.0",
 		"react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
 	},
@@ -32,5 +32,5 @@
 		"format": "prettier --write \"**/*.{js,ts,tsx,md,mdx,json,scss}\"",
 		"test": "jest --config ../../jest.config.js"
 	},
-	"version": "3.165.0"
+	"version": "3.166.0"
 }

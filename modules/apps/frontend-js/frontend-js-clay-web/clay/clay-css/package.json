@@ -57,5 +57,5 @@
 		"link": "npm link",
 		"prepublish": "yarn compile"
 	},
-	"version": "3.165.0"
+	"version": "3.166.0"
 }

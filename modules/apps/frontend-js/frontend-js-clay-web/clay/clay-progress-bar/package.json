@@ -3,8 +3,8 @@
 		"extends browserslist-config-clay"
 	],
 	"dependencies": {
-		"@clayui/icon": "^3.165.0",
-		"@clayui/shared": "^3.165.0",
+		"@clayui/icon": "^3.166.0",
+		"@clayui/shared": "^3.166.0",
 		"classnames": "2.3.1",
 		"warning": "^4.0.3"
 	},
@@ -20,7 +20,7 @@
 	"main": "src/index.tsx",
 	"name": "@clayui/progress-bar",
 	"peerDependencies": {
-		"@clayui/css": "^3.165.0",
+		"@clayui/css": "^3.166.0",
 		"react": "^16.0.0 || ^17.0.0 || ^18.0.0",
 		"react-dom": "^16.0.0 || ^17.0.0 || ^18.0.0"
 	},
@@ -32,5 +32,5 @@
 		"buildTypes": "cross-env NODE_ENV=production tsc --project ./tsconfig.declarations.json",
 		"test": "jest --config ../../jest.config.js"
 	},
-	"version": "3.165.0"
+	"version": "3.166.0"
 }
