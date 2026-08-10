@@ -1,0 +1,64 @@
+release:
+    name: my-release
+    namespace: my-namespace
+suite: FilestoreStorageClass
+templates:
+    -   templates/filestore-storageclass.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-110"
+            -   equal:
+                    path: metadata.name
+                    value: filestore-sc
+            -   equal:
+                    path: provisioner
+                    value: filestore.csi.storage.gke.io
+            -   equal:
+                    path: volumeBindingMode
+                    value: WaitForFirstConsumer
+            -   isKind:
+                    of: StorageClass
+        it: Creates the Filestore storage class ahead of the Liferay workloads
+        set:
+            global:
+                gcp:
+                    vpcName: liferay-test-vpc
+    -   asserts:
+            -   equal:
+                    path: parameters.network
+                    value: liferay-test-vpc
+            -   equal:
+                    path: parameters.tier
+                    value: standard
+        it: Provisions Filestore instances on the deployment VPC instead of the default network
+        set:
+            global:
+                gcp:
+                    vpcName: liferay-test-vpc
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the storage class when the VPC name is unset
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the storage class when Filestore is disabled
+        set:
+            filestore:
+                enabled: false
+            global:
+                gcp:
+                    vpcName: liferay-test-vpc
+    -   asserts:
+            -   equal:
+                    path: parameters.tier
+                    value: premium
+        it: Renders the tier declared by the values
+        set:
+            filestore:
+                tier: premium
+            global:
+                gcp:
+                    vpcName: liferay-test-vpc

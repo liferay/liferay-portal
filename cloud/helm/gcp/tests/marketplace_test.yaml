@@ -5,7 +5,7 @@ tests:
     -   asserts:
             -   equal:
                     path: spec.marketplaceVolume.storageClassName
-                    value: standard-rwx
+                    value: filestore-sc
             -   equal:
                     path: spec.workloadRef.name
                     value: liferay-default

@@ -132,7 +132,7 @@ liferay-default:
     marketplace:
         enabled: true
         size: 10Gi
-        storageClassName: standard-rwx
+        storageClassName: filestore-sc
     network:
         enabled: true
         hostnames: []
