@@ -564,6 +564,14 @@ public class StyleBookEntryLocalServiceUtil {
 		return getService().updateDraft(draftStyleBookEntry);
 	}
 
+	public static StyleBookEntry updateFrontendTokenDefinition(
+			long styleBookEntryId, String frontendTokenDefinition)
+		throws PortalException {
+
+		return getService().updateFrontendTokenDefinition(
+			styleBookEntryId, frontendTokenDefinition);
+	}
+
 	public static StyleBookEntry updateFrontendTokensValues(
 			long styleBookEntryId, String frontendTokensValues)
 		throws PortalException {
@@ -636,4 +644,4 @@ public class StyleBookEntryLocalServiceUtil {
 			StyleBookEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:756067428
+// LIFERAY-SERVICE-BUILDER-HASH:675583099

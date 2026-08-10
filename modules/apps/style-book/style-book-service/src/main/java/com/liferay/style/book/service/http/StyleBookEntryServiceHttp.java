@@ -766,6 +766,49 @@ public class StyleBookEntryServiceHttp {
 	}
 
 	public static com.liferay.style.book.model.StyleBookEntry
+			updateFrontendTokenDefinition(
+				HttpPrincipal httpPrincipal, long styleBookEntryId,
+				String frontendTokenDefinition)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				StyleBookEntryServiceUtil.class,
+				"updateFrontendTokenDefinition",
+				_updateFrontendTokenDefinitionParameterTypes17);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, styleBookEntryId, frontendTokenDefinition);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.style.book.model.StyleBookEntry)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.style.book.model.StyleBookEntry
 			updateFrontendTokensValues(
 				HttpPrincipal httpPrincipal, long styleBookEntryId,
 				String frontendTokensValues)
@@ -774,7 +817,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateFrontendTokensValues",
-				_updateFrontendTokensValuesParameterTypes17);
+				_updateFrontendTokensValuesParameterTypes18);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, frontendTokensValues);
@@ -814,7 +857,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateName",
-				_updateNameParameterTypes18);
+				_updateNameParameterTypes19);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, name);
@@ -857,7 +900,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updatePreviewFileEntryId",
-				_updatePreviewFileEntryIdParameterTypes19);
+				_updatePreviewFileEntryIdParameterTypes20);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, previewFileEntryId,
@@ -902,7 +945,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateStyleBookEntry",
-				_updateStyleBookEntryParameterTypes20);
+				_updateStyleBookEntryParameterTypes21);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, defaultStylebookEntry,
@@ -947,7 +990,7 @@ public class StyleBookEntryServiceHttp {
 		try {
 			MethodKey methodKey = new MethodKey(
 				StyleBookEntryServiceUtil.class, "updateStyleBookEntry",
-				_updateStyleBookEntryParameterTypes21);
+				_updateStyleBookEntryParameterTypes22);
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, styleBookEntryId, frontendTokensValues, name,
@@ -1042,27 +1085,31 @@ public class StyleBookEntryServiceHttp {
 			long.class, boolean.class
 		};
 	private static final Class<?>[]
-		_updateFrontendTokensValuesParameterTypes17 = new Class[] {
+		_updateFrontendTokenDefinitionParameterTypes17 = new Class[] {
 			long.class, String.class
 		};
-	private static final Class<?>[] _updateNameParameterTypes18 = new Class[] {
+	private static final Class<?>[]
+		_updateFrontendTokensValuesParameterTypes18 = new Class[] {
+			long.class, String.class
+		};
+	private static final Class<?>[] _updateNameParameterTypes19 = new Class[] {
 		long.class, String.class
 	};
-	private static final Class<?>[] _updatePreviewFileEntryIdParameterTypes19 =
+	private static final Class<?>[] _updatePreviewFileEntryIdParameterTypes20 =
 		new Class[] {
 			long.class, long.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateStyleBookEntryParameterTypes20 =
+	private static final Class<?>[] _updateStyleBookEntryParameterTypes21 =
 		new Class[] {
 			long.class, boolean.class, String.class, String.class, String.class,
 			long.class, com.liferay.portal.kernel.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateStyleBookEntryParameterTypes21 =
+	private static final Class<?>[] _updateStyleBookEntryParameterTypes22 =
 		new Class[] {
 			long.class, String.class, String.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-830904547
+// LIFERAY-SERVICE-BUILDER-HASH:-1350064969
