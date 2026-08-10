@@ -111,7 +111,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "io.netty", name: "netty-codec-http2", version: "4.1.135.Final"
-	testImplementation group: "io.netty", name: "netty-transport", version: "4.1.135.Final"
+	testImplementation group: "io.netty", name: "netty-codec-http2", version: "4.1.137.Final"
+	testImplementation group: "io.netty", name: "netty-transport", version: "4.1.137.Final"
 	testImplementation group: "org.littleshoot", name: "littleproxy", version: "1.1.1"
 }
