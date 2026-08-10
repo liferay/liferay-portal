@@ -66,16 +66,6 @@ interface ISegmentActivationCardProps {
 	segmentActivation: any;
 }
 
-const SCHEDULE_TYPE_LABELS: Record<
-	SegmentActivationScheduleTypes,
-	{label: string; value: string}
-> = {
-	[SegmentActivationScheduleTypes.Batch]: {
-		label: Liferay.Language.get('batch'),
-		value: SegmentActivationScheduleTypes.Batch,
-	},
-};
-
 const FREQUENCY_TYPE_LABELS: Record<
 	SegmentActivationFrequencyTypes,
 	{label: string; value: string}
@@ -304,16 +294,13 @@ const SegmentActivationCard: React.FC<
 			});
 		});
 
-	const getScheduleLabel = (type: SegmentActivationScheduleTypes) =>
-		type && SCHEDULE_TYPE_LABELS[type]?.label;
-
 	const labelMessage =
 		frequencyType === SegmentActivationFrequencyTypes.Indefinitely
 			? sub(Liferay.Language.get('x-sync-will-run-indefinitely'), [
-					getScheduleLabel(scheduleType),
+					Liferay.Language.get('batch'),
 				])
 			: sub(Liferay.Language.get('x-sync-will-run-from-x-to-x'), [
-					getScheduleLabel(scheduleType),
+					Liferay.Language.get('batch'),
 					formatUTCDateFromUnix(
 						scheduleStartDate,
 						getCustomDateFormat()
