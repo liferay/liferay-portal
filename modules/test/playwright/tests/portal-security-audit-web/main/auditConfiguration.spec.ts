@@ -69,6 +69,26 @@ test(
 );
 
 test(
+	'Assert that the database processor configuration is rendered on the system scope',
+	{tag: '@LPD-98545'},
+	async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+		await expect(
+			page.getByRole('heading', {name: 'Database Processor'})
+		).toBeVisible();
+
+		await expect(
+			page.getByLabel('Enable Database Processor')
+		).toBeChecked();
+		await expect(page.getByLabel('Buffer Size')).toHaveValue('2000');
+		await expect(
+			page.getByLabel('Flush Interval in Milliseconds')
+		).toHaveValue('60000');
+	}
+);
+
+test(
 	'Assert that the audit message maximum queue size is not rendered on the system scope when the feature flag is enabled',
 	{tag: '@LPD-98544'},
 	async ({page, systemSettingsPage}) => {
@@ -116,6 +136,24 @@ test(
 			menubar.getByRole('menuitem', {
 				name: 'Persistent Message Audit Message Processor',
 			})
+		).toBeHidden();
+	}
+);
+
+testWithoutFeatureFlag(
+	'Assert that the database processor has a separate configuration entry on the system scope when the feature flag is disabled',
+	{tag: '@LPD-98545'},
+	async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+		await expect(
+			page.getByRole('menuitem', {
+				name: 'Persistent Message Audit Message Processor',
+			})
+		).toBeVisible();
+
+		await expect(
+			page.getByRole('heading', {name: 'Database Processor'})
 		).toBeHidden();
 	}
 );
@@ -196,6 +234,47 @@ test.describe('Database Processor instance configuration', () => {
 			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
 
 			await expect(page.getByLabel('Buffer Size')).toHaveValue('2000');
+		}
+	);
+});
+
+test.describe('Database Processor system configuration', () => {
+	test.afterEach(async ({page, systemSettingsPage}) => {
+		await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+		await systemSettingsPage.checkOption('Enable Database Processor', true);
+		await page.getByLabel('Buffer Size').fill('2000');
+		await page.getByLabel('Flush Interval in Milliseconds').fill('60000');
+
+		await systemSettingsPage.saveAndWaitForAlert();
+	});
+
+	test(
+		'Assert that the database processor configuration is saved and persisted on the system scope',
+		{tag: '@LPD-98545'},
+		async ({page, systemSettingsPage}) => {
+			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+			await systemSettingsPage.checkOption(
+				'Enable Database Processor',
+				false
+			);
+			await page.getByLabel('Buffer Size').fill('500');
+			await page
+				.getByLabel('Flush Interval in Milliseconds')
+				.fill('30000');
+
+			await systemSettingsPage.saveAndWaitForAlert();
+
+			await systemSettingsPage.goToSystemSetting('Audit', 'Audit');
+
+			await expect(
+				page.getByLabel('Enable Database Processor')
+			).not.toBeChecked();
+			await expect(page.getByLabel('Buffer Size')).toHaveValue('500');
+			await expect(
+				page.getByLabel('Flush Interval in Milliseconds')
+			).toHaveValue('30000');
 		}
 	);
 });

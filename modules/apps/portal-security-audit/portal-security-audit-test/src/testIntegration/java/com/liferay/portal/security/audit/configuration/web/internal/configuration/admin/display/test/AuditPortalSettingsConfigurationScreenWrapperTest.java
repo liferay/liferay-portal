@@ -78,7 +78,7 @@ public class AuditPortalSettingsConfigurationScreenWrapperTest {
 			_isVisible(
 				configurationScreens,
 				ExtendedObjectClassDefinition.Scope.COMPANY));
-		Assert.assertTrue(
+		Assert.assertFalse(
 			_isVisible(
 				configurationScreens,
 				ExtendedObjectClassDefinition.Scope.SYSTEM));

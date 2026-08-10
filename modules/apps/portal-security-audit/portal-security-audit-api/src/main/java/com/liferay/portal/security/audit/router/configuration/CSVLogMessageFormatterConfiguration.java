@@ -9,6 +9,8 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Brian Greenwald
  * @author Prathima Shreenath
@@ -19,6 +21,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	localization = "content/Language",
 	name = "csv-log-message-formatter-configuration-name"
 )
+@ProviderType
 public interface CSVLogMessageFormatterConfiguration {
 
 	@Meta.AD(

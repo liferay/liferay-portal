@@ -28,8 +28,8 @@ public class AuditConfigurationVisibilityControllerTest {
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testIsVisible() {
-		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.COMPANY);
-		_testIsVisible(true, ExtendedObjectClassDefinition.Scope.SYSTEM);
+		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.COMPANY);
+		_testIsVisible(false, ExtendedObjectClassDefinition.Scope.SYSTEM);
 	}
 
 	@FeatureFlag(enable = false, value = "LPD-6417")

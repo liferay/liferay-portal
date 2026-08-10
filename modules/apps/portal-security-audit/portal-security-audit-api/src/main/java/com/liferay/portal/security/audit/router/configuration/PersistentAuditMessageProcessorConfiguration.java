@@ -9,18 +9,20 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Shanon Mathai
  */
 @ExtendedObjectClassDefinition(
-	category = "audit", generateUI = false,
-	scope = ExtendedObjectClassDefinition.Scope.COMPANY
+	category = "audit", scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(
 	id = "com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration",
 	localization = "content/Language",
 	name = "persistent-audit-message-processor-configuration-name"
 )
+@ProviderType
 public interface PersistentAuditMessageProcessorConfiguration {
 
 	@Meta.AD(deflt = "2000", name = "buffer-size", required = false)

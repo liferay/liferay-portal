@@ -106,12 +106,8 @@ public class AuditPortalSettingsConfigurationScreenWrapper
 
 		@Override
 		public boolean isVisible() {
-			if (ExtendedObjectClassDefinition.Scope.COMPANY.equals(_scope)) {
-				return FeatureFlagManagerUtil.isEnabled(
-					CompanyThreadLocal.getCompanyId(), "LPD-6417");
-			}
-
-			return true;
+			return FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-6417");
 		}
 
 		@Override
@@ -122,10 +118,7 @@ public class AuditPortalSettingsConfigurationScreenWrapper
 			httpServletRequest.setAttribute(
 				AuditConfigurationDisplayContext.class.getName(),
 				new AuditConfigurationDisplayContext(
-					_getConfiguration(AuditConfiguration.class),
-					ExtendedObjectClassDefinition.Scope.SYSTEM.equals(_scope) &&
-					!FeatureFlagManagerUtil.isEnabled(
-						CompanyThreadLocal.getCompanyId(), "LPD-6417")));
+					_getConfiguration(AuditConfiguration.class)));
 			httpServletRequest.setAttribute(
 				PersistentAuditMessageProcessorConfigurationDisplayContext.
 					class.getName(),

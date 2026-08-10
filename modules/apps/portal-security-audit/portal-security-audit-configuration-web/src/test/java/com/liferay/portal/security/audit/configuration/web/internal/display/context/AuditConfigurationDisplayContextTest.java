@@ -12,9 +12,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -34,28 +31,53 @@ public class AuditConfigurationDisplayContextTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testGetHelpMessage() {
-		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::
-				getAuditMessageMaxQueueSizeHelpMessage,
-			"auditMessageMaxQueueSize");
-		_testGetHelpMessage(
-			AuditConfigurationDisplayContext::getEnabledHelpMessage, "enabled");
+	public void testGetEnabledHelpMessage() {
+		try (MockedStatic<ConfigurationOverridePropertiesUtil>
+				configurationOverridePropertiesUtilMockedStatic =
+					Mockito.mockStatic(
+						ConfigurationOverridePropertiesUtil.class)) {
+
+			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
+				_createDisplayContext();
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				auditConfigurationDisplayContext.getEnabledHelpMessage());
+
+			_mockOverrideProperties(
+				configurationOverridePropertiesUtilMockedStatic, "enabled");
+
+			Assert.assertEquals(
+				"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
+					"changed-here",
+				auditConfigurationDisplayContext.getEnabledHelpMessage());
+		}
 	}
 
 	@Test
-	public void testIsOverridden() {
-		_testIsOverridden(
-			"auditMessageMaxQueueSize",
-			AuditConfigurationDisplayContext::
-				isAuditMessageMaxQueueSizeOverridden);
-		_testIsOverridden(
-			"enabled", AuditConfigurationDisplayContext::isEnabledOverridden);
+	public void testIsEnabledOverridden() {
+		try (MockedStatic<ConfigurationOverridePropertiesUtil>
+				configurationOverridePropertiesUtilMockedStatic =
+					Mockito.mockStatic(
+						ConfigurationOverridePropertiesUtil.class)) {
+
+			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
+				_createDisplayContext();
+
+			Assert.assertFalse(
+				auditConfigurationDisplayContext.isEnabledOverridden());
+
+			_mockOverrideProperties(
+				configurationOverridePropertiesUtilMockedStatic, "enabled");
+
+			Assert.assertTrue(
+				auditConfigurationDisplayContext.isEnabledOverridden());
+		}
 	}
 
 	private AuditConfigurationDisplayContext _createDisplayContext() {
 		return new AuditConfigurationDisplayContext(
-			Mockito.mock(AuditConfiguration.class), true);
+			Mockito.mock(AuditConfiguration.class));
 	}
 
 	private void _mockOverrideProperties(
@@ -71,53 +93,6 @@ public class AuditConfigurationDisplayContextTest {
 				key, RandomTestUtil.randomString()
 			).build()
 		);
-	}
-
-	private void _testGetHelpMessage(
-		Function<AuditConfigurationDisplayContext, String> function,
-		String key) {
-
-		try (MockedStatic<ConfigurationOverridePropertiesUtil>
-				configurationOverridePropertiesUtilMockedStatic =
-					Mockito.mockStatic(
-						ConfigurationOverridePropertiesUtil.class)) {
-
-			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createDisplayContext();
-
-			Assert.assertEquals(
-				StringPool.BLANK,
-				function.apply(auditConfigurationDisplayContext));
-
-			_mockOverrideProperties(
-				configurationOverridePropertiesUtilMockedStatic, key);
-
-			Assert.assertEquals(
-				"this-field-has-been-set-by-a-portal-property-and-cannot-be-" +
-					"changed-here",
-				function.apply(auditConfigurationDisplayContext));
-		}
-	}
-
-	private void _testIsOverridden(
-		String key, Predicate<AuditConfigurationDisplayContext> predicate) {
-
-		try (MockedStatic<ConfigurationOverridePropertiesUtil>
-				configurationOverridePropertiesUtilMockedStatic =
-					Mockito.mockStatic(
-						ConfigurationOverridePropertiesUtil.class)) {
-
-			AuditConfigurationDisplayContext auditConfigurationDisplayContext =
-				_createDisplayContext();
-
-			Assert.assertFalse(
-				predicate.test(auditConfigurationDisplayContext));
-
-			_mockOverrideProperties(
-				configurationOverridePropertiesUtilMockedStatic, key);
-
-			Assert.assertTrue(predicate.test(auditConfigurationDisplayContext));
-		}
 	}
 
 }

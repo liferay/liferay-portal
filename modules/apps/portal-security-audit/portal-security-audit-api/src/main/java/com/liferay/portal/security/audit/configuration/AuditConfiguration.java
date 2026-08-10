@@ -15,8 +15,7 @@ import org.osgi.annotation.versioning.ProviderType;
  * @author Michael C. Han
  */
 @ExtendedObjectClassDefinition(
-	category = "audit", generateUI = false,
-	scope = ExtendedObjectClassDefinition.Scope.COMPANY
+	category = "audit", scope = ExtendedObjectClassDefinition.Scope.COMPANY
 )
 @Meta.OCD(
 	id = "com.liferay.portal.security.audit.configuration.AuditConfiguration",
