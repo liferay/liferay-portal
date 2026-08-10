@@ -204,7 +204,9 @@ func (httpClient *HTTPClient) post(
 	logger := logf.FromContext(context)
 
 	logger.V(1).Info(
-		"Provisioning POST", "payload", decodeJWTPayload(token), "url", url,
+		"Provisioning POST",
+		"payload", redactSensitive(decodeJWTPayload(token)),
+		"url", url,
 	)
 
 	request, error := http.NewRequestWithContext(
@@ -233,7 +235,8 @@ func (httpClient *HTTPClient) post(
 		}
 
 		logger.V(1).Info(
-			"Provisioning response", "body", string(body),
+			"Provisioning response",
+			"body", redactSensitive(string(body)),
 			"status", response.StatusCode, "url", url,
 		)
 
@@ -241,6 +244,35 @@ func (httpClient *HTTPClient) post(
 	}
 
 	return response, nil
+}
+
+func redactSensitive(payload string) string {
+	var fields map[string]any
+
+	if error := json.Unmarshal([]byte(payload), &fields); error != nil {
+		return payload
+	}
+
+	redacted := false
+
+	for _, key := range []string{"activationCode", "licenseXML"} {
+		if _, ok := fields[key]; ok {
+			fields[key] = "[REDACTED]"
+			redacted = true
+		}
+	}
+
+	if !redacted {
+		return payload
+	}
+
+	marshaled, error := json.Marshal(fields)
+
+	if error != nil {
+		return payload
+	}
+
+	return string(marshaled)
 }
 
 func signJWT(
