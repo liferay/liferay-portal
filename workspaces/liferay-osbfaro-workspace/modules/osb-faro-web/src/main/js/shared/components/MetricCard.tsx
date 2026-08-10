@@ -8,18 +8,12 @@ import {getIcon, getStatsColor} from 'shared/util/metrics';
 import {isNil} from 'lodash';
 import {Text} from '@clayui/core';
 import {TrendClassification} from 'segment/types';
+import {TREND_PLACEHOLDER} from '../util/constants';
 
 interface IMetricCardTrend {
 	percentage: number;
 	trendClassification: TrendClassification;
 }
-
-/**
- * Fills the trend row on cards without a trend so that it keeps its height,
- * leaving the value aligned with the sibling cards that do render a trend.
- */
-const TREND_PLACEHOLDER = '\u00A0';
-
 interface IMetricCardProps {
 	className?: string;
 	description: string;
