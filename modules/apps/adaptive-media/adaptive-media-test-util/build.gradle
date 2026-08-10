@@ -1,6 +1,6 @@
 dependencies {
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
-	compileOnly group: "org.jsoup", name: "jsoup", version: "1.15.3"
+	compileOnly group: "org.jsoup", name: "jsoup", version: "1.23.1"
 }
 
 liferay {

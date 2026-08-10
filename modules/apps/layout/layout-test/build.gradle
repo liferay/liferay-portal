@@ -3,7 +3,7 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "org.hamcrest", name: "hamcrest-all", version: "1.3"
-	testIntegrationImplementation group: "org.jsoup", name: "jsoup", version: "1.15.3"
+	testIntegrationImplementation group: "org.jsoup", name: "jsoup", version: "1.23.1"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation project(":apps:asset:asset-link-api")
 	testIntegrationImplementation project(":apps:asset:asset-list-api")

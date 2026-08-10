@@ -23,7 +23,7 @@ dependencies {
 	compileOnly group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"
 	compileOnly group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
-	compileOnly group: "org.jsoup", name: "jsoup", version: "1.15.3"
+	compileOnly group: "org.jsoup", name: "jsoup", version: "1.23.1"
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"

@@ -47,7 +47,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "org.jsoup", name: "jsoup", version: "1.15.3"
+	testImplementation group: "org.jsoup", name: "jsoup", version: "1.23.1"
 	testImplementation project(":apps:portal-search:portal-search")
 	testImplementation project(":core:petra:petra-concurrent")
 	testImplementation project(":core:petra:petra-memory")
