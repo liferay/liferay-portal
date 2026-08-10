@@ -38,6 +38,10 @@ const DEFAULT_VIEW_FIELD_NAMES = [
 	'firstActive',
 	'lastActive',
 	'activitiesCount',
+];
+
+const ALL_ATTRIBUTES_FIXED_FIELD_NAMES = [
+	...DEFAULT_VIEW_FIELD_NAMES,
 	'lastEnriched',
 ];
 
@@ -540,17 +544,9 @@ describe('AccountsDataSet', () => {
 			expect(view.default).toBe(true);
 			expect(view.label).toBe('Default View');
 
-			expect(view.schema.fields.map((f) => f.fieldName)).toEqual([
-				'accountName',
-				'industry',
-				'lifecycleStage',
-				'annualRevenue',
-				'country',
-				'firstActive',
-				'lastActive',
-				'activitiesCount',
-				'lastEnriched',
-			]);
+			expect(view.schema.fields.map((f) => f.fieldName)).toEqual(
+				DEFAULT_VIEW_FIELD_NAMES
+			);
 		});
 	});
 
@@ -626,7 +622,7 @@ describe('AccountsDataSet', () => {
 			expect(field?.contentRenderer).toBeUndefined();
 		});
 
-		it('should build the Default View with the 9 fixed fields in order, with the correct renderers', () => {
+		it('should build the Default View with the 8 fixed fields in order, with the correct renderers', () => {
 			render(
 				<AccountsDataSet
 					apiURL="fake-url"
@@ -640,17 +636,9 @@ describe('AccountsDataSet', () => {
 
 			expect(defaultView).toBeDefined();
 			expect(defaultView!.label).toBe('Default View');
-			expect(defaultView!.schema.fields.map((f) => f.fieldName)).toEqual([
-				'accountName',
-				'industry',
-				'lifecycleStage',
-				'annualRevenue',
-				'country',
-				'firstActive',
-				'lastActive',
-				'activitiesCount',
-				'lastEnriched',
-			]);
+			expect(defaultView!.schema.fields.map((f) => f.fieldName)).toEqual(
+				DEFAULT_VIEW_FIELD_NAMES
+			);
 
 			expect(
 				defaultView!.schema.fields.map((f) => f.contentRenderer)
@@ -663,7 +651,6 @@ describe('AccountsDataSet', () => {
 				'dateRenderer',
 				'dateRenderer',
 				'activitiesCountRenderer',
-				'dateRenderer',
 			]);
 
 			const activitiesCountField = defaultView!.schema.fields.find(
@@ -692,9 +679,10 @@ describe('AccountsDataSet', () => {
 			expect(allAttributesView).toBeDefined();
 			expect(allAttributesView!.label).toBe('All Attributes');
 			expect(allAttributesView!.schema.fields).toHaveLength(
-				DEFAULT_VIEW_FIELD_NAMES.length +
+				ALL_ATTRIBUTES_FIXED_FIELD_NAMES.length +
 					ALL_ATTRIBUTES_FIELD_CATALOG.filter(
-						({name}) => !DEFAULT_VIEW_FIELD_NAMES.includes(name)
+						({name}) =>
+							!ALL_ATTRIBUTES_FIXED_FIELD_NAMES.includes(name)
 					).length
 			);
 
@@ -731,7 +719,7 @@ describe('AccountsDataSet', () => {
 
 			expect(
 				allAttributesView!.schema.fields.map((f) => f.fieldName)
-			).toEqual([...DEFAULT_VIEW_FIELD_NAMES, 'website', 'city']);
+			).toEqual([...ALL_ATTRIBUTES_FIXED_FIELD_NAMES, 'website', 'city']);
 		});
 
 		it('should build only the Default View when the catalog comes back empty', () => {
@@ -794,6 +782,70 @@ describe('AccountsDataSet', () => {
 
 			expect(byFieldName('description')?.label).toBe('Description');
 			expect(byFieldName('signupDate')?.label).toBe('signupDate');
+		});
+	});
+
+	describe('the Last Enriched column', () => {
+		it('should be left out of the Default View', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={ALL_ATTRIBUTES_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			const defaultView = lastViews!.find((v) => v.default);
+
+			expect(
+				defaultView!.schema.fields.map((f) => f.fieldName)
+			).not.toContain('lastEnriched');
+		});
+
+		it('should sit at the end of the fixed columns in the All Attributes View, still curated', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={ALL_ATTRIBUTES_FIELD_CATALOG}
+					groupId="23"
+				/>
+			);
+
+			expect(
+				allAttributesFields().findIndex(
+					(field) => field.fieldName === 'lastEnriched'
+				)
+			).toBe(DEFAULT_VIEW_FIELD_NAMES.length);
+
+			const field = byFieldName('lastEnriched');
+
+			expect(field?.contentRenderer).toBe('dateRenderer');
+			expect(field?.sortable).toBe(true);
+			expect(field?.label).toMatch(/last.enriched/i);
+		});
+
+		it('should not be duplicated when the catalog also reports it', () => {
+			render(
+				<AccountsDataSet
+					apiURL="fake-url"
+					channelId="123"
+					fieldCatalog={[
+						buildCatalogField('lastEnriched', 'Date'),
+						buildCatalogField('website', 'Text'),
+					]}
+					groupId="23"
+				/>
+			);
+
+			expect(
+				allAttributesFields().filter(
+					(field) => field.fieldName === 'lastEnriched'
+				)
+			).toHaveLength(1);
+
+			expect(byFieldName('lastEnriched')?.sortable).toBe(true);
 		});
 	});
 });

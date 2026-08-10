@@ -56,6 +56,10 @@ const DEFAULT_VIEW_FIELDS: IViewField[] = [
 		label: Liferay.Language.get('recent-activities'),
 		sortable: true,
 	},
+];
+
+const ALL_ATTRIBUTES_VIEW_FIELDS: IViewField[] = [
+	...DEFAULT_VIEW_FIELDS,
 	{
 		contentRenderer: 'dateRenderer',
 		fieldName: 'lastEnriched',
@@ -64,8 +68,8 @@ const DEFAULT_VIEW_FIELDS: IViewField[] = [
 	},
 ];
 
-const DEFAULT_VIEW_FIELD_NAMES = new Set(
-	DEFAULT_VIEW_FIELDS.map(({fieldName}) => fieldName)
+const ALL_ATTRIBUTES_VIEW_FIELD_NAMES = new Set(
+	ALL_ATTRIBUTES_VIEW_FIELDS.map(({fieldName}) => fieldName)
 );
 
 const DATA_CATEGORY_RENDERERS: {[dataCategory: string]: string} = {
@@ -81,7 +85,7 @@ const buildViewField = (field: ICatalogField): IViewField => ({
 });
 
 const buildCatalogFields = (fieldCatalog: ICatalogField[]): IViewField[] => {
-	const seen = new Set(DEFAULT_VIEW_FIELD_NAMES);
+	const seen = new Set(ALL_ATTRIBUTES_VIEW_FIELD_NAMES);
 
 	return fieldCatalog
 		.filter(({name}) => {
@@ -118,7 +122,9 @@ export const buildViews = (fieldCatalog?: ICatalogField[]) => {
 			contentRenderer: 'table',
 			label: Liferay.Language.get('all-attributes'),
 			name: 'allAttributes',
-			schema: {fields: [...DEFAULT_VIEW_FIELDS, ...catalogFields]},
+			schema: {
+				fields: [...ALL_ATTRIBUTES_VIEW_FIELDS, ...catalogFields],
+			},
 			thumbnail: 'table',
 		},
 	];
