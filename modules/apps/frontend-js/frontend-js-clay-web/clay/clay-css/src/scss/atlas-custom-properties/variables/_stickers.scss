@@ -71,7 +71,7 @@ $sticker-overlay: map-merge(
 $sticker-sm: () !default;
 $sticker-sm: map-deep-merge(
 	(
-		border-radius: var(--sticker-sm-border-radius, $sticker-border-radius),
+		border-radius: var(--sticker-sm-border-radius, 0.25rem),
 		font-size: var(--sticker-sm-font-size, 0.75rem),
 		height: var(--sticker-sm-height, 1.5rem),
 		line-height: var(--sticker-sm-line-height, 1.5rem),
@@ -172,6 +172,7 @@ $sticker-xl: map-deep-merge(
 $sticker-xxl: () !default;
 $sticker-xxl: map-deep-merge(
 	(
+		border-radius: var(--sticker-xxl-border-radius, $border-radius-xl),
 		font-size: var(--sticker-xxl-font-size, 2.5rem),
 		height: var(--sticker-xxl-height, 5rem),
 		line-height: var(--sticker-xxl-line-height, 5rem),
@@ -187,8 +188,7 @@ $sticker-sizes: () !default;
 $sticker-sizes: map-deep-merge(
 	(
 		sticker-xs: (
-			border-radius:
-				var(--sticker-xs-border-radius, $sticker-border-radius),
+			border-radius: var(--sticker-xs-border-radius, 0.25rem),
 			font-size: var(--sticker-xs-font-size, 0.5rem),
 			height: var(--sticker-xs-height, 1rem),
 			line-height: var(--sticker-xs-line-height, 1rem),

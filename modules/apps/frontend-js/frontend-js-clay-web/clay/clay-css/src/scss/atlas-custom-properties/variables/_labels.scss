@@ -1,7 +1,7 @@
 // .label
 
 $label-border-color: var(--label-border-color, $gray-900) !default;
-$label-border-radius: var(--label-border-radius, $border-radius) !default;
+$label-border-radius: var(--label-border-radius, 0.25rem) !default;
 $label-border-style: var(--label-border-style, solid) !default;
 $label-border-width: var(--label-border-width, 1px) !default;
 $label-color: var(--label-color, inherit) !default;

@@ -45,12 +45,6 @@
 	}
 }
 
-// Sticker User Icon
-
-.sticker-user-icon {
-	@include clay-sticker-variant($sticker-user-icon);
-}
-
 // Sticker Sizes
 
 @each $size, $value in $sticker-sizes {
@@ -120,6 +114,12 @@
 			}
 		}
 	}
+}
+
+// Sticker User Icon
+
+.sticker-user-icon {
+	@include clay-sticker-variant($sticker-user-icon);
 }
 
 // Sticker Circle

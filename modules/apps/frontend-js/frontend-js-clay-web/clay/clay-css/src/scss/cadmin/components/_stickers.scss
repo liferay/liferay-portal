@@ -60,12 +60,6 @@
 	}
 }
 
-// Sticker User Icon
-
-.sticker-user-icon {
-	@include clay-sticker-variant($cadmin-sticker-user-icon);
-}
-
 // Sticker Sizes
 
 @each $size, $value in $cadmin-sticker-sizes {
@@ -135,6 +129,12 @@
 			}
 		}
 	}
+}
+
+// Sticker User Icon
+
+.sticker-user-icon {
+	@include clay-sticker-variant($cadmin-sticker-user-icon);
 }
 
 // Sticker Circle

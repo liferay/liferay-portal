@@ -383,10 +383,10 @@ $line-height-sm: 1.5 !default;
 $border-color: $gray-300 !default;
 $border-width: 0.0625rem !default;
 
-$border-radius: 0.25rem !default; // 4px
-$border-radius-lg: 0.375rem !default; // 6px
-$border-radius-sm: 0.1875rem !default; // 3px
-$border-radius-xl: 1rem !default; // 16px
+$border-radius: 0.5rem !default;
+$border-radius-lg: 0.5rem !default;
+$border-radius-sm: 0.5rem !default;
+$border-radius-xl: 1rem !default;
 
 $rounded-0-border-radius: 0px !default;
 $rounded-border-radius: $border-radius !default;

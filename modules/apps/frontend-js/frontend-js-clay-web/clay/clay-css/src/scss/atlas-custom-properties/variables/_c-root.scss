@@ -212,15 +212,15 @@ $c-root: map-merge(
 		--border-color: var(--gray-200),
 		--border-width: 0.0625rem,
 
-		--border-radius: 0.25rem,
+		--border-radius: 0.5rem,
 
-		--border-radius-lg: 0.375rem,
-		--border-radius-sm: 0.1875rem,
+		--border-radius-lg: 0.5rem,
+		--border-radius-sm: 0.5rem,
 		--border-radius-xl: 1rem,
 
-		--rounded-0-border-radius: 0,
+		--rounded-0-border-radius: 0px,
 		--rounded-border-radius: $border-radius,
-		--rounded-circle-border-radius: 50%,
+		--rounded-circle-border-radius: 5000px,
 		--rounded-pill: 50rem,
 
 		--box-shadow:

@@ -2619,7 +2619,7 @@
 				{
 					"frontendTokens": [
 						{
-							"defaultValue": "0.25rem",
+							"defaultValue": "0.5rem",
 							"editorType": "Length",
 							"label": "border-radius",
 							"mappings": [
@@ -2632,7 +2632,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "0.1875rem",
+							"defaultValue": "0.5rem",
 							"editorType": "Length",
 							"label": "border-radius-sm",
 							"mappings": [
@@ -2645,7 +2645,7 @@
 							"type": "String"
 						},
 						{
-							"defaultValue": "0.375rem",
+							"defaultValue": "0.5rem",
 							"editorType": "Length",
 							"label": "border-radius-lg",
 							"mappings": [

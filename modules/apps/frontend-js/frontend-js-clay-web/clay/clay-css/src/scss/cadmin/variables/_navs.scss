@@ -433,7 +433,7 @@ $cadmin-nav-tabs: map-deep-merge(
 // Nav Tabs Tab Pane
 
 $cadmin-nav-tabs-tab-pane-bg: $cadmin-white !default;
-$cadmin-nav-tabs-tab-pane-border-radius: 4px !default;
+$cadmin-nav-tabs-tab-pane-border-radius: 0px 0px 4px 4px !default;
 $cadmin-nav-tabs-tab-pane-padding: 32px !default;
 
 // Nav Variants

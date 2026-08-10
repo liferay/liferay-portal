@@ -218,6 +218,7 @@ $btn-sizes: () !default;
 $btn-sizes: map-deep-merge(
 	(
 		btn-xs: (
+			border-radius: clay-enable-rounded(0.25rem),
 			font-size: 0.75rem,
 			line-height: 1.5,
 			padding-bottom: 0.125rem,

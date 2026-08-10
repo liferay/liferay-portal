@@ -382,7 +382,7 @@ $cadmin-custom-control-primary-label-text: map-merge(
 
 // .custom-checkbox
 
-$cadmin-custom-checkbox-indicator-border-radius: 2px !default; // 2px
+$cadmin-custom-checkbox-indicator-border-radius: 4px !default;
 
 $cadmin-custom-checkbox-indicator-icon-checked: var(
 	--cadmin-custom-checkbox-indicator-icon-checked,

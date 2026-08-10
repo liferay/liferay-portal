@@ -71,6 +71,7 @@ $cadmin-sticker-overlay: map-merge(
 $cadmin-sticker-sm: () !default;
 $cadmin-sticker-sm: map-deep-merge(
 	(
+		border-radius: clay-enable-rounded(4px),
 		font-size: 12px,
 		size: 24px,
 	),
@@ -98,6 +99,7 @@ $cadmin-sticker-xl: map-deep-merge(
 $cadmin-sticker-xxl: () !default;
 $cadmin-sticker-xxl: map-deep-merge(
 	(
+		border-radius: clay-enable-rounded($cadmin-border-radius-xl),
 		font-size: 2.5rem,
 		height: 5rem,
 		line-height: 5rem,
@@ -114,6 +116,7 @@ $cadmin-sticker-sizes: () !default;
 $cadmin-sticker-sizes: map-deep-merge(
 	(
 		sticker-xs: (
+			border-radius: clay-enable-rounded(4px),
 			font-size: 0.5rem,
 			height: 1rem,
 			line-height: 1rem,

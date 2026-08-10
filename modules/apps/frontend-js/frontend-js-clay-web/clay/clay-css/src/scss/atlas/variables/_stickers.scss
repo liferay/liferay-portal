@@ -17,6 +17,7 @@ $sticker: map-deep-merge(
 $sticker-sm: () !default;
 $sticker-sm: map-deep-merge(
 	(
+		border-radius: clay-enable-rounded(0.25rem),
 		font-size: 0.75rem,
 	),
 	$sticker-sm
@@ -42,12 +43,40 @@ $sticker-xl: map-deep-merge(
 	$sticker-xl
 );
 
+$sticker-xxl: () !default;
+$sticker-xxl: map-deep-merge(
+	(
+		border-radius: clay-enable-rounded($border-radius-xl),
+		font-size: 2.5rem,
+		height: 5rem,
+		line-height: 5rem,
+		width: 5rem,
+
+		lexicon-icon: (
+			font-size: 2.5rem,
+		),
+	),
+	$sticker-xxl
+);
+
 $sticker-sizes: () !default;
 $sticker-sizes: map-deep-merge(
 	(
+		sticker-xs: (
+			border-radius: clay-enable-rounded(0.25rem),
+			font-size: 0.5rem,
+			height: 1rem,
+			line-height: 1rem,
+			width: 1rem,
+		),
+
 		sticker-sm: $sticker-sm,
+
 		sticker-lg: $sticker-lg,
+
 		sticker-xl: $sticker-xl,
+
+		sticker-xxl: $sticker-xxl,
 	),
 	$sticker-sizes
 );

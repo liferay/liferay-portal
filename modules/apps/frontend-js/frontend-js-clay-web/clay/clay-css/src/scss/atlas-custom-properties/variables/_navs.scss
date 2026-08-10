@@ -544,7 +544,7 @@ $nav-tabs: map-deep-merge(
 $nav-tabs-tab-pane-bg: var(--nav-tabs-tab-pane-bg, $white) !default;
 $nav-tabs-tab-pane-border-radius: var(
 	--nav-tabs-tab-pane-border-radius,
-	4px
+	0px 0px 4px 4px
 ) !default;
 $nav-tabs-tab-pane-padding: var(--nav-tabs-tab-pane-padding, 32px) !default;
 

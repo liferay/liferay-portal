@@ -229,7 +229,7 @@ $custom-checkbox-indicator-icon-indeterminate: clay-icon(
 	$custom-checkbox-indicator-indeterminate-color
 ) !default;
 
-$custom-checkbox-indicator-border-radius: 0.125rem !default; // 2px
+$custom-checkbox-indicator-border-radius: 0.25rem !default;
 
 $custom-checkbox: () !default;
 $custom-checkbox: map-deep-merge(
