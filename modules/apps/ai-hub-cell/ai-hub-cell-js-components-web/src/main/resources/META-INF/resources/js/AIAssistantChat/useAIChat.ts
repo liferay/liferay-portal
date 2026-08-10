@@ -364,8 +364,6 @@ export default function useAIChat({
 		eventSourceRef.current?.close();
 
 		eventSourceRef.current = null;
-
-		setIsGenerating(false);
 	}, []);
 
 	useEffect(() => {
