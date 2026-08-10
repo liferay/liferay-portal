@@ -36,6 +36,70 @@ describe('getFrontendTokenValuesSorter', () => {
 		expect(result[1].tokenDefinitionId).toBe('theme');
 	});
 
+	it('sorts custom-tagged values above theme values regardless of definitions order', () => {
+		const sortFrontendTokenValues = getFrontendTokenValuesSorter({
+			customTokenDefinitionId: 'custom',
+			customTokenDefinitionPriority: 500,
+			defaultPriority: DEFAULT_PRIORITY,
+			frontendTokenDefinitions: DEFINITIONS,
+		});
+
+		const result = sortFrontendTokenValues({
+			a: {
+				cssVariableMapping: 'color-1',
+				tokenDefinitionId: 'theme',
+				value: 'red',
+			},
+			b: {
+				cssVariableMapping: 'color-2',
+				tokenDefinitionId: 'custom',
+				value: 'green',
+			},
+		});
+
+		expect(result[0].tokenDefinitionId).toBe('theme');
+		expect(result[1].tokenDefinitionId).toBe('custom');
+	});
+
+	it('does not treat a missing tokenDefinitionId as a match for an unset customTokenDefinitionId', () => {
+		const sortFrontendTokenValues = getFrontendTokenValuesSorter({
+			defaultPriority: DEFAULT_PRIORITY,
+			frontendTokenDefinitions: DEFINITIONS,
+		});
+
+		const result = sortFrontendTokenValues({
+			a: {cssVariableMapping: 'color-1', value: 'red'},
+			b: {
+				cssVariableMapping: 'color-2',
+				tokenDefinitionId: 'global',
+				value: 'blue',
+			},
+		});
+
+		expect(result[0].tokenDefinitionId).toBe('global');
+		expect(result[1].value).toBe('red');
+	});
+
+	it('does not apply customTokenDefinitionPriority to a value missing tokenDefinitionId when customTokenDefinitionId is unset', () => {
+		const sortFrontendTokenValues = getFrontendTokenValuesSorter({
+			customTokenDefinitionPriority: 500,
+			defaultPriority: 400,
+			frontendTokenDefinitions: [{id: 'other', priority: 450}],
+		});
+
+		const result = sortFrontendTokenValues({
+			a: {cssVariableMapping: 'color-1', value: 'red'},
+			b: {
+				cssVariableMapping: 'color-2',
+				tokenDefinitionId: 'other',
+				value: 'blue',
+			},
+		});
+
+		expect(result[0].value).toBe('red');
+		expect(result[1].value).toBe('blue');
+	});
+
 	it('applies defaultPriority to values without tokenDefinitionId', () => {
 		const sortFrontendTokenValues = getFrontendTokenValuesSorter({
 			defaultPriority: DEFAULT_PRIORITY,

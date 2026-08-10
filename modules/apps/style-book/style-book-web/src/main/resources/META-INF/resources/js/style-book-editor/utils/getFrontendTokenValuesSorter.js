@@ -4,12 +4,17 @@
  */
 
 export function getFrontendTokenValuesSorter({
+	customTokenDefinitionId,
+	customTokenDefinitionPriority,
 	defaultPriority,
 	frontendTokenDefinitions,
 }) {
-	const tokenDefinitionPriorities = Object.fromEntries(
-		frontendTokenDefinitions.map(({id, priority}) => [id, priority])
-	);
+	const tokenDefinitionPriorities = Object.fromEntries([
+		...frontendTokenDefinitions.map(({id, priority}) => [id, priority]),
+		...(customTokenDefinitionId === undefined
+			? []
+			: [[customTokenDefinitionId, customTokenDefinitionPriority]]),
+	]);
 
 	return (frontendTokensValues) =>
 		Object.values(frontendTokensValues).sort(
