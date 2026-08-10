@@ -1814,6 +1814,14 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("system", additionalAssertFieldName)) {
+				if (workflowDefinition.getSystem() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("title", additionalAssertFieldName)) {
 				if (workflowDefinition.getTitle() == null) {
 					valid = false;
@@ -2111,6 +2119,17 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 				if (!Objects.deepEquals(
 						workflowDefinition1.getScope(),
 						workflowDefinition2.getScope())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("system", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						workflowDefinition1.getSystem(),
+						workflowDefinition2.getSystem())) {
 
 					return false;
 				}
@@ -2629,6 +2648,11 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("system")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("title")) {
 			Object object = workflowDefinition.getTitle();
 
@@ -2791,6 +2815,7 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				scope = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				system = RandomTestUtil.randomBoolean();
 				title = StringUtil.toLowerCase(RandomTestUtil.randomString());
 				version = StringUtil.toLowerCase(RandomTestUtil.randomString());
 			}
@@ -3068,4 +3093,4 @@ public abstract class BaseWorkflowDefinitionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:438749719
+// LIFERAY-REST-BUILDER-HASH:1453249279

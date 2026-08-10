@@ -301,6 +301,27 @@ public class WorkflowDefinition implements Cloneable, Serializable {
 
 	protected String scope;
 
+	public Boolean getSystem() {
+		return system;
+	}
+
+	public void setSystem(Boolean system) {
+		this.system = system;
+	}
+
+	public void setSystem(
+		UnsafeSupplier<Boolean, Exception> systemUnsafeSupplier) {
+
+		try {
+			system = systemUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean system;
+
 	public String getTitle() {
 		return title;
 	}
@@ -418,4 +439,4 @@ public class WorkflowDefinition implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-683857376
+// LIFERAY-REST-BUILDER-HASH:677865872

@@ -320,7 +320,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "system": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -388,7 +388,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions/deploy' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions/deploy' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "system": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -410,7 +410,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions/save' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions/save' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "system": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {
@@ -563,7 +563,7 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions/{workflowDefinitionId}' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-admin-workflow/v1.0/workflow-definitions/{workflowDefinitionId}' -d $'{"active": ___, "content": ___, "externalReferenceCode": ___, "groupExternalReferenceCode": ___, "name": ___, "scope": ___, "system": ___, "title": ___, "title_i18n": ___, "version": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -1391,4 +1391,4 @@ public abstract class BaseWorkflowDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseWorkflowDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-968012697
+// LIFERAY-REST-BUILDER-HASH:777378861
