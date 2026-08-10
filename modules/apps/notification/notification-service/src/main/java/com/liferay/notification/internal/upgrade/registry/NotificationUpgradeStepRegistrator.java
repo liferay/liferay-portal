@@ -159,6 +159,13 @@ public class NotificationUpgradeStepRegistrator
 			"3.10.4", "4.0.0",
 			UpgradeProcessFactory.alterColumnType(
 				"NotificationQueueEntry", "body", "TEXT null"));
+
+		registry.register(
+			"4.0.0", "4.0.1",
+			UpgradeProcessFactory.runSQL(
+				"update NotificationTemplate set externalReferenceCode = " +
+					"'COMMERCE_ORDER_TEMPLATE' where externalReferenceCode = " +
+						"'L_COMMERCE_ORDER_TEMPLATE'"));
 	}
 
 	@Reference
