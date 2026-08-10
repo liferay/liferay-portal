@@ -32,6 +32,7 @@ export class DataSetFragmentPage {
 	readonly paginationWrapper: Locator;
 	readonly publishPageButton: Locator;
 	readonly removeFilterButton: Locator;
+	readonly searchInput: Locator;
 	readonly selectDataSetModal: {
 		cancelButton: Locator;
 		container: Locator;
@@ -118,6 +119,7 @@ export class DataSetFragmentPage {
 			exact: true,
 			name: 'Remove Filter',
 		});
+		this.searchInput = page.locator('.fds').getByRole('searchbox');
 
 		const selectDataSetModalContainer = page
 			.locator('.modal')
