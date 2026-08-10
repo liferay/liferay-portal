@@ -55,6 +55,7 @@ export async function loadData({
 	odataFiltersStrings = [],
 	page = 1,
 	searchParam,
+	signal,
 	sorts,
 }: ILoadDataArgs) {
 	const fullUrl = apiURL.startsWith('/')
@@ -236,6 +237,7 @@ export async function loadData({
 	const response = await fetch(url.toString(), {
 		headers: DEFAULT_FETCH_HEADERS,
 		method: 'GET',
+		signal,
 	});
 
 	const responseJSON = await response.json();

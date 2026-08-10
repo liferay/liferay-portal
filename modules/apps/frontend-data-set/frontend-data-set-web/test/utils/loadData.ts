@@ -172,4 +172,40 @@ describe('loadData util', () => {
 			'/o/products?page=1&pageSize=20&nestedFields=skus'
 		);
 	});
+
+	it('rejects an in-flight request when the caller aborts it', async () => {
+
+		// Unlike the browser, jest-fetch-mock ignores the signal, so the
+		// mock stays pending until the abort rejects it
+
+		fetch.resetMocks();
+		fetch.mockResponse(
+			(request) =>
+				new Promise<string>((_resolve, reject) =>
+					request.signal?.addEventListener('abort', () =>
+						reject(
+							new DOMException(
+								'The user aborted a request.',
+								'AbortError'
+							)
+						)
+					)
+				)
+		);
+
+		const abortController = new AbortController();
+
+		const requestPromise = loadData({
+			apiURL: '/o/products',
+			delta: 20,
+			page: 1,
+			signal: abortController.signal,
+		});
+
+		abortController.abort();
+
+		await expect(requestPromise).rejects.toMatchObject({
+			name: 'AbortError',
+		});
+	});
 });

@@ -657,56 +657,69 @@ const FrontendDataSetContent = ({
 		!!items?.length &&
 		!!total;
 
-	const requestData = useCallback(() => {
-		if (!apiURL) {
-			return;
-		}
+	const requestIdRef = useRef(0);
 
-		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
+	const requestData = useCallback(
+		(signal?: AbortSignal) => {
+			if (!apiURL) {
+				return;
+			}
 
-		const activeFilters: Array<IBaseFilterState> =
-			unfrozenGlobalFDSState.filters.filter((filter) => filter.active) ||
-			[];
+			const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
 
-		const activeFiltersOdataStrings = activeFilters.map((filter) => {
-			const filterImplementation = FILTER_IMPLEMENTATIONS[filter.type];
+			const activeFilters: Array<IBaseFilterState> =
+				unfrozenGlobalFDSState.filters.filter(
+					(filter) => filter.active
+				) || [];
 
-			return filterImplementation.getOdataString(filter);
-		});
+			const activeFiltersOdataStrings = activeFilters.map((filter) => {
+				const filterImplementation =
+					FILTER_IMPLEMENTATIONS[filter.type];
 
-		const activeSorts =
-			sorts.length > 1
-				? sorts.filter((sort: TSort) => sort.active)
-				: sorts;
+				return filterImplementation.getOdataString(filter);
+			});
 
-		const loadDataArgs = {
+			const activeSorts =
+				sorts.length > 1
+					? sorts.filter((sort: TSort) => sort.active)
+					: sorts;
+
+			const loadDataArgs = {
+				additionalAPIURLParameters,
+				apiURL,
+				currentURL,
+				delta: paginationDelta,
+				odataFiltersStrings: activeFiltersOdataStrings,
+				page: pageNumber,
+				searchParam: unfrozenGlobalFDSState.search.query,
+				sorts: activeSorts,
+			};
+
+			const requestId = ++requestIdRef.current;
+
+			return loadData({
+				...loadDataArgs,
+				additionalAPIURLParameters: transformAdditionalAPIURLParameters(
+					loadDataArgs,
+					additionalAPIURLParametersTransformer
+				),
+				signal,
+			}).then((response) => ({
+				...response,
+				stale: requestId !== requestIdRef.current,
+			}));
+		},
+		[
 			additionalAPIURLParameters,
+			additionalAPIURLParametersTransformer,
 			apiURL,
 			currentURL,
-			delta: paginationDelta,
-			odataFiltersStrings: activeFiltersOdataStrings,
-			page: pageNumber,
-			searchParam: unfrozenGlobalFDSState.search.query,
-			sorts: activeSorts,
-		};
-
-		return loadData({
-			...loadDataArgs,
-			additionalAPIURLParameters: transformAdditionalAPIURLParameters(
-				loadDataArgs,
-				additionalAPIURLParametersTransformer
-			),
-		});
-	}, [
-		additionalAPIURLParameters,
-		additionalAPIURLParametersTransformer,
-		apiURL,
-		currentURL,
-		globalFDSState,
-		pageNumber,
-		paginationDelta,
-		sorts,
-	]);
+			globalFDSState,
+			pageNumber,
+			paginationDelta,
+			sorts,
+		]
+	);
 
 	const onClearFilters = useCallback(() => {
 		const unfrozenGlobalFDSState: IFDSState = deepClone(globalFDSState);
@@ -1287,7 +1300,7 @@ const FrontendDataSetContent = ({
 			setDataLoading(true);
 
 			return requestData()!
-				.then(({data}) => {
+				.then(({data, stale}) => {
 					if (successNotification?.showSuccessNotification) {
 						openToast({
 							message:
@@ -1297,7 +1310,7 @@ const FrontendDataSetContent = ({
 						});
 					}
 
-					if (isMounted()) {
+					if (isMounted() && !stale) {
 						const updatedItems = updateDataSetItems(data);
 
 						setSelectedItems(
@@ -1399,10 +1412,16 @@ const FrontendDataSetContent = ({
 			return;
 		}
 
+		const abortController = new AbortController();
+
 		setDataLoading(true);
 
-		requestData()!.then(({data, ok, status: statusCode}) => {
-			if (isMounted()) {
+		requestData(abortController.signal)!
+			.then(({data, ok, stale, status: statusCode}) => {
+				if (!isMounted() || stale) {
+					return;
+				}
+
 				if (!ok) {
 					handleApiError({data, statusCode});
 				}
@@ -1430,8 +1449,22 @@ const FrontendDataSetContent = ({
 				setDataLoading(false);
 
 				setSearching(false);
-			}
-		});
+			})
+			.catch((error) => {
+
+				// An aborted request is always followed by a newer one, which
+				// takes over the loading state
+
+				if (error.name === 'AbortError' || !isMounted()) {
+					return;
+				}
+
+				setDataLoading(false);
+
+				setSearching(false);
+			});
+
+		return () => abortController.abort();
 	}, [
 		apiURL,
 		globalFDSStateInitialized,

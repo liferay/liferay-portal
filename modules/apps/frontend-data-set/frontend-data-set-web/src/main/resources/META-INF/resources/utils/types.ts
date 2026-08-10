@@ -321,6 +321,7 @@ export type ILoadDataArgs = {
 	odataFiltersStrings?: Array<string>;
 	page?: number;
 	searchParam?: string;
+	signal?: AbortSignal;
 	sorts?: TSort[];
 };
 
