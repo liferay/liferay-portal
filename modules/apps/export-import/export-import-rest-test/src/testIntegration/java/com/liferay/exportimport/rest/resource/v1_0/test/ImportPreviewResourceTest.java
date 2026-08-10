@@ -239,6 +239,49 @@ public class ImportPreviewResourceTest
 
 	@Override
 	@Test
+	public void testPostPortletImportPreview() throws Exception {
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		ObjectDefinition objectDefinition = _publishObjectDefinitionWithEntries(
+			GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		String portletId = objectDefinition.getPortletId();
+
+		LayoutTestUtil.addPortletToLayout(layout, portletId);
+
+		assertHttpResponseStatusCode(
+			403,
+			_importPreviewResource.postPortletImportPreviewHttpResponse(
+				portletId, layout.getPlid(), null,
+				HashMapBuilder.put(
+					"file",
+					_exportPortletAsFile(
+						group.getGroupId(), layout.getPlid(), portletId)
+				).build()));
+
+		_testPostImportPreviewWithInvalidFile(
+			file -> importPreviewResource.postPortletImportPreviewHttpResponse(
+				portletId, layout.getPlid(), null,
+				HashMapBuilder.put(
+					"file", file
+				).build()));
+		_testPostPortletImportPreviewWithObjectEntries(
+			group.getGroupId(), objectDefinition, layout.getPlid(),
+			file -> importPreviewResource.postPortletImportPreview(
+				portletId, layout.getPlid(), null,
+				HashMapBuilder.put(
+					"file", file
+				).build()));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Override
+	@Test
 	public void testPostSiteImportPreview() throws Exception {
 		assertHttpResponseStatusCode(
 			403,

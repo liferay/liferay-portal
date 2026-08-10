@@ -292,6 +292,42 @@ public class ImportProcessResourceTest
 
 	@Override
 	@Test
+	public void testPostPortletImportProcess() throws Exception {
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		ObjectDefinition objectDefinition = _publishObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		String portletId = objectDefinition.getPortletId();
+
+		LayoutTestUtil.addPortletToLayout(layout, portletId);
+
+		assertHttpResponseStatusCode(
+			403,
+			_importProcessResource.postPortletImportProcessHttpResponse(
+				portletId, layout.getPlid(), new ImportProcessRequest()));
+
+		_testPostImportProcessWithObjectDefinition(
+			() -> _exportPortletAsFile(
+				companyGroup.getGroupId(), layout.getPlid(), portletId),
+			objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID,
+			file -> _importPreviewResource.postPortletImportPreview(
+				portletId, layout.getPlid(), null,
+				HashMapBuilder.put(
+					"file", file
+				).build()),
+			importProcessRequest ->
+				importProcessResource.postPortletImportProcess(
+					portletId, layout.getPlid(), importProcessRequest));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Override
+	@Test
 	public void testPostSiteImportProcess() throws Exception {
 		assertHttpResponseStatusCode(
 			403,
@@ -492,6 +528,24 @@ public class ImportProcessResourceTest
 				percentage = 50;
 			}
 		};
+	}
+
+	@Override
+	protected ImportProcess testGetPortletImportProcessesPage_addImportProcess(
+			String portletId, ImportProcess importProcess)
+		throws Exception {
+
+		return _addImportProcess(
+			_getCompanyGroupId(), portletId,
+			BackgroundTaskExecutorNames.
+				PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR);
+	}
+
+	@Override
+	protected String testGetPortletImportProcessesPage_getPortletId()
+		throws Exception {
+
+		return RandomTestUtil.randomString();
 	}
 
 	@Override

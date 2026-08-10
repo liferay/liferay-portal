@@ -207,6 +207,30 @@ public class ExportPreviewResourceTest
 			_depotObjectDefinition, _siteObjectDefinition);
 	}
 
+	@Override
+	@Test
+	public void testGetPortletExportPreview() throws Exception {
+		String portletId = _companyObjectDefinition.getPortletId();
+
+		assertHttpResponseStatusCode(
+			404,
+			_exportPreviewResource.getPortletExportPreviewHttpResponse(
+				portletId, null, 0L, null));
+
+		_testGetExportPreviewWithDateFilter(
+			_companyObjectDefinition,
+			(startDate, endDate) ->
+				exportPreviewResource.getPortletExportPreview(
+					portletId, endDate, 0L, startDate));
+
+		long plid = _addLayoutWithPortlet(testGroup, portletId);
+
+		_testGetPortletExportPreview(
+			exportPreviewResource.getPortletExportPreview(
+				portletId, null, plid, null),
+			portletId);
+	}
+
 	@FeatureFlag("LPD-38869")
 	@Override
 	@Test

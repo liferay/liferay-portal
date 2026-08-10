@@ -293,6 +293,46 @@ public class ExportProcessResourceTest
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
+	@Override
+	@Test
+	public void testPostPortletExportProcess() throws Exception {
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		ObjectDefinition objectDefinition = _publishObjectDefinition(
+			ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		String portletId = objectDefinition.getPortletId();
+
+		LayoutTestUtil.addPortletToLayout(layout, portletId);
+
+		assertHttpResponseStatusCode(
+			403,
+			_exportProcessResource.postPortletExportProcessHttpResponse(
+				portletId, layout.getPlid(),
+				new ExportProcessRequest() {
+					{
+						name = RandomTestUtil.randomString();
+					}
+				}));
+
+		_testPostExportProcessWithInvalidDateRange(
+			exportProcessRequest ->
+				exportProcessResource.postPortletExportProcessHttpResponse(
+					portletId, layout.getPlid(), exportProcessRequest));
+		_testPostExportProcessWithObjectDefinition(
+			exportProcessRequest ->
+				exportProcessResource.postPortletExportProcess(
+					portletId, layout.getPlid(), exportProcessRequest),
+			companyGroup.getGroupId(), objectDefinition,
+			_addObjectEntries(
+				objectDefinition, GroupConstants.DEFAULT_PARENT_GROUP_ID));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
 	@FeatureFlag("LPD-38869")
 	@Override
 	@Test
@@ -476,6 +516,24 @@ public class ExportProcessResourceTest
 				percentage = 50;
 			}
 		};
+	}
+
+	@Override
+	protected ExportProcess testGetPortletExportProcessesPage_addExportProcess(
+			String portletId, ExportProcess exportProcess)
+		throws Exception {
+
+		return _addExportProcess(
+			_getCompanyGroupId(), portletId,
+			BackgroundTaskExecutorNames.
+				PORTLET_EXPORT_BACKGROUND_TASK_EXECUTOR);
+	}
+
+	@Override
+	protected String testGetPortletExportProcessesPage_getPortletId()
+		throws Exception {
+
+		return RandomTestUtil.randomString();
 	}
 
 	@Override
