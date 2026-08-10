@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rsa"
 	"fmt"
+	"io"
 	"testing"
 	"time"
 
@@ -26,6 +27,14 @@ func (stubProvisioning *stubProvisioning) Activate(
 	privateKey *rsa.PrivateKey,
 ) error {
 	return stubProvisioning.activateError
+}
+
+func (stubProvisioning *stubProvisioning) DownloadAddOn(
+	context context.Context,
+	downloadRequest provisioning.DownloadRequest,
+	privateKey *rsa.PrivateKey,
+) (io.ReadCloser, error) {
+	return nil, nil
 }
 
 func (stubProvisioning *stubProvisioning) Manifest(
