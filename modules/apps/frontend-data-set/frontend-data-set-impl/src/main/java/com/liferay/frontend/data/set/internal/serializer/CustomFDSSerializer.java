@@ -486,6 +486,16 @@ public class CustomFDSSerializer
 	}
 
 	@Override
+	public boolean serializeSearchAsYouType(
+		String fdsName, HttpServletRequest httpServletRequest) {
+
+		Map<String, Object> properties = getDataSetObjectEntryProperties(
+			fdsName, httpServletRequest);
+
+		return GetterUtil.getBoolean(properties.get("searchAsYouType"));
+	}
+
+	@Override
 	public boolean serializeShowSearch(
 		String fdsName, HttpServletRequest httpServletRequest) {
 

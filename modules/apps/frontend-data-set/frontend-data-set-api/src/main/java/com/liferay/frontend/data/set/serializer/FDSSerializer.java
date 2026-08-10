@@ -81,6 +81,9 @@ public interface FDSSerializer {
 	public String serializePropsTransformer(
 		String fdsName, HttpServletRequest httpServletRequest);
 
+	public boolean serializeSearchAsYouType(
+		String fdsName, HttpServletRequest httpServletRequest);
+
 	public boolean serializeShowSearch(
 		String fdsName, HttpServletRequest httpServletRequest);
 

@@ -46,6 +46,10 @@ public interface SystemFDSEntry {
 
 	public String getRESTSchema();
 
+	public default boolean getSearchAsYouType() {
+		return false;
+	}
+
 	public default boolean getShowSearch() {
 		return true;
 	}
