@@ -392,6 +392,7 @@ public class WorkflowDefinitionResourceImpl
 							workflowNode),
 						Node.class));
 				setScope(workflowDefinition::getScope);
+				setSystem(workflowDefinition::isSystem);
 				setTitle(
 					() -> workflowDefinition.getTitle(
 						_language.getLanguageId(

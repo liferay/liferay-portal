@@ -204,6 +204,7 @@ public class KaleoWorkflowModelConverterImpl
 			defaultWorkflowDefinition.setActive(false);
 			defaultWorkflowDefinition.setScope(
 				WorkflowDefinitionConstants.SCOPE_ALL);
+			defaultWorkflowDefinition.setSystem(false);
 		}
 
 		String content = kaleoDefinitionVersion.getContent();
