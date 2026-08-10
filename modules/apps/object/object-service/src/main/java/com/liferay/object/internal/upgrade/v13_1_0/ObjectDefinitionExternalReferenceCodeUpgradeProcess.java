@@ -12,6 +12,7 @@ import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.sql.PreparedStatement;
@@ -55,23 +56,31 @@ public class ObjectDefinitionExternalReferenceCodeUpgradeProcess
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			while (resultSet.next()) {
+				String externalReferenceCode = null;
+
 				SystemObjectDefinitionManager systemObjectDefinitionManager =
 					_systemObjectDefinitionManagerRegistry.
 						getSystemObjectDefinitionManager(
 							resultSet.getString("name"));
 
-				if (systemObjectDefinitionManager == null) {
+				if (systemObjectDefinitionManager != null) {
+					externalReferenceCode =
+						systemObjectDefinitionManager.
+							getExternalReferenceCode();
+				}
+				else {
+					externalReferenceCode = _externalReferenceCodes.get(
+						resultSet.getString("name"));
+				}
+
+				if (Validator.isNull(externalReferenceCode)) {
 					continue;
 				}
 
-				String externalReferenceCode =
-					systemObjectDefinitionManager.getExternalReferenceCode();
 				String oldExternalReferenceCode = resultSet.getString(
 					"externalReferenceCode");
 
-				if (Validator.isNull(externalReferenceCode) ||
-					externalReferenceCode.equals(oldExternalReferenceCode)) {
-
+				if (externalReferenceCode.equals(oldExternalReferenceCode)) {
 					continue;
 				}
 
@@ -140,6 +149,27 @@ public class ObjectDefinitionExternalReferenceCodeUpgradeProcess
 
 		return externalReferenceCodesByCompanyId;
 	}
+
+	private static final Map<String, String> _externalReferenceCodes =
+		HashMapBuilder.put(
+			"AccountEntry", "L_ACCOUNT"
+		).put(
+			"Address", "L_POSTAL_ADDRESS"
+		).put(
+			"CommerceOrder", "L_COMMERCE_ORDER"
+		).put(
+			"CommerceOrderItem", "L_COMMERCE_ORDER_ITEM"
+		).put(
+			"CommerceOrderNote", "L_COMMERCE_ORDER_NOTE"
+		).put(
+			"CommercePricingClass", "L_COMMERCE_PRODUCT_GROUP"
+		).put(
+			"CPDefinition", "L_COMMERCE_PRODUCT_DEFINITION"
+		).put(
+			"Organization", "L_ORGANIZATION"
+		).put(
+			"User", "L_USER"
+		).build();
 
 	private final SystemObjectDefinitionManagerRegistry
 		_systemObjectDefinitionManagerRegistry;
