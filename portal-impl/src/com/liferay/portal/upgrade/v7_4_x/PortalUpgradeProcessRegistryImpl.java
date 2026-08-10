@@ -671,7 +671,8 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(34, 0, 0),
 			new LayoutLayoutSetPrototypeLayoutERCUpgradeProcess());
 
-		upgradeVersionTreeMap.put(new Version(34, 1, 0), new UpgradeDB2());
+		upgradeVersionTreeMap.put(
+			new Version(34, 1, 0), new DummyUpgradeProcess());
 
 		upgradeVersionTreeMap.put(
 			new Version(34, 1, 1),
