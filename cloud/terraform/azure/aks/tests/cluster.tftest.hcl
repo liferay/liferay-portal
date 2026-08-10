@@ -31,6 +31,18 @@ run "should_apply_default_node_pool_settings" {
 		error_message="The default node pool must use ephemeral OS disks"
 	}
 	assert {
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].upgrade_settings[0].drain_timeout_in_minutes == 0
+		error_message="The default node pool must pin the Azure default drain timeout"
+	}
+	assert {
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].upgrade_settings[0].max_surge == "10%"
+		error_message="The default node pool must pin the Azure default max surge of 10%"
+	}
+	assert {
+		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].upgrade_settings[0].node_soak_duration_in_minutes == 0
+		error_message="The default node pool must pin the Azure default node soak duration"
+	}
+	assert {
 		condition=azurerm_kubernetes_cluster.main.default_node_pool[0].vm_size == "Standard_D4ds_v4"
 		error_message="The default node pool must default to the Standard_D4ds_v4 VM size"
 	}
