@@ -35,6 +35,7 @@ public class AssetSummaryTagFaroController extends BaseFaroController {
 				@PathParam("groupId") long groupId,
 				@QueryParam("accountId") String accountId,
 				@QueryParam("channelId") long channelId,
+				@QueryParam("individualId") String individualId,
 				@QueryParam("keywords") String keywords,
 				@QueryParam("page") int page,
 				@DefaultValue("20") @QueryParam("pageSize") int pageSize,
@@ -49,8 +50,9 @@ public class AssetSummaryTagFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getAssetSummaryTags(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				accountId, channelId, keywords, rangeEnd, rangeKey, rangeStart,
-				selectedMetric, sortString, page, pageSize),
+				accountId, channelId, individualId, keywords, rangeEnd,
+				rangeKey, rangeStart, selectedMetric, sortString, page,
+				pageSize),
 			AssetSummaryTagDisplay::new, page, pageSize);
 	}
 
