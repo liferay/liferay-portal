@@ -72,20 +72,45 @@ public class JournalContentExportImportTest
 			TestPropsValues.getUserId(), group, false, false,
 			new ServiceContext());
 
+		Group stagingGroup = group.getStagingGroup();
+
 		PortletPreferences portletPreferences = getImportedPortletPreferences(
 			HashMapBuilder.put(
 				"articleExternalReferenceCode",
 				new String[] {RandomTestUtil.randomString()}
 			).put(
 				"groupExternalReferenceCode",
-				new String[] {
-					group.getStagingGroup(
-					).getExternalReferenceCode()
-				}
+				new String[] {stagingGroup.getExternalReferenceCode()}
 			).build());
 
 		Assert.assertEquals(
 			group.getExternalReferenceCode(),
+			portletPreferences.getValue("groupExternalReferenceCode", null));
+	}
+
+	@Test
+	@TestInfo("LPD-98716")
+	public void testExportImportGroupExternalReferenceCodeWithoutStaging()
+		throws Exception {
+
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), group, false, false,
+			new ServiceContext());
+
+		Group stagingGroup = group.getStagingGroup();
+
+		PortletPreferences portletPreferences = getImportedPortletPreferences(
+			HashMapBuilder.put(
+				"articleExternalReferenceCode",
+				new String[] {RandomTestUtil.randomString()}
+			).put(
+				"groupExternalReferenceCode",
+				new String[] {stagingGroup.getExternalReferenceCode()}
+			).build(),
+			false);
+
+		Assert.assertEquals(
+			stagingGroup.getExternalReferenceCode(),
 			portletPreferences.getValue("groupExternalReferenceCode", null));
 	}
 
@@ -96,14 +121,15 @@ public class JournalContentExportImportTest
 			TestPropsValues.getUserId(), group, false, false,
 			new ServiceContext());
 
+		Group stagingGroup = group.getStagingGroup();
+
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
 		try {
 			Assert.assertEquals(
 				group.getExternalReferenceCode(),
 				_getExportedGroupExternalReferenceCode(
-					group.getStagingGroup(
-					).getExternalReferenceCode()));
+					stagingGroup.getExternalReferenceCode()));
 		}
 		finally {
 			ExportImportThreadLocal.setPortletStagingInProcess(false);
@@ -121,14 +147,15 @@ public class JournalContentExportImportTest
 			TestPropsValues.getUserId(), contentGroup, false, false,
 			new ServiceContext());
 
+		Group stagingGroup = contentGroup.getStagingGroup();
+
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
 		try {
 			Assert.assertEquals(
 				contentGroup.getExternalReferenceCode(),
 				_getExportedGroupExternalReferenceCode(
-					contentGroup.getStagingGroup(
-					).getExternalReferenceCode()));
+					stagingGroup.getExternalReferenceCode()));
 		}
 		finally {
 			ExportImportThreadLocal.setPortletStagingInProcess(false);
