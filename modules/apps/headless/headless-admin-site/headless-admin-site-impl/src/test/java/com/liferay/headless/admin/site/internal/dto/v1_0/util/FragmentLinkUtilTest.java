@@ -15,23 +15,14 @@ import com.liferay.headless.admin.site.dto.v1_0.FragmentMappedValueItemReference
 import com.liferay.headless.admin.site.dto.v1_0.Mapping;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
-import com.liferay.info.item.InfoItemDetails;
-import com.liferay.info.item.InfoItemIdentifier;
 import com.liferay.info.item.InfoItemReference;
-import com.liferay.info.item.InfoItemServiceRegistry;
-import com.liferay.info.item.provider.InfoItemDetailsProvider;
-import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.layout.util.structure.LayoutStructure;
-import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -59,7 +50,7 @@ import org.mockito.Mockito;
 /**
  * @author Mikel Lorza
  */
-public class FragmentLinkUtilTest {
+public class FragmentLinkUtilTest extends BaseUtilTestCase {
 
 	@ClassRule
 	@Rule
@@ -69,31 +60,12 @@ public class FragmentLinkUtilTest {
 	@BeforeClass
 	public static void setUpClass() {
 		_mockDTOConverterContextAttributes();
-
-		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
-
-		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
-
-		_mockGroup(
-			_ITEM_GROUP_EXTERNAL_REFERENCE_CODE, _ITEM_GROUP_ID,
-			GroupConstants.TYPE_DEPOT);
-		_mockGroup(
-			_SCOPE_EXTERNAL_REFERENCE_CODE, _SCOPE_GROUP_ID,
-			GroupConstants.TYPE_SITE_OPEN);
-
-		_portalUtilMockedStatic.when(
-			() -> PortalUtil.getClassNameId(Mockito.anyString())
-		).thenReturn(
-			_CLASS_NAME_ID
-		);
 	}
 
 	@AfterClass
 	public static void tearDownClass() {
-		_groupLocalServiceUtilMockedStatic.close();
 		_layoutLocalServiceUtilMockedStatic.close();
 		_localizedValueUtilMockedStatic.close();
-		_portalUtilMockedStatic.close();
 	}
 
 	@Test
@@ -114,7 +86,7 @@ public class FragmentLinkUtilTest {
 		Assert.assertEquals(
 			_getFragmentLink(null, null, null, localizedValues, null),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"href",
 					JSONUtil.put(
@@ -125,7 +97,7 @@ public class FragmentLinkUtilTest {
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -133,13 +105,13 @@ public class FragmentLinkUtilTest {
 		Assert.assertEquals(
 			_getFragmentLink(null, null, "FileEntry_fileName", null, null),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"mappedField", "FileEntry_fileName"
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -147,7 +119,7 @@ public class FragmentLinkUtilTest {
 		String journalArticleExternalReferenceCode =
 			RandomTestUtil.randomString();
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		ERCInfoItemIdentifier ercInfoItemIdentifier = Mockito.mock(
 			ERCInfoItemIdentifier.class);
@@ -164,7 +136,7 @@ public class FragmentLinkUtilTest {
 			journalArticleExternalReferenceCode
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			JournalArticle.class.getName()
@@ -176,7 +148,7 @@ public class FragmentLinkUtilTest {
 				journalArticleExternalReferenceCode, "JournalArticle_title",
 				null, null),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"className", JournalArticle.class.getName()
 				).put(
@@ -190,7 +162,7 @@ public class FragmentLinkUtilTest {
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -212,10 +184,10 @@ public class FragmentLinkUtilTest {
 		Mockito.when(
 			ercInfoItemIdentifier.getScopeExternalReferenceCode()
 		).thenReturn(
-			_ITEM_GROUP_EXTERNAL_REFERENCE_CODE
+			ITEM_GROUP_EXTERNAL_REFERENCE_CODE
 		);
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -223,7 +195,7 @@ public class FragmentLinkUtilTest {
 			ercInfoItemIdentifier
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			JournalArticle.class.getName()
@@ -233,9 +205,9 @@ public class FragmentLinkUtilTest {
 			_getFragmentLink(
 				JournalArticle.class.getName(),
 				journalArticleExternalReferenceCode, "JournalArticle_title",
-				null, Scope.of(_ITEM_GROUP_ID, LocaleUtil.getDefault())),
+				null, Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"className", JournalArticle.class.getName()
 				).put(
@@ -249,7 +221,7 @@ public class FragmentLinkUtilTest {
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -257,7 +229,7 @@ public class FragmentLinkUtilTest {
 		ERCInfoItemIdentifier ercInfoItemIdentifier = Mockito.mock(
 			ERCInfoItemIdentifier.class);
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -278,7 +250,7 @@ public class FragmentLinkUtilTest {
 		Mockito.when(
 			layout.getGroupId()
 		).thenReturn(
-			_SCOPE_GROUP_ID
+			SCOPE_GROUP_ID
 		);
 
 		Mockito.when(
@@ -294,7 +266,7 @@ public class FragmentLinkUtilTest {
 			layout
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			Layout.class.getName()
@@ -305,7 +277,7 @@ public class FragmentLinkUtilTest {
 				Layout.class.getName(), layoutExternalReferenceCode, null, null,
 				null),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"layout",
 					JSONUtil.put(
@@ -320,7 +292,7 @@ public class FragmentLinkUtilTest {
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -332,7 +304,7 @@ public class FragmentLinkUtilTest {
 		Mockito.when(
 			layout.getGroupId()
 		).thenReturn(
-			_ITEM_GROUP_ID
+			ITEM_GROUP_ID
 		);
 
 		long layoutId = RandomTestUtil.randomLong();
@@ -353,12 +325,12 @@ public class FragmentLinkUtilTest {
 
 		_layoutLocalServiceUtilMockedStatic.when(
 			() -> LayoutLocalServiceUtil.fetchLayout(
-				_ITEM_GROUP_ID, false, layoutId)
+				ITEM_GROUP_ID, false, layoutId)
 		).thenReturn(
 			layout
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			Layout.class.getName()
@@ -367,34 +339,34 @@ public class FragmentLinkUtilTest {
 		Assert.assertEquals(
 			_getFragmentLink(
 				Layout.class.getName(), layoutExternalReferenceCode, null, null,
-				Scope.of(_ITEM_GROUP_ID, LocaleUtil.getDefault())),
+				Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"layout",
 					JSONUtil.put(
 						"externalReferenceCode", layoutExternalReferenceCode
 					).put(
-						"groupId", _ITEM_GROUP_ID
+						"groupId", ITEM_GROUP_ID
 					).put(
 						"layoutId", layoutId
 					).put(
 						"privateLayout", false
 					).put(
 						"scopeExternalReferenceCode",
-						_SCOPE_EXTERNAL_REFERENCE_CODE
+						SCOPE_EXTERNAL_REFERENCE_CODE
 					)
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
 	public void testToFragmentLinkMappedNonexistingJournalArticle()
 		throws Exception {
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -402,7 +374,7 @@ public class FragmentLinkUtilTest {
 			null
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			JournalArticle.class.getName()
@@ -417,7 +389,7 @@ public class FragmentLinkUtilTest {
 				journalArticleExternalReferenceCode, "JournalArticle_title",
 				null, null),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"className", JournalArticle.class.getName()
 				).put(
@@ -431,14 +403,14 @@ public class FragmentLinkUtilTest {
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
 	public void testToFragmentLinkMappedNonexistingJournalArticleDifferentScope()
 		throws Exception {
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -446,7 +418,7 @@ public class FragmentLinkUtilTest {
 			null
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			JournalArticle.class.getName()
@@ -459,9 +431,9 @@ public class FragmentLinkUtilTest {
 			_getFragmentLink(
 				JournalArticle.class.getName(),
 				journalArticleExternalReferenceCode, "JournalArticle_title",
-				null, Scope.of(_ITEM_GROUP_ID, LocaleUtil.getDefault())),
+				null, Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"className", JournalArticle.class.getName()
 				).put(
@@ -474,11 +446,11 @@ public class FragmentLinkUtilTest {
 					"fieldId", "JournalArticle_title"
 				).put(
 					"scopeExternalReferenceCode",
-					_ITEM_GROUP_EXTERNAL_REFERENCE_CODE
+					ITEM_GROUP_EXTERNAL_REFERENCE_CODE
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -490,7 +462,7 @@ public class FragmentLinkUtilTest {
 			null
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			Layout.class.getName()
@@ -503,7 +475,7 @@ public class FragmentLinkUtilTest {
 				Layout.class.getName(), layoutExternalReferenceCode, null, null,
 				null),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"layout",
 					JSONUtil.put(
@@ -511,7 +483,7 @@ public class FragmentLinkUtilTest {
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -525,7 +497,7 @@ public class FragmentLinkUtilTest {
 			null
 		);
 
-		_portalUtilMockedStatic.when(
+		portalUtilMockedStatic.when(
 			() -> PortalUtil.getClassName(Mockito.any(long.class))
 		).thenReturn(
 			Layout.class.getName()
@@ -536,21 +508,21 @@ public class FragmentLinkUtilTest {
 		Assert.assertEquals(
 			_getFragmentLink(
 				Layout.class.getName(), layoutExternalReferenceCode, null, null,
-				Scope.of(_ITEM_GROUP_ID, LocaleUtil.getDefault())),
+				Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
 			FragmentLinkUtil.toFragmentLink(
-				_COMPANY_ID, _dtoConverterContext, _infoItemServiceRegistry,
+				COMPANY_ID, _dtoConverterContext, infoItemServiceRegistry,
 				JSONUtil.put(
 					"layout",
 					JSONUtil.put(
 						"externalReferenceCode", layoutExternalReferenceCode
 					).put(
 						"scopeExternalReferenceCode",
-						_ITEM_GROUP_EXTERNAL_REFERENCE_CODE
+						ITEM_GROUP_EXTERNAL_REFERENCE_CODE
 					)
 				).put(
 					"target", "_blank"
 				),
-				_SCOPE_GROUP_ID));
+				SCOPE_GROUP_ID));
 	}
 
 	@Test
@@ -574,7 +546,7 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					null, null, null,
 					HashMapBuilder.put(
@@ -583,7 +555,7 @@ public class FragmentLinkUtilTest {
 						LocaleUtil.US.toString(), "https://www.liferay.com"
 					).build(),
 					null),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -596,9 +568,9 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(null, null, "FileEntry_fileName", null, null),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -615,7 +587,7 @@ public class FragmentLinkUtilTest {
 			classPK
 		);
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -630,7 +602,7 @@ public class FragmentLinkUtilTest {
 			JSONUtil.put(
 				"className", JournalArticle.class.getName()
 			).put(
-				"classNameId", _CLASS_NAME_ID
+				"classNameId", CLASS_NAME_ID
 			).put(
 				"classPK", String.valueOf(classPK)
 			).put(
@@ -641,12 +613,12 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					JournalArticle.class.getName(),
 					journalArticleExternalReferenceCode, "JournalArticle_title",
 					null, null),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -682,7 +654,7 @@ public class FragmentLinkUtilTest {
 			true
 		);
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -697,7 +669,7 @@ public class FragmentLinkUtilTest {
 			JSONUtil.put(
 				"className", JournalArticle.class.getName()
 			).put(
-				"classNameId", _CLASS_NAME_ID
+				"classNameId", CLASS_NAME_ID
 			).put(
 				"classPK", String.valueOf(classPK)
 			).put(
@@ -711,12 +683,12 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					JournalArticle.class.getName(),
 					journalArticleExternalReferenceCode, "JournalArticle_title",
 					null, Scope.of(group, LocaleUtil.getDefault())),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -727,7 +699,7 @@ public class FragmentLinkUtilTest {
 		Mockito.when(
 			layout.getGroupId()
 		).thenReturn(
-			_SCOPE_GROUP_ID
+			SCOPE_GROUP_ID
 		);
 
 		long layoutId = RandomTestUtil.randomLong();
@@ -775,7 +747,7 @@ public class FragmentLinkUtilTest {
 				JSONUtil.put(
 					"externalReferenceCode", layoutExternalReferenceCode
 				).put(
-					"groupId", _SCOPE_GROUP_ID
+					"groupId", SCOPE_GROUP_ID
 				).put(
 					"layoutId", layoutId
 				).put(
@@ -789,11 +761,11 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					Layout.class.getName(), layoutExternalReferenceCode, null,
 					null, null),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -804,7 +776,7 @@ public class FragmentLinkUtilTest {
 		Mockito.when(
 			layout.getGroupId()
 		).thenReturn(
-			_ITEM_GROUP_ID
+			ITEM_GROUP_ID
 		);
 
 		long layoutId = RandomTestUtil.randomLong();
@@ -852,7 +824,7 @@ public class FragmentLinkUtilTest {
 				JSONUtil.put(
 					"externalReferenceCode", layoutExternalReferenceCode
 				).put(
-					"groupId", _ITEM_GROUP_ID
+					"groupId", ITEM_GROUP_ID
 				).put(
 					"layoutId", layoutId
 				).put(
@@ -861,7 +833,7 @@ public class FragmentLinkUtilTest {
 					"privateLayout", true
 				).put(
 					"scopeExternalReferenceCode",
-					_ITEM_GROUP_EXTERNAL_REFERENCE_CODE
+					ITEM_GROUP_EXTERNAL_REFERENCE_CODE
 				).put(
 					"title", title
 				)
@@ -869,11 +841,11 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					Layout.class.getName(), layoutExternalReferenceCode, null,
-					null, Scope.of(_ITEM_GROUP_ID, LocaleUtil.getDefault())),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+					null, Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -881,7 +853,7 @@ public class FragmentLinkUtilTest {
 	public void testToJSONObjectMappedNonexistingJournalArticle()
 		throws Exception {
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -896,7 +868,7 @@ public class FragmentLinkUtilTest {
 			JSONUtil.put(
 				"className", JournalArticle.class.getName()
 			).put(
-				"classNameId", _CLASS_NAME_ID
+				"classNameId", CLASS_NAME_ID
 			).put(
 				"externalReferenceCode", journalArticleExternalReferenceCode
 			).put(
@@ -905,12 +877,12 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					JournalArticle.class.getName(),
 					journalArticleExternalReferenceCode, "JournalArticle_title",
 					null, null),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -918,7 +890,7 @@ public class FragmentLinkUtilTest {
 	public void testToJSONObjectMappedNonexistingJournalArticleDifferentScope()
 		throws Exception {
 
-		InfoItemReference infoItemReference = _mockInfoItemReference();
+		InfoItemReference infoItemReference = mockInfoItemReference();
 
 		Mockito.when(
 			infoItemReference.getInfoItemIdentifier()
@@ -933,24 +905,23 @@ public class FragmentLinkUtilTest {
 			JSONUtil.put(
 				"className", JournalArticle.class.getName()
 			).put(
-				"classNameId", _CLASS_NAME_ID
+				"classNameId", CLASS_NAME_ID
 			).put(
 				"externalReferenceCode", journalArticleExternalReferenceCode
 			).put(
 				"fieldId", "JournalArticle_title"
 			).put(
-				"scopeExternalReferenceCode",
-				_ITEM_GROUP_EXTERNAL_REFERENCE_CODE
+				"scopeExternalReferenceCode", ITEM_GROUP_EXTERNAL_REFERENCE_CODE
 			).put(
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					JournalArticle.class.getName(),
 					journalArticleExternalReferenceCode, "JournalArticle_title",
-					null, Scope.of(_ITEM_GROUP_ID, LocaleUtil.getDefault())),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+					null, Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -974,11 +945,11 @@ public class FragmentLinkUtilTest {
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					Layout.class.getName(), layoutExternalReferenceCode, null,
 					null, null),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -1002,17 +973,17 @@ public class FragmentLinkUtilTest {
 					"externalReferenceCode", layoutExternalReferenceCode
 				).put(
 					"scopeExternalReferenceCode",
-					_ITEM_GROUP_EXTERNAL_REFERENCE_CODE
+					ITEM_GROUP_EXTERNAL_REFERENCE_CODE
 				)
 			).put(
 				"target", "_blank"
 			).toString(),
 			FragmentLinkUtil.toJSONObject(
-				_COMPANY_ID,
+				COMPANY_ID,
 				_getFragmentLink(
 					Layout.class.getName(), layoutExternalReferenceCode, null,
-					null, Scope.of(_ITEM_GROUP_ID, LocaleUtil.getDefault())),
-				_infoItemServiceRegistry, _SCOPE_GROUP_ID
+					null, Scope.of(ITEM_GROUP_ID, LocaleUtil.getDefault())),
+				infoItemServiceRegistry, SCOPE_GROUP_ID
 			).toString());
 	}
 
@@ -1033,62 +1004,6 @@ public class FragmentLinkUtilTest {
 
 				return null;
 			}
-		);
-	}
-
-	private static void _mockGroup(
-		String externalReferenceCode, long groupId, int type) {
-
-		Group group = Mockito.mock(Group.class);
-
-		Mockito.when(
-			group.getExternalReferenceCode()
-		).thenReturn(
-			externalReferenceCode
-		);
-
-		Mockito.when(
-			group.getGroupId()
-		).thenReturn(
-			groupId
-		);
-
-		Mockito.when(
-			group.getType()
-		).thenReturn(
-			type
-		);
-
-		Mockito.when(
-			group.isDepot()
-		).thenReturn(
-			GroupConstants.TYPE_DEPOT == type
-		);
-
-		_groupLocalServiceUtilMockedStatic.when(
-			() -> GroupLocalServiceUtil.fetchGroup(groupId)
-		).thenReturn(
-			group
-		);
-
-		_groupLocalServiceUtilMockedStatic.when(
-			() -> GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
-				externalReferenceCode, _COMPANY_ID)
-		).thenReturn(
-			group
-		);
-
-		_groupLocalServiceUtilMockedStatic.when(
-			() -> GroupLocalServiceUtil.getGroup(groupId)
-		).thenReturn(
-			group
-		);
-
-		_groupLocalServiceUtilMockedStatic.when(
-			() -> GroupLocalServiceUtil.getGroupByExternalReferenceCode(
-				externalReferenceCode, _COMPANY_ID)
-		).thenReturn(
-			group
 		);
 	}
 
@@ -1180,87 +1095,13 @@ public class FragmentLinkUtilTest {
 		return fragmentMappedValueItemExternalReference;
 	}
 
-	private InfoItemReference _mockInfoItemReference() throws Exception {
-		InfoItemObjectProvider<Object> infoItemObjectProvider = Mockito.mock(
-			InfoItemObjectProvider.class);
-
-		InfoItemDetailsProvider<Object> infoItemDetailsProvider = Mockito.mock(
-			InfoItemDetailsProvider.class);
-
-		Mockito.when(
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				Mockito.eq(InfoItemDetailsProvider.class), Mockito.any(),
-				Mockito.any())
-		).thenReturn(
-			infoItemDetailsProvider
-		);
-
-		Mockito.when(
-			_infoItemServiceRegistry.getFirstInfoItemService(
-				Mockito.eq(InfoItemObjectProvider.class), Mockito.any(),
-				Mockito.any())
-		).thenReturn(
-			infoItemObjectProvider
-		);
-
-		Mockito.when(
-			infoItemObjectProvider.getInfoItem(
-				Mockito.eq(_SCOPE_GROUP_ID),
-				Mockito.any(InfoItemIdentifier.class))
-		).thenReturn(
-			Mockito.mock(Object.class)
-		);
-
-		InfoItemDetails infoItemDetails = Mockito.mock(InfoItemDetails.class);
-
-		Mockito.when(
-			infoItemDetailsProvider.getInfoItemDetails(
-				Mockito.eq(_SCOPE_GROUP_ID), Mockito.any(Class.class),
-				Mockito.any())
-		).thenReturn(
-			infoItemDetails
-		);
-
-		InfoItemReference infoItemReference = Mockito.mock(
-			InfoItemReference.class);
-
-		Mockito.when(
-			infoItemDetails.getInfoItemReference()
-		).thenReturn(
-			infoItemReference
-		);
-
-		return infoItemReference;
-	}
-
-	private static final long _CLASS_NAME_ID = RandomTestUtil.randomLong();
-
-	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
-
-	private static final String _ITEM_GROUP_EXTERNAL_REFERENCE_CODE =
-		RandomTestUtil.randomString();
-
-	private static final long _ITEM_GROUP_ID = RandomTestUtil.randomLong();
-
-	private static final String _SCOPE_EXTERNAL_REFERENCE_CODE =
-		RandomTestUtil.randomString();
-
-	private static final long _SCOPE_GROUP_ID = RandomTestUtil.randomLong();
-
 	private static final DTOConverterContext _dtoConverterContext =
 		Mockito.mock(DTOConverterContext.class);
-	private static final MockedStatic<GroupLocalServiceUtil>
-		_groupLocalServiceUtilMockedStatic = Mockito.mockStatic(
-			GroupLocalServiceUtil.class);
-	private static final InfoItemServiceRegistry _infoItemServiceRegistry =
-		Mockito.mock(InfoItemServiceRegistry.class);
 	private static final MockedStatic<LayoutLocalServiceUtil>
 		_layoutLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			LayoutLocalServiceUtil.class);
 	private static final MockedStatic<LocalizedValueUtil>
 		_localizedValueUtilMockedStatic = Mockito.mockStatic(
 			LocalizedValueUtil.class);
-	private static final MockedStatic<PortalUtil> _portalUtilMockedStatic =
-		Mockito.mockStatic(PortalUtil.class);
 
 }
