@@ -1310,171 +1310,6 @@ test.describe('Display Page', () => {
 		}
 	);
 
-});
-	test.describe('Information Template', () => {
-		let contentPageName: string;
-		let informationTemplateName: string;
-
-		test.afterEach(async ({pagesAdminPage, templatesPage}) => {
-			if (contentPageName) {
-				await pagesAdminPage.goto();
-
-				await pagesAdminPage.deletePage(contentPageName);
-
-				contentPageName = '';
-			}
-
-			if (informationTemplateName) {
-				await templatesPage.goto();
-
-				await templatesPage.deleteInformationTemplate(
-					informationTemplateName
-				);
-
-				informationTemplateName = '';
-			}
-		});
-
-		test('verify it is possible to create a information template with an object as an item type and see its entries', async ({
-			apiHelpers,
-			page,
-			pageEditorPage,
-			pagesAdminPage,
-			templatesPage,
-		}) => {
-			const {listTypeDefinition, listTypeEntries} =
-				await postListTypeDefinitionListTypeEntries({
-					apiHelpers,
-				});
-
-			const objectFields = generateObjectFields({
-				listTypeDefinitionExternalReferenceCode:
-					listTypeDefinition.externalReferenceCode,
-				objectFieldBusinessTypes: [
-					'Boolean',
-					'Decimal',
-					'Integer',
-					'LongText',
-					'Picklist',
-					'Text',
-				],
-			});
-
-			apiHelpers.data.push({
-				id: listTypeDefinition.id,
-				type: 'listTypeDefinition',
-			});
-
-			const objectDefinition =
-				await apiHelpers.objectAdmin.postRandomObjectDefinition({
-					objectFields,
-					status: {code: 0},
-				});
-
-			apiHelpers.data.push({
-				id: objectDefinition.id,
-				type: 'objectDefinition',
-			});
-
-			const {objectEntry: objectEntryValues} =
-				await generateObjectEntryValues({
-					listTypeEntries: listTypeEntries.map(
-						(listTypeEntry) => listTypeEntry.name
-					),
-					objectEntryFormat: 'API',
-					objectFields,
-				});
-
-			const applicationName =
-				'c/' + objectDefinition.name.toLowerCase() + 's';
-
-			const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
-				objectEntryValues,
-				applicationName
-			);
-
-			informationTemplateName = 'Object Template' + getRandomInt();
-
-			await test.step('create information template and add object fields', async () => {
-				await templatesPage.goto();
-
-				await templatesPage.createInformationTemplate({
-					itemType: objectDefinition.label['en_US'],
-					name: informationTemplateName,
-				});
-
-				for (const objectField of objectFields) {
-					await page
-						.getByRole('button', {name: objectField.label['en_US']})
-						.click();
-				}
-
-				await templatesPage.saveTemplate(informationTemplateName);
-			});
-
-			contentPageName = getRandomString();
-
-			await test.step('create page template with HTML element linked to the informationTemplateName', async () => {
-				await pagesAdminPage.goto();
-
-				await pagesAdminPage.createNewPage({
-					name: contentPageName,
-				});
-
-				await pagesAdminPage.editPage(contentPageName);
-
-				await pageEditorPage.addFragment('Basic Components', 'HTML');
-
-				const htmlFragmentId =
-					await pageEditorPage.getFragmentId('HTML');
-
-				await pageEditorPage.selectEditable(
-					htmlFragmentId,
-					'element-html'
-				);
-
-				await pageEditorPage.setMappedItem({
-					entity: objectDefinition.label['en_US'],
-					entry: objectEntry.id.toString(),
-					entryLocator: page
-						.frameLocator('iframe[title="Select"]')
-						.getByText(objectEntry.id.toString())
-						.first(),
-					field: informationTemplateName,
-				});
-
-				await pageEditorPage.waitForChangesSaved();
-
-				await pageEditorPage.publishPage();
-			});
-
-			await test.step('go to created page and assert object entries', async () => {
-				await page.goto(`/web/guest/${contentPageName}`);
-
-				const entries = Object.values(objectEntryValues)
-					.map((value) => {
-						if (typeof value === 'boolean') {
-							return value ? 'Yes' : 'No';
-						}
-
-						if (
-							typeof value === 'object' &&
-							value !== null &&
-							'key' in (value as object)
-						) {
-							return (value as {key: string}).key;
-						}
-
-						return String(value);
-					})
-					.join(' ');
-
-				await expect(page.getByText(entries)).toBeVisible();
-			});
-		});
-	});
-test.describe('Display Page', () => {
-
 	test('verify if the object entries are displayed when selecting to preview an object entry on a page template', async ({
 		apiHelpers,
 		displayPageTemplatesPage,
@@ -1637,6 +1472,165 @@ test.describe('Display Page', () => {
 		await displayPageTemplatesPage.goto();
 
 		await displayPageTemplatesPage.deleteTemplate(objectDefinitionLabel);
+	});
+});
+
+test.describe('Information Template', () => {
+	let contentPageName: string;
+	let informationTemplateName: string;
+
+	test.afterEach(async ({pagesAdminPage, templatesPage}) => {
+		if (contentPageName) {
+			await pagesAdminPage.goto();
+
+			await pagesAdminPage.deletePage(contentPageName);
+
+			contentPageName = '';
+		}
+
+		if (informationTemplateName) {
+			await templatesPage.goto();
+
+			await templatesPage.deleteInformationTemplate(
+				informationTemplateName
+			);
+
+			informationTemplateName = '';
+		}
+	});
+
+	test('verify it is possible to create a information template with an object as an item type and see its entries', async ({
+		apiHelpers,
+		page,
+		pageEditorPage,
+		pagesAdminPage,
+		templatesPage,
+	}) => {
+		const {listTypeDefinition, listTypeEntries} =
+			await postListTypeDefinitionListTypeEntries({
+				apiHelpers,
+			});
+
+		const objectFields = generateObjectFields({
+			listTypeDefinitionExternalReferenceCode:
+				listTypeDefinition.externalReferenceCode,
+			objectFieldBusinessTypes: [
+				'Boolean',
+				'Decimal',
+				'Integer',
+				'LongText',
+				'Picklist',
+				'Text',
+			],
+		});
+
+		apiHelpers.data.push({
+			id: listTypeDefinition.id,
+			type: 'listTypeDefinition',
+		});
+
+		const objectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectFields,
+				status: {code: 0},
+			});
+
+		apiHelpers.data.push({
+			id: objectDefinition.id,
+			type: 'objectDefinition',
+		});
+
+		const {objectEntry: objectEntryValues} =
+			await generateObjectEntryValues({
+				listTypeEntries: listTypeEntries.map(
+					(listTypeEntry) => listTypeEntry.name
+				),
+				objectEntryFormat: 'API',
+				objectFields,
+			});
+
+		const applicationName =
+			'c/' + objectDefinition.name.toLowerCase() + 's';
+
+		const objectEntry = await apiHelpers.objectEntry.postObjectEntry(
+			objectEntryValues,
+			applicationName
+		);
+
+		informationTemplateName = 'Object Template' + getRandomInt();
+
+		await test.step('create information template and add object fields', async () => {
+			await templatesPage.goto();
+
+			await templatesPage.createInformationTemplate({
+				itemType: objectDefinition.label['en_US'],
+				name: informationTemplateName,
+			});
+
+			for (const objectField of objectFields) {
+				await page
+					.getByRole('button', {name: objectField.label['en_US']})
+					.click();
+			}
+
+			await templatesPage.saveTemplate(informationTemplateName);
+		});
+
+		contentPageName = getRandomString();
+
+		await test.step('create page template with HTML element linked to the informationTemplateName', async () => {
+			await pagesAdminPage.goto();
+
+			await pagesAdminPage.createNewPage({
+				name: contentPageName,
+			});
+
+			await pagesAdminPage.editPage(contentPageName);
+
+			await pageEditorPage.addFragment('Basic Components', 'HTML');
+
+			const htmlFragmentId = await pageEditorPage.getFragmentId('HTML');
+
+			await pageEditorPage.selectEditable(htmlFragmentId, 'element-html');
+
+			await pageEditorPage.setMappedItem({
+				entity: objectDefinition.label['en_US'],
+				entry: objectEntry.id.toString(),
+				entryLocator: page
+					.frameLocator('iframe[title="Select"]')
+					.getByText(objectEntry.id.toString())
+					.first(),
+				field: informationTemplateName,
+			});
+
+			await pageEditorPage.waitForChangesSaved();
+
+			await pageEditorPage.publishPage();
+		});
+
+		await test.step('go to created page and assert object entries', async () => {
+			await page.goto(`/web/guest/${contentPageName}`);
+
+			const entries = Object.values(objectEntryValues)
+				.map((value) => {
+					if (typeof value === 'boolean') {
+						return value ? 'Yes' : 'No';
+					}
+
+					if (
+						typeof value === 'object' &&
+						value !== null &&
+						'key' in (value as object)
+					) {
+						return (value as {key: string}).key;
+					}
+
+					return String(value);
+				})
+				.join(' ');
+
+			await expect(page.getByText(entries)).toBeVisible();
+		});
 	});
 });
 

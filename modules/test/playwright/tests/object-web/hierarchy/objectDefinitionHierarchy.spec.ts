@@ -628,190 +628,7 @@ test.describe('Manage root model elements through View Object Entries', () => {
 	});
 });
 
-	test.describe('Disable inheritance modal flows', () => {
-
-		// Inheritance edges with linked entries cannot be PUT edge=false until
-		// the entries are gone, and apiHelpers cannot delete an edge=true
-		// relationship. Delete the parent entry here so the cascade clears the
-		// linked child, then PUT edge=false on the relationships so the
-		// automatic apiHelpers cleanup chain stays unblocked.
-
-		let parentApplicationName = '';
-		let parentEntryId: number | undefined;
-		let relationshipsForCleanup: ObjectRelationship[] = [];
-
-		test.afterEach(async ({apiHelpers}) => {
-			if (parentEntryId !== undefined && parentApplicationName) {
-				await apiHelpers.delete(
-					`${apiHelpers.baseUrl}${parentApplicationName}/${parentEntryId}`
-				);
-			}
-
-			for (const objectRelationship of relationshipsForCleanup) {
-				await apiHelpers.objectAdmin.patchObjectRelationshipEdge(
-					objectRelationship,
-					false
-				);
-			}
-
-			parentApplicationName = '';
-			parentEntryId = undefined;
-			relationshipsForCleanup = [];
-		});
-
-		test('shows modal with warning message before disabling inheritance', async ({
-			apiHelpers,
-			objectRelationshipsPage,
-		}) => {
-			const parent =
-				await apiHelpers.objectAdmin.postRandomObjectDefinition({
-					status: {code: 0},
-				});
-
-			const child =
-				await apiHelpers.objectAdmin.postRandomObjectDefinition({
-					status: {code: 0},
-				});
-
-			pushToApiHelpersData(
-				apiHelpers,
-				[parent.id!, child.id!],
-				'objectDefinition'
-			);
-
-			const relationship =
-				await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
-					parent,
-					child
-				);
-
-			relationshipsForCleanup = [relationship];
-
-			apiHelpers.data.push({
-				id: relationship.id!,
-				type: 'objectRelationship',
-			});
-
-			await objectRelationshipsPage.goto(parent.label!['en_US']);
-
-			await objectRelationshipsPage.actionsButton.click();
-
-			await objectRelationshipsPage.editObjectRelationshipOption.click();
-
-			await objectRelationshipsPage.inheritanceCheckbox.click();
-
-			await expect(
-				objectRelationshipsPage.inheritanceModalHeader
-			).toBeVisible();
-
-			await expect(
-				objectRelationshipsPage.inheritanceModalConfirmationMessage
-			).toBeVisible();
-		});
-
-		test(
-			'shows modal blocking disabling inheritance when entries would be orphaned',
-			{tag: '@LPD-89021'},
-			async ({apiHelpers, objectRelationshipsPage}) => {
-
-				// Build a child with two inheritance parents and standalone=false
-
-				const parent1 =
-					await apiHelpers.objectAdmin.postRandomObjectDefinition({
-						status: {code: 0},
-					});
-
-				const parent2 =
-					await apiHelpers.objectAdmin.postRandomObjectDefinition({
-						status: {code: 0},
-					});
-
-				const child =
-					await apiHelpers.objectAdmin.postRandomObjectDefinition({
-						status: {code: 0},
-					});
-
-				pushToApiHelpersData(
-					apiHelpers,
-					[parent1.id!, parent2.id!, child.id!],
-					'objectDefinition'
-				);
-
-				const relationship1 =
-					await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
-						parent1,
-						child
-					);
-
-				const relationship2 =
-					await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
-						parent2,
-						child
-					);
-
-				relationshipsForCleanup = [relationship1, relationship2];
-
-				apiHelpers.data.push(
-					{id: relationship1.id!, type: 'objectRelationship'},
-					{id: relationship2.id!, type: 'objectRelationship'}
-				);
-
-				await apiHelpers.objectAdmin.patchObjectDefinitionSetting(
-					child.id!,
-					'allowStandaloneObjectEntry',
-					'false'
-				);
-
-				// Create a child entry linked under parent1
-
-				parentApplicationName = parent1.restContextPath!.replace(
-					/^\/o\//,
-					''
-				);
-
-				const parentEntry =
-					await apiHelpers.objectEntry.postObjectEntry(
-						{textField: 'parent-' + getRandomInt()},
-						parentApplicationName
-					);
-
-				parentEntryId = parentEntry.id;
-
-				await apiHelpers.post(
-					`${apiHelpers.baseUrl}${parentApplicationName}/${parentEntry.id}/${relationship1.name}`,
-					{data: {textField: 'linked-' + getRandomInt()}}
-				);
-
-				// Open Edit relationship and uncheck inheritance
-
-				await objectRelationshipsPage.goto(parent1.label!['en_US']);
-
-				await objectRelationshipsPage.actionsButton.click();
-
-				await objectRelationshipsPage.editObjectRelationshipOption.click();
-
-				await objectRelationshipsPage.inheritanceCheckbox.click();
-
-				// Block modal fires directly from the pre-check (no warning step)
-
-				await expect(
-					objectRelationshipsPage.disableInheritanceNotAllowedModalHeader
-				).toBeVisible();
-
-				await expect(
-					objectRelationshipsPage.disableInheritanceNotAllowedModalBody
-				).toBeVisible();
-
-				await objectRelationshipsPage.disableInheritanceNotAllowedModalDoneButton.click();
-
-				await expect(
-					objectRelationshipsPage.disableInheritanceNotAllowedModalHeader
-				).toBeHidden();
-			}
-		);
-	});
 test.describe('Manage root models elements through Objects Admin', () => {
-
 	test('cannot delete an object definition with inheritance enabled on its relationship', async ({
 		apiHelpers,
 		page,
@@ -1703,6 +1520,186 @@ test.describe('Manage root models elements through Objects Admin', () => {
 			}
 		}
 	});
+});
+
+test.describe('Disable inheritance modal flows', () => {
+
+	// Inheritance edges with linked entries cannot be PUT edge=false until
+	// the entries are gone, and apiHelpers cannot delete an edge=true
+	// relationship. Delete the parent entry here so the cascade clears the
+	// linked child, then PUT edge=false on the relationships so the
+	// automatic apiHelpers cleanup chain stays unblocked.
+
+	let parentApplicationName = '';
+	let parentEntryId: number | undefined;
+	let relationshipsForCleanup: ObjectRelationship[] = [];
+
+	test.afterEach(async ({apiHelpers}) => {
+		if (parentEntryId !== undefined && parentApplicationName) {
+			await apiHelpers.delete(
+				`${apiHelpers.baseUrl}${parentApplicationName}/${parentEntryId}`
+			);
+		}
+
+		for (const objectRelationship of relationshipsForCleanup) {
+			await apiHelpers.objectAdmin.patchObjectRelationshipEdge(
+				objectRelationship,
+				false
+			);
+		}
+
+		parentApplicationName = '';
+		parentEntryId = undefined;
+		relationshipsForCleanup = [];
+	});
+
+	test('shows modal with warning message before disabling inheritance', async ({
+		apiHelpers,
+		objectRelationshipsPage,
+	}) => {
+		const parent = await apiHelpers.objectAdmin.postRandomObjectDefinition({
+			status: {code: 0},
+		});
+
+		const child = await apiHelpers.objectAdmin.postRandomObjectDefinition({
+			status: {code: 0},
+		});
+
+		pushToApiHelpersData(
+			apiHelpers,
+			[parent.id!, child.id!],
+			'objectDefinition'
+		);
+
+		const relationship =
+			await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
+				parent,
+				child
+			);
+
+		relationshipsForCleanup = [relationship];
+
+		apiHelpers.data.push({
+			id: relationship.id!,
+			type: 'objectRelationship',
+		});
+
+		await objectRelationshipsPage.goto(parent.label!['en_US']);
+
+		await objectRelationshipsPage.actionsButton.click();
+
+		await objectRelationshipsPage.editObjectRelationshipOption.click();
+
+		await objectRelationshipsPage.inheritanceCheckbox.click();
+
+		await expect(
+			objectRelationshipsPage.inheritanceModalHeader
+		).toBeVisible();
+
+		await expect(
+			objectRelationshipsPage.inheritanceModalConfirmationMessage
+		).toBeVisible();
+	});
+
+	test(
+		'shows modal blocking disabling inheritance when entries would be orphaned',
+		{tag: '@LPD-89021'},
+		async ({apiHelpers, objectRelationshipsPage}) => {
+
+			// Build a child with two inheritance parents and standalone=false
+
+			const parent1 =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			const parent2 =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			const child =
+				await apiHelpers.objectAdmin.postRandomObjectDefinition({
+					status: {code: 0},
+				});
+
+			pushToApiHelpersData(
+				apiHelpers,
+				[parent1.id!, parent2.id!, child.id!],
+				'objectDefinition'
+			);
+
+			const relationship1 =
+				await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
+					parent1,
+					child
+				);
+
+			const relationship2 =
+				await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
+					parent2,
+					child
+				);
+
+			relationshipsForCleanup = [relationship1, relationship2];
+
+			apiHelpers.data.push(
+				{id: relationship1.id!, type: 'objectRelationship'},
+				{id: relationship2.id!, type: 'objectRelationship'}
+			);
+
+			await apiHelpers.objectAdmin.patchObjectDefinitionSetting(
+				child.id!,
+				'allowStandaloneObjectEntry',
+				'false'
+			);
+
+			// Create a child entry linked under parent1
+
+			parentApplicationName = parent1.restContextPath!.replace(
+				/^\/o\//,
+				''
+			);
+
+			const parentEntry = await apiHelpers.objectEntry.postObjectEntry(
+				{textField: 'parent-' + getRandomInt()},
+				parentApplicationName
+			);
+
+			parentEntryId = parentEntry.id;
+
+			await apiHelpers.post(
+				`${apiHelpers.baseUrl}${parentApplicationName}/${parentEntry.id}/${relationship1.name}`,
+				{data: {textField: 'linked-' + getRandomInt()}}
+			);
+
+			// Open Edit relationship and uncheck inheritance
+
+			await objectRelationshipsPage.goto(parent1.label!['en_US']);
+
+			await objectRelationshipsPage.actionsButton.click();
+
+			await objectRelationshipsPage.editObjectRelationshipOption.click();
+
+			await objectRelationshipsPage.inheritanceCheckbox.click();
+
+			// Block modal fires directly from the pre-check (no warning step)
+
+			await expect(
+				objectRelationshipsPage.disableInheritanceNotAllowedModalHeader
+			).toBeVisible();
+
+			await expect(
+				objectRelationshipsPage.disableInheritanceNotAllowedModalBody
+			).toBeVisible();
+
+			await objectRelationshipsPage.disableInheritanceNotAllowedModalDoneButton.click();
+
+			await expect(
+				objectRelationshipsPage.disableInheritanceNotAllowedModalHeader
+			).toBeHidden();
+		}
+	);
 });
 
 test.describe('Manage root models elements through Model Builder', () => {
