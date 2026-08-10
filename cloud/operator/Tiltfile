@@ -171,9 +171,11 @@ k8s_yaml(
         namespace="liferay-system",
         set=[
             "debug=true",
+            "gracePeriod=10m",
             "heartbeatInterval=30s",
             "image.repository=liferay/liferay-dxp-operator",
             "provisioning.baseURL=https://webserver-lrprovisioning-uat.lfr.cloud",
+            "retry.maxDelay=1m",
             "securityContext.readOnlyRootFilesystem=false",
         ],
     )
