@@ -51,9 +51,7 @@ public class SaveAuditConfigurationMVCActionCommand
 
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
-
 		String portletId = PortalUtil.getPortletId(actionRequest);
-
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
 				"enabled", ParamUtil.getBoolean(actionRequest, "enabled")

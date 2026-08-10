@@ -37,7 +37,6 @@ public class AuditConfigurationUtilTest {
 		_testIsEnabled(CompanyConstants.SYSTEM, true);
 		_testIsEnabled(RandomTestUtil.randomLong(), false);
 		_testIsEnabled(RandomTestUtil.randomLong(), true);
-
 		_testIsEnabledWhenConfigurationIsUnavailable(
 			CompanyConstants.SYSTEM, new ConfigurationException());
 		_testIsEnabledWhenConfigurationIsUnavailable(
@@ -133,8 +132,6 @@ public class AuditConfigurationUtilTest {
 
 			AuditConfiguration companyAuditConfiguration =
 				_createAuditConfiguration(!enabled);
-			AuditConfiguration systemAuditConfiguration =
-				_createAuditConfiguration(enabled);
 
 			configurationProviderUtilMockedStatic.when(
 				() -> ConfigurationProviderUtil.getCompanyConfiguration(
@@ -142,6 +139,9 @@ public class AuditConfigurationUtilTest {
 			).thenReturn(
 				companyAuditConfiguration
 			);
+
+			AuditConfiguration systemAuditConfiguration =
+				_createAuditConfiguration(enabled);
 
 			configurationProviderUtilMockedStatic.when(
 				() -> ConfigurationProviderUtil.getSystemConfiguration(

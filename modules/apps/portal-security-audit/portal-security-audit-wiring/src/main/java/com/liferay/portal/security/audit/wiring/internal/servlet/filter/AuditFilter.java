@@ -150,7 +150,7 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 
 		if (companyId == CompanyConstants.SYSTEM) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Not capturing request audit data for company ID 0");
+				_log.debug("Skip filter for company ID 0");
 			}
 
 			return false;

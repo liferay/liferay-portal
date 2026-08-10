@@ -18,7 +18,7 @@ public class AuditConfigurationUtil {
 
 	public static boolean isEnabled(long companyId) {
 		try {
-			AuditConfiguration auditConfiguration;
+			AuditConfiguration auditConfiguration = null;
 
 			if ((companyId == CompanyConstants.SYSTEM) ||
 				!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-6417")) {
