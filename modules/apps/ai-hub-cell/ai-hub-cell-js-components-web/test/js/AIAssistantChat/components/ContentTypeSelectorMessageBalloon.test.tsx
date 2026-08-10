@@ -111,6 +111,10 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 
 		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
 		expect(sendMessage).not.toHaveBeenCalled();
-		expect(screen.getByLabelText('content-type')).toBeEnabled();
+
+		const select = screen.getByLabelText('content-type');
+
+		expect(select).toBeEnabled();
+		expect(select).toHaveValue('');
 	});
 });

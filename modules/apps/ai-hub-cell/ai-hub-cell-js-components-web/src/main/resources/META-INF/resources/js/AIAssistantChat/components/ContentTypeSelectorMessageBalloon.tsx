@@ -68,6 +68,8 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 			);
 		}
 		catch {
+			setExternalReferenceCode('');
+
 			setIsGenerating(false);
 
 			Liferay.Util.openToast({
