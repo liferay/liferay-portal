@@ -15,7 +15,6 @@ import com.liferay.notification.exception.NotificationTemplateDescriptionExcepti
 import com.liferay.notification.exception.NotificationTemplateEditorTypeException;
 import com.liferay.notification.exception.NotificationTemplateExternalReferenceCodeException;
 import com.liferay.notification.exception.NotificationTemplateNameException;
-import com.liferay.notification.exception.NotificationTemplateObjectDefinitionIdException;
 import com.liferay.notification.exception.NotificationTemplateSubjectException;
 import com.liferay.notification.internal.template.util.NotificationTemplateUtil;
 import com.liferay.notification.model.NotificationQueueEntry;
@@ -34,9 +33,7 @@ import com.liferay.notification.type.NotificationTypeServiceTracker;
 import com.liferay.notification.util.NotificationRecipientSettingUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.definition.util.ObjectDefinitionUtil;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -548,16 +545,6 @@ public class NotificationTemplateLocalServiceImpl
 			}
 		}
 
-		if (notificationTemplate.getObjectDefinitionId() > 0) {
-			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.fetchObjectDefinition(
-					notificationTemplate.getObjectDefinitionId());
-
-			if (objectDefinition == null) {
-				throw new NotificationTemplateObjectDefinitionIdException();
-			}
-		}
-
 		String description = notificationTemplate.getDescription();
 
 		if (description.length() > 255) {
@@ -633,9 +620,6 @@ public class NotificationTemplateLocalServiceImpl
 
 	@Reference
 	private NotificationTypeServiceTracker _notificationTypeServiceTracker;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
