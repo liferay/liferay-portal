@@ -40,8 +40,8 @@ public class UpgradeDB2 extends UpgradeProcess {
 				StringBundler.concat(
 					"select columns.colname, columns.tabname from ",
 					"syscat.columns columns inner join syscat.tables tables ",
-					"on tables.tabname = columns.tabname and ",
-					"tables.tabschema = columns.tabschema where ",
+					"on columns.tabname = tables.tabname and ",
+					"columns.tabschema = tables.tabschema where ",
 					"columns.length = 1048576 and columns.tabschema = ? and ",
 					"columns.typename = ? and tables.type = 'T'"))) {
 
