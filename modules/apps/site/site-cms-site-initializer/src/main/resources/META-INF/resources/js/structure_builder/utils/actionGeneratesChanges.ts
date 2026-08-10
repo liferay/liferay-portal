@@ -29,6 +29,7 @@ export default function actionGeneratesChanges(actionType: Action['type']) {
 		case 'create-structure':
 		case 'publish-structure':
 		case 'refresh-referenced-structures':
+		case 'save-structure':
 		case 'set-renaming-item-uuid':
 		case 'set-selection':
 		case 'set-structure-status':

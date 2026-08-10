@@ -110,7 +110,7 @@ export default async function handleSaveStructure({
 			return;
 		}
 		else {
-			dispatch({status: 'draft', type: 'set-structure-status'});
+			dispatch({type: 'save-structure'});
 			dispatch({type: 'clear-errors'});
 		}
 	}

@@ -11,12 +11,12 @@ import findChild from '../findChild';
 export default function updateHistory({
 	deletedChildrenUuids,
 	initialHistory,
-	publishedChildren,
+	savedChildren,
 	structure,
 }: {
 	deletedChildrenUuids: Set<Uuid>;
 	initialHistory: State['history'];
-	publishedChildren: State['publishedChildren'];
+	savedChildren: State['savedChildren'];
 	structure: Structure;
 }) {
 	let nextHistory = {...initialHistory};
@@ -31,7 +31,7 @@ export default function updateHistory({
 			continue;
 		}
 
-		if (publishedChildren.has(deletedChildUuid)) {
+		if (savedChildren.has(deletedChildUuid)) {
 			nextHistory = {
 				...nextHistory,
 				deletedChildren: [...nextHistory.deletedChildren, child],

@@ -63,6 +63,7 @@ function buildInitialState(child: StructureChild): State {
 		invalids: new Map(),
 		publishedChildren: new Set(),
 		renamingItemUuid: null,
+		savedChildren: new Set(),
 		selection: [],
 		structure: {
 			children,

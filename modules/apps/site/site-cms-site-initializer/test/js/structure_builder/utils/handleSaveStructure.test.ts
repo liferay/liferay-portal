@@ -49,7 +49,6 @@ it('resets the structure status to draft after a successful update save so the S
 	await handleSaveStructure({dispatch, state, validate: () => true});
 
 	expect(dispatch).toHaveBeenCalledWith({
-		status: 'draft',
-		type: 'set-structure-status',
+		type: 'save-structure',
 	});
 });

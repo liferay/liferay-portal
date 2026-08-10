@@ -42,6 +42,7 @@ export default function buildState({
 				? getChildrenUuids({root: structure})
 				: new Set(),
 		renamingItemUuid: null,
+		savedChildren: getChildrenUuids({root: structure}),
 		selection: [],
 		structure,
 		unsavedChanges: false,

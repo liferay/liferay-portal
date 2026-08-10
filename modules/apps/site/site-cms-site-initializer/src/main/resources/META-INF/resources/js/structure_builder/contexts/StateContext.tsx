@@ -74,6 +74,7 @@ export type State = {
 	invalids: Map<Uuid, ErrorMap>;
 	publishedChildren: Set<Uuid>;
 	renamingItemUuid: Uuid | null;
+	savedChildren: Set<Uuid>;
 	selection: Uuid[];
 	structure: Structure;
 	unsavedChanges: boolean;
@@ -91,6 +92,7 @@ const INITIAL_STATE: State = {
 	invalids: new Map(),
 	publishedChildren: new Set(),
 	renamingItemUuid: null,
+	savedChildren: new Set(),
 	selection: [],
 	structure: {
 		children: new Map(),
@@ -170,6 +172,8 @@ type RenameItemAction = {
 	type: 'rename-item';
 	uuid: Uuid;
 };
+
+type SaveStructureAction = {type: 'save-structure'};
 
 type SetRenamingItemUuidAction = {
 	type: 'set-renaming-item-uuid';
@@ -258,6 +262,7 @@ export type Action =
 	| PublishStructureAction
 	| RefreshReferencedStructuresAction
 	| RenameItemAction
+	| SaveStructureAction
 	| SetRenamingItemUuidAction
 	| SetSelectionAction
 	| SetStructureStatusAction
@@ -316,10 +321,11 @@ function reducer(state: State, action: Action): State {
 		case 'add-referenced-structures': {
 			const {referencedStructures} = action;
 
-			const {publishedChildren, structure} = state;
+			const {publishedChildren, savedChildren, structure} = state;
 
 			let children = new Map(structure.children);
 
+			let nextSavedChildren = new Set(savedChildren);
 			let nextPublishedChildren = new Set(publishedChildren);
 
 			let selection: State['selection'] = [];
@@ -333,9 +339,17 @@ function reducer(state: State, action: Action): State {
 					root: {...structure, children},
 				});
 
+				const referencedStructureChildrenUuids = getChildrenUuids({
+					root: referencedStructure,
+				});
+
+				nextSavedChildren = new Set([
+					...nextSavedChildren,
+					...referencedStructureChildrenUuids,
+				]);
 				nextPublishedChildren = new Set([
 					...nextPublishedChildren,
-					...getChildrenUuids({root: referencedStructure}),
+					...referencedStructureChildrenUuids,
 				]);
 
 				if (i === 0) {
@@ -348,6 +362,7 @@ function reducer(state: State, action: Action): State {
 			return {
 				...state,
 				publishedChildren: nextPublishedChildren,
+				savedChildren: nextSavedChildren,
 				selection,
 				structure: {...structure, children: sortedChildren},
 			};
@@ -371,7 +386,7 @@ function reducer(state: State, action: Action): State {
 			};
 		}
 		case 'add-repeatable-group': {
-			const {history, publishedChildren, structure} = state;
+			const {history, savedChildren, structure} = state;
 
 			const {uuids} = action;
 
@@ -391,7 +406,7 @@ function reducer(state: State, action: Action): State {
 			const deletedChildrenUuids = new Set<Uuid>();
 
 			for (const item of items) {
-				if (publishedChildren.has(item.uuid)) {
+				if (savedChildren.has(item.uuid)) {
 					deletedChildrenUuids.add(item.uuid);
 				}
 			}
@@ -402,7 +417,7 @@ function reducer(state: State, action: Action): State {
 					? updateHistory({
 							deletedChildrenUuids,
 							initialHistory: history,
-							publishedChildren,
+							savedChildren,
 							structure,
 						})
 					: history,
@@ -482,7 +497,7 @@ function reducer(state: State, action: Action): State {
 				history: updateHistory({
 					deletedChildrenUuids,
 					initialHistory: state.history,
-					publishedChildren: state.publishedChildren,
+					savedChildren: state.savedChildren,
 					structure,
 				}),
 				invalids,
@@ -538,7 +553,7 @@ function reducer(state: State, action: Action): State {
 		case 'move-children': {
 			const {items, targetUuid} = action;
 
-			const {history, publishedChildren, structure} = state;
+			const {history, savedChildren, structure} = state;
 
 			const children = moveChildren({
 				items,
@@ -549,7 +564,7 @@ function reducer(state: State, action: Action): State {
 			const deletedChildrenUuids = new Set<Uuid>();
 
 			for (const item of items) {
-				if (publishedChildren.has(item.uuid)) {
+				if (savedChildren.has(item.uuid)) {
 					deletedChildrenUuids.add(item.uuid);
 				}
 			}
@@ -560,7 +575,7 @@ function reducer(state: State, action: Action): State {
 					? updateHistory({
 							deletedChildrenUuids,
 							initialHistory: history,
-							publishedChildren,
+							savedChildren,
 							structure,
 						})
 					: history,
@@ -624,7 +639,22 @@ function reducer(state: State, action: Action): State {
 				history: INITIAL_STATE.history,
 				invalids: new Map(),
 				publishedChildren: getChildrenUuids({root: structure}),
+				savedChildren: getChildrenUuids({root: structure}),
 				structure: nextStructure,
+				unsavedChanges: false,
+			};
+		}
+		case 'save-structure': {
+			const {structure} = state;
+
+			return {
+				...state,
+				history: INITIAL_STATE.history,
+				savedChildren: getChildrenUuids({root: structure}),
+				structure: {
+					...structure,
+					status: 'draft' as Structure['status'],
+				},
 				unsavedChanges: false,
 			};
 		}
