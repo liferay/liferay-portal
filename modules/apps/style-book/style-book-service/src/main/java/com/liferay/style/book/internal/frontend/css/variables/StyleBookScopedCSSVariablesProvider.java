@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.util.DefaultStyleBookEntryUtil;
 
@@ -33,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -150,10 +152,23 @@ public class StyleBookScopedCSSVariablesProvider
 		for (String key : keys) {
 			JSONObject tokenValueJSONObject = jsonObject.getJSONObject(key);
 
+			String tokenDefinitionId = tokenValueJSONObject.getString(
+				"tokenDefinitionId");
+
+			if (Objects.equals(
+					tokenDefinitionId,
+					StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID)) {
+
+				priorities.put(
+					key, FrontendTokenDefinitionConstants.PRIORITY_CUSTOM);
+
+				continue;
+			}
+
 			priorities.put(
 				key,
 				tokenDefinitionPriorities.getOrDefault(
-					tokenValueJSONObject.getString("tokenDefinitionId"),
+					tokenDefinitionId,
 					FrontendTokenDefinitionConstants.PRIORITY_LEGACY));
 		}
 

@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
+import com.liferay.style.book.constants.StyleBookConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -75,8 +76,16 @@ public class StyleBookScopedCSSVariablesProviderTest {
 			"clay:primaryColor",
 			_createTokenValueJSONObject("--primary-color", "clay", "#fff")
 		).put(
+			"custom:secondaryColor",
+			_createTokenValueJSONObject(
+				"--secondary-color",
+				StyleBookConstants.CUSTOM_FRONTEND_TOKEN_DEFINITION_ID, "#0f0")
+		).put(
 			"theme:primaryColor",
 			_createTokenValueJSONObject("--primary-color", "theme", "#000")
+		).put(
+			"theme:secondaryColor",
+			_createTokenValueJSONObject("--secondary-color", "theme", "#000")
 		);
 
 		_testGetScopedCSSVariablesCollection(
@@ -85,9 +94,11 @@ public class StyleBookScopedCSSVariablesProviderTest {
 			FrontendTokenDefinitionConstants.PRIORITY_THEME,
 			cssVariables -> {
 				Assert.assertEquals(
-					cssVariables.toString(), 1, cssVariables.size());
+					cssVariables.toString(), 2, cssVariables.size());
 				Assert.assertEquals(
 					"#000", cssVariables.get("--primary-color"));
+				Assert.assertEquals(
+					"#0f0", cssVariables.get("--secondary-color"));
 			});
 		_testGetScopedCSSVariablesCollection(
 			FrontendTokenDefinitionConstants.PRIORITY_THEME,
@@ -95,9 +106,11 @@ public class StyleBookScopedCSSVariablesProviderTest {
 			FrontendTokenDefinitionConstants.PRIORITY_GLOBAL,
 			cssVariables -> {
 				Assert.assertEquals(
-					cssVariables.toString(), 1, cssVariables.size());
+					cssVariables.toString(), 2, cssVariables.size());
 				Assert.assertEquals(
 					"#fff", cssVariables.get("--primary-color"));
+				Assert.assertEquals(
+					"#0f0", cssVariables.get("--secondary-color"));
 			});
 	}
 

@@ -10,6 +10,8 @@ package com.liferay.frontend.token.definition.constants;
  */
 public class FrontendTokenDefinitionConstants {
 
+	public static final int PRIORITY_CUSTOM = 500;
+
 	public static final int PRIORITY_GLOBAL = 100;
 
 	public static final int PRIORITY_LEGACY =
