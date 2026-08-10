@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.service.UserService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -150,7 +151,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 
 		for (String objectDefinitionExternalReferenceCode :
-				new String[] {"L_CMP_PROJECT_LINK", "L_CMP_TASK_LINK"}) {
+				ListUtil.fromArray("L_CMP_PROJECT_LINK", "L_CMP_TASK_LINK")) {
 
 			for (long objectEntryId :
 					CMPObjectEntryUtil.getObjectEntryIds(
