@@ -1103,7 +1103,7 @@ public abstract class BaseDB implements DB {
 				matcher.matches() ? GetterUtil.getInteger(matcher.group(1)) :
 					DB.SQL_SIZE_NONE);
 
-			if (templateType.equals("BLOB") || templateType.equals("DATE")) {
+			if (templateType.equals("DATE")) {
 				_sqlTypeSizes.put(templateType, DB.SQL_SIZE_NONE);
 
 				continue;
@@ -1834,7 +1834,7 @@ public abstract class BaseDB implements DB {
 	private static final Pattern _sqlTypeDecimalDigitsPattern = Pattern.compile(
 		"^\\w+(?:\\(\\d+,\\s(\\d+)\\))", Pattern.CASE_INSENSITIVE);
 	private static final Pattern _sqlTypeSizePattern = Pattern.compile(
-		"^\\w+(?:\\((\\d+).*\\))", Pattern.CASE_INSENSITIVE);
+		"^\\w+\\((\\d+)(?:[,\\s].*)?\\)$", Pattern.CASE_INSENSITIVE);
 	private static final AtomicLong _tempIndexCounter = new AtomicLong(0);
 	private static final Pattern _templatePattern;
 
