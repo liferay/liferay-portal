@@ -27,8 +27,13 @@ public class DefaultExportImportBackgroundTaskStatusMessageTranslatorTest {
 
 	@Test
 	@TestInfo("LPD-75919")
-	public void testTranslateBatchProgressMessageWhenTotalsAreKnown() {
+	public void testTranslate() {
 		BackgroundTaskStatus backgroundTaskStatus = new BackgroundTaskStatus();
+
+		_defaultExportImportBackgroundTaskStatusMessageTranslator.translate(
+			backgroundTaskStatus, _createMessage(1));
+
+		Assert.assertNull(backgroundTaskStatus.getAttribute("percentage"));
 
 		backgroundTaskStatus.setAttribute(
 			"allModelAdditionCountersTotal", 200L);
@@ -39,17 +44,6 @@ public class DefaultExportImportBackgroundTaskStatusMessageTranslatorTest {
 		Assert.assertEquals(
 			Integer.valueOf(25),
 			backgroundTaskStatus.getAttribute("percentage"));
-	}
-
-	@Test
-	@TestInfo("LPD-75919")
-	public void testTranslateBatchProgressMessageWhenTotalsAreUnknown() {
-		BackgroundTaskStatus backgroundTaskStatus = new BackgroundTaskStatus();
-
-		_defaultExportImportBackgroundTaskStatusMessageTranslator.translate(
-			backgroundTaskStatus, _createMessage(1));
-
-		Assert.assertNull(backgroundTaskStatus.getAttribute("percentage"));
 	}
 
 	private Message _createMessage(int batchEngineProcessedItemsCount) {
