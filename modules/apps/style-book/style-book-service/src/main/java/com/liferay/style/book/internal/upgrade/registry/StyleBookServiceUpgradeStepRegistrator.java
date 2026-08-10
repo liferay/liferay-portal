@@ -94,6 +94,13 @@ public class StyleBookServiceUpgradeStepRegistrator
 		registry.register(
 			"1.7.0", "1.8.0",
 			new StyleBookEntryVersionThemeIdUpgradeProcess(_groupLocalService));
+
+		registry.register(
+			"1.8.0", "1.9.0",
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntry", "frontendTokenDefinition TEXT null"),
+			UpgradeProcessFactory.addColumns(
+				"StyleBookEntryVersion", "frontendTokenDefinition TEXT null"));
 	}
 
 	@Reference
