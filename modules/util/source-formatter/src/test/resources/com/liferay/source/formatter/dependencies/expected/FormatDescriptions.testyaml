@@ -1,25 +1,9 @@
-components:
-    schemas:
-        ExternalLink :
-            description: |-
-                Represents a link
-                 to
-                 an entity
-                in a
-                different
-                 domain.
-            properties:
-                dateCreated:
-                    description:
-                        The external link's creation date.
-                    format: date-time
-                    readOnly: true
-                    type: string
-                domain:
-                    description:
-                        "Gets a user's segments. The set of available headers are: Host (string), Accept-Language
-                        (string), User-Agent (string), X-Browser (string), X-Cookies (collection string), X-Device-Brand
-                        (string), X-Device-Model (string), X-Device-Screen-Resolution-Height (double),
-                        X-Device-Screen-Resolution-Width (double), X-Last-Sign-In-Date-Time (date time) and X-Signed-In
-                        (boolean). Local date will be always present in the request."
-                    type: string
+properties:
+    dateCreated:
+        description:
+            The external link's creation date.
+        type: string
+    domain:
+        description:
+            Liferay is an all-in-one DXP, LCAP, and Commerce platform. This chart provides cloud infrastructure resource definitions to support Liferay cloud native infrastructure.
+        type: string
