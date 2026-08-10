@@ -86,6 +86,8 @@ public class PageSpecificationVersionResourceTest
 		throws Exception {
 
 		super.testDeleteSiteSitePagePageSpecificationVersion();
+
+		_testDeleteSiteSitePagePageSpecificationVersionLatestApproved();
 	}
 
 	@Override
@@ -283,6 +285,29 @@ public class PageSpecificationVersionResourceTest
 		).parameters(
 			"nestedFields", "pageSpecification"
 		).build();
+	}
+
+	private void _testDeleteSiteSitePagePageSpecificationVersionLatestApproved()
+		throws Exception {
+
+		PageSpecificationVersion pageSpecificationVersion =
+			_addPageSpecificationVersion();
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() ->
+				pageSpecificationVersionResource.
+					deleteSiteSitePagePageSpecificationVersion(
+						testGroup.getExternalReferenceCode(),
+						_testGroupLayout.getExternalReferenceCode(),
+						pageSpecificationVersion.getExternalReferenceCode()));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("CONFLICT", problem.getStatus());
+		Assert.assertEquals(
+			"The latest approved page specification version is required",
+			problem.getTitle());
 	}
 
 	private void _testGetSiteSitePagePageSpecificationVersionActions()
