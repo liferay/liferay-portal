@@ -163,13 +163,13 @@ public class ExportImportProcessesDisplayContext {
 	private String _getAPIURL(String endpoint) {
 		String portletId = _getPortletId();
 
-		if (!Validator.isBlank(portletId)) {
-			return StringBundler.concat(
-				_BASE_PATH, _getScopePath(), "/portlets/",
-				URLEncoder.encode(portletId, StandardCharsets.UTF_8), endpoint);
+		if (Validator.isBlank(portletId)) {
+			return _BASE_PATH + _getScopePath() + endpoint;
 		}
 
-		return _BASE_PATH + _getScopePath() + endpoint;
+		return StringBundler.concat(
+			_BASE_PATH, _getScopePath(), endpoint, "?portletId=",
+			URLEncoder.encode(portletId, StandardCharsets.UTF_8));
 	}
 
 	private FDSActionDropdownItem _getClearFDSActionDropdownItem(

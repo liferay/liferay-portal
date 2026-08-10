@@ -52,38 +52,18 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 	@Override
 	public ExportPreview getAssetLibraryExportPreview(
-			String assetLibraryExternalReferenceCode, Date endDate,
-			Date startDate)
-		throws Exception {
-
-		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
-
-		return _getExportPreview(endDate, group, 0, null, startDate);
-	}
-
-	@Override
-	public ExportPreview getAssetLibraryPortletExportPreview(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Date endDate, Long plid, Date startDate)
-		throws Exception {
-
-		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
-
-		return _getExportPreview(
-			endDate, group, GetterUtil.getLong(plid), portletId, startDate);
-	}
-
-	@Override
-	public ExportPreview getExportPreview(Date endDate, Date startDate)
+			String assetLibraryExternalReferenceCode, Date endDate, Long plid,
+			String portletId, Date startDate)
 		throws Exception {
 
 		return _getExportPreview(
-			endDate, _getCompanyGroup(), 0, null, startDate);
+			endDate, _getAssetLibraryGroup(assetLibraryExternalReferenceCode),
+			GetterUtil.getLong(plid), portletId, startDate);
 	}
 
 	@Override
-	public ExportPreview getPortletExportPreview(
-			String portletId, Date endDate, Long plid, Date startDate)
+	public ExportPreview getExportPreview(
+			Date endDate, Long plid, String portletId, Date startDate)
 		throws Exception {
 
 		return _getExportPreview(
@@ -93,24 +73,13 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 	@Override
 	public ExportPreview getSiteExportPreview(
-			String siteExternalReferenceCode, Date endDate, Date startDate)
+			String siteExternalReferenceCode, Date endDate, Long plid,
+			String portletId, Date startDate)
 		throws Exception {
-
-		Group group = _getSiteGroup(siteExternalReferenceCode);
-
-		return _getExportPreview(endDate, group, 0, null, startDate);
-	}
-
-	@Override
-	public ExportPreview getSitePortletExportPreview(
-			String siteExternalReferenceCode, String portletId, Date endDate,
-			Long plid, Date startDate)
-		throws Exception {
-
-		Group group = _getSiteGroup(siteExternalReferenceCode);
 
 		return _getExportPreview(
-			endDate, group, GetterUtil.getLong(plid), portletId, startDate);
+			endDate, _getSiteGroup(siteExternalReferenceCode),
+			GetterUtil.getLong(plid), portletId, startDate);
 	}
 
 	private Group _getAssetLibraryGroup(String externalReferenceCode) {

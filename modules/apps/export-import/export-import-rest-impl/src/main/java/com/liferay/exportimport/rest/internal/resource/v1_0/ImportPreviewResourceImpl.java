@@ -58,70 +58,34 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 	@Override
 	public ImportPreview postAssetLibraryImportPreview(
-			String assetLibraryExternalReferenceCode,
-			MultipartBody multipartBody)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, MultipartBody multipartBody)
 		throws Exception {
-
-		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
-
-		return _getImportPreview(group.getGroupId(), multipartBody, 0, null);
-	}
-
-	@Override
-	public ImportPreview postAssetLibraryPortletImportPreview(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long plid, MultipartBody multipartBody)
-		throws Exception {
-
-		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
 
 		return _getImportPreview(
-			group.getGroupId(), multipartBody, GetterUtil.getLong(plid),
-			portletId);
+			_getAssetLibraryGroup(assetLibraryExternalReferenceCode),
+			multipartBody, GetterUtil.getLong(plid), portletId);
 	}
 
 	@Override
-	public ImportPreview postImportPreview(MultipartBody multipartBody)
+	public ImportPreview postImportPreview(
+			Long plid, String portletId, MultipartBody multipartBody)
 		throws Exception {
-
-		Group group = _getCompanyGroup();
-
-		return _getImportPreview(group.getGroupId(), multipartBody, 0, null);
-	}
-
-	@Override
-	public ImportPreview postPortletImportPreview(
-			String portletId, Long plid, MultipartBody multipartBody)
-		throws Exception {
-
-		Group group = _getCompanyGroup();
 
 		return _getImportPreview(
-			group.getGroupId(), multipartBody, GetterUtil.getLong(plid),
+			_getCompanyGroup(), multipartBody, GetterUtil.getLong(plid),
 			portletId);
 	}
 
 	@Override
 	public ImportPreview postSiteImportPreview(
-			String siteExternalReferenceCode, MultipartBody multipartBody)
-		throws Exception {
-
-		Group group = _getSiteGroup(siteExternalReferenceCode);
-
-		return _getImportPreview(group.getGroupId(), multipartBody, 0, null);
-	}
-
-	@Override
-	public ImportPreview postSitePortletImportPreview(
-			String siteExternalReferenceCode, String portletId, Long plid,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			MultipartBody multipartBody)
 		throws Exception {
 
-		Group group = _getSiteGroup(siteExternalReferenceCode);
-
 		return _getImportPreview(
-			group.getGroupId(), multipartBody, GetterUtil.getLong(plid),
-			portletId);
+			_getSiteGroup(siteExternalReferenceCode), multipartBody,
+			GetterUtil.getLong(plid), portletId);
 	}
 
 	private ExportImportConfiguration _addExportImportConfiguration(
@@ -199,9 +163,11 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 	}
 
 	private ImportPreview _getImportPreview(
-			long groupId, MultipartBody multipartBody, long plid,
+			Group group, MultipartBody multipartBody, long plid,
 			String portletId)
 		throws Exception {
+
+		long groupId = group.getGroupId();
 
 		PermissionUtil.checkImportPermission(
 			contextCompany.getCompanyId(), groupId);

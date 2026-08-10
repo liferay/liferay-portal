@@ -236,38 +236,22 @@ public class ExportImportPreviewDisplayContext {
 					themeDisplay.getUser()
 				).build();
 
+			long plid = ParamUtil.getLong(_httpServletRequest, "plid");
 			String portletId = _getPortletId();
 
-			if (Validator.isBlank(portletId)) {
-				if (_isInstanceScoped()) {
-					return exportPreviewResource.getExportPreview(null, null);
-				}
-
-				if (_group.isDepot()) {
-					return exportPreviewResource.getAssetLibraryExportPreview(
-						_group.getExternalReferenceCode(), null, null);
-				}
-
-				return exportPreviewResource.getSiteExportPreview(
-					_group.getExternalReferenceCode(), null, null);
-			}
-
-			long plid = ParamUtil.getLong(_httpServletRequest, "plid");
-
 			if (_isInstanceScoped()) {
-				return exportPreviewResource.getPortletExportPreview(
-					portletId, null, plid, null);
+				return exportPreviewResource.getExportPreview(
+					null, plid, portletId, null);
 			}
 
 			if (_group.isDepot()) {
-				return exportPreviewResource.
-					getAssetLibraryPortletExportPreview(
-						_group.getExternalReferenceCode(), portletId, null,
-						plid, null);
+				return exportPreviewResource.getAssetLibraryExportPreview(
+					_group.getExternalReferenceCode(), null, plid, portletId,
+					null);
 			}
 
-			return exportPreviewResource.getSitePortletExportPreview(
-				_group.getExternalReferenceCode(), portletId, null, plid, null);
+			return exportPreviewResource.getSiteExportPreview(
+				_group.getExternalReferenceCode(), null, plid, portletId, null);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get export preview", exception);
@@ -283,14 +267,14 @@ public class ExportImportPreviewDisplayContext {
 	private String _getResourceAPIURL(String endpoint) {
 		String portletId = _getPortletId();
 
-		if (!Validator.isBlank(portletId)) {
-			return StringBundler.concat(
-				_BASE_PATH, _getScopePath(), "/portlets/", _encode(portletId),
-				endpoint, "?plid=",
-				ParamUtil.getLong(_httpServletRequest, "plid"));
+		if (Validator.isBlank(portletId)) {
+			return _BASE_PATH + _getScopePath() + endpoint;
 		}
 
-		return _BASE_PATH + _getScopePath() + endpoint;
+		return StringBundler.concat(
+			_BASE_PATH, _getScopePath(), endpoint, "?plid=",
+			ParamUtil.getLong(_httpServletRequest, "plid"), "&portletId=",
+			_encode(portletId));
 	}
 
 	private String _getScopePath() {

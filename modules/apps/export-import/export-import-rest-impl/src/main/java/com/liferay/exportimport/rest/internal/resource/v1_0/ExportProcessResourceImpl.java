@@ -89,28 +89,13 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	@Override
 	public Page<ExportProcess> getAssetLibraryExportProcessesPage(
 			String assetLibraryExternalReferenceCode, Long creatorId,
-			String search, Integer status, Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
-
-		return _getExportProcessesPage(
-			creatorId, group.getGroupId(), pagination, null, search, sorts,
-			status);
-	}
-
-	@Override
-	public Page<ExportProcess> getAssetLibraryPortletExportProcessesPage(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long creatorId, String search, Integer status,
+			String portletId, String search, Integer status,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		Group group = _getAssetLibraryGroup(assetLibraryExternalReferenceCode);
-
 		return _getExportProcessesPage(
-			creatorId, group.getGroupId(), pagination, portletId, search, sorts,
-			status);
+			creatorId, _getAssetLibraryGroup(assetLibraryExternalReferenceCode),
+			pagination, portletId, search, sorts, status);
 	}
 
 	@Override
@@ -159,14 +144,12 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 	@Override
 	public Page<ExportProcess> getExportProcessesPage(
-			Long creatorId, String search, Integer status,
+			Long creatorId, String portletId, String search, Integer status,
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		Group group = _getCompanyGroup();
-
 		return _getExportProcessesPage(
-			creatorId, group.getGroupId(), pagination, null, search, sorts,
+			creatorId, _getCompanyGroup(), pagination, portletId, search, sorts,
 			status);
 	}
 
@@ -192,62 +175,23 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	}
 
 	@Override
-	public Page<ExportProcess> getPortletExportProcessesPage(
-			String portletId, Long creatorId, String search, Integer status,
-			Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		Group group = _getCompanyGroup();
-
-		return _getExportProcessesPage(
-			creatorId, group.getGroupId(), pagination, portletId, search, sorts,
-			status);
-	}
-
-	@Override
 	public Page<ExportProcess> getSiteExportProcessesPage(
-			String siteExternalReferenceCode, Long creatorId, String search,
-			Integer status, Pagination pagination, Sort[] sorts)
-		throws Exception {
-
-		Group group = _getSiteGroup(siteExternalReferenceCode);
-
-		return _getExportProcessesPage(
-			creatorId, group.getGroupId(), pagination, null, search, sorts,
-			status);
-	}
-
-	@Override
-	public Page<ExportProcess> getSitePortletExportProcessesPage(
-			String siteExternalReferenceCode, String portletId, Long creatorId,
+			String siteExternalReferenceCode, Long creatorId, String portletId,
 			String search, Integer status, Pagination pagination, Sort[] sorts)
 		throws Exception {
 
-		Group group = _getSiteGroup(siteExternalReferenceCode);
-
 		return _getExportProcessesPage(
-			creatorId, group.getGroupId(), pagination, portletId, search, sorts,
-			status);
+			creatorId, _getSiteGroup(siteExternalReferenceCode), pagination,
+			portletId, search, sorts, status);
 	}
 
 	@Override
 	public ExportProcess postAssetLibraryExportProcess(
-			String assetLibraryExternalReferenceCode,
-			ExportProcessRequest exportProcessRequest)
+			String assetLibraryExternalReferenceCode, Long plid,
+			String portletId, ExportProcessRequest exportProcessRequest)
 		throws Exception {
 
-		return _postLayoutExportProcess(
-			exportProcessRequest,
-			_getAssetLibraryGroup(assetLibraryExternalReferenceCode));
-	}
-
-	@Override
-	public ExportProcess postAssetLibraryPortletExportProcess(
-			String assetLibraryExternalReferenceCode, String portletId,
-			Long plid, ExportProcessRequest exportProcessRequest)
-		throws Exception {
-
-		return _postPortletExportProcess(
+		return _postExportProcess(
 			exportProcessRequest,
 			_getAssetLibraryGroup(assetLibraryExternalReferenceCode),
 			GetterUtil.getLong(plid), portletId);
@@ -255,11 +199,13 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 	@Override
 	public ExportProcess postExportProcess(
+			Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception {
 
-		return _postLayoutExportProcess(
-			exportProcessRequest, _getCompanyGroup());
+		return _postExportProcess(
+			exportProcessRequest, _getCompanyGroup(), GetterUtil.getLong(plid),
+			portletId);
 	}
 
 	@Override
@@ -304,33 +250,12 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	}
 
 	@Override
-	public ExportProcess postPortletExportProcess(
-			String portletId, Long plid,
-			ExportProcessRequest exportProcessRequest)
-		throws Exception {
-
-		return _postPortletExportProcess(
-			exportProcessRequest, _getCompanyGroup(), GetterUtil.getLong(plid),
-			portletId);
-	}
-
-	@Override
 	public ExportProcess postSiteExportProcess(
-			String siteExternalReferenceCode,
+			String siteExternalReferenceCode, Long plid, String portletId,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception {
 
-		return _postLayoutExportProcess(
-			exportProcessRequest, _getSiteGroup(siteExternalReferenceCode));
-	}
-
-	@Override
-	public ExportProcess postSitePortletExportProcess(
-			String siteExternalReferenceCode, String portletId, Long plid,
-			ExportProcessRequest exportProcessRequest)
-		throws Exception {
-
-		return _postPortletExportProcess(
+		return _postExportProcess(
 			exportProcessRequest, _getSiteGroup(siteExternalReferenceCode),
 			GetterUtil.getLong(plid), portletId);
 	}
@@ -420,9 +345,11 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	}
 
 	private Page<ExportProcess> _getExportProcessesPage(
-			Long creatorId, long groupId, Pagination pagination,
+			Long creatorId, Group group, Pagination pagination,
 			String portletId, String search, Sort[] sorts, Integer status)
 		throws Exception {
+
+		long groupId = group.getGroupId();
 
 		return Page.of(
 			transform(
@@ -445,6 +372,24 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		}
 
 		return group;
+	}
+
+	private ExportProcess _postExportProcess(
+			ExportProcessRequest exportProcessRequest, Group group, long plid,
+			String portletId)
+		throws Exception {
+
+		if (Validator.isBlank(portletId)) {
+			return _postLayoutExportProcess(exportProcessRequest, group);
+		}
+
+		if (plid <= 0) {
+			throw new BadRequestException(
+				"Exporting the portlet " + portletId + " requires a plid");
+		}
+
+		return _postPortletExportProcess(
+			exportProcessRequest, group, plid, portletId);
 	}
 
 	private ExportProcess _postLayoutExportProcess(
