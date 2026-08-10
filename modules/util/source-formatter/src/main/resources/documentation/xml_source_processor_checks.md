@@ -3,6 +3,7 @@
 Check | Category | Description
 ----- | -------- | -----------
 EmbeddedJSONCheck | [Styling](styling_checks.md#styling-checks) | Ensures consistent formatting for embedded JSON. |
+JDKDynamicAgentLoadingCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that dynamic loading of agents is not used. |
 XMLBuildFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `build.xml`. |
 XMLCheckstyleFileCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on `checkstyle.xml` file. |
 XMLCustomSQLOrderCheck | [Styling](styling_checks.md#styling-checks) | Checks the order of attributes in `custom-sql` file. |

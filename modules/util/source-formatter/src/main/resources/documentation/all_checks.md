@@ -147,6 +147,7 @@ InnerExceptionClassCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevent
 InstanceofOrderCheck | [Styling](styling_checks.md#styling-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Check the order of `instanceof` calls. |
 [ItemBuilderCheck](check/builder_check.md#buildercheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | .java | Checks that `DropdownItemBuilder`, `LabelItemBuilder` or `NavigationItemBuilder` is used when possible. |
 [ItemListBuilderCheck](check/builder_check.md#buildercheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | .java | Checks that `DropdownItemListBuilder`, `LabelItemListBuilder` or `NavigationItemListBuilder` is used when possible. |
+JDKDynamicAgentLoadingCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .action, .eslintignore, .function, .jelly, .jrxml, .macro, .pom, .prettierignore, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, .xsd, .yaml, or .yml | Checks that dynamic loading of agents is not used. |
 JSCompatibilityCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | | Checks for JavaScript compatibility. |
 [JSLodashDependencyCheck](check/js_lodash_dependency_check.md#jslodashdependencycheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .js or .jsx | Finds incorrect use of `AUI._`. |
 JSONBatchEngineDataFileCheck | [Styling](styling_checks.md#styling-checks) | .ipynb, .json, or .npmbridgerc | Remove elements in `*.batch-engine-data.json` files. |

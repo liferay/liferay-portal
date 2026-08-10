@@ -2,6 +2,7 @@
 
 Check | Category | Description
 ----- | -------- | -----------
+JDKDynamicAgentLoadingCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that dynamic loading of agents is not used. |
 YMLDefinitionOrderCheck | [Styling](styling_checks.md#styling-checks) | Sorts definitions alphabetically in `.yml` files. |
 YMLEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | Finds missing and unnecessary empty lines. |
 YMLIndentationCheck | [Styling](styling_checks.md#styling-checks) | Finds incorrect indentation in YAML files. |
