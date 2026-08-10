@@ -48,6 +48,10 @@ public class ExportImportPortletPreferencesProcessorHelperImpl
 	public String getGroupExportPortletPreferencesExternalReferenceCode(
 		long companyId, String externalReferenceCode) {
 
+		if (!ExportImportThreadLocal.isStagingInProcess()) {
+			return externalReferenceCode;
+		}
+
 		Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
 			externalReferenceCode, companyId);
 
@@ -55,9 +59,7 @@ public class ExportImportPortletPreferencesProcessorHelperImpl
 			return externalReferenceCode;
 		}
 
-		if (ExportImportThreadLocal.isStagingInProcess() &&
-			group.isStagedRemotely()) {
-
+		if (group.isStagedRemotely()) {
 			String remoteGroupExternalReferenceCode =
 				_getRemoteGroupExternalReferenceCode(group);
 
