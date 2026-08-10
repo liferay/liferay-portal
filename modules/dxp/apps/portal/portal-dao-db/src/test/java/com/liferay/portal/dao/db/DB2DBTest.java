@@ -170,6 +170,19 @@ public class DB2DBTest extends BaseDBTestCase {
 	}
 
 	@Test
+	public void testSBlobColumnType() throws Exception {
+		Assert.assertEquals(
+			"create table TestTable (largeColumnValue blob(2G))\n",
+			buildSQL("create table TestTable (largeColumnValue SBLOB)"));
+	}
+
+	@Test
+	public void testSBlobColumnTypeSize() {
+		Assert.assertEquals(
+			Integer.valueOf(DB.SQL_SIZE_NONE), db.getSQLTypeSize("SBLOB"));
+	}
+
+	@Test
 	public void testTextColumnType() throws Exception {
 		Assert.assertEquals(
 			"create table TestTable (largeColumnValue clob(2G))\n",
