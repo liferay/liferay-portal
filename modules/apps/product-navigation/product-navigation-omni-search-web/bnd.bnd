@@ -1,0 +1,4 @@
+Bundle-Name: Liferay Product Navigation Omni Search Web
+Bundle-SymbolicName: com.liferay.product.navigation.omni.search.web
+Bundle-Version: 1.0.0
+Web-ContextPath: /product-navigation-omni-search-web
