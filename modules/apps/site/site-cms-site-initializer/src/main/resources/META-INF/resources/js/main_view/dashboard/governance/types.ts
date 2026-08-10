@@ -5,9 +5,9 @@
 
 import type {IItemsActions} from '@liferay/frontend-data-set-web';
 
-import type {AssetListAdditionalProps} from '../../props_transformer/getAssetListFDSProps';
+import type {DashboardAssetListAdditionalProps} from '../../props_transformer/getDashboardAssetListFDSProps';
 
-export type GovernanceAdditionalProps = AssetListAdditionalProps & {
+export type GovernanceAdditionalProps = DashboardAssetListAdditionalProps & {
 	allSectionFDSName: string;
 	expiringSoonFDSName: string;
 	expiringSoonFilterString: string;

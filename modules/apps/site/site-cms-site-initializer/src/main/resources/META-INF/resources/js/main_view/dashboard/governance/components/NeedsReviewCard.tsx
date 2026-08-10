@@ -9,7 +9,7 @@ import {sub} from 'frontend-js-web';
 import React, {useMemo} from 'react';
 
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
-import getAssetListFDSProps from '../../../props_transformer/getAssetListFDSProps';
+import getDashboardAssetListFDSProps from '../../../props_transformer/getDashboardAssetListFDSProps';
 import {GovernanceAdditionalProps} from '../types';
 
 const EMPTY_STATE_IMAGE = '/states/cms_empty_state.svg';
@@ -57,7 +57,7 @@ const NeedsReviewCard: React.FC<INeedsReviewCardProps> = ({
 }) => {
 	const fdsProps = useMemo(
 		() =>
-			getAssetListFDSProps({
+			getDashboardAssetListFDSProps({
 				additionalProps,
 				apiURL,
 				id,

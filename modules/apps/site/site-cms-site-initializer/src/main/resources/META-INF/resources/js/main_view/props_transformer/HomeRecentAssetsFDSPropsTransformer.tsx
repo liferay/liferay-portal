@@ -4,7 +4,7 @@
  */
 
 import {AdditionalProps} from './AssetsFDSPropsTransformer';
-import getAssetListFDSProps from './getAssetListFDSProps';
+import getDashboardAssetListFDSProps from './getDashboardAssetListFDSProps';
 
 export default function HomeRecentAssetsFDSPropsTransformer({
 	additionalProps,
@@ -16,7 +16,7 @@ export default function HomeRecentAssetsFDSPropsTransformer({
 	itemsActions?: any[];
 	otherProps: any;
 }) {
-	return getAssetListFDSProps({
+	return getDashboardAssetListFDSProps({
 		...otherProps,
 		additionalProps,
 		apiURL: `${otherProps.apiURL}&pageSize=16`,

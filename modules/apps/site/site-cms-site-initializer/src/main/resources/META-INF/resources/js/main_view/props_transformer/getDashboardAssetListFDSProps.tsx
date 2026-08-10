@@ -3,7 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IInternalRenderer, replaceTokens} from '@liferay/frontend-data-set-web';
+import {
+	IInternalRenderer,
+	IItemsActions,
+	replaceTokens,
+} from '@liferay/frontend-data-set-web';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
@@ -23,7 +27,7 @@ import openFolderItemSelectorAction from './actions/openFolderItemSelectorAction
 import shareAction from './actions/shareAction';
 import AssetRenderer from './cell_renderers/AssetRenderer';
 
-export type AssetListAdditionalProps = Pick<
+export type DashboardAssetListAdditionalProps = Pick<
 	AdditionalProps,
 	| 'assetLibraries'
 	| 'autocompleteURL'
@@ -47,15 +51,15 @@ export type AssetListAdditionalProps = Pick<
 		>
 	>;
 
-export default function getAssetListFDSProps({
+export default function getDashboardAssetListFDSProps({
 	additionalProps,
 	itemsActions = [],
 	renderSubtitle,
 	...otherProps
 }: {
-	additionalProps: AssetListAdditionalProps;
+	additionalProps: DashboardAssetListAdditionalProps;
 	apiURL?: string;
-	itemsActions?: any[];
+	itemsActions?: IItemsActions[];
 	renderSubtitle?: (itemData: ISearchAssetObjectEntry) => React.ReactNode;
 	[key: string]: any;
 }) {
