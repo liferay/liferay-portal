@@ -208,6 +208,7 @@ JavaUpgradeModelPermissionsCheck | [Upgrade](upgrade_checks.md#upgrade-checks) |
 JavaUpgradeVersionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Verifies that the correct upgrade versions are used in classes that implement `UpgradeStepRegistrator`. |
 JavaVariableTypeCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on the modifiers on variables. |
 JavaVerifyUpgradeConnectionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where `DataAccess.getConnection` is used (instead of using the available global variable `connection`). |
+JavaVirtualThreadsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that virtual threads are not used (e.g., Executors.newVirtualThreadPerTaskExecutor(), Thread.ofVirtual(), Thread.startVirtualThread()). |
 JavaXMLSecurityCheck | [Security](security_checks.md#security-checks) | Finds possible XXE or Quadratic Blowup security vulnerabilities. |
 JavadocCheck | [Javadoc](javadoc_checks.md#javadoc-checks) | Performs several checks on javadoc. |
 [JavadocStyleCheck](https://checkstyle.sourceforge.io/checks/javadoc/javadocstyle.html) | [Javadoc](javadoc_checks.md#javadoc-checks) | Validates Javadoc comments to help ensure they are well formed. |
