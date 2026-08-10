@@ -710,50 +710,43 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 	public void testExportImportDisplayStyleFromStagedGroup() throws Exception {
 		Group displayStyleLiveGroup = GroupTestUtil.addGroup();
 
-		try {
-			StagingLocalServiceUtil.enableLocalStaging(
-				TestPropsValues.getUserId(), displayStyleLiveGroup, false,
-				false, new ServiceContext());
+		StagingLocalServiceUtil.enableLocalStaging(
+			TestPropsValues.getUserId(), displayStyleLiveGroup, false, false,
+			new ServiceContext());
 
-			Group displayStyleStagingGroup =
-				displayStyleLiveGroup.getStagingGroup();
+		Group displayStyleStagingGroup =
+			displayStyleLiveGroup.getStagingGroup();
 
-			DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
-				displayStyleStagingGroup.getGroupId(),
-				PortalUtil.getClassNameId(getClassName(group.getCompanyId())),
-				0,
-				PortalUtil.getClassNameId(
-					PortletDisplayTemplate.class.getName()),
-				TemplateConstants.LANG_TYPE_FTL, RandomTestUtil.randomString(),
-				PortalUtil.getSiteDefaultLocale(displayStyleStagingGroup));
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			displayStyleStagingGroup.getGroupId(),
+			PortalUtil.getClassNameId(getClassName(group.getCompanyId())), 0,
+			PortalUtil.getClassNameId(PortletDisplayTemplate.class.getName()),
+			TemplateConstants.LANG_TYPE_FTL, RandomTestUtil.randomString(),
+			PortalUtil.getSiteDefaultLocale(displayStyleStagingGroup));
 
-			String displayStyle =
-				PortletDisplayTemplate.DISPLAY_STYLE_PREFIX +
-					ddmTemplate.getTemplateKey();
+		String displayStyle =
+			PortletDisplayTemplate.DISPLAY_STYLE_PREFIX +
+				ddmTemplate.getTemplateKey();
 
-			PortletPreferences portletPreferences =
-				getImportedPortletPreferences(
-					HashMapBuilder.put(
-						"displayStyle", new String[] {displayStyle}
-					).put(
-						"displayStyleGroupExternalReferenceCode",
-						new String[] {
-							displayStyleStagingGroup.getExternalReferenceCode()
-						}
-					).build());
+		PortletPreferences portletPreferences = getImportedPortletPreferences(
+			HashMapBuilder.put(
+				"displayStyle", new String[] {displayStyle}
+			).put(
+				"displayStyleGroupExternalReferenceCode",
+				new String[] {
+					displayStyleStagingGroup.getExternalReferenceCode()
+				}
+			).build());
 
-			Assert.assertEquals(
-				displayStyle,
-				portletPreferences.getValue("displayStyle", null));
+		Assert.assertEquals(
+			displayStyle, portletPreferences.getValue("displayStyle", null));
 
-			Assert.assertEquals(
-				displayStyleLiveGroup.getExternalReferenceCode(),
-				portletPreferences.getValue(
-					"displayStyleGroupExternalReferenceCode", null));
-		}
-		finally {
-			GroupTestUtil.deleteGroup(displayStyleLiveGroup);
-		}
+		Assert.assertEquals(
+			displayStyleLiveGroup.getExternalReferenceCode(),
+			portletPreferences.getValue(
+				"displayStyleGroupExternalReferenceCode", null));
+
+		GroupTestUtil.deleteGroup(displayStyleLiveGroup);
 	}
 
 	@Ignore

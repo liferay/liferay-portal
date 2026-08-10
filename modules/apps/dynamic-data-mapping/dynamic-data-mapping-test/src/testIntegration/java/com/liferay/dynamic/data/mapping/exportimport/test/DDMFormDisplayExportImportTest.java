@@ -138,18 +138,15 @@ public class DDMFormDisplayExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		try {
-			Map<String, Object> portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(layout.getPlid(), portletId);
+		Map<String, Object> portletConfiguration =
+			_portletPreferencesPortletConfigurationExporter.
+				getPortletConfiguration(layout.getPlid(), portletId);
 
-			Assert.assertEquals(
-				group.getExternalReferenceCode(),
-				portletConfiguration.get("groupExternalReferenceCode"));
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		Assert.assertEquals(
+			group.getExternalReferenceCode(),
+			portletConfiguration.get("groupExternalReferenceCode"));
+
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
 	}
 
 	@Inject

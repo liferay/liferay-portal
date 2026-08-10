@@ -73,30 +73,25 @@ public class AnnouncementsExportImportTest {
 			stagingLayout, liveGroup1.getStagingGroup(),
 			liveGroup2.getStagingGroup());
 
-		try {
-			_publishLayouts(_stagingGroup);
+		_publishLayouts(_stagingGroup);
 
-			Layout liveLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
-				stagingLayout.getUuid(), _liveGroup.getGroupId(),
-				stagingLayout.isPrivateLayout());
+		Layout liveLayout = _layoutLocalService.getLayoutByUuidAndGroupId(
+			stagingLayout.getUuid(), _liveGroup.getGroupId(),
+			stagingLayout.isPrivateLayout());
 
-			PortletPreferences portletPreferences =
-				_portletPreferencesLocalService.getPreferences(
-					_liveGroup.getCompanyId(),
-					PortletKeys.PREFS_OWNER_ID_DEFAULT,
-					PortletKeys.PREFS_OWNER_TYPE_LAYOUT, liveLayout.getPlid(),
-					portletId);
+		PortletPreferences portletPreferences =
+			_portletPreferencesLocalService.getPreferences(
+				_liveGroup.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, liveLayout.getPlid(),
+				portletId);
 
-			_assertScopeGroupExternalReferenceCodesTranslated(
-				portletPreferences.getValue(
-					"selectedScopeGroupExternalReferenceCodes",
-					StringPool.BLANK),
-				liveGroup1, liveGroup2);
-		}
-		finally {
-			GroupTestUtil.deleteGroup(liveGroup1);
-			GroupTestUtil.deleteGroup(liveGroup2);
-		}
+		_assertScopeGroupExternalReferenceCodesTranslated(
+			portletPreferences.getValue(
+				"selectedScopeGroupExternalReferenceCodes", StringPool.BLANK),
+			liveGroup1, liveGroup2);
+
+		GroupTestUtil.deleteGroup(liveGroup1);
+		GroupTestUtil.deleteGroup(liveGroup2);
 	}
 
 	@Test
@@ -116,22 +111,19 @@ public class AnnouncementsExportImportTest {
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		try {
-			Map<String, Object> portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(stagingLayout.getPlid(), portletId);
+		Map<String, Object> portletConfiguration =
+			_portletPreferencesPortletConfigurationExporter.
+				getPortletConfiguration(stagingLayout.getPlid(), portletId);
 
-			_assertScopeGroupExternalReferenceCodesTranslated(
-				(String)portletConfiguration.get(
-					"selectedScopeGroupExternalReferenceCodes"),
-				liveGroup1, liveGroup2);
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		_assertScopeGroupExternalReferenceCodesTranslated(
+			(String)portletConfiguration.get(
+				"selectedScopeGroupExternalReferenceCodes"),
+			liveGroup1, liveGroup2);
 
-			GroupTestUtil.deleteGroup(liveGroup1);
-			GroupTestUtil.deleteGroup(liveGroup2);
-		}
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
+
+		GroupTestUtil.deleteGroup(liveGroup1);
+		GroupTestUtil.deleteGroup(liveGroup2);
 	}
 
 	private String _addAnnouncementsPortletWithScopeGroups(

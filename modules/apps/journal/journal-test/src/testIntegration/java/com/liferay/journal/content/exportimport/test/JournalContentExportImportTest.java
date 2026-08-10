@@ -125,15 +125,12 @@ public class JournalContentExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		try {
-			Assert.assertEquals(
-				group.getExternalReferenceCode(),
-				_getExportedGroupExternalReferenceCode(
-					stagingGroup.getExternalReferenceCode()));
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		Assert.assertEquals(
+			group.getExternalReferenceCode(),
+			_getExportedGroupExternalReferenceCode(
+				stagingGroup.getExternalReferenceCode()));
+
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
 	}
 
 	@Test
@@ -151,17 +148,14 @@ public class JournalContentExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		try {
-			Assert.assertEquals(
-				contentGroup.getExternalReferenceCode(),
-				_getExportedGroupExternalReferenceCode(
-					stagingGroup.getExternalReferenceCode()));
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
+		Assert.assertEquals(
+			contentGroup.getExternalReferenceCode(),
+			_getExportedGroupExternalReferenceCode(
+				stagingGroup.getExternalReferenceCode()));
 
-			GroupTestUtil.deleteGroup(contentGroup);
-		}
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
+
+		GroupTestUtil.deleteGroup(contentGroup);
 	}
 
 	@Test
@@ -200,15 +194,12 @@ public class JournalContentExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		try {
-			Assert.assertEquals(
-				remoteGroupExternalReferenceCode,
-				_getExportedGroupExternalReferenceCode(
-					group.getExternalReferenceCode()));
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		Assert.assertEquals(
+			remoteGroupExternalReferenceCode,
+			_getExportedGroupExternalReferenceCode(
+				group.getExternalReferenceCode()));
+
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
 	}
 
 	private Object _getExportedGroupExternalReferenceCode(

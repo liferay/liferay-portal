@@ -522,19 +522,16 @@ public class SiteNavigationMenuExportImportTest
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
-		try {
-			Map<String, Object> portletConfiguration =
-				_portletPreferencesPortletConfigurationExporter.
-					getPortletConfiguration(_layout.getPlid(), portletId);
+		Map<String, Object> portletConfiguration =
+			_portletPreferencesPortletConfigurationExporter.
+				getPortletConfiguration(_layout.getPlid(), portletId);
 
-			Assert.assertEquals(
-				_liveGroup.getExternalReferenceCode(),
-				portletConfiguration.get(
-					"siteNavigationMenuGroupExternalReferenceCode"));
-		}
-		finally {
-			ExportImportThreadLocal.setPortletStagingInProcess(false);
-		}
+		Assert.assertEquals(
+			_liveGroup.getExternalReferenceCode(),
+			portletConfiguration.get(
+				"siteNavigationMenuGroupExternalReferenceCode"));
+
+		ExportImportThreadLocal.setPortletStagingInProcess(false);
 	}
 
 	private void _addGroupEmbeddedPortlet(
