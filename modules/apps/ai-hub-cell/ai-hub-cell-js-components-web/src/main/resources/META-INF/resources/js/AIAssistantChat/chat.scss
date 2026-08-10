@@ -56,10 +56,10 @@ html#{$cadmin-selector} {
 		}
 
 		&--categorization {
-			height: stretch;
+			align-self: stretch;
 
 			.lexicon-icon {
-				font-size: 14px;
+				font-size: 12px;
 			}
 		}
 	}
