@@ -117,10 +117,13 @@
 	}
 
 	.filter-resume {
+		align-items: center;
 		color: inherit;
 		cursor: pointer;
 		font-size: inherit;
 		font-weight: $font-weight-normal;
+		min-height: $btn-monospaced-size-sm;
+		vertical-align: middle;
 
 		.dropdown {
 			min-width: 0;
