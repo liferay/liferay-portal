@@ -26,7 +26,7 @@ const test = mergeTests(
 const BASIC_WEB_CONTENTS = 'cms/basic-web-contents';
 const CMP_PROJECTS = 'cmp/projects';
 
-test.skip(
+test(
 	'Keeps a linked project after reopening the content editor',
 	{tag: ['@LPD-98901']},
 	async ({apiHelpers, contentsPage, page}) => {
@@ -99,7 +99,7 @@ test.skip(
 	}
 );
 
-test.skip(
+test(
 	'Links and unlinks a project from the content editor',
 	{tag: ['@LPD-98901']},
 	async ({apiHelpers, contentsPage, page}) => {
@@ -185,7 +185,7 @@ test.skip(
 	}
 );
 
-test.skip(
+test(
 	'Links and unlinks a project from the content list info panel',
 	{tag: ['@LPD-98942']},
 	async ({apiHelpers, contentsPage, infoPanelPage, page}) => {
@@ -263,7 +263,7 @@ test.skip(
 	}
 );
 
-test.skip(
+test(
 	'Links multiple assets to projects in bulk from the content list',
 	{tag: ['@LPD-99127']},
 	async ({apiHelpers, assetsPage, contentsPage, infoPanelPage, page}) => {
