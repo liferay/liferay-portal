@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export const COLUMN_SIZE_MODULE_PER_ROW_SIZES = {
+export const COLUMN_SIZE_MODULE_PER_ROW_SIZES: Record<
+	number,
+	Record<number, number[]>
+> = {
 	1: {
 		1: [12],
 	},
