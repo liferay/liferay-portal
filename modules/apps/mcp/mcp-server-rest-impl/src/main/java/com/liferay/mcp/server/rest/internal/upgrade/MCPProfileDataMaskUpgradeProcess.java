@@ -84,33 +84,19 @@ public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
 					MCPServerConstants.EXTERNAL_REFERENCE_CODE_DATA_MASK,
 					companyId);
 
-		ObjectDefinition mcpServerProfileDataMaskObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					MCPServerConstants.
-						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
-					companyId);
-
-		ObjectDefinition mcpServerProfileObjectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					MCPServerConstants.
-						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE,
-					companyId);
-
-		if ((dataMaskObjectDefinition == null) ||
-			(mcpServerProfileDataMaskObjectDefinition == null) ||
-			(mcpServerProfileObjectDefinition == null)) {
-
-			return;
-		}
-
 		List<ObjectEntry> systemDataMaskObjectEntries =
 			_getSystemDataMaskObjectEntries(dataMaskObjectDefinition);
 
 		if (systemDataMaskObjectEntries.isEmpty()) {
 			return;
 		}
+
+		ObjectDefinition mcpServerProfileDataMaskObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					MCPServerConstants.
+						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE_DATA_MASK,
+					companyId);
 
 		Map<String, Set<String>> dataMaskExternalReferenceCodesMap =
 			new HashMap<>();
@@ -140,6 +126,13 @@ public class MCPProfileDataMaskUpgradeProcess extends UpgradeProcess {
 				mcpServerProfileExternalReferenceCode,
 				MapUtil.getInteger(values, "executionOrder"), Math::max);
 		}
+
+		ObjectDefinition mcpServerProfileObjectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					MCPServerConstants.
+						EXTERNAL_REFERENCE_CODE_MCP_SERVER_PROFILE,
+					companyId);
 
 		for (ObjectEntry mcpServerProfileObjectEntry :
 				_objectEntryLocalService.getObjectEntries(
