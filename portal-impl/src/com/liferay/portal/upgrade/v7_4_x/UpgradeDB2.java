@@ -38,20 +38,20 @@ public class UpgradeDB2 extends UpgradeProcess {
 		try (LoggingTimer loggingTimer = new LoggingTimer();
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
-					"select columns.tabname, columns.colname from ",
+					"select columns.colname, columns.tabname from ",
 					"syscat.columns columns inner join syscat.tables tables ",
-					"on tables.tabschema = columns.tabschema and ",
-					"tables.tabname = columns.tabname where tables.type = 'T' ",
-					"and columns.length = 1048576 and columns.typename = ? ",
-					"and columns.tabschema = ?"))) {
+					"on tables.tabname = columns.tabname and ",
+					"tables.tabschema = columns.tabschema where ",
+					"columns.length = 1048576 and columns.tabschema = ? and ",
+					"columns.typename = ? and tables.type = 'T'"))) {
 
-			preparedStatement.setString(1, typeName);
-			preparedStatement.setString(2, connection.getSchema());
+			preparedStatement.setString(1, connection.getSchema());
+			preparedStatement.setString(2, typeName);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				while (resultSet.next()) {
-					String tableName = resultSet.getString("tabname");
 					String columnName = resultSet.getString("colname");
+					String tableName = resultSet.getString("tabname");
 
 					if (_log.isInfoEnabled()) {
 						_log.info(
