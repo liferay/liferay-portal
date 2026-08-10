@@ -130,43 +130,32 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 	public void testUpgradeKeepsDDMStructureDefaultValues() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
-		JournalArticle journalArticle = null;
+		JournalArticle journalArticle = JournalTestUtil.addArticleDefaultValues(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			RandomTestUtil.randomString());
 
-		try {
-			journalArticle = JournalTestUtil.addArticleDefaultValues(
-				TestPropsValues.getUserId(), group.getGroupId(),
-				RandomTestUtil.randomString());
+		DDMStructure ddmStructure = journalArticle.getDDMStructure();
 
-			DDMStructure ddmStructure = journalArticle.getDDMStructure();
+		Assert.assertNotNull(
+			_ddmFieldLocalService.getDDMFormValues(
+				ddmStructure.getDDMForm(), journalArticle.getId()));
 
-			Assert.assertNotNull(
-				_ddmFieldLocalService.getDDMFormValues(
-					ddmStructure.getDDMForm(), journalArticle.getId()));
+		upgrade();
 
-			upgrade();
+		Assert.assertNotNull(
+			_ddmFieldLocalService.getDDMFormValues(
+				ddmStructure.getDDMForm(), journalArticle.getId()));
 
-			Assert.assertNotNull(
-				_ddmFieldLocalService.getDDMFormValues(
-					ddmStructure.getDDMForm(), journalArticle.getId()));
-		}
-		finally {
-			if (journalArticle != null) {
-				_ddmTemplateLocalService.deleteTemplate(
-					journalArticle.getDDMTemplate());
-			}
+		_ddmTemplateLocalService.deleteTemplate(
+			journalArticle.getDDMTemplate());
 
-			_groupLocalService.deleteGroup(group);
-		}
+		_groupLocalService.deleteGroup(group);
 	}
 
 	@Test
 	public void testUpgradeWithJournalArticleDDMFields() throws Exception {
 		long id = RandomTestUtil.nextLong();
 
-		runSQL(
-			StringBundler.concat(
-				"insert into JournalArticle (mvccVersion, ctCollectionId, ",
-				"id_) values (0, 0, ", id, ")"));
 		runSQL(
 			StringBundler.concat(
 				"insert into DDMField (mvccVersion, ctCollectionId, fieldId, ",
@@ -177,6 +166,10 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 				"insert into DDMFieldAttribute (mvccVersion, ctCollectionId, ",
 				"fieldAttributeId, storageId) values (0, 0, ",
 				RandomTestUtil.nextLong(), ", ", id, ")"));
+		runSQL(
+			StringBundler.concat(
+				"insert into JournalArticle (mvccVersion, ctCollectionId, ",
+				"id_) values (0, 0, ", id, ")"));
 
 		try (Connection connection = DataAccess.getConnection();
 			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -195,9 +188,9 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 				1, _getCount(connection, "storageId", "DDMFieldAttribute", id));
 		}
 		finally {
-			runSQL("delete from JournalArticle where id_ = " + id);
 			runSQL("delete from DDMField where storageId = " + id);
 			runSQL("delete from DDMFieldAttribute where storageId = " + id);
+			runSQL("delete from JournalArticle where id_ = " + id);
 		}
 	}
 

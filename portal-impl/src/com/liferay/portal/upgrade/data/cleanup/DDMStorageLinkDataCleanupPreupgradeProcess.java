@@ -23,12 +23,12 @@ public class DDMStorageLinkDataCleanupPreupgradeProcess
 				null, null, "contentId", "DDMContent", "classPK",
 				"DDMStorageLink"));
 
+		String sourceAdditionalWhereClause = null;
+
 		DBInspector dbInspector = new DBInspector(connection);
 
 		String journalArticleTableName = dbInspector.normalizeName(
 			"JournalArticle");
-
-		String sourceAdditionalWhereClause = null;
 
 		if (dbInspector.hasTable(journalArticleTableName)) {
 			sourceAdditionalWhereClause = StringBundler.concat(
