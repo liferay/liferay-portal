@@ -90,6 +90,8 @@ test.afterEach(async ({apiHelpers}) => {
 	}
 });
 
+test.use({viewport: {height: 1080, width: 1920}});
+
 test(
 	'Bulk actions and selection are hidden for project members',
 	{tag: ['@LPD-99451']},
@@ -489,9 +491,9 @@ test(
 				year: 'numeric',
 			});
 
-			await expect(page.getByLabel('Due Date')).toHaveValue(
-				expectedDueDate
-			);
+			await expect(
+				page.getByLabel('Due Date', {exact: true})
+			).toHaveValue(expectedDueDate);
 		});
 
 		await test.step('Fill in the title and save', async () => {
@@ -520,7 +522,9 @@ test(
 				Liferay.ThemeDisplay.getBCP47LanguageId()
 			);
 
-			await expect(page.getByLabel('Due Date')).toHaveValue(
+			await expect(
+				page.getByLabel('Due Date', {exact: true})
+			).toHaveValue(
 				daySlotDate.toLocaleDateString(locale, {
 					day: '2-digit',
 					month: '2-digit',
@@ -660,7 +664,7 @@ test(
 		const taskTitleBase = getRandomString();
 
 		const taskTitles = Array.from(
-			{length: 3},
+			{length: 5},
 			(_, index) => `${taskTitleBase}-${index}`
 		);
 
@@ -784,10 +788,10 @@ test(
 			const dayCell = tasksPage.getCalendarDayCell(tomorrow);
 
 			await expect(
-				dayCell.getByText(taskTitles[1], {exact: true})
+				dayCell.getByText(taskTitles[3], {exact: true})
 			).toBeHidden();
 			await expect(
-				dayCell.getByText(taskTitles[2], {exact: true})
+				dayCell.getByText(taskTitles[4], {exact: true})
 			).toBeHidden();
 
 			await expect(calendarView.moreLinkButton).toBeVisible();
@@ -804,12 +808,12 @@ test(
 			});
 
 			await expect(
-				calendarView.moreLinkPopover.getByText(taskTitles[1], {
+				calendarView.moreLinkPopover.getByText(taskTitles[3], {
 					exact: true,
 				})
 			).toBeVisible();
 			await expect(
-				calendarView.moreLinkPopover.getByText(taskTitles[2], {
+				calendarView.moreLinkPopover.getByText(taskTitles[4], {
 					exact: true,
 				})
 			).toBeVisible();
@@ -817,13 +821,13 @@ test(
 
 		await test.step('Clicking a task in the more popover opens its view page', async () => {
 			await calendarView.moreLinkPopover
-				.getByText(taskTitles[1], {exact: true})
+				.getByText(taskTitles[3], {exact: true})
 				.click();
 
 			await expect(page).toHaveURL(/\/e\/task\//);
 
 			await expect(
-				page.getByText(taskTitles[1], {exact: true})
+				page.getByText(taskTitles[3], {exact: true})
 			).toBeVisible();
 
 			await page.goBack();
@@ -1673,7 +1677,13 @@ test(
 
 			await page.getByRole('menuitem', {name: 'Edit'}).click();
 
-			await page.getByRole('textbox', {name: 'Due Date'}).fill(todayDate);
+			await page.getByTestId('date-button').click();
+
+			await page
+				.getByRole('button', {name: 'Select Current Date'})
+				.click();
+
+			await page.keyboard.press('Escape');
 
 			await tasksPage.saveButton.click();
 

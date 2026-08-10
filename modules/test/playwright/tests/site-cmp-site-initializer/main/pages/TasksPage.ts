@@ -119,9 +119,12 @@ export class TasksPage {
 		});
 		this.projectTasksTab = page.getByRole('tab', {name: 'Project Tasks'});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
-		this.tableViewButton = page.getByRole('combobox', {
-			name: 'Table View Selected',
-		});
+		this.tableViewButton = page
+			.getByRole('combobox', {
+				name: 'Table View Selected',
+			})
+			.or(page.getByRole('combobox', {name: 'Calendar View Selected'}))
+			.or(page.getByRole('combobox', {name: 'Kanban View Selected'}));
 		this.titleInput = page.locator('#title');
 		this.updateDueDateDialog = page.getByRole('dialog', {
 			name: 'Update Due Date',
