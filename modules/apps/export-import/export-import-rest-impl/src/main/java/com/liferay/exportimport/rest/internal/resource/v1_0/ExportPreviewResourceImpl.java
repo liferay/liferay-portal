@@ -77,14 +77,18 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 	public ExportPreview getExportPreview(Date endDate, Date startDate)
 		throws Exception {
 
-		Group group = _stagingGroupHelper.fetchCompanyGroup(
-			contextCompany.getCompanyId());
+		return _getExportPreview(
+			endDate, _getCompanyGroup(), 0, null, startDate);
+	}
 
-		if (group == null) {
-			throw new NotFoundException();
-		}
+	@Override
+	public ExportPreview getPortletExportPreview(
+			String portletId, Date endDate, Long plid, Date startDate)
+		throws Exception {
 
-		return _getExportPreview(endDate, group, 0, null, startDate);
+		return _getExportPreview(
+			endDate, _getCompanyGroup(), GetterUtil.getLong(plid), portletId,
+			startDate);
 	}
 
 	@Override
@@ -114,6 +118,17 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 			externalReferenceCode, contextCompany.getCompanyId());
 
 		if ((group == null) || !group.isDepot()) {
+			throw new NotFoundException();
+		}
+
+		return group;
+	}
+
+	private Group _getCompanyGroup() {
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			contextCompany.getCompanyId());
+
+		if (group == null) {
 			throw new NotFoundException();
 		}
 

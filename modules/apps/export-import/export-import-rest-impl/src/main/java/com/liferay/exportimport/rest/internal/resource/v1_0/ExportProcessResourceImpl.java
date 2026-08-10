@@ -163,8 +163,10 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		Group group = _getCompanyGroup();
+
 		return _getExportProcessesPage(
-			creatorId, _getCompanyGroupId(), pagination, null, search, sorts,
+			creatorId, group.getGroupId(), pagination, null, search, sorts,
 			status);
 	}
 
@@ -187,6 +189,19 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 						backgroundTask.getBackgroundTaskId()));
 			}
 		};
+	}
+
+	@Override
+	public Page<ExportProcess> getPortletExportProcessesPage(
+			String portletId, Long creatorId, String search, Integer status,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		Group group = _getCompanyGroup();
+
+		return _getExportProcessesPage(
+			creatorId, group.getGroupId(), pagination, portletId, search, sorts,
+			status);
 	}
 
 	@Override
@@ -243,14 +258,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			ExportProcessRequest exportProcessRequest)
 		throws Exception {
 
-		Group group = _stagingGroupHelper.fetchCompanyGroup(
-			contextCompany.getCompanyId());
-
-		if (group == null) {
-			throw new NotFoundException();
-		}
-
-		return _postLayoutExportProcess(exportProcessRequest, group);
+		return _postLayoutExportProcess(
+			exportProcessRequest, _getCompanyGroup());
 	}
 
 	@Override
@@ -292,6 +301,17 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		return _toExportProcess(
 			_backgroundTaskLocalService.getBackgroundTask(backgroundTaskId));
+	}
+
+	@Override
+	public ExportProcess postPortletExportProcess(
+			String portletId, Long plid,
+			ExportProcessRequest exportProcessRequest)
+		throws Exception {
+
+		return _postPortletExportProcess(
+			exportProcessRequest, _getCompanyGroup(), GetterUtil.getLong(plid),
+			portletId);
 	}
 
 	@Override
@@ -344,15 +364,15 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			pagination.getEndPosition());
 	}
 
-	private long _getCompanyGroupId() {
+	private Group _getCompanyGroup() {
 		Group group = _stagingGroupHelper.fetchCompanyGroup(
 			contextCompany.getCompanyId());
 
 		if (group == null) {
-			return 0L;
+			throw new NotFoundException();
 		}
 
-		return group.getGroupId();
+		return group;
 	}
 
 	private DynamicQuery _getDynamicQuery(

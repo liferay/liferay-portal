@@ -237,7 +237,7 @@ public class ExportImportProcessesDisplayContext {
 	}
 
 	private String _getFDSName(String companyFDSName, String fdsName) {
-		if (_stagingGroupHelper.isCompanyGroup(_group)) {
+		if (_isInstanceScoped()) {
 			return companyFDSName;
 		}
 
@@ -251,7 +251,7 @@ public class ExportImportProcessesDisplayContext {
 	}
 
 	private String _getScopePath() {
-		if (_stagingGroupHelper.isCompanyGroup(_group)) {
+		if (_isInstanceScoped()) {
 			return StringPool.BLANK;
 		}
 
@@ -275,6 +275,16 @@ public class ExportImportProcessesDisplayContext {
 		return StringBundler.concat(
 			LanguageUtil.get(_httpServletRequest, key), " ",
 			PortalUtil.getPortletTitle(portletId, _themeDisplay.getLocale()));
+	}
+
+	private boolean _isInstanceScoped() {
+		if (_group.isControlPanel() ||
+			_stagingGroupHelper.isCompanyGroup(_group)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final String _BASE_PATH = "/o/export-import/v1.0";

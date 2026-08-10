@@ -135,8 +135,10 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		Group group = _getCompanyGroup();
+
 		return _getImportProcessesPage(
-			creatorId, _getCompanyGroupId(), pagination, null, search, sorts,
+			creatorId, group.getGroupId(), pagination, null, search, sorts,
 			status);
 	}
 
@@ -159,6 +161,19 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 						backgroundTask.getBackgroundTaskId()));
 			}
 		};
+	}
+
+	@Override
+	public Page<ImportProcess> getPortletImportProcessesPage(
+			String portletId, Long creatorId, String search, Integer status,
+			Pagination pagination, Sort[] sorts)
+		throws Exception {
+
+		Group group = _getCompanyGroup();
+
+		return _getImportProcessesPage(
+			creatorId, group.getGroupId(), pagination, portletId, search, sorts,
+			status);
 	}
 
 	@Override
@@ -214,14 +229,19 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			ImportProcessRequest importProcessRequest)
 		throws Exception {
 
-		Group group = _stagingGroupHelper.fetchCompanyGroup(
-			contextCompany.getCompanyId());
+		return _postLayoutImportProcess(
+			_getCompanyGroup(), importProcessRequest);
+	}
 
-		if (group == null) {
-			throw new NotFoundException();
-		}
+	@Override
+	public ImportProcess postPortletImportProcess(
+			String portletId, Long plid,
+			ImportProcessRequest importProcessRequest)
+		throws Exception {
 
-		return _postLayoutImportProcess(group, importProcessRequest);
+		return _postPortletImportProcess(
+			_getCompanyGroup(), importProcessRequest, GetterUtil.getLong(plid),
+			portletId);
 	}
 
 	@Override
@@ -274,15 +294,15 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 			pagination.getEndPosition());
 	}
 
-	private long _getCompanyGroupId() {
+	private Group _getCompanyGroup() {
 		Group group = _stagingGroupHelper.fetchCompanyGroup(
 			contextCompany.getCompanyId());
 
 		if (group == null) {
-			return 0L;
+			throw new NotFoundException();
 		}
 
-		return group.getGroupId();
+		return group;
 	}
 
 	private DynamicQuery _getDynamicQuery(

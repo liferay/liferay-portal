@@ -173,7 +173,7 @@ public class ExportImportPreviewDisplayContext {
 			return Scope.PORTLET;
 		}
 
-		if (_stagingGroupHelper.isCompanyGroup(_group)) {
+		if (_isInstanceScoped()) {
 			return Scope.COMPANY;
 		}
 
@@ -185,7 +185,7 @@ public class ExportImportPreviewDisplayContext {
 	}
 
 	public boolean isCommentsAndRatingsEnabled() {
-		if (!_stagingGroupHelper.isCompanyGroup(_group) ||
+		if (!_isInstanceScoped() ||
 			FeatureFlagManagerUtil.isEnabled(
 				_group.getCompanyId(), "LPD-43996")) {
 
@@ -236,34 +236,38 @@ public class ExportImportPreviewDisplayContext {
 					themeDisplay.getUser()
 				).build();
 
-			if (_stagingGroupHelper.isCompanyGroup(_group)) {
-				return exportPreviewResource.getExportPreview(null, null);
-			}
-
-			String externalReferenceCode = _group.getExternalReferenceCode();
-
 			String portletId = _getPortletId();
 
-			if (!Validator.isBlank(portletId)) {
-				long plid = ParamUtil.getLong(_httpServletRequest, "plid");
-
-				if (_group.isDepot()) {
-					return exportPreviewResource.
-						getAssetLibraryPortletExportPreview(
-							externalReferenceCode, portletId, null, plid, null);
+			if (Validator.isBlank(portletId)) {
+				if (_isInstanceScoped()) {
+					return exportPreviewResource.getExportPreview(null, null);
 				}
 
-				return exportPreviewResource.getSitePortletExportPreview(
-					externalReferenceCode, portletId, null, plid, null);
+				if (_group.isDepot()) {
+					return exportPreviewResource.getAssetLibraryExportPreview(
+						_group.getExternalReferenceCode(), null, null);
+				}
+
+				return exportPreviewResource.getSiteExportPreview(
+					_group.getExternalReferenceCode(), null, null);
+			}
+
+			long plid = ParamUtil.getLong(_httpServletRequest, "plid");
+
+			if (_isInstanceScoped()) {
+				return exportPreviewResource.getPortletExportPreview(
+					portletId, null, plid, null);
 			}
 
 			if (_group.isDepot()) {
-				return exportPreviewResource.getAssetLibraryExportPreview(
-					externalReferenceCode, null, null);
+				return exportPreviewResource.
+					getAssetLibraryPortletExportPreview(
+						_group.getExternalReferenceCode(), portletId, null,
+						plid, null);
 			}
 
-			return exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, null);
+			return exportPreviewResource.getSitePortletExportPreview(
+				_group.getExternalReferenceCode(), portletId, null, plid, null);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get export preview", exception);
@@ -290,7 +294,7 @@ public class ExportImportPreviewDisplayContext {
 	}
 
 	private String _getScopePath() {
-		if (_stagingGroupHelper.isCompanyGroup(_group)) {
+		if (_isInstanceScoped()) {
 			return StringPool.BLANK;
 		}
 
@@ -315,6 +319,16 @@ public class ExportImportPreviewDisplayContext {
 			label, " - ",
 			PortalUtil.getPortletTitle(
 				portletId, PortalUtil.getLocale(_httpServletRequest)));
+	}
+
+	private boolean _isInstanceScoped() {
+		if (_group.isControlPanel() ||
+			_stagingGroupHelper.isCompanyGroup(_group)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final String _BASE_PATH = "/o/export-import/v1.0";

@@ -84,14 +84,21 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 	public ImportPreview postImportPreview(MultipartBody multipartBody)
 		throws Exception {
 
-		Group group = _stagingGroupHelper.fetchCompanyGroup(
-			contextCompany.getCompanyId());
-
-		if (group == null) {
-			throw new NotFoundException();
-		}
+		Group group = _getCompanyGroup();
 
 		return _getImportPreview(group.getGroupId(), multipartBody, 0, null);
+	}
+
+	@Override
+	public ImportPreview postPortletImportPreview(
+			String portletId, Long plid, MultipartBody multipartBody)
+		throws Exception {
+
+		Group group = _getCompanyGroup();
+
+		return _getImportPreview(
+			group.getGroupId(), multipartBody, GetterUtil.getLong(plid),
+			portletId);
 	}
 
 	@Override
@@ -174,6 +181,17 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 			externalReferenceCode, contextCompany.getCompanyId());
 
 		if ((group == null) || !group.isDepot()) {
+			throw new NotFoundException();
+		}
+
+		return group;
+	}
+
+	private Group _getCompanyGroup() {
+		Group group = _stagingGroupHelper.fetchCompanyGroup(
+			contextCompany.getCompanyId());
+
+		if (group == null) {
 			throw new NotFoundException();
 		}
 
