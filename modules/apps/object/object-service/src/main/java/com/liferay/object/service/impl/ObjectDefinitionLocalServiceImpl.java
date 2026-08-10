@@ -272,6 +272,21 @@ public class ObjectDefinitionLocalServiceImpl
 			serviceContext);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public ObjectDefinition addObjectDefinition(
+			String externalReferenceCode, long userId, long objectFolderId,
+			boolean modifiable, String scope, boolean system)
+		throws PortalException {
+
+		return _addObjectDefinition(
+			externalReferenceCode, userId, objectFolderId, modifiable, scope,
+			system ||
+			externalReferenceCode.startsWith(
+				ObjectDefinitionConstants.
+					EXTERNAL_REFERENCE_CODE_PREFIX_SYSTEM_OBJECT_DEFINITION));
+	}
+
 	@Override
 	public void addOrUpdateObjectDefinitionPLOEntries(
 			ObjectDefinition objectDefinition)
@@ -985,13 +1000,9 @@ public class ObjectDefinitionLocalServiceImpl
 
 		return _emptyModelManager.getOrAddEmptyModel(
 			ObjectDefinition.class, companyId,
-			() -> _addObjectDefinition(
+			() -> objectDefinitionLocalService.addObjectDefinition(
 				externalReferenceCode, userId, objectFolderId, modifiable,
-				scope,
-				system ||
-				externalReferenceCode.startsWith(
-					ObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_PREFIX_SYSTEM_OBJECT_DEFINITION)),
+				scope, system),
 			externalReferenceCode,
 			this::fetchObjectDefinitionByExternalReferenceCode,
 			this::getObjectDefinitionByExternalReferenceCode,
