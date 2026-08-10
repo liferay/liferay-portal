@@ -375,6 +375,41 @@ public abstract class SecretsUtil {
 
 	}
 
+	protected static class ItemFile {
+
+		public ItemFile(String contentPath, String name) {
+			_contentPath = contentPath;
+			_name = name;
+		}
+
+		public String getName() {
+			return _name;
+		}
+
+		public String getValue() {
+			if (_value != null) {
+				return _value;
+			}
+
+			String value = _toString(_contentPath);
+
+			value = value.trim();
+
+			if (!JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+				JenkinsResultsParserUtil.addRedactToken(value);
+			}
+
+			_value = value;
+
+			return _value;
+		}
+
+		private final String _contentPath;
+		private final String _name;
+		private String _value;
+
+	}
+
 	private static void _createItem(
 		Map<String, String> itemFieldsMap, String itemTitle, Vault vault) {
 
@@ -809,41 +844,6 @@ public abstract class SecretsUtil {
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)");
 	private static final Pattern _secretReferencePattern = Pattern.compile(
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)/(?<fieldLabel>.*)");
-
-	private static class ItemFile {
-
-		public ItemFile(String contentPath, String name) {
-			_contentPath = contentPath;
-			_name = name;
-		}
-
-		public String getName() {
-			return _name;
-		}
-
-		public String getValue() {
-			if (_value != null) {
-				return _value;
-			}
-
-			String value = _toString(_contentPath);
-
-			value = value.trim();
-
-			if (!JenkinsResultsParserUtil.isNullOrEmpty(value)) {
-				JenkinsResultsParserUtil.addRedactToken(value);
-			}
-
-			_value = value;
-
-			return _value;
-		}
-
-		private final String _contentPath;
-		private final String _name;
-		private String _value;
-
-	}
 
 	private static class Vault {
 
