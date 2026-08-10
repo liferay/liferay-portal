@@ -1,3 +1,4 @@
+{{- if .Values.liferay.enabled -}}
 {{- $gitops := .Values.gitops -}}
 {{- $layout := $gitops.layout -}}
 {{- $name := printf "%s-%s-app" $layout.projectId $layout.environmentId -}}
@@ -82,3 +83,4 @@ spec:
                 syncOptions:
                     -   CreateNamespace=true
                     -   RespectIgnoreDifferences=true
+{{- end -}}

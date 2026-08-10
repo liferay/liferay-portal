@@ -1,3 +1,4 @@
+{{- if .Values.infrastructure.enabled -}}
 {{- $layout := .Values.gitops.layout -}}
 {{- $name := printf "%s-resources" $layout.projectId -}}
 apiVersion: argoproj.io/v1alpha1
@@ -68,3 +69,4 @@ spec:
                     -   IgnoreExtraneous=true
                     -   RespectIgnoreDifferences=true
                     -   SkipDryRunOnMissingResource=true
+{{- end -}}

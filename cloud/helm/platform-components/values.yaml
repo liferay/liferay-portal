@@ -68,18 +68,21 @@ gitops:
         usernameProperty: git_machine_user_id
 infrastructure:
     chart: ""
+    enabled: true
     parameters: []
     path: ""
     repoURL: ""
     targetRevision: ""
 infrastructureProvider:
     chart: ""
+    enabled: true
     parameters: []
     path: ""
     repoURL: ""
     targetRevision: ""
 liferay:
     chart: ""
+    enabled: true
     parameters: []
     path: ""
     repoURL: ""

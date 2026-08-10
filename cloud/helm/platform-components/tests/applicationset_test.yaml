@@ -13,14 +13,6 @@ templates:
     -   templates/appproject-operator.yaml
 tests:
     -   asserts:
-            -   hasDocuments:
-                    count: 1
-                template: templates/application-infrastructure-provider.yaml
-            -   hasDocuments:
-                    count: 1
-                template: templates/appproject-infrastructure.yaml
-        it: Always renders the infrastructure AppProject and provider application
-    -   asserts:
             -   equal:
                     path: spec.template.metadata.name
                     value: "{{path[1]}}-{{path[3]}}-infra"
@@ -123,6 +115,24 @@ tests:
                 template: templates/appproject-operator.yaml
         it: Names the operator AppProject liferay-operator in the release namespace
     -   asserts:
+            -   hasDocuments:
+                    count: 0
+                template: templates/application-infrastructure-provider.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-infrastructure.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-liferay.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/applicationset-resources.yaml
+        it: Omits the Applications and ApplicationSets that can be disabled
+        set:
+            infrastructure.enabled: false
+            infrastructureProvider.enabled: false
+            liferay.enabled: false
+    -   asserts:
             -   contains:
                     content:
                         name: clusterIdentity.deploymentName
@@ -198,6 +208,14 @@ tests:
             liferay:
                 chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+                template: templates/application-infrastructure-provider.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/appproject-infrastructure.yaml
+        it: Renders the infrastructure AppProject and provider application by default
     -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
