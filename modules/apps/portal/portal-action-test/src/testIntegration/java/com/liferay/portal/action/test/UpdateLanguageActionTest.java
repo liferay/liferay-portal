@@ -135,7 +135,7 @@ public class UpdateLanguageActionTest {
 	}
 
 	@Test
-	@TestInfo("LPD-86415")
+	@TestInfo({"LPD-86415", "LPD-102324"})
 	public void testGetRedirect() throws Exception {
 		_testGetRedirectWithControlPanelURL(false);
 		_testGetRedirectWithControlPanelURL(true);
@@ -143,6 +143,9 @@ public class UpdateLanguageActionTest {
 		_testGetRedirectWithFriendlyURL(true);
 		_testGetRedirectWithGroupFriendlyURLWithPortletURLMapping();
 		_testGetRedirectWithLayoutFriendlyURLWithPortletURLMapping();
+		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(
+			_sourceLocale);
+		_testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(null);
 		_testGetRedirectWithPortletFriendlyURL(_sourceLocale);
 		_testGetRedirectWithPortletFriendlyURL(null);
 		_testGetRedirectWithPortletURLMapping(_sourceLocale);
@@ -680,6 +683,25 @@ public class UpdateLanguageActionTest {
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 				_group.getFriendlyURL(), _layout.getFriendlyURL(_targetLocale),
 				"?queryString"),
+			false);
+	}
+
+	private void _testGetRedirectWithoutLayoutFriendlyURLWithPortletURLMapping(
+			Locale sourceLocale)
+		throws Exception {
+
+		String mappingPart = "/tags/" + RandomTestUtil.randomString();
+
+		_testGetRedirect(
+			sourceLocale,
+			StringBundler.concat(
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				_group.getFriendlyURL(), mappingPart),
+			_targetLocale,
+			StringBundler.concat(
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				_group.getFriendlyURL(), _layout.getFriendlyURL(_targetLocale),
+				mappingPart),
 			false);
 	}
 
