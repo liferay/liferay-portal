@@ -292,6 +292,30 @@ public abstract class BaseImportPreviewResourceTestCase {
 	}
 
 	@Test
+	public void testPostPortletImportPreview() throws Exception {
+		ImportPreview randomImportPreview = randomImportPreview();
+
+		Map<String, File> multipartFiles = getMultipartFiles();
+
+		ImportPreview postImportPreview =
+			testPostPortletImportPreview_addImportPreview(
+				randomImportPreview, multipartFiles);
+
+		assertEquals(randomImportPreview, postImportPreview);
+		assertValid(postImportPreview);
+
+		assertValid(postImportPreview, multipartFiles);
+	}
+
+	protected ImportPreview testPostPortletImportPreview_addImportPreview(
+			ImportPreview importPreview, Map<String, File> multipartFiles)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
 	public void testPostSiteImportPreview() throws Exception {
 		ImportPreview randomImportPreview = randomImportPreview();
 
@@ -1224,4 +1248,4 @@ public abstract class BaseImportPreviewResourceTestCase {
 		_importPreviewResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-966860844
+// LIFERAY-REST-BUILDER-HASH:-1353640579

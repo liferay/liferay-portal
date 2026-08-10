@@ -67,6 +67,10 @@ public interface ImportPreviewResource {
 			MultipartBody multipartBody, String callbackURL, Object object)
 		throws Exception;
 
+	public ImportPreview postPortletImportPreview(
+			String portletId, Long plid, MultipartBody multipartBody)
+		throws Exception;
+
 	public ImportPreview postSiteImportPreview(
 			String siteExternalReferenceCode, MultipartBody multipartBody)
 		throws Exception;
@@ -177,4 +181,4 @@ public interface ImportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-224406554
+// LIFERAY-REST-BUILDER-HASH:2043114669

@@ -55,6 +55,10 @@ public interface ExportPreviewResource {
 	public ExportPreview getExportPreview(Date endDate, Date startDate)
 		throws Exception;
 
+	public ExportPreview getPortletExportPreview(
+			String portletId, Date endDate, Long plid, Date startDate)
+		throws Exception;
+
 	public ExportPreview getSiteExportPreview(
 			String siteExternalReferenceCode, Date endDate, Date startDate)
 		throws Exception;
@@ -152,4 +156,4 @@ public interface ExportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:244394098
+// LIFERAY-REST-BUILDER-HASH:-877717860

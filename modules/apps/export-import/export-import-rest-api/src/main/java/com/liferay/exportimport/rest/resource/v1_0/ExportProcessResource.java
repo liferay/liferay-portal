@@ -81,6 +81,12 @@ public interface ExportProcessResource {
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
+	public Page<ExportProcess> getPortletExportProcessesPage(
+			String portletId, Long creatorId, String search, Integer status,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
 	public Page<ExportProcess> getSiteExportProcessesPage(
 			String siteExternalReferenceCode, Long creatorId, String search,
 			Integer status, Pagination pagination,
@@ -132,6 +138,11 @@ public interface ExportProcessResource {
 			Long creatorId, String search, Integer status,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
+		throws Exception;
+
+	public ExportProcess postPortletExportProcess(
+			String portletId, Long plid,
+			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public ExportProcess postSiteExportProcess(
@@ -252,4 +263,4 @@ public interface ExportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1845212112
+// LIFERAY-REST-BUILDER-HASH:1474850743

@@ -1588,6 +1588,350 @@ public abstract class BaseImportProcessResourceTestCase {
 	}
 
 	@Test
+	public void testGetPortletImportProcessesPage() throws Exception {
+		String portletId = testGetPortletImportProcessesPage_getPortletId();
+		String irrelevantPortletId =
+			testGetPortletImportProcessesPage_getIrrelevantPortletId();
+
+		Page<ImportProcess> page =
+			importProcessResource.getPortletImportProcessesPage(
+				portletId, null, null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantPortletId != null) {
+			ImportProcess irrelevantImportProcess =
+				testGetPortletImportProcessesPage_addImportProcess(
+					irrelevantPortletId, randomIrrelevantImportProcess());
+
+			page = importProcessResource.getPortletImportProcessesPage(
+				irrelevantPortletId, null, null, null,
+				Pagination.of(1, (int)totalCount + 1), null);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantImportProcess, (List<ImportProcess>)page.getItems());
+			assertValid(
+				page,
+				testGetPortletImportProcessesPage_getExpectedActions(
+					irrelevantPortletId));
+		}
+
+		ImportProcess importProcess1 =
+			testGetPortletImportProcessesPage_addImportProcess(
+				portletId, randomImportProcess());
+
+		ImportProcess importProcess2 =
+			testGetPortletImportProcessesPage_addImportProcess(
+				portletId, randomImportProcess());
+
+		page = importProcessResource.getPortletImportProcessesPage(
+			portletId, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(importProcess1, (List<ImportProcess>)page.getItems());
+		assertContains(importProcess2, (List<ImportProcess>)page.getItems());
+		assertValid(
+			page,
+			testGetPortletImportProcessesPage_getExpectedActions(portletId));
+
+		importProcessResource.deleteImportProcess(importProcess1.getId());
+
+		importProcessResource.deleteImportProcess(importProcess2.getId());
+	}
+
+	protected Map<String, Map<String, String>>
+			testGetPortletImportProcessesPage_getExpectedActions(
+				String portletId)
+		throws Exception {
+
+		Map<String, Map<String, String>> expectedActions = new HashMap<>();
+
+		return expectedActions;
+	}
+
+	@Test
+	public void testGetPortletImportProcessesPageWithPagination()
+		throws Exception {
+
+		String portletId = testGetPortletImportProcessesPage_getPortletId();
+
+		Page<ImportProcess> importProcessesPage =
+			importProcessResource.getPortletImportProcessesPage(
+				portletId, null, null, null, null, null);
+
+		int totalCount = GetterUtil.getInteger(
+			importProcessesPage.getTotalCount());
+
+		ImportProcess importProcess1 =
+			testGetPortletImportProcessesPage_addImportProcess(
+				portletId, randomImportProcess());
+
+		ImportProcess importProcess2 =
+			testGetPortletImportProcessesPage_addImportProcess(
+				portletId, randomImportProcess());
+
+		ImportProcess importProcess3 =
+			testGetPortletImportProcessesPage_addImportProcess(
+				portletId, randomImportProcess());
+
+		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
+
+		int pageSizeLimit = 500;
+
+		if (totalCount >= (pageSizeLimit - 2)) {
+			Page<ImportProcess> page1 =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
+
+			assertContains(
+				importProcess1, (List<ImportProcess>)page1.getItems());
+
+			Page<ImportProcess> page2 =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				importProcess2, (List<ImportProcess>)page2.getItems());
+
+			Page<ImportProcess> page3 =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
+
+			assertContains(
+				importProcess3, (List<ImportProcess>)page3.getItems());
+		}
+		else {
+			Page<ImportProcess> page1 =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(1, totalCount + 2), null);
+
+			List<ImportProcess> importProcesses1 =
+				(List<ImportProcess>)page1.getItems();
+
+			Assert.assertEquals(
+				importProcesses1.toString(), totalCount + 2,
+				importProcesses1.size());
+
+			Page<ImportProcess> page2 =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(2, totalCount + 2), null);
+
+			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
+
+			List<ImportProcess> importProcesses2 =
+				(List<ImportProcess>)page2.getItems();
+
+			Assert.assertEquals(
+				importProcesses2.toString(), 1, importProcesses2.size());
+
+			Page<ImportProcess> page3 =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(1, (int)totalCount + 3), null);
+
+			assertContains(
+				importProcess1, (List<ImportProcess>)page3.getItems());
+			assertContains(
+				importProcess2, (List<ImportProcess>)page3.getItems());
+			assertContains(
+				importProcess3, (List<ImportProcess>)page3.getItems());
+		}
+	}
+
+	@Test
+	public void testGetPortletImportProcessesPageWithSortDateTime()
+		throws Exception {
+
+		testGetPortletImportProcessesPageWithSort(
+			EntityField.Type.DATE_TIME,
+			(entityField, importProcess1, importProcess2) -> {
+				BeanTestUtil.setProperty(
+					importProcess1, entityField.getName(),
+					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
+			});
+	}
+
+	@Test
+	public void testGetPortletImportProcessesPageWithSortDouble()
+		throws Exception {
+
+		testGetPortletImportProcessesPageWithSort(
+			EntityField.Type.DOUBLE,
+			(entityField, importProcess1, importProcess2) -> {
+				BeanTestUtil.setProperty(
+					importProcess1, entityField.getName(), 0.1);
+				BeanTestUtil.setProperty(
+					importProcess2, entityField.getName(), 0.5);
+			});
+	}
+
+	@Test
+	public void testGetPortletImportProcessesPageWithSortInteger()
+		throws Exception {
+
+		testGetPortletImportProcessesPageWithSort(
+			EntityField.Type.INTEGER,
+			(entityField, importProcess1, importProcess2) -> {
+				BeanTestUtil.setProperty(
+					importProcess1, entityField.getName(), 0);
+				BeanTestUtil.setProperty(
+					importProcess2, entityField.getName(), 1);
+			});
+	}
+
+	@Test
+	public void testGetPortletImportProcessesPageWithSortString()
+		throws Exception {
+
+		testGetPortletImportProcessesPageWithSort(
+			EntityField.Type.STRING,
+			(entityField, importProcess1, importProcess2) -> {
+				Class<?> clazz = importProcess1.getClass();
+
+				String entityFieldName = entityField.getName();
+
+				Method method = clazz.getMethod(
+					"get" + StringUtil.upperCaseFirstLetter(entityFieldName));
+
+				Class<?> returnType = method.getReturnType();
+
+				if (returnType.isAssignableFrom(Map.class)) {
+					BeanTestUtil.setProperty(
+						importProcess1, entityFieldName,
+						Collections.singletonMap("Aaa", "Aaa"));
+					BeanTestUtil.setProperty(
+						importProcess2, entityFieldName,
+						Collections.singletonMap("Bbb", "Bbb"));
+				}
+				else if (entityFieldName.contains("email")) {
+					BeanTestUtil.setProperty(
+						importProcess1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+					BeanTestUtil.setProperty(
+						importProcess2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()) +
+									"@liferay.com");
+				}
+				else {
+					BeanTestUtil.setProperty(
+						importProcess1, entityFieldName,
+						"aaa" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+					BeanTestUtil.setProperty(
+						importProcess2, entityFieldName,
+						"bbb" +
+							StringUtil.toLowerCase(
+								RandomTestUtil.randomString()));
+				}
+			});
+	}
+
+	protected void testGetPortletImportProcessesPageWithSort(
+			EntityField.Type type,
+			UnsafeTriConsumer
+				<EntityField, ImportProcess, ImportProcess, Exception>
+					unsafeTriConsumer)
+		throws Exception {
+
+		List<EntityField> entityFields = getEntityFields(type);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		String portletId = testGetPortletImportProcessesPage_getPortletId();
+
+		ImportProcess importProcess1 = randomImportProcess();
+		ImportProcess importProcess2 = randomImportProcess();
+
+		for (EntityField entityField : entityFields) {
+			unsafeTriConsumer.accept(
+				entityField, importProcess1, importProcess2);
+		}
+
+		importProcess1 = testGetPortletImportProcessesPage_addImportProcess(
+			portletId, importProcess1);
+
+		importProcess2 = testGetPortletImportProcessesPage_addImportProcess(
+			portletId, importProcess2);
+
+		Page<ImportProcess> page =
+			importProcessResource.getPortletImportProcessesPage(
+				portletId, null, null, null, null, null);
+
+		for (EntityField entityField : entityFields) {
+			Page<ImportProcess> ascPage =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
+
+			assertContains(
+				importProcess1, (List<ImportProcess>)ascPage.getItems());
+			assertContains(
+				importProcess2, (List<ImportProcess>)ascPage.getItems());
+
+			Page<ImportProcess> descPage =
+				importProcessResource.getPortletImportProcessesPage(
+					portletId, null, null, null,
+					Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
+
+			assertContains(
+				importProcess2, (List<ImportProcess>)descPage.getItems());
+			assertContains(
+				importProcess1, (List<ImportProcess>)descPage.getItems());
+		}
+	}
+
+	protected ImportProcess testGetPortletImportProcessesPage_addImportProcess(
+			String portletId, ImportProcess importProcess)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String testGetPortletImportProcessesPage_getPortletId()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	protected String testGetPortletImportProcessesPage_getIrrelevantPortletId()
+		throws Exception {
+
+		return null;
+	}
+
+	@Test
 	public void testGetSiteImportProcessesPage() throws Exception {
 		String siteExternalReferenceCode =
 			testGetSiteImportProcessesPage_getSiteExternalReferenceCode();
@@ -2379,6 +2723,25 @@ public abstract class BaseImportProcessResourceTestCase {
 	}
 
 	protected ImportProcess testPostImportProcess_addImportProcess(
+			ImportProcess importProcess)
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testPostPortletImportProcess() throws Exception {
+		ImportProcess randomImportProcess = randomImportProcess();
+
+		ImportProcess postImportProcess =
+			testPostPortletImportProcess_addImportProcess(randomImportProcess);
+
+		assertEquals(randomImportProcess, postImportProcess);
+		assertValid(postImportProcess);
+	}
+
+	protected ImportProcess testPostPortletImportProcess_addImportProcess(
 			ImportProcess importProcess)
 		throws Exception {
 
@@ -3540,4 +3903,4 @@ public abstract class BaseImportProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1730440680
+// LIFERAY-REST-BUILDER-HASH:-1655208362
