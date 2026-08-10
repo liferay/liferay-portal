@@ -29,7 +29,6 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             liferay:
                 path: cloud/helm/azure
@@ -68,7 +67,6 @@ tests:
                 repoURL: https://github.com/myfork/liferay-portal
                 targetRevision: LCD-12345
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   equal:

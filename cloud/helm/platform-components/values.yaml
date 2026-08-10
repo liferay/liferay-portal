@@ -67,48 +67,40 @@ gitops:
         url: ""
         usernameProperty: git_machine_user_id
 infrastructure:
-    chart: ""
     enabled: true
     parameters: []
     path: ""
     repoURL: ""
     targetRevision: ""
 infrastructureProvider:
-    chart: ""
     enabled: true
     parameters: []
     path: ""
     repoURL: ""
     targetRevision: ""
 liferay:
-    chart: ""
     enabled: true
     parameters: []
     path: ""
     repoURL: ""
     targetRevision: ""
 observability:
-    chart: observability
     enabled: false
     namespace: observability
     parameters: []
-    path: ""
     repoURL: oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/observability
     targetRevision: 1.0.0
 operatorApplications:
     ackPrometheusService:
-        chart: prometheusservice-chart
         enabled: false
         namespace: ack-system
-        path: ""
-        repoURL: oci://public.ecr.aws/aws-controllers-k8s
+        repoURL: oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart
         targetRevision: 1.4.1
         values: {}
     argoWorkflows:
         chart: argo-workflows
         enabled: true
         namespace: argo-workflows-system
-        path: ""
         repoURL: https://argoproj.github.io/argo-helm
         targetRevision: 1.0.10
         values:
@@ -155,6 +147,9 @@ operatorApplications:
                     requests:
                         cpu: 15m
                         memory: 128Mi
+            workflow:
+                rbac:
+                    create: false
     crossplane:
         chart: crossplane
         enabled: true
@@ -192,7 +187,6 @@ operatorApplications:
                         cpu: 15m
                         memory: 128Mi
         namespace: crossplane-system
-        path: ""
         repoURL: https://charts.crossplane.io/stable
         targetRevision: 2.1.3
         values:
@@ -236,7 +230,6 @@ operatorApplications:
         chart: eck-operator
         enabled: true
         namespace: elastic-system
-        path: ""
         repoURL: https://helm.elastic.co
         targetRevision: 3.2.0
         values:
@@ -263,11 +256,9 @@ operatorApplications:
                 seccompProfile:
                     type: RuntimeDefault
     envoyGateway:
-        chart: gateway-helm
         enabled: true
         namespace: envoy-gateway-system
-        path: ""
-        repoURL: oci://docker.io/envoyproxy
+        repoURL: oci://docker.io/envoyproxy/gateway-helm
         targetRevision: 1.6.3
         values:
             config:
@@ -282,7 +273,6 @@ operatorApplications:
         chart: external-secrets
         enabled: true
         namespace: external-secrets-system
-        path: ""
         repoURL: https://charts.external-secrets.io
         targetRevision: 1.0.0
         values:
@@ -311,7 +301,6 @@ operatorApplications:
         chart: keda
         enabled: false
         namespace: keda-system
-        path: ""
         repoURL: https://kedacore.github.io/charts
         targetRevision: 2.19.0
         values:

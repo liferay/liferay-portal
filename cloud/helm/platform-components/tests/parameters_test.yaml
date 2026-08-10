@@ -27,7 +27,6 @@ tests:
             clusterIdentity:
                 deploymentName: liferay-test
             infrastructureProvider:
-                chart: liferay-aws-infrastructure-provider
                 parameters:
                     -   name: aws.vpcId
                         value: vpc-0123456789
@@ -62,7 +61,6 @@ tests:
             clusterIdentity:
                 deploymentName: liferay-test
             infrastructure:
-                chart: liferay-azure-infrastructure
                 parameters:
                     -   name: azure.subnetId
                         value: /subscriptions/x
@@ -86,7 +84,6 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             liferay:
-                chart: liferay-aws
                 parameters:
                     -   name: global.aws.accountId
                         value: "123456789012"
@@ -170,10 +167,8 @@ tests:
             clusterIdentity:
                 deploymentName: liferay-test
             infrastructureProvider:
-                chart: liferay-aws-infrastructure-provider
                 parameters: null
                 repoURL: oci://example-registry/liferay-aws-infrastructure-provider
             liferay:
-                chart: liferay-aws
                 parameters: null
                 repoURL: oci://example-registry/liferay-aws

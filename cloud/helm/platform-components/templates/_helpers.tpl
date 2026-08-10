@@ -6,7 +6,9 @@
 {{- end -}}
 
 {{- define "liferay-platform.chartSource" -}}
-{{- if .path -}}
+{{- if hasPrefix "oci://" .repoURL -}}
+path: .
+{{- else if .path -}}
 path: {{ .path }}
 {{- else -}}
 chart: {{ .chart }}

@@ -54,10 +54,8 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   equal:
@@ -93,10 +91,8 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
             observability:
                 enabled: true
@@ -156,7 +152,6 @@ tests:
             clusterIdentity:
                 deploymentName: liferay-test
             infrastructureProvider:
-                chart: liferay-azure-infrastructure-provider
                 repoURL: oci://example-registry/liferay-azure-infrastructure-provider
     -   asserts:
             -   contains:
@@ -203,10 +198,8 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   hasDocuments:
@@ -226,16 +219,16 @@ tests:
             -   equal:
                     path: spec.sourceRepos
                     value:
-                        -   oci://public.ecr.aws/aws-controllers-k8s
-                        -   oci://public.ecr.aws/aws-controllers-k8s/*
+                        -   oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart
+                        -   oci://public.ecr.aws/aws-controllers-k8s/prometheusservice-chart/*
                         -   https://argoproj.github.io/argo-helm
                         -   https://argoproj.github.io/argo-helm/*
                         -   https://charts.crossplane.io/stable
                         -   https://charts.crossplane.io/stable/*
                         -   https://helm.elastic.co
                         -   https://helm.elastic.co/*
-                        -   oci://docker.io/envoyproxy
-                        -   oci://docker.io/envoyproxy/*
+                        -   oci://docker.io/envoyproxy/gateway-helm
+                        -   oci://docker.io/envoyproxy/gateway-helm/*
                         -   https://charts.external-secrets.io
                         -   https://charts.external-secrets.io/*
                         -   https://kedacore.github.io/charts
@@ -306,8 +299,6 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure

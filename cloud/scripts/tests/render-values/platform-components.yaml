@@ -5,14 +5,11 @@ gitops:
     repository:
         url: https://github.com/example/liferay-gitops.git
 infrastructure:
-    chart: liferay-azure-infrastructure
-    repoURL: oci://example-registry/liferay-helm-chart
+    repoURL: oci://example-registry/liferay-helm-chart/liferay-azure-infrastructure
     targetRevision: 1.0.0
 infrastructureProvider:
-    chart: liferay-azure-infrastructure-provider
-    repoURL: oci://example-registry/liferay-helm-chart
+    repoURL: oci://example-registry/liferay-helm-chart/liferay-azure-infrastructure-provider
     targetRevision: 1.0.0
 liferay:
-    chart: liferay-azure
-    repoURL: oci://example-registry/liferay-helm-chart
+    repoURL: oci://example-registry/liferay-helm-chart/liferay-azure
     targetRevision: 1.0.0

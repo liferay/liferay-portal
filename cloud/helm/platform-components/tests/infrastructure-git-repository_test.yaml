@@ -35,13 +35,10 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             infrastructureProvider:
-                chart: liferay-azure-infrastructure-provider
                 repoURL: oci://example-registry/liferay-azure-infrastructure-provider
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   equal:
@@ -65,10 +62,8 @@ tests:
                     revision: v1.2.3
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   equal:
@@ -86,10 +81,8 @@ tests:
                     revision: v1.2.3
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
     -   asserts:
             -   equal:
@@ -154,13 +147,10 @@ tests:
                 repository:
                     url: https://github.com/example/liferay-gitops.git
             infrastructure:
-                chart: liferay-azure-infrastructure
                 repoURL: oci://example-registry/liferay-azure-infrastructure
             infrastructureProvider:
-                chart: liferay-azure-infrastructure-provider
                 repoURL: oci://example-registry/liferay-azure-infrastructure-provider
             liferay:
-                chart: liferay-azure
                 repoURL: oci://example-registry/liferay-azure
             observability:
                 enabled: true
