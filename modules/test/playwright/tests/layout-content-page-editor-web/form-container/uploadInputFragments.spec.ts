@@ -4,7 +4,7 @@
  */
 
 import {ObjectDefinitionAPI} from '@liferay/object-admin-rest-client-js';
-import {expect, mergeTests} from '@playwright/test';
+import {FileChooser, expect, mergeTests} from '@playwright/test';
 import path from 'path';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
@@ -442,17 +442,23 @@ test.describe('File Upload Fragment', () => {
 
 			// Select file from computer
 
-			const fileChooserPromise = page.waitForEvent('filechooser');
-
 			const fileUploadInput = page.locator('.file-upload');
 
-			await fileUploadInput
-				.getByText('Select File', {exact: true})
-				.click();
+			let fileChooser: FileChooser;
 
-			const fileChooser = await fileChooserPromise;
+			await expect(async () => {
+				const fileChooserPromise = page.waitForEvent('filechooser', {
+					timeout: 1000,
+				});
 
-			await fileChooser.setFiles(
+				await fileUploadInput
+					.getByText('Select File', {exact: true})
+					.click({timeout: 1000});
+
+				fileChooser = await fileChooserPromise;
+			}).toPass();
+
+			await fileChooser!.setFiles(
 				path.join(
 					__dirname,
 					'../main/dependencies/file_upload_image_2.jpg'
