@@ -231,6 +231,12 @@ public class DateEntryLocalServiceUtil {
 		return getService().getDateEntries(start, end);
 	}
 
+	public static List<Object[]> getDateEntriesBySQLQuery(
+		long companyId, com.liferay.portal.kernel.dao.orm.Type type) {
+
+		return getService().getDateEntriesBySQLQuery(companyId, type);
+	}
+
 	/**
 	 * Returns the number of date entries.
 	 *
@@ -258,6 +264,12 @@ public class DateEntryLocalServiceUtil {
 			getIndexableActionableDynamicQuery() {
 
 		return getService().getIndexableActionableDynamicQuery();
+	}
+
+	public static List<Object> getMaxSnapshotDatesBySQLQuery(
+		long companyId, com.liferay.portal.kernel.dao.orm.Type type) {
+
+		return getService().getMaxSnapshotDatesBySQLQuery(companyId, type);
 	}
 
 	/**
@@ -303,4 +315,4 @@ public class DateEntryLocalServiceUtil {
 	private static volatile DateEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:312012647
+// LIFERAY-SERVICE-BUILDER-HASH:-1065324007
