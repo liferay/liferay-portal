@@ -16,6 +16,7 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.rest.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler;
+import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ImportPreviewResource;
@@ -32,10 +33,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
 import com.liferay.portal.vulcan.multipart.MultipartBody;
-import com.liferay.staging.StagingGroupHelper;
 
 import jakarta.ws.rs.BadRequestException;
-import jakarta.ws.rs.NotFoundException;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -63,7 +62,9 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		throws Exception {
 
 		return _getImportPreview(
-			_getAssetLibraryGroup(assetLibraryExternalReferenceCode),
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
 			multipartBody, GetterUtil.getLong(plid), portletId);
 	}
 
@@ -73,8 +74,8 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		throws Exception {
 
 		return _getImportPreview(
-			_getCompanyGroup(), multipartBody, GetterUtil.getLong(plid),
-			portletId);
+			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
+			multipartBody, GetterUtil.getLong(plid), portletId);
 	}
 
 	@Override
@@ -84,8 +85,9 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		throws Exception {
 
 		return _getImportPreview(
-			_getSiteGroup(siteExternalReferenceCode), multipartBody,
-			GetterUtil.getLong(plid), portletId);
+			GroupUtil.getSiteGroup(
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			multipartBody, GetterUtil.getLong(plid), portletId);
 	}
 
 	private ExportImportConfiguration _addExportImportConfiguration(
@@ -138,28 +140,6 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		return _layoutService.addTempFileEntry(
 			groupId, folderName, binaryFile.getFileName(),
 			binaryFile.getInputStream(), binaryFile.getContentType());
-	}
-
-	private Group _getAssetLibraryGroup(String externalReferenceCode) {
-		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, contextCompany.getCompanyId());
-
-		if ((group == null) || !group.isDepot()) {
-			throw new NotFoundException();
-		}
-
-		return group;
-	}
-
-	private Group _getCompanyGroup() {
-		Group group = _stagingGroupHelper.fetchCompanyGroup(
-			contextCompany.getCompanyId());
-
-		if (group == null) {
-			throw new NotFoundException();
-		}
-
-		return group;
 	}
 
 	private ImportPreview _getImportPreview(
@@ -240,17 +220,6 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		};
 	}
 
-	private Group _getSiteGroup(String externalReferenceCode) {
-		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, contextCompany.getCompanyId());
-
-		if ((group == null) || (!group.isCMS() && !group.isSite())) {
-			throw new NotFoundException();
-		}
-
-		return group;
-	}
-
 	private void _validateImportFile(
 			FileEntry fileEntry, long groupId, long plid, String portletId)
 		throws Exception {
@@ -303,8 +272,5 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 	@Reference
 	private Staging _staging;
-
-	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
 
 }

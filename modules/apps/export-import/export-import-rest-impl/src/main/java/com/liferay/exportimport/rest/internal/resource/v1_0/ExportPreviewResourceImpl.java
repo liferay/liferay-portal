@@ -16,6 +16,7 @@ import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandler
 import com.liferay.exportimport.rest.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler;
 import com.liferay.exportimport.rest.internal.util.DateRangeUtil;
+import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PreviewPortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ExportPreviewResource;
@@ -27,9 +28,6 @@ import com.liferay.portal.kernel.util.DateRange;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.staging.StagingGroupHelper;
-
-import jakarta.ws.rs.NotFoundException;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -57,7 +55,10 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		throws Exception {
 
 		return _getExportPreview(
-			endDate, _getAssetLibraryGroup(assetLibraryExternalReferenceCode),
+			endDate,
+			GroupUtil.getAssetLibraryGroup(
+				contextCompany.getCompanyId(),
+				assetLibraryExternalReferenceCode),
 			GetterUtil.getLong(plid), portletId, startDate);
 	}
 
@@ -67,8 +68,8 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		throws Exception {
 
 		return _getExportPreview(
-			endDate, _getCompanyGroup(), GetterUtil.getLong(plid), portletId,
-			startDate);
+			endDate, GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
+			GetterUtil.getLong(plid), portletId, startDate);
 	}
 
 	@Override
@@ -78,30 +79,10 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		throws Exception {
 
 		return _getExportPreview(
-			endDate, _getSiteGroup(siteExternalReferenceCode),
+			endDate,
+			GroupUtil.getSiteGroup(
+				contextCompany.getCompanyId(), siteExternalReferenceCode),
 			GetterUtil.getLong(plid), portletId, startDate);
-	}
-
-	private Group _getAssetLibraryGroup(String externalReferenceCode) {
-		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, contextCompany.getCompanyId());
-
-		if ((group == null) || !group.isDepot()) {
-			throw new NotFoundException();
-		}
-
-		return group;
-	}
-
-	private Group _getCompanyGroup() {
-		Group group = _stagingGroupHelper.fetchCompanyGroup(
-			contextCompany.getCompanyId());
-
-		if (group == null) {
-			throw new NotFoundException();
-		}
-
-		return group;
 	}
 
 	private ExportPreview _getExportPreview(
@@ -243,17 +224,6 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 		};
 	}
 
-	private Group _getSiteGroup(String externalReferenceCode) {
-		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, contextCompany.getCompanyId());
-
-		if ((group == null) || (!group.isCMS() && !group.isSite())) {
-			throw new NotFoundException();
-		}
-
-		return group;
-	}
-
 	@Reference
 	private DeletionSystemEventExporter _deletionSystemEventExporter;
 
@@ -268,8 +238,5 @@ public class ExportPreviewResourceImpl extends BaseExportPreviewResourceImpl {
 
 	@Reference
 	private PortletLocalService _portletLocalService;
-
-	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
 
 }
