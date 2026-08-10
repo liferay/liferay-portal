@@ -230,6 +230,57 @@ describe('CalendarTaskCard', () => {
 			jest.clearAllMocks();
 		});
 
+		it('clears the due date when the updated task comes back without one', async () => {
+			(getUserAccount as jest.Mock).mockResolvedValue({
+				externalReferenceCode: 'USER-1',
+				name: 'John Doe',
+			});
+
+			const taskWithDueDate = createTask({
+				actions: taskActions,
+				dueDate: futureDueDate,
+				id: 1,
+			} as Partial<ITaskObjectEntry>);
+
+			const updatedTaskWithoutDueDate: Partial<ITaskObjectEntry> = {
+				...taskWithDueDate,
+				assignTo: {
+					externalReferenceCode: 'USER-1',
+					id: 1,
+					name: 'John Doe',
+					type: 'User',
+				},
+			};
+
+			delete updatedTaskWithoutDueDate.dueDate;
+
+			(patchTaskById as jest.Mock).mockResolvedValue({
+				data: updatedTaskWithoutDueDate,
+				error: null,
+			});
+
+			const onTaskChanged = jest.fn();
+
+			const {getByLabelText, getByText} = renderCard(taskWithDueDate, {
+				loadData: jest.fn(),
+				onTaskChanged,
+			});
+
+			fireEvent.click(getByLabelText('actions'));
+			fireEvent.click(getByText('assign-to-me'));
+
+			await waitFor(() => {
+				expect(onTaskChanged).toHaveBeenCalledWith({
+					actions: taskActions,
+					embedded: updatedTaskWithoutDueDate,
+				});
+			});
+
+			expect(onTaskChanged.mock.calls[0][0].embedded).not.toHaveProperty(
+				'dueDate'
+			);
+		});
+
 		it('keeps the task untouched when watching fails', async () => {
 			(
 				postSubscribeTaskByExternalReferenceCode as jest.Mock
@@ -254,43 +305,6 @@ describe('CalendarTaskCard', () => {
 
 			expect(loadData).not.toHaveBeenCalled();
 			expect(onTaskChanged).not.toHaveBeenCalled();
-		});
-
-		it('merges the assign to me response into the task instead of reloading', async () => {
-			(getUserAccount as jest.Mock).mockResolvedValue({
-				externalReferenceCode: 'USER-1',
-				name: 'John Doe',
-			});
-
-			const updatedTask = {
-				assignTo: {name: 'John Doe'},
-				dateModified: '2026-02-05T00:00:00Z',
-			};
-
-			(patchTaskById as jest.Mock).mockResolvedValue({
-				data: updatedTask,
-				error: null,
-			});
-
-			const loadData = jest.fn();
-			const onTaskChanged = jest.fn();
-
-			const {getByLabelText, getByText} = renderCard(task, {
-				loadData,
-				onTaskChanged,
-			});
-
-			fireEvent.click(getByLabelText('actions'));
-			fireEvent.click(getByText('assign-to-me'));
-
-			await waitFor(() => {
-				expect(onTaskChanged).toHaveBeenCalledWith({
-					actions: taskActions,
-					embedded: {...task, ...updatedTask},
-				});
-			});
-
-			expect(loadData).not.toHaveBeenCalled();
 		});
 
 		it('refreshes the task after stop watching instead of reloading', async () => {
