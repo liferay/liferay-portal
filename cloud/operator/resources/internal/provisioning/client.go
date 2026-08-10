@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rsa"
 	"errors"
+	"io"
 )
 
 type ActivationRequest struct {
@@ -24,7 +25,14 @@ type AddOn struct {
 
 type Client interface {
 	Activate(activationRequest ActivationRequest, context context.Context, privateKey *rsa.PrivateKey) error
+	DownloadAddOn(context context.Context, downloadRequest DownloadRequest, privateKey *rsa.PrivateKey) (io.ReadCloser, error)
 	Manifest(context context.Context, manifestRequest ManifestRequest, privateKey *rsa.PrivateKey) (*Entitlements, error)
+}
+
+type DownloadRequest struct {
+	DownloadURL    string
+	EnvironmentID  string
+	VirtualEntryID int64
 }
 
 type Entitlements struct {

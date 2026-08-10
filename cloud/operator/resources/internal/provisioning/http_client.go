@@ -64,6 +64,43 @@ func (httpClient *HTTPClient) Activate(
 	return nil
 }
 
+func (httpClient *HTTPClient) DownloadAddOn(
+	context context.Context,
+	downloadRequest DownloadRequest,
+	privateKey *rsa.PrivateKey,
+) (io.ReadCloser, error) {
+	token, error := signJWT(
+		map[string]any{
+			"environmentID":  downloadRequest.EnvironmentID,
+			"virtualEntryId": downloadRequest.VirtualEntryID,
+		},
+		downloadRequest.EnvironmentID,
+		privateKey,
+	)
+
+	if error != nil {
+		return nil, error
+	}
+
+	response, error := httpClient.post(
+		context, token, downloadRequest.DownloadURL,
+	)
+
+	if error != nil {
+		return nil, error
+	}
+
+	if response.StatusCode != http.StatusOK {
+		response.Body.Close()
+
+		return nil, fmt.Errorf(
+			"add-on download: unexpected status %d", response.StatusCode,
+		)
+	}
+
+	return response.Body, nil
+}
+
 func (httpClient *HTTPClient) Manifest(
 	context context.Context,
 	manifestRequest ManifestRequest,
