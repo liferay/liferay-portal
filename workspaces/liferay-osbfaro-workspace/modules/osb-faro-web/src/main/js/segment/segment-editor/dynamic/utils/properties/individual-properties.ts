@@ -20,6 +20,11 @@ const createIndividualProperty = ({
 
 const INDIVIDUAL_PROPERTIES = [
 	{
+		label: Liferay.Language.get('known-since-date'),
+		name: 'knownSinceDate',
+		type: PropertyTypes.Date,
+	},
+	{
 		label: Liferay.Language.get('site-membership'),
 		name: 'groupIds',
 		type: PropertyTypes.SelectText,

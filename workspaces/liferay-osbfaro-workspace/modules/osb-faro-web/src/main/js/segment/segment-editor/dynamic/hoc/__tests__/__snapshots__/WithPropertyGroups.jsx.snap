@@ -12,7 +12,7 @@ exports[`WithPropertyGroups should pass propertyGroups to the WrappedComponent 1
     <div>
       Individual
       <div>
-        Individual-0: 6
+        Individual-0: 7
       </div>
       <div>
         DXP Custom Fields-1: 1
