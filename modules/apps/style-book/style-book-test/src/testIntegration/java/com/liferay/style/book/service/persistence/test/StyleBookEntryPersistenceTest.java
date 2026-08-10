@@ -140,6 +140,9 @@ public class StyleBookEntryPersistenceTest {
 		newStyleBookEntry.setDefaultStyleBookEntry(
 			RandomTestUtil.randomBoolean());
 
+		newStyleBookEntry.setFrontendTokenDefinition(
+			RandomTestUtil.randomString());
+
 		newStyleBookEntry.setFrontendTokensValues(
 			RandomTestUtil.randomString());
 
@@ -195,6 +198,9 @@ public class StyleBookEntryPersistenceTest {
 			existingStyleBookEntry.isDefaultStyleBookEntry(),
 			newStyleBookEntry.isDefaultStyleBookEntry());
 		Assert.assertEquals(
+			existingStyleBookEntry.getFrontendTokenDefinition(),
+			newStyleBookEntry.getFrontendTokenDefinition());
+		Assert.assertEquals(
 			existingStyleBookEntry.getFrontendTokensValues(),
 			newStyleBookEntry.getFrontendTokensValues());
 		Assert.assertEquals(
@@ -232,6 +238,8 @@ public class StyleBookEntryPersistenceTest {
 		draftStyleBookEntry.setModifiedDate(styleBookEntry.getModifiedDate());
 		draftStyleBookEntry.setDefaultStyleBookEntry(
 			styleBookEntry.getDefaultStyleBookEntry());
+		draftStyleBookEntry.setFrontendTokenDefinition(
+			styleBookEntry.getFrontendTokenDefinition());
 		draftStyleBookEntry.setFrontendTokensValues(
 			styleBookEntry.getFrontendTokensValues());
 		draftStyleBookEntry.setName(styleBookEntry.getName());
@@ -273,6 +281,9 @@ public class StyleBookEntryPersistenceTest {
 		Assert.assertEquals(
 			styleBookEntry.isDefaultStyleBookEntry(),
 			draftStyleBookEntry.isDefaultStyleBookEntry());
+		Assert.assertEquals(
+			styleBookEntry.getFrontendTokenDefinition(),
+			draftStyleBookEntry.getFrontendTokenDefinition());
 		Assert.assertEquals(
 			styleBookEntry.getFrontendTokensValues(),
 			draftStyleBookEntry.getFrontendTokensValues());
@@ -323,6 +334,9 @@ public class StyleBookEntryPersistenceTest {
 
 		styleBookEntry2.setDefaultStyleBookEntry(
 			RandomTestUtil.randomBoolean());
+
+		styleBookEntry2.setFrontendTokenDefinition(
+			RandomTestUtil.randomString());
 
 		styleBookEntry2.setFrontendTokensValues(RandomTestUtil.randomString());
 
@@ -1019,6 +1033,9 @@ public class StyleBookEntryPersistenceTest {
 
 		styleBookEntry.setDefaultStyleBookEntry(RandomTestUtil.randomBoolean());
 
+		styleBookEntry.setFrontendTokenDefinition(
+			RandomTestUtil.randomString());
+
 		styleBookEntry.setFrontendTokensValues(RandomTestUtil.randomString());
 
 		styleBookEntry.setName(RandomTestUtil.randomString());
@@ -1040,4 +1057,4 @@ public class StyleBookEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-757194958
+// LIFERAY-SERVICE-BUILDER-HASH:-357568069

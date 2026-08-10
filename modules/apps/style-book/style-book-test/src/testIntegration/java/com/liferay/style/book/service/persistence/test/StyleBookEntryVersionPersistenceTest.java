@@ -142,6 +142,9 @@ public class StyleBookEntryVersionPersistenceTest {
 		newStyleBookEntryVersion.setDefaultStyleBookEntry(
 			RandomTestUtil.randomBoolean());
 
+		newStyleBookEntryVersion.setFrontendTokenDefinition(
+			RandomTestUtil.randomString());
+
 		newStyleBookEntryVersion.setFrontendTokensValues(
 			RandomTestUtil.randomString());
 
@@ -208,6 +211,9 @@ public class StyleBookEntryVersionPersistenceTest {
 		Assert.assertEquals(
 			existingStyleBookEntryVersion.isDefaultStyleBookEntry(),
 			newStyleBookEntryVersion.isDefaultStyleBookEntry());
+		Assert.assertEquals(
+			existingStyleBookEntryVersion.getFrontendTokenDefinition(),
+			newStyleBookEntryVersion.getFrontendTokenDefinition());
 		Assert.assertEquals(
 			existingStyleBookEntryVersion.getFrontendTokensValues(),
 			newStyleBookEntryVersion.getFrontendTokensValues());
@@ -828,6 +834,9 @@ public class StyleBookEntryVersionPersistenceTest {
 		styleBookEntryVersion.setDefaultStyleBookEntry(
 			RandomTestUtil.randomBoolean());
 
+		styleBookEntryVersion.setFrontendTokenDefinition(
+			RandomTestUtil.randomString());
+
 		styleBookEntryVersion.setFrontendTokensValues(
 			RandomTestUtil.randomString());
 
@@ -851,4 +860,4 @@ public class StyleBookEntryVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-712525469
+// LIFERAY-SERVICE-BUILDER-HASH:-1722767333

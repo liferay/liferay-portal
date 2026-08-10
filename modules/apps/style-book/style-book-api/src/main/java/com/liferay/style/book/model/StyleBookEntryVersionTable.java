@@ -68,6 +68,10 @@ public class StyleBookEntryVersionTable
 		defaultStyleBookEntry = createColumn(
 			"defaultStyleBookEntry", Boolean.class, Types.BOOLEAN,
 			Column.FLAG_DEFAULT);
+	public final Column<StyleBookEntryVersionTable, Clob>
+		frontendTokenDefinition = createColumn(
+			"frontendTokenDefinition", Clob.class, Types.CLOB,
+			Column.FLAG_DEFAULT);
 	public final Column<StyleBookEntryVersionTable, Clob> frontendTokensValues =
 		createColumn(
 			"frontendTokensValues", Clob.class, Types.CLOB,
@@ -91,4 +95,4 @@ public class StyleBookEntryVersionTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1786923065
+// LIFERAY-SERVICE-BUILDER-HASH:-946573344

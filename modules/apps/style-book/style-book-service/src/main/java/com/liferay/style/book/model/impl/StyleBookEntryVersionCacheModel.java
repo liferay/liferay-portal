@@ -69,7 +69,7 @@ public class StyleBookEntryVersionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(39);
+		StringBundler sb = new StringBundler(41);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -99,6 +99,8 @@ public class StyleBookEntryVersionCacheModel
 		sb.append(modifiedDate);
 		sb.append(", defaultStyleBookEntry=");
 		sb.append(defaultStyleBookEntry);
+		sb.append(", frontendTokenDefinition=");
+		sb.append(frontendTokenDefinition);
 		sb.append(", frontendTokensValues=");
 		sb.append(frontendTokensValues);
 		sb.append(", name=");
@@ -169,6 +171,14 @@ public class StyleBookEntryVersionCacheModel
 		styleBookEntryVersionImpl.setDefaultStyleBookEntry(
 			defaultStyleBookEntry);
 
+		if (frontendTokenDefinition == null) {
+			styleBookEntryVersionImpl.setFrontendTokenDefinition("");
+		}
+		else {
+			styleBookEntryVersionImpl.setFrontendTokenDefinition(
+				frontendTokenDefinition);
+		}
+
 		if (frontendTokensValues == null) {
 			styleBookEntryVersionImpl.setFrontendTokensValues("");
 		}
@@ -231,6 +241,7 @@ public class StyleBookEntryVersionCacheModel
 		modifiedDate = objectInput.readLong();
 
 		defaultStyleBookEntry = objectInput.readBoolean();
+		frontendTokenDefinition = (String)objectInput.readObject();
 		frontendTokensValues = (String)objectInput.readObject();
 		name = objectInput.readUTF();
 
@@ -283,6 +294,13 @@ public class StyleBookEntryVersionCacheModel
 
 		objectOutput.writeBoolean(defaultStyleBookEntry);
 
+		if (frontendTokenDefinition == null) {
+			objectOutput.writeObject("");
+		}
+		else {
+			objectOutput.writeObject(frontendTokenDefinition);
+		}
+
 		if (frontendTokensValues == null) {
 			objectOutput.writeObject("");
 		}
@@ -328,6 +346,7 @@ public class StyleBookEntryVersionCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public boolean defaultStyleBookEntry;
+	public String frontendTokenDefinition;
 	public String frontendTokensValues;
 	public String name;
 	public long previewFileEntryId;
@@ -335,4 +354,4 @@ public class StyleBookEntryVersionCacheModel
 	public String themeId;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-111709581
+// LIFERAY-SERVICE-BUILDER-HASH:-1386151244

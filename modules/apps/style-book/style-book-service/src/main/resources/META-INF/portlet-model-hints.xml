@@ -15,6 +15,9 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="defaultStyleBookEntry" type="boolean" />
+		<field name="frontendTokenDefinition" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field name="frontendTokensValues" type="String">
 			<hint-collection name="CLOB" />
 		</field>
@@ -40,6 +43,9 @@
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
 		<field name="defaultStyleBookEntry" type="boolean" />
+		<field name="frontendTokenDefinition" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field name="frontendTokensValues" type="String">
 			<hint-collection name="CLOB" />
 		</field>

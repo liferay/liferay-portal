@@ -74,6 +74,7 @@ public class StyleBookEntryModelImpl
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP},
 		{"defaultStyleBookEntry", Types.BOOLEAN},
+		{"frontendTokenDefinition", Types.CLOB},
 		{"frontendTokensValues", Types.CLOB}, {"name", Types.VARCHAR},
 		{"previewFileEntryId", Types.BIGINT},
 		{"styleBookEntryKey", Types.VARCHAR}, {"themeId", Types.VARCHAR}
@@ -97,6 +98,7 @@ public class StyleBookEntryModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("defaultStyleBookEntry", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("frontendTokenDefinition", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("frontendTokensValues", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("previewFileEntryId", Types.BIGINT);
@@ -105,7 +107,7 @@ public class StyleBookEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table StyleBookEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,headId LONG,head BOOLEAN,styleBookEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,defaultStyleBookEntry BOOLEAN,frontendTokensValues TEXT null,name VARCHAR(75) null,previewFileEntryId LONG,styleBookEntryKey VARCHAR(75) null,themeId VARCHAR(255) null,primary key (styleBookEntryId, ctCollectionId))";
+		"create table StyleBookEntry (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,headId LONG,head BOOLEAN,styleBookEntryId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,defaultStyleBookEntry BOOLEAN,frontendTokenDefinition TEXT null,frontendTokensValues TEXT null,name VARCHAR(75) null,previewFileEntryId LONG,styleBookEntryKey VARCHAR(75) null,themeId VARCHAR(255) null,primary key (styleBookEntryId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table StyleBookEntry";
 
@@ -325,6 +327,9 @@ public class StyleBookEntryModelImpl
 				"defaultStyleBookEntry",
 				StyleBookEntry::getDefaultStyleBookEntry);
 			attributeGetterFunctions.put(
+				"frontendTokenDefinition",
+				StyleBookEntry::getFrontendTokenDefinition);
+			attributeGetterFunctions.put(
 				"frontendTokensValues",
 				StyleBookEntry::getFrontendTokensValues);
 			attributeGetterFunctions.put("name", StyleBookEntry::getName);
@@ -398,6 +403,10 @@ public class StyleBookEntryModelImpl
 				(BiConsumer<StyleBookEntry, Boolean>)
 					StyleBookEntry::setDefaultStyleBookEntry);
 			attributeSetterBiConsumers.put(
+				"frontendTokenDefinition",
+				(BiConsumer<StyleBookEntry, String>)
+					StyleBookEntry::setFrontendTokenDefinition);
+			attributeSetterBiConsumers.put(
 				"frontendTokensValues",
 				(BiConsumer<StyleBookEntry, String>)
 					StyleBookEntry::setFrontendTokensValues);
@@ -438,6 +447,8 @@ public class StyleBookEntryModelImpl
 		styleBookEntryVersion.setModifiedDate(getModifiedDate());
 		styleBookEntryVersion.setDefaultStyleBookEntry(
 			getDefaultStyleBookEntry());
+		styleBookEntryVersion.setFrontendTokenDefinition(
+			getFrontendTokenDefinition());
 		styleBookEntryVersion.setFrontendTokensValues(
 			getFrontendTokensValues());
 		styleBookEntryVersion.setName(getName());
@@ -777,6 +788,26 @@ public class StyleBookEntryModelImpl
 
 	@JSON
 	@Override
+	public String getFrontendTokenDefinition() {
+		if (_frontendTokenDefinition == null) {
+			return "";
+		}
+		else {
+			return _frontendTokenDefinition;
+		}
+	}
+
+	@Override
+	public void setFrontendTokenDefinition(String frontendTokenDefinition) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_frontendTokenDefinition = frontendTokenDefinition;
+	}
+
+	@JSON
+	@Override
 	public String getFrontendTokensValues() {
 		if (_frontendTokensValues == null) {
 			return "";
@@ -972,6 +1003,8 @@ public class StyleBookEntryModelImpl
 		styleBookEntryImpl.setCreateDate(getCreateDate());
 		styleBookEntryImpl.setModifiedDate(getModifiedDate());
 		styleBookEntryImpl.setDefaultStyleBookEntry(isDefaultStyleBookEntry());
+		styleBookEntryImpl.setFrontendTokenDefinition(
+			getFrontendTokenDefinition());
 		styleBookEntryImpl.setFrontendTokensValues(getFrontendTokensValues());
 		styleBookEntryImpl.setName(getName());
 		styleBookEntryImpl.setPreviewFileEntryId(getPreviewFileEntryId());
@@ -1013,6 +1046,8 @@ public class StyleBookEntryModelImpl
 			this.<Date>getColumnOriginalValue("modifiedDate"));
 		styleBookEntryImpl.setDefaultStyleBookEntry(
 			this.<Boolean>getColumnOriginalValue("defaultStyleBookEntry"));
+		styleBookEntryImpl.setFrontendTokenDefinition(
+			this.<String>getColumnOriginalValue("frontendTokenDefinition"));
 		styleBookEntryImpl.setFrontendTokensValues(
 			this.<String>getColumnOriginalValue("frontendTokensValues"));
 		styleBookEntryImpl.setName(this.<String>getColumnOriginalValue("name"));
@@ -1166,6 +1201,18 @@ public class StyleBookEntryModelImpl
 		styleBookEntryCacheModel.defaultStyleBookEntry =
 			isDefaultStyleBookEntry();
 
+		styleBookEntryCacheModel.frontendTokenDefinition =
+			getFrontendTokenDefinition();
+
+		String frontendTokenDefinition =
+			styleBookEntryCacheModel.frontendTokenDefinition;
+
+		if ((frontendTokenDefinition != null) &&
+			(frontendTokenDefinition.length() == 0)) {
+
+			styleBookEntryCacheModel.frontendTokenDefinition = null;
+		}
+
 		styleBookEntryCacheModel.frontendTokensValues =
 			getFrontendTokensValues();
 
@@ -1280,6 +1327,7 @@ public class StyleBookEntryModelImpl
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
 	private boolean _defaultStyleBookEntry;
+	private String _frontendTokenDefinition;
 	private String _frontendTokensValues;
 	private String _name;
 	private long _previewFileEntryId;
@@ -1337,6 +1385,8 @@ public class StyleBookEntryModelImpl
 		_columnOriginalValues.put(
 			"defaultStyleBookEntry", _defaultStyleBookEntry);
 		_columnOriginalValues.put(
+			"frontendTokenDefinition", _frontendTokenDefinition);
+		_columnOriginalValues.put(
 			"frontendTokensValues", _frontendTokensValues);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("previewFileEntryId", _previewFileEntryId);
@@ -1393,15 +1443,17 @@ public class StyleBookEntryModelImpl
 
 		columnBitmasks.put("defaultStyleBookEntry", 8192L);
 
-		columnBitmasks.put("frontendTokensValues", 16384L);
+		columnBitmasks.put("frontendTokenDefinition", 16384L);
 
-		columnBitmasks.put("name", 32768L);
+		columnBitmasks.put("frontendTokensValues", 32768L);
 
-		columnBitmasks.put("previewFileEntryId", 65536L);
+		columnBitmasks.put("name", 65536L);
 
-		columnBitmasks.put("styleBookEntryKey", 131072L);
+		columnBitmasks.put("previewFileEntryId", 131072L);
 
-		columnBitmasks.put("themeId", 262144L);
+		columnBitmasks.put("styleBookEntryKey", 262144L);
+
+		columnBitmasks.put("themeId", 524288L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1410,4 +1462,4 @@ public class StyleBookEntryModelImpl
 	private StyleBookEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1188066663
+// LIFERAY-SERVICE-BUILDER-HASH:1168539878

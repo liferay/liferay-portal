@@ -924,6 +924,8 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 			publishedStyleBookEntry.getModifiedDate());
 		draftStyleBookEntry.setDefaultStyleBookEntry(
 			publishedStyleBookEntry.getDefaultStyleBookEntry());
+		draftStyleBookEntry.setFrontendTokenDefinition(
+			publishedStyleBookEntry.getFrontendTokenDefinition());
 		draftStyleBookEntry.setFrontendTokensValues(
 			publishedStyleBookEntry.getFrontendTokensValues());
 		draftStyleBookEntry.setName(publishedStyleBookEntry.getName());
@@ -1024,4 +1026,4 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 		StyleBookEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-249882438
+// LIFERAY-SERVICE-BUILDER-HASH:-231218119

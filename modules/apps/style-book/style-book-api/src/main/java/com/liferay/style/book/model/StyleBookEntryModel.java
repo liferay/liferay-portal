@@ -289,6 +289,21 @@ public interface StyleBookEntryModel
 	public void setDefaultStyleBookEntry(boolean defaultStyleBookEntry);
 
 	/**
+	 * Returns the frontend token definition of this style book entry.
+	 *
+	 * @return the frontend token definition of this style book entry
+	 */
+	@AutoEscape
+	public String getFrontendTokenDefinition();
+
+	/**
+	 * Sets the frontend token definition of this style book entry.
+	 *
+	 * @param frontendTokenDefinition the frontend token definition of this style book entry
+	 */
+	public void setFrontendTokenDefinition(String frontendTokenDefinition);
+
+	/**
 	 * Returns the frontend tokens values of this style book entry.
 	 *
 	 * @return the frontend tokens values of this style book entry
@@ -370,4 +385,4 @@ public interface StyleBookEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1407349188
+// LIFERAY-SERVICE-BUILDER-HASH:-757872884

@@ -3340,6 +3340,7 @@ public class StyleBookEntryPersistenceImpl
 		ctStrictColumnNames.add("createDate");
 		ctIgnoreColumnNames.add("modifiedDate");
 		ctMergeColumnNames.add("defaultStyleBookEntry");
+		ctMergeColumnNames.add("frontendTokenDefinition");
 		ctMergeColumnNames.add("frontendTokensValues");
 		ctMergeColumnNames.add("name");
 		ctMergeColumnNames.add("previewFileEntryId");
@@ -4262,4 +4263,4 @@ public class StyleBookEntryPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1986777486
+// LIFERAY-SERVICE-BUILDER-HASH:-1858693601

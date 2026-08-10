@@ -49,6 +49,7 @@ public class StyleBookEntryWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("defaultStyleBookEntry", isDefaultStyleBookEntry());
+		attributes.put("frontendTokenDefinition", getFrontendTokenDefinition());
 		attributes.put("frontendTokensValues", getFrontendTokensValues());
 		attributes.put("name", getName());
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
@@ -140,6 +141,13 @@ public class StyleBookEntryWrapper
 			setDefaultStyleBookEntry(defaultStyleBookEntry);
 		}
 
+		String frontendTokenDefinition = (String)attributes.get(
+			"frontendTokenDefinition");
+
+		if (frontendTokenDefinition != null) {
+			setFrontendTokenDefinition(frontendTokenDefinition);
+		}
+
 		String frontendTokensValues = (String)attributes.get(
 			"frontendTokensValues");
 
@@ -225,6 +233,16 @@ public class StyleBookEntryWrapper
 	@Override
 	public String getExternalReferenceCode() {
 		return model.getExternalReferenceCode();
+	}
+
+	/**
+	 * Returns the frontend token definition of this style book entry.
+	 *
+	 * @return the frontend token definition of this style book entry
+	 */
+	@Override
+	public String getFrontendTokenDefinition() {
+		return model.getFrontendTokenDefinition();
 	}
 
 	/**
@@ -458,6 +476,16 @@ public class StyleBookEntryWrapper
 	}
 
 	/**
+	 * Sets the frontend token definition of this style book entry.
+	 *
+	 * @param frontendTokenDefinition the frontend token definition of this style book entry
+	 */
+	@Override
+	public void setFrontendTokenDefinition(String frontendTokenDefinition) {
+		model.setFrontendTokenDefinition(frontendTokenDefinition);
+	}
+
+	/**
 	 * Sets the frontend tokens values of this style book entry.
 	 *
 	 * @param frontendTokensValues the frontend tokens values of this style book entry
@@ -649,4 +677,4 @@ public class StyleBookEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1225993359
+// LIFERAY-SERVICE-BUILDER-HASH:1388369981

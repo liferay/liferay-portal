@@ -68,7 +68,7 @@ public class StyleBookEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(39);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -96,6 +96,8 @@ public class StyleBookEntryCacheModel
 		sb.append(modifiedDate);
 		sb.append(", defaultStyleBookEntry=");
 		sb.append(defaultStyleBookEntry);
+		sb.append(", frontendTokenDefinition=");
+		sb.append(frontendTokenDefinition);
 		sb.append(", frontendTokensValues=");
 		sb.append(frontendTokensValues);
 		sb.append(", name=");
@@ -162,6 +164,14 @@ public class StyleBookEntryCacheModel
 
 		styleBookEntryImpl.setDefaultStyleBookEntry(defaultStyleBookEntry);
 
+		if (frontendTokenDefinition == null) {
+			styleBookEntryImpl.setFrontendTokenDefinition("");
+		}
+		else {
+			styleBookEntryImpl.setFrontendTokenDefinition(
+				frontendTokenDefinition);
+		}
+
 		if (frontendTokensValues == null) {
 			styleBookEntryImpl.setFrontendTokensValues("");
 		}
@@ -223,6 +233,7 @@ public class StyleBookEntryCacheModel
 		modifiedDate = objectInput.readLong();
 
 		defaultStyleBookEntry = objectInput.readBoolean();
+		frontendTokenDefinition = (String)objectInput.readObject();
 		frontendTokensValues = (String)objectInput.readObject();
 		name = objectInput.readUTF();
 
@@ -275,6 +286,13 @@ public class StyleBookEntryCacheModel
 
 		objectOutput.writeBoolean(defaultStyleBookEntry);
 
+		if (frontendTokenDefinition == null) {
+			objectOutput.writeObject("");
+		}
+		else {
+			objectOutput.writeObject(frontendTokenDefinition);
+		}
+
 		if (frontendTokensValues == null) {
 			objectOutput.writeObject("");
 		}
@@ -320,6 +338,7 @@ public class StyleBookEntryCacheModel
 	public long createDate;
 	public long modifiedDate;
 	public boolean defaultStyleBookEntry;
+	public String frontendTokenDefinition;
 	public String frontendTokensValues;
 	public String name;
 	public long previewFileEntryId;
@@ -327,4 +346,4 @@ public class StyleBookEntryCacheModel
 	public String themeId;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-575322181
+// LIFERAY-SERVICE-BUILDER-HASH:-1158768179

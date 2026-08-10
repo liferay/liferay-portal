@@ -51,6 +51,7 @@ public class StyleBookEntryVersionWrapper
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("defaultStyleBookEntry", isDefaultStyleBookEntry());
+		attributes.put("frontendTokenDefinition", getFrontendTokenDefinition());
 		attributes.put("frontendTokensValues", getFrontendTokensValues());
 		attributes.put("name", getName());
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
@@ -149,6 +150,13 @@ public class StyleBookEntryVersionWrapper
 			setDefaultStyleBookEntry(defaultStyleBookEntry);
 		}
 
+		String frontendTokenDefinition = (String)attributes.get(
+			"frontendTokenDefinition");
+
+		if (frontendTokenDefinition != null) {
+			setFrontendTokenDefinition(frontendTokenDefinition);
+		}
+
 		String frontendTokensValues = (String)attributes.get(
 			"frontendTokensValues");
 
@@ -234,6 +242,16 @@ public class StyleBookEntryVersionWrapper
 	@Override
 	public String getExternalReferenceCode() {
 		return model.getExternalReferenceCode();
+	}
+
+	/**
+	 * Returns the frontend token definition of this style book entry version.
+	 *
+	 * @return the frontend token definition of this style book entry version
+	 */
+	@Override
+	public String getFrontendTokenDefinition() {
+		return model.getFrontendTokenDefinition();
 	}
 
 	/**
@@ -457,6 +475,16 @@ public class StyleBookEntryVersionWrapper
 	}
 
 	/**
+	 * Sets the frontend token definition of this style book entry version.
+	 *
+	 * @param frontendTokenDefinition the frontend token definition of this style book entry version
+	 */
+	@Override
+	public void setFrontendTokenDefinition(String frontendTokenDefinition) {
+		model.setFrontendTokenDefinition(frontendTokenDefinition);
+	}
+
+	/**
 	 * Sets the frontend tokens values of this style book entry version.
 	 *
 	 * @param frontendTokensValues the frontend tokens values of this style book entry version
@@ -663,4 +691,4 @@ public class StyleBookEntryVersionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1457907
+// LIFERAY-SERVICE-BUILDER-HASH:633940839
