@@ -1,7 +1,7 @@
 {
 	"dependencies": {
-		"@clayui/button": "^3.165.0",
-		"@clayui/icon": "^3.165.0",
+		"@clayui/button": "^3.166.0",
+		"@clayui/icon": "^3.166.0",
 		"@liferay/layout-js-components-web": "*",
 		"classnames": "2.3.1",
 		"frontend-js-web": "*",

@@ -1,10 +1,10 @@
 {
 	"dependencies": {
-		"@clayui/css": "^3.165.0",
-		"@clayui/form": "^3.165.0",
-		"@clayui/icon": "^3.165.0",
-		"@clayui/link": "^3.165.0",
-		"@clayui/navigation-bar": "^3.165.0",
+		"@clayui/css": "^3.166.0",
+		"@clayui/form": "^3.166.0",
+		"@clayui/icon": "^3.166.0",
+		"@clayui/link": "^3.166.0",
+		"@clayui/navigation-bar": "^3.166.0",
 		"@codesandbox/sandpack-react": "^2.20.0",
 		"@codesandbox/sandpack-themes": "^2.0.21",
 		"@docsearch/react": "^3.5.2",

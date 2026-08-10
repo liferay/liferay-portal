@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"@clayui/core": "^3.165.0",
-		"@clayui/form": "^3.165.0",
-		"@clayui/icon": "^3.165.0",
+		"@clayui/core": "^3.166.0",
+		"@clayui/form": "^3.166.0",
+		"@clayui/icon": "^3.166.0",
 		"prop-types": "15.7.2",
 		"react": "18.2.0"
 	},

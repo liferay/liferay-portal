@@ -1,10 +1,10 @@
 {
 	"dependencies": {
-		"@clayui/button": "^3.165.0",
-		"@clayui/form": "^3.165.0",
-		"@clayui/icon": "^3.165.0",
-		"@clayui/link": "^3.165.0",
-		"@clayui/sticker": "^3.165.0",
+		"@clayui/button": "^3.166.0",
+		"@clayui/form": "^3.166.0",
+		"@clayui/icon": "^3.166.0",
+		"@clayui/link": "^3.166.0",
+		"@clayui/sticker": "^3.166.0",
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/site-cms-site-initializer": "*",
 		"frontend-js-web": "*",

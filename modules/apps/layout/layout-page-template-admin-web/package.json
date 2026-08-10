@@ -1,9 +1,9 @@
 {
 	"dependencies": {
-		"@clayui/alert": "^3.165.0",
-		"@clayui/button": "^3.165.0",
-		"@clayui/icon": "^3.165.0",
-		"@clayui/modal": "^3.165.0",
+		"@clayui/alert": "^3.166.0",
+		"@clayui/button": "^3.166.0",
+		"@clayui/icon": "^3.166.0",
+		"@clayui/modal": "^3.166.0",
 		"@liferay/frontend-icons-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/layout-js-components-web": "*",

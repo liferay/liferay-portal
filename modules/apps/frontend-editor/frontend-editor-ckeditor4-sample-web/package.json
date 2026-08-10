@@ -4,7 +4,7 @@
 		"@ckeditor/ckeditor5-bookmark": "46.0.3",
 		"@ckeditor/ckeditor5-core": "46.0.3",
 		"@ckeditor/ckeditor5-ui": "46.0.3",
-		"@clayui/button": "^3.165.0",
+		"@clayui/button": "^3.166.0",
 		"frontend-editor-ckeditor-web": "*",
 		"react": "18.2.0"
 	},

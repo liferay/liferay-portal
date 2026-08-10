@@ -1,8 +1,8 @@
 {
 	"dependencies": {
-		"@clayui/alert": "^3.165.0",
-		"@clayui/date-picker": "^3.165.0",
-		"@clayui/tabs": "^3.165.0",
+		"@clayui/alert": "^3.166.0",
+		"@clayui/date-picker": "^3.166.0",
+		"@clayui/tabs": "^3.166.0",
 		"frontend-js-web": "*",
 		"react": "18.2.0"
 	},
