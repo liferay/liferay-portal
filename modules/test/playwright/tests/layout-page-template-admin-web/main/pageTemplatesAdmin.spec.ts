@@ -476,6 +476,10 @@ test.describe('General', () => {
 			template: pageTemplateName,
 		});
 
+		// Publish the page so it can be reached through its live friendly URL
+
+		await pageEditorPage.publishPage();
+
 		// Assert new content page in view mode
 
 		await page.goto(`/web${site.friendlyUrlPath}/${layoutTitle}`);
