@@ -49,8 +49,8 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select ObjectDefinition.className, ",
-					"ObjectField.companyId, ObjectField.label, ",
-					"ObjectField.name, ObjectField.userId from ObjectField ",
+					"ObjectField.companyId, ObjectField.userId, ",
+					"ObjectField.label, ObjectField.name from ObjectField ",
 					"inner join ObjectDefinition on ",
 					"ObjectDefinition.objectDefinitionId = ",
 					"ObjectField.objectDefinitionId where ",
@@ -96,47 +96,44 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 	}
 
 	private void _updateResourcePermissions(
-			long bitwiseValue, long companyId, String name,
+			long bitwiseValue, String className, long companyId,
 			long viewBitwiseValue)
 		throws Exception {
 
-		try (PreparedStatement selectPreparedStatement =
-				connection.prepareStatement(
-					StringBundler.concat(
-						"select resourcePermissionId, actionIds from ",
-						"ResourcePermission where companyId = ? and ",
-						"ctCollectionId = 0 and name = ? and scope = ?"));
-			PreparedStatement updatePreparedStatement =
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				StringBundler.concat(
+					"select resourcePermissionId, actionIds from ",
+					"ResourcePermission where companyId = ? and ",
+					"ctCollectionId = 0 and name = ? and scope = ?"));
+			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
 					"update ResourcePermission set actionIds = ? where " +
-						"ctCollectionId = 0 and resourcePermissionId = ?")) {
+						"resourcePermissionId = ? and ctCollectionId = 0")) {
 
-			selectPreparedStatement.setLong(1, companyId);
-			selectPreparedStatement.setString(2, name);
-			selectPreparedStatement.setInt(
-				3, ResourceConstants.SCOPE_INDIVIDUAL);
+			preparedStatement1.setLong(1, companyId);
+			preparedStatement1.setString(2, className);
+			preparedStatement1.setInt(3, ResourceConstants.SCOPE_INDIVIDUAL);
 
-			try (ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
 				while (resultSet.next()) {
 					long actionIds = resultSet.getLong("actionIds");
 
-					if (((actionIds & viewBitwiseValue) == 0) ||
-						((actionIds & bitwiseValue) != 0)) {
+					if (((actionIds & bitwiseValue) != 0) ||
+						((actionIds & viewBitwiseValue) == 0)) {
 
 						continue;
 					}
 
-					updatePreparedStatement.setLong(
-						1, actionIds | bitwiseValue);
-					updatePreparedStatement.setLong(
+					preparedStatement2.setLong(1, actionIds | bitwiseValue);
+					preparedStatement2.setLong(
 						2, resultSet.getLong("resourcePermissionId"));
 
-					updatePreparedStatement.addBatch();
+					preparedStatement2.addBatch();
 				}
 			}
 
-			updatePreparedStatement.executeBatch();
+			preparedStatement2.executeBatch();
 		}
 	}
 
@@ -163,7 +160,7 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 		}
 
 		_updateResourcePermissions(
-			resourceAction.getBitwiseValue(), companyId, className,
+			resourceAction.getBitwiseValue(), className, companyId,
 			viewResourceAction.getBitwiseValue());
 
 		_addPLOEntries(actionId, companyId, label, userId);
