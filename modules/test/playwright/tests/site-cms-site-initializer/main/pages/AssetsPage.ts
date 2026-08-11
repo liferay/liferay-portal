@@ -24,6 +24,7 @@ interface ExecItemActionArgs {
 		| 'Edit'
 		| 'Expire'
 		| 'Export for Translation'
+		| 'Import Translation'
 		| 'Move'
 		| 'Move To'
 		| 'Share'
