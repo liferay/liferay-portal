@@ -26,6 +26,10 @@ import deleteItemAction from './actions/deleteItemAction';
 import openFolderItemSelectorAction from './actions/openFolderItemSelectorAction';
 import shareAction from './actions/shareAction';
 import AssetRenderer from './cell_renderers/AssetRenderer';
+import {
+	isScheduleDateActionId,
+	openScheduleDateModal,
+} from './utils/createScheduleDateModalOpener';
 
 export type DashboardAssetListAdditionalProps = Pick<
 	AdditionalProps,
@@ -312,6 +316,16 @@ export default function getDashboardAssetListFDSProps({
 							items,
 						}),
 					size: 'full-screen',
+				});
+			}
+			else if (isScheduleDateActionId(action?.data?.id)) {
+				event?.preventDefault();
+
+				openScheduleDateModal({
+					actionId: action.data.id,
+					apiURL: otherProps.apiURL,
+					dataSetId: otherProps.id,
+					itemData,
 				});
 			}
 			else if (action?.data?.id === 'share') {

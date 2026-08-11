@@ -20,10 +20,7 @@ import org.osgi.service.component.annotations.Component;
  * @author Veronica Gonzalez
  */
 @Component(
-	property = {
-		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.EXPIRING_SOON_SECTION,
-		"frontend.data.set.name=" + CMSSiteInitializerFDSNames.UPCOMING_REVIEWS_SECTION
-	},
+	property = "frontend.data.set.name=" + CMSSiteInitializerFDSNames.UPCOMING_REVIEWS_SECTION,
 	service = FDSItemsActions.class
 )
 public class ViewNeedsReviewSectionFDSItemsActions implements FDSItemsActions {
@@ -32,8 +29,18 @@ public class ViewNeedsReviewSectionFDSItemsActions implements FDSItemsActions {
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
 
-		return SectionDisplayContextUtil.getFDSActionDropdownItems(
-			httpServletRequest);
+		List<FDSActionDropdownItem> fdsActionDropdownItems =
+			SectionDisplayContextUtil.getFDSActionDropdownItems(
+				httpServletRequest);
+
+		fdsActionDropdownItems.add(
+			SectionDisplayContextUtil.getScheduleDateFDSActionDropdownItem(
+				httpServletRequest, "update-expiration-date"));
+		fdsActionDropdownItems.add(
+			SectionDisplayContextUtil.getScheduleDateFDSActionDropdownItem(
+				httpServletRequest, "update-review-date"));
+
+		return fdsActionDropdownItems;
 	}
 
 }
