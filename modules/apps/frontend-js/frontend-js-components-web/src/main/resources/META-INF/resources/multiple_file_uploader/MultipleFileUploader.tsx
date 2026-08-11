@@ -12,7 +12,7 @@ import ClaySticker from '@clayui/sticker';
 import classNames from 'classnames';
 import {formatStorage, sub} from 'frontend-js-web';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Accept, ErrorCode, useDropzone} from 'react-dropzone';
+import {ErrorCode, useDropzone} from 'react-dropzone';
 
 import DragZoneBackground from './DragZoneBackground';
 import FailedFilesMessages from './FailedFilesMessages';
@@ -133,10 +133,7 @@ export default function MultipleFileUploader({
 	}, [FILE_ERRORS, initialFilesToUpload, maxFileSize, validExtensions]);
 
 	const {getInputProps, getRootProps, isDragActive} = useDropzone({
-		accept:
-			validExtensions === '*'
-				? undefined
-				: (validExtensions as unknown as Accept),
+		accept: validExtensions === '*' ? undefined : validExtensions,
 		maxSize: maxFileSize,
 		multiple: true,
 		noKeyboard: true,
