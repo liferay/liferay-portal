@@ -436,11 +436,17 @@ public class ExportImportDateUtil {
 
 			startDate = startCalendar.getTime();
 
-			Calendar endCalendar = getCalendar(
-				endDateAmPm, endDateYear, endDateMonth, endDateDay, endDateHour,
-				endDateMinute, endDateSecond, locale, timeZone, true);
+			if (endDateYear > 0) {
+				Calendar endCalendar = getCalendar(
+					endDateAmPm, endDateYear, endDateMonth, endDateDay,
+					endDateHour, endDateMinute, endDateSecond, locale, timeZone,
+					true);
 
-			endDate = endCalendar.getTime();
+				endDate = endCalendar.getTime();
+			}
+			else {
+				endDate = new Date();
+			}
 		}
 		else if (range.equals(RANGE_FROM_LAST_PUBLISH_DATE)) {
 			Date lastPublishDate = null;
