@@ -14,6 +14,9 @@ import com.liferay.headless.admin.workflow.internal.dto.v1_0.util.WorkflowLogUti
 import com.liferay.headless.admin.workflow.resource.v1_0.WorkflowLogResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -27,7 +30,13 @@ import com.liferay.portal.workflow.comparator.WorkflowComparatorFactory;
 import com.liferay.portal.workflow.kaleo.KaleoWorkflowModelConverter;
 import com.liferay.portal.workflow.kaleo.definition.LogType;
 import com.liferay.portal.workflow.kaleo.definition.util.KaleoLogUtil;
+import com.liferay.portal.workflow.kaleo.exception.NoSuchInstanceException;
+import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
+import com.liferay.portal.workflow.kaleo.model.KaleoLog;
+import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
+import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoLogLocalService;
+import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.portal.workflow.manager.WorkflowLogManager;
 
 import java.util.List;
@@ -53,6 +62,8 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 			Long workflowInstanceId, String[] types, Pagination pagination)
 		throws Exception {
 
+		_checkKaleoInstanceViewPermission(workflowInstanceId);
+
 		return Page.of(
 			transform(
 				_workflowLogManager.getWorkflowLogsByWorkflowInstance(
@@ -70,9 +81,12 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 
 	@Override
 	public WorkflowLog getWorkflowLog(Long workflowLogId) throws Exception {
+		KaleoLog kaleoLog = _kaleoLogLocalService.getKaleoLog(workflowLogId);
+
+		_checkKaleoInstanceViewPermission(kaleoLog.getKaleoInstanceId());
+
 		return _toWorkflowLog(
-			_kaleoWorkflowModelConverter.toWorkflowLog(
-				_kaleoLogLocalService.getKaleoLog(workflowLogId)));
+			_kaleoWorkflowModelConverter.toWorkflowLog(kaleoLog));
 	}
 
 	@NestedField(parentClass = WorkflowTask.class, value = "workflowLogs")
@@ -81,6 +95,13 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 			@NestedFieldId(value = "id") Long workflowTaskId, String[] types,
 			Pagination pagination)
 		throws Exception {
+
+		KaleoTaskInstanceToken kaleoTaskInstanceToken =
+			_kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceToken(
+				workflowTaskId);
+
+		_checkKaleoInstanceViewPermission(
+			kaleoTaskInstanceToken.getKaleoInstanceId());
 
 		return Page.of(
 			transform(
@@ -95,6 +116,23 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 			_workflowLogManager.getWorkflowLogCountByWorkflowTask(
 				contextCompany.getCompanyId(), workflowTaskId,
 				_toLogTypes(types)));
+	}
+
+	private void _checkKaleoInstanceViewPermission(long kaleoInstanceId)
+		throws Exception {
+
+		KaleoInstance kaleoInstance =
+			_kaleoInstanceLocalService.getKaleoInstance(kaleoInstanceId);
+
+		if (kaleoInstance.getCompanyId() != contextCompany.getCompanyId()) {
+			throw new NoSuchInstanceException(
+				"No KaleoInstance exists with the primary key " +
+					kaleoInstanceId);
+		}
+
+		_kaleoInstanceModelResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(), kaleoInstance,
+			ActionKeys.VIEW);
 	}
 
 	private String _toLogTypeName(WorkflowLog.Type type) {
@@ -224,7 +262,20 @@ public class WorkflowLogResourceImpl extends BaseWorkflowLogResourceImpl {
 	}
 
 	@Reference
+	private KaleoInstanceLocalService _kaleoInstanceLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.workflow.kaleo.model.KaleoInstance)"
+	)
+	private ModelResourcePermission<KaleoInstance>
+		_kaleoInstanceModelResourcePermission;
+
+	@Reference
 	private KaleoLogLocalService _kaleoLogLocalService;
+
+	@Reference
+	private KaleoTaskInstanceTokenLocalService
+		_kaleoTaskInstanceTokenLocalService;
 
 	@Reference
 	private KaleoWorkflowModelConverter _kaleoWorkflowModelConverter;
