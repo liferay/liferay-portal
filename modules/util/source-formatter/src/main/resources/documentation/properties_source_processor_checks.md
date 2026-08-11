@@ -4,6 +4,7 @@ Check | Category | Description
 ----- | -------- | -----------
 [GradleDependencyArtifactsCheck](check/gradle_dependency_artifacts_check.md#gradledependencyartifactscheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Performs several checks on dependencies artifacts. |
 JDKDynamicAgentLoadingCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that dynamic loading of agents is not used. |
+JDKPreviewFeaturesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that preview features are not used. |
 PropertiesArchivedModulesCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds `test.batch.class.names.includes` property value pointing to archived modules in `test.properties`. |
 PropertiesBuildIncludeDirsCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Verifies property value of `build.include.dirs` in `build.properties`. |
 PropertiesCommentsCheck | [Styling](styling_checks.md#styling-checks) | Validates comments in `.properties` files. |
