@@ -7,6 +7,7 @@ import ApiHelper from '../../../common/services/ApiHelper';
 
 export type AssetStatistics = {
 	approvedCount: number;
+	brokenLinksCount: number;
 	expiredCount: number;
 	expiringSoonCount: number;
 	inDraftCount: number;

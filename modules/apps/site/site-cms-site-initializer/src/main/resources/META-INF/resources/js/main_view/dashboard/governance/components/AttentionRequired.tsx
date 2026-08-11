@@ -25,7 +25,7 @@ type AttentionCard = {
 	description: string;
 	hoverContent: React.ReactNode;
 	icon: string;
-	statKey?: keyof AssetStatistics;
+	statKey: keyof AssetStatistics;
 	title: string;
 };
 
@@ -37,6 +37,7 @@ const ATTENTION_CARDS: AttentionCard[] = [
 		),
 		hoverContent: reviewText(Liferay.Language.get('review-broken-links')),
 		icon: 'link',
+		statKey: 'brokenLinksCount',
 		title: Liferay.Language.get('broken-links'),
 	},
 	{
@@ -123,7 +124,7 @@ export function AttentionRequired() {
 						statKey,
 						title,
 					}) => {
-						const sectionPath = statKey && SECTION_PATHS[statKey];
+						const sectionPath = SECTION_PATHS[statKey];
 
 						return (
 							<ClayLayout.Col
@@ -145,9 +146,7 @@ export function AttentionRequired() {
 									}
 									title={title}
 									trend={placeholderTrend}
-									value={
-										(statKey && statistics?.[statKey]) || 0
-									}
+									value={statistics?.[statKey] || 0}
 								/>
 							</ClayLayout.Col>
 						);
