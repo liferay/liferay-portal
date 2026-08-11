@@ -68,6 +68,7 @@ import java.io.InputStream;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -493,6 +494,34 @@ public class FragmentEntryLinkLocalServiceTest {
 		Assert.assertTrue(
 			notDeletedFragmentEntryLinks.toString(),
 			notDeletedFragmentEntryLinks.isEmpty());
+	}
+
+	@Test
+	@TestInfo("LPD-101584")
+	public void testGetGroupFragmentEntryUsageCounts() throws Exception {
+		_addFragmentEntryLinkToLayout();
+		_addFragmentEntryLinkToLayoutPageTemplateEntry();
+		_addFragmentEntryLinkFromGlobalToLayout();
+
+		Map<Long, Integer> groupFragmentEntryUsageCounts1 =
+			_fragmentEntryLinkLocalService.getGroupFragmentEntryUsageCounts(
+				_fragmentEntry);
+		Map<Long, Integer> groupFragmentEntryUsageCounts2 =
+			_fragmentEntryLinkLocalService.getGroupFragmentEntryUsageCounts(
+				_globalFragmentEntry);
+
+		Assert.assertEquals(
+			groupFragmentEntryUsageCounts1.toString(), 1,
+			groupFragmentEntryUsageCounts1.size());
+		Assert.assertEquals(
+			Integer.valueOf(2),
+			groupFragmentEntryUsageCounts1.get(_group.getGroupId()));
+		Assert.assertEquals(
+			groupFragmentEntryUsageCounts2.toString(), 1,
+			groupFragmentEntryUsageCounts2.size());
+		Assert.assertEquals(
+			Integer.valueOf(1),
+			groupFragmentEntryUsageCounts2.get(_group.getGroupId()));
 	}
 
 	@Test
