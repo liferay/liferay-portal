@@ -62,8 +62,8 @@ function main {
 		local storage_account_name
 
 		container_name="$(jq --raw-output '.tfstate.container_name' "${1}")"
-		deployment_name="$(jq --raw-output '.terraform.platform.deployment_name' "${1}")"
-		region="$(jq --raw-output '.terraform.platform.region' "${1}")"
+		deployment_name="$(jq --raw-output '.terraform.common.deployment_name' "${1}")"
+		region="$(jq --raw-output '.terraform.common.region' "${1}")"
 		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${1}")"
 		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${1}")"
 
@@ -230,7 +230,7 @@ function _generate_tfvars {
 
 	echo "Generating ${tfvars_file} from ${configuration_json_file}."
 
-	jq --arg module "${module}" '.terraform[$module]' "${configuration_json_file}" > "${tfvars_file}"
+	jq --arg module "${module}" '(.terraform.common // {}) * (.terraform[$module] // {})' "${configuration_json_file}" > "${tfvars_file}"
 
 	echo "${tfvars_file} was generated successfully."
 }
@@ -391,8 +391,8 @@ function _validate_config_json {
 	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
 	then
 		required_keys+=(
-			".terraform.platform.deployment_name"
-			".terraform.platform.region"
+			".terraform.common.deployment_name"
+			".terraform.common.region"
 			".tfstate.container_name"
 			".tfstate.resource_group_name"
 			".tfstate.storage_account_name"

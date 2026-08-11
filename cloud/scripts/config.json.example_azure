@@ -17,7 +17,7 @@
 	"subscription_id": "your-azure-subscription-id",
 	"tenant_id": "your-azure-tenant-id",
 	"terraform": {
-		"aks": {
+		"common": {
 			"deployment_name": "liferay-azure-test",
 			"region": "eastus"
 		},
@@ -27,9 +27,12 @@
 					"name": "your-key-vault-name",
 					"resource_group_name": "your-key-vault-resource-group"
 				}
-			},
-			"deployment_name": "liferay-azure-test",
-			"region": "eastus"
+			}
 		}
+	},
+	"tfstate": {
+		"container_name": "your-tfstate-container",
+		"resource_group_name": "your-tfstate-resource-group",
+		"storage_account_name": "yourtfstateaccount"
 	}
 }
