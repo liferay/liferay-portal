@@ -35,6 +35,7 @@ import {config as changeTrackingWebConfig} from './tests/change-tracking-web/mai
 import {config as clientExtensionWebClusterConfig} from './tests/client-extension-web/cluster/config';
 import {config as clientExtensionWebCSSConfig} from './tests/client-extension-web/css/config';
 import {config as clientExtensionWebCustomElementConfig} from './tests/client-extension-web/custom-element/config';
+import {config as clientExtensionWebEditorConfigContributorConfig} from './tests/client-extension-web/editor-config-contributor/config';
 import {config as clientExtensionWebIFrameConfig} from './tests/client-extension-web/iframe/config';
 import {config as clientExtensionWebJSImportMapsEntryConfig} from './tests/client-extension-web/js-import-maps-entry/config';
 import {config as clientExtensionWebJSConfig} from './tests/client-extension-web/js/config';
@@ -293,6 +294,7 @@ export default defineConfig({
 		clientExtensionWebClusterConfig,
 		clientExtensionWebCSSConfig,
 		clientExtensionWebCustomElementConfig,
+		clientExtensionWebEditorConfigContributorConfig,
 		clientExtensionWebIFrameConfig,
 		clientExtensionWebJSConfig,
 		clientExtensionWebJSImportMapsEntryConfig,
