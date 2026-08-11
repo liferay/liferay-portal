@@ -119,6 +119,34 @@ public abstract class SecretsUtil {
 		return matcher.matches();
 	}
 
+	public static String replaceSecrets(String content) {
+		if (content == null) {
+			return content;
+		}
+
+		Matcher matcher = _inlineSecretReferencePattern.matcher(content);
+
+		StringBuffer sb = new StringBuffer();
+
+		while (matcher.find()) {
+			String secretReference = matcher.group();
+
+			String secret = getSecret(
+				matcher.group("vaultName"), matcher.group("itemTitle"),
+				matcher.group("fieldLabel"));
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(secret)) {
+				secret = secretReference;
+			}
+
+			matcher.appendReplacement(sb, Matcher.quoteReplacement(secret));
+		}
+
+		matcher.appendTail(sb);
+
+		return sb.toString();
+	}
+
 	protected static Item getItem(String itemReference) {
 		Matcher matcher = _itemReferencePattern.matcher(
 			itemReference.replaceAll("/+$", ""));
@@ -860,6 +888,10 @@ public abstract class SecretsUtil {
 	private static boolean _connectSecretsLoaded;
 	private static String _connectURL;
 	private static BearerHTTPAuthorization _httpAuthorization;
+	private static final Pattern _inlineSecretReferencePattern =
+		Pattern.compile(
+			"op://(?<vaultName>[^/<\\n]*)/(?<itemTitle>[^/<\\n]*)/" +
+				"(?<fieldLabel>[^<\\n]*[^<\\s])");
 	private static final Pattern _itemReferencePattern = Pattern.compile(
 		"op://(?<vaultName>[^/]*)/(?<itemTitle>[^/]*)");
 	private static final Pattern _secretReferencePattern = Pattern.compile(

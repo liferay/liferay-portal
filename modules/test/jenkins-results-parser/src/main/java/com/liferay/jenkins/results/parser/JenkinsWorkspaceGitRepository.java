@@ -64,7 +64,8 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			return null;
 		}
 
-		String userConfigContent = getFileContent(userConfigFilePath);
+		String userConfigContent = SecretsUtil.replaceSecrets(
+			getFileContent(userConfigFilePath));
 
 		Document document = null;
 
