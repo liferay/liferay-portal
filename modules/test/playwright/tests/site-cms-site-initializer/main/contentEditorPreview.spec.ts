@@ -151,6 +151,11 @@ const createStructureWithAllFields = async ({
 				picklist: picklist.name,
 			});
 		}
+		else if (type === 'Select Related Content') {
+			await structureBuilderPage.changeFieldSettings({
+				relatedContent: 'Basic Document',
+			});
+		}
 		else if (type === 'Upload') {
 			await structureBuilderPage.changeFieldSettings({
 				requestFile: 'computer',
@@ -642,7 +647,9 @@ test(
 				},
 				{
 					action: async () => {
-						const trigger = form.getByLabel('Open Options Menu');
+						const trigger = form
+							.getByLabel('Open Options Menu')
+							.nth(1);
 
 						await trigger.scrollIntoViewIfNeeded();
 
