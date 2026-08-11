@@ -31,7 +31,7 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcess
 					"select distinct Layout1.externalReferenceCode, ",
 					"Layout1.plid, Layout1.groupId from Layout Layout1 inner ",
 					"join (select ctCollectionId, externalReferenceCode, ",
-					"groupId, max(plid) maxPlid from Layout group by ",
+					"groupId, max(plid) as maxPlid from Layout group by ",
 					"ctCollectionId, externalReferenceCode, groupId having ",
 					"count(*) > 1) Layout2 on Layout2.ctCollectionId = ",
 					"Layout1.ctCollectionId and Layout2.externalReferenceCode ",
