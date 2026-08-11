@@ -44,7 +44,7 @@ overlayBucket:
     forceDestroy: false
     orphanOnDelete: false
 persistence:
-    storageClassName: ""
+    storageClassName: standard-rwo
 podMonitoring:
     instances:
         envoy:
