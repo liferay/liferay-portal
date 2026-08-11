@@ -277,6 +277,15 @@ public class PriceEntryResourceTest extends BasePriceEntryResourceTestCase {
 			_commercePriceList.getCommercePriceListId(), priceEntry);
 	}
 
+	@Override
+	protected PriceEntry
+			testPutPriceEntryByExternalReferenceCode_addPriceEntry()
+		throws Exception {
+
+		return priceEntryResource.postPriceListIdPriceEntry(
+			_commercePriceList.getCommercePriceListId(), randomPriceEntry());
+	}
+
 	private void _testPostPriceListIdPriceEntryWithPriceOnApplicationOnBasePriceList()
 		throws Exception {
 
