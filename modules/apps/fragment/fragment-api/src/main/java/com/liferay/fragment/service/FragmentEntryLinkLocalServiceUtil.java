@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides the local service utility for FragmentEntryLink. This utility wraps
@@ -580,6 +581,13 @@ public class FragmentEntryLinkLocalServiceUtil {
 		return getService().getFragmentEntryLinksCountByPlid(groupId, plid);
 	}
 
+	public static Map<Long, Integer> getGroupFragmentEntryUsageCounts(
+			com.liferay.fragment.model.FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		return getService().getGroupFragmentEntryUsageCounts(fragmentEntry);
+	}
+
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -728,4 +736,4 @@ public class FragmentEntryLinkLocalServiceUtil {
 			FragmentEntryLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1331238008
+// LIFERAY-SERVICE-BUILDER-HASH:850440636

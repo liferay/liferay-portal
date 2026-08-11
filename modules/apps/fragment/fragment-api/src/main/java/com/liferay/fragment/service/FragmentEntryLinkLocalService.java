@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import java.io.Serializable;
 
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -439,6 +440,11 @@ public interface FragmentEntryLinkLocalService
 	public int getFragmentEntryLinksCountByPlid(long groupId, long plid);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Map<Long, Integer> getGroupFragmentEntryUsageCounts(
+			FragmentEntry fragmentEntry)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -538,4 +544,4 @@ public interface FragmentEntryLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1523302530
+// LIFERAY-SERVICE-BUILDER-HASH:-1994661514
