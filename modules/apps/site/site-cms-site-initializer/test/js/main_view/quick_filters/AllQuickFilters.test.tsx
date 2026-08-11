@@ -139,6 +139,96 @@ describe('AllQuickFilters', () => {
 		expect(screen.getByText('2')).toBeInTheDocument();
 	});
 
+	it('marks the Expiring Soon quick filter when the page loads with its filters', async () => {
+		mockFDSState.filters = [
+			{
+				active: true,
+				id: 'status',
+				selectedData: {
+					selectedItems: [{label: 'approved', value: 0}],
+				},
+			},
+			{active: true, id: 'dateExpiration', selectedData: {}},
+			{active: false, id: 'dateReview', selectedData: {}},
+		];
+
+		mockFetch.mockResolvedValueOnce({
+			json: async () => ({totalCount: 17}),
+			ok: true,
+		} as Response);
+
+		render(<AllQuickFilters />);
+
+		await waitFor(() => {
+			expect(mockFetch).toHaveBeenCalled();
+		});
+
+		expect(
+			await screen.findByRole('button', {
+				name: /expiring-soon/,
+				pressed: true,
+			})
+		).toBeInTheDocument();
+		expect(
+			screen.getByRole('button', {name: /expired/, pressed: false})
+		).toBeInTheDocument();
+	});
+
+	it('marks the Review Date Overdue quick filter when the page loads with a review date range without a start', async () => {
+		mockFDSState.filters = [
+			{active: false, id: 'status', selectedData: {selectedItems: []}},
+			{active: false, id: 'dateExpiration', selectedData: {}},
+			{
+				active: true,
+				id: 'dateReview',
+				selectedData: {exclude: false, from: null, to: {year: 2026}},
+			},
+		];
+
+		mockFetch.mockResolvedValueOnce({
+			json: async () => ({totalCount: 17}),
+			ok: true,
+		} as Response);
+
+		render(<AllQuickFilters />);
+
+		expect(
+			await screen.findByRole('button', {
+				name: /review-date-overdue/,
+				pressed: true,
+			})
+		).toBeInTheDocument();
+	});
+
+	it('marks no quick filter when the page loads with an upcoming review date range', async () => {
+		mockFDSState.filters = [
+			{active: false, id: 'status', selectedData: {selectedItems: []}},
+			{active: false, id: 'dateExpiration', selectedData: {}},
+			{
+				active: true,
+				id: 'dateReview',
+				selectedData: {
+					exclude: false,
+					from: {year: 2026},
+					to: {year: 2026},
+				},
+			},
+		];
+
+		mockFetch.mockResolvedValueOnce({
+			json: async () => ({totalCount: 17}),
+			ok: true,
+		} as Response);
+
+		render(<AllQuickFilters />);
+
+		await screen.findByRole('button', {name: /review-date-overdue/});
+
+		expect(screen.queryAllByRole('button', {pressed: true})).toHaveLength(
+			0
+		);
+	});
+
 	it('renders nothing and logs an error when the fetch fails', async () => {
 		const consoleError = jest
 			.spyOn(console, 'error')

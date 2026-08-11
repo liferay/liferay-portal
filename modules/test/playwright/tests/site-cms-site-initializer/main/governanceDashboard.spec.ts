@@ -947,6 +947,10 @@ test.describe('Needs Review section', () => {
 					/allSection_fdsConfig=.*filters.*dateExpiration/
 				);
 
+				await expect(
+					page.getByRole('button', {name: /Expiring Soon/})
+				).toHaveAttribute('aria-pressed', 'true');
+
 				for (const title of secondSpaceTitles) {
 					await expect(
 						page.getByText(title, {exact: true})

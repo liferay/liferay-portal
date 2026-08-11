@@ -12,13 +12,11 @@ import React, {useContext, useMemo} from 'react';
 
 import StatusLabel from '../../../../common/components/StatusLabel';
 import {ISearchAssetObjectEntry} from '../../../../common/types/AssetType';
-import {
-	EXPIRING_SOON_THRESHOLD_DAYS,
-	FDS_FILTER_ID,
-	WORKFLOW_STATUS,
-} from '../../../../common/utils/constants';
+import {FDS_FILTER_ID} from '../../../../common/utils/constants';
 import dateFormat from '../../../../common/utils/dateFormat';
 import toDatePart from '../../../../common/utils/toDatePart';
+import {QUICK_FILTER_TYPES} from '../../../quick_filters/constants';
+import {QUICK_FILTER_UPDATES} from '../../../quick_filters/quickFilterUpdates';
 import {SectionHeader} from '../../common/SectionHeader';
 import {GovernanceContext} from '../GovernanceContext';
 import GovernanceService from '../GovernanceService';
@@ -83,16 +81,6 @@ function getAllSectionHref(
 	return `${Liferay.ThemeDisplay.getPathFriendlyURLPublic()}/cms/all?${searchParams}`;
 }
 
-function getDateWindowSelectedData() {
-	const from = new Date();
-
-	const to = new Date();
-
-	to.setDate(from.getDate() + EXPIRING_SOON_THRESHOLD_DAYS);
-
-	return {exclude: false, from: toDatePart(from), to: toDatePart(to)};
-}
-
 export function NeedsReview({
 	additionalProps,
 }: {
@@ -107,21 +95,9 @@ export function NeedsReview({
 			expiringSoonHref: getAllSectionHref(
 				additionalProps.allSectionFDSName,
 				{
-					filters: [
-						{
-							id: FDS_FILTER_ID.STATUS,
-							selectedData: {
-								exclude: false,
-								selectedItems: [
-									{value: WORKFLOW_STATUS.APPROVED},
-								],
-							},
-						},
-						{
-							id: FDS_FILTER_ID.DATE_EXPIRATION,
-							selectedData: getDateWindowSelectedData(),
-						},
-					],
+					filters: Object.entries(
+						QUICK_FILTER_UPDATES[QUICK_FILTER_TYPES.EXPIRING_SOON]()
+					).map(([id, selectedData]) => ({id, selectedData})),
 				}
 			),
 			upcomingReviewsHref: getAllSectionHref(

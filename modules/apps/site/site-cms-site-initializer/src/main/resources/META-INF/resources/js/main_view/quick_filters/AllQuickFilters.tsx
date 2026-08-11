@@ -11,24 +11,17 @@ import {IBaseFilterState, IFDSState} from '@liferay/frontend-data-set-web';
 import {useLiferayState} from '@liferay/frontend-js-state-web/react';
 import classNames from 'classnames';
 import {fetch} from 'frontend-js-web';
-import React, {
-	ComponentProps,
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-} from 'react';
+import React, {ComponentProps, useCallback, useEffect, useState} from 'react';
 
 import {
 	CMSSiteInitializerFDSNames,
-	EXPIRING_SOON_THRESHOLD_DAYS,
 	FDS_EVENT_DISPLAY_UPDATED,
 	FDS_FILTER_ID,
 	WORKFLOW_STATUS,
 } from '../../common/utils/constants';
-import toDatePart from '../../common/utils/toDatePart';
 import {allFDSAtom} from './atoms';
 import {QUICK_FILTER_TYPES, QuickFilterType} from './constants';
+import {QUICK_FILTER_UPDATES} from './quickFilterUpdates';
 
 import './AllQuickFilters.scss';
 
@@ -38,6 +31,55 @@ interface QuickFilterCounts {
 	inDraft: number;
 	reviewDateOverdue: number;
 	total: number;
+}
+
+function getSelectedStatus(filter?: IBaseFilterState) {
+	const selectedData = filter?.selectedData as
+		| {selectedItems?: Array<{value: number}>}
+		| undefined;
+
+	return selectedData?.selectedItems?.[0]?.value;
+}
+
+function getActiveQuickFilter(filters: readonly IBaseFilterState[] = []) {
+	const activeFilters = filters.filter(({active}) => active);
+
+	const statusFilter = activeFilters.find(
+		({id}) => id === FDS_FILTER_ID.STATUS
+	);
+
+	const status = getSelectedStatus(statusFilter);
+
+	const dateReviewFilter = activeFilters.find(
+		({id}) => id === FDS_FILTER_ID.DATE_REVIEW
+	);
+
+	const dateReviewSelectedData = dateReviewFilter?.selectedData as
+		| {from?: unknown}
+		| undefined;
+
+	if (dateReviewFilter && !dateReviewSelectedData?.from && !statusFilter) {
+		return QUICK_FILTER_TYPES.REVIEW_DATE_OVERDUE;
+	}
+
+	if (
+		activeFilters.some(({id}) => id === FDS_FILTER_ID.DATE_EXPIRATION) &&
+		status === WORKFLOW_STATUS.APPROVED
+	) {
+		return QUICK_FILTER_TYPES.EXPIRING_SOON;
+	}
+
+	if (activeFilters.length === 1 && statusFilter) {
+		if (status === WORKFLOW_STATUS.DRAFT) {
+			return QUICK_FILTER_TYPES.IN_DRAFT;
+		}
+
+		if (status === WORKFLOW_STATUS.EXPIRED) {
+			return QUICK_FILTER_TYPES.EXPIRED;
+		}
+	}
+
+	return null;
 }
 
 function clearedFilter(filter: IBaseFilterState): IBaseFilterState {
@@ -66,6 +108,7 @@ function QuickFilterButton({
 }) {
 	return (
 		<ClayButton
+			aria-pressed={active}
 			className={classNames('quick-filter-button', {active})}
 			displayType="secondary"
 			onClick={onClick}
@@ -92,13 +135,10 @@ function QuickFilterButton({
 }
 
 export default function AllQuickFilters() {
-	const [activeQuickFilter, setActiveQuickFilter] =
-		useState<QuickFilterType | null>(null);
-
 	const [allFDSState, setAllFDSState] =
 		useLiferayState<IFDSState>(allFDSAtom);
 
-	const isQuickFilterChangeRef = useRef(false);
+	const activeQuickFilter = getActiveQuickFilter(allFDSState.filters);
 
 	const [counts, setCounts] = useState<QuickFilterCounts>({
 		expired: 0,
@@ -152,11 +192,8 @@ export default function AllQuickFilters() {
 	}, [fetchCounts]);
 
 	const applyQuickFilter = useCallback(
-		(
-			quickFilterType: QuickFilterType,
-			filterUpdates: Record<string, IBaseFilterState['selectedData']>
-		) => {
-			setActiveQuickFilter(quickFilterType);
+		(quickFilterType: QuickFilterType) => {
+			const filterUpdates = QUICK_FILTER_UPDATES[quickFilterType]();
 
 			setAllFDSState({
 				...allFDSState,
@@ -174,84 +211,9 @@ export default function AllQuickFilters() {
 					return clearedFilter(filter);
 				}),
 			});
-
-			isQuickFilterChangeRef.current = true;
 		},
 		[allFDSState, setAllFDSState]
 	);
-
-	const handleInDraftClick = useCallback(() => {
-		applyQuickFilter(QUICK_FILTER_TYPES.IN_DRAFT, {
-			[FDS_FILTER_ID.STATUS]: {
-				exclude: false,
-				selectedItems: [
-					{
-						label: Liferay.Language.get('draft'),
-						value: WORKFLOW_STATUS.DRAFT,
-					},
-				],
-			},
-		});
-	}, [applyQuickFilter]);
-
-	const handleExpiringSoonClick = useCallback(() => {
-		const now = new Date();
-
-		const threshold = new Date();
-
-		threshold.setDate(now.getDate() + EXPIRING_SOON_THRESHOLD_DAYS);
-
-		applyQuickFilter(QUICK_FILTER_TYPES.EXPIRING_SOON, {
-			[FDS_FILTER_ID.DATE_EXPIRATION]: {
-				exclude: false,
-				from: toDatePart(now),
-				to: toDatePart(threshold),
-			},
-			[FDS_FILTER_ID.STATUS]: {
-				exclude: false,
-				selectedItems: [
-					{
-						label: Liferay.Language.get('approved'),
-						value: WORKFLOW_STATUS.APPROVED,
-					},
-				],
-			},
-		});
-	}, [applyQuickFilter]);
-
-	const handleExpiredClick = useCallback(() => {
-		applyQuickFilter(QUICK_FILTER_TYPES.EXPIRED, {
-			[FDS_FILTER_ID.STATUS]: {
-				exclude: false,
-				selectedItems: [
-					{
-						label: Liferay.Language.get('expired'),
-						value: WORKFLOW_STATUS.EXPIRED,
-					},
-				],
-			},
-		});
-	}, [applyQuickFilter]);
-
-	const handleReviewDateOverdueClick = useCallback(() => {
-		applyQuickFilter(QUICK_FILTER_TYPES.REVIEW_DATE_OVERDUE, {
-			[FDS_FILTER_ID.DATE_REVIEW]: {
-				exclude: false,
-				from: null,
-				to: toDatePart(new Date()),
-			},
-		});
-	}, [applyQuickFilter]);
-
-	useEffect(() => {
-		if (isQuickFilterChangeRef.current) {
-			isQuickFilterChangeRef.current = false;
-
-			return;
-		}
-
-		setActiveQuickFilter(null);
-	}, [allFDSState.filters]);
 
 	if (counts.total === 0) {
 		return null;
@@ -274,7 +236,9 @@ export default function AllQuickFilters() {
 							displayType="secondary"
 							icon="pencil"
 							label={Liferay.Language.get('in-draft')}
-							onClick={handleInDraftClick}
+							onClick={() =>
+								applyQuickFilter(QUICK_FILTER_TYPES.IN_DRAFT)
+							}
 						/>
 					</ClayLayout.Col>
 
@@ -288,7 +252,11 @@ export default function AllQuickFilters() {
 							displayType="warning"
 							icon="flag-full"
 							label={Liferay.Language.get('expiring-soon')}
-							onClick={handleExpiringSoonClick}
+							onClick={() =>
+								applyQuickFilter(
+									QUICK_FILTER_TYPES.EXPIRING_SOON
+								)
+							}
 						/>
 					</ClayLayout.Col>
 
@@ -301,7 +269,9 @@ export default function AllQuickFilters() {
 							displayType="danger"
 							icon="warning-full"
 							label={Liferay.Language.get('expired')}
-							onClick={handleExpiredClick}
+							onClick={() =>
+								applyQuickFilter(QUICK_FILTER_TYPES.EXPIRED)
+							}
 						/>
 					</ClayLayout.Col>
 
@@ -315,7 +285,11 @@ export default function AllQuickFilters() {
 							displayType="info"
 							icon="date-time"
 							label={Liferay.Language.get('review-date-overdue')}
-							onClick={handleReviewDateOverdueClick}
+							onClick={() =>
+								applyQuickFilter(
+									QUICK_FILTER_TYPES.REVIEW_DATE_OVERDUE
+								)
+							}
 						/>
 					</ClayLayout.Col>
 				</ClayLayout.Row>

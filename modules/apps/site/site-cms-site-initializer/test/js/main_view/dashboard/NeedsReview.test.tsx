@@ -142,8 +142,13 @@ describe('[CMS Dashboard] NeedsReview', () => {
 		const expiringSoonFilters = getFilters(FDS_FILTER_ID.DATE_EXPIRATION);
 
 		expect(expiringSoonFilters).toHaveLength(2);
-		expect(expiringSoonFilters[0].selectedData.selectedItems).toEqual([
-			{value: WORKFLOW_STATUS.APPROVED},
+
+		const statusFilter = expiringSoonFilters.find(
+			({id}: {id: string}) => id === FDS_FILTER_ID.STATUS
+		);
+
+		expect(statusFilter.selectedData.selectedItems).toEqual([
+			expect.objectContaining({value: WORKFLOW_STATUS.APPROVED}),
 		]);
 	});
 
