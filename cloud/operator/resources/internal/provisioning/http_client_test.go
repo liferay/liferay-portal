@@ -34,7 +34,7 @@ func TestDownloadAddOn(t *testing.T) {
 		"streams the binary on success": {
 			responseBody: []byte("PK\x03\x04 fake lpkg bytes"),
 			statusCode:   http.StatusOK,
-			wantError:    false,		
+			wantError:    false,
 		},
 	}
 
