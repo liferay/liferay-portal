@@ -1859,6 +1859,13 @@
 			<category name="Styling" />
 			<description name="Finds missing and unnecessary whitespace." />
 		</check>
+
+		<!-- Liferay Source Checks -->
+
+		<check name="JDKDynamicAgentLoadingCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that dynamic loading of agents is not used." />
+		</check>
 	</source-processor>
 	<source-processor name="SoySourceProcessor">
 		<check name="SoyEmptyLinesCheck">
