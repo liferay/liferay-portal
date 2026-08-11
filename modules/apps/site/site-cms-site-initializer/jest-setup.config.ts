@@ -5,6 +5,8 @@
 
 // @ts-nocheck
 
+import {escapeHTML} from 'frontend-js-web';
+
 jest.mock('@ckeditor/ckeditor5-bookmark/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-clipboard/dist/index', () => ({}));
 jest.mock('@ckeditor/ckeditor5-editor-decoupled/dist/index', () => ({}));
@@ -84,7 +86,7 @@ class MockBroadcastChannel {
 	},
 	Util: {
 		...(globalThis.Liferay.Util || {}),
-		escapeHTML: (str: string) => str,
+		escapeHTML,
 		formatStorage: (size: number) => `${size / 1024} KB`,
 	},
 	authToken: 'mocked-auth-token',
