@@ -6,6 +6,7 @@
 package com.liferay.commerce.currency.web.internal.frontend.data.set.filter;
 
 import com.liferay.commerce.currency.web.internal.constants.CommerceCurrencyFDSNames;
+import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseSelectionFDSFilter;
 import com.liferay.frontend.data.set.filter.FDSFilter;
 import com.liferay.frontend.data.set.filter.SelectionFDSFilterItem;
@@ -25,7 +26,13 @@ import org.osgi.service.component.annotations.Reference;
 	property = "frontend.data.set.name=" + CommerceCurrencyFDSNames.COMMERCE_CURRENCIES,
 	service = FDSFilter.class
 )
-public class CommerceCatalogSelectionFDSFilter extends BaseSelectionFDSFilter {
+public class CommerceCurrencyActiveSelectionFDSFilter
+	extends BaseSelectionFDSFilter {
+
+	@Override
+	public String getEntityFieldType() {
+		return FDSEntityFieldTypes.BOOLEAN;
+	}
 
 	@Override
 	public String getId() {
