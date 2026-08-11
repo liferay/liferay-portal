@@ -100,7 +100,7 @@ export function NeedsReview({
 }) {
 	const {space} = useContext(GovernanceContext);
 
-	const spaceId = space.value === 'all' ? undefined : space.value;
+	const groupId = space.siteId;
 
 	const {expiringSoonHref, upcomingReviewsHref} = useMemo(
 		() => ({
@@ -153,7 +153,7 @@ export function NeedsReview({
 						apiURL={GovernanceService.getSearchURL(
 							additionalProps.upcomingReviewsFilterString,
 							'dateReview:asc',
-							spaceId
+							groupId
 						)}
 						description={Liferay.Language.get(
 							'assets-approaching-their-review-date'
@@ -172,7 +172,7 @@ export function NeedsReview({
 						apiURL={GovernanceService.getSearchURL(
 							additionalProps.expiringSoonFilterString,
 							'dateExpiration:asc',
-							spaceId
+							groupId
 						)}
 						description={Liferay.Language.get(
 							'assets-approaching-their-expiration-date'

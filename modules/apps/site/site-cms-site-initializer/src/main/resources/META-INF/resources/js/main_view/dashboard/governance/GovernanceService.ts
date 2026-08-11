@@ -55,20 +55,18 @@ async function getAssetStatistics(
 	};
 }
 
-function getScopedFilter(filter: string, spaceId?: string) {
-	const groupId = Number(spaceId);
-
-	if (!groupId) {
+function getScopedFilter(filter: string, groupId?: number) {
+	if (!Number(groupId)) {
 		return filter;
 	}
 
-	return `${filter} and groupIds/any(g:g eq ${groupId})`;
+	return `${filter} and groupIds/any(g:g eq ${Number(groupId)})`;
 }
 
-function getSearchURL(filter: string, sort: string, spaceId?: string) {
+function getSearchURL(filter: string, sort: string, groupId?: number) {
 	const searchParams = new URLSearchParams({
 		emptySearch: 'true',
-		filter: getScopedFilter(filter, spaceId),
+		filter: getScopedFilter(filter, groupId),
 		nestedFields: NESTED_FIELDS,
 		pageSize: String(NEEDS_REVIEW_PAGE_SIZE),
 		sort,
