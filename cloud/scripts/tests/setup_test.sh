@@ -15,6 +15,7 @@ function main {
 	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_gcp.sh"
 	do
 		_run_test "${script}" _test_aborts_with_config_missing_variables_object
+		_run_test "${script}" _test_aborts_with_old_terraform_version
 	done
 
 	for script in "${scripts_dir}/setup_aws.sh" "${scripts_dir}/setup_azure.sh" "${scripts_dir}/setup_gcp.sh"
@@ -23,7 +24,6 @@ function main {
 		_run_test "${script}" _test_aborts_with_missing_config_file
 		_run_test "${script}" _test_aborts_with_missing_required_utility
 		_run_test "${script}" _test_aborts_with_no_arguments
-		_run_test "${script}" _test_aborts_with_old_terraform_version
 	done
 
 	echo ""
@@ -82,7 +82,7 @@ function _make_terraform_stub {
 	cat > "${stub_dir}/terraform" <<EOF
 #!/usr/bin/env bash
 
-if [[ \${1:-} = --version ]]
+if [[ \${1:-} == --version ]]
 then
 	echo "Terraform v${version}"
 
