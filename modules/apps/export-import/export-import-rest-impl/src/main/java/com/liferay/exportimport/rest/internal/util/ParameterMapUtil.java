@@ -58,6 +58,16 @@ public class ParameterMapUtil {
 			return parameterMap;
 		}
 
+		if (dateRangeType.equals(_DATE_RANGE_TYPE_FROM_LAST_PUBLISH_DATE)) {
+			parameterMap.put(
+				ExportImportDateUtil.RANGE,
+				new String[] {
+					ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE
+				});
+
+			return parameterMap;
+		}
+
 		if (dateRangeType.equals(_DATE_RANGE_TYPE_LAST)) {
 			if (startDate == null) {
 				throw new BadRequestException(
@@ -476,6 +486,9 @@ public class ParameterMapUtil {
 	private static final String _DATE_RANGE_TYPE_ALL = "ALL";
 
 	private static final String _DATE_RANGE_TYPE_DATE_RANGE = "DATE_RANGE";
+
+	private static final String _DATE_RANGE_TYPE_FROM_LAST_PUBLISH_DATE =
+		"FROM_LAST_PUBLISH_DATE";
 
 	private static final String _DATE_RANGE_TYPE_LAST = "LAST";
 
