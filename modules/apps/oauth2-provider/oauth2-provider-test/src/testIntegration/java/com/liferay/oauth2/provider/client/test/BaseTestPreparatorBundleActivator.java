@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionary;
@@ -290,7 +291,7 @@ public abstract class BaseTestPreparatorBundleActivator
 
 		return createOAuth2Application(
 			companyId, user, clientId, clientSecret, allowedGrantTypesList,
-			clientAuthenticationMethod, jwks, "test application",
+			clientAuthenticationMethod, jwks, RandomTestUtil.randomString(),
 			redirectURIsList, rememberDevice, scopeAliasesList,
 			trustedApplication);
 	}
