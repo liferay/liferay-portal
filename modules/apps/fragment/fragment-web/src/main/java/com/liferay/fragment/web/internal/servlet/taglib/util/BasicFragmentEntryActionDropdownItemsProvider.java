@@ -45,10 +45,11 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 
 	public BasicFragmentEntryActionDropdownItemsProvider(
 		FragmentEntry fragmentEntry, RenderRequest renderRequest,
-		RenderResponse renderResponse) {
+		RenderResponse renderResponse, int usageCount) {
 
 		_fragmentEntry = fragmentEntry;
 		_renderResponse = renderResponse;
+		_usageCount = usageCount;
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
 
@@ -492,7 +493,7 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 		boolean viewSiteUsages = _isViewSiteUsages();
 
 		return dropdownItem -> {
-			dropdownItem.setDisabled(_fragmentEntry.getUsageCount() == 0);
+			dropdownItem.setDisabled(_usageCount == 0);
 			dropdownItem.setHref(
 				_renderResponse.createRenderURL(), "mvcRenderCommandName",
 				viewSiteUsages ? "/fragment/view_group_fragment_entry_usages" :
@@ -527,5 +528,6 @@ public class BasicFragmentEntryActionDropdownItemsProvider {
 	private final ItemSelector _itemSelector;
 	private final RenderResponse _renderResponse;
 	private final ThemeDisplay _themeDisplay;
+	private final int _usageCount;
 
 }

@@ -43,6 +43,7 @@ public class BasicFragmentEntryVerticalCard
 		_renderResponse = renderResponse;
 
 		_httpServletRequest = PortalUtil.getHttpServletRequest(renderRequest);
+		_usageCount = fragmentEntry.getUsageCount();
 	}
 
 	@Override
@@ -50,7 +51,8 @@ public class BasicFragmentEntryVerticalCard
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					fragmentEntry, _renderRequest, _renderResponse);
+					fragmentEntry, _renderRequest, _renderResponse,
+					_usageCount);
 
 		try {
 			return basicFragmentEntryActionDropdownItemsProvider.
@@ -151,7 +153,7 @@ public class BasicFragmentEntryVerticalCard
 	@Override
 	public String getSubtitle() {
 		return LanguageUtil.format(
-			_httpServletRequest, "x-usages", fragmentEntry.getUsageCount());
+			_httpServletRequest, "x-usages", _usageCount);
 	}
 
 	@Override
@@ -169,5 +171,6 @@ public class BasicFragmentEntryVerticalCard
 	private final HttpServletRequest _httpServletRequest;
 	private final RenderRequest _renderRequest;
 	private final RenderResponse _renderResponse;
+	private final int _usageCount;
 
 }
