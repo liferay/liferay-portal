@@ -5,6 +5,7 @@
 
 import {Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../utils/waitForAlert';
 import {ProcessBuilderPage} from './ProcessBuilderPage';
 
@@ -79,7 +80,15 @@ export class ConfigurationTabPage {
 
 		await expect(editButton).toBeVisible();
 
-		await editButton.click();
+		// The edit button swaps the row into its inline edit form. A click
+		// fired before the row's script is wired gets swallowed, leaving the
+		// workflow definition select present but hidden, so retry the click
+		// until the select is visible.
+
+		await clickAndExpectToBeVisible({
+			target: this.getAssignWorkflowDropdown(assetType),
+			trigger: editButton,
+		});
 	}
 
 	private async clickAssetTypeSaveButton(
