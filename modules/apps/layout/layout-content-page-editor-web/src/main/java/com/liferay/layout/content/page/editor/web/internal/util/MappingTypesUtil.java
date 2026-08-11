@@ -11,9 +11,13 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFormVariationsProvider;
 import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.info.permission.provider.InfoPermissionProvider;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
 
@@ -25,51 +29,50 @@ import java.util.Objects;
  */
 public class MappingTypesUtil {
 
+	public static JSONObject getMappingTypeJSONObject(
+		String className, InfoItemServiceRegistry infoItemServiceRegistry,
+		String itemCapabilityKey, ThemeDisplay themeDisplay) {
+
+		for (InfoItemClassDetails infoItemClassDetails :
+				infoItemServiceRegistry.getInfoItemClassDetails(
+					itemCapabilityKey)) {
+
+			if (Objects.equals(
+					infoItemClassDetails.getClassName(), className)) {
+
+				return _getMappingTypeJSONObject(
+					infoItemClassDetails, infoItemServiceRegistry,
+					themeDisplay);
+			}
+		}
+
+		return null;
+	}
+
 	public static JSONArray getMappingTypesJSONArray(
 		InfoItemServiceRegistry infoItemServiceRegistry,
 		String itemCapabilityKey, ThemeDisplay themeDisplay) {
 
 		JSONArray mappingTypesJSONArray = JSONFactoryUtil.createJSONArray();
 
+		Group scopeGroup = themeDisplay.getScopeGroup();
+
 		for (InfoItemClassDetails infoItemClassDetails :
 				infoItemServiceRegistry.getInfoItemClassDetails(
 					itemCapabilityKey)) {
 
+			if (!scopeGroup.isCMS() &&
+				_isCMS(
+					infoItemClassDetails.getClassName(),
+					themeDisplay.getCompanyId())) {
+
+				continue;
+			}
+
 			mappingTypesJSONArray.put(
-				JSONUtil.put(
-					"className", infoItemClassDetails.getClassName()
-				).put(
-					"isRestricted",
-					() -> {
-						InfoPermissionProvider infoPermissionProvider =
-							infoItemServiceRegistry.getFirstInfoItemService(
-								InfoPermissionProvider.class,
-								infoItemClassDetails.getClassName());
-
-						if ((infoPermissionProvider == null) ||
-							infoPermissionProvider.hasViewPermission(
-								null, themeDisplay.getScopeGroupId(),
-								themeDisplay.getPermissionChecker())) {
-
-							return false;
-						}
-
-						return true;
-					}
-				).put(
-					"label",
-					infoItemClassDetails.getLabel(themeDisplay.getLocale())
-				).put(
-					"subtypes",
-					_getMappingFormVariationsJSONArray(
-						infoItemClassDetails, infoItemServiceRegistry,
-						themeDisplay)
-				).put(
-					"value",
-					String.valueOf(
-						PortalUtil.getClassNameId(
-							infoItemClassDetails.getClassName()))
-				));
+				_getMappingTypeJSONObject(
+					infoItemClassDetails, infoItemServiceRegistry,
+					themeDisplay));
 		}
 
 		return mappingTypesJSONArray;
@@ -151,6 +154,56 @@ public class MappingTypesUtil {
 		}
 
 		return jsonArray;
+	}
+
+	private static JSONObject _getMappingTypeJSONObject(
+		InfoItemClassDetails infoItemClassDetails,
+		InfoItemServiceRegistry infoItemServiceRegistry,
+		ThemeDisplay themeDisplay) {
+
+		return JSONUtil.put(
+			"className", infoItemClassDetails.getClassName()
+		).put(
+			"isRestricted",
+			() -> {
+				InfoPermissionProvider infoPermissionProvider =
+					infoItemServiceRegistry.getFirstInfoItemService(
+						InfoPermissionProvider.class,
+						infoItemClassDetails.getClassName());
+
+				if ((infoPermissionProvider == null) ||
+					infoPermissionProvider.hasViewPermission(
+						null, themeDisplay.getScopeGroupId(),
+						themeDisplay.getPermissionChecker())) {
+
+					return false;
+				}
+
+				return true;
+			}
+		).put(
+			"label", infoItemClassDetails.getLabel(themeDisplay.getLocale())
+		).put(
+			"subtypes",
+			_getMappingFormVariationsJSONArray(
+				infoItemClassDetails, infoItemServiceRegistry, themeDisplay)
+		).put(
+			"value",
+			String.valueOf(
+				PortalUtil.getClassNameId(infoItemClassDetails.getClassName()))
+		);
+	}
+
+	private static boolean _isCMS(String className, long companyId) {
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionLocalServiceUtil.fetchObjectDefinitionByClassName(
+				companyId, className);
+
+		if (objectDefinition == null) {
+			return false;
+		}
+
+		return objectDefinition.isCMS();
 	}
 
 }

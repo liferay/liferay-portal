@@ -53,6 +53,7 @@ dependencies {
 	compileOnly project(":apps:learn:learn-api")
 	compileOnly project(":apps:marketplace:marketplace-api")
 	compileOnly project(":apps:mentions:mentions-api")
+	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal:portal-aop-api")

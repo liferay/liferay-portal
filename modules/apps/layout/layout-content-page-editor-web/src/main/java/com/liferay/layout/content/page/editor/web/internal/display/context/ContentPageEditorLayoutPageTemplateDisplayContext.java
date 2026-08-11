@@ -39,8 +39,10 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
@@ -72,6 +74,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Jürgen Kappler
@@ -138,6 +141,9 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 		Map<String, Object> configContext =
 			(Map<String, Object>)editorContext.get("config");
 
+		configContext.put(
+			"formTypes",
+			_addSelectedFormType((JSONArray)configContext.get("formTypes")));
 		configContext.put(
 			"infoItemPreviewSelectorURL", _getInfoItemPreviewSelectorURL());
 
@@ -245,6 +251,41 @@ public class ContentPageEditorLayoutPageTemplateDisplayContext
 		}
 
 		return mappingFieldsJSONObject;
+	}
+
+	private JSONArray _addSelectedFormType(JSONArray formTypesJSONArray) {
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_getLayoutPageTemplateEntry();
+
+		if ((layoutPageTemplateEntry == null) ||
+			(layoutPageTemplateEntry.getClassNameId() <= 0)) {
+
+			return formTypesJSONArray;
+		}
+
+		String className = layoutPageTemplateEntry.getClassName();
+
+		for (int i = 0; i < formTypesJSONArray.length(); i++) {
+			JSONObject formTypeJSONObject = formTypesJSONArray.getJSONObject(i);
+
+			if (Objects.equals(
+					formTypeJSONObject.getString("className"), className)) {
+
+				return formTypesJSONArray;
+			}
+		}
+
+		JSONObject formTypeJSONObject =
+			MappingTypesUtil.getMappingTypeJSONObject(
+				className, infoItemServiceRegistry,
+				EditPageInfoItemCapability.KEY, themeDisplay);
+
+		if (formTypeJSONObject == null) {
+			return formTypesJSONArray;
+		}
+
+		return JSONUtil.concat(
+			JSONUtil.put(formTypeJSONObject), formTypesJSONArray);
 	}
 
 	private Long _getClassTypeId() {
