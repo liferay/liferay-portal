@@ -66,7 +66,6 @@ import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -107,7 +106,6 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -301,7 +299,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	public void testGetSiteSitePageRenderedPage() throws Exception {
 		_testGetSiteSitePageRenderedPage();
 		_testGetSiteSitePageRenderedPageInRequestedLocale();
-		_testGetSiteSitePageRenderedPageUsesRequestHost();
+		_testGetSiteSitePageRenderedPagePortalURL();
 	}
 
 	@Test
@@ -646,21 +644,20 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		}
 	}
 
-	private void _assertRequestHost(String host, String friendlyURL)
+	private void _assertPortalURL(String friendlyURL, String host)
 		throws Exception {
 
 		int port = PortalUtil.getPortalServerPort(false);
 
-		SitePageResource requestHostSitePageResource = SitePageResource.builder(
+		SitePageResource sitePageResource = SitePageResource.builder(
 		).authentication(
 			"test@liferay.com", PropsValues.DEFAULT_ADMIN_PASSWORD
 		).endpoint(
 			host, port, "http"
 		).build();
 
-		String pageHTML =
-			requestHostSitePageResource.getSiteSitePageRenderedPage(
-				testGroup.getGroupId(), friendlyURL);
+		String pageHTML = sitePageResource.getSiteSitePageRenderedPage(
+			testGroup.getGroupId(), friendlyURL);
 
 		Assert.assertTrue(
 			pageHTML,
@@ -920,19 +917,8 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertTrue(pageHTML, pageHTML.contains(expectedTitle));
 	}
 
-	private void _testGetSiteSitePageRenderedPageUsesRequestHost()
-		throws Exception {
-
+	private void _testGetSiteSitePageRenderedPagePortalURL() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
-			"{}", draftLayout,
-			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
-				draftLayout.getPlid()));
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 
 		LayoutSet layoutSet = layout.getLayoutSet();
 
@@ -942,44 +928,28 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				_LOOPBACK_VIRTUAL_HOSTNAME, StringPool.BLANK
 			).build());
 
-		String friendlyURL = layout.getFriendlyURL();
+		String friendlyURL = StringUtil.removeFirst(
+			layout.getFriendlyURL(), StringPool.SLASH);
 
-		friendlyURL = friendlyURL.substring(1);
-
-		_assertRequestHost(testCompany.getVirtualHostname(), friendlyURL);
-		_assertRequestHost(_LOOPBACK_VIRTUAL_HOSTNAME, friendlyURL);
+		_assertPortalURL(friendlyURL, testCompany.getVirtualHostname());
+		_assertPortalURL(friendlyURL, _LOOPBACK_VIRTUAL_HOSTNAME);
 
 		_virtualHostLocalService.updateVirtualHosts(
 			layout.getCompanyId(), layoutSet.getLayoutSetId(), new TreeMap<>());
 
-		Group otherGroup = GroupTestUtil.addGroup();
+		Group group = GroupTestUtil.addGroup();
 
-		try {
-			_virtualHostLocalService.updateVirtualHosts(
-				otherGroup.getCompanyId(),
-				otherGroup.getPublicLayoutSet(
-				).getLayoutSetId(),
-				TreeMapBuilder.put(
-					_LOOPBACK_VIRTUAL_HOSTNAME, StringPool.BLANK
-				).build());
+		layoutSet = group.getPublicLayoutSet();
 
-			try (AutoCloseable autoCloseable =
-					new CompanyConfigurationTemporarySwapper(
-						layout.getCompanyId(),
-						"com.liferay.site.internal.configuration." +
-							"SiteVirtualHostConfiguration",
-						HashMapDictionaryBuilder.<String, Object>put(
-							"allowDefaultInstanceURLBypass", false
-						).put(
-							"strictModeEnabled", true
-						).build())) {
+		_virtualHostLocalService.updateVirtualHosts(
+			group.getCompanyId(), layoutSet.getLayoutSetId(),
+			TreeMapBuilder.put(
+				_LOOPBACK_VIRTUAL_HOSTNAME, StringPool.BLANK
+			).build());
 
-				_assertRequestHost(_LOOPBACK_VIRTUAL_HOSTNAME, friendlyURL);
-			}
-		}
-		finally {
-			GroupTestUtil.deleteGroup(otherGroup);
-		}
+		_assertPortalURL(friendlyURL, _LOOPBACK_VIRTUAL_HOSTNAME);
+
+		GroupTestUtil.deleteGroup(group);
 	}
 
 	private void _testGetSiteSitePagesPagePageSet() throws Exception {
