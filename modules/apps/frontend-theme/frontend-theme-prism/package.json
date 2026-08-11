@@ -9,7 +9,7 @@
 	"license": "LGPL",
 	"liferayTheme": {
 		"baseTheme": "styled",
-		"distName": "classic-2-theme",
+		"distName": "prism-theme",
 		"rubySass": false,
 		"sassOptions": {
 			"dartSass": true
@@ -17,7 +17,7 @@
 		"version": "7.1"
 	},
 	"main": "package.json",
-	"name": "@liferay/liferay-classic-2-theme",
+	"name": "@liferay/liferay-prism-theme",
 	"repository": "liferay/liferay-portal",
 	"scripts": {
 		"build": "node-scripts build:theme",
