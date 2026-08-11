@@ -22,11 +22,13 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -35,7 +37,10 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
+import com.liferay.portal.language.override.model.PLOEntry;
+import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
@@ -46,6 +51,7 @@ import java.io.Serializable;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -115,14 +121,34 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcessTest {
 		long companyId = objectDefinition.getCompanyId();
 		String name = objectDefinition.getClassName();
 
+		String primKey = String.valueOf(objectEntry.getObjectEntryId());
+
 		Role powerUserRole = _roleLocalService.getRole(
 			companyId, RoleConstants.POWER_USER);
-
-		String primKey = String.valueOf(objectEntry.getObjectEntryId());
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, primKey,
 			powerUserRole.getRoleId(), new String[] {ActionKeys.VIEW});
+
+		String actionId = objectField.getAttachmentDownloadActionKey();
+
+		Assert.assertFalse(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, primKey,
+				powerUserRole.getRoleId(), actionId));
+
+		_resourceActionLocalService.deleteResourceAction(
+			_resourceActionLocalService.getResourceAction(name, actionId));
+
+		Assert.assertNull(
+			_resourceActionLocalService.fetchResourceAction(name, actionId));
+
+		String key = "action." + actionId;
+
+		for (Locale locale : _language.getAvailableLocales()) {
+			_ploEntryLocalService.deletePLOEntry(
+				companyId, key, LocaleUtil.toLanguageId(locale));
+		}
 
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator, _CLASS_NAME);
@@ -131,7 +157,13 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcessTest {
 
 		_entityCache.clearCache();
 
-		String actionId = objectField.getAttachmentDownloadActionKey();
+		Assert.assertNotNull(
+			_resourceActionLocalService.fetchResourceAction(name, actionId));
+
+		Assert.assertTrue(
+			_resourcePermissionLocalService.hasResourcePermission(
+				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, primKey,
+				powerUserRole.getRoleId(), actionId));
 
 		Role guestRole = _roleLocalService.getRole(
 			companyId, RoleConstants.GUEST);
@@ -149,10 +181,16 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcessTest {
 				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, primKey,
 				userRole.getRoleId(), actionId));
 
-		Assert.assertTrue(
-			_resourcePermissionLocalService.hasResourcePermission(
-				companyId, name, ResourceConstants.SCOPE_INDIVIDUAL, primKey,
-				powerUserRole.getRoleId(), actionId));
+		for (Locale locale : _language.getAvailableLocales()) {
+			PLOEntry ploEntry = _ploEntryLocalService.fetchPLOEntry(
+				companyId, key, LocaleUtil.toLanguageId(locale));
+
+			Assert.assertNotNull(ploEntry);
+			Assert.assertEquals(
+				_language.format(
+					locale, "download-x", objectField.getLabel(locale)),
+				ploEntry.getValue());
+		}
 	}
 
 	private DLFileEntry _addDLFileEntry() throws Exception {
@@ -183,7 +221,16 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcessTest {
 	private EntityCache _entityCache;
 
 	@Inject
+	private Language _language;
+
+	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private PLOEntryLocalService _ploEntryLocalService;
+
+	@Inject
+	private ResourceActionLocalService _resourceActionLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
