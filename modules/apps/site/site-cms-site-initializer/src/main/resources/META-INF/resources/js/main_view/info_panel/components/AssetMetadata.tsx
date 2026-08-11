@@ -239,14 +239,16 @@ const AssetMetadata = () => {
 
 						<ClayBreadcrumb
 							className="p-0"
-							items={breadcrumbProps?.breadcrumbItems.map(
-								(breadcrumbItem: any) => ({
-									active: false,
-									label: Liferay.Language.get(
-										breadcrumbItem.label
-									),
-								})
-							)}
+							items={
+								breadcrumbProps?.breadcrumbItems?.map(
+									(breadcrumbItem: any) => ({
+										active: false,
+										label: Liferay.Language.get(
+											breadcrumbItem.label
+										),
+									})
+								) ?? []
+							}
 						/>
 					</div>
 				</div>

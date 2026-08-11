@@ -295,6 +295,32 @@ describe('CMS Asset Type Info Panel', () => {
 		).toBeInTheDocument();
 	});
 
+	it('renders the component when the section provides no breadcrumb props', async () => {
+		render(
+			<SidePanel containerRef={{current: null}}>
+				<AssetTypeInfoPanelContent
+					additionalProps={{
+						...testAdditionalProps,
+						breadcrumbProps: undefined,
+					}}
+					items={[DOCUMENT_OBJECT_ENTRY] as any}
+				/>
+			</SidePanel>
+		);
+
+		expect(
+			screen.getByRole('heading', {
+				name: DOCUMENT_OBJECT_ENTRY.embedded.title,
+			})
+		).toBeInTheDocument();
+
+		expect(screen.getByText('location')).toBeInTheDocument();
+
+		expect(
+			await screen.findByText(DOCUMENT_OBJECT_ENTRY.embedded.creator.name)
+		).toBeInTheDocument();
+	});
+
 	it('renders the component for a Folder asset type', async () => {
 		const {container} = render(
 			<SidePanel containerRef={{current: null}}>
