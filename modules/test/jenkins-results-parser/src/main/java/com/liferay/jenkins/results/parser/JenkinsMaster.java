@@ -177,6 +177,67 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		return Objects.equals(jenkinsMaster.getName(), getName());
 	}
 
+	public synchronized List<APIToken> getAPITokens(String jenkinsUserID) {
+		if (JenkinsResultsParserUtil.isNullOrEmpty(jenkinsUserID)) {
+			return null;
+		}
+
+		List<APIToken> cachedAPITokens = _apiTokens.get(jenkinsUserID);
+
+		if (cachedAPITokens != null) {
+			return cachedAPITokens;
+		}
+
+		String propertyName = JenkinsResultsParserUtil.combine(
+			"jenkins.user.op.item[", jenkinsUserID, "]");
+
+		String itemReference = null;
+
+		try {
+			itemReference = JenkinsResultsParserUtil.getBuildProperty(
+				propertyName);
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(
+				"Unable to get property " + propertyName, ioException);
+		}
+
+		List<APIToken> apiTokens = new ArrayList<>();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(itemReference)) {
+			return apiTokens;
+		}
+
+		SecretsUtil.Item item = SecretsUtil.getItem(itemReference);
+
+		if (item == null) {
+			throw new RuntimeException(
+				JenkinsResultsParserUtil.combine(
+					"Unable to find item ", itemReference, " from property ",
+					propertyName));
+		}
+
+		apiTokens.add(new APIToken(itemReference));
+
+		Set<String> apiTokenItemFieldLabels = new HashSet<>();
+
+		for (SecretsUtil.ItemField itemField : item.getItemFields()) {
+			String label = itemField.getLabel();
+
+			if ((label == null) || !label.startsWith("api.token.json.") ||
+				!apiTokenItemFieldLabels.add(label)) {
+
+				continue;
+			}
+
+			apiTokens.add(new APIToken(new JSONObject(itemField.getValue())));
+		}
+
+		_apiTokens.put(jenkinsUserID, apiTokens);
+
+		return apiTokens;
+	}
+
 	@Override
 	public List<String> getAssignedLabels() {
 		return _assignedLabels;
@@ -1238,6 +1299,66 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 	protected static long maxRecentBatchAge = 120 * 1000;
 
+	protected static class APIToken {
+
+		public String getCreationDate() {
+			return _creationDate;
+		}
+
+		public String getHash() {
+			return _hash;
+		}
+
+		public String getName() {
+			return _name;
+		}
+
+		public String getToken() {
+			return _token;
+		}
+
+		public String getUUID() {
+			return _uuid;
+		}
+
+		public String getVersion() {
+			return _version;
+		}
+
+		private APIToken(JSONObject jsonObject) {
+			_creationDate = jsonObject.getString("api.token.creation.date");
+			_hash = jsonObject.getString("api.token.hash");
+			_name = jsonObject.getString("api.token.name");
+			_token = jsonObject.getString("api.token");
+			_uuid = jsonObject.getString("api.token.uuid");
+			_version = jsonObject.getString("api.token.version");
+		}
+
+		private APIToken(String itemReference) {
+			_creationDate = _getSecret(
+				itemReference, "api.token.creation.date");
+			_hash = _getSecret(itemReference, "api.token.hash");
+			_name = _getSecret(itemReference, "api.token.name");
+			_token = _getSecret(itemReference, "api.token");
+			_uuid = _getSecret(itemReference, "api.token.uuid");
+			_version = _getSecret(itemReference, "api.token.version");
+		}
+
+		private String _getSecret(String itemReference, String itemFieldLabel) {
+			return SecretsUtil.getSecret(
+				JenkinsResultsParserUtil.combine(
+					itemReference, "/", itemFieldLabel));
+		}
+
+		private final String _creationDate;
+		private final String _hash;
+		private final String _name;
+		private final String _token;
+		private final String _uuid;
+		private final String _version;
+
+	}
+
 	private static Map<String, String> _getParameters(JSONObject jsonObject) {
 		Map<String, String> parameters = new HashMap<>();
 
@@ -1706,6 +1827,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 	}
 
+	private final Map<String, List<APIToken>> _apiTokens = new HashMap<>();
 	private final List<String> _assignedLabels = new ArrayList<>();
 	private boolean _available;
 	private long _availableTimestamp = -1;
