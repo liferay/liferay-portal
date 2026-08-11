@@ -10,6 +10,10 @@ import java.io.IOException;
 
 import java.util.Properties;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+
 import org.json.JSONObject;
 
 /**
@@ -17,9 +21,9 @@ import org.json.JSONObject;
  */
 public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
-	public Properties getBuildProperties() {
-		if (_environmentBuildProperties != null) {
-			return _environmentBuildProperties;
+	public Properties getCommandsBuildProperties() {
+		if (_commandsBuildProperties != null) {
+			return _commandsBuildProperties;
 		}
 
 		File buildPropertiesFile = new File(
@@ -28,10 +32,10 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		String buildPropertiesFilePath =
 			JenkinsResultsParserUtil.getCanonicalPath(buildPropertiesFile);
 
-		EnvironmentBuildProperties environmentBuildProperties = null;
+		Properties commandsBuildProperties = null;
 
 		try {
-			environmentBuildProperties = new EnvironmentBuildProperties(
+			commandsBuildProperties = new EnvironmentBuildProperties(
 				buildPropertiesFile);
 		}
 		catch (IOException ioException) {
@@ -39,19 +43,40 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 				"Unable to load " + buildPropertiesFilePath, ioException);
 		}
 
-		if (environmentBuildProperties.isEmpty()) {
+		if (commandsBuildProperties.isEmpty()) {
 			throw new RuntimeException(
 				"Unable to find build properties for " +
 					buildPropertiesFilePath);
 		}
 
-		_environmentBuildProperties = environmentBuildProperties;
+		_commandsBuildProperties = commandsBuildProperties;
 
-		return _environmentBuildProperties;
+		return _commandsBuildProperties;
 	}
 
-	public File getTemplateUsersDirectory() {
-		return new File(getDirectory(), "template/users");
+	public Element getUserConfigElement(
+		JenkinsMaster jenkinsMaster, String jenkinsUserID) {
+
+		String userConfigFilePath = _getUserConfigFilePath(
+			jenkinsMaster.getName(), jenkinsUserID);
+
+		if (userConfigFilePath == null) {
+			return null;
+		}
+
+		String userConfigContent = getFileContent(userConfigFilePath);
+
+		Document document = null;
+
+		try {
+			document = Dom4JUtil.parse(userConfigContent);
+		}
+		catch (DocumentException documentException) {
+			throw new RuntimeException(
+				"Unable to parse " + userConfigFilePath, documentException);
+		}
+
+		return document.getRootElement();
 	}
 
 	protected JenkinsWorkspaceGitRepository(JSONObject jsonObject) {
@@ -70,6 +95,28 @@ public class JenkinsWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		super(remoteGitRef, upstreamBranchName);
 	}
 
-	private EnvironmentBuildProperties _environmentBuildProperties;
+	private String _getUserConfigFilePath(
+		String masterName, String jenkinsUserID) {
+
+		for (String mastersDirName : _MASTERS_DIR_NAMES) {
+			String userConfigFilePath = JenkinsResultsParserUtil.combine(
+				mastersDirName, "/", masterName, "/users/", jenkinsUserID,
+				"/config.xml");
+
+			File userConfigFile = new File(getDirectory(), userConfigFilePath);
+
+			if (userConfigFile.exists()) {
+				return userConfigFilePath;
+			}
+		}
+
+		return null;
+	}
+
+	private static final String[] _MASTERS_DIR_NAMES = {
+		"masters/generated", "masters/static"
+	};
+
+	private Properties _commandsBuildProperties;
 
 }
