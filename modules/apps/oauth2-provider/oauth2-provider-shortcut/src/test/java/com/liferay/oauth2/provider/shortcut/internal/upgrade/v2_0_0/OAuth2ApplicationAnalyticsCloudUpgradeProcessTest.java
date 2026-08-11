@@ -9,6 +9,7 @@ import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Arrays;
@@ -160,7 +161,7 @@ public class OAuth2ApplicationAnalyticsCloudUpgradeProcessTest {
 		return oAuth2Application;
 	}
 
-	private static final long _COMPANY_ID = 12345;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private final CompanyLocalService _companyLocalService = Mockito.mock(
 		CompanyLocalService.class);
