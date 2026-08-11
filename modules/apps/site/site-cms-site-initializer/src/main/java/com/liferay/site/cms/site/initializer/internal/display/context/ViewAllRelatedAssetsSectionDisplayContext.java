@@ -30,7 +30,6 @@ import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporterRe
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Carolina Barbosa
@@ -58,22 +57,6 @@ public class ViewAllRelatedAssetsSectionDisplayContext
 
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectRelationship = objectRelationship;
-	}
-
-	@Override
-	public Map<String, Object> getAdditionalProps() {
-		Map<String, Object> additionalProps = super.getAdditionalProps();
-
-		try {
-			additionalProps.put("breadcrumbProps", getBreadcrumbProps());
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
-
-		return additionalProps;
 	}
 
 	@Override

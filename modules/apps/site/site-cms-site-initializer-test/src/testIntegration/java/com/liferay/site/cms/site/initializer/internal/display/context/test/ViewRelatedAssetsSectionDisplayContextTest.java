@@ -102,6 +102,11 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 			_getViewRelatedAssetsSectionDisplayContext(mockHttpServletRequest),
 			"getAdditionalProps", new Class<?>[0]);
 
+		Map<String, Object> breadcrumbProps =
+			(Map<String, Object>)additionalProps.get("breadcrumbProps");
+
+		Assert.assertNotNull(breadcrumbProps.get("breadcrumbItems"));
+
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
 				"objectEntryId", String.valueOf(_objectEntry.getObjectEntryId())

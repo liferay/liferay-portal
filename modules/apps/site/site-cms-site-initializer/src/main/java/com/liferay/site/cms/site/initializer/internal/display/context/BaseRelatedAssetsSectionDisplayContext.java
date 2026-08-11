@@ -13,8 +13,11 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -52,6 +55,22 @@ public abstract class BaseRelatedAssetsSectionDisplayContext
 
 		this.objectDefinition = objectDefinition;
 		this.objectEntry = objectEntry;
+	}
+
+	@Override
+	public Map<String, Object> getAdditionalProps() {
+		Map<String, Object> additionalProps = super.getAdditionalProps();
+
+		try {
+			additionalProps.put("breadcrumbProps", getBreadcrumbProps());
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return additionalProps;
 	}
 
 	@Override
@@ -121,5 +140,8 @@ public abstract class BaseRelatedAssetsSectionDisplayContext
 
 	protected final ObjectDefinition objectDefinition;
 	protected final ObjectEntry objectEntry;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		BaseRelatedAssetsSectionDisplayContext.class);
 
 }
