@@ -267,7 +267,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.commerce.payment.method.authorize.net.jar!httpclient5.jar</file-name>
-				<version>5.4.4</version>
+				<version>5.6.3</version>
 				<project-name>Apache HttpClient</project-name>
 				<licenses>
 					<license>
@@ -3015,7 +3015,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.search.elasticsearch8.impl.jar!httpclient5.jar</file-name>
-				<version>5.4.4</version>
+				<version>5.6.3</version>
 				<project-name>Apache HttpClient</project-name>
 				<licenses>
 					<license>
@@ -3319,7 +3319,7 @@
 			</library>
 			<library>
 				<file-name>com.liferay.portal.security.antisamy.jar!httpclient5.jar</file-name>
-				<version>5.4.4</version>
+				<version>5.6.3</version>
 				<project-name>Apache HttpClient</project-name>
 				<licenses>
 					<license>
