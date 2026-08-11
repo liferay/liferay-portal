@@ -468,7 +468,10 @@ public class ExportImportConfigurationParameterMapFactoryImpl
 			if (!portletDataHandlerBoolean.isDisabled()) {
 				defaultState = MapUtil.getBoolean(
 					parameterMap, portletDataHandlerBoolean.getNamespacedName(),
-					true);
+					MapUtil.getBoolean(
+						parameterMap,
+						PortletDataHandlerKeys.PORTLET_DATA_CONTROL_DEFAULT,
+						true));
 			}
 
 			if ((defaultState || portletDataAll) &&
