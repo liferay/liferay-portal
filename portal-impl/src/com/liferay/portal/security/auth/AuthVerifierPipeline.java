@@ -23,10 +23,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.auth.registry.AuthVerifierRegistry;
 import com.liferay.portal.spring.context.PortalContextLoaderListener;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -286,6 +288,56 @@ public class AuthVerifierPipeline {
 			_requestURI = requestURI;
 		}
 
+		private boolean _isImpersonated(
+			AccessControlContext accessControlContext, long userId) {
+
+			HttpServletRequest httpServletRequest =
+				accessControlContext.getRequest();
+
+			long doAsUserId = GetterUtil.getLong(
+				httpServletRequest.getAttribute(WebKeys.USER_ID));
+
+			if (doAsUserId != userId) {
+				return false;
+			}
+
+			HttpServletRequest originalHttpServletRequest =
+				PortalUtil.getOriginalServletRequest(httpServletRequest);
+
+			HttpSession httpSession = originalHttpServletRequest.getSession(
+				false);
+
+			if (httpSession == null) {
+				return false;
+			}
+
+			long realUserId = GetterUtil.getLong(
+				httpSession.getAttribute(WebKeys.USER_ID));
+
+			if ((realUserId <= 0) || (realUserId == userId)) {
+				return false;
+			}
+
+			return true;
+		}
+
+		private boolean _isUserAuthSuccessful(
+			AccessControlContext accessControlContext, User user) {
+
+			if (!user.isActive()) {
+				return false;
+			}
+
+			if (_isImpersonated(accessControlContext, user.getUserId()) ||
+				(user.isEmailAddressVerificationComplete() &&
+				 !user.isPasswordResetRequired())) {
+
+				return true;
+			}
+
+			return false;
+		}
+
 		private Map<String, Object> _mergeSettings(
 			Properties properties, Map<String, Object> settings) {
 
@@ -351,9 +403,7 @@ public class AuthVerifierPipeline {
 				authVerifierResult.getUserId());
 
 			if ((user != null) &&
-				(!user.isActive() ||
-				 !user.isEmailAddressVerificationComplete() ||
-				 user.isPasswordResetRequired())) {
+				!_isUserAuthSuccessful(accessControlContext, user)) {
 
 				long userId = authVerifierResult.getUserId();
 
