@@ -4,6 +4,7 @@
  */
 
 import {
+	isComputedColor,
 	isHexFormat,
 	parseColor,
 	toHexColorString,
@@ -62,6 +63,26 @@ export function parseColorValue({
 		}
 
 		tokenLabel = token.label;
+	}
+	else if (isComputedColor(value)) {
+		validValue = value;
+
+		const element = document.createElement('div');
+
+		element.style.background = value;
+		element.style.display = 'none';
+
+		document.body.appendChild(element);
+
+		const computedColor = convertRGBtoHex(
+			window.getComputedStyle(element).backgroundColor
+		);
+
+		element.remove();
+
+		if (computedColor.startsWith('#')) {
+			pickerColor = computedColor.replace(/^#/, '');
+		}
 	}
 	else if (color.isValid()) {
 		if (isHexFormat(color)) {

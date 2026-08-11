@@ -4,6 +4,7 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
+import {isComputedColor} from '@clayui/color-picker';
 import ClayForm from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import {useIsFirstRender} from '@clayui/shared';
@@ -240,7 +241,7 @@ export default function ColorPicker({
 			deleteStyleError(field.name, activeItemId);
 		}
 
-		setColor(`#${color}`);
+		setColor(isComputedColor(color) ? color : `#${color}`);
 	};
 
 	const onKeyDownInput = (event: KeyboardEvent<HTMLInputElement>) => {
