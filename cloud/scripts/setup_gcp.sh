@@ -279,7 +279,7 @@ function _pushd {
 function _recover_kubectl_context {
 	local exit_code="${1}"
 
-	if [[ -z ${_GCP_DEPLOYMENT_NAME:-} ]] || [[ ${_GCP_DEPLOYMENT_NAME} = null ]] || [[ -z ${_GCP_PROJECT_ID:-} ]] || [[ ${_GCP_PROJECT_ID} = null ]]
+	if [[ -z ${_GCP_DEPLOYMENT_NAME:-} ]] || [[ ${_GCP_DEPLOYMENT_NAME} == null ]] || [[ -z ${_GCP_PROJECT_ID:-} ]] || [[ ${_GCP_PROJECT_ID} == null ]]
 	then
 		exit "${exit_code}"
 	fi

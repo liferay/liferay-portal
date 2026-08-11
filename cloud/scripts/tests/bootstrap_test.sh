@@ -14,7 +14,7 @@ function curl {
 
 	for arg in "${@}"
 	do
-		if [[ ${capture} = yes ]]
+		if [[ ${capture} == yes ]]
 		then
 			capture=""
 			output="${arg}"
@@ -22,7 +22,7 @@ function curl {
 			continue
 		fi
 
-		if [[ ${arg} = --output ]]
+		if [[ ${arg} == --output ]]
 		then
 			capture="yes"
 		fi
@@ -42,7 +42,7 @@ function curl {
 
 	if [[ ${url} == *.sha256 ]]
 	then
-		if [[ ${CURL_STUB_SIDECAR_FAIL-} = true ]]
+		if [[ ${CURL_STUB_SIDECAR_FAIL-} == true ]]
 		then
 			return 22
 		fi
@@ -233,7 +233,7 @@ function _test_ignores_sidecar_objects_when_resolving_latest {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ ${exit_code} -eq 0 ] && [[ ${output} = liferay-aws-bootstrap-1.2.3 ]]
+	if [ ${exit_code} -eq 0 ] && [[ ${output} == liferay-aws-bootstrap-1.2.3 ]]
 	then
 		return 0
 	fi
@@ -250,7 +250,7 @@ function _test_succeeds_with_valid_checksum {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ ${exit_code} -eq 0 ] && [[ ${output} = liferay-aws-bootstrap-1.2.3 ]]
+	if [ ${exit_code} -eq 0 ] && [[ ${output} == liferay-aws-bootstrap-1.2.3 ]]
 	then
 		return 0
 	fi

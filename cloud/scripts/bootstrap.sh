@@ -107,7 +107,7 @@ function _download_and_extract_files {
 			--silent \
 			"https://storage.googleapis.com/storage/v1/b/${bucket_name}/o?prefix=${prefix}/&projection=noAcl")
 
-	if [[ ! -n ${json} ]]
+	if [[ -z ${json} ]]
 	then
 		echo "Unable to get metadata from gs://${bucket_name}/${prefix}" >&2
 
