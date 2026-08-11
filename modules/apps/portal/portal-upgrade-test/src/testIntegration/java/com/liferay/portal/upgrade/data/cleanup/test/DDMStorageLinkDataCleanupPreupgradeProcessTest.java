@@ -15,7 +15,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
@@ -35,7 +38,9 @@ import java.sql.ResultSet;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,6 +58,24 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Before
+	public void setUp() throws Exception {
+		_classNames = _classNameLocalService.getClassNames(
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		for (ClassName className :
+				_classNameLocalService.getClassNames(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			if (!_classNames.contains(className)) {
+				_classNameLocalService.deleteClassName(className);
+			}
+		}
+	}
 
 	@Test
 	public void testUpgrade() throws Exception {
@@ -213,6 +236,11 @@ public class DDMStorageLinkDataCleanupPreupgradeProcessTest
 			}
 		}
 	}
+
+	@Inject
+	private ClassNameLocalService _classNameLocalService;
+
+	private List<ClassName> _classNames;
 
 	@Inject
 	private DDMFieldLocalService _ddmFieldLocalService;
