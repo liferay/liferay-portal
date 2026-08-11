@@ -11,7 +11,7 @@ _ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
 readonly _ROOT_CLOUD_DIR _SCRIPTS_DIR
 
 function main {
-	if [ "${#}" -eq 0 ]
+	if [ ${#} -eq 0 ]
 	then
 		echo "Usage: ${0} <configuration-json-file>" >&2
 		echo "" >&2
@@ -121,7 +121,7 @@ function _check_key_vault {
 			--query properties.enableRbacAuthorization \
 			--resource-group "${key_vault_resource_group_name}")
 
-	if [ "${rbac_authorization_enabled}" != "true" ]
+	if [[ ${rbac_authorization_enabled} != true ]]
 	then
 		echo "The key vault ${key_vault_name} uses the access policy permission model, but the Liferay platform grants vault access through Azure RBAC roles, so the External Secrets operator would be denied access." >&2
 		echo "Run \"az keyvault update --enable-rbac-authorization true --name ${key_vault_name}\" to switch the permission model, and run this script again." >&2
@@ -142,7 +142,7 @@ function _check_terraform_version {
 
 	lowest_version=$(printf "%s\n%s\n" "${required_version}" "${found_version}" | sort --version-sort | head -n 1)
 
-	if [ "${lowest_version}" != "${required_version}" ]
+	if [[ ${lowest_version} != ${required_version} ]]
 	then
 		echo "The installed Terraform version ${found_version} is older than ${required_version}." >&2
 
@@ -313,7 +313,7 @@ function _get_terraform_apply_args {
 
 	local apply_args=()
 
-	if [[ "${auto_approve}" == "true" ]]
+	if [[ ${auto_approve} == true ]]
 	then
 		apply_args+=("-auto-approve")
 	fi
@@ -322,12 +322,12 @@ function _get_terraform_apply_args {
 
 	parallelism=$(jq --raw-output '.options.parallelism | numbers' "${configuration_json_file}")
 
-	if [ -n "${parallelism}" ]
+	if [[ -n ${parallelism} ]]
 	then
 		apply_args+=("-parallelism=${parallelism}")
 	fi
 
-	if [ "${#apply_args[@]}" -gt 0 ]
+	if [ ${#apply_args[@]} -gt 0 ]
 	then
 		printf '%s\n' "${apply_args[@]}"
 	fi
@@ -438,7 +438,7 @@ function _set_up_azure_platform {
 function _validate_config_json {
 	local configuration_json_file="${1}"
 
-	if [ ! -f "${configuration_json_file}" ]
+	if [[ ! -f ${configuration_json_file} ]]
 	then
 		echo "Configuration JSON file ${configuration_json_file} does not exist." >&2
 

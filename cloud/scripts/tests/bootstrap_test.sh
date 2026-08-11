@@ -14,7 +14,7 @@ function curl {
 
 	for arg in "${@}"
 	do
-		if [ "${capture}" = "yes" ]
+		if [[ ${capture} = yes ]]
 		then
 			capture=""
 			output="${arg}"
@@ -22,27 +22,27 @@ function curl {
 			continue
 		fi
 
-		if [ "${arg}" = "--output" ]
+		if [[ ${arg} = --output ]]
 		then
 			capture="yes"
 		fi
 
-		if [[ "${arg}" == https://* ]]
+		if [[ ${arg} == https://* ]]
 		then
 			url="${arg}"
 		fi
 	done
 
-	if [[ "${url}" == https://storage.googleapis.com/* ]]
+	if [[ ${url} == https://storage.googleapis.com/* ]]
 	then
 		printf '%s' "${CURL_STUB_METADATA_JSON-}"
 
 		return 0
 	fi
 
-	if [[ "${url}" == *.sha256 ]]
+	if [[ ${url} == *.sha256 ]]
 	then
-		if [ "${CURL_STUB_SIDECAR_FAIL-}" = "true" ]
+		if [[ ${CURL_STUB_SIDECAR_FAIL-} = true ]]
 		then
 			return 22
 		fi
@@ -69,7 +69,7 @@ function main {
 	echo ""
 	echo "Results: ${pass} passed, ${fail} failed."
 
-	if [ "${fail}" -eq 0 ]
+	if [ ${fail} -eq 0 ]
 	then
 		return 0
 	fi
@@ -86,7 +86,7 @@ function _make_metadata_json {
 
 	local tarball_item='{"name": "bootstrap/liferay-aws-bootstrap/liferay-aws-bootstrap-1.2.3.tar.gz", "updated": "2026-01-01T00:00:00Z"}'
 
-	if [ -n "${with_sidecar}" ]
+	if [[ -n ${with_sidecar} ]]
 	then
 		echo "{\"items\": [${tarball_item}, {\"name\": \"bootstrap/liferay-aws-bootstrap/liferay-aws-bootstrap-1.2.3.tar.gz.sha256\", \"updated\": \"2026-01-01T00:00:01Z\"}]}"
 
@@ -144,7 +144,7 @@ function _run_test {
 
 	"${test_function}" || exit_code="${?}"
 
-	if [ "${exit_code}" -eq 0 ]
+	if [ ${exit_code} -eq 0 ]
 	then
 		echo "PASS: ${description}."
 
@@ -165,7 +165,7 @@ function _test_aborts_with_empty_checksum_file {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ "${exit_code}" -ne 0 ] && [[ "${output}" == *"Invalid expected checksum format"* ]]
+	if [ ${exit_code} -ne 0 ] && [[ ${output} == *"Invalid expected checksum format"* ]]
 	then
 		return 0
 	fi
@@ -182,7 +182,7 @@ function _test_aborts_with_invalid_checksum_format {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ "${exit_code}" -ne 0 ] && [[ "${output}" == *"Invalid expected checksum format"* ]]
+	if [ ${exit_code} -ne 0 ] && [[ ${output} == *"Invalid expected checksum format"* ]]
 	then
 		return 0
 	fi
@@ -199,7 +199,7 @@ function _test_aborts_with_mismatched_checksum {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ "${exit_code}" -ne 0 ] && [[ "${output}" == *"Checksum verification failed"* ]]
+	if [ ${exit_code} -ne 0 ] && [[ ${output} == *"Checksum verification failed"* ]]
 	then
 		return 0
 	fi
@@ -216,7 +216,7 @@ function _test_aborts_with_missing_checksum_file {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ "${exit_code}" -ne 0 ] && [[ "${output}" == *"Unable to download checksum"* ]]
+	if [ ${exit_code} -ne 0 ] && [[ ${output} == *"Unable to download checksum"* ]]
 	then
 		return 0
 	fi
@@ -233,7 +233,7 @@ function _test_ignores_sidecar_objects_when_resolving_latest {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ "${exit_code}" -eq 0 ] && [ "${output}" = "liferay-aws-bootstrap-1.2.3" ]
+	if [ ${exit_code} -eq 0 ] && [[ ${output} = liferay-aws-bootstrap-1.2.3 ]]
 	then
 		return 0
 	fi
@@ -250,7 +250,7 @@ function _test_succeeds_with_valid_checksum {
 	exit_code=$(echo "${result}" | head -n 1)
 	output=$(echo "${result}" | tail -n +2)
 
-	if [ "${exit_code}" -eq 0 ] && [ "${output}" = "liferay-aws-bootstrap-1.2.3" ]
+	if [ ${exit_code} -eq 0 ] && [[ ${output} = liferay-aws-bootstrap-1.2.3 ]]
 	then
 		return 0
 	fi

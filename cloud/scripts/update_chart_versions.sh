@@ -11,11 +11,11 @@ _ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
 function main {
 	local chart_dir
 
-	if [ "${#}" -eq 0 ]
+	if [ ${#} -eq 0 ]
 	then
 		for chart_dir in "${_ROOT_CLOUD_DIR}"/helm/*/
 		do
-			if [ -f "${chart_dir}Chart.yaml" ]
+			if [[ -f ${chart_dir}Chart.yaml ]]
 			then
 				_check_chart_yaml "${chart_dir%/}"
 			fi
@@ -51,7 +51,7 @@ function _check_chart_yaml {
 
 	local helm_chart_yaml="${helm_dir}/Chart.yaml"
 
-	if [ ! -f "${helm_chart_yaml}" ]
+	if [[ ! -f ${helm_chart_yaml} ]]
 	then
 		echo "The chart file ${helm_chart_yaml} does not exist." >&2
 
@@ -62,7 +62,7 @@ function _check_chart_yaml {
 
 	git_blame_sha=$(_git_blame_sha "^version: .*$" "${helm_chart_yaml}")
 
-	if [ -z "${git_blame_sha}" ] || ! git rev-parse --quiet --verify "${git_blame_sha}^{commit}" > /dev/null
+	if [[ -z ${git_blame_sha} ]] || ! git rev-parse --quiet --verify "${git_blame_sha}^{commit}" > /dev/null
 	then
 		echo "The blame boundary commit for ${helm_chart_yaml} cannot be resolved." >&2
 
@@ -73,7 +73,7 @@ function _check_chart_yaml {
 
 	commit_count=$(git rev-list --count "${git_blame_sha}..HEAD" -- "${helm_dir}")
 
-	if [[ "${commit_count}" -gt 0 ]]
+	if [ ${commit_count} -gt 0 ]
 	then
 		git --no-pager log --date=short --format="%h %ad %an %s" "${git_blame_sha}..HEAD" -- "${helm_dir}"
 
@@ -103,7 +103,7 @@ function _update_chart_dependency_version {
 
 	find "${_ROOT_CLOUD_DIR}" -name "Chart.yaml" -type f | while read -r chart_yaml_file;
 	do
-		if [[ "${chart_yaml_file}" == "${current_chart_yaml}" ]]
+		if [[ ${chart_yaml_file} == ${current_chart_yaml} ]]
 		then
 			continue
 		fi
@@ -112,7 +112,7 @@ function _update_chart_dependency_version {
 
 		dep_repository=$(yq ".dependencies[]? | select(.name == \"${chart_name}\" and (.repository | test(\"^file://\"))) | .repository" "${chart_yaml_file}" | head -n 1)
 
-		if [ -z "${dep_repository}" ]
+		if [[ -z ${dep_repository} ]]
 		then
 			continue
 		fi
@@ -125,7 +125,7 @@ function _update_chart_dependency_version {
 
 		resolved_dir=$(cd "${parent_dir}/${dep_repository#file://}" 2>/dev/null && pwd)
 
-		if [[ "${resolved_dir}" != "${subchart_dir}" ]]
+		if [[ ${resolved_dir} != ${subchart_dir} ]]
 		then
 			continue
 		fi

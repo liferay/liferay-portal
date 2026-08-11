@@ -9,7 +9,7 @@ _SCRIPTS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 _ROOT_CLOUD_DIR=$(cd "${_SCRIPTS_DIR}/.." && pwd)
 
 function main {
-	if [ "${#}" -eq 0 ]
+	if [ ${#} -eq 0 ]
 	then
 		echo "Usage: ${0} <configuration-json-file>" >&2
 		echo "" >&2
@@ -85,7 +85,7 @@ function _check_terraform_version {
 
 	lowest_version=$(printf "%s\n%s\n" "${required_version}" "${found_version}" | sort --version-sort | head -n 1)
 
-	if [ "${lowest_version}" != "${required_version}" ]
+	if [[ ${lowest_version} != ${required_version} ]]
 	then
 		echo "The installed Terraform version ${found_version} is older than ${required_version}." >&2
 
@@ -214,7 +214,7 @@ function _create_s3_bucket {
 	local bucket_name="${1}"
 	local region="${2}"
 
-	if [ "${region}" == "us-east-1" ]
+	if [[ ${region} == us-east-1 ]]
 	then
 		aws s3api create-bucket \
 			--bucket "${bucket_name}" \
@@ -255,7 +255,7 @@ function _generate_tfvars {
 		  	"\(.key) = \(.value)"
 		  end' "${configuration_json_file}")
 
-	if [ -z "${tfvars_content}" ]
+	if [[ -z ${tfvars_content} ]]
 	then
 		echo "The \"variables\" object in the configuration JSON file is empty. You will be prompted for all required variables."
 
@@ -280,7 +280,7 @@ function _get_terraform_apply_args {
 	local apply_args=(
 		"-var-file=${_SCRIPTS_DIR}/global_terraform.tfvars")
 
-	if [[ "${auto_approve}" == "true" ]]
+	if [[ ${auto_approve} == true ]]
 	then
 		apply_args+=("-auto-approve")
 	fi
@@ -420,7 +420,7 @@ function _terraform_init_and_apply {
 
 	_pushd "${1}"
 
-	if [ -n "${bucket_name}" ]
+	if [[ -n ${bucket_name} ]]
 	then
 	terraform init \
 		-backend-config="bucket=${bucket_name}" \
@@ -445,7 +445,7 @@ EOF
 function _validate_config_json {
 	local configuration_json_file="${1}"
 
-	if [ ! -f "${configuration_json_file}" ]
+	if [[ ! -f ${configuration_json_file} ]]
 	then
 		echo "Configuration JSON file ${configuration_json_file} does not exist." >&2
 

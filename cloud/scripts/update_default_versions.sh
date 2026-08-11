@@ -115,7 +115,7 @@ function _check_bootstrap {
 
 		commit_count=$(git rev-list --count "${git_blame_sha}..HEAD" -- "${clean_source}")
 
-		if [[ "${commit_count}" -gt 0 ]]; then
+		if [ ${commit_count} -gt 0 ]; then
 			git rev-list --oneline "${git_blame_sha}..HEAD" -- "${clean_source}"
 
 			echo "The version in ${_VERSIONS_JSON_FILE} is outdated. Updating liferay-${bootstrap_name}-bootstrap version." >&2
@@ -135,7 +135,7 @@ function _check_operator {
 
 	git_blame_sha="${git_blame_sha#^}"
 
-	if [ -z "${git_blame_sha}" ] || ! git rev-parse --quiet --verify "${git_blame_sha}^{commit}" > /dev/null
+	if [[ -z ${git_blame_sha} ]] || ! git rev-parse --quiet --verify "${git_blame_sha}^{commit}" > /dev/null
 	then
 		echo "The blame boundary commit for liferay-dxp-operator cannot be resolved." >&2
 
@@ -146,7 +146,7 @@ function _check_operator {
 
 	commit_count=$(git rev-list --count "${git_blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator")
 
-	if [[ "${commit_count}" -gt 0 ]]
+	if [ ${commit_count} -gt 0 ]
 	then
 		git rev-list --oneline "${git_blame_sha}..HEAD" -- "${_ROOT_CLOUD_DIR}/operator"
 

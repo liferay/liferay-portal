@@ -5,7 +5,7 @@ set -o nounset
 set -o pipefail
 
 function main {
-	if [[ "${BASH_SOURCE[0]}" != "${0}" ]]
+	if [[ ${BASH_SOURCE[0]} != ${0} ]]
 	then
 		return
 	fi
@@ -38,7 +38,7 @@ function main {
 
 	local versions_tfvars_file="${extracted_dir}/cloud/scripts/versions_${provider}.tfvars"
 
-	if [ -f "${versions_tfvars_file}" ]
+	if [[ -f ${versions_tfvars_file} ]]
 	then
 		setup_args+=("${versions_tfvars_file}")
 	fi
@@ -58,7 +58,7 @@ function _check_terraform_version {
 
 	lowest_version=$(printf "%s\n%s\n" "${required_version}" "${found_version}" | sort --version-sort | head -n 1)
 
-	if [ "${lowest_version}" != "${required_version}" ]
+	if [[ ${lowest_version} != ${required_version} ]]
 	then
 		echo "The installed Terraform version ${found_version} is older than ${required_version}." >&2
 
@@ -87,7 +87,7 @@ function _download_and_extract_files {
 	local download_base_url="https://cdn.liferay.cloud"
 	local prefix="bootstrap/liferay-${provider}-bootstrap"
 
-	if [ -n "${branch}" ]
+	if [[ -n ${branch} ]]
 	then
 		bucket_name="liferay-cloud-native-bootstrap-nonprd"
 		download_base_url="https://cdn.liferay.sh"
@@ -107,7 +107,7 @@ function _download_and_extract_files {
 			--silent \
 			"https://storage.googleapis.com/storage/v1/b/${bucket_name}/o?prefix=${prefix}/&projection=noAcl")
 
-	if [ ! -n "${json}" ]
+	if [[ ! -n ${json} ]]
 	then
 		echo "Unable to get metadata from gs://${bucket_name}/${prefix}" >&2
 
@@ -116,7 +116,7 @@ function _download_and_extract_files {
 
 	local output_path
 
-	if [ "${version}" == "latest" ]
+	if [[ ${version} == latest ]]
 	then
 		output_path=$( \
 			jq \
@@ -141,14 +141,14 @@ function _download_and_extract_files {
 
 	output_file=$(basename "${output_path}")
 
-	if [ "${output_file}" == "null" ] || [ -z "${output_file}" ]
+	if [[ ${output_file} == null ]] || [[ -z ${output_file} ]]
 	then
 		echo "There are no files in gs://${bucket_name}/${prefix}/ for the version \"${version}\"" >&2
 
 		exit 1
 	fi
 
-	if [ -e "${output_file}" ]
+	if [[ -e ${output_file} ]]
 	then
 		rm "${output_file}"
 	fi
@@ -163,7 +163,7 @@ function _download_and_extract_files {
 
 	local checksum_file="${output_file}.sha256"
 
-	if [ -e "${checksum_file}" ]
+	if [[ -e ${checksum_file} ]]
 	then
 		rm "${checksum_file}"
 	fi
@@ -185,7 +185,7 @@ function _download_and_extract_files {
 
 	local output_dir="${output_file%.tar.gz}"
 
-	if [ ! -d "${output_dir}" ]
+	if [[ ! -d ${output_dir} ]]
 	then
 		mkdir "${output_dir}"
 	fi
@@ -211,12 +211,12 @@ function _get_branch {
 function _get_config_file {
 	local config_file="${1}"
 
-	if [ -z "${config_file}" ]
+	if [[ -z ${config_file} ]]
 	then
 		config_file="config.json"
 	fi
 
-	if [ ! -f "${config_file}" ]
+	if [[ ! -f ${config_file} ]]
 	then
 		echo "The configuration file ${config_file} does not exist." >&2
 
@@ -233,11 +233,11 @@ function _get_provider {
 
 	provider=$(jq -r ".options.provider // empty" "${config_file}")
 
-	if [ -z "${provider}" ]
+	if [[ -z ${provider} ]]
 	then
 		provider=$(jq -r ".provider // empty" "${config_file}")
 
-		if [ -z "${provider}" ]
+		if [[ -z ${provider} ]]
 		then
 			echo "No provider is specified in ${config_file}." >&2
 
@@ -264,7 +264,7 @@ function _get_version {
 
 	version=$(jq -r ".options.version // empty" "${config_file}")
 
-	if [ -z "${version}" ]
+	if [[ -z ${version} ]]
 	then
 		version="latest"
 	fi
@@ -305,7 +305,7 @@ function _verify_checksum {
 
 	expected_digest=$(awk '{print $1; exit}' "${checksum_file}")
 
-	if [[ ! "${expected_digest}" =~ ^[0-9a-f]{64}$ ]]
+	if [[ ! ${expected_digest} =~ ^[0-9a-f]{64}$ ]]
 	then
 		echo "Invalid expected checksum format in ${checksum_file}." >&2
 
@@ -318,7 +318,7 @@ function _verify_checksum {
 
 	local actual_digest="${sha256_output%% *}"
 
-	if [ "${expected_digest}" != "${actual_digest}" ]
+	if [[ ${expected_digest} != ${actual_digest} ]]
 	then
 		echo "Checksum verification failed for ${output_file}." >&2
 
