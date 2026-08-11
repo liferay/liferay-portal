@@ -40,6 +40,7 @@ import {config as clientExtensionWebJSConfig} from './tests/client-extension-web
 import {config as clientExtensionWebConfig} from './tests/client-extension-web/main/config';
 import {config as clientExtensionWebThemeCSSConfig} from './tests/client-extension-web/theme-css/config';
 import {config as clientExtensionWebThemeFaviconConfig} from './tests/client-extension-web/theme-favicon/config';
+import {config as clientExtensionWebThemeSpritemapConfig} from './tests/client-extension-web/theme-spritemap/config';
 import {config as commerceAccountWebConfig} from './tests/commerce/commerce-account-web/main/config';
 import {config as commerceCartContentWebConfig} from './tests/commerce/commerce-cart-content-web/main/config';
 import {config as commerceCatalogWebConfig} from './tests/commerce/commerce-catalog-web/main/config';
@@ -295,6 +296,7 @@ export default defineConfig({
 		clientExtensionWebJSConfig,
 		clientExtensionWebThemeCSSConfig,
 		clientExtensionWebThemeFaviconConfig,
+		clientExtensionWebThemeSpritemapConfig,
 		commerceAccountWebConfig,
 		commerceCartContentWebConfig,
 		commerceCatalogWebConfig,
