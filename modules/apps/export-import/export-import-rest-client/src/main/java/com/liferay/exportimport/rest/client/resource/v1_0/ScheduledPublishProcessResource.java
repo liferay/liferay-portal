@@ -5,17 +5,16 @@
 
 package com.liferay.exportimport.rest.client.resource.v1_0;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
+import com.liferay.exportimport.rest.client.dto.v1_0.ScheduledPublishProcess;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
+import com.liferay.exportimport.rest.client.pagination.Page;
+import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.exportimport.rest.client.problem.Problem;
-import com.liferay.exportimport.rest.client.serdes.v1_0.ExportPreviewSerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.ScheduledPublishProcessSerDes;
 
 import jakarta.annotation.Generated;
 
 import java.net.URL;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -29,44 +28,51 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface ExportPreviewResource {
+public interface ScheduledPublishProcessResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public ExportPreview getAssetLibraryExportPreview(
-			String assetLibraryExternalReferenceCode, String dateRangeType,
-			java.util.Date endDate, Long plid, String portletId,
-			java.util.Date startDate)
+	public void deleteSiteScheduledPublishProcess(
+			String siteExternalReferenceCode, Long scheduledPublishProcessId)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse getAssetLibraryExportPreviewHttpResponse(
-			String assetLibraryExternalReferenceCode, String dateRangeType,
-			java.util.Date endDate, Long plid, String portletId,
-			java.util.Date startDate)
+	public HttpInvoker.HttpResponse
+			deleteSiteScheduledPublishProcessHttpResponse(
+				String siteExternalReferenceCode,
+				Long scheduledPublishProcessId)
 		throws Exception;
 
-	public ExportPreview getExportPreview(
-			String dateRangeType, java.util.Date endDate, Long plid,
-			String portletId, java.util.Date startDate)
+	public ScheduledPublishProcess getSiteScheduledPublishProcess(
+			String siteExternalReferenceCode, Long scheduledPublishProcessId)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse getExportPreviewHttpResponse(
-			String dateRangeType, java.util.Date endDate, Long plid,
-			String portletId, java.util.Date startDate)
+	public HttpInvoker.HttpResponse getSiteScheduledPublishProcessHttpResponse(
+			String siteExternalReferenceCode, Long scheduledPublishProcessId)
 		throws Exception;
 
-	public ExportPreview getSiteExportPreview(
-			String siteExternalReferenceCode, String dateRangeType,
-			java.util.Date endDate, Long plid, String portletId,
-			java.util.Date startDate)
+	public Page<ScheduledPublishProcess> getSiteScheduledPublishProcessesPage(
+			String siteExternalReferenceCode, String search,
+			Pagination pagination, String sortString)
 		throws Exception;
 
-	public HttpInvoker.HttpResponse getSiteExportPreviewHttpResponse(
-			String siteExternalReferenceCode, String dateRangeType,
-			java.util.Date endDate, Long plid, String portletId,
-			java.util.Date startDate)
+	public HttpInvoker.HttpResponse
+			getSiteScheduledPublishProcessesPageHttpResponse(
+				String siteExternalReferenceCode, String search,
+				Pagination pagination, String sortString)
+		throws Exception;
+
+	public void postSiteScheduledPublishProcessesPageExportBatch(
+			String siteExternalReferenceCode, String search, String sortString,
+			String callbackURL, String contentType, String fieldNames)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			postSiteScheduledPublishProcessesPageExportBatchHttpResponse(
+				String siteExternalReferenceCode, String search,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
 		throws Exception;
 
 	public static class Builder {
@@ -82,8 +88,8 @@ public interface ExportPreviewResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public ExportPreviewResource build() {
-			return new ExportPreviewResourceImpl(this);
+		public ScheduledPublishProcessResource build() {
+			return new ScheduledPublishProcessResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -175,19 +181,17 @@ public interface ExportPreviewResource {
 
 	}
 
-	public static class ExportPreviewResourceImpl
-		implements ExportPreviewResource {
+	public static class ScheduledPublishProcessResourceImpl
+		implements ScheduledPublishProcessResource {
 
-		public ExportPreview getAssetLibraryExportPreview(
-				String assetLibraryExternalReferenceCode, String dateRangeType,
-				java.util.Date endDate, Long plid, String portletId,
-				java.util.Date startDate)
+		public void deleteSiteScheduledPublishProcess(
+				String siteExternalReferenceCode,
+				Long scheduledPublishProcessId)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getAssetLibraryExportPreviewHttpResponse(
-					assetLibraryExternalReferenceCode, dateRangeType, endDate,
-					plid, portletId, startDate);
+				deleteSiteScheduledPublishProcessHttpResponse(
+					siteExternalReferenceCode, scheduledPublishProcessId);
 
 			String content = httpResponse.getContent();
 
@@ -237,7 +241,7 @@ public interface ExportPreviewResource {
 			}
 
 			try {
-				return ExportPreviewSerDes.toDTO(content);
+				return;
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -249,10 +253,9 @@ public interface ExportPreviewResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getAssetLibraryExportPreviewHttpResponse(
-					String assetLibraryExternalReferenceCode,
-					String dateRangeType, java.util.Date endDate, Long plid,
-					String portletId, java.util.Date startDate)
+				deleteSiteScheduledPublishProcessHttpResponse(
+					String siteExternalReferenceCode,
+					Long scheduledPublishProcessId)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -274,42 +277,17 @@ public interface ExportPreviewResource {
 				httpInvoker.parameter(entry.getKey(), entry.getValue());
 			}
 
-			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
-
-			DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ssXX");
-
-			if (dateRangeType != null) {
-				httpInvoker.parameter(
-					"dateRangeType", String.valueOf(dateRangeType));
-			}
-
-			if (endDate != null) {
-				httpInvoker.parameter(
-					"endDate", liferayToJSONDateFormat.format(endDate));
-			}
-
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
-			if (portletId != null) {
-				httpInvoker.parameter("portletId", String.valueOf(portletId));
-			}
-
-			if (startDate != null) {
-				httpInvoker.parameter(
-					"startDate", liferayToJSONDateFormat.format(startDate));
-			}
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.DELETE);
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/export-preview");
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes/{scheduledPublishProcessId}");
 
 			httpInvoker.path(
-				"assetLibraryExternalReferenceCode",
-				assetLibraryExternalReferenceCode);
+				"siteExternalReferenceCode", siteExternalReferenceCode);
+			httpInvoker.path(
+				"scheduledPublishProcessId", scheduledPublishProcessId);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -319,14 +297,14 @@ public interface ExportPreviewResource {
 			return httpInvoker.invoke();
 		}
 
-		public ExportPreview getExportPreview(
-				String dateRangeType, java.util.Date endDate, Long plid,
-				String portletId, java.util.Date startDate)
+		public ScheduledPublishProcess getSiteScheduledPublishProcess(
+				String siteExternalReferenceCode,
+				Long scheduledPublishProcessId)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getExportPreviewHttpResponse(
-					dateRangeType, endDate, plid, portletId, startDate);
+				getSiteScheduledPublishProcessHttpResponse(
+					siteExternalReferenceCode, scheduledPublishProcessId);
 
 			String content = httpResponse.getContent();
 
@@ -376,7 +354,7 @@ public interface ExportPreviewResource {
 			}
 
 			try {
-				return ExportPreviewSerDes.toDTO(content);
+				return ScheduledPublishProcessSerDes.toDTO(content);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -387,9 +365,10 @@ public interface ExportPreviewResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse getExportPreviewHttpResponse(
-				String dateRangeType, java.util.Date endDate, Long plid,
-				String portletId, java.util.Date startDate)
+		public HttpInvoker.HttpResponse
+				getSiteScheduledPublishProcessHttpResponse(
+					String siteExternalReferenceCode,
+					Long scheduledPublishProcessId)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -413,36 +392,15 @@ public interface ExportPreviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ssXX");
-
-			if (dateRangeType != null) {
-				httpInvoker.parameter(
-					"dateRangeType", String.valueOf(dateRangeType));
-			}
-
-			if (endDate != null) {
-				httpInvoker.parameter(
-					"endDate", liferayToJSONDateFormat.format(endDate));
-			}
-
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
-			if (portletId != null) {
-				httpInvoker.parameter("portletId", String.valueOf(portletId));
-			}
-
-			if (startDate != null) {
-				httpInvoker.parameter(
-					"startDate", liferayToJSONDateFormat.format(startDate));
-			}
-
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/export-preview");
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes/{scheduledPublishProcessId}");
+
+			httpInvoker.path(
+				"siteExternalReferenceCode", siteExternalReferenceCode);
+			httpInvoker.path(
+				"scheduledPublishProcessId", scheduledPublishProcessId);
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -452,16 +410,15 @@ public interface ExportPreviewResource {
 			return httpInvoker.invoke();
 		}
 
-		public ExportPreview getSiteExportPreview(
-				String siteExternalReferenceCode, String dateRangeType,
-				java.util.Date endDate, Long plid, String portletId,
-				java.util.Date startDate)
+		public Page<ScheduledPublishProcess>
+				getSiteScheduledPublishProcessesPage(
+					String siteExternalReferenceCode, String search,
+					Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getSiteExportPreviewHttpResponse(
-					siteExternalReferenceCode, dateRangeType, endDate, plid,
-					portletId, startDate);
+				getSiteScheduledPublishProcessesPageHttpResponse(
+					siteExternalReferenceCode, search, pagination, sortString);
 
 			String content = httpResponse.getContent();
 
@@ -511,7 +468,7 @@ public interface ExportPreviewResource {
 			}
 
 			try {
-				return ExportPreviewSerDes.toDTO(content);
+				return Page.of(content, ScheduledPublishProcessSerDes::toDTO);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -522,10 +479,10 @@ public interface ExportPreviewResource {
 			}
 		}
 
-		public HttpInvoker.HttpResponse getSiteExportPreviewHttpResponse(
-				String siteExternalReferenceCode, String dateRangeType,
-				java.util.Date endDate, Long plid, String portletId,
-				java.util.Date startDate)
+		public HttpInvoker.HttpResponse
+				getSiteScheduledPublishProcessesPageHttpResponse(
+					String siteExternalReferenceCode, String search,
+					Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -549,36 +506,25 @@ public interface ExportPreviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.GET);
 
-			DateFormat liferayToJSONDateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd'T'HH:mm:ssXX");
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
 
-			if (dateRangeType != null) {
+			if (pagination != null) {
 				httpInvoker.parameter(
-					"dateRangeType", String.valueOf(dateRangeType));
-			}
-
-			if (endDate != null) {
+					"page", String.valueOf(pagination.getPage()));
 				httpInvoker.parameter(
-					"endDate", liferayToJSONDateFormat.format(endDate));
+					"pageSize", String.valueOf(pagination.getPageSize()));
 			}
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
-			if (portletId != null) {
-				httpInvoker.parameter("portletId", String.valueOf(portletId));
-			}
-
-			if (startDate != null) {
-				httpInvoker.parameter(
-					"startDate", liferayToJSONDateFormat.format(startDate));
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
 			}
 
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/export-preview");
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes");
 
 			httpInvoker.path(
 				"siteExternalReferenceCode", siteExternalReferenceCode);
@@ -591,16 +537,143 @@ public interface ExportPreviewResource {
 			return httpInvoker.invoke();
 		}
 
-		private ExportPreviewResourceImpl(Builder builder) {
+		public void postSiteScheduledPublishProcessesPageExportBatch(
+				String siteExternalReferenceCode, String search,
+				String sortString, String callbackURL, String contentType,
+				String fieldNames)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postSiteScheduledPublishProcessesPageExportBatchHttpResponse(
+					siteExternalReferenceCode, search, sortString, callbackURL,
+					contentType, fieldNames);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postSiteScheduledPublishProcessesPageExportBatchHttpResponse(
+					String siteExternalReferenceCode, String search,
+					String sortString, String callbackURL, String contentType,
+					String fieldNames)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body("[]", "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			if (search != null) {
+				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (sortString != null) {
+				httpInvoker.parameter("sort", sortString);
+			}
+
+			if (callbackURL != null) {
+				httpInvoker.parameter(
+					"callbackURL", String.valueOf(callbackURL));
+			}
+
+			if (contentType != null) {
+				httpInvoker.parameter(
+					"contentType", String.valueOf(contentType));
+			}
+
+			if (fieldNames != null) {
+				httpInvoker.parameter("fieldNames", String.valueOf(fieldNames));
+			}
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/export-import/v1.0/sites/{siteExternalReferenceCode}/scheduled-publish-processes/export-batch");
+
+			httpInvoker.path(
+				"siteExternalReferenceCode", siteExternalReferenceCode);
+
+			if ((_builder._login != null) && (_builder._password != null)) {
+				httpInvoker.userNameAndPassword(
+					_builder._login + ":" + _builder._password);
+			}
+
+			return httpInvoker.invoke();
+		}
+
+		private ScheduledPublishProcessResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			ExportPreviewResource.class.getName());
+			ScheduledPublishProcessResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:687878337
+// LIFERAY-REST-BUILDER-HASH:-1547821772

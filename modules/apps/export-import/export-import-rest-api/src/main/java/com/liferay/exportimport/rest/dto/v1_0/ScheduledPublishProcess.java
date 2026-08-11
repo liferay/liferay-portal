@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.liferay.headless.delivery.dto.v1_0.Creator;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLField;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
@@ -28,6 +29,8 @@ import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,17 +43,18 @@ import java.util.function.Supplier;
  * @generated
  */
 @Generated("")
-@GraphQLName("ExportProcess")
+@GraphQLName("ScheduledPublishProcess")
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "ExportProcess")
-public class ExportProcess implements Serializable {
+@XmlRootElement(name = "ScheduledPublishProcess")
+public class ScheduledPublishProcess implements Serializable {
 
-	public static ExportProcess toDTO(String json) {
-		return ObjectMapperUtil.readValue(ExportProcess.class, json);
+	public static ScheduledPublishProcess toDTO(String json) {
+		return ObjectMapperUtil.readValue(ScheduledPublishProcess.class, json);
 	}
 
-	public static ExportProcess unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(ExportProcess.class, json);
+	public static ScheduledPublishProcess unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(
+			ScheduledPublishProcess.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema
@@ -95,30 +99,32 @@ public class ExportProcess implements Serializable {
 	@JsonIgnore
 	private Supplier<Creator> _creatorSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	public Date getDateCompleted() {
-		if (_dateCompletedSupplier != null) {
-			dateCompleted = _dateCompletedSupplier.get();
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The cron expression that fires the scheduled publication."
+	)
+	public String getCronExpression() {
+		if (_cronExpressionSupplier != null) {
+			cronExpression = _cronExpressionSupplier.get();
 
-			_dateCompletedSupplier = null;
+			_cronExpressionSupplier = null;
 		}
 
-		return dateCompleted;
+		return cronExpression;
 	}
 
-	public void setDateCompleted(Date dateCompleted) {
-		this.dateCompleted = dateCompleted;
+	public void setCronExpression(String cronExpression) {
+		this.cronExpression = cronExpression;
 
-		_dateCompletedSupplier = null;
+		_cronExpressionSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setDateCompleted(
-		UnsafeSupplier<Date, Exception> dateCompletedUnsafeSupplier) {
+	public void setCronExpression(
+		UnsafeSupplier<String, Exception> cronExpressionUnsafeSupplier) {
 
-		_dateCompletedSupplier = () -> {
+		_cronExpressionSupplier = () -> {
 			try {
-				return dateCompletedUnsafeSupplier.get();
+				return cronExpressionUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -129,15 +135,17 @@ public class ExportProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField
+	@GraphQLField(
+		description = "The cron expression that fires the scheduled publication."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected Date dateCompleted;
+	protected String cronExpression;
 
 	@JsonIgnore
-	private Supplier<Date> _dateCompletedSupplier;
+	private Supplier<String> _cronExpressionSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The export process's creation date."
+		description = "The scheduled publish process's creation date."
 	)
 	public Date getDateCreated() {
 		if (_dateCreatedSupplier != null) {
@@ -172,7 +180,9 @@ public class ExportProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The export process's creation date.")
+	@GraphQLField(
+		description = "The scheduled publish process's creation date."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date dateCreated;
 
@@ -180,95 +190,7 @@ public class ExportProcess implements Serializable {
 	private Supplier<Date> _dateCreatedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The export process's last modification date."
-	)
-	public Date getDateModified() {
-		if (_dateModifiedSupplier != null) {
-			dateModified = _dateModifiedSupplier.get();
-
-			_dateModifiedSupplier = null;
-		}
-
-		return dateModified;
-	}
-
-	public void setDateModified(Date dateModified) {
-		this.dateModified = dateModified;
-
-		_dateModifiedSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setDateModified(
-		UnsafeSupplier<Date, Exception> dateModifiedUnsafeSupplier) {
-
-		_dateModifiedSupplier = () -> {
-			try {
-				return dateModifiedUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(description = "The export process's last modification date.")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected Date dateModified;
-
-	@JsonIgnore
-	private Supplier<Date> _dateModifiedSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The export process's error message when it did not end successfully."
-	)
-	public String getErrorMessage() {
-		if (_errorMessageSupplier != null) {
-			errorMessage = _errorMessageSupplier.get();
-
-			_errorMessageSupplier = null;
-		}
-
-		return errorMessage;
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-
-		_errorMessageSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setErrorMessage(
-		UnsafeSupplier<String, Exception> errorMessageUnsafeSupplier) {
-
-		_errorMessageSupplier = () -> {
-			try {
-				return errorMessageUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField(
-		description = "The export process's error message when it did not end successfully."
-	)
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected String errorMessage;
-
-	@JsonIgnore
-	private Supplier<String> _errorMessageSupplier;
-
-	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The export process's ID."
+		description = "The scheduled publish process's ID."
 	)
 	public Long getId() {
 		if (_idSupplier != null) {
@@ -301,7 +223,7 @@ public class ExportProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The export process's ID.")
+	@GraphQLField(description = "The scheduled publish process's ID.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long id;
 
@@ -309,7 +231,7 @@ public class ExportProcess implements Serializable {
 	private Supplier<Long> _idSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The export process's name."
+		description = "The scheduled publish process's name."
 	)
 	public String getName() {
 		if (_nameSupplier != null) {
@@ -342,7 +264,7 @@ public class ExportProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The export process's name.")
+	@GraphQLField(description = "The scheduled publish process's name.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String name;
 
@@ -350,32 +272,31 @@ public class ExportProcess implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The export process's end status."
+		description = "The next date the scheduled publication fires."
 	)
-	@Valid
-	public Status getStatus() {
-		if (_statusSupplier != null) {
-			status = _statusSupplier.get();
+	public Date getNextFireDate() {
+		if (_nextFireDateSupplier != null) {
+			nextFireDate = _nextFireDateSupplier.get();
 
-			_statusSupplier = null;
+			_nextFireDateSupplier = null;
 		}
 
-		return status;
+		return nextFireDate;
 	}
 
-	public void setStatus(Status status) {
-		this.status = status;
+	public void setNextFireDate(Date nextFireDate) {
+		this.nextFireDate = nextFireDate;
 
-		_statusSupplier = null;
+		_nextFireDateSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setStatus(
-		UnsafeSupplier<Status, Exception> statusUnsafeSupplier) {
+	public void setNextFireDate(
+		UnsafeSupplier<Date, Exception> nextFireDateUnsafeSupplier) {
 
-		_statusSupplier = () -> {
+		_nextFireDateSupplier = () -> {
 			try {
-				return statusUnsafeSupplier.get();
+				return nextFireDateUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -386,12 +307,150 @@ public class ExportProcess implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The export process's end status.")
+	@GraphQLField(
+		description = "The next date the scheduled publication fires."
+	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected Status status;
+	protected Date nextFireDate;
 
 	@JsonIgnore
-	private Supplier<Status> _statusSupplier;
+	private Supplier<Date> _nextFireDateSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The raw export import parameters the scheduled publication was created with."
+	)
+	@Valid
+	public Object getPublishParameters() {
+		if (_publishParametersSupplier != null) {
+			publishParameters = _publishParametersSupplier.get();
+
+			_publishParametersSupplier = null;
+		}
+
+		return publishParameters;
+	}
+
+	public void setPublishParameters(Object publishParameters) {
+		this.publishParameters = publishParameters;
+
+		_publishParametersSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setPublishParameters(
+		UnsafeSupplier<Object, Exception> publishParametersUnsafeSupplier) {
+
+		_publishParametersSupplier = () -> {
+			try {
+				return publishParametersUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The raw export import parameters the scheduled publication was created with."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Object publishParameters;
+
+	@JsonIgnore
+	private Supplier<Object> _publishParametersSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The date the scheduled publication stops firing."
+	)
+	public Date getScheduleEndDate() {
+		if (_scheduleEndDateSupplier != null) {
+			scheduleEndDate = _scheduleEndDateSupplier.get();
+
+			_scheduleEndDateSupplier = null;
+		}
+
+		return scheduleEndDate;
+	}
+
+	public void setScheduleEndDate(Date scheduleEndDate) {
+		this.scheduleEndDate = scheduleEndDate;
+
+		_scheduleEndDateSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScheduleEndDate(
+		UnsafeSupplier<Date, Exception> scheduleEndDateUnsafeSupplier) {
+
+		_scheduleEndDateSupplier = () -> {
+			try {
+				return scheduleEndDateUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The date the scheduled publication stops firing."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date scheduleEndDate;
+
+	@JsonIgnore
+	private Supplier<Date> _scheduleEndDateSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The date the scheduled publication starts firing."
+	)
+	public Date getScheduleStartDate() {
+		if (_scheduleStartDateSupplier != null) {
+			scheduleStartDate = _scheduleStartDateSupplier.get();
+
+			_scheduleStartDateSupplier = null;
+		}
+
+		return scheduleStartDate;
+	}
+
+	public void setScheduleStartDate(Date scheduleStartDate) {
+		this.scheduleStartDate = scheduleStartDate;
+
+		_scheduleStartDateSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setScheduleStartDate(
+		UnsafeSupplier<Date, Exception> scheduleStartDateUnsafeSupplier) {
+
+		_scheduleStartDateSupplier = () -> {
+			try {
+				return scheduleStartDateUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The date the scheduled publication starts firing."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Date scheduleStartDate;
+
+	@JsonIgnore
+	private Supplier<Date> _scheduleStartDateSupplier;
 
 	@Override
 	public boolean equals(Object object) {
@@ -399,13 +458,14 @@ public class ExportProcess implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ExportProcess)) {
+		if (!(object instanceof ScheduledPublishProcess)) {
 			return false;
 		}
 
-		ExportProcess exportProcess = (ExportProcess)object;
+		ScheduledPublishProcess scheduledPublishProcess =
+			(ScheduledPublishProcess)object;
 
-		return Objects.equals(toString(), exportProcess.toString());
+		return Objects.equals(toString(), scheduledPublishProcess.toString());
 	}
 
 	@Override
@@ -435,18 +495,18 @@ public class ExportProcess implements Serializable {
 			sb.append(creator);
 		}
 
-		Date dateCompleted = getDateCompleted();
+		String cronExpression = getCronExpression();
 
-		if (dateCompleted != null) {
+		if (cronExpression != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"dateCompleted\": ");
+			sb.append("\"cronExpression\": ");
 
 			sb.append("\"");
 
-			sb.append(liferayToJSONDateFormat.format(dateCompleted));
+			sb.append(_escape(cronExpression));
 
 			sb.append("\"");
 		}
@@ -463,38 +523,6 @@ public class ExportProcess implements Serializable {
 			sb.append("\"");
 
 			sb.append(liferayToJSONDateFormat.format(dateCreated));
-
-			sb.append("\"");
-		}
-
-		Date dateModified = getDateModified();
-
-		if (dateModified != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"dateModified\": ");
-
-			sb.append("\"");
-
-			sb.append(liferayToJSONDateFormat.format(dateModified));
-
-			sb.append("\"");
-		}
-
-		String errorMessage = getErrorMessage();
-
-		if (errorMessage != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"errorMessage\": ");
-
-			sb.append("\"");
-
-			sb.append(_escape(errorMessage));
 
 			sb.append("\"");
 		}
@@ -527,16 +555,86 @@ public class ExportProcess implements Serializable {
 			sb.append("\"");
 		}
 
-		Status status = getStatus();
+		Date nextFireDate = getNextFireDate();
 
-		if (status != null) {
+		if (nextFireDate != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"status\": ");
+			sb.append("\"nextFireDate\": ");
 
-			sb.append(String.valueOf(status));
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(nextFireDate));
+
+			sb.append("\"");
+		}
+
+		Object publishParameters = getPublishParameters();
+
+		if (publishParameters != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"publishParameters\": ");
+
+			if (publishParameters instanceof Collection) {
+				sb.append(
+					JSONFactoryUtil.createJSONArray(
+						(Collection<?>)publishParameters));
+			}
+			else if (publishParameters instanceof Map) {
+				sb.append(
+					JSONFactoryUtil.createJSONObject(
+						(Map<?, ?>)publishParameters));
+			}
+			else if (publishParameters instanceof Object[]) {
+				sb.append(
+					JSONFactoryUtil.createJSONArray(
+						Arrays.asList((Object[])publishParameters)));
+			}
+			else if (publishParameters instanceof String) {
+				sb.append("\"");
+				sb.append(_escape((String)publishParameters));
+				sb.append("\"");
+			}
+			else {
+				sb.append(publishParameters);
+			}
+		}
+
+		Date scheduleEndDate = getScheduleEndDate();
+
+		if (scheduleEndDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scheduleEndDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(scheduleEndDate));
+
+			sb.append("\"");
+		}
+
+		Date scheduleStartDate = getScheduleStartDate();
+
+		if (scheduleStartDate != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"scheduleStartDate\": ");
+
+			sb.append("\"");
+
+			sb.append(liferayToJSONDateFormat.format(scheduleStartDate));
+
+			sb.append("\"");
 		}
 
 		sb.append("}");
@@ -546,7 +644,7 @@ public class ExportProcess implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.ExportProcess",
+		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcess",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -640,4 +738,4 @@ public class ExportProcess implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1765162398
+// LIFERAY-REST-BUILDER-HASH:1075655950

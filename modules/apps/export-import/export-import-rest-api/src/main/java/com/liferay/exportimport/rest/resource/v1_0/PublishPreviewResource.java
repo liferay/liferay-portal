@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.rest.resource.v1_0;
 
-import com.liferay.exportimport.rest.dto.v1_0.ExportPreview;
+import com.liferay.exportimport.rest.dto.v1_0.PublishPreview;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -40,21 +40,11 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface ExportPreviewResource {
+public interface PublishPreviewResource {
 
-	public ExportPreview getAssetLibraryExportPreview(
-			String assetLibraryExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
-		throws Exception;
-
-	public ExportPreview getExportPreview(
-			String dateRangeType, Date endDate, Long plid, String portletId,
-			Date startDate)
-		throws Exception;
-
-	public ExportPreview getSiteExportPreview(
+	public PublishPreview getSitePublishPreview(
 			String siteExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
+			Date endDate, Date startDate)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -119,7 +109,7 @@ public interface ExportPreviewResource {
 	@ProviderType
 	public interface Builder {
 
-		public ExportPreviewResource build();
+		public PublishPreviewResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -145,4 +135,4 @@ public interface ExportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1963135107
+// LIFERAY-REST-BUILDER-HASH:-804255047

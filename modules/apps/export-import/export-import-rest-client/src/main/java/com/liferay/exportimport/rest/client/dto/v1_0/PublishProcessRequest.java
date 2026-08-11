@@ -6,7 +6,7 @@
 package com.liferay.exportimport.rest.client.dto.v1_0;
 
 import com.liferay.exportimport.rest.client.function.UnsafeSupplier;
-import com.liferay.exportimport.rest.client.serdes.v1_0.ExportProcessRequestSerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.PublishProcessRequestSerDes;
 
 import jakarta.annotation.Generated;
 
@@ -20,10 +20,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class ExportProcessRequest implements Cloneable, Serializable {
+public class PublishProcessRequest implements Cloneable, Serializable {
 
-	public static ExportProcessRequest toDTO(String json) {
-		return ExportProcessRequestSerDes.toDTO(json);
+	public static PublishProcessRequest toDTO(String json) {
+		return PublishProcessRequestSerDes.toDTO(json);
 	}
 
 	public Boolean getComments() {
@@ -46,6 +46,27 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 	}
 
 	protected Boolean comments;
+
+	public String getCronExpression() {
+		return cronExpression;
+	}
+
+	public void setCronExpression(String cronExpression) {
+		this.cronExpression = cronExpression;
+	}
+
+	public void setCronExpression(
+		UnsafeSupplier<String, Exception> cronExpressionUnsafeSupplier) {
+
+		try {
+			cronExpression = cronExpressionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String cronExpression;
 
 	public DateRangeType getDateRangeType() {
 		return dateRangeType;
@@ -223,6 +244,48 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 
 	protected RequestPortletDataHandler[] requestPortletDataHandlers;
 
+	public Date getScheduleEndDate() {
+		return scheduleEndDate;
+	}
+
+	public void setScheduleEndDate(Date scheduleEndDate) {
+		this.scheduleEndDate = scheduleEndDate;
+	}
+
+	public void setScheduleEndDate(
+		UnsafeSupplier<Date, Exception> scheduleEndDateUnsafeSupplier) {
+
+		try {
+			scheduleEndDate = scheduleEndDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date scheduleEndDate;
+
+	public Date getScheduleStartDate() {
+		return scheduleStartDate;
+	}
+
+	public void setScheduleStartDate(Date scheduleStartDate) {
+		this.scheduleStartDate = scheduleStartDate;
+	}
+
+	public void setScheduleStartDate(
+		UnsafeSupplier<Date, Exception> scheduleStartDateUnsafeSupplier) {
+
+		try {
+			scheduleStartDate = scheduleStartDateUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Date scheduleStartDate;
+
 	public Boolean getSitePagesSettings() {
 		return sitePagesSettings;
 	}
@@ -307,9 +370,30 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 
 	protected Boolean themeSettings;
 
+	public String getTimeZoneId() {
+		return timeZoneId;
+	}
+
+	public void setTimeZoneId(String timeZoneId) {
+		this.timeZoneId = timeZoneId;
+	}
+
+	public void setTimeZoneId(
+		UnsafeSupplier<String, Exception> timeZoneIdUnsafeSupplier) {
+
+		try {
+			timeZoneId = timeZoneIdUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String timeZoneId;
+
 	@Override
-	public ExportProcessRequest clone() throws CloneNotSupportedException {
-		return (ExportProcessRequest)super.clone();
+	public PublishProcessRequest clone() throws CloneNotSupportedException {
+		return (PublishProcessRequest)super.clone();
 	}
 
 	@Override
@@ -318,14 +402,14 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof ExportProcessRequest)) {
+		if (!(object instanceof PublishProcessRequest)) {
 			return false;
 		}
 
-		ExportProcessRequest exportProcessRequest =
-			(ExportProcessRequest)object;
+		PublishProcessRequest publishProcessRequest =
+			(PublishProcessRequest)object;
 
-		return Objects.equals(toString(), exportProcessRequest.toString());
+		return Objects.equals(toString(), publishProcessRequest.toString());
 	}
 
 	@Override
@@ -336,12 +420,13 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return ExportProcessRequestSerDes.toJSON(this);
+		return PublishProcessRequestSerDes.toJSON(this);
 	}
 
 	public static enum DateRangeType {
 
-		ALL("ALL"), DATE_RANGE("DATE_RANGE"), LAST("LAST");
+		ALL("ALL"), DATE_RANGE("DATE_RANGE"),
+		FROM_LAST_PUBLISH_DATE("FROM_LAST_PUBLISH_DATE"), LAST("LAST");
 
 		public static DateRangeType create(String value) {
 			for (DateRangeType dateRangeType : values()) {
@@ -373,4 +458,4 @@ public class ExportProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-773468954
+// LIFERAY-REST-BUILDER-HASH:814828940

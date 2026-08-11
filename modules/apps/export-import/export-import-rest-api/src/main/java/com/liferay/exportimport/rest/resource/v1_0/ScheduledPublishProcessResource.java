@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.rest.resource.v1_0;
 
-import com.liferay.exportimport.rest.dto.v1_0.ExportPreview;
+import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcess;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -14,16 +14,20 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineExportTaskResource;
+import com.liferay.portal.vulcan.batch.engine.resource.VulcanBatchEngineImportTaskResource;
+import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,21 +44,26 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface ExportPreviewResource {
+public interface ScheduledPublishProcessResource {
 
-	public ExportPreview getAssetLibraryExportPreview(
-			String assetLibraryExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
+	public void deleteSiteScheduledPublishProcess(
+			String siteExternalReferenceCode, Long scheduledPublishProcessId)
 		throws Exception;
 
-	public ExportPreview getExportPreview(
-			String dateRangeType, Date endDate, Long plid, String portletId,
-			Date startDate)
+	public ScheduledPublishProcess getSiteScheduledPublishProcess(
+			String siteExternalReferenceCode, Long scheduledPublishProcessId)
 		throws Exception;
 
-	public ExportPreview getSiteExportPreview(
-			String siteExternalReferenceCode, String dateRangeType,
-			Date endDate, Long plid, String portletId, Date startDate)
+	public Page<ScheduledPublishProcess> getSiteScheduledPublishProcessesPage(
+			String siteExternalReferenceCode, String search,
+			Pagination pagination,
+			com.liferay.portal.kernel.search.Sort[] sorts)
+		throws Exception;
+
+	public Response postSiteScheduledPublishProcessesPageExportBatch(
+			String siteExternalReferenceCode, String search,
+			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
+			String contentType, String fieldNames)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -97,6 +106,14 @@ public interface ExportPreviewResource {
 
 	public void setSortParserProvider(SortParserProvider sortParserProvider);
 
+	public void setVulcanBatchEngineExportTaskResource(
+		VulcanBatchEngineExportTaskResource
+			vulcanBatchEngineExportTaskResource);
+
+	public void setVulcanBatchEngineImportTaskResource(
+		VulcanBatchEngineImportTaskResource
+			vulcanBatchEngineImportTaskResource);
+
 	public default com.liferay.portal.kernel.search.filter.Filter toFilter(
 		String filterString) {
 
@@ -119,7 +136,7 @@ public interface ExportPreviewResource {
 	@ProviderType
 	public interface Builder {
 
-		public ExportPreviewResource build();
+		public ScheduledPublishProcessResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -145,4 +162,4 @@ public interface ExportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1963135107
+// LIFERAY-REST-BUILDER-HASH:-1383633235
