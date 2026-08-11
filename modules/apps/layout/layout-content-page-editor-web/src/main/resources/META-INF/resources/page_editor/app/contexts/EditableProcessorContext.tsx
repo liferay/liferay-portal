@@ -5,15 +5,33 @@
 
 import React, {useCallback, useContext, useRef, useState} from 'react';
 
-const INITIAL_STATE = {editableClickPosition: null, editableUniqueId: null};
+import {Position} from '../processors/setCursorPosition';
 
-const EditableProcessorDispatchContext = React.createContext(() => {});
-const EditableProcessorRefContext = React.createContext({current: null});
+type EditableProcessorState = {
+	editableClickPosition: Position | null;
+	editableUniqueId: string | null;
+};
+
+const INITIAL_STATE: EditableProcessorState = {
+	editableClickPosition: null,
+	editableUniqueId: null,
+};
+
+const EditableProcessorDispatchContext = React.createContext<
+	React.Dispatch<React.SetStateAction<EditableProcessorState>>
+>(() => {});
+const EditableProcessorRefContext = React.createContext<
+	React.MutableRefObject<EditableProcessorState | null>
+>({current: null});
 const EditableProcessorStateContext = React.createContext(INITIAL_STATE);
 
-export function EditableProcessorContextProvider({children}) {
+export function EditableProcessorContextProvider({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	const [state, setState] = useState(INITIAL_STATE);
-	const ref = useRef(null);
+	const ref = useRef<EditableProcessorState | null>(null);
 
 	ref.current = state;
 
@@ -42,7 +60,7 @@ export function useIsProcessorEnabled() {
 	const ref = useContext(EditableProcessorRefContext);
 
 	return useCallback(
-		(editableUniqueId = null) =>
+		(editableUniqueId: string | null = null) =>
 			editableUniqueId
 				? ref.current?.editableUniqueId === editableUniqueId
 				: !!ref.current?.editableUniqueId,
@@ -54,7 +72,10 @@ export function useSetEditableProcessorUniqueId() {
 	const setState = useContext(EditableProcessorDispatchContext);
 
 	return useCallback(
-		(editableUniqueIdOrNull, editableClickPosition = null) => {
+		(
+			editableUniqueIdOrNull: string | null,
+			editableClickPosition: Position | null = null
+		) => {
 			setState({
 				editableClickPosition,
 				editableUniqueId: editableUniqueIdOrNull,

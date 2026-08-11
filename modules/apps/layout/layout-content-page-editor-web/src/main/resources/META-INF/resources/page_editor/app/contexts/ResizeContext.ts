@@ -5,8 +5,17 @@
 
 import React, {useContext} from 'react';
 
-const INITIAL_STATE = {
-	nextColumnSizes: {},
+type ColumnSizes = Record<string, number> | null;
+
+type ResizeState = {
+	nextColumnSizes: ColumnSizes;
+	resizing: boolean;
+	setNextColumnSizes: React.Dispatch<React.SetStateAction<ColumnSizes>>;
+	setResizing: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const INITIAL_STATE: ResizeState = {
+	nextColumnSizes: null,
 	resizing: false,
 	setNextColumnSizes: () => {},
 	setResizing: () => null,

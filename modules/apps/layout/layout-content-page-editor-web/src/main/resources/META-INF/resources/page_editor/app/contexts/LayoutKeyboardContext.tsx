@@ -5,31 +5,46 @@
 
 import React, {useEffect, useMemo, useState} from 'react';
 
-import {LAYOUT_DATA_ITEM_TYPES} from '../config/constants/layoutDataItemTypes';
+import {LayoutData, LayoutDataItem} from '../../types/layout_data/LayoutData';
+import {
+	LAYOUT_DATA_ITEM_TYPES,
+	LayoutDataItemType,
+} from '../config/constants/layoutDataItemTypes';
+import {ViewportSize} from '../config/constants/viewportSizes';
 import {isItemHidden} from '../utils/isItemHidden';
 import {isLayoutDataItemDeleted} from '../utils/isLayoutDataItemDeleted';
 import {useSelector} from './StoreContext';
 
-const LayoutKeyboardContext = React.createContext({
+type LayoutKeyboardState = {
+	itemList: string[];
+	setTargetId: React.Dispatch<React.SetStateAction<string | null>>;
+	targetId: string | null;
+};
+
+const LayoutKeyboardContext = React.createContext<LayoutKeyboardState>({
 	itemList: [],
 	setTargetId: () => {},
 	targetId: null,
 });
 
-function LayoutKeyboardContextProvider({children}) {
+function LayoutKeyboardContextProvider({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
 	const layoutData = useSelector((state) => state.layoutData);
 	const viewportSize = useSelector((state) => state.selectedViewportSize);
 
 	const itemList = useMemo(() => {
-		const list = [];
+		const list: string[] = [];
 
 		visit(layoutData.rootItems.main, layoutData, list, viewportSize);
 
 		return list;
 	}, [layoutData, viewportSize]);
 
-	const [targetId, setTargetId] = useState(null);
-	const [targetIndex, setTargetIndex] = useState(null);
+	const [targetId, setTargetId] = useState<string | null>(null);
+	const [targetIndex, setTargetIndex] = useState<number | null>(null);
 
 	// Store target index
 
@@ -62,7 +77,12 @@ function LayoutKeyboardContextProvider({children}) {
 	);
 }
 
-function visit(itemId, layoutData, list, viewportSize) {
+function visit(
+	itemId: string,
+	layoutData: LayoutData,
+	list: string[],
+	viewportSize: ViewportSize
+) {
 	const {items} = layoutData;
 
 	const item = items[itemId];
@@ -84,12 +104,12 @@ function visit(itemId, layoutData, list, viewportSize) {
 	}
 }
 
-function isSelectable(item) {
+function isSelectable(item: LayoutDataItem) {
 	if (item.type === LAYOUT_DATA_ITEM_TYPES.root && !item.children.length) {
 		return true;
 	}
 
-	return [
+	const selectableTypes: LayoutDataItemType[] = [
 		LAYOUT_DATA_ITEM_TYPES.column,
 		LAYOUT_DATA_ITEM_TYPES.collection,
 		LAYOUT_DATA_ITEM_TYPES.container,
@@ -99,7 +119,9 @@ function isSelectable(item) {
 		LAYOUT_DATA_ITEM_TYPES.formStepContainer,
 		LAYOUT_DATA_ITEM_TYPES.fragmentDropZone,
 		LAYOUT_DATA_ITEM_TYPES.row,
-	].includes(item.type);
+	];
+
+	return selectableTypes.includes(item.type);
 }
 
 export {LayoutKeyboardContext, LayoutKeyboardContextProvider};

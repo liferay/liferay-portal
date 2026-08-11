@@ -5,15 +5,29 @@
 
 import React, {useContext, useState} from 'react';
 
-const INITIAL_STATE = {
+type FormValidation = {
+	classNameId: string;
+	errors: Array<{steps?: number[]; type: string}>;
+};
+
+type FormValidationState = {
+	setValidations: React.Dispatch<React.SetStateAction<FormValidation[]>>;
+	validations: FormValidation[];
+};
+
+const INITIAL_STATE: FormValidationState = {
 	setValidations: () => {},
 	validations: [],
 };
 
 const FormValidationContext = React.createContext(INITIAL_STATE);
 
-const FormValidationContextProvider = ({children}) => {
-	const [validations, setValidations] = useState([]);
+const FormValidationContextProvider = ({
+	children,
+}: {
+	children: React.ReactNode;
+}) => {
+	const [validations, setValidations] = useState<FormValidation[]>([]);
 
 	return (
 		<FormValidationContext.Provider value={{setValidations, validations}}>
