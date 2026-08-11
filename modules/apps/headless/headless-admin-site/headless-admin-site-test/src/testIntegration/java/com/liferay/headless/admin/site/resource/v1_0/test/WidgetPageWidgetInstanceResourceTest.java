@@ -458,9 +458,6 @@ public class WidgetPageWidgetInstanceResourceTest
 	private void _testPutSiteSitePageWidgetInstanceWithUnregisteredWidget()
 		throws Exception {
 
-		String widgetInstanceId = RandomTestUtil.randomString();
-		String widgetName = "com_liferay_test_FakePortlet";
-
 		WidgetPageWidgetInstance widgetPageWidgetInstance =
 			new BasicWidgetPageWidgetInstance();
 
@@ -468,7 +465,13 @@ public class WidgetPageWidgetInstanceResourceTest
 		widgetPageWidgetInstance.setPosition(0);
 		widgetPageWidgetInstance.setType(
 			WidgetPageWidgetInstance.Type.BASIC_WIDGET_PAGE_WIDGET_INSTANCE);
+
+		String widgetInstanceId = RandomTestUtil.randomString();
+
 		widgetPageWidgetInstance.setWidgetInstanceId(widgetInstanceId);
+
+		String widgetName = "com_liferay_test_FakePortlet";
+
 		widgetPageWidgetInstance.setWidgetName(widgetName);
 
 		String portletId = PortletIdCodec.encode(widgetName, widgetInstanceId);
