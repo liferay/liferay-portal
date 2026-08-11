@@ -42,10 +42,10 @@ describe('SegmentGrowthWithList', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(screen.getByText('Known Members')).toBeInTheDocument();
+		expect(screen.getByText(/^members$/i)).toBeInTheDocument();
 	});
 
-	it('requests only known members when the segment excludes anonymous users', async () => {
+	it('requests only known individuals when the segment excludes anonymous users', async () => {
 		const {container} = render(
 			<MemoryRouter
 				initialEntries={[
@@ -108,6 +108,6 @@ describe('SelectedPointInfo', () => {
 			/>
 		);
 
-		expect(screen.getByText('Known Members')).toBeInTheDocument();
+		expect(screen.getByText(/^members$/i)).toBeInTheDocument();
 	});
 });

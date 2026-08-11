@@ -57,6 +57,6 @@ describe('MembershipChart', () => {
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(screen.getByText('Known Members')).toBeInTheDocument();
+		expect(screen.getByText(/^members$/i)).toBeInTheDocument();
 	});
 });

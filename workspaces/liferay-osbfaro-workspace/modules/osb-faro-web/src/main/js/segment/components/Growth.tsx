@@ -596,7 +596,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 
 export const SelectedPointInfo: React.FC = () => (
 	<div className="selected-point-info">
-		<div className="h4">{Liferay.Language.get('known-members')}</div>
+		<div className="h4">{Liferay.Language.get('members')}</div>
 	</div>
 );
 
