@@ -5,12 +5,16 @@
 
 package com.liferay.oauth2.provider.shortcut.internal.upgrade.v2_0_0;
 
-import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
-import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import java.util.List;
 
 /**
@@ -19,48 +23,45 @@ import java.util.List;
 public class OAuth2ApplicationAnalyticsCloudUpgradeProcess
 	extends UpgradeProcess {
 
-	public OAuth2ApplicationAnalyticsCloudUpgradeProcess(
-		CompanyLocalService companyLocalService,
-		OAuth2ApplicationLocalService oAuth2ApplicationLocalService) {
-
-		_companyLocalService = companyLocalService;
-		_oAuth2ApplicationLocalService = oAuth2ApplicationLocalService;
-	}
-
 	@Override
 	protected void doUpgrade() throws Exception {
-		_companyLocalService.forEachCompanyId(
-			companyId -> _upgradeCompany(companyId));
+		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
+				"select oAuth2ApplicationId, redirectURIs from " +
+					"OAuth2Application where externalReferenceCode = ?");
+			PreparedStatement preparedStatement2 =
+				AutoBatchPreparedStatementUtil.autoBatch(
+					connection,
+					"update OAuth2Application set homePageURL = ?, " +
+						"redirectURIs = ? where oAuth2ApplicationId = ?")) {
+
+			preparedStatement1.setString(1, "ANALYTICS-CLOUD");
+
+			try (ResultSet resultSet = preparedStatement1.executeQuery()) {
+				while (resultSet.next()) {
+					List<String> redirectURIs = ListUtil.fromArray(
+						StringUtil.split(
+							resultSet.getString("redirectURIs"),
+							CharPool.NEW_LINE));
+
+					if (!redirectURIs.contains(_REDIRECT_URI)) {
+						redirectURIs.add(_REDIRECT_URI);
+					}
+
+					preparedStatement2.setString(1, "https://ldp.liferay.com");
+					preparedStatement2.setString(
+						2, StringUtil.merge(redirectURIs, StringPool.NEW_LINE));
+					preparedStatement2.setLong(
+						3, resultSet.getLong("oAuth2ApplicationId"));
+
+					preparedStatement2.addBatch();
+				}
+			}
+
+			preparedStatement2.executeBatch();
+		}
 	}
 
-	private void _upgradeCompany(long companyId) {
-		OAuth2Application oAuth2Application =
-			_oAuth2ApplicationLocalService.
-				fetchOAuth2ApplicationByExternalReferenceCode(
-					"ANALYTICS-CLOUD", companyId);
-
-		if (oAuth2Application == null) {
-			return;
-		}
-
-		oAuth2Application.setHomePageURL("https://ldp.liferay.com");
-
-		List<String> redirectURIsList = new ArrayList<>(
-			oAuth2Application.getRedirectURIsList());
-
-		if (!redirectURIsList.contains(
-				"https://ldp.liferay.com/oauth/receive")) {
-
-			redirectURIsList.add("https://ldp.liferay.com/oauth/receive");
-
-			oAuth2Application.setRedirectURIsList(redirectURIsList);
-		}
-
-		_oAuth2ApplicationLocalService.updateOAuth2Application(
-			oAuth2Application);
-	}
-
-	private final CompanyLocalService _companyLocalService;
-	private final OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
+	private static final String _REDIRECT_URI =
+		"https://ldp.liferay.com/oauth/receive";
 
 }
