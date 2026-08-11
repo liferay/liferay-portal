@@ -37,6 +37,10 @@
 	.fds .management-bar-wrapper {
 		border: 0;
 		margin-bottom: 0;
+
+		+ .inline-notification-bar {
+			margin-top: 0;
+		}
 	}
 }
 
