@@ -19,7 +19,7 @@ ViewAllRelatedAssetsSectionDisplayContext viewAllRelatedAssetsSectionDisplayCont
 		fdsActionDropdownItems="<%= viewAllRelatedAssetsSectionDisplayContext.getFDSActionDropdownItems() %>"
 		formName="fm"
 		id="<%= CMSSiteInitializerFDSNames.ALL_RELATED_ASSETS_SECTION %>"
-		propsTransformer="{AssetsFDSPropsTransformer} from site-cms-site-initializer"
+		propsTransformer="{AllRelatedAssetsFDSPropsTransformer} from site-cms-site-initializer"
 		selectedItemsKey="embedded.id"
 		selectionType="multiple"
 		showSelectAll="<%= true %>"

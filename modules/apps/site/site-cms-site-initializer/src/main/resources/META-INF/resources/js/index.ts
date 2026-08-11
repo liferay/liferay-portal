@@ -67,6 +67,7 @@ export {default as TransitionWorkflowStateModalContent} from './main_view/home/m
 export {default as UpdateDueDateModalContent} from './main_view/home/modal/UpdateDueDateModalContent';
 export {default as AssetTypeInfoPanelContent} from './main_view/info_panel/AssetTypeInfoPanelContent';
 export {default as AssetTags} from './main_view/info_panel/components/AssetTags';
+export {default as AllRelatedAssetsFDSPropsTransformer} from './main_view/props_transformer/AllRelatedAssetsFDSPropsTransformer';
 export {default as AllSpacesFDSPropsTransformer} from './main_view/props_transformer/AllSpacesFDSPropsTransformer';
 export {
 	default as AssetsFDSPropsTransformer,
