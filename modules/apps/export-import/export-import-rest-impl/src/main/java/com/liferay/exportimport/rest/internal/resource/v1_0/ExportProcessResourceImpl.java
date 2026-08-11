@@ -388,7 +388,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		if (privateLayout && publicLayout) {
 			throw new BadRequestException(
-				"Cannot request both private and public pages");
+				"Unable to request both private and public pages");
 		}
 
 		if (privateLayout && !group.isPrivateLayoutsEnabled()) {
