@@ -5,6 +5,9 @@
 
 package com.liferay.fragment.service.impl;
 
+import com.liferay.depot.model.DepotEntryGroupRel;
+import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.util.DLURLHelper;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.listener.FragmentEntryLinkListener;
@@ -71,7 +74,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -527,6 +532,46 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
+	public Map<Long, Integer> getGroupFragmentEntryUsageCounts(
+			FragmentEntry fragmentEntry)
+		throws PortalException {
+
+		Map<Long, Integer> groupFragmentEntryUsageCounts = new HashMap<>();
+
+		List<Object[]> results = fragmentEntryLinkPersistence.dslQuery(
+			DSLQueryFactoryUtil.select(
+				FragmentEntryLinkTable.INSTANCE.groupId,
+				DSLFunctionFactoryUtil.countDistinct(
+					FragmentEntryLinkTable.INSTANCE.classPK
+				).as(
+					"allUsageCount"
+				)
+			).from(
+				FragmentEntryLinkTable.INSTANCE
+			).where(
+				FragmentEntryLinkTable.INSTANCE.fragmentEntryERC.eq(
+					fragmentEntry.getExternalReferenceCode()
+				).and(
+					_getFragmentEntryScopePredicate(
+						_groupLocalService.getGroup(fragmentEntry.getGroupId()))
+				).and(
+					FragmentEntryLinkTable.INSTANCE.deleted.eq(false)
+				)
+			).groupBy(
+				FragmentEntryLinkTable.INSTANCE.groupId
+			));
+
+		for (Object[] result : results) {
+			Number count = (Number)result[1];
+
+			groupFragmentEntryUsageCounts.put(
+				(Long)result[0], count.intValue());
+		}
+
+		return groupFragmentEntryUsageCounts;
+	}
+
+	@Override
 	public List<FragmentEntryLink> getLayoutFragmentEntryLinksByFragmentEntry(
 			long groupId, FragmentEntry fragmentEntry, int start, int end,
 			OrderByComparator<FragmentEntryLink> orderByComparator)
@@ -881,6 +926,46 @@ public class FragmentEntryLinkLocalServiceImpl
 		);
 	}
 
+	private Predicate _getFragmentEntryScopePredicate(Group group)
+		throws PortalException {
+
+		Predicate emptyScopePredicate = Predicate.withParentheses(
+			FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.isNull(
+			).and(
+				FragmentEntryLinkTable.INSTANCE.groupId.eq(group.getGroupId())
+			));
+
+		if (!group.isDepot()) {
+			return Predicate.withParentheses(
+				FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.eq(
+					group.getExternalReferenceCode()
+				).or(
+					emptyScopePredicate
+				));
+		}
+
+		Long[] connectedSiteGroupIds = TransformUtil.transformToArray(
+			_depotEntryGroupRelLocalService.getDepotEntryGroupRels(
+				_depotEntryLocalService.getGroupDepotEntry(group.getGroupId())),
+			DepotEntryGroupRel::getToGroupId, Long.class);
+
+		if (ArrayUtil.isEmpty(connectedSiteGroupIds)) {
+			return emptyScopePredicate;
+		}
+
+		return Predicate.withParentheses(
+			Predicate.withParentheses(
+				FragmentEntryLinkTable.INSTANCE.fragmentEntryScopeERC.eq(
+					group.getExternalReferenceCode()
+				).and(
+					FragmentEntryLinkTable.INSTANCE.groupId.in(
+						connectedSiteGroupIds)
+				)
+			).or(
+				emptyScopePredicate
+			));
+	}
+
 	private Predicate _getLatestFragmentEntryLinkPredicate(
 		Predicate predicate) {
 
@@ -1097,6 +1182,12 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	private static final Pattern _pattern = Pattern.compile(
 		"\\[resources:(.+?)\\]");
+
+	@Reference
+	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private DLURLHelper _dlURLHelper;
