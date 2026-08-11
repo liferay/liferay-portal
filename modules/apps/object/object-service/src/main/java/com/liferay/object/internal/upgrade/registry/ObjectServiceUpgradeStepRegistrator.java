@@ -737,8 +737,7 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.2.0", "13.3.0",
 			new com.liferay.object.internal.upgrade.v13_3_0.
 				ObjectDefinitionClassNameResourcePermissionUpgradeProcess(
-					_resourceActionLocalService,
-					_resourcePermissionLocalService));
+					_resourceActionLocalService));
 	}
 
 	@Reference

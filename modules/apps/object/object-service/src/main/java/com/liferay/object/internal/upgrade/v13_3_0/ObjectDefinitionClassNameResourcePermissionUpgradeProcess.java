@@ -5,21 +5,22 @@
 
 package com.liferay.object.internal.upgrade.v13_3_0;
 
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
-import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.TextFormatter;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import java.util.Collections;
 
 /**
  * @author Manuele Castro
@@ -28,199 +29,110 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
 	extends UpgradeProcess {
 
 	public ObjectDefinitionClassNameResourcePermissionUpgradeProcess(
-		ResourceActionLocalService resourceActionLocalService,
-		ResourcePermissionLocalService resourcePermissionLocalService) {
+		ResourceActionLocalService resourceActionLocalService) {
 
 		_resourceActionLocalService = resourceActionLocalService;
-		_resourcePermissionLocalService = resourcePermissionLocalService;
 	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select objectDefinitionId, name from ObjectField where " +
-					"businessType = 'Attachment'");
-			ResultSet resultSet = preparedStatement.executeQuery()) {
+				StringBundler.concat(
+					"select ObjectDefinition.className, ObjectField.name from ",
+					"ObjectField inner join ObjectDefinition on ",
+					"ObjectDefinition.objectDefinitionId = ",
+					"ObjectField.objectDefinitionId where ",
+					"ObjectField.businessType = ? and ObjectDefinition.status ",
+					"= ?"))) {
 
-			while (resultSet.next()) {
-				long objectDefinitionId = resultSet.getLong(1);
+			preparedStatement.setString(
+				1, ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+			preparedStatement.setInt(2, WorkflowConstants.STATUS_APPROVED);
 
-				String objectDefinitionClassName =
-					(String)_getObjectDefinitionTableColumnValue(
-						objectDefinitionId, "className");
-
-				Integer objectDefinitionStatus =
-					(Integer)_getObjectDefinitionTableColumnValue(
-						objectDefinitionId, "status");
-
-				if ((objectDefinitionClassName != null) &&
-					(objectDefinitionStatus != null) &&
-					(objectDefinitionStatus == 0)) {
-
-					String objectFieldActionId = StringBundler.concat(
-						ActionKeys.DOWNLOAD, StringPool.UNDERLINE,
-						TextFormatter.format(
-							resultSet.getString(2), TextFormatter.R));
-
-					ResourceAction resourceAction =
-						_resourceActionLocalService.fetchResourceAction(
-							objectDefinitionClassName, objectFieldActionId);
-
-					if (resourceAction == null) {
-						_addResourceAction(
-							objectFieldActionId,
-							_getNextBitwiseValue(objectDefinitionClassName),
-							objectDefinitionClassName);
-
-						resourceAction =
-							_resourceActionLocalService.fetchResourceAction(
-								objectDefinitionClassName, objectFieldActionId);
-					}
-
-					_updateObjectDefinitionClassNameResourcePermissions(
-						resourceAction.getBitwiseValue(),
-						objectDefinitionClassName, objectFieldActionId);
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					_upgradeAttachmentObjectField(
+						resultSet.getString("className"),
+						resultSet.getString("name"));
 				}
 			}
 		}
 	}
 
-	private void _addResourceAction(
-		String actionId, long bitwiseValue, String name) {
+	private String _getAttachmentDownloadActionKey(String name) {
+		return StringBundler.concat(
+			ActionKeys.DOWNLOAD, StringPool.UNDERLINE,
+			TextFormatter.format(name, TextFormatter.R));
+	}
 
-		if (bitwiseValue <= 1) {
+	private void _updateResourcePermissions(
+			long bitwiseValue, String name, long viewBitwiseValue)
+		throws Exception {
+
+		try (PreparedStatement selectPreparedStatement =
+				connection.prepareStatement(
+					StringBundler.concat(
+						"select resourcePermissionId, actionIds from ",
+						"ResourcePermission where ctCollectionId = 0 and ",
+						"name = ? and scope = ?"));
+			PreparedStatement updatePreparedStatement =
+				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
+					connection,
+					"update ResourcePermission set actionIds = ? where " +
+						"ctCollectionId = 0 and resourcePermissionId = ?")) {
+
+			selectPreparedStatement.setString(1, name);
+			selectPreparedStatement.setInt(
+				2, ResourceConstants.SCOPE_INDIVIDUAL);
+
+			try (ResultSet resultSet = selectPreparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					long actionIds = resultSet.getLong("actionIds");
+
+					if (((actionIds & viewBitwiseValue) == 0) ||
+						((actionIds & bitwiseValue) != 0)) {
+
+						continue;
+					}
+
+					updatePreparedStatement.setLong(
+						1, actionIds | bitwiseValue);
+					updatePreparedStatement.setLong(
+						2, resultSet.getLong("resourcePermissionId"));
+
+					updatePreparedStatement.addBatch();
+				}
+			}
+
+			updatePreparedStatement.executeBatch();
+		}
+	}
+
+	private void _upgradeAttachmentObjectField(String className, String name)
+		throws Exception {
+
+		String actionId = _getAttachmentDownloadActionKey(name);
+
+		_resourceActionLocalService.checkResourceActions(
+			className, Collections.singletonList(actionId));
+
+		ResourceAction resourceAction =
+			_resourceActionLocalService.fetchResourceAction(
+				className, actionId);
+
+		ResourceAction viewResourceAction =
+			_resourceActionLocalService.fetchResourceAction(
+				className, ActionKeys.VIEW);
+
+		if ((resourceAction == null) || (viewResourceAction == null)) {
 			return;
 		}
 
-		long resourceActionId = increment(ResourceAction.class.getName());
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"insert into ResourceAction (mvccVersion, ",
-					"resourceActionId, name, actionId, bitwiseValue) values ",
-					"(?, ?, ?, ?, ?)"))) {
-
-			preparedStatement.setLong(1, 0);
-			preparedStatement.setLong(2, resourceActionId);
-			preparedStatement.setString(3, name);
-			preparedStatement.setString(4, actionId);
-			preparedStatement.setLong(5, bitwiseValue);
-
-			preparedStatement.executeUpdate();
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to add ResourceAction for " + actionId, exception);
-			}
-		}
+		_updateResourcePermissions(
+			resourceAction.getBitwiseValue(), className,
+			viewResourceAction.getBitwiseValue());
 	}
-
-	private long _getNextBitwiseValue(String resourceActionName)
-		throws Exception {
-
-		long nextBitwiseValue = 1;
-
-		long combinedBitwiseValues = 0;
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select bitwiseValue from ResourceAction where name = '" +
-					resourceActionName + "'");
-			ResultSet resultSet = preparedStatement.executeQuery()) {
-
-			while (resultSet.next()) {
-				combinedBitwiseValues |= resultSet.getLong(1);
-			}
-		}
-
-		while ((combinedBitwiseValues & nextBitwiseValue) != 0) {
-			nextBitwiseValue <<= 1;
-		}
-
-		return nextBitwiseValue;
-	}
-
-	private Object _getObjectDefinitionTableColumnValue(
-		long objectDefinitionId, String columnName) {
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select ", columnName,
-					" from ObjectDefinition where objectDefinitionId = ",
-					objectDefinitionId));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
-
-			if (resultSet.next()) {
-				return resultSet.getObject(1);
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"Unable to select ObjectDefinition table value for ",
-						"the following column ", columnName),
-					exception);
-			}
-		}
-
-		return null;
-	}
-
-	private void _updateObjectDefinitionClassNameResourcePermissions(
-		long bitwiseValue, String name, String resourceActionId) {
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select resourcePermissionId, actionIds from ",
-					"ResourcePermission where name = '", name, "' and scope = ",
-					ResourceConstants.SCOPE_INDIVIDUAL));
-			ResultSet resultSet = preparedStatement.executeQuery()) {
-
-			while (resultSet.next()) {
-				ResourcePermission resourcePermission =
-					_resourcePermissionLocalService.fetchResourcePermission(
-						resultSet.getLong(1));
-
-				if ((resourcePermission != null) &&
-					resourcePermission.isViewActionId() &&
-					!resourcePermission.hasActionId(resourceActionId)) {
-
-					_updateResourcePermission(
-						resultSet.getLong(1),
-						resultSet.getLong(2) + bitwiseValue);
-				}
-			}
-		}
-		catch (Exception exception) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					"Unable to update ResourcePermission for " + name,
-					exception);
-			}
-		}
-	}
-
-	private void _updateResourcePermission(
-			long resourcePermissionId, long bitwiseValue)
-		throws Exception {
-
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"update ResourcePermission set actionIds = ? where " +
-					"resourcePermissionId = ?")) {
-
-			preparedStatement.setLong(1, bitwiseValue);
-			preparedStatement.setLong(2, resourcePermissionId);
-
-			preparedStatement.executeUpdate();
-		}
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		ObjectDefinitionClassNameResourcePermissionUpgradeProcess.class);
 
 	private final ResourceActionLocalService _resourceActionLocalService;
-	private final ResourcePermissionLocalService
-		_resourcePermissionLocalService;
 
 }
