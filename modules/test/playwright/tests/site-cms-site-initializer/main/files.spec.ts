@@ -10,6 +10,7 @@ import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import getRandomString from '../../../utils/getRandomString';
 import performLogin, {
 	performLoginViaApi,
@@ -17,6 +18,7 @@ import performLogin, {
 	performUserSwitch,
 	userData,
 } from '../../../utils/performLogin';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
 
 const validImageFileBase64 =
@@ -27,6 +29,25 @@ const validPdfFileBase64 = readFileSync(
 ).toString('base64');
 
 const test = mergeTests(cmsPagesTest, dataApiHelpersTest, loginTest());
+
+async function getBasicDocuments({
+	apiHelpers,
+	titles,
+}: {
+	apiHelpers: DataApiHelpers;
+	titles: string[];
+}) {
+	const {items} =
+		await apiHelpers.objectEntry.getObjectDefinitionObjectEntriesByScope(
+			'cms/basic-documents',
+			'Default',
+			new URLSearchParams({pageSize: '100'})
+		);
+
+	return (items || []).filter((item: {title: string}) =>
+		titles.includes(item.title)
+	);
+}
 
 test(
 	'Renders video preview for External Video entries',
@@ -876,7 +897,7 @@ test(
 
 test(
 	'Uploads a file dropped onto a folder into that folder in Gallery View',
-	{tag: '@LPD-87681'},
+	{tag: ['@LPD-87681', '@LPD-102030']},
 	async ({apiHelpers, assetsPage, page}) => {
 		const fileName = 'file_upload_image_1.jpeg';
 		const parentFolderTitle = getRandomString();
@@ -956,8 +977,38 @@ test(
 
 				await expect(assetsPage.modal.body).toContainText(fileName);
 			});
+
+			await test.step('The uploaded file lands in the target folder', async () => {
+				await assetsPage.modal.footer
+					.getByRole('button', {name: /^Upload/})
+					.click();
+
+				await waitForAlert(
+					page,
+					'1 file was successfully uploaded to Default space.'
+				);
+
+				const [document] = await getBasicDocuments({
+					apiHelpers,
+					titles: [fileName],
+				});
+
+				expect(document.objectEntryFolderExternalReferenceCode).toBe(
+					targetFolder.externalReferenceCode
+				);
+			});
 		}
 		finally {
+			for (const document of await getBasicDocuments({
+				apiHelpers,
+				titles: [fileName],
+			})) {
+				await apiHelpers.objectEntry.deleteObjectEntry(
+					'cms/basic-documents',
+					String(document.id)
+				);
+			}
+
 			await apiHelpers.objectFolder.deleteObjectEntryFolder(
 				targetFolder.id
 			);
