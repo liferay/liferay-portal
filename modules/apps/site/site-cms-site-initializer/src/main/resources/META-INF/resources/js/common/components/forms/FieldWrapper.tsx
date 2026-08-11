@@ -4,12 +4,12 @@
  */
 
 import ClayForm from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import React, {ReactNode} from 'react';
 
 import ErrorFeedback from './ErrorFeedback';
 import HelpFeedback from './HelpFeedback';
+import HelpTooltipIcon from './HelpTooltipIcon';
 import RequiredMark from './RequiredMark';
 
 const FieldWrapper = ({
@@ -44,16 +44,7 @@ const FieldWrapper = ({
 			{required && <RequiredMark />}
 		</label>
 
-		{helpIcon ? (
-			<ClayIcon
-				className="lfr-portal-tooltip ml-1 text-secondary"
-				data-title={helpIcon}
-				focusable="false"
-				role="dialog"
-				symbol="question-circle"
-				tabIndex={0}
-			/>
-		) : null}
+		{helpIcon ? <HelpTooltipIcon message={helpIcon} /> : null}
 
 		{children}
 

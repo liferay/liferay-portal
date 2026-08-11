@@ -14,6 +14,7 @@ import {openToast} from 'frontend-js-components-web';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useState} from 'react';
 
+import HelpTooltipIcon from '../../common/components/forms/HelpTooltipIcon';
 import CMSDefaultPermissionService from '../../common/services/CMSDefaultPermissionService';
 import {triggerAssetBulkAction} from '../props_transformer/actions/triggerAssetBulkAction';
 import DefaultPermissionFormContainer from './DefaultPermissionFormContainer';
@@ -189,20 +190,12 @@ export default function DefaultPermissionModalContent({
 								}}
 							/>
 
-							<ClayTooltipProvider>
-								<span
-									className="pl-2"
-									data-tooltip-align="top"
-									title={Liferay.Language.get(
-										'enabling-this-setting-will-apply-the-permissions-configuration-to-all-current-subfolders'
-									)}
-								>
-									<ClayIcon
-										aria-label="Info"
-										symbol="question-circle-full"
-									/>
-								</span>
-							</ClayTooltipProvider>
+							<HelpTooltipIcon
+								className="pl-2"
+								message={Liferay.Language.get(
+									'enabling-this-setting-will-apply-the-permissions-configuration-to-all-current-subfolders'
+								)}
+							/>
 						</div>
 					) : (
 						<></>

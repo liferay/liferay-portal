@@ -13,10 +13,10 @@ import ClayForm, {
 import ClayIcon from '@clayui/icon';
 import ClayLayout from '@clayui/layout';
 import ClayPanel from '@clayui/panel';
-import {ClayTooltipProvider} from '@clayui/tooltip';
 import {sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
+import HelpTooltipIcon from '../../../common/components/forms/HelpTooltipIcon';
 import {IPermissionItem} from '../../../common/components/forms/PermissionsTable';
 import {IVocabulary} from '../../../common/types/IVocabulary';
 import CategorizationProjects from '../components/CategorizationProjects';
@@ -311,32 +311,22 @@ export default function EditGeneralInfo({
 
 						{Liferay.Language.get('allow-multiple-categories')}
 
-						<ClayTooltipProvider>
-							<span
-								className="help-text-icon ml-2"
-								title={Liferay.Language.get(
-									'multi-valued-help'
-								)}
-							>
-								<ClayIcon symbol="question-circle-full" />
-							</span>
-						</ClayTooltipProvider>
+						<HelpTooltipIcon
+							className="ml-2"
+							message={Liferay.Language.get('multi-valued-help')}
+						/>
 					</label>
 
 					<div>
 						<label>
 							{Liferay.Language.get('visibility')}
 
-							<ClayTooltipProvider>
-								<span
-									className="help-text-icon ml-2"
-									title={Liferay.Language.get(
-										'visibility-help'
-									)}
-								>
-									<ClayIcon symbol="question-circle-full" />
-								</span>
-							</ClayTooltipProvider>
+							<HelpTooltipIcon
+								className="ml-2"
+								message={Liferay.Language.get(
+									'visibility-help'
+								)}
+							/>
 						</label>
 
 						<ClaySelectWithOption

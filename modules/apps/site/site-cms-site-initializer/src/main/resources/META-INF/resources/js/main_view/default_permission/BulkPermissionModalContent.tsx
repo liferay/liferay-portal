@@ -9,10 +9,10 @@ import ClayButton from '@clayui/button';
 import ClayForm, {ClaySelectWithOption} from '@clayui/form';
 import ClayIcon from '@clayui/icon';
 import ClayModal from '@clayui/modal';
-import {ClayTooltipProvider} from '@clayui/tooltip';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+import HelpTooltipIcon from '../../common/components/forms/HelpTooltipIcon';
 import CMSDefaultPermissionService from '../../common/services/CMSDefaultPermissionService';
 import SpaceService from '../../common/services/SpaceService';
 import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../common/utils/constants';
@@ -296,16 +296,12 @@ export default function BulkPermissionModalContent({
 				{singleRoleMode ? (
 					<>
 						{Liferay.Language.get('edit-permissions-by-role')}
-						<ClayTooltipProvider>
-							<span
-								className="ml-2"
-								title={Liferay.Language.get(
-									'these-permissions-will-apply-only-to-the-selected-entities-themselves-and-will-not-affect-their-default-permissions'
-								)}
-							>
-								<ClayIcon symbol="question-circle-full" />
-							</span>
-						</ClayTooltipProvider>
+						<HelpTooltipIcon
+							className="ml-2 text-4"
+							message={Liferay.Language.get(
+								'these-permissions-will-apply-only-to-the-selected-entities-themselves-and-will-not-affect-their-default-permissions'
+							)}
+						/>
 					</>
 				) : (
 					sub(

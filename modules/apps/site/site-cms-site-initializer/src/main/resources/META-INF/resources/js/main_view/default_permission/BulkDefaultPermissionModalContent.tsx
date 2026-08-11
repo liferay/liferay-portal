@@ -13,6 +13,7 @@ import {ClayTooltipProvider} from '@clayui/tooltip';
 import {sub} from 'frontend-js-web';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 
+import HelpTooltipIcon from '../../common/components/forms/HelpTooltipIcon';
 import CMSDefaultPermissionService from '../../common/services/CMSDefaultPermissionService';
 import SpaceService from '../../common/services/SpaceService';
 import {getScopeExternalReferenceCode} from '../../common/utils/getScopeExternalReferenceCode';
@@ -284,16 +285,12 @@ export default function BulkDefaultPermissionModalContent({
 						{Liferay.Language.get(
 							'edit-default-permissions-by-role'
 						)}
-						<ClayTooltipProvider>
-							<span
-								className="ml-2"
-								title={Liferay.Language.get(
-									'these-default-permissions-will-apply-to-all-newly-created-items-within-the-selected-folders-or-spaces'
-								)}
-							>
-								<ClayIcon symbol="question-circle-full" />
-							</span>
-						</ClayTooltipProvider>
+						<HelpTooltipIcon
+							className="ml-2 text-4"
+							message={Liferay.Language.get(
+								'these-default-permissions-will-apply-to-all-newly-created-items-within-the-selected-folders-or-spaces'
+							)}
+						/>
 					</>
 				) : (
 					sub(

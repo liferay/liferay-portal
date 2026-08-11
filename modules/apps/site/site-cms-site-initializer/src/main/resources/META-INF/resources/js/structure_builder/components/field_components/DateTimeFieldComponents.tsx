@@ -9,6 +9,7 @@ import ClayIcon from '@clayui/icon';
 import {useId} from 'frontend-js-components-web';
 import React from 'react';
 
+import HelpTooltipIcon from '../../../common/components/forms/HelpTooltipIcon';
 import {useSelector, useStateDispatch} from '../../contexts/StateContext';
 import selectPublishedChildren from '../../selectors/selectPublishedChildren';
 import {DateTimeField, Field} from '../../utils/field';
@@ -60,16 +61,13 @@ function FirstSectionComponent({
 					role="presentation"
 					symbol="asterisk"
 				/>
-
-				<ClayIcon
-					className="lfr-portal-tooltip ml-1 text-secondary"
-					data-title={Liferay.Language.get(
-						'store-the-time-in-utc-for-time-zone-conversion-or-keep-it-as-entered'
-					)}
-					focusable="false"
-					symbol="question-circle"
-				/>
 			</label>
+
+			<HelpTooltipIcon
+				message={Liferay.Language.get(
+					'store-the-time-in-utc-for-time-zone-conversion-or-keep-it-as-entered'
+				)}
+			/>
 
 			<Picker
 				aria-label={Liferay.Language.get('time-storage')}

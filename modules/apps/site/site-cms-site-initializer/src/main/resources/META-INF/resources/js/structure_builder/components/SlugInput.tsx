@@ -4,10 +4,11 @@
  */
 
 import ClayForm, {ClayInput} from '@clayui/form';
-import ClayIcon from '@clayui/icon';
 import classNames from 'classnames';
 import {FieldFeedback, useId} from 'frontend-js-components-web';
 import React, {useEffect, useState} from 'react';
+
+import HelpTooltipIcon from '../../common/components/forms/HelpTooltipIcon';
 
 export default function SlugInput({
 	disabled,
@@ -32,15 +33,10 @@ export default function SlugInput({
 		<ClayForm.Group className={classNames({'has-error': error})}>
 			<label htmlFor={id}>{Liferay.Language.get('slug')}</label>
 
-			<ClayIcon
-				className="lfr-portal-tooltip ml-1 text-secondary"
-				data-title={Liferay.Language.get(
+			<HelpTooltipIcon
+				message={Liferay.Language.get(
 					"the-unique-path-for-this-category.-it-will-be-appended-to-the-channel's-friendly-url"
 				)}
-				focusable="false"
-				role="dialog"
-				symbol="question-circle"
-				tabIndex={0}
 			/>
 
 			<ClayInput

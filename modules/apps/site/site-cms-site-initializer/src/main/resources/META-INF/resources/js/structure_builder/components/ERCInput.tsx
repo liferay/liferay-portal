@@ -9,6 +9,8 @@ import classNames from 'classnames';
 import {FieldFeedback, useId} from 'frontend-js-components-web';
 import React, {useState} from 'react';
 
+import HelpTooltipIcon from '../../common/components/forms/HelpTooltipIcon';
+
 export default function ERCInput({
 	disabled,
 	error,
@@ -41,14 +43,7 @@ export default function ERCInput({
 				/>
 			</label>
 
-			<ClayIcon
-				className="lfr-portal-tooltip ml-1 text-secondary"
-				data-title={helpText}
-				focusable="false"
-				role="dialog"
-				symbol="question-circle"
-				tabIndex={0}
-			/>
+			<HelpTooltipIcon message={helpText} />
 
 			<ClayInput
 				disabled={disabled}
