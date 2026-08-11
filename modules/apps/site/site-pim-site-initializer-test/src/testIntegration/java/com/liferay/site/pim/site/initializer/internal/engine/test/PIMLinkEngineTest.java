@@ -68,26 +68,26 @@ public class PIMLinkEngineTest {
 	}
 
 	@Test
-	public void testAddLinks() throws Exception {
-		_testAddLinks();
-		_testAddLinksWithExistingCluster();
-		_testAddLinksWithInvalidGroupId();
-		_testAddLinksWithInvalidType();
+	public void testAddPIMLinks() throws Exception {
+		_testAddPIMLinks();
+		_testAddPIMLinksWithExistingCluster();
+		_testAddPIMLinksWithInvalidGroupId();
+		_testAddPIMLinksWithInvalidType();
 	}
 
 	@Test
-	public void testDeleteLink() throws Exception {
+	public void testDeletePIMLink() throws Exception {
 		long groupId = _addSpaceDepotEntryGroupId();
 
 		ObjectEntry objectEntry1 = _addPIMBaseSKUObjectEntry(groupId);
 		ObjectEntry objectEntry2 = _addPIMBaseSKUObjectEntry(groupId);
 
-		_pimLinkEngine.addLinks(
+		_pimLinkEngine.addPIMLinks(
 			objectEntry1, Collections.singletonList(objectEntry2), _TYPE);
 
 		Assert.assertNotNull(_getClusterKey(objectEntry2));
 
-		_pimLinkEngine.deleteLink(objectEntry2, _TYPE);
+		_pimLinkEngine.deletePIMLink(objectEntry2, _TYPE);
 
 		Assert.assertNotNull(_getClusterKey(objectEntry1));
 		Assert.assertNull(_getClusterKey(objectEntry2));
@@ -159,13 +159,13 @@ public class PIMLinkEngineTest {
 		return MapUtil.getString(valuesList.get(0), "clusterKey");
 	}
 
-	private void _testAddLinks() throws Exception {
+	private void _testAddPIMLinks() throws Exception {
 		long groupId = _addSpaceDepotEntryGroupId();
 
 		ObjectEntry objectEntry1 = _addPIMBaseSKUObjectEntry(groupId);
 		ObjectEntry objectEntry2 = _addPIMBaseSKUObjectEntry(groupId);
 
-		_pimLinkEngine.addLinks(
+		_pimLinkEngine.addPIMLinks(
 			objectEntry1, Collections.singletonList(objectEntry2), _TYPE);
 
 		String clusterKey = _getClusterKey(objectEntry1);
@@ -174,25 +174,25 @@ public class PIMLinkEngineTest {
 		Assert.assertEquals(clusterKey, _getClusterKey(objectEntry2));
 	}
 
-	private void _testAddLinksWithExistingCluster() throws Exception {
+	private void _testAddPIMLinksWithExistingCluster() throws Exception {
 		long groupId = _addSpaceDepotEntryGroupId();
 
 		ObjectEntry objectEntry1 = _addPIMBaseSKUObjectEntry(groupId);
 		ObjectEntry objectEntry2 = _addPIMBaseSKUObjectEntry(groupId);
 
-		_pimLinkEngine.addLinks(
+		_pimLinkEngine.addPIMLinks(
 			objectEntry1, Collections.singletonList(objectEntry2), _TYPE);
 
 		ObjectEntry objectEntry3 = _addPIMBaseSKUObjectEntry(groupId);
 		ObjectEntry objectEntry4 = _addPIMBaseSKUObjectEntry(groupId);
 
-		_pimLinkEngine.addLinks(
+		_pimLinkEngine.addPIMLinks(
 			objectEntry3, Collections.singletonList(objectEntry4), _TYPE);
 
 		Assert.assertNotEquals(
 			_getClusterKey(objectEntry1), _getClusterKey(objectEntry3));
 
-		_pimLinkEngine.addLinks(
+		_pimLinkEngine.addPIMLinks(
 			objectEntry1, Collections.singletonList(objectEntry3), _TYPE);
 
 		String clusterKey = _getClusterKey(objectEntry1);
@@ -202,7 +202,7 @@ public class PIMLinkEngineTest {
 		Assert.assertEquals(clusterKey, _getClusterKey(objectEntry4));
 	}
 
-	private void _testAddLinksWithInvalidGroupId() throws Exception {
+	private void _testAddPIMLinksWithInvalidGroupId() throws Exception {
 		ObjectEntry objectEntry1 = _addPIMBaseSKUObjectEntry(
 			_addSpaceDepotEntryGroupId());
 		ObjectEntry objectEntry2 = _addPIMBaseSKUObjectEntry(
@@ -210,11 +210,11 @@ public class PIMLinkEngineTest {
 
 		Assert.assertThrows(
 			UnsupportedOperationException.class,
-			() -> _pimLinkEngine.addLinks(
+			() -> _pimLinkEngine.addPIMLinks(
 				objectEntry1, Collections.singletonList(objectEntry2), _TYPE));
 	}
 
-	private void _testAddLinksWithInvalidType() throws Exception {
+	private void _testAddPIMLinksWithInvalidType() throws Exception {
 		long groupId = _addSpaceDepotEntryGroupId();
 
 		ObjectEntry objectEntry1 = _addPIMBaseSKUObjectEntry(groupId);
@@ -222,7 +222,7 @@ public class PIMLinkEngineTest {
 
 		Assert.assertThrows(
 			UnsupportedOperationException.class,
-			() -> _pimLinkEngine.addLinks(
+			() -> _pimLinkEngine.addPIMLinks(
 				objectEntry1, Collections.singletonList(objectEntry2),
 				RandomTestUtil.randomString()));
 	}
