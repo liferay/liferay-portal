@@ -36,10 +36,14 @@ import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.segments.constants.SegmentsEntryConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
 import com.liferay.segments.constants.SegmentsExperimentConstants;
+import com.liferay.segments.criteria.Criteria;
+import com.liferay.segments.criteria.CriteriaSerializer;
 import com.liferay.segments.exception.DefaultSegmentsExperienceException;
 import com.liferay.segments.exception.DuplicateSegmentsExperienceExternalReferenceCodeException;
 import com.liferay.segments.exception.DuplicateSegmentsExperienceKeyException;
@@ -169,6 +173,70 @@ public class SegmentsExperienceLocalServiceTest {
 			2,
 			_segmentsExperienceLocalService.getSegmentsExperiencesCount(
 				_group.getGroupId(), _plid, true));
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-78863")
+	@Test
+	public void testAddSegmentsExperienceActiveWithFeatureFlagDisabled()
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			_group.getGroupId());
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.addSegmentsExperience(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				segmentsEntry.getExternalReferenceCode(), null, _plid,
+				RandomTestUtil.randomLocaleStringMap(), true,
+				new UnicodeProperties(true),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertFalse(segmentsExperience.isActive());
+
+		segmentsExperience =
+			_segmentsExperienceLocalService.updateSegmentsExperienceActive(
+				TestPropsValues.getUserId(),
+				segmentsExperience.getSegmentsExperienceId(), true);
+
+		Assert.assertFalse(segmentsExperience.isActive());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-78863")
+	@Test
+	public void testAddSegmentsExperienceActiveWithFeatureFlagDisabledAsahFaroBackendSource()
+		throws Exception {
+
+		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			CriteriaSerializer.serialize(new Criteria()),
+			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.addSegmentsExperience(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				segmentsEntry.getExternalReferenceCode(), null, _plid,
+				RandomTestUtil.randomLocaleStringMap(), true,
+				new UnicodeProperties(true),
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertTrue(segmentsExperience.isActive());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-78863")
+	@Test
+	public void testAddSegmentsExperienceActiveWithFeatureFlagDisabledDefaultSegmentsExperience()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		SegmentsExperience segmentsExperience =
+			_segmentsExperienceLocalService.fetchSegmentsExperience(
+				_group.getGroupId(), SegmentsExperienceConstants.KEY_DEFAULT,
+				layout.getPlid());
+
+		Assert.assertTrue(segmentsExperience.isActive());
 	}
 
 	@Test

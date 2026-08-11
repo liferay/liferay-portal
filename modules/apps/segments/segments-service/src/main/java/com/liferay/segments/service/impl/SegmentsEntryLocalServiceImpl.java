@@ -5,6 +5,7 @@
 
 package com.liferay.segments.service.impl;
 
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -87,6 +88,15 @@ public class SegmentsEntryLocalServiceImpl
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
+	public SegmentsEntry addSegmentsEntry(SegmentsEntry segmentsEntry) {
+		segmentsEntry.setActive(
+			_isActive(segmentsEntry.isActive(), segmentsEntry.getSource()));
+
+		return super.addSegmentsEntry(segmentsEntry);
+	}
+
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
 	public SegmentsEntry addSegmentsEntry(
 			String externalReferenceCode, String segmentsEntryKey,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
@@ -126,9 +136,13 @@ public class SegmentsEntryLocalServiceImpl
 		segmentsEntry.setSegmentsEntryKey(segmentsEntryKey);
 		segmentsEntry.setNameMap(nameMap);
 		segmentsEntry.setDescriptionMap(descriptionMap);
-		segmentsEntry.setActive(active);
+
 		segmentsEntry.setCriteria(criteria);
-		segmentsEntry.setSource(_getSource(criteria, source));
+
+		source = _getSource(criteria, source);
+
+		segmentsEntry.setActive(_isActive(active, source));
+		segmentsEntry.setSource(source);
 
 		segmentsEntry = segmentsEntryPersistence.update(segmentsEntry);
 
@@ -438,10 +452,13 @@ public class SegmentsEntryLocalServiceImpl
 		segmentsEntry.setSegmentsEntryKey(segmentsEntryKey);
 		segmentsEntry.setNameMap(nameMap);
 		segmentsEntry.setDescriptionMap(descriptionMap);
-		segmentsEntry.setActive(active);
+
 		segmentsEntry.setCriteria(criteria);
-		segmentsEntry.setSource(
-			_getSource(criteria, segmentsEntry.getSource()));
+
+		String source = _getSource(criteria, segmentsEntry.getSource());
+
+		segmentsEntry.setActive(_isActive(active, source));
+		segmentsEntry.setSource(source);
 
 		segmentsEntry = segmentsEntryPersistence.update(segmentsEntry);
 
@@ -564,6 +581,26 @@ public class SegmentsEntryLocalServiceImpl
 		}
 
 		return source;
+	}
+
+	private boolean _isActive(boolean active, String source) {
+
+		// While the feature flag is off, a segments entry the flag governs is
+		// created and updated inactive, so the data matches the flag from the
+		// start instead of relying on a later pass to fix it. Analytics Cloud
+		// entries are what the deprecation points to, and imports preserve
+		// what the exporting system stored
+
+		if (!active ||
+			SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND.equals(source) ||
+			ExportImportThreadLocal.isImportInProcess() ||
+			FeatureFlagManagerUtil.isEnabled(
+				CompanyConstants.SYSTEM, "LPD-78863")) {
+
+			return active;
+		}
+
+		return false;
 	}
 
 	private void _reindexReferredSegmentsEntryRels(SegmentsEntry segmentsEntry)
