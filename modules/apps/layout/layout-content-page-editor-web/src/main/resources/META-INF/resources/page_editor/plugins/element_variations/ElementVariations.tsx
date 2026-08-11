@@ -389,6 +389,10 @@ function ElementVariations({
 					languageId={languageId}
 					previewURL={previewURL}
 					ref={elementVariationsPreviewRef}
+					segmentsExperienceId={
+						selectedExperience?.segmentsExperienceId ??
+						selectedSegmentsExperienceId
+					}
 				/>
 			</div>
 		</div>

@@ -32,6 +32,7 @@ interface Props {
 	itemNames: Record<string, string>;
 	languageId: string;
 	previewURL: string;
+	segmentsExperienceId: number;
 }
 
 const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
@@ -44,6 +45,7 @@ const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
 			itemNames,
 			languageId,
 			previewURL: initialPreviewURL,
+			segmentsExperienceId,
 		},
 		ref
 	) {
@@ -55,9 +57,16 @@ const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
 		} | null>(null);
 
 		const [previewReady, setPreviewReady] = useState(false);
-		const [previewURL, setPreviewURL] = useState(
-			() => `${initialPreviewURL}&languageId=${languageId}`
+
+		const url = new URL(initialPreviewURL, window.location.origin);
+
+		url.searchParams.set('languageId', languageId);
+		url.searchParams.set(
+			'segmentsExperienceId',
+			String(segmentsExperienceId)
 		);
+
+		const previewURL = url.toString();
 
 		useImperativeHandle(
 			ref,
@@ -198,9 +207,7 @@ const ElementVariationsPreview = forwardRef<ElementVariationsPreviewRef, Props>(
 
 		useEffect(() => {
 			setPreviewReady(false);
-
-			setPreviewURL(`${initialPreviewURL}&languageId=${languageId}`);
-		}, [initialPreviewURL, languageId]);
+		}, [previewURL]);
 
 		return (
 			<div className="d-flex flex-column flex-grow-1 position-relative">
