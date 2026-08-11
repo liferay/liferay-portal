@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileEntryTable;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.text.DLFileEntryTextProvider;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.business.type.ObjectFieldBusinessTypeRegistry;
@@ -78,6 +79,7 @@ public class ObjectEntryModelDocumentContributor
 		AccountEntryOrganizationRelLocalService
 			accountEntryOrganizationRelLocalService,
 		DLFileEntryLocalService dlFileEntryLocalService,
+		DLFileEntryTextProvider dlFileEntryTextProvider,
 		ObjectEntryFolderLocalService objectEntryFolderLocalService,
 		ObjectFieldBusinessTypeRegistry objectFieldBusinessTypeRegistry,
 		TextEmbeddingDocumentContributor textEmbeddingDocumentContributor) {
@@ -85,6 +87,7 @@ public class ObjectEntryModelDocumentContributor
 		_accountEntryOrganizationRelLocalService =
 			accountEntryOrganizationRelLocalService;
 		_dlFileEntryLocalService = dlFileEntryLocalService;
+		_dlFileEntryTextProvider = dlFileEntryTextProvider;
 		_objectEntryFolderLocalService = objectEntryFolderLocalService;
 		_objectFieldBusinessTypeRegistry = objectFieldBusinessTypeRegistry;
 		_textEmbeddingDocumentContributor = textEmbeddingDocumentContributor;
@@ -273,8 +276,24 @@ public class ObjectEntryModelDocumentContributor
 					objectField.getBusinessType(),
 					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
-			fieldValue = _getFileName(
-				GetterUtil.getLong(fieldValue), objectDefinition);
+			long fileEntryId = GetterUtil.getLong(fieldValue);
+
+			if (!objectField.isIndexedAsKeyword()) {
+				String fileEntryText = _getFileEntryText(fileEntryId);
+
+				if (Validator.isNotNull(fileEntryText)) {
+					_addField(
+						fieldArray, fieldName,
+						_getValueFieldName(locale, objectEntry, objectField),
+						fileEntryText);
+
+					_appendToContent(
+						locale, fieldName, textEmbeddingContentHelper,
+						fileEntryText);
+				}
+			}
+
+			fieldValue = _getFileName(fileEntryId, objectDefinition);
 		}
 		else if (StringUtil.equals(
 					objectField.getBusinessType(),
@@ -393,18 +412,10 @@ public class ObjectEntryModelDocumentContributor
 				locale, fieldName, textEmbeddingContentHelper, valueString);
 		}
 		else if (fieldValue instanceof String) {
-			if (Validator.isBlank(objectField.getIndexedLanguageId())) {
-				_addField(fieldArray, fieldName, "value_text", valueString);
-			}
-			else if (objectField.isLocalized()) {
-				_addField(
-					fieldArray, fieldName, "value_" + locale, valueString);
-			}
-			else {
-				_addField(
-					fieldArray, fieldName,
-					"value_" + objectEntry.getDefaultLanguageId(), valueString);
-			}
+			_addField(
+				fieldArray, fieldName,
+				_getValueFieldName(locale, objectEntry, objectField),
+				valueString);
 
 			_addField(
 				fieldArray, fieldName, "value_keyword_lowercase",
@@ -670,6 +681,21 @@ public class ObjectEntryModelDocumentContributor
 		return _format.format(value);
 	}
 
+	private String _getFileEntryText(long fileEntryId) {
+		if (fileEntryId == 0) {
+			return null;
+		}
+
+		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
+			fileEntryId);
+
+		if (dlFileEntry == null) {
+			return null;
+		}
+
+		return _dlFileEntryTextProvider.getText(dlFileEntry);
+	}
+
 	private String _getFileName(
 		long dlFileEntryId, ObjectDefinition objectDefinition) {
 
@@ -838,6 +864,20 @@ public class ObjectEntryModelDocumentContributor
 		return value;
 	}
 
+	private String _getValueFieldName(
+		String locale, ObjectEntry objectEntry, ObjectField objectField) {
+
+		if (Validator.isBlank(objectField.getIndexedLanguageId())) {
+			return "value_text";
+		}
+
+		if (objectField.isLocalized()) {
+			return "value_" + locale;
+		}
+
+		return "value_" + objectEntry.getDefaultLanguageId();
+	}
+
 	private String _translate(Boolean value) {
 		if (value.booleanValue()) {
 			return "yes";
@@ -855,6 +895,7 @@ public class ObjectEntryModelDocumentContributor
 	private final AccountEntryOrganizationRelLocalService
 		_accountEntryOrganizationRelLocalService;
 	private final DLFileEntryLocalService _dlFileEntryLocalService;
+	private final DLFileEntryTextProvider _dlFileEntryTextProvider;
 	private final ObjectEntryFolderLocalService _objectEntryFolderLocalService;
 	private final ObjectFieldBusinessTypeRegistry
 		_objectFieldBusinessTypeRegistry;

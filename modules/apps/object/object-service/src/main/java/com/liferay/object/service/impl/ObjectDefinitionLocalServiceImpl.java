@@ -13,6 +13,7 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.text.DLFileEntryTextProvider;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.fragment.cache.FragmentEntryLinkCache;
@@ -1077,10 +1078,10 @@ public class ObjectDefinitionLocalServiceImpl
 			_accountEntryLocalService, _accountEntryOrganizationRelLocalService,
 			_assetEntryLocalService, _bundleContext,
 			_depotEntryGroupRelLocalService, _depotEntryLocalService,
-			_dlFileEntryLocalService, _groupLocalService,
-			_kaleoDefinitionLocalService, _listTypeLocalService,
-			_objectActionLocalService, objectDefinitionLocalService,
-			_objectDefinitionSettingLocalService,
+			_dlFileEntryLocalService, _dlFileEntryTextProvider,
+			_groupLocalService, _kaleoDefinitionLocalService,
+			_listTypeLocalService, _objectActionLocalService,
+			objectDefinitionLocalService, _objectDefinitionSettingLocalService,
 			_objectEntryFolderLocalService, _objectEntryLocalService,
 			_objectEntryService, _objectFieldBusinessTypeRegistry,
 			_objectFieldLocalService, _objectFolderLocalService,
@@ -4070,6 +4071,9 @@ public class ObjectDefinitionLocalServiceImpl
 
 	@Reference
 	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Reference
+	private DLFileEntryTextProvider _dlFileEntryTextProvider;
 
 	@Reference
 	private EmptyModelManager _emptyModelManager;

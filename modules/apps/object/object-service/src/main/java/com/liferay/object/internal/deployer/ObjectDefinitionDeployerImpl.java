@@ -11,6 +11,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.text.DLFileEntryTextProvider;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationCategory;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.notification.handler.NotificationHandler;
@@ -137,6 +138,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		DepotEntryGroupRelLocalService depotEntryGroupRelLocalService,
 		DepotEntryLocalService depotEntryLocalService,
 		DLFileEntryLocalService dlFileEntryLocalService,
+		DLFileEntryTextProvider dlFileEntryTextProvider,
 		GroupLocalService groupLocalService,
 		KaleoDefinitionLocalService kaleoDefinitionLocalService,
 		ListTypeLocalService listTypeLocalService,
@@ -175,6 +177,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		_depotEntryGroupRelLocalService = depotEntryGroupRelLocalService;
 		_depotEntryLocalService = depotEntryLocalService;
 		_dlFileEntryLocalService = dlFileEntryLocalService;
+		_dlFileEntryTextProvider = dlFileEntryTextProvider;
 		_groupLocalService = groupLocalService;
 		_kaleoDefinitionLocalService = kaleoDefinitionLocalService;
 		_listTypeLocalService = listTypeLocalService;
@@ -344,7 +347,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					ModelDocumentContributor.class,
 					new ObjectEntryModelDocumentContributor(
 						_accountEntryOrganizationRelLocalService,
-						_dlFileEntryLocalService,
+						_dlFileEntryLocalService, _dlFileEntryTextProvider,
 						_objectEntryFolderLocalService,
 						_objectFieldBusinessTypeRegistry,
 						_textEmbeddingDocumentContributor),
@@ -694,6 +697,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		_depotEntryGroupRelLocalService;
 	private final DepotEntryLocalService _depotEntryLocalService;
 	private final DLFileEntryLocalService _dlFileEntryLocalService;
+	private final DLFileEntryTextProvider _dlFileEntryTextProvider;
 	private final GroupLocalService _groupLocalService;
 	private final KaleoDefinitionLocalService _kaleoDefinitionLocalService;
 	private final ListTypeLocalService _listTypeLocalService;
