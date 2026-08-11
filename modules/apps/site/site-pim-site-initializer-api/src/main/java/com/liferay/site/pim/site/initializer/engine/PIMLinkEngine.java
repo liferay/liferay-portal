@@ -18,12 +18,12 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PIMLinkEngine {
 
-	public void addLinks(
+	public void addPIMLinks(
 			ObjectEntry sourceObjectEntry,
 			List<ObjectEntry> targetObjectEntries, String type)
 		throws PortalException;
 
-	public void deleteLink(ObjectEntry objectEntry, String type)
+	public void deletePIMLink(ObjectEntry objectEntry, String type)
 		throws PortalException;
 
 }

@@ -145,11 +145,11 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				objectEntry.getCompanyId(),
 				MapUtil.getString(values, "sourceClassName"));
 
-		ObjectEntry sourceObjectEntry = _objectEntryLocalService.getObjectEntry(
+		objectEntry = _objectEntryLocalService.getObjectEntry(
 			MapUtil.getString(values, "sourceClassExternalReferenceCode"),
 			objectEntry.getGroupId(), objectDefinition.getObjectDefinitionId());
 
-		PIMLinkUtil.checkPermission(sourceObjectEntry, ActionKeys.UPDATE);
+		PIMLinkUtil.checkPermission(objectEntry, ActionKeys.UPDATE);
 
 		PIMLinkType pimLinkType = _pimLinkTypeRegistry.getPIMLinkType(
 			MapUtil.getString(values, "type"));
@@ -158,14 +158,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			throw new UnsupportedOperationException();
 		}
 
-		ObjectEntry pimLinkObjectEntry = PIMLinkUtil.fetchObjectEntry(
-			sourceObjectEntry.getCompanyId(), _filterFactory,
-			sourceObjectEntry.getGroupId(),
-			sourceObjectEntry.getExternalReferenceCode(),
-			sourceObjectEntry.getModelClassName(),
-			MapUtil.getString(values, "type"));
+		objectEntry = PIMLinkUtil.fetchPIMLinkObjectEntry(
+			objectEntry.getCompanyId(), _filterFactory,
+			objectEntry.getGroupId(), objectEntry.getExternalReferenceCode(),
+			objectEntry.getModelClassName(), MapUtil.getString(values, "type"));
 
-		if (pimLinkObjectEntry != null) {
+		if (objectEntry != null) {
 			throw new DuplicatePIMLinkException();
 		}
 	}

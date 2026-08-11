@@ -41,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
 public class PIMLinkEngineImpl implements PIMLinkEngine {
 
 	@Override
-	public void addLinks(
+	public void addPIMLinks(
 			ObjectEntry sourceObjectEntry,
 			List<ObjectEntry> targetObjectEntries, String type)
 		throws PortalException {
@@ -84,12 +84,12 @@ public class PIMLinkEngineImpl implements PIMLinkEngine {
 	}
 
 	@Override
-	public void deleteLink(ObjectEntry objectEntry, String type)
+	public void deletePIMLink(ObjectEntry objectEntry, String type)
 		throws PortalException {
 
 		_validate(objectEntry, type);
 
-		objectEntry = PIMLinkUtil.fetchObjectEntry(
+		objectEntry = PIMLinkUtil.fetchPIMLinkObjectEntry(
 			objectEntry.getCompanyId(), _filterFactory,
 			objectEntry.getGroupId(), objectEntry.getExternalReferenceCode(),
 			objectEntry.getModelClassName(), type);

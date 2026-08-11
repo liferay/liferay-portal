@@ -42,7 +42,7 @@ public class PIMLinkUtil {
 			actionId);
 	}
 
-	public static ObjectEntry fetchObjectEntry(
+	public static ObjectEntry fetchPIMLinkObjectEntry(
 			long companyId, FilterFactory<Predicate> filterFactory,
 			long groupId, String sourceClassExternalReferenceCode,
 			String sourceClassName, String type)
