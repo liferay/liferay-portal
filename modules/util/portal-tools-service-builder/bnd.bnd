@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Tools Service Builder
 Bundle-SymbolicName: com.liferay.portal.tools.service.builder
-Bundle-Version: 1.0.557
+Bundle-Version: 1.0.558
 Main-Class: com.liferay.portal.tools.service.builder.ServiceBuilder
 -includeresource:\
 	com/liferay/account/service.xml=../../../modules/apps/account/account-service/service.xml,\

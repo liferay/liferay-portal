@@ -1,6 +1,6 @@
 Bundle-Description: The Service Builder Gradle plugin lets you generate a Liferay service layer defined in a Service Builder service.xml file.
 Bundle-Name: Liferay Gradle Plugins Service Builder
 Bundle-SymbolicName: com.liferay.gradle.plugins.service.builder
-Bundle-Version: 4.0.233
+Bundle-Version: 4.0.234
 Export-Package: com.liferay.gradle.plugins.service.builder
 -includeresource: @com.liferay.portal.tools.service.builder-*.jar!/com/liferay/portal/tools/service/builder/ServiceBuilderArgs.class
