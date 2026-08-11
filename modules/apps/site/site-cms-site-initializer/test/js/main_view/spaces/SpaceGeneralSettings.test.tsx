@@ -28,6 +28,8 @@ jest.mock(
 	})
 );
 
+const SPACE_NAME_WITH_MARKUP = '<img src=x onerror="alert(1)">';
+
 const SPACE: Partial<Space> = {
 	description: 'This is the description for Cool Space',
 	externalReferenceCode: 'space-external-reference-code',
@@ -156,6 +158,29 @@ describe('SpaceGeneralSettings', () => {
 				screen.getByText('My Space-was-saved-successfully')
 			).toBeInTheDocument();
 		});
+
+		await closeToast();
+	});
+
+	it('shows a name containing markup as text in the success toast', async () => {
+		renderComponent();
+
+		const nameField = screen.getByRole('textbox', {name: /space-name/});
+
+		await userEvent.clear(nameField);
+		await userEvent.type(nameField, SPACE_NAME_WITH_MARKUP);
+
+		await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+		await waitFor(() => {
+			expect(
+				screen.getByText(
+					`${SPACE_NAME_WITH_MARKUP}-was-saved-successfully`
+				)
+			).toBeInTheDocument();
+		});
+
+		expect(document.querySelector('img[src="x"]')).toBeNull();
 
 		await closeToast();
 	});
