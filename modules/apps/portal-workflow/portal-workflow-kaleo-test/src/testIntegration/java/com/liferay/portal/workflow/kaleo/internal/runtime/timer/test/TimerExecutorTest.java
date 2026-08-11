@@ -258,6 +258,42 @@ public class TimerExecutorTest {
 			kaleoTaskAssignmentInstance.getAssigneeClassPK());
 	}
 
+	@Test
+	public void testExecuteTimerWithCompletedKaleoTimerInstanceToken()
+		throws Exception {
+
+		KaleoTask kaleoTask = _getKaleoTask("Timer Reassignment");
+
+		Assert.assertNotNull(kaleoTask);
+
+		KaleoInstanceToken kaleoInstanceToken = _addKaleoInstanceToken(
+			kaleoTask);
+
+		KaleoTaskInstanceToken kaleoTaskInstanceToken =
+			_addKaleoTaskInstanceToken(kaleoInstanceToken, kaleoTask);
+
+		KaleoTimerInstanceToken kaleoTimerInstanceToken =
+			_kaleoTimerInstanceTokenLocalService.addKaleoTimerInstanceToken(
+				kaleoInstanceToken.getKaleoInstanceTokenId(),
+				kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId(),
+				_getKaleoTimerId(kaleoTask), RandomTestUtil.randomString(),
+				_workflowContext, _serviceContext);
+
+		Message message = _getMessage(kaleoTimerInstanceToken);
+
+		_kaleoTimerInstanceTokenLocalService.completeKaleoTimerInstanceToken(
+			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId(),
+			_serviceContext);
+
+		_messageListener.receive(message);
+
+		Assert.assertTrue(
+			ListUtil.isEmpty(
+				_kaleoTaskAssignmentInstanceLocalService.
+					getKaleoTaskAssignmentInstances(
+						kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId())));
+	}
+
 	private KaleoInstanceToken _addKaleoInstanceToken(KaleoTask kaleoTask)
 		throws Exception {
 
@@ -281,24 +317,7 @@ public class TimerExecutorTest {
 	private void _executeTimer(KaleoTimerInstanceToken kaleoTimerInstanceToken)
 		throws Exception {
 
-		String schedulerGroupName = SchedulerUtil.getGroupName(
-			kaleoTimerInstanceToken.getCompanyId(),
-			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
-
-		SchedulerResponse schedulerResponse =
-			SchedulerEngineHelperUtil.getScheduledJob(
-				schedulerGroupName, schedulerGroupName, StorageType.PERSISTED);
-
-		Message message = schedulerResponse.getMessage();
-
-		message.put(
-			SchedulerEngine.DESTINATION_NAME,
-			KaleoRuntimeDestinationNames.WORKFLOW_TIMER);
-		message.put(SchedulerEngine.GROUP_NAME, schedulerGroupName);
-		message.put(SchedulerEngine.JOB_NAME, schedulerGroupName);
-		message.put("companyId", kaleoTimerInstanceToken.getCompanyId());
-
-		_messageListener.receive(message);
+		_messageListener.receive(_getMessage(kaleoTimerInstanceToken));
 	}
 
 	private KaleoTask _getKaleoTask(String taskName) {
@@ -335,6 +354,29 @@ public class TimerExecutorTest {
 		KaleoTimer kaleoTimer = kaleoTimers.get(0);
 
 		return kaleoTimer.getKaleoTimerId();
+	}
+
+	private Message _getMessage(KaleoTimerInstanceToken kaleoTimerInstanceToken)
+		throws Exception {
+
+		String schedulerGroupName = SchedulerUtil.getGroupName(
+			kaleoTimerInstanceToken.getCompanyId(),
+			kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
+
+		SchedulerResponse schedulerResponse =
+			SchedulerEngineHelperUtil.getScheduledJob(
+				schedulerGroupName, schedulerGroupName, StorageType.PERSISTED);
+
+		Message message = schedulerResponse.getMessage();
+
+		message.put(
+			SchedulerEngine.DESTINATION_NAME,
+			KaleoRuntimeDestinationNames.WORKFLOW_TIMER);
+		message.put(SchedulerEngine.GROUP_NAME, schedulerGroupName);
+		message.put(SchedulerEngine.JOB_NAME, schedulerGroupName);
+		message.put("companyId", kaleoTimerInstanceToken.getCompanyId());
+
+		return message;
 	}
 
 	private static ServiceRegistration<WorkflowHandler<?>>
