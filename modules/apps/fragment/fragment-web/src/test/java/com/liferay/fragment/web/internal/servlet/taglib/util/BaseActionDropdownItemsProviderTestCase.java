@@ -66,7 +66,7 @@ public abstract class BaseActionDropdownItemsProviderTestCase {
 	protected void assertDropdownItemsInCorrectOrder(
 		List<DropdownItem> dropdownItems, String... labels) {
 
-		dropdownItems = _getActionDropdownItems(dropdownItems);
+		dropdownItems = getActionDropdownItems(dropdownItems);
 
 		Assert.assertEquals(
 			dropdownItems.toString(), labels.length, dropdownItems.size());
@@ -78,23 +78,7 @@ public abstract class BaseActionDropdownItemsProviderTestCase {
 		}
 	}
 
-	protected void setUpFragmentPermission(boolean contains) {
-		Mockito.when(
-			FragmentPermission.contains(
-				Mockito.any(), Mockito.anyLong(), Mockito.anyString())
-		).thenReturn(
-			contains
-		);
-	}
-
-	protected final HttpServletRequest httpServletRequest = Mockito.mock(
-		HttpServletRequest.class);
-	protected final RenderRequest renderRequest = Mockito.mock(
-		RenderRequest.class);
-	protected final RenderResponse renderResponse = Mockito.mock(
-		RenderResponse.class);
-
-	private List<DropdownItem> _getActionDropdownItems(
+	protected List<DropdownItem> getActionDropdownItems(
 		List<DropdownItem> dropdownItems) {
 
 		List<DropdownItem> allDropdownItems = new ArrayList<>();
@@ -112,6 +96,22 @@ public abstract class BaseActionDropdownItemsProviderTestCase {
 
 		return allDropdownItems;
 	}
+
+	protected void setUpFragmentPermission(boolean contains) {
+		Mockito.when(
+			FragmentPermission.contains(
+				Mockito.any(), Mockito.anyLong(), Mockito.anyString())
+		).thenReturn(
+			contains
+		);
+	}
+
+	protected final HttpServletRequest httpServletRequest = Mockito.mock(
+		HttpServletRequest.class);
+	protected final RenderRequest renderRequest = Mockito.mock(
+		RenderRequest.class);
+	protected final RenderResponse renderResponse = Mockito.mock(
+		RenderResponse.class);
 
 	private void _setUpFragmentPortletConfiguration() {
 		Mockito.when(
