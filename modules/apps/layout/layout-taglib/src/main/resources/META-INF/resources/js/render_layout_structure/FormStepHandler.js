@@ -74,11 +74,15 @@ export default function FormStepHandler({formId}) {
 	// Set active step when there's an invalid field
 
 	const onSubmit = () => {
-		const fields = form.querySelectorAll('input');
+		const fields = form.querySelectorAll('input, select, textarea');
 
 		for (const field of Array.from(fields)) {
 			if (!field.checkValidity()) {
 				const step = field.closest('[data-step-index]');
+
+				if (!step) {
+					continue;
+				}
 
 				const index = Number(step.dataset.stepIndex);
 
