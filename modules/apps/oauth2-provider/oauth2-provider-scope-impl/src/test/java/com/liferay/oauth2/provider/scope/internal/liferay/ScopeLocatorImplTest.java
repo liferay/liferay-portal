@@ -18,6 +18,7 @@ import com.liferay.osgi.service.tracker.collections.map.ScopedServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.remote.jaxrs.whiteboard.lifecycle.JAXRSLifecycle;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -389,7 +390,7 @@ public class ScopeLocatorImplTest {
 
 	private static final String _APPLICATION_NAME = "com.liferay.test1";
 
-	private static final long _COMPANY_ID = 1;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final MockedStatic<FrameworkUtil>
 		_frameworkUtilMockedStatic = Mockito.mockStatic(FrameworkUtil.class);

@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.IndexWriter;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.search.elasticsearch8.internal.ElasticsearchIndexWriter;
 import com.liferay.portal.search.elasticsearch8.internal.indexing.LiferayElasticsearchIndexingFixtureFactory;
 import com.liferay.portal.search.elasticsearch8.internal.search.engine.adapter.document.BulkDocumentRequestExecutor;
@@ -325,7 +326,7 @@ public class ElasticsearchIndexWriterExceptionsTest
 		consumer.accept(logEntry.getMessage());
 	}
 
-	private static final long _COMPANY_ID = 1;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final String _UID = "1";
 

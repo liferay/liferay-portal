@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -933,7 +934,7 @@ public class MediaQueryProviderImplTest {
 		return amImageConfigurationEntry;
 	}
 
-	private static final long _COMPANY_ID = 1L;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private final AMImageConfigurationHelper _amImageConfigurationHelper =
 		Mockito.mock(AMImageConfigurationHelper.class);

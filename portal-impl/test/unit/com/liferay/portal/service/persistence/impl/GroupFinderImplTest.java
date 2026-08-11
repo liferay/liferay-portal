@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.service.ResourceActionLocalServiceWrapper;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceWrapper;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.xml.UnsecureSAXReaderUtil;
@@ -455,7 +456,7 @@ public class GroupFinderImplTest {
 			join);
 	}
 
-	private static final long _COMPANY_ID = 12345L;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static String _capturedSQL;
 	private static GroupFinderImpl _groupFinderImpl;

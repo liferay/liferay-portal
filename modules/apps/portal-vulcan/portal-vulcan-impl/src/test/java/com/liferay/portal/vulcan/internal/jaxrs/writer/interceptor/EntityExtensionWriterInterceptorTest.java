@@ -268,7 +268,7 @@ public class EntityExtensionWriterInterceptorTest {
 		);
 	}
 
-	private static final long _COMPANY_ID = 11111;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final TestEntity _TEST_ENTITY = new TestEntity();
 

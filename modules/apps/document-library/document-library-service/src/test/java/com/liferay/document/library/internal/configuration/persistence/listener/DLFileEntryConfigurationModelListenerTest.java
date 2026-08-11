@@ -262,9 +262,9 @@ public class DLFileEntryConfigurationModelListenerTest {
 			).build());
 	}
 
-	private static final long _COMPANY_ID = 12345L;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
-	private static final long _GROUP_ID = 67890L;
+	private static final long _GROUP_ID = RandomTestUtil.randomLong();
 
 	private final DLFileEntryConfigurationModelListener
 		_dlFileEntryConfigurationModelListener =

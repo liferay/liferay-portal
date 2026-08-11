@@ -128,7 +128,7 @@ public class FeatureFlagsBagTest {
 			UniqueStringRandomizerBumper.INSTANCE);
 	}
 
-	private static final long _COMPANY_ID = 1L;
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private final FeatureFlag _betaFeatureFlag = _createFeatureFlag(
 		FeatureFlagType.BETA);
