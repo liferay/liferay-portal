@@ -41,7 +41,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
+					_fragmentEntry, renderRequest, renderResponse,
+					RandomTestUtil.randomInt());
 
 		assertDropdownItemsInCorrectOrder(
 			basicFragmentEntryActionDropdownItemsProvider.
@@ -67,7 +68,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
+					_fragmentEntry, renderRequest, renderResponse,
+					RandomTestUtil.randomInt());
 
 		assertDropdownItemsInCorrectOrder(
 			basicFragmentEntryActionDropdownItemsProvider.
@@ -86,7 +88,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
+					_fragmentEntry, renderRequest, renderResponse,
+					RandomTestUtil.randomInt());
 
 		assertDropdownItemsInCorrectOrder(
 			basicFragmentEntryActionDropdownItemsProvider.
@@ -105,7 +108,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
+					_fragmentEntry, renderRequest, renderResponse,
+					RandomTestUtil.randomInt());
 
 		assertDropdownItemsInCorrectOrder(
 			basicFragmentEntryActionDropdownItemsProvider.
@@ -130,7 +134,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
+					_fragmentEntry, renderRequest, renderResponse,
+					RandomTestUtil.randomInt());
 
 		try (MockedStatic<DesignLibraryUtil> designLibraryUtilMockedStatic =
 				Mockito.mockStatic(DesignLibraryUtil.class);
@@ -189,7 +194,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
+					_fragmentEntry, renderRequest, renderResponse,
+					RandomTestUtil.randomInt());
 
 		assertDropdownItemsInCorrectOrder(
 			basicFragmentEntryActionDropdownItemsProvider.
@@ -208,7 +214,8 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		BasicFragmentEntryActionDropdownItemsProvider
 			basicFragmentEntryActionDropdownItemsProvider =
 				new BasicFragmentEntryActionDropdownItemsProvider(
-					_fragmentEntry, renderRequest, renderResponse);
+					_fragmentEntry, renderRequest, renderResponse,
+					RandomTestUtil.randomInt());
 
 		assertDropdownItemsInCorrectOrder(
 			basicFragmentEntryActionDropdownItemsProvider.
@@ -217,12 +224,6 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 
 	private void _setUpFragmentEntry(
 		boolean draft, boolean readOnly, boolean typeReact) {
-
-		Mockito.when(
-			_fragmentEntry.getUsageCount()
-		).thenReturn(
-			0
-		);
 
 		Mockito.when(
 			_fragmentEntry.isDraft()
