@@ -5,10 +5,17 @@
 
 import ColorPicker from './ColorPicker';
 import useColorPicker from './useColorPicker';
-import {internalToHex, isHexFormat, parseColor, toHexColorString} from './util';
+import {
+	internalToHex,
+	isComputedColor,
+	isHexFormat,
+	parseColor,
+	toHexColorString,
+} from './util';
 
 export {
 	internalToHex as toHexValue,
+	isComputedColor,
 	isHexFormat,
 	parseColor,
 	toHexColorString,

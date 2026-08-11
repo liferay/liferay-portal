@@ -8,7 +8,7 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import tinycolor, {Instance} from 'tinycolor2';
 
 import {useEditor} from './Editor';
-import {findColorIndex, getCSSVariableColor} from './util';
+import {findColorIndex, getCSSVariableColor, isComputedColor} from './util';
 
 const BLANK_COLORS = Array(12).fill('FFFFFF');
 
@@ -72,8 +72,8 @@ export default function useColorPicker({
 
 	const color = useMemo(
 		() =>
-			internalValue?.includes('var(')
-				? getCSSVariableColor(internalValue!)
+			internalValue && isComputedColor(internalValue)
+				? getCSSVariableColor(internalValue)
 				: tinycolor(internalValue),
 		[internalValue]
 	);
@@ -170,7 +170,7 @@ export default function useColorPicker({
 				value = newColor.toString();
 			}
 		}
-		else if (!value.includes('var(')) {
+		else if (!isComputedColor(value)) {
 			value = '';
 		}
 		if (onColorsChange && !internalActive) {
@@ -188,11 +188,11 @@ export default function useColorPicker({
 
 	const onHexChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const value = normalizeValueHex(event.target.value);
-		const color = value.includes('var(')
+		const color = isComputedColor(value)
 			? getCSSVariableColor(value)
 			: tinycolor(value);
 
-		if (onColorsChange && (color.isValid() || value.includes('var('))) {
+		if (onColorsChange && (color.isValid() || isComputedColor(value))) {
 			dispatch({
 				hex: internalToHex(color),
 				hue: color.toHsv().h,
@@ -208,7 +208,7 @@ export default function useColorPicker({
 			else {
 				const colorIndex = findColorIndex(
 					customColors,
-					value!.includes('var(')
+					isComputedColor(value!)
 						? getCSSVariableColor(value!)
 						: tinycolor(value)
 				);

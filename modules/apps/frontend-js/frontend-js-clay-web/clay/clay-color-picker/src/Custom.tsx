@@ -8,7 +8,7 @@ import React, {useRef} from 'react';
 import tinycolor from 'tinycolor2';
 
 import Splotch from './Splotch';
-import {findColorIndex, getCSSVariableColor} from './util';
+import {findColorIndex, getCSSVariableColor, isComputedColor} from './util';
 
 type Props = {
 	color: tinycolor.Instance;
@@ -159,7 +159,7 @@ function ClayColorPickerCustom({
 										}
 									}
 									else {
-										const newColor = hex!.includes('var(')
+										const newColor = isComputedColor(hex!)
 											? getCSSVariableColor(hex!)
 											: tinycolor(hex);
 										previousColorRef.current = newColor;

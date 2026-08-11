@@ -57,7 +57,7 @@ export function findColorIndex(
 ) {
 	return colors.findIndex((currentColor) =>
 		tinycolor.equals(
-			currentColor.includes('var(')
+			isComputedColor(currentColor)
 				? getCSSVariableColor(currentColor)
 				: tinycolor(currentColor),
 			color
@@ -77,6 +77,15 @@ export function isHexFormat(color: ColorInstance) {
 	const format = color.getFormat();
 
 	return format === 'hex' || format === 'hex8';
+}
+
+export function isComputedColor(value: string) {
+	const lowerCaseValue = value.toLowerCase();
+
+	return (
+		lowerCaseValue.includes('var(') ||
+		lowerCaseValue.includes('light-dark(')
+	);
 }
 
 export function getCSSVariableColor(value: string) {
