@@ -19,6 +19,13 @@ public class JDKDynamicAgentLoadingCheck extends BaseFileCheck {
 	protected String doProcess(
 		String fileName, String absolutePath, String content) {
 
+		if (!fileName.endsWith(".properties") && !fileName.endsWith(".sh") &&
+			!fileName.endsWith(".xml") && !fileName.endsWith(".yaml") &&
+			!fileName.endsWith(".yml")) {
+
+			return content;
+		}
+
 		int x = -1;
 
 		while (true) {
