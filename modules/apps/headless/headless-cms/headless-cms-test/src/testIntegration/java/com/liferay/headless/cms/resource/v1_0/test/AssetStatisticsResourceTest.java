@@ -21,6 +21,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -70,7 +73,8 @@ public class AssetStatisticsResourceTest
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
-			PermissionCheckerMethodTestRule.INSTANCE);
+			PermissionCheckerMethodTestRule.INSTANCE,
+			SynchronousDestinationTestRule.INSTANCE);
 
 	@Before
 	@Override
@@ -88,6 +92,7 @@ public class AssetStatisticsResourceTest
 		};
 	}
 
+	@FeatureFlag("LPD-82226")
 	@Override
 	@Test
 	public void testGetAssetStatistics() throws Exception {
@@ -227,6 +232,7 @@ public class AssetStatisticsResourceTest
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry.getDepotEntryId());
 
+		_testGetAssetStatisticsBrokenLinksCount();
 		_testGetAssetStatisticsByAssetLibrary();
 	}
 
@@ -237,6 +243,15 @@ public class AssetStatisticsResourceTest
 
 	private ObjectEntry _addObjectEntry(
 			DepotEntry depotEntry, ObjectDefinition objectDefinition)
+		throws Exception {
+
+		return _addObjectEntry(
+			RandomTestUtil.randomString(), depotEntry, objectDefinition);
+	}
+
+	private ObjectEntry _addObjectEntry(
+			String content, DepotEntry depotEntry,
+			ObjectDefinition objectDefinition)
 		throws Exception {
 
 		ObjectEntryFolder objectEntryFolder =
@@ -252,7 +267,7 @@ public class AssetStatisticsResourceTest
 			HashMapBuilder.<String, Serializable>put(
 				"content_i18n",
 				HashMapBuilder.put(
-					"en_US", RandomTestUtil.randomString()
+					"en_US", content
 				).build()
 			).put(
 				"title_i18n",
@@ -333,6 +348,22 @@ public class AssetStatisticsResourceTest
 		}
 	}
 
+	private void _assertBrokenLinksCount(
+			Long assetLibraryId, long expectedBrokenLinksCount)
+		throws Exception {
+
+		for (AssetStatisticsResource assetStatisticsResource :
+				_assetStatisticsResources) {
+
+			AssetStatistics assetStatistics =
+				assetStatisticsResource.getAssetStatistics(assetLibraryId);
+
+			Assert.assertEquals(
+				expectedBrokenLinksCount,
+				GetterUtil.getLong(assetStatistics.getBrokenLinksCount()));
+		}
+	}
+
 	private AssetStatisticsResource _buildAssetStatisticsResource(User user) {
 		return AssetStatisticsResource.builder(
 		).authentication(
@@ -354,6 +385,47 @@ public class AssetStatisticsResourceTest
 		return _objectDefinitionLocalService.
 			getObjectDefinitionByExternalReferenceCode(
 				"L_CMS_BASIC_WEB_CONTENT", cmsGroup.getCompanyId());
+	}
+
+	private String _getImageHTML(String externalReferenceCode) {
+		return StringBundler.concat(
+			"<img src=\"/documents/20125/0/image.jpg/", StringUtil.randomId(),
+			"?download=true&amp;objectDefinitionExternalReferenceCode=",
+			"L_CMS_BASIC_DOCUMENT&amp;objectEntryExternalReferenceCode=",
+			externalReferenceCode,
+			"&amp;objectFieldExternalReferenceCode=FILE\">");
+	}
+
+	private void _testGetAssetStatisticsBrokenLinksCount() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry depotEntry = _addSpaceDepotEntry(serviceContext);
+
+		try {
+			ObjectDefinition objectDefinition =
+				_getBasicWebContentObjectDefinition();
+
+			ObjectEntry targetObjectEntry = _addObjectEntry(
+				depotEntry, objectDefinition);
+
+			_addObjectEntry(
+				_getImageHTML(targetObjectEntry.getExternalReferenceCode()),
+				depotEntry, objectDefinition);
+
+			_assertBrokenLinksCount(depotEntry.getGroupId(), 0);
+
+			_objectEntryLocalService.updateStatus(
+				TestPropsValues.getUserId(),
+				targetObjectEntry.getObjectEntryId(),
+				WorkflowConstants.STATUS_EXPIRED, serviceContext);
+
+			_assertBrokenLinksCount(depotEntry.getGroupId(), 1);
+		}
+		finally {
+			_depotEntryLocalService.deleteDepotEntry(
+				depotEntry.getDepotEntryId());
+		}
 	}
 
 	private void _testGetAssetStatisticsByAssetLibrary() throws Exception {
