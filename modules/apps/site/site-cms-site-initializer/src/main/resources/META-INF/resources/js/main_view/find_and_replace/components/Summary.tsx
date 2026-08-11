@@ -202,7 +202,7 @@ function ListItem({item}: {item: ReplaceItem}) {
 		openToast({
 			message: sub(
 				Liferay.Language.get('changes-applied-to-x'),
-				item.title
+				Liferay.Util.escapeHTML(item.title)
 			),
 			type: 'success',
 		});

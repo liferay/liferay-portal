@@ -18,6 +18,7 @@ import {required, validate} from '../../common/components/forms/validations';
 import FolderService, {TFolder} from '../../common/services/FolderService';
 import SpaceService from '../../common/services/SpaceService';
 import {Space} from '../../common/types/Space';
+import {getFormattedLabel} from '../../common/utils/getFormattedText';
 
 interface EditFolderProps {
 	backURL: string;
@@ -95,7 +96,7 @@ const EditFolder: React.FC<EditFolderProps> = ({backURL, folderId}) => {
 				openToast({
 					message: sub(
 						Liferay.Language.get('x-was-updated-successfully'),
-						`<strong>${formValues.folderName}</strong>`
+						getFormattedLabel(formValues.folderName)
 					),
 					type: 'success',
 				});

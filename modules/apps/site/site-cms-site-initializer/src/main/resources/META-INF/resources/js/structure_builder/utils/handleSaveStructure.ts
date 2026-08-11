@@ -118,7 +118,7 @@ export default async function handleSaveStructure({
 	openToast({
 		message: Liferay.Util.sub(
 			Liferay.Language.get('x-was-saved-successfully'),
-			localizedLabel
+			Liferay.Util.escapeHTML(localizedLabel)
 		),
 		type: 'success',
 	});

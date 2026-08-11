@@ -155,7 +155,7 @@ const displayToast = (
 					: Liferay.Language.get(
 							'x-could-not-be-moved.-please-ensure-the-structure-it-is-using-exists-in-the-destination-space'
 						),
-				itemData.title
+				Liferay.Util.escapeHTML(itemData.title)
 			);
 		}
 

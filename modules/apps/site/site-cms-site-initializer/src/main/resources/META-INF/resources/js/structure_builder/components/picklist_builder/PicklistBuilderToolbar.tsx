@@ -96,7 +96,7 @@ export default function PicklistBuilderToolbar() {
 			openToast({
 				message: Liferay.Util.sub(
 					Liferay.Language.get('x-was-saved-successfully'),
-					localizedName
+					Liferay.Util.escapeHTML(localizedName)
 				),
 				type: 'success',
 			});

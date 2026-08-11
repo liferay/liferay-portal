@@ -158,7 +158,7 @@ export default function AllSpacesFDSPropsTransformer({
 					},
 					successMessage: sub(
 						Liferay.Language.get('x-was-successfully-deleted'),
-						itemData.name
+						Liferay.Util.escapeHTML(itemData.name)
 					),
 					title: sub(
 						Liferay.Language.get('delete-space-confirmation-title'),

@@ -9,6 +9,7 @@ import React from 'react';
 
 import {openAssetUsageListModal} from '../../common/components/asset_usage/utils';
 import {OBJECT_ENTRY_FOLDER_CLASS_NAME} from '../../common/utils/constants';
+import {getFormattedLabel} from '../../common/utils/getFormattedText';
 import {openCMSModal} from '../../common/utils/openCMSModal';
 import DefaultPermissionModalContent from '../default_permission/DefaultPermissionModalContent';
 import openResetAssetPermissionModal from '../default_permission/ResetPermissionModalContent';
@@ -174,13 +175,13 @@ export default function HomeRecentAssetsFDSPropsTransformer({
 								Liferay.Language.get(
 									'delete-folder-confirmation-body'
 								),
-								title
+								getFormattedLabel(title)
 							)
 						: sub(
 								Liferay.Language.get(
 									'delete-asset-confirmation-body'
 								),
-								title
+								getFormattedLabel(title)
 							);
 
 				if (additionalProps.brokenLinksCheckerEnabled) {

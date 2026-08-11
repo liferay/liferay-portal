@@ -10,7 +10,10 @@ import {getFormattedLabel} from './getFormattedText';
 
 const displayCreateSuccessToast = (name: string) => {
 	openToast({
-		message: sub(Liferay.Language.get('x-was-created-successfully'), name),
+		message: sub(
+			Liferay.Language.get('x-was-created-successfully'),
+			Liferay.Util.escapeHTML(name)
+		),
 		type: 'success',
 	});
 };
@@ -42,7 +45,10 @@ const displayDeleteSuccessToast = (name: string) => {
 
 const displayEditSuccessToast = (name: string) => {
 	openToast({
-		message: sub(Liferay.Language.get('x-was-updated-successfully'), name),
+		message: sub(
+			Liferay.Language.get('x-was-updated-successfully'),
+			Liferay.Util.escapeHTML(name)
+		),
 		type: 'success',
 	});
 };

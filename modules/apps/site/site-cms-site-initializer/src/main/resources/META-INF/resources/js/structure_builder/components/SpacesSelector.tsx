@@ -76,7 +76,7 @@ export default function SpacesSelector({
 					Liferay.Language.get(
 						'the-space-x-cannot-be-removed-because-it-has-content-created-from-this-structure'
 					),
-					space.name
+					Liferay.Util.escapeHTML(space.name)
 				),
 				type: 'danger',
 			});

@@ -126,7 +126,7 @@ export default function SpaceGeneralSettings({
 				openToast({
 					message: Liferay.Util.sub(
 						Liferay.Language.get('x-was-saved-successfully'),
-						name
+						Liferay.Util.escapeHTML(name)
 					),
 					type: 'success',
 				});

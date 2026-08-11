@@ -238,7 +238,7 @@ export default function EditVocabulary({
 			Liferay.Util.openToast({
 				message: Liferay.Util.sub(
 					Liferay.Language.get('x-was-published-successfully'),
-					vocabulary.name
+					Liferay.Util.escapeHTML(vocabulary.name)
 				),
 				type: 'success',
 			});
@@ -247,7 +247,7 @@ export default function EditVocabulary({
 			Liferay.Util.openToast({
 				message: Liferay.Util.sub(
 					Liferay.Language.get('x-was-updated-successfully'),
-					vocabulary.name
+					Liferay.Util.escapeHTML(vocabulary.name)
 				),
 				type: 'success',
 			});

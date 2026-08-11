@@ -8,6 +8,7 @@ import {sub} from 'frontend-js-web';
 
 import FolderService from '../../../common/services/FolderService';
 import {AssetLibrary} from '../../../common/types/AssetLibrary';
+import {getFormattedLabel} from '../../../common/utils/getFormattedText';
 import {openCMSModal} from '../../../common/utils/openCMSModal';
 import CreationModalContent from '../../modal/CreationModalContent';
 
@@ -58,8 +59,8 @@ export default function createFolderAction(
 									'x-was-created-successfully-to-x-space'
 								),
 								[
-									`<a href="${data.baseFolderViewURL}${folderId}" class="alert-link lead"><strong>${folderName}</strong></a>`,
-									`<a href="${data.baseAssetLibraryViewURL}${groupId}" class="alert-link lead"><strong>${spaceName}</strong></a>`,
+									`<a href="${data.baseFolderViewURL}${folderId}" class="alert-link lead">${getFormattedLabel(folderName ?? '')}</a>`,
+									`<a href="${data.baseAssetLibraryViewURL}${groupId}" class="alert-link lead">${getFormattedLabel(spaceName ?? '')}</a>`,
 								]
 							),
 							type: 'success',

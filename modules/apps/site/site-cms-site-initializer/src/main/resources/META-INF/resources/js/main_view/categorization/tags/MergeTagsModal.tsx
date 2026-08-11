@@ -77,7 +77,11 @@ export default function MergeTagsModalContent({
 
 	const _getConfirmationMessage = (tag: Tag) => {
 		const tagNames =
-			'"' + selectedTags.map((item) => item.label).join(', ') + '"';
+			'"' +
+			selectedTags
+				.map((item) => Liferay.Util.escapeHTML(item.label))
+				.join(', ') +
+			'"';
 		const intoTagName = '"' + Liferay.Util.escapeHTML(tag.label) + '"';
 
 		return sub(

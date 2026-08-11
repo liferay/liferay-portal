@@ -219,7 +219,7 @@ export default async function handlePublishStructure({
 			openToast({
 				message: Liferay.Util.sub(
 					Liferay.Language.get('x-was-published-successfully'),
-					localizedLabel
+					Liferay.Util.escapeHTML(localizedLabel)
 				),
 				type: 'success',
 			});
@@ -232,7 +232,7 @@ export default async function handlePublishStructure({
 				Liferay.Language.get(
 					'x-was-published-successfully.-remember-to-review-the-customized-editor-if-needed'
 				),
-				localizedLabel
+				Liferay.Util.escapeHTML(localizedLabel)
 			),
 			toastProps: {
 				actions: (
