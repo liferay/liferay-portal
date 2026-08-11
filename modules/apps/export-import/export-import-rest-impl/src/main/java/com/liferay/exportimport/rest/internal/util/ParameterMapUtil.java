@@ -10,6 +10,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcessRequest;
+import com.liferay.exportimport.rest.dto.v1_0.PublishProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.RequestPortletDataHandlerControl;
 import com.liferay.portal.kernel.model.User;
@@ -24,12 +25,17 @@ import jakarta.ws.rs.BadRequestException;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * @author Daniel Raposo
  */
 public class ParameterMapUtil {
+
+	public static final String CRON_EXPRESSION = "cronExpression";
+
+	public static final String TIME_ZONE_ID = "timeZoneId";
 
 	public static Map<String, String[]> putDateRangeParameters(
 		String dateRangeType, Date startDate, Date endDate,
@@ -260,6 +266,77 @@ public class ParameterMapUtil {
 				PortletDataHandlerKeys.USER_ID_STRATEGY,
 				new String[] {userIdStrategy.toString()});
 		}
+
+		return parameterMap;
+	}
+
+	public static Map<String, String[]> toParameterMap(
+		PublishProcessRequest publishProcessRequest) {
+
+		Map<String, String[]> parameterMap = new LinkedHashMap<>();
+
+		_addRequestPortletDataHandlers(
+			publishProcessRequest.getRequestPortletDataHandlers(),
+			parameterMap);
+
+		parameterMap.put(
+			PortletDataHandlerKeys.COMMENTS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(publishProcessRequest.getComments()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.DELETIONS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(publishProcessRequest.getDeletions()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						publishProcessRequest.getSiteTemplateSettings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						publishProcessRequest.getSitePagesSettings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LOGO,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(publishProcessRequest.getLogo()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.PERMISSIONS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						publishProcessRequest.getPermissions()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.PORTLET_DATA,
+			new String[] {Boolean.TRUE.toString()});
+		parameterMap.put(
+			PortletDataHandlerKeys.PORTLET_DATA_CONTROL_DEFAULT,
+			new String[] {Boolean.FALSE.toString()});
+		parameterMap.put(
+			PortletDataHandlerKeys.RATINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(publishProcessRequest.getRatings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.THEME_REFERENCE,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						publishProcessRequest.getThemeSettings()))
+			});
 
 		return parameterMap;
 	}
