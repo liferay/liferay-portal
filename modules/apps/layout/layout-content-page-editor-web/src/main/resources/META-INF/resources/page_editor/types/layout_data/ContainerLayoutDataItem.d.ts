@@ -12,6 +12,17 @@ import {
 	TranslatedConfig,
 } from './BaseLayoutDataItem';
 
+type HtmlTag =
+	| 'article'
+	| 'aside'
+	| 'div'
+	| 'footer'
+	| 'header'
+	| 'nav'
+	| 'section';
+
+type LinkTarget = '_blank' | '_parent' | '_self' | '_top';
+
 export type ContainerGeneralConfig = ResponsiveConfig<{
 	align?: VerticalAlignmentOption;
 	contentDisplay?: ContentDisplayOption;
@@ -25,11 +36,11 @@ export type ContainerLayoutDataItem = BaseLayoutDataItem<
 	CommonStyles &
 		ContainerGeneralConfig & {
 			contentVisibility?: string;
-			htmlTag: 'header';
+			htmlTag?: HtmlTag | '';
 			indexed?: boolean;
 			link?: {
 				href: TranslatedConfig<string>;
-				target: '_blank';
+				target?: LinkTarget | '';
 			};
 		}
 >;
