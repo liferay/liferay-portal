@@ -7311,6 +7311,25 @@ public class ServiceBuilder {
 
 			if (Validator.isNotNull(finderWhere)) {
 				for (EntityColumn column : entityColumns) {
+					String dbName = column.getDBName();
+
+					String name = column.getName();
+
+					if (!name.equals(dbName) &&
+						finderWhere.matches(".*\\b" + dbName + "\\b.*")) {
+
+						throw new IllegalArgumentException(
+							StringBundler.concat(
+								"Finder \"", finderName,
+								"\" defined by entity \"", entityName,
+								"\" must use the entity property name \"", name,
+								"\" instead of the database column name \"",
+								dbName, "\" in its where clause \"",
+								finderWhere, "\""));
+					}
+				}
+
+				for (EntityColumn column : entityColumns) {
 					String name = column.getName();
 
 					if (_containSpecialCharacter(name)) {
