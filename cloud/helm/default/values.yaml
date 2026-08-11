@@ -414,7 +414,7 @@ overlay:
     initScriptsVolumeName: liferay-init-scripts-default
     type: ""
 persistence:
-    storageClassName: ""
+    defaultStorageClassName: ""
 podLabels: {}
 podSecurityContext: {}
 portalBundleDenyList: []

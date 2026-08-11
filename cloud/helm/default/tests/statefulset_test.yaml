@@ -55,7 +55,7 @@ tests:
             value: StatefulSet
         it: Fills the chart storage class into volume claim templates that omit it
         set:
-            persistence.storageClassName: hyperdisk-balanced-rwo
+            persistence.defaultStorageClassName: hyperdisk-balanced-rwo
     -   asserts:
             -   equal:
                     path: spec.volumeClaimTemplates[0].spec.storageClassName
@@ -66,7 +66,7 @@ tests:
             value: StatefulSet
         it: Keeps an explicit volume claim storage class over the chart value
         set:
-            persistence.storageClassName: hyperdisk-balanced-rwo
+            persistence.defaultStorageClassName: hyperdisk-balanced-rwo
             volumeClaimTemplates:
                 -   metadata:
                         name: liferay-persistent-volume

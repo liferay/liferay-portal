@@ -144,7 +144,7 @@ liferay-default:
         enabled: false
         type: gcs
     persistence:
-        storageClassName: standard-rwo
+        defaultStorageClassName: standard-rwo
     podSecurityContext:
         fsGroup: 1000
         runAsNonRoot: true
