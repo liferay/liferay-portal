@@ -7,12 +7,17 @@ package com.liferay.fragment.web.internal.servlet.taglib.util;
 
 import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.fragment.model.FragmentEntry;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -205,6 +210,14 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 	}
 
 	@Test
+	@TestInfo("LPD-101584")
+	public void testGetActionDropdownItemsWithUsageCount() throws Exception {
+		_assertViewSiteUsagesDropdownItemDisabled(true, 0);
+		_assertViewSiteUsagesDropdownItemDisabled(
+			false, RandomTestUtil.randomInt());
+	}
+
+	@Test
 	public void testGetActionDropdownItemsWithoutManageFragmentEntries()
 		throws Exception {
 
@@ -220,6 +233,44 @@ public class BasicFragmentEntryActionDropdownItemsProviderTest
 		assertDropdownItemsInCorrectOrder(
 			basicFragmentEntryActionDropdownItemsProvider.
 				getActionDropdownItems());
+	}
+
+	private void _assertViewSiteUsagesDropdownItemDisabled(
+			boolean disabled, int usageCount)
+		throws Exception {
+
+		setUpFragmentPermission(true);
+		_setUpFragmentEntry(false, false, false);
+
+		BasicFragmentEntryActionDropdownItemsProvider
+			basicFragmentEntryActionDropdownItemsProvider =
+				new BasicFragmentEntryActionDropdownItemsProvider(
+					_fragmentEntry, renderRequest, renderResponse, usageCount);
+
+		DropdownItem dropdownItem = _getViewSiteUsagesDropdownItem(
+			basicFragmentEntryActionDropdownItemsProvider.
+				getActionDropdownItems());
+
+		Assert.assertEquals("view-site-usages", dropdownItem.get("label"));
+		Assert.assertEquals(disabled, dropdownItem.get("disabled"));
+	}
+
+	private DropdownItem _getViewSiteUsagesDropdownItem(
+		List<DropdownItem> dropdownItems) {
+
+		for (DropdownItem dropdownItem :
+				getActionDropdownItems(dropdownItems)) {
+
+			if (StringUtil.equals(
+					(String)dropdownItem.get("label"), "view-site-usages")) {
+
+				return dropdownItem;
+			}
+		}
+
+		throw new AssertionError(
+			"Unable to find the \"view-site-usages\" dropdown item in " +
+				dropdownItems);
 	}
 
 	private void _setUpFragmentEntry(
