@@ -319,9 +319,7 @@ const ConnectableSelector = ({
 								<ItemSelector.Item
 									className="align-items-center d-flex"
 									key={item.id}
-									textValue={Liferay.Util.escapeHTML(
-										item.descriptiveName
-									)}
+									textValue={item.descriptiveName}
 								>
 									<ClaySticker
 										className="c-mr-2"
@@ -335,9 +333,7 @@ const ConnectableSelector = ({
 										/>
 									</ClaySticker>
 
-									{Liferay.Util.escapeHTML(
-										item.descriptiveName
-									)}
+									{item.descriptiveName}
 								</ItemSelector.Item>
 							)}
 						</ItemSelector>
@@ -371,9 +367,7 @@ const ConnectableSelector = ({
 								<ItemSelector.Item
 									className="align-items-center d-flex"
 									key={item.id}
-									textValue={Liferay.Util.escapeHTML(
-										item.name
-									)}
+									textValue={item.name}
 								>
 									<ClaySticker
 										className="c-mr-2"
@@ -387,7 +381,7 @@ const ConnectableSelector = ({
 										/>
 									</ClaySticker>
 
-									{Liferay.Util.escapeHTML(item.name)}
+									{item.name}
 								</ItemSelector.Item>
 							)}
 						</ItemSelector>
