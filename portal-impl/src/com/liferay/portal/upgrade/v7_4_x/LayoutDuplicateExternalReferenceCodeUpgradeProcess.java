@@ -41,14 +41,13 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcess
 					"= Layout1.externalReferenceCode and Layout2.groupId = ",
 					"Layout1.groupId where Layout1.plid != Layout2.maxPlid ",
 					"order by Layout1.plid"));
-
-			ResultSet resultSet = preparedStatement1.executeQuery();
-
 			PreparedStatement preparedStatement2 =
 				AutoBatchPreparedStatementUtil.autoBatch(
 					connection,
 					"update Layout set externalReferenceCode = ? where " +
-						"externalReferenceCode = ? and plid = ?")) {
+						"externalReferenceCode = ? and plid = ?");
+
+			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			while (resultSet.next()) {
 				long plid = resultSet.getLong("plid");
