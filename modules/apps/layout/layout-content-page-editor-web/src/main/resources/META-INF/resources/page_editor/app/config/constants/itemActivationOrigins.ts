@@ -11,3 +11,6 @@ export const ITEM_ACTIVATION_ORIGINS = {
 	layout: 'layout',
 	sidebar: 'sidebar',
 } as const;
+
+export type ItemActivationOrigin =
+	(typeof ITEM_ACTIVATION_ORIGINS)[keyof typeof ITEM_ACTIVATION_ORIGINS];

@@ -7,3 +7,6 @@ export const MULTI_SELECT_TYPES = {
 	range: 'range',
 	simple: 'simple',
 } as const;
+
+export type MultiSelectType =
+	(typeof MULTI_SELECT_TYPES)[keyof typeof MULTI_SELECT_TYPES];
