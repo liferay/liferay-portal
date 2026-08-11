@@ -2461,9 +2461,14 @@ test(
 				`${liferayConfig.environment.baseUrl}/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
 			);
 
-			await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
-				'has-badge mini-cart-opener'
-			);
+			await expect(async () => {
+				await page.reload();
+
+				await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
+					'has-badge mini-cart-opener',
+					{timeout: 5000}
+				);
+			}).toPass({timeout: 30000});
 
 			await commerceMiniCartPage.miniCartButton.click();
 

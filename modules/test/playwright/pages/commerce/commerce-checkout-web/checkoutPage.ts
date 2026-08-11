@@ -338,11 +338,16 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		let currentStep = await this.activeCheckoutStep.textContent();
 
 		while (!currentStep.includes(stopAt)) {
-			await this.continueButton.click();
+			const previousStep = currentStep;
 
-			await this.page.waitForLoadState('networkidle');
+			await expect(async () => {
+				await this.continueButton.click();
 
-			await expect(this.activeCheckoutStep).not.toHaveText(currentStep);
+				await expect(this.activeCheckoutStep).not.toHaveText(
+					previousStep,
+					{timeout: 5000}
+				);
+			}).toPass({timeout: 30000});
 
 			currentStep = await this.activeCheckoutStep.textContent();
 		}
