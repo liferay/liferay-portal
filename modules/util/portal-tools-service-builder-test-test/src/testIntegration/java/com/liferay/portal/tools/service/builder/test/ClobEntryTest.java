@@ -11,18 +11,16 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PersistenceTestRule;
 import com.liferay.portal.test.rule.TransactionalTestRule;
 import com.liferay.portal.tools.service.builder.test.model.ClobEntry;
 import com.liferay.portal.tools.service.builder.test.service.persistence.ClobEntryPersistence;
-import com.liferay.portal.tools.service.builder.test.service.persistence.ClobEntryUtil;
 
 import java.util.Arrays;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,40 +41,43 @@ public class ClobEntryTest {
 				Propagation.REQUIRED,
 				"com.liferay.portal.tools.service.builder.test.service"));
 
-	@Before
-	public void setUp() {
-		_persistence = ClobEntryUtil.getPersistence();
-
-		_clobEntry1 = _addClobEntry("aaa");
-		_clobEntry2 = _addClobEntry("bbb");
-	}
-
-	@After
-	public void tearDown() {
-		_persistence.remove(_clobEntry1);
-		_persistence.remove(_clobEntry2);
-	}
-
 	@Test
 	public void test() {
-		Assert.assertEquals(
-			Arrays.asList(_clobEntry2, _clobEntry1),
-			_persistence.findAll(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				OrderByComparatorFactoryUtil.create(
-					"ClobEntry", "content", false)));
+		ClobEntry clobEntry1 = null;
+		ClobEntry clobEntry2 = null;
+
+		try {
+			clobEntry1 = _addClobEntry("aaa");
+			clobEntry2 = _addClobEntry("bbb");
+
+			Assert.assertEquals(
+				Arrays.asList(clobEntry2, clobEntry1),
+				_clobEntryPersistence.findAll(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+					OrderByComparatorFactoryUtil.create(
+						"ClobEntry", "content", false)));
+		}
+		finally {
+			if (clobEntry1 != null) {
+				_clobEntryPersistence.remove(clobEntry1);
+			}
+
+			if (clobEntry2 != null) {
+				_clobEntryPersistence.remove(clobEntry2);
+			}
+		}
 	}
 
 	private ClobEntry _addClobEntry(String content) {
-		ClobEntry clobEntry = _persistence.create(RandomTestUtil.nextLong());
+		ClobEntry clobEntry = _clobEntryPersistence.create(
+			RandomTestUtil.nextLong());
 
 		clobEntry.setContent(content);
 
-		return _persistence.update(clobEntry);
+		return _clobEntryPersistence.update(clobEntry);
 	}
 
-	private ClobEntry _clobEntry1;
-	private ClobEntry _clobEntry2;
-	private ClobEntryPersistence _persistence;
+	@Inject
+	private ClobEntryPersistence _clobEntryPersistence;
 
 }
