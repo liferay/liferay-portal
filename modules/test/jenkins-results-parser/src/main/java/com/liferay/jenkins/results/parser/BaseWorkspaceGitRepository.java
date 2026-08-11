@@ -179,7 +179,9 @@ public abstract class BaseWorkspaceGitRepository
 
 	@Override
 	public GitWorkingDirectory getGitWorkingDirectory() {
-		if (isSnapshot() && !_isDotGitDirArchiveRequired()) {
+		if (_isGitArchiveEnabled() && isSnapshot() &&
+			!_isDotGitDirArchiveRequired()) {
+
 			throw new RuntimeException(
 				"Using Git archive, unable to get Git working directory");
 		}
