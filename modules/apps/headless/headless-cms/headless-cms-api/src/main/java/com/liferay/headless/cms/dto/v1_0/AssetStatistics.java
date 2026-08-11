@@ -88,6 +88,47 @@ public class AssetStatistics implements Serializable {
 	private Supplier<Long> _approvedCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getBrokenLinksCount() {
+		if (_brokenLinksCountSupplier != null) {
+			brokenLinksCount = _brokenLinksCountSupplier.get();
+
+			_brokenLinksCountSupplier = null;
+		}
+
+		return brokenLinksCount;
+	}
+
+	public void setBrokenLinksCount(Long brokenLinksCount) {
+		this.brokenLinksCount = brokenLinksCount;
+
+		_brokenLinksCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setBrokenLinksCount(
+		UnsafeSupplier<Long, Exception> brokenLinksCountUnsafeSupplier) {
+
+		_brokenLinksCountSupplier = () -> {
+			try {
+				return brokenLinksCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long brokenLinksCount;
+
+	@JsonIgnore
+	private Supplier<Long> _brokenLinksCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getExpiredCount() {
 		if (_expiredCountSupplier != null) {
 			expiredCount = _expiredCountSupplier.get();
@@ -454,6 +495,18 @@ public class AssetStatistics implements Serializable {
 			sb.append(approvedCount);
 		}
 
+		Long brokenLinksCount = getBrokenLinksCount();
+
+		if (brokenLinksCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"brokenLinksCount\": ");
+
+			sb.append(brokenLinksCount);
+		}
+
 		Long expiredCount = getExpiredCount();
 
 		if (expiredCount != null) {
@@ -651,4 +704,4 @@ public class AssetStatistics implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1350526058
+// LIFERAY-REST-BUILDER-HASH:-178751699

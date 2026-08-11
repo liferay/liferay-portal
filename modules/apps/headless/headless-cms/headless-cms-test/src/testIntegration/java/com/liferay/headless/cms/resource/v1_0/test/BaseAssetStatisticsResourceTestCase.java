@@ -282,6 +282,14 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("brokenLinksCount", additionalAssertFieldName)) {
+				if (assetStatistics.getBrokenLinksCount() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("expiredCount", additionalAssertFieldName)) {
 				if (assetStatistics.getExpiredCount() == null) {
 					valid = false;
@@ -475,6 +483,17 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				if (!Objects.deepEquals(
 						assetStatistics1.getApprovedCount(),
 						assetStatistics2.getApprovedCount())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("brokenLinksCount", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						assetStatistics1.getBrokenLinksCount(),
+						assetStatistics2.getBrokenLinksCount())) {
 
 					return false;
 				}
@@ -689,6 +708,11 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("brokenLinksCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("expiredCount")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -777,6 +801,7 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 		return new AssetStatistics() {
 			{
 				approvedCount = RandomTestUtil.randomLong();
+				brokenLinksCount = RandomTestUtil.randomLong();
 				expiredCount = RandomTestUtil.randomLong();
 				expiringSoonCount = RandomTestUtil.randomLong();
 				inDraftCount = RandomTestUtil.randomLong();
@@ -1012,4 +1037,4 @@ public abstract class BaseAssetStatisticsResourceTestCase {
 		_assetStatisticsResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:501613399
+// LIFERAY-REST-BUILDER-HASH:-583460990

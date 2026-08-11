@@ -46,6 +46,27 @@ public class AssetStatistics implements Cloneable, Serializable {
 
 	protected Long approvedCount;
 
+	public Long getBrokenLinksCount() {
+		return brokenLinksCount;
+	}
+
+	public void setBrokenLinksCount(Long brokenLinksCount) {
+		this.brokenLinksCount = brokenLinksCount;
+	}
+
+	public void setBrokenLinksCount(
+		UnsafeSupplier<Long, Exception> brokenLinksCountUnsafeSupplier) {
+
+		try {
+			brokenLinksCount = brokenLinksCountUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Long brokenLinksCount;
+
 	public Long getExpiredCount() {
 		return expiredCount;
 	}
@@ -246,4 +267,4 @@ public class AssetStatistics implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-195853936
+// LIFERAY-REST-BUILDER-HASH:-614999884
