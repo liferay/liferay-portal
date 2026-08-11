@@ -583,25 +583,43 @@ public class LayoutLocalServiceWrapper
 				sourceLayoutPageTemplateStructureRelElementVariation.
 					getAudienceEntryERCs();
 
-			_layoutPageTemplateStructureRelElementVariationLocalService.
-				addOrUpdateLayoutPageTemplateStructureRelElementVariation(
-					PortalUUIDUtil.generate(), user.getUserId(),
-					targetLayout.getGroupId(),
-					sourceLayoutPageTemplateStructureRelElementVariation.
-						isActive(),
-					sourceLayoutPageTemplateStructureRelElementVariation.
-						getHide(),
-					sourceLayoutPageTemplateStructureRelElementVariation.
-						getHtmlMap(),
-					sourceLayoutPageTemplateStructureRelElementVariation.
-						getJsMap(),
-					sourceLayoutPageTemplateStructureRelElementVariation.
-						getName(),
-					targetLayout.getPlid(), segmentsExperienceERC,
-					sourceLayoutPageTemplateStructureRelElementVariation.
-						getTargetElement(),
-					audienceEntryERCs.toArray(new String[0]),
-					ServiceContextThreadLocal.getServiceContext());
+			if (ListUtil.isEmpty(audienceEntryERCs)) {
+				continue;
+			}
+
+			try {
+				_layoutPageTemplateStructureRelElementVariationLocalService.
+					addOrUpdateLayoutPageTemplateStructureRelElementVariation(
+						PortalUUIDUtil.generate(), user.getUserId(),
+						targetLayout.getGroupId(),
+						sourceLayoutPageTemplateStructureRelElementVariation.
+							isActive(),
+						sourceLayoutPageTemplateStructureRelElementVariation.
+							getHide(),
+						sourceLayoutPageTemplateStructureRelElementVariation.
+							getHtmlMap(),
+						sourceLayoutPageTemplateStructureRelElementVariation.
+							getJsMap(),
+						sourceLayoutPageTemplateStructureRelElementVariation.
+							getName(),
+						targetLayout.getPlid(), segmentsExperienceERC,
+						sourceLayoutPageTemplateStructureRelElementVariation.
+							getTargetElement(),
+						audienceEntryERCs.toArray(new String[0]),
+						ServiceContextThreadLocal.getServiceContext());
+			}
+			catch (Exception exception) {
+				if (_log.isWarnEnabled()) {
+					String externalReferenceCode =
+						sourceLayoutPageTemplateStructureRelElementVariation.
+							getExternalReferenceCode();
+
+					_log.warn(
+						"Unable to copy element variation " +
+							externalReferenceCode,
+						exception);
+				}
+			}
 		}
 	}
 
