@@ -10,6 +10,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:asset:asset-publisher-api")
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
+	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
 	testIntegrationImplementation project(":apps:data-engine:data-engine-rest-api")
 	testIntegrationImplementation project(":apps:data-engine:data-engine-rest-test-util")
