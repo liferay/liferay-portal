@@ -20,8 +20,7 @@ import java.util.List;
 /**
  * @author Leslie Wong
  */
-public class OAuth2ApplicationAnalyticsCloudUpgradeProcess
-	extends UpgradeProcess {
+public class OAuth2ApplicationLDPDomainUpgradeProcess extends UpgradeProcess {
 
 	@Override
 	protected void doUpgrade() throws Exception {
