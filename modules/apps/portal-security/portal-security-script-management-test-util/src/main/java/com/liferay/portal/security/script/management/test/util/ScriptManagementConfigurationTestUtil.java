@@ -5,8 +5,10 @@
 
 package com.liferay.portal.security.script.management.test.util;
 
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.security.script.management.configuration.GroovyScriptUsesCheckThreadLocal;
 import com.liferay.portal.security.script.management.configuration.ScriptManagementConfiguration;
 
 import java.io.Closeable;
@@ -17,7 +19,10 @@ import java.io.Closeable;
 public class ScriptManagementConfigurationTestUtil {
 
 	public static void delete() {
-		try {
+		try (SafeCloseable safeCloseable =
+				GroovyScriptUsesCheckThreadLocal.setEnabledWithSafeCloseable(
+					false)) {
+
 			ConfigurationTestUtil.deleteConfiguration(
 				ScriptManagementConfiguration.class.getName());
 		}
@@ -29,12 +34,17 @@ public class ScriptManagementConfigurationTestUtil {
 	public static void save(boolean allowScriptContentToBeExecutedOrIncluded)
 		throws Exception {
 
-		ConfigurationTestUtil.saveConfiguration(
-			ScriptManagementConfiguration.class.getName(),
-			HashMapDictionaryBuilder.<String, Object>put(
-				"allowScriptContentToBeExecutedOrIncluded",
-				allowScriptContentToBeExecutedOrIncluded
-			).build());
+		try (SafeCloseable safeCloseable =
+				GroovyScriptUsesCheckThreadLocal.setEnabledWithSafeCloseable(
+					false)) {
+
+			ConfigurationTestUtil.saveConfiguration(
+				ScriptManagementConfiguration.class.getName(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"allowScriptContentToBeExecutedOrIncluded",
+					allowScriptContentToBeExecutedOrIncluded
+				).build());
+		}
 	}
 
 	public static Closeable saveWithCloseable(

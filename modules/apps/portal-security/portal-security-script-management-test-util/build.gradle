@@ -3,6 +3,7 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly project(":apps:portal-configuration:portal-configuration-test-util")
 	compileOnly project(":apps:portal-security:portal-security-script-management-api")
+	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }
 
