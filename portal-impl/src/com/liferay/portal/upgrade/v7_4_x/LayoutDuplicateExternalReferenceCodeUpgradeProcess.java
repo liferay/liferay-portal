@@ -53,10 +53,10 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcess
 					externalReferenceCodesMap = _getExternalReferenceCodesMap();
 				}
 
-				long plid = resultSet.getLong("plid");
-
 				Set<String> externalReferenceCodes =
 					externalReferenceCodesMap.get(resultSet.getLong("groupId"));
+
+				long plid = resultSet.getLong("plid");
 
 				String externalReferenceCode = String.valueOf(plid);
 
