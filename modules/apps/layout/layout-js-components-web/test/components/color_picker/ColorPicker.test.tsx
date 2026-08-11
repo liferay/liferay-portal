@@ -534,6 +534,28 @@ describe('ColorPicker', () => {
 
 			expect(baseElement.querySelector('input')).toHaveValue('aliceblue');
 		});
+
+		it('accepts a light-dark() value', async () => {
+			const onValueSelect = jest.fn();
+
+			const {baseElement} = renderColorPicker({
+				onValueSelect,
+				value: '#ffb46e',
+			});
+
+			const input = baseElement.querySelector('input')!;
+
+			fireEvent.change(input, {
+				target: {value: 'light-dark(#fff, #000)'},
+			});
+			fireEvent.blur(input);
+
+			expect(input).toHaveValue('light-dark(#fff, #000)');
+			expect(onValueSelect).toHaveBeenCalledWith(
+				INPUT_NAME,
+				'light-dark(#fff, #000)'
+			);
+		});
 	});
 
 	describe('Filter a Value from Stylebook', () => {
