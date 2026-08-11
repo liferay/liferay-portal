@@ -206,12 +206,20 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 		else if (GetterUtil.getBoolean(
 					serviceContext.getAttribute("forceReloadPermissions"))) {
 
-			List<ResourcePermission> resourcePermissions =
-				_resourcePermissionLocalService.getRoleResourcePermissions(
-					role.getRoleId());
+			if (Objects.equals(
+					name,
+					AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MEMBER)) {
 
-			if (ListUtil.isEmpty(resourcePermissions)) {
 				_setRolePermissions(role, serviceContext);
+			}
+			else {
+				List<ResourcePermission> resourcePermissions =
+					_resourcePermissionLocalService.getRoleResourcePermissions(
+						role.getRoleId());
+
+				if (ListUtil.isEmpty(resourcePermissions)) {
+					_setRolePermissions(role, serviceContext);
+				}
 			}
 		}
 	}
@@ -235,7 +243,11 @@ public class CommerceRoleHelperImpl implements CommerceRoleHelper {
 		else if (GetterUtil.getBoolean(
 					serviceContext.getAttribute("forceReloadPermissions"))) {
 
-			if (Objects.equals(name, RoleConstants.USER)) {
+			if (Objects.equals(
+					name,
+					AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_MANAGER) ||
+				Objects.equals(name, RoleConstants.USER)) {
+
 				_setRolePermissions(role, serviceContext);
 			}
 			else {
