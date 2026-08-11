@@ -59,40 +59,42 @@ Portlet portlet = (Portlet)request.getAttribute("liferay-theme:portlet-messages:
 	</c:if>
 </c:if>
 
-<c:if test='<%= MultiSessionMessages.contains(renderRequest, "requestProcessed") && !MultiSessionMessages.contains(renderRequest, portlet.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE) %>'>
+<c:if test="<%= renderRequest != null %>">
+	<c:if test='<%= MultiSessionMessages.contains(renderRequest, "requestProcessed") && !MultiSessionMessages.contains(renderRequest, portlet.getPortletId() + SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_SUCCESS_MESSAGE) %>'>
 
-	<%
-	String successMessage = (String)MultiSessionMessages.get(renderRequest, "requestProcessed");
-	%>
+		<%
+		String successMessage = (String)MultiSessionMessages.get(renderRequest, "requestProcessed");
+		%>
 
-	<liferay-util:buffer
-		var="successHTML"
-	>
-		<c:choose>
-			<c:when test='<%= Validator.isNotNull(successMessage) && !successMessage.equals("request_processed") %>'>
-				<%= HtmlUtil.escape(successMessage) %>
-			</c:when>
-			<c:otherwise>
-				<liferay-ui:message key="your-request-completed-successfully" />
-			</c:otherwise>
-		</c:choose>
+		<liferay-util:buffer
+			var="successHTML"
+		>
+			<c:choose>
+				<c:when test='<%= Validator.isNotNull(successMessage) && !successMessage.equals("request_processed") %>'>
+					<%= HtmlUtil.escape(successMessage) %>
+				</c:when>
+				<c:otherwise>
+					<liferay-ui:message key="your-request-completed-successfully" />
+				</c:otherwise>
+			</c:choose>
 
-		<c:if test="<%= themeDisplay.isStatePopUp() && MultiSessionMessages.contains(renderRequest, portlet.getPortletId() + SessionMessages.KEY_SUFFIX_CLOSE_REDIRECT) %>">
+			<c:if test="<%= themeDisplay.isStatePopUp() && MultiSessionMessages.contains(renderRequest, portlet.getPortletId() + SessionMessages.KEY_SUFFIX_CLOSE_REDIRECT) %>">
 
-			<%
-			String taglibMessage = "class=\"lfr-hide-dialog\" href=\"javascript:void(0);\"";
-			%>
+				<%
+				String taglibMessage = "class=\"lfr-hide-dialog\" href=\"javascript:void(0);\"";
+				%>
 
-			<liferay-ui:message arguments="<%= taglibMessage %>" key="the-page-will-be-refreshed-when-you-close-this-dialog.alternatively-you-can-hide-this-dialog-x" translateArguments="<%= false %>" />
-		</c:if>
-	</liferay-util:buffer>
+				<liferay-ui:message arguments="<%= taglibMessage %>" key="the-page-will-be-refreshed-when-you-close-this-dialog.alternatively-you-can-hide-this-dialog-x" translateArguments="<%= false %>" />
+			</c:if>
+		</liferay-util:buffer>
 
-	<liferay-ui:success key="requestProcessed" message="<%= successHTML %>" />
-</c:if>
+		<liferay-ui:success key="requestProcessed" message="<%= successHTML %>" />
+	</c:if>
 
-<liferay-ui:success key="<%= portlet.getPortletId() + SessionMessages.KEY_SUFFIX_UPDATED_CONFIGURATION %>" message="you-have-successfully-updated-the-setup" />
-<liferay-ui:success key="<%= portlet.getPortletId() + SessionMessages.KEY_SUFFIX_UPDATED_PREFERENCES %>" message="you-have-successfully-updated-your-preferences" />
+	<liferay-ui:success key="<%= portlet.getPortletId() + SessionMessages.KEY_SUFFIX_UPDATED_CONFIGURATION %>" message="you-have-successfully-updated-the-setup" />
+	<liferay-ui:success key="<%= portlet.getPortletId() + SessionMessages.KEY_SUFFIX_UPDATED_PREFERENCES %>" message="you-have-successfully-updated-your-preferences" />
 
-<c:if test="<%= !MultiSessionErrors.isHideDefaultErrorMessage(renderRequest, portlet.getPortletId()) %>">
-	<liferay-ui:error embed="<%= false %>" />
+	<c:if test="<%= !MultiSessionErrors.isHideDefaultErrorMessage(renderRequest, portlet.getPortletId()) %>">
+		<liferay-ui:error embed="<%= false %>" />
+	</c:if>
 </c:if>
