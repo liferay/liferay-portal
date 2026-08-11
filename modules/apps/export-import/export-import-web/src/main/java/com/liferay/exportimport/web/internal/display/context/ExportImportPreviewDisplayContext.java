@@ -10,6 +10,7 @@ import com.liferay.exportimport.rest.resource.v1_0.ExportPreviewResource;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate.Scope;
 import com.liferay.exportimport.web.internal.util.ScopeUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.group.capability.GroupCapabilityUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -205,7 +206,7 @@ public class ExportImportPreviewDisplayContext {
 
 	private String _encode(String value) {
 		if (Validator.isBlank(value)) {
-			return "";
+			return StringPool.BLANK;
 		}
 
 		return URLEncoder.encode(value, StandardCharsets.UTF_8);
@@ -238,17 +239,18 @@ public class ExportImportPreviewDisplayContext {
 
 			if (ScopeUtil.isInstanceScoped(_group)) {
 				return exportPreviewResource.getExportPreview(
-					null, plid, portletId, null);
+					null, null, plid, portletId, null);
 			}
 
 			if (_group.isDepot()) {
 				return exportPreviewResource.getAssetLibraryExportPreview(
-					_group.getExternalReferenceCode(), null, plid, portletId,
-					null);
+					_group.getExternalReferenceCode(), null, null, plid,
+					portletId, null);
 			}
 
 			return exportPreviewResource.getSiteExportPreview(
-				_group.getExternalReferenceCode(), null, plid, portletId, null);
+				_group.getExternalReferenceCode(), null, null, plid, portletId,
+				null);
 		}
 		catch (Exception exception) {
 			_log.error("Unable to get export preview", exception);

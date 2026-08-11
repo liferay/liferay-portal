@@ -6,13 +6,18 @@
 package com.liferay.exportimport.rest.internal.util;
 
 import com.liferay.exportimport.constants.ExportImportConstants;
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.ManifestSummary;
+import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.exportimport.kernel.lar.PortletDataContextFactory;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerBoolean;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerChoice;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerControl;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+import com.liferay.exportimport.lar.DeletionSystemEventExporter;
+import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
 import com.liferay.exportimport.rest.dto.v1_0.Choice;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandlerBoolean;
@@ -20,18 +25,24 @@ import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandlerChoice;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandlerControl;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandlerSection;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewPortletDataHandlerSetting;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.DateRange;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * @author Daniel Raposo
@@ -245,6 +256,120 @@ public class PreviewPortletDataHandlerUtil {
 		}
 
 		return deletionCount;
+	}
+
+	public static Map<String, List<PreviewPortletDataHandler>>
+			getPreviewPortletDataHandlersMap(
+				DeletionSystemEventExporter deletionSystemEventExporter,
+				Group group, Locale locale, Map<String, String[]> parameterMap,
+				long plid, PortletDataContextFactory portletDataContextFactory,
+				PortletDataHandlerProvider portletDataHandlerProvider,
+				List<Portlet> portlets, boolean portletScoped,
+				TimeZone timeZone)
+		throws Exception {
+
+		Map<String, List<PreviewPortletDataHandler>>
+			previewPortletDataHandlersMap = new LinkedHashMap<>();
+
+		long groupId = group.getGroupId();
+		String range = MapUtil.getString(
+			parameterMap, ExportImportDateUtil.RANGE);
+
+		for (Portlet portlet : portlets) {
+			PortletDataHandler portletDataHandler =
+				portletDataHandlerProvider.provide(portlet);
+
+			if (portletDataHandler == null) {
+				continue;
+			}
+
+			boolean layoutSetScoped =
+				LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS.equals(
+					portlet.getPortletId());
+
+			DateRange dateRange = ExportImportDateUtil.getDateRange(
+				parameterMap, groupId, false, plid,
+				layoutSetScoped ? null : portlet.getRootPortletId(), locale,
+				timeZone);
+
+			PortletDataContext portletDataContext =
+				portletDataContextFactory.createPreparePortletDataContext(
+					group.getCompanyId(), groupId, range,
+					dateRange.getStartDate(), dateRange.getEndDate());
+
+			portletDataHandler.prepareManifestSummary(portletDataContext);
+
+			if (layoutSetScoped) {
+				portletDataContext.addDeletionSystemEventStagedModelTypes(
+					portletDataHandler.
+						getDeletionSystemEventStagedModelTypes());
+
+				long publicDeletionSystemEventsCount =
+					deletionSystemEventExporter.getDeletionSystemEventsCount(
+						portletDataContext);
+
+				long privateDeletionSystemEventsCount = 0;
+				ManifestSummary privateManifestSummary = null;
+
+				if (!portletScoped && group.isPrivateLayoutsEnabled()) {
+					DateRange privateDateRange =
+						ExportImportDateUtil.getDateRange(
+							parameterMap, groupId, true, plid, null, locale,
+							timeZone);
+
+					PortletDataContext privatePortletDataContext =
+						portletDataContextFactory.
+							createPreparePortletDataContext(
+								group.getCompanyId(), groupId, range,
+								privateDateRange.getStartDate(),
+								privateDateRange.getEndDate());
+
+					privatePortletDataContext.setPrivateLayout(true);
+
+					portletDataHandler.prepareManifestSummary(
+						privatePortletDataContext);
+
+					privatePortletDataContext.
+						addDeletionSystemEventStagedModelTypes(
+							portletDataHandler.
+								getDeletionSystemEventStagedModelTypes());
+
+					privateManifestSummary =
+						privatePortletDataContext.getManifestSummary();
+					privateDeletionSystemEventsCount =
+						deletionSystemEventExporter.
+							getDeletionSystemEventsCount(
+								privatePortletDataContext);
+				}
+
+				addLayoutSetPreviewPortletDataHandler(
+					group.getCompanyId(), locale, portlet, portletDataHandler,
+					previewPortletDataHandlersMap,
+					privateDeletionSystemEventsCount, privateManifestSummary,
+					publicDeletionSystemEventsCount,
+					portletDataContext.getManifestSummary());
+			}
+			else {
+				addPreviewPortletDataHandler(
+					group.getCompanyId(), locale,
+					portletDataContext.getManifestSummary(), portlet,
+					portletDataHandler,
+					PortletDataHandler::getExportPortletDataHandlerControls,
+					portletScoped, previewPortletDataHandlersMap);
+
+				if (portletScoped) {
+					addConfigurationPreviewPortletDataHandler(
+						locale, portlet,
+						portletDataHandler.
+							getExportConfigurationPortletDataHandlerControls(
+								group.getCompanyId(), group.getGroupId(),
+								portlet, plid, false),
+						previewPortletDataHandlersMap);
+				}
+			}
+		}
+
+		return previewPortletDataHandlersMap;
 	}
 
 	public static PreviewPortletDataHandlerSection[]

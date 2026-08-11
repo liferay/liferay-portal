@@ -5,22 +5,115 @@
 
 package com.liferay.exportimport.rest.internal.util;
 
+import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ImportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.RequestPortletDataHandlerControl;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.ws.rs.BadRequestException;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 /**
  * @author Daniel Raposo
  */
 public class ParameterMapUtil {
+
+	public static Map<String, String[]> putDateRangeParameters(
+		String dateRangeType, Date startDate, Date endDate,
+		Map<String, String[]> parameterMap, User user) {
+
+		if (dateRangeType == null) {
+			if ((endDate == null) && (startDate == null)) {
+				dateRangeType = _DATE_RANGE_TYPE_ALL;
+			}
+			else {
+				dateRangeType = _DATE_RANGE_TYPE_DATE_RANGE;
+			}
+		}
+
+		if (dateRangeType.equals(_DATE_RANGE_TYPE_ALL)) {
+			parameterMap.put(
+				ExportImportDateUtil.RANGE,
+				new String[] {ExportImportDateUtil.RANGE_ALL});
+
+			return parameterMap;
+		}
+
+		if (dateRangeType.equals(_DATE_RANGE_TYPE_LAST)) {
+			if (startDate == null) {
+				throw new BadRequestException(
+					"The last date range type needs a start date");
+			}
+
+			Date date = new Date();
+
+			if (startDate.after(date)) {
+				throw new BadRequestException(
+					"The start date must be in the past for the last date " +
+						"range type");
+			}
+
+			long hours = Math.max(
+				1,
+				(date.getTime() - startDate.getTime() + (Time.HOUR / 2)) /
+					Time.HOUR);
+
+			parameterMap.put("last", new String[] {String.valueOf(hours)});
+
+			parameterMap.put(
+				ExportImportDateUtil.RANGE,
+				new String[] {ExportImportDateUtil.RANGE_LAST});
+
+			return parameterMap;
+		}
+
+		if (!dateRangeType.equals(_DATE_RANGE_TYPE_DATE_RANGE)) {
+			throw new BadRequestException(
+				"The date range type \"" + dateRangeType +
+					"\" is not supported");
+		}
+
+		if ((endDate == null) && (startDate == null)) {
+			throw new BadRequestException(
+				"The date range type needs a start or end date");
+		}
+
+		if ((endDate != null) && (startDate != null) &&
+			!startDate.before(endDate)) {
+
+			throw new BadRequestException(
+				"The start date must be before the end date");
+		}
+
+		parameterMap.put(
+			ExportImportDateUtil.RANGE,
+			new String[] {ExportImportDateUtil.RANGE_DATE_RANGE});
+
+		if (startDate == null) {
+			startDate = new Date(0);
+		}
+
+		_putDateParameters(startDate, parameterMap, "startDate", user);
+
+		if (endDate != null) {
+			_putDateParameters(endDate, parameterMap, "endDate", user);
+		}
+
+		return parameterMap;
+	}
 
 	public static Map<String, String[]> toParameterMap(
 		ExportProcessRequest exportProcessRequest, boolean portletScoped) {
@@ -31,69 +124,58 @@ public class ParameterMapUtil {
 		_addRequestPortletDataHandlers(
 			exportProcessRequest.getRequestPortletDataHandlers(), parameterMap);
 
-		Boolean comments = exportProcessRequest.getComments();
-
-		if (comments != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.COMMENTS,
-				new String[] {comments.toString()});
-		}
-
-		Boolean deletions = exportProcessRequest.getDeletions();
-
-		if (deletions != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.DELETIONS,
-				new String[] {deletions.toString()});
-		}
-
-		Boolean logo = exportProcessRequest.getLogo();
-
-		if (logo != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.LOGO, new String[] {logo.toString()});
-		}
-
-		Boolean permissions = exportProcessRequest.getPermissions();
-
-		if (permissions != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.PERMISSIONS,
-				new String[] {permissions.toString()});
-		}
-
-		Boolean ratings = exportProcessRequest.getRatings();
-
-		if (ratings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.RATINGS,
-				new String[] {ratings.toString()});
-		}
-
-		Boolean sitePagesSettings = exportProcessRequest.getSitePagesSettings();
-
-		if (sitePagesSettings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
-				new String[] {sitePagesSettings.toString()});
-		}
-
-		Boolean siteTemplateSettings =
-			exportProcessRequest.getSiteTemplateSettings();
-
-		if (siteTemplateSettings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS,
-				new String[] {siteTemplateSettings.toString()});
-		}
-
-		Boolean themeSettings = exportProcessRequest.getThemeSettings();
-
-		if (themeSettings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.THEME_REFERENCE,
-				new String[] {themeSettings.toString()});
-		}
+		parameterMap.put(
+			PortletDataHandlerKeys.COMMENTS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(exportProcessRequest.getComments()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.DELETIONS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(exportProcessRequest.getDeletions()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						exportProcessRequest.getSiteTemplateSettings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						exportProcessRequest.getSitePagesSettings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LOGO,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(exportProcessRequest.getLogo()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.PERMISSIONS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						exportProcessRequest.getPermissions()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.RATINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(exportProcessRequest.getRatings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.THEME_REFERENCE,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						exportProcessRequest.getThemeSettings()))
+			});
 
 		return parameterMap;
 	}
@@ -107,6 +189,13 @@ public class ParameterMapUtil {
 		_addRequestPortletDataHandlers(
 			importProcessRequest.getRequestPortletDataHandlers(), parameterMap);
 
+		parameterMap.put(
+			PortletDataHandlerKeys.COMMENTS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(importProcessRequest.getComments()))
+			});
+
 		ImportProcessRequest.DataStrategy dataStrategy =
 			importProcessRequest.getDataStrategy();
 
@@ -116,69 +205,52 @@ public class ParameterMapUtil {
 				new String[] {"DATA_STRATEGY_" + dataStrategy});
 		}
 
-		Boolean comments = importProcessRequest.getComments();
-
-		if (comments != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.COMMENTS,
-				new String[] {comments.toString()});
-		}
-
-		Boolean deletions = importProcessRequest.getDeletions();
-
-		if (deletions != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.DELETIONS,
-				new String[] {deletions.toString()});
-		}
-
-		Boolean logo = importProcessRequest.getLogo();
-
-		if (logo != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.LOGO, new String[] {logo.toString()});
-		}
-
-		Boolean permissions = importProcessRequest.getPermissions();
-
-		if (permissions != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.PERMISSIONS,
-				new String[] {permissions.toString()});
-		}
-
-		Boolean ratings = importProcessRequest.getRatings();
-
-		if (ratings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.RATINGS,
-				new String[] {ratings.toString()});
-		}
-
-		Boolean sitePagesSettings = importProcessRequest.getSitePagesSettings();
-
-		if (sitePagesSettings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
-				new String[] {sitePagesSettings.toString()});
-		}
-
-		Boolean siteTemplateSettings =
-			importProcessRequest.getSiteTemplateSettings();
-
-		if (siteTemplateSettings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS,
-				new String[] {siteTemplateSettings.toString()});
-		}
-
-		Boolean themeSettings = importProcessRequest.getThemeSettings();
-
-		if (themeSettings != null) {
-			parameterMap.put(
-				PortletDataHandlerKeys.THEME_REFERENCE,
-				new String[] {themeSettings.toString()});
-		}
+		parameterMap.put(
+			PortletDataHandlerKeys.DELETIONS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(importProcessRequest.getDeletions()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LAYOUT_SET_PROTOTYPE_SETTINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						importProcessRequest.getSiteTemplateSettings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LAYOUT_SET_SETTINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						importProcessRequest.getSitePagesSettings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.LOGO,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(importProcessRequest.getLogo()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.PERMISSIONS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						importProcessRequest.getPermissions()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.RATINGS,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(importProcessRequest.getRatings()))
+			});
+		parameterMap.put(
+			PortletDataHandlerKeys.THEME_REFERENCE,
+			new String[] {
+				String.valueOf(
+					GetterUtil.getBoolean(
+						importProcessRequest.getThemeSettings()))
+			});
 
 		ImportProcessRequest.UserIdStrategy userIdStrategy =
 			importProcessRequest.getUserIdStrategy();
@@ -291,5 +363,43 @@ public class ParameterMapUtil {
 			new String[] {UserIdStrategy.CURRENT_USER_ID}
 		).build();
 	}
+
+	private static void _putDateParameters(
+		Date date, Map<String, String[]> parameterMap, String prefix,
+		User user) {
+
+		Calendar calendar = CalendarFactoryUtil.getCalendar(
+			user.getTimeZone(), user.getLocale());
+
+		calendar.setTime(date);
+
+		parameterMap.put(
+			prefix + "AmPm",
+			new String[] {String.valueOf(calendar.get(Calendar.AM_PM))});
+		parameterMap.put(
+			prefix + "Day",
+			new String[] {String.valueOf(calendar.get(Calendar.DATE))});
+		parameterMap.put(
+			prefix + "Hour",
+			new String[] {String.valueOf(calendar.get(Calendar.HOUR))});
+		parameterMap.put(
+			prefix + "Minute",
+			new String[] {String.valueOf(calendar.get(Calendar.MINUTE))});
+		parameterMap.put(
+			prefix + "Month",
+			new String[] {String.valueOf(calendar.get(Calendar.MONTH))});
+		parameterMap.put(
+			prefix + "Second",
+			new String[] {String.valueOf(calendar.get(Calendar.SECOND))});
+		parameterMap.put(
+			prefix + "Year",
+			new String[] {String.valueOf(calendar.get(Calendar.YEAR))});
+	}
+
+	private static final String _DATE_RANGE_TYPE_ALL = "ALL";
+
+	private static final String _DATE_RANGE_TYPE_DATE_RANGE = "DATE_RANGE";
+
+	private static final String _DATE_RANGE_TYPE_LAST = "LAST";
 
 }
