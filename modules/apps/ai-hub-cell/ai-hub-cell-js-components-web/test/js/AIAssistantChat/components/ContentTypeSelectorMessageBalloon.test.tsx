@@ -43,7 +43,7 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 		} as never);
 
 		const contextRef = {current: {}};
-		const sendMessage = jest.fn();
+		const sendMessage = jest.fn(() => true);
 		const setIsGenerating = jest.fn();
 
 		render(
@@ -85,7 +85,7 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 	it('stops generating and reports the failure when the object fields cannot be fetched', async () => {
 		mockFetch.mockResolvedValue({ok: false} as never);
 
-		const sendMessage = jest.fn();
+		const sendMessage = jest.fn(() => true);
 		const setIsGenerating = jest.fn();
 
 		render(
@@ -111,6 +111,44 @@ describe('ContentTypeSelectorMessageBalloon', () => {
 
 		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
 		expect(sendMessage).not.toHaveBeenCalled();
+
+		const select = screen.getByLabelText('content-type');
+
+		expect(select).toBeEnabled();
+		expect(select).toHaveValue('');
+	});
+
+	it('stops generating and reports the failure when the message is not sent', async () => {
+		mockFetch.mockResolvedValue({
+			json: () => Promise.resolve({items: []}),
+			ok: true,
+		} as never);
+
+		const sendMessage = jest.fn(() => false);
+		const setIsGenerating = jest.fn();
+
+		render(
+			<ContentTypeSelectorMessageBalloon
+				contentTypes={CONTENT_TYPES}
+				contextRef={{current: {}}}
+				message="What type of content do you want to generate?"
+				sendMessage={sendMessage}
+				setIsGenerating={setIsGenerating}
+			/>
+		);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('content-type'),
+			'L_CMS_BASIC_WEB_CONTENT'
+		);
+
+		await waitFor(() =>
+			expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+				expect.objectContaining({type: 'danger'})
+			)
+		);
+
+		expect(setIsGenerating).toHaveBeenLastCalledWith(false);
 
 		const select = screen.getByLabelText('content-type');
 

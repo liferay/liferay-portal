@@ -949,7 +949,7 @@ describe('AIAssistantHost', () => {
 		});
 	});
 
-	it('keeps the composer usable when a content type is selected before the connection subscribes', async () => {
+	it('keeps the composer and the selector usable when a content type is selected before the connection subscribes', async () => {
 		const fakeEventSource = createFakeEventSource();
 
 		mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
@@ -981,6 +981,15 @@ describe('AIAssistantHost', () => {
 		);
 
 		expect(screen.queryByText('generating')).toBeNull();
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith(
+			expect.objectContaining({type: 'danger'})
+		);
+
+		const select = screen.getByLabelText('content-type');
+
+		expect(select).toBeEnabled();
+		expect(select).toHaveValue('');
 	});
 
 	it('sends the command initial message when the connection is already subscribed', async () => {

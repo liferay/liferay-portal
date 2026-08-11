@@ -45,7 +45,7 @@ export interface AIChat {
 	reportContext: AIChatReportContext | null;
 	runtimeContextRef: React.MutableRefObject<ChatContext>;
 	scrollToBottom: () => void;
-	sendMessage: (text: string) => void;
+	sendMessage: (text: string) => boolean;
 	setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>;
 	setMessage: (message: string) => void;
 	setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
@@ -164,7 +164,7 @@ export default function useAIChat({
 
 	const sendMessage = useCallback((text: string) => {
 		if (!text.trim()) {
-			return;
+			return false;
 		}
 
 		setMessages((previousMessages) => [
@@ -177,7 +177,7 @@ export default function useAIChat({
 		if (!eventSourceReference.current) {
 			setIsGenerating(false);
 
-			return;
+			return false;
 		}
 
 		setIsGenerating(true);
@@ -199,7 +199,7 @@ export default function useAIChat({
 		if (!enableFreeFormCategorizationRef.current) {
 			postToChat();
 
-			return;
+			return true;
 		}
 
 		classifyCategorizationIntent(text)
@@ -217,6 +217,8 @@ export default function useAIChat({
 				});
 			})
 			.catch(() => postToChat());
+
+		return true;
 	}, []);
 
 	useEffect(() => {

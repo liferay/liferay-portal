@@ -22,7 +22,7 @@ interface ContentTypeSelectorMessageBalloonProps {
 	contentTypes: ContentType[];
 	contextRef: React.MutableRefObject<ChatContext>;
 	message: string;
-	sendMessage: (text: string) => void;
+	sendMessage: (text: string) => boolean;
 	setIsGenerating: (isGenerating: boolean) => void;
 }
 
@@ -33,6 +33,17 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 	const [submitted, setSubmitted] = useState(false);
 
 	const selectId = useId();
+
+	function reportFailure() {
+		setExternalReferenceCode('');
+
+		setIsGenerating(false);
+
+		Liferay.Util.openToast({
+			message: Liferay.Language.get('an-unexpected-error-occurred'),
+			type: 'danger',
+		});
+	}
 
 	async function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
 		const value = event.target.value;
@@ -61,21 +72,19 @@ const ContentTypeSelectorMessageBalloon: React.FC<
 				objectFields: JSON.stringify(objectFields),
 			};
 
-			setSubmitted(true);
-
-			sendMessage(
+			const sent = sendMessage(
 				`${Liferay.Language.get('generate')} ${contentType.label}`
 			);
+
+			if (sent) {
+				setSubmitted(true);
+			}
+			else {
+				reportFailure();
+			}
 		}
 		catch {
-			setExternalReferenceCode('');
-
-			setIsGenerating(false);
-
-			Liferay.Util.openToast({
-				message: Liferay.Language.get('an-unexpected-error-occurred'),
-				type: 'danger',
-			});
+			reportFailure();
 		}
 	}
 
