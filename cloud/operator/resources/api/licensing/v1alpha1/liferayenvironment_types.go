@@ -15,7 +15,7 @@ type AppStatus struct {
 	// +optional
 	Name string `json:"name,omitempty"`
 
-	// +kubebuilder:validation:Enum=Downloaded;Failed
+	// +kubebuilder:validation:Enum=Downloaded;Downloading;Failed
 	// +optional
 	State string `json:"state,omitempty"`
 

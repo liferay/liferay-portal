@@ -17,9 +17,11 @@ import (
 	"fmt"
 	"maps"
 	"math"
+	"path/filepath"
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	addon "github.com/liferay/liferay-portal/cloud/operator/internal/addon"
 	license "github.com/liferay/liferay-portal/cloud/operator/internal/license"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	appsv1 "k8s.io/api/apps/v1"
@@ -42,6 +44,7 @@ const (
 	conditionLicenseValid          = "LicenseValid"
 	conditionProvisioningReachable = "ProvisioningReachable"
 	conditionReplicasCountValid    = "ReplicasCountValid"
+	downloadPollInterval           = 15 * time.Second
 	entitlementsSecretSuffix       = "-entitlements"
 	environmentLabel               = "licensing.liferay.com/environment"
 	gracePeriodReplicaCeiling      = 1
@@ -352,10 +355,32 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 		return controllerruntime.Result{}, error
 	}
 
+	apps, pending := liferayEnvironmentReconciler.Syncer.Sync(
+		entitlements.AddOns,
+		addon.NewFilesystemCache(
+			filepath.Join(
+				liferayEnvironmentReconciler.MarketplaceDir,
+				liferayEnvironment.Namespace,
+			),
+		),
+		context,
+		environmentID,
+		liferayEnvironment.Namespace,
+		privateKey,
+	)
+
+	liferayEnvironment.Status.Apps = apps
+
 	liferayEnvironment.Status.Phase = "Ready"
 
+	requeueAfter := liferayEnvironmentReconciler.HeartbeatInterval
+
+	if pending {
+		requeueAfter = downloadPollInterval
+	}
+
 	return liferayEnvironmentReconciler.finishAfter(
-		context, liferayEnvironment, liferayEnvironmentReconciler.HeartbeatInterval,
+		context, liferayEnvironment, requeueAfter,
 	)
 }
 
@@ -945,8 +970,10 @@ type LiferayEnvironmentReconciler struct {
 
 	GracePeriod       time.Duration
 	HeartbeatInterval time.Duration
+	MarketplaceDir    string
 	Provisioning      provisioning.Client
 	Recorder          record.EventRecorder
 	RetryInitialDelay time.Duration
 	RetryMaxDelay     time.Duration
+	Syncer            *addon.Syncer
 }

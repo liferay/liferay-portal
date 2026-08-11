@@ -1,9 +1,12 @@
 package licensing
 
 import (
+	"bytes"
 	"context"
 	"crypto/rsa"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -12,6 +15,7 @@ import (
 	"time"
 
 	licensingv1alpha1 "github.com/liferay/liferay-portal/cloud/operator/api/licensing/v1alpha1"
+	addon "github.com/liferay/liferay-portal/cloud/operator/internal/addon"
 	provisioning "github.com/liferay/liferay-portal/cloud/operator/internal/provisioning"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -42,7 +46,11 @@ func (stubProvisioning *stubProvisioning) DownloadAddOn(
 ) (io.ReadCloser, error) {
 	stubProvisioning.downloadCalled = true
 
-	return nil, nil
+	if stubProvisioning.downloadError != nil {
+		return nil, stubProvisioning.downloadError
+	}
+
+	return io.NopCloser(bytes.NewReader(stubProvisioning.downloadBody)), nil
 }
 
 func (stubProvisioning *stubProvisioning) Manifest(
@@ -53,6 +61,10 @@ func (stubProvisioning *stubProvisioning) Manifest(
 	stubProvisioning.manifestCalled = true
 
 	return stubProvisioning.entitlements, stubProvisioning.manifestError
+}
+
+func (inlineRunner inlineRunner) Run(task func()) {
+	task()
 }
 
 func TestBackoffDuration(t *testing.T) {
@@ -390,6 +402,64 @@ func TestReconcileDowngradesAfterGracePeriod(t *testing.T) {
 	}
 }
 
+func TestReconcileDownloadsAddOns(t *testing.T) {
+	body := []byte("PK\x03\x04 sample lpkg")
+
+	sum := sha256.Sum256(body)
+
+	entitlements := &provisioning.Entitlements{
+		AddOns: []provisioning.AddOn{
+			{
+				DownloadURL:    "https://example.com/marketplace/virtual-entry/77",
+				ProductName:    "Sample Add-on",
+				SHA256Checksum: hex.EncodeToString(sum[:]),
+				VirtualEntryID: 77,
+			},
+		},
+		LicenseXML:      []byte(virtualClusterLicenseXML("Friday, March 2, 2029 12:00:00 AM GMT", 3)),
+		MaxClusterNodes: 3,
+	}
+
+	liferayEnvironmentReconciler, result := reconcileEnvironment(
+		&stubProvisioning{downloadBody: body, entitlements: entitlements}, t,
+		developmentObjects()...,
+	)
+
+	liferayEnvironment := getEnvironment(liferayEnvironmentReconciler, t)
+
+	if length := len(liferayEnvironment.Status.Apps); length != 1 {
+		t.Fatalf("Status.Apps length = %d, want 1", length)
+	}
+
+	if state := liferayEnvironment.Status.Apps[0].State; state != "Downloading" {
+		t.Errorf("State = %q, want Downloading on the first pass", state)
+	}
+
+	if result.RequeueAfter != downloadPollInterval {
+		t.Errorf("RequeueAfter = %s, want the download poll interval", result.RequeueAfter)
+	}
+
+	result = reconcileAgain(liferayEnvironmentReconciler, t)
+
+	appStatus := getEnvironment(liferayEnvironmentReconciler, t).Status.Apps[0]
+
+	if appStatus.Name != "Sample Add-on" {
+		t.Errorf("Name = %q, want Sample Add-on", appStatus.Name)
+	}
+
+	if appStatus.State != "Downloaded" {
+		t.Errorf("State = %q, want Downloaded on the second pass", appStatus.State)
+	}
+
+	if appStatus.VirtualEntryID != 77 {
+		t.Errorf("VirtualEntryID = %d, want 77", appStatus.VirtualEntryID)
+	}
+
+	if result.RequeueAfter != 10*time.Minute {
+		t.Errorf("RequeueAfter = %s, want the heartbeat 10m", result.RequeueAfter)
+	}
+}
+
 func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 	entitlements := &provisioning.Entitlements{
 		AddOns: []provisioning.AddOn{
@@ -413,8 +483,8 @@ func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 		t.Errorf("Phase = %q, want Ready despite the broken add-on", liferayEnvironment.Status.Phase)
 	}
 
-	if result.RequeueAfter != 10*time.Minute {
-		t.Errorf("RequeueAfter = %s, want the heartbeat 10m", result.RequeueAfter)
+	if result.RequeueAfter != downloadPollInterval {
+		t.Errorf("RequeueAfter = %s, want the download poll interval", result.RequeueAfter)
 	}
 
 	if length := len(getSecret("dev-entitlements", liferayEnvironmentReconciler, t).Data["add-ons.json"]); length == 0 {
@@ -938,6 +1008,27 @@ func pointerInt32(value int32) *int32 {
 	return &value
 }
 
+func reconcileAgain(
+	liferayEnvironmentReconciler *LiferayEnvironmentReconciler, t *testing.T,
+) controllerruntime.Result {
+	t.Helper()
+
+	result, error := liferayEnvironmentReconciler.Reconcile(
+		context.Background(), controllerruntime.Request{
+			NamespacedName: types.NamespacedName{
+				Name:      "dev",
+				Namespace: "liferay-dev",
+			},
+		},
+	)
+
+	if error != nil {
+		t.Fatalf("Unexpected reconcile error: %v", error)
+	}
+
+	return result
+}
+
 func reconcileEnvironment(
 	provisioningClient provisioning.Client,
 	t *testing.T,
@@ -949,10 +1040,12 @@ func reconcileEnvironment(
 		Client:            newFakeClient(t, objects...),
 		GracePeriod:       7 * 24 * time.Hour,
 		HeartbeatInterval: 10 * time.Minute,
+		MarketplaceDir:    t.TempDir(),
 		Provisioning:      provisioningClient,
 		Recorder:          record.NewFakeRecorder(10),
 		RetryInitialDelay: 30 * time.Second,
 		RetryMaxDelay:     30 * time.Minute,
+		Syncer:            addon.NewSyncer(provisioningClient, inlineRunner{}),
 	}
 
 	result, error := liferayEnvironmentReconciler.Reconcile(
@@ -982,10 +1075,14 @@ func virtualClusterLicenseXML(expirationDate string, maxClusterNodes int32) stri
 	)
 }
 
+type inlineRunner struct{}
+
 type stubProvisioning struct {
 	activateCalled bool
 	activateError  error
+	downloadBody   []byte
 	downloadCalled bool
+	downloadError  error
 	entitlements   *provisioning.Entitlements
 	manifestCalled bool
 	manifestError  error
