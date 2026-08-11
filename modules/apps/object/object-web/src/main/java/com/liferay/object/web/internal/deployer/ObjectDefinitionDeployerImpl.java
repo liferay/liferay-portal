@@ -521,9 +521,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 					objectDefinition.getObjectDefinitionId(),
 					_objectDefinitionLocalService,
 					_objectFieldFDSFilterFactoryRegistry,
-					_objectFieldLocalService, _objectScopeProviderRegistry,
-					_objectViewLocalService, _portal,
-					portletResourcePermission),
+					_objectFieldLocalService, _objectRelationshipLocalService,
+					_objectScopeProviderRegistry, _objectViewLocalService,
+					_portal, portletResourcePermission),
 				HashMapDictionaryBuilder.<String, Object>put(
 					"com.liferay.portlet.company",
 					objectDefinition.getCompanyId()

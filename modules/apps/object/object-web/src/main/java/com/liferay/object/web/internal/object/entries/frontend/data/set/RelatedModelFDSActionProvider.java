@@ -18,6 +18,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.web.internal.object.entries.constants.ObjectEntriesFDSNames;
+import com.liferay.object.web.internal.util.ObjectEntryPortletURLUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
@@ -120,14 +121,13 @@ public class RelatedModelFDSActionProvider implements FDSActionProvider {
 		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
 			objectEntryId);
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				objectEntry.getObjectDefinitionId());
-
 		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
-				httpServletRequest, objectDefinition.getPortletId(),
-				PortletRequest.ACTION_PHASE)
+			ObjectEntryPortletURLUtil.getRelatedObjectEntryPortletURL(
+				null, httpServletRequest, PortletRequest.ACTION_PHASE,
+				_objectDefinitionLocalService.getObjectDefinition(
+					objectEntry.getObjectDefinitionId()),
+				ParamUtil.getString(
+					httpServletRequest, "objectDefinitionPortletId"))
 		).setActionName(
 			"/object_entries/edit_object_entry"
 		).setCMD(
@@ -198,15 +198,19 @@ public class RelatedModelFDSActionProvider implements FDSActionProvider {
 		}
 
 		return PortletURLBuilder.create(
-			_portal.getControlPanelPortletURL(
-				httpServletRequest, objectDefinition.getPortletId(),
-				PortletRequest.ACTION_PHASE)
+			ObjectEntryPortletURLUtil.getRelatedObjectEntryPortletURL(
+				null, httpServletRequest, PortletRequest.ACTION_PHASE,
+				objectDefinition,
+				ParamUtil.getString(
+					httpServletRequest, "objectDefinitionPortletId"))
 		).setMVCRenderCommandName(
 			"/object_entries/edit_object_entry"
 		).setBackURL(
 			_portal.getCurrentURL(httpServletRequest)
 		).setParameter(
 			"externalReferenceCode", objectEntry.getExternalReferenceCode()
+		).setParameter(
+			"objectDefinitionId", objectDefinition.getObjectDefinitionId()
 		).setParameter(
 			"objectRelationshipId",
 			ParamUtil.getLong(httpServletRequest, "objectRelationshipId")

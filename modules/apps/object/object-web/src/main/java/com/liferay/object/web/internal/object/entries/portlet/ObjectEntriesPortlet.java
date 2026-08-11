@@ -7,15 +7,18 @@ package com.liferay.object.web.internal.object.entries.portlet;
 
 import com.liferay.object.constants.ObjectWebKeys;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.web.internal.object.entries.display.context.ViewObjectEntriesDisplayContext;
 import com.liferay.object.web.internal.object.entries.frontend.data.set.filter.factory.ObjectFieldFDSFilterFactoryRegistry;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -37,6 +40,7 @@ public class ObjectEntriesPortlet extends MVCPortlet {
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectFieldFDSFilterFactoryRegistry objectFieldFDSFilterFactoryRegistry,
 		ObjectFieldLocalService objectFieldLocalService,
+		ObjectRelationshipLocalService objectRelationshipLocalService,
 		ObjectScopeProviderRegistry objectScopeProviderRegistry,
 		ObjectViewLocalService objectViewLocalService, Portal portal,
 		PortletResourcePermission portletResourcePermission) {
@@ -47,6 +51,7 @@ public class ObjectEntriesPortlet extends MVCPortlet {
 		_objectFieldFDSFilterFactoryRegistry =
 			objectFieldFDSFilterFactoryRegistry;
 		_objectFieldLocalService = objectFieldLocalService;
+		_objectRelationshipLocalService = objectRelationshipLocalService;
 		_objectScopeProviderRegistry = objectScopeProviderRegistry;
 		_objectViewLocalService = objectViewLocalService;
 		_portal = portal;
@@ -63,7 +68,8 @@ public class ObjectEntriesPortlet extends MVCPortlet {
 				_objectDefinitionId);
 
 		renderRequest.setAttribute(
-			ObjectWebKeys.OBJECT_DEFINITION, objectDefinition);
+			ObjectWebKeys.OBJECT_DEFINITION,
+			_getObjectDefinition(objectDefinition, renderRequest));
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT,
 			new ViewObjectEntriesDisplayContext(
@@ -78,12 +84,50 @@ public class ObjectEntriesPortlet extends MVCPortlet {
 		super.render(renderRequest, renderResponse);
 	}
 
+	private ObjectDefinition _getObjectDefinition(
+		ObjectDefinition objectDefinition, RenderRequest renderRequest) {
+
+		long objectDefinitionId = ParamUtil.getLong(
+			renderRequest, "objectDefinitionId");
+
+		if ((objectDefinitionId == 0) ||
+			(objectDefinitionId == _objectDefinitionId)) {
+
+			return objectDefinition;
+		}
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.fetchObjectRelationship(
+				ParamUtil.getLong(renderRequest, "objectRelationshipId"));
+
+		if ((objectRelationship == null) ||
+			(objectRelationship.getObjectDefinitionId1() !=
+				_objectDefinitionId) ||
+			(objectRelationship.getObjectDefinitionId2() !=
+				objectDefinitionId)) {
+
+			return objectDefinition;
+		}
+
+		ObjectDefinition relatedObjectDefinition =
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectDefinitionId);
+
+		if (relatedObjectDefinition == null) {
+			return objectDefinition;
+		}
+
+		return relatedObjectDefinition;
+	}
+
 	private final ObjectActionLocalService _objectActionLocalService;
 	private final long _objectDefinitionId;
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectFieldFDSFilterFactoryRegistry
 		_objectFieldFDSFilterFactoryRegistry;
 	private final ObjectFieldLocalService _objectFieldLocalService;
+	private final ObjectRelationshipLocalService
+		_objectRelationshipLocalService;
 	private final ObjectScopeProviderRegistry _objectScopeProviderRegistry;
 	private final ObjectViewLocalService _objectViewLocalService;
 	private final Portal _portal;

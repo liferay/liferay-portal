@@ -76,6 +76,7 @@ import com.liferay.object.tree.ObjectEntryTreeFactory;
 import com.liferay.object.tree.Tree;
 import com.liferay.object.web.internal.display.context.helper.ObjectRequestHelper;
 import com.liferay.object.web.internal.security.permission.resource.util.ObjectDefinitionResourcePermissionUtil;
+import com.liferay.object.web.internal.util.ObjectEntryPortletURLUtil;
 import com.liferay.object.web.internal.util.ObjectEntryUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
@@ -94,6 +95,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
@@ -690,6 +692,8 @@ public class ObjectEntryDisplayContextImpl
 		throws PortalException {
 
 		return HashMapBuilder.put(
+			"objectDefinitionPortletId", _getObjectDefinitionPortletId()
+		).put(
 			"objectEntryId", String.valueOf(_objectEntry.getId())
 		).put(
 			"objectRelationshipId",
@@ -1102,11 +1106,11 @@ public class ObjectEntryDisplayContextImpl
 
 		return DropdownItemBuilder.setHref(
 			PortletURLBuilder.create(
-				PortalUtil.getControlPanelPortletURL(
-					_objectRequestHelper.getRequest(),
+				ObjectEntryPortletURLUtil.getRelatedObjectEntryPortletURL(
 					serviceContext.getScopeGroup(),
-					objectDefinition.getPortletId(), 0, 0,
-					PortletRequest.RENDER_PHASE)
+					_objectRequestHelper.getRequest(),
+					PortletRequest.RENDER_PHASE, objectDefinition,
+					_getObjectDefinitionPortletId())
 			).setMVCRenderCommandName(
 				"/object_entries/edit_object_entry"
 			).setBackURL(
@@ -1525,6 +1529,25 @@ public class ObjectEntryDisplayContextImpl
 
 				return ddmFormFieldValue;
 			});
+	}
+
+	private String _getObjectDefinitionPortletId() {
+		ObjectDefinition objectDefinition = getObjectDefinition1();
+
+		if (objectDefinition == null) {
+			return StringPool.BLANK;
+		}
+
+		String portletId = _objectRequestHelper.getPortletId();
+
+		if (!StringUtil.equals(
+				PortletIdCodec.decodePortletName(portletId),
+				objectDefinition.getPortletId())) {
+
+			return StringPool.BLANK;
+		}
+
+		return portletId;
 	}
 
 	private ObjectEntry _getObjectEntry() throws PortalException {
