@@ -41,6 +41,11 @@ create table CacheReplicatorEntry (
 	name VARCHAR(75) null
 );
 
+create table ClobEntry (
+	clobEntryId LONG not null primary key,
+	content TEXT null
+);
+
 create table ColumnNameEntry (
 	cNameEntryId LONG not null primary key,
 	name VARCHAR(75) null

@@ -8,6 +8,7 @@
 	<import class="com.liferay.portal.tools.service.builder.test.model.CacheFieldEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.CacheMissEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.CacheReplicatorEntry" />
+	<import class="com.liferay.portal.tools.service.builder.test.model.ClobEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.ColumnNameEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.CompoundPKEntry" />
 	<import class="com.liferay.portal.tools.service.builder.test.model.DataLimitEntry" />
@@ -82,6 +83,12 @@
 		</id>
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="com.liferay.portal.tools.service.builder.test.model.impl.ClobEntryImpl" table="ClobEntry">
+		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="clobEntryId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" name="content" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
 	</class>
 	<class name="com.liferay.portal.tools.service.builder.test.model.impl.ColumnNameEntryImpl" table="ColumnNameEntry">
 		<id access="com.liferay.portal.dao.orm.hibernate.MethodPropertyAccessor" column="cNameEntryId" name="columnNameEntryId" type="long">
