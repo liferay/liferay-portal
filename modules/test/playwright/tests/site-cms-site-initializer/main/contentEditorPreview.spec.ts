@@ -4,6 +4,7 @@
  */
 
 import {Locator, Page, expect, mergeTests} from '@playwright/test';
+import {readFileSync} from 'fs';
 import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
@@ -554,6 +555,7 @@ test(
 		structureBuilderPage,
 	}) => {
 		const displayPageTemplateName = getRandomString();
+		const fileTitle = `File ${getRandomString()}`;
 		const spaceName = `Space ${getRandomString()}`;
 		const title = getRandomString();
 		const unsavedChangesAlert = page.getByText(
@@ -589,6 +591,26 @@ test(
 					spaceName,
 					spaceSummaryPage,
 				});
+			});
+
+			await test.step('Create a basic document to relate content to', async () => {
+				await apiHelpers.objectEntry.postObjectEntry(
+					{
+						file: {
+							fileBase64: readFileSync(
+								path.join(
+									__dirname,
+									'/dependencies/file_upload_image_1.jpg'
+								)
+							).toString('base64'),
+							name: `${fileTitle}.jpg`,
+						},
+						objectEntryFolderExternalReferenceCode: 'L_FILES',
+						title: fileTitle,
+					},
+					'cms/basic-documents',
+					spaceName
+				);
 			});
 
 			await test.step('Create a content from the new structure', async () => {
@@ -726,6 +748,24 @@ test(
 					action: () =>
 						fill(form.locator('input[type="tel"]'), '2125551234'),
 					label: 'Phone Number',
+				},
+				{
+					action: async () => {
+						const trigger = form.getByRole('combobox', {
+							name: 'Select Related Content',
+						});
+
+						await trigger.scrollIntoViewIfNeeded();
+
+						await clickAndExpectToBeVisible({
+							autoClick: true,
+							target: page.getByRole('option', {
+								name: fileTitle,
+							}),
+							trigger,
+						});
+					},
+					label: 'Select Related Content',
 				},
 			];
 
