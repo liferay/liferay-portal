@@ -132,36 +132,15 @@ public class ExportImportDateUtil {
 		Map<String, String[]> parameterMap =
 			(Map<String, String[]>)settingsMap.get("parameterMap");
 
-		String range = MapUtil.getString(
-			parameterMap, RANGE,
-			getDefaultDateRange(exportImportConfiguration));
-		int rangeLast = MapUtil.getInteger(parameterMap, "last");
-		int startDateAmPm = MapUtil.getInteger(parameterMap, "startDateAmPm");
-		int startDateYear = MapUtil.getInteger(parameterMap, "startDateYear");
-		int startDateMonth = MapUtil.getInteger(parameterMap, "startDateMonth");
-		int startDateDay = MapUtil.getInteger(parameterMap, "startDateDay");
-		int startDateHour = MapUtil.getInteger(parameterMap, "startDateHour");
-		int startDateMinute = MapUtil.getInteger(
-			parameterMap, "startDateMinute");
-		int endDateAmPm = MapUtil.getInteger(parameterMap, "endDateAmPm");
-		int endDateYear = MapUtil.getInteger(parameterMap, "endDateYear");
-		int endDateMonth = MapUtil.getInteger(parameterMap, "endDateMonth");
-		int endDateDay = MapUtil.getInteger(parameterMap, "endDateDay");
-		int endDateHour = MapUtil.getInteger(parameterMap, "endDateHour");
-		int endDateMinute = MapUtil.getInteger(parameterMap, "endDateMinute");
-
-		long groupId = MapUtil.getLong(settingsMap, "sourceGroupId");
-		long plid = MapUtil.getLong(settingsMap, "sourcePlid");
-		boolean privateLayout = MapUtil.getBoolean(
-			settingsMap, "privateLayout");
-		Locale locale = (Locale)settingsMap.get("locale");
-		TimeZone timeZone = (TimeZone)settingsMap.get("timezone");
-
-		return getDateRange(
-			range, rangeLast, startDateAmPm, startDateYear, startDateMonth,
-			startDateDay, startDateHour, startDateMinute, endDateAmPm,
-			endDateYear, endDateMonth, endDateDay, endDateHour, endDateMinute,
-			portletId, groupId, plid, privateLayout, locale, timeZone);
+		return _getDateRange(
+			MapUtil.getString(
+				parameterMap, RANGE,
+				getDefaultDateRange(exportImportConfiguration)),
+			parameterMap, MapUtil.getLong(settingsMap, "sourceGroupId"),
+			MapUtil.getBoolean(settingsMap, "privateLayout"),
+			MapUtil.getLong(settingsMap, "sourcePlid"), portletId,
+			(Locale)settingsMap.get("locale"),
+			(TimeZone)settingsMap.get("timezone"));
 	}
 
 	public static DateRange getDateRange(long exportImportConfigurationId)
@@ -170,6 +149,17 @@ public class ExportImportDateUtil {
 		return getDateRange(
 			ExportImportConfigurationLocalServiceUtil.
 				getExportImportConfiguration(exportImportConfigurationId));
+	}
+
+	public static DateRange getDateRange(
+			Map<String, String[]> parameterMap, long groupId,
+			boolean privateLayout, long plid, String portletId, Locale locale,
+			TimeZone timeZone)
+		throws PortalException {
+
+		return _getDateRange(
+			MapUtil.getString(parameterMap, RANGE, RANGE_ALL), parameterMap,
+			groupId, privateLayout, plid, portletId, locale, timeZone);
 	}
 
 	public static DateRange getDateRange(
@@ -579,6 +569,29 @@ public class ExportImportDateUtil {
 		}
 
 		return true;
+	}
+
+	private static DateRange _getDateRange(
+			String range, Map<String, String[]> parameterMap, long groupId,
+			boolean privateLayout, long plid, String portletId, Locale locale,
+			TimeZone timeZone)
+		throws PortalException {
+
+		return getDateRange(
+			range, MapUtil.getInteger(parameterMap, "last"),
+			MapUtil.getInteger(parameterMap, "startDateAmPm"),
+			MapUtil.getInteger(parameterMap, "startDateYear"),
+			MapUtil.getInteger(parameterMap, "startDateMonth"),
+			MapUtil.getInteger(parameterMap, "startDateDay"),
+			MapUtil.getInteger(parameterMap, "startDateHour"),
+			MapUtil.getInteger(parameterMap, "startDateMinute"),
+			MapUtil.getInteger(parameterMap, "endDateAmPm"),
+			MapUtil.getInteger(parameterMap, "endDateYear"),
+			MapUtil.getInteger(parameterMap, "endDateMonth"),
+			MapUtil.getInteger(parameterMap, "endDateDay"),
+			MapUtil.getInteger(parameterMap, "endDateHour"),
+			MapUtil.getInteger(parameterMap, "endDateMinute"), portletId,
+			groupId, plid, privateLayout, locale, timeZone);
 	}
 
 	private static final String _LAST_PUBLISH_DATE = "last-publish-date";
