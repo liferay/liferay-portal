@@ -33,6 +33,7 @@ export function EditableProcessorContextProvider({
 	const [state, setState] = useState(INITIAL_STATE);
 	const ref = useRef<EditableProcessorState | null>(null);
 
+	// eslint-disable-next-line react-compiler/react-compiler
 	ref.current = state;
 
 	return (
