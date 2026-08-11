@@ -6758,6 +6758,93 @@ paths:
                         Unexpected error
             summary: Updates a Price Entry by external reference code.
             tags: ["PriceEntry"]
+        put:
+            description:
+                Creates or updates price entry by ERC; PUT replaces the resource while PATCH applies JSON Merge Patch.
+            operationId: putPriceEntryByExternalReferenceCode
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/PriceEntry"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/PriceEntry"
+                required: true
+            responses:
+                201:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/PriceEntry"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/PriceEntry"
+                    description:
+                        Created
+                202:
+                    description:
+                        Accepted - Async
+                204:
+                    description:
+                        No content
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this price entry.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                422:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        A domain validation error prevented the price entry from being created or updated (for example, a referenced entity is missing, a required cross-reference is unresolved, or a value is out of range).
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Creates or updates a Price Entry by external reference code.
+            tags: ["PriceEntry"]
     /price-entries/by-externalReferenceCode/{externalReferenceCode}/tier-prices:
         get:
             description:
