@@ -64,21 +64,7 @@ public class ExportImportConfigurationParameterMapFactoryImpl
 
 	@Override
 	public Map<String, String[]> buildParameterMap(
-		PortletRequest portletRequest) {
-
-		Map<String, String[]> parameterMap = new LinkedHashMap<>(
-			portletRequest.getParameterMap());
-
-		// Add before parameter replacement
-
-		if (ArrayUtil.isNotEmpty(
-				GetterUtil.getLongValues(parameterMap.get("layoutIds")))) {
-
-			parameterMap.put(
-				PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE +
-					LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS,
-				new String[] {"true"});
-		}
+		Map<String, String[]> parameterMap) {
 
 		if (ExportImportDateUtil.isRangeFromLastPublishDate(parameterMap)) {
 			_replaceParameterMap(parameterMap);
@@ -151,6 +137,27 @@ public class ExportImportConfigurationParameterMapFactoryImpl
 			new String[] {UserIdStrategy.CURRENT_USER_ID});
 
 		return parameterMap;
+	}
+
+	@Override
+	public Map<String, String[]> buildParameterMap(
+		PortletRequest portletRequest) {
+
+		Map<String, String[]> parameterMap = new LinkedHashMap<>(
+			portletRequest.getParameterMap());
+
+		// Add before parameter replacement
+
+		if (ArrayUtil.isNotEmpty(
+				GetterUtil.getLongValues(parameterMap.get("layoutIds")))) {
+
+			parameterMap.put(
+				PortletDataHandlerKeys.PORTLET_DATA + StringPool.UNDERLINE +
+					LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS,
+				new String[] {"true"});
+		}
+
+		return buildParameterMap(parameterMap);
 	}
 
 	@Override

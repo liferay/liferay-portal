@@ -23,6 +23,9 @@ public interface ExportImportConfigurationParameterMapFactory {
 	public Map<String, String[]> buildParameterMap();
 
 	public Map<String, String[]> buildParameterMap(
+		Map<String, String[]> parameterMap);
+
+	public Map<String, String[]> buildParameterMap(
 		PortletRequest portletRequest);
 
 	public Map<String, String[]> buildParameterMap(
