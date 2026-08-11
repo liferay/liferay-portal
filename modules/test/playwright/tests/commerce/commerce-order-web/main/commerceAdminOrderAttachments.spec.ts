@@ -199,27 +199,13 @@ test(
 		let editedTitle = `edited-${getRandomString()}.png`;
 
 		await test.step('Edit the added attachment from the row dropdown', async () => {
-			await expect(async () => {
-				if (
-					!(await commerceAdminOrderAttachmentsPage.sidePanelTitleInput.isVisible())
-				) {
-					await commerceAdminOrderAttachmentsPage
-						.rowActionsButton(addedTitle)
-						.click();
+			await commerceAdminOrderAttachmentsPage.openEditSidePanel(
+				addedTitle
+			);
 
-					await expect(
-						commerceAdminOrderAttachmentsPage.editRowAction
-					).toBeVisible({timeout: 500});
-
-					await commerceAdminOrderAttachmentsPage.editRowAction.click(
-						{timeout: 500}
-					);
-				}
-
-				await expect(
-					commerceAdminOrderAttachmentsPage.sidePanelTitleInput
-				).toHaveValue(addedTitle, {timeout: 500});
-			}).toPass({timeout: 5000});
+			await expect(
+				commerceAdminOrderAttachmentsPage.sidePanelTitleInput
+			).toHaveValue(addedTitle);
 
 			await commerceAdminOrderAttachmentsPage.sidePanelTitleInput.fill(
 				editedTitle
@@ -435,27 +421,13 @@ test(
 		});
 
 		await test.step('Verify the file has the checkbox set', async () => {
-			await expect(async () => {
-				if (
-					!(await commerceAdminOrderAttachmentsPage.sidePanelRestrictedCheckbox.isVisible())
-				) {
-					await commerceAdminOrderAttachmentsPage
-						.rowActionsButton(addedTitle)
-						.click();
+			await commerceAdminOrderAttachmentsPage.openEditSidePanel(
+				addedTitle
+			);
 
-					await expect(
-						commerceAdminOrderAttachmentsPage.editRowAction
-					).toBeVisible({timeout: 500});
-
-					await commerceAdminOrderAttachmentsPage.editRowAction.click(
-						{timeout: 500}
-					);
-				}
-
-				await expect(
-					commerceAdminOrderAttachmentsPage.sidePanelRestrictedCheckbox
-				).toBeChecked({timeout: 500});
-			}).toPass({timeout: 5000});
+			await expect(
+				commerceAdminOrderAttachmentsPage.sidePanelRestrictedCheckbox
+			).toBeChecked();
 
 			await expect(async () => {
 				if (

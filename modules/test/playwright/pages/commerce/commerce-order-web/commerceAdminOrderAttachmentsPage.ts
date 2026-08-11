@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {CommerceDNDTablePage} from '../commerceDNDTablePage';
 
@@ -84,5 +84,23 @@ export class CommerceAdminOrderAttachmentsPage extends CommerceDNDTablePage {
 		);
 		this.sidePanelTitleInput = this.sidePanelFrame.getByLabel('Title');
 		this.sidePanelTypeSelect = this.sidePanelFrame.getByLabel('Type');
+	}
+
+	async openEditSidePanel(title: string) {
+		await expect(async () => {
+			if (!(await this.sidePanelTitleInput.isVisible())) {
+				await this.rowActionsButton(title).click();
+
+				await expect(this.editRowAction).toBeVisible({
+					timeout: 2000,
+				});
+
+				await this.editRowAction.click({timeout: 2000});
+			}
+
+			await expect(this.sidePanelTitleInput).toBeVisible({
+				timeout: 5000,
+			});
+		}).toPass({timeout: 20000});
 	}
 }
