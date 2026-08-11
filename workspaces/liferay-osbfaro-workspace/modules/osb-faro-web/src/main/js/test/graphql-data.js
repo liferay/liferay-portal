@@ -2458,7 +2458,7 @@ export const mockAccountUserSessionsReq = ({
 	rangeKey = 30,
 	sessions = DEFAULT_ACCOUNT_USER_SESSIONS,
 	size = 2,
-	totalEvents = 1,
+	totalSessions = 1,
 } = {}) => ({
 	request: {
 		query: AccountUserSessionQuery,
@@ -2479,9 +2479,9 @@ export const mockAccountUserSessionsReq = ({
 		data: {
 			eventsByUserSessions: {
 				__typename: 'EventsByUserSession',
-				totalEventsMetric: {
+				totalSessionsMetric: {
 					__typename: 'Metric',
-					value: totalEvents,
+					value: totalSessions,
 				},
 				userSessions: sessions,
 			},

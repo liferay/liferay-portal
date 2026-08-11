@@ -37,7 +37,7 @@ export interface AccountUserSession {
 
 export interface AccountUserSessionData {
 	eventsByUserSessions: {
-		totalEventsMetric: {value: number} | null;
+		totalSessionsMetric: {value: number} | null;
 		userSessions: AccountUserSession[];
 	};
 }
@@ -81,7 +81,7 @@ export default gql`
 			rangeStart: $rangeStart
 			size: $size
 		) {
-			totalEventsMetric {
+			totalSessionsMetric {
 				value
 			}
 			userSessions {
