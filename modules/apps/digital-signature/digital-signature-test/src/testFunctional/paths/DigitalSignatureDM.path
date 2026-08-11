@@ -17,7 +17,7 @@
 </tr>
 <tr>
 	<td>DIGITAL_SIGNATURE_COLLECT_BUTTON</td>
-	<td>//button[contains(@title, 'Collect Digital Signature')] | //button[contains(@title, 'Collect Digital Signature')]//*[contains(@class, 'lexicon-icon-signature')]</td>
+	<td>//button[contains(@class, 'inline')][.//*[name()='svg'][contains(@class, 'lexicon-icon-signature')]]</td>
 	<td></td>
 </tr>
 <tr>
