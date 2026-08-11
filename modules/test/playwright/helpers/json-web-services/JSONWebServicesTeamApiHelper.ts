@@ -15,6 +15,23 @@ export class JSONWebServicesTeamApiHelper {
 		this.basePath = '/api/jsonws/team';
 	}
 
+	async addTeam(groupId: string, name: string, description = '') {
+		const urlSearchParams = new URLSearchParams();
+
+		urlSearchParams.append('groupId', groupId);
+		urlSearchParams.append('name', name);
+		urlSearchParams.append('description', description);
+
+		return this.apiHelpers.post(
+			`${liferayConfig.environment.baseUrl}${this.basePath}/add-team`,
+			{
+				data: urlSearchParams.toString(),
+				failOnStatusCode: true,
+				headers: await this.apiHelpers.getJSONWebServicesHeaders(),
+			}
+		);
+	}
+
 	async deleteTeam(teamId: string) {
 		const urlSearchParams = new URLSearchParams();
 
