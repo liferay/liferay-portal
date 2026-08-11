@@ -11,7 +11,10 @@ import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalSer
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.OrderFactoryUtil;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -97,6 +100,43 @@ public class BackgroundTaskUtil {
 			currentModelAdditionCountersTotal + currentPortletAdditionCounter;
 
 		return (int)(currentAdditionCounters * 100 / allCounters);
+	}
+
+	public static void setSorts(DynamicQuery dynamicQuery, Sort[] sorts) {
+		if (sorts == null) {
+			dynamicQuery.addOrder(OrderFactoryUtil.desc("createDate"));
+
+			return;
+		}
+
+		for (Sort sort : sorts) {
+			String fieldName = sort.getFieldName();
+
+			fieldName = StringUtil.removeSubstring(fieldName, "_sortable");
+
+			if (fieldName.equals("creator")) {
+				fieldName = "userName";
+			}
+			else if (fieldName.equals("dateCompleted")) {
+				fieldName = "completionDate";
+			}
+			else if (fieldName.equals("dateCreated")) {
+				fieldName = "createDate";
+			}
+			else if (fieldName.equals("dateModified")) {
+				fieldName = "modifiedDate";
+			}
+			else if (fieldName.equals("id")) {
+				fieldName = "backgroundTaskId";
+			}
+
+			if (sort.isReverse()) {
+				dynamicQuery.addOrder(OrderFactoryUtil.desc(fieldName));
+			}
+			else {
+				dynamicQuery.addOrder(OrderFactoryUtil.asc(fieldName));
+			}
+		}
 	}
 
 }

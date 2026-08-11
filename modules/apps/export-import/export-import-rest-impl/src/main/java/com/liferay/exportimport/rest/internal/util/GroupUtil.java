@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 /**
@@ -43,6 +44,19 @@ public class GroupUtil {
 		return group;
 	}
 
+	public static Group getLiveGroup(Group stagingGroup) {
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		Group liveGroup = stagingGroupHelper.fetchLocalLiveGroup(stagingGroup);
+
+		if (liveGroup == null) {
+			throw new NotFoundException();
+		}
+
+		return liveGroup;
+	}
+
 	public static Group getSiteGroup(
 		long companyId, String externalReferenceCode) {
 
@@ -54,6 +68,25 @@ public class GroupUtil {
 		}
 
 		return group;
+	}
+
+	public static Group getStagingGroup(Group group) {
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		if (stagingGroupHelper.isLocalStagingGroup(group)) {
+			return group;
+		}
+
+		Group stagingGroup = stagingGroupHelper.fetchLocalStagingGroup(group);
+
+		if (stagingGroup == null) {
+			throw new BadRequestException(
+				"Local staging is not enabled for site \"" +
+					group.getExternalReferenceCode() + "\"");
+		}
+
+		return stagingGroup;
 	}
 
 }
