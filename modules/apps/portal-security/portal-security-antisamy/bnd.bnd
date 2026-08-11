@@ -2,7 +2,12 @@ Bundle-Name: Liferay Portal Security AntiSamy
 Bundle-SymbolicName: com.liferay.portal.security.antisamy
 Bundle-Version: 6.0.50
 Import-Package:\
+	!com.aayushatharva.brotli4j.*,\
+	\
+	!com.github.luben.zstd.*,\
+	\
 	!org.apache.avalon.framework.*,\
+	!org.apache.commons.compress.*,\
 	!org.apache.commons.logging.*,\
 	!org.apache.log.*,\
 	!org.apache.log4j.*,\

@@ -5,6 +5,8 @@ Bundle-Version: 1.0.0
 Import-Package:\
 	!co.elastic.logging.*,\
 	\
+	!com.aayushatharva.brotli4j.*,\
+	\
 	!com.barchart.udt.*,\
 	\
 	!com.beust.jcommander.*,\
@@ -79,6 +81,7 @@ Import-Package:\
 	!org.apache.avalon.framework.*,\
 	!org.apache.bsf.*,\
 	!org.apache.commons.cli.*,\
+	!org.apache.commons.compress.*,\
 	!org.apache.commons.csv.*,\
 	!org.apache.commons.lang.*,\
 	!org.apache.ivy.*,\
