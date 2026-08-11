@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {hoverAndExpectToBeVisible} from '../../utils/hoverAndExpectToBeVisible';
@@ -11,6 +11,8 @@ import {hoverAndExpectToBeVisible} from '../../utils/hoverAndExpectToBeVisible';
 export class ElementVariationsPage {
 	readonly audienceInput: Locator;
 	readonly audiencesPriorityModal: Locator;
+	readonly cancelButton: Locator;
+	readonly experiencePicker: Locator;
 	readonly hideToggle: Locator;
 	readonly htmlInput: Locator;
 	readonly javaScriptInput: Locator;
@@ -19,6 +21,7 @@ export class ElementVariationsPage {
 	readonly newVariationButton: Locator;
 	readonly page: Page;
 	readonly pageElementPicker: Locator;
+	readonly preview: FrameLocator;
 	readonly saveButton: Locator;
 	readonly sidebar: Locator;
 
@@ -27,6 +30,12 @@ export class ElementVariationsPage {
 		this.audiencesPriorityModal = page.locator(
 			'.element-variations__audiences-priority-modal'
 		);
+		this.sidebar = page.locator('.element-variations__sidebar');
+		this.cancelButton = page.getByRole('button', {
+			exact: true,
+			name: 'Cancel',
+		});
+		this.experiencePicker = this.sidebar.getByLabel('Experience');
 		this.hideToggle = page.getByText('Hide Page Element');
 		this.htmlInput = page.getByLabel('HTML', {exact: true});
 		this.javaScriptInput = page.getByLabel('JavaScript', {exact: true});
@@ -43,8 +52,8 @@ export class ElementVariationsPage {
 			);
 		this.page = page;
 		this.pageElementPicker = page.getByLabel('Page Element');
+		this.preview = page.frameLocator('iframe[title="Element Variations"]');
 		this.saveButton = page.getByRole('button', {exact: true, name: 'Save'});
-		this.sidebar = page.locator('.element-variations__sidebar');
 	}
 
 	async createElementVariation({
@@ -105,6 +114,12 @@ export class ElementVariationsPage {
 		await this.sidebar.getByText(name).waitFor();
 	}
 
+	async startElementVariationDraft() {
+		await this.newVariationButton.click();
+
+		await this.nameInput.waitFor();
+	}
+
 	async deleteElementVariation(name: string) {
 		await this.openVariationActions(name);
 
@@ -157,8 +172,24 @@ export class ElementVariationsPage {
 		await this.sidebar.getByText(newName ?? name).waitFor();
 	}
 
+	async cancelElementVariationDraft() {
+		await this.page.keyboard.press('Escape');
+
+		await this.cancelButton.click();
+
+		await this.experiencePicker.waitFor();
+	}
+
+	getPageElementOption(label: string): Locator {
+		return this.page.getByRole('option', {exact: true, name: label});
+	}
+
 	getVariationListItem(name: string): Locator {
 		return this.sidebar.getByRole('listitem').filter({hasText: name});
+	}
+
+	async openPageElementPicker() {
+		await this.pageElementPicker.click();
 	}
 
 	async openVariationActions(name: string) {
@@ -243,6 +274,14 @@ export class ElementVariationsPage {
 			.locator('.dropdown-menu')
 			.getByText(audienceName)
 			.click();
+	}
+
+	async selectExperience(label: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('option', {exact: true, name: label}),
+			trigger: this.experiencePicker,
+		});
 	}
 
 	async selectLanguage(languageId: string) {

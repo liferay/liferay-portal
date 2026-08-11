@@ -750,6 +750,108 @@ test(
 );
 
 test(
+	'Reflects the selected experience content in the preview and page element picker',
+	{tag: '@LPD-101994'},
+	async ({
+		apiHelpers,
+		audiencesPage,
+		elementVariationsPage,
+		pageEditorPage,
+		site,
+	}) => {
+
+		// Create an audience so element variations can be built
+
+		const audienceName = 'Audience ' + getRandomString();
+
+		await audiencesPage.goto();
+
+		await audiencesPage.createAudience({
+			attributeName: 'Language',
+			name: audienceName,
+			value: 'English (United States)',
+			valueType: 'select',
+		});
+
+		// Create a page with a Paragraph fragment in the default experience
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'BASIC_COMPONENT-paragraph',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		// Create a second experience and add a Heading only to it
+
+		const experienceName = 'Experience ' + getRandomString();
+
+		await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+		await pageEditorPage.createExperience(experienceName);
+
+		await pageEditorPage.addFragment('Basic Components', 'Heading');
+
+		// Open element variations from the second experience
+
+		await pageEditorPage.goToElementVariations();
+
+		const paragraphDefaultText =
+			'A paragraph is a self-contained unit of a discourse';
+
+		// The default experience preview excludes the heading, so it is neither
+		// rendered nor offered as a page element
+
+		await elementVariationsPage.selectExperience('Default');
+
+		await expect(
+			elementVariationsPage.preview.getByText(paragraphDefaultText)
+		).toBeVisible();
+
+		await expect(
+			elementVariationsPage.preview.getByText('Heading Example')
+		).not.toBeVisible();
+
+		await elementVariationsPage.startElementVariationDraft();
+
+		await elementVariationsPage.openPageElementPicker();
+
+		await expect(
+			elementVariationsPage.getPageElementOption(
+				'Paragraph (element-text)'
+			)
+		).toBeVisible();
+
+		await expect(
+			elementVariationsPage.getPageElementOption('Heading (element-text)')
+		).not.toBeVisible();
+
+		await elementVariationsPage.cancelElementVariationDraft();
+
+		// The second experience preview renders the heading and offers it as a
+		// page element
+
+		await elementVariationsPage.selectExperience(experienceName);
+
+		await expect(
+			elementVariationsPage.preview.getByText('Heading Example')
+		).toBeVisible();
+
+		await elementVariationsPage.startElementVariationDraft();
+
+		await elementVariationsPage.openPageElementPicker();
+
+		await expect(
+			elementVariationsPage.getPageElementOption('Heading (element-text)')
+		).toBeVisible();
+	}
+);
+
+test(
 	'Loads each page own variations when navigating between pages',
 	{tag: '@LPD-93951'},
 	async ({
