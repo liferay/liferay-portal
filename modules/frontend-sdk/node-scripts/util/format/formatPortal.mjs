@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import getPackageJSONs from '../configuration/getPackageJSONs.mjs';
 import getProjectDirs from '../getProjectDirs.mjs';
 import getTypeScriptProjectDirs from '../getTypeScriptProjectDirs.mjs';
 import {PLAYWRIGHT_DIR} from '../locations.mjs';
@@ -12,6 +13,7 @@ import formatGlobalNodeScriptsConfig from './formatters/formatGlobalNodeScriptsC
 import formatIgnoreFilePatterns from './formatters/formatIgnoreFilePatterns.mjs';
 import formatNodeScriptsHash from './formatters/formatNodeScriptsHash.mjs';
 import formatPackageJSONFiles from './formatters/formatPackageJSONFiles.mjs';
+import formatPackageJSONVersionAlignment from './formatters/formatPackageJSONVersionAlignment.mjs';
 import formatSourceFiles from './formatters/formatSourceFiles.mjs';
 import formatTsconfigFiles from './formatters/formatTsconfigFiles.mjs';
 import formatTypeScript from './formatters/formatTypeScript.mjs';
@@ -63,12 +65,19 @@ export default async function formatPortal(check, files) {
 	}
 
 	if (
-		(!files ||
-			!!files.find((file) => file.endsWith('/package.json')) ||
-			!!files.find((file) => file.endsWith('/node-scripts.config.js'))) &&
-		!(await formatPackageJSONFiles())
+		!files ||
+		!!files.find((file) => file.endsWith('/package.json')) ||
+		!!files.find((file) => file.endsWith('/node-scripts.config.js'))
 	) {
-		checksPassed = false;
+		const packageJSONs = await getPackageJSONs(true);
+
+		if (!(await formatPackageJSONVersionAlignment(packageJSONs))) {
+			checksPassed = false;
+		}
+
+		if (!(await formatPackageJSONFiles())) {
+			checksPassed = false;
+		}
 	}
 
 	if (
