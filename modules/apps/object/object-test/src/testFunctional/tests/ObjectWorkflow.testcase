@@ -24,6 +24,8 @@ definition {
 	@description = "LPS-181663 - Verify when a user creates an object entry and saves it as a draft, the workflow related to that object definition is not triggered"
 	@priority = 4
 	test CheckWorkflowNotTriggeredForDraftEntry {
+		property custom.properties = "feature.flag.LPS-178052=true";
+
 		task ("Given a custom object definition scoped by site") {
 			ObjectAdmin.addObjectViaAPI(
 				labelName = "Custom Object 197509",
@@ -54,32 +56,12 @@ definition {
 		}
 
 		task ("and Given a mapped form container on a content page") {
-			JSONLayout.addPublicLayout(
+			JSONObjectContentPage.addObjectFormContainerPageViaAPI(
 				groupName = "Guest",
 				layoutName = "Object Page",
-				type = "content");
-
-			ContentPagesNavigator.openEditContentPage(
-				pageName = "Object Page",
-				siteName = "Guest");
-
-			PageEditor.addFragment(
-				collectionName = "Form Components",
-				fragmentName = "Form Container");
-
-			PageEditor.mapFormContainerToObject(contentType = "Custom Object 197509");
-
-			Click.javaScriptClick(
-				index = 1,
-				key_fragmentName = "Form Button",
-				locator1 = "Fragment#FRAGMENT_LABEL");
-
-			Select(
-				key_fieldLabel = "Submitted Entry Status",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = "Draft");
-
-			PageEditor.publish();
+				objectFieldName = "textField",
+				objectName = "CustomObject197509",
+				submittedEntryStatus = 2);
 		}
 
 		task ("and Given a workflow is set for that object definition") {

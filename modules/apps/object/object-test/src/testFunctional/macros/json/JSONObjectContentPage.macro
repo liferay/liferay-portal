@@ -1,0 +1,76 @@
+definition {
+
+	@summary = "Default summary"
+	macro addObjectFormContainerPageViaAPI(groupName = null, layoutName = null, objectFieldName = null, objectName = null, submittedEntryStatus = null) {
+		Variables.assertDefined(parameterList = "${groupName},${layoutName},${objectFieldName},${objectName}");
+
+		if (!(isSet(submittedEntryStatus))) {
+			var submittedEntryStatus = 0;
+		}
+
+		var objectDefinitionId = JSONObject.getObjectId(objectName = ${objectName});
+		var portalURL = JSONCompany.getPortalURL();
+		var siteId = JSONGroupAPI._getSiteIdByGroupKey(groupName = ${groupName});
+		var userLoginInfo = JSONUtil2.formatJSONUser();
+
+		var curl = '''
+			${portalURL}/o/headless-delivery/v1.0/sites/${siteId}/site-pages \
+				-H 'Content-Type: application/json' \
+				-u ${userLoginInfo} \
+				-d '{
+					"pageDefinition": {
+						"pageElement": {
+							"id": "root",
+							"pageElements": [
+								{
+									"definition": {
+										"formConfig": {
+											"formReference": {
+												"className": "com.liferay.object.model.ObjectDefinition#${objectDefinitionId}",
+												"classType": 0
+											},
+											"formType": "simple"
+										}
+									},
+									"id": "form-container",
+									"pageElements": [
+										{
+											"definition": {
+												"fragment": {
+													"key": "INPUTS-text-input"
+												},
+												"fragmentConfig": {
+													"inputFieldId": "ObjectField_${objectFieldName}"
+												}
+											},
+											"id": "text-input",
+											"type": "Fragment"
+										},
+										{
+											"definition": {
+												"fragment": {
+													"key": "INPUTS-submit-button"
+												},
+												"fragmentConfig": {
+													"submittedEntryStatus": "${submittedEntryStatus}",
+													"type": "submit"
+												}
+											},
+											"id": "submit-button",
+											"type": "Fragment"
+										}
+									],
+									"type": "Form"
+								}
+							],
+							"type": "Root"
+						}
+					},
+					"title": "${layoutName}"
+				}'
+		''';
+
+		JSONCurlUtil.post(${curl});
+	}
+
+}
