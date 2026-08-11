@@ -22,6 +22,12 @@
 			"region": "eastus"
 		},
 		"platform": {
+			"cluster_secret_store": {
+				"key_vault": {
+					"name": "your-key-vault-name",
+					"resource_group_name": "your-key-vault-resource-group"
+				}
+			},
 			"deployment_name": "liferay-azure-test",
 			"region": "eastus"
 		}

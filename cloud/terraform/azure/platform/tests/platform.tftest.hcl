@@ -2,6 +2,7 @@ mock_provider "azurerm" {
 	mock_data "azurerm_key_vault" {
 		defaults={
 			id="/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/liferay-test-vault/providers/Microsoft.KeyVault/vaults/liferay-test-vault"
+			rbac_authorization_enabled=true
 		}
 	}
 	mock_data "azurerm_resource_group" {
@@ -33,26 +34,26 @@ run "should_assemble_the_cluster_identity" {
 	}
 	command=plan
 }
-run "should_default_to_the_azure_key_vault_secret_store" {
+run "should_build_the_azure_key_vault_secret_store_provider" {
 	assert {
 		condition=join(",", keys(local.cluster_secret_store_provider)) == "azurekv"
-		error_message="The secret store provider must default to Azure Key Vault"
+		error_message="The key vault branch must produce an Azure Key Vault provider"
 	}
 	assert {
 		condition=local.cluster_secret_store_provider.azurekv.authType == "WorkloadIdentity"
-		error_message="The default Azure Key Vault provider must authenticate through workload identity"
+		error_message="The Azure Key Vault provider must authenticate through workload identity"
 	}
 	assert {
 		condition=local.cluster_secret_store_provider.azurekv.serviceAccountRef.name == "external-secrets" && local.cluster_secret_store_provider.azurekv.serviceAccountRef.namespace == "external-secrets-system"
-		error_message="The default Azure Key Vault provider must reference the External Secrets service account"
+		error_message="The Azure Key Vault provider must reference the External Secrets service account"
 	}
 	assert {
 		condition=local.cluster_secret_store_provider.azurekv.tenantId == data.azurerm_client_config.current.tenant_id
-		error_message="The default Azure Key Vault provider must carry the tenant ID required by workload identity"
+		error_message="The Azure Key Vault provider must carry the tenant ID required by workload identity"
 	}
 	assert {
 		condition=local.cluster_secret_store_provider.azurekv.vaultUrl == data.azurerm_key_vault.liferay[0].vault_uri
-		error_message="The default Azure Key Vault provider must point at the deployment vault"
+		error_message="The Azure Key Vault provider must point at the configured vault"
 	}
 	command=plan
 }
@@ -60,14 +61,6 @@ run "should_derive_azure_resource_names_from_the_deployment_name" {
 	assert {
 		condition=data.azurerm_kubernetes_cluster.aks.name == "liferay-test-aks"
 		error_message="The AKS cluster lookup must derive its name from the deployment name"
-	}
-	assert {
-		condition=data.azurerm_key_vault.liferay[0].name == "liferay-test-vault"
-		error_message="The Key Vault lookup must derive its name from the deployment name with the -vault suffix"
-	}
-	assert {
-		condition=data.azurerm_key_vault.liferay[0].resource_group_name == "liferay-test-vault"
-		error_message="The Key Vault lookup must target the dedicated vault resource group named after the vault"
 	}
 	assert {
 		condition=azurerm_user_assigned_identity.crossplane_data.name == "liferay-test-crossplane-data"
@@ -102,9 +95,11 @@ run "should_inject_an_external_secret_store_provider" {
 	}
 	command=plan
 	variables {
-		cluster_secret_store_provider_hcl={
-			vault={
-				server="https://vault.example.com:8200"
+		cluster_secret_store={
+			provider_hcl={
+				vault={
+					server="https://vault.example.com:8200"
+				}
 			}
 		}
 	}
@@ -120,17 +115,52 @@ run "should_look_up_the_key_vault_from_the_configured_names" {
 	}
 	command=plan
 	variables {
-		key_vault_name="custom-vault"
-		key_vault_resource_group_name="custom-group"
+		cluster_secret_store={
+			key_vault={
+				name="custom-vault"
+				resource_group_name="custom-group"
+			}
+		}
 	}
 }
-run "should_reject_a_deployment_name_the_vault_name_cannot_absorb" {
+run "should_reject_a_cluster_secret_store_with_both_branches" {
 	command=plan
 	expect_failures=[
-		var.deployment_name,
+		var.cluster_secret_store,
 	]
 	variables {
-		deployment_name="liferay-test-overflowing"
+		cluster_secret_store={
+			key_vault={
+				name="liferay-test-vault"
+				resource_group_name="liferay-test-vault"
+			}
+			provider_hcl={
+				vault={
+					server="https://vault.example.com:8200"
+				}
+			}
+		}
+	}
+}
+run "should_reject_a_key_vault_without_rbac_authorization" {
+	command=plan
+	expect_failures=[
+		data.azurerm_key_vault.liferay,
+	]
+	override_data {
+		target=data.azurerm_key_vault.liferay
+		values={
+			rbac_authorization_enabled=false
+		}
+	}
+}
+run "should_reject_an_empty_cluster_secret_store" {
+	command=plan
+	expect_failures=[
+		var.cluster_secret_store,
+	]
+	variables {
+		cluster_secret_store={}
 	}
 }
 run "should_wire_the_platform_identities" {
@@ -206,6 +236,12 @@ run "should_wire_the_platform_identities" {
 }
 variables {
 	argocd_helm_chart_version="10.1.3"
+	cluster_secret_store={
+		key_vault={
+			name="liferay-test-vault"
+			resource_group_name="liferay-test-vault"
+		}
+	}
 	deployment_name="liferay-test"
 	region="eastus"
 }

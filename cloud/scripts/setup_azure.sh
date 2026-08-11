@@ -22,8 +22,6 @@ function main {
 
 	_check_utils az helm jq terraform
 
-	_check_terraform_version "1.10.0"
-
 	_validate_config_json "${1}"
 
 	_generate_tfvars "${1}" "aks"
@@ -48,12 +46,6 @@ function main {
 
 	az account set --subscription "${subscription_id}"
 
-	local deployment_name
-
-	deployment_name="$(jq --raw-output '.terraform.platform.deployment_name' "${1}")"
-
-	_check_key_vault "${1}" "${deployment_name}"
-
 	local terraform_args=()
 
 	while IFS= read -r terraform_arg
@@ -64,11 +56,13 @@ function main {
 	if jq --exit-status '.tfstate | objects' "${1}" &> /dev/null
 	then
 		local container_name
+		local deployment_name
 		local region
 		local resource_group_name
 		local storage_account_name
 
 		container_name="$(jq --raw-output '.tfstate.container_name' "${1}")"
+		deployment_name="$(jq --raw-output '.terraform.platform.deployment_name' "${1}")"
 		region="$(jq --raw-output '.terraform.platform.region' "${1}")"
 		resource_group_name="$(jq --raw-output '.tfstate.resource_group_name' "${1}")"
 		storage_account_name="$(jq --raw-output '.tfstate.storage_account_name' "${1}")"
@@ -85,69 +79,6 @@ function main {
 	_set_up_azure_platform "${terraform_args[@]}"
 
 	_install_liferay_platform_chart "${1}"
-}
-
-function _check_key_vault {
-	local configuration_json_file="${1}"
-	local deployment_name="${2}"
-
-	if jq --exit-status '.terraform.platform.cluster_secret_store_provider_hcl' "${configuration_json_file}" &> /dev/null
-	then
-		return 0
-	fi
-
-	local key_vault_name
-
-	key_vault_name="$(jq --arg default_name "${deployment_name}-vault" --raw-output '.terraform.platform.key_vault_name // $default_name' "${configuration_json_file}")"
-
-	local key_vault_resource_group_name
-
-	key_vault_resource_group_name="$(jq --arg default_name "${deployment_name}-vault" --raw-output '.terraform.platform.key_vault_resource_group_name // $default_name' "${configuration_json_file}")"
-
-	if ! az keyvault show --name "${key_vault_name}" --resource-group "${key_vault_resource_group_name}" &> /dev/null
-	then
-		echo "The default cluster secret store requires an Azure key vault named ${key_vault_name} in the resource group ${key_vault_resource_group_name}, holding the GitOps repository credentials secret (liferay-credentials-gitops by default)." >&2
-		echo "Create the key vault, point at an existing one with \"terraform.platform.key_vault_name\" and \"terraform.platform.key_vault_resource_group_name\" in the configuration JSON file, or set \"terraform.platform.cluster_secret_store_provider_hcl\" to bring your own secret store." >&2
-
-		exit 1
-	fi
-
-	local rbac_authorization_enabled
-
-	rbac_authorization_enabled=$( \
-		az keyvault show \
-			--name "${key_vault_name}" \
-			--output tsv \
-			--query properties.enableRbacAuthorization \
-			--resource-group "${key_vault_resource_group_name}")
-
-	if [[ ${rbac_authorization_enabled} != true ]]
-	then
-		echo "The key vault ${key_vault_name} uses the access policy permission model, but the Liferay platform grants vault access through Azure RBAC roles, so the External Secrets operator would be denied access." >&2
-		echo "Run \"az keyvault update --enable-rbac-authorization true --name ${key_vault_name}\" to switch the permission model, and run this script again." >&2
-
-		exit 1
-	fi
-}
-
-function _check_terraform_version {
-	local found_version
-
-	found_version=$(terraform --version | awk '/^Terraform v/ {print $2; exit}')
-	found_version="${found_version#v}"
-
-	local required_version="${1}"
-
-	local lowest_version
-
-	lowest_version=$(printf "%s\n%s\n" "${required_version}" "${found_version}" | sort --version-sort | head -n 1)
-
-	if [[ ${lowest_version} != ${required_version} ]]
-	then
-		echo "The installed Terraform version ${found_version} is older than ${required_version}." >&2
-
-		exit 1
-	fi
 }
 
 function _check_utils {
@@ -407,7 +338,7 @@ function _set_up_azure_aks {
 
 	terraform init
 
-	terraform apply "${@}"
+	terraform apply -input=false "${@}"
 
 	export KUBE_CONFIG_PATH="${HOME}/.kube/config"
 
@@ -428,7 +359,7 @@ function _set_up_azure_platform {
 
 	terraform init
 
-	terraform apply "${@}"
+	terraform apply -input=false "${@}"
 
 	echo "Liferay platform setup complete."
 
@@ -455,15 +386,13 @@ function _validate_config_json {
 	local required_keys=(
 		".subscription_id"
 		".tenant_id"
-		".terraform.aks.deployment_name"
-		".terraform.aks.region"
-		".terraform.platform.deployment_name"
-		".terraform.platform.region"
 	)
 
 	if jq --exit-status '.tfstate | objects' "${configuration_json_file}" &> /dev/null
 	then
 		required_keys+=(
+			".terraform.platform.deployment_name"
+			".terraform.platform.region"
 			".tfstate.container_name"
 			".tfstate.resource_group_name"
 			".tfstate.storage_account_name"

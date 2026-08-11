@@ -13,23 +13,20 @@ variable "argocd_external_access_config" {
 variable "argocd_helm_chart_version" {
 	type=string
 }
-variable "cluster_secret_store_provider_hcl" {
-	default=null
-	type=any
-}
-variable "deployment_name" {
-	type=string
+variable "cluster_secret_store" {
+	type=object({
+		key_vault=optional(object({
+			name=string
+			resource_group_name=string
+		}))
+		provider_hcl=optional(any)
+	})
 	validation {
-		condition=can(regex("^[a-z][a-z0-9-]{2,17}$", var.deployment_name))
-		error_message="The variable \"deployment_name\" must be 3-18 characters, start with a lowercase letter, and contain only lowercase letters, numbers, and hyphens, so the derived \"<deployment_name>-vault\" Key Vault name fits Azure's 24-character limit."
+		condition=(var.cluster_secret_store.key_vault == null) != (var.cluster_secret_store.provider_hcl == null)
+		error_message="The variable \"cluster_secret_store\" must set either \"key_vault\" (an existing Azure key vault for backing the cluster secret store) or \"provider_hcl\" (a custom External Secrets provider)."
 	}
 }
-variable "key_vault_name" {
-	default=null
-	type=string
-}
-variable "key_vault_resource_group_name" {
-	default=null
+variable "deployment_name" {
 	type=string
 }
 variable "region" {
