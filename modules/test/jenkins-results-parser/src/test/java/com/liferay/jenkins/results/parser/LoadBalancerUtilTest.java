@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,14 +19,6 @@ import org.junit.Test;
  */
 public class LoadBalancerUtilTest
 	extends com.liferay.jenkins.results.parser.Test {
-
-	@After
-	@Override
-	public void tearDown() {
-		super.tearDown();
-
-		JenkinsMasterTestUtil.resetCaches();
-	}
 
 	@Test
 	public void testGetAvailableJenkinsMasters() {

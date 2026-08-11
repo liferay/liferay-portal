@@ -62,8 +62,6 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 		super.tearDown();
 
 		JenkinsMaster.maxRecentBatchAge = 120 * 1000;
-
-		JenkinsMasterTestUtil.resetCaches();
 	}
 
 	@Test

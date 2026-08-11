@@ -16,7 +16,6 @@ import java.util.Properties;
 
 import org.json.JSONObject;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,14 +33,6 @@ public class JobHealthMonitorTest
 
 		JenkinsMasterTestUtil.getJenkinsMaster(
 			_MASTER_NAME, "http://" + _MASTER_NAME);
-	}
-
-	@After
-	@Override
-	public void tearDown() {
-		super.tearDown();
-
-		JenkinsMasterTestUtil.resetCaches();
 	}
 
 	@Test

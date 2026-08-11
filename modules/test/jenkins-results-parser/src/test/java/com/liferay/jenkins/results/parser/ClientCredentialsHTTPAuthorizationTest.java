@@ -13,7 +13,6 @@ import java.util.Date;
 
 import org.json.JSONObject;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,14 +28,6 @@ public class ClientCredentialsHTTPAuthorizationTest
 	@Before
 	public void setUpBuildProperties() {
 		JenkinsMasterTestUtil.getJenkinsCohortProperties("test-9", 1);
-	}
-
-	@After
-	@Override
-	public void tearDown() {
-		super.tearDown();
-
-		JenkinsMasterTestUtil.resetCaches();
 	}
 
 	@Test

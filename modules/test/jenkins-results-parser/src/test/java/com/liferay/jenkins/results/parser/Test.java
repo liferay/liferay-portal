@@ -45,7 +45,11 @@ public class Test {
 
 		Environment.setInstance(new Environment());
 
+		JenkinsMasterTestUtil.resetCaches();
+
 		JenkinsResultsParserUtil.setBuildProperties(new Properties());
+
+		JenkinsResultsParserUtil.setTopLevelJobNames(null);
 
 		Map<String, Job> jobs = ReflectionTestUtil.getFieldValue(
 			JobFactory.class, "_jobs");

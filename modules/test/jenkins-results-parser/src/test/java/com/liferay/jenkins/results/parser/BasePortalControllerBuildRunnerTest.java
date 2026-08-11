@@ -10,7 +10,6 @@ import java.util.Arrays;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,14 +21,6 @@ import org.mockito.verification.VerificationMode;
  */
 public class BasePortalControllerBuildRunnerTest
 	extends com.liferay.jenkins.results.parser.Test {
-
-	@After
-	@Override
-	public void tearDown() {
-		super.tearDown();
-
-		JenkinsMasterTestUtil.resetCaches();
-	}
 
 	@Test
 	public void testExpirePreviousBuild() throws Exception {
