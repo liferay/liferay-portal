@@ -368,7 +368,7 @@ test(
 
 test(
 	'Can user with account manager role view and manage channel defaults',
-	{tag: '@LPD-28220'},
+	{tag: ['@LPD-28220', '@LPD-102068']},
 	async ({
 		accountManagementWidgetPage,
 		accountsPage,
