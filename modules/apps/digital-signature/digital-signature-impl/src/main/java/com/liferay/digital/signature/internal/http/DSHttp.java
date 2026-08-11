@@ -137,6 +137,7 @@ public class DSHttp {
 				"/restapi/v2.1/accounts/",
 				digitalSignatureConfiguration.apiAccountId(), "/", location));
 		options.setMethod(method);
+		options.setTimeout(digitalSignatureConfiguration.httpTimeout());
 
 		return _http.URLtoByteArray(options);
 	}
