@@ -212,7 +212,7 @@ public class LayoutSitemapURLProvider implements SitemapURLProvider {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if ((permissionChecker != null) &&
+		if ((permissionChecker == null) ||
 			!_layoutModelResourcePermission.contains(
 				permissionChecker, layout, ActionKeys.VIEW)) {
 

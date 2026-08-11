@@ -363,7 +363,7 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
-		if ((permissionChecker != null) &&
+		if ((permissionChecker == null) ||
 			!_journalArticleModelResourcePermission.contains(
 				permissionChecker, journalArticle, ActionKeys.VIEW)) {
 
