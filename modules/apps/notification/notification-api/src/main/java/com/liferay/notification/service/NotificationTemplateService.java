@@ -76,4 +76,4 @@ public interface NotificationTemplateService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1470619479
+// LIFERAY-SERVICE-BUILDER-HASH:54011445
