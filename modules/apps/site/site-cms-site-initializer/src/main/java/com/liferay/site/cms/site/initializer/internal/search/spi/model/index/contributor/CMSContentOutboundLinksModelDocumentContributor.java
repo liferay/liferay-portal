@@ -11,8 +11,6 @@ import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.bag.ObjectFieldBag;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringBundler;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -21,6 +19,7 @@ import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.DocumentContributor;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.site.cms.site.initializer.internal.search.links.OutboundLinksUtil;
+import com.liferay.site.cms.site.initializer.util.CMSOutboundLinksUtil;
 
 import java.io.Serializable;
 
@@ -86,9 +85,8 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 					if (objectEntryId != 0) {
 						outboundLinks.add(
-							_getToken(
-								"objectEntryId",
-								String.valueOf(objectEntryId)));
+							CMSOutboundLinksUtil.getObjectEntryIdToken(
+								objectEntryId));
 					}
 				}
 				else if (Objects.equals(
@@ -104,8 +102,9 @@ public class CMSContentOutboundLinksModelDocumentContributor
 										content)) {
 
 							outboundLinks.add(
-								_getToken(
-									"objectEntryERC", externalReferenceCode));
+								CMSOutboundLinksUtil.
+									getObjectEntryExternalReferenceCodeToken(
+										externalReferenceCode));
 						}
 					}
 				}
@@ -113,7 +112,8 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 			if (!outboundLinks.isEmpty()) {
 				document.addKeyword(
-					"outboundLinks", outboundLinks.toArray(new String[0]));
+					CMSOutboundLinksUtil.FIELD_NAME,
+					outboundLinks.toArray(new String[0]));
 			}
 		}
 		catch (Exception exception) {
@@ -155,10 +155,6 @@ public class CMSContentOutboundLinksModelDocumentContributor
 		}
 
 		return Collections.singletonList(String.valueOf(content));
-	}
-
-	private String _getToken(String prefix, String value) {
-		return StringBundler.concat(prefix, StringPool.UNDERLINE, value);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
