@@ -47,6 +47,10 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 		PortalPermissionUtil.check(
 			permissionChecker, PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
 
+		if (userId <= 0) {
+			userId = permissionChecker.getUserId();
+		}
+
 		return ploEntryLocalService.addOrUpdatePLOEntry(
 			externalReferenceCode, permissionChecker.getCompanyId(), userId,
 			key, languageId, value);
