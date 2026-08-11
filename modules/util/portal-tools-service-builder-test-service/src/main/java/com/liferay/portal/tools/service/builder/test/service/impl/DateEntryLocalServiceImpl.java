@@ -20,14 +20,17 @@ import java.util.List;
  */
 public class DateEntryLocalServiceImpl extends DateEntryLocalServiceBaseImpl {
 
+	@Override
 	public DateEntry fetchDateEntry(long companyId, Date snapshotDate) {
 		return dateEntryPersistence.fetchByC_S(companyId, snapshotDate);
 	}
 
+	@Override
 	public List<DateEntry> getDateEntries(Date snapshotDate) {
 		return dateEntryPersistence.findBySnapshotDate(snapshotDate);
 	}
 
+	@Override
 	public List<Object[]> getDateEntriesBySQLQuery(long companyId, Type type) {
 		Session session = dateEntryPersistence.openSession();
 
@@ -52,6 +55,7 @@ public class DateEntryLocalServiceImpl extends DateEntryLocalServiceBaseImpl {
 		}
 	}
 
+	@Override
 	public List<Object> getMaxSnapshotDatesBySQLQuery(
 		long companyId, Type type) {
 
