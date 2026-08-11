@@ -106,51 +106,51 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcessTest
 	public void testUpgrade() throws Exception {
 		String externalReferenceCode = PortalUUIDUtil.generate();
 
+		Layout otherGroupExternalReferenceCodeLayout = _addLayout(
+			GroupTestUtil.addGroup(), externalReferenceCode, false);
 		Layout renamedExternalReferenceCodeLayout1 = _addLayout(
 			_group, externalReferenceCode, false);
+
 		Layout renamedExternalReferenceCodeLayout2 = _addLayout(
-			_group, externalReferenceCode, true);
-		Layout keptExternalReferenceCodeLayout = _addLayout(
 			_group, externalReferenceCode, false);
-		Layout sharedExternalReferenceCodeLayout = _addLayout(
-			GroupTestUtil.addGroup(), externalReferenceCode, false);
 
 		Layout reservedExternalReferenceCodeLayout = _addLayout(
 			_group,
-			String.valueOf(renamedExternalReferenceCodeLayout1.getPlid()),
+			String.valueOf(renamedExternalReferenceCodeLayout2.getPlid()),
 			false);
 
-		String uniqueExternalReferenceCode = PortalUUIDUtil.generate();
+		Layout uniqueExternalReferenceCodeLayout =
+			LayoutTestUtil.addTypePortletLayout(_group, false);
 
-		Layout uniqueExternalReferenceCodeLayout = _addLayout(
-			_group, uniqueExternalReferenceCode, false);
+		Layout maxPlidExternalReferenceCodeLayout = _addLayout(
+			_group, externalReferenceCode, true);
 
 		long plid = CounterLocalServiceUtil.increment(Layout.class.getName());
 
 		runUpgrade();
 
 		Assert.assertEquals(
-			String.valueOf(plid + 1),
+			externalReferenceCode,
 			_getExternalReferenceCode(
-				renamedExternalReferenceCodeLayout1.getPlid()));
-		Assert.assertEquals(
-			String.valueOf(renamedExternalReferenceCodeLayout2.getPlid()),
-			_getExternalReferenceCode(
-				renamedExternalReferenceCodeLayout2.getPlid()));
+				maxPlidExternalReferenceCodeLayout.getPlid()));
 		Assert.assertEquals(
 			externalReferenceCode,
 			_getExternalReferenceCode(
-				keptExternalReferenceCodeLayout.getPlid()));
+				otherGroupExternalReferenceCodeLayout.getPlid()));
 		Assert.assertEquals(
 			String.valueOf(renamedExternalReferenceCodeLayout1.getPlid()),
 			_getExternalReferenceCode(
+				renamedExternalReferenceCodeLayout1.getPlid()));
+		Assert.assertEquals(
+			String.valueOf(plid + 1),
+			_getExternalReferenceCode(
+				renamedExternalReferenceCodeLayout2.getPlid()));
+		Assert.assertEquals(
+			String.valueOf(renamedExternalReferenceCodeLayout2.getPlid()),
+			_getExternalReferenceCode(
 				reservedExternalReferenceCodeLayout.getPlid()));
 		Assert.assertEquals(
-			externalReferenceCode,
-			_getExternalReferenceCode(
-				sharedExternalReferenceCodeLayout.getPlid()));
-		Assert.assertEquals(
-			uniqueExternalReferenceCode,
+			uniqueExternalReferenceCodeLayout.getExternalReferenceCode(),
 			_getExternalReferenceCode(
 				uniqueExternalReferenceCodeLayout.getPlid()));
 
