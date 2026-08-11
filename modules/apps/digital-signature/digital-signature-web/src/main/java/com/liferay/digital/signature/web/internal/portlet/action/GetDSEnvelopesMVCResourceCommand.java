@@ -58,7 +58,7 @@ public class GetDSEnvelopesMVCResourceCommand extends BaseMVCResourceCommand {
 			Pagination.of(
 				ParamUtil.getInteger(resourceRequest, "page"),
 				ParamUtil.getInteger(resourceRequest, "pageSize")),
-			ParamUtil.getString(resourceRequest, "status"));
+			ParamUtil.getString(resourceRequest, "status"), false);
 
 		JSONPortletResponseUtil.writeJSON(
 			resourceRequest, resourceResponse, page.toString());
