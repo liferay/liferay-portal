@@ -43,7 +43,6 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcess
 					connection,
 					"update Layout set externalReferenceCode = ? where " +
 						"externalReferenceCode = ? and plid = ?");
-
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
 			Map<Long, Set<String>> externalReferenceCodesMap = null;
@@ -68,7 +67,6 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcess
 				externalReferenceCodes.add(externalReferenceCode);
 
 				preparedStatement2.setString(1, externalReferenceCode);
-
 				preparedStatement2.setString(
 					2, resultSet.getString("externalReferenceCode"));
 				preparedStatement2.setLong(3, plid);
