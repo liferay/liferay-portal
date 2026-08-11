@@ -387,7 +387,9 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 		}
 
 		if (_sitemapURLProviderHelper.isExcludeLayoutFromSitemap(
-				journalArticleLayout)) {
+				journalArticleLayout) ||
+			!_layoutModelResourcePermission.contains(
+				permissionChecker, journalArticleLayout, ActionKeys.VIEW)) {
 
 			return;
 		}
@@ -481,6 +483,11 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.model.Layout)"
+	)
+	private ModelResourcePermission<Layout> _layoutModelResourcePermission;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService
