@@ -59,8 +59,7 @@ public class SegmentsFeatureFlagListenerTest {
 		SegmentsEntry referredSegmentsEntry = _addSegmentsEntry(
 			false, SegmentsEntryConstants.SOURCE_REFERRED);
 
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			CompanyConstants.SYSTEM, true, "LPD-78863");
+		_invokeFeatureFlagListeners(true);
 
 		defaultSegmentsEntry = _segmentsEntryLocalService.getSegmentsEntry(
 			defaultSegmentsEntry.getSegmentsEntryId());
@@ -81,7 +80,7 @@ public class SegmentsFeatureFlagListenerTest {
 		SegmentsEntry asahFaroSegmentsEntry = _addSegmentsEntry(
 			false, SegmentsEntryConstants.SOURCE_ASAH_FARO_BACKEND);
 
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(0, true, "LPD-78863");
+		_invokeFeatureFlagListeners(true);
 
 		asahFaroSegmentsEntry = _segmentsEntryLocalService.getSegmentsEntry(
 			asahFaroSegmentsEntry.getSegmentsEntryId());
@@ -97,8 +96,7 @@ public class SegmentsFeatureFlagListenerTest {
 		SegmentsEntry referredSegmentsEntry = _addSegmentsEntry(
 			true, SegmentsEntryConstants.SOURCE_REFERRED);
 
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			CompanyConstants.SYSTEM, false, "LPD-78863");
+		_invokeFeatureFlagListeners(false);
 
 		defaultSegmentsEntry = _segmentsEntryLocalService.getSegmentsEntry(
 			defaultSegmentsEntry.getSegmentsEntryId());
@@ -132,8 +130,7 @@ public class SegmentsFeatureFlagListenerTest {
 				asahFaroSegmentsEntry.getExternalReferenceCode(),
 				_group.getExternalReferenceCode(), layout.getPlid());
 
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			CompanyConstants.SYSTEM, false, "LPD-78863");
+		_invokeFeatureFlagListeners(false);
 
 		SegmentsExperience defaultSegmentsExperience =
 			_segmentsExperienceLocalService.getSegmentsExperience(
@@ -165,6 +162,19 @@ public class SegmentsFeatureFlagListenerTest {
 		}
 
 		return segmentsEntry;
+	}
+
+	private void _invokeFeatureFlagListeners(boolean enabled) {
+
+		// The listener only rewrites segments entries and segments experiences
+		// when the value changes, so deliver the opposite value first to put
+		// every company in a known state
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			CompanyConstants.SYSTEM, !enabled, "LPD-78863");
+
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			CompanyConstants.SYSTEM, enabled, "LPD-78863");
 	}
 
 	@DeleteAfterTestRun
