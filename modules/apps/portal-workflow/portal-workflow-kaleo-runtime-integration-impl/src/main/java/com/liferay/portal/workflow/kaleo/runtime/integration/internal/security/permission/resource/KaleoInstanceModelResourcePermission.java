@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.permission.WorkflowPermissionUtil;
@@ -59,9 +60,11 @@ public class KaleoInstanceModelResourcePermission
 			String actionId)
 		throws PortalException {
 
-		return WorkflowPermissionUtil.hasPermission(
-			permissionChecker, kaleoInstance.getGroupId(),
-			kaleoInstance.getClassName(), kaleoInstance.getClassPK(), actionId);
+		return GetterUtil.getBoolean(
+			WorkflowPermissionUtil.hasPermission(
+				permissionChecker, kaleoInstance.getGroupId(),
+				kaleoInstance.getClassName(), kaleoInstance.getClassPK(),
+				actionId));
 	}
 
 	@Override
