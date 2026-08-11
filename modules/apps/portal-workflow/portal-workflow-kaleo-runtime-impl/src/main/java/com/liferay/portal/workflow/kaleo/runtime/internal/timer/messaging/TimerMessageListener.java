@@ -97,6 +97,16 @@ public class TimerMessageListener extends BaseMessageListener {
 		KaleoTimerInstanceToken kaleoTimerInstanceToken =
 			_getKaleoTimerInstanceToken(message);
 
+		if (kaleoTimerInstanceToken.isCompleted()) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"Skipping completed Kaleo timer instance token " +
+						kaleoTimerInstanceToken.getKaleoTimerInstanceTokenId());
+			}
+
+			return;
+		}
+
 		Map<String, Serializable> workflowContext = WorkflowContextUtil.convert(
 			kaleoTimerInstanceToken.getWorkflowContext());
 
