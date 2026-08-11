@@ -40,10 +40,7 @@ export default function DeleteStructureModalContent({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{sub(
-					Liferay.Language.get('delete-x'),
-					Liferay.Util.escapeHTML(name)
-				)}
+				{sub(Liferay.Language.get('delete-x'), name)}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
