@@ -42,6 +42,7 @@ import com.liferay.object.internal.upgrade.v9_0_1.ObjectFolderUpgradeProcess;
 import com.liferay.object.model.impl.ObjectFieldSettingModelImpl;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -54,6 +55,7 @@ import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess
 import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.UpgradeProcessFactory;
 import com.liferay.portal.kernel.util.Localization;
+import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 
 import org.osgi.service.component.annotations.Component;
@@ -737,6 +739,7 @@ public class ObjectServiceUpgradeStepRegistrator
 			"13.2.0", "13.3.0",
 			new com.liferay.object.internal.upgrade.v13_3_0.
 				ObjectDefinitionClassNameResourcePermissionUpgradeProcess(
+					_language, _localization, _ploEntryLocalService,
 					_resourceActionLocalService));
 	}
 
@@ -754,10 +757,16 @@ public class ObjectServiceUpgradeStepRegistrator
 	private GroupLocalService _groupLocalService;
 
 	@Reference
+	private Language _language;
+
+	@Reference
 	private Localization _localization;
 
 	@Reference
 	private NotificationTemplateLocalService _notificationTemplateLocalService;
+
+	@Reference
+	private PLOEntryLocalService _ploEntryLocalService;
 
 	@Reference
 	private ResourceActionLocalService _resourceActionLocalService;

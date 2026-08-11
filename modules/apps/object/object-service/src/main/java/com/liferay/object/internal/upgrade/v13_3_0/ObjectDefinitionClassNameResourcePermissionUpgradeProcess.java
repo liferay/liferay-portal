@@ -9,18 +9,23 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.language.override.service.PLOEntryLocalService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.util.Collections;
+import java.util.Locale;
 
 /**
  * @author Manuele Castro
@@ -29,8 +34,13 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
 	extends UpgradeProcess {
 
 	public ObjectDefinitionClassNameResourcePermissionUpgradeProcess(
+		Language language, Localization localization,
+		PLOEntryLocalService ploEntryLocalService,
 		ResourceActionLocalService resourceActionLocalService) {
 
+		_language = language;
+		_localization = localization;
+		_ploEntryLocalService = ploEntryLocalService;
 		_resourceActionLocalService = resourceActionLocalService;
 	}
 
@@ -38,8 +48,10 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
 	protected void doUpgrade() throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
-					"select ObjectDefinition.className, ObjectField.name from ",
-					"ObjectField inner join ObjectDefinition on ",
+					"select ObjectDefinition.className, ",
+					"ObjectField.companyId, ObjectField.label, ",
+					"ObjectField.name, ObjectField.userId from ObjectField ",
+					"inner join ObjectDefinition on ",
 					"ObjectDefinition.objectDefinitionId = ",
 					"ObjectField.objectDefinitionId where ",
 					"ObjectField.businessType = ? and ObjectDefinition.status ",
@@ -53,9 +65,27 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
 				while (resultSet.next()) {
 					_upgradeAttachmentObjectField(
 						resultSet.getString("className"),
-						resultSet.getString("name"));
+						resultSet.getLong("companyId"),
+						resultSet.getString("label"),
+						resultSet.getString("name"),
+						resultSet.getLong("userId"));
 				}
 			}
+		}
+	}
+
+	private void _addPLOEntries(
+			String actionId, long companyId, String label, long userId)
+		throws Exception {
+
+		for (Locale locale : _language.getCompanyAvailableLocales(companyId)) {
+			String languageId = LocaleUtil.toLanguageId(locale);
+
+			_ploEntryLocalService.addOrUpdatePLOEntry(
+				null, companyId, userId, "action." + actionId, languageId,
+				_language.format(
+					locale, "download-x",
+					_localization.getLocalization(label, languageId)));
 		}
 	}
 
@@ -66,24 +96,26 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
 	}
 
 	private void _updateResourcePermissions(
-			long bitwiseValue, String name, long viewBitwiseValue)
+			long bitwiseValue, long companyId, String name,
+			long viewBitwiseValue)
 		throws Exception {
 
 		try (PreparedStatement selectPreparedStatement =
 				connection.prepareStatement(
 					StringBundler.concat(
 						"select resourcePermissionId, actionIds from ",
-						"ResourcePermission where ctCollectionId = 0 and ",
-						"name = ? and scope = ?"));
+						"ResourcePermission where companyId = ? and ",
+						"ctCollectionId = 0 and name = ? and scope = ?"));
 			PreparedStatement updatePreparedStatement =
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection,
 					"update ResourcePermission set actionIds = ? where " +
 						"ctCollectionId = 0 and resourcePermissionId = ?")) {
 
-			selectPreparedStatement.setString(1, name);
+			selectPreparedStatement.setLong(1, companyId);
+			selectPreparedStatement.setString(2, name);
 			selectPreparedStatement.setInt(
-				2, ResourceConstants.SCOPE_INDIVIDUAL);
+				3, ResourceConstants.SCOPE_INDIVIDUAL);
 
 			try (ResultSet resultSet = selectPreparedStatement.executeQuery()) {
 				while (resultSet.next()) {
@@ -108,7 +140,9 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
 		}
 	}
 
-	private void _upgradeAttachmentObjectField(String className, String name)
+	private void _upgradeAttachmentObjectField(
+			String className, long companyId, String label, String name,
+			long userId)
 		throws Exception {
 
 		String actionId = _getAttachmentDownloadActionKey(name);
@@ -129,10 +163,15 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
 		}
 
 		_updateResourcePermissions(
-			resourceAction.getBitwiseValue(), className,
+			resourceAction.getBitwiseValue(), companyId, className,
 			viewResourceAction.getBitwiseValue());
+
+		_addPLOEntries(actionId, companyId, label, userId);
 	}
 
+	private final Language _language;
+	private final Localization _localization;
+	private final PLOEntryLocalService _ploEntryLocalService;
 	private final ResourceActionLocalService _resourceActionLocalService;
 
 }
