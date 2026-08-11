@@ -227,6 +227,17 @@ describe('Interactions', () => {
 		expect(input.value).toBe('var(--red)');
 	});
 
+	it('accept value with colors using light-dark()', () => {
+		const {getByLabelText} = render(<ClayColorPickerWithState />);
+
+		const input = getByLabelText(/Color selection is/) as HTMLInputElement;
+
+		fireEvent.change(input, {target: {value: 'light-dark(#fff, #000)'}});
+		fireEvent.blur(input);
+
+		expect(input.value).toBe('light-dark(#fff, #000)');
+	});
+
 	it('opens color picker drop down when clicked', () => {
 		const {container} = render(
 			<ClayColorPicker
