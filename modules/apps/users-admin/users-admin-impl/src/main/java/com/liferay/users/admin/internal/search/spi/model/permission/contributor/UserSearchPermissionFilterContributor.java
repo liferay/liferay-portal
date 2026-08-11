@@ -10,7 +10,9 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.ContactTable;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
@@ -20,7 +22,9 @@ import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.UserBag;
 import com.liferay.portal.kernel.service.ContactLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
+import com.liferay.portal.kernel.service.TeamLocalService;
 import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
+import com.liferay.portal.kernel.service.permission.TeamPermissionUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.search.spi.model.permission.contributor.SearchPermissionFilterContributor;
@@ -54,6 +58,7 @@ public class UserSearchPermissionFilterContributor
 
 		_addManagedOrganizationUsersFilter(
 			booleanFilter, companyId, permissionChecker);
+		_addManagedTeamGroupUsersFilter(booleanFilter, permissionChecker);
 		_addOwnedUsersFilter(booleanFilter, permissionChecker, userId);
 	}
 
@@ -97,6 +102,40 @@ public class UserSearchPermissionFilterContributor
 
 			if (!organizationIds.isEmpty()) {
 				termsFilter.addValues(ArrayUtil.toStringArray(organizationIds));
+			}
+
+			if (!termsFilter.isEmpty()) {
+				booleanFilter.add(termsFilter);
+			}
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(exception);
+			}
+		}
+	}
+
+	private void _addManagedTeamGroupUsersFilter(
+		BooleanFilter booleanFilter, PermissionChecker permissionChecker) {
+
+		try {
+			TermsFilter termsFilter = new TermsFilter(Field.GROUP_ID);
+
+			UserBag userBag = permissionChecker.getUserBag();
+
+			for (Group group : userBag.getGroups()) {
+				long groupId = group.getGroupId();
+
+				for (Team team : _teamLocalService.getGroupTeams(groupId)) {
+					if (TeamPermissionUtil.contains(
+							permissionChecker, team,
+							ActionKeys.ASSIGN_MEMBERS)) {
+
+						termsFilter.addValue(String.valueOf(groupId));
+
+						break;
+					}
+				}
 			}
 
 			if (!termsFilter.isEmpty()) {
@@ -156,5 +195,8 @@ public class UserSearchPermissionFilterContributor
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private TeamLocalService _teamLocalService;
 
 }
