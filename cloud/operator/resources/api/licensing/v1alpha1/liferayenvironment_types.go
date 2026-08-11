@@ -9,6 +9,21 @@ func init() {
 	SchemeBuilder.Register(&LiferayEnvironment{}, &LiferayEnvironmentList{})
 }
 
+type AppStatus struct {
+	// +optional
+	Checksum string `json:"checksum,omitempty"`
+
+	// +optional
+	Name string `json:"name,omitempty"`
+
+	// +kubebuilder:validation:Enum=Downloaded;Failed
+	// +optional
+	State string `json:"state,omitempty"`
+
+	// +optional
+	VirtualEntryID int64 `json:"virtualEntryId,omitempty"`
+}
+
 type LicenseStatus struct {
 	// +optional
 	Checksum string `json:"checksum,omitempty"`
@@ -75,6 +90,9 @@ type LiferayEnvironmentSpec struct {
 type LiferayEnvironmentStatus struct {
 	// +optional
 	ActivatedAt *metav1.Time `json:"activatedAt,omitempty"`
+
+	// +optional
+	Apps []AppStatus `json:"apps,omitempty"`
 
 	// +listMapKey=type
 	// +listType=map

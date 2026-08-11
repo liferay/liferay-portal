@@ -125,6 +125,23 @@ spec:
                             activatedAt:
                                 format: date-time
                                 type: string
+                            apps:
+                                items:
+                                    properties:
+                                        checksum:
+                                            type: string
+                                        name:
+                                            type: string
+                                        state:
+                                            enum:
+                                            -   Downloaded
+                                            -   Failed
+                                            type: string
+                                        virtualEntryId:
+                                            format: int64
+                                            type: integer
+                                    type: object
+                                type: array
                             conditions:
                                 items:
                                     description:
