@@ -7,6 +7,8 @@ package com.liferay.portal.dao.sql.transformer;
 
 import java.util.function.Function;
 
+import org.hibernate.cfg.Configuration;
+
 /**
  * @author Manuel de la Peña
  * @author Brian Wing Shun Chan
@@ -14,5 +16,7 @@ import java.util.function.Function;
 public interface SQLTransformerLogic {
 
 	public Function<String, String>[] getFunctions();
+
+	public void populateSqlFunctions(Configuration configuration);
 
 }

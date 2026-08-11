@@ -8,6 +8,10 @@ package com.liferay.portal.dao.sql.transformer;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBType;
 
+import java.util.function.Function;
+
+import org.hibernate.cfg.Configuration;
+
 /**
  * @author Manuel de la Peña
  * @author Brian Wing Shun Chan
@@ -36,7 +40,18 @@ public class SQLTransformerLogicFactory {
 			return new SQLServerSQLTransformerLogic(db);
 		}
 
-		return () -> null;
+		return new SQLTransformerLogic() {
+
+			@Override
+			public Function<String, String>[] getFunctions() {
+				return null;
+			}
+
+			@Override
+			public void populateSqlFunctions(Configuration configuration) {
+			}
+
+		};
 	}
 
 }

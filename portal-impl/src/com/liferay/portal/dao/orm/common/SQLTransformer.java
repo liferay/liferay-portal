@@ -17,12 +17,18 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 
 import java.util.function.Function;
 
+import org.hibernate.cfg.Configuration;
+
 /**
  * @author Brian Wing Shun Chan
  * @author Shuyang Zhou
  * @author Manuel de la Peña
  */
 public class SQLTransformer {
+
+	public static void populateSqlFunctions(Configuration configuration) {
+		_sqlTransformerLogic.populateSqlFunctions(configuration);
+	}
 
 	public static void reloadSQLTransformer() {
 		_hibernateTransformedSQLsPortalCache.removeAll();
