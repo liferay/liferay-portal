@@ -29,6 +29,7 @@ const mockedSpaceService = SpaceService as jest.Mocked<typeof SpaceService>;
 
 const STATISTICS = {
 	approvedCount: 0,
+	brokenLinksCount: 7,
 	expiredCount: 6,
 	expiringSoonCount: 0,
 	inDraftCount: 0,
@@ -54,7 +55,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		} as any);
 	});
 
-	it("shows each card's count, from the statistics for the real ones and the placeholder for Broken Links", async () => {
+	it("shows each card's count from the statistics", async () => {
 		render(<GovernanceDashboard />);
 
 		expect(
@@ -78,7 +79,7 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		expect(
 			within(
 				screen.getByRole('button', {name: /broken-links/})
-			).getByText('0')
+			).getByText('7')
 		).toBeInTheDocument();
 	});
 
