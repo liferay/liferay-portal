@@ -60,23 +60,17 @@ public class DateEntryTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		_companyId = RandomTestUtil.nextLong();
-		_microseconds = RandomTestUtil.randomInt(500, 999);
+		_microsDateEntryId = _addDateEntry(
+			_COMPANY_ID, _MILLIS_TIME, _MICROSECONDS);
+		_microsNanos = _toNanos(_MILLIS_TIME, _MICROSECONDS);
 
-		_millisTime = System.currentTimeMillis();
+		_midnightTime = _MILLIS_TIME - (_MILLIS_TIME % Time.DAY);
 
-		_midnightTime = _millisTime - (_millisTime % Time.DAY);
-
-		_microsNanos = _toNanos(_millisTime, _microseconds);
-		_millisNanos = _toNanos(_millisTime, 0);
-
+		_midnightDateEntryId = _addDateEntry(_COMPANY_ID, _midnightTime, 0);
 		_midnightNanos = _toNanos(_midnightTime, 0);
 
-		_midnightDateEntryId = _addDateEntry(_companyId, _midnightTime, 0);
-
-		_millisDateEntryId = _addDateEntry(_companyId, _millisTime, 0);
-		_microsDateEntryId = _addDateEntry(
-			_companyId, _millisTime, _microseconds);
+		_millisDateEntryId = _addDateEntry(_COMPANY_ID, _MILLIS_TIME, 0);
+		_millisNanos = _toNanos(_MILLIS_TIME, 0);
 
 		_dateEntryPersistence.clearCache();
 	}
@@ -99,7 +93,7 @@ public class DateEntryTest {
 
 			dateEntry.setCompanyId(RandomTestUtil.nextLong());
 
-			Timestamp timestamp = _toTimestamp(_millisTime, _microseconds);
+			Timestamp timestamp = _toTimestamp(_MILLIS_TIME, _MICROSECONDS);
 
 			dateEntry.setSnapshotDate(timestamp);
 
@@ -111,11 +105,11 @@ public class DateEntryTest {
 
 			dateEntry.setCompanyId(RandomTestUtil.nextLong());
 
-			dateEntry.setSnapshotDate(new Date(_millisTime));
+			dateEntry.setSnapshotDate(new Date(_MILLIS_TIME));
 
 			dateEntry = _dateEntryLocalService.addDateEntry(dateEntry);
 
-			_assertDate(_millisTime, dateEntry.getSnapshotDate());
+			_assertDate(_MILLIS_TIME, dateEntry.getSnapshotDate());
 		}
 		finally {
 			_dateEntryLocalService.deleteDateEntry(dateEntryId1);
@@ -135,7 +129,7 @@ public class DateEntryTest {
 			).from(
 				DateEntryTable.INSTANCE
 			).where(
-				DateEntryTable.INSTANCE.companyId.eq(_companyId)
+				DateEntryTable.INSTANCE.companyId.eq(_COMPANY_ID)
 			));
 
 		Assert.assertEquals(results.toString(), 1, results.size());
@@ -150,7 +144,7 @@ public class DateEntryTest {
 				).from(
 					DateEntryTable.INSTANCE
 				).where(
-					DateEntryTable.INSTANCE.companyId.eq(_companyId)
+					DateEntryTable.INSTANCE.companyId.eq(_COMPANY_ID)
 				).orderBy(
 					DateEntryTable.INSTANCE.snapshotDate.ascending()
 				)));
@@ -186,34 +180,34 @@ public class DateEntryTest {
 	@Test
 	public void testFetchDateEntry() {
 		DateEntry dateEntry = _dateEntryLocalService.fetchDateEntry(
-			_companyId, new Date(_millisTime));
+			_COMPANY_ID, new Date(_MILLIS_TIME));
 
 		Assert.assertEquals(_millisDateEntryId, dateEntry.getDateEntryId());
 
 		_assertTimestamp(_millisNanos, dateEntry.getSnapshotDate());
 
 		dateEntry = _dateEntryLocalService.fetchDateEntry(
-			_companyId, new Date(_millisTime));
+			_COMPANY_ID, new Date(_MILLIS_TIME));
 
 		Assert.assertEquals(_millisDateEntryId, dateEntry.getDateEntryId());
 
-		_assertDate(_millisTime, dateEntry.getSnapshotDate());
+		_assertDate(_MILLIS_TIME, dateEntry.getSnapshotDate());
 
 		_dateEntryPersistence.clearCache();
 
 		dateEntry = _dateEntryLocalService.fetchDateEntry(
-			_companyId, _toTimestamp(_millisTime, _microseconds));
+			_COMPANY_ID, _toTimestamp(_MILLIS_TIME, _MICROSECONDS));
 
 		Assert.assertEquals(_microsDateEntryId, dateEntry.getDateEntryId());
 
 		_assertTimestamp(_microsNanos, dateEntry.getSnapshotDate());
 
 		dateEntry = _dateEntryLocalService.fetchDateEntry(
-			_companyId, _toTimestamp(_millisTime, _microseconds));
+			_COMPANY_ID, _toTimestamp(_MILLIS_TIME, _MICROSECONDS));
 
 		Assert.assertEquals(_microsDateEntryId, dateEntry.getDateEntryId());
 
-		_assertDate(_millisTime, dateEntry.getSnapshotDate());
+		_assertDate(_MILLIS_TIME, dateEntry.getSnapshotDate());
 
 		_dateEntryPersistence.clearCache();
 
@@ -221,7 +215,7 @@ public class DateEntryTest {
 				BasePersistenceImpl.class.getName(), LoggerTestUtil.OFF)) {
 
 			_dateEntryLocalService.fetchDateEntry(
-				_companyId, new java.sql.Date(_midnightTime));
+				_COMPANY_ID, new java.sql.Date(_midnightTime));
 
 			Assert.fail();
 		}
@@ -242,7 +236,7 @@ public class DateEntryTest {
 
 		dateEntry = _dateEntryLocalService.fetchDateEntry(_millisDateEntryId);
 
-		_assertDate(_millisTime, dateEntry.getSnapshotDate());
+		_assertDate(_MILLIS_TIME, dateEntry.getSnapshotDate());
 
 		_dateEntryPersistence.clearCache();
 
@@ -252,13 +246,13 @@ public class DateEntryTest {
 
 		dateEntry = _dateEntryLocalService.fetchDateEntry(_microsDateEntryId);
 
-		_assertDate(_millisTime, dateEntry.getSnapshotDate());
+		_assertDate(_MILLIS_TIME, dateEntry.getSnapshotDate());
 	}
 
 	@Test
 	public void testGetDateEntries() {
 		List<DateEntry> dateEntries = _dateEntryLocalService.getDateEntries(
-			new Date(_millisTime));
+			new Date(_MILLIS_TIME));
 
 		Assert.assertEquals(dateEntries.toString(), 1, dateEntries.size());
 
@@ -269,7 +263,7 @@ public class DateEntryTest {
 		_assertTimestamp(_millisNanos, dateEntry.getSnapshotDate());
 
 		dateEntries = _dateEntryLocalService.getDateEntries(
-			new Date(_millisTime));
+			new Date(_MILLIS_TIME));
 
 		Assert.assertEquals(dateEntries.toString(), 1, dateEntries.size());
 
@@ -277,12 +271,12 @@ public class DateEntryTest {
 
 		Assert.assertEquals(_millisDateEntryId, dateEntry.getDateEntryId());
 
-		_assertDate(_millisTime, dateEntry.getSnapshotDate());
+		_assertDate(_MILLIS_TIME, dateEntry.getSnapshotDate());
 
 		_dateEntryPersistence.clearCache();
 
 		dateEntries = _dateEntryLocalService.getDateEntries(
-			_toTimestamp(_millisTime, _microseconds));
+			_toTimestamp(_MILLIS_TIME, _MICROSECONDS));
 
 		Assert.assertEquals(dateEntries.toString(), 1, dateEntries.size());
 
@@ -293,7 +287,7 @@ public class DateEntryTest {
 		_assertTimestamp(_microsNanos, dateEntry.getSnapshotDate());
 
 		dateEntries = _dateEntryLocalService.getDateEntries(
-			_toTimestamp(_millisTime, _microseconds));
+			_toTimestamp(_MILLIS_TIME, _MICROSECONDS));
 
 		Assert.assertEquals(dateEntries.toString(), 1, dateEntries.size());
 
@@ -301,7 +295,7 @@ public class DateEntryTest {
 
 		Assert.assertEquals(_microsDateEntryId, dateEntry.getDateEntryId());
 
-		_assertDate(_millisTime, dateEntry.getSnapshotDate());
+		_assertDate(_MILLIS_TIME, dateEntry.getSnapshotDate());
 	}
 
 	@Test
@@ -312,7 +306,7 @@ public class DateEntryTest {
 				"select max(snapshotDate) as maxSnapshotDate from DateEntry " +
 					"where companyId = ?")) {
 
-			preparedStatement.setLong(1, _companyId);
+			preparedStatement.setLong(1, _COMPANY_ID);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				Assert.assertTrue(resultSet.next());
@@ -328,7 +322,7 @@ public class DateEntryTest {
 				"select dateEntryId, snapshotDate from DateEntry where " +
 					"companyId = ? order by snapshotDate")) {
 
-			preparedStatement.setLong(1, _companyId);
+			preparedStatement.setLong(1, _COMPANY_ID);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 				List<Object[]> rows = new ArrayList<>();
@@ -393,19 +387,19 @@ public class DateEntryTest {
 			_microsNanos, _getMaxSnapshotDateBySQLQuery(Type.TIMESTAMP));
 
 		_assertTimestampRows(
-			_dateEntryLocalService.getDateEntriesBySQLQuery(_companyId, null));
+			_dateEntryLocalService.getDateEntriesBySQLQuery(_COMPANY_ID, null));
 		_assertSQLDateRows(
 			_dateEntryLocalService.getDateEntriesBySQLQuery(
-				_companyId, Type.DATE));
+				_COMPANY_ID, Type.DATE));
 		_assertTimestampRows(
 			_dateEntryLocalService.getDateEntriesBySQLQuery(
-				_companyId, Type.TIMESTAMP));
+				_COMPANY_ID, Type.TIMESTAMP));
 	}
 
 	@Test
 	public void testUpdateDateEntry() throws Exception {
 		long dateEntryId = _addDateEntry(
-			RandomTestUtil.nextLong(), _millisTime, _microseconds);
+			RandomTestUtil.nextLong(), _MILLIS_TIME, _MICROSECONDS);
 
 		try {
 			_dateEntryPersistence.clearCache();
@@ -413,7 +407,7 @@ public class DateEntryTest {
 			DateEntry dateEntry = _dateEntryLocalService.fetchDateEntry(
 				dateEntryId);
 
-			Timestamp timestamp = _toTimestamp(_millisTime + 1, _microseconds);
+			Timestamp timestamp = _toTimestamp(_MILLIS_TIME + 1, _MICROSECONDS);
 
 			dateEntry.setSnapshotDate(timestamp);
 
@@ -427,17 +421,17 @@ public class DateEntryTest {
 
 			_assertTimestamp(timestamp.getNanos(), dateEntry.getSnapshotDate());
 
-			dateEntry.setSnapshotDate(new Date(_millisTime + 2));
+			dateEntry.setSnapshotDate(new Date(_MILLIS_TIME + 2));
 
 			dateEntry = _dateEntryLocalService.updateDateEntry(dateEntry);
 
-			_assertDate(_millisTime + 2, dateEntry.getSnapshotDate());
+			_assertDate(_MILLIS_TIME + 2, dateEntry.getSnapshotDate());
 
 			dateEntry.setCompanyId(RandomTestUtil.nextLong());
 
 			dateEntry = _dateEntryLocalService.updateDateEntry(dateEntry);
 
-			_assertDate(_millisTime + 2, dateEntry.getSnapshotDate());
+			_assertDate(_MILLIS_TIME + 2, dateEntry.getSnapshotDate());
 		}
 		finally {
 			_dateEntryLocalService.deleteDateEntry(dateEntryId);
@@ -544,7 +538,7 @@ public class DateEntryTest {
 		DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
 			DateEntry.class, clazz.getClassLoader());
 
-		dynamicQuery.add(RestrictionsFactoryUtil.eq("companyId", _companyId));
+		dynamicQuery.add(RestrictionsFactoryUtil.eq("companyId", _COMPANY_ID));
 
 		return dynamicQuery;
 	}
@@ -552,14 +546,18 @@ public class DateEntryTest {
 	private Object _getMaxSnapshotDateBySQLQuery(Type type) {
 		List<Object> results =
 			_dateEntryLocalService.getMaxSnapshotDatesBySQLQuery(
-				_companyId, type);
+				_COMPANY_ID, type);
 
 		Assert.assertEquals(results.toString(), 1, results.size());
 
 		return results.get(0);
 	}
 
-	private static long _companyId;
+	private static final long _COMPANY_ID = RandomTestUtil.nextLong();
+
+	private static final int _MICROSECONDS = RandomTestUtil.randomInt(500, 999);
+
+	private static final long _MILLIS_TIME = System.currentTimeMillis();
 
 	@Inject
 	private static DateEntryLocalService _dateEntryLocalService;
@@ -568,13 +566,11 @@ public class DateEntryTest {
 	private static DateEntryPersistence _dateEntryPersistence;
 
 	private static long _microsDateEntryId;
-	private static int _microseconds;
 	private static int _microsNanos;
 	private static long _midnightDateEntryId;
 	private static int _midnightNanos;
 	private static long _midnightTime;
 	private static long _millisDateEntryId;
 	private static int _millisNanos;
-	private static long _millisTime;
 
 }
