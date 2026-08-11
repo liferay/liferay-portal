@@ -13,17 +13,21 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.Response;
 
 import java.net.URI;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -44,6 +48,54 @@ public class SecurityTest extends BaseClientTestCase {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testEscapeOAuth2ApplicationName() {
+		Function<WebTarget, Invocation.Builder> invocationBuilderFunction =
+			getAuthenticatedInvocationBuilderFunction(
+				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+				null);
+
+		Response response = getCodeFunction(
+			webTarget -> webTarget.queryParam(
+				"client_id", "oauthTestApplicationUnescapedName"
+			).queryParam(
+				"response_type", "code"
+			),
+			true
+		).apply(
+			invocationBuilderFunction
+		);
+
+		URI uri = response.getLocation();
+
+		if (uri == null) {
+			throw new IllegalArgumentException(
+				"Authorization service response missing \"Location\" header " +
+					"from which the authorization page URL is extracted");
+		}
+
+		WebTarget webTarget = getWebTarget();
+
+		webTarget = webTarget.path(uri.getPath());
+
+		Map<String, String[]> parameterMap = HttpComponentsUtil.getParameterMap(
+			uri.getRawQuery());
+
+		for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+			webTarget = webTarget.queryParam(
+				entry.getKey(), (Object[])entry.getValue());
+		}
+
+		Invocation.Builder invocationBuilder = invocationBuilderFunction.apply(
+			webTarget);
+
+		String bodyString = getBodyAsString(invocationBuilder.get());
+
+		Assert.assertFalse(bodyString.contains(_APPLICATION_NAME));
+		Assert.assertTrue(
+			bodyString.contains(HtmlUtil.escape(_APPLICATION_NAME)));
+	}
 
 	@Test
 	public void testGuestOwnerCreateTokenPermission() {
@@ -234,6 +286,8 @@ public class SecurityTest extends BaseClientTestCase {
 		return response.getHeaderString("x-frame-options");
 	}
 
+	private static final String _APPLICATION_NAME = "<script>alert(1)</script>";
+
 	private User _user;
 
 	private class SecurityTestPreparatorBundleActivator
@@ -249,6 +303,11 @@ public class SecurityTest extends BaseClientTestCase {
 				companyId, _user, "oauthTestApplicationCode",
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				Collections.singletonList("everything"));
+
+			createOAuth2Application(
+				companyId, _user, "oauthTestApplicationUnescapedName",
+				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
+				_APPLICATION_NAME, Collections.singletonList("everything"));
 
 			createOAuth2ApplicationWithNone(
 				companyId, _user, "oauthTestApplicationCodePKCE",

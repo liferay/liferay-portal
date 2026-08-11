@@ -230,6 +230,21 @@ public abstract class BaseTestPreparatorBundleActivator
 
 	protected OAuth2Application createOAuth2Application(
 			long companyId, User user, String clientId,
+			List<GrantType> allowedGrantTypesList, String name,
+			List<String> scopeAliasesList)
+		throws PortalException {
+
+		return createOAuth2Application(
+			companyId, user, clientId, "oauthTestApplicationSecret",
+			allowedGrantTypesList, OAuthConstants.TOKEN_ENDPOINT_AUTH_POST,
+			null, name,
+			Collections.singletonList(
+				"http://redirecturi:" + PortalUtil.getPortalServerPort(false)),
+			false, scopeAliasesList, false);
+	}
+
+	protected OAuth2Application createOAuth2Application(
+			long companyId, User user, String clientId,
 			List<String> scopeAliasesList)
 		throws PortalException {
 
@@ -273,6 +288,21 @@ public abstract class BaseTestPreparatorBundleActivator
 			List<String> scopeAliasesList, boolean trustedApplication)
 		throws PortalException {
 
+		return createOAuth2Application(
+			companyId, user, clientId, clientSecret, allowedGrantTypesList,
+			clientAuthenticationMethod, jwks, "test application",
+			redirectURIsList, rememberDevice, scopeAliasesList,
+			trustedApplication);
+	}
+
+	protected OAuth2Application createOAuth2Application(
+			long companyId, User user, String clientId, String clientSecret,
+			List<GrantType> allowedGrantTypesList,
+			String clientAuthenticationMethod, String jwks, String name,
+			List<String> redirectURIsList, boolean rememberDevice,
+			List<String> scopeAliasesList, boolean trustedApplication)
+		throws PortalException {
+
 		ServiceReference<OAuth2ApplicationLocalService> serviceReference =
 			bundleContext.getServiceReference(
 				OAuth2ApplicationLocalService.class);
@@ -290,7 +320,7 @@ public abstract class BaseTestPreparatorBundleActivator
 				"test oauth application",
 				Collections.singletonList("token.introspection"),
 				"http://localhost:" + PortalUtil.getPortalServerPort(false), 0,
-				jwks, "test application",
+				jwks, name,
 				"http://localhost:" + PortalUtil.getPortalServerPort(false),
 				redirectURIsList, rememberDevice, scopeAliasesList,
 				trustedApplication, new ServiceContext());
