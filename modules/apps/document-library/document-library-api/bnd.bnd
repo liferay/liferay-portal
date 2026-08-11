@@ -18,6 +18,7 @@ Export-Package:\
 	com.liferay.document.library.security.io,\
 	com.liferay.document.library.service,\
 	com.liferay.document.library.service.persistence,\
+	com.liferay.document.library.text,\
 	com.liferay.document.library.url.provider,\
 	com.liferay.document.library.util,\
 	com.liferay.document.library.versioning,\
