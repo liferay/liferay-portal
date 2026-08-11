@@ -30,10 +30,10 @@ import java.util.Locale;
 /**
  * @author Manuele Castro
  */
-public class ObjectDefinitionClassNameResourcePermissionUpgradeProcess
+public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 	extends UpgradeProcess {
 
-	public ObjectDefinitionClassNameResourcePermissionUpgradeProcess(
+	public AttachmentObjectFieldDownloadPermissionUpgradeProcess(
 		Language language, Localization localization,
 		PLOEntryLocalService ploEntryLocalService,
 		ResourceActionLocalService resourceActionLocalService) {

@@ -21,6 +21,7 @@ import com.liferay.object.internal.upgrade.v10_8_0.util.ObjectDefinitionSettingT
 import com.liferay.object.internal.upgrade.v10_8_1.ObjectEntryAssetEntryTitleUpgradeProcess;
 import com.liferay.object.internal.upgrade.v10_9_0.util.ObjectEntryVersionTable;
 import com.liferay.object.internal.upgrade.v10_9_1.ClassNameUpgradeProcess;
+import com.liferay.object.internal.upgrade.v13_3_0.AttachmentObjectFieldDownloadPermissionUpgradeProcess;
 import com.liferay.object.internal.upgrade.v1_2_0.util.ObjectViewColumnTable;
 import com.liferay.object.internal.upgrade.v1_2_0.util.ObjectViewTable;
 import com.liferay.object.internal.upgrade.v2_1_0.ObjectFieldBusinessTypeUpgradeProcess;
@@ -737,10 +738,9 @@ public class ObjectServiceUpgradeStepRegistrator
 
 		registry.register(
 			"13.2.0", "13.3.0",
-			new com.liferay.object.internal.upgrade.v13_3_0.
-				ObjectDefinitionClassNameResourcePermissionUpgradeProcess(
-					_language, _localization, _ploEntryLocalService,
-					_resourceActionLocalService));
+			new AttachmentObjectFieldDownloadPermissionUpgradeProcess(
+				_language, _localization, _ploEntryLocalService,
+				_resourceActionLocalService));
 	}
 
 	@Reference

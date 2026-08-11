@@ -63,7 +63,7 @@ import org.junit.runner.RunWith;
  * @author Manuele Castro
  */
 @RunWith(Arquillian.class)
-public class ObjectDefinitionClassNameResourcePermissionUpgradeProcessTest {
+public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 
 	@ClassRule
 	@Rule
@@ -209,7 +209,7 @@ public class ObjectDefinitionClassNameResourcePermissionUpgradeProcessTest {
 
 	private static final String _CLASS_NAME =
 		"com.liferay.object.internal.upgrade.v13_3_0." +
-			"ObjectDefinitionClassNameResourcePermissionUpgradeProcess";
+			"AttachmentObjectFieldDownloadPermissionUpgradeProcess";
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
