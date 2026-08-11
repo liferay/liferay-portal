@@ -989,6 +989,8 @@ test(
 			await performLogout(page);
 			await performLoginViaApi({page, screenName: user.alternateName});
 
+			await page.goto(`/web/${site.name}`);
+
 			await page.goto(`/web/${site.name}/pending-orders`, {
 				waitUntil: 'networkidle',
 			});
