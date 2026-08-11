@@ -21,6 +21,10 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                brokenLinksCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 expiredCount:
                     format: int64
                     readOnly: true
