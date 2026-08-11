@@ -26,9 +26,6 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcess
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		Map<Long, Set<String>> externalReferenceCodesMap =
-			_getExternalReferenceCodesMap();
-
 		try (PreparedStatement preparedStatement1 = connection.prepareStatement(
 				StringBundler.concat(
 					"select distinct Layout1.externalReferenceCode, ",
@@ -49,7 +46,13 @@ public class LayoutDuplicateExternalReferenceCodeUpgradeProcess
 
 			ResultSet resultSet = preparedStatement1.executeQuery()) {
 
+			Map<Long, Set<String>> externalReferenceCodesMap = null;
+
 			while (resultSet.next()) {
+				if (externalReferenceCodesMap == null) {
+					externalReferenceCodesMap = _getExternalReferenceCodesMap();
+				}
+
 				long plid = resultSet.getLong("plid");
 
 				Set<String> externalReferenceCodes =
