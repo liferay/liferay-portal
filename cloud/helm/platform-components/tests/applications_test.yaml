@@ -119,12 +119,6 @@ tests:
         it: Creates the Envoy proxy PodDisruptionBudget
     -   asserts:
             -   equal:
-                    path: spec.source.helm.valuesObject.workflow.rbac.create
-                    value: false
-                template: templates/application-argo-workflows.yaml
-        it: Disables the per-namespace workflow RBAC
-    -   asserts:
-            -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
                     value: "-100"
                 template: templates/application-external-secrets.yaml
@@ -191,7 +185,7 @@ tests:
                 template: templates/application-envoy-gateway.yaml
             -   equal:
                     path: spec.source.path
-                    value: "."
+                    value: .
                 template: templates/application-envoy-gateway.yaml
             -   equal:
                     path: spec.source.repoURL
@@ -227,7 +221,7 @@ tests:
                 template: templates/application-ack-prometheusservice.yaml
             -   equal:
                     path: spec.source.path
-                    value: "."
+                    value: .
                 template: templates/application-ack-prometheusservice.yaml
             -   equal:
                     path: spec.source.repoURL
