@@ -10,6 +10,7 @@ import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.mail.MailMessage;
@@ -23,6 +24,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Carolina Barbosa
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class ScriptNotificationRecipientBuilderTest
 	extends BaseNotificationRecipientBuilderTestCase {

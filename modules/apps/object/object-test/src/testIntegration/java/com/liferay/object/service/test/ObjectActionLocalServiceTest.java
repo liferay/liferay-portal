@@ -122,6 +122,7 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -203,6 +204,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 /**
  * @author Brian Wing Shun Chan
  */
+@DataGuard(scope = DataGuard.Scope.METHOD)
 @FeatureFlag("LPS-173537")
 @RunWith(Arquillian.class)
 public class ObjectActionLocalServiceTest {

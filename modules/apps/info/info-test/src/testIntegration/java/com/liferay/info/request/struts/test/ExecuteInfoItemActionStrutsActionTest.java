@@ -94,14 +94,14 @@ public class ExecuteInfoItemActionStrutsActionTest {
 
 		_user = UserTestUtil.getAdminUser(_group.getCompanyId());
 
-		ObjectDefinition objectDefinition = _addObjectDefinition();
+		_objectDefinition = _addObjectDefinition();
 
 		_classNameId = String.valueOf(
-			_portal.getClassNameId(objectDefinition.getClassName()));
+			_portal.getClassNameId(_objectDefinition.getClassName()));
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 			_group.getGroupId(), _user.getUserId(),
-			objectDefinition.getObjectDefinitionId(),
+			_objectDefinition.getObjectDefinitionId(),
 			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 			null,
 			HashMapBuilder.<String, Serializable>put(
@@ -130,7 +130,7 @@ public class ExecuteInfoItemActionStrutsActionTest {
 
 		_objectAction = _objectActionLocalService.addObjectAction(
 			RandomTestUtil.randomString(), _user.getUserId(),
-			objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
+			_objectDefinition.getObjectDefinitionId(), true, StringPool.BLANK,
 			RandomTestUtil.randomString(), _errorMessageMap,
 			LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
 			RandomTestUtil.randomString(),
@@ -305,6 +305,9 @@ public class ExecuteInfoItemActionStrutsActionTest {
 
 	@Inject
 	private ObjectActionLocalService _objectActionLocalService;
+
+	@DeleteAfterTestRun
+	private ObjectDefinition _objectDefinition;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
