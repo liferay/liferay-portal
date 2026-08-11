@@ -207,11 +207,9 @@ test.describe('Object Expression Builder Validation', () => {
 	}) => {
 		await objectValidationsPage.viewObjectDefinitionsPage.goto();
 
-		await page.getByPlaceholder('Search').fill('User');
-
-		await page.keyboard.press('Enter');
-
-		await page.getByRole('link', {exact: true, name: 'User'}).click();
+		await objectValidationsPage.viewObjectDefinitionsPage.clickEditObjectDefinitionLink(
+			'User'
+		);
 
 		await objectValidationsPage.validationTabItem.click();
 
