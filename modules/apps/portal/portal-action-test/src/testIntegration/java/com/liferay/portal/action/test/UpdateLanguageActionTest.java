@@ -135,13 +135,15 @@ public class UpdateLanguageActionTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-86415", "LPD-102324", "LPD-102413"})
+	@TestInfo({"LPD-86415", "LPD-102324", "LPD-102413", "LPD-102430"})
 	public void testGetRedirect() throws Exception {
 		_testGetRedirectWithControlPanelURL(false);
 		_testGetRedirectWithControlPanelURL(true);
 		_testGetRedirectWithFriendlyURL(false);
 		_testGetRedirectWithFriendlyURL(true);
+		_testGetRedirectWithGroupFriendlyURLContainingLayoutFriendlyURL();
 		_testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping();
+		_testGetRedirectWithLayoutFriendlyURLStartingWithPathMain();
 		_testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping();
 		_testGetRedirectWithLowerPriorityLanguageIdUniqueInSite();
 		_testGetRedirectWithPortletFriendlyURL(_sourceLocale);
@@ -565,6 +567,33 @@ public class UpdateLanguageActionTest {
 			_targetLocale, false);
 	}
 
+	private void _testGetRedirectWithGroupFriendlyURLContainingLayoutFriendlyURL()
+		throws Exception {
+
+		_group = _groupLocalService.updateFriendlyURL(
+			_group.getGroupId(), "/homework");
+
+		_layout = _layoutLocalService.updateFriendlyURL(
+			TestPropsValues.getUserId(), _layout.getPlid(), "/home",
+			LocaleUtil.toLanguageId(_sourceLocale));
+		_layout = _layoutLocalService.updateFriendlyURL(
+			TestPropsValues.getUserId(), _layout.getPlid(), "/hogar",
+			LocaleUtil.toLanguageId(_targetLocale));
+
+		String path = "/tags/" + RandomTestUtil.randomString();
+
+		_testGetRedirect(
+			_sourceLocale,
+			StringBundler.concat(
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				_group.getFriendlyURL(), "/home", path),
+			_targetLocale,
+			StringBundler.concat(
+				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+				_group.getFriendlyURL(), "/hogar", path),
+			false);
+	}
+
 	private void _testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping()
 		throws Exception {
 
@@ -660,6 +689,36 @@ public class UpdateLanguageActionTest {
 
 		_testGetRedirect(
 			sourceLocale, sourceURL, targetLocale, targetURL, virtualHost);
+	}
+
+	private void _testGetRedirectWithLayoutFriendlyURLStartingWithPathMain()
+		throws Exception {
+
+		String redirectParameter =
+			Portal.PATH_MAIN + RandomTestUtil.randomString();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameter("redirect", redirectParameter);
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(_group.getCompanyId()));
+		themeDisplay.setLayout(_layout);
+		themeDisplay.setLayoutSet(_group.getPublicLayoutSet());
+		themeDisplay.setPathMain(Portal.PATH_MAIN);
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+
+		UpdateLanguageAction updateLanguageAction = new UpdateLanguageAction();
+
+		Assert.assertNotEquals(
+			StringBundler.concat(
+				StringPool.SLASH, _targetLocale.getLanguage(),
+				redirectParameter),
+			updateLanguageAction.getRedirect(
+				mockHttpServletRequest, themeDisplay, _targetLocale));
 	}
 
 	private void _testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping()
