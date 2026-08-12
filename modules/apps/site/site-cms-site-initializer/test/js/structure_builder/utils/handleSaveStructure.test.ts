@@ -29,14 +29,8 @@ jest.mock(
 
 (globalThis as any).Liferay.Util.sub = (template: string) => template;
 
-it('resets the structure status to draft after a successful update save so the Save button becomes interactable again', async () => {
-	(StructureService.updateStructure as jest.Mock).mockResolvedValue({
-		error: null,
-	});
-
-	const dispatch = jest.fn();
-
-	const state = buildState({
+function buildDraftState() {
+	return buildState({
 		mainObjectDefinition: buildObjectDefinition({
 			erc: 'erc',
 			label: {en_US: 'Label'},
@@ -45,8 +39,36 @@ it('resets the structure status to draft after a successful update save so the S
 		}),
 		objectDefinitions: {},
 	})!;
+}
 
-	await handleSaveStructure({dispatch, state, validate: () => true});
+it('ends the operation when the save fails so the Save button stops loading', async () => {
+	(StructureService.updateStructure as jest.Mock).mockResolvedValue({
+		error: 'in-use',
+	});
+
+	const dispatch = jest.fn();
+
+	await handleSaveStructure({
+		dispatch,
+		state: buildDraftState(),
+		validate: () => true,
+	});
+
+	expect(dispatch).toHaveBeenCalledWith({type: 'end-operation'});
+});
+
+it('resets the structure status to draft after a successful update save so the Save button becomes interactable again', async () => {
+	(StructureService.updateStructure as jest.Mock).mockResolvedValue({
+		error: null,
+	});
+
+	const dispatch = jest.fn();
+
+	await handleSaveStructure({
+		dispatch,
+		state: buildDraftState(),
+		validate: () => true,
+	});
 
 	expect(dispatch).toHaveBeenCalledWith({
 		type: 'save-structure',

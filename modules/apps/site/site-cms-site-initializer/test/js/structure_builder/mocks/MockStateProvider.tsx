@@ -40,6 +40,7 @@ const DEFAULT_STATE: State = {
 		modifiedSlugs: new Set(),
 	},
 	invalids: new Map(),
+	operation: null,
 	publishedChildren: new Set(),
 	renamingItemUuid: null,
 	savedChildren: new Set(),

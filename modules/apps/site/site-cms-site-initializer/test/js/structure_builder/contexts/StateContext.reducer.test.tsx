@@ -81,6 +81,7 @@ function buildInitialState({
 			modifiedSlugs: new Set(),
 		},
 		invalids: new Map(),
+		operation: null,
 		publishedChildren: new Set(),
 		renamingItemUuid: null,
 		savedChildren: new Set(),
@@ -331,6 +332,84 @@ describe('StateContext reducer — update-structure friendly URL', () => {
 		});
 
 		expect(refs.state!.structure.slug).toBe('product-categories');
+	});
+});
+
+describe('StateContext reducer — start-operation', () => {
+	function buildPublishedState(): State {
+		const state = buildInitialState({
+			childLabel: {},
+			structureLabel: {},
+		});
+
+		return {
+			...state,
+			structure: {...state.structure, status: 'published'},
+		};
+	}
+
+	it('Keeps the persisted status untouched while an operation is in flight', () => {
+		const refs = renderWithState(buildPublishedState());
+
+		act(() => {
+			refs.dispatch!({operation: 'publishing', type: 'start-operation'});
+		});
+
+		expect(refs.state!.operation).toBe('publishing');
+		expect(refs.state!.structure.status).toBe('published');
+	});
+
+	it('Keeps regenerating the name and the friendly URL of a published structure disabled while publishing', () => {
+		const refs = renderWithState(buildPublishedState());
+
+		act(() => {
+			refs.dispatch!({operation: 'publishing', type: 'start-operation'});
+		});
+
+		act(() => {
+			refs.dispatch!({
+				label: {en_US: 'Product Categories'} as any,
+				objectDefinitions: {},
+				type: 'update-structure',
+			});
+		});
+
+		expect(refs.state!.structure.name).toBe('MyStructure');
+		expect(refs.state!.structure.slug).toBe('');
+	});
+
+	it('Clears the operation once it ends', () => {
+		const refs = renderWithState(buildPublishedState());
+
+		act(() => {
+			refs.dispatch!({operation: 'publishing', type: 'start-operation'});
+		});
+
+		act(() => {
+			refs.dispatch!({type: 'end-operation'});
+		});
+
+		expect(refs.state!.operation).toBeNull();
+		expect(refs.state!.structure.status).toBe('published');
+	});
+
+	it('Keeps the operation running when an unrelated validation error is added', () => {
+		const refs = renderWithState(buildPublishedState());
+
+		act(() => {
+			refs.dispatch!({operation: 'publishing', type: 'start-operation'});
+		});
+
+		act(() => {
+			refs.dispatch!({
+				error: 'empty',
+				property: 'spaces',
+				type: 'add-error',
+				uuid: STRUCTURE_UUID,
+			});
+		});
+
+		expect(refs.state!.operation).toBe('publishing');
 	});
 });
 

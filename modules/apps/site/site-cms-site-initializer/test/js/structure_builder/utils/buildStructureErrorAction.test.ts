@@ -12,14 +12,12 @@ describe('buildStructureErrorAction', () => {
 	it('routes a friendly URL collision to the friendly URL field', () => {
 		const action = buildStructureErrorAction({
 			error: 'slug-in-use',
-			previousStatus: 'draft',
 			uuid: UUID,
 		});
 
 		expect(action).toEqual({
 			error: 'in-use',
 			property: 'slug',
-			status: 'draft',
 			type: 'add-error',
 			uuid: UUID,
 		});
@@ -28,14 +26,12 @@ describe('buildStructureErrorAction', () => {
 	it('routes a name collision to the name field', () => {
 		const action = buildStructureErrorAction({
 			error: 'in-use',
-			previousStatus: 'draft',
 			uuid: UUID,
 		});
 
 		expect(action).toEqual({
 			error: 'in-use',
 			property: 'name',
-			status: 'draft',
 			type: 'add-error',
 			uuid: UUID,
 		});
@@ -44,14 +40,12 @@ describe('buildStructureErrorAction', () => {
 	it('routes an unexpected error to the global scope', () => {
 		const action = buildStructureErrorAction({
 			error: 'unexpected',
-			previousStatus: 'published',
 			uuid: UUID,
 		});
 
 		expect(action).toEqual({
 			error: 'unexpected',
 			property: 'global',
-			status: 'published',
 			type: 'add-error',
 			uuid: UUID,
 		});
