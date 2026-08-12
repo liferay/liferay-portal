@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -199,15 +200,21 @@ public class LayoutPageTemplateManagementToolbarDisplayContext
 			_layoutPageTemplateDisplayContext.
 				getLayoutPageTemplateCollectionId());
 
-		return ResourceURLBuilder.createResourceURL(
-			liferayPortletResponse
-		).setParameter(
-			"layoutPageTemplateCollectionId",
-			_layoutPageTemplateDisplayContext.
-				getLayoutPageTemplateCollectionId()
-		).setResourceID(
-			"/layout_page_template_admin/export_layout_page_template_entries"
-		).buildString();
+		LiferayPortletURL exportLayoutPageTemplateEntryURL =
+			(LiferayPortletURL)ResourceURLBuilder.createResourceURL(
+				liferayPortletResponse
+			).setParameter(
+				"layoutPageTemplateCollectionId",
+				_layoutPageTemplateDisplayContext.
+					getLayoutPageTemplateCollectionId()
+			).setResourceID(
+				"/layout_page_template_admin" +
+					"/export_layout_page_template_entries"
+			).buildResourceURL();
+
+		exportLayoutPageTemplateEntryURL.setCopyCurrentRenderParameters(false);
+
+		return exportLayoutPageTemplateEntryURL.toString();
 	}
 
 	private String _getSelectMasterLayoutURL() {

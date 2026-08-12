@@ -17,6 +17,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -298,15 +299,22 @@ public class LayoutPageTemplateCollectionActionDropdownItem {
 	}
 
 	private String _getExportLayoutPageTemplateCollectionURL() {
-		return ResourceURLBuilder.createResourceURL(
-			_renderResponse
-		).setParameter(
-			"layoutPageTemplateCollectionsIds",
-			_layoutPageTemplateCollection.getLayoutPageTemplateCollectionId()
-		).setResourceID(
-			"/layout_page_template_admin/export_layout_page_template_" +
-				"entries_and_layout_page_template_collections"
-		).buildString();
+		LiferayPortletURL exportLayoutPageTemplateCollectionURL =
+			(LiferayPortletURL)ResourceURLBuilder.createResourceURL(
+				_renderResponse
+			).setParameter(
+				"layoutPageTemplateCollectionsIds",
+				_layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId()
+			).setResourceID(
+				"/layout_page_template_admin/export_layout_page_template_" +
+					"entries_and_layout_page_template_collections"
+			).buildResourceURL();
+
+		exportLayoutPageTemplateCollectionURL.setCopyCurrentRenderParameters(
+			false);
+
+		return exportLayoutPageTemplateCollectionURL.toString();
 	}
 
 	private String _getItemSelectorURL() {

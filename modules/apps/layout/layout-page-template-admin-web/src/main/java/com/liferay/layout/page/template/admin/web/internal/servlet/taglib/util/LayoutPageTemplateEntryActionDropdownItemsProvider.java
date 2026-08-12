@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutPrototype;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -370,9 +371,8 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 		_getExportLayoutPageTemplateEntryActionUnsafeConsumer() {
 
 		return dropdownItem -> {
-			dropdownItem.setDisabled(_layoutPageTemplateEntry.isDraft());
-			dropdownItem.setHref(
-				ResourceURLBuilder.createResourceURL(
+			LiferayPortletURL exportLayoutPageTemplateEntryURL =
+				(LiferayPortletURL)ResourceURLBuilder.createResourceURL(
 					_renderResponse
 				).setParameter(
 					"layoutPageTemplateCollectionId",
@@ -383,7 +383,13 @@ public class LayoutPageTemplateEntryActionDropdownItemsProvider {
 				).setResourceID(
 					"/layout_page_template_admin" +
 						"/export_layout_page_template_entries"
-				).buildString());
+				).buildResourceURL();
+
+			exportLayoutPageTemplateEntryURL.setCopyCurrentRenderParameters(
+				false);
+
+			dropdownItem.setDisabled(_layoutPageTemplateEntry.isDraft());
+			dropdownItem.setHref(exportLayoutPageTemplateEntryURL.toString());
 			dropdownItem.setIcon("upload");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "export"));

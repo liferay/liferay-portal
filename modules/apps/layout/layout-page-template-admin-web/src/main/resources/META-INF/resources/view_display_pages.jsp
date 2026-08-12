@@ -33,7 +33,9 @@ DisplayPageManagementToolbarDisplayContext displayPageManagementToolbarDisplayCo
 />
 
 <div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
-	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= true %>" id="/layout_page_template_admin/info_panel" var="sidebarPanelURL" />
+	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/layout_page_template_admin/info_panel" var="sidebarPanelURL">
+		<portlet:param name="layoutPageTemplateCollectionId" value="<%= String.valueOf(displayPageDisplayContext.getLayoutPageTemplateCollectionId()) %>" />
+	</liferay-portlet:resourceURL>
 
 	<liferay-frontend:sidebar-panel
 		resourceURL="<%= sidebarPanelURL %>"

@@ -13,6 +13,16 @@ portletDisplay.setURLBack(ParamUtil.getString(request, "backURL", String.valueOf
 portletDisplay.setURLBackTitle(portletDisplay.getPortletDisplayName());
 
 renderResponse.setTitle(LanguageUtil.get(request, "import"));
+
+LiferayPortletURL importURL = (LiferayPortletURL)ResourceURLBuilder.createResourceURL(
+	renderResponse
+).setParameter(
+	"layoutPageTemplateCollectionId", ParamUtil.getString(request, "layoutPageTemplateCollectionId")
+).setResourceID(
+	"/layout_page_template_admin/import"
+).buildResourceURL();
+
+importURL.setCopyCurrentRenderParameters(false);
 %>
 
 <react:component
@@ -21,14 +31,7 @@ renderResponse.setTitle(LanguageUtil.get(request, "import"));
 		HashMapBuilder.<String, Object>put(
 			"backURL", ParamUtil.getString(request, "backURL")
 		).put(
-			"importURL",
-			ResourceURLBuilder.createResourceURL(
-				renderResponse
-			).setParameter(
-				"layoutPageTemplateCollectionId", ParamUtil.getString(request, "layoutPageTemplateCollectionId")
-			).setResourceID(
-				"/layout_page_template_admin/import"
-			).buildString()
+			"importURL", importURL.toString()
 		).build()
 	%>'
 />

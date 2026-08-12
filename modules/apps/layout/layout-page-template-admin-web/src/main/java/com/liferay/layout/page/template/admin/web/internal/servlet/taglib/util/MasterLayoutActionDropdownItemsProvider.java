@@ -23,6 +23,7 @@ import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -356,16 +357,20 @@ public class MasterLayoutActionDropdownItemsProvider {
 		_getExportMasterLayoutActionUnsafeConsumer() {
 
 		return dropdownItem -> {
-			dropdownItem.setDisabled(!_layout.isPublished());
-			dropdownItem.setHref(
-				ResourceURLBuilder.createResourceURL(
+			LiferayPortletURL exportMasterLayoutURL =
+				(LiferayPortletURL)ResourceURLBuilder.createResourceURL(
 					_renderResponse
 				).setParameter(
 					"layoutPageTemplateEntryId",
 					_layoutPageTemplateEntry.getLayoutPageTemplateEntryId()
 				).setResourceID(
 					"/layout_page_template_admin/export_master_layouts"
-				).buildString());
+				).buildResourceURL();
+
+			exportMasterLayoutURL.setCopyCurrentRenderParameters(false);
+
+			dropdownItem.setDisabled(!_layout.isPublished());
+			dropdownItem.setHref(exportMasterLayoutURL.toString());
 			dropdownItem.setIcon("upload");
 			dropdownItem.setLabel(
 				LanguageUtil.get(_httpServletRequest, "export"));

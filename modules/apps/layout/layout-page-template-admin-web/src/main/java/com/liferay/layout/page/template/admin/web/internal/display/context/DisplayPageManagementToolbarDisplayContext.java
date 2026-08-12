@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
@@ -344,12 +345,17 @@ public class DisplayPageManagementToolbarDisplayContext
 	}
 
 	private String _getExportDisplayPageURL() {
-		return ResourceURLBuilder.createResourceURL(
-			liferayPortletResponse
-		).setResourceID(
-			"/layout_page_template_admin/export_layout_page_template_entries_" +
-				"and_layout_page_template_collections"
-		).buildString();
+		LiferayPortletURL exportDisplayPageURL =
+			(LiferayPortletURL)ResourceURLBuilder.createResourceURL(
+				liferayPortletResponse
+			).setResourceID(
+				"/layout_page_template_admin/export_layout_page_template_" +
+					"entries_and_layout_page_template_collections"
+			).buildResourceURL();
+
+		exportDisplayPageURL.setCopyCurrentRenderParameters(false);
+
+		return exportDisplayPageURL.toString();
 	}
 
 	private String _getItemSelectorURL() {
