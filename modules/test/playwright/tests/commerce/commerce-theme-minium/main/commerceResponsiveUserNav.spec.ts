@@ -27,12 +27,11 @@ test.use({
 test('LPD-3391 Minium sidebar user navigation items are clickable in responsive mode', async ({
 	apiHelpers,
 	commerceThemeMiniumPage,
-	globalMenuPage,
 	page,
 }) => {
 	const {site} = await miniumSetUp(apiHelpers);
 
-	await globalMenuPage.goToSite(site.name);
+	await page.goto(`/web/${site.name}`);
 
 	await commerceThemeMiniumPage.stickerUserNav.click();
 	await commerceThemeMiniumPage.myProfileItemMenu.click();
