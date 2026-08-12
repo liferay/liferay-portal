@@ -285,10 +285,15 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 				).isNotNull());
 		}
 
+		Date startDate = _getStartDate(rangeEnd, rangeKey, rangeStart);
+
+		if (startDate == null) {
+			return predicate;
+		}
+
 		if (!previous) {
 			predicate = predicate.and(
-				ObjectEntryTable.INSTANCE.createDate.gte(
-					_getStartDate(rangeKey, rangeStart)));
+				ObjectEntryTable.INSTANCE.createDate.gte(startDate));
 
 			if (Validator.isNotNull(rangeEnd)) {
 				predicate = predicate.and(
@@ -301,8 +306,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 				ObjectEntryTable.INSTANCE.createDate.gte(
 					_getPreviousStartDate(rangeEnd, rangeKey, rangeStart))
 			).and(
-				ObjectEntryTable.INSTANCE.createDate.lt(
-					_getStartDate(rangeKey, rangeStart))
+				ObjectEntryTable.INSTANCE.createDate.lt(startDate)
 			);
 		}
 
@@ -316,7 +320,7 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 
 		if (Validator.isNotNull(rangeEnd) && Validator.isNotNull(rangeStart)) {
 			try {
-				calendar.setTime(_getStartDate(null, rangeStart));
+				calendar.setTime(_getStartDate(rangeEnd, null, rangeStart));
 
 				DateFormat dateFormat = _getDateFormat();
 
@@ -331,8 +335,11 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 				}
 			}
 		}
-		else {
+		else if (rangeKey != null) {
 			calendar.add(Calendar.DAY_OF_MONTH, -(rangeKey * 2));
+		}
+		else {
+			return null;
 		}
 
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -399,10 +406,12 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 		return GetterUtil.getLong(results.get(0));
 	}
 
-	private Date _getStartDate(Integer rangeKey, String rangeStart) {
+	private Date _getStartDate(
+		String rangeEnd, Integer rangeKey, String rangeStart) {
+
 		Calendar calendar = Calendar.getInstance();
 
-		if (Validator.isNotNull(rangeStart)) {
+		if (Validator.isNotNull(rangeEnd) && Validator.isNotNull(rangeStart)) {
 			try {
 				DateFormat dateFormat = _getDateFormat();
 
@@ -414,8 +423,11 @@ public class OverviewResourceImpl extends BaseOverviewResourceImpl {
 				}
 			}
 		}
-		else {
+		else if (rangeKey != null) {
 			calendar.add(Calendar.DAY_OF_MONTH, -rangeKey);
+		}
+		else {
+			return null;
 		}
 
 		calendar.set(Calendar.HOUR_OF_DAY, 0);
