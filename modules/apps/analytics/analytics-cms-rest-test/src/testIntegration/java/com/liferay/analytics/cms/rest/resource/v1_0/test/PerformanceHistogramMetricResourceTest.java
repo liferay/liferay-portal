@@ -30,6 +30,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.ws.rs.ForbiddenException;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -156,6 +158,17 @@ public class PerformanceHistogramMetricResourceTest
 			ReflectionTestUtil.setFieldValue(
 				_performanceHistogramMetricResource, "_http", _http);
 		}
+	}
+
+	@Test
+	public void testGetPerformanceHistogramMetricWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() ->
+				_performanceHistogramMetricResource.
+					getPerformanceHistogramMetric(
+						new Long[] {_depotEntry.getDepotEntryId()},
+						RandomTestUtil.nextInt(), "downloadsMetric"));
 	}
 
 	@DeleteAfterTestRun

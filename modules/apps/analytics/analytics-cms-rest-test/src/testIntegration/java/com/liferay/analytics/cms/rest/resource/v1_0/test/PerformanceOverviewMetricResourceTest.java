@@ -30,6 +30,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.ws.rs.ForbiddenException;
+
 import java.util.Collections;
 
 import org.junit.Assert;
@@ -176,6 +178,16 @@ public class PerformanceOverviewMetricResourceTest
 			ReflectionTestUtil.setFieldValue(
 				_performanceOverviewMetricResource, "_http", _http);
 		}
+	}
+
+	@Test
+	public void testGetPerformanceOverviewMetricWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() ->
+				_performanceOverviewMetricResource.getPerformanceOverviewMetric(
+					new Long[] {_depotEntry.getDepotEntryId()},
+					RandomTestUtil.nextInt()));
 	}
 
 	private void _assertMetric(

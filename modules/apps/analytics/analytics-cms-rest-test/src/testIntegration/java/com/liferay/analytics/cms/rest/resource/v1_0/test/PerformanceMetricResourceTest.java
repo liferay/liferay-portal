@@ -37,6 +37,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
 
@@ -88,6 +89,7 @@ public class PerformanceMetricResourceTest
 		_testGetPerformanceMetric(
 			"location", "downloadsMetric",
 			"/api/1.0/asset-metric/objectEntry/geolocation");
+		_testGetPerformanceMetricWithAnalyticsCloudNotConnected();
 		_testGetPerformanceMetricWithInvalidMetricType();
 		_testGetPerformanceMetricWithNoData();
 	}
@@ -101,6 +103,7 @@ public class PerformanceMetricResourceTest
 		_testGetPerformanceMetricExport(
 			"location", "downloadsMetric",
 			"/api/1.0/asset-metric/objectEntry/geolocation/export");
+		_testGetPerformanceMetricExportWithAnalyticsCloudNotConnected();
 		_testGetPerformanceMetricExportWithInvalidMetricType();
 	}
 
@@ -307,6 +310,15 @@ public class PerformanceMetricResourceTest
 		}
 	}
 
+	private void _testGetPerformanceMetricExportWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() -> _performanceMetricResource.getPerformanceMetricExport(
+				TransformUtil.transformToArray(
+					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+				"categories", "viewsMetric", RandomTestUtil.nextInt()));
+	}
+
 	private void _testGetPerformanceMetricExportWithInvalidMetricType() {
 		Assert.assertThrows(
 			BadRequestException.class,
@@ -315,6 +327,15 @@ public class PerformanceMetricResourceTest
 					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.nextInt()));
+	}
+
+	private void _testGetPerformanceMetricWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() -> _performanceMetricResource.getPerformanceMetric(
+				TransformUtil.transformToArray(
+					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
+				"categories", "viewsMetric", RandomTestUtil.nextInt()));
 	}
 
 	private void _testGetPerformanceMetricWithInvalidMetricType() {

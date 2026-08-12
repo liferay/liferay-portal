@@ -29,6 +29,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
@@ -94,6 +95,15 @@ public class PerformanceTopAssetResourceTest
 		}
 	}
 
+	@Test
+	public void testGetPerformanceTopAssetExportWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() -> _performanceTopAssetResource.getPerformanceTopAssetExport(
+				null, RandomTestUtil.nextInt(), RandomTestUtil.randomString(),
+				null, null));
+	}
+
 	@Override
 	@Test
 	public void testGetPerformanceTopAssetPage() throws Exception {
@@ -123,6 +133,15 @@ public class PerformanceTopAssetResourceTest
 			ReflectionTestUtil.setFieldValue(
 				_performanceTopAssetResource, "_http", _http);
 		}
+	}
+
+	@Test
+	public void testGetPerformanceTopAssetPageWithAnalyticsCloudNotConnected() {
+		Assert.assertThrows(
+			ForbiddenException.class,
+			() -> _performanceTopAssetResource.getPerformanceTopAssetPage(
+				null, RandomTestUtil.nextInt(), RandomTestUtil.randomString(),
+				null, Pagination.of(1, 10), null));
 	}
 
 	@Override
