@@ -18,7 +18,7 @@ const UnableDeletePropertyModal: React.FC<{
 			<p className="text-secondary">
 				{sub(
 					Liferay.Language.get(
-						'ensure-no-sites-and-channels-are-assigned-to-it-before-deleting-a-property'
+						'ensure-no-sites-are-assigned-to-it-before-deleting-a-property'
 					),
 					[
 						<ClayLink
