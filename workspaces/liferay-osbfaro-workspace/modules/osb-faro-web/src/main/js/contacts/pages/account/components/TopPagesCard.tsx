@@ -1,6 +1,5 @@
 import BaseCard from 'shared/components/base-card';
 import BasePage from 'shared/components/base-page';
-import ClayEmptyState from '@clayui/empty-state';
 import React, {useContext, useState} from 'react';
 import SitesTopPagesQuery, {
 	SitesTopPagesQueryData,
@@ -8,6 +7,7 @@ import SitesTopPagesQuery, {
 } from 'shared/queries/SitesTopPagesQuery';
 import TopPagesCardContent, {
 	TOP_PAGES_TABS,
+	TopPagesEmptyState,
 } from 'shared/components/TopPagesCardContent';
 import {getSafeRangeSelectors} from 'shared/util/util';
 import {OrderByDirections} from 'shared/util/constants';
@@ -73,16 +73,7 @@ const TopPagesCardWithData: React.FC<ITopPagesCardWithDataProps> = ({
 		<TopPagesCardContent
 			activeTabId={activeTabId}
 			empty={!data?.pages.total}
-			emptyState={
-				<ClayEmptyState
-					className="py-3 text-center"
-					description={Liferay.Language.get(
-						'pages-will-appear-here-when-available'
-					)}
-					small
-					title={Liferay.Language.get('no-pages-available')}
-				/>
-			}
+			emptyState={<TopPagesEmptyState />}
 			error={error}
 			footer={{
 				href: setUriQueryValues(

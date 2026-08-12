@@ -1,5 +1,6 @@
 import BasePage from 'shared/components/base-page';
 import Card from 'shared/components/Card';
+import ClayEmptyState from '@clayui/empty-state';
 import ClayLink from '@clayui/link';
 import ClayTabs from '@clayui/tabs';
 import ErrorDisplay from 'shared/components/ErrorDisplay';
@@ -96,6 +97,17 @@ export const TOP_PAGES_TABS = [
 		title: Liferay.Language.get('exit-pages'),
 	},
 ];
+
+export const TopPagesEmptyState: React.FC = () => (
+	<ClayEmptyState
+		className="py-3 text-center"
+		description={Liferay.Language.get(
+			'pages-will-appear-here-when-available'
+		)}
+		small
+		title={Liferay.Language.get('no-pages-available')}
+	/>
+);
 
 export interface ITopPagesCardItem {
 	assetId: string;
