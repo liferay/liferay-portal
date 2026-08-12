@@ -6,6 +6,7 @@
 package com.liferay.portal.workflow.metrics.internal.search.index.reindexer;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalRunMode;
@@ -26,6 +27,7 @@ import com.liferay.portal.search.query.QueriesUtil;
 import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.workflow.metrics.internal.background.task.WorkflowMetricsSLAProcessBackgroundTaskHelper;
 import com.liferay.portal.workflow.metrics.internal.search.index.SLAInstanceResultWorkflowMetricsIndexer;
+import com.liferay.portal.workflow.metrics.internal.search.index.WorkflowMetricsIndex;
 import com.liferay.portal.workflow.metrics.search.index.constants.WorkflowMetricsIndexNameConstants;
 import com.liferay.portal.workflow.metrics.search.index.reindexer.WorkflowMetricsReindexer;
 
@@ -46,6 +48,16 @@ public class SLAInstanceResultWorkflowMetricsReindexer
 
 	@Override
 	public void reindex(long companyId) throws PortalException {
+		if (!_searchCapabilities.isWorkflowMetricsSupported() ||
+			(companyId == CompanyConstants.SYSTEM)) {
+
+			return;
+		}
+
+		WorkflowMetricsIndex.createMissingIndexes(
+			_searchCapabilities, _searchEngineAdapter, _indexNameBuilder,
+			companyId);
+
 		_createDefaultDocuments(companyId);
 
 		WorkflowMetricsSLAProcessBackgroundTaskHelper
@@ -66,8 +78,7 @@ public class SLAInstanceResultWorkflowMetricsReindexer
 	}
 
 	private void _createDefaultDocuments(long companyId) {
-		if (!_searchCapabilities.isWorkflowMetricsSupported() ||
-			!_hasIndex(
+		if (!_hasIndex(
 				_indexNameBuilder.getIndexName(companyId) +
 					WorkflowMetricsIndexNameConstants.SUFFIX_PROCESS)) {
 

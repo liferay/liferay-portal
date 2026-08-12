@@ -50,6 +50,10 @@ public abstract class BaseWorkflowMetricsReindexer
 			return;
 		}
 
+		WorkflowMetricsIndex.createMissingIndexes(
+			searchCapabilities, searchEngineAdapter, indexNameBuilder,
+			companyId);
+
 		Date date = null;
 
 		WorkflowMetricsIndex workflowMetricsIndex =
