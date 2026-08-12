@@ -123,19 +123,9 @@ public class DSEnvelopeManagerImpl implements DSEnvelopeManager {
 
 	@Override
 	public Page<DSEnvelope> getDSEnvelopesPage(
-		long companyId, long groupId, String fromDateString, String keywords,
-		String order, Pagination pagination, String status) {
-
-		return getDSEnvelopesPage(
-			companyId, groupId, fromDateString, keywords, order, pagination,
-			status, true);
-	}
-
-	@Override
-	public Page<DSEnvelope> getDSEnvelopesPage(
-		long companyId, long groupId, String fromDateString, String keywords,
-		String order, Pagination pagination, String status,
-		boolean includeDocuments) {
+		long companyId, long groupId, String fromDateString,
+		boolean includeDocuments, String keywords, String order,
+		Pagination pagination, String status) {
 
 		Matcher matcher = _pattern.matcher(GetterUtil.get(keywords, ""));
 

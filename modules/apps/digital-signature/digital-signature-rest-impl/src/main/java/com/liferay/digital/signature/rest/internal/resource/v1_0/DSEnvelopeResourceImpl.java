@@ -47,7 +47,7 @@ public class DSEnvelopeResourceImpl extends BaseDSEnvelopeResourceImpl {
 
 		Page<com.liferay.digital.signature.model.DSEnvelope> page =
 			_dsEnvelopeManager.getDSEnvelopesPage(
-				contextCompany.getCompanyId(), siteId, fromDate, keywords,
+				contextCompany.getCompanyId(), siteId, fromDate, true, keywords,
 				order, pagination, status);
 
 		return Page.of(

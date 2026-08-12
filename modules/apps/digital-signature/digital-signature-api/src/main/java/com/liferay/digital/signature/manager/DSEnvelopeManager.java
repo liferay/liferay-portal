@@ -31,12 +31,8 @@ public interface DSEnvelopeManager {
 		long companyId, long groupId, String dsEnvelopeId, String include);
 
 	public Page<DSEnvelope> getDSEnvelopesPage(
-		long companyId, long groupId, String fromDateString, String keywords,
-		String order, Pagination pagination, String status);
-
-	public Page<DSEnvelope> getDSEnvelopesPage(
-		long companyId, long groupId, String fromDateString, String keywords,
-		String order, Pagination pagination, String status,
-		boolean includeDocuments);
+		long companyId, long groupId, String fromDateString,
+		boolean includeDocuments, String keywords, String order,
+		Pagination pagination, String status);
 
 }

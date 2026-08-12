@@ -337,7 +337,7 @@ public class DSEnvelopeManagerTest {
 
 		Page<DSEnvelope> page = _dsEnvelopeManager.getDSEnvelopesPage(
 			TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
-			"2021-01-01", keywords, order, Pagination.of(1, 2), status);
+			"2021-01-01", true, keywords, order, Pagination.of(1, 2), status);
 
 		Assert.assertEquals(expectedTotalCount, page.getTotalCount());
 
