@@ -27,12 +27,13 @@ export default function actionGeneratesChanges(actionType: Action['type']) {
 		case 'clear-errors':
 		case 'copy-children':
 		case 'create-structure':
+		case 'end-operation':
 		case 'publish-structure':
 		case 'refresh-referenced-structures':
 		case 'save-structure':
 		case 'set-renaming-item-uuid':
 		case 'set-selection':
-		case 'set-structure-status':
+		case 'start-operation':
 		case 'validate':
 			return false;
 		default: {

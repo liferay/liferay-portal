@@ -37,6 +37,7 @@ export default function buildState({
 			modifiedSlugs: new Set(),
 		},
 		invalids: new Map(),
+		operation: null,
 		publishedChildren:
 			structure.status === 'published'
 				? getChildrenUuids({root: structure})

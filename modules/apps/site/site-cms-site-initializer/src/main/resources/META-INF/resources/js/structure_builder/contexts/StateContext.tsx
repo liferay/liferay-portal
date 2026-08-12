@@ -68,10 +68,13 @@ export type Clipboard = {
 	items: StructureChild[];
 };
 
+export type Operation = 'publishing' | 'saving';
+
 export type State = {
 	clipboard: Clipboard | null;
 	history: History;
 	invalids: Map<Uuid, ErrorMap>;
+	operation: Operation | null;
 	publishedChildren: Set<Uuid>;
 	renamingItemUuid: Uuid | null;
 	savedChildren: Set<Uuid>;
@@ -90,6 +93,7 @@ const INITIAL_STATE: State = {
 		modifiedSlugs: new Set(),
 	},
 	invalids: new Map(),
+	operation: null,
 	publishedChildren: new Set(),
 	renamingItemUuid: null,
 	savedChildren: new Set(),
@@ -132,7 +136,6 @@ type AddRepeatableGroupAction = {
 type AddErrorAction = {
 	error: ValidationError;
 	property: ValidationProperty;
-	status?: Structure['status'];
 	type: 'add-error';
 	uuid: Uuid;
 };
@@ -151,6 +154,8 @@ type CreateStructureAction = {
 type DeleteChildrenAction = {type: 'delete-children'; uuids: Uuid[]};
 
 type DuplicateChildrenAction = {type: 'duplicate-children'; uuids: Uuid[]};
+
+type EndOperationAction = {type: 'end-operation'};
 
 type MoveChildrenAction = {
 	items: StructureChild[];
@@ -185,15 +190,15 @@ type SetSelectionAction = {
 	type: 'set-selection';
 };
 
-type SetStructureStatusAction = {
-	status: Structure['status'];
-	type: 'set-structure-status';
-};
-
 type SetWorkflowAction = {
 	name: Workflow['name'];
 	spaceERC?: Space['externalReferenceCode'];
 	type: 'set-workflow';
+};
+
+type StartOperationAction = {
+	operation: Operation;
+	type: 'start-operation';
 };
 
 type UngroupAction = {
@@ -257,6 +262,7 @@ export type Action =
 	| CreateStructureAction
 	| DeleteChildrenAction
 	| DuplicateChildrenAction
+	| EndOperationAction
 	| MoveChildrenAction
 	| PasteAction
 	| PublishStructureAction
@@ -265,8 +271,8 @@ export type Action =
 	| SaveStructureAction
 	| SetRenamingItemUuidAction
 	| SetSelectionAction
-	| SetStructureStatusAction
 	| SetWorkflowAction
+	| StartOperationAction
 	| UngroupAction
 	| UpdateFieldAction
 	| UpdateRelatedContentAction
@@ -426,7 +432,7 @@ function reducer(state: State, action: Action): State {
 			};
 		}
 		case 'add-error': {
-			const {error, property, status, uuid} = action;
+			const {error, property, uuid} = action;
 
 			const invalids = new Map(state.invalids);
 
@@ -438,7 +444,6 @@ function reducer(state: State, action: Action): State {
 
 			return {
 				...state,
-				...(status && {structure: {...state.structure, status}}),
 				invalids,
 			};
 		}
@@ -549,6 +554,9 @@ function reducer(state: State, action: Action): State {
 				selection: newSelection.length ? newSelection : state.selection,
 				structure: nextStructure,
 			};
+		}
+		case 'end-operation': {
+			return {...state, operation: null};
 		}
 		case 'move-children': {
 			const {items, targetUuid} = action;
@@ -725,17 +733,6 @@ function reducer(state: State, action: Action): State {
 
 			return {...state, selection};
 		}
-		case 'set-structure-status': {
-			const {status} = action;
-
-			return {
-				...state,
-				structure: {
-					...state.structure,
-					status,
-				},
-			};
-		}
 		case 'set-workflow': {
 			const {name, spaceERC} = action;
 
@@ -750,6 +747,11 @@ function reducer(state: State, action: Action): State {
 			};
 
 			return {...state, structure: nextStructure};
+		}
+		case 'start-operation': {
+			const {operation} = action;
+
+			return {...state, operation};
 		}
 		case 'ungroup': {
 			const {structure} = state;
