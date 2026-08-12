@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -59,13 +58,13 @@ public class GroupDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
-		List<ClassName> classNames = ListUtil.remove(
-			_classNameLocalService.getClassNames(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_classNames);
+		for (ClassName className :
+				_classNameLocalService.getClassNames(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		for (ClassName className : classNames) {
-			_classNameLocalService.deleteClassName(className);
+			if (!_classNames.contains(className)) {
+				_classNameLocalService.deleteClassName(className);
+			}
 		}
 	}
 

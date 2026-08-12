@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.data.cleanup.JournalDataCleanupPreupgradeProcess;
@@ -77,13 +76,13 @@ public class JournalDataCleanupPreupgradeProcessTest
 			_groupLocalService.deleteGroup(_group);
 		}
 
-		List<ClassName> classNames = ListUtil.remove(
-			_classNameLocalService.getClassNames(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_classNames);
+		for (ClassName className :
+				_classNameLocalService.getClassNames(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		for (ClassName className : classNames) {
-			_classNameLocalService.deleteClassName(className);
+			if (!_classNames.contains(className)) {
+				_classNameLocalService.deleteClassName(className);
+			}
 		}
 	}
 

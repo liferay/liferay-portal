@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.upgrade.data.cleanup.ContactDataCleanupPreupgradeProcess;
@@ -72,22 +71,22 @@ public class ContactDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
-		List<ClassName> classNames = ListUtil.remove(
-			_classNameLocalService.getClassNames(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_classNames);
+		for (ClassName className :
+				_classNameLocalService.getClassNames(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		for (ClassName className : classNames) {
-			_classNameLocalService.deleteClassName(className);
+			if (!_classNames.contains(className)) {
+				_classNameLocalService.deleteClassName(className);
+			}
 		}
 
-		List<SystemEvent> systemEvents = ListUtil.remove(
-			_systemEventLocalService.getSystemEvents(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_systemEvents);
+		for (SystemEvent systemEvent :
+				_systemEventLocalService.getSystemEvents(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		for (SystemEvent systemEvent : systemEvents) {
-			_systemEventLocalService.deleteSystemEvent(systemEvent);
+			if (!_systemEvents.contains(systemEvent)) {
+				_systemEventLocalService.deleteSystemEvent(systemEvent);
+			}
 		}
 	}
 

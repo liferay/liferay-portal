@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.util.OrphanReferencesDataCleanupUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -93,13 +92,13 @@ public class DDMDataCleanupPreupgradeProcessTest
 
 	@After
 	public void tearDown() throws Exception {
-		List<ClassName> classNames = ListUtil.remove(
-			_classNameLocalService.getClassNames(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_classNames);
+		for (ClassName className :
+				_classNameLocalService.getClassNames(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		for (ClassName className : classNames) {
-			_classNameLocalService.deleteClassName(className);
+			if (!_classNames.contains(className)) {
+				_classNameLocalService.deleteClassName(className);
+			}
 		}
 	}
 

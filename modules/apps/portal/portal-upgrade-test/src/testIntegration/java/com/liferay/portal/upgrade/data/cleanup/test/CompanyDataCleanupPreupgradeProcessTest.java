@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -82,22 +81,23 @@ public class CompanyDataCleanupPreupgradeProcessTest
 	public void tearDown() throws Exception {
 		DataAccess.cleanUp(_connection);
 
-		List<ClassName> classNames = ListUtil.remove(
-			_classNameLocalService.getClassNames(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_classNames);
+		for (ClassName className :
+				_classNameLocalService.getClassNames(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		for (ClassName className : classNames) {
-			_classNameLocalService.deleteClassName(className);
+			if (!_classNames.contains(className)) {
+				_classNameLocalService.deleteClassName(className);
+			}
 		}
 
-		List<ResourceAction> resourceActions = ListUtil.remove(
-			_resourceActionLocalService.getResourceActions(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			_resourceActions);
+		for (ResourceAction resourceAction :
+				_resourceActionLocalService.getResourceActions(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
 
-		for (ResourceAction resourceAction : resourceActions) {
-			_resourceActionLocalService.deleteResourceAction(resourceAction);
+			if (!_resourceActions.contains(resourceAction)) {
+				_resourceActionLocalService.deleteResourceAction(
+					resourceAction);
+			}
 		}
 	}
 
