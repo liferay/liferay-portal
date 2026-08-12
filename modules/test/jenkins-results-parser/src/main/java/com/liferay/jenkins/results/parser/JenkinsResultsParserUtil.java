@@ -5738,7 +5738,10 @@ public class JenkinsResultsParserUtil {
 		for (String propertyName : propertyNames) {
 			sb.append(propertyName);
 			sb.append("=");
-			sb.append(getProperty(properties, propertyName));
+
+			sb.append(
+				StringEscapeUtils.escapeJava(
+					getProperty(properties, propertyName)));
 
 			sb.append("\n");
 		}
