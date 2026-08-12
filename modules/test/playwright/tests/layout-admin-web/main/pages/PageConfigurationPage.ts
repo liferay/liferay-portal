@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {PagesAdminPage} from '../../../../pages/layout-admin-web/PagesAdminPage';
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
@@ -89,6 +89,8 @@ export class PageConfigurationPage {
 	}
 
 	async setFriendlyURL(friendlyURL: string, language: 'spanish' | 'english') {
+		const languageIds = {english: 'en_US', spanish: 'es_ES'};
+
 		const selectLanguage = async (name: string) => {
 			const toggle = this.page.locator(
 				'.form-group.friendly-url .input-localized-trigger'
@@ -113,6 +115,16 @@ export class PageConfigurationPage {
 		await selectLanguage(language);
 
 		await this.friendlyURL.fill(friendlyURL);
+
+		// The localized input debounces copying the typed value into the hidden
+		// input of the selected language, so switching back to the default
+		// language too early discards it
+
+		await expect(
+			this.page.locator(
+				`input[name$="friendlyURL_${languageIds[language]}"]`
+			)
+		).toHaveValue(friendlyURL);
 
 		await selectLanguage('default');
 
