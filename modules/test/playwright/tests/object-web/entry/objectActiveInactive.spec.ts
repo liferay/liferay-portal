@@ -85,20 +85,4 @@ test('Verify that pending and completed Object entries with workflow are not dis
 	await metricsPage.chooseProcess('Single Approver');
 
 	await expect(page.getByText('0', {exact: true}).first()).toBeVisible();
-
-	// Reactivate the object and unassign workflow for cleanup
-
-	await viewObjectDefinitionsPage.goto();
-
-	await viewObjectDefinitionsPage.changeObjectActivateStatus(
-		objectDefinition.name
-	);
-
-	await globalMenuPage.goToApplications('Process Builder');
-
-	await configurationTabPage.configurationTabLink.click();
-
-	await configurationTabPage.unassignWorkflowFromAssetType(
-		objectDefinition.label['en_US']
-	);
 });
