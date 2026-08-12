@@ -20,6 +20,8 @@ import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcessRequest;
 import com.liferay.exportimport.rest.client.dto.v1_0.ProcessProgress;
 import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
+import com.liferay.exportimport.rest.client.pagination.Page;
+import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportProcessResource;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
@@ -73,6 +75,7 @@ import java.io.Serializable;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -129,6 +132,56 @@ public class ImportProcessResourceTest
 		super.tearDown();
 
 		_userLocalService.deleteUser(_user);
+	}
+
+	@Override
+	@Test
+	public void testGetImportProcessesPage() throws Exception {
+		Page<ImportProcess> page = importProcessResource.getImportProcessesPage(
+			null, null, null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		ImportProcess importProcess1 =
+			testGetImportProcessesPage_addImportProcess(randomImportProcess());
+
+		ImportProcess importProcess2 =
+			testGetImportProcessesPage_addImportProcess(randomImportProcess());
+
+		String portletId = RandomTestUtil.randomString();
+
+		ImportProcess portletImportProcess = _addImportProcess(
+			_getCompanyGroupId(), portletId,
+			BackgroundTaskExecutorNames.
+				PORTLET_IMPORT_BACKGROUND_TASK_EXECUTOR);
+
+		page = importProcessResource.getImportProcessesPage(
+			null, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(importProcess1, (List<ImportProcess>)page.getItems());
+		assertContains(importProcess2, (List<ImportProcess>)page.getItems());
+		assertValid(page, testGetImportProcessesPage_getExpectedActions());
+
+		page = importProcessResource.getImportProcessesPage(
+			null, portletId, null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		assertContains(
+			portletImportProcess, (List<ImportProcess>)page.getItems());
+
+		page = importProcessResource.getImportProcessesPage(
+			null, RandomTestUtil.randomString(), null, null,
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		importProcessResource.deleteImportProcess(importProcess1.getId());
+		importProcessResource.deleteImportProcess(importProcess2.getId());
+		importProcessResource.deleteImportProcess(portletImportProcess.getId());
 	}
 
 	@Override

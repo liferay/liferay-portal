@@ -13,6 +13,8 @@ import com.liferay.exportimport.rest.client.dto.v1_0.ProcessProgress;
 import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
+import com.liferay.exportimport.rest.client.pagination.Page;
+import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportProcessResource;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -178,6 +180,56 @@ public class ExportProcessResourceTest
 			exportProcess.getName() + ".lar", fileEntry.getTitle());
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Override
+	@Test
+	public void testGetExportProcessesPage() throws Exception {
+		Page<ExportProcess> page = exportProcessResource.getExportProcessesPage(
+			null, null, null, null, Pagination.of(1, 10), null);
+
+		long totalCount = page.getTotalCount();
+
+		ExportProcess exportProcess1 =
+			testGetExportProcessesPage_addExportProcess(randomExportProcess());
+
+		ExportProcess exportProcess2 =
+			testGetExportProcessesPage_addExportProcess(randomExportProcess());
+
+		String portletId = RandomTestUtil.randomString();
+
+		ExportProcess portletExportProcess = _addExportProcess(
+			_getCompanyGroupId(), portletId,
+			BackgroundTaskExecutorNames.
+				PORTLET_EXPORT_BACKGROUND_TASK_EXECUTOR);
+
+		page = exportProcessResource.getExportProcessesPage(
+			null, null, null, null, Pagination.of(1, (int)totalCount + 2),
+			null);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(exportProcess1, (List<ExportProcess>)page.getItems());
+		assertContains(exportProcess2, (List<ExportProcess>)page.getItems());
+		assertValid(page, testGetExportProcessesPage_getExpectedActions());
+
+		page = exportProcessResource.getExportProcessesPage(
+			null, portletId, null, null, Pagination.of(1, 10), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		assertContains(
+			portletExportProcess, (List<ExportProcess>)page.getItems());
+
+		page = exportProcessResource.getExportProcessesPage(
+			null, RandomTestUtil.randomString(), null, null,
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		exportProcessResource.deleteExportProcess(exportProcess1.getId());
+		exportProcessResource.deleteExportProcess(exportProcess2.getId());
+		exportProcessResource.deleteExportProcess(portletExportProcess.getId());
 	}
 
 	@Override
