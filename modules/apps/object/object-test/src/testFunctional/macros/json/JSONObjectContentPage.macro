@@ -8,7 +8,7 @@ definition {
 			var submittedEntryStatus = 0;
 		}
 
-		var objectDefinitionId = JSONObject.getObjectId(objectName = ${objectName});
+		var objectClassName = JSONObject.getObjectClassName(objectName = ${objectName});
 		var portalURL = JSONCompany.getPortalURL();
 		var siteId = JSONGroupAPI._getSiteIdByGroupKey(groupName = ${groupName});
 		var userLoginInfo = JSONUtil2.formatJSONUser();
@@ -26,7 +26,7 @@ definition {
 									"definition": {
 										"formConfig": {
 											"formReference": {
-												"className": "com.liferay.object.model.ObjectDefinition#${objectDefinitionId}",
+												"className": "${objectClassName}",
 												"classType": 0
 											},
 											"formType": "simple"

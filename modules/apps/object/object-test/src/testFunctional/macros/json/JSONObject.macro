@@ -1155,6 +1155,41 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro getObjectClassName(objectName = null, virtualHost = null, token = null) {
+		if (isSet(virtualHost)) {
+			if (!(isSet(port))) {
+				var port = 8080;
+			}
+
+			var portalURL = "http://${virtualHost}:${port}";
+		}
+		else {
+			var portalURL = JSONCompany.getPortalURL();
+		}
+
+		if (!(isSet(userEmailAddress))) {
+			var userEmailAddress = "test@liferay.com";
+		}
+
+		if (!(isSet(userPassword))) {
+			var userPassword = PropsUtil.get("default.admin.password");
+		}
+
+		var curl = '''
+			${portalURL}/o/object-admin/v1.0/object-definitions?filter=name%20eq%20%27${objectName}%27 \
+				-u ${userEmailAddress}:${userPassword}
+		''';
+
+		if (isSet(token)) {
+			var curl = StringUtil.add(${curl}, " -H 'Authorization: Bearer ${token}'", "");
+		}
+
+		var objectClassName = JSONCurlUtil.get(${curl}, "$.items[?(@['name'] == '${objectName}')]['className']");
+
+		return ${objectClassName};
+	}
+
+	@summary = "Default summary"
 	macro getObjectDefinition(objectName = null) {
 		Variables.assertDefined(parameterList = ${objectName});
 
