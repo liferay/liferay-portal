@@ -1,0 +1,15 @@
+apiDir: ../headless-pim-api/src/main/java
+apiPackagePath: com.liferay.headless.pim
+application:
+    baseURI: /headless-pim
+    className: HeadlessPIMApplication
+    name: Liferay.Headless.PIM
+author: Stefano Motta
+clientDir: ../headless-pim-client/src/main/java
+compatibilityVersion: 16
+forcePredictableOperationId: true
+forcePredictableSchemaPropertyName: true
+generateBatch: false
+generateGraphQL: false
+javaEEPackage: jakarta
+testDir: ../headless-pim-test/src/testIntegration/java
