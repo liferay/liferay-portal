@@ -74,6 +74,9 @@ public class FaroSubscriptionDisplay {
 		_apiActivationMonthlyLimit =
 			baseFaroSubscriptionPlan.getApiActivationMonthlyLimit();
 		_batchSegmentsLimit = baseFaroSubscriptionPlan.getBatchSegmentsLimit();
+		_billableEventsMonthlyLimit =
+			baseFaroSubscriptionPlan.getBillableEventsMonthlyLimit();
+		_connectorsLimit = baseFaroSubscriptionPlan.getConnectorsLimit();
 		_eventAnalysisLimit = baseFaroSubscriptionPlan.getEventAnalysisLimit();
 		_individualsLimit = baseFaroSubscriptionPlan.getIndividualsLimit();
 		_pageViewsLimit = baseFaroSubscriptionPlan.getPageViewsLimit();
@@ -104,6 +107,13 @@ public class FaroSubscriptionDisplay {
 				_batchSegmentsLimit = _computeLimit(
 					faroSubscriptionPlan.getBatchSegmentsLimit(),
 					_batchSegmentsLimit, osbOfferingEntry.getQuantity());
+				_billableEventsMonthlyLimit = _computeLimit(
+					faroSubscriptionPlan.getBillableEventsMonthlyLimit(),
+					_billableEventsMonthlyLimit,
+					osbOfferingEntry.getQuantity());
+				_connectorsLimit = _computeLimit(
+					faroSubscriptionPlan.getConnectorsLimit(), _connectorsLimit,
+					osbOfferingEntry.getQuantity());
 				_eventAnalysisLimit = _computeLimit(
 					faroSubscriptionPlan.getEventAnalysisLimit(),
 					_eventAnalysisLimit, osbOfferingEntry.getQuantity());
@@ -130,6 +140,14 @@ public class FaroSubscriptionDisplay {
 
 	public long getBatchSegmentsLimit() {
 		return _batchSegmentsLimit;
+	}
+
+	public long getBillableEventsMonthlyLimit() {
+		return _billableEventsMonthlyLimit;
+	}
+
+	public long getConnectorsLimit() {
+		return _connectorsLimit;
 	}
 
 	public long getEventAnalysisLimit() {
@@ -442,6 +460,8 @@ public class FaroSubscriptionDisplay {
 	private long _apiActivationDailyLimit;
 	private long _apiActivationMonthlyLimit;
 	private long _batchSegmentsLimit;
+	private long _billableEventsMonthlyLimit;
+	private long _connectorsLimit;
 	private Date _endDate;
 	private long _eventAnalysisLimit;
 	private long _individualsCountSinceLastAnniversary;

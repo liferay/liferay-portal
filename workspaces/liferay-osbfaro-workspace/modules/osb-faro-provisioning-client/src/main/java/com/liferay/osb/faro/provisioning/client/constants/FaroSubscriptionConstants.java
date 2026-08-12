@@ -76,10 +76,15 @@ public class FaroSubscriptionConstants {
 			).put(
 				ProductConstants.DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_NAME,
 				new FaroSubscriptionPlan(
-					20, 300, null, 5, 3, 1000,
+					20, 300, null, 5, -1, -1, 3, 1000,
 					ProductConstants.
 						DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_NAME,
 					300000, 3)
+			).put(
+				ProductConstants.DATA_PLATFORM_PRODUCT_ENTRY_NAME,
+				new FaroSubscriptionPlan(
+					-1, 100000, null, 50, 2000000, 3, -1, -1,
+					ProductConstants.DATA_PLATFORM_PRODUCT_ENTRY_NAME, -1, 20)
 			).put(
 				ProductConstants.ENTERPRISE_CONTACTS_PRODUCT_ENTRY_NAME,
 				new FaroSubscriptionPlan(

@@ -100,7 +100,9 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 				StringUtil.equals(
 					name,
 					ProductConstants.
-						DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_NAME)) {
+						DATA_PLATFORM_PRIVATE_BETA_PRODUCT_ENTRY_NAME) ||
+				StringUtil.equals(
+					name, ProductConstants.DATA_PLATFORM_PRODUCT_ENTRY_NAME)) {
 
 				return true;
 			}

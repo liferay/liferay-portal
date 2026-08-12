@@ -102,6 +102,13 @@ public class FaroProjectImplTest {
 			).toString());
 
 		Assert.assertTrue(faroProject.isDataPlatform());
+
+		faroProject.setSubscription(
+			JSONUtil.put(
+				"name", "Liferay Data Platform"
+			).toString());
+
+		Assert.assertTrue(faroProject.isDataPlatform());
 	}
 
 }

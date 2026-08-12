@@ -13,6 +13,7 @@ public class FaroSubscriptionPlan {
 	public FaroSubscriptionPlan(
 		int apiActivationDailyLimit, int apiActivationMonthlyLimit,
 		String baseSubscriptionPlan, int batchSegmentsLimit,
+		int billableEventsMonthlyLimit, int connectorsLimit,
 		int eventAnalysisLimit, int individualsLimit, String name,
 		int pageViewsLimit, int realTimeSegmentsLimit) {
 
@@ -20,6 +21,8 @@ public class FaroSubscriptionPlan {
 		_apiActivationMonthlyLimit = apiActivationMonthlyLimit;
 		_baseSubscriptionPlan = baseSubscriptionPlan;
 		_batchSegmentsLimit = batchSegmentsLimit;
+		_billableEventsMonthlyLimit = billableEventsMonthlyLimit;
+		_connectorsLimit = connectorsLimit;
 		_eventAnalysisLimit = eventAnalysisLimit;
 		_individualsLimit = individualsLimit;
 		_name = name;
@@ -51,6 +54,14 @@ public class FaroSubscriptionPlan {
 
 	public int getBatchSegmentsLimit() {
 		return _batchSegmentsLimit;
+	}
+
+	public int getBillableEventsMonthlyLimit() {
+		return _billableEventsMonthlyLimit;
+	}
+
+	public int getConnectorsLimit() {
+		return _connectorsLimit;
 	}
 
 	public int getEventAnalysisLimit() {
@@ -89,6 +100,14 @@ public class FaroSubscriptionPlan {
 		_batchSegmentsLimit = batchSegmentsLimit;
 	}
 
+	public void setBillableEventsMonthlyLimit(int billableEventsMonthlyLimit) {
+		_billableEventsMonthlyLimit = billableEventsMonthlyLimit;
+	}
+
+	public void setConnectorsLimit(int connectorsLimit) {
+		_connectorsLimit = connectorsLimit;
+	}
+
 	public void setEventAnalysisLimit(int eventAnalysisLimit) {
 		_eventAnalysisLimit = eventAnalysisLimit;
 	}
@@ -113,6 +132,8 @@ public class FaroSubscriptionPlan {
 	private int _apiActivationMonthlyLimit = -1;
 	private String _baseSubscriptionPlan;
 	private int _batchSegmentsLimit = -1;
+	private int _billableEventsMonthlyLimit = -1;
+	private int _connectorsLimit = -1;
 	private int _eventAnalysisLimit = -1;
 	private int _individualsLimit;
 	private String _name;
