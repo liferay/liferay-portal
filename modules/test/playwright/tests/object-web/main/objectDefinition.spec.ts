@@ -2786,6 +2786,19 @@ test.describe('Manage object definitions through Page Templates', () => {
 				type: 'objectDefinition',
 			});
 
+			await collectionsPage.goto(site.friendlyUrlPath);
+
+			await page.goto(
+				(await page
+					.getByRole('link', {name: 'Collection Providers'})
+					.getAttribute('href')) +
+					'&_com_liferay_asset_list_web_portlet_AssetListPortlet_delta=200'
+			);
+
+			await expect(
+				page.getByText(objectDefinition.name).first()
+			).toBeVisible();
+
 			await viewObjectDefinitionsPage.goto();
 
 			await viewObjectDefinitionsPage.changeObjectActivateStatus(
@@ -2794,9 +2807,12 @@ test.describe('Manage object definitions through Page Templates', () => {
 
 			await collectionsPage.goto(site.friendlyUrlPath);
 
-			await page
-				.getByRole('link', {name: 'Collection Providers'})
-				.click();
+			await page.goto(
+				(await page
+					.getByRole('link', {name: 'Collection Providers'})
+					.getAttribute('href')) +
+					'&_com_liferay_asset_list_web_portlet_AssetListPortlet_delta=200'
+			);
 
 			await expect(
 				page.getByText(objectDefinition.name).first()
@@ -2810,9 +2826,12 @@ test.describe('Manage object definitions through Page Templates', () => {
 
 			await collectionsPage.goto(site.friendlyUrlPath);
 
-			await page
-				.getByRole('link', {name: 'Collection Providers'})
-				.click();
+			await page.goto(
+				(await page
+					.getByRole('link', {name: 'Collection Providers'})
+					.getAttribute('href')) +
+					'&_com_liferay_asset_list_web_portlet_AssetListPortlet_delta=200'
+			);
 
 			await expect(
 				page.getByText(objectDefinition.name).first()
