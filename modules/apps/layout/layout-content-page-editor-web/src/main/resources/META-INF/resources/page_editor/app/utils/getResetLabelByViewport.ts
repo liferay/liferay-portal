@@ -5,7 +5,7 @@
 
 import {sub} from 'frontend-js-web';
 
-import {VIEWPORT_SIZES} from '../config/constants/viewportSizes';
+import {VIEWPORT_SIZES, ViewportSize} from '../config/constants/viewportSizes';
 import {config} from '../config/index';
 
 const ORDERED_VIEWPORT_SIZES = [
@@ -15,7 +15,7 @@ const ORDERED_VIEWPORT_SIZES = [
 	VIEWPORT_SIZES.portraitMobile,
 ];
 
-export function getResetLabelByViewport(selectedViewportSize) {
+export function getResetLabelByViewport(selectedViewportSize: ViewportSize) {
 	let previousViewport = Liferay.Language.get('initial');
 
 	if (selectedViewportSize !== VIEWPORT_SIZES.desktop) {

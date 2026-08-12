@@ -17,10 +17,18 @@ export const FORM_ERROR_TYPES = {
 	missingNextButton: 'missingNextButton',
 	missingPreviousButton: 'missingPreviousButton',
 	missingSubmit: 'missingSubmit',
+} as const;
+
+type FormErrorType = (typeof FORM_ERROR_TYPES)[keyof typeof FORM_ERROR_TYPES];
+
+type FormError = {
+	name?: string;
+	steps?: number[];
+	type: FormErrorType;
 };
 
-export function getFormErrorDescription(error) {
-	const {name = null, type} = error;
+export function getFormErrorDescription(error: FormError) {
+	const {name = '', type} = error;
 
 	switch (type) {
 		case FORM_ERROR_TYPES.deletedFragment:
@@ -42,7 +50,7 @@ export function getFormErrorDescription(error) {
 			};
 
 		case FORM_ERROR_TYPES.emptySteps: {
-			const steps = [...error.steps];
+			const steps = [...(error.steps ?? [])];
 
 			const lastStep = sub(Liferay.Language.get('step-x'), steps.pop());
 
@@ -124,7 +132,7 @@ export function getFormErrorDescription(error) {
 			};
 
 		case FORM_ERROR_TYPES.missingNextButton: {
-			const steps = [...error.steps];
+			const steps = [...(error.steps ?? [])];
 
 			const lastStep = sub(Liferay.Language.get('step-x'), steps.pop());
 
@@ -168,7 +176,7 @@ export function getFormErrorDescription(error) {
 		}
 
 		case FORM_ERROR_TYPES.missingPreviousButton: {
-			const steps = [...error.steps];
+			const steps = [...(error.steps ?? [])];
 
 			const lastStep = sub(Liferay.Language.get('step-x'), steps.pop());
 
