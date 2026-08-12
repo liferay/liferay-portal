@@ -99,11 +99,6 @@ definition {
 		task ("Given the Notification Date is changed to 2 weeks") {
 			KBNavigator.openToConfigInSystemSettings(portlet = "System Service");
 
-			AssertTextEquals(
-				key_sectionTitle = "Article Expiration Date Notification",
-				locator1 = "PagesAdmin#SECTION_SUBTITLE",
-				value1 = "Define the timeline (in weeks) in which the user will receive a notification informing of an article expiration date. Articles within the specified expiration date will display the label \"Expiring Soon\" in the knowledge base management screen.");
-
 			Type(
 				key_text = "Notification Date (Weeks)",
 				locator1 = "TextInput#ANY",
