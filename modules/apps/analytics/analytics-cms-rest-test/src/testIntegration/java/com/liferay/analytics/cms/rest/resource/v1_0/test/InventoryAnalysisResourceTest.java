@@ -142,6 +142,27 @@ public class InventoryAnalysisResourceTest
 		Assert.assertEquals(1L, (long)inventoryAnalysisItem.getCount());
 
 		Assert.assertEquals("Category", inventoryAnalysisItem.getTitle());
+
+		_assertInventoryAnalysis(
+			inventoryAnalysisResource.getInventoryAnalysis(
+				null, _depotEntry.getDepotEntryId(), null, null, null, 7, null,
+				null, null, null, null),
+			3, 5L, null);
+
+		_assertInventoryAnalysis(
+			inventoryAnalysisResource.getInventoryAnalysis(
+				null, _depotEntry.getDepotEntryId(), null, null, null, -1, null,
+				null, null, null, null),
+			0, 0L, null);
+	}
+
+	@Test
+	public void testGetInventoryAnalysisWithoutSpaces() throws Exception {
+		_assertInventoryAnalysis(
+			inventoryAnalysisResource.getInventoryAnalysis(
+				null, null, null, null, null, null, null, null, null, null,
+				null),
+			0, 0L, null);
 	}
 
 	private void _assertInventoryAnalysis(
