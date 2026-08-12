@@ -77,8 +77,8 @@ public class KaleoDefinitionUpgradeProcessTest {
 			_kaleoDefinitionLocalService.addKaleoDefinition(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				StringUtil.randomString(), StringUtil.randomString(),
-				StringPool.BLANK, WorkflowDefinitionConstants.SCOPE_ALL, 0,
-				ServiceContextTestUtil.getServiceContext());
+				StringPool.BLANK, WorkflowDefinitionConstants.SCOPE_ALL, false,
+				0, ServiceContextTestUtil.getServiceContext());
 
 		kaleoDefinition.setActive(active);
 

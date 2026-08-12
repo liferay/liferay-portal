@@ -938,7 +938,7 @@ public class UpgradeJakartaTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			_read("javax-workflow-definition.xml"),
-			WorkflowDefinitionConstants.SCOPE_ALL, 1, _serviceContext);
+			WorkflowDefinitionConstants.SCOPE_ALL, false, 1, _serviceContext);
 	}
 
 	private KaleoInstance _addKaleoInstance() throws Exception {

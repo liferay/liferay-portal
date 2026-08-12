@@ -108,7 +108,7 @@ public class KaleoInstanceServiceTest {
 				TestPropsValues.getCompanyId(), null,
 				accountEntry.getAccountEntryGroupId(),
 				RandomTestUtil.randomString(),
-				WorkflowDefinitionConstants.SCOPE_AI,
+				WorkflowDefinitionConstants.SCOPE_AI, false,
 				RandomTestUtil.randomString(), user.getUserId());
 
 		ConfigurationTestUtil.saveConfiguration(

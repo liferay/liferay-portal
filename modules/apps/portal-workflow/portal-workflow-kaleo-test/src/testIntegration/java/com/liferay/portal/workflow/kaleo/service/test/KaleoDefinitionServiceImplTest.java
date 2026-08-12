@@ -184,7 +184,7 @@ public class KaleoDefinitionServiceImplTest {
 		return _kaleoDefinitionService.addKaleoDefinition(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			_read(), "company", 1, _serviceContext);
+			_read(), "company", false, 1, _serviceContext);
 	}
 
 	private KaleoDefinition _addKaleoDefinition(ServiceContext serviceContext)
@@ -193,7 +193,7 @@ public class KaleoDefinitionServiceImplTest {
 		return _kaleoDefinitionService.addKaleoDefinition(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			_read(), "ai", 1, serviceContext);
+			_read(), "ai", false, 1, serviceContext);
 	}
 
 	private User _addUser() throws Exception {
@@ -363,7 +363,7 @@ public class KaleoDefinitionServiceImplTest {
 				kaleoDefinition.getExternalReferenceCode(),
 				kaleoDefinition.getKaleoDefinitionId(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				kaleoDefinition.getContent(), _serviceContext));
+				kaleoDefinition.getContent(), false, _serviceContext));
 
 		// Administrator with "company.administrator.can.publish" enabled
 
@@ -378,7 +378,7 @@ public class KaleoDefinitionServiceImplTest {
 				kaleoDefinition.getExternalReferenceCode(),
 				kaleoDefinition.getKaleoDefinitionId(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				kaleoDefinition.getContent(), _serviceContext));
+				kaleoDefinition.getContent(), false, _serviceContext));
 	}
 
 	private void _testUpdateKaleoDefinitionWithGroupId() throws Exception {
@@ -405,7 +405,7 @@ public class KaleoDefinitionServiceImplTest {
 				kaleoDefinition.getExternalReferenceCode(),
 				kaleoDefinition.getKaleoDefinitionId(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				kaleoDefinition.getContent(),
+				kaleoDefinition.getContent(), false,
 				ServiceContextTestUtil.getServiceContext(
 					accountEntry.getAccountEntryGroupId(), user.getUserId())));
 
@@ -417,7 +417,7 @@ public class KaleoDefinitionServiceImplTest {
 				kaleoDefinition.getExternalReferenceCode(),
 				kaleoDefinition.getKaleoDefinitionId(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				kaleoDefinition.getContent(),
+				kaleoDefinition.getContent(), false,
 				ServiceContextTestUtil.getServiceContext(
 					accountEntry.getAccountEntryGroupId(), user.getUserId())));
 	}

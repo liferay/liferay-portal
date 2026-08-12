@@ -93,7 +93,7 @@ public class KaleoDefinitionVersionUpgradeProcessTest {
 		_kaleoDefinitionLocalService.addKaleoDefinition(
 			RandomTestUtil.randomString(), name, StringUtil.randomString(),
 			StringUtil.randomString(), StringPool.BLANK,
-			WorkflowDefinitionConstants.SCOPE_ALL, version,
+			WorkflowDefinitionConstants.SCOPE_ALL, false, version,
 			ServiceContextTestUtil.getServiceContext());
 	}
 

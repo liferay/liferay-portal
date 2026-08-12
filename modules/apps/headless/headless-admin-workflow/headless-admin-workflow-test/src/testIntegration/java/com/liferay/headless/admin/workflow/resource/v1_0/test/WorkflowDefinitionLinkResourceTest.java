@@ -56,7 +56,8 @@ public class WorkflowDefinitionLinkResourceTest
 			StringPool.BLANK,
 			WorkflowDefinitionTestUtil.getContent(
 				RandomTestUtil.randomString(), "workflow-definition.xml", name),
-			StringPool.BLANK, 1, ServiceContextTestUtil.getServiceContext());
+			StringPool.BLANK, false, 1,
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Ignore

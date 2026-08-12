@@ -62,7 +62,7 @@ public class KaleoDefinitionVersionCTTest {
 		_kaleoDefinition = _kaleoDefinitionLocalService.addKaleoDefinition(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), null, null,
-			WorkflowDefinitionConstants.SCOPE_ALL, 1, _serviceContext);
+			WorkflowDefinitionConstants.SCOPE_ALL, false, 1, _serviceContext);
 
 		_kaleoDefinitionLocalService.activateKaleoDefinition(
 			_kaleoDefinition.getKaleoDefinitionId(), _serviceContext);

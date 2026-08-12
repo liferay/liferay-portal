@@ -54,7 +54,8 @@ public class WorkflowDefinitionManagerImpl
 	@Override
 	public WorkflowDefinition deployWorkflowDefinition(
 			byte[] bytes, long companyId, String externalReferenceCode,
-			long groupId, String name, String scope, String title, long userId)
+			long groupId, String name, String scope, boolean system,
+			String title, long userId)
 		throws WorkflowException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -64,7 +65,7 @@ public class WorkflowDefinitionManagerImpl
 		serviceContext.setUserId(userId);
 
 		return _workflowEngine.deployWorkflowDefinition(
-			externalReferenceCode, title, name, scope,
+			externalReferenceCode, title, name, scope, system,
 			new UnsyncByteArrayInputStream(bytes), serviceContext);
 	}
 
@@ -76,7 +77,7 @@ public class WorkflowDefinitionManagerImpl
 
 		return deployWorkflowDefinition(
 			bytes, companyId, externalReferenceCode, 0, name,
-			WorkflowDefinitionConstants.SCOPE_ALL, title, userId);
+			WorkflowDefinitionConstants.SCOPE_ALL, false, title, userId);
 	}
 
 	@Override
@@ -304,7 +305,8 @@ public class WorkflowDefinitionManagerImpl
 	@Override
 	public WorkflowDefinition saveWorkflowDefinition(
 			byte[] bytes, long companyId, String externalReferenceCode,
-			long groupId, String name, String scope, String title, long userId)
+			long groupId, String name, String scope, boolean system,
+			String title, long userId)
 		throws WorkflowException {
 
 		ServiceContext serviceContext = new ServiceContext();
@@ -314,7 +316,8 @@ public class WorkflowDefinitionManagerImpl
 		serviceContext.setUserId(userId);
 
 		return _workflowEngine.saveWorkflowDefinition(
-			externalReferenceCode, title, name, scope, bytes, serviceContext);
+			externalReferenceCode, title, name, scope, system, bytes,
+			serviceContext);
 	}
 
 	@Override
@@ -325,7 +328,7 @@ public class WorkflowDefinitionManagerImpl
 
 		return saveWorkflowDefinition(
 			bytes, companyId, externalReferenceCode, 0, name,
-			WorkflowDefinitionConstants.SCOPE_ALL, title, userId);
+			WorkflowDefinitionConstants.SCOPE_ALL, false, title, userId);
 	}
 
 	@Override

@@ -98,9 +98,16 @@ public abstract class BaseKaleoLocalServiceTestCase {
 	protected KaleoDefinition addKaleoDefinition(String scope)
 		throws IOException, PortalException {
 
+		return addKaleoDefinition(scope, false);
+	}
+
+	protected KaleoDefinition addKaleoDefinition(String scope, boolean system)
+		throws IOException, PortalException {
+
 		return addKaleoDefinition(
 			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), StringUtil.randomString(), scope);
+			StringUtil.randomString(), StringUtil.randomString(), scope,
+			system);
 	}
 
 	protected KaleoDefinition addKaleoDefinition(
@@ -108,13 +115,22 @@ public abstract class BaseKaleoLocalServiceTestCase {
 			String title, String scope)
 		throws IOException, PortalException {
 
+		return addKaleoDefinition(
+			externalReferenceCode, name, description, title, scope, false);
+	}
+
+	protected KaleoDefinition addKaleoDefinition(
+			String externalReferenceCode, String name, String description,
+			String title, String scope, boolean system)
+		throws IOException, PortalException {
+
 		KaleoDefinition kaleoDefinition =
 			_kaleoDefinitionLocalService.addKaleoDefinition(
 				externalReferenceCode, name,
 				LocalizationUtil.getXml(new LocalizedValuesMap(title), "title"),
 				description, _read("legal-marketing-workflow-definition.xml"),
-				GetterUtil.get(scope, WorkflowDefinitionConstants.SCOPE_ALL), 1,
-				serviceContext);
+				GetterUtil.get(scope, WorkflowDefinitionConstants.SCOPE_ALL),
+				system, 1, serviceContext);
 
 		_kaleoDefinitionLocalService.activateKaleoDefinition(
 			kaleoDefinition.getKaleoDefinitionId(), serviceContext);
@@ -274,10 +290,17 @@ public abstract class BaseKaleoLocalServiceTestCase {
 			KaleoDefinition kaleoDefinition)
 		throws IOException, PortalException {
 
+		return updateKaleoDefinition(kaleoDefinition, false);
+	}
+
+	protected KaleoDefinition updateKaleoDefinition(
+			KaleoDefinition kaleoDefinition, boolean system)
+		throws IOException, PortalException {
+
 		kaleoDefinition = _kaleoDefinitionLocalService.updatedKaleoDefinition(
 			kaleoDefinition.getExternalReferenceCode(),
 			kaleoDefinition.getKaleoDefinitionId(), StringUtil.randomString(),
-			StringUtil.randomString(), kaleoDefinition.getContent(),
+			StringUtil.randomString(), kaleoDefinition.getContent(), system,
 			serviceContext);
 
 		_kaleoDefinitionLocalService.activateKaleoDefinition(

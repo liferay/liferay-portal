@@ -126,7 +126,7 @@ public class WorkflowInstanceManagerImplPerformanceTest {
 				TestPropsValues.getCompanyId(), null,
 				accountEntry.getAccountEntryGroupId(),
 				RandomTestUtil.randomString(),
-				WorkflowDefinitionConstants.SCOPE_AI,
+				WorkflowDefinitionConstants.SCOPE_AI, false,
 				RandomTestUtil.randomString(), TestPropsValues.getUserId());
 
 		int workflowInstancesThreadCount = GetterUtil.getInteger(

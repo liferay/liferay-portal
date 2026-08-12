@@ -74,7 +74,7 @@ public class
 				0,
 				WorkflowDefinitionConstants.
 					NAME_MESSAGE_BOARDS_USER_STATS_MODERATION,
-				MBMessage.class.getName(),
+				MBMessage.class.getName(), false,
 				_localization.getXml(
 					_getTitleMap(companyId),
 					_language.getLanguageId(company.getLocale()), "title"),

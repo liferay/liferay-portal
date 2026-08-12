@@ -101,7 +101,7 @@ public class KaleoDefinitionVersionUpgradeProcessTest {
 	private void _addKaleoDefinition() throws Exception {
 		_kaleoDefinition = _kaleoDefinitionLocalService.addKaleoDefinition(
 			null, _NAME, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), null, StringPool.BLANK, 1,
+			RandomTestUtil.randomString(), null, StringPool.BLANK, false, 1,
 			ServiceContextTestUtil.getServiceContext());
 	}
 

@@ -17,12 +17,14 @@ public interface WorkflowDeployer {
 
 	public WorkflowDefinition deploy(
 			String externalReferenceCode, String title, String name,
-			String scope, Definition definition, ServiceContext serviceContext)
+			String scope, boolean system, Definition definition,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 	public WorkflowDefinition save(
 			String externalReferenceCode, String title, String name,
-			String scope, Definition definition, ServiceContext serviceContext)
+			String scope, boolean system, Definition definition,
+			ServiceContext serviceContext)
 		throws PortalException;
 
 }

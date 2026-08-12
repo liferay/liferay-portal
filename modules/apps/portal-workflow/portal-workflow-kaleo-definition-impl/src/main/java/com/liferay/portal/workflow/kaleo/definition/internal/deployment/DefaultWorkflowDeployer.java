@@ -50,13 +50,14 @@ public class DefaultWorkflowDeployer implements WorkflowDeployer {
 	@Override
 	public WorkflowDefinition deploy(
 			String externalReferenceCode, String title, String name,
-			String scope, Definition definition, ServiceContext serviceContext)
+			String scope, boolean system, Definition definition,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		_checkPermissions(serviceContext);
 
 		KaleoDefinition kaleoDefinition = _addOrUpdateKaleoDefinition(
-			externalReferenceCode, title, name, scope, definition,
+			externalReferenceCode, title, name, scope, system, definition,
 			serviceContext);
 
 		KaleoDefinitionVersion kaleoDefinitionVersion =
@@ -151,11 +152,12 @@ public class DefaultWorkflowDeployer implements WorkflowDeployer {
 	@Override
 	public WorkflowDefinition save(
 			String externalReferenceCode, String title, String name,
-			String scope, Definition definition, ServiceContext serviceContext)
+			String scope, boolean system, Definition definition,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		KaleoDefinition kaleoDefinition = _addOrUpdateKaleoDefinition(
-			externalReferenceCode, title, name, scope, definition,
+			externalReferenceCode, title, name, scope, system, definition,
 			serviceContext);
 
 		return _kaleoWorkflowModelConverter.toWorkflowDefinition(
@@ -164,7 +166,8 @@ public class DefaultWorkflowDeployer implements WorkflowDeployer {
 
 	private KaleoDefinition _addOrUpdateKaleoDefinition(
 			String externalReferenceCode, String title, String name,
-			String scope, Definition definition, ServiceContext serviceContext)
+			String scope, boolean system, Definition definition,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		KaleoDefinition kaleoDefinition =
@@ -174,13 +177,13 @@ public class DefaultWorkflowDeployer implements WorkflowDeployer {
 		if (kaleoDefinition == null) {
 			kaleoDefinition = _kaleoDefinitionService.addKaleoDefinition(
 				externalReferenceCode, name, title, definition.getDescription(),
-				definition.getContent(), scope, 1, serviceContext);
+				definition.getContent(), scope, system, 1, serviceContext);
 		}
 		else {
 			kaleoDefinition = _kaleoDefinitionService.updateKaleoDefinition(
 				externalReferenceCode, kaleoDefinition.getKaleoDefinitionId(),
 				title, definition.getDescription(), definition.getContent(),
-				serviceContext);
+				system, serviceContext);
 		}
 
 		return kaleoDefinition;

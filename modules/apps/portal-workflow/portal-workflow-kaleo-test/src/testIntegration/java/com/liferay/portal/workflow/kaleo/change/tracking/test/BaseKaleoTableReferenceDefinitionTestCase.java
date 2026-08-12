@@ -83,7 +83,7 @@ public abstract class BaseKaleoTableReferenceDefinitionTestCase
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), StringPool.BLANK,
 			_read("legal-marketing-workflow-definition.xml"), StringPool.BLANK,
-			1, serviceContext);
+			false, 1, serviceContext);
 	}
 
 	protected KaleoInstance addKaleoInstance() throws Exception {

@@ -38,7 +38,7 @@ public interface WorkflowEngine {
 
 	public WorkflowDefinition deployWorkflowDefinition(
 			String externalReferenceCode, String title, String name,
-			String scope, InputStream inputStream,
+			String scope, boolean system, InputStream inputStream,
 			ServiceContext serviceContext)
 		throws WorkflowException;
 
@@ -96,7 +96,8 @@ public interface WorkflowEngine {
 
 	public WorkflowDefinition saveWorkflowDefinition(
 			String externalReferenceCode, String title, String name,
-			String scope, byte[] bytes, ServiceContext serviceContext)
+			String scope, boolean system, byte[] bytes,
+			ServiceContext serviceContext)
 		throws WorkflowException;
 
 	public default List<WorkflowInstance> search(

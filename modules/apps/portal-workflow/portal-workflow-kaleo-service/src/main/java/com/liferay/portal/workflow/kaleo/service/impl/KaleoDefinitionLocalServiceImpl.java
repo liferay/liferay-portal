@@ -126,8 +126,8 @@ public class KaleoDefinitionLocalServiceImpl
 	@Override
 	public KaleoDefinition addKaleoDefinition(
 			String externalReferenceCode, String name, String title,
-			String description, String content, String scope, int version,
-			ServiceContext serviceContext)
+			String description, String content, String scope, boolean system,
+			int version, ServiceContext serviceContext)
 		throws PortalException {
 
 		// Kaleo definition
@@ -166,6 +166,7 @@ public class KaleoDefinitionLocalServiceImpl
 		kaleoDefinition.setScope(scope);
 		kaleoDefinition.setVersion(version);
 		kaleoDefinition.setActive(false);
+		kaleoDefinition.setSystem(system);
 		kaleoDefinition.setStatus(WorkflowConstants.STATUS_DRAFT);
 
 		kaleoDefinition = kaleoDefinitionPersistence.update(kaleoDefinition);
@@ -376,7 +377,8 @@ public class KaleoDefinitionLocalServiceImpl
 	@Override
 	public KaleoDefinition updatedKaleoDefinition(
 			String externalReferenceCode, long kaleoDefinitionId, String title,
-			String description, String content, ServiceContext serviceContext)
+			String description, String content, boolean system,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		// Kaleo definition
@@ -410,6 +412,7 @@ public class KaleoDefinitionLocalServiceImpl
 		kaleoDefinition.setVersion(nextVersion);
 
 		kaleoDefinition.setActive(false);
+		kaleoDefinition.setSystem(system);
 
 		kaleoDefinition = kaleoDefinitionPersistence.update(kaleoDefinition);
 

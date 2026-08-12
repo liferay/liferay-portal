@@ -237,7 +237,7 @@ public class WorkflowDefinitionLinkServiceImplTest {
 	private KaleoDefinition _addKaleoDefinition() throws Exception {
 		return _kaleoDefinitionLocalService.addKaleoDefinition(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), null, StringPool.BLANK, 1,
+			RandomTestUtil.randomString(), null, StringPool.BLANK, false, 1,
 			_serviceContext);
 	}
 

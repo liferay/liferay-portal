@@ -70,7 +70,7 @@ public class KaleoDefinitionVersionServiceImplTest {
 			_kaleoDefinitionLocalService.addKaleoDefinition(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-				_read(), StringPool.BLANK, 1, serviceContext);
+				_read(), StringPool.BLANK, false, 1, serviceContext);
 
 		_kaleoDefinitionLocalService.activateKaleoDefinition(
 			kaleoDefinition.getKaleoDefinitionId(), serviceContext);
