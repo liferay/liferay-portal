@@ -1,4 +1,7 @@
 {
+	"dependencies": {
+		"alloy-ui": "3.1.0"
+	},
 	"jest": {
 		"setupFilesAfterEnv": [
 			"<rootDir>/test/setup.js"

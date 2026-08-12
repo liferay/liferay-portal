@@ -17,6 +17,7 @@
 		"@clayui/table": "^3.166.0",
 		"@clayui/tooltip": "^3.166.0",
 		"@liferay/frontend-js-codemirror-web": "*",
+		"alloy-ui": "3.1.0",
 		"classnames": "2.3.1",
 		"clipboard": "2.0.4",
 		"formik": "2.1.4",
