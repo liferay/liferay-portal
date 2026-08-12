@@ -35,6 +35,7 @@
 						iconCssClass="inline-item inline-item-before"
 						markupView="lexicon"
 						message=displayName
+						method="get"
 						url=entry.getURL()
 					/>
 				</#if>
