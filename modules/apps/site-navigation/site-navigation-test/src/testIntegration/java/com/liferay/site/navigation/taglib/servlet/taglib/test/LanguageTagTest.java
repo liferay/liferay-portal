@@ -319,8 +319,6 @@ public class LanguageTagTest {
 			Layout layout)
 		throws Exception {
 
-		ThemeDisplay themeDisplay = _getThemeDisplay(layout, LocaleUtil.US);
-
 		_assertLocalizedURL(
 			layout, LocaleUtil.FRANCE, _FRIENDLY_URL_MAPPING_PART,
 			_getURL(
@@ -328,7 +326,7 @@ public class LanguageTagTest {
 					StringBundler.concat(
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(), _FRIENDLY_URL_MAPPING_PART),
-					null, themeDisplay),
+					null, _getThemeDisplay(layout, LocaleUtil.US)),
 				LocaleUtil.FRANCE));
 	}
 
