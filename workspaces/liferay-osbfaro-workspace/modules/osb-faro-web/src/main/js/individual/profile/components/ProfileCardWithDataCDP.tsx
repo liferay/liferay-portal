@@ -7,6 +7,10 @@ import EventMetricQuery, {
 	EventMetricsData,
 	EventMetricsVariables,
 } from 'shared/queries/EventMetricQuery';
+import EventsTrendQuery, {
+	EventsTrendData,
+	EventsTrendVariables,
+} from 'shared/queries/EventsTrendQuery';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useMemo, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
@@ -69,6 +73,8 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 
 	const {groupId} = useParams<{groupId: string}>();
 
+	const safeRangeSelectors = getSafeRangeSelectors(rangeSelectors);
+
 	const activityResponse = useQuery<EventMetricsData, EventMetricsVariables>(
 		EventMetricQuery,
 		{
@@ -79,7 +85,7 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 				entityType: SessionEntityTypes.Individual,
 				interval,
 				keywords: query,
-				...getSafeRangeSelectors(rangeSelectors),
+				...safeRangeSelectors,
 			},
 		}
 	);
@@ -92,6 +98,20 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 	} = mapListResultsToProps(activityResponse, ({eventMetric}) => ({
 		items: mapEventMetricToActivityHistory(eventMetric),
 	}));
+
+	const trendResponse = useQuery<EventsTrendData, EventsTrendVariables>(
+		EventsTrendQuery,
+		{
+			fetchPolicy: fetchPolicyDefinition(rangeSelectors),
+			variables: {
+				channelId,
+				entityId,
+				entityType: SessionEntityTypes.Individual,
+				keywords: query,
+				...safeRangeSelectors,
+			},
+		}
+	);
 
 	const sessionsResponse = useQuery<UserSessionData, UserSessionVariables>(
 		UserSessionQuery,
@@ -154,6 +174,9 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 		onQueryChange('');
 		setSearchValue('');
 	};
+
+	const trendMetric =
+		trendResponse.data?.eventsByUserSessions?.totalEventsMetric;
 
 	const selected = hasSelectedPoint || selectedPoint !== undefined;
 
@@ -249,6 +272,11 @@ const ProfileCardWithDataCDP: React.FC<IProfileCardWithDataCDPProps> = ({
 			selectedPoint={selectedPoint}
 			sessionsMappedResults={sessionsMappedResults}
 			timeZoneId={timeZoneId}
+			trendSummary={{
+				classification: trendMetric?.trend?.trendClassification,
+				percentage: trendMetric?.trend?.percentage ?? 0,
+				value: trendMetric?.value ?? 0,
+			}}
 		/>
 	);
 };

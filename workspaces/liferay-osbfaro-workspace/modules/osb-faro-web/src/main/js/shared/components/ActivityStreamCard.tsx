@@ -66,8 +66,8 @@ interface IActivityStreamCardProps {
 /**
  * Shared activity-stream card used by both the account and individual detail
  * pages. It renders a search box, an optional trend summary (activities count
- * plus change versus the previous period — account only), the interactive
- * activities chart, a chart footer, and the paginated vertical timeline. The
+ * plus change versus the previous period), the interactive activities chart, a
+ * chart footer, and the paginated vertical timeline. The
  * card is presentational: each page owns its own queries and feeds the mapped
  * data, labels, and handlers in. Card title/description come from the wrapping
  * BaseCard, so each page keeps its own heading.
