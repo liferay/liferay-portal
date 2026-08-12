@@ -8,7 +8,7 @@ package com.liferay.portal.workflow.metrics.internal.search.index.reindexer;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.workflow.kaleo.metrics.integration.helper.IndexerHelper;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
@@ -29,8 +29,8 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Rafael Praxedes
  */
-@Component(service = WorkflowMetricsReindexer.class)
-public class TaskWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
+@Component(service = {IndexReindexer.class, WorkflowMetricsReindexer.class})
+public class TaskWorkflowMetricsReindexer extends BaseWorkflowMetricsReindexer {
 
 	@Override
 	public String getKey() {
@@ -38,7 +38,9 @@ public class TaskWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
 	}
 
 	@Override
-	public void reindex(long companyId) throws PortalException {
+	protected void reindexEntities(long companyId, ExecutionMode executionMode)
+		throws Exception {
+
 		ActionableDynamicQuery actionableDynamicQuery =
 			_kaleoTaskInstanceTokenLocalService.getActionableDynamicQuery();
 
