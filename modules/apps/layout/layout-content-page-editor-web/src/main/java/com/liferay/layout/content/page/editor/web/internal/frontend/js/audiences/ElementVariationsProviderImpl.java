@@ -18,13 +18,20 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
@@ -59,7 +66,8 @@ public class ElementVariationsProviderImpl
 
 		if ((layout == null) ||
 			!FeatureFlagManagerUtil.isEnabled(
-				layout.getCompanyId(), "LPD-85746")) {
+				layout.getCompanyId(), "LPD-85746") ||
+			!_hasViewPermission(layout)) {
 
 			return null;
 		}
@@ -240,11 +248,38 @@ public class ElementVariationsProviderImpl
 			SegmentsExperienceAudienceEntryRel::getAudienceEntryERC);
 	}
 
+	private boolean _hasViewPermission(Layout layout) {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (permissionChecker == null) {
+			return false;
+		}
+
+		try {
+			return _layoutModelResourcePermission.contains(
+				permissionChecker, layout, ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return false;
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ElementVariationsProviderImpl.class);
+
 	@Reference
 	private JSONFactory _jsonFactory;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.portal.kernel.model.Layout)"
+	)
+	private ModelResourcePermission<Layout> _layoutModelResourcePermission;
 
 	@Reference
 	private

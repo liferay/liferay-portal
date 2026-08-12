@@ -13,7 +13,14 @@ import com.liferay.frontend.js.audiences.web.internal.util.BootstrapJavaScriptUt
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -55,6 +62,7 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 		String[] parts = StringUtil.split(
 			httpServletRequest.getPathInfo(), CharPool.SLASH);
 
+		String cacheControl = "immutable, max-age=31536000, public";
 		String content = null;
 		String contentType = null;
 		String hash = null;
@@ -83,12 +91,27 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 			hash = audiencesDefinition.getHash();
 		}
 		else if ((parts.length == 4) && parts[3].startsWith("variations.")) {
+			User user = _getUser(httpServletRequest);
+
+			if (user == null) {
+				httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+
+				return;
+			}
+
+			PermissionThreadLocal.setPermissionChecker(
+				_permissionCheckerFactory.create(user));
+
 			ElementVariations elementVariations = _getElementVariations(parts);
 
 			if (elementVariations == null) {
 				httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
 				return;
+			}
+
+			if (!user.isGuestUser()) {
+				cacheControl = "immutable, max-age=31536000, private";
 			}
 
 			content = elementVariations.getContent();
@@ -124,8 +147,7 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 		}
 
 		httpServletResponse.setContentType(contentType);
-		httpServletResponse.setHeader(
-			HttpHeaders.CACHE_CONTROL, "immutable, max-age=31536000, public");
+		httpServletResponse.setHeader(HttpHeaders.CACHE_CONTROL, cacheControl);
 
 		PrintWriter printWriter = httpServletResponse.getWriter();
 
@@ -137,6 +159,27 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 			GetterUtil.getLong(parts[1]), GetterUtil.getLong(parts[2]));
 	}
 
+	private User _getUser(HttpServletRequest httpServletRequest) {
+		try {
+			User user = _portal.getUser(httpServletRequest);
+
+			if (user != null) {
+				return user;
+			}
+
+			return _userLocalService.getGuestUser(
+				_portal.getCompanyId(httpServletRequest));
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return null;
+		}
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FrontendJSAudiencesWebServlet.class);
+
 	@Reference
 	private AudiencesDefinitionProvider _audiencesDefinitionProvider;
 
@@ -144,6 +187,12 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 	private ElementVariationsProvider _elementVariationsProvider;
 
 	@Reference
+	private PermissionCheckerFactory _permissionCheckerFactory;
+
+	@Reference
 	private Portal _portal;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
