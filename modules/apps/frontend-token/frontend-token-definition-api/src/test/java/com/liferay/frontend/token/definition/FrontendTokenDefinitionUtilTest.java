@@ -32,12 +32,12 @@ public class FrontendTokenDefinitionUtilTest {
 
 	@Test
 	public void testGetFrontendTokenNames() {
-		_testGetFrontendTokenNamesWithBlankFrontendTokenDefinitionReturnsEmptySet();
-		_testGetFrontendTokenNamesWithDuplicateFrontendTokenNameReturnsDuplicateNames();
-		_testGetFrontendTokenNamesWithInvalidElementInFrontendTokenCategoriesReturnsEmptySet();
-		_testGetFrontendTokenNamesWithInvalidElementInFrontendTokenSetsAndFrontendTokensReturnsRemainingNames();
-		_testGetFrontendTokenNamesWithMalformedFrontendTokenDefinitionReturnsEmptySet();
-		_testGetFrontendTokenNamesWithValidFrontendTokenDefinitionReturnsAllCustomNames();
+		_testGetFrontendTokenNamesWithBlankDefinition();
+		_testGetFrontendTokenNamesWithDuplicateName();
+		_testGetFrontendTokenNamesWithInvalidCategories();
+		_testGetFrontendTokenNamesWithInvalidSetsAndTokens();
+		_testGetFrontendTokenNamesWithMalformedDefinition();
+		_testGetFrontendTokenNamesWithValidDefinition();
 	}
 
 	private String _createFrontendTokenDefinitionJSON(
@@ -54,7 +54,7 @@ public class FrontendTokenDefinitionUtilTest {
 		).toString();
 	}
 
-	private void _testGetFrontendTokenNamesWithBlankFrontendTokenDefinitionReturnsEmptySet() {
+	private void _testGetFrontendTokenNamesWithBlankDefinition() {
 		List<String> frontendTokenNames =
 			FrontendTokenDefinitionUtil.getFrontendTokenNames(null);
 
@@ -66,7 +66,7 @@ public class FrontendTokenDefinitionUtilTest {
 		Assert.assertTrue(frontendTokenNames.isEmpty());
 	}
 
-	private void _testGetFrontendTokenNamesWithDuplicateFrontendTokenNameReturnsDuplicateNames() {
+	private void _testGetFrontendTokenNamesWithDuplicateName() {
 		String frontendTokenName = "customPrimaryColor";
 
 		List<String> frontendTokenNames =
@@ -94,7 +94,7 @@ public class FrontendTokenDefinitionUtilTest {
 		Assert.assertEquals(frontendTokenName, frontendTokenNames.get(1));
 	}
 
-	private void _testGetFrontendTokenNamesWithInvalidElementInFrontendTokenCategoriesReturnsEmptySet() {
+	private void _testGetFrontendTokenNamesWithInvalidCategories() {
 		List<String> frontendTokenNames =
 			FrontendTokenDefinitionUtil.getFrontendTokenNames(
 				JSONUtil.put(
@@ -104,7 +104,7 @@ public class FrontendTokenDefinitionUtilTest {
 		Assert.assertTrue(frontendTokenNames.isEmpty());
 	}
 
-	private void _testGetFrontendTokenNamesWithInvalidElementInFrontendTokenSetsAndFrontendTokensReturnsRemainingNames() {
+	private void _testGetFrontendTokenNamesWithInvalidSetsAndTokens() {
 		List<String> frontendTokenNames =
 			FrontendTokenDefinitionUtil.getFrontendTokenNames(
 				_createFrontendTokenDefinitionJSON(
@@ -124,7 +124,7 @@ public class FrontendTokenDefinitionUtilTest {
 		Assert.assertTrue(frontendTokenNames.contains("customPrimaryColor"));
 	}
 
-	private void _testGetFrontendTokenNamesWithMalformedFrontendTokenDefinitionReturnsEmptySet() {
+	private void _testGetFrontendTokenNamesWithMalformedDefinition() {
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				FrontendTokenDefinitionUtil.class.getName(),
 				LoggerTestUtil.WARN)) {
@@ -147,7 +147,7 @@ public class FrontendTokenDefinitionUtilTest {
 		}
 	}
 
-	private void _testGetFrontendTokenNamesWithValidFrontendTokenDefinitionReturnsAllCustomNames() {
+	private void _testGetFrontendTokenNamesWithValidDefinition() {
 		List<String> frontendTokenNames =
 			FrontendTokenDefinitionUtil.getFrontendTokenNames(
 				_createFrontendTokenDefinitionJSON(
