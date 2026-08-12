@@ -45,7 +45,7 @@ public class KaleoDefinitionServiceHttp {
 			addKaleoDefinition(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				String name, String title, String description, String content,
-				String scope, int version,
+				String scope, boolean system, int version,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -56,7 +56,7 @@ public class KaleoDefinitionServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, name, title, description,
-				content, scope, version, serviceContext);
+				content, scope, system, version, serviceContext);
 
 			Object returnObj = null;
 
@@ -321,7 +321,7 @@ public class KaleoDefinitionServiceHttp {
 			updateKaleoDefinition(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
 				long kaleoDefinitionId, String title, String description,
-				String content,
+				String content, boolean system,
 				com.liferay.portal.kernel.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -332,7 +332,7 @@ public class KaleoDefinitionServiceHttp {
 
 			MethodHandler methodHandler = new MethodHandler(
 				methodKey, externalReferenceCode, kaleoDefinitionId, title,
-				description, content, serviceContext);
+				description, content, system, serviceContext);
 
 			Object returnObj = null;
 
@@ -369,7 +369,7 @@ public class KaleoDefinitionServiceHttp {
 	private static final Class<?>[] _addKaleoDefinitionParameterTypes0 =
 		new Class[] {
 			String.class, String.class, String.class, String.class,
-			String.class, String.class, int.class,
+			String.class, String.class, boolean.class, int.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 	private static final Class<?>[] _getKaleoDefinitionParameterTypes1 =
@@ -395,8 +395,9 @@ public class KaleoDefinitionServiceHttp {
 	private static final Class<?>[] _updateKaleoDefinitionParameterTypes6 =
 		new Class[] {
 			String.class, long.class, String.class, String.class, String.class,
+			boolean.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-141709008
+// LIFERAY-SERVICE-BUILDER-HASH:1796864672
