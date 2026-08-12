@@ -67,13 +67,17 @@ public class UserSearchPermissionFilterContributorTest {
 	public void testWhenHasGroupManageTeamsPermissionSearch() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
-		User user = _addGroupUser(group);
+		Team team = _addTeam(group);
 
-		_addGroupUser(group);
+		User user1 = UserTestUtil.addUser();
 
-		_addTeam(group);
+		_userLocalService.addGroupUser(team.getGroupId(), user1);
 
-		Assert.assertEquals(1, _performUserSearchCount(user));
+		User user2 = UserTestUtil.addUser();
+
+		_userLocalService.addGroupUser(team.getGroupId(), user2);
+
+		Assert.assertEquals(1, _performUserSearchCount(user1));
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
 
@@ -84,9 +88,9 @@ public class UserSearchPermissionFilterContributorTest {
 			role.getRoleId(), ActionKeys.MANAGE_TEAMS);
 
 		_userGroupRoleLocalService.addUserGroupRole(
-			user.getUserId(), group.getGroupId(), role.getRoleId());
+			user1.getUserId(), group.getGroupId(), role.getRoleId());
 
-		Assert.assertEquals(3, _performUserSearchCount(user));
+		Assert.assertEquals(3, _performUserSearchCount(user1));
 	}
 
 	@Test
@@ -146,11 +150,11 @@ public class UserSearchPermissionFilterContributorTest {
 
 		Organization organization = OrganizationTestUtil.addOrganization();
 
-		User userA = _addOrganizationUser(organization);
+		User user = _addOrganizationUser(organization);
 
 		_addOrganizationUser(organization);
 
-		Assert.assertEquals(1, _performUserSearchCount(userA));
+		Assert.assertEquals(1, _performUserSearchCount(user));
 
 		Role organizationRole = RoleTestUtil.addRole(
 			RoleConstants.TYPE_ORGANIZATION);
@@ -163,10 +167,10 @@ public class UserSearchPermissionFilterContributorTest {
 			organizationRole.getRoleId(), ActionKeys.MANAGE_USERS);
 
 		_userGroupRoleLocalService.addUserGroupRole(
-			userA.getUserId(), organization.getGroupId(),
+			user.getUserId(), organization.getGroupId(),
 			organizationRole.getRoleId());
 
-		Assert.assertEquals(2, _performUserSearchCount(userA));
+		Assert.assertEquals(2, _performUserSearchCount(user));
 	}
 
 	@Test
@@ -209,20 +213,21 @@ public class UserSearchPermissionFilterContributorTest {
 		throws Exception {
 
 		Group group1 = GroupTestUtil.addGroup();
+		User user1 = UserTestUtil.addUser();
 
-		User user = _addGroupUser(group1);
+		_userLocalService.addGroupUser(group1.getGroupId(), user1);
 
-		_addGroupUser(group1);
+		User user2 = UserTestUtil.addUser();
+
+		_userLocalService.addGroupUser(group1.getGroupId(), user2);
 
 		Group group2 = GroupTestUtil.addGroup();
 
-		_userLocalService.addGroupUser(group2.getGroupId(), user);
+		Team team = _addTeam(group2);
 
-		_addGroupUser(group2);
+		_userLocalService.addGroupUser(team.getGroupId(), user1);
 
-		_addTeam(group2);
-
-		Assert.assertEquals(1, _performUserSearchCount(user));
+		Assert.assertEquals(1, _performUserSearchCount(user1));
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
 
@@ -233,21 +238,13 @@ public class UserSearchPermissionFilterContributorTest {
 			role.getRoleId(), ActionKeys.ASSIGN_MEMBERS);
 
 		_userGroupRoleLocalService.addUserGroupRole(
-			user.getUserId(), group1.getGroupId(), role.getRoleId());
+			user1.getUserId(), group1.getGroupId(), role.getRoleId());
 
-		Assert.assertEquals(1, _performUserSearchCount(user));
+		Assert.assertEquals(1, _performUserSearchCount(user1));
 
 		_addTeam(group1);
 
-		Assert.assertEquals(3, _performUserSearchCount(user));
-	}
-
-	private User _addGroupUser(Group group) throws Exception {
-		User user = UserTestUtil.addUser();
-
-		_userLocalService.addGroupUser(group.getGroupId(), user);
-
-		return user;
+		Assert.assertEquals(3, _performUserSearchCount(user1));
 	}
 
 	private User _addOrganizationUser(Organization organization)
