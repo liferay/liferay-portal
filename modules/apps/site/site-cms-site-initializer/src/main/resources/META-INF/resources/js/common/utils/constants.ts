@@ -95,6 +95,8 @@ export const WORKFLOW_STATUS = {
 	APPROVED: 0,
 	DRAFT: 2,
 	EXPIRED: 3,
+	PENDING: 1,
+	SCHEDULED: 7,
 } as const;
 
 export type WorkflowStatus =

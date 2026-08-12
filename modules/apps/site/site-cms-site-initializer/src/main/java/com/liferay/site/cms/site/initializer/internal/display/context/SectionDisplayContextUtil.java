@@ -307,6 +307,13 @@ public class SectionDisplayContextUtil {
 		return collaboratorURLs;
 	}
 
+	public static String getContentProgressFilterString(
+		HttpServletRequest httpServletRequest) {
+
+		return appendGroupIds(
+			appendStatus(_CMS_CONTENT_FILTER_STRING), httpServletRequest);
+	}
+
 	public static List<DropdownItem> getContentsBulkActionDropdownItems(
 		HttpServletRequest httpServletRequest) {
 

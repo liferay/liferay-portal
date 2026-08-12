@@ -33,7 +33,7 @@ export default function GovernanceDashboard({
 
 			<NeedsReview additionalProps={additionalProps} />
 
-			<WorkflowAndContentProgress />
+			<WorkflowAndContentProgress additionalProps={additionalProps} />
 
 			<DuplicationAndSimilarity
 				additionalProps={additionalProps}

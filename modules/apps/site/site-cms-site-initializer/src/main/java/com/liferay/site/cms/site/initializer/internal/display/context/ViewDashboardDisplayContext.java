@@ -171,6 +171,10 @@ public class ViewDashboardDisplayContext {
 		).put(
 			"commentsProps", CommentUtil.getCommentsProps(_httpServletRequest)
 		).put(
+			"contentProgressFilter",
+			SectionDisplayContextUtil.getContentProgressFilterString(
+				_httpServletRequest)
+		).put(
 			"contentViewURL",
 			SectionDisplayContextUtil.getContentViewURL(_themeDisplay)
 		).put(

@@ -31,6 +31,12 @@ export type DuplicateTopicAsset = {
 	title: string;
 };
 
+export type StatusFacetBucket = {
+	displayName: string;
+	frequency: number;
+	term: string;
+};
+
 const DUPLICATE_TITLES_AGGREGATION_NAME = 'duplicateTitles';
 
 const MAX_FACET_TERMS = 10000;
@@ -71,6 +77,30 @@ async function getAssetStatistics(
 			duplicatedCount: similarityClusters.data?.totalCount,
 		},
 	};
+}
+
+function getContentProgress(filter: string, groupId?: number) {
+	const searchParams = new URLSearchParams({
+		filter: getScopedFilter(filter, groupId),
+	});
+
+	// Facet configurations only work in the POST body, where the empty-search
+	// switch must travel as an attribute (the query parameter is ignored).
+
+	return ApiHelper.post<{
+		searchFacets?: {statusFacet?: StatusFacetBucket[]};
+	}>(`${SEARCH_URL}?${searchParams}`, {
+		attributes: {'search.empty.search': true},
+		facetConfigurations: [
+			{
+				aggregationName: 'statusFacet',
+				attributes: {field: 'status'},
+				frequencyThreshold: 0,
+				maxTerms: 50,
+				name: 'custom',
+			},
+		],
+	});
 }
 
 function getScopedFilter(filter: string, groupId?: number) {
@@ -181,6 +211,7 @@ async function getDuplicateTopicsCount({
 export default {
 	getAssetStatistics,
 	getCMSEntryClassNames,
+	getContentProgress,
 	getDuplicateTitles,
 	getDuplicateTopicsCount,
 	getSearchURL,
