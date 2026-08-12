@@ -1,12 +1,6 @@
 {
-	"dependencies": {
-		"prettier": "3.2.5"
-	},
 	"devDependencies": {
-		"@liferay/eslint-plugin": "1.9.1",
 		"@liferay/prettier-plugin": "1.1.5",
-		"@liferay/stylelint-plugin": "1.1.0",
-		"@testing-library/react": "16.3.0",
 		"@types/ckeditor4": "4.16.2",
 		"@types/codemirror": "5.60.5",
 		"@types/jest": "26.0.14",
@@ -23,12 +17,7 @@
 		"@types/vfile-message": "2.0.0",
 		"@types/warning": "3.0.0",
 		"@types/yauzl": "2.10.3",
-		"alloy-ui": "3.1.0",
-		"compass-mixins": "0.12.10",
-		"cross-env": "7.0.0",
 		"eslint-plugin-react-compiler": "19.0.0-beta-8a03594-20241020",
-		"jsdoc": "3.6.3",
-		"liferay-frontend-common-css": "1.0.4",
 		"typescript": "4.7.4"
 	},
 	"private": true,
