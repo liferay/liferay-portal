@@ -6,11 +6,15 @@
 package com.liferay.account.service.impl;
 
 import com.liferay.account.constants.AccountActionKeys;
+import com.liferay.account.exception.AccountEntryExternalReferenceCodeException;
+import com.liferay.account.exception.AccountEntryNameException;
+import com.liferay.account.exception.AccountEntryTaxIdNumberException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.base.AccountEntryServiceBaseImpl;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -21,6 +25,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.permission.PortalPermissionUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -289,6 +294,10 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 			_validateAddressId(accountEntry.getDefaultShippingAddressId());
 		}
 
+		_validateExternalReferenceCode(accountEntry.getExternalReferenceCode());
+		_validateName(accountEntry.getName());
+		_validateTaxIdNumber(accountEntry.getTaxIdNumber());
+
 		if (!_accountEntryModelResourcePermission.contains(
 				getPermissionChecker(), accountEntry.getAccountEntryId(),
 				AccountActionKeys.MANAGE_DOMAINS)) {
@@ -403,6 +412,54 @@ public class AccountEntryServiceImpl extends AccountEntryServiceBaseImpl {
 	private void _validateAddressId(long addressId) throws PortalException {
 		if (addressId > 0) {
 			_addressService.getAddress(addressId);
+		}
+	}
+
+	private void _validateExternalReferenceCode(String externalReferenceCode)
+		throws PortalException {
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return;
+		}
+
+		int externalReferenceCodeMaxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "externalReferenceCode");
+
+		if (externalReferenceCode.length() > externalReferenceCodeMaxLength) {
+			throw new AccountEntryExternalReferenceCodeException(
+				"External reference code has more than " +
+					externalReferenceCodeMaxLength + " characters");
+		}
+	}
+
+	private void _validateName(String name) throws PortalException {
+		if (Validator.isNull(name)) {
+			throw new AccountEntryNameException("Name is null");
+		}
+
+		int nameMaxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "name");
+
+		if (name.length() > nameMaxLength) {
+			throw new AccountEntryNameException(
+				"Name has more than " + nameMaxLength + " characters");
+		}
+	}
+
+	private void _validateTaxIdNumber(String taxIdNumber)
+		throws PortalException {
+
+		if (Validator.isNull(taxIdNumber)) {
+			return;
+		}
+
+		int taxIdNumberMaxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "taxIdNumber");
+
+		if (taxIdNumber.length() > taxIdNumberMaxLength) {
+			throw new AccountEntryTaxIdNumberException(
+				"Tax ID number has more than " + taxIdNumberMaxLength +
+					" characters");
 		}
 	}
 

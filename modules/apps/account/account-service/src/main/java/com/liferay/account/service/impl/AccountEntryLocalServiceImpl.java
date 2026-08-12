@@ -8,7 +8,9 @@ package com.liferay.account.service.impl;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.AccountEntryDomainsException;
 import com.liferay.account.exception.AccountEntryEmailAddressException;
+import com.liferay.account.exception.AccountEntryExternalReferenceCodeException;
 import com.liferay.account.exception.AccountEntryNameException;
+import com.liferay.account.exception.AccountEntryTaxIdNumberException;
 import com.liferay.account.exception.AccountEntryTypeException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryOrganizationRel;
@@ -50,6 +52,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -164,6 +167,8 @@ public class AccountEntryLocalServiceImpl
 
 		User user = _userLocalService.getUser(userId);
 
+		_validateExternalReferenceCode(externalReferenceCode);
+
 		accountEntry.setExternalReferenceCode(externalReferenceCode);
 		accountEntry.setCompanyId(user.getCompanyId());
 		accountEntry.setUserId(user.getUserId());
@@ -191,6 +196,9 @@ public class AccountEntryLocalServiceImpl
 			_userFileUploadsSettings.getImageMaxWidth());
 
 		accountEntry.setRestrictMembership(true);
+
+		_validateTaxIdNumber(taxIdNumber);
+
 		accountEntry.setTaxIdNumber(taxIdNumber);
 
 		_validateType(user.getCompanyId(), type);
@@ -648,6 +656,8 @@ public class AccountEntryLocalServiceImpl
 		AccountEntry accountEntry = accountEntryPersistence.findByPrimaryKey(
 			accountEntryId);
 
+		_validateExternalReferenceCode(externalReferenceCode);
+
 		accountEntry.setExternalReferenceCode(externalReferenceCode);
 		accountEntry.setParentAccountEntryId(parentAccountEntryId);
 
@@ -669,6 +679,8 @@ public class AccountEntryLocalServiceImpl
 			_userFileUploadsSettings.getImageMaxSize(),
 			_userFileUploadsSettings.getImageMaxHeight(),
 			_userFileUploadsSettings.getImageMaxWidth());
+
+		_validateTaxIdNumber(taxIdNumber);
 
 		accountEntry.setTaxIdNumber(taxIdNumber);
 		accountEntry.setStatus(WorkflowConstants.STATUS_DRAFT);
@@ -775,6 +787,8 @@ public class AccountEntryLocalServiceImpl
 	public AccountEntry updateExternalReferenceCode(
 			AccountEntry accountEntry, String externalReferenceCode)
 		throws PortalException {
+
+		_validateExternalReferenceCode(externalReferenceCode);
 
 		accountEntry.setExternalReferenceCode(externalReferenceCode);
 
@@ -1260,9 +1274,51 @@ public class AccountEntryLocalServiceImpl
 		}
 	}
 
+	private void _validateExternalReferenceCode(String externalReferenceCode)
+		throws PortalException {
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return;
+		}
+
+		int externalReferenceCodeMaxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "externalReferenceCode");
+
+		if (externalReferenceCode.length() > externalReferenceCodeMaxLength) {
+			throw new AccountEntryExternalReferenceCodeException(
+				"External reference code has more than " +
+					externalReferenceCodeMaxLength + " characters");
+		}
+	}
+
 	private void _validateName(String name) throws PortalException {
 		if (Validator.isNull(name)) {
 			throw new AccountEntryNameException("Name is null");
+		}
+
+		int nameMaxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "name");
+
+		if (name.length() > nameMaxLength) {
+			throw new AccountEntryNameException(
+				"Name has more than " + nameMaxLength + " characters");
+		}
+	}
+
+	private void _validateTaxIdNumber(String taxIdNumber)
+		throws PortalException {
+
+		if (Validator.isNull(taxIdNumber)) {
+			return;
+		}
+
+		int taxIdNumberMaxLength = ModelHintsUtil.getMaxLength(
+			AccountEntry.class.getName(), "taxIdNumber");
+
+		if (taxIdNumber.length() > taxIdNumberMaxLength) {
+			throw new AccountEntryTaxIdNumberException(
+				"Tax ID number has more than " + taxIdNumberMaxLength +
+					" characters");
 		}
 	}
 
