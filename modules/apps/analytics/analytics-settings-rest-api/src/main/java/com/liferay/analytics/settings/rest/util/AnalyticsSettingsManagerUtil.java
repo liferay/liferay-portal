@@ -9,11 +9,21 @@ import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
 import com.liferay.portal.kernel.model.Group;
 
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.ForbiddenException;
 
 /**
  * @author Rachael Koestartyo
  */
 public class AnalyticsSettingsManagerUtil {
+
+	public static void checkAnalyticsEnabled(
+			AnalyticsSettingsManager analyticsSettingsManager, long companyId)
+		throws Exception {
+
+		if (!analyticsSettingsManager.isAnalyticsEnabled(companyId)) {
+			throw new ForbiddenException("Analytics Cloud is not configured");
+		}
+	}
 
 	public static void checkSiteIdSynced(
 			AnalyticsSettingsManager analyticsSettingsManager, Group group)
