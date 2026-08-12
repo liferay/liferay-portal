@@ -13,10 +13,8 @@ export const fetchPropertiesResponse = {
 	items: [
 		{
 			channelId: '591043793166298694',
-			commerceSyncEnabled: false,
 			dataSources: [
 				{
-					commerceChannelIds: [],
 					dataSourceId: '591043793057281573',
 					siteIds: [],
 				},
@@ -25,10 +23,8 @@ export const fetchPropertiesResponse = {
 		},
 		{
 			channelId: '507692450375472147',
-			commerceSyncEnabled: false,
 			dataSources: [
 				{
-					commerceChannelIds: [],
 					dataSourceId: '507692450032087801',
 					siteIds: [43811416, 82272606, 54804552, 10693199, 57390646],
 				},

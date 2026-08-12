@@ -28,7 +28,7 @@ describe('Properties', () => {
 
 		await loadingElement();
 
-		expect(screen.getAllByRole('columnheader')).toHaveLength(5);
+		expect(screen.getAllByRole('columnheader')).toHaveLength(3);
 		expect(
 			screen.getByRole('columnheader', {
 				name: /available-properties/i,
@@ -36,17 +36,7 @@ describe('Properties', () => {
 		).toBeInTheDocument();
 		expect(
 			screen.getByRole('columnheader', {
-				name: /channels/i,
-			})
-		).toBeInTheDocument();
-		expect(
-			screen.getByRole('columnheader', {
 				name: /sites/i,
-			})
-		).toBeInTheDocument();
-		expect(
-			screen.getByRole('columnheader', {
-				name: /commerce/i,
 			})
 		).toBeInTheDocument();
 	});
@@ -59,7 +49,7 @@ describe('Properties', () => {
 		await loadingElement();
 
 		expect(
-			screen.getByText(/create-a-property-to-add-sites-and-channels/i)
+			screen.getByText(/create-a-property-to-add-sites/i)
 		).toBeInTheDocument();
 
 		expect(
@@ -77,17 +67,13 @@ describe('Properties', () => {
 		const first = screen.getByTestId(/Liferay DXP/i);
 
 		expect(within(first).getByText(/Liferay DXP/i)).toBeInTheDocument();
-		expect(within(first).getByText(/-/i)).toBeInTheDocument();
 		expect(within(first).getByText(/0/i)).toBeInTheDocument();
-		expect(within(first).getByRole('toggle-switch')).toBeInTheDocument();
 		expect(within(first).getByRole('assign-button')).toBeInTheDocument();
 
 		const second = screen.getByTestId(/Beryl Commerce/i);
 
 		expect(within(second).getByText(/Beryl Commerce/i)).toBeInTheDocument();
-		expect(within(second).getByText(/-/i)).toBeInTheDocument();
 		expect(within(second).getByText(/5/i)).toBeInTheDocument();
-		expect(within(second).getByRole('toggle-switch')).toBeInTheDocument();
 		expect(within(second).getByRole('assign-button')).toBeInTheDocument();
 	});
 
@@ -130,41 +116,6 @@ describe('Properties', () => {
 		fireEvent.click(screen.getAllByRole('assign-button')[0]);
 
 		expect(document.body).toHaveClass('modal-open');
-	});
-
-	it('enable commerce in the first table column', async () => {
-		fetch.mockResponse(JSON.stringify(fetchPropertiesResponse));
-
-		render(<Properties />);
-
-		await loadingElement();
-
-		const firstRow = screen.getByTestId(/Liferay DXP/i);
-
-		const toggleSwitch = within(firstRow).getByRole('toggle-switch');
-
-		expect(toggleSwitch).not.toBeChecked();
-		expect(within(firstRow).getByText(/-/i)).toBeInTheDocument();
-
-		await act(async () => {
-			await fireEvent.click(toggleSwitch);
-		});
-
-		fetch.mockResponse(
-			JSON.stringify({
-				...fetchPropertiesResponse,
-				items: [
-					{
-						...fetchPropertiesResponse.items[0],
-						commerceSyncEnabled: true,
-					},
-					fetchPropertiesResponse.items[1],
-				],
-			})
-		);
-
-		expect(toggleSwitch).toBeChecked();
-		expect(within(firstRow).getAllByText(/0/i)[0]).toBeInTheDocument();
 	});
 
 	it('renders modal to create a new property', async () => {
