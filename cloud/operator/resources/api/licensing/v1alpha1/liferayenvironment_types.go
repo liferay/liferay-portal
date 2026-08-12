@@ -83,6 +83,9 @@ type LiferayEnvironmentSpec struct {
 	// +kubebuilder:validation:Required
 	MarketplaceVolume *MarketplaceVolumeSpec `json:"marketplaceVolume,omitempty"`
 
+	// +optional
+	Offline bool `json:"offline,omitempty"`
+
 	// +kubebuilder:validation:Required
 	WorkloadRef WorkloadRef `json:"workloadRef"`
 }

@@ -108,6 +108,8 @@ spec:
                                 -   size
                                 -   storageClassName
                                 type: object
+                            offline:
+                                type: boolean
                             workloadRef:
                                 properties:
                                     name:
