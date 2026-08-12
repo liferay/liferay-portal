@@ -121,6 +121,7 @@ import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -3195,6 +3196,12 @@ public class ObjectDefinitionLocalServiceTest {
 					externalReferenceCode, companyId, userId,
 					_defaultObjectFolder.getObjectFolderId(), true,
 					ObjectDefinitionConstants.SCOPE_COMPANY, false);
+
+			EntityCacheUtil.clearCache();
+
+			Assert.assertNotNull(
+				_objectDefinitionLocalService.fetchObjectDefinition(
+					objectDefinition.getObjectDefinitionId()));
 
 			Assert.assertEquals(
 				externalReferenceCode,
