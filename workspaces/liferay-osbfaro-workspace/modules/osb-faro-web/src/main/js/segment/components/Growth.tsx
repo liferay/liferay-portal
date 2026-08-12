@@ -338,7 +338,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 			return;
 		}
 
-		onSelectedPointChange(data?.activeTooltipIndex);
+		onSelectedPointChange?.(data?.activeTooltipIndex);
 	};
 
 	return (

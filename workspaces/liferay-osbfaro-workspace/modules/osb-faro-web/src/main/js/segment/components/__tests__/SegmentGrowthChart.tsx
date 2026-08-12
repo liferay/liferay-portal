@@ -306,4 +306,19 @@ describe('SegmentGrowthChart', () => {
 			container.querySelector('.recharts-wrapper')
 		).toBeInTheDocument();
 	});
+
+	it('does not throw when clicked without a selection handler', () => {
+		const {container} = render(
+			<SegmentGrowthChart data={chartData} hasSelectedPoint={false} />
+		);
+
+		const event = new MouseEvent('click', {bubbles: true});
+
+		Object.defineProperty(event, 'pageX', {value: 400});
+		Object.defineProperty(event, 'pageY', {value: 150});
+
+		expect(() =>
+			fireEvent(container.querySelector('.recharts-wrapper')!, event)
+		).not.toThrow();
+	});
 });
