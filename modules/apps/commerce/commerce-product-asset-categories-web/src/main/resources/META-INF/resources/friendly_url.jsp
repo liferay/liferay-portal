@@ -13,6 +13,7 @@ String commerceFriendlyURLBase = (String)request.getAttribute(CPAssetCategoriesW
 String commerceFriendlyURLSeparator = (String)request.getAttribute(CPAssetCategoriesWebKeys.COMMERCE_FRIENDLY_URL_SEPARATOR);
 String siteFriendlyURLBase = (String)request.getAttribute(CPAssetCategoriesWebKeys.SITE_FRIENDLY_URL_BASE);
 String siteFriendlyURLSeparator = (String)request.getAttribute(CPAssetCategoriesWebKeys.SITE_FRIENDLY_URL_SEPARATOR);
+String siteURLTitle = (String)request.getAttribute(CPAssetCategoriesWebKeys.SITE_URL_TITLE);
 String titleMapAsXML = (String)request.getAttribute(CPAssetCategoriesWebKeys.TITLE_MAP_AS_XML);
 String urlTitle = (String)request.getAttribute(CPAssetCategoriesWebKeys.URL_TITLE);
 long vocabularyId = ParamUtil.getLong(request, "vocabularyId");
@@ -59,7 +60,15 @@ renderResponse.setTitle(category.getTitle(locale));
 			<label for="<portlet:namespace />urlTitleMapAsXML"><liferay-ui:message key="friendly-url" /><span aria-label="<%= friendlyURLHelpMessage %>" class="c-ml-1 lfr-portal-tooltip" tabindex="0" title="<%= friendlyURLHelpMessage %>"><clay:icon symbol="question-circle-full" /></span></label>
 
 			<div class="c-mb-2 text-3 text-secondary">
-				<div><%= HtmlUtil.escape(siteFriendlyURLBase) %><strong class="text-dark" id="<portlet:namespace />siteURLTitle"><%= HtmlUtil.escape(urlTitle) %></strong></div>
+				<c:choose>
+					<c:when test="<%= siteURLTitle.equals(urlTitle) %>">
+						<div><%= HtmlUtil.escape(siteFriendlyURLBase) %><strong class="text-dark" id="<portlet:namespace />siteURLTitle"><%= HtmlUtil.escape(urlTitle) %></strong></div>
+					</c:when>
+					<c:otherwise>
+						<div><%= HtmlUtil.escape(siteFriendlyURLBase) %><strong class="text-dark"><%= HtmlUtil.escape(siteURLTitle) %></strong></div>
+					</c:otherwise>
+				</c:choose>
+
 				<div><%= HtmlUtil.escape(commerceFriendlyURLBase) %><strong class="text-dark" id="<portlet:namespace />commerceURLTitle"><%= HtmlUtil.escape(urlTitle) %></strong></div>
 			</div>
 

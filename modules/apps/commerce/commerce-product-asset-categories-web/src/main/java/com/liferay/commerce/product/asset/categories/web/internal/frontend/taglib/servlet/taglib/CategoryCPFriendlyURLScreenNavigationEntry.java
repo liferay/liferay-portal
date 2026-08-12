@@ -80,6 +80,7 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 		String commerceFriendlyURLSeparator = StringPool.BLANK;
 		String siteFriendlyURLBase = StringPool.BLANK;
 		String siteFriendlyURLSeparator = StringPool.BLANK;
+		String siteURLTitle = StringPool.BLANK;
 		String titleMapAsXML = StringPool.BLANK;
 		String urlTitle = StringPool.BLANK;
 
@@ -116,11 +117,19 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 							themeDisplay.getCompanyId(),
 							AssetCategory.class.getName());
 
-				siteFriendlyURLBase = _getSiteFriendlyURLBase(
-					assetCategory, groupFriendlyURL, layoutDisplayPageProvider,
-					siteDefaultLocale);
 				siteFriendlyURLSeparator =
 					layoutDisplayPageProvider.getURLSeparator();
+
+				String siteURLPath = _getSiteURLPath(
+					assetCategory, layoutDisplayPageProvider,
+					siteDefaultLocale);
+
+				int index = siteURLPath.lastIndexOf(CharPool.SLASH) + 1;
+
+				siteFriendlyURLBase =
+					groupFriendlyURL + siteFriendlyURLSeparator +
+						siteURLPath.substring(0, index);
+				siteURLTitle = siteURLPath.substring(index);
 			}
 		}
 		catch (Exception exception) {
@@ -142,6 +151,8 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 			CPAssetCategoriesWebKeys.SITE_FRIENDLY_URL_SEPARATOR,
 			siteFriendlyURLSeparator);
 		httpServletRequest.setAttribute(
+			CPAssetCategoriesWebKeys.SITE_URL_TITLE, siteURLTitle);
+		httpServletRequest.setAttribute(
 			CPAssetCategoriesWebKeys.TITLE_MAP_AS_XML, titleMapAsXML);
 		httpServletRequest.setAttribute(
 			CPAssetCategoriesWebKeys.URL_TITLE, urlTitle);
@@ -161,8 +172,8 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 			group.getPublicLayoutSet(), themeDisplay, false, false);
 	}
 
-	private String _getSiteFriendlyURLBase(
-		AssetCategory assetCategory, String groupFriendlyURL,
+	private String _getSiteURLPath(
+		AssetCategory assetCategory,
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider,
 		Locale siteDefaultLocale) {
 
@@ -172,11 +183,7 @@ public class CategoryCPFriendlyURLScreenNavigationEntry
 					AssetCategory.class.getName(),
 					assetCategory.getCategoryId()));
 
-		String urlTitle = layoutDisplayPageObjectProvider.getURLTitle(
-			siteDefaultLocale);
-
-		return groupFriendlyURL + layoutDisplayPageProvider.getURLSeparator() +
-			urlTitle.substring(0, urlTitle.lastIndexOf(CharPool.SLASH) + 1);
+		return layoutDisplayPageObjectProvider.getURLTitle(siteDefaultLocale);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

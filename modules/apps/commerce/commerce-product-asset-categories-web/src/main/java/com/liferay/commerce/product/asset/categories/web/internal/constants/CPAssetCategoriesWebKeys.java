@@ -24,6 +24,8 @@ public class CPAssetCategoriesWebKeys {
 	public static final String SITE_FRIENDLY_URL_SEPARATOR =
 		"SITE_FRIENDLY_URL_SEPARATOR";
 
+	public static final String SITE_URL_TITLE = "SITE_URL_TITLE";
+
 	public static final String TITLE_MAP_AS_XML = "TITLE_MAP_AS_XML";
 
 	public static final String URL_TITLE = "URL_TITLE";
