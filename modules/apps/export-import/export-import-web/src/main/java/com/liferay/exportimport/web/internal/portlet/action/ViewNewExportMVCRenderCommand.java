@@ -14,7 +14,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.staging.StagingGroupHelper;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
@@ -51,8 +50,7 @@ public class ViewNewExportMVCRenderCommand implements MVCRenderCommand {
 				_portal.getHttpServletRequest(renderRequest),
 				_portal.getLiferayPortletResponse(renderResponse),
 				ParamUtil.getLong(renderRequest, "liveGroupId", groupId),
-				ParamUtil.getBoolean(renderRequest, "privateLayout"),
-				_stagingGroupHelper));
+				ParamUtil.getBoolean(renderRequest, "privateLayout")));
 
 		return "/revamp/export/new_export.jsp";
 	}
@@ -65,8 +63,5 @@ public class ViewNewExportMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private StagingGroupHelper _stagingGroupHelper;
 
 }
