@@ -8523,9 +8523,7 @@ public class PortalImpl implements Portal {
 			return changeLanguageURL;
 		}
 
-		String i18nPath =
-			StringPool.SLASH +
-				getI18nPathLanguageId(locale, LocaleUtil.toLanguageId(locale));
+		String i18nPath = _buildI18NPath(locale, themeDisplay.getSiteGroup());
 
 		if (path.startsWith(i18nPath + StringPool.SLASH) ||
 			path.equals(i18nPath)) {
