@@ -52,6 +52,19 @@ public class SegmentsServiceVerifyProcessTest {
 		_group = GroupTestUtil.addGroup();
 	}
 
+	@Test
+	public void testVerify() throws Exception {
+		SegmentsEntry defaultSegmentsEntry = _addActiveSegmentsEntry(
+			SegmentsEntryConstants.SOURCE_DEFAULT);
+
+		_verifyProcess.verify();
+
+		defaultSegmentsEntry = _segmentsEntryLocalService.getSegmentsEntry(
+			defaultSegmentsEntry.getSegmentsEntryId());
+
+		Assert.assertTrue(defaultSegmentsEntry.isActive());
+	}
+
 	@FeatureFlag(enable = false, value = "LPD-78863")
 	@Test
 	public void testVerifyWithFeatureFlagDisabled() throws Exception {
@@ -81,19 +94,6 @@ public class SegmentsServiceVerifyProcessTest {
 				segmentsExperience.getSegmentsExperienceId());
 
 		Assert.assertFalse(segmentsExperience.isActive());
-	}
-
-	@Test
-	public void testVerify() throws Exception {
-		SegmentsEntry defaultSegmentsEntry = _addActiveSegmentsEntry(
-			SegmentsEntryConstants.SOURCE_DEFAULT);
-
-		_verifyProcess.verify();
-
-		defaultSegmentsEntry = _segmentsEntryLocalService.getSegmentsEntry(
-			defaultSegmentsEntry.getSegmentsEntryId());
-
-		Assert.assertTrue(defaultSegmentsEntry.isActive());
 	}
 
 	private SegmentsEntry _addActiveSegmentsEntry(String source)
