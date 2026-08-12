@@ -8,7 +8,9 @@ package com.liferay.account.service.test;
 import com.liferay.account.configuration.AccountEntryEmailDomainsConfiguration;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.exception.AccountEntryDomainsException;
+import com.liferay.account.exception.AccountEntryExternalReferenceCodeException;
 import com.liferay.account.exception.AccountEntryNameException;
+import com.liferay.account.exception.AccountEntryTaxIdNumberException;
 import com.liferay.account.exception.NoSuchEntryException;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountEntryUserRel;
@@ -176,6 +178,71 @@ public class AccountEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testAccountEntryExternalReferenceCode() throws Exception {
+		try {
+			AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withExternalReferenceCode(
+					RandomTestUtil.randomString(76)));
+
+			Assert.fail();
+		}
+		catch (AccountEntryExternalReferenceCodeException
+					accountEntryExternalReferenceCodeException) {
+
+			String message =
+				accountEntryExternalReferenceCodeException.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					"External reference code has more than 75 characters"));
+		}
+
+		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry(
+			AccountEntryArgs.withExternalReferenceCode(
+				RandomTestUtil.randomString(75)));
+
+		try {
+			_accountEntryLocalService.updateAccountEntry(
+				RandomTestUtil.randomString(76),
+				accountEntry.getAccountEntryId(),
+				accountEntry.getParentAccountEntryId(), accountEntry.getName(),
+				null, false, null, null, null, accountEntry.getTaxIdNumber(),
+				accountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (AccountEntryExternalReferenceCodeException
+					accountEntryExternalReferenceCodeException) {
+
+			String message =
+				accountEntryExternalReferenceCodeException.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					"External reference code has more than 75 characters"));
+		}
+
+		try {
+			_accountEntryLocalService.updateExternalReferenceCode(
+				accountEntry.getAccountEntryId(),
+				RandomTestUtil.randomString(76));
+
+			Assert.fail();
+		}
+		catch (AccountEntryExternalReferenceCodeException
+					accountEntryExternalReferenceCodeException) {
+
+			String message =
+				accountEntryExternalReferenceCodeException.getMessage();
+
+			Assert.assertTrue(
+				message.contains(
+					"External reference code has more than 75 characters"));
+		}
+	}
+
+	@Test
 	public void testAccountEntryGroup() throws Exception {
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
 
@@ -211,6 +278,19 @@ public class AccountEntryLocalServiceTest {
 			String message = accountEntryNameException.getMessage();
 
 			Assert.assertTrue(message.contains("Name is null"));
+		}
+
+		try {
+			AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withName(RandomTestUtil.randomString(251)));
+
+			Assert.fail();
+		}
+		catch (AccountEntryNameException accountEntryNameException) {
+			String message = accountEntryNameException.getMessage();
+
+			Assert.assertTrue(
+				message.contains("Name has more than 250 characters"));
 		}
 
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
@@ -455,6 +535,48 @@ public class AccountEntryLocalServiceTest {
 			Assert.assertEquals(
 				"This name is invalid.",
 				objectValidationRuleResult.getErrorMessage());
+		}
+	}
+
+	@Test
+	public void testAccountEntryTaxIdNumber() throws Exception {
+		try {
+			AccountEntryTestUtil.addAccountEntry(
+				AccountEntryArgs.withTaxIdNumber(
+					RandomTestUtil.randomString(76)));
+
+			Assert.fail();
+		}
+		catch (AccountEntryTaxIdNumberException
+					accountEntryTaxIdNumberException) {
+
+			String message = accountEntryTaxIdNumberException.getMessage();
+
+			Assert.assertTrue(
+				message.contains("Tax ID number has more than 75 characters"));
+		}
+
+		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry(
+			AccountEntryArgs.withTaxIdNumber(RandomTestUtil.randomString(75)));
+
+		try {
+			_accountEntryLocalService.updateAccountEntry(
+				accountEntry.getExternalReferenceCode(),
+				accountEntry.getAccountEntryId(),
+				accountEntry.getParentAccountEntryId(), accountEntry.getName(),
+				null, false, null, null, null, RandomTestUtil.randomString(76),
+				accountEntry.getStatus(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.fail();
+		}
+		catch (AccountEntryTaxIdNumberException
+					accountEntryTaxIdNumberException) {
+
+			String message = accountEntryTaxIdNumberException.getMessage();
+
+			Assert.assertTrue(
+				message.contains("Tax ID number has more than 75 characters"));
 		}
 	}
 

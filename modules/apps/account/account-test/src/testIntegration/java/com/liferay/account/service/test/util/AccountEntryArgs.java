@@ -40,6 +40,13 @@ public class AccountEntryArgs {
 		return accountEntryArgs -> accountEntryArgs.domains = domains;
 	}
 
+	public static Consumer withExternalReferenceCode(
+		String externalReferenceCode) {
+
+		return accountEntryArgs ->
+			accountEntryArgs.externalReferenceCode = externalReferenceCode;
+	}
+
 	public static Consumer withName(String name) {
 		return accountEntryArgs -> accountEntryArgs.name = name;
 	}
@@ -51,6 +58,10 @@ public class AccountEntryArgs {
 
 	public static Consumer withOwner(User user) {
 		return accountEntryArgs -> accountEntryArgs.userId = user.getUserId();
+	}
+
+	public static Consumer withTaxIdNumber(String taxIdNumber) {
+		return accountEntryArgs -> accountEntryArgs.taxIdNumber = taxIdNumber;
 	}
 
 	public static Consumer withUsers(User... users) {
