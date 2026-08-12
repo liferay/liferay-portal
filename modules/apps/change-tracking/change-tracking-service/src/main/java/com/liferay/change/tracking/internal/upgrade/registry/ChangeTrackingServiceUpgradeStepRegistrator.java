@@ -9,12 +9,10 @@ import com.liferay.change.tracking.internal.upgrade.v2_10_0.CTCollectionUpgradeP
 import com.liferay.change.tracking.internal.upgrade.v2_12_3.CTMessageCompanyIdUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_12_4.CTProcessResourceUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_14_0.CTConflictCheckerDispatchTriggerUpgradeProcess;
-import com.liferay.change.tracking.internal.upgrade.v2_15_0.CTCollectionScheduledDateUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_3_0.UpgradeCompanyId;
 import com.liferay.change.tracking.internal.upgrade.v2_4_0.CTSchemaVersionUpgradeProcess;
 import com.liferay.change.tracking.internal.upgrade.v2_7_0.CTProcessUpgradeProcess;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseUuidUpgradeProcess;
@@ -158,11 +156,6 @@ public class ChangeTrackingServiceUpgradeStepRegistrator
 		registry.register(
 			"2.13.1", "2.14.0",
 			new CTConflictCheckerDispatchTriggerUpgradeProcess());
-
-		registry.register(
-			"2.14.0", "2.15.0",
-			new CTCollectionScheduledDateUpgradeProcess(
-				_schedulerEngineHelper));
 	}
 
 	@Reference
@@ -173,8 +166,5 @@ public class ChangeTrackingServiceUpgradeStepRegistrator
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;
-
-	@Reference
-	private SchedulerEngineHelper _schedulerEngineHelper;
 
 }
