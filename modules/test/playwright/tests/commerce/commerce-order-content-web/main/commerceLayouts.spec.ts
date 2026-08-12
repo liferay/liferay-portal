@@ -16,6 +16,7 @@ import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {liferayConfig} from '../../../../liferay.config';
+import {formatDateForUI} from '../../../../utils/applyFDSDateTimeRangeFilter';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
@@ -1098,9 +1099,11 @@ test(
 		const orderSummaryId =
 			await pageEditorPage.getFragmentId('Order Summary');
 
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
-			'Subtotal'
+		const orderSummaryFragment = page.locator(
+			`.lfr-layout-structure-item-${orderSummaryId}`
 		);
+
+		await expect(orderSummaryFragment).toContainText('Subtotal');
 
 		await pageEditorPage.changeFragmentConfiguration({
 			fieldLabel: 'Field',
@@ -1115,9 +1118,7 @@ test(
 			value: 'TotalTest',
 		});
 
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
-			'TotalTest'
-		);
+		await expect(orderSummaryFragment).toContainText('TotalTest');
 
 		await pageEditorPage.addWidget('Commerce', 'Coupon Code Entry');
 		await pageEditorPage.waitForChangesSaved();
@@ -1133,11 +1134,13 @@ test(
 				`/web/${site.name}/order/${postCart.id}`
 		);
 
+		const orderDetailsTabPanel = page.getByRole('tabpanel').first();
+
 		let cart = await apiHelpers.headlessCommerceDeliveryCart.getCart(
 			postCart.id
 		);
 
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`TotalTest ${cart.summary.totalFormatted}`
 		);
 
@@ -1204,28 +1207,28 @@ test(
 			postCart.id
 		);
 
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`Subtotal ${cart.summary.subtotalFormatted}`
 		);
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`Subtotal Discount ${cart.summary.subtotalDiscountValueFormatted}`
 		);
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`Total Discount ${cart.summary.totalDiscountValueFormatted}`
 		);
 		await expect(
 			page.getByText(`Promotion Code ${discount.couponCode}`)
 		).toBeVisible();
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`Tax ${cart.summary.taxValueFormatted}`
 		);
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`Delivery ${cart.summary.shippingValueFormatted}`
 		);
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`Delivery Discount ${cart.summary.shippingDiscountValueFormatted}`
 		);
-		await expect(page.getByLabel('Details', {exact: true})).toContainText(
+		await expect(orderDetailsTabPanel).toContainText(
 			`Total ${cart.summary.totalFormatted}`
 		);
 	}
@@ -1947,6 +1950,8 @@ test(
 		await commerceLayoutsPage.inputTextArea.fill(randomComment);
 
 		await commerceLayoutsPage.submitButton.click();
+
+		await waitForAlert(page);
 
 		let comment = await apiHelpers.headlessCommerceDeliveryCart.getComments(
 			cart.id
@@ -3260,7 +3265,7 @@ test(
 			.click();
 		await page
 			.getByLabel('To', {exact: true})
-			.fill(expectedDate.toISOString().replace(/T.*/, ''));
+			.fill(formatDateForUI(expectedDate));
 		await page
 			.getByRole('button', {exact: true, name: 'Add Filter'})
 			.click();
