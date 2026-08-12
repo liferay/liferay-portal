@@ -17,7 +17,8 @@ import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 
-import jakarta.ws.rs.BadRequestException;
+import jakarta.validation.ValidationException;
+
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
 
@@ -113,7 +114,7 @@ public class PerformanceMetricResourceImpl
 			return "/geolocation";
 		}
 
-		throw new BadRequestException("Invalid group by: " + groupBy);
+		throw new ValidationException("Invalid group by: " + groupBy);
 	}
 
 	private void _validateMetricType(String metricType) {
@@ -122,7 +123,7 @@ public class PerformanceMetricResourceImpl
 			!StringUtil.equalsIgnoreCase(metricType, "readsMetric") &&
 			!StringUtil.equalsIgnoreCase(metricType, "viewsMetric")) {
 
-			throw new BadRequestException("Invalid metric type: " + metricType);
+			throw new ValidationException("Invalid metric type: " + metricType);
 		}
 	}
 

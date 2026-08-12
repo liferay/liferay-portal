@@ -36,7 +36,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
-import jakarta.ws.rs.BadRequestException;
+import jakarta.validation.ValidationException;
+
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.StreamingOutput;
@@ -321,7 +322,7 @@ public class PerformanceMetricResourceTest
 
 	private void _testGetPerformanceMetricExportWithInvalidMetricType() {
 		Assert.assertThrows(
-			BadRequestException.class,
+			ValidationException.class,
 			() -> _performanceMetricResource.getPerformanceMetricExport(
 				TransformUtil.transformToArray(
 					_depotEntries, DepotEntry::getDepotEntryId, Long.class),
@@ -340,7 +341,7 @@ public class PerformanceMetricResourceTest
 
 	private void _testGetPerformanceMetricWithInvalidMetricType() {
 		Assert.assertThrows(
-			BadRequestException.class,
+			ValidationException.class,
 			() -> _performanceMetricResource.getPerformanceMetric(
 				TransformUtil.transformToArray(
 					_depotEntries, DepotEntry::getDepotEntryId, Long.class),

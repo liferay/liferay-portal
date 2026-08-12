@@ -38,7 +38,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import jakarta.ws.rs.BadRequestException;
+import jakarta.validation.ValidationException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -351,7 +351,7 @@ public class PerformanceAssetConsumptionResourceTest
 
 	private void _testGetPerformanceAssetConsumptionWithInvalidGroupBy() {
 		Assert.assertThrows(
-			BadRequestException.class,
+			ValidationException.class,
 			() ->
 				_performanceAssetConsumptionResource.
 					getPerformanceAssetConsumption(

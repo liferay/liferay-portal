@@ -6,6 +6,7 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.test.integration", version: "default"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	testIntegrationImplementation group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
 	testIntegrationImplementation project(":apps:analytics:analytics-cms-rest-api")
 	testIntegrationImplementation project(":apps:analytics:analytics-cms-rest-client")
 	testIntegrationImplementation project(":apps:analytics:analytics-settings-api")

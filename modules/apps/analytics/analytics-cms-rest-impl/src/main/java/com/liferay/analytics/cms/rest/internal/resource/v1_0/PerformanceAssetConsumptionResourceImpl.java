@@ -18,7 +18,7 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import jakarta.ws.rs.BadRequestException;
+import jakarta.validation.ValidationException;
 
 import java.util.Arrays;
 
@@ -85,7 +85,7 @@ public class PerformanceAssetConsumptionResourceImpl
 			!StringUtil.equalsIgnoreCase(groupBy, "tag") &&
 			!StringUtil.equalsIgnoreCase(groupBy, "vocabulary")) {
 
-			throw new BadRequestException("Invalid group by: " + groupBy);
+			throw new ValidationException("Invalid group by: " + groupBy);
 		}
 	}
 
