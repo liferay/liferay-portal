@@ -21,6 +21,7 @@ import com.liferay.portal.search.hits.SearchHits;
 import com.liferay.portal.search.index.IndexNameBuilder;
 import com.liferay.portal.search.query.BooleanQuery;
 import com.liferay.portal.search.query.QueriesUtil;
+import com.liferay.portal.search.spi.reindexer.IndexReindexer;
 import com.liferay.portal.workflow.metrics.internal.search.index.SLATaskResultWorkflowMetricsIndexer;
 import com.liferay.portal.workflow.metrics.search.background.task.WorkflowMetricsReindexStatusMessageSender;
 import com.liferay.portal.workflow.metrics.search.index.constants.WorkflowMetricsIndexNameConstants;
@@ -34,9 +35,9 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Rafael Praxedes
  */
-@Component(service = WorkflowMetricsReindexer.class)
+@Component(service = {IndexReindexer.class, WorkflowMetricsReindexer.class})
 public class SLATaskResultWorkflowMetricsReindexer
-	implements WorkflowMetricsReindexer {
+	implements IndexReindexer, WorkflowMetricsReindexer {
 
 	@Override
 	public String getKey() {
@@ -48,8 +49,12 @@ public class SLATaskResultWorkflowMetricsReindexer
 		_createDefaultDocuments(companyId);
 	}
 
-	@Reference
-	protected SearchEngineAdapter searchEngineAdapter;
+	@Override
+	public void reindex(long companyId, ExecutionMode executionMode)
+		throws Exception {
+
+		reindex(companyId);
+	}
 
 	private void _createDefaultDocuments(long companyId) {
 		if (!_searchCapabilities.isWorkflowMetricsSupported() ||
@@ -76,7 +81,7 @@ public class SLATaskResultWorkflowMetricsReindexer
 
 		searchSearchRequest.setSize(10000);
 
-		SearchSearchResponse searchSearchResponse = searchEngineAdapter.execute(
+		SearchSearchResponse searchSearchResponse = _searchEngineAdapter.execute(
 			searchSearchRequest);
 
 		SearchHits searchHits = searchSearchResponse.getSearchHits();
@@ -113,7 +118,7 @@ public class SLATaskResultWorkflowMetricsReindexer
 				bulkDocumentRequest.setRefresh(true);
 			}
 
-			searchEngineAdapter.execute(bulkDocumentRequest);
+			_searchEngineAdapter.execute(bulkDocumentRequest);
 		}
 	}
 
@@ -122,7 +127,7 @@ public class SLATaskResultWorkflowMetricsReindexer
 			new IndicesExistsIndexRequest(indexName);
 
 		IndicesExistsIndexResponse indicesExistsIndexResponse =
-			searchEngineAdapter.execute(indicesExistsIndexRequest);
+			_searchEngineAdapter.execute(indicesExistsIndexRequest);
 
 		return indicesExistsIndexResponse.isExists();
 	}
@@ -132,6 +137,9 @@ public class SLATaskResultWorkflowMetricsReindexer
 
 	@Reference
 	private SearchCapabilities _searchCapabilities;
+
+	@Reference
+	private SearchEngineAdapter _searchEngineAdapter;
 
 	@Reference
 	private SLATaskResultWorkflowMetricsIndexer
