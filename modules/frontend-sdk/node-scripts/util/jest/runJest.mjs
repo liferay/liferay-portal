@@ -44,6 +44,7 @@ export default async function runJest({
 				...execaConfig.env,
 				NODE_ENV: 'test',
 			},
+			reject: false,
 			...execaConfig,
 		};
 

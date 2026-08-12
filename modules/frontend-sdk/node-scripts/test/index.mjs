@@ -73,17 +73,19 @@ export default async function () {
 
 	const totalTestableProjects = testableProjectsMap.size;
 
+	let failed = false;
+
 	if (totalTestableProjects === 1) {
 		const [[projectPath, envObj]] = testableProjectsMap.entries();
 
-		await runJest({
+		({failed} = await runJest({
 			cliFlags: args,
 			execaConfig: {
 				env: envObj,
 				stdio: 'inherit',
 			},
 			projectPath,
-		});
+		}));
 	}
 	else {
 		print(
@@ -99,7 +101,7 @@ export default async function () {
 			asyncItems.push(async () => {
 				const projectName = path.relative(PORTAL_DIR, projectPath);
 
-				const {all, failed} = await runJest({
+				const {all, failed: projectFailed} = await runJest({
 					cliFlags: args,
 					execaConfig: {
 						all: true,
@@ -110,7 +112,7 @@ export default async function () {
 					projectPath,
 				});
 
-				if (failed) {
+				if (projectFailed) {
 					print(
 						1,
 						print.error('FAILED:'),
@@ -127,20 +129,36 @@ export default async function () {
 						'\n'
 					);
 				}
+
+				return projectFailed;
 			});
 		}
 
 		if (sync) {
 			for (const task of asyncItems) {
-				await task('inherit');
+				if (await task()) {
+					failed = true;
+				}
 			}
 		}
 		else {
-			await runConcurrentTasks(asyncItems);
+			const results = await runConcurrentTasks(asyncItems);
+
+			failed = results.some(Boolean);
+		}
+
+		if (failed) {
+			print(
+				0,
+				print.error('ERROR:'),
+				'Some projects have failing tests.\n'
+			);
 		}
 	}
 
 	process.env.NODE_ENV = originalNodeEnv;
+
+	process.exitCode = failed ? 1 : 0;
 }
 
 function getEnvVars(value) {
