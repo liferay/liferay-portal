@@ -41,6 +41,7 @@ export class ViewObjectEntriesPage {
 	readonly frontendDatasetViewAction: Locator;
 	readonly neverExpire: Locator;
 	readonly neverReview: Locator;
+	readonly noPermissionMessage: Locator;
 	readonly objectEntryButton: Locator;
 	readonly page: Page;
 	readonly publishDateInput: Locator;
@@ -114,6 +115,11 @@ export class ViewObjectEntriesPage {
 		});
 		this.neverExpire = page.getByLabel('Never Expire', {exact: true});
 		this.neverReview = page.getByLabel('Never Review', {exact: true});
+		this.noPermissionMessage = page
+			.getByText(
+				'You do not have the roles required to access this portlet.'
+			)
+			.first();
 		this.objectEntryButton = page.getByRole('link', {name: 'View'});
 		this.page = page;
 		this.publishDateInput = page.getByLabel('Publish Date' + 'Mandatory', {

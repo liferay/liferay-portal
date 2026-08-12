@@ -29,9 +29,13 @@ import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectLayoutLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -143,6 +147,23 @@ public class ObjectEntryDisplayContextImplTest {
 		_testGetMethod("PUT", _OBJECT_ENTRY_ID, 0);
 		_testGetMethod("PUT", null, 0);
 		_testGetMethod("PUT", null, RandomTestUtil.randomLong());
+	}
+
+	@Test
+	@TestInfo("LPD-102111")
+	public void testGetObjectDefinitionPortletId() throws Exception {
+		Assert.assertEquals(
+			_PORTLET_ID, _getObjectDefinitionPortletId(_PORTLET_ID));
+
+		String portletId = PortletIdCodec.encode(
+			_PORTLET_ID, RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			portletId, _getObjectDefinitionPortletId(portletId));
+
+		Assert.assertEquals(
+			StringPool.BLANK,
+			_getObjectDefinitionPortletId(RandomTestUtil.randomString()));
 	}
 
 	@Test
@@ -323,6 +344,29 @@ public class ObjectEntryDisplayContextImplTest {
 			Mockito.mock(ObjectEntryManagerRegistry.class),
 			objectFieldBusinessTypeRegistry,
 			Mockito.mock(ObjectRelationshipLocalService.class));
+	}
+
+	private String _getObjectDefinitionPortletId(String portletId)
+		throws Exception {
+
+		PortletDisplay portletDisplay = Mockito.mock(PortletDisplay.class);
+
+		Mockito.when(
+			portletDisplay.getId()
+		).thenReturn(
+			portletId
+		);
+
+		Mockito.when(
+			_themeDisplay.getPortletDisplay()
+		).thenReturn(
+			portletDisplay
+		);
+
+		return ReflectionTestUtil.invoke(
+			_createObjectEntryDisplayContextImpl(
+				_mockHttpServletRequest, _OBJECT_ENTRY_ID),
+			"_getObjectDefinitionPortletId", new Class<?>[0]);
 	}
 
 	private void _setUpMockHttpServletRequest() {

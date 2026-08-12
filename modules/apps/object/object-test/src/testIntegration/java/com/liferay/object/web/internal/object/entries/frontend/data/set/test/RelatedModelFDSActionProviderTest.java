@@ -11,13 +11,18 @@ import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.frontend.data.set.provider.FDSActionProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.entries.frontend.data.set.data.model.RelatedModel;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.object.test.util.ObjectRelationshipTestUtil;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -32,6 +37,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -39,6 +45,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -193,6 +200,81 @@ public class RelatedModelFDSActionProviderTest {
 			dropdownItem.get("href"));
 	}
 
+	@Test
+	@TestInfo("LPD-102111")
+	public void testGetDropdownItemsWithObjectDefinitionPortletId()
+		throws Exception {
+
+		ObjectDefinition parentObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectDefinition childObjectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipTestUtil.addObjectRelationship(
+				_objectRelationshipLocalService, parentObjectDefinition,
+				childObjectDefinition);
+
+		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			childObjectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		MockHttpServletRequest mockHttpServletRequest =
+			_getMockHttpServletRequest(objectEntry.getObjectEntryId());
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)mockHttpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(
+			TestPropsValues.getGroupId());
+
+		themeDisplay.setLayout(layout);
+		themeDisplay.setPlid(layout.getPlid());
+
+		mockHttpServletRequest.setParameter(
+			"objectDefinitionPortletId", parentObjectDefinition.getPortletId());
+		mockHttpServletRequest.setParameter(
+			"objectRelationshipId",
+			String.valueOf(objectRelationship.getObjectRelationshipId()));
+
+		RelatedModel relatedModel = new RelatedModel(
+			childObjectDefinition.getClassName(),
+			objectEntry.getObjectEntryId(), objectEntry.getTitleValue(), false);
+
+		_assertDropdownItemPortletIds(
+			_fdsActionProvider.getDropdownItems(
+				TestPropsValues.getGroupId(), mockHttpServletRequest,
+				relatedModel),
+			parentObjectDefinition.getPortletId());
+
+		mockHttpServletRequest.removeParameter("objectDefinitionPortletId");
+
+		_assertDropdownItemPortletIds(
+			_fdsActionProvider.getDropdownItems(
+				TestPropsValues.getGroupId(), mockHttpServletRequest,
+				relatedModel),
+			childObjectDefinition.getPortletId());
+	}
+
+	private void _assertDropdownItemPortletIds(
+		List<DropdownItem> dropdownItems, String expectedPortletId) {
+
+		Assert.assertEquals(dropdownItems.toString(), 2, dropdownItems.size());
+
+		for (DropdownItem dropdownItem : dropdownItems) {
+			String href = (String)dropdownItem.get("href");
+
+			Assert.assertEquals(
+				href, expectedPortletId,
+				HttpComponentsUtil.getParameter(href, "p_p_id", false));
+		}
+	}
+
 	private void _assertDropdownItems(
 		String[] expectedDropdownItemLabels,
 		List<DropdownItem> actualDropdownItems) {
@@ -259,6 +341,9 @@ public class RelatedModelFDSActionProviderTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Inject
+	private ObjectRelationshipLocalService _objectRelationshipLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
