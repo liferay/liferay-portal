@@ -3,6 +3,7 @@ import AccountMembership from '../components/AccountMembership';
 import Card from 'shared/components/Card';
 import ClayIcon from '@clayui/icon';
 import ClayLink from '@clayui/link';
+import EngagementSummary from '../components/EngagementSummary';
 import IndividualAttributesCDP from '../components/IndividualAttributesCDP';
 import IndividualDetailsCDP from '../components/IndividualAllAttributesCDP';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
@@ -126,6 +127,8 @@ const IndividualProfileCDP: React.FC<IIndividualProfileCDPProps> = ({
 	groupId,
 	individual,
 }) => {
+	const individualId = individual.get('id');
+
 	const {data: dataSourceData, loading: dataSourceLoading} = useRequest({
 		dataSourceFn: API.dataSource.search,
 		variables: {
@@ -145,7 +148,7 @@ const IndividualProfileCDP: React.FC<IIndividualProfileCDPProps> = ({
 	return (
 		<>
 			<IndividualAttributesCDP
-				contactId={individual.get('id')}
+				contactId={individualId}
 				loading={dataSourceLoading}
 				propertiesData={individual.get('properties')}
 				showEmptyState={showEmptyState}
@@ -173,9 +176,16 @@ const IndividualProfileCDP: React.FC<IIndividualProfileCDPProps> = ({
 				/>
 			</AccountMembership>
 
+			<EngagementSummary
+				channelId={channelId}
+				groupId={groupId}
+				individualId={individualId}
+				individualName={individual.get('name')}
+			/>
+
 			<IndividualDetailsCDP
 				groupId={groupId}
-				individualId={individual.get('id')}
+				individualId={individualId}
 				showEmptyState={showEmptyState}
 			>
 				<ProfileCDPEmptyState
