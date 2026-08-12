@@ -30,8 +30,8 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * @author Anderson Luiz
- * @author Thiago Buarque
  * @author Gabriel Lima
+ * @author Thiago Buarque
  */
 public class StyleBookEntryLocalServiceImplTest {
 
@@ -59,9 +59,9 @@ public class StyleBookEntryLocalServiceImplTest {
 
 	@Test
 	public void testUpdateFrontendTokenDefinition() throws Exception {
+		_testUpdateFrontendTokenDefinitionClearsFrontendTokenDefinition(null);
 		_testUpdateFrontendTokenDefinitionClearsFrontendTokenDefinition(
 			StringPool.BLANK);
-		_testUpdateFrontendTokenDefinitionClearsFrontendTokenDefinition(null);
 		_testUpdateFrontendTokenDefinitionWithDuplicateFrontendTokenInPayload();
 		_testUpdateFrontendTokenDefinitionWithInvalidJSON();
 		_testUpdateFrontendTokenDefinitionWithSchemaInvalidJSON();
