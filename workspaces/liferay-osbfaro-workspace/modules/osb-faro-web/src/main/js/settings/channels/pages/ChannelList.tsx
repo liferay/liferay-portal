@@ -364,8 +364,7 @@ const ChannelList: React.FC<IChannelListProps> = ({
 						displayType="secondary"
 						onClick={() => {
 							const ableToDeleteChannel = !selectedItems.some(
-								({commerceChannelsCount, groupsCount}) =>
-									commerceChannelsCount || groupsCount
+								({groupsCount}) => groupsCount
 							);
 
 							if (ableToDeleteChannel) {
@@ -390,10 +389,9 @@ const ChannelList: React.FC<IChannelListProps> = ({
 	const authorized: boolean = currentUser.isAdmin();
 
 	const renderRowActions = ({
-		data: {commerceChannelsCount, groupsCount, id, name},
+		data: {groupsCount, id, name},
 	}: {
 		data: {
-			commerceChannelsCount: number;
 			groupsCount: number;
 			id: string;
 			name: string;
@@ -409,7 +407,7 @@ const ChannelList: React.FC<IChannelListProps> = ({
 				iconSymbol: 'trash',
 				label: Liferay.Language.get('delete'),
 				onClick: () => {
-					if (!commerceChannelsCount && !groupsCount) {
+					if (!groupsCount) {
 						handleDeleteChannel([id], name);
 					}
 					else {

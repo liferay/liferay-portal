@@ -35,7 +35,6 @@ import {useRequest} from 'shared/hooks/useRequest';
 const {channelPermissionTypes} = Constants;
 
 type Channel = {
-	commerceChannelsCount: number;
 	createTime: number;
 	groupsCount: number;
 	id: string;
@@ -321,10 +320,7 @@ const View: React.FC<IViewProps> = ({
 								data-testid="delete"
 								displayType="secondary"
 								onClick={() => {
-									if (
-										channel.commerceChannelsCount ||
-										channel.groupsCount
-									) {
+									if (channel.groupsCount) {
 										handleUnableToDeleteProperty();
 
 										return;
@@ -433,10 +429,7 @@ const View: React.FC<IViewProps> = ({
 			</div>
 
 			<Card pageDisplay>
-				<SyncedStripe
-					channelsSyncedCount={channel.commerceChannelsCount}
-					sitesSyncedCount={channel.groupsCount}
-				/>
+				<SyncedStripe sitesSyncedCount={channel.groupsCount} />
 
 				<Card.Body className="flex-grow-0">
 					<RadioGroup
