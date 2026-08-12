@@ -225,6 +225,7 @@ public class UpdateLanguageActionTest {
 
 		Assert.assertEquals(
 			StringBundler.concat(
+				StringPool.SLASH, _targetLocale.getLanguage(),
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 				_group.getFriendlyURL(), StringPool.SLASH),
 			updateLanguageAction.getRedirect(
@@ -379,6 +380,13 @@ public class UpdateLanguageActionTest {
 			Locale targetLocale, String targetURL, boolean virtualHost)
 		throws Exception {
 
+		if (!Objects.equals(_defaultLocale, targetLocale)) {
+			String i18nPathLanguageId = PortalUtil.getI18nPathLanguageId(
+				targetLocale, LocaleUtil.toLanguageId(targetLocale));
+
+			targetURL = StringPool.SLASH + i18nPathLanguageId + targetURL;
+		}
+
 		if (Validator.isNotNull(contextPath)) {
 			targetURL = contextPath + targetURL;
 		}
@@ -526,6 +534,13 @@ public class UpdateLanguageActionTest {
 				_group.getFriendlyURL() + _layout.getFriendlyURL(_targetLocale);
 
 		targetURL += targetFriendlyURLSeparatorPart + "?queryString";
+
+		if (!Objects.equals(_defaultLocale, _targetLocale)) {
+			String i18nPathLanguageId = PortalUtil.getI18nPathLanguageId(
+				_targetLocale, LocaleUtil.toLanguageId(_targetLocale));
+
+			targetURL = StringPool.SLASH + i18nPathLanguageId + targetURL;
+		}
 
 		String sourceURL =
 			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
