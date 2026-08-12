@@ -85,13 +85,38 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) Reconcile(
 	}
 
 	if liferayEnvironment.Spec.Offline {
-		logger.V(1).Info("Awaiting offline bundle", "environmentID", environmentID)
+		publicKey, error := publicKeyBase64(privateKey)
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		offlineActivationPayload, error := provisioning.OfflineActivationPayload(
+			provisioning.ActivationRequest{
+				EnvironmentID:   environmentID,
+				EnvironmentName: liferayEnvironment.Spec.EnvironmentName,
+				PublicKey:       publicKey,
+			},
+			privateKey,
+		)
+
+		if error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		if error := liferayEnvironmentReconciler.persistOfflineRequest(
+			context, liferayEnvironment, offlineActivationPayload,
+		); error != nil {
+			return controllerruntime.Result{}, error
+		}
+
+		logger.V(1).Info("Awaiting offline activation bundle", "environmentID", environmentID)
 
 		meta.SetStatusCondition(
 			&liferayEnvironment.Status.Conditions,
 			metav1.Condition{
-				Message: "Waiting for the offline bundle to be provided",
-				Reason:  "AwaitingOfflineBundle",
+				Message: "Waiting for the offline activation bundle to be provided",
+				Reason:  "AwaitingOfflineActivationBundle",
 				Status:  metav1.ConditionFalse,
 				Type:    conditionActivated,
 			},
@@ -793,6 +818,44 @@ func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistEntitle
 	}
 
 	logf.FromContext(context).Info("Created entitlements secret", "secret", entitlementsName)
+
+	return nil
+}
+
+func (liferayEnvironmentReconciler *LiferayEnvironmentReconciler) persistOfflineRequest(
+	context context.Context,
+	liferayEnvironment *licensingv1alpha1.LiferayEnvironment,
+	payload string,
+) error {
+	identityName := liferayEnvironment.Name + identitySecretSuffix
+
+	secret := &corev1.Secret{}
+
+	if error := liferayEnvironmentReconciler.Get(
+		context, types.NamespacedName{
+			Name:      identityName,
+			Namespace: liferayEnvironment.Namespace,
+		}, secret); error != nil {
+		return error
+	}
+
+	if bytes.Equal(secret.Data["offline-request"], []byte(payload)) {
+		return nil
+	}
+
+	if secret.Data == nil {
+		secret.Data = map[string][]byte{}
+	}
+
+	secret.Data["offline-request"] = []byte(payload)
+
+	if error := liferayEnvironmentReconciler.Update(context, secret); error != nil {
+		return error
+	}
+
+	logf.FromContext(context).Info(
+		"Stored offline request in identity secret", "secret", identityName,
+	)
 
 	return nil
 }

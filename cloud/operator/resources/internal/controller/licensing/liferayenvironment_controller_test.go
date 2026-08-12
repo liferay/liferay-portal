@@ -3,6 +3,8 @@ package licensing
 import (
 	"context"
 	"crypto/rsa"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"strings"
@@ -420,7 +422,7 @@ func TestReconcileIsNotBlockedByAddOns(t *testing.T) {
 	}
 }
 
-func TestReconcileOfflineAwaitsBundle(t *testing.T) {
+func TestReconcileOfflineAwaitsActivationBundle(t *testing.T) {
 	environment := pendingEnvironment()
 	environment.Spec.Offline = true
 
@@ -472,12 +474,54 @@ func TestReconcileOfflineAwaitsBundle(t *testing.T) {
 		t.Fatal("Activated condition is nil, wanted value")
 	}
 
-	if condition.Reason != "AwaitingOfflineBundle" {
-		t.Errorf("Activated condition reason = %v, want AwaitingOfflineBundle", condition.Reason)
+	if condition.Reason != "AwaitingOfflineActivationBundle" {
+		t.Errorf("Activated condition reason = %v, want AwaitingOfflineActivationBundle", condition.Reason)
 	}
 
 	if condition.Status != metav1.ConditionFalse {
 		t.Errorf("Activated condition status = %v, want False", condition.Status)
+	}
+}
+
+func TestReconcileOfflineStoresRequestInIdentitySecret(t *testing.T) {
+	environment := pendingEnvironment()
+	environment.Spec.Offline = true
+
+	liferayEnvironmentReconciler, _ := reconcileEnvironment(
+		&stubProvisioning{}, t,
+		&corev1.Namespace{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "liferay-dev",
+				UID:  "dev-namespace-uid",
+			},
+		},
+		environment,
+	)
+
+	payload := getSecret(
+		"dev-identity", liferayEnvironmentReconciler, t,
+	).Data["offline-request"]
+
+	if len(payload) == 0 {
+		t.Fatal("identity secret has no offline-request payload")
+	}
+
+	segments := strings.Split(string(payload), ".")
+
+	if len(segments) != 3 {
+		t.Fatalf("offline-request is not a JWT: got %d segments, want 3", len(segments))
+	}
+
+	claims, error := base64.RawURLEncoding.DecodeString(segments[1])
+
+	if error != nil {
+		t.Fatalf("Unable to decode the JWT payload segment: %v", error)
+	}
+
+	var claimsMap map[string]any
+
+	if error := json.Unmarshal(claims, &claimsMap); error != nil {
+		t.Errorf("JWT payload segment is not valid JSON: %v", error)
 	}
 }
 
