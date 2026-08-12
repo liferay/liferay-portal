@@ -64,7 +64,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 					</div>
 
 					<aui:fieldset>
-						<div class="lfr-ddl-content">
+						<div class="lfr-ddl-content" id="<portlet:namespace />recordSets">
 							<clay:sheet>
 								<liferay-ui:search-container
 									emptyResultsMessage="no-lists-were-found"
@@ -101,35 +101,30 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 									>
 
 										<%
-										StringBundler sb = new StringBundler(7);
-
-										sb.append("javascript:");
-										sb.append(liferayPortletResponse.getNamespace());
-										sb.append("selectRecordSet('");
-										sb.append(recordSet.getRecordSetId());
-										sb.append("','");
-										sb.append(HtmlUtil.escapeJS(recordSet.getName(locale)));
-										sb.append("');");
-
-										String rowURL = sb.toString();
+										row.setData(
+											HashMapBuilder.<String, Object>put(
+												"record-set-id", recordSet.getRecordSetId()
+											).put(
+												"record-set-name", HtmlUtil.unescape(recordSet.getName(locale))
+											).build());
 										%>
 
 										<liferay-ui:search-container-column-text
-											href="<%= rowURL %>"
+											href="#"
 											name="name"
 											orderable="<%= false %>"
 											value="<%= recordSet.getName(locale) %>"
 										/>
 
 										<liferay-ui:search-container-column-text
-											href="<%= rowURL %>"
+											href="#"
 											name="description"
 											orderable="<%= false %>"
 											value="<%= StringUtil.shorten(recordSet.getDescription(locale), 100) %>"
 										/>
 
 										<liferay-ui:search-container-column-date
-											href="<%= rowURL %>"
+											href="#"
 											name="modified-date"
 											orderable="<%= false %>"
 											value="<%= recordSet.getModifiedDate() %>"
@@ -150,7 +145,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 			</liferay-ui:section>
 		</aui:form>
 
-		<aui:form action="<%= configurationActionURL %>" method="post" name="fm">
+		<aui:form action="<%= configurationActionURL %>" data-senna-off="<%= true %>" method="post" name="fm">
 			<aui:input name="<%= Constants.CMD %>" type="hidden" value="<%= Constants.UPDATE %>" />
 			<aui:input name="redirect" type="hidden" value='<%= configurationRenderURL.toString() + StringPool.AMPERSAND + liferayPortletResponse.getNamespace() + "cur" + cur %>' />
 			<aui:input name="preferences--recordSetId--" type="hidden" value="<%= recordSetId %>" />
@@ -265,34 +260,64 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 </aui:script>
 
 <aui:script>
-	window['<portlet:namespace />selectRecordSet'] = function (
-		recordSetId,
-		recordSetName
-	) {
-		document.<portlet:namespace />fm.<portlet:namespace />recordSetId.value =
-			recordSetId;
+	if (!window['<portlet:namespace />selectRecordSet']) {
+		window['<portlet:namespace />selectRecordSet'] = function (event) {
+			var rowElement = event.target.closest(
+				'#<portlet:namespace />recordSets [data-record-set-id]'
+			);
 
-		var displayingRecordSetIdHolder = document.querySelector(
-			'.displaying-record-set-id-holder'
-		);
-		displayingRecordSetIdHolder.classList.remove('hide');
-		displayingRecordSetIdHolder.removeAttribute('hidden');
-		displayingRecordSetIdHolder.style.display = '';
+			if (!rowElement) {
+				return;
+			}
 
-		var displayingHelpMessageHolder = document.querySelector(
-			'.displaying-help-message-holder'
-		);
-		displayingHelpMessageHolder.classList.add('hide');
-		displayingHelpMessageHolder.setAttribute('hidden', 'hidden');
-		displayingHelpMessageHolder.style.display = 'none';
+			event.preventDefault();
 
-		var displayRecordSetId = document.querySelector(
-			'.displaying-record-set-id'
+			var recordSetIdInput = document.getElementById(
+				'<portlet:namespace />recordSetId'
+			);
+
+			if (recordSetIdInput) {
+				recordSetIdInput.value = rowElement.dataset.recordSetId;
+			}
+
+			var displayingRecordSetIdHolder = document.querySelector(
+				'.displaying-record-set-id-holder'
+			);
+
+			if (displayingRecordSetIdHolder) {
+				displayingRecordSetIdHolder.classList.remove('hide');
+				displayingRecordSetIdHolder.removeAttribute('hidden');
+				displayingRecordSetIdHolder.style.display = '';
+			}
+
+			var displayingHelpMessageHolder = document.querySelector(
+				'.displaying-help-message-holder'
+			);
+
+			if (displayingHelpMessageHolder) {
+				displayingHelpMessageHolder.classList.add('hide');
+				displayingHelpMessageHolder.setAttribute('hidden', 'hidden');
+				displayingHelpMessageHolder.style.display = 'none';
+			}
+
+			var displayRecordSetId = document.querySelector(
+				'.displaying-record-set-id'
+			);
+
+			if (displayRecordSetId) {
+				displayRecordSetId.textContent =
+					rowElement.dataset.recordSetName +
+					' (<%= UnicodeLanguageUtil.get(request, "modified") %>)';
+
+				displayRecordSetId.classList.add('modified');
+			}
+		};
+
+		document.addEventListener(
+			'click',
+			window['<portlet:namespace />selectRecordSet']
 		);
-		displayRecordSetId.innerHTML =
-			recordSetName + ' (<liferay-ui:message key="modified" />)';
-		displayRecordSetId.classList.add('modified');
-	};
+	}
 </aui:script>
 
 <%!
