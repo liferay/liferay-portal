@@ -109,7 +109,7 @@ definition {
 				locator1 = "TextInput#ANY",
 				value1 = 2);
 
-			Button.clickSave();
+			SystemSettings.saveConfiguration();
 		}
 
 		task ("When a Knowledge Base article is created that has expired and another that has not") {

@@ -1349,9 +1349,7 @@ definition {
 			locator1 = "TextInput#ANY",
 			value1 = ${copyLimit});
 
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
+		SystemSettings.saveConfiguration();
 	}
 
 	@summary = "Default summary"
