@@ -10,6 +10,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.bag.ObjectFieldBag;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -23,7 +24,7 @@ import com.liferay.site.cms.site.initializer.internal.search.links.OutboundLinks
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 					if (objectEntryId != 0) {
 						outboundLinks.add(
 							_getToken(
-								_TOKEN_PREFIX_OBJECT_ENTRY_ID,
+								"objectEntryId",
 								String.valueOf(objectEntryId)));
 					}
 				}
@@ -101,8 +102,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 							outboundLinks.add(
 								_getToken(
-									_TOKEN_PREFIX_OBJECT_ENTRY_ERC,
-									externalReferenceCode));
+									"objectEntryERC", externalReferenceCode));
 						}
 					}
 				}
@@ -130,8 +130,6 @@ public class CMSContentOutboundLinksModelDocumentContributor
 	private List<String> _getContents(
 		ObjectField objectField, Map<String, Serializable> values) {
 
-		List<String> contents = new ArrayList<>();
-
 		if (objectField.isLocalized()) {
 			Object localizedValues = values.get(
 				objectField.getI18nObjectFieldName());
@@ -139,33 +137,30 @@ public class CMSContentOutboundLinksModelDocumentContributor
 			if (localizedValues instanceof Map) {
 				Map<?, ?> localizedValuesMap = (Map<?, ?>)localizedValues;
 
-				for (Object value : localizedValuesMap.values()) {
-					if (value != null) {
-						contents.add(String.valueOf(value));
-					}
-				}
+				return TransformUtil.transform(
+					localizedValuesMap.values(),
+					localizedValue -> {
+						if (localizedValue == null) {
+							return null;
+						}
 
-				return contents;
+						return String.valueOf(localizedValue);
+					});
 			}
 		}
 
-		Object value = values.get(objectField.getName());
+		Object content = values.get(objectField.getName());
 
-		if (value != null) {
-			contents.add(String.valueOf(value));
+		if (content == null) {
+			return Collections.emptyList();
 		}
 
-		return contents;
+		return Collections.singletonList(String.valueOf(content));
 	}
 
 	private String _getToken(String prefix, String value) {
 		return StringBundler.concat(prefix, StringPool.UNDERLINE, value);
 	}
-
-	private static final String _TOKEN_PREFIX_OBJECT_ENTRY_ERC =
-		"objectEntryERC";
-
-	private static final String _TOKEN_PREFIX_OBJECT_ENTRY_ID = "objectEntryId";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CMSContentOutboundLinksModelDocumentContributor.class);
