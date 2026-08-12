@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.ListType;
 import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupTable;
@@ -588,6 +589,18 @@ public class UserManagerImpl implements UserManager {
 			portalUser.getContactId());
 
 		for (ScimAddress scimAddress : scimUser.getAddresses()) {
+			String streetAddress = scimAddress.getStreetAddress();
+
+			if (Validator.isNull(streetAddress)) {
+				streetAddress = scimAddress.getFormatted();
+			}
+
+			if (Validator.isNull(streetAddress) ||
+				Validator.isNull(scimAddress.getLocality())) {
+
+				continue;
+			}
+
 			Address address = _addressLocalService.createAddress(
 				_counterLocalService.increment());
 
@@ -596,36 +609,45 @@ public class UserManagerImpl implements UserManager {
 			address.setClassName(Contact.class.getName());
 			address.setClassPK(portalUser.getContactId());
 
-			Country country = _countryLocalService.getCountryByA2(
+			Country country = _countryLocalService.fetchCountryByA2(
 				portalUser.getCompanyId(), scimAddress.getCountry());
 
-			address.setCountryId(country.getCountryId());
+			if (country != null) {
+				address.setCountryId(country.getCountryId());
 
-			if (Validator.isNull(scimAddress.getType())) {
-				scimAddress.setType("other");
-			}
+				for (Region region :
+						_regionLocalService.getRegions(
+							country.getCountryId(), true)) {
 
-			address.setListTypeId(
-				_listTypeLocalService.getListTypeId(
-					portalUser.getCompanyId(), scimAddress.getType(),
-					Contact.class.getName() + ".address"));
+					if (Objects.equals(
+							region.getName(), scimAddress.getRegion())) {
 
-			for (Region region :
-					_regionLocalService.getRegions(
-						country.getCountryId(), true)) {
+						address.setRegionId(region.getRegionId());
 
-				if (Objects.equals(region.getName(), scimAddress.getRegion())) {
-					address.setRegionId(region.getRegionId());
-
-					break;
+						break;
+					}
 				}
 			}
 
+			ListType listType = _listTypeLocalService.fetchListType(
+				portalUser.getCompanyId(), scimAddress.getType(),
+				Contact.class.getName() + ".address");
+
+			if (listType == null) {
+				listType = _listTypeLocalService.fetchListType(
+					portalUser.getCompanyId(), "other",
+					Contact.class.getName() + ".address");
+
+				if (listType == null) {
+					continue;
+				}
+			}
+
+			address.setListTypeId(listType.getListTypeId());
 			address.setCity(scimAddress.getLocality());
 			address.setPrimary(scimAddress.isPrimary());
 
-			String[] streetAddressParts = StringUtil.split(
-				scimAddress.getStreetAddress(), "\n");
+			String[] streetAddressParts = StringUtil.split(streetAddress, "\n");
 
 			address.setStreet1(streetAddressParts[0]);
 
