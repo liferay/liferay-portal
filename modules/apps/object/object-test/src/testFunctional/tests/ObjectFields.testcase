@@ -631,7 +631,7 @@ definition {
 				fieldList = "Custom Decimal Field 1,Custom Decimal Field 2,Custom Formula Field",
 				tabName = "Tab Test");
 
-			Button.clickSave();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("When the value of the fields is added") {
@@ -1195,7 +1195,7 @@ definition {
 				locator1 = "ObjectAdmin#LAYOUT_BASIC_INFO_NAME_FIELD",
 				value1 = "Layout Updated");
 
-			Button.clickSave();
+			ObjectAdmin.saveSidePanel();
 		}
 
 		task ("Then the Layout can be updated") {
