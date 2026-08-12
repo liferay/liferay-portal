@@ -2218,18 +2218,6 @@ export const mockEventMetrics = (variables) => ({
 	},
 });
 
-export function mockCommerceTotalOrderValueReq({Query, data, variables}) {
-	return {
-		request: {
-			query: Query,
-			variables,
-		},
-		result: {
-			data,
-		},
-	};
-}
-
 export const mockSessions = (variables) => ({
 	request: {
 		query: UserSessionQuery,

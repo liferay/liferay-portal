@@ -33,7 +33,6 @@ export const ACTIVITIES = 'activities';
 export const ANALYTICS = 'analytics';
 export const ANY = 'Any';
 export const ASSETS = 'assets';
-export const COMMERCE = 'commerce';
 export const CONTACTS = 'contacts';
 export const CSV = 'csv';
 export const GROWTH = 'growth';
@@ -158,7 +157,6 @@ export const Routes = buildRoutes({
 									},
 								},
 							},
-							COMMERCE: `/${COMMERCE}`,
 							CONTACTS: {
 								path: `/${CONTACTS}`,
 								routes: {

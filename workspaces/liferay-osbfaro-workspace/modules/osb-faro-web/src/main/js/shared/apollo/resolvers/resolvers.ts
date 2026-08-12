@@ -1,8 +1,4 @@
 import AssetAppearsOnResolver from './AssetAppearsOnResolver';
-import CommerceAverageOrderValueResolver from './CommerceAverageOrderValueResolver';
-import CommerceAverageRevenuePerAccountResolver from './CommerceAverageRevenuePerAccountResolver';
-import CommerceIncompleteOrdersResolver from './CommerceIncompleteOrdersResolver';
-import CommerceTotalOrderValueResolver from './CommerceTotalOrderValueResolver';
 import CustomAssetsListResolver from './CustomAssetsListResolver';
 import DocumentsAndMediaListResolver from './DocumentsAndMediaListResolver';
 import DocumentsAndMediaMetricsResolver from './DocumentsAndMediaMetricsResolver';
@@ -35,10 +31,6 @@ export const resolvers = {
 	eventsByUserSessions: EventsByUserSessionsResolver,
 	experiment: ExperimentResolver,
 	individualInterests: InterestsResolver,
-	orderAccountAverageCurrencyValues: CommerceAverageRevenuePerAccountResolver,
-	orderAverageCurrencyValues: CommerceAverageOrderValueResolver,
-	orderIncompleteCurrencyValues: CommerceIncompleteOrdersResolver,
-	orderTotalCurrencyValues: CommerceTotalOrderValueResolver,
 	pagePath: PagePathResolver,
 	site: IndividualSiteMetricsResolver,
 	siteInterests: InterestsResolver,

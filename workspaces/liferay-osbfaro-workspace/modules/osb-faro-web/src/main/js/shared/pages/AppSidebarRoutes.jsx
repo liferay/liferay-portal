@@ -7,7 +7,6 @@ import {ChannelContext} from 'shared/context/channel';
 import {connect} from 'react-redux';
 import {DEVELOPER_MODE} from 'shared/util/constants';
 import {DownloadReportProvider} from 'shared/components/download-report/DownloadReportContext';
-import {ENABLE_COMMERCE} from 'shared/util/feature-flags';
 import {Routes} from 'shared/util/router';
 import {Switch, withRouter} from 'react-router-dom';
 import {
@@ -179,12 +178,6 @@ const ObjectEntry = lazy(() =>
 	import(/* webpackChunkName: "ObjectEntry" */ 'assets/object-entry/pages')
 );
 
-/* Commmerce */
-
-const CommerceDashboard = lazy(() =>
-	import(/* webpackChunkName: "CommerceDashboard" */ 'commerce/pages')
-);
-
 const ROUTES = [
 	{
 		data: SegmentsList,
@@ -287,11 +280,6 @@ const ROUTES = [
 		data: SitesDashboard,
 		destructured: false,
 		path: Routes.CHANNEL
-	},
-	ENABLE_COMMERCE && {
-		data: CommerceDashboard,
-		destructured: false,
-		path: Routes.COMMERCE
 	}
 ].filter(Boolean);
 
