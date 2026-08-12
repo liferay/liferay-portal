@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -299,6 +300,10 @@ public class UpdateLanguageAction implements Action {
 			redirect = redirect + queryString;
 		}
 
+		redirect = _prependI18nPath(
+			redirect, locale, themeDisplay, layout,
+			localePrependFriendlyURLStyle);
+
 		if (Validator.isNotNull(themeDisplay.getDoAsUserId())) {
 			return HttpComponentsUtil.setParameter(
 				PortalUtil.addPreservedParameters(
@@ -388,6 +393,69 @@ public class UpdateLanguageAction implements Action {
 		}
 
 		return mappingPart;
+	}
+
+	private String _prependI18nPath(
+			String redirect, Locale locale, ThemeDisplay themeDisplay,
+			Layout layout, int localePrependFriendlyURLStyle)
+		throws PortalException {
+
+		if (localePrependFriendlyURLStyle == 0) {
+			return redirect;
+		}
+
+		if ((localePrependFriendlyURLStyle != 2) &&
+			locale.equals(LocaleUtil.getDefault())) {
+
+			return redirect;
+		}
+
+		if (layout.isTypeControlPanel()) {
+			return redirect;
+		}
+
+		int pathStart = 0;
+
+		if (redirect.startsWith(Http.HTTP_WITH_SLASH) ||
+			redirect.startsWith(Http.HTTPS_WITH_SLASH)) {
+
+			pathStart = redirect.indexOf(
+				CharPool.SLASH, redirect.indexOf("://") + 3);
+
+			if (pathStart == -1) {
+				return redirect;
+			}
+		}
+
+		String pathContext = themeDisplay.getPathContext();
+
+		if (Validator.isNotNull(pathContext) &&
+			!pathContext.equals(StringPool.SLASH) &&
+			redirect.startsWith(pathContext, pathStart)) {
+
+			pathStart += pathContext.length();
+		}
+
+		String path = redirect.substring(pathStart);
+
+		if (!Validator.isBlank(themeDisplay.getPathMain()) &&
+			path.startsWith(themeDisplay.getPathMain() + StringPool.SLASH)) {
+
+			return redirect;
+		}
+
+		String i18nPath =
+			StringPool.SLASH +
+				PortalUtil.getI18nPathLanguageId(
+					locale, LocaleUtil.toLanguageId(locale));
+
+		if (path.startsWith(i18nPath + StringPool.SLASH) ||
+			path.equals(i18nPath)) {
+
+			return redirect;
+		}
+
+		return redirect.substring(0, pathStart) + i18nPath + path;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
