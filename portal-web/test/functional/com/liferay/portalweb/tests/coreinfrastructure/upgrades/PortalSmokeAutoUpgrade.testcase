@@ -24,7 +24,7 @@ definition {
 	@description = "LPS-158183: This is a smoke test to directly upgrade from 6.1 to 7.4 version using Auto Upgrade."
 	@priority = 5
 	test ViewPortalSmokeArchiveAutoUpgrade6130 {
-		property custom.properties = "feature.flag.LPS-157670=true${line.separator}upgrade.database.auto.run=true";
+		property custom.properties = "feature.flag.LPS-157670=true";
 		property custom.startup.timeout = "1800";
 		property data.archive.type = "data-archive-portal";
 		property database.types = "oracle,mariadb,mysql,postgresql,db2";
