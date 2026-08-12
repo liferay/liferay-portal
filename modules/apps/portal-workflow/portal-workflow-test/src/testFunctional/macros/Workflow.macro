@@ -423,7 +423,7 @@ definition {
 		var key_workflowResourceValue = ${workflowResourceValue};
 
 		if (!(IsElementPresent(locator1 = "Pagination#ICON_DISABLED", type = "angle-right")) && (IsElementPresent(locator1 = "Pagination#FIRST_LINK"))) {
-			Pagination.changePagination(itemsPerPage = 40);
+			Pagination.changePagination(itemsPerPage = 60);
 		}
 
 		AssertClick.pauseAssertTextClickAt(
