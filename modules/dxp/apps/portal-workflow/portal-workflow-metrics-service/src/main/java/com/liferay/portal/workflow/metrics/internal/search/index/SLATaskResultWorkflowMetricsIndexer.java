@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.Reference;
 public class SLATaskResultWorkflowMetricsIndexer
 	extends BaseSLAWorkflowMetricsIndexer {
 
-	public Document creatDefaultDocument(
+	public Document createDefaultDocument(
 		long companyId, long nodeId, long processId, String taskName) {
 
 		WorkflowMetricsSLATaskResult workflowMetricsSLATaskResult =

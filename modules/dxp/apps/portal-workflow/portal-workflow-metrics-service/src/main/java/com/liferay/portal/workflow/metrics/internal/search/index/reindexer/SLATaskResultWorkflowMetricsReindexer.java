@@ -45,13 +45,13 @@ public class SLATaskResultWorkflowMetricsReindexer
 
 	@Override
 	public void reindex(long companyId) {
-		_creatDefaultDocuments(companyId);
+		_createDefaultDocuments(companyId);
 	}
 
 	@Reference
 	protected SearchEngineAdapter searchEngineAdapter;
 
-	private void _creatDefaultDocuments(long companyId) {
+	private void _createDefaultDocuments(long companyId) {
 		if (!_searchCapabilities.isWorkflowMetricsSupported() ||
 			!_hasIndex(
 				_indexNameBuilder.getIndexName(companyId) +
@@ -96,7 +96,7 @@ public class SLATaskResultWorkflowMetricsReindexer
 				new IndexDocumentRequest(
 					_slaTaskResultWorkflowMetricsIndexer.getIndexName(
 						companyId),
-					_slaTaskResultWorkflowMetricsIndexer.creatDefaultDocument(
+					_slaTaskResultWorkflowMetricsIndexer.createDefaultDocument(
 						companyId, document.getLong("nodeId"),
 						document.getLong("processId"),
 						document.getString("name"))));

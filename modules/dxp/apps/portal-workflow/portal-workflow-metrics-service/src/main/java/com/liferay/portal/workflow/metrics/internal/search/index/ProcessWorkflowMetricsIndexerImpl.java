@@ -59,7 +59,7 @@ public class ProcessWorkflowMetricsIndexerImpl
 			new IndexDocumentRequest(
 				_slaInstanceResultWorkflowMetricsIndexer.getIndexName(
 					document.getLong("companyId")),
-				_slaInstanceResultWorkflowMetricsIndexer.creatDefaultDocument(
+				_slaInstanceResultWorkflowMetricsIndexer.createDefaultDocument(
 					document.getLong("companyId"),
 					document.getLong("processId"))));
 

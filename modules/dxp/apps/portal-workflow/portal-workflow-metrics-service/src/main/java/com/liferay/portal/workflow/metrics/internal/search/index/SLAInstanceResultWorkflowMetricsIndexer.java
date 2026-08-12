@@ -52,7 +52,7 @@ public class SLAInstanceResultWorkflowMetricsIndexer
 				QueriesUtil.term("slaDefinitionId", slaDefinitionId)));
 	}
 
-	public Document creatDefaultDocument(long companyId, long processId) {
+	public Document createDefaultDocument(long companyId, long processId) {
 		WorkflowMetricsSLAInstanceResult workflowMetricsSLAInstanceResult =
 			new WorkflowMetricsSLAInstanceResult();
 

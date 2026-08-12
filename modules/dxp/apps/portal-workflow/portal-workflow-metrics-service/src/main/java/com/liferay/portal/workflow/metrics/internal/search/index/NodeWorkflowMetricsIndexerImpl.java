@@ -117,7 +117,7 @@ public class NodeWorkflowMetricsIndexerImpl
 				new IndexDocumentRequest(
 					_slaTaskResultWorkflowMetricsIndexer.getIndexName(
 						document.getLong("companyId")),
-					_slaTaskResultWorkflowMetricsIndexer.creatDefaultDocument(
+					_slaTaskResultWorkflowMetricsIndexer.createDefaultDocument(
 						document.getLong("companyId"),
 						document.getLong("nodeId"),
 						document.getLong("processId"),

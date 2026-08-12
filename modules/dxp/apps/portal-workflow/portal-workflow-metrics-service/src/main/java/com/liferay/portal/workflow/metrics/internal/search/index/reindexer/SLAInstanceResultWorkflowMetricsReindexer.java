@@ -45,7 +45,7 @@ public class SLAInstanceResultWorkflowMetricsReindexer
 
 	@Override
 	public void reindex(long companyId) throws PortalException {
-		_creatDefaultDocuments(companyId);
+		_createDefaultDocuments(companyId);
 
 		WorkflowMetricsSLAProcessBackgroundTaskHelper
 			workflowMetricsSLAProcessBackgroundTaskHelper =
@@ -60,7 +60,7 @@ public class SLAInstanceResultWorkflowMetricsReindexer
 	@Reference
 	protected SearchEngineAdapter searchEngineAdapter;
 
-	private void _creatDefaultDocuments(long companyId) {
+	private void _createDefaultDocuments(long companyId) {
 		if (!_searchCapabilities.isWorkflowMetricsSupported() ||
 			!_hasIndex(
 				_indexNameBuilder.getIndexName(companyId) +
@@ -104,7 +104,7 @@ public class SLAInstanceResultWorkflowMetricsReindexer
 					_slaInstanceResultWorkflowMetricsIndexer.getIndexName(
 						companyId),
 					_slaInstanceResultWorkflowMetricsIndexer.
-						creatDefaultDocument(
+						createDefaultDocument(
 							companyId, document.getLong("processId"))));
 		}
 
