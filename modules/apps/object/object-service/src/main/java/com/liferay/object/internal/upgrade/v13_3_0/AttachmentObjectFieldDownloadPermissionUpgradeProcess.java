@@ -74,7 +74,7 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 		}
 	}
 
-	private void _addPLOEntries(
+	private void _addOrUpdatePLOEntries(
 			String actionId, long companyId, String label, long userId)
 		throws Exception {
 
@@ -163,7 +163,7 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcess
 			resourceAction.getBitwiseValue(), className, companyId,
 			viewResourceAction.getBitwiseValue());
 
-		_addPLOEntries(actionId, companyId, label, userId);
+		_addOrUpdatePLOEntries(actionId, companyId, label, userId);
 	}
 
 	private final Language _language;
