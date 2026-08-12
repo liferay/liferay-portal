@@ -14,6 +14,7 @@ import EventDefinitionQuery from 'event-analysis/queries/EventDefinitionQuery';
 import EventDefinitionsQuery from 'event-analysis/queries/EventDefinitionsQuery';
 import EventMetricQuery from 'shared/queries/EventMetricQuery';
 import EventPropertiesQuery from 'segment/segment-editor/dynamic/queries/EventPropertiesQuery';
+import EventsTrendQuery from 'shared/queries/EventsTrendQuery';
 import getInterestsQuery from 'contacts/queries/InterestsQuery';
 import IndividualInterestsQuery from 'shared/queries/IndividualInterestsQuery';
 import IndividualMetricsQuery from 'shared/queries/IndividualMetricsQuery';
@@ -2282,6 +2283,39 @@ export const mockSessions = (variables) => ({
 							'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36',
 					},
 				],
+			},
+		},
+	},
+});
+
+export const mockEventsTrend = (variables) => ({
+	request: {
+		query: EventsTrendQuery,
+		variables: {
+			channelId: '123123',
+			entityId: '0',
+			entityType: 'INDIVIDUAL',
+			keywords: '',
+			rangeEnd: null,
+			rangeKey: 30,
+			rangeStart: null,
+			...variables,
+		},
+	},
+	result: {
+		data: {
+			eventsByUserSessions: {
+				__typename: 'EventsByUserSession',
+				totalEventsMetric: {
+					__typename: 'Metric',
+					previousValue: 45,
+					trend: {
+						__typename: 'Trend',
+						percentage: 22.5,
+						trendClassification: 'POSITIVE',
+					},
+					value: 56,
+				},
 			},
 		},
 	},
