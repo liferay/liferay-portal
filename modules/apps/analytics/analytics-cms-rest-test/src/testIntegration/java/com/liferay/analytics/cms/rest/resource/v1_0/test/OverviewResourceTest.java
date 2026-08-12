@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -46,6 +47,9 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
+import java.text.DateFormat;
+
+import java.util.Calendar;
 import java.util.Map;
 
 import org.junit.Assert;
@@ -160,6 +164,49 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 				}
 			},
 			overviewResource.getContentOverview(null, null, null, 7, null));
+
+		Trend neutralTrend = new Trend();
+
+		neutralTrend.setClassification(Trend.Classification.NEUTRAL);
+		neutralTrend.setPercentage(0.0);
+
+		Assert.assertEquals(
+			new Overview() {
+				{
+					categoriesCount = 2L;
+					tagsCount = 1L;
+					totalCount = 3L;
+					trend = neutralTrend;
+					vocabulariesCount = 1L;
+				}
+			},
+			overviewResource.getContentOverview(null, null, null, null, null));
+
+		Assert.assertEquals(
+			new Overview() {
+				{
+					categoriesCount = 2L;
+					tagsCount = 1L;
+					totalCount = 3L;
+					trend = neutralTrend;
+					vocabulariesCount = 1L;
+				}
+			},
+			overviewResource.getContentOverview(
+				null, null, null, null, _getRangeDate(-7)));
+
+		Assert.assertEquals(
+			new Overview() {
+				{
+					categoriesCount = 2L;
+					tagsCount = 1L;
+					totalCount = 3L;
+					trend = neutralTrend;
+					vocabulariesCount = 1L;
+				}
+			},
+			overviewResource.getContentOverview(
+				null, null, _getRangeDate(0), null, null));
 	}
 
 	@Override
@@ -213,6 +260,47 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 				}
 			},
 			overviewResource.getFileOverview(null, null, null, 7, null));
+
+		Trend neutralTrend = new Trend();
+
+		neutralTrend.setClassification(Trend.Classification.NEUTRAL);
+		neutralTrend.setPercentage(0.0);
+
+		Assert.assertEquals(
+			new Overview() {
+				{
+					categoriesCount = 0L;
+					tagsCount = 0L;
+					totalCount = 1L;
+					trend = neutralTrend;
+					vocabulariesCount = 0L;
+				}
+			},
+			overviewResource.getFileOverview(null, null, null, null, null));
+
+		Assert.assertEquals(
+			new Overview() {
+				{
+					categoriesCount = 0L;
+					tagsCount = 0L;
+					totalCount = 1L;
+					trend = neutralTrend;
+					vocabulariesCount = 0L;
+				}
+			},
+			overviewResource.getFileOverview(
+				null, null, null, null, _getRangeDate(-7)));
+	}
+
+	private String _getRangeDate(int days) {
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.add(Calendar.DAY_OF_MONTH, days);
+
+		DateFormat dateFormat = DateFormatFactoryUtil.getSimpleDateFormat(
+			"yyyy-MM-dd");
+
+		return dateFormat.format(calendar.getTime());
 	}
 
 	private void _setUpCMSContext() throws Exception {
