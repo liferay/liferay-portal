@@ -54,6 +54,8 @@ export interface IBasePageContext {
 	accountName?: string | null;
 	experienceId?: string | null;
 	filters: any;
+	individualId?: string | null;
+	individualName?: string | null;
 	router: any;
 	rangeSelectors?: RangeSelectors;
 	segmentId?: string | null;
