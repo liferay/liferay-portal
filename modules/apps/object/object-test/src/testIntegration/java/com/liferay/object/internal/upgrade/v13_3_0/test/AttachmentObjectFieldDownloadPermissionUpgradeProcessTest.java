@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.language.override.model.PLOEntry;
@@ -73,8 +74,8 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 
 	@Test
 	public void testUpgrade() throws Exception {
-		_testUpgrade();
 		_testUpgradeWithDraftObjectDefinition();
+		_testUpgradeWithPublishedObjectDefinition();
 	}
 
 	private DLFileEntry _addDLFileEntry() throws Exception {
@@ -91,29 +92,9 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 			fileEntry.getFileEntryId());
 	}
 
-	private void _assertDownloadResourcePermission(
-			String actionId, String className, long companyId,
-			ObjectField objectField, String primKey)
+	private void _assertDownloadPLOEntryValues(
+			String actionId, long companyId, ObjectField objectField)
 		throws Exception {
-
-		_entityCache.clearCache();
-
-		Assert.assertNotNull(
-			_resourceActionLocalService.fetchResourceAction(
-				className, actionId));
-
-		Assert.assertTrue(
-			_hasResourcePermission(
-				actionId, className, companyId, primKey,
-				RoleConstants.POWER_USER));
-
-		Assert.assertFalse(
-			_hasResourcePermission(
-				actionId, className, companyId, primKey, RoleConstants.GUEST));
-
-		Assert.assertFalse(
-			_hasResourcePermission(
-				actionId, className, companyId, primKey, RoleConstants.USER));
 
 		for (Locale locale : _language.getCompanyAvailableLocales(companyId)) {
 			PLOEntry ploEntry = _ploEntryLocalService.fetchPLOEntry(
@@ -127,11 +108,35 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 		}
 	}
 
-	private ObjectField _createAttachmentObjectField(String name) {
+	private void _assertDownloadResourceAction(
+		String actionId, String className) {
+
+		Assert.assertNotNull(
+			_resourceActionLocalService.fetchResourceAction(
+				className, actionId));
+	}
+
+	private void _assertHasResourcePermissions(
+			String actionId, String className, long companyId, String primKey)
+		throws Exception {
+
+		Assert.assertFalse(
+			_hasResourcePermission(
+				actionId, className, companyId, primKey, RoleConstants.GUEST));
+		Assert.assertFalse(
+			_hasResourcePermission(
+				actionId, className, companyId, primKey, RoleConstants.USER));
+		Assert.assertTrue(
+			_hasResourcePermission(
+				actionId, className, companyId, primKey,
+				RoleConstants.POWER_USER));
+	}
+
+	private ObjectField _createAttachmentObjectField() {
 		return ObjectFieldUtil.createObjectField(
 			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT,
 			ObjectFieldConstants.DB_TYPE_LONG, true, false, null,
-			RandomTestUtil.randomString(), name,
+			RandomTestUtil.randomString(), StringUtil.randomId(),
 			Arrays.asList(
 				new ObjectFieldSettingBuilder(
 				).name(
@@ -184,77 +189,8 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 			role.getRoleId(), actionIds);
 	}
 
-	private void _testUpgrade() throws Exception {
-		ObjectField objectField = _createAttachmentObjectField("attachment");
-
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(objectField));
-
-		ObjectEntry objectEntry =
-			_objectEntryLocalService.addOrUpdateObjectEntry(
-				RandomTestUtil.randomString(), 0, TestPropsValues.getUserId(),
-				objectDefinition.getObjectDefinitionId(),
-				ObjectEntryFolderConstants.
-					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
-				HashMapBuilder.<String, Serializable>put(
-					"attachment",
-					() -> {
-						DLFileEntry dlFileEntry = _addDLFileEntry();
-
-						return String.valueOf(dlFileEntry.getFileEntryId());
-					}
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-
-		long companyId = objectDefinition.getCompanyId();
-		String className = objectDefinition.getClassName();
-
-		String primKey = String.valueOf(objectEntry.getObjectEntryId());
-
-		_setResourcePermissions(
-			new String[] {ActionKeys.VIEW}, className, companyId, primKey,
-			RoleConstants.POWER_USER);
-		_setResourcePermissions(
-			new String[] {ActionKeys.UPDATE}, className, companyId, primKey,
-			RoleConstants.USER);
-
-		String actionId = objectField.getAttachmentDownloadActionKey();
-
-		Assert.assertFalse(
-			_hasResourcePermission(
-				actionId, className, companyId, primKey,
-				RoleConstants.POWER_USER));
-
-		_resourceActionLocalService.deleteResourceAction(
-			_resourceActionLocalService.getResourceAction(className, actionId));
-
-		Assert.assertNull(
-			_resourceActionLocalService.fetchResourceAction(
-				className, actionId));
-
-		for (Locale locale : _language.getCompanyAvailableLocales(companyId)) {
-			_ploEntryLocalService.deletePLOEntry(
-				companyId, "action." + actionId,
-				LocaleUtil.toLanguageId(locale));
-		}
-
-		UpgradeProcess upgradeProcess = _getUpgradeProcess();
-
-		upgradeProcess.upgrade();
-
-		_assertDownloadResourcePermission(
-			actionId, className, companyId, objectField, primKey);
-
-		upgradeProcess.upgrade();
-
-		_assertDownloadResourcePermission(
-			actionId, className, companyId, objectField, primKey);
-	}
-
 	private void _testUpgradeWithDraftObjectDefinition() throws Exception {
-		ObjectField objectField = _createAttachmentObjectField(
-			"draftAttachment");
+		ObjectField objectField = _createAttachmentObjectField();
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.addCustomObjectDefinition(
@@ -283,6 +219,80 @@ public class AttachmentObjectFieldDownloadPermissionUpgradeProcessTest {
 					companyId, "action." + actionId,
 					LocaleUtil.toLanguageId(locale)));
 		}
+	}
+
+	private void _testUpgradeWithPublishedObjectDefinition() throws Exception {
+		ObjectField objectField = _createAttachmentObjectField();
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField));
+
+		String className = objectDefinition.getClassName();
+		long companyId = objectDefinition.getCompanyId();
+
+		ObjectEntry objectEntry =
+			_objectEntryLocalService.addOrUpdateObjectEntry(
+				RandomTestUtil.randomString(), 0, TestPropsValues.getUserId(),
+				objectDefinition.getObjectDefinitionId(),
+				ObjectEntryFolderConstants.
+					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+				HashMapBuilder.<String, Serializable>put(
+					objectField.getName(),
+					() -> {
+						DLFileEntry dlFileEntry = _addDLFileEntry();
+
+						return String.valueOf(dlFileEntry.getFileEntryId());
+					}
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+		String primKey = String.valueOf(objectEntry.getObjectEntryId());
+
+		_setResourcePermissions(
+			new String[] {ActionKeys.UPDATE}, className, companyId, primKey,
+			RoleConstants.USER);
+		_setResourcePermissions(
+			new String[] {ActionKeys.VIEW}, className, companyId, primKey,
+			RoleConstants.POWER_USER);
+
+		String actionId = objectField.getAttachmentDownloadActionKey();
+
+		Assert.assertFalse(
+			_hasResourcePermission(
+				actionId, className, companyId, primKey,
+				RoleConstants.POWER_USER));
+
+		_resourceActionLocalService.deleteResourceAction(
+			_resourceActionLocalService.getResourceAction(className, actionId));
+
+		Assert.assertNull(
+			_resourceActionLocalService.fetchResourceAction(
+				className, actionId));
+
+		for (Locale locale : _language.getCompanyAvailableLocales(companyId)) {
+			_ploEntryLocalService.deletePLOEntry(
+				companyId, "action." + actionId,
+				LocaleUtil.toLanguageId(locale));
+		}
+
+		UpgradeProcess upgradeProcess = _getUpgradeProcess();
+
+		upgradeProcess.upgrade();
+
+		_entityCache.clearCache();
+
+		_assertDownloadPLOEntryValues(actionId, companyId, objectField);
+		_assertDownloadResourceAction(actionId, className);
+		_assertHasResourcePermissions(actionId, className, companyId, primKey);
+
+		upgradeProcess.upgrade();
+
+		_entityCache.clearCache();
+
+		_assertDownloadPLOEntryValues(actionId, companyId, objectField);
+		_assertDownloadResourceAction(actionId, className);
+		_assertHasResourcePermissions(actionId, className, companyId, primKey);
 	}
 
 	private static final String _CLASS_NAME =
