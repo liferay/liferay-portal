@@ -6,6 +6,7 @@
 package com.liferay.commerce.order.content.web.internal.frontend.data.set.filter;
 
 import com.liferay.commerce.order.content.web.internal.constants.CommerceOrderFragmentFDSNames;
+import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseDateRangeFDSFilter;
 import com.liferay.frontend.data.set.filter.DateFDSFilterItem;
 import com.liferay.frontend.data.set.filter.FDSFilter;
@@ -23,6 +24,11 @@ import org.osgi.service.component.annotations.Component;
 )
 public class CommerceShipmentCreateDateRangeFDSFilter
 	extends BaseDateRangeFDSFilter {
+
+	@Override
+	public String getEntityFieldType() {
+		return FDSEntityFieldTypes.DATE_TIME;
+	}
 
 	@Override
 	public String getId() {
