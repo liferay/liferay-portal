@@ -43,7 +43,7 @@ module.exports = {
 		'ua-parser-js',
 	],
 	symbols: {
-		qrcode: [
+		'qrcode': [
 
 			// Need to explicitly list exports because the package differs in browser and server
 
@@ -51,6 +51,15 @@ module.exports = {
 			'toCanvas',
 			'toString',
 			'toDataURL',
+		],
+		'ua-parser-js': [
+
+			// Need to explicitly list exports because Node.js requires the
+			// CommonJS build, which exposes the `UAParser` function itself
+			// along with its static properties, whereas esbuild bundles the
+			// ESM one, which only exports `UAParser`
+
+			'UAParser',
 		],
 	},
 };
