@@ -25,6 +25,7 @@ function main {
 	_check_bootstrap "aws" "${aws_bootstrap_sources[@]}"
 
 	local azure_bootstrap_sources=(
+		"${_ROOT_CLOUD_DIR}/scripts/azure_common.sh"
 		"${_ROOT_CLOUD_DIR}/scripts/chart_versions.json"
 		"${_ROOT_CLOUD_DIR}/scripts/setup_azure.sh"
 		"${_ROOT_CLOUD_DIR}/terraform/azure/aks"

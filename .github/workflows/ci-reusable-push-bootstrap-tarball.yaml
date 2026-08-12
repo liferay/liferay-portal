@@ -77,6 +77,7 @@ jobs:
                         elif [[ "${provider}" == "azure" ]]
                         then
                             files=(
+                                cloud/scripts/azure_common.sh
                                 cloud/scripts/chart_versions.json
                                 cloud/scripts/setup_azure.sh
                                 cloud/terraform/azure/aks/*
