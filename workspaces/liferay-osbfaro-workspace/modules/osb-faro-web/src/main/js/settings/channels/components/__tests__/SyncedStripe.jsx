@@ -8,59 +8,33 @@ describe('SyncedStripe', () => {
 	afterEach(cleanup);
 
 	it('should render', () => {
-		const {container} = render(
-			<SyncedStripe channelsSyncedCount={0} sitesSyncedCount={0} />
-		);
+		const {container} = render(<SyncedStripe sitesSyncedCount={0} />);
 
 		expect(container).toMatchSnapshot();
 	});
 
 	it.each`
-		sitesSyncedCount | channelsSyncedCount
-		${1}             | ${0}
-		${1}             | ${1}
-		${0}             | ${0}
-		${0}             | ${1}
-		${2}             | ${0}
-		${0}             | ${2}
+		sitesSyncedCount
+		${0}
+		${1}
+		${2}
 	`(
-		'returns correct text if sitesSyncedCount is $sitesSyncedCount and channelsSyncedCount is $channelsSyncedCount',
-		({channelsSyncedCount, sitesSyncedCount}) => {
+		'returns correct text if sitesSyncedCount is $sitesSyncedCount',
+		({sitesSyncedCount}) => {
 			const {queryByText} = render(
-				<SyncedStripe
-					channelsSyncedCount={channelsSyncedCount}
-					sitesSyncedCount={sitesSyncedCount}
-				/>
+				<SyncedStripe sitesSyncedCount={sitesSyncedCount} />
 			);
 
 			if (sitesSyncedCount === 1) {
-				if (channelsSyncedCount === 1) {
-					expect(
-						queryByText(
-							`There is ${sitesSyncedCount} site and ${channelsSyncedCount} channel synced to this property.`
-						)
-					).toBeInTheDocument();
-				} else {
-					expect(
-						queryByText(
-							`There is ${sitesSyncedCount} site and ${channelsSyncedCount} channels synced to this property.`
-						)
-					).toBeInTheDocument();
-				}
+				expect(
+					queryByText('There is 1 site synced to this property.')
+				).toBeInTheDocument();
 			} else {
-				if (channelsSyncedCount === 1) {
-					expect(
-						queryByText(
-							`There are ${sitesSyncedCount} sites and ${channelsSyncedCount} channel synced to this property.`
-						)
-					).toBeInTheDocument();
-				} else {
-					expect(
-						queryByText(
-							`There are ${sitesSyncedCount} sites and ${channelsSyncedCount} channels synced to this property.`
-						)
-					).toBeInTheDocument();
-				}
+				expect(
+					queryByText(
+						`There are ${sitesSyncedCount} sites synced to this property.`
+					)
+				).toBeInTheDocument();
 			}
 		}
 	);
@@ -68,38 +42,21 @@ describe('SyncedStripe', () => {
 
 describe('getTitle', () => {
 	it.each`
-		sitesSyncedCount | channelsSyncedCount
-		${1}             | ${0}
-		${1}             | ${1}
-		${0}             | ${0}
-		${0}             | ${1}
-		${2}             | ${0}
-		${0}             | ${2}
+		sitesSyncedCount
+		${0}
+		${1}
+		${2}
 	`(
-		'returns correct text if sitesSyncedCount is $sitesSyncedCount and channelsSyncedCount is $channelsSyncedCount',
-		({channelsSyncedCount, sitesSyncedCount}) => {
-			const title = getTitle(sitesSyncedCount, channelsSyncedCount);
+		'returns correct text if sitesSyncedCount is $sitesSyncedCount',
+		({sitesSyncedCount}) => {
+			const title = getTitle(sitesSyncedCount);
 
 			if (sitesSyncedCount === 1) {
-				if (channelsSyncedCount === 1) {
-					expect(title).toEqual(
-						`There is 1 site and ${channelsSyncedCount} channel synced to this property.`
-					);
-				} else {
-					expect(title).toEqual(
-						`There is 1 site and ${channelsSyncedCount} channels synced to this property.`
-					);
-				}
+				expect(title).toEqual('There is 1 site synced to this property.');
 			} else {
-				if (channelsSyncedCount === 1) {
-					expect(title).toEqual(
-						`There are ${sitesSyncedCount} sites and 1 channel synced to this property.`
-					);
-				} else {
-					expect(title).toEqual(
-						`There are ${sitesSyncedCount} sites and ${channelsSyncedCount} channels synced to this property.`
-					);
-				}
+				expect(title).toEqual(
+					`There are ${sitesSyncedCount} sites synced to this property.`
+				);
 			}
 		}
 	);

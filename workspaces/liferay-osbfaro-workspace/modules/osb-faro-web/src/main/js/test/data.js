@@ -316,7 +316,6 @@ export function mockChannels() {
 		disableSearch: false,
 		items: [
 			{
-				commerceChannelsCount: 5,
 				createTime: 1695241914644,
 				groupsCount: 6,
 				id: '643280225365059871',

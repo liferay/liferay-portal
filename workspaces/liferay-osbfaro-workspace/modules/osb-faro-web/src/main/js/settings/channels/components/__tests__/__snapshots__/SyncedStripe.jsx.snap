@@ -8,7 +8,7 @@ exports[`SyncedStripe should render 1`] = `
     <div
       class="title d-flex align-items-center"
     >
-      There are 0 sites and 0 channels synced to this property.
+      There are 0 sites synced to this property.
     </div>
     <div>
       Manage sites synced to this property by going to 

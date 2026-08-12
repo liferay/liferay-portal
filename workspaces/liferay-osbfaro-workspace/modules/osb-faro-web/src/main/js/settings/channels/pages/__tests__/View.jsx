@@ -97,7 +97,7 @@ describe('View Channel', () => {
 		expect(queryByText('Clear Data')).toBeInTheDocument();
 	});
 
-	it('should check error modal message and hyperlink on deleting property that has CHANNELS synced', async () => {
+	it('should check error modal message and hyperlink on deleting property that has SITES synced', async () => {
 		API.user.fetchCurrentUser.mockReturnValueOnce(
 			Promise.resolve(data.mockUser())
 		);
@@ -105,8 +105,7 @@ describe('View Channel', () => {
 		API.channels.fetch.mockReturnValueOnce(
 			Promise.resolve(
 				data.mockChannel(1, 1, {
-					commerceChannelsCount: 5,
-					groupsCount: 0
+					groupsCount: 5
 				})
 			)
 		);
@@ -116,9 +115,7 @@ describe('View Channel', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			screen.getByText(
-				'There are 0 sites and 5 channels synced to this property.'
-			)
+			screen.getByText('There are 5 sites synced to this property.')
 		).toBeInTheDocument();
 
 		const deleteBtn = screen.getByTestId('delete');
@@ -140,7 +137,7 @@ describe('View Channel', () => {
 		const modalText = screen.getByText((content, node) => {
 			const hasText = node =>
 				node.textContent ===
-				'Ensure no sites and channels are assigned to it before deleting a property. To disconnect them from a property, navigate to Instance Settings > Analytics Cloud > Properties and select the properties with synchronizations that you wish to undo. Access our documentation to learn more.(Opens a new window)';
+				'Ensure no sites are assigned to it before deleting a property. To disconnect them from a property, navigate to Instance Settings > Analytics Cloud > Properties and select the properties with synchronizations that you wish to undo. Access our documentation to learn more.(Opens a new window)';
 			const nodeHasText = hasText(node);
 			const childrenDontHaveText = Array.from(node.children).every(
 				child => !hasText(child)
@@ -163,7 +160,7 @@ describe('View Channel', () => {
 		);
 	});
 
-	it('should check error modal message and hyperlink on deleting property that has SITES synced', async () => {
+	it('should check error modal message and hyperlink on deleting property that has SITES NOT synced', async () => {
 		API.user.fetchCurrentUser.mockReturnValueOnce(
 			Promise.resolve(data.mockUser())
 		);
@@ -171,59 +168,6 @@ describe('View Channel', () => {
 		API.channels.fetch.mockReturnValueOnce(
 			Promise.resolve(
 				data.mockChannel(1, 1, {
-					commerceChannelsCount: 0,
-					groupsCount: 5
-				})
-			)
-		);
-
-		const {container} = render(<DefaultComponent />);
-
-		await waitForLoadingToBeRemoved(container);
-
-		expect(
-			screen.getByText(
-				'There are 5 sites and 0 channels synced to this property.'
-			)
-		).toBeInTheDocument();
-
-		const deleteBtn = screen.getByTestId('delete');
-
-		fireEvent.click(deleteBtn);
-
-		expect(
-			container.querySelector('div.modal-container')
-		).toBeInTheDocument();
-
-		expect(container.querySelector('div.modal-container')).toHaveClass(
-			'show'
-		);
-
-		expect(
-			screen.getByText('Unable to Delete Property')
-		).toBeInTheDocument();
-
-		expect(
-			screen.getByText('Access our documentation to learn more.')
-		).toBeInTheDocument();
-
-		expect(
-			screen.getByText('Access our documentation to learn more.')
-		).toHaveAttribute(
-			'href',
-			'https://learn.liferay.com/w/dxp/personalization/analytics-cloud/workspace-settings/managing-properties#adding-and-removing-users-to-a-property'
-		);
-	});
-
-	it('should check error modal message and hyperlink on deleting property that has SITES and CHANNELS NOT synced', async () => {
-		API.user.fetchCurrentUser.mockReturnValueOnce(
-			Promise.resolve(data.mockUser())
-		);
-
-		API.channels.fetch.mockReturnValueOnce(
-			Promise.resolve(
-				data.mockChannel(1, 1, {
-					commerceChannelsCount: 0,
 					groupsCount: 0
 				})
 			)
@@ -234,9 +178,7 @@ describe('View Channel', () => {
 		await waitForLoadingToBeRemoved(container);
 
 		expect(
-			screen.getByText(
-				'There are 0 sites and 0 channels synced to this property.'
-			)
+			screen.getByText('There are 0 sites synced to this property.')
 		).toBeInTheDocument();
 
 		const deleteBtn = screen.getByTestId('delete');

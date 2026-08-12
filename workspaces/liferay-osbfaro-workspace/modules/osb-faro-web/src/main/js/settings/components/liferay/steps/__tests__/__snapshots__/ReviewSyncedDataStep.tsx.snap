@@ -49,7 +49,7 @@ exports[`ReviewSyncedDataStep should render 1`] = `
           <p
             class="list-group-text"
           >
-            Used to aggregate data on your users, sites and DXP commerce channels.
+            Used to aggregate data on your users and sites.
           </p>
         </div>
         <div
