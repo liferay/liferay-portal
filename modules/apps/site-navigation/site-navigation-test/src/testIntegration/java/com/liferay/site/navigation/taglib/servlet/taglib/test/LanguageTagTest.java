@@ -143,19 +143,17 @@ public class LanguageTagTest {
 
 		Layout layout = themeDisplay.getLayout();
 
-		String currentCompleteURL = null;
+		String currentURL = null;
 
 		if (layout != null) {
-			currentCompleteURL = StringBundler.concat(
-				themeDisplay.getPortalURL(),
+			currentURL = StringBundler.concat(
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 				_group.getFriendlyURL(),
 				layout.getFriendlyURL(themeDisplay.getLocale()),
 				currentURLSuffix);
 		}
 
-		return _getLanguageEntriesForURL(
-			currentCompleteURL, formAction, themeDisplay);
+		return _getLanguageEntriesForURL(currentURL, formAction, themeDisplay);
 	}
 
 	private List<LanguageEntry> _getLanguageEntries(
@@ -169,8 +167,7 @@ public class LanguageTagTest {
 	}
 
 	private List<LanguageEntry> _getLanguageEntriesForURL(
-		String currentCompleteURL, String formAction,
-		ThemeDisplay themeDisplay) {
+		String currentURL, String formAction, ThemeDisplay themeDisplay) {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -179,7 +176,7 @@ public class LanguageTagTest {
 
 		if (layout != null) {
 			mockHttpServletRequest.setAttribute(
-				WebKeys.CURRENT_COMPLETE_URL, currentCompleteURL);
+				WebKeys.CURRENT_URL, currentURL);
 			mockHttpServletRequest.setAttribute(WebKeys.LAYOUT, layout);
 		}
 
@@ -299,7 +296,6 @@ public class LanguageTagTest {
 			_getURL(
 				_getLanguageEntriesForURL(
 					StringBundler.concat(
-						themeDisplay.getPortalURL(),
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(),
 						layout.getFriendlyURL(LocaleUtil.FRANCE)),
@@ -311,7 +307,6 @@ public class LanguageTagTest {
 			_getURL(
 				_getLanguageEntriesForURL(
 					StringBundler.concat(
-						themeDisplay.getPortalURL(),
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(),
 						layout.getFriendlyURL(LocaleUtil.FRANCE),
@@ -331,7 +326,6 @@ public class LanguageTagTest {
 			_getURL(
 				_getLanguageEntriesForURL(
 					StringBundler.concat(
-						themeDisplay.getPortalURL(),
 						PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 						_group.getFriendlyURL(), _FRIENDLY_URL_MAPPING_PART),
 					null, themeDisplay),
@@ -370,19 +364,18 @@ public class LanguageTagTest {
 				journalArticle.getDDMStructureKey(), true,
 				WorkflowConstants.STATUS_APPROVED);
 
-		ThemeDisplay themeDisplay = _getThemeDisplay(
-			LayoutLocalServiceUtil.getLayout(layoutPageTemplateEntry.getPlid()),
-			LocaleUtil.US);
-
 		String frenchURL = _getURL(
 			_getLanguageEntriesForURL(
 				StringBundler.concat(
-					themeDisplay.getPortalURL(),
 					PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 					_group.getFriendlyURL(),
 					FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE,
 					friendlyURLMap.get(LocaleUtil.US)),
-				null, themeDisplay),
+				null,
+				_getThemeDisplay(
+					LayoutLocalServiceUtil.getLayout(
+						layoutPageTemplateEntry.getPlid()),
+					LocaleUtil.US)),
 			LocaleUtil.FRANCE);
 
 		Assert.assertEquals(
@@ -450,11 +443,8 @@ public class LanguageTagTest {
 			).build());
 
 		try {
-			Assert.assertEquals(
-				StringBundler.concat(
-					"http://fr.mysite.com:",
-					PortalUtil.getPortalServerPort(false), "/fr",
-					layout.getFriendlyURL(LocaleUtil.FRANCE)),
+			_assertLocalizedURL(
+				layout, LocaleUtil.FRANCE, StringPool.BLANK,
 				_getURL(
 					_getLanguageEntries(
 						_getThemeDisplay(layout, LocaleUtil.US)),
@@ -580,15 +570,11 @@ public class LanguageTagTest {
 			).build());
 
 		try {
-			Company company = CompanyLocalServiceUtil.getCompany(
-				_group.getCompanyId());
-
-			Assert.assertEquals(
-				_UPDATE_LANGUAGE_PATH + "?languageId=fr_FR",
+			_assertLocalizedURL(
+				layout, LocaleUtil.FRANCE, StringPool.BLANK,
 				_getURL(
 					_getLanguageEntries(
-						_getThemeDisplay(
-							layout, LocaleUtil.US, company.getPortalURL(0))),
+						_getThemeDisplay(layout, LocaleUtil.US)),
 					LocaleUtil.FRANCE));
 		}
 		finally {
