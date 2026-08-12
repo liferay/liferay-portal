@@ -6,6 +6,7 @@
 import '@testing-library/jest-dom';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import React from 'react';
+import {getEmptyImage} from 'react-dnd-html5-backend';
 
 import Task from '../../js/components/props_transformer/views/kanban_view/components/Task';
 import TaskDragLayer from '../../js/components/props_transformer/views/kanban_view/components/TaskDragLayer';
@@ -14,6 +15,7 @@ import {mockNavigate} from '../../tests/js/__mocks__/frontend-js-web';
 
 const mockGetUserAccount = jest.fn();
 const mockPatchTaskById = jest.fn();
+const mockConnectDragPreview = jest.fn();
 const mockDeleteTaskById = jest.fn();
 const mockDisplayAssignSuccessToast = jest.fn();
 const mockDisplayDeleteSuccessToast = jest.fn();
@@ -31,7 +33,11 @@ jest.mock('react-dnd', () => ({
 	useDrag: (spec: any) => {
 		capturedDragSpec = spec;
 
-		return [{isDragging: mockIsDragging}, jest.fn(), jest.fn()];
+		return [
+			{isDragging: mockIsDragging},
+			jest.fn(),
+			mockConnectDragPreview,
+		];
 	},
 	useDragLayer: () => mockDragLayerState,
 }));
@@ -326,6 +332,14 @@ describe('Kanban Task', () => {
 
 		await waitFor(() => {
 			expect(mockDisplayErrorToast).toHaveBeenCalledWith('error');
+		});
+	});
+
+	it('suppresses the native drag image with an empty drag preview', () => {
+		renderTask();
+
+		expect(mockConnectDragPreview).toHaveBeenCalledWith(getEmptyImage(), {
+			captureDraggingState: true,
 		});
 	});
 
