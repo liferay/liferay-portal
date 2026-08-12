@@ -6,8 +6,9 @@
 package com.liferay.source.formatter.checkstyle.check;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
-import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+
+import java.util.List;
 
 /**
  * @author Alan Huang
@@ -27,9 +28,13 @@ public class VirtualThreadsCheck extends BaseCheck {
 			return;
 		}
 
-		FullIdent fullIdent = FullIdent.createFullIdent(dotDetailAST);
+		List<String> names = getNames(dotDetailAST, false);
 
-		String methodCall = fullIdent.getText();
+		if (names.size() != 2) {
+			return;
+		}
+
+		String methodCall = names.get(0) + "." + names.get(1);
 
 		if (!methodCall.equals("Executors.newVirtualThreadPerTaskExecutor") &&
 			!methodCall.equals("Thread.ofVirtual") &&
