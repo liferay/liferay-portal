@@ -44,7 +44,7 @@ public class PLOEntryServiceHttp {
 	public static com.liferay.portal.language.override.model.PLOEntry
 			addOrUpdatePLOEntry(
 				HttpPrincipal httpPrincipal, String externalReferenceCode,
-				long userId, String key, String languageId, String value)
+				String key, String languageId, String value)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
@@ -53,8 +53,7 @@ public class PLOEntryServiceHttp {
 				_addOrUpdatePLOEntryParameterTypes0);
 
 			MethodHandler methodHandler = new MethodHandler(
-				methodKey, externalReferenceCode, userId, key, languageId,
-				value);
+				methodKey, externalReferenceCode, key, languageId, value);
 
 			Object returnObj = null;
 
@@ -538,9 +537,7 @@ public class PLOEntryServiceHttp {
 	private static Log _log = LogFactoryUtil.getLog(PLOEntryServiceHttp.class);
 
 	private static final Class<?>[] _addOrUpdatePLOEntryParameterTypes0 =
-		new Class[] {
-			String.class, long.class, String.class, String.class, String.class
-		};
+		new Class[] {String.class, String.class, String.class, String.class};
 	private static final Class<?>[] _deletePLOEntriesParameterTypes1 =
 		new Class[] {String.class};
 	private static final Class<?>[] _deletePLOEntryParameterTypes2 =
@@ -575,4 +572,4 @@ public class PLOEntryServiceHttp {
 		new Class[] {String.class, java.util.Map.class};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:651918052
+// LIFERAY-SERVICE-BUILDER-HASH:-136216899
