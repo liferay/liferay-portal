@@ -481,6 +481,39 @@ public class WorkflowDefinitionManagerTest extends BaseWorkflowManagerTestCase {
 	}
 
 	@Test
+	public void testDeployWorkflowDefinitionWithSystem() throws Exception {
+		byte[] bytes = FileUtil.getBytes(
+			getResourceInputStream("single-approver-workflow-definition.xml"));
+
+		String name = StringUtil.randomId();
+
+		WorkflowDefinition workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				bytes, TestPropsValues.getCompanyId(), null, 0, name,
+				WorkflowDefinitionConstants.SCOPE_ALL, true,
+				StringUtil.randomId(), TestPropsValues.getUserId());
+
+		Assert.assertTrue(workflowDefinition.isSystem());
+
+		workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				bytes, TestPropsValues.getCompanyId(), null, 0, name,
+				WorkflowDefinitionConstants.SCOPE_ALL, false,
+				StringUtil.randomId(), TestPropsValues.getUserId());
+
+		Assert.assertFalse(workflowDefinition.isSystem());
+
+		// Overload without a system parameter
+
+		workflowDefinition =
+			_workflowDefinitionManager.deployWorkflowDefinition(
+				bytes, TestPropsValues.getCompanyId(), null, name,
+				StringUtil.randomId(), TestPropsValues.getUserId());
+
+		Assert.assertFalse(workflowDefinition.isSystem());
+	}
+
+	@Test
 	public void testDeployWorkflowDraftDefinition() throws Exception {
 		WorkflowDefinition workflowDefinition = _saveWorkflowDefinition();
 

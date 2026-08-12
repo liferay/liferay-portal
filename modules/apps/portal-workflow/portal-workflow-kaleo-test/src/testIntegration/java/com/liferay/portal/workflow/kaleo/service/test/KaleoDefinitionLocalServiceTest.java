@@ -38,6 +38,7 @@ public class KaleoDefinitionLocalServiceTest
 	public void testAddKaleoDefinition() throws Exception {
 		_testAddKaleoDefinition();
 		_testAddKaleoDefinitionWithScope();
+		_testAddKaleoDefinitionWithSystem();
 	}
 
 	@Test
@@ -72,6 +73,7 @@ public class KaleoDefinitionLocalServiceTest
 	public void testUpdateKaleoDefinition() throws Exception {
 		_testUpdateKaleoDefinition();
 		_testUpdateKaleoDefinitionWithScope();
+		_testUpdateKaleoDefinitionWithSystem();
 	}
 
 	private AccountEntry _addAccountEntry() throws Exception {
@@ -122,6 +124,16 @@ public class KaleoDefinitionLocalServiceTest
 			() -> addKaleoDefinition(WorkflowDefinitionConstants.SCOPE_AI));
 	}
 
+	private void _testAddKaleoDefinitionWithSystem() throws Exception {
+		KaleoDefinition kaleoDefinition = addKaleoDefinition(null, false);
+
+		Assert.assertFalse(kaleoDefinition.isSystem());
+
+		kaleoDefinition = addKaleoDefinition(null, true);
+
+		Assert.assertTrue(kaleoDefinition.isSystem());
+	}
+
 	private void _testUpdateKaleoDefinition() throws Exception {
 		KaleoDefinition kaleoDefinition = addKaleoDefinition(null);
 
@@ -164,6 +176,20 @@ public class KaleoDefinitionLocalServiceTest
 			"Invalid group ID " + TestPropsValues.getGroupId() +
 				" for scope AI",
 			() -> updateKaleoDefinition(kaleoDefinition));
+	}
+
+	private void _testUpdateKaleoDefinitionWithSystem() throws Exception {
+		KaleoDefinition kaleoDefinition = addKaleoDefinition(null, true);
+
+		Assert.assertTrue(kaleoDefinition.isSystem());
+
+		kaleoDefinition = updateKaleoDefinition(kaleoDefinition, true);
+
+		Assert.assertTrue(kaleoDefinition.isSystem());
+
+		kaleoDefinition = updateKaleoDefinition(kaleoDefinition, false);
+
+		Assert.assertFalse(kaleoDefinition.isSystem());
 	}
 
 	@Inject
