@@ -56,7 +56,9 @@ public class OmniSearchProductNavigationControlMenuEntry
 		String layoutMode = ParamUtil.getString(
 			httpServletRequest, "p_l_mode", Constants.VIEW);
 
-		if (layoutMode.equals(Constants.EDIT)) {
+		if (layoutMode.equals(Constants.EDIT) ||
+			layoutMode.equals(Constants.HISTORY)) {
+
 			return false;
 		}
 
