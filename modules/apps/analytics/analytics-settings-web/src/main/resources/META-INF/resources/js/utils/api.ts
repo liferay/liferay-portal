@@ -34,14 +34,6 @@ export function fetchAccountGroups(params: TTableRequestParams) {
 	});
 }
 
-export function fetchChannels(params: TTableRequestParams) {
-	const queryString = serializeTableRequestParams(params);
-
-	return request(`/commerce-channels?${queryString}`, {
-		method: 'GET',
-	});
-}
-
 export function fetchConnection(token: string) {
 	return request(
 		'/data-sources',
@@ -95,46 +87,24 @@ export function fetchSites(params: TTableRequestParams) {
 
 interface IProperty {
 	channelId: string;
-	commerceChannelIds?: number[];
-	commerceSyncEnabled: boolean;
 	dataSourceId?: string;
 	siteIds?: number[];
 }
 
 export function updateProperty({
 	channelId,
-	commerceChannelIds = [],
-	commerceSyncEnabled,
 	dataSourceId,
 	siteIds = [],
 }: IProperty) {
 	return request('/channels', {
 		body: JSON.stringify({
 			channelId,
-			commerceSyncEnabled,
 			dataSources: [
 				{
-					commerceChannelIds,
 					dataSourceId,
 					siteIds,
 				},
 			],
-		}),
-		method: 'PATCH',
-	});
-}
-
-export function updatecommerceSyncEnabled({
-	channelId,
-	commerceSyncEnabled,
-}: {
-	channelId: string;
-	commerceSyncEnabled: boolean;
-}) {
-	return request('/channels', {
-		body: JSON.stringify({
-			channelId,
-			commerceSyncEnabled,
 		}),
 		method: 'PATCH',
 	});

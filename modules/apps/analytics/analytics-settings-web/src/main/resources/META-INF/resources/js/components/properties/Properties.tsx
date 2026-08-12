@@ -4,38 +4,33 @@
  */
 
 import ClayButton from '@clayui/button';
-import {ClayToggle} from '@clayui/form';
 import {useModal} from '@clayui/modal';
 import React, {useState} from 'react';
 
-import {fetchProperties, updatecommerceSyncEnabled} from '../../utils/api';
+import {fetchProperties} from '../../utils/api';
 import {OrderBy} from '../../utils/filter';
 import TableContext, {Events, useData, useDispatch} from '../table/Context';
 import {Table} from '../table/Table';
-import {EColumnAlign, TColumn, TItem} from '../table/types';
+import {EColumnAlign, TColumn} from '../table/types';
 import AssignModal from './AssignModal';
 import CreatePropertyModal from './CreatePropertyModal';
 
 export type TDataSource = {
-	commerceChannelIds: number[];
 	dataSourceId?: string;
 	siteIds: number[];
 };
 
 export type TProperty = {
 	channelId: string;
-	commerceSyncEnabled: boolean;
 	dataSources: TDataSource[] | [];
 	name: string;
 };
 
 enum EColumn {
 	AssignButton = 'assignButton',
-	CommerceChannelIds = 'commerceChannelIds',
 	CreateDate = 'createDate',
 	Name = 'name',
 	SiteIds = 'siteIds',
-	ToggleSwitch = 'toggleSwitch',
 }
 
 const columns: TColumn[] = [
@@ -46,20 +41,8 @@ const columns: TColumn[] = [
 	},
 	{
 		align: EColumnAlign.Right,
-		id: EColumn.CommerceChannelIds,
-		label: Liferay.Language.get('channels'),
-		sortable: false,
-	},
-	{
-		align: EColumnAlign.Right,
 		id: EColumn.SiteIds,
 		label: Liferay.Language.get('sites'),
-		sortable: false,
-	},
-	{
-		align: EColumnAlign.Right,
-		id: EColumn.ToggleSwitch,
-		label: Liferay.Language.get('Commerce'),
 		sortable: false,
 	},
 	{
@@ -75,76 +58,10 @@ const columns: TColumn[] = [
 	},
 ];
 
-const getTotalCommerceChannels = (enabled: boolean, value: string): string =>
-	enabled ? value : '-';
-
-const ToggleSwitch = ({
-	item,
-	property: {channelId},
-}: {
-	item: TItem;
-	property: TProperty;
-}) => {
-	const [, {value: totalCommerceChannels}, , {value: commerceSyncEnabled}] =
-		item.columns;
-	const [toggle, setToggle] = useState<boolean>(
-		commerceSyncEnabled as boolean
-	);
-	const dispatch = useDispatch();
-
-	return (
-		<ClayToggle
-			onToggle={async () => {
-				const newValue = !toggle;
-				const {ok} = await updatecommerceSyncEnabled({
-					channelId,
-					commerceSyncEnabled: newValue,
-				});
-
-				if (ok) {
-					dispatch({
-						payload: {
-							columns: [
-								{
-									column: {
-										cellRenderer: () => (
-											<span>
-												{getTotalCommerceChannels(
-													newValue,
-													totalCommerceChannels as string
-												)}
-											</span>
-										),
-									},
-									index: 1,
-								},
-								{
-									column: {
-										value: newValue,
-									},
-									index: 3,
-								},
-							],
-							id: item.id,
-						},
-						type: Events.ChangeItem,
-					});
-
-					setToggle(newValue);
-				}
-			}}
-			role="toggle-switch"
-			toggled={toggle}
-			value={EColumn.ToggleSwitch}
-		/>
-	);
-};
-
 const getSafeProperty = (
 	property: TProperty
 ): {
 	channelId: string;
-	commerceSyncEnabled: boolean;
 	dataSources: TDataSource[];
 	name: string;
 } => {
@@ -156,7 +73,6 @@ const getSafeProperty = (
 		...property,
 		dataSources: [
 			{
-				commerceChannelIds: [],
 				siteIds: [],
 			},
 		],
@@ -209,8 +125,7 @@ const Properties: React.FC = () => {
 						const safeProperty = getSafeProperty(property);
 						const {
 							channelId,
-							commerceSyncEnabled,
-							dataSources: [{commerceChannelIds, siteIds}],
+							dataSources: [{siteIds}],
 							name,
 						} = safeProperty;
 
@@ -221,46 +136,19 @@ const Properties: React.FC = () => {
 									value: name,
 								},
 								{
-									cellRenderer: (item: any) => (
-										<span>
-											{getTotalCommerceChannels(
-												commerceSyncEnabled,
-												item.columns[1].value
-											)}
-										</span>
-									),
-									id: EColumn.CommerceChannelIds,
-									value: commerceChannelIds.length,
-								},
-								{
 									id: EColumn.SiteIds,
 									value: siteIds.length,
-								},
-								{
-									cellRenderer: (item) => (
-										<ToggleSwitch
-											item={item}
-											property={property}
-										/>
-									),
-									id: EColumn.ToggleSwitch,
-									value: commerceSyncEnabled,
 								},
 								{
 									id: EColumn.CreateDate,
 									value: 'createDate',
 								},
 								{
-									cellRenderer: (item) => (
+									cellRenderer: () => (
 										<ClayButton
 											displayType="secondary"
 											onClick={() => {
-												setSelectedProperty({
-													...property,
-													commerceSyncEnabled: item
-														.columns[3]
-														.value as boolean,
-												});
+												setSelectedProperty(property);
 												onAssignModalOpenChange(true);
 											}}
 											role="assign-button"
@@ -286,7 +174,7 @@ const Properties: React.FC = () => {
 				<AssignModal
 					observer={assignModalObserver}
 					onCancel={() => onAssignModalOpenChange(false)}
-					onSubmit={({commerceChannelIds, siteIds}) => {
+					onSubmit={({siteIds}) => {
 						Liferay.Util.openToast({
 							message: Liferay.Language.get(
 								'properties-settings-have-been-saved'
@@ -300,25 +188,9 @@ const Properties: React.FC = () => {
 								columns: [
 									{
 										column: {
-											cellRenderer: () => (
-												<span>
-													{getTotalCommerceChannels(
-														selectedProperty?.commerceSyncEnabled,
-														String(
-															commerceChannelIds.length
-														)
-													)}
-												</span>
-											),
-											value: commerceChannelIds.length,
-										},
-										index: 1,
-									},
-									{
-										column: {
 											value: siteIds.length,
 										},
-										index: 2,
+										index: 1,
 									},
 								],
 								id: selectedProperty?.channelId,
