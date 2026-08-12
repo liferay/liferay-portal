@@ -124,15 +124,19 @@ export interface Config {
 		className: string;
 		isRestricted: boolean;
 		label: string;
-		subtypes: Array<{label: string; value: string}>;
+		subtypes: Array<{
+			isRestricted: boolean;
+			label: string;
+			value: string;
+		}>;
 		value: string;
 	}>;
-	fragmentCompositionDescriptionMaxLength: number;
-	fragmentCompositionNameMaxLength: number;
 	fragmentCollections: Array<{
 		fragmentCollectionId: number;
 		name: string;
 	}>;
+	fragmentCompositionDescriptionMaxLength: number;
+	fragmentCompositionNameMaxLength: number;
 	fragmentPortletNamespace: string;
 	fragmentsImportURL: string;
 	freeTier: boolean;

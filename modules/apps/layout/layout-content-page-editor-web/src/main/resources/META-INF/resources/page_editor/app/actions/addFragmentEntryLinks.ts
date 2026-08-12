@@ -37,6 +37,7 @@ export interface FragmentEntryLink<
 		'com.liferay.fragment.entry.processor.freemarker.FreeMarkerFragmentEntryProcessor': {
 			[key in ConfigurationFieldId]: EditableValue;
 		};
+		'portletId'?: string;
 	};
 	fieldTypes: string[];
 	fragmentEntryId: string;
