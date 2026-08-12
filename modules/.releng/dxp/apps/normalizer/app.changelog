@@ -1449,3 +1449,14 @@ app.artifacts-1.0.131=\
 app.change.log-1.0.131=LPD-45811 LPD-92633 LPS-146089 LPS-166543 LPS-172919 LPS-188912
 
 app.git.id-1.0.131=23092f3896cee8b38e59843e9afa96c200cfdffb
+
+#
+# Liferay App Version 1.0.132
+#
+
+app.artifacts-1.0.132=\
+	
+
+app.change.log-1.0.132=LPD-45811 LPD-92633 LPS-146089 LPS-166543 LPS-172919 LPS-188912
+
+app.git.id-1.0.132=cf680a343c91b04346047007f5726a1f22cf9a46
