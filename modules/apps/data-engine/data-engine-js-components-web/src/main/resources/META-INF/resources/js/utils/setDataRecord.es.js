@@ -7,6 +7,7 @@ import extractDataRecordValueKey from '../utils/extractDataRecordValueKey.es';
 
 export default function setDataRecord(
 	{
+		hiddenByTranslationFilter,
 		locale,
 		localizable,
 		localizedValue = {
@@ -36,7 +37,7 @@ export default function setDataRecord(
 		_value = JSON.stringify(value);
 	}
 
-	if (!visible) {
+	if (!visible && !hiddenByTranslationFilter) {
 		_value = localizable ? '' : _value;
 	}
 
