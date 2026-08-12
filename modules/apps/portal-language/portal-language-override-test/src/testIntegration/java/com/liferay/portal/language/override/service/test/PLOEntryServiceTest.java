@@ -7,6 +7,7 @@ package com.liferay.portal.language.override.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -37,13 +38,22 @@ public class PLOEntryServiceTest {
 
 	@Test
 	public void testAddOrUpdatePLOEntry() throws Exception {
+		String name = PrincipalThreadLocal.getName();
+
 		User user = UserTestUtil.addUser();
 
-		PLOEntry ploEntry = _ploEntryService.addOrUpdatePLOEntry(
-			null, user.getUserId(), RandomTestUtil.randomString(), "en_US",
-			RandomTestUtil.randomString());
+		PrincipalThreadLocal.setName(user.getUserId());
 
-		Assert.assertEquals(user.getUserId(), ploEntry.getUserId());
+		try {
+			PLOEntry ploEntry = _ploEntryService.addOrUpdatePLOEntry(
+				null, RandomTestUtil.randomString(), "en_US",
+				RandomTestUtil.randomString());
+
+			Assert.assertEquals(user.getUserId(), ploEntry.getUserId());
+		}
+		finally {
+			PrincipalThreadLocal.setName(name);
+		}
 	}
 
 	@Inject

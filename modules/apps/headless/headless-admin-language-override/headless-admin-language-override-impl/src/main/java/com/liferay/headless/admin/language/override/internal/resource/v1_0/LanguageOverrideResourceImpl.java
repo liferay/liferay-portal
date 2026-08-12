@@ -149,8 +149,8 @@ public class LanguageOverrideResourceImpl
 		return _toLanguageOverride(
 			_ploEntryService.addOrUpdatePLOEntry(
 				languageOverride.getExternalReferenceCode(),
-				contextUser.getUserId(), languageOverride.getKey(),
-				languageOverride.getLanguageId(), languageOverride.getValue()));
+				languageOverride.getKey(), languageOverride.getLanguageId(),
+				languageOverride.getValue()));
 	}
 
 	@Override
@@ -162,9 +162,8 @@ public class LanguageOverrideResourceImpl
 
 		return _toLanguageOverride(
 			_ploEntryService.addOrUpdatePLOEntry(
-				externalReferenceCode, contextUser.getUserId(),
-				languageOverride.getKey(), languageOverride.getLanguageId(),
-				languageOverride.getValue()));
+				externalReferenceCode, languageOverride.getKey(),
+				languageOverride.getLanguageId(), languageOverride.getValue()));
 	}
 
 	private void _checkFeatureFlag() {
