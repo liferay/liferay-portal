@@ -279,20 +279,6 @@ public interface CTCollectionModel
 	public void setOnDemandUserUuid(String onDemandUserUuid);
 
 	/**
-	 * Returns the scheduled date of this ct collection.
-	 *
-	 * @return the scheduled date of this ct collection
-	 */
-	public Date getScheduledDate();
-
-	/**
-	 * Sets the scheduled date of this ct collection.
-	 *
-	 * @param scheduledDate the scheduled date of this ct collection
-	 */
-	public void setScheduledDate(Date scheduledDate);
-
-	/**
 	 * Returns the shareable of this ct collection.
 	 *
 	 * @return the shareable of this ct collection
@@ -377,4 +363,4 @@ public interface CTCollectionModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1314799029
+// LIFERAY-SERVICE-BUILDER-HASH:-1380836720

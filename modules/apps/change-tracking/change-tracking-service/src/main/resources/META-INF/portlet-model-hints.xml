@@ -31,7 +31,6 @@
 			<hint name="max-length">200</hint>
 		</field>
 		<field name="onDemandUserId" type="long" />
-		<field name="scheduledDate" type="Date" />
 		<field name="shareable" type="boolean" />
 		<field name="status" type="int" />
 		<field name="statusByUserId" type="long" />

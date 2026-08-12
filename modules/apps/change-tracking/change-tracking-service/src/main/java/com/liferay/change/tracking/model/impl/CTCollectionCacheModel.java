@@ -68,7 +68,7 @@ public class CTCollectionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(37);
+		StringBundler sb = new StringBundler(35);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -96,8 +96,6 @@ public class CTCollectionCacheModel
 		sb.append(description);
 		sb.append(", onDemandUserId=");
 		sb.append(onDemandUserId);
-		sb.append(", scheduledDate=");
-		sb.append(scheduledDate);
 		sb.append(", shareable=");
 		sb.append(shareable);
 		sb.append(", status=");
@@ -167,14 +165,6 @@ public class CTCollectionCacheModel
 		}
 
 		ctCollectionImpl.setOnDemandUserId(onDemandUserId);
-
-		if (scheduledDate == Long.MIN_VALUE) {
-			ctCollectionImpl.setScheduledDate(null);
-		}
-		else {
-			ctCollectionImpl.setScheduledDate(new Date(scheduledDate));
-		}
-
 		ctCollectionImpl.setShareable(shareable);
 		ctCollectionImpl.setStatus(status);
 		ctCollectionImpl.setStatusByUserId(statusByUserId);
@@ -212,7 +202,6 @@ public class CTCollectionCacheModel
 		description = objectInput.readUTF();
 
 		onDemandUserId = objectInput.readLong();
-		scheduledDate = objectInput.readLong();
 
 		shareable = objectInput.readBoolean();
 
@@ -267,7 +256,6 @@ public class CTCollectionCacheModel
 		}
 
 		objectOutput.writeLong(onDemandUserId);
-		objectOutput.writeLong(scheduledDate);
 
 		objectOutput.writeBoolean(shareable);
 
@@ -290,11 +278,10 @@ public class CTCollectionCacheModel
 	public String name;
 	public String description;
 	public long onDemandUserId;
-	public long scheduledDate;
 	public boolean shareable;
 	public int status;
 	public long statusByUserId;
 	public long statusDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-526990286
+// LIFERAY-SERVICE-BUILDER-HASH:956614182

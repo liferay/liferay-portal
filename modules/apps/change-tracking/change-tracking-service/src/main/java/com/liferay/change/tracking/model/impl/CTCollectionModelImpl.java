@@ -72,9 +72,8 @@ public class CTCollectionModelImpl
 		{"modifiedDate", Types.TIMESTAMP}, {"ctRemoteId", Types.BIGINT},
 		{"schemaVersionId", Types.BIGINT}, {"name", Types.VARCHAR},
 		{"description", Types.VARCHAR}, {"onDemandUserId", Types.BIGINT},
-		{"scheduledDate", Types.TIMESTAMP}, {"shareable", Types.BOOLEAN},
-		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
-		{"statusDate", Types.TIMESTAMP}
+		{"shareable", Types.BOOLEAN}, {"status", Types.INTEGER},
+		{"statusByUserId", Types.BIGINT}, {"statusDate", Types.TIMESTAMP}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -94,7 +93,6 @@ public class CTCollectionModelImpl
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("onDemandUserId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("scheduledDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("shareable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("statusByUserId", Types.BIGINT);
@@ -102,7 +100,7 @@ public class CTCollectionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CTCollection (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,ctCollectionId LONG not null primary key,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,ctRemoteId LONG,schemaVersionId LONG,name VARCHAR(75) null,description VARCHAR(200) null,onDemandUserId LONG,scheduledDate DATE null,shareable BOOLEAN,status INTEGER,statusByUserId LONG,statusDate DATE null)";
+		"create table CTCollection (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,ctCollectionId LONG not null primary key,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,ctRemoteId LONG,schemaVersionId LONG,name VARCHAR(75) null,description VARCHAR(200) null,onDemandUserId LONG,shareable BOOLEAN,status INTEGER,statusByUserId LONG,statusDate DATE null)";
 
 	public static final String TABLE_SQL_DROP = "drop table CTCollection";
 
@@ -302,8 +300,6 @@ public class CTCollectionModelImpl
 			attributeGetterFunctions.put(
 				"onDemandUserId", CTCollection::getOnDemandUserId);
 			attributeGetterFunctions.put(
-				"scheduledDate", CTCollection::getScheduledDate);
-			attributeGetterFunctions.put(
 				"shareable", CTCollection::getShareable);
 			attributeGetterFunctions.put("status", CTCollection::getStatus);
 			attributeGetterFunctions.put(
@@ -370,9 +366,6 @@ public class CTCollectionModelImpl
 				"onDemandUserId",
 				(BiConsumer<CTCollection, Long>)
 					CTCollection::setOnDemandUserId);
-			attributeSetterBiConsumers.put(
-				"scheduledDate",
-				(BiConsumer<CTCollection, Date>)CTCollection::setScheduledDate);
 			attributeSetterBiConsumers.put(
 				"shareable",
 				(BiConsumer<CTCollection, Boolean>)CTCollection::setShareable);
@@ -695,21 +688,6 @@ public class CTCollectionModelImpl
 
 	@JSON
 	@Override
-	public Date getScheduledDate() {
-		return _scheduledDate;
-	}
-
-	@Override
-	public void setScheduledDate(Date scheduledDate) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_scheduledDate = scheduledDate;
-	}
-
-	@JSON
-	@Override
 	public boolean getShareable() {
 		return _shareable;
 	}
@@ -875,7 +853,6 @@ public class CTCollectionModelImpl
 		ctCollectionImpl.setName(getName());
 		ctCollectionImpl.setDescription(getDescription());
 		ctCollectionImpl.setOnDemandUserId(getOnDemandUserId());
-		ctCollectionImpl.setScheduledDate(getScheduledDate());
 		ctCollectionImpl.setShareable(isShareable());
 		ctCollectionImpl.setStatus(getStatus());
 		ctCollectionImpl.setStatusByUserId(getStatusByUserId());
@@ -913,8 +890,6 @@ public class CTCollectionModelImpl
 			this.<String>getColumnOriginalValue("description"));
 		ctCollectionImpl.setOnDemandUserId(
 			this.<Long>getColumnOriginalValue("onDemandUserId"));
-		ctCollectionImpl.setScheduledDate(
-			this.<Date>getColumnOriginalValue("scheduledDate"));
 		ctCollectionImpl.setShareable(
 			this.<Boolean>getColumnOriginalValue("shareable"));
 		ctCollectionImpl.setStatus(
@@ -1068,15 +1043,6 @@ public class CTCollectionModelImpl
 
 		ctCollectionCacheModel.onDemandUserId = getOnDemandUserId();
 
-		Date scheduledDate = getScheduledDate();
-
-		if (scheduledDate != null) {
-			ctCollectionCacheModel.scheduledDate = scheduledDate.getTime();
-		}
-		else {
-			ctCollectionCacheModel.scheduledDate = Long.MIN_VALUE;
-		}
-
 		ctCollectionCacheModel.shareable = isShareable();
 
 		ctCollectionCacheModel.status = getStatus();
@@ -1167,7 +1133,6 @@ public class CTCollectionModelImpl
 	private String _name;
 	private String _description;
 	private long _onDemandUserId;
-	private Date _scheduledDate;
 	private boolean _shareable;
 	private int _status;
 	private long _statusByUserId;
@@ -1217,7 +1182,6 @@ public class CTCollectionModelImpl
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("description", _description);
 		_columnOriginalValues.put("onDemandUserId", _onDemandUserId);
-		_columnOriginalValues.put("scheduledDate", _scheduledDate);
 		_columnOriginalValues.put("shareable", _shareable);
 		_columnOriginalValues.put("status", _status);
 		_columnOriginalValues.put("statusByUserId", _statusByUserId);
@@ -1271,15 +1235,13 @@ public class CTCollectionModelImpl
 
 		columnBitmasks.put("onDemandUserId", 4096L);
 
-		columnBitmasks.put("scheduledDate", 8192L);
+		columnBitmasks.put("shareable", 8192L);
 
-		columnBitmasks.put("shareable", 16384L);
+		columnBitmasks.put("status", 16384L);
 
-		columnBitmasks.put("status", 32768L);
+		columnBitmasks.put("statusByUserId", 32768L);
 
-		columnBitmasks.put("statusByUserId", 65536L);
-
-		columnBitmasks.put("statusDate", 131072L);
+		columnBitmasks.put("statusDate", 65536L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -1288,4 +1250,4 @@ public class CTCollectionModelImpl
 	private CTCollection _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1724200380
+// LIFERAY-SERVICE-BUILDER-HASH:49190194
