@@ -38,7 +38,7 @@ const buildSteps = (config: ConnectorConfig): Step[] => [
 			/>
 		),
 		description: Liferay.Language.get(
-			'properties-let-you-consolidate-data-from-individuals,-accounts,-campaigns,-sites,-and-commerce-channels-in-one-place.-an-individuals-data-is-available-in-every-property-they-are-assigned-to'
+			'properties-let-you-consolidate-data-from-individuals,-accounts,-campaigns,-and-sites-in-one-place.-an-individuals-data-is-available-in-every-property-they-are-assigned-to'
 		),
 		title: Liferay.Language.get('assign-individuals-data-to-properties'),
 	},

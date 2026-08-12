@@ -81,7 +81,7 @@ const ReviewSyncedDataFragment: React.FC<IReviewSyncedDataFragmentProps> = ({
 						</ClayList.ItemTitle>
 						<ClayList.ItemText>
 							{Liferay.Language.get(
-								'used-to-aggregate-data-on-your-users,-sites-and-dxp-commerce-channels'
+								'used-to-aggregate-data-on-your-users-and-sites'
 							)}
 						</ClayList.ItemText>
 
