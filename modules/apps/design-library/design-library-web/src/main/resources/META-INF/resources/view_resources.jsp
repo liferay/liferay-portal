@@ -48,11 +48,14 @@ ViewResourcesDesignLibraryDisplayContext viewResourcesDesignLibraryDisplayContex
 									<frontend-data-set:headless-display
 										additionalProps="<%= resourcesFDSAdditionalProps %>"
 										apiURL="<%= viewResourcesDesignLibraryDisplayContext.getAPIURL() %>"
+										bulkActionDropdownItems="<%= viewResourcesDesignLibraryDisplayContext.getBulkActionDropdownItems() %>"
 										emptyState="<%= viewResourcesDesignLibraryDisplayContext.getEmptyState() %>"
 										fdsActionDropdownItems="<%= viewResourcesDesignLibraryDisplayContext.getFDSActionDropdownItems() %>"
 										formName="fm"
 										id="<%= DesignLibraryAdminFDSNames.DESIGN_LIBRARY_RESOURCES %>"
 										propsTransformer="{DesignLibraryAssetsFDSPropsTransformer} from design-library-web"
+										selectedItemsKey="embedded.externalReferenceCode"
+										selectionType="multiple"
 									/>
 								</div>
 							</div>

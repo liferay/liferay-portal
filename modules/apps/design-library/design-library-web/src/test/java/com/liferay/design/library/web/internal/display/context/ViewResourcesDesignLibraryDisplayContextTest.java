@@ -12,6 +12,7 @@ import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -165,6 +166,30 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		Assert.assertTrue(labels.toString(), labels.contains("export"));
 		Assert.assertTrue(labels.toString(), labels.contains("import"));
 		Assert.assertTrue(labels.toString(), labels.contains("settings"));
+	}
+
+	@Test
+	public void testGetBulkActionDropdownItems() {
+		_setUpLanguageUtil();
+
+		List<DropdownItem> bulkActionDropdownItems =
+			_viewResourcesDesignLibraryDisplayContext.
+				getBulkActionDropdownItems();
+
+		Assert.assertEquals(
+			bulkActionDropdownItems.toString(), 1,
+			bulkActionDropdownItems.size());
+
+		DropdownItem dropdownItem = bulkActionDropdownItems.get(0);
+
+		Assert.assertEquals("trash", dropdownItem.get("icon"));
+		Assert.assertEquals("delete", dropdownItem.get("label"));
+
+		Map<String, Object> data = (Map<String, Object>)dropdownItem.get(
+			"data");
+
+		Assert.assertEquals("delete", data.get("id"));
+		Assert.assertNull(data.get("method"));
 	}
 
 	@Test
@@ -355,12 +380,7 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 				group
 			);
 
-			_languageUtilMockedStatic.when(
-				() -> LanguageUtil.get(
-					Mockito.any(HttpServletRequest.class), Mockito.anyString())
-			).thenAnswer(
-				invocation -> invocation.getArgument(1)
-			);
+			_setUpLanguageUtil();
 
 			HttpServletRequest httpServletRequest = Mockito.mock(
 				HttpServletRequest.class);
@@ -437,6 +457,15 @@ public class ViewResourcesDesignLibraryDisplayContextTest {
 		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
 
 		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+	}
+
+	private void _setUpLanguageUtil() {
+		_languageUtilMockedStatic.when(
+			() -> LanguageUtil.get(
+				Mockito.any(HttpServletRequest.class), Mockito.anyString())
+		).thenAnswer(
+			invocation -> invocation.getArgument(1)
+		);
 	}
 
 	private void _setUpPortletURLMocks() {
