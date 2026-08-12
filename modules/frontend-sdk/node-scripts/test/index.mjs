@@ -13,16 +13,20 @@ import {PORTAL_DIR} from '../util/locations.mjs';
 import print from '../util/print.mjs';
 import runConcurrentTasks from '../util/runConcurrentTasks.mjs';
 
+const SYNC_FLAG = '--sync';
+
 export default async function () {
 	const {sync} = getNamedArguments({
-		sync: '--sync',
+		sync: SYNC_FLAG,
 	});
 
 	const originalNodeEnv = process.env.NODE_ENV;
 
 	process.env.NODE_ENV = 'test';
 
-	const args = process.argv.slice(3);
+	// Every remaining argument is forwarded to jest, which rejects our own flags
+
+	const args = process.argv.slice(3).filter((arg) => arg !== SYNC_FLAG);
 
 	/**
 	 * When using 'yarn run ...' it sets the cwd to the nearest package.json

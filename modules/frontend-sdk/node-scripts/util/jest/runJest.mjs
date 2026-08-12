@@ -28,7 +28,7 @@ export default async function runJest({
 	const hasForceDebug = cliFlags.includes(FORCE_DEBUG_FLAG);
 
 	if (!hasForceDebug) {
-		cliFlags.push(SILENT_FLAG);
+		cliFlags = [...cliFlags, SILENT_FLAG];
 	}
 	else {
 		cliFlags = cliFlags.filter((flag) => flag !== FORCE_DEBUG_FLAG);
