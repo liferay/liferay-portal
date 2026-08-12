@@ -36,10 +36,6 @@ public class ChannelsConfiguration {
 			return _channelId;
 		}
 
-		public Set<Long> getCommerceChannelIds() {
-			return _commerceChannelIds;
-		}
-
 		public Set<Long> getGroupIds() {
 			return _groupIds;
 		}
@@ -52,10 +48,6 @@ public class ChannelsConfiguration {
 			_channelId = channelId;
 		}
 
-		public void setCommerceChannelIds(Set<Long> commerceChannelIds) {
-			_commerceChannelIds = commerceChannelIds;
-		}
-
 		public void setEnabled(Boolean enabled) {
 			_enabled = enabled;
 		}
@@ -65,7 +57,6 @@ public class ChannelsConfiguration {
 		}
 
 		private String _channelId;
-		private Set<Long> _commerceChannelIds;
 		private Boolean _enabled;
 		private Set<Long> _groupIds;
 

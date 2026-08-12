@@ -26,11 +26,6 @@ public class ChannelDataSourceDisplay {
 		this(channelDataSource);
 
 		for (Map<String, Object> dataSource : channel.getDataSources()) {
-			List<String> commerceChannelIds = (List<String>)dataSource.get(
-				"commerceChannelIds");
-
-			_commerceChannelsCount += commerceChannelIds.size();
-
 			List<String> groupIds = (List<String>)dataSource.get("groupIds");
 
 			_groupsCount += groupIds.size();
@@ -51,7 +46,6 @@ public class ChannelDataSourceDisplay {
 	}
 
 	private String _channelId;
-	private int _commerceChannelsCount;
 	private boolean _enabled;
 	private int _groupsCount;
 	private int _individualDataSourcesCount;
