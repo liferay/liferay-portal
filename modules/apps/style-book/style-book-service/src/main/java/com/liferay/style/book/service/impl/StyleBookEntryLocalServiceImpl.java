@@ -765,7 +765,7 @@ public class StyleBookEntryLocalServiceImpl
 			String frontendTokenDefinition)
 		throws PortalException {
 
-		if (Validator.isNull(frontendTokenDefinition)) {
+		if (Validator.isBlank(frontendTokenDefinition)) {
 			return;
 		}
 
