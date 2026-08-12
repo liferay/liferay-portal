@@ -66,7 +66,9 @@ public class RestClientTransportFactory {
 
 				@Override
 				public void onFailure(Node node) {
-					_log.error(new Exception("Unable to connect to " + node));
+					if (_log.isWarnEnabled()) {
+						_log.warn("Marked node as unavailable: " + node);
+					}
 				}
 
 			}
