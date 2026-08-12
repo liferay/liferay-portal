@@ -7,6 +7,7 @@ package com.liferay.analytics.cms.rest.resource.v1_0.test;
 
 import com.liferay.analytics.cms.rest.client.dto.v1_0.Overview;
 import com.liferay.analytics.cms.rest.client.dto.v1_0.Trend;
+import com.liferay.analytics.cms.rest.client.problem.Problem;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.entry.rel.model.AssetEntryAssetCategoryRel;
 import com.liferay.asset.entry.rel.service.AssetEntryAssetCategoryRelLocalService;
@@ -28,6 +29,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -207,6 +209,16 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 			},
 			overviewResource.getContentOverview(
 				null, null, _getRangeDate(0), null, null));
+
+		_assertBadRequest(
+			"Invalid range end: not a date",
+			() -> overviewResource.getContentOverview(
+				null, null, "not a date", null, _getRangeDate(-7)));
+
+		_assertBadRequest(
+			"Invalid range start: not a date",
+			() -> overviewResource.getContentOverview(
+				null, null, _getRangeDate(0), null, "not a date"));
 	}
 
 	@Override
@@ -290,6 +302,23 @@ public class OverviewResourceTest extends BaseOverviewResourceTestCase {
 			},
 			overviewResource.getFileOverview(
 				null, null, null, null, _getRangeDate(-7)));
+	}
+
+	private void _assertBadRequest(
+			String expectedTitle, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+			Assert.assertEquals(expectedTitle, problem.getTitle());
+		}
 	}
 
 	private String _getRangeDate(int days) {
