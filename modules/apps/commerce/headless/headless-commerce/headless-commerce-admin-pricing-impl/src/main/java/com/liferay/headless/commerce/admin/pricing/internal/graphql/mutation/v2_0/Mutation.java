@@ -1230,6 +1230,22 @@ public class Mutation {
 	}
 
 	@GraphQLField(
+		description = "Creates or updates price entry by ERC; PUT replaces the resource while PATCH applies JSON Merge Patch."
+	)
+	public PriceEntry updatePriceEntryByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("priceEntry") PriceEntry priceEntry)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_priceEntryResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			priceEntryResource ->
+				priceEntryResource.putPriceEntryByExternalReferenceCode(
+					externalReferenceCode, priceEntry));
+	}
+
+	@GraphQLField(
 		description = "Deletes the price list addressed by internal id."
 	)
 	public boolean deletePriceList(@GraphQLName("id") Long id)
@@ -2853,4 +2869,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1165084285
+// LIFERAY-REST-BUILDER-HASH:964184010

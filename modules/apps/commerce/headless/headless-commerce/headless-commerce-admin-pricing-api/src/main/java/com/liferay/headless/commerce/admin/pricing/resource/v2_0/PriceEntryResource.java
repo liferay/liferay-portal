@@ -93,6 +93,10 @@ public interface PriceEntryResource {
 			String callbackURL, Object object)
 		throws Exception;
 
+	public PriceEntry putPriceEntryByExternalReferenceCode(
+			String externalReferenceCode, PriceEntry priceEntry)
+		throws Exception;
+
 	public default void setContextAcceptLanguage(
 		AcceptLanguage contextAcceptLanguage) {
 	}
@@ -189,4 +193,4 @@ public interface PriceEntryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:499698224
+// LIFERAY-REST-BUILDER-HASH:-1653034802

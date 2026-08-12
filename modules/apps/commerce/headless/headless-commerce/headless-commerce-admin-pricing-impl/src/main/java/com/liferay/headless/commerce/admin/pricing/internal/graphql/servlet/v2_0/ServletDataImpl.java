@@ -542,6 +542,11 @@ public class ServletDataImpl implements ServletData {
 							PriceEntryResourceImpl.class,
 							"postPriceListIdPriceEntryBatch"));
 					put(
+						"mutation#updatePriceEntryByExternalReferenceCode",
+						new ObjectValuePair<>(
+							PriceEntryResourceImpl.class,
+							"putPriceEntryByExternalReferenceCode"));
+					put(
 						"mutation#deletePriceList",
 						new ObjectValuePair<>(
 							PriceListResourceImpl.class, "deletePriceList"));
@@ -1470,4 +1475,4 @@ public class ServletDataImpl implements ServletData {
 		_skuResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1724542952
+// LIFERAY-REST-BUILDER-HASH:1953227541

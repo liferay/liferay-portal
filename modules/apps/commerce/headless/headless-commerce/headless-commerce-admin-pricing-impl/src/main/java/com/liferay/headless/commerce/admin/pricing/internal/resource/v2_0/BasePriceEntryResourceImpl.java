@@ -12,6 +12,7 @@ import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -478,7 +479,122 @@ public abstract class BasePriceEntryResourceImpl
 			PriceEntry priceEntry)
 		throws Exception {
 
-		return new PriceEntry();
+		PriceEntry existingPriceEntry = getPriceEntryByExternalReferenceCode(
+			externalReferenceCode);
+
+		if (priceEntry.getActive() != null) {
+			existingPriceEntry.setActive(priceEntry.getActive());
+		}
+
+		if (priceEntry.getBulkPricing() != null) {
+			existingPriceEntry.setBulkPricing(priceEntry.getBulkPricing());
+		}
+
+		if (priceEntry.getCustomFields() != null) {
+			existingPriceEntry.setCustomFields(priceEntry.getCustomFields());
+		}
+
+		if (priceEntry.getDiscountDiscovery() != null) {
+			existingPriceEntry.setDiscountDiscovery(
+				priceEntry.getDiscountDiscovery());
+		}
+
+		if (priceEntry.getDiscountLevel1() != null) {
+			existingPriceEntry.setDiscountLevel1(
+				priceEntry.getDiscountLevel1());
+		}
+
+		if (priceEntry.getDiscountLevel2() != null) {
+			existingPriceEntry.setDiscountLevel2(
+				priceEntry.getDiscountLevel2());
+		}
+
+		if (priceEntry.getDiscountLevel3() != null) {
+			existingPriceEntry.setDiscountLevel3(
+				priceEntry.getDiscountLevel3());
+		}
+
+		if (priceEntry.getDiscountLevel4() != null) {
+			existingPriceEntry.setDiscountLevel4(
+				priceEntry.getDiscountLevel4());
+		}
+
+		if (priceEntry.getDiscountLevelsFormatted() != null) {
+			existingPriceEntry.setDiscountLevelsFormatted(
+				priceEntry.getDiscountLevelsFormatted());
+		}
+
+		if (priceEntry.getDisplayDate() != null) {
+			existingPriceEntry.setDisplayDate(priceEntry.getDisplayDate());
+		}
+
+		if (priceEntry.getExpirationDate() != null) {
+			existingPriceEntry.setExpirationDate(
+				priceEntry.getExpirationDate());
+		}
+
+		if (priceEntry.getExternalReferenceCode() != null) {
+			existingPriceEntry.setExternalReferenceCode(
+				priceEntry.getExternalReferenceCode());
+		}
+
+		if (priceEntry.getHasTierPrice() != null) {
+			existingPriceEntry.setHasTierPrice(priceEntry.getHasTierPrice());
+		}
+
+		if (priceEntry.getNeverExpire() != null) {
+			existingPriceEntry.setNeverExpire(priceEntry.getNeverExpire());
+		}
+
+		if (priceEntry.getPrice() != null) {
+			existingPriceEntry.setPrice(priceEntry.getPrice());
+		}
+
+		if (priceEntry.getPriceEntryId() != null) {
+			existingPriceEntry.setPriceEntryId(priceEntry.getPriceEntryId());
+		}
+
+		if (priceEntry.getPriceFormatted() != null) {
+			existingPriceEntry.setPriceFormatted(
+				priceEntry.getPriceFormatted());
+		}
+
+		if (priceEntry.getPriceListExternalReferenceCode() != null) {
+			existingPriceEntry.setPriceListExternalReferenceCode(
+				priceEntry.getPriceListExternalReferenceCode());
+		}
+
+		if (priceEntry.getPriceListId() != null) {
+			existingPriceEntry.setPriceListId(priceEntry.getPriceListId());
+		}
+
+		if (priceEntry.getPriceOnApplication() != null) {
+			existingPriceEntry.setPriceOnApplication(
+				priceEntry.getPriceOnApplication());
+		}
+
+		if (priceEntry.getQuantity() != null) {
+			existingPriceEntry.setQuantity(priceEntry.getQuantity());
+		}
+
+		if (priceEntry.getSkuExternalReferenceCode() != null) {
+			existingPriceEntry.setSkuExternalReferenceCode(
+				priceEntry.getSkuExternalReferenceCode());
+		}
+
+		if (priceEntry.getSkuId() != null) {
+			existingPriceEntry.setSkuId(priceEntry.getSkuId());
+		}
+
+		if (priceEntry.getUnitOfMeasureKey() != null) {
+			existingPriceEntry.setUnitOfMeasureKey(
+				priceEntry.getUnitOfMeasureKey());
+		}
+
+		preparePatch(priceEntry, existingPriceEntry);
+
+		return putPriceEntryByExternalReferenceCode(
+			externalReferenceCode, existingPriceEntry);
 	}
 
 	/**
@@ -599,6 +715,44 @@ public abstract class BasePriceEntryResourceImpl
 		).build();
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-commerce-admin-pricing/v2.0/price-entries/by-externalReferenceCode/{externalReferenceCode}' -d $'{"active": ___, "bulkPricing": ___, "customFields": ___, "discountDiscovery": ___, "discountLevel1": ___, "discountLevel2": ___, "discountLevel3": ___, "discountLevel4": ___, "discountLevelsFormatted": ___, "displayDate": ___, "expirationDate": ___, "externalReferenceCode": ___, "hasTierPrice": ___, "neverExpire": ___, "price": ___, "priceEntryId": ___, "priceFormatted": ___, "priceListExternalReferenceCode": ___, "priceListId": ___, "priceOnApplication": ___, "quantity": ___, "skuExternalReferenceCode": ___, "skuId": ___, "tierPrices": ___, "unitOfMeasureKey": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Creates or updates price entry by ERC; PUT replaces the resource while PATCH applies JSON Merge Patch."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				description = "External reference code that addresses the target resource on the `by-externalReferenceCode` paths. The code is the integration-supplied idempotency key, unique within the resource scope; POST against this path is upsert (create when absent, replace when present).",
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode"
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "PriceEntry")}
+	)
+	@jakarta.ws.rs.Consumes({"application/json", "application/xml"})
+	@jakarta.ws.rs.Path(
+		"/price-entries/by-externalReferenceCode/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@jakarta.ws.rs.PUT
+	@Override
+	public PriceEntry putPriceEntryByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode,
+			PriceEntry priceEntry)
+		throws Exception {
+
+		return new PriceEntry();
+	}
+
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
@@ -623,6 +777,52 @@ public abstract class BasePriceEntryResourceImpl
 			else {
 				throw new NotSupportedException(
 					"One of the following parameters must be specified: [externalReferenceCode]");
+			}
+		}
+
+		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
+			String updateStrategy = (String)parameters.getOrDefault(
+				"updateStrategy", "UPDATE");
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
+				priceEntryUnsafeFunction = priceEntry -> {
+					PriceEntry getPriceEntry = null;
+					PriceEntry persistedPriceEntry = null;
+
+					try {
+						getPriceEntry = getPriceEntryByExternalReferenceCode(
+							priceEntry.getExternalReferenceCode());
+
+						persistedPriceEntry = patchPriceEntry(
+							getPriceEntry.getPriceEntryId(), priceEntry);
+					}
+					catch (NoSuchModelException noSuchModelException) {
+						if (parameters.containsKey("externalReferenceCode")) {
+							persistedPriceEntry =
+								postPriceListByExternalReferenceCodePriceEntry(
+									(String)parameters.get(
+										"externalReferenceCode"),
+									priceEntry);
+						}
+						else {
+							throw new NotSupportedException(
+								"One of the following parameters must be specified: [externalReferenceCode]");
+						}
+					}
+
+					return persistedPriceEntry;
+				};
+			}
+
+			if (StringUtil.equalsIgnoreCase(updateStrategy, "UPDATE")) {
+				priceEntryUnsafeFunction = priceEntry -> {
+					PriceEntry persistedPriceEntry = null;
+
+					persistedPriceEntry = putPriceEntryByExternalReferenceCode(
+						priceEntry.getExternalReferenceCode(), priceEntry);
+
+					return persistedPriceEntry;
+				};
 			}
 		}
 
@@ -697,7 +897,7 @@ public abstract class BasePriceEntryResourceImpl
 	}
 
 	public Set<String> getAvailableCreateStrategies() {
-		return SetUtil.fromArray("INSERT");
+		return SetUtil.fromArray("INSERT", "UPSERT");
 	}
 
 	public Set<String> getAvailableUpdateStrategies() {
@@ -1019,6 +1219,10 @@ public abstract class BasePriceEntryResourceImpl
 
 		return addAction(
 			actionName, siteId, methodName, null, permissionName, siteId);
+	}
+
+	protected void preparePatch(
+		PriceEntry priceEntry, PriceEntry existingPriceEntry) {
 	}
 
 	protected <T, R, E extends Throwable> List<R> transform(
@@ -1367,4 +1571,4 @@ public abstract class BasePriceEntryResourceImpl
 		LogFactoryUtil.getLog(BasePriceEntryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-464159381
+// LIFERAY-REST-BUILDER-HASH:403443542
