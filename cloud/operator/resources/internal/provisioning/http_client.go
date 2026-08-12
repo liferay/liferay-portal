@@ -166,6 +166,21 @@ func NewHTTPClient(baseURL string) *HTTPClient {
 	}
 }
 
+func OfflineActivationPayload(
+	activationRequest ActivationRequest,
+	privateKey *rsa.PrivateKey,
+) (string, error) {
+	return signJWT(
+		map[string]any{
+			"environmentID":   activationRequest.EnvironmentID,
+			"environmentName": activationRequest.EnvironmentName,
+			"publicKey":       activationRequest.PublicKey,
+		},
+		activationRequest.EnvironmentID,
+		privateKey,
+	)
+}
+
 func decodeJWTPayload(token string) string {
 	segments := strings.Split(token, ".")
 

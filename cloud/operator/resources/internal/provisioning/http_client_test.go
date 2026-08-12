@@ -112,6 +112,46 @@ func TestDownloadAddOn(t *testing.T) {
 	}
 }
 
+func TestOfflineActivationPayload(t *testing.T) {
+	privateKey, error := rsa.GenerateKey(rand.Reader, 2048)
+
+	if error != nil {
+		t.Fatalf("Unable to generate key: %v", error)
+	}
+
+	payload, error := OfflineActivationPayload(
+		ActivationRequest{
+			ActivationCode:  "must-be-omitted",
+			EnvironmentID:   "env-123",
+			EnvironmentName: "prod",
+			PublicKey:       "public-key-base64",
+		},
+		privateKey,
+	)
+
+	if error != nil {
+		t.Fatalf("Unexpected error: %v", error)
+	}
+
+	claims := decodeClaims(t, payload)
+
+	if claims["environmentID"] != "env-123" {
+		t.Errorf("environmentID = %v, want env-123", claims["environmentID"])
+	}
+
+	if claims["environmentName"] != "prod" {
+		t.Errorf("environmentName = %v, want prod", claims["environmentName"])
+	}
+
+	if claims["publicKey"] != "public-key-base64" {
+		t.Errorf("publicKey = %v, want public-key-base64", claims["publicKey"])
+	}
+
+	if _, present := claims["activationCode"]; present {
+		t.Error("activationCode should be omitted from the offline payload")
+	}
+}
+
 func TestRedactSensitive(t *testing.T) {
 	testCases := map[string]struct {
 		assertContains    string
