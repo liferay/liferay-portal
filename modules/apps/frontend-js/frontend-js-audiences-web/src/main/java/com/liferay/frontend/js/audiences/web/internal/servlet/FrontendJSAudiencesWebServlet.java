@@ -18,10 +18,12 @@ import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -32,6 +34,7 @@ import jakarta.servlet.Servlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -159,16 +162,43 @@ public class FrontendJSAudiencesWebServlet extends HttpServlet {
 			GetterUtil.getLong(parts[1]), GetterUtil.getLong(parts[2]));
 	}
 
+	private User _getSessionUser(HttpServletRequest httpServletRequest)
+		throws PortalException {
+
+		HttpSession httpSession = httpServletRequest.getSession();
+
+		if (PortalSessionThreadLocal.getHttpSession() == null) {
+			PortalSessionThreadLocal.setHttpSession(httpSession);
+		}
+
+		String userIdString = (String)httpSession.getAttribute("j_username");
+		String password = (String)httpSession.getAttribute("j_password");
+
+		if ((userIdString == null) || (password == null)) {
+			return null;
+		}
+
+		return _userLocalService.getUser(GetterUtil.getLong(userIdString));
+	}
+
 	private User _getUser(HttpServletRequest httpServletRequest) {
 		try {
 			User user = _portal.getUser(httpServletRequest);
 
-			if (user != null) {
-				return user;
+			if (user == null) {
+				user = _getSessionUser(httpServletRequest);
 			}
 
-			return _userLocalService.getGuestUser(
-				_portal.getCompanyId(httpServletRequest));
+			if (user == null) {
+				return _userLocalService.getGuestUser(
+					_portal.getCompanyId(httpServletRequest));
+			}
+
+			PrincipalThreadLocal.setName(user.getUserId());
+			PrincipalThreadLocal.setPassword(
+				_portal.getUserPassword(httpServletRequest));
+
+			return user;
 		}
 		catch (PortalException portalException) {
 			_log.error(portalException);
