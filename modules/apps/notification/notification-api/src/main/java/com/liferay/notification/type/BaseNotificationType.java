@@ -9,6 +9,8 @@ import com.liferay.notification.constants.NotificationQueueEntryConstants;
 import com.liferay.notification.context.NotificationContext;
 import com.liferay.notification.exception.NotificationQueueEntrySubjectException;
 import com.liferay.notification.exception.NotificationRecipientSettingNameException;
+import com.liferay.notification.exception.NotificationTemplateAttachmentObjectFieldIdException;
+import com.liferay.notification.exception.NotificationTemplateObjectDefinitionIdException;
 import com.liferay.notification.model.NotificationQueueEntry;
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.model.NotificationRecipientSetting;
@@ -18,6 +20,11 @@ import com.liferay.notification.service.NotificationRecipientLocalService;
 import com.liferay.notification.service.NotificationRecipientSettingLocalService;
 import com.liferay.notification.term.evaluator.NotificationTermEvaluatorTracker;
 import com.liferay.notification.type.util.NotificationTypeUtil;
+import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
@@ -35,6 +42,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Reference;
@@ -77,6 +85,16 @@ public abstract class BaseNotificationType implements NotificationType {
 			NotificationQueueEntryConstants.STATUS_UNSENT);
 
 		return notificationQueueEntry;
+	}
+
+	@Override
+	public List<NotificationRecipientSetting>
+		createNotificationRecipientSettings(
+			long notificationRecipientId, Object[] recipients, User user) {
+
+		return notificationRecipientSettingLocalService.
+			createNotificationRecipientSettings(
+				notificationRecipientId, recipients, user);
 	}
 
 	@Override
@@ -156,6 +174,38 @@ public abstract class BaseNotificationType implements NotificationType {
 				throw new NotificationRecipientSettingNameException.
 					NotAllowedNames(
 						notAllowedNotificationRecipientSettingsNames);
+			}
+		}
+
+		NotificationTemplate notificationTemplate =
+			notificationContext.getNotificationTemplate();
+
+		if (notificationTemplate.getObjectDefinitionId() > 0) {
+			ObjectDefinition objectDefinition =
+				ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
+					notificationTemplate.getObjectDefinitionId());
+
+			if (objectDefinition == null) {
+				throw new NotificationTemplateObjectDefinitionIdException();
+			}
+		}
+
+		for (long attachmentObjectFieldId :
+				notificationContext.getAttachmentObjectFieldIds()) {
+
+			ObjectField objectField =
+				ObjectFieldLocalServiceUtil.fetchObjectField(
+					attachmentObjectFieldId);
+
+			if ((objectField == null) ||
+				!Objects.equals(
+					objectField.getBusinessType(),
+					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT) ||
+				!Objects.equals(
+					objectField.getObjectDefinitionId(),
+					notificationTemplate.getObjectDefinitionId())) {
+
+				throw new NotificationTemplateAttachmentObjectFieldIdException();
 			}
 		}
 	}
