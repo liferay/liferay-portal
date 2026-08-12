@@ -10,6 +10,7 @@ import com.liferay.portal.configuration.persistence.ConfigurationOverridePropert
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -41,6 +42,24 @@ public class AuditConfigurationDisplayContextTest {
 			AuditConfiguration.class, "enabled");
 		_testGetHelpMessage(
 			AuditConfigurationDisplayContext::
+				getFileSystemAuditMessageProcessorEnabledHelpMessage,
+			FileSystemAuditMessageProcessorConfiguration.class, "enabled");
+		_testGetHelpMessage(
+			AuditConfigurationDisplayContext::
+				getFileSystemAuditMessageProcessorGenerateChecksumHelpMessage,
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"generateChecksum");
+		_testGetHelpMessage(
+			AuditConfigurationDisplayContext::
+				getFileSystemAuditMessageProcessorOutputDirectoryHelpMessage,
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"outputDirectory");
+		_testGetHelpMessage(
+			AuditConfigurationDisplayContext::
+				getFileSystemAuditMessageProcessorOutputFormatHelpMessage,
+			FileSystemAuditMessageProcessorConfiguration.class, "outputFormat");
+		_testGetHelpMessage(
+			AuditConfigurationDisplayContext::
 				getPersistentAuditMessageProcessorBufferSizeHelpMessage,
 			PersistentAuditMessageProcessorConfiguration.class, "bufferSize");
 		_testGetHelpMessage(
@@ -61,6 +80,24 @@ public class AuditConfigurationDisplayContextTest {
 			AuditConfiguration.class, "enabled");
 		_testIsOverridden(
 			AuditConfigurationDisplayContext::
+				isFileSystemAuditMessageProcessorEnabledOverridden,
+			FileSystemAuditMessageProcessorConfiguration.class, "enabled");
+		_testIsOverridden(
+			AuditConfigurationDisplayContext::
+				isFileSystemAuditMessageProcessorGenerateChecksumOverridden,
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"generateChecksum");
+		_testIsOverridden(
+			AuditConfigurationDisplayContext::
+				isFileSystemAuditMessageProcessorOutputDirectoryOverridden,
+			FileSystemAuditMessageProcessorConfiguration.class,
+			"outputDirectory");
+		_testIsOverridden(
+			AuditConfigurationDisplayContext::
+				isFileSystemAuditMessageProcessorOutputFormatOverridden,
+			FileSystemAuditMessageProcessorConfiguration.class, "outputFormat");
+		_testIsOverridden(
+			AuditConfigurationDisplayContext::
 				isPersistentAuditMessageProcessorBufferSizeOverridden,
 			PersistentAuditMessageProcessorConfiguration.class, "bufferSize");
 		_testIsOverridden(
@@ -77,6 +114,7 @@ public class AuditConfigurationDisplayContextTest {
 	private AuditConfigurationDisplayContext _createDisplayContext() {
 		return new AuditConfigurationDisplayContext(
 			Mockito.mock(AuditConfiguration.class),
+			Mockito.mock(FileSystemAuditMessageProcessorConfiguration.class),
 			Mockito.mock(PersistentAuditMessageProcessorConfiguration.class));
 	}
 

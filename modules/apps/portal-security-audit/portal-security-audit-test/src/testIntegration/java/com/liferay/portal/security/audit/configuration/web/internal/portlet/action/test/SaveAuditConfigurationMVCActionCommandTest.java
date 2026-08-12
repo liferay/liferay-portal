@@ -42,6 +42,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -92,10 +93,15 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		_configurationProvider.deleteCompanyConfiguration(
 			AuditConfiguration.class, TestPropsValues.getCompanyId());
 		_configurationProvider.deleteCompanyConfiguration(
+			FileSystemAuditMessageProcessorConfiguration.class,
+			TestPropsValues.getCompanyId());
+		_configurationProvider.deleteCompanyConfiguration(
 			PersistentAuditMessageProcessorConfiguration.class,
 			TestPropsValues.getCompanyId());
 		_configurationProvider.deleteSystemConfiguration(
 			AuditConfiguration.class);
+		_configurationProvider.deleteSystemConfiguration(
+			FileSystemAuditMessageProcessorConfiguration.class);
 		_configurationProvider.deleteSystemConfiguration(
 			PersistentAuditMessageProcessorConfiguration.class);
 	}
@@ -111,10 +117,40 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 		Assert.assertFalse(auditConfiguration.enabled());
 
+		_assertFileSystemAuditMessageProcessorConfiguration(
+			_configurationProvider.getCompanyConfiguration(
+				FileSystemAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId()));
+
 		_assertPersistentAuditMessageProcessorConfiguration(
 			_configurationProvider.getCompanyConfiguration(
 				PersistentAuditMessageProcessorConfiguration.class,
 				TestPropsValues.getCompanyId()));
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testProcessActionWithCompanyScopeDoesNotAffectOtherInstances()
+		throws Exception {
+
+		_processAction(ExtendedObjectClassDefinition.Scope.COMPANY);
+
+		FileSystemAuditMessageProcessorConfiguration
+			fileSystemAuditMessageProcessorConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					FileSystemAuditMessageProcessorConfiguration.class,
+					RandomTestUtil.randomLong());
+
+		Assert.assertFalse(
+			fileSystemAuditMessageProcessorConfiguration.enabled());
+		Assert.assertFalse(
+			fileSystemAuditMessageProcessorConfiguration.generateChecksum());
+		Assert.assertNotEquals(
+			_OUTPUT_DIRECTORY,
+			fileSystemAuditMessageProcessorConfiguration.outputDirectory());
+		Assert.assertEquals(
+			"NDJSON",
+			fileSystemAuditMessageProcessorConfiguration.outputFormat());
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -124,6 +160,31 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 		_testProcessActionWhenDatabaseProcessorIsOverridden(
 			ExtendedObjectClassDefinition.Scope.COMPANY);
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testProcessActionWithCompanyScopeWhenDatabaseProcessorParametersAreAbsent()
+		throws Exception {
+
+		_configurationProvider.saveCompanyConfiguration(
+			PersistentAuditMessageProcessorConfiguration.class,
+			TestPropsValues.getCompanyId(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"bufferSize", _BUFFER_SIZE
+			).put(
+				"enabled", false
+			).put(
+				"flushInterval", _FLUSH_INTERVAL
+			).build());
+
+		_processAction(
+			null, true, false, ExtendedObjectClassDefinition.Scope.COMPANY);
+
+		_assertPersistentAuditMessageProcessorConfiguration(
+			_configurationProvider.getCompanyConfiguration(
+				PersistentAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId()));
 	}
 
 	@FeatureFlag("LPD-6417")
@@ -147,26 +208,37 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 	@FeatureFlag("LPD-6417")
 	@Test
-	public void testProcessActionWithCompanyScopeWhenParametersAreAbsent()
+	public void testProcessActionWithCompanyScopeWhenFileSystemProcessorIsOverridden()
+		throws Exception {
+
+		_testProcessActionWhenFileSystemProcessorIsOverridden(
+			ExtendedObjectClassDefinition.Scope.COMPANY);
+	}
+
+	@FeatureFlag("LPD-6417")
+	@Test
+	public void testProcessActionWithCompanyScopeWhenFileSystemProcessorParametersAreAbsent()
 		throws Exception {
 
 		_configurationProvider.saveCompanyConfiguration(
-			PersistentAuditMessageProcessorConfiguration.class,
+			FileSystemAuditMessageProcessorConfiguration.class,
 			TestPropsValues.getCompanyId(),
 			HashMapDictionaryBuilder.<String, Object>put(
-				"bufferSize", _BUFFER_SIZE
+				"enabled", true
 			).put(
-				"enabled", false
+				"generateChecksum", true
 			).put(
-				"flushInterval", _FLUSH_INTERVAL
+				"outputDirectory", _OUTPUT_DIRECTORY
+			).put(
+				"outputFormat", _OUTPUT_FORMAT
 			).build());
 
 		_processAction(
-			null, false, ExtendedObjectClassDefinition.Scope.COMPANY);
+			null, false, true, ExtendedObjectClassDefinition.Scope.COMPANY);
 
-		_assertPersistentAuditMessageProcessorConfiguration(
+		_assertFileSystemAuditMessageProcessorConfiguration(
 			_configurationProvider.getCompanyConfiguration(
-				PersistentAuditMessageProcessorConfiguration.class,
+				FileSystemAuditMessageProcessorConfiguration.class,
 				TestPropsValues.getCompanyId()));
 	}
 
@@ -189,6 +261,10 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				AuditConfiguration.class);
 
 		Assert.assertFalse(auditConfiguration.enabled());
+
+		_assertFileSystemAuditMessageProcessorConfiguration(
+			_configurationProvider.getSystemConfiguration(
+				FileSystemAuditMessageProcessorConfiguration.class));
 
 		_assertPersistentAuditMessageProcessorConfiguration(
 			_configurationProvider.getSystemConfiguration(
@@ -254,12 +330,36 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	}
 
 	@Test
+	public void testProcessActionWithSystemScopeWhenFileSystemProcessorIsOverridden()
+		throws Exception {
+
+		_testProcessActionWhenFileSystemProcessorIsOverridden(
+			ExtendedObjectClassDefinition.Scope.SYSTEM);
+	}
+
+	@Test
 	public void testProcessActionWithSystemScopeWhenUserIsNotOmniadmin()
 		throws Exception {
 
 		_assertProcessActionFailsForUser(
 			ExtendedObjectClassDefinition.Scope.SYSTEM,
 			PrincipalException.MustBeOmniadmin.class);
+	}
+
+	private void _assertFileSystemAuditMessageProcessorConfiguration(
+		FileSystemAuditMessageProcessorConfiguration
+			fileSystemAuditMessageProcessorConfiguration) {
+
+		Assert.assertTrue(
+			fileSystemAuditMessageProcessorConfiguration.enabled());
+		Assert.assertTrue(
+			fileSystemAuditMessageProcessorConfiguration.generateChecksum());
+		Assert.assertEquals(
+			_OUTPUT_DIRECTORY,
+			fileSystemAuditMessageProcessorConfiguration.outputDirectory());
+		Assert.assertEquals(
+			_OUTPUT_FORMAT,
+			fileSystemAuditMessageProcessorConfiguration.outputFormat());
 	}
 
 	private void _assertPersistentAuditMessageProcessorConfiguration(
@@ -376,11 +476,12 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 	private void _processAction(ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
-		_processAction(null, true, scope);
+		_processAction(null, true, true, scope);
 	}
 
 	private void _processAction(
 			Integer auditMessageMaxQueueSize,
+			boolean setFileSystemAuditMessageProcessorParameters,
 			boolean setPersistentAuditMessageProcessorParameters,
 			ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
@@ -412,6 +513,18 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 				String.valueOf(auditMessageMaxQueueSize));
 		}
 
+		if (setFileSystemAuditMessageProcessorParameters) {
+			mockLiferayPortletActionRequest.setParameter(
+				"fileSystemAuditMessageProcessorEnabled", "true");
+			mockLiferayPortletActionRequest.setParameter(
+				"fileSystemAuditMessageProcessorGenerateChecksum", "true");
+			mockLiferayPortletActionRequest.setParameter(
+				"fileSystemAuditMessageProcessorOutputDirectory",
+				_OUTPUT_DIRECTORY);
+			mockLiferayPortletActionRequest.setParameter(
+				"fileSystemAuditMessageProcessorOutputFormat", _OUTPUT_FORMAT);
+		}
+
 		if (setPersistentAuditMessageProcessorParameters) {
 			mockLiferayPortletActionRequest.setParameter(
 				"persistentAuditMessageProcessorBufferSize",
@@ -436,7 +549,7 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 			ExtendedObjectClassDefinition.Scope scope)
 		throws Exception {
 
-		_processAction(auditMessageMaxQueueSize, true, scope);
+		_processAction(auditMessageMaxQueueSize, true, true, scope);
 	}
 
 	private void _processActionWithOverriddenConfiguration(
@@ -541,9 +654,63 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 		Assert.assertEquals(enabled, properties.get("enabled"));
 	}
 
+	private void _testProcessActionWhenFileSystemProcessorIsOverridden(
+			ExtendedObjectClassDefinition.Scope scope)
+		throws Exception {
+
+		Dictionary<String, Object> properties =
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", false
+			).put(
+				"generateChecksum", false
+			).put(
+				"outputDirectory", _OUTPUT_DIRECTORY
+			).put(
+				"outputFormat", _OUTPUT_FORMAT
+			).build();
+
+		if (ExtendedObjectClassDefinition.Scope.SYSTEM.equals(scope)) {
+			_configurationProvider.saveSystemConfiguration(
+				FileSystemAuditMessageProcessorConfiguration.class, properties);
+		}
+		else {
+			_configurationProvider.saveCompanyConfiguration(
+				FileSystemAuditMessageProcessorConfiguration.class,
+				TestPropsValues.getCompanyId(), properties);
+		}
+
+		_processActionWithOverriddenConfiguration(
+			FileSystemAuditMessageProcessorConfiguration.class,
+			HashMapBuilder.<String, Object>put(
+				"enabled", true
+			).put(
+				"generateChecksum", true
+			).put(
+				"outputDirectory", "data/other"
+			).put(
+				"outputFormat", "NDJSON"
+			).build(),
+			scope);
+
+		Dictionary<String, Object> currentProperties = _getProperties(
+			FileSystemAuditMessageProcessorConfiguration.class, scope);
+
+		Assert.assertEquals(Boolean.FALSE, currentProperties.get("enabled"));
+		Assert.assertEquals(
+			Boolean.FALSE, currentProperties.get("generateChecksum"));
+		Assert.assertEquals(
+			_OUTPUT_DIRECTORY, currentProperties.get("outputDirectory"));
+		Assert.assertEquals(
+			_OUTPUT_FORMAT, currentProperties.get("outputFormat"));
+	}
+
 	private static final int _BUFFER_SIZE = 1000;
 
 	private static final long _FLUSH_INTERVAL = 30000;
+
+	private static final String _OUTPUT_DIRECTORY = "data/audit-test";
+
+	private static final String _OUTPUT_FORMAT = "CSV";
 
 	@Inject
 	private CompanyLocalService _companyLocalService;
