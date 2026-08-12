@@ -113,7 +113,7 @@ const Properties: React.FC = () => {
 						</ClayButton>
 					),
 					description: Liferay.Language.get(
-						'create-a-property-to-add-sites-and-channels'
+						'create-a-property-to-add-sites'
 					),
 					noResultsTitle: Liferay.Language.get(
 						'no-properties-were-found'
