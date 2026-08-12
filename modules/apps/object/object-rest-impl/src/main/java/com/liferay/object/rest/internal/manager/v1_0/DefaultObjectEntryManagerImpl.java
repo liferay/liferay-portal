@@ -1299,6 +1299,25 @@ public class DefaultObjectEntryManagerImpl
 	}
 
 	@Override
+	public ObjectEntry partialUpdateObjectEntry(
+			long companyId, DTOConverterContext dtoConverterContext,
+			String externalReferenceCode, ObjectDefinition objectDefinition,
+			ObjectEntry objectEntry, String scopeKey)
+		throws Exception {
+
+		ObjectEntry existingObjectEntry =
+			ObjectEntryManagerUtil.partialUpdateObjectEntry(
+				getObjectEntry(
+					companyId, dtoConverterContext, externalReferenceCode,
+					objectDefinition, scopeKey),
+				objectDefinition.getObjectDefinitionId(), objectEntry);
+
+		return _updateObjectEntry(
+			companyId, dtoConverterContext, externalReferenceCode,
+			objectDefinition, existingObjectEntry, true, scopeKey);
+	}
+
+	@Override
 	public ObjectEntry partialUpdateRelatedObjectEntry(
 			DTOConverterContext dtoConverterContext, ObjectEntry objectEntry,
 			long objectEntryId, ObjectRelationship objectRelationship,
@@ -1309,14 +1328,14 @@ public class DefaultObjectEntryManagerImpl
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectRelationship.getObjectDefinitionId2());
 
-		return updateRelatedObjectEntry(
+		return _updateRelatedObjectEntry(
 			dtoConverterContext,
 			ObjectEntryManagerUtil.partialUpdateObjectEntry(
 				getRelatedObjectEntry(
 					dtoConverterContext, objectEntryId, objectRelationship,
 					parentObjectEntryId),
 				objectDefinition2.getObjectDefinitionId(), objectEntry),
-			objectEntryId, objectRelationship, parentObjectEntryId);
+			objectEntryId, objectRelationship, parentObjectEntryId, true);
 	}
 
 	@Override
@@ -1331,14 +1350,14 @@ public class DefaultObjectEntryManagerImpl
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectRelationship.getObjectDefinitionId2());
 
-		return updateRelatedObjectEntry(
+		return _updateRelatedObjectEntry(
 			dtoConverterContext, externalReferenceCode,
 			ObjectEntryManagerUtil.partialUpdateObjectEntry(
 				getRelatedObjectEntry(
 					dtoConverterContext, externalReferenceCode,
 					objectRelationship, parentExternalReferenceCode, scopeKey),
 				objectDefinition2.getObjectDefinitionId(), objectEntry),
-			objectRelationship, parentExternalReferenceCode, scopeKey);
+			objectRelationship, parentExternalReferenceCode, true, scopeKey);
 	}
 
 	@Override
@@ -1434,46 +1453,9 @@ public class DefaultObjectEntryManagerImpl
 			ObjectEntry objectEntry, String scopeKey)
 		throws Exception {
 
-		long groupId = getGroupId(objectDefinition, scopeKey);
-
-		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
-			objectEntryLocalService.fetchObjectEntry(
-				externalReferenceCode, groupId,
-				objectDefinition.getObjectDefinitionId());
-
-		if (serviceBuilderObjectEntry != null) {
-			_checkObjectEntryStatus(serviceBuilderObjectEntry);
-		}
-
-		validateReadOnlyObjectFields(
-			externalReferenceCode, groupId, objectDefinition, objectEntry);
-
-		ServiceContext serviceContext = _createServiceContext(
-			dtoConverterContext, objectDefinition, objectEntry, scopeKey);
-
-		serviceContext.setCompanyId(companyId);
-
-		return _toObjectEntry(
-			dtoConverterContext, objectDefinition,
-			_addOrUpdateNestedObjectEntries(
-				dtoConverterContext, objectDefinition, objectEntry,
-				_getObjectRelationships(objectDefinition, objectEntry),
-				_updateStatus(
-					dtoConverterContext, objectEntry,
-					_objectEntryService.addOrUpdateObjectEntry(
-						externalReferenceCode, groupId,
-						objectDefinition.getObjectDefinitionId(),
-						_getObjectEntryFolderId(
-							objectDefinition.getCompanyId(), groupId,
-							objectEntry, objectDefinition, serviceContext),
-						_toObjectValues(
-							0L, dtoConverterContext.getLocale(),
-							objectDefinition, objectEntry, scopeKey,
-							serviceContext),
-						serviceContext),
-					serviceContext),
-				scopeKey),
-			null);
+		return _updateObjectEntry(
+			companyId, dtoConverterContext, externalReferenceCode,
+			objectDefinition, objectEntry, false, scopeKey);
 	}
 
 	public ObjectEntry updateRelatedObjectEntry(
@@ -1484,7 +1466,7 @@ public class DefaultObjectEntryManagerImpl
 
 		return _updateRelatedObjectEntry(
 			dtoConverterContext, objectEntry, objectEntryId, objectRelationship,
-			parentObjectEntryId);
+			parentObjectEntryId, false);
 	}
 
 	@Override
@@ -1495,27 +1477,9 @@ public class DefaultObjectEntryManagerImpl
 			String parentExternalReferenceCode, String scopeKey)
 		throws Exception {
 
-		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
-			_objectEntryService.getObjectEntry(
-				externalReferenceCode,
-				getGroupId(
-					_objectDefinitionLocalService.getObjectDefinition(
-						objectRelationship.getObjectDefinitionId2()),
-					scopeKey),
-				objectRelationship.getObjectDefinitionId2());
-		com.liferay.object.model.ObjectEntry parentServiceBuilderObjectEntry =
-			_objectEntryService.getObjectEntry(
-				parentExternalReferenceCode,
-				getGroupId(
-					_objectDefinitionLocalService.getObjectDefinition(
-						objectRelationship.getObjectDefinitionId1()),
-					scopeKey),
-				objectRelationship.getObjectDefinitionId1());
-
 		return _updateRelatedObjectEntry(
-			dtoConverterContext, objectEntry,
-			serviceBuilderObjectEntry.getObjectEntryId(), objectRelationship,
-			parentServiceBuilderObjectEntry.getObjectEntryId());
+			dtoConverterContext, externalReferenceCode, objectEntry,
+			objectRelationship, parentExternalReferenceCode, false, scopeKey);
 	}
 
 	@Override
@@ -1717,7 +1681,7 @@ public class DefaultObjectEntryManagerImpl
 			dtoConverterContext, objectDefinition,
 			_addOrUpdateNestedObjectEntries(
 				dtoConverterContext, objectDefinition, objectEntry,
-				_getObjectRelationships(objectDefinition, objectEntry),
+				_getObjectRelationships(objectDefinition, objectEntry), false,
 				serviceBuilderObjectEntry, scopeKey),
 			null);
 	}
@@ -1727,6 +1691,7 @@ public class DefaultObjectEntryManagerImpl
 				DTOConverterContext dtoConverterContext,
 				ObjectDefinition objectDefinition, ObjectEntry objectEntry,
 				Map<String, ObjectRelationship> objectRelationships,
+				boolean partialUpdate,
 				com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry,
 				String scopeKey)
 		throws Exception {
@@ -1880,13 +1845,13 @@ public class DefaultObjectEntryManagerImpl
 								nestedScopeKey);
 						}
 						else {
-							nestedObjectEntry = updateRelatedObjectEntry(
+							nestedObjectEntry = _updateRelatedObjectEntry(
 								dtoConverterContext,
 								nestedObjectEntry.getExternalReferenceCode(),
 								nestedObjectEntry, objectRelationship,
 								serviceBuilderObjectEntry.
 									getExternalReferenceCode(),
-								nestedScopeKey);
+								partialUpdate, nestedScopeKey);
 						}
 					}
 					else if (LazyReferencingThreadLocal.isEnabled()) {
@@ -1900,13 +1865,37 @@ public class DefaultObjectEntryManagerImpl
 							null);
 					}
 					else {
-						nestedObjectEntry =
-							objectEntryManager.updateObjectEntry(
-								objectDefinition.getCompanyId(),
-								dtoConverterContext,
-								nestedObjectEntry.getExternalReferenceCode(),
+						com.liferay.object.model.ObjectEntry
+							nestedServiceBuilderObjectEntry = null;
+
+						if (partialUpdate) {
+							nestedServiceBuilderObjectEntry =
+								_objectEntryService.fetchObjectEntry(
+									nestedObjectEntry.
+										getExternalReferenceCode(),
+									groupId,
+									relatedObjectDefinition.
+										getObjectDefinitionId());
+						}
+
+						if (nestedServiceBuilderObjectEntry == null) {
+							nestedObjectEntry =
+								objectEntryManager.updateObjectEntry(
+									objectDefinition.getCompanyId(),
+									dtoConverterContext,
+									nestedObjectEntry.
+										getExternalReferenceCode(),
+									relatedObjectDefinition, nestedObjectEntry,
+									nestedScopeKey);
+						}
+						else {
+							nestedObjectEntry = _updateObjectEntry(
+								0L, dtoConverterContext,
 								relatedObjectDefinition, nestedObjectEntry,
-								nestedScopeKey);
+								nestedServiceBuilderObjectEntry.
+									getObjectEntryId(),
+								true, true);
+						}
 					}
 
 					if (!oneToManyObjectRelationship) {
@@ -1994,7 +1983,7 @@ public class DefaultObjectEntryManagerImpl
 			dtoConverterContext, objectDefinition,
 			_addOrUpdateNestedObjectEntries(
 				dtoConverterContext, objectDefinition, objectEntry,
-				_getObjectRelationships(objectDefinition, objectEntry),
+				_getObjectRelationships(objectDefinition, objectEntry), false,
 				_objectEntryService.addObjectEntry(
 					groupId, objectDefinition.getObjectDefinitionId(),
 					GetterUtil.getLong(objectEntry.getObjectEntryFolderId()),
@@ -3978,6 +3967,15 @@ public class DefaultObjectEntryManagerImpl
 			objectDefinition, objectEntry, scopeKey, serviceContext);
 
 		if (partialUpdate) {
+			Set<Map.Entry<String, Serializable>> entries = values.entrySet();
+
+			Map<String, Object> properties = objectEntry.getProperties();
+
+			entries.removeIf(
+				entry ->
+					(entry.getValue() == null) &&
+					!properties.containsKey(entry.getKey()));
+
 			serviceBuilderObjectEntry =
 				_objectEntryService.partialUpdateObjectEntry(
 					objectEntryId,
@@ -4002,8 +4000,59 @@ public class DefaultObjectEntryManagerImpl
 			_addOrUpdateNestedObjectEntries(
 				dtoConverterContext, objectDefinition, objectEntry,
 				_getObjectRelationships(objectDefinition, objectEntry),
+				partialUpdate,
 				_updateStatus(
 					dtoConverterContext, objectEntry, serviceBuilderObjectEntry,
+					serviceContext),
+				scopeKey),
+			null);
+	}
+
+	private ObjectEntry _updateObjectEntry(
+			long companyId, DTOConverterContext dtoConverterContext,
+			String externalReferenceCode, ObjectDefinition objectDefinition,
+			ObjectEntry objectEntry, boolean partialUpdateNestedObjectEntries,
+			String scopeKey)
+		throws Exception {
+
+		long groupId = getGroupId(objectDefinition, scopeKey);
+
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+			objectEntryLocalService.fetchObjectEntry(
+				externalReferenceCode, groupId,
+				objectDefinition.getObjectDefinitionId());
+
+		if (serviceBuilderObjectEntry != null) {
+			_checkObjectEntryStatus(serviceBuilderObjectEntry);
+		}
+
+		validateReadOnlyObjectFields(
+			externalReferenceCode, groupId, objectDefinition, objectEntry);
+
+		ServiceContext serviceContext = _createServiceContext(
+			dtoConverterContext, objectDefinition, objectEntry, scopeKey);
+
+		serviceContext.setCompanyId(companyId);
+
+		return _toObjectEntry(
+			dtoConverterContext, objectDefinition,
+			_addOrUpdateNestedObjectEntries(
+				dtoConverterContext, objectDefinition, objectEntry,
+				_getObjectRelationships(objectDefinition, objectEntry),
+				partialUpdateNestedObjectEntries,
+				_updateStatus(
+					dtoConverterContext, objectEntry,
+					_objectEntryService.addOrUpdateObjectEntry(
+						externalReferenceCode, groupId,
+						objectDefinition.getObjectDefinitionId(),
+						_getObjectEntryFolderId(
+							objectDefinition.getCompanyId(), groupId,
+							objectEntry, objectDefinition, serviceContext),
+						_toObjectValues(
+							0L, dtoConverterContext.getLocale(),
+							objectDefinition, objectEntry, scopeKey,
+							serviceContext),
+						serviceContext),
 					serviceContext),
 				scopeKey),
 			null);
@@ -4012,7 +4061,7 @@ public class DefaultObjectEntryManagerImpl
 	private ObjectEntry _updateRelatedObjectEntry(
 			DTOConverterContext dtoConverterContext, ObjectEntry objectEntry,
 			long objectEntryId, ObjectRelationship objectRelationship,
-			long parentObjectEntryId)
+			long parentObjectEntryId, boolean partialUpdate)
 		throws Exception {
 
 		Map<String, Object> properties = objectEntry.getProperties();
@@ -4042,7 +4091,38 @@ public class DefaultObjectEntryManagerImpl
 			objectRelationship.getObjectFieldId2(), dtoConverterContext,
 			_objectDefinitionLocalService.getObjectDefinition(
 				objectRelationship.getObjectDefinitionId2()),
-			objectEntry, objectEntryId, false, true);
+			objectEntry, objectEntryId, partialUpdate, true);
+	}
+
+	private ObjectEntry _updateRelatedObjectEntry(
+			DTOConverterContext dtoConverterContext,
+			String externalReferenceCode, ObjectEntry objectEntry,
+			ObjectRelationship objectRelationship,
+			String parentExternalReferenceCode, boolean partialUpdate,
+			String scopeKey)
+		throws Exception {
+
+		com.liferay.object.model.ObjectEntry serviceBuilderObjectEntry =
+			_objectEntryService.getObjectEntry(
+				externalReferenceCode,
+				getGroupId(
+					_objectDefinitionLocalService.getObjectDefinition(
+						objectRelationship.getObjectDefinitionId2()),
+					scopeKey),
+				objectRelationship.getObjectDefinitionId2());
+		com.liferay.object.model.ObjectEntry parentServiceBuilderObjectEntry =
+			_objectEntryService.getObjectEntry(
+				parentExternalReferenceCode,
+				getGroupId(
+					_objectDefinitionLocalService.getObjectDefinition(
+						objectRelationship.getObjectDefinitionId1()),
+					scopeKey),
+				objectRelationship.getObjectDefinitionId1());
+
+		return _updateRelatedObjectEntry(
+			dtoConverterContext, objectEntry,
+			serviceBuilderObjectEntry.getObjectEntryId(), objectRelationship,
+			parentServiceBuilderObjectEntry.getObjectEntryId(), partialUpdate);
 	}
 
 	private com.liferay.object.model.ObjectEntry _updateStatus(
