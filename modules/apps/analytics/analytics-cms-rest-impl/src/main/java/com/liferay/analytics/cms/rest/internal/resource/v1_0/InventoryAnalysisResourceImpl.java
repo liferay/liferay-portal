@@ -18,6 +18,7 @@ import com.liferay.asset.kernel.model.AssetTagGroupRelTable;
 import com.liferay.asset.kernel.model.AssetTagTable;
 import com.liferay.asset.kernel.model.AssetVocabularyGroupRelTable;
 import com.liferay.asset.kernel.model.AssetVocabularyTable;
+import com.liferay.depot.model.DepotEntry;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinitionTable;
 import com.liferay.object.model.ObjectEntryTable;
@@ -77,9 +78,19 @@ public class InventoryAnalysisResourceImpl
 
 		LicenseManagerUtil.checkFreeTier();
 
-		Long[] groupIds = DepotEntryUtil.getGroupIds(
-			DepotEntryUtil.getDepotEntries(
-				contextCompany.getCompanyId(), depotEntryId));
+		List<DepotEntry> depotEntries = DepotEntryUtil.getDepotEntries(
+			contextCompany.getCompanyId(), depotEntryId);
+
+		if (depotEntries.isEmpty()) {
+			inventoryAnalysis.setInventoryAnalysisItems(
+				() -> new InventoryAnalysisItem[0]);
+			inventoryAnalysis.setInventoryAnalysisItemsCount(() -> 0L);
+			inventoryAnalysis.setTotalCount(() -> 0L);
+
+			return inventoryAnalysis;
+		}
+
+		Long[] groupIds = DepotEntryUtil.getGroupIds(depotEntries);
 
 		inventoryAnalysis.setInventoryAnalysisItems(
 			() -> transformToArray(
