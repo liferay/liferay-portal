@@ -14,6 +14,7 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -271,7 +272,18 @@ public class ObjectEntryModelListenerTest {
 		Mockito.when(
 			_group.getFriendlyURL()
 		).thenReturn(
-			RandomTestUtil.randomString()
+			"/" + friendlyURL + "_updated"
+		);
+
+		Mockito.when(
+			_groupLocalService.updateGroup(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.any(),
+				Mockito.any(), Mockito.anyInt(), Mockito.any(),
+				Mockito.anyBoolean(), Mockito.anyInt(), Mockito.anyString(),
+				Mockito.anyBoolean(), Mockito.anyBoolean(),
+				Mockito.any(ServiceContext.class))
+		).thenReturn(
+			_group
 		);
 
 		ReflectionTestUtil.invoke(
@@ -290,6 +302,17 @@ public class ObjectEntryModelListenerTest {
 		);
 
 		Assert.assertEquals(name, nameMap.get(LocaleUtil.getDefault()));
+
+		Mockito.verify(
+			_objectEntryLocalService, Mockito.times(1)
+		).partialUpdateObjectEntry(
+			Mockito.eq(_USER_ID), Mockito.eq(objectEntryId), Mockito.anyLong(),
+			Mockito.eq(
+				HashMapBuilder.<String, Serializable>put(
+					"friendlyURL", friendlyURL + "_updated"
+				).build()),
+			Mockito.any(ServiceContext.class)
+		);
 
 		Mockito.when(
 			_group.getFriendlyURL()
@@ -571,6 +594,8 @@ public class ObjectEntryModelListenerTest {
 		GroupLocalService.class);
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);
+	private final ObjectEntryLocalService _objectEntryLocalService =
+		Mockito.mock(ObjectEntryLocalService.class);
 
 	@InjectMocks
 	private ObjectEntryModelListener _objectEntryModelListener;

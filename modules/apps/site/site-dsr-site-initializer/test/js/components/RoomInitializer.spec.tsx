@@ -267,7 +267,7 @@ describe('RoomInitializer', () => {
 
 		expect(spyOnAddRoom).toBeCalledWith({
 			accountEntryId: 100,
-			friendlyURL: 'testfriendlyurl',
+			friendlyURL: 'testFriendlyURL',
 			name: 'testRoomName',
 			siteTemplateKey: 'uuid1',
 		});
