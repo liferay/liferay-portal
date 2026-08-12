@@ -1119,5 +1119,10 @@
 			<message key="variable.rename" value="Rename variable &quot;{0}&quot; to &quot;{1}&quot;" />
 			<message key="variable.typo" value="Typo in variable &quot;{0}&quot;, expected variable name &quot;{1}&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.VirtualThreadsCheck">
+			<property name="category" value="Bug Prevention" />
+			<property name="description" value="Checks that virtual threads are not used (e.g., Executors.newVirtualThreadPerTaskExecutor(), Thread.ofVirtual(), Thread.startVirtualThread())." />
+			<message key="virtual.threads.avoid" value="Do not use virtual threads (e.g., Executors.newVirtualThreadPerTaskExecutor(), Thread.ofVirtual(), Thread.startVirtualThread()" />
+		</module>
 	</module>
 </module>

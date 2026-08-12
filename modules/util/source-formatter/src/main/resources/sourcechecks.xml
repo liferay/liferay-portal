@@ -1062,10 +1062,6 @@
 			<category name="Bug Prevention" />
 			<description name="Finds cases where `DataAccess.getConnection` is used (instead of using the available global variable `connection`)." />
 		</check>
-		<check name="JavaVirtualThreadsCheck">
-			<category name="Bug Prevention" />
-			<description name="Checks that virtual threads are not used (e.g., Executors.newVirtualThreadPerTaskExecutor(), Thread.ofVirtual(), Thread.startVirtualThread())." />
-		</check>
 		<check name="JavaXMLSecurityCheck">
 			<category name="Security" />
 			<description name="Finds possible XXE or Quadratic Blowup security vulnerabilities." />
