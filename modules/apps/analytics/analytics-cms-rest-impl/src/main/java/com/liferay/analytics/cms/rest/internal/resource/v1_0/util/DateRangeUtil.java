@@ -5,11 +5,11 @@
 
 package com.liferay.analytics.cms.rest.internal.resource.v1_0.util;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.Validator;
+
+import jakarta.validation.ValidationException;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -23,27 +23,16 @@ import java.util.Date;
 public class DateRangeUtil {
 
 	public static Date getEndDate(String rangeEnd) {
-		try {
-			Calendar calendar = Calendar.getInstance();
+		Calendar calendar = Calendar.getInstance();
 
-			DateFormat dateFormat = _getDateFormat();
+		calendar.setTime(_parseRangeEnd(rangeEnd));
 
-			calendar.setTime(dateFormat.parse(rangeEnd));
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MILLISECOND, 59);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
 
-			calendar.set(Calendar.HOUR_OF_DAY, 23);
-			calendar.set(Calendar.MILLISECOND, 59);
-			calendar.set(Calendar.MINUTE, 59);
-			calendar.set(Calendar.SECOND, 59);
-
-			return calendar.getTime();
-		}
-		catch (ParseException parseException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(parseException);
-			}
-		}
-
-		return null;
+		return calendar.getTime();
 	}
 
 	public static Date getPreviousStartDate(
@@ -52,21 +41,12 @@ public class DateRangeUtil {
 		Calendar calendar = Calendar.getInstance();
 
 		if (Validator.isNotNull(rangeEnd) && Validator.isNotNull(rangeStart)) {
-			try {
-				calendar.setTime(getStartDate(rangeEnd, null, rangeStart));
+			calendar.setTime(getStartDate(rangeEnd, null, rangeStart));
 
-				DateFormat dateFormat = _getDateFormat();
+			int delta = DateUtil.getDaysBetween(
+				_parseRangeStart(rangeStart), _parseRangeEnd(rangeEnd));
 
-				int delta = DateUtil.getDaysBetween(
-					dateFormat.parse(rangeStart), dateFormat.parse(rangeEnd));
-
-				calendar.add(Calendar.DAY_OF_MONTH, -delta);
-			}
-			catch (ParseException parseException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(parseException);
-				}
-			}
+			calendar.add(Calendar.DAY_OF_MONTH, -delta);
 		}
 		else if (rangeKey != null) {
 			calendar.add(Calendar.DAY_OF_MONTH, -(rangeKey * 2));
@@ -89,16 +69,7 @@ public class DateRangeUtil {
 		Calendar calendar = Calendar.getInstance();
 
 		if (Validator.isNotNull(rangeEnd) && Validator.isNotNull(rangeStart)) {
-			try {
-				DateFormat dateFormat = _getDateFormat();
-
-				calendar.setTime(dateFormat.parse(rangeStart));
-			}
-			catch (ParseException parseException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(parseException);
-				}
-			}
+			calendar.setTime(_parseRangeStart(rangeStart));
 		}
 		else if (rangeKey != null) {
 			calendar.add(Calendar.DAY_OF_MONTH, -rangeKey);
@@ -119,6 +90,28 @@ public class DateRangeUtil {
 		return DateFormatFactoryUtil.getSimpleDateFormat("yyyy-MM-dd");
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(DateRangeUtil.class);
+	private static Date _parseRangeEnd(String rangeEnd) {
+		try {
+			DateFormat dateFormat = _getDateFormat();
+
+			return dateFormat.parse(rangeEnd);
+		}
+		catch (ParseException parseException) {
+			throw new ValidationException(
+				"Invalid range end: " + rangeEnd, parseException);
+		}
+	}
+
+	private static Date _parseRangeStart(String rangeStart) {
+		try {
+			DateFormat dateFormat = _getDateFormat();
+
+			return dateFormat.parse(rangeStart);
+		}
+		catch (ParseException parseException) {
+			throw new ValidationException(
+				"Invalid range start: " + rangeStart, parseException);
+		}
+	}
 
 }
