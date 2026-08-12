@@ -10,6 +10,7 @@ import com.liferay.analytics.cms.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.analytics.cms.rest.internal.depot.entry.util.DepotEntryUtil;
 import com.liferay.analytics.cms.rest.resource.v1_0.PerformanceOverviewMetricResource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.Http;
 
@@ -36,6 +37,9 @@ public class PerformanceOverviewMetricResourceImpl
 		throws Exception {
 
 		LicenseManagerUtil.checkFreeTier();
+
+		AnalyticsSettingsManagerUtil.checkAnalyticsEnabled(
+			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		Long[] groupIds = DepotEntryUtil.getGroupIds(
 			DepotEntryUtil.getDepotEntries(

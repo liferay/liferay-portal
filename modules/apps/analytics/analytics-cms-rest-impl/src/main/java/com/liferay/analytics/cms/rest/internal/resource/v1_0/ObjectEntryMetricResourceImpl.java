@@ -9,6 +9,7 @@ import com.liferay.analytics.cms.rest.dto.v1_0.ObjectEntryMetric;
 import com.liferay.analytics.cms.rest.internal.client.AnalyticsCloudClient;
 import com.liferay.analytics.cms.rest.resource.v1_0.ObjectEntryMetricResource;
 import com.liferay.analytics.settings.rest.manager.AnalyticsSettingsManager;
+import com.liferay.analytics.settings.rest.util.AnalyticsSettingsManagerUtil;
 import com.liferay.portal.kernel.license.util.LicenseManagerUtil;
 import com.liferay.portal.kernel.util.Http;
 
@@ -33,6 +34,9 @@ public class ObjectEntryMetricResourceImpl
 		throws Exception {
 
 		LicenseManagerUtil.checkFreeTier();
+
+		AnalyticsSettingsManagerUtil.checkAnalyticsEnabled(
+			_analyticsSettingsManager, contextCompany.getCompanyId());
 
 		AnalyticsCloudClient analyticsCloudClient = new AnalyticsCloudClient(
 			_http);
