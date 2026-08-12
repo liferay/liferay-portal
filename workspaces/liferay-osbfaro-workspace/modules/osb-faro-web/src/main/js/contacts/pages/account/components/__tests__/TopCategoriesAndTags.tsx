@@ -1,10 +1,11 @@
 import BasePage from 'shared/components/base-page';
 import mockStore from 'test/mock-store';
 import React from 'react';
-import TopCategoriesAndTags, {
+import TopCategoriesAndTags from '../TopCategoriesAndTags';
+import {
 	ITopCategory,
 	ITopTag,
-} from '../TopCategoriesAndTags';
+} from 'shared/components/TopCategoriesAndTagsBaseCard';
 import {
 	cleanup,
 	fireEvent,
