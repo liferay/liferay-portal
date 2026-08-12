@@ -16,7 +16,7 @@ function main {
 		exit 1
 	fi
 
-	_check_utils az helm jq kubectl terraform
+	_check_utils az helm jq terraform
 
 	_validate_config_json "${1}"
 
@@ -47,7 +47,14 @@ function main {
 		terraform_args+=("${terraform_arg}")
 	done < <(_get_terraform_args "${1}")
 
+	local has_remote_tfstate=false
+
 	if jq --exit-status '.tfstate | objects' "${1}" &> /dev/null
+	then
+		has_remote_tfstate=true
+	fi
+
+	if [[ ${has_remote_tfstate} == true ]]
 	then
 		local container_name
 		local deployment_name
@@ -74,7 +81,7 @@ function main {
 
 	_destroy_azure_aks "${terraform_args[@]}"
 
-	if jq --exit-status '.tfstate | objects' "${1}" &> /dev/null
+	if [[ ${has_remote_tfstate} == true ]]
 	then
 		_delete_tfstate_storage "${resource_group_name}" "${storage_account_name}"
 	fi
@@ -121,6 +128,8 @@ function _destroy_azure_aks {
 
 	echo "Destroying the Azure AKS cluster."
 
+	terraform init
+
 	terraform destroy -input=false "${@}"
 
 	echo "Azure AKS cluster teardown complete."
@@ -154,7 +163,7 @@ function _uninstall_liferay_platform_chart {
 
 	if ! helm uninstall liferay-platform --namespace argocd-system --timeout 10m0s --wait
 	then
-		echo "The liferay-platform Helm release was not uninstalled after 10 minutes. If an application is stuck on the resources-finalizer.argocd.argoproj.io finalizer, remove the finalizer with kubectl patch and rerun this script." >&2
+		echo "The liferay-platform Helm release was not uninstalled after 10 minutes." >&2
 
 		exit 1
 	fi
