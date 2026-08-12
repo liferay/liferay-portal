@@ -135,7 +135,7 @@ public class UpdateLanguageActionTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-86415", "LPD-102324"})
+	@TestInfo({"LPD-86415", "LPD-102324", "LPD-102413"})
 	public void testGetRedirect() throws Exception {
 		_testGetRedirectWithControlPanelURL(false);
 		_testGetRedirectWithControlPanelURL(true);
@@ -143,6 +143,7 @@ public class UpdateLanguageActionTest {
 		_testGetRedirectWithFriendlyURL(true);
 		_testGetRedirectWithGroupFriendlyURLWithFriendlyURLMapping();
 		_testGetRedirectWithLayoutFriendlyURLWithFriendlyURLMapping();
+		_testGetRedirectWithLowerPriorityLanguageIdUniqueInSite();
 		_testGetRedirectWithPortletFriendlyURL(_sourceLocale);
 		_testGetRedirectWithPortletFriendlyURL(null);
 		_testGetRedirectWithFriendlyURLMapping(_sourceLocale);
@@ -708,6 +709,43 @@ public class UpdateLanguageActionTest {
 				_group.getFriendlyURL(), _layout.getFriendlyURL(_targetLocale),
 				"?queryString"),
 			false);
+	}
+
+	private void _testGetRedirectWithLowerPriorityLanguageIdUniqueInSite()
+		throws Exception {
+
+		Locale targetLocale = LocaleUtil.UK;
+
+		_group = GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(),
+			Arrays.asList(LocaleUtil.GERMANY, targetLocale, LocaleUtil.FRANCE),
+			LocaleUtil.GERMANY);
+
+		String redirectParameter = StringBundler.concat(
+			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
+			_group.getFriendlyURL(), _layout.getFriendlyURL(targetLocale));
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setParameter("redirect", redirectParameter);
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(_group.getCompanyId()));
+		themeDisplay.setLayout(_layout);
+		themeDisplay.setLayoutSet(_group.getPublicLayoutSet());
+		themeDisplay.setSiteGroupId(_group.getGroupId());
+
+		UpdateLanguageAction updateLanguageAction = new UpdateLanguageAction();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				StringPool.SLASH, targetLocale.getLanguage(),
+				redirectParameter),
+			updateLanguageAction.getRedirect(
+				mockHttpServletRequest, themeDisplay, targetLocale));
 	}
 
 	private void _testGetRedirectWithoutLayoutFriendlyURLWithFriendlyURLMapping(
