@@ -472,12 +472,6 @@ const ChannelList: React.FC<IChannelListProps> = ({
 							sortable: false,
 						},
 						{
-							accessor: 'commerceChannelsCount',
-							className: 'text-right',
-							label: Liferay.Language.get('channels'),
-							sortable: false,
-						},
-						{
 							accessor: 'id',
 							className: 'text-right',
 							label: Liferay.Language.get('property-id'),

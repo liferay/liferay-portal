@@ -319,14 +319,6 @@ const LiferayOverview: React.FC<ILiferayeOverviewProps> = ({
 					close={close}
 					customColumns={[
 						{
-							accessor: 'commerceChannelsCount',
-							className: 'text-right',
-							label: Liferay.Language.get(
-								'dxp-commerce-channels'
-							),
-							sortable: false,
-						},
-						{
 							accessor: 'groupsCount',
 							className: 'text-right',
 							label: Liferay.Language.get('sites'),

@@ -18,7 +18,6 @@ import {
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
 export interface ISelectableChannel {
-	commerceChannelsCount: number;
 	groupsCount: number;
 	id: string;
 	name: string;
@@ -159,14 +158,6 @@ const SelectChannelsModal: React.FC<ISelectChannelsModalProps> = ({
 									'available-properties'
 								),
 								title: true,
-							},
-							{
-								accessor: 'commerceChannelsCount',
-								className: 'text-right',
-								label: Liferay.Language.get(
-									'dxp-commerce-channels'
-								),
-								sortable: false,
 							},
 							{
 								accessor: 'groupsCount',
