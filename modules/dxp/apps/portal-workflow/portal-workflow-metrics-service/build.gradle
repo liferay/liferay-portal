@@ -16,6 +16,8 @@ dependencies {
 	compileOnly project(":apps:portal-background-task:portal-background-task-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-search:portal-search-engine-adapter-api")
+	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-api")
+	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-metrics-sla-api")
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
@@ -30,6 +32,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
+	compileOnly project(":dxp:apps:portal-workflow:portal-workflow-kaleo-metrics-integration")
 	compileOnly project(":dxp:apps:portal-workflow:portal-workflow-metrics-api")
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation project(":apps:portal-search:portal-search")

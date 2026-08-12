@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.portal.workflow.kaleo.metrics.integration.internal.search.index.reindexer;
+package com.liferay.portal.workflow.metrics.internal.search.index.reindexer;
 
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -12,12 +12,10 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.workflow.kaleo.metrics.integration.helper.IndexerHelper;
 import com.liferay.portal.workflow.kaleo.model.KaleoDefinitionVersion;
 import com.liferay.portal.workflow.kaleo.model.KaleoInstance;
-import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceToken;
 import com.liferay.portal.workflow.kaleo.service.KaleoDefinitionVersionLocalService;
 import com.liferay.portal.workflow.kaleo.service.KaleoInstanceLocalService;
-import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.portal.workflow.metrics.search.background.task.WorkflowMetricsReindexStatusMessageSender;
-import com.liferay.portal.workflow.metrics.search.index.TaskWorkflowMetricsIndexer;
+import com.liferay.portal.workflow.metrics.search.index.InstanceWorkflowMetricsIndexer;
 import com.liferay.portal.workflow.metrics.search.index.reindexer.WorkflowMetricsReindexer;
 
 import java.util.Objects;
@@ -30,17 +28,18 @@ import org.osgi.service.component.annotations.Reference;
  * @author Rafael Praxedes
  */
 @Component(service = WorkflowMetricsReindexer.class)
-public class TaskWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
+public class InstanceWorkflowMetricsReindexer
+	implements WorkflowMetricsReindexer {
 
 	@Override
 	public String getKey() {
-		return "task";
+		return "instance";
 	}
 
 	@Override
 	public void reindex(long companyId) throws PortalException {
 		ActionableDynamicQuery actionableDynamicQuery =
-			_kaleoTaskInstanceTokenLocalService.getActionableDynamicQuery();
+			_kaleoInstanceLocalService.getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			dynamicQuery -> {
@@ -55,32 +54,34 @@ public class TaskWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
 		AtomicInteger atomicCounter = new AtomicInteger(0);
 
 		actionableDynamicQuery.setPerformActionMethod(
-			(KaleoTaskInstanceToken kaleoTaskInstanceToken) -> {
+			(KaleoInstance kaleoInstance) -> {
 				KaleoDefinitionVersion kaleoDefinitionVersion =
 					_kaleoDefinitionVersionLocalService.
 						fetchKaleoDefinitionVersion(
-							kaleoTaskInstanceToken.
-								getKaleoDefinitionVersionId());
+							kaleoInstance.getKaleoDefinitionVersionId());
 
 				if (Objects.isNull(kaleoDefinitionVersion)) {
 					return;
 				}
 
-				KaleoInstance kaleoInstance =
-					_kaleoInstanceLocalService.fetchKaleoInstance(
-						kaleoTaskInstanceToken.getKaleoInstanceId());
-
-				if (Objects.isNull(kaleoInstance)) {
-					return;
-				}
-
-				_taskWorkflowMetricsIndexer.addTask(
-					_indexerHelper.createAddTaskRequest(
-						kaleoInstance, kaleoTaskInstanceToken,
-						kaleoDefinitionVersion.getVersion()));
+				_instanceWorkflowMetricsIndexer.addInstance(
+					_indexerHelper.createAssetTitleLocalizationMap(
+						kaleoInstance.getClassName(),
+						kaleoInstance.getClassPK(), kaleoInstance.getGroupId()),
+					_indexerHelper.createAssetTypeLocalizationMap(
+						kaleoInstance.getClassName(),
+						kaleoInstance.getGroupId()),
+					kaleoInstance.getClassName(), kaleoInstance.getClassPK(),
+					companyId, kaleoInstance.getCompletionDate(),
+					kaleoInstance.getCreateDate(),
+					kaleoInstance.getKaleoInstanceId(),
+					kaleoInstance.getModifiedDate(),
+					kaleoInstance.getKaleoDefinitionId(),
+					kaleoDefinitionVersion.getVersion(),
+					kaleoInstance.getUserId(), kaleoInstance.getUserName());
 
 				_workflowMetricsReindexStatusMessageSender.sendStatusMessage(
-					atomicCounter.incrementAndGet(), total, "task");
+					atomicCounter.incrementAndGet(), total, "instance");
 			});
 
 		actionableDynamicQuery.performActions();
@@ -90,18 +91,14 @@ public class TaskWorkflowMetricsReindexer implements WorkflowMetricsReindexer {
 	private IndexerHelper _indexerHelper;
 
 	@Reference
+	private InstanceWorkflowMetricsIndexer _instanceWorkflowMetricsIndexer;
+
+	@Reference
 	private KaleoDefinitionVersionLocalService
 		_kaleoDefinitionVersionLocalService;
 
 	@Reference
 	private KaleoInstanceLocalService _kaleoInstanceLocalService;
-
-	@Reference
-	private KaleoTaskInstanceTokenLocalService
-		_kaleoTaskInstanceTokenLocalService;
-
-	@Reference
-	private TaskWorkflowMetricsIndexer _taskWorkflowMetricsIndexer;
 
 	@Reference
 	private WorkflowMetricsReindexStatusMessageSender
