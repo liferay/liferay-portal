@@ -70,7 +70,7 @@ public abstract class BaseWorkflowMetricsReindexer
 				companyId);
 		}
 
-		reindexEntities(companyId, executionMode);
+		reindexEntities(companyId);
 
 		if (isExecuteSyncReindex(executionMode)) {
 			SyncReindexManager syncReindexManager =
@@ -95,9 +95,7 @@ public abstract class BaseWorkflowMetricsReindexer
 		return false;
 	}
 
-	protected abstract void reindexEntities(
-			long companyId, ExecutionMode executionMode)
-		throws Exception;
+	protected abstract void reindexEntities(long companyId) throws Exception;
 
 	@Reference
 	protected IndexNameBuilder indexNameBuilder;

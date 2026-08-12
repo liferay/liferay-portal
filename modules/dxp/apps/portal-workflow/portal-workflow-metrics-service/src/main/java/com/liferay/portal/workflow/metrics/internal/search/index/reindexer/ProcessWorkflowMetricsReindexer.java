@@ -34,9 +34,7 @@ public class ProcessWorkflowMetricsReindexer
 	}
 
 	@Override
-	protected void reindexEntities(long companyId, ExecutionMode executionMode)
-		throws Exception {
-
+	protected void reindexEntities(long companyId) throws Exception {
 		ActionableDynamicQuery actionableDynamicQuery =
 			_kaleoDefinitionLocalService.getActionableDynamicQuery();
 

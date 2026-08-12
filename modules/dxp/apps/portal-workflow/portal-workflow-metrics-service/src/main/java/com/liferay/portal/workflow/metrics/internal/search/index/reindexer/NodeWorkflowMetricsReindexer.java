@@ -39,9 +39,7 @@ public class NodeWorkflowMetricsReindexer extends BaseWorkflowMetricsReindexer {
 	}
 
 	@Override
-	protected void reindexEntities(long companyId, ExecutionMode executionMode)
-		throws Exception {
-
+	protected void reindexEntities(long companyId) throws Exception {
 		_reindexIndexWithKaleoNode(companyId);
 		_reindexIndexWithKaleoTask(companyId);
 	}
