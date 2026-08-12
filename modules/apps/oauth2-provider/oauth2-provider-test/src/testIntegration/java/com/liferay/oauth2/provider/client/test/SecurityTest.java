@@ -304,11 +304,6 @@ public class SecurityTest extends BaseClientTestCase {
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
 				Collections.singletonList("everything"));
 
-			createOAuth2Application(
-				companyId, _user, "oauthTestApplicationUnescapedName",
-				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
-				_APPLICATION_NAME, Collections.singletonList("everything"));
-
 			createOAuth2ApplicationWithNone(
 				companyId, _user, "oauthTestApplicationCodePKCE",
 				Collections.singletonList(GrantType.AUTHORIZATION_CODE_PKCE),
@@ -322,6 +317,11 @@ public class SecurityTest extends BaseClientTestCase {
 			createOAuth2Application(
 				companyId, company.getGuestUser(),
 				"oauthTestApplicationDefaultUser");
+
+			createOAuth2Application(
+				companyId, _user, "oauthTestApplicationUnescapedName",
+				Collections.singletonList(GrantType.AUTHORIZATION_CODE),
+				_APPLICATION_NAME, Collections.singletonList("everything"));
 		}
 
 	}
