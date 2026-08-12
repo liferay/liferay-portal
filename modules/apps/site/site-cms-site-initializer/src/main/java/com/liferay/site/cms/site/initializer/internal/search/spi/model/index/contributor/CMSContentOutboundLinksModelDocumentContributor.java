@@ -66,7 +66,8 @@ public class CMSContentOutboundLinksModelDocumentContributor
 
 			Set<String> outboundLinks = new LinkedHashSet<>();
 
-			Map<String, Serializable> values = objectEntry.getValues();
+			Map<String, Serializable> indexedValues =
+				objectEntry.getIndexedValues();
 
 			ObjectFieldBag objectFieldBag =
 				objectDefinition.getObjectFieldBag();
@@ -81,7 +82,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 						ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
 					long objectEntryId = GetterUtil.getLong(
-						values.get(objectField.getName()));
+						indexedValues.get(objectField.getName()));
 
 					if (objectEntryId != 0) {
 						outboundLinks.add(
@@ -94,7 +95,9 @@ public class CMSContentOutboundLinksModelDocumentContributor
 							businessType,
 							ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT)) {
 
-					for (String content : _getContents(objectField, values)) {
+					for (String content :
+							_getContents(objectField, indexedValues)) {
+
 						for (String externalReferenceCode :
 								OutboundLinksUtil.
 									getObjectEntryExternalReferenceCodes(
@@ -128,10 +131,10 @@ public class CMSContentOutboundLinksModelDocumentContributor
 	}
 
 	private List<String> _getContents(
-		ObjectField objectField, Map<String, Serializable> values) {
+		ObjectField objectField, Map<String, Serializable> indexedValues) {
 
 		if (objectField.isLocalized()) {
-			Object localizedValues = values.get(
+			Object localizedValues = indexedValues.get(
 				objectField.getI18nObjectFieldName());
 
 			if (localizedValues instanceof Map) {
@@ -149,7 +152,7 @@ public class CMSContentOutboundLinksModelDocumentContributor
 			}
 		}
 
-		Object content = values.get(objectField.getName());
+		Object content = indexedValues.get(objectField.getName());
 
 		if (content == null) {
 			return Collections.emptyList();
