@@ -178,12 +178,12 @@ public class ElasticsearchConnectionManager
 		Supplier<ElasticsearchConnection> elasticsearchConnectionSupplier =
 			_elasticsearchConnectionSuppliers.get(connectionId);
 
-		if (_log.isInfoEnabled()) {
+		if (_log.isDebugEnabled()) {
 			if (elasticsearchConnectionSupplier != null) {
-				_log.info("Returning connection with ID: " + connectionId);
+				_log.debug("Returning connection with ID: " + connectionId);
 			}
 			else {
-				_log.info(
+				_log.debug(
 					"Connection not found. Returning null for ID: " +
 						connectionId);
 			}
@@ -366,21 +366,21 @@ public class ElasticsearchConnectionManager
 	protected ElasticsearchConnection getElasticsearchConnection(
 		String connectionId, boolean preferLocalCluster) {
 
-		if (_log.isInfoEnabled()) {
-			_log.info("Connection requested for ID: " + connectionId);
+		if (_log.isDebugEnabled()) {
+			_log.debug("Connection requested for ID: " + connectionId);
 		}
 
 		if (!Validator.isBlank(connectionId)) {
-			if (_log.isInfoEnabled()) {
-				_log.info("Getting connection with ID: " + connectionId);
+			if (_log.isDebugEnabled()) {
+				_log.debug("Getting connection with ID: " + connectionId);
 			}
 
 			return getElasticsearchConnection(connectionId);
 		}
 
 		if (!elasticsearchConfigurationWrapper.productionModeEnabled()) {
-			if (_log.isInfoEnabled()) {
-				_log.info(
+			if (_log.isDebugEnabled()) {
+				_log.debug(
 					"Getting " + ConnectionConstants.SIDECAR_CONNECTION_ID +
 						" connection");
 			}
@@ -393,8 +393,8 @@ public class ElasticsearchConnectionManager
 			String localClusterConnectionId = getLocalClusterConnectionId();
 
 			if (localClusterConnectionId != null) {
-				if (_log.isInfoEnabled()) {
-					_log.info(
+				if (_log.isDebugEnabled()) {
+					_log.debug(
 						"Getting local cluster connection with ID: " +
 							localClusterConnectionId);
 				}
@@ -411,8 +411,8 @@ public class ElasticsearchConnectionManager
 				ConnectionConstants.REMOTE_CONNECTION_ID;
 		}
 
-		if (_log.isInfoEnabled()) {
-			_log.info(
+		if (_log.isDebugEnabled()) {
+			_log.debug(
 				"Getting remote cluster connection with ID: " +
 					remoteClusterConnectionId);
 		}
