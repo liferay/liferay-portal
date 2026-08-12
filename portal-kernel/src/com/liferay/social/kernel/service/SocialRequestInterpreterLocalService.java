@@ -103,4 +103,4 @@ public interface SocialRequestInterpreterLocalService extends BaseLocalService {
 		SocialRequest request, ThemeDisplay themeDisplay);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-202907136
+// LIFERAY-SERVICE-BUILDER-HASH:-96726058
