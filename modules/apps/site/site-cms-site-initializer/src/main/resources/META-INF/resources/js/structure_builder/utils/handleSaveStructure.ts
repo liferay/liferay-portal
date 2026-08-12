@@ -58,12 +58,10 @@ export default async function handleSaveStructure({
 	const workflows = selectStructureWorkflows(state);
 	const uuid = selectStructureUuid(state);
 
-	const previousStatus = state.structure.status;
-
 	const onError = (error: StructureServiceError) =>
-		dispatch(buildStructureErrorAction({error, previousStatus, uuid}));
+		dispatch(buildStructureErrorAction({error, uuid}));
 
-	dispatch({status: 'saving', type: 'set-structure-status'});
+	dispatch({operation: 'saving', type: 'start-operation'});
 
 	if (status === 'new') {
 		const {data, error} = await StructureService.createStructure({
@@ -78,6 +76,8 @@ export default async function handleSaveStructure({
 			status: 'draft',
 			workflows,
 		});
+
+		dispatch({type: 'end-operation'});
 
 		if (error) {
 			onError(error);
@@ -103,6 +103,8 @@ export default async function handleSaveStructure({
 			status: 'draft',
 			workflows,
 		});
+
+		dispatch({type: 'end-operation'});
 
 		if (error) {
 			onError(error);

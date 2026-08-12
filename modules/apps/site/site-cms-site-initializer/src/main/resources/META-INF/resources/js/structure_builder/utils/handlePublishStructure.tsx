@@ -265,12 +265,10 @@ export default async function handlePublishStructure({
 		});
 	};
 
-	const previousStatus = state.structure.status;
-
 	const onError = (error: StructureServiceError) =>
-		dispatch(buildStructureErrorAction({error, previousStatus, uuid}));
+		dispatch(buildStructureErrorAction({error, uuid}));
 
-	dispatch({status: 'publishing', type: 'set-structure-status'});
+	dispatch({operation: 'publishing', type: 'start-operation'});
 
 	if (status === 'new') {
 		const {data, error} = await StructureService.createStructure({
@@ -285,6 +283,8 @@ export default async function handlePublishStructure({
 			status: 'published',
 			workflows,
 		});
+
+		dispatch({type: 'end-operation'});
 
 		if (error) {
 			onError(error);
@@ -312,6 +312,8 @@ export default async function handlePublishStructure({
 			status: 'published',
 			workflows,
 		});
+
+		dispatch({type: 'end-operation'});
 
 		if (error) {
 			onError(error);

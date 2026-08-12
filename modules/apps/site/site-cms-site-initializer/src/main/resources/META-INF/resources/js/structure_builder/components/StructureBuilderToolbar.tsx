@@ -15,6 +15,7 @@ import {config} from '../config';
 import {useCache, useStaleCache} from '../contexts/CacheContext';
 import {useSelector, useStateDispatch} from '../contexts/StateContext';
 import selectHistory from '../selectors/selectHistory';
+import selectOperation from '../selectors/selectOperation';
 import selectState from '../selectors/selectState';
 import selectStructureId from '../selectors/selectStructureId';
 import selectStructureLocalizedLabel from '../selectors/selectStructureLocalizedLabel';
@@ -194,6 +195,7 @@ function SaveButton() {
 	const dispatch = useStateDispatch();
 	const validate = useValidate();
 
+	const operation = useSelector(selectOperation);
 	const state = useSelector(selectState);
 
 	const onSave = async () => {
@@ -204,8 +206,6 @@ function SaveButton() {
 		});
 	};
 
-	const {status} = state.structure;
-
 	return (
 		<>
 			<AsyncButton
@@ -213,7 +213,7 @@ function SaveButton() {
 				displayType="secondary"
 				label={Liferay.Language.get('save')}
 				onClick={onSave}
-				status={status === 'saving' ? 'loading' : 'idle'}
+				status={operation === 'saving' ? 'loading' : 'idle'}
 			/>
 
 			<ClayButtonWithIcon
@@ -232,6 +232,8 @@ function SaveButton() {
 function PublishButton() {
 	const dispatch = useStateDispatch();
 	const validate = useValidate();
+
+	const operation = useSelector(selectOperation);
 	const state = useSelector(selectState);
 
 	const {data: objectDefinitions} = useCache('object-definitions');
@@ -251,14 +253,12 @@ function PublishButton() {
 		});
 	};
 
-	const {status} = state.structure;
-
 	return (
 		<AsyncButton
 			displayType="primary"
 			label={Liferay.Language.get('publish')}
 			onClick={onPublish}
-			status={status === 'publishing' ? 'loading' : 'idle'}
+			status={operation === 'publishing' ? 'loading' : 'idle'}
 		/>
 	);
 }
