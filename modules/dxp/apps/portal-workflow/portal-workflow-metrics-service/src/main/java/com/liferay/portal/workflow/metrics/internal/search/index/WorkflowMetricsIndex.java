@@ -50,6 +50,19 @@ public enum WorkflowMetricsIndex {
 		WorkflowMetricsIndexNameConstants.SUFFIX_TRANSITION,
 		WorkflowMetricsIndexTypeConstants.TRANSITION_TYPE);
 
+	public static void createMissingIndexes(
+			SearchCapabilities searchCapabilities,
+			SearchEngineAdapter searchEngineAdapter,
+			IndexNameBuilder indexNameBuilder, long companyId)
+		throws PortalException {
+
+		for (WorkflowMetricsIndex workflowMetricsIndex : values()) {
+			workflowMetricsIndex.createIndex(
+				searchCapabilities, searchEngineAdapter, indexNameBuilder,
+				companyId);
+		}
+	}
+
 	public static String getIndexName(
 		IndexNameBuilder indexNameBuilder, String indexNameSuffix,
 		long companyId) {
@@ -92,7 +105,10 @@ public enum WorkflowMetricsIndex {
 			searchEngineAdapter.execute(createIndexRequest);
 		}
 		catch (Exception exception) {
-			_log.error(exception);
+			throw new PortalException(
+				"Unable to create index " +
+					getIndexName(indexNameBuilder, _indexNameSuffix, companyId),
+				exception);
 		}
 
 		return true;
